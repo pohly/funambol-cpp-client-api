@@ -1,0 +1,114 @@
+/*
+ * Copyright (C) 2003-2006 Funambol
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ */
+ 
+#include "base/util/utils.h"
+#include "syncml/core/ContentTypeInfo.h"
+ 
+      
+ContentTypeInfo::ContentTypeInfo() {
+     ctType = NULL;
+     verCT = NULL;
+}
+
+ContentTypeInfo::~ContentTypeInfo() {
+    if (ctType) {
+        delete [] ctType; ctType = NULL;
+    }
+    if (verCT) {
+        delete [] verCT; verCT = NULL;
+    }
+
+}
+
+/**
+ * Creates a new ContentTypeCapability object with the given content type 
+ * and versione
+ *
+ * @param ctType corresponds to &lt;CTType&gt; element in the SyncML 
+ *                    specification - NOT NULL
+ * @param verCT corresponds to &lt;VerCT&gt; element in the SyncML 
+ *                specification - NOT NULL
+ *
+ */
+ContentTypeInfo::ContentTypeInfo(wchar_t* ctType, wchar_t* verCT) {
+    
+    this->ctType = NULL;
+    this->verCT  = NULL;
+
+    if (ctType == NULL){
+        // TBD
+    }    
+    if (verCT == NULL){
+        // TBD
+    }        
+    setCTType(ctType);
+    setVerCT(verCT);
+}
+
+/**
+ * Gets the content type properties
+ *
+ * @return the content type properties
+ */
+wchar_t* ContentTypeInfo::getCTType(wchar_t* retCTType) {
+    if (retCTType == NULL) {
+        return ctType;
+    }
+    return wcscpy(retCTType, ctType);
+}
+
+/**
+ * Sets the content type properties
+ *
+ * @param ctType the content type properties
+ */
+void ContentTypeInfo::setCTType(wchar_t* ctType) {
+    if (this->ctType) {
+        delete [] this->ctType; this->ctType = NULL;
+    }
+    this->ctType = stringdup(ctType);
+}
+
+/**
+ * Gets the version of the content type
+ *
+ * @return the version of the content type
+ */
+wchar_t* ContentTypeInfo::getVerCT(wchar_t* retVerCT) {
+    if (retVerCT == NULL) {
+        return verCT;
+    }
+    return wcscpy(retVerCT, verCT);
+}
+
+/**
+ * Sets the version of the content type
+ *
+ * @param verCT the version of the content type
+ */
+void ContentTypeInfo::setVerCT(wchar_t* verCT) {
+    if (this->verCT) {
+        delete [] this->verCT; this->verCT = NULL;
+    }
+    this->verCT = stringdup(verCT);
+}
+
+ArrayElement* ContentTypeInfo::clone() {
+    ContentTypeInfo* ret = new ContentTypeInfo(ctType, verCT);
+    return ret;
+}

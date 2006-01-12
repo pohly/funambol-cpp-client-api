@@ -1,0 +1,101 @@
+/**
+ * Copyright (C) 2003-2006 Funambol
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston,
+ * MA 02111-1307 USA
+ */
+
+//
+// @author Stefano Fornari @ Funambol
+// @version $Id: ContactDetail.h,v 1.1 2006-01-12 11:39:35 nichele Exp $
+//
+
+#ifndef INCL_PIM_CONTACT_DETAIL
+#define INCL_PIM_CONTACT_DETAIL
+
+#include "base/util/ArrayList.h"
+
+/**
+ * An object containing details on how to reach a contact (phone numbers, emails, webpage)
+ *
+ */
+class ContactDetail {
+
+    // ------------------------------------------------------------ Private data
+
+    private:
+        ArrayList* phones  ;
+        ArrayList* emails  ;
+        ArrayList* webPages;
+
+    // -------------------------------------------- Constructors and Destructors
+    public:
+        /**
+         * Creates an empty list of contact details
+         */
+        ContactDetail();
+        ~ContactDetail();
+
+    // ---------------------------------------------------------- Public methods
+
+        /**
+         * Returns the telephones for this Contact Detail
+         *
+         * @return the telephones for this Contact Detail or null if not defined
+         */
+        ArrayList* getPhones();
+
+        /**
+         * Sets the phones. The given ArrayList is cloned, so that the
+         * caller can independently release it as needed.
+         */
+        void setPhones(ArrayList& list);
+
+        /**
+         * Returns the emails for this Contact Detail
+         *
+         * @return the emails for this Contact Detail or null if not defined
+         */
+        ArrayList* getEmails();
+
+        /**
+         * Sets the emails. The given ArrayList is cloned, so that the
+         * caller can independently release it as needed.
+         */
+        void setEmails(ArrayList& list);
+
+        /**
+         * Returns the webpage for this Contact Detail
+         *
+         * @return the webpage for this Contact Detail or null if not defined
+         */
+        ArrayList* getWebPages();
+
+        /**
+         * Sets the web pages. The given ArrayList is cloned, so that the
+         * caller can independently release it as needed.
+         */
+        void setWebPages(ArrayList& list);
+
+        /**
+         * Creates and returns a new ContactDetail object. The object is created with
+         * the C++ new operator and must be deallocated with the delete C++
+         * operator
+         */
+        ContactDetail* clone();
+
+};
+
+#endif

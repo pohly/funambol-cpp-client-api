@@ -1,0 +1,68 @@
+/*
+ * Copyright (C) 2005-2006 Funambol
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ */
+
+
+#ifndef INCL_CTCAP
+#define INCL_CTCAP
+
+#include "base/fscapi.h"
+#include "base/util/ArrayList.h"
+#include "syncml/core/CTTypeSupported.h"
+
+
+class CTCap : public ArrayElement {
+    
+     // ------------------------------------------------------------ Private data
+    private:
+        ArrayList* ctTypeSupported;  // CTTypeSupported[]
+    
+    // ---------------------------------------------------------- Public data    
+    public:
+                    
+        CTCap();
+        ~CTCap();
+        
+        /**
+         * Creates a new CTCap object with the given array of information
+         *
+         * @param ctTypeSupported the array of information on content type
+         *                        capabilities - NOT NULL
+         *
+         */
+        CTCap(ArrayList* ctTypeSupported);
+        
+
+        /**
+         * Get an array of content type information objects
+         *
+         * @return an array of content type information objects
+         */
+        ArrayList* getCTTypeSupported();
+
+        /**
+         * Sets an array of content type information objects
+         *
+         * @param ctTypeSupported an array of content type information objects
+         */
+        void setCTTypeSupported(ArrayList* ctTypeSupported);
+
+        ArrayElement* clone();
+   
+};
+
+#endif

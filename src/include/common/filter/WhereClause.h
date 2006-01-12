@@ -1,0 +1,148 @@
+/*
+ * Copyright (C) 2005-2006 Funambol
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ */
+
+#ifndef INCL_WHERECLAUSE
+#define INCL_WHERECLAUSE
+
+#include "base/fscapi.h"
+#include "filter/Clause.h"
+
+typedef enum {
+    EQ       =  0,
+    NE       =  1,
+    GT       =  2,
+    LT       =  3,
+    GE       =  4,
+    LE       =  5,
+    CONTAIN  =  6,
+    NCONTAIN =  7,
+    UNKNOWN  = -1
+} WhereClauseOperator;
+
+class WhereClause : public Clause {
+
+    // ------------------------------------------------------- Private interface
+private:
+
+    wchar_t*            property     ;
+    wchar_t*            value        ;
+    WhereClauseOperator op           ;
+    BOOL                caseSensitive;
+
+    // ----------------------------------------------------- Protected interface
+protected:
+
+    // -------------------------------------------------------- Public interface
+public:
+
+    /*
+     * WhereClause constructor
+     *
+     */
+    WhereClause();
+
+
+    /*
+     * WhereClause constructor
+     *
+     * @param property
+     * @param value
+     * @param o
+     * @param s
+     */
+    WhereClause(const wchar_t* property, const wchar_t* value, WhereClauseOperator o, BOOL p3);
+
+
+    /*
+     * WhereClause destructor
+     *
+     */
+    ~WhereClause();
+
+    /*
+     * setProperty
+     *
+     * @param p0
+     */
+    void setProperty(wchar_t* p);
+
+
+    /*
+     * getProperty
+     *
+     */
+    wchar_t* getProperty(wchar_t* p = NULL);
+
+
+
+    /*
+     * setValue
+     *
+     * @param p0
+     */
+    void setValue(wchar_t* v);
+
+
+    /*
+     * getvalue
+     *
+     */
+    wchar_t* getValue(wchar_t* v = NULL);
+
+
+    /*
+     * getOperator
+     *
+     */
+    WhereClauseOperator getOperator();
+
+
+    /*
+     * setOperator
+     *
+     * @param o
+     */
+    void setOperator(WhereClauseOperator o);
+
+
+    /*
+     * isCaseSensitive
+     *
+     */
+    BOOL isCaseSensitive();
+
+
+    /*
+     * setCaseSensitive
+     *
+     * @param s
+     */
+    void setCaseSensitive(BOOL s);
+
+    /*
+     * Creates a new instance of this Clause
+     *
+     * @return the clone
+     */
+    ArrayElement* clone();
+
+
+};
+
+
+#endif
