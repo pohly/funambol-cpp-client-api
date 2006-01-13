@@ -121,7 +121,7 @@ void Log::reset() {
     wchar_t* currentTime = getCurrentTime(true);
     
     logFile     = _wfopen(logPath, TEXT("w+"));      
-    fwprintf(logFile, TEXT("%s - # Sync4j Client API Log\n"), currentTime); fflush(logFile);    
+    fwprintf(logFile, TEXT("%s - # Funambol WindowsMobile Plugin Log\n"), currentTime); fflush(logFile);    
     fclose(logFile);
 
     delete[] currentTime;    

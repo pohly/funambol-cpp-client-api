@@ -131,7 +131,7 @@ void Log::reset() {
    
     
     logFile     = _wfopen(currentLogPath, TEXT("w+"));      
-    fwprintf(logFile, TEXT("%s - # Sync4j Client API Log\n"), currentTime); fflush(logFile);    
+       fwprintf(logFile, TEXT("%s - # Funambol Win32 Plugin Log\n"), currentTime); fflush(logFile);    
     fclose(logFile);
     logFile = NULL;
 
