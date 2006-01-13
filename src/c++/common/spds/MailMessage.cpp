@@ -24,11 +24,14 @@
 #include "spds/MailMessage.h"
 
 //------------------------------------------------------------------ Defines
+
+// Headers names
 #define NL          TEXT("\n")
 #define FROM        TEXT("From: ")
 #define TO          TEXT("To: ")
 #define CC          TEXT("CC: ")
 #define BCC         TEXT("BCC: ")
+#define DATE        TEXT("Date: ")
 #define SUBJECT     TEXT("Subject: ")
 #define MIMETYPE    TEXT("Content-Type: ")
 #define MIMEVERS    TEXT("Mime-Version: ")
@@ -38,10 +41,12 @@
 #define MULTIPART   TEXT("multipart/")
 #define CHARSET     TEXT("charset=")
 
+// Header names' length
 static const unsigned char FROM_LEN = wcslen(FROM);
 static const unsigned char TO_LEN   = wcslen(TO);
 static const unsigned char CC_LEN   = wcslen(CC);
 static const unsigned char BCC_LEN  = wcslen(BCC);
+static const unsigned char DATE_LEN  = wcslen(DATE);
 static const unsigned char SUBJECT_LEN = wcslen(SUBJECT);
 static const unsigned char MIMETYPE_LEN = wcslen(MIMETYPE);
 static const unsigned char MIMEVERS_LEN = wcslen(MIMEVERS);
@@ -308,6 +313,9 @@ static bool getBodyPart(StringBuffer &rfcBody, StringBuffer &boundary,
 	return (next != StringBuffer::npos);
 }
 
+
+
+
 //----------------------------------------------------------- Public Methods
 
 void generateBoundary(StringBuffer& boundary)
@@ -356,6 +364,7 @@ wchar_t * MailMessage::format() {
     if (bcc.length() ) {
         ret += BCC; ret += bcc; ret += NL;
     }
+    ret += DATE; ret += date.formatRfc822(); ret += NL;
     ret += SUBJECT; ret += subject; ret += NL;
     ret += MIMETYPE; ret += contentType; ret+= TEXT("; ");
     if (contentType.ifind(MULTIPART) != StringBuffer::npos ){
@@ -467,6 +476,8 @@ int MailMessage::parseHeaders(StringBuffer &rfcHeaders) {
             cc = line->substr(CC_LEN);
         else if( line->ifind(BCC) == 0 )
             bcc = line->substr(BCC_LEN);
+        else if ( line->ifind(DATE) == 0 )
+            date.parseRfc822( line->substr(DATE_LEN) );
         else if( line->ifind(SUBJECT) == 0 )
             subject = line->substr(SUBJECT_LEN);
         else if( line->ifind(ENCODING) == 0 )   // it is here for single part only

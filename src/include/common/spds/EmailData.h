@@ -26,7 +26,7 @@
 
 class EmailData : public ArrayElement {
     
-    // ------------------------------------------------------------ Private data
+    // ------------------------------------------------------- Private data
     private:
         bool read;
         bool forwarded;
@@ -40,8 +40,9 @@ class EmailData : public ArrayElement {
         MailMessage emailItem;
 
     public:
+    // ------------------------------------------------------- Constructors
         
-    // --------------------------------------------------------------- Accessors  
+    // ---------------------------------------------------------- Accessors  
         bool getRead() { return read; }
         void setRead(bool v) { read=v; }
 
@@ -69,7 +70,7 @@ class EmailData : public ArrayElement {
         MailMessage& getEmailItem() { return emailItem; }
         void setEmailItem(const MailMessage& v) { emailItem = v; }
 
-    // ---------------------------------------------------------- Public Methods
+    // ----------------------------------------------------- Public Methods
         int parse(const wchar_t *syncmlData, size_t len = StringBuffer::npos) ;
         wchar_t *format() ;
 

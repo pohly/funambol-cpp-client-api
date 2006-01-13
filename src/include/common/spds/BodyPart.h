@@ -16,7 +16,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 #ifndef INCL_BODY_PART
-    #define INCL_BODY_PART
+#define INCL_BODY_PART
 
 #include "base/util/ArrayElement.h"
 #include "base/util/StringBuffer.h"

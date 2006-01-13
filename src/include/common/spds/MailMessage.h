@@ -21,6 +21,7 @@
 #include "base/util/ArrayList.h"
 #include "base/util/StringBuffer.h"
 #include "base/util/UTF8StringBuffer.h"
+#include "base/util/BasicTime.h"
 #include "spds/BodyPart.h"
 
 class MailMessage : public ArrayElement {
@@ -36,6 +37,8 @@ class MailMessage : public ArrayElement {
         StringBuffer bcc;
 
         StringBuffer subject;
+
+        BasicTime date;
 
         StringBuffer contentType;
         StringBuffer boundary;
@@ -76,6 +79,9 @@ class MailMessage : public ArrayElement {
 
         const wchar_t *getSubject() const ;
         void setSubject(const wchar_t *subj);
+		
+        const BasicTime& getDate() const ;
+        void setDate(BasicTime d);
 		
         const wchar_t * getContentType() const ;
         void setContentType(const wchar_t *val);
