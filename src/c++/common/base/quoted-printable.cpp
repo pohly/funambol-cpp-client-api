@@ -72,3 +72,37 @@ wchar_t *qp_decode(const wchar_t *qp)
     return ret;
 }
 
+// A simple version of qp_encoding not used yet
+wchar_t *qp_encode(const wchar_t *qp) {
+	wchar_t QP_DIGITS[] = TEXT("0123456789ABCDEF");
+	wchar_t* ret = new wchar_t[wcslen(qp)*3+1];
+	int i = 0;
+
+	const wchar_t *in;
+	for (in = qp; *in; in++ ) {
+		if ( (0x21 <= in[0]) & (in[0] <= 0x7e) && in[0] != '=' ) {
+            ret[i] = *in;
+			i++;
+        }
+        else {
+            ret[i] = '=';
+			i++;
+            ret[i] = QP_DIGITS[in[0] >> 4 & 0xf];
+			i++;
+            ret[i] = QP_DIGITS[in[0] & 0xf];
+			i++;
+        }
+	}
+
+	ret[i] = '\0';
+
+	return ret;
+}
+
+bool qp_isNeed(BSTR in) {
+	for(int i = 0; i < wcslen(in); i++) 
+		if ( (0x21 > in[i]) | (in[i] > 0x7e) || in[i] == '=' )
+			return true;
+	
+	return false;
+}

@@ -19,6 +19,9 @@
 #define INCL_QUOTED_PRINTABLE_H
 
 wchar_t *qp_decode(const wchar_t *qp);
+wchar_t *qp_encode(const wchar_t *qp);
+
+bool qp_isNeed(BSTR in);
 
 #endif
 
