@@ -95,6 +95,10 @@ void MailMessage::setBcc(const wchar_t *bcc) { this->bcc = bcc; }
 const wchar_t *MailMessage::getSubject() const { return subject.c_str(); }
 void MailMessage::setSubject(const wchar_t *subj) { subject = subj; }
 
+const BasicTime& MailMessage::getDate() const { return date; }
+void MailMessage::setDate(const BasicTime& v) { date = v; }
+
+
 const wchar_t * MailMessage::getContentType() const { return contentType; };
 void MailMessage::setContentType(const wchar_t *val) { contentType = val; };
 

@@ -117,7 +117,7 @@ wchar_t *EmailData::format() {
     StringBuffer out;
 
     out.reserve(150);
-
+    
     out = TEXT("<![CDATA[\n<Email>\n");
     out += XMLProcessor::makeElement(EMAIL_READ, read);
     out += XMLProcessor::makeElement(EMAIL_FORW, forwarded);

@@ -15,6 +15,8 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
+#ifndef INCL_BASIC_TIME
+    #define INCL_BASIC_TIME
 
 #include "base/fscapi.h"
 #include "base/util/ArrayElement.h"
@@ -59,6 +61,9 @@ class BasicTime : public ArrayElement {
     int getMin() const { return min; }
     void setMin(int v) { min=v; }
 
+    int getSec() const { return sec; }
+    void setSec(int v) { sec=v; }
+
     int getTzHour() const { return tzHour; }
     void setTzHour(int v) { tzHour=v; }
 
@@ -73,4 +78,4 @@ class BasicTime : public ArrayElement {
     ArrayElement *clone();
 
 };
-
+#endif

@@ -136,12 +136,12 @@ bool saveFile(const char *filename, const char *buffer, size_t len, bool binary)
 {
 	const char *mode = binary ? "wb" : "w" ;
 
-    FILE *f = fopen(filename, "w");
+    FILE *f = fopen(filename, mode);
 
     if(!f)
         return false;
 
-    if (fwrite(buffer, len, sizeof(char), f) != len) {
+    if (fwrite(buffer, sizeof(char), len, f) != len) {
         fclose(f);
         return false;
     }

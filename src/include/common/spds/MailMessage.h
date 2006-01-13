@@ -81,7 +81,7 @@ class MailMessage : public ArrayElement {
         void setSubject(const wchar_t *subj);
 		
         const BasicTime& getDate() const ;
-        void setDate(BasicTime d);
+        void setDate(const BasicTime& d);
 		
         const wchar_t * getContentType() const ;
         void setContentType(const wchar_t *val);
