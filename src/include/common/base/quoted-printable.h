@@ -21,7 +21,7 @@
 wchar_t *qp_decode(const wchar_t *qp);
 wchar_t *qp_encode(const wchar_t *qp);
 
-bool qp_isNeed(BSTR in);
+bool qp_isNeed(const wchar_t *in);
 
 #endif
 

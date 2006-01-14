@@ -99,7 +99,7 @@ wchar_t *qp_encode(const wchar_t *qp) {
 	return ret;
 }
 
-bool qp_isNeed(BSTR in) {
+bool qp_isNeed(const wchar_t *in) {
 	for(int i = 0; i < wcslen(in); i++) 
 		if ( (0x21 > in[i]) | (in[i] > 0x7e) || in[i] == '=' )
 			return true;
