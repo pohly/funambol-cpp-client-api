@@ -24,6 +24,15 @@
 #include "base/util/BasicTime.h"
 #include "spds/BodyPart.h"
 
+/**
+ * This class is represent a mail message, and can parse/format
+ * it in RFC2822/MIME encoding.
+ * Some of the RFC2822 headers are handles as clas fields (To,
+ * From, etc.), the others are inserted literally in the headers
+ * arraylist. Any string put in this list is inserted in the 
+ * header section of an outgoing message.
+ */
+
 class MailMessage : public ArrayElement {
 
     private:
@@ -48,7 +57,7 @@ class MailMessage : public ArrayElement {
 
 		// can be used by the client to store an internal msg id
 		StringBuffer entryId;
-
+        
 		time_t lastModificationTime;
 
         BodyPart body;
@@ -113,7 +122,7 @@ class MailMessage : public ArrayElement {
         BodyPart * getFirstAttachment() ;
         BodyPart * getNextAttachment() ;
         int addAttachment(BodyPart &att);
-        int attachmentCount() { return attachments.size(); };
+        int attachmentCount();
 
         // Conversion methods
         wchar_t *format();
@@ -124,7 +133,7 @@ class MailMessage : public ArrayElement {
          */
         bool empty();
 
-        ArrayElement* clone() { return new MailMessage(*this); }
+        ArrayElement* clone();
 
 };
 

@@ -139,7 +139,13 @@ BodyPart * MailMessage::getNextAttachment() {
     return (BodyPart *)attachments.next();
 }
 
-int MailMessage::addAttachment(BodyPart &body) { return attachments.add(body); }
+int MailMessage::addAttachment(BodyPart &body) {
+    return attachments.add(body);
+}
+
+int MailMessage::attachmentCount() {
+    return attachments.size();
+}
 
 //----------------------------------------------------------- Static Functions
 
@@ -147,19 +153,26 @@ static StringBuffer formatBodyPart(const BodyPart &part)
 {
     StringBuffer ret;
 
+    LOG.debug(TEXT("FormatBodyPart START"));
+
     ret = MIMETYPE; 
     ret += part.getMimeType(); ret += TEXT(";\n");
     if( part.getFilename() ) {
-        ret += TEXT(" name=\""); ret += part.getFilename(); ret += TEXT("\"\n");
+        ret += TEXT("        name=\""); ret += part.getFilename(); ret += TEXT("\"\n");
     }
     if( part.getEncoding() ) {
         ret += ENCODING; ret += part.getEncoding(); ret += NL;
     }
-    if( part.getDisposition() ) {
-        ret += DISPOSITION; ret += part.getDisposition(); ret += NL;
-    }
     if( part.getFilename() ) {
-        ret += TEXT(" filename=\""); ret += part.getFilename(); ret += TEXT("\"\n");
+        if( part.getDisposition() ) {
+            ret += DISPOSITION; ret += part.getDisposition(); ret += TEXT(";\n");
+        }
+        else {
+            ret += DISPOSITION; ret += TEXT("attachment;\n");
+        }
+        
+        ret += TEXT("      filename=\""); ret += part.getFilename();
+        ret += TEXT("\"\n");
     }
     // End of part headers
     ret += NL;
@@ -172,6 +185,7 @@ static StringBuffer formatBodyPart(const BodyPart &part)
     else
         ret += part.getContent();
 
+    LOG.debug(TEXT("FormatBodyPart END"));
     return ret;
 }
 
@@ -193,6 +207,7 @@ inline static size_t findNewLine(StringBuffer &str, size_t offset) {
 static bool getBodyPart(StringBuffer &rfcBody, StringBuffer &boundary,
                        BodyPart &ret, size_t &next)
 {   
+    LOG.debug(TEXT("getBodyPart START"));
 
     // FIXME: check empty value 
     const wchar_t *newline = TEXT("\n");
@@ -313,6 +328,8 @@ static bool getBodyPart(StringBuffer &rfcBody, StringBuffer &boundary,
             }    
         }
 	}
+    LOG.debug(TEXT("getBodyPart END"));
+
     // return true if there are more parts
 	return (next != StringBuffer::npos);
 }
@@ -338,6 +355,8 @@ void generateBoundary(StringBuffer& boundary)
 wchar_t * MailMessage::format() {
 
     StringBuffer ret;
+
+    LOG.debug(TEXT("MailMessage::format START"));
 
     // If the message is empty, return null
     if ( empty() ) {
@@ -405,6 +424,7 @@ wchar_t * MailMessage::format() {
         ret += NL;
         ret += body.getContent(); ret += NL;
     }
+    LOG.debug(TEXT("MailMessage::format END"));
 	return stringdup(ret.c_str());
 }
 
@@ -413,6 +433,8 @@ int MailMessage::parse(const wchar_t *rfc2822, size_t len) {
     StringBuffer s(rfc2822, len);
     int rc;
     
+    LOG.debug(TEXT("MailMessage::parse START"));
+
     // set default newline sequence
     newline = TEXT("\n");
 
@@ -447,9 +469,16 @@ int MailMessage::parse(const wchar_t *rfc2822, size_t len) {
     }
     else {
         body.setMimeType(contentType);
-        body.setContent(rfcbody);
+        // FIXME: handle all encodings, not only quoted-printable
+        if( wcscmp(body.getEncoding(), TEXT("quoted-printable")) == 0 ) {
+            wchar_t *decoded = qp_decode( rfcbody );
+            body.setContent ( decoded );
+            delete [] decoded;
+        }
+        else body.setContent(rfcbody);
     }
 
+    LOG.debug(TEXT("MailMessage::parse END"));
     return rc;
 }
 
@@ -458,6 +487,8 @@ int MailMessage::parseHeaders(StringBuffer &rfcHeaders) {
     ArrayList lines;
     const StringBuffer *line;
     
+    LOG.debug(TEXT("parseHeaders START"));
+
     rfcHeaders.split(lines, newline);
 
     for ( line=(StringBuffer *)lines.front();
@@ -517,6 +548,8 @@ int MailMessage::parseHeaders(StringBuffer &rfcHeaders) {
 	    }
         
     }
+    LOG.debug(TEXT("parseHeaders END"));
+
 	// FIXME: should check for mandatory headers before return 0
 	return 0;
 }
@@ -530,6 +563,8 @@ int MailMessage::parseBodyParts(StringBuffer &rfcBody) {
     StringBuffer bound(TEXT("\n--"));
     bound += boundary;
 
+    LOG.debug(TEXT("parseBodyParts START"));
+
     size_t nextBoundary = rfcBody.find(bound);
     getBodyPart(rfcBody, bound, body, nextBoundary);
 
@@ -538,6 +573,7 @@ int MailMessage::parseBodyParts(StringBuffer &rfcBody) {
         if( part.getContent() )
             attachments.add(part);
     }
+    LOG.debug(TEXT("parseBodyParts END"));
     return 0;
 }
 
@@ -546,3 +582,8 @@ bool MailMessage::empty() {
     MailMessage emptymsg;
     return ( memcmp(this, &emptymsg, sizeof(MailMessage)) == 0);
 }
+
+ArrayElement* MailMessage::clone() {
+    return new MailMessage(*this);
+}
+

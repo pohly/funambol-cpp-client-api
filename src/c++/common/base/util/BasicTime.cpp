@@ -171,7 +171,7 @@ wchar_t *BasicTime::formatRfc822() const {
     };
     wchar_t *ret = new wchar_t[30];
 
-    wsprintf(ret, TEXT("%ls, %d %ls %d %02d:%02d:%02d %02d%02d"),
+    wsprintf(ret, TEXT("%ls, %d %ls %d %02d:%02d:%02d %+03d%02d"),
                   days[weekday], day, months[month-1], year, hour, min, sec,
                   tzHour, tzMin);
 
