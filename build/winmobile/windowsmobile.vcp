@@ -411,6 +411,89 @@ NODEP_CPP_BASEU=\
 # End Source File
 # Begin Source File
 
+SOURCE="..\..\src\c++\common\base\util\BasicTime.cpp"
+
+!IF  "$(CFG)" == "windowsmobile - Win32 (WCE emulator) Release"
+
+DEP_CPP_BASIC=\
+	"..\..\src\include\common\base\errors.h"\
+	"..\..\src\include\common\base\fscapi.h"\
+	"..\..\src\include\common\base\util\ArrayElement.h"\
+	"..\..\src\include\common\base\util\BasicTime.h"\
+	"..\..\src\include\common\http\errors.h"\
+	"..\..\src\include\common\spdm\errors.h"\
+	"..\..\src\include\common\spds\errors.h"\
+	"..\..\src\include\winmobile\base\PPC2003adapter.h"\
+	"..\..\src\include\winmobile\base\time.h"\
+	
+NODEP_CPP_BASIC=\
+	"..\..\src\include\common\base\base\palmadapter.h"\
+	"..\..\src\include\common\base\base\posixadapter.h"\
+	"..\..\src\include\common\base\base\win32adapter.h"\
+	
+
+!ELSEIF  "$(CFG)" == "windowsmobile - Win32 (WCE emulator) Debug"
+
+DEP_CPP_BASIC=\
+	"..\..\src\include\common\base\errors.h"\
+	"..\..\src\include\common\base\fscapi.h"\
+	"..\..\src\include\common\base\util\ArrayElement.h"\
+	"..\..\src\include\common\base\util\BasicTime.h"\
+	"..\..\src\include\common\http\errors.h"\
+	"..\..\src\include\common\spdm\errors.h"\
+	"..\..\src\include\common\spds\errors.h"\
+	"..\..\src\include\winmobile\base\PPC2003adapter.h"\
+	"..\..\src\include\winmobile\base\time.h"\
+	
+NODEP_CPP_BASIC=\
+	"..\..\src\include\common\base\base\palmadapter.h"\
+	"..\..\src\include\common\base\base\posixadapter.h"\
+	"..\..\src\include\common\base\base\win32adapter.h"\
+	
+
+!ELSEIF  "$(CFG)" == "windowsmobile - Win32 (WCE ARMV4) Release"
+
+DEP_CPP_BASIC=\
+	"..\..\src\include\common\base\errors.h"\
+	"..\..\src\include\common\base\fscapi.h"\
+	"..\..\src\include\common\base\util\ArrayElement.h"\
+	"..\..\src\include\common\base\util\BasicTime.h"\
+	"..\..\src\include\common\http\errors.h"\
+	"..\..\src\include\common\spdm\errors.h"\
+	"..\..\src\include\common\spds\errors.h"\
+	"..\..\src\include\winmobile\base\PPC2003adapter.h"\
+	"..\..\src\include\winmobile\base\time.h"\
+	
+NODEP_CPP_BASIC=\
+	"..\..\src\include\common\base\base\palmadapter.h"\
+	"..\..\src\include\common\base\base\posixadapter.h"\
+	"..\..\src\include\common\base\base\win32adapter.h"\
+	
+
+!ELSEIF  "$(CFG)" == "windowsmobile - Win32 (WCE ARMV4) Debug"
+
+DEP_CPP_BASIC=\
+	"..\..\src\include\common\base\errors.h"\
+	"..\..\src\include\common\base\fscapi.h"\
+	"..\..\src\include\common\base\util\ArrayElement.h"\
+	"..\..\src\include\common\base\util\BasicTime.h"\
+	"..\..\src\include\common\http\errors.h"\
+	"..\..\src\include\common\spdm\errors.h"\
+	"..\..\src\include\common\spds\errors.h"\
+	"..\..\src\include\winmobile\base\PPC2003adapter.h"\
+	"..\..\src\include\winmobile\base\time.h"\
+	
+NODEP_CPP_BASIC=\
+	"..\..\src\include\common\base\base\palmadapter.h"\
+	"..\..\src\include\common\base\base\posixadapter.h"\
+	"..\..\src\include\common\base\base\win32adapter.h"\
+	
+
+!ENDIF 
+
+# End Source File
+# Begin Source File
+
 SOURCE="..\..\src\c++\common\base\util\KeyValuePair.cpp"
 
 !IF  "$(CFG)" == "windowsmobile - Win32 (WCE emulator) Release"
@@ -1538,7 +1621,7 @@ DEP_CPP_ACCES=\
 	"..\..\src\include\common\base\util\utils.h"\
 	"..\..\src\include\common\client\AccessManagementNode.h"\
 	"..\..\src\include\common\http\errors.h"\
-	"..\..\src\include\common\spdm\constants.h"\
+	"..\..\src\include\common\spdm\Constants.h"\
 	"..\..\src\include\common\spdm\errors.h"\
 	"..\..\src\include\common\spdm\ManagementNode.h"\
 	"..\..\src\include\common\spds\AccessConfig.h"\
@@ -1567,7 +1650,7 @@ DEP_CPP_ACCES=\
 	"..\..\src\include\common\base\util\utils.h"\
 	"..\..\src\include\common\client\AccessManagementNode.h"\
 	"..\..\src\include\common\http\errors.h"\
-	"..\..\src\include\common\spdm\constants.h"\
+	"..\..\src\include\common\spdm\Constants.h"\
 	"..\..\src\include\common\spdm\errors.h"\
 	"..\..\src\include\common\spdm\ManagementNode.h"\
 	"..\..\src\include\common\spds\AccessConfig.h"\
@@ -1596,7 +1679,7 @@ DEP_CPP_ACCES=\
 	"..\..\src\include\common\base\util\utils.h"\
 	"..\..\src\include\common\client\AccessManagementNode.h"\
 	"..\..\src\include\common\http\errors.h"\
-	"..\..\src\include\common\spdm\constants.h"\
+	"..\..\src\include\common\spdm\Constants.h"\
 	"..\..\src\include\common\spdm\errors.h"\
 	"..\..\src\include\common\spdm\ManagementNode.h"\
 	"..\..\src\include\common\spds\AccessConfig.h"\
@@ -1625,7 +1708,7 @@ DEP_CPP_ACCES=\
 	"..\..\src\include\common\base\util\utils.h"\
 	"..\..\src\include\common\client\AccessManagementNode.h"\
 	"..\..\src\include\common\http\errors.h"\
-	"..\..\src\include\common\spdm\constants.h"\
+	"..\..\src\include\common\spdm\Constants.h"\
 	"..\..\src\include\common\spdm\errors.h"\
 	"..\..\src\include\common\spdm\ManagementNode.h"\
 	"..\..\src\include\common\spds\AccessConfig.h"\
@@ -1663,7 +1746,7 @@ DEP_CPP_DMTCL=\
 	"..\..\src\include\common\client\DMTClientConfig.h"\
 	"..\..\src\include\common\http\constants.h"\
 	"..\..\src\include\common\http\errors.h"\
-	"..\..\src\include\common\spdm\constants.h"\
+	"..\..\src\include\common\spdm\Constants.h"\
 	"..\..\src\include\common\spdm\DMTree.h"\
 	"..\..\src\include\common\spdm\DMTreeFactory.h"\
 	"..\..\src\include\common\spdm\errors.h"\
@@ -1697,7 +1780,7 @@ DEP_CPP_DMTCL=\
 	"..\..\src\include\common\client\DMTClientConfig.h"\
 	"..\..\src\include\common\http\constants.h"\
 	"..\..\src\include\common\http\errors.h"\
-	"..\..\src\include\common\spdm\constants.h"\
+	"..\..\src\include\common\spdm\Constants.h"\
 	"..\..\src\include\common\spdm\DMTree.h"\
 	"..\..\src\include\common\spdm\DMTreeFactory.h"\
 	"..\..\src\include\common\spdm\errors.h"\
@@ -1731,7 +1814,7 @@ DEP_CPP_DMTCL=\
 	"..\..\src\include\common\client\DMTClientConfig.h"\
 	"..\..\src\include\common\http\constants.h"\
 	"..\..\src\include\common\http\errors.h"\
-	"..\..\src\include\common\spdm\constants.h"\
+	"..\..\src\include\common\spdm\Constants.h"\
 	"..\..\src\include\common\spdm\DMTree.h"\
 	"..\..\src\include\common\spdm\DMTreeFactory.h"\
 	"..\..\src\include\common\spdm\errors.h"\
@@ -1765,7 +1848,7 @@ DEP_CPP_DMTCL=\
 	"..\..\src\include\common\client\DMTClientConfig.h"\
 	"..\..\src\include\common\http\constants.h"\
 	"..\..\src\include\common\http\errors.h"\
-	"..\..\src\include\common\spdm\constants.h"\
+	"..\..\src\include\common\spdm\Constants.h"\
 	"..\..\src\include\common\spdm\DMTree.h"\
 	"..\..\src\include\common\spdm\DMTreeFactory.h"\
 	"..\..\src\include\common\spdm\errors.h"\
@@ -1804,7 +1887,7 @@ DEP_CPP_MAILS=\
 	"..\..\src\include\common\base\util\utils.h"\
 	"..\..\src\include\common\client\MailSourceManagementNode.h"\
 	"..\..\src\include\common\http\errors.h"\
-	"..\..\src\include\common\spdm\constants.h"\
+	"..\..\src\include\common\spdm\Constants.h"\
 	"..\..\src\include\common\spdm\errors.h"\
 	"..\..\src\include\common\spdm\ManagementNode.h"\
 	"..\..\src\include\common\spds\constants.h"\
@@ -1834,7 +1917,7 @@ DEP_CPP_MAILS=\
 	"..\..\src\include\common\base\util\utils.h"\
 	"..\..\src\include\common\client\MailSourceManagementNode.h"\
 	"..\..\src\include\common\http\errors.h"\
-	"..\..\src\include\common\spdm\constants.h"\
+	"..\..\src\include\common\spdm\Constants.h"\
 	"..\..\src\include\common\spdm\errors.h"\
 	"..\..\src\include\common\spdm\ManagementNode.h"\
 	"..\..\src\include\common\spds\constants.h"\
@@ -1864,7 +1947,7 @@ DEP_CPP_MAILS=\
 	"..\..\src\include\common\base\util\utils.h"\
 	"..\..\src\include\common\client\MailSourceManagementNode.h"\
 	"..\..\src\include\common\http\errors.h"\
-	"..\..\src\include\common\spdm\constants.h"\
+	"..\..\src\include\common\spdm\Constants.h"\
 	"..\..\src\include\common\spdm\errors.h"\
 	"..\..\src\include\common\spdm\ManagementNode.h"\
 	"..\..\src\include\common\spds\constants.h"\
@@ -1894,7 +1977,7 @@ DEP_CPP_MAILS=\
 	"..\..\src\include\common\base\util\utils.h"\
 	"..\..\src\include\common\client\MailSourceManagementNode.h"\
 	"..\..\src\include\common\http\errors.h"\
-	"..\..\src\include\common\spdm\constants.h"\
+	"..\..\src\include\common\spdm\Constants.h"\
 	"..\..\src\include\common\spdm\errors.h"\
 	"..\..\src\include\common\spdm\ManagementNode.h"\
 	"..\..\src\include\common\spds\constants.h"\
@@ -1931,7 +2014,7 @@ DEP_CPP_SOURC=\
 	"..\..\src\include\common\base\util\utils.h"\
 	"..\..\src\include\common\client\SourceManagementNode.h"\
 	"..\..\src\include\common\http\errors.h"\
-	"..\..\src\include\common\spdm\constants.h"\
+	"..\..\src\include\common\spdm\Constants.h"\
 	"..\..\src\include\common\spdm\errors.h"\
 	"..\..\src\include\common\spdm\ManagementNode.h"\
 	"..\..\src\include\common\spds\constants.h"\
@@ -1960,7 +2043,7 @@ DEP_CPP_SOURC=\
 	"..\..\src\include\common\base\util\utils.h"\
 	"..\..\src\include\common\client\SourceManagementNode.h"\
 	"..\..\src\include\common\http\errors.h"\
-	"..\..\src\include\common\spdm\constants.h"\
+	"..\..\src\include\common\spdm\Constants.h"\
 	"..\..\src\include\common\spdm\errors.h"\
 	"..\..\src\include\common\spdm\ManagementNode.h"\
 	"..\..\src\include\common\spds\constants.h"\
@@ -1989,7 +2072,7 @@ DEP_CPP_SOURC=\
 	"..\..\src\include\common\base\util\utils.h"\
 	"..\..\src\include\common\client\SourceManagementNode.h"\
 	"..\..\src\include\common\http\errors.h"\
-	"..\..\src\include\common\spdm\constants.h"\
+	"..\..\src\include\common\spdm\Constants.h"\
 	"..\..\src\include\common\spdm\errors.h"\
 	"..\..\src\include\common\spdm\ManagementNode.h"\
 	"..\..\src\include\common\spds\constants.h"\
@@ -2018,7 +2101,7 @@ DEP_CPP_SOURC=\
 	"..\..\src\include\common\base\util\utils.h"\
 	"..\..\src\include\common\client\SourceManagementNode.h"\
 	"..\..\src\include\common\http\errors.h"\
-	"..\..\src\include\common\spdm\constants.h"\
+	"..\..\src\include\common\spdm\Constants.h"\
 	"..\..\src\include\common\spdm\errors.h"\
 	"..\..\src\include\common\spdm\ManagementNode.h"\
 	"..\..\src\include\common\spds\constants.h"\
@@ -2067,7 +2150,7 @@ DEP_CPP_SYNC4=\
 	"..\..\src\include\common\http\Proxy.h"\
 	"..\..\src\include\common\http\TransportAgent.h"\
 	"..\..\src\include\common\http\URL.h"\
-	"..\..\src\include\common\spdm\constants.h"\
+	"..\..\src\include\common\spdm\Constants.h"\
 	"..\..\src\include\common\spdm\errors.h"\
 	"..\..\src\include\common\spdm\ManagementNode.h"\
 	"..\..\src\include\common\spds\AccessConfig.h"\
@@ -2183,7 +2266,7 @@ DEP_CPP_SYNC4=\
 	"..\..\src\include\common\http\Proxy.h"\
 	"..\..\src\include\common\http\TransportAgent.h"\
 	"..\..\src\include\common\http\URL.h"\
-	"..\..\src\include\common\spdm\constants.h"\
+	"..\..\src\include\common\spdm\Constants.h"\
 	"..\..\src\include\common\spdm\errors.h"\
 	"..\..\src\include\common\spdm\ManagementNode.h"\
 	"..\..\src\include\common\spds\AccessConfig.h"\
@@ -2299,7 +2382,7 @@ DEP_CPP_SYNC4=\
 	"..\..\src\include\common\http\Proxy.h"\
 	"..\..\src\include\common\http\TransportAgent.h"\
 	"..\..\src\include\common\http\URL.h"\
-	"..\..\src\include\common\spdm\constants.h"\
+	"..\..\src\include\common\spdm\Constants.h"\
 	"..\..\src\include\common\spdm\errors.h"\
 	"..\..\src\include\common\spdm\ManagementNode.h"\
 	"..\..\src\include\common\spds\AccessConfig.h"\
@@ -2415,7 +2498,7 @@ DEP_CPP_SYNC4=\
 	"..\..\src\include\common\http\Proxy.h"\
 	"..\..\src\include\common\http\TransportAgent.h"\
 	"..\..\src\include\common\http\URL.h"\
-	"..\..\src\include\common\spdm\constants.h"\
+	"..\..\src\include\common\spdm\Constants.h"\
 	"..\..\src\include\common\spdm\errors.h"\
 	"..\..\src\include\common\spdm\ManagementNode.h"\
 	"..\..\src\include\common\spds\AccessConfig.h"\
@@ -2548,12 +2631,12 @@ DEP_CPP_GPRSC=\
 	"..\..\src\include\winmobile\base\PPC2003adapter.h"\
 	"..\..\src\include\winmobile\base\time.h"\
 	"..\..\src\include\winmobile\http\GPRSConnection.h"\
-	{$(INCLUDE)}"connmgr.h"\
 	
 NODEP_CPP_GPRSC=\
 	"..\..\src\include\common\base\base\palmadapter.h"\
 	"..\..\src\include\common\base\base\posixadapter.h"\
 	"..\..\src\include\common\base\base\win32adapter.h"\
+	".\onnmgr.h"\
 	
 
 !ELSEIF  "$(CFG)" == "windowsmobile - Win32 (WCE ARMV4) Release"
@@ -2588,6 +2671,7 @@ DEP_CPP_GPRSC=\
 	"..\..\src\include\winmobile\base\PPC2003adapter.h"\
 	"..\..\src\include\winmobile\base\time.h"\
 	"..\..\src\include\winmobile\http\GPRSConnection.h"\
+	{$(INCLUDE)}"connmgr.h"\
 	
 NODEP_CPP_GPRSC=\
 	"..\..\src\include\common\base\base\palmadapter.h"\
@@ -3211,7 +3295,7 @@ DEP_CPP_ACCESS=\
 	"..\..\src\include\common\base\util\ArrayList.h"\
 	"..\..\src\include\common\base\util\utils.h"\
 	"..\..\src\include\common\http\errors.h"\
-	"..\..\src\include\common\spdm\constants.h"\
+	"..\..\src\include\common\spdm\Constants.h"\
 	"..\..\src\include\common\spdm\errors.h"\
 	"..\..\src\include\common\spds\AccessConfig.h"\
 	"..\..\src\include\common\spds\constants.h"\
@@ -3236,7 +3320,7 @@ DEP_CPP_ACCESS=\
 	"..\..\src\include\common\base\util\ArrayList.h"\
 	"..\..\src\include\common\base\util\utils.h"\
 	"..\..\src\include\common\http\errors.h"\
-	"..\..\src\include\common\spdm\constants.h"\
+	"..\..\src\include\common\spdm\Constants.h"\
 	"..\..\src\include\common\spdm\errors.h"\
 	"..\..\src\include\common\spds\AccessConfig.h"\
 	"..\..\src\include\common\spds\constants.h"\
@@ -3261,7 +3345,7 @@ DEP_CPP_ACCESS=\
 	"..\..\src\include\common\base\util\ArrayList.h"\
 	"..\..\src\include\common\base\util\utils.h"\
 	"..\..\src\include\common\http\errors.h"\
-	"..\..\src\include\common\spdm\constants.h"\
+	"..\..\src\include\common\spdm\Constants.h"\
 	"..\..\src\include\common\spdm\errors.h"\
 	"..\..\src\include\common\spds\AccessConfig.h"\
 	"..\..\src\include\common\spds\constants.h"\
@@ -3286,7 +3370,7 @@ DEP_CPP_ACCESS=\
 	"..\..\src\include\common\base\util\ArrayList.h"\
 	"..\..\src\include\common\base\util\utils.h"\
 	"..\..\src\include\common\http\errors.h"\
-	"..\..\src\include\common\spdm\constants.h"\
+	"..\..\src\include\common\spdm\Constants.h"\
 	"..\..\src\include\common\spdm\errors.h"\
 	"..\..\src\include\common\spds\AccessConfig.h"\
 	"..\..\src\include\common\spds\constants.h"\
@@ -3367,6 +3451,7 @@ NODEP_CPP_B64DE=\
 !ELSEIF  "$(CFG)" == "windowsmobile - Win32 (WCE ARMV4) Debug"
 
 DEP_CPP_B64DE=\
+	"..\..\src\include\common\base\base64.h"\
 	"..\..\src\include\common\base\errors.h"\
 	"..\..\src\include\common\base\fscapi.h"\
 	"..\..\src\include\common\http\errors.h"\
@@ -3450,8 +3535,21 @@ NODEP_CPP_B64EN=\
 !ELSEIF  "$(CFG)" == "windowsmobile - Win32 (WCE ARMV4) Debug"
 
 DEP_CPP_B64EN=\
+	"..\..\src\include\common\base\base64.h"\
+	"..\..\src\include\common\base\errors.h"\
+	"..\..\src\include\common\base\fscapi.h"\
+	"..\..\src\include\common\http\errors.h"\
+	"..\..\src\include\common\spdm\errors.h"\
 	"..\..\src\include\common\spds\B64Encoder.h"\
 	"..\..\src\include\common\spds\DataTransformer.h"\
+	"..\..\src\include\common\spds\errors.h"\
+	"..\..\src\include\winmobile\base\PPC2003adapter.h"\
+	"..\..\src\include\winmobile\base\time.h"\
+	
+NODEP_CPP_B64EN=\
+	"..\..\src\include\common\base\base\palmadapter.h"\
+	"..\..\src\include\common\base\base\posixadapter.h"\
+	"..\..\src\include\common\base\base\win32adapter.h"\
 	
 
 !ENDIF 
@@ -4070,13 +4168,24 @@ NODEP_CPP_DATAT=\
 !ELSEIF  "$(CFG)" == "windowsmobile - Win32 (WCE ARMV4) Debug"
 
 DEP_CPP_DATAT=\
-	"..\..\src\include\common\spds\B64Decoder.h"\
-	"..\..\src\include\common\spds\B64Encoder.h"\
+	"..\..\src\include\common\base\base64.h"\
+	"..\..\src\include\common\base\errors.h"\
+	"..\..\src\include\common\base\fscapi.h"\
+	"..\..\src\include\common\base\md5.h"\
+	"..\..\src\include\common\base\util\ArrayElement.h"\
+	"..\..\src\include\common\base\util\ArrayList.h"\
+	"..\..\src\include\common\base\util\utils.h"\
+	"..\..\src\include\common\http\errors.h"\
+	"..\..\src\include\common\spdm\errors.h"\
 	"..\..\src\include\common\spds\DataTransformer.h"\
-	"..\..\src\include\common\spds\DESDecoder.h"\
+	"..\..\src\include\common\spds\errors.h"\
+	"..\..\src\include\winmobile\base\PPC2003adapter.h"\
+	"..\..\src\include\winmobile\base\time.h"\
 	
 NODEP_CPP_DATAT=\
-	"..\..\src\c++\common\spds\spds\DESEncoder.h"\
+	"..\..\src\include\common\base\base\palmadapter.h"\
+	"..\..\src\include\common\base\base\posixadapter.h"\
+	"..\..\src\include\common\base\base\win32adapter.h"\
 	
 
 !ENDIF 
@@ -4146,8 +4255,25 @@ NODEP_CPP_DESDE=\
 !ELSEIF  "$(CFG)" == "windowsmobile - Win32 (WCE ARMV4) Debug"
 
 DEP_CPP_DESDE=\
+	"..\..\src\include\common\base\base64.h"\
+	"..\..\src\include\common\base\errors.h"\
+	"..\..\src\include\common\base\fscapi.h"\
+	"..\..\src\include\common\base\md5.h"\
+	"..\..\src\include\common\base\util\ArrayElement.h"\
+	"..\..\src\include\common\base\util\ArrayList.h"\
+	"..\..\src\include\common\base\util\utils.h"\
+	"..\..\src\include\common\http\errors.h"\
+	"..\..\src\include\common\spdm\errors.h"\
 	"..\..\src\include\common\spds\DataTransformer.h"\
 	"..\..\src\include\common\spds\DESDecoder.h"\
+	"..\..\src\include\common\spds\errors.h"\
+	"..\..\src\include\winmobile\base\PPC2003adapter.h"\
+	"..\..\src\include\winmobile\base\time.h"\
+	
+NODEP_CPP_DESDE=\
+	"..\..\src\include\common\base\base\palmadapter.h"\
+	"..\..\src\include\common\base\base\posixadapter.h"\
+	"..\..\src\include\common\base\base\win32adapter.h"\
 	
 
 !ENDIF 
@@ -4217,8 +4343,13 @@ NODEP_CPP_DESEN=\
 !ELSEIF  "$(CFG)" == "windowsmobile - Win32 (WCE ARMV4) Debug"
 
 DEP_CPP_DESEN=\
+	"..\..\src\include\common\base\base64.h"\
 	"..\..\src\include\common\base\errors.h"\
 	"..\..\src\include\common\base\fscapi.h"\
+	"..\..\src\include\common\base\md5.h"\
+	"..\..\src\include\common\base\util\ArrayElement.h"\
+	"..\..\src\include\common\base\util\ArrayList.h"\
+	"..\..\src\include\common\base\util\utils.h"\
 	"..\..\src\include\common\http\errors.h"\
 	"..\..\src\include\common\spdm\errors.h"\
 	"..\..\src\include\common\spds\DataTransformer.h"\
@@ -4526,6 +4657,7 @@ DEP_CPP_EMAIL=\
 	"..\..\src\include\common\base\md5.h"\
 	"..\..\src\include\common\base\util\ArrayElement.h"\
 	"..\..\src\include\common\base\util\ArrayList.h"\
+	"..\..\src\include\common\base\util\BasicTime.h"\
 	"..\..\src\include\common\base\util\StringBuffer.h"\
 	"..\..\src\include\common\base\util\UTF8StringBuffer.h"\
 	"..\..\src\include\common\base\util\utils.h"\
@@ -4723,8 +4855,10 @@ DEP_CPP_MAILM=\
 	"..\..\src\include\common\base\fscapi.h"\
 	"..\..\src\include\common\base\Log.h"\
 	"..\..\src\include\common\base\md5.h"\
+	"..\..\src\include\common\base\quoted-printable.h"\
 	"..\..\src\include\common\base\util\ArrayElement.h"\
 	"..\..\src\include\common\base\util\ArrayList.h"\
+	"..\..\src\include\common\base\util\BasicTime.h"\
 	"..\..\src\include\common\base\util\StringBuffer.h"\
 	"..\..\src\include\common\base\util\UTF8StringBuffer.h"\
 	"..\..\src\include\common\base\util\utils.h"\
@@ -6677,7 +6811,7 @@ DEP_CPP_SYNCS=\
 	"..\..\src\include\common\filter\SourceFilter.h"\
 	"..\..\src\include\common\http\constants.h"\
 	"..\..\src\include\common\http\errors.h"\
-	"..\..\src\include\common\spdm\constants.h"\
+	"..\..\src\include\common\spdm\Constants.h"\
 	"..\..\src\include\common\spdm\errors.h"\
 	"..\..\src\include\common\spdm\ManagementNode.h"\
 	"..\..\src\include\common\spds\AccessConfig.h"\
@@ -6717,7 +6851,7 @@ DEP_CPP_SYNCS=\
 	"..\..\src\include\common\filter\SourceFilter.h"\
 	"..\..\src\include\common\http\constants.h"\
 	"..\..\src\include\common\http\errors.h"\
-	"..\..\src\include\common\spdm\constants.h"\
+	"..\..\src\include\common\spdm\Constants.h"\
 	"..\..\src\include\common\spdm\errors.h"\
 	"..\..\src\include\common\spdm\ManagementNode.h"\
 	"..\..\src\include\common\spds\AccessConfig.h"\
@@ -6757,7 +6891,7 @@ DEP_CPP_SYNCS=\
 	"..\..\src\include\common\filter\SourceFilter.h"\
 	"..\..\src\include\common\http\constants.h"\
 	"..\..\src\include\common\http\errors.h"\
-	"..\..\src\include\common\spdm\constants.h"\
+	"..\..\src\include\common\spdm\Constants.h"\
 	"..\..\src\include\common\spdm\errors.h"\
 	"..\..\src\include\common\spdm\ManagementNode.h"\
 	"..\..\src\include\common\spds\AccessConfig.h"\
@@ -6797,7 +6931,7 @@ DEP_CPP_SYNCS=\
 	"..\..\src\include\common\filter\SourceFilter.h"\
 	"..\..\src\include\common\http\constants.h"\
 	"..\..\src\include\common\http\errors.h"\
-	"..\..\src\include\common\spdm\constants.h"\
+	"..\..\src\include\common\spdm\Constants.h"\
 	"..\..\src\include\common\spdm\errors.h"\
 	"..\..\src\include\common\spdm\ManagementNode.h"\
 	"..\..\src\include\common\spds\AccessConfig.h"\
@@ -6942,7 +7076,7 @@ DEP_CPP_DEVIC=\
 	"..\..\src\include\common\base\util\ArrayList.h"\
 	"..\..\src\include\common\base\util\utils.h"\
 	"..\..\src\include\common\http\errors.h"\
-	"..\..\src\include\common\spdm\constants.h"\
+	"..\..\src\include\common\spdm\Constants.h"\
 	"..\..\src\include\common\spdm\errors.h"\
 	"..\..\src\include\common\spdm\ManagementNode.h"\
 	"..\..\src\include\common\spdm\spdmutils.h"\
@@ -6968,7 +7102,7 @@ DEP_CPP_DEVIC=\
 	"..\..\src\include\common\base\util\ArrayList.h"\
 	"..\..\src\include\common\base\util\utils.h"\
 	"..\..\src\include\common\http\errors.h"\
-	"..\..\src\include\common\spdm\constants.h"\
+	"..\..\src\include\common\spdm\Constants.h"\
 	"..\..\src\include\common\spdm\errors.h"\
 	"..\..\src\include\common\spdm\ManagementNode.h"\
 	"..\..\src\include\common\spdm\spdmutils.h"\
@@ -6994,7 +7128,7 @@ DEP_CPP_DEVIC=\
 	"..\..\src\include\common\base\util\ArrayList.h"\
 	"..\..\src\include\common\base\util\utils.h"\
 	"..\..\src\include\common\http\errors.h"\
-	"..\..\src\include\common\spdm\constants.h"\
+	"..\..\src\include\common\spdm\Constants.h"\
 	"..\..\src\include\common\spdm\errors.h"\
 	"..\..\src\include\common\spdm\ManagementNode.h"\
 	"..\..\src\include\common\spdm\spdmutils.h"\
@@ -7020,7 +7154,7 @@ DEP_CPP_DEVIC=\
 	"..\..\src\include\common\base\util\ArrayList.h"\
 	"..\..\src\include\common\base\util\utils.h"\
 	"..\..\src\include\common\http\errors.h"\
-	"..\..\src\include\common\spdm\constants.h"\
+	"..\..\src\include\common\spdm\Constants.h"\
 	"..\..\src\include\common\spdm\errors.h"\
 	"..\..\src\include\common\spdm\ManagementNode.h"\
 	"..\..\src\include\common\spdm\spdmutils.h"\
@@ -7054,7 +7188,7 @@ DEP_CPP_DMTRE=\
 	"..\..\src\include\common\base\util\ArrayList.h"\
 	"..\..\src\include\common\base\util\utils.h"\
 	"..\..\src\include\common\http\errors.h"\
-	"..\..\src\include\common\spdm\constants.h"\
+	"..\..\src\include\common\spdm\Constants.h"\
 	"..\..\src\include\common\spdm\DMTree.h"\
 	"..\..\src\include\common\spdm\errors.h"\
 	"..\..\src\include\common\spdm\ManagementNode.h"\
@@ -7082,7 +7216,7 @@ DEP_CPP_DMTRE=\
 	"..\..\src\include\common\base\util\ArrayList.h"\
 	"..\..\src\include\common\base\util\utils.h"\
 	"..\..\src\include\common\http\errors.h"\
-	"..\..\src\include\common\spdm\constants.h"\
+	"..\..\src\include\common\spdm\Constants.h"\
 	"..\..\src\include\common\spdm\DMTree.h"\
 	"..\..\src\include\common\spdm\errors.h"\
 	"..\..\src\include\common\spdm\ManagementNode.h"\
@@ -7110,7 +7244,7 @@ DEP_CPP_DMTRE=\
 	"..\..\src\include\common\base\util\ArrayList.h"\
 	"..\..\src\include\common\base\util\utils.h"\
 	"..\..\src\include\common\http\errors.h"\
-	"..\..\src\include\common\spdm\constants.h"\
+	"..\..\src\include\common\spdm\Constants.h"\
 	"..\..\src\include\common\spdm\DMTree.h"\
 	"..\..\src\include\common\spdm\errors.h"\
 	"..\..\src\include\common\spdm\ManagementNode.h"\
@@ -7138,7 +7272,7 @@ DEP_CPP_DMTRE=\
 	"..\..\src\include\common\base\util\ArrayList.h"\
 	"..\..\src\include\common\base\util\utils.h"\
 	"..\..\src\include\common\http\errors.h"\
-	"..\..\src\include\common\spdm\constants.h"\
+	"..\..\src\include\common\spdm\Constants.h"\
 	"..\..\src\include\common\spdm\DMTree.h"\
 	"..\..\src\include\common\spdm\errors.h"\
 	"..\..\src\include\common\spdm\ManagementNode.h"\
@@ -7169,7 +7303,7 @@ DEP_CPP_DMTREE=\
 	"..\..\src\include\common\base\util\ArrayElement.h"\
 	"..\..\src\include\common\base\util\ArrayList.h"\
 	"..\..\src\include\common\http\errors.h"\
-	"..\..\src\include\common\spdm\constants.h"\
+	"..\..\src\include\common\spdm\Constants.h"\
 	"..\..\src\include\common\spdm\DMTree.h"\
 	"..\..\src\include\common\spdm\DMTreeFactory.h"\
 	"..\..\src\include\common\spdm\errors.h"\
@@ -7192,7 +7326,7 @@ DEP_CPP_DMTREE=\
 	"..\..\src\include\common\base\util\ArrayElement.h"\
 	"..\..\src\include\common\base\util\ArrayList.h"\
 	"..\..\src\include\common\http\errors.h"\
-	"..\..\src\include\common\spdm\constants.h"\
+	"..\..\src\include\common\spdm\Constants.h"\
 	"..\..\src\include\common\spdm\DMTree.h"\
 	"..\..\src\include\common\spdm\DMTreeFactory.h"\
 	"..\..\src\include\common\spdm\errors.h"\
@@ -7215,7 +7349,7 @@ DEP_CPP_DMTREE=\
 	"..\..\src\include\common\base\util\ArrayElement.h"\
 	"..\..\src\include\common\base\util\ArrayList.h"\
 	"..\..\src\include\common\http\errors.h"\
-	"..\..\src\include\common\spdm\constants.h"\
+	"..\..\src\include\common\spdm\Constants.h"\
 	"..\..\src\include\common\spdm\DMTree.h"\
 	"..\..\src\include\common\spdm\DMTreeFactory.h"\
 	"..\..\src\include\common\spdm\errors.h"\
@@ -7238,7 +7372,7 @@ DEP_CPP_DMTREE=\
 	"..\..\src\include\common\base\util\ArrayElement.h"\
 	"..\..\src\include\common\base\util\ArrayList.h"\
 	"..\..\src\include\common\http\errors.h"\
-	"..\..\src\include\common\spdm\constants.h"\
+	"..\..\src\include\common\spdm\Constants.h"\
 	"..\..\src\include\common\spdm\DMTree.h"\
 	"..\..\src\include\common\spdm\DMTreeFactory.h"\
 	"..\..\src\include\common\spdm\errors.h"\
@@ -7272,7 +7406,7 @@ DEP_CPP_MANAG=\
 	"..\..\src\include\common\base\util\ArrayList.h"\
 	"..\..\src\include\common\base\util\utils.h"\
 	"..\..\src\include\common\http\errors.h"\
-	"..\..\src\include\common\spdm\constants.h"\
+	"..\..\src\include\common\spdm\Constants.h"\
 	"..\..\src\include\common\spdm\errors.h"\
 	"..\..\src\include\common\spdm\ManagementNode.h"\
 	"..\..\src\include\common\spds\errors.h"\
@@ -7297,7 +7431,7 @@ DEP_CPP_MANAG=\
 	"..\..\src\include\common\base\util\ArrayList.h"\
 	"..\..\src\include\common\base\util\utils.h"\
 	"..\..\src\include\common\http\errors.h"\
-	"..\..\src\include\common\spdm\constants.h"\
+	"..\..\src\include\common\spdm\Constants.h"\
 	"..\..\src\include\common\spdm\errors.h"\
 	"..\..\src\include\common\spdm\ManagementNode.h"\
 	"..\..\src\include\common\spds\errors.h"\
@@ -7322,7 +7456,7 @@ DEP_CPP_MANAG=\
 	"..\..\src\include\common\base\util\ArrayList.h"\
 	"..\..\src\include\common\base\util\utils.h"\
 	"..\..\src\include\common\http\errors.h"\
-	"..\..\src\include\common\spdm\constants.h"\
+	"..\..\src\include\common\spdm\Constants.h"\
 	"..\..\src\include\common\spdm\errors.h"\
 	"..\..\src\include\common\spdm\ManagementNode.h"\
 	"..\..\src\include\common\spds\errors.h"\
@@ -7347,7 +7481,7 @@ DEP_CPP_MANAG=\
 	"..\..\src\include\common\base\util\ArrayList.h"\
 	"..\..\src\include\common\base\util\utils.h"\
 	"..\..\src\include\common\http\errors.h"\
-	"..\..\src\include\common\spdm\constants.h"\
+	"..\..\src\include\common\spdm\Constants.h"\
 	"..\..\src\include\common\spdm\errors.h"\
 	"..\..\src\include\common\spdm\ManagementNode.h"\
 	"..\..\src\include\common\spds\errors.h"\
@@ -16209,6 +16343,7 @@ DEP_CPP_SYNCN=\
 	"..\..\src\include\common\base\base64.h"\
 	"..\..\src\include\common\base\errors.h"\
 	"..\..\src\include\common\base\fscapi.h"\
+	"..\..\src\include\common\base\Log.h"\
 	"..\..\src\include\common\base\md5.h"\
 	"..\..\src\include\common\base\util\ArrayElement.h"\
 	"..\..\src\include\common\base\util\ArrayList.h"\
