@@ -106,3 +106,4 @@ bool qp_isNeed(const wchar_t *in) {
 	
 	return false;
 }
+

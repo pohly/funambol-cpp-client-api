@@ -176,5 +176,7 @@ class StringBuffer: public ArrayElement {
         void freemem();
 };
 
+StringBuffer operator+(const StringBuffer& x, const wchar_t *y);
+
 #endif
 

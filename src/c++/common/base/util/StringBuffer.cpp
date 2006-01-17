@@ -315,7 +315,8 @@ bool StringBuffer::empty() const {
 
 bool StringBuffer::null() const { return (s==0); }
 
-// Operators
+
+// Member Operators
 StringBuffer& StringBuffer::operator= (const wchar_t* sc)
     { return set(sc); }
 StringBuffer& StringBuffer::operator= (const StringBuffer& sb)
@@ -332,6 +333,15 @@ bool  StringBuffer::operator!= (const wchar_t* sc) const
     { return !(*this == sc); }
 bool  StringBuffer::operator!= (const StringBuffer& s) const
     { return !(*this == s); }
+
+
+// Function operators
+StringBuffer operator+(const StringBuffer& x, const wchar_t *y)
+{
+  StringBuffer result(x);
+  result.append(y);
+  return result;
+}
 
 
 //size_t StringBuffer_memcount = 0;
