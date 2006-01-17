@@ -175,118 +175,38 @@ LINK32=link.exe
 # PROP Default_Filter "cpp;c;cxx;rc;def;r;odl;idl;hpj;bat"
 # Begin Source File
 
-SOURCE="..\..\src\c++\common\examples\client.cpp"
+SOURCE="..\..\src\c++\common\examples\MailTest.cpp"
 
 !IF  "$(CFG)" == "testwindowsmobile - Win32 (WCE emulator) Release"
 
-DEP_CPP_CLIEN=\
+DEP_CPP_MAILT=\
 	"..\..\src\include\common\base\base64.h"\
 	"..\..\src\include\common\base\constants.h"\
-	"..\..\src\include\common\base\ErrorHandler.h"\
 	"..\..\src\include\common\base\errors.h"\
 	"..\..\src\include\common\base\fscapi.h"\
 	"..\..\src\include\common\base\Log.h"\
 	"..\..\src\include\common\base\md5.h"\
-	"..\..\src\include\common\base\messages.h"\
 	"..\..\src\include\common\base\util\ArrayElement.h"\
 	"..\..\src\include\common\base\util\ArrayList.h"\
+	"..\..\src\include\common\base\util\BasicTime.h"\
 	"..\..\src\include\common\base\util\StringBuffer.h"\
+	"..\..\src\include\common\base\util\UTF8StringBuffer.h"\
 	"..\..\src\include\common\base\util\utils.h"\
-	"..\..\src\include\common\base\util\XMLProcessor.h"\
-	"..\..\src\include\common\client\DMTClientConfig.h"\
-	"..\..\src\include\common\client\Sync4jClient.h"\
-	"..\..\src\include\common\examples\TestSyncSource.h"\
-	"..\..\src\include\common\examples\TestSyncSource2.h"\
-	"..\..\src\include\common\filter\AllClause.h"\
-	"..\..\src\include\common\filter\Clause.h"\
-	"..\..\src\include\common\filter\ClauseUtil.h"\
-	"..\..\src\include\common\filter\FieldClause.h"\
-	"..\..\src\include\common\filter\LogicalClause.h"\
-	"..\..\src\include\common\filter\SourceFilter.h"\
-	"..\..\src\include\common\filter\WhereClause.h"\
-	"..\..\src\include\common\http\constants.h"\
 	"..\..\src\include\common\http\errors.h"\
-	"..\..\src\include\common\spdm\constants.h"\
 	"..\..\src\include\common\spdm\errors.h"\
-	"..\..\src\include\common\spdm\ManagementNode.h"\
-	"..\..\src\include\common\spds\AccessConfig.h"\
+	"..\..\src\include\common\spds\BodyPart.h"\
 	"..\..\src\include\common\spds\constants.h"\
+	"..\..\src\include\common\spds\EmailData.h"\
 	"..\..\src\include\common\spds\errors.h"\
+	"..\..\src\include\common\spds\MailMessage.h"\
 	"..\..\src\include\common\spds\spdsutils.h"\
 	"..\..\src\include\common\spds\SyncItem.h"\
 	"..\..\src\include\common\spds\SyncItemStatus.h"\
-	"..\..\src\include\common\spds\SyncManagerConfig.h"\
-	"..\..\src\include\common\spds\SyncMap.h"\
-	"..\..\src\include\common\spds\SyncSource.h"\
-	"..\..\src\include\common\spds\SyncSourceConfig.h"\
 	"..\..\src\include\common\spds\SyncStatus.h"\
-	"..\..\src\include\common\syncml\core\AbstractCommand.h"\
-	"..\..\src\include\common\syncml\core\Add.h"\
-	"..\..\src\include\common\syncml\core\Alert.h"\
-	"..\..\src\include\common\syncml\core\Anchor.h"\
-	"..\..\src\include\common\syncml\core\Atomic.h"\
-	"..\..\src\include\common\syncml\core\Authentication.h"\
-	"..\..\src\include\common\syncml\core\Chal.h"\
-	"..\..\src\include\common\syncml\core\CmdID.h"\
-	"..\..\src\include\common\syncml\core\ComplexData.h"\
-	"..\..\src\include\common\syncml\core\Constants.h"\
-	"..\..\src\include\common\syncml\core\ContentTypeInfo.h"\
-	"..\..\src\include\common\syncml\core\Copy.h"\
-	"..\..\src\include\common\syncml\core\core.h"\
-	"..\..\src\include\common\syncml\core\Cred.h"\
-	"..\..\src\include\common\syncml\core\CTCap.h"\
-	"..\..\src\include\common\syncml\core\CTTypeSupported.h"\
-	"..\..\src\include\common\syncml\core\Data.h"\
-	"..\..\src\include\common\syncml\core\DataStore.h"\
-	"..\..\src\include\common\syncml\core\Delete.h"\
-	"..\..\src\include\common\syncml\core\DevInf.h"\
-	"..\..\src\include\common\syncml\core\DSMem.h"\
-	"..\..\src\include\common\syncml\core\EMI.h"\
-	"..\..\src\include\common\syncml\core\Exec.h"\
-	"..\..\src\include\common\syncml\core\Ext.h"\
-	"..\..\src\include\common\syncml\core\Filter.h"\
-	"..\..\src\include\common\syncml\core\Get.h"\
-	"..\..\src\include\common\syncml\core\Item.h"\
-	"..\..\src\include\common\syncml\core\ItemizedCommand.h"\
-	"..\..\src\include\common\syncml\core\Map.h"\
-	"..\..\src\include\common\syncml\core\MapItem.h"\
-	"..\..\src\include\common\syncml\core\Mem.h"\
-	"..\..\src\include\common\syncml\core\Meta.h"\
-	"..\..\src\include\common\syncml\core\MetInf.h"\
-	"..\..\src\include\common\syncml\core\ModificationCommand.h"\
-	"..\..\src\include\common\syncml\core\NextNonce.h"\
-	"..\..\src\include\common\syncml\core\ObjectDel.h"\
-	"..\..\src\include\common\syncml\core\Property.h"\
-	"..\..\src\include\common\syncml\core\PropParam.h"\
-	"..\..\src\include\common\syncml\core\Put.h"\
-	"..\..\src\include\common\syncml\core\Replace.h"\
-	"..\..\src\include\common\syncml\core\ResponseCommand.h"\
-	"..\..\src\include\common\syncml\core\Results.h"\
-	"..\..\src\include\common\syncml\core\Search.h"\
-	"..\..\src\include\common\syncml\core\Sequence.h"\
-	"..\..\src\include\common\syncml\core\SessionID.h"\
-	"..\..\src\include\common\syncml\core\Source.h"\
-	"..\..\src\include\common\syncml\core\SourceArray.h"\
-	"..\..\src\include\common\syncml\core\SourceRef.h"\
-	"..\..\src\include\common\syncml\core\Status.h"\
-	"..\..\src\include\common\syncml\core\StringElement.h"\
-	"..\..\src\include\common\syncml\core\Sync.h"\
-	"..\..\src\include\common\syncml\core\SyncBody.h"\
-	"..\..\src\include\common\syncml\core\SyncCap.h"\
-	"..\..\src\include\common\syncml\core\SyncHdr.h"\
-	"..\..\src\include\common\syncml\core\SyncML.h"\
-	"..\..\src\include\common\syncml\core\SyncType.h"\
-	"..\..\src\include\common\syncml\core\SyncTypeArray.h"\
-	"..\..\src\include\common\syncml\core\TagNames.h"\
-	"..\..\src\include\common\syncml\core\Target.h"\
-	"..\..\src\include\common\syncml\core\TargetRef.h"\
-	"..\..\src\include\common\syncml\core\VerDTD.h"\
-	"..\..\src\include\common\syncml\core\VerProto.h"\
-	"..\..\src\include\common\syncml\formatter\Formatter.h"\
 	"..\..\src\include\winmobile\base\PPC2003adapter.h"\
 	"..\..\src\include\winmobile\base\time.h"\
 	
-NODEP_CPP_CLIEN=\
+NODEP_CPP_MAILT=\
 	"..\..\src\include\common\base\base\palmadapter.h"\
 	"..\..\src\include\common\base\base\posixadapter.h"\
 	"..\..\src\include\common\base\base\win32adapter.h"\
@@ -294,114 +214,34 @@ NODEP_CPP_CLIEN=\
 
 !ELSEIF  "$(CFG)" == "testwindowsmobile - Win32 (WCE emulator) Debug"
 
-DEP_CPP_CLIEN=\
+DEP_CPP_MAILT=\
 	"..\..\src\include\common\base\base64.h"\
 	"..\..\src\include\common\base\constants.h"\
-	"..\..\src\include\common\base\ErrorHandler.h"\
 	"..\..\src\include\common\base\errors.h"\
 	"..\..\src\include\common\base\fscapi.h"\
 	"..\..\src\include\common\base\Log.h"\
 	"..\..\src\include\common\base\md5.h"\
-	"..\..\src\include\common\base\messages.h"\
 	"..\..\src\include\common\base\util\ArrayElement.h"\
 	"..\..\src\include\common\base\util\ArrayList.h"\
+	"..\..\src\include\common\base\util\BasicTime.h"\
 	"..\..\src\include\common\base\util\StringBuffer.h"\
+	"..\..\src\include\common\base\util\UTF8StringBuffer.h"\
 	"..\..\src\include\common\base\util\utils.h"\
-	"..\..\src\include\common\base\util\XMLProcessor.h"\
-	"..\..\src\include\common\client\DMTClientConfig.h"\
-	"..\..\src\include\common\client\Sync4jClient.h"\
-	"..\..\src\include\common\examples\TestSyncSource.h"\
-	"..\..\src\include\common\examples\TestSyncSource2.h"\
-	"..\..\src\include\common\filter\AllClause.h"\
-	"..\..\src\include\common\filter\Clause.h"\
-	"..\..\src\include\common\filter\ClauseUtil.h"\
-	"..\..\src\include\common\filter\FieldClause.h"\
-	"..\..\src\include\common\filter\LogicalClause.h"\
-	"..\..\src\include\common\filter\SourceFilter.h"\
-	"..\..\src\include\common\filter\WhereClause.h"\
-	"..\..\src\include\common\http\constants.h"\
 	"..\..\src\include\common\http\errors.h"\
-	"..\..\src\include\common\spdm\constants.h"\
 	"..\..\src\include\common\spdm\errors.h"\
-	"..\..\src\include\common\spdm\ManagementNode.h"\
-	"..\..\src\include\common\spds\AccessConfig.h"\
+	"..\..\src\include\common\spds\BodyPart.h"\
 	"..\..\src\include\common\spds\constants.h"\
+	"..\..\src\include\common\spds\EmailData.h"\
 	"..\..\src\include\common\spds\errors.h"\
+	"..\..\src\include\common\spds\MailMessage.h"\
 	"..\..\src\include\common\spds\spdsutils.h"\
 	"..\..\src\include\common\spds\SyncItem.h"\
 	"..\..\src\include\common\spds\SyncItemStatus.h"\
-	"..\..\src\include\common\spds\SyncManagerConfig.h"\
-	"..\..\src\include\common\spds\SyncMap.h"\
-	"..\..\src\include\common\spds\SyncSource.h"\
-	"..\..\src\include\common\spds\SyncSourceConfig.h"\
 	"..\..\src\include\common\spds\SyncStatus.h"\
-	"..\..\src\include\common\syncml\core\AbstractCommand.h"\
-	"..\..\src\include\common\syncml\core\Add.h"\
-	"..\..\src\include\common\syncml\core\Alert.h"\
-	"..\..\src\include\common\syncml\core\Anchor.h"\
-	"..\..\src\include\common\syncml\core\Atomic.h"\
-	"..\..\src\include\common\syncml\core\Authentication.h"\
-	"..\..\src\include\common\syncml\core\Chal.h"\
-	"..\..\src\include\common\syncml\core\CmdID.h"\
-	"..\..\src\include\common\syncml\core\ComplexData.h"\
-	"..\..\src\include\common\syncml\core\Constants.h"\
-	"..\..\src\include\common\syncml\core\ContentTypeInfo.h"\
-	"..\..\src\include\common\syncml\core\Copy.h"\
-	"..\..\src\include\common\syncml\core\core.h"\
-	"..\..\src\include\common\syncml\core\Cred.h"\
-	"..\..\src\include\common\syncml\core\CTCap.h"\
-	"..\..\src\include\common\syncml\core\CTTypeSupported.h"\
-	"..\..\src\include\common\syncml\core\Data.h"\
-	"..\..\src\include\common\syncml\core\DataStore.h"\
-	"..\..\src\include\common\syncml\core\Delete.h"\
-	"..\..\src\include\common\syncml\core\DevInf.h"\
-	"..\..\src\include\common\syncml\core\DSMem.h"\
-	"..\..\src\include\common\syncml\core\EMI.h"\
-	"..\..\src\include\common\syncml\core\Exec.h"\
-	"..\..\src\include\common\syncml\core\Ext.h"\
-	"..\..\src\include\common\syncml\core\Filter.h"\
-	"..\..\src\include\common\syncml\core\Get.h"\
-	"..\..\src\include\common\syncml\core\Item.h"\
-	"..\..\src\include\common\syncml\core\ItemizedCommand.h"\
-	"..\..\src\include\common\syncml\core\Map.h"\
-	"..\..\src\include\common\syncml\core\MapItem.h"\
-	"..\..\src\include\common\syncml\core\Mem.h"\
-	"..\..\src\include\common\syncml\core\Meta.h"\
-	"..\..\src\include\common\syncml\core\MetInf.h"\
-	"..\..\src\include\common\syncml\core\ModificationCommand.h"\
-	"..\..\src\include\common\syncml\core\NextNonce.h"\
-	"..\..\src\include\common\syncml\core\ObjectDel.h"\
-	"..\..\src\include\common\syncml\core\Property.h"\
-	"..\..\src\include\common\syncml\core\PropParam.h"\
-	"..\..\src\include\common\syncml\core\Put.h"\
-	"..\..\src\include\common\syncml\core\Replace.h"\
-	"..\..\src\include\common\syncml\core\ResponseCommand.h"\
-	"..\..\src\include\common\syncml\core\Results.h"\
-	"..\..\src\include\common\syncml\core\Search.h"\
-	"..\..\src\include\common\syncml\core\Sequence.h"\
-	"..\..\src\include\common\syncml\core\SessionID.h"\
-	"..\..\src\include\common\syncml\core\Source.h"\
-	"..\..\src\include\common\syncml\core\SourceArray.h"\
-	"..\..\src\include\common\syncml\core\SourceRef.h"\
-	"..\..\src\include\common\syncml\core\Status.h"\
-	"..\..\src\include\common\syncml\core\StringElement.h"\
-	"..\..\src\include\common\syncml\core\Sync.h"\
-	"..\..\src\include\common\syncml\core\SyncBody.h"\
-	"..\..\src\include\common\syncml\core\SyncCap.h"\
-	"..\..\src\include\common\syncml\core\SyncHdr.h"\
-	"..\..\src\include\common\syncml\core\SyncML.h"\
-	"..\..\src\include\common\syncml\core\SyncType.h"\
-	"..\..\src\include\common\syncml\core\SyncTypeArray.h"\
-	"..\..\src\include\common\syncml\core\TagNames.h"\
-	"..\..\src\include\common\syncml\core\Target.h"\
-	"..\..\src\include\common\syncml\core\TargetRef.h"\
-	"..\..\src\include\common\syncml\core\VerDTD.h"\
-	"..\..\src\include\common\syncml\core\VerProto.h"\
-	"..\..\src\include\common\syncml\formatter\Formatter.h"\
 	"..\..\src\include\winmobile\base\PPC2003adapter.h"\
 	"..\..\src\include\winmobile\base\time.h"\
 	
-NODEP_CPP_CLIEN=\
+NODEP_CPP_MAILT=\
 	"..\..\src\include\common\base\base\palmadapter.h"\
 	"..\..\src\include\common\base\base\posixadapter.h"\
 	"..\..\src\include\common\base\base\win32adapter.h"\
@@ -409,114 +249,34 @@ NODEP_CPP_CLIEN=\
 
 !ELSEIF  "$(CFG)" == "testwindowsmobile - Win32 (WCE ARMV4) Release"
 
-DEP_CPP_CLIEN=\
+DEP_CPP_MAILT=\
 	"..\..\src\include\common\base\base64.h"\
 	"..\..\src\include\common\base\constants.h"\
-	"..\..\src\include\common\base\ErrorHandler.h"\
 	"..\..\src\include\common\base\errors.h"\
 	"..\..\src\include\common\base\fscapi.h"\
 	"..\..\src\include\common\base\Log.h"\
 	"..\..\src\include\common\base\md5.h"\
-	"..\..\src\include\common\base\messages.h"\
 	"..\..\src\include\common\base\util\ArrayElement.h"\
 	"..\..\src\include\common\base\util\ArrayList.h"\
+	"..\..\src\include\common\base\util\BasicTime.h"\
 	"..\..\src\include\common\base\util\StringBuffer.h"\
+	"..\..\src\include\common\base\util\UTF8StringBuffer.h"\
 	"..\..\src\include\common\base\util\utils.h"\
-	"..\..\src\include\common\base\util\XMLProcessor.h"\
-	"..\..\src\include\common\client\DMTClientConfig.h"\
-	"..\..\src\include\common\client\Sync4jClient.h"\
-	"..\..\src\include\common\examples\TestSyncSource.h"\
-	"..\..\src\include\common\examples\TestSyncSource2.h"\
-	"..\..\src\include\common\filter\AllClause.h"\
-	"..\..\src\include\common\filter\Clause.h"\
-	"..\..\src\include\common\filter\ClauseUtil.h"\
-	"..\..\src\include\common\filter\FieldClause.h"\
-	"..\..\src\include\common\filter\LogicalClause.h"\
-	"..\..\src\include\common\filter\SourceFilter.h"\
-	"..\..\src\include\common\filter\WhereClause.h"\
-	"..\..\src\include\common\http\constants.h"\
 	"..\..\src\include\common\http\errors.h"\
-	"..\..\src\include\common\spdm\constants.h"\
 	"..\..\src\include\common\spdm\errors.h"\
-	"..\..\src\include\common\spdm\ManagementNode.h"\
-	"..\..\src\include\common\spds\AccessConfig.h"\
+	"..\..\src\include\common\spds\BodyPart.h"\
 	"..\..\src\include\common\spds\constants.h"\
+	"..\..\src\include\common\spds\EmailData.h"\
 	"..\..\src\include\common\spds\errors.h"\
+	"..\..\src\include\common\spds\MailMessage.h"\
 	"..\..\src\include\common\spds\spdsutils.h"\
 	"..\..\src\include\common\spds\SyncItem.h"\
 	"..\..\src\include\common\spds\SyncItemStatus.h"\
-	"..\..\src\include\common\spds\SyncManagerConfig.h"\
-	"..\..\src\include\common\spds\SyncMap.h"\
-	"..\..\src\include\common\spds\SyncSource.h"\
-	"..\..\src\include\common\spds\SyncSourceConfig.h"\
 	"..\..\src\include\common\spds\SyncStatus.h"\
-	"..\..\src\include\common\syncml\core\AbstractCommand.h"\
-	"..\..\src\include\common\syncml\core\Add.h"\
-	"..\..\src\include\common\syncml\core\Alert.h"\
-	"..\..\src\include\common\syncml\core\Anchor.h"\
-	"..\..\src\include\common\syncml\core\Atomic.h"\
-	"..\..\src\include\common\syncml\core\Authentication.h"\
-	"..\..\src\include\common\syncml\core\Chal.h"\
-	"..\..\src\include\common\syncml\core\CmdID.h"\
-	"..\..\src\include\common\syncml\core\ComplexData.h"\
-	"..\..\src\include\common\syncml\core\Constants.h"\
-	"..\..\src\include\common\syncml\core\ContentTypeInfo.h"\
-	"..\..\src\include\common\syncml\core\Copy.h"\
-	"..\..\src\include\common\syncml\core\core.h"\
-	"..\..\src\include\common\syncml\core\Cred.h"\
-	"..\..\src\include\common\syncml\core\CTCap.h"\
-	"..\..\src\include\common\syncml\core\CTTypeSupported.h"\
-	"..\..\src\include\common\syncml\core\Data.h"\
-	"..\..\src\include\common\syncml\core\DataStore.h"\
-	"..\..\src\include\common\syncml\core\Delete.h"\
-	"..\..\src\include\common\syncml\core\DevInf.h"\
-	"..\..\src\include\common\syncml\core\DSMem.h"\
-	"..\..\src\include\common\syncml\core\EMI.h"\
-	"..\..\src\include\common\syncml\core\Exec.h"\
-	"..\..\src\include\common\syncml\core\Ext.h"\
-	"..\..\src\include\common\syncml\core\Filter.h"\
-	"..\..\src\include\common\syncml\core\Get.h"\
-	"..\..\src\include\common\syncml\core\Item.h"\
-	"..\..\src\include\common\syncml\core\ItemizedCommand.h"\
-	"..\..\src\include\common\syncml\core\Map.h"\
-	"..\..\src\include\common\syncml\core\MapItem.h"\
-	"..\..\src\include\common\syncml\core\Mem.h"\
-	"..\..\src\include\common\syncml\core\Meta.h"\
-	"..\..\src\include\common\syncml\core\MetInf.h"\
-	"..\..\src\include\common\syncml\core\ModificationCommand.h"\
-	"..\..\src\include\common\syncml\core\NextNonce.h"\
-	"..\..\src\include\common\syncml\core\ObjectDel.h"\
-	"..\..\src\include\common\syncml\core\Property.h"\
-	"..\..\src\include\common\syncml\core\PropParam.h"\
-	"..\..\src\include\common\syncml\core\Put.h"\
-	"..\..\src\include\common\syncml\core\Replace.h"\
-	"..\..\src\include\common\syncml\core\ResponseCommand.h"\
-	"..\..\src\include\common\syncml\core\Results.h"\
-	"..\..\src\include\common\syncml\core\Search.h"\
-	"..\..\src\include\common\syncml\core\Sequence.h"\
-	"..\..\src\include\common\syncml\core\SessionID.h"\
-	"..\..\src\include\common\syncml\core\Source.h"\
-	"..\..\src\include\common\syncml\core\SourceArray.h"\
-	"..\..\src\include\common\syncml\core\SourceRef.h"\
-	"..\..\src\include\common\syncml\core\Status.h"\
-	"..\..\src\include\common\syncml\core\StringElement.h"\
-	"..\..\src\include\common\syncml\core\Sync.h"\
-	"..\..\src\include\common\syncml\core\SyncBody.h"\
-	"..\..\src\include\common\syncml\core\SyncCap.h"\
-	"..\..\src\include\common\syncml\core\SyncHdr.h"\
-	"..\..\src\include\common\syncml\core\SyncML.h"\
-	"..\..\src\include\common\syncml\core\SyncType.h"\
-	"..\..\src\include\common\syncml\core\SyncTypeArray.h"\
-	"..\..\src\include\common\syncml\core\TagNames.h"\
-	"..\..\src\include\common\syncml\core\Target.h"\
-	"..\..\src\include\common\syncml\core\TargetRef.h"\
-	"..\..\src\include\common\syncml\core\VerDTD.h"\
-	"..\..\src\include\common\syncml\core\VerProto.h"\
-	"..\..\src\include\common\syncml\formatter\Formatter.h"\
 	"..\..\src\include\winmobile\base\PPC2003adapter.h"\
 	"..\..\src\include\winmobile\base\time.h"\
 	
-NODEP_CPP_CLIEN=\
+NODEP_CPP_MAILT=\
 	"..\..\src\include\common\base\base\palmadapter.h"\
 	"..\..\src\include\common\base\base\posixadapter.h"\
 	"..\..\src\include\common\base\base\win32adapter.h"\
@@ -524,114 +284,34 @@ NODEP_CPP_CLIEN=\
 
 !ELSEIF  "$(CFG)" == "testwindowsmobile - Win32 (WCE ARMV4) Debug"
 
-DEP_CPP_CLIEN=\
+DEP_CPP_MAILT=\
 	"..\..\src\include\common\base\base64.h"\
 	"..\..\src\include\common\base\constants.h"\
-	"..\..\src\include\common\base\ErrorHandler.h"\
 	"..\..\src\include\common\base\errors.h"\
 	"..\..\src\include\common\base\fscapi.h"\
 	"..\..\src\include\common\base\Log.h"\
 	"..\..\src\include\common\base\md5.h"\
-	"..\..\src\include\common\base\messages.h"\
 	"..\..\src\include\common\base\util\ArrayElement.h"\
 	"..\..\src\include\common\base\util\ArrayList.h"\
+	"..\..\src\include\common\base\util\BasicTime.h"\
 	"..\..\src\include\common\base\util\StringBuffer.h"\
+	"..\..\src\include\common\base\util\UTF8StringBuffer.h"\
 	"..\..\src\include\common\base\util\utils.h"\
-	"..\..\src\include\common\base\util\XMLProcessor.h"\
-	"..\..\src\include\common\client\DMTClientConfig.h"\
-	"..\..\src\include\common\client\Sync4jClient.h"\
-	"..\..\src\include\common\examples\TestSyncSource.h"\
-	"..\..\src\include\common\examples\TestSyncSource2.h"\
-	"..\..\src\include\common\filter\AllClause.h"\
-	"..\..\src\include\common\filter\Clause.h"\
-	"..\..\src\include\common\filter\ClauseUtil.h"\
-	"..\..\src\include\common\filter\FieldClause.h"\
-	"..\..\src\include\common\filter\LogicalClause.h"\
-	"..\..\src\include\common\filter\SourceFilter.h"\
-	"..\..\src\include\common\filter\WhereClause.h"\
-	"..\..\src\include\common\http\constants.h"\
 	"..\..\src\include\common\http\errors.h"\
-	"..\..\src\include\common\spdm\constants.h"\
 	"..\..\src\include\common\spdm\errors.h"\
-	"..\..\src\include\common\spdm\ManagementNode.h"\
-	"..\..\src\include\common\spds\AccessConfig.h"\
+	"..\..\src\include\common\spds\BodyPart.h"\
 	"..\..\src\include\common\spds\constants.h"\
+	"..\..\src\include\common\spds\EmailData.h"\
 	"..\..\src\include\common\spds\errors.h"\
+	"..\..\src\include\common\spds\MailMessage.h"\
 	"..\..\src\include\common\spds\spdsutils.h"\
 	"..\..\src\include\common\spds\SyncItem.h"\
 	"..\..\src\include\common\spds\SyncItemStatus.h"\
-	"..\..\src\include\common\spds\SyncManagerConfig.h"\
-	"..\..\src\include\common\spds\SyncMap.h"\
-	"..\..\src\include\common\spds\SyncSource.h"\
-	"..\..\src\include\common\spds\SyncSourceConfig.h"\
 	"..\..\src\include\common\spds\SyncStatus.h"\
-	"..\..\src\include\common\syncml\core\AbstractCommand.h"\
-	"..\..\src\include\common\syncml\core\Add.h"\
-	"..\..\src\include\common\syncml\core\Alert.h"\
-	"..\..\src\include\common\syncml\core\Anchor.h"\
-	"..\..\src\include\common\syncml\core\Atomic.h"\
-	"..\..\src\include\common\syncml\core\Authentication.h"\
-	"..\..\src\include\common\syncml\core\Chal.h"\
-	"..\..\src\include\common\syncml\core\CmdID.h"\
-	"..\..\src\include\common\syncml\core\ComplexData.h"\
-	"..\..\src\include\common\syncml\core\Constants.h"\
-	"..\..\src\include\common\syncml\core\ContentTypeInfo.h"\
-	"..\..\src\include\common\syncml\core\Copy.h"\
-	"..\..\src\include\common\syncml\core\core.h"\
-	"..\..\src\include\common\syncml\core\Cred.h"\
-	"..\..\src\include\common\syncml\core\CTCap.h"\
-	"..\..\src\include\common\syncml\core\CTTypeSupported.h"\
-	"..\..\src\include\common\syncml\core\Data.h"\
-	"..\..\src\include\common\syncml\core\DataStore.h"\
-	"..\..\src\include\common\syncml\core\Delete.h"\
-	"..\..\src\include\common\syncml\core\DevInf.h"\
-	"..\..\src\include\common\syncml\core\DSMem.h"\
-	"..\..\src\include\common\syncml\core\EMI.h"\
-	"..\..\src\include\common\syncml\core\Exec.h"\
-	"..\..\src\include\common\syncml\core\Ext.h"\
-	"..\..\src\include\common\syncml\core\Filter.h"\
-	"..\..\src\include\common\syncml\core\Get.h"\
-	"..\..\src\include\common\syncml\core\Item.h"\
-	"..\..\src\include\common\syncml\core\ItemizedCommand.h"\
-	"..\..\src\include\common\syncml\core\Map.h"\
-	"..\..\src\include\common\syncml\core\MapItem.h"\
-	"..\..\src\include\common\syncml\core\Mem.h"\
-	"..\..\src\include\common\syncml\core\Meta.h"\
-	"..\..\src\include\common\syncml\core\MetInf.h"\
-	"..\..\src\include\common\syncml\core\ModificationCommand.h"\
-	"..\..\src\include\common\syncml\core\NextNonce.h"\
-	"..\..\src\include\common\syncml\core\ObjectDel.h"\
-	"..\..\src\include\common\syncml\core\Property.h"\
-	"..\..\src\include\common\syncml\core\PropParam.h"\
-	"..\..\src\include\common\syncml\core\Put.h"\
-	"..\..\src\include\common\syncml\core\Replace.h"\
-	"..\..\src\include\common\syncml\core\ResponseCommand.h"\
-	"..\..\src\include\common\syncml\core\Results.h"\
-	"..\..\src\include\common\syncml\core\Search.h"\
-	"..\..\src\include\common\syncml\core\Sequence.h"\
-	"..\..\src\include\common\syncml\core\SessionID.h"\
-	"..\..\src\include\common\syncml\core\Source.h"\
-	"..\..\src\include\common\syncml\core\SourceArray.h"\
-	"..\..\src\include\common\syncml\core\SourceRef.h"\
-	"..\..\src\include\common\syncml\core\Status.h"\
-	"..\..\src\include\common\syncml\core\StringElement.h"\
-	"..\..\src\include\common\syncml\core\Sync.h"\
-	"..\..\src\include\common\syncml\core\SyncBody.h"\
-	"..\..\src\include\common\syncml\core\SyncCap.h"\
-	"..\..\src\include\common\syncml\core\SyncHdr.h"\
-	"..\..\src\include\common\syncml\core\SyncML.h"\
-	"..\..\src\include\common\syncml\core\SyncType.h"\
-	"..\..\src\include\common\syncml\core\SyncTypeArray.h"\
-	"..\..\src\include\common\syncml\core\TagNames.h"\
-	"..\..\src\include\common\syncml\core\Target.h"\
-	"..\..\src\include\common\syncml\core\TargetRef.h"\
-	"..\..\src\include\common\syncml\core\VerDTD.h"\
-	"..\..\src\include\common\syncml\core\VerProto.h"\
-	"..\..\src\include\common\syncml\formatter\Formatter.h"\
 	"..\..\src\include\winmobile\base\PPC2003adapter.h"\
 	"..\..\src\include\winmobile\base\time.h"\
 	
-NODEP_CPP_CLIEN=\
+NODEP_CPP_MAILT=\
 	"..\..\src\include\common\base\base\palmadapter.h"\
 	"..\..\src\include\common\base\base\posixadapter.h"\
 	"..\..\src\include\common\base\base\win32adapter.h"\
@@ -1653,110 +1333,6 @@ DEP_CPP_TESTCO=\
 	"..\..\src\include\winmobile\spdm\DeviceManagementNode.h"\
 	
 NODEP_CPP_TESTCO=\
-	"..\..\src\include\common\base\base\palmadapter.h"\
-	"..\..\src\include\common\base\base\posixadapter.h"\
-	"..\..\src\include\common\base\base\win32adapter.h"\
-	
-
-!ENDIF 
-
-# End Source File
-# Begin Source File
-
-SOURCE="..\..\src\c++\winmobile\examples\testEncryption.cpp"
-
-!IF  "$(CFG)" == "testwindowsmobile - Win32 (WCE emulator) Release"
-
-DEP_CPP_TESTE=\
-	"..\..\src\include\common\base\errors.h"\
-	"..\..\src\include\common\base\fscapi.h"\
-	"..\..\src\include\common\base\Log.h"\
-	"..\..\src\include\common\base\messages.h"\
-	"..\..\src\include\common\http\errors.h"\
-	"..\..\src\include\common\spdm\errors.h"\
-	"..\..\src\include\common\spds\B64Decoder.h"\
-	"..\..\src\include\common\spds\B64Encoder.h"\
-	"..\..\src\include\common\spds\DataTransformer.h"\
-	"..\..\src\include\common\spds\DESDecoder.h"\
-	"..\..\src\include\common\spds\DESEncoder.h"\
-	"..\..\src\include\common\spds\errors.h"\
-	"..\..\src\include\winmobile\base\PPC2003adapter.h"\
-	"..\..\src\include\winmobile\base\time.h"\
-	
-NODEP_CPP_TESTE=\
-	"..\..\src\include\common\base\base\palmadapter.h"\
-	"..\..\src\include\common\base\base\posixadapter.h"\
-	"..\..\src\include\common\base\base\win32adapter.h"\
-	
-
-!ELSEIF  "$(CFG)" == "testwindowsmobile - Win32 (WCE emulator) Debug"
-
-DEP_CPP_TESTE=\
-	"..\..\src\include\common\base\errors.h"\
-	"..\..\src\include\common\base\fscapi.h"\
-	"..\..\src\include\common\base\Log.h"\
-	"..\..\src\include\common\base\messages.h"\
-	"..\..\src\include\common\http\errors.h"\
-	"..\..\src\include\common\spdm\errors.h"\
-	"..\..\src\include\common\spds\B64Decoder.h"\
-	"..\..\src\include\common\spds\B64Encoder.h"\
-	"..\..\src\include\common\spds\DataTransformer.h"\
-	"..\..\src\include\common\spds\DESDecoder.h"\
-	"..\..\src\include\common\spds\DESEncoder.h"\
-	"..\..\src\include\common\spds\errors.h"\
-	"..\..\src\include\winmobile\base\PPC2003adapter.h"\
-	"..\..\src\include\winmobile\base\time.h"\
-	
-NODEP_CPP_TESTE=\
-	"..\..\src\include\common\base\base\palmadapter.h"\
-	"..\..\src\include\common\base\base\posixadapter.h"\
-	"..\..\src\include\common\base\base\win32adapter.h"\
-	
-
-!ELSEIF  "$(CFG)" == "testwindowsmobile - Win32 (WCE ARMV4) Release"
-
-DEP_CPP_TESTE=\
-	"..\..\src\include\common\base\errors.h"\
-	"..\..\src\include\common\base\fscapi.h"\
-	"..\..\src\include\common\base\Log.h"\
-	"..\..\src\include\common\base\messages.h"\
-	"..\..\src\include\common\http\errors.h"\
-	"..\..\src\include\common\spdm\errors.h"\
-	"..\..\src\include\common\spds\B64Decoder.h"\
-	"..\..\src\include\common\spds\B64Encoder.h"\
-	"..\..\src\include\common\spds\DataTransformer.h"\
-	"..\..\src\include\common\spds\DESDecoder.h"\
-	"..\..\src\include\common\spds\DESEncoder.h"\
-	"..\..\src\include\common\spds\errors.h"\
-	"..\..\src\include\winmobile\base\PPC2003adapter.h"\
-	"..\..\src\include\winmobile\base\time.h"\
-	
-NODEP_CPP_TESTE=\
-	"..\..\src\include\common\base\base\palmadapter.h"\
-	"..\..\src\include\common\base\base\posixadapter.h"\
-	"..\..\src\include\common\base\base\win32adapter.h"\
-	
-
-!ELSEIF  "$(CFG)" == "testwindowsmobile - Win32 (WCE ARMV4) Debug"
-
-DEP_CPP_TESTE=\
-	"..\..\src\include\common\base\errors.h"\
-	"..\..\src\include\common\base\fscapi.h"\
-	"..\..\src\include\common\base\Log.h"\
-	"..\..\src\include\common\base\messages.h"\
-	"..\..\src\include\common\http\errors.h"\
-	"..\..\src\include\common\spdm\errors.h"\
-	"..\..\src\include\common\spds\B64Decoder.h"\
-	"..\..\src\include\common\spds\B64Encoder.h"\
-	"..\..\src\include\common\spds\DataTransformer.h"\
-	"..\..\src\include\common\spds\DataTransformerFactory.h"\
-	"..\..\src\include\common\spds\DESDecoder.h"\
-	"..\..\src\include\common\spds\DESEncoder.h"\
-	"..\..\src\include\common\spds\errors.h"\
-	"..\..\src\include\winmobile\base\PPC2003adapter.h"\
-	"..\..\src\include\winmobile\base\time.h"\
-	
-NODEP_CPP_TESTE=\
 	"..\..\src\include\common\base\base\palmadapter.h"\
 	"..\..\src\include\common\base\base\posixadapter.h"\
 	"..\..\src\include\common\base\base\win32adapter.h"\
