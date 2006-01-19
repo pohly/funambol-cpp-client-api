@@ -64,8 +64,8 @@ class MailMessage : public ArrayElement {
         //BodyPart *alternate;
         ArrayList attachments;
 
-        parseHeaders(StringBuffer &rfcHeaders);
-        parseBodyParts(StringBuffer &rfcBody);
+        int parseHeaders(StringBuffer &rfcHeaders);
+        int parseBodyParts(StringBuffer &rfcBody);
 
     public:
 

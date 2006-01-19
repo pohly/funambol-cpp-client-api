@@ -61,7 +61,7 @@ wchar_t* XMLProcessor::getElementContent(const wchar_t*      xml     ,
         wsprintf(closeTag, TEXT("</%s>"), tag);
     }
 
-    p1 = wcsstr(xml, openTag);
+    p1 = wcsstr((wchar_t*)xml, openTag);
 
     if (p1 == NULL) { // tag can have attributes or can be empty
 
@@ -70,7 +70,7 @@ wchar_t* XMLProcessor::getElementContent(const wchar_t*      xml     ,
         
         // try to find "<tagName/>". If found it return null.
         wsprintf(openTag, TEXT("<%s/>"), tag);
-        p1 = wcsstr(xml, openTag);
+        p1 = wcsstr((wchar_t*)xml, openTag);
         // ok, found an empty tag
         if (p1 != NULL) {
             goto finally;
@@ -78,7 +78,7 @@ wchar_t* XMLProcessor::getElementContent(const wchar_t*      xml     ,
 
         // try to find "<tagName"
         wsprintf(openTag, TEXT("<%s"), tag);
-        p1 = wcsstr(xml, openTag);
+        p1 = wcsstr((wchar_t*)xml, openTag);
 
         if (p1 == NULL) {
             goto finally;
@@ -197,7 +197,7 @@ wchar_t* XMLProcessor::getElementContent(const wchar_t*      xml       ,
     wsprintf(openTag, TEXT("<%s>"), tag);
     wsprintf(closeTag, TEXT("</%s>"), tag);
 
-    p1 = wcsstr(xml, openTag);
+    p1 = wcsstr((wchar_t*)xml, openTag);
 
     if (p1 == NULL) { // tag can have attributes
         //
@@ -207,7 +207,7 @@ wchar_t* XMLProcessor::getElementContent(const wchar_t*      xml       ,
     
         // try to find "<tagName/>". If found it return empty string.
         wsprintf(openTag, TEXT("<%s/>"), tag);
-        p1 = wcsstr(xml, openTag);
+        p1 = wcsstr((wchar_t*)xml, openTag);
 
         if (p1 != NULL) {
             ret = new wchar_t[2];
@@ -222,7 +222,7 @@ wchar_t* XMLProcessor::getElementContent(const wchar_t*      xml       ,
         
         // try to find "<tagName"
         wsprintf(openTag, TEXT("<%s"), tag);
-        p1 = wcsstr(xml, openTag);
+        p1 = wcsstr((wchar_t*)xml, openTag);
 
         if (p1 == NULL) {
             goto finally;

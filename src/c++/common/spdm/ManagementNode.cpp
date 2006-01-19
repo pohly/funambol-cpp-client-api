@@ -67,7 +67,7 @@ int ManagementNode::setFullName(const wchar_t *fullname) {
     wchar_t* p;
 	int len;
 
-    p = wcsrchr(fullname, CHR('/'));
+    p = wcsrchr((wchar_t*)fullname, CHR('/'));
 
     if ( !p )
         return -1;

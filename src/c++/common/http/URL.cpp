@@ -120,7 +120,7 @@ void URL::setURL(const wchar_t* url) {
     //
     // protocol (mandatory)
     //
-    s = wcsstr(url, TEXT("://"));
+    s = wcsstr((wchar_t*)url, TEXT("://"));
     if ((s == NULL) || (s == url)) {
         return;
     }

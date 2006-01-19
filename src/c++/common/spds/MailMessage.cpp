@@ -342,10 +342,11 @@ static bool getBodyPart(StringBuffer &rfcBody, StringBuffer &boundary,
 void generateBoundary(StringBuffer& boundary)
 {
     wchar_t buf[40];
+	int i;
 
     *buf = '=';
     wmemset(buf+1, '-', 9);
-    for(int i=10; i<36; i++) {
+    for(i=10; i<36; i++) {
         buf[i] = '0' + rand() % 10;
     }
     buf[i]=0;

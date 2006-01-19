@@ -114,11 +114,11 @@ void settings() {
     setProperty(
         TEXT("Software/Funambol/examples/dummy/spds/syncml"),
         TEXT("syncUrl"),
-        TEXT("http://192.168.0.37:8080/sync4j/sync"));
+        TEXT("http://192.168.0.00:8080/funambol/ds"));
     setProperty(
         TEXT("Software/Funambol/examples/dummy/spds/syncml"),
         TEXT("serverName"),
-        TEXT("http://192.168.0.37:8080"));
+        TEXT("http://192.168.0.00:8080"));
     setProperty(
         TEXT("Software/Funambol/examples/dummy/spds/syncml"),
         TEXT("beginTimestamp"),
