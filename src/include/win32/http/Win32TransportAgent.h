@@ -16,6 +16,31 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
+
+/**
+
+ How to test SSL connections on Win32
+ -------------------------------------
+
+ On the server:
+ 1) create the keystore:
+    %JAVA_HOME%\bin\keytool -genkey -alias tomcat -keyalg RSA
+ 2) In $CATALINA_HOME/conf/server.xml uncomment the lines:
+    <Connector className="org.apache.catalina.connector.http.HttpConnector"
+               port="8443" minProcessors="5" maxProcessors="75"
+               enableLookups="true"
+               acceptCount="10" debug="0" scheme="https" secure="true">
+      <Factory className="org.apache.catalina.net.SSLServerSocketFactory" clientAuth="false" protocol="TLS"/>
+    </Connector>
+ 2) Export the certificate from the key store:
+    %JAVA_HOME%\bin\keytool -export -alias tomcat -file myroot.cer  
+
+ On the client:
+ 1) Connect (via https) to the server using a web-browser (type "https://<server_address>:8443)
+ 2) Accept and install the certificate sent from the server
+
+**/
+
 #ifndef INCL_WIN32_TRANSPORT_AGENT
     #define INCL_WIN32_TRANSPORT_AGENT
 
