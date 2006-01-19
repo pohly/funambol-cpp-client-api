@@ -136,6 +136,12 @@ class SyncMLBuilder {
         * increase the msgID counter
         */
         void increaseMsgRef() EXTRA_SECTION_01;
+        
+        /*
+        * reset MsgId counter
+        */
+        
+        void resetMessageID() EXTRA_SECTION_01;
 
     private:
 

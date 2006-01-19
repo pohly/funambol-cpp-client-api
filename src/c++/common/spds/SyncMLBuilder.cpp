@@ -649,3 +649,6 @@ void SyncMLBuilder::addMapItem(Map* map, MapItem* mapItem){
 
 }
 
+void SyncMLBuilder::resetMessageID() {
+    msgID = 0;
+}

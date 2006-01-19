@@ -18,13 +18,64 @@
 
 
 #include "base/fscapi.h"
+#include "base/Log.h"
+
+void TimeFormatter(SYSTEMTIME t, wchar_t* out);
 
 unsigned int time(void* unused) {
     SYSTEMTIME st;
-    FILETIME   ft;
-
+    
     GetSystemTime(&st);
-    SystemTimeToFileTime(&st, &ft);
+    
+    // year + month
+    int t = st.wYear + st.wMonth;
+    
+    wchar_t tttt[100];
+    TimeFormatter(st, tttt);
 
-    return ft.dwHighDateTime;
+    unsigned int l = wcstol(tttt, NULL, 10);
+    
+    l += l + t;
+    return l;
+    
+    wsprintf(tttt, TEXT("Low %u"), l);
+    LOG.debug(tttt);
+    
+}
+void TimeFormatter(SYSTEMTIME t, wchar_t* out) {
+            
+    wchar_t day   [10];
+    wchar_t hour  [10];
+    wchar_t minute[10];
+    wchar_t second[10];
+         
+    // day
+    if (t.wDay  < 10)
+        wsprintf(day, TEXT("0%i"), t.wDay);
+    else
+        wsprintf(day, TEXT("%i"), t.wDay);
+    
+    // hour
+    if (t.wHour  < 10)
+        wsprintf(hour, TEXT("0%i"), t.wHour);
+    else
+        wsprintf(hour, TEXT("%i"), t.wHour);
+
+    // minute
+    if (t.wMinute < 10)
+        wsprintf(minute, TEXT("0%i"), t.wMinute);
+    else
+        wsprintf(minute, TEXT("%i"), t.wMinute);
+
+    // second
+    if (t.wSecond < 10)
+        wsprintf(second, TEXT("0%i"), t.wSecond);
+    else
+        wsprintf(second, TEXT("%i"), t.wSecond);
+    
+    if (out == NULL)
+        out = new wchar_t[20];
+
+    wsprintf(out, TEXT("%s%s%s%s"), day, hour, minute, second);          
+        
 }

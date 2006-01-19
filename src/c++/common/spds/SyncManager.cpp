@@ -175,10 +175,9 @@ int SyncManager::prepareSync(SyncSource** s) {
 
     //
     syncMLBuilder.resetCommandID();
-
+    syncMLBuilder.resetMessageID();
     unsigned long timestamp = time(NULL);
-    config.getAccessConfig().setBeginSync(timestamp);
-    
+    config.getAccessConfig().setBeginSync(timestamp); 
     for (count = 0; count < sourcesNumber; count ++) {
         if (readSyncSourceDefinition(*sources[count]) == false) {
         ret = lastErrorCode = ERR_SOURCE_DEFINITION_NOT_FOUND;
@@ -772,17 +771,23 @@ int SyncManager::sync() {
                 ret = lastErrorCode;
                 goto finally;
             }               
+            
+            ret = syncMLProcessor.processSyncHdrStatus(syncml);
 
+            if (isErrorStatus(ret)) {
+                ret = lastErrorCode;
+                wsprintf(lastErrorMsg, TEXT("Error: error code %i"), ret);
+                LOG.debug(lastErrorMsg);
+                goto finally;
+
+            }
+            ret = 0;
             // 
             // Process the status of the item sent by client. It invokes the 
             // source method 
             //
             syncMLProcessor.processItemStatus(*sources[count], syncml->getSyncBody());
-
-            if (ret) {
-                ret = lastErrorCode;
-                goto finally;
-            }
+            
 
             // deleteSyncML(&syncml);
 
