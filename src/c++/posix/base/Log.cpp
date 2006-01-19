@@ -28,6 +28,9 @@ char logmsg[512];
 static FILE* logFile = NULL;
 static BOOL logFileStdout = FALSE;
 
+// a copy of stderr before it was redirected
+static int fderr = -1;
+
 void setLogFile(const char* configLogFile, BOOL redirectStderr) {
     if (logFile) {
         fclose(logFile);
@@ -44,8 +47,19 @@ void setLogFile(const char* configLogFile, BOOL redirectStderr) {
     }
 
     if (redirectStderr) {
-        close(2);
+        if (fderr == -1) {
+            // remember original stderr
+            fderr = dup(2);
+        } else {
+            // close redirected stderr
+            close(2);
+        }
         dup2(fileno(logFile), 2);
+    } else {
+        if (fderr != -1) {
+            // restore original stderr
+            dup2(fderr, 2);
+        }
     }
 }
 
