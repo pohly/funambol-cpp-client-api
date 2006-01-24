@@ -35,6 +35,7 @@
 #define SUBJECT     TEXT("Subject: ")
 #define MIMETYPE    TEXT("Content-Type: ")
 #define MIMEVERS    TEXT("Mime-Version: ")
+#define MESSAGEID   TEXT("Message-ID: ")
 #define DISPOSITION TEXT("Content-Disposition:")
 #define ENCODING    TEXT("Content-Transfer-Encoding: ")
 
@@ -50,6 +51,7 @@ static const unsigned char DATE_LEN  = wcslen(DATE);
 static const unsigned char SUBJECT_LEN = wcslen(SUBJECT);
 static const unsigned char MIMETYPE_LEN = wcslen(MIMETYPE);
 static const unsigned char MIMEVERS_LEN = wcslen(MIMEVERS);
+static const unsigned char MESSAGEID_LEN = wcslen(MESSAGEID);
 static const unsigned char DISPOSITION_LEN = wcslen(DISPOSITION);
 static const unsigned char ENCODING_LEN = wcslen(ENCODING);
 
@@ -98,24 +100,25 @@ void MailMessage::setSubject(const wchar_t *subj) { subject = subj; }
 const BasicTime& MailMessage::getDate() const { return date; }
 void MailMessage::setDate(const BasicTime& v) { date = v; }
 
+const wchar_t * MailMessage::getContentType() const { return contentType; }
+void MailMessage::setContentType(const wchar_t *val) { contentType = val; }
 
-const wchar_t * MailMessage::getContentType() const { return contentType; };
-void MailMessage::setContentType(const wchar_t *val) { contentType = val; };
+const wchar_t * MailMessage::getBoundary() const { return boundary; }
+void MailMessage::setBoundary(const wchar_t *val) { boundary = val; }
 
-const wchar_t * MailMessage::getBoundary() const { return boundary; };
-void MailMessage::setBoundary(const wchar_t *val) { boundary = val; };
+const wchar_t * MailMessage::getMimeVersion() const { return mimeVersion; }
+void MailMessage::setMimeVersion(const wchar_t *val) { mimeVersion = val; }
 
-const wchar_t * MailMessage::getMimeVersion() const { return mimeVersion; };
-void MailMessage::setMimeVersion(const wchar_t *val) { mimeVersion = val; };
-
-
+const wchar_t * MailMessage::getMessageId() const { return messageId; }
+void MailMessage::setMessageId(const wchar_t *val) { messageId = val; }
+        
 const wchar_t* MailMessage::getEntryID() { return entryId.c_str(); }
 void MailMessage::setEntryID(const wchar_t* id) { entryId = id; }
 
 //wchar_t* setSubjectPrefix
 //void setSenderName
 //long setMessageSize
-
+/*
 time_t MailMessage::getLastModificationTime () {
 	return lastModificationTime;
 }
@@ -123,7 +126,9 @@ time_t MailMessage::getLastModificationTime () {
 void MailMessage::setLastModificationTime (time_t time) {
 	lastModificationTime = time;
 } 
-        
+  
+*/
+
 BodyPart & MailMessage::getBody() { return body; }
 void MailMessage::setBody(BodyPart &body) { this->body = body; }
 
@@ -353,6 +358,9 @@ void generateBoundary(StringBuffer& boundary)
     boundary = buf;
 }
 
+/**
+ * Format a mailmessage in a RFC2822 string
+ */
 wchar_t * MailMessage::format() {
 
     StringBuffer ret;
@@ -380,6 +388,7 @@ wchar_t * MailMessage::format() {
     ret.join((ArrayList &)headers, NL);
     // Add parsed headers
     ret += MIMEVERS; ret += mimeVersion; ret += NL;
+    ret += MESSAGEID; ret += messageId; ret += NL;
     ret += FROM; ret += from; ret += NL;
     ret += TO; ret += to; ret += NL;
     if (cc.length() ) {
@@ -520,6 +529,8 @@ int MailMessage::parseHeaders(StringBuffer &rfcHeaders) {
             body.setEncoding(line->substr(ENCODING_LEN));
         else if(line->ifind(MIMEVERS) == 0 )
             mimeVersion = line->substr(MIMEVERS_LEN);
+        else if(line->ifind(MESSAGEID) == 0 )
+            mimeVersion = line->substr(MESSAGEID_LEN);
         else
             if( line->ifind(MIMETYPE) == 0 ) {
                 size_t len = line->find(TEXT(";")) - MIMETYPE_LEN ;

@@ -52,13 +52,14 @@ class MailMessage : public ArrayElement {
         StringBuffer contentType;
         StringBuffer boundary;
         StringBuffer mimeVersion;
+        StringBuffer messageId;
 
         ArrayList headers;
 
 		// can be used by the client to store an internal msg id
 		StringBuffer entryId;
-        
-		time_t lastModificationTime;
+        //
+		//time_t lastModificationTime;
 
         BodyPart body;
         //BodyPart *alternate;
@@ -101,6 +102,9 @@ class MailMessage : public ArrayElement {
         const wchar_t * getMimeVersion() const ;
         void setMimeVersion(const wchar_t *val);
         
+        const wchar_t * getMessageId() const ;
+        void setMessageId(const wchar_t *val);
+        
 		const wchar_t* getEntryID();
 		void setEntryID(const wchar_t* id);
 
@@ -108,8 +112,8 @@ class MailMessage : public ArrayElement {
 		//void setSenderName
 		//long setMessageSize
 
-		time_t getLastModificationTime ();
-	    void setLastModificationTime (time_t time);
+//		time_t getLastModificationTime ();
+//	    void setLastModificationTime (time_t time);
 //        int addHeader(const wchar_t *name, const wchar_t *content);
         
         // Body

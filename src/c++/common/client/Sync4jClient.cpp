@@ -116,18 +116,25 @@ int Sync4jClient::sync(SyncSource** sources) {
     if (!syncManager)
         return -1;
 
-    if ((ret = syncManager->prepareSync(sources))) { 
-        LOG.error(TEXT("ERROR prepareSync"));
+    if ((ret = syncManager->prepareSync(sources))) {
+        wchar_t dbg[256];
+        wsprintf(dbg, TEXT("ERROR prepareSync: %s"), lastErrorMsg);
+        LOG.error(dbg);
+        
         goto finally;
     }
        
     if ((ret = syncManager->sync())) {   
-        LOG.error(TEXT("ERROR sync"));
+        wchar_t dbg[256];
+        wsprintf(dbg, TEXT("ERROR sync: %s"), lastErrorMsg);
+        LOG.error(dbg);
         goto finally;
     }
 
     if ((ret = syncManager->endSync())) {       
-        LOG.error(TEXT("ERROR endSync"));
+        wchar_t dbg[256];
+        wsprintf(dbg, TEXT("ERROR endSync: %s"), lastErrorMsg);
+        LOG.error(dbg);
         goto finally;
     }
 
@@ -145,7 +152,7 @@ finally:
 }
 
 
-
+#if 0
 /*
  * Used to start the sync process. The argument is an array of SyncSource
  * that have to be synched
@@ -166,3 +173,5 @@ int Sync4jClient::sync(ArrayList& sources) {
 
     return sync(array);
 }
+
+#endif
