@@ -72,6 +72,7 @@ class SyncManager {
         int  sourcesNumber;
         int  count;
         
+		ArrayList** allItemsList;
         
         wchar_t syncURL [512];
         wchar_t deviceId[32];  

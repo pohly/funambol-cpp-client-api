@@ -31,8 +31,12 @@ SyncMode syncModeCode(const wchar_t* syncMode) {
         return SYNC_TWO_WAY;
     else if (wcscmp(syncMode,TEXT("one-way")) == 0)
         return SYNC_ONE_WAY_FROM_SERVER;
-    else if (wcscmp(syncMode,TEXT("refresh")) == 0)
+	else if (wcscmp(syncMode,TEXT("refresh")) == 0)
         return SYNC_REFRESH_FROM_SERVER;
+    else if (wcscmp(syncMode,TEXT("refresh-server")) == 0)
+        return SYNC_REFRESH_FROM_SERVER;
+    else if (wcscmp(syncMode,TEXT("refresh-client")) == 0)
+        return SYNC_REFRESH_FROM_CLIENT;
     //--------- Funambol extension --------------------
     else if (wcscmp(syncMode, TEXT("addrchange")) == 0)
         return SYNC_ADDR_CHANGE_NOTIFICATION;

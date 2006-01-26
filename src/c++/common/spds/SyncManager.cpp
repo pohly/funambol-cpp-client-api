@@ -177,7 +177,7 @@ int SyncManager::prepareSync(SyncSource** s) {
     syncMLBuilder.resetCommandID();
     syncMLBuilder.resetMessageID();
     unsigned long timestamp = time(NULL);
-    config.getAccessConfig().setBeginSync(timestamp); 
+    config.getAccessConfig().setBeginSync(timestamp);
     for (count = 0; count < sourcesNumber; count ++) {
         if (readSyncSourceDefinition(*sources[count]) == false) {
         ret = lastErrorCode = ERR_SOURCE_DEFINITION_NOT_FOUND;
@@ -437,7 +437,7 @@ int SyncManager::prepareSync(SyncSource** s) {
         ret = -1;
         goto finally;
     }
-    
+
     currentState = STATE_PKG1_SENT;
     
 // ---------------------------------------------------------------------------------------
@@ -479,6 +479,9 @@ int SyncManager::sync() {
     BOOL last            = FALSE;
     ArrayList* list      = new ArrayList();
 
+	//for refresh from server sync
+	allItemsList = new ArrayList*[sourcesNumber];
+
     //
     // If this is the first message, currentState is STATE_PKG1_SENT,
     // otherwise it is already in STATE_PKG3_SENDING.
@@ -489,6 +492,7 @@ int SyncManager::sync() {
 
     // The real number of source to sync
     for (count = 0; count < sourcesNumber; count ++) {
+		allItemsList[count] = NULL;
         if (!check[count])
             continue;
         toSync++;
@@ -577,13 +581,58 @@ int SyncManager::sync() {
                 }; break;
 
                 case SYNC_REFRESH_FROM_SERVER:
-                    last = TRUE;
+                    last = TRUE; 
+					
+					allItemsList[count] = new ArrayList();
+					sItem = sources[count]->getFirstItem();
+					if(sItem)
+						allItemsList[count]->add((ArrayElement&)*sItem);
+					sItem = sources[count]->getNextItem();
+					while(sItem) {
+						allItemsList[count]->add((ArrayElement&)*sItem);
+						sItem = sources[count]->getNextItem();	
+					}
+
                     break;
 
                 case SYNC_ONE_WAY_FROM_SERVER:
                     last = TRUE;
                     break;
 
+				case SYNC_REFRESH_FROM_CLIENT: {   
+                    sItem = NULL;
+                    if (tot == 0) {                    
+                        sItem = sources[count]->getFirstItem();                        
+                        if (sItem) {
+                            syncItem = (SyncItem*)sItem->clone();
+                        }
+                    }
+                    tot = 0;
+                    do {
+                        if (syncItem == NULL) {
+                            sItem = sources[count]->getNextItem();
+                            if (sItem)
+                                syncItem = (SyncItem*)sItem->clone();                     
+                        }
+                        if (modificationCommand == NULL) {
+                            modificationCommand = syncMLBuilder.prepareModificationCommand(REPLACE_COMMAND_NAME, 
+                                    syncItem, sources[count]->getType());
+                        } else {
+                            syncMLBuilder.addItem(modificationCommand, REPLACE_COMMAND_NAME, syncItem, 
+                                    sources[count]->getType());
+                        }
+
+                        if (syncItem) {
+                            delete syncItem; syncItem = NULL;// the item is only the pointer not another instance. to save mem                        
+                        }
+                        else {
+                            last = TRUE;
+                            break;
+                        }
+                        tot++;
+                        sItem = NULL;
+                    } while( tot < maxModPerMsg);                                                    
+                }; break;
 
                 default: {    
                     tot = 0;
@@ -771,7 +820,7 @@ int SyncManager::sync() {
                 ret = lastErrorCode;
                 goto finally;
             }               
-            
+
             ret = syncMLProcessor.processSyncHdrStatus(syncml);
 
             if (isErrorStatus(ret)) {
@@ -787,7 +836,7 @@ int SyncManager::sync() {
             // source method 
             //
             syncMLProcessor.processItemStatus(*sources[count], syncml->getSyncBody());
-            
+
 
             // deleteSyncML(&syncml);
 
@@ -1126,8 +1175,19 @@ int SyncManager::endSync() {
         if (!check[count])
             continue;
         commitChanges(*sources[count]);
-    }
+		
+		if(allItemsList[count]) {
+			int size = allItemsList[count]->size();
+			for(int i = 0; i < size; i++) {
+				SyncItem* syncItem = (SyncItem*)((SyncItem*)allItemsList[count]->get(i));
+				sources[count]->deleteItem(*syncItem);
+				delete syncItem;
+			}
+			delete allItemsList[count];
+		}
 
+	}
+	
     config.getAccessConfig().setEndSync(time(NULL));
     safeDelete(&responseMsg);
     safeDelete(&mapMsg);
