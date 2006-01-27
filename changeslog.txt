@@ -1,5 +1,13 @@
 Funambol C++ API 
 -----------------   
 2006-01-13
-  - gazza: new release 3.0.0
+  - gazza: new release 3.0.1
+
+2006-01-18
+  - magi: UI bugfix
+  - gazza: e-mail attachment fix
+
+2006-01-27
+  - magi: new polling process
+  - gazza: new notification listener
 

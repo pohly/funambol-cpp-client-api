@@ -225,9 +225,6 @@ int convertAndSave(const wchar_t *filename,
         buf = wc2utf8(s);
         len = strlen(buf);
     }
-#ifdef DEBUG
-    saveFile("/allegato.txt", buf, len, binary);
-#endif
     saveFile(name, buf, len, binary);
     delete [] buf;
     delete [] name;

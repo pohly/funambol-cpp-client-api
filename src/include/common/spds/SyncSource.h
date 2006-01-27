@@ -162,15 +162,29 @@ public:
         
     virtual void setItemStatus(const wchar_t* key, int status) = 0 EXTRA_SECTION_01;
     /*
+     * Return the key of the first SyncItem of all.
+     * It is used in case of refresh sync 
+     * and retrieve all the keys of the data source.
+     */
+//    virtual SyncItem* getFirstItemKey() = 0 EXTRA_SECTION_01;
+
+    /*
+     * Return the key of the next SyncItem of all.
+     * It is used in case of refresh sync 
+     * and retrieve all the keys of the data source.
+     */
+//    virtual SyncItem* getNextItemKey() = 0 EXTRA_SECTION_01;
+
+    /*
      * Return the first SyncItem of all.
-     * It is used in case of slow or refresh sync 
+     * It is used in case of slow sync
      * and retrieve the entire data source content.
      */
     virtual SyncItem* getFirstItem() = 0 EXTRA_SECTION_01;
 
     /*
      * Return the next SyncItem of all.
-     * It is used in case of slow or refresh sync 
+     * It is used in case of slow sync
      * and retrieve the entire data source content.
      */
     virtual SyncItem* getNextItem() = 0 EXTRA_SECTION_01;
