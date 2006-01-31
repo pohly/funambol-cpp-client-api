@@ -582,16 +582,19 @@ int SyncManager::sync() {
 
                 case SYNC_REFRESH_FROM_SERVER:
                     last = TRUE; 
-					
-					allItemsList[count] = new ArrayList();
-					sItem = sources[count]->getFirstItem();
-					if(sItem)
-						allItemsList[count]->add((ArrayElement&)*sItem);
-					sItem = sources[count]->getNextItem();
-					while(sItem) {
-						allItemsList[count]->add((ArrayElement&)*sItem);
-						sItem = sources[count]->getNextItem();	
-					}
+				    
+				    allItemsList[count] = new ArrayList();
+				    sItem = sources[count]->getFirstItemKey();
+                    if(sItem) {
+					    allItemsList[count]->add((ArrayElement&)*sItem);
+                        delete sItem;
+                    }
+				    sItem = sources[count]->getNextItemKey();
+				    while(sItem) {
+				        allItemsList[count]->add((ArrayElement&)*sItem);
+                        delete sItem;
+				        sItem = sources[count]->getNextItemKey();	
+				    } 
 
                     break;
 
@@ -985,6 +988,19 @@ int SyncManager::sync() {
                         if (code >= 200 && code <= 299) {
                             syncMap = new SyncMap((wchar_t*)item->getSource()->getLocURI(), syncItem.getKey()); 
                             mappings[count]->add(*syncMap);
+                            
+                            //for refresh sync from server; delete from list the items that were already on device
+                            if(allItemsList[count]) {
+			                    int size = allItemsList[count]->size();
+			                    for(int i = 0; i < size; i++) {
+				                    SyncItem* syncItemRefresh = (SyncItem*)((SyncItem*)allItemsList[count]->get(i));
+                                    if(syncItemRefresh->getKey() == syncItem.getKey()) {
+				                        allItemsList[count]->remove(i); 
+				                        delete syncItemRefresh;
+                                    }
+			                    }
+                            }
+
                             delete syncMap; syncMap = NULL;
                         }                    
                     }
@@ -1165,7 +1181,19 @@ int SyncManager::endSync() {
                 goto finally;
             }
 
-        } while(!last);                
+        } while(!last);           
+            
+        if(allItemsList[count]) {
+			int size = allItemsList[count]->size();
+			for(int i = 0; i < size; i++) {
+				SyncItem* syncItem = (SyncItem*)((SyncItem*)allItemsList[count]->get(i));
+                if(syncItem) {
+				    sources[count]->deleteItem(*syncItem);
+				    delete syncItem;
+                }
+			}
+        }
+
         sources[count]->endSync();
     }         
             
@@ -1175,17 +1203,6 @@ int SyncManager::endSync() {
         if (!check[count])
             continue;
         commitChanges(*sources[count]);
-		
-		if(allItemsList[count]) {
-			int size = allItemsList[count]->size();
-			for(int i = 0; i < size; i++) {
-				SyncItem* syncItem = (SyncItem*)((SyncItem*)allItemsList[count]->get(i));
-				sources[count]->deleteItem(*syncItem);
-				delete syncItem;
-			}
-			delete allItemsList[count];
-		}
-
 	}
 	
     config.getAccessConfig().setEndSync(time(NULL));

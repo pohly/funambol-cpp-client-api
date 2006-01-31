@@ -166,14 +166,14 @@ public:
      * It is used in case of refresh sync 
      * and retrieve all the keys of the data source.
      */
-//    virtual SyncItem* getFirstItemKey() = 0 EXTRA_SECTION_01;
+    virtual SyncItem* getFirstItemKey() = 0 EXTRA_SECTION_01;
 
     /*
      * Return the key of the next SyncItem of all.
      * It is used in case of refresh sync 
      * and retrieve all the keys of the data source.
      */
-//    virtual SyncItem* getNextItemKey() = 0 EXTRA_SECTION_01;
+    virtual SyncItem* getNextItemKey() = 0 EXTRA_SECTION_01;
 
     /*
      * Return the first SyncItem of all.
