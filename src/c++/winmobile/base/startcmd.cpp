@@ -36,9 +36,14 @@ const wchar_t *getProgramPath()
     return path;
 }
 
-BOOL startcmd(const wchar_t *app, const wchar_t *cmdline) 
+/**
+ * Start a command in a new process and return the pid
+ * or 0 in cas of error.
+ */
+unsigned long startcmd(const wchar_t *app, const wchar_t *cmdline) 
 {
     const wchar_t *path = getProgramPath();
+    PROCESS_INFORMATION procinfo;
     
     wchar_t *cmd = new wchar_t[wcslen(path)+wcslen(app)+5];
     wsprintf(cmd, TEXT("%s/%s"), path, app);
@@ -46,8 +51,30 @@ BOOL startcmd(const wchar_t *app, const wchar_t *cmdline)
     wchar_t dbg[200];
     wsprintf(dbg, L"Running: %s %s\n", cmd, cmdline);
     LOG.error(dbg);
-    return CreateProcess( cmd, cmdline, 
-                            NULL, NULL, FALSE, 0,
-                            NULL, NULL, NULL, NULL );
+    if( CreateProcess( cmd, cmdline, 
+                       NULL, NULL, FALSE, 0,
+                       NULL, NULL, NULL, &procinfo ) ) {
+        return procinfo.dwProcessId; 
+    }
+    else
+        return 0;
 }
 
+/*
+ * Return 0: process terminated
+ *        1: timeout
+ *       -1: no such process/invalid handle
+ */
+int waitProcess(unsigned long pid, time_t timeout)
+{
+    HANDLE phandle = OpenProcess( 0, FALSE, pid );
+
+    if (phandle) {
+        switch ( WaitForSingleObject( phandle, timeout ) ) {
+            case WAIT_TIMEOUT:   return 1; break;
+            case WAIT_OBJECT_0:  return 0; break;
+            default:             return -1;
+        }
+    }
+    return -1;
+}

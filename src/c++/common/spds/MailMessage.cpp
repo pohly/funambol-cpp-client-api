@@ -530,7 +530,7 @@ int MailMessage::parseHeaders(StringBuffer &rfcHeaders) {
         else if(line->ifind(MIMEVERS) == 0 )
             mimeVersion = line->substr(MIMEVERS_LEN);
         else if(line->ifind(MESSAGEID) == 0 )
-            mimeVersion = line->substr(MESSAGEID_LEN);
+            messageId = line->substr(MESSAGEID_LEN);
         else
             if( line->ifind(MIMETYPE) == 0 ) {
                 size_t len = line->find(TEXT(";")) - MIMETYPE_LEN ;

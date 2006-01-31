@@ -25,7 +25,8 @@
 #define SYNCAPP TEXT("startsync.exe")
 
 const wchar_t *getProgramPath();
-BOOL startcmd(const wchar_t *app, const wchar_t *cmdline) ;
+unsigned long startcmd(const wchar_t *app, const wchar_t *cmdline) ;
+int waitProcess(unsigned long pid, time_t timeout);
 
 #endif
 
