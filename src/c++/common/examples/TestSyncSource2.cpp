@@ -221,3 +221,10 @@ int TestSyncSource2::endSync() {
     return 0;
 }
 
+SyncItem* TestSyncSource2::getFirstItemKey() {
+    return NULL;
+}
+    
+SyncItem* TestSyncSource2::getNextItemKey() {
+    return NULL;
+}
