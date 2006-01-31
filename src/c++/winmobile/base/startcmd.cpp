@@ -61,9 +61,11 @@ unsigned long startcmd(const wchar_t *app, const wchar_t *cmdline)
 }
 
 /*
- * Return 0: process terminated
- *        1: timeout
+ * Return 0: process terminated successfully
+ *        >0: error code from child process    
  *       -1: no such process/invalid handle
+ *       -2: timeout
+ *       -3: can't get child exit code
  */
 int waitProcess(unsigned long pid, time_t timeout)
 {
@@ -71,9 +73,18 @@ int waitProcess(unsigned long pid, time_t timeout)
 
     if (phandle) {
         switch ( WaitForSingleObject( phandle, timeout ) ) {
-            case WAIT_TIMEOUT:   return 1; break;
-            case WAIT_OBJECT_0:  return 0; break;
-            default:             return -1;
+            case WAIT_TIMEOUT:
+                return -2;
+                break;
+            case WAIT_OBJECT_0:
+                DWORD exitcode;
+                if ( GetExitCodeProcess(phandle, &exitcode) )
+                    return exitcode;
+                else
+                    return -3;
+                break;
+            default:
+                return -1;
         }
     }
     return -1;
