@@ -17,7 +17,7 @@ Windows Registry Editor Version 5.00
 "sync"="two-way"
 "type"="plain/text"
 "syncModes"="slow,two-way"
-"uri"="./briefcase"
+"uri"="briefcase"
 
 [HKEY_LOCAL_MACHINE\SOFTWARE\Funambol\examples\dummy\spds\sources\contact]
 "name"="contact"
@@ -25,16 +25,16 @@ Windows Registry Editor Version 5.00
 "sync"="two-way"
 "type"="plain/text"
 "syncModes"="slow,two-way"
-"uri"="./contact"
+"uri"="scard"
 
 [HKEY_LOCAL_MACHINE\SOFTWARE\Funambol\examples\dummy\spds\syncml]
 "deviceId"="sc-pim-outlook"
 "username"="guest"
 "password"="guest"
 "serverName"="http://localhost:8080"
-"syncUrl"="http://localhost:8080/sync4j/sync"
-"begin"="1132734032"
-"end"="1132734207"
+"syncUrl"="http://localhost:8080/funambol/ds"
+"begin"="0"
+"end"="0"
 "firstTimeSyncMode"="0"
 "useProxy"="F"
 "proxyHost"=""
@@ -45,6 +45,6 @@ Windows Registry Editor Version 5.00
 "isServerAuthRequired"="F"
 "clientAuthType"="syncml:auth-basic"
 "serverAuthType"="syncml:auth-basic"
-"maxMsgSize"="12288"
+"maxMsgSize"="1228800"
 "maxModPerMsg"="3"
 
