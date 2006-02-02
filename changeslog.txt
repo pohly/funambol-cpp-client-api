@@ -1,4 +1,4 @@
-Funambol SDK C++ 3.0.5
+Funambol SDK C++ 3.0.6
 -------------------------   
 2006-02-02
   - minor fixes
