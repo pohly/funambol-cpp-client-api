@@ -1,0 +1,110 @@
+<?html version="1.0" enconding="UTF-8"?>
+
+<!-- $Id: build.xml,v 1.1 2006-02-02 18:18:53 gazza Exp $
+=============================================================================
+Forge file for Funambol C++ API
+
+=============================================================================
+-->
+
+<project basedir="." default="all" name="Funambol SDK C++ ">
+
+    <!--
+    ========================================================================
+      Setting variable
+    ========================================================================
+    -->
+    <target name="init">
+
+        <property file="release.properties"/>
+
+        <property name="package.name" value="funambol-c++-api-${release.major}.${release.minor}.${build.number}"/>
+        <property name="dir.forge" value="output/${package.name}"/>
+
+        <property file="${user.home}/api-native-build.properties"/>
+        <property file="api-native-build.properties"/>
+
+    </target>
+
+    <!--
+    ========================================================================
+      ALL
+    ========================================================================
+    -->
+    <target name="all" depends="clean, mkdirs, build, checkout, forge"/>
+    
+    <target name="no-checkout" depends="clean, mkdirs, build, forge"/>
+
+    <!--
+    ========================================================================
+      MKMDIRS
+    ========================================================================
+    -->
+    <target name="mkdirs" depends="init">
+      <mkdir dir="${dir.forge}"/>
+    </target>
+     
+    <!--
+    ========================================================================
+      BUILD
+    ========================================================================
+    -->
+    <target name="build" depends="init">
+        <propertyfile file = "release.properties"
+                      comment = "Funambol C++ Client API version file" >
+            <entry key="build.date"   type="date" value="now" pattern="yyyyMMdd"/>
+            <!--entry key="build.number" type="int"  operation = "+" default="1"   /-->
+        </propertyfile>
+
+        <!-- Load release.propeties -->
+        <property file="release.properties"/>
+
+        <echo message="Build release: ${release.major}.${release.minor}.${build.number}" />
+    </target>
+    
+    <!--
+    ========================================================================
+      CHECKOUT
+    ========================================================================
+    -->
+    <target name="checkout" depends="init">
+      <echo message="Extracting ${cppapi.modulename}.${cppapi.tag}..."/>
+      <echo message="cvs -z3 -d${cvsroot} export -r ${cppapi.tag} ${cppapi.modulename}"/>
+      <exec dir="output" executable="cvs">
+        <arg line="-z3 -d${cvsroot} export -r ${cppapi.tag} ${cppapi.modulename}"/>
+      </exec>
+    </target>
+
+    <!--
+    ========================================================================
+      FORGE
+    ========================================================================
+    -->
+    <target name="forge" depends="init">
+
+      <!--
+          Copy all stuffs.
+          Note that only public include files are released.
+      -->
+      <copy todir="${dir.forge}/Funambol/sdk/c++">
+        <fileset dir="output/${cppapi.modulename}" includes="**/*" excludes="**/CVS"/>
+      </copy>
+      <!--
+          Zip up everything
+      -->
+      <zip destfile="output/${package.name}.zip">
+        <fileset dir="${dir.forge}" includes="**/*" excludes="**/CVS"/>
+      </zip>
+    </target>
+
+
+    <!--
+    ========================================================================
+    CLEAN
+    ========================================================================
+    -->
+    <target name="clean" depends="init">
+      <delete dir="output"/>
+    </target>
+
+</project>
