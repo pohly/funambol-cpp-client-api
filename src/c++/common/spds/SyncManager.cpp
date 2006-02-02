@@ -358,7 +358,7 @@ int SyncManager::prepareSync(SyncSource** s) {
                     if (wcscmp(credentialHandler.getServerAuthType(NULL), AUTH_TYPE_MD5) == 0 || serverAuthRetries == 1) {
                         serverChal   = credentialHandler.getServerChal(isServerAuthenticated);
                         authStatusCode = 401;                        
-                        ;
+                        
                     } else {
                         ret = -1;
                         goto finally;
@@ -405,7 +405,7 @@ int SyncManager::prepareSync(SyncSource** s) {
                     credentialHandler.setClientNonce(clientChal->getNextNonce()->getValueAsBase64());
                  
                 } else {
-                    ret = -1;
+                    ret = 401;
                     goto finally;
                 }                                    
             }
