@@ -5,7 +5,11 @@ Funambol SDK C++ 3.0.6
       
 
 Funambol SDK C++ 3.0.0
+    
+    new major release
 -------------------------   
+
+
 2005-12-13
   - magi: added sourceParent and targetParent into SyncItem, SyncManager, Parser and Formatter
 
