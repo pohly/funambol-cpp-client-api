@@ -290,7 +290,9 @@ static bool getBodyPart(StringBuffer &rfcBody, StringBuffer &boundary,
            ret.setDisposition(line->substr(DISPOSITION_LEN));
         else if( line->ifind(ENCODING) == 0 )
            ret.setEncoding(line->substr(ENCODING_LEN));
-        else if( line->ifind(TEXT("filename=")) != StringBuffer::npos ) {
+
+        // These ones are parameters, and can appear on the same line.
+        if( line->ifind(TEXT("filename=")) != StringBuffer::npos ) {
 			size_t begin = line->find(TEXT("=\"")) + 2 ;
 			size_t end = line->find(TEXT("\""), begin) ;
 			ret.setFilename( line->substr(begin, end-begin) );
@@ -303,6 +305,7 @@ static bool getBodyPart(StringBuffer &rfcBody, StringBuffer &boundary,
                 ret.setCharset( line->substr( begin, end-begin ) );
             }
 		}
+
     }
     // move to the beginning of the content
     hdrlen += wcslen(newline);
@@ -539,8 +542,8 @@ int MailMessage::parseHeaders(StringBuffer &rfcHeaders) {
         else
             unknown=true;
 
-        // These one are parameters, and can appear on the same line.
-        // FIXME: Should be a sub-parsing of charset.
+        // These ones are parameters, and can appear on the same line.
+        // FIXME: Should be a sub-parsing of content-type.
         if( line->ifind(TEXT("boundary=")) != StringBuffer::npos ) {
 			size_t begin = line->find(TEXT("=\"")) + 2 ;
 			size_t end = line->find(TEXT("\""), begin) ;

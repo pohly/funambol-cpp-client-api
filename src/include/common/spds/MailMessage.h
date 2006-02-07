@@ -108,14 +108,6 @@ class MailMessage : public ArrayElement {
 		const wchar_t* getEntryID();
 		void setEntryID(const wchar_t* id);
 
-        //wchar_t* setSubjectPrefix
-		//void setSenderName
-		//long setMessageSize
-
-//		time_t getLastModificationTime ();
-//	    void setLastModificationTime (time_t time);
-//        int addHeader(const wchar_t *name, const wchar_t *content);
-        
         // Body
 		BodyPart & getBody();
 		void setBody(BodyPart &body);
