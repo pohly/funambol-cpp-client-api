@@ -497,6 +497,7 @@ int MailMessage::parse(const wchar_t *rfc2822, size_t len) {
 
 //---------------------------------------------------------- Private Methods
 int MailMessage::parseHeaders(StringBuffer &rfcHeaders) {
+
     ArrayList lines;
     const StringBuffer *line;
     
@@ -524,8 +525,12 @@ int MailMessage::parseHeaders(StringBuffer &rfcHeaders) {
             cc = line->substr(CC_LEN);
         else if( line->ifind(BCC) == 0 )
             bcc = line->substr(BCC_LEN);
-        else if ( line->ifind(DATE) == 0 )
-            date.parseRfc822( line->substr(DATE_LEN) );
+        else if ( line->ifind(DATE) == 0 ) {
+            if( date.parseRfc822(line->substr(DATE_LEN)) ) {
+                LOG.error(TEXT("Error parsing date"));
+                return 500;
+            }
+        }
         else if( line->ifind(SUBJECT) == 0 )
             subject = line->substr(SUBJECT_LEN);
         else if( line->ifind(ENCODING) == 0 )   // it is here for single part only

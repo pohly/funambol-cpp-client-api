@@ -30,6 +30,12 @@ BasicTime::BasicTime() {
     tzMin = 0;
 }
 
+int BasicTime::set(int yy, int mon, int dd, int wd,
+                   int hh, int mm, int ss, int tzh, int tzm)
+{
+    //  TODO
+    return 0;
+}
 
 /**
  * Parse the date in RF 822 format
@@ -86,25 +92,40 @@ int BasicTime::parseRfc822(const wchar_t *date)
 	wchar_t mon[4] = TEXT("---");
 	wchar_t time[10] = TEXT("00:00:00");
 	wchar_t timeZone[20] = TEXT("GMT");
+
+    int ret;
     
+    // Wed Feb 01 14:40:45 Europe/Amsterdam 2006
 	// do we have day of week?
     wchar_t *pdate = wcsstr( date, TEXT(",") );
 	if ( pdate == 0 ) {
-		swscanf(pdate, L"%d %ls %d %ls %ls",
+		ret=swscanf(date, TEXT("%d %ls %d %ls %ls"),
             &day, month, &year, time, timeZone);
     }
 	else {
-		swscanf(pdate, L"%ls %d %ls %d %ls %ls",
+		ret=swscanf(date, TEXT("%ls %d %ls %d %ls %ls"),
             dayOfWeek, &day, mon, &year, time, timeZone);
+    }
+    // Trap parsing error
+    if(ret == EOF || ret == 0){
+        return -1;
+    }
+    if (year > 3000 || day < 0 || day > 31){
+        *this = BasicTime();
+        return -1;
     }
 
     // Get month
-	for (int i = 0; i < 12; i++) {
+    int i;
+	for (i = 0; i < 12; i++) {
 		if ( wcscmp(months[i], mon) == 0 ) {
             month = i+1;
 			break;
         }
 	}
+    // Trap parsing error
+    if (i==13)
+        return -1;
 
 	// Year ---------------------------------
 	if (year < 100) year += 1900;
@@ -181,3 +202,32 @@ wchar_t *BasicTime::formatRfc822() const {
 ArrayElement *BasicTime::clone() {
     return new BasicTime(*this);
 };
+
+BasicTime& BasicTime::operator=(const BasicTime& o) {
+    year = o.year;
+    month = o.month;
+    day = o.day;
+    weekday = o.weekday;
+    hour = o.hour;
+    min = o.min;
+    sec = o.sec;
+    tzHour = o.tzHour;
+    tzMin = o.tzMin;
+    
+    return *this;
+}
+
+bool BasicTime::operator==(const BasicTime& o) const {
+    return (
+        year == o.year &&
+        month == o.month &&
+        day == o.day &&
+        weekday == o.weekday &&
+        hour == o.hour &&
+        min == o.min &&
+        sec == o.sec &&
+        tzHour == o.tzHour &&
+        tzMin == o.tzMin
+    );
+}
+

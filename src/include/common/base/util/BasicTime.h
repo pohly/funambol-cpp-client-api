@@ -72,10 +72,17 @@ class BasicTime : public ArrayElement {
 
     // ----------------------------------------------------- Public Methods
 
+    int set(int yy, int mon, int dd, int wd,
+            int hh, int mm, int ss, int tzh, int tzm);
+            
     int parseRfc822(const wchar_t *date);
     wchar_t *formatRfc822() const ;
 
     ArrayElement *clone();
+
+    BasicTime& operator=(const BasicTime& d);
+    bool operator==(const BasicTime& d) const;
+
 
 };
 #endif

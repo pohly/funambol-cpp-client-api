@@ -101,6 +101,7 @@ wchar_t *uuencode(const char *msg, int len)
 
 // Get a line from the char buffer msg
 // line endings are discarded
+// Return the first character after the newline
 static const char *getLine(const char *msg, char **line) {
     // Null message?
     if (!msg)
@@ -229,6 +230,27 @@ int convertAndSave(const wchar_t *filename,
     delete [] buf;
     delete [] name;
     return 0;
+}
+
+wchar_t *getSourceName(const wchar_t *uri)
+{
+#if 0
+// FIXME
+    wchar_t nodeName = new wchar_t[];
+    wcscpy(nodeName, rootContext); wcscat(nodeName, TEXT(CONTEXT_SPDS_SOURCES));
+
+    node = dmt->getManagementNode(nodeName);
+    if ( ! node ) {
+        lastErrorCode = ERR_INVALID_CONTEXT;
+        wsprintf(lastErrorMsg, ERRMSG_INVALID_CONTEXT, nodeName);
+        goto finally;
+    }
+    n = node->getChildrenMaxCount();
+    for()
+#else
+        // FIXME
+        return stringdup(uri);
+#endif
 }
 
 

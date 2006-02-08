@@ -41,7 +41,8 @@ class EmailData : public ArrayElement {
 
     public:
     // ------------------------------------------------------- Constructors
-        
+        EmailData();
+
     // ---------------------------------------------------------- Accessors  
         bool getRead() { return read; }
         void setRead(bool v) { read=v; }

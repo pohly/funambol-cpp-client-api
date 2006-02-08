@@ -34,6 +34,15 @@
 #define EMAIL_FLAG  TEXT("flagged")
 #define EMAIL_ITEM  TEXT("emailitem")
 
+EmailData::EmailData()
+{
+    read = false;
+    forwarded = false;
+    replied = false;
+    deleted = false;
+    flagged = false;
+}
+
 int EmailData::parse(const wchar_t *syncmlData, size_t len)
 {
     int ret = 0;
