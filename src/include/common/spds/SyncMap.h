@@ -23,7 +23,7 @@
     #include "base/util/ArrayElement.h"
 
 
-class __declspec(dllexport) SyncMap : public ArrayElement {
+class SyncMap : public ArrayElement {
 
     private:
         wchar_t* luid;
