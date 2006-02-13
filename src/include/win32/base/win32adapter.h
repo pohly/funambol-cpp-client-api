@@ -23,15 +23,15 @@
 #include <stdarg.h>
 #include <stdio.h>
 
-#define EXTRA_SECTION_00  
-#define EXTRA_SECTION_01  
-#define EXTRA_SECTION_02  
-#define EXTRA_SECTION_03  
-#define EXTRA_SECTION_04  
-#define EXTRA_SECTION_05  
-#define EXTRA_SECTION_06  
+#define EXTRA_SECTION_00
+#define EXTRA_SECTION_01
+#define EXTRA_SECTION_02
+#define EXTRA_SECTION_03
+#define EXTRA_SECTION_04
+#define EXTRA_SECTION_05
+#define EXTRA_SECTION_06
 
-#define __declspec(ignore)
+//#define __declspec(ignore)
 #define CHR(c) c
 
 inline void wcsprintf(wchar_t* s, wchar_t* format, ...);
