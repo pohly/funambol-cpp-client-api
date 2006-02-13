@@ -42,8 +42,12 @@ class SyncManagerConfig {
 
         virtual SyncSourceConfig* getSyncSourceConfigs() EXTRA_SECTION_01;
         virtual BOOL getSyncSourceConfig(const wchar_t* name, SyncSourceConfig& sc, BOOL refresh = FALSE) EXTRA_SECTION_01;
-        virtual AccessConfig& getAccessConfig() EXTRA_SECTION_01;
+		virtual BOOL setSyncSourceConfig(SyncSourceConfig& sc) EXTRA_SECTION_01;
         virtual unsigned int getSyncSourceConfigsCount() EXTRA_SECTION_01;
+
+		virtual AccessConfig& getAccessConfig() EXTRA_SECTION_01;
+		virtual void setAccessConfig(AccessConfig& ac) EXTRA_SECTION_01;
+
 
         BOOL isDirty() EXTRA_SECTION_01;
 

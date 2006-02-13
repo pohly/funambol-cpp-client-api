@@ -46,6 +46,10 @@ AccessConfig& SyncManagerConfig::getAccessConfig() {
     return accessConfig;
 }
 
+void SyncManagerConfig::setAccessConfig(AccessConfig& ac) {
+    accessConfig.assign(ac);
+}
+
 BOOL SyncManagerConfig::getSyncSourceConfig(const wchar_t* name, SyncSourceConfig& sc, BOOL refresh) {
     if ((name == NULL) || (wcslen(name) == 0)) {
         return FALSE;
@@ -59,6 +63,29 @@ BOOL SyncManagerConfig::getSyncSourceConfig(const wchar_t* name, SyncSourceConfi
     }
 
     return FALSE;
+}
+
+
+BOOL SyncManagerConfig::setSyncSourceConfig(SyncSourceConfig& sc) {
+    unsigned int i=0;
+    for (i=0; i<sourceConfigsCount; ++i) {
+        if (wcscmp(sc.getName(), sourceConfigs[i].getName()) == 0) {
+            break;
+        }
+    }
+
+    if (i >= sourceConfigsCount) {
+        //
+        // Not found!
+        //
+        return FALSE;
+    }
+
+    sourceConfigs[i].assign(sc);
+
+    //dirty |= DIRTY_SYNC_SOURCE;
+
+    return TRUE;
 }
 
 
