@@ -19,11 +19,19 @@
 #ifndef INCL_SYNCML_BUILDER
 #define INCL_SYNCML_BUILDER
 
+#include "spds/DataTransformer.h"
 #include "spds/SyncSource.h"
 #include "spds/SyncMap.h"
 #include "syncml/core/TagNames.h"
 #include "syncml/core/ObjectDel.h"
 #include "syncml/formatter/Formatter.h"
+
+enum DataEncoding {
+    PLAIN  = 0,
+    B64    = 1,
+    DES    = 2,
+    DESB64 = 3
+};
 
 class SyncMLBuilder {
 
@@ -112,6 +120,8 @@ class SyncMLBuilder {
         */
         MapItem* prepareMapItem(SyncMap* syncMap) EXTRA_SECTION_01;
         
+        ArrayList* prepareItem(SyncItem* syncItem, const wchar_t* type, wchar_t* COMMAND);
+
         /*
         * Add the MapItem to the Map command.
         */
@@ -142,6 +152,24 @@ class SyncMLBuilder {
         */
         
         void resetMessageID() EXTRA_SECTION_01;
+        
+        /**
+         * Sets the items content encoding
+         */
+        void setEncoding(DataEncoding e) EXTRA_SECTION_01;
+
+        /**
+         * Returns the items content encoding
+         */
+        DataEncoding getEncoding() EXTRA_SECTION_01;
+
+        /**
+         * Sets the encryption password
+         *
+         * @param pwd encryption password - NOT NULL
+         */
+        void setEncPassword(const wchar_t* pwd);
+
 
     private:
 
@@ -149,12 +177,19 @@ class SyncMLBuilder {
 
         wchar_t* target;
         wchar_t* device;
-        unsigned long maxMsgSize;
+        unsigned long maxMsgSize;        
+        wchar_t* encPassword;
 
         unsigned long sessionID;
         unsigned int  msgID    ;
         unsigned int  cmdID    ;
         unsigned int  msgRef   ;
+        
+        DataEncoding encoding;
+
+        wchar_t* encodeB64(char* data, TransformationInfo& info);   
+        wchar_t* encodeDESB64(char* data, TransformationInfo& info);
+        ComplexData* getComplexData(SyncItem* syncItem);
 
 };
 

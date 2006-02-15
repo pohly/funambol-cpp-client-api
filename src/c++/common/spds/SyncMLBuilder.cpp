@@ -24,6 +24,7 @@
 #include "base/util/StringBuffer.h"
 #include "filter/ClauseUtil.h"
 #include "spds/constants.h"
+#include "spds/DataTransformerFactory.h"
 #include "spds/SyncItem.h"
 #include "spds/SyncMLBuilder.h"
 
@@ -35,7 +36,8 @@ SyncMLBuilder::SyncMLBuilder() {
 
 SyncMLBuilder::~SyncMLBuilder() {
     safeDelete(&target  );    
-    safeDelete(&device  );        
+    safeDelete(&device  );     
+    safeDelete(&encPassword);
 }
 
 
@@ -56,7 +58,17 @@ void SyncMLBuilder::initialize() {
     msgRef    = 0         ;
     msgID     = 0         ;
     cmdID     = 0         ;
-    maxMsgSize = 0        ;         
+    maxMsgSize = 0        ;      
+    encoding   = PLAIN    ;
+    encPassword = NULL    ;
+}
+
+void SyncMLBuilder::setEncoding(DataEncoding e) {
+    encoding = e;
+}
+
+DataEncoding SyncMLBuilder::getEncoding() {
+    return encoding;
 }
 
 void SyncMLBuilder::resetCommandID() {
@@ -502,24 +514,61 @@ SyncML* SyncMLBuilder::prepareSyncML(ArrayList* commands, BOOL final) {
     return syncml;
 }
 
-ArrayList* prepareItem(SyncItem* syncItem, const wchar_t* type, wchar_t* COMMAND) {
+ComplexData* SyncMLBuilder::getComplexData(SyncItem* syncItem) {
+    
+        wchar_t* t   = NULL;        
+        TransformationInfo info;
+        ComplexData* data = NULL;
+
+        info.size = syncItem->getDataSize();
+        info.password = encPassword;
+        if (encoding == DESB64) {
+            char* tt = new char[info.size + 1];
+            memset(tt, 0, info.size + 1);            
+            memcpy(tt, syncItem->getData(), syncItem->getDataSize());                        
+            t = encodeDESB64(tt, info);
+            delete [] tt;
+        } else if (encoding == B64) {
+            char* tt = new char[info.size + 1];
+            memset(tt, 0, info.size + 1);            
+            memcpy(tt, syncItem->getData(), syncItem->getDataSize());            
+            t = encodeB64(tt, info);
+            delete [] tt;
+        } else {
+            char* tt = new char[info.size + 1];
+            memset(tt, 0, info.size + 1);            
+            memcpy(tt, syncItem->getData(), syncItem->getDataSize());
+            t = toWideChar(tt);
+            delete [] tt;
+        }
+                           
+        data = new ComplexData(t);
+        
+        if (t) {delete [] t; t = NULL; }
+        
+        return data;
+
+}
+
+
+ArrayList* SyncMLBuilder::prepareItem(SyncItem* syncItem, const wchar_t* type, wchar_t* COMMAND) {
     ArrayList* list = new ArrayList();            
     
     Source* sou = new Source(syncItem->getKey());
     ComplexData* data = NULL;
-    if (wcscmp(DELETE_COMMAND_NAME, COMMAND) != 0) {
-        wchar_t* t = new wchar_t[syncItem->getDataSize() + 1];
-        wmemset(t, 0, syncItem->getDataSize());
-        memcpy(t, syncItem->getData(), syncItem->getDataSize());
-        t[syncItem->getDataSize()] = 0;
-        data = new ComplexData(t);
+    Meta m;
+    if (wcscmp(DELETE_COMMAND_NAME, COMMAND) != 0) {       
+        if (encoding == DESB64) {
+            m.setFormat(TEXT("des;b64"));         
+        } else if (encoding == B64) {
+            m.setFormat(TEXT("b64"));            
+        } 
+        data = getComplexData(syncItem);
 
-        if (t) {delete [] t; t = NULL; }
     }
-
-    // Item* item           = new Item(NULL, sou, NULL, data, FALSE);
+    
     Item* item           = new Item(NULL, sou, syncItem->getTargetParent(), syncItem->getSourceParent(), 
-                                    NULL, data, FALSE);
+                                    &m, data, FALSE);
     list->add(*item);
     deleteSource(&sou);
     deleteComplexData(&data);
@@ -652,3 +701,143 @@ void SyncMLBuilder::addMapItem(Map* map, MapItem* mapItem){
 void SyncMLBuilder::resetMessageID() {
     msgID = 0;
 }
+
+void SyncMLBuilder::setEncPassword(const wchar_t* pwd) {
+    if (encPassword) {
+        safeDelete(&encPassword);
+    }
+
+    if (pwd) {
+        encPassword = stringdup(pwd);
+    }
+}
+
+wchar_t* SyncMLBuilder::encodeDESB64(char* data, TransformationInfo& info) {
+    char*    des = NULL;
+    char*    b64 = NULL;
+    wchar_t* ret = NULL;
+
+    DataTransformer* dtdes = DataTransformerFactory::getEncoder(TEXT("des"));
+    DataTransformer* dtb64 = DataTransformerFactory::getEncoder(TEXT("b64"));
+
+    if ((dtdes == NULL) || (dtb64 == NULL)) {
+        goto exit;
+    }
+
+    des = dtdes->transform(data, info);
+
+    if (lastErrorCode != ERR_NONE) {
+        goto exit;
+    }
+
+    b64 = dtb64->transform(des, info);
+
+    if (lastErrorCode != ERR_NONE) {
+        goto exit;
+    }
+
+    //
+    // We now translate it into a wchar zero-terminated string 
+    //
+    ret = utf82wc(b64, NULL, 0);
+
+    ++info.size;
+    // info.size = (wcslen(ret)+1)*sizeof(wchar_t);
+
+
+exit:
+
+    if (des) {
+        delete [] des; des = NULL;
+    }
+
+    if (b64) {
+        delete [] b64; b64 = NULL;
+    }
+
+    if (dtdes) {
+        delete dtdes;
+    }
+
+    if (dtb64) {
+        delete dtb64;
+    }
+
+    return ret;
+}
+
+wchar_t* SyncMLBuilder::encodeB64(char* data, TransformationInfo& info) {
+    char*    b64 = NULL;
+    wchar_t* ret = NULL;
+    DataTransformer* dtb64 = DataTransformerFactory::getEncoder(TEXT("b64"));
+
+    if (dtb64 == NULL) {
+        goto exit;
+    }
+
+    b64 = dtb64->transform((char*)data, info);
+
+    if (lastErrorCode != ERR_NONE) {
+        goto exit;
+    }
+
+    //
+    // We now translate it into a wchar zero-terminated string 
+    //
+    ret = utf82wc(b64);
+
+    ++info.size;
+    // info.size = (wcslen(ret)+1)*sizeof(wchar_t);
+
+exit:
+
+    if (b64) {
+        delete [] b64; b64 = NULL;
+    }
+
+    if (dtb64) {
+        delete dtb64;
+    }
+
+    return ret;
+}
+
+/*
+ComplexData* SyncMLBuilder::getComplexData(SyncItem* syncItem) {
+    
+        wchar_t* t   = NULL;
+        char*    tmp = NULL;
+        TransformationInfo info;
+        ComplexData* data = NULL;
+
+        info.size = syncItem->getDataSize() / sizeof(wchar_t);
+        info.password = encPassword;
+        if (encoding == DESB64) {
+            wchar_t* tt = new wchar_t[info.size + 1];
+            wmemset(tt, 0, info.size + 1);            
+            memcpy(tt, syncItem->getData(), syncItem->getDataSize());            
+            tmp = wc2utf8(tt);            
+            t = encodeDESB64(tmp, info);
+            delete [] tt;
+        } else if (encoding == B64) {
+            wchar_t* tt = new wchar_t[info.size + 1];
+            wmemset(tt, 0, info.size + 1);            
+            memcpy(tt, syncItem->getData(), syncItem->getDataSize());
+            tmp = wc2utf8(tt);                                          
+            t = encodeB64(tmp, info);
+            delete [] tt;
+        } else {
+            t = new wchar_t[info.size + 1];
+            wmemset(t, 0, info.size + 1);            
+            memcpy(t, syncItem->getData(), syncItem->getDataSize());
+        }
+                           
+        data = new ComplexData(t);
+        
+        if (t) {delete [] t; t = NULL; }
+        if (tmp) {delete [] tmp; tmp = NULL; }
+
+        return data;
+
+}
+*/

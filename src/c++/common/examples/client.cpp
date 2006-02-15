@@ -37,7 +37,9 @@
 #include "syncml/core/core.h"
 #include "syncml/formatter/Formatter.h"
 
-#define TEST_SYNCSOURCE
+//#define TEST_SYNCSOURCE
+#define TEST_SYNC_ENCRYPTION
+
 
 void testFilter();
 void testClause();
@@ -45,7 +47,8 @@ void testConfigFilter();
 void testEncryption();
 
 
-#define APPLICATION_URI TEXT("Funambol/examples/dummy")
+// #define APPLICATION_URI TEXT("Funambol/examples/dummy")
+#define APPLICATION_URI TEXT("Funambol/SyncclientPIM")
 
 // Define DEBUG_SETTINGS in your project to create a default configuration
 // tree for the test client. WARNING: it will override any previous setting!

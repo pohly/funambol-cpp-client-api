@@ -85,7 +85,12 @@ class SyncManager {
         void initialize() EXTRA_SECTION_01;
         int assignSources(SyncSource** sources) EXTRA_SECTION_01;
         
-
+        //void processItemContent(SyncItem& i, wchar_t* encodings) EXTRA_SECTION_01;
+        // void decodeSyncItemContent(SyncItem& i, wchar_t* encoding) EXTRA_SECTION_01;
+        void decodeSyncItemContent(char** c, TransformationInfo& info, wchar_t* encoding) EXTRA_SECTION_01;
+        char* processItemContent(wchar_t* toConvert, wchar_t* encodings, long* size) EXTRA_SECTION_01;
+        wchar_t  credentialInfo[256]; // used to store info for the des;b64 encription
+    
 };
 
 #endif

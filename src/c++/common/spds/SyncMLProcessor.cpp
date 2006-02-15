@@ -277,11 +277,9 @@ Chal* SyncMLProcessor::getChal(SyncBody* syncBody) {
                 
                 chal = s->getChal();
                 if (chal == NULL) {
-                     //
-                    // It should not happen
                     //
-                    wcsprintf(lastErrorMsg, TEXT("Status/Data not found!"));
-                    lastErrorCode = ERR_REPRESENTATION;
+                    // no chal found
+                    //
                     goto finally;
                 }                
                 break;

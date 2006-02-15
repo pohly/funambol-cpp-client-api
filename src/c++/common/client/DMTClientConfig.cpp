@@ -293,6 +293,10 @@ BOOL DMTClientConfig::readAccessConfig(ManagementNode& n) {
     tmp = n.getPropertyValue(PROPERTY_MAX_MOD_PER_MSG);     
     accessConfig.setMaxModPerMsg(wcstol(tmp, NULL, 10));
     delete [] tmp;
+    
+    tmp = n.getPropertyValue(PROPERTY_ENCRYPTION);     
+    accessConfig.setEncryption((*tmp == 'T') ? TRUE : FALSE);
+    delete [] tmp;
 
     return TRUE;
 }
@@ -332,7 +336,9 @@ void DMTClientConfig::saveAccessConfig(ManagementNode& n) {
 
     wsprintf(buf, TEXT("%lu"), accessConfig.getMaxModPerMsg());
     n.setPropertyValue(PROPERTY_MAX_MOD_PER_MSG, buf);
-
+    
+    n.setPropertyValue(PROPERTY_ENCRYPTION,
+		(accessConfig.getEncryption() ? TEXT("T") : TEXT("F") ) ); 
 }
 
 BOOL DMTClientConfig::readSourceConfig(int i, ManagementNode& n) {    
@@ -362,7 +368,12 @@ BOOL DMTClientConfig::readSourceConfig(int i, ManagementNode& n) {
     tmp = n.getPropertyValue(PROPERTY_SOURCE_LAST_SYNC);    
     sourceConfigs[i].setLast( ((*tmp) ? wcstol(tmp, NULL, 10) : 0) );
     delete [] tmp;
+    
+    tmp = n.getPropertyValue(PROPERTY_SOURCE_ENCODING);    
+    sourceConfigs[i].setEncoding(tmp);
+    delete [] tmp;
 
+    
     return TRUE;
 }
 
@@ -375,6 +386,7 @@ void DMTClientConfig::saveSourceConfig(int i, ManagementNode& n) {
     n.setPropertyValue(PROPERTY_SOURCE_TYPE, sourceConfigs[i].getType());
     n.setPropertyValue(PROPERTY_SOURCE_SYNC_MODES, sourceConfigs[i].getSyncModes());
     n.setPropertyValue(PROPERTY_SOURCE_SYNC, sourceConfigs[i].getSync());    
+    n.setPropertyValue(PROPERTY_SOURCE_ENCODING, sourceConfigs[i].getEncoding());    
 
     timestampToAnchor(sourceConfigs[i].getLast(), buf); 
     n.setPropertyValue(PROPERTY_SOURCE_LAST_SYNC, buf);    

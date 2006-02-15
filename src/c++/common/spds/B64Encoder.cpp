@@ -27,8 +27,10 @@ B64Encoder::~B64Encoder() {
 
 char* B64Encoder::transform(char* data, TransformationInfo& info) {
     long len = info.size;
-
-    char* b64 = new char[(len/3+1)<<2];
+    //
+    // get extra space for wm memory allocation
+    //
+    char* b64 = new char[((len/3+1)<<2) + 32];
 
     info.size = b64_encode(b64, data, len);
     b64[info.size] = 0;

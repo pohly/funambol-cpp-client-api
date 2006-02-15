@@ -22,6 +22,8 @@
 #include "base/messages.h"
 #include "http/TransportAgentFactory.h"
 #include "spds/constants.h"
+#include "spds/DataTransformer.h"
+#include "spds/DataTransformerFactory.h"
 #include "spds/SyncManagerConfig.h"
 #include "spds/SyncManager.h"
 #include "spds/SyncMLProcessor.h"
@@ -97,6 +99,7 @@ void SyncManager::initialize() {
         maxModPerMsg = c.getMaxModPerMsg();
     
     syncMLBuilder.set(syncURL, deviceId, maxMsgSize);
+    wmemset(credentialInfo, 0, 256);
 }
 
 SyncManager::~SyncManager() {
@@ -145,7 +148,6 @@ int SyncManager::prepareSync(SyncSource** s) {
     Cred*   cred                = NULL;
     Alert*  alert               = NULL;
     SyncSource** buf            = NULL;
-    
     const wchar_t *syncURL;
     
     syncURL = config.getAccessConfig().getSyncURL(); //sizeof(syncURL));
@@ -241,6 +243,7 @@ int SyncManager::prepareSync(SyncSource** s) {
                 deleteAlert(&alert);
             }                        
             cred = credentialHandler.getClientCredential();             
+            wcscpy(credentialInfo, cred->getAuthentication()->getData(NULL)); LOG.debug(credentialInfo);
         }
         syncml = syncMLBuilder.prepareInitObject(cred, alerts, commands);
         if (syncml == NULL) {
@@ -516,6 +519,24 @@ int SyncManager::sync() {
         }
 
         do {
+
+            //
+            // Sets the proper encoding for the content of the items.
+            //
+            if (config.isEncryption()) {
+                syncMLBuilder.setEncPassword(credentialInfo);
+                syncMLBuilder.setEncoding(DESB64);
+            } else {
+                // TBD: if we are using vcard/icalendar, we need to 
+                // set the encoding to PLAIN
+                if (wcscmp(sources[count]->getEncoding(), B64_ENCODING) == 0) {
+                    syncMLBuilder.setEncoding(B64);
+                } else {
+                    syncMLBuilder.setEncoding(PLAIN);
+                }   
+                
+            }
+
             if (modificationCommand) {
                 delete modificationCommand; 
                 modificationCommand = NULL;
@@ -890,6 +911,20 @@ int SyncManager::sync() {
     syncml = syncMLProcessor.processMsg(responseMsg);
     safeDelete(&responseMsg);
     deleteArrayList(&commands);
+    
+    if (syncml == NULL) {
+        ret = lastErrorCode;
+        goto finally;
+    }  
+    ret = syncMLProcessor.processSyncHdrStatus(syncml);
+
+    if (isErrorStatus(ret)) {
+        ret = lastErrorCode;
+        wsprintf(lastErrorMsg, TEXT("Error: error code %i"), ret);
+        LOG.debug(lastErrorMsg);
+        goto finally;
+    }
+    ret = 0;
 
     //
     // Process the items returned from server
@@ -941,12 +976,14 @@ int SyncManager::sync() {
             }                               
 
             ArrayList* previousStatus = new ArrayList();
+            wchar_t* format = NULL;
             for (i = 0; i < items->size(); i++) {
                 modificationCommand = (ModificationCommand*)(items->get(i));
                 meta = modificationCommand->getMeta();
-                if (meta)
+                if (meta) {
                     dataType = meta->getType(NULL);
-
+                    format = meta->getFormat(NULL); 
+                }
                 list = modificationCommand->getItems();
                 commandName = modificationCommand->getName();    
 
@@ -967,13 +1004,35 @@ int SyncManager::sync() {
                     }
                     syncItem = SyncItem(itemName);
                     
-                    wchar_t* data = NULL;
+                    wchar_t* toConvert = NULL;
+                    char* data = NULL;
+                    long size = 0;
                     if (item->getData()) {
-                        data = item->getData()->getData(NULL);
-                            syncItem.setData(data, wcslen(data) * sizeof(wchar_t));
+                        toConvert = item->getData()->getData(NULL);    
+                        
+                        //
+                        // Retrieving how the content has been encoded
+                        // and then processing the content accordingly
+                        //
+                        if (format == NULL) {
+                            Meta* m = item->getMeta();
+                            if (m) {
+                                format = m->getFormat(NULL);                            
+                            }
+                        } 
+                        if (format) {
+                            data = processItemContent(toConvert, format, &size);
+                            syncItem.setData(data, size);
+                            delete [] data; data = NULL;
+                        } else {
+                            data = toMultibyte(toConvert);
+                            syncItem.setData(data, strlen(data));                        
+                            delete [] data; data = NULL;
                         }
-                    if (dataType)
+                    }
+                    if (dataType) {
                         syncItem.setDataType(dataType);   
+                    }
                     syncItem.setSourceParent(item->getSourceParent());
                     syncItem.setTargetParent(item->getTargetParent());
 
@@ -1058,6 +1117,19 @@ int SyncManager::sync() {
             syncml = syncMLProcessor.processMsg(responseMsg);
             safeDelete(&responseMsg);
             deleteArrayList(&commands);
+            if (syncml == NULL) {
+                ret = lastErrorCode;
+                goto finally;
+            }  
+            ret = syncMLProcessor.processSyncHdrStatus(syncml);
+
+            if (isErrorStatus(ret)) {
+                ret = lastErrorCode;
+                wsprintf(lastErrorMsg, TEXT("Error: error code %i"), ret);
+                LOG.debug(lastErrorMsg);
+                goto finally;
+            }
+            ret = 0;
 
         }        
         deleteArrayList(&statusList);
@@ -1171,7 +1243,21 @@ int SyncManager::endSync() {
             syncml = syncMLProcessor.processMsg(responseMsg);
             safeDelete(&responseMsg);
             deleteArrayList(&commands);
-    
+            
+            if (syncml == NULL) {
+                ret = lastErrorCode;
+                goto finally;
+            }  
+            ret = syncMLProcessor.processSyncHdrStatus(syncml);
+
+            if (isErrorStatus(ret)) {
+                ret = lastErrorCode;
+                wsprintf(lastErrorMsg, TEXT("Error: error code %i"), ret);
+                LOG.debug(lastErrorMsg);
+                goto finally;
+            }
+            ret = 0;
+
             //
             // Process the status of mapping
             //                        
@@ -1242,6 +1328,7 @@ BOOL SyncManager::readSyncSourceDefinition(SyncSource& source) {
     timestampToAnchor(source.getNextSync(), anchor);
     source.setNextAnchor(anchor);
     source.setRemoteURI(ssc.getURI());
+    source.setEncoding(ssc.getEncoding());
 
     return TRUE;
 }
@@ -1293,6 +1380,83 @@ finally:
 
     return count;
 
+}
+
+char* SyncManager::processItemContent(wchar_t* toConvert, wchar_t* format, long *size) {
+    
+    wchar_t* p = NULL;
+    wchar_t* encodings = stringdup(format);
+    wchar_t* encoding = NULL;
+    TransformationInfo info;
+
+    char* c = wc2utf8(toConvert);
+    info.size = strlen(c);
+    info.password = credentialInfo; //(wchar_t*)config.getAccessConfig().getPassword();
+
+    while ((p = wcsrchr(encodings, L';'))) {
+        encoding = p+1;
+        decodeSyncItemContent(&c, info, encoding);
+        if (lastErrorCode != ERR_NONE) {
+            break;
+        }
+        *p = 0;
+    }
+
+    if (wcslen(encodings) > 0) {
+        
+        decodeSyncItemContent(&c, info, encodings);        
+    }
+    c[info.size] = 0;
+    *size = info.size;
+    //wchar_t* ret = utf82wc(c);
+    delete [] encodings;
+    //delete [] c;    
+    return c;
+    
+}
+
+void SyncManager::decodeSyncItemContent(char** c, TransformationInfo& info, wchar_t* encoding) {
+    
+    char* decodedData = NULL;
+   
+    resetError();
+   
+    DataTransformer* dt = DataTransformerFactory::getDecoder(encoding);
+
+    if (dt == NULL) {
+        //
+        // lastErrorCode contains already the error
+        //
+        goto exit;
+    }
+    
+    decodedData = dt->transform(*c, info);
+
+    if (lastErrorCode != ERR_NONE) {
+        goto exit;
+    }
+    
+    //
+    // If the transformer has allocated new memory, we set it into the 
+    // sync item, otherwise we just need to adjust the data size.
+    //
+    if (info.newReturnedData) {   
+        
+        strncpy(*c, decodedData, info.size);
+        if (decodedData) {
+            delete [] decodedData;
+        }
+        
+    } else {               
+       
+    }       
+
+exit:
+
+    if (dt) {
+        delete dt;
+    }
+    
 }
 
 

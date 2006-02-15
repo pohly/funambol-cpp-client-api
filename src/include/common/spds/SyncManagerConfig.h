@@ -35,6 +35,11 @@ class SyncManagerConfig {
 
         unsigned int sourceConfigsCount;
 
+        /**
+         * Should the content items be encrypted
+         */
+        BOOL encryption;
+
     public:
  
         SyncManagerConfig() EXTRA_SECTION_01;
@@ -48,7 +53,8 @@ class SyncManagerConfig {
 		virtual AccessConfig& getAccessConfig() EXTRA_SECTION_01;
 		virtual void setAccessConfig(AccessConfig& ac) EXTRA_SECTION_01;
 
-
+        BOOL isEncryption() EXTRA_SECTION_01;
+        
         BOOL isDirty() EXTRA_SECTION_01;
 
 };

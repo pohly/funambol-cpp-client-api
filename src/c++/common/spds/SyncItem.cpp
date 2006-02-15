@@ -158,6 +158,13 @@ long SyncItem::getDataSize() {
 }
 
 /*
+ * Sets the SyncItem data size.
+ */
+void SyncItem::setDataSize(long s) {
+    size = s;
+}
+
+/*
  * Sets the SyncItem data mime type
  *
  * @param - type the content mimetype

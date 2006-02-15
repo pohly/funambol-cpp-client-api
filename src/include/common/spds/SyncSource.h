@@ -35,6 +35,7 @@ private:
     unsigned long nextSync;
     wchar_t*      name;
     wchar_t*      remoteURI;
+    wchar_t*      encoding;
 
     wchar_t type[DIM_MIME_TYPE];
     wchar_t next[DIM_ANCHOR];
@@ -122,6 +123,12 @@ public:
      */
     const wchar_t* getNextAnchor() EXTRA_SECTION_01;
     void setNextAnchor(const wchar_t* next) EXTRA_SECTION_01;
+    
+    /*
+     * Get & Set encoding attribute.
+     */
+    void setEncoding(const wchar_t* enc) EXTRA_SECTION_01;
+    const wchar_t* getEncoding() EXTRA_SECTION_01;
 
     /*
     * Gets filter

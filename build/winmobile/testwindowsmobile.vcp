@@ -1663,6 +1663,113 @@ NODEP_CPP_TESTCO=\
 # End Source File
 # Begin Source File
 
+SOURCE="..\..\src\c++\winmobile\examples\testEncryption.cpp"
+
+!IF  "$(CFG)" == "testwindowsmobile - Win32 (WCE emulator) Release"
+
+DEP_CPP_TESTE=\
+	"..\..\src\include\common\base\errors.h"\
+	"..\..\src\include\common\base\fscapi.h"\
+	"..\..\src\include\common\base\Log.h"\
+	"..\..\src\include\common\base\messages.h"\
+	"..\..\src\include\common\http\errors.h"\
+	"..\..\src\include\common\spdm\errors.h"\
+	"..\..\src\include\common\spds\B64Decoder.h"\
+	"..\..\src\include\common\spds\B64Encoder.h"\
+	"..\..\src\include\common\spds\DataTransformer.h"\
+	"..\..\src\include\common\spds\DataTransformerFactory.h"\
+	"..\..\src\include\common\spds\DESDecoder.h"\
+	"..\..\src\include\common\spds\DESEncoder.h"\
+	"..\..\src\include\common\spds\errors.h"\
+	"..\..\src\include\winmobile\base\PPC2003adapter.h"\
+	"..\..\src\include\winmobile\base\time.h"\
+	
+NODEP_CPP_TESTE=\
+	"..\..\src\include\common\base\base\palmadapter.h"\
+	"..\..\src\include\common\base\base\posixadapter.h"\
+	"..\..\src\include\common\base\base\win32adapter.h"\
+	
+
+!ELSEIF  "$(CFG)" == "testwindowsmobile - Win32 (WCE emulator) Debug"
+
+DEP_CPP_TESTE=\
+	"..\..\src\include\common\base\errors.h"\
+	"..\..\src\include\common\base\fscapi.h"\
+	"..\..\src\include\common\base\Log.h"\
+	"..\..\src\include\common\base\messages.h"\
+	"..\..\src\include\common\http\errors.h"\
+	"..\..\src\include\common\spdm\errors.h"\
+	"..\..\src\include\common\spds\B64Decoder.h"\
+	"..\..\src\include\common\spds\B64Encoder.h"\
+	"..\..\src\include\common\spds\DataTransformer.h"\
+	"..\..\src\include\common\spds\DataTransformerFactory.h"\
+	"..\..\src\include\common\spds\DESDecoder.h"\
+	"..\..\src\include\common\spds\DESEncoder.h"\
+	"..\..\src\include\common\spds\errors.h"\
+	"..\..\src\include\winmobile\base\PPC2003adapter.h"\
+	"..\..\src\include\winmobile\base\time.h"\
+	
+NODEP_CPP_TESTE=\
+	"..\..\src\include\common\base\base\palmadapter.h"\
+	"..\..\src\include\common\base\base\posixadapter.h"\
+	"..\..\src\include\common\base\base\win32adapter.h"\
+	
+
+!ELSEIF  "$(CFG)" == "testwindowsmobile - Win32 (WCE ARMV4) Release"
+
+DEP_CPP_TESTE=\
+	"..\..\src\include\common\base\errors.h"\
+	"..\..\src\include\common\base\fscapi.h"\
+	"..\..\src\include\common\base\Log.h"\
+	"..\..\src\include\common\base\messages.h"\
+	"..\..\src\include\common\http\errors.h"\
+	"..\..\src\include\common\spdm\errors.h"\
+	"..\..\src\include\common\spds\B64Decoder.h"\
+	"..\..\src\include\common\spds\B64Encoder.h"\
+	"..\..\src\include\common\spds\DataTransformer.h"\
+	"..\..\src\include\common\spds\DataTransformerFactory.h"\
+	"..\..\src\include\common\spds\DESDecoder.h"\
+	"..\..\src\include\common\spds\DESEncoder.h"\
+	"..\..\src\include\common\spds\errors.h"\
+	"..\..\src\include\winmobile\base\PPC2003adapter.h"\
+	"..\..\src\include\winmobile\base\time.h"\
+	
+NODEP_CPP_TESTE=\
+	"..\..\src\include\common\base\base\palmadapter.h"\
+	"..\..\src\include\common\base\base\posixadapter.h"\
+	"..\..\src\include\common\base\base\win32adapter.h"\
+	
+
+!ELSEIF  "$(CFG)" == "testwindowsmobile - Win32 (WCE ARMV4) Debug"
+
+DEP_CPP_TESTE=\
+	"..\..\src\include\common\base\errors.h"\
+	"..\..\src\include\common\base\fscapi.h"\
+	"..\..\src\include\common\base\Log.h"\
+	"..\..\src\include\common\base\messages.h"\
+	"..\..\src\include\common\http\errors.h"\
+	"..\..\src\include\common\spdm\errors.h"\
+	"..\..\src\include\common\spds\B64Decoder.h"\
+	"..\..\src\include\common\spds\B64Encoder.h"\
+	"..\..\src\include\common\spds\DataTransformer.h"\
+	"..\..\src\include\common\spds\DataTransformerFactory.h"\
+	"..\..\src\include\common\spds\DESDecoder.h"\
+	"..\..\src\include\common\spds\DESEncoder.h"\
+	"..\..\src\include\common\spds\errors.h"\
+	"..\..\src\include\winmobile\base\PPC2003adapter.h"\
+	"..\..\src\include\winmobile\base\time.h"\
+	
+NODEP_CPP_TESTE=\
+	"..\..\src\include\common\base\base\palmadapter.h"\
+	"..\..\src\include\common\base\base\posixadapter.h"\
+	"..\..\src\include\common\base\base\win32adapter.h"\
+	
+
+!ENDIF 
+
+# End Source File
+# Begin Source File
+
 SOURCE="..\..\src\c++\winmobile\examples\testFilter.cpp"
 
 !IF  "$(CFG)" == "testwindowsmobile - Win32 (WCE emulator) Release"

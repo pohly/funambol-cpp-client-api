@@ -48,6 +48,7 @@ AccessConfig::AccessConfig() {
 
     maxMsgSize            = 0;
     maxModPerMsg          = 0;
+    encryption            = FALSE;  // F = FALSE, T = TRUE
 }
 
 AccessConfig::AccessConfig(AccessConfig& s) {
@@ -330,7 +331,19 @@ void AccessConfig::set(wchar_t** buf, const wchar_t* v) {
 	
 	wcscpy(*buf, v);
 }
-	
+
+BOOL AccessConfig::getEncryption() {
+    return encryption;   
+}
+
+/**
+ * Sets if the sync engine should use a HTTP proxy to access the server.
+ *
+ * @param useProxy FALSE for not use a proxy, TRUE otherwise
+ */
+void AccessConfig::setEncryption(BOOL useEncryption) {
+    encryption = useEncryption;   
+}
 
 void AccessConfig::assign(AccessConfig& s) {
 	setUsername (s.getUsername() );
@@ -352,6 +365,8 @@ void AccessConfig::assign(AccessConfig& s) {
     setClientNonce(s.getClientNonce());
     setMaxMsgSize(s.getMaxMsgSize());
     setMaxModPerMsg(s.getMaxModPerMsg());
+    
+    setEncryption  (s.getEncryption()  );
 
 	dirty = s.getDirty();
 }

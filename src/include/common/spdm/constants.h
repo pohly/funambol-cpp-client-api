@@ -60,6 +60,10 @@
 #define PROPERTY_SOURCE_DRAFT          TEXT("Draft"            )
 #define PROPERTY_SOURCE_TRASH          TEXT("Trash"            )
 #define PROPERTY_SOURCE_SENT           TEXT("Sent"             )
+#define PROPERTY_ENCRYPTION            TEXT("encryption"       )
+#define PROPERTY_SOURCE_ENCODING       TEXT("encoding"         )
+
+
         
 
         

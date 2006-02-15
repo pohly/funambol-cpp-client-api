@@ -415,8 +415,9 @@ StringBuffer* Formatter::getTarget(Target* target) {
     }
     
     if (NotZeroStringBufferLenght(2, s, filter)) {
-        ret = getValue(TARGET, s);
         ret->append(filter);
+        ret = getValue(TARGET, s);
+        
     } 
     
     deleteAllStringBuffer(2, &s, &filter);

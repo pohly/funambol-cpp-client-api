@@ -308,7 +308,11 @@ wchar_t* PPC2003TransportAgent::sendMessage(wchar_t* msg) {
     t = 0;
     do {
         Sleep(T);
+        wchar_t tmp[128];
+        wsprintf(tmp, TEXT("t: %i - previous: %i - sumByteSent: %i"), t, previousNumWrite, sumByteSent);
+        LOG.debug(tmp);
         if (previousNumWrite == sumByteSent) {
+           
             t += T;
             if (t > TO_SEND) {
                 lastErrorCode = 2007;

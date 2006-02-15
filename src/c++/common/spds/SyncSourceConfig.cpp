@@ -28,6 +28,7 @@ SyncSourceConfig::SyncSourceConfig() {
     syncModes = NULL;
     type      = NULL;
     sync      = NULL;
+    encodings = NULL;
 }
 
 SyncSourceConfig::~SyncSourceConfig() {
@@ -45,6 +46,10 @@ SyncSourceConfig::~SyncSourceConfig() {
     }
     if (sync) {
         delete [] sync;
+    }
+
+    if (encodings) {
+        delete [] encodings;
     }
 }
 
@@ -143,6 +148,22 @@ unsigned long SyncSourceConfig::getLast() const {
     return (unsigned long)last;
 }
 
+const wchar_t* SyncSourceConfig::getEncoding(wchar_t* buf) const {
+     if (buf == NULL) {
+        return encodings;
+    }
+
+    return wcscpy(buf, encodings); 
+}
+        
+void SyncSourceConfig::setEncoding(const wchar_t* s) {
+    safeDelete(&encodings);
+
+    if (s) {
+        encodings = new wchar_t[wcslen(s)+1];
+        wcscpy(encodings, s);
+    }
+}
 
 // ------------------------------------------------------------- Private methods
 
@@ -153,4 +174,5 @@ void SyncSourceConfig::assign(const SyncSourceConfig& sc) {
     setType     (sc.getType     ());
     setSync     (sc.getSync     ());
     setLast     (sc.getLast     ());
+    setEncoding (sc.getEncoding ());
 }

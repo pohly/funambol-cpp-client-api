@@ -117,6 +117,13 @@
          * Returns the SyncItem data size.
          */
         long getDataSize() EXTRA_SECTION_01;
+        
+         /*
+         * Sets the SyncItem data size.
+         *
+         * @param s the new size
+         */
+        void setDataSize(long s) EXTRA_SECTION_01;
 
         /*
          * Sets the SyncItem data mime type

@@ -27,6 +27,10 @@
     // Default len for stringdup (means: use source string len)
     #define STRINGDUP_NOLEN 0xFFFFFFFF
 
+    #define B64_ENCODING        TEXT("b64")
+    #define TEXT_PLAIN_ENCODING TEXT("text/plain")
+
+
 	struct codepage {
 		const wchar_t *name;
 		int  codepage_id;

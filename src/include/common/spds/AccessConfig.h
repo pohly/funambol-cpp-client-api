@@ -46,7 +46,7 @@ class AccessConfig {
 
         unsigned long maxMsgSize       ;
         unsigned long maxModPerMsg     ;
-
+        BOOL encryption                ;  // F = FALSE, T = TRUE
 
         unsigned int dirty;
 
@@ -237,6 +237,18 @@ class AccessConfig {
          * @param config the new value.
          */
         void assign(AccessConfig& s) EXTRA_SECTION_02;
+
+        /**
+         * Should the sync engine use a HTTP proxy?
+         */
+        BOOL getEncryption() EXTRA_SECTION_02;
+
+        /**
+         * Sets if the sync engine should use a HTTP proxy to access the server.
+         *
+         * @param useProxy FALSE for not use a proxy, TRUE otherwise
+         */
+        void setEncryption(BOOL useEncryption) EXTRA_SECTION_02;
 
 };
 

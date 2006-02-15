@@ -142,6 +142,31 @@ const wchar_t* SyncSource::getRemoteURI() {
 }
 
 
+/*
+ * Sets the encoding parameter
+ *
+ * @param ecnc - encoding
+ */
+void SyncSource::setEncoding(const wchar_t* enc) {
+    if (encoding) {
+        delete [] encoding;
+    }
+
+    if (enc) {
+        encoding = new wchar_t[wcslen(enc)+1];
+        wcscpy(encoding, enc);
+    } else {
+        encoding = stringdup(TEXT(""));
+    }
+}
+
+/*
+ * Returns the preferred synchronization mode for the SyncSource
+ */
+const wchar_t* SyncSource::getEncoding() {   
+    return encoding;   
+}
+
 
 /*
  * Sets the mime type standard for the source items

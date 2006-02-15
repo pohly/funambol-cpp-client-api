@@ -1,6 +1,6 @@
 <?html version="1.0" enconding="UTF-8"?>
 
-<!-- $Id: build.xml,v 1.1 2006-02-02 18:18:53 gazza Exp $
+<!-- $Id: build.xml,v 1.2 2006-02-15 16:51:04 magi Exp $
 =============================================================================
 Forge file for Funambol C++ API
 
@@ -71,8 +71,8 @@ Forge file for Funambol C++ API
       <echo message="Extracting ${cppapi.modulename}.${cppapi.tag}..."/>
       <echo message="cvs -z3 -d${cvsroot} export -r ${cppapi.tag} ${cppapi.modulename}"/>
       <exec dir="output" executable="cvs">
-        <arg line="-z3 -d${cvsroot} export -r ${cppapi.tag} ${cppapi.modulename}"/>
-      </exec>
+         <arg line="-z3 -d${cvsroot} export -r ${cppapi.tag} ${cppapi.modulename}"/>
+      </exec>      
     </target>
 
     <!--
