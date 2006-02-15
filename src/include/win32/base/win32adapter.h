@@ -34,19 +34,22 @@
 //#define __declspec(ignore)
 #define CHR(c) c
 
-inline void wcsprintf(wchar_t* s, wchar_t* format, ...);
 
+#define wcsprintf wsprintf
 
-
-
-inline void wcsprintf(wchar_t* s, wchar_t* format, ...) {
-    va_list args;
-
-    va_start( args, format );
-
-    vswprintf(s, format, args);
-
-    va_end(args);
-}
+//inline void wcsprintf(wchar_t* s, wchar_t* format, ...);
+//
+//
+//
+//
+//inline void wcsprintf(wchar_t* s, wchar_t* format, ...) {
+//    va_list args;
+//
+//    va_start( args, format );
+//
+//    vswprintf(s, format, args);
+//
+//    va_end(args);
+//}
 
 #endif
