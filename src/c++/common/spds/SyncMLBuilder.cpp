@@ -406,7 +406,32 @@ Alert* SyncMLBuilder::prepareAddrChangeAlert(SyncSource& s) {
     
     SyncItem *syncItem;
     ArrayList list;
+    for(syncItem = s.getFirstItem(); syncItem; syncItem = s.getNextItem()) {
+        int size = syncItem->getDataSize();        
+        
+        if( syncItem && size ) {  // only valid items
+            
+            char* syncData = new char[size + 1];
+            memset(syncData, 0, size + 1);
+            memcpy (syncData, (char*)syncItem->getData(), size); 
+            
+            wchar_t* syncDataW = toWideChar(syncData);
+            delete [] syncData; syncData = NULL;
 
+            StringBuffer itemData(syncDataW);
+            
+            ComplexData addr( itemData.c_str() );
+            Target target( TEXT("") );
+            Source source(syncItem->getKey());
+            // Build Item
+            Item item(&target, &source, NULL, &addr, FALSE);
+            // Add it to the list
+            list.add(item);
+
+            delete [] syncDataW; syncDataW = NULL;
+        }
+    }
+    /*
     for(syncItem = s.getFirstItem(); syncItem; syncItem = s.getNextItem()) {
         int size = syncItem->getDataSize()/sizeof(wchar_t);
         wchar_t *syncData = (wchar_t *)syncItem->getData();
@@ -424,6 +449,7 @@ Alert* SyncMLBuilder::prepareAddrChangeAlert(SyncSource& s) {
             list.add(item);
         }
     }
+    */
     // If no valid items were provided by the syncsource
     // return null alert
     if(list.isEmpty())

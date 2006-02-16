@@ -34,15 +34,15 @@ int setAllItems2() {
     
     SyncItem item;
     wchar_t name[64];
-    wchar_t data[128];   
+    char data[128];   
         
     for (int i = 0; i < 4; ++i) {
     
         wsprintf(name, TEXT("%s%d"), TEXT("item"), i);
-        wsprintf(data, TEXT("This is item in test2 %d"), i);
+        sprintf(data, "This is item in test2 %d", i);
 
         item.setKey(name);
-        item.setData(data  , (wcslen(data) + 1)*sizeof(wchar_t));
+        item.setData(data  , (strlen(data))*sizeof(char));
         Items2.add(item);              
     }           
     return 0;
@@ -62,19 +62,19 @@ int setModifiedItems2() {
 
             case 0:
                 item.setKey(TEXT("item5"));
-                item.setData(TEXT("This is a new item Four test2")  , 30*sizeof(wchar_t));
+                item.setData("This is a new item Four test2"  , 29*sizeof(char));
                 newItems2.add(item);
                 break;
             
             case 1:
                 item.setKey(TEXT("item1"));
-                item.setData(TEXT("This is the updated item One test2")  , 35*sizeof(wchar_t));
+                item.setData("This is the updated item One test2"  , 34*sizeof(char));
                 updatedItems2.add(item);
                 break;
 
             case 2:
                 item.setKey(TEXT("item3"));
-                item.setData(TEXT("This is the updated item Three test2"), 37*sizeof(wchar_t));
+                item.setData("This is the updated item Three test2", 36*sizeof(char));
                 updatedItems2.add(item);
                 break;
 
@@ -187,18 +187,39 @@ void TestSyncSource2::setItemStatus(const wchar_t* key, int status) {
 }
 
 int TestSyncSource2::addItem(SyncItem& item) {
-    wchar_t tmp[256];
+    wchar_t tmp[512];
     wsprintf(tmp, TEXT("added item: %s"), item.getKey());
-    item.setKey(TEXT("LUIDAssigned"));
-    LOG.debug(tmp);
+    LOG.info(tmp);
+    
+    LOG.info(TEXT("Data:"));
+    char tmp2[1024];  
+    memset(tmp2, 0, 1024);
+    strncpy(tmp2, (char*)item.getData(), item.getDataSize());
+    wchar_t* tmp3 = toWideChar(tmp2);
+    LOG.info(tmp3);
+    
+    wsprintf(tmp, TEXT("%s-luid"), item.getKey());
+    item.setKey(tmp);
+    
+    delete [] tmp3;
     return 200;
 }
 
 int TestSyncSource2::updateItem(SyncItem& item) {
     wchar_t tmp[256];
     wsprintf(tmp, TEXT("updated item: %s"), item.getKey());
-    LOG.debug(tmp);
+    LOG.info(tmp);
+    
+    LOG.info(TEXT("Data:"));
+    char tmp2[1024];  
+    memset(tmp2, 0, 1024);    
+    strncpy(tmp2, (char*)item.getData(), item.getDataSize());
+    wchar_t* tmp3 = toWideChar(tmp2);
+    LOG.info(tmp3);
+    
+    delete [] tmp3;
     return 200;
+       
 }
 
 int TestSyncSource2::deleteItem(SyncItem& item) {
