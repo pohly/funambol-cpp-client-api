@@ -481,9 +481,10 @@ int SyncManager::sync() {
     int ret              = 0;  
     BOOL last            = FALSE;
     ArrayList* list      = new ArrayList();
+    BOOL isFinalfromServer = FALSE;
 
-	//for refresh from server sync
-	allItemsList = new ArrayList*[sourcesNumber];
+    //for refresh from server sync
+    allItemsList = new ArrayList*[sourcesNumber];
 
     //
     // If this is the first message, currentState is STATE_PKG1_SENT,
@@ -495,7 +496,7 @@ int SyncManager::sync() {
 
     // The real number of source to sync
     for (count = 0; count < sourcesNumber; count ++) {
-		allItemsList[count] = NULL;
+        allItemsList[count] = NULL;
         if (!check[count])
             continue;
         toSync++;
@@ -509,7 +510,7 @@ int SyncManager::sync() {
         step = 0;
         last = FALSE;        
         iterator++;
-        
+
         if ( sources[count]->beginSync() ) {
             // Error from SyncSource
             lastErrorCode = ERR_UNSPECIFIED;
@@ -534,7 +535,7 @@ int SyncManager::sync() {
                 } else {
                     syncMLBuilder.setEncoding(PLAIN);
                 }   
-                
+
             }
 
             if (modificationCommand) {
@@ -567,236 +568,239 @@ int SyncManager::sync() {
 
             switch (sources[count]->getSyncMode()) {
                 case SYNC_SLOW: {   
-                    sItem = NULL;
-                    if (tot == 0) {                    
-                        sItem = sources[count]->getFirstItem();                        
-                        if (sItem) {
-                            syncItem = (SyncItem*)sItem->clone();
-                        }
-                    }
-                    tot = 0;
-                    do {
-                        if (syncItem == NULL) {
-                            sItem = sources[count]->getNextItem();
-                            if (sItem)
-                                syncItem = (SyncItem*)sItem->clone();                     
-                        }
-                        if (modificationCommand == NULL) {
-                            modificationCommand = syncMLBuilder.prepareModificationCommand(REPLACE_COMMAND_NAME, 
-                                    syncItem, sources[count]->getType());
-                        } else {
-                            syncMLBuilder.addItem(modificationCommand, REPLACE_COMMAND_NAME, syncItem, 
-                                    sources[count]->getType());
-                        }
+                                    sItem = NULL;
+                                    if (tot == 0) {                    
+                                        sItem = sources[count]->getFirstItem();                        
+                                        if (sItem) {
+                                            syncItem = (SyncItem*)sItem->clone();
+                                        }
+                                    }
+                                    tot = 0;
+                                    do {
+                                        if (syncItem == NULL) {
+                                            sItem = sources[count]->getNextItem();
+                                            if (sItem)
+                                                syncItem = (SyncItem*)sItem->clone();                     
+                                        }
+                                        if (modificationCommand == NULL) {
+                                            modificationCommand = syncMLBuilder.prepareModificationCommand(REPLACE_COMMAND_NAME, 
+                                                    syncItem, sources[count]->getType());
+                                        } else {
+                                            syncMLBuilder.addItem(modificationCommand, REPLACE_COMMAND_NAME, syncItem, 
+                                                    sources[count]->getType());
+                                        }
 
-                        if (syncItem) {
-                            delete syncItem; syncItem = NULL;// the item is only the pointer not another instance. to save mem                        
-                        }
-                        else {
-                            last = TRUE;
-                            break;
-                        }
-                        tot++;
-                        sItem = NULL;
-                    } while( tot < maxModPerMsg);                                                    
-                }; break;
+                                        if (syncItem) {
+                                            delete syncItem; syncItem = NULL;// the item is only the pointer not another instance. to save mem                        
+                                        }
+                                        else {
+                                            last = TRUE;
+                                            break;
+                                        }
+                                        tot++;
+                                        sItem = NULL;
+                                    } while( tot < maxModPerMsg);                                                    
+                                }; break;
 
                 case SYNC_REFRESH_FROM_SERVER:
-                    last = TRUE; 
-				    
-				    allItemsList[count] = new ArrayList();
-				    sItem = sources[count]->getFirstItemKey();
-                    if(sItem) {
-					    allItemsList[count]->add((ArrayElement&)*sItem);
-                        delete sItem;
-                    }
-				    sItem = sources[count]->getNextItemKey();
-				    while(sItem) {
-				        allItemsList[count]->add((ArrayElement&)*sItem);
-                        delete sItem;
-				        sItem = sources[count]->getNextItemKey();	
-				    } 
+                                last = TRUE; 
 
-                    break;
+                                allItemsList[count] = new ArrayList();
+                                sItem = sources[count]->getFirstItemKey();
+                                if(sItem) {
+                                    allItemsList[count]->add((ArrayElement&)*sItem);
+                                    delete sItem;
+                                }
+                                sItem = sources[count]->getNextItemKey();
+                                while(sItem) {
+                                    allItemsList[count]->add((ArrayElement&)*sItem);
+                                    delete sItem;
+                                    sItem = sources[count]->getNextItemKey();	
+                                } 
+
+                                break;
 
                 case SYNC_ONE_WAY_FROM_SERVER:
-                    last = TRUE;
-                    break;
-
-				case SYNC_REFRESH_FROM_CLIENT: {   
-                    sItem = NULL;
-                    if (tot == 0) {                    
-                        sItem = sources[count]->getFirstItem();                        
-                        if (sItem) {
-                            syncItem = (SyncItem*)sItem->clone();
-                        }
-                    }
-                    tot = 0;
-                    do {
-                        if (syncItem == NULL) {
-                            sItem = sources[count]->getNextItem();
-                            if (sItem)
-                                syncItem = (SyncItem*)sItem->clone();                     
-                        }
-                        if (modificationCommand == NULL) {
-                            modificationCommand = syncMLBuilder.prepareModificationCommand(REPLACE_COMMAND_NAME, 
-                                    syncItem, sources[count]->getType());
-                        } else {
-                            syncMLBuilder.addItem(modificationCommand, REPLACE_COMMAND_NAME, syncItem, 
-                                    sources[count]->getType());
-                        }
-
-                        if (syncItem) {
-                            delete syncItem; syncItem = NULL;// the item is only the pointer not another instance. to save mem                        
-                        }
-                        else {
-                            last = TRUE;
-                            break;
-                        }
-                        tot++;
-                        sItem = NULL;
-                    } while( tot < maxModPerMsg);                                                    
-                }; break;
-
-                default: {    
-                    tot = 0;
-                    //
-                    // New Item
-                    //
-                    sItem = NULL;
-                    if (step == 0) {
-                        sItem = sources[count]->getFirstNewItem(); 
-                        if (sItem)
-                            syncItem = (SyncItem*)sItem->clone();
-                        step++;
-                        if (syncItem == NULL)
-                            step++;                        
-                    }
-                    if (step == 1) {                                                          
-                        do {
-                            if (syncItem == NULL) {
-                                sItem = sources[count]->getNextNewItem();
-                                if (sItem)   
-                                    syncItem = (SyncItem*)sItem->clone(); 
-                            }
-                            if (modificationCommand == NULL) {
-                                modificationCommand = syncMLBuilder.prepareModificationCommand(ADD_COMMAND_NAME, 
-                                        syncItem, sources[count]->getType());
-                            } else {
-                                syncMLBuilder.addItem(modificationCommand, ADD_COMMAND_NAME, 
-                                        syncItem, sources[count]->getType());
-                            }
-
-                            if (syncItem) {
-                                delete syncItem; syncItem = NULL;
-                            }
-                            else {
-                                step++;
+                                last = TRUE;
                                 break;
+
+                case SYNC_REFRESH_FROM_CLIENT:
+                    {   
+                        sItem = NULL;
+                        if (tot == 0) {                    
+                            sItem = sources[count]->getFirstItem();                        
+                            if (sItem) {
+                                syncItem = (SyncItem*)sItem->clone();
                             }
-                            tot++;
-                            sItem = NULL;
-                        } while( tot < maxModPerMsg);
-                    }
-
-                    //
-                    // Updated Item
-                    //
-                    if (step == 2) {
-
-                        if (modificationCommand) {
-                            list->add(*modificationCommand);
-                            delete modificationCommand; 
-                            modificationCommand = NULL;
                         }
-
-                        sItem = sources[count]->getFirstUpdatedItem();
-                        if (sItem)
-                            syncItem = (SyncItem*)sItem->clone();
-
-                        step++;
-                        if (syncItem == NULL)
-                            step++;    
-                    }
-                    if (step == 3) {
+                        tot = 0;
                         do {
                             if (syncItem == NULL) {
-                                sItem = sources[count]->getNextUpdatedItem();
+                                sItem = sources[count]->getNextItem();
                                 if (sItem)
-                                    syncItem = (SyncItem*)sItem->clone();
-
+                                    syncItem = (SyncItem*)sItem->clone();                     
                             }
                             if (modificationCommand == NULL) {
                                 modificationCommand = syncMLBuilder.prepareModificationCommand(REPLACE_COMMAND_NAME, 
                                         syncItem, sources[count]->getType());
                             } else {
-                                syncMLBuilder.addItem(modificationCommand, REPLACE_COMMAND_NAME, 
-                                        syncItem, sources[count]->getType());
+                                syncMLBuilder.addItem(modificationCommand, REPLACE_COMMAND_NAME, syncItem, 
+                                        sources[count]->getType());
                             }
 
-                            if (syncItem) {                            
-                                delete syncItem; syncItem = NULL;
+                            if (syncItem) {
+                                delete syncItem; syncItem = NULL;// the item is only the pointer not another instance. to save mem                        
                             }
                             else {
-                                step++;
+                                last = TRUE;
                                 break;
                             }
                             tot++;
                             sItem = NULL;
-                        } while( tot < maxModPerMsg);                                                      
-                    } 
+                        } while( tot < maxModPerMsg);                                                    
+                    }
+                    break;
 
-                    //
-                    // Deleted Item
-                    //
-                    if (step == 4) {
+                default:
+                    {    
+                        tot = 0;
+                        //
+                        // New Item
+                        //
+                        sItem = NULL;
+                        if (step == 0) {
+                            sItem = sources[count]->getFirstNewItem(); 
+                            if (sItem)
+                                syncItem = (SyncItem*)sItem->clone();
+                            step++;
+                            if (syncItem == NULL)
+                                step++;                        
+                        }
+                        if (step == 1) {                                                          
+                            do {
+                                if (syncItem == NULL) {
+                                    sItem = sources[count]->getNextNewItem();
+                                    if (sItem)   
+                                        syncItem = (SyncItem*)sItem->clone(); 
+                                }
+                                if (modificationCommand == NULL) {
+                                    modificationCommand = syncMLBuilder.prepareModificationCommand(ADD_COMMAND_NAME, 
+                                            syncItem, sources[count]->getType());
+                                } else {
+                                    syncMLBuilder.addItem(modificationCommand, ADD_COMMAND_NAME, 
+                                            syncItem, sources[count]->getType());
+                                }
 
-                        if (modificationCommand) {
-                            list->add(*modificationCommand);
-                            delete modificationCommand; 
-                            modificationCommand = NULL;
+                                if (syncItem) {
+                                    delete syncItem; syncItem = NULL;
+                                }
+                                else {
+                                    step++;
+                                    break;
+                                }
+                                tot++;
+                                sItem = NULL;
+                            } while( tot < maxModPerMsg);
                         }
 
-                        sItem = sources[count]->getFirstDeletedItem();
+                        //
+                        // Updated Item
+                        //
+                        if (step == 2) {
 
-                        if (sItem)
-                            syncItem = (SyncItem*)sItem->clone();
+                            if (modificationCommand) {
+                                list->add(*modificationCommand);
+                                delete modificationCommand; 
+                                modificationCommand = NULL;
+                            }
 
-                        step++;
-                        if (syncItem == NULL)
-                            step++;    
+                            sItem = sources[count]->getFirstUpdatedItem();
+                            if (sItem)
+                                syncItem = (SyncItem*)sItem->clone();
+
+                            step++;
+                            if (syncItem == NULL)
+                                step++;    
+                        }
+                        if (step == 3) {
+                            do {
+                                if (syncItem == NULL) {
+                                    sItem = sources[count]->getNextUpdatedItem();
+                                    if (sItem)
+                                        syncItem = (SyncItem*)sItem->clone();
+
+                                }
+                                if (modificationCommand == NULL) {
+                                    modificationCommand = syncMLBuilder.prepareModificationCommand(REPLACE_COMMAND_NAME, 
+                                            syncItem, sources[count]->getType());
+                                } else {
+                                    syncMLBuilder.addItem(modificationCommand, REPLACE_COMMAND_NAME, 
+                                            syncItem, sources[count]->getType());
+                                }
+
+                                if (syncItem) {                            
+                                    delete syncItem; syncItem = NULL;
+                                }
+                                else {
+                                    step++;
+                                    break;
+                                }
+                                tot++;
+                                sItem = NULL;
+                            } while( tot < maxModPerMsg);                                                      
+                        } 
+
+                        //
+                        // Deleted Item
+                        //
+                        if (step == 4) {
+
+                            if (modificationCommand) {
+                                list->add(*modificationCommand);
+                                delete modificationCommand; 
+                                modificationCommand = NULL;
+                            }
+
+                            sItem = sources[count]->getFirstDeletedItem();
+
+                            if (sItem)
+                                syncItem = (SyncItem*)sItem->clone();
+
+                            step++;
+                            if (syncItem == NULL)
+                                step++;    
+                        }
+                        if (step == 5) {
+                            do {
+                                if (syncItem == NULL) {
+                                    sItem = sources[count]->getNextDeletedItem(); 
+                                    if (sItem)
+                                        syncItem = (SyncItem*)sItem->clone();                        
+                                }
+                                if (modificationCommand == NULL) {
+                                    modificationCommand = syncMLBuilder.prepareModificationCommand(DELETE_COMMAND_NAME, 
+                                            syncItem, sources[count]->getType());
+                                } else {
+                                    syncMLBuilder.addItem(modificationCommand, DELETE_COMMAND_NAME, 
+                                            syncItem, sources[count]->getType());
+                                }
+
+                                if (syncItem) {                            
+                                    delete syncItem; syncItem = NULL;
+                                }
+                                else {
+                                    step++;
+                                    break;
+                                }
+                                tot++;
+                                sItem = NULL;
+                            } while( tot < maxModPerMsg);           
+                        }
+                        if (step == 6 && syncItem == NULL)
+                            last = TRUE;
+
+                        break;
                     }
-                    if (step == 5) {
-                        do {
-                            if (syncItem == NULL) {
-                                sItem = sources[count]->getNextDeletedItem(); 
-                                if (sItem)
-                                    syncItem = (SyncItem*)sItem->clone();                        
-                            }
-                            if (modificationCommand == NULL) {
-                                modificationCommand = syncMLBuilder.prepareModificationCommand(DELETE_COMMAND_NAME, 
-                                        syncItem, sources[count]->getType());
-                            } else {
-                                syncMLBuilder.addItem(modificationCommand, DELETE_COMMAND_NAME, 
-                                        syncItem, sources[count]->getType());
-                            }
-
-                            if (syncItem) {                            
-                                delete syncItem; syncItem = NULL;
-                            }
-                            else {
-                                step++;
-                                break;
-                            }
-                            tot++;
-                            sItem = NULL;
-                        } while( tot < maxModPerMsg);           
-                    }
-                    if (step == 6 && syncItem == NULL)
-                        last = TRUE;
-
-                    break;
-                }
             }
 
             if (modificationCommand) {
@@ -845,6 +849,7 @@ int SyncManager::sync() {
                 goto finally;
             }               
 
+            isFinalfromServer = syncml->isLastMessage();
             ret = syncMLProcessor.processSyncHdrStatus(syncml);
 
             if (isErrorStatus(ret)) {
@@ -879,263 +884,266 @@ int SyncManager::sync() {
     // send 222 alert code to retrieve the item from server
     //    
 
-    status = syncMLBuilder.prepareSyncHdrStatus(NULL, 200);
-    commands->add(*status);
-    deleteStatus(&status); 
-    for (count = 0; count < sourcesNumber; count ++) {
-        if(!check[count])
-            continue;
-        alert = syncMLBuilder.prepareRequestAlert(*sources[count]);
-        commands->add(*alert);
-        deleteAlert(&alert);
-    }
-
-    syncml = syncMLBuilder.prepareSyncML(commands, last);
-    msg    = syncMLBuilder.prepareMsg(syncml);        
-
-    LOG.debug(TEXT("Alert to request server changes"));
-    LOG.debug(msg);
-
-    responseMsg = transportAgent->sendMessage(msg);
-    if (responseMsg == NULL) {
-        ret=lastErrorCode;
-        goto finally;
-    }      
-    // increment the msgRef after every send message
-    syncMLBuilder.increaseMsgRef();
-    syncMLBuilder.resetCommandID();
-
-    deleteSyncML(&syncml);
-    safeDelete(&msg);
-
-    syncml = syncMLProcessor.processMsg(responseMsg);
-    safeDelete(&responseMsg);
-    deleteArrayList(&commands);
-    
-    if (syncml == NULL) {
-        ret = lastErrorCode;
-        goto finally;
-    }  
-    ret = syncMLProcessor.processSyncHdrStatus(syncml);
-
-    if (isErrorStatus(ret)) {
-        ret = lastErrorCode;
-        wsprintf(lastErrorMsg, TEXT("Error: error code %i"), ret);
-        LOG.debug(lastErrorMsg);
-        goto finally;
-    }
-    ret = 0;
-
-    //
-    // Process the items returned from server
-    //
-
-    do {              
-        last = syncml->getSyncBody()->getFinalMsg();
-        int code = 0, i = 0, j = 0;             
-        Item* item              = NULL;
-        ArrayList* list         = new ArrayList();  
-        ArrayList* statusList   = new ArrayList();
-        ArrayList* items        = new ArrayList();
-        Meta* meta              = NULL;
-        Target* t               = NULL;
-        Source* s               = NULL;
-        wchar_t* commandName    = NULL;
-        wchar_t* dataType       = NULL;        
-        wchar_t* itemName       = NULL;
-        SyncItem  syncItem;
-        SyncMap*   syncMap      = NULL;
-        Sync* sync              = NULL;        
-
+    if (isFinalfromServer == FALSE)
+    {
         status = syncMLBuilder.prepareSyncHdrStatus(NULL, 200);
         commands->add(*status);
         deleteStatus(&status); 
-
-        /* The server should not send any alert...
-           list = syncMLProcessor.getCommands(syncml->getSyncBody(), ALERT);   
-           status = syncMLBuilder.prepareAlertStatus(*sources[0], list, 200);
-
-           if (status) {
-           commands->add(*status);
-           deleteStatus(&status);    
-           }
-           deleteArrayList(&list);
-         */
         for (count = 0; count < sourcesNumber; count ++) {
-            if (!check[count])
+            if(!check[count])
                 continue;
+            alert = syncMLBuilder.prepareRequestAlert(*sources[count]);
+            commands->add(*alert);
+            deleteAlert(&alert);
+        }
 
-            sync = syncMLProcessor.processSyncResponse(*sources[count], syncml);
+        syncml = syncMLBuilder.prepareSyncML(commands, last);
+        msg    = syncMLBuilder.prepareMsg(syncml);        
 
-            if (sync) {
-                // items = sync->getCommands()->clone();
-                items = sync->getCommands();
-                status = syncMLBuilder.prepareSyncStatus(*sources[count], sync);
-                statusList->add(*status);
-                deleteStatus(&status);
-            }                               
+        LOG.debug(TEXT("Alert to request server changes"));
+        LOG.debug(msg);
 
-            ArrayList* previousStatus = new ArrayList();
-            wchar_t* format = NULL;
-            for (i = 0; i < items->size(); i++) {
-                modificationCommand = (ModificationCommand*)(items->get(i));
-                meta = modificationCommand->getMeta();
-                if (meta) {
-                    dataType = meta->getType(NULL);
-                    format = meta->getFormat(NULL); 
-                }
-                list = modificationCommand->getItems();
-                commandName = modificationCommand->getName();    
+        responseMsg = transportAgent->sendMessage(msg);
+        if (responseMsg == NULL) {
+            ret=lastErrorCode;
+            goto finally;
+        }      
+        // increment the msgRef after every send message
+        syncMLBuilder.increaseMsgRef();
+        syncMLBuilder.resetCommandID();
 
-                for (j = 0; j < list->size(); j++) {
-                    item = (Item*)list->get(j);
-                    if (item == NULL)
-                        goto finally;
+        deleteSyncML(&syncml);
+        safeDelete(&msg);
 
-                    //
-                    // set the syncItem element
-                    //
-                    s = item->getSource();
-                    if (s) { 
-                        itemName = (wchar_t*)s->getLocURI();                        
-                    } else {
-                        t = item->getTarget();                
-                        itemName = (wchar_t*)t->getLocURI();                        
+        syncml = syncMLProcessor.processMsg(responseMsg);
+        safeDelete(&responseMsg);
+        deleteArrayList(&commands);
+
+        if (syncml == NULL) {
+            ret = lastErrorCode;
+            goto finally;
+        }  
+        ret = syncMLProcessor.processSyncHdrStatus(syncml);
+
+        if (isErrorStatus(ret)) {
+            ret = lastErrorCode;
+            wsprintf(lastErrorMsg, TEXT("Error: error code %i"), ret);
+            LOG.debug(lastErrorMsg);
+            goto finally;
+        }
+        ret = 0;
+
+        //
+        // Process the items returned from server
+        //
+
+        do {              
+            last = syncml->getSyncBody()->getFinalMsg();
+            int code = 0, i = 0, j = 0;             
+            Item* item              = NULL;
+            ArrayList* list         = new ArrayList();  
+            ArrayList* statusList   = new ArrayList();
+            ArrayList* items        = new ArrayList();
+            Meta* meta              = NULL;
+            Target* t               = NULL;
+            Source* s               = NULL;
+            wchar_t* commandName    = NULL;
+            wchar_t* dataType       = NULL;        
+            wchar_t* itemName       = NULL;
+            SyncItem  syncItem;
+            SyncMap*   syncMap      = NULL;
+            Sync* sync              = NULL;        
+
+            status = syncMLBuilder.prepareSyncHdrStatus(NULL, 200);
+            commands->add(*status);
+            deleteStatus(&status); 
+
+            /* The server should not send any alert...
+               list = syncMLProcessor.getCommands(syncml->getSyncBody(), ALERT);   
+               status = syncMLBuilder.prepareAlertStatus(*sources[0], list, 200);
+
+               if (status) {
+               commands->add(*status);
+               deleteStatus(&status);    
+               }
+               deleteArrayList(&list);
+             */
+            for (count = 0; count < sourcesNumber; count ++) {
+                if (!check[count])
+                    continue;
+
+                sync = syncMLProcessor.processSyncResponse(*sources[count], syncml);
+
+                if (sync) {
+                    // items = sync->getCommands()->clone();
+                    items = sync->getCommands();
+                    status = syncMLBuilder.prepareSyncStatus(*sources[count], sync);
+                    statusList->add(*status);
+                    deleteStatus(&status);
+                }                               
+
+                ArrayList* previousStatus = new ArrayList();
+                wchar_t* format = NULL;
+                for (i = 0; i < items->size(); i++) {
+                    modificationCommand = (ModificationCommand*)(items->get(i));
+                    meta = modificationCommand->getMeta();
+                    if (meta) {
+                        dataType = meta->getType(NULL);
+                        format = meta->getFormat(NULL); 
                     }
-                    syncItem = SyncItem(itemName);
-                    
-                    wchar_t* toConvert = NULL;
-                    char* data = NULL;
-                    long size = 0;
-                    if (item->getData()) {
-                        toConvert = item->getData()->getData(NULL);    
-                        
+                    list = modificationCommand->getItems();
+                    commandName = modificationCommand->getName();    
+
+                    for (j = 0; j < list->size(); j++) {
+                        item = (Item*)list->get(j);
+                        if (item == NULL)
+                            goto finally;
+
                         //
-                        // Retrieving how the content has been encoded
-                        // and then processing the content accordingly
+                        // set the syncItem element
                         //
-                        if (format == NULL) {
-                            Meta* m = item->getMeta();
-                            if (m) {
-                                format = m->getFormat(NULL);                            
-                            }
-                        } 
-                        if (format) {
-                            data = processItemContent(toConvert, format, &size);
-                            syncItem.setData(data, size);
-                            delete [] data; data = NULL;
+                        s = item->getSource();
+                        if (s) { 
+                            itemName = (wchar_t*)s->getLocURI();                        
                         } else {
-                            data = toMultibyte(toConvert);
-                            syncItem.setData(data, strlen(data));                        
-                            delete [] data; data = NULL;
+                            t = item->getTarget();                
+                            itemName = (wchar_t*)t->getLocURI();                        
                         }
-                    }
-                    if (dataType) {
-                        syncItem.setDataType(dataType);   
-                    }
-                    syncItem.setSourceParent(item->getSourceParent());
-                    syncItem.setTargetParent(item->getTargetParent());
+                        syncItem = SyncItem(itemName);
 
-                    syncItem.setModificationTime(sources[count]->getNextSync());
+                        wchar_t* toConvert = NULL;
+                        char* data = NULL;
+                        long size = 0;
+                        if (item->getData()) {
+                            toConvert = item->getData()->getData(NULL);    
 
-                    if (commandName && wcscmp(commandName, ADD) == 0) {   
-                        syncItem.setState(SYNC_STATE_NEW);
-                        code = sources[count]->addItem(syncItem);      
-                        status = syncMLBuilder.prepareItemStatus(ADD, itemName, 
-                                modificationCommand->getCmdID()->getCmdID(), 
-                                code);                    
-                        if (code >= 200 && code <= 299) {
-                            syncMap = new SyncMap((wchar_t*)item->getSource()->getLocURI(), syncItem.getKey()); 
-                            mappings[count]->add(*syncMap);
-                            
-                            //for refresh sync from server; delete from list the items that were already on device
-                            if(allItemsList[count]) {
-			                    int size = allItemsList[count]->size();
-			                    for(int i = 0; i < size; i++) {
-				                    SyncItem* syncItemRefresh = (SyncItem*)((SyncItem*)allItemsList[count]->get(i));
-                                    if(syncItemRefresh->getKey() == syncItem.getKey()) {
-				                        allItemsList[count]->remove(i); 
-				                        delete syncItemRefresh;
-                                    }
-			                    }
+                            //
+                            // Retrieving how the content has been encoded
+                            // and then processing the content accordingly
+                            //
+                            if (format == NULL) {
+                                Meta* m = item->getMeta();
+                                if (m) {
+                                    format = m->getFormat(NULL);                            
+                                }
+                            } 
+                            if (format) {
+                                data = processItemContent(toConvert, format, &size);
+                                syncItem.setData(data, size);
+                                delete [] data; data = NULL;
+                            } else {
+                                data = toMultibyte(toConvert);
+                                syncItem.setData(data, strlen(data));                        
+                                delete [] data; data = NULL;
                             }
+                        }
+                        if (dataType) {
+                            syncItem.setDataType(dataType);   
+                        }
+                        syncItem.setSourceParent(item->getSourceParent());
+                        syncItem.setTargetParent(item->getTargetParent());
 
-                            delete syncMap; syncMap = NULL;
-                        }                    
+                        syncItem.setModificationTime(sources[count]->getNextSync());
+
+                        if (commandName && wcscmp(commandName, ADD) == 0) {   
+                            syncItem.setState(SYNC_STATE_NEW);
+                            code = sources[count]->addItem(syncItem);      
+                            status = syncMLBuilder.prepareItemStatus(ADD, itemName, 
+                                    modificationCommand->getCmdID()->getCmdID(), 
+                                    code);                    
+                            if (code >= 200 && code <= 299) {
+                                syncMap = new SyncMap((wchar_t*)item->getSource()->getLocURI(), syncItem.getKey()); 
+                                mappings[count]->add(*syncMap);
+
+                                //for refresh sync from server; delete from list the items that were already on device
+                                if(allItemsList[count]) {
+                                    int size = allItemsList[count]->size();
+                                    for(int i = 0; i < size; i++) {
+                                        SyncItem* syncItemRefresh = (SyncItem*)((SyncItem*)allItemsList[count]->get(i));
+                                        if(syncItemRefresh->getKey() == syncItem.getKey()) {
+                                            allItemsList[count]->remove(i); 
+                                            delete syncItemRefresh;
+                                        }
+                                    }
+                                }
+
+                                delete syncMap; syncMap = NULL;
+                            }                    
+                        }
+                        else if (commandName && wcscmp(commandName, REPLACE) == 0) {        
+                            syncItem.setState(SYNC_STATE_UPDATED);
+                            code = sources[count]->updateItem(syncItem);                
+                            status = syncMLBuilder.prepareItemStatus(REPLACE, itemName, 
+                                    modificationCommand->getCmdID()->getCmdID(), 
+                                    code);                
+                        }
+                        else if (commandName && wcscmp(commandName, DEL) == 0) {
+                            syncItem.setState(SYNC_STATE_DELETED);
+                            code = sources[count]->deleteItem(syncItem);        
+                            status = syncMLBuilder.prepareItemStatus(DEL, itemName, 
+                                    modificationCommand->getCmdID()->getCmdID(), 
+                                    code);            
+                        }                
+                        syncMLBuilder.addItemStatus(previousStatus, status);
+                        deleteStatus(&status);            
                     }
-                    else if (commandName && wcscmp(commandName, REPLACE) == 0) {        
-                        syncItem.setState(SYNC_STATE_UPDATED);
-                        code = sources[count]->updateItem(syncItem);                
-                        status = syncMLBuilder.prepareItemStatus(REPLACE, itemName, 
-                                modificationCommand->getCmdID()->getCmdID(), 
-                                code);                
+
+                    if (previousStatus) {
+                        statusList->add(previousStatus);
+                        deleteArrayList(&previousStatus);                    
                     }
-                    else if (commandName && wcscmp(commandName, DEL) == 0) {
-                        syncItem.setState(SYNC_STATE_DELETED);
-                        code = sources[count]->deleteItem(syncItem);        
-                        status = syncMLBuilder.prepareItemStatus(DEL, itemName, 
-                                modificationCommand->getCmdID()->getCmdID(), 
-                                code);            
-                    }                
-                    syncMLBuilder.addItemStatus(previousStatus, status);
-                    deleteStatus(&status);            
+
                 }
-                
-                if (previousStatus) {
-                    statusList->add(previousStatus);
-                    deleteArrayList(&previousStatus);                    
+            } // End for (count = 0; count < sourcesNumber; count ++) 
+
+            // deleteArrayList(&items);                
+            // deleteArrayList(&list);
+
+            commands->add(statusList);
+
+            if (!last) {
+                deleteSyncML(&syncml);
+                syncml = syncMLBuilder.prepareSyncML(commands, last);
+                msg    = syncMLBuilder.prepareMsg(syncml);        
+
+                LOG.debug(TEXT("Status to the server"));
+                LOG.debug(msg);
+
+                responseMsg = transportAgent->sendMessage(msg);
+                if (responseMsg == NULL) {
+                    ret=lastErrorCode;
+                    goto finally;
+                }      
+                // increment the msgRef after every send message
+                syncMLBuilder.increaseMsgRef();
+                syncMLBuilder.resetCommandID();
+
+                deleteSyncML(&syncml);
+                safeDelete(&msg);
+
+                syncml = syncMLProcessor.processMsg(responseMsg);
+                safeDelete(&responseMsg);
+                deleteArrayList(&commands);
+                if (syncml == NULL) {
+                    ret = lastErrorCode;
+                    goto finally;
+                }  
+                ret = syncMLProcessor.processSyncHdrStatus(syncml);
+
+                if (isErrorStatus(ret)) {
+                    ret = lastErrorCode;
+                    wsprintf(lastErrorMsg, TEXT("Error: error code %i"), ret);
+                    LOG.debug(lastErrorMsg);
+                    goto finally;
                 }
+                ret = 0;
 
-            }
-        } // End for (count = 0; count < sourcesNumber; count ++) 
+            }        
+            deleteArrayList(&statusList);
 
-        // deleteArrayList(&items);                
-        // deleteArrayList(&list);
+        } while (last == FALSE);
 
-        commands->add(statusList);
-
-        if (!last) {
-            deleteSyncML(&syncml);
-            syncml = syncMLBuilder.prepareSyncML(commands, last);
-            msg    = syncMLBuilder.prepareMsg(syncml);        
-
-            LOG.debug(TEXT("Status to the server"));
-            LOG.debug(msg);
-
-            responseMsg = transportAgent->sendMessage(msg);
-            if (responseMsg == NULL) {
-                ret=lastErrorCode;
-                goto finally;
-            }      
-            // increment the msgRef after every send message
-            syncMLBuilder.increaseMsgRef();
-            syncMLBuilder.resetCommandID();
-
-            deleteSyncML(&syncml);
-            safeDelete(&msg);
-
-            syncml = syncMLProcessor.processMsg(responseMsg);
-            safeDelete(&responseMsg);
-            deleteArrayList(&commands);
-            if (syncml == NULL) {
-                ret = lastErrorCode;
-                goto finally;
-            }  
-            ret = syncMLProcessor.processSyncHdrStatus(syncml);
-
-            if (isErrorStatus(ret)) {
-                ret = lastErrorCode;
-                wsprintf(lastErrorMsg, TEXT("Error: error code %i"), ret);
-                LOG.debug(lastErrorMsg);
-                goto finally;
-            }
-            ret = 0;
-
-        }        
-        deleteArrayList(&statusList);
-
-    } while (last == FALSE);
-
+    }
 finally:
 
     safeDelete(&responseMsg);
@@ -1171,116 +1179,119 @@ int SyncManager::endSync() {
         if (!check[count])
             continue;
 
-        iterator++;
-        last = FALSE;
-        i = 0;
-        do {
-            tot = -1;
-            if (commands->isEmpty()) {
-                status = syncMLBuilder.prepareSyncHdrStatus(NULL, 200);
-                commands->add(*status);
-                deleteStatus(&status); 
+		if ((sources[count]->getSyncMode()) != SYNC_ONE_WAY_FROM_CLIENT)
+		{
+			iterator++;
+			last = FALSE;
+			i = 0;
+			do {
+				tot = -1;
+				if (commands->isEmpty()) {
+					status = syncMLBuilder.prepareSyncHdrStatus(NULL, 200);
+					commands->add(*status);
+					deleteStatus(&status); 
             
-                /* The server should not send any alert...
-                list = syncMLProcessor.getCommands(syncml->getSyncBody(), ALERT);   
-                status = syncMLBuilder.prepareAlertStatus(*sources[0], list, 200);
-                if (status) {
-                    commands->add(*status);
-                    deleteStatus(&status);    
-                }
-                deleteArrayList(&list),
-                */
-            }
+					/* The server should not send any alert...
+					list = syncMLProcessor.getCommands(syncml->getSyncBody(), ALERT);   
+					status = syncMLBuilder.prepareAlertStatus(*sources[0], list, 200);
+					if (status) {
+						commands->add(*status);
+						deleteStatus(&status);    
+					}
+					deleteArrayList(&list),
+					*/
+				}
         
-            if (mappings[count]->size() > 0)
-                map = syncMLBuilder.prepareMapCommand(*sources[count]);
-            else if (iterator != toSync)
-                break;
-            else
-                last = TRUE;
+				if (mappings[count]->size() > 0)
+					map = syncMLBuilder.prepareMapCommand(*sources[count]);
+				else if (iterator != toSync)
+					break;
+				else
+					last = TRUE;
         
-            for (i; i < mappings[count]->size(); i++) {                                                      
-                tot++;
-                MapItem* mapItem = syncMLBuilder.prepareMapItem((SyncMap*)mappings[count]->get(i));
-                syncMLBuilder.addMapItem(map, mapItem);
+				for (i; i < mappings[count]->size(); i++) {                                                      
+					tot++;
+					MapItem* mapItem = syncMLBuilder.prepareMapItem((SyncMap*)mappings[count]->get(i));
+					syncMLBuilder.addMapItem(map, mapItem);
             
-                deleteMapItem(&mapItem);                        
+					deleteMapItem(&mapItem);                        
             
-                if (tot == ((int)maxModPerMsg - 1)) {
-                    i++;
-                    last = FALSE;
-                    break; 
+					if (tot == ((int)maxModPerMsg - 1)) {
+						i++;
+						last = FALSE;
+						break; 
                     
-                }
-                last = TRUE;
-            }
+					}
+					last = TRUE;
+				}
             
-            if (i == mappings[count]->size()) {
-                last = TRUE;
-            }
+				if (i == mappings[count]->size()) {
+					last = TRUE;
+				}
 
-            if (mappings[count]->size() > 0)
-                commands->add(*map);
+				if (mappings[count]->size() > 0)
+					commands->add(*map);
 
-            syncml    = syncMLBuilder.prepareSyncML(commands, iterator != toSync ? FALSE : last);
-            mapMsg    = syncMLBuilder.prepareMsg(syncml);                   
+				syncml    = syncMLBuilder.prepareSyncML(commands, iterator != toSync ? FALSE : last);
+				mapMsg    = syncMLBuilder.prepareMsg(syncml);                   
     
-            LOG.debug(TEXT("Mapping"));
-            LOG.debug(mapMsg);
+				LOG.debug(TEXT("Mapping"));
+				LOG.debug(mapMsg);
     
-            responseMsg = transportAgent->sendMessage(mapMsg);
-            if (responseMsg == NULL) {
-                ret=lastErrorCode;
-                goto finally;
-            }      
-            // increment the msgRef after every send message
-            syncMLBuilder.increaseMsgRef();
-            syncMLBuilder.resetCommandID();
+				responseMsg = transportAgent->sendMessage(mapMsg);
+				if (responseMsg == NULL) {
+					ret=lastErrorCode;
+					goto finally;
+				}      
+				// increment the msgRef after every send message
+				syncMLBuilder.increaseMsgRef();
+				syncMLBuilder.resetCommandID();
 
-            deleteSyncML(&syncml);
-            safeDelete(&mapMsg);
+				deleteSyncML(&syncml);
+				safeDelete(&mapMsg);
 
-            syncml = syncMLProcessor.processMsg(responseMsg);
-            safeDelete(&responseMsg);
-            deleteArrayList(&commands);
+				syncml = syncMLProcessor.processMsg(responseMsg);
+				safeDelete(&responseMsg);
+				deleteArrayList(&commands);
             
-            if (syncml == NULL) {
-                ret = lastErrorCode;
-                goto finally;
-            }  
-            ret = syncMLProcessor.processSyncHdrStatus(syncml);
+				if (syncml == NULL) {
+					ret = lastErrorCode;
+					goto finally;
+				}  
+				ret = syncMLProcessor.processSyncHdrStatus(syncml);
 
-            if (isErrorStatus(ret)) {
-                ret = lastErrorCode;
-                wsprintf(lastErrorMsg, TEXT("Error: error code %i"), ret);
-                LOG.debug(lastErrorMsg);
-                goto finally;
-            }
-            ret = 0;
+				if (isErrorStatus(ret)) {
+					ret = lastErrorCode;
+					wsprintf(lastErrorMsg, TEXT("Error: error code %i"), ret);
+					LOG.debug(lastErrorMsg);
+					goto finally;
+				}
+				ret = 0;
 
-            //
-            // Process the status of mapping
-            //                        
-                ret = syncMLProcessor.processMapResponse(*sources[count], syncml->getSyncBody());
-            if (ret == -1) {
-                ret = lastErrorCode;
-                goto finally;
-            }
+				//
+				// Process the status of mapping
+				//                        
+					ret = syncMLProcessor.processMapResponse(*sources[count], syncml->getSyncBody());
+				if (ret == -1) {
+					ret = lastErrorCode;
+					goto finally;
+				}
 
-        } while(!last);           
+			} while(!last);           
             
-        if(allItemsList[count]) {
-			int size = allItemsList[count]->size();
-			for(int i = 0; i < size; i++) {
-				SyncItem* syncItem = (SyncItem*)((SyncItem*)allItemsList[count]->get(i));
-                if(syncItem) {
-				    sources[count]->deleteItem(*syncItem);
-				    delete syncItem;
-                }
+			if(allItemsList[count]) {
+				int size = allItemsList[count]->size();
+				for(int i = 0; i < size; i++) {
+					SyncItem* syncItem = (SyncItem*)((SyncItem*)allItemsList[count]->get(i));
+					if(syncItem) {
+						sources[count]->deleteItem(*syncItem);
+						delete syncItem;
+					}
+				}
 			}
-        }
 
-        sources[count]->endSync();
+			sources[count]->endSync();
+		}         
     }         
             
  finally:

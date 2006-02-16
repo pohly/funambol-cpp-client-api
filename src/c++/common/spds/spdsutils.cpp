@@ -31,7 +31,11 @@ SyncMode syncModeCode(const wchar_t* syncMode) {
         return SYNC_TWO_WAY;
     else if (wcscmp(syncMode,TEXT("one-way")) == 0)
         return SYNC_ONE_WAY_FROM_SERVER;
-	else if (wcscmp(syncMode,TEXT("refresh")) == 0)
+    else if (wcscmp(syncMode,TEXT("one-way-server")) == 0)
+        return SYNC_ONE_WAY_FROM_SERVER;
+    else if (wcscmp(syncMode,TEXT("one-way-client")) == 0)
+        return SYNC_ONE_WAY_FROM_CLIENT;
+    else if (wcscmp(syncMode,TEXT("refresh")) == 0)
         return SYNC_REFRESH_FROM_SERVER;
     else if (wcscmp(syncMode,TEXT("refresh-server")) == 0)
         return SYNC_REFRESH_FROM_SERVER;
