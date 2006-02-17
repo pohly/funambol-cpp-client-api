@@ -217,7 +217,7 @@ Chal* CredentialHandler::getServerChal(BOOL isServerAuthenticated) {
 
 // private
 void CredentialHandler::generateNonce(char nonce[16]) {
-    srand(time(NULL));
+    srand((unsigned int)time(NULL));
     for (unsigned int i = 0; i < 16; i++) {
         nonce[i] = ((rand()%100) * (rand()%100))%100;
 

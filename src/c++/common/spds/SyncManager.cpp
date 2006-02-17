@@ -178,7 +178,7 @@ int SyncManager::prepareSync(SyncSource** s) {
     //
     syncMLBuilder.resetCommandID();
     syncMLBuilder.resetMessageID();
-    unsigned long timestamp = time(NULL);
+    unsigned long timestamp = (unsigned long)time(NULL);
     config.getAccessConfig().setBeginSync(timestamp);
     for (count = 0; count < sourcesNumber; count ++) {
         if (readSyncSourceDefinition(*sources[count]) == false) {
@@ -218,7 +218,7 @@ int SyncManager::prepareSync(SyncSource** s) {
         // credential of the client
         if (isClientAuthenticated == FALSE) {
             wchar_t anc[DIM_ANCHOR];
-            timestamp = time(NULL);
+            timestamp = (unsigned long)time(NULL);
             for (count = 0; count < sourcesNumber; count ++) {
                 if (!check[count])
                     continue;
@@ -1302,7 +1302,7 @@ int SyncManager::endSync() {
         commitChanges(*sources[count]);
 	}
 	
-    config.getAccessConfig().setEndSync(time(NULL));
+    config.getAccessConfig().setEndSync((unsigned long)time(NULL));
     safeDelete(&responseMsg);
     safeDelete(&mapMsg);
 
