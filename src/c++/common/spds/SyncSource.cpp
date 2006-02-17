@@ -42,6 +42,7 @@ SyncSource::SyncSource(const wchar_t* sourceName) {
     
     errorHandler = NULL;
     filter       = NULL;
+    encoding     = NULL;
 }
 
 /**
