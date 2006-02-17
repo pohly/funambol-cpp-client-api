@@ -220,6 +220,14 @@ SOURCE="..\..\src\c++\common\spds\AccessConfig.cpp"
 # End Source File
 # Begin Source File
 
+SOURCE="..\..\src\c++\common\spds\B64Decoder.cpp"
+# End Source File
+# Begin Source File
+
+SOURCE="..\..\src\c++\common\spds\B64Encoder.cpp"
+# End Source File
+# Begin Source File
+
 SOURCE="..\..\src\c++\common\spds\BodyPart.cpp"
 # End Source File
 # Begin Source File
@@ -232,11 +240,31 @@ SOURCE="..\..\src\c++\common\spds\CredentialHandler.cpp"
 # End Source File
 # Begin Source File
 
+SOURCE="..\..\src\c++\common\spds\DataTransformer.cpp"
+# End Source File
+# Begin Source File
+
+SOURCE="..\..\src\c++\common\spds\DataTransformerFactory.cpp"
+# End Source File
+# Begin Source File
+
+SOURCE="..\..\src\c++\win32\spds\DESDecoder.cpp"
+# End Source File
+# Begin Source File
+
+SOURCE="..\..\src\c++\win32\spds\DESEncoder.cpp"
+# End Source File
+# Begin Source File
+
 SOURCE="..\..\src\c++\common\spds\EmailData.cpp"
 # End Source File
 # Begin Source File
 
 SOURCE="..\..\src\c++\common\spds\MailMessage.cpp"
+# End Source File
+# Begin Source File
+
+SOURCE="..\..\src\c++\common\spds\MailSyncSourceConfig.cpp"
 # End Source File
 # Begin Source File
 

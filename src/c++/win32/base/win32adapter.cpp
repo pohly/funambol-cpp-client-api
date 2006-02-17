@@ -183,6 +183,89 @@ bool saveFile(const char *filename,
 }
 
 
+long int getLenEncoding(const wchar_t* s, const wchar_t* encoding) {
+
+	if ((s == NULL) || (wcslen(s) == 0)) {
+        return 0;
+    }
+    
+	int i = 0;
+	long k = 0;
+	
+	while(encodings[i].name) {
+		if(wcscmpIgnoreCase(encodings[i].name, encoding)) {
+			k = WideCharToMultiByte (encodings[i].codepage_id, 0, s, wcslen(s), NULL, 0, NULL, NULL);
+			break;
+		}
+		i++;
+	}
+
+    return (k != 0) ? (long)k : -1;
+	
+}
+
+
+char* toMultibyte(const wchar_t *wc, const wchar_t *encoding) {
+	if (wc == NULL) {
+        return NULL;
+    }
+       
+    unsigned long dsize = getLenEncoding(wc, encoding);
+	if(dsize <= 0)
+		return NULL;
+
+    char* ret = new char[dsize+1];
+         
+    
+    unsigned long k = 0;
+    int i = 0;
+
+	while(encodings[i].name) {
+		if(wcscmpIgnoreCase(encodings[i].name, encoding)) {
+			k = WideCharToMultiByte (encodings[i].codepage_id, 0, wc, wcslen(wc), ret, dsize, 0, 0);	
+			break;
+		}
+		i++;
+	}
+	
+	ret[dsize] = 0;
+    
+	if(k == 0) {
+		delete [] ret; ret = NULL;
+	}
+    return ret;
+}
+
+wchar_t* toWideChar(const char *mb, const wchar_t *encoding) {
+
+	if (mb == NULL) {
+        return NULL;
+    }
+
+	
+    unsigned long dsize = strlen(mb);
+	wchar_t* ret = new wchar_t[dsize+1];
+   
+    wmemset(ret, 0, dsize + 1);
+
+	unsigned long k = 0;
+    int i = 0;
+	
+	while(encodings[i].name) {
+		if(wcscmpIgnoreCase(encodings[i].name, encoding)) {
+			k = MultiByteToWideChar(encodings[i].codepage_id, 0, mb, strlen(mb), ret, dsize + 1);
+			break;
+		}
+		i++;
+	}
+    
+    if(k == 0) {
+		delete [] ret; ret = NULL;
+	}
+    return ret;
+}
+
+
 
 #if 0 //def __DEBUG__
 
