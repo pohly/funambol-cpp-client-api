@@ -22,6 +22,8 @@
 
 #include "base/fscapi.h"
 #include "base/util/StringBuffer.h"
+#include "base/util/KeyValuePair.h"
+#include "base/util/ArrayList.h"
 
 #define DIM_TAG 32
 
@@ -126,7 +128,7 @@ public:
      * @param tag - the tag we want the content
      * @param val - the element value
      */
-    static StringBuffer makeElement(const wchar_t* tag, const wchar_t* val) EXTRA_SECTION_00;
+    //static StringBuffer makeElement(const wchar_t* tag, const wchar_t* val) EXTRA_SECTION_00;
 
 	/**
 	 * Same with bool value
@@ -141,7 +143,45 @@ public:
 	static StringBuffer makeElement(const wchar_t* tag, int val) {
         return makeElement( tag, StringBuffer().append(val) ) EXTRA_SECTION_00 ;
     }
+    
+    /**
+     * Extracts the attributes list from a tag into an XML message. It is supposed that the
+     * message is a valid XML message. It returns NULL in case the tag is not
+     * found or the XML fragment is not in the expected form. The calling function must 
+     * further parse the resultto extract attribute name and value
+     *
+     * @param xml the xml fragment
+     * @param tag the tag whom attributes we want
+     * @param startPos (OUTPUT) the start position of the tag attributes (ignored if NULL)
+     * @param endPos (OUTPUT) the end position of the tag attributes (ignored if NULL)
+     *
+    */
+    static wchar_t* getElementAttributes(const wchar_t* xml,
+                                         const wchar_t* tag,
+                                         unsigned int*  startPos, 
+                                         unsigned int*  endPos) EXTRA_SECTION_00;
 
+    /**
+     * Create an XML element with the specified tag, value and attribute list.
+     *
+     * @param tag - the tag we want the content
+     * @param val - the element value
+     * @param attr - attribute list, already formated - ex: enc="base64"
+     */
+    static StringBuffer makeElement(const wchar_t* tag, 
+                                    const wchar_t* val,
+                                    const wchar_t* attr) EXTRA_SECTION_00;
+
+    /**
+     * Create an XML element with the specified tag, value and attribute list.
+     *
+     * @param tag - the tag we want the content
+     * @param val - the element value
+     * @param attr - attribute list, pairs of name and value
+     */
+    static StringBuffer makeElement(const wchar_t* tag, 
+                                    const wchar_t* val,
+                                    ArrayList*     attrList = NULL) EXTRA_SECTION_00;
 };
 
 #endif

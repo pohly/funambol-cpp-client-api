@@ -731,31 +731,167 @@ finally:
 
 }
 
-StringBuffer XMLProcessor::makeElement(const wchar_t* tag, const wchar_t* val)
+StringBuffer XMLProcessor::makeElement(const wchar_t* tag, const wchar_t* val, ArrayList* attrList)
 {
     StringBuffer s;
     
-    if (!val)
-        return s;
-    if (!val[0])
-        return s;
-    
-    size_t len = wcslen(tag);
-    wchar_t* t1 = new wchar_t[len + 4]; // <  >  0
-    wchar_t* t2 = new wchar_t[len + 6]; // </ > \n 0
+    if (attrList == NULL)
+    {
+        if (!val)
+            return s;
+        if (!val[0])
+            return s;
+        
+        size_t len = wcslen(tag);
+        wchar_t* t1 = new wchar_t[len + 4]; // <  >  0
+        wchar_t* t2 = new wchar_t[len + 6]; // </ > \n 0
 
-    if(!t1 || !t2){
-        fprintf(stderr, "Memory error.\n");
-        exit(1);
+        if(!t1 || !t2){
+            fprintf(stderr, "Memory error.\n");
+            exit(1);
+        }
+        wsprintf(t1, TEXT("<%s>"), tag);
+        wsprintf(t2, TEXT("</%s>\n"), tag);
+
+        s = t1; s += val; s += t2;
+
+        delete [] t1;
+        delete [] t2;
     }
-    wsprintf(t1, TEXT("<%s>"), tag);
-    wsprintf(t2, TEXT("</%s>\n"), tag);
-
-    s = t1; s += val; s += t2;
-
-    delete [] t1;
-    delete [] t2;
-
+    else
+    {
+        size_t tagLen = wcslen(tag);
+        wchar_t* t1 = new wchar_t[tagLen + 4]; // <  >  0, whitout closing >
+        wchar_t* t2 = new wchar_t[tagLen + 6]; // </ > \n 0
+        wsprintf(t1, TEXT("<%s"), tag);
+        wsprintf(t2, TEXT("</%s>\n"), tag);
+        s = t1;
+        for (int i = 0; i < attrList->size(); i++)
+        {
+            KeyValuePair* item = (KeyValuePair*)attrList->get(i);
+            wchar_t* attr = item->getKey();
+            wchar_t* value = item->getValue();
+            s += TEXT(" ");
+            s += attr; 
+            s += TEXT("=\"");
+            s += value; 
+            s += TEXT("\"");
+        }
+        s += TEXT(">"); s+= val; s+= t2;
+        delete [] t1;
+        delete [] t2;
+        
+    }
     return s;    
 }
 
+
+wchar_t* XMLProcessor::getElementAttributes(const wchar_t* xml,
+                                            const wchar_t* tag,                                            
+                                            unsigned int*  startPos,
+                                            unsigned int*  endPos  ) {
+        
+    wchar_t* p1       = NULL;
+    wchar_t* p2       = NULL;
+    BOOL charFound    = FALSE;
+    unsigned int xmlLength = (unsigned int)-1;
+    unsigned int l = (unsigned int)-1;
+
+    // exemple ot tag with attribute list
+    // <body enc="base64">
+    wchar_t *openTag = 0; //<tag
+    
+    if (xml == NULL) {
+        goto finally;
+    }
+
+    xmlLength = wcslen(xml);
+    l = wcslen(tag);
+
+
+    if(wcscmp(tag, TEXT("CDATA")) == 0) {
+        goto finally;
+    }
+    else {
+        openTag = new wchar_t[l+10];
+        wsprintf(openTag, TEXT("<%s>"), tag);        
+    }
+
+    p1 = wcsstr((wchar_t*)xml, openTag);
+
+    if (p1 == NULL) { // tag can have attributes or can be empty
+
+        // if p1 is null I try to discover the next '>' char to close the tag. If does not exist 
+        // return NULL
+        
+        // try to find "<tagName/>". If found it return null.
+        wsprintf(openTag, TEXT("<%s/>"), tag);
+        p1 = wcsstr((wchar_t*)xml, openTag);
+        // ok, found an empty tag
+        if (p1 != NULL) {
+            goto finally;
+        }
+
+        // try to find "<tagName"
+        wsprintf(openTag, TEXT("<%s"), tag);
+        p1 = wcsstr((wchar_t*)xml, openTag);
+
+        if (p1 == NULL) {
+            goto finally;
+        }
+        
+        p1 = p1 + l + 1;   // <body_
+        p2 = p1 + 1;
+        for (unsigned int k = 0; k < xmlLength; k++) { // Suppose max length as the xml string
+            p2 = p2 + 1;
+            if (*p2 == 0) {
+                goto finally;
+            }
+            else if (*p2 == '>') {
+                charFound = TRUE;                
+                break;
+            }            
+        }
+        if (!charFound)
+            goto finally;
+    } else {  // tag doesn't have attribute.    
+        p1 = NULL;
+        *startPos = 0;
+        *endPos = 0;
+        goto finally;    
+    }
+
+    if (*p1 == 0) {
+        //
+        // This is abc<tag>\0
+        //
+        goto finally;
+    }
+    
+    if (startPos != NULL) {
+        *startPos = p1 - xml;
+    }
+    if (endPos != NULL) {
+        *endPos = p2 - xml ;
+    }
+
+    finally:
+
+    if (openTag)
+        delete [] openTag;
+
+    return p1;
+
+}
+
+StringBuffer XMLProcessor::makeElement(const wchar_t* tag, 
+                                    const wchar_t* val,
+                                    const wchar_t* attr) {
+
+
+int i = 0;
+
+
+return NULL;
+
+}
