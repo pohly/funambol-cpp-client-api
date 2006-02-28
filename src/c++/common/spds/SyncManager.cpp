@@ -1179,7 +1179,8 @@ int SyncManager::endSync() {
         if (!check[count])
             continue;
 
-		if ((sources[count]->getSyncMode()) != SYNC_ONE_WAY_FROM_CLIENT)
+		if ((sources[count]->getSyncMode()) != SYNC_ONE_WAY_FROM_CLIENT &&
+            (sources[count]->getSyncMode()) != SYNC_REFRESH_FROM_CLIENT )
 		{
 			iterator++;
 			last = FALSE;
