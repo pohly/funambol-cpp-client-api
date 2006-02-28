@@ -41,16 +41,16 @@ BOOL EstablishConnection() {
     
     // First we check if we might have a connection
     DWORD  pdwStatus = 0;
-    LOG.debug(TEXT("Establish connection: test internet connection status..."));
+    LOG.info(TEXT("Establish connection: test internet connection status..."));
     ConnMgrConnectionStatus(phWebConnection, &pdwStatus);
     
     if (pdwStatus == CONNMGR_STATUS_CONNECTED) {
-        LOG.debug(TEXT("Arleady connected"));
+        LOG.info(TEXT("Arleady connected"));
         //We are already connected!        
         return TRUE;
     }
     else {
-        LOG.debug(TEXT("Not connected: try to connect..."));
+        LOG.info(TEXT("Not connected: try to connect..."));
         //We are not connected, so lets try:
         //The CONNECTIONINFO is the structure that 
         //tells Connection Manager how we want
@@ -78,7 +78,7 @@ BOOL EstablishConnection() {
                 ConnMgrConnectionStatus(phWebConnection,&pdwStatus);
 
                 if (pdwStatus == CONNMGR_STATUS_CONNECTED) {
-                    LOG.debug(TEXT("Internet connection succesfully completed."));
+                    LOG.info(TEXT("Internet connection succesfully completed."));
                     return TRUE;
 
                 }
@@ -106,7 +106,7 @@ BOOL EstablishConnection() {
         }
         else {
             //Connection failed!
-            LOG.debug(TEXT("Internet connection failed."));
+            LOG.info(TEXT("Internet connection failed."));
             return FALSE;
            
         }

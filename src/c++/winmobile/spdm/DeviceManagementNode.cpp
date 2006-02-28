@@ -269,7 +269,7 @@ void DeviceManagementNode::setPropertyValue(const wchar_t* property, const wchar
             NULL,
             REG_SZ,  // we currently support only strings
             (UCHAR*)value,
-            (wcslen(value)+1)*sizeof(wchar_t*)
+            (wcslen(value)+1)*sizeof(wchar_t)
             );
 
 

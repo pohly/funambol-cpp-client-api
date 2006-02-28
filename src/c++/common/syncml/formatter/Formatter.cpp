@@ -412,10 +412,10 @@ StringBuffer* Formatter::getTarget(Target* target) {
     //
     if (target->getFilter()) {
         filter = getFilter(target->getFilter());
+        s->append(filter);
     }
     
-    if (NotZeroStringBufferLenght(2, s, filter)) {
-        ret->append(filter);
+    if (NotZeroStringBufferLenght(1, s)) {        
         ret = getValue(TARGET, s);
         
     } 
@@ -2207,11 +2207,11 @@ StringBuffer* Formatter::getProperty(Property* p) {
                                      truncate)) {
         s.append(displayName);
         s.append(propName   );
+        s.append(maxSize    );
         s.append(dataType   );
         s.append(propParams );
         s.append(valEnums   );
-        s.append(maxOccur   );
-        s.append(maxSize    );
+        s.append(maxOccur   );        
         s.append(truncate   );
     }
 

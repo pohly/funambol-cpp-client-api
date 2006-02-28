@@ -316,7 +316,7 @@ wchar_t* Win32TransportAgent::sendMessage(wchar_t* msg) {
 
     } while(cont);
     
-    CloseHandle (hThread);    
+    //CloseHandle (hThread);    
     LOG.debug(MESSAGE_SENT);
     //
     // restore cont variable for the InternetReadFile
@@ -430,7 +430,7 @@ wchar_t* Win32TransportAgent::sendMessage(wchar_t* msg) {
     
 
     exit:
-    CloseHandle (hThread);
+    //CloseHandle (hThread);
     
     // Close the Internet handles.
     if (inet) {

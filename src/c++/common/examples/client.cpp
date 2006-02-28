@@ -37,8 +37,8 @@
 #include "syncml/core/core.h"
 #include "syncml/formatter/Formatter.h"
 
-//#define TEST_SYNCSOURCE
-#define TEST_SYNC_ENCRYPTION
+#define TEST_SYNCSOURCE
+//#define TEST_SYNC_ENCRYPTION
 
 
 void testFilter();
@@ -47,8 +47,8 @@ void testConfigFilter();
 void testEncryption();
 
 
-// #define APPLICATION_URI TEXT("Funambol/examples/dummy")
-#define APPLICATION_URI TEXT("Funambol/SyncclientPIM")
+#define APPLICATION_URI TEXT("Funambol/examples/dummy")
+// #define APPLICATION_URI TEXT("Funambol/SyncclientPIM")
 
 // Define DEBUG_SETTINGS in your project to create a default configuration
 // tree for the test client. WARNING: it will override any previous setting!
@@ -100,15 +100,14 @@ int main(int argc, char** argv) {
     
 	
     TestSyncSource source = TestSyncSource(TEXT("briefcase"));           
-    TestSyncSource2 source2 = TestSyncSource2(TEXT("contact"));           
+    //TestSyncSource2 source2 = TestSyncSource2(TEXT("contact"));           
     //TestSyncSource source3 = TestSyncSource(TEXT("notExisting"));           
 
-    SyncSource** ssArray = new SyncSource*[3];
+    SyncSource** ssArray = new SyncSource*[2];
     ssArray[0] = &source;
-    ssArray[1] = &source2;
+    //ssArray[1] = &source2;
     //ssArray[2] = &source3;
-
-    ssArray[2] = NULL;
+    ssArray[1] = NULL;    
     s4j.sync(ssArray);
 #endif
 

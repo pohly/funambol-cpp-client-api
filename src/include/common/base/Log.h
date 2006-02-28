@@ -39,7 +39,7 @@
 
     private:
 
-        void printMessage(const wchar_t* level, const wchar_t* msg);
+        void printMessage(const wchar_t* level, const wchar_t* msg, va_list argList);
 
         /*
          * Which log level is set?
@@ -47,16 +47,22 @@
         LogLevel logLevel;
 
     public:
-
-        Log(BOOL reset = FALSE);
+    
+        Log(BOOL reset = FALSE, wchar_t* path = NULL, wchar_t* name = NULL);
         ~Log();
+        
+        void setLogPath(wchar_t* configLogPath);
+        void setLogName(wchar_t* configLogName);
+        
+        void error(const wchar_t* msg, ...);
+        void error(const wchar_t* msg, va_list argList);
 
-        void error(const wchar_t* msg);
+        void info(const wchar_t* msg, ...);
+        void info(const wchar_t* msg, va_list argList);
 
-        void info(const wchar_t* msg);
-
-        void debug(const wchar_t* msg);
-
+        void debug(const wchar_t* msg, ...);
+        void debug(const wchar_t* msg, va_list argList);
+        
         void trace(const wchar_t* msg);
 
         void reset();

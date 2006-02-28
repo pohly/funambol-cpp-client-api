@@ -25,16 +25,29 @@ Log LOG = Log(false);
 wchar_t logmsg[512];
 
 FILE* logFile;
+wchar_t logDir[512];   
+wchar_t logName[128];
 wchar_t logPath[256];   
 
-void setLogPath(wchar_t* configLogPath) {
+void Log::setLogPath(wchar_t* configLogPath) {
     
-    wmemset(logPath, 0, 256);
+    wmemset(logPath, 0, 512);
     if (configLogPath != NULL) {
         wsprintf(logPath, TEXT("%s/"), configLogPath); 
-    } 
+    } else {
+        wsprintf(logPath, TEXT("%s"), TEXT("./"));         
+    }
 }
 
+void Log::setLogName(wchar_t* configLogName) {
+    
+    wmemset(logName, 0, 128);
+    if (configLogName != NULL) {
+        wsprintf(logName, TEXT("%s"), configLogName); 
+    } else {
+        wsprintf(logName, TEXT("%s"), LOG_NAME);         
+    }
+}
 
 /*
 * return a the time to write into log file. If complete is true, it return 
@@ -61,11 +74,13 @@ wchar_t* getCurrentTime(BOOL complete) {
 }
 
 
-Log::Log(BOOL resetLog) {
-    if (resetLog) {
+Log::Log(BOOL resetLog, wchar_t* path, wchar_t* name) {
+
+    setLogPath(path);
+    setLogName(name);
+	if (resetLog) {
         reset();
     }
-    logPath[0] = 0;
 }
 
 Log::~Log() {
@@ -74,20 +89,41 @@ Log::~Log() {
     }
 }
 
-void Log::error(const wchar_t* msg) {    
-        printMessage(LOG_ERROR, msg);    
+void Log::error(const wchar_t* msg, ...) {    
+    va_list argList;
+    va_start (argList, msg);
+    printMessage(LOG_ERROR, msg, argList);    
+    va_end(argList);
+}
+void Log::error(const wchar_t* msg, va_list argList) {    
+    printMessage(LOG_ERROR, msg, argList);        
 }
 
-void Log::info(const wchar_t* msg) {
+void Log::info(const wchar_t* msg, ...) {
     if (logLevel >= LOG_LEVEL_INFO) {
-        printMessage(LOG_INFO, msg);
+        va_list argList;
+	    va_start (argList, msg);
+        printMessage(LOG_INFO, msg, argList);    
+	    va_end(argList);
+
+    }
+}
+void Log::info(const wchar_t* msg, va_list argList) {    
+    printMessage(LOG_INFO, msg, argList);        
+}
+
+void Log::debug(const wchar_t* msg, ...) {
+    if (logLevel >= LOG_LEVEL_DEBUG) {
+	    va_list argList;
+        va_start (argList, msg);
+        printMessage(LOG_DEBUG, msg, argList);    
+        va_end(argList);
+        
     }
 }
 
-void Log::debug(const wchar_t* msg) {
-    if (logLevel >= LOG_LEVEL_DEBUG) {
-        printMessage(LOG_DEBUG, msg);
-    }
+void Log::debug(const wchar_t* msg, va_list argList) {    
+    printMessage(LOG_DEBUG, msg, argList);        
 }
 
 void Log::trace(const wchar_t* msg) { 
@@ -105,35 +141,27 @@ BOOL Log::isLoggable(LogLevel level) {
     return (level >= logLevel);
 }
 
-void Log::printMessage(const wchar_t* level, const wchar_t* msg) {       
+void Log::printMessage(const wchar_t* level, const wchar_t* msg, va_list argList) {       
     
-    wchar_t* currentTime = NULL;
-    wchar_t  currentLogPath [256];
+	wchar_t* currentTime = getCurrentTime(false);    
+    logFile     = _wfopen(logDir, TEXT("a+"));       
+	
+	fwprintf(logFile, TEXT("%s [%s] - "), currentTime, level); 		
+    vfwprintf(logFile, msg, argList);	
+	fwprintf(logFile, TEXT("\n")); 
+	fclose(logFile);
 
-    currentTime = getCurrentTime(false);
-    wsprintf(currentLogPath, TEXT("%s%s"), logPath, LOG_NAME);
-    
-    logFile     = _wfopen(currentLogPath, TEXT("a+"));          
-    fwprintf(logFile, TEXT("%s [%s] - %s\n"), currentTime, level, msg); fflush(logFile);
-    fclose(logFile);
-    logFile = NULL;
-
-    delete[] currentTime;
+    delete[] currentTime;	
 }
 
 void Log::reset() {
     
-    wchar_t* currentTime = NULL;
-    wchar_t  currentLogPath [256];
-    
-    currentTime = getCurrentTime(true);
-    wsprintf(currentLogPath, TEXT("%s%s"), logPath, LOG_NAME);
-   
-    
-    logFile     = _wfopen(currentLogPath, TEXT("w+"));      
-       fwprintf(logFile, TEXT("%s - # Funambol Win32 Plugin Log\n"), currentTime); fflush(logFile);    
+    wchar_t* currentTime = getCurrentTime(true);
+    wmemset(logDir, 0, 512);
+    wsprintf(logDir, TEXT("%s%s"), logPath, logName);
+    logFile     = _wfopen(logDir, TEXT("w+"));      
+    fwprintf(logFile, TEXT("%s - # Funambol WindowsMobile Plugin Log\n"), currentTime); fflush(logFile);    
     fclose(logFile);
-    logFile = NULL;
 
     delete[] currentTime;    
 }

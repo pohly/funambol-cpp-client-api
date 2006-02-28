@@ -64,8 +64,6 @@ bool DMTree::isLeaf(const wchar_t *node) {
  * discarded by the caller with the operator delete.
  */
 ManagementNode* DMTree::getManagementNode(const wchar_t* node) {
-
-    LOG.debug(node);
     
     ManagementNode *n = new DeviceManagementNode(node);
 

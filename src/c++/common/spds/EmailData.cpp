@@ -46,19 +46,35 @@ EmailData::EmailData()
 int EmailData::parse(const wchar_t *syncmlData, size_t len)
 {
     int ret = 0;
-    size_t start, end;        
+    size_t start, end, size;        
     StringBuffer* s = new StringBuffer(syncmlData, len);
-
+    size = s->length();
     // FIXME: remove these replace once the server has fixed the message.
-    s->replaceAll(TEXT("&lt;"), TEXT("<"));
-    s->replaceAll(TEXT("&gt;"), TEXT(">"));
-    s->replaceAll(TEXT("&amp;"), TEXT("&"));
+    const wchar_t* ptr = NULL;
+    if ((ptr = wcsstr(s->c_str(), TEXT("&lt;"))) != NULL) {
+        s->replaceAll(TEXT("&lt;"), TEXT("<"));
+        s->replaceAll(TEXT("&gt;"), TEXT(">"));
+        s->replaceAll(TEXT("&amp;"), TEXT("&"));
+    }
     
     // Get the CDATA content
     if(XMLProcessor::getElementContent(s->c_str(), TEXT("CDATA"), NULL, &start, &end) == 0) {
         LOG.error(TEXT("EMailData: can't find outer CDATA section."));
         return -1;
     }
+    /*
+    // workaround: if the item was crypted the mail item arrives with <Email> and not in &lt;Email>
+    // So the substitution doesn't works fine
+    
+    if ((size-(end-start)) > 10) {
+        wchar_t* ptr = wcsstr(&s->c_str()[end + 1], TEXT("]]>"));
+        if (ptr) {
+            int l = ptr - &s->c_str()[end];
+            end = end + l;
+        }
+
+    }
+    */
     StringBuffer msg = s->substr(start, end-start);
     
     delete s;

@@ -144,14 +144,14 @@ PPC2003TransportAgent::PPC2003TransportAgent(URL& newURL, Proxy& newProxy,
     } else {
         setTimeout(maxResponseTimeout);
     }
-    /* currently not used
-    if (useCheckConnection == TRUE) {
-        if (!EstablishConnection()) {
-            lastErrorCode = ERR_INTERNET_CONNECTION_MISSING;
-            wsprintf (lastErrorMsg, TEXT("%s: %d"), TEXT("Internet Connection Missing"), ERR_INTERNET_CONNECTION_MISSING);
-        }    
-    }   
-    */
+    // used by default. check connection before...
+    
+    if (!EstablishConnection()) {
+        lastErrorCode = ERR_INTERNET_CONNECTION_MISSING;
+        wsprintf (lastErrorMsg, TEXT("%s: %d"), TEXT("Internet Connection Missing"), ERR_INTERNET_CONNECTION_MISSING);
+    }    
+   
+    
     EXITING(L"PPC2003TransportAgent::PPC2003TransportAgent");
 }
 

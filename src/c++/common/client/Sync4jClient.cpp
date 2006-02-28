@@ -48,8 +48,8 @@ Sync4jClient::~Sync4jClient() {
  */
 Sync4jClient& Sync4jClient::getInstance() {
     
-        LOG.reset();  
-        LOG.setLevel(LOG_LEVEL_DEBUG);            
+    LOG.reset();  
+    LOG.setLevel(LOG_LEVEL_DEBUG);            
 
     if (instance == NULL) {
         instance = new Sync4jClient();
