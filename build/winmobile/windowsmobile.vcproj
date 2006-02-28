@@ -2107,6 +2107,10 @@
 					</FileConfiguration>
 				</File>
 				<File
+					RelativePath="..\..\src\c++\common\spds\FileData.cpp"
+					>
+				</File>
+				<File
 					RelativePath="..\..\src\c++\common\spds\MailMessage.cpp"
 					>
 					<FileConfiguration
@@ -6978,6 +6982,118 @@
 			Name="Header Files"
 			Filter="h;hpp;hxx;hm;inl"
 			>
+			<Filter
+				Name="spds"
+				>
+				<File
+					RelativePath="..\..\src\include\common\spds\AccessConfig.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\include\common\spds\B64Decoder.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\include\common\spds\B64Encoder.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\include\common\spds\BodyPart.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\include\common\spds\constants.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\include\common\spds\CredentialHandler.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\include\common\spds\DataTransformer.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\include\common\spds\DataTransformerFactory.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\include\common\spds\DESDecoder.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\include\common\spds\DESEncoder.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\include\common\spds\Email.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\include\common\spds\EmailData.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\include\common\spds\errors.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\include\common\spds\FileData.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\include\common\spds\MailMessage.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\include\common\spds\MailSyncSourceConfig.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\include\common\spds\spdsutils.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\include\common\spds\SyncItem.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\include\common\spds\SyncItemStatus.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\include\common\spds\SyncManager.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\include\common\spds\SyncManagerConfig.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\include\common\spds\SyncMap.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\include\common\spds\SyncMLBuilder.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\include\common\spds\SyncMLProcessor.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\include\common\spds\SyncSource.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\include\common\spds\SyncSourceConfig.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\include\common\spds\SyncStatus.h"
+					>
+				</File>
+			</Filter>
 		</Filter>
 	</Files>
 	<Globals>
