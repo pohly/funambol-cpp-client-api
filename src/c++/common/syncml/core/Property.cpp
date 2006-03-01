@@ -36,8 +36,8 @@ Property::~Property() {
     if (dataType)    delete [] dataType   ;
     if (displayName) delete [] displayName;
 
-    if (propParams) propParams;
-    if (valEnums)   valEnums  ;
+    if (propParams) delete propParams;
+    if (valEnums)   delete valEnums  ;
 }
 
 Property::Property(wchar_t* p0, wchar_t* p1, long p2, long p3, BOOL p4, ArrayList* p5, wchar_t* p6, ArrayList* p7) {

@@ -109,6 +109,7 @@ int main(int argc, char** argv) {
     //ssArray[2] = &source3;
     ssArray[1] = NULL;    
     s4j.sync(ssArray);
+    s4j.dispose();
 #endif
 
     
