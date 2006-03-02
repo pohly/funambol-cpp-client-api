@@ -65,6 +65,20 @@ FileData::FileData()
 
 }
 
+FileData::~FileData()
+{
+    accessed.reset();
+    attributes.reset();
+    
+    enc.reset();
+    file.reset();
+    modified.reset();
+    name.reset();
+    created.reset();
+    body.reset();    
+    cttype.reset();
+            
+}
 int FileData::parse(const wchar_t *syncmlData, size_t len)
 {
     int ret = 0;

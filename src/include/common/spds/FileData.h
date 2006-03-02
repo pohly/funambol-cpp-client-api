@@ -57,6 +57,7 @@ class FileData : public ArrayElement {
     public:
     // ------------------------------------------------------- Constructors
         FileData();
+        ~FileData();
 
     // ---------------------------------------------------------- Accessors  
 		const wchar_t* getFile() { return file; }
@@ -101,7 +102,7 @@ class FileData : public ArrayElement {
 		const wchar_t* getCttype() { return cttype; }
 		void setCttype(const wchar_t* v) { cttype = v; } 
 
-		const wchar_t* getBody() { return body; }
+        const wchar_t* getBody() { return body; }
 		void setBody(const wchar_t* v) { body = v; } 
 
 		const wchar_t* getEnc() { return enc; }
