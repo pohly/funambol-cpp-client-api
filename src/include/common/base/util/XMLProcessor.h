@@ -170,7 +170,7 @@ public:
      */
     static StringBuffer makeElement(const wchar_t* tag, 
                                     const wchar_t* val,
-                                    const wchar_t* attr) EXTRA_SECTION_00;
+                                    const wchar_t* attr = NULL) EXTRA_SECTION_00;
 
     /**
      * Create an XML element with the specified tag, value and attribute list.
@@ -181,7 +181,7 @@ public:
      */
     static StringBuffer makeElement(const wchar_t* tag, 
                                     const wchar_t* val,
-                                    ArrayList*     attrList = NULL) EXTRA_SECTION_00;
+                                    ArrayList*     attrList) EXTRA_SECTION_00;
 };
 
 #endif
