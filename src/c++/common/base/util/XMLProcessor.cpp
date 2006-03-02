@@ -731,57 +731,38 @@ finally:
 
 }
 
-StringBuffer XMLProcessor::makeElement(const wchar_t* tag, const wchar_t* val, ArrayList* attrList)
+StringBuffer XMLProcessor::makeElement(const wchar_t* tag, const wchar_t* val, const wchar_t* attr)
 {
     StringBuffer s;
+        
+    if (!val)
+        return s;
+    if (!val[0])
+        return s;
     
-    if (attrList == NULL)
-    {
-        if (!val)
-            return s;
-        if (!val[0])
-            return s;
-        
-        size_t len = wcslen(tag);
-        wchar_t* t1 = new wchar_t[len + 4]; // <  >  0
-        wchar_t* t2 = new wchar_t[len + 6]; // </ > \n 0
+    size_t len = wcslen(tag);
+    wchar_t* t1 = new wchar_t[len + 4]; // <  >  0, whitout closing >
+    wchar_t* t2 = new wchar_t[len + 6]; // </ > \n 0
 
-        if(!t1 || !t2){
-            fprintf(stderr, "Memory error.\n");
-            exit(1);
-        }
-        wsprintf(t1, TEXT("<%s>"), tag);
-        wsprintf(t2, TEXT("</%s>\n"), tag);
-
-        s = t1; s += val; s += t2;
-
-        delete [] t1;
-        delete [] t2;
+    if(!t1 || !t2){
+        fprintf(stderr, "Memory error.\n");
+        exit(1);
     }
-    else
+    wsprintf(t1, TEXT("<%s"), tag);    
+    wsprintf(t2, TEXT("</%s>\n"), tag);
+
+    s = t1; 
+    if (attr != NULL)
     {
-        size_t tagLen = wcslen(tag);
-        wchar_t* t1 = new wchar_t[tagLen + 4]; // <  >  0, whitout closing >
-        wchar_t* t2 = new wchar_t[tagLen + 6]; // </ > \n 0
-        wsprintf(t1, TEXT("<%s"), tag);
-        wsprintf(t2, TEXT("</%s>\n"), tag);
-        s = t1;
-        for (int i = 0; i < attrList->size(); i++)
-        {
-            KeyValuePair* item = (KeyValuePair*)attrList->get(i);
-            wchar_t* attr = item->getKey();
-            wchar_t* value = item->getValue();
-            s += TEXT(" ");
-            s += attr; 
-            s += TEXT("=\"");
-            s += value; 
-            s += TEXT("\"");
-        }
-        s += TEXT(">"); s+= val; s+= t2;
-        delete [] t1;
-        delete [] t2;
-        
+        s += TEXT(" ");
+        s += attr;        
     }
+    s += TEXT(">");
+    s += val; s += t2;
+
+    delete [] t1;
+    delete [] t2;
+    
     return s;    
 }
 
@@ -886,12 +867,23 @@ wchar_t* XMLProcessor::getElementAttributes(const wchar_t* xml,
 
 StringBuffer XMLProcessor::makeElement(const wchar_t* tag, 
                                     const wchar_t* val,
-                                    const wchar_t* attr) {
+                                    ArrayList* attrList) {
 
+    StringBuffer s;
+    
+    for (int i = 0; i < attrList->size(); i++)
+    {
+        KeyValuePair* item = (KeyValuePair*)attrList->get(i);
+        wchar_t* attr = item->getKey();
+        wchar_t* value = item->getValue();
+        if (i > 0)
+            s += TEXT(" ");
+        s += attr; 
+        s += TEXT("=\"");
+        s += value; 
+        s += TEXT("\"");
+    }    
+    s = makeElement(tag, val, s.c_str());
 
-int i = 0;
-
-
-return NULL;
-
+    return s;
 }
