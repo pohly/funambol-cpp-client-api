@@ -223,6 +223,9 @@ static int hex2int( wchar_t x )
 void VObject::toNativeEncoding()
 {
     BOOL is_30 = !wcscmp(getVersion(), TEXT("3.0"));
+    // line break is encoded with either one or two
+    // characters on different platforms
+    const int linebreaklen = wcslen(SYNC4J_LINEBREAK);
 
     for (int index = propertiesCount() - 1; index >= 0; index--) {
         VProperty *vprop = getProperty(index);
@@ -255,6 +258,15 @@ void VObject::toNativeEncoding()
                             hex2int(values[1]);
                         out++;
 
+                        // replace \r\n with \n?
+                        if ( linebreaklen == 1 &&
+                             out >= 2 &&
+                             native[out - 2] == '\r' &&
+                             native[out - 1] == '\n' ) {
+                            native[out - 2] = SYNC4J_LINEBREAK[0];
+                            out--;
+                        }
+                        
                         // the conversion to wchar on Windows is
                         // probably missing here
                     }
@@ -272,9 +284,6 @@ void VObject::toNativeEncoding()
         if (is_30) {
             wchar_t curr;
             int in = 0, out = 0;
-            // line break is encoded with either one or two
-            // characters on different platforms
-            const int linebreaklen = wcslen(SYNC4J_LINEBREAK);
 
             while ((curr = native[in]) != 0) {
                 in++;

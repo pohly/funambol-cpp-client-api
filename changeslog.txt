@@ -1,3 +1,7 @@
+2006-03-11
+  - pohly: a =0A=0D must be translated into a \n on Linux (VObject::toNativeEncoding())
+
+
 Funambol SDK C++ 3.0.6
 -------------------------   
 2006-02-02
