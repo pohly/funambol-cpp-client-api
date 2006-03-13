@@ -32,7 +32,7 @@ private:
 
     wchar_t* name;
     wchar_t* value;
-    void set(wchar_t** p, wchar_t* v);
+    void set(wchar_t** p, const wchar_t* v);
     ArrayList* parameters;
 
  public:       
@@ -40,11 +40,11 @@ private:
     VProperty(wchar_t* propName , wchar_t* propValue  = NULL);
     ~VProperty();
     ArrayElement* clone();
-    void setName (wchar_t* name);
-    void setValue (wchar_t* value);
+    void setName (const wchar_t* name);
+    void setValue (const wchar_t* value);
     wchar_t* getName(wchar_t* buf = NULL, int size = -1);
     wchar_t* getValue(wchar_t* buf = NULL, int size = -1);
-    void addParameter(wchar_t* paramName, wchar_t* paramValue);
+    void addParameter(const wchar_t* paramName, const wchar_t* paramValue);
     void removeParameter(wchar_t* paramName);
     bool containsParameter(wchar_t* paramName);
     wchar_t* getParameterValue(wchar_t* paramName);

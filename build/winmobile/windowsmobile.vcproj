@@ -350,7 +350,7 @@
 			/>
 			<DeploymentTool
 				ForceDirty="-1"
-				RemoteDirectory="%CSIDL_PROGRAM_FILES%\Funambol"
+				RemoteDirectory="\Windows"
 				RegisterOutput="0"
 				AdditionalFiles=""
 			/>

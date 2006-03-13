@@ -40,12 +40,12 @@ VProperty::~VProperty() {
     }
 }	 
 
-void VProperty::setName (wchar_t* s) {
+void VProperty::setName (const wchar_t* s) {
     
     set(&name, s);
 }
 
-void VProperty::setValue (wchar_t* s) {
+void VProperty::setValue (const wchar_t* s) {
     
     set(&value, s);
 }
@@ -82,7 +82,7 @@ wchar_t* VProperty::getValue(wchar_t* buf, int size) {
 	return buf;
 }
 
-void VProperty::addParameter (wchar_t* paramName, wchar_t* paramValue) {
+void VProperty::addParameter (const wchar_t* paramName, const wchar_t* paramValue) {
 	
     if(paramName) {
     KeyValuePair *parameter = new KeyValuePair(paramName, paramValue);
@@ -133,7 +133,7 @@ wchar_t* VProperty::getParameterValue(wchar_t* paramName) {
     return NULL;
 }
 
-void VProperty::set(wchar_t** p, wchar_t* v) {
+void VProperty::set(wchar_t** p, const wchar_t* v) {
 	
     if (*p) {
         delete [] *p;
