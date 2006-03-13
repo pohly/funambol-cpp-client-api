@@ -1330,9 +1330,9 @@ BOOL SyncManager::readSyncSourceDefinition(SyncSource& source) {
         source.getPreferredSyncMode() < 0     ||
         source.getPreferredSyncMode() > 210      )  {
 
-        source.setPreferredSyncMode(syncModeCode(ssc.getSync()));
+        //source.setPreferredSyncMode(syncModeCode(ssc.getSync()));
     }
-
+    source.setPreferredSyncMode(syncModeCode(ssc.getSync()));
     source.setType(ssc.getType());
     source.setLastSync(ssc.getLast());
     timestampToAnchor(ssc.getLast(), anchor);
