@@ -24,10 +24,14 @@ Log LOG = Log(false);
 
 wchar_t logmsg[512];
 
-static FILE* logFile = NULL;
-static wchar_t logDir[512] = TEXT("\\synclog.txt");   
-static wchar_t logName[128] = LOG_NAME;
-static wchar_t logPath[256] = TEXT("\\");
+//static FILE* logFile = NULL;
+//static wchar_t logDir[512] = TEXT("\\synclog.txt");   
+//static wchar_t logName[128] = LOG_NAME;
+//static wchar_t logPath[256] = TEXT("\\");
+FILE* logFile;
+wchar_t logDir[512];   
+wchar_t logName[128];
+wchar_t logPath[256];   
 
 void Log::setLogPath(wchar_t* configLogPath) {
     
