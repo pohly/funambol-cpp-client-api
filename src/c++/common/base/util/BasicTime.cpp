@@ -141,14 +141,15 @@ int BasicTime::parseRfc822(const wchar_t *date)
     if ( wcscmp(timeZone, TEXT("GMT")) ) {
 		// is this explicit time?
 		if ( timeZone[0] == '+' || timeZone[0]== '-' ) {
-			wchar_t wcH[3] = TEXT("00");
-			wchar_t wcM[3] = TEXT("00");
+			wchar_t wcH[4] = TEXT("+00");
+			wchar_t wcM[4] = TEXT("00");
 
 			// get hour
 			if ( wcslen(timeZone) > 3) {
-				wcH[0] = timeZone[1];
-				wcH[1] = timeZone[2];
-				wcH[2] = '\0';
+				wcH[0] = timeZone[0];
+				wcH[1] = timeZone[1];
+				wcH[2] = timeZone[2];
+				wcH[3] = '\0';
 			}
 			// get min
 			if ( wcslen(timeZone) >= 5)	{
@@ -161,18 +162,18 @@ int BasicTime::parseRfc822(const wchar_t *date)
 		}
 		// otherwise it could be one string with the time
 		else if ( wcscmp(timeZone, TEXT("EDT")) )
-			tzHour = 4;
+			tzHour = -4;
 		else if ( wcscmp(timeZone, TEXT("EST"))
                   ||  wcscmp(timeZone, TEXT("CDT")) )
-			tzHour = 5;
+			tzHour = -5;
 		else if ( wcscmp(timeZone, TEXT("CST"))
                   ||  wcscmp(timeZone, TEXT("MDT")) )
-			tzHour = 6;
+			tzHour = -6;
 		else if ( wcscmp(timeZone, TEXT("MST"))
                   ||  wcscmp(timeZone, TEXT("PDT")) )
-			tzHour = 7;
+			tzHour = -7;
 		else if ( wcscmp(timeZone, TEXT("PST")) )
-			tzHour = 8;
+			tzHour = -8;
 	}
 
 	// clean up
