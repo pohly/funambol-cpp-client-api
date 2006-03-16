@@ -1325,14 +1325,17 @@ BOOL SyncManager::readSyncSourceDefinition(SyncSource& source) {
         return FALSE;
     }
 
-    // syncMode setted only if value has no good value...
+#if 0
+    // syncMode set only if value has no good value...
     if (source.getPreferredSyncMode() == NULL ||
         source.getPreferredSyncMode() < 0     ||
         source.getPreferredSyncMode() > 210      )  {
 
-        //source.setPreferredSyncMode(syncModeCode(ssc.getSync()));
+        source.setPreferredSyncMode(syncModeCode(ssc.getSync()));
     }
+#endif
     source.setPreferredSyncMode(syncModeCode(ssc.getSync()));
+    
     source.setType(ssc.getType());
     source.setLastSync(ssc.getLast());
     timestampToAnchor(ssc.getLast(), anchor);
