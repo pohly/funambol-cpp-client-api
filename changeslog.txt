@@ -6,6 +6,7 @@ Funambol SDK C++ 3.0.11
   - Added FileData object (OMA 1.2)
   - Fixed encryption 
   - Fixed mail filter
+  - Fixed bug 304701 (Refresh or slow sync on Briefcase loose file names)
 
 2006-03-11
   - pohly: a =0A=0D must be translated into a \n on Linux (VObject::toNativeEncoding())
