@@ -1,3 +1,12 @@
+Funambol SDK C++ 3.0.11
+------------------------- 
+2006-03-16
+  - Fixed email date parsing
+  - Fixed refresh from client/one-way from client
+  - Added FileData object (OMA 1.2)
+  - Fixed encryption 
+  - Fixed mail filter
+
 2006-03-11
   - pohly: a =0A=0D must be translated into a \n on Linux (VObject::toNativeEncoding())
 
