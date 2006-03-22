@@ -1,4 +1,4 @@
-The port of the Sync4j C++ Client API to Unix/Linux
+The port of the Funambol C++ Client API to Unix/Linux
 was done by Patrick Ohly <patrick.ohly@gmx.de>.
 It uses libcurl for HTTP transfer of SyncML messages.
 

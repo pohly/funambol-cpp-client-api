@@ -45,7 +45,7 @@ nobase_pkginclude_HEADERS = \
     posix/base/posixlog.h
 
 # fix header files for public distribution
-$(nobase_pkginclude_HEADERS): % : $(srcdir)/../../../src/include/%
+$(nobase_pkginclude_HEADERS): % : ../../../src/include/%
 	mkdir -p `dirname $@`
 	sed -e 's/wchar_t/char/g' -e 's/__declspec([^)]*)//g' -e 's/__cdecl//g' -e 's/EXTRA_SECTION_[0123456789]*//g' -e 's/BOOL/int/g' -e 's/FALSE/0/g' -e 's/TRUE/1/g' $< >$@
 

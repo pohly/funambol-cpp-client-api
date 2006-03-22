@@ -350,7 +350,7 @@
 			/>
 			<DeploymentTool
 				ForceDirty="-1"
-				RemoteDirectory="\Windows"
+				RemoteDirectory="%CSIDL_PROGRAM_FILES%\Funambol"
 				RegisterOutput="0"
 				AdditionalFiles=""
 			/>
@@ -621,48 +621,6 @@
 					</FileConfiguration>
 				</File>
 				<File
-					RelativePath="..\..\src\c++\winmobile\base\PPC2003adapter.cpp"
-					>
-					<FileConfiguration
-						Name="Release|Smartphone 2003 (ARMV4)"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-							AdditionalIncludeDirectories=""
-							UsePrecompiledHeader="0"
-							BrowseInformation="1"
-						/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Release|Pocket PC 2003 (ARMV4)"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-							AdditionalIncludeDirectories=""
-							UsePrecompiledHeader="0"
-							BrowseInformation="1"
-						/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Debug|Smartphone 2003 (ARMV4)"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-							AdditionalIncludeDirectories=""
-							UsePrecompiledHeader="0"
-						/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Debug|Pocket PC 2003 (ARMV4)"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-							AdditionalIncludeDirectories=""
-							UsePrecompiledHeader="0"
-						/>
-					</FileConfiguration>
-				</File>
-				<File
 					RelativePath="..\..\src\c++\common\base\quoted-printable.cpp"
 					>
 					<FileConfiguration
@@ -787,6 +745,10 @@
 							UsePrecompiledHeader="0"
 						/>
 					</FileConfiguration>
+				</File>
+				<File
+					RelativePath="..\..\src\c++\winmobile\base\winmobileadapter.cpp"
+					>
 				</File>
 				<Filter
 					Name="util"
@@ -1044,46 +1006,12 @@
 						</FileConfiguration>
 					</File>
 					<File
-						RelativePath="..\..\src\c++\common\base\util\UTF8StringBuffer.cpp"
+						RelativePath="..\..\src\c++\common\base\util\WKeyValuePair.cpp"
 						>
-						<FileConfiguration
-							Name="Release|Smartphone 2003 (ARMV4)"
-							>
-							<Tool
-								Name="VCCLCompilerTool"
-								AdditionalIncludeDirectories=""
-								UsePrecompiledHeader="0"
-								BrowseInformation="1"
-							/>
-						</FileConfiguration>
-						<FileConfiguration
-							Name="Release|Pocket PC 2003 (ARMV4)"
-							>
-							<Tool
-								Name="VCCLCompilerTool"
-								AdditionalIncludeDirectories=""
-								UsePrecompiledHeader="0"
-								BrowseInformation="1"
-							/>
-						</FileConfiguration>
-						<FileConfiguration
-							Name="Debug|Smartphone 2003 (ARMV4)"
-							>
-							<Tool
-								Name="VCCLCompilerTool"
-								AdditionalIncludeDirectories=""
-								UsePrecompiledHeader="0"
-							/>
-						</FileConfiguration>
-						<FileConfiguration
-							Name="Debug|Pocket PC 2003 (ARMV4)"
-							>
-							<Tool
-								Name="VCCLCompilerTool"
-								AdditionalIncludeDirectories=""
-								UsePrecompiledHeader="0"
-							/>
-						</FileConfiguration>
+					</File>
+					<File
+						RelativePath="..\..\src\c++\common\base\util\WString.cpp"
+						>
 					</File>
 					<File
 						RelativePath="..\..\src\c++\common\base\util\XMLProcessor.cpp"
@@ -1133,48 +1061,6 @@
 				Name="client"
 				>
 				<File
-					RelativePath="..\..\src\c++\common\client\AccessManagementNode.cpp"
-					>
-					<FileConfiguration
-						Name="Release|Smartphone 2003 (ARMV4)"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-							AdditionalIncludeDirectories=""
-							UsePrecompiledHeader="0"
-							BrowseInformation="1"
-						/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Release|Pocket PC 2003 (ARMV4)"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-							AdditionalIncludeDirectories=""
-							UsePrecompiledHeader="0"
-							BrowseInformation="1"
-						/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Debug|Smartphone 2003 (ARMV4)"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-							AdditionalIncludeDirectories=""
-							UsePrecompiledHeader="0"
-						/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Debug|Pocket PC 2003 (ARMV4)"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-							AdditionalIncludeDirectories=""
-							UsePrecompiledHeader="0"
-						/>
-					</FileConfiguration>
-				</File>
-				<File
 					RelativePath="..\..\src\c++\common\client\DMTClientConfig.cpp"
 					>
 					<FileConfiguration
@@ -1218,48 +1104,6 @@
 				</File>
 				<File
 					RelativePath="..\..\src\c++\common\client\MailSourceManagementNode.cpp"
-					>
-					<FileConfiguration
-						Name="Release|Smartphone 2003 (ARMV4)"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-							AdditionalIncludeDirectories=""
-							UsePrecompiledHeader="0"
-							BrowseInformation="1"
-						/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Release|Pocket PC 2003 (ARMV4)"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-							AdditionalIncludeDirectories=""
-							UsePrecompiledHeader="0"
-							BrowseInformation="1"
-						/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Debug|Smartphone 2003 (ARMV4)"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-							AdditionalIncludeDirectories=""
-							UsePrecompiledHeader="0"
-						/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Debug|Pocket PC 2003 (ARMV4)"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-							AdditionalIncludeDirectories=""
-							UsePrecompiledHeader="0"
-						/>
-					</FileConfiguration>
-				</File>
-				<File
-					RelativePath="..\..\src\c++\common\client\SourceManagementNode.cpp"
 					>
 					<FileConfiguration
 						Name="Release|Smartphone 2003 (ARMV4)"
@@ -6982,118 +6826,310 @@
 			Name="Header Files"
 			Filter="h;hpp;hxx;hm;inl"
 			>
-			<Filter
-				Name="spds"
+			<File
+				RelativePath="..\..\src\include\common\spds\AccessConfig.h"
 				>
-				<File
-					RelativePath="..\..\src\include\common\spds\AccessConfig.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\src\include\common\spds\B64Decoder.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\src\include\common\spds\B64Encoder.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\src\include\common\spds\BodyPart.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\src\include\common\spds\constants.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\src\include\common\spds\CredentialHandler.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\src\include\common\spds\DataTransformer.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\src\include\common\spds\DataTransformerFactory.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\src\include\common\spds\DESDecoder.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\src\include\common\spds\DESEncoder.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\src\include\common\spds\Email.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\src\include\common\spds\EmailData.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\src\include\common\spds\errors.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\src\include\common\spds\FileData.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\src\include\common\spds\MailMessage.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\src\include\common\spds\MailSyncSourceConfig.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\src\include\common\spds\spdsutils.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\src\include\common\spds\SyncItem.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\src\include\common\spds\SyncItemStatus.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\src\include\common\spds\SyncManager.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\src\include\common\spds\SyncManagerConfig.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\src\include\common\spds\SyncMap.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\src\include\common\spds\SyncMLBuilder.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\src\include\common\spds\SyncMLProcessor.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\src\include\common\spds\SyncSource.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\src\include\common\spds\SyncSourceConfig.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\src\include\common\spds\SyncStatus.h"
-					>
-				</File>
-			</Filter>
+			</File>
+			<File
+				RelativePath="..\..\src\include\common\filter\AllClause.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\include\common\base\util\ArrayElement.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\include\common\base\util\ArrayList.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\include\common\spds\B64Decoder.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\include\common\spds\B64Encoder.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\include\common\base\base64.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\include\common\base\util\BasicTime.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\include\common\spds\BodyPart.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\include\common\filter\Clause.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\include\common\filter\ClauseUtil.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\include\common\base\constants.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\include\common\spdm\constants.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\include\common\spds\constants.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\include\common\http\constants.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\include\common\spds\CredentialHandler.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\include\common\spds\DataTransformer.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\include\common\spds\DataTransformerFactory.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\include\common\base\debug.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\include\common\spds\DESDecoder.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\include\common\spds\DESEncoder.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\include\common\spdm\DeviceManager.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\include\common\spdm\DeviceManagerFactory.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\include\common\client\DMTClientConfig.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\include\common\spdm\DMTree.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\include\common\spdm\DMTreeFactory.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\include\common\spdm\DMTreeManager.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\include\common\spds\Email.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\include\common\spds\EmailData.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\include\common\base\ErrorHandler.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\include\common\http\errors.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\include\common\spds\errors.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\include\common\spdm\errors.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\include\common\base\errors.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\include\common\filter\FieldClause.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\include\common\base\fscapi.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\include\common\http\HTTPHeader.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\include\common\base\util\KeyValuePair.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\include\common\base\Log.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\include\common\base\LogErrorHandler.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\include\common\filter\LogicalClause.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\include\common\spds\MailMessage.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\include\common\spds\MailSyncSourceConfig.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\include\common\spdm\ManagementNode.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\include\common\spdm\ManagementObject.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\include\common\base\md5.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\include\common\base\messages.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\include\common\spdm\ParentManagementNode.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\include\common\http\Proxy.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\include\common\base\quoted-printable.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\include\common\filter\SourceFilter.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\include\common\spdm\spdmutils.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\include\common\spds\spdsutils.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\include\winmobile\base\startcmd.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\include\common\base\util\StringBuffer.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\include\common\client\Sync4jClient.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\include\common\spds\SyncItem.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\include\common\spds\SyncItemStatus.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\include\common\spds\SyncManager.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\include\common\spds\SyncManagerConfig.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\include\common\spds\SyncMap.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\include\common\spds\SyncMLBuilder.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\include\common\spds\SyncMLProcessor.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\include\common\spds\SyncSource.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\include\common\spds\SyncSourceConfig.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\include\common\spds\SyncStatus.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\include\common\examples\TestSyncSource.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\include\common\examples\TestSyncSource2.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\include\winmobile\base\time.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\include\common\http\TransportAgent.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\include\common\http\TransportAgentFactory.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\include\common\http\URL.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\include\common\base\util\utils.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\include\common\filter\WhereClause.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\include\winmobile\base\winmobileadapter.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\include\common\base\util\XMLProcessor.h"
+				>
+			</File>
 		</Filter>
 	</Files>
 	<Globals>

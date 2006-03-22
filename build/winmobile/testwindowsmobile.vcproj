@@ -783,6 +783,10 @@
 			Name="Header Files"
 			Filter="h;hpp;hxx;hm;inl"
 			>
+			<File
+				RelativePath="..\..\src\include\common\examples\config.h"
+				>
+			</File>
 		</Filter>
 		<Filter
 			Name="Resource Files"

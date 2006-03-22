@@ -1,4 +1,4 @@
-bin_PROGRAMS = client NotifProcessorTest vcardconverter
+bin_PROGRAMS = client vcardconverter
 lib_LTLIBRARIES = libsync4j.la
 
 SOURCES_BASE = \
@@ -7,11 +7,13 @@ SOURCES_BASE = \
     ArrayElement.cpp \
     ArrayList.cpp \
     KeyValuePair.cpp \
+    WKeyValuePair.cpp \
     StringBuffer.cpp \
-    UTF8StringBuffer.cpp \
+    WString.cpp \
     XMLProcessor.cpp \
     baseutils.cpp \
     base64.cpp \
+    quoted-printable.cpp \
     error.cpp \
     ErrorHandler.cpp \
     LogErrorHandler.cpp \
@@ -110,7 +112,15 @@ SOURCES_SPDM = \
 
 SOURCES_SPDS = \
     AccessConfig.cpp \
+    BodyPart.cpp \
     CredentialHandler.cpp \
+    DataTransformerFactory.cpp \
+    DataTransformer.cpp \
+    DESDecoder.cpp \
+    DESEncoder.cpp \
+    EmailData.cpp \
+    FileData.cpp \
+    MailMessage.cpp \
     SyncManagerConfig.cpp \
     SyncItem.cpp \
     SyncItemStatus.cpp \
@@ -156,7 +166,7 @@ SOURCES_VOCL = \
     vCardProperty.cpp
 
 libsync4j_la_SOURCES = $(SOURCES_BASE) $(SOURCES_FRAMEWORK) $(SOURCES_HTTP) $(SOURCES_SPDM) $(SOURCES_SPDS) $(SOURCES_CLIENT) $(SOURCES_VOCL)
-libsync4j_la_LDFLAGS = -version-info 2:0:0
+libsync4j_la_LDFLAGS = -version-info 3:0
 
 client_SOURCES = client.cpp TestSyncSource.cpp TestSyncSource2.cpp
 client_LDADD = libsync4j.la
@@ -164,28 +174,29 @@ client_LDADD = libsync4j.la
 vcardconverter_SOURCES = vcardconverter.cpp
 vcardconverter_LDADD = libsync4j.la
 
-NotifProcessorTest_SOURCES = NotifProcessorTest.cpp
-NotifProcessorTest_LDADD = libsync4j.la
+#NotifProcessorTest_SOURCES = NotifProcessorTest.cpp
+#NotifProcessorTest_LDADD = libsync4j.la
 
-vpath %.cpp $(srcdir)/../../../src/c++/common/base             \
-            $(srcdir)/../../../src/c++/common/base/util        \
-            $(srcdir)/../../../src/c++/common/client           \
-            $(srcdir)/../../../src/c++/common/examples         \
-            $(srcdir)/../../../src/c++/common/filter           \
-            $(srcdir)/../../../src/c++/common/syncml/formatter \
-            $(srcdir)/../../../src/c++/common/syncml/core      \
-            $(srcdir)/../../../src/c++/common/syncml/parser    \
-            $(srcdir)/../../../src/c++/common/http             \
-            $(srcdir)/../../../src/c++/common/spdm             \
-            $(srcdir)/../../../src/c++/common/spds             \
-            $(srcdir)/../../../src/c++/common/vocl             \
-            $(srcdir)/../../../src/c++/common/vocl/iCalendar   \
-            $(srcdir)/../../../src/c++/common/vocl/vCard       \
-            $(srcdir)/../../../src/c++/posix/base              \
-            $(srcdir)/../../../src/c++/posix/http              \
-            $(srcdir)/../../../src/c++/posix/spdm
+vpath %.cpp ../../../src/c++/common/base             \
+            ../../../src/c++/common/base/util        \
+            ../../../src/c++/common/client           \
+            ../../../src/c++/common/examples         \
+            ../../../src/c++/common/filter           \
+            ../../../src/c++/common/syncml/formatter \
+            ../../../src/c++/common/syncml/core      \
+            ../../../src/c++/common/syncml/parser    \
+            ../../../src/c++/common/http             \
+            ../../../src/c++/common/spdm             \
+            ../../../src/c++/common/spds             \
+            ../../../src/c++/common/vocl             \
+            ../../../src/c++/common/vocl/iCalendar   \
+            ../../../src/c++/common/vocl/vCard       \
+            ../../../src/c++/posix/base              \
+            ../../../src/c++/posix/http              \
+            ../../../src/c++/posix/spdm              \
+            ../../../src/c++/posix/spds
 
-vpath %.c   $(srcdir)/../../../src/c++/common/base
+vpath %.c   ../../../src/c++/common/base
 
 AM_LDFLAGS = `curl-config --libs`
-AM_CPPFLAGS = -I$(srcdir)/../../../src/include/posix -I$(srcdir)/../../../src/include/common -DAUTOTOOLS
+AM_CPPFLAGS = -I../../../src/include/posix -I../../../src/include/common -DAUTOTOOLS

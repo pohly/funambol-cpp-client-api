@@ -628,8 +628,8 @@ DEP_CPP_CLIEN=\
 	"..\..\src\include\common\syncml\core\VerDTD.h"\
 	"..\..\src\include\common\syncml\core\VerProto.h"\
 	"..\..\src\include\common\syncml\formatter\Formatter.h"\
-	"..\..\src\include\winmobile\base\PPC2003adapter.h"\
 	"..\..\src\include\winmobile\base\time.h"\
+	"..\..\src\include\winmobile\base\winmobileadapter.h"\
 	
 NODEP_CPP_CLIEN=\
 	"..\..\src\include\common\base\base\palmadapter.h"\
@@ -703,8 +703,8 @@ DEP_CPP_TEST_=\
 	"..\..\src\include\common\http\errors.h"\
 	"..\..\src\include\common\spdm\errors.h"\
 	"..\..\src\include\common\spds\errors.h"\
-	"..\..\src\include\winmobile\base\PPC2003adapter.h"\
 	"..\..\src\include\winmobile\base\time.h"\
+	"..\..\src\include\winmobile\base\winmobileadapter.h"\
 	
 NODEP_CPP_TEST_=\
 	"..\..\src\include\common\base\base\palmadapter.h"\
@@ -1170,8 +1170,8 @@ DEP_CPP_TESTC=\
 	"..\..\src\include\common\syncml\core\VerDTD.h"\
 	"..\..\src\include\common\syncml\core\VerProto.h"\
 	"..\..\src\include\common\syncml\formatter\Formatter.h"\
-	"..\..\src\include\winmobile\base\PPC2003adapter.h"\
 	"..\..\src\include\winmobile\base\time.h"\
+	"..\..\src\include\winmobile\base\winmobileadapter.h"\
 	
 NODEP_CPP_TESTC=\
 	"..\..\src\include\common\base\base\palmadapter.h"\
@@ -1648,8 +1648,8 @@ DEP_CPP_TESTCO=\
 	"..\..\src\include\common\syncml\core\VerDTD.h"\
 	"..\..\src\include\common\syncml\core\VerProto.h"\
 	"..\..\src\include\common\syncml\formatter\Formatter.h"\
-	"..\..\src\include\winmobile\base\PPC2003adapter.h"\
 	"..\..\src\include\winmobile\base\time.h"\
+	"..\..\src\include\winmobile\base\winmobileadapter.h"\
 	"..\..\src\include\winmobile\spdm\DeviceManagementNode.h"\
 	
 NODEP_CPP_TESTCO=\
@@ -2223,8 +2223,8 @@ DEP_CPP_TESTF=\
 	"..\..\src\include\common\syncml\core\VerDTD.h"\
 	"..\..\src\include\common\syncml\core\VerProto.h"\
 	"..\..\src\include\common\syncml\formatter\Formatter.h"\
-	"..\..\src\include\winmobile\base\PPC2003adapter.h"\
 	"..\..\src\include\winmobile\base\time.h"\
+	"..\..\src\include\winmobile\base\winmobileadapter.h"\
 	
 NODEP_CPP_TESTF=\
 	"..\..\src\include\common\base\base\palmadapter.h"\
@@ -2366,8 +2366,8 @@ DEP_CPP_TESTS=\
 	"..\..\src\include\common\spds\SyncMap.h"\
 	"..\..\src\include\common\spds\SyncSource.h"\
 	"..\..\src\include\common\spds\SyncStatus.h"\
-	"..\..\src\include\winmobile\base\PPC2003adapter.h"\
 	"..\..\src\include\winmobile\base\time.h"\
+	"..\..\src\include\winmobile\base\winmobileadapter.h"\
 	
 NODEP_CPP_TESTS=\
 	"..\..\src\include\common\base\base\palmadapter.h"\
@@ -2513,8 +2513,8 @@ DEP_CPP_TESTSY=\
 	"..\..\src\include\common\spds\SyncMap.h"\
 	"..\..\src\include\common\spds\SyncSource.h"\
 	"..\..\src\include\common\spds\SyncStatus.h"\
-	"..\..\src\include\winmobile\base\PPC2003adapter.h"\
 	"..\..\src\include\winmobile\base\time.h"\
+	"..\..\src\include\winmobile\base\winmobileadapter.h"\
 	
 NODEP_CPP_TESTSY=\
 	"..\..\src\include\common\base\base\palmadapter.h"\

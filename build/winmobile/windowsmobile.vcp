@@ -127,7 +127,7 @@ BSC32=bscmake.exe
 # PROP Target_Dir ""
 CPP=clarm.exe
 # ADD BASE CPP /nologo /W3 /Zi /Od /D "DEBUG" /D _WIN32_WCE=$(CEVersion) /D "$(CePlatform)" /D "ARM" /D "_ARM_" /D "ARMV4" /D UNDER_CE=$(CEVersion) /D "UNICODE" /D "_UNICODE" /D "_LIB" /YX /M$(CECrtMTDebug) /c
-# ADD CPP /nologo /W3 /Zi /Od /Gy /I "..\..\src\include\winmobile" /I "..\..\src\include\common" /D "DEBUG" /D _WIN32_WCE=$(CEVersion) /D "$(CePlatform)" /D "ARM" /D "_ARM_" /D "ARMV4" /D UNDER_CE=$(CEVersion) /D "UNICODE" /D "_UNICODE" /D "_LIB" /YX /M$(CECrtMTDebug) /c
+# ADD CPP /nologo /W3 /Zi /Od /Gy /I "..\..\src\include\winmobile" /I "..\..\src\include\common" /D "DEBUG" /D _WIN32_WCE=$(CEVersion) /D "$(CePlatform)" /D "ARM" /D "_ARM_" /D "ARMV4" /D UNDER_CE=$(CEVersion) /D "_LIB" /YX /M$(CECrtMTDebug) /c
 LIB32=link.exe -lib
 # ADD BASE LIB32 /nologo
 # ADD LIB32 /nologo
@@ -219,8 +219,8 @@ DEP_CPP_ARRAY=\
 	"..\..\src\include\common\http\errors.h"\
 	"..\..\src\include\common\spdm\errors.h"\
 	"..\..\src\include\common\spds\errors.h"\
-	"..\..\src\include\winmobile\base\PPC2003adapter.h"\
 	"..\..\src\include\winmobile\base\time.h"\
+	"..\..\src\include\winmobile\base\winmobileadapter.h"\
 	
 NODEP_CPP_ARRAY=\
 	"..\..\src\include\common\base\base\palmadapter.h"\
@@ -302,8 +302,8 @@ DEP_CPP_ARRAYL=\
 	"..\..\src\include\common\http\errors.h"\
 	"..\..\src\include\common\spdm\errors.h"\
 	"..\..\src\include\common\spds\errors.h"\
-	"..\..\src\include\winmobile\base\PPC2003adapter.h"\
 	"..\..\src\include\winmobile\base\time.h"\
+	"..\..\src\include\winmobile\base\winmobileadapter.h"\
 	
 NODEP_CPP_ARRAYL=\
 	"..\..\src\include\common\base\base\palmadapter.h"\
@@ -397,8 +397,8 @@ DEP_CPP_BASEU=\
 	"..\..\src\include\common\http\errors.h"\
 	"..\..\src\include\common\spdm\errors.h"\
 	"..\..\src\include\common\spds\errors.h"\
-	"..\..\src\include\winmobile\base\PPC2003adapter.h"\
 	"..\..\src\include\winmobile\base\time.h"\
+	"..\..\src\include\winmobile\base\winmobileadapter.h"\
 	
 NODEP_CPP_BASEU=\
 	"..\..\src\include\common\base\base\palmadapter.h"\
@@ -480,8 +480,8 @@ DEP_CPP_BASIC=\
 	"..\..\src\include\common\http\errors.h"\
 	"..\..\src\include\common\spdm\errors.h"\
 	"..\..\src\include\common\spds\errors.h"\
-	"..\..\src\include\winmobile\base\PPC2003adapter.h"\
 	"..\..\src\include\winmobile\base\time.h"\
+	"..\..\src\include\winmobile\base\winmobileadapter.h"\
 	
 NODEP_CPP_BASIC=\
 	"..\..\src\include\common\base\base\palmadapter.h"\
@@ -579,8 +579,8 @@ DEP_CPP_KEYVA=\
 	"..\..\src\include\common\http\errors.h"\
 	"..\..\src\include\common\spdm\errors.h"\
 	"..\..\src\include\common\spds\errors.h"\
-	"..\..\src\include\winmobile\base\PPC2003adapter.h"\
 	"..\..\src\include\winmobile\base\time.h"\
+	"..\..\src\include\winmobile\base\winmobileadapter.h"\
 	
 NODEP_CPP_KEYVA=\
 	"..\..\src\include\common\base\base\palmadapter.h"\
@@ -682,8 +682,8 @@ DEP_CPP_STRIN=\
 	"..\..\src\include\common\http\errors.h"\
 	"..\..\src\include\common\spdm\errors.h"\
 	"..\..\src\include\common\spds\errors.h"\
-	"..\..\src\include\winmobile\base\PPC2003adapter.h"\
 	"..\..\src\include\winmobile\base\time.h"\
+	"..\..\src\include\winmobile\base\winmobileadapter.h"\
 	
 NODEP_CPP_STRIN=\
 	"..\..\src\include\common\base\base\palmadapter.h"\
@@ -789,8 +789,8 @@ DEP_CPP_UTF8S=\
 	"..\..\src\include\common\http\errors.h"\
 	"..\..\src\include\common\spdm\errors.h"\
 	"..\..\src\include\common\spds\errors.h"\
-	"..\..\src\include\winmobile\base\PPC2003adapter.h"\
 	"..\..\src\include\winmobile\base\time.h"\
+	"..\..\src\include\winmobile\base\winmobileadapter.h"\
 	
 NODEP_CPP_UTF8S=\
 	"..\..\src\include\common\base\base\palmadapter.h"\
@@ -892,8 +892,8 @@ DEP_CPP_XMLPR=\
 	"..\..\src\include\common\http\errors.h"\
 	"..\..\src\include\common\spdm\errors.h"\
 	"..\..\src\include\common\spds\errors.h"\
-	"..\..\src\include\winmobile\base\PPC2003adapter.h"\
 	"..\..\src\include\winmobile\base\time.h"\
+	"..\..\src\include\winmobile\base\winmobileadapter.h"\
 	
 NODEP_CPP_XMLPR=\
 	"..\..\src\include\common\base\base\palmadapter.h"\
@@ -968,8 +968,8 @@ DEP_CPP_BASE6=\
 	"..\..\src\include\common\http\errors.h"\
 	"..\..\src\include\common\spdm\errors.h"\
 	"..\..\src\include\common\spds\errors.h"\
-	"..\..\src\include\winmobile\base\PPC2003adapter.h"\
 	"..\..\src\include\winmobile\base\time.h"\
+	"..\..\src\include\winmobile\base\winmobileadapter.h"\
 	
 NODEP_CPP_BASE6=\
 	"..\..\src\include\common\base\base\palmadapter.h"\
@@ -1047,8 +1047,8 @@ DEP_CPP_ERROR=\
 	"..\..\src\include\common\http\errors.h"\
 	"..\..\src\include\common\spdm\errors.h"\
 	"..\..\src\include\common\spds\errors.h"\
-	"..\..\src\include\winmobile\base\PPC2003adapter.h"\
 	"..\..\src\include\winmobile\base\time.h"\
+	"..\..\src\include\winmobile\base\winmobileadapter.h"\
 	
 NODEP_CPP_ERROR=\
 	"..\..\src\include\common\base\base\palmadapter.h"\
@@ -1126,8 +1126,8 @@ DEP_CPP_ERRORH=\
 	"..\..\src\include\common\http\errors.h"\
 	"..\..\src\include\common\spdm\errors.h"\
 	"..\..\src\include\common\spds\errors.h"\
-	"..\..\src\include\winmobile\base\PPC2003adapter.h"\
 	"..\..\src\include\winmobile\base\time.h"\
+	"..\..\src\include\winmobile\base\winmobileadapter.h"\
 	
 NODEP_CPP_ERRORH=\
 	"..\..\src\include\common\base\base\palmadapter.h"\
@@ -1225,8 +1225,8 @@ DEP_CPP_LOG_C=\
 	"..\..\src\include\common\http\errors.h"\
 	"..\..\src\include\common\spdm\errors.h"\
 	"..\..\src\include\common\spds\errors.h"\
-	"..\..\src\include\winmobile\base\PPC2003adapter.h"\
 	"..\..\src\include\winmobile\base\time.h"\
+	"..\..\src\include\winmobile\base\winmobileadapter.h"\
 	
 NODEP_CPP_LOG_C=\
 	"..\..\src\include\common\base\base\palmadapter.h"\
@@ -1308,8 +1308,8 @@ DEP_CPP_LOGER=\
 	"..\..\src\include\common\http\errors.h"\
 	"..\..\src\include\common\spdm\errors.h"\
 	"..\..\src\include\common\spds\errors.h"\
-	"..\..\src\include\winmobile\base\PPC2003adapter.h"\
 	"..\..\src\include\winmobile\base\time.h"\
+	"..\..\src\include\winmobile\base\winmobileadapter.h"\
 	
 NODEP_CPP_LOGER=\
 	"..\..\src\include\common\base\base\palmadapter.h"\
@@ -1346,105 +1346,6 @@ DEP_CPP_MD5_C=\
 
 DEP_CPP_MD5_C=\
 	"..\..\src\include\common\base\md5.h"\
-	
-
-!ENDIF 
-
-# End Source File
-# Begin Source File
-
-SOURCE="..\..\src\c++\winmobile\base\PPC2003adapter.cpp"
-
-!IF  "$(CFG)" == "windowsmobile - Win32 (WCE emulator) Release"
-
-DEP_CPP_PPC20=\
-	"..\..\src\include\common\base\base64.h"\
-	"..\..\src\include\common\base\errors.h"\
-	"..\..\src\include\common\base\fscapi.h"\
-	"..\..\src\include\common\base\Log.h"\
-	"..\..\src\include\common\base\md5.h"\
-	"..\..\src\include\common\base\util\ArrayElement.h"\
-	"..\..\src\include\common\base\util\ArrayList.h"\
-	"..\..\src\include\common\base\util\utils.h"\
-	"..\..\src\include\common\http\errors.h"\
-	"..\..\src\include\common\spdm\errors.h"\
-	"..\..\src\include\common\spds\errors.h"\
-	"..\..\src\include\winmobile\base\PPC2003adapter.h"\
-	"..\..\src\include\winmobile\base\time.h"\
-	
-NODEP_CPP_PPC20=\
-	"..\..\src\include\common\base\base\palmadapter.h"\
-	"..\..\src\include\common\base\base\posixadapter.h"\
-	"..\..\src\include\common\base\base\win32adapter.h"\
-	
-
-!ELSEIF  "$(CFG)" == "windowsmobile - Win32 (WCE emulator) Debug"
-
-DEP_CPP_PPC20=\
-	"..\..\src\include\common\base\base64.h"\
-	"..\..\src\include\common\base\errors.h"\
-	"..\..\src\include\common\base\fscapi.h"\
-	"..\..\src\include\common\base\Log.h"\
-	"..\..\src\include\common\base\md5.h"\
-	"..\..\src\include\common\base\util\ArrayElement.h"\
-	"..\..\src\include\common\base\util\ArrayList.h"\
-	"..\..\src\include\common\base\util\utils.h"\
-	"..\..\src\include\common\http\errors.h"\
-	"..\..\src\include\common\spdm\errors.h"\
-	"..\..\src\include\common\spds\errors.h"\
-	"..\..\src\include\winmobile\base\PPC2003adapter.h"\
-	"..\..\src\include\winmobile\base\time.h"\
-	
-NODEP_CPP_PPC20=\
-	"..\..\src\include\common\base\base\palmadapter.h"\
-	"..\..\src\include\common\base\base\posixadapter.h"\
-	"..\..\src\include\common\base\base\win32adapter.h"\
-	
-
-!ELSEIF  "$(CFG)" == "windowsmobile - Win32 (WCE ARMV4) Release"
-
-DEP_CPP_PPC20=\
-	"..\..\src\include\common\base\base64.h"\
-	"..\..\src\include\common\base\errors.h"\
-	"..\..\src\include\common\base\fscapi.h"\
-	"..\..\src\include\common\base\Log.h"\
-	"..\..\src\include\common\base\md5.h"\
-	"..\..\src\include\common\base\util\ArrayElement.h"\
-	"..\..\src\include\common\base\util\ArrayList.h"\
-	"..\..\src\include\common\base\util\utils.h"\
-	"..\..\src\include\common\http\errors.h"\
-	"..\..\src\include\common\spdm\errors.h"\
-	"..\..\src\include\common\spds\errors.h"\
-	"..\..\src\include\winmobile\base\PPC2003adapter.h"\
-	"..\..\src\include\winmobile\base\time.h"\
-	
-NODEP_CPP_PPC20=\
-	"..\..\src\include\common\base\base\palmadapter.h"\
-	"..\..\src\include\common\base\base\posixadapter.h"\
-	"..\..\src\include\common\base\base\win32adapter.h"\
-	
-
-!ELSEIF  "$(CFG)" == "windowsmobile - Win32 (WCE ARMV4) Debug"
-
-DEP_CPP_PPC20=\
-	"..\..\src\include\common\base\base64.h"\
-	"..\..\src\include\common\base\errors.h"\
-	"..\..\src\include\common\base\fscapi.h"\
-	"..\..\src\include\common\base\Log.h"\
-	"..\..\src\include\common\base\md5.h"\
-	"..\..\src\include\common\base\util\ArrayElement.h"\
-	"..\..\src\include\common\base\util\ArrayList.h"\
-	"..\..\src\include\common\base\util\utils.h"\
-	"..\..\src\include\common\http\errors.h"\
-	"..\..\src\include\common\spdm\errors.h"\
-	"..\..\src\include\common\spds\errors.h"\
-	"..\..\src\include\winmobile\base\PPC2003adapter.h"\
-	"..\..\src\include\winmobile\base\time.h"\
-	
-NODEP_CPP_PPC20=\
-	"..\..\src\include\common\base\base\palmadapter.h"\
-	"..\..\src\include\common\base\base\posixadapter.h"\
-	"..\..\src\include\common\base\base\win32adapter.h"\
 	
 
 !ENDIF 
@@ -1513,8 +1414,8 @@ DEP_CPP_QUOTE=\
 	"..\..\src\include\common\http\errors.h"\
 	"..\..\src\include\common\spdm\errors.h"\
 	"..\..\src\include\common\spds\errors.h"\
-	"..\..\src\include\winmobile\base\PPC2003adapter.h"\
 	"..\..\src\include\winmobile\base\time.h"\
+	"..\..\src\include\winmobile\base\winmobileadapter.h"\
 	
 NODEP_CPP_QUOTE=\
 	"..\..\src\include\common\base\base\palmadapter.h"\
@@ -1589,15 +1490,20 @@ NODEP_CPP_START=\
 !ELSEIF  "$(CFG)" == "windowsmobile - Win32 (WCE ARMV4) Debug"
 
 DEP_CPP_START=\
+	"..\..\src\include\common\base\base64.h"\
 	"..\..\src\include\common\base\errors.h"\
 	"..\..\src\include\common\base\fscapi.h"\
 	"..\..\src\include\common\base\Log.h"\
+	"..\..\src\include\common\base\md5.h"\
+	"..\..\src\include\common\base\util\ArrayElement.h"\
+	"..\..\src\include\common\base\util\ArrayList.h"\
+	"..\..\src\include\common\base\util\utils.h"\
 	"..\..\src\include\common\http\errors.h"\
 	"..\..\src\include\common\spdm\errors.h"\
 	"..\..\src\include\common\spds\errors.h"\
-	"..\..\src\include\winmobile\base\PPC2003adapter.h"\
 	"..\..\src\include\winmobile\base\startcmd.h"\
 	"..\..\src\include\winmobile\base\time.h"\
+	"..\..\src\include\winmobile\base\winmobileadapter.h"\
 	
 NODEP_CPP_START=\
 	"..\..\src\include\common\base\base\palmadapter.h"\
@@ -1672,10 +1578,109 @@ DEP_CPP_TIME_=\
 	"..\..\src\include\common\http\errors.h"\
 	"..\..\src\include\common\spdm\errors.h"\
 	"..\..\src\include\common\spds\errors.h"\
-	"..\..\src\include\winmobile\base\PPC2003adapter.h"\
 	"..\..\src\include\winmobile\base\time.h"\
+	"..\..\src\include\winmobile\base\winmobileadapter.h"\
 	
 NODEP_CPP_TIME_=\
+	"..\..\src\include\common\base\base\palmadapter.h"\
+	"..\..\src\include\common\base\base\posixadapter.h"\
+	"..\..\src\include\common\base\base\win32adapter.h"\
+	
+
+!ENDIF 
+
+# End Source File
+# Begin Source File
+
+SOURCE="..\..\src\c++\winmobile\base\winmobileadapter.cpp"
+
+!IF  "$(CFG)" == "windowsmobile - Win32 (WCE emulator) Release"
+
+DEP_CPP_WINMO=\
+	"..\..\src\include\common\base\base64.h"\
+	"..\..\src\include\common\base\errors.h"\
+	"..\..\src\include\common\base\fscapi.h"\
+	"..\..\src\include\common\base\Log.h"\
+	"..\..\src\include\common\base\md5.h"\
+	"..\..\src\include\common\base\util\ArrayElement.h"\
+	"..\..\src\include\common\base\util\ArrayList.h"\
+	"..\..\src\include\common\base\util\utils.h"\
+	"..\..\src\include\common\http\errors.h"\
+	"..\..\src\include\common\spdm\errors.h"\
+	"..\..\src\include\common\spds\errors.h"\
+	"..\..\src\include\winmobile\base\time.h"\
+	"..\..\src\include\winmobile\base\winmobileadapter.h"\
+	
+NODEP_CPP_WINMO=\
+	"..\..\src\include\common\base\base\palmadapter.h"\
+	"..\..\src\include\common\base\base\posixadapter.h"\
+	"..\..\src\include\common\base\base\win32adapter.h"\
+	
+
+!ELSEIF  "$(CFG)" == "windowsmobile - Win32 (WCE emulator) Debug"
+
+DEP_CPP_WINMO=\
+	"..\..\src\include\common\base\base64.h"\
+	"..\..\src\include\common\base\errors.h"\
+	"..\..\src\include\common\base\fscapi.h"\
+	"..\..\src\include\common\base\Log.h"\
+	"..\..\src\include\common\base\md5.h"\
+	"..\..\src\include\common\base\util\ArrayElement.h"\
+	"..\..\src\include\common\base\util\ArrayList.h"\
+	"..\..\src\include\common\base\util\utils.h"\
+	"..\..\src\include\common\http\errors.h"\
+	"..\..\src\include\common\spdm\errors.h"\
+	"..\..\src\include\common\spds\errors.h"\
+	"..\..\src\include\winmobile\base\time.h"\
+	"..\..\src\include\winmobile\base\winmobileadapter.h"\
+	
+NODEP_CPP_WINMO=\
+	"..\..\src\include\common\base\base\palmadapter.h"\
+	"..\..\src\include\common\base\base\posixadapter.h"\
+	"..\..\src\include\common\base\base\win32adapter.h"\
+	
+
+!ELSEIF  "$(CFG)" == "windowsmobile - Win32 (WCE ARMV4) Release"
+
+DEP_CPP_WINMO=\
+	"..\..\src\include\common\base\base64.h"\
+	"..\..\src\include\common\base\errors.h"\
+	"..\..\src\include\common\base\fscapi.h"\
+	"..\..\src\include\common\base\Log.h"\
+	"..\..\src\include\common\base\md5.h"\
+	"..\..\src\include\common\base\util\ArrayElement.h"\
+	"..\..\src\include\common\base\util\ArrayList.h"\
+	"..\..\src\include\common\base\util\utils.h"\
+	"..\..\src\include\common\http\errors.h"\
+	"..\..\src\include\common\spdm\errors.h"\
+	"..\..\src\include\common\spds\errors.h"\
+	"..\..\src\include\winmobile\base\time.h"\
+	"..\..\src\include\winmobile\base\winmobileadapter.h"\
+	
+NODEP_CPP_WINMO=\
+	"..\..\src\include\common\base\base\palmadapter.h"\
+	"..\..\src\include\common\base\base\posixadapter.h"\
+	"..\..\src\include\common\base\base\win32adapter.h"\
+	
+
+!ELSEIF  "$(CFG)" == "windowsmobile - Win32 (WCE ARMV4) Debug"
+
+DEP_CPP_WINMO=\
+	"..\..\src\include\common\base\base64.h"\
+	"..\..\src\include\common\base\errors.h"\
+	"..\..\src\include\common\base\fscapi.h"\
+	"..\..\src\include\common\base\Log.h"\
+	"..\..\src\include\common\base\md5.h"\
+	"..\..\src\include\common\base\util\ArrayElement.h"\
+	"..\..\src\include\common\base\util\ArrayList.h"\
+	"..\..\src\include\common\base\util\utils.h"\
+	"..\..\src\include\common\http\errors.h"\
+	"..\..\src\include\common\spdm\errors.h"\
+	"..\..\src\include\common\spds\errors.h"\
+	"..\..\src\include\winmobile\base\time.h"\
+	"..\..\src\include\winmobile\base\winmobileadapter.h"\
+	
+NODEP_CPP_WINMO=\
 	"..\..\src\include\common\base\base\palmadapter.h"\
 	"..\..\src\include\common\base\base\posixadapter.h"\
 	"..\..\src\include\common\base\base\win32adapter.h"\
@@ -1798,8 +1803,8 @@ DEP_CPP_ACCES=\
 	"..\..\src\include\common\spds\AccessConfig.h"\
 	"..\..\src\include\common\spds\constants.h"\
 	"..\..\src\include\common\spds\errors.h"\
-	"..\..\src\include\winmobile\base\PPC2003adapter.h"\
 	"..\..\src\include\winmobile\base\time.h"\
+	"..\..\src\include\winmobile\base\winmobileadapter.h"\
 	"..\..\src\include\winmobile\spdm\DeviceManagementNode.h"\
 	
 NODEP_CPP_ACCES=\
@@ -1942,8 +1947,8 @@ DEP_CPP_DMTCL=\
 	"..\..\src\include\common\spds\errors.h"\
 	"..\..\src\include\common\spds\SyncManagerConfig.h"\
 	"..\..\src\include\common\spds\SyncSourceConfig.h"\
-	"..\..\src\include\winmobile\base\PPC2003adapter.h"\
 	"..\..\src\include\winmobile\base\time.h"\
+	"..\..\src\include\winmobile\base\winmobileadapter.h"\
 	
 NODEP_CPP_DMTCL=\
 	"..\..\src\include\common\base\base\palmadapter.h"\
@@ -2068,8 +2073,8 @@ DEP_CPP_MAILS=\
 	"..\..\src\include\common\spds\errors.h"\
 	"..\..\src\include\common\spds\MailSyncSourceConfig.h"\
 	"..\..\src\include\common\spds\SyncSourceConfig.h"\
-	"..\..\src\include\winmobile\base\PPC2003adapter.h"\
 	"..\..\src\include\winmobile\base\time.h"\
+	"..\..\src\include\winmobile\base\winmobileadapter.h"\
 	"..\..\src\include\winmobile\spdm\DeviceManagementNode.h"\
 	
 NODEP_CPP_MAILS=\
@@ -2191,8 +2196,8 @@ DEP_CPP_SOURC=\
 	"..\..\src\include\common\spds\constants.h"\
 	"..\..\src\include\common\spds\errors.h"\
 	"..\..\src\include\common\spds\SyncSourceConfig.h"\
-	"..\..\src\include\winmobile\base\PPC2003adapter.h"\
 	"..\..\src\include\winmobile\base\time.h"\
+	"..\..\src\include\winmobile\base\winmobileadapter.h"\
 	"..\..\src\include\winmobile\spdm\DeviceManagementNode.h"\
 	
 NODEP_CPP_SOURC=\
@@ -2663,8 +2668,8 @@ DEP_CPP_SYNC4=\
 	"..\..\src\include\common\syncml\core\VerProto.h"\
 	"..\..\src\include\common\syncml\formatter\Formatter.h"\
 	"..\..\src\include\common\syncml\parser\Parser.h"\
-	"..\..\src\include\winmobile\base\PPC2003adapter.h"\
 	"..\..\src\include\winmobile\base\time.h"\
+	"..\..\src\include\winmobile\base\winmobileadapter.h"\
 	
 NODEP_CPP_SYNC4=\
 	"..\..\src\include\common\base\base\palmadapter.h"\
@@ -2752,15 +2757,15 @@ DEP_CPP_GPRSC=\
 	"..\..\src\include\common\http\errors.h"\
 	"..\..\src\include\common\spdm\errors.h"\
 	"..\..\src\include\common\spds\errors.h"\
-	"..\..\src\include\winmobile\base\PPC2003adapter.h"\
 	"..\..\src\include\winmobile\base\time.h"\
+	"..\..\src\include\winmobile\base\winmobileadapter.h"\
 	"..\..\src\include\winmobile\http\GPRSConnection.h"\
+	{$(INCLUDE)}"connmgr.h"\
 	
 NODEP_CPP_GPRSC=\
 	"..\..\src\include\common\base\base\palmadapter.h"\
 	"..\..\src\include\common\base\base\posixadapter.h"\
 	"..\..\src\include\common\base\base\win32adapter.h"\
-	".\onnmgr.h"\
 	
 
 !ENDIF 
@@ -2837,8 +2842,8 @@ DEP_CPP_HTTPH=\
 	"..\..\src\include\common\http\HTTPHeader.h"\
 	"..\..\src\include\common\spdm\errors.h"\
 	"..\..\src\include\common\spds\errors.h"\
-	"..\..\src\include\winmobile\base\PPC2003adapter.h"\
 	"..\..\src\include\winmobile\base\time.h"\
+	"..\..\src\include\winmobile\base\winmobileadapter.h"\
 	
 NODEP_CPP_HTTPH=\
 	"..\..\src\include\common\base\base\palmadapter.h"\
@@ -2855,7 +2860,7 @@ SOURCE="..\..\src\c++\winmobile\http\PPC2003TransportAgent.cpp"
 
 !IF  "$(CFG)" == "windowsmobile - Win32 (WCE emulator) Release"
 
-DEP_CPP_PPC200=\
+DEP_CPP_PPC20=\
 	"..\..\src\include\common\base\constants.h"\
 	"..\..\src\include\common\base\errors.h"\
 	"..\..\src\include\common\base\fscapi.h"\
@@ -2874,7 +2879,7 @@ DEP_CPP_PPC200=\
 	"..\..\src\include\winmobile\http\GPRSConnection.h"\
 	"..\..\src\include\winmobile\http\PPC2003TransportAgent.h"\
 	
-NODEP_CPP_PPC200=\
+NODEP_CPP_PPC20=\
 	"..\..\src\include\common\base\base\palmadapter.h"\
 	"..\..\src\include\common\base\base\posixadapter.h"\
 	"..\..\src\include\common\base\base\win32adapter.h"\
@@ -2882,7 +2887,7 @@ NODEP_CPP_PPC200=\
 
 !ELSEIF  "$(CFG)" == "windowsmobile - Win32 (WCE emulator) Debug"
 
-DEP_CPP_PPC200=\
+DEP_CPP_PPC20=\
 	"..\..\src\include\common\base\constants.h"\
 	"..\..\src\include\common\base\errors.h"\
 	"..\..\src\include\common\base\fscapi.h"\
@@ -2901,7 +2906,7 @@ DEP_CPP_PPC200=\
 	"..\..\src\include\winmobile\http\GPRSConnection.h"\
 	"..\..\src\include\winmobile\http\PPC2003TransportAgent.h"\
 	
-NODEP_CPP_PPC200=\
+NODEP_CPP_PPC20=\
 	"..\..\src\include\common\base\base\palmadapter.h"\
 	"..\..\src\include\common\base\base\posixadapter.h"\
 	"..\..\src\include\common\base\base\win32adapter.h"\
@@ -2909,7 +2914,7 @@ NODEP_CPP_PPC200=\
 
 !ELSEIF  "$(CFG)" == "windowsmobile - Win32 (WCE ARMV4) Release"
 
-DEP_CPP_PPC200=\
+DEP_CPP_PPC20=\
 	"..\..\src\include\common\base\constants.h"\
 	"..\..\src\include\common\base\errors.h"\
 	"..\..\src\include\common\base\fscapi.h"\
@@ -2928,7 +2933,7 @@ DEP_CPP_PPC200=\
 	"..\..\src\include\winmobile\http\GPRSConnection.h"\
 	"..\..\src\include\winmobile\http\PPC2003TransportAgent.h"\
 	
-NODEP_CPP_PPC200=\
+NODEP_CPP_PPC20=\
 	"..\..\src\include\common\base\base\palmadapter.h"\
 	"..\..\src\include\common\base\base\posixadapter.h"\
 	"..\..\src\include\common\base\base\win32adapter.h"\
@@ -2936,12 +2941,17 @@ NODEP_CPP_PPC200=\
 
 !ELSEIF  "$(CFG)" == "windowsmobile - Win32 (WCE ARMV4) Debug"
 
-DEP_CPP_PPC200=\
+DEP_CPP_PPC20=\
+	"..\..\src\include\common\base\base64.h"\
 	"..\..\src\include\common\base\constants.h"\
 	"..\..\src\include\common\base\errors.h"\
 	"..\..\src\include\common\base\fscapi.h"\
 	"..\..\src\include\common\base\Log.h"\
+	"..\..\src\include\common\base\md5.h"\
 	"..\..\src\include\common\base\messages.h"\
+	"..\..\src\include\common\base\util\ArrayElement.h"\
+	"..\..\src\include\common\base\util\ArrayList.h"\
+	"..\..\src\include\common\base\util\utils.h"\
 	"..\..\src\include\common\http\constants.h"\
 	"..\..\src\include\common\http\errors.h"\
 	"..\..\src\include\common\http\Proxy.h"\
@@ -2950,12 +2960,12 @@ DEP_CPP_PPC200=\
 	"..\..\src\include\common\spdm\errors.h"\
 	"..\..\src\include\common\spdm\spdmutils.h"\
 	"..\..\src\include\common\spds\errors.h"\
-	"..\..\src\include\winmobile\base\PPC2003adapter.h"\
 	"..\..\src\include\winmobile\base\time.h"\
+	"..\..\src\include\winmobile\base\winmobileadapter.h"\
 	"..\..\src\include\winmobile\http\GPRSConnection.h"\
 	"..\..\src\include\winmobile\http\PPC2003TransportAgent.h"\
 	
-NODEP_CPP_PPC200=\
+NODEP_CPP_PPC20=\
 	"..\..\src\include\common\base\base\palmadapter.h"\
 	"..\..\src\include\common\base\base\posixadapter.h"\
 	"..\..\src\include\common\base\base\win32adapter.h"\
@@ -3039,8 +3049,8 @@ DEP_CPP_PROXY=\
 	"..\..\src\include\common\http\Proxy.h"\
 	"..\..\src\include\common\spdm\errors.h"\
 	"..\..\src\include\common\spds\errors.h"\
-	"..\..\src\include\winmobile\base\PPC2003adapter.h"\
 	"..\..\src\include\winmobile\base\time.h"\
+	"..\..\src\include\winmobile\base\winmobileadapter.h"\
 	
 NODEP_CPP_PROXY=\
 	"..\..\src\include\common\base\base\palmadapter.h"\
@@ -3138,8 +3148,8 @@ DEP_CPP_TRANS=\
 	"..\..\src\include\common\http\URL.h"\
 	"..\..\src\include\common\spdm\errors.h"\
 	"..\..\src\include\common\spds\errors.h"\
-	"..\..\src\include\winmobile\base\PPC2003adapter.h"\
 	"..\..\src\include\winmobile\base\time.h"\
+	"..\..\src\include\winmobile\base\winmobileadapter.h"\
 	
 NODEP_CPP_TRANS=\
 	"..\..\src\include\common\base\base\palmadapter.h"\
@@ -3240,8 +3250,8 @@ DEP_CPP_TRANSP=\
 	"..\..\src\include\common\http\URL.h"\
 	"..\..\src\include\common\spdm\errors.h"\
 	"..\..\src\include\common\spds\errors.h"\
-	"..\..\src\include\winmobile\base\PPC2003adapter.h"\
 	"..\..\src\include\winmobile\base\time.h"\
+	"..\..\src\include\winmobile\base\winmobileadapter.h"\
 	"..\..\src\include\winmobile\http\PPC2003TransportAgent.h"\
 	
 NODEP_CPP_TRANSP=\
@@ -3348,8 +3358,8 @@ DEP_CPP_URL_C=\
 	"..\..\src\include\common\http\URL.h"\
 	"..\..\src\include\common\spdm\errors.h"\
 	"..\..\src\include\common\spds\errors.h"\
-	"..\..\src\include\winmobile\base\PPC2003adapter.h"\
 	"..\..\src\include\winmobile\base\time.h"\
+	"..\..\src\include\winmobile\base\winmobileadapter.h"\
 	
 NODEP_CPP_URL_C=\
 	"..\..\src\include\common\base\base\palmadapter.h"\
@@ -3459,8 +3469,8 @@ DEP_CPP_ACCESS=\
 	"..\..\src\include\common\spds\AccessConfig.h"\
 	"..\..\src\include\common\spds\constants.h"\
 	"..\..\src\include\common\spds\errors.h"\
-	"..\..\src\include\winmobile\base\PPC2003adapter.h"\
 	"..\..\src\include\winmobile\base\time.h"\
+	"..\..\src\include\winmobile\base\winmobileadapter.h"\
 	
 NODEP_CPP_ACCESS=\
 	"..\..\src\include\common\base\base\palmadapter.h"\
@@ -3543,8 +3553,8 @@ DEP_CPP_B64DE=\
 	"..\..\src\include\common\spds\B64Decoder.h"\
 	"..\..\src\include\common\spds\DataTransformer.h"\
 	"..\..\src\include\common\spds\errors.h"\
-	"..\..\src\include\winmobile\base\PPC2003adapter.h"\
 	"..\..\src\include\winmobile\base\time.h"\
+	"..\..\src\include\winmobile\base\winmobileadapter.h"\
 	
 NODEP_CPP_B64DE=\
 	"..\..\src\include\common\base\base\palmadapter.h"\
@@ -3627,8 +3637,8 @@ DEP_CPP_B64EN=\
 	"..\..\src\include\common\spds\B64Encoder.h"\
 	"..\..\src\include\common\spds\DataTransformer.h"\
 	"..\..\src\include\common\spds\errors.h"\
-	"..\..\src\include\winmobile\base\PPC2003adapter.h"\
 	"..\..\src\include\winmobile\base\time.h"\
+	"..\..\src\include\winmobile\base\winmobileadapter.h"\
 	
 NODEP_CPP_B64EN=\
 	"..\..\src\include\common\base\base\palmadapter.h"\
@@ -3714,8 +3724,8 @@ DEP_CPP_BODYP=\
 	"..\..\src\include\common\spdm\errors.h"\
 	"..\..\src\include\common\spds\BodyPart.h"\
 	"..\..\src\include\common\spds\errors.h"\
-	"..\..\src\include\winmobile\base\PPC2003adapter.h"\
 	"..\..\src\include\winmobile\base\time.h"\
+	"..\..\src\include\winmobile\base\winmobileadapter.h"\
 	
 NODEP_CPP_BODYP=\
 	"..\..\src\include\common\base\base\palmadapter.h"\
@@ -3793,8 +3803,8 @@ DEP_CPP_CONST=\
 	"..\..\src\include\common\spdm\errors.h"\
 	"..\..\src\include\common\spds\constants.h"\
 	"..\..\src\include\common\spds\errors.h"\
-	"..\..\src\include\winmobile\base\PPC2003adapter.h"\
 	"..\..\src\include\winmobile\base\time.h"\
+	"..\..\src\include\winmobile\base\winmobileadapter.h"\
 	
 NODEP_CPP_CONST=\
 	"..\..\src\include\common\base\base\palmadapter.h"\
@@ -4152,8 +4162,8 @@ DEP_CPP_CREDE=\
 	"..\..\src\include\common\syncml\core\TargetRef.h"\
 	"..\..\src\include\common\syncml\core\VerDTD.h"\
 	"..\..\src\include\common\syncml\core\VerProto.h"\
-	"..\..\src\include\winmobile\base\PPC2003adapter.h"\
 	"..\..\src\include\winmobile\base\time.h"\
+	"..\..\src\include\winmobile\base\winmobileadapter.h"\
 	
 NODEP_CPP_CREDE=\
 	"..\..\src\include\common\base\base\palmadapter.h"\
@@ -4263,8 +4273,8 @@ DEP_CPP_DATAT=\
 	"..\..\src\include\common\spdm\errors.h"\
 	"..\..\src\include\common\spds\DataTransformer.h"\
 	"..\..\src\include\common\spds\errors.h"\
-	"..\..\src\include\winmobile\base\PPC2003adapter.h"\
 	"..\..\src\include\winmobile\base\time.h"\
+	"..\..\src\include\winmobile\base\winmobileadapter.h"\
 	
 NODEP_CPP_DATAT=\
 	"..\..\src\include\common\base\base\palmadapter.h"\
@@ -4362,8 +4372,8 @@ DEP_CPP_DATATR=\
 	"..\..\src\include\common\spds\DESDecoder.h"\
 	"..\..\src\include\common\spds\DESEncoder.h"\
 	"..\..\src\include\common\spds\errors.h"\
-	"..\..\src\include\winmobile\base\PPC2003adapter.h"\
 	"..\..\src\include\winmobile\base\time.h"\
+	"..\..\src\include\winmobile\base\winmobileadapter.h"\
 	
 NODEP_CPP_DATATR=\
 	"..\..\src\include\common\base\base\palmadapter.h"\
@@ -4450,8 +4460,8 @@ DEP_CPP_DESDE=\
 	"..\..\src\include\common\spds\DataTransformer.h"\
 	"..\..\src\include\common\spds\DESDecoder.h"\
 	"..\..\src\include\common\spds\errors.h"\
-	"..\..\src\include\winmobile\base\PPC2003adapter.h"\
 	"..\..\src\include\winmobile\base\time.h"\
+	"..\..\src\include\winmobile\base\winmobileadapter.h"\
 	
 NODEP_CPP_DESDE=\
 	"..\..\src\include\common\base\base\palmadapter.h"\
@@ -4538,8 +4548,8 @@ DEP_CPP_DESEN=\
 	"..\..\src\include\common\spds\DataTransformer.h"\
 	"..\..\src\include\common\spds\DESEncoder.h"\
 	"..\..\src\include\common\spds\errors.h"\
-	"..\..\src\include\winmobile\base\PPC2003adapter.h"\
 	"..\..\src\include\winmobile\base\time.h"\
+	"..\..\src\include\winmobile\base\winmobileadapter.h"\
 	
 NODEP_CPP_DESEN=\
 	"..\..\src\include\common\base\base\palmadapter.h"\
@@ -4914,393 +4924,10 @@ DEP_CPP_EMAIL=\
 	"..\..\src\include\common\syncml\core\VerDTD.h"\
 	"..\..\src\include\common\syncml\core\VerProto.h"\
 	"..\..\src\include\common\syncml\formatter\Formatter.h"\
-	"..\..\src\include\winmobile\base\PPC2003adapter.h"\
 	"..\..\src\include\winmobile\base\time.h"\
+	"..\..\src\include\winmobile\base\winmobileadapter.h"\
 	
 NODEP_CPP_EMAIL=\
-	"..\..\src\include\common\base\base\palmadapter.h"\
-	"..\..\src\include\common\base\base\posixadapter.h"\
-	"..\..\src\include\common\base\base\win32adapter.h"\
-	
-
-!ENDIF 
-
-# End Source File
-# Begin Source File
-
-SOURCE="..\..\src\c++\common\spds\FileData.cpp"
-
-!IF  "$(CFG)" == "windowsmobile - Win32 (WCE emulator) Release"
-
-DEP_CPP_FILED=\
-	"..\..\src\include\common\base\base64.h"\
-	"..\..\src\include\common\base\errors.h"\
-	"..\..\src\include\common\base\fscapi.h"\
-	"..\..\src\include\common\base\Log.h"\
-	"..\..\src\include\common\base\md5.h"\
-	"..\..\src\include\common\base\util\ArrayElement.h"\
-	"..\..\src\include\common\base\util\ArrayList.h"\
-	"..\..\src\include\common\base\util\BasicTime.h"\
-	"..\..\src\include\common\base\util\KeyValuePair.h"\
-	"..\..\src\include\common\base\util\StringBuffer.h"\
-	"..\..\src\include\common\base\util\UTF8StringBuffer.h"\
-	"..\..\src\include\common\base\util\utils.h"\
-	"..\..\src\include\common\base\util\XMLProcessor.h"\
-	"..\..\src\include\common\http\errors.h"\
-	"..\..\src\include\common\spdm\errors.h"\
-	"..\..\src\include\common\spds\BodyPart.h"\
-	"..\..\src\include\common\spds\errors.h"\
-	"..\..\src\include\common\spds\FileData.h"\
-	"..\..\src\include\common\spds\MailMessage.h"\
-	"..\..\src\include\common\syncml\core\AbstractCommand.h"\
-	"..\..\src\include\common\syncml\core\Add.h"\
-	"..\..\src\include\common\syncml\core\Alert.h"\
-	"..\..\src\include\common\syncml\core\Anchor.h"\
-	"..\..\src\include\common\syncml\core\Atomic.h"\
-	"..\..\src\include\common\syncml\core\Authentication.h"\
-	"..\..\src\include\common\syncml\core\Chal.h"\
-	"..\..\src\include\common\syncml\core\CmdID.h"\
-	"..\..\src\include\common\syncml\core\ComplexData.h"\
-	"..\..\src\include\common\syncml\core\Constants.h"\
-	"..\..\src\include\common\syncml\core\ContentTypeInfo.h"\
-	"..\..\src\include\common\syncml\core\Copy.h"\
-	"..\..\src\include\common\syncml\core\core.h"\
-	"..\..\src\include\common\syncml\core\Cred.h"\
-	"..\..\src\include\common\syncml\core\CTCap.h"\
-	"..\..\src\include\common\syncml\core\CTTypeSupported.h"\
-	"..\..\src\include\common\syncml\core\Data.h"\
-	"..\..\src\include\common\syncml\core\DataStore.h"\
-	"..\..\src\include\common\syncml\core\Delete.h"\
-	"..\..\src\include\common\syncml\core\DevInf.h"\
-	"..\..\src\include\common\syncml\core\DSMem.h"\
-	"..\..\src\include\common\syncml\core\EMI.h"\
-	"..\..\src\include\common\syncml\core\Exec.h"\
-	"..\..\src\include\common\syncml\core\Ext.h"\
-	"..\..\src\include\common\syncml\core\Filter.h"\
-	"..\..\src\include\common\syncml\core\Get.h"\
-	"..\..\src\include\common\syncml\core\Item.h"\
-	"..\..\src\include\common\syncml\core\ItemizedCommand.h"\
-	"..\..\src\include\common\syncml\core\Map.h"\
-	"..\..\src\include\common\syncml\core\MapItem.h"\
-	"..\..\src\include\common\syncml\core\Mem.h"\
-	"..\..\src\include\common\syncml\core\Meta.h"\
-	"..\..\src\include\common\syncml\core\MetInf.h"\
-	"..\..\src\include\common\syncml\core\ModificationCommand.h"\
-	"..\..\src\include\common\syncml\core\NextNonce.h"\
-	"..\..\src\include\common\syncml\core\ObjectDel.h"\
-	"..\..\src\include\common\syncml\core\Property.h"\
-	"..\..\src\include\common\syncml\core\PropParam.h"\
-	"..\..\src\include\common\syncml\core\Put.h"\
-	"..\..\src\include\common\syncml\core\Replace.h"\
-	"..\..\src\include\common\syncml\core\ResponseCommand.h"\
-	"..\..\src\include\common\syncml\core\Results.h"\
-	"..\..\src\include\common\syncml\core\Search.h"\
-	"..\..\src\include\common\syncml\core\Sequence.h"\
-	"..\..\src\include\common\syncml\core\SessionID.h"\
-	"..\..\src\include\common\syncml\core\Source.h"\
-	"..\..\src\include\common\syncml\core\SourceArray.h"\
-	"..\..\src\include\common\syncml\core\SourceRef.h"\
-	"..\..\src\include\common\syncml\core\Status.h"\
-	"..\..\src\include\common\syncml\core\StringElement.h"\
-	"..\..\src\include\common\syncml\core\Sync.h"\
-	"..\..\src\include\common\syncml\core\SyncBody.h"\
-	"..\..\src\include\common\syncml\core\SyncCap.h"\
-	"..\..\src\include\common\syncml\core\SyncHdr.h"\
-	"..\..\src\include\common\syncml\core\SyncML.h"\
-	"..\..\src\include\common\syncml\core\SyncType.h"\
-	"..\..\src\include\common\syncml\core\SyncTypeArray.h"\
-	"..\..\src\include\common\syncml\core\TagNames.h"\
-	"..\..\src\include\common\syncml\core\Target.h"\
-	"..\..\src\include\common\syncml\core\TargetRef.h"\
-	"..\..\src\include\common\syncml\core\VerDTD.h"\
-	"..\..\src\include\common\syncml\core\VerProto.h"\
-	"..\..\src\include\common\syncml\formatter\Formatter.h"\
-	"..\..\src\include\winmobile\base\PPC2003adapter.h"\
-	"..\..\src\include\winmobile\base\time.h"\
-	
-NODEP_CPP_FILED=\
-	"..\..\src\include\common\base\base\palmadapter.h"\
-	"..\..\src\include\common\base\base\posixadapter.h"\
-	"..\..\src\include\common\base\base\win32adapter.h"\
-	
-
-!ELSEIF  "$(CFG)" == "windowsmobile - Win32 (WCE emulator) Debug"
-
-DEP_CPP_FILED=\
-	"..\..\src\include\common\base\base64.h"\
-	"..\..\src\include\common\base\errors.h"\
-	"..\..\src\include\common\base\fscapi.h"\
-	"..\..\src\include\common\base\Log.h"\
-	"..\..\src\include\common\base\md5.h"\
-	"..\..\src\include\common\base\util\ArrayElement.h"\
-	"..\..\src\include\common\base\util\ArrayList.h"\
-	"..\..\src\include\common\base\util\BasicTime.h"\
-	"..\..\src\include\common\base\util\KeyValuePair.h"\
-	"..\..\src\include\common\base\util\StringBuffer.h"\
-	"..\..\src\include\common\base\util\UTF8StringBuffer.h"\
-	"..\..\src\include\common\base\util\utils.h"\
-	"..\..\src\include\common\base\util\XMLProcessor.h"\
-	"..\..\src\include\common\http\errors.h"\
-	"..\..\src\include\common\spdm\errors.h"\
-	"..\..\src\include\common\spds\BodyPart.h"\
-	"..\..\src\include\common\spds\errors.h"\
-	"..\..\src\include\common\spds\FileData.h"\
-	"..\..\src\include\common\spds\MailMessage.h"\
-	"..\..\src\include\common\syncml\core\AbstractCommand.h"\
-	"..\..\src\include\common\syncml\core\Add.h"\
-	"..\..\src\include\common\syncml\core\Alert.h"\
-	"..\..\src\include\common\syncml\core\Anchor.h"\
-	"..\..\src\include\common\syncml\core\Atomic.h"\
-	"..\..\src\include\common\syncml\core\Authentication.h"\
-	"..\..\src\include\common\syncml\core\Chal.h"\
-	"..\..\src\include\common\syncml\core\CmdID.h"\
-	"..\..\src\include\common\syncml\core\ComplexData.h"\
-	"..\..\src\include\common\syncml\core\Constants.h"\
-	"..\..\src\include\common\syncml\core\ContentTypeInfo.h"\
-	"..\..\src\include\common\syncml\core\Copy.h"\
-	"..\..\src\include\common\syncml\core\core.h"\
-	"..\..\src\include\common\syncml\core\Cred.h"\
-	"..\..\src\include\common\syncml\core\CTCap.h"\
-	"..\..\src\include\common\syncml\core\CTTypeSupported.h"\
-	"..\..\src\include\common\syncml\core\Data.h"\
-	"..\..\src\include\common\syncml\core\DataStore.h"\
-	"..\..\src\include\common\syncml\core\Delete.h"\
-	"..\..\src\include\common\syncml\core\DevInf.h"\
-	"..\..\src\include\common\syncml\core\DSMem.h"\
-	"..\..\src\include\common\syncml\core\EMI.h"\
-	"..\..\src\include\common\syncml\core\Exec.h"\
-	"..\..\src\include\common\syncml\core\Ext.h"\
-	"..\..\src\include\common\syncml\core\Filter.h"\
-	"..\..\src\include\common\syncml\core\Get.h"\
-	"..\..\src\include\common\syncml\core\Item.h"\
-	"..\..\src\include\common\syncml\core\ItemizedCommand.h"\
-	"..\..\src\include\common\syncml\core\Map.h"\
-	"..\..\src\include\common\syncml\core\MapItem.h"\
-	"..\..\src\include\common\syncml\core\Mem.h"\
-	"..\..\src\include\common\syncml\core\Meta.h"\
-	"..\..\src\include\common\syncml\core\MetInf.h"\
-	"..\..\src\include\common\syncml\core\ModificationCommand.h"\
-	"..\..\src\include\common\syncml\core\NextNonce.h"\
-	"..\..\src\include\common\syncml\core\ObjectDel.h"\
-	"..\..\src\include\common\syncml\core\Property.h"\
-	"..\..\src\include\common\syncml\core\PropParam.h"\
-	"..\..\src\include\common\syncml\core\Put.h"\
-	"..\..\src\include\common\syncml\core\Replace.h"\
-	"..\..\src\include\common\syncml\core\ResponseCommand.h"\
-	"..\..\src\include\common\syncml\core\Results.h"\
-	"..\..\src\include\common\syncml\core\Search.h"\
-	"..\..\src\include\common\syncml\core\Sequence.h"\
-	"..\..\src\include\common\syncml\core\SessionID.h"\
-	"..\..\src\include\common\syncml\core\Source.h"\
-	"..\..\src\include\common\syncml\core\SourceArray.h"\
-	"..\..\src\include\common\syncml\core\SourceRef.h"\
-	"..\..\src\include\common\syncml\core\Status.h"\
-	"..\..\src\include\common\syncml\core\StringElement.h"\
-	"..\..\src\include\common\syncml\core\Sync.h"\
-	"..\..\src\include\common\syncml\core\SyncBody.h"\
-	"..\..\src\include\common\syncml\core\SyncCap.h"\
-	"..\..\src\include\common\syncml\core\SyncHdr.h"\
-	"..\..\src\include\common\syncml\core\SyncML.h"\
-	"..\..\src\include\common\syncml\core\SyncType.h"\
-	"..\..\src\include\common\syncml\core\SyncTypeArray.h"\
-	"..\..\src\include\common\syncml\core\TagNames.h"\
-	"..\..\src\include\common\syncml\core\Target.h"\
-	"..\..\src\include\common\syncml\core\TargetRef.h"\
-	"..\..\src\include\common\syncml\core\VerDTD.h"\
-	"..\..\src\include\common\syncml\core\VerProto.h"\
-	"..\..\src\include\common\syncml\formatter\Formatter.h"\
-	"..\..\src\include\winmobile\base\PPC2003adapter.h"\
-	"..\..\src\include\winmobile\base\time.h"\
-	
-NODEP_CPP_FILED=\
-	"..\..\src\include\common\base\base\palmadapter.h"\
-	"..\..\src\include\common\base\base\posixadapter.h"\
-	"..\..\src\include\common\base\base\win32adapter.h"\
-	
-
-!ELSEIF  "$(CFG)" == "windowsmobile - Win32 (WCE ARMV4) Release"
-
-DEP_CPP_FILED=\
-	"..\..\src\include\common\base\base64.h"\
-	"..\..\src\include\common\base\errors.h"\
-	"..\..\src\include\common\base\fscapi.h"\
-	"..\..\src\include\common\base\Log.h"\
-	"..\..\src\include\common\base\md5.h"\
-	"..\..\src\include\common\base\util\ArrayElement.h"\
-	"..\..\src\include\common\base\util\ArrayList.h"\
-	"..\..\src\include\common\base\util\BasicTime.h"\
-	"..\..\src\include\common\base\util\KeyValuePair.h"\
-	"..\..\src\include\common\base\util\StringBuffer.h"\
-	"..\..\src\include\common\base\util\UTF8StringBuffer.h"\
-	"..\..\src\include\common\base\util\utils.h"\
-	"..\..\src\include\common\base\util\XMLProcessor.h"\
-	"..\..\src\include\common\http\errors.h"\
-	"..\..\src\include\common\spdm\errors.h"\
-	"..\..\src\include\common\spds\BodyPart.h"\
-	"..\..\src\include\common\spds\errors.h"\
-	"..\..\src\include\common\spds\FileData.h"\
-	"..\..\src\include\common\spds\MailMessage.h"\
-	"..\..\src\include\common\syncml\core\AbstractCommand.h"\
-	"..\..\src\include\common\syncml\core\Add.h"\
-	"..\..\src\include\common\syncml\core\Alert.h"\
-	"..\..\src\include\common\syncml\core\Anchor.h"\
-	"..\..\src\include\common\syncml\core\Atomic.h"\
-	"..\..\src\include\common\syncml\core\Authentication.h"\
-	"..\..\src\include\common\syncml\core\Chal.h"\
-	"..\..\src\include\common\syncml\core\CmdID.h"\
-	"..\..\src\include\common\syncml\core\ComplexData.h"\
-	"..\..\src\include\common\syncml\core\Constants.h"\
-	"..\..\src\include\common\syncml\core\ContentTypeInfo.h"\
-	"..\..\src\include\common\syncml\core\Copy.h"\
-	"..\..\src\include\common\syncml\core\core.h"\
-	"..\..\src\include\common\syncml\core\Cred.h"\
-	"..\..\src\include\common\syncml\core\CTCap.h"\
-	"..\..\src\include\common\syncml\core\CTTypeSupported.h"\
-	"..\..\src\include\common\syncml\core\Data.h"\
-	"..\..\src\include\common\syncml\core\DataStore.h"\
-	"..\..\src\include\common\syncml\core\Delete.h"\
-	"..\..\src\include\common\syncml\core\DevInf.h"\
-	"..\..\src\include\common\syncml\core\DSMem.h"\
-	"..\..\src\include\common\syncml\core\EMI.h"\
-	"..\..\src\include\common\syncml\core\Exec.h"\
-	"..\..\src\include\common\syncml\core\Ext.h"\
-	"..\..\src\include\common\syncml\core\Filter.h"\
-	"..\..\src\include\common\syncml\core\Get.h"\
-	"..\..\src\include\common\syncml\core\Item.h"\
-	"..\..\src\include\common\syncml\core\ItemizedCommand.h"\
-	"..\..\src\include\common\syncml\core\Map.h"\
-	"..\..\src\include\common\syncml\core\MapItem.h"\
-	"..\..\src\include\common\syncml\core\Mem.h"\
-	"..\..\src\include\common\syncml\core\Meta.h"\
-	"..\..\src\include\common\syncml\core\MetInf.h"\
-	"..\..\src\include\common\syncml\core\ModificationCommand.h"\
-	"..\..\src\include\common\syncml\core\NextNonce.h"\
-	"..\..\src\include\common\syncml\core\ObjectDel.h"\
-	"..\..\src\include\common\syncml\core\Property.h"\
-	"..\..\src\include\common\syncml\core\PropParam.h"\
-	"..\..\src\include\common\syncml\core\Put.h"\
-	"..\..\src\include\common\syncml\core\Replace.h"\
-	"..\..\src\include\common\syncml\core\ResponseCommand.h"\
-	"..\..\src\include\common\syncml\core\Results.h"\
-	"..\..\src\include\common\syncml\core\Search.h"\
-	"..\..\src\include\common\syncml\core\Sequence.h"\
-	"..\..\src\include\common\syncml\core\SessionID.h"\
-	"..\..\src\include\common\syncml\core\Source.h"\
-	"..\..\src\include\common\syncml\core\SourceArray.h"\
-	"..\..\src\include\common\syncml\core\SourceRef.h"\
-	"..\..\src\include\common\syncml\core\Status.h"\
-	"..\..\src\include\common\syncml\core\StringElement.h"\
-	"..\..\src\include\common\syncml\core\Sync.h"\
-	"..\..\src\include\common\syncml\core\SyncBody.h"\
-	"..\..\src\include\common\syncml\core\SyncCap.h"\
-	"..\..\src\include\common\syncml\core\SyncHdr.h"\
-	"..\..\src\include\common\syncml\core\SyncML.h"\
-	"..\..\src\include\common\syncml\core\SyncType.h"\
-	"..\..\src\include\common\syncml\core\SyncTypeArray.h"\
-	"..\..\src\include\common\syncml\core\TagNames.h"\
-	"..\..\src\include\common\syncml\core\Target.h"\
-	"..\..\src\include\common\syncml\core\TargetRef.h"\
-	"..\..\src\include\common\syncml\core\VerDTD.h"\
-	"..\..\src\include\common\syncml\core\VerProto.h"\
-	"..\..\src\include\common\syncml\formatter\Formatter.h"\
-	"..\..\src\include\winmobile\base\PPC2003adapter.h"\
-	"..\..\src\include\winmobile\base\time.h"\
-	
-NODEP_CPP_FILED=\
-	"..\..\src\include\common\base\base\palmadapter.h"\
-	"..\..\src\include\common\base\base\posixadapter.h"\
-	"..\..\src\include\common\base\base\win32adapter.h"\
-	
-
-!ELSEIF  "$(CFG)" == "windowsmobile - Win32 (WCE ARMV4) Debug"
-
-DEP_CPP_FILED=\
-	"..\..\src\include\common\base\base64.h"\
-	"..\..\src\include\common\base\errors.h"\
-	"..\..\src\include\common\base\fscapi.h"\
-	"..\..\src\include\common\base\Log.h"\
-	"..\..\src\include\common\base\md5.h"\
-	"..\..\src\include\common\base\util\ArrayElement.h"\
-	"..\..\src\include\common\base\util\ArrayList.h"\
-	"..\..\src\include\common\base\util\BasicTime.h"\
-	"..\..\src\include\common\base\util\KeyValuePair.h"\
-	"..\..\src\include\common\base\util\StringBuffer.h"\
-	"..\..\src\include\common\base\util\UTF8StringBuffer.h"\
-	"..\..\src\include\common\base\util\utils.h"\
-	"..\..\src\include\common\base\util\XMLProcessor.h"\
-	"..\..\src\include\common\http\errors.h"\
-	"..\..\src\include\common\spdm\errors.h"\
-	"..\..\src\include\common\spds\BodyPart.h"\
-	"..\..\src\include\common\spds\errors.h"\
-	"..\..\src\include\common\spds\FileData.h"\
-	"..\..\src\include\common\spds\MailMessage.h"\
-	"..\..\src\include\common\syncml\core\AbstractCommand.h"\
-	"..\..\src\include\common\syncml\core\Add.h"\
-	"..\..\src\include\common\syncml\core\Alert.h"\
-	"..\..\src\include\common\syncml\core\Anchor.h"\
-	"..\..\src\include\common\syncml\core\Atomic.h"\
-	"..\..\src\include\common\syncml\core\Authentication.h"\
-	"..\..\src\include\common\syncml\core\Chal.h"\
-	"..\..\src\include\common\syncml\core\CmdID.h"\
-	"..\..\src\include\common\syncml\core\ComplexData.h"\
-	"..\..\src\include\common\syncml\core\Constants.h"\
-	"..\..\src\include\common\syncml\core\ContentTypeInfo.h"\
-	"..\..\src\include\common\syncml\core\Copy.h"\
-	"..\..\src\include\common\syncml\core\core.h"\
-	"..\..\src\include\common\syncml\core\Cred.h"\
-	"..\..\src\include\common\syncml\core\CTCap.h"\
-	"..\..\src\include\common\syncml\core\CTTypeSupported.h"\
-	"..\..\src\include\common\syncml\core\Data.h"\
-	"..\..\src\include\common\syncml\core\DataStore.h"\
-	"..\..\src\include\common\syncml\core\Delete.h"\
-	"..\..\src\include\common\syncml\core\DevInf.h"\
-	"..\..\src\include\common\syncml\core\DSMem.h"\
-	"..\..\src\include\common\syncml\core\EMI.h"\
-	"..\..\src\include\common\syncml\core\Exec.h"\
-	"..\..\src\include\common\syncml\core\Ext.h"\
-	"..\..\src\include\common\syncml\core\Filter.h"\
-	"..\..\src\include\common\syncml\core\Get.h"\
-	"..\..\src\include\common\syncml\core\Item.h"\
-	"..\..\src\include\common\syncml\core\ItemizedCommand.h"\
-	"..\..\src\include\common\syncml\core\Map.h"\
-	"..\..\src\include\common\syncml\core\MapItem.h"\
-	"..\..\src\include\common\syncml\core\Mem.h"\
-	"..\..\src\include\common\syncml\core\Meta.h"\
-	"..\..\src\include\common\syncml\core\MetInf.h"\
-	"..\..\src\include\common\syncml\core\ModificationCommand.h"\
-	"..\..\src\include\common\syncml\core\NextNonce.h"\
-	"..\..\src\include\common\syncml\core\ObjectDel.h"\
-	"..\..\src\include\common\syncml\core\Property.h"\
-	"..\..\src\include\common\syncml\core\PropParam.h"\
-	"..\..\src\include\common\syncml\core\Put.h"\
-	"..\..\src\include\common\syncml\core\Replace.h"\
-	"..\..\src\include\common\syncml\core\ResponseCommand.h"\
-	"..\..\src\include\common\syncml\core\Results.h"\
-	"..\..\src\include\common\syncml\core\Search.h"\
-	"..\..\src\include\common\syncml\core\Sequence.h"\
-	"..\..\src\include\common\syncml\core\SessionID.h"\
-	"..\..\src\include\common\syncml\core\Source.h"\
-	"..\..\src\include\common\syncml\core\SourceArray.h"\
-	"..\..\src\include\common\syncml\core\SourceRef.h"\
-	"..\..\src\include\common\syncml\core\Status.h"\
-	"..\..\src\include\common\syncml\core\StringElement.h"\
-	"..\..\src\include\common\syncml\core\Sync.h"\
-	"..\..\src\include\common\syncml\core\SyncBody.h"\
-	"..\..\src\include\common\syncml\core\SyncCap.h"\
-	"..\..\src\include\common\syncml\core\SyncHdr.h"\
-	"..\..\src\include\common\syncml\core\SyncML.h"\
-	"..\..\src\include\common\syncml\core\SyncType.h"\
-	"..\..\src\include\common\syncml\core\SyncTypeArray.h"\
-	"..\..\src\include\common\syncml\core\TagNames.h"\
-	"..\..\src\include\common\syncml\core\Target.h"\
-	"..\..\src\include\common\syncml\core\TargetRef.h"\
-	"..\..\src\include\common\syncml\core\VerDTD.h"\
-	"..\..\src\include\common\syncml\core\VerProto.h"\
-	"..\..\src\include\common\syncml\formatter\Formatter.h"\
-	"..\..\src\include\winmobile\base\PPC2003adapter.h"\
-	"..\..\src\include\winmobile\base\time.h"\
-	
-NODEP_CPP_FILED=\
 	"..\..\src\include\common\base\base\palmadapter.h"\
 	"..\..\src\include\common\base\base\posixadapter.h"\
 	"..\..\src\include\common\base\base\win32adapter.h"\
@@ -5438,8 +5065,8 @@ DEP_CPP_MAILM=\
 	"..\..\src\include\common\spds\SyncItem.h"\
 	"..\..\src\include\common\spds\SyncItemStatus.h"\
 	"..\..\src\include\common\spds\SyncStatus.h"\
-	"..\..\src\include\winmobile\base\PPC2003adapter.h"\
 	"..\..\src\include\winmobile\base\time.h"\
+	"..\..\src\include\winmobile\base\winmobileadapter.h"\
 	
 NODEP_CPP_MAILM=\
 	"..\..\src\include\common\base\base\palmadapter.h"\
@@ -5545,8 +5172,8 @@ DEP_CPP_MAILSY=\
 	"..\..\src\include\common\spds\errors.h"\
 	"..\..\src\include\common\spds\MailSyncSourceConfig.h"\
 	"..\..\src\include\common\spds\SyncSourceConfig.h"\
-	"..\..\src\include\winmobile\base\PPC2003adapter.h"\
 	"..\..\src\include\winmobile\base\time.h"\
+	"..\..\src\include\winmobile\base\winmobileadapter.h"\
 	
 NODEP_CPP_MAILSY=\
 	"..\..\src\include\common\base\base\palmadapter.h"\
@@ -5664,8 +5291,8 @@ DEP_CPP_SPDSU=\
 	"..\..\src\include\common\spds\SyncItem.h"\
 	"..\..\src\include\common\spds\SyncItemStatus.h"\
 	"..\..\src\include\common\spds\SyncStatus.h"\
-	"..\..\src\include\winmobile\base\PPC2003adapter.h"\
 	"..\..\src\include\winmobile\base\time.h"\
+	"..\..\src\include\winmobile\base\winmobileadapter.h"\
 	
 NODEP_CPP_SPDSU=\
 	"..\..\src\include\common\base\base\palmadapter.h"\
@@ -5775,8 +5402,8 @@ DEP_CPP_SYNCI=\
 	"..\..\src\include\common\spds\errors.h"\
 	"..\..\src\include\common\spds\SyncItem.h"\
 	"..\..\src\include\common\spds\SyncStatus.h"\
-	"..\..\src\include\winmobile\base\PPC2003adapter.h"\
 	"..\..\src\include\winmobile\base\time.h"\
+	"..\..\src\include\winmobile\base\winmobileadapter.h"\
 	
 NODEP_CPP_SYNCI=\
 	"..\..\src\include\common\base\base\palmadapter.h"\
@@ -5866,8 +5493,8 @@ DEP_CPP_SYNCIT=\
 	"..\..\src\include\common\spds\constants.h"\
 	"..\..\src\include\common\spds\errors.h"\
 	"..\..\src\include\common\spds\SyncItemStatus.h"\
-	"..\..\src\include\winmobile\base\PPC2003adapter.h"\
 	"..\..\src\include\winmobile\base\time.h"\
+	"..\..\src\include\winmobile\base\winmobileadapter.h"\
 	
 NODEP_CPP_SYNCIT=\
 	"..\..\src\include\common\base\base\palmadapter.h"\
@@ -6333,8 +5960,8 @@ DEP_CPP_SYNCM=\
 	"..\..\src\include\common\syncml\core\VerProto.h"\
 	"..\..\src\include\common\syncml\formatter\Formatter.h"\
 	"..\..\src\include\common\syncml\parser\Parser.h"\
-	"..\..\src\include\winmobile\base\PPC2003adapter.h"\
 	"..\..\src\include\winmobile\base\time.h"\
+	"..\..\src\include\winmobile\base\winmobileadapter.h"\
 	
 NODEP_CPP_SYNCM=\
 	"..\..\src\include\common\base\base\palmadapter.h"\
@@ -6432,8 +6059,8 @@ DEP_CPP_SYNCMA=\
 	"..\..\src\include\common\spds\errors.h"\
 	"..\..\src\include\common\spds\SyncManagerConfig.h"\
 	"..\..\src\include\common\spds\SyncSourceConfig.h"\
-	"..\..\src\include\winmobile\base\PPC2003adapter.h"\
 	"..\..\src\include\winmobile\base\time.h"\
+	"..\..\src\include\winmobile\base\winmobileadapter.h"\
 	
 NODEP_CPP_SYNCMA=\
 	"..\..\src\include\common\base\base\palmadapter.h"\
@@ -6531,8 +6158,8 @@ DEP_CPP_SYNCMAP=\
 	"..\..\src\include\common\spdm\errors.h"\
 	"..\..\src\include\common\spds\errors.h"\
 	"..\..\src\include\common\spds\SyncMap.h"\
-	"..\..\src\include\winmobile\base\PPC2003adapter.h"\
 	"..\..\src\include\winmobile\base\time.h"\
+	"..\..\src\include\winmobile\base\winmobileadapter.h"\
 	
 NODEP_CPP_SYNCMAP=\
 	"..\..\src\include\common\base\base\palmadapter.h"\
@@ -6934,8 +6561,8 @@ DEP_CPP_SYNCML=\
 	"..\..\src\include\common\syncml\core\VerDTD.h"\
 	"..\..\src\include\common\syncml\core\VerProto.h"\
 	"..\..\src\include\common\syncml\formatter\Formatter.h"\
-	"..\..\src\include\winmobile\base\PPC2003adapter.h"\
 	"..\..\src\include\winmobile\base\time.h"\
+	"..\..\src\include\winmobile\base\winmobileadapter.h"\
 	
 NODEP_CPP_SYNCML=\
 	"..\..\src\include\common\base\base\palmadapter.h"\
@@ -7341,8 +6968,8 @@ DEP_CPP_SYNCMLP=\
 	"..\..\src\include\common\syncml\core\VerDTD.h"\
 	"..\..\src\include\common\syncml\core\VerProto.h"\
 	"..\..\src\include\common\syncml\parser\Parser.h"\
-	"..\..\src\include\winmobile\base\PPC2003adapter.h"\
 	"..\..\src\include\winmobile\base\time.h"\
+	"..\..\src\include\winmobile\base\winmobileadapter.h"\
 	
 NODEP_CPP_SYNCMLP=\
 	"..\..\src\include\common\base\base\palmadapter.h"\
@@ -7508,8 +7135,8 @@ DEP_CPP_SYNCS=\
 	"..\..\src\include\common\spds\SyncSource.h"\
 	"..\..\src\include\common\spds\SyncSourceConfig.h"\
 	"..\..\src\include\common\spds\SyncStatus.h"\
-	"..\..\src\include\winmobile\base\PPC2003adapter.h"\
 	"..\..\src\include\winmobile\base\time.h"\
+	"..\..\src\include\winmobile\base\winmobileadapter.h"\
 	
 NODEP_CPP_SYNCS=\
 	"..\..\src\include\common\base\base\palmadapter.h"\
@@ -7611,8 +7238,8 @@ DEP_CPP_SYNCSO=\
 	"..\..\src\include\common\spds\constants.h"\
 	"..\..\src\include\common\spds\errors.h"\
 	"..\..\src\include\common\spds\SyncSourceConfig.h"\
-	"..\..\src\include\winmobile\base\PPC2003adapter.h"\
 	"..\..\src\include\winmobile\base\time.h"\
+	"..\..\src\include\winmobile\base\winmobileadapter.h"\
 	
 NODEP_CPP_SYNCSO=\
 	"..\..\src\include\common\base\base\palmadapter.h"\
@@ -7725,8 +7352,8 @@ DEP_CPP_DEVIC=\
 	"..\..\src\include\common\spdm\ManagementNode.h"\
 	"..\..\src\include\common\spdm\spdmutils.h"\
 	"..\..\src\include\common\spds\errors.h"\
-	"..\..\src\include\winmobile\base\PPC2003adapter.h"\
 	"..\..\src\include\winmobile\base\time.h"\
+	"..\..\src\include\winmobile\base\winmobileadapter.h"\
 	"..\..\src\include\winmobile\spdm\DeviceManagementNode.h"\
 	
 NODEP_CPP_DEVIC=\
@@ -7844,8 +7471,8 @@ DEP_CPP_DMTRE=\
 	"..\..\src\include\common\spdm\ManagementNode.h"\
 	"..\..\src\include\common\spdm\spdmutils.h"\
 	"..\..\src\include\common\spds\errors.h"\
-	"..\..\src\include\winmobile\base\PPC2003adapter.h"\
 	"..\..\src\include\winmobile\base\time.h"\
+	"..\..\src\include\winmobile\base\winmobileadapter.h"\
 	"..\..\src\include\winmobile\spdm\DeviceManagementNode.h"\
 	
 NODEP_CPP_DMTRE=\
@@ -7944,8 +7571,8 @@ DEP_CPP_DMTREE=\
 	"..\..\src\include\common\spdm\errors.h"\
 	"..\..\src\include\common\spdm\ManagementNode.h"\
 	"..\..\src\include\common\spds\errors.h"\
-	"..\..\src\include\winmobile\base\PPC2003adapter.h"\
 	"..\..\src\include\winmobile\base\time.h"\
+	"..\..\src\include\winmobile\base\winmobileadapter.h"\
 	
 NODEP_CPP_DMTREE=\
 	"..\..\src\include\common\base\base\palmadapter.h"\
@@ -8051,8 +7678,8 @@ DEP_CPP_MANAG=\
 	"..\..\src\include\common\spdm\errors.h"\
 	"..\..\src\include\common\spdm\ManagementNode.h"\
 	"..\..\src\include\common\spds\errors.h"\
-	"..\..\src\include\winmobile\base\PPC2003adapter.h"\
 	"..\..\src\include\winmobile\base\time.h"\
+	"..\..\src\include\winmobile\base\winmobileadapter.h"\
 	
 NODEP_CPP_MANAG=\
 	"..\..\src\include\common\base\base\palmadapter.h"\
@@ -8130,8 +7757,8 @@ DEP_CPP_SPDMU=\
 	"..\..\src\include\common\spdm\errors.h"\
 	"..\..\src\include\common\spdm\spdmutils.h"\
 	"..\..\src\include\common\spds\errors.h"\
-	"..\..\src\include\winmobile\base\PPC2003adapter.h"\
 	"..\..\src\include\winmobile\base\time.h"\
+	"..\..\src\include\winmobile\base\winmobileadapter.h"\
 	
 NODEP_CPP_SPDMU=\
 	"..\..\src\include\common\base\base\palmadapter.h"\
@@ -8276,8 +7903,8 @@ DEP_CPP_ABSTR=\
 	"..\..\src\include\common\syncml\core\Meta.h"\
 	"..\..\src\include\common\syncml\core\MetInf.h"\
 	"..\..\src\include\common\syncml\core\NextNonce.h"\
-	"..\..\src\include\winmobile\base\PPC2003adapter.h"\
 	"..\..\src\include\winmobile\base\time.h"\
+	"..\..\src\include\winmobile\base\winmobileadapter.h"\
 	
 NODEP_CPP_ABSTR=\
 	"..\..\src\include\common\base\base\palmadapter.h"\
@@ -8499,8 +8126,8 @@ DEP_CPP_ADD_C=\
 	"..\..\src\include\common\syncml\core\SyncTypeArray.h"\
 	"..\..\src\include\common\syncml\core\Target.h"\
 	"..\..\src\include\common\syncml\core\VerDTD.h"\
-	"..\..\src\include\winmobile\base\PPC2003adapter.h"\
 	"..\..\src\include\winmobile\base\time.h"\
+	"..\..\src\include\winmobile\base\winmobileadapter.h"\
 	
 NODEP_CPP_ADD_C=\
 	"..\..\src\include\common\base\base\palmadapter.h"\
@@ -8718,8 +8345,8 @@ DEP_CPP_ALERT=\
 	"..\..\src\include\common\syncml\core\SyncTypeArray.h"\
 	"..\..\src\include\common\syncml\core\Target.h"\
 	"..\..\src\include\common\syncml\core\VerDTD.h"\
-	"..\..\src\include\winmobile\base\PPC2003adapter.h"\
 	"..\..\src\include\winmobile\base\time.h"\
+	"..\..\src\include\winmobile\base\winmobileadapter.h"\
 	
 NODEP_CPP_ALERT=\
 	"..\..\src\include\common\base\base\palmadapter.h"\
@@ -8817,8 +8444,8 @@ DEP_CPP_ANCHO=\
 	"..\..\src\include\common\spdm\errors.h"\
 	"..\..\src\include\common\spds\errors.h"\
 	"..\..\src\include\common\syncml\core\Anchor.h"\
-	"..\..\src\include\winmobile\base\PPC2003adapter.h"\
 	"..\..\src\include\winmobile\base\time.h"\
+	"..\..\src\include\winmobile\base\winmobileadapter.h"\
 	
 NODEP_CPP_ANCHO=\
 	"..\..\src\include\common\base\base\palmadapter.h"\
@@ -8960,8 +8587,8 @@ DEP_CPP_ATOMI=\
 	"..\..\src\include\common\syncml\core\Meta.h"\
 	"..\..\src\include\common\syncml\core\MetInf.h"\
 	"..\..\src\include\common\syncml\core\NextNonce.h"\
-	"..\..\src\include\winmobile\base\PPC2003adapter.h"\
 	"..\..\src\include\winmobile\base\time.h"\
+	"..\..\src\include\winmobile\base\winmobileadapter.h"\
 	
 NODEP_CPP_ATOMI=\
 	"..\..\src\include\common\base\base\palmadapter.h"\
@@ -9091,8 +8718,8 @@ DEP_CPP_AUTHE=\
 	"..\..\src\include\common\syncml\core\Meta.h"\
 	"..\..\src\include\common\syncml\core\MetInf.h"\
 	"..\..\src\include\common\syncml\core\NextNonce.h"\
-	"..\..\src\include\winmobile\base\PPC2003adapter.h"\
 	"..\..\src\include\winmobile\base\time.h"\
+	"..\..\src\include\winmobile\base\winmobileadapter.h"\
 	
 NODEP_CPP_AUTHE=\
 	"..\..\src\include\common\base\base\palmadapter.h"\
@@ -9218,8 +8845,8 @@ DEP_CPP_CHAL_=\
 	"..\..\src\include\common\syncml\core\Meta.h"\
 	"..\..\src\include\common\syncml\core\MetInf.h"\
 	"..\..\src\include\common\syncml\core\NextNonce.h"\
-	"..\..\src\include\winmobile\base\PPC2003adapter.h"\
 	"..\..\src\include\winmobile\base\time.h"\
+	"..\..\src\include\winmobile\base\winmobileadapter.h"\
 	
 NODEP_CPP_CHAL_=\
 	"..\..\src\include\common\base\base\palmadapter.h"\
@@ -9317,8 +8944,8 @@ DEP_CPP_CMDID=\
 	"..\..\src\include\common\spdm\errors.h"\
 	"..\..\src\include\common\spds\errors.h"\
 	"..\..\src\include\common\syncml\core\CmdID.h"\
-	"..\..\src\include\winmobile\base\PPC2003adapter.h"\
 	"..\..\src\include\winmobile\base\time.h"\
+	"..\..\src\include\winmobile\base\winmobileadapter.h"\
 	
 NODEP_CPP_CMDID=\
 	"..\..\src\include\common\base\base\palmadapter.h"\
@@ -9472,8 +9099,8 @@ DEP_CPP_COMPL=\
 	"..\..\src\include\common\syncml\core\SyncType.h"\
 	"..\..\src\include\common\syncml\core\SyncTypeArray.h"\
 	"..\..\src\include\common\syncml\core\VerDTD.h"\
-	"..\..\src\include\winmobile\base\PPC2003adapter.h"\
 	"..\..\src\include\winmobile\base\time.h"\
+	"..\..\src\include\winmobile\base\winmobileadapter.h"\
 	
 NODEP_CPP_COMPL=\
 	"..\..\src\include\common\base\base\palmadapter.h"\
@@ -9571,8 +9198,8 @@ DEP_CPP_CONTE=\
 	"..\..\src\include\common\spdm\errors.h"\
 	"..\..\src\include\common\spds\errors.h"\
 	"..\..\src\include\common\syncml\core\ContentTypeInfo.h"\
-	"..\..\src\include\winmobile\base\PPC2003adapter.h"\
 	"..\..\src\include\winmobile\base\time.h"\
+	"..\..\src\include\winmobile\base\winmobileadapter.h"\
 	
 NODEP_CPP_CONTE=\
 	"..\..\src\include\common\base\base\palmadapter.h"\
@@ -9674,8 +9301,8 @@ DEP_CPP_CONTEN=\
 	"..\..\src\include\common\spds\errors.h"\
 	"..\..\src\include\common\syncml\core\ContentTypeParameter.h"\
 	"..\..\src\include\common\syncml\core\StringElement.h"\
-	"..\..\src\include\winmobile\base\PPC2003adapter.h"\
 	"..\..\src\include\winmobile\base\time.h"\
+	"..\..\src\include\winmobile\base\winmobileadapter.h"\
 	
 NODEP_CPP_CONTEN=\
 	"..\..\src\include\common\base\base\palmadapter.h"\
@@ -9897,8 +9524,8 @@ DEP_CPP_COPY_=\
 	"..\..\src\include\common\syncml\core\SyncTypeArray.h"\
 	"..\..\src\include\common\syncml\core\Target.h"\
 	"..\..\src\include\common\syncml\core\VerDTD.h"\
-	"..\..\src\include\winmobile\base\PPC2003adapter.h"\
 	"..\..\src\include\winmobile\base\time.h"\
+	"..\..\src\include\winmobile\base\winmobileadapter.h"\
 	
 NODEP_CPP_COPY_=\
 	"..\..\src\include\common\base\base\palmadapter.h"\
@@ -10028,8 +9655,8 @@ DEP_CPP_CRED_=\
 	"..\..\src\include\common\syncml\core\Meta.h"\
 	"..\..\src\include\common\syncml\core\MetInf.h"\
 	"..\..\src\include\common\syncml\core\NextNonce.h"\
-	"..\..\src\include\winmobile\base\PPC2003adapter.h"\
 	"..\..\src\include\winmobile\base\time.h"\
+	"..\..\src\include\winmobile\base\winmobileadapter.h"\
 	
 NODEP_CPP_CRED_=\
 	"..\..\src\include\common\base\base\palmadapter.h"\
@@ -10119,8 +9746,8 @@ DEP_CPP_CTCAP=\
 	"..\..\src\include\common\spds\errors.h"\
 	"..\..\src\include\common\syncml\core\CTCap.h"\
 	"..\..\src\include\common\syncml\core\CTTypeSupported.h"\
-	"..\..\src\include\winmobile\base\PPC2003adapter.h"\
 	"..\..\src\include\winmobile\base\time.h"\
+	"..\..\src\include\winmobile\base\winmobileadapter.h"\
 	
 NODEP_CPP_CTCAP=\
 	"..\..\src\include\common\base\base\palmadapter.h"\
@@ -10226,8 +9853,8 @@ DEP_CPP_CTPRO=\
 	"..\..\src\include\common\syncml\core\ContentTypeParameter.h"\
 	"..\..\src\include\common\syncml\core\CTPropParam.h"\
 	"..\..\src\include\common\syncml\core\StringElement.h"\
-	"..\..\src\include\winmobile\base\PPC2003adapter.h"\
 	"..\..\src\include\winmobile\base\time.h"\
+	"..\..\src\include\winmobile\base\winmobileadapter.h"\
 	
 NODEP_CPP_CTPRO=\
 	"..\..\src\include\common\base\base\palmadapter.h"\
@@ -10325,8 +9952,8 @@ DEP_CPP_CTTYP=\
 	"..\..\src\include\common\spdm\errors.h"\
 	"..\..\src\include\common\spds\errors.h"\
 	"..\..\src\include\common\syncml\core\CTTypeSupported.h"\
-	"..\..\src\include\winmobile\base\PPC2003adapter.h"\
 	"..\..\src\include\winmobile\base\time.h"\
+	"..\..\src\include\winmobile\base\winmobileadapter.h"\
 	
 NODEP_CPP_CTTYP=\
 	"..\..\src\include\common\base\base\palmadapter.h"\
@@ -10428,8 +10055,8 @@ DEP_CPP_DATA_=\
 	"..\..\src\include\common\spds\errors.h"\
 	"..\..\src\include\common\syncml\core\Constants.h"\
 	"..\..\src\include\common\syncml\core\Data.h"\
-	"..\..\src\include\winmobile\base\PPC2003adapter.h"\
 	"..\..\src\include\winmobile\base\time.h"\
+	"..\..\src\include\winmobile\base\winmobileadapter.h"\
 	
 NODEP_CPP_DATA_=\
 	"..\..\src\include\common\base\base\palmadapter.h"\
@@ -10555,8 +10182,8 @@ DEP_CPP_DATAS=\
 	"..\..\src\include\common\syncml\core\SyncCap.h"\
 	"..\..\src\include\common\syncml\core\SyncType.h"\
 	"..\..\src\include\common\syncml\core\SyncTypeArray.h"\
-	"..\..\src\include\winmobile\base\PPC2003adapter.h"\
 	"..\..\src\include\winmobile\base\time.h"\
+	"..\..\src\include\winmobile\base\winmobileadapter.h"\
 	
 NODEP_CPP_DATAS=\
 	"..\..\src\include\common\base\base\palmadapter.h"\
@@ -10778,8 +10405,8 @@ DEP_CPP_DELET=\
 	"..\..\src\include\common\syncml\core\SyncTypeArray.h"\
 	"..\..\src\include\common\syncml\core\Target.h"\
 	"..\..\src\include\common\syncml\core\VerDTD.h"\
-	"..\..\src\include\winmobile\base\PPC2003adapter.h"\
 	"..\..\src\include\winmobile\base\time.h"\
+	"..\..\src\include\winmobile\base\winmobileadapter.h"\
 	
 NODEP_CPP_DELET=\
 	"..\..\src\include\common\base\base\palmadapter.h"\
@@ -10929,8 +10556,8 @@ DEP_CPP_DEVIN=\
 	"..\..\src\include\common\syncml\core\SyncType.h"\
 	"..\..\src\include\common\syncml\core\SyncTypeArray.h"\
 	"..\..\src\include\common\syncml\core\VerDTD.h"\
-	"..\..\src\include\winmobile\base\PPC2003adapter.h"\
 	"..\..\src\include\winmobile\base\time.h"\
+	"..\..\src\include\winmobile\base\winmobileadapter.h"\
 	
 NODEP_CPP_DEVIN=\
 	"..\..\src\include\common\base\base\palmadapter.h"\
@@ -11080,8 +10707,8 @@ DEP_CPP_DEVINF=\
 	"..\..\src\include\common\syncml\core\SyncType.h"\
 	"..\..\src\include\common\syncml\core\SyncTypeArray.h"\
 	"..\..\src\include\common\syncml\core\VerDTD.h"\
-	"..\..\src\include\winmobile\base\PPC2003adapter.h"\
 	"..\..\src\include\winmobile\base\time.h"\
+	"..\..\src\include\winmobile\base\winmobileadapter.h"\
 	
 NODEP_CPP_DEVINF=\
 	"..\..\src\include\common\base\base\palmadapter.h"\
@@ -11283,8 +10910,8 @@ DEP_CPP_DEVINFI=\
 	"..\..\src\include\common\syncml\core\SyncTypeArray.h"\
 	"..\..\src\include\common\syncml\core\Target.h"\
 	"..\..\src\include\common\syncml\core\VerDTD.h"\
-	"..\..\src\include\winmobile\base\PPC2003adapter.h"\
 	"..\..\src\include\winmobile\base\time.h"\
+	"..\..\src\include\winmobile\base\winmobileadapter.h"\
 	
 NODEP_CPP_DEVINFI=\
 	"..\..\src\include\common\base\base\palmadapter.h"\
@@ -11362,8 +10989,8 @@ DEP_CPP_DSMEM=\
 	"..\..\src\include\common\spdm\errors.h"\
 	"..\..\src\include\common\spds\errors.h"\
 	"..\..\src\include\common\syncml\core\DSMem.h"\
-	"..\..\src\include\winmobile\base\PPC2003adapter.h"\
 	"..\..\src\include\winmobile\base\time.h"\
+	"..\..\src\include\winmobile\base\winmobileadapter.h"\
 	
 NODEP_CPP_DSMEM=\
 	"..\..\src\include\common\base\base\palmadapter.h"\
@@ -11461,8 +11088,8 @@ DEP_CPP_EMI_C=\
 	"..\..\src\include\common\spdm\errors.h"\
 	"..\..\src\include\common\spds\errors.h"\
 	"..\..\src\include\common\syncml\core\EMI.h"\
-	"..\..\src\include\winmobile\base\PPC2003adapter.h"\
 	"..\..\src\include\winmobile\base\time.h"\
+	"..\..\src\include\winmobile\base\winmobileadapter.h"\
 	
 NODEP_CPP_EMI_C=\
 	"..\..\src\include\common\base\base\palmadapter.h"\
@@ -11684,8 +11311,8 @@ DEP_CPP_EXEC_=\
 	"..\..\src\include\common\syncml\core\SyncTypeArray.h"\
 	"..\..\src\include\common\syncml\core\Target.h"\
 	"..\..\src\include\common\syncml\core\VerDTD.h"\
-	"..\..\src\include\winmobile\base\PPC2003adapter.h"\
 	"..\..\src\include\winmobile\base\time.h"\
+	"..\..\src\include\winmobile\base\winmobileadapter.h"\
 	
 NODEP_CPP_EXEC_=\
 	"..\..\src\include\common\base\base\palmadapter.h"\
@@ -11787,8 +11414,8 @@ DEP_CPP_EXT_C=\
 	"..\..\src\include\common\spds\errors.h"\
 	"..\..\src\include\common\syncml\core\Ext.h"\
 	"..\..\src\include\common\syncml\core\StringElement.h"\
-	"..\..\src\include\winmobile\base\PPC2003adapter.h"\
 	"..\..\src\include\winmobile\base\time.h"\
+	"..\..\src\include\winmobile\base\winmobileadapter.h"\
 	
 NODEP_CPP_EXT_C=\
 	"..\..\src\include\common\base\base\palmadapter.h"\
@@ -11986,8 +11613,8 @@ DEP_CPP_FILTE=\
 	"..\..\src\include\common\syncml\core\SyncTypeArray.h"\
 	"..\..\src\include\common\syncml\core\Target.h"\
 	"..\..\src\include\common\syncml\core\VerDTD.h"\
-	"..\..\src\include\winmobile\base\PPC2003adapter.h"\
 	"..\..\src\include\winmobile\base\time.h"\
+	"..\..\src\include\winmobile\base\winmobileadapter.h"\
 	
 NODEP_CPP_FILTE=\
 	"..\..\src\include\common\base\base\palmadapter.h"\
@@ -12205,8 +11832,8 @@ DEP_CPP_GET_C=\
 	"..\..\src\include\common\syncml\core\SyncTypeArray.h"\
 	"..\..\src\include\common\syncml\core\Target.h"\
 	"..\..\src\include\common\syncml\core\VerDTD.h"\
-	"..\..\src\include\winmobile\base\PPC2003adapter.h"\
 	"..\..\src\include\winmobile\base\time.h"\
+	"..\..\src\include\winmobile\base\winmobileadapter.h"\
 	
 NODEP_CPP_GET_C=\
 	"..\..\src\include\common\base\base\palmadapter.h"\
@@ -12400,8 +12027,8 @@ DEP_CPP_ITEM_=\
 	"..\..\src\include\common\syncml\core\SyncTypeArray.h"\
 	"..\..\src\include\common\syncml\core\Target.h"\
 	"..\..\src\include\common\syncml\core\VerDTD.h"\
-	"..\..\src\include\winmobile\base\PPC2003adapter.h"\
 	"..\..\src\include\winmobile\base\time.h"\
+	"..\..\src\include\winmobile\base\winmobileadapter.h"\
 	
 NODEP_CPP_ITEM_=\
 	"..\..\src\include\common\base\base\palmadapter.h"\
@@ -12615,8 +12242,8 @@ DEP_CPP_ITEMI=\
 	"..\..\src\include\common\syncml\core\SyncTypeArray.h"\
 	"..\..\src\include\common\syncml\core\Target.h"\
 	"..\..\src\include\common\syncml\core\VerDTD.h"\
-	"..\..\src\include\winmobile\base\PPC2003adapter.h"\
 	"..\..\src\include\winmobile\base\time.h"\
+	"..\..\src\include\winmobile\base\winmobileadapter.h"\
 	
 NODEP_CPP_ITEMI=\
 	"..\..\src\include\common\base\base\palmadapter.h"\
@@ -12838,8 +12465,8 @@ DEP_CPP_MAP_C=\
 	"..\..\src\include\common\syncml\core\SyncTypeArray.h"\
 	"..\..\src\include\common\syncml\core\Target.h"\
 	"..\..\src\include\common\syncml\core\VerDTD.h"\
-	"..\..\src\include\winmobile\base\PPC2003adapter.h"\
 	"..\..\src\include\winmobile\base\time.h"\
+	"..\..\src\include\winmobile\base\winmobileadapter.h"\
 	
 NODEP_CPP_MAP_C=\
 	"..\..\src\include\common\base\base\palmadapter.h"\
@@ -12929,8 +12556,8 @@ DEP_CPP_MAPIT=\
 	"..\..\src\include\common\syncml\core\MapItem.h"\
 	"..\..\src\include\common\syncml\core\Source.h"\
 	"..\..\src\include\common\syncml\core\Target.h"\
-	"..\..\src\include\winmobile\base\PPC2003adapter.h"\
 	"..\..\src\include\winmobile\base\time.h"\
+	"..\..\src\include\winmobile\base\winmobileadapter.h"\
 	
 NODEP_CPP_MAPIT=\
 	"..\..\src\include\common\base\base\palmadapter.h"\
@@ -13008,8 +12635,8 @@ DEP_CPP_MEM_C=\
 	"..\..\src\include\common\spdm\errors.h"\
 	"..\..\src\include\common\spds\errors.h"\
 	"..\..\src\include\common\syncml\core\Mem.h"\
-	"..\..\src\include\winmobile\base\PPC2003adapter.h"\
 	"..\..\src\include\winmobile\base\time.h"\
+	"..\..\src\include\winmobile\base\winmobileadapter.h"\
 	
 NODEP_CPP_MEM_C=\
 	"..\..\src\include\common\base\base\palmadapter.h"\
@@ -13127,8 +12754,8 @@ DEP_CPP_META_=\
 	"..\..\src\include\common\syncml\core\Meta.h"\
 	"..\..\src\include\common\syncml\core\MetInf.h"\
 	"..\..\src\include\common\syncml\core\NextNonce.h"\
-	"..\..\src\include\winmobile\base\PPC2003adapter.h"\
 	"..\..\src\include\winmobile\base\time.h"\
+	"..\..\src\include\winmobile\base\winmobileadapter.h"\
 	
 NODEP_CPP_META_=\
 	"..\..\src\include\common\base\base\palmadapter.h"\
@@ -13242,8 +12869,8 @@ DEP_CPP_METIN=\
 	"..\..\src\include\common\syncml\core\Mem.h"\
 	"..\..\src\include\common\syncml\core\MetInf.h"\
 	"..\..\src\include\common\syncml\core\NextNonce.h"\
-	"..\..\src\include\winmobile\base\PPC2003adapter.h"\
 	"..\..\src\include\winmobile\base\time.h"\
+	"..\..\src\include\winmobile\base\winmobileadapter.h"\
 	
 NODEP_CPP_METIN=\
 	"..\..\src\include\common\base\base\palmadapter.h"\
@@ -13461,8 +13088,8 @@ DEP_CPP_MODIF=\
 	"..\..\src\include\common\syncml\core\SyncTypeArray.h"\
 	"..\..\src\include\common\syncml\core\Target.h"\
 	"..\..\src\include\common\syncml\core\VerDTD.h"\
-	"..\..\src\include\winmobile\base\PPC2003adapter.h"\
 	"..\..\src\include\winmobile\base\time.h"\
+	"..\..\src\include\winmobile\base\winmobileadapter.h"\
 	
 NODEP_CPP_MODIF=\
 	"..\..\src\include\common\base\base\palmadapter.h"\
@@ -13560,8 +13187,8 @@ DEP_CPP_NEXTN=\
 	"..\..\src\include\common\spdm\errors.h"\
 	"..\..\src\include\common\spds\errors.h"\
 	"..\..\src\include\common\syncml\core\NextNonce.h"\
-	"..\..\src\include\winmobile\base\PPC2003adapter.h"\
 	"..\..\src\include\winmobile\base\time.h"\
+	"..\..\src\include\winmobile\base\winmobileadapter.h"\
 	
 NODEP_CPP_NEXTN=\
 	"..\..\src\include\common\base\base\palmadapter.h"\
@@ -13907,8 +13534,8 @@ DEP_CPP_OBJEC=\
 	"..\..\src\include\common\syncml\core\TargetRef.h"\
 	"..\..\src\include\common\syncml\core\VerDTD.h"\
 	"..\..\src\include\common\syncml\core\VerProto.h"\
-	"..\..\src\include\winmobile\base\PPC2003adapter.h"\
 	"..\..\src\include\winmobile\base\time.h"\
+	"..\..\src\include\winmobile\base\winmobileadapter.h"\
 	
 NODEP_CPP_OBJEC=\
 	"..\..\src\include\common\base\base\palmadapter.h"\
@@ -14006,8 +13633,8 @@ DEP_CPP_PROPE=\
 	"..\..\src\include\common\spdm\errors.h"\
 	"..\..\src\include\common\spds\errors.h"\
 	"..\..\src\include\common\syncml\core\Property.h"\
-	"..\..\src\include\winmobile\base\PPC2003adapter.h"\
 	"..\..\src\include\winmobile\base\time.h"\
+	"..\..\src\include\winmobile\base\winmobileadapter.h"\
 	
 NODEP_CPP_PROPE=\
 	"..\..\src\include\common\base\base\palmadapter.h"\
@@ -14105,8 +13732,8 @@ DEP_CPP_PROPP=\
 	"..\..\src\include\common\spdm\errors.h"\
 	"..\..\src\include\common\spds\errors.h"\
 	"..\..\src\include\common\syncml\core\PropParam.h"\
-	"..\..\src\include\winmobile\base\PPC2003adapter.h"\
 	"..\..\src\include\winmobile\base\time.h"\
+	"..\..\src\include\winmobile\base\winmobileadapter.h"\
 	
 NODEP_CPP_PROPP=\
 	"..\..\src\include\common\base\base\palmadapter.h"\
@@ -14324,8 +13951,8 @@ DEP_CPP_PUT_C=\
 	"..\..\src\include\common\syncml\core\SyncTypeArray.h"\
 	"..\..\src\include\common\syncml\core\Target.h"\
 	"..\..\src\include\common\syncml\core\VerDTD.h"\
-	"..\..\src\include\winmobile\base\PPC2003adapter.h"\
 	"..\..\src\include\winmobile\base\time.h"\
+	"..\..\src\include\winmobile\base\winmobileadapter.h"\
 	
 NODEP_CPP_PUT_C=\
 	"..\..\src\include\common\base\base\palmadapter.h"\
@@ -14547,8 +14174,8 @@ DEP_CPP_REPLA=\
 	"..\..\src\include\common\syncml\core\SyncTypeArray.h"\
 	"..\..\src\include\common\syncml\core\Target.h"\
 	"..\..\src\include\common\syncml\core\VerDTD.h"\
-	"..\..\src\include\winmobile\base\PPC2003adapter.h"\
 	"..\..\src\include\winmobile\base\time.h"\
+	"..\..\src\include\winmobile\base\winmobileadapter.h"\
 	
 NODEP_CPP_REPLA=\
 	"..\..\src\include\common\base\base\palmadapter.h"\
@@ -14766,8 +14393,8 @@ DEP_CPP_RESPO=\
 	"..\..\src\include\common\syncml\core\SyncTypeArray.h"\
 	"..\..\src\include\common\syncml\core\Target.h"\
 	"..\..\src\include\common\syncml\core\VerDTD.h"\
-	"..\..\src\include\winmobile\base\PPC2003adapter.h"\
 	"..\..\src\include\winmobile\base\time.h"\
+	"..\..\src\include\winmobile\base\winmobileadapter.h"\
 	
 NODEP_CPP_RESPO=\
 	"..\..\src\include\common\base\base\palmadapter.h"\
@@ -14989,8 +14616,8 @@ DEP_CPP_RESUL=\
 	"..\..\src\include\common\syncml\core\SyncTypeArray.h"\
 	"..\..\src\include\common\syncml\core\Target.h"\
 	"..\..\src\include\common\syncml\core\VerDTD.h"\
-	"..\..\src\include\winmobile\base\PPC2003adapter.h"\
 	"..\..\src\include\winmobile\base\time.h"\
+	"..\..\src\include\winmobile\base\winmobileadapter.h"\
 	
 NODEP_CPP_RESUL=\
 	"..\..\src\include\common\base\base\palmadapter.h"\
@@ -15140,8 +14767,8 @@ DEP_CPP_SEARC=\
 	"..\..\src\include\common\syncml\core\NextNonce.h"\
 	"..\..\src\include\common\syncml\core\Search.h"\
 	"..\..\src\include\common\syncml\core\Target.h"\
-	"..\..\src\include\winmobile\base\PPC2003adapter.h"\
 	"..\..\src\include\winmobile\base\time.h"\
+	"..\..\src\include\winmobile\base\winmobileadapter.h"\
 	
 NODEP_CPP_SEARC=\
 	"..\..\src\include\common\base\base\palmadapter.h"\
@@ -15283,8 +14910,8 @@ DEP_CPP_SEQUE=\
 	"..\..\src\include\common\syncml\core\MetInf.h"\
 	"..\..\src\include\common\syncml\core\NextNonce.h"\
 	"..\..\src\include\common\syncml\core\Sequence.h"\
-	"..\..\src\include\winmobile\base\PPC2003adapter.h"\
 	"..\..\src\include\winmobile\base\time.h"\
+	"..\..\src\include\winmobile\base\winmobileadapter.h"\
 	
 NODEP_CPP_SEQUE=\
 	"..\..\src\include\common\base\base\palmadapter.h"\
@@ -15382,8 +15009,8 @@ DEP_CPP_SESSI=\
 	"..\..\src\include\common\spdm\errors.h"\
 	"..\..\src\include\common\spds\errors.h"\
 	"..\..\src\include\common\syncml\core\SessionID.h"\
-	"..\..\src\include\winmobile\base\PPC2003adapter.h"\
 	"..\..\src\include\winmobile\base\time.h"\
+	"..\..\src\include\winmobile\base\winmobileadapter.h"\
 	
 NODEP_CPP_SESSI=\
 	"..\..\src\include\common\base\base\palmadapter.h"\
@@ -15481,8 +15108,8 @@ DEP_CPP_SOURCE=\
 	"..\..\src\include\common\spdm\errors.h"\
 	"..\..\src\include\common\spds\errors.h"\
 	"..\..\src\include\common\syncml\core\Source.h"\
-	"..\..\src\include\winmobile\base\PPC2003adapter.h"\
 	"..\..\src\include\winmobile\base\time.h"\
+	"..\..\src\include\winmobile\base\winmobileadapter.h"\
 	
 NODEP_CPP_SOURCE=\
 	"..\..\src\include\common\base\base\palmadapter.h"\
@@ -15568,8 +15195,8 @@ DEP_CPP_SOURCEA=\
 	"..\..\src\include\common\spds\errors.h"\
 	"..\..\src\include\common\syncml\core\Source.h"\
 	"..\..\src\include\common\syncml\core\SourceArray.h"\
-	"..\..\src\include\winmobile\base\PPC2003adapter.h"\
 	"..\..\src\include\winmobile\base\time.h"\
+	"..\..\src\include\winmobile\base\winmobileadapter.h"\
 	
 NODEP_CPP_SOURCEA=\
 	"..\..\src\include\common\base\base\palmadapter.h"\
@@ -15671,8 +15298,8 @@ DEP_CPP_SOURCER=\
 	"..\..\src\include\common\spds\errors.h"\
 	"..\..\src\include\common\syncml\core\Source.h"\
 	"..\..\src\include\common\syncml\core\SourceRef.h"\
-	"..\..\src\include\winmobile\base\PPC2003adapter.h"\
 	"..\..\src\include\winmobile\base\time.h"\
+	"..\..\src\include\winmobile\base\winmobileadapter.h"\
 	
 NODEP_CPP_SOURCER=\
 	"..\..\src\include\common\base\base\palmadapter.h"\
@@ -15898,8 +15525,8 @@ DEP_CPP_STATU=\
 	"..\..\src\include\common\syncml\core\SyncTypeArray.h"\
 	"..\..\src\include\common\syncml\core\Target.h"\
 	"..\..\src\include\common\syncml\core\VerDTD.h"\
-	"..\..\src\include\winmobile\base\PPC2003adapter.h"\
 	"..\..\src\include\winmobile\base\time.h"\
+	"..\..\src\include\winmobile\base\winmobileadapter.h"\
 	
 NODEP_CPP_STATU=\
 	"..\..\src\include\common\base\base\palmadapter.h"\
@@ -15997,8 +15624,8 @@ DEP_CPP_STRING=\
 	"..\..\src\include\common\spdm\errors.h"\
 	"..\..\src\include\common\spds\errors.h"\
 	"..\..\src\include\common\syncml\core\StringElement.h"\
-	"..\..\src\include\winmobile\base\PPC2003adapter.h"\
 	"..\..\src\include\winmobile\base\time.h"\
+	"..\..\src\include\winmobile\base\winmobileadapter.h"\
 	
 NODEP_CPP_STRING=\
 	"..\..\src\include\common\base\base\palmadapter.h"\
@@ -16148,8 +15775,8 @@ DEP_CPP_SYNC_=\
 	"..\..\src\include\common\syncml\core\Source.h"\
 	"..\..\src\include\common\syncml\core\Sync.h"\
 	"..\..\src\include\common\syncml\core\Target.h"\
-	"..\..\src\include\winmobile\base\PPC2003adapter.h"\
 	"..\..\src\include\winmobile\base\time.h"\
+	"..\..\src\include\winmobile\base\winmobileadapter.h"\
 	
 NODEP_CPP_SYNC_=\
 	"..\..\src\include\common\base\base\palmadapter.h"\
@@ -16251,8 +15878,8 @@ DEP_CPP_SYNCA=\
 	"..\..\src\include\common\spds\errors.h"\
 	"..\..\src\include\common\syncml\core\AlertCode.h"\
 	"..\..\src\include\common\syncml\core\SyncAlert.h"\
-	"..\..\src\include\winmobile\base\PPC2003adapter.h"\
 	"..\..\src\include\winmobile\base\time.h"\
+	"..\..\src\include\winmobile\base\winmobileadapter.h"\
 	
 NODEP_CPP_SYNCA=\
 	"..\..\src\include\common\base\base\palmadapter.h"\
@@ -16394,8 +16021,8 @@ DEP_CPP_SYNCB=\
 	"..\..\src\include\common\syncml\core\MetInf.h"\
 	"..\..\src\include\common\syncml\core\NextNonce.h"\
 	"..\..\src\include\common\syncml\core\SyncBody.h"\
-	"..\..\src\include\winmobile\base\PPC2003adapter.h"\
 	"..\..\src\include\winmobile\base\time.h"\
+	"..\..\src\include\winmobile\base\winmobileadapter.h"\
 	
 NODEP_CPP_SYNCB=\
 	"..\..\src\include\common\base\base\palmadapter.h"\
@@ -16489,8 +16116,8 @@ DEP_CPP_SYNCC=\
 	"..\..\src\include\common\syncml\core\SyncCap.h"\
 	"..\..\src\include\common\syncml\core\SyncType.h"\
 	"..\..\src\include\common\syncml\core\SyncTypeArray.h"\
-	"..\..\src\include\winmobile\base\PPC2003adapter.h"\
 	"..\..\src\include\winmobile\base\time.h"\
+	"..\..\src\include\winmobile\base\winmobileadapter.h"\
 	
 NODEP_CPP_SYNCC=\
 	"..\..\src\include\common\base\base\palmadapter.h"\
@@ -16644,8 +16271,8 @@ DEP_CPP_SYNCH=\
 	"..\..\src\include\common\syncml\core\Target.h"\
 	"..\..\src\include\common\syncml\core\VerDTD.h"\
 	"..\..\src\include\common\syncml\core\VerProto.h"\
-	"..\..\src\include\winmobile\base\PPC2003adapter.h"\
 	"..\..\src\include\winmobile\base\time.h"\
+	"..\..\src\include\winmobile\base\winmobileadapter.h"\
 	
 NODEP_CPP_SYNCH=\
 	"..\..\src\include\common\base\base\palmadapter.h"\
@@ -16815,8 +16442,8 @@ DEP_CPP_SYNCML_=\
 	"..\..\src\include\common\syncml\core\Target.h"\
 	"..\..\src\include\common\syncml\core\VerDTD.h"\
 	"..\..\src\include\common\syncml\core\VerProto.h"\
-	"..\..\src\include\winmobile\base\PPC2003adapter.h"\
 	"..\..\src\include\winmobile\base\time.h"\
+	"..\..\src\include\winmobile\base\winmobileadapter.h"\
 	
 NODEP_CPP_SYNCML_=\
 	"..\..\src\include\common\base\base\palmadapter.h"\
@@ -16919,8 +16546,8 @@ DEP_CPP_SYNCN=\
 	"..\..\src\include\common\spds\errors.h"\
 	"..\..\src\include\common\syncml\core\SyncAlert.h"\
 	"..\..\src\include\common\syncml\core\SyncNotification.h"\
-	"..\..\src\include\winmobile\base\PPC2003adapter.h"\
 	"..\..\src\include\winmobile\base\time.h"\
+	"..\..\src\include\winmobile\base\winmobileadapter.h"\
 	
 NODEP_CPP_SYNCN=\
 	"..\..\src\include\common\base\base\palmadapter.h"\
@@ -17002,8 +16629,8 @@ DEP_CPP_SYNCT=\
 	"..\..\src\include\common\spdm\errors.h"\
 	"..\..\src\include\common\spds\errors.h"\
 	"..\..\src\include\common\syncml\core\SyncType.h"\
-	"..\..\src\include\winmobile\base\PPC2003adapter.h"\
 	"..\..\src\include\winmobile\base\time.h"\
+	"..\..\src\include\winmobile\base\winmobileadapter.h"\
 	
 NODEP_CPP_SYNCT=\
 	"..\..\src\include\common\base\base\palmadapter.h"\
@@ -17093,8 +16720,8 @@ DEP_CPP_SYNCTY=\
 	"..\..\src\include\common\spds\errors.h"\
 	"..\..\src\include\common\syncml\core\SyncType.h"\
 	"..\..\src\include\common\syncml\core\SyncTypeArray.h"\
-	"..\..\src\include\winmobile\base\PPC2003adapter.h"\
 	"..\..\src\include\winmobile\base\time.h"\
+	"..\..\src\include\winmobile\base\winmobileadapter.h"\
 	
 NODEP_CPP_SYNCTY=\
 	"..\..\src\include\common\base\base\palmadapter.h"\
@@ -17292,8 +16919,8 @@ DEP_CPP_TARGE=\
 	"..\..\src\include\common\syncml\core\SyncTypeArray.h"\
 	"..\..\src\include\common\syncml\core\Target.h"\
 	"..\..\src\include\common\syncml\core\VerDTD.h"\
-	"..\..\src\include\winmobile\base\PPC2003adapter.h"\
 	"..\..\src\include\winmobile\base\time.h"\
+	"..\..\src\include\winmobile\base\winmobileadapter.h"\
 	
 NODEP_CPP_TARGE=\
 	"..\..\src\include\common\base\base\palmadapter.h"\
@@ -17395,8 +17022,8 @@ DEP_CPP_TARGET=\
 	"..\..\src\include\common\spds\errors.h"\
 	"..\..\src\include\common\syncml\core\Target.h"\
 	"..\..\src\include\common\syncml\core\TargetRef.h"\
-	"..\..\src\include\winmobile\base\PPC2003adapter.h"\
 	"..\..\src\include\winmobile\base\time.h"\
+	"..\..\src\include\winmobile\base\winmobileadapter.h"\
 	
 NODEP_CPP_TARGET=\
 	"..\..\src\include\common\base\base\palmadapter.h"\
@@ -17494,8 +17121,8 @@ DEP_CPP_VERDT=\
 	"..\..\src\include\common\spdm\errors.h"\
 	"..\..\src\include\common\spds\errors.h"\
 	"..\..\src\include\common\syncml\core\VerDTD.h"\
-	"..\..\src\include\winmobile\base\PPC2003adapter.h"\
 	"..\..\src\include\winmobile\base\time.h"\
+	"..\..\src\include\winmobile\base\winmobileadapter.h"\
 	
 NODEP_CPP_VERDT=\
 	"..\..\src\include\common\base\base\palmadapter.h"\
@@ -17593,8 +17220,8 @@ DEP_CPP_VERPR=\
 	"..\..\src\include\common\spdm\errors.h"\
 	"..\..\src\include\common\spds\errors.h"\
 	"..\..\src\include\common\syncml\core\VerProto.h"\
-	"..\..\src\include\winmobile\base\PPC2003adapter.h"\
 	"..\..\src\include\winmobile\base\time.h"\
+	"..\..\src\include\winmobile\base\winmobileadapter.h"\
 	
 NODEP_CPP_VERPR=\
 	"..\..\src\include\common\base\base\palmadapter.h"\
@@ -17952,8 +17579,8 @@ DEP_CPP_PARSE=\
 	"..\..\src\include\common\syncml\core\VerDTD.h"\
 	"..\..\src\include\common\syncml\core\VerProto.h"\
 	"..\..\src\include\common\syncml\parser\Parser.h"\
-	"..\..\src\include\winmobile\base\PPC2003adapter.h"\
 	"..\..\src\include\winmobile\base\time.h"\
+	"..\..\src\include\winmobile\base\winmobileadapter.h"\
 	
 NODEP_CPP_PARSE=\
 	"..\..\src\include\common\base\base\palmadapter.h"\
@@ -18311,8 +17938,8 @@ DEP_CPP_FORMA=\
 	"..\..\src\include\common\syncml\core\VerDTD.h"\
 	"..\..\src\include\common\syncml\core\VerProto.h"\
 	"..\..\src\include\common\syncml\formatter\Formatter.h"\
-	"..\..\src\include\winmobile\base\PPC2003adapter.h"\
 	"..\..\src\include\winmobile\base\time.h"\
+	"..\..\src\include\winmobile\base\winmobileadapter.h"\
 	
 NODEP_CPP_FORMA=\
 	"..\..\src\include\common\base\base\palmadapter.h"\
@@ -18403,8 +18030,8 @@ DEP_CPP_ALLCL=\
 	"..\..\src\include\common\http\errors.h"\
 	"..\..\src\include\common\spdm\errors.h"\
 	"..\..\src\include\common\spds\errors.h"\
-	"..\..\src\include\winmobile\base\PPC2003adapter.h"\
 	"..\..\src\include\winmobile\base\time.h"\
+	"..\..\src\include\winmobile\base\winmobileadapter.h"\
 	
 NODEP_CPP_ALLCL=\
 	"..\..\src\include\common\base\base\palmadapter.h"\
@@ -18486,8 +18113,8 @@ DEP_CPP_CLAUS=\
 	"..\..\src\include\common\http\errors.h"\
 	"..\..\src\include\common\spdm\errors.h"\
 	"..\..\src\include\common\spds\errors.h"\
-	"..\..\src\include\winmobile\base\PPC2003adapter.h"\
 	"..\..\src\include\winmobile\base\time.h"\
+	"..\..\src\include\winmobile\base\winmobileadapter.h"\
 	
 NODEP_CPP_CLAUS=\
 	"..\..\src\include\common\base\base\palmadapter.h"\
@@ -18725,8 +18352,8 @@ DEP_CPP_CLAUSE=\
 	"..\..\src\include\common\syncml\core\SyncTypeArray.h"\
 	"..\..\src\include\common\syncml\core\Target.h"\
 	"..\..\src\include\common\syncml\core\VerDTD.h"\
-	"..\..\src\include\winmobile\base\PPC2003adapter.h"\
 	"..\..\src\include\winmobile\base\time.h"\
+	"..\..\src\include\winmobile\base\winmobileadapter.h"\
 	
 NODEP_CPP_CLAUSE=\
 	"..\..\src\include\common\base\base\palmadapter.h"\
@@ -18816,8 +18443,8 @@ DEP_CPP_FIELD=\
 	"..\..\src\include\common\http\errors.h"\
 	"..\..\src\include\common\spdm\errors.h"\
 	"..\..\src\include\common\spds\errors.h"\
-	"..\..\src\include\winmobile\base\PPC2003adapter.h"\
 	"..\..\src\include\winmobile\base\time.h"\
+	"..\..\src\include\winmobile\base\winmobileadapter.h"\
 	
 NODEP_CPP_FIELD=\
 	"..\..\src\include\common\base\base\palmadapter.h"\
@@ -18907,8 +18534,8 @@ DEP_CPP_LOGIC=\
 	"..\..\src\include\common\http\errors.h"\
 	"..\..\src\include\common\spdm\errors.h"\
 	"..\..\src\include\common\spds\errors.h"\
-	"..\..\src\include\winmobile\base\PPC2003adapter.h"\
 	"..\..\src\include\winmobile\base\time.h"\
+	"..\..\src\include\winmobile\base\winmobileadapter.h"\
 	
 NODEP_CPP_LOGIC=\
 	"..\..\src\include\common\base\base\palmadapter.h"\
@@ -19014,8 +18641,8 @@ DEP_CPP_SOURCEF=\
 	"..\..\src\include\common\http\errors.h"\
 	"..\..\src\include\common\spdm\errors.h"\
 	"..\..\src\include\common\spds\errors.h"\
-	"..\..\src\include\winmobile\base\PPC2003adapter.h"\
 	"..\..\src\include\winmobile\base\time.h"\
+	"..\..\src\include\winmobile\base\winmobileadapter.h"\
 	
 NODEP_CPP_SOURCEF=\
 	"..\..\src\include\common\base\base\palmadapter.h"\
@@ -19117,8 +18744,8 @@ DEP_CPP_WHERE=\
 	"..\..\src\include\common\http\errors.h"\
 	"..\..\src\include\common\spdm\errors.h"\
 	"..\..\src\include\common\spds\errors.h"\
-	"..\..\src\include\winmobile\base\PPC2003adapter.h"\
 	"..\..\src\include\winmobile\base\time.h"\
+	"..\..\src\include\winmobile\base\winmobileadapter.h"\
 	
 NODEP_CPP_WHERE=\
 	"..\..\src\include\common\base\base\palmadapter.h"\
@@ -19235,8 +18862,8 @@ DEP_CPP_CALEN=\
 	"..\..\src\include\common\vocl\iCalendar\ToDo.h"\
 	"..\..\src\include\common\vocl\VObject.h"\
 	"..\..\src\include\common\vocl\VProperty.h"\
-	"..\..\src\include\winmobile\base\PPC2003adapter.h"\
 	"..\..\src\include\winmobile\base\time.h"\
+	"..\..\src\include\winmobile\base\winmobileadapter.h"\
 	
 NODEP_CPP_CALEN=\
 	"..\..\src\include\common\base\base\palmadapter.h"\
@@ -19338,8 +18965,8 @@ DEP_CPP_EVENT=\
 	"..\..\src\include\common\vocl\iCalendar\iCalProperty.h"\
 	"..\..\src\include\common\vocl\VObject.h"\
 	"..\..\src\include\common\vocl\VProperty.h"\
-	"..\..\src\include\winmobile\base\PPC2003adapter.h"\
 	"..\..\src\include\winmobile\base\time.h"\
+	"..\..\src\include\winmobile\base\winmobileadapter.h"\
 	
 NODEP_CPP_EVENT=\
 	"..\..\src\include\common\base\base\palmadapter.h"\
@@ -19457,8 +19084,8 @@ DEP_CPP_ICALC=\
 	"..\..\src\include\common\vocl\VConverter.h"\
 	"..\..\src\include\common\vocl\VObject.h"\
 	"..\..\src\include\common\vocl\VProperty.h"\
-	"..\..\src\include\winmobile\base\PPC2003adapter.h"\
 	"..\..\src\include\winmobile\base\time.h"\
+	"..\..\src\include\winmobile\base\winmobileadapter.h"\
 	
 NODEP_CPP_ICALC=\
 	"..\..\src\include\common\base\base\palmadapter.h"\
@@ -19556,8 +19183,8 @@ DEP_CPP_ICALP=\
 	"..\..\src\include\common\spdm\errors.h"\
 	"..\..\src\include\common\spds\errors.h"\
 	"..\..\src\include\common\vocl\iCalendar\iCalProperty.h"\
-	"..\..\src\include\winmobile\base\PPC2003adapter.h"\
 	"..\..\src\include\winmobile\base\time.h"\
+	"..\..\src\include\winmobile\base\winmobileadapter.h"\
 	
 NODEP_CPP_ICALP=\
 	"..\..\src\include\common\base\base\palmadapter.h"\
@@ -19659,8 +19286,8 @@ DEP_CPP_TODO_=\
 	"..\..\src\include\common\vocl\iCalendar\ToDo.h"\
 	"..\..\src\include\common\vocl\VObject.h"\
 	"..\..\src\include\common\vocl\VProperty.h"\
-	"..\..\src\include\winmobile\base\PPC2003adapter.h"\
 	"..\..\src\include\winmobile\base\time.h"\
+	"..\..\src\include\winmobile\base\winmobileadapter.h"\
 	
 NODEP_CPP_TODO_=\
 	"..\..\src\include\common\base\base\palmadapter.h"\
@@ -19746,8 +19373,8 @@ DEP_CPP_ADDRE=\
 	"..\..\src\include\common\spds\errors.h"\
 	"..\..\src\include\common\vocl\vCard\Address.h"\
 	"..\..\src\include\common\vocl\vCard\vCardProperty.h"\
-	"..\..\src\include\winmobile\base\PPC2003adapter.h"\
 	"..\..\src\include\winmobile\base\time.h"\
+	"..\..\src\include\winmobile\base\winmobileadapter.h"\
 	
 NODEP_CPP_ADDRE=\
 	"..\..\src\include\common\base\base\palmadapter.h"\
@@ -19869,8 +19496,8 @@ DEP_CPP_BUSIN=\
 	"..\..\src\include\common\vocl\vCard\Title.h"\
 	"..\..\src\include\common\vocl\vCard\TypedProperty.h"\
 	"..\..\src\include\common\vocl\vCard\vCardProperty.h"\
-	"..\..\src\include\winmobile\base\PPC2003adapter.h"\
 	"..\..\src\include\winmobile\base\time.h"\
+	"..\..\src\include\winmobile\base\winmobileadapter.h"\
 	
 NODEP_CPP_BUSIN=\
 	"..\..\src\include\common\base\base\palmadapter.h"\
@@ -20028,8 +19655,8 @@ DEP_CPP_CONTA=\
 	"..\..\src\include\common\vocl\vCard\WebPage.h"\
 	"..\..\src\include\common\vocl\VObject.h"\
 	"..\..\src\include\common\vocl\VProperty.h"\
-	"..\..\src\include\winmobile\base\PPC2003adapter.h"\
 	"..\..\src\include\winmobile\base\time.h"\
+	"..\..\src\include\winmobile\base\winmobileadapter.h"\
 	
 NODEP_CPP_CONTA=\
 	"..\..\src\include\common\base\base\palmadapter.h"\
@@ -20179,8 +19806,8 @@ DEP_CPP_CONTAC=\
 	"..\..\src\include\common\vocl\vCard\WebPage.h"\
 	"..\..\src\include\common\vocl\VObject.h"\
 	"..\..\src\include\common\vocl\VProperty.h"\
-	"..\..\src\include\winmobile\base\PPC2003adapter.h"\
 	"..\..\src\include\winmobile\base\time.h"\
+	"..\..\src\include\winmobile\base\winmobileadapter.h"\
 	
 NODEP_CPP_CONTAC=\
 	"..\..\src\include\common\base\base\palmadapter.h"\
@@ -20266,8 +19893,8 @@ DEP_CPP_CONTACT=\
 	"..\..\src\include\common\spdm\errors.h"\
 	"..\..\src\include\common\spds\errors.h"\
 	"..\..\src\include\common\vocl\vCard\ContactDetail.h"\
-	"..\..\src\include\winmobile\base\PPC2003adapter.h"\
 	"..\..\src\include\winmobile\base\time.h"\
+	"..\..\src\include\winmobile\base\winmobileadapter.h"\
 	
 NODEP_CPP_CONTACT=\
 	"..\..\src\include\common\base\base\palmadapter.h"\
@@ -20357,8 +19984,8 @@ DEP_CPP_EMAIL_=\
 	"..\..\src\include\common\vocl\vCard\Email.h"\
 	"..\..\src\include\common\vocl\vCard\TypedProperty.h"\
 	"..\..\src\include\common\vocl\vCard\vCardProperty.h"\
-	"..\..\src\include\winmobile\base\PPC2003adapter.h"\
 	"..\..\src\include\winmobile\base\time.h"\
+	"..\..\src\include\winmobile\base\winmobileadapter.h"\
 	
 NODEP_CPP_EMAIL_=\
 	"..\..\src\include\common\base\base\palmadapter.h"\
@@ -20440,8 +20067,8 @@ DEP_CPP_NAME_=\
 	"..\..\src\include\common\spds\errors.h"\
 	"..\..\src\include\common\vocl\vCard\Name.h"\
 	"..\..\src\include\common\vocl\vCard\vCardProperty.h"\
-	"..\..\src\include\winmobile\base\PPC2003adapter.h"\
 	"..\..\src\include\winmobile\base\time.h"\
+	"..\..\src\include\winmobile\base\winmobileadapter.h"\
 	
 NODEP_CPP_NAME_=\
 	"..\..\src\include\common\base\base\palmadapter.h"\
@@ -20531,8 +20158,8 @@ DEP_CPP_NOTE_=\
 	"..\..\src\include\common\vocl\vCard\Note.h"\
 	"..\..\src\include\common\vocl\vCard\TypedProperty.h"\
 	"..\..\src\include\common\vocl\vCard\vCardProperty.h"\
-	"..\..\src\include\winmobile\base\PPC2003adapter.h"\
 	"..\..\src\include\winmobile\base\time.h"\
+	"..\..\src\include\winmobile\base\winmobileadapter.h"\
 	
 NODEP_CPP_NOTE_=\
 	"..\..\src\include\common\base\base\palmadapter.h"\
@@ -20642,8 +20269,8 @@ DEP_CPP_PERSO=\
 	"..\..\src\include\common\vocl\vCard\ContactDetail.h"\
 	"..\..\src\include\common\vocl\vCard\PersonalDetail.h"\
 	"..\..\src\include\common\vocl\vCard\vCardProperty.h"\
-	"..\..\src\include\winmobile\base\PPC2003adapter.h"\
 	"..\..\src\include\winmobile\base\time.h"\
+	"..\..\src\include\winmobile\base\winmobileadapter.h"\
 	
 NODEP_CPP_PERSO=\
 	"..\..\src\include\common\base\base\palmadapter.h"\
@@ -20733,8 +20360,8 @@ DEP_CPP_PHONE=\
 	"..\..\src\include\common\vocl\vCard\Phone.h"\
 	"..\..\src\include\common\vocl\vCard\TypedProperty.h"\
 	"..\..\src\include\common\vocl\vCard\vCardProperty.h"\
-	"..\..\src\include\winmobile\base\PPC2003adapter.h"\
 	"..\..\src\include\winmobile\base\time.h"\
+	"..\..\src\include\winmobile\base\winmobileadapter.h"\
 	
 NODEP_CPP_PHONE=\
 	"..\..\src\include\common\base\base\palmadapter.h"\
@@ -20824,8 +20451,8 @@ DEP_CPP_TITLE=\
 	"..\..\src\include\common\vocl\vCard\Title.h"\
 	"..\..\src\include\common\vocl\vCard\TypedProperty.h"\
 	"..\..\src\include\common\vocl\vCard\vCardProperty.h"\
-	"..\..\src\include\winmobile\base\PPC2003adapter.h"\
 	"..\..\src\include\winmobile\base\time.h"\
+	"..\..\src\include\winmobile\base\winmobileadapter.h"\
 	
 NODEP_CPP_TITLE=\
 	"..\..\src\include\common\base\base\palmadapter.h"\
@@ -20927,8 +20554,8 @@ DEP_CPP_TYPED=\
 	"..\..\src\include\common\spds\errors.h"\
 	"..\..\src\include\common\vocl\vCard\TypedProperty.h"\
 	"..\..\src\include\common\vocl\vCard\vCardProperty.h"\
-	"..\..\src\include\winmobile\base\PPC2003adapter.h"\
 	"..\..\src\include\winmobile\base\time.h"\
+	"..\..\src\include\winmobile\base\winmobileadapter.h"\
 	
 NODEP_CPP_TYPED=\
 	"..\..\src\include\common\base\base\palmadapter.h"\
@@ -21082,8 +20709,8 @@ DEP_CPP_VCARD=\
 	"..\..\src\include\common\vocl\VConverter.h"\
 	"..\..\src\include\common\vocl\VObject.h"\
 	"..\..\src\include\common\vocl\VProperty.h"\
-	"..\..\src\include\winmobile\base\PPC2003adapter.h"\
 	"..\..\src\include\winmobile\base\time.h"\
+	"..\..\src\include\winmobile\base\winmobileadapter.h"\
 	
 NODEP_CPP_VCARD=\
 	"..\..\src\include\common\base\base\palmadapter.h"\
@@ -21181,8 +20808,8 @@ DEP_CPP_VCARDP=\
 	"..\..\src\include\common\spdm\errors.h"\
 	"..\..\src\include\common\spds\errors.h"\
 	"..\..\src\include\common\vocl\vCard\vCardProperty.h"\
-	"..\..\src\include\winmobile\base\PPC2003adapter.h"\
 	"..\..\src\include\winmobile\base\time.h"\
+	"..\..\src\include\winmobile\base\winmobileadapter.h"\
 	
 NODEP_CPP_VCARDP=\
 	"..\..\src\include\common\base\base\palmadapter.h"\
@@ -21272,8 +20899,8 @@ DEP_CPP_WEBPA=\
 	"..\..\src\include\common\vocl\vCard\TypedProperty.h"\
 	"..\..\src\include\common\vocl\vCard\vCardProperty.h"\
 	"..\..\src\include\common\vocl\vCard\WebPage.h"\
-	"..\..\src\include\winmobile\base\PPC2003adapter.h"\
 	"..\..\src\include\winmobile\base\time.h"\
+	"..\..\src\include\winmobile\base\winmobileadapter.h"\
 	
 NODEP_CPP_WEBPA=\
 	"..\..\src\include\common\base\base\palmadapter.h"\
@@ -21376,8 +21003,8 @@ DEP_CPP_VCONV=\
 	"..\..\src\include\common\vocl\VObject.h"\
 	"..\..\src\include\common\vocl\VObjectFactory.h"\
 	"..\..\src\include\common\vocl\VProperty.h"\
-	"..\..\src\include\winmobile\base\PPC2003adapter.h"\
 	"..\..\src\include\winmobile\base\time.h"\
+	"..\..\src\include\winmobile\base\winmobileadapter.h"\
 	
 NODEP_CPP_VCONV=\
 	"..\..\src\include\common\base\base\palmadapter.h"\
@@ -21483,8 +21110,8 @@ DEP_CPP_VOBJE=\
 	"..\..\src\include\common\spds\errors.h"\
 	"..\..\src\include\common\vocl\VObject.h"\
 	"..\..\src\include\common\vocl\VProperty.h"\
-	"..\..\src\include\winmobile\base\PPC2003adapter.h"\
 	"..\..\src\include\winmobile\base\time.h"\
+	"..\..\src\include\winmobile\base\winmobileadapter.h"\
 	
 NODEP_CPP_VOBJE=\
 	"..\..\src\include\common\base\base\palmadapter.h"\
@@ -21650,8 +21277,8 @@ DEP_CPP_VOBJEC=\
 	"..\..\src\include\common\vocl\VObject.h"\
 	"..\..\src\include\common\vocl\VObjectFactory.h"\
 	"..\..\src\include\common\vocl\VProperty.h"\
-	"..\..\src\include\winmobile\base\PPC2003adapter.h"\
 	"..\..\src\include\winmobile\base\time.h"\
+	"..\..\src\include\winmobile\base\winmobileadapter.h"\
 	
 NODEP_CPP_VOBJEC=\
 	"..\..\src\include\common\base\base\palmadapter.h"\
@@ -21753,8 +21380,8 @@ DEP_CPP_VPROP=\
 	"..\..\src\include\common\spdm\errors.h"\
 	"..\..\src\include\common\spds\errors.h"\
 	"..\..\src\include\common\vocl\VProperty.h"\
-	"..\..\src\include\winmobile\base\PPC2003adapter.h"\
 	"..\..\src\include\winmobile\base\time.h"\
+	"..\..\src\include\winmobile\base\winmobileadapter.h"\
 	
 NODEP_CPP_VPROP=\
 	"..\..\src\include\common\base\base\palmadapter.h"\

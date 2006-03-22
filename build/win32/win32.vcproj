@@ -4,6 +4,7 @@
 	Version="8,00"
 	Name="win32"
 	ProjectGUID="{D279EE74-36FB-4C4C-8F29-04947825C53E}"
+	RootNamespace="win32"
 	>
 	<Platforms>
 		<Platform
@@ -306,6 +307,10 @@
 					</FileConfiguration>
 				</File>
 				<File
+					RelativePath="..\..\src\c++\common\base\quoted-printable.cpp"
+					>
+				</File>
+				<File
 					RelativePath="..\..\src\c++\win32\base\win32adapter.cpp"
 					>
 					<FileConfiguration
@@ -397,6 +402,10 @@
 						</FileConfiguration>
 					</File>
 					<File
+						RelativePath="..\..\src\c++\common\base\util\BasicTime.cpp"
+						>
+					</File>
+					<File
 						RelativePath="..\..\src\c++\common\base\util\KeyValuePair.cpp"
 						>
 						<FileConfiguration
@@ -441,26 +450,12 @@
 						</FileConfiguration>
 					</File>
 					<File
-						RelativePath="..\..\src\c++\common\base\util\UTF8StringBuffer.cpp"
+						RelativePath="..\..\src\c++\common\base\util\WKeyValuePair.cpp"
 						>
-						<FileConfiguration
-							Name="Debug|Win32"
-							>
-							<Tool
-								Name="VCCLCompilerTool"
-								AdditionalIncludeDirectories=""
-								PreprocessorDefinitions=""
-							/>
-						</FileConfiguration>
-						<FileConfiguration
-							Name="Release|Win32"
-							>
-							<Tool
-								Name="VCCLCompilerTool"
-								AdditionalIncludeDirectories=""
-								PreprocessorDefinitions=""
-							/>
-						</FileConfiguration>
+					</File>
+					<File
+						RelativePath="..\..\src\c++\common\base\util\WString.cpp"
+						>
 					</File>
 					<File
 						RelativePath="..\..\src\c++\common\base\util\XMLProcessor.cpp"

@@ -103,6 +103,10 @@ SOURCE="..\..\src\c++\common\base\util\baseutils.cpp"
 # End Source File
 # Begin Source File
 
+SOURCE="..\..\src\c++\common\base\util\BasicTime.cpp"
+# End Source File
+# Begin Source File
+
 SOURCE="..\..\src\c++\common\base\util\KeyValuePair.cpp"
 # End Source File
 # Begin Source File
@@ -111,7 +115,11 @@ SOURCE="..\..\src\c++\common\base\util\StringBuffer.cpp"
 # End Source File
 # Begin Source File
 
-SOURCE="..\..\src\c++\common\base\util\UTF8StringBuffer.cpp"
+SOURCE="..\..\src\c++\common\base\util\WKeyValuePair.cpp"
+# End Source File
+# Begin Source File
+
+SOURCE="..\..\src\c++\common\base\util\WString.cpp"
 # End Source File
 # Begin Source File
 
@@ -141,6 +149,10 @@ SOURCE="..\..\src\c++\common\base\LogErrorHandler.cpp"
 # Begin Source File
 
 SOURCE="..\..\src\c++\common\base\md5.c"
+# End Source File
+# Begin Source File
+
+SOURCE="..\..\src\c++\common\base\quoted-printable.cpp"
 # End Source File
 # Begin Source File
 
