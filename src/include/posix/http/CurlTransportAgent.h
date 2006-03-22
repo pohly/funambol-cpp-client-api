@@ -54,7 +54,8 @@
         CurlTransportAgent(URL& url, Proxy& proxy, unsigned int responseTimeout = DEFAULT_MAX_TIMEOUT);
         ~CurlTransportAgent();
 
-        wchar_t* sendMessage(wchar_t* msg);
+        char* sendMessage(const char* msg);
+
     };
 
 #endif

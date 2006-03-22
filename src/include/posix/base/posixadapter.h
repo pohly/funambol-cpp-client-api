@@ -50,6 +50,7 @@
 //# endif
 #define TEXT(_x) _x
 #define CHR(_x)  _x
+#define T(_x) _x
 
 #define EXTRA_SECTION_00
 #define EXTRA_SECTION_01
@@ -68,6 +69,25 @@
 /* map wchar_t and its functions back to standard functions */
 #undef wchar_t
 #define wchar_t char
+#undef BCHAR
+typedef char BCHAR;
+typedef char WCHAR;
+
+#define bsprintf sprintf 
+
+#define bstrlen strlen
+#define bstrcpy strcpy
+#define bstrcat strcat
+#define bstrstr strstr
+#define bstrchr strchr
+#define bstrrchr strrchr
+#define bscanf scanf
+#define bstrcmp strcmp
+#define bstricmp _stricmp
+#define bstrncpy strncpy
+#define bstrncmp strncmp
+#define bstrtol strtol
+#define bstrtoul strtoul
 
 #define wsprintf sprintf
 #define _wfopen fopen
@@ -96,6 +116,7 @@ inline char towupper(char x) { return toupper(x); }
 #define wcsncat strncat
 #define _wtoi atoi
 #define wcstod strtod
+#define wcsicmp strcasecmp
 
 /* some of the code compares NULL against integers, which
    fails if NULL is defined as (void *)0 */
@@ -104,9 +125,6 @@ inline char towupper(char x) { return toupper(x); }
 
 #define min(x,y) ( (x) < (y) ? (x) : (y) )
 #define max(x,y) ( (x) > (y) ? (x) : (y) )
-
-
-#include "base/posixlog.h"
 
 #endif
 

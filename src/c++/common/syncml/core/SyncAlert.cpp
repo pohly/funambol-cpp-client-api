@@ -48,7 +48,7 @@ SyncAlert::~SyncAlert()
  */
 int SyncAlert::getSyncType() { return syncType; }
 int SyncAlert::getContentType () { return contentType; }
-const wchar_t *SyncAlert::getServerURI () { return serverURI; }
+const BCHAR *SyncAlert::getServerURI () { return serverURI; }
 
 /**
   @brief Set values for the object
@@ -60,7 +60,7 @@ const wchar_t *SyncAlert::getServerURI () { return serverURI; }
 
   @return 
  */
-int SyncAlert::set(int sync_type, int content_type, const wchar_t *uri)
+int SyncAlert::set(int sync_type, int content_type, const BCHAR *uri)
 {
     if (sync_type < 6 || sync_type > 10)
         return -1;

@@ -18,45 +18,45 @@
 
 #include "spds/constants.h"
 
-wchar_t* retSyncMode(SyncMode sm)
+BCHAR* retSyncMode(SyncMode sm)
 {
 	switch (sm)
 	{
 		case SYNC_NONE:
-			return TEXT("000");
+			return T("000");
 			break;
 		case SYNC_TWO_WAY:
-			return TEXT("200");
+			return T("200");
 			break;
 		case SYNC_SLOW:
-			return TEXT("201");
+			return T("201");
 			break;
 		case SYNC_ONE_WAY_FROM_CLIENT:
-			return TEXT("202");
+			return T("202");
 			break;
 		case SYNC_REFRESH_FROM_CLIENT:
-			return TEXT("203");
+			return T("203");
 			break;
 		case SYNC_ONE_WAY_FROM_SERVER:
-			return TEXT("204");
+			return T("204");
 			break;
 		case SYNC_REFRESH_FROM_SERVER:
-			return TEXT("205");
+			return T("205");
 			break;
 		case SYNC_TWO_WAY_BY_SERVER:
-			return TEXT("206");
+			return T("206");
 			break;
 		case SYNC_ONE_WAY_FROM_CLIENT_BY_SERVER:
-			return TEXT("207");
+			return T("207");
 			break;
 		case SYNC_REFRESH_FROM_CLIENT_BY_SERVER:
-			return TEXT("208");
+			return T("208");
 			break;
 		case SYNC_ONE_WAY_FROM_SERVER_BY_SERVER:
-			return TEXT("209");
+			return T("209");
 			break;
 		case SYNC_REFRESG_FROM_SERVER_BY_SERVER:
-			return TEXT("210");
+			return T("210");
 			break;
 		default:
 			return NULL;

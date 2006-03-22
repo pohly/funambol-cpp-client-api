@@ -26,17 +26,17 @@
 #include "syncml/core/Data.h"
 #include "syncml/core/Target.h"
 
-#define SEARCH_COMMAND_NAME TEXT("Search")
+#define SEARCH_COMMAND_NAME T("Search")
 
 class Search : public AbstractCommand{
     
      // ------------------------------------------------------------ Private data
     private:       
-        wchar_t*    COMMAND_NAME;
+        BCHAR*    COMMAND_NAME;
         BOOL        noResults;
         Target*     target   ;
         ArrayList*  sources; // Source[]. It is an ArrayList of SourceArray object. Every one contains a Source object
-        wchar_t*    lang;
+        BCHAR*    lang;
         Data*       data;       
     
     // ---------------------------------------------------------- Public data    
@@ -66,7 +66,7 @@ class Search : public AbstractCommand{
                Cred*       cred     ,
                Target*     target   ,
                ArrayList*  sources  ,
-               wchar_t*    lang     ,
+               BCHAR*    lang     ,
                Meta*       meta     ,
                Data*       data     );    
     
@@ -125,14 +125,14 @@ class Search : public AbstractCommand{
          * @return the preferred language
          *
          */
-        wchar_t* getLang(wchar_t* retLang = NULL);
+        BCHAR* getLang(BCHAR* retLang = NULL);
     
         /**
          * Sets the preferred language
          *
          * @param lang the preferred language
          */
-        void setLang(wchar_t* lang);
+        void setLang(BCHAR* lang);
         
         /**
          * Returns data
@@ -155,7 +155,7 @@ class Search : public AbstractCommand{
          *
          * @return the command name
          */
-        wchar_t* getName();
+        BCHAR* getName();
 
         ArrayElement* clone();    
    

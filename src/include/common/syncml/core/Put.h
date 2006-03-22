@@ -23,13 +23,13 @@
 #include "base/fscapi.h"
 #include "syncml/core/ItemizedCommand.h"
 
-#define PUT_COMMAND_NAME TEXT("Put")
+#define PUT_COMMAND_NAME T("Put")
 
 class Put : public ItemizedCommand {
     
     private:       
-        wchar_t* lang;
-        wchar_t* COMMAND_NAME;
+        BCHAR* lang;
+        BCHAR* COMMAND_NAME;
     
        
     
@@ -51,7 +51,7 @@ class Put : public ItemizedCommand {
          */
         Put( CmdID* cmdID,
                     BOOL noResp,
-                    wchar_t* lang,
+                    BCHAR* lang,
                     Cred* cred,
                     Meta* meta,
                     ArrayList* items ); // items[]
@@ -66,21 +66,21 @@ class Put : public ItemizedCommand {
          * @return the preferred language
          *
          */
-        wchar_t* getLang(wchar_t* retLang);
+        BCHAR* getLang(BCHAR* retLang);
     
         /**
          * Sets the preferred language
          *
          * @param lang new preferred language
          */
-         void setLang(wchar_t* lang);
+         void setLang(BCHAR* lang);
     
         /**
          * Returns the command name
          *
          * @return the command name
          */
-         wchar_t* getName();
+         BCHAR* getName();
     
          ArrayElement* clone();
    

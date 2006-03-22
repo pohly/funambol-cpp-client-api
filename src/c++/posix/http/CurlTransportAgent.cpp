@@ -141,7 +141,7 @@ int CurlTransportAgent::debugCallback(CURL *easyhandle, curl_infotype type, char
  *
  * Use getResponse() to get the server response.
  */
-wchar_t* CurlTransportAgent::sendMessage(wchar_t* msg) {
+char* CurlTransportAgent::sendMessage(const char* msg) {
     if (!easyhandle) {
         lastErrorCode = ERR_NETWORK_INIT;
         strcpy(lastErrorMsg, TEXT("libcurl error init error"));

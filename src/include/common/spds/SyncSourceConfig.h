@@ -28,12 +28,12 @@
 
     protected:
 
-        wchar_t* name     ;
-        wchar_t* uri      ;
-        wchar_t* syncModes;
-        wchar_t* type     ;
-        wchar_t* sync     ;
-        wchar_t* encodings;
+        BCHAR* name     ;
+        BCHAR* uri      ;
+        BCHAR* syncModes;
+        BCHAR* type     ;
+        BCHAR* sync     ;
+        BCHAR* encodings;
 
         unsigned long last;
 
@@ -57,34 +57,34 @@
         /*
          * Returns the SyncSource name.
          */
-        const wchar_t* getName(wchar_t* buf = NULL) const EXTRA_SECTION_02;
+        const BCHAR* getName(BCHAR* buf = NULL) const EXTRA_SECTION_02;
 
         /*
          * Sets the SyncSource name
          *
          * @param n the new name
          */
-        void setName(const wchar_t* n) EXTRA_SECTION_02;
+        void setName(const BCHAR* n) EXTRA_SECTION_02;
 
 
         /*
          * Returns the SyncSource URI (used in SyncML addressing).
          */
-        const wchar_t* getURI(wchar_t* buf = NULL) const EXTRA_SECTION_02;
+        const BCHAR* getURI(BCHAR* buf = NULL) const EXTRA_SECTION_02;
 
         /*
          * Sets the SyncSource URI (used in SyncML addressing).
          *
          * @param u the new uri
          */
-        void setURI(const wchar_t* u) EXTRA_SECTION_02;
+        void setURI(const BCHAR* u) EXTRA_SECTION_02;
 
         /*
          * Returns a comma separated list of the possible syncModes for the
          * SyncSource.
          */
 
-        const wchar_t* getSyncModes(wchar_t* buf = NULL) const EXTRA_SECTION_02;
+        const BCHAR* getSyncModes(BCHAR* buf = NULL) const EXTRA_SECTION_02;
 
         /*
          * Sets the available syncModes for the SyncSource as comma separated
@@ -97,7 +97,7 @@
          *
          * @param s the new list
          */
-        void setSyncModes(const wchar_t* s) EXTRA_SECTION_02;
+        void setSyncModes(const BCHAR* s) EXTRA_SECTION_02;
 
         /*
          * Returns the mime type of the items handled by the sync source.
@@ -107,26 +107,26 @@
          *
          * @param t the buffer were the mime type will be copied into (if not null)
          */
-        const wchar_t* getType(wchar_t* buf = NULL) const EXTRA_SECTION_02;
+        const BCHAR* getType(BCHAR* buf = NULL) const EXTRA_SECTION_02;
 
         /*
          * Sets the mime type of the items handled by the sync source.
          *
          * @param t the mime type
          */
-        void setType(const wchar_t* t) EXTRA_SECTION_02;
+        void setType(const BCHAR* t) EXTRA_SECTION_02;
 
         /*
          * Sets the default syncMode as one of the strings listed in setSyncModes.
          *
          * @param s the sync mode
          */
-        const wchar_t* getSync(wchar_t* buf = NULL) const EXTRA_SECTION_02;
+        const BCHAR* getSync(BCHAR* buf = NULL) const EXTRA_SECTION_02;
 
         /*
          * Returns the default syncMode as one of the strings above.
          */
-        void setSync(const wchar_t* s) EXTRA_SECTION_02;
+        void setSync(const BCHAR* s) EXTRA_SECTION_02;
         
         /*
          * Sets the encodings to use to format the content of the items
@@ -134,12 +134,12 @@
          *
          * @param buf the sync mode
          */
-        const wchar_t* getEncoding(wchar_t* buf = NULL) const EXTRA_SECTION_02;
+        const BCHAR* getEncoding(BCHAR* buf = NULL) const EXTRA_SECTION_02;
         
         /*
          * Returns the default syncMode as one of the strings above.
          */
-        void setEncoding(const wchar_t* s) EXTRA_SECTION_02;
+        void setEncoding(const BCHAR* s) EXTRA_SECTION_02;
 
         /*
          * Sets the last sync timestamp

@@ -25,19 +25,19 @@
 #define DIM_64    64
 #define DIM_512  512
 
-#define MIMETYPE_SYNCMLDS_XML               TEXT("application/vnd.syncml+xml")
-#define MIMETYPE_SYNCMLDS_WBXML             TEXT("application/vnd.syncml+wbxml")
-#define MIMETYPE_SYNCML_DEVICEINFO_XML      TEXT("application/vnd.syncml-devinf+xml")
-#define MIMETYPE_SYNCML_DEVICEINFO_WBXML    TEXT("application/vnd.syncml-devinf+wbxml")
+#define MIMETYPE_SYNCMLDS_XML               T("application/vnd.syncml+xml")
+#define MIMETYPE_SYNCMLDS_WBXML             T("application/vnd.syncml+wbxml")
+#define MIMETYPE_SYNCML_DEVICEINFO_XML      T("application/vnd.syncml-devinf+xml")
+#define MIMETYPE_SYNCML_DEVICEINFO_WBXML    T("application/vnd.syncml-devinf+wbxml")
 
-#define NAMESPACE_METINF    TEXT("syncml:metinf")
-#define NAMESPACE_DEVINF    TEXT("syncml:devinf")
-#define FORMAT_B64          TEXT("b64")
+#define NAMESPACE_METINF    T("syncml:metinf")
+#define NAMESPACE_DEVINF    T("syncml:devinf")
+#define FORMAT_B64          T("b64")
 
-#define AUTH_TYPE_MD5    TEXT("syncml:auth-md5"  )
-#define AUTH_TYPE_BASIC  TEXT("syncml:auth-basic")
-#define AUTH_NONE        TEXT("none"             )
-#define AUTH_SUPPORTED_TYPES  TEXT("syncml:auth-md5,syncml:auth-basic")
+#define AUTH_TYPE_MD5    T("syncml:auth-md5"  )
+#define AUTH_TYPE_BASIC  T("syncml:auth-basic")
+#define AUTH_NONE        T("none"             )
+#define AUTH_SUPPORTED_TYPES  T("syncml:auth-md5,syncml:auth-basic")
 
 
 #endif

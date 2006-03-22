@@ -42,7 +42,7 @@ CTTypeSupported::~CTTypeSupported() {
  *                     content type parameters - NOT NULL
  *
  */
-CTTypeSupported::CTTypeSupported(wchar_t* ctType, ArrayList* ctPropParams ) {
+CTTypeSupported::CTTypeSupported(BCHAR* ctType, ArrayList* ctPropParams ) {
      setCTType(ctType);
      setCTPropParams(ctPropParams);
 }
@@ -53,11 +53,11 @@ CTTypeSupported::CTTypeSupported(wchar_t* ctType, ArrayList* ctPropParams ) {
  *
  * @return a CTType String
  */
-wchar_t* CTTypeSupported::getCTType(wchar_t* retCTType) {
+BCHAR* CTTypeSupported::getCTType(BCHAR* retCTType) {
     if (retCTType == NULL) {
         return ctType;
     }
-    return wcscpy(retCTType, ctType);
+    return bstrcpy(retCTType, ctType);
 }
 
 /**
@@ -65,7 +65,7 @@ wchar_t* CTTypeSupported::getCTType(wchar_t* retCTType) {
  *
  * @param ctType a CTType object
  */
-void CTTypeSupported::setCTType(wchar_t* ctType) {
+void CTTypeSupported::setCTType(BCHAR* ctType) {
      if (this->ctType) {
         delete [] this->ctType; this->ctType = NULL;
     }

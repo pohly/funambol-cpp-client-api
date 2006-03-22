@@ -45,7 +45,7 @@ ContentTypeInfo::~ContentTypeInfo() {
  *                specification - NOT NULL
  *
  */
-ContentTypeInfo::ContentTypeInfo(wchar_t* ctType, wchar_t* verCT) {
+ContentTypeInfo::ContentTypeInfo(BCHAR* ctType, BCHAR* verCT) {
     
     this->ctType = NULL;
     this->verCT  = NULL;
@@ -65,11 +65,11 @@ ContentTypeInfo::ContentTypeInfo(wchar_t* ctType, wchar_t* verCT) {
  *
  * @return the content type properties
  */
-wchar_t* ContentTypeInfo::getCTType(wchar_t* retCTType) {
+BCHAR* ContentTypeInfo::getCTType(BCHAR* retCTType) {
     if (retCTType == NULL) {
         return ctType;
     }
-    return wcscpy(retCTType, ctType);
+    return bstrcpy(retCTType, ctType);
 }
 
 /**
@@ -77,7 +77,7 @@ wchar_t* ContentTypeInfo::getCTType(wchar_t* retCTType) {
  *
  * @param ctType the content type properties
  */
-void ContentTypeInfo::setCTType(wchar_t* ctType) {
+void ContentTypeInfo::setCTType(BCHAR* ctType) {
     if (this->ctType) {
         delete [] this->ctType; this->ctType = NULL;
     }
@@ -89,11 +89,11 @@ void ContentTypeInfo::setCTType(wchar_t* ctType) {
  *
  * @return the version of the content type
  */
-wchar_t* ContentTypeInfo::getVerCT(wchar_t* retVerCT) {
+BCHAR* ContentTypeInfo::getVerCT(BCHAR* retVerCT) {
     if (retVerCT == NULL) {
         return verCT;
     }
-    return wcscpy(retVerCT, verCT);
+    return bstrcpy(retVerCT, verCT);
 }
 
 /**
@@ -101,7 +101,7 @@ wchar_t* ContentTypeInfo::getVerCT(wchar_t* retVerCT) {
  *
  * @param verCT the version of the content type
  */
-void ContentTypeInfo::setVerCT(wchar_t* verCT) {
+void ContentTypeInfo::setVerCT(BCHAR* verCT) {
     if (this->verCT) {
         delete [] this->verCT; this->verCT = NULL;
     }

@@ -20,7 +20,7 @@
 
 #include "base/util/ArrayList.h"
 #include "base/util/StringBuffer.h"
-#include "base/util/UTF8StringBuffer.h"
+//#include "base/util/UTF8StringBuffer.h"
 #include "base/util/BasicTime.h"
 #include "spds/BodyPart.h"
 
@@ -75,38 +75,38 @@ class MailMessage : public ArrayElement {
         //~MailMessage();
 
         // Headers
-        const wchar_t *getTo() const;
-        void setTo(const wchar_t *to);
+        const BCHAR *getTo() const;
+        void setTo(const BCHAR *to);
 
-        const wchar_t *getFrom() const;
-        void setFrom(const wchar_t *from);
+        const BCHAR *getFrom() const;
+        void setFrom(const BCHAR *from);
 
-        const wchar_t *getCc() const;
-        void setCc(const wchar_t *cc);
+        const BCHAR *getCc() const;
+        void setCc(const BCHAR *cc);
 
-        const wchar_t *getBcc() const ;
-        void setBcc(const wchar_t *bcc);
+        const BCHAR *getBcc() const ;
+        void setBcc(const BCHAR *bcc);
 
-        const wchar_t *getSubject() const ;
-        void setSubject(const wchar_t *subj);
+        const BCHAR *getSubject() const ;
+        void setSubject(const BCHAR *subj);
 		
         const BasicTime& getDate() const ;
         void setDate(const BasicTime& d);
 		
-        const wchar_t * getContentType() const ;
-        void setContentType(const wchar_t *val);
+        const BCHAR * getContentType() const ;
+        void setContentType(const BCHAR *val);
 
-        const wchar_t * getBoundary() const ;
-        void setBoundary(const wchar_t *val);
+        const BCHAR * getBoundary() const ;
+        void setBoundary(const BCHAR *val);
 
-        const wchar_t * getMimeVersion() const ;
-        void setMimeVersion(const wchar_t *val);
+        const BCHAR * getMimeVersion() const ;
+        void setMimeVersion(const BCHAR *val);
         
-        const wchar_t * getMessageId() const ;
-        void setMessageId(const wchar_t *val);
+        const BCHAR * getMessageId() const ;
+        void setMessageId(const BCHAR *val);
         
-		const wchar_t* getEntryID();
-		void setEntryID(const wchar_t* id);
+		const BCHAR* getEntryID();
+		void setEntryID(const BCHAR* id);
 
         // Body
 		BodyPart & getBody();
@@ -121,8 +121,8 @@ class MailMessage : public ArrayElement {
         int attachmentCount();
 
         // Conversion methods
-        wchar_t *format();
-        int parse(const wchar_t *rfc2822, size_t len = StringBuffer::npos);
+        BCHAR *format();
+        int parse(const BCHAR *rfc2822, size_t len = StringBuffer::npos);
 
         /*
          * Return true if the message is empty

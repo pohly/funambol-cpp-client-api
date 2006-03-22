@@ -233,14 +233,14 @@ iCalProperty* Calendar::getiCalPropertyFromVProperty(VProperty* vp) {
             prop->setValueType(vp->getParameterValue(TEXT("VALUE")));
 
         ArrayList* xParamList = NULL;
-        KeyValuePair* xTagParam = NULL;
+        WKeyValuePair* xTagParam = NULL;
         wchar_t* xParamName = NULL;
         for(int i = 0; i < vp->parameterCount(); i++) {
             if(wcsstr(vp->getParameter(i),TEXT("X-")) == vp->getParameter(i)) {
                 xParamName = new wchar_t[wcslen(vp->getParameter(i)) + 1];
                 wcscpy(xParamName, vp->getParameter(i));
 
-                xTagParam = new KeyValuePair();
+                xTagParam = new WKeyValuePair();
                 xTagParam->setKey(xParamName);
                 if(vp->getParameterValue(xParamName))
                     xTagParam->setValue(vp->getParameterValue(xParamName));
@@ -309,7 +309,7 @@ VProperty* Calendar::getVPropertyFromiCalProperty(wchar_t* name, iCalProperty* p
             ArrayList* xParamList = new ArrayList();
             xParamList = prop->getXParam();
             for(int i = 0; i<xParamList->size(); i++) {
-                KeyValuePair* xParam = (KeyValuePair*)xParamList->get(i);
+                WKeyValuePair* xParam = (WKeyValuePair*)xParamList->get(i);
                 if(xParam->getKey())
                     if(xParam->getValue())
                         vprop->addParameter(xParam->getKey(), xParam->getValue());

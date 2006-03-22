@@ -24,14 +24,12 @@
 SyncSource::SyncSource(const wchar_t* sourceName) {
     if ((sourceName == NULL) || (*sourceName == 0)) {
         lastErrorCode = ERR_PARAMETER_IS_EMPTY;
-        wcsprintf(lastErrorMsg, TEXT("name cannot be empty (NULL or 0-length)"));
+        bsprintf(lastErrorMsg, T("name cannot be empty (NULL or 0-length)"));
         goto finally;
     }
 
-    name = new wchar_t[wcslen(sourceName)+1];
-    wcscpy(name, sourceName);
-    remoteURI = new wchar_t[wcslen(sourceName)+1];
-    wcscpy(remoteURI, sourceName);
+    name = wstrdup(sourceName);
+    remoteURI = wstrdup(sourceName);
 
     *type = *next = *last = 0;
     finally:
@@ -95,7 +93,7 @@ void SyncSource::setErrorHandler(ErrorHandler& e) {
  * @param dim - buffer size
  *
  */
-const  wchar_t *SyncSource::getName() {
+const wchar_t *SyncSource::getName() {
      return name;
  }
 
@@ -128,10 +126,9 @@ void SyncSource::setRemoteURI(const wchar_t* uri) {
     }
 
     if (uri) {
-        remoteURI = new wchar_t[wcslen(uri)+1];
-        wcscpy(remoteURI, uri);
+        remoteURI = wstrdup(uri);
     } else {
-        wcscpy(remoteURI, TEXT(""));
+        remoteURI = wstrdup(TEXT(""));
     }
 }
 
@@ -154,10 +151,9 @@ void SyncSource::setEncoding(const wchar_t* enc) {
     }
 
     if (enc) {
-        encoding = new wchar_t[wcslen(enc)+1];
-        wcscpy(encoding, enc);
+        encoding = wstrdup(enc);
     } else {
-        encoding = stringdup(TEXT(""));
+        encoding = wstrdup(TEXT(""));
     }
 }
 
@@ -168,14 +164,13 @@ const wchar_t* SyncSource::getEncoding() {
     return encoding;   
 }
 
-
 /*
  * Sets the mime type standard for the source items
  *
  * @param mimeType the mime type
  */
-void SyncSource::setType(const wchar_t* mimeType) {
-    wcsncpy(type, (mimeType == NULL) ? TEXT("") : mimeType, DIM_MIME_TYPE);
+void SyncSource::setType(const BCHAR* mimeType) {
+    bstrncpy(type, (mimeType == NULL) ? T("") : mimeType, DIM_MIME_TYPE);
     type[DIM_MIME_TYPE-1] = 0;
 }
 
@@ -186,7 +181,7 @@ void SyncSource::setType(const wchar_t* mimeType) {
  *
  * @param mimeType the buffer where to copy the mime type value
  */
-const wchar_t* SyncSource::getType() {
+const BCHAR* SyncSource::getType() {
         return type;
 }
 
@@ -257,8 +252,9 @@ void SyncSource::setNextSync(unsigned long timestamp) {
  *
  * @param lastAnchor last anchor
  */
-void SyncSource::setLastAnchor(const wchar_t* lastAnchor) {
-    wcsncpy(last, (lastAnchor != NULL) ? lastAnchor : TEXT(""), DIM_ANCHOR);
+void SyncSource::setLastAnchor(const BCHAR* lastAnchor) {
+    bstrncpy(last, (lastAnchor != NULL) ? lastAnchor : T(""), DIM_ANCHOR);
+    next[DIM_ANCHOR-1] = 0;
 }
 
 /*
@@ -266,7 +262,7 @@ void SyncSource::setLastAnchor(const wchar_t* lastAnchor) {
  * internal buffer address is returned, otherwise the value is copied
  * in the given buffer and the buffer address is returned.
  */
-const wchar_t* SyncSource::getLastAnchor() {
+const BCHAR* SyncSource::getLastAnchor() {
     return last;
 }
 
@@ -275,8 +271,8 @@ const wchar_t* SyncSource::getLastAnchor() {
  *
  * @param next next anchor
  */
-void SyncSource::setNextAnchor(const wchar_t* nextAnchor) {
-    wcsncpy(next, (nextAnchor != NULL) ? nextAnchor : TEXT(""), DIM_ANCHOR);
+void SyncSource::setNextAnchor(const BCHAR* nextAnchor) {
+    bstrncpy(next, (nextAnchor != NULL) ? nextAnchor : T(""), DIM_ANCHOR);
     next[DIM_ANCHOR-1] = 0;
 }
 
@@ -285,7 +281,7 @@ void SyncSource::setNextAnchor(const wchar_t* nextAnchor) {
  * internal buffer address is returned, otherwise the value is copied
  * in the given buffer and the buffer address is returned.
  */
-const wchar_t* SyncSource::getNextAnchor() {
+const BCHAR* SyncSource::getNextAnchor() {
     return next;
 }
 

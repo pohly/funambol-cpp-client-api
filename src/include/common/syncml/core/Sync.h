@@ -27,13 +27,13 @@
 #include "syncml/core/Target.h"
 
 
-#define SYNC_COMMAND_NAME TEXT("Sync")
+#define SYNC_COMMAND_NAME T("Sync")
 
 class Sync : public AbstractCommand {
     
      // ------------------------------------------------------------ Private data
     private:
-        wchar_t* COMMAND_NAME;
+        BCHAR* COMMAND_NAME;
         Target* target;
         Source* source;
         ArrayList* commands;
@@ -132,7 +132,7 @@ class Sync : public AbstractCommand {
          */
         void setNumberOfChanges(long numberOfChanges) ;
     
-        wchar_t* getName();
+        BCHAR* getName();
 
         ArrayElement* clone();
 

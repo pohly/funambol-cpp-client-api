@@ -81,135 +81,135 @@ void AccessConfig::setServerAuthRequired(BOOL v) {
     dirty |= DIRTY_SERVERAUTH_REQUIRED;
 }
 
-const wchar_t* AccessConfig::getServerAuthType(const wchar_t* buf) {
+const BCHAR* AccessConfig::getServerAuthType(const BCHAR* buf) {
     if (buf == NULL) {
         return serverAuthType;
     }
 
-    return wcscpy((wchar_t*)buf, serverAuthType);
+    return bstrcpy((BCHAR*)buf, serverAuthType);
 }
 
 
-void AccessConfig::setServerAuthType(const wchar_t* v){
+void AccessConfig::setServerAuthType(const BCHAR* v){
 	set(&serverAuthType, v);	    
 }
 
 
-const wchar_t* AccessConfig::getClientAuthType(const wchar_t* buf) {
+const BCHAR* AccessConfig::getClientAuthType(const BCHAR* buf) {
     if (buf == NULL) {
         return clientAuthType;
     }
 
-    return wcscpy((wchar_t*)buf, clientAuthType);
+    return bstrcpy((BCHAR*)buf, clientAuthType);
 }
 
 
-void AccessConfig::setClientAuthType(const wchar_t* v){
+void AccessConfig::setClientAuthType(const BCHAR* v){
 	set(&clientAuthType, v);
 	
     dirty |= DIRTY_CLIENTAUTHTYPE; 
 }
 
-const wchar_t* AccessConfig::getServerPWD(const wchar_t* buf) {
+const BCHAR* AccessConfig::getServerPWD(const BCHAR* buf) {
     if (buf == NULL) {
 		return serverPWD;
     }
 
-    return wcscpy((wchar_t*)buf, serverPWD);
+    return bstrcpy((BCHAR*)buf, serverPWD);
 }
 
 
-void AccessConfig::setServerPWD(const wchar_t* v){
+void AccessConfig::setServerPWD(const BCHAR* v){
 	set(&serverPWD, v);
 	
     dirty |= DIRTY_SERVERPWD;
 }
 
-const wchar_t* AccessConfig::getServerID(const wchar_t* buf) {
+const BCHAR* AccessConfig::getServerID(const BCHAR* buf) {
     if (buf == NULL) {
 		return serverID;
     }
 
-    return wcscpy((wchar_t*)buf, serverID);
+    return bstrcpy((BCHAR*)buf, serverID);
 }
 
 
-void AccessConfig::setServerID(const wchar_t* v){
+void AccessConfig::setServerID(const BCHAR* v){
 	set(&serverID, v);
 	
     dirty |= DIRTY_SERVERID;
 }
 
-const wchar_t* AccessConfig::getServerNonce(const wchar_t* buf) {
+const BCHAR* AccessConfig::getServerNonce(const BCHAR* buf) {
     if (buf == NULL) {
 		return serverNonce;
     }
 
-    return wcscpy((wchar_t*)buf, serverNonce);;
+    return bstrcpy((BCHAR*)buf, serverNonce);;
 }
 
 
-void AccessConfig::setServerNonce(const wchar_t* v){
+void AccessConfig::setServerNonce(const BCHAR* v){
 	set(&serverNonce, v);
 	
     dirty |= DIRTY_SERVER_NONCE;
 }
 
-const wchar_t* AccessConfig::getClientNonce(const wchar_t* buf) {
+const BCHAR* AccessConfig::getClientNonce(const BCHAR* buf) {
     if (buf == NULL) {
 		return clientNonce;
     }
 
-    return wcscpy((wchar_t*)buf, clientNonce);
+    return bstrcpy((BCHAR*)buf, clientNonce);
 }
 
 
-void AccessConfig::setClientNonce(const wchar_t* v){
+void AccessConfig::setClientNonce(const BCHAR* v){
 	set(&clientNonce, v);
 	
     dirty |= DIRTY_CLIENT_NONCE;
 }
 
-const wchar_t* AccessConfig::getUsername(const wchar_t* buf) {
+const BCHAR* AccessConfig::getUsername(const BCHAR* buf) {
     if (buf == NULL) {
 		return username;
     }
 
-    return wcscpy((wchar_t*)buf, username);
+    return bstrcpy((BCHAR*)buf, username);
 }
 
 
-void AccessConfig::setUsername(const wchar_t* v){
+void AccessConfig::setUsername(const BCHAR* v){
 	set(&username, v);
 	
     dirty |= DIRTY_USERNAME;
 }
 
 
-const wchar_t* AccessConfig::getPassword(const wchar_t* buf) {
+const BCHAR* AccessConfig::getPassword(const BCHAR* buf) {
     if (buf == NULL) {
 		return password;
     }
 
-    return wcscpy((wchar_t*)buf, password);
+    return bstrcpy((BCHAR*)buf, password);
 }
 
-void AccessConfig::setPassword(const wchar_t* v) {	
+void AccessConfig::setPassword(const BCHAR* v) {	
 	set(&password, v);
 	 
     dirty |= DIRTY_PASSWORD;
 }
 
 
-const wchar_t* AccessConfig::getDeviceId(const wchar_t* buf) {
+const BCHAR* AccessConfig::getDeviceId(const BCHAR* buf) {
     if (buf == NULL) {
 		return deviceId;
     }
 
-    return wcscpy((wchar_t*)buf, deviceId);
+    return bstrcpy((BCHAR*)buf, deviceId);
 }
 
-void AccessConfig::setDeviceId(const wchar_t* v) {	
+void AccessConfig::setDeviceId(const BCHAR* v) {	
 	set(&deviceId, v);
 	
     dirty |= DIRTY_DEVICE_ID;
@@ -235,48 +235,47 @@ void AccessConfig::setUseProxy(BOOL v) {
     dirty |= DIRTY_USE_PROXY;
 }
 
-const wchar_t* AccessConfig::getProxyHost(const wchar_t* buf) {
+const BCHAR* AccessConfig::getProxyHost(const BCHAR* buf) {
     if (buf == NULL) {
 		return proxyHost;
 	}
 
-    return wcscpy((wchar_t*)buf, proxyHost);
+    return bstrcpy((BCHAR*)buf, proxyHost);
 }
 
-void AccessConfig::setProxyHost(const wchar_t* v) {
+void AccessConfig::setProxyHost(const BCHAR* v) {
 	set(&proxyHost, v);
 	
     dirty |= DIRTY_PROXY_HOST;
 }
 
-const wchar_t* AccessConfig::getSyncURL(const wchar_t* buf) {
+const BCHAR* AccessConfig::getSyncURL(const BCHAR* buf) {
     if (buf == NULL) {
 		return syncURL;
 	}
 
-    return wcscpy((wchar_t*)buf, syncURL);
+    return bstrcpy((BCHAR*)buf, syncURL);
 }
 
-void AccessConfig::setSyncURL(const wchar_t* v) {	
+void AccessConfig::setSyncURL(const BCHAR* v) {	
 	//
 	// Checks if the url starts with http(s)://; if not, http:// is prepended
 	//
 	set(&syncURL, v);
 	
 	// Adds default protocol if not set AND the string is not empty
-    if (*syncURL							  &&
-		wcsncmp(syncURL, TEXT("http://"), 7)  && 
-	    wcsncmp(syncURL, TEXT("HTTP://"), 7)  &&
-	    wcsncmp(syncURL, TEXT("https://"), 8) &&
-	    wcsncmp(syncURL, TEXT("HTTPS://"), 8) ) {
+    if (*syncURL							&&
+		bstrncmp(syncURL, T("http://"), 7)  && 
+	    bstrncmp(syncURL, T("HTTP://"), 7)  &&
+	    bstrncmp(syncURL, T("https://"), 8) &&
+	    bstrncmp(syncURL, T("HTTPS://"), 8) ) {
         
-		wchar_t* dest = new wchar_t[wcslen(syncURL)+8];
-		wcscpy((wchar_t*)dest, TEXT("http://")); wcscat(dest, syncURL);
+		BCHAR* dest = new BCHAR[bstrlen(syncURL)+8];
+        bsprintf(dest, T("http://%s"), syncURL );
 		
 		set(&syncURL, dest);
 
-        if (dest != NULL)
-            delete dest;
+        delete dest;
 	}
 	
     dirty |= DIRTY_SYNC_URL;
@@ -320,16 +319,16 @@ unsigned int AccessConfig::getDirty() {
     return dirty;
 }
 
-void AccessConfig::set(wchar_t** buf, const wchar_t* v) {
+void AccessConfig::set(BCHAR** buf, const BCHAR* v) {
 	safeDelete(buf);
 	
 	if (v == NULL) {
-		v = TEXT("");
+		v = T("");
 	}
-	int len = wcslen(v);
-	*buf = new wchar_t[len+2];
+	int len = bstrlen(v);
+	*buf = new BCHAR[len+2];
 	
-	wcscpy(*buf, v);
+	bstrcpy(*buf, v);
 }
 
 BOOL AccessConfig::getEncryption() {

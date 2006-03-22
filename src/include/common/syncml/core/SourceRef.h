@@ -29,7 +29,7 @@ class SourceRef : public ArrayElement{
     
      // ------------------------------------------------------------ Private data
     private:
-         wchar_t* value;
+         BCHAR* value;
          Source*  source;
     
     // ---------------------------------------------------------- Protected data    
@@ -44,7 +44,7 @@ class SourceRef : public ArrayElement{
          * @param value the referenced value - NULL ALLOWED
          *
          */
-        SourceRef(const wchar_t* value);
+        SourceRef(const BCHAR* value);
     
         /**
          * Creates a new SourceRef object from an existing Source.
@@ -62,14 +62,14 @@ class SourceRef : public ArrayElement{
          *
          * @return the value
          */
-        const wchar_t* getValue();
+        const BCHAR* getValue();
     
         /**
          * Sets the reference value. If value is null, the empty string is adopted.
          *
          * @param value the reference value - NULL
          */
-        void setValue(const wchar_t* value);
+        void setValue(const BCHAR* value);
     
         /**
          * Gets the Source property

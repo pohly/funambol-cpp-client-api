@@ -22,8 +22,8 @@
 
 Get::Get() {
     lang = NULL;
-    COMMAND_NAME = new wchar_t[wcslen(GET_COMMAND_NAME) + 1];
-    wsprintf(COMMAND_NAME, GET_COMMAND_NAME);
+    COMMAND_NAME = new BCHAR[bstrlen(GET_COMMAND_NAME) + 1];
+    bsprintf(COMMAND_NAME, GET_COMMAND_NAME);
 }
 
 Get::~Get() {
@@ -48,14 +48,14 @@ Get::~Get() {
 */
 Get::Get(CmdID* cmdID,
          BOOL noResp,
-         wchar_t* lang,
+         BCHAR* lang,
          Cred* cred,
          Meta* meta,
          ArrayList* items) : ItemizedCommand(cmdID, meta, items) {
     
     this->lang = NULL;
-    COMMAND_NAME = new wchar_t[wcslen(GET_COMMAND_NAME) + 1];
-    wsprintf(COMMAND_NAME, GET_COMMAND_NAME);
+    COMMAND_NAME = new BCHAR[bstrlen(GET_COMMAND_NAME) + 1];
+    bsprintf(COMMAND_NAME, GET_COMMAND_NAME);
 
     setCred(cred);
     setNoResp(noResp);   
@@ -69,11 +69,11 @@ Get::Get(CmdID* cmdID,
 * @return the preferred language
 *
 */
-wchar_t* Get::getLang(wchar_t* retLang) {
+BCHAR* Get::getLang(BCHAR* retLang) {
     if (retLang == NULL) {
         return lang;
     }
-    return wcscpy(retLang, lang);
+    return bstrcpy(retLang, lang);
 }
 
 /**
@@ -81,7 +81,7 @@ wchar_t* Get::getLang(wchar_t* retLang) {
 *
 * @param lang new preferred language
 */
-void Get::setLang(wchar_t* lang) {
+void Get::setLang(BCHAR* lang) {
     if (this->lang) {
         delete [] this->lang; this->lang = NULL;
     }
@@ -93,7 +93,7 @@ void Get::setLang(wchar_t* lang) {
 *
 * @return the command name property
 */   
-wchar_t* Get::getName() {
+BCHAR* Get::getName() {
     return COMMAND_NAME;
 }
 

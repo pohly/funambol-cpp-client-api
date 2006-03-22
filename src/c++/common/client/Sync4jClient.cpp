@@ -48,8 +48,8 @@ Sync4jClient::~Sync4jClient() {
  */
 Sync4jClient& Sync4jClient::getInstance() {
     
-    LOG.reset();  
-    LOG.setLevel(LOG_LEVEL_DEBUG);            
+    //LOG.reset();  
+    //LOG.setLevel(LOG_LEVEL_DEBUG);            
 
     if (instance == NULL) {
         instance = new Sync4jClient();
@@ -81,7 +81,7 @@ void Sync4jClient::setDMConfig(DMTClientConfig& config) {
 /*
  * Set config from DM using an application URI
  */
-void Sync4jClient::setDMConfig(const wchar_t *root) {
+void Sync4jClient::setDMConfig(const BCHAR *root) {
     if (defaultConfig)
         delete defaultConfig;
     if (syncManager)
@@ -117,23 +117,23 @@ int Sync4jClient::sync(SyncSource** sources) {
         return -1;
 
     if ((ret = syncManager->prepareSync(sources))) {
-        wchar_t dbg[256];
-        wsprintf(dbg, TEXT("ERROR prepareSync: %s"), lastErrorMsg);
+        BCHAR dbg[256];
+        bsprintf(dbg, T("ERROR prepareSync: %s"), lastErrorMsg);//
         LOG.error(dbg);
         
         goto finally;
     }
        
     if ((ret = syncManager->sync())) {   
-        wchar_t dbg[256];
-        wsprintf(dbg, TEXT("ERROR sync: %s"), lastErrorMsg);
+        BCHAR dbg[256];
+        bsprintf(dbg, T("ERROR sync: %s"), lastErrorMsg);
         LOG.error(dbg);
         goto finally;
     }
 
     if ((ret = syncManager->endSync())) {       
-        wchar_t dbg[256];
-        wsprintf(dbg, TEXT("ERROR endSync: %s"), lastErrorMsg);
+        BCHAR dbg[256];
+        bsprintf(dbg, T("ERROR endSync: %s"), lastErrorMsg);
         LOG.error(dbg);
         goto finally;
     }

@@ -95,7 +95,7 @@ int setModifiedItemsEmpty() {
 }
 
 
-TestSyncSource::TestSyncSource(const wchar_t* name) : SyncSource(name) {
+TestSyncSource::TestSyncSource(const wchar_t* name) : SyncSource(name){
 }
 
 TestSyncSource::~TestSyncSource() {
@@ -181,63 +181,56 @@ SyncItem* TestSyncSource::getNextDeletedItem() {
 }
 
 void TestSyncSource::setItemStatus(const wchar_t* key, int status) {
-    wchar_t tmp[256];
-    wsprintf(tmp, TEXT("key: %s, status: %i"), key, status);
-    LOG.debug(tmp);
+    bsprintf(logmsg, T("key: %ls, status: %i"), key, status);
+    LOG.debug(logmsg);
 }
 
 int TestSyncSource::addItem(SyncItem& item) {
-    wchar_t tmp[512];
-    wsprintf(tmp, TEXT("added item: %s"), item.getKey());
-    LOG.info(tmp);
+    bsprintf(logmsg, T("added item: %ls"), item.getKey());
+    LOG.info(logmsg);
     
-    LOG.info(TEXT("Data:"));
-    char tmp2[1024];  
-    memset(tmp2, 0, 1024);
-    strncpy(tmp2, (char*)item.getData(), item.getDataSize());
-    wchar_t* tmp3 = toWideChar(tmp2);
-    LOG.info(tmp3);
+    LOG.info(T("Data:"));
+    char *data = new char [item.getDataSize()];
+    memcpy(data, item.getData(), item.getDataSize());
+    data[item.getDataSize()] = 0;
+    LOG.info(data);
+    delete [] data;
     
-    wsprintf(tmp, TEXT("%s-luid"), item.getKey());
-    item.setKey(tmp);
+    wchar_t *luid = new wchar_t[wcslen(item.getKey())+10];
+    wsprintf(luid, TEXT("%s-luid"), item.getKey());
+    item.setKey(luid);
     
-    delete [] tmp3;
     return 200;
 }
 
 int TestSyncSource::updateItem(SyncItem& item) {
-    wchar_t tmp[256];
-    wsprintf(tmp, TEXT("updated item: %s"), item.getKey());
-    LOG.info(tmp);
+    bsprintf(logmsg, T("updated item: %ls"), item.getKey());
+    LOG.info(logmsg);
     
-    LOG.info(TEXT("Data:"));
-    char tmp2[1024];  
-    memset(tmp2, 0, 1024);    
-    strncpy(tmp2, (char*)item.getData(), item.getDataSize());
-    wchar_t* tmp3 = toWideChar(tmp2);
-    LOG.info(tmp3);
+    LOG.info(T("Data:"));
+    char *data = new char [item.getDataSize()];
+    memcpy(data, item.getData(), item.getDataSize());
+    data[item.getDataSize()] = 0;
+    LOG.info(data);
+    delete [] data;
     
-    delete [] tmp3;
     return 200;
 }
 
 int TestSyncSource::deleteItem(SyncItem& item) {
-    wchar_t tmp[256];
-    wsprintf(tmp, TEXT("deleted item: %s"), item.getKey());
-    LOG.debug(tmp);
+    bsprintf(logmsg, T("deleted item: %ls"), item.getKey());
+    LOG.debug(logmsg);
     return 200;
 }
 
 int TestSyncSource::beginSync() {
-    wchar_t tmp[256];
-    wsprintf(tmp, TEXT("Begin sync TestSyncSource"));
-    LOG.debug(tmp);
+    bsprintf(logmsg, T("Begin sync TestSyncSource"));
+    LOG.debug(logmsg);
     return 0;
 }
 int TestSyncSource::endSync() {
-    wchar_t tmp[256];
-    wsprintf(tmp, TEXT("End sync TestSyncSource"));
-    LOG.debug(tmp);
+    bsprintf(logmsg, T("End sync TestSyncSource"));
+    LOG.debug(logmsg);
     return 0;
 }
 

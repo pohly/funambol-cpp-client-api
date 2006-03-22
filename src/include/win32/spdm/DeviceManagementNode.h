@@ -24,13 +24,15 @@
 #include "base/util/ArrayElement.h"
 #include "spdm/ManagementNode.h"
 
+/*
+ * Windows 32 implementation of ManagementNode.
+ */
 class DeviceManagementNode: public ManagementNode {
 
     private:
-        wchar_t *fullContext;
+        TCHAR *fullContext;
 
     protected:
-        wchar_t * convertSlashes(const wchar_t* str);
         void setFullContext(); 
 
     public:
@@ -45,18 +47,42 @@ class DeviceManagementNode: public ManagementNode {
          * @param name - the node name
          *
          */
-        DeviceManagementNode(const wchar_t* parent, const wchar_t* name);
-        DeviceManagementNode(const wchar_t* fullName);  
+        DeviceManagementNode(const BCHAR* parent, const BCHAR* name);
+        DeviceManagementNode(const BCHAR* fullName);  
         ~DeviceManagementNode();
 
-        wchar_t* getPropertyValue(const wchar_t* property);
-        void setPropertyValue(const wchar_t* property, const wchar_t* value);
+        // --------------------------------------------------- Public methods
+        /*
+         * Returns the value of the given property
+         *
+         * @param property - the property name
+         */
+        BCHAR* getPropertyValue(const BCHAR* property);
 
-        wchar_t **getChildrenNames();
-        
+        /*
+         * Sets a property value.
+         *
+         * @param property - the property name
+         * @param value - the property value (zero terminated string)
+         */
+        void setPropertyValue(const BCHAR* property, const BCHAR* value);
+
+        /*
+         * Returns the children's name of the parent node. 
+         */
+        BCHAR **getChildrenNames();
+
+        /*
+         * Find how many children are defined for this node in the underlying
+		 * config system.
+         */
         int getChildrenMaxCount();
 
-		ArrayElement* clone();
+        /*
+         * Creates a new ManagementNode with the exact content of this object.
+         * The new instance MUST be created with the C++ new opertator.
+         */
+        ArrayElement* clone();
 
 };
 

@@ -32,7 +32,7 @@ PropParam::~PropParam() {
 }
 
 
-PropParam::PropParam(wchar_t* paramName, wchar_t* dataType, ArrayList* valEnums, wchar_t* displayName) {
+PropParam::PropParam(BCHAR* paramName, BCHAR* dataType, ArrayList* valEnums, BCHAR* displayName) {
     this->paramName   = NULL;
     this->dataType    = NULL;
     this->displayName = NULL;
@@ -51,12 +51,12 @@ PropParam::PropParam(wchar_t* paramName, wchar_t* dataType, ArrayList* valEnums,
  * @return  the current displayName's value
  *
  */
-wchar_t* PropParam::getDisplayName(wchar_t* displayName) {
+BCHAR* PropParam::getDisplayName(BCHAR* displayName) {
     if (displayName == NULL) {
         return this->displayName;
     }
 
-    return wcscpy(displayName, this->displayName);
+    return bstrcpy(displayName, this->displayName);
 }
 
 /*
@@ -65,7 +65,7 @@ wchar_t* PropParam::getDisplayName(wchar_t* displayName) {
  * @param displayName the new value
  *
  */
-void PropParam::setDisplayName(wchar_t* displayName) {
+void PropParam::setDisplayName(BCHAR* displayName) {
     if (this->displayName) {
         delete [] this->displayName; this->displayName = NULL;
     }
@@ -82,12 +82,12 @@ void PropParam::setDisplayName(wchar_t* displayName) {
  * @return  the current paramName's value
  *
  */
-wchar_t* PropParam::getParamName(wchar_t* paramName) {
+BCHAR* PropParam::getParamName(BCHAR* paramName) {
     if (paramName == NULL) {
         return this->paramName;
     }
 
-    return wcscpy(paramName, this->paramName);
+    return bstrcpy(paramName, this->paramName);
 }
 
 /*
@@ -96,7 +96,7 @@ wchar_t* PropParam::getParamName(wchar_t* paramName) {
  * @param paramName the new value
  *
  */
-void PropParam::setParamName(wchar_t* paramName) {
+void PropParam::setParamName(BCHAR* paramName) {
     if (this->paramName) {
         delete [] this->paramName; this->paramName = NULL;
     }
@@ -112,12 +112,12 @@ void PropParam::setParamName(wchar_t* paramName) {
  * @return  the current dataType's value
  *
  */
-wchar_t* PropParam::getDataType(wchar_t* dataType) {
+BCHAR* PropParam::getDataType(BCHAR* dataType) {
     if (dataType == NULL) {
         return this->dataType;
     }
 
-    return wcscpy(dataType, this->dataType);
+    return bstrcpy(dataType, this->dataType);
 }
 
 /*
@@ -126,7 +126,7 @@ wchar_t* PropParam::getDataType(wchar_t* dataType) {
  * @param dataType the new value
  *
  */
-void PropParam::setDataType(wchar_t* dataType) {
+void PropParam::setDataType(BCHAR* dataType) {
     if (this->dataType) {
         delete [] this->dataType; this->dataType = NULL;
     }

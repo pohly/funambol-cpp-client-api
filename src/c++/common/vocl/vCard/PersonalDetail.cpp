@@ -231,6 +231,7 @@ PersonalDetail* PersonalDetail::clone() {
 }
 
 void PersonalDetail::set(wchar_t** p, wchar_t* v) {
-    safeDelete(p);
-    *p = stringdup(v);
+    if(*p)
+        delete *p;
+    *p = wstrdup(v);
 }

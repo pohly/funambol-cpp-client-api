@@ -45,12 +45,12 @@ class SyncAlert {
          */
         int getSyncType( void );
         int getContentType ( void );
-        const wchar_t *getServerURI ( void );
+        const BCHAR *getServerURI ( void );
 
     private:
         int syncType;
         int contentType;
-        wchar_t *serverURI;
+        BCHAR *serverURI;
 
         /**
           @brief Set values for the object
@@ -62,7 +62,7 @@ class SyncAlert {
 
           @return 
          */
-        int set(int sync_type, int content_type, const wchar_t *uri);
+        int set(int sync_type, int content_type, const BCHAR *uri);
 
         friend class SyncNotification;
 };

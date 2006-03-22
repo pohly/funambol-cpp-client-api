@@ -40,9 +40,9 @@
 
         BOOL newReturnedData;
         long size;
-        wchar_t* username;
-        wchar_t* password;
-        wchar_t* sourceName;
+        BCHAR* username;
+        BCHAR* password;
+        BCHAR* sourceName;
 
         TransformationInfo() : newReturnedData(FALSE)
                              , size(-1)
@@ -56,7 +56,7 @@
 
     private:
 
-        wchar_t* name;
+        BCHAR* name;
 
     public:
         /*
@@ -64,17 +64,17 @@
          */
         DataTransformer() EXTRA_SECTION_01;
 
-        DataTransformer(wchar_t* name) EXTRA_SECTION_01;
+        DataTransformer(BCHAR* name) EXTRA_SECTION_01;
 
         virtual ~DataTransformer() EXTRA_SECTION_01;
 
-        static DataTransformer* getEncoder(wchar_t* name) EXTRA_SECTION_01;
-        static DataTransformer* getDecoder(wchar_t* name) EXTRA_SECTION_01;
-        static BOOL isSupportedEncoder(wchar_t* name) EXTRA_SECTION_01;
-        static BOOL isSupportedDecoder(wchar_t* name) EXTRA_SECTION_01;
+        static DataTransformer* getEncoder(BCHAR* name) EXTRA_SECTION_01;
+        static DataTransformer* getDecoder(BCHAR* name) EXTRA_SECTION_01;
+        static BOOL isSupportedEncoder(BCHAR* name) EXTRA_SECTION_01;
+        static BOOL isSupportedDecoder(BCHAR* name) EXTRA_SECTION_01;
 
-        void setName(wchar_t* name) EXTRA_SECTION_01;
-        wchar_t* getName(wchar_t* name = NULL) EXTRA_SECTION_01;
+        void setName(BCHAR* name) EXTRA_SECTION_01;
+        BCHAR* getName(BCHAR* name = NULL) EXTRA_SECTION_01;
 
         /**
          * Performs the transformation. data is the pointer to the

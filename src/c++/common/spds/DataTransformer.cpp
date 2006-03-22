@@ -25,7 +25,7 @@ DataTransformer::DataTransformer() : name(NULL) {
 
 }
 
-DataTransformer::DataTransformer(wchar_t* n) {
+DataTransformer::DataTransformer(BCHAR* n) {
     name = stringdup(n);
 }
 
@@ -33,7 +33,7 @@ DataTransformer::~DataTransformer() {
     safeDelete(&name);
 }
 
-void DataTransformer::setName(wchar_t* n) {
+void DataTransformer::setName(BCHAR* n) {
     if (name) {
         safeDelete(&name);
     }
@@ -41,9 +41,9 @@ void DataTransformer::setName(wchar_t* n) {
     name = stringdup(n);
 }
 
-wchar_t* DataTransformer::getName(wchar_t* n) {
+BCHAR* DataTransformer::getName(BCHAR* n) {
     if (n && name) {
-        return wcscpy(n, name);
+        return bstrcpy(n, name);
     }
 
     return name;

@@ -25,15 +25,14 @@
 #include "spdm/ManagementNode.h"
 
 /*
- * Windows 32 implementation of ManagementNode.
+ * Windows Mobile implementation of ManagementNode.
  */
-class DeviceManagementNode : public ManagementNode {
+class DeviceManagementNode: public ManagementNode {
 
     private:
-        wchar_t *fullContext;
+        TCHAR *fullContext;
 
     protected:
-        wchar_t * convertSlashes(const wchar_t* str);
         void setFullContext(); 
 
     public:
@@ -48,8 +47,8 @@ class DeviceManagementNode : public ManagementNode {
          * @param name - the node name
          *
          */
-        DeviceManagementNode(const wchar_t* parent, const wchar_t* name);
-        DeviceManagementNode(const wchar_t* fullName);  
+        DeviceManagementNode(const BCHAR* parent, const BCHAR* name);
+        DeviceManagementNode(const BCHAR* fullName);  
         ~DeviceManagementNode();
 
         // --------------------------------------------------- Public methods
@@ -58,7 +57,7 @@ class DeviceManagementNode : public ManagementNode {
          *
          * @param property - the property name
          */
-        wchar_t* getPropertyValue(const wchar_t* property);
+        BCHAR* getPropertyValue(const BCHAR* property);
 
         /*
          * Sets a property value.
@@ -66,12 +65,12 @@ class DeviceManagementNode : public ManagementNode {
          * @param property - the property name
          * @param value - the property value (zero terminated string)
          */
-        void setPropertyValue(const wchar_t* property, const wchar_t* value);
+        void setPropertyValue(const BCHAR* property, const BCHAR* value);
 
         /*
          * Returns the children's name of the parent node. 
          */
-        wchar_t **getChildrenNames();
+        BCHAR **getChildrenNames();
 
         /*
          * Find how many children are defined for this node in the underlying

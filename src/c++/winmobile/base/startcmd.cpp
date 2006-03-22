@@ -18,8 +18,10 @@
 
 #include <windows.h>
 #include <Winbase.h>
+#include "base/fscapi.h"
 #include "base/startcmd.h"
 #include "base/Log.h"
+#include "base/util/utils.h"
 
 // retrieve the Funambol program path and set it in a static
 // buffer. Return the buffer
@@ -29,16 +31,15 @@ const wchar_t *getProgramPath()
 
     if (!path[0]) {
         SHGetSpecialFolderPath(NULL, path, CSIDL_PROGRAM_FILES , FALSE);
-        wcscat(path, TEXT("/"));
+        wcscat(path, TEXT("\\"));
         wcscat(path, PROGRAM_DIR);
-        wcscat(path, TEXT("/"));
     }
     return path;
 }
 
 /**
  * Start a command in a new process and return the pid
- * or 0 in cas of error.
+ * or 0 in case of error.
  */
 unsigned long startcmd(const wchar_t *app, const wchar_t *cmdline) 
 {
@@ -48,8 +49,8 @@ unsigned long startcmd(const wchar_t *app, const wchar_t *cmdline)
     wchar_t *cmd = new wchar_t[wcslen(path)+wcslen(app)+5];
     wsprintf(cmd, TEXT("%s/%s"), path, app);
 
-    wchar_t dbg[200];
-    wsprintf(dbg, L"Running: %s %s\n", cmd, cmdline);
+    BCHAR dbg[200];
+    bsprintf(dbg, T("Running: %ls %ls\n"), cmd, cmdline);
     LOG.error(dbg);
     if( CreateProcess( cmd, cmdline, 
                        NULL, NULL, FALSE, 0,

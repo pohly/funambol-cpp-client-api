@@ -23,13 +23,13 @@
 #include "base/fscapi.h"
 #include "syncml/core/ModificationCommand.h"
 
-#define DELETE_COMMAND_NAME TEXT("Delete")
+#define DELETE_COMMAND_NAME T("Delete")
 
 class Delete : public ModificationCommand {
     
      // ------------------------------------------------------------ Private data
     private:
-        wchar_t* COMMAND_NAME;
+        BCHAR* COMMAND_NAME;
         BOOL archive;
         BOOL sftDel;
     
@@ -66,7 +66,7 @@ class Delete : public ModificationCommand {
          *
          * @return the command name property
          */    
-        wchar_t* getName();
+        BCHAR* getName();
 
         /**
          * Gets the Archive property

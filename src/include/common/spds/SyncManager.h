@@ -57,6 +57,14 @@ class SyncManager {
 
     private:
 
+        // Struct used to pass command info to the method processSyncItem
+        struct CommandInfo {
+            BCHAR* commandName;
+            BCHAR *cmdRef;
+            BCHAR* format;
+            BCHAR* dataType;
+        };
+
         SyncManagerConfig& config;
         CredentialHandler credentialHandler;
         SyncMLBuilder syncMLBuilder;
@@ -74,23 +82,22 @@ class SyncManager {
         
 		ArrayList** allItemsList;
         
-        wchar_t syncURL [512];
-        wchar_t deviceId[32];  
+        BCHAR syncURL [512];
+        BCHAR deviceId[32];  
                 
         unsigned int maxMsgSize;    // the max message size. If 0 it is not set
         unsigned int maxModPerMsg;  // the max modification per message
 
+        BCHAR  credentialInfo[256]; // used to store info for the des;b64 encription
+    
+        void initialize() EXTRA_SECTION_01;
         BOOL readSyncSourceDefinition(SyncSource& source) EXTRA_SECTION_01;
         BOOL commitChanges(SyncSource& source) EXTRA_SECTION_01;
-        void initialize() EXTRA_SECTION_01;
         int assignSources(SyncSource** sources) EXTRA_SECTION_01;
         
-        //void processItemContent(SyncItem& i, wchar_t* encodings) EXTRA_SECTION_01;
-        // void decodeSyncItemContent(SyncItem& i, wchar_t* encoding) EXTRA_SECTION_01;
-        void decodeSyncItemContent(char** c, TransformationInfo& info, wchar_t* encoding) EXTRA_SECTION_01;
-        char* processItemContent(wchar_t* toConvert, wchar_t* encodings, long* size) EXTRA_SECTION_01;
-        wchar_t  credentialInfo[256]; // used to store info for the des;b64 encription
-    
+        Status *processSyncItem(Item* item, const CommandInfo &cmdInfo) EXTRA_SECTION_01;
+        char* processItemContent(const BCHAR* data, const BCHAR* encodings, long* size) EXTRA_SECTION_01;
+        void decodeSyncItemContent(char** c, TransformationInfo& info, const BCHAR* encoding) EXTRA_SECTION_01;
 };
 
 #endif

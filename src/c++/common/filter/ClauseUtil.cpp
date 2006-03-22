@@ -40,7 +40,7 @@
  *
  * @return the corresponding CGI query string
  */
-const wchar_t* ClauseUtil::toCGIQuery(Clause& clause) {
+const BCHAR* ClauseUtil::toCGIQuery(Clause& clause) {
     StringBuffer query;
 
     ArrayList* operands = NULL;
@@ -58,10 +58,10 @@ const wchar_t* ClauseUtil::toCGIQuery(Clause& clause) {
         if (i) {
             switch (((LogicalClause*)&clause)->getOperator()) {
                 case AND:
-                    query.append(TEXT("&amp;AND;"));
+                    query.append(T("&amp;AND;"));
                     break;
                 case OR:
-                    query.append(TEXT("&amp;OR;"));
+                    query.append(T("&amp;OR;"));
                     break;
             }
         }
@@ -69,58 +69,58 @@ const wchar_t* ClauseUtil::toCGIQuery(Clause& clause) {
         switch (where->getOperator()) {
             case EQ:
                 if (where->isCaseSensitive()) {
-                    query.append(TEXT("&amp;EQ;"));
+                    query.append(T("&amp;EQ;"));
                 } else {
-                    query.append(TEXT("&amp;iEQ;"));
+                    query.append(T("&amp;iEQ;"));
                 }
                 break;
             case NE:
                 if (where->isCaseSensitive()) {
-                    query.append(TEXT("&amp;NE;"));
+                    query.append(T("&amp;NE;"));
                 } else {
-                    query.append(TEXT("&amp;iNE;"));
+                    query.append(T("&amp;iNE;"));
                 }
                 break;
             case LT:
                 if (where->isCaseSensitive()) {
-                    query.append(TEXT("&amp;LT;"));
+                    query.append(T("&amp;LT;"));
                 } else {
-                    query.append(TEXT("&amp;iLT;"));
+                    query.append(T("&amp;iLT;"));
                 }
                 break;
             case GT:
                 if (where->isCaseSensitive()) {
-                    query.append(TEXT("&amp;GT;"));
+                    query.append(T("&amp;GT;"));
                 } else {
-                    query.append(TEXT("&amp;iGT;"));
+                    query.append(T("&amp;iGT;"));
                 }
                 break;
             case LE:
                 if (where->isCaseSensitive()) {
-                    query.append(TEXT("&amp;LE;"));
+                    query.append(T("&amp;LE;"));
                 } else {
-                    query.append(TEXT("&amp;iLE;"));
+                    query.append(T("&amp;iLE;"));
                 }
                 break;
             case GE:
                 if (where->isCaseSensitive()) {
-                    query.append(TEXT("&amp;GE;"));
+                    query.append(T("&amp;GE;"));
                 } else {
-                    query.append(TEXT("&amp;iGE;"));
+                    query.append(T("&amp;iGE;"));
                 }
                 break;
             case CONTAIN:
                 if (where->isCaseSensitive()) {
-                    query.append(TEXT("&amp;CON;"));
+                    query.append(T("&amp;CON;"));
                 } else {
-                    query.append(TEXT("&amp;iCON;"));
+                    query.append(T("&amp;iCON;"));
                 }
                 break;
             case NCONTAIN:
                 if (where->isCaseSensitive()) {
-                    query.append(TEXT("&amp;NCON;"));
+                    query.append(T("&amp;NCON;"));
                 } else {
-                    query.append(TEXT("&amp;iNCON;"));
+                    query.append(T("&amp;iNCON;"));
                 }
                 break;
         }
@@ -208,7 +208,7 @@ Filter* ClauseUtil::toFilter(SourceFilter& sourceFilter) {
         Meta fieldMeta;
         ComplexData fieldData;
    
-        fieldMeta.setType(TEXT("application/vnd.syncml-devinf+xml"));
+        fieldMeta.setType(T("application/vnd.syncml-devinf+xml"));
         fieldData.setProperties(fieldClause->getProperties());
 
         field.setMeta(&fieldMeta);
@@ -222,8 +222,8 @@ Filter* ClauseUtil::toFilter(SourceFilter& sourceFilter) {
         Meta recordMeta;
         ComplexData recordData;
 
-        recordMeta.setType(TEXT("syncml:filtertype-cgi"));
-        wchar_t* query = (wchar_t*)toCGIQuery(*recordClause);
+        recordMeta.setType(T("syncml:filtertype-cgi"));
+        BCHAR* query = (BCHAR*)toCGIQuery(*recordClause);
         recordData.setData(query);
         safeDelete(&query);
 
@@ -234,7 +234,7 @@ Filter* ClauseUtil::toFilter(SourceFilter& sourceFilter) {
     }
 
     if (sourceFilter.isInclusive()) {
-        filter->setFilterType(TEXT("INCLUSIVE"));
+        filter->setFilterType(T("INCLUSIVE"));
     }
 
     return filter;
@@ -291,11 +291,11 @@ Filter* ClauseUtil::toFilter(SourceFilter& sourceFilter) {
     if (bodySize >= 0) {
         Property p;
 
-        p.setPropName(TEXT("emailitem"));
+        p.setPropName(T("emailitem"));
         if (bodySize > 0) {
             ArrayList params;
             PropParam textParam;
-            textParam.setParamName(TEXT("texttype"));
+            textParam.setParamName(T("texttype"));
 
             params.add(textParam);
 
@@ -308,13 +308,13 @@ Filter* ClauseUtil::toFilter(SourceFilter& sourceFilter) {
     if (attachSize >= 0) {
         ArrayList params;
         PropParam attachParam;
-        attachParam.setParamName(TEXT("attachtype"));
+        attachParam.setParamName(T("attachtype"));
         
         params.add(attachParam);
 
         Property p;
 
-        p.setPropName(TEXT("emailitem"));
+        p.setPropName(T("emailitem"));
         p.setPropParams(params);
         p.setMaxSize(attachSize*1024);
 
@@ -337,8 +337,10 @@ Filter* ClauseUtil::toFilter(SourceFilter& sourceFilter) {
     // If since is not NULL we need to add a Record clause
     //
     if (since) {
-        WhereClause recordClause(TEXT("modified"), since, GE, FALSE);
+        char *s = toMultibyte(since);
+        WhereClause recordClause(T("modified"), s, GE, FALSE);
         operands.add(recordClause);
+        delete [] s;
     } else {
         AllClause all;
         operands.add(all);
@@ -348,7 +350,6 @@ Filter* ClauseUtil::toFilter(SourceFilter& sourceFilter) {
 
     SourceFilter* filter = new SourceFilter();
     filter->setClause(clause);
-    
 
     return filter;
 }

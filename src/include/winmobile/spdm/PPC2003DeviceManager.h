@@ -46,7 +46,7 @@
          * The ManagementNode is created with the new operator and must be
          * discarded by the caller with the operator delete.
          */
-        ManagementNode* getManagementNode(wchar_t* node);
+        ManagementNode* getManagementNode(BCHAR* node);
         
         void setManagementNode(ManagementNode& n);
         

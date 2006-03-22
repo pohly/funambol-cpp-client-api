@@ -130,15 +130,16 @@ void* SyncItem::setData(const void* itemData, long dataSize) {
         return NULL;
     }
 
-    data = new char[dataSize];
+    data = new char[dataSize + 1];
     if (data == NULL) {
         lastErrorCode = ERR_NOT_ENOUGH_MEMORY;
-        wcsprintf(lastErrorMsg, ERRMSG_NOT_ENOUGH_MEMORY, dataSize);
+        bsprintf(lastErrorMsg, ERRMSG_NOT_ENOUGH_MEMORY, dataSize);
         return NULL;
     }
 
     size = dataSize;
     memcpy(data, itemData, size);
+	data[size] = 0;
 
     return data;
 }
@@ -215,11 +216,11 @@ wchar_t* SyncItem::getTargetParent(wchar_t* parent) {
  *
  * @param parent the taregtParent property
  */
-void SyncItem::setTargetParent(wchar_t* parent) {
+void SyncItem::setTargetParent(const wchar_t* parent) {
     if (targetParent) {
         delete [] targetParent; targetParent = NULL;
     }
-    targetParent = stringdup(parent);  
+    targetParent = wstrdup(parent);  
 }
 
 /**
@@ -239,11 +240,11 @@ wchar_t* SyncItem::getSourceParent(wchar_t* parent) {
  *
  * @param parent the sourceParent property
  */
-void SyncItem::setSourceParent(wchar_t* parent) {
+void SyncItem::setSourceParent(const wchar_t* parent) {
     if (sourceParent) {
         delete [] sourceParent; sourceParent = NULL;
     }
-    sourceParent = stringdup(parent);  
+    sourceParent = wstrdup(parent);  
 }
 
 ArrayElement* SyncItem::clone() {

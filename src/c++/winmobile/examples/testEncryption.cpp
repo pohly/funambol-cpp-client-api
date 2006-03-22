@@ -32,42 +32,41 @@
 // to update it to UTF8 strings when used with such content. 
 //
 void testEncryption() {
-    wchar_t* clearText = TEXT("This is clear text.\nLet's see if encryption/decryption works!");
-    wchar_t* password = TEXT("dummypassword");
+    char* clearText = T("This is clear text.\nLet's see if encryption/decryption works!");
+    char* password = T("dummypassword");
 
-    DataTransformer* b64e = DataTransformerFactory::getEncoder(TEXT("b64"));
-    DataTransformer* b64d = DataTransformerFactory::getDecoder(TEXT("b64"));
-    DataTransformer* dese = DataTransformerFactory::getEncoder(TEXT("des"));
-    DataTransformer* desd = DataTransformerFactory::getDecoder(TEXT("des"));
-
+    DataTransformer* b64e = DataTransformerFactory::getEncoder(T("b64"));
+    DataTransformer* b64d = DataTransformerFactory::getDecoder(T("b64"));
+    DataTransformer* dese = DataTransformerFactory::getEncoder(T("des"));
+    DataTransformer* desd = DataTransformerFactory::getDecoder(T("des"));
 
     TransformationInfo infoe, infod;
 
-    infoe.size = wcslen(clearText)*sizeof(wchar_t);
+    infoe.size = strlen(clearText)*sizeof(char);
     infoe.password = password;
 
-    MessageBox(0, clearText, TEXT("Clear text"), MB_OK);
+    LOG.info(T("Clear text"));
+    LOG.info(clearText);
 
-    char* desText = dese->transform((char*)clearText, infoe);
-    char* b64Text = b64e->transform((char*)desText, infoe);
+    char* desText = dese->transform(clearText, infoe);
+    char* b64Text = b64e->transform(desText, infoe);
 
-
-    wcsprintf(logmsg, TEXT("%S"), b64Text);  // NOTE: %S is not portable!!!
-    MessageBox(0, logmsg, TEXT("B64 text"), MB_OK);
+    LOG.info(T("Clear text"));    
+    LOG.info(b64Text);
 
     delete [] desText;
 
     infod.size = infoe.size;
     infod.password = infoe.password;
-    desText = b64d->transform((char*)b64Text, infod);
-    clearText = (wchar_t*)desd->transform((char*)desText, infod);
+    desText = b64d->transform(b64Text, infod);
+    clearText = desd->transform(desText, infod);
 
-    wchar_t* clearString = new wchar_t[infod.size/sizeof(wchar_t)+1];
-    wcsncpy(clearString, clearText, infod.size/sizeof(wchar_t));
-    clearString[infod.size/sizeof(wchar_t)] = 0;
+    char* clearString = new char[infod.size/sizeof(char)+1];
+    strncpy(clearString, clearText, infod.size/sizeof(char));
+    clearString[infod.size/sizeof(char)] = 0;
 
-    wcsprintf(logmsg, TEXT("%s"), clearString);
-    MessageBox(0, logmsg, TEXT("Clear text"), MB_OK);
+    LOG.info(T("Clear text"));
+    LOG.info(clearString);
 
     delete [] clearString; delete [] clearText; 
     delete [] b64Text; delete [] desText;

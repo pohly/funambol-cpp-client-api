@@ -35,11 +35,11 @@ class StringElement : public ArrayElement {
      // ------------------------------------------------------------ Private data
     private:
       
-        wchar_t* value;
+        BCHAR* value;
     // ---------------------------------------------------------- Protected data    
     public:
                 
-        StringElement(wchar_t* value);
+        StringElement(BCHAR* value);
         ~StringElement();
 
 
@@ -49,7 +49,7 @@ class StringElement : public ArrayElement {
          * 
          * @return the value of string element
          */
-        wchar_t* getValue(wchar_t* retValue);
+        BCHAR* getValue(BCHAR* retValue);
 
     
         /**
@@ -58,7 +58,7 @@ class StringElement : public ArrayElement {
          * @param value the value of experimental meta information
          *
          */
-        void setValue(wchar_t* value);
+        void setValue(BCHAR* value);
         
         ArrayElement* clone();
 

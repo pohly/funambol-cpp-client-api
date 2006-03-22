@@ -31,10 +31,10 @@ CmdID::CmdID() {
  * @param cmdID the cmdID of CmdID - NOT NULL
  *
  */
-CmdID::CmdID(wchar_t* cmdID) {
+CmdID::CmdID(BCHAR* cmdID) {
 
     this->cmdID = NULL;
-    if ((cmdID == NULL) || (wcslen(cmdID) == 0)) {
+    if ((cmdID == NULL) || (bstrlen(cmdID) == 0)) {
         // tbd
     }
     this->cmdID = stringdup(cmdID);
@@ -54,8 +54,8 @@ CmdID::~CmdID() {
  *
  */
 CmdID::CmdID(long cmdID) {
-    wchar_t t[64];
-    wsprintf(t, TEXT("%i"), cmdID);
+    BCHAR t[64];
+    bsprintf(t, T("%i"), cmdID);
     this->cmdID = stringdup(t);
 }
 
@@ -64,7 +64,7 @@ CmdID::CmdID(long cmdID) {
  *
  * @return cmdID properties
  */
-wchar_t* CmdID::getCmdID() {
+BCHAR* CmdID::getCmdID() {
     return cmdID;
 }
 

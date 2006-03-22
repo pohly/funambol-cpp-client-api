@@ -37,9 +37,8 @@
 #include "syncml/core/core.h"
 #include "syncml/formatter/Formatter.h"
 
-#define TEST_SYNCSOURCE
-//#define TEST_SYNC_ENCRYPTION
-
+// Define the test configuration
+#include "examples/config.h"
 
 void testFilter();
 void testClause();
@@ -47,14 +46,19 @@ void testConfigFilter();
 void testEncryption();
 
 
-#define APPLICATION_URI TEXT("Funambol/examples/dummy")
-// #define APPLICATION_URI TEXT("Funambol/SyncclientPIM")
+#define APPLICATION_URI T("Funambol/examples/dummy")
+//#define APPLICATION_URI T("Funambol/SyncclientPIM")
+
+#define LOG_TITLE		T("Funambol Win32 Example Log")
+#define LOG_PATH		T(".")
+#define LOG_LEVEL		LOG_LEVEL_DEBUG
+
 
 // Define DEBUG_SETTINGS in your project to create a default configuration
 // tree for the test client. WARNING: it will override any previous setting!
 // 
 #ifdef DEBUG_SETTINGS
-void settings();
+int settings(const char *root);
 #endif
 
 #ifdef _WIN32_WCE
@@ -62,6 +66,11 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLin
 #else
 int main(int argc, char** argv) {
 #endif
+
+    // Init LOG
+    Log(0, LOG_PATH, LOG_NAME);
+	LOG.reset(LOG_TITLE);
+    LOG.setLevel(LOG_LEVEL);
     
 #if 0
     _CrtSetDbgFlag (ON);
@@ -80,7 +89,11 @@ int main(int argc, char** argv) {
 #endif
 
 #ifdef DEBUG_SETTINGS
-   settings();
+    if ( settings(APPLICATION_URI) ){
+        sprintf(logmsg, "Error %d setting config paramaters.", lastErrorCode);
+        LOG.error(logmsg);
+        return lastErrorCode;
+    }
 #endif
 
 #ifdef TEST_ENCODE
@@ -90,8 +103,6 @@ int main(int argc, char** argv) {
         exit(1);
     }
     convertAndSave(TEXT("message_out.xml"), content, TEXT("base64"));
-    
-    return 0;
 #endif
 
 #ifdef TEST_SYNCSOURCE
@@ -107,8 +118,10 @@ int main(int argc, char** argv) {
     ssArray[0] = &source;
     //ssArray[1] = &source2;
     //ssArray[2] = &source3;
-    ssArray[1] = NULL;    
-    s4j.sync(ssArray);
+    ssArray[1] = NULL;
+    if( s4j.sync(ssArray) ) {
+        LOG.error("Error in sync.");
+    }
     s4j.dispose();
 #endif
 
@@ -117,7 +130,6 @@ int main(int argc, char** argv) {
 	Sync4jClient& s4j = Sync4jClient::getInstance();
     s4j.setDMConfig(APPLICATION_URI);
     
-	
     TestSyncSource source = TestSyncSource(TEXT("briefcase"));                             
 
     SyncSource** ssArray = new SyncSource*[2];

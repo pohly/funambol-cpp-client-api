@@ -115,7 +115,7 @@ SN_Errors SyncNotification::parse (const char *msg, int len)
     const char *p=msg, *end=msg+len;          // message cursor and boundary
 
     //LOG.setLevel(LOG_LEVEL_DEBUG);
-    //LOG.debug(TEXT("SyncNotification::parse START...."));
+    //LOG.debug(T("SyncNotification::parse START...."));
 
     if(!msg){
         return SNErr_NullValue;
@@ -134,20 +134,20 @@ SN_Errors SyncNotification::parse (const char *msg, int len)
     sessionId = hdr->s.session_id;
     server_id_len = hdr->s.server_id_len;
     IncP(8);
-    //LOG.debug(TEXT("After header."));
+    //LOG.debug(T("After header."));
 
     // get server identifier
-    serverId = charBuf2wc(p, server_id_len);
+    serverId = stringdup(p, server_id_len);
     IncP(server_id_len);
 
-    //wchar_t dbg[256];
-    //wsprintf(dbg, TEXT("serverId: %s"), serverId);
+    //BCHAR dbg[256];
+    //bsprintf(dbg, T("serverId: %s"), serverId);
     //LOG.debug(dbg);
 
     // get num sync
     numSyncs = (*p)>>4;
     IncP(1);
-    //wsprintf(dbg, TEXT("numSyncs: %d"), numSyncs);
+    //bsprintf(dbg, T("numSyncs: %d"), numSyncs);
     //LOG.debug(dbg);
 
     // allocate syncalert objects
@@ -156,7 +156,7 @@ SN_Errors SyncNotification::parse (const char *msg, int len)
 
     // Init all sync items
     for(int i=0; i<numSyncs; i++){
-        wchar_t *tmps;
+        BCHAR *tmps;
         sync_body *sync;
         unsigned char server_URI_len;
         int ret;
@@ -167,7 +167,7 @@ SN_Errors SyncNotification::parse (const char *msg, int len)
         // set syncAlert attributes
         server_URI_len = *p;
         IncP(1);
-        tmps = charBuf2wc(p, server_URI_len);
+        tmps = stringdup(p, server_URI_len);
         ret = syncAlerts[i].set(sync->s.sync_type, sync->s.content_type, tmps);
         delete [] tmps;
         // Check errors
@@ -196,7 +196,7 @@ int SyncNotification::getSessionId() {
     return sessionId;
 }
 
-const wchar_t *SyncNotification::getServerId() {
+const BCHAR *SyncNotification::getServerId() {
     return serverId;
 }
 

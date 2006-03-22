@@ -28,10 +28,10 @@ class ContentTypeParameter : public ArrayElement {
     
      // ------------------------------------------------------------ Private data
     private:
-        wchar_t*   paramName;
+        BCHAR*   paramName;
         ArrayList* valEnum;   //String[]
-        wchar_t*   displayName;
-        wchar_t*   dataType;
+        BCHAR*   displayName;
+        BCHAR*   dataType;
         int size;
     
     // ---------------------------------------------------------- Protected data    
@@ -52,9 +52,9 @@ class ContentTypeParameter : public ArrayElement {
          *                  specification
          *
          */
-        ContentTypeParameter(wchar_t* paramName,
+        ContentTypeParameter(BCHAR* paramName,
                              ArrayList* valEnum, 
-                             wchar_t* displayName);
+                             BCHAR* displayName);
 
         /**
          * Creates a new ContentTypeParameter object with the given name, data type,
@@ -70,10 +70,10 @@ class ContentTypeParameter : public ArrayElement {
          *                  specification
          *
          */
-        ContentTypeParameter(wchar_t* paramName,
-                             wchar_t* dataType,
+        ContentTypeParameter(BCHAR* paramName,
+                             BCHAR* dataType,
                              int size,
-                             wchar_t* displayName);
+                             BCHAR* displayName);
 
         
         /**
@@ -81,14 +81,14 @@ class ContentTypeParameter : public ArrayElement {
          *
          * @return the parameter name propeties
          */
-        wchar_t*  getParamName(wchar_t* retParamName);
+        BCHAR*  getParamName(BCHAR* retParamName);
     
         /**
          * Sets the param name property
          *
          * @param paramName the param name property
          */
-        void setParamName(wchar_t* paramName);
+        void setParamName(BCHAR* paramName);
     
         /**
          * Gets the array of value for parameter
@@ -109,7 +109,7 @@ class ContentTypeParameter : public ArrayElement {
          *
          * @return the display name propeties
          */
-        wchar_t* getDisplayName(wchar_t* retDisplayName);
+        BCHAR* getDisplayName(BCHAR* retDisplayName);
     
         /**
          * Sets the display name of a given content type parameter
@@ -117,14 +117,14 @@ class ContentTypeParameter : public ArrayElement {
          * @param displayName the display name of a given content type parameter
          *
          */
-        void setDisplayName(wchar_t* displayName);
+        void setDisplayName(BCHAR* displayName);
     
         /**
          * Gets the data type propeties
          *
          * @return the data type propeties
          */
-        wchar_t* getDataType(wchar_t* retDataType);
+        BCHAR* getDataType(BCHAR* retDataType);
     
         /**
          * Sets the data type of a given content type parameter
@@ -132,7 +132,7 @@ class ContentTypeParameter : public ArrayElement {
          * @param dataType the data type of a given content type parameter
          *
          */
-        void setDataType(wchar_t* dataType);
+        void setDataType(BCHAR* dataType);
     
         /**
          * Gets the size propeties

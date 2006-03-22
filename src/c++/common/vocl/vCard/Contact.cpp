@@ -911,8 +911,9 @@ void Contact::setRevision (wchar_t* r) {
 }
 
 void Contact::set(wchar_t** p, wchar_t* v) {
-    safeDelete(p);
-    *p = stringdup(v);
+    if(*p)
+        delete *p;
+    *p = wstrdup(v);
 }
 
 vCardProperty* Contact::getPropertyFromVProperty(VProperty* vp) {

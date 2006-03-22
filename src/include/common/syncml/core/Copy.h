@@ -24,13 +24,13 @@
 
 #include "syncml/core/ModificationCommand.h"
 
-#define COPY_COMMAND_NAME TEXT("Copy")
+#define COPY_COMMAND_NAME T("Copy")
 
 class Copy : public ModificationCommand {
     
      // ------------------------------------------------------------ Private data
     private:
-        wchar_t* COMMAND_NAME;
+        BCHAR* COMMAND_NAME;
     
     // ---------------------------------------------------------- Public data    
     public:            
@@ -62,7 +62,7 @@ class Copy : public ModificationCommand {
          *
          * @return the command name property
          */    
-        wchar_t* getName();
+        BCHAR* getName();
 
         ArrayElement* clone();
 };

@@ -20,23 +20,38 @@
 #include "base/util/utils.h"
 
 /*
- * Deletes the given wchar_t[] buffer if it is not NULL
+ * Deletes the given BCHAR[] buffer if it is not NULL
  * and sets the pointer to NULL
  *
  */
-void safeDelete(wchar_t* p[]) {
+void safeDelete(BCHAR* p[]) {
     if (*p) {
         delete [] *p; *p = NULL;
     }
 }
 
-void safeDel(wchar_t** p) {
+void safeDel(BCHAR** p) {
     if (*p) {
         delete [] *p; *p = NULL;
     }
 }
 
-wchar_t* stringdup(const wchar_t* s, size_t len)
+BCHAR* stringdup(const BCHAR* s, size_t len)
+{
+    if ( !s )
+        return NULL;
+
+    int l = (len==STRINGDUP_NOLEN)?bstrlen(s):len;
+
+    BCHAR* news = new BCHAR[l+1];
+
+    strncpy(news, s, l);
+    news[l]=0;
+
+    return news;
+}
+
+wchar_t* wstrdup(const wchar_t* s, size_t len)
 {
     if ( !s )
         return NULL;
@@ -51,12 +66,35 @@ wchar_t* stringdup(const wchar_t* s, size_t len)
     return news;
 }
 
+BCHAR* strtolower(const BCHAR *s)
+{
+    BCHAR* l = NULL;
+    BCHAR* p = NULL;
+
+    for(l = p = stringdup(s); *p; ++p) {
+        *p=tolower(*p);
+    }
+    return l;
+}
+
+BCHAR* strtoupper(const BCHAR *s)
+{
+    BCHAR* u = NULL;
+    BCHAR* p = NULL;
+
+    for(u = p = stringdup(s); *p; ++p) {
+        *p=toupper(*p);
+    }
+    return u;
+}
+
+
 wchar_t* wcstolower(const wchar_t *s)
 {
     wchar_t* l = NULL;
     wchar_t* p = NULL;
 
-    for(l = p = stringdup(s); *p; ++p) {
+    for(l = p = wstrdup(s); *p; ++p) {
         *p=towlower(*p);
     }
 
@@ -68,13 +106,14 @@ wchar_t* wcstoupper(const wchar_t *s)
     wchar_t* u = NULL;
     wchar_t* p = NULL;
 
-    for(u = p = stringdup(s); *p; ++p) {
+    for(u = p = wstrdup(s); *p; ++p) {
         *p=towupper(*p);
     }
 
     return u;
 }
 
+#if 0
 /**
  * @brief       Convert a UTF-8 char buffer with specified
  *              to a wchar string. Source buffer MAY not be
@@ -87,11 +126,11 @@ wchar_t* wcstoupper(const wchar_t *s)
  *
  * @return
  */
-wchar_t* charBuf2wc(
+BCHAR* charBuf2wc(
         const char* s, unsigned long ssize,
-        wchar_t* d, unsigned long dsize)
+        BCHAR* d, unsigned long dsize)
 {
-    wchar_t *ret=NULL;
+    BCHAR *ret=NULL;
 
     if (s) {
         // allocate char string and make sure it is null-terminated
@@ -104,6 +143,7 @@ wchar_t* charBuf2wc(
     }
     return ret;
 }
+#endif
 
 /**
  * Convert an unsigned long to an anchor.
@@ -111,19 +151,19 @@ wchar_t* charBuf2wc(
  * @param timestamp the timestamo to convert into an anchor
  * @param anchor where the anchor will be written
  */
-void timestampToAnchor(unsigned long timestamp, wchar_t* anchor) {
-    wcsprintf(anchor, TEXT("%lu"), timestamp);
+void timestampToAnchor(unsigned long timestamp, BCHAR* anchor) {
+    bsprintf(anchor, T("%lu"), timestamp);
 }
 
-bool wcscmpIgnoreCase(const wchar_t* p, const wchar_t* q) {
+bool wcscmpIgnoreCase(const BCHAR* p, const BCHAR* q) {
 
     bool ret = false;
     if (p == NULL || q == NULL)
         return ret;
 
     unsigned int lenp = 0, lenq = 0;
-    lenp = wcslen(p);
-    lenq = wcslen(q);
+    lenp = bstrlen(p);
+    lenq = bstrlen(q);
 
     if (lenp != lenq) {
         return ret;
@@ -138,17 +178,17 @@ bool wcscmpIgnoreCase(const wchar_t* p, const wchar_t* q) {
 }
 
 
-wchar_t* itow(int i) {
-    wchar_t* ret = new wchar_t[10];
-    wmemset(ret, 0, 10);
-    wsprintf(ret, TEXT("%i"), i);
+BCHAR* itow(int i) {
+    BCHAR* ret = new BCHAR[10];
+    memset(ret, 0, 10*sizeof(BCHAR) );
+    bsprintf(ret, T("%i"), i);
     return ret;
 }
 
-wchar_t* ltow(long i) {
-    wchar_t* ret = new wchar_t[20];
-    wmemset(ret, 0, 20);
-    wsprintf(ret, TEXT("%i"), i);
+BCHAR* ltow(long i) {
+    BCHAR* ret = new BCHAR[20];
+    memset(ret, 0, 20*sizeof(BCHAR));
+    bsprintf(ret, T("%i"), i);
     return ret;
 }
 
@@ -160,7 +200,7 @@ wchar_t* ltow(long i) {
 * Data: H (B64(H(username:password)):nonce)
 */
 
-wchar_t* MD5CredentialData(wchar_t* userName, wchar_t* password, wchar_t* nonce) {
+BCHAR* MD5CredentialData(BCHAR* userName, BCHAR* password, BCHAR* nonce) {
 
     int len = 0, lenNonce = 0, totLen = 0;
 
@@ -169,9 +209,9 @@ wchar_t* MD5CredentialData(wchar_t* userName, wchar_t* password, wchar_t* nonce)
     char digest      [16];
     char base64      [64];
     char base64Nonce [64];
-    wchar_t wnonce   [64];
-    wchar_t wtoken   [64];
-    wchar_t* md5Digest = NULL;
+    BCHAR wnonce   [64];
+    BCHAR wtoken   [64];
+    BCHAR* md5Digest = NULL;
     char ch          [3];
     char* dig = NULL;
 
@@ -183,7 +223,7 @@ wchar_t* MD5CredentialData(wchar_t* userName, wchar_t* password, wchar_t* nonce)
     memset(wtoken,     0,  64);
     sprintf(ch, ":");
 
-    wsprintf(wtoken, TEXT("%s:%s"), userName
+    bsprintf(wtoken, T("%s:%s"), userName
                                   , password
                                   );
 
@@ -198,7 +238,7 @@ wchar_t* MD5CredentialData(wchar_t* userName, wchar_t* password, wchar_t* nonce)
 
     memset(digest, 0, 16);
 
-    wsprintf(wnonce, TEXT("%s"), nonce);
+    bsprintf(wnonce, T("%s"), nonce);
     lenNonce = utf8len(wnonce);
     wc2utf8(wnonce, cnonce, lenNonce);
 
@@ -216,7 +256,7 @@ wchar_t* MD5CredentialData(wchar_t* userName, wchar_t* password, wchar_t* nonce)
     b64_encode(base64, digest, 16);
 
     // return value in wchar...
-    md5Digest = new wchar_t[33];
+    md5Digest = new BCHAR[33];
 
     utf82wc(base64, md5Digest, 33);
 

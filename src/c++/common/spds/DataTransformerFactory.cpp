@@ -22,19 +22,19 @@
 #include "spds/DESEncoder.h"
 #include "spds/DESDecoder.h"
 
-DataTransformer* DataTransformerFactory::getEncoder(wchar_t* name) {
+DataTransformer* DataTransformerFactory::getEncoder(const BCHAR* name) {
     DataTransformer* ret = NULL;
 
     if (isSupportedEncoder(name) == FALSE) {
         lastErrorCode = ERR_DT_UNKNOWN;
-        wsprintf (lastErrorMsg, ERRMSG_DT_UNKNOWN, name);
+        bsprintf (lastErrorMsg, ERRMSG_DT_UNKNOWN, name);
         goto exit;
-    } else if (wcscmp(name, DT_B64) == 0) {
+    } else if (bstrcmp(name, DT_B64) == 0) {
         //
         // base 64 encoder
         //
         ret = new B64Encoder();
-    } else if (wcscmp(name, DT_DES) == 0) {
+    } else if (bstrcmp(name, DT_DES) == 0) {
         //
         // DES encoder
         //
@@ -46,19 +46,19 @@ exit:
     return ret;
 }
 
-DataTransformer* DataTransformerFactory::getDecoder(wchar_t* name) {
+DataTransformer* DataTransformerFactory::getDecoder(const BCHAR* name) {
     DataTransformer* ret = NULL;
 
     if (isSupportedDecoder(name) == FALSE) {
         lastErrorCode = ERR_DT_UNKNOWN;
-        wsprintf (lastErrorMsg, ERRMSG_DT_UNKNOWN, name);
+        bsprintf (lastErrorMsg, ERRMSG_DT_UNKNOWN, name);
         goto exit;
-    } else if (wcscmp(name, DT_B64) == 0) {
+    } else if (bstrcmp(name, DT_B64) == 0) {
         //
         // base 64 decoder
         //
         ret = new B64Decoder();
-    } else if (wcscmp(name, DT_DES) == 0) {
+    } else if (bstrcmp(name, DT_DES) == 0) {
         //
         // DES decoder
         //
@@ -70,12 +70,13 @@ exit:
     return ret;
 }
 
-BOOL DataTransformerFactory::isSupportedEncoder(wchar_t* name) {
-    wchar_t* t = new wchar_t[wcslen(name)+2];
+BOOL DataTransformerFactory::isSupportedEncoder(const BCHAR* name) {
+    BCHAR* t = new BCHAR[bstrlen(name)+2];
 
-    wcscpy(t, name); wcscat(t, TEXT(";"));
+    bsprintf(t, T("%s;"), name);
+    //bstrcpy(t, name); bstrcat(t, T(";"));
 
-    BOOL ret = (wcsstr(DF_FORMATTERS, t) != NULL);
+    BOOL ret = (bstrstr(DF_FORMATTERS, t) != NULL);
 
     delete [] t;
 
@@ -83,10 +84,11 @@ BOOL DataTransformerFactory::isSupportedEncoder(wchar_t* name) {
 
 }
 
-BOOL DataTransformerFactory::isSupportedDecoder(wchar_t* name) {
+BOOL DataTransformerFactory::isSupportedDecoder(const BCHAR* name) {
     //
     // Currently, same encoders/decoders are supported
     //
     return isSupportedEncoder(name);
 
 }
+

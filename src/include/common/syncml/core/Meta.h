@@ -34,12 +34,12 @@ class Meta {
     private:
        MetInf* metInf;
        
-       void set(wchar_t*    format    ,
-                wchar_t*    type      ,
-                wchar_t*    mark      ,
+       void set(BCHAR*    format    ,
+                BCHAR*    type      ,
+                BCHAR*    mark      ,
                 long        size      ,
                 Anchor*     anchor    ,
-                wchar_t*    version   ,
+                BCHAR*    version   ,
                 NextNonce*  nonce     ,
                 long        maxMsgSize,
                 long        maxObjSize,
@@ -85,56 +85,56 @@ class Meta {
 		 *
 		 * @return format
 		 */
-		wchar_t* Meta::getFormat(wchar_t* retFormat);
+		BCHAR* Meta::getFormat(BCHAR* retFormat=0);
 
 		/**
 		 * Sets format
 		 *
 		 * @param format the new format value
 		 */
-		void setFormat(wchar_t* format);
+		void setFormat(BCHAR* format);
 
 		/**
 		 * Returns type
 		 *
 		 * @return type
 		 */
-		wchar_t* getType(wchar_t* retType);
+		BCHAR* getType(BCHAR* retType=0);
 
 		/**
 		 * Sets type
 		 *
 		 * @param type the new type value
 		 */
-		void setType(wchar_t* type);
+		void setType(BCHAR* type);
 
 		/**
 		 * Returns mark
 		 *
 		 * @return mark
 		 */
-		wchar_t* getMark(wchar_t* retMark);
+		BCHAR* getMark(BCHAR* retMark=0);
 
 		/**
 		 * Sets mark
 		 *
 		 * @param mark the new mark value
 		 */
-		void setMark(wchar_t* mark);
+		void setMark(BCHAR* mark);
 
 		/**
 		 * Returns version
 		 *
 		 * @return version
 		 */
-		wchar_t* getVersion(wchar_t* retVersion);
+		BCHAR* getVersion(BCHAR* retVersion=0);
 
 		/**
 		 * Sets version
 		 *
 		 * @param version the new version value
 		 */
-		void setVersion(wchar_t* version);
+		void setVersion(BCHAR* version);
 
 		
 		/**

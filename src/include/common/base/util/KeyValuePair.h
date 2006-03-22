@@ -29,7 +29,7 @@
 class KeyValuePair : public ArrayElement {
     public:
 
-        KeyValuePair(const wchar_t* key = NULL, const wchar_t* value = NULL) EXTRA_SECTION_00;
+        KeyValuePair(const BCHAR* key = NULL, const BCHAR* value = NULL) EXTRA_SECTION_00;
         ~KeyValuePair() EXTRA_SECTION_00;
 
         ArrayElement* clone() EXTRA_SECTION_00;
@@ -41,7 +41,7 @@ class KeyValuePair : public ArrayElement {
          *
          * @param key the new key
          */
-        void setKey(const wchar_t* key) EXTRA_SECTION_00;
+        void setKey(const BCHAR* key) EXTRA_SECTION_00;
 
         /**
          * Sets the value. The string is duplicated so that the caller can
@@ -51,21 +51,21 @@ class KeyValuePair : public ArrayElement {
          * @param value the new value
          */
 
-        void setValue(const wchar_t* value) EXTRA_SECTION_00;
+        void setValue(const BCHAR* value) EXTRA_SECTION_00;
 
         /**
          * Returns the key (the internal buffer address is returned).
          */
-        wchar_t* getKey() EXTRA_SECTION_00;
+        const BCHAR* getKey() EXTRA_SECTION_00;
 
         /**
          * Returns the value (the internal buffer address is returned).
          */
-        wchar_t* getValue() EXTRA_SECTION_00;
+        const BCHAR* getValue() EXTRA_SECTION_00;
 
     private:
-        wchar_t* k;
-        wchar_t* v;
+        BCHAR* k;
+        BCHAR* v;
 };
 
 #endif

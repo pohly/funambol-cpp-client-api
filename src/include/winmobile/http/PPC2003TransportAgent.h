@@ -67,10 +67,12 @@
 
         /*
          * Sends the given SyncML message to the server specified
-         * by the instal property 'url'. Returns the response status code.
-         * Use getResponse() to get the server response.
+         * by the install property 'url'. Returns the server's response.
+         * The response string has to be freed with delete [].
+         * In case of an error, NULL is returned and lastErrorCode/Msg
+         * is set.
          */
-        wchar_t* sendMessage(wchar_t* msg);
+        BCHAR* sendMessage(const BCHAR* msg);
     };
 
 #endif

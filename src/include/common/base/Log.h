@@ -21,11 +21,11 @@
 
     #include "fscapi.h"
 
-    #define LOG_ERROR TEXT("ERROR")
-    #define LOG_INFO  TEXT("INFO" )
-    #define LOG_DEBUG TEXT("DEBUG")
+    #define LOG_ERROR T("ERROR")
+    #define LOG_INFO  T("INFO" )
+    #define LOG_DEBUG T("DEBUG")
 
-    #define LOG_NAME TEXT("synclog.txt")
+    #define LOG_NAME T("synclog.txt")
 
     typedef enum {
         LOG_LEVEL_NONE  = 0,
@@ -33,13 +33,13 @@
         LOG_LEVEL_DEBUG = 2
     } LogLevel;
 
-    extern wchar_t logmsg[];
+    extern BCHAR logmsg[];
 
-    class __declspec(dllexport) Log {
+    class Log {
 
     private:
 
-        void printMessage(const wchar_t* level, const wchar_t* msg, va_list argList);
+        void printMessage(const BCHAR* level, const BCHAR* msg, va_list argList);
 
         /*
          * Which log level is set?
@@ -48,30 +48,27 @@
 
     public:
     
-        Log(BOOL reset = FALSE, wchar_t* path = NULL, wchar_t* name = NULL);
+        Log(BOOL reset = FALSE, BCHAR* path = NULL, BCHAR* name = NULL);
         ~Log();
         
-        void setLogPath(wchar_t* configLogPath);
-        void setLogName(wchar_t* configLogName);
+        void setLogPath(BCHAR* configLogPath);
+        void setLogName(BCHAR* configLogName);
         
-        void error(const wchar_t* msg, ...);
-        void error(const wchar_t* msg, va_list argList);
+        void error(const BCHAR* msg, ...);
+        void info(const BCHAR* msg, ...);
+        void debug(const BCHAR* msg, ...);
+        void trace(const BCHAR* msg);
 
-        void info(const wchar_t* msg, ...);
-        void info(const wchar_t* msg, va_list argList);
-
-        void debug(const wchar_t* msg, ...);
-        void debug(const wchar_t* msg, va_list argList);
-        
-        void trace(const wchar_t* msg);
-
-        void reset();
+        void reset(const BCHAR* title = NULL);
 
         void setLevel(LogLevel level);
 
         LogLevel getLevel();
 
         BOOL isLoggable(LogLevel level);
+
+        // FIXME!
+        void printMessageW(const char* level, const wchar_t* msg, va_list argList);
 
     };
 

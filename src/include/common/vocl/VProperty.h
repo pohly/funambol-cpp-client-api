@@ -21,7 +21,7 @@
 #define INCL_VIRTUAL_PROPERTY
 
 #include "base/fscapi.h"
-#include "base/util/KeyValuePair.h"
+#include "base/util/WKeyValuePair.h"
 #include "base/util/ArrayList.h"
 
 #define VPROPETY_BUFFER 500

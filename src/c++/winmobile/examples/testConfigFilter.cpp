@@ -54,13 +54,13 @@ void testConfigFilter() {
         config.setBodySize(-1);
         config.setAttachSize(-1);
 
-        MailSourceManagementNode node(TEXT("sources"), TEXT("mail"), config);
+        MailSourceManagementNode node(T("sources"), T("mail"), config);
     }
    
     //
     // Now we can read the config and than create the needed clause
     //
-    MailSourceManagementNode node(TEXT("sources"), TEXT("mail"));
+    MailSourceManagementNode node(T("sources"), T("mail"));
     MailSyncSourceConfig& config = node.getMailSourceConfig(TRUE);
 
 
@@ -93,12 +93,12 @@ void testConfigFilter() {
             MessageBox(0, TEXT("There must be an error..."), TEXT("Config to filter"), MB_OK);
         } else {
             StringBuffer* sb = Formatter::getFilter(f);
+            wchar_t *msg = toWideChar(sb->c_str());
 
-            MessageBox(0, sb->c_str(), TEXT("Config to filter"), MB_OK);
+            MessageBox(0, msg, TEXT("Config to filter"), MB_OK);
 
-            if (sb) {
-                delete sb; sb = NULL;
-            }
+            delete sb;
+            delete [] msg;
         }
 
         if (filter) {
@@ -125,12 +125,11 @@ void testConfigFilter() {
             MessageBox(0, TEXT("There must be an error..."), TEXT("10Kb body, no attachment"), MB_OK);
         } else {
             StringBuffer* sb = Formatter::getFilter(f);
+            wchar_t *msg = toWideChar(sb->c_str());
+            MessageBox(0, msg, TEXT("10Kb body, no attachment"), MB_OK);
 
-            MessageBox(0, sb->c_str(), TEXT("10Kb body, no attachment"), MB_OK);
-
-            if (sb) {
-                delete sb; sb = NULL;
-            }
+            delete sb; 
+            delete [] msg;
         }
 
         if (filter) {
@@ -156,12 +155,12 @@ void testConfigFilter() {
             MessageBox(0, TEXT("There must be an error..."), TEXT("10Kb body, attachment up to 25Kb"), MB_OK);
         } else {
             StringBuffer* sb = Formatter::getFilter(f);
+            wchar_t *msg = toWideChar(sb->c_str());
 
-            MessageBox(0, sb->c_str(), TEXT("10Kb body, attachment up to 25Kb"), MB_OK);
+            MessageBox(0, msg, TEXT("10Kb body, attachment up to 25Kb"), MB_OK);
 
-            if (sb) {
-                delete sb; sb = NULL;
-            }
+            delete sb;
+            delete [] msg;
         }
 
         if (filter) {
@@ -188,12 +187,14 @@ void testConfigFilter() {
             MessageBox(0, TEXT("There must be an error..."), TEXT("TODAY's emails, no attachments"), MB_OK);
         } else {
             StringBuffer* sb = Formatter::getFilter(f);
+            wchar_t *msg = toWideChar(sb->c_str());
 
-            MessageBox(0, sb->c_str(), TEXT("TODAY's emails, no attachments"), MB_OK);
+            MessageBox(0, msg, TEXT("TODAY's emails, no attachments"), MB_OK);
 
             if (sb) {
                 delete sb; sb = NULL;
             }
+            delete [] msg;
         }
 
         if (filter) {
@@ -215,7 +216,7 @@ void testConfigFilter() {
         config.setBodySize(5);
         config.setAttachSize(30);
 
-        MailSourceManagementNode node(TEXT("sources"), TEXT("mail"), config);
+        MailSourceManagementNode node(T("sources"), T("mail"), config);
     }
     
     config = node.getMailSourceConfig(TRUE); // reread from the DM
@@ -230,12 +231,14 @@ void testConfigFilter() {
             MessageBox(0, TEXT("There must be an error..."), TEXT("All in one"), MB_OK);
         } else {
             StringBuffer* sb = Formatter::getFilter(f);
+            wchar_t *msg = toWideChar(sb->c_str());
 
-            MessageBox(0, sb->c_str(), TEXT("All in one"), MB_OK);
+            MessageBox(0, msg, TEXT("All in one"), MB_OK);
 
             if (sb) {
                 delete sb; sb = NULL;
             }
+            delete [] msg;
         }
 
         if (filter) {

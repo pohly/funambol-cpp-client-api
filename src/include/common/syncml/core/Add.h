@@ -23,13 +23,13 @@
 #include "base/fscapi.h"
 #include "syncml/core/ModificationCommand.h"
 
-#define ADD_COMMAND_NAME TEXT("Add")
+#define ADD_COMMAND_NAME T("Add")
 
 class Add : public ModificationCommand {
     
      // ------------------------------------------------------------ Private data
     private:
-        wchar_t* COMMAND_NAME;
+        BCHAR* COMMAND_NAME;
     
     // ---------------------------------------------------------- Public data    
     public:
@@ -62,7 +62,7 @@ class Add : public ModificationCommand {
          *
          * @return the command name property
          */    
-        wchar_t* getName();
+        BCHAR* getName();
 
         ArrayElement* clone();
    

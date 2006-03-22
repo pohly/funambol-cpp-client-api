@@ -32,7 +32,7 @@ class CmdID {
     
      // ------------------------------------------------------------ Private data
     private:
-        wchar_t* cmdID;
+        BCHAR* cmdID;
             
     
     // ---------------------------------------------------------- Protected data    
@@ -47,7 +47,7 @@ class CmdID {
      * @param cmdID the cmdID of CmdID - NOT NULL
      *
      */
-    CmdID(wchar_t* cmdID);
+    CmdID(BCHAR* cmdID);
 
     /**
      * Creates a new CmdID object with the given numeric cmdID
@@ -64,7 +64,7 @@ class CmdID {
      *
      * @return cmdID properties
      */
-    wchar_t* getCmdID();
+    BCHAR* getCmdID();
 
     CmdID* clone();
 

@@ -45,28 +45,28 @@ class Cred {
          *
          * @return type property
          */
-        wchar_t* getType(wchar_t* retType);
+        BCHAR* getType(BCHAR* retType);
 
         /**
          * Gets format property
          *
          * @return format property
          */
-        wchar_t* getFormat(wchar_t* retFormat);
+        BCHAR* getFormat(BCHAR* retFormat);
 
         /**
          * Gets data property
          *
          * @return data property
          */
-        wchar_t* getData(wchar_t* retData);
+        BCHAR* getData(BCHAR* retData);
 
         /**
          * Gets the username stored in this credential
          *
          * @return the username stored in this credential
          */
-        wchar_t* getUsername(wchar_t* retUsername);
+        BCHAR* getUsername(BCHAR* retUsername);
 
 
         /**
@@ -78,7 +78,7 @@ class Cred {
          *
          * @return the corresponding Authentication object.
          */
-        Authentication* createAuthentication(wchar_t* data, wchar_t* type);
+        Authentication* createAuthentication(BCHAR* data, BCHAR* type);
 
         /**
          * Gets the Authentication object.

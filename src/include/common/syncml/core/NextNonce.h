@@ -29,7 +29,7 @@ class NextNonce {
     
      // ------------------------------------------------------------ Private data
     private:
-        wchar_t* wvalue;
+        BCHAR* wvalue;
         char* value;
         long size;
         void initialize();
@@ -42,7 +42,7 @@ class NextNonce {
     /*
     * For a NextNonce starting from a b64 string
     */
-    NextNonce(wchar_t* b64value);
+    NextNonce(BCHAR* b64value);
 
     ~NextNonce();
     
@@ -51,9 +51,9 @@ class NextNonce {
 
     void* setValue(void* argValue, unsigned long size);        
     
-    void setWValue(wchar_t* wnonce);
+    void setWValue(BCHAR* wnonce);
 
-    wchar_t* getValueAsBase64();
+    BCHAR* getValueAsBase64();
 
     NextNonce* clone();
 };

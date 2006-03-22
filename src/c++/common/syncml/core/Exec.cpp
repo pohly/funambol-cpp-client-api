@@ -20,8 +20,8 @@
 #include "syncml/core/Exec.h"
  
 Exec::Exec() {
-    COMMAND_NAME = new wchar_t[wcslen(EXEC_COMMAND_NAME) + 1];
-    wsprintf(COMMAND_NAME, EXEC_COMMAND_NAME);
+    COMMAND_NAME = new BCHAR[bstrlen(EXEC_COMMAND_NAME) + 1];
+    bsprintf(COMMAND_NAME, EXEC_COMMAND_NAME);
 }
 
 Exec::~Exec() {
@@ -45,8 +45,8 @@ Exec::Exec(CmdID*   cmdID,
            Cred*  cred,
            ArrayList*  items) : ModificationCommand(cmdID, items) {
    
-    COMMAND_NAME = new wchar_t[wcslen(EXEC_COMMAND_NAME) + 1];
-    wsprintf(COMMAND_NAME, EXEC_COMMAND_NAME);
+    COMMAND_NAME = new BCHAR[bstrlen(EXEC_COMMAND_NAME) + 1];
+    bsprintf(COMMAND_NAME, EXEC_COMMAND_NAME);
 
     setNoResp(noResp); 
     setCred(cred);
@@ -59,7 +59,7 @@ Exec::Exec(CmdID*   cmdID,
  *
  * @return the command name property
  */   
-wchar_t* Exec::getName() {
+BCHAR* Exec::getName() {
     return COMMAND_NAME;
 }
 

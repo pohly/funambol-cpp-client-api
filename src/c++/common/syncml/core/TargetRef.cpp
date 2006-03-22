@@ -45,7 +45,7 @@ TargetRef::~TargetRef() {
  * @param value the referenced value - NULL ALLOWED
  * 
  */
-TargetRef::TargetRef(const wchar_t* value) {
+TargetRef::TargetRef(const BCHAR* value) {
     initialize();
     setValue(value);
 }
@@ -70,7 +70,7 @@ void TargetRef::initialize() {
  
 }
 
-void TargetRef::setQuery(wchar_t* val) {
+void TargetRef::setQuery(BCHAR* val) {
     if (query) {
         delete [] query; query = NULL;
     }
@@ -86,7 +86,7 @@ void TargetRef::setQuery(wchar_t* val) {
  *
  * @return the value
  */
-const wchar_t* TargetRef::getValue() {     
+const BCHAR* TargetRef::getValue() {     
         return value;
     }
     
@@ -95,14 +95,14 @@ const wchar_t* TargetRef::getValue() {
  *
  * @param value the reference value - NULL
  */
- void TargetRef::setValue(const wchar_t* valuer) {
+ void TargetRef::setValue(const BCHAR* valuer) {
     if (valuer == NULL) {
-        this->value = stringdup(TEXT(""));
-        this->query = stringdup(TEXT(""));
+        this->value = stringdup(T(""));
+        this->query = stringdup(T(""));
     } else {
-        unsigned int qMark = wcslen(valuer);
-        wchar_t* value = stringdup(valuer);
-        wchar_t* p1 = value;
+        unsigned int qMark = bstrlen(valuer);
+        BCHAR* value = stringdup(valuer);
+        BCHAR* p1 = value;
         BOOL charFound = FALSE;
         for (unsigned int k = 0; k < qMark; k++) {             
             if (*p1 == 0) {
@@ -125,9 +125,9 @@ const wchar_t* TargetRef::getValue() {
             if (this->query) { 
                 delete [] this->query; this->query = NULL; 
             } 
-            this->query = stringdup(TEXT(""));
+            this->query = stringdup(T(""));
         } else {
-            wchar_t* p2 = p1 - 1;
+            BCHAR* p2 = p1 - 1;
             *p2 = 0;
             if (this->value) { 
                 delete [] this->value; this->value = NULL; 

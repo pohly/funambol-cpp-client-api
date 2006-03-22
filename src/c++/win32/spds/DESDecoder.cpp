@@ -58,7 +58,7 @@ char* DESDecoder::transform(char* data, TransformationInfo& info) {
 
     if (res == FALSE) {
         lastErrorCode = ERR_DT_FAILURE;
-        wcsprintf(lastErrorMsg, ERRMSG_DT_FAILURE, GetLastError());
+        bsprintf(lastErrorMsg, ERRMSG_DT_FAILURE, GetLastError());
         goto exit;
     }
 
@@ -73,7 +73,7 @@ char* DESDecoder::transform(char* data, TransformationInfo& info) {
 
     if (res == FALSE) {
         lastErrorCode = ERR_DT_FAILURE;
-        wcsprintf(lastErrorMsg, ERRMSG_DT_FAILURE, GetLastError());
+        bsprintf(lastErrorMsg, ERRMSG_DT_FAILURE, GetLastError());
         goto exit;
     }
 
@@ -87,7 +87,7 @@ char* DESDecoder::transform(char* data, TransformationInfo& info) {
 
     if (res == FALSE) {
         lastErrorCode = ERR_DT_FAILURE;
-        wcsprintf(lastErrorMsg, ERRMSG_DT_FAILURE, GetLastError());
+        bsprintf(lastErrorMsg, ERRMSG_DT_FAILURE, GetLastError());
         goto exit;
     }
 
@@ -102,7 +102,7 @@ char* DESDecoder::transform(char* data, TransformationInfo& info) {
 
     if (res == FALSE) {
         lastErrorCode = ERR_DT_FAILURE;
-        wcsprintf(lastErrorMsg, ERRMSG_DT_FAILURE, GetLastError());
+        bsprintf(lastErrorMsg, ERRMSG_DT_FAILURE, GetLastError());
         goto exit;
     }
 
@@ -117,7 +117,7 @@ char* DESDecoder::transform(char* data, TransformationInfo& info) {
 
     if (res == FALSE) {
         lastErrorCode = ERR_DT_FAILURE;
-        wcsprintf(lastErrorMsg, ERRMSG_DT_FAILURE, GetLastError());
+        bsprintf(lastErrorMsg, ERRMSG_DT_FAILURE, GetLastError());
         goto exit;
     }
 
@@ -132,7 +132,7 @@ char* DESDecoder::transform(char* data, TransformationInfo& info) {
 
     if (res == FALSE) {
         lastErrorCode = ERR_DT_FAILURE;
-        wcsprintf(lastErrorMsg, ERRMSG_DT_FAILURE, GetLastError());
+        bsprintf(lastErrorMsg, ERRMSG_DT_FAILURE, GetLastError());
         goto exit;
     }
 
@@ -147,7 +147,7 @@ char* DESDecoder::transform(char* data, TransformationInfo& info) {
 
     if (res == FALSE) {
         lastErrorCode = ERR_DT_FAILURE;
-        wcsprintf(lastErrorMsg, ERRMSG_DT_FAILURE, GetLastError());
+        bsprintf(lastErrorMsg, ERRMSG_DT_FAILURE, GetLastError());
         goto exit;
     }
 

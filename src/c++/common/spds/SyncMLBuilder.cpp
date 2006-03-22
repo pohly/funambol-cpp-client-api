@@ -29,6 +29,7 @@
 #include "spds/SyncMLBuilder.h"
 
 
+
 SyncMLBuilder::SyncMLBuilder() {
     initialize();
     set(NULL, NULL, 0);
@@ -41,12 +42,12 @@ SyncMLBuilder::~SyncMLBuilder() {
 }
 
 
-SyncMLBuilder::SyncMLBuilder(wchar_t* t, wchar_t* d, unsigned long msgSize) {
+SyncMLBuilder::SyncMLBuilder(BCHAR* t, BCHAR* d, unsigned long msgSize) {
     initialize();
     set(t, d, msgSize);
 }
 
-void SyncMLBuilder::set(wchar_t* t, wchar_t* d, unsigned long msgSize) {    
+void SyncMLBuilder::set(BCHAR* t, BCHAR* d, unsigned long msgSize) {    
 
     target   = stringdup(t);   
     device   = stringdup(d);   
@@ -54,7 +55,7 @@ void SyncMLBuilder::set(wchar_t* t, wchar_t* d, unsigned long msgSize) {
 }
 
 void SyncMLBuilder::initialize() {
-    sessionID = time(NULL);
+    sessionID = (unsigned long)time(NULL);
     msgRef    = 0         ;
     msgID     = 0         ;
     cmdID     = 0         ;
@@ -79,6 +80,10 @@ void SyncMLBuilder::increaseMsgRef() {
     msgRef++;
 }
 
+void SyncMLBuilder::resetMsgRef() {
+    msgRef = 0;
+}
+
 void SyncMLBuilder::addItemStatus(ArrayList* previousStatus, Status* status) {
     
     if (previousStatus->size() == 0) {
@@ -95,9 +100,9 @@ void SyncMLBuilder::addItemStatus(ArrayList* previousStatus, Status* status) {
     for (int i = 0; i < previousStatus->size(); i++) {
     
         s = (Status*)previousStatus->get(i);
-        if ((wcscmp(s->getCmd(NULL), status->getCmd(NULL)) == 0) &&
-            (wcscmp(s->getData()->getData(NULL), status->getData()->getData(NULL)) == 0) &&  
-            (wcscmp(s->getCmdRef(NULL), status->getCmdRef(NULL)) == 0) ) {                    
+        if ((bstrcmp(s->getCmd(NULL), status->getCmd(NULL)) == 0) &&
+            (bstrcmp(s->getData()->getData(NULL), status->getData()->getData(NULL)) == 0) &&  
+            (bstrcmp(s->getCmdRef(NULL), status->getCmdRef(NULL)) == 0) ) {                    
                     list = s->getItems();
                     for (int j = 0; j < status->getItems()->size(); j++) {                        
                         list->add(*((Item*)(status->getItems())->get(j)));  
@@ -117,12 +122,15 @@ void SyncMLBuilder::addItemStatus(ArrayList* previousStatus, Status* status) {
 * Return the status of the items sent by server. Used to create the status to respond
 * after a add, replace or delete command
 */
-Status* SyncMLBuilder::prepareItemStatus(wchar_t* COMMAND, wchar_t* key, wchar_t* cmdRef, int code) {
+Status* SyncMLBuilder::prepareItemStatus(const BCHAR* COMMAND,
+                                         const BCHAR* key,
+                                         const BCHAR* cmdRef,
+                                         int code) {
     /*                                                                                               
     <Status>                                 CmdID*        cmdID     ,                           
-        <CmdID>3</CmdID>                     wchar_t*      msgRef    ,                           
-        <MsgRef>2</MsgRef>                   wchar_t*      cmdRef    ,                           
-        <CmdRef>4</CmdRef>                   wchar_t*      cmd       ,                           
+        <CmdID>3</CmdID>                     BCHAR*      msgRef    ,                           
+        <MsgRef>2</MsgRef>                   BCHAR*      cmdRef    ,                           
+        <CmdRef>4</CmdRef>                   BCHAR*      cmd       ,                           
         <Cmd>Replace</Cmd>                   ArrayList*    targetRefs,                           
         <Data>201</Data>                     ArrayList*    sourceRefs,                           
         <Item>                               Cred*         cred      ,                           
@@ -148,7 +156,9 @@ Status* SyncMLBuilder::prepareItemStatus(wchar_t* COMMAND, wchar_t* key, wchar_t
     Item* item        = new Item(NULL, sou, NULL, NULL, FALSE);
     list->add(*item);
 
-    Status* s = new Status(commandID, itow(msgRef), cmdRef, COMMAND, empty, empty, NULL, NULL, data, list);
+    BCHAR *mRef = itow(msgRef);
+    Status* s = new Status(commandID, mRef, cmdRef, COMMAND, empty, empty, NULL, NULL, data, list);
+    delete [] mRef;
     
     deleteCmdID(&commandID);
     deleteData(&data);
@@ -175,7 +185,7 @@ Status* SyncMLBuilder::prepareSyncHdrStatus(Chal*chal, int d) {
     targetRefs->add(*tar);
     sourceRefs->add(*sou);
 
-    Status* s = new Status(commandID, itow(msgRef), TEXT("0"), SYNC_HDR, targetRefs, sourceRefs, NULL, chal, data, NULL);
+    Status* s = new Status(commandID, itow(msgRef), T("0"), SYNC_HDR, targetRefs, sourceRefs, NULL, chal, data, NULL);
     
     deleteCmdID(&commandID);
     deleteArrayList(&targetRefs);
@@ -199,8 +209,9 @@ Status* SyncMLBuilder::prepareSyncStatus(SyncSource& source, Sync* sync) {
     ArrayList*    sourceRefs = new ArrayList();
     CmdID* cmdRef            = sync->getCmdID();
 
-    TargetRef*    tar        = new TargetRef(source.getRemoteURI());
-    SourceRef*    sou        = new SourceRef(source.getName());       
+    
+    TargetRef*    tar        = new TargetRef(_wcc(source.getRemoteURI()));
+    SourceRef*    sou        = new SourceRef(_wcc(source.getName()));
     targetRefs->add(*tar);
     sourceRefs->add(*sou);
     Data* d                  = new Data(200);
@@ -263,7 +274,7 @@ Status* SyncMLBuilder::prepareAlertStatus(SyncSource& source, ArrayList* alerts,
         list = a->getItems();
         if (list->size() == 1) {
             item = (Item*)list->get(0);
-            if (wcscmp(item->getTarget()->getLocURI(), source.getName()) == 0) {
+            if (bstrcmp(item->getTarget()->getLocURI(), _wcc(source.getName())) == 0) {
                 found = TRUE;
             }
         }
@@ -283,12 +294,12 @@ Status* SyncMLBuilder::prepareAlertStatus(SyncSource& source, ArrayList* alerts,
     ArrayList*    targetRefs = new ArrayList();
     ArrayList*    sourceRefs = new ArrayList();
     
-    TargetRef*    tar        = new TargetRef(source.getRemoteURI());
-    SourceRef*    sou        = new SourceRef(source.getName());       
+    TargetRef*    tar        = new TargetRef(_wcc(source.getRemoteURI()));
+    SourceRef*    sou        = new SourceRef(_wcc(source.getName()));
     targetRefs->add(*tar);
     sourceRefs->add(*sou);
     CmdID* cmdRef            = a->getCmdID();
-    wchar_t* next            = NULL;
+    BCHAR* next            = NULL;
     int authStatus           = 0;
     
     if (authStatusCode >= 200 && authStatusCode <=299)
@@ -343,8 +354,8 @@ Alert* SyncMLBuilder::prepareRequestAlert(SyncSource& s) {
     ++cmdID;
 
     CmdID* commandID     = new CmdID(itow(cmdID));    
-    Target* tar          = new Target(s.getRemoteURI());
-    Source* sou          = new Source(s.getName());     
+    Target* tar          = new Target(_wcc(s.getRemoteURI()));
+    Source* sou          = new Source(_wcc(s.getName()));     
     Item* item           = new Item(tar, sou, NULL, NULL, FALSE);
 
     ArrayList* list      = new ArrayList();    
@@ -364,8 +375,8 @@ Alert* SyncMLBuilder::prepareInitAlert(SyncSource& s) {
 
     CmdID* commandID     = new CmdID(itow(cmdID));
     int data             = s.getPreferredSyncMode();
-    Target* tar          = new Target(s.getRemoteURI());    
-    Source* sou          = new Source(s.getName());     
+    Target* tar          = new Target(_wcc(s.getRemoteURI()));    
+    Source* sou          = new Source(_wcc(s.getName()));
 
     //
     // Read the clause filter from the source and translate
@@ -413,35 +424,30 @@ Alert* SyncMLBuilder::prepareAddrChangeAlert(SyncSource& s) {
             
             char* syncData = new char[size + 1];
             memset(syncData, 0, size + 1);
-            memcpy (syncData, (char*)syncItem->getData(), size); 
-            
-            wchar_t* syncDataW = toWideChar(syncData);
-            delete [] syncData; syncData = NULL;
-
-            StringBuffer itemData(syncDataW);
-            
-            ComplexData addr( itemData.c_str() );
-            Target target( TEXT("") );
-            Source source(syncItem->getKey());
+            memcpy (syncData, (char*)syncItem->getData(), size);
+             
+            ComplexData addr( syncData );
+            Target target( T("") );
+            Source source(_wcc(syncItem->getKey()));
             // Build Item
             Item item(&target, &source, NULL, &addr, FALSE);
             // Add it to the list
             list.add(item);
 
-            delete [] syncDataW; syncDataW = NULL;
+            delete [] syncData;
         }
     }
     /*
     for(syncItem = s.getFirstItem(); syncItem; syncItem = s.getNextItem()) {
-        int size = syncItem->getDataSize()/sizeof(wchar_t);
-        wchar_t *syncData = (wchar_t *)syncItem->getData();
+        int size = syncItem->getDataSize()/sizeof(BCHAR);
+        BCHAR *syncData = (BCHAR *)syncItem->getData();
 
         if( syncItem && size ) {  // only valid items
 
             // Add the syncItem data as zero terminated string
             StringBuffer itemData(syncData, size);
             ComplexData addr( itemData.c_str() );
-            Target target( TEXT("") );
+            Target target( T("") );
             Source source(syncItem->getKey());
             // Build Item
             Item item(&target, &source, NULL, &addr, FALSE);
@@ -470,10 +476,10 @@ SyncHdr* SyncMLBuilder::prepareSyncHdr(Cred* cred) {
 
     ++msgID;
 
-    VerDTD*    verDTD    = new VerDTD(TEXT("1.1"));
-    VerProto*  verProto  = new VerProto(TEXT("SyncML/1.1"));
+    VerDTD*    verDTD    = new VerDTD(T("1.1"));
+    VerProto*  verProto  = new VerProto(T("SyncML/1.1"));
     SessionID* sessID    = new SessionID(ltow(sessionID));
-    wchar_t*   messageID = itow(msgID);
+    BCHAR*   messageID = itow(msgID);
     Target*    tar       = new Target(target);
     Source*    sou       = new Source(device);       
     Meta* meta           = NULL;
@@ -524,7 +530,7 @@ SyncML* SyncMLBuilder::prepareInitObject(Cred* cred, ArrayList* alerts, ArrayLis
     return syncml;
 }
 
-wchar_t* SyncMLBuilder::prepareMsg(SyncML* syncml) {        
+BCHAR* SyncMLBuilder::prepareMsg(SyncML* syncml) {        
     StringBuffer s = *Formatter::getSyncML(syncml);
     return stringdup(s.c_str());     
 }
@@ -542,7 +548,7 @@ SyncML* SyncMLBuilder::prepareSyncML(ArrayList* commands, BOOL final) {
 
 ComplexData* SyncMLBuilder::getComplexData(SyncItem* syncItem) {
     
-        wchar_t* t   = NULL;        
+        BCHAR* t   = NULL;
         TransformationInfo info;
         ComplexData* data = NULL;
 
@@ -561,41 +567,45 @@ ComplexData* SyncMLBuilder::getComplexData(SyncItem* syncItem) {
             t = encodeB64(tt, info);
             delete [] tt;
         } else {
-            char* tt = new char[info.size + 1];
-            memset(tt, 0, info.size + 1);            
-            memcpy(tt, syncItem->getData(), syncItem->getDataSize());
-            t = toWideChar(tt);
-            delete [] tt;
+            t = new BCHAR[info.size + 1];
+            memset(t, 0, info.size + 1);            
+            memcpy(t, syncItem->getData(), syncItem->getDataSize());
         }
                            
         data = new ComplexData(t);
         
-        if (t) {delete [] t; t = NULL; }
+        if (t)
+            {delete [] t; t = NULL; }
         
         return data;
-
 }
 
 
-ArrayList* SyncMLBuilder::prepareItem(SyncItem* syncItem, const wchar_t* type, wchar_t* COMMAND) {
+ArrayList* SyncMLBuilder::prepareItem(SyncItem* syncItem, const BCHAR* type, BCHAR* COMMAND) {
     ArrayList* list = new ArrayList();            
     
-    Source* sou = new Source(syncItem->getKey());
+    Source* sou = new Source(_wcc(syncItem->getKey()));
     ComplexData* data = NULL;
     Meta m;
-    if (wcscmp(DELETE_COMMAND_NAME, COMMAND) != 0) {       
+    if (bstrcmp(DELETE_COMMAND_NAME, COMMAND) != 0) {       
         if (encoding == DESB64) {
-            m.setFormat(TEXT("des;b64"));         
+            m.setFormat(T("des;b64"));         
         } else if (encoding == B64) {
-            m.setFormat(TEXT("b64"));            
+            m.setFormat(T("b64"));            
         } 
         data = getComplexData(syncItem);
 
     }
     
-    Item* item           = new Item(NULL, sou, syncItem->getTargetParent(), syncItem->getSourceParent(), 
-                                    &m, data, FALSE);
+    BCHAR *tparent = toMultibyte(syncItem->getTargetParent());
+    BCHAR *sparent = toMultibyte(syncItem->getSourceParent());
+
+    Item* item = new Item(NULL, sou, tparent, sparent, &m, data, FALSE);
     list->add(*item);
+
+    delete [] tparent;
+    delete [] sparent;
+
     deleteSource(&sou);
     deleteComplexData(&data);
     deleteItem(&item);
@@ -606,7 +616,7 @@ ArrayList* SyncMLBuilder::prepareItem(SyncItem* syncItem, const wchar_t* type, w
 /*
 * Prepare an empty modification command without any commands. They will be added with the insertItem method
 */
-ModificationCommand* SyncMLBuilder::prepareModificationCommand(wchar_t* COMMAND, SyncItem* syncItem, const wchar_t* type) {        
+ModificationCommand* SyncMLBuilder::prepareModificationCommand(BCHAR* COMMAND, SyncItem* syncItem, const BCHAR* type) {        
     
     if (syncItem == NULL) {
          return NULL;
@@ -615,7 +625,7 @@ ModificationCommand* SyncMLBuilder::prepareModificationCommand(wchar_t* COMMAND,
     CmdID* commandID     = new CmdID(itow(cmdID));
 
     ModificationCommand* ret = NULL;
-    MetInf* metInf       = new MetInf(NULL, (wchar_t*)type, NULL, NULL, 
+    MetInf* metInf       = new MetInf(NULL, (BCHAR*)type, NULL, NULL, 
                                       NULL, NULL, NULL, NULL, NULL, NULL, NULL); 
     Meta* meta           = new Meta();
     meta->setMetInf(metInf);
@@ -624,11 +634,11 @@ ModificationCommand* SyncMLBuilder::prepareModificationCommand(wchar_t* COMMAND,
     if (syncItem) {
         list->add(prepareItem(syncItem, type, COMMAND));
     }
-    if (wcscmp(ADD_COMMAND_NAME, COMMAND) == 0)
+    if (bstrcmp(ADD_COMMAND_NAME, COMMAND) == 0)
         ret = new Add(commandID, FALSE, NULL, meta, list);
-    else if (wcscmp(REPLACE_COMMAND_NAME, COMMAND) == 0){
+    else if (bstrcmp(REPLACE_COMMAND_NAME, COMMAND) == 0){
         ret = new Replace(commandID, FALSE, NULL, meta, list);
-    } else if (wcscmp(DELETE_COMMAND_NAME, COMMAND) == 0) {
+    } else if (bstrcmp(DELETE_COMMAND_NAME, COMMAND) == 0) {
         ret = new Delete(commandID, FALSE, FALSE, FALSE, NULL, meta, list);
     }
     
@@ -641,27 +651,15 @@ ModificationCommand* SyncMLBuilder::prepareModificationCommand(wchar_t* COMMAND,
 /*
 * Add another item into the 
 */
-void SyncMLBuilder::addItem(ModificationCommand* modificationCommand, wchar_t* COMMAND, SyncItem* syncItem, const wchar_t* type) {        
+void SyncMLBuilder::addItem(ModificationCommand* modificationCommand, BCHAR* COMMAND, SyncItem* syncItem, const BCHAR* type) {        
     
     if (syncItem == NULL || modificationCommand == NULL) {
          return;
     }       
     
-    ArrayList* toInsert = new ArrayList();
-    if (syncItem) {
-        toInsert->add(prepareItem(syncItem, type, COMMAND));        
-    }
-    ArrayList* list = modificationCommand->getItems()->clone();
-
-    for (int i = 0; i < toInsert->size(); i++) {
-        list->add(*(Item*)toInsert->get(i));
-    }
-
-    modificationCommand->setItems(list);
-        
-    deleteArrayList(&toInsert);
-    deleteArrayList(&list);    
-        
+    ArrayList* list = modificationCommand->getItems();
+    list->add(prepareItem(syncItem, type, COMMAND));
+      
 }
 
 Sync* SyncMLBuilder::prepareSyncCommand(SyncSource& source) {            
@@ -669,8 +667,8 @@ Sync* SyncMLBuilder::prepareSyncCommand(SyncSource& source) {
     ++cmdID;
 
     CmdID* commandID     = new CmdID(itow(cmdID));
-    Target* tar          = new Target(source.getRemoteURI());
-    Source* sou          = new Source(source.getName()); 
+    Target* tar          = new Target(_wcc(source.getRemoteURI()));
+    Source* sou          = new Source(_wcc(source.getName())); 
     ArrayList* list      = new ArrayList();  
     Sync* sync           = NULL;
          
@@ -692,8 +690,8 @@ Map* SyncMLBuilder::prepareMapCommand(SyncSource& s) {
     */
     ++cmdID;
     CmdID* commandID     = new CmdID(itow(cmdID));    
-    Target* tar          = new Target(s.getRemoteURI());
-    Source* sou          = new Source(s.getName());
+    Target* tar          = new Target(_wcc(s.getRemoteURI()));
+    Source* sou          = new Source(_wcc(s.getName()));
     ArrayList* mapItems  = new ArrayList();
     Map* map = new Map(commandID, tar, sou, NULL, NULL, mapItems);
 
@@ -707,8 +705,8 @@ Map* SyncMLBuilder::prepareMapCommand(SyncSource& s) {
 
 MapItem* SyncMLBuilder::prepareMapItem(SyncMap* syncMap) {
       
-    Target* tar          = new Target(syncMap->getGUID(NULL));
-    Source* sou          = new Source(syncMap->getLUID(NULL));    
+    Target* tar          = new Target(syncMap->getGUID());
+    Source* sou          = new Source(syncMap->getLUID());    
     MapItem* m = new MapItem(tar, sou);
     deleteTarget(&tar);
     deleteSource(&sou);
@@ -728,7 +726,7 @@ void SyncMLBuilder::resetMessageID() {
     msgID = 0;
 }
 
-void SyncMLBuilder::setEncPassword(const wchar_t* pwd) {
+void SyncMLBuilder::setEncPassword(const BCHAR* pwd) {
     if (encPassword) {
         safeDelete(&encPassword);
     }
@@ -738,13 +736,13 @@ void SyncMLBuilder::setEncPassword(const wchar_t* pwd) {
     }
 }
 
-wchar_t* SyncMLBuilder::encodeDESB64(char* data, TransformationInfo& info) {
+BCHAR* SyncMLBuilder::encodeDESB64(char* data, TransformationInfo& info) {
     char*    des = NULL;
     char*    b64 = NULL;
-    wchar_t* ret = NULL;
+    BCHAR* ret = NULL;
 
-    DataTransformer* dtdes = DataTransformerFactory::getEncoder(TEXT("des"));
-    DataTransformer* dtb64 = DataTransformerFactory::getEncoder(TEXT("b64"));
+    DataTransformer* dtdes = DataTransformerFactory::getEncoder(T("des"));
+    DataTransformer* dtb64 = DataTransformerFactory::getEncoder(T("b64"));
 
     if ((dtdes == NULL) || (dtb64 == NULL)) {
         goto exit;
@@ -768,7 +766,7 @@ wchar_t* SyncMLBuilder::encodeDESB64(char* data, TransformationInfo& info) {
     ret = utf82wc(b64, NULL, 0);
 
     ++info.size;
-    // info.size = (wcslen(ret)+1)*sizeof(wchar_t);
+    // info.size = (bstrlen(ret)+1)*sizeof(BCHAR);
 
 
 exit:
@@ -792,10 +790,10 @@ exit:
     return ret;
 }
 
-wchar_t* SyncMLBuilder::encodeB64(char* data, TransformationInfo& info) {
+BCHAR* SyncMLBuilder::encodeB64(char* data, TransformationInfo& info) {
     char*    b64 = NULL;
-    wchar_t* ret = NULL;
-    DataTransformer* dtb64 = DataTransformerFactory::getEncoder(TEXT("b64"));
+    BCHAR* ret = NULL;
+    DataTransformer* dtb64 = DataTransformerFactory::getEncoder(T("b64"));
 
     if (dtb64 == NULL) {
         goto exit;
@@ -813,7 +811,7 @@ wchar_t* SyncMLBuilder::encodeB64(char* data, TransformationInfo& info) {
     ret = utf82wc(b64);
 
     ++info.size;
-    // info.size = (wcslen(ret)+1)*sizeof(wchar_t);
+    // info.size = (bstrlen(ret)+1)*sizeof(BCHAR);
 
 exit:
 
@@ -831,29 +829,29 @@ exit:
 /*
 ComplexData* SyncMLBuilder::getComplexData(SyncItem* syncItem) {
     
-        wchar_t* t   = NULL;
+        BCHAR* t   = NULL;
         char*    tmp = NULL;
         TransformationInfo info;
         ComplexData* data = NULL;
 
-        info.size = syncItem->getDataSize() / sizeof(wchar_t);
+        info.size = syncItem->getDataSize() / sizeof(BCHAR);
         info.password = encPassword;
         if (encoding == DESB64) {
-            wchar_t* tt = new wchar_t[info.size + 1];
+            BCHAR* tt = new BCHAR[info.size + 1];
             wmemset(tt, 0, info.size + 1);            
             memcpy(tt, syncItem->getData(), syncItem->getDataSize());            
             tmp = wc2utf8(tt);            
             t = encodeDESB64(tmp, info);
             delete [] tt;
         } else if (encoding == B64) {
-            wchar_t* tt = new wchar_t[info.size + 1];
+            BCHAR* tt = new BCHAR[info.size + 1];
             wmemset(tt, 0, info.size + 1);            
             memcpy(tt, syncItem->getData(), syncItem->getDataSize());
             tmp = wc2utf8(tt);                                          
             t = encodeB64(tmp, info);
             delete [] tt;
         } else {
-            t = new wchar_t[info.size + 1];
+            t = new BCHAR[info.size + 1];
             wmemset(t, 0, info.size + 1);            
             memcpy(t, syncItem->getData(), syncItem->getDataSize());
         }

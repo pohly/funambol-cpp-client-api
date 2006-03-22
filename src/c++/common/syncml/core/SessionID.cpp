@@ -35,7 +35,7 @@ SessionID::~SessionID() {
 * @param sessionID the identifier of session - NOT NULL
 *
 */
-SessionID::SessionID(wchar_t* sessionID) {
+SessionID::SessionID(BCHAR* sessionID) {
     this->sessionID = NULL;
     setSessionID(sessionID);
 }
@@ -45,11 +45,11 @@ SessionID::SessionID(wchar_t* sessionID) {
 *
 * @return sessionID the session identifier
 */
-wchar_t* SessionID::getSessionID(wchar_t* retSessionID) {
+BCHAR* SessionID::getSessionID(BCHAR* retSessionID) {
      if (retSessionID == NULL) {
         return sessionID;
     }
-    return wcscpy(retSessionID, sessionID);
+    return bstrcpy(retSessionID, sessionID);
 }
 
 
@@ -58,7 +58,7 @@ wchar_t* SessionID::getSessionID(wchar_t* retSessionID) {
 *
 * @param sessionID the session identifier
 */
-void SessionID::setSessionID(wchar_t* sessionID) {
+void SessionID::setSessionID(BCHAR* sessionID) {
     if (this->sessionID) {
         delete [] this->sessionID; this->sessionID = NULL;
     }

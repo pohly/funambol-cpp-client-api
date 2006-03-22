@@ -33,11 +33,11 @@ class MetInf {
     
      // ------------------------------------------------------------ Private data
     private:
-        wchar_t*     format    ;
-        wchar_t*     type      ;
-        wchar_t*     mark      ;
+        BCHAR*     format    ;
+        BCHAR*     type      ;
+        BCHAR*     mark      ;
         Anchor*      anchor    ;
-        wchar_t*     version   ;
+        BCHAR*     version   ;
         NextNonce*   nextNonce ;
         long         maxMsgSize;
         long         maxObjSize;
@@ -60,12 +60,12 @@ class MetInf {
          * @param memoryInfo memory information
          *
          */
-        void set(wchar_t*    format    ,
-                 wchar_t*    type      ,
-                 wchar_t*    mark      ,
+        void set(BCHAR*    format    ,
+                 BCHAR*    type      ,
+                 BCHAR*    mark      ,
                  long        size      ,
                  Anchor*     anchor    ,
-                 wchar_t*    version   ,
+                 BCHAR*    version   ,
                  NextNonce*  nonce     ,
                  long        maxMsgSize,
                  long        maxObjSize,
@@ -95,12 +95,12 @@ class MetInf {
      * @param mem the memory information
      *
      */
-    MetInf(wchar_t*    format    ,
-           wchar_t*    type      ,
-           wchar_t*    mark      ,
+    MetInf(BCHAR*    format    ,
+           BCHAR*    type      ,
+           BCHAR*    mark      ,
            long        size      ,
            Anchor*     anchor    ,
-           wchar_t*    version   ,
+           BCHAR*    version   ,
            NextNonce*  nonce     ,
            long        maxMsgSize,
            long        maxObjSize,
@@ -127,42 +127,42 @@ class MetInf {
      *
      * @return format
      */
-    wchar_t* getFormat(wchar_t* retformat);
+    BCHAR* getFormat(BCHAR* retformat);
 
     /**
      * Sets format
      *
      * @param format the new format value
      */
-    void setFormat(wchar_t* format);
+    void setFormat(BCHAR* format);
 
     /**
      * Returns type
      *
      * @return type
      */
-    wchar_t* getType(wchar_t* retType);
+    BCHAR* getType(BCHAR* retType);
 
     /**
      * Sets type
      *
      * @param type the new type value
      */
-    void setType(wchar_t* type);
+    void setType(BCHAR* type);
     
     /**
      * Returns mark
      *
      * @return mark
      */
-    wchar_t* getMark(wchar_t* retMark) ;
+    BCHAR* getMark(BCHAR* retMark) ;
 
     /**
      * Sets mark
      *
      * @param mark the new mark value
      */
-    void setMark(wchar_t* mark);
+    void setMark(BCHAR* mark);
 
      /**
      * Sets emi
@@ -260,14 +260,14 @@ class MetInf {
 	 *
 	 * @return version
 	 */
-	wchar_t* getVersion(wchar_t* retVersion);
+	BCHAR* getVersion(BCHAR* retVersion);
 
 	/**
 	 * Sets version
 	 *
 	 * @param version the new version value
 	 */
-	void setVersion(wchar_t* version);
+	void setVersion(BCHAR* version);
 
 	MetInf* clone();
 

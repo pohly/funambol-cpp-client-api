@@ -37,9 +37,9 @@ private:
     wchar_t*      remoteURI;
     wchar_t*      encoding;
 
-    wchar_t type[DIM_MIME_TYPE];
-    wchar_t next[DIM_ANCHOR];
-    wchar_t last[DIM_ANCHOR];
+    BCHAR type[DIM_MIME_TYPE];
+    BCHAR next[DIM_ANCHOR];
+    BCHAR last[DIM_ANCHOR];
 
     ErrorHandler* errorHandler;
 
@@ -89,14 +89,14 @@ public:
      *
      * @param type the mime type
      */
-    void setType(const wchar_t* type) EXTRA_SECTION_01;
+    void setType(const BCHAR* type) EXTRA_SECTION_01;
     /*
      * Gets the standard mime type for the source items.
      *
      * @return - the source name (a pointer to the object buffer,
      *           will be released at object destruction)
      */
-    const wchar_t* getType() EXTRA_SECTION_01;
+    const BCHAR* getType() EXTRA_SECTION_01;
 
     /*
      * Get & Set the timestamp in milliseconds of the last synchronization.
@@ -115,14 +115,14 @@ public:
     /*
      * Gets & Sets the last anchor associated to the source
      */
-    void setLastAnchor(const wchar_t* last) EXTRA_SECTION_01;
-    const wchar_t* getLastAnchor() EXTRA_SECTION_01;
+    void setLastAnchor(const BCHAR* last) EXTRA_SECTION_01;
+    const BCHAR* getLastAnchor() EXTRA_SECTION_01;
 
     /*
      * Gets & Sets the next anchor associated to the source
      */
-    const wchar_t* getNextAnchor() EXTRA_SECTION_01;
-    void setNextAnchor(const wchar_t* next) EXTRA_SECTION_01;
+    const BCHAR* getNextAnchor() EXTRA_SECTION_01;
+    void setNextAnchor(const BCHAR* next) EXTRA_SECTION_01;
     
     /*
      * Get & Set encoding attribute.

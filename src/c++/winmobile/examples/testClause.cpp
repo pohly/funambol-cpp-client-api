@@ -40,8 +40,8 @@
 void testClause() {
     SourceFilter filter;
 
-    WhereClause where1(TEXT("CompanyName"), TEXT("funambol"), EQ, FALSE);
-    WhereClause where2(TEXT("FirstName"), TEXT("ste"), CONTAIN, TRUE);
+    WhereClause where1(T("CompanyName"), T("funambol"), EQ, FALSE);
+    WhereClause where2(T("FirstName"), T("ste"), CONTAIN, TRUE);
 
     ArrayList operands;
 
@@ -62,14 +62,14 @@ void testClause() {
 
     filter.setClause(recordOnly);
     filter.setInclusive(FALSE);
-    filter.setType(TEXT("text/x-s4j-sifc"));
+    filter.setType(T("text/x-s4j-sifc"));
 
     Filter* f = ClauseUtil::toFilter(filter);
 
     StringBuffer* sb = Formatter::getFilter(f);
-
-    MessageBox(0, sb->c_str(), TEXT("Record only filter"), MB_OK);
-
+    LOG.info(T("Record only filter"));
+    LOG.info(sb->c_str());
+    
     delete f; delete sb;
 
     //
@@ -79,12 +79,12 @@ void testClause() {
     ArrayList fieldProperties, fieldParameters;
     PropParam param;
 
-    param.setParamName(TEXT("texttype"));
+    param.setParamName(T("texttype"));
     fieldParameters.add(param);
-    param.setParamName(TEXT("attachtype"));
+    param.setParamName(T("attachtype"));
     fieldParameters.add(param);
 
-    fieldProperty.setPropName(TEXT("emailitem"));
+    fieldProperty.setPropName(T("emailitem"));
     fieldProperty.setMaxSize(20000);
     fieldProperty.setPropParams(&fieldParameters);
     fieldProperties.add(fieldProperty);
@@ -101,10 +101,12 @@ void testClause() {
     filter.setInclusive(TRUE);
 
     f = ClauseUtil::toFilter(filter);
-
     sb = Formatter::getFilter(f);
 
-    MessageBox(0, sb->c_str(), TEXT("Field only filter"), MB_OK);
+    LOG.info(T("Field only filter"));
+    LOG.info(sb->c_str());
+
+    delete f; delete sb;
 
     //
     // Both record and field filters
@@ -118,10 +120,10 @@ void testClause() {
     filter.setClause(fieldAndRecord);
 
     f = ClauseUtil::toFilter(filter);
-
     sb = Formatter::getFilter(f);
 
-    MessageBox(0, sb->c_str(), TEXT("Field and record filter"), MB_OK);
+    LOG.info(T("Field and record filter"));
+    LOG.info(sb->c_str());
 
     delete f; delete sb;
 }

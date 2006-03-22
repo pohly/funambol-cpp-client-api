@@ -24,44 +24,44 @@
 #include "base/util/StringBuffer.h"
 
 
-wchar_t* XMLProcessor::getElementContent(const wchar_t*      xml     ,
-                                         const wchar_t*      tag     ,
+BCHAR* XMLProcessor::getElementContent(const BCHAR*      xml     ,
+                                         const BCHAR*      tag     ,
                                          unsigned int* pos     ,
                                          unsigned int* startPos,
                                          unsigned int* endPos  ) {
         
-    wchar_t* p1       = NULL;
-    wchar_t* p2       = NULL;
+    BCHAR* p1       = NULL;
+    BCHAR* p2       = NULL;
     BOOL charFound    = FALSE;
     unsigned int xmlLength = (unsigned int)-1;
     unsigned int l = (unsigned int)-1;
 
-    wchar_t *openTag = 0;
-    wchar_t *closeTag = 0;
+    BCHAR *openTag = 0;
+    BCHAR *closeTag = 0;
     
     if (xml == NULL) {
         goto finally;
     }
 
-    xmlLength = wcslen(xml);
-    l = wcslen(tag);
+    xmlLength = bstrlen(xml);
+    l = bstrlen(tag);
 
     if (pos != NULL) {
         *pos = 0;
     }
 
-    if(wcscmp(tag, TEXT("CDATA")) == 0) {
-        openTag = stringdup(TEXT("<![CDATA["));
-        closeTag = stringdup(TEXT("]]>"));
+    if(bstrcmp(tag, T("CDATA")) == 0) {
+        openTag = stringdup(T("<![CDATA["));
+        closeTag = stringdup(T("]]>"));
     }
     else {
-        openTag = new wchar_t[l+10];
-        closeTag = new wchar_t[l+10];
-        wsprintf(openTag, TEXT("<%s>"), tag);
-        wsprintf(closeTag, TEXT("</%s>"), tag);
+        openTag = new BCHAR[l+10];
+        closeTag = new BCHAR[l+10];
+        bsprintf(openTag, T("<%s>"), tag);
+        bsprintf(closeTag, T("</%s>"), tag);
     }
 
-    p1 = wcsstr((wchar_t*)xml, openTag);
+    p1 = bstrstr((BCHAR*)xml, openTag);
 
     if (p1 == NULL) { // tag can have attributes or can be empty
 
@@ -69,16 +69,16 @@ wchar_t* XMLProcessor::getElementContent(const wchar_t*      xml     ,
         // return NULL
         
         // try to find "<tagName/>". If found it return null.
-        wsprintf(openTag, TEXT("<%s/>"), tag);
-        p1 = wcsstr((wchar_t*)xml, openTag);
+        bsprintf(openTag, T("<%s/>"), tag);
+        p1 = bstrstr((BCHAR*)xml, openTag);
         // ok, found an empty tag
         if (p1 != NULL) {
             goto finally;
         }
 
         // try to find "<tagName"
-        wsprintf(openTag, TEXT("<%s"), tag);
-        p1 = wcsstr((wchar_t*)xml, openTag);
+        bsprintf(openTag, T("<%s"), tag);
+        p1 = bstrstr((BCHAR*)xml, openTag);
 
         if (p1 == NULL) {
             goto finally;
@@ -103,7 +103,7 @@ wchar_t* XMLProcessor::getElementContent(const wchar_t*      xml     ,
 
     } else {  // tag doesn't have attribute. Original version
     
-        p1 += wcslen(openTag);
+        p1 += bstrlen(openTag);
     
     }
     if (*p1 == 0) {
@@ -113,7 +113,7 @@ wchar_t* XMLProcessor::getElementContent(const wchar_t*      xml     ,
         goto finally;
     }
 
-    p2 = wcsstr(p1, closeTag);
+    p2 = bstrstr(p1, closeTag);
 
     if (p2 == NULL) {
         //
@@ -124,7 +124,7 @@ wchar_t* XMLProcessor::getElementContent(const wchar_t*      xml     ,
     }
         
     if (pos != NULL) {
-        *pos = p1-xml+wcslen(openTag);
+        *pos = p1-xml+bstrlen(openTag);
     }
     if (startPos != NULL) {
         *startPos = p1 - xml;
@@ -144,11 +144,11 @@ wchar_t* XMLProcessor::getElementContent(const wchar_t*      xml     ,
 
 }
 
-wchar_t* XMLProcessor::getContent(wchar_t*     xml     ,
+BCHAR* XMLProcessor::getContent(BCHAR*     xml     ,
                                   unsigned int startPos,
                                   unsigned int endPos  ) {
 
-    wchar_t * ret = NULL;
+    BCHAR * ret = NULL;
 
     if (xml == NULL) {
         goto finally;
@@ -156,13 +156,13 @@ wchar_t* XMLProcessor::getContent(wchar_t*     xml     ,
     if (endPos <= startPos) {
         goto finally;
     }
-    if (wcslen(xml) < endPos - startPos) {
+    if (bstrlen(xml) < endPos - startPos) {
         goto finally;
     }
 
-    ret = new wchar_t[endPos - startPos + 1];
+    ret = new BCHAR[endPos - startPos + 1];
 
-    wcsncpy(ret, xml, endPos - startPos);
+    bstrncpy(ret, xml, endPos - startPos);
     ret[endPos - startPos] = 0;
 
 finally:
@@ -170,12 +170,12 @@ finally:
     return ret;
 }
 
-wchar_t* XMLProcessor::getElementContent(const wchar_t*      xml       ,
-                                         const wchar_t*      tag       ,
+BCHAR* XMLProcessor::getElementContent(const BCHAR*      xml       ,
+                                         const BCHAR*      tag       ,
                                          unsigned int* pos) {
-    wchar_t* p1       = NULL;
-    wchar_t* p2       = NULL;
-    wchar_t* ret      = NULL;
+    BCHAR* p1       = NULL;
+    BCHAR* p2       = NULL;
+    BCHAR* ret      = NULL;
     BOOL charFound    = FALSE;
     unsigned int xmlLength  = (unsigned int)-1;
     unsigned int l          = (unsigned int)-1;
@@ -184,20 +184,20 @@ wchar_t* XMLProcessor::getElementContent(const wchar_t*      xml       ,
         goto finally;
     }
 
-    wchar_t openTag[40];
-    wchar_t closeTag[40];
+    BCHAR openTag[40];
+    BCHAR closeTag[40];
     
-    xmlLength = wcslen(xml);
-    l = wcslen(tag);
+    xmlLength = bstrlen(xml);
+    l = bstrlen(tag);
 
     if (pos != NULL) {
         *pos = 0;
     }
 
-    wsprintf(openTag, TEXT("<%s>"), tag);
-    wsprintf(closeTag, TEXT("</%s>"), tag);
+    bsprintf(openTag, T("<%s>"), tag);
+    bsprintf(closeTag, T("</%s>"), tag);
 
-    p1 = wcsstr((wchar_t*)xml, openTag);
+    p1 = bstrstr((BCHAR*)xml, openTag);
 
     if (p1 == NULL) { // tag can have attributes
         //
@@ -206,11 +206,11 @@ wchar_t* XMLProcessor::getElementContent(const wchar_t*      xml       ,
         // goto finally;
     
         // try to find "<tagName/>". If found it return empty string.
-        wsprintf(openTag, TEXT("<%s/>"), tag);
-        p1 = wcsstr((wchar_t*)xml, openTag);
+        bsprintf(openTag, T("<%s/>"), tag);
+        p1 = bstrstr((BCHAR*)xml, openTag);
 
         if (p1 != NULL) {
-            ret = new wchar_t[2];
+            ret = new BCHAR[2];
             ret[0] = 0;
             ret[1] = 0;
             p2 = p1 + l + 3;
@@ -221,8 +221,8 @@ wchar_t* XMLProcessor::getElementContent(const wchar_t*      xml       ,
         }
         
         // try to find "<tagName"
-        wsprintf(openTag, TEXT("<%s"), tag);
-        p1 = wcsstr((wchar_t*)xml, openTag);
+        bsprintf(openTag, T("<%s"), tag);
+        p1 = bstrstr((BCHAR*)xml, openTag);
 
         if (p1 == NULL) {
             goto finally;
@@ -256,7 +256,7 @@ wchar_t* XMLProcessor::getElementContent(const wchar_t*      xml       ,
         goto finally;
     }
 
-    p2 = wcsstr(p1, closeTag);
+    p2 = bstrstr(p1, closeTag);
 
     if (p2 == NULL) {
         //
@@ -265,15 +265,15 @@ wchar_t* XMLProcessor::getElementContent(const wchar_t*      xml       ,
         goto finally;
     }
 
-    ret = new wchar_t[p2-p1+1];
+    ret = new BCHAR[p2-p1+1];
     
     if (ret != NULL) {
-        wcsncpy(ret, p1, p2-p1);
+        bstrncpy(ret, p1, p2-p1);
         ret[p2-p1] = 0;
     } 
     // if no enough memory to instantiate the new object...
     else {
-        ret = TEXT("");
+        ret = T("");
     }
 
     if (pos != NULL) {
@@ -290,7 +290,7 @@ wchar_t* XMLProcessor::getElementContent(const wchar_t*      xml       ,
 * It returns the number of the tag in the xml string
 */
 
-int XMLProcessor::countElementTag(wchar_t* xml, wchar_t* tag) {
+int XMLProcessor::countElementTag(BCHAR* xml, BCHAR* tag) {
 
     unsigned int count = 0, pos = 0, previous = 0;
     
@@ -308,15 +308,15 @@ int XMLProcessor::countElementTag(wchar_t* xml, wchar_t* tag) {
 * the name of the token. 
 * If <tag xmlns...> it returns "tag"
 * The "pos" argument will contain the position of the close <tag/>
-* The return value is a new wchar_t* and must be fred by the caller. If no tag is found, NULL is returned
+* The return value is a new BCHAR* and must be fred by the caller. If no tag is found, NULL is returned
 */
-wchar_t* XMLProcessor::getNextTag(wchar_t* xml, int* pos) {
+BCHAR* XMLProcessor::getNextTag(BCHAR* xml, int* pos) {
     
-    wchar_t* p1, *p2, *p4, *p3 = NULL, *ret = NULL;
+    BCHAR* p1, *p2, *p4, *p3 = NULL, *ret = NULL;
     p1 = p2 = p4 = xml;
     int i = 0, k = 0, len = 0;
     BOOL found = FALSE;
-    len = wcslen(xml);     
+    len = bstrlen(xml);     
     
     for (i = 0; i < len; i++) {
         if (found) {
@@ -346,8 +346,8 @@ wchar_t* XMLProcessor::getNextTag(wchar_t* xml, int* pos) {
                 if (p3) {                    
                     p1 = p3;
                 }
-                ret = new wchar_t[(p1)-(p2)];
-                wcsncpy(ret, p2+1, (p1)-(p2+1));
+                ret = new BCHAR[(p1)-(p2)];
+                bstrncpy(ret, p2+1, (p1)-(p2+1));
                 ret[(p1)-(p2+1)] = 0;
                 return ret;
                 break;
@@ -364,18 +364,18 @@ wchar_t* XMLProcessor::getNextTag(wchar_t* xml, int* pos) {
 /*
 * count the number of "&" (passed as a string) in the token. 
 */
-int XMLProcessor::countAnd(wchar_t* token) {
-    return countChar(token, TEXT("&"));
+int XMLProcessor::countAnd(BCHAR* token) {
+    return countChar(token, T("&"));
 }
 
-int XMLProcessor::countChar(wchar_t* token, wchar_t* element) {
+int XMLProcessor::countChar(BCHAR* token, BCHAR* element) {
 
-    wchar_t* p1, *p2;
+    BCHAR* p1, *p2;
     p1 = p2 = token;
     int i = 0, k = 0, len = 0;
 
-    while (wcsstr(p1, element) != NULL) {
-        len = wcslen(p2);        
+    while (bstrstr(p1, element) != NULL) {
+        len = bstrlen(p2);        
         for (k = 0; k < len; k++) {             
             if (*p1 == 0) {
                 break;
@@ -397,7 +397,7 @@ int XMLProcessor::countChar(wchar_t* token, wchar_t* element) {
 * The parent can be more than one. They have to be separated by &
 * i.e.  
 *
-* getElementContentExcept(xmlPtr, TEXT("Add"), TEXT("Sync&Atomic"), &post)
+* getElementContentExcept(xmlPtr, T("Add"), T("Sync&Atomic"), &post)
 *
 * The function returns "... to keep ... " content only 
 *
@@ -415,15 +415,15 @@ int XMLProcessor::countChar(wchar_t* token, wchar_t* element) {
  </SyncBody>
 */
 
-wchar_t* XMLProcessor::getElementContentExcept(wchar_t*      xmlPtr    ,
-                                               wchar_t*      tag       ,
-                                               wchar_t*      except    ,
+BCHAR* XMLProcessor::getElementContentExcept(BCHAR*      xmlPtr    ,
+                                               BCHAR*      tag       ,
+                                               BCHAR*      except    ,
                                                unsigned int* post) {
     
-    wchar_t*  ret    = NULL;
-    wchar_t*  found  = NULL;
-    wchar_t*  xml    = NULL;
-    wchar_t** array = NULL;
+    BCHAR*  ret    = NULL;
+    BCHAR*  found  = NULL;
+    BCHAR*  xml    = NULL;
+    BCHAR** array = NULL;
     int*  validElement = NULL;   
     int count        = 0, countTag = 0;
     BOOL notValid  = FALSE;
@@ -448,7 +448,7 @@ wchar_t* XMLProcessor::getElementContentExcept(wchar_t*      xmlPtr    ,
     count = countAnd(except);    
     count++;
     
-    array = new wchar_t*[count + 1];
+    array = new BCHAR*[count + 1];
 	 int l;
     for (l = 0; l <= count; l++) {
         array[l] = NULL;
@@ -461,13 +461,13 @@ wchar_t* XMLProcessor::getElementContentExcept(wchar_t*      xmlPtr    ,
         validElement[l] = 1;
     }
 
-    wchar_t* internal = stringdup(except);
-    wchar_t* p1, *p2;
+    BCHAR* internal = stringdup(except);
+    BCHAR* p1, *p2;
     p1 = p2 = internal;
     int i = 0, k = 0, len = 0;
 
-    while (wcsstr(p2, TEXT("&")) != NULL) {
-        len = wcslen(p2);        
+    while (bstrstr(p2, T("&")) != NULL) {
+        len = bstrlen(p2);        
         for (k = 0; k < len; k++) {             
             if (*p1 == 0) {
                 break;
@@ -539,7 +539,7 @@ wchar_t* XMLProcessor::getElementContentExcept(wchar_t*      xmlPtr    ,
         } while(array[i] != NULL);
 
         if (count > 1) {
-            wchar_t* tmp = stringdup(array[0]);
+            BCHAR* tmp = stringdup(array[0]);
     
             for (int m = 0; m < count - 1; m++) {
                 safeDel(&array[m]);  
@@ -598,25 +598,25 @@ wchar_t* XMLProcessor::getElementContentExcept(wchar_t*      xmlPtr    ,
 * Note the startLevel declaration and initialization to -1 value
 *
 *
-*    wchar_t* p = NULL;
+*    BCHAR* p = NULL;
 *    unsigned int pos = 0, previous = 0;
 *    int startLevel = -1;
-*    while ((p = XMLProcessor::getElementContentLevel(&xml[pos], TEXT("Add"), 0, &startLevel, &pos)) != NULL) {        
+*    while ((p = XMLProcessor::getElementContentLevel(&xml[pos], T("Add"), 0, &startLevel, &pos)) != NULL) {        
 *        pos += previous;
 *        previous = pos;                
 *    }
 *
 */
 
-wchar_t* XMLProcessor::getElementContentLevel(wchar_t*      xml   ,
-                                              wchar_t*      tag   ,                                              
+BCHAR* XMLProcessor::getElementContentLevel(BCHAR*      xml   ,
+                                              BCHAR*      tag   ,                                              
                                               unsigned int* pos, 
                                               int           lev ,   
                                               int*          startLevel)  {
     
-    wchar_t* p1       = NULL;
-    wchar_t* p2       = NULL;
-    wchar_t* ret      = NULL;
+    BCHAR* p1       = NULL;
+    BCHAR* p2       = NULL;
+    BCHAR* ret      = NULL;
     BOOL openBracket  = FALSE;  // <
     BOOL closeBracket = FALSE;  // >
     BOOL aloneBracket = FALSE;  // </
@@ -624,7 +624,7 @@ wchar_t* XMLProcessor::getElementContentLevel(wchar_t*      xml   ,
     BOOL openTag      = FALSE;
     BOOL closeTag     = FALSE;
 
-    wchar_t tagNameFound[40];
+    BCHAR tagNameFound[40];
     
     int level               = -1;
     unsigned int xmlLength  = (unsigned int)-1;
@@ -640,8 +640,8 @@ wchar_t* XMLProcessor::getElementContentLevel(wchar_t*      xml   ,
         return getElementContent(xml, tag, pos);
     }        
    
-    xmlLength = wcslen(xml);
-    l = wcslen(tag);
+    xmlLength = bstrlen(xml);
+    l = bstrlen(tag);
 
     if (pos != NULL) {
         *pos = 0;
@@ -703,9 +703,9 @@ wchar_t* XMLProcessor::getElementContentLevel(wchar_t*      xml   ,
         }         
           if (openTag && openBracket && closeBracket) {
             int n = (&p1[i] - p2 - 1);
-            wcsncpy(tagNameFound, p2 + 1, n);         
+            bstrncpy(tagNameFound, p2 + 1, n);         
             tagNameFound[n] = 0;
-            if (wcscmp(tagNameFound, tag) == 0 && (level == lev)) {
+            if (bstrcmp(tagNameFound, tag) == 0 && (level == lev)) {
                 unsigned int internalPos;
                 ret = getElementContent(p2, tag, &internalPos);
                 if (pos) {
@@ -731,7 +731,7 @@ finally:
 
 }
 
-StringBuffer XMLProcessor::makeElement(const wchar_t* tag, const wchar_t* val, const wchar_t* attr)
+StringBuffer XMLProcessor::makeElement(const BCHAR* tag, const BCHAR* val, const BCHAR* attr)
 {
     StringBuffer s;
         
@@ -740,24 +740,20 @@ StringBuffer XMLProcessor::makeElement(const wchar_t* tag, const wchar_t* val, c
     if (!val[0])
         return s;
     
-    size_t len = wcslen(tag);
-    wchar_t* t1 = new wchar_t[len + 4]; // <  >  0, whitout closing >
-    wchar_t* t2 = new wchar_t[len + 6]; // </ > \n 0
+    size_t len = bstrlen(tag);
+    BCHAR* t1 = new BCHAR[len + 4]; // <  >  0, whitout closing >
+    BCHAR* t2 = new BCHAR[len + 6]; // </ > \n 0
 
-    if(!t1 || !t2){
-        fprintf(stderr, "Memory error.\n");
-        exit(1);
-    }
-    wsprintf(t1, TEXT("<%s"), tag);    
-    wsprintf(t2, TEXT("</%s>\n"), tag);
+    sprintf(t1, T("<%s"), tag);    
+    sprintf(t2, T("</%s>\n"), tag);
 
     s = t1; 
     if (attr != NULL)
     {
-        s += TEXT(" ");
+        s += " ";
         s += attr;        
     }
-    s += TEXT(">");
+    s += ">";
     s += val; s += t2;
 
     delete [] t1;
@@ -767,38 +763,38 @@ StringBuffer XMLProcessor::makeElement(const wchar_t* tag, const wchar_t* val, c
 }
 
 
-wchar_t* XMLProcessor::getElementAttributes(const wchar_t* xml,
-                                            const wchar_t* tag,                                            
-                                            unsigned int*  startPos,
-                                            unsigned int*  endPos  ) {
+BCHAR* XMLProcessor::getElementAttributes(const BCHAR* xml,
+                                          const BCHAR* tag,
+                                          unsigned int* startPos,
+                                          unsigned int* endPos  ) {
         
-    wchar_t* p1       = NULL;
-    wchar_t* p2       = NULL;
+    BCHAR* p1       = NULL;
+    BCHAR* p2       = NULL;
     BOOL charFound    = FALSE;
     unsigned int xmlLength = (unsigned int)-1;
     unsigned int l = (unsigned int)-1;
 
     // exemple ot tag with attribute list
     // <body enc="base64">
-    wchar_t *openTag = 0; //<tag
+    BCHAR *openTag = 0; //<tag
     
     if (xml == NULL) {
         goto finally;
     }
 
-    xmlLength = wcslen(xml);
-    l = wcslen(tag);
+    xmlLength = bstrlen(xml);
+    l = bstrlen(tag);
 
 
-    if(wcscmp(tag, TEXT("CDATA")) == 0) {
+    if(bstrcmp(tag, T("CDATA")) == 0) {
         goto finally;
     }
     else {
-        openTag = new wchar_t[l+10];
-        wsprintf(openTag, TEXT("<%s>"), tag);        
+        openTag = new BCHAR[l+10];
+        bsprintf(openTag, T("<%s>"), tag);        
     }
 
-    p1 = wcsstr((wchar_t*)xml, openTag);
+    p1 = bstrstr((char*)xml, openTag);
 
     if (p1 == NULL) { // tag can have attributes or can be empty
 
@@ -806,16 +802,16 @@ wchar_t* XMLProcessor::getElementAttributes(const wchar_t* xml,
         // return NULL
         
         // try to find "<tagName/>". If found it return null.
-        wsprintf(openTag, TEXT("<%s/>"), tag);
-        p1 = wcsstr((wchar_t*)xml, openTag);
+        bsprintf(openTag, T("<%s/>"), tag);
+        p1 = bstrstr((char*)xml, openTag);
         // ok, found an empty tag
         if (p1 != NULL) {
             goto finally;
         }
 
         // try to find "<tagName"
-        wsprintf(openTag, TEXT("<%s"), tag);
-        p1 = wcsstr((wchar_t*)xml, openTag);
+        bsprintf(openTag, T("<%s"), tag);
+        p1 = bstrstr((char*)xml, openTag);
 
         if (p1 == NULL) {
             goto finally;
@@ -865,23 +861,21 @@ wchar_t* XMLProcessor::getElementAttributes(const wchar_t* xml,
 
 }
 
-StringBuffer XMLProcessor::makeElement(const wchar_t* tag, 
-                                    const wchar_t* val,
-                                    ArrayList* attrList) {
+StringBuffer XMLProcessor::makeElement(const BCHAR* tag, 
+                                    const BCHAR* val,
+                                    ArrayList attrList) {
 
     StringBuffer s;
     
-    for (int i = 0; i < attrList->size(); i++)
+    for (int i = 0; i < attrList.size(); i++)
     {
-        KeyValuePair* item = (KeyValuePair*)attrList->get(i);
-        wchar_t* attr = item->getKey();
-        wchar_t* value = item->getValue();
+        KeyValuePair* item = (KeyValuePair*)attrList[i];
         if (i > 0)
-            s += TEXT(" ");
-        s += attr; 
-        s += TEXT("=\"");
-        s += value; 
-        s += TEXT("\"");
+            s += " ";
+        s += item->getKey(); 
+        s += "=\"";
+        s += item->getValue(); 
+        s += "\"";
     }    
     s = makeElement(tag, val, s.c_str());
 

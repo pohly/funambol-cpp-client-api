@@ -16,22 +16,21 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-
-#include "base/util/utils.h"
 #include "base/fscapi.h"
+#include "base/util/utils.h"
 #include "spdm/spdmutils.h"
 #include "spdm/constants.h"
 #include "spdm/ManagementNode.h"
 #include "spdm/DeviceManagementNode.h"
 
 
-DeviceManagementNode::DeviceManagementNode(const wchar_t* parent, const wchar_t* name)
+DeviceManagementNode::DeviceManagementNode(const BCHAR* parent, const BCHAR* name)
     : ManagementNode(parent, name), fullContext(0)
 {
-	setFullContext();
+    setFullContext();
 }
 
-DeviceManagementNode::DeviceManagementNode(const wchar_t *node)
+DeviceManagementNode::DeviceManagementNode(const BCHAR *node)
     : ManagementNode(node), fullContext(0)
 {
     setFullContext();
@@ -39,28 +38,22 @@ DeviceManagementNode::DeviceManagementNode(const wchar_t *node)
 
 DeviceManagementNode::~DeviceManagementNode()
 {
-    if (context)
-        delete [] context;
-    if (name)
-        delete [] name;
-
     if (fullContext)
         delete [] fullContext;
-
 }
 
 /*
  * Returns the value of the given property
- * the value is returned as a new wchar_t array and must be free'd by the user
+ * the value is returned as a new BCHAR array and must be free'd by the user
  *
  * @param property - the property name
  */
-wchar_t* DeviceManagementNode::getPropertyValue(const wchar_t* property) {
+BCHAR* DeviceManagementNode::getPropertyValue(const BCHAR* prop) {
     HKEY key = NULL;    
     DWORD res;	
     long err = 0;
-    wchar_t *buf=NULL;
-
+    BCHAR *ret=NULL;
+    TCHAR *p = toWideChar(prop);
     ULONG dim = 0;
 
     RegCreateKeyEx(
@@ -77,50 +70,52 @@ wchar_t* DeviceManagementNode::getPropertyValue(const wchar_t* property) {
 
     if (key == 0) {
         lastErrorCode = ERR_INVALID_CONTEXT;
-        wsprintf(lastErrorMsg, TEXT("Invalid context path: %s"), fullContext);
+        bsprintf(lastErrorMsg, T("Invalid context path: %s"), fullContext);
         goto finally;
     }
 
+    // Get value length
     err = RegQueryValueEx(
             key,
-            property,
+            p,
             NULL,
             NULL,  // we currently support only strings
-            (UCHAR*)buf,
+            NULL,
             &dim
             );
 
-    if (buf == NULL) {
-        buf = new wchar_t[dim + 1];
-
+    if (err == ERROR_SUCCESS) {
 		if (dim > 0) {
+            TCHAR *buf = new TCHAR[dim + 1];
+
 			err = RegQueryValueEx(
 					key,
-					property,
+					p,
 					NULL,
 					NULL,  // we currently support only strings
 					(UCHAR*)buf,
 					&dim
 					);
+            if (err == ERROR_SUCCESS)
+                ret = toMultibyte(buf);
+            delete [] buf;
 		}
-		else buf[0] = 0;
     }
+    //else MessageBox(NULL,  T("Error"), T("getConfigParameter"), MB_OK);
 
-
-    if (err == ERROR_SUCCESS) {
-        ; //MessageBox(NULL,  TEXT("Correct"), TEXT("getConfigParameter"), MB_OK);
-    } else {		
-        ;//MessageBox(NULL,  TEXT("Error"), TEXT("getConfigParameter"), MB_OK);
-        buf[0] = 0;
-    }
+    if (!ret) 
+        ret = stringdup("");
 
 finally:
+
+    if (p)
+        delete [] p;
 
     if (key != 0) {
         RegCloseKey(key);
     }
 
-    return buf;
+    return ret;
 }
 
 int DeviceManagementNode::getChildrenMaxCount() {
@@ -137,7 +132,7 @@ int DeviceManagementNode::getChildrenMaxCount() {
 
     if (key == 0) {
         lastErrorCode = ERR_INVALID_CONTEXT;
-        wsprintf(lastErrorMsg, TEXT("Invalid context path: %s"), fullContext);
+        bsprintf(lastErrorMsg, T("Invalid context path: %s"), fullContext);
 
         goto finally;
     }
@@ -164,11 +159,10 @@ finally:
  * @param size - the size of the children buffer (number of ManagementNode*) in
  *               input; the number of children in output
  */
-wchar_t **DeviceManagementNode::getChildrenNames() {
+BCHAR **DeviceManagementNode::getChildrenNames() {
     ULONG dim = DIM_MANAGEMENT_PATH;
     HKEY key;
-    wchar_t child[DIM_MANAGEMENT_PATH];
-	wchar_t **childrenName ;
+	BCHAR **childrenName ;
     ULONG i, howMany = 0;
 
     DWORD res;
@@ -188,7 +182,7 @@ wchar_t **DeviceManagementNode::getChildrenNames() {
 
     if (key == 0) {
         lastErrorCode = ERR_INVALID_CONTEXT;
-        wsprintf(lastErrorMsg, TEXT("Invalid context path: %s"), fullContext);
+        bsprintf(lastErrorMsg, T("Invalid context path: %s"), fullContext);
         goto finally;
     }
 
@@ -199,11 +193,11 @@ wchar_t **DeviceManagementNode::getChildrenNames() {
 			NULL, NULL, NULL, NULL
             );
 
-	childrenName = new wchar_t *[howMany];
+	childrenName = new BCHAR *[howMany];
 
     for (i=0; i<howMany; ++i) {
-        dim = DIM_MANAGEMENT_PATH*sizeof(wchar_t);
-        child[0] = 0;
+        dim = DIM_MANAGEMENT_PATH*sizeof(BCHAR);
+        TCHAR child[DIM_MANAGEMENT_PATH] = TEXT("");
 
         ret = RegEnumKeyEx(key, i, child, &dim, NULL, NULL, NULL, NULL);
         if (ret != ERROR_SUCCESS) {
@@ -212,11 +206,11 @@ wchar_t **DeviceManagementNode::getChildrenNames() {
             }
             else {
                 lastErrorCode = GetLastError();
-                wcscpy(lastErrorMsg, TEXT("Error enumerating children nodes"));
+                bstrcpy(lastErrorMsg, T("Error enumerating children nodes"));
                 goto finally;
             }
         }
-        childrenName[i] = stringdup(child);
+        childrenName[i] = toMultibyte(child);
     }
 
 
@@ -236,8 +230,8 @@ finally:
  * @param property - the property name
  * @param value - the property value (zero terminated string)
  */
-void DeviceManagementNode::setPropertyValue(const wchar_t* property, const wchar_t* value) {
-    if ((property == NULL) || (value == NULL)) {
+void DeviceManagementNode::setPropertyValue(const BCHAR* prop, const BCHAR* value) {
+    if ((prop == NULL) || (value == NULL)) {
         return;
     }
 
@@ -259,20 +253,25 @@ void DeviceManagementNode::setPropertyValue(const wchar_t* property, const wchar
 
     if (key == 0) {
         lastErrorCode = ERR_INVALID_CONTEXT;
-        wsprintf(lastErrorMsg, TEXT("Invalid context path: %s"), fullContext);
+        bsprintf(lastErrorMsg, T("Invalid context path: %s"), fullContext);
         goto finally;
     }
 
+    TCHAR *p = toWideChar(prop);
+    TCHAR *v = toWideChar(value);
+
     RegSetValueEx(
             key,
-            property,
+            p,
             NULL,
             REG_SZ,  // we currently support only strings
-            (UCHAR*)value,
-            (wcslen(value)+1)*sizeof(wchar_t)
+            (UCHAR*)v,
+            (wcslen(v)+1)*sizeof(wchar_t)
             );
 
-
+    delete [] p;
+    delete [] v;
+    
 finally:
 
     if (key != 0) {
@@ -281,18 +280,17 @@ finally:
 }
 
 /*
- * Device management contexts are expressed as slash '/' separated
- * context path. This function converts the '/' chars in '\\' as
- * accepted by the registry API.
+ * Convert the path in Windows format, changing the slashes in back-slashes
+ * and converting it to wide char.
  *
  * @param str - the string to convert
  *
  * @return  a new-allocated string with the converted path
  */
-wchar_t *DeviceManagementNode::convertSlashes(const wchar_t* str) {
+static wchar_t *toWindows(const BCHAR* str) {
     int i, len;
 
-    len = wcslen(str);
+    len = bstrlen(str);
     wchar_t *ret = new wchar_t[len+1];
 
     for (i=0; i<len; ++i) {
@@ -308,23 +306,23 @@ wchar_t *DeviceManagementNode::convertSlashes(const wchar_t* str) {
 }
 
 void DeviceManagementNode::setFullContext() { 
-    int len = wcslen(context)+wcslen(name)+1;
-    wchar_t *ctx;
-    const wchar_t swkey[] = TEXT("Software");
+    int len = bstrlen(context)+bstrlen(name)+1;
+    BCHAR *ctx;
+    const BCHAR swkey[] = T("/Software");
 
 	if (fullContext)
 		delete [] fullContext;
 
-    ctx = convertSlashes(context);
-    if (wcsstr(context, swkey) == NULL) {
-        len += wcslen(swkey)+1;
-        fullContext = new wchar_t[len+1];
-        wsprintf(fullContext, TEXT("%s\\%s\\%s"), swkey, ctx, name);
+    if (bstrstr(context, swkey) == NULL) {
+        len += bstrlen(swkey)+1;
+        ctx = new BCHAR[len+1];
+        sprintf(ctx, T("%s/%s/%s"), swkey, context, name);
     }
     else {
-        fullContext = new wchar_t[len+1];
-        wsprintf(fullContext, TEXT("%s\\%s"), ctx, name);
+        ctx = new BCHAR[len+1];
+        sprintf(ctx, T("%s/%s"), context, name);
     }
+    fullContext = toWindows(ctx);
     delete [] ctx;
 }
 

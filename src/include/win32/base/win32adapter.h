@@ -19,7 +19,6 @@
 #ifndef INCL_WIN32_ADAPTER
 #define INCL_WIN32_ADAPTER
 
-
 #include <stdarg.h>
 #include <stdio.h>
 
@@ -31,25 +30,28 @@
 #define EXTRA_SECTION_05
 #define EXTRA_SECTION_06
 
-//#define __declspec(ignore)
-#define CHR(c) c
+#define T(_x) _x
+#define CHR(_x)  _x
 
+#define BCHAR char
+//typedef char BCHAR;
+typedef wchar_t WCHAR;
 
-#define wcsprintf wsprintf
+#define bsprintf sprintf 
+#define bstrlen strlen
+#define bstrcpy strcpy
+#define bstrcat strcat
+#define bstrstr strstr
+#define bstrchr strchr
+#define bstrrchr strrchr
+#define bscanf scanf
+#define bstrcmp strcmp
+#define bstricmp _stricmp
+#define bstrncmp strncmp
 
-//inline void wcsprintf(wchar_t* s, wchar_t* format, ...);
-//
-//
-//
-//
-//inline void wcsprintf(wchar_t* s, wchar_t* format, ...) {
-//    va_list args;
-//
-//    va_start( args, format );
-//
-//    vswprintf(s, format, args);
-//
-//    va_end(args);
-//}
+#define bstrncpy strncpy
+#define bstrtol strtol
+#define bstrtoul strtoul
+
 
 #endif

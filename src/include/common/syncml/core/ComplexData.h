@@ -48,7 +48,7 @@ class ComplexData : public Data {
          * @param data the data
          *
          */
-        ComplexData(const wchar_t* data);
+        ComplexData(const BCHAR* data);
     
         // ---------------------------------------------------------- Public methods
 

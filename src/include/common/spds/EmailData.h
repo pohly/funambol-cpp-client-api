@@ -53,14 +53,14 @@ class EmailData : public ArrayElement {
         bool getReplied() { return replied; }
         void setReplied(bool r) { replied=r; }
         
-        const wchar_t * getReceived() { return received; }
-        void setReceived(const wchar_t * v) { received=v; }
+        const BCHAR * getReceived() { return received; }
+        void setReceived(const BCHAR * v) { received=v; }
 
-        const wchar_t * getCreated() { return created; }
-        void setCreated(const wchar_t * v) { created=v; }
+        const BCHAR * getCreated() { return created; }
+        void setCreated(const BCHAR * v) { created=v; }
 
-        const wchar_t * getModified() { return modified; }
-        void setModified(const wchar_t * v) { modified=v; }
+        const BCHAR * getModified() { return modified; }
+        void setModified(const BCHAR * v) { modified=v; }
 
         bool getDeleted() { return deleted; }
         void setDeleted(bool v) { deleted=v; }
@@ -72,8 +72,8 @@ class EmailData : public ArrayElement {
         void setEmailItem(const MailMessage& v) { emailItem = v; }
 
     // ----------------------------------------------------- Public Methods
-        int parse(const wchar_t *syncmlData, size_t len = StringBuffer::npos) ;
-        wchar_t *format() ;
+        int parse(const BCHAR *syncmlData, size_t len = StringBuffer::npos) ;
+        BCHAR *format() ;
 
         ArrayElement* clone() { return new EmailData(*this); }
    

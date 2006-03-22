@@ -20,7 +20,7 @@
 
     #include "spds/DataTransformer.h"
 
-    #define DT_B64 TEXT("b64")
+    #define DT_B64 T("b64")
 
     class B64Decoder : public DataTransformer {
         public:
@@ -40,3 +40,4 @@
     };
 
  #endif
+

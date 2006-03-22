@@ -24,12 +24,12 @@
 #include "base/util/ArrayList.h"
 #include "syncml/core/ResponseCommand.h"
 
-#define RESULTS_COMMAND_NAME TEXT("Results")
+#define RESULTS_COMMAND_NAME T("Results")
 
 class Results : public ResponseCommand {
     
     private:               
-        wchar_t* COMMAND_NAME;    
+        BCHAR* COMMAND_NAME;    
     
     // ---------------------------------------------------------- Public data    
     public:
@@ -50,8 +50,8 @@ class Results : public ResponseCommand {
          *
          */
         Results(CmdID*      cmdID,
-                wchar_t*    msgRef,
-                wchar_t*    cmdRef,
+                BCHAR*    msgRef,
+                BCHAR*    cmdRef,
                 Meta*       meta,
                 ArrayList*  targetRef,  // it could be and arraylist with only the first element assigned
                 ArrayList*  sourceRef,  // it could be and arraylist with only the first element assigned
@@ -62,7 +62,7 @@ class Results : public ResponseCommand {
          *
          * @return the command name
          */
-        wchar_t* getName();
+        BCHAR* getName();
 
         ArrayElement* clone();
    

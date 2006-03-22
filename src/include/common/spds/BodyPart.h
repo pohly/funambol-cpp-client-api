@@ -35,31 +35,31 @@ class BodyPart : public ArrayElement {
         BodyPart();
 
         // The mime type as specified by MIME standard
-        const wchar_t *getMimeType() const ;
-        void setMimeType(const wchar_t *type) ;
+        const BCHAR *getMimeType() const ;
+        void setMimeType(const BCHAR *type) ;
         
         // The character set: UTF-8
-        const wchar_t *getCharset() const ;
-        void setCharset(const wchar_t *cs) ;
+        const BCHAR *getCharset() const ;
+        void setCharset(const BCHAR *cs) ;
         
         // The content encoding: 7bit, 8bit, base64, quoted-printable
-        const wchar_t *getEncoding() const ;
-        void setEncoding(const wchar_t *type) ;
+        const BCHAR *getEncoding() const ;
+        void setEncoding(const BCHAR *type) ;
 
         // The content is the real content for the body
         // or a path name to a temp file for the attachment
-        const wchar_t *getContent() const ;
-        void setContent(const wchar_t *cont) ;
+        const BCHAR *getContent() const ;
+        void setContent(const BCHAR *cont) ;
 
         // For multipart message.
         // Values: inline, attachment
-        const wchar_t *getDisposition() const ;
-        void setDisposition(const wchar_t *type) ;
+        const BCHAR *getDisposition() const ;
+        void setDisposition(const BCHAR *type) ;
 
         // For multipart message.
         // It is the name of the file attached (without path)
-        const wchar_t *getFilename() const ;
-        void setFilename(const wchar_t *type) ;
+        const BCHAR *getFilename() const ;
+        void setFilename(const BCHAR *type) ;
 
 		ArrayElement* clone() ;
 };

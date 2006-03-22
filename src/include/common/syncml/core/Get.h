@@ -23,13 +23,13 @@
 #include "base/fscapi.h"
 #include "syncml/core/ItemizedCommand.h"
 
-#define GET_COMMAND_NAME TEXT("Get")
+#define GET_COMMAND_NAME T("Get")
 
 class Get : public ItemizedCommand {
     
     private:       
-        wchar_t* lang;
-        wchar_t* COMMAND_NAME;
+        BCHAR* lang;
+        BCHAR* COMMAND_NAME;
     
     public:
        
@@ -50,7 +50,7 @@ class Get : public ItemizedCommand {
          */
         Get(CmdID* cmdID,
             BOOL noResp,
-            wchar_t* lang,
+            BCHAR* lang,
             Cred* cred,
             Meta* meta,
             ArrayList* items);
@@ -62,21 +62,21 @@ class Get : public ItemizedCommand {
          * @return the preferred language
          *
          */
-        wchar_t* getLang(wchar_t* retLang);
+        BCHAR* getLang(BCHAR* retLang);
     
         /**
          * Sets the preferred language
          *
          * @param lang new preferred language
          */
-        void setLang(wchar_t* lang);
+        void setLang(BCHAR* lang);
 
         /**
          * Gets the command name property
          *
          * @return the command name property
          */   
-        wchar_t* getName();
+        BCHAR* getName();
     
         ArrayElement* clone();
 

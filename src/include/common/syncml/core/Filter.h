@@ -34,7 +34,7 @@ class Filter {
     private:
        Item*   field      ;
        Item*   record     ;
-       wchar_t* filterType;
+       BCHAR* filterType;
        Meta*    meta;
 
        void initialize();
@@ -58,7 +58,7 @@ class Filter {
         Filter(Meta*    meta      ,
                Item*    field     ,
                Item*    record    ,
-               wchar_t* filterType);
+               BCHAR* filterType);
 
         ~Filter();
 
@@ -112,7 +112,7 @@ class Filter {
          *
          * @return the filter type
          */
-        wchar_t* getFilterType(wchar_t* type = NULL);
+        BCHAR* getFilterType(BCHAR* type = NULL);
     
         /**
          * Sets the filter type
@@ -120,7 +120,7 @@ class Filter {
          * @param the filter type
          *
          */
-        void setFilterType(wchar_t* type);
+        void setFilterType(BCHAR* type);
 
         /**
          * Creates a clone of this Filter

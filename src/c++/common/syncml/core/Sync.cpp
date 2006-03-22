@@ -22,8 +22,8 @@ Sync::Sync() {
     
     initialize();
 
-    COMMAND_NAME = new wchar_t[wcslen(SYNC_COMMAND_NAME) + 1];
-    wsprintf(COMMAND_NAME, SYNC_COMMAND_NAME);
+    COMMAND_NAME = new BCHAR[bstrlen(SYNC_COMMAND_NAME) + 1];
+    bsprintf(COMMAND_NAME, SYNC_COMMAND_NAME);
 }
 
 Sync::~Sync() {
@@ -62,8 +62,8 @@ Sync::Sync(CmdID* cmdID,
 
     initialize();
 
-    COMMAND_NAME = new wchar_t[wcslen(SYNC_COMMAND_NAME) + 1];
-    wsprintf(COMMAND_NAME, SYNC_COMMAND_NAME);    
+    COMMAND_NAME = new BCHAR[bstrlen(SYNC_COMMAND_NAME) + 1];
+    bsprintf(COMMAND_NAME, SYNC_COMMAND_NAME);    
     
     
     setCommands(commands);
@@ -185,7 +185,7 @@ void Sync::setNumberOfChanges(long numberOfChanges) {
     this->numberOfChanges = numberOfChanges;
 }
 
-wchar_t* Sync::getName() {
+BCHAR* Sync::getName() {
     return COMMAND_NAME;
 }
 

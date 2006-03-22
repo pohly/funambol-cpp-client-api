@@ -37,7 +37,7 @@ class LogErrorHandler: public ErrorHandler {
          *
          * @return None.
          */
-        void warning(int code, const wchar_t* msg);
+        void warning(int code, const BCHAR* msg);
 
         /**
          * @brief Handle an error condition
@@ -49,7 +49,7 @@ class LogErrorHandler: public ErrorHandler {
          *
          * @return true if the synchronization must be stopped.
          */
-        bool error(int code, const wchar_t* msg);
+        bool error(int code, const BCHAR* msg);
         
         /**
          * @brief Handle a fatal error
@@ -61,7 +61,7 @@ class LogErrorHandler: public ErrorHandler {
          *
          * @return None
          */
-        void fatalError(int code, const wchar_t* msg);
+        void fatalError(int code, const BCHAR* msg);
         
         /**
          * @brief clone the error handler object.

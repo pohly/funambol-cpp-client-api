@@ -28,7 +28,7 @@
      * @param name - the buffer that will contain the node name
      * @param size - buffer size
      */
-    void getNodeName(const wchar_t* node, wchar_t* name, int size) EXTRA_SECTION_02;
+    void getNodeName(const BCHAR* node, BCHAR* name, int size) EXTRA_SECTION_02;
 
     /*
      * Extracts the node context from the node path
@@ -37,6 +37,6 @@
      * @param context - the buffer that will contain the node context
      * @param size - buffer size
      */
-    void getNodeContext(const wchar_t* node, wchar_t* context, int size) EXTRA_SECTION_02;
+    void getNodeConT(const BCHAR* node, BCHAR* context, int size) EXTRA_SECTION_02;
 
 #endif

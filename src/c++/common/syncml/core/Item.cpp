@@ -59,8 +59,8 @@ void Item::initialize() {
  */
 Item::Item( Target* target,
             Source* source,
-            wchar_t* tParent,
-            wchar_t* sParent,
+            BCHAR* tParent,
+            BCHAR* sParent,
             Meta*   meta  ,
             ComplexData* data,
             BOOL moreData) {
@@ -239,11 +239,11 @@ void Item::setMoreData(BOOL moreData) {
  *
  * @return the taregtParent property value
  */
-wchar_t* Item::getTargetParent(wchar_t* parent) {
+BCHAR* Item::getTargetParent(BCHAR* parent) {
     if (parent == NULL) {
         return targetParent;
     }
-    return wcscpy(parent, targetParent);
+    return bstrcpy(parent, targetParent);
 }
 
 /**
@@ -251,7 +251,7 @@ wchar_t* Item::getTargetParent(wchar_t* parent) {
  *
  * @param parent the taregtParent property
  */
-void Item::setTargetParent(wchar_t* parent) {
+void Item::setTargetParent(BCHAR* parent) {
     if (targetParent) {
         delete [] targetParent; targetParent = NULL;
     }
@@ -263,11 +263,11 @@ void Item::setTargetParent(wchar_t* parent) {
  *
  * @return the sourceParent property value
  */
-wchar_t* Item::getSourceParent(wchar_t* parent) {
+BCHAR* Item::getSourceParent(BCHAR* parent) {
     if (parent == NULL) {
         return sourceParent;
     }
-    return wcscpy(parent, sourceParent);
+    return bstrcpy(parent, sourceParent);
 }
 
 /**
@@ -275,7 +275,7 @@ wchar_t* Item::getSourceParent(wchar_t* parent) {
  *
  * @param parent the sourceParent property
  */
-void Item::setSourceParent(wchar_t* parent) {
+void Item::setSourceParent(BCHAR* parent) {
     if (sourceParent) {
         delete [] sourceParent; sourceParent = NULL;
     }

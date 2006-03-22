@@ -29,20 +29,20 @@
 #include "syncml/core/Cred.h"
 #include "syncml/core/Meta.h"
 
-#define SYNCHDR_COMMAND_NAME TEXT("SyncHdr")
+#define SYNCHDR_COMMAND_NAME T("SyncHdr")
 
 class SyncHdr {
     
      // ------------------------------------------------------------ Private data
     private:
-        wchar_t*    COMMAND_NAME;
+        BCHAR*    COMMAND_NAME;
         VerDTD*     verDTD   ;
         VerProto*   verProto ;
         SessionID*  sessionID;
-        wchar_t*    msgID    ;
+        BCHAR*    msgID    ;
         Target*     target   ;
         Source*     source   ;
-        wchar_t*    respURI  ;
+        BCHAR*    respURI  ;
         BOOL        noResp   ;
         Cred*       cred     ;
         Meta*       meta     ;
@@ -71,10 +71,10 @@ class SyncHdr {
         SyncHdr(VerDTD*      verDTD,
                 VerProto*    verProto,
                 SessionID*   sessionID,
-                wchar_t*     msgID,
+                BCHAR*     msgID,
                 Target*      target,
                 Source*      source,
-                wchar_t*     respURI,
+                BCHAR*     respURI,
                 BOOL         noResp,
                 Cred*        cred,
                 Meta*        meta);
@@ -128,14 +128,14 @@ class SyncHdr {
          *
          * @return msgID the message identifier
          */
-        wchar_t* getMsgID(wchar_t* retMsgID);
+        BCHAR* getMsgID(BCHAR* retMsgID);
 
         /**
          * Sets the message identifier
          *
          * @param msgID the message identifier
          */
-        void setMsgID(wchar_t* msgID);
+        void setMsgID(BCHAR* msgID);
 
         /**
          * Gets the Target object
@@ -170,14 +170,14 @@ class SyncHdr {
          *
          * @return respURI the response URI
          */
-        wchar_t* getRespURI(wchar_t* respURI);
+        BCHAR* getRespURI(BCHAR* respURI);
 
         /**
          * Sets the response URI.
          *
          * @param uri the new response URI; NOT NULL
          */
-        void setRespURI(wchar_t* uri);
+        void setRespURI(BCHAR* uri);
 
         /**
          * Gets noResp property
@@ -228,7 +228,7 @@ class SyncHdr {
          */
         void setMeta(Meta* meta);
 
-        wchar_t* getName();
+        BCHAR* getName();
         
         SyncHdr* clone();
 };

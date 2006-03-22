@@ -39,9 +39,9 @@ CTPropParam::~CTPropParam() {
 
 }
 
-CTPropParam::CTPropParam(wchar_t*   propName,
+CTPropParam::CTPropParam(BCHAR*   propName,
                         ArrayList* valEnum,
-                        wchar_t*   displayName,
+                        BCHAR*   displayName,
                         ArrayList* ctParameters) {
 
     setPropName(propName);
@@ -68,10 +68,10 @@ CTPropParam::CTPropParam(wchar_t*   propName,
  * @param ctParameters the array of content type parameters - NOT NULL
  *
  */
-CTPropParam::CTPropParam(wchar_t* propName,
-                   wchar_t* dataType,
+CTPropParam::CTPropParam(BCHAR* propName,
+                   BCHAR* dataType,
                    int size,
-                   wchar_t* displayName,
+                   BCHAR* displayName,
                    ArrayList* ctParameters) {
 
     setPropName(propName);
@@ -89,11 +89,11 @@ CTPropParam::CTPropParam(wchar_t* propName,
  *
  * @return the property name
  */
-wchar_t* CTPropParam::getPropName(wchar_t* retPropName) {
+BCHAR* CTPropParam::getPropName(BCHAR* retPropName) {
     if (retPropName == NULL) {
         return propName;
     }
-    return wcscpy(retPropName, propName);
+    return bstrcpy(retPropName, propName);
 }
 
 /**
@@ -101,7 +101,7 @@ wchar_t* CTPropParam::getPropName(wchar_t* retPropName) {
  *
  * @param propName the property name
  */
-void CTPropParam::setPropName(wchar_t* propName) {
+void CTPropParam::setPropName(BCHAR* propName) {
     if (this->propName) {
         delete [] this->propName; this->propName = NULL;
     }
@@ -135,11 +135,11 @@ void CTPropParam::setValEnum(ArrayList* valEnum) {
  *
  * @return the display name property
  */
-wchar_t* CTPropParam::getDisplayName(wchar_t* retDisplayName) {
+BCHAR* CTPropParam::getDisplayName(BCHAR* retDisplayName) {
     if (retDisplayName == NULL) {
         return displayName;
     }
-    return wcscpy(retDisplayName, displayName);
+    return bstrcpy(retDisplayName, displayName);
 }
 
 /**
@@ -147,7 +147,7 @@ wchar_t* CTPropParam::getDisplayName(wchar_t* retDisplayName) {
  *
  * @param displayName the display name of a given content type property
  */
-void CTPropParam::setDisplayName(wchar_t* displayName) {
+void CTPropParam::setDisplayName(BCHAR* displayName) {
     if (this->displayName) {
         delete [] this->displayName; this->displayName = NULL;
     }
@@ -159,11 +159,11 @@ void CTPropParam::setDisplayName(wchar_t* displayName) {
  *
  * @return the data type propeties
  */
-wchar_t* CTPropParam::getDataType(wchar_t* retDataType) {
+BCHAR* CTPropParam::getDataType(BCHAR* retDataType) {
     if (retDataType == NULL) {
         return dataType;
     }
-    return wcscpy(retDataType, dataType);
+    return bstrcpy(retDataType, dataType);
 }
 
 /**
@@ -171,7 +171,7 @@ wchar_t* CTPropParam::getDataType(wchar_t* retDataType) {
  *
  * @param dataType the data type of a given content type property
  */
-void CTPropParam::setDataType(wchar_t* dataType) {
+void CTPropParam::setDataType(BCHAR* dataType) {
     if (this->dataType) {
         delete [] this->dataType; this->dataType = NULL;
     }

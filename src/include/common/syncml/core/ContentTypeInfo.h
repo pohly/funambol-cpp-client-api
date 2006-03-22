@@ -28,8 +28,8 @@ class ContentTypeInfo : public ArrayElement {
     
      // ------------------------------------------------------------ Private data
     private:
-        wchar_t* ctType;
-        wchar_t* verCT;
+        BCHAR* ctType;
+        BCHAR* verCT;
     
     
     // ---------------------------------------------------------- Protected data    
@@ -49,35 +49,35 @@ class ContentTypeInfo : public ArrayElement {
          *                specification - NOT NULL
          *
          */
-        ContentTypeInfo(wchar_t* ctType, wchar_t* verCT);
+        ContentTypeInfo(BCHAR* ctType, BCHAR* verCT);
 
         /**
          * Gets the content type properties
          *
          * @return the content type properties
          */
-        wchar_t* getCTType(wchar_t* retCTType);
+        BCHAR* getCTType(BCHAR* retCTType);
     
         /**
          * Sets the content type properties
          *
          * @param ctType the content type properties
          */
-        void setCTType(wchar_t* ctType);
+        void setCTType(BCHAR* ctType);
 
         /**
          * Gets the version of the content type
          *
          * @return the version of the content type
          */
-        wchar_t* getVerCT(wchar_t* retVerCT);
+        BCHAR* getVerCT(BCHAR* retVerCT);
 
         /**
          * Sets the version of the content type
          *
          * @param verCT the version of the content type
          */
-        void setVerCT(wchar_t* verCT);
+        void setVerCT(BCHAR* verCT);
 
         ArrayElement* clone();
 };

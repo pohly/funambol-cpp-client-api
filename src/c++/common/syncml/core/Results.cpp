@@ -21,8 +21,8 @@
 
  
 Results::Results() {
-    COMMAND_NAME = new wchar_t[wcslen(RESULTS_COMMAND_NAME) + 1];
-    wsprintf(COMMAND_NAME, RESULTS_COMMAND_NAME);
+    COMMAND_NAME = new BCHAR[bstrlen(RESULTS_COMMAND_NAME) + 1];
+    bsprintf(COMMAND_NAME, RESULTS_COMMAND_NAME);
 }
 Results::~Results() {
     if (COMMAND_NAME) {
@@ -44,8 +44,8 @@ Results::~Results() {
 *
 */
 Results::Results(CmdID*      cmdID,
-                 wchar_t*    msgRef,
-                 wchar_t*    cmdRef,
+                 BCHAR*    msgRef,
+                 BCHAR*    cmdRef,
                  Meta*       meta,
                  ArrayList*  targetRef,
                  ArrayList*  sourceRef,
@@ -55,8 +55,8 @@ Results::Results(CmdID*      cmdID,
                                       items ) {
 
     
-    COMMAND_NAME = new wchar_t[wcslen(RESULTS_COMMAND_NAME) + 1];
-    wsprintf(COMMAND_NAME, RESULTS_COMMAND_NAME);
+    COMMAND_NAME = new BCHAR[bstrlen(RESULTS_COMMAND_NAME) + 1];
+    bsprintf(COMMAND_NAME, RESULTS_COMMAND_NAME);
     
     setMeta(meta);
 }
@@ -66,7 +66,7 @@ Results::Results(CmdID*      cmdID,
 *
 * @return the command name
 */
-wchar_t* Results::getName() {
+BCHAR* Results::getName() {
     return COMMAND_NAME;
 }
 

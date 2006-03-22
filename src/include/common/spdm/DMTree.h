@@ -26,14 +26,14 @@
 
     private:
 
-        wchar_t *root;
+        BCHAR *root;
 
     protected:
 
-        virtual bool isLeaf(const wchar_t *node);
+        virtual bool isLeaf(const BCHAR *node);
 
     public:
-        DMTree(const wchar_t *root);
+        DMTree(const BCHAR *root);
 
         virtual ~DMTree();
 
@@ -46,7 +46,7 @@
          * The ManagementNode is created with the new operator and must be
          * discarded by the caller with the operator delete.
          */
-        virtual ManagementNode* getManagementNode(const wchar_t* node);
+        virtual ManagementNode* getManagementNode(const BCHAR* node);
 
         void setManagementNode(ManagementNode& n);
 

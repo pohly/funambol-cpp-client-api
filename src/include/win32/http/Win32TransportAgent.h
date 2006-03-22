@@ -70,9 +70,8 @@
         /*
          * Sends the given SyncML message to the server specified
          * by the instal property 'url'. Returns the response status code.
-         * Use getResponse() to get the server response.
          */
-        wchar_t* sendMessage(wchar_t* msg);
+        BCHAR* sendMessage(const BCHAR* msg);
     };
 
 #endif

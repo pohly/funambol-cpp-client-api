@@ -84,11 +84,11 @@ void SourceFilter::setClause(LogicalClause& clause) {
  *
  * @return type
  */
-wchar_t* SourceFilter::getType(wchar_t* buf) {
+BCHAR* SourceFilter::getType(BCHAR* buf) {
 	if (buf == NULL) {
         return type;
     }
-    return wcscpy(buf, type);   
+    return bstrcpy(buf, type);   
 }
 
 /**
@@ -96,7 +96,7 @@ wchar_t* SourceFilter::getType(wchar_t* buf) {
  *
  * @param type the new type value
  */
-void SourceFilter::setType(wchar_t* type) {
+void SourceFilter::setType(BCHAR* type) {
     if (this->type) {
         delete [] this->type; this->type = NULL;
     }

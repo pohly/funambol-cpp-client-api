@@ -32,8 +32,8 @@
         int      cmdID ;
         int      msgRef;
         int      cmdRef;
-        wchar_t* cmd   ;
-        wchar_t* key   ;
+        BCHAR* cmd   ;
+        BCHAR* key   ;
         int      data  ;
 
     public:
@@ -48,7 +48,7 @@
          *
          * @param key - the key
          */
-        SyncItemStatus(wchar_t* key) EXTRA_SECTION_01;
+        SyncItemStatus(BCHAR* key) EXTRA_SECTION_01;
 
         ~SyncItemStatus() EXTRA_SECTION_01;
 
@@ -59,7 +59,7 @@
          *
          * @param key - buffer where the key will be stored
          */
-        wchar_t* getKey(wchar_t* key) EXTRA_SECTION_01;
+        BCHAR* getKey(BCHAR* key) EXTRA_SECTION_01;
 
         /*
          * Changes the SyncItemStatus key. The key must not be longer than DIM_KEY_SYNC_ITEM_STATUS
@@ -67,7 +67,7 @@
          *
          * @param key - the key
          */
-        void setKey(wchar_t* key) EXTRA_SECTION_01;
+        void setKey(BCHAR* key) EXTRA_SECTION_01;
 
          /*
          * Returns the SyncItemStatus's command name. If cmd is NULL, the internal buffer is
@@ -76,7 +76,7 @@
          *
          * @param cmd - buffer where the cmd will be stored
          */
-        wchar_t* getCmd(wchar_t* cmd) EXTRA_SECTION_01;
+        BCHAR* getCmd(BCHAR* cmd) EXTRA_SECTION_01;
 
         /*
          * Changes the SyncItemStatus cmd. The cmd must not be longer than DIM_COMMAND_SYNC_ITEM_STATUS
@@ -84,7 +84,7 @@
          *
          * @param cmd - the cmd
          */
-        void setCmd(wchar_t* cmd) EXTRA_SECTION_01;
+        void setCmd(BCHAR* cmd) EXTRA_SECTION_01;
 
 
         /*

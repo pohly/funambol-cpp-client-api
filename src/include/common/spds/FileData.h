@@ -17,23 +17,23 @@
  */
 
 
-#ifndef INCL_FILE
-#define INCL_FILE
+#ifndef INCL_FILEDATA
+#define INCL_FILEDATA
 
 #include "base/util/ArrayElement.h"
+#include "base/util/WString.h"
 #include "base/util/StringBuffer.h"
-#include "spds/MailMessage.h"
 
 class FileData : public ArrayElement {
     
     // ------------------------------------------------------- Private data
     private:
-        StringBuffer file;
-		StringBuffer name;
-		StringBuffer created;
-		StringBuffer modified;
-		StringBuffer accessed;
-		StringBuffer attributes;
+        WString file;
+		WString name;
+		WString created;
+		WString modified;
+		WString accessed;
+		WString attributes;
 		bool hidden;
 		bool system;
 		bool archived;
@@ -41,9 +41,9 @@ class FileData : public ArrayElement {
 		bool writable;
 		bool readable;
 		bool executable;
-		StringBuffer cttype;
+		WString cttype;
 		StringBuffer body;
-		StringBuffer enc;
+		WString enc;
 		int size;
 
         // represents the presence of their equivalent tag
@@ -54,6 +54,12 @@ class FileData : public ArrayElement {
         bool isWritablePresent;
         bool isReadablePresent;
         bool isExecutablePresent;
+
+        /*
+        * return the length for the base64 array starting from length of the original array
+        */
+        int lengthForB64(int len);
+
     public:
     // ------------------------------------------------------- Constructors
         FileData();
@@ -102,8 +108,8 @@ class FileData : public ArrayElement {
 		const wchar_t* getCttype() { return cttype; }
 		void setCttype(const wchar_t* v) { cttype = v; } 
 
-        const wchar_t* getBody() { return body; }
-		void setBody(const wchar_t* v) { body = v; } 
+        const char* getBody() { return body; }
+		void setBody(const char* v, int len);
 
 		const wchar_t* getEnc() { return enc; }
 		void setEnc(const wchar_t* v) { enc = v; } 
@@ -112,8 +118,8 @@ class FileData : public ArrayElement {
 		void setSize(int v) { size = v; }
         
     // ----------------------------------------------------- Public Methods
-        int parse(const wchar_t *syncmlData, size_t len = StringBuffer::npos) ;
-        wchar_t *format() ;
+        int parse(const char *syncmlData, size_t len = WString::npos) ;
+        char *format() ;
 
         ArrayElement* clone() { return new FileData(*this); }
    

@@ -18,10 +18,10 @@
 #ifndef INCL_QUOTED_PRINTABLE_H
 #define INCL_QUOTED_PRINTABLE_H
 
-wchar_t *qp_decode(const wchar_t *qp);
-wchar_t *qp_encode(const wchar_t *qp);
+BCHAR *qp_decode(const BCHAR *qp);
+BCHAR *qp_encode(const BCHAR *qp);
 
-bool qp_isNeed(const wchar_t *in);
+bool qp_isNeed(const BCHAR *in);
 
 #endif
 

@@ -39,7 +39,7 @@
         /*
          * It include the common part of getSyncHdrStatusCode and getAlertStatusCode
          */
-        int getStatusCode(SyncBody* syncBody, SyncSource* source, wchar_t* commandName) EXTRA_SECTION_01;
+        int getStatusCode(SyncBody* syncBody, SyncSource* source, BCHAR* commandName) EXTRA_SECTION_01;
         /*
          * Returns the status code for the SyncHeader command included
          * in the message sent by the client.
@@ -53,12 +53,12 @@
          * @param syncBody - the SyncBody content
          * @param sourceName - the name of the source
          */
-        int getAlertStatusCode(Status* status, wchar_t* sourceName) EXTRA_SECTION_01;       
+        int getAlertStatusCode(Status* status, const BCHAR* sourceName) EXTRA_SECTION_01;       
 
         /*
         * Return the command of the given commandName
         */
-        AbstractCommand* getCommand(SyncBody* syncBody, wchar_t* commandName, int index) EXTRA_SECTION_01;
+        AbstractCommand* getCommand(SyncBody* syncBody, BCHAR* commandName, int index) EXTRA_SECTION_01;
         
          /*
         * To get a generic array element. It returns the <index> arrayElement it founds.
@@ -76,7 +76,7 @@
         /*
         * Process a generic syncml message and return a SyncML object
         */
-        SyncML* processMsg(wchar_t* msg) EXTRA_SECTION_01;
+        SyncML* processMsg(BCHAR* msg) EXTRA_SECTION_01;
 
         /*
          * Processes the initialization response. Returns 0 in case of success, an
@@ -131,12 +131,12 @@
          *
          * @param msg - the SyncHdr message - NOT NULL
          */
-        wchar_t* getRespURI(SyncHdr* msg) EXTRA_SECTION_01;
+        BCHAR* getRespURI(SyncHdr* msg) EXTRA_SECTION_01;
 
         /*
          * Returns an ArrayList containing the command given by commandName. It uses the getCommand method
          */
-        ArrayList* getCommands(SyncBody* syncBody, wchar_t* commandName) EXTRA_SECTION_01;
+        ArrayList* getCommands(SyncBody* syncBody, BCHAR* commandName) EXTRA_SECTION_01;
        
 
     };

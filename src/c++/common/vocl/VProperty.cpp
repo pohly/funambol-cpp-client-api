@@ -22,8 +22,8 @@
 
 VProperty::VProperty(wchar_t* propname, wchar_t* propvalue) {
     
-    name = (propname) ? stringdup(propname) : NULL;
-    value = (propvalue) ? stringdup(propvalue) : NULL;	
+    name = (propname) ? wstrdup(propname) : NULL;
+    value = (propvalue) ? wstrdup(propvalue) : NULL;	
     parameters = new ArrayList();
 }
 
@@ -85,7 +85,7 @@ wchar_t* VProperty::getValue(wchar_t* buf, int size) {
 void VProperty::addParameter (const wchar_t* paramName, const wchar_t* paramValue) {
 	
     if(paramName) {
-    KeyValuePair *parameter = new KeyValuePair(paramName, paramValue);
+    WKeyValuePair *parameter = new WKeyValuePair(paramName, paramValue);
     parameters->add((ArrayElement &)*parameter);
 
     delete parameter; parameter = NULL;
@@ -96,8 +96,8 @@ void VProperty::removeParameter(wchar_t* paramName) {
     
     if (parameters != NULL) {
         for (int i=0; i<parameters->size(); i++){
-            KeyValuePair *parameter; 
-            parameter = (KeyValuePair* )parameters->get(i);
+            WKeyValuePair *parameter; 
+            parameter = (WKeyValuePair* )parameters->get(i);
             if(!wcscmp(parameter->getKey(), paramName)) {
                 parameters->remove(i);
                 break;
@@ -109,8 +109,8 @@ bool VProperty::containsParameter(wchar_t* paramName) {
     
     if (parameters != NULL) {
         for (int i=0; i<parameters->size(); i++){
-            KeyValuePair *parameter; 
-            parameter = (KeyValuePair* )parameters->get(i);
+            WKeyValuePair *parameter; 
+            parameter = (WKeyValuePair* )parameters->get(i);
             if(!wcscmp(parameter->getKey(), paramName)){
                 return true;
             }
@@ -123,8 +123,8 @@ wchar_t* VProperty::getParameterValue(wchar_t* paramName) {
     
     if (parameters != NULL) {
 	    for (int i=0; i<parameters->size(); i++) {
-            KeyValuePair *parameter; 
-            parameter = (KeyValuePair* )parameters->get(i);
+            WKeyValuePair *parameter; 
+            parameter = (WKeyValuePair* )parameters->get(i);
             if(!wcscmp(parameter->getKey(), paramName))
                 return (parameter->getValue());
         }
@@ -138,7 +138,7 @@ void VProperty::set(wchar_t** p, const wchar_t* v) {
     if (*p) {
         delete [] *p;
     }
-    *p = (v) ? stringdup(v) : NULL;
+    *p = (v) ? wstrdup(v) : NULL;
 }
 
 ArrayElement* VProperty::clone() {
@@ -152,8 +152,8 @@ ArrayElement* VProperty::clone() {
 
         if (parameters != NULL) {
             for (int i=0; i<parameters->size(); i++) {
-                KeyValuePair* parameterCopy;
-                parameterCopy = (KeyValuePair*)parameters->get(i)->clone();
+                WKeyValuePair* parameterCopy;
+                parameterCopy = (WKeyValuePair*)parameters->get(i)->clone();
                 cloneProperty->addParameter(parameterCopy->getKey(), parameterCopy->getValue());
             }
         }
@@ -174,8 +174,8 @@ wchar_t* VProperty::toString() {
         wcscpy(propertyString, name);
         if(parameterCount()>0) {
             for (int i=0; i<parameters->size(); i++) {
-                KeyValuePair *parameter;
-                parameter = (KeyValuePair*)parameters->get(i);
+                WKeyValuePair *parameter;
+                parameter = (WKeyValuePair*)parameters->get(i);
                 if(parameter->getKey()!= NULL) {
                     wcscat(propertyString, TEXT(";"));
                     wcscat(propertyString, parameter->getKey());
@@ -196,8 +196,8 @@ wchar_t* VProperty::toString() {
 
 wchar_t* VProperty::getParameter(int index){
 
-    KeyValuePair *parameter;
-    parameter = (KeyValuePair*)parameters->get(index);
+    WKeyValuePair *parameter;
+    parameter = (WKeyValuePair*)parameters->get(index);
     return parameter->getKey();
 }
 

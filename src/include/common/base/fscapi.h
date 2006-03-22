@@ -53,7 +53,8 @@
 
     #ifdef _WIN32_WCE
         #include "base/time.h"
-        #include "base/PPC2003adapter.h" 
+        //#include "base/PPC2003adapter.h" 
+        #include "base/winmobileadapter.h" 
     #endif
 
     #if defined(__PALMOS__)
@@ -73,7 +74,7 @@
       
     #endif
     
-    extern wchar_t lastErrorMsg[];
+    extern BCHAR lastErrorMsg[];
     extern int  lastErrorCode;
 
     void resetError();

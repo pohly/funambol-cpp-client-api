@@ -28,19 +28,19 @@ class SourceManagementNode : public DeviceManagementNode {
 
     public:
         // ------------------------------------------ Constructors & destructors
-        SourceManagementNode( const wchar_t*   context,
-                              const wchar_t*   name   ) EXTRA_SECTION_02;
+        SourceManagementNode( const BCHAR*   context,
+                              const BCHAR*   name   ) EXTRA_SECTION_02;
 
-        SourceManagementNode( const wchar_t*    context,
-                              const wchar_t*    name   ,
+        SourceManagementNode( const BCHAR*    context,
+                              const BCHAR*    name   ,
                               SyncSourceConfig& config ) EXTRA_SECTION_02;
 
         ~SourceManagementNode() EXTRA_SECTION_02;
 
         // ------------------------------------------------------------- Methods
 
-        void getPropertyValue(const wchar_t* property, wchar_t* v, int size) EXTRA_SECTION_02;
-        void setPropertyValue(const wchar_t* property, const wchar_t* value) EXTRA_SECTION_02;
+        void getPropertyValue(const BCHAR* property, BCHAR* v, int size) EXTRA_SECTION_02;
+        void setPropertyValue(const BCHAR* property, const BCHAR* value) EXTRA_SECTION_02;
 
         ArrayElement* clone() EXTRA_SECTION_02;
 

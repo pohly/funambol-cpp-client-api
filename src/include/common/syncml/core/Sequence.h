@@ -25,12 +25,12 @@
 #include "syncml/core/AbstractCommand.h"
 
 
-#define SEQUENCE_COMMAND_NAME TEXT("Sequence")
+#define SEQUENCE_COMMAND_NAME T("Sequence")
 
 class Sequence : public AbstractCommand {
     
     private:               
-        wchar_t* COMMAND_NAME;       
+        BCHAR* COMMAND_NAME;       
         ArrayList* commands;
     
     // ---------------------------------------------------------- Public data    
@@ -74,7 +74,7 @@ class Sequence : public AbstractCommand {
          *
          * @return the command name
          */
-        wchar_t* getName();
+        BCHAR* getName();
         
         ArrayElement* clone();
 };

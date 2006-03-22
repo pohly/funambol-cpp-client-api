@@ -41,16 +41,16 @@ BOOL EstablishConnection() {
     
     // First we check if we might have a connection
     DWORD  pdwStatus = 0;
-    LOG.info(TEXT("Establish connection: test internet connection status..."));
+    LOG.info(T("Establish connection: test internet connection status..."));
     ConnMgrConnectionStatus(phWebConnection, &pdwStatus);
     
     if (pdwStatus == CONNMGR_STATUS_CONNECTED) {
-        LOG.info(TEXT("Arleady connected"));
+        LOG.info(T("Arleady connected"));
         //We are already connected!        
         return TRUE;
     }
     else {
-        LOG.info(TEXT("Not connected: try to connect..."));
+        LOG.info(T("Not connected: try to connect..."));
         //We are not connected, so lets try:
         //The CONNECTIONINFO is the structure that 
         //tells Connection Manager how we want
@@ -70,21 +70,21 @@ BOOL EstablishConnection() {
         sConInfo.bExclusive = FALSE;
         sConInfo.bDisabled = FALSE;
         sConInfo.guidDestNet = IID_DestNetInternet;
-        LOG.debug(TEXT("Try to establish connection..."));
+        LOG.debug(T("Try to establish connection..."));
         if (ConnMgrEstablishConnection(&sConInfo,&phWebConnection) == S_OK) {
-            LOG.debug(TEXT("Start internet connection process..."));
+            LOG.debug(T("Start internet connection process..."));
             //We start successfully process!
             for (unsigned int k = 0; k < 6; k++) {
                 ConnMgrConnectionStatus(phWebConnection,&pdwStatus);
 
                 if (pdwStatus == CONNMGR_STATUS_CONNECTED) {
-                    LOG.info(TEXT("Internet connection succesfully completed."));
+                    LOG.info(T("Internet connection succesfully completed."));
                     return TRUE;
 
                 }
                 else {
                     if (pdwStatus == CONNMGR_STATUS_CONNECTIONCANCELED || pdwStatus == CONNMGR_STATUS_WAITINGCONNECTIONABORT) {
-                        LOG.debug(TEXT("Internet connection not succeded."));
+                        LOG.debug(T("Internet connection not succeded."));
                         return FALSE;
             
                     }
@@ -96,17 +96,17 @@ BOOL EstablishConnection() {
                     }
                     
                     if (pdwStatus == CONNMGR_STATUS_CONNECTIONCANCELED || pdwStatus == CONNMGR_STATUS_WAITINGCONNECTIONABORT) {
-                        LOG.debug(TEXT("Internet connection not succeded"));   
+                        LOG.debug(T("Internet connection not succeded"));   
                         return FALSE;
                     }
                 }
             }
-            LOG.debug(TEXT("Internet connection not succeded after connection process"));
+            LOG.debug(T("Internet connection not succeded after connection process"));
             return FALSE;
         }
         else {
             //Connection failed!
-            LOG.info(TEXT("Internet connection failed."));
+            LOG.info(T("Internet connection failed."));
             return FALSE;
            
         }

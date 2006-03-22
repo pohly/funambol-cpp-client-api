@@ -172,8 +172,9 @@ void BusinessDetail::setAssistant (wchar_t* a) {
 }
 
 void BusinessDetail::set(wchar_t** p, wchar_t* v) {
-    safeDelete(p);
-    *p = stringdup(v);
+    if(*p)
+        delete *p;
+    *p = wstrdup(v);
 }
 
 void BusinessDetail::set(vCardProperty** oldProperty, vCardProperty& newProperty) {

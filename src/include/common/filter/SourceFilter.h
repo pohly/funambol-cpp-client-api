@@ -28,7 +28,7 @@ private:
 
     LogicalClause* clause;
     BOOL inclusive;
-    wchar_t* type;
+    BCHAR* type;
 
     // ----------------------------------------------------- Protected interface
 protected:
@@ -98,14 +98,14 @@ public:
      *
      * @return type
      */
-    wchar_t* getType(wchar_t* buf = NULL);
+    BCHAR* getType(BCHAR* buf = NULL);
 
     /**
      * Sets type
      *
      * @param type the new type value
      */
-    void setType(wchar_t* type);
+    void setType(BCHAR* type);
 
 };
 

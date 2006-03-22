@@ -42,7 +42,7 @@ iCalProperty::iCalProperty (wchar_t* v) {
      valuetype     = NULL;
      xParams = NULL;
 
-     value  = (v) ? stringdup(v) : NULL;
+     value  = (v) ? wstrdup(v) : NULL;
 }
 
 iCalProperty::~iCalProperty() {
@@ -429,7 +429,7 @@ void iCalProperty::set(wchar_t** property, wchar_t* v) {
     if (*property) {
         delete [] *property;
     }
-    *property = (v) ? stringdup(v) : NULL;
+    *property = (v) ? wstrdup(v) : NULL;
 }
 
 ArrayElement * iCalProperty::clone() {

@@ -28,24 +28,31 @@ char logmsg[512];
 static FILE* logFile = NULL;
 static BOOL logFileStdout = FALSE;
 
+static char logName[128] = LOG_NAME;
+static char logPath[256] = "/tmp" ;   
+
 // a copy of stderr before it was redirected
 static int fderr = -1;
 
-void setLogFile(const char* configLogFile, BOOL redirectStderr) {
+
+static void setLogFile(const char *path, const char* name, BOOL redirectStderr) {
     if (logFile) {
         fclose(logFile);
         logFile = NULL;
     }
     logFileStdout = FALSE;
-    if (configLogFile != NULL) {
-        if (!strcmp(configLogFile, "-")) {
-            // write to stdout
-            logFileStdout = TRUE;
-        } else {
-            logFile = fopen(configLogFile, "a+" );
-        }
+    
+    if (!strcmp(name, "-")) {
+        // write to stdout
+        logFileStdout = TRUE;
+    } else {
+        char *filename = new char[strlen(path) + strlen(name) + 3];
+        
+        sprintf(filename, "%s/%s", path, name);
+        logFile = fopen(filename, "a+" );
+        delete [] filename;
     }
-
+    
     if (redirectStderr) {
         if (fderr == -1) {
             // remember original stderr
@@ -63,32 +70,36 @@ void setLogFile(const char* configLogFile, BOOL redirectStderr) {
     }
 }
 
-
 /*
 * return a the time to write into log file. If complete is true, it return 
 * the date too, else only hours, minutes, seconds and milliseconds
 */ 
-wchar_t* getCurrentTime(BOOL complete) {
-	 time_t t = time(NULL);
-	 struct tm *sys_time = localtime(&t);
+static BCHAR* getCurrentTime(BOOL complete) {
+    time_t t = time(NULL);
+    struct tm *sys_time = localtime(&t);
 
-	 wchar_t *fmtComplete = TEXT("%04d-%02d-%02d %02d:%02d:%02d");
-    wchar_t *fmt         = TEXT("%02d:%02d:%02d");
+    BCHAR *fmtComplete = T("%04d-%02d-%02d %02d:%02d:%02d");
+    BCHAR *fmt         = T("%02d:%02d:%02d");
 
-    wchar_t* ret = new wchar_t [64];
-    
+    BCHAR* ret = new BCHAR [64];
+
     if (complete) {
-        wsprintf(ret, fmtComplete, sys_time->tm_year, sys_time->tm_mon, sys_time->tm_mday,  
-                      sys_time->tm_hour, sys_time->tm_min, sys_time->tm_sec);
+        bsprintf(ret, fmtComplete, sys_time->tm_year, sys_time->tm_mon, sys_time->tm_mday,  
+                sys_time->tm_hour, sys_time->tm_min, sys_time->tm_sec);
     } else {
-        wsprintf(ret, fmt, sys_time->tm_hour, sys_time->tm_min, sys_time->tm_sec);
+        bsprintf(ret, fmt, sys_time->tm_hour, sys_time->tm_min, sys_time->tm_sec);
     }
     return ret;
 }
 
 
-Log::Log(BOOL resetLog) {
-    if (resetLog) {
+//---------------------------------------------------------------------- Constructors
+
+Log::Log(BOOL resetLog, BCHAR* path, BCHAR* name) {
+
+    setLogPath(path);
+    setLogName(name);
+	if (resetLog) {
         reset();
     }
 }
@@ -99,23 +110,58 @@ Log::~Log() {
     }
 }
 
-void Log::error(const wchar_t* msg) {    
-        printMessage(LOG_ERROR, msg);    
+//---------------------------------------------------------------------- Public methods
+
+void Log::setLogPath(BCHAR* configLogPath) {
+    memset(logPath, 0, 512*sizeof(BCHAR));
+    if (configLogPath != NULL) {
+        bsprintf(logPath, T("%s/"), configLogPath); 
+    } else {
+        bsprintf(logPath, T("%s"), T("./"));
+    }
+    setLogFile(logPath, logName, false);
 }
 
-void Log::info(const wchar_t* msg) {
+void Log::setLogName(BCHAR* configLogName) {
+    
+    memset(logName, 0, 128*sizeof(BCHAR));
+    if (configLogName != NULL) {
+        bsprintf(logName, T("%s"), configLogName); 
+    }
+    else {
+        bsprintf(logName, T("%s"), LOG_NAME);         
+    }
+    setLogFile(logPath, logName, false);
+}
+
+void Log::error(const BCHAR* msg, ...) {    
+    va_list argList;
+    va_start (argList, msg);
+    printMessage(LOG_ERROR, msg, argList);    
+    va_end(argList);
+}
+
+void Log::info(const BCHAR* msg, ...) {
     if (logLevel >= LOG_LEVEL_INFO) {
-        printMessage(LOG_INFO, msg);
+        va_list argList;
+	    va_start (argList, msg);
+        printMessage(LOG_INFO, msg, argList);    
+	    va_end(argList);
+
     }
 }
 
-void Log::debug(const wchar_t* msg) {
+void Log::debug(const BCHAR* msg, ...) {
     if (logLevel >= LOG_LEVEL_DEBUG) {
-        printMessage(LOG_DEBUG, msg);
+	    va_list argList;
+        va_start (argList, msg);
+        printMessage(LOG_DEBUG, msg, argList);    
+        va_end(argList);
+        
     }
 }
 
-void Log::trace(const wchar_t* msg) { 
+void Log::trace(const BCHAR* msg) { 
 }
 
 void Log::setLevel(LogLevel level) {
@@ -130,25 +176,31 @@ BOOL Log::isLoggable(LogLevel level) {
     return (level >= logLevel);
 }
 
-void Log::printMessage(const wchar_t* level, const wchar_t* msg) {       
+void Log::printMessage(const BCHAR* level, const BCHAR* msg, va_list argList) {       
     
     wchar_t* currentTime = NULL;
 
     currentTime = getCurrentTime(false);
     if (!logFileStdout && !logFile) {
-        setLogFile(LOG_NAME);
+        setLogName(LOG_NAME);
     }
-    
-    fwprintf(logFile ? logFile : stdout,
-             TEXT("%s [%s] - %s\n"), currentTime, level, msg);
-    fflush(logFile);
+    FILE *out = logFile ? logFile : stdout ;
+    fprintf(out, "%s [%s] - ", currentTime, level );
+    vfprintf(out, msg, argList);
+	fputs("\n", logFile); 
+    fflush(out);
 
     delete[] currentTime;
 }
 
-void Log::reset() {
+// This is used by clients to log using wchar_t. Redirected to printmessage for
+// posix.
+void Log::printMessageW(const BCHAR* level, const BCHAR* msg, va_list argList)
+{       printMessage(level, msg, argList); }
+
+void Log::reset(const BCHAR* title) {
     if (!logFileStdout && !logFile) {
-        setLogFile(LOG_NAME);
+        setLogName(LOG_NAME);
     }
     
     if (logFile) {

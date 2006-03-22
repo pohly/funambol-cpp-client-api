@@ -18,8 +18,9 @@
  */
 
 #include "base/fscapi.h"
+#include "base/quoted-printable.h"
 
-static int hex2int( wchar_t x )
+static int hex2int( BCHAR x )
 {
     return (x >= '0' && x <= '9') ? x - '0' :
         (x >= 'A' && x <= 'F') ? x - 'A' + 10 :
@@ -27,11 +28,11 @@ static int hex2int( wchar_t x )
         0;
 }
 
-wchar_t *qp_decode(const wchar_t *qp)
+BCHAR *qp_decode(const BCHAR *qp)
 {
-    const wchar_t *in;
-    wchar_t *ret = new wchar_t[wcslen(qp)+1];
-    wchar_t *out = ret;
+    const BCHAR *in;
+    BCHAR *ret = new BCHAR[bstrlen(qp)+1];
+    BCHAR *out = ret;
 
     for (in = qp; *in; in++ ) {
         // Handle encoded chars
@@ -63,9 +64,6 @@ wchar_t *qp_decode(const wchar_t *qp)
         // Copy other characters
         *out = *in;
         out++;
-
-        // FIXME: check if we have now a multi-byte sequence
-        // to convert into multi-byte. Assume UTF-8 at first.
     }
     *out = 0;
     
@@ -73,12 +71,12 @@ wchar_t *qp_decode(const wchar_t *qp)
 }
 
 // A simple version of qp_encoding not used yet
-wchar_t *qp_encode(const wchar_t *qp) {
-	wchar_t QP_DIGITS[] = TEXT("0123456789ABCDEF");
-	wchar_t* ret = new wchar_t[wcslen(qp)*3+1];
+BCHAR *qp_encode(const BCHAR *qp) {
+	BCHAR QP_DIGITS[] = T("0123456789ABCDEF");
+	BCHAR* ret = new BCHAR[bstrlen(qp)*3+1];
 	int i = 0;
 
-	const wchar_t *in;
+	const BCHAR *in;
 	for (in = qp; *in; in++ ) {
 		if ( (0x21 <= in[0]) & (in[0] <= 0x7e) && in[0] != '=' ) {
             ret[i] = *in;
@@ -99,8 +97,8 @@ wchar_t *qp_encode(const wchar_t *qp) {
 	return ret;
 }
 
-bool qp_isNeed(const wchar_t *in) {
-	for(int i = 0; i < int(wcslen(in)); i++) 
+bool qp_isNeed(const BCHAR *in) {
+	for(int i = 0; i < int(bstrlen(in)); i++) 
 		if ( (0x21 > in[i]) | (in[i] > 0x7e) || in[i] == '=' )
 			return true;
 	

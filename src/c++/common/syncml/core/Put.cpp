@@ -20,8 +20,8 @@
  
 Put::Put() {
     lang = NULL;
-    COMMAND_NAME = new wchar_t[wcslen(PUT_COMMAND_NAME) + 1];
-    wsprintf(COMMAND_NAME, PUT_COMMAND_NAME);
+    COMMAND_NAME = new BCHAR[bstrlen(PUT_COMMAND_NAME) + 1];
+    bsprintf(COMMAND_NAME, PUT_COMMAND_NAME);
 }
 
 Put::~Put() {
@@ -45,7 +45,7 @@ Put::~Put() {
 */
 Put::Put(CmdID* cmdID,
          BOOL noResp,
-         wchar_t* lang,
+         BCHAR* lang,
          Cred* cred,
          Meta* meta,
          ArrayList* items ) : ItemizedCommand(cmdID, meta, items) {
@@ -56,8 +56,8 @@ Put::Put(CmdID* cmdID,
     setNoResp(noResp);   
     setLang(lang);    
 
-    COMMAND_NAME = new wchar_t[wcslen(PUT_COMMAND_NAME) + 1];
-    wsprintf(COMMAND_NAME, PUT_COMMAND_NAME);
+    COMMAND_NAME = new BCHAR[bstrlen(PUT_COMMAND_NAME) + 1];
+    bsprintf(COMMAND_NAME, PUT_COMMAND_NAME);
 }
 
 // ----------------------------------------------------------- Public methods
@@ -68,11 +68,11 @@ Put::Put(CmdID* cmdID,
 * @return the preferred language
 *
 */
-wchar_t* Put::getLang(wchar_t* retLang) {
+BCHAR* Put::getLang(BCHAR* retLang) {
     if (retLang == NULL) {
         return lang;
     }
-    return wcscpy(retLang, lang);
+    return bstrcpy(retLang, lang);
 }
 
 /**
@@ -80,7 +80,7 @@ wchar_t* Put::getLang(wchar_t* retLang) {
 *
 * @param lang new preferred language
 */
-void Put::setLang(wchar_t* lang) {
+void Put::setLang(BCHAR* lang) {
     if (this->lang) {
         delete [] this->lang; this->lang = NULL;
     }
@@ -92,7 +92,7 @@ void Put::setLang(wchar_t* lang) {
 *
 * @return the command name
 */
-wchar_t* Put::getName() {
+BCHAR* Put::getName() {
     return COMMAND_NAME;
 }
 

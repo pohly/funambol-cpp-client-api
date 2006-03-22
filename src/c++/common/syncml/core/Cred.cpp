@@ -44,12 +44,12 @@ Cred::Cred(Authentication* auth) {
  *
  * @return type property
  */
-wchar_t* Cred::getType(wchar_t* retType) {
+BCHAR* Cred::getType(BCHAR* retType) {
 
     if (retType == NULL) {
         return authentication->getType(NULL);
     }
-    return wcscpy(retType, authentication->getType(NULL));
+    return bstrcpy(retType, authentication->getType(NULL));
 }
 
 /**
@@ -57,11 +57,11 @@ wchar_t* Cred::getType(wchar_t* retType) {
  *
  * @return format property
  */
-wchar_t* Cred::getFormat(wchar_t* retFormat) {
+BCHAR* Cred::getFormat(BCHAR* retFormat) {
     if (retFormat == NULL) {
         return authentication->getFormat(NULL);
     }
-    return wcscpy(retFormat, authentication->getFormat(NULL));
+    return bstrcpy(retFormat, authentication->getFormat(NULL));
 }
 
 /**
@@ -69,11 +69,11 @@ wchar_t* Cred::getFormat(wchar_t* retFormat) {
  *
  * @return data property
  */
-wchar_t* Cred::getData(wchar_t* retData) {
+BCHAR* Cred::getData(BCHAR* retData) {
  if (retData == NULL) {
         return authentication->getData(NULL);
     }
-    return wcscpy(retData, authentication->getData(NULL));
+    return bstrcpy(retData, authentication->getData(NULL));
 }
 
 /**
@@ -81,11 +81,11 @@ wchar_t* Cred::getData(wchar_t* retData) {
  *
  * @return the username stored in this credential
  */
-wchar_t* Cred::getUsername(wchar_t* retUsername) {
+BCHAR* Cred::getUsername(BCHAR* retUsername) {
     if (retUsername == NULL) {
         return authentication->getUsername(NULL);
     }
-    return wcscpy(retUsername, authentication->getUsername(NULL));
+    return bstrcpy(retUsername, authentication->getUsername(NULL));
 }
 
 
@@ -98,7 +98,7 @@ wchar_t* Cred::getUsername(wchar_t* retUsername) {
  *
  * @return the corresponding Authentication object.
  */
-Authentication* Cred::createAuthentication(wchar_t* data, wchar_t* type) {
+Authentication* Cred::createAuthentication(BCHAR* data, BCHAR* type) {
     return new Authentication(data, type);
 }
 

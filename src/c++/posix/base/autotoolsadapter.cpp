@@ -23,11 +23,11 @@
 #include "base/util/utils.h"
 
 
-long utf8len(const wchar_t* s) {
+long utf8len(const char* s) {
 	 return s ? wcslen(s) : 0;
 }
 
-char* wc2utf8(const wchar_t* s, char* d, unsigned long dsize) {
+char* wc2utf8(const char* s, char* d, unsigned long dsize) {
     
     //
     // First of all, if s is NULL, just return NULL.
@@ -48,7 +48,7 @@ char* wc2utf8(const wchar_t* s, char* d, unsigned long dsize) {
     return d;
 }
 
-wchar_t* utf82wc(const char* s, wchar_t* d, unsigned long dsize) {
+char* utf82wc(const char* s, char* d, unsigned long dsize) {
               
     //
     // First of all, if s is NULL, just return NULL.
@@ -132,3 +132,16 @@ bool readFile(const char* path, char **message, size_t *len, bool binary)
 
     return res;
 }
+
+// TODO: convert to the specified encoding, assuming wc is UTF-8
+char* toMultibyte(const WCHAR *wc, const BCHAR *encoding)
+{
+    return stringdup(wc);
+}
+
+// TODO: convert to UTF-8 from the specified encoding
+wchar_t* toWideChar(const char *mb, const BCHAR *encoding)
+{
+    return stringdup(mb);
+}
+

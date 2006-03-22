@@ -36,7 +36,7 @@ VerDTD::~VerDTD() {
  * @param value the version - NOT NULL
  *
  */
-VerDTD::VerDTD(wchar_t* value) {
+VerDTD::VerDTD(BCHAR* value) {
     this->value = NULL;
     setValue(value);
 }
@@ -48,11 +48,11 @@ VerDTD::VerDTD(wchar_t* value) {
  *
  * @return value properties
  */
-wchar_t* VerDTD::getValue(wchar_t* retValue) {
+BCHAR* VerDTD::getValue(BCHAR* retValue) {
     if (retValue == NULL) {
         return value;
     }
-    return wcscpy(retValue, value);
+    return bstrcpy(retValue, value);
 }
 
 /**
@@ -60,7 +60,7 @@ wchar_t* VerDTD::getValue(wchar_t* retValue) {
  *
  * @param value the version of DTD
  */
-void VerDTD::setValue(wchar_t* value) {
+void VerDTD::setValue(BCHAR* value) {
     if (this->value) {
         delete [] this->value; this->value = NULL;
     }

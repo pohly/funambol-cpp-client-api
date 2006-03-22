@@ -21,9 +21,11 @@
 #define ERR_INVALID_CONTEXT             10000
 #define ERR_SOURCE_DEFINITION_NOT_FOUND 10001
 #define ERR_DM_TREE_NOT_AVAILABLE       10002
+#define ERR_NO_SOURCE_TO_SYNC           10001
 
-#define ERRMSG_INVALID_CONTEXT       TEXT("Invalid context: %s")
-#define ERRMSG_DM_TREE_NOT_AVAILABLE TEXT("Unable to access the DM Tree")
-#define ERRMSG_SOURCE_DEFINITION_NOT_FOUND TEXT("Configuration not found for source %s")
+#define ERRMSG_INVALID_CONTEXT       T("Invalid context: %s")
+#define ERRMSG_DM_TREE_NOT_AVAILABLE T("Unable to access the DM Tree")
+#define ERRMSG_SOURCE_DEFINITION_NOT_FOUND T("Configuration not found for source %s")
+#define ERRMSG_NO_SOURCE_TO_SYNC T("No sources to synchronize")
 
 #endif

@@ -35,8 +35,8 @@
 class ManagementNode : public ArrayElement {
 
     protected:
-        wchar_t *name;
-        wchar_t *context;
+        BCHAR *name;
+        BCHAR *context;
         //
         // Children are dinamically allocated inside this class and given to
         // the list. The list will delete all created objects at descruction
@@ -48,7 +48,7 @@ class ManagementNode : public ArrayElement {
          * Set node attributes (name, context, fullcontext) from a Full Name string
          *
          */
-        int setFullName(const wchar_t *name);
+        int setFullName(const BCHAR *name);
 
     public:
 
@@ -62,7 +62,7 @@ class ManagementNode : public ArrayElement {
          * @param name - the node name
          *
          */
-        ManagementNode(const wchar_t* parent, const wchar_t* name) EXTRA_SECTION_02;
+        ManagementNode(const BCHAR* parent, const BCHAR* name) EXTRA_SECTION_02;
         /*
          * Constructor.
          *
@@ -70,7 +70,7 @@ class ManagementNode : public ArrayElement {
          *                      component is used as name, the rest as context
          *
          */
-        ManagementNode(const wchar_t* fullcontext) EXTRA_SECTION_02;
+        ManagementNode(const BCHAR* fullcontext) EXTRA_SECTION_02;
 
         /* Base class destructor */
         virtual ~ManagementNode() EXTRA_SECTION_02;
@@ -104,7 +104,7 @@ class ManagementNode : public ArrayElement {
          * Returns the full node name
          *
          */
-        virtual wchar_t *getFullName();
+        virtual BCHAR *getFullName();
 
         // ---------------------------------------------------- Abstract methods
 
@@ -119,7 +119,7 @@ class ManagementNode : public ArrayElement {
          *
          * @return NULL on failure
          */
-        virtual wchar_t **getChildrenNames() = 0;
+        virtual BCHAR **getChildrenNames() = 0;
 
         /*
          * Returns the value of the given property
@@ -128,7 +128,7 @@ class ManagementNode : public ArrayElement {
          *
          * @return - the property value. MUST be deleted by the caller with delete []
          */
-        virtual wchar_t *getPropertyValue(const wchar_t* property) = 0;
+        virtual BCHAR *getPropertyValue(const BCHAR* property) = 0;
 
         /*
          * Sets a property value.
@@ -136,7 +136,7 @@ class ManagementNode : public ArrayElement {
          * @param property - the property name
          * @param value - the property value (zero terminated string)
          */
-        virtual void setPropertyValue(const wchar_t* property, const wchar_t* value) = 0;
+        virtual void setPropertyValue(const BCHAR* property, const BCHAR* value) = 0;
 
         /*
          * Creates a new ManagementNode with the exact content of this object.

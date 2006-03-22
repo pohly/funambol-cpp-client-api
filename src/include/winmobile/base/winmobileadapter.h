@@ -16,8 +16,8 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-#ifndef INCL_PPC2003_ADAPTER
-#define INCL_PPC2003_ADAPTER
+#ifndef INCL_WINMOBILE_ADAPTER
+#define INCL_WINMOBILE_ADAPTER
 
 
 #include <stdarg.h>
@@ -34,31 +34,36 @@
 #define EXTRA_SECTION_06  
 
 #define __declspec(ignore)
-#define CHR(c) c
 
-#undef wcsdup
+#define T(_x) _x
+#define CHR(_x)  _x
 
-inline void wcsprintf(wchar_t* s, wchar_t* format, ...);
-inline wchar_t * wmemset(wchar_t *ws, wchar_t wc, size_t n);
+#undef BCHAR
+typedef char BCHAR;
+typedef wchar_t WCHAR;
 
-inline void wcsprintf(wchar_t* s, wchar_t* format, ...) {
-    va_list args;
+#define bsprintf sprintf 
 
-    va_start( args, format );
+#define bstrlen strlen
+#define bstrcpy strcpy
+#define bstrcat strcat
+#define bstrstr strstr
+#define bstrchr strchr
+#define bstrrchr strrchr
+#define bscanf scanf
+#define bstrcmp strcmp
+#define bstricmp _stricmp
+#define bstrncpy strncpy
+#define bstrncmp strncmp
+#define bstrtol strtol
+#define bstrtoul strtoul
 
-    vswprintf(s, format, args);
 
-    va_end(args);
-}
 
-inline wchar_t *wmemset(wchar_t *ws, wchar_t wc, size_t n) {
-    
-    for (unsigned int i = 0; i < n; i++) {
-        
-        ws[i] = wc;    
-    }    
-    
-    return ws;
-}
+/* some of the code compares NULL against integers, which
+   fails if NULL is defined as (void *)0 */
+#undef NULL
+#define NULL 0
 
 #endif
+

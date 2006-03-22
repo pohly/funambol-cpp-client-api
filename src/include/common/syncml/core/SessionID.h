@@ -27,7 +27,7 @@ class SessionID {
     
      // ------------------------------------------------------------ Private data
     private:
-         wchar_t* sessionID;        
+         BCHAR* sessionID;        
     
     public:       
 
@@ -42,7 +42,7 @@ class SessionID {
      * @param sessionID the identifier of session - NOT NULL
      *
      */
-    SessionID(wchar_t* sessionID);
+    SessionID(BCHAR* sessionID);
 
     // ---------------------------------------------------------- Public methods
 
@@ -51,14 +51,14 @@ class SessionID {
      *
      * @return sessionID the session identifier
      */
-    wchar_t* getSessionID(wchar_t* retSessionID);
+    BCHAR* getSessionID(BCHAR* retSessionID);
 
     /**
      * Sets the session identifier
      *
      * @param sessionID the session identifier
      */
-    void setSessionID(wchar_t* sessionID);
+    void setSessionID(BCHAR* sessionID);
 
     SessionID* clone();
        

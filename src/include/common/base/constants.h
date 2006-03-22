@@ -18,12 +18,12 @@
 #ifndef INCL_FSCAPI_CONSTANTS
 #define INCL_FSCAPI_CONSTANTS
 
-#define SOURCES                 TEXT("sources")
-#define SYNCML                  TEXT("syncml")
+#define SOURCES                 T("sources")
+#define SYNCML                  T("syncml")
 
-#define EMPTY_STRING TEXT("")
+#define EMPTY_STRING T("")
 
-#define ENCODING_UTF8 TEXT("utf-8")
+#define ENCODING_UTF8 T("utf-8")
 
 #define MAX_MSG_SIZE 12288
 

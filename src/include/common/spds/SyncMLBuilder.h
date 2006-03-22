@@ -38,12 +38,12 @@ class SyncMLBuilder {
     public:
         SyncMLBuilder() EXTRA_SECTION_01;
         ~SyncMLBuilder() EXTRA_SECTION_01;
-        SyncMLBuilder(wchar_t* t, wchar_t* d, unsigned long msgSize) EXTRA_SECTION_01;
+        SyncMLBuilder(BCHAR* t, BCHAR* d, unsigned long msgSize) EXTRA_SECTION_01;
         
         /*
          * Convert the SyncML object into an xml message
          */
-        wchar_t* prepareMsg(SyncML* syncml) EXTRA_SECTION_01;        
+        BCHAR* prepareMsg(SyncML* syncml) EXTRA_SECTION_01;        
         
         /*
          * Convert the SyncML object into an xml message
@@ -53,7 +53,7 @@ class SyncMLBuilder {
         /*
         * Set init parameters
         */
-        void     set(wchar_t* t, wchar_t* d, unsigned long msgSize) EXTRA_SECTION_01;
+        void     set(BCHAR* t, BCHAR* d, unsigned long msgSize) EXTRA_SECTION_01;
         
         /*
         * Prepare the init SyncML* message with credential and db alert to sync
@@ -93,7 +93,7 @@ class SyncMLBuilder {
         /*
         * Prepare the status for Item command. COMMAND could be ADD, REPLACE, DEL
         */
-        Status*  prepareItemStatus(wchar_t* COMMAND, wchar_t* key, wchar_t* cmdRef, int code) EXTRA_SECTION_01;
+        Status*  prepareItemStatus(const BCHAR* COMMAND, const BCHAR* key, const BCHAR* cmdRef, int code) EXTRA_SECTION_01;
         
         /*
         * Add the status to the corrent list of commands. It is responsible to collapse the status if needed
@@ -120,7 +120,7 @@ class SyncMLBuilder {
         */
         MapItem* prepareMapItem(SyncMap* syncMap) EXTRA_SECTION_01;
         
-        ArrayList* prepareItem(SyncItem* syncItem, const wchar_t* type, wchar_t* COMMAND);
+        ArrayList* prepareItem(SyncItem* syncItem, const BCHAR* type, BCHAR* COMMAND);
 
         /*
         * Add the MapItem to the Map command.
@@ -130,12 +130,12 @@ class SyncMLBuilder {
         /*
         * Prepare a ADD, REPLACE, DEL command using the syncItem passed by the source
         */ 
-        ModificationCommand* prepareModificationCommand(wchar_t* COMMAND, SyncItem* item, const wchar_t* type) EXTRA_SECTION_01;
+        ModificationCommand* prepareModificationCommand(BCHAR* COMMAND, SyncItem* item, const BCHAR* type) EXTRA_SECTION_01;
         
         /*
         * Add a SyncItem into the modificationCommand. It is responsible to collapse if needed
         */
-        void addItem(ModificationCommand* modificationCommand, wchar_t* COMMAND, SyncItem* syncItem, const wchar_t* type) EXTRA_SECTION_01;
+        void addItem(ModificationCommand* modificationCommand, BCHAR* COMMAND, SyncItem* syncItem, const BCHAR* type) EXTRA_SECTION_01;
         
         /*
         * Reset the cmdID counter
@@ -168,17 +168,21 @@ class SyncMLBuilder {
          *
          * @param pwd encryption password - NOT NULL
          */
-        void setEncPassword(const wchar_t* pwd);
-
+        void setEncPassword(const BCHAR* pwd);
+        
+        /*
+        * reset MsgRef counter
+        */
+        void resetMsgRef();
 
     private:
 
         void initialize();
 
-        wchar_t* target;
-        wchar_t* device;
+        BCHAR* target;
+        BCHAR* device;
         unsigned long maxMsgSize;        
-        wchar_t* encPassword;
+        BCHAR* encPassword;
 
         unsigned long sessionID;
         unsigned int  msgID    ;
@@ -187,8 +191,8 @@ class SyncMLBuilder {
         
         DataEncoding encoding;
 
-        wchar_t* encodeB64(char* data, TransformationInfo& info);   
-        wchar_t* encodeDESB64(char* data, TransformationInfo& info);
+        BCHAR* encodeB64(char* data, TransformationInfo& info);   
+        BCHAR* encodeDESB64(char* data, TransformationInfo& info);
         ComplexData* getComplexData(SyncItem* syncItem);
 
 };

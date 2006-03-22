@@ -20,7 +20,7 @@
 #include "syncml/core/EMI.h"
 
  
-EMI::EMI(wchar_t* value) {
+EMI::EMI(BCHAR* value) {
     this->value = NULL;
     setValue(value);
 }
@@ -37,11 +37,11 @@ EMI::~EMI() {
  * 
  * @return the value of experimental meta information
  */
-wchar_t* EMI::getValue(wchar_t* retValue) {
+BCHAR* EMI::getValue(BCHAR* retValue) {
     if (retValue == NULL) {
         return value;
     }
-    return wcscpy(retValue, value);
+    return bstrcpy(retValue, value);
 
 }
     
@@ -51,8 +51,8 @@ wchar_t* EMI::getValue(wchar_t* retValue) {
  * @param value the value of experimental meta information
  *
  */
-void EMI::setValue(wchar_t* value) {
-    if (value == NULL || wcslen(value) == 0) {
+void EMI::setValue(BCHAR* value) {
+    if (value == NULL || bstrlen(value) == 0) {
         // tbd
     }        
     this->value = stringdup(value);

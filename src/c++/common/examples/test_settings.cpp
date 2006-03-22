@@ -27,9 +27,15 @@
 // what you are doing.
 //---------------------------------------------------------WARNING------
 
+#include "examples/config.h"
+
 #ifdef DEBUG_SETTINGS
 
 #include "base/fscapi.h"
+#include "spds/constants.h"
+#include "spdm/DMTree.h"
+#include "spdm/DMTreeFactory.h"
+#include "spdm/ManagementNode.h"
 
 #ifdef _WIN32_WCE
 static wchar_t *convertSlashes(const wchar_t* str) {
@@ -98,207 +104,118 @@ finally:
 
 #endif  // _WIN32_CE
 
-void settings() {
-    setProperty(
-        TEXT("Software/Funambol/examples/dummy/spds/syncml"),
-        TEXT("deviceId"),
-        TEXT("sc-pim-ppc"));
-    setProperty(
-        TEXT("Software/Funambol/examples/dummy/spds/syncml"),
-        TEXT("username"),
-        TEXT("guest"));
-    setProperty(
-        TEXT("Software/Funambol/examples/dummy/spds/syncml"),
-        TEXT("password"),
-        TEXT("guest"));
-    setProperty(
-        TEXT("Software/Funambol/examples/dummy/spds/syncml"),
-        TEXT("syncUrl"),
-        TEXT("http://192.168.0.00:8080/funambol/ds"));
-    setProperty(
-        TEXT("Software/Funambol/examples/dummy/spds/syncml"),
-        TEXT("serverName"),
-        TEXT("http://192.168.0.00:8080"));
-    setProperty(
-        TEXT("Software/Funambol/examples/dummy/spds/syncml"),
-        TEXT("beginTimestamp"),
-        TEXT("0"));
-    setProperty(
-        TEXT("Software/Funambol/examples/dummy/spds/syncml"),
-        TEXT("endTimestamp"),
-        TEXT("0"));
-    setProperty(
-        TEXT("Software/Funambol/examples/dummy/spds/syncml"),
-        TEXT("sourceCount"),
-        TEXT("0"));
-    setProperty(
-        TEXT("Software/Funambol/examples/dummy/spds/syncml"),
-        TEXT("responseTimeout"),
-        TEXT("0"));
-    setProperty(
-        TEXT("Software/Funambol/examples/dummy/spds/syncml"),
-        TEXT("checkConn"),
-        TEXT("1"));
-    setProperty(
-        TEXT("Software/Funambol/examples/dummy/spds/syncml"),
-        TEXT("firstTimeSyncMode"),
-        TEXT("0"));
-    setProperty(
-        TEXT("Software/Funambol/examples/dummy/spds/syncml"),
-        TEXT("proxyHost"),
-        TEXT(""));
-    setProperty(
-        TEXT("Software/Funambol/examples/dummy/spds/syncml"),
-        TEXT("proxyPort"),
-        TEXT(""));
-    setProperty(
-        TEXT("Software/Funambol/examples/dummy/spds/syncml"),
-        TEXT("useProxy"),
-        TEXT(""));
-    setProperty(
-        TEXT("Software/Funambol/examples/dummy/spds/syncml"),
-        TEXT("clientNonce"),
-        TEXT("cGlwcG8="));
-    setProperty(
-        TEXT("Software/Funambol/examples/dummy/spds/syncml"),
-        TEXT("serverNonce"),
-        TEXT("VGB8YHQ6U25lWmAuR3Z3bw=="));
-    setProperty(
-        TEXT("Software/Funambol/examples/dummy/spds/syncml"),
-        TEXT("serverID"),
-        TEXT("sync4j"));
-    setProperty(
-        TEXT("Software/Funambol/examples/dummy/spds/syncml"),
-        TEXT("serverPWD"),
-        TEXT("sync4j"));
-    setProperty(
-        TEXT("Software/Funambol/examples/dummy/spds/syncml"),
-        TEXT("isServerAuthRequired"),
-        TEXT("F"));
-    setProperty(
-        TEXT("Software/Funambol/examples/dummy/spds/syncml"),
-        TEXT("clientAuthType"),
-        TEXT("syncml:auth-basic"));
-    setProperty(
-        TEXT("Software/Funambol/examples/dummy/spds/syncml"),
-        TEXT("serverAuthType"),
-        TEXT("syncml:auth-basic"));
-    setProperty(
-        TEXT("Software/Funambol/examples/dummy/spds/syncml"),
-        TEXT("maxMsgSize"),
-        TEXT("12288"));
-    setProperty(
-        TEXT("Software/Funambol/examples/dummy/spds/syncml"),
-        TEXT("maxModPerMsg"),
-        TEXT("3"));
-    
-    setProperty(
-        TEXT("Software/Funambol/examples/dummy/spds/sources/contact"),
-        TEXT("sync"),
-        TEXT("two-way"));
-    setProperty(
-        TEXT("Software/Funambol/examples/dummy/spds/sources/contact"),
-        TEXT("last"),
-        TEXT("0"));
-    setProperty(
-        TEXT("Software/Funambol/examples/dummy/spds/sources/contact"),
-        TEXT("name"),
-        TEXT("contact"));
-    setProperty(
-        TEXT("Software/Funambol/examples/dummy/spds/sources/contact"),
-        TEXT("type"),
-        TEXT("text/x-s4j-sifc"));
-    setProperty(
-        TEXT("Software/Funambol/examples/dummy/spds/sources/contact"),
-        TEXT("syncModes"),
-        TEXT("slow,two-way,refresh"));
-    setProperty(
-        TEXT("Software/Funambol/examples/dummy/spds/sources/contact"),
-        TEXT("uri"),
-        TEXT("scard"));
-    setProperty(    
-        TEXT("Software/Funambol/examples/dummy/spds/sourcesprop/contact"),
-        TEXT("name"),
-        TEXT("contact"));
-    setProperty(
-        TEXT("Software/Funambol/examples/dummy/spds/sourcesprop/contact"),
-        TEXT("show"),
-        TEXT("1"));
+int settings(const char *rootContext)
+{
+    char nodeName[DIM_MANAGEMENT_PATH];
+    DMTree* dmt = DMTreeFactory::getDMTree(rootContext);
+    lastErrorCode = 0;
 
-    setProperty(
-        TEXT("Software/Funambol/examples/dummy/spds/sources/briefcase"),
-        TEXT("sync"),
-        TEXT("none"));
-    setProperty(
-        TEXT("Software/Funambol/examples/dummy/spds/sources/briefcase"),
-        TEXT("last"),
-        TEXT("0"));
-    setProperty(
-        TEXT("Software/Funambol/examples/dummy/spds/sources/briefcase"),
-        TEXT("name"),
-        TEXT("calendar"));
-    setProperty(
-        TEXT("Software/Funambol/examples/dummy/spds/sources/briefcase"),
-        TEXT("type"),
-        TEXT("text/x-s4j-sife"));
-    setProperty(
-        TEXT("Software/Funambol/examples/dummy/spds/sources/briefcase"),
-        TEXT("syncModes"),
-        TEXT("slow,two-way,refresh"));
-    setProperty(
-        TEXT("Software/Funambol/examples/dummy/spds/sources/briefcase"),
-        TEXT("uri"),
-        TEXT("scal"));
-    setProperty(
-        TEXT("Software/Funambol/examples/dummy/spds/sourcesprop/briefcase"),
-        TEXT("name"),
-        TEXT("calendar"));
-    setProperty(
-        TEXT("Software/Funambol/examples/dummy/spds/sourcesprop/briefcase"),
-        TEXT("show"),
-        TEXT("1"));
+    // Access config parameters
+    sprintf(nodeName, "%s%s", rootContext, CONTEXT_SPDS_SYNCML);
 
-    setProperty(
-        TEXT("Software/Funambol/examples/dummy/spds/sources/mail"),
-        TEXT("sync"),
-        TEXT("none"));
-    setProperty(
-        TEXT("Software/Funambol/examples/dummy/spds/sources/mail"),
-        TEXT("last"),
-        TEXT("0"));
-    setProperty(
-        TEXT("Software/Funambol/examples/dummy/spds/sources/mail"),
-        TEXT("name"),
-        TEXT("mail"));
-    setProperty(
-        TEXT("Software/Funambol/examples/dummy/spds/sources/mail"),
-        TEXT("type"),
-        TEXT("text/x-s4j-sife"));
-    setProperty(
-        TEXT("Software/Funambol/examples/dummy/spds/sources/mail"),
-        TEXT("syncModes"),
-        TEXT("slow,two-way,refresh"));
-    setProperty(
-        TEXT("Software/Funambol/examples/dummy/spds/sources/mail"),
-        TEXT("uri"),
-        TEXT("mail"));
-    setProperty(
-        TEXT("Software/Funambol/examples/dummy/spds/sourcesprop/mail"),
-        TEXT("name"),
-        TEXT("briefcase"));
-    setProperty(
-        TEXT("Software/Funambol/examples/dummy/spds/sourcesprop/mail"),
-        TEXT("show"),
-        TEXT("1"));
+    ManagementNode *node = dmt->getManagementNode(nodeName);
+    if ( ! node ) {
+        lastErrorCode = ERR_INVALID_CONTEXT;
+        goto finally;
+    }
+
+    node->setPropertyValue(T("deviceId"), T(""));
+    node->setPropertyValue(T("username"), T("guest"));
+    node->setPropertyValue(T("password"), T("guest"));
+    node->setPropertyValue(T("syncUrl"), T("http://192.168.0.xx:8080/funambol/ds"));
+    node->setPropertyValue(T("serverName"), T("http://192.168.0.xx:8080"));
+    node->setPropertyValue(T("beginTimestamp"), T("0"));
+    node->setPropertyValue(T("endTimestamp"), T("0"));
+    node->setPropertyValue(T("sourceCount"), T("0"));
+    node->setPropertyValue(T("responseTimeout"), T("0"));
+    node->setPropertyValue(T("checkConn"), T("1"));
+    node->setPropertyValue(T("firstTimeSyncMode"), T("0"));
+    node->setPropertyValue(T("proxyHost"), T(""));
+    node->setPropertyValue(T("proxyPort"), T(""));
+    node->setPropertyValue(T("useProxy"), T(""));
+    node->setPropertyValue(T("clientNonce"), T("cGlwcG8="));
+    node->setPropertyValue(T("serverNonce"), T("VGB8YHQ6U25lWmAuR3Z3bw=="));
+    node->setPropertyValue(T("serverID"), T("funambol"));
+    node->setPropertyValue(T("serverPWD"), T("funambol"));
+    node->setPropertyValue(T("isServerAuthRequired"), T("F"));
+    node->setPropertyValue(T("clientAuthType"), T("syncml:auth-basic"));
+    node->setPropertyValue(T("serverAuthType"), T("syncml:auth-basic"));
+    node->setPropertyValue(T("maxMsgSize"), T("122880"));
+    node->setPropertyValue(T("maxModPerMsg"), T("20"));
     
-    setProperty(
-        TEXT("Software/Funambol/examples"),
-        TEXT("showRemoteSettings"),
-        TEXT("1"));
-    setProperty(
-        TEXT("Software/Funambol/examples"),
-        TEXT("logLevel"),
-        TEXT("1"));
+    delete node;
+
+    // Contact sync source parameters
+    sprintf(nodeName, "%s%s", rootContext, "/spds/sources/contact");
+
+    node = dmt->getManagementNode(nodeName);
+    if ( ! node ) {
+        lastErrorCode = ERR_INVALID_CONTEXT;
+        goto finally;
+    }
+
+    node->setPropertyValue(T("sync"), T("two-way"));
+    node->setPropertyValue(T("last"), T("0"));
+    node->setPropertyValue(T("name"), T("contact"));
+    node->setPropertyValue(T("type"), T("text/x-s4j-sifc"));
+    node->setPropertyValue(T("syncModes"), T("slow,two-way,refresh"));
+    node->setPropertyValue(T("uri"), T("scard"));
+    node->setPropertyValue(T("useSIF"), T("1"));
+    node->setPropertyValue(T("encoding"), T("b64"));
+
+    delete node;
+
+    // Contact sync source parameters
+    sprintf(nodeName, "%s%s", rootContext, "/spds/sources/appointments");
+
+    node = dmt->getManagementNode(nodeName);
+    if ( ! node ) {
+        lastErrorCode = ERR_INVALID_CONTEXT;
+        goto finally;
+    }
+
+    node->setPropertyValue(T("sync"), T("none"));
+    node->setPropertyValue(T("last"), T("0"));
+    node->setPropertyValue(T("name"), T("calendar"));
+    node->setPropertyValue(T("type"), T("text/x-s4j-sife"));
+    node->setPropertyValue(T("syncModes"), T("slow,two-way,refresh"));
+    node->setPropertyValue(T("uri"),  T("scal"));
+    node->setPropertyValue(T("useSIF"), T("1"));
+    node->setPropertyValue(T("encoding"), T("b64"));
+
+    delete node;
+
+    // Contact sync source parameters
+    sprintf(nodeName, "%s%s", rootContext, "/spds/sources/mails");
+
+    node = dmt->getManagementNode(nodeName);
+    if ( ! node ) {
+        lastErrorCode = ERR_INVALID_CONTEXT;
+        goto finally;
+    }
+
+    node->setPropertyValue(T("sync"), T("none"));
+    node->setPropertyValue(T("last"), T("0"));
+    node->setPropertyValue(T("name"), T("mail"));
+    node->setPropertyValue(T("type"), T("text/x-s4j-sife"));
+    node->setPropertyValue(T("syncModes"), T("slow,two-way,refresh"));
+    node->setPropertyValue(T("uri"), T("mail"));
+    node->setPropertyValue(T("useSIF"), T("1"));
+    node->setPropertyValue(T("encoding"), T("b64"));
+    node->setPropertyValue(T("Inbox" ), T("1" ) );
+    node->setPropertyValue(T("Outbox" ), T("1" ) );
+    node->setPropertyValue(T("Trash" ), T("0" ) );
+    node->setPropertyValue(T("Sent" ), T("1" ) );
+    node->setPropertyValue(T("Draft" ), T("0" ) );
+    
+finally:
+    if (node)
+        delete node;
+    if (dmt)
+        delete dmt;
+        
+    return lastErrorCode;
 }
+
 #endif // DEBUG
 

@@ -51,7 +51,7 @@ public:
      * @param pos (OUTPUT) the position where the tag is found (ignored if NULL)
      *
      */
-    static wchar_t* getElementContent(const wchar_t* xml, const wchar_t* tag, unsigned int* pos = NULL) EXTRA_SECTION_00;
+    static BCHAR* getElementContent(const BCHAR* xml, const BCHAR* tag, unsigned int* pos = NULL) EXTRA_SECTION_00;
 
     /*
      * It's like getElementContent but it doesn't allocate new memory.
@@ -62,25 +62,25 @@ public:
      * @param startPos (OUTPUT) the start position of the tag content (ignored if NULL)
      * @param endPos (OUTPUT) the end position of the tag content (ignored if NULL)
      */
-    static wchar_t* getElementContent(const wchar_t* xml, const wchar_t* tag, unsigned int* pos, unsigned int* startPos, unsigned int* endPos) EXTRA_SECTION_00;
+    static BCHAR* getElementContent(const BCHAR* xml, const BCHAR* tag, unsigned int* pos, unsigned int* startPos, unsigned int* endPos) EXTRA_SECTION_00;
     
     /*
     * It returns the number of the tag in the xml string
     */
-    static int countElementTag(wchar_t* xml, wchar_t* tag) EXTRA_SECTION_00;
+    static int countElementTag(BCHAR* xml, BCHAR* tag) EXTRA_SECTION_00;
     
-    static int countAnd(wchar_t* token) EXTRA_SECTION_00;
+    static int countAnd(BCHAR* token) EXTRA_SECTION_00;
 
-    static int countChar(wchar_t* token, wchar_t* element) EXTRA_SECTION_00;
+    static int countChar(BCHAR* token, BCHAR* element) EXTRA_SECTION_00;
     
-    static wchar_t* getNextTag(wchar_t* xml, int* pos);
+    static BCHAR* getNextTag(BCHAR* xml, int* pos);
    /*
     * it's as getElementContent but it doesn't get the content of a tag if
     * the parent match except.
     * The parent can be more than one. They have to be separated by &
     * i.e.  
     *
-    * getElementContentExcept(xmlPtr, TEXT("Add"), TEXT("Sync&Atomic"), &post)
+    * getElementContentExcept(xmlPtr, T("Add"), T("Sync&Atomic"), &post)
     *
     * The function returns "... to keep ... " content only 
     *
@@ -97,13 +97,13 @@ public:
     *   </Atomic>
     * </SyncBody>
     */
-    static wchar_t* getElementContentExcept(wchar_t*      xml       ,
-                                            wchar_t*      tag       ,
-                                            wchar_t*      except    ,
+    static BCHAR* getElementContentExcept(BCHAR*      xml       ,
+                                            BCHAR*      tag       ,
+                                            BCHAR*      except    ,
                                             unsigned int* pos) EXTRA_SECTION_00;
 
-    static wchar_t* getElementContentLevel(wchar_t*      xml,
-                                           wchar_t*      tag,
+    static BCHAR* getElementContentLevel(BCHAR*      xml,
+                                           BCHAR*      tag,
                                            unsigned int* pos,
                                            int           lev = 0 ,  // the root value level
                                            int* startLevel   = NULL) EXTRA_SECTION_00;
@@ -120,7 +120,7 @@ public:
      *
      */
 
-    static wchar_t* getContent(wchar_t* xml, unsigned int startPos, unsigned int endPos) EXTRA_SECTION_00;
+    static BCHAR* getContent(BCHAR* xml, unsigned int startPos, unsigned int endPos) EXTRA_SECTION_00;
     
     /**
      * Create an XML element with the specified tag and value.
@@ -130,17 +130,39 @@ public:
      */
     //static StringBuffer makeElement(const wchar_t* tag, const wchar_t* val) EXTRA_SECTION_00;
 
+    /**
+     * Create an XML element with the specified tag, value and attribute list.
+     *
+     * @param tag - the tag we want the content
+     * @param val - the element value
+     * @param attr - attribute list, already formated - ex: enc="base64"
+     */
+    static StringBuffer makeElement(const BCHAR* tag, 
+                                    const BCHAR* val,
+                                    const BCHAR* attr = NULL) EXTRA_SECTION_00;
+
+    /**
+     * Create an XML element with the specified tag, value and attribute list.
+     *
+     * @param tag - the tag we want the content
+     * @param val - the element value
+     * @param attr - attribute list, pairs of name and value
+     */
+    static StringBuffer makeElement(const BCHAR* tag, 
+                                    const BCHAR* val,
+                                    ArrayList attrList) EXTRA_SECTION_00;
+
 	/**
 	 * Same with bool value
 	 */
-    static StringBuffer makeElement(const wchar_t* tag, bool val) {
-        return makeElement( tag, (val?TEXT("true"):TEXT("false")) ) EXTRA_SECTION_00 ;
+    static StringBuffer makeElement(const BCHAR* tag, bool val) {
+        return makeElement( tag, (val?T("true"):T("false")) ) EXTRA_SECTION_00 ;
     }
 
     /**
 	 * Same with integer value
 	 */
-	static StringBuffer makeElement(const wchar_t* tag, int val) {
+	static StringBuffer makeElement(const BCHAR* tag, int val) {
         return makeElement( tag, StringBuffer().append(val) ) EXTRA_SECTION_00 ;
     }
     
@@ -156,32 +178,11 @@ public:
      * @param endPos (OUTPUT) the end position of the tag attributes (ignored if NULL)
      *
     */
-    static wchar_t* getElementAttributes(const wchar_t* xml,
-                                         const wchar_t* tag,
+    static BCHAR* getElementAttributes(const BCHAR* xml,
+                                         const BCHAR* tag,
                                          unsigned int*  startPos, 
                                          unsigned int*  endPos) EXTRA_SECTION_00;
 
-    /**
-     * Create an XML element with the specified tag, value and attribute list.
-     *
-     * @param tag - the tag we want the content
-     * @param val - the element value
-     * @param attr - attribute list, already formated - ex: enc="base64"
-     */
-    static StringBuffer makeElement(const wchar_t* tag, 
-                                    const wchar_t* val,
-                                    const wchar_t* attr = NULL) EXTRA_SECTION_00;
-
-    /**
-     * Create an XML element with the specified tag, value and attribute list.
-     *
-     * @param tag - the tag we want the content
-     * @param val - the element value
-     * @param attr - attribute list, pairs of name and value
-     */
-    static StringBuffer makeElement(const wchar_t* tag, 
-                                    const wchar_t* val,
-                                    ArrayList*     attrList) EXTRA_SECTION_00;
 };
 
 #endif

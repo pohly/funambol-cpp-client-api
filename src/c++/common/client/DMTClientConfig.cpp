@@ -33,9 +33,9 @@ DMTClientConfig::DMTClientConfig() : SyncManagerConfig() {
 }
 
 
-DMTClientConfig::DMTClientConfig(const wchar_t* root): SyncManagerConfig() {
-    rootContext = new wchar_t[wcslen(root)+1];
-    wcscpy(rootContext, root);
+DMTClientConfig::DMTClientConfig(const BCHAR* root): SyncManagerConfig() {
+    rootContext = new BCHAR[bstrlen(root)+1];
+    bstrcpy(rootContext, root);
 }
 
 
@@ -46,11 +46,11 @@ DMTClientConfig::~DMTClientConfig() {
 }
 
 BOOL DMTClientConfig::getSyncSourceConfig(
-						const wchar_t* name,
+						const BCHAR* name,
 						SyncSourceConfig &sc,
 						BOOL refresh)
 {
-    if ((name == NULL) || (wcslen(name) == 0)) {
+    if ((name == NULL) || (bstrlen(name) == 0)) {
         return FALSE;
     }
 
@@ -67,7 +67,7 @@ BOOL DMTClientConfig::getSyncSourceConfig(
     }
 
     for (unsigned int i=0; i<sourceConfigsCount; ++i) {
-        if (wcscmp(sourceConfigs[i].getName(), name) == 0) {
+        if (bstrcmp(sourceConfigs[i].getName(), name) == 0) {
             sc.assign(sourceConfigs[i]);
             return TRUE;
         }
@@ -87,10 +87,9 @@ BOOL DMTClientConfig::read() {
     //
     // Reading syncml node
     //
-    wchar_t nodeName[DIM_MANAGEMENT_PATH];
+    BCHAR nodeName[DIM_MANAGEMENT_PATH];
 
-    wmemset(nodeName, 0, DIM_MANAGEMENT_PATH);
-    wcscpy(nodeName, rootContext); wcscat(nodeName, TEXT(CONTEXT_SPDS_SYNCML));
+    bsprintf(nodeName, T("%s%s"), rootContext, T(CONTEXT_SPDS_SYNCML));
 
     DMTree* dmt = DMTreeFactory::getDMTree(rootContext);
 
@@ -98,7 +97,7 @@ BOOL DMTClientConfig::read() {
     
     if ( ! node ) {
         lastErrorCode = ERR_INVALID_CONTEXT;
-        wsprintf(lastErrorMsg, ERRMSG_INVALID_CONTEXT, nodeName);
+        bsprintf(lastErrorMsg, ERRMSG_INVALID_CONTEXT, nodeName);
         goto finally;
     }
 
@@ -106,12 +105,12 @@ BOOL DMTClientConfig::read() {
     delete node;
     node = 0;
 
-    wcscpy(nodeName, rootContext); wcscat(nodeName, TEXT(CONTEXT_SPDS_SOURCES));
+    bstrcpy(nodeName, rootContext); bstrcat(nodeName, T(CONTEXT_SPDS_SOURCES));
 
     node = dmt->getManagementNode(nodeName);
     if ( ! node ) {
         lastErrorCode = ERR_INVALID_CONTEXT;
-        wsprintf(lastErrorMsg, ERRMSG_INVALID_CONTEXT, nodeName);
+        bsprintf(lastErrorMsg, ERRMSG_INVALID_CONTEXT, nodeName);
         goto finally;
     }
     n = node->getChildrenMaxCount();
@@ -149,7 +148,7 @@ finally:
 BOOL DMTClientConfig::save() {
     BOOL ret = FALSE;
     unsigned int i = 0;
-    wchar_t nodeName[DIM_MANAGEMENT_PATH];
+    BCHAR nodeName[DIM_MANAGEMENT_PATH];
 	ManagementNode *node = 0;
 
     DMTree* dmt = DMTreeFactory::getDMTree(rootContext);
@@ -162,12 +161,12 @@ BOOL DMTClientConfig::save() {
         //
         // SyncML management node
         //
-        wcscpy(nodeName, rootContext); wcscat(nodeName, TEXT(CONTEXT_SPDS_SYNCML));
+        bstrcpy(nodeName, rootContext); bstrcat(nodeName, T(CONTEXT_SPDS_SYNCML));
         
         node = dmt->getManagementNode(nodeName);
         if ( ! node ) {
             lastErrorCode = ERR_INVALID_CONTEXT;
-            wsprintf(lastErrorMsg, ERRMSG_INVALID_CONTEXT, nodeName);
+            bsprintf(lastErrorMsg, ERRMSG_INVALID_CONTEXT, nodeName);
             goto finally;
         }
 
@@ -184,12 +183,12 @@ BOOL DMTClientConfig::save() {
     //
     // Sources management node
     //
-    wcscpy(nodeName, rootContext); wcscat(nodeName, TEXT(CONTEXT_SPDS_SOURCES));
+    bstrcpy(nodeName, rootContext); bstrcat(nodeName, T(CONTEXT_SPDS_SOURCES));
 
     node = dmt->getManagementNode(nodeName);
     if ( ! node ) {
         lastErrorCode = ERR_INVALID_CONTEXT;
-        wsprintf(lastErrorMsg, ERRMSG_INVALID_CONTEXT, nodeName);
+        bsprintf(lastErrorMsg, ERRMSG_INVALID_CONTEXT, nodeName);
         goto finally;
     }
 
@@ -219,7 +218,7 @@ finally:
 
 BOOL DMTClientConfig::readAccessConfig(ManagementNode& n) {
 
-    wchar_t *tmp;
+    BCHAR *tmp;
     
     tmp = n.getPropertyValue(PROPERTY_USERNAME);
     accessConfig.setUsername(tmp);
@@ -238,16 +237,16 @@ BOOL DMTClientConfig::readAccessConfig(ManagementNode& n) {
     delete [] tmp;
    
     tmp = n.getPropertyValue(PROPERTY_FIRST_TIME_SYNC_MODE);
-    SyncMode i = (SyncMode)(*tmp ? wcstol(tmp, NULL, 10) : 0);
+    SyncMode i = (SyncMode)(*tmp ? bstrtol(tmp, NULL, 10) : 0);
     accessConfig.setFirstTimeSyncMode(i);   
     delete [] tmp;
     
     tmp = n.getPropertyValue(PROPERTY_SYNC_BEGIN);     
-    accessConfig.setBeginSync(wcstol(tmp, NULL, 10));
+    accessConfig.setBeginSync(bstrtol(tmp, NULL, 10));
     delete [] tmp;
 
     tmp = n.getPropertyValue(PROPERTY_SYNC_END);     
-    accessConfig.setEndSync(wcstol(tmp, NULL, 10));
+    accessConfig.setEndSync(bstrtol(tmp, NULL, 10));
     delete [] tmp;
 
     tmp = n.getPropertyValue(PROPERTY_USE_PROXY);     
@@ -287,11 +286,11 @@ BOOL DMTClientConfig::readAccessConfig(ManagementNode& n) {
     delete [] tmp;
 
     tmp = n.getPropertyValue(PROPERTY_MAX_MSG_SIZE);     
-    accessConfig.setMaxMsgSize(wcstol(tmp, NULL, 10));
+    accessConfig.setMaxMsgSize(bstrtol(tmp, NULL, 10));
     delete [] tmp;
 
     tmp = n.getPropertyValue(PROPERTY_MAX_MOD_PER_MSG);     
-    accessConfig.setMaxModPerMsg(wcstol(tmp, NULL, 10));
+    accessConfig.setMaxModPerMsg(bstrtol(tmp, NULL, 10));
     delete [] tmp;
     
     tmp = n.getPropertyValue(PROPERTY_ENCRYPTION);     
@@ -303,14 +302,14 @@ BOOL DMTClientConfig::readAccessConfig(ManagementNode& n) {
 
 void DMTClientConfig::saveAccessConfig(ManagementNode& n) {
 
-    wchar_t buf[512];
+    BCHAR buf[512];
 
     n.setPropertyValue(PROPERTY_USERNAME, accessConfig.getUsername());
     n.setPropertyValue(PROPERTY_PASSWORD, accessConfig.getPassword());
     n.setPropertyValue(PROPERTY_DEVICE_ID, accessConfig.getDeviceId());
     n.setPropertyValue(PROPERTY_SYNC_URL, accessConfig.getSyncURL());
 
-    wsprintf(buf, TEXT("%lu"), accessConfig.getFirstTimeSyncMode());
+    bsprintf(buf, T("%lu"), accessConfig.getFirstTimeSyncMode());
     n.setPropertyValue(PROPERTY_FIRST_TIME_SYNC_MODE, buf);
     
     timestampToAnchor(accessConfig.getBeginSync(), buf);
@@ -320,7 +319,7 @@ void DMTClientConfig::saveAccessConfig(ManagementNode& n) {
     n.setPropertyValue(PROPERTY_SYNC_END, buf);
 
     n.setPropertyValue(PROPERTY_USE_PROXY,
-		(accessConfig.getUseProxy() ? TEXT("T"): TEXT("F")) );     
+		(accessConfig.getUseProxy() ? T("T"): T("F")) );     
     n.setPropertyValue(PROPERTY_PROXY_HOST, accessConfig.getProxyHost());     
     n.setPropertyValue(PROPERTY_SERVER_NONCE, accessConfig.getServerNonce());
     n.setPropertyValue(PROPERTY_CLIENT_NONCE, accessConfig.getClientNonce());
@@ -329,21 +328,21 @@ void DMTClientConfig::saveAccessConfig(ManagementNode& n) {
     n.setPropertyValue(PROPERTY_CLIENT_AUTH_TYPE, accessConfig.getClientAuthType());
     n.setPropertyValue(PROPERTY_SERVER_AUTH_TYPE, accessConfig.getServerAuthType());
     n.setPropertyValue(PROPERTY_IS_SERVER_REQUIRED,
-		(accessConfig.getServerAuthRequired() ? TEXT("T") : TEXT("F") ) ); 
+		(accessConfig.getServerAuthRequired() ? T("T") : T("F") ) ); 
 
-    wcsprintf(buf, TEXT("%lu"), accessConfig.getMaxMsgSize());
+    bsprintf(buf, T("%lu"), accessConfig.getMaxMsgSize());
     n.setPropertyValue(PROPERTY_MAX_MSG_SIZE, buf);     
 
-    wsprintf(buf, TEXT("%lu"), accessConfig.getMaxModPerMsg());
+    bsprintf(buf, T("%lu"), accessConfig.getMaxModPerMsg());
     n.setPropertyValue(PROPERTY_MAX_MOD_PER_MSG, buf);
     
     n.setPropertyValue(PROPERTY_ENCRYPTION,
-		(accessConfig.getEncryption() ? TEXT("T") : TEXT("F") ) ); 
+		(accessConfig.getEncryption() ? T("T") : T("F") ) ); 
 }
 
 BOOL DMTClientConfig::readSourceConfig(int i, ManagementNode& n) {    
 
-    wchar_t *tmp;
+    BCHAR *tmp;
 
     tmp = n.getPropertyValue(PROPERTY_SOURCE_NAME);    
     sourceConfigs[i].setName(tmp);
@@ -366,7 +365,7 @@ BOOL DMTClientConfig::readSourceConfig(int i, ManagementNode& n) {
     delete [] tmp;
 
     tmp = n.getPropertyValue(PROPERTY_SOURCE_LAST_SYNC);    
-    sourceConfigs[i].setLast( ((*tmp) ? wcstol(tmp, NULL, 10) : 0) );
+    sourceConfigs[i].setLast( ((*tmp) ? bstrtol(tmp, NULL, 10) : 0) );
     delete [] tmp;
     
     tmp = n.getPropertyValue(PROPERTY_SOURCE_ENCODING);    
@@ -379,7 +378,7 @@ BOOL DMTClientConfig::readSourceConfig(int i, ManagementNode& n) {
 
 void DMTClientConfig::saveSourceConfig(int i, ManagementNode& n) {
 
-    wchar_t buf[512];
+    BCHAR buf[512];
 
     n.setPropertyValue(PROPERTY_SOURCE_NAME, sourceConfigs[i].getName());    
     n.setPropertyValue(PROPERTY_SOURCE_URI, sourceConfigs[i].getURI());

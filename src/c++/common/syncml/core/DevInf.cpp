@@ -68,14 +68,14 @@ DevInf::~DevInf() {
 *
 */
 DevInf::DevInf(VerDTD* verDTD,
-        wchar_t* man,
-        wchar_t* mod,
-        wchar_t* oem,
-        wchar_t* fwV,
-        wchar_t* swV,
-        wchar_t* hwV,
-        wchar_t* devID,
-        wchar_t* devTyp,
+        BCHAR* man,
+        BCHAR* mod,
+        BCHAR* oem,
+        BCHAR* fwV,
+        BCHAR* swV,
+        BCHAR* hwV,
+        BCHAR* devID,
+        BCHAR* devTyp,
         ArrayList* dataStores,
         ArrayList* ctCap,
         ArrayList* ext,
@@ -159,11 +159,11 @@ void DevInf::setVerDTD(VerDTD* verDTD) {
 *
 * @return the device manufacturer property
 */
-wchar_t* DevInf::getMan(wchar_t* retMan) {
+BCHAR* DevInf::getMan(BCHAR* retMan) {
     if (retMan == NULL) {
         return man;
     }
-    return wcscpy(retMan, man);
+    return bstrcpy(retMan, man);
 
 }
 
@@ -173,7 +173,7 @@ wchar_t* DevInf::getMan(wchar_t* retMan) {
 * @param man the device manufacturer property
 *
 */
-void DevInf::setMan(wchar_t* man) {
+void DevInf::setMan(BCHAR* man) {
     if (this->man) {
         delete [] this->man; this->man = NULL;
     }
@@ -185,11 +185,11 @@ void DevInf::setMan(wchar_t* man) {
 *
 * @return the model name of device
 */
-wchar_t* DevInf::getMod(wchar_t* retMod) {
+BCHAR* DevInf::getMod(BCHAR* retMod) {
     if (retMod == NULL) {
         return mod;
     }
-    return wcscpy(retMod, mod);
+    return bstrcpy(retMod, mod);
 }
 
 /**
@@ -198,7 +198,7 @@ wchar_t* DevInf::getMod(wchar_t* retMod) {
 * @param mod the device model property
 *
 */
-void DevInf::setMod(wchar_t* mod) {
+void DevInf::setMod(BCHAR* mod) {
     if (this->mod) {
         delete [] this->mod; this->mod = NULL;
     }
@@ -210,11 +210,11 @@ void DevInf::setMod(wchar_t* mod) {
 *
 * @return the OEM property
 */
-wchar_t* DevInf::getOEM(wchar_t* retOem) {
+BCHAR* DevInf::getOEM(BCHAR* retOem) {
     if (retOem == NULL) {
         return oem;
     }
-    return wcscpy(retOem, oem);
+    return bstrcpy(retOem, oem);
 }
 
 /**
@@ -223,7 +223,7 @@ wchar_t* DevInf::getOEM(wchar_t* retOem) {
 * @param oem the Original Equipment Manufacturer of the device
 *
 */
-void DevInf::setOEM(wchar_t* oem) {
+void DevInf::setOEM(BCHAR* oem) {
     if (this->oem) {
         delete [] this->oem; this->oem = NULL;
     }
@@ -235,11 +235,11 @@ void DevInf::setOEM(wchar_t* oem) {
 *
 * @return the firmware version property
 */
-wchar_t* DevInf::getFwV(wchar_t* retFwV) {
+BCHAR* DevInf::getFwV(BCHAR* retFwV) {
     if (retFwV == NULL) {
         return fwV;
     }
-    return wcscpy(retFwV, fwV);
+    return bstrcpy(retFwV, fwV);
 }
 
 /**
@@ -248,7 +248,7 @@ wchar_t* DevInf::getFwV(wchar_t* retFwV) {
 * @param fwV the firmware version property
 *
 */
-void DevInf::setFwV(wchar_t* fwV) {
+void DevInf::setFwV(BCHAR* fwV) {
     if (this->fwV) {
         delete [] this->fwV; this->fwV = NULL;
     }
@@ -260,11 +260,11 @@ void DevInf::setFwV(wchar_t* fwV) {
 *
 * @return the software version property
 */
-wchar_t* DevInf::getSwV(wchar_t* retSwV) {
+BCHAR* DevInf::getSwV(BCHAR* retSwV) {
     if (retSwV == NULL) {
         return swV;
     }
-    return wcscpy(retSwV, swV);
+    return bstrcpy(retSwV, swV);
 }
 
 /**
@@ -273,7 +273,7 @@ wchar_t* DevInf::getSwV(wchar_t* retSwV) {
 * @param swV the software version property
 *
 */
-void DevInf::setSwV(wchar_t* swV) {
+void DevInf::setSwV(BCHAR* swV) {
     if (this->swV) {
         delete [] this->swV; this->swV = NULL;
     }
@@ -285,11 +285,11 @@ void DevInf::setSwV(wchar_t* swV) {
 *
 * @return the hardware version property
 */
-wchar_t* DevInf::getHwV(wchar_t* retHwv) {
+BCHAR* DevInf::getHwV(BCHAR* retHwv) {
     if (retHwv == NULL) {
         return hwV;
     }
-    return wcscpy(retHwv, hwV);
+    return bstrcpy(retHwv, hwV);
 }
 
 /**
@@ -298,7 +298,7 @@ wchar_t* DevInf::getHwV(wchar_t* retHwv) {
 * @param hwV the hardware version property
 *
 */
-void DevInf::setHwV(wchar_t* hwV) {
+void DevInf::setHwV(BCHAR* hwV) {
     if (this->hwV) {
         delete [] this->hwV; this->hwV = NULL;
     }
@@ -310,11 +310,11 @@ void DevInf::setHwV(wchar_t* hwV) {
 *
 * @return the device identifier
 */
-wchar_t* DevInf::getDevID(wchar_t* retDevID) {
+BCHAR* DevInf::getDevID(BCHAR* retDevID) {
     if (retDevID == NULL) {
         return devID;
     }
-    return wcscpy(retDevID, devID);
+    return bstrcpy(retDevID, devID);
 }
 
 /**
@@ -323,7 +323,7 @@ wchar_t* DevInf::getDevID(wchar_t* retDevID) {
 * @param devID the device identifier
 *
 */
-void DevInf::setDevID(wchar_t* devID) {
+void DevInf::setDevID(BCHAR* devID) {
     if (devID == NULL) {
             // TBD
     } else {
@@ -339,11 +339,11 @@ void DevInf::setDevID(wchar_t* devID) {
 *
 * @return the device type
 */
-wchar_t* DevInf::getDevTyp(wchar_t* retDevTyp) {
+BCHAR* DevInf::getDevTyp(BCHAR* retDevTyp) {
     if (retDevTyp == NULL) {
         return devTyp;
     }
-    return wcscpy(retDevTyp, devTyp);
+    return bstrcpy(retDevTyp, devTyp);
 }
 
 /**
@@ -352,7 +352,7 @@ wchar_t* DevInf::getDevTyp(wchar_t* retDevTyp) {
 * @param devTyp the device type
 *
 */
-void DevInf::setDevTyp(wchar_t* devTyp) {
+void DevInf::setDevTyp(BCHAR* devTyp) {
     if (devTyp == NULL) {
             // TBD
     } else {

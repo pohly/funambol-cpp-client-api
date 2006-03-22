@@ -75,14 +75,14 @@ class Chal {
      *
      * @return authentication type.
      */
-    wchar_t* getType(wchar_t* retType);
+    BCHAR* getType(BCHAR* retType);
 
     /**
      * Returns the authentication format
      *
      * @return format the authentication format
      */
-    wchar_t* getFormat(wchar_t* retFormat);
+    BCHAR* getFormat(BCHAR* retFormat);
 
     /**
      * Creates a basic authentication challange.

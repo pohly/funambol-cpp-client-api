@@ -25,17 +25,17 @@
 
     #include "spds/DataTransformer.h"
 
-    #define DF_FORMATTERS TEXT("b64;des;")
+    #define DF_FORMATTERS T("b64;des;")
 
 
     class DataTransformerFactory {
 
     public:
 
-        static DataTransformer* getEncoder(wchar_t* name) EXTRA_SECTION_01;
-        static DataTransformer* getDecoder(wchar_t* name) EXTRA_SECTION_01;
-        static BOOL isSupportedEncoder(wchar_t* name) EXTRA_SECTION_01;
-        static BOOL isSupportedDecoder(wchar_t* name) EXTRA_SECTION_01;
+        static DataTransformer* getEncoder(const BCHAR* name) EXTRA_SECTION_01;
+        static DataTransformer* getDecoder(const BCHAR* name) EXTRA_SECTION_01;
+        static BOOL isSupportedEncoder(const BCHAR* name) EXTRA_SECTION_01;
+        static BOOL isSupportedDecoder(const BCHAR* name) EXTRA_SECTION_01;
 
     };
 

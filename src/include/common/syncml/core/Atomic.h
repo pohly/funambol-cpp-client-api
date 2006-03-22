@@ -24,12 +24,12 @@
 #include "syncml/core/AbstractCommand.h"
 
 
-#define ATOMIC_COMMAND_NAME TEXT("Atomic")
+#define ATOMIC_COMMAND_NAME T("Atomic")
 
 class Atomic : public AbstractCommand {
      // ------------------------------------------------------------ Private data
     private:
-       wchar_t* COMMAND_NAME;
+       BCHAR* COMMAND_NAME;
        ArrayList* commands;
     
     // ---------------------------------------------------------- Public data    
@@ -71,7 +71,7 @@ class Atomic : public AbstractCommand {
      *
      * @return the command name property
      */ 
-    wchar_t* getName();
+    BCHAR* getName();
 
     ArrayElement* clone();    
    

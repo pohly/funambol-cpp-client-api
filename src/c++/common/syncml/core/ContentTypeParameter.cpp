@@ -50,9 +50,9 @@ ContentTypeParameter::~ContentTypeParameter() {
  *                  specification
  *
  */
-ContentTypeParameter::ContentTypeParameter(wchar_t* paramName,
+ContentTypeParameter::ContentTypeParameter(BCHAR* paramName,
                      ArrayList* valEnum, 
-                     wchar_t* displayName) {
+                     BCHAR* displayName) {
     
     setParamName(paramName);
     setValEnum(valEnum);
@@ -75,10 +75,10 @@ ContentTypeParameter::ContentTypeParameter(wchar_t* paramName,
  *                  specification
  *
  */
-ContentTypeParameter::ContentTypeParameter(wchar_t* paramName,
-                            wchar_t* dataType,
+ContentTypeParameter::ContentTypeParameter(BCHAR* paramName,
+                            BCHAR* dataType,
                             int size,
-                            wchar_t* displayName) {
+                            BCHAR* displayName) {
         
         setParamName(paramName);        
         this->dataType    = stringdup(dataType);
@@ -91,11 +91,11 @@ ContentTypeParameter::ContentTypeParameter(wchar_t* paramName,
  *
  * @return the parameter name propeties
  */
-wchar_t* ContentTypeParameter::getParamName(wchar_t* retParamName) {
+BCHAR* ContentTypeParameter::getParamName(BCHAR* retParamName) {
     if (retParamName == NULL) {
         return paramName;
     }
-    return wcscpy(retParamName, paramName);
+    return bstrcpy(retParamName, paramName);
 }
 
 /**
@@ -103,7 +103,7 @@ wchar_t* ContentTypeParameter::getParamName(wchar_t* retParamName) {
  *
  * @param paramName the param name property
  */
-void ContentTypeParameter::setParamName(wchar_t* paramName) {
+void ContentTypeParameter::setParamName(BCHAR* paramName) {
     if (this->paramName) {
         delete [] this->paramName; this->paramName = NULL;
     }
@@ -139,11 +139,11 @@ void ContentTypeParameter::setValEnum(ArrayList* valEnum) {
  *
  * @return the display name propeties
  */
-wchar_t* ContentTypeParameter::getDisplayName(wchar_t* retDisplayName) {
+BCHAR* ContentTypeParameter::getDisplayName(BCHAR* retDisplayName) {
     if (retDisplayName == NULL) {
         return displayName;
     }
-    return wcscpy(retDisplayName, displayName);
+    return bstrcpy(retDisplayName, displayName);
 }
 
 /**
@@ -152,7 +152,7 @@ wchar_t* ContentTypeParameter::getDisplayName(wchar_t* retDisplayName) {
  * @param displayName the display name of a given content type parameter
  *
  */
-void ContentTypeParameter::setDisplayName(wchar_t* displayName) {
+void ContentTypeParameter::setDisplayName(BCHAR* displayName) {
     if (this->displayName) {
         delete [] this->displayName; this->displayName = NULL;
     }
@@ -164,11 +164,11 @@ void ContentTypeParameter::setDisplayName(wchar_t* displayName) {
  *
  * @return the data type propeties
  */
-wchar_t* ContentTypeParameter::getDataType(wchar_t* retDataType) {
+BCHAR* ContentTypeParameter::getDataType(BCHAR* retDataType) {
     if (retDataType == NULL) {
         return dataType;
     }
-    return wcscpy(retDataType, dataType);
+    return bstrcpy(retDataType, dataType);
 }
 
 /**
@@ -177,7 +177,7 @@ wchar_t* ContentTypeParameter::getDataType(wchar_t* retDataType) {
  * @param dataType the data type of a given content type parameter
  *
  */
-void ContentTypeParameter::setDataType(wchar_t* dataType) {
+void ContentTypeParameter::setDataType(BCHAR* dataType) {
     if (this->dataType) {
         delete [] this->dataType; this->dataType = NULL;
     }

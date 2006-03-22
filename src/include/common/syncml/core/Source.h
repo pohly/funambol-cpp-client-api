@@ -26,10 +26,10 @@ class Source {
     
      // ------------------------------------------------------------ Private data
     private:
-        wchar_t* locURI;
-        wchar_t* locName;
+        BCHAR* locURI;
+        BCHAR* locName;
 
-        void set(const wchar_t* locURI, const wchar_t* locName);
+        void set(const BCHAR* locURI, const BCHAR* locName);
     
     // ---------------------------------------------------------- Protected data    
     public:
@@ -44,7 +44,7 @@ class Source {
          * @param locName the source display name - NULL ALLOWED
          *
          */
-        Source(const wchar_t* locURI, const wchar_t* locName);
+        Source(const BCHAR* locURI, const BCHAR* locName);
     
         /**
          * Creates a new Source object given its URI
@@ -52,7 +52,7 @@ class Source {
          * @param locURI the source URI - NOT NULL
          *
          */
-        Source(const wchar_t* locURI);
+        Source(const BCHAR* locURI);
         
         // ------------------------------------------------------ Public methods
     
@@ -61,7 +61,7 @@ class Source {
          *
          * @return the source URI value
          */
-        const wchar_t* getLocURI();
+        const BCHAR* getLocURI();
     
         /**
          * Sets the source URI
@@ -69,7 +69,7 @@ class Source {
          * @param locURI the source URI - NOT NULL
          *
          */
-        void setLocURI(const wchar_t* locURI);
+        void setLocURI(const BCHAR* locURI);
     
         /**
          * Returns the source display name
@@ -77,7 +77,7 @@ class Source {
          * @return the source display name
          *
          */
-        const wchar_t* getLocName();
+        const BCHAR* getLocName();
     
         /**
          * Sets the local name property
@@ -85,7 +85,7 @@ class Source {
          * @param locName the local name property
          *
          */
-        void setLocName(const wchar_t* locName);
+        void setLocName(const BCHAR* locName);
 
         Source* clone();
    

@@ -135,14 +135,14 @@ typedef enum SyncMode{
 //-------------------------------------------------------
 // Commands
 
-#define COMMAND_ADD     TEXT("Add")
-#define COMMAND_DELETE  TEXT("Delete")
-#define COMMAND_GET     TEXT("Get")
-#define COMMAND_PUT     TEXT("Put")
-#define COMMAND_REPLACE TEXT("Replace")
-#define COMMAND_RESULTS TEXT("Results")
-#define COMMAND_STATUS  TEXT("Status")
-#define COMMAND_SYNC    TEXT("Sync")
+#define COMMAND_ADD     T("Add")
+#define COMMAND_DELETE  T("Delete")
+#define COMMAND_GET     T("Get")
+#define COMMAND_PUT     T("Put")
+#define COMMAND_REPLACE T("Replace")
+#define COMMAND_RESULTS T("Results")
+#define COMMAND_STATUS  T("Status")
+#define COMMAND_SYNC    T("Sync")
 
 //-------------------------------------------------------
 
@@ -151,6 +151,6 @@ typedef enum SyncMode{
 #endif
 
 
-wchar_t* retSyncMode(SyncMode) EXTRA_SECTION_01;
+BCHAR* retSyncMode(SyncMode) EXTRA_SECTION_01;
 
 #endif

@@ -23,13 +23,13 @@
 #include "base/fscapi.h"
 #include "syncml/core/ModificationCommand.h"
 
-#define EXEC_COMMAND_NAME TEXT("Exec")
+#define EXEC_COMMAND_NAME T("Exec")
 
 class Exec : public ModificationCommand {
     
      // ------------------------------------------------------------ Private data
     private:
-        wchar_t* COMMAND_NAME;
+        BCHAR* COMMAND_NAME;
 
     
     // ---------------------------------------------------------- Public data    
@@ -59,7 +59,7 @@ class Exec : public ModificationCommand {
          *
          * @return the command name property
          */   
-        wchar_t* getName();
+        BCHAR* getName();
 
         /**
          * Gets an Item object

@@ -21,9 +21,9 @@
 #include "base/constants.h"
 
 int  lastErrorCode = ERR_NONE;
-wchar_t lastErrorMsg[DIM_ERROR_MESSAGE];
+BCHAR lastErrorMsg[DIM_ERROR_MESSAGE];
 
 void resetError() {
 	lastErrorCode = ERR_NONE;
-	wcscpy(lastErrorMsg, TEXT(""));
+	bstrcpy(lastErrorMsg, T(""));
 }

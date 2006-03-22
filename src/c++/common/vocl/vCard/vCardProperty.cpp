@@ -35,7 +35,7 @@ vCardProperty::vCardProperty (wchar_t* v) {
     language      = NULL;
     chrset        = NULL;
 
-    value  = (v) ? stringdup(v) : NULL;
+    value  = (v) ? wstrdup(v) : NULL;
 }
 
 vCardProperty::~vCardProperty() {
@@ -132,7 +132,7 @@ void vCardProperty::set(wchar_t** property, wchar_t* v) {
     if (*property) {
         delete [] *property;
     }
-    *property = (v) ? stringdup(v) : NULL;
+    *property = (v) ? wstrdup(v) : NULL;
 }
 
 vCardProperty* vCardProperty::clone() {

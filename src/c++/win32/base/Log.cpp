@@ -22,30 +22,30 @@
 
 Log LOG = Log(false);
 
-wchar_t logmsg[512];
+BCHAR logmsg[512];
 
 FILE* logFile;
-wchar_t logDir[512];   
-wchar_t logName[128];
-wchar_t logPath[256];   
+BCHAR logDir[512];   
+BCHAR logName[128];
+BCHAR logPath[256];   
 
-void Log::setLogPath(wchar_t* configLogPath) {
+void Log::setLogPath(BCHAR* configLogPath) {
     
-    wmemset(logPath, 0, 512);
+    memset(logPath, 0, 512*sizeof(BCHAR));
     if (configLogPath != NULL) {
-        wsprintf(logPath, TEXT("%s/"), configLogPath); 
+        bsprintf(logPath, T("%s/"), configLogPath); 
     } else {
-        wsprintf(logPath, TEXT("%s"), TEXT("./"));         
+        bsprintf(logPath, T("%s"), T("./"));
     }
 }
 
-void Log::setLogName(wchar_t* configLogName) {
+void Log::setLogName(BCHAR* configLogName) {
     
-    wmemset(logName, 0, 128);
+    memset(logName, 0, 128*sizeof(BCHAR));
     if (configLogName != NULL) {
-        wsprintf(logName, TEXT("%s"), configLogName); 
+        bsprintf(logName, T("%s"), configLogName); 
     } else {
-        wsprintf(logName, TEXT("%s"), LOG_NAME);         
+        bsprintf(logName, T("%s"), LOG_NAME);         
     }
 }
 
@@ -53,33 +53,33 @@ void Log::setLogName(wchar_t* configLogName) {
 * return a the time to write into log file. If complete is true, it return 
 * the date too, else only hours, minutes, seconds and milliseconds
 */ 
-wchar_t* getCurrentTime(BOOL complete) {
+BCHAR* getCurrentTime(BOOL complete) {
     
     SYSTEMTIME sys_time;   
     GetLocalTime(&sys_time);
 
-    wchar_t fmtComplete[] = TEXT("%04d-%02d-%02d %02d:%02d:%02d:%03d");
-    wchar_t fmt[]         = TEXT("%02d:%02d:%02d:%03d");
+    BCHAR fmtComplete[] = T("%04d-%02d-%02d %02d:%02d:%02d:%03d");
+    BCHAR fmt[]         = T("%02d:%02d:%02d:%03d");
 
-    wchar_t* ret = new wchar_t [64];
+    BCHAR* ret = new BCHAR [64];
     
     if (complete) {
-        wsprintf(ret, fmtComplete, sys_time.wYear, sys_time.wMonth, sys_time.wDay,  
-                      sys_time.wHour, sys_time.wMinute, sys_time.wSecond, sys_time.wMilliseconds);
+        bsprintf(ret, fmtComplete, sys_time.wYear, sys_time.wMonth, sys_time.wDay,
+                 sys_time.wHour, sys_time.wMinute, sys_time.wSecond, sys_time.wMilliseconds);
     } else {
-        wsprintf(ret, fmt, sys_time.wHour, sys_time.wMinute, sys_time.wSecond, sys_time.wMilliseconds);
+        bsprintf(ret, fmt, sys_time.wHour, sys_time.wMinute, sys_time.wSecond, sys_time.wMilliseconds);
     }
     return ret;
 
 }
 
 
-Log::Log(BOOL resetLog, wchar_t* path, wchar_t* name) {
+Log::Log(BOOL resetLog, BCHAR* path, BCHAR* name) {
 
     setLogPath(path);
     setLogName(name);
 	if (resetLog) {
-        reset();
+        reset(LOG_NAME);
     }
 }
 
@@ -89,17 +89,15 @@ Log::~Log() {
     }
 }
 
-void Log::error(const wchar_t* msg, ...) {    
+void Log::error(const BCHAR* msg, ...) {    
     va_list argList;
     va_start (argList, msg);
     printMessage(LOG_ERROR, msg, argList);    
     va_end(argList);
 }
-void Log::error(const wchar_t* msg, va_list argList) {    
-    printMessage(LOG_ERROR, msg, argList);        
-}
 
-void Log::info(const wchar_t* msg, ...) {
+
+void Log::info(const BCHAR* msg, ...) {
     if (logLevel >= LOG_LEVEL_INFO) {
         va_list argList;
 	    va_start (argList, msg);
@@ -108,11 +106,9 @@ void Log::info(const wchar_t* msg, ...) {
 
     }
 }
-void Log::info(const wchar_t* msg, va_list argList) {    
-    printMessage(LOG_INFO, msg, argList);        
-}
 
-void Log::debug(const wchar_t* msg, ...) {
+
+void Log::debug(const BCHAR* msg, ...) {
     if (logLevel >= LOG_LEVEL_DEBUG) {
 	    va_list argList;
         va_start (argList, msg);
@@ -122,11 +118,9 @@ void Log::debug(const wchar_t* msg, ...) {
     }
 }
 
-void Log::debug(const wchar_t* msg, va_list argList) {    
-    printMessage(LOG_DEBUG, msg, argList);        
-}
 
-void Log::trace(const wchar_t* msg) { 
+
+void Log::trace(const BCHAR* msg) { 
 }
 
 void Log::setLevel(LogLevel level) {
@@ -141,26 +135,26 @@ BOOL Log::isLoggable(LogLevel level) {
     return (level >= logLevel);
 }
 
-void Log::printMessage(const wchar_t* level, const wchar_t* msg, va_list argList) {       
+void Log::printMessage(const BCHAR* level, const BCHAR* msg, va_list argList) {       
     
-	wchar_t* currentTime = getCurrentTime(false);    
-    logFile     = _wfopen(logDir, TEXT("a+"));       
+	BCHAR* currentTime = getCurrentTime(false);    
+    logFile = fopen(logDir, T("a+"));       
 	
-	fwprintf(logFile, TEXT("%s [%s] - "), currentTime, level); 		
-    vfwprintf(logFile, msg, argList);	
-	fwprintf(logFile, TEXT("\n")); 
+	fprintf(logFile, T("%s [%s] - "), currentTime, level); 		
+    vfprintf(logFile, msg, argList);	
+	fprintf(logFile, T("\n")); 
 	fclose(logFile);
 
     delete[] currentTime;	
 }
 
-void Log::reset() {
+void Log::reset(const BCHAR* title) {
     
-    wchar_t* currentTime = getCurrentTime(true);
-    wmemset(logDir, 0, 512);
-    wsprintf(logDir, TEXT("%s%s"), logPath, logName);
-    logFile     = _wfopen(logDir, TEXT("w+"));      
-    fwprintf(logFile, TEXT("%s - # Funambol WindowsMobile Plugin Log\n"), currentTime); fflush(logFile);    
+    BCHAR* currentTime = getCurrentTime(true);
+    memset(logDir, 0, 512*sizeof(BCHAR));
+    bsprintf(logDir, T("%s%s"), logPath, logName);
+    logFile = fopen(logDir, T("w+"));      
+    fprintf(logFile, T("%s - # %s\n\n"), currentTime, title);
     fclose(logFile);
 
     delete[] currentTime;    

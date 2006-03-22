@@ -27,7 +27,7 @@ class VerDTD {
     
      // ------------------------------------------------------------ Private data
     private:
-         wchar_t* value;        
+         BCHAR* value;        
     
     public:       
 
@@ -46,7 +46,7 @@ class VerDTD {
      * @param value the version - NOT NULL
      *
      */
-    VerDTD(wchar_t* value);
+    VerDTD(BCHAR* value);
 
     // ---------------------------------------------------------- Public methods
 
@@ -55,14 +55,14 @@ class VerDTD {
      *
      * @return value properties
      */
-    wchar_t* getValue(wchar_t* retValue);
+    BCHAR* getValue(BCHAR* retValue);
 
     /**
      * Sets the version of DTD
      *
      * @param value the version of DTD
      */
-    void setValue(wchar_t* value);
+    void setValue(BCHAR* value);
 
     VerDTD* clone();
 

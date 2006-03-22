@@ -24,13 +24,13 @@
 #include "syncml/core/AbstractCommand.h"
 #include "syncml/core/ModificationCommand.h"
 
-#define MAP_COMMAND_NAME TEXT("Map")
+#define MAP_COMMAND_NAME T("Map")
 
 class Map : public AbstractCommand {
     
      // ------------------------------------------------------------ Private data
     private:
-        wchar_t* COMMAND_NAME;
+        BCHAR* COMMAND_NAME;
         Target*    target;
         Source*    source;
         ArrayList* mapItems; //MapItem[]
@@ -113,7 +113,7 @@ class Map : public AbstractCommand {
          *
          * @return the command name
          */
-        wchar_t* getName();
+        BCHAR* getName();
     
         ArrayElement* clone();
 };

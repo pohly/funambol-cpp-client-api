@@ -19,30 +19,31 @@
 #include "base/fscapi.h"
 #include "base/util/utils.h"
 #include "spds/spdsutils.h"
+#include "base/quoted-printable.h"
 
 // Base64 encoding for files (with newline)
-wchar_t *uuencode(const char *msg, int len);
+BCHAR *uuencode(const char *msg, int len);
 
-SyncMode syncModeCode(const wchar_t* syncMode) {
+SyncMode syncModeCode(const BCHAR* syncMode) {
 
-    if (wcscmp(syncMode,TEXT("slow")) == 0)
+    if (bstrcmp(syncMode,T("slow")) == 0)
         return SYNC_SLOW;
-    else if (wcscmp(syncMode,TEXT("two-way")) == 0)
+    else if (bstrcmp(syncMode,T("two-way")) == 0)
         return SYNC_TWO_WAY;
-    else if (wcscmp(syncMode,TEXT("one-way")) == 0)
+    else if (bstrcmp(syncMode,T("one-way")) == 0)
         return SYNC_ONE_WAY_FROM_SERVER;
-    else if (wcscmp(syncMode,TEXT("one-way-server")) == 0)
+    else if (bstrcmp(syncMode,T("one-way-server")) == 0)
         return SYNC_ONE_WAY_FROM_SERVER;
-    else if (wcscmp(syncMode,TEXT("one-way-client")) == 0)
+    else if (bstrcmp(syncMode,T("one-way-client")) == 0)
         return SYNC_ONE_WAY_FROM_CLIENT;
-    else if (wcscmp(syncMode,TEXT("refresh")) == 0)
+    else if (bstrcmp(syncMode,T("refresh")) == 0)
         return SYNC_REFRESH_FROM_SERVER;
-    else if (wcscmp(syncMode,TEXT("refresh-server")) == 0)
+    else if (bstrcmp(syncMode,T("refresh-server")) == 0)
         return SYNC_REFRESH_FROM_SERVER;
-    else if (wcscmp(syncMode,TEXT("refresh-client")) == 0)
+    else if (bstrcmp(syncMode,T("refresh-client")) == 0)
         return SYNC_REFRESH_FROM_CLIENT;
     //--------- Funambol extension --------------------
-    else if (wcscmp(syncMode, TEXT("addrchange")) == 0)
+    else if (bstrcmp(syncMode, T("addrchange")) == 0)
         return SYNC_ADDR_CHANGE_NOTIFICATION;
     return SYNC_NONE;
 }
@@ -82,24 +83,24 @@ SyncItem** toSyncItemArray(ArrayList& items) {
     return itemArray;
 }
 
-wchar_t *uuencode(const char *msg, int len)
+/*
+ * Encode the message in base64, splitting the result in lines of 72 columns
+ * each.
+ */
+char *uuencode(const char *msg, int len)
 {
-    wchar_t *ret = 0;
     int i, step=54, dlen=0;
 
-    char *buf = new char[ len * 2 ]; // b64 is 4/3, but we have also the newlines....
+    char *ret = new char[ len * 2 ]; // b64 is 4/3, but we have also the newlines....
     for(i=0; i<len; i+=step) {
         if(len-i < step)
             step = len-i;
-        dlen += b64_encode(buf+dlen, (void *)(msg+i), step);
-        buf[dlen++]='\n';
+        dlen += b64_encode(ret+dlen, (void *)(msg+i), step);
+        ret[dlen++]='\n';
     }
     
     // Terminate the string
-    buf[dlen]=0;
-    // Convert it
-    ret = utf82wc(buf);
-    delete [] buf;
+    ret[dlen]=0;
     return ret;
 }
 
@@ -136,7 +137,7 @@ static const char *getLine(const char *msg, char **line) {
 
 // This functions works for standard encoded files with new line every
 // 72 characters. It does not work if the line length is not multiple of 4.
-int uudecode(const wchar_t *msg, char **binmsg, size_t *binlen)
+int uudecode(const BCHAR *msg, char **binmsg, size_t *binlen)
 {
     // Convert the string
     char *buf = wc2utf8(msg);
@@ -167,45 +168,42 @@ int uudecode(const wchar_t *msg, char **binmsg, size_t *binlen)
     return 0;
 }
 
-wchar_t *loadAndConvert(const wchar_t *filename, const wchar_t *encoding)
+BCHAR *loadAndConvert(const BCHAR *filename, const BCHAR *encoding)
 {
-    char *name = wc2utf8(filename);
     char *msg = 0;
     bool binary = true;
     size_t msglen=0;
-    wchar_t *ret = 0;
-
+    BCHAR *ret = 0;
     
-    if(!name)
+    if(!filename)
         return 0;
 
-    if( wcscmp(encoding, TEXT("base64")) == 0 ) {
+    if( bstrcmp(encoding, T("base64")) == 0 ) {
         binary = true;
     }
 
     // Read file
-    if(!readFile(name, &msg, &msglen, binary))
+    if(!readFile(filename, &msg, &msglen, binary))
         return 0;
     // Encode the file
-    if( wcscmp(encoding, TEXT("base64")) == 0 ) {
+    if( bstrcmp(encoding, T("base64")) == 0 ) {
         ret = uuencode(msg, msglen);
+        delete [] msg;
     }
-    else if( wcscmp(encoding, TEXT("ISO-8859-1")) == 0 ) {
-        // TODO
-        ret = utf82wc(msg);
+    else if( bstrcmp(encoding, T("quoted-printable")) == 0 ) {
+        if(qp_isNeed(msg))
+            ret = qp_encode(msg);
+        delete [] msg;
     }
-    else {      // Default UTF-8
-        ret = utf82wc(msg);    
+    else {  // Default 8bit
+        ret = msg;    
     }
-    // Free memory
-    delete [] msg;
-    delete [] name;
     return ret;
 }
 
-int convertAndSave(const wchar_t *filename,
-                   const wchar_t *s,
-                   const wchar_t *encoding)
+int convertAndSave(const BCHAR *filename,
+                   const BCHAR *s,
+                   const BCHAR *encoding)
 {
     char *buf, *name = wc2utf8(filename);
     bool binary = true;
@@ -215,13 +213,13 @@ int convertAndSave(const wchar_t *filename,
         return -1;
 
     // Decode the file
-    if( wcscmp(encoding, TEXT("base64")) == 0 ) {
+    if( bstrcmp(encoding, T("base64")) == 0 ) {
         if( uudecode(s, &buf, &len) ) {
             return -1;
         }
         binary = true;
     }
-    else if( wcscmp(encoding, TEXT("ISO-8859-1")) == 0 ) {
+    else if( bstrcmp(encoding, T("ISO-8859-1")) == 0 ) {
         // TODO
         buf = wc2utf8(s);
         len = strlen(buf);        
@@ -236,17 +234,17 @@ int convertAndSave(const wchar_t *filename,
     return 0;
 }
 
-wchar_t *getSourceName(const wchar_t *uri)
+BCHAR *getSourceName(const BCHAR *uri)
 {
 #if 0
 // FIXME
-    wchar_t nodeName = new wchar_t[];
-    wcscpy(nodeName, rootContext); wcscat(nodeName, TEXT(CONTEXT_SPDS_SOURCES));
+    BCHAR nodeName = new BCHAR[];
+    bstrcpy(nodeName, rootContext); bstrcat(nodeName, T(CONTEXT_SPDS_SOURCES));
 
     node = dmt->getManagementNode(nodeName);
     if ( ! node ) {
         lastErrorCode = ERR_INVALID_CONTEXT;
-        wsprintf(lastErrorMsg, ERRMSG_INVALID_CONTEXT, nodeName);
+        bsprintf(lastErrorMsg, ERRMSG_INVALID_CONTEXT, nodeName);
         goto finally;
     }
     n = node->getChildrenMaxCount();

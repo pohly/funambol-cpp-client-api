@@ -41,7 +41,7 @@ Source::~Source() {
  * @param locName the source display name - NULL ALLOWED
  *
  */
-Source::Source(const wchar_t* locURI, const wchar_t* locName) {
+Source::Source(const BCHAR* locURI, const BCHAR* locName) {
     this->locName  = NULL;
     this->locURI   = NULL;
     set(locURI, locName);
@@ -53,14 +53,14 @@ Source::Source(const wchar_t* locURI, const wchar_t* locName) {
  * @param locURI the source URI - NOT NULL
  *
  */
-Source::Source(const wchar_t* locURI) {
+Source::Source(const BCHAR* locURI) {
     this->locName  = NULL;
     this->locURI   = NULL;
     set(locURI, NULL);
 }
 
 
-void Source::set(const wchar_t* locURI, const wchar_t* locName) {
+void Source::set(const BCHAR* locURI, const BCHAR* locName) {
     setLocURI(locURI);
     if (this->locName) {
         delete [] this->locName; this->locName = NULL;
@@ -76,7 +76,7 @@ void Source::set(const wchar_t* locURI, const wchar_t* locName) {
  *
  * @return the source URI value
  */
-const wchar_t* Source::getLocURI() {
+const BCHAR* Source::getLocURI() {
         return locURI;
     }
 
@@ -86,7 +86,7 @@ const wchar_t* Source::getLocURI() {
  * @param locURI the source URI - NOT NULL
  *
  */
-void Source::setLocURI(const wchar_t* locURI) {
+void Source::setLocURI(const BCHAR* locURI) {
     if (locURI == NULL) {
         // TBD
     }
@@ -102,7 +102,7 @@ void Source::setLocURI(const wchar_t* locURI) {
  * @return the source display name
  *
  */
-const wchar_t* Source::getLocName() {
+const BCHAR* Source::getLocName() {
         return locName;
     }
 
@@ -112,7 +112,7 @@ const wchar_t* Source::getLocName() {
  * @param locName the local name property
  *
  */
-void Source::setLocName(const wchar_t* locName) {
+void Source::setLocName(const BCHAR* locName) {
     if (this->locName ) {
         delete [] this->locName ; this->locName  = NULL;
     }

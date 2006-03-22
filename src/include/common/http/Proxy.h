@@ -26,18 +26,18 @@
 class Proxy {
 
     public:
-        wchar_t host    [DIM_HOSTNAME];
-        wchar_t user    [DIM_USERNAME];
-        wchar_t password[DIM_PASSWORD];
+        BCHAR host    [DIM_HOSTNAME];
+        BCHAR user    [DIM_USERNAME];
+        BCHAR password[DIM_PASSWORD];
         int     port;
 
         Proxy() EXTRA_SECTION_03;
-        Proxy(wchar_t* host, int port) EXTRA_SECTION_03;
+        Proxy(BCHAR* host, int port) EXTRA_SECTION_03;
 
-        Proxy(wchar_t* host, int port, wchar_t* user, wchar_t* password) EXTRA_SECTION_03;
+        Proxy(BCHAR* host, int port, BCHAR* user, BCHAR* password) EXTRA_SECTION_03;
 
         void setProxy(Proxy& proxy) EXTRA_SECTION_03;
-        void setProxy(wchar_t* proxyHost, int proxyPort, wchar_t* proxyUser, wchar_t* proxyPassword) EXTRA_SECTION_03;
+        void setProxy(BCHAR* proxyHost, int proxyPort, BCHAR* proxyUser, BCHAR* proxyPassword) EXTRA_SECTION_03;
 
         Proxy& operator= (Proxy& proxy) { setProxy(proxy); return *this;}
     };

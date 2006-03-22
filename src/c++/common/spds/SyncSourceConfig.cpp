@@ -54,89 +54,81 @@ SyncSourceConfig::~SyncSourceConfig() {
 }
 
 
-const wchar_t* SyncSourceConfig::getName(wchar_t* buf) const {
+const BCHAR* SyncSourceConfig::getName(BCHAR* buf) const {
     if (buf == NULL) {
         return name;
     }
 
-    return wcscpy(buf, name);
+    return bstrcpy(buf, name);
 }
 
-void SyncSourceConfig::setName(const wchar_t* n) {
+void SyncSourceConfig::setName(const BCHAR* n) {
     safeDelete(&name);
-
-    if (n) {
-        name = new wchar_t[wcslen(n)+1];
-        wcscpy(name, n);
-    }
+    name = stringdup(n);
 }
 
-const wchar_t* SyncSourceConfig::getURI(wchar_t* buf) const {
+const BCHAR* SyncSourceConfig::getURI(BCHAR* buf) const {
     if (buf == NULL) {
         return uri;
     }
 
-    return wcscpy(buf, uri);
+    return bstrcpy(buf, uri);
 }
 
-void SyncSourceConfig::setURI(const wchar_t* u) {
+void SyncSourceConfig::setURI(const BCHAR* u) {
     safeDelete(&uri);
-
-    if (u) {
-        uri = new wchar_t[wcslen(u)+1];
-        wcscpy(uri, u);
-    }
+    uri = stringdup(u);
 }
 
 
-const wchar_t* SyncSourceConfig::getSyncModes(wchar_t* buf) const {
+const BCHAR* SyncSourceConfig::getSyncModes(BCHAR* buf) const {
     if (buf == NULL) {
         return syncModes;
     }
 
-    return wcscpy(buf, syncModes);
+    return bstrcpy(buf, syncModes);
 }
 
-void SyncSourceConfig::setSyncModes(const wchar_t* s) {
+void SyncSourceConfig::setSyncModes(const BCHAR* s) {
     safeDelete(&syncModes);
 
     if (s) {
-        syncModes = new wchar_t[wcslen(s)+1];
-        wcscpy(syncModes, s);
+        syncModes = new BCHAR[bstrlen(s)+1];
+        bstrcpy(syncModes, s);
     }
 }
 
-const wchar_t* SyncSourceConfig::getType(wchar_t* buf) const {
+const BCHAR* SyncSourceConfig::getType(BCHAR* buf) const {
     if (buf == NULL) {
         return type;
     }
 
-    return wcscpy(buf, type);
+    return bstrcpy(buf, type);
 }
 
-void SyncSourceConfig::setType(const wchar_t* t) {
+void SyncSourceConfig::setType(const BCHAR* t) {
     safeDelete(&type);
 
     if (t) {
-        type = new wchar_t[wcslen(t)+1];
-        wcscpy(type, t);
+        type = new BCHAR[bstrlen(t)+1];
+        bstrcpy(type, t);
     }
 }
 
-const wchar_t* SyncSourceConfig::getSync(wchar_t* buf) const {
+const BCHAR* SyncSourceConfig::getSync(BCHAR* buf) const {
     if (buf == NULL) {
         return sync;
     }
 
-    return wcscpy(buf, sync);
+    return bstrcpy(buf, sync);
 }
 
-void SyncSourceConfig::setSync(const wchar_t *s) {
+void SyncSourceConfig::setSync(const BCHAR *s) {
     safeDelete(&sync);
 
     if (s) {
-        sync = new wchar_t[wcslen(s)+1];
-        wcscpy(sync, s);
+        sync = new BCHAR[bstrlen(s)+1];
+        bstrcpy(sync, s);
     }
 }
 
@@ -148,20 +140,19 @@ unsigned long SyncSourceConfig::getLast() const {
     return (unsigned long)last;
 }
 
-const wchar_t* SyncSourceConfig::getEncoding(wchar_t* buf) const {
+const BCHAR* SyncSourceConfig::getEncoding(BCHAR* buf) const {
      if (buf == NULL) {
         return encodings;
     }
 
-    return wcscpy(buf, encodings); 
+    return bstrcpy(buf, encodings); 
 }
         
-void SyncSourceConfig::setEncoding(const wchar_t* s) {
+void SyncSourceConfig::setEncoding(const BCHAR* s) {
     safeDelete(&encodings);
 
     if (s) {
-        encodings = new wchar_t[wcslen(s)+1];
-        wcscpy(encodings, s);
+        encodings = stringdup(s);
     }
 }
 

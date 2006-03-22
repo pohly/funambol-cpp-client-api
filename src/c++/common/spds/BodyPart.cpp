@@ -20,28 +20,28 @@
 #include "spds/BodyPart.h"
 
 BodyPart::BodyPart() {
-    mimeType = TEXT("text/plain");
-    charset  = TEXT("UTF-8");
-    encoding = TEXT("8bit");
+    mimeType = T("text/plain");
+    charset  = T("UTF-8");
+    encoding = T("8bit");
 }
 
-const wchar_t * BodyPart::getMimeType() const { return (mimeType.c_str()); }
-void BodyPart::setMimeType(const wchar_t *type) { mimeType = type; }
+const BCHAR * BodyPart::getMimeType() const { return (mimeType.c_str()); }
+void BodyPart::setMimeType(const BCHAR *type) { mimeType = type; }
 
-const wchar_t * BodyPart::getEncoding() const { return (encoding.c_str()); }
-void BodyPart::setEncoding(const wchar_t *enc) { encoding = enc; }
+const BCHAR * BodyPart::getEncoding() const { return (encoding.c_str()); }
+void BodyPart::setEncoding(const BCHAR *enc) { encoding = enc; }
 
-const wchar_t * BodyPart::getCharset() const { return (charset.c_str()); }
-void BodyPart::setCharset(const wchar_t *cs) { charset = cs; }
+const BCHAR * BodyPart::getCharset() const { return (charset.c_str()); }
+void BodyPart::setCharset(const BCHAR *cs) { charset = cs; }
 
-const wchar_t * BodyPart::getContent() const { return content.c_str(); }
-void BodyPart::setContent(const wchar_t *cont) { content = cont; }
+const BCHAR * BodyPart::getContent() const { return content.c_str(); }
+void BodyPart::setContent(const BCHAR *cont) { content = cont; }
 
-const wchar_t *BodyPart::getDisposition() const { return disposition.c_str(); }
-void BodyPart::setDisposition(const wchar_t *disp) { disposition = disp; }
+const BCHAR *BodyPart::getDisposition() const { return disposition.c_str(); }
+void BodyPart::setDisposition(const BCHAR *disp) { disposition = disp; }
 
-const wchar_t *BodyPart::getFilename() const { return filename.c_str(); }
-void BodyPart::setFilename(const wchar_t *name) { filename = name; }
+const BCHAR *BodyPart::getFilename() const { return filename.c_str(); }
+void BodyPart::setFilename(const BCHAR *name) { filename = name; }
 
 ArrayElement* BodyPart::clone() {
     BodyPart *p = new BodyPart();

@@ -19,7 +19,6 @@
 #include <windows.h>
 #include <wincrypt.h>
 
-
 #include "base/util/utils.h"
 #include "spds/DESEncoder.h"
 
@@ -61,7 +60,7 @@ char* DESEncoder::transform(char* data, TransformationInfo& info) {
 
     if (res == FALSE) {
         lastErrorCode = ERR_DT_FAILURE;
-        wcsprintf(lastErrorMsg, ERRMSG_DT_FAILURE, GetLastError());
+        bsprintf(lastErrorMsg, ERRMSG_DT_FAILURE, GetLastError());
         goto exit;
     }
 
@@ -76,7 +75,7 @@ char* DESEncoder::transform(char* data, TransformationInfo& info) {
 
     if (res == FALSE) {
         lastErrorCode = ERR_DT_FAILURE;
-        wcsprintf(lastErrorMsg, ERRMSG_DT_FAILURE, GetLastError());
+        bsprintf(lastErrorMsg, ERRMSG_DT_FAILURE, GetLastError());
         goto exit;
     }
 
@@ -90,7 +89,7 @@ char* DESEncoder::transform(char* data, TransformationInfo& info) {
 
     if (res == FALSE) {
         lastErrorCode = ERR_DT_FAILURE;
-        wcsprintf(lastErrorMsg, ERRMSG_DT_FAILURE, GetLastError());
+        bsprintf(lastErrorMsg, ERRMSG_DT_FAILURE, GetLastError());
         goto exit;
     }
 
@@ -105,7 +104,7 @@ char* DESEncoder::transform(char* data, TransformationInfo& info) {
 
     if (res == FALSE) {
         lastErrorCode = ERR_DT_FAILURE;
-        wcsprintf(lastErrorMsg, ERRMSG_DT_FAILURE, GetLastError());
+        bsprintf(lastErrorMsg, ERRMSG_DT_FAILURE, GetLastError());
         goto exit;
     }
 
@@ -120,7 +119,7 @@ char* DESEncoder::transform(char* data, TransformationInfo& info) {
 
     if (res == FALSE) {
         lastErrorCode = ERR_DT_FAILURE;
-        wcsprintf(lastErrorMsg, ERRMSG_DT_FAILURE, GetLastError());
+        bsprintf(lastErrorMsg, ERRMSG_DT_FAILURE, GetLastError());
         goto exit;
     }
 
@@ -135,7 +134,7 @@ char* DESEncoder::transform(char* data, TransformationInfo& info) {
 
     if (res == FALSE) {
         lastErrorCode = ERR_DT_FAILURE;
-        wcsprintf(lastErrorMsg, ERRMSG_DT_FAILURE, GetLastError());
+        bsprintf(lastErrorMsg, ERRMSG_DT_FAILURE, GetLastError());
         goto exit;
     }
 
@@ -155,7 +154,7 @@ char* DESEncoder::transform(char* data, TransformationInfo& info) {
 
     if ((res == FALSE) && (GetLastError() != ERROR_MORE_DATA)) {
         lastErrorCode = ERR_DT_FAILURE;
-        wcsprintf(lastErrorMsg, ERRMSG_DT_FAILURE, GetLastError());
+        bsprintf(lastErrorMsg, ERRMSG_DT_FAILURE, GetLastError());
         goto exit;
     }
 
@@ -176,7 +175,7 @@ char* DESEncoder::transform(char* data, TransformationInfo& info) {
 
     if (res == FALSE) {
         lastErrorCode = ERR_DT_FAILURE;
-        wcsprintf(lastErrorMsg, ERRMSG_DT_FAILURE, GetLastError());
+        bsprintf(lastErrorMsg, ERRMSG_DT_FAILURE, GetLastError());
         goto exit;
     }
 

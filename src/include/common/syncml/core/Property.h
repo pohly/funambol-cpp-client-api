@@ -26,13 +26,13 @@ class Property : public ArrayElement {
     // ------------------------------------------------------- Private interface
 private:
 
-    wchar_t* propName;
-    wchar_t* dataType;
+    BCHAR* propName;
+    BCHAR* dataType;
     long maxOccur;
     long maxSize;
     BOOL noTruncate;  // -1 undefined, 0 FALSE, 1 TRUE
     ArrayList* valEnums;
-    wchar_t* displayName;
+    BCHAR* displayName;
     ArrayList* propParams;
 
 
@@ -46,15 +46,12 @@ protected:
     // -------------------------------------------------------- Public interface
 public:
 
-
     /*
      * Property constructor
-     *
      */
     Property();
 
     ~Property();
-
 
     /*
      * Property constructor
@@ -68,21 +65,20 @@ public:
      * @param p6
      * @param p7
      */
-    Property(wchar_t* p0, wchar_t* p1, long p2, long p3, BOOL p4, ArrayList* p5, wchar_t* p6, ArrayList* p7);
-
+    Property(BCHAR* p0, BCHAR* p1, long p2, long p3, BOOL p4, ArrayList* p5, BCHAR* p6, ArrayList* p7);
 
 
     /*
      * getDisplayName
      *
      */
-    wchar_t* getDisplayName(wchar_t* displayName = NULL);
+    BCHAR* getDisplayName(BCHAR* displayName = NULL);
 
     /*
      * getPropName
      *
      */
-    wchar_t* getPropName(wchar_t* propName = NULL);
+    BCHAR* getPropName(BCHAR* propName = NULL);
 
 
     /*
@@ -90,14 +86,14 @@ public:
      *
      * @param p0
      */
-    void setPropName(wchar_t* propName);
+    void setPropName(BCHAR* propName);
 
 
     /*
      * getDataType
      *
      */
-    wchar_t* getDataType(wchar_t* dataType = NULL);
+    BCHAR* getDataType(BCHAR* dataType = NULL);
 
 
     /*
@@ -105,7 +101,7 @@ public:
      *
      * @param p0
      */
-    void setDataType(wchar_t* p0);
+    void setDataType(BCHAR* p0);
 
 
     /*
@@ -180,7 +176,7 @@ public:
      *
      * @param p0
      */
-    void setDisplayName(wchar_t* p0);
+    void setDisplayName(BCHAR* p0);
 
 
     /*

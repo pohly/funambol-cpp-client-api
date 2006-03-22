@@ -35,7 +35,7 @@ VerProto::~VerProto() {
  * @param version the protocol version - NOT NULL
  *
  */
-VerProto::VerProto(wchar_t* version) {
+VerProto::VerProto(BCHAR* version) {
     this->version = NULL;
     setVersion(version);
 }
@@ -46,11 +46,11 @@ VerProto::VerProto(wchar_t* version) {
  * @return the protocol version - NOT NULL
  *
  */
-wchar_t* VerProto::getVersion(wchar_t* retVersion) {
+BCHAR* VerProto::getVersion(BCHAR* retVersion) {
     if (retVersion == NULL) {
         return version;
     }
-    return wcscpy(retVersion, version);
+    return bstrcpy(retVersion, version);
 }
 
 /**
@@ -59,7 +59,7 @@ wchar_t* VerProto::getVersion(wchar_t* retVersion) {
  * @param version the protocol version - NOT NULL
  *
  */
-void VerProto::setVersion(wchar_t* version) {
+void VerProto::setVersion(BCHAR* version) {
     
     if (version == NULL) {
         // TBD

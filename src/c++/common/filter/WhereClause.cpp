@@ -23,7 +23,7 @@ WhereClause::WhereClause() : property(NULL), value(NULL), op(UNKNOWN), caseSensi
     type = WHERE_CLAUSE;
 }
 
-WhereClause::WhereClause(const wchar_t* p, const wchar_t* v, WhereClauseOperator o, BOOL s) {
+WhereClause::WhereClause(const BCHAR* p, const BCHAR* v, WhereClauseOperator o, BOOL s) {
     type = WHERE_CLAUSE;
     property = NULL; if (p) property = stringdup(p);
     value = NULL; if (v) value = stringdup(v);
@@ -46,12 +46,12 @@ WhereClause::~WhereClause() {
  * @return  the current property's value
  *
  */
-wchar_t* WhereClause::getProperty(wchar_t* property) {
+BCHAR* WhereClause::getProperty(BCHAR* property) {
     if (property == NULL) {
         return this->property;
     }
 
-    return wcscpy(property, this->property);
+    return bstrcpy(property, this->property);
 }
 
 /*
@@ -60,7 +60,7 @@ wchar_t* WhereClause::getProperty(wchar_t* property) {
  * @param property the new value
  *
  */
-void WhereClause::setProperty(wchar_t* property) {
+void WhereClause::setProperty(BCHAR* property) {
     if (this->property) {
         delete this->property; this->property = NULL;
     }
@@ -76,12 +76,12 @@ void WhereClause::setProperty(wchar_t* property) {
  * @return  the current value's value
  *
  */
-wchar_t* WhereClause::getValue(wchar_t* value) {
+BCHAR* WhereClause::getValue(BCHAR* value) {
     if (value == NULL) {
         return this->value;
     }
 
-    return wcscpy(value, this->value);
+    return bstrcpy(value, this->value);
 }
 
 /*
@@ -90,7 +90,7 @@ wchar_t* WhereClause::getValue(wchar_t* value) {
  * @param value the new value
  *
  */
-void WhereClause::setValue(wchar_t* value) {
+void WhereClause::setValue(BCHAR* value) {
     if (this->value) {
         delete this->value; this->value = NULL;
     }

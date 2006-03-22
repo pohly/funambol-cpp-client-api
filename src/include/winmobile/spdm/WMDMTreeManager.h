@@ -46,7 +46,7 @@
          * The ManagementNode is created with the new operator and must be
          * discarded by the caller with the operator delete.
          */
-        ManagementNode* const getManagementNode(const wchar_t* node);
+        ManagementNode* const getManagementNode(const BCHAR* node);
 
         void setManagementNode(ManagementNode& n);
 

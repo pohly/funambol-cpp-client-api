@@ -31,7 +31,7 @@
  *
  * @param url the URL
  */
-URL::URL(const wchar_t* url) : fullURL(NULL), protocol(NULL), host(NULL), resource(NULL){
+URL::URL(const BCHAR* url) : fullURL(NULL), protocol(NULL), host(NULL), resource(NULL){
     setURL(url);
 }
 
@@ -64,7 +64,7 @@ void URL::setURL(URL& url) {
     setURL(url.fullURL, url.protocol, url.host, url.resource, url.port);
 }
 
-void URL::setURL(wchar_t* u, wchar_t* p, wchar_t* h, wchar_t*r, unsigned int port) {
+void URL::setURL(BCHAR* u, BCHAR* p, BCHAR* h, BCHAR*r, unsigned int port) {
     if (fullURL) {
         delete [] fullURL; fullURL = NULL;
     }
@@ -107,27 +107,27 @@ void URL::setURL(wchar_t* u, wchar_t* p, wchar_t* h, wchar_t*r, unsigned int por
     }
 }
 
-void URL::setURL(const wchar_t* url) {
-    if ((url == NULL) || (wcslen(url) == 0)) {
+void URL::setURL(const BCHAR* url) {
+    if ((url == NULL) || (bstrlen(url) == 0)) {
         return;
     }
 
     int size;
 
-    wchar_t* s = NULL;
-    wchar_t* q = NULL;
+    BCHAR* s = NULL;
+    BCHAR* q = NULL;
 
     //
     // protocol (mandatory)
     //
-    s = wcsstr((wchar_t*)url, TEXT("://"));
+    s = bstrstr((BCHAR*)url, T("://"));
     if ((s == NULL) || (s == url)) {
         return;
     }
 
     size = s-url;
-    wchar_t* p = new wchar_t[size+1];
-    wcsncpy(p, url, size);  p[size] = 0;
+    BCHAR* p = new BCHAR[size+1];
+    bstrncpy(p, url, size);  p[size] = 0;
 
     //
     // server (mandatory)
@@ -135,35 +135,35 @@ void URL::setURL(const wchar_t* url) {
     // port (optional)
     //
     s += 3;
-    q = wcsstr(s, TEXT("/"));
+    q = bstrstr(s, T("/"));
     if (q == NULL) {
-        size = wcslen(s);
+        size = bstrlen(s);
     } else {
         size = q-s;
     }
-    wchar_t* h = new wchar_t[size+1];    
-    wcsncpy(h, s, size); h[size] = 0;
+    BCHAR* h = new BCHAR[size+1];    
+    bstrncpy(h, s, size); h[size] = 0;
 
     unsigned int port = (unsigned int)-1;
-    s = wcsstr(h, TEXT(":"));
+    s = bstrstr(h, T(":"));
     if (s) {
-        port = wcstol(s+1, NULL, 10);
+        port = bstrtol(s+1, NULL, 10);
         *s = 0;
     }
 
     //
     // resource
     //
-    size = q ? wcslen(q) : 0;
-    wchar_t* r = new wchar_t[size+1];
-    if (size) wcsncpy(r, q, size); r[size] = 0;
+    size = q ? bstrlen(q) : 0;
+    BCHAR* r = new BCHAR[size+1];
+    if (size) bstrncpy(r, q, size); r[size] = 0;
 
     //
     // fullURL
     //
-    size = wcslen(url);
-    wchar_t* u = new wchar_t[size+1];
-    wcscpy(u, url);
+    size = bstrlen(url);
+    BCHAR* u = new BCHAR[size+1];
+    bstrcpy(u, url);
 
     setURL(u, p, h, r, port);
 
@@ -186,14 +186,14 @@ URL& URL::operator= (URL& url) {
     setURL(url); return *this;
 }
 
-URL& URL::operator= (const wchar_t* url) {
+URL& URL::operator= (const BCHAR* url) {
     setURL(url); return *this;
 }
 
 BOOL URL::isSecure() {
-   wchar_t* t = wcstolower(protocol);
+   BCHAR* t = strtolower(protocol);
 
-   BOOL ret = (wcscmp(t, TEXT("https")) == 0);
+   BOOL ret = (bstrcmp(t, T("https")) == 0);
 
    delete [] t; t = NULL;
 

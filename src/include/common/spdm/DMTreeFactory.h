@@ -45,7 +45,7 @@ class DMTreeFactory {
          * The DMTreeManager is created with the 'new' C++ operator and must be
          * discarded by the caller with the operator 'delete'.
          */
-        static DMTree* getDMTree(const wchar_t* node);
+        static DMTree* getDMTree(const BCHAR* node);
 };
 
 #endif

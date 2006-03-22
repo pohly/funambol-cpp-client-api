@@ -46,22 +46,17 @@ ResponseCommand::~ResponseCommand()  {
  * if any of the NOT NULL parameter is null
  */
 ResponseCommand::ResponseCommand(CmdID*         cmdID     ,
-                                 wchar_t*       msgRef    ,
-                                 wchar_t*       cmdRef    ,
+                                 const BCHAR*   msgRef    ,
+                                 const BCHAR*   cmdRef    ,
                                  ArrayList*     targetRefs,
                                  ArrayList*     sourceRefs,
-                                 ArrayList*     items      ) : ItemizedCommand (cmdID, items) {
-
-    
-    this->msgRef     = NULL;
-    this->cmdRef     = NULL;
-    this->targetRef  = new ArrayList(); // TargetRef[]
-    this->sourceRef  = new ArrayList(); // SourceRef[]              
-
-    setCmdRef(cmdRef);
-    setMsgRef(msgRef);
-    setTargetRef(targetRefs);
-    setSourceRef(sourceRefs);       
+                                 ArrayList*     items      )
+: ItemizedCommand (cmdID, items)
+{  
+    this->msgRef     = stringdup(msgRef);
+    this->cmdRef     = stringdup(cmdRef);
+    this->targetRef  = targetRefs->clone();
+    this->sourceRef  = sourceRefs->clone();
 }
     
 
@@ -71,11 +66,11 @@ ResponseCommand::ResponseCommand(CmdID*         cmdID     ,
  * @return the message reference
  *
  */
-wchar_t* ResponseCommand::getMsgRef(wchar_t* retGetMsgRef) {
+BCHAR* ResponseCommand::getMsgRef(BCHAR* retGetMsgRef) {
     if (retGetMsgRef == NULL) {
         return msgRef;
     }    
-    return wcscpy(retGetMsgRef, msgRef);
+    return bstrcpy(retGetMsgRef, msgRef);
 }
 
 /**
@@ -83,7 +78,7 @@ wchar_t* ResponseCommand::getMsgRef(wchar_t* retGetMsgRef) {
  *
  * @param msgRef message reference
  */
-void ResponseCommand::setMsgRef(wchar_t* msgRef) {
+void ResponseCommand::setMsgRef(const BCHAR* msgRef) {
      if (this->msgRef) {
         delete [] this->msgRef; this->msgRef = NULL;
     }
@@ -96,11 +91,11 @@ void ResponseCommand::setMsgRef(wchar_t* msgRef) {
  * @return the command reference
  *
  */
-wchar_t* ResponseCommand::getCmdRef(wchar_t* retGetCmdRef) {
+BCHAR* ResponseCommand::getCmdRef(BCHAR* retGetCmdRef) {
     if (retGetCmdRef == NULL) {
         return cmdRef;
     }
-    return wcscpy(retGetCmdRef, cmdRef);
+    return bstrcpy(retGetCmdRef, cmdRef);
 }
 
 /**
@@ -109,15 +104,11 @@ wchar_t* ResponseCommand::getCmdRef(wchar_t* retGetCmdRef) {
  * @param cmdRef commandreference - NOT NULL
  *
  */
-void ResponseCommand::setCmdRef(wchar_t* cmdRef) {
-     if (cmdRef == NULL) {
-            // TBD
-     } else {
-         if (this->cmdRef) {
-             delete [] this->cmdRef; this->cmdRef = NULL;
-         }
-         this->cmdRef = stringdup(cmdRef);
+void ResponseCommand::setCmdRef(const BCHAR* cmdRef) {
+     if (this->cmdRef) {
+         delete [] this->cmdRef; this->cmdRef = NULL;
      }
+     this->cmdRef = stringdup(cmdRef);
 }
 
 /**

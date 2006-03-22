@@ -24,24 +24,24 @@
 
 class AccessConfig {
     private:
-        wchar_t*      username         ;
-        wchar_t*      password         ;
-        wchar_t*      deviceId         ;
+        BCHAR*      username         ;
+        BCHAR*      password         ;
+        BCHAR*      deviceId         ;
         BOOL          useProxy         ;
-        wchar_t*      proxyHost        ;
+        BCHAR*      proxyHost        ;
         int           proxyPort        ;
-        wchar_t*      syncURL          ;
+        BCHAR*      syncURL          ;
         unsigned long beginTimestamp   ;
         unsigned long endTimestamp     ;
         SyncMode      firstTimeSyncMode;
 
         // added for authentication improvments
-        wchar_t* serverNonce           ;  // from client to server
-        wchar_t* clientNonce           ;  // from server to client
-        wchar_t* serverID              ;
-        wchar_t* serverPWD             ;
-        wchar_t* clientAuthType        ;
-        wchar_t* serverAuthType        ;
+        BCHAR* serverNonce           ;  // from client to server
+        BCHAR* clientNonce           ;  // from server to client
+        BCHAR* serverID              ;
+        BCHAR* serverPWD             ;
+        BCHAR* clientAuthType        ;
+        BCHAR* serverAuthType        ;
         BOOL isServerAuthRequired      ;  // F = FALSE, T = TRUE
 
         unsigned long maxMsgSize       ;
@@ -57,7 +57,7 @@ class AccessConfig {
          * @param buf the destination buffer
          * @param v the new value (CAN BE NULL)
          */
-        void set(wchar_t** buf, const wchar_t* v) EXTRA_SECTION_02;
+        void set(BCHAR** buf, const BCHAR* v) EXTRA_SECTION_02;
 
     public:
 
@@ -72,7 +72,7 @@ class AccessConfig {
          *         the memory itself.
          *
          */
-        const wchar_t* getUsername(const wchar_t* buf = NULL) EXTRA_SECTION_02;
+        const BCHAR* getUsername(const BCHAR* buf = NULL) EXTRA_SECTION_02;
 
         /**
          *  Sets the username value. The given data are copied in an internal
@@ -81,12 +81,12 @@ class AccessConfig {
          *
          *  @param username the new username value
          */
-        void setUsername(const wchar_t* username) EXTRA_SECTION_02;
+        void setUsername(const BCHAR* username) EXTRA_SECTION_02;
 
         /**
          * Returns the password value.
          */
-        const wchar_t* getPassword(const wchar_t* buf = NULL) EXTRA_SECTION_02;
+        const BCHAR* getPassword(const BCHAR* buf = NULL) EXTRA_SECTION_02;
 
         /**
          * Sets a new password value. The given data are copied in an internal
@@ -95,12 +95,12 @@ class AccessConfig {
          *
          * @param password the new password value
          */
-        void setPassword(const wchar_t* password) EXTRA_SECTION_02;
+        void setPassword(const BCHAR* password) EXTRA_SECTION_02;
 
         /**
          * Returns the deviceId value.
          */
-        const wchar_t* getDeviceId(const wchar_t* buf = NULL) EXTRA_SECTION_02;
+        const BCHAR* getDeviceId(const BCHAR* buf = NULL) EXTRA_SECTION_02;
 
         /**
          * Sets a new  deviceId value. The given data are copied in an internal
@@ -109,7 +109,7 @@ class AccessConfig {
          *
          * @param deviceId the new deviceId value
          */
-        void setDeviceId(const wchar_t* deviceId) EXTRA_SECTION_02;
+        void setDeviceId(const BCHAR* deviceId) EXTRA_SECTION_02;
 
         /**
          * Returns the SyncMode that the sync engine should your the first time
@@ -140,21 +140,21 @@ class AccessConfig {
         /**
          * Returns the proxyHost value.
          */
-        const wchar_t* getProxyHost(const wchar_t* buf = NULL) EXTRA_SECTION_02;
+        const BCHAR* getProxyHost(const BCHAR* buf = NULL) EXTRA_SECTION_02;
 
         /**
          * Sets a new proxyHost value.
          *
          * @param proxyHost the new proxyHost value
          */
-        void setProxyHost(const wchar_t* proxyHost) EXTRA_SECTION_02;
+        void setProxyHost(const BCHAR* proxyHost) EXTRA_SECTION_02;
 
         /**
          * Returns the syncURL value. If the URL does not start with http://
          * (or HTTP://) or https:// (or HTTPS://), http:// is prepended to the
          * given string.
          */
-        const wchar_t* getSyncURL(const wchar_t* buf = NULL) EXTRA_SECTION_02;
+        const BCHAR* getSyncURL(const BCHAR* buf = NULL) EXTRA_SECTION_02;
 
         /**
          * Sets a new the syncURL value. The given data are copied in an internal
@@ -163,7 +163,7 @@ class AccessConfig {
          *
          * @param syncURL the new syncURL value
          */
-        void setSyncURL(const wchar_t* syncURL) EXTRA_SECTION_02;
+        void setSyncURL(const BCHAR* syncURL) EXTRA_SECTION_02;
 
         /**
          * Sets the new "beginSync" timestamp.
@@ -193,29 +193,29 @@ class AccessConfig {
 
         void setServerAuthRequired(BOOL v) EXTRA_SECTION_02;
 
-        const wchar_t* getClientAuthType(const wchar_t* buf = NULL) EXTRA_SECTION_02;
+        const BCHAR* getClientAuthType(const BCHAR* buf = NULL) EXTRA_SECTION_02;
 
-        void setClientAuthType(const wchar_t* v) EXTRA_SECTION_02;
+        void setClientAuthType(const BCHAR* v) EXTRA_SECTION_02;
 
-        const wchar_t* getServerAuthType(const wchar_t* buf = NULL) EXTRA_SECTION_02;
+        const BCHAR* getServerAuthType(const BCHAR* buf = NULL) EXTRA_SECTION_02;
 
-        void setServerAuthType(const wchar_t* v) EXTRA_SECTION_02;
+        void setServerAuthType(const BCHAR* v) EXTRA_SECTION_02;
 
-        const wchar_t* getServerPWD(const wchar_t* buf = NULL) EXTRA_SECTION_02;
+        const BCHAR* getServerPWD(const BCHAR* buf = NULL) EXTRA_SECTION_02;
 
-        void setServerPWD(const wchar_t* v) EXTRA_SECTION_02;
+        void setServerPWD(const BCHAR* v) EXTRA_SECTION_02;
 
-        const wchar_t* getServerID(const wchar_t* buf = NULL) EXTRA_SECTION_02;
+        const BCHAR* getServerID(const BCHAR* buf = NULL) EXTRA_SECTION_02;
 
-        void setServerID(const wchar_t* v) EXTRA_SECTION_02;
+        void setServerID(const BCHAR* v) EXTRA_SECTION_02;
 
-        const wchar_t* getServerNonce(const wchar_t* buf = NULL) EXTRA_SECTION_02;
+        const BCHAR* getServerNonce(const BCHAR* buf = NULL) EXTRA_SECTION_02;
 
-        void setServerNonce(const wchar_t* v) EXTRA_SECTION_02;
+        void setServerNonce(const BCHAR* v) EXTRA_SECTION_02;
 
-        const wchar_t* getClientNonce(const wchar_t* buf = NULL) EXTRA_SECTION_02;
+        const BCHAR* getClientNonce(const BCHAR* buf = NULL) EXTRA_SECTION_02;
 
-        void setClientNonce(const wchar_t* v) EXTRA_SECTION_02;
+        void setClientNonce(const BCHAR* v) EXTRA_SECTION_02;
 
         void setMaxMsgSize(unsigned long msgSize) EXTRA_SECTION_02;
 

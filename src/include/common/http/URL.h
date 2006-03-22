@@ -25,25 +25,25 @@
     class __declspec(dllexport) URL {
 
     public:
-        wchar_t* fullURL ;
-        wchar_t* protocol;
-        wchar_t* host    ;
-        wchar_t* resource;
+        BCHAR* fullURL ;
+        BCHAR* protocol;
+        BCHAR* host    ;
+        BCHAR* resource;
         int      port    ;
 
         URL() EXTRA_SECTION_03;
-        URL(const wchar_t* url) EXTRA_SECTION_03;
+        URL(const BCHAR* url) EXTRA_SECTION_03;
         ~URL() EXTRA_SECTION_03;
 
         void setURL(URL& url) EXTRA_SECTION_03;
-        void setURL(const wchar_t* url) EXTRA_SECTION_03;
+        void setURL(const BCHAR* url) EXTRA_SECTION_03;
 
         BOOL isSecure() EXTRA_SECTION_03;
 
         URL& operator= (URL& url) EXTRA_SECTION_03;
-        URL& operator= (const wchar_t* url) EXTRA_SECTION_03;
+        URL& operator= (const BCHAR* url) EXTRA_SECTION_03;
 
     protected:
-        void setURL(wchar_t* u, wchar_t* p, wchar_t* h, wchar_t*r, unsigned int port) EXTRA_SECTION_03;
+        void setURL(BCHAR* u, BCHAR* p, BCHAR* h, BCHAR*r, unsigned int port) EXTRA_SECTION_03;
     };
 #endif

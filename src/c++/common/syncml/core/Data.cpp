@@ -36,7 +36,7 @@ Data::~Data() {
 * @param data the data value
 *
 */
-Data::Data(const wchar_t* data) {
+Data::Data(const BCHAR* data) {
     initialize();
     setData(data);
 }
@@ -53,8 +53,8 @@ void Data::initialize() {
 */
 Data::Data(long data) {
     initialize();    
-    wchar_t tmp[DIM_64];
-    wsprintf(tmp, TEXT("%i"), data);
+    BCHAR tmp[DIM_64];
+    bsprintf(tmp, T("%i"), data);
     setData(tmp);
 }
 
@@ -65,7 +65,7 @@ Data::Data(long data) {
 *
 * @param data the data property
 */
-void Data::setData(const wchar_t* data) {
+void Data::setData(const BCHAR* data) {
     if (this->data) {
         delete [] this->data; this->data = NULL;
     }
@@ -78,11 +78,11 @@ void Data::setData(const wchar_t* data) {
 *
 * @return the data properties
 */
-wchar_t* Data::getData(wchar_t* retData) {
+BCHAR* Data::getData(BCHAR* retData) {
     if (retData == NULL) {
         return data;
     }
-    return wcscpy(retData, data);
+    return bstrcpy(retData, data);
 }
 
 Data* Data::clone() {

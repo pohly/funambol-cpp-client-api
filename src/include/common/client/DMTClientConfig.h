@@ -34,7 +34,7 @@
 class DMTClientConfig : public SyncManagerConfig {
     
     protected:
-        wchar_t* rootContext;
+        BCHAR* rootContext;
 
         DMTClientConfig() EXTRA_SECTION_01;
 
@@ -45,12 +45,12 @@ class DMTClientConfig : public SyncManagerConfig {
 
     public:
 
-        DMTClientConfig(const wchar_t* root) EXTRA_SECTION_01;
+        DMTClientConfig(const BCHAR* root) EXTRA_SECTION_01;
 
         ~DMTClientConfig() EXTRA_SECTION_01;
 
         BOOL getSyncSourceConfig(
-                const wchar_t* name,
+                const BCHAR* name,
                 SyncSourceConfig& sc,
                 BOOL refresh = FALSE) EXTRA_SECTION_01;
        

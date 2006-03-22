@@ -20,7 +20,7 @@
 
     #include "spds/DataTransformer.h"
 
-    #define DT_DES TEXT("des")
+    #define DT_DES T("des")
 
     struct DESEncInfo {
         long size;
@@ -44,3 +44,4 @@
         char* transform(char* data, TransformationInfo& info);
     };
  #endif
+

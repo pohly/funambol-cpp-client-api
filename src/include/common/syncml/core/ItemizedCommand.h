@@ -96,7 +96,7 @@ class ItemizedCommand : public AbstractCommand {
          *
          * @return the name of the command
          */
-        virtual wchar_t* getName() = 0;
+        virtual BCHAR* getName() = 0;
         
         virtual ArrayElement* clone() = 0;
 };  

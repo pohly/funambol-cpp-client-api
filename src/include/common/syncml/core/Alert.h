@@ -28,14 +28,14 @@
 #include "syncml/core/CmdID.h"
 #include "syncml/core/ItemizedCommand.h"
 
-#define ALERT_COMMAND_NAME TEXT("Alert")
+#define ALERT_COMMAND_NAME T("Alert")
 
 class Alert : public ItemizedCommand {
     
      // ------------------------------------------------------------ Private data
     private:
        int data;
-       wchar_t* COMMAND_NAME;
+       BCHAR* COMMAND_NAME;
        void initialize(); 
 
     // ---------------------------------------------------------- Public data    
@@ -80,7 +80,7 @@ class Alert : public ItemizedCommand {
          *
          * @return the command name property
          */    
-        wchar_t* getName();
+        BCHAR* getName();
 
         ArrayElement* clone();
         

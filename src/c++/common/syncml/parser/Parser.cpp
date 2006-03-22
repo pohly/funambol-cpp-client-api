@@ -19,7 +19,7 @@
  
 #include "syncml/parser/Parser.h"
  
-SyncML* Parser::getSyncML(wchar_t* xml) {
+SyncML* Parser::getSyncML(BCHAR* xml) {
     SyncBody* syncBody = NULL;
     SyncHdr*  syncHdr  = NULL;
     SyncML*   syncML   = NULL; 
@@ -37,7 +37,7 @@ SyncML* Parser::getSyncML(wchar_t* xml) {
      
 }
 
-SyncHdr* Parser::getSyncHdr(wchar_t* xml) {
+SyncHdr* Parser::getSyncHdr(BCHAR* xml) {
          
     SessionID*   sessionID = NULL;
     VerDTD*      verDTD    = NULL;
@@ -45,10 +45,10 @@ SyncHdr* Parser::getSyncHdr(wchar_t* xml) {
     Source*      source    = NULL;
     Target*      target    = NULL;
     Cred*        cred      = NULL;
-    wchar_t*     respURI   = NULL;
-    wchar_t*     msgID     = NULL;
+    BCHAR*     respURI   = NULL;
+    BCHAR*     msgID     = NULL;
     BOOL         noResp    = NULL;             
-    wchar_t*     tmp       = NULL;
+    BCHAR*     tmp       = NULL;
     Meta*        meta      = NULL;
 
     SyncHdr*     ret       = NULL;
@@ -65,7 +65,7 @@ SyncHdr* Parser::getSyncHdr(wchar_t* xml) {
     tmp       = XMLProcessor::getElementContent        (xml, NO_RESP, NULL);
 
     if (tmp) {
-        wcscmpIgnoreCase(tmp, TEXT("TRUE")) ? noResp = TRUE : noResp = FALSE;            
+        wcscmpIgnoreCase(tmp, T("TRUE")) ? noResp = TRUE : noResp = FALSE;            
     } 
        
     ret = new SyncHdr(verDTD, verProto, sessionID, msgID, target, source, respURI, noResp, cred, meta);                
@@ -84,7 +84,7 @@ SyncHdr* Parser::getSyncHdr(wchar_t* xml) {
     return ret;    
 }
 
-Cred* Parser::getCred(wchar_t* xml) {
+Cred* Parser::getCred(BCHAR* xml) {
     Cred* ret              = NULL;
     Authentication* auth   = NULL;    
     
@@ -98,14 +98,14 @@ Cred* Parser::getCred(wchar_t* xml) {
     return ret;
 }
 
-Authentication* Parser::getAuthentication(wchar_t* xml) {
+Authentication* Parser::getAuthentication(BCHAR* xml) {
     Authentication* ret        = NULL;
     
-    wchar_t*        data       = NULL;    
-    Meta*           meta       = NULL;
+    BCHAR* data       = NULL;    
+    Meta*  meta       = NULL;
     
-    data           = XMLProcessor::getElementContent              (xml, DATA   , NULL);
-    meta           = getMeta(XMLProcessor::getElementContentLevel      (xml, META   , NULL));
+    data = XMLProcessor::getElementContent (xml, DATA , NULL);
+    meta = getMeta(XMLProcessor::getElementContentLevel (xml, META , NULL));
     
     if (data || meta) {    
         ret = new Authentication(meta, data);
@@ -116,7 +116,7 @@ Authentication* Parser::getAuthentication(wchar_t* xml) {
     return ret;
 }
 
-Meta* Parser::getMeta(wchar_t* xml) {
+Meta* Parser::getMeta(BCHAR* xml) {
     Meta* ret        = NULL;
     MetInf* metInf   = NULL;    
     
@@ -131,14 +131,14 @@ Meta* Parser::getMeta(wchar_t* xml) {
     return ret;
 }
 
-MetInf* Parser::getMetInf(wchar_t* xml) {
+MetInf* Parser::getMetInf(BCHAR* xml) {
     MetInf* ret             = NULL;
     
-    wchar_t*     format     = NULL;
-    wchar_t*     type       = NULL;
-    wchar_t*     mark       = NULL;
+    BCHAR*     format     = NULL;
+    BCHAR*     type       = NULL;
+    BCHAR*     mark       = NULL;
     Anchor*      anchor     = NULL;
-    wchar_t*     version    = NULL;
+    BCHAR*     version    = NULL;
     NextNonce*   nextNonce  = NULL;
     long         maxMsgSize = 0;
     long         maxObjSize = 0;
@@ -146,32 +146,32 @@ MetInf* Parser::getMetInf(wchar_t* xml) {
     ArrayList*   emi        = NULL;
     Mem*         mem        = NULL; 
     
-    wchar_t*         maxMsgSizeW   = NULL;
-    wchar_t*         maxObjSizeW   = NULL;
-    wchar_t*         sizeW         = NULL;    
+    BCHAR*         maxMsgSizeW   = NULL;
+    BCHAR*         maxObjSizeW   = NULL;
+    BCHAR*         sizeW         = NULL;    
     
     // get all the values
 
-    format       = XMLProcessor::getElementContent              (xml, FORMAT   , NULL);
-    type         = XMLProcessor::getElementContent              (xml, TYPE     , NULL);
-    mark         = XMLProcessor::getElementContent              (xml, MARK     , NULL);
+    format       = XMLProcessor::getElementContent (xml, FORMAT   , NULL);
+    type         = XMLProcessor::getElementContent (xml, TYPE     , NULL);
+    mark         = XMLProcessor::getElementContent (xml, MARK     , NULL);
     
     anchor       = getAnchor(xml);
-    version      = XMLProcessor::getElementContent              (xml, VERSIONSTR       , NULL);
+    version      = XMLProcessor::getElementContent (xml, VERSIONSTR       , NULL);
     nextNonce    = getNextNonce(xml);
     
-    maxMsgSizeW  = XMLProcessor::getElementContent              (xml, MAX_MESSAGE_SIZE     , NULL);
-    maxObjSizeW  = XMLProcessor::getElementContent              (xml, MAX_OBJ_SIZE     , NULL);
-    sizeW        = XMLProcessor::getElementContent              (xml, SIZE             , NULL);
+    maxMsgSizeW  = XMLProcessor::getElementContent (xml, MAX_MESSAGE_SIZE     , NULL);
+    maxObjSizeW  = XMLProcessor::getElementContent (xml, MAX_OBJ_SIZE     , NULL);
+    sizeW        = XMLProcessor::getElementContent (xml, SIZE             , NULL);
         
     if (maxMsgSizeW) {
-        maxMsgSize = wcstol(maxMsgSizeW, NULL, 10);
+        maxMsgSize = bstrtol(maxMsgSizeW, NULL, 10);
     }
     if (maxObjSizeW) {
-        maxObjSize = wcstol(maxObjSizeW, NULL, 10);
+        maxObjSize = bstrtol(maxObjSizeW, NULL, 10);
     }
     if (sizeW) {
-        size = wcstol(sizeW, NULL, 10);
+        size = bstrtol(sizeW, NULL, 10);
     }
         
     emi          = getEMI(xml);
@@ -200,7 +200,7 @@ MetInf* Parser::getMetInf(wchar_t* xml) {
 }
 
 
-ArrayList* Parser::getSources(wchar_t* xml) {
+ArrayList* Parser::getSources(BCHAR* xml) {
     
     Source* source = NULL; 
     SourceArray* sourceArray = NULL;
@@ -221,10 +221,10 @@ ArrayList* Parser::getSources(wchar_t* xml) {
 }
 
 
-Source* Parser::getSource(wchar_t* xml) {
+Source* Parser::getSource(BCHAR* xml) {
     Source* ret      = NULL;
-    wchar_t* locURI  = NULL;
-    wchar_t* locName = NULL;
+    BCHAR* locURI  = NULL;
+    BCHAR* locName = NULL;
     locURI  = XMLProcessor::getElementContent (xml, LOC_URI, NULL);
     locName = XMLProcessor::getElementContent (xml, LOC_NAME, NULL);
     
@@ -238,10 +238,10 @@ Source* Parser::getSource(wchar_t* xml) {
     return ret;
 }
 
-Target* Parser::getTarget(wchar_t* xml) {
+Target* Parser::getTarget(BCHAR* xml) {
     Target*  ret      = NULL;
-    wchar_t* locURI   = NULL;
-    wchar_t* locName  = NULL;
+    BCHAR* locURI   = NULL;
+    BCHAR* locName  = NULL;
     
     locURI  = XMLProcessor::getElementContent (xml, LOC_URI, NULL);
     locName = XMLProcessor::getElementContent (xml, LOC_NAME, NULL);
@@ -256,10 +256,10 @@ Target* Parser::getTarget(wchar_t* xml) {
     return ret;
 }
 
-Anchor* Parser::getAnchor(wchar_t* xml) {
+Anchor* Parser::getAnchor(BCHAR* xml) {
     Anchor*  ret    = NULL;
-    wchar_t* last   = NULL;
-    wchar_t* next   = NULL;
+    BCHAR* last   = NULL;
+    BCHAR* next   = NULL;
     
     last  = XMLProcessor::getElementContent (xml, LAST, NULL);
     next  = XMLProcessor::getElementContent (xml, NEXT, NULL);
@@ -274,9 +274,9 @@ Anchor* Parser::getAnchor(wchar_t* xml) {
     return ret;   
 }
 
-NextNonce* Parser::getNextNonce(wchar_t* xml) {
+NextNonce* Parser::getNextNonce(BCHAR* xml) {
     NextNonce* ret   = NULL;
-    wchar_t* value   = NULL;   
+    BCHAR* value   = NULL;   
     
     value  = XMLProcessor::getElementContent (xml, NEXT_NONCE, NULL);
 
@@ -289,11 +289,11 @@ NextNonce* Parser::getNextNonce(wchar_t* xml) {
     return ret;   
 }
 
-Mem* Parser::getMem(wchar_t* xml) {
+Mem* Parser::getMem(BCHAR* xml) {
     Mem* ret            = NULL;
-    wchar_t* freeMemW   = NULL;   
-    wchar_t* sharedMemW = NULL;
-    wchar_t* freeIDW    = NULL;
+    BCHAR* freeMemW   = NULL;   
+    BCHAR* sharedMemW = NULL;
+    BCHAR* freeIDW    = NULL;
         
     BOOL    sharedMem   = NULL;
     long    freeMem     = 0;
@@ -308,13 +308,13 @@ Mem* Parser::getMem(wchar_t* xml) {
     isToCreate = NotNullCheck(3, freeMemW, sharedMemW, freeIDW);
 
     if (freeMemW != NULL) {
-        freeMem = wcstol(freeMemW, NULL, 10);
+        freeMem = bstrtol(freeMemW, NULL, 10);
     }
     if (freeIDW != NULL) {
-        freeID = wcstol(freeIDW, NULL, 10);
+        freeID = bstrtol(freeIDW, NULL, 10);
     } 
     if (sharedMemW != NULL) {
-        sharedMem = wcstol(sharedMemW, NULL, 10);
+        sharedMem = bstrtol(sharedMemW, NULL, 10);
     }
     
     if (isToCreate) {
@@ -329,7 +329,7 @@ Mem* Parser::getMem(wchar_t* xml) {
 }
 
 
-SessionID* Parser::getSessionID(wchar_t* content) {
+SessionID* Parser::getSessionID(BCHAR* content) {
     SessionID* ret = NULL;
     if (content) {
         ret = new SessionID(content);
@@ -337,7 +337,7 @@ SessionID* Parser::getSessionID(wchar_t* content) {
     return ret;
 }
 
-VerDTD* Parser::getVerDTD(wchar_t* content) {
+VerDTD* Parser::getVerDTD(BCHAR* content) {
     VerDTD* ret = NULL;
     if (content) {
         ret = new VerDTD(content);
@@ -345,7 +345,7 @@ VerDTD* Parser::getVerDTD(wchar_t* content) {
     return ret;
 }
 
-VerProto* Parser::getVerProto(wchar_t* content) {
+VerProto* Parser::getVerProto(BCHAR* content) {
     VerProto* ret = NULL;
     if (content) {
         ret = new VerProto(content);
@@ -353,7 +353,7 @@ VerProto* Parser::getVerProto(wchar_t* content) {
     return ret;
 }
 
-SyncBody* Parser::getSyncBody(wchar_t* xml) {
+SyncBody* Parser::getSyncBody(BCHAR* xml) {
     
     SyncBody* syncBody   = NULL;
     BOOL finalMsg        = FALSE;
@@ -378,7 +378,7 @@ SyncBody* Parser::getSyncBody(wchar_t* xml) {
 * Atomic
 * Sync
 */
-Sequence* Parser::getSequence(wchar_t* xml) {    
+Sequence* Parser::getSequence(BCHAR* xml) {    
 
     Sequence* ret           = NULL;
         
@@ -401,7 +401,7 @@ Sequence* Parser::getSequence(wchar_t* xml) {
     meta     = getMeta       (XMLProcessor::getElementContentLevel (xml,  META  , NULL));
     noResp   = getNoResp     (XMLProcessor::getElementContent (xml, NO_RESP, NULL));
     // list of commands that must not be leaf of Sync and Atomic
-    commands = getCommonCommandList(xml, TEXT("Atomic&Sync"));    
+    commands = getCommonCommandList(xml, T("Atomic&Sync"));    
 
     // Alert
     pos = 0, previous = 0;
@@ -476,7 +476,7 @@ Sequence* Parser::getSequence(wchar_t* xml) {
     }        
     deleteArrayList(&list);
 
-    wchar_t* element = XMLProcessor::getElementContentLevel (xml,  SYNC, NULL);
+    BCHAR* element = XMLProcessor::getElementContentLevel (xml,  SYNC, NULL);
 
     if (element) {       
         sync = getSync(element);
@@ -524,7 +524,7 @@ Sequence* Parser::getSequence(wchar_t* xml) {
 * Sync
 * Sequence
 */
-Atomic* Parser::getAtomic(wchar_t* xml) {    
+Atomic* Parser::getAtomic(BCHAR* xml) {    
 
     Atomic* ret             = NULL;
 
@@ -534,7 +534,7 @@ Atomic* Parser::getAtomic(wchar_t* xml) {
     ArrayList* commands     = new ArrayList(); 
     Sync* sync              = NULL;
     Sequence* sequence      = NULL;
-    wchar_t* element = NULL;
+    BCHAR* element = NULL;
     
     Alert* alert            = NULL;
     Map*   map              = NULL;
@@ -548,7 +548,7 @@ Atomic* Parser::getAtomic(wchar_t* xml) {
     meta     = getMeta       (XMLProcessor::getElementContentLevel (xml,  META  , NULL));
     noResp   = getNoResp    (XMLProcessor::getElementContent (xml, NO_RESP, NULL));
     // list of commands that must not be leaf of Sync and Atomic
-    commands = getCommonCommandList(xml, TEXT("Sync&Sequence"));
+    commands = getCommonCommandList(xml, T("Sync&Sequence"));
     
     // Alert
     pos = 0, previous = 0;
@@ -675,7 +675,7 @@ Atomic* Parser::getAtomic(wchar_t* xml) {
 *    Sync   
 */
 
-Sync* Parser::getSync(wchar_t* xml) {    
+Sync* Parser::getSync(BCHAR* xml) {    
 
     Sync* ret               = NULL;
     Sequence* sequence      = NULL;
@@ -688,7 +688,7 @@ Sync* Parser::getSync(wchar_t* xml) {
     Source* source          = NULL;
     ArrayList* commands     = new ArrayList();   
     long numberOfChanges    = 0;
-    wchar_t* numberOfChangesW = NULL;
+    BCHAR* numberOfChangesW = NULL;
 
     cmdID    = getCmdID      (XMLProcessor::getElementContent(xml, CMD_ID,  NULL));
     target   = getTarget     (XMLProcessor::getElementContent(xml, TARGET,  NULL));
@@ -696,14 +696,14 @@ Sync* Parser::getSync(wchar_t* xml) {
     meta     = getMeta       (XMLProcessor::getElementContentLevel (xml,  META  ,NULL));
     numberOfChangesW = XMLProcessor::getElementContent (xml,  NUMBER_OF_CHANGES ,NULL);
     if (numberOfChangesW) {
-        numberOfChanges = wcstol(numberOfChangesW, NULL, 10);
+        numberOfChanges = bstrtol(numberOfChangesW, NULL, 10);
     }
 
     cred     = getCred       (XMLProcessor::getElementContent (xml, CRED   ,NULL));
     noResp   = getNoResp    (XMLProcessor::getElementContent (xml, NO_RESP, NULL));
-    commands = getCommonCommandList(xml, TEXT("Atomic&Sequence"));
+    commands = getCommonCommandList(xml, T("Atomic&Sequence"));
     
-    wchar_t* element = XMLProcessor::getElementContentExcept(xml,  SEQUENCE, TEXT("Atomic"), NULL);
+    BCHAR* element = XMLProcessor::getElementContentExcept(xml,  SEQUENCE, T("Atomic"), NULL);
     
     if (element) {
         sequence = getSequence(element);
@@ -714,7 +714,7 @@ Sync* Parser::getSync(wchar_t* xml) {
         safeDel(&element);
     }
 
-    element = XMLProcessor::getElementContentExcept(xml,  ATOMIC, TEXT("Atomic&Sequence"), NULL);
+    element = XMLProcessor::getElementContentExcept(xml,  ATOMIC, T("Atomic&Sequence"), NULL);
     
     if (element) {
         atomic = getAtomic(element);
@@ -745,7 +745,7 @@ Sync* Parser::getSync(wchar_t* xml) {
     return ret;
 }
 
-ArrayList* Parser::getCommonCommandList(wchar_t* xml, wchar_t* except) {
+ArrayList* Parser::getCommonCommandList(BCHAR* xml, BCHAR* except) {
 
     ArrayList* commands = new ArrayList();
     ArrayList* list = new ArrayList();
@@ -797,7 +797,7 @@ ArrayList* Parser::getCommonCommandList(wchar_t* xml, wchar_t* except) {
     return commands;
 }
 
-Copy* Parser::getCopy(wchar_t* xml) {
+Copy* Parser::getCopy(BCHAR* xml) {
     Copy* ret = NULL;
         
     CmdID*      cmdID   = NULL;
@@ -829,7 +829,7 @@ Copy* Parser::getCopy(wchar_t* xml) {
 }
 
 
-Add* Parser::getAdd(wchar_t* xml) {
+Add* Parser::getAdd(BCHAR* xml) {
     Add* ret = NULL;
 
     CmdID*      cmdID   = NULL;
@@ -860,7 +860,7 @@ Add* Parser::getAdd(wchar_t* xml) {
     return ret;
 }
 
-Delete* Parser::getDelete(wchar_t* xml) {
+Delete* Parser::getDelete(BCHAR* xml) {
     Delete* ret = NULL;
        
     CmdID*      cmdID   = NULL;
@@ -893,7 +893,7 @@ Delete* Parser::getDelete(wchar_t* xml) {
     return ret;
 }
 
-Replace* Parser::getReplace(wchar_t* xml) {
+Replace* Parser::getReplace(BCHAR* xml) {
     Replace* ret = NULL;
 
     CmdID*      cmdID   = NULL;
@@ -924,7 +924,7 @@ Replace* Parser::getReplace(wchar_t* xml) {
     return ret;
 }
 
-MapItem* Parser::getMapItem(wchar_t* xml) {
+MapItem* Parser::getMapItem(BCHAR* xml) {
     MapItem* ret = NULL;
     
     Target*    target = NULL;
@@ -948,7 +948,7 @@ MapItem* Parser::getMapItem(wchar_t* xml) {
 /*
 * Returns an ArrayList of mapItem command
 */
-ArrayList* Parser::getMapItems(wchar_t* xml) {
+ArrayList* Parser::getMapItems(BCHAR* xml) {
     
     MapItem* mapItem = NULL;    
     unsigned int pos = 0, previous = 0;
@@ -965,7 +965,7 @@ ArrayList* Parser::getMapItems(wchar_t* xml) {
     return list;   
 }
 
-Map* Parser::getMap(wchar_t* xml) {
+Map* Parser::getMap(BCHAR* xml) {
     Map* ret = NULL;
 
     CmdID*     cmdID  = NULL;
@@ -1008,7 +1008,7 @@ Map* Parser::getMap(wchar_t* xml) {
 /*
 * Returns an ArrayList of copy command
 */
-ArrayList* Parser::getCopies(wchar_t* xml, wchar_t* except) {
+ArrayList* Parser::getCopies(BCHAR* xml, BCHAR* except) {
     
     Copy* copy = NULL;    
     unsigned int pos = 0, previous = 0;
@@ -1031,7 +1031,7 @@ ArrayList* Parser::getCopies(wchar_t* xml, wchar_t* except) {
 /*
 * Returns an ArrayList of add command
 */
-ArrayList* Parser::getAdds(wchar_t* xml, wchar_t* except) {
+ArrayList* Parser::getAdds(BCHAR* xml, BCHAR* except) {
     
     Add* add = NULL;    
     unsigned int pos = 0, previous = 0;
@@ -1054,7 +1054,7 @@ ArrayList* Parser::getAdds(wchar_t* xml, wchar_t* except) {
 /*
 * Returns an ArrayList of Replace commands
 */
-ArrayList* Parser::getReplaces(wchar_t* xml, wchar_t* except) {
+ArrayList* Parser::getReplaces(BCHAR* xml, BCHAR* except) {
     
     Replace* replace = NULL;    
     unsigned int pos = 0, previous = 0;
@@ -1074,7 +1074,7 @@ ArrayList* Parser::getReplaces(wchar_t* xml, wchar_t* except) {
 /*
 * Returns an ArrayList of Dels command
 */
-ArrayList* Parser::getDels(wchar_t* xml, wchar_t* except) {
+ArrayList* Parser::getDels(BCHAR* xml, BCHAR* except) {
     
     Delete* del = NULL;    
     unsigned int pos = 0, previous = 0;
@@ -1109,7 +1109,7 @@ Commands of SyncBody tag
     Status  
     Sync
 */
-ArrayList* Parser::getCommands(wchar_t* xml) {    
+ArrayList* Parser::getCommands(BCHAR* xml) {    
     ArrayList* ret    = new ArrayList();
     
     ArrayList* list = new ArrayList();
@@ -1272,7 +1272,7 @@ ArrayList* Parser::getCommands(wchar_t* xml) {
     deleteArrayList(&list);
 
     // get the Sync commands. not belonging to Atomic and Sequence
-    //sync = getSync(XMLProcessor::getElementContentExcept (xml, SYNC, TEXT("Atomic&Sequence"), NULL));
+    //sync = getSync(XMLProcessor::getElementContentExcept (xml, SYNC, T("Atomic&Sequence"), NULL));
     
     //if (sync) {
     //    ret->add(*sync);
@@ -1281,7 +1281,7 @@ ArrayList* Parser::getCommands(wchar_t* xml) {
     
     // Sync
     pos = 0, previous = 0;
-    while ((sync = getSync(XMLProcessor::getElementContentExcept(&xml[pos], SYNC, TEXT("Atomic&Sequence"), &pos))) != NULL) {
+    while ((sync = getSync(XMLProcessor::getElementContentExcept(&xml[pos], SYNC, T("Atomic&Sequence"), &pos))) != NULL) {
     if (sync) {
             list->add(*sync); // in the ArrayList NULL element cannot be inserted
         deleteSync(&sync);
@@ -1300,7 +1300,7 @@ ArrayList* Parser::getCommands(wchar_t* xml) {
 
 
     // get the Sequence commands. Not belonging to Atomic and Sync
-    sequence = getSequence(XMLProcessor::getElementContentExcept(xml, SEQUENCE, TEXT("Atomic&Sync"), NULL));    
+    sequence = getSequence(XMLProcessor::getElementContentExcept(xml, SEQUENCE, T("Atomic&Sync"), NULL));    
     
     if (sequence) {
         ret->add(*sequence);
@@ -1308,7 +1308,7 @@ ArrayList* Parser::getCommands(wchar_t* xml) {
     }
     
     // get the Sequence commands. Not belonging to Sequence and Sync and Atomic
-    atomic = getAtomic(XMLProcessor::getElementContentExcept(xml, ATOMIC, TEXT("Atomic&Sync&Sequence"), NULL));   
+    atomic = getAtomic(XMLProcessor::getElementContentExcept(xml, ATOMIC, T("Atomic&Sync&Sequence"), NULL));   
     
     if (atomic) {
         ret->add(*atomic);
@@ -1316,7 +1316,7 @@ ArrayList* Parser::getCommands(wchar_t* xml) {
     }
     
     
-    list = getCommonCommandList(xml, TEXT("Atomic&Sync&Sequence"));
+    list = getCommonCommandList(xml, T("Atomic&Sync&Sequence"));
 
     if (list->size() > 0) {
         for (int i = 0; i < list->size(); i++) {
@@ -1328,7 +1328,7 @@ ArrayList* Parser::getCommands(wchar_t* xml) {
     return ret;
 }
 
-Status* Parser::getStatus(wchar_t* xml) {
+Status* Parser::getStatus(BCHAR* xml) {
     
     if (!xml)
         return NULL;
@@ -1336,9 +1336,9 @@ Status* Parser::getStatus(wchar_t* xml) {
     Status*     ret         = NULL;
     
     CmdID*      cmdID       = NULL;
-    wchar_t*    msgRef      = NULL;
-    wchar_t*    cmdRef      = NULL;
-    wchar_t*    cmd         = NULL;
+    BCHAR*    msgRef      = NULL;
+    BCHAR*    cmdRef      = NULL;
+    BCHAR*    cmd         = NULL;
     ArrayList*  targetRefs  = new ArrayList();
     ArrayList*  sourceRefs  = new ArrayList();
     Cred*       cred        = NULL;
@@ -1379,7 +1379,7 @@ Status* Parser::getStatus(wchar_t* xml) {
     return ret;   
 }
 
-Chal* Parser::getChal(wchar_t* xml) {
+Chal* Parser::getChal(BCHAR* xml) {
     
     Chal* ret  = NULL;
     Meta* meta = NULL;
@@ -1394,7 +1394,7 @@ Chal* Parser::getChal(wchar_t* xml) {
     return ret;
 }
 
-ArrayList* Parser::getTargetRefs(wchar_t* xml) {
+ArrayList* Parser::getTargetRefs(BCHAR* xml) {
     ArrayList* list = new ArrayList();
     TargetRef* targetRef = NULL;
     unsigned int pos = 0, previous = 0;
@@ -1411,7 +1411,7 @@ ArrayList* Parser::getTargetRefs(wchar_t* xml) {
     return list;
 }
 
-ArrayList* Parser::getSourceRefs(wchar_t* xml) {
+ArrayList* Parser::getSourceRefs(BCHAR* xml) {
     ArrayList* list = new ArrayList();
     SourceRef* sourceRef = NULL;
     unsigned int pos = 0, previous = 0;
@@ -1428,7 +1428,7 @@ ArrayList* Parser::getSourceRefs(wchar_t* xml) {
     return list;
 }
 
-SourceRef* Parser::getSourceRef(wchar_t* xml) {    
+SourceRef* Parser::getSourceRef(BCHAR* xml) {    
     SourceRef* ret = NULL;        
     Source* source;   
     
@@ -1442,7 +1442,7 @@ SourceRef* Parser::getSourceRef(wchar_t* xml) {
     return ret;
 }
 
-TargetRef* Parser::getTargetRef(wchar_t* xml) {    
+TargetRef* Parser::getTargetRef(BCHAR* xml) {    
     TargetRef* ret = NULL;        
     Target* target;   
     
@@ -1456,7 +1456,7 @@ TargetRef* Parser::getTargetRef(wchar_t* xml) {
     return ret;
 }
 
-Alert* Parser::getAlert(wchar_t* xml) {
+Alert* Parser::getAlert(BCHAR* xml) {
     
     Alert* ret = NULL;
     ArrayList* items = new ArrayList();    
@@ -1478,7 +1478,7 @@ Alert* Parser::getAlert(wchar_t* xml) {
     return ret;
 }
 
-Exec* Parser::getExec(wchar_t* xml) {
+Exec* Parser::getExec(BCHAR* xml) {
     
     Exec* ret = NULL;
     
@@ -1503,7 +1503,7 @@ Exec* Parser::getExec(wchar_t* xml) {
     return ret;
 }
 
-Get* Parser::getGet(wchar_t* xml) {
+Get* Parser::getGet(BCHAR* xml) {
        
     Get* ret = NULL;    
     ArrayList* items = NULL;    
@@ -1512,7 +1512,7 @@ Get* Parser::getGet(wchar_t* xml) {
     Cred*  cred      = getCred    (XMLProcessor::getElementContent (xml, CRED   , NULL));
     BOOL   noResp    = getNoResp  (XMLProcessor::getElementContent (xml, NO_RESP, NULL));
     Meta*  meta      = getMeta    (XMLProcessor::getElementContentLevel (xml, META ,   NULL));
-    wchar_t* lang    = XMLProcessor::getElementContent        (xml, LANG, NULL);
+    BCHAR* lang    = XMLProcessor::getElementContent        (xml, LANG, NULL);
     items = getItems(xml);
 
     if (NotNullCheck(1, lang)  || (cred) 
@@ -1532,7 +1532,7 @@ Get* Parser::getGet(wchar_t* xml) {
     return ret;
 }
 
-Put* Parser::getPut(wchar_t* xml) {
+Put* Parser::getPut(BCHAR* xml) {
     
     Put* ret = NULL;    
     ArrayList* items = NULL;    
@@ -1541,7 +1541,7 @@ Put* Parser::getPut(wchar_t* xml) {
     Cred*  cred      = getCred    (XMLProcessor::getElementContent (xml, CRED   , NULL));
     BOOL   noResp    = getNoResp  (XMLProcessor::getElementContent (xml, NO_RESP, NULL));
     Meta*  meta      = getMeta    (XMLProcessor::getElementContentLevel (xml, META ,   NULL));
-    wchar_t* lang    = XMLProcessor::getElementContent        (xml, LANG, NULL);        
+    BCHAR* lang    = XMLProcessor::getElementContent        (xml, LANG, NULL);        
     items = getItems(xml);
 
     if (NotNullCheck(1, lang)  || (cred) 
@@ -1561,7 +1561,7 @@ Put* Parser::getPut(wchar_t* xml) {
     return ret;
 }
 
-Search* Parser::getSearch(wchar_t* xml) {    
+Search* Parser::getSearch(BCHAR* xml) {    
     
     Search*     ret      = NULL;
     CmdID*      cmdID    = NULL;
@@ -1570,7 +1570,7 @@ Search* Parser::getSearch(wchar_t* xml) {
     Cred*       cred     = NULL;
     Target*     target   = NULL;
     ArrayList*  sources  = new ArrayList();  // an Array of SourceArray object
-    wchar_t*    lang     = NULL;
+    BCHAR*    lang     = NULL;
     Meta*       meta     = NULL;
     Data*       data     = NULL;
     
@@ -1602,15 +1602,15 @@ Search* Parser::getSearch(wchar_t* xml) {
   return ret;
 }
 
-Results* Parser::getResult(wchar_t* xml) {
+Results* Parser::getResult(BCHAR* xml) {
     
     if (!xml)
         return NULL;
     
     Results*    ret         = NULL;        
     CmdID*      cmdID       = NULL;
-    wchar_t*    msgRef      = NULL;
-    wchar_t*    cmdRef      = NULL;
+    BCHAR*    msgRef      = NULL;
+    BCHAR*    cmdRef      = NULL;
     Meta*       meta        = NULL;   
     ArrayList*  targetRefs  = new ArrayList(); // it could be an array with only a value
     ArrayList*  sourceRefs  = new ArrayList();
@@ -1644,7 +1644,7 @@ Results* Parser::getResult(wchar_t* xml) {
 //
 // return and array list of items
 //
-ArrayList* Parser::getItems(wchar_t* xml) {
+ArrayList* Parser::getItems(BCHAR* xml) {
 
     Item* item = NULL;
     ArrayList* items = new ArrayList();
@@ -1662,15 +1662,15 @@ ArrayList* Parser::getItems(wchar_t* xml) {
     return items;    
 }
 
-Item* Parser::getItem(wchar_t* xml) {    
+Item* Parser::getItem(BCHAR* xml) {    
     Item*   ret       = NULL;
     Target* target    = NULL;
     Source* source    = NULL;
     Meta*   meta      = NULL;
     ComplexData* data = NULL;
     BOOL moreData     = FALSE;  
-    wchar_t* targetParent = NULL;
-    wchar_t* sourceParent = NULL;
+    BCHAR* targetParent = NULL;
+    BCHAR* sourceParent = NULL;
 
     
     target   = getTarget     (XMLProcessor::getElementContent(xml, TARGET,         NULL));
@@ -1699,15 +1699,15 @@ Item* Parser::getItem(wchar_t* xml) {
     return ret;
 }
 
-int Parser::getDataCode(wchar_t* content) {    
+int Parser::getDataCode(BCHAR* content) {    
    int ret = 0;
    if (content) {
-        ret = wcstol(content, NULL, 10);
+        ret = bstrtol(content, NULL, 10);
    }
    return ret;
 }
 
-Data* Parser::getData(wchar_t* content) {    
+Data* Parser::getData(BCHAR* content) {    
    Data* ret = 0;
    if (content) {
         ret = new Data(content);
@@ -1715,7 +1715,7 @@ Data* Parser::getData(wchar_t* content) {
    return ret;
 }
 
-BOOL Parser::getFinalMsg(wchar_t* content) {    
+BOOL Parser::getFinalMsg(BCHAR* content) {    
     BOOL ret = FALSE;
     if (content) {
         ret = TRUE;
@@ -1723,7 +1723,7 @@ BOOL Parser::getFinalMsg(wchar_t* content) {
     return ret;
 }
 
-CmdID* Parser::getCmdID(wchar_t* content) {
+CmdID* Parser::getCmdID(BCHAR* content) {
     CmdID* ret = NULL;
     if (content) {
         ret = new CmdID(content);
@@ -1731,7 +1731,7 @@ CmdID* Parser::getCmdID(wchar_t* content) {
     return ret;
 }
 
-ComplexData* Parser::getComplexData(wchar_t* xml) {
+ComplexData* Parser::getComplexData(BCHAR* xml) {
     
     ComplexData* ret = NULL;
     Anchor* anchor   = NULL;
@@ -1755,21 +1755,21 @@ ComplexData* Parser::getComplexData(wchar_t* xml) {
     return ret;
 }
 
-DevInf* Parser::getDevInf(wchar_t* xml) {
+DevInf* Parser::getDevInf(BCHAR* xml) {
     DevInf* ret             = NULL;
     DataStore* dataStore    = NULL;
     CTCap* ctCap            = NULL;
     Ext* ext                = NULL;
 
     VerDTD* verDTD          = NULL;
-    wchar_t* man            = NULL;
-    wchar_t* mod            = NULL;
-    wchar_t* oem            = NULL;
-    wchar_t* fwV            = NULL;
-    wchar_t* swV            = NULL;
-    wchar_t* hwV            = NULL;
-    wchar_t* devId          = NULL;
-    wchar_t* devTyp         = NULL;
+    BCHAR* man            = NULL;
+    BCHAR* mod            = NULL;
+    BCHAR* oem            = NULL;
+    BCHAR* fwV            = NULL;
+    BCHAR* swV            = NULL;
+    BCHAR* hwV            = NULL;
+    BCHAR* devId          = NULL;
+    BCHAR* devTyp         = NULL;
     ArrayList* dataStores   = new ArrayList();  //DataStore[]
     ArrayList* ctCaps       = new ArrayList();       // CTCap[]
     ArrayList* exts         = new ArrayList();         // Ext[]
@@ -1778,7 +1778,7 @@ DevInf* Parser::getDevInf(wchar_t* xml) {
     BOOL supportNumberOfChanges = NULL;     // if present they Support NumberOfChanges
     SyncCap* syncCap        = NULL;
 
-    wchar_t* value          = NULL;
+    BCHAR* value          = NULL;
     
     verDTD = getVerDTD(XMLProcessor::getElementContent(xml, VER_DTD,           NULL));
     man = XMLProcessor::getElementContent(xml, MAN,           NULL);
@@ -1831,7 +1831,7 @@ DevInf* Parser::getDevInf(wchar_t* xml) {
     // The large object value depends on SUPPORT_LARGE_OBJECT tag.
     //
     if ((value = XMLProcessor::getElementContent(xml, SUPPORT_LARGE_OBJECT, NULL)) != NULL) {
-        if (wcscmpIgnoreCase(value, TEXT("TRUE"))) {
+        if (wcscmpIgnoreCase(value, T("TRUE"))) {
             supportLargeObjs = TRUE;
         }
         safeDel(&value);
@@ -1841,7 +1841,7 @@ DevInf* Parser::getDevInf(wchar_t* xml) {
     // The large object value depends on SUPPORT_NUMBER_OF_CHANGES tag. 
     //    
     if ((value = XMLProcessor::getElementContent(xml, SUPPORT_NUMBER_OF_CHANGES, NULL)) != NULL) {
-        if (wcscmpIgnoreCase(value, TEXT("TRUE"))) {
+        if (wcscmpIgnoreCase(value, T("TRUE"))) {
             supportNumberOfChanges = TRUE;
         }
         safeDel(&value);
@@ -1851,7 +1851,7 @@ DevInf* Parser::getDevInf(wchar_t* xml) {
     // The large object value depends on UTC tag.
     //
     if ((value = XMLProcessor::getElementContent(xml, UTC, NULL)) != NULL) {
-        if (wcscmpIgnoreCase(value, TEXT("TRUE"))) {
+        if (wcscmpIgnoreCase(value, T("TRUE"))) {
             utc = TRUE;
         }
         safeDel(&value);
@@ -1883,10 +1883,10 @@ DevInf* Parser::getDevInf(wchar_t* xml) {
 * This CTCap is no nested as a usual XML. See syncml_devinf_v11_20020215.pdf
 *
 */
-Ext* Parser::getExt(wchar_t* xml) {
+Ext* Parser::getExt(BCHAR* xml) {
     Ext* ret = NULL;
-    wchar_t* XNam       = NULL;
-    wchar_t* value      = NULL;
+    BCHAR* XNam       = NULL;
+    BCHAR* value      = NULL;
     ArrayList* list     = new ArrayList();
     StringElement* s      = NULL;
     unsigned int pos = 0, previous = 0;
@@ -1915,13 +1915,13 @@ Ext* Parser::getExt(wchar_t* xml) {
     return ret;
 }
 
-DataStore* Parser::getDataStore(wchar_t* xml) {
+DataStore* Parser::getDataStore(BCHAR* xml) {
     DataStore* ret = NULL;
     
     SourceRef*       sourceRef      = NULL;
-    wchar_t*         displayName    = NULL;
+    BCHAR*         displayName    = NULL;
     long             maxGUIDSize    = 0;
-    wchar_t*         maxGUIDSizeW   = NULL;
+    BCHAR*         maxGUIDSizeW   = NULL;
     ContentTypeInfo* rxPref         = NULL;
     ArrayList*       rx             = new ArrayList(); // ContentTypeInfo[]
     ContentTypeInfo* txPref         = NULL;;
@@ -1935,7 +1935,7 @@ DataStore* Parser::getDataStore(wchar_t* xml) {
     displayName = XMLProcessor::getElementContent(xml, DISPLAY_NAME,             NULL);
     maxGUIDSizeW = XMLProcessor::getElementContent(xml, MAX_GUID_SIZE,           NULL);
     if (maxGUIDSizeW) {
-        maxGUIDSize = wcstol(maxGUIDSizeW, NULL, 10);
+        maxGUIDSize = bstrtol(maxGUIDSizeW, NULL, 10);
     }
     rxPref = getContentTypeInfo(XMLProcessor::getElementContent(xml, RX_PREF,  NULL));
     txPref = getContentTypeInfo(XMLProcessor::getElementContent(xml, TX_PREF,  NULL));
@@ -1990,7 +1990,7 @@ DataStore* Parser::getDataStore(wchar_t* xml) {
 }
 
 
-SyncCap* Parser::getSyncCap(wchar_t* xml) {
+SyncCap* Parser::getSyncCap(BCHAR* xml) {
     
     SyncCap* ret            = NULL;
     SyncType* syncType      = NULL;
@@ -2015,13 +2015,13 @@ SyncCap* Parser::getSyncCap(wchar_t* xml) {
     return ret;
 }
 
-SyncType* Parser::getSyncType(wchar_t* content) {
+SyncType* Parser::getSyncType(BCHAR* content) {
     
     SyncType* ret            = NULL;    
     int value                = 0;
   
     if (content) {
-         value = wcstol(content, NULL, 10);
+         value = bstrtol(content, NULL, 10);
          if (value >= 1 && value <= 7) {
              ret = new SyncType(value);
          }
@@ -2031,11 +2031,11 @@ SyncType* Parser::getSyncType(wchar_t* content) {
 }
 
 
-ContentTypeInfo* Parser::getContentTypeInfo(wchar_t* xml) {
+ContentTypeInfo* Parser::getContentTypeInfo(BCHAR* xml) {
     
     ContentTypeInfo* ret = NULL;
-    wchar_t* ctType      = NULL;
-    wchar_t* verCT       = NULL;     
+    BCHAR* ctType      = NULL;
+    BCHAR* verCT       = NULL;     
 
     ctType = XMLProcessor::getElementContent(xml, CT_TYPE,             NULL);
     verCT  = XMLProcessor::getElementContent(xml, VER_CT,             NULL);
@@ -2049,12 +2049,12 @@ ContentTypeInfo* Parser::getContentTypeInfo(wchar_t* xml) {
     return ret;
 }
 
-DSMem* Parser::getDSMem(wchar_t* xml) {    
+DSMem* Parser::getDSMem(BCHAR* xml) {    
     
     DSMem* ret          = NULL;
-    wchar_t* maxMemW   = NULL;   
-    wchar_t* sharedMemW = NULL;
-    wchar_t* maxIDW    = NULL;
+    BCHAR* maxMemW   = NULL;   
+    BCHAR* sharedMemW = NULL;
+    BCHAR* maxIDW    = NULL;
         
     BOOL    sharedMem   = NULL;
     long    maxMem     = 0;
@@ -2069,13 +2069,13 @@ DSMem* Parser::getDSMem(wchar_t* xml) {
     isToCreate = NotNullCheck(3, maxMemW, sharedMemW, maxIDW);
 
     if (maxMemW != NULL) {
-        maxMem = wcstol(maxMemW, NULL, 10);
+        maxMem = bstrtol(maxMemW, NULL, 10);
     }
     if (maxIDW != NULL) {
-        maxID = wcstol(maxIDW, NULL, 10);
+        maxID = bstrtol(maxIDW, NULL, 10);
     } 
     if (sharedMemW != NULL) {
-        sharedMem = wcstol(sharedMemW, NULL, 10);
+        sharedMem = bstrtol(sharedMemW, NULL, 10);
     }
     
     if (isToCreate) {
@@ -2090,14 +2090,14 @@ DSMem* Parser::getDSMem(wchar_t* xml) {
 
 }
 
-BOOL Parser::getNoResp(wchar_t* content) {    
+BOOL Parser::getNoResp(BCHAR* content) {    
   if (content)
       return TRUE;
   else
       return FALSE;
 }
 
-BOOL Parser::getNoResults(wchar_t* content) {    
+BOOL Parser::getNoResults(BCHAR* content) {    
     
     if (content)
         return TRUE;
@@ -2105,7 +2105,7 @@ BOOL Parser::getNoResults(wchar_t* content) {
         return FALSE;
 }
 
-BOOL Parser::getMoreData(wchar_t* content) {
+BOOL Parser::getMoreData(BCHAR* content) {
      if (content)
         return TRUE;
     else    
@@ -2118,7 +2118,7 @@ BOOL Parser::getMoreData(wchar_t* content) {
 * TBD
 *
 */
-CTCap* Parser::getCTCap(wchar_t* xml) {
+CTCap* Parser::getCTCap(BCHAR* xml) {
     CTCap* ret = NULL;
     CTTypeSupported* ctTypeSupported = NULL;
 
@@ -2130,7 +2130,7 @@ CTCap* Parser::getCTCap(wchar_t* xml) {
 //
 // TBD 
 //
-ArrayList* Parser::getEMI(wchar_t* content) {
+ArrayList* Parser::getEMI(BCHAR* content) {
     ArrayList* ret = new ArrayList();    
     return ret;
 }

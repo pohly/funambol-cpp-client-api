@@ -42,7 +42,7 @@
             static Sync4jClient& getInstance();
             static void dispose();
             // set the default client configuration (using context root)
-            void setDMConfig(const wchar_t* root);
+            void setDMConfig(const BCHAR* root);
             // set a client-provided DMTree config
             void setDMConfig(DMTClientConfig& c);
 

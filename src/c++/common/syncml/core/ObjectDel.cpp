@@ -22,13 +22,13 @@
 
 
 /*
-* delete all the wchar_t* type in the list.
-* The first parameter is the number of wchar_t* pointer array to delete
+* delete all the BCHAR* type in the list.
+* The first parameter is the number of BCHAR* pointer array to delete
 * 
 */
 /*
 // To be developed
-void deleteAll(int count, wchar_t** s, ...) {
+void deleteAll(int count, BCHAR** s, ...) {
   
     va_list ap;
     int i = 0;
@@ -36,38 +36,38 @@ void deleteAll(int count, wchar_t** s, ...) {
     va_start (ap, s);
 
     for (i = 0; i < count; i++)
-    safeDel((va_arg (ap, wchar_t**))); 
+    safeDel((va_arg (ap, BCHAR**))); 
 
     va_end (ap);
 
 }
 */
 
-void deleteAll(int count, wchar_t** s) {
+void deleteAll(int count, BCHAR** s) {
     safeDel(s);
 }
-void deleteAll(int count, wchar_t** s, wchar_t** s1) {
+void deleteAll(int count, BCHAR** s, BCHAR** s1) {
     safeDel(s); safeDel(s1);
 }
-void deleteAll(int count, wchar_t** s, wchar_t** s1, wchar_t** s2) {
+void deleteAll(int count, BCHAR** s, BCHAR** s1, BCHAR** s2) {
     safeDel(s); safeDel(s1); safeDel(s2);
 }
-void deleteAll(int count, wchar_t** s, wchar_t** s1, wchar_t** s2, wchar_t** s3) {
+void deleteAll(int count, BCHAR** s, BCHAR** s1, BCHAR** s2, BCHAR** s3) {
     safeDel(s); safeDel(s1); safeDel(s2); safeDel(s3);
 }
-void deleteAll(int count, wchar_t** s, wchar_t** s1, wchar_t** s2, wchar_t** s3, wchar_t** s4) {
+void deleteAll(int count, BCHAR** s, BCHAR** s1, BCHAR** s2, BCHAR** s3, BCHAR** s4) {
     safeDel(s); safeDel(s1); safeDel(s2); safeDel(s3); safeDel(s4);
 }
-void deleteAll(int count, wchar_t** s, wchar_t** s1, wchar_t** s2, wchar_t** s3, wchar_t** s4, wchar_t** s5) {
+void deleteAll(int count, BCHAR** s, BCHAR** s1, BCHAR** s2, BCHAR** s3, BCHAR** s4, BCHAR** s5) {
     safeDel(s); safeDel(s1); safeDel(s2); safeDel(s3); safeDel(s4); safeDel(s5);
 }
-void deleteAll(int count, wchar_t** s, wchar_t** s1, wchar_t** s2, wchar_t** s3, wchar_t** s4, wchar_t** s5, wchar_t** s6) {
+void deleteAll(int count, BCHAR** s, BCHAR** s1, BCHAR** s2, BCHAR** s3, BCHAR** s4, BCHAR** s5, BCHAR** s6) {
     safeDel(s); safeDel(s1); safeDel(s2); safeDel(s3); safeDel(s4); safeDel(s5); safeDel(s6);
 }
-void deleteAll(int count, wchar_t** s, wchar_t** s1, wchar_t** s2, wchar_t** s3, wchar_t** s4, wchar_t** s5, wchar_t** s6, wchar_t** s7) {
+void deleteAll(int count, BCHAR** s, BCHAR** s1, BCHAR** s2, BCHAR** s3, BCHAR** s4, BCHAR** s5, BCHAR** s6, BCHAR** s7) {
     safeDel(s); safeDel(s1); safeDel(s2); safeDel(s3); safeDel(s4); safeDel(s5); safeDel(s6); safeDel(s7);
 }
-void deleteAll(int count, wchar_t** s, wchar_t** s1, wchar_t** s2, wchar_t** s3, wchar_t** s4, wchar_t** s5, wchar_t** s6, wchar_t** s7, wchar_t** s8) {
+void deleteAll(int count, BCHAR** s, BCHAR** s1, BCHAR** s2, BCHAR** s3, BCHAR** s4, BCHAR** s5, BCHAR** s6, BCHAR** s7, BCHAR** s8) {
     safeDel(s); safeDel(s1); safeDel(s2); safeDel(s3); safeDel(s4); safeDel(s5); safeDel(s6); safeDel(s7); safeDel(s8);
 }
 
@@ -183,48 +183,48 @@ void deleteAllStringBuffer(int count, StringBuffer** s, ...) {
 }
 */
 
-BOOL SingleNotNullCheck(wchar_t* s) {
+BOOL SingleNotNullCheck(BCHAR* s) {
     return (s) ? TRUE : FALSE; 
 }
 
-BOOL NotNullCheck(int count, wchar_t* s) {
+BOOL NotNullCheck(int count, BCHAR* s) {
     return SingleNotNullCheck(s);
 }
-BOOL NotNullCheck(int count, wchar_t* s, wchar_t* s1) {
+BOOL NotNullCheck(int count, BCHAR* s, BCHAR* s1) {
     return (SingleNotNullCheck(s) || SingleNotNullCheck(s1));
 }
-BOOL NotNullCheck(int count, wchar_t* s, wchar_t* s1, wchar_t* s2) {
+BOOL NotNullCheck(int count, BCHAR* s, BCHAR* s1, BCHAR* s2) {
     return (SingleNotNullCheck(s) || SingleNotNullCheck(s1) || SingleNotNullCheck(s2));
 }
-BOOL NotNullCheck(int count, wchar_t* s, wchar_t* s1, wchar_t* s2, wchar_t* s3) {
+BOOL NotNullCheck(int count, BCHAR* s, BCHAR* s1, BCHAR* s2, BCHAR* s3) {
     return (SingleNotNullCheck(s) || SingleNotNullCheck(s1) || SingleNotNullCheck(s2) || SingleNotNullCheck(s3));
 }
-BOOL NotNullCheck(int count, wchar_t* s, wchar_t* s1, wchar_t* s2, wchar_t* s3, wchar_t* s4) {
+BOOL NotNullCheck(int count, BCHAR* s, BCHAR* s1, BCHAR* s2, BCHAR* s3, BCHAR* s4) {
     return (SingleNotNullCheck(s) || SingleNotNullCheck(s1) || SingleNotNullCheck(s2) || SingleNotNullCheck(s3) || SingleNotNullCheck(s4));
 }
-BOOL NotNullCheck(int count, wchar_t* s, wchar_t* s1, wchar_t* s2, wchar_t* s3, wchar_t* s4, wchar_t* s5) {
+BOOL NotNullCheck(int count, BCHAR* s, BCHAR* s1, BCHAR* s2, BCHAR* s3, BCHAR* s4, BCHAR* s5) {
     return (SingleNotNullCheck(s) || SingleNotNullCheck(s1) || SingleNotNullCheck(s2) || SingleNotNullCheck(s3) || SingleNotNullCheck(s4)
            || SingleNotNullCheck(s5));
 }
-BOOL NotNullCheck(int count, wchar_t* s, wchar_t* s1, wchar_t* s2, wchar_t* s3, wchar_t* s4, wchar_t* s5, wchar_t* s6) {
+BOOL NotNullCheck(int count, BCHAR* s, BCHAR* s1, BCHAR* s2, BCHAR* s3, BCHAR* s4, BCHAR* s5, BCHAR* s6) {
     return (SingleNotNullCheck(s) || SingleNotNullCheck(s1) || SingleNotNullCheck(s2) || SingleNotNullCheck(s3) || SingleNotNullCheck(s4)
             || SingleNotNullCheck(s5)
             || SingleNotNullCheck(s6));
 }           
-BOOL NotNullCheck(int count, wchar_t* s, wchar_t* s1, wchar_t* s2, wchar_t* s3, wchar_t* s4, wchar_t* s5, wchar_t* s6, wchar_t* s7) {
+BOOL NotNullCheck(int count, BCHAR* s, BCHAR* s1, BCHAR* s2, BCHAR* s3, BCHAR* s4, BCHAR* s5, BCHAR* s6, BCHAR* s7) {
     return (SingleNotNullCheck(s) || SingleNotNullCheck(s1) || SingleNotNullCheck(s2) || SingleNotNullCheck(s3) || SingleNotNullCheck(s4)
             || SingleNotNullCheck(s5)
             || SingleNotNullCheck(s6)
             || SingleNotNullCheck(s7));
 }       
-BOOL NotNullCheck(int count, wchar_t* s, wchar_t* s1, wchar_t* s2, wchar_t* s3, wchar_t* s4, wchar_t* s5, wchar_t* s6, wchar_t* s7, wchar_t* s8) {
+BOOL NotNullCheck(int count, BCHAR* s, BCHAR* s1, BCHAR* s2, BCHAR* s3, BCHAR* s4, BCHAR* s5, BCHAR* s6, BCHAR* s7, BCHAR* s8) {
     return (SingleNotNullCheck(s) || SingleNotNullCheck(s1) || SingleNotNullCheck(s2) || SingleNotNullCheck(s3) || SingleNotNullCheck(s4)
             || SingleNotNullCheck(s5)
             || SingleNotNullCheck(s6)
             || SingleNotNullCheck(s7)
             || SingleNotNullCheck(s8));
 }
-BOOL NotNullCheck(int count, wchar_t* s, wchar_t* s1, wchar_t* s2, wchar_t* s3, wchar_t* s4, wchar_t* s5, wchar_t* s6, wchar_t* s7, wchar_t* s8, wchar_t* s9) {
+BOOL NotNullCheck(int count, BCHAR* s, BCHAR* s1, BCHAR* s2, BCHAR* s3, BCHAR* s4, BCHAR* s5, BCHAR* s6, BCHAR* s7, BCHAR* s8, BCHAR* s9) {
     return (SingleNotNullCheck(s) || SingleNotNullCheck(s1) || SingleNotNullCheck(s2) || SingleNotNullCheck(s3) || SingleNotNullCheck(s4)
             || SingleNotNullCheck(s5)
             || SingleNotNullCheck(s6)
@@ -232,7 +232,7 @@ BOOL NotNullCheck(int count, wchar_t* s, wchar_t* s1, wchar_t* s2, wchar_t* s3, 
             || SingleNotNullCheck(s8)
             || SingleNotNullCheck(s9));
 }
-BOOL NotNullCheck(int count, wchar_t* s, wchar_t* s1, wchar_t* s2, wchar_t* s3, wchar_t* s4, wchar_t* s5, wchar_t* s6, wchar_t* s7, wchar_t* s8, wchar_t* s9, wchar_t* s10) {
+BOOL NotNullCheck(int count, BCHAR* s, BCHAR* s1, BCHAR* s2, BCHAR* s3, BCHAR* s4, BCHAR* s5, BCHAR* s6, BCHAR* s7, BCHAR* s8, BCHAR* s9, BCHAR* s10) {
     return (SingleNotNullCheck(s) || SingleNotNullCheck(s1) || SingleNotNullCheck(s2) || SingleNotNullCheck(s3) || SingleNotNullCheck(s4)
             || SingleNotNullCheck(s5)
             || SingleNotNullCheck(s6)
@@ -243,22 +243,22 @@ BOOL NotNullCheck(int count, wchar_t* s, wchar_t* s1, wchar_t* s2, wchar_t* s3, 
 }
 
 /*
-* return TRUE if an element of the wchar_t* list is not NULL
+* return TRUE if an element of the BCHAR* list is not NULL
 */
 /*
 // To be developed
-BOOL NotNullCheck(int count, wchar_t* s, ...) {
+BOOL NotNullCheck(int count, BCHAR* s, ...) {
   
     va_list ap;
     int i = 0;
     BOOL ret = FALSE;
 
     va_start (ap, s);
-    wchar_t* t = NULL;
+    BCHAR* t = NULL;
     
     for(i = 0; i < count; i++) {
         t = NULL;
-        t = va_arg (ap, wchar_t*);
+        t = va_arg (ap, BCHAR*);
         if (t != NULL) {
             ret = TRUE;
         }

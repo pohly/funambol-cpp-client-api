@@ -32,7 +32,7 @@
         SYNC_STATE_NONE    = ' '
     } SyncState;
 
-    class /*__declspec(dllexport)*/ SyncItem : public ArrayElement {
+    class SyncItem : public ArrayElement {
 
     private:
 
@@ -45,8 +45,8 @@
         long lastModificationTime;
         SyncState state;
 
-        wchar_t*     targetParent;
-        wchar_t*     sourceParent;
+        wchar_t* targetParent;
+        wchar_t* sourceParent;
 
         /**
          * Initializes private members
@@ -162,7 +162,7 @@
          * @param parent the target parent
          *
          */
-        void setTargetParent(wchar_t* parent) EXTRA_SECTION_01;    
+        void setTargetParent(const wchar_t* parent) EXTRA_SECTION_01;    
 
         /**
          * Returns the SyncItem sourceParent
@@ -177,7 +177,7 @@
          * @param parent the source parent
          *
          */
-        void setSourceParent(wchar_t* parent) EXTRA_SECTION_01;
+        void setSourceParent(const wchar_t* parent) EXTRA_SECTION_01;
 
         /**
          * Creates a new instance of SyncItem from the content of this

@@ -73,7 +73,7 @@ class SyncNotification {
         SN_UIMode getUIMode();
         SN_Initiator getInitiator();
         int getSessionId();
-        const wchar_t* getServerId();
+        const BCHAR* getServerId();
         int getNumSyncs();
         SyncAlert* getSyncAlert ( int idx );
 
@@ -83,7 +83,7 @@ class SyncNotification {
         SN_UIMode uiMode;
         SN_Initiator initiator;
         int sessionId;
-        wchar_t* serverId;
+        BCHAR* serverId;
         // Notification Body
         int numSyncs;
         SyncAlert *syncAlerts;

@@ -25,12 +25,12 @@ class Anchor {
     
     // ------------------------------------------------------------ Private data
     private:
-        wchar_t* last;
-        wchar_t* next;
+        BCHAR* last;
+        BCHAR* next;
     // ---------------------------------------------------------- Protected data    
     public:
     
-        Anchor(const wchar_t* last, const wchar_t* next);
+        Anchor(const BCHAR* last, const BCHAR* next);
         ~Anchor();
 
         /**
@@ -38,7 +38,7 @@ class Anchor {
      *
      * @return the last property
      */
-     const wchar_t* getLast();
+     const BCHAR* getLast();
 
     /**
      * Sets the last property
@@ -46,14 +46,14 @@ class Anchor {
      * @param last the last property
      *
      */
-    void setLast(const wchar_t* last);
+    void setLast(const BCHAR* last);
     
     /**
      * Gets the next property
      *
      * @return the next property
      */
-    const wchar_t* getNext();
+    const BCHAR* getNext();
     
     /**
      * Sets the next property
@@ -61,7 +61,7 @@ class Anchor {
      * @param next the next property
      *
      */
-    void setNext(const wchar_t* next);
+    void setNext(const BCHAR* next);
 
 
     Anchor* clone();

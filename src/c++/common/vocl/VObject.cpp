@@ -43,7 +43,7 @@ void VObject::set(wchar_t** p, wchar_t* v) {
     if (*p) {
         delete [] *p;
     }
-    *p = (v) ? stringdup(v) : NULL;
+    *p = (v) ? wstrdup(v) : NULL;
 }
 
 void VObject::setVersion(wchar_t* ver) {
@@ -386,7 +386,7 @@ void VObject::fromNativeEncoding()
                         in += linebreaklen;
                     } else if(curr == '=') {
                         // escape =
-                        wcsprintf(foreign + out, TEXT("=%02X"), '=');
+                        wsprintf(foreign + out, TEXT("=%02X"), '=');
                         out += 3;
                         in++;
                     } else {

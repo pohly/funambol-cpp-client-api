@@ -40,7 +40,7 @@ Property::~Property() {
     if (valEnums)   delete valEnums  ;
 }
 
-Property::Property(wchar_t* p0, wchar_t* p1, long p2, long p3, BOOL p4, ArrayList* p5, wchar_t* p6, ArrayList* p7) {
+Property::Property(BCHAR* p0, BCHAR* p1, long p2, long p3, BOOL p4, ArrayList* p5, BCHAR* p6, ArrayList* p7) {
     propName    = (p0) ? stringdup(p0) : NULL;
     dataType    = (p1) ? stringdup(p1) : NULL;
     maxOccur    = p2;
@@ -51,15 +51,15 @@ Property::Property(wchar_t* p0, wchar_t* p1, long p2, long p3, BOOL p4, ArrayLis
     propParams  = (p7) ? p7->clone() : NULL;
 }
 
-wchar_t* Property::getDisplayName(wchar_t* displayName) {
+BCHAR* Property::getDisplayName(BCHAR* displayName) {
     if (displayName == NULL) {
         return this->displayName;
     }
 
-    return wcscpy(displayName, this->displayName);
+    return bstrcpy(displayName, this->displayName);
 }
 
-void Property::setDisplayName(wchar_t* displayName) {
+void Property::setDisplayName(BCHAR* displayName) {
     if (this->displayName) {
         delete this->displayName; this->displayName = NULL;
     }
@@ -75,12 +75,12 @@ void Property::setDisplayName(wchar_t* displayName) {
  * @return  the current propName's value
  *
  */
-wchar_t* Property::getPropName(wchar_t* propName) {
+BCHAR* Property::getPropName(BCHAR* propName) {
     if (propName == NULL) {
         return this->propName;
     }
 
-    return wcscpy(propName, this->propName);
+    return bstrcpy(propName, this->propName);
 }
 
 /*
@@ -89,7 +89,7 @@ wchar_t* Property::getPropName(wchar_t* propName) {
  * @param propName the new value
  *
  */
-void Property::setPropName(wchar_t* propName) {
+void Property::setPropName(BCHAR* propName) {
     if (this->propName) {
         delete this->propName; this->propName = NULL;
     }
@@ -105,12 +105,12 @@ void Property::setPropName(wchar_t* propName) {
  * @return  the current dataType's value
  *
  */
-wchar_t* Property::getDataType(wchar_t* dataType) {
+BCHAR* Property::getDataType(BCHAR* dataType) {
     if (dataType == NULL) {
         return this->dataType;
     }
 
-    return wcscpy(dataType, this->dataType);
+    return bstrcpy(dataType, this->dataType);
 }
 
 /*
@@ -119,7 +119,7 @@ wchar_t* Property::getDataType(wchar_t* dataType) {
  * @param dataType the new value
  *
  */
-void Property::setDataType(wchar_t* dataType) {
+void Property::setDataType(BCHAR* dataType) {
     if (this->dataType) {
         delete this->dataType; this->dataType = NULL;
     }

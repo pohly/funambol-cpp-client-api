@@ -22,27 +22,26 @@
 #include "base/util/XMLProcessor.h"
 #include "syncml/formatter/Formatter.h"
 #include "spds/FileData.h"
+#include "base/quoted-printable.h"
 
-
-//#define EMAIL_ITEM  TEXT("emailitem")
 
 #define FILE_ITEM       TEXT("File")
-#define FILE_HIDDEN     TEXT("h")
-#define FILE_SYSTEM     TEXT("s") 
-#define FILE_ARCHIVED   TEXT("a")
-#define FILE_DELETE     TEXT("d")
-#define FILE_WRITABLE   TEXT("w")
-#define FILE_READABLE   TEXT("r")
-#define FILE_EXECUTABLE TEXT("e")
-#define FILE_ACCESSED   TEXT("accessed")
-#define FILE_ATTRIBUTES TEXT("attributes")
-#define FILE_BODY       TEXT("body")
-#define FILE_CTTYTPE    TEXT("cttype")
-#define FILE_ENC        TEXT("enc")
-#define FILE_MODIFIED   TEXT("modified")
-#define FILE_NAME       TEXT("name")
-#define FILE_SIZE       TEXT("size")
-#define FILE_CREATED    TEXT("created")
+#define FILE_HIDDEN     T("h")
+#define FILE_SYSTEM     T("s") 
+#define FILE_ARCHIVED   T("a")
+#define FILE_DELETE     T("d")
+#define FILE_WRITABLE   T("w")
+#define FILE_READABLE   T("r")
+#define FILE_EXECUTABLE T("e")
+#define FILE_ACCESSED   T("accessed")
+#define FILE_ATTRIBUTES T("attributes")
+#define FILE_BODY       T("body")
+#define FILE_CTTYTPE    T("cttype")
+#define FILE_ENC        T("enc")
+#define FILE_MODIFIED   T("modified")
+#define FILE_NAME       T("name")
+#define FILE_SIZE       T("size")
+#define FILE_CREATED    T("created")
 
 
 FileData::FileData()
@@ -79,7 +78,7 @@ FileData::~FileData()
     cttype.reset();
             
 }
-int FileData::parse(const wchar_t *syncmlData, size_t len)
+int FileData::parse(const char *syncmlData, size_t len)
 {
     int ret = 0;
     size_t start, end;        
@@ -87,13 +86,13 @@ int FileData::parse(const wchar_t *syncmlData, size_t len)
     StringBuffer bodyattr;
 
     // FIXME: remove these replace once the server has fixed the message.
-    s->replaceAll(TEXT("&lt;"), TEXT("<"));
-    s->replaceAll(TEXT("&gt;"), TEXT(">"));
-    s->replaceAll(TEXT("&amp;"), TEXT("&"));
+    s->replaceAll(T("&lt;"), T("<"));
+    s->replaceAll(T("&gt;"), T(">"));
+    s->replaceAll(T("&amp;"), T("&"));
     
     // Get the CDATA content
-    if(XMLProcessor::getElementContent(s->c_str(), TEXT("CDATA"), NULL, &start, &end) == 0) {
-        LOG.error(TEXT("FileData: can't find outer CDATA section."));
+    if(XMLProcessor::getElementContent(s->c_str(), T("CDATA"), NULL, &start, &end) == 0) {
+        LOG.error(T("FileData: can't find outer CDATA section."));
         return -1;
     }
     StringBuffer msg = s->substr(start, end-start);
@@ -102,43 +101,43 @@ int FileData::parse(const wchar_t *syncmlData, size_t len)
 
     // Get attributes
     if( XMLProcessor::getElementContent (msg, FILE_HIDDEN, NULL, &start, &end) ) {
-        hidden = ( wcsncmp(msg.c_str()+start, TEXT("true"), end-start) == 0 ) ;
+        hidden = ( strncmp(msg.c_str()+start, T("true"), end-start) == 0 ) ;
         isHiddenPresent = true;
     }
     else hidden = false;
 
     if( XMLProcessor::getElementContent (msg, FILE_SYSTEM, NULL, &start, &end) ) {
-        system = ( wcsncmp(msg.c_str()+start, TEXT("true"), end-start) == 0 ) ;
+        system = ( strncmp(msg.c_str()+start, T("true"), end-start) == 0 ) ;
         isSystemPresent = true;
     }
     else system = false;
 
     if( XMLProcessor::getElementContent (msg, FILE_ARCHIVED, NULL, &start, &end) ) {
-        archived = ( wcsncmp(msg.c_str()+start, TEXT("true"), end-start) == 0 ) ;
+        archived = ( strncmp(msg.c_str()+start, T("true"), end-start) == 0 ) ;
         isArchivedPresent = true;
     }
     else archived = false;
     
     if( XMLProcessor::getElementContent (msg, FILE_DELETE, NULL, &start, &end) ) {
-        deleted = ( wcsncmp(msg.c_str()+start, TEXT("true"), end-start) == 0 ) ;
+        deleted = ( strncmp(msg.c_str()+start, T("true"), end-start) == 0 ) ;
         isDeletedPresent = true;
     }
     else deleted = false;
 
     if( XMLProcessor::getElementContent (msg, FILE_WRITABLE, NULL, &start, &end) ) {
-        writable = ( wcsncmp(msg.c_str()+start, TEXT("true"), end-start) == 0 ) ;
+        writable = ( strncmp(msg.c_str()+start, T("true"), end-start) == 0 ) ;
         isWritablePresent = true;
     }
     else writable = false;
 
     if( XMLProcessor::getElementContent (msg, FILE_READABLE, NULL, &start, &end) ) {
-        readable = ( wcsncmp(msg.c_str()+start, TEXT("true"), end-start) == 0 ) ;
+        readable = ( strncmp(msg.c_str()+start, T("true"), end-start) == 0 ) ;
         isReadablePresent = true;
     }
     else readable = false;
 
     if( XMLProcessor::getElementContent (msg, FILE_EXECUTABLE, NULL, &start, &end) ) {
-        executable = ( wcsncmp(msg.c_str()+start, TEXT("true"), end-start) == 0 ) ;
+        executable = ( strncmp(msg.c_str()+start, T("true"), end-start) == 0 ) ;
         isExecutablePresent = true;
     }
     else executable = false;
@@ -158,17 +157,21 @@ int FileData::parse(const wchar_t *syncmlData, size_t len)
     }
     else created = TEXT("");
 
+    if ( XMLProcessor::getElementContent (msg, FILE_SIZE, NULL, &start, &end) ) {
+        size = atoi(msg.substr(start, end-start));
+    }
+
     if( XMLProcessor::getElementContent (msg, FILE_BODY, NULL, &start, &end) ) {
         body = msg.substr(start, end-start);
     }
-    else body = TEXT("");
+    else body = "";
     if ( XMLProcessor::getElementAttributes (msg, FILE_BODY, &start, &end) ) {
         bodyattr = msg.substr(start, end-start);
-        size_t attrstart = bodyattr.ifind(TEXT("enc"));
+        size_t attrstart = bodyattr.ifind("enc");
         if (attrstart!= StringBuffer::npos) {
             enc = bodyattr.substr(attrstart + 4);
             if ((enc != TEXT("\"base64\"")) &&
-                (enc != TEXT("\"qouted-printable\"")))
+                (enc != TEXT("\"quoted-printable\"")))
             {
                 enc = TEXT("");
             }
@@ -182,34 +185,64 @@ int FileData::parse(const wchar_t *syncmlData, size_t len)
     }
     else
         enc = TEXT("");
+        
+    if (enc == TEXT("base64"))
+    {
+        int len = b64_decode((void *)body.c_str(), body.c_str());        
+    }
+    
+    if (enc == TEXT("quoted-printable"))
+    {        
+        body = qp_decode(body.c_str());        
+    }
+
 
     if( XMLProcessor::getElementContent (msg, FILE_NAME, NULL, &start, &end) ) {
         name = msg.substr(start, end-start);
     }
     else name = TEXT("");
 
-    if ( XMLProcessor::getElementContent (msg, FILE_SIZE, NULL, &start, &end) ) {
-        size = _wtoi(msg.substr(start, end-start));
-    }
+    
     
     return ret;
 }
 
-wchar_t* FileData::format() {
+void FileData::setBody(const char* v, int len)
+{
+    if (size == 0)
+    {
+        body = v;
+    }
+    else
+    {
+        char*   base64    = NULL;
+        int     encodeLen = lengthForB64(len);             
+        base64 = new char[encodeLen + 1];
+        memset(base64, 0, encodeLen + 1);           
+        b64_encode(base64, (char*)v, len);    
+        body = base64;
+    }
+}
+
+
+char* FileData::format() {
+    
     StringBuffer out;
 
     out.reserve(150);
     
-    out = TEXT("<![CDATA[\n<File>\n");
+    out = T("<![CDATA[\n<File>\n");
     if (name.length() > 0)
-        out += XMLProcessor::makeElement(FILE_NAME, name);
+        out += XMLProcessor::makeElement(FILE_NAME, _wcc(name));
     if (created.length() > 0)
-        out += XMLProcessor::makeElement(FILE_CREATED, created);
+        out += XMLProcessor::makeElement(FILE_CREATED, _wcc(created));
     if (modified.length() > 0)
-        out += XMLProcessor::makeElement(FILE_MODIFIED, modified);
+        out += XMLProcessor::makeElement(FILE_MODIFIED, _wcc(modified));
     if (accessed.length() > 0)
-        out += XMLProcessor::makeElement(FILE_ACCESSED, accessed);
-    StringBuffer attributes = TEXT("");
+        out += XMLProcessor::makeElement(FILE_ACCESSED, _wcc(accessed));
+
+    StringBuffer attributes;
+
     if (isHiddenPresent)
         attributes += XMLProcessor::makeElement(FILE_HIDDEN, hidden);
     if (isArchivedPresent)
@@ -227,17 +260,41 @@ wchar_t* FileData::format() {
     if (size > 0)
         out += XMLProcessor::makeElement(FILE_SIZE, size);
     if (enc.empty()){
+        int len = b64_decode((void*)body.c_str(), body.c_str());
         out += XMLProcessor::makeElement(FILE_BODY, body);
     }
     else
     {   
-        ArrayList* attrList = new ArrayList();
-        KeyValuePair* attr = new KeyValuePair(TEXT("enc"), (wchar_t*)enc.c_str());
-        attrList->add(*attr);
-        out += XMLProcessor::makeElement(FILE_BODY, body, attrList);
+        ArrayList attrList;
+        KeyValuePair attr("enc", _wcc(enc.c_str()));
+        attrList.add(attr);
+        /*if (enc == TEXT("quoted-printable"))
+        {
+            // encode body to quoted-printable
+            int len = b64_decode((byte*)body.c_str(), body.c_str());
+            body = qp_encode(body.c_str());
+        } */       
+        out += XMLProcessor::makeElement(FILE_BODY, body.c_str(), attrList);
     }
     
-    
-    out += TEXT("</File>\n]]>\n");
+    out += T("</File>\n]]>\n");
     return stringdup(out.c_str());
+}
+
+int FileData::lengthForB64(int len) {
+    
+    int modules = 0;
+    int ret     = 0;
+
+    modules = len % 3;
+    if (modules == 0) {
+        ret = 4 * (len / 3);
+
+    } else {
+        ret = 4 * ((len/3) + 1);
+
+    }
+    return ret;
+
+
 }

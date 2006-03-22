@@ -23,13 +23,13 @@
 #include "spdm/constants.h"
 #include "client/MailSourceManagementNode.h"
 
-MailSourceManagementNode::MailSourceManagementNode(const wchar_t*        context,
-                                                   const wchar_t*        name   )
+MailSourceManagementNode::MailSourceManagementNode(const BCHAR* context,
+                                                   const BCHAR* name   )
     : DeviceManagementNode(context, name) {
 }
 
-MailSourceManagementNode::MailSourceManagementNode(const wchar_t*        context,
-                                                   const wchar_t*        name   ,
+MailSourceManagementNode::MailSourceManagementNode(const BCHAR*        context,
+                                                   const BCHAR*        name   ,
                                                    MailSyncSourceConfig& c      )
     : DeviceManagementNode(context, name) {
 
@@ -41,7 +41,7 @@ MailSourceManagementNode::~MailSourceManagementNode() {
 
 MailSyncSourceConfig& MailSourceManagementNode::getMailSourceConfig(BOOL refresh) {
     if (refresh) {
-        wchar_t* c = NULL;
+        BCHAR* c = NULL;
 
         config.setName(getPropertyValue(PROPERTY_SOURCE_NAME));
         config.setURI(getPropertyValue(PROPERTY_SOURCE_URI));
@@ -49,16 +49,16 @@ MailSyncSourceConfig& MailSourceManagementNode::getMailSourceConfig(BOOL refresh
         config.setSync(getPropertyValue(PROPERTY_SOURCE_SYNC));
         config.setType(getPropertyValue(PROPERTY_SOURCE_TYPE));
 
-        config.setLast(wcstol(getPropertyValue(PROPERTY_SOURCE_LAST_SYNC), &c, 10));
-        config.setDownloadAge((int)wcstol(getPropertyValue(PROPERTY_SOURCE_DOWNLOAD_AGE), &c, 10));
-        config.setBodySize((int)wcstol(getPropertyValue(PROPERTY_SOURCE_BODY_SIZE), &c, 10));
-        config.setAttachSize((int)wcstol(getPropertyValue(PROPERTY_SOURCE_ATTACH_SIZE), &c, 10));
+        config.setLast(bstrtol(getPropertyValue(PROPERTY_SOURCE_LAST_SYNC), &c, 10));
+        config.setDownloadAge((int)bstrtol(getPropertyValue(PROPERTY_SOURCE_DOWNLOAD_AGE), &c, 10));
+        config.setBodySize((int)bstrtol(getPropertyValue(PROPERTY_SOURCE_BODY_SIZE), &c, 10));
+        config.setAttachSize((int)bstrtol(getPropertyValue(PROPERTY_SOURCE_ATTACH_SIZE), &c, 10));
 
-        config.setInbox((int)wcstol(getPropertyValue(PROPERTY_SOURCE_INBOX), &c, 10));
-        config.setDraft((int)wcstol(getPropertyValue(PROPERTY_SOURCE_DRAFT), &c, 10));
-        config.setTrash((int)wcstol(getPropertyValue(PROPERTY_SOURCE_TRASH), &c, 10));
-        config.setOutbox((int)wcstol(getPropertyValue(PROPERTY_SOURCE_OUTBOX), &c, 10));
-        config.setSent((int)wcstol(getPropertyValue(PROPERTY_SOURCE_SENT), &c, 10));
+        config.setInbox((int)bstrtol(getPropertyValue(PROPERTY_SOURCE_INBOX), &c, 10));
+        config.setDraft((int)bstrtol(getPropertyValue(PROPERTY_SOURCE_DRAFT), &c, 10));
+        config.setTrash((int)bstrtol(getPropertyValue(PROPERTY_SOURCE_TRASH), &c, 10));
+        config.setOutbox((int)bstrtol(getPropertyValue(PROPERTY_SOURCE_OUTBOX), &c, 10));
+        config.setSent((int)bstrtol(getPropertyValue(PROPERTY_SOURCE_SENT), &c, 10));
     }
 
     return config;
@@ -67,32 +67,32 @@ MailSyncSourceConfig& MailSourceManagementNode::getMailSourceConfig(BOOL refresh
 void MailSourceManagementNode::setMailSourceConfig(MailSyncSourceConfig& c) {
     config.assign(c);
 
-    wchar_t t[512];
+    BCHAR t[512];
 
-    setPropertyValue(PROPERTY_SOURCE_NAME,       (wchar_t*)c.getName());
-    setPropertyValue(PROPERTY_SOURCE_URI,        (wchar_t*)c.getURI());
-    setPropertyValue(PROPERTY_SOURCE_SYNC_MODES, (wchar_t*)c.getSyncModes());
-    setPropertyValue(PROPERTY_SOURCE_SYNC,       (wchar_t*)c.getSync());
-    setPropertyValue(PROPERTY_SOURCE_TYPE,       (wchar_t*)c.getType());
+    setPropertyValue(PROPERTY_SOURCE_NAME,       (BCHAR*)c.getName());
+    setPropertyValue(PROPERTY_SOURCE_URI,        (BCHAR*)c.getURI());
+    setPropertyValue(PROPERTY_SOURCE_SYNC_MODES, (BCHAR*)c.getSyncModes());
+    setPropertyValue(PROPERTY_SOURCE_SYNC,       (BCHAR*)c.getSync());
+    setPropertyValue(PROPERTY_SOURCE_TYPE,       (BCHAR*)c.getType());
 
-    wcsprintf(t, TEXT("%ld"), c.getLast());
+    bsprintf(t, T("%ld"), c.getLast());
     setPropertyValue(PROPERTY_SOURCE_LAST_SYNC, t);
-    wcsprintf(t, TEXT("%d"), c.getDownloadAge());
+    bsprintf(t, T("%d"), c.getDownloadAge());
     setPropertyValue(PROPERTY_SOURCE_DOWNLOAD_AGE, t);
-    wcsprintf(t, TEXT("%d"), c.getBodySize());
+    bsprintf(t, T("%d"), c.getBodySize());
     setPropertyValue(PROPERTY_SOURCE_BODY_SIZE, t);
-    wcsprintf(t, TEXT("%d"), c.getAttachSize());
+    bsprintf(t, T("%d"), c.getAttachSize());
     setPropertyValue(PROPERTY_SOURCE_ATTACH_SIZE, t);
 
-    wcsprintf(t, TEXT("%d"), c.getInbox());
+    bsprintf(t, T("%d"), c.getInbox());
     setPropertyValue(PROPERTY_SOURCE_INBOX, t);
-    wcsprintf(t, TEXT("%d"), c.getOutbox());
+    bsprintf(t, T("%d"), c.getOutbox());
     setPropertyValue(PROPERTY_SOURCE_OUTBOX, t);
-    wcsprintf(t, TEXT("%d"), c.getTrash());
+    bsprintf(t, T("%d"), c.getTrash());
     setPropertyValue(PROPERTY_SOURCE_TRASH, t);
-    wcsprintf(t, TEXT("%d"), c.getSent());
+    bsprintf(t, T("%d"), c.getSent());
     setPropertyValue(PROPERTY_SOURCE_SENT, t);
-    wcsprintf(t, TEXT("%d"), c.getDraft());
+    bsprintf(t, T("%d"), c.getDraft());
     setPropertyValue(PROPERTY_SOURCE_DRAFT, t);
 
 }

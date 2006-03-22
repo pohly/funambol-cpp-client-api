@@ -25,15 +25,15 @@
 #include "syncml/core/Chal.h"
 #include "syncml/core/Data.h"
 
-#define STATUS_COMMAND_NAME TEXT("Status")
+#define STATUS_COMMAND_NAME T("Status")
 
 class Status : public ResponseCommand {
     
     private:               
-        wchar_t*  COMMAND_NAME;
+        BCHAR*  COMMAND_NAME;
         Chal*     chal;
         Data*     data;
-        wchar_t*  cmd;
+        BCHAR*  cmd;
         
         void initialize();
     
@@ -62,17 +62,16 @@ class Status : public ResponseCommand {
          *
          *
          */
-        Status(
-                   CmdID*        cmdID     ,
-                   wchar_t*      msgRef    ,
-                   wchar_t*      cmdRef    ,
-                   wchar_t*      cmd       ,
-                   ArrayList*    targetRefs,
-                   ArrayList*    sourceRefs,
-                   Cred*         cred      ,
-                   Chal*         chal      ,
-                   Data*         data      ,
-                   ArrayList*    items     );
+        Status(  CmdID*        cmdID     ,
+                 const BCHAR*  msgRef    ,
+                 const BCHAR*  cmdRef    ,
+                 const BCHAR*  cmd       ,
+                 ArrayList*    targetRefs,
+                 ArrayList*    sourceRefs,
+                 Cred*         cred      ,
+                 Chal*         chal      ,
+                 Data*         data      ,
+                 ArrayList*    items     );
     
        
         /**
@@ -111,7 +110,7 @@ class Status : public ResponseCommand {
          *
          * @return the cmd element
          */
-        wchar_t* getCmd(wchar_t* retCmd);
+        BCHAR* getCmd(BCHAR* retCmd = 0);
     
         /**
          * Sets the cmd element
@@ -119,7 +118,7 @@ class Status : public ResponseCommand {
          * @param cmd the new cmd element - NOT NULL
          *         
          */
-        void setCmd(wchar_t* cmd);
+        void setCmd(const BCHAR* cmd);
     
         /**
          * Returns the status code as int
@@ -133,7 +132,7 @@ class Status : public ResponseCommand {
          *
          * @return the command name
          */
-        wchar_t* getName();
+        BCHAR* getName();
 
         ArrayElement* clone();   
 };

@@ -28,7 +28,7 @@ class Data {
     
      // ---------------------------------------------------------- Protected data
     protected:
-        wchar_t* data;
+        BCHAR* data;
         void initialize();
     
     // ---------------------------------------------------------- Protected data    
@@ -43,7 +43,7 @@ class Data {
      * @param data the data value
      *
      */
-    Data(const wchar_t* data);
+    Data(const BCHAR* data);
     
     /** 
      * Creates a new Data object with the given data value
@@ -60,14 +60,14 @@ class Data {
      *
      * @param data the data property
      */
-    void setData(const wchar_t* data);
+    void setData(const BCHAR* data);
     
     /**
      * Gets the data properties
      *
      * @return the data properties
      */
-    wchar_t* getData(wchar_t* retData = NULL);
+    BCHAR* getData(BCHAR* retData = NULL);
 
     Data* clone();
 };

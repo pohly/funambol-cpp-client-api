@@ -424,7 +424,7 @@ ArrayList* ToDo::getXProp() {
             if((wcsstr(getProperty(i)->getName(),TEXT("X-")) == getProperty(i)->getName()) && getProperty(i)->getValue()) {
                 if(!xProp)
                     xProp = new ArrayList();
-                KeyValuePair *kvp = new KeyValuePair(getProperty(i)->getName(), getProperty(i)->getValue());
+                WKeyValuePair *kvp = new WKeyValuePair(getProperty(i)->getName(), getProperty(i)->getValue());
                 xProp->add((ArrayElement&) *kvp);
                 delete kvp; kvp = NULL;
             }
@@ -757,7 +757,9 @@ void ToDo::setXProp(ArrayList& list) {
         int s = list.size();
         for (int j=0; j<s; ++j) {
             xProp->add(*list[j]);
-            insertProperty(new VProperty(((KeyValuePair*)list[j])->getKey(),((KeyValuePair*)list[j])->getValue()));
+            insertProperty(new VProperty(
+                                    ((WKeyValuePair*)list[j])->getKey(),
+                                    ((WKeyValuePair*)list[j])->getValue()));
         }
 }
 
@@ -858,14 +860,14 @@ iCalProperty* ToDo::getiCalPropertyFromVProperty(VProperty* vp) {
             prop->setValueType(vp->getParameterValue(TEXT("VALUE")));
 
         ArrayList* xParamList = NULL;
-        KeyValuePair* xTagParam = NULL;
+        WKeyValuePair* xTagParam = NULL;
         wchar_t* xParamName = NULL;
         for(int i = 0; i < vp->parameterCount(); i++) {
             if(wcsstr(vp->getParameter(i),TEXT("X-")) == vp->getParameter(i)) {
                 xParamName = new wchar_t[wcslen(vp->getParameter(i)) + 1];
                 wcscpy(xParamName, vp->getParameter(i));
 
-                xTagParam = new KeyValuePair();
+                xTagParam = new WKeyValuePair();
                 xTagParam->setKey(xParamName);
                 if(vp->getParameterValue(xParamName))
                     xTagParam->setValue(vp->getParameterValue(xParamName));
@@ -934,7 +936,7 @@ VProperty* ToDo::getVPropertyFromiCalProperty(wchar_t* name, iCalProperty* prop)
             ArrayList* xParamList = new ArrayList();
             xParamList = prop->getXParam();
             for(int i = 0; i<xParamList->size(); i++) {
-                KeyValuePair* xParam = (KeyValuePair*)xParamList->get(i);
+                WKeyValuePair* xParam = (WKeyValuePair*)xParamList->get(i);
                 if(xParam->getKey())
                     if(xParam->getValue())
                         vprop->addParameter(xParam->getKey(), xParam->getValue());

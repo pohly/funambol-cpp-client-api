@@ -24,12 +24,12 @@ MetInf::MetInf() {
         NULL, NULL, NULL);
 }
 
-MetInf::MetInf(wchar_t*    format    ,
-               wchar_t*    type      ,
-               wchar_t*    mark      ,
+MetInf::MetInf(BCHAR*    format    ,
+               BCHAR*    type      ,
+               BCHAR*    mark      ,
                long        size      ,
                Anchor*     anchor    ,
-               wchar_t*    version   ,
+               BCHAR*    version   ,
                NextNonce*  nonce     ,
                long        maxMsgSize,
                long        maxObjSize,
@@ -62,12 +62,12 @@ MetInf::~MetInf() {
 }
 
 
-void MetInf::set(  wchar_t*  format    ,
-                   wchar_t*    type      ,
-                   wchar_t*    mark      ,
+void MetInf::set(  BCHAR*  format    ,
+                   BCHAR*    type      ,
+                   BCHAR*    mark      ,
                    long        size      ,
                    Anchor*     anchor    ,
-                   wchar_t*    version   ,
+                   BCHAR*    version   ,
                    NextNonce*  nonce     ,
                    long        maxMsgSize,
                    long        maxObjSize,
@@ -144,12 +144,12 @@ void MetInf::setSize(long size) {
  *
  * @return format
  */
-wchar_t* MetInf::getFormat(wchar_t* retFormat) {
+BCHAR* MetInf::getFormat(BCHAR* retFormat) {
 	
 	if (retFormat == NULL) {
         return format;
     }
-    return wcscpy(retFormat, type);
+    return bstrcpy(retFormat, type);
 }
 
 /**
@@ -157,7 +157,7 @@ wchar_t* MetInf::getFormat(wchar_t* retFormat) {
  *
  * @param format the new format value
  */
-void MetInf::setFormat(wchar_t* format) {
+void MetInf::setFormat(BCHAR* format) {
     if (this->format) {
         delete [] this->format; this->format = NULL;           
     }
@@ -169,11 +169,11 @@ void MetInf::setFormat(wchar_t* format) {
  *
  * @return type
  */
-wchar_t* MetInf::getType(wchar_t* retType) {
+BCHAR* MetInf::getType(BCHAR* retType) {
 	if (retType == NULL) {
         return type;
     }
-    return wcscpy(retType, type);
+    return bstrcpy(retType, type);
 }
 
 /**
@@ -181,7 +181,7 @@ wchar_t* MetInf::getType(wchar_t* retType) {
  *
  * @param type the new type value
  */
-void MetInf::setType(wchar_t* type) {
+void MetInf::setType(BCHAR* type) {
      if (this->type) {
         delete [] this->type; this->type = NULL;           
      }
@@ -193,11 +193,11 @@ void MetInf::setType(wchar_t* type) {
  *
  * @return mark
  */
-wchar_t* MetInf::getMark(wchar_t* retMark) {
+BCHAR* MetInf::getMark(BCHAR* retMark) {
 	if (retMark == NULL) {
         return mark;
     }
-    return wcscpy(retMark, mark);
+    return bstrcpy(retMark, mark);
 }
 
 /**
@@ -205,7 +205,7 @@ wchar_t* MetInf::getMark(wchar_t* retMark) {
  *
  * @param mark the new mark value
  */
-void MetInf::setMark(wchar_t* mark){
+void MetInf::setMark(BCHAR* mark){
     if (this->mark) {
         delete [] this->mark; this->mark = NULL;           
     }
@@ -328,11 +328,11 @@ void MetInf::setMaxObjSize(long maxObjSize) {
  *
  * @return version
  */
-wchar_t* MetInf::getVersion(wchar_t* retVersion) {
+BCHAR* MetInf::getVersion(BCHAR* retVersion) {
 	if (retVersion == NULL) {
         return version;
     }
-    return wcscpy(retVersion, version);
+    return bstrcpy(retVersion, version);
     
 }
 
@@ -341,7 +341,7 @@ wchar_t* MetInf::getVersion(wchar_t* retVersion) {
  *
  * @param version the new version value
  */
-void MetInf::setVersion(wchar_t* version) {
+void MetInf::setVersion(BCHAR* version) {
     if (this->version) {
         delete [] this->version; this->version = NULL;           
     }

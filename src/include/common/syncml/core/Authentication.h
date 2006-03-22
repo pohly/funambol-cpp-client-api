@@ -29,13 +29,13 @@ class Authentication {
     
      // ------------------------------------------------------------ Private data
     private:
-        wchar_t* data;
-        wchar_t* username;
-        wchar_t* password;
+        BCHAR* data;
+        BCHAR* username;
+        BCHAR* password;
         BOOL encode;
-        wchar_t* deviceId;
-        wchar_t* syncMLVerProto;
-        wchar_t* principalId;
+        BCHAR* deviceId;
+        BCHAR* syncMLVerProto;
+        BCHAR* principalId;
         Meta* meta;
 
         void initialize();
@@ -59,7 +59,7 @@ class Authentication {
          * @param data the data of authentication
          *
          */
-        Authentication(Meta* meta, wchar_t* data);
+        Authentication(Meta* meta, BCHAR* data);
 
         /**
          * Creates a new Authentication object with the given data
@@ -68,7 +68,7 @@ class Authentication {
          * @param data the data of authentication
          *
          */
-        Authentication(wchar_t* type, wchar_t* data);
+        Authentication(BCHAR* type, BCHAR* data);
 
         /**
          * Creates a new Authentication object with the given data
@@ -78,8 +78,8 @@ class Authentication {
          * @param encode true if data is encoded, false otherwise
          *
          */
-        Authentication(wchar_t* type,
-                              wchar_t* data,
+        Authentication(BCHAR* type,
+                              BCHAR* data,
                               BOOL encode);
 
         /**
@@ -90,48 +90,48 @@ class Authentication {
          * @param password the password
          *
          */
-        Authentication(wchar_t* type,
-                              wchar_t* username,
-                              wchar_t* password);
+        Authentication(BCHAR* type,
+                              BCHAR* username,
+                              BCHAR* password);
         
         // ---------------------------------------------------------- Public methods
 
-        void createAuthentication(wchar_t* type, wchar_t* data);
+        void createAuthentication(BCHAR* type, BCHAR* data);
 
         /**
          * Gets the type property
          *
          * @return the type property
          */
-        wchar_t* getType(wchar_t*retType);
+        BCHAR* getType(BCHAR*retType);
 
         /**
          * Sets the type property
          *
          * @param type the type property
          */
-        void setType(wchar_t* type);
+        void setType(BCHAR* type);
 
         /**
          * Gets the format property
          *
          * @return the format property
          */
-        wchar_t* getFormat(wchar_t* retFormat);
+        BCHAR* getFormat(BCHAR* retFormat);
 
         /**
          * Sets the format property
          *
          * @param format the format property
          */
-        void setFormat(wchar_t* format);
+        void setFormat(BCHAR* format);
 
         /**
          * Gets the data property
          *
          * @return the data property
          */
-        wchar_t* getData(wchar_t* retData);
+        BCHAR* getData(BCHAR* retData);
 
         /**
          * Sets the data property
@@ -139,7 +139,7 @@ class Authentication {
          * @param data the data property
          *
          */
-        void setData(wchar_t* data);
+        void setData(BCHAR* data);
 
 
         /**
@@ -147,28 +147,28 @@ class Authentication {
          *
          * @return the username property
          */
-        wchar_t* getUsername(wchar_t* retPassword);
+        BCHAR* getUsername(BCHAR* retPassword);
 
         /**
          * Sets the username property
          *
          * @param username the username property
          */
-        void setUsername(wchar_t* username);
+        void setUsername(BCHAR* username);
 
         /**
          * Gets password property
          *
          * @return the password property
          */
-        wchar_t* getPassword(wchar_t* retPassword);
+        BCHAR* getPassword(BCHAR* retPassword);
 
         /**
          * Sets the password property
          *
          * @param password the password property
          */
-        void setPassword(wchar_t* password);
+        void setPassword(BCHAR* password);
 
         /**
          * Gets the nextNonce property
@@ -205,14 +205,14 @@ class Authentication {
          *
          * @return deviceId the device identificator
          */
-        wchar_t* getDeviceId(wchar_t* retDeviceId);
+        BCHAR* getDeviceId(BCHAR* retDeviceId);
 
         /**
          * Sets the device identificator
          *
          * @param deviceId the device identificator
          */
-        void setDeviceId(wchar_t* deviceId);
+        void setDeviceId(BCHAR* deviceId);
 
         /**
          * Gets the SyncML Protocol version. It is useful to decide how calculate
@@ -220,7 +220,7 @@ class Authentication {
          *
          * @return syncMLVerProto the SyncML Protocol version.
          */
-        wchar_t* getSyncMLVerProto(wchar_t* retSyncMLVerProto);
+        BCHAR* getSyncMLVerProto(BCHAR* retSyncMLVerProto);
 
         /**
          * Sets the SyncML Protocol version. It is useful to decide how calculate
@@ -229,21 +229,21 @@ class Authentication {
          * @param syncMLVerProto the SyncML Protocol version.
          *
          */
-         void setSyncMLVerProto(wchar_t* syncMLVerProto);
+         void setSyncMLVerProto(BCHAR* syncMLVerProto);
 
         /**
          * Gets the principal id
          *
          * @return principalId the principal identificator
          */
-        wchar_t* getPrincipalId(wchar_t* retPrincipalId);
+        BCHAR* getPrincipalId(BCHAR* retPrincipalId);
 
         /**
          * Sets the principal identificator
          *
          * @param principalId the principal identificator
          */
-        void setPrincipalId(wchar_t* principalId);
+        void setPrincipalId(BCHAR* principalId);
         
         Authentication* clone();
 

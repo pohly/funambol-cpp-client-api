@@ -31,12 +31,12 @@ class ResponseCommand : public ItemizedCommand {
         /**
          * Message reference
          */
-        wchar_t* msgRef;
+        BCHAR* msgRef;
     
         /** 
          * Command reference
          */
-        wchar_t* cmdRef;
+        BCHAR* cmdRef;
     
         /**
          * Target references
@@ -68,8 +68,8 @@ class ResponseCommand : public ItemizedCommand {
          */
         ResponseCommand(
                 CmdID*              cmdID     ,
-                wchar_t*            msgRef    ,
-                wchar_t*            cmdRef    ,
+                const BCHAR*        msgRef    ,
+                const BCHAR*        cmdRef    ,
                 ArrayList*          targetRefs,
                 ArrayList*          sourceRefs,
                 ArrayList*          items      );
@@ -81,14 +81,14 @@ class ResponseCommand : public ItemizedCommand {
          * @return the message reference
          *
          */
-        wchar_t* getMsgRef(wchar_t* retGetMsgRef);
+        BCHAR* getMsgRef(BCHAR* retGetMsgRef);
     
         /**
          * Sets the message reference
          *
          * @param msgRef message reference
          */
-        void setMsgRef(wchar_t* msgRef);
+        void setMsgRef(const BCHAR* msgRef);
     
         /**
          * Returns the command reference
@@ -96,7 +96,7 @@ class ResponseCommand : public ItemizedCommand {
          * @return the command reference
          *
          */
-        wchar_t* getCmdRef(wchar_t* retGetCmdRef);
+        BCHAR* getCmdRef(BCHAR* retGetCmdRef);
     
         /**
          * Sets the command reference
@@ -104,7 +104,7 @@ class ResponseCommand : public ItemizedCommand {
          * @param cmdRef commandreference - NOT NULL
          *
          */
-        void setCmdRef(wchar_t* cmdRef);
+        void setCmdRef(const BCHAR* cmdRef);
     
         /**
          * Returns the target references
@@ -141,7 +141,7 @@ class ResponseCommand : public ItemizedCommand {
          *
          * @return the command name
          */
-        virtual wchar_t* getName() = 0;
+        virtual BCHAR* getName() = 0;
 
         virtual ArrayElement* clone() = 0;
    

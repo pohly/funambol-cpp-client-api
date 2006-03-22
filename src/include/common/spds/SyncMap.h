@@ -26,35 +26,23 @@
 class SyncMap : public ArrayElement {
 
     private:
-        wchar_t* luid;
-        wchar_t* guid;
-
+        BCHAR* luid;
+        BCHAR* guid;
 
     public:
-        // SyncMap() EXTRA_SECTION_01;
-        SyncMap(wchar_t* guid = NULL, wchar_t* luid = NULL) EXTRA_SECTION_01;
+        SyncMap(const BCHAR* guid = NULL, const BCHAR* luid = NULL) EXTRA_SECTION_01;
         ~SyncMap() EXTRA_SECTION_01;
 
         /*
-         * Returns the guid of this mapping. If guid is NULL, the internal
-         * buffer address is returned, otherwise the value is copied into the
-         * given buffer and its pointer is returned.
-         *
-         * @param guid - the buffer where the guid is copied to. It must be
-         *               big enough
+         * Returns the guid of this mapping. 
          */
-        wchar_t* getGUID(wchar_t* guid) EXTRA_SECTION_01;
+        const BCHAR* getGUID() EXTRA_SECTION_01;
 
 
         /*
-         * Returns the luid of this mapping. If luid is NULL, the internal
-         * buffer address is returned, otherwise the value is copied into the
-         * given buffer and its pointer is returned.
-         *
-         * @param luid - the buffer where the luid is copied to. It must be
-         *               big enough
+         * Returns the luid of this mapping.
          */
-        wchar_t* getLUID(wchar_t* luid) EXTRA_SECTION_01;
+        const BCHAR* getLUID() EXTRA_SECTION_01;
 
         /**
          * Sets a new value for the LUID property. The value is copied in the
@@ -62,11 +50,11 @@ class SyncMap : public ArrayElement {
          *
          * @param luid the new value
          */
-        void setLUID(wchar_t* luid) EXTRA_SECTION_01;
+        void setLUID(const BCHAR* luid) EXTRA_SECTION_01;
 
         /**
          * Sets a new value for the LUID property (as unsigned int). It internally
-         * calls setLUID(wchar_t*)
+         * calls setLUID(BCHAR*)
          *
          * @param luid the new value
          */
@@ -79,7 +67,7 @@ class SyncMap : public ArrayElement {
          *
          * @param guid the new value
          */
-        void setGUID(wchar_t* guid) EXTRA_SECTION_01;
+        void setGUID(const BCHAR* guid) EXTRA_SECTION_01;
 
         /**
          * Creates a new instance of SyncMap from the content of this

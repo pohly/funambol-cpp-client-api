@@ -21,17 +21,10 @@
 #include "base/util/utils.h"
 #include "spds/SyncMap.h"
 
-/*
-SyncMap::SyncMap() {
-    guid = luid = NULL;
-}
-*/
 
-SyncMap::SyncMap(wchar_t *g, wchar_t* l) {
-    guid = luid = NULL;
-
-    setGUID(g);
-    setLUID(l);
+SyncMap::SyncMap(const BCHAR *g, const BCHAR* l) {
+    guid = stringdup(g);
+    luid = stringdup(l);
 }
 
 SyncMap::~SyncMap() {
@@ -52,35 +45,16 @@ SyncMap::~SyncMap() {
  * @param luid - the buffer where the luid is copied to. It must be
  *               big enough
  */
-wchar_t* SyncMap::getGUID(wchar_t* g) {
-    if (g == NULL) {
-        return guid;
-    }
-
-    if (guid == NULL) {
-        return NULL;
-    }
-
-    return wcscpy(g, guid);
+const BCHAR* SyncMap::getGUID() {
+    return guid;
 }
 
 
 /*
  * Returns the luid of this mapping
- *
- * @param l - the buffer where the luid is copied to. It must be
- *               big enough
  */
-wchar_t* SyncMap::getLUID(wchar_t* l) {
-    if (l == NULL) {
-        return luid;
-    }
-
-    if (luid == NULL) {
-        return NULL;
-    }
-
-    return wcscpy(l, luid);
+const BCHAR* SyncMap::getLUID() {
+    return luid;
 }
 
 /**
@@ -89,9 +63,9 @@ wchar_t* SyncMap::getLUID(wchar_t* l) {
  *
  * @param guid the new value
  */
-void SyncMap::setGUID(wchar_t* g) {
+void SyncMap::setGUID(const BCHAR* g) {
     if (guid) {
-        delete [] guid; guid = NULL;
+        delete [] guid;
     }
 
     if (g) {
@@ -105,9 +79,9 @@ void SyncMap::setGUID(wchar_t* g) {
  *
  * @param luid the new value
  */
-void SyncMap::setLUID(wchar_t* l) {
+void SyncMap::setLUID(const BCHAR* l) {
     if (luid) {
-        delete [] luid; luid = NULL;
+        delete [] luid;
     }
 
     if (l) {
@@ -117,22 +91,18 @@ void SyncMap::setLUID(wchar_t* l) {
 
 /**
  * Sets a new value for the LUID property (as unsigned int). It internally
- * calls setLUID(wchar_t*)
+ * calls setLUID(BCHAR*)
  *
  * @param luid the new value
  */
 void SyncMap::setLUID(unsigned long l) {
-    wchar_t ls[12];
+    BCHAR ls[12];
 
-    wcsprintf(ls, TEXT("%lu"), l);
+    bsprintf(ls, T("%lu"), l);
     setLUID(ls);
 }
 
 ArrayElement* SyncMap::clone() {
-
-    SyncMap* ret = new SyncMap();
-    ret->setGUID(this->getGUID(NULL));
-    ret->setLUID(this->getLUID(NULL));
-    
+    SyncMap* ret = new SyncMap(this->getGUID(), this->getLUID());
     return ret;
 }

@@ -11,7 +11,7 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
  *
- * You should have received a copy of the GNU General Public	 License
+ * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston,
  * MA 02111-1307 USA
@@ -19,7 +19,7 @@
 
 //
 // @author Stefano Fornari @ Funambol
-// @version $Id: vCardProperty.h,v 1.1 2006-01-12 11:39:35 nichele Exp $
+// @version $Id: vCardProperty.h,v 1.2 2006-03-22 12:06:25 gazza Exp $
 //
 #include <string.h>
 
@@ -44,7 +44,7 @@ class vCardProperty {
 
         /**
          * Sets internal members releasing the currently allocated memory (if
-         * any was allocate). The passed value is doplicated so that the caller
+         * any was allocate). The passed value is duplicated so that the caller
          * can independently release it.
          *
          * @param property the address of the pointer to set to the new

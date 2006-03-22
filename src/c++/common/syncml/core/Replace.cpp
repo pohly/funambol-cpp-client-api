@@ -20,8 +20,8 @@
 #include "syncml/core/Replace.h"
  
 Replace::Replace() {
-    COMMAND_NAME = new wchar_t[wcslen(REPLACE_COMMAND_NAME) + 1];
-    wsprintf(COMMAND_NAME, REPLACE_COMMAND_NAME);
+    COMMAND_NAME = new BCHAR[bstrlen(REPLACE_COMMAND_NAME) + 1];
+    bsprintf(COMMAND_NAME, REPLACE_COMMAND_NAME);
 }
 
 Replace::~Replace() {
@@ -49,15 +49,15 @@ Replace::Replace(CmdID *cmdID   ,
     setNoResp(noResp); 
     setCred(cred);
 
-    COMMAND_NAME = new wchar_t[wcslen(REPLACE_COMMAND_NAME) + 1];
-    wsprintf(COMMAND_NAME, REPLACE_COMMAND_NAME);
+    COMMAND_NAME = new BCHAR[bstrlen(REPLACE_COMMAND_NAME) + 1];
+    bsprintf(COMMAND_NAME, REPLACE_COMMAND_NAME);
 }
 /** 
  * Returns the command name
  *
  * @return the command name
  */
-wchar_t* Replace::getName(){
+BCHAR* Replace::getName(){
     return COMMAND_NAME;
 }
 

@@ -62,5 +62,5 @@ wchar_t* TypedProperty::getType(wchar_t* buf, int size) {
 
 void TypedProperty::setType(wchar_t* type) {
     if (t) delete [] t;
-    t = stringdup(type);
+    t = wstrdup(type);
 }

@@ -34,26 +34,26 @@ void abort(const char *msg)
     fclose(f);
     exit(1);
 }
-size_t charlen = sizeof(wchar_t);
+size_t charlen = sizeof(BCHAR);
     if(charlen != 2) {
         abort("Panic: wide char size in not 2");
     }
     
 #endif
 
-StringBuffer::StringBuffer(const wchar_t* str, size_t len) {
+StringBuffer::StringBuffer(const BCHAR* str, size_t len) {
     size = 0;
     s = 0;
 
     // if the given string is null, leave this null,
     // otherwise set it, even empty.
     if (str) {
-        size_t slen = wcslen(str);
+        size_t slen = bstrlen(str);
         size_t newlen = (len > slen) ? slen : len ; 
 
         if(newlen) {
             getmem(newlen);
-            wcsncpy(s, str, newlen);
+            bstrncpy(s, str, newlen);
             s[newlen]=0;
         }
         else {  // empty string
@@ -73,37 +73,37 @@ StringBuffer::~StringBuffer() {
     freemem();
 }
 
-StringBuffer& StringBuffer::append(const wchar_t* sNew) {
+StringBuffer& StringBuffer::append(const BCHAR* sNew) {
     if (sNew == NULL) {
         return *this;
     }
 
-    unsigned long len = wcslen(sNew);
+    unsigned long len = bstrlen(sNew);
 
     if (len == 0) {
         return *this;
     }
     if (s) {
-        getmem(wcslen(s) + len);
-        wcscat(s, sNew);
+        getmem(bstrlen(s) + len);
+        bstrcat(s, sNew);
     }
     else {
         getmem(len);
-        wcscpy(s, sNew);
+        bstrcpy(s, sNew);
     }
 
     return *this;
 }
 
 StringBuffer& StringBuffer::append(unsigned long i, BOOL sign) {
-    wchar_t v[12];
+    BCHAR v[12];
 
     if (sign) {
-        // wcsprintf(v, "%ld", i);
-        wcsprintf(v, TEXT("%ld"), i);
+        // bsprintf(v, "%ld", i);
+        bsprintf(v, T("%ld"), i);
     } else {
-        // wcsprintf(v, "%lu", i);
-        wcsprintf(v, TEXT("%lu"), i);
+        // bsprintf(v, "%lu", i);
+        bsprintf(v, T("%lu"), i);
     }
 
     append(v);
@@ -122,12 +122,12 @@ StringBuffer& StringBuffer::append(StringBuffer* str) {
         return *this;
 }
 
-StringBuffer& StringBuffer::set(const wchar_t* sNew) {
+StringBuffer& StringBuffer::set(const BCHAR* sNew) {
     if (sNew) {
-        size_t len = wcslen(sNew);
+        size_t len = bstrlen(sNew);
         if ( len ) {
             getmem( len );
-            wcscpy(s, sNew);
+            bstrcpy(s, sNew);
         }
         else if (s) {
             s[0]=0; // just make the string empty
@@ -140,10 +140,10 @@ StringBuffer& StringBuffer::set(const wchar_t* sNew) {
     return *this;
 }
 
-const wchar_t* StringBuffer::getChars() const { return s; }
+const BCHAR* StringBuffer::getChars() const { return s; }
 
 unsigned long StringBuffer::length() const {
-    return (s) ? wcslen(s) : 0;
+    return (s) ? bstrlen(s) : 0;
 }
 
 StringBuffer& StringBuffer::reset() {
@@ -151,24 +151,24 @@ StringBuffer& StringBuffer::reset() {
     return *this;
 }
 
-size_t StringBuffer::find(const wchar_t *str, size_t pos) const 
+size_t StringBuffer::find(const BCHAR *str, size_t pos) const 
 {
     if (pos >= length())
         return npos;
-    wchar_t *p = wcsstr(s+pos, str);
+    BCHAR *p = bstrstr(s+pos, str);
     if(!p)
         return npos;
     return (p-s);
 }
 
-size_t StringBuffer::ifind(const wchar_t *str, size_t pos) const
+size_t StringBuffer::ifind(const BCHAR *str, size_t pos) const
 {
     if (pos >= length())
         return npos;
-    wchar_t *ls = wcstolower(s+pos);
-    wchar_t *lstr = wcstolower(str);
+    BCHAR *ls = strtolower(s+pos);
+    BCHAR *lstr = strtolower(str);
 
-    wchar_t *p = wcsstr(ls, lstr);
+    BCHAR *p = bstrstr(ls, lstr);
     
     size_t ret = (p) ? p-ls : npos;
 
@@ -178,7 +178,7 @@ size_t StringBuffer::ifind(const wchar_t *str, size_t pos) const
     return ret;
 }
 
-size_t StringBuffer::replace(const wchar_t *from, const wchar_t *to, size_t pos) 
+size_t StringBuffer::replace(const BCHAR *from, const BCHAR *to, size_t pos) 
 {
 	size_t ret = npos;
 
@@ -188,24 +188,24 @@ size_t StringBuffer::replace(const wchar_t *from, const wchar_t *to, size_t pos)
     if(pos>=length())
         return npos;
 
-    wchar_t *p = wcsstr(s+pos, from);
+    BCHAR *p = bstrstr(s+pos, from);
     if (p) {
-        size_t flen = wcslen(from), tlen = wcslen(to);
-        wchar_t *tail = 0;
+        size_t flen = bstrlen(from), tlen = bstrlen(to);
+        BCHAR *tail = 0;
         int ldiff = tlen - flen ;
 
         // reallocate if needed
         getmem(length() + ldiff);
         // check is there is a remainder after the replaced token
         if( p[flen] ) {
-            tail = new wchar_t[length()];
-            wcscpy(tail, p+flen);
+            tail = new BCHAR[length()];
+            bstrcpy(tail, p+flen);
         }
         // copy to in place of from
-        wcscpy(p, to);
+        bstrcpy(p, to);
         // copy the remainder of old string, if there is one
         if( tail ) {
-            wcscpy(p+tlen, tail);
+            bstrcpy(p+tlen, tail);
             delete [] tail;
         }
 		ret = p - s;
@@ -214,7 +214,7 @@ size_t StringBuffer::replace(const wchar_t *from, const wchar_t *to, size_t pos)
 }
 
 // TODO: implement some smarter argorithm to avoid multiple reallocations
-int StringBuffer::replaceAll(const wchar_t *from, const wchar_t *to, size_t pos) {
+int StringBuffer::replaceAll(const BCHAR *from, const BCHAR *to, size_t pos) {
     int i=0;
     size_t next;
     for(next=replace(from, to, pos); next != npos; next=replace(from,to,next) ) {
@@ -223,18 +223,18 @@ int StringBuffer::replaceAll(const wchar_t *from, const wchar_t *to, size_t pos)
     return i;
 }
 
-ArrayList& StringBuffer::split(ArrayList &tokens, const wchar_t *separator) const {
+ArrayList& StringBuffer::split(ArrayList &tokens, const BCHAR *separator) const {
     tokens.clear();
-    size_t seplen = wcslen(separator);
-    wchar_t *base = s;
-    wchar_t *p = wcsstr( base, separator );
+    size_t seplen = bstrlen(separator);
+    BCHAR *base = s;
+    BCHAR *p = bstrstr( base, separator );
 
     while( p )
     {
         StringBuffer token(base, p-base);
         tokens.add( token );
         base = p + seplen;
-        p = wcsstr( base, separator );
+        p = bstrstr( base, separator );
     }
     StringBuffer token(base);
     tokens.add( token );
@@ -242,9 +242,9 @@ ArrayList& StringBuffer::split(ArrayList &tokens, const wchar_t *separator) cons
     return tokens;
 }
 
-StringBuffer& StringBuffer::join(ArrayList &tokens, const wchar_t *separator) {
+StringBuffer& StringBuffer::join(ArrayList &tokens, const BCHAR *separator) {
     StringBuffer *line;
-    size_t totlen = 0, seplen = wcslen(separator);
+    size_t totlen = 0, seplen = bstrlen(separator);
     // Calc total size
     for (line=(StringBuffer *)tokens.front();
 		 line;
@@ -264,8 +264,8 @@ StringBuffer& StringBuffer::join(ArrayList &tokens, const wchar_t *separator) {
 }
 
 StringBuffer StringBuffer::substr(size_t pos, size_t len) const {
-    if(pos > wcslen(s))
-        return StringBuffer(TEXT(""));
+    if(pos > bstrlen(s))
+        return StringBuffer(T(""));
 
 	return (StringBuffer(s+pos, len));
 }
@@ -275,20 +275,20 @@ void StringBuffer::reserve(size_t len) {
 }
 
 StringBuffer& StringBuffer::upperCase() {
-    wchar_t* p = NULL;
+    BCHAR* p = NULL;
 
     for(p = s; *p; p++) {
-        *p=towupper(*p);
+        *p=toupper(*p);
     }
 
     return *this;
 }
 
 StringBuffer& StringBuffer::lowerCase() {
-    wchar_t* p = NULL;
+    BCHAR* p = NULL;
 
     for(p = s; *p; p++) {
-        *p=towlower(*p);
+        *p=tolower(*p);
     }
 
     return *this;
@@ -297,7 +297,7 @@ StringBuffer& StringBuffer::lowerCase() {
 /**
  * Perform case insensitive compare
  */
-bool StringBuffer::icmp(const wchar_t *sc) const {
+bool StringBuffer::icmp(const BCHAR *sc) const {
     return wcscmpIgnoreCase(s, sc);
 }
 
@@ -317,26 +317,26 @@ bool StringBuffer::null() const { return (s==0); }
 
 
 // Member Operators
-StringBuffer& StringBuffer::operator= (const wchar_t* sc)
+StringBuffer& StringBuffer::operator= (const BCHAR* sc)
     { return set(sc); }
 StringBuffer& StringBuffer::operator= (const StringBuffer& sb)
     { return set(sb); }
-StringBuffer& StringBuffer::operator+= (const wchar_t* sc)
+StringBuffer& StringBuffer::operator+= (const BCHAR* sc)
     { append(sc); return *this; }
 StringBuffer& StringBuffer::operator+= (const StringBuffer& s)
     { append(s); return *this; }
-bool  StringBuffer::operator== (const wchar_t* sc) const
-    { return wcscmp(s, sc) == 0; }
+bool  StringBuffer::operator== (const BCHAR* sc) const
+    { return bstrcmp(s, sc) == 0; }
 bool  StringBuffer::operator== (const StringBuffer& sb) const
-    { return wcscmp(s, sb.c_str()) == 0; }
-bool  StringBuffer::operator!= (const wchar_t* sc) const
+    { return bstrcmp(s, sb.c_str()) == 0; }
+bool  StringBuffer::operator!= (const BCHAR* sc) const
     { return !(*this == sc); }
 bool  StringBuffer::operator!= (const StringBuffer& s) const
     { return !(*this == s); }
 
 
 // Function operators
-StringBuffer operator+(const StringBuffer& x, const wchar_t *y)
+StringBuffer operator+(const StringBuffer& x, const BCHAR *y)
 {
   StringBuffer result(x);
   result.append(y);
@@ -354,7 +354,7 @@ void StringBuffer::getmem(size_t len)
         // Remember the old length (0 for the null string)
         size_t oldlen = length();
         // Realloc the string (like malloc when s is null)
-        s = (wchar_t *)realloc(s, (len+1) * sizeof(wchar_t) );
+        s = (BCHAR *)realloc(s, (len+1) * sizeof(BCHAR) );
         //StringBuffer_memcount += (len-size);
         size = len;
         // Make sure s is terminated at the old position 

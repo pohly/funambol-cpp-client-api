@@ -104,7 +104,7 @@
          * In case of an error, NULL is returned and lastErrorCode/Msg
          * is set.
          */
-        virtual wchar_t* sendMessage(wchar_t* msg) = 0;
+        virtual BCHAR* sendMessage(const BCHAR* msg) = 0;
 
     };
 

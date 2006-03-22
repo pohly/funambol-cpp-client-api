@@ -27,7 +27,7 @@ class VerProto {
     
      // ------------------------------------------------------------ Private data
     private:
-        wchar_t* version;       
+        BCHAR* version;       
     
     // ---------------------------------------------------------- Protected data    
     public:
@@ -41,7 +41,7 @@ class VerProto {
          * @param version the protocol version - NOT NULL
          *
          */
-        VerProto(wchar_t* version);            
+        VerProto(BCHAR* version);            
     
         /**
          * Returns the protocol version.
@@ -49,7 +49,7 @@ class VerProto {
          * @return the protocol version - NOT NULL
          *
          */
-        wchar_t* getVersion(wchar_t* retVersion);
+        BCHAR* getVersion(BCHAR* retVersion);
     
         /**
          * Sets the protol version.
@@ -57,7 +57,7 @@ class VerProto {
          * @param version the protocol version - NOT NULL
          *
          */
-        void setVersion(wchar_t* version);        
+        void setVersion(BCHAR* version);        
         
         VerProto* clone();
    

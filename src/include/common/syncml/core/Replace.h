@@ -24,13 +24,13 @@
 #include "base/util/ArrayElement.h"
 #include "syncml/core/ModificationCommand.h"
 
-#define REPLACE_COMMAND_NAME TEXT("Replace")
+#define REPLACE_COMMAND_NAME T("Replace")
 
 class Replace : public ModificationCommand {
     
      // ------------------------------------------------------------ Private data
     private:
-        wchar_t* COMMAND_NAME;
+        BCHAR* COMMAND_NAME;
     
     public:
         
@@ -58,7 +58,7 @@ class Replace : public ModificationCommand {
          *
          * @return the command name
          */
-        wchar_t* getName();
+        BCHAR* getName();
 
         ArrayElement* clone();
    

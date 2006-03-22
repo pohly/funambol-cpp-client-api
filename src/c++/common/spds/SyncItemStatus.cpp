@@ -32,10 +32,10 @@ SyncItemStatus::SyncItemStatus() {
  *
  * @param key - the key
  */
-SyncItemStatus::SyncItemStatus(wchar_t* itemStatusKey){
+SyncItemStatus::SyncItemStatus(BCHAR* itemStatusKey){
     
-    key = new wchar_t[wcslen(itemStatusKey)+1];
-    wcscpy(key, itemStatusKey);
+    key = new BCHAR[bstrlen(itemStatusKey)+1];
+    bstrcpy(key, itemStatusKey);
     
     data    = 0;
     cmdID   = 0;
@@ -64,12 +64,12 @@ SyncItemStatus::~SyncItemStatus() {
  *
  * @param key - buffer where the key will be stored
  */
-wchar_t* SyncItemStatus::getKey(wchar_t* itemStatusKey) {
+BCHAR* SyncItemStatus::getKey(BCHAR* itemStatusKey) {
     if (itemStatusKey == NULL) {
         return key;
     }
 
-    return wcscpy(itemStatusKey, key);
+    return bstrcpy(itemStatusKey, key);
 }
 
 /*
@@ -78,12 +78,12 @@ wchar_t* SyncItemStatus::getKey(wchar_t* itemStatusKey) {
  *
  * @param key - the key
  */
-void SyncItemStatus::setKey(wchar_t* itemStatusKey) {
+void SyncItemStatus::setKey(BCHAR* itemStatusKey) {
 	if (key) {
 		delete [] key;
 	}
-	key = new wchar_t[wcslen(itemStatusKey)+1];
-    wcscpy(key, itemStatusKey);
+	key = new BCHAR[bstrlen(itemStatusKey)+1];
+    bstrcpy(key, itemStatusKey);
 }
 
  /*
@@ -93,12 +93,12 @@ void SyncItemStatus::setKey(wchar_t* itemStatusKey) {
  *
  * @param itemStatusCmd - buffer where the itemStatusCmd will be stored
  */
-wchar_t* SyncItemStatus::getCmd(wchar_t* itemStatusCmd) {
+BCHAR* SyncItemStatus::getCmd(BCHAR* itemStatusCmd) {
     if (itemStatusCmd == NULL) {
         return cmd;
     }
 
-    return wcscpy(itemStatusCmd, cmd);
+    return bstrcpy(itemStatusCmd, cmd);
 }
 
 
@@ -108,12 +108,12 @@ wchar_t* SyncItemStatus::getCmd(wchar_t* itemStatusCmd) {
  *
  * @param itemStatusCmd - the itemStatusCmd
  */
-void SyncItemStatus::setCmd(wchar_t* itemStatusCmd) {
+void SyncItemStatus::setCmd(BCHAR* itemStatusCmd) {
     if (cmd) {
 		delete [] cmd;
 	}
-	cmd = new wchar_t[wcslen(itemStatusCmd)+1];
-    wcscpy(cmd, itemStatusCmd);
+	cmd = new BCHAR[bstrlen(itemStatusCmd)+1];
+    bstrcpy(cmd, itemStatusCmd);
 
 }
 
