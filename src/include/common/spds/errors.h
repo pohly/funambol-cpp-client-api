@@ -32,8 +32,15 @@
 // data transformer error
 #define ERR_DT_FAILURE          ERR_DT_BASE+1
 
+// StartSync return codes
+// Another sync in progress
+#define ERR_ANOTHER_SYNC        810
+
+
 #define ERRMSG_SERVER_FAILURE   T("The server returned error code %d")
 #define ERRMSG_DT_UNKNOWN       T("Data transformer '%s' unknown")
 #define ERRMSG_DT_FAILURE       T("Data transformer error: %lx")
+
+#define ERRMSG_ANOPTHER_SYNC    T("Another sync in progress")
 
 #endif

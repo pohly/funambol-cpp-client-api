@@ -21,7 +21,7 @@
 #define ERR_INVALID_CONTEXT             10000
 #define ERR_SOURCE_DEFINITION_NOT_FOUND 10001
 #define ERR_DM_TREE_NOT_AVAILABLE       10002
-#define ERR_NO_SOURCE_TO_SYNC           10001
+#define ERR_NO_SOURCE_TO_SYNC           10003
 
 #define ERRMSG_INVALID_CONTEXT       T("Invalid context: %s")
 #define ERRMSG_DM_TREE_NOT_AVAILABLE T("Unable to access the DM Tree")
