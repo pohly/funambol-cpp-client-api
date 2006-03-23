@@ -46,8 +46,8 @@ void testConfigFilter();
 void testEncryption();
 
 
-#define APPLICATION_URI T("Funambol/examples/dummy")
-//#define APPLICATION_URI T("Funambol/SyncclientPIM")
+//#define APPLICATION_URI T("Funambol/examples/dummy")
+#define APPLICATION_URI T("Funambol/SyncclientPIM")
 
 #define LOG_TITLE		T("Funambol Win32 Example Log")
 #define LOG_PATH		T(".")

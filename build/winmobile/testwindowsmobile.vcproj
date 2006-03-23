@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="Windows-1252"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="8.00"
+	Version="8,00"
 	Name="testwindowsmobile"
 	ProjectGUID="{8E8959A9-409A-4B8D-A8F1-4F731C894129}"
 	RootNamespace="testwindowsmobile"
