@@ -116,6 +116,8 @@ SOURCES_SPDS = \
     CredentialHandler.cpp \
     DataTransformerFactory.cpp \
     DataTransformer.cpp \
+    B64Decoder.cpp \
+    B64Encoder.cpp \
     DESDecoder.cpp \
     DESEncoder.cpp \
     EmailData.cpp \

@@ -84,11 +84,12 @@ am__objects_3 = CurlTransportAgent.lo TransportAgentFactory.lo \
 am__objects_4 = DMTree.lo DMTreeFactory.lo DeviceManagementNode.lo \
 	ManagementNode.lo spdmutils.lo
 am__objects_5 = AccessConfig.lo BodyPart.lo CredentialHandler.lo \
-	DataTransformerFactory.lo DataTransformer.lo DESDecoder.lo \
-	DESEncoder.lo EmailData.lo FileData.lo MailMessage.lo \
-	SyncManagerConfig.lo SyncItem.lo SyncItemStatus.lo \
-	SyncMLBuilder.lo SyncMLProcessor.lo SyncManager.lo SyncMap.lo \
-	SyncSource.lo SyncSourceConfig.lo spdsutils.lo constants.lo
+	DataTransformerFactory.lo DataTransformer.lo B64Decoder.lo \
+	B64Encoder.lo DESDecoder.lo DESEncoder.lo EmailData.lo \
+	FileData.lo MailMessage.lo SyncManagerConfig.lo SyncItem.lo \
+	SyncItemStatus.lo SyncMLBuilder.lo SyncMLProcessor.lo \
+	SyncManager.lo SyncMap.lo SyncSource.lo SyncSourceConfig.lo \
+	spdsutils.lo constants.lo
 am__objects_6 = DMTClientConfig.lo Sync4jClient.lo
 am__objects_7 = VConverter.lo VObject.lo VObjectFactory.lo \
 	VProperty.lo Calendar.lo Event.lo ToDo.lo iCalConverter.lo \
@@ -347,6 +348,8 @@ SOURCES_SPDS = \
     CredentialHandler.cpp \
     DataTransformerFactory.cpp \
     DataTransformer.cpp \
+    B64Decoder.cpp \
+    B64Encoder.cpp \
     DESDecoder.cpp \
     DESEncoder.cpp \
     EmailData.cpp \
@@ -518,6 +521,8 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ArrayList.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Atomic.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Authentication.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/B64Decoder.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/B64Encoder.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/BodyPart.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/BusinessDetail.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/CTCap.Plo@am__quote@
