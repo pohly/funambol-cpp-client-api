@@ -19,13 +19,13 @@
 
 #include "base/fscapi.h"
 
-static const unsigned char *b64_tbl =
-        (unsigned char *)"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
-static const unsigned char b64_pad = '=';
+static const char b64_tbl[] =
+        "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
+static const char b64_pad = '=';
 
 /* base64 encode a group of between 1 and 3 input chars into a group of
  * 4 output chars */
-static void encode_group(unsigned char output[], const unsigned char
+static void encode_group(char output[], const unsigned char
 input[], int n)
 {
         unsigned char ingrp[3];
@@ -60,7 +60,7 @@ int __cdecl b64_encode(char *dest, void *src, int len)
         int outsz = 0;
 
         while (len > 0) {
-                encode_group((unsigned char*)dest + outsz,
+                encode_group(dest + outsz,
                     (const unsigned char*)src,
                     len > 3 ? 3 : len);
                 len -= 3;
@@ -74,10 +74,10 @@ int __cdecl b64_encode(char *dest, void *src, int len)
 /* base64 decode a group of 4 input chars into a group of between 0 and
  * 3
  * output chars */
-static void decode_group(unsigned char output[], const unsigned char
+static void decode_group(unsigned char output[], const char
 input[], int *n)
 {
-        unsigned char *t1,*t2;
+        char *t1,*t2;
         *n = 0;
 
         if (input[0] == b64_pad)
@@ -89,8 +89,8 @@ input[], int *n)
             return;
         }
 
-        t1 = (unsigned char*)strchr((const char *)b64_tbl, input[0]);
-        t2 = (unsigned char*)strchr((const char *)b64_tbl, input[1]);
+        t1 = strchr(b64_tbl, input[0]);
+        t2 = strchr(b64_tbl, input[1]);
 
         if ((t1 == NULL) || (t2 == NULL)) {
             lastErrorCode = ERR_UNSPECIFIED;
@@ -102,7 +102,7 @@ input[], int *n)
         if (input[2] == b64_pad)
                 return;
 
-        t1 = (unsigned char*)strchr((const char *)b64_tbl, input[2]);
+        t1 = strchr(b64_tbl, input[2]);
 
         if (t1 == NULL) {
             lastErrorCode = ERR_UNSPECIFIED;
@@ -115,7 +115,7 @@ input[], int *n)
         if (input[3] == b64_pad)
                 return;
 
-        t2 = (unsigned char*)strchr((const char *)b64_tbl, input[3]);
+        t2 = strchr((const char *)b64_tbl, input[3]);
 
         if (t2 == NULL) {
             lastErrorCode = ERR_UNSPECIFIED;
@@ -135,7 +135,7 @@ int b64_decode(void *dest, const char *src)
 
         while (*src) {
                 decode_group((unsigned char*)dest + outsz,
-                    (const unsigned char*)src,
+                    src,
                     &len);
                 src += 4;
                 outsz += len;
