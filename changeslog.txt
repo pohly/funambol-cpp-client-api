@@ -1,5 +1,7 @@
 Funambol SDK C++ 3.0.12
 ------------------------- 
+  - SDK is now based on char, and data is transferred transparently
+  - Handle charset different from UTF-8 in the data
   - minor bugs fixed
 
 Funambol SDK C++ 3.0.11
