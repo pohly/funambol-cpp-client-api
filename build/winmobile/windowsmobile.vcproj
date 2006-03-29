@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="Windows-1252"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="8,00"
+	Version="8.00"
 	Name="windowsmobile"
 	ProjectGUID="{4E03F2CD-31F3-4EA8-81E4-AC267456C910}"
 	RootNamespace="windowsmobile"
@@ -525,7 +525,7 @@
 			/>
 			<DeploymentTool
 				ForceDirty="-1"
-				RemoteDirectory=""
+				RemoteDirectory="\Windows\"
 				RegisterOutput="0"
 				AdditionalFiles=""
 			/>
@@ -10010,10 +10010,6 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\include\common\base\errors.h"
-				>
-			</File>
-			<File
 				RelativePath="..\..\src\include\common\http\errors.h"
 				>
 			</File>
@@ -10023,6 +10019,10 @@
 			</File>
 			<File
 				RelativePath="..\..\src\include\common\spdm\errors.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\include\common\base\errors.h"
 				>
 			</File>
 			<File
