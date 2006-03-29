@@ -22,13 +22,28 @@
 #include <base/fscapi.h>
 
 /*
- * Sets the name of the log file.
- * Use "-" to write to stdout.
- * Default is writing into LOG_NAME in the current directory.
+ * Opens the specified file for logging of messages.
  *
- * If redirectStderr is TRUE, then file descriptor 2 (stderr)
- * will also be redirected into the log file.
+ * By default the LOG instance of the Log class will
+ * create the file specified via its set methods
+ * as soon as the first message needs to be printed or
+ * when explicitly asking for a reset.
+ *
+ * By calling this function instead one gets more detailed
+ * control over logging and avoids the (currently) insecurely
+ * implemented handling of file name strings in the Log class.
+ *
+ * @param path            directory where file is to be created, can be NULL
+ * @param name            file name relative to path or "-" when asking for
+ *                        logging to stdout
+ * @param redirectStderr  if TRUE, then file descriptor 2 (stderr)
+ *                        will also be redirected into the log file;
+ *                        the original stderr is preserved and will be
+ *                        restored when turning this redirection off
  */
-void setLogFile(const char *logFile, BOOL redirectStderr = FALSE);
+void setLogFile(const char *path, const char* name, BOOL redirectStderr = FALSE);
+
+/** traditional version of setLogFile() which writes in the current directory */
+void setLogFile(const char* name, BOOL redirectStderr = FALSE);
 
 #endif

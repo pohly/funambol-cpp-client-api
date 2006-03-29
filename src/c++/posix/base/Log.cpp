@@ -28,14 +28,14 @@ char logmsg[512];
 static FILE* logFile = NULL;
 static BOOL logFileStdout = FALSE;
 
-static char logName[128] = LOG_NAME;
-static char logPath[256] = "/tmp" ;   
+static char logName[1024] = LOG_NAME;
+static char logPath[1024] = "/tmp" ;   
 
 // a copy of stderr before it was redirected
 static int fderr = -1;
 
 
-static void setLogFile(const char *path, const char* name, BOOL redirectStderr) {
+void setLogFile(const char *path, const char* name, BOOL redirectStderr) {
     if (logFile) {
         fclose(logFile);
         logFile = NULL;
@@ -45,22 +45,23 @@ static void setLogFile(const char *path, const char* name, BOOL redirectStderr) 
     if (!strcmp(name, "-")) {
         // write to stdout
         logFileStdout = TRUE;
-    } else {
+    } else if (path) {
         char *filename = new char[strlen(path) + strlen(name) + 3];
         
         sprintf(filename, "%s/%s", path, name);
         logFile = fopen(filename, "a+" );
         delete [] filename;
+    } else {
+        logFile = fopen(name, "a+" );
     }
     
-    if (redirectStderr) {
+    if (redirectStderr && logFile) {
         if (fderr == -1) {
             // remember original stderr
             fderr = dup(2);
-        } else {
-            // close redirected stderr
-            close(2);
         }
+        // overwrite stderr with log file fd,
+        // closing the current stderr if necessary
         dup2(fileno(logFile), 2);
     } else {
         if (fderr != -1) {
@@ -68,6 +69,11 @@ static void setLogFile(const char *path, const char* name, BOOL redirectStderr) 
             dup2(fderr, 2);
         }
     }
+}
+
+void setLogFile(const char* name, BOOL redirectStderr)
+{
+    setLogFile(0, name, redirectStderr);
 }
 
 /*
@@ -99,7 +105,7 @@ Log::Log(BOOL resetLog, BCHAR* path, BCHAR* name) {
 
     setLogPath(path);
     setLogName(name);
-	if (resetLog) {
+    if (resetLog) {
         reset();
     }
 }
@@ -113,25 +119,21 @@ Log::~Log() {
 //---------------------------------------------------------------------- Public methods
 
 void Log::setLogPath(BCHAR* configLogPath) {
-    memset(logPath, 0, 512*sizeof(BCHAR));
     if (configLogPath != NULL) {
         bsprintf(logPath, T("%s/"), configLogPath); 
     } else {
         bsprintf(logPath, T("%s"), T("./"));
     }
-    setLogFile(logPath, logName, false);
 }
 
 void Log::setLogName(BCHAR* configLogName) {
     
-    memset(logName, 0, 128*sizeof(BCHAR));
     if (configLogName != NULL) {
         bsprintf(logName, T("%s"), configLogName); 
     }
     else {
         bsprintf(logName, T("%s"), LOG_NAME);         
     }
-    setLogFile(logPath, logName, false);
 }
 
 void Log::error(const BCHAR* msg, ...) {    
@@ -182,12 +184,12 @@ void Log::printMessage(const BCHAR* level, const BCHAR* msg, va_list argList) {
 
     currentTime = getCurrentTime(false);
     if (!logFileStdout && !logFile) {
-        setLogName(LOG_NAME);
+        reset();
     }
     FILE *out = logFile ? logFile : stdout ;
     fprintf(out, "%s [%s] - ", currentTime, level );
     vfprintf(out, msg, argList);
-	fputs("\n", logFile); 
+    fputs("\n", out); 
     fflush(out);
 
     delete[] currentTime;
@@ -200,7 +202,7 @@ void Log::printMessageW(const BCHAR* level, const BCHAR* msg, va_list argList)
 
 void Log::reset(const BCHAR* title) {
     if (!logFileStdout && !logFile) {
-        setLogName(LOG_NAME);
+        setLogFile(logPath, logName, false);
     }
     
     if (logFile) {
