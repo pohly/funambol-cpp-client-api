@@ -24,11 +24,5 @@ To modify the build scripts, install the development packages of:
 After editing some of the input files (configure.ac, Makefile.am)
 the next "make" run will rebuild the build files automatically.
 
-If that somehow doesn't work, here's the sequence of commands
-used to setup the autotools initially:
-  libtoolize --force
-  aclocal
-  autoconf
-  autoheader
-  automake --add-missing
-  automake
+If that somehow doesn't work, the sequence of commands
+used to setup the autotools is contained in autogen.sh.

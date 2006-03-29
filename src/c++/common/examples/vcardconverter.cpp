@@ -67,7 +67,7 @@ int main( int argc, char **argv )
     auto_array<char> vcard(buffer);
 
     // convert to wchar_t
-    auto_array<wchar_t> wvcard(charBuf2wc(vcard, len));
+    auto_array<wchar_t> wvcard(toWideChar(vcard));
     fwprintf(stdout, sep, TEXT("original vcard"));
     fwprintf(stdout, TEXT("%s\n"), wvcard.get());
     fwprintf(stdout, sep2);

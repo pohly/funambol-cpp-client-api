@@ -30,6 +30,9 @@
     #ifdef AUTOTOOLS
         #include "base/posixadapter.h"
     #endif
+    #ifdef HAVE_STDARG_H
+        #include <stdarg.h>
+    #endif
 
     #include "base/errors.h"
 

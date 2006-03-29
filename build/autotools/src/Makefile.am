@@ -6,6 +6,7 @@ SOURCES_BASE = \
     autotoolsadapter.cpp \
     ArrayElement.cpp \
     ArrayList.cpp \
+    BasicTime.cpp \
     KeyValuePair.cpp \
     WKeyValuePair.cpp \
     StringBuffer.cpp \
@@ -179,26 +180,26 @@ vcardconverter_LDADD = libsync4j.la
 #NotifProcessorTest_SOURCES = NotifProcessorTest.cpp
 #NotifProcessorTest_LDADD = libsync4j.la
 
-vpath %.cpp ../../../src/c++/common/base             \
-            ../../../src/c++/common/base/util        \
-            ../../../src/c++/common/client           \
-            ../../../src/c++/common/examples         \
-            ../../../src/c++/common/filter           \
-            ../../../src/c++/common/syncml/formatter \
-            ../../../src/c++/common/syncml/core      \
-            ../../../src/c++/common/syncml/parser    \
-            ../../../src/c++/common/http             \
-            ../../../src/c++/common/spdm             \
-            ../../../src/c++/common/spds             \
-            ../../../src/c++/common/vocl             \
-            ../../../src/c++/common/vocl/iCalendar   \
-            ../../../src/c++/common/vocl/vCard       \
-            ../../../src/c++/posix/base              \
-            ../../../src/c++/posix/http              \
-            ../../../src/c++/posix/spdm              \
-            ../../../src/c++/posix/spds
+vpath %.cpp $(srcdir)/../../../src/c++/common/base             \
+            $(srcdir)/../../../src/c++/common/base/util        \
+            $(srcdir)/../../../src/c++/common/client           \
+            $(srcdir)/../../../src/c++/common/examples         \
+            $(srcdir)/../../../src/c++/common/filter           \
+            $(srcdir)/../../../src/c++/common/syncml/formatter \
+            $(srcdir)/../../../src/c++/common/syncml/core      \
+            $(srcdir)/../../../src/c++/common/syncml/parser    \
+            $(srcdir)/../../../src/c++/common/http             \
+            $(srcdir)/../../../src/c++/common/spdm             \
+            $(srcdir)/../../../src/c++/common/spds             \
+            $(srcdir)/../../../src/c++/common/vocl             \
+            $(srcdir)/../../../src/c++/common/vocl/iCalendar   \
+            $(srcdir)/../../../src/c++/common/vocl/vCard       \
+            $(srcdir)/../../../src/c++/posix/base              \
+            $(srcdir)/../../../src/c++/posix/http              \
+            $(srcdir)/../../../src/c++/posix/spdm              \
+            $(srcdir)/../../../src/c++/posix/spds
 
-vpath %.c   ../../../src/c++/common/base
+vpath %.c   $(srcdir)/../../../src/c++/common/base
 
 AM_LDFLAGS = `curl-config --libs`
-AM_CPPFLAGS = -I../../../src/include/posix -I../../../src/include/common -DAUTOTOOLS
+AM_CPPFLAGS = -I$(srcdir)/../../../src/include/posix -I$(srcdir)/../../../src/include/common -DAUTOTOOLS
