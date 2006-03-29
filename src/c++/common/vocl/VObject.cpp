@@ -221,6 +221,8 @@ static int hex2int( wchar_t x )
         0;
 }
 
+#define SEMICOLON_REPLACEMENT '\a'
+
 void VObject::toNativeEncoding()
 {
     BOOL is_30 = !wcscmp(getVersion(), TEXT("3.0"));
@@ -282,43 +284,51 @@ void VObject::toNativeEncoding()
             wcscpy(native, foreign);
         }
 
-        if (is_30) {
-            wchar_t curr;
-            int in = 0, out = 0;
-
-            while ((curr = native[in]) != 0) {
+        // decode escaped characters after backslash:
+        // \n is line break only in 3.0
+        wchar_t curr;
+        int in = 0, out = 0;
+        while ((curr = native[in]) != 0) {
+            in++;
+            switch (curr) {
+             case '\\':
+                curr = native[in];
                 in++;
-                if (curr == '\\') {
-                    curr = native[in];
-                    in++;
-                    switch (curr) {
-                     case 'n':
+                switch (curr) {
+                 case 'n':
+                    if (is_30) {
                         // replace with line break
                         wcsncpy(native + out, SYNC4J_LINEBREAK, linebreaklen);
                         out += linebreaklen;
-                        break;
-                     case ',':
-                     case '\\':
+                    } else {
+                        // normal escaped character
                         native[out] = curr;
                         out++;
-                        break;
-                     case 0:
-                        // unexpected end of string
-                        break;
-                     default:
-                        // just copy next character
-                        native[out] = curr;
-                        out++;
-                        break;
                     }
-                } else {
+                    break;
+                 case 0:
+                    // unexpected end of string
+                    break;
+                 default:
+                    // just copy next character
                     native[out] = curr;
                     out++;
+                    break;
                 }
+                break;
+             case ';':
+                // field separator - must replace with something special
+                // so that we can encode it again in fromNativeEncoding()
+                native[out] = SEMICOLON_REPLACEMENT;
+                out++;
+                break;
+             default:
+                native[out] = curr;
+                out++;
             }
-            native[out] = 0;
-            out++;
         }
+        native[out] = 0;
+        out++;
 
         vprop->setValue(native);
         delete [] native;
@@ -347,62 +357,65 @@ void VObject::fromNativeEncoding()
         // characters on different platforms
         const int linebreaklen = wcslen(SYNC4J_LINEBREAK);
         
-        if (is_30) {
-            // use backslash for special characters
-            while ((curr = native[in]) != 0) {
-                in++;
-                switch (curr) {
-                 case ',':
-                 case '\\':
-                    foreign[out] = '\\';
-                    out++;
+        // use backslash for special characters,
+        // if necessary do quoted-printable encoding
+        bool doquoted = !is_30 &&
+            wcsstr(native, SYNC4J_LINEBREAK) != NULL;
+        while ((curr = native[in]) != 0) {
+            in++;
+            switch (curr) {
+             case ',':
+                if (!is_30) {
+                    // normal character
                     foreign[out] = curr;
                     out++;
                     break;
-                 default:
-                    if (!wcsncmp(native + in - 1,
-                                 SYNC4J_LINEBREAK,
-                                 linebreaklen)) {
-                        // line break
+                }
+                // no break!
+             case ';':
+             case '\\':
+                foreign[out] = '\\';
+                out++;
+                foreign[out] = curr;
+                out++;
+                break;
+             case SEMICOLON_REPLACEMENT:
+                foreign[out] = ';';
+                out++;
+                break;
+             default:
+                if (doquoted &&
+                    (curr == '=' || (unsigned wchar_t)curr >= 128)) {
+                    // escape = and non-ASCII characters
+                    wcsprintf(foreign + out, TEXT("=%02X"), (unsigned int)(unsigned wchar_t)curr);
+                    out += 3;
+                } else if (!wcsncmp(native + in - 1,
+                                    SYNC4J_LINEBREAK,
+                                    linebreaklen)) {
+                    // line break
+                    if (is_30) {
                         foreign[out] = '\\';
                         out++;
                         foreign[out] = 'n';
                         out++;
                     } else {
-                        foreign[out] = curr;
-                        out++;
-                    }
-                    break;
-                }
-            }
-            foreign[out] = 0;
-            vprop->setValue(foreign);
-        } else {
-            if (wcsstr(native, SYNC4J_LINEBREAK)) {
-                // replace linebreak with =0D=0A
-                while ((curr = native[in]) != 0) {
-                    if (!wcsncmp( native + in, SYNC4J_LINEBREAK, linebreaklen)) {
                         wcscpy(foreign + out, TEXT("=0D=0A"));
                         out += 6;
-                        in += linebreaklen;
-                    } else if(curr == '=') {
-                        // escape =
-                        wsprintf(foreign + out, TEXT("=%02X"), '=');
-                        out += 3;
-                        in++;
-                    } else {
-                        foreign[out] = curr;
-                        out++;
-                        in++;
                     }
+                    in += linebreaklen - 1;
+                } else {
+                    foreign[out] = curr;
+                    out++;
                 }
-                foreign[out] = 0;
-                vprop->setValue(foreign);
-
-                // we have used quoted-printable encoding
-                vprop->addParameter(TEXT("ENCODING"), TEXT("QUOTED-PRINTABLE"));
+                break;
             }
         }
+        foreign[out] = 0;
+        vprop->setValue(foreign);
         delete [] foreign;
+        if (doquoted) {
+            // we have used quoted-printable encoding
+            vprop->addParameter(TEXT("ENCODING"), TEXT("QUOTED-PRINTABLE"));
+        }
     }
 }
