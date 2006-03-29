@@ -145,3 +145,23 @@ wchar_t* toWideChar(const char *mb, const BCHAR *encoding)
     return stringdup(mb);
 }
 
+// Implemented using mkstemp() with a template hard-coded
+// to /tmp. Because the API of mkTempFileName() cannot return
+// an open file, the file has to be closed. This exposes
+// the possibility for an attacker to replace the file
+// before it is opened again if /tmp has incorrect permissions.
+BCHAR *mkTempFileName(const BCHAR *name)
+{
+    BCHAR *filename = new BCHAR[strlen("/tmp/") + strlen(name) + strlen(".XXXXXX") + 1];
+    int fd;
+
+    sprintf(filename, "/tmp/%s.XXXXXX", name );
+    fd = mkstemp(filename);
+    if (fd == -1) {
+        delete [] filename;
+        return NULL;
+    } else {
+        close(fd);
+        return filename;
+    }
+}
