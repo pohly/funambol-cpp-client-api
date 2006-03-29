@@ -47,7 +47,12 @@ private:
     void addParameter(const wchar_t* paramName, const wchar_t* paramValue);
     void removeParameter(wchar_t* paramName);
     bool containsParameter(wchar_t* paramName);
+    // Warning: the name does not always uniquely identify
+    // the parameter, some of them may occur multiple times.
+    // Use getParameterValue(int index) to get the value which
+    // corresponds to a specific parameter.
     wchar_t* getParameterValue(wchar_t* paramName);
+    wchar_t* getParameterValue(int index);
     wchar_t* getParameter(int index);
     int parameterCount();
     bool equalsEncoding(wchar_t* encoding);

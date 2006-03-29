@@ -132,6 +132,16 @@ wchar_t* VProperty::getParameterValue(wchar_t* paramName) {
 
     return NULL;
 }
+wchar_t* VProperty::getParameterValue(int index) {
+    
+    if (parameters != NULL) {
+        WKeyValuePair *parameter;
+        parameter = (WKeyValuePair*)parameters->get(index);
+        return parameter ? parameter->getValue() : NULL;
+    }
+
+    return NULL;
+}
 
 void VProperty::set(wchar_t** p, const wchar_t* v) {
 	

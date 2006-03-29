@@ -144,9 +144,10 @@ wchar_t* VObject::toString() {
             wcscpy(paramName, property->getParameter(k));
 			
             wcscat(strVObject,paramName);
-            if(property->getParameterValue(paramName)) {
+            const wchar_t *value = property->getParameterValue(k);
+            if(value) {
                 wcscat(strVObject,TEXT("="));
-                wcscat(strVObject,property->getParameterValue(paramName));
+                wcscat(strVObject,value);
             }
             delete [] paramName; paramName = NULL;
         }
