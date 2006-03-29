@@ -59,9 +59,20 @@ VProperty* VConverter::readFieldHeader(wchar_t* buffer) {
     if(!headerIndex)
         return NULL;
     bool quota = false;
+    // If the header contains a quotation mark,
+    // then rescan it starting directly after the _quotation mark_
+    // (not after the end of the header, as in the original code)
+    // to find the real end of the header.
+    //
+    // The reason for this code apparently is that the simple search above
+    // might have found a headerIndex which points into the middle of
+    // the quoted string.
+    //
+    // A better solution would be to always scan the header properly.
     if(quotaIndex && quotaIndex < headerIndex) {
         quota = true;
-        for(int i = int(headerIndex - buffer); i < int(wcslen(buffer)); i++) {
+        int len = int(wcslen(buffer));
+        for(int i = int(quotaIndex - buffer) + 1; i < len; i++) {
             if(buffer[i] == '"')
                 quota = !quota;
             if(buffer[i] == ':' && !quota) {
@@ -79,7 +90,12 @@ VProperty* VConverter::readFieldHeader(wchar_t* buffer) {
     wchar_t* header = new wchar_t[wcslen(buffer) + 1];
     buffer[headerIndex - buffer] = '\0';
     wcscpy(header, buffer);
-    wcscpy(buffer, ++headerIndex);
+    // Shift the remaing string to the front of the buffer.
+    // Using wcscpy() for that is incorrect because the standard
+    // does not guarantee in which order bytes are moved!
+    // wcscpy(buffer, ++headerIndex);
+    ++headerIndex;
+    memmove(buffer, headerIndex, (wcslen(headerIndex) + 1) * sizeof(*headerIndex));
 
     //if the header is folded (in .ics files)
     //we need to remove the folding
@@ -100,7 +116,7 @@ VProperty* VConverter::readFieldHeader(wchar_t* buffer) {
             if(extractGroup(token, group)) 
                 prop->addParameter(TEXT("GROUP"), group);
             else
-                delete group; group= NULL;
+                delete [] group; group= NULL;
             prop->setName(token);            
             first = false;
         }
@@ -119,7 +135,7 @@ VProperty* VConverter::readFieldHeader(wchar_t* buffer) {
                 prop->addParameter(paramName, paramVal);
                 
                 delete [] paramName; paramName = NULL;
-                delete paramVal; paramVal = NULL;
+                delete [] paramVal; paramVal = NULL;
             }
             else {
                 prop->addParameter(token,NULL);
@@ -128,7 +144,7 @@ VProperty* VConverter::readFieldHeader(wchar_t* buffer) {
         token = wcstok( NULL, seps );
     }
 
-    delete header; header = NULL;
+    delete [] header; header = NULL;
     delete token; token = NULL;
 
     return prop;
@@ -213,7 +229,10 @@ bool VConverter::readFieldBody(wchar_t* buffer, VProperty* vprop) {
     
     vprop->setValue(value);
     delete [] value; value = NULL;
-    wcscpy(buffer, c+i);
+    // wcscpy only valid for non-overlapping buffers.
+    // This one here can overlap.
+    // wcscpy(buffer, c+i);
+    memmove(buffer, c+i, (wcslen(c+i) + 1) * sizeof(*c));
 
 	return true;
 }
