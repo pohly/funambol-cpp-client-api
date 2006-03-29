@@ -300,7 +300,7 @@ WString& WString::lowerCase() {
  * Perform case insensitive compare
  */
 bool WString::icmp(const wchar_t *sc) const {
-    return (wcsicmp(s, sc)==0);
+    return (_wcsicmp(s, sc)==0);
 }
 
 ArrayElement* WString::clone() {

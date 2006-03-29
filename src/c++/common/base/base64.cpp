@@ -77,7 +77,7 @@ int __cdecl b64_encode(char *dest, void *src, int len)
 static void decode_group(unsigned char output[], const char
 input[], int *n)
 {
-        char *t1,*t2;
+        const char *t1,*t2;
         *n = 0;
 
         if (input[0] == b64_pad)
