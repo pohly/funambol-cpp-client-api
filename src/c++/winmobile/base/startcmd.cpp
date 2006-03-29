@@ -47,7 +47,7 @@ unsigned long startcmd(const wchar_t *app, const wchar_t *cmdline)
     PROCESS_INFORMATION procinfo;
     
     wchar_t *cmd = new wchar_t[wcslen(path)+wcslen(app)+5];
-    wsprintf(cmd, TEXT("%s/%s"), path, app);
+    wsprintf(cmd, TEXT("%s\\%s"), path, app);
 
     BCHAR dbg[200];
     bsprintf(dbg, T("Running: %ls %ls\n"), cmd, cmdline);
