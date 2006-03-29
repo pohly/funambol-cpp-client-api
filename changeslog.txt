@@ -1,3 +1,10 @@
+2006-03-29
+  - pohly: fixed Linux build
+  - pohly: #304771: parsing vcards with quotation marks
+    in the header fails
+  - pohly: #304829: mixing quoted-printable encoding of
+    linebreaks with non-ASCII characters
+
 Funambol SDK C++ 3.0.12
 ------------------------- 
   - SDK is now based on char, and data is transferred transparently
