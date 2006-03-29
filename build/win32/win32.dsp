@@ -64,7 +64,7 @@ LIB32=link.exe -lib
 # PROP Intermediate_Dir "output\win32-dbg-object"
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /W3 /Gm /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_MBCS" /D "_LIB" /YX /FD /GZ /c
-# ADD CPP /nologo /W3 /Gm /GX /ZI /Od /I "..\..\src\include\common" /I "..\..\src\include\win32" /D "WIN32" /D "_DEBUG" /D "_MBCS" /D "_UNICODE" /D "UNICODE" /D "_LIB" /D "NO_CRIT_MSGBOX" /FD /I /GZ /c
+# ADD CPP /nologo /MDd /W3 /Gm /GX /ZI /Od /I "..\..\src\include\common" /I "..\..\src\include\win32" /D "WIN32" /D "_DEBUG" /D "_MBCS" /D "_UNICODE" /D "UNICODE" /D "_LIB" /D "NO_CRIT_MSGBOX" /FD /I /GZ /c
 # ADD BASE RSC /l 0x410 /d "_DEBUG"
 # ADD RSC /l 0x410 /d "_DEBUG"
 BSC32=bscmake.exe
@@ -149,6 +149,10 @@ SOURCE="..\..\src\c++\common\base\LogErrorHandler.cpp"
 # Begin Source File
 
 SOURCE="..\..\src\c++\common\base\md5.c"
+# End Source File
+# Begin Source File
+
+SOURCE="..\..\src\c++\win32\base\MemTracker.cpp"
 # End Source File
 # Begin Source File
 

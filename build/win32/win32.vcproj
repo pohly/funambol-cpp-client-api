@@ -307,6 +307,10 @@
 					</FileConfiguration>
 				</File>
 				<File
+					RelativePath="..\..\src\c++\win32\base\memTracker.cpp"
+					>
+				</File>
+				<File
 					RelativePath="..\..\src\c++\common\base\quoted-printable.cpp"
 					>
 				</File>

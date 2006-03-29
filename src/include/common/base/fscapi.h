@@ -61,7 +61,8 @@
       #include "base/palmadapter.h"
     #endif
 
-    #if 0 //def __DEBUG__
+    #ifdef MALLOC_DEBUG
+      #pragma warning(disable:4291)
       extern size_t dbgcounter;
       void *operator new(size_t s);
       void *operator new[](size_t s);
@@ -71,7 +72,6 @@
       void operator delete[] (void* p);
 
       #define new new(__FILE__, __LINE__)
-      
     #endif
     
     extern BCHAR lastErrorMsg[];

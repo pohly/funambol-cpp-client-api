@@ -530,23 +530,36 @@ wchar_t* toWideChar(const char *mb, const BCHAR *encoding) {
     return ret;
 }
 
-#if 0 //def __DEBUG__
+
+
+
+// ----------------------------------------------------
+// REDEFINITION OF NEW / DELETE -> debug for memory leaks
+//
+// WARNING: this sloooooowwwwssss doooowwwwnnnn things!
+// ----------------------------------------------------
+#ifdef MALLOC_DEBUG
 
     //
     // This is required since in debug mode, new is rewritten
     // as new(__FILE__, __LINE__). See utils.h for details
     //
     #undef new
-    
-    #include <stddef.h>
+    #include "base/memTracker.h"
+
+    MemTracker m = MemTracker(TRUE);
+
 
     void *operator new(size_t s, char* file, int line) {
         void* p = malloc(s);
 
-        // /** WARNING: this sloooooowwwwssss doooowwwwnnnn things
-        fprintf(stderr, "%s:%d new - s:%ld, p:%lx\n", file, line, s, p);
-        // **/
-
+        //fprintf(stderr, "new - p:%lx s:%ld, %s:%d\n", p, s, file, line);
+        if (m.isMemTracking()) {
+            m.disableMemTracker();
+		    m.addTrack((DWORD)p, s, file, line);
+            m.enableMemTracker();
+        }
+ 
         return p;
     }
 
@@ -563,9 +576,13 @@ wchar_t* toWideChar(const char *mb, const BCHAR *encoding) {
     }
 
     void operator delete(void* p) {
-        // /** WARNING: this sloooooowwwwssss doooowwwwnnnn things
-        fprintf(stderr, "delete - p:%lx\n", (long)p);
-        // **/
+        
+        //fprintf(stderr, "delete - p:%lx\n", (long)p);
+        if (m.isMemTracking()) {
+            m.disableMemTracker();
+		    m.removeTrack((DWORD)p);
+            m.enableMemTracker();
+        }
 
         if (p) {
             free(p);
@@ -574,6 +591,12 @@ wchar_t* toWideChar(const char *mb, const BCHAR *encoding) {
 
     void operator delete[] (void* p) {
         ::operator delete(p);
+    }
+
+
+    void printMemLeaks() {
+        if (m.isMemTracking()) 
+            m.dumpUnfreed();
     }
 
 #endif

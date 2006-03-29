@@ -53,5 +53,6 @@ typedef wchar_t WCHAR;
 #define bstrtol strtol
 #define bstrtoul strtoul
 
+void printMemLeaks();
 
 #endif
