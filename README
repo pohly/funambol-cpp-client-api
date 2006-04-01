@@ -1,0 +1,34 @@
+Building
+========
+
+To build for a certain platform, go to the
+subdirectory in "build" which matches your
+platform and follow the instructions there.
+"build/autotools" uses the normal GNU
+configure/make tools and works for Unix/Linux.
+
+Patches
+=======
+
+The .patches directory contains patches which
+have not been imported CVS yet, usually because
+the current branch is frozen in preparation for
+a release.
+
+They can be applied automatically with Holger
+Schurig's patcher utility:
+  http://www.holgerschurig.de/patcher.html
+This simple Perl script can be downloaded from
+that page, but is also packaged as part of
+e.g. Debian 3.1 (Sarge).
+
+To just apply the patches:
+- enter the "client-api/native" directory
+- enter "patcher -A"
+
+This utility can also be used to create new
+patches or to update existing ones: this might
+be necessary when the regular files in CVS have
+been modified since the time when the patch
+was created or when some patches have been
+applied in the meantime.
