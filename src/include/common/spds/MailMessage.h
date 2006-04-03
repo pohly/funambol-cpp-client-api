@@ -55,7 +55,7 @@ class MailMessage : public ArrayElement {
         StringBuffer messageId;
 
         ArrayList headers;
-
+        
 		// can be used by the client to store an internal msg id
 		StringBuffer entryId;
         //
@@ -108,6 +108,8 @@ class MailMessage : public ArrayElement {
 		const BCHAR* getEntryID();
 		void setEntryID(const BCHAR* id);
 
+        void setHeaders(const BCHAR* extraHeaders); 
+        const BCHAR* getHeaders();
         // Body
 		BodyPart & getBody();
 		void setBody(BodyPart &body);

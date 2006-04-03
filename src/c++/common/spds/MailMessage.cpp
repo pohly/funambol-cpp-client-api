@@ -625,3 +625,28 @@ ArrayElement* MailMessage::clone() {
     return new MailMessage(*this);
 }
 
+
+void MailMessage::setHeaders(const BCHAR* chExtraHeaders) 
+{
+    StringBuffer newline = "\n";
+    StringBuffer extraHeaders = chExtraHeaders;
+    ArrayList lines;
+    const StringBuffer *line;
+    if (extraHeaders.length() > 0){
+        extraHeaders.split(lines, newline);
+        for ( line=(StringBuffer *)lines.front();
+		      line;
+		      line=(StringBuffer *)lines.next() ) {
+            StringBuffer s(line->c_str());
+            headers.add(s);            	            
+        } 
+    }
+}
+const BCHAR* MailMessage::getHeaders() 
+{    
+    StringBuffer buff;    
+    buff.join(headers, "\n");            
+    BCHAR* strHeaders = new char[buff.length()];
+    strcpy(strHeaders, buff.c_str());
+    return strHeaders;
+}
