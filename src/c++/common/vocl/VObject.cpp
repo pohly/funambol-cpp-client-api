@@ -376,7 +376,7 @@ void VObject::fromNativeEncoding()
              case '\\':
                 foreign[out] = '\\';
                 out++;
-                foreign[out] = curr;
+                foreign[out] = curr; 
                 out++;
                 break;
              case SEMICOLON_REPLACEMENT:

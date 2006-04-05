@@ -75,7 +75,6 @@ Log::~Log() {
 
 void Log::setLogPath(BCHAR* configLogPath) {
     
-    memset(logPath, 0, 512*sizeof(BCHAR));
     if (configLogPath != NULL) {
         bsprintf(logPath, T("%s/"), configLogPath); 
     } else {
@@ -85,7 +84,6 @@ void Log::setLogPath(BCHAR* configLogPath) {
 
 void Log::setLogName(BCHAR* configLogName) {
     
-    memset(logName, 0, 128*sizeof(BCHAR));
     if (configLogName != NULL) {
         bsprintf(logName, T("%s"), configLogName); 
     }

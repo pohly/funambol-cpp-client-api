@@ -10010,10 +10010,6 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\include\common\http\errors.h"
-				>
-			</File>
-			<File
 				RelativePath="..\..\src\include\common\spds\errors.h"
 				>
 			</File>
@@ -10023,6 +10019,10 @@
 			</File>
 			<File
 				RelativePath="..\..\src\include\common\base\errors.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\include\common\http\errors.h"
 				>
 			</File>
 			<File

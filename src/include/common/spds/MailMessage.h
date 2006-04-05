@@ -109,7 +109,8 @@ class MailMessage : public ArrayElement {
 		void setEntryID(const BCHAR* id);
 
         void setHeaders(const BCHAR* extraHeaders); 
-        const BCHAR* getHeaders();
+        BCHAR* getHeaders();
+
         // Body
 		BodyPart & getBody();
 		void setBody(BodyPart &body);
