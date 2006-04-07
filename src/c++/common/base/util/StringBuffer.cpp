@@ -131,6 +131,9 @@ StringBuffer& StringBuffer::set(const BCHAR* sNew) {
         }
         else if (s) {
             s[0]=0; // just make the string empty
+        } else {
+            getmem( 2 );
+            bstrcpy(s, "");
         }
     }
     else {

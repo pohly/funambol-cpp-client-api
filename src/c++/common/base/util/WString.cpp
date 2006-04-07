@@ -132,6 +132,9 @@ WString& WString::set(const wchar_t* sNew) {
         }
         else if (s) {
             s[0]=0; // just make the string empty
+        } else {
+             getmem( 2 );
+             wcscpy(s, TEXT(""));
         }
     }
     else {

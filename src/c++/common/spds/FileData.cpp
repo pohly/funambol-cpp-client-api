@@ -201,9 +201,7 @@ int FileData::parse(const char *syncmlData, size_t len)
         name = msg.substr(start, end-start);
     }
     else name = TEXT("");
-
-    
-    
+        
     return ret;
 }
 
