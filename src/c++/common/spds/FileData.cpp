@@ -170,7 +170,7 @@ int FileData::parse(const char *syncmlData, size_t len)
         size_t attrstart = bodyattr.ifind("enc");
         if (attrstart!= StringBuffer::npos) {
             enc = bodyattr.substr(attrstart + 4);
-            if ((enc != TEXT("\"base64\"")) &&
+            if (!enc.empty() && (enc != TEXT("\"base64\"")) &&
                 (enc != TEXT("\"quoted-printable\"")))
             {
                 enc = TEXT("");
@@ -185,13 +185,13 @@ int FileData::parse(const char *syncmlData, size_t len)
     }
     else
         enc = TEXT("");
-        
-    if (enc == TEXT("base64"))
+    
+    if (!enc.empty() && (enc == TEXT("base64")))
     {
         int len = b64_decode((void *)body.c_str(), body.c_str());        
     }
     
-    if (enc == TEXT("quoted-printable"))
+    if (!enc.empty() && (enc == TEXT("quoted-printable")))
     {        
         body = qp_decode(body.c_str());        
     }
