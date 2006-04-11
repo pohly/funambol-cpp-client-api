@@ -11,7 +11,7 @@ Patches
 =======
 
 The .patches directory contains patches which
-have not been imported CVS yet, usually because
+have not been imported into CVS yet, usually because
 the current branch is frozen in preparation for
 a release.
 
