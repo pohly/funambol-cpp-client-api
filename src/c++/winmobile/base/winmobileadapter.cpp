@@ -382,7 +382,7 @@ bool readFile(const char* path, char **message, size_t *len, bool binary)
     *len=fread(msg, sizeof(char), msglen, f);
     if(ferror(f)){
         delete [] msg;
-        return false;
+        return false; 
     }
     fclose(f);
 

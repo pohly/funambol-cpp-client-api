@@ -400,7 +400,7 @@ BCHAR * MailMessage::format() {
     // Add parsed headers
     ret += MIMEVERS; ret += mimeVersion; ret += NL;
     ret += MESSAGEID; ret += messageId; ret += NL;
-    LOG.debug("MailMessage: From: %s\n", from);
+    LOG.debug("MailMessage: From: %s\n", from.c_str());
     ret += FROM; ret += from; ret += NL;
     ret += TO; ret += to; ret += NL;
     if (cc.length() ) {

@@ -1453,7 +1453,7 @@ Status *SyncManager::processSyncItem(Item* item, const CommandInfo &cmdInfo)
     }
     else if (bstrcmp(cmdInfo.commandName, REPLACE) == 0) {        
         syncItem.setState(SYNC_STATE_UPDATED);
-        code = sources[count]->updateItem(syncItem);                
+        code = sources[count]->updateItem(syncItem);
         status = syncMLBuilder.prepareItemStatus(REPLACE, itemName, cmdInfo.cmdRef, code);                
     }
     else if (bstrcmp(cmdInfo.commandName, DEL) == 0) {
