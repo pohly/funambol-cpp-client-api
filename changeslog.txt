@@ -1,3 +1,8 @@
+Funambol SDK C++ 3.0.15
+------------------------- 
+  - setHeaders() and getHeaders() methods in MailMessage.cpp
+  - fix error on StringBuffer() on empty string assignment.
+
 2006-03-29
   - pohly: fixed Linux build
   - pohly: #304771: parsing vcards with quotation marks
