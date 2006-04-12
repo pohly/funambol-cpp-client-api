@@ -79,6 +79,7 @@ void MemTracker::dumpUnfreed() {
 
     info = (AllocInfo*)allocList.front();
     LOG.debug("addr: %lx - size:%3ld, file: %s:%d", info->address, info->size, info->file, info->line);
+	totalSize += info->size;
     for(i=1; i<size; i++) {
 		info = (AllocInfo*)allocList.next();
 		LOG.debug("addr: %lx - size:%3ld, file: %s:%d", info->address, info->size, info->file, info->line);
