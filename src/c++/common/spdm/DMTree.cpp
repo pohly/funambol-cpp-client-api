@@ -83,6 +83,7 @@ ManagementNode* DMTree::getManagementNode(const BCHAR* node) {
             DeviceManagementNode s(node, childrenNames[i]);
             n->addChild(s);
         }
+		delete [] childrenNames;
     }
 
     return n;
