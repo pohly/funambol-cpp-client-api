@@ -643,7 +643,7 @@ BCHAR* MailMessage::getHeaders()
     if( headers.size() ) {
         StringBuffer buff;    
         buff.join(headers, "\n");            
-        BCHAR* strHeaders = stringdup(buff.c_str());
+        BCHAR* strHeaders = stringdup(buff.c_str(), buff.length() -1);
         return strHeaders;
     }
     else return 0;
