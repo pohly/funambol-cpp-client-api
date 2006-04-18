@@ -23,7 +23,7 @@
 // #define DEBUG_SETTINGS       1
 
 // Test a simple sync with two sync sources
-#define TEST_SYNCSOURCE      1
+//#define TEST_SYNCSOURCE      1
 
 // Test the encryption routines
 //#define TEST_SYNC_ENCRYPTION 1
@@ -34,3 +34,4 @@
 // Test SyncML config filter
 //#define TEST_CONFIG_FILTER   1
 
+#define TEST_FILTER 1

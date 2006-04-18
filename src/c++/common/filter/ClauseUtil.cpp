@@ -267,10 +267,22 @@ Filter* ClauseUtil::toFilter(SourceFilter& sourceFilter) {
   * -1: all attachments
   * x : attachments up to x kb
   *
+  ***************************************************************************
+  * SINCE 2006-04-18: changed the meaning of the flag
   *
-  * @param downloadAge download age
-  * @param bodySize body size
-  * @param attachSize attachment size
+  * if since == -1, bodySize == -1, attachSize == -1 -> no filter
+  *
+  * since: keeps the same meaning
+  *
+  * bodySize: == 0  there is only the header of the mail. No attach is consider
+  *           == 1  there is the header and the body. AttachSize regards only the 
+                    amount in byte of the Body. Actually it doesn't refer to attachSize.
+              == -1 permits to consider the attachments too. If attachsize > 0 the filter
+                    contains the amount of header + body + attachment until to attachSize.
+  * attachSize: 1   it is consider only if bodySize is -1 or 1.   
+
+  *
+  * 
   */
   SourceFilter* ClauseUtil::createSourceFilter(const wchar_t* since, int bodySize, int attachSize) {
     if ((since == NULL) && (bodySize == -1) && (attachSize == -1)) {
@@ -286,8 +298,56 @@ Filter* ClauseUtil::toFilter(SourceFilter& sourceFilter) {
     // FIELD CLAUSE(S)
     // ---------------
     //
-
+    
     ArrayList properties;
+
+    if (bodySize >= 0) {
+        Property p;
+
+        p.setPropName(T("emailitem"));
+               
+        if (bodySize > 0) {
+            ArrayList params;
+            PropParam textParam;
+            textParam.setParamName(T("texttype"));
+
+            params.add(textParam);            
+            p.setPropParams(params);
+
+            if (attachSize > 0) {                
+                p.setMaxSize(attachSize*1024);
+            }            
+        }
+        properties.add(p);    
+
+    } else {
+        
+        if (attachSize == -1) {
+            // do nothing
+        }
+        else if (attachSize > 0) {
+            Property p;
+             
+            p.setPropName(T("emailitem"));            
+            ArrayList params;                        
+
+            PropParam textParam;
+            textParam.setParamName(T("texttype"));
+            params.add(textParam);              
+
+            PropParam attachParam;
+            attachParam.setParamName(T("attachtype"));        
+            params.add(attachParam);
+            
+            p.setPropParams(params);
+
+            p.setMaxSize(attachSize*1024);
+            properties.add(p);    
+        }
+
+    }
+    
+/*
     if (bodySize >= 0) {
         Property p;
 
@@ -320,7 +380,7 @@ Filter* ClauseUtil::toFilter(SourceFilter& sourceFilter) {
 
         properties.add(p);
     }
-
+*/
     if (properties.size() == 0) {
         AllClause all;
         operands.add(all);
