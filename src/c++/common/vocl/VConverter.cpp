@@ -128,7 +128,8 @@ VProperty* VConverter::readFieldHeader(wchar_t* buffer) {
                 wchar_t* paramName = new wchar_t[wcslen(token) + 1];
                 token[paramIndex - token] = '\0';
                 wcscpy(paramName, token);
-                wcscpy(token, ++paramIndex);
+                ++paramIndex;
+                wmemmove(token, paramIndex, (wcslen(paramIndex) + 1) * sizeof(*paramIndex));
 
                 wchar_t* paramVal = new wchar_t[wcslen(token) + 1];
                 wcscpy(paramVal, token);
