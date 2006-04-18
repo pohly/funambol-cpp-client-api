@@ -46,7 +46,7 @@ EmailData::EmailData()
 int EmailData::parse(const BCHAR *syncmlData, size_t len)
 {
     int ret = 0;
-    size_t start, end, size;        
+    unsigned int start, end, size;        
     StringBuffer* s = new StringBuffer(syncmlData, len);
     size = s->length();
     // FIXME: remove these replace once the server has fixed the message.

@@ -81,7 +81,7 @@ FileData::~FileData()
 int FileData::parse(const char *syncmlData, size_t len)
 {
     int ret = 0;
-    size_t start, end;        
+    unsigned int start, end;        
     StringBuffer* s = new StringBuffer(syncmlData, len);
     StringBuffer bodyattr;
 

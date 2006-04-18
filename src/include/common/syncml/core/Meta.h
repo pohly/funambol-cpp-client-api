@@ -85,7 +85,7 @@ class Meta {
 		 *
 		 * @return format
 		 */
-		BCHAR* Meta::getFormat(BCHAR* retFormat=0);
+		BCHAR* getFormat(BCHAR* retFormat=0);
 
 		/**
 		 * Sets format

@@ -68,7 +68,7 @@ class Exec : public ModificationCommand {
          */    
         Item* getItem();
 
-        ArrayElement* Exec::clone();
+        ArrayElement* clone();
 
 };
 
