@@ -67,8 +67,7 @@ FileData::FileData()
 FileData::~FileData()
 {
     accessed.reset();
-    attributes.reset();
-    
+    attributes.reset();    
     enc.reset();
     file.reset();
     modified.reset();
@@ -243,20 +242,21 @@ char* FileData::format() {
 
     if (isHiddenPresent)
         attributes += XMLProcessor::makeElement(FILE_HIDDEN, hidden);
+    if (isSystemPresent)
+        attributes += XMLProcessor::makeElement(FILE_SYSTEM, system);
     if (isArchivedPresent)
         attributes += XMLProcessor::makeElement(FILE_ARCHIVED, archived);
     if (isDeletedPresent)
         attributes += XMLProcessor::makeElement(FILE_DELETE, deleted);
-    if (isExecutablePresent)
-        attributes += XMLProcessor::makeElement(FILE_EXECUTABLE, executable);
+    if (isWritablePresent)
+        attributes += XMLProcessor::makeElement(FILE_WRITABLE, writable);
     if (isReadablePresent)
         attributes += XMLProcessor::makeElement(FILE_READABLE, readable);
-    if (isSystemPresent)
-        attributes += XMLProcessor::makeElement(FILE_SYSTEM, system);
+    if (isExecutablePresent)
+        attributes += XMLProcessor::makeElement(FILE_EXECUTABLE, executable);        
     if (!attributes.empty())
-        out += XMLProcessor::makeElement(FILE_ATTRIBUTES, attributes);
-    if (size > 0)
-        out += XMLProcessor::makeElement(FILE_SIZE, size);
+        out += XMLProcessor::makeElement(FILE_ATTRIBUTES, attributes);    
+
     if (enc.empty()){
         int len = b64_decode((void*)body.c_str(), body.c_str());
         out += XMLProcessor::makeElement(FILE_BODY, body);
@@ -265,16 +265,11 @@ char* FileData::format() {
     {   
         ArrayList attrList;
         KeyValuePair attr("enc", _wcc(enc.c_str()));
-        attrList.add(attr);
-        /*if (enc == TEXT("quoted-printable"))
-        {
-            // encode body to quoted-printable
-            int len = b64_decode((byte*)body.c_str(), body.c_str());
-            body = qp_encode(body.c_str());
-        } */       
+        attrList.add(attr);           
         out += XMLProcessor::makeElement(FILE_BODY, body.c_str(), attrList);
     }
-    
+    if (size > 0)
+        out += XMLProcessor::makeElement(FILE_SIZE, size);
     out += T("</File>\n]]>\n");
     return stringdup(out.c_str());
 }
