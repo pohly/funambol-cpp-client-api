@@ -1121,7 +1121,7 @@ int SyncManager::endSync() {
     BCHAR* responseMsg    = NULL;
     SyncML*  syncml         = NULL;
     BOOL     last           = TRUE;
-    int ret                 = 0;   
+    int ret= 0, srcRet= 0;   
     Map* map                = NULL;
     Status* status          = NULL;
     ArrayList* list         = new ArrayList();
@@ -1255,7 +1255,9 @@ int SyncManager::endSync() {
                 }
             }
 
-            sources[count]->endSync();
+            int sret = sources[count]->endSync();
+            if (sret)
+                srcRet = sret;
         }        
     }         
             
@@ -1272,13 +1274,20 @@ int SyncManager::endSync() {
     safeDelete(&mapMsg);
 
     //
-    // This commitSync is no used because the saving of the configuration is done into
-    // the Sync4jClient.
+    // This commitSync is not used because the saving of the configuration
+    // is done into the Sync4jClient.
     // The operation of save the config is ONLY for the default config (the DMConfig)
     //
     //config.save();
-
-    return ret;
+    if (ret){
+        return ret;
+    }
+    else if (srcRet){
+        lastErrorCode = srcRet;
+        return srcRet;
+    }
+    else
+        return 0;
 }
 
 BOOL SyncManager::readSyncSourceDefinition(SyncSource& source) {
