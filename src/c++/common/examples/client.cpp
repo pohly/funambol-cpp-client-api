@@ -45,6 +45,7 @@ void testClause();
 void testConfigFilter();
 void testEncryption();
 
+static void testXMLProcessor();
 
 //#define APPLICATION_URI T("Funambol/examples/dummy")
 #define APPLICATION_URI T("Funambol/SyncclientPIM")
@@ -154,6 +155,79 @@ int main(int argc, char** argv) {
     testConfigFilter();
 #endif
 
+#ifdef TEST_XMLPROCESSOR
+    testXMLProcessor();
+#endif
     return 0;
 }
 
+static void testXMLProcessor(void)
+{
+    const char xml1[] = 
+        "<document>\n\
+            <LocURI>./devinf11</LocURI>\n\
+            <plaintag>\n\
+                <attrtag attr=\"val\">content</attrtag>\n\
+            </plaintag>\n\
+            <emptytag/>\n\
+         </document>" ;
+         
+    unsigned int pos = 0, start = 0, end = 0;
+    const char *p = 0;
+
+    // Get 'document' tag
+    char *doc = XMLProcessor::getElementContent(xml1, "document", &pos);
+    LOG.debug("Document: '%s'", doc);
+    LOG.debug("xml[pos]= '%s'", xml1 + pos);
+
+    char buf[256];
+
+    // Get 'plaintag' content, using start/end pos
+    if(!XMLProcessor::getElementContent(doc, "plaintag", &pos, &start, &end)){
+        LOG.error("TEST FAILED.");
+        return;
+    }
+    memset(buf, 0, 255);
+    memcpy(buf, doc+start, end-start);
+    LOG.debug("Plaintag: '%s'", buf);
+
+    // Get 'LocURI' content, using start/end pos
+    if(!XMLProcessor::getElementContent(doc, "LocURI", &pos, &start, &end)){
+        LOG.error("TEST FAILED.");
+        return;
+    }
+    memset(buf, 0, 255);
+    memcpy(buf, doc+start, end-start);
+    LOG.debug("LocURI: '%s'", buf);
+
+    // Get 'attrtag' content, using start/end pos
+    if(!XMLProcessor::getElementContent(doc, "attrtag", &pos, &start, &end)){
+        LOG.error("TEST FAILED.");
+        return;
+    }
+    memset(buf, 0, 255);
+    memcpy(buf, doc+start, end-start);
+    LOG.debug("Attrtag: '%s'", buf);
+
+    // Get 'attrtag' attr list, using start/end pos
+    if(!XMLProcessor::getElementAttributes(doc, "attrtag", &start, &end)){
+        LOG.error("TEST FAILED.");
+        return;
+    }
+    memset(buf, 0, 255);
+    memcpy(buf, doc+start, end-start);
+    LOG.debug("Attrlist: '%s'", buf);
+
+    // Get 'emptytag' content, that should be empty
+    char *empty = XMLProcessor::getElementContent(doc, "emptytag");
+    if(!empty){
+        LOG.error("TEST FAILED.");
+        return;
+    }
+    LOG.debug("Emptytag: '%s'", empty);
+    
+    if(doc)
+        delete [] doc;
+    if (empty)
+        delete [] empty;
+}

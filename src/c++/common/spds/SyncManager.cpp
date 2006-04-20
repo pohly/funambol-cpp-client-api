@@ -903,8 +903,16 @@ int SyncManager::sync() {
             // Process the status of the item sent by client. It invokes the 
             // source method 
             //
-            syncMLProcessor.processItemStatus(*sources[count], syncml->getSyncBody());
-
+            int itemret = syncMLProcessor.processItemStatus(*sources[count], syncml->getSyncBody());
+            if(itemret){
+                char *name = toMultibyte(sources[count]->getName());
+                LOG.error("Error #%d in source %s", itemret, name);
+                delete [] name;
+                // skip the source, and set an error
+                check[count] = 0;
+                lastErrorCode = itemret;
+                break;
+            }
 
             // deleteSyncML(&syncml);
 
@@ -922,7 +930,6 @@ int SyncManager::sync() {
     //
     // send 222 alert code to retrieve the item from server
     //    
-
     if ((FALSE == isFinalfromServer) && (TRUE == isAtLeastOneSourceCorrect))
     {
         status = syncMLBuilder.prepareSyncHdrStatus(NULL, 200);
@@ -1121,7 +1128,7 @@ int SyncManager::endSync() {
     BCHAR* responseMsg    = NULL;
     SyncML*  syncml         = NULL;
     BOOL     last           = TRUE;
-    int ret= 0, srcRet= 0;   
+    int ret                 = 0;   
     Map* map                = NULL;
     Status* status          = NULL;
     ArrayList* list         = new ArrayList();
@@ -1256,8 +1263,9 @@ int SyncManager::endSync() {
             }
 
             int sret = sources[count]->endSync();
-            if (sret)
-                srcRet = sret;
+            if (sret) {
+                lastErrorCode = sret;
+            }
         }        
     }         
             
@@ -1282,9 +1290,8 @@ int SyncManager::endSync() {
     if (ret){
         return ret;
     }
-    else if (srcRet){
-        lastErrorCode = srcRet;
-        return srcRet;
+    else if (lastErrorCode){
+        return lastErrorCode;
     }
     else
         return 0;

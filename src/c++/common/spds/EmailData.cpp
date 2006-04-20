@@ -34,6 +34,17 @@
 #define EMAIL_FLAG  T("flagged")
 #define EMAIL_ITEM  T("emailitem")
 
+static inline bool checkFlag(const char *xml, const char *field)
+{
+    size_t start = 0, end = 0;
+    bool ret = false;
+
+    if( XMLProcessor::getEscapedElementContent(xml, field, NULL, &start, &end) ) {
+        ret = ( bstrncmp(xml+start, T("true"), end-start) == 0 ) ;
+    }
+    return ret;
+}
+
 EmailData::EmailData()
 {
     read = false;
@@ -43,88 +54,38 @@ EmailData::EmailData()
     flagged = false;
 }
 
-int EmailData::parse(const BCHAR *syncmlData, size_t len)
+int EmailData::parse(const BCHAR *msg, size_t len)
 {
     int ret = 0;
-    unsigned int start, end, size;        
-    StringBuffer* s = new StringBuffer(syncmlData, len);
-    size = s->length();
-    // FIXME: remove these replace once the server has fixed the message.
-    if ( strstr(s->c_str(), T("&lt;")) != NULL) {
-        s->replaceAll(T("&lt;"), T("<"));
-        s->replaceAll(T("&gt;"), T(">"));
-        s->replaceAll(T("&amp;"), T("&"));
-    }
+    size_t start, end;
     
-    // Get the CDATA content
-    if(XMLProcessor::getElementContent(s->c_str(), T("CDATA"), NULL, &start, &end) == 0) {
-        LOG.error(T("EMailData: can't find outer CDATA section."));
-        return -1;
-    }
-    /*
-    // workaround: if the item was crypted the mail item arrives with <Email> and not in &lt;Email>
-    // So the substitution doesn't works fine
-    
-    if ((size-(end-start)) > 10) {
-        wchar_t* ptr = wcsstr(&s->c_str()[end + 1], TEXT("]]>"));
-        if (ptr) {
-            int l = ptr - &s->c_str()[end];
-            end = end + l;
-        }
-
-    }
-    */
-    StringBuffer msg = s->substr(start, end-start);
-    
-    delete s;
-
     // Get attributes
-    if( XMLProcessor::getElementContent (msg, EMAIL_READ, NULL, &start, &end) ) {
-        read = ( bstrncmp(msg.c_str()+start, T("true"), end-start) == 0 ) ;
-    }
-    else read = false;
-
-    if( XMLProcessor::getElementContent (msg, EMAIL_FORW, NULL, &start, &end) ) {
-        forwarded = ( msg.substr(start, end-start) == T("true") ) ;
-    }
-    else forwarded = false;
-
-    if( XMLProcessor::getElementContent (msg, EMAIL_REPL, NULL, &start, &end) ) {
-        replied = ( msg.substr(start, end-start) == T("true") ) ;
-    }
-    else replied = false;
-
-    if( XMLProcessor::getElementContent (msg, EMAIL_DELE, NULL, &start, &end) ) {
-        deleted = ( msg.substr(start, end-start) == T("true") ) ;
-    }
-    else deleted = false;
-
-    if( XMLProcessor::getElementContent (msg, EMAIL_FLAG, NULL, &start, &end) ) {
-        flagged = ( msg.substr(start, end-start) == T("true") ) ;
-    }
-    else flagged = false;
-
-    if( XMLProcessor::getElementContent (msg, EMAIL_TREC, NULL, &start, &end) ) {
-        received = msg.substr(start, end-start);
+    read      = checkFlag(msg, EMAIL_READ);
+    forwarded = checkFlag(msg, EMAIL_FORW);
+    replied   = checkFlag(msg, EMAIL_REPL);
+    deleted   = checkFlag(msg, EMAIL_DELE);
+    flagged   = checkFlag(msg, EMAIL_FLAG);
+     
+    if( XMLProcessor::getEscapedElementContent (msg, EMAIL_TREC, NULL, &start, &end) ) {
+        received = StringBuffer(msg+start, end-start);
     }
     else received = T("");
 
-    if( XMLProcessor::getElementContent (msg, EMAIL_TCRE, NULL, &start, &end) ) {
-        created = msg.substr(start, end-start);
+    if( XMLProcessor::getEscapedElementContent (msg, EMAIL_TCRE, NULL, &start, &end) ) {
+        created = StringBuffer(msg+start, end-start);
     }
     else created = T("");
 
-    if( XMLProcessor::getElementContent (msg, EMAIL_TMOD, NULL, &start, &end) ) {
-        modified = msg.substr(start, end-start);
+    if( XMLProcessor::getEscapedElementContent (msg, EMAIL_TMOD, NULL, &start, &end) ) {
+        modified = StringBuffer(msg+start, end-start);
     }
     else modified = T("");    
 
     // Get content
-    if( XMLProcessor::getElementContent (msg, EMAIL_ITEM, NULL, &start, &end) ) {
-		StringBuffer item = msg.substr(start, end-start);
-        item.replace(T("]]&gt;"), T("]]>"));
+    if( XMLProcessor::getEscapedElementContent (msg, EMAIL_ITEM, NULL, &start, &end) ) {
+		StringBuffer item(msg+start, end-start);
         
-        if(XMLProcessor::getElementContent(item, T("CDATA"), NULL, &start, &end) == 0) {
+        if(XMLProcessor::getEscapedElementContent(item, T("CDATA"), NULL, &start, &end) == 0) {
             LOG.error(T("EMailData: can't find inner CDATA section."));
             return -1;
         }

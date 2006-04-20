@@ -62,7 +62,20 @@ public:
      * @param startPos (OUTPUT) the start position of the tag content (ignored if NULL)
      * @param endPos (OUTPUT) the end position of the tag content (ignored if NULL)
      */
-    static BCHAR* getElementContent(const BCHAR* xml, const BCHAR* tag, unsigned int* pos, unsigned int* startPos, unsigned int* endPos) EXTRA_SECTION_00;
+    static const BCHAR* getElementContent(const BCHAR* xml, const BCHAR* tag,
+                    unsigned int* pos, unsigned int* startPos, unsigned int* endPos) EXTRA_SECTION_00;
+    
+    /*
+     * It's like getElementContent above but it works on escaped XML tags.
+     *
+     * @param xml the xml fragment
+     * @param tag the tag we want the content
+     * @param pos (OUTPUT) the position where the tag is found (ignored if NULL)
+     * @param startPos (OUTPUT) the start position of the tag content (ignored if NULL)
+     * @param endPos (OUTPUT) the end position of the tag content (ignored if NULL)
+     */
+    static const BCHAR* getEscapedElementContent(const BCHAR* xml, const BCHAR* tag,
+                    unsigned int* pos, unsigned int* startPos, unsigned int* endPos) EXTRA_SECTION_00;
     
     /*
     * It returns the number of the tag in the xml string
@@ -120,7 +133,7 @@ public:
      *
      */
 
-    static BCHAR* getContent(BCHAR* xml, unsigned int startPos, unsigned int endPos) EXTRA_SECTION_00;
+    static BCHAR* getContent(const BCHAR* xml, unsigned int startPos, unsigned int endPos) EXTRA_SECTION_00;
     
     /**
      * Create an XML element with the specified tag and value.
@@ -178,7 +191,8 @@ public:
      * @param endPos (OUTPUT) the end position of the tag attributes (ignored if NULL)
      *
     */
-    static BCHAR* getElementAttributes(const BCHAR* xml,
+    static const BCHAR* getElementAttributes(
+                                         const BCHAR* xml,
                                          const BCHAR* tag,
                                          unsigned int*  startPos, 
                                          unsigned int*  endPos) EXTRA_SECTION_00;

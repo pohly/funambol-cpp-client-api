@@ -131,22 +131,34 @@ finally:
 
 int SyncMLProcessor::processItemStatus(SyncSource& source, SyncBody* syncBody) {
     
-    ArrayList* list  = new ArrayList();    
     ArrayList* items = NULL;
     Item* item       = NULL;
     SourceRef* sourceRef = NULL;
     Status* s = NULL;
     BCHAR* name = NULL;
     Data* data = NULL;
+    int ret = 0;
 
-    list = getCommands(syncBody, STATUS);
+    ArrayList* list = getCommands(syncBody, STATUS);
 
     for (int i = 0; i < list->size(); i++) {
         s = (Status*)list->get(i);
-        name = s->getCmd(NULL);    
+        name = s->getCmd();    
         
-        if (bstrcmp(name, SYNC) == 0 &&
-            getAlertStatusCode(s, _wcc(source.getName())) < 0) {
+        if (bstrcmp(name, SYNC) == 0){
+            char *srcname = toMultibyte(source.getName());
+            int alertStatus = getAlertStatusCode(s, srcname);
+            
+            delete [] srcname;
+            
+            if(alertStatus < 0){
+                LOG.error("processItemStatus: status not found in SYNC");
+                ret = alertStatus;
+            }
+            if(alertStatus >=300) {
+                LOG.error("processItemStatus: server sent status %d in SYNC");
+                ret = alertStatus;
+            }
             break;
         }         
 
@@ -180,7 +192,7 @@ int SyncMLProcessor::processItemStatus(SyncSource& source, SyncBody* syncBody) {
     }
 
     deleteArrayList(&list);    
-    return 0;
+    return ret;
 }
 
 /*
@@ -387,7 +399,7 @@ int SyncMLProcessor::getStatusCode(SyncBody* syncBody, SyncSource* source, BCHAR
         name = ((AbstractCommand*)(list->get(i)))->getName();    // is returned the pointer to the element not a new element
         if (name && bstrcmp(name, STATUS) == 0) {
             s = (Status*)list->get(i);
-            if (bstrcmp(s->getCmd(NULL), commandName) == 0) {
+            if (bstrcmp(s->getCmd(), commandName) == 0) {
                 if (bstrcmp(commandName, SYNC_HDR) == 0) {
                     ret = getSyncHeaderStatusCode(s);
                 } else if (bstrcmp(commandName, ALERT) == 0) {

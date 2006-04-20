@@ -22,33 +22,155 @@
 #include "base/util/utils.h"
 #include "base/util/XMLProcessor.h"
 #include "base/util/StringBuffer.h"
+#include "base/Log.h"
 
+//--------------------------------------------------------------- Static functions
 
-BCHAR* XMLProcessor::getElementContent(const BCHAR*      xml     ,
-                                         const BCHAR*      tag     ,
-                                         unsigned int* pos     ,
-                                         unsigned int* startPos,
-                                         unsigned int* endPos  ) {
+static const BCHAR *findElementContent(const BCHAR *xml,
+                          const BCHAR *openTag, const BCHAR *closeTag,
+                          unsigned int* pos     ,
+                          unsigned int* startPos,
+                          unsigned int* endPos  )
+{
+    const BCHAR *p1, *p2, *xmlptr = xml;
+
+    if (pos) {
+        *pos = 0;
+    }
+
+    do {
+        p1 = bstrstr(xmlptr, openTag);
+        p2 = NULL;
+
+        if (!p1) {
+            // Tag not found
+            //LOG.debug("XMLProcessor: tag %s not found", openTag);
+            return 0;
+        }
         
-    BCHAR* p1       = NULL;
-    BCHAR* p2       = NULL;
-    BOOL charFound    = FALSE;
-    unsigned int xmlLength = (unsigned int)-1;
-    unsigned int l = (unsigned int)-1;
+        p1 += bstrlen(openTag); // move to end of tag
 
+        // Check the tag type
+        switch( *p1 ){
+            case ' ':   // <tag attr=xxx>
+                // Find the end of the tag (TODO: should check for invalid chars?)
+                for (p1++; *p1 != '>'; p1++) {
+                    if(*p1 == 0 || *p1 == '<'){
+                        LOG.info("XMLProcessor: incomplete tag");
+                        return 0;
+                    }
+                }
+                // The break is not missing!
+                // After the for, we are in the same case of the tag
+                // without attributes
+            case '>':   // <tag>
+                p1++;   // this is the beginning of content
+                if (!p1[0]) {
+                    LOG.info("XMLProcessor: tag at end of file");
+                    return 0;
+                }
+                // Find the closing tag
+                p2 = bstrstr(p1, closeTag);
+                break;
+            case '/':
+                p1++;
+                if(*p1 != '>'){
+                    LOG.info("XMLProcessor: invalid empty tag");
+                    return 0;
+                }
+                p1++;
+                // The tag is already closed, no content: make end = start
+                p2=p1;
+                // Invalidate closeTag
+                closeTag=0;
+                break;
+            default:
+                // This is not the searched tag, search again
+                //LOG.debug("XMLProcessor: this is not tag %s", openTag);
+                xmlptr = p1;
+                p1 = 0;
+        }
+    }
+    while (!p1); // If p1 is null and we are here, it means that the 'default'
+                 // case was hit.
+
+    // Closing tag not found
+    if (!p2) {
+        //
+        // This is abc<tag>xyz\0
+        //
+        p1 = NULL;
+        return 0;
+    }
+    
+    // Okay, if we are here, the tag content has been found
+    if (startPos) {
+        *startPos = p1 - xml;
+    }
+    if (endPos) {
+        *endPos = p2 - xml ;
+    }
+    if (pos) {
+        *pos = p2-xml;
+        if (closeTag){
+            *pos += bstrlen(closeTag);
+        }
+    }
+
+    return p1;
+}
+
+
+const BCHAR* XMLProcessor::getEscapedElementContent(const BCHAR* xml ,
+                                              const BCHAR* tag ,
+                                              unsigned int* pos ,
+                                              unsigned int* startPos,
+                                              unsigned int* endPos )
+{        
     BCHAR *openTag = 0;
     BCHAR *closeTag = 0;
     
-    if (xml == NULL) {
-        goto finally;
+    if (!xml) {
+        return 0;
     }
 
-    xmlLength = bstrlen(xml);
-    l = bstrlen(tag);
+    size_t l = bstrlen(tag);
 
-    if (pos != NULL) {
-        *pos = 0;
+    if(bstrcmp(tag, T("CDATA")) == 0) {
+        openTag = stringdup(T("&lt;![CDATA["));
+        closeTag = stringdup(T("]]>"));
     }
+    else {
+        openTag = new BCHAR[l+10];
+        closeTag = new BCHAR[l+10];
+        bsprintf(openTag, T("&lt;%s"), tag);
+        bsprintf(closeTag, T("&lt;/%s>"), tag);
+    }
+
+    const BCHAR *ret = findElementContent(xml, openTag, closeTag, pos, startPos, endPos);
+
+    if (openTag)
+        delete [] openTag;
+    if (closeTag)
+        delete [] closeTag;
+
+    return ret;
+}
+
+const BCHAR* XMLProcessor::getElementContent(const BCHAR* xml,
+                                       const BCHAR* tag,
+                                       unsigned int* pos,
+                                       unsigned int* startPos,
+                                       unsigned int* endPos  )
+{        
+    BCHAR *openTag = 0;
+    BCHAR *closeTag = 0;
+    
+    if (!xml) {
+        return 0;
+    }
+
+    size_t l = bstrlen(tag);
 
     if(bstrcmp(tag, T("CDATA")) == 0) {
         openTag = stringdup(T("<![CDATA["));
@@ -57,233 +179,54 @@ BCHAR* XMLProcessor::getElementContent(const BCHAR*      xml     ,
     else {
         openTag = new BCHAR[l+10];
         closeTag = new BCHAR[l+10];
-        bsprintf(openTag, T("<%s>"), tag);
+        bsprintf(openTag, T("<%s"), tag);
         bsprintf(closeTag, T("</%s>"), tag);
     }
 
-    p1 = bstrstr((BCHAR*)xml, openTag);
-
-    if (p1 == NULL) { // tag can have attributes or can be empty
-
-        // if p1 is null I try to discover the next '>' char to close the tag. If does not exist 
-        // return NULL
-        
-        // try to find "<tagName/>". If found it return null.
-        bsprintf(openTag, T("<%s/>"), tag);
-        p1 = bstrstr((BCHAR*)xml, openTag);
-        // ok, found an empty tag
-        if (p1 != NULL) {
-            goto finally;
-        }
-
-        // try to find "<tagName"
-        bsprintf(openTag, T("<%s"), tag);
-        p1 = bstrstr((BCHAR*)xml, openTag);
-
-        if (p1 == NULL) {
-            goto finally;
-        }
-        
-        p1 = p1 + l + 1;   // <body_
-        
-        for (unsigned int k = 0; k < xmlLength; k++) { // Suppose max length as the xml string
-            p1 = p1 + 1;
-            if (*p1 == 0) {
-                goto finally;
-            }
-            else if (*p1 == '>') {
-                charFound = TRUE;
-                p1 = p1 + 1;
-                break;
-            }            
-        }
-        if (!charFound)
-            goto finally;
-
-
-    } else {  // tag doesn't have attribute. Original version
-    
-        p1 += bstrlen(openTag);
-    
-    }
-    if (*p1 == 0) {
-        //
-        // This is abc<tag>\0
-        //
-        goto finally;
-    }
-
-    p2 = bstrstr(p1, closeTag);
-
-    if (p2 == NULL) {
-        //
-        // This is abc<tag>xyz\0
-        //
-        p1 = NULL;
-        goto finally;
-    }
-        
-    if (pos != NULL) {
-        *pos = p1-xml+bstrlen(openTag);
-    }
-    if (startPos != NULL) {
-        *startPos = p1 - xml;
-    }
-    if (endPos != NULL) {
-        *endPos = p2 - xml ;
-    }
-
-    finally:
+    const BCHAR *ret = findElementContent(xml, openTag, closeTag, pos, startPos, endPos);
 
     if (openTag)
         delete [] openTag;
     if (closeTag)
         delete [] closeTag;
 
-    return p1;
-
+    return ret;
 }
 
-BCHAR* XMLProcessor::getContent(BCHAR*     xml     ,
-                                  unsigned int startPos,
-                                  unsigned int endPos  ) {
+BCHAR* XMLProcessor::getContent(const BCHAR* xml,
+                                unsigned int startPos,
+                                unsigned int endPos  ) {
 
     BCHAR * ret = NULL;
 
-    if (xml == NULL) {
-        goto finally;
+    if (!xml) {
+        return 0;
     }
-    if (endPos <= startPos) {
-        goto finally;
+    if (endPos < startPos) {
+        return 0;
     }
     if (bstrlen(xml) < endPos - startPos) {
-        goto finally;
+        return 0;
     }
 
     ret = new BCHAR[endPos - startPos + 1];
 
-    bstrncpy(ret, xml, endPos - startPos);
+    bstrncpy(ret, xml+startPos, endPos - startPos);
     ret[endPos - startPos] = 0;
-
-finally:
 
     return ret;
 }
 
-BCHAR* XMLProcessor::getElementContent(const BCHAR*      xml       ,
-                                         const BCHAR*      tag       ,
-                                         unsigned int* pos) {
-    BCHAR* p1       = NULL;
-    BCHAR* p2       = NULL;
-    BCHAR* ret      = NULL;
-    BOOL charFound    = FALSE;
-    unsigned int xmlLength  = (unsigned int)-1;
-    unsigned int l          = (unsigned int)-1;
+BCHAR* XMLProcessor::getElementContent(const BCHAR* xml,
+                                       const BCHAR* tag,
+                                       unsigned int* pos)
+{
+    unsigned int start, end;
 
-    if (xml == NULL) {
-        goto finally;
+    if( getElementContent (xml, tag, pos, &start, &end) ) {
+        return getContent(xml, start, end);
     }
-
-    BCHAR openTag[40];
-    BCHAR closeTag[40];
-    
-    xmlLength = bstrlen(xml);
-    l = bstrlen(tag);
-
-    if (pos != NULL) {
-        *pos = 0;
-    }
-
-    bsprintf(openTag, T("<%s>"), tag);
-    bsprintf(closeTag, T("</%s>"), tag);
-
-    p1 = bstrstr((BCHAR*)xml, openTag);
-
-    if (p1 == NULL) { // tag can have attributes
-        //
-        // This is abcxyz
-        //
-        // goto finally;
-    
-        // try to find "<tagName/>". If found it return empty string.
-        bsprintf(openTag, T("<%s/>"), tag);
-        p1 = bstrstr((BCHAR*)xml, openTag);
-
-        if (p1 != NULL) {
-            ret = new BCHAR[2];
-            ret[0] = 0;
-            ret[1] = 0;
-            p2 = p1 + l + 3;
-            if (pos != NULL) {
-                *pos = p2-xml+l+3;
-            }
-            goto finally;
-        }
-        
-        // try to find "<tagName"
-        bsprintf(openTag, T("<%s"), tag);
-        p1 = bstrstr((BCHAR*)xml, openTag);
-
-        if (p1 == NULL) {
-            goto finally;
-        }
-        
-        p1 = p1 + l + 1;   // <body_ 
-
-        for (unsigned int k = 0; k < xmlLength; k++) { // Suppose max length as the xml string
-            p1 = p1 + 1;
-            if (*p1 == 0) {
-                goto finally;
-            }
-            else if (*p1 == '>') {
-                charFound = TRUE;
-                p1 = p1 + 1;
-                break;
-            }            
-        }
-        if (!charFound)
-            goto finally;             
-    
-    } else {  // tag doesn't have attribute. Original version
-        
-        p1 = p1+l+2;
-
-    }
-    if (*p1 == 0) {
-        //
-        // This is abc<tag>\0
-        //
-        goto finally;
-    }
-
-    p2 = bstrstr(p1, closeTag);
-
-    if (p2 == NULL) {
-        //
-        // This is abc<tag>xyz\0
-        //
-        goto finally;
-    }
-
-    ret = new BCHAR[p2-p1+1];
-    
-    if (ret != NULL) {
-        bstrncpy(ret, p1, p2-p1);
-        ret[p2-p1] = 0;
-    } 
-    // if no enough memory to instantiate the new object...
-    else {
-        ret = T("");
-    }
-
-    if (pos != NULL) {
-        *pos = p2-xml+l+3;
-    }
-
-    finally:
-
-    return ret;
-
+    return 0;
 }
 
 /*
@@ -421,7 +364,7 @@ BCHAR* XMLProcessor::getElementContentExcept(BCHAR*      xmlPtr    ,
                                                unsigned int* post) {
     
     BCHAR*  ret    = NULL;
-    BCHAR*  found  = NULL;
+    const BCHAR*  found  = NULL;
     BCHAR*  xml    = NULL;
     BCHAR** array = NULL;
     int*  validElement = NULL;   
@@ -495,6 +438,7 @@ BCHAR* XMLProcessor::getElementContentExcept(BCHAR*      xmlPtr    ,
         do {
             safeDel(&ret);
             k = 0;
+
             pos = 0, previous = 0;
             while ((ret = getElementContent(&xml[pos], tag, &pos)) != NULL) {    
             
@@ -763,88 +707,50 @@ StringBuffer XMLProcessor::makeElement(const BCHAR* tag, const BCHAR* val, const
 }
 
 
-BCHAR* XMLProcessor::getElementAttributes(const BCHAR* xml,
+const BCHAR* XMLProcessor::getElementAttributes(const BCHAR* xml,
                                           const BCHAR* tag,
                                           unsigned int* startPos,
                                           unsigned int* endPos  ) {
         
-    BCHAR* p1       = NULL;
-    BCHAR* p2       = NULL;
-    BOOL charFound    = FALSE;
-    unsigned int xmlLength = (unsigned int)-1;
-    unsigned int l = (unsigned int)-1;
+    const BCHAR* p1 = NULL;
+    const BCHAR* p2 = NULL;
+    BOOL charFound  = FALSE;
 
-    // exemple ot tag with attribute list
+    // example ot tag with attribute list
     // <body enc="base64">
     BCHAR *openTag = 0; //<tag
     
-    if (xml == NULL) {
+    if (!xml) {
         goto finally;
     }
 
-    xmlLength = bstrlen(xml);
-    l = bstrlen(tag);
-
+    unsigned int l = bstrlen(tag);
 
     if(bstrcmp(tag, T("CDATA")) == 0) {
         goto finally;
     }
     else {
         openTag = new BCHAR[l+10];
-        bsprintf(openTag, T("<%s>"), tag);        
+        bsprintf(openTag, T("<%s "), tag);        
     }
 
-    p1 = bstrstr((char*)xml, openTag);
+    p1 = bstrstr(xml, openTag);
 
-    if (p1 == NULL) { // tag can have attributes or can be empty
-
-        // if p1 is null I try to discover the next '>' char to close the tag. If does not exist 
-        // return NULL
-        
-        // try to find "<tagName/>". If found it return null.
-        bsprintf(openTag, T("<%s/>"), tag);
-        p1 = bstrstr((char*)xml, openTag);
-        // ok, found an empty tag
-        if (p1 != NULL) {
-            goto finally;
-        }
-
-        // try to find "<tagName"
-        bsprintf(openTag, T("<%s"), tag);
-        p1 = bstrstr((char*)xml, openTag);
-
-        if (p1 == NULL) {
-            goto finally;
-        }
-        
-        p1 = p1 + l + 1;   // <body_
-        p2 = p1 + 1;
-        for (unsigned int k = 0; k < xmlLength; k++) { // Suppose max length as the xml string
-            p2 = p2 + 1;
-            if (*p2 == 0) {
-                goto finally;
-            }
-            else if (*p2 == '>') {
-                charFound = TRUE;                
-                break;
-            }            
-        }
-        if (!charFound)
-            goto finally;
-    } else {  // tag doesn't have attribute.    
-        p1 = NULL;
-        *startPos = 0;
-        *endPos = 0;
-        goto finally;    
-    }
-
-    if (*p1 == 0) {
-        //
-        // This is abc<tag>\0
-        //
+    if (!p1) {
+        LOG.info("XMLProcessor: tag %s not found", tag);
         goto finally;
     }
-    
+    // move to the beginning of the attribute list
+    p1 += bstrlen(openTag);
+
+    // find the end of the tag
+    for (p2 = p1; *p2 != '>'; p2++) {
+        if(*p2 == 0 || *p2 == '<'){
+            LOG.info("XMLProcessor: incomplete tag");
+            goto finally;
+        }
+    }
+    // set the return parameters
     if (startPos != NULL) {
         *startPos = p1 - xml;
     }

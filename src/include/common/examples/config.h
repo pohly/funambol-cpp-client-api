@@ -34,4 +34,8 @@
 // Test SyncML config filter
 //#define TEST_CONFIG_FILTER   1
 
-#define TEST_FILTER 1
+// Test filters
+//#define TEST_FILTER 1
+
+// Test XMLProcessor class
+#define TEST_XMLPROCESSOR 1
