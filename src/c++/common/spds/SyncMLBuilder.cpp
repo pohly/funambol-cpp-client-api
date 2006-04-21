@@ -801,10 +801,6 @@ BCHAR* SyncMLBuilder::encodeB64(char* data, TransformationInfo& info) {
 
     b64 = dtb64->transform((char*)data, info);
 
-    if (lastErrorCode != ERR_NONE) {
-        goto exit;
-    }
-
     //
     // We now translate it into a wchar zero-terminated string 
     //
