@@ -385,9 +385,9 @@ void VObject::fromNativeEncoding()
                 break;
              default:
                 if (doquoted &&
-                    (curr == '=' || curr >= 128)) {
+                    (curr == '=' || (unsigned char)curr >= 128)) {
                     // escape = and non-ASCII characters
-                    wsprintf(foreign + out, TEXT("=%02X"), curr);
+                    wcsprintf(foreign + out, TEXT("=%02X"), (unsigned int)(unsigned char)curr);
                     out += 3;
                 } else if (!wcsncmp(native + in - 1,
                                     SYNC4J_LINEBREAK,
