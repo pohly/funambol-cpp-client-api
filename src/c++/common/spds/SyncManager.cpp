@@ -1300,7 +1300,7 @@ int SyncManager::endSync() {
 BOOL SyncManager::readSyncSourceDefinition(SyncSource& source) {
     SyncSourceConfig ssc;
     BCHAR anchor[DIM_ANCHOR];
-
+    
     if (config.getSyncSourceConfig(_wcc(source.getName()), ssc) == FALSE) {
         return FALSE;
     }
@@ -1531,7 +1531,7 @@ void SyncManager::decodeSyncItemContent(char** c,
     
     decodedData = dt->transform(*c, info);
 
-    if (lastErrorCode != ERR_NONE) {
+    if (lastErrorCode == ERR_UNSPECIFIED) {
         goto exit;
     }
     
