@@ -2833,6 +2833,10 @@
 					>
 				</File>
 				<File
+					RelativePath="..\..\src\c++\common\spds\FolderData.cpp"
+					>
+				</File>
+				<File
 					RelativePath="..\..\src\c++\common\spds\MailMessage.cpp"
 					>
 					<FileConfiguration
@@ -9934,10 +9938,6 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\include\common\base\constants.h"
-				>
-			</File>
-			<File
 				RelativePath="..\..\src\include\common\spdm\constants.h"
 				>
 			</File>
@@ -9947,6 +9947,10 @@
 			</File>
 			<File
 				RelativePath="..\..\src\include\common\http\constants.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\include\common\base\constants.h"
 				>
 			</File>
 			<File
@@ -10010,6 +10014,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\src\include\common\http\errors.h"
+				>
+			</File>
+			<File
 				RelativePath="..\..\src\include\common\spds\errors.h"
 				>
 			</File>
@@ -10022,11 +10030,15 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\include\common\http\errors.h"
+				RelativePath="..\..\src\include\common\filter\FieldClause.h"
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\include\common\filter\FieldClause.h"
+				RelativePath="..\..\src\include\common\spds\FileData.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\include\common\spds\FolderData.h"
 				>
 			</File>
 			<File
