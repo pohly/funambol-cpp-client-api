@@ -113,6 +113,36 @@ wchar_t* wcstoupper(const wchar_t *s)
     return u;
 }
 
+/**
+ * find a substring from the end, with optional string lenght
+ */
+const BCHAR *brfind(const BCHAR *s1, const BCHAR *s2, size_t len)
+{
+	const BCHAR *sc1, *sc2, *ps1;
+
+    if (!s1)
+        return NULL;
+
+	if (*s2 == '\0')
+		return s1;
+
+    if(len < strlen(s1)){
+        ps1 = s1 + len;
+    }
+    else {
+	    ps1 = s1 + strlen(s1);
+    }
+	
+	while(ps1 > s1) {
+		--ps1;
+        for (sc1 = ps1, sc2 = s2; *sc1 != *sc2; sc1++, sc2++) {
+			if (*sc2 == '\0')
+				return (ps1);
+        }
+	}
+	return NULL;
+}
+
 #if 0
 /**
  * @brief       Convert a UTF-8 char buffer with specified

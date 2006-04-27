@@ -49,6 +49,11 @@ BCHAR* strtolower(const BCHAR *s) EXTRA_SECTION_00;
 BCHAR* wcstoupper(const BCHAR *s) EXTRA_SECTION_00;
 
 /**
+ * find a substring from the end, with optional string lenght
+ */
+const BCHAR *brfind(const BCHAR *s1, const BCHAR *s2, size_t len=STRINGDUP_NOLEN) EXTRA_SECTION_00 ;
+
+/**
  * Returns TRUE is the given string is NULL or zero-length
  */
 inline BOOL isEmpty(const BCHAR* s) {
