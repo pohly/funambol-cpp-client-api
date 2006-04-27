@@ -675,42 +675,21 @@ finally:
 
 }
 
-StringBuffer XMLProcessor::makeElement(const BCHAR* tag, const BCHAR* val, const BCHAR* attr)
-{
-    StringBuffer s;
-        
-    if (!val)
-        return s;
-    if (!val[0])
-        return s;
-    
-    size_t len = bstrlen(tag);
-    BCHAR* t1 = new BCHAR[len + 4]; // <  >  0, whitout closing >
-    BCHAR* t2 = new BCHAR[len + 6]; // </ > \n 0
-
-    sprintf(t1, T("<%s"), tag);    
-    sprintf(t2, T("</%s>\n"), tag);
-
-    s = t1; 
-    if (attr != NULL)
-    {
-        s += " ";
-        s += attr;        
-    }
-    s += ">";
-    s += val; s += t2;
-
-    delete [] t1;
-    delete [] t2;
-    
-    return s;    
-}
-
-
+/**
+ * Get the attribute list of the forst element 'tag', returning a pointer 
+ * to the beginning of the string in the original buffer 'xml', and the 
+ * starting and ending position of the substring.
+ *
+ * @param xml - the XML document to process.
+ * @param tag - the tag name to find
+ * @param startPos - return value - the start pos of the attribute list
+ * @param endPos - return value - the end position of the attribute list
+ */
 const BCHAR* XMLProcessor::getElementAttributes(const BCHAR* xml,
                                           const BCHAR* tag,
                                           unsigned int* startPos,
-                                          unsigned int* endPos  ) {
+                                          unsigned int* endPos, 
+                                          bool escaped) {
         
     const BCHAR* p1 = NULL;
     const BCHAR* p2 = NULL;
@@ -731,7 +710,12 @@ const BCHAR* XMLProcessor::getElementAttributes(const BCHAR* xml,
     }
     else {
         openTag = new BCHAR[l+10];
-        bsprintf(openTag, T("<%s "), tag);        
+        if (escaped){
+            bsprintf(openTag, T("&lt;%s "), tag);
+        }
+        else{
+            bsprintf(openTag, T("<%s "), tag);
+        }
     }
 
     p1 = bstrstr(xml, openTag);
@@ -766,6 +750,39 @@ const BCHAR* XMLProcessor::getElementAttributes(const BCHAR* xml,
     return p1;
 
 }
+
+
+StringBuffer XMLProcessor::makeElement(const BCHAR* tag, const BCHAR* val, const BCHAR* attr)
+{
+    StringBuffer s;
+        
+    if (!val)
+        return s;
+    if (!val[0])
+        return s;
+    
+    size_t len = bstrlen(tag);
+    BCHAR* t1 = new BCHAR[len + 4]; // <  >  0, whitout closing >
+    BCHAR* t2 = new BCHAR[len + 6]; // </ > \n 0
+
+    sprintf(t1, T("<%s"), tag);    
+    sprintf(t2, T("</%s>\n"), tag);
+
+    s = t1; 
+    if (attr != NULL)
+    {
+        s += " ";
+        s += attr;        
+    }
+    s += ">";
+    s += val; s += t2;
+
+    delete [] t1;
+    delete [] t2;
+    
+    return s;    
+}
+
 
 StringBuffer XMLProcessor::makeElement(const BCHAR* tag, 
                                     const BCHAR* val,

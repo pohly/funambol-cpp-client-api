@@ -195,7 +195,8 @@ public:
                                          const BCHAR* xml,
                                          const BCHAR* tag,
                                          unsigned int*  startPos, 
-                                         unsigned int*  endPos) EXTRA_SECTION_00;
+                                         unsigned int*  endPos,
+                                         bool escaped = false) EXTRA_SECTION_00;
 
 };
 
