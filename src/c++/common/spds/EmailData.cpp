@@ -20,6 +20,7 @@
 #include "base/fscapi.h"
 #include "base/Log.h"
 #include "base/util/XMLProcessor.h"
+#include "base/quoted-printable.h"
 #include "syncml/formatter/Formatter.h"
 #include "spds/EmailData.h"
 
@@ -82,14 +83,41 @@ int EmailData::parse(const BCHAR *msg, size_t len)
     else modified = T("");    
 
     // Get content
-    if( XMLProcessor::getEscapedElementContent (msg, EMAIL_ITEM, NULL, &start, &end) ) {
+    if( XMLProcessor::getEscapedElementContent(msg, EMAIL_ITEM, NULL, &start, &end) ) {
 		StringBuffer item(msg+start, end-start);
-        
-        if(XMLProcessor::getEscapedElementContent(item, T("CDATA"), NULL, &start, &end) == 0) {
+        item.replaceAll("&lt;", "<");
+        item.replaceAll("&gt;", ">");
+
+        unsigned int startAttr=0, endAttr=0;
+        size_t itemlen = end-start;
+
+        if(XMLProcessor::getElementAttributes(msg, EMAIL_ITEM, &startAttr, &endAttr, true)){
+            if(bstrstr(msg+startAttr, "quoted-printable")) {
+                char *decoded = qp_decode(item);
+                item = decoded;
+                delete [] decoded;
+            }
+        }
+        // item must start with CDATA
+        size_t item_start = item.find("![CDATA");
+        if(item_start > 10){
             LOG.error(T("EMailData: can't find inner CDATA section."));
             return -1;
         }
-        ret=emailItem.parse( item.c_str()+start, end-start );
+        size_t item_end = item.rfind("]]>");
+        // If not found, try also the old case
+        if(item.length() - item_end > 10){
+            item_end = item.rfind("]]&amp;gt;");
+            if(item.length() - item_end > 10){
+                LOG.error(T("EMailData: can't find CDATA end tag."));
+                return -1;
+            }
+        }
+        // okay, move the start pointer to the end of
+        item_start += bstrlen("![CDATA");
+        
+        ret=emailItem.parse( item.c_str()+item_start, item_end - item_start );
+
     }
     else {
         LOG.info(T("EMailData: no <emailitem> tag."));
