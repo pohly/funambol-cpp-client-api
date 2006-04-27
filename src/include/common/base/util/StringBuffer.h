@@ -73,6 +73,13 @@ class StringBuffer: public ArrayElement {
         size_t ifind(const BCHAR *str, size_t pos = 0) const EXTRA_SECTION_00;
 
         /**
+         * Find the last occurrence of substring str.
+         *
+         * @return - the position or StringBuffer::npos if not found.
+         */
+        size_t rfind(const BCHAR *str, size_t pos = 0) const EXTRA_SECTION_00;
+
+        /**
          * Replace the first occurrence of substring 'from' with string 'to'.
          *
          * @return - the position of the first token replaced or StringBuffer::npos if

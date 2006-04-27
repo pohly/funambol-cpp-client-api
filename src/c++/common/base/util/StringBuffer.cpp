@@ -181,6 +181,17 @@ size_t StringBuffer::ifind(const BCHAR *str, size_t pos) const
     return ret;
 }
 
+size_t StringBuffer::rfind(const BCHAR *str, size_t pos) const 
+{
+    if (pos >= length())
+        return npos;
+    const BCHAR *p = brfind(s+pos, str);
+    if(!p)
+        return npos;
+    return (p-s);
+}
+
+
 size_t StringBuffer::replace(const BCHAR *from, const BCHAR *to, size_t pos) 
 {
 	size_t ret = npos;
