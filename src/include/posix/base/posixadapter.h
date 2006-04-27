@@ -93,7 +93,7 @@ typedef char WCHAR;
 #define _wfopen fopen
 #define wprintf printf
 #define fwprintf fprintf
-#define wcsprintf sprintf
+#define wsprintf sprintf
 #define swprintf sprintf
 #define wcscpy strcpy
 #define wcsncpy strncpy
