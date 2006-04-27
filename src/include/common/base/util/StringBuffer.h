@@ -56,7 +56,7 @@ class StringBuffer: public ArrayElement {
          * Get the BCHAR array, same as the cast operator
          */
         const BCHAR* getChars() const EXTRA_SECTION_00;
-        const BCHAR* c_str() const { return s; } EXTRA_SECTION_00;
+        inline const BCHAR* c_str() const { return s; } EXTRA_SECTION_00;
 
         /**
          * Find the first occurrence of substring str.
