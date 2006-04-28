@@ -48,6 +48,7 @@ class MailMessage : public ArrayElement {
         StringBuffer subject;
 
         BasicTime date;
+        BasicTime received;
 
         StringBuffer contentType;
         StringBuffer boundary;
@@ -93,6 +94,8 @@ class MailMessage : public ArrayElement {
         const BasicTime& getDate() const ;
         void setDate(const BasicTime& d);
 		
+        const BasicTime& getReceived() const ;
+
         const BCHAR * getContentType() const ;
         void setContentType(const BCHAR *val);
 

@@ -32,6 +32,7 @@
 #define CC          T("CC: ")
 #define BCC         T("BCC: ")
 #define DATE        T("Date: ")
+#define RECEIVED    T("Received:")
 #define SUBJECT     T("Subject: ")
 #define MIMETYPE    T("Content-Type: ")
 #define MIMEVERS    T("Mime-Version: ")
@@ -99,6 +100,8 @@ void MailMessage::setSubject(const BCHAR *subj) { subject = subj; }
 
 const BasicTime& MailMessage::getDate() const { return date; }
 void MailMessage::setDate(const BasicTime& v) { date = v; }
+
+const BasicTime& MailMessage::getReceived() const { return received; }
 
 const BCHAR * MailMessage::getContentType() const { return contentType; }
 void MailMessage::setContentType(const BCHAR *val) { contentType = val; }
@@ -518,7 +521,9 @@ int MailMessage::parseHeaders(StringBuffer &rfcHeaders) {
 
     ArrayList lines;
     const StringBuffer *line;
-    
+    StringBuffer strReceived;
+    BOOL firstReceivedMatched = FALSE;
+    BOOL receivedExtracted = FALSE;
     LOG.debug(T("parseHeaders START"));
 
     rfcHeaders.split(lines, newline);
@@ -562,8 +567,34 @@ int MailMessage::parseHeaders(StringBuffer &rfcHeaders) {
                 size_t len = line->find(T(";")) - MIMETYPE_LEN ;
                 contentType = line->substr(MIMETYPE_LEN, len);
             }
-        else
-            unknown=true;
+        else if(line->ifind(RECEIVED) == 0) {
+            if (FALSE == receivedExtracted) {
+                strReceived = line->substr(line->ifind("; ") );
+                firstReceivedMatched = TRUE;
+                if (!strReceived.empty())                    
+                {
+                    received.parseRfc822(strReceived.substr(2));
+                    firstReceivedMatched = FALSE;
+                    receivedExtracted = TRUE;
+                }   
+            }
+        }
+        else {
+            if (TRUE == firstReceivedMatched) {
+                strReceived = line->substr(line->ifind("; "));
+                if (strReceived.empty())
+                    unknown = true;
+                else
+                {
+                    received.parseRfc822(strReceived.substr(2));
+                    firstReceivedMatched = FALSE;
+                    receivedExtracted = TRUE;
+                }
+            }
+            else {
+                unknown = true;
+            }            
+        }            
 
         // These ones are parameters, and can appear on the same line.
         // FIXME: Should be a sub-parsing of content-type.
