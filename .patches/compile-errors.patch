@@ -15,7 +15,7 @@
 
 --- native/src/c++/common/base/util/XMLProcessor.cpp~compile-errors
 +++ native/src/c++/common/base/util/XMLProcessor.cpp
-@@ -719,12 +719,13 @@
+@@ -698,12 +698,13 @@
      // example ot tag with attribute list
      // <body enc="base64">
      BCHAR *openTag = 0; //<tag
