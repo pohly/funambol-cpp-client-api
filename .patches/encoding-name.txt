@@ -1,0 +1,11 @@
+The vCard 2.1 standard uses "BASE64" as encoding
+whereas 3.0 uses "B" or "b" instead.
+
+This patch changes the underlying parser so that
+they are synonyms and treats them alike, regardless of
+the version. It also fixes the bug that after such
+binary encoded data an extra line break gets added
+(forge.objectweb #305112).
+
+TODO: most of classes on top of VObject still use
+"BASE64" only and need to be fixed for 3.0 vCards.

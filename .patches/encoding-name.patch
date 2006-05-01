@@ -1,0 +1,85 @@
+The vCard 2.1 standard uses "BASE64" as encoding
+whereas 3.0 uses "B" or "b" instead.
+
+This patch changes the underlying parser so that
+they are synonyms and treats them alike, regardless of
+the version. It also fixes the bug that after such
+binary encoded data an extra line break gets added
+(forge.objectweb #305112).
+
+TODO: most of classes on top of VObject still use
+"BASE64" only and need to be fixed for 3.0 vCards.
+
+#
+# Patch managed by http://www.holgerschurig.de/patcher.html
+#
+
+--- native/src/c++/common/vocl/VObject.cpp~encoding-name
++++ native/src/c++/common/vocl/VObject.cpp
+@@ -154,7 +154,9 @@
+ 
+         wcscat(strVObject,TEXT(":"));
+         if(property->getValue()) {
+-            if(property->equalsEncoding(TEXT("BASE64"))) {
++            // 2.1 uses "BASE64", 3.0 "B"
++            if(property->equalsEncoding(TEXT("BASE64")) ||
++               property->equalsEncoding(TEXT("B"))) {
+                 wchar_t delim[] = TEXT("\r\n ");
+                 int fold = 76;
+                 int sizeOfValue = int(wcslen(property->getValue()));
+@@ -163,12 +165,12 @@
+ 
+                 wchar_t* output = new wchar_t[size + 1];
+                 wcscpy(output, TEXT("\0"));
+-                wcscat(output, delim);
+ 
+                 while (index<sizeOfValue)
+-                {  
+-                    wcsncat(output,property->getValue()+index,fold);
++                {
++                    // only add line break if characters follow
+                     wcscat(output,delim);
++                    wcsncat(output,property->getValue()+index,fold);
+                     index+=fold;
+                 }
+                 
+--- native/src/c++/common/vocl/VProperty.cpp~encoding-name
++++ native/src/c++/common/vocl/VProperty.cpp
+@@ -212,9 +212,9 @@
+ }
+ 
+ bool VProperty::equalsEncoding(wchar_t* encoding) {
+-
++    // parameter values are case insensitive
+     if ((encoding != NULL) && ((containsParameter(TEXT("ENCODING")) && 
+-		!wcscmp(getParameterValue(TEXT("ENCODING")),encoding)) || 
++		!wcsicmp(getParameterValue(TEXT("ENCODING")),encoding)) || 
+         containsParameter(encoding)))
+         return true;
+     return false;
+--- native/src/c++/common/examples/vcardconverter.cpp~encoding-name
++++ native/src/c++/common/examples/vcardconverter.cpp
+@@ -103,6 +103,23 @@
+         vobj->setVersion(versions[index]);
+         VProperty *vprop = vobj->getProperty(TEXT("VERSION"));
+         vprop->setValue(versions[index]);
++
++        for (int property = vobj->propertiesCount() - 1;
++             property >= 0;
++             property--) {
++            VProperty *vprop = vobj->getProperty(property);
++
++            // replace 3.0 ENCODING=B with 2.1 ENCODING=BASE64 and vice versa
++            char *encoding = vprop->getParameterValue("ENCODING");
++            if (encoding &&
++                (!wcsicmp(TEXT("B"), encoding) || !wcsicmp(TEXT("BASE64"), encoding))) {
++                vprop->removeParameter("ENCODING");
++                vprop->addParameter("ENCODING",
++                                    !wcscmp(versions[index], TEXT("2.1")) ?
++                                    "BASE64" : "b");
++            }
++        }
++        
+         vobj->fromNativeEncoding();
+         wvcard = vobj->toString();
+         vobj->toNativeEncoding();
