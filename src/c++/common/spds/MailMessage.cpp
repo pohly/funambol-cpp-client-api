@@ -571,6 +571,7 @@ int MailMessage::parseHeaders(StringBuffer &rfcHeaders) {
             if (FALSE == receivedExtracted) {
                 strReceived = line->substr(line->ifind("; ") );
                 firstReceivedMatched = TRUE;
+                unknown = true;
                 if (!strReceived.empty())                    
                 {
                     received.parseRfc822(strReceived.substr(2));
@@ -589,6 +590,7 @@ int MailMessage::parseHeaders(StringBuffer &rfcHeaders) {
                     received.parseRfc822(strReceived.substr(2));
                     firstReceivedMatched = FALSE;
                     receivedExtracted = TRUE;
+                    unknown = true;
                 }
             }
             else {
