@@ -88,7 +88,7 @@ int FolderData::parse(const char *syncmlData, size_t len)
     
     // Get the CDATA content
     if(XMLProcessor::getElementContent(s->c_str(), T("CDATA"), NULL, &start, &end) == 0) {
-        LOG.info(T("FileData: can't find outer CDATA section."));
+        LOG.info(T("FolderData: can't find outer CDATA section."));
         start = 0;
         end = s->length();        
     }

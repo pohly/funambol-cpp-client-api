@@ -303,8 +303,19 @@ static bool getBodyPart(StringBuffer &rfcBody, StringBuffer &boundary,
         else {
             size_t begin=line->ifind(CHARSET);
             if( begin != StringBuffer::npos ) {
-			    begin += bstrlen(CHARSET) ;
-		        size_t end = line->find(T(";"), begin) ;
+                begin += bstrlen(CHARSET);
+                size_t end = begin;
+                size_t quote = line->find(T("\""), begin);
+                if (quote != StringBuffer::npos){
+                    begin = quote;
+                    end = line->find(T("\""), begin) ;
+                }
+                else {
+                    end = line->find(T(";"), begin) ;
+                    if (end == StringBuffer::npos) {
+                        end = line->find(T(" "), begin);
+                    }
+                }
                 ret.setCharset( line->substr( begin, end-begin ) );
             }
 		}
@@ -441,7 +452,7 @@ BCHAR * MailMessage::format() {
     else {
         // Body
         if(body.getCharset())
-            ret += T(" charset="); ret += body.getCharset(); ret += NL;
+            ret += CHARSET; ret += body.getCharset(); ret += NL;
         if( body.getEncoding() )
             ret += ENCODING; ret += body.getEncoding();
         // end of headers
@@ -608,8 +619,19 @@ int MailMessage::parseHeaders(StringBuffer &rfcHeaders) {
         else {
             size_t begin=line->ifind(CHARSET);
             if( begin != StringBuffer::npos ) {
-                begin += bstrlen(T("charset="));
-		        size_t end = line->find(T(" "), begin) ;
+                begin += bstrlen(CHARSET);
+                size_t end = begin;
+                size_t quote = line->find(T("\""), begin);
+                if (quote != StringBuffer::npos){
+                    begin = quote + 1;
+                    end = line->find(T("\""), begin) ;
+                }
+                else {
+                    end = line->find(T(";"), begin) ;
+                    if (end == StringBuffer::npos) {
+                        end = line->find(T(" "), begin);
+                    }
+                }
                 body.setCharset( line->substr( begin, end-begin ) );
             }
             else if(unknown) {

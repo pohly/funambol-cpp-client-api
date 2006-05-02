@@ -92,7 +92,8 @@ int EmailData::parse(const BCHAR *msg, size_t len)
         size_t itemlen = end-start;
 
         if(XMLProcessor::getElementAttributes(msg, EMAIL_ITEM, &startAttr, &endAttr, true)){
-            if(bstrstr(msg+startAttr, "quoted-printable")) {
+            StringBuffer attrlist(msg+startAttr, endAttr-startAttr);
+            if(attrlist.ifind("quoted-printable") != StringBuffer::npos) {
                 char *decoded = qp_decode(item);
                 item = decoded;
                 delete [] decoded;
