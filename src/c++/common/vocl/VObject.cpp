@@ -18,6 +18,7 @@
  */
 
 #include "base/util/utils.h"
+#include "base/util/Wstring.h"
 #include "vocl/VObject.h"
 #include "string.h"
 
@@ -182,6 +183,12 @@ wchar_t* VObject::toString() {
         //if(property->equalsEncoding(TEXT("BASE64")) && !wcscmp(version,TEXT("2.1"))) 
         //    wcscat(strVObject, eof);
     }		
+    if (wcschr(strVObject, '&') || wcschr(strVObject, '&')) {
+        WString tmp = strVObject;
+        tmp.replaceAll(TEXT("&"), TEXT("&amp;"));
+        tmp.replaceAll(TEXT("<"), TEXT("&lt;"));
+        wcscpy(strVObject,tmp.c_str());
+    }
     return strVObject;
 }
 
