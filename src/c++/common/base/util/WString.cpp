@@ -221,8 +221,9 @@ size_t WString::replace(const wchar_t *from, const wchar_t *to, size_t pos)
 // TODO: implement some smarter argorithm to avoid multiple reallocations
 int WString::replaceAll(const wchar_t *from, const wchar_t *to, size_t pos) {
     int i=0;
+    int len = wcslen(to);
     size_t next;
-    for(next=replace(from, to, pos); next != npos; next=replace(from,to,next) ) {
+    for(next=replace(from, to, pos); next != npos; next=replace(from,to,next + len) ) {
         i++;
     }
     return i;
