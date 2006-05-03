@@ -152,7 +152,9 @@ int uudecode(const BCHAR *msg, char **binmsg, size_t *binlen)
     memset(out, 0, outlen);
     int len = 0, nl=0;
 
-    while( (cursor=getLine(cursor, &line)) != 0 ) {
+    while( (cursor=getLine(cursor, &line)) != 0) {
+        if (strstr(line, "]]") != 0)
+            break;
         nl++;
         len += b64_decode(out+len, line);
         if(nl==200)
