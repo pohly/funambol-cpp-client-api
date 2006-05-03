@@ -649,7 +649,6 @@ int MailMessage::parseHeaders(StringBuffer &rfcHeaders) {
                 subject = toMultibyte(wsubject);                
             }
         }
-            
         else if( line->ifind(ENCODING) == 0 ) {  // it is here for single part only
             body.setEncoding(line->substr(ENCODING_LEN));
             subjectParsing = FALSE;
@@ -668,8 +667,8 @@ int MailMessage::parseHeaders(StringBuffer &rfcHeaders) {
             subjectParsing = FALSE;
         }            
         else if(line->ifind(RECEIVED) == 0) {
-            if (FALSE == receivedExtracted) {
-                strReceived = line->substr(line->ifind("; ") );
+            if (!receivedExtracted) {
+                strReceived = line->substr(line->ifind(";") );
                 firstReceivedMatched = TRUE;
                 unknown = true;
                 if (!strReceived.empty())                    
@@ -677,23 +676,22 @@ int MailMessage::parseHeaders(StringBuffer &rfcHeaders) {
                     received.parseRfc822(strReceived.substr(2));
                     firstReceivedMatched = FALSE;
                     receivedExtracted = TRUE;
-                }   
+                }
             }
         }
         else {
-            if (TRUE == firstReceivedMatched) {
+            if (firstReceivedMatched) {
                 strReceived = line->substr(line->ifind("; "));
-                if (strReceived.empty())
-                    unknown = true;
-                else
+                if (!strReceived.empty())
                 {
                     received.parseRfc822(strReceived.substr(2));
                     firstReceivedMatched = FALSE;
                     receivedExtracted = TRUE;
                     unknown = true;
                 }
+                unknown = true;
             }
-            else if (TRUE == subjectParsing) {
+            else if (subjectParsing) {
                 size_t startPos, endPos;
                 StringBuffer tmp = line->c_str();
                 if (TRUE == hasLineEncodedWords(tmp, &startPos, &endPos)) {
@@ -741,6 +739,10 @@ int MailMessage::parseHeaders(StringBuffer &rfcHeaders) {
             }
 	    }
         
+    }
+    // If received was not found, copy send date
+    if( received == BasicTime() ){
+        received = date;
     }
     LOG.debug(T("parseHeaders END"));
 

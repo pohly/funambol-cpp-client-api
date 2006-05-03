@@ -115,7 +115,7 @@ int EmailData::parse(const BCHAR *msg, size_t len)
             }
         }
         // okay, move the start pointer to the end of
-        item_start += bstrlen("![CDATA");
+        item_start += bstrlen("![CDATA[");
         
         ret=emailItem.parse( item.c_str()+item_start, item_end - item_start );
 

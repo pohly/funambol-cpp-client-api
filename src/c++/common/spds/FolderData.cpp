@@ -78,24 +78,11 @@ int FolderData::parse(const char *syncmlData, size_t len)
 {
     int ret = 0;
     unsigned int start, end;        
-    StringBuffer* s = new StringBuffer(syncmlData, len);
-    StringBuffer bodyattr;
+    StringBuffer msg(syncmlData, len);
 
-    // FIXME: remove these replace once the server has fixed the message.
-    s->replaceAll(T("&lt;"), T("<"));
-    s->replaceAll(T("&gt;"), T(">"));
-    s->replaceAll(T("&amp;"), T("&"));
+    msg.replaceAll(T("&lt;"), T("<"));
+    msg.replaceAll(T("&amp;"), T("&"));
     
-    // Get the CDATA content
-    if(XMLProcessor::getElementContent(s->c_str(), T("CDATA"), NULL, &start, &end) == 0) {
-        LOG.info(T("FolderData: can't find outer CDATA section."));
-        start = 0;
-        end = s->length();        
-    }
-    StringBuffer msg = s->substr(start, end-start);
-    
-    delete s;
-
     // Get attributes
     if( XMLProcessor::getElementContent (msg, FOLDER_HIDDEN, NULL, &start, &end) ) {
         hidden = ( strncmp(msg.c_str()+start, T("true"), end-start) == 0 ) ;
