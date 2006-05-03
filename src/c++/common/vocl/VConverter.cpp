@@ -19,6 +19,7 @@
 
 #include "vocl/VConverter.h"
 #include "vocl/VObjectFactory.h"
+#include "base/util/WString.h"
 
 VObject* VConverter::parse(wchar_t* buffer) {
 
@@ -26,6 +27,11 @@ VObject* VConverter::parse(wchar_t* buffer) {
 	wchar_t *objVersion = extractObjectVersion(buffer);
     if(!objType)
         return NULL;
+    
+    WString tmp = buffer;
+    tmp.replaceAll(TEXT("&amp;"), TEXT("&"));
+    tmp.replaceAll(TEXT("&lt;"), TEXT("<"));
+    wcscpy(buffer, tmp.c_str());
 
 	VObject* vo = VObjectFactory::createInstance(objType, objVersion); 	
     VProperty *prop;
