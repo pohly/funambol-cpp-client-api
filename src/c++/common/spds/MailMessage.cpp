@@ -424,7 +424,20 @@ BCHAR * MailMessage::format() {
         ret += BCC; ret += bcc; ret += NL;
     }
     ret += DATE; ret += date.formatRfc822(); ret += NL;
-    ret += SUBJECT; ret += subject; ret += NL;
+    ret += SUBJECT; 
+    if (qp_isNeed(subject.c_str()))
+    {
+        // FIXME
+        // If the length of the encoded subject is bigger then 75 chars,
+        // additional encoded words are needed, as required by rfc2047        
+        BCHAR* qp = 0;
+        qp = qp_encode(subject.c_str());
+        StringBuffer tmp = "=?utf-8?Q?";
+        tmp.append(qp);
+        tmp.append("?=");
+        subject = tmp;        
+    }
+    ret += subject; ret += NL;
     ret += MIMETYPE; ret += contentType; ret+= T("; ");
     if (contentType.ifind(MULTIPART) != StringBuffer::npos ){
         if ( boundary.empty() ) {
@@ -527,6 +540,55 @@ int MailMessage::parse(const BCHAR *rfc2822, size_t len) {
     return rc;
 }
 
+BOOL hasLineEncodedWords(StringBuffer line, size_t* startPos, size_t* endPos)
+{
+    BOOL has = FALSE;
+    *startPos = line.find("=?");
+    size_t firstMark = line.substr(*startPos + 2).find("?") + *startPos + 2;
+    if (StringBuffer::npos != firstMark) {
+        size_t secondMark = line.substr(firstMark + 1).find("?") + firstMark + 1;
+        if (StringBuffer::npos != secondMark) {
+            *endPos = line.substr(secondMark + 1).find("?=") + secondMark + 1;
+            if ((StringBuffer::npos != *endPos) && 
+                (StringBuffer::npos != *startPos) && 
+                (endPos > startPos)) /*&& 
+                (endPos - startPos) <= 73)*/ // uncomment when the 75 maximum length 
+                                             // for an encoded word fix will be applied
+                                             // in format() method       
+            {
+                has = TRUE;
+            }        
+        }
+    }
+    return has;
+}
+
+StringBuffer decodeWordFromHeader(StringBuffer encodedWord, StringBuffer& charset)
+{
+    StringBuffer decodedWord;
+    unsigned int charsetStart = 2;
+    unsigned int encodingStart = encodedWord.substr(charsetStart).find("?") + charsetStart + 1;
+    unsigned int encTextStart = encodedWord.substr(encodingStart).find("?") + encodingStart + 1;
+
+    charset = encodedWord.substr(charsetStart, encodingStart - charsetStart - 1);
+    StringBuffer encoding = encodedWord.substr(encodingStart, encTextStart - encodingStart - 1);
+    StringBuffer encText = encodedWord.substr(encTextStart);
+    if (_stricmp(encoding.c_str(), "Q") == 0) {
+        // quoted-printable
+        BCHAR* dec = qp_decode(encText.c_str());
+        decodedWord.append(dec);
+        decodedWord.replaceAll("_", " ");         
+    }
+    else if (_stricmp(encoding.c_str(), "B") == 0){
+        // base64
+        int len = b64_decode((void *)encText.c_str(), encText.c_str());
+        decodedWord.append(encText);
+    }
+
+    return decodedWord;
+}
+
+
 //---------------------------------------------------------- Private Methods
 int MailMessage::parseHeaders(StringBuffer &rfcHeaders) {
 
@@ -535,6 +597,7 @@ int MailMessage::parseHeaders(StringBuffer &rfcHeaders) {
     StringBuffer strReceived;
     BOOL firstReceivedMatched = FALSE;
     BOOL receivedExtracted = FALSE;
+    BOOL subjectParsing = FALSE;
     LOG.debug(T("parseHeaders START"));
 
     rfcHeaders.split(lines, newline);
@@ -550,34 +613,60 @@ int MailMessage::parseHeaders(StringBuffer &rfcHeaders) {
         }
         // Process the headers
         bool unknown=false;
-
-        if( line->ifind(TO) == 0 )
+        
+        if( line->ifind(TO) == 0 ){
             to = line->substr(TO_LEN);
-        else if( line->ifind(FROM) == 0 )
+            subjectParsing = FALSE;
+        }
+        else if( line->ifind(FROM) == 0 ) {
             from = line->substr(FROM_LEN);
-        else if( line->ifind(CC) == 0 )
+            subjectParsing = FALSE;
+        }
+        else if( line->ifind(CC) == 0 ) {
             cc = line->substr(CC_LEN);
-        else if( line->ifind(BCC) == 0 )
+            subjectParsing = FALSE;
+        }
+        else if( line->ifind(BCC) == 0 ) {
             bcc = line->substr(BCC_LEN);
+            subjectParsing = FALSE;
+        }
         else if ( line->ifind(DATE) == 0 ) {
+            subjectParsing = FALSE;        
             if( date.parseRfc822(line->substr(DATE_LEN)) ) {
                 LOG.error(T("Error parsing date"));
                 return 500;
             }
         }
-        else if( line->ifind(SUBJECT) == 0 )
+        else if( line->ifind(SUBJECT) == 0 ) {
             subject = line->substr(SUBJECT_LEN);
-        else if( line->ifind(ENCODING) == 0 )   // it is here for single part only
-            body.setEncoding(line->substr(ENCODING_LEN));
-        else if(line->ifind(MIMEVERS) == 0 )
-            mimeVersion = line->substr(MIMEVERS_LEN);
-        else if(line->ifind(MESSAGEID) == 0 )
-            messageId = line->substr(MESSAGEID_LEN);
-        else
-            if( line->ifind(MIMETYPE) == 0 ) {
-                size_t len = line->find(T(";")) - MIMETYPE_LEN ;
-                contentType = line->substr(MIMETYPE_LEN, len);
+            subjectParsing = TRUE;        
+            size_t startPos, endPos;
+            if (TRUE == hasLineEncodedWords(subject, &startPos, &endPos)) {
+                StringBuffer charset;
+                StringBuffer decoded = decodeWordFromHeader(subject.substr(startPos, endPos - startPos), charset);
+                subject.replace(subject.substr(startPos, endPos + 2), decoded); 
+                wchar_t* wsubject = toWideChar(subject.c_str(), charset); 
+                subject = toMultibyte(wsubject);                
             }
+        }
+            
+        else if( line->ifind(ENCODING) == 0 ) {  // it is here for single part only
+            body.setEncoding(line->substr(ENCODING_LEN));
+            subjectParsing = FALSE;
+        }
+        else if(line->ifind(MIMEVERS) == 0 ) {
+            mimeVersion = line->substr(MIMEVERS_LEN);
+            subjectParsing = FALSE;
+        }
+        else if(line->ifind(MESSAGEID) == 0 ) {
+            messageId = line->substr(MESSAGEID_LEN);
+            subjectParsing = FALSE;
+        }
+        else if( line->ifind(MIMETYPE) == 0 ) {
+            size_t len = line->find(T(";")) - MIMETYPE_LEN ;
+            contentType = line->substr(MIMETYPE_LEN, len);
+            subjectParsing = FALSE;
+        }            
         else if(line->ifind(RECEIVED) == 0) {
             if (FALSE == receivedExtracted) {
                 strReceived = line->substr(line->ifind("; ") );
@@ -602,6 +691,18 @@ int MailMessage::parseHeaders(StringBuffer &rfcHeaders) {
                     firstReceivedMatched = FALSE;
                     receivedExtracted = TRUE;
                     unknown = true;
+                }
+            }
+            else if (TRUE == subjectParsing) {
+                size_t startPos, endPos;
+                StringBuffer tmp = line->c_str();
+                if (TRUE == hasLineEncodedWords(tmp, &startPos, &endPos)) {
+                    StringBuffer charset;
+                    StringBuffer decoded = decodeWordFromHeader(tmp.substr(startPos, endPos - startPos), charset);
+                    tmp.replace(tmp.substr(startPos, endPos + 2), decoded); 
+                    wchar_t* wline = toWideChar(tmp.c_str(), charset); 
+                    tmp = toMultibyte(wline);                
+                    subject.append(tmp.substr(1));
                 }
             }
             else {
