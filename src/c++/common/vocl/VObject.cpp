@@ -164,27 +164,27 @@ wchar_t* VObject::toString() {
 
                 wchar_t* output = new wchar_t[size + 1];
                 wcscpy(output, TEXT("\0"));
-                wcscat(output, delim);
 
                 while (index<sizeOfValue)
                 {  
-                    wcsncat(output,property->getValue()+index,fold);
                     wcscat(output,delim);
+                    wcsncat(output,property->getValue()+index,fold);
                     index+=fold;
                 }
                 
                 wcscat(strVObject,output);
+                // the extra empty line is needed because the Bachus-Naur 
+                // specification of vCard 2.1 says so
+                wcscat(strVObject, eof);
                 delete [] output;
             } 
             else
                 wcscat(strVObject,property->getValue());
         }
         wcscat(strVObject,eof);
-        //if(property->equalsEncoding(TEXT("BASE64")) && !wcscmp(version,TEXT("2.1"))) 
-        //    wcscat(strVObject, eof);
     }		
     if (wcschr(strVObject, '&') || wcschr(strVObject, '<')) {
-        WString tmp = strVObject;
+        WString tmp(strVObject);
         tmp.replaceAll(TEXT("&"), TEXT("&amp;"));
         tmp.replaceAll(TEXT("<"), TEXT("&lt;"));
         wcscpy(strVObject,tmp.c_str());

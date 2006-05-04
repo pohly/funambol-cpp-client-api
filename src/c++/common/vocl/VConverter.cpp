@@ -28,7 +28,7 @@ VObject* VConverter::parse(wchar_t* buffer) {
     if(!objType)
         return NULL;
     
-    WString tmp = buffer;
+    WString tmp(buffer);
     tmp.replaceAll(TEXT("&amp;"), TEXT("&"));
     tmp.replaceAll(TEXT("&lt;"), TEXT("<"));
     wcscpy(buffer, tmp.c_str());

@@ -694,6 +694,7 @@ const BCHAR* XMLProcessor::getElementAttributes(const BCHAR* xml,
     const BCHAR* p1 = NULL;
     const BCHAR* p2 = NULL;
     BOOL charFound  = FALSE;
+    unsigned int l = bstrlen(tag);
 
     // example ot tag with attribute list
     // <body enc="base64">
@@ -702,8 +703,6 @@ const BCHAR* XMLProcessor::getElementAttributes(const BCHAR* xml,
     if (!xml) {
         goto finally;
     }
-
-    unsigned int l = bstrlen(tag);
 
     if(bstrcmp(tag, T("CDATA")) == 0) {
         goto finally;

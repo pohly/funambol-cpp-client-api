@@ -102,6 +102,23 @@ int main( int argc, char **argv )
     for (int index = 0; index < 2; index++) {
         vobj->setVersion(versions[index]);
         VProperty *vprop = vobj->getProperty(TEXT("VERSION"));
+
+        for (int property = vobj->propertiesCount() - 1;
+             property >= 0;
+             property--) {
+            VProperty *vprop = vobj->getProperty(property);
+
+            // replace 3.0 ENCODING=B with 2.1 ENCODING=BASE64 and vice versa
+            char *encoding = vprop->getParameterValue("ENCODING");
+            if (encoding &&
+                (!wcsicmp(TEXT("B"), encoding) || !wcsicmp(TEXT("BASE64"), encoding))) {
+                vprop->removeParameter("ENCODING");
+                vprop->addParameter("ENCODING",
+                                    !wcscmp(versions[index], TEXT("2.1")) ?
+                                    "BASE64" : "b");
+            }
+        }
+
         vprop->setValue(versions[index]);
         vobj->fromNativeEncoding();
         wvcard = vobj->toString();
