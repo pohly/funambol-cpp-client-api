@@ -1,0 +1,10 @@
+/scratch/work/sync-sarge/src/client-api/src/c++/common/base/util/XMLProcessor.cpp: In
+   static member function `static const BCHAR* 
+   XMLProcessor::getElementAttributes(const BCHAR*, const BCHAR*, unsigned 
+   int*, unsigned int*)':
+/scratch/work/sync-sarge/src/client-api/src/c++/common/base/util/XMLProcessor.cpp:761: error: jump
+   to label `finally'
+/scratch/work/sync-sarge/src/client-api/src/c++/common/base/util/XMLProcessor.cpp:724: error: 
+    from here
+/scratch/work/sync-sarge/src/client-api/src/c++/common/base/util/XMLProcessor.cpp:727: error: 
+    crosses initialization of `unsigned int l'
