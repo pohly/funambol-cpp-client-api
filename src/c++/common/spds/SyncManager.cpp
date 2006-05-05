@@ -919,6 +919,12 @@ int SyncManager::sync() {
         } while (last == FALSE);
 
     } // end for (count = 0; count < sourcesNumber; count ++)
+    
+    if (isToExit(check, sourcesNumber)) {
+        // error. no source to sync
+        ret = lastErrorCode;
+        goto finally;
+    }
 
     //
     // If this was the last chunk, we move the state to STATE_PKG3_SENT
