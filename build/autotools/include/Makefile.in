@@ -167,6 +167,7 @@ nobase_pkginclude_HEADERS = \
     common/base/util/KeyValuePair.h \
     common/base/util/WKeyValuePair.h \
     common/base/util/XMLProcessor.h \
+    common/base/util/WString.h \
     common/client/DMTClientConfig.h \
     common/client/Sync4jClient.h \
     common/filter/Clause.h \
