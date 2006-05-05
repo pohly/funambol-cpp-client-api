@@ -148,7 +148,21 @@ const BCHAR* XMLProcessor::getEscapedElementContent(const BCHAR* xml ,
     }
 
     const BCHAR *ret = findElementContent(xml, openTag, closeTag, pos, startPos, endPos);
+    /*
+    if (ret == NULL) {
+        if (openTag)
+        delete [] openTag; openTag = NULL;
+    if (closeTag)
+        delete [] closeTag; closeTag = NULL;
+        
+        openTag = new BCHAR[l+10];
+        closeTag = new BCHAR[l+10];
+        bsprintf(openTag, T("<%s"), tag);
+        bsprintf(closeTag, T("</%s>"), tag);
 
+        ret = findElementContent(xml, openTag, closeTag, pos, startPos, endPos);
+    }
+    */
     if (openTag)
         delete [] openTag;
     if (closeTag)
