@@ -118,6 +118,7 @@ inline char towupper(char x) { return toupper(x); }
 #define wcstod strtod
 #define wcsicmp strcasecmp
 #define _wcsicmp strcasecmp
+#define _stricmp strcasecmp
 
 /* some of the code compares NULL against integers, which
    fails if NULL is defined as (void *)0 */
