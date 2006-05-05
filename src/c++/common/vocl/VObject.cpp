@@ -18,7 +18,7 @@
  */
 
 #include "base/util/utils.h"
-#include "base/util/Wstring.h"
+#include "base/util/WString.h"
 #include "vocl/VObject.h"
 #include "string.h"
 
