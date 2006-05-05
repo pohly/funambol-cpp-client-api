@@ -100,7 +100,7 @@ int BasicTime::parseRfc822(const BCHAR *date)
     const BCHAR *pdate = bstrstr( date, T(",") );
 	if ( pdate == 0 ) {
 		ret=sscanf(date, T("%d %s %d %s %s"),
-            &day, month, &year, time, timeZone);
+            &day, mon, &year, time, timeZone);
     }
 	else {
 		ret=sscanf(date, T("%s %d %s %d %s %s"),

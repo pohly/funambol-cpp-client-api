@@ -204,6 +204,32 @@ inline static size_t findNewLine(StringBuffer &str, size_t offset) {
     return (str[nl] == CHR('\r')) ? nl+1 : nl ;
 }
 
+static size_t getHeadersLen(StringBuffer &s, StringBuffer &newline)
+{
+    // detect the newline used in headers
+    size_t pos1 = s.find("\n");
+    if(pos1 == StringBuffer::npos){
+        LOG.error("MailMessage: no newlines in message?");
+        return pos1;
+    }
+    size_t pos2 = pos1 + 1 ;
+
+    while (s[pos1-1] == '\r'){
+        pos1--;
+    }
+    newline = s.substr(pos1, pos2-pos1);
+    
+    StringBuffer emptyline = newline + newline ;
+
+    // Split headers and body
+    size_t hdrlen = s.find(emptyline);
+    if(hdrlen == StringBuffer::npos) {
+        // Empty body, get the message anyway.
+        hdrlen = s.length();
+    }
+    return hdrlen;
+}
+
 /**
  * Get the next bodypart from the message body string.
  *
@@ -216,9 +242,6 @@ static bool getBodyPart(StringBuffer &rfcBody, StringBuffer &boundary,
                        BodyPart &ret, size_t &next)
 {   
     LOG.debug(T("getBodyPart START"));
-
-    // FIXME: check empty value 
-    const BCHAR *newline = T("\n");
 
     // The part starts on the next line
     size_t begin = findNewLine(rfcBody, next);
@@ -250,25 +273,12 @@ static bool getBodyPart(StringBuffer &rfcBody, StringBuffer &boundary,
             }                
 		}
     }
+
+    StringBuffer newline;
+
     // Split headers and body
-    size_t hdrlen = part.find(T("\n\n"));
-    if(hdrlen == StringBuffer::npos) {
-        // No double newline, try CRLF
-        hdrlen = part.find(T("\r\n\r\n"));
-        if(hdrlen == StringBuffer::npos) {
-            // FIXME: handle abnormal CR CR LF case from server
-            hdrlen = part.find(T("\r\r\n\r\r\n"));
-            if(hdrlen == StringBuffer::npos) {
-                return false;      // No part body ?
-            }
-            else {
-                newline = T("\r\r\n");
-            }
-        }
-        else {
-            newline = T("\r\n");
-        }
-    }
+    size_t hdrlen = getHeadersLen(part, newline);
+
     // Get headers
     StringBuffer headers = part.substr(0, hdrlen);
     ArrayList lines;
@@ -364,12 +374,7 @@ static bool getBodyPart(StringBuffer &rfcBody, StringBuffer &boundary,
 	return (next != StringBuffer::npos);
 }
 
-
-
-
-//----------------------------------------------------------- Public Methods
-
-void generateBoundary(StringBuffer& boundary)
+static void generateBoundary(StringBuffer& boundary)
 {
     BCHAR buf[40];
 	int i;
@@ -382,6 +387,21 @@ void generateBoundary(StringBuffer& boundary)
     buf[i]=0;
     boundary = buf;
 }
+
+static bool isAscii(const char *str){
+    if(!str)
+        return true;
+
+    for(size_t i = 0; i < bstrlen(str); i++) {
+        if ( ! isprint(str[i]) ){
+			return false;
+        }
+    }
+	return true;
+}
+
+
+//----------------------------------------------------------- Public Methods
 
 /**
  * Format a mailmessage in a RFC2822 string
@@ -425,19 +445,22 @@ BCHAR * MailMessage::format() {
     }
     ret += DATE; ret += date.formatRfc822(); ret += NL;
     ret += SUBJECT; 
-    if (qp_isNeed(subject.c_str()))
+    if (!isAscii(subject))
     {
         // FIXME
         // If the length of the encoded subject is bigger then 75 chars,
         // additional encoded words are needed, as required by rfc2047        
         BCHAR* qp = 0;
         qp = qp_encode(subject.c_str());
-        StringBuffer tmp = "=?utf-8?Q?";
-        tmp.append(qp);
-        tmp.append("?=");
-        subject = tmp;        
+        ret += "=?utf-8?Q?";
+        ret += qp;
+        ret += "?=";
+        delete [] qp;
     }
-    ret += subject; ret += NL;
+    else {
+        ret += subject; 
+    }
+    ret += NL;
     ret += MIMETYPE; ret += contentType; ret+= T("; ");
     if (contentType.ifind(MULTIPART) != StringBuffer::npos ){
         if ( boundary.empty() ) {
@@ -484,24 +507,7 @@ int MailMessage::parse(const BCHAR *rfc2822, size_t len) {
     
     LOG.debug(T("MailMessage::parse START"));
 
-    // set default newline sequence
-    newline = T("\n");
-
-    // Split headers and body
-    size_t hdrlen = s.find(T("\n\n"));
-    if(hdrlen == StringBuffer::npos) {
-        // No double newline, try CRLF
-        hdrlen = s.find(T("\r\n\r\n"));
-        if(hdrlen == StringBuffer::npos) {
-            // FIXME: Try broken CR CR NL sequence
-            hdrlen = s.find(T("\r\r\n\r\r\n"));
-            if(hdrlen == StringBuffer::npos) 
-                return -1;      // No body ?
-            else
-                newline = T("\r\r\n");
-        }
-        else newline = T("\r\n"); // Adjust newline   
-    }
+    size_t hdrlen = getHeadersLen(s, newline);
 
     StringBuffer headers = s.substr(0, hdrlen);
     StringBuffer rfcbody = s.substr(hdrlen);
@@ -590,6 +596,7 @@ StringBuffer decodeWordFromHeader(StringBuffer encodedWord, StringBuffer& charse
 
 
 //---------------------------------------------------------- Private Methods
+
 int MailMessage::parseHeaders(StringBuffer &rfcHeaders) {
 
     ArrayList lines;
