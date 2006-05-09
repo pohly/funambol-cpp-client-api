@@ -182,13 +182,7 @@ wchar_t* VObject::toString() {
                 wcscat(strVObject,property->getValue());
         }
         wcscat(strVObject,eof);
-    }		
-    if (wcschr(strVObject, '&') || wcschr(strVObject, '<')) {
-        WString tmp(strVObject);
-        tmp.replaceAll(TEXT("&"), TEXT("&amp;"));
-        tmp.replaceAll(TEXT("<"), TEXT("&lt;"));
-        wcscpy(strVObject,tmp.c_str());
-    }
+    }		    
     return strVObject;
 }
 
