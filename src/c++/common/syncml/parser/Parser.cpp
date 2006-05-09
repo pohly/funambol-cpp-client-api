@@ -1748,7 +1748,12 @@ ComplexData* Parser::getComplexData(BCHAR* xml) {
         if (devInf)
             ret->setDevInf(devInf);
     }
-    else if (xml) {
+    else if (xml) {        
+        StringBuffer tmp(xml);
+        tmp.replaceAll("&amp;", "&");
+        tmp.replaceAll("&lt;", "<");
+        tmp.replaceAll("&gt;", ">");
+        strcpy(xml,tmp.c_str());
         ret = new ComplexData(xml);
     }    
 
