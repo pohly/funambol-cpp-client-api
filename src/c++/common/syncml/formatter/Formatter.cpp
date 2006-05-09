@@ -1628,7 +1628,10 @@ StringBuffer* Formatter::getData(ComplexData* data) {
         s.append(anchor);
         s.append(devInf);     
     } else {
-        s.append(data->getData());
+        StringBuffer tmp = data->getData();
+        tmp.replaceAll("&", "&amp;");
+        tmp.replaceAll("<", "&lt;");
+        s.append(tmp);        
     }
 
     deleteAllStringBuffer(2, &anchor, &devInf);
