@@ -67,26 +67,24 @@ int EmailData::parse(const BCHAR *msg, size_t len)
     deleted   = checkFlag(msg, EMAIL_DELE);
     flagged   = checkFlag(msg, EMAIL_FLAG);
      
-    if( XMLProcessor::getEscapedElementContent (msg, EMAIL_TREC, NULL, &start, &end) ) {
+    if( XMLProcessor::getElementContent (msg, EMAIL_TREC, NULL, &start, &end) ) {
         received = StringBuffer(msg+start, end-start);
     }
     else received = T("");
 
-    if( XMLProcessor::getEscapedElementContent (msg, EMAIL_TCRE, NULL, &start, &end) ) {
+    if( XMLProcessor::getElementContent (msg, EMAIL_TCRE, NULL, &start, &end) ) {
         created = StringBuffer(msg+start, end-start);
     }
     else created = T("");
 
-    if( XMLProcessor::getEscapedElementContent (msg, EMAIL_TMOD, NULL, &start, &end) ) {
+    if( XMLProcessor::getElementContent (msg, EMAIL_TMOD, NULL, &start, &end) ) {
         modified = StringBuffer(msg+start, end-start);
     }
     else modified = T("");    
 
     // Get content
-    if( XMLProcessor::getEscapedElementContent(msg, EMAIL_ITEM, NULL, &start, &end) ) {
-		StringBuffer item(msg+start, end-start);
-        item.replaceAll("&lt;", "<");
-        item.replaceAll("&gt;", ">");
+    if( XMLProcessor::getElementContent(msg, EMAIL_ITEM, NULL, &start, &end) ) {
+		StringBuffer item(msg+start, end-start);        
 
         unsigned int startAttr=0, endAttr=0;
         size_t itemlen = end-start;
@@ -131,8 +129,8 @@ BCHAR *EmailData::format() {
     StringBuffer out;
 
     out.reserve(150);
-    
-    out = T("<![CDATA[\n<Email>\n");
+        
+    out = T("<Email>\n");
     out += XMLProcessor::makeElement(EMAIL_READ, read);
     out += XMLProcessor::makeElement(EMAIL_FORW, forwarded);
     out += XMLProcessor::makeElement(EMAIL_REPL, replied);
@@ -147,7 +145,7 @@ BCHAR *EmailData::format() {
         out += item;
         delete [] item;
     }
-    out += T("]]&gt;\n</emailitem>\n</Email>\n]]>\n");
+    out += T("]]&gt;\n</emailitem>\n</Email>\n");
     return stringdup(out.c_str());
 }
 
