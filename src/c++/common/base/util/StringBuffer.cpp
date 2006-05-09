@@ -230,8 +230,9 @@ size_t StringBuffer::replace(const BCHAR *from, const BCHAR *to, size_t pos)
 // TODO: implement some smarter argorithm to avoid multiple reallocations
 int StringBuffer::replaceAll(const BCHAR *from, const BCHAR *to, size_t pos) {
     int i=0;
+    int len = strlen(to);
     size_t next;
-    for(next=replace(from, to, pos); next != npos; next=replace(from,to,next) ) {
+    for(next=replace(from, to, pos); next != npos; next=replace(from,to,next + len) ) {
         i++;
     }
     return i;
