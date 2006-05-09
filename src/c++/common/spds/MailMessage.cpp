@@ -557,7 +557,7 @@ BOOL hasLineEncodedWords(StringBuffer line, size_t* startPos, size_t* endPos)
             *endPos = line.substr(secondMark + 1).find("?=") + secondMark + 1;
             if ((StringBuffer::npos != *endPos) && 
                 (StringBuffer::npos != *startPos) && 
-                (endPos > startPos)) /*&& 
+                (*endPos > *startPos)) /*&& 
                 (endPos - startPos) <= 73)*/ // uncomment when the 75 maximum length 
                                              // for an encoded word fix will be applied
                                              // in format() method       
