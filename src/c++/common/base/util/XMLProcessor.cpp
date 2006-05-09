@@ -84,6 +84,10 @@ static const BCHAR *findElementContent(const BCHAR *xml,
                 // Invalidate closeTag
                 closeTag=0;
                 break;
+            case '\n':
+                p1++;
+                p2 = bstrstr(p1, closeTag);
+                break;
             default:
                 // This is not the searched tag, search again
                 //LOG.debug("XMLProcessor: this is not tag %s", openTag);
