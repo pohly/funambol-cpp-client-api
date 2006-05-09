@@ -26,12 +26,7 @@ VObject* VConverter::parse(wchar_t* buffer) {
 	wchar_t *objType = extractObjectType(buffer);
 	wchar_t *objVersion = extractObjectVersion(buffer);
     if(!objType)
-        return NULL;
-    
-    WString tmp(buffer);
-    tmp.replaceAll(TEXT("&amp;"), TEXT("&"));
-    tmp.replaceAll(TEXT("&lt;"), TEXT("<"));
-    wcscpy(buffer, tmp.c_str());
+        return NULL;        
 
 	VObject* vo = VObjectFactory::createInstance(objType, objVersion); 	
     VProperty *prop;
