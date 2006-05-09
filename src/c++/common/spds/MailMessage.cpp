@@ -562,7 +562,7 @@ BOOL hasLineEncodedWords(StringBuffer line, size_t* startPos, size_t* endPos)
                                              // for an encoded word fix will be applied
                                              // in format() method       
             {
-                has = TRUE;
+                has = TRUE; LOG.debug("TRUE");
             }        
         }
     }
@@ -579,18 +579,21 @@ StringBuffer decodeWordFromHeader(StringBuffer encodedWord, StringBuffer& charse
     charset = encodedWord.substr(charsetStart, encodingStart - charsetStart - 1);
     StringBuffer encoding = encodedWord.substr(encodingStart, encTextStart - encodingStart - 1);
     StringBuffer encText = encodedWord.substr(encTextStart);
+    LOG.debug("1");
     if (_stricmp(encoding.c_str(), "Q") == 0) {
+        LOG.debug("2");
         // quoted-printable
         BCHAR* dec = qp_decode(encText.c_str());
         decodedWord.append(dec);
         decodedWord.replaceAll("_", " ");         
     }
     else if (_stricmp(encoding.c_str(), "B") == 0){
+        LOG.debug("3");
         // base64
         int len = b64_decode((void *)encText.c_str(), encText.c_str());
-        decodedWord.append(encText);
+        decodedWord.append(encText.substr(0, len));
     }
-
+    else { LOG.debug("4"); }
     return decodedWord;
 }
 
@@ -645,7 +648,7 @@ int MailMessage::parseHeaders(StringBuffer &rfcHeaders) {
             }
         }
         else if( line->ifind(SUBJECT) == 0 ) {
-            subject = line->substr(SUBJECT_LEN);
+            subject = line->substr(SUBJECT_LEN); LOG.debug("SUBJECT:"); LOG.debug(subject.c_str());
             subjectParsing = TRUE;        
             size_t startPos, endPos;
             if (TRUE == hasLineEncodedWords(subject, &startPos, &endPos)) {

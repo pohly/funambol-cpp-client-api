@@ -476,8 +476,8 @@ SyncHdr* SyncMLBuilder::prepareSyncHdr(Cred* cred) {
 
     ++msgID;
 
-    VerDTD*    verDTD    = new VerDTD(T("1.2"));
-    VerProto*  verProto  = new VerProto(T("SyncML/1.2"));
+    VerDTD*    verDTD    = new VerDTD(T("1.1"));
+    VerProto*  verProto  = new VerProto(T("SyncML/1.1"));
     SessionID* sessID    = new SessionID(ltow(sessionID));
     BCHAR*   messageID = itow(msgID);
     Target*    tar       = new Target(target);
