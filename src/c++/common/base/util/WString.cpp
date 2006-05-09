@@ -199,8 +199,10 @@ size_t WString::replace(const wchar_t *from, const wchar_t *to, size_t pos)
         wchar_t *tail = 0;
         int ldiff = tlen - flen ;
 
-        // reallocate if needed
+        // reallocate if needed 
+        size_t p_off = p - s;     // remember position in string
         getmem(length() + ldiff);
+        p = s + p_off;            // ensure that p is valid again 
         // check is there is a remainder after the replaced token
         if( p[flen] ) {
             tail = new wchar_t[length()];
