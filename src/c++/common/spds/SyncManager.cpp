@@ -1286,7 +1286,7 @@ int SyncManager::endSync() {
     config.getAccessConfig().setEndSync((unsigned long)time(NULL));
     safeDelete(&responseMsg);
     safeDelete(&mapMsg);
-
+    BCHAR g[768]; bsprintf(g, "ret: %i, lastErrorCode: %i, lastErrorMessage: %s", ret, lastErrorCode, lastErrorMsg); LOG.debug(g);
     //
     // This commitSync is not used because the saving of the configuration
     // is done into the Sync4jClient.
