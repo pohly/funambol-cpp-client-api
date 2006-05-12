@@ -423,6 +423,22 @@ BCHAR * MailMessage::format() {
         }
         else {
             contentType = body.getMimeType();
+
+            if (headers.size() > 0) {
+                StringBuffer *line; int j = 0;
+                for (line=(StringBuffer *)headers.front(); line; line=(StringBuffer *)headers.next() ) {                                                  
+                    if (bstrstr(line->c_str(), T("format=")) != 0 
+                        || bstrstr(line->c_str(),T("reply-type=")) != 0 ) {
+                            contentType.append(T("; "));
+                            line->replaceAll(T(";"), T(" "));
+                            contentType.append(line->c_str());                     
+                            headers.removeElementAt(j);
+                            j--;
+                         }
+                     j++;
+                }
+            }
+
         }
     }
     if ( mimeVersion.empty() ) {

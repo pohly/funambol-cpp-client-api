@@ -144,26 +144,24 @@ int SyncMLProcessor::processItemStatus(SyncSource& source, SyncBody* syncBody) {
     for (int i = 0; i < list->size(); i++) {
         s = (Status*)list->get(i);
         name = s->getCmd();    
-        
+        data = s->getData();
         if (bstrcmp(name, SYNC) == 0){
             char *srcname = toMultibyte(source.getName());
             int alertStatus = getAlertStatusCode(s, srcname);
             
             delete [] srcname;
             
-            if(alertStatus < 0){
-                LOG.error("processItemStatus: status not found in SYNC");
-                ret = alertStatus;
+            if(alertStatus < 0 || alertStatus >=300){
+                if ((ret = alertStatus) < 0)
+                    LOG.error("processItemStatus: status not found in SYNC");
+                else
+                    LOG.error("processItemStatus: server sent status %d in SYNC");                
+                break;            
             }
-            if(alertStatus >=300) {
-                LOG.error("processItemStatus: server sent status %d in SYNC");
-                ret = alertStatus;
-            }
-            break;
+            
         }         
-
-        data = s->getData();
-        if (bstrcmp(name, ADD) == 0 ||
+        
+        else if (bstrcmp(name, ADD) == 0 ||
             bstrcmp(name, REPLACE) == 0 ||
             bstrcmp(name, DEL) == 0) {
 

@@ -58,10 +58,10 @@ const BCHAR* ClauseUtil::toCGIQuery(Clause& clause) {
         if (i) {
             switch (((LogicalClause*)&clause)->getOperator()) {
                 case AND:
-                    query.append(T("&amp;AND;"));
+                    query.append(T("&AND;"));
                     break;
                 case OR:
-                    query.append(T("&amp;OR;"));
+                    query.append(T("&OR;"));
                     break;
             }
         }
@@ -69,58 +69,58 @@ const BCHAR* ClauseUtil::toCGIQuery(Clause& clause) {
         switch (where->getOperator()) {
             case EQ:
                 if (where->isCaseSensitive()) {
-                    query.append(T("&amp;EQ;"));
+                    query.append(T("&EQ;"));
                 } else {
-                    query.append(T("&amp;iEQ;"));
+                    query.append(T("&iEQ;"));
                 }
                 break;
             case NE:
                 if (where->isCaseSensitive()) {
-                    query.append(T("&amp;NE;"));
+                    query.append(T("&NE;"));
                 } else {
-                    query.append(T("&amp;iNE;"));
+                    query.append(T("&iNE;"));
                 }
                 break;
             case LT:
                 if (where->isCaseSensitive()) {
-                    query.append(T("&amp;LT;"));
+                    query.append(T("&LT;"));
                 } else {
-                    query.append(T("&amp;iLT;"));
+                    query.append(T("&iLT;"));
                 }
                 break;
             case GT:
                 if (where->isCaseSensitive()) {
-                    query.append(T("&amp;GT;"));
+                    query.append(T("&GT;"));
                 } else {
-                    query.append(T("&amp;iGT;"));
+                    query.append(T("&iGT;"));
                 }
                 break;
             case LE:
                 if (where->isCaseSensitive()) {
-                    query.append(T("&amp;LE;"));
+                    query.append(T("&LE;"));
                 } else {
-                    query.append(T("&amp;iLE;"));
+                    query.append(T("&iLE;"));
                 }
                 break;
             case GE:
                 if (where->isCaseSensitive()) {
-                    query.append(T("&amp;GE;"));
+                    query.append(T("&GE;"));
                 } else {
-                    query.append(T("&amp;iGE;"));
+                    query.append(T("&iGE;"));
                 }
                 break;
             case CONTAIN:
                 if (where->isCaseSensitive()) {
-                    query.append(T("&amp;CON;"));
+                    query.append(T("&CON;"));
                 } else {
-                    query.append(T("&amp;iCON;"));
+                    query.append(T("&iCON;"));
                 }
                 break;
             case NCONTAIN:
                 if (where->isCaseSensitive()) {
-                    query.append(T("&amp;NCON;"));
+                    query.append(T("&NCON;"));
                 } else {
-                    query.append(T("&amp;iNCON;"));
+                    query.append(T("&iNCON;"));
                 }
                 break;
         }
