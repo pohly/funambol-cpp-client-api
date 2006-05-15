@@ -270,7 +270,7 @@ static bool getBodyPart(StringBuffer &rfcBody, StringBuffer &boundary,
                 part = part.substr(begin, end-begin);
                 LOG.debug(T("Bodypart is multipart/alternative: getting first alternative only."));
                 LOG.debug(part);
-            }                
+            }
 		}
     }
 
@@ -534,9 +534,7 @@ int MailMessage::parse(const BCHAR *rfc2822, size_t len) {
 
     if(contentType.ifind(MULTIPART) != StringBuffer::npos) {
         // Multipart message
-        if (!rc) {
-            rc= parseBodyParts(rfcbody);
-        }
+        rc= parseBodyParts(rfcbody);
     }
     else {
         body.setMimeType(contentType);
@@ -790,11 +788,15 @@ int MailMessage::parseBodyParts(StringBuffer &rfcBody) {
     size_t nextBoundary = rfcBody.find(bound);
     getBodyPart(rfcBody, bound, body, nextBoundary);
 
-    while( getBodyPart(rfcBody, bound, part, nextBoundary) ) {
-        // some problem in the attachment?
-        if( part.getContent() )
-            attachments.add(part);
+    if (contentType.ifind("multipart/alternative") == StringBuffer::npos) {        
+        // If it's not multipart/alternative, get the other parts
+        while( getBodyPart(rfcBody, bound, part, nextBoundary) ) {
+            // some problem in the attachment?
+            if( part.getContent() )
+                attachments.add(part);
+        }
     }
+
     LOG.debug(T("parseBodyParts END"));
     return 0;
 }
