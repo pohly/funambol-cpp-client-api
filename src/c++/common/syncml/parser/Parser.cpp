@@ -24,10 +24,13 @@ SyncML* Parser::getSyncML(BCHAR* xml) {
     SyncHdr*  syncHdr  = NULL;
     SyncML*   syncML   = NULL; 
     unsigned int pos = 0;
-
-    syncHdr  = getSyncHdr (XMLProcessor::getElementContent(xml, SYNC_HDR, &pos));
-    syncBody = getSyncBody(XMLProcessor::getElementContent(xml, SYNC_BODY, &pos));
-    
+    BCHAR* t = NULL;
+    t = XMLProcessor::getElementContent(xml, SYNC_HDR, &pos);
+    syncHdr  = getSyncHdr (t);
+    if (t) { delete [] t; t = NULL; }
+    t = XMLProcessor::getElementContent(xml, SYNC_BODY, &pos);
+    syncBody = getSyncBody(t);
+    if (t) { delete [] t; t = NULL; }
     syncML = new SyncML(syncHdr, syncBody);
     
     deleteSyncHdr (&syncHdr);
@@ -837,7 +840,7 @@ Add* Parser::getAdd(BCHAR* xml) {
     Cred*       cred    = NULL;
     Meta*       meta    = NULL;
     ArrayList*  items   = NULL;
-
+    
     cmdID   = getCmdID     (XMLProcessor::getElementContent (xml, CMD_ID , NULL));
     meta    = getMeta      (XMLProcessor::getElementContentLevel(xml,  META,    NULL));
     cred    = getCred      (XMLProcessor::getElementContent (xml, CRED   , NULL));
@@ -1033,20 +1036,23 @@ ArrayList* Parser::getCopies(BCHAR* xml, BCHAR* except) {
 */
 ArrayList* Parser::getAdds(BCHAR* xml, BCHAR* except) {
     
-    Add* add = NULL;    
+    Add* add         = NULL;    
     unsigned int pos = 0, previous = 0;
-    ArrayList* list = new ArrayList();
-    
+    ArrayList* list  = new ArrayList();
+    BCHAR* t         = NULL;
    /*
     * except is set to SYNC if we are looking for Add commands external from <sync> tag
     */
-    while ((add = getAdd(XMLProcessor::getElementContentExcept(&xml[pos], ADD, except, &pos))) != NULL) {
+    t = XMLProcessor::getElementContentExcept(&xml[pos], ADD, except, &pos);
+    while ((add = getAdd(t)) != NULL) {
         if (add) {
             list->add(*add); // in the ArrayList NULL element cannot be inserted
             deleteAdd(&add);            
         }
         pos += previous;
         previous = pos;                
+        if (t) { delete [] t; t = NULL; }
+        t = XMLProcessor::getElementContentExcept(&xml[pos], ADD, except, &pos);
     }   
     return list;   
 }
@@ -1059,14 +1065,18 @@ ArrayList* Parser::getReplaces(BCHAR* xml, BCHAR* except) {
     Replace* replace = NULL;    
     unsigned int pos = 0, previous = 0;
     ArrayList* list = new ArrayList();
+    BCHAR* t        = NULL;
 
-    while ((replace = getReplace(XMLProcessor::getElementContentExcept(&xml[pos], REPLACE, except, &pos))) != NULL) {
+    t = XMLProcessor::getElementContentExcept(&xml[pos], REPLACE, except, &pos);
+    while ((replace = getReplace(t)) != NULL) {
         if (replace) {
             list->add(*replace); // in the ArrayList NULL element cannot be inserted
             deleteReplace(&replace);            
         }
         pos += previous;
         previous = pos;                
+        if (t) { delete [] t; t = NULL; }
+        t = XMLProcessor::getElementContentExcept(&xml[pos], REPLACE, except, &pos);
     }
     return list;   
 }
@@ -1076,17 +1086,21 @@ ArrayList* Parser::getReplaces(BCHAR* xml, BCHAR* except) {
 */
 ArrayList* Parser::getDels(BCHAR* xml, BCHAR* except) {
     
-    Delete* del = NULL;    
-    unsigned int pos = 0, previous = 0;
-    ArrayList* list = new ArrayList();
+    Delete* del        = NULL;    
+    unsigned int pos   = 0, previous = 0;
+    ArrayList* list    = new ArrayList();
+    BCHAR* t           = NULL;
 
-    while ((del = getDelete(XMLProcessor::getElementContentExcept(&xml[pos], DEL, except, &pos))) != NULL) {
+    t = XMLProcessor::getElementContentExcept(&xml[pos], DEL, except, &pos);
+    while ((del = getDelete(t)) != NULL) {
         if (del) {
             list->add(*del); // in the ArrayList NULL element cannot be inserted
             deleteDelete(&del);            
         }
         pos += previous;
         previous = pos;                
+        if (t) { delete [] t; t = NULL;}
+        t = XMLProcessor::getElementContentExcept(&xml[pos], DEL, except, &pos);
     }
     return list;   
 }
@@ -1126,15 +1140,20 @@ ArrayList* Parser::getCommands(BCHAR* xml) {
     Atomic* atomic      = NULL;
     Sync* sync          = NULL;
     unsigned int pos = 0, previous = 0;
-        
+    BCHAR* t            = NULL;
+
+
     // Status
-    while ((status = getStatus(XMLProcessor::getElementContent(&xml[pos], STATUS, &pos))) != NULL) {
+    t = XMLProcessor::getElementContent(&xml[pos], STATUS, &pos);
+    while ((status = getStatus(t)) != NULL) {
         if (status) {
             list->add(*status); // in the ArrayList NULL element cannot be inserted
             deleteStatus(&status);            
         }
         pos += previous;
         previous = pos;                
+        if (t) { delete [] t; t = NULL; }
+        t = XMLProcessor::getElementContent(&xml[pos], STATUS, &pos);
     }
    
     if (list->size() > 0) {
@@ -1281,13 +1300,16 @@ ArrayList* Parser::getCommands(BCHAR* xml) {
     
     // Sync
     pos = 0, previous = 0;
-    while ((sync = getSync(XMLProcessor::getElementContentExcept(&xml[pos], SYNC, T("Atomic&Sequence"), &pos))) != NULL) {
-    if (sync) {
+    t = XMLProcessor::getElementContentExcept(&xml[pos], SYNC, T("Atomic&Sequence"), &pos);
+    while ((sync = getSync(t)) != NULL) {
+        if (sync) {
             list->add(*sync); // in the ArrayList NULL element cannot be inserted
-        deleteSync(&sync);
-    }
+            deleteSync(&sync);
+        }
         pos += previous;
-        previous = pos;                
+        previous = pos;     
+        if (t) { delete [] t; t = NULL; }
+        t = XMLProcessor::getElementContentExcept(&xml[pos], SYNC, T("Atomic&Sequence"), &pos);
     }
     
     if (list->size() > 0) {
@@ -1649,14 +1671,18 @@ ArrayList* Parser::getItems(BCHAR* xml) {
     Item* item = NULL;
     ArrayList* items = new ArrayList();
     unsigned int pos = 0, previous = 0;
-
-    while ((item = getItem(XMLProcessor::getElementContent(&xml[pos], ITEM, &pos))) != NULL) {
+    BCHAR*      t       = NULL;
+    
+    t = XMLProcessor::getElementContent(&xml[pos], ITEM, &pos);    
+    while ((item = getItem(t)) != NULL) {
         if (item) {
             items->add(*item);    // in the ArrayList NULL element cannot be inserted
             deleteItem(&item);    
         }
         pos += previous;
         previous = pos;                
+        if (t) { delete [] t; t = NULL; }
+        t = XMLProcessor::getElementContent(&xml[pos], ITEM, &pos);
     }
 
     return items;    
@@ -1671,12 +1697,16 @@ Item* Parser::getItem(BCHAR* xml) {
     BOOL moreData     = FALSE;  
     BCHAR* targetParent = NULL;
     BCHAR* sourceParent = NULL;
-
+    BCHAR*      t       = NULL;   
     
     target   = getTarget     (XMLProcessor::getElementContent(xml, TARGET,         NULL));
     source   = getSource     (XMLProcessor::getElementContent(xml, SOURCE,         NULL));
     meta     = getMeta       (XMLProcessor::getElementContentLevel(xml, META,           NULL));
-    data     = getComplexData(XMLProcessor::getElementContent(xml, COMPLEX_DATA,   NULL));
+    
+    t = XMLProcessor::getElementContent(xml, COMPLEX_DATA,   NULL);
+    data     = getComplexData(t);
+    if (t) { delete [] t; t = NULL; } 
+    
     moreData = getMoreData   (XMLProcessor::getElementContent(xml, MORE_DATA,      NULL));
     targetParent = XMLProcessor::getElementContent(xml, TARGET_PARENT,      NULL);
     sourceParent = XMLProcessor::getElementContent(xml, SOURCE_PARENT,      NULL);
