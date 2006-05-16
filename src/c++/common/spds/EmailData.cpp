@@ -85,11 +85,10 @@ int EmailData::parse(const BCHAR *msg, size_t len)
     // Get content
     if( XMLProcessor::getElementContent(msg, EMAIL_ITEM, NULL, &start, &end) ) {
 		StringBuffer item(msg+start, end-start);        
-
         unsigned int startAttr=0, endAttr=0;
         size_t itemlen = end-start;
 
-        if(XMLProcessor::getElementAttributes(msg, EMAIL_ITEM, &startAttr, &endAttr, true)){
+        if(XMLProcessor::getElementAttributes(msg, EMAIL_ITEM, &startAttr, &endAttr, false)){ //currently emailitem is not escaped so false!!
             StringBuffer attrlist(msg+startAttr, endAttr-startAttr);
             if(attrlist.ifind("quoted-printable") != StringBuffer::npos) {
                 char *decoded = qp_decode(item);
@@ -104,9 +103,12 @@ int EmailData::parse(const BCHAR *msg, size_t len)
             return -1;
         }
         size_t item_end = item.rfind("]]>");
-        // If not found, try also the old case
+        
+        // In emailitem the last &gt; close the CDATA of emailitem tag and is escaped, so it is needed
+        // to be found the follow. Usually the first is skipped
+        //
         if(item.length() - item_end > 10){
-            item_end = item.rfind("]]&amp;gt;");
+            item_end = item.rfind("]]&gt;");
             if(item.length() - item_end > 10){
                 LOG.error(T("EMailData: can't find CDATA end tag."));
                 return -1;

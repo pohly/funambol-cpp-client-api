@@ -183,12 +183,34 @@ size_t StringBuffer::ifind(const BCHAR *str, size_t pos) const
 
 size_t StringBuffer::rfind(const BCHAR *str, size_t pos) const 
 {
+    /*
     if (pos >= length())
         return npos;
     const BCHAR *p = brfind(s+pos, str);
     if(!p)
         return npos;
     return (p-s);
+    */  
+    if (pos >= length())
+        return npos;
+
+    size_t tmp = StringBuffer::npos;
+    int previous = pos;
+    
+    tmp = find(str, pos);
+    if (tmp == StringBuffer::npos)
+        return npos;
+        
+    while(1) {
+        
+        previous = tmp;
+        tmp = find(str, tmp + 1);
+        if (tmp == StringBuffer::npos)
+            break;        
+    }
+    
+    return previous;
+  
 }
 
 
