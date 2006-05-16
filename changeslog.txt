@@ -1,9 +1,19 @@
+Funambol SDK C++ 3.0.17
+------------------------- 
+2006-05-16:
+  - fixed bugs:
+      305019	Ordering of elements in File object incorrect
+      305020	Writeable attribute not generated
+      305155	WString::replace - write-after-free due to dangling pointer
+      304786	ampersand as part of vcard -&gt; XML encoding problems
+
 Funambol SDK C++ 3.0.15
 ------------------------- 
+2006-04-14:
   - setHeaders() and getHeaders() methods in MailMessage.cpp
   - fix error on StringBuffer() on empty string assignment.
 
-2006-03-29
+2006-03-29:
   - pohly: fixed Linux build
   - pohly: #304771: parsing vcards with quotation marks
     in the header fails
