@@ -306,8 +306,19 @@ static bool getBodyPart(StringBuffer &rfcBody, StringBuffer &boundary,
 
         // These ones are parameters, and can appear on the same line.
         if( line->ifind(T("filename=")) != StringBuffer::npos ) {
-			size_t begin = line->find(T("=\"")) + 2 ;
-			size_t end = line->find(T("\""), begin) ;
+            size_t begin = line->find("filename=") + bstrlen("filename=");
+            size_t end = begin;
+            size_t quote = line->find(T("\""), begin);
+            if (quote != StringBuffer::npos){
+                begin = quote + 1;
+                end = line->find(T("\""), begin) ;
+            }
+            else {
+                end = line->find(T(";"), begin) ;
+                if (end == StringBuffer::npos) {
+                    end = line->find(T(" "), begin);
+                }
+            }
 			ret.setFilename( line->substr(begin, end-begin) );
 		}
         else {
@@ -317,7 +328,7 @@ static bool getBodyPart(StringBuffer &rfcBody, StringBuffer &boundary,
                 size_t end = begin;
                 size_t quote = line->find(T("\""), begin);
                 if (quote != StringBuffer::npos){
-                    begin = quote;
+                    begin = quote + 1;
                     end = line->find(T("\""), begin) ;
                 }
                 else {
@@ -792,8 +803,10 @@ int MailMessage::parseBodyParts(StringBuffer &rfcBody) {
         // If it's not multipart/alternative, get the other parts
         while( getBodyPart(rfcBody, bound, part, nextBoundary) ) {
             // some problem in the attachment?
-            if( part.getContent() )
+            if( part.getContent() ) {
                 attachments.add(part);
+            }
+            else LOG.error("Empty content in attachment.");
         }
     }
 
