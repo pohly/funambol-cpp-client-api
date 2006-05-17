@@ -574,21 +574,23 @@ int MailMessage::parse(const BCHAR *rfc2822, size_t len) {
 BOOL hasLineEncodedWords(StringBuffer line, size_t* startPos, size_t* endPos)
 {
     BOOL has = FALSE;
-    *startPos = line.find("=?");
-    size_t firstMark = line.substr(*startPos + 2).find("?") + *startPos + 2;
-    if (StringBuffer::npos != firstMark) {
-        size_t secondMark = line.substr(firstMark + 1).find("?") + firstMark + 1;
-        if (StringBuffer::npos != secondMark) {
-            *endPos = line.substr(secondMark + 1).find("?=") + secondMark + 1;
-            if ((StringBuffer::npos != *endPos) && 
-                (StringBuffer::npos != *startPos) && 
-                (*endPos > *startPos)) /*&& 
-                (endPos - startPos) <= 73)*/ // uncomment when the 75 maximum length 
-                                             // for an encoded word fix will be applied
-                                             // in format() method       
-            {
-                has = TRUE; LOG.debug("TRUE");
-            }        
+    if (!line.empty()) {
+        *startPos = line.find("=?");
+        size_t firstMark = line.substr(*startPos + 2).find("?") + *startPos + 2;
+        if (StringBuffer::npos != firstMark) {
+            size_t secondMark = line.substr(firstMark + 1).find("?") + firstMark + 1;
+            if (StringBuffer::npos != secondMark) {
+                *endPos = line.substr(secondMark + 1).find("?=") + secondMark + 1;
+                if ((StringBuffer::npos != *endPos) && 
+                    (StringBuffer::npos != *startPos) && 
+                    (*endPos > *startPos)) /*&& 
+                    (endPos - startPos) <= 73)*/ // uncomment when the 75 maximum length 
+                                                 // for an encoded word fix will be applied
+                                                 // in format() method       
+                {
+                    has = TRUE; LOG.debug("TRUE");
+                }        
+            }
         }
     }
     return has;
@@ -676,7 +678,7 @@ int MailMessage::parseHeaders(StringBuffer &rfcHeaders) {
             subject = line->substr(SUBJECT_LEN); LOG.debug("SUBJECT:"); LOG.debug(subject.c_str());
             subjectParsing = TRUE;        
             size_t startPos, endPos;
-            if (TRUE == hasLineEncodedWords(subject, &startPos, &endPos)) {
+            if (!subject.empty()&& (TRUE == hasLineEncodedWords(subject, &startPos, &endPos))) {
                 StringBuffer charset;
                 StringBuffer decoded = decodeWordFromHeader(subject.substr(startPos, endPos - startPos), charset);
                 subject.replace(subject.substr(startPos, endPos + 2), decoded); 
