@@ -307,6 +307,9 @@ BCHAR* PPC2003TransportAgent::sendMessage(const BCHAR* msg) {
     BCHAR* p        = NULL;  
 	p = response;
     (*p) = 0;
+
+    int recsize = 0;
+
     do {
         if (!InternetReadFile (request, (LPVOID)bufferA, 5000, &read)) {
             lastErrorCode = ERR_READING_CONTENT;
@@ -316,8 +319,17 @@ BCHAR* PPC2003TransportAgent::sendMessage(const BCHAR* msg) {
         }
 
         if (read != 0) {
-            bufferA[read] = 0;
+            recsize += read;
+            if(recsize > contentLengthResponse) {
+                lastErrorCode = ERR_READING_CONTENT;
+                bsprintf(lastErrorMsg, "Message size greater than content-lenght.");
+                LOG.debug(lastErrorMsg);
+                goto exit;
+            }
+            
+            LOG.debug("Size: %d", recsize);
 
+            bufferA[read] = 0;
             bstrcpy(p, bufferA);
             p += strlen(bufferA);
         }

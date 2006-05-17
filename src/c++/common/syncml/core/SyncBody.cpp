@@ -18,6 +18,7 @@
  
  
 #include "syncml/core/SyncBody.h"
+#include "base/Log.h"
  
 SyncBody::SyncBody() {
     initialize();
@@ -75,12 +76,12 @@ ArrayList* SyncBody::getCommands() {
 void SyncBody::setCommands(ArrayList* commands) {
     BOOL err = FALSE;
     if (commands == NULL) {
-        // TBD
+        LOG.error("SyncBody::setCommands: null command list");
         err = TRUE;
     }        
     for (int i = 0; i < commands->size(); i++) {
         if (commands->get(i) == NULL) {
-            // TBD
+            LOG.error("SyncBody::setCommands: command %d is null.", i);
             err = TRUE;
         } 
     }
