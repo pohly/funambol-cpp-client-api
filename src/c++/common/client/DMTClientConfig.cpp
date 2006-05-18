@@ -296,7 +296,11 @@ BOOL DMTClientConfig::readAccessConfig(ManagementNode& n) {
     tmp = n.getPropertyValue(PROPERTY_ENCRYPTION);     
     accessConfig.setEncryption((*tmp == 'T') ? TRUE : FALSE);
     delete [] tmp;
-
+    
+    tmp = n.getPropertyValue(PROPERTY_READ_BUFFER_SIZE);     
+    accessConfig.setReadBufferSize(bstrtol(tmp, NULL, 10));
+    delete [] tmp;
+    
     return TRUE;
 }
 
@@ -332,6 +336,9 @@ void DMTClientConfig::saveAccessConfig(ManagementNode& n) {
 
     bsprintf(buf, T("%lu"), accessConfig.getMaxMsgSize());
     n.setPropertyValue(PROPERTY_MAX_MSG_SIZE, buf);     
+    
+    bsprintf(buf, T("%lu"), accessConfig.getReadBufferSize());
+    n.setPropertyValue(PROPERTY_READ_BUFFER_SIZE, buf);     
 
     bsprintf(buf, T("%lu"), accessConfig.getMaxModPerMsg());
     n.setPropertyValue(PROPERTY_MAX_MOD_PER_MSG, buf);

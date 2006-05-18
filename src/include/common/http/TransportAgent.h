@@ -35,6 +35,12 @@
     //
     #define DEFAULT_MAX_MSG_SIZE 0    
 
+    //
+    // This is the default value for the size of the buffer used to store the 
+    // incoming stram from server. It is expressed in byte     
+    //
+    #define DEFAULT_INTERNET_READ_BUFFER_SIZE  4096
+
     /*
      * This class is the transport agent responsible for messages exchange
      * over an HTTP connection.
@@ -49,6 +55,7 @@
 
         unsigned int timeout;
         unsigned int maxmsgsize;
+        unsigned int readBufferSize;
 
     public:
         TransportAgent() EXTRA_SECTION_03;
@@ -95,6 +102,18 @@
          * Returns the max msg size
          */
         unsigned int getMaxMsgSize()EXTRA_SECTION_03;
+
+        /**
+         * Sets the buffer size
+         *
+         * @param t the buffer size size in bytes
+         */
+        void setReadBufferSize(unsigned int t) EXTRA_SECTION_03;
+         
+        /**
+         * Returns the buffer size
+         */
+        unsigned int getReadBufferSize()EXTRA_SECTION_03;
 
 
         /*

@@ -56,3 +56,11 @@ void TransportAgent::setMaxMsgSize(unsigned int t) {
 unsigned int TransportAgent::getMaxMsgSize() {
     return maxmsgsize;
 }
+
+void TransportAgent::setReadBufferSize(unsigned int t) {
+    readBufferSize = t;
+}
+
+unsigned int TransportAgent::getReadBufferSize() {
+    return readBufferSize;
+}

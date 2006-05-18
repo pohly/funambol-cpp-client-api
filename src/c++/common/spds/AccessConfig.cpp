@@ -49,6 +49,7 @@ AccessConfig::AccessConfig() {
     maxMsgSize            = 0;
     maxModPerMsg          = 0;
     encryption            = FALSE;  // F = FALSE, T = TRUE
+    readBufferSize        = 0;
 }
 
 AccessConfig::AccessConfig(AccessConfig& s) {
@@ -298,6 +299,14 @@ unsigned long AccessConfig::getMaxMsgSize() {
     return maxMsgSize;
 }
 
+void AccessConfig::setReadBufferSize(unsigned long bufferSize) {
+    readBufferSize = bufferSize;
+}
+
+unsigned long AccessConfig::getReadBufferSize() {
+    return readBufferSize;
+}
+
 void AccessConfig::setMaxModPerMsg(unsigned long mod){
     maxModPerMsg = mod;
 }
@@ -364,7 +373,7 @@ void AccessConfig::assign(AccessConfig& s) {
     setClientNonce(s.getClientNonce());
     setMaxMsgSize(s.getMaxMsgSize());
     setMaxModPerMsg(s.getMaxModPerMsg());
-    
+    setReadBufferSize(s.getReadBufferSize());
     setEncryption  (s.getEncryption()  );
 
 	dirty = s.getDirty();

@@ -62,6 +62,8 @@
 #define PROPERTY_SOURCE_SENT           T("Sent"             )
 #define PROPERTY_ENCRYPTION            T("encryption"       )
 #define PROPERTY_SOURCE_ENCODING       T("encoding"         )
+#define PROPERTY_READ_BUFFER_SIZE      T("readBufferSize"   )
+
 
 
         

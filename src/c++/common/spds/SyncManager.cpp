@@ -103,10 +103,14 @@ void SyncManager::initialize() {
 
     maxMsgSize   = c.getMaxMsgSize();
     maxModPerMsg = 150;  // dafault value
+    readBufferSize = 5000; // default value
 
     if (c.getMaxModPerMsg() > 0)
         maxModPerMsg = c.getMaxModPerMsg();
     
+    if (c.getReadBufferSize() > 0)
+        readBufferSize = c.getReadBufferSize();
+
     syncMLBuilder.set(syncURL, deviceId, maxMsgSize);
     memset(credentialInfo, 0, 256*sizeof(BCHAR));
 }
@@ -277,9 +281,12 @@ int SyncManager::prepareSync(SyncSource** s) {
 
         if (transportAgent == NULL) {
             transportAgent = TransportAgentFactory::getTransportAgent(url, proxy);
+            transportAgent->setReadBufferSize(readBufferSize);
+
             if (maxMsgSize > 0) {
                 transportAgent->setMaxMsgSize(maxMsgSize);
             }
+            
         } else {
             transportAgent->setURL(url);
         }

@@ -156,6 +156,8 @@ BCHAR* PPC2003TransportAgent::sendMessage(const BCHAR* msg) {
     DWORD compare     = 0;    
     DWORD size = 0, read = 0;          
     DWORD    dwTimeout = 10000; 
+    char* bufferA = new char[readBufferSize+1];
+    memset(bufferA, 0, readBufferSize+1 * sizeof(char));
     
     cont    = TRUE;
     int t   = 0;            
@@ -303,7 +305,7 @@ BCHAR* PPC2003TransportAgent::sendMessage(const BCHAR* msg) {
         goto exit;        
 
     }
-    char bufferA[5000+1];
+    
     BCHAR* p        = NULL;  
 	p = response;
     (*p) = 0;
@@ -311,7 +313,7 @@ BCHAR* PPC2003TransportAgent::sendMessage(const BCHAR* msg) {
     int recsize = 0;
 
     do {
-        if (!InternetReadFile (request, (LPVOID)bufferA, 5000, &read)) {
+        if (!InternetReadFile (request, (LPVOID)bufferA, readBufferSize, &read)) {
             lastErrorCode = ERR_READING_CONTENT;
             bsprintf(lastErrorMsg, T("%s: %d"), T("InternetReadFile Error"), GetLastError());
 			LOG.error(lastErrorMsg);
@@ -360,6 +362,10 @@ BCHAR* PPC2003TransportAgent::sendMessage(const BCHAR* msg) {
     
     if (lastErrorCode != 0 && lastErrorCode == ERR_HTTP_TIME_OUT) {
         delete [] response; response = NULL;
+    }
+
+    if (bufferA) {
+        delete [] bufferA; bufferA = NULL;
     }
     EXITING(L"TransportAgent::sendMessage");
     return response;

@@ -87,7 +87,7 @@ class SyncManager {
                 
         unsigned int maxMsgSize;    // the max message size. If 0 it is not set
         unsigned int maxModPerMsg;  // the max modification per message
-
+        unsigned int readBufferSize; // the size of the buffer to store chunk of incoming stream.
         BCHAR  credentialInfo[256]; // used to store info for the des;b64 encription
     
         void initialize() EXTRA_SECTION_01;

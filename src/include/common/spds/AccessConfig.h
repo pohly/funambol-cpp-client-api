@@ -46,6 +46,7 @@ class AccessConfig {
 
         unsigned long maxMsgSize       ;
         unsigned long maxModPerMsg     ;
+        unsigned long readBufferSize   ;
         BOOL encryption                ;  // F = FALSE, T = TRUE
 
         unsigned int dirty;
@@ -224,6 +225,10 @@ class AccessConfig {
         void setMaxModPerMsg(unsigned long msgSize) EXTRA_SECTION_02;
 
         unsigned long getMaxModPerMsg() EXTRA_SECTION_02;
+        
+        void setReadBufferSize(unsigned long bufferSize);
+
+        unsigned long getReadBufferSize();
 
         /**
          * Has some of this values changed?
