@@ -18,10 +18,12 @@
 #include "http/constants.h"
 #include "http/HTTPHeader.h"
 #include "http/TransportAgent.h"
+#include "base/util/utils.h"
 
 TransportAgent::TransportAgent() {
     timeout = DEFAULT_MAX_TIMEOUT;
     maxmsgsize = DEFAULT_MAX_MSG_SIZE;
+    userAgent[0] = 0;
 }
 
 TransportAgent::TransportAgent(URL& newURL, Proxy& proxy, unsigned int timeout, unsigned int maxmsgsize) {
@@ -63,4 +65,13 @@ void TransportAgent::setReadBufferSize(unsigned int t) {
 
 unsigned int TransportAgent::getReadBufferSize() {
     return readBufferSize;
+}
+
+void TransportAgent::setUserAgent(BCHAR* ua) {
+    if (ua) 
+        bstrcpy(userAgent, ua);
+}
+
+BCHAR* TransportAgent::getUserAgent() {
+    return stringdup(userAgent);
 }

@@ -84,7 +84,7 @@ class SyncManager {
         
         BCHAR syncURL [512];
         BCHAR deviceId[32];  
-                
+        BCHAR userAgent[128];        
         unsigned int maxMsgSize;    // the max message size. If 0 it is not set
         unsigned int maxModPerMsg;  // the max modification per message
         unsigned int readBufferSize; // the size of the buffer to store chunk of incoming stream.

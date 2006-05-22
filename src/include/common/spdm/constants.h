@@ -63,6 +63,7 @@
 #define PROPERTY_ENCRYPTION            T("encryption"       )
 #define PROPERTY_SOURCE_ENCODING       T("encoding"         )
 #define PROPERTY_READ_BUFFER_SIZE      T("readBufferSize"   )
+#define PROPERTY_USER_AGENT            T("userAgent"        )
 
 
 

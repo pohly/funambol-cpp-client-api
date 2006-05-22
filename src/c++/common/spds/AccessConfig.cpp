@@ -50,6 +50,7 @@ AccessConfig::AccessConfig() {
     maxModPerMsg          = 0;
     encryption            = FALSE;  // F = FALSE, T = TRUE
     readBufferSize        = 0;
+    userAgent             = NULL;
 }
 
 AccessConfig::AccessConfig(AccessConfig& s) {
@@ -248,6 +249,14 @@ void AccessConfig::setProxyHost(const BCHAR* v) {
 	set(&proxyHost, v);
 	
     dirty |= DIRTY_PROXY_HOST;
+}
+
+const BCHAR* AccessConfig::getUserAgent() {    
+    return userAgent;	
+}
+
+void AccessConfig::setUserAgent(const BCHAR* v) {
+	set(&userAgent, v);	    
 }
 
 const BCHAR* AccessConfig::getSyncURL(const BCHAR* buf) {

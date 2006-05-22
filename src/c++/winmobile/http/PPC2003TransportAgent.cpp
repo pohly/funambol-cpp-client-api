@@ -177,9 +177,10 @@ BCHAR* PPC2003TransportAgent::sendMessage(const BCHAR* msg) {
               | INTERNET_FLAG_IGNORE_CERT_DATE_INVALID
               ;
     }
-
-    inet = InternetOpen (USER_AGENT, INTERNET_OPEN_TYPE_PRECONFIG, NULL, 0, 0);    
-
+    wchar_t* ua = toWideChar(userAgent);
+    inet = InternetOpen (ua, INTERNET_OPEN_TYPE_PRECONFIG, NULL, 0, 0);    
+    if (ua) {delete [] ua; ua = NULL; }
+    
     if (!inet) {
         lastErrorCode = ERR_NETWORK_INIT;
         bsprintf (lastErrorMsg, T("%s: %d"), T("InternetOpen Error"), GetLastError());

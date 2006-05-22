@@ -24,13 +24,13 @@
 
 class AccessConfig {
     private:
-        BCHAR*      username         ;
-        BCHAR*      password         ;
-        BCHAR*      deviceId         ;
+        BCHAR*        username         ;
+        BCHAR*        password         ;
+        BCHAR*        deviceId         ;
         BOOL          useProxy         ;
-        BCHAR*      proxyHost        ;
+        BCHAR*        proxyHost        ;
         int           proxyPort        ;
-        BCHAR*      syncURL          ;
+        BCHAR*        syncURL          ;
         unsigned long beginTimestamp   ;
         unsigned long endTimestamp     ;
         SyncMode      firstTimeSyncMode;
@@ -48,6 +48,7 @@ class AccessConfig {
         unsigned long maxModPerMsg     ;
         unsigned long readBufferSize   ;
         BOOL encryption                ;  // F = FALSE, T = TRUE
+        BCHAR*        userAgent        ;
 
         unsigned int dirty;
 
@@ -229,6 +230,10 @@ class AccessConfig {
         void setReadBufferSize(unsigned long bufferSize);
 
         unsigned long getReadBufferSize();
+
+        const BCHAR* getUserAgent();
+
+        void setUserAgent(const BCHAR* v);
 
         /**
          * Has some of this values changed?

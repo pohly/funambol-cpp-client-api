@@ -301,6 +301,10 @@ BOOL DMTClientConfig::readAccessConfig(ManagementNode& n) {
     accessConfig.setReadBufferSize(bstrtol(tmp, NULL, 10));
     delete [] tmp;
     
+    tmp = n.getPropertyValue(PROPERTY_USER_AGENT);     
+    accessConfig.setUserAgent(tmp);
+    delete [] tmp;
+
     return TRUE;
 }
 
@@ -345,6 +349,8 @@ void DMTClientConfig::saveAccessConfig(ManagementNode& n) {
     
     n.setPropertyValue(PROPERTY_ENCRYPTION,
 		(accessConfig.getEncryption() ? T("T") : T("F") ) ); 
+
+    n.setPropertyValue(PROPERTY_USER_AGENT, accessConfig.getUserAgent());
 }
 
 BOOL DMTClientConfig::readSourceConfig(int i, ManagementNode& n) {    

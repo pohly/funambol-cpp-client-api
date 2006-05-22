@@ -56,6 +56,7 @@
         unsigned int timeout;
         unsigned int maxmsgsize;
         unsigned int readBufferSize;
+        BCHAR userAgent[128];
 
     public:
         TransportAgent() EXTRA_SECTION_03;
@@ -109,7 +110,11 @@
          * @param t the buffer size size in bytes
          */
         void setReadBufferSize(unsigned int t) EXTRA_SECTION_03;
-         
+        
+        void setUserAgent(BCHAR* ua);
+
+        BCHAR* getUserAgent();
+
         /**
          * Returns the buffer size
          */

@@ -22,6 +22,7 @@
 #define METHOD_GET          TEXT("GET")
 #define METHOD_POST         TEXT("POST")
 #define USER_AGENT          TEXT("Funambol SyncML Client")
+#define BCHAR_USER_AGENT    T("Funambol SyncML Client")
 #define SYNCML_CONTENT_TYPE TEXT("application/vnd.syncml+xml")
 
 #define HTTP_OK            200
