@@ -51,6 +51,9 @@
     #include "http/TransportAgent.h"
 
 
+	#define OLPLUGIN_USER_AGENT		TEXT("Funambol Outlook Plug-in v. 3.0.6")
+
+
     /*
      * This class is the transport agent responsible for messages exchange
      * over an HTTP connection.
