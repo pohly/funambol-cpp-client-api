@@ -116,7 +116,9 @@ BCHAR* Win32TransportAgent::sendMessage(const BCHAR* msg) {
     //
     // Open Internet connection.
     //
-    inet = InternetOpen (OLPLUGIN_USER_AGENT, INTERNET_OPEN_TYPE_PRECONFIG, NULL, 0, 0);
+	wchar_t* ua = toWideChar(userAgent);
+    inet = InternetOpen (ua, INTERNET_OPEN_TYPE_PRECONFIG, NULL, 0, 0);
+	if (ua) {delete [] ua; ua = NULL; }
 
     if (!inet) {
         lastErrorCode = ERR_NETWORK_INIT;
