@@ -1,6 +1,6 @@
 <?html version="1.0" enconding="UTF-8"?>
 
-<!-- $Id: build.xml,v 1.3 2006-05-24 09:23:31 magi Exp $
+<!-- $Id: build.xml,v 1.4 2006-05-24 09:44:18 magi Exp $
 =============================================================================
 Forge file for Funambol C++ API
 
@@ -33,8 +33,8 @@ Forge file for Funambol C++ API
     -->
     <target name="all" depends="clean, mkdirs, build, checkout, forge"/>
     
-    <target name="no-checkout" depends="clean, mkdirs, build, forge"/>
-
+    <!--target name="no-checkout" depends="clean, mkdirs, build, forge"/-->
+    <target name="no-checkout" depends="clean, mkdirs, build, forge-no-checkout"/>
     <!--
     ========================================================================
       MKMDIRS
@@ -97,7 +97,45 @@ Forge file for Funambol C++ API
       </zip>
     </target>
 
+    
+     <!--
+    ========================================================================
+      FORGE
+    ========================================================================
+    -->
+    <target name="forge-no-checkout" depends="init">
 
+      <!--
+          Copy all stuffs.
+          Note that only public include files are released.
+      -->
+      <copy todir="${dir.forge}/Funambol/sdk/c++/">
+        <fileset dir="..">
+            <exclude name="**/${cppapi.targetwm5}/"/>
+            <exclude name="**/${cppapi.targetppc}/"/>
+            <exclude name="**/${cppapi.targetppc}/**"/>
+            <exclude name="**/${cppapi.targetwm5}/**"/>
+            <exclude name="**/*.user"/>
+            <exclude name="**/*.old*"/> <!-- old file name -->
+            <exclude name="**/*.ori*"/> <!-- ori file name -->    
+            <exclude name="**/*.bak*"/> <!-- bak file name -->    
+            <exclude name="**/output/"/>        
+            <exclude name="**/output/**"/>    
+            <exclude name="**/*.suo*"/> <!-- project extension-->
+            <exclude name="**/*.vcb*"/> <!-- project extension-->
+            <exclude name="**/*.ncb*"/> <!-- project extension-->   
+            <exclude name="**/CVS/"/> <!-- CVS-->                           
+            <exclude name="**/CVS/**"/> <!-- CVS-->                           
+        </fileset>             
+      </copy>
+      <!--
+          Zip up everything
+      -->
+      <zip destfile="output/${package.name}.zip">
+        <fileset dir="${dir.forge}" includes="**/*" excludes="**/CVS"/>
+      </zip>
+    </target>
+    
     <!--
     ========================================================================
     CLEAN
