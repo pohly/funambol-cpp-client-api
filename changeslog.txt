@@ -1,5 +1,10 @@
 Funambol SDK C++ 3.0.17
 ------------------------- 
+2006-05-24:
+    Enanchement: Adding the version number to the user agent
+
+Funambol SDK C++ 3.0.16
+------------------------- 
 2006-05-16:
   - fixed bugs:
       305019	Ordering of elements in File object incorrect

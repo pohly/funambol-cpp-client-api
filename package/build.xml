@@ -1,6 +1,6 @@
 <?html version="1.0" enconding="UTF-8"?>
 
-<!-- $Id: build.xml,v 1.2 2006-02-15 16:51:04 magi Exp $
+<!-- $Id: build.xml,v 1.3 2006-05-24 09:23:31 magi Exp $
 =============================================================================
 Forge file for Funambol C++ API
 
@@ -18,7 +18,7 @@ Forge file for Funambol C++ API
 
         <property file="release.properties"/>
 
-        <property name="package.name" value="funambol-c++-api-${release.major}.${release.minor}.${build.number}"/>
+        <property name="package.name" value="funambol-cpp-api-${release.major}.${release.minor}.${build.number}"/>
         <property name="dir.forge" value="output/${package.name}"/>
 
         <property file="${user.home}/api-native-build.properties"/>
