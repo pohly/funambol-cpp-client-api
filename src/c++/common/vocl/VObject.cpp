@@ -19,6 +19,7 @@
 
 #include "base/util/utils.h"
 #include "base/util/WString.h"
+#include "base/Log.h"
 #include "vocl/VObject.h"
 #include "string.h"
 
@@ -330,6 +331,24 @@ void VObject::toNativeEncoding()
         }
         native[out] = 0;
         out++;
+
+        // charset handling:
+        // - doesn't exist at the moment, vCards have to be in ASCII or UTF-8
+        // - an explicit CHARSET parameter is removed because its parameter
+        //   value might differ between 2.1 and 3.0 (quotation marks allowed in
+        //   3.0 but not 2.1) and thus would require extra code to convert it;
+        //   when charsets really get supported this needs to be addressed
+        wchar_t *charset = vprop->getParameterValue(TEXT("CHARSET"));
+        if (charset) {
+            // proper decoding of the value and the property value text
+            // would go here, for the time being we just remove the
+            // value
+            if (wcsicmp(charset, TEXT("UTF-8")) &&
+                wcsicmp(charset, TEXT("\"UTF-8\""))) {
+                LOG.error("ignoring unsupported charset");
+            }
+            vprop->removeParameter(TEXT("CHARSET"));
+        }
 
         vprop->setValue(native);
         delete [] native;
