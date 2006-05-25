@@ -1,0 +1,106 @@
+A patch with replaces the fixed-sized buffer with a WString.
+It also fixes a memory leak due to copying the eof string into a
+dynamically allocated buffer instead of just using pointers to the
+right string.
+
+
+#
+# Patch managed by http://www.holgerschurig.de/patcher.html
+#
+
+--- native/src/c++/common/vocl/VObject.cpp~vocl-tostring
++++ native/src/c++/common/vocl/VObject.cpp
+@@ -120,41 +120,40 @@
+ 
+ wchar_t* VObject::toString() {
+     
+-    wchar_t* strVObject = new wchar_t[VOBJECT_BUFFER];
+-    wcscpy(strVObject,TEXT(""));
+-    wchar_t* eof = new wchar_t[EOF_LENGHT];
++    WString strVObject;
++    const wchar_t* eof;
+ 
+     if(version && !wcscmp(version,TEXT("3.0")))
+-        wcscpy(eof, TEXT("\n"));
++        eof = TEXT("\n");
+     else
+-        wcscpy(eof, TEXT("\r\n"));
++        eof = TEXT("\r\n");
+ 
+     for (int i=0; i<properties->size(); i++) {
+         VProperty *property;
+         property = (VProperty*)properties->get(i);
+         if(property->containsParameter(TEXT("GROUP"))) {
+-           wcscat(strVObject,property->getParameterValue(TEXT("GROUP")));
+-           wcscat(strVObject,TEXT("."));
++           strVObject.append(property->getParameterValue(TEXT("GROUP")));
++           strVObject.append(TEXT("."));
+            property->removeParameter(TEXT("GROUP"));
+         }
+-        wcscat(strVObject,property->getName());
++        strVObject.append(property->getName());
+         
+         for(int k=0; k<property->parameterCount(); k++) {
+-            wcscat(strVObject,TEXT(";"));
++            strVObject.append(TEXT(";"));
+ 			
+             wchar_t* paramName = new wchar_t[wcslen(property->getParameter(k))+1];
+             wcscpy(paramName, property->getParameter(k));
+ 			
+-            wcscat(strVObject,paramName);
++            strVObject.append(paramName);
+             const wchar_t *value = property->getParameterValue(k);
+             if(value) {
+-                wcscat(strVObject,TEXT("="));
+-                wcscat(strVObject,value);
++                strVObject.append(TEXT("="));
++                strVObject.append(value);
+             }
+             delete [] paramName; paramName = NULL;
+         }
+ 
+-        wcscat(strVObject,TEXT(":"));
++        strVObject.append(TEXT(":"));
+         if(property->getValue()) {
+             if(property->equalsEncoding(TEXT("BASE64"))) {
+                 wchar_t delim[] = TEXT("\r\n ");
+@@ -173,18 +172,22 @@
+                     index+=fold;
+                 }
+                 
+-                wcscat(strVObject,output);
++                strVObject.append(output);
+                 // the extra empty line is needed because the Bachus-Naur 
+                 // specification of vCard 2.1 says so
+-                wcscat(strVObject, eof);
++                strVObject.append(eof);
+                 delete [] output;
+             } 
+             else
+-                wcscat(strVObject,property->getValue());
++                strVObject.append(property->getValue());
+         }
+-        wcscat(strVObject,eof);
++        strVObject.append(eof);
+     }		    
+-    return strVObject;
++
++    // memory must be free by caller with delete []
++    wchar_t *str = new wchar_t[strVObject.length() + 1];
++    wcscpy(str, strVObject.c_str());
++    return str;
+ }
+ 
+ void VObject::insertProperty(VProperty* property) {
+--- native/src/include/common/vocl/VObject.h~vocl-tostring
++++ native/src/include/common/vocl/VObject.h
+@@ -1,9 +1,6 @@
+ #ifndef INCL_VIRTUAL_OBJECT
+ #define INCL_VIRTUAL_OBJECT
+ 
+-#define VOBJECT_BUFFER 5000
+-#define EOF_LENGHT     5 
+-
+ #include "VProperty.h"
+ 
+ class VObject {

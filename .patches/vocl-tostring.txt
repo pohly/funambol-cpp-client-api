@@ -1,0 +1,5 @@
+A patch with replaces the fixed-sized buffer with a WString.
+It also fixes a memory leak due to copying the eof string into a
+dynamically allocated buffer instead of just using pointers to the
+right string.
+

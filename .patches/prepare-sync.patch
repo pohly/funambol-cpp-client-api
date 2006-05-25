@@ -17,7 +17,7 @@
 
 --- native/src/c++/common/spds/SyncManager.cpp~prepare-sync
 +++ native/src/c++/common/spds/SyncManager.cpp
-@@ -198,20 +198,35 @@
+@@ -208,20 +208,35 @@
              check[count] = 0;
          }
      }
