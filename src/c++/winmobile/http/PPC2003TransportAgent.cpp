@@ -79,10 +79,13 @@ typedef struct
     int      msgLength;   
 } PARM_HTTP_SEND_REQUEST;
 
+#if 0
+// This code is not used at the moment.
 DWORD WINAPI WorkerFunctionInternetConnect( IN LPVOID vThreadParm);
 DWORD WINAPI WorkerFunctionInternetReadFile(IN LPVOID vThreadParm);
 DWORD WINAPI WorkerFunctionHttpOpenRequest( IN LPVOID vThreadParm);
 DWORD WINAPI WorkerFunctionHttpSendRequest( IN PARM_HTTP_SEND_REQUEST vThreadParm);
+#endif
 
 int sumRead, previousNumRead;
 int sumByteSent, previousNumWrite;
@@ -124,15 +127,15 @@ PPC2003TransportAgent::PPC2003TransportAgent(URL& newURL, Proxy& newProxy,
     } else {
         setTimeout(maxResponseTimeout);
     }
+
     // used by default. check connection before...
-    
     if (!EstablishConnection()) {
-        lastErrorCode = ERR_INTERNET_CONNECTION_MISSING;
-        bsprintf(lastErrorMsg, T("%s: %d"),
-                 T("Internet Connection Missing"),
-                 ERR_INTERNET_CONNECTION_MISSING);
-    }    
-   
+//        lastErrorCode = ERR_INTERNET_CONNECTION_MISSING;
+//        bsprintf(lastErrorMsg, T("%s: %d"),
+//                 T("Internet Connection Missing"),
+//                 ERR_INTERNET_CONNECTION_MISSING);
+        LOG.error("Warning: internet connection missing.");
+    }
     
     EXITING(T("PPC2003TransportAgent::PPC2003TransportAgent"));
 }
@@ -236,9 +239,8 @@ BCHAR* PPC2003TransportAgent::sendMessage(const BCHAR* msg) {
     wsprintf(headers, TEXT("Content-Type: %s\r\nContent-Length: %d"),
                       SYNCML_CONTENT_TYPE, contentLength);
     
-
     
-    /*
+#if 0
     // Send a request to the HTTP server.
     PARM_HTTP_SEND_REQUEST     threadParmHttpSendRequest;    
 
@@ -252,7 +254,8 @@ BCHAR* PPC2003TransportAgent::sendMessage(const BCHAR* msg) {
 	    LOG.error(lastErrorMsg);
         goto exit;
     }
-    */
+#endif
+
     // Send a request to the HTTP server.
     if (!HttpSendRequest (request, headers, wcslen(headers), (void*)msg, contentLength)) {
         lastErrorCode = ERR_CONNECT;
@@ -373,7 +376,7 @@ BCHAR* PPC2003TransportAgent::sendMessage(const BCHAR* msg) {
 }
 
 
-
+#if 0
  /*
 * The function try to read the content of a file with InternetReadFile . It was called by a thread in the main
 * procedure. 
@@ -518,5 +521,5 @@ DWORD WINAPI WorkerFunctionHttpSendRequest(IN PARM_HTTP_SEND_REQUEST vThreadParm
     return 0;
 
 }
-
+#endif
 
