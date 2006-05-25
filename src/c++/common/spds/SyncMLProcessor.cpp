@@ -155,7 +155,7 @@ int SyncMLProcessor::processItemStatus(SyncSource& source, SyncBody* syncBody) {
                 if ((ret = alertStatus) < 0)
                     LOG.error("processItemStatus: status not found in SYNC");
                 else
-                    LOG.error("processItemStatus: server sent status %d in SYNC");                
+                    LOG.error("processItemStatus: server sent status %d in SYNC", alertStatus);                
                 break;            
             }
             
