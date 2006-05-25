@@ -1,9 +1,6 @@
 #ifndef INCL_VIRTUAL_OBJECT
 #define INCL_VIRTUAL_OBJECT
 
-#define VOBJECT_BUFFER 5000
-#define EOF_LENGHT     5 
-
 #include "VProperty.h"
 
 class VObject {

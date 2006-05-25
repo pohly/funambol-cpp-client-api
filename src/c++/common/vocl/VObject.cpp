@@ -120,41 +120,43 @@ VProperty* VObject::getProperty(wchar_t* propName) {
 
 wchar_t* VObject::toString() {
     
-    wchar_t* strVObject = new wchar_t[VOBJECT_BUFFER];
-    wcscpy(strVObject,TEXT(""));
-    wchar_t* eof = new wchar_t[EOF_LENGHT];
+    WString strVObject;
+    const wchar_t* eof;
 
     if(version && !wcscmp(version,TEXT("3.0")))
-        wcscpy(eof, TEXT("\n"));
+        eof = TEXT("\n");
     else
-        wcscpy(eof, TEXT("\r\n"));
+        eof = TEXT("\r\n");
+
+    // let's reserve some space to avoid reallocation in most cases
+    strVObject.reserve(5000);
 
     for (int i=0; i<properties->size(); i++) {
         VProperty *property;
         property = (VProperty*)properties->get(i);
         if(property->containsParameter(TEXT("GROUP"))) {
-           wcscat(strVObject,property->getParameterValue(TEXT("GROUP")));
-           wcscat(strVObject,TEXT("."));
+           strVObject.append(property->getParameterValue(TEXT("GROUP")));
+           strVObject.append(TEXT("."));
            property->removeParameter(TEXT("GROUP"));
         }
-        wcscat(strVObject,property->getName());
+        strVObject.append(property->getName());
         
         for(int k=0; k<property->parameterCount(); k++) {
-            wcscat(strVObject,TEXT(";"));
+            strVObject.append(TEXT(";"));
 			
             wchar_t* paramName = new wchar_t[wcslen(property->getParameter(k))+1];
             wcscpy(paramName, property->getParameter(k));
 			
-            wcscat(strVObject,paramName);
+            strVObject.append(paramName);
             const wchar_t *value = property->getParameterValue(k);
             if(value) {
-                wcscat(strVObject,TEXT("="));
-                wcscat(strVObject,value);
+                strVObject.append(TEXT("="));
+                strVObject.append(value);
             }
             delete [] paramName; paramName = NULL;
         }
 
-        wcscat(strVObject,TEXT(":"));
+        strVObject.append(TEXT(":"));
         if(property->getValue()) {
             if(property->equalsEncoding(TEXT("BASE64"))) {
                 wchar_t delim[] = TEXT("\r\n ");
@@ -173,18 +175,21 @@ wchar_t* VObject::toString() {
                     index+=fold;
                 }
                 
-                wcscat(strVObject,output);
+                strVObject.append(output);
                 // the extra empty line is needed because the Bachus-Naur 
                 // specification of vCard 2.1 says so
-                wcscat(strVObject, eof);
+                strVObject.append(eof);
                 delete [] output;
             } 
             else
-                wcscat(strVObject,property->getValue());
+                strVObject.append(property->getValue());
         }
-        wcscat(strVObject,eof);
+        strVObject.append(eof);
     }		    
-    return strVObject;
+
+    // memory must be free by caller with delete []
+    wchar_t *str = wstrdup(strVObject);
+    return str;
 }
 
 void VObject::insertProperty(VProperty* property) {
