@@ -37,7 +37,7 @@
 #include "spdm/DMTreeFactory.h"
 #include "spdm/ManagementNode.h"
 
-#ifdef _WIN32_WCE
+#if 0 //def _WIN32_WCE
 static wchar_t *convertSlashes(const wchar_t* str) {
     int i, len;
 
@@ -146,7 +146,7 @@ int settings(const char *rootContext)
     delete node;
 
     // Contact sync source parameters
-    sprintf(nodeName, "%s%s", rootContext, "/spds/sources/contact");
+    sprintf(nodeName, "%s%s", rootContext, "/spds/sources/contacts");
 
     node = dmt->getManagementNode(nodeName);
     if ( ! node ) {
@@ -165,7 +165,7 @@ int settings(const char *rootContext)
 
     delete node;
 
-    // Contact sync source parameters
+    // Appointments sync source parameters
     sprintf(nodeName, "%s%s", rootContext, "/spds/sources/appointments");
 
     node = dmt->getManagementNode(nodeName);
@@ -185,7 +185,67 @@ int settings(const char *rootContext)
 
     delete node;
 
-    // Contact sync source parameters
+    // Tasks sync source parameters
+    sprintf(nodeName, "%s%s", rootContext, "/spds/sources/tasks");
+
+    node = dmt->getManagementNode(nodeName);
+    if ( ! node ) {
+        lastErrorCode = ERR_INVALID_CONTEXT;
+        goto finally;
+    }
+
+    node->setPropertyValue(T("sync"), T("none"));
+    node->setPropertyValue(T("last"), T("0"));
+    node->setPropertyValue(T("name"), T("task"));
+    node->setPropertyValue(T("type"), T("text/x-s4j-sift"));
+    node->setPropertyValue(T("syncModes"), T("slow,two-way,refresh"));
+    node->setPropertyValue(T("uri"),  T("stask"));
+    node->setPropertyValue(T("useSIF"), T("1"));
+    node->setPropertyValue(T("encoding"), T("b64"));
+
+    delete node;
+
+    // Notes sync source parameters
+    sprintf(nodeName, "%s%s", rootContext, "/spds/sources/notes");
+
+    node = dmt->getManagementNode(nodeName);
+    if ( ! node ) {
+        lastErrorCode = ERR_INVALID_CONTEXT;
+        goto finally;
+    }
+
+    node->setPropertyValue(T("sync"), T("none"));
+    node->setPropertyValue(T("last"), T("0"));
+    node->setPropertyValue(T("name"), T("note"));
+    node->setPropertyValue(T("type"), T("text/x-s4j-sifn"));
+    node->setPropertyValue(T("syncModes"), T("slow,two-way,refresh"));
+    node->setPropertyValue(T("uri"),  T("stask"));
+    node->setPropertyValue(T("useSIF"), T("1"));
+    node->setPropertyValue(T("encoding"), T("b64"));
+
+    delete node;
+
+    // Briefcase sync source parameters
+    sprintf(nodeName, "%s%s", rootContext, "/spds/sources/briefcase");
+
+    node = dmt->getManagementNode(nodeName);
+    if ( ! node ) {
+        lastErrorCode = ERR_INVALID_CONTEXT;
+        goto finally;
+    }
+
+    node->setPropertyValue(T("sync"), T("none"));
+    node->setPropertyValue(T("last"), T("0"));
+    node->setPropertyValue(T("name"), T("briefcase"));
+    node->setPropertyValue(T("type"), T("application/*"));
+    node->setPropertyValue(T("syncModes"), T("slow,two-way,refresh"));
+    node->setPropertyValue(T("uri"),  T("briefcase"));
+    node->setPropertyValue(T("useSIF"), T("1"));
+    node->setPropertyValue(T("encoding"), T("b64"));
+
+    delete node;
+
+    // Mail sync source parameters
     sprintf(nodeName, "%s%s", rootContext, "/spds/sources/mails");
 
     node = dmt->getManagementNode(nodeName);
@@ -197,16 +257,19 @@ int settings(const char *rootContext)
     node->setPropertyValue(T("sync"), T("none"));
     node->setPropertyValue(T("last"), T("0"));
     node->setPropertyValue(T("name"), T("mail"));
-    node->setPropertyValue(T("type"), T("text/x-s4j-sife"));
+    node->setPropertyValue(T("type"), T("application/vnd.omads-email+xml"));
     node->setPropertyValue(T("syncModes"), T("slow,two-way,refresh"));
     node->setPropertyValue(T("uri"), T("mail"));
     node->setPropertyValue(T("useSIF"), T("1"));
-    node->setPropertyValue(T("encoding"), T("b64"));
+    node->setPropertyValue(T("encoding"), T("text/plain"));
     node->setPropertyValue(T("Inbox" ), T("1" ) );
     node->setPropertyValue(T("Outbox" ), T("1" ) );
     node->setPropertyValue(T("Trash" ), T("0" ) );
     node->setPropertyValue(T("Sent" ), T("1" ) );
     node->setPropertyValue(T("Draft" ), T("0" ) );
+    node->setPropertyValue(T("attachSize" ), T("-1" ) );
+    node->setPropertyValue(T("bodySyze" ), T("-1" ) );
+    node->setPropertyValue(T("downloadAge" ), T("-1" ) );
     
 finally:
     if (node)
