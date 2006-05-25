@@ -130,11 +130,14 @@ PPC2003TransportAgent::PPC2003TransportAgent(URL& newURL, Proxy& newProxy,
 
     // used by default. check connection before...
     if (!EstablishConnection()) {
-//        lastErrorCode = ERR_INTERNET_CONNECTION_MISSING;
-//        bsprintf(lastErrorMsg, T("%s: %d"),
-//                 T("Internet Connection Missing"),
-//                 ERR_INTERNET_CONNECTION_MISSING);
+#ifdef WIN32_PLATFORM_PSPC
+        lastErrorCode = ERR_INTERNET_CONNECTION_MISSING;
+        bsprintf(lastErrorMsg, T("%s: %d"),
+                 T("Internet Connection Missing"),
+                 ERR_INTERNET_CONNECTION_MISSING);
+#else
         LOG.error("Warning: internet connection missing.");
+#endif
     }
     
     EXITING(T("PPC2003TransportAgent::PPC2003TransportAgent"));
