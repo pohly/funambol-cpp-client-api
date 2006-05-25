@@ -226,12 +226,14 @@ size_t StringBuffer::replace(const BCHAR *from, const BCHAR *to, size_t pos)
 
     BCHAR *p = bstrstr(s+pos, from);
     if (p) {
+        size_t fpos = p - s;
         size_t flen = bstrlen(from), tlen = bstrlen(to);
         BCHAR *tail = 0;
         int ldiff = tlen - flen ;
 
         // reallocate if needed
         getmem(length() + ldiff);
+        p = s + fpos;            // ensure that p is valid again 
         // check is there is a remainder after the replaced token
         if( p[flen] ) {
             tail = new BCHAR[length()];
@@ -254,6 +256,7 @@ int StringBuffer::replaceAll(const BCHAR *from, const BCHAR *to, size_t pos) {
     int i=0;
     int len = strlen(to);
     size_t next;
+
     for(next=replace(from, to, pos); next != npos; next=replace(from,to,next + len) ) {
         i++;
     }
