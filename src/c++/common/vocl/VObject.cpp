@@ -348,8 +348,8 @@ void VObject::toNativeEncoding()
             // proper decoding of the value and the property value text
             // would go here, for the time being we just remove the
             // value
-            if (wcsicmp(charset, TEXT("UTF-8")) &&
-                wcsicmp(charset, TEXT("\"UTF-8\""))) {
+            if (_wcsicmp(charset, TEXT("UTF-8")) &&
+                _wcsicmp(charset, TEXT("\"UTF-8\""))) {
                 LOG.error("ignoring unsupported charset");
             }
             vprop->removeParameter(TEXT("CHARSET"));
