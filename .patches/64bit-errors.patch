@@ -1,0 +1,74 @@
+Problem:
+
+ /scratch/gcc-4.1.1-amd64/bin/x86_64-pc-linux-gnu-g++ -DHAVE_CONFIG_H -I. -I/scratch/work/sync-cross/src/client-api/build/autotools/src -I.. 
+-I/scratch/work/sync-cross/src/client-api/build/autotools/src/../../../src/include/posix -I/scratch/work/sync-cross/src/client-api/build/auto
+tools/src/../../../src/include/common -DAUTOTOOLS -I/usr/include -g -MT EmailData.lo -MD -MP -MF .deps/EmailData.Tpo -c /scratch/work/sync-cr
+oss/src/client-api/build/autotools/src/../../../src/c++/common/spds/EmailData.cpp -o EmailData.o
+/scratch/work/sync-cross/src/client-api/build/autotools/src/../../../src/c++/common/spds/EmailData.cpp: In function ‘bool checkFlag(const cha
+r*, const char*)’:
+/scratch/work/sync-cross/src/client-api/build/autotools/src/../../../src/c++/common/spds/EmailData.cpp:43: error: no matching function for ca
+ll to ‘XMLProcessor::getEscapedElementContent(const char*&, const char*&, int, size_t*, size_t*)’
+/scratch/work/sync-cross/src/client-api/build/autotools/src/../../../src/include/common/base/util/XMLProcessor.h:78: note: candidates are: st
+atic const BCHAR* XMLProcessor::getEscapedElementContent(const BCHAR*, const BCHAR*, unsigned int*, unsigned int*, unsigned int*)
+/scratch/work/sync-cross/src/client-api/build/autotools/src/../../../src/c++/common/spds/EmailData.cpp: In member function ‘int EmailData::pa
+rse(const BCHAR*, size_t)’:
+/scratch/work/sync-cross/src/client-api/build/autotools/src/../../../src/c++/common/spds/EmailData.cpp:70: error: no matching function for ca
+ll to ‘XMLProcessor::getElementContent(const BCHAR*&, const char [9], int, size_t*, size_t*)’
+/scratch/work/sync-cross/src/client-api/build/autotools/src/../../../src/include/common/base/util/XMLProcessor.h:54: note: candidates are: st
+atic BCHAR* XMLProcessor::getElementContent(const BCHAR*, const BCHAR*, unsigned int*)
+/scratch/work/sync-cross/src/client-api/build/autotools/src/../../../src/include/common/base/util/XMLProcessor.h:66: note:                 st
+atic const BCHAR* XMLProcessor::getElementContent(const BCHAR*, const BCHAR*, unsigned int*, unsigned int*, unsigned int*)
+/scratch/work/sync-cross/src/client-api/build/autotools/src/../../../src/c++/common/spds/EmailData.cpp:75: error: no matching function for ca
+ll to ‘XMLProcessor::getElementContent(const BCHAR*&, const char [8], int, size_t*, size_t*)’
+/scratch/work/sync-cross/src/client-api/build/autotools/src/../../../src/include/common/base/util/XMLProcessor.h:54: note: candidates are: st
+atic BCHAR* XMLProcessor::getElementContent(const BCHAR*, const BCHAR*, unsigned int*)
+/scratch/work/sync-cross/src/client-api/build/autotools/src/../../../src/include/common/base/util/XMLProcessor.h:66: note:                 st
+atic const BCHAR* XMLProcessor::getElementContent(const BCHAR*, const BCHAR*, unsigned int*, unsigned int*, unsigned int*)
+/scratch/work/sync-cross/src/client-api/build/autotools/src/../../../src/c++/common/spds/EmailData.cpp:80: error: no matching function for ca
+ll to ‘XMLProcessor::getElementContent(const BCHAR*&, const char [9], int, size_t*, size_t*)’
+/scratch/work/sync-cross/src/client-api/build/autotools/src/../../../src/include/common/base/util/XMLProcessor.h:54: note: candidates are: st
+atic BCHAR* XMLProcessor::getElementContent(const BCHAR*, const BCHAR*, unsigned int*)
+/scratch/work/sync-cross/src/client-api/build/autotools/src/../../../src/include/common/base/util/XMLProcessor.h:66: note:                 st
+atic const BCHAR* XMLProcessor::getElementContent(const BCHAR*, const BCHAR*, unsigned int*, unsigned int*, unsigned int*)
+/scratch/work/sync-cross/src/client-api/build/autotools/src/../../../src/c++/common/spds/EmailData.cpp:86: error: no matching function for ca
+ll to ‘XMLProcessor::getElementContent(const BCHAR*&, const char [10], int, size_t*, size_t*)’
+/scratch/work/sync-cross/src/client-api/build/autotools/src/../../../src/include/common/base/util/XMLProcessor.h:54: note: candidates are: st
+atic BCHAR* XMLProcessor::getElementContent(const BCHAR*, const BCHAR*, unsigned int*)
+/scratch/work/sync-cross/src/client-api/build/autotools/src/../../../src/include/common/base/util/XMLProcessor.h:66: note:                 st
+atic const BCHAR* XMLProcessor::getElementContent(const BCHAR*, const BCHAR*, unsigned int*, unsigned int*, unsigned int*)
+make[5]: *** [EmailData.lo] Error 1
+
+-----------------------------------------------------------
+
+Solution:
+
+The correct solution would be to use size_t in the XMLProcessor,
+but that requires more changes than simply adapting EmailData.cpp
+to the usage of "unsigned int" as type for number of bytes.
+
+Thus the patch changes EmailData.cpp.
+
+#
+# Patch managed by http://www.holgerschurig.de/patcher.html
+#
+
+--- native/src/c++/common/spds/EmailData.cpp~64bit-errors
++++ native/src/c++/common/spds/EmailData.cpp
+@@ -37,7 +37,7 @@
+ 
+ static inline bool checkFlag(const char *xml, const char *field)
+ {
+-    size_t start = 0, end = 0;
++    unsigned int start = 0, end = 0;
+     bool ret = false;
+ 
+     if( XMLProcessor::getEscapedElementContent(xml, field, NULL, &start, &end) ) {
+@@ -58,7 +58,7 @@
+ int EmailData::parse(const BCHAR *msg, size_t len)
+ {
+     int ret = 0;
+-    size_t start, end;
++    unsigned int start, end;
+     
+     // Get attributes
+     read      = checkFlag(msg, EMAIL_READ);
