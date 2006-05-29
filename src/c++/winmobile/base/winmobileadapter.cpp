@@ -283,7 +283,7 @@ static Codepage encodings[] = {
 
 
 long utf8len(const BCHAR* s) {
-	 return s ? bstrlen(s) : 0;
+     return s ? bstrlen(s) : 0;
 }
 
 char* wc2utf8(const BCHAR* s, char* d, unsigned long dsize) {
@@ -302,7 +302,7 @@ char* wc2utf8(const BCHAR* s, char* d, unsigned long dsize) {
         d = new char[dsize+1];
     }        
     
-	bstrcpy( d, s );
+    bstrcpy( d, s );
                                     
     return d;
 }
@@ -416,11 +416,11 @@ bool saveFile(const char *filename,
 static int findCodePage(const BCHAR *encoding)
 {
     if (encoding){
-  	    for(int i=0; encodings[i].name; i++) {
-	        if(bstricmp(encodings[i].name, encoding) == 0) {
+        for(int i=0; encodings[i].name; i++) {
+            if(bstricmp(encodings[i].name, encoding) == 0) {
                 // Found
                 return encodings[i].codepage_id;
-	        }
+            }
         }
         // Not found
         bsprintf(logmsg, T("Invalid encoding: %s"), encoding);
@@ -437,10 +437,10 @@ static size_t getLenEncoding(const wchar_t* s, int codepage)
 
     int len = wcslen(s);
 
-	if (!len)
+    if (!len)
         return 0;
 
-	long k = WideCharToMultiByte (codepage, 0, s, len, 0, 0, 0, 0);
+    long k = WideCharToMultiByte (codepage, 0, s, len, 0, 0, 0, 0);
 
     return (k != 0) ? (long)k : -1;
 }
@@ -452,8 +452,8 @@ size_t getLenEncoding(const WCHAR* s, const BCHAR* encoding)
 
 char* toMultibyte(const WCHAR *wc, const BCHAR *encoding)
 {
-	if (!wc) {
-        return NULL;
+    if (!wc) {
+        return 0;
     }
 
     char *ret;
@@ -473,33 +473,40 @@ char* toMultibyte(const WCHAR *wc, const BCHAR *encoding)
 
     ret = new char[blen+1];
 
-	blen = WideCharToMultiByte(codepage, 0, wc, wlen, ret, blen, 0, 0);	
-	ret[blen] = 0;
+    blen = WideCharToMultiByte(codepage, 0, wc, wlen, ret, blen, 0, 0); 
+    ret[blen] = 0;
 
     return ret;
 }
 
 wchar_t* toWideChar(const char *mb, const BCHAR *encoding) {
 
-	if (mb == NULL) {
-        return NULL;
+    if (!mb) {
+        return 0;
     }
 
     unsigned long dsize = strlen(mb); 
-    wchar_t *ret = new wchar_t[dsize+1];
+    wchar_t *ret = new wchar_t[dsize+2];
     memset(ret, 0, (dsize + 1)*sizeof(wchar_t));
     
     if (!dsize)
         return ret;
 
     int codepage = findCodePage(encoding);
-	unsigned long k = 0;
+    unsigned long k = 0;
     
-	k = MultiByteToWideChar(codepage, 0, mb, strlen(mb), ret, dsize + 1);
-    if(k == 0) {
-        delete [] ret; ret = NULL;
+    k = MultiByteToWideChar(codepage, 0, mb, -1, ret, dsize + 1);
+    if( !k ) {
+        LOG.error("toWideChar: error %d \n\tConverting: %s\n\tWith encoding %s",
+            GetLastError(), mb, encoding);
+        LOG.error("toWideChar: try to use default codepage.");
+        k = MultiByteToWideChar(CP_UTF8, 0, mb, -1, ret, dsize + 1);
+        if( !k ){
+            LOG.error("toWideChar: error %d converting the string using default codepage.");
+            delete [] ret; ret = 0;
+        }
     }
-	
+    
     return ret;
 }
 
