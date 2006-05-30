@@ -366,13 +366,27 @@ StringBuffer& StringBuffer::operator+= (const BCHAR* sc)
 StringBuffer& StringBuffer::operator+= (const StringBuffer& s)
     { append(s); return *this; }
 bool  StringBuffer::operator== (const BCHAR* sc) const
-    { return bstrcmp(s, sc) == 0; }
+{
+    if(!s)
+        return (sc) ? false : true ;
+    if (!sc)
+        return false;
+
+    return bstrcmp(s, sc) == 0;
+}
 bool  StringBuffer::operator== (const StringBuffer& sb) const
-    { return bstrcmp(s, sb.c_str()) == 0; }
+{
+    return *this == sb.c_str();
+}
+
 bool  StringBuffer::operator!= (const BCHAR* sc) const
-    { return !(*this == sc); }
+{
+    return !(*this == sc);
+}
 bool  StringBuffer::operator!= (const StringBuffer& s) const
-    { return !(*this == s); }
+{
+    return !(*this == s.c_str());
+}
 
 
 // Function operators

@@ -56,30 +56,6 @@ static const unsigned char MESSAGEID_LEN = bstrlen(MESSAGEID);
 static const unsigned char DISPOSITION_LEN = bstrlen(DISPOSITION);
 static const unsigned char ENCODING_LEN = bstrlen(ENCODING);
 
-#if 0
-//-------------------------------------------------------------- Contructors
-MailMessage::MailMessage()
-  : to(), from(), cc(), bcc(), subject(),
-    contentType(), boundary(), mimeVersion(),
-    headers(), entryId(), lastModificationTime(0), body(), alt(0),
-    attachments() {
-}
-
-MailMessage::MailMessage(MailMessage &m)
-  : to(m.to), from(m.from), cc(m.cc), bcc(m.bcc), subject(m.subject),
-    contentType(m.contentType), boundary(m.boundary), mimeVersion(m.mimeVersion),
-    headers(m.headers), entryId(m.entryId),
-    lastModificationTime(m.lastModificationTime), body(m.body),
-    attachments(m.attachments) {
-    alt = new BodyPart(m.alt);
-}
-
-MailMessage::~MailMessage() {
-    if (alt)
-        delete alt;
-}
-#endif
-
 //---------------------------------------------------------------- Accessors
 
 const BCHAR *MailMessage::getTo() const { return to.c_str(); } 
@@ -117,20 +93,6 @@ void MailMessage::setMessageId(const BCHAR *val) { messageId = val; }
         
 const BCHAR* MailMessage::getEntryID() { return entryId.c_str(); }
 void MailMessage::setEntryID(const BCHAR* id) { entryId = id; }
-
-//BCHAR* setSubjectPrefix
-//void setSenderName
-//long setMessageSize
-/*
-time_t MailMessage::getLastModificationTime () {
-	return lastModificationTime;
-}
-
-void MailMessage::setLastModificationTime (time_t time) {
-	lastModificationTime = time;
-} 
-  
-*/
 
 BodyPart & MailMessage::getBody() { return body; }
 void MailMessage::setBody(BodyPart &body) { this->body = body; }
@@ -419,14 +381,15 @@ static bool isAscii(const char *str){
  */
 BCHAR * MailMessage::format() {
 
+    // If the message is empty, return null
+    if ( empty() ) {
+        LOG.debug(T("MailMessage::format: empty message."));
+        return 0;
+    }
+
     StringBuffer ret;
 
     LOG.debug(T("MailMessage::format START"));
-
-    // If the message is empty, return null
-    if ( empty() ) {
-        return 0;
-    }
 
     if ( contentType.empty() ) {
         if ( attachments.size() ) {
@@ -816,10 +779,9 @@ int MailMessage::parseBodyParts(StringBuffer &rfcBody) {
     return 0;
 }
 
-// Return true if the instance is empty
+// Return true if the instance is empty (a valid MailMessage must have a messageId)
 bool MailMessage::empty() {
-    MailMessage emptymsg;
-    return ( memcmp(this, &emptymsg, sizeof(MailMessage)) == 0);
+    return ( this->messageId.empty() );
 }
 
 ArrayElement* MailMessage::clone() {
@@ -848,4 +810,22 @@ BCHAR* MailMessage::getHeaders()
         return strHeaders;
     }
     else return 0;
+}
+
+bool MailMessage::operator==(MailMessage& that){
+    return (
+        this->to == that.to &&
+        this->from == that.from &&
+        this->cc == that.cc &&
+        this->bcc == that.bcc &&
+        this->subject == that.subject &&
+
+        this->date == that.date &&
+        this->received == that.received &&
+
+        this->contentType == that.contentType &&
+        this->boundary == that.boundary &&
+        this->mimeVersion == that.mimeVersion &&
+        this->messageId == that.messageId
+        );
 }

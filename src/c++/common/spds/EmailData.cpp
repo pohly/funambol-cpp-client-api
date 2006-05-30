@@ -142,13 +142,14 @@ BCHAR *EmailData::format() {
     out += XMLProcessor::makeElement(EMAIL_TMOD, modified);
     out += XMLProcessor::makeElement(EMAIL_DELE, deleted);
     out += XMLProcessor::makeElement(EMAIL_FLAG, flagged);
-    out += T("<emailitem>\n<![CDATA[");
     BCHAR *item = emailItem.format();
     if ( item ) {
+    out += T("<emailitem>\n<![CDATA[");
         out += item;
         delete [] item;
+        out += T("]]&gt;\n</emailitem>\n");
     }
-    out += T("]]&gt;\n</emailitem>\n</Email>\n");
+    out += T("</Email>\n");
     return stringdup(out.c_str());
 }
 

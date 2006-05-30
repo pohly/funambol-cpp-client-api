@@ -71,10 +71,6 @@ class MailMessage : public ArrayElement {
 
     public:
 
-        //MailMessage();
-        //MailMessage(MailMessage &);
-        //~MailMessage();
-
         // Headers
         const BCHAR *getTo() const;
         void setTo(const BCHAR *to);
@@ -136,6 +132,8 @@ class MailMessage : public ArrayElement {
         bool empty();
 
         ArrayElement* clone();
+
+        bool operator==(MailMessage& that);
 
 };
 

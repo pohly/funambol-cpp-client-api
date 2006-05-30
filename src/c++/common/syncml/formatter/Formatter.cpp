@@ -17,6 +17,7 @@
  */
  
 #include "syncml/formatter/Formatter.h"
+#include "base/Log.h"
 
 #define EMPTY_VALUE  T("__EMPTY__")
 
@@ -1617,18 +1618,15 @@ StringBuffer* Formatter::getData(ComplexData* data) {
     
     StringBuffer s;
     
-    StringBuffer* anchor    = NULL;
-    StringBuffer* devInf    = NULL;
-                
-    anchor    = getAnchor   (data->getAnchor());
-    devInf    = getDevInf   (data->getDevInf());
+    StringBuffer* anchor = getAnchor(data->getAnchor());
+    StringBuffer* devInf = getDevInf(data->getDevInf());
     
     if ((anchor != NULL && anchor->length() > 0) ||
         (devInf != NULL && devInf->length() > 0)) {
         s.append(anchor);
-        s.append(devInf);     
+        s.append(devInf);
     } else {
-        StringBuffer tmp = data->getData();
+        StringBuffer tmp(data->getData());
         tmp.replaceAll("&", "&amp;");
         tmp.replaceAll("<", "&lt;");
         s.append(tmp);        
