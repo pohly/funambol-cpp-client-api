@@ -40,7 +40,8 @@ static inline bool checkFlag(const char *xml, const char *field)
     size_t start = 0, end = 0;
     bool ret = false;
 
-    if( XMLProcessor::getEscapedElementContent(xml, field, NULL, &start, &end) ) {
+    if( XMLProcessor::getElementContent(xml, field, NULL, &start, &end) ) {
+
         ret = ( bstrncmp(xml+start, T("true"), end-start) == 0 ) ;
     }
     return ret;
