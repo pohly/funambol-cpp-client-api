@@ -329,7 +329,7 @@ static bool getBodyPart(StringBuffer &rfcBody, StringBuffer &boundary,
     else {
         LOG.debug(T("Attachment"));
         ret.setContent( mkTempFileName( ret.getFilename() ) );
-        LOG.debug(ret.getContent());
+        LOG.debug("%s", ret.getContent());
         StringBuffer p = part.substr(hdrlen);
         if (p.length()) {
             LOG.debug(T("Saving..."));
@@ -569,21 +569,18 @@ StringBuffer decodeWordFromHeader(StringBuffer encodedWord, StringBuffer& charse
     charset = encodedWord.substr(charsetStart, encodingStart - charsetStart - 1);
     StringBuffer encoding = encodedWord.substr(encodingStart, encTextStart - encodingStart - 1);
     StringBuffer encText = encodedWord.substr(encTextStart);
-    LOG.debug("1");
     if (_stricmp(encoding.c_str(), "Q") == 0) {
-        LOG.debug("2");
         // quoted-printable
         BCHAR* dec = qp_decode(encText.c_str());
         decodedWord.append(dec);
         decodedWord.replaceAll("_", " ");         
     }
     else if (_stricmp(encoding.c_str(), "B") == 0){
-        LOG.debug("3");
         // base64
         int len = b64_decode((void *)encText.c_str(), encText.c_str());
         decodedWord.append(encText.substr(0, len));
     }
-    else { LOG.debug("4"); }
+    else { }
     return decodedWord;
 }
 
@@ -638,7 +635,7 @@ int MailMessage::parseHeaders(StringBuffer &rfcHeaders) {
             }
         }
         else if( line->ifind(SUBJECT) == 0 ) {
-            subject = line->substr(SUBJECT_LEN); LOG.debug("SUBJECT:"); LOG.debug(subject.c_str());
+            subject = line->substr(SUBJECT_LEN); LOG.debug("SUBJECT:"); LOG.debug("%s", subject.c_str());
             subjectParsing = TRUE;        
             size_t startPos, endPos;
             if (!subject.empty()&& (TRUE == hasLineEncodedWords(subject, &startPos, &endPos))) {

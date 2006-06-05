@@ -266,7 +266,7 @@ int SyncManager::prepareSync(SyncSource** s) {
             }                        
             cred = credentialHandler.getClientCredential();             
             bstrcpy(credentialInfo, cred->getAuthentication()->getData(NULL));
-            LOG.debug(credentialInfo);
+            LOG.debug("%s", credentialInfo);
         }
         syncml = syncMLBuilder.prepareInitObject(cred, alerts, commands);
         if (syncml == NULL) {
@@ -281,7 +281,7 @@ int SyncManager::prepareSync(SyncSource** s) {
         }        
 
         LOG.debug(MSG_INITIALIZATATION_MESSAGE);
-        LOG.debug(initMsg);
+        LOG.debug("%s", initMsg);
 
         currentState = STATE_PKG1_SENDING;
 
@@ -882,7 +882,7 @@ int SyncManager::sync() {
             // Synchronization message:
 
             LOG.debug(MSG_MODIFICATION_MESSAGE);
-            LOG.debug(msg);
+            LOG.debug("%s", msg);
 
             responseMsg = transportAgent->sendMessage(msg);
             if (responseMsg == NULL) {
@@ -971,7 +971,7 @@ int SyncManager::sync() {
         msg    = syncMLBuilder.prepareMsg(syncml);        
 
         LOG.debug(T("Alert to request server changes"));
-        LOG.debug(msg);
+        LOG.debug("%s", msg);
 
         responseMsg = transportAgent->sendMessage(msg);
         if (responseMsg == NULL) {
@@ -1091,7 +1091,7 @@ int SyncManager::sync() {
                 msg    = syncMLBuilder.prepareMsg(syncml);        
 
                 LOG.debug(T("Status to the server"));
-                LOG.debug(msg);
+                LOG.debug("%s", msg);
 
                 responseMsg = transportAgent->sendMessage(msg);
                 if (responseMsg == NULL) {
@@ -1228,7 +1228,7 @@ int SyncManager::endSync() {
                 mapMsg = syncMLBuilder.prepareMsg(syncml);                   
 
                 LOG.debug(T("Mapping"));
-                LOG.debug(mapMsg);
+                LOG.debug("%s", mapMsg);
 
                 responseMsg = transportAgent->sendMessage(mapMsg);
                 if (responseMsg == NULL) {

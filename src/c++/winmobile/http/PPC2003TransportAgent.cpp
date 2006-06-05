@@ -89,7 +89,7 @@ DWORD WINAPI WorkerFunctionHttpSendRequest( IN PARM_HTTP_SEND_REQUEST vThreadPar
 
 int sumRead, previousNumRead;
 int sumByteSent, previousNumWrite;
-BCHAR* response;
+
 BOOL cont;
 
 #define ENTERING(func) //bsprintf(logmsg, L"Entering %s", func); LOG.debug(logmsg)
@@ -163,8 +163,8 @@ BCHAR* PPC2003TransportAgent::sendMessage(const BCHAR* msg) {
     DWORD size = 0, read = 0;          
     DWORD    dwTimeout = 10000; 
     char* bufferA = new char[readBufferSize+1];
-    memset(bufferA, 0, readBufferSize+1 * sizeof(char));
-    
+    memset(bufferA, 0, (readBufferSize+1) * sizeof(char));
+    BCHAR* response = NULL;
     cont    = TRUE;
     int t   = 0;            
     unsigned int m = 0;
@@ -305,7 +305,8 @@ BCHAR* PPC2003TransportAgent::sendMessage(const BCHAR* msg) {
     }   
     
     // Allocate a block of memory for lpHeadersW.
-    response = new BCHAR[contentLengthResponse+1];   
+    response = new BCHAR[contentLengthResponse+1]; 
+    memset (response, 0, (contentLengthResponse+1)*sizeof(BCHAR));
     if (response == NULL) {
         lastErrorCode = ERR_NOT_ENOUGH_MEMORY;
         bsprintf(lastErrorMsg, T("Not enough memory to allocate a buffer for the server response: %d required"), contentLengthResponse);
@@ -343,10 +344,11 @@ BCHAR* PPC2003TransportAgent::sendMessage(const BCHAR* msg) {
             p += strlen(bufferA);
         }
 
-    } while (read);
-    
+    } while (read);   
+
+    int len = strlen(response); 
     LOG.debug(T("Response read"));    
-    LOG.debug(response);    
+    LOG.debug("%s", response);    
 
     exit:    
     
