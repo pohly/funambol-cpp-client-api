@@ -17,9 +17,12 @@
  * MA 02111-1307 USA
  */
 
+#include "base/util/utils.h"
 #include "vocl/VConverter.h"
 #include "vocl/VObjectFactory.h"
 #include "base/util/WString.h"
+#include "base/quoted-printable.h"
+
 
 VObject* VConverter::parse(wchar_t* buffer) {
 
@@ -154,90 +157,119 @@ VProperty* VConverter::readFieldHeader(wchar_t* buffer) {
 
 bool VConverter::readFieldBody(wchar_t* buffer, VProperty* vprop) {
 
-    bool folding = false;
-    wchar_t *c = buffer;
-    int i = 0, j = 0;
-    wchar_t* value = new wchar_t[wcslen(buffer) + 1];
+    int i      = 0;
+    int j      = 0;
+    int len    = 0;
+    int offset = 0;
+    bool ret   = false;
+    wchar_t* value     = NULL;
+    wchar_t* allValues = NULL;
 
-    wcscpy(value, TEXT(""));
-    
-    if(vprop->equalsEncoding(TEXT("QUOTED-PRINTABLE"))) {
-        bool afterEqual = false;
-        while (c[i] != '\0') {
-            if(afterEqual) {
-                if(c[i] == '\n')
-                    afterEqual = false;
-                else if(c[i] == '\r') {
-                    if(c[i++] != '\n') {
-                        i++;
-                        break;
-                    }
-                    afterEqual = false;
-                }
-                else {
-                    value[j] = c[i];
-                    j++;
-                    afterEqual = false;
-                }
-            }
-            else {
-                if (c[i] == '=') {
-                    afterEqual = true;
-                    value[j] = c[i];
-                    j++;
-                    value[j] = '\0';
-                }
-                else if(c[i] == '\n') {
-                    i++;
+
+    // Get length of all values
+    while (buffer[i] != '\0') {
+        if ((buffer[i] == '\r') || buffer[i] == '\n') {
+            
+            // Get offset of next property
+            for (j=i+1; buffer[j] != '\0'; j++) {
+                if((buffer[j] != '\r') && (buffer[j] != '\n'))
                     break;
-                }
-                else if(c[i] == '\r') {
-                    if(c[i++] != '\n') {
-                        i++;
-                        break;
-                    }
-                }
-                else {
-                    value[j] = c[i];
-                    j++;
-                    value[j] = '\0';
-                }
             }
-            i++;
+            offset = j;
+            break;
+        }
+        i++;
+    }
+    len = i;
+
+
+    if (!len) {
+        goto finally;
+    }
+
+    // This is a string with all values for this property (to parse)
+    allValues = new wchar_t[len + 1];
+    wcsncpy(allValues, buffer, len);
+    allValues[len] = 0;
+
+
+    //
+    // If needed, decode QP string and copy to 'allValues'.
+    //
+    if(vprop->equalsEncoding(TEXT("QUOTED-PRINTABLE"))) {
+
+        char* buf = toMultibyte(allValues);
+	    char* dec = qp_decode(buf);
+        len = strlen(dec);
+	    delete [] buf;
+
+	    if (dec) {
+            wchar_t* wdecoded = toWideChar(dec);
+            delete [] dec;
+
+            if (wdecoded) {
+                wcsncpy(allValues, wdecoded, len);
+                allValues[len] = 0;
+                delete [] wdecoded;
+            }
+        }
+        if (!len) {
+            goto finally;
         }
     }
-    else 
-        while (c[i] != '\0') {
-            if(folding) {
-                if((c[i] == ' ') || c[i] == '\t' ) {
-                    folding = false;
-                }
-                else
-                    if((c[i] != '\r') && (c[i] != '\n'))
-                        break;
-	        }
-            else {
-                if((c[i] == '\r') || c[i] == '\n' )
-                    folding = true;
-                else {     
-                    value[j] = c[i];
-                    j++;
-                    value[j] = '\0';
-                }
-            }
-            i++;
-        }
-  
-    
-    vprop->setValue(value);
-    delete [] value; value = NULL;
-    // wcscpy only valid for non-overlapping buffers.
-    // This one here can overlap.
-    // wcscpy(buffer, c+i);
-    memmove(buffer, c+i, (wcslen(c+i) + 1) * sizeof(*c));
 
-	return true;
+
+    // This is a buffer for each single value
+    value = new wchar_t[len + 1];
+    wcscpy(value, TEXT(""));
+
+    //
+    // Extract values and add to Vproperty
+    //
+    j=0;
+    wchar_t *c = allValues;
+    for (i=0; i<len; i++) {
+     
+        // End of value
+        if (c[i] == ';') {
+            vprop->addValue(value);
+            j = 0;
+            wcscpy(value, TEXT(""));
+        }
+
+        else {     
+            // Manage escaped chars: jump back-slash
+            if (c[i] == '\\') {
+                i++;
+                if (c[i] == '\0')
+                    break;
+            }
+            value[j] = c[i];
+            j++;
+            value[j] = '\0';
+        }
+    }
+
+    vprop->addValue(value);
+    ret = true;
+
+finally:
+
+    // Shift buffer for next property to parse
+    // (now buffers don't overlap)
+    wcscpy(buffer, buffer+offset);
+
+    if (value) {
+        delete [] value;     value = NULL;
+    }
+    if (allValues) {
+        delete [] allValues; allValues = NULL;
+    }
+
+	return ret;
 }
+
+
 
 wchar_t* VConverter::extractObjectType(wchar_t* buffer) {
 

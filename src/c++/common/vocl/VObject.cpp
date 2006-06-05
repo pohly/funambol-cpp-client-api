@@ -118,15 +118,18 @@ VProperty* VObject::getProperty(wchar_t* propName) {
     return NULL;
 }
 
+/*
+ * Returns the VCard - iCal string fro this VObject.
+ * Note:
+ * The returned wchar_t* is new allocated, must be freed by the caller.
+ */
 wchar_t* VObject::toString() {
     
     WString strVObject;
     const wchar_t* eof;
 
-    if(version && !wcscmp(version,TEXT("3.0")))
-        eof = TEXT("\n");
-    else
-        eof = TEXT("\r\n");
+    // vcard 2.1 and 3.0 both use \r\n as line ending
+    eof = TEXT("\r\n");
 
     // let's reserve some space to avoid reallocation in most cases
     strVObject.reserve(5000);
@@ -134,63 +137,19 @@ wchar_t* VObject::toString() {
     for (int i=0; i<properties->size(); i++) {
         VProperty *property;
         property = (VProperty*)properties->get(i);
-        if(property->containsParameter(TEXT("GROUP"))) {
-           strVObject.append(property->getParameterValue(TEXT("GROUP")));
-           strVObject.append(TEXT("."));
-           property->removeParameter(TEXT("GROUP"));
-        }
-        strVObject.append(property->getName());
+        wchar_t* propString = property->toString();
         
-        for(int k=0; k<property->parameterCount(); k++) {
-            strVObject.append(TEXT(";"));
-			
-            wchar_t* paramName = new wchar_t[wcslen(property->getParameter(k))+1];
-            wcscpy(paramName, property->getParameter(k));
-			
-            strVObject.append(paramName);
-            const wchar_t *value = property->getParameterValue(k);
-            if(value) {
-                strVObject.append(TEXT("="));
-                strVObject.append(value);
-            }
-            delete [] paramName; paramName = NULL;
-        }
-
-        strVObject.append(TEXT(":"));
-        if(property->getValue()) {
-            if(property->equalsEncoding(TEXT("BASE64"))) {
-                wchar_t delim[] = TEXT("\r\n ");
-                int fold = 76;
-                int sizeOfValue = int(wcslen(property->getValue()));
-                int size = sizeOfValue + (int)(sizeOfValue/fold + 2)*int(wcslen(delim));
-                int index = 0;
-
-                wchar_t* output = new wchar_t[size + 1];
-                wcscpy(output, TEXT("\0"));
-
-                while (index<sizeOfValue)
-                {  
-                    wcscat(output,delim);
-                    wcsncat(output,property->getValue()+index,fold);
-                    index+=fold;
-                }
-                
-                strVObject.append(output);
-                // the extra empty line is needed because the Bachus-Naur 
-                // specification of vCard 2.1 says so
-                strVObject.append(eof);
-                delete [] output;
-            } 
-            else
-                strVObject.append(property->getValue());
-        }
+        strVObject.append(propString);
         strVObject.append(eof);
+
+        delete [] propString;
     }		    
 
     // memory must be free by caller with delete []
     wchar_t *str = wstrdup(strVObject);
     return str;
 }
+
 
 void VObject::insertProperty(VProperty* property) {
 

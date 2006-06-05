@@ -3,6 +3,49 @@
 
 #include "VProperty.h"
 
+
+
+/*
+ * ************************************* Class VObject *********************************************
+ * *************************************************************************************************
+ * A VObject object rapresents an item that can be a vCard, a vCalendar or vTodo.
+ * A VObject contains an array of VProperty, each one rapresents a property.
+ * A property is the definition of an individual attribute describing the vCard/vCal/vTodo.
+ * Each property has a name, an array of parameters and an array of values,
+ * for example, the property:
+ *
+ *    TEL;HOME:+1-919-555-1234
+ *
+ * has name 'TEL', one parameter 'HOME' and one value '+1-919-555-1234'
+ *
+ * Some properties have more than one parameter, each parameter is a pair: (name, value).
+ * Use VProperty::add/getParameter() methods to access them.
+ *
+ * Some properties have more than one value, each value is a string of text.
+ * Values MUST be inserted in the right order (as vCard specific).
+ * Use VProperty::add/getValue() methods to access them.
+ * Note:
+ *       If one of these value is not present, it must be inserted however as
+ *       an empty string, to make sure the right order is respected.
+ *
+ *
+ * Properties with more than one value are:
+ *
+ * Property         name     1^value     2^value        3^value         4^value           5^value
+ * -------------------------------------------------------------------------------------------------
+ * Name         ->  N:      <LastName>  <FirstName>    <MiddleName>    <Title>           <Suffix>
+ * Address      ->  ADR:    <Street>    <City>         <State>         <PostalCode>      <Country>
+ * Audio Alarm  ->  AALARM: <RunTime>   <Snooze Time>  <Repeat Count>  <Audio Content>
+ *
+ *
+ * Property values should be added as simple text, Quoted-Printable encoding is 
+ * automatically managed inside VObject. Also the escaping of special chars (";" "\") is
+ * automatically managed inside VObject.
+ * Use VObject::toString() method to obtain the correspondent vCard/vCal/vTodo.
+ *
+ */
+
+
 class VObject {
 
 private:

@@ -24,16 +24,34 @@
 #include "base/util/WKeyValuePair.h"
 #include "base/util/ArrayList.h"
 
-#define VPROPETY_BUFFER 500
+
+// Quoted-Printable formatted lines should be max 76 chars long.
+#define QP_MAX_LINE_LEN             70
+
+// These are special chars to escape in vCard/vCal/vTodo
+#define VCARD_SPECIAL_CHARS         TEXT(";\\")
+
+
+// ------------ Public functions --------------
+wchar_t* escapeSpecialChars(const wchar_t* inputString, wchar_t* charsToEscape);
+char*    convertToQP(const char* input, int start);
+
+
+
+// ------------ Class VProperty ---------------
 
 class VProperty : public ArrayElement {
 
 private:
 
     wchar_t* name;
-    wchar_t* value;
     void set(wchar_t** p, const wchar_t* v);
+
     ArrayList* parameters;
+    ArrayList* values;
+
+    // This is only used as a buffer for 'getValue()'
+    wchar_t* valueBuf;
 
  public:       
 	
@@ -41,9 +59,18 @@ private:
     ~VProperty();
     ArrayElement* clone();
     void setName (const wchar_t* name);
-    void setValue (const wchar_t* value);
     wchar_t* getName(wchar_t* buf = NULL, int size = -1);
-    wchar_t* getValue(wchar_t* buf = NULL, int size = -1);
+
+    void addValue(const wchar_t* value);
+    bool removeValue(const int index);
+    wchar_t* getValue(int index);
+    int valueCount();
+
+    // For back-compatibility (to remove)
+    wchar_t* getValue(wchar_t* buf = NULL);
+    void setValue (const wchar_t* value);
+    wchar_t* getPropComponent(int i);
+
     void addParameter(const wchar_t* paramName, const wchar_t* paramValue);
     void removeParameter(wchar_t* paramName);
     bool containsParameter(wchar_t* paramName);
@@ -56,7 +83,7 @@ private:
     wchar_t* getParameter(int index);
     int parameterCount();
     bool equalsEncoding(wchar_t* encoding);
-    wchar_t* getPropComponent(int i);
+    //wchar_t* getPropComponent(int i);
     bool isType(wchar_t* type);
     wchar_t* toString();
 
