@@ -10,7 +10,7 @@ right string.
 
 --- native/src/c++/common/vocl/VObject.cpp~vocl-tostring
 +++ native/src/c++/common/vocl/VObject.cpp
-@@ -120,41 +120,40 @@
+@@ -119,41 +119,40 @@
  
  wchar_t* VObject::toString() {
      
@@ -64,7 +64,7 @@ right string.
          if(property->getValue()) {
              if(property->equalsEncoding(TEXT("BASE64"))) {
                  wchar_t delim[] = TEXT("\r\n ");
-@@ -173,18 +172,22 @@
+@@ -172,18 +171,22 @@
                      index+=fold;
                  }
                  

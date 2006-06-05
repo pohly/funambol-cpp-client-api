@@ -5,7 +5,7 @@
 
 --- native/src/c++/common/vocl/VObject.cpp~vcard-30-lineend
 +++ native/src/c++/common/vocl/VObject.cpp
-@@ -123,10 +123,8 @@
+@@ -122,10 +122,8 @@
      WString strVObject;
      const wchar_t* eof;
  
