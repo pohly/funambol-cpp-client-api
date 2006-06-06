@@ -230,8 +230,8 @@ static bool getBodyPart(StringBuffer &rfcBody, StringBuffer &boundary,
             end = part.find(inner_boundary, begin);
             if (begin != StringBuffer::npos && end != StringBuffer::npos) {
                 part = part.substr(begin, end-begin);
-                LOG.debug(T("Bodypart is multipart/alternative: getting first alternative only."));
-                LOG.debug(part);
+                LOG.debug("Bodypart is multipart/alternative: "
+                    "getting first alternative only: \n%s\n", part);
             }
 		}
     }
@@ -635,7 +635,10 @@ int MailMessage::parseHeaders(StringBuffer &rfcHeaders) {
             }
         }
         else if( line->ifind(SUBJECT) == 0 ) {
-            subject = line->substr(SUBJECT_LEN); LOG.debug("SUBJECT:"); LOG.debug("%s", subject.c_str());
+            subject = line->substr(SUBJECT_LEN);
+            
+            LOG.debug("SUBJECT: %s", subject.c_str());
+
             subjectParsing = TRUE;        
             size_t startPos, endPos;
             if (!subject.empty()&& (TRUE == hasLineEncodedWords(subject, &startPos, &endPos))) {
