@@ -324,12 +324,15 @@ int SyncManager::prepareSync(SyncSource** s) {
         syncMLBuilder.resetCommandID();
 
         syncml = syncMLProcessor.processMsg(responseMsg);
+        safeDelete(&responseMsg);
+        safeDelete(&initMsg);
+        
         if (syncml == NULL) {
             ret = lastErrorCode;
             LOG.error(T("Error processing alert response."));
             goto finally;
         }
-
+        
         // ret = syncMLProcessor.processInitResponse(*sources[0], syncml, alerts);
 
         ret = syncMLProcessor.processSyncHdrStatus(syncml);
@@ -558,7 +561,7 @@ int SyncManager::sync() {
             // Error from SyncSource
             lastErrorCode = ERR_UNSPECIFIED;
             ret = lastErrorCode;
-            check[count]=0;
+            check[count]=0;            
             continue;
         }
         else
@@ -942,10 +945,11 @@ int SyncManager::sync() {
 
     //
     // If this was the last chunk, we move the state to STATE_PKG3_SENT
+    // At this time "last" is always true. The client is going to send
+    // the 222 package for to get the server modification if at least a source is correct
     //
-    if (last) {
-        currentState = STATE_PKG3_SENT;
-    }        
+    last = TRUE;
+    currentState = STATE_PKG3_SENT;    
 
     //
     // send 222 alert code to retrieve the item from server

@@ -169,7 +169,11 @@ BCHAR* PPC2003TransportAgent::sendMessage(const BCHAR* msg) {
     int t   = 0;            
     unsigned int m = 0;
     BOOL queryInfo = TRUE;
-
+    int recsize = 0;
+    BCHAR* p        = NULL; 
+    wchar_t* wurlResource = NULL;
+    wchar_t* wurlHost = NULL;
+    
     DWORD flags = INTERNET_FLAG_RELOAD | INTERNET_FLAG_NO_CACHE_WRITE;
 
 	LPCWSTR acceptTypes[2] = {TEXT("*/*"), NULL};
@@ -198,7 +202,7 @@ BCHAR* PPC2003TransportAgent::sendMessage(const BCHAR* msg) {
     
     // Open an HTTP session for a specified site by using lpszServer.
     
-    wchar_t* wurlHost = toWideChar(url.host);
+    wurlHost = toWideChar(url.host);
     if (!(connection = InternetConnect (inet,
                                         wurlHost,
                                         url.port,
@@ -219,7 +223,7 @@ BCHAR* PPC2003TransportAgent::sendMessage(const BCHAR* msg) {
     //
     // Open an HTTP request handle.
 	//
-    wchar_t* wurlResource = toWideChar(url.resource);
+    wurlResource = toWideChar(url.resource);
     if (!(request = HttpOpenRequest (connection,
                                      METHOD_POST,
                                      wurlResource,
@@ -314,11 +318,11 @@ BCHAR* PPC2003TransportAgent::sendMessage(const BCHAR* msg) {
 
     }
     
-    BCHAR* p        = NULL;  
+    
 	p = response;
     (*p) = 0;
 
-    int recsize = 0;
+    
 
     do {
         if (!InternetReadFile (request, (LPVOID)bufferA, readBufferSize, &read)) {
@@ -346,7 +350,6 @@ BCHAR* PPC2003TransportAgent::sendMessage(const BCHAR* msg) {
 
     } while (read);   
 
-    int len = strlen(response); 
     LOG.debug(T("Response read"));    
     LOG.debug("%s", response);    
 

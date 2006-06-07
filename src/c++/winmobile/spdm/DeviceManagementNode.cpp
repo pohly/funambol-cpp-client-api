@@ -237,7 +237,9 @@ void DeviceManagementNode::setPropertyValue(const BCHAR* prop, const BCHAR* valu
 
     HKEY key;
     DWORD res;
-
+    TCHAR *p = NULL;
+    TCHAR *v = NULL;
+    
     RegCreateKeyEx(
             HKEY_LOCAL_MACHINE,
             fullContext,
@@ -257,8 +259,8 @@ void DeviceManagementNode::setPropertyValue(const BCHAR* prop, const BCHAR* valu
         goto finally;
     }
 
-    TCHAR *p = toWideChar(prop);
-    TCHAR *v = toWideChar(value);
+    p = toWideChar(prop);
+    v = toWideChar(value);
 
     RegSetValueEx(
             key,

@@ -164,7 +164,7 @@ bool VConverter::readFieldBody(wchar_t* buffer, VProperty* vprop) {
     bool ret   = false;
     wchar_t* value     = NULL;
     wchar_t* allValues = NULL;
-
+    wchar_t* c         = NULL;
 
     // Get length of all values
     while (buffer[i] != '\0') {
@@ -227,7 +227,7 @@ bool VConverter::readFieldBody(wchar_t* buffer, VProperty* vprop) {
     // Extract values and add to Vproperty
     //
     j=0;
-    wchar_t *c = allValues;
+    c = allValues;
     for (i=0; i<len; i++) {
      
         // End of value
