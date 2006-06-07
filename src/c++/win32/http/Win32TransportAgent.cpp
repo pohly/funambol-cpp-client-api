@@ -128,8 +128,7 @@ BCHAR* Win32TransportAgent::sendMessage(const BCHAR* msg) {
 		LOG.error(lastErrorMsg);
         goto exit;
     }   
-    bsprintf(logmsg, T("Connecting to %s:%d"), url.host, url.port);
-    LOG.debug(logmsg);
+    LOG.debug(T("Connecting to %s:%d"), url.host, url.port);
 
 
     //
@@ -149,8 +148,7 @@ BCHAR* Win32TransportAgent::sendMessage(const BCHAR* msg) {
 	  LOG.error(lastErrorMsg);
       goto exit;
     }
-    bsprintf(logmsg, T("Requesting resource %s"), url.resource);
-    LOG.debug(logmsg);
+    LOG.debug(T("Requesting resource %s"), url.resource);
 
     //
     // Open an HTTP request handle.
@@ -259,8 +257,7 @@ BCHAR* Win32TransportAgent::sendMessage(const BCHAR* msg) {
 
     // ====================== Reading Response ==============================
     LOG.debug(READING_RESPONSE);
-    bsprintf(logmsg, T("Content-length: %d"), contentLength);
-    LOG.debug(logmsg);
+    LOG.debug(T("Content-length: %d"), contentLength);
 
     if (contentLength <= 0) {
         lastErrorCode = ERR_READING_CONTENT;
@@ -291,7 +288,7 @@ BCHAR* Win32TransportAgent::sendMessage(const BCHAR* msg) {
     } while (read);
 
     LOG.debug(T("Response read"));
-	LOG.debug(response); 
+	LOG.debug("%s", response); 
 
 
 exit:
