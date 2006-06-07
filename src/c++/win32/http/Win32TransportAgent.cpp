@@ -98,7 +98,9 @@ BCHAR* Win32TransportAgent::sendMessage(const BCHAR* msg) {
 
     DWORD size  = 0,
           read  = 0,
-          flags = INTERNET_FLAG_RELOAD | INTERNET_FLAG_NO_CACHE_WRITE;
+          flags = INTERNET_FLAG_RELOAD | 
+                  INTERNET_FLAG_NO_CACHE_WRITE | 
+                  INTERNET_FLAG_KEEP_CONNECTION;            // This is necessary if authentication is required.
 
 	LPCWSTR acceptTypes[2] = {TEXT("*/*"), NULL};
     
@@ -177,38 +179,76 @@ BCHAR* Win32TransportAgent::sendMessage(const BCHAR* msg) {
     wsprintf(headers, TEXT("Content-Type: %s\r\nContent-Length: %d"), SYNCML_CONTENT_TYPE, contentLength);
 
 
-    // Send a request to the HTTP server.
-    if (!HttpSendRequest (request, headers, wcslen(headers), (void*)msg, contentLength)) {
-        lastErrorCode = ERR_CONNECT;
-        bsprintf (lastErrorMsg, T("%s: %d"), T("HttpSendRequest Error"), GetLastError());
-		LOG.error(lastErrorMsg);
-        goto exit;
+    //
+    // Try 5 times to send http request: used to retry sending request in case
+    // of authentication (proxy/server).
+    //
+    for (int i=0; i<MAX_AUTH_ATTEMPT; i++) {
+
+        // Send a request to the HTTP server.
+        if (!HttpSendRequest (request, headers, wcslen(headers), (void*)msg, contentLength)) {
+            lastErrorCode = ERR_CONNECT;
+            bsprintf (lastErrorMsg, T("%s: %d"), T("HttpSendRequest Error"), GetLastError());
+		    LOG.error(lastErrorMsg);
+            goto exit;
+        }
+        LOG.debug(MESSAGE_SENT);
+
+
+        // Check the status code.
+        size = sizeof(status);
+        HttpQueryInfo (request,
+                       HTTP_QUERY_STATUS_CODE | HTTP_QUERY_FLAG_NUMBER,
+                       (LPDWORD)&status,
+                       (LPDWORD)&size,
+                       NULL);
+
+        //
+        // OK (200)
+        //
+        if (status == HTTP_STATUS_OK) {
+            break;
+        }
+
+        //
+        // Proxy Authentication Required (407) / Server Authentication Required (401).
+        // Prompt dialog box to set username/password.
+        //
+        else if(status == HTTP_STATUS_PROXY_AUTH_REQ ||
+                status == HTTP_STATUS_DENIED) {
+            
+            LOG.debug("HTTP Authentication required.");
+            DWORD dwError = InternetErrorDlg(GetDesktopWindow(), request, NULL, 
+                                             FLAGS_ERROR_UI_FILTER_FOR_ERRORS | 
+                                             FLAGS_ERROR_UI_FLAGS_CHANGE_OPTIONS |
+                                             FLAGS_ERROR_UI_FLAGS_GENERATE_DATA,
+                                             NULL);
+            
+            if (dwError == ERROR_INTERNET_FORCE_RETRY) {
+                continue;
+            }
+            else {
+                LOG.error("HTTP Authentication failed.");
+                break;
+            }
+        }
+        
+        //
+        // Other HTTP errors
+        //
+        else {
+            break;
+        }
     }
 
-    LOG.debug(MESSAGE_SENT);
-    LOG.debug(READING_RESPONSE);
-
-
-	// ============================ Reading response message =================================
-    //
-    // First of all, check the status code
-    //
-    size = sizeof(status);
-    HttpQueryInfo (request,
-                   HTTP_QUERY_STATUS_CODE | HTTP_QUERY_FLAG_NUMBER,
-                   (LPDWORD)&status,
-                   (LPDWORD)&size,
-                   NULL);
-
-    //
-    // If status code is not OK, returns immediately, otherwise reads the response
-    //
-    if (status != STATUS_OK) {
+    // If wrong status, exit immediately.
+    if (status != HTTP_STATUS_OK) {
         lastErrorCode = ERR_HTTP;
         bsprintf(lastErrorMsg, T("HTTP request error: %d"), status);
-		LOG.error(lastErrorMsg);
+        LOG.error("%s", lastErrorMsg);
         goto exit;
     }
+
     HttpQueryInfo (request,
                    HTTP_QUERY_CONTENT_LENGTH | HTTP_QUERY_FLAG_NUMBER,
                    (LPDWORD)&contentLength,
@@ -216,6 +256,8 @@ BCHAR* Win32TransportAgent::sendMessage(const BCHAR* msg) {
                    NULL);
 
 
+
+    // ====================== Reading Response ==============================
     LOG.debug(READING_RESPONSE);
     bsprintf(logmsg, T("Content-length: %d"), contentLength);
     LOG.debug(logmsg);

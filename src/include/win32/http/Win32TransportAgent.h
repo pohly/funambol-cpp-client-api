@@ -51,6 +51,9 @@
     #include "http/TransportAgent.h"
 
 
+    #define MAX_AUTH_ATTEMPT        5       // Max number of attempts sending http requests.
+
+
     /*
      * This class is the transport agent responsible for messages exchange
      * over an HTTP connection.
