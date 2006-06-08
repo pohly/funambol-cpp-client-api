@@ -35,7 +35,7 @@ AccessConfig::AccessConfig() {
     deviceId   = NULL;
     proxyHost  = NULL;
     syncURL    = NULL;
-    
+
     endTimestamp = beginTimestamp = 0;
 
     serverNonce           = NULL;  // from client to server
@@ -51,6 +51,8 @@ AccessConfig::AccessConfig() {
     encryption            = FALSE;  // F = FALSE, T = TRUE
     readBufferSize        = 0;
     userAgent             = NULL;
+    proxyUsername         = NULL;
+    proxyPassword         = NULL;
 }
 
 AccessConfig::AccessConfig(AccessConfig& s) {
@@ -69,8 +71,10 @@ AccessConfig::~AccessConfig() {
     safeDelete(&serverID            );
     safeDelete(&serverPWD           );
     safeDelete(&clientAuthType      );    
-    safeDelete(&serverAuthType      );    
-
+    safeDelete(&serverAuthType      );  
+    safeDelete(&userAgent           );
+    safeDelete(&proxyUsername       );
+    safeDelete(&proxyPassword       );
 }
 
 BOOL AccessConfig::getServerAuthRequired() {
@@ -251,6 +255,31 @@ void AccessConfig::setProxyHost(const BCHAR* v) {
     dirty |= DIRTY_PROXY_HOST;
 }
 
+
+BCHAR* AccessConfig::getProxyUsername(const BCHAR* buf) {
+    if (buf == NULL) {
+		return proxyUsername;
+	}
+
+    return bstrcpy((BCHAR*)buf, proxyUsername);
+}
+
+void AccessConfig::setProxyUsername(const BCHAR* v) {
+	set(&proxyUsername, v);
+}
+
+BCHAR* AccessConfig::getProxyPassword(const BCHAR* buf) {
+    if (buf == NULL) {
+		return proxyPassword;
+	}
+
+    return bstrcpy((BCHAR*)buf, proxyPassword);
+}
+
+void AccessConfig::setProxyPassword(const BCHAR* v) {
+	set(&proxyPassword, v);
+}
+
 const BCHAR* AccessConfig::getUserAgent() {    
     return userAgent;	
 }
@@ -368,7 +397,10 @@ void AccessConfig::assign(AccessConfig& s) {
 	setSyncURL  (s.getSyncURL()  );
 	setProxyHost(s.getProxyHost());
 	setDeviceId (s.getDeviceId() );
-	
+    setUserAgent(s.getUserAgent());
+
+    setProxyUsername(s.getProxyUsername());
+    setProxyPassword(s.getProxyPassword());
 	setBeginSync(s.getBeginSync());
 	setEndSync(s.getEndSync());
 	setFirstTimeSyncMode(s.getFirstTimeSyncMode());

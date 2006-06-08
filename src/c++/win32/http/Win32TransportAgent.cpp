@@ -62,6 +62,7 @@ Win32TransportAgent::Win32TransportAgent(URL& newURL, Proxy& newProxy,
 										 unsigned int maxResponseTimeout, 
 										 unsigned int maxmsgsize) : TransportAgent(){
 	url = newURL;
+    proxy.setProxy(newProxy);
 
     if (maxResponseTimeout == 0) {
         setTimeout(DEFAULT_MAX_TIMEOUT);
@@ -210,17 +211,34 @@ BCHAR* Win32TransportAgent::sendMessage(const BCHAR* msg) {
 
         //
         // Proxy Authentication Required (407) / Server Authentication Required (401).
-        // Prompt dialog box to set username/password.
+        // Need to set username/password.
         //
         else if(status == HTTP_STATUS_PROXY_AUTH_REQ ||
                 status == HTTP_STATUS_DENIED) {
-            
             LOG.debug("HTTP Authentication required.");
-            DWORD dwError = InternetErrorDlg(GetDesktopWindow(), request, NULL, 
-                                             FLAGS_ERROR_UI_FILTER_FOR_ERRORS | 
-                                             FLAGS_ERROR_UI_FLAGS_CHANGE_OPTIONS |
-                                             FLAGS_ERROR_UI_FLAGS_GENERATE_DATA,
-                                             NULL);
+            DWORD dwError;
+            
+            // Automatic authentication (user/pass stored in win reg key).
+            if (strcmp(proxy.user, "") && strcmp(proxy.password, "")) {
+                wchar_t* wUser = toWideChar(proxy.user);
+                wchar_t* wPwd  = toWideChar(proxy.password);
+
+                InternetSetOption(request, INTERNET_OPTION_PROXY_USERNAME, wUser, wcslen(wUser)+1);
+                InternetSetOption(request, INTERNET_OPTION_PROXY_PASSWORD, wPwd,  wcslen(wPwd)+1);
+
+                delete [] wUser;
+                delete [] wPwd;
+                dwError = ERROR_INTERNET_FORCE_RETRY;
+            }
+
+            // Prompt dialog box.
+            else {
+                dwError = InternetErrorDlg(GetDesktopWindow(), request, NULL, 
+                                           FLAGS_ERROR_UI_FILTER_FOR_ERRORS | 
+                                           FLAGS_ERROR_UI_FLAGS_CHANGE_OPTIONS |
+                                           FLAGS_ERROR_UI_FLAGS_GENERATE_DATA,
+                                           NULL);
+            }
             
             if (dwError == ERROR_INTERNET_FORCE_RETRY) {
                 continue;

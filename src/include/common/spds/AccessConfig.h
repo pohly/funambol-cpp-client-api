@@ -30,6 +30,8 @@ class AccessConfig {
         BOOL          useProxy         ;
         BCHAR*        proxyHost        ;
         int           proxyPort        ;
+        BCHAR*        proxyUsername    ;
+        BCHAR*        proxyPassword    ;
         BCHAR*        syncURL          ;
         unsigned long beginTimestamp   ;
         unsigned long endTimestamp     ;
@@ -150,6 +152,30 @@ class AccessConfig {
          * @param proxyHost the new proxyHost value
          */
         void setProxyHost(const BCHAR* proxyHost) EXTRA_SECTION_02;
+
+        /**
+         * Returns the proxyUsername value.
+         */
+        BCHAR* getProxyUsername(const BCHAR* buf = NULL) EXTRA_SECTION_02;
+
+        /**
+         * Sets a new proxyUsername value.
+         *
+         * @param proxyUsername the new proxyUsername value
+         */
+        void setProxyUsername(const BCHAR* proxyUsername) EXTRA_SECTION_02;
+
+        /**
+         * Returns the proxyPassword value.
+         */
+        BCHAR* getProxyPassword(const BCHAR* buf = NULL) EXTRA_SECTION_02;
+
+        /**
+         * Sets a new proxyPassword value.
+         *
+         * @param proxyPassword the new proxyPassword value
+         */
+        void setProxyPassword(const BCHAR* proxyPassword) EXTRA_SECTION_02;
 
         /**
          * Returns the syncURL value. If the URL does not start with http://

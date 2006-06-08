@@ -257,6 +257,14 @@ BOOL DMTClientConfig::readAccessConfig(ManagementNode& n) {
     accessConfig.setProxyHost(tmp);
     delete [] tmp;
 
+    tmp = n.getPropertyValue(PROPERTY_PROXY_USERNAME);     
+    accessConfig.setProxyUsername(tmp);
+    delete [] tmp;
+
+    tmp = n.getPropertyValue(PROPERTY_PROXY_PASSWORD);     
+    accessConfig.setProxyPassword(tmp);
+    delete [] tmp;
+
     tmp = n.getPropertyValue(PROPERTY_SERVER_NONCE);     
     accessConfig.setServerNonce(tmp);
     delete [] tmp;
@@ -328,7 +336,9 @@ void DMTClientConfig::saveAccessConfig(ManagementNode& n) {
 
     n.setPropertyValue(PROPERTY_USE_PROXY,
 		(accessConfig.getUseProxy() ? T("T"): T("F")) );     
-    n.setPropertyValue(PROPERTY_PROXY_HOST, accessConfig.getProxyHost());     
+    n.setPropertyValue(PROPERTY_PROXY_HOST, accessConfig.getProxyHost());   
+    n.setPropertyValue(PROPERTY_PROXY_USERNAME, accessConfig.getProxyUsername()); 
+    n.setPropertyValue(PROPERTY_PROXY_PASSWORD, accessConfig.getProxyPassword()); 
     n.setPropertyValue(PROPERTY_SERVER_NONCE, accessConfig.getServerNonce());
     n.setPropertyValue(PROPERTY_CLIENT_NONCE, accessConfig.getClientNonce());
     n.setPropertyValue(PROPERTY_SERVER_ID, accessConfig.getServerID());

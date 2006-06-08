@@ -53,7 +53,7 @@ void Proxy::setProxy(BCHAR* proxyHost    ,
         bstrncpy((BCHAR*)user, (const BCHAR*)proxyUser, DIM_USERNAME);
         user[DIM_USERNAME-1] = 0;
     } else {
-        memset(host, 0, DIM_USERNAME*sizeof(BCHAR));
+        memset(user, 0, DIM_USERNAME*sizeof(BCHAR));
         //bstrcpy((BCHAR*)user, (BCHAR*)"");
     }
 
@@ -61,7 +61,7 @@ void Proxy::setProxy(BCHAR* proxyHost    ,
         bstrncpy((BCHAR*)password,(const BCHAR*) proxyPassword, DIM_PASSWORD);
         password[DIM_PASSWORD-1] = 0;
     } else {
-        memset(host, 0, DIM_PASSWORD*sizeof(BCHAR));
+        memset(password, 0, DIM_PASSWORD*sizeof(BCHAR));
         //bstrcpy((BCHAR*)password, (const BCHAR*)"");
     }
     port = proxyPort;

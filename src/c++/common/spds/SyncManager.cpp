@@ -172,7 +172,16 @@ int SyncManager::prepareSync(SyncSource** s) {
     syncURL = config.getAccessConfig().getSyncURL(); //sizeof(syncURL));
 
     URL url(syncURL);
-    Proxy proxy = Proxy();
+    Proxy proxy;
+
+    // Set proxy username/password if proxy is used.
+    if (config.getAccessConfig().getUseProxy()) {
+        //BCHAR* proxyHost = config.getAccessConfig().getProxyHost();
+        //int    proxyPort = config.getAccessConfig().getProxyPort();
+        BCHAR* proxyUser = config.getAccessConfig().getProxyUsername();
+        BCHAR* proxyPwd  = config.getAccessConfig().getProxyPassword();
+        proxy.setProxy(NULL, 0, proxyUser, proxyPwd);
+    }
     
     const BCHAR* sourceName = NULL;
     
