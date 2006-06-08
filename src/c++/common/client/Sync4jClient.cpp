@@ -118,7 +118,7 @@ int Sync4jClient::sync(SyncSource** sources) {
 
     if ((ret = syncManager->prepareSync(sources))) {
         BCHAR dbg[256];
-        bsprintf(dbg, T("ERROR prepareSync: %s"), lastErrorMsg);//
+        bsprintf(dbg, T("Error in preparing sync: %s"), lastErrorMsg);//
         LOG.error(dbg);
         
         goto finally;
@@ -126,14 +126,14 @@ int Sync4jClient::sync(SyncSource** sources) {
        
     if ((ret = syncManager->sync())) {   
         BCHAR dbg[256];
-        bsprintf(dbg, T("ERROR sync: %s"), lastErrorMsg);
+        bsprintf(dbg, T("Error in syncing: %s"), lastErrorMsg);
         LOG.error(dbg);
         goto finally;
     }
 
     if ((ret = syncManager->endSync())) {       
         BCHAR dbg[256];
-        bsprintf(dbg, T("ERROR endSync: %s"), lastErrorMsg);
+        bsprintf(dbg, T("Error in ending sync: %s"), lastErrorMsg);
         LOG.error(dbg);
         goto finally;
     }

@@ -910,7 +910,7 @@ int SyncManager::sync() {
 
             if (isErrorStatus(ret)) {
                 lastErrorCode = ret;
-                bsprintf(lastErrorMsg, T("Error: error code %i"), ret);
+                bsprintf(lastErrorMsg, T("Server Failure: server returned error code %i"), ret);
                 LOG.error(lastErrorMsg);
                 goto finally;
 
@@ -1001,7 +1001,7 @@ int SyncManager::sync() {
 
         if (isErrorStatus(ret)) {
             lastErrorCode = ret;
-            bsprintf(lastErrorMsg, T("Error: error code %i"), ret);
+            bsprintf(lastErrorMsg, T("Server Failure: server returned error code %i"), ret);
             LOG.error(lastErrorMsg);
             goto finally;
         }
@@ -1120,7 +1120,7 @@ int SyncManager::sync() {
 
                 if (isErrorStatus(ret)) {
                     lastErrorCode = ret;
-                    bsprintf(lastErrorMsg, T("Error: error code %i"), ret);
+                    bsprintf(lastErrorMsg, T("Server Failure: server returned error code %i"), ret);
                     LOG.error(lastErrorMsg);
                     goto finally;
                 }
@@ -1258,7 +1258,7 @@ int SyncManager::endSync() {
 
                 if (isErrorStatus(ret)) {
                     lastErrorCode = ret;
-                    bsprintf(lastErrorMsg, T("Error: error code %i"), ret);
+                    bsprintf(lastErrorMsg, T("Server Failure: server returned error code %i"), ret);
                     LOG.error(lastErrorMsg);
                     goto finally;
                 }
