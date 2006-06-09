@@ -37,6 +37,15 @@
 #include "syncml/core/core.h"
 #include "syncml/formatter/Formatter.h"
 
+#include "examples/MySyncListener.h"
+#include "examples/MySyncSourceListener.h"
+#include "examples/MySyncStatusListener.h"
+#include "examples/MySyncItemListener.h"
+#include "examples/MyTransportListener.h"
+
+#include "event/SetListener.h"
+
+
 // Define the test configuration
 #include "examples/config.h"
 
@@ -153,6 +162,43 @@ int main(int argc, char** argv) {
 
 #ifdef TEST_CONFIG_FILTER
     testConfigFilter();
+#endif
+
+
+#ifdef TEST_EVENT_HANDLING
+
+    Sync4jClient& s4j = Sync4jClient::getInstance();
+    s4j.setDMConfig(APPLICATION_URI);
+
+    SetListener * set = new SetListener();
+
+    MySyncListener * listener1 = new MySyncListener();
+    set->setSyncListener(listener1);
+
+    MySyncSourceListener * listener2 = new MySyncSourceListener();
+    set->setSyncSourceListener(listener2);
+
+    MySyncStatusListener * listener3 = new MySyncStatusListener();
+    set->setSyncStatusListener(listener3);
+
+    MySyncItemListener * listener4 = new MySyncItemListener();
+    set->setSyncItemListener(listener4);
+
+    MyTransportListener * listener5 = new MyTransportListener();
+    set->setTransportListener(listener5); 
+    TestSyncSource2 source2 = TestSyncSource2(TEXT("contact"));
+
+    SyncSource** ssArray = new SyncSource*[2];
+    ssArray[0] = &source2;
+
+    ssArray[1] = NULL;
+    s4j.sync(ssArray);
+
+    set->unsetSyncListener();
+    set->unsetSyncSourceListener();
+    set->unsetSyncStatusListener();
+    set->unsetSyncItemListener();
+    set->unsetTransportListener();
 #endif
 
 #ifdef TEST_XMLPROCESSOR

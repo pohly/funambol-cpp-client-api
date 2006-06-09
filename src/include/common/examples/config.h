@@ -34,6 +34,10 @@
 // Test SyncML config filter
 //#define TEST_CONFIG_FILTER   1
 
+
+// Test the Event Handling Framework
+#define TEST_EVENT_HANDLING 1
+
 // Test filters
 //#define TEST_FILTER 1
 
