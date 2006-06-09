@@ -31,11 +31,11 @@
  *
  * Properties with more than one value are:
  *
- * Property         name     1^value     2^value        3^value         4^value           5^value
- * -------------------------------------------------------------------------------------------------
- * Name         ->  N:      <LastName>  <FirstName>    <MiddleName>    <Title>           <Suffix>
- * Address      ->  ADR:    <Street>    <City>         <State>         <PostalCode>      <Country>
- * Audio Alarm  ->  AALARM: <RunTime>   <Snooze Time>  <Repeat Count>  <Audio Content>
+ * Property         name     1^value         2^value          3^value         4^value          5^value    6^value       7^value
+ * ----------------------------------------------------------------------------------------------------------------------------------
+ * Name         ->  N:      <LastName>      <FirstName>      <MiddleName>    <Title>          <Suffix>
+ * Address      ->  ADR:    <Post Office>   <Extended Addr>  <Street>        <City>           <State>    <PostalCode>  <Country>
+ * Audio Alarm  ->  AALARM: <RunTime>       <Snooze Time>    <Repeat Count>  <Audio Content>
  *
  *
  * Property values should be added as simple text, Quoted-Printable encoding is 
