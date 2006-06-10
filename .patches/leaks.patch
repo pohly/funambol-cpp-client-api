@@ -1,0 +1,149 @@
+
+#
+# Patch managed by http://www.holgerschurig.de/patcher.html
+#
+
+--- native/src/c++/common/vocl/VConverter.cpp~leaks
++++ native/src/c++/common/vocl/VConverter.cpp
+@@ -40,9 +40,11 @@
+             break;
+         }
+         if ( readFieldBody(buffCopy, prop )) {
++            // this makes a copy of prop, we still have to free it
+             vo->addProperty(prop);
+-		}
+-	}
++        }
++        delete prop;
++    }
+ 
+     delete [] buffCopy; buffCopy  = NULL;
+ 
+@@ -239,47 +241,37 @@
+ 	return true;
+ }
+ 
+-wchar_t* VConverter::extractObjectType(wchar_t* buffer) {
++wchar_t* VConverter::extractObjectProperty(wchar_t* buffer, const wchar_t *property,
++                                           wchar_t * &buffCopy, size_t &buffCopyLen) {
+ 
+-    wchar_t* buffCopy = new wchar_t[wcslen(buffer) + 1];
++    // Memory handling in extractObjectType() and
++    // extractObjectVersion() was broken:
++    // they allocated a buffer, then returned a pointer into
++    // parts of this buffer as result. The caller cannot
++    // free the result in this case. The functions were also
++    // duplicating the same code.
++    //
++    // This partial fix reuses previously allocated
++    // memory if the function is called a second time.
++    
++    size_t len = wcslen(buffer) + 1;
++    if (buffCopyLen < len) {
++        if (buffCopy) {
++            delete [] buffCopy;
++        }
++        buffCopy = new wchar_t[len];
++        buffCopyLen = len;
++    }
+     wcscpy(buffCopy, buffer);
+ 
+-
+     wchar_t seps[] = TEXT(":\n");
+     wchar_t *token;
+ 
+     token = wcstok( buffCopy, seps );
+-
+-    if(!wcscmp(token, TEXT("BEGIN"))) {
+-        
+-        token = wcstok( NULL, seps );
+-        wchar_t* index = wcschr(token,'\r');
+-        if(index)
+-            token[index-token] = '\0';
+-        return token;
+-    }
+-
+-    delete [] buffCopy; buffCopy = NULL;
+-
+-    return NULL;
+-
+-}
+-wchar_t* VConverter::extractObjectVersion(wchar_t* buffer) {
+-    
+-    wchar_t* buffCopy = new wchar_t[wcslen(buffer) + 1];
+-    wcscpy(buffCopy, buffer);
+-
+-    wchar_t seps[] = TEXT(":\n");
+-    wchar_t* token;
+-    wchar_t* index;
+-    
+-    token = wcstok( buffCopy, seps );
+-
+-    while( token != NULL ) {
+-
+-        if(!wcscmp(token, TEXT("VERSION"))) {
++    while (token != NULL) {
++        if(!wcscmp(token, TEXT(property))) {
+             token = wcstok( NULL, seps );
+-            index = wcschr(token,'\r');
++            wchar_t* index = wcschr(token,'\r');
+             if(index)
+                 token[index-token] = '\0';
+             return token;
+@@ -287,11 +279,26 @@
+         token = wcstok( NULL, seps );
+     }
+     
+-    delete [] buffCopy; buffCopy = NULL;
+-
+     return NULL;
+ }
+ 
++wchar_t* VConverter::extractObjectType(wchar_t* buffer) {
++    static wchar_t* buffCopy;
++    static size_t buffCopyLen;
++    
++    return extractObjectProperty(buffer, "BEGIN",
++                                 buffCopy, buffCopyLen);
++}
++
++
++wchar_t* VConverter::extractObjectVersion(wchar_t* buffer) {
++    static wchar_t* buffCopy;
++    static size_t buffCopyLen;
++
++    return extractObjectProperty(buffer, "VERSION",
++                                 buffCopy, buffCopyLen);    
++}
++
+ bool VConverter::extractGroup(wchar_t* propertyName, wchar_t* propertyGroup) {
+     
+     wchar_t* groupIndex;
+--- native/src/include/common/vocl/VConverter.h~leaks
++++ native/src/include/common/vocl/VConverter.h
+@@ -11,6 +11,15 @@
+ private:
+     static VProperty* readFieldHeader(wchar_t* buffer);
+     static bool readFieldBody(wchar_t* buffer, VProperty* property);
++
++    // Extract the parameter of certain properties, e.g. "BEGIN:" or "VERSION:".
++    // The result is a pointer into buffCopy, which is expected to have
++    // buffCopyLen wchars and will be reallocated if necessary.
++    static wchar_t* extractObjectProperty(wchar_t* buffer, const wchar_t *property,
++                                          wchar_t * &buffCopy, size_t &buffCopyLen);
++
++    // extractObjectType() and extractObjectVersion() contain static buffers,
++    // copy the result before calling these functions again!
+     static wchar_t* extractObjectType(wchar_t* buffer);
+     static wchar_t* extractObjectVersion(wchar_t* buffer);
+     static bool extractGroup(wchar_t* propertyName, wchar_t* propertyGroup);
+--- native/src/c++/common/vocl/VProperty.cpp~leaks
++++ native/src/c++/common/vocl/VProperty.cpp
+@@ -170,6 +170,7 @@
+                 WKeyValuePair* parameterCopy;
+                 parameterCopy = (WKeyValuePair*)parameters->get(i)->clone();
+                 cloneProperty->addParameter(parameterCopy->getKey(), parameterCopy->getValue());
++                delete parameterCopy;
+             }
+         }
+         return cloneProperty;
