@@ -162,6 +162,9 @@ nobase_pkginclude_HEADERS = \
     common/base/constants.h \
     common/base/errors.h \
     common/base/fscapi.h \
+    common/base/md5.h \
+    common/base/base64.h \
+    common/base/util/utils.h \
     common/base/util/ArrayElement.h \
     common/base/util/ArrayList.h \
     common/base/util/KeyValuePair.h \
