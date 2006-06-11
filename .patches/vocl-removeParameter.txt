@@ -1,4 +1,0 @@
-VProperty::removeParameter(wchar_t* paramName) can only
-be used for parameters which are guaranteed to be unique.
-This not the case e.g. TYPE, so another version which
-removes parameter by index is needed.
