@@ -27,6 +27,8 @@
 
 // Quoted-Printable formatted lines should be max 76 chars long.
 #define QP_MAX_LINE_LEN             70
+#define B64_MAX_LINE_LEN            76
+
 
 // These are special chars to escape in vCard/vCal/vTodo
 #define VCARD_SPECIAL_CHARS         TEXT(";\\")
@@ -35,6 +37,8 @@
 // ------------ Public functions --------------
 wchar_t* escapeSpecialChars(const wchar_t* inputString, wchar_t* charsToEscape);
 char*    convertToQP(const char* input, int start);
+bool     qp_isNeedForVprop(const BCHAR *in);
+wchar_t* folding(const wchar_t* inputString, const int maxLine);
 
 
 

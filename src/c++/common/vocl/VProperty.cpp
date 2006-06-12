@@ -262,7 +262,7 @@ wchar_t* VProperty::toString() {
     if (!equalsEncoding(TEXT("QUOTED-PRINTABLE"))) {
         for (int i=0; i<valueCount(); i++) {
             char* charValue = toMultibyte(getValue(i));
-            if (qp_isNeed(charValue)) {
+            if (qp_isNeedForVprop(charValue)) {
                 addParameter(TEXT("ENCODING"), TEXT("QUOTED-PRINTABLE"));
 		        addParameter(TEXT("CHARSET"), TEXT("UTF-8"));
                 delete [] charValue;
@@ -293,7 +293,7 @@ wchar_t* VProperty::toString() {
             WKeyValuePair *parameter;
             parameter = (WKeyValuePair*)parameters->get(i);
             if (parameter->getKey()) {
-                if (wcscmp(parameter->getKey(), TEXT("GROUP"))) {
+                if (!wcscmp(parameter->getKey(), TEXT("GROUP"))) {
                     continue;
                 }
                 propertyString.append(TEXT(";"));
@@ -313,28 +313,34 @@ wchar_t* VProperty::toString() {
     if(valueCount()>0) {
         WString valueString = TEXT("");
 
-        // Base64 encoding: supposed only 1 value                   (?)
-        //                  supposed value already in base64 format (?)
-        // ******** TO DEVELOP **********
-        /*if(property->equalsEncoding(TEXT("BASE64"))) {
-            if (values->get(0)) {
-                valueString.append(values->get(0));
+        // Base64 encoding: supposed only 1 value
+        //                  supposed value already in base64 format
+        if(equalsEncoding(TEXT("BASE64")) || 
+           equalsEncoding(TEXT("B")) || 
+           equalsEncoding(TEXT("b")) ) {
+            
+            wchar_t *value, *valueConv;
+            value = getValue(0);
+            if (value) {
+                valueConv = folding(value, B64_MAX_LINE_LEN);
+                valueString.append(valueConv);
+                delete [] valueConv;
             }
-        }*/
+        }
+        else {
+            wchar_t *value, *valueConv;
+            for (int i=0; i<valueCount(); i++) {
+                if (i>0) {
+                    valueString.append(TEXT(";"));
+                }
+                value = getValue(i);
+                valueConv = escapeSpecialChars(value, VCARD_SPECIAL_CHARS);         // Escape special chars (";"  "\")
+                valueString.append(valueConv);
+                delete [] valueConv;
+	        }
+        }
 
-        wchar_t *value, *valueConv;
-        for (int i=0; i<valueCount(); i++) {
-            if (i>0) {
-                valueString.append(TEXT(";"));
-            }
-            value = getValue(i);
-            valueConv = escapeSpecialChars(value, VCARD_SPECIAL_CHARS);         // Escape special chars (";"  "\")
-            valueString.append(valueConv);
-            delete [] valueConv;
-	    }
-
-
-        // convert values string to QUOTED-PRINTABLE
+        // QUOTED-PRINTABLE encoding
         if (equalsEncoding(TEXT("QUOTED-PRINTABLE"))) {
             char* s  = toMultibyte(valueString.c_str());
             char* qp = convertToQP(s, 0);
@@ -501,6 +507,18 @@ char* convertToQP(const char* input, int start) {
 
 
 
+// Returns true if Quoted-Printable is needed for the string 'in'.
+bool qp_isNeedForVprop(const BCHAR *in) {
+	for(int i = 0; i < int(bstrlen(in)); i++) 
+		if ( (in[i] < 0x20) || (in[i] > 0x7f))
+			return true;
+	
+	return false;
+}
+
+
+
+
 
 /*
 * Escape special characters adding a back-slash (i.e. ";" -> "\;")
@@ -543,6 +561,37 @@ wchar_t* escapeSpecialChars(const wchar_t* inputString, wchar_t* charsToEscape) 
     
     outputString[outputLen] = 0;
     delete [] wc;
+    return outputString;
+}
+
+
+
+
+/*
+ * Folding of long lines.
+ * @param inputString : input wchar_t string of text
+ * @param maxLine     : the length of lines in the output string
+ * @return            : output wchar_t string with folded lines (new allocated)
+ *
+ * Note:
+ *      returns new allocated wchar_t*, must be freed by the caller.
+ */
+wchar_t* folding(const wchar_t* inputString, const int maxLine) {
+
+    wchar_t newLine[] = TEXT("\r\n");
+
+    int inputLen  = wcslen(inputString);
+    int outputLen = inputLen + (int)(inputLen/maxLine + 1)*wcslen(newLine);
+    
+    wchar_t* outputString = new wchar_t[outputLen + 1];
+    outputString[0] = 0;
+
+    for (int i=0; i<inputLen; i += maxLine) {
+        wcsncat(outputString, inputString+i, maxLine);
+        wcscat(outputString, newLine);
+    }
+    outputString[outputLen] = 0;
+
     return outputString;
 }
 

@@ -70,7 +70,7 @@ BCHAR *qp_decode(const BCHAR *qp)
     return ret;
 }
 
-// A simple version of qp_encoding not used yet
+// A simple version of qp_encoding
 BCHAR *qp_encode(const BCHAR *qp) {
 	BCHAR QP_DIGITS[] = T("0123456789ABCDEF");
 	BCHAR* ret = new BCHAR[bstrlen(qp)*3+1];
@@ -99,7 +99,7 @@ BCHAR *qp_encode(const BCHAR *qp) {
 
 bool qp_isNeed(const BCHAR *in) {
 	for(int i = 0; i < int(bstrlen(in)); i++) 
-		if ( (0x21 > in[i]) | (in[i] > 0x7e) || in[i] == '=' )
+		if ( (0x21 > in[i]) || (in[i] > 0x7e) || in[i] == '=' )
 			return true;
 	
 	return false;
