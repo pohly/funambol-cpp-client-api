@@ -62,8 +62,8 @@ Thus the patch changes EmailData.cpp.
 +    unsigned int start = 0, end = 0;
      bool ret = false;
  
-     if( XMLProcessor::getEscapedElementContent(xml, field, NULL, &start, &end) ) {
-@@ -58,7 +58,7 @@
+     if( XMLProcessor::getElementContent(xml, field, NULL, &start, &end) ) {
+@@ -59,7 +59,7 @@
  int EmailData::parse(const BCHAR *msg, size_t len)
  {
      int ret = 0;
