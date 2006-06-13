@@ -34,8 +34,8 @@ VObject* VConverter::parse(wchar_t* buffer) {
 	VObject* vo = VObjectFactory::createInstance(objType, objVersion); 	
     VProperty *prop;
 
-    wchar_t* buffCopy = new wchar_t[wcslen(buffer) + 1];
-    wcscpy(buffCopy, buffer);
+    // Unfolding
+    wchar_t* buffCopy = unfolding(buffer);
 
     while ( true ) {
         prop = readFieldHeader(buffCopy);
@@ -218,6 +218,33 @@ bool VConverter::readFieldBody(wchar_t* buffer, VProperty* vprop) {
         }
     }
 
+    //
+    // If needed, decode B64 string and copy to 'allValues'.
+    //
+    if(vprop->equalsEncoding(TEXT("BASE64")) || 
+       vprop->equalsEncoding(TEXT("B")) || 
+       vprop->equalsEncoding(TEXT("b")) ) {
+
+        char* buf = toMultibyte(allValues);
+        char* dec = new char[2*strlen(buf) + 1];
+        b64_decode(dec, buf);
+        len = strlen(dec);
+	    delete [] buf;
+
+	    if (dec) {
+            wchar_t* wdecoded = toWideChar(dec);
+            delete [] dec;
+
+            if (wdecoded) {
+                wcsncpy(allValues, wdecoded, len);
+                allValues[len] = 0;
+                delete [] wdecoded;
+            }
+        }
+        if (!len) {
+            goto finally;
+        }
+    }
 
     // This is a buffer for each single value
     value = new wchar_t[len + 1];
@@ -240,9 +267,14 @@ bool VConverter::readFieldBody(wchar_t* buffer, VProperty* vprop) {
         else {     
             // Manage escaped chars: jump back-slash
             if (c[i] == '\\') {
-                i++;
-                if (c[i] == '\0')
-                    break;
+                if (c[i+1]=='n') {
+                    // none: this is "\n" sequence (formatted line ending for 3.0)
+                }
+                else {
+                    i++;
+                    if (c[i] == '\0')
+                        break;
+                }
             }
             value[j] = c[i];
             j++;
@@ -256,8 +288,8 @@ bool VConverter::readFieldBody(wchar_t* buffer, VProperty* vprop) {
 finally:
 
     // Shift buffer for next property to parse
-    // (now buffers don't overlap)
-    wcscpy(buffer, buffer+offset);
+    //wcscpy(buffer, buffer+offset);
+    memmove(buffer, buffer+offset, (wcslen(buffer+offset) + 1)*sizeof(*buffer));
 
     if (value) {
         delete [] value;     value = NULL;

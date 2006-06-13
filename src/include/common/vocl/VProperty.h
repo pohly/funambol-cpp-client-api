@@ -27,18 +27,21 @@
 
 // Quoted-Printable formatted lines should be max 76 chars long.
 #define QP_MAX_LINE_LEN             70
-#define B64_MAX_LINE_LEN            76
+#define VCARD_MAX_LINE_LEN          76
 
 
-// These are special chars to escape in vCard/vCal/vTodo
-#define VCARD_SPECIAL_CHARS         TEXT(";\\")
+// These are special chars to escape in vCard/vCal/vTodo (version 2.1 - 3.0)
+#define VCARD21_SPECIAL_CHARS       TEXT(";\\")
+#define VCARD30_SPECIAL_CHARS       TEXT(";\\,")
+#define RFC822_LINE_BREAK           TEXT("\r\n")
 
 
 // ------------ Public functions --------------
-wchar_t* escapeSpecialChars(const wchar_t* inputString, wchar_t* charsToEscape);
+wchar_t* escapeSpecialChars(const wchar_t* inputString, wchar_t* version);
 char*    convertToQP(const char* input, int start);
-bool     qp_isNeedForVprop(const BCHAR *in);
+bool     encodingIsNeed(const BCHAR *in);
 wchar_t* folding(const wchar_t* inputString, const int maxLine);
+wchar_t* unfolding(const wchar_t* inputString);
 
 
 
@@ -89,7 +92,7 @@ private:
     bool equalsEncoding(wchar_t* encoding);
     //wchar_t* getPropComponent(int i);
     bool isType(wchar_t* type);
-    wchar_t* toString();
+    wchar_t* toString(wchar_t* version = NULL);
 
  };
 

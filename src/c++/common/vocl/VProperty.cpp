@@ -245,11 +245,20 @@ int VProperty::parameterCount() {
 
 /*
  * Returns a wchar_t* string of this VProperty, based on vCard-vCal specifications.
- * Here values of the property are encoded / proper chars are escaped.
+ * Here values of the property are encoded / special chars are escaped according to
+ * vCard-vCal 2.1/3.0 specifications.
+ * @param version: vCard version "2.1" or "3.0" - we have different specs
+ *                 (if not defined, default will be 2.1)
+ *
  * Note:
  * The returned wchar_t* is new allocated, must be freed by the caller.
  */
-wchar_t* VProperty::toString() {
+wchar_t* VProperty::toString(wchar_t* version) {
+
+    bool is_30 = false;
+    if (version) {
+        is_30 = !wcscmp(version, TEXT("3.0"));
+    }
 
     WString propertyString = TEXT("");
 
@@ -257,20 +266,37 @@ wchar_t* VProperty::toString() {
         goto finally;
     }
 
-
-    // Set QP parameter if necessary
-    if (!equalsEncoding(TEXT("QUOTED-PRINTABLE"))) {
-        for (int i=0; i<valueCount(); i++) {
-            char* charValue = toMultibyte(getValue(i));
-            if (qp_isNeedForVprop(charValue)) {
-                addParameter(TEXT("ENCODING"), TEXT("QUOTED-PRINTABLE"));
-		        addParameter(TEXT("CHARSET"), TEXT("UTF-8"));
-                delete [] charValue;
-                break;
+    // Set encoding (QP/B64) parameter if necessary
+    // QP encoding not allowed for vCard 3.0 (RFC 2426)
+    if (is_30) {
+        if(!equalsEncoding(TEXT("BASE64")) && 
+           !equalsEncoding(TEXT("B")) &&
+           !equalsEncoding(TEXT("b")) ) {
+            for (int i=0; i<valueCount(); i++) {
+                char* charValue = toMultibyte(getValue(i));
+                if (encodingIsNeed(charValue)) {
+                    addParameter(TEXT("ENCODING"), TEXT("b"));
+                    delete [] charValue;
+                    break;
+                }
             }
-            delete [] charValue;
         }
     }
+    else {
+        if (!equalsEncoding(TEXT("QUOTED-PRINTABLE")) ) {
+            for (int i=0; i<valueCount(); i++) {
+                char* charValue = toMultibyte(getValue(i));
+                if (encodingIsNeed(charValue)) {
+                    addParameter(TEXT("ENCODING"), TEXT("QUOTED-PRINTABLE"));
+	                addParameter(TEXT("CHARSET"), TEXT("UTF-8"));
+                    delete [] charValue;
+                    break;
+                }
+                delete [] charValue;
+            }
+        }
+    }
+
 
     //
     // Write Group:
@@ -313,35 +339,27 @@ wchar_t* VProperty::toString() {
     if(valueCount()>0) {
         WString valueString = TEXT("");
 
-        // Base64 encoding: supposed only 1 value
-        //                  supposed value already in base64 format
-        if(equalsEncoding(TEXT("BASE64")) || 
-           equalsEncoding(TEXT("B")) || 
-           equalsEncoding(TEXT("b")) ) {
-            
-            wchar_t *value, *valueConv;
-            value = getValue(0);
-            if (value) {
-                valueConv = folding(value, B64_MAX_LINE_LEN);
-                valueString.append(valueConv);
-                delete [] valueConv;
+
+        // Get all values in one single string
+        wchar_t *value, *valueConv;
+        for (int i=0; i<valueCount(); i++) {
+            if (i>0) {
+                valueString.append(TEXT(";"));
             }
-        }
-        else {
-            wchar_t *value, *valueConv;
-            for (int i=0; i<valueCount(); i++) {
-                if (i>0) {
-                    valueString.append(TEXT(";"));
-                }
-                value = getValue(i);
-                valueConv = escapeSpecialChars(value, VCARD_SPECIAL_CHARS);         // Escape special chars (";"  "\")
-                valueString.append(valueConv);
-                delete [] valueConv;
-	        }
+            value = getValue(i);
+
+            // Escape special chars - based on version (";"  "\", ",")
+            valueConv = escapeSpecialChars(value, version);
+
+            valueString.append(valueConv);
+            delete [] valueConv;
         }
 
-        // QUOTED-PRINTABLE encoding
+
+
+        // QUOTED-PRINTABLE encoding (of all values)
         if (equalsEncoding(TEXT("QUOTED-PRINTABLE"))) {
+            
             char* s  = toMultibyte(valueString.c_str());
             char* qp = convertToQP(s, 0);
             wchar_t* qpValueString = toWideChar(qp);
@@ -355,6 +373,28 @@ wchar_t* VProperty::toString() {
             delete [] qp;
         }
 
+        // BASE64 encoding (of all values)
+        else if(equalsEncoding(TEXT("BASE64")) || 
+           equalsEncoding(TEXT("B")) || 
+           equalsEncoding(TEXT("b")) ) {
+            
+            char* s  = toMultibyte(valueString.c_str());
+            int len = strlen(s);
+            char* base64 = new char[2*len + 1];
+            b64_encode(base64, s, len);
+            wchar_t* b64ValueString = toWideChar(base64);
+            
+            propertyString.append(b64ValueString);
+            // Extra line break: required for v.2.1 / optional for v.3.0
+            //propertyString.append(RFC822_LINE_BREAK);
+
+            delete [] b64ValueString;
+            delete [] base64;
+            delete [] s;
+        }
+
+
+        // Default encoding (7bit)
         else {
             propertyString.append(valueString);
         }
@@ -456,11 +496,12 @@ char* convertToQP(const char* input, int start) {
 			return NULL;
 		
 		for (p = sAppend; *p; p++) { 
-			if (count > QP_MAX_LINE_LEN) {
-				strcat(qpString, "=\r\n");
-				count = 0;
-			}
-			else if (*p == '\t' || *p == ' ') {							
+			//if (count > QP_MAX_LINE_LEN) {
+			//	strcat(qpString, "=\r\n");
+			//	count = 0;
+			//}
+			//else 
+            if (*p == '\t' || *p == ' ') {							
 				const char *pScan = p;
 				while (*pScan && (*pScan == '\t' || *pScan == ' ')) {
 					pScan++;
@@ -473,10 +514,10 @@ char* convertToQP(const char* input, int start) {
 						count += 3;
 						p++;
 
-						if (count > QP_MAX_LINE_LEN) {
-							strcat(qpString, "=\r\n");
-							count = 0;
-						}
+						//if (count > QP_MAX_LINE_LEN) {
+						//	strcat(qpString, "=\r\n");
+						//	count = 0;
+						//}
 					}
 					break;
 				}
@@ -507,8 +548,8 @@ char* convertToQP(const char* input, int start) {
 
 
 
-// Returns true if Quoted-Printable is needed for the string 'in'.
-bool qp_isNeedForVprop(const BCHAR *in) {
+// Returns true if special encoding is needed for the string 'in'.
+bool encodingIsNeed(const BCHAR *in) {
 	for(int i = 0; i < int(bstrlen(in)); i++) 
 		if ( (in[i] < 0x20) || (in[i] > 0x7f))
 			return true;
@@ -522,18 +563,31 @@ bool qp_isNeedForVprop(const BCHAR *in) {
 
 /*
 * Escape special characters adding a back-slash (i.e. ";" -> "\;")
-* @param inputString   : the input string to parse
-* @param charsToEscape : string with special characters to escape (i.e. ";<>\\")
-* @return              : the new allocated string with escaped chars
+* @param inputString  : the input string to parse
+* @param version      : vCard version "2.1" or "3.0" - we have different chars to escape
+ *                     (if not defined, default will be 2.1)
+* @return             : the new allocated string with escaped chars
 * Note: 
 *      returns new allocated wchar_t*, must be freed by the caller.
 */
-wchar_t* escapeSpecialChars(const wchar_t* inputString, wchar_t* charsToEscape) {
+wchar_t* escapeSpecialChars(const wchar_t* inputString, wchar_t* version) {
 
     int i, j, inputLen, outputLen;
     inputLen  = wcslen(inputString);
-    
     wchar_t* wc = new wchar_t[2];
+    wchar_t charsToEscape[4];
+
+    bool is_30 = false;
+    if (version) {
+        is_30 = !wcscmp(version, TEXT("3.0"));
+    }
+    if (is_30) {
+        wcscpy(charsToEscape, VCARD30_SPECIAL_CHARS);
+    }
+    else {
+        wcscpy(charsToEscape, VCARD21_SPECIAL_CHARS);
+    }
+
 
     // First find the length of output value
     outputLen = inputLen;
@@ -552,8 +606,13 @@ wchar_t* escapeSpecialChars(const wchar_t* inputString, wchar_t* charsToEscape) 
         wcsncpy(wc, &inputString[i], 1);
         wc[1]=0;
         if (wcsstr(charsToEscape, wc)) {
-            outputString[j]   = '\\';
-            j++;
+            if (is_30 && inputString[i]=='\\' && inputString[i+1]=='n') {
+                // none: this is "\n" sequence, MUST NOT be escaped in 3.0
+            }
+            else {
+                outputString[j]   = '\\';
+                j++;
+            }
         }
         outputString[j] = inputString[i];
         j++;
@@ -568,7 +627,8 @@ wchar_t* escapeSpecialChars(const wchar_t* inputString, wchar_t* charsToEscape) 
 
 
 /*
- * Folding of long lines.
+ * Folding of long lines. Output string is splitted into multiple
+ * lines, delimited by the RFC-822 line break ("\r\n").
  * @param inputString : input wchar_t string of text
  * @param maxLine     : the length of lines in the output string
  * @return            : output wchar_t string with folded lines (new allocated)
@@ -578,12 +638,23 @@ wchar_t* escapeSpecialChars(const wchar_t* inputString, wchar_t* charsToEscape) 
  */
 wchar_t* folding(const wchar_t* inputString, const int maxLine) {
 
-    wchar_t newLine[] = TEXT("\r\n");
+    // "\r\n" followed by a white space as line ending (RFC 2425)
+    wchar_t newLine[4];
+    wcscpy(newLine, RFC822_LINE_BREAK);
+    wcscat(newLine, TEXT(" \0"));
 
     int inputLen  = wcslen(inputString);
+    wchar_t* outputString;
+
+    // No folding needed
+    if (inputLen <= maxLine) {
+        outputString = new wchar_t[inputLen + 1];
+        wcscpy(outputString, inputString);
+        goto finally;
+    }
+
     int outputLen = inputLen + (int)(inputLen/maxLine + 1)*wcslen(newLine);
-    
-    wchar_t* outputString = new wchar_t[outputLen + 1];
+    outputString = new wchar_t[outputLen + 1];
     outputString[0] = 0;
 
     for (int i=0; i<inputLen; i += maxLine) {
@@ -592,6 +663,41 @@ wchar_t* folding(const wchar_t* inputString, const int maxLine) {
     }
     outputString[outputLen] = 0;
 
+finally:
     return outputString;
 }
+
+
+
+/*
+ * Unfolding a logical line. Input string is splitted into multiple
+ * lines, delimited by the RFC-822 line break ("\r\n") followed by one space.
+ * @param inputString : input  wchar_t string with folded lines
+ * @return            : output wchar_t string unfolded (new allocated)
+ *
+ * Note:
+ *      returns new allocated wchar_t*, must be freed by the caller.
+ */
+wchar_t* unfolding(const wchar_t* inputString) {
+
+    int inputLen  = wcslen(inputString);
+    wchar_t* outputString = new wchar_t[inputLen + 1];
+    outputString[0] = 0;
+
+    int j=0;
+    for (int i=0; i<inputLen-2; i++) {
+        if (inputString[i]   == '\r' &&
+            inputString[i+1] == '\n' &&
+            inputString[i+2] == ' ') {
+            i += 2;
+            continue;
+        }
+        outputString[j] = inputString[i];
+        j++;
+    }
+    outputString[j] = 0;
+
+    return outputString;
+}
+
 

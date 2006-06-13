@@ -126,23 +126,38 @@ VProperty* VObject::getProperty(wchar_t* propName) {
 wchar_t* VObject::toString() {
     
     WString strVObject;
-    const wchar_t* eof;
 
-    // vcard 2.1 and 3.0 both use \r\n as line ending
-    eof = TEXT("\r\n");
+    BOOL is_30 = FALSE;
+    if (version) {
+        is_30 = !wcscmp(getVersion(), TEXT("3.0"));
+    }
+
+    bool useFolding = true;
 
     // let's reserve some space to avoid reallocation in most cases
     strVObject.reserve(5000);
 
     for (int i=0; i<properties->size(); i++) {
-        VProperty *property;
-        property = (VProperty*)properties->get(i);
-        wchar_t* propString = property->toString();
-        
-        strVObject.append(propString);
-        strVObject.append(eof);
+        VProperty *prop = getProperty(i);
+        wchar_t* propString = prop->toString(version);
+        wchar_t* valueConv = NULL;
 
-        delete [] propString;
+        // Folding
+        if (useFolding && wcslen(propString) > VCARD_MAX_LINE_LEN) {
+            valueConv = folding(propString, VCARD_MAX_LINE_LEN);
+            strVObject.append(valueConv);
+        }
+        else {
+            strVObject.append(propString);
+        }
+        strVObject.append(RFC822_LINE_BREAK);
+
+        if (propString) {
+            delete [] propString;  propString = NULL;
+        }
+        if (valueConv) {
+            delete [] valueConv;   valueConv = NULL;
+        }
     }		    
 
     // memory must be free by caller with delete []

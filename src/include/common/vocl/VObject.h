@@ -38,10 +38,26 @@
  * Audio Alarm  ->  AALARM: <RunTime>       <Snooze Time>    <Repeat Count>  <Audio Content>
  *
  *
- * Property values should be added as simple text, Quoted-Printable encoding is 
- * automatically managed inside VObject. Also the escaping of special chars (";" "\") is
+ * Property values should be added as simple text, Quoted-Printable and BASE64 encodings are
+ * automatically managed inside VObject. Also the escaping of special chars is
  * automatically managed inside VObject.
+ *  Escaped chars for v.2.1:  ";" "\"
+ *  Escaped chars for v.3.0:  ";" "\" ","
  * Use VObject::toString() method to obtain the correspondent vCard/vCal/vTodo.
+ *
+ *
+ * To set Quoted-Printable / Base64 encoding for a property:
+ * =========================================================
+ * QP and B64 encodings are automatically managed inside VObject. This means that
+ * data conversion is performed inside VObject, to force data encoding
+ * just add the encoding parameter to the VProperty, calling:
+ *
+ *   for QP:    VProperty->addParameter(TEXT("ENCODING"), TEXT("QUOTED-PRINTABLE"))
+ *   for B64:   VProperty->addParameter(TEXT("ENCODING"), TEXT("b"))
+ *
+ * Note that QP encoding is used only for vCard v.2.1 (not allowed in v.3.0).
+ * If a property contains characters that cannot be managed with the default
+ * 7bit encoding, it is encoded automatically with QP (v.2.1) or B64 (v.3.0).
  *
  */
 
