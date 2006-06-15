@@ -56,6 +56,16 @@ EmailData::EmailData()
     flagged = false;
 }
 
+/*
+* The parse method returns:
+* -1: it means the <emailitem> doesn't containt CDATA section. This could be right
+*     if the <email> is an update from server of flags only, as <read>, <forwarded>...
+      The rightness must be choosen by the caller. It could be or not an error
+*
+* -2: it means there is an error into the format of the <emailitem>. It must be treated as an error
+*       
+*/
+
 int EmailData::parse(const BCHAR *msg, size_t len)
 {
     int ret = 0;
@@ -112,7 +122,7 @@ int EmailData::parse(const BCHAR *msg, size_t len)
             item_end = item.rfind("]]&gt;");
             if(item.length() - item_end > 10){
                 LOG.error(T("EMailData: can't find CDATA end tag."));
-                return -1;
+                return -2;
             }
         }
         // okay, move the start pointer to the end of
