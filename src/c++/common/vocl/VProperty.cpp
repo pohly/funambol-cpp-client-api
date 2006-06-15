@@ -230,6 +230,7 @@ ArrayElement* VProperty::clone() {
                 WKeyValuePair* parameterCopy;
                 parameterCopy = (WKeyValuePair*)parameters->get(i)->clone();
                 cloneProperty->addParameter(parameterCopy->getKey(), parameterCopy->getValue());
+                delete parameterCopy;
             }
         }
         return cloneProperty;

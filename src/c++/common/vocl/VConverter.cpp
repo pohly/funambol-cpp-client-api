@@ -44,8 +44,9 @@ VObject* VConverter::parse(wchar_t* buffer) {
         }
         if ( readFieldBody(buffCopy, prop )) {
             vo->addProperty(prop);
-		}
-	}
+        }
+        delete prop;
+    }
 
     delete [] buffCopy; buffCopy  = NULL;
 
@@ -303,47 +304,37 @@ finally:
 
 
 
-wchar_t* VConverter::extractObjectType(wchar_t* buffer) {
+wchar_t* VConverter::extractObjectProperty(wchar_t* buffer, const wchar_t *property,
+                                           wchar_t * &buffCopy, size_t &buffCopyLen) {
 
-    wchar_t* buffCopy = new wchar_t[wcslen(buffer) + 1];
+    // Memory handling in extractObjectType() and
+    // extractObjectVersion() was broken:
+    // they allocated a buffer, then returned a pointer into
+    // parts of this buffer as result. The caller cannot
+    // free the result in this case. The functions were also
+    // duplicating the same code.
+    //
+    // This partial fix reuses previously allocated
+    // memory if the function is called a second time.
+    
+    size_t len = wcslen(buffer) + 1;
+    if (buffCopyLen < len) {
+        if (buffCopy) {
+            delete [] buffCopy;
+        }
+        buffCopy = new wchar_t[len];
+        buffCopyLen = len;
+    }
     wcscpy(buffCopy, buffer);
-
 
     wchar_t seps[] = TEXT(":\n");
     wchar_t *token;
 
     token = wcstok( buffCopy, seps );
-
-    if(!wcscmp(token, TEXT("BEGIN"))) {
-        
-        token = wcstok( NULL, seps );
-        wchar_t* index = wcschr(token,'\r');
-        if(index)
-            token[index-token] = '\0';
-        return token;
-    }
-
-    delete [] buffCopy; buffCopy = NULL;
-
-    return NULL;
-
-}
-wchar_t* VConverter::extractObjectVersion(wchar_t* buffer) {
-    
-    wchar_t* buffCopy = new wchar_t[wcslen(buffer) + 1];
-    wcscpy(buffCopy, buffer);
-
-    wchar_t seps[] = TEXT(":\n");
-    wchar_t* token;
-    wchar_t* index;
-    
-    token = wcstok( buffCopy, seps );
-
-    while( token != NULL ) {
-
-        if(!wcscmp(token, TEXT("VERSION"))) {
+    while (token != NULL) {
+        if(!wcscmp(token, TEXT("BEGIN"))) {
             token = wcstok( NULL, seps );
-            index = wcschr(token,'\r');
+            wchar_t* index = wcschr(token,'\r');
             if(index)
                 token[index-token] = '\0';
             return token;
@@ -351,9 +342,24 @@ wchar_t* VConverter::extractObjectVersion(wchar_t* buffer) {
         token = wcstok( NULL, seps );
     }
     
-    delete [] buffCopy; buffCopy = NULL;
-
     return NULL;
+}
+
+wchar_t* VConverter::extractObjectType(wchar_t* buffer) {
+    static wchar_t* buffCopy;
+    static size_t buffCopyLen;
+    
+    return extractObjectProperty(buffer, TEXT("BEGIN"),
+                                 buffCopy, buffCopyLen);
+}
+
+
+wchar_t* VConverter::extractObjectVersion(wchar_t* buffer) {
+    static wchar_t* buffCopy;
+    static size_t buffCopyLen;
+
+    return extractObjectProperty(buffer, TEXT("VERSION"),
+                                 buffCopy, buffCopyLen);    
 }
 
 bool VConverter::extractGroup(wchar_t* propertyName, wchar_t* propertyGroup) {
