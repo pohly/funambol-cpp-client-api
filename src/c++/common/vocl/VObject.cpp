@@ -132,7 +132,9 @@ wchar_t* VObject::toString() {
         is_30 = !wcscmp(getVersion(), TEXT("3.0"));
     }
 
-    bool useFolding = true;
+    // *** FIXME ***
+    // By now folding feature not supported on server...
+    bool useFolding = false;
 
     // let's reserve some space to avoid reallocation in most cases
     strVObject.reserve(5000);
