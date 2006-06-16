@@ -2,6 +2,13 @@ Funambol SDK C++ 3.0.18
 ------------------------- 
 2006-06-16:
       305364    endless loop if second of two sync sources fails in SyncSource::beginSync()
+      305474    patch for memory leaks in VOCL
+      
+    - toccy: vocl fix about folding feature, escape special char and b64 encoding
+      improved StringBuffer stability
+      fixed some memory leaks
+      added proxy authentication parameters used in Win32 Transport Agent
+      
 
 Funambol SDK C++ 3.0.17
 ------------------------- 
