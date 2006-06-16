@@ -1,3 +1,8 @@
+Funambol SDK C++ 3.0.18
+------------------------- 
+2006-06-16:
+      305364    endless loop if second of two sync sources fails in SyncSource::beginSync()
+
 Funambol SDK C++ 3.0.17
 ------------------------- 
 2006-05-24:
