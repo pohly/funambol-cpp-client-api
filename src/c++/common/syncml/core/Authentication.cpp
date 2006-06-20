@@ -331,6 +331,7 @@ void Authentication::setData(BCHAR* data) {
             }
             
         }
+        if (clearData) { delete [] clearData; clearData = NULL; }
     }
 
     if (bstrcmp(type, AUTH_TYPE_MD5) == 0) {

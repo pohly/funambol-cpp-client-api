@@ -700,6 +700,7 @@ Map* SyncMLBuilder::prepareMapCommand(SyncSource& s) {
     deleteCmdID(&commandID);
     deleteTarget(&tar);
     deleteSource(&sou);
+    deleteArrayList(&mapItems);
 
     return map;
 
