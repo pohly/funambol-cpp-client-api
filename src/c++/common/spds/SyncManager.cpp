@@ -874,7 +874,9 @@ int SyncManager::sync() {
                 modificationCommand = NULL;
             }                     
             sync->setCommands(list);
+            delete list;
             commands->add(*sync);
+            delete sync;
 
             //
             // Check if all the sources were synced.

@@ -531,8 +531,10 @@ SyncML* SyncMLBuilder::prepareInitObject(Cred* cred, ArrayList* alerts, ArrayLis
 }
 
 BCHAR* SyncMLBuilder::prepareMsg(SyncML* syncml) {        
-    StringBuffer s = *Formatter::getSyncML(syncml);
-    return stringdup(s.c_str());     
+    StringBuffer *s = Formatter::getSyncML(syncml);
+    BCHAR* str = stringdup(s->c_str());
+    delete s;
+    return str;
 }
 
 

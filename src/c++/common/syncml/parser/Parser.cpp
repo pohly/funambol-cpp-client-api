@@ -1205,6 +1205,7 @@ ArrayList* Parser::getAdds(BCHAR* xml, BCHAR* except) {
         if (t) { delete [] t; t = NULL; }
         t = XMLProcessor::getElementContentExcept(&xml[pos], ADD, except, &pos);
     }   
+    if (t) { delete [] t; t = NULL; }
     return list;   
 }
 
@@ -1229,6 +1230,7 @@ ArrayList* Parser::getReplaces(BCHAR* xml, BCHAR* except) {
         if (t) { delete [] t; t = NULL; }
         t = XMLProcessor::getElementContentExcept(&xml[pos], REPLACE, except, &pos);
     }
+    if (t) { delete [] t; t = NULL; }
     return list;   
 }
 
@@ -1253,6 +1255,7 @@ ArrayList* Parser::getDels(BCHAR* xml, BCHAR* except) {
         if (t) { delete [] t; t = NULL;}
         t = XMLProcessor::getElementContentExcept(&xml[pos], DEL, except, &pos);
     }
+    if (t) { delete [] t; t = NULL; }
     return list;   
 }
 
@@ -1306,6 +1309,7 @@ ArrayList* Parser::getCommands(BCHAR* xml) {
         if (t) { delete [] t; t = NULL; }
         t = XMLProcessor::getElementContent(&xml[pos], STATUS, &pos);
     }
+    if (t) { delete [] t; t = NULL; }
    
     if (list->size() > 0) {
         for (int i = 0; i < list->size(); i++) {
@@ -1490,6 +1494,7 @@ ArrayList* Parser::getCommands(BCHAR* xml) {
         if (t) { delete [] t; t = NULL; }
         t = XMLProcessor::getElementContentExcept(&xml[pos], SYNC, T("Atomic&Sequence"), &pos);
     }
+    if (t) { delete [] t; t = NULL; }
     
     if (list->size() > 0) {
         for (int i = 0; i < list->size(); i++) {
@@ -1947,6 +1952,7 @@ ArrayList* Parser::getItems(BCHAR* xml) {
         if (t) { delete [] t; t = NULL; }
         t = XMLProcessor::getElementContent(&xml[pos], ITEM, &pos);
     }
+    if (t) { delete [] t; t = NULL; }
 
     return items;    
 }
