@@ -640,7 +640,9 @@ ModificationCommand* SyncMLBuilder::prepareModificationCommand(BCHAR* COMMAND, S
     
     ArrayList* list = new ArrayList();
     if (syncItem) {
-        list->add(prepareItem(syncItem, type, COMMAND));
+        ArrayList* tmpList = prepareItem(syncItem, type, COMMAND);
+        list->add(tmpList);
+        deleteArrayList(&tmpList);
     }
     if (bstrcmp(ADD_COMMAND_NAME, COMMAND) == 0)
         ret = new Add(commandID, FALSE, NULL, meta, list);
@@ -668,8 +670,9 @@ void SyncMLBuilder::addItem(ModificationCommand* modificationCommand, BCHAR* COM
     }       
     
     ArrayList* list = modificationCommand->getItems();
-    list->add(prepareItem(syncItem, type, COMMAND));
-      
+    ArrayList* tmpList = prepareItem(syncItem, type, COMMAND);
+    list->add(tmpList);
+    deleteArrayList(&tmpList);
 }
 
 Sync* SyncMLBuilder::prepareSyncCommand(SyncSource& source) {            

@@ -1279,6 +1279,7 @@ int SyncManager::endSync() {
                 // Process the status of mapping
                 //                        
                 ret = syncMLProcessor.processMapResponse(*sources[count], syncml->getSyncBody());
+                deleteSyncML(&syncml);
                 if (ret == -1) {
                     ret = lastErrorCode;
                     goto finally;
