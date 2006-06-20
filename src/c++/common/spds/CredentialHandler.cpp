@@ -142,7 +142,8 @@ Cred* CredentialHandler::getClientCredential() {
         auth = new Authentication(AUTH_TYPE_BASIC, username, password);
     } else {
         credential = MD5CredentialData(username, password, clientNonce);
-        auth = new Authentication(AUTH_TYPE_MD5, credential);                    
+        auth = new Authentication(AUTH_TYPE_MD5, credential);                   
+        if (credential) { delete [] credential; credential = NULL; }
     }
     
     Cred* cred           = new Cred(auth);    

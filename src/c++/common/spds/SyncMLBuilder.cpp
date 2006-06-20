@@ -676,6 +676,11 @@ Sync* SyncMLBuilder::prepareSyncCommand(SyncSource& source) {
          
     sync = new Sync(commandID, FALSE, NULL, tar, sou, NULL, 0,  list);
 
+    deleteCmdID(&commandID);
+    deleteTarget(&tar);
+    deleteSource(&sou);
+    deleteArrayList(&list);
+
     return sync;  
     
 }
