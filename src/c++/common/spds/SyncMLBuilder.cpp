@@ -164,6 +164,8 @@ Status* SyncMLBuilder::prepareItemStatus(const BCHAR* COMMAND,
     deleteData(&data);
     deleteSource(&sou);    
     deleteItem(&item);
+    deleteArrayList(&empty);
+    deleteArrayList(&list);
 
     return s;
 
@@ -366,6 +368,8 @@ Alert* SyncMLBuilder::prepareRequestAlert(SyncSource& s) {
     deleteSource(&sou);
     deleteItem(&item);
     deleteCmdID(&commandID);
+    deleteArrayList(&list);
+
     return alert;
 }
 
@@ -490,6 +494,7 @@ SyncHdr* SyncMLBuilder::prepareSyncHdr(Cred* cred) {
                                     NULL, NULL, NULL); 
         meta = new Meta();
         meta->setMetInf(metInf);
+        deleteMetInf(&metInf);
     }
     SyncHdr* syncHdr = new SyncHdr(verDTD, verProto, sessID, messageID, 
                                    tar, sou, NULL, false, cred, meta); //respUri e Meta are null
@@ -544,6 +549,7 @@ SyncML* SyncMLBuilder::prepareSyncML(ArrayList* commands, BOOL final) {
     SyncBody* syncBody   = new SyncBody(commands, final);       
     SyncML* syncml = new SyncML(syncHdr, syncBody);
     deleteSyncHdr(&syncHdr);    
+    deleteSyncBody(&syncBody);
 
     return syncml;
 }
@@ -644,6 +650,8 @@ ModificationCommand* SyncMLBuilder::prepareModificationCommand(BCHAR* COMMAND, S
         ret = new Delete(commandID, FALSE, FALSE, FALSE, NULL, meta, list);
     }
     
+    deleteMetInf(&metInf);
+    deleteCmdID(&commandID);
     deleteArrayList(&list);
     deleteMeta(&meta);
 
