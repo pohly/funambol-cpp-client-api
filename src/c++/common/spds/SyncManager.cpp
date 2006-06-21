@@ -129,10 +129,19 @@ SyncManager::~SyncManager() {
         commands->clear();
     }
     if (check) {
-        // delete check
+        delete [] check;
     }
     if (mappings) {
-        // delete mappings
+        for (int i=0; i<sourcesNumber; i++) {
+            deleteArrayList(&mappings[i]);
+            delete mappings[i];
+        }
+        delete [] mappings;
+    }
+    if (sources) {
+        // This deletes only SyncSource array
+        // We DON'T want to release SyncSource objects here!
+        delete [] sources;
     }
 }
 
