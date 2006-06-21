@@ -410,7 +410,7 @@ BCHAR* XMLProcessor::getElementContentExcept(BCHAR*      xmlPtr    ,
     count++;
     
     array = new BCHAR*[count + 1];
-	 int l;
+	int l;
     for (l = 0; l <= count; l++) {
         array[l] = NULL;
     }
@@ -476,11 +476,12 @@ BCHAR* XMLProcessor::getElementContentExcept(BCHAR*      xmlPtr    ,
                             break;
                         }
                         previousPosition = position;
-                    }
-                
+                       
+                    }                    
+
                     if (notValid) {
                         notValid = FALSE;     
-                         safeDel(&ret);
+                        safeDel(&ret);
                         validElement[k] = 0;
                     } else {
                         if (post) {
@@ -494,6 +495,7 @@ BCHAR* XMLProcessor::getElementContentExcept(BCHAR*      xmlPtr    ,
                     pos += previous;
                     previous = pos;
                     k++;
+                    if (ret) { delete [] ret; ret = NULL; }
                 }
             }
             i++;
@@ -528,8 +530,11 @@ BCHAR* XMLProcessor::getElementContentExcept(BCHAR*      xmlPtr    ,
     if (validElement) {
         delete [] validElement; validElement = NULL;
     }
-
-    safeDelete(array);   
+    
+    for (l = 0; l <= count; l++) {
+        if (array[l]) { delete [] array[l]; array[l] = NULL; }
+    }
+    //safeDelete(array);   
 
     return ret;
 }
