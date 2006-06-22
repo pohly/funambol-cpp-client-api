@@ -37,9 +37,9 @@ DevInf::~DevInf() {
     if(devID )  { delete [] devID ;  devID  = NULL; } 
     if(devTyp)  { delete [] devTyp;  devTyp = NULL; } 
     
-    if(dataStores) { dataStores->clear() ; }     //DataStore[]  
-    if(ctCap     ) { ctCap->clear()      ; }     // CTCap[]
-    if(ext       ) { ext->clear()        ; }     // Ext[]
+    if(dataStores) { dataStores->clear() ; } //delete dataStores; dataStores = NULL;}     //DataStore[]  
+    if(ctCap     ) { ctCap->clear()      ; } //delete ctCap;      ctCap = NULL;     }     // CTCap[]
+    if(ext       ) { ext->clear()        ; } //delete ext;        ext = NULL;       }     // Ext[]
 
     utc                    = FALSE;                  
     supportLargeObjs       = FALSE;     

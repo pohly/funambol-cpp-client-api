@@ -417,9 +417,11 @@ BCHAR* XMLProcessor::getElementContentExcept(BCHAR*      xmlPtr    ,
     
     // represent a element found that can be used properly
     countTag = countElementTag(xml, tag);
-    validElement = new int[countTag];
-    for (l = 0; l < countTag; l++) {
-        validElement[l] = 1;
+    if (countTag > 0) {
+        validElement = new int[countTag];
+        for (l = 0; l < countTag; l++) {
+            validElement[l] = 1;
+        }
     }
 
     BCHAR* internal = stringdup(except);
@@ -446,6 +448,7 @@ BCHAR* XMLProcessor::getElementContentExcept(BCHAR*      xmlPtr    ,
     }
     
     if (i == 0 || k < len) {
+        if (array[i]) { delete [] array[i]; array[i] = NULL; }
         array[i] = stringdup(p2);
         i++;
     }
@@ -460,7 +463,7 @@ BCHAR* XMLProcessor::getElementContentExcept(BCHAR*      xmlPtr    ,
             pos = 0, previous = 0;
             while ((ret = getElementContent(&xml[pos], tag, &pos)) != NULL) {    
             
-                if (validElement[k] == 1) {
+                if (validElement && validElement[k] == 1) {
                     pos += previous;
                     position = 0; 
                     previousPosition = 0;
@@ -495,7 +498,7 @@ BCHAR* XMLProcessor::getElementContentExcept(BCHAR*      xmlPtr    ,
                     pos += previous;
                     previous = pos;
                     k++;
-                    if (ret) { delete [] ret; ret = NULL; }
+                    safeDel(&ret); // if (ret) { delete [] ret; ret = NULL; }
                 }
             }
             i++;
@@ -506,10 +509,12 @@ BCHAR* XMLProcessor::getElementContentExcept(BCHAR*      xmlPtr    ,
             BCHAR* tmp = stringdup(array[0]);
     
             for (int m = 0; m < count - 1; m++) {
-                safeDel(&array[m]);  
+                if (array[m]) { delete [] array[m]; array[m] = NULL; }
+                //safeDel(&array[m]);  
                 array[m] = stringdup(array[m+1]);
             }
             //safeDel(&array[count-1]);
+            if (array[count-1]) { delete [] array[count-1]; array[count-1] = NULL; }
             array[count-1] = stringdup(tmp);
             safeDel(&tmp); 
         }
@@ -534,6 +539,7 @@ BCHAR* XMLProcessor::getElementContentExcept(BCHAR*      xmlPtr    ,
     for (l = 0; l <= count; l++) {
         if (array[l]) { delete [] array[l]; array[l] = NULL; }
     }
+    delete [] array; array = NULL;
     //safeDelete(array);   
 
     return ret;

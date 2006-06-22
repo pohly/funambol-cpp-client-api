@@ -216,7 +216,8 @@ BCHAR* PPC2003TransportAgent::sendMessage(const BCHAR* msg) {
 	  LOG.error(lastErrorMsg);
       goto exit;
     }    
-    
+     if(wurlHost) { delete [] wurlHost; wurlHost = NULL;}
+
     bsprintf(logmsg, T("Requesting resource %s"), url.resource);
     LOG.debug(logmsg);    
     
@@ -236,6 +237,8 @@ BCHAR* PPC2003TransportAgent::sendMessage(const BCHAR* msg) {
 	  LOG.error(lastErrorMsg);
       goto exit;
     }
+
+    if(wurlResource) { delete [] wurlResource; wurlResource = NULL;}
     
     //
     // Prepares headers
@@ -379,6 +382,9 @@ BCHAR* PPC2003TransportAgent::sendMessage(const BCHAR* msg) {
     if (bufferA) {
         delete [] bufferA; bufferA = NULL;
     }
+    if (wurlHost) { delete [] wurlHost; wurlHost = NULL;}
+    if (wurlResource) { delete [] wurlResource; wurlResource = NULL;}   
+    
     EXITING(L"TransportAgent::sendMessage");
     return response;
 }

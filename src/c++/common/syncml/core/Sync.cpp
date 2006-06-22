@@ -30,7 +30,7 @@ Sync::~Sync() {
     if (COMMAND_NAME)   { delete [] COMMAND_NAME; COMMAND_NAME = NULL; }
     if (target)         { delete target; target = NULL; }
     if (source)         { delete source; source = NULL; }
-    if (commands)       { commands->clear();          }
+    if (commands)       { commands->clear(); } //delete commands; commands = NULL;         }
     numberOfChanges = 0;
 }
 

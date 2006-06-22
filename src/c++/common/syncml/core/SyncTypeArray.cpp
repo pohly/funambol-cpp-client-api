@@ -43,7 +43,7 @@ SyncTypeArray::SyncTypeArray(){
 
 SyncTypeArray::~SyncTypeArray() {
     if (syncTypeArray) {
-        syncTypeArray->clear();
+        syncTypeArray->clear();  //delete syncTypeArray; syncTypeArray = NULL;
     }
 }
 

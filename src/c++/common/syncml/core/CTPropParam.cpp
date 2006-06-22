@@ -31,11 +31,11 @@ CTPropParam::CTPropParam() {
 
 CTPropParam::~CTPropParam() {
     if (propName)        { delete [] propName;    propName      = NULL; }
-    if (valEnum)         { valEnum->clear();                            }       //String[]
+    if (valEnum)         { valEnum->clear(); } //delete valEnum; valEnum = NULL; }       //String[]
     if (displayName)     { delete [] displayName; displayName   = NULL; }
     if (dataType)        { delete    dataType;                          }
     size            = 0;
-    if (ctParameters)    { ctParameters->clear(); ctParameters = NULL;  } //ContentTypeParameter[]
+    if (ctParameters)    { ctParameters->clear(); }//delete ctParameters; ctParameters = NULL;  } //ContentTypeParameter[]
 
 }
 

@@ -53,7 +53,7 @@ MetInf::~MetInf() {
     if (this->nextNonce)  { delete    this->nextNonce; this->nextNonce = NULL; }    
 	if (this->mem)        { delete    this->mem;       this->mem = NULL; }
 
-    if (this->emi)        { this->emi->clear(); }
+    if (this->emi)        { this->emi->clear(); } //delete this->emi; this->emi = NULL;}
 	
 	this->maxMsgSize = 0;
     this->maxObjSize = 0;  
@@ -84,11 +84,13 @@ void MetInf::set(  BCHAR*  format    ,
     setMaxMsgSize(maxMsgSize);
     setMaxObjSize(maxObjSize);                
 	this->mem        = mem->clone();
-
+    
+    
     if (emi == NULL) {
-        emi = new ArrayList();
+        this->emi = NULL;
+    } else {
+        this->emi = emi->clone();
     }
-    this->emi        = emi->clone();
 }
 
 

@@ -32,7 +32,7 @@ Sequence::~Sequence() {
         delete [] COMMAND_NAME; COMMAND_NAME = NULL;
     }
     if (commands) {
-        commands->clear(); 
+        commands->clear();  //delete commands; commands = NULL;
     }
 }
 

@@ -31,7 +31,7 @@ ContentTypeParameter::ContentTypeParameter() {
 
 ContentTypeParameter::~ContentTypeParameter() {
     if (paramName)      { delete [] paramName;      paramName   = NULL; }
-    if (valEnum)        { valEnum->clear();                             }   
+    if (valEnum)        { valEnum->clear(); } //delete valEnum; valEnum = NULL; }   
     if (displayName)    { delete [] displayName;    displayName = NULL; }
     if (dataType)       { delete [] dataType;       dataType    = NULL; }
     size            = 0;

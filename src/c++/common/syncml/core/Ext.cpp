@@ -29,7 +29,7 @@ Ext::~Ext() {
     }
     
     if (xVal) {
-        xVal->clear(); 
+        xVal->clear(); //delete xVal;        xVal = NULL;
     }
 }
 

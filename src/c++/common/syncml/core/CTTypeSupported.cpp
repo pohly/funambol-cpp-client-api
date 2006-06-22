@@ -30,7 +30,7 @@ CTTypeSupported::~CTTypeSupported() {
         delete [] ctType; ctType = NULL;
     }
     if (ctPropParams) {
-        ctPropParams->clear(); 
+        ctPropParams->clear();  //delete ctPropParams; ctPropParams = NULL; 
     }
 }
 

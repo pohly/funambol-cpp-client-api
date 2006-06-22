@@ -126,17 +126,17 @@ SyncManager::~SyncManager() {
         delete transportAgent;
     }
     if (commands) {
-        commands->clear();
+        commands->clear(); delete commands; commands = NULL;
     }
     if (check) {
-        delete [] check;
+        delete [] check; check = NULL;
     }
     if (mappings) {
         for (int i=0; i<sourcesNumber; i++) {
             deleteArrayList(&mappings[i]);
             delete mappings[i];
         }
-        delete [] mappings;
+        delete [] mappings; mappings = NULL;
     }
     if (sources) {
         // This deletes only SyncSource array
@@ -962,6 +962,8 @@ int SyncManager::sync() {
         ret = lastErrorCode;
         goto finally;
     }
+    
+    deleteSyncML(&syncml);
 
     //
     // If this was the last chunk, we move the state to STATE_PKG3_SENT
@@ -1321,7 +1323,15 @@ int SyncManager::endSync() {
             continue;
         commitChanges(*sources[count]);
     }
-	
+    /*
+	if (mappings) {
+        for (int i=0; i<sourcesNumber; i++) {
+            deleteArrayList(&mappings[i]);
+            if (mappings[i]) { delete mappings[i]; mappings[i] = NULL; } 
+        }
+        delete [] mappings; mappings = NULL;
+    }
+    */
     config.getAccessConfig().setEndSync((unsigned long)time(NULL));
     safeDelete(&responseMsg);
     safeDelete(&mapMsg);
@@ -1552,7 +1562,8 @@ char* SyncManager::processItemContent(const BCHAR* toConvert,
     }
     c[info.size] = 0;
     *size = info.size;
-
+    
+    if (encodings) { delete [] encodings; encodings = NULL; }
     return c;
     
 }

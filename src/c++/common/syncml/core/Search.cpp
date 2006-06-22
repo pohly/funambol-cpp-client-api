@@ -33,7 +33,7 @@ Search::Search() {
 Search::~Search() {
     if (COMMAND_NAME)   { delete [] COMMAND_NAME;   COMMAND_NAME = NULL; }
     if (target)         { delete    target;         target       = NULL; }
-    if (sources)        { sources->clear();                              }
+    if (sources)        { sources->clear(); } //delete sources; sources = NULL; }
     if (lang)           { delete [] lang;           lang         = NULL; }
     if (data)           { delete    data;           data         = NULL; }
 

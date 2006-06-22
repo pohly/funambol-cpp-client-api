@@ -29,8 +29,8 @@ ResponseCommand::ResponseCommand() {
 ResponseCommand::~ResponseCommand()  {
     if (msgRef)     { delete [] msgRef;     msgRef    = NULL; }
     if (cmdRef)     { delete [] cmdRef;     cmdRef    = NULL; }
-    if (targetRef)  { targetRef->clear();                     }
-    if (sourceRef)  { sourceRef->clear();                     }
+    if (targetRef)  { targetRef->clear();   } //delete targetRef; targetRef = NULL; }
+    if (sourceRef)  { sourceRef->clear();   } //delete sourceRef; sourceRef = NULL; }
     
 }
 

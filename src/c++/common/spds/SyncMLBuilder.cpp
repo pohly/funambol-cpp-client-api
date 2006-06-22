@@ -147,8 +147,8 @@ Status* SyncMLBuilder::prepareItemStatus(const BCHAR* COMMAND,
     */                                                                                           
 
     ++cmdID;
-
-    CmdID* commandID  = new CmdID(itow(cmdID));
+    BCHAR* cmdid = itow(cmdID);
+    CmdID* commandID  = new CmdID(cmdid);    
     ArrayList* empty  = new ArrayList();    
     Data*      data   = new Data(code);    
     ArrayList* list   = new ArrayList();                
@@ -160,12 +160,15 @@ Status* SyncMLBuilder::prepareItemStatus(const BCHAR* COMMAND,
     Status* s = new Status(commandID, mRef, cmdRef, COMMAND, empty, empty, NULL, NULL, data, list);
     delete [] mRef;
     
+    safeDelete(&cmdid);
     deleteCmdID(&commandID);
     deleteData(&data);
     deleteSource(&sou);    
     deleteItem(&item);
     deleteArrayList(&empty);
     deleteArrayList(&list);
+    if (list)  { delete list; list = NULL; }
+    if (empty) { delete empty; empty = NULL; }
 
     return s;
 
@@ -177,8 +180,8 @@ Status* SyncMLBuilder::prepareItemStatus(const BCHAR* COMMAND,
 Status* SyncMLBuilder::prepareSyncHdrStatus(Chal*chal, int d) {
     
     ++cmdID;
-
-    CmdID* commandID         = new CmdID(itow(cmdID));
+    BCHAR* cmdid = itow(cmdID);
+    CmdID* commandID         = new CmdID(cmdid);
     ArrayList*    targetRefs = new ArrayList();
     ArrayList*    sourceRefs = new ArrayList();
     TargetRef*    tar        = new TargetRef(target);
@@ -189,6 +192,7 @@ Status* SyncMLBuilder::prepareSyncHdrStatus(Chal*chal, int d) {
 
     Status* s = new Status(commandID, itow(msgRef), T("0"), SYNC_HDR, targetRefs, sourceRefs, NULL, chal, data, NULL);
     
+    safeDelete(&cmdid);
     deleteCmdID(&commandID);
     deleteArrayList(&targetRefs);
     deleteArrayList(&sourceRefs);

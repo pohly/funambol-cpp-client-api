@@ -78,10 +78,13 @@ ManagementNode* DMTree::getManagementNode(const BCHAR* node) {
 			LOG.error(T("Error in getChildrenNames"));
 			return NULL;
 		}
-
-        for (int i = 0; i < childrenCount; i++) {
+        int i = 0;
+        for (i = 0; i < childrenCount; i++) {
             DeviceManagementNode s(node, childrenNames[i]);
             n->addChild(s);
+        }
+        for (i = 0; i < childrenCount; i++) {
+            delete [] childrenNames[i]; childrenNames[i] = NULL;
         }
 		delete [] childrenNames;
     }

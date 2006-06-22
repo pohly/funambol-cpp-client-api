@@ -25,7 +25,7 @@ SyncCap::SyncCap() {
 }
 SyncCap::~SyncCap() {
     if (syncType) {
-        syncType->clear(); 
+        syncType->clear();  //delete syncType; syncType = NULL;
     }
 }
 

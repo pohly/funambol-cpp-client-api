@@ -643,7 +643,7 @@ wchar_t* folding(const wchar_t* inputString, const int maxLine) {
     wchar_t newLine[4];
     wcscpy(newLine, RFC822_LINE_BREAK);
     wcscat(newLine, TEXT(" \0"));
-
+    int outputLen = 0, i = 0;
     int inputLen  = wcslen(inputString);
     wchar_t* outputString;
 
@@ -654,11 +654,11 @@ wchar_t* folding(const wchar_t* inputString, const int maxLine) {
         goto finally;
     }
 
-    int outputLen = inputLen + (int)(inputLen/maxLine + 1)*wcslen(newLine);
+    outputLen = inputLen + (int)(inputLen/maxLine + 1)*wcslen(newLine);
     outputString = new wchar_t[outputLen + 1];
     outputString[0] = 0;
 
-    for (int i=0; i<inputLen; i += maxLine) {
+    for (i=0; i<inputLen; i += maxLine) {
         wcsncat(outputString, inputString+i, maxLine);
         wcscat(outputString, newLine);
     }

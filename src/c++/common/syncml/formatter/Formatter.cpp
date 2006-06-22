@@ -201,7 +201,7 @@ StringBuffer* Formatter::getCred(Cred* cred) {
     auth = getAuthentication(cred->getAuthentication());
             
     if (auth) { 
-        ret = new StringBuffer();
+        //ret = new StringBuffer();
         ret = getValue(CRED, auth);
     }        
     deleteStringBuffer(&auth);
@@ -215,8 +215,8 @@ StringBuffer* Formatter::getAuthentication(Authentication* auth) {
         return NULL;
 
     StringBuffer* ret          = NULL;
-    StringBuffer* data         = new StringBuffer();
-    StringBuffer* meta         = new StringBuffer();
+    StringBuffer* data         = NULL;
+    StringBuffer* meta         = NULL;
     
     data = getValue(DATA, auth->getData(NULL));
     meta = getMeta(auth->getMeta());
@@ -298,7 +298,7 @@ StringBuffer* Formatter::getMetInf(MetInf* metInf) {
         ret ->append(maxObjSize);               
         ret ->append(mem);               
     }             
-    deleteAllStringBuffer(9, &format, &type, &mark, &version, &maxMsgSize, &maxObjSize, &size, &nextNonce, &mem);
+    deleteAllStringBuffer(10, &format, &type, &mark, &version, &maxMsgSize, &maxObjSize, &size, &nextNonce, &mem, &anchor);
        
     return ret;    
 }
@@ -308,11 +308,20 @@ StringBuffer* Formatter::getMem(Mem* mem) {
         return NULL;
 
     StringBuffer* ret = new StringBuffer();                
+    StringBuffer* tmp = NULL;
+
+    tmp = getValue(SHARED_MEM, mem->getSharedMem());
+    ret->append(tmp);
+    if (tmp) { delete tmp; tmp = NULL; }
     
-    ret->append(getValue(SHARED_MEM, mem->getSharedMem()));
-    ret->append(getValue(FREE_MEM,   mem->getFreeMem()));
-    ret->append(getValue(FREE_ID,    mem->getFreeID()));
-    
+    tmp = getValue(FREE_MEM,   mem->getFreeMem());
+    ret->append(tmp);
+    if (tmp) { delete tmp; tmp = NULL; }
+
+    tmp = getValue(FREE_ID,    mem->getFreeID());
+    ret->append(tmp);
+    if (tmp) { delete tmp; tmp = NULL; }
+
     return ret;    
 }
 
@@ -329,13 +338,21 @@ StringBuffer* Formatter::getAnchor(Anchor* anchor) {
     if (!anchor)
         return NULL;
 
-    StringBuffer* ret = new StringBuffer();     
+    StringBuffer* ret = NULL;   
+    StringBuffer* buf = new StringBuffer();   
+    StringBuffer* tmp = NULL;
 
-    ret->append(getValue(LAST,  anchor->getLast()));
-    ret->append(getValue(NEXT,  anchor->getNext()));
-       
-    ret = getValue(ANCHOR, ret);    
-
+    tmp = getValue(LAST,  anchor->getLast());
+    buf->append(tmp);
+    if (tmp) { delete tmp; tmp = NULL; }
+    
+    tmp = getValue(NEXT,  anchor->getNext());
+    buf->append(tmp);
+    if (tmp) { delete tmp; tmp = NULL; }
+        
+    ret = getValue(ANCHOR, buf);    
+    
+    if (buf) {delete buf; buf = NULL; }
     return ret;    
 }
 
@@ -353,9 +370,12 @@ StringBuffer* Formatter::getSources(ArrayList* sources) {
         return NULL;
     
     StringBuffer* ret = new StringBuffer();
-        
+    StringBuffer* tmp = NULL;
+    
     for (int i = 0; i < sources->size(); i++) {
-        ret->append(getSourceArray(((SourceArray*)sources->get(i))));   
+        tmp = getSourceArray(((SourceArray*)sources->get(i)));
+        ret->append(tmp);   
+        if (tmp) { delete tmp; tmp = NULL; }
     }
     return ret;
 }
@@ -366,9 +386,16 @@ StringBuffer* Formatter::getSourceArray(SourceArray* sourceArray) {
 
     StringBuffer* ret = new StringBuffer(); 
     StringBuffer* s   = new StringBuffer(); 
+    StringBuffer* tmp = NULL;
+    
+    tmp = getValue(LOC_URI,  sourceArray->getSource()->getLocURI());
+    s->append(tmp);
+    if (tmp) { delete tmp; tmp = NULL; }
 
-    s->append(getValue(LOC_URI,  sourceArray->getSource()->getLocURI()));
-    s->append(getValue(LOC_NAME, sourceArray->getSource()->getLocName()));
+    tmp = getValue(LOC_NAME, sourceArray->getSource()->getLocName());
+    s->append(tmp);
+    if (tmp) { delete tmp; tmp = NULL; }
+
     if (NotZeroStringBufferLenght(1, s)) {     
         ret = getValue(SOURCE, s);    
     }    
@@ -385,10 +412,18 @@ StringBuffer* Formatter::getSource(Source* source) {
 
     StringBuffer* ret = new StringBuffer(); 
     StringBuffer* s   = new StringBuffer(); 
+    StringBuffer* tmp = NULL;
 
-    s->append(getValue(LOC_URI,  source->getLocURI()));
-    s->append(getValue(LOC_NAME, source->getLocName()));
+    tmp = getValue(LOC_URI,  source->getLocURI());
+    s->append(tmp);
+    if (tmp) { delete [] tmp; tmp = NULL; }
+
+    tmp = getValue(LOC_NAME, source->getLocName());
+    s->append(tmp);
+    if (tmp) { delete [] tmp; tmp = NULL; }
+
     if (NotZeroStringBufferLenght(1, s)) {     
+        delete ret; ret = NULL;
         ret = getValue(SOURCE, s);    
     }    
     
@@ -404,9 +439,15 @@ StringBuffer* Formatter::getTarget(Target* target) {
     StringBuffer* ret    = new StringBuffer();
     StringBuffer* s      = new StringBuffer();
     StringBuffer* filter = new StringBuffer();
-        
-    s->append(getValue(LOC_URI,  target->getLocURI()));
-    s->append(getValue(LOC_NAME, target->getLocName()));
+    StringBuffer* tmp    = NULL;
+    
+    tmp = getValue(LOC_URI,  target->getLocURI());
+    s->append(tmp);
+    if (tmp) { delete tmp; tmp = NULL; }
+    
+    tmp = getValue(LOC_NAME, target->getLocName());
+    s->append(tmp);
+    if (tmp) { delete tmp; tmp = NULL; }
 
     //
     // And now the filter (if any)
@@ -416,7 +457,8 @@ StringBuffer* Formatter::getTarget(Target* target) {
         s->append(filter);
     }
     
-    if (NotZeroStringBufferLenght(1, s)) {        
+    if (NotZeroStringBufferLenght(1, s)) {    
+        delete ret; ret = NULL;
         ret = getValue(TARGET, s);
         
     } 
@@ -430,7 +472,7 @@ StringBuffer* Formatter::getSessionID(SessionID* sessionID) {
     if (!sessionID)
         return NULL;
 
-    StringBuffer* s = new StringBuffer();
+    StringBuffer* s = NULL;
     s = getValue(SESSION_ID, sessionID->getSessionID(NULL));    
     return s;    
 }
@@ -439,7 +481,7 @@ StringBuffer* Formatter::getVerDTD(VerDTD* verDTD) {
     if (!verDTD)
         return NULL;
 
-    StringBuffer* s = new StringBuffer();
+    StringBuffer* s = NULL;
     s = getValue(VER_DTD, verDTD->getValue(NULL));    
     return s;    
 }
@@ -448,7 +490,7 @@ StringBuffer* Formatter::getCmdID(CmdID* cmdID) {
     if (!cmdID)
         return NULL;
 
-    StringBuffer* s = new StringBuffer();
+    StringBuffer* s = NULL;
     s = getValue(CMD_ID, cmdID->getCmdID());    
     return s;    
 }
@@ -457,7 +499,7 @@ StringBuffer* Formatter::getVerProto(VerProto* verProto) {
     if (!verProto)
         return NULL;
 
-    StringBuffer* s = new StringBuffer();
+    StringBuffer* s = NULL;
     s = getValue(VER_PROTO, verProto->getVersion(NULL));
     return s;    
 }
@@ -477,7 +519,8 @@ StringBuffer* Formatter::getExtraCommandList(ArrayList* commands) {
     StringBuffer*   map             = NULL;
     StringBuffer*   alert           = NULL;
     StringBuffer*   get             = NULL;
-    BCHAR*        name            = NULL;
+    BCHAR*          name            = NULL;
+    StringBuffer*   tmp             = NULL;
     /*
     * Use the name of the command to get the proper action to invoke
     */
@@ -487,22 +530,30 @@ StringBuffer* Formatter::getExtraCommandList(ArrayList* commands) {
             if (!exec) {
                 exec = new StringBuffer();
             }
-            exec->append(getExec((Exec*)commands->get(i)));
+            tmp = getExec((Exec*)commands->get(i));
+            exec->append(tmp);
+            if (tmp) { delete tmp; tmp = NULL; }
         } else if (name && bstrcmp(name, ALERT) == 0) {
             if (!alert) {
                 alert = new StringBuffer();
             }
-            alert->append(getAlert((Alert*)commands->get(i)));
+            tmp = getAlert((Alert*)commands->get(i));
+            alert->append(tmp);
+            if (tmp) { delete tmp; tmp = NULL; }
         } else if (name && bstrcmp(name, GET) == 0) {
             if (!get) {
                 get = new StringBuffer();
             }
-            get->append(getGet((Get*)commands->get(i)));
+            tmp = getGet((Get*)commands->get(i));
+            get->append(tmp);
+            if (tmp) { delete tmp; tmp = NULL; }
         } else if (name && bstrcmp(name, MAP) == 0) {
             if (!map) {
                 map = new StringBuffer();
             }
-            map->append(getMap((Map*)commands->get(i)));
+            tmp = getMap((Map*)commands->get(i));
+            map->append(tmp);
+            if (tmp) { delete tmp; tmp = NULL; }
         }
     }    
 
@@ -534,7 +585,8 @@ StringBuffer* Formatter::getCommonCommandList(ArrayList* commands) {
     StringBuffer*   dels            = NULL;
     StringBuffer*   replaces        = NULL;
     StringBuffer*   copies          = NULL;
-    BCHAR*        name            = NULL;
+    BCHAR*          name            = NULL;
+    StringBuffer*   tmp             = NULL;
     /*
     * Use the name of the command to get the proper action to invoke
     */
@@ -544,22 +596,31 @@ StringBuffer* Formatter::getCommonCommandList(ArrayList* commands) {
             if (!copies) {
                 copies = new StringBuffer();
             }
-            copies->append(getCopy((Copy*)commands->get(i)));
+            tmp = getCopy((Copy*)commands->get(i));
+            copies->append(tmp);
+            if (tmp) { delete tmp; tmp = NULL; }
         } else if (name && bstrcmp(name, ADD) == 0) {
             if (!adds) {
                 adds = new StringBuffer();
             }
-            adds->append(getAdd((Add*)commands->get(i)));
+            tmp = getAdd((Add*)commands->get(i));
+            adds->append(tmp);
+            if (tmp) { delete tmp; tmp = NULL; }
+
         } else if (name && bstrcmp(name, DEL) == 0) {
             if (!dels) {
                 dels = new StringBuffer();
             }
-            dels->append(getDelete((Delete*)commands->get(i)));
+            tmp = getDelete((Delete*)commands->get(i));
+            dels->append(tmp);
+            if (tmp) { delete tmp; tmp = NULL; }
         } else if (name && bstrcmp(name, REPLACE) == 0) {
             if (!replaces) {
                 replaces = new StringBuffer();
             }
-            replaces->append(getReplace((Replace*)commands->get(i)));
+            tmp = getReplace((Replace*)commands->get(i));
+            replaces->append(tmp);
+            if (tmp) { delete tmp; tmp = NULL; }
         }
     }    
 
@@ -580,8 +641,9 @@ StringBuffer* Formatter::getCommonCommandList(ArrayList* commands) {
 StringBuffer* Formatter::getSpecificCommand(ArrayList* commands, BCHAR* commandName) {
     
     StringBuffer*   s               = NULL;        
-    StringBuffer*   ret            = NULL;   
-    BCHAR*        name            = NULL;
+    StringBuffer*   ret             = NULL;   
+    BCHAR*          name            = NULL;
+    StringBuffer*   tmp             = NULL;
     /*
     * Use the name of the command to get the proper action to invoke
     */
@@ -591,17 +653,23 @@ StringBuffer* Formatter::getSpecificCommand(ArrayList* commands, BCHAR* commandN
             if (!ret) {
                 ret = new StringBuffer();
             }
-            ret->append(getSync((Sync*)commands->get(i)));
+            tmp = getSync((Sync*)commands->get(i));
+            ret->append(tmp);
+            if (tmp) { delete tmp; tmp = NULL; }
         } else if (name && bstrcmp(name, ATOMIC) == 0 && bstrcmp(ATOMIC, commandName) == 0) {
             if (!ret) {
                 ret = new StringBuffer();
             }
-            ret->append(getAtomic((Atomic*)commands->get(i)));
+            tmp = getAtomic((Atomic*)commands->get(i));
+            ret->append(tmp);
+            if (tmp) { delete tmp; tmp = NULL; }
         } else if (name && bstrcmp(name, SEQUENCE) == 0 && bstrcmp(SEQUENCE, commandName) == 0) {
             if (!ret) {
                 ret = new StringBuffer();
             }
-            ret->append(getSequence((Sequence*)commands->get(i)));
+            tmp = getSequence((Sequence*)commands->get(i));
+            ret->append(tmp);
+            if (tmp) { delete tmp; tmp = NULL; }
         } 
     }    
 
@@ -611,7 +679,6 @@ StringBuffer* Formatter::getSpecificCommand(ArrayList* commands, BCHAR* commandN
     }    
     deleteAllStringBuffer(1, &ret);
     
-
     return s;   
 }
 
@@ -621,8 +688,8 @@ StringBuffer* Formatter::getSyncBody(SyncBody* syncBody) {
        
     StringBuffer*   ret             = NULL;
     StringBuffer*   s               = NULL;    
-    ArrayList*      commands        = new ArrayList();
-    BCHAR* name                   = NULL;
+    ArrayList*      commands        = NULL;
+    BCHAR* name                     = NULL;
 
     StringBuffer*   alerts          = NULL;
     StringBuffer*   statusArray     = NULL;    
@@ -641,7 +708,8 @@ StringBuffer* Formatter::getSyncBody(SyncBody* syncBody) {
     StringBuffer*   finalMessage    = NULL;
     
     commands = syncBody->getCommands();
-    
+    StringBuffer* tmp               = NULL;
+
     /*
     * Use the name of the command to get the proper action to invoke
     */
@@ -651,57 +719,79 @@ StringBuffer* Formatter::getSyncBody(SyncBody* syncBody) {
             if (!statusArray) {
                 statusArray = new StringBuffer();
             }
-            statusArray->append(getStatus((Status*)commands->get(i)));
+            tmp = getStatus((Status*)commands->get(i));
+            statusArray->append(tmp);
+            if (tmp) { delete tmp; tmp = NULL; }
         } else if (name && bstrcmp(name, ALERT) == 0) {
             if (!alerts) {
                 alerts = new StringBuffer();
             }
-            alerts->append(getAlert((Alert*)commands->get(i)));
+            tmp = getAlert((Alert*)commands->get(i));
+            alerts->append(tmp);
+            if (tmp) { delete tmp; tmp = NULL; }
         } else if (name && bstrcmp(name, SYNC) == 0) {
             if (!sync) {
                 sync = new StringBuffer();
             }
-            sync->append(getSync((Sync*)commands->get(i)));
+            tmp = getSync((Sync*)commands->get(i));
+            sync->append(tmp);
+            if (tmp) { delete tmp; tmp = NULL; }
         } else if (name && bstrcmp(name, MAP) == 0) {
             if (!map) {
                 map = new StringBuffer();
             }
-            map->append(getMap((Map*)commands->get(i)));
+            tmp = getMap((Map*)commands->get(i));
+            map->append(tmp);
+            if (tmp) { delete tmp; tmp = NULL; }
         } else if (name && bstrcmp(name, EXEC) == 0) {
             if (!exec) {
                 exec = new StringBuffer();
             }
-            exec->append(getExec((Exec*)commands->get(i)));
+            tmp = getExec((Exec*)commands->get(i));
+            exec->append(tmp);
+            if (tmp) { delete tmp; tmp = NULL; }
         } else if (name && bstrcmp(name, GET) == 0) {
             if (!get) {
                 get = new StringBuffer();
             }
-            get->append(getGet((Get*)commands->get(i)));
+            tmp = getGet((Get*)commands->get(i));
+            get->append(tmp);
+            if (tmp) { delete tmp; tmp = NULL; }
         } else if (name && bstrcmp(name, RESULTS) == 0) {
             if (!results) {
                 results = new StringBuffer();
             }
-            results->append(getResults((Results*)commands->get(i)));
+            tmp = getResults((Results*)commands->get(i));
+            results->append(tmp);
+            if (tmp) { delete tmp; tmp = NULL; }
         } else if (name && bstrcmp(name, PUT) == 0) {
             if (!put) {
                 put = new StringBuffer();
             }
-            put->append(getPut((Put*)commands->get(i)));
+            tmp = getPut((Put*)commands->get(i));
+            put->append(tmp);
+            if (tmp) { delete tmp; tmp = NULL; }
         } else if (name && bstrcmp(name, SEARCH) == 0) {
             if (!search) {
                 search = new StringBuffer();
             }
-            search->append(getSearch((Search*)commands->get(i)));
+            tmp = getSearch((Search*)commands->get(i));
+            search->append(tmp);
+            if (tmp) { delete tmp; tmp = NULL; }
         } else if (name && bstrcmp(name, SEQUENCE) == 0) {
             if (!sequence) {
                 sequence = new StringBuffer();
             }
-            sequence->append(getSequence((Sequence*)commands->get(i)));
+            tmp = getSequence((Sequence*)commands->get(i));
+            sequence->append(tmp);
+            if (tmp) { delete tmp; tmp = NULL; }
         } else if (name && bstrcmp(name, ATOMIC) == 0) {
             if (!atomic) {
                 atomic = new StringBuffer();
             }
-            atomic->append(getAtomic((Atomic*)commands->get(i)));
+            tmp = getAtomic((Atomic*)commands->get(i));
+            atomic->append(tmp);
+            if (tmp) { delete tmp; tmp = NULL; }
         }  
         
     }    
@@ -905,9 +995,12 @@ StringBuffer* Formatter::getMapItems(ArrayList* mapItems) {
         return NULL;
     
     StringBuffer* ret = new StringBuffer();
+    StringBuffer* tmp = NULL;
         
     for (int i = 0; i < mapItems->size(); i++) {
-        ret->append(getMapItem(((MapItem*)mapItems->get(i))));   
+        tmp = getMapItem(((MapItem*)mapItems->get(i)));
+        ret->append(tmp);   
+        if (tmp) { delete tmp; tmp = NULL; }
     }
     return ret;
 }
@@ -1401,9 +1494,12 @@ StringBuffer* Formatter::getStatusArray(ArrayList* statusArray) {
         return NULL;
     
     StringBuffer* ret = new StringBuffer();
-        
+    StringBuffer* tmp = NULL;
+    
     for (int i = 0; i < statusArray->size(); i++) {
-        ret->append(getStatus(((Status*)statusArray->get(i))));   
+        tmp = getStatus(((Status*)statusArray->get(i)));
+        ret->append(tmp);   
+        if (tmp) { delete tmp; tmp = NULL; }
     }
     return ret;
 }
@@ -1493,9 +1589,12 @@ StringBuffer* Formatter::getAlerts(ArrayList* alerts) {
         return NULL;
     
     StringBuffer* ret = new StringBuffer();
-        
+    StringBuffer* tmp = NULL;
+    
     for (int i = 0; i < alerts->size(); i++) {
-        ret->append(getAlert(((Alert*)alerts->get(i))));   
+        tmp = getAlert(((Alert*)alerts->get(i)));
+        ret->append(tmp);   
+        if (tmp) { delete tmp; tmp = NULL; }
     }
     return ret;
 }
@@ -1542,9 +1641,12 @@ StringBuffer* Formatter::getItems(ArrayList* items) {
         return NULL;
     
     StringBuffer* ret = new StringBuffer();
+    StringBuffer* tmp = NULL;
         
     for (int i = 0; i < items->size(); i++) {
-        ret->append(getItem(((Item*)items->get(i))));   
+        tmp = getItem(((Item*)items->get(i)));
+        ret->append(tmp);   
+        if (tmp) { delete tmp; tmp = NULL; }
     }
     return ret;
 }
@@ -1742,9 +1844,12 @@ StringBuffer* Formatter::getExts(ArrayList* exts) {
         return NULL;
     
     StringBuffer* ret = new StringBuffer();
+    StringBuffer* tmp = NULL;
         
     for (int i = 0; i < exts->size(); i++) {
-        ret->append(getExt(((Ext*)exts->get(i))));   
+        tmp = getExt(((Ext*)exts->get(i)));
+        ret->append(tmp);   
+        if (tmp) { delete tmp; tmp = NULL; }
     }
     return ret;
 }
@@ -1789,9 +1894,12 @@ StringBuffer* Formatter::getXVals(ArrayList* xVals) {
         return NULL;
     
     StringBuffer* ret = new StringBuffer();
+    StringBuffer* tmp = NULL;
         
     for (int i = 0; i < xVals->size(); i++) {
-        ret->append(getXVal(((StringElement*)xVals->get(i))));   
+        tmp = getXVal(((StringElement*)xVals->get(i)));
+        ret->append(tmp);   
+        if (tmp) { delete tmp; tmp = NULL; }
     }
     return ret;
 }
@@ -1820,9 +1928,12 @@ StringBuffer* Formatter::getDataStores(ArrayList* dataStores) {
         return NULL;
     
     StringBuffer* ret = new StringBuffer();
+    StringBuffer* tmp = NULL;
         
     for (int i = 0; i < dataStores->size(); i++) {
-        ret->append(getDataStore(((DataStore*)dataStores->get(i))));   
+        tmp = getDataStore(((DataStore*)dataStores->get(i)));
+        ret->append(tmp);   
+        if (tmp) { delete tmp; tmp = NULL; }
     }
     return ret;
 }
@@ -1903,9 +2014,12 @@ StringBuffer* Formatter::getSyncTypes(ArrayList* syncTypes) {
         return NULL;
     
     StringBuffer* ret = new StringBuffer();
+    StringBuffer* tmp = NULL;
         
     for (int i = 0; i < syncTypes->size(); i++) {
-        ret->append(getSyncType(((SyncType*)syncTypes->get(i))));   
+        tmp = getSyncType(((SyncType*)syncTypes->get(i)));
+        ret->append(tmp);   
+        if (tmp) { delete tmp; tmp = NULL; }
     }
     return ret;
 }
@@ -1937,11 +2051,20 @@ StringBuffer* Formatter::getDSMem(DSMem* dsMem) {
     if (!dsMem)
         return NULL;
 
-    StringBuffer* ret = new StringBuffer();                           
+    StringBuffer* ret = new StringBuffer();
+    StringBuffer* tmp = NULL;
     
-    ret->append(getValue(SHARED_MEM, dsMem->getSharedMem()));    
-    ret->append(getValue(MAX_MEM,    dsMem->getMaxMem()));
-    ret->append(getValue(MAX_ID,     dsMem->getMaxID()));
+    tmp = getValue(SHARED_MEM, dsMem->getSharedMem());
+    ret->append(tmp);    
+    if (tmp) { delete tmp; tmp = NULL; }
+
+    tmp = getValue(MAX_MEM,    dsMem->getMaxMem());
+    ret->append(tmp);
+    if (tmp) { delete tmp; tmp = NULL; }
+
+    tmp = getValue(MAX_ID,     dsMem->getMaxID());
+    ret->append(tmp);
+    if (tmp) { delete tmp; tmp = NULL; }
     
     return ret;    
 }
@@ -1953,9 +2076,12 @@ StringBuffer* Formatter::getContentTypeInfos(ArrayList* contentTypeInfos, BCHAR*
         return NULL;
     
     StringBuffer* ret = new StringBuffer();
+    StringBuffer* tmp = NULL;
         
     for (int i = 0; i < contentTypeInfos->size(); i++) {
-        ret->append(getContentTypeInfo(((ContentTypeInfo*)contentTypeInfos->get(i)), TAG));   
+        tmp = getContentTypeInfo(((ContentTypeInfo*)contentTypeInfos->get(i)), TAG);
+        ret->append(tmp);   
+        if (tmp) { delete tmp; tmp = NULL; }
     }
     return ret;
 }
@@ -1993,9 +2119,12 @@ StringBuffer* Formatter::getTargetRefs(ArrayList* targetRefs) {
         return NULL;
     
     StringBuffer* ret = new StringBuffer();
+    StringBuffer* tmp = NULL;
         
     for (int i = 0; i < targetRefs->size(); i++) {
-        ret->append(getTargetRef(((TargetRef*)targetRefs->get(i))));   
+        tmp = getTargetRef(((TargetRef*)targetRefs->get(i)));
+        ret->append(tmp);   
+        if (tmp) { delete tmp; tmp = NULL; }
     }
     return ret;
 }
@@ -2037,9 +2166,12 @@ StringBuffer* Formatter::getSourceRefs(ArrayList* sourceRefs) {
         return NULL;
     
     StringBuffer* ret = new StringBuffer();
+    StringBuffer* tmp = NULL;
         
     for (int i = 0; i < sourceRefs->size(); i++) {
-        ret->append(getSourceRef(((SourceRef*)sourceRefs->get(i))));   
+        tmp = getSourceRef(((SourceRef*)sourceRefs->get(i)));
+        ret->append(tmp);   
+        if (tmp) { delete tmp; tmp = NULL; }
     }
     return ret;
 }
@@ -2087,9 +2219,12 @@ StringBuffer* Formatter::getCTCaps(ArrayList* ctCaps) {
         return NULL;
     
     StringBuffer* ret = new StringBuffer();
+    StringBuffer* tmp = NULL;
         
     for (int i = 0; i < ctCaps->size(); i++) {
-        ret->append(getCTCap(((CTCap*)ctCaps->get(i))));   
+        tmp = getCTCap(((CTCap*)ctCaps->get(i)));
+        ret->append(tmp);   
+        if (tmp) { delete tmp; tmp = NULL; }
     }
     return ret;
 }

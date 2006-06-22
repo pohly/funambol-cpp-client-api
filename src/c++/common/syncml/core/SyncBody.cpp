@@ -25,7 +25,7 @@ SyncBody::SyncBody() {
 }
 SyncBody::~SyncBody() {
     if(commands) {
-        commands->clear(); 
+        commands->clear();  //delete commands; commands = NULL;
     }
     finalMsg = FALSE;
 }

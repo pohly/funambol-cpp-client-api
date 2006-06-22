@@ -62,6 +62,9 @@ void Sync4jClient::dispose() {
         delete instance;         
     }        
     instance = NULL;
+    if (defaultConfig)
+        delete defaultConfig;
+    defaultConfig = NULL;
 }
 
 /*

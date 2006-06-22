@@ -26,7 +26,7 @@ ItemizedCommand::ItemizedCommand() {
 }
 ItemizedCommand::~ItemizedCommand() {
     if (items) {
-        items->clear(); items = NULL;
+        items->clear(); // delete items;        items = NULL; 
     }
     if (meta) {
         delete meta; meta = NULL;
