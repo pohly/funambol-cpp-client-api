@@ -372,7 +372,7 @@ int SyncManager::prepareSync(SyncSource** s) {
                 continue;
 
             ret = syncMLProcessor.processAlertStatus(*sources[count], syncml, alerts);
-            if (ret == -1 || ret == 404) {
+            if (ret == -1 || ret == 404 || ret == 415) {
                 lastErrorCode = ret;
                 bsprintf(logmsg, T("AlertStatus from server %d"), ret);
                 LOG.error(logmsg);

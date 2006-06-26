@@ -98,6 +98,11 @@ int SyncMLProcessor::processServerAlert(SyncSource& source, SyncML* syncml) {
     ret = 0;
     do {
         a = getCommand(syncml->getSyncBody(), ALERT, iterator);                   
+        if (a == NULL) {
+            lastErrorCode = ERR_REPRESENTATION;
+            bsprintf(lastErrorMsg, T("SyncBody/Alert not found!"));
+            goto finally;
+        }
         Alert* alert = (Alert*)a;
         Item* item = NULL;
         ArrayList* itemList = alert->getItems();
