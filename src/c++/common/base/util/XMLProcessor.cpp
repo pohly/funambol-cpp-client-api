@@ -60,6 +60,13 @@ static const BCHAR *findElementContent(const BCHAR *xml,
                         return 0;
                     }
                 }
+                if(*(p1-1) == '/'){ // <tag attr=xxx />
+                    // Like case '/' below:
+                    p1++;
+                    p2=p1;
+                    closeTag=0;
+                    break;
+                }
                 // The break is not missing!
                 // After the for, we are in the same case of the tag
                 // without attributes
@@ -122,57 +129,6 @@ static const BCHAR *findElementContent(const BCHAR *xml,
     }
 
     return p1;
-}
-
-
-const BCHAR* XMLProcessor::getEscapedElementContent(const BCHAR* xml ,
-                                              const BCHAR* tag ,
-                                              unsigned int* pos ,
-                                              unsigned int* startPos,
-                                              unsigned int* endPos )
-{        
-    BCHAR *openTag = 0;
-    BCHAR *closeTag = 0;
-    
-    if (!xml) {
-        return 0;
-    }
-
-    size_t l = bstrlen(tag);
-
-    if(bstrcmp(tag, T("CDATA")) == 0) {
-        openTag = stringdup(T("&lt;![CDATA["));
-        closeTag = stringdup(T("]]>"));
-    }
-    else {
-        openTag = new BCHAR[l+10];
-        closeTag = new BCHAR[l+10];
-        bsprintf(openTag, T("&lt;%s"), tag);
-        bsprintf(closeTag, T("&lt;/%s>"), tag);
-    }
-
-    const BCHAR *ret = findElementContent(xml, openTag, closeTag, pos, startPos, endPos);
-    /*
-    if (ret == NULL) {
-        if (openTag)
-        delete [] openTag; openTag = NULL;
-    if (closeTag)
-        delete [] closeTag; closeTag = NULL;
-        
-        openTag = new BCHAR[l+10];
-        closeTag = new BCHAR[l+10];
-        bsprintf(openTag, T("<%s"), tag);
-        bsprintf(closeTag, T("</%s>"), tag);
-
-        ret = findElementContent(xml, openTag, closeTag, pos, startPos, endPos);
-    }
-    */
-    if (openTag)
-        delete [] openTag;
-    if (closeTag)
-        delete [] closeTag;
-
-    return ret;
 }
 
 const BCHAR* XMLProcessor::getElementContent(const BCHAR* xml,
