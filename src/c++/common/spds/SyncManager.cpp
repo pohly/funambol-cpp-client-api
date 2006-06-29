@@ -146,8 +146,8 @@ SyncManager::~SyncManager() {
 }
 
 /*
-* Modification to performe the sync of an array of sync sources.
-*/
+ * Modification to perform the sync of an array of sync sources.
+ */
 
 int SyncManager::prepareSync(SyncSource** s) {
     
