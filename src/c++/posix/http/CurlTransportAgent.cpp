@@ -65,6 +65,7 @@ CurlTransportAgent::CurlTransportAgent(URL& newURL, Proxy& newProxy, unsigned in
         curl_easy_setopt(easyhandle, CURLOPT_ERRORBUFFER, this->curlerrortxt );
         curl_easy_setopt(easyhandle, CURLOPT_AUTOREFERER, TRUE);
         curl_easy_setopt(easyhandle, CURLOPT_FOLLOWLOCATION, TRUE);
+        curl_easy_setopt(easyhandle, CURLOPT_USERAGENT, userAgent[0] ? userAgent : "Funambol POSIX SyncML client");
         if (proxy.host[0]) {
             curl_easy_setopt(easyhandle, CURLOPT_PROXY, proxy.host);
             if (proxy.port) {
