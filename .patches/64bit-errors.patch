@@ -63,7 +63,7 @@ Thus the patch changes EmailData.cpp.
      bool ret = false;
  
      if( XMLProcessor::getElementContent(xml, field, NULL, &start, &end) ) {
-@@ -59,7 +59,7 @@
+@@ -69,7 +69,7 @@
  int EmailData::parse(const BCHAR *msg, size_t len)
  {
      int ret = 0;
