@@ -1,4 +1,4 @@
-bin_PROGRAMS = client vcardconverter
+EXTRA_PROGRAMS = client vcardconverter
 lib_LTLIBRARIES = libsync4j.la
 
 SOURCES_BASE = \
