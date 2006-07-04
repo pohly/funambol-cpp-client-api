@@ -50,7 +50,7 @@ BOOL EstablishConnection() {
         return TRUE;
     }
     else {
-        LOG.info(T("Not connected: try to connect..."));
+        LOG.debug(T("Not connected: try to connect..."));
         //We are not connected, so lets try:
         //The CONNECTIONINFO is the structure that 
         //tells Connection Manager how we want

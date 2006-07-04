@@ -416,11 +416,11 @@ StringBuffer* Formatter::getSource(Source* source) {
 
     tmp = getValue(LOC_URI,  source->getLocURI());
     s->append(tmp);
-    if (tmp) { delete [] tmp; tmp = NULL; }
+    if (tmp) { delete tmp; tmp = NULL; }
 
     tmp = getValue(LOC_NAME, source->getLocName());
     s->append(tmp);
-    if (tmp) { delete [] tmp; tmp = NULL; }
+    if (tmp) { delete tmp; tmp = NULL; }
 
     if (NotZeroStringBufferLenght(1, s)) {     
         delete ret; ret = NULL;

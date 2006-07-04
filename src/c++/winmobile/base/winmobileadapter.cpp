@@ -307,7 +307,7 @@ char* wc2utf8(const BCHAR* s, char* d, unsigned long dsize) {
     return d;
 }
 
-BCHAR* utf82wc(const char* s, BCHAR* d, unsigned long dsize) {
+BCHAR*utf82wc(const char* s, BCHAR* d, unsigned long dsize) {
               
     //
     // First of all, if s is NULL, just return NULL.

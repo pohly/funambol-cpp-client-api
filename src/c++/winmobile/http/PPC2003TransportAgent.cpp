@@ -56,7 +56,7 @@
 #define TIMEOUT 10000
 #define SEND_TIMEOUT 20000
 #define ERR_HTTP_TIME_OUT 2007
-
+#define MAX_RETRIES 3
 
 typedef struct
 {
@@ -84,8 +84,9 @@ typedef struct
 DWORD WINAPI WorkerFunctionInternetConnect( IN LPVOID vThreadParm);
 DWORD WINAPI WorkerFunctionInternetReadFile(IN LPVOID vThreadParm);
 DWORD WINAPI WorkerFunctionHttpOpenRequest( IN LPVOID vThreadParm);
-DWORD WINAPI WorkerFunctionHttpSendRequest( IN PARM_HTTP_SEND_REQUEST vThreadParm);
 #endif
+
+DWORD WINAPI WorkerFunctionHttpSendRequest( IN PARM_HTTP_SEND_REQUEST vThreadParm);
 
 int sumRead, previousNumRead;
 int sumByteSent, previousNumWrite;
@@ -248,9 +249,11 @@ BCHAR* PPC2003TransportAgent::sendMessage(const BCHAR* msg) {
     contentLength = bstrlen(msg);
     wsprintf(headers, TEXT("Content-Type: %s\r\nContent-Length: %d"),
                       SYNCML_CONTENT_TYPE, contentLength);
+    BCHAR* toLog = toMultibyte(headers);
+    LOG.debug(toLog);
+    if (toLog) { delete [] toLog; toLog = NULL; }
     
-    
-#if 0
+
     // Send a request to the HTTP server.
     PARM_HTTP_SEND_REQUEST     threadParmHttpSendRequest;    
 
@@ -259,13 +262,50 @@ BCHAR* PPC2003TransportAgent::sendMessage(const BCHAR* msg) {
     threadParmHttpSendRequest.pMsg           = (char *)msg;
     threadParmHttpSendRequest.msgLength      = contentLength;
     
-    if (WorkerFunctionHttpSendRequest(threadParmHttpSendRequest)) {
-        bsprintf (lastErrorMsg, T("%s: %d"), T("HttpOpenRequest Error"), GetLastError());
-	    LOG.error(lastErrorMsg);
+    DWORD r = 0;
+    int k = 0;
+    for (k = 0; k < MAX_RETRIES; k++) {         
+        
+        r = WorkerFunctionHttpSendRequest(threadParmHttpSendRequest);
+        if (r == 8001) {
+            LOG.info("Network error in writing data from client: retry %i time...", k + 1);  
+        } else {
+            LOG.debug(MESSAGE_SENT);
+            size = sizeof(status);
+            queryInfo = HttpQueryInfo (request,
+                           HTTP_QUERY_STATUS_CODE | HTTP_QUERY_FLAG_NUMBER,
+                           (LPDWORD)&status,
+                           (LPDWORD)&size,
+                           NULL);       
+            
+            if (status == HTTP_ERROR) { // 400 bad request error. retry to send the message
+                LOG.info("Network error in server reciving data. Server responds 400: retry %i time...", k + 1);
+            } else if (status != STATUS_OK) {
+                lastErrorCode = ERR_HTTP;
+                bsprintf(lastErrorMsg, T("HTTP request error: %d"), status);
+                goto exit;
+            } else { //status_ok
+                LOG.debug("Data sent succesfully to server. Server responds OK");
+                break;
+            }
+        }
+    }    
+    if (k == MAX_RETRIES) {            
+        lastErrorCode = ERR_CONNECT;
+        bsprintf (lastErrorMsg, T("%s"), T("Network error: max number of send retries reached: exit"));
+        LOG.error(lastErrorMsg);
         goto exit;
-    }
-#endif
+    
+    } 
+/*  
+    int to = 45000;
+    BOOL result = InternetSetOption(request, INTERNET_OPTION_CONNECT_TIMEOUT, &to, sizeof(to));
 
+    if (result) 
+        LOG.debug("set timeout ok");
+    else
+        LOG.debug("set timeout not ok");
+    
     // Send a request to the HTTP server.
     if (!HttpSendRequest (request, headers, wcslen(headers), (void*)msg, contentLength)) {
         lastErrorCode = ERR_CONNECT;
@@ -273,6 +313,8 @@ BCHAR* PPC2003TransportAgent::sendMessage(const BCHAR* msg) {
 		LOG.error(lastErrorMsg);
         goto exit;
     }
+
+
     LOG.debug(MESSAGE_SENT);
     //
     // restore cont variable for the InternetReadFile
@@ -282,19 +324,21 @@ BCHAR* PPC2003TransportAgent::sendMessage(const BCHAR* msg) {
     //
     // If status code is not OK, returns immediately, otherwise reads the response
     //
-    size = sizeof(status);
+    
+    
     queryInfo = HttpQueryInfo (request,
                    HTTP_QUERY_STATUS_CODE | HTTP_QUERY_FLAG_NUMBER,
                    (LPDWORD)&status,
                    (LPDWORD)&size,
                    NULL);       
-
+    
     if (status != STATUS_OK) {
         lastErrorCode = ERR_HTTP;
         bsprintf(lastErrorMsg, T("HTTP request error: %d"), status);
         goto exit;
     }
-    
+    */
+    size = sizeof(status);
     queryInfo = HttpQueryInfo (request,
                        HTTP_QUERY_CONTENT_LENGTH | HTTP_QUERY_FLAG_NUMBER,
                        (LPDWORD)&contentLengthResponse,
@@ -320,13 +364,10 @@ BCHAR* PPC2003TransportAgent::sendMessage(const BCHAR* msg) {
         goto exit;        
 
     }
-    
-    
+        
 	p = response;
     (*p) = 0;
-
-    
-
+       
     do {
         if (!InternetReadFile (request, (LPVOID)bufferA, readBufferSize, &read)) {
             lastErrorCode = ERR_READING_CONTENT;
@@ -390,6 +431,128 @@ BCHAR* PPC2003TransportAgent::sendMessage(const BCHAR* msg) {
 }
 
 
+
+/*
+* The function try to send a message with HttpSendRequest . It was called by a thread in the main
+* procedure. 
+*/
+DWORD WINAPI WorkerFunctionHttpSendRequest(IN PARM_HTTP_SEND_REQUEST vThreadParm) {
+    ENTERING(L"WorkerFunctionHttpSendRequest");
+    int status        = -1;   
+    DWORD size        = 0; 
+    INTERNET_BUFFERS BufferIn;
+    BOOL queryInfo;
+    DWORD dwBytesWritten = 0;
+    char  pBuffer[1024 + 1];
+    memset(pBuffer, 0, 1024+1);
+    char* ptrBuffer = NULL;   
+    BCHAR dbg[200];
+    sumByteSent = 0;
+    DWORD ret = 0;
+
+    PARM_HTTP_SEND_REQUEST pThreadParm;
+    
+    pThreadParm = (PARM_HTTP_SEND_REQUEST)vThreadParm;
+        
+    BufferIn.dwStructSize       = sizeof( INTERNET_BUFFERS ); // Must be set or error will occur
+    BufferIn.Next               = NULL; 
+    BufferIn.lpcszHeader        = pThreadParm.pHeaders;
+    BufferIn.dwHeadersLength    = pThreadParm.headersLength;
+    BufferIn.dwHeadersTotal     = pThreadParm.headersLength;
+    BufferIn.lpvBuffer          = NULL;                
+    BufferIn.dwBufferLength     = 0;
+    BufferIn.dwBufferTotal      = pThreadParm.msgLength; // This is the only member used other than dwStructSize
+    BufferIn.dwOffsetLow        = 0;
+    BufferIn.dwOffsetHigh       = 0;
+    
+    if(!HttpSendRequestEx( request, &BufferIn, NULL, HSR_INITIATE, 0)) {   
+        lastErrorCode = 8001;        
+        bsprintf (lastErrorMsg, T("%s: %d"), T("HttpSendRequestEx error"), GetLastError());
+        LOG.debug(lastErrorMsg);     
+        ret =  lastErrorCode;
+        goto finally;
+    }        
+
+    ptrBuffer = pThreadParm.pMsg;
+    
+    do {        
+        strncpy (pBuffer, ptrBuffer, 1024);
+        if (!InternetWriteFile (request, pBuffer, strlen(pBuffer), &dwBytesWritten)) {
+            lastErrorCode = 8001;
+            bsprintf(lastErrorMsg, T("%s: %d"), T("InternetWriteFile error"), GetLastError());    
+            LOG.debug(lastErrorMsg);
+            ret =  lastErrorCode;
+            goto finally;
+        } else {          
+           //LOG.debug(T("InternetWriteFile success..."));
+        }
+        
+        size = sizeof(status);
+        queryInfo = HttpQueryInfo (request,
+                   HTTP_QUERY_STATUS_CODE | HTTP_QUERY_FLAG_NUMBER,
+                   (LPDWORD)&status,
+                   (LPDWORD)&size,
+                   NULL);       
+
+        if( status == HTTP_SERVER_ERROR ) {
+            LOG.error(T("Status: HTTP_SERVER_ERROR"));
+            break;
+        }
+        else if( status == HTTP_UNAUTHORIZED ) {
+            LOG.error(T("Status: HTTP_UNAUTHORIZED"));
+            break;
+        }
+        else if( status == HTTP_ERROR ) {
+            LOG.error(T("Status: HTTP_ERROR"));
+            break;
+        }
+        else if( status == HTTP_NOT_FOUND ) {
+            LOG.error(T("Status: HTTP_NOT_FOUND"));
+            break;
+        }
+        else if( status == X_HTTP_420_IPPRV ) {
+            LOG.error(T("Status: X_HTTP_420_IPPRV 420"));
+            break;
+        }    
+        else {           
+            if (status != -1) {
+                bsprintf(dbg, T("Status: %d"), status);
+                LOG.debug(dbg);
+            }
+        }
+        
+        sumByteSent += dwBytesWritten;
+        bsprintf(dbg, "WorkerFunctionHttpSendRequest: total byte sent: %i", sumByteSent);
+        LOG.debug(dbg);
+
+        ptrBuffer = ptrBuffer + (dwBytesWritten * (sizeof(char)));
+
+        if (sumByteSent < pThreadParm.msgLength) {
+            
+        } else {
+            
+            break;
+        }
+
+    } while (1);
+
+    cont = FALSE;    
+
+finally:
+
+    LOG.debug("Now HttpEndRequest is call");
+    if(!HttpEndRequest(request, NULL, 0, 0))
+    {        
+        bsprintf(lastErrorMsg, T("%s: %d"), T("HttpEndRequest"), GetLastError());    
+        LOG.debug(lastErrorMsg);     
+        ret = lastErrorCode; 
+       
+    }
+    EXITING(L"WorkerFunctionHttpSendRequest");
+    return ret;
+
+}
+
 #if 0
  /*
 * The function try to read the content of a file with InternetReadFile . It was called by a thread in the main
@@ -425,115 +588,5 @@ DWORD WINAPI WorkerFunctionInternetReadFile(IN LPVOID vThreadParm) {
 }
 
 
-/*
-* The function try to send a message with HttpSendRequest . It was called by a thread in the main
-* procedure. 
-*/
-DWORD WINAPI WorkerFunctionHttpSendRequest(IN PARM_HTTP_SEND_REQUEST vThreadParm) {
-    ENTERING(L"WorkerFunctionHttpSendRequest");
-    int status        = -1;   
-    DWORD size        = 0; 
-    INTERNET_BUFFERS BufferIn;
-    BOOL queryInfo;
-    DWORD dwBytesWritten = 0;
-    char  pBuffer[4096 + 1];
-    memset(pBuffer, 0, 4096);
-    char* ptrBuffer = NULL;   
-
-    sumByteSent = 0;
-
-    PARM_HTTP_SEND_REQUEST pThreadParm;
-    
-    pThreadParm = (PARM_HTTP_SEND_REQUEST)vThreadParm;
-        
-    BufferIn.dwStructSize       = sizeof( INTERNET_BUFFERS ); // Must be set or error will occur
-    BufferIn.Next               = NULL; 
-    BufferIn.lpcszHeader        = pThreadParm.pHeaders;
-    BufferIn.dwHeadersLength    = pThreadParm.headersLength;
-    BufferIn.dwHeadersTotal     = pThreadParm.headersLength;
-    BufferIn.lpvBuffer          = NULL;                
-    BufferIn.dwBufferLength     = 0;
-    BufferIn.dwBufferTotal      = pThreadParm.msgLength; // This is the only member used other than dwStructSize
-    BufferIn.dwOffsetLow        = 0;
-    BufferIn.dwOffsetHigh       = 0;
-    
-    if(!HttpSendRequestEx( request, &BufferIn, NULL, 0, 0)) {   
-        lastErrorCode = ERR_CONNECT;        
-        bsprintf (lastErrorMsg, T("%s: %d"), T("Error on HttpSendRequestEx"),GetLastError());
-        LOG.debug(lastErrorMsg);     
-        return ERR_CONNECT;
-    }        
-
-    ptrBuffer = pThreadParm.pMsg;
-    
-    do {
-        
-        strncpy (pBuffer, ptrBuffer, 4096);
-        if (!InternetWriteFile (request, pBuffer, strlen(pBuffer), &dwBytesWritten)) {
-            lastErrorCode = 8001;
-            bsprintf(lastErrorMsg, T("%s: %d"), T("InternetWriteFile Error"), GetLastError());    
-            return lastErrorCode;
-        } else {          
-           LOG.debug(T("InternetWriteFile success..."));
-        }
-        
-        size = sizeof(status);
-        queryInfo = HttpQueryInfo (request,
-                   HTTP_QUERY_STATUS_CODE | HTTP_QUERY_FLAG_NUMBER,
-                   (LPDWORD)&status,
-                   (LPDWORD)&size,
-                   NULL);       
-
-        if( status == HTTP_SERVER_ERROR ) {
-            LOG.error(T("Status: HTTP_SERVER_ERROR"));
-            break;
-        }
-        else if( status == HTTP_UNAUTHORIZED ) {
-            LOG.error(T("Status: HTTP_UNAUTHORIZED"));
-            break;
-        }
-        else if( status == HTTP_ERROR ) {
-            LOG.error(T("Status: HTTP_ERROR"));
-            break;
-        }
-        else if( status == HTTP_NOT_FOUND ) {
-            LOG.error(T("Status: HTTP_NOT_FOUND"));
-            break;
-        }
-        else if( status == X_HTTP_420_IPPRV ) {
-            LOG.error(T("Status: X_HTTP_420_IPPRV 420"));
-            break;
-        }    
-        else {
-            BCHAR dbg[200];
-            bsprintf(dbg, T("Status: %d"), status);
-            LOG.debug(dbg);
-        }
-
-        sumByteSent += dwBytesWritten;
-        ptrBuffer = ptrBuffer + (dwBytesWritten * (sizeof(char)));
-
-        if (sumByteSent < pThreadParm.msgLength) {
-            
-        } else {
-            
-            break;
-        }
-
-    } while (1);
-    
-    cont = FALSE;    
-    
-    if(!HttpEndRequest(request, NULL, 0, 0))
-    {
-        LOG.debug(T("Error in httpEndRequest"));
-        bsprintf(lastErrorMsg, T("%s: %d"), T("InternetWriteFile Error"), GetLastError());    
-        return lastErrorCode; 
-       
-    }
-    EXITING(L"WorkerFunctionHttpSendRequest");
-    return 0;
-
-}
 #endif
 
