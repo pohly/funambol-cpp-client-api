@@ -1,3 +1,11 @@
+Funambol SDK C++ 3.0.19
+------------------------- 
+2006-07-06:
+
+     - magi: fixed memory leaks in all code
+             improved PocketPC Transport Agent. It tries to sent request to the server if it doesn't respond          
+      
+
 Funambol SDK C++ 3.0.18
 ------------------------- 
 2006-06-16:
