@@ -23,7 +23,7 @@
 // #define DEBUG_SETTINGS       1
 
 // Test a simple sync with two sync sources
-//#define TEST_SYNCSOURCE      1
+#define TEST_SYNCSOURCE      1
 
 // Test the encryption routines
 //#define TEST_SYNC_ENCRYPTION 1
@@ -36,10 +36,10 @@
 
 
 // Test the Event Handling Framework
-#define TEST_EVENT_HANDLING 1
+//#define TEST_EVENT_HANDLING 1
 
 // Test filters
 //#define TEST_FILTER 1
 
 // Test XMLProcessor class
-#define TEST_XMLPROCESSOR 1
+//#define TEST_XMLPROCESSOR 1

@@ -283,8 +283,7 @@ int SyncManager::prepareSync(SyncSource** s) {
                 deleteAlert(&alert);
             }                        
             cred = credentialHandler.getClientCredential();             
-            bstrcpy(credentialInfo, cred->getAuthentication()->getData(NULL));
-            LOG.debug("%s", credentialInfo);
+            bstrcpy(credentialInfo, cred->getAuthentication()->getData(NULL));            
         }
         syncml = syncMLBuilder.prepareInitObject(cred, alerts, commands);
         if (syncml == NULL) {

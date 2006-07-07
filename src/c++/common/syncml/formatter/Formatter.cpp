@@ -2277,6 +2277,7 @@ StringBuffer* Formatter::getPropParam(PropParam* p) {
         s.append(dataType   );
         s.append(valEnums   );
     }
+    deleteAllStringBuffer(3, &paramName, &displayName, &dataType);
 
     return getValue(PROP_PARAM, s);
 }

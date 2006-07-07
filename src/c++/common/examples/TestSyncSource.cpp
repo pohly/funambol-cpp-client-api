@@ -37,9 +37,9 @@ int setAllItems() {
     char data[128];   
         
     for (int i = 0; i < 4; ++i) {
-    
+        
         wsprintf(name, TEXT("%s%d"), TEXT("item"), i);
-        sprintf(data, "This is item %d", i);
+        sprintf(data, "This is item %d", i);        
 
         item.setKey(name);
         item.setData(data  , (strlen(data))*sizeof(char));
