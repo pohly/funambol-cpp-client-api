@@ -1,0 +1,10 @@
+Fixes several problems in combination with Synthesis (and probably
+other) servers:
+- CDATA in <Data></Data> parts
+- <LocName> required for MD5 authentication
+- after failed authentication <SourceRef> might be missing in reply,
+  ignore it
+- moved code into new SyncManager::checkForServerChanges() to deal with
+  server <Sync> which might come before the 222 alert and wasn't expected
+  there by the client without this patch
+- several XML tags must have the xmlns parameter to be accepted as valid XML
