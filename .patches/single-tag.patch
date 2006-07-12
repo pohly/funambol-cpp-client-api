@@ -1,0 +1,37 @@
+A <foo/> tag was not handled correctly by
+XMLProcessor::getElementContentLevel(): it
+incremented the level instead of staying on the
+same one.
+
+#
+# Patch managed by http://www.holgerschurig.de/patcher.html
+#
+
+--- native/src/c++/common/base/util/XMLProcessor.cpp~single-tag
++++ native/src/c++/common/base/util/XMLProcessor.cpp
+@@ -607,10 +607,11 @@
+ 
+         } else if (p1[i] == '/') {
+             if (previousIndex == (i - 1)) {
+-                // <.../>                
++                // </...>                
+                 preCloseBracket = TRUE;
+             } else {
+-                // TBD  </...>
++                // might be <.../>, which will be checked below
++                // with p1[i - 1] == '/'
+             }
+ 
+         } else if (p1[i] == '>') {  
+@@ -622,7 +623,10 @@
+                 if (preCloseBracket) {
+                     closeTag = TRUE;
+                 }
+-                else { 
++                else if (openBracket && p1[i - 1] == '/') {
++                    // <.../>: do not change levels or open tag,
++                    // it has been closed already
++                } else {
+                     openTag = TRUE;                    
+                 }
+                 closeBracket = TRUE;

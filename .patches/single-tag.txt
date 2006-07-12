@@ -1,0 +1,4 @@
+A <foo/> tag was not handled correctly by
+XMLProcessor::getElementContentLevel(): it
+incremented the level instead of staying on the
+same one.
