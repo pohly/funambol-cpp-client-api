@@ -1,6 +1,12 @@
 Fixes several problems in combination with Synthesis (and probably
 other) servers:
-- CDATA in <Data></Data> parts
+- CDATA in <Data></Data> parts not supported
+- escape & and < with CDATA because the Synthesis server only supports that;
+  is also cheaper to do at runtime (no replaceAll).
+- bugfix: code which replaced &amp; and &lt; was unconditionally applied
+  at high levels and broke e.g. <Add><Data><![CDATA[ literal entity &amp; ]]></Data></Add>
+  but it was also applied multiple times to the same text and thus might have
+  incorrectly replaced &amp;amp; with & although &amp; would have been correct
 - <LocName> required for MD5 authentication
 - after failed authentication <SourceRef> might be missing in reply,
   ignore it
@@ -15,22 +21,75 @@ other) servers:
 
 --- native/src/c++/common/base/util/XMLProcessor.cpp~synthesis
 +++ native/src/c++/common/base/util/XMLProcessor.cpp
-@@ -183,6 +183,14 @@
+@@ -183,10 +183,64 @@
          return 0;
      }
  
-+    // strip CDATA markers at start and end?
-+    if (endPos - startPos > bstrlen(T("<![CDATA[")) + bstrlen(T("]]>")) &&
-+        !bstrncmp(xml + startPos, T("<![CDATA["), bstrlen(T("<![CDATA["))) &&
-+        !bstrncmp(xml + endPos - bstrlen(T("]]>")), T("]]>"), bstrlen(T("]]>")))) {
-+        startPos += bstrlen(T("<![CDATA["));
-+        endPos -= bstrlen(T("]]>"));
+-    ret = new BCHAR[endPos - startPos + 1];
++    // figure out whether the text that we are about to copy
++    // contains further elements; if not, treat it as a leaf
++    // element and decode entities
++    BOOL isLeaf = TRUE;
++    unsigned int pos = startPos;
++    while (pos < endPos) {
++        if (xml[pos] == '<') {
++            isLeaf = FALSE;
++            break;
++        }
++        pos++;
 +    }
-+
-     ret = new BCHAR[endPos - startPos + 1];
  
-     bstrncpy(ret, xml+startPos, endPos - startPos);
-@@ -582,7 +590,16 @@
+-    bstrncpy(ret, xml+startPos, endPos - startPos);
+-    ret[endPos - startPos] = 0;
++    const BCHAR cdataStart[] = T("<![CDATA[");
++    const int cdataStartLen = sizeof(cdataStart) - 1;
++    const BCHAR cdataEnd[] = T("]]>");
++    const int cdataEndLen = sizeof(cdataEnd) - 1;
++
++    // strip CDATA markers at start and end?
++    if (!isLeaf &&
++        endPos - pos > cdataStartLen + cdataEndLen &&
++        !bstrncmp(xml + pos, cdataStart, cdataStartLen)) {
++        // yep, copy content verbatim;
++        // search real end of data first
++        pos += cdataStartLen;
++        unsigned int cdataEndPos = endPos;
++        while (cdataEndPos - cdataEndLen > pos) {
++            if (!bstrncmp(xml + cdataEndPos - cdataEndLen,
++                          cdataEnd,
++                          cdataEndLen)) {
++                // found "]]>"
++                cdataEndPos -= cdataEndLen;
++                break;
++            }
++            cdataEndPos--;
++        }
++        
++        ret = new BCHAR[cdataEndPos - pos + 1];
++        bstrncpy(ret, xml + pos, cdataEndPos - pos);
++        ret[cdataEndPos - pos] = 0;
++    } else if (isLeaf) {
++        // Decode content of final element:
++        // might contain escaped special characters.
++        //
++        // This must _not_ be done for tags which contain other
++        // tags because then we might destroy the content of e.g.
++        // <Add><Data><![CDATA[ literal entity &amp; ]]></Data></Add>
++        //
++        StringBuffer tmp(xml+startPos, endPos - startPos);
++        tmp.replaceAll("&amp;", "&");
++        tmp.replaceAll("&lt;", "<");
++        ret = stringdup(tmp.c_str());
++    } else {
++        size_t len = endPos - startPos;
++        ret = new BCHAR [len + 1];
++        memcpy( ret, xml + startPos, len * sizeof(BCHAR));
++        ret[len] = 0;
++    }
+ 
+     return ret;
+ }
+@@ -582,7 +636,16 @@
      p1 = p2 = xml;
      
      for (i = 0; i < xmlLength; i ++) {
@@ -141,7 +200,7 @@ other) servers:
              if (clientChal == NULL) {
                  requestedAuthType = credentialHandler.getClientAuthType();
              } else {
-@@ -541,6 +562,75 @@
+@@ -541,6 +562,88 @@
      return ret;
  }
  
@@ -155,6 +214,15 @@ other) servers:
 +//
 +BOOL SyncManager::checkForServerChanges(SyncML* syncml, ArrayList &statusList)
 +{
++    BOOL result = FALSE;
++    
++    // Danger, danger: count is a member variable!
++    // It has to be because that's the context for some of
++    // the other methods. Modifying it has to be careful to
++    // restore the initial value before returning because
++    // our caller might use it, too.
++    int oldCount = this->count;
++    
 +    for (count = 0; count < sourcesNumber; count ++) {
 +        if (!check [count])
 +            continue;
@@ -190,7 +258,8 @@ other) servers:
 +                    Item *item = (Item*)list->get(j);
 +                    if (item == NULL) {
 +                        LOG.error("SyncManager::sync() - unexpected NULL item.");
-+                        return TRUE;
++                        result = TRUE;
++                        goto finally;
 +                    }
 +
 +                    //
@@ -210,14 +279,17 @@ other) servers:
 +        }                               
 +    } // End for (count = 0; count < sourcesNumber; count ++)
 +
-+    return FALSE;
++    
++  finally:
++    this->count = oldCount;
++    return result;
 +}
 +
 +
  int SyncManager::sync() {
  
      BCHAR* msg         = NULL;
-@@ -965,6 +1055,19 @@
+@@ -965,6 +1068,19 @@
                  break;
              }
  
@@ -237,7 +309,7 @@ other) servers:
              // deleteSyncML(&syncml);
  
          } while (last == FALSE);
-@@ -1055,73 +1158,9 @@
+@@ -1055,73 +1171,9 @@
              commands->add(*status);
              deleteStatus(&status); 
  
@@ -442,6 +514,20 @@ other) servers:
      
      if (buf) {delete buf; buf = NULL; }
      return ret;    
+@@ -1728,10 +1732,9 @@
+         s.append(anchor);
+         s.append(devInf);
+     } else {
+-        StringBuffer tmp(data->getData());
+-        tmp.replaceAll("&", "&amp;");
+-        tmp.replaceAll("<", "&lt;");
+-        s.append(tmp);        
++        s.append("<![CDATA[");
++        s.append(data->getData());
++        s.append("]]>");
+     }
+ 
+     deleteAllStringBuffer(2, &anchor, &devInf);
 --- native/src/include/common/spds/CredentialHandler.h~synthesis
 +++ native/src/include/common/spds/CredentialHandler.h
 @@ -73,7 +73,9 @@
