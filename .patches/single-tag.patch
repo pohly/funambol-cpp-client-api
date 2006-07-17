@@ -9,7 +9,7 @@ same one.
 
 --- native/src/c++/common/base/util/XMLProcessor.cpp~single-tag
 +++ native/src/c++/common/base/util/XMLProcessor.cpp
-@@ -607,10 +607,11 @@
+@@ -653,10 +653,11 @@
  
          } else if (p1[i] == '/') {
              if (previousIndex == (i - 1)) {
@@ -23,7 +23,7 @@ same one.
              }
  
          } else if (p1[i] == '>') {  
-@@ -622,7 +623,10 @@
+@@ -668,7 +669,10 @@
                  if (preCloseBracket) {
                      closeTag = TRUE;
                  }
