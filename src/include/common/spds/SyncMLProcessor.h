@@ -39,7 +39,7 @@
         /*
          * It include the common part of getSyncHdrStatusCode and getAlertStatusCode
          */
-        int getStatusCode(SyncBody* syncBody, SyncSource* source, BCHAR* commandName) EXTRA_SECTION_01;
+        int getStatusCode(SyncBody* syncBody, SyncSource* source, BCHAR* commandName) EXTRA_SECTION_01;        
         /*
          * Returns the status code for the SyncHeader command included
          * in the message sent by the client.
@@ -54,7 +54,7 @@
          * @param sourceName - the name of the source
          */
         int getAlertStatusCode(Status* status, const BCHAR* sourceName) EXTRA_SECTION_01;       
-
+        
         /*
         * Return the command of the given commandName
         */

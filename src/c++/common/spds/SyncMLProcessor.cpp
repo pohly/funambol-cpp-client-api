@@ -390,7 +390,7 @@ AbstractCommand* SyncMLProcessor::getCommand(SyncBody* syncBody, BCHAR* commandN
 }
 
 
-int SyncMLProcessor::getStatusCode(SyncBody* syncBody, SyncSource* source, BCHAR* commandName) {
+int SyncMLProcessor::getStatusCode(SyncBody* syncBody, SyncSource* source, BCHAR* commandName) {    
     int ret = -1;
     
     ArrayList* list = syncBody->getCommands();

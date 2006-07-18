@@ -198,7 +198,7 @@ BCHAR* PPC2003TransportAgent::sendMessage(const BCHAR* msg) {
     connection = NULL,
     request    = NULL;
 
-    DWORD flags = INTERNET_FLAG_RELOAD | INTERNET_FLAG_NO_CACHE_WRITE;
+    DWORD flags = INTERNET_FLAG_RELOAD | INTERNET_FLAG_NO_CACHE_WRITE | INTERNET_FLAG_NO_COOKIES;
 
 	LPCWSTR acceptTypes[2] = {TEXT("*/*"), NULL};    
 
