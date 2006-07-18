@@ -600,3 +600,19 @@ other) servers:
          static StringBuffer*    getValue            (BCHAR* tagName, const BCHAR* value);
          static StringBuffer*    getValue            (BCHAR* tagName, StringBuffer* value);
          static StringBuffer*    getValue            (BCHAR* tagName, long value);
+--- native/src/c++/common/syncml/parser/Parser.cpp~synthesis
++++ native/src/c++/common/syncml/parser/Parser.cpp
+@@ -2083,11 +2083,8 @@
+         if (devInf)
+             ret->setDevInf(devInf);
+     }
+-    else if (xml) {        
+-        StringBuffer tmp(xml);
+-        tmp.replaceAll("&amp;", "&");
+-        tmp.replaceAll("&lt;", "<");        
+-        ret = new ComplexData(tmp);
++    else if (xml) {
++        ret = new ComplexData(xml);
+     }    
+ 
+     return ret;
