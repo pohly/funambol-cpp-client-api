@@ -101,7 +101,8 @@ BCHAR* Win32TransportAgent::sendMessage(const BCHAR* msg) {
           read  = 0,
           flags = INTERNET_FLAG_RELOAD | 
                   INTERNET_FLAG_NO_CACHE_WRITE | 
-                  INTERNET_FLAG_KEEP_CONNECTION;            // This is necessary if authentication is required.
+                  INTERNET_FLAG_KEEP_CONNECTION |           // This is necessary if authentication is required.
+                  INTERNET_FLAG_NO_COOKIES;                 // This is used to avoid possible server errors on successive sessions.
 
 	LPCWSTR acceptTypes[2] = {TEXT("*/*"), NULL};
     
