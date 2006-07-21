@@ -163,7 +163,7 @@ finally:
 BCHAR **DeviceManagementNode::getChildrenNames() {
     ULONG dim = DIM_MANAGEMENT_PATH;
     HKEY key;
-	BCHAR **childrenName ;
+	BCHAR **childrenName = NULL;
     ULONG i, howMany = 0;
 
     DWORD res;
