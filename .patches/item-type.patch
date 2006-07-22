@@ -1,0 +1,93 @@
+A SyncSource is allowed to deliver items of different types
+as long as the server knows how to deal with them. That the
+C++ client library used the configured type instead of the
+one from the SyncItem is an unnecessary restriction, removed
+by this patch.
+
+For backwards compatibility with (IMHO broken) SyncSources
+which do not use SyncItem->setType() the SyncSource's type
+is still used as fallback - as far as I am concerned, this
+parameter should be removed.
+
+Note that SyncEvolution is affected because it uses different
+strings in the configured type to determine which kind of
+database backend needs to be accessed (calendar or tasks)
+although items from both sources have "text/calendar" as type.
+#
+# Patch managed by http://www.holgerschurig.de/patcher.html
+#
+
+--- native/src/include/common/spds/SyncMLBuilder.h~item-type
++++ native/src/include/common/spds/SyncMLBuilder.h
+@@ -130,12 +130,12 @@
+         /*
+         * Prepare a ADD, REPLACE, DEL command using the syncItem passed by the source
+         */ 
+-        ModificationCommand* prepareModificationCommand(BCHAR* COMMAND, SyncItem* item, const BCHAR* type) EXTRA_SECTION_01;
++        ModificationCommand* prepareModificationCommand(BCHAR* COMMAND, SyncItem* item, const BCHAR* defaultType) EXTRA_SECTION_01;
+         
+         /*
+         * Add a SyncItem into the modificationCommand. It is responsible to collapse if needed
+         */
+-        void addItem(ModificationCommand* modificationCommand, BCHAR* COMMAND, SyncItem* syncItem, const BCHAR* type) EXTRA_SECTION_01;
++        void addItem(ModificationCommand* modificationCommand, BCHAR* COMMAND, SyncItem* syncItem, const BCHAR* defaultType) EXTRA_SECTION_01;
+         
+         /*
+         * Reset the cmdID counter
+--- native/src/c++/common/spds/SyncMLBuilder.cpp~item-type
++++ native/src/c++/common/spds/SyncMLBuilder.cpp
+@@ -628,7 +628,7 @@
+ /*
+ * Prepare an empty modification command without any commands. They will be added with the insertItem method
+ */
+-ModificationCommand* SyncMLBuilder::prepareModificationCommand(BCHAR* COMMAND, SyncItem* syncItem, const BCHAR* type) {        
++ModificationCommand* SyncMLBuilder::prepareModificationCommand(BCHAR* COMMAND, SyncItem* syncItem, const BCHAR* defaultType) {        
+     
+     if (syncItem == NULL) {
+          return NULL;
+@@ -636,6 +636,15 @@
+     ++cmdID;
+     CmdID* commandID     = new CmdID(itow(cmdID));
+ 
++    // The item should determine its type itself.
++    // Only fallback to the default type configured for its
++    // source if (broken?) SyncSources do not set a in their
++    // items.
++    const BCHAR *type = syncItem->getDataType();
++    if (!type || !type[0]) {
++        type = defaultType;
++    }
++
+     ModificationCommand* ret = NULL;
+     MetInf* metInf       = new MetInf(NULL, (BCHAR*)type, NULL, NULL, 
+                                       NULL, NULL, NULL, NULL, NULL, NULL, NULL); 
+@@ -667,12 +676,21 @@
+ /*
+ * Add another item into the 
+ */
+-void SyncMLBuilder::addItem(ModificationCommand* modificationCommand, BCHAR* COMMAND, SyncItem* syncItem, const BCHAR* type) {        
++void SyncMLBuilder::addItem(ModificationCommand* modificationCommand, BCHAR* COMMAND, SyncItem* syncItem, const BCHAR* defaultType) {        
+     
+     if (syncItem == NULL || modificationCommand == NULL) {
+          return;
+     }       
+     
++    // The item should determine its type itself.
++    // Only fallback to the default type configured for its
++    // source if (broken?) SyncSources do not set a in their
++    // items.
++    const BCHAR *type = syncItem->getDataType();
++    if (!type || !type[0]) {
++        type = defaultType;
++    }
++
+     ArrayList* list = modificationCommand->getItems();
+     ArrayList* tmpList = prepareItem(syncItem, type, COMMAND);
+     list->add(tmpList);
+@@ -883,4 +901,4 @@
+         return data;
+ 
+ }
+-*/
+\ No newline at end of file
++*/

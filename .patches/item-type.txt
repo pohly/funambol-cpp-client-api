@@ -1,0 +1,15 @@
+A SyncSource is allowed to deliver items of different types
+as long as the server knows how to deal with them. That the
+C++ client library used the configured type instead of the
+one from the SyncItem is an unnecessary restriction, removed
+by this patch.
+
+For backwards compatibility with (IMHO broken) SyncSources
+which do not use SyncItem->setType() the SyncSource's type
+is still used as fallback - as far as I am concerned, this
+parameter should be removed.
+
+Note that SyncEvolution is affected because it uses different
+strings in the configured type to determine which kind of
+database backend needs to be accessed (calendar or tasks)
+although items from both sources have "text/calendar" as type.

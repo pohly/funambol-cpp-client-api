@@ -418,13 +418,6 @@ other) servers:
      SyncML*  syncml      = NULL;               
      ArrayList* list      = new ArrayList();
      SyncBody* syncBody   = NULL;
-@@ -883,4 +883,4 @@
-         return data;
- 
- }
--*/
-\ No newline at end of file
-+*/
 --- native/src/c++/common/spds/SyncMLProcessor.cpp~synthesis
 +++ native/src/c++/common/spds/SyncMLProcessor.cpp
 @@ -65,10 +65,19 @@
