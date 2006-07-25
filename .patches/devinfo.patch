@@ -1,0 +1,1998 @@
+This patch adds support for sending device info. They are constructed
+from new SyncClient and SyncSource API calls and configuration
+information. A client does not have to implement any calls, default
+implementations of the calls fill provide reasonable defaults for
+required properties or leave them empty.
+
+DevInf is actively sent as part of a Put if they have changed since
+the last time, the new "syncml/devInfHash" property stores a hash of
+the DevInf string to detect that.
+
+Sending DevInf as part of Results in reply to a Get is also supported
+(tested with Synthesis server).
+
+While implementing this, several related changes were made:
+- added "const" whenever necessary
+- fixed spelling of tag names
+- instead of implementing the copying of devInfHash into a new
+  SyncSource property, the code was refactored so that a SyncSource
+  now has a SyncSourceConfig
+
+#
+# Patch managed by http://www.holgerschurig.de/patcher.html
+#
+
+--- native/src/c++/common/base/util/baseutils.cpp~devinfo
++++ native/src/c++/common/base/util/baseutils.cpp
+@@ -296,7 +296,7 @@
+ 
+ 
+ 
+-char* calculateMD5(void* token, int len, char* wdigest) {
++char* calculateMD5(const void* token, int len, char* wdigest) {
+ 
+     //algo for md5 digest
+     char dig [18];
+--- native/src/c++/common/client/DMTClientConfig.cpp~devinfo
++++ native/src/c++/common/client/DMTClientConfig.cpp
+@@ -249,6 +249,10 @@
+     accessConfig.setEndSync(bstrtol(tmp, NULL, 10));
+     delete [] tmp;
+ 
++    tmp = n.getPropertyValue(PROPERTY_SOURCE_DEVINF_HASH);
++    accessConfig.setDevInfHash(tmp);
++    delete [] tmp;
++    
+     tmp = n.getPropertyValue(PROPERTY_USE_PROXY);     
+     accessConfig.setUseProxy((*tmp == 'T') ? TRUE : FALSE);
+     delete [] tmp;
+@@ -334,6 +338,7 @@
+     timestampToAnchor(accessConfig.getEndSync(), buf);
+     n.setPropertyValue(PROPERTY_SYNC_END, buf);
+ 
++    n.setPropertyValue(PROPERTY_SOURCE_DEVINF_HASH, accessConfig.getDevInfHash());
+     n.setPropertyValue(PROPERTY_USE_PROXY,
+ 		(accessConfig.getUseProxy() ? T("T"): T("F")) );     
+     n.setPropertyValue(PROPERTY_PROXY_HOST, accessConfig.getProxyHost());   
+--- native/src/c++/common/spds/AccessConfig.cpp~devinfo
++++ native/src/c++/common/spds/AccessConfig.cpp
+@@ -45,6 +45,7 @@
+     clientAuthType        = NULL;
+     serverAuthType        = NULL;
+     isServerAuthRequired  = FALSE;  // F = FALSE, T = TRUE
++    devInfHash            = NULL;
+ 
+     maxMsgSize            = 0;
+     maxModPerMsg          = 0;
+@@ -75,6 +76,7 @@
+     safeDelete(&userAgent           );
+     safeDelete(&proxyUsername       );
+     safeDelete(&proxyPassword       );
++    safeDelete(&devInfHash          );
+ }
+ 
+ BOOL AccessConfig::getServerAuthRequired() {
+@@ -362,6 +364,15 @@
+     return endTimestamp;
+ }
+ 
++const BCHAR* AccessConfig::getDevInfHash() const {
++    return devInfHash;
++}
++
++void AccessConfig::setDevInfHash(const BCHAR *v) {
++    set(&devInfHash, v);
++    dirty |= DIRTY_DEV_INF_HASH;
++}
++
+ unsigned int AccessConfig::getDirty() {
+     return dirty;
+ }
+@@ -416,6 +427,7 @@
+     setMaxModPerMsg(s.getMaxModPerMsg());
+     setReadBufferSize(s.getReadBufferSize());
+     setEncryption  (s.getEncryption()  );
++    setDevInfHash(s.getDevInfHash());
+ 
+ 	dirty = s.getDirty();
+ }
+--- native/src/c++/common/spds/SyncManager.cpp~devinfo
++++ native/src/c++/common/spds/SyncManager.cpp
+@@ -30,6 +30,11 @@
+ #include "spds/spdsutils.h"
+ #include "syncml/core/TagNames.h"
+ #include "syncml/core/ObjectDel.h"
++#include "syncml/core/DevInf.h"
++#include "syncml/core/StringElement.h"
++#include "syncml/core/CTTypeSupported.h"
++#include "syncml/core/CTCap.h"
++#include "syncml/core/CTPropParam.h"
+ #include "client/Sync4jClient.h"
+ 
+ /**
+@@ -121,7 +126,17 @@
+     bstrcpy(userAgent, c.getUserAgent());
+     if (bstrlen(userAgent) == 0) {
+         const BCHAR *clientID = client.getClientID();
+-        bstrcpy(userAgent, clientID ? clientID : BCHAR_USER_AGENT);
++        const BCHAR *clientVer = client.getClientVersion();
++        // danger, may overflow our buffer...
++        if (clientID) {
++            bstrcpy(userAgent, clientID);
++            if (clientVer) {
++                bstrcat(userAgent, " ");
++                bstrcat(userAgent, clientVer);
++            }
++        } else {
++            bstrcpy(userAgent, BCHAR_USER_AGENT);
++        }
+     }
+                   
+     syncMLBuilder.set(syncURL, deviceId, maxMsgSize);
+@@ -183,6 +198,10 @@
+     Cred*   cred                = NULL;
+     Alert*  alert               = NULL;
+     SyncSource** buf            = NULL;
++    DevInf* devInf              = NULL;
++    StringBuffer* devInfStr     = NULL;
++    BOOL putDevInf              = FALSE;
++    BCHAR devInfHash[16 * 4 +1]; // worst case factor base64 is four
+     const BCHAR *syncURL;
+     
+     syncURL = config.getAccessConfig().getSyncURL(); //sizeof(syncURL));
+@@ -246,6 +265,31 @@
+         }
+     }
+ 
++    // build device infos
++    devInf = buildDeviceInfo();
++    if (devInf) {
++        char md5[16];
++        devInfStr = Formatter::getDevInf(devInf);
++        LOG.debug(T("devinfo: %s"), devInfStr->c_str());
++        calculateMD5(devInfStr->c_str(), devInfStr->length(), md5);
++        devInfHash[b64_encode(devInfHash, md5, sizeof(md5))] = 0;
++        LOG.debug(T("devinfo hash: %s"), devInfHash);
++
++        // compare against previous device info hash:
++        // if different, then the local config has changed and
++        // infos should be sent again
++        if (bstrcmp(devInfHash, config.getAccessConfig().getDevInfHash())) {
++            putDevInf = TRUE;
++        }
++        LOG.debug(T("devinfo %s"), putDevInf ? T("changed, retransmit") : T("unchanged, no need to send"));
++    } else {
++        LOG.debug(T("no devinfo available"));
++    }
++
++    // have device infos changed since the last time that they were
++    // sent or is this the initial sync?
++    
++
+     // disable all SyncSources without a preferred sync mode
+     for (count = 0; count < sourcesNumber; count ++) {
+         if (!check[count])
+@@ -307,6 +351,17 @@
+             cred = credentialHandler.getClientCredential();             
+             bstrcpy(credentialInfo, cred->getAuthentication()->getData(NULL));
+         }
++
++        // actively send out device infos?
++        if (putDevInf) {
++            AbstractCommand* put = syncMLBuilder.prepareDevInf(NULL, *devInf);
++            if (put) {
++                commands->add(*put);
++                delete put;
++            }
++            putDevInf = FALSE;
++        }
++        
+         // "cred" only contains an encoded strings as username, also
+         // need the original username for LocName
+         syncml = syncMLBuilder.prepareInitObject(credentialHandler.getUsername(), cred, alerts, commands);
+@@ -501,12 +556,51 @@
+             AbstractCommand* cmd = (AbstractCommand*)list->get(cmdindex);
+             BCHAR* name = cmd->getName();
+             if (name) {
+-                if (!bstrcmp(name, PUT) || !bstrcmp(name, GET)) {
+-                    // not currently supported, pretend that it worked anyway
+-                    status = syncMLBuilder.prepareCmdStatus(*cmd, 200);
+-                    if (status) {
+-                        commands->add(*status);
+-                        deleteStatus(&status);    
++                BOOL isPut = !bstrcmp(name, PUT);
++                BOOL isGet = !bstrcmp(name, GET);
++
++                if (isGet || isPut) {
++                    int statusCode = 200; // if set, then send it (on by default)
++
++                    if (isGet) {
++                        Get *get = (Get *)cmd;
++                        ArrayList *items = get->getItems();
++                        BOOL sendDevInf = FALSE;
++
++                        Results results;
++                        for (int i = 0; i < items->size(); i++) {
++                            Item *item = (Item *)items->get(i);
++                        
++                            // we are not very picky: as long as the Item is
++                            // called "./devinf11" as required by the standard
++                            // we return our device infos
++                            Target *target = item->getTarget();
++                            if (target && target->getLocURI() &&
++                                !bstrcmp(target->getLocURI(),
++                                         DEVINF_URI)) {
++                                sendDevInf = TRUE;
++                            } else {
++                                LOG.debug(T("ignoring request to Get item #%d"), i);
++                            }
++                        }
++
++                        if (sendDevInf) {
++                            AbstractCommand *result = syncMLBuilder.prepareDevInf(cmd, *devInf);
++                            if (result) {
++                                commands->add(*result);
++                                delete result;
++                            }
++                        }
++                    } else {
++                        // simply acknowledge Put
++                    }
++
++                    if (statusCode) {
++                        status = syncMLBuilder.prepareCmdStatus(*cmd, statusCode);
++                        if (status) {
++                            commands->add(*status);
++                            deleteStatus(&status);    
++                        }
+                     }
+                 }
+             }
+@@ -559,6 +653,7 @@
+ 
+     config.getAccessConfig().setClientNonce(credentialHandler.getClientNonce(NULL));
+     config.getAccessConfig().setServerNonce(credentialHandler.getServerNonce(NULL));
++    config.getAccessConfig().setDevInfHash(devInfHash);
+     
+     if (isToExit(check, sourcesNumber)) {
+         // error. no source to sync
+@@ -580,6 +675,12 @@
+     if (initMsg) {
+         safeDelete(&initMsg);
+     }
++    if (devInf) {
++        delete devInf;
++    }
++    if (devInfStr) {
++        delete devInfStr;
++    }
+ 
+     deleteSyncML(&syncml);
+     deleteCred(&cred);
+@@ -742,7 +843,7 @@
+             } else {
+                 // TBD: if we are using vcard/icalendar, we need to 
+                 // set the encoding to PLAIN
+-                if (bstrcmp(_wcc(sources[count]->getEncoding()), B64_ENCODING) == 0) {
++                if (bstrcmp(sources[count]->getConfig().getEncoding(), B64_ENCODING) == 0) {
+                     syncMLBuilder.setEncoding(B64);
+                 } else {
+                     syncMLBuilder.setEncoding(PLAIN);
+@@ -800,13 +901,13 @@
+                                     syncMLBuilder.prepareModificationCommand(
+                                                             REPLACE_COMMAND_NAME, 
+                                                             syncItem,
+-                                                            sources[count]->getType()
++                                                            sources[count]->getConfig().getType()
+                                                   );
+                             } else {
+                                 syncMLBuilder.addItem(modificationCommand,
+                                                       REPLACE_COMMAND_NAME,
+                                                       syncItem, 
+-                                                      sources[count]->getType());
++                                                      sources[count]->getConfig().getType());
+                             }
+ 
+                             if (syncItem) {
+@@ -860,10 +961,10 @@
+                             }
+                             if (modificationCommand == NULL) {
+                                 modificationCommand = syncMLBuilder.prepareModificationCommand(REPLACE_COMMAND_NAME, 
+-                                        syncItem, sources[count]->getType());
++                                                                                               syncItem, sources[count]->getConfig().getType());
+                             } else {
+                                 syncMLBuilder.addItem(modificationCommand, REPLACE_COMMAND_NAME, syncItem, 
+-                                        sources[count]->getType());
++                                                      sources[count]->getConfig().getType());
+                             }
+ 
+                             if (syncItem) {
+@@ -903,10 +1004,10 @@
+                                 }
+                                 if (modificationCommand == NULL) {
+                                     modificationCommand = syncMLBuilder.prepareModificationCommand(ADD_COMMAND_NAME, 
+-                                            syncItem, sources[count]->getType());
++                                                                                                   syncItem, sources[count]->getConfig().getType());
+                                 } else {
+                                     syncMLBuilder.addItem(modificationCommand, ADD_COMMAND_NAME, 
+-                                            syncItem, sources[count]->getType());
++                                                          syncItem, sources[count]->getConfig().getType());
+                                 }
+ 
+                                 if (syncItem) {
+@@ -950,10 +1051,10 @@
+                                 }
+                                 if (modificationCommand == NULL) {
+                                     modificationCommand = syncMLBuilder.prepareModificationCommand(REPLACE_COMMAND_NAME, 
+-                                            syncItem, sources[count]->getType());
++                                                                                                   syncItem, sources[count]->getConfig().getType());
+                                 } else {
+                                     syncMLBuilder.addItem(modificationCommand, REPLACE_COMMAND_NAME, 
+-                                            syncItem, sources[count]->getType());
++                                                          syncItem, sources[count]->getConfig().getType());
+                                 }
+ 
+                                 if (syncItem) {                            
+@@ -997,10 +1098,10 @@
+                                 }
+                                 if (modificationCommand == NULL) {
+                                     modificationCommand = syncMLBuilder.prepareModificationCommand(DELETE_COMMAND_NAME, 
+-                                            syncItem, sources[count]->getType());
++                                                                                                   syncItem, sources[count]->getConfig().getType());
+                                 } else {
+                                     syncMLBuilder.addItem(modificationCommand, DELETE_COMMAND_NAME, 
+-                                            syncItem, sources[count]->getType());
++                                            syncItem, sources[count]->getConfig().getType());
+                                 }
+ 
+                                 if (syncItem) {                            
+@@ -1446,41 +1547,22 @@
+ }
+ 
+ BOOL SyncManager::readSyncSourceDefinition(SyncSource& source) {
+-    SyncSourceConfig ssc;
+     BCHAR anchor[DIM_ANCHOR];
+     
+-    if (config.getSyncSourceConfig(_wcc(source.getName()), ssc) == FALSE) {
++    if (config.getSyncSourceConfig(_wcc(source.getName()), source.getConfig()) == FALSE) {
+         return FALSE;
+     }
+ 
+-    /* This check could be removed because the sync type is decided later from server.
+-       This kind of sync should be read by the settings
+-       So, the follow code was used in the previous version of the api.
+-
+-    // syncMode set only if value has no good value...
+-    if (source.getPreferredSyncMode() == NULL ||
+-        source.getPreferredSyncMode() < 0     ||
+-        source.getPreferredSyncMode() > 210      )  {
++    SyncSourceConfig& ssc(source.getConfig());
+ 
+-        //source.setPreferredSyncMode(syncModeCode(ssc.getSync()));
+-    }
+-    */
++    // only copy properties which either have a different format
++    // or are expected to change during the synchronization
+     source.setPreferredSyncMode(syncModeCode(ssc.getSync()));
+-
+-    source.setType(ssc.getType());
+-    source.setLastSync(ssc.getLast());
+     timestampToAnchor(ssc.getLast(), anchor);
+     source.setLastAnchor(anchor);
+     timestampToAnchor(source.getNextSync(), anchor);
+     source.setNextAnchor(anchor);
+ 
+-    wchar_t *remuri = toWideChar(ssc.getURI());
+-    wchar_t *enc = toWideChar(ssc.getEncoding());
+-    source.setRemoteURI(remuri);
+-    source.setEncoding(enc);
+-
+-    delete [] remuri; delete [] enc;
+-
+     return TRUE;
+ }
+ 
+@@ -1707,4 +1789,162 @@
+     
+ }
+ 
++// copy from SyncSource::getSend/RecvTypes() format into array list
++// of ContentTypeInfos
++static void fillContentTypeInfoList(ArrayList &l, const BCHAR** types)
++{
++    const BCHAR** curr;
++    
++    l.clear();
++    if (!types) {
++        return;
++    }
++
++    curr = types;
++    while (curr[0] && curr[1]) {
++        ContentTypeInfo cti(curr[0], curr[1]);
++        l.add(cti);
++        curr += 2;
++    }
++}
+ 
++
++DevInf *SyncManager::buildDeviceInfo()
++{
++    VerDTD verdtd(T("1.1"));
++
++    // check that essential information is available
++    const BCHAR *rxType, *rxVer,
++        *txType, *txVer;
++    sources[count]->getPreferredTypes(rxType, rxVer,
++                                      txType, txVer);
++
++    if (!rxType || !rxVer || !txType || !txVer) {
++        return NULL;
++    }
++    
++    DevInf *devinfo = new DevInf();
++    devinfo->setVerDTD(&verdtd);
++    devinfo->setMan(client.getManufacturer());
++    devinfo->setMod(client.getClientID());
++    devinfo->setSwV(client.getClientVersion());
++    devinfo->setDevID(deviceId);
++    const char *devType = client.getClientType();
++    devinfo->setDevTyp(devType ? devType : "workstation");
++    devinfo->setUTC(client.isUTC());
++    // not sure whether the client library supports this
++    devinfo->setSupportLargeObjs(FALSE);
++    devinfo->setSupportNumberOfChanges(FALSE);
++
++    // It is unclear where SyncCap belongs:
++    // according to our config and the devinf 1.1 spec it
++    // belongs to each DataStore, but the protocol 4.1.1
++    // example puts it into DevInf.
++    BOOL syncCapInDevInf = FALSE;
++    BOOL syncCapInDataStore = TRUE;
++    
++    static const struct {
++        SyncMode mode;
++        int type;
++    } mapping[] = {
++        { SYNC_TWO_WAY, 1 },             // Support of 'two-way sync'
++        { SYNC_SLOW, 2 },                // Support of 'slow two-way sync'
++        { SYNC_ONE_WAY_FROM_CLIENT, 3 }, // Support of 'one-way sync from client only'
++        { SYNC_REFRESH_FROM_CLIENT, 4 }, // Support of 'refresh sync from client only'
++        { SYNC_ONE_WAY_FROM_SERVER, 5 }, // Support of 'one-way sync from server only'
++        { SYNC_REFRESH_FROM_SERVER, 6 }, // Support of 'refresh sync from server only'
++        // 7, // Support of 'server alerted sync'
++        { SYNC_NONE, -1 }
++    };
++
++    ArrayList dataStores;
++    for (int count = 0; count < sourcesNumber; count ++) {
++        ArrayList syncModeList;
++        const BCHAR *syncModes = sources[count]->getConfig().getSyncModes();
++        if (syncModes && syncCapInDataStore) {
++            BCHAR buffer[80];
++            const BCHAR *mode = syncModes;
++
++            while (*mode) {
++                // skip leading spaces and commas
++                while (isspace(*mode) || *mode == ',') {
++                    mode++;
++                }
++                // fast-forward to comma
++                const BCHAR *eostr = mode;
++                while (*eostr && *eostr != ',') {
++                    eostr++;
++                }
++                // strip spaces directly before comma
++                while (eostr > mode && isspace(eostr[-1])) {
++                    eostr--;
++                }
++                // make temporary copy (mode is read-only)
++                size_t len = eostr - mode;
++                if (len > sizeof(buffer) - 1) {
++                    len = sizeof(buffer) - 1;
++                }
++                memcpy(buffer, mode, sizeof(BCHAR) * len);
++                buffer[len] = 0;
++                SyncMode sm = syncModeCode(buffer);
++                for (int i = 0; mapping[i].type >= 0; i++) {
++                    if (mapping[i].mode == sm) {
++                        SyncType syncType(mapping[i].type);
++                        syncModeList.add(syncType);
++                        break;
++                    }
++                }
++
++                // next item
++                mode = eostr;
++            }
++        }
++
++        SourceRef sourceRef(sources[count]->getName());
++        ContentTypeInfo rxPref(rxType, rxVer);
++        ArrayList rx;
++        fillContentTypeInfoList(rx,sources[count]->getRecvTypes());
++        ContentTypeInfo txPref(txType, txVer);
++        ArrayList tx;
++        fillContentTypeInfoList(rx,sources[count]->getSendTypes());
++        SyncCap syncCap(&syncModeList);
++        DataStore dataStore(&sourceRef,
++                            NULL,
++                            -1,
++                            &rxPref,
++                            &rx,
++                            &txPref,
++                            &tx,
++                            NULL,
++                            &syncCap);
++        dataStores.add(dataStore);
++    }
++    devinfo->setDataStore(&dataStores);
++
++    if (syncCapInDevInf) {
++        // add everything the library supports
++        ArrayList syncModeList;
++        for (int i = 0; mapping[i].type >= 0; i++) {
++            SyncType syncType(mapping[i].type);
++            syncModeList.add(syncType);
++        }
++        SyncCap syncCap(&syncModeList);
++        devinfo->setSyncCap(&syncCap);
++    }
++
++#if 0
++    // dummy CTCap - has no effect because Formatter::getCTCaps() has
++    // not be implemented yet
++    ArrayList empty;
++    ArrayList ctPropParams;
++    CTPropParam param(T("X-FOO"),
++                      NULL, 0, NULL, &empty);
++    ctPropParams.add(param);
++    CTTypeSupported cttType(T("text/x-foo"), &ctPropParams);
++    ArrayList ctCap;
++    ctCap.add(cttType);
++    devinfo->setCTCap(&ctCap);
++#endif
++
++    return devinfo;
++}
+--- native/src/c++/common/spds/SyncMLBuilder.cpp~devinfo
++++ native/src/c++/common/spds/SyncMLBuilder.cpp
+@@ -216,7 +216,7 @@
+     CmdID* cmdRef            = sync->getCmdID();
+ 
+     
+-    TargetRef*    tar        = new TargetRef(_wcc(source.getRemoteURI()));
++    TargetRef*    tar        = new TargetRef(source.getConfig().getURI());
+     SourceRef*    sou        = new SourceRef(_wcc(source.getName()));
+     targetRefs->add(*tar);
+     sourceRefs->add(*sou);
+@@ -300,7 +300,7 @@
+     ArrayList*    targetRefs = new ArrayList();
+     ArrayList*    sourceRefs = new ArrayList();
+     
+-    TargetRef*    tar        = new TargetRef(_wcc(source.getRemoteURI()));
++    TargetRef*    tar        = new TargetRef(source.getConfig().getURI());
+     SourceRef*    sou        = new SourceRef(_wcc(source.getName()));
+     targetRefs->add(*tar);
+     sourceRefs->add(*sou);
+@@ -383,13 +383,86 @@
+     return s;
+ }
+ 
++AbstractCommand *SyncMLBuilder::prepareDevInf(AbstractCommand *cmd, DevInf &devInf)
++{
++    AbstractCommand *res = NULL;
++    char *msgRefStr = NULL;
++
++    Source source(DEVINF_URI);
++    Meta meta;
++    meta.setType(DEVINF_FORMAT);
++    // meta.setFormat(T("xml"));
++    ComplexData complexData;
++    complexData.setDevInf(&devInf);
++    Item item(NULL,
++              &source,
++              NULL,
++              &complexData,
++              FALSE);
++    
++
++    ++cmdID;
++    CmdID commandID(itow(cmdID));
++    ArrayList items;
++    items.add(item);
++
++    if (cmd) {
++        /*
++          <Result>
++          <CmdID>2</CmdID>
++          <MsgRef>1</MsgRef>
++          <CmdRef>4</CmdRef>
++          <Meta><Type xmlns='syncml:metinf'>application/vnd.syncml-devinf+xml</Type></Meta>
++          <Item>
++            <SourceRef><LocURI>./devinf11</LocURI></SourceRef>
++            <Data>
++              <DevInf>...</DevInf>
++            </Data>
++          </Item>
++          </Result>
++        */
++
++        msgRefStr = itow(msgRef);
++        ArrayList empty;
++        res = new Results(&commandID,
++                          msgRefStr,
++                          cmd->getCmdID()->getCmdID(),
++                          &meta,
++                          &empty,
++                          &empty,
++                          &items);
++    } else {
++        /*
++          <Put>
++            <CmdID>2</CmdID>
++            <Meta><Type xmlns='syncml:metinf'>application/vnd.syncml-devinf+xml</Type></Meta>
++            <Item>
++              <Source><LocURI>./devinf11</LocURI></Source>
++              <Data>
++                <DevInf xmlns='syncml:devinf'>...</DevInf>
++              </Data>
++            </Item>
++          </Put>
++        */
++
++        res = new Put(&commandID,
++                      FALSE,
++                      NULL,
++                      NULL,
++                      &meta,
++                      &items);
++    }
++    safeDelete(&msgRefStr);
++    return res;
++}
++
+ 
+ Alert* SyncMLBuilder::prepareRequestAlert(SyncSource& s) {
+     
+     ++cmdID;
+ 
+     CmdID* commandID     = new CmdID(itow(cmdID));    
+-    Target* tar          = new Target(_wcc(s.getRemoteURI()));
++    Target* tar          = new Target(s.getConfig().getURI());
+     Source* sou          = new Source(_wcc(s.getName()));     
+     Item* item           = new Item(tar, sou, NULL, NULL, FALSE);
+ 
+@@ -412,7 +485,7 @@
+ 
+     CmdID* commandID     = new CmdID(itow(cmdID));
+     int data             = s.getPreferredSyncMode();
+-    Target* tar          = new Target(_wcc(s.getRemoteURI()));    
++    Target* tar          = new Target(s.getConfig().getURI());
+     Source* sou          = new Source(_wcc(s.getName()));
+ 
+     //
+@@ -731,7 +804,7 @@
+     ++cmdID;
+ 
+     CmdID* commandID     = new CmdID(itow(cmdID));
+-    Target* tar          = new Target(_wcc(source.getRemoteURI()));
++    Target* tar          = new Target(source.getConfig().getURI());
+     Source* sou          = new Source(_wcc(source.getName())); 
+     ArrayList* list      = new ArrayList();  
+     Sync* sync           = NULL;
+@@ -759,7 +832,7 @@
+     */
+     ++cmdID;
+     CmdID* commandID     = new CmdID(itow(cmdID));    
+-    Target* tar          = new Target(_wcc(s.getRemoteURI()));
++    Target* tar          = new Target(s.getConfig().getURI());
+     Source* sou          = new Source(_wcc(s.getName()));
+     ArrayList* mapItems  = new ArrayList();
+     Map* map = new Map(commandID, tar, sou, NULL, NULL, mapItems);
+--- native/src/c++/common/spds/SyncSourceConfig.cpp~devinfo
++++ native/src/c++/common/spds/SyncSourceConfig.cpp
+@@ -54,12 +54,8 @@
+ }
+ 
+ 
+-const BCHAR* SyncSourceConfig::getName(BCHAR* buf) const {
+-    if (buf == NULL) {
+-        return name;
+-    }
+-
+-    return bstrcpy(buf, name);
++const BCHAR* SyncSourceConfig::getName() const {
++    return name;
+ }
+ 
+ void SyncSourceConfig::setName(const BCHAR* n) {
+@@ -67,12 +63,10 @@
+     name = stringdup(n);
+ }
+ 
+-const BCHAR* SyncSourceConfig::getURI(BCHAR* buf) const {
+-    if (buf == NULL) {
+-        return uri;
+-    }
+-
+-    return bstrcpy(buf, uri);
++const BCHAR* SyncSourceConfig::getURI() const {
++    return uri ? uri :
++        name ? name :
++        "";
+ }
+ 
+ void SyncSourceConfig::setURI(const BCHAR* u) {
+@@ -81,12 +75,10 @@
+ }
+ 
+ 
+-const BCHAR* SyncSourceConfig::getSyncModes(BCHAR* buf) const {
+-    if (buf == NULL) {
+-        return syncModes;
+-    }
+-
+-    return bstrcpy(buf, syncModes);
++const BCHAR* SyncSourceConfig::getSyncModes() const {
++    return syncModes ? syncModes :
++        "";
++        
+ }
+ 
+ void SyncSourceConfig::setSyncModes(const BCHAR* s) {
+@@ -98,12 +90,9 @@
+     }
+ }
+ 
+-const BCHAR* SyncSourceConfig::getType(BCHAR* buf) const {
+-    if (buf == NULL) {
+-        return type;
+-    }
+-
+-    return bstrcpy(buf, type);
++const BCHAR* SyncSourceConfig::getType() const {
++    return type ? type :
++        "";
+ }
+ 
+ void SyncSourceConfig::setType(const BCHAR* t) {
+@@ -115,12 +104,9 @@
+     }
+ }
+ 
+-const BCHAR* SyncSourceConfig::getSync(BCHAR* buf) const {
+-    if (buf == NULL) {
+-        return sync;
+-    }
+-
+-    return bstrcpy(buf, sync);
++const BCHAR* SyncSourceConfig::getSync() const {
++    return sync ? sync :
++        "";
+ }
+ 
+ void SyncSourceConfig::setSync(const BCHAR *s) {
+@@ -140,12 +126,9 @@
+     return (unsigned long)last;
+ }
+ 
+-const BCHAR* SyncSourceConfig::getEncoding(BCHAR* buf) const {
+-     if (buf == NULL) {
+-        return encodings;
+-    }
+-
+-    return bstrcpy(buf, encodings); 
++const BCHAR* SyncSourceConfig::getEncoding() const {
++    return encodings ? encodings :
++        "";
+ }
+         
+ void SyncSourceConfig::setEncoding(const BCHAR* s) {
+--- native/src/c++/common/spds/SyncSource.cpp~devinfo
++++ native/src/c++/common/spds/SyncSource.cpp
+@@ -22,17 +22,16 @@
+ #include "client/Sync4jClient.h"
+ 
+ SyncSource::SyncSource(const wchar_t* sourceName) {
++    name = NULL;
++
+     if ((sourceName == NULL) || (*sourceName == 0)) {
+         lastErrorCode = ERR_PARAMETER_IS_EMPTY;
+         bsprintf(lastErrorMsg, T("name cannot be empty (NULL or 0-length)"));
+         goto finally;
+     }
+-
+     name = wstrdup(sourceName);
+-    remoteURI = wstrdup(sourceName);
+ 
+-    *type = *next = *last = 0;
+-    finally:
++  finally:
+ 
+     syncMode = SYNC_NONE;
+     lastSync = 0;
+@@ -40,7 +39,6 @@
+     
+     errorHandler = NULL;
+     filter       = NULL;
+-    encoding     = NULL;
+ }
+ 
+ /**
+@@ -50,11 +48,6 @@
+     if (name) {
+         delete [] name;
+     }
+-
+-    if (remoteURI) {
+-        delete [] remoteURI;
+-    }
+-
+     if (filter) {
+        delete filter;
+     }
+@@ -115,78 +108,6 @@
+ }
+ 
+ /*
+- * Sets the synchronization mode required for the
+- * SyncSource.
+- *
+- * @param syncMode - sync synchronization mode
+- */
+-void SyncSource::setRemoteURI(const wchar_t* uri) {
+-    if (remoteURI) {
+-        delete [] remoteURI;
+-    }
+-
+-    if (uri) {
+-        remoteURI = wstrdup(uri);
+-    } else {
+-        remoteURI = wstrdup(TEXT(""));
+-    }
+-}
+-
+-/*
+- * Returns the preferred synchronization mode for the SyncSource
+- */
+-const wchar_t* SyncSource::getRemoteURI() {   
+-    return remoteURI;   
+-}
+-
+-
+-/*
+- * Sets the encoding parameter
+- *
+- * @param ecnc - encoding
+- */
+-void SyncSource::setEncoding(const wchar_t* enc) {
+-    if (encoding) {
+-        delete [] encoding;
+-    }
+-
+-    if (enc) {
+-        encoding = wstrdup(enc);
+-    } else {
+-        encoding = wstrdup(TEXT(""));
+-    }
+-}
+-
+-/*
+- * Returns the preferred synchronization mode for the SyncSource
+- */
+-const wchar_t* SyncSource::getEncoding() {   
+-    return encoding;   
+-}
+-
+-/*
+- * Sets the mime type standard for the source items
+- *
+- * @param mimeType the mime type
+- */
+-void SyncSource::setType(const BCHAR* mimeType) {
+-    bstrncpy(type, (mimeType == NULL) ? T("") : mimeType, DIM_MIME_TYPE);
+-    type[DIM_MIME_TYPE-1] = 0;
+-}
+-
+-/*
+- * Returns the items data mime type. If type is NULL, the pointer to the
+- * internal buffer is returned, otherwise the value is copied in the
+- * given buffer, which is also returned to the caller.
+- *
+- * @param mimeType the buffer where to copy the mime type value
+- */
+-const BCHAR* SyncSource::getType() {
+-        return type;
+-}
+-
+-
+-/*
+  * Sets the server imposed synchronization mode for the SyncSource.
+  *
+  * @param syncMode - sync synchronization mode
+@@ -312,3 +233,28 @@
+         filter->setClause(f->getClause());
+     }
+ }
++
++void SyncSource::getPreferredTypes(const BCHAR*& recvType,
++                                   const BCHAR*& recvVersion,
++                                   const BCHAR*& sendType,
++                                   const BCHAR*& sendVersion)
++{
++    const BCHAR *type = config.getType();
++    const BCHAR *ver;
++
++    recvType =
++        sendType = type;
++    if (!bstrcmp(type, "text/x-vcard")) {
++        ver = "2.1";
++    } else if (!bstrcmp(type, "text/vcard")) {
++        ver = "3.0";
++    } else if (!bstrcmp(type, "text/x-calendar")) {
++        ver = "1.0";
++    }else if (!bstrcmp(type, "text/calendar")) {
++        ver = "2.0";
++    } else {
++        ver = "";
++    }
++    sendVersion =
++        recvVersion = ver;
++}
+--- native/src/c++/common/syncml/core/ContentTypeInfo.cpp~devinfo
++++ native/src/c++/common/syncml/core/ContentTypeInfo.cpp
+@@ -45,7 +45,7 @@
+  *                specification - NOT NULL
+  *
+  */
+-ContentTypeInfo::ContentTypeInfo(BCHAR* ctType, BCHAR* verCT) {
++ContentTypeInfo::ContentTypeInfo(const BCHAR* ctType, const BCHAR* verCT) {
+     
+     this->ctType = NULL;
+     this->verCT  = NULL;
+@@ -77,7 +77,7 @@
+  *
+  * @param ctType the content type properties
+  */
+-void ContentTypeInfo::setCTType(BCHAR* ctType) {
++void ContentTypeInfo::setCTType(const BCHAR* ctType) {
+     if (this->ctType) {
+         delete [] this->ctType; this->ctType = NULL;
+     }
+@@ -101,7 +101,7 @@
+  *
+  * @param verCT the version of the content type
+  */
+-void ContentTypeInfo::setVerCT(BCHAR* verCT) {
++void ContentTypeInfo::setVerCT(const BCHAR* verCT) {
+     if (this->verCT) {
+         delete [] this->verCT; this->verCT = NULL;
+     }
+--- native/src/c++/common/syncml/core/CTPropParam.cpp~devinfo
++++ native/src/c++/common/syncml/core/CTPropParam.cpp
+@@ -21,8 +21,12 @@
+  
+ 
+ CTPropParam::CTPropParam() {
++    initialize();
++}
++
++void CTPropParam::initialize() {
+     propName        = NULL;
+-    valEnum         = NULL;       //String[]
++    valEnum         = NULL;
+     displayName     = NULL;
+     dataType        = NULL;
+     size            = 0;
+@@ -43,7 +47,7 @@
+                         ArrayList* valEnum,
+                         BCHAR*   displayName,
+                         ArrayList* ctParameters) {
+-
++    initialize();
+     setPropName(propName);
+     setValEnum(valEnum);
+     setContentTypeParameters(ctParameters);
+@@ -73,10 +77,11 @@
+                    int size,
+                    BCHAR* displayName,
+                    ArrayList* ctParameters) {
+-
++    initialize();
+     setPropName(propName);
+     setContentTypeParameters(ctParameters);
+-    
++
++    this->valEnum      = new ArrayList();
+     this->dataType     = stringdup(dataType);
+     this->size         = size;
+     this->displayName  = stringdup(displayName);
+--- native/src/c++/common/syncml/core/CTTypeSupported.cpp~devinfo
++++ native/src/c++/common/syncml/core/CTTypeSupported.cpp
+@@ -21,8 +21,7 @@
+  
+ 
+ CTTypeSupported::CTTypeSupported(){
+-    ctType       = NULL;
+-    ctPropParams = NULL;    // CTPropParam[]   
++    initialize();
+ }
+ 
+ CTTypeSupported::~CTTypeSupported() {
+@@ -43,8 +42,14 @@
+  *
+  */
+ CTTypeSupported::CTTypeSupported(BCHAR* ctType, ArrayList* ctPropParams ) {
+-     setCTType(ctType);
+-     setCTPropParams(ctPropParams);
++    initialize();
++    setCTType(ctType);
++    setCTPropParams(ctPropParams);
++}
++
++void CTTypeSupported::initialize() {
++    ctType       = NULL;
++    ctPropParams = NULL;
+ }
+ 
+ 
+--- native/src/c++/common/syncml/core/DevInf.cpp~devinfo
++++ native/src/c++/common/syncml/core/DevInf.cpp
+@@ -68,14 +68,14 @@
+ *
+ */
+ DevInf::DevInf(VerDTD* verDTD,
+-        BCHAR* man,
+-        BCHAR* mod,
+-        BCHAR* oem,
+-        BCHAR* fwV,
+-        BCHAR* swV,
+-        BCHAR* hwV,
+-        BCHAR* devID,
+-        BCHAR* devTyp,
++        const BCHAR* man,
++        const BCHAR* mod,
++        const BCHAR* oem,
++        const BCHAR* fwV,
++        const BCHAR* swV,
++        const BCHAR* hwV,
++        const BCHAR* devID,
++        const BCHAR* devTyp,
+         ArrayList* dataStores,
+         ArrayList* ctCap,
+         ArrayList* ext,
+@@ -173,7 +173,7 @@
+ * @param man the device manufacturer property
+ *
+ */
+-void DevInf::setMan(BCHAR* man) {
++void DevInf::setMan(const BCHAR* man) {
+     if (this->man) {
+         delete [] this->man; this->man = NULL;
+     }
+@@ -198,7 +198,7 @@
+ * @param mod the device model property
+ *
+ */
+-void DevInf::setMod(BCHAR* mod) {
++void DevInf::setMod(const BCHAR* mod) {
+     if (this->mod) {
+         delete [] this->mod; this->mod = NULL;
+     }
+@@ -223,7 +223,7 @@
+ * @param oem the Original Equipment Manufacturer of the device
+ *
+ */
+-void DevInf::setOEM(BCHAR* oem) {
++void DevInf::setOEM(const BCHAR* oem) {
+     if (this->oem) {
+         delete [] this->oem; this->oem = NULL;
+     }
+@@ -248,7 +248,7 @@
+ * @param fwV the firmware version property
+ *
+ */
+-void DevInf::setFwV(BCHAR* fwV) {
++void DevInf::setFwV(const BCHAR* fwV) {
+     if (this->fwV) {
+         delete [] this->fwV; this->fwV = NULL;
+     }
+@@ -273,7 +273,7 @@
+ * @param swV the software version property
+ *
+ */
+-void DevInf::setSwV(BCHAR* swV) {
++void DevInf::setSwV(const BCHAR* swV) {
+     if (this->swV) {
+         delete [] this->swV; this->swV = NULL;
+     }
+@@ -298,7 +298,7 @@
+ * @param hwV the hardware version property
+ *
+ */
+-void DevInf::setHwV(BCHAR* hwV) {
++void DevInf::setHwV(const BCHAR* hwV) {
+     if (this->hwV) {
+         delete [] this->hwV; this->hwV = NULL;
+     }
+@@ -323,7 +323,7 @@
+ * @param devID the device identifier
+ *
+ */
+-void DevInf::setDevID(BCHAR* devID) {
++void DevInf::setDevID(const BCHAR* devID) {
+     if (devID == NULL) {
+             // TBD
+     } else {
+@@ -352,7 +352,7 @@
+ * @param devTyp the device type
+ *
+ */
+-void DevInf::setDevTyp(BCHAR* devTyp) {
++void DevInf::setDevTyp(const BCHAR* devTyp) {
+     if (devTyp == NULL) {
+             // TBD
+     } else {
+--- native/src/c++/common/syncml/core/StringElement.cpp~devinfo
++++ native/src/c++/common/syncml/core/StringElement.cpp
+@@ -25,7 +25,7 @@
+ #include "base/util/utils.h"
+ #include "syncml/core/StringElement.h"
+  
+-StringElement::StringElement(BCHAR* value) {
++StringElement::StringElement(const BCHAR* value) {
+     this->value = NULL;
+     setValue(value);
+ }
+@@ -56,7 +56,7 @@
+  * @param value the value of string element
+  *
+  */
+-void StringElement::setValue(BCHAR* value) {
++void StringElement::setValue(const BCHAR* value) {
+     if (value) {
+         delete [] this->value; this->value = NULL;
+     }        
+--- native/src/c++/common/syncml/formatter/Formatter.cpp~devinfo
++++ native/src/c++/common/syncml/formatter/Formatter.cpp
+@@ -1423,7 +1423,7 @@
+ 
+     cmdID     = getCmdID   (put->getCmdID());
+     noResp    = getValue   (NO_RESP, put->getNoResp());
+-    lang      = getValue   (LANG, put->getNoResp());    
++    lang      = getValue   (LANG, put->getLang());    
+     cred      = getCred    (put->getCred());
+     meta      = getMeta    (put->getMeta());
+     items     = getItems   (put->getItems());        
+@@ -1762,7 +1762,7 @@
+     
+     if (!devInf)
+         return NULL;
+-    
++
+     StringBuffer* ret = NULL;
+     StringBuffer* s   = NULL;
+     
+@@ -1825,7 +1825,8 @@
+         s->append(supportNumberOfChanges);            
+     }
+ 
+-    ret = getValue(DEV_INF, s);
++    // TODO: getValue() should accept const strings
++    ret = getValue((BCHAR *)DEV_INF, (BCHAR *)s->c_str(), (BCHAR *)DEVINF);
+     
+     deleteAllStringBuffer(16, &s, &verDTD, &man, &mod, &oem, &fwV, &swV, &hwV, 
+                               &devID, &devTyp, &dataStores, &ctCaps, &exts, &utc, 
+@@ -1961,7 +1962,10 @@
+     
+     sourceRef   = getSourceRef(dataStore->getSourceRef());
+     displayName = getValue(DISPLAY_NAME, dataStore->getDisplayName(NULL));
+-    maxGUIDSize = getValue(MAX_GUID_SIZE, dataStore->getMaxGUIDSize());
++    int maxGUIDSizeVal = dataStore->getMaxGUIDSize();
++    maxGUIDSize = maxGUIDSizeVal > 0 ?
++        getValue(MAX_GUID_SIZE, maxGUIDSizeVal) :
++        new StringBuffer;
+     rxPref      = getContentTypeInfo(dataStore->getRxPref(), RX_PREF);
+     rx          = getContentTypeInfos(dataStore->getRx(), RX);
+     txPref      = getContentTypeInfo(dataStore->getTxPref(), TX_PREF);
+@@ -1973,7 +1977,9 @@
+         s = new StringBuffer();
+         s->append(sourceRef);
+         s->append(displayName);
+-        s->append(maxGUIDSize);
++        if (maxGUIDSize->length()) {
++            s->append(maxGUIDSize);
++        }
+         s->append(rxPref);
+         s->append(rx);
+         s->append(txPref);
+@@ -2217,6 +2223,73 @@
+ * 
+ */
+ StringBuffer* Formatter::getCTCaps(ArrayList* ctCaps) {
++#if 0
++    return new StringBuffer(
++        "<CTCap>"
++        "<CTType>text/x-vcard</CTType>"
++        "<PropName>BEGIN</PropName>"
++        "<ValEnum>VCARD</ValEnum>"
++        "<PropName>VERSION</PropName>"
++        "<ValEnum>2.1</ValEnum>"
++        "<PropName>END</PropName>"
++        "<ValEnum>VCARD</ValEnum>"
++        "<PropName>N</PropName>"
++        "<PropName>TEL</PropName>"
++        "<ParamName>PREF</ParamName>"
++        "<ParamName>WORK</ParamName>"
++        "<ParamName>HOME</ParamName>"
++        "<ParamName>VOICE</ParamName>"
++        "<ParamName>FAX</ParamName>"
++        "<ParamName>CELL</ParamName>"
++        "<PropName>NOTE</PropName>"
++        "<PropName>URL</PropName>"
++        "<PropName>EMAIL</PropName>"
++        "<PropName>ADR</PropName>"
++        "</CTCap>"
++        "<CTCap>"
++        "<CTType>text/x-vcalendar</CTType>"
++        "<PropName>BEGIN</PropName>"
++        "<ValEnum>VCALENDAR</ValEnum>"
++        "<ValEnum>VEVENT</ValEnum>"
++        "<ValEnum>VTODO</ValEnum>"
++        "<PropName>VERSION</PropName>"
++        "<ValEnum>1.0</ValEnum>"
++        "<PropName>END</PropName>"
++        "<ValEnum>VCALENDAR</ValEnum>"
++        "<ValEnum>VEVENT</ValEnum>"
++        "<ValEnum>VTODO</ValEnum>"
++        "<PropName>DTSTART</PropName>"
++        "<PropName>DTEND</PropName>"
++        "<PropName>SUMMARY</PropName>"
++        "<PropName>DESCRIPTION</PropName>"
++        "<PropName>DUE</PropName>"
++        "<PropName>AALARM</PropName>"
++        "<PropName>DALARM</PropName>"
++        "<PropName>RRULE</PropName>"
++        "<PropName>CATEGORIES</PropName>"
++        "<ParamName>SPECIAL OCCASION</ParamName>"
++        "<ParamName>MEETING</ParamName>"
++        "<ParamName>PHONE CALL</ParamName>"
++        "<ParamName>MISCELLANEOUS</ParamName>"
++        "<ParamName>REMINDER</ParamName>"
++        "<PropName>LOCATION</PropName>"
++        "<PropName>STATUS</PropName>"
++        "<ParamName>NEEDS ACTION</ParamName>"
++        "<ParamName>COMPLETED</ParamName>"
++        "<PropName>PRIORITY</PropName>"
++        "<ParamName>1</ParamName>"
++        "<ParamName>2</ParamName>"
++        "<ParamName>3</ParamName>"
++        "<PropName>EXDATE</PropName>"
++        "</CTCap>"
++        "<CTCap>"
++        "<CTType>text/plain</CTType>"
++        "<PropName></PropName>"
++        "<DataType>chr</DataType>"
++        "<Size>3000</Size>"
++        "</CTCap>" );
++#endif
++
+     
+     if (!ctCaps || !NotZeroArrayLenght(1, ctCaps))
+         return NULL;
+--- native/src/include/common/base/util/utils.h~devinfo
++++ native/src/include/common/base/util/utils.h
+@@ -136,7 +136,7 @@
+ /*
+ * Calculates the digest given the token and its lenght
+ */
+-char* calculateMD5(void* token, int len, char* wdigest);
++char* calculateMD5(const void* token, int len, char* wdigest);
+ 
+ /*
+  * Return a filename composed by the system temp dir and the name given
+--- native/src/include/common/client/Sync4jClient.h~devinfo
++++ native/src/include/common/client/Sync4jClient.h
+@@ -56,17 +56,6 @@
+         // set a custom error handler
+         virtual void setErrorHandler(ErrorHandler& e);
+ 
+-        /**
+-         * Optionally get a short version string describing the client, f.i.
+-         * "Foo SyncML Client 1.0"
+-         *
+-         * Currently used as HTTP transport agent unless overriddent by the
+-         * userAgent config property, will later also be embedded in device infos
+-         * sent to server.
+-         *
+-         * @return a pointer to a string owned by the client, NULL if not available
+-         */
+-        virtual const BCHAR *getClientID() { return NULL; }
+ 
+         /*
+          * Execute a synchronization on the specified sources.
+@@ -77,6 +66,100 @@
+          */
+         virtual int sync(SyncSource** sources);
+ 
++
++        /*********************************************************************
++         * The following calls provide information about the client that the
++         * client library may need during synchronization.
++         *
++         * Implementing them is optional.
++         ********************************************************************/
++        
++        /**
++         * Get a short string describing the client, f.i.
++         * "SyncEvolution Client"
++         *
++         * Currently used as HTTP transport agent together with the
++         * version number unless overridden by the userAgent config
++         * property. Also embedded in device infos sent to server in the
++         * <Mod> model property.
++         *
++         * @return a pointer to a string owned by the client, NULL if not available
++         */
++        virtual const BCHAR *getClientID() const { return NULL; }
++
++        /**
++         * Get a short string with the version of the client software,
++         * e.g. "1.0".
++         *
++         * Appended to the client ID string in the HTTP transport agent unless
++         * that is configured explicitly and sent as <SwV> software version
++         * property of the device infos.
++         *
++         * @return a pointer to a string owned by the client, NULL if not available
++         */
++        virtual const BCHAR *getClientVersion() const { return NULL; }
++
++        /**
++         * Get a short string describing the manufacturer/author of the client software.
++         *
++         * Only used as part of the detailed device infos in the <Man> tag.
++         *
++         * @return a pointer to a string owned by the client, NULL if not available
++         */
++        virtual const BCHAR *getManufacturer() const { return NULL; }
++
++        /**
++         * Get a short string describing the type of device the client is running
++         * on.
++         *
++         * Only used as part of the detailed device infos in the <DevType> tag.
++         * SyncML devinfo V1.1 defines the following strings, but mentions that
++         * "other values can be defined":
++         * - pager
++         * - handheld
++         * - pda
++         * - phone
++         * - smartphone
++         * - server
++         * - workstation
++         *
++         * @return a pointer to a string owned by the client, must be provided
++         */
++        virtual const BCHAR *getClientType() const { return "workstation"; }
++
++        /**
++         * Returning TRUE here tells the server that the client is able to
++         * handle UTC time stamps. The exact effect depends on the server,
++         * but the standard implies that the server is then expected to prefer
++         * UTC over local time stamps.
++         *
++         * The default is FALSE because that was what the server traditionally
++         * had to assume when talking to Funambol C++ based clients due to not
++         * getting any device infos. For modern clients UTC is probably the
++         * better value.
++         */
++        virtual BOOL isUTC() const { return FALSE; }
++        
++        /**
++         * Optionally specifies the content type capabilities of the device
++         * as expected by the SyncML devinfo 1.1 specification. This information
++         * describes which properties and which values the client can store.
++         * devinfo 1.1 separates this information from specific sync sources.
++         *
++         * The standard only suggests that this information SHOULD be provided,
++         * but does not require it (5.1 CTCap). Not sending this information
++         * might be treated as a sign that the client supports the full range of
++         * properties, thus clients with limited capabilities really should indicate
++         * that by sending valid information.
++         *
++         * @return a valid XML fragment starting with <CTCap> and ending in </CTCap>
++         *         or NULL if the client does not which to send this information
++         *
++         * Not currently implemented.
++         */
++        /* virtual const BCHAR *getCapabilities() { return NULL; } */
++
++
+       private:
+         SyncManager* syncManager;
+         ErrorHandler* errorHandler;
+--- native/src/include/common/spdm/constants.h~devinfo
++++ native/src/include/common/spdm/constants.h
+@@ -45,6 +45,7 @@
+ #define PROPERTY_SOURCE_TYPE           T("type"             )
+ #define PROPERTY_SOURCE_SYNC           T("sync"             )
+ #define PROPERTY_SOURCE_LAST_SYNC      T("last"             )
++#define PROPERTY_SOURCE_DEVINF_HASH    T("devInfHash"       )
+ #define PROPERTY_SERVER_NONCE          T("serverNonce"      ) 
+ #define PROPERTY_CLIENT_NONCE          T("clientNonce"      )
+ #define PROPERTY_SERVER_ID             T("serverID"         )
+@@ -90,6 +91,7 @@
+ #define DIRTY_SERVERPWD                0x08000 
+ #define DIRTY_CLIENTAUTHTYPE           0x10000 
+ #define DIRTY_SERVERAUTH_REQUIRED      0x20000
++#define DIRTY_DEV_INF_HASH             0x40000
+ 
+ 
+ #endif
+--- native/src/include/common/spds/AccessConfig.h~devinfo
++++ native/src/include/common/spds/AccessConfig.h
+@@ -33,6 +33,7 @@
+         BCHAR*        proxyUsername    ;
+         BCHAR*        proxyPassword    ;
+         BCHAR*        syncURL          ;
++        BCHAR*        devInfHash       ;
+         unsigned long beginTimestamp   ;
+         unsigned long endTimestamp     ;
+         SyncMode      firstTimeSyncMode;
+@@ -217,6 +218,9 @@
+          */
+         unsigned long getEndSync() EXTRA_SECTION_02;
+ 
++        const BCHAR* getDevInfHash() const EXTRA_SECTION_02;
++        void setDevInfHash(const BCHAR *devInfHash) EXTRA_SECTION_02;
++
+         BOOL getServerAuthRequired() EXTRA_SECTION_02;
+ 
+         void setServerAuthRequired(BOOL v) EXTRA_SECTION_02;
+--- native/src/include/common/spds/SyncManager.h~devinfo
++++ native/src/include/common/spds/SyncManager.h
+@@ -115,6 +115,14 @@
+         char* processItemContent(const BCHAR* data, const BCHAR* encodings, long* size) EXTRA_SECTION_01;
+         void decodeSyncItemContent(char** c, TransformationInfo& info, const BCHAR* encoding) EXTRA_SECTION_01;
+         BOOL checkForServerChanges(SyncML* syncml, ArrayList &statusList) EXTRA_SECTION_01;
++
++        /**
++         * gathers the various bits and pieces the SyncManager knows
++         * about the client and builds a SyncML devinfo 1.1 instance.
++         *
++         * @return device infos, to be deleted by caller
++         */
++        DevInf *buildDeviceInfo() EXTRA_SECTION_01;
+ };
+ 
+ #endif
+--- native/src/include/common/spds/SyncMLBuilder.h~devinfo
++++ native/src/include/common/spds/SyncMLBuilder.h
+@@ -109,7 +109,13 @@
+          * Prepare the status for an arbitrary command
+          */
+         Status* prepareCmdStatus(AbstractCommand &cmd, int status) EXTRA_SECTION_01;
+-                        
++
++        /**
++         * Prepare either a Result with the device infos (if command given) or
++         * a Put.
++         */
++        AbstractCommand *prepareDevInf(AbstractCommand *cmd, DevInf &devInf) EXTRA_SECTION_01;
++        
+         /*
+         * Prepare the Sync object. It doesn't contain any items. It is to prepare the insert of items
+         */
+--- native/src/include/common/spds/SyncSourceConfig.h~devinfo
++++ native/src/include/common/spds/SyncSourceConfig.h
+@@ -45,11 +45,6 @@
+         SyncSourceConfig() EXTRA_SECTION_02;
+ 
+         /*
+-         * Constructs a new SyncSourceConfig object from an other.
+-         */
+-        SyncSourceConfig(SyncSourceConfig& c) EXTRA_SECTION_02;
+-
+-        /*
+          * Destructor
+          */
+         ~SyncSourceConfig() EXTRA_SECTION_02;
+@@ -57,7 +52,7 @@
+         /*
+          * Returns the SyncSource name.
+          */
+-        const BCHAR* getName(BCHAR* buf = NULL) const EXTRA_SECTION_02;
++        const BCHAR* getName() const EXTRA_SECTION_02;
+ 
+         /*
+          * Sets the SyncSource name
+@@ -70,7 +65,7 @@
+         /*
+          * Returns the SyncSource URI (used in SyncML addressing).
+          */
+-        const BCHAR* getURI(BCHAR* buf = NULL) const EXTRA_SECTION_02;
++        const BCHAR* getURI() const EXTRA_SECTION_02;
+ 
+         /*
+          * Sets the SyncSource URI (used in SyncML addressing).
+@@ -83,8 +78,7 @@
+          * Returns a comma separated list of the possible syncModes for the
+          * SyncSource.
+          */
+-
+-        const BCHAR* getSyncModes(BCHAR* buf = NULL) const EXTRA_SECTION_02;
++        const BCHAR* getSyncModes() const EXTRA_SECTION_02;
+ 
+         /*
+          * Sets the available syncModes for the SyncSource as comma separated
+@@ -101,13 +95,8 @@
+ 
+         /*
+          * Returns the mime type of the items handled by the sync source.
+-         * If type is null, the internal buffer is returned, otherwise the
+-         * value is copied into the given buffer (that must be DIM_SYNC_MIME_TYPE
+-         * big).
+-         *
+-         * @param t the buffer were the mime type will be copied into (if not null)
+          */
+-        const BCHAR* getType(BCHAR* buf = NULL) const EXTRA_SECTION_02;
++        const BCHAR* getType() const EXTRA_SECTION_02;
+ 
+         /*
+          * Sets the mime type of the items handled by the sync source.
+@@ -117,11 +106,9 @@
+         void setType(const BCHAR* t) EXTRA_SECTION_02;
+ 
+         /*
+-         * Sets the default syncMode as one of the strings listed in setSyncModes.
+-         *
+-         * @param s the sync mode
++         * Gets the default syncMode as one of the strings listed in setSyncModes.
+          */
+-        const BCHAR* getSync(BCHAR* buf = NULL) const EXTRA_SECTION_02;
++        const BCHAR* getSync() const EXTRA_SECTION_02;
+ 
+         /*
+          * Returns the default syncMode as one of the strings above.
+@@ -132,9 +119,8 @@
+          * Sets the encodings to use to format the content of the items
+          * generated by the sync source..
+          *
+-         * @param buf the sync mode
+          */
+-        const BCHAR* getEncoding(BCHAR* buf = NULL) const EXTRA_SECTION_02;
++        const BCHAR* getEncoding() const EXTRA_SECTION_02;
+         
+         /*
+          * Returns the default syncMode as one of the strings above.
+@@ -159,7 +145,10 @@
+          * @pram sc the source config object
+          */
+         void assign(const SyncSourceConfig& sc);
+-
++        SyncSourceConfig& operator = (const SyncSourceConfig& sc) {
++            assign(sc);
++            return *this;
++        }
+     };
+ 
+ #endif
+--- native/src/include/common/spds/SyncSource.h~devinfo
++++ native/src/include/common/spds/SyncSource.h
+@@ -26,18 +26,17 @@
+ #include "spds/constants.h"
+ #include "spds/SyncItem.h"
+ #include "spds/SyncStatus.h"
++#include "spds/SyncSourceConfig.h"
+ 
+ class SyncSource : public ArrayElement {
+ 
+ private:
++    SyncSourceConfig config;
+     SyncMode      syncMode;
+     unsigned long lastSync;
+     unsigned long nextSync;
+     wchar_t*      name;
+-    wchar_t*      remoteURI;
+-    wchar_t*      encoding;
+ 
+-    BCHAR type[DIM_MIME_TYPE];
+     BCHAR next[DIM_ANCHOR];
+     BCHAR last[DIM_ANCHOR];
+ 
+@@ -66,39 +65,57 @@
+      */
+     const wchar_t *getName() EXTRA_SECTION_01;
+ 
+-    /*
+-     * Get & Set remoteURI attribute.
+-     */
+-    void setRemoteURI(const wchar_t* uri) EXTRA_SECTION_01;
+-    const wchar_t* getRemoteURI() EXTRA_SECTION_01;
++    /**********************************************************
++     * Most of the configurable properties are read
++     * by the client library from the config (in
++     * SyncClient::setDMConfig()) and then copied into the
++     * sync source.
++     *
++     * These properties are stored in a local copy which will not be
++     * written back into the permanent config, with a few exceptions:
++     * properties related to mananging sync sessions like lastAnchor
++     * arer written back into the config by the library afer a
++     * successful synchronization.
++     *
++     * A client developer is not required to modify these calls,
++     * but he can use and/or update the properties in
++     * prepareSync().
++     *********************************************************/
++
++    // read-only access to configuration
++    const SyncSourceConfig& getConfig() const EXTRA_SECTION_01 {
++        return config;
++    }
++    // read-write access to configuration
++    SyncSourceConfig& getConfig() EXTRA_SECTION_01 {
++        return config;
++    }
++    // overwrite complete configuration, use read-write access to
++    // modify individual attributes instead
++    void setConfig(const SyncSourceConfig& sc) EXTRA_SECTION_01 {
++        config.assign(sc);
++    }
+ 
+     /*
+      * Get & Set the preferred synchronization mode for the SyncSource.
++     *
++     * Taken initially from the configuration, it can then in prepareSync()
++     * be modified by the SyncSource itself.
+      */
+     SyncMode getPreferredSyncMode() EXTRA_SECTION_01;
+     void setPreferredSyncMode(SyncMode syncMode) EXTRA_SECTION_01;
+ 
+     /*
+      * Get & Sets the server imposed synchronization mode for the SyncSource.
++     *
++     * Agreed upon with the server during the initial exchange with the server.
++     * The SyncSource can react to it in beginSync(), in particular it must wipe
++     * its local data during a refresh from server.
+      */
+     SyncMode getSyncMode() EXTRA_SECTION_01;
+     void setSyncMode(SyncMode syncMode) EXTRA_SECTION_01;
+ 
+     /*
+-     * Sets the mime type standard for the source items
+-     *
+-     * @param type the mime type
+-     */
+-    void setType(const BCHAR* type) EXTRA_SECTION_01;
+-    /*
+-     * Gets the standard mime type for the source items.
+-     *
+-     * @return - the source name (a pointer to the object buffer,
+-     *           will be released at object destruction)
+-     */
+-    const BCHAR* getType() EXTRA_SECTION_01;
+-
+-    /*
+      * Get & Set the timestamp in milliseconds of the last synchronization.
+      * The reference time of the timestamp is platform specific.
+      */
+@@ -125,12 +142,6 @@
+     void setNextAnchor(const BCHAR* next) EXTRA_SECTION_01;
+     
+     /*
+-     * Get & Set encoding attribute.
+-     */
+-    void setEncoding(const wchar_t* enc) EXTRA_SECTION_01;
+-    const wchar_t* getEncoding() EXTRA_SECTION_01;
+-
+-    /*
+     * Gets filter
+     *
+     * @return  the current filter's value
+@@ -146,6 +157,14 @@
+     */
+     void setFilter(SourceFilter* f);
+ 
++    /******************************************************
++     * The following methods are virtual because a
++     * derived SyncSource is expected to override or
++     * implement them. Only the pure virtual methods
++     * really have to be implemented, the others have
++     * reasonable defaults.
++     *****************************************************/
++    
+     /*
+      * Called by the engine from inside SyncClient::sync()
+      * right after initializing the SyncSource with its
+@@ -289,7 +308,56 @@
+      * ArrayElement implementation
+      */
+     virtual ArrayElement* clone() EXTRA_SECTION_01 = 0;
+-                                         
++
++    /****************** meta information about SyncSource ****************/
++
++    /**
++     * Return information about preferred types for item during send
++     * and receive.
++     *
++     * The default implementation assumes that the configured
++     * type (getConfig().getType()) is also the preferred one for
++     * both direction. However, it has to determine the version to
++     * comply with the SyncML specs and this only works for:
++     * - text/x-vcard -> 2.1
++     * - text/vcard -> 3.0
++     * - text/x-calendar -> 1.0
++     * - text/calendar -> 2.0
++     *
++     * For all other, unknown types the version is set to an empty string.
++     *
++     * These values are all required. Returning NULL for any of them prevents
++     * sending of device infos.
++     *
++     * @retval recvType     preferred item type for receiving information
++     * @retval recvVersion  version string corresponding to recvType
++     * @retval sendType     preferred item type for sending information
++     * @retval sendVersion  version string corresponding to sendType
++     */
++    virtual void getPreferredTypes(const BCHAR*& recvType,
++                                   const BCHAR*& recvVersion,
++                                   const BCHAR*& sendType,
++                                   const BCHAR*& sendVersion) EXTRA_SECTION_01;
++
++    /**
++     * Return information about all supported types for sending
++     * items (optional).
++     *
++     * The default implementation returns the preferred type as the
++     * only available type.
++     *
++     * @return NULL if not further specified, otherwise a NULL terminated
++     *         array with type/version pairs for each supported type:
++     *         { "text/x-vcard", "2.1",
++     *           "text/vcard", "3.0",
++     *           NULL }
++     */
++    virtual const BCHAR** getSendTypes() EXTRA_SECTION_01 { return NULL; }
++
++    /**
++     * Same as getSendTypes() for receiving items.
++     */
++    virtual const BCHAR** getRecvTypes() EXTRA_SECTION_01 { return NULL; }
+ };
+ 
+ #endif
+--- native/src/include/common/syncml/core/ContentTypeInfo.h~devinfo
++++ native/src/include/common/syncml/core/ContentTypeInfo.h
+@@ -49,7 +49,7 @@
+          *                specification - NOT NULL
+          *
+          */
+-        ContentTypeInfo(BCHAR* ctType, BCHAR* verCT);
++        ContentTypeInfo(const BCHAR* ctType, const BCHAR* verCT);
+ 
+         /**
+          * Gets the content type properties
+@@ -63,7 +63,7 @@
+          *
+          * @param ctType the content type properties
+          */
+-        void setCTType(BCHAR* ctType);
++        void setCTType(const BCHAR* ctType);
+ 
+         /**
+          * Gets the version of the content type
+@@ -77,7 +77,7 @@
+          *
+          * @param verCT the version of the content type
+          */
+-        void setVerCT(BCHAR* verCT);
++        void setVerCT(const BCHAR* verCT);
+ 
+         ArrayElement* clone();
+ };
+--- native/src/include/common/syncml/core/CTPropParam.h~devinfo
++++ native/src/include/common/syncml/core/CTPropParam.h
+@@ -35,7 +35,9 @@
+         BCHAR*   dataType;
+         int size;
+         ArrayList* ctParameters; //ContentTypeParameter[]
+-    
++
++        void initialize();
++        
+     // ---------------------------------------------------------- Protected data    
+     public:
+         CTPropParam();
+--- native/src/include/common/syncml/core/CTTypeSupported.h~devinfo
++++ native/src/include/common/syncml/core/CTTypeSupported.h
+@@ -31,7 +31,9 @@
+     private:
+     BCHAR* ctType;
+     ArrayList* ctPropParams;    // CTPropParam[]   
+-        
++
++    void initialize();
++    
+     public:
+         
+     CTTypeSupported();
+--- native/src/include/common/syncml/core/DevInf.h~devinfo
++++ native/src/include/common/syncml/core/DevInf.h
+@@ -78,21 +78,21 @@
+          *
+          */
+         DevInf(VerDTD* verDTD,
+-                    BCHAR* man,
+-                    BCHAR* mod,
+-                    BCHAR* oem,
+-                    BCHAR* fwV,
+-                    BCHAR* swV,
+-                    BCHAR* hwV,
+-                    BCHAR* devID,
+-                    BCHAR* devTyp,
+-                    ArrayList* dataStores,
+-                    ArrayList* ctCap,
+-                    ArrayList* ext,
+-                    BOOL utc,
+-                    BOOL supportLargeObjs,
+-                    BOOL supportNumberOfChanges,
+-                    SyncCap* syncCap);
++               const  BCHAR* man,
++               const BCHAR* mod,
++               const BCHAR* oem,
++               const BCHAR* fwV,
++               const BCHAR* swV,
++               const BCHAR* hwV,
++               const BCHAR* devID,
++               const BCHAR* devTyp,
++               ArrayList* dataStores,
++               ArrayList* ctCap,
++               ArrayList* ext,
++               BOOL utc,
++               BOOL supportLargeObjs,
++               BOOL supportNumberOfChanges,
++               SyncCap* syncCap);
+ 
+         // ---------------------------------------------------------- Public methods
+         /**
+@@ -122,7 +122,7 @@
+          * @param man the device manufacturer property
+          *
+          */
+-        void setMan(BCHAR* man);
++        void setMan(const BCHAR* man);
+ 
+         /**
+          * Gets the model name of device
+@@ -137,7 +137,7 @@
+          * @param mod the device model property
+          *
+          */
+-        void setMod(BCHAR* mod);
++        void setMod(const BCHAR* mod);
+ 
+         /**
+          * Gets the Original Equipment Manufacturer of the device
+@@ -152,7 +152,7 @@
+          * @param oem the Original Equipment Manufacturer of the device
+          *
+          */
+-        void setOEM(BCHAR* oem);
++        void setOEM(const BCHAR* oem);
+ 
+         /**
+          * Gets the firmware version property
+@@ -167,7 +167,7 @@
+          * @param fwV the firmware version property
+          *
+          */
+-        void setFwV(BCHAR* fwV);
++        void setFwV(const BCHAR* fwV);
+ 
+         /**
+          * Gets the software version property
+@@ -182,7 +182,7 @@
+          * @param swV the software version property
+          *
+          */
+-        void setSwV(BCHAR* swV);
++        void setSwV(const BCHAR* swV);
+ 
+         /**
+          * Gets the hardware version property
+@@ -197,7 +197,7 @@
+          * @param hwV the hardware version property
+          *
+          */
+-        void setHwV(BCHAR* hwV);
++        void setHwV(const BCHAR* hwV);
+ 
+         /**
+          * Gets the device identifier
+@@ -212,7 +212,7 @@
+          * @param devID the device identifier
+          *
+          */
+-        void setDevID(BCHAR* devID);
++        void setDevID(const BCHAR* devID);
+ 
+         /**
+          * Gets the device type
+@@ -227,7 +227,7 @@
+          * @param devTyp the device type
+          *
+          */
+-        void setDevTyp(BCHAR* devTyp);
++        void setDevTyp(const BCHAR* devTyp);
+ 
+         /**
+          * Gets the array of datastore
+--- native/src/include/common/syncml/core/Put.h~devinfo
++++ native/src/include/common/syncml/core/Put.h
+@@ -66,7 +66,7 @@
+          * @return the preferred language
+          *
+          */
+-        BCHAR* getLang(BCHAR* retLang);
++        BCHAR* getLang(BCHAR* retLang = NULL);
+     
+         /**
+          * Sets the preferred language
+--- native/src/include/common/syncml/core/StringElement.h~devinfo
++++ native/src/include/common/syncml/core/StringElement.h
+@@ -39,7 +39,7 @@
+     // ---------------------------------------------------------- Protected data    
+     public:
+                 
+-        StringElement(BCHAR* value);
++        StringElement(const BCHAR* value);
+         ~StringElement();
+ 
+ 
+@@ -58,7 +58,7 @@
+          * @param value the value of experimental meta information
+          *
+          */
+-        void setValue(BCHAR* value);
++        void setValue(const BCHAR* value);
+         
+         ArrayElement* clone();
+ 
+--- native/src/include/common/syncml/core/TagNames.h~devinfo
++++ native/src/include/common/syncml/core/TagNames.h
+@@ -88,7 +88,7 @@
+ #define SUPPORT_NUMBER_OF_CHANGES T("SupportNumberOfChanges")
+ #define NUMBER_OF_CHANGES   T("NumberOfChanges")
+ #define SUPPORT_LARGE_OBJECT T("LargeObject"              )
+-#define UTC                 T("Utc"              )
++#define UTC                 T("UTC"              )
+ #define DATA_STORE          T("DataStore"        )
+ #define MAN                 T("Man"              )
+ #define MOD                 T("Mod"              )
+@@ -96,7 +96,7 @@
+ #define FWV                 T("FwV"              )
+ #define SWV                 T("SwV"              )
+ #define HWV                 T("HwV"              )
+-#define DEV_ID              T("DevId"            )
++#define DEV_ID              T("DevID"            )
+ #define DEV_TYP             T("DevTyp"           )
+ #define DEV_INF             T("DevInf"           )
+ #define DISPLAY_NAME        T("DisplayName"      )
+@@ -121,8 +121,12 @@
+ #define SOURCE_PARENT       T("SourceParent"     )
+ 
+ // parameters 
+-#define METINFO             T("xmlns='syncml:metinf'")
++#define METINFO             T("xmlns=\"syncml:metinf\"")
++#define DEVINF              T("xmlns=\"syncml:devinf\"")
+ 
++// special values
++#define DEVINF_URI          T("./devinf11")
++#define DEVINF_FORMAT       T("application/vnd.syncml-devinf+xml")
+ 
+ // Commands
+ #define ALERT               T("Alert"            )
