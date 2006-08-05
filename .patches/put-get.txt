@@ -1,5 +1,0 @@
-At least reply to Put/Get commands even if no real support
-for device infos exists yet. This is necessary because the Synthesis
-server keeps the session open without those replies and
-then always forces a slow sync.
-

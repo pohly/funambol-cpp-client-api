@@ -1,22 +1,54 @@
-This patch adds support for sending device info. They are constructed
-from new SyncClient and SyncSource API calls and configuration
-information. A client does not have to implement any calls, default
+This patch replaces several older patches and reimplements
+their functionality using a new sync client API provided
+by the SyncClient class:
+
+http://wiki.objectweb.org/sync4j/Wiki.jsp?page=CClientDevelopmentHOWTO
+
+Various changes:
+- replaces one getSyncMode() with getPreferredSyncMode() because at
+  that time getSyncMode() normally wouldn't be set yet
+- if an error has been set already in SyncManager::beginSync(), do
+  not overwrite it with a follow-up error
+- added missing const qualifiers whenever necessary
+
+(Curl)TransportAgent:
+- did not set userAgent member in constructor,
+  causing an uninitialized memory read in the
+  CurlTransportAgent constructor
+- CurlTransportAgent needs to be notified of
+  userAgent modifications, therefore made all
+  calls in TransportAgent virtual and added
+  CurlTransportAgent::setUserAgent
+
+Client API:
+- SyncClient replaces Sync4jClient: API is backwards
+  compatible, code using Sync4jClient compiles without
+  changes
+- SyncClient is expected to be subclassed by client
+  to override certain functions which will be called
+  by the base SyncClient:sync() and createDevInf() methods
+
+SyncManager:
+- fix for uninitialized memory (and potential crashes)
+  when constructing a SyncManager and immediately
+  deleting it again
+
+Support for DevInf:
+- constructed by SyncClient, passed to SyncManager
+- fixed spelling of tag names
+- instead of implementing the copying of devInfHash into a new
+  SyncSource property, the code was refactored so that a SyncSource
+  now has a SyncSourceConfig
+
+Support for DevInf was tested with the Synthesis and Funambol
+servers. A client does not have to implement any calls, default
 implementations of the calls fill provide reasonable defaults for
 required properties or leave them empty.
 
 DevInf is actively sent as part of a Put if they have changed since
 the last time, the new "syncml/devInfHash" property stores a hash of
-the DevInf string to detect that.
-
-Sending DevInf as part of Results in reply to a Get is also supported
-(tested with Synthesis server).
-
-While implementing this, several related changes were made:
-- added "const" whenever necessary
-- fixed spelling of tag names
-- instead of implementing the copying of devInfHash into a new
-  SyncSource property, the code was refactored so that a SyncSource
-  now has a SyncSourceConfig
+the DevInf string to detect that. Sending DevInf as part of Results in
+reply to a Get is also supported.
 
 #
 # Patch managed by http://www.holgerschurig.de/patcher.html
@@ -35,7 +67,231 @@ While implementing this, several related changes were made:
      char dig [18];
 --- native/src/c++/common/client/DMTClientConfig.cpp~devinfo
 +++ native/src/c++/common/client/DMTClientConfig.cpp
-@@ -249,6 +249,10 @@
+@@ -28,12 +28,20 @@
+ #include "spdm/ManagementNode.h"
+ 
+ 
++void DMTClientConfig::initialize() {
++    dmt = NULL;
++    syncMLNode = NULL;
++    sourcesNode = NULL;
++}
++
+ DMTClientConfig::DMTClientConfig() : SyncManagerConfig() {
++    initialize();
+     rootContext = 0;
+ }
+ 
+ 
+ DMTClientConfig::DMTClientConfig(const BCHAR* root): SyncManagerConfig() {
++    initialize();
+     rootContext = new BCHAR[bstrlen(root)+1];
+     bstrcpy(rootContext, root);
+ }
+@@ -43,6 +51,7 @@
+     if (rootContext) {
+         delete [] rootContext;
+     }
++    close();
+ }
+ 
+ BOOL DMTClientConfig::getSyncSourceConfig(
+@@ -89,31 +98,13 @@
+     //
+     BCHAR nodeName[DIM_MANAGEMENT_PATH];
+ 
+-    bsprintf(nodeName, T("%s%s"), rootContext, T(CONTEXT_SPDS_SYNCML));
+-
+-    DMTree* dmt = DMTreeFactory::getDMTree(rootContext);
+-
+-    ManagementNode *node = dmt->getManagementNode(nodeName);
+-    
+-    if ( ! node ) {
+-        lastErrorCode = ERR_INVALID_CONTEXT;
+-        bsprintf(lastErrorMsg, ERRMSG_INVALID_CONTEXT, nodeName);
+-        goto finally;
++    if (!open()) {
++        return FALSE;
+     }
+ 
+-    readAccessConfig(*node);
+-    delete node;
+-    node = 0;
+-
+-    bstrcpy(nodeName, rootContext); bstrcat(nodeName, T(CONTEXT_SPDS_SOURCES));
++    readAccessConfig(*syncMLNode);
+ 
+-    node = dmt->getManagementNode(nodeName);
+-    if ( ! node ) {
+-        lastErrorCode = ERR_INVALID_CONTEXT;
+-        bsprintf(lastErrorMsg, ERRMSG_INVALID_CONTEXT, nodeName);
+-        goto finally;
+-    }
+-    n = node->getChildrenMaxCount();
++    n = sourcesNode->getChildrenMaxCount();
+ 
+     //
+     // Let's remove previously created config objects and reinitialize
+@@ -127,20 +118,14 @@
+ 
+     for (i=0; i<n; ++i) {
+         // node owns children, we must not delete them
+-        readSourceConfig(i, *(node->getChild(i)) );
++        readSourceConfig(i, *(sourcesNode->getChild(i)) );
+     }
+ 
+     ret = TRUE;
+ 
+ finally:
+ 
+-    if (dmt) {
+-        delete dmt;
+-    }
+-    if (node) {
+-        delete node;
+-    }
+-
++    close();
+     return ret;
+ }
+ 
+@@ -148,12 +133,11 @@
+ BOOL DMTClientConfig::save() {
+     BOOL ret = FALSE;
+     unsigned int i = 0;
+-    BCHAR nodeName[DIM_MANAGEMENT_PATH];
+-	ManagementNode *node = 0;
+-
+-    DMTree* dmt = DMTreeFactory::getDMTree(rootContext);
+ 
+     LOG.debug(DBG_WRITING_CONFIG_TO_DM);
++    if (!open()) {
++        return FALSE;
++    }
+ 
+     if (accessConfig.getDirty()) {
+         resetError();
+@@ -161,19 +145,7 @@
+         //
+         // SyncML management node
+         //
+-        bstrcpy(nodeName, rootContext); bstrcat(nodeName, T(CONTEXT_SPDS_SYNCML));
+-        
+-        node = dmt->getManagementNode(nodeName);
+-        if ( ! node ) {
+-            lastErrorCode = ERR_INVALID_CONTEXT;
+-            bsprintf(lastErrorMsg, ERRMSG_INVALID_CONTEXT, nodeName);
+-            goto finally;
+-        }
+-
+-        saveAccessConfig(*node);
+-
+-        delete node;
+-        node = 0;
++        saveAccessConfig(*syncMLNode);
+     }
+ 
+     //
+@@ -183,39 +155,81 @@
+     //
+     // Sources management node
+     //
+-    bstrcpy(nodeName, rootContext); bstrcat(nodeName, T(CONTEXT_SPDS_SOURCES));
+-
+-    node = dmt->getManagementNode(nodeName);
+-    if ( ! node ) {
+-        lastErrorCode = ERR_INVALID_CONTEXT;
+-        bsprintf(lastErrorMsg, ERRMSG_INVALID_CONTEXT, nodeName);
+-        goto finally;
+-    }
+-
+     for(i=0; i<sourceConfigsCount; ++i) {
+-        saveSourceConfig(i, *(node->getChild(i)) );
++        saveSourceConfig(i, *(sourcesNode->getChild(i)) );
+ 
+         if (lastErrorCode != ERR_NONE) {
+             goto finally;
+         }
+     }
+-    delete node;
+-    node = 0;
+ 
+     ret = (lastErrorCode == ERR_NONE);
+ 
+ finally:
+ 
+-    if (dmt) {
+-        delete dmt;
++    close();
++    return ret;
++}
++
++BOOL DMTClientConfig::open() {
++    BCHAR nodeName[DIM_MANAGEMENT_PATH];
++    nodeName[0] = 0;
++
++    dmt = DMTreeFactory::getDMTree(rootContext);
++
++    bsprintf(nodeName, T("%s%s"), rootContext, T(CONTEXT_SPDS_SYNCML));
++    syncMLNode = dmt->getManagementNode(nodeName);
++    if (!syncMLNode ) {
++        goto failed;
+     }
+-    if (node) {
+-        delete node;
++    
++    bsprintf(nodeName, T("%s%s"), rootContext, T(CONTEXT_SPDS_SOURCES));
++    sourcesNode = dmt->getManagementNode(nodeName);
++    if (!sourcesNode) {
++        goto failed;
+     }
+ 
+-    return ret;
++    return TRUE;
++
++failed:
++    lastErrorCode = ERR_INVALID_CONTEXT;
++    bsprintf(lastErrorMsg, ERRMSG_INVALID_CONTEXT, nodeName);
++    close();
++    return FALSE;
+ }
+ 
++ManagementNode* DMTClientConfig::getSyncMLNode() {
++    return syncMLNode;
++}
++
++int DMTClientConfig::getNumSources() {
++    return sourcesNode ?
++        sourcesNode->getChildrenMaxCount() :
++        -1;
++}
++
++ManagementNode* DMTClientConfig::getSyncSourceNode(int index) {
++    return sourcesNode ?
++        sourcesNode->getChild(index) :
++        NULL;
++}
++
++void DMTClientConfig::close() {
++    if (syncMLNode) {
++        delete syncMLNode;
++        syncMLNode = NULL;
++    }
++    if (sourcesNode) {
++        delete sourcesNode;
++        sourcesNode = NULL;
++    }
++    if (dmt) {
++        delete dmt;
++        dmt = NULL;
++    }
++}
++
++
+ BOOL DMTClientConfig::readAccessConfig(ManagementNode& n) {
+ 
+     BCHAR *tmp;
+@@ -249,6 +263,10 @@
      accessConfig.setEndSync(bstrtol(tmp, NULL, 10));
      delete [] tmp;
  
@@ -46,7 +302,7 @@ While implementing this, several related changes were made:
      tmp = n.getPropertyValue(PROPERTY_USE_PROXY);     
      accessConfig.setUseProxy((*tmp == 'T') ? TRUE : FALSE);
      delete [] tmp;
-@@ -334,6 +338,7 @@
+@@ -334,6 +352,7 @@
      timestampToAnchor(accessConfig.getEndSync(), buf);
      n.setPropertyValue(PROPERTY_SYNC_END, buf);
  
@@ -54,346 +310,311 @@ While implementing this, several related changes were made:
      n.setPropertyValue(PROPERTY_USE_PROXY,
  		(accessConfig.getUseProxy() ? T("T"): T("F")) );     
      n.setPropertyValue(PROPERTY_PROXY_HOST, accessConfig.getProxyHost());   
---- native/src/c++/common/spds/AccessConfig.cpp~devinfo
-+++ native/src/c++/common/spds/AccessConfig.cpp
-@@ -45,6 +45,7 @@
-     clientAuthType        = NULL;
-     serverAuthType        = NULL;
-     isServerAuthRequired  = FALSE;  // F = FALSE, T = TRUE
-+    devInfHash            = NULL;
+--- native/src/c++/common/client/Sync4jClient.cpp~devinfo
++++ native/src/c++/common/client/Sync4jClient.cpp
+@@ -18,33 +18,40 @@
  
-     maxMsgSize            = 0;
-     maxModPerMsg          = 0;
-@@ -75,6 +76,7 @@
-     safeDelete(&userAgent           );
-     safeDelete(&proxyUsername       );
-     safeDelete(&proxyPassword       );
-+    safeDelete(&devInfHash          );
- }
  
- BOOL AccessConfig::getServerAuthRequired() {
-@@ -362,6 +364,15 @@
-     return endTimestamp;
- }
- 
-+const BCHAR* AccessConfig::getDevInfHash() const {
-+    return devInfHash;
-+}
-+
-+void AccessConfig::setDevInfHash(const BCHAR *v) {
-+    set(&devInfHash, v);
-+    dirty |= DIRTY_DEV_INF_HASH;
-+}
-+
- unsigned int AccessConfig::getDirty() {
-     return dirty;
- }
-@@ -416,6 +427,7 @@
-     setMaxModPerMsg(s.getMaxModPerMsg());
-     setReadBufferSize(s.getReadBufferSize());
-     setEncryption  (s.getEncryption()  );
-+    setDevInfHash(s.getDevInfHash());
- 
- 	dirty = s.getDirty();
- }
---- native/src/c++/common/spds/SyncManager.cpp~devinfo
-+++ native/src/c++/common/spds/SyncManager.cpp
-@@ -30,6 +30,11 @@
- #include "spds/spdsutils.h"
- #include "syncml/core/TagNames.h"
- #include "syncml/core/ObjectDel.h"
-+#include "syncml/core/DevInf.h"
-+#include "syncml/core/StringElement.h"
+ #include "client/Sync4jClient.h"
+-#include "base/LogErrorHandler.h"
+ #include "spds/SyncManager.h"
+-
+-//----------------------------------------------------------- Static variables
+-static DMTClientConfig *defaultConfig = 0;
+-static LogErrorHandler *defaultErrorHandler = 0;
++#include "spds/spdsutils.h"
++#include "base/LogErrorHandler.h"
 +#include "syncml/core/CTTypeSupported.h"
 +#include "syncml/core/CTCap.h"
 +#include "syncml/core/CTPropParam.h"
- #include "client/Sync4jClient.h"
  
- /**
-@@ -121,7 +126,17 @@
-     bstrcpy(userAgent, c.getUserAgent());
-     if (bstrlen(userAgent) == 0) {
-         const BCHAR *clientID = client.getClientID();
--        bstrcpy(userAgent, clientID ? clientID : BCHAR_USER_AGENT);
-+        const BCHAR *clientVer = client.getClientVersion();
-+        // danger, may overflow our buffer...
-+        if (clientID) {
-+            bstrcpy(userAgent, clientID);
-+            if (clientVer) {
-+                bstrcat(userAgent, " ");
-+                bstrcat(userAgent, clientVer);
-+            }
-+        } else {
-+            bstrcpy(userAgent, BCHAR_USER_AGENT);
-+        }
-     }
-                   
-     syncMLBuilder.set(syncURL, deviceId, maxMsgSize);
-@@ -183,6 +198,10 @@
-     Cred*   cred                = NULL;
-     Alert*  alert               = NULL;
-     SyncSource** buf            = NULL;
-+    DevInf* devInf              = NULL;
-+    StringBuffer* devInfStr     = NULL;
-+    BOOL putDevInf              = FALSE;
-+    BCHAR devInfHash[16 * 4 +1]; // worst case factor base64 is four
-     const BCHAR *syncURL;
-     
-     syncURL = config.getAccessConfig().getSyncURL(); //sizeof(syncURL));
-@@ -246,6 +265,31 @@
-         }
-     }
+ Sync4jClient* Sync4jClient::instance = 0;
  
-+    // build device infos
-+    devInf = buildDeviceInfo();
-+    if (devInf) {
-+        char md5[16];
-+        devInfStr = Formatter::getDevInf(devInf);
-+        LOG.debug(T("devinfo: %s"), devInfStr->c_str());
-+        calculateMD5(devInfStr->c_str(), devInfStr->length(), md5);
-+        devInfHash[b64_encode(devInfHash, md5, sizeof(md5))] = 0;
-+        LOG.debug(T("devinfo hash: %s"), devInfHash);
+ //--------------------------------------------------- Constructor & Destructor
+-Sync4jClient::Sync4jClient() {
+-    syncManager  = NULL;
++SyncClient::SyncClient() {
+     defaultErrorHandler = new LogErrorHandler();
+-    errorHandler = defaultErrorHandler;
++    customErrorHandler = NULL;
++    config = NULL;
++    isOurConfig = FALSE;
+ }
+ 
+-Sync4jClient::~Sync4jClient() {
+-    if(syncManager)
+-        delete syncManager;
+-    if(defaultErrorHandler)
+-        delete defaultErrorHandler;
++SyncClient::~SyncClient() {
++    if (isOurConfig && config) {
++        delete config;
++    }
++    delete defaultErrorHandler;
+ }
+ 
+ //------------------------------------------------------------- Public Methods
+ 
++Sync4jClient::Sync4jClient() {
++}
 +
-+        // compare against previous device info hash:
-+        // if different, then the local config has changed and
-+        // infos should be sent again
-+        if (bstrcmp(devInfHash, config.getAccessConfig().getDevInfHash())) {
-+            putDevInf = TRUE;
-+        }
-+        LOG.debug(T("devinfo %s"), putDevInf ? T("changed, retransmit") : T("unchanged, no need to send"));
++Sync4jClient::~Sync4jClient() {
++}
++
+ /*
+- * Get, or create, Sync4jClient instance 
++ * Get, or create, SyncClient instance 
+  */
+ Sync4jClient& Sync4jClient::getInstance() {
+     
+@@ -62,49 +69,41 @@
+         delete instance;         
+     }        
+     instance = NULL;
+-    if (defaultConfig)
+-        delete defaultConfig;
+-    defaultConfig = NULL;
+ }
+ 
+ /*
+  * Set config from user defined Config
+  */
+-void Sync4jClient::setDMConfig(DMTClientConfig& config) {
+-    if (syncManager)
+-        delete syncManager;
+-
+-    if (defaultConfig) {
+-        delete defaultConfig; 
+-        defaultConfig = NULL;
++void SyncClient::setDMConfig(DMTClientConfig& dc) {
++    if (isOurConfig && config) {
++        delete config;
+     }
+-    syncManager = new SyncManager(config);
++    config = &dc;
++    isOurConfig = false;
+ }
+ 
+ /*
+  * Set config from DM using an application URI
+  */
+-void Sync4jClient::setDMConfig(const BCHAR *root) {
+-    if (defaultConfig)
+-        delete defaultConfig;
+-    if (syncManager)
+-        delete syncManager;
+-
+-    defaultConfig = new DMTClientConfig(root);
+-    defaultConfig->read();    
+-    syncManager = new SyncManager(*defaultConfig);
+-
++void SyncClient::setDMConfig(const BCHAR *root) {
++    if (isOurConfig && config) {
++        delete config;
++    }
++    config = new DMTClientConfig(root);
++    isOurConfig = TRUE;
++    config->read();
+ }
+ 
+-ErrorHandler& Sync4jClient::getErrorHandler() {
+-    return *errorHandler;
++ErrorHandler& SyncClient::getErrorHandler() {
++    if (customErrorHandler) {
++        return *customErrorHandler;
 +    } else {
-+        LOG.debug(T("no devinfo available"));
++        return *defaultErrorHandler;
++    }
+ }
+ 
+-void Sync4jClient::setErrorHandler(ErrorHandler& e) {
+-    if (defaultErrorHandler) {
+-        delete defaultErrorHandler; defaultErrorHandler = NULL;
+-    }    
+-    errorHandler = &e;
++void SyncClient::setErrorHandler(ErrorHandler& e) {
++    customErrorHandler = &e;
+ }
+ 
+ 
+@@ -112,14 +111,40 @@
+ * Used to start the sync process. The argument is an array of SyncSources
+ * that have to be synched with the sync process
+ */
+-int Sync4jClient::sync(SyncSource** sources) {
++int SyncClient::sync(SyncSource** sources) {
+ 
+     resetError();
+     int ret = 0;
+-    if (!syncManager)
+-        return -1;
++    DevInf *devInf = NULL;
+ 
+-    if ((ret = syncManager->prepareSync(sources))) {
++    if (!config) {
++        LOG.error("SyncClient::sync() called without valid config");
++        return ERR_PARAMETER_IS_NULL;
 +    }
 +
-+    // have device infos changed since the last time that they were
-+    // sent or is this the initial sync?
-+    
-+
-     // disable all SyncSources without a preferred sync mode
-     for (count = 0; count < sourcesNumber; count ++) {
-         if (!check[count])
-@@ -307,6 +351,17 @@
-             cred = credentialHandler.getClientCredential();             
-             bstrcpy(credentialInfo, cred->getAuthentication()->getData(NULL));
-         }
-+
-+        // actively send out device infos?
-+        if (putDevInf) {
-+            AbstractCommand* put = syncMLBuilder.prepareDevInf(NULL, *devInf);
-+            if (put) {
-+                commands->add(*put);
-+                delete put;
++    // ensure that the user agent string is valid
++    StringBuffer userAgent(config->getAccessConfig().getUserAgent());
++    StringBuffer buffer;
++    if (!userAgent.length()) {
++        const BCHAR *clientID = getClientID();
++        const BCHAR *clientVer = getClientVersion();
++        if (clientID) {
++            // use our own version as default
++            buffer.append(clientID);
++            if (clientVer) {
++                buffer.append(" ");
++                buffer.append(clientVer);
 +            }
-+            putDevInf = FALSE;
++            config->getAccessConfig().setUserAgent(buffer.c_str());
++        } else {
++            config->getAccessConfig().setUserAgent(BCHAR_USER_AGENT);
 +        }
-+        
-         // "cred" only contains an encoded strings as username, also
-         // need the original username for LocName
-         syncml = syncMLBuilder.prepareInitObject(credentialHandler.getUsername(), cred, alerts, commands);
-@@ -501,12 +556,51 @@
-             AbstractCommand* cmd = (AbstractCommand*)list->get(cmdindex);
-             BCHAR* name = cmd->getName();
-             if (name) {
--                if (!bstrcmp(name, PUT) || !bstrcmp(name, GET)) {
--                    // not currently supported, pretend that it worked anyway
--                    status = syncMLBuilder.prepareCmdStatus(*cmd, 200);
--                    if (status) {
--                        commands->add(*status);
--                        deleteStatus(&status);    
-+                BOOL isPut = !bstrcmp(name, PUT);
-+                BOOL isGet = !bstrcmp(name, GET);
++    }
++    
++    devInf = createDeviceInfo(sources);
++    SyncManager syncManager(*config, devInf);
 +
-+                if (isGet || isPut) {
-+                    int statusCode = 200; // if set, then send it (on by default)
-+
-+                    if (isGet) {
-+                        Get *get = (Get *)cmd;
-+                        ArrayList *items = get->getItems();
-+                        BOOL sendDevInf = FALSE;
-+
-+                        Results results;
-+                        for (int i = 0; i < items->size(); i++) {
-+                            Item *item = (Item *)items->get(i);
-+                        
-+                            // we are not very picky: as long as the Item is
-+                            // called "./devinf11" as required by the standard
-+                            // we return our device infos
-+                            Target *target = item->getTarget();
-+                            if (target && target->getLocURI() &&
-+                                !bstrcmp(target->getLocURI(),
-+                                         DEVINF_URI)) {
-+                                sendDevInf = TRUE;
-+                            } else {
-+                                LOG.debug(T("ignoring request to Get item #%d"), i);
-+                            }
-+                        }
-+
-+                        if (sendDevInf) {
-+                            AbstractCommand *result = syncMLBuilder.prepareDevInf(cmd, *devInf);
-+                            if (result) {
-+                                commands->add(*result);
-+                                delete result;
-+                            }
-+                        }
-+                    } else {
-+                        // simply acknowledge Put
-+                    }
-+
-+                    if (statusCode) {
-+                        status = syncMLBuilder.prepareCmdStatus(*cmd, statusCode);
-+                        if (status) {
-+                            commands->add(*status);
-+                            deleteStatus(&status);    
-+                        }
-                     }
-                 }
-             }
-@@ -559,6 +653,7 @@
- 
-     config.getAccessConfig().setClientNonce(credentialHandler.getClientNonce(NULL));
-     config.getAccessConfig().setServerNonce(credentialHandler.getServerNonce(NULL));
-+    config.getAccessConfig().setDevInfHash(devInfHash);
-     
-     if (isToExit(check, sourcesNumber)) {
-         // error. no source to sync
-@@ -580,6 +675,12 @@
-     if (initMsg) {
-         safeDelete(&initMsg);
++    if ((ret = syncManager.prepareSync(sources))) {
+         BCHAR dbg[256];
+         bsprintf(dbg, T("Error in preparing sync: %s"), lastErrorMsg);//
+         LOG.error(dbg);
+@@ -127,54 +152,259 @@
+         goto finally;
      }
+        
+-    if ((ret = syncManager->sync())) {   
++    if ((ret = syncManager.sync())) {   
+         BCHAR dbg[256];
+         bsprintf(dbg, T("Error in syncing: %s"), lastErrorMsg);
+         LOG.error(dbg);
+         goto finally;
+     }
+ 
+-    if ((ret = syncManager->endSync())) {       
++    if ((ret = syncManager.endSync())) {       
+         BCHAR dbg[256];
+         bsprintf(dbg, T("Error in ending sync: %s"), lastErrorMsg);
+         LOG.error(dbg);
+         goto finally;
+     }
+ 
+-    if (defaultConfig) {
+-        defaultConfig->save();
++    if (isOurConfig) {
++        // restore old settings
++        config->getAccessConfig().setUserAgent(userAgent.c_str());
++        config->save();
+     }
+        
+-finally:    
++  finally:
++    config->getAccessConfig().setUserAgent(userAgent.c_str());
 +    if (devInf) {
 +        delete devInf;
 +    }
-+    if (devInfStr) {
-+        delete devInfStr;
-+    }
  
-     deleteSyncML(&syncml);
-     deleteCred(&cred);
-@@ -742,7 +843,7 @@
-             } else {
-                 // TBD: if we are using vcard/icalendar, we need to 
-                 // set the encoding to PLAIN
--                if (bstrcmp(_wcc(sources[count]->getEncoding()), B64_ENCODING) == 0) {
-+                if (bstrcmp(sources[count]->getConfig().getEncoding(), B64_ENCODING) == 0) {
-                     syncMLBuilder.setEncoding(B64);
-                 } else {
-                     syncMLBuilder.setEncoding(PLAIN);
-@@ -800,13 +901,13 @@
-                                     syncMLBuilder.prepareModificationCommand(
-                                                             REPLACE_COMMAND_NAME, 
-                                                             syncItem,
--                                                            sources[count]->getType()
-+                                                            sources[count]->getConfig().getType()
-                                                   );
-                             } else {
-                                 syncMLBuilder.addItem(modificationCommand,
-                                                       REPLACE_COMMAND_NAME,
-                                                       syncItem, 
--                                                      sources[count]->getType());
-+                                                      sources[count]->getConfig().getType());
-                             }
- 
-                             if (syncItem) {
-@@ -860,10 +961,10 @@
-                             }
-                             if (modificationCommand == NULL) {
-                                 modificationCommand = syncMLBuilder.prepareModificationCommand(REPLACE_COMMAND_NAME, 
--                                        syncItem, sources[count]->getType());
-+                                                                                               syncItem, sources[count]->getConfig().getType());
-                             } else {
-                                 syncMLBuilder.addItem(modificationCommand, REPLACE_COMMAND_NAME, syncItem, 
--                                        sources[count]->getType());
-+                                                      sources[count]->getConfig().getType());
-                             }
- 
-                             if (syncItem) {
-@@ -903,10 +1004,10 @@
-                                 }
-                                 if (modificationCommand == NULL) {
-                                     modificationCommand = syncMLBuilder.prepareModificationCommand(ADD_COMMAND_NAME, 
--                                            syncItem, sources[count]->getType());
-+                                                                                                   syncItem, sources[count]->getConfig().getType());
-                                 } else {
-                                     syncMLBuilder.addItem(modificationCommand, ADD_COMMAND_NAME, 
--                                            syncItem, sources[count]->getType());
-+                                                          syncItem, sources[count]->getConfig().getType());
-                                 }
- 
-                                 if (syncItem) {
-@@ -950,10 +1051,10 @@
-                                 }
-                                 if (modificationCommand == NULL) {
-                                     modificationCommand = syncMLBuilder.prepareModificationCommand(REPLACE_COMMAND_NAME, 
--                                            syncItem, sources[count]->getType());
-+                                                                                                   syncItem, sources[count]->getConfig().getType());
-                                 } else {
-                                     syncMLBuilder.addItem(modificationCommand, REPLACE_COMMAND_NAME, 
--                                            syncItem, sources[count]->getType());
-+                                                          syncItem, sources[count]->getConfig().getType());
-                                 }
- 
-                                 if (syncItem) {                            
-@@ -997,10 +1098,10 @@
-                                 }
-                                 if (modificationCommand == NULL) {
-                                     modificationCommand = syncMLBuilder.prepareModificationCommand(DELETE_COMMAND_NAME, 
--                                            syncItem, sources[count]->getType());
-+                                                                                                   syncItem, sources[count]->getConfig().getType());
-                                 } else {
-                                     syncMLBuilder.addItem(modificationCommand, DELETE_COMMAND_NAME, 
--                                            syncItem, sources[count]->getType());
-+                                            syncItem, sources[count]->getConfig().getType());
-                                 }
- 
-                                 if (syncItem) {                            
-@@ -1446,41 +1547,22 @@
+-//    if (syncManager != NULL) {
+-//        delete syncManager;
+-//    }
+-   
+     return ret;
  }
  
- BOOL SyncManager::readSyncSourceDefinition(SyncSource& source) {
--    SyncSourceConfig ssc;
-     BCHAR anchor[DIM_ANCHOR];
+ 
+-#if 0
+-/*
+- * Used to start the sync process. The argument is an array of SyncSource
+- * that have to be synched
+- *
+- * @param sources the SyncSource& array
+- */
+-int Sync4jClient::sync(ArrayList& sources) {
+-    const int ml = 10;
+-    int l = sources.size();
+-
+-    SyncSource* array[ml];
++int SyncClient::sync() {
++    SyncSource **sources = NULL;
++    int currSource = 0, numActive = 0;
++    int ret = 0;
      
--    if (config.getSyncSourceConfig(_wcc(source.getName()), ssc) == FALSE) {
-+    if (config.getSyncSourceConfig(_wcc(source.getName()), source.getConfig()) == FALSE) {
-         return FALSE;
+-    for (int i=0; (i<l) && (i<ml-1); ++i) {
+-        array[i] = (SyncSource*)sources[i];
++    if (!config) {
++        LOG.error("SyncClient::sync() called without valid config");
++        return ERR_PARAMETER_IS_NULL;
      }
  
--    /* This check could be removed because the sync type is decided later from server.
--       This kind of sync should be read by the settings
--       So, the follow code was used in the previous version of the api.
--
--    // syncMode set only if value has no good value...
--    if (source.getPreferredSyncMode() == NULL ||
--        source.getPreferredSyncMode() < 0     ||
--        source.getPreferredSyncMode() > 210      )  {
-+    SyncSourceConfig& ssc(source.getConfig());
+-    array[l] = NULL;
++    if (!config->open()) {
++        return lastErrorCode;
++    }
  
--        //source.setPreferredSyncMode(syncModeCode(ssc.getSync()));
--    }
--    */
-+    // only copy properties which either have a different format
-+    // or are expected to change during the synchronization
-     source.setPreferredSyncMode(syncModeCode(ssc.getSync()));
--
--    source.setType(ssc.getType());
--    source.setLastSync(ssc.getLast());
-     timestampToAnchor(ssc.getLast(), anchor);
-     source.setLastAnchor(anchor);
-     timestampToAnchor(source.getNextSync(), anchor);
-     source.setNextAnchor(anchor);
- 
--    wchar_t *remuri = toWideChar(ssc.getURI());
--    wchar_t *enc = toWideChar(ssc.getEncoding());
--    source.setRemoteURI(remuri);
--    source.setEncoding(enc);
--
--    delete [] remuri; delete [] enc;
--
-     return TRUE;
- }
- 
-@@ -1707,4 +1789,162 @@
-     
+-    return sync(array);
++    ManagementNode* syncMLNode = config->getSyncMLNode();
++    if (!syncMLNode) {
++        // shouldn't happen
++        ret = lastErrorCode;
++        goto finally;
++    }
++    ret = prepareSync(config->getAccessConfig(),
++                      *syncMLNode);
++    if (ret) {
++        goto finally;
++    }
++
++    // make room for all potential sync sources
++    sources = new SyncSource* [config->getNumSources() + 1];
++
++    // iterate over all configs and add those which the client
++    // wants to have synchronized
++    while (currSource < config->getNumSources()) {
++        SyncSourceConfig sc;
++        ManagementNode* node = config->getSyncSourceNode(currSource);
++        if (!node) {
++            ret = lastErrorCode;
++            goto finally;
++        }
++        if (!config->getSyncSourceConfig(node->getName(), sc)) {
++            ret = lastErrorCode;
++            goto finally;
++        }
++        ret = createSyncSource(node->getName(),
++                               sc, *node,
++                               sources + numActive);
++        if (ret) {
++            goto finally;
++        }
++
++        if (sources[numActive]) {
++            numActive++;
++        }
++
++        currSource++;
++    }
++    sources[numActive] = NULL;
++    config->close();
++
++    ret = beginSync();
++    if (ret) {
++        goto finally;
++    }
++
++    // ready to synchronize
++    ret = sync(sources);
++
++  finally:
++    if (sources) {
++        // sources themselves are owned by creator
++        delete [] sources;
++    }
++    config->close();
++
++    return ret;
  }
  
 +// copy from SyncSource::getSend/RecvTypes() format into array list
@@ -414,42 +635,40 @@ While implementing this, several related changes were made:
 +        curr += 2;
 +    }
 +}
- 
 +
-+DevInf *SyncManager::buildDeviceInfo()
++DevInf *SyncClient::createDeviceInfo(SyncSource **sources)
 +{
 +    VerDTD verdtd(T("1.1"));
-+
-+    // check that essential information is available
 +    const BCHAR *rxType, *rxVer,
 +        *txType, *txVer;
-+    sources[count]->getPreferredTypes(rxType, rxVer,
++
++    // check that essential information is available
++    // for each source
++    for (SyncSource **source = sources;
++         *source;
++         source++) {
++        
++        (*sources)->getPreferredTypes(rxType, rxVer,
 +                                      txType, txVer);
 +
-+    if (!rxType || !rxVer || !txType || !txVer) {
-+        return NULL;
++        if (!rxType || !rxVer || !txType || !txVer) {
++            return NULL;
++        }
 +    }
 +    
 +    DevInf *devinfo = new DevInf();
 +    devinfo->setVerDTD(&verdtd);
-+    devinfo->setMan(client.getManufacturer());
-+    devinfo->setMod(client.getClientID());
-+    devinfo->setSwV(client.getClientVersion());
-+    devinfo->setDevID(deviceId);
-+    const char *devType = client.getClientType();
++    devinfo->setMan(getManufacturer());
++    devinfo->setMod(getClientID());
++    devinfo->setSwV(getClientVersion());
++    devinfo->setDevID(config->getAccessConfig().getDeviceId());
++    const char *devType = getClientType();
 +    devinfo->setDevTyp(devType ? devType : "workstation");
-+    devinfo->setUTC(client.isUTC());
++    devinfo->setUTC(isUTC());
 +    // not sure whether the client library supports this
 +    devinfo->setSupportLargeObjs(FALSE);
 +    devinfo->setSupportNumberOfChanges(FALSE);
 +
-+    // It is unclear where SyncCap belongs:
-+    // according to our config and the devinf 1.1 spec it
-+    // belongs to each DataStore, but the protocol 4.1.1
-+    // example puts it into DevInf.
-+    BOOL syncCapInDevInf = FALSE;
-+    BOOL syncCapInDataStore = TRUE;
-+    
 +    static const struct {
 +        SyncMode mode;
 +        int type;
@@ -465,10 +684,12 @@ While implementing this, several related changes were made:
 +    };
 +
 +    ArrayList dataStores;
-+    for (int count = 0; count < sourcesNumber; count ++) {
++    for (SyncSource **source = sources;
++         *source;
++         source++) {
 +        ArrayList syncModeList;
-+        const BCHAR *syncModes = sources[count]->getConfig().getSyncModes();
-+        if (syncModes && syncCapInDataStore) {
++        const BCHAR *syncModes = (*source)->getConfig().getSyncModes();
++        if (syncModes) {
 +            BCHAR buffer[80];
 +            const BCHAR *mode = syncModes;
 +
@@ -507,13 +728,15 @@ While implementing this, several related changes were made:
 +            }
 +        }
 +
-+        SourceRef sourceRef(sources[count]->getName());
++        SourceRef sourceRef((*source)->getName());
++        (*sources)->getPreferredTypes(rxType, rxVer,
++                                      txType, txVer);
 +        ContentTypeInfo rxPref(rxType, rxVer);
 +        ArrayList rx;
-+        fillContentTypeInfoList(rx,sources[count]->getRecvTypes());
++        fillContentTypeInfoList(rx, (*source)->getRecvTypes());
 +        ContentTypeInfo txPref(txType, txVer);
 +        ArrayList tx;
-+        fillContentTypeInfoList(rx,sources[count]->getSendTypes());
++        fillContentTypeInfoList(rx, (*source)->getSendTypes());
 +        SyncCap syncCap(&syncModeList);
 +        DataStore dataStore(&sourceRef,
 +                            NULL,
@@ -528,17 +751,6 @@ While implementing this, several related changes were made:
 +    }
 +    devinfo->setDataStore(&dataStores);
 +
-+    if (syncCapInDevInf) {
-+        // add everything the library supports
-+        ArrayList syncModeList;
-+        for (int i = 0; mapping[i].type >= 0; i++) {
-+            SyncType syncType(mapping[i].type);
-+            syncModeList.add(syncType);
-+        }
-+        SyncCap syncCap(&syncModeList);
-+        devinfo->setSyncCap(&syncCap);
-+    }
-+
 +#if 0
 +    // dummy CTCap - has no effect because Formatter::getCTCaps() has
 +    // not be implemented yet
@@ -551,10 +763,671 @@ While implementing this, several related changes were made:
 +    ArrayList ctCap;
 +    ctCap.add(cttType);
 +    devinfo->setCTCap(&ctCap);
-+#endif
+ #endif
 +
 +    return devinfo;
 +}
+--- native/src/c++/common/http/TransportAgent.cpp~devinfo
++++ native/src/c++/common/http/TransportAgent.cpp
+@@ -30,6 +30,7 @@
+     url     = newURL ;
+     timeout = timeout;
+     maxmsgsize  = maxmsgsize;
++    userAgent[0] = 0;
+ }
+ 
+ TransportAgent::~TransportAgent() {
+@@ -74,4 +75,4 @@
+ 
+ BCHAR* TransportAgent::getUserAgent() {
+     return stringdup(userAgent);
+-}
+\ No newline at end of file
++}
+--- native/src/c++/common/spdm/ManagementNode.cpp~devinfo
++++ native/src/c++/common/spdm/ManagementNode.cpp
+@@ -80,6 +80,10 @@
+ 	return 0;
+ }
+ 
++const BCHAR *ManagementNode::getName() {
++    return name;
++}
++
+ /*
+  * Returns how many children belong to this node.
+  *
+--- native/src/c++/common/spds/AccessConfig.cpp~devinfo
++++ native/src/c++/common/spds/AccessConfig.cpp
+@@ -45,6 +45,7 @@
+     clientAuthType        = NULL;
+     serverAuthType        = NULL;
+     isServerAuthRequired  = FALSE;  // F = FALSE, T = TRUE
++    devInfHash            = NULL;
+ 
+     maxMsgSize            = 0;
+     maxModPerMsg          = 0;
+@@ -75,9 +76,10 @@
+     safeDelete(&userAgent           );
+     safeDelete(&proxyUsername       );
+     safeDelete(&proxyPassword       );
++    safeDelete(&devInfHash          );
+ }
+ 
+-BOOL AccessConfig::getServerAuthRequired() {
++BOOL AccessConfig::getServerAuthRequired() const {
+     return isServerAuthRequired;
+ }
+ 
+@@ -87,7 +89,7 @@
+     dirty |= DIRTY_SERVERAUTH_REQUIRED;
+ }
+ 
+-const BCHAR* AccessConfig::getServerAuthType(const BCHAR* buf) {
++const BCHAR* AccessConfig::getServerAuthType(const BCHAR* buf) const {
+     if (buf == NULL) {
+         return serverAuthType;
+     }
+@@ -101,7 +103,7 @@
+ }
+ 
+ 
+-const BCHAR* AccessConfig::getClientAuthType(const BCHAR* buf) {
++const BCHAR* AccessConfig::getClientAuthType(const BCHAR* buf) const {
+     if (buf == NULL) {
+         return clientAuthType;
+     }
+@@ -116,7 +118,7 @@
+     dirty |= DIRTY_CLIENTAUTHTYPE; 
+ }
+ 
+-const BCHAR* AccessConfig::getServerPWD(const BCHAR* buf) {
++const BCHAR* AccessConfig::getServerPWD(const BCHAR* buf) const {
+     if (buf == NULL) {
+ 		return serverPWD;
+     }
+@@ -131,7 +133,7 @@
+     dirty |= DIRTY_SERVERPWD;
+ }
+ 
+-const BCHAR* AccessConfig::getServerID(const BCHAR* buf) {
++const BCHAR* AccessConfig::getServerID(const BCHAR* buf) const {
+     if (buf == NULL) {
+ 		return serverID;
+     }
+@@ -146,7 +148,7 @@
+     dirty |= DIRTY_SERVERID;
+ }
+ 
+-const BCHAR* AccessConfig::getServerNonce(const BCHAR* buf) {
++const BCHAR* AccessConfig::getServerNonce(const BCHAR* buf) const {
+     if (buf == NULL) {
+ 		return serverNonce;
+     }
+@@ -161,7 +163,7 @@
+     dirty |= DIRTY_SERVER_NONCE;
+ }
+ 
+-const BCHAR* AccessConfig::getClientNonce(const BCHAR* buf) {
++const BCHAR* AccessConfig::getClientNonce(const BCHAR* buf) const {
+     if (buf == NULL) {
+ 		return clientNonce;
+     }
+@@ -176,7 +178,7 @@
+     dirty |= DIRTY_CLIENT_NONCE;
+ }
+ 
+-const BCHAR* AccessConfig::getUsername(const BCHAR* buf) {
++const BCHAR* AccessConfig::getUsername(const BCHAR* buf) const {
+     if (buf == NULL) {
+ 		return username;
+     }
+@@ -192,7 +194,7 @@
+ }
+ 
+ 
+-const BCHAR* AccessConfig::getPassword(const BCHAR* buf) {
++const BCHAR* AccessConfig::getPassword(const BCHAR* buf) const {
+     if (buf == NULL) {
+ 		return password;
+     }
+@@ -207,7 +209,7 @@
+ }
+ 
+ 
+-const BCHAR* AccessConfig::getDeviceId(const BCHAR* buf) {
++const BCHAR* AccessConfig::getDeviceId(const BCHAR* buf) const {
+     if (buf == NULL) {
+ 		return deviceId;
+     }
+@@ -221,7 +223,7 @@
+     dirty |= DIRTY_DEVICE_ID;
+ }
+ 
+-SyncMode AccessConfig::getFirstTimeSyncMode() {
++SyncMode AccessConfig::getFirstTimeSyncMode() const {
+     return firstTimeSyncMode;
+ }
+ 
+@@ -231,7 +233,7 @@
+     dirty |= DIRTY_FIRST_TIME_SYNC_MODE;
+ }
+ 
+-BOOL AccessConfig::getUseProxy() {
++BOOL AccessConfig::getUseProxy() const {
+     return useProxy;
+ }
+ 
+@@ -241,7 +243,7 @@
+     dirty |= DIRTY_USE_PROXY;
+ }
+ 
+-const BCHAR* AccessConfig::getProxyHost(const BCHAR* buf) {
++const BCHAR* AccessConfig::getProxyHost(const BCHAR* buf) const {
+     if (buf == NULL) {
+ 		return proxyHost;
+ 	}
+@@ -256,7 +258,7 @@
+ }
+ 
+ 
+-BCHAR* AccessConfig::getProxyUsername(const BCHAR* buf) {
++BCHAR* AccessConfig::getProxyUsername(const BCHAR* buf) const {
+     if (buf == NULL) {
+ 		return proxyUsername;
+ 	}
+@@ -268,7 +270,7 @@
+ 	set(&proxyUsername, v);
+ }
+ 
+-BCHAR* AccessConfig::getProxyPassword(const BCHAR* buf) {
++BCHAR* AccessConfig::getProxyPassword(const BCHAR* buf) const {
+     if (buf == NULL) {
+ 		return proxyPassword;
+ 	}
+@@ -280,7 +282,7 @@
+ 	set(&proxyPassword, v);
+ }
+ 
+-const BCHAR* AccessConfig::getUserAgent() {    
++const BCHAR* AccessConfig::getUserAgent() const {    
+     return userAgent;	
+ }
+ 
+@@ -288,7 +290,7 @@
+ 	set(&userAgent, v);	    
+ }
+ 
+-const BCHAR* AccessConfig::getSyncURL(const BCHAR* buf) {
++const BCHAR* AccessConfig::getSyncURL(const BCHAR* buf) const {
+     if (buf == NULL) {
+ 		return syncURL;
+ 	}
+@@ -325,7 +327,7 @@
+     dirty |= DIRTY_SYNC_BEGIN;
+ }
+ 
+-unsigned long AccessConfig::getBeginSync() {
++unsigned long AccessConfig::getBeginSync() const {
+     return beginTimestamp;
+ }
+ 
+@@ -333,7 +335,7 @@
+     maxMsgSize = msgSize;
+ }
+ 
+-unsigned long AccessConfig::getMaxMsgSize() {
++unsigned long AccessConfig::getMaxMsgSize() const {
+     return maxMsgSize;
+ }
+ 
+@@ -341,7 +343,7 @@
+     readBufferSize = bufferSize;
+ }
+ 
+-unsigned long AccessConfig::getReadBufferSize() {
++unsigned long AccessConfig::getReadBufferSize() const {
+     return readBufferSize;
+ }
+ 
+@@ -349,7 +351,7 @@
+     maxModPerMsg = mod;
+ }
+ 
+-unsigned long AccessConfig::getMaxModPerMsg() {
++unsigned long AccessConfig::getMaxModPerMsg() const {
+     return maxModPerMsg;
+ }
+ 
+@@ -358,11 +360,20 @@
+     dirty |= DIRTY_SYNC_END;
+ }
+ 
+-unsigned long AccessConfig::getEndSync() {
++unsigned long AccessConfig::getEndSync() const {
+     return endTimestamp;
+ }
+ 
+-unsigned int AccessConfig::getDirty() {
++const BCHAR* AccessConfig::getDevInfHash() const {
++    return devInfHash;
++}
++
++void AccessConfig::setDevInfHash(const BCHAR *v) {
++    set(&devInfHash, v);
++    dirty |= DIRTY_DEV_INF_HASH;
++}
++
++unsigned int AccessConfig::getDirty() const {
+     return dirty;
+ }
+ 
+@@ -378,7 +389,7 @@
+ 	bstrcpy(*buf, v);
+ }
+ 
+-BOOL AccessConfig::getEncryption() {
++BOOL AccessConfig::getEncryption() const {
+     return encryption;   
+ }
+ 
+@@ -416,6 +427,7 @@
+     setMaxModPerMsg(s.getMaxModPerMsg());
+     setReadBufferSize(s.getReadBufferSize());
+     setEncryption  (s.getEncryption()  );
++    setDevInfHash(s.getDevInfHash());
+ 
+ 	dirty = s.getDirty();
+ }
+--- native/src/c++/common/spds/SyncManager.cpp~devinfo
++++ native/src/c++/common/spds/SyncManager.cpp
+@@ -64,19 +64,28 @@
+     return true;
+ }
+ 
+-SyncManager::SyncManager(SyncManagerConfig* c) : config(*c) {
+-    initialize();
+-}
+-
+-SyncManager::SyncManager(SyncManagerConfig& c) : config(c) {
++SyncManager::SyncManager(SyncManagerConfig& c, DevInf* di) : config(c), devInf(di) {
+     initialize();
+ }
+ 
+ void SyncManager::initialize() {
++    // set all values which are checked by the destructor;
++    // previously some pointers were only set later, leading to
++    // uninitialized memory reads and potential crashes when
++    // constructing a SyncManager, but not using it
++    transportAgent = NULL;
++    mappings       = NULL;
++    sources        = NULL;
++    currentState   = STATE_START;
++    mappings       = NULL;
++    check          = NULL;
++    sourcesNumber  = 0;
++    sources        = NULL;
++    count          = 0;
++    commands       = NULL;
++
+     AccessConfig& c = config.getAccessConfig();   
+     
+-    credentialHandler = CredentialHandler();
+-
+     bstrncpy(syncURL, c.getSyncURL(), 511);
+     bstrncpy(deviceId, c.getDeviceId(), 31);
+     
+@@ -91,15 +100,7 @@
+     credentialHandler.setServerAuthType     (c.getServerAuthType());
+     credentialHandler.setServerAuthRequired (c.getServerAuthRequired());
+             
+-    transportAgent = NULL;
+-    
+-    currentState = STATE_START;
+-
+     commands = new ArrayList();
+-    mappings      = NULL;
+-    check         = NULL;
+-    sourcesNumber = 0;
+-    count         = 0;
+ 
+     maxMsgSize   = c.getMaxMsgSize();
+     maxModPerMsg = 150;  // dafault value
+@@ -111,12 +112,6 @@
+     if (c.getReadBufferSize() > 0)
+         readBufferSize = c.getReadBufferSize();
+     
+-    memset(userAgent, 0, 128*sizeof(BCHAR));
+-    bstrcpy(userAgent, c.getUserAgent());
+-    if (bstrlen(userAgent) == 0) {
+-        bstrcpy(userAgent, BCHAR_USER_AGENT);
+-    }
+-                  
+     syncMLBuilder.set(syncURL, deviceId, maxMsgSize);
+     memset(credentialInfo, 0, 256*sizeof(BCHAR));
+ }
+@@ -176,6 +171,9 @@
+     Cred*   cred                = NULL;
+     Alert*  alert               = NULL;
+     SyncSource** buf            = NULL;
++    StringBuffer* devInfStr     = NULL;
++    BOOL putDevInf              = FALSE;
++    BCHAR devInfHash[16 * 4 +1]; // worst case factor base64 is four
+     const BCHAR *syncURL;
+     
+     syncURL = config.getAccessConfig().getSyncURL(); //sizeof(syncURL));
+@@ -226,20 +224,47 @@
+             check[count] = 0;
+         }
+     }
++
++    // check device information for changes
++    if (devInf) {
++        char md5[16];
++        devInfStr = Formatter::getDevInf(devInf);
++        LOG.debug(T("devinfo: %s"), devInfStr->c_str());
++        calculateMD5(devInfStr->c_str(), devInfStr->length(), md5);
++        devInfHash[b64_encode(devInfHash, md5, sizeof(md5))] = 0;
++        LOG.debug(T("devinfo hash: %s"), devInfHash);
++
++        // compare against previous device info hash:
++        // if different, then the local config has changed and
++        // infos should be sent again
++        if (bstrcmp(devInfHash, config.getAccessConfig().getDevInfHash())) {
++            putDevInf = TRUE;
++        }
++        LOG.debug(T("devinfo %s"), putDevInf ? T("changed, retransmit") : T("unchanged, no need to send"));
++    } else {
++        LOG.debug(T("no devinfo available"));
++    }
++
++    // have device infos changed since the last time that they were
++    // sent or is this the initial sync?
+     
++
++    // disable all SyncSources without a preferred sync mode
+     for (count = 0; count < sourcesNumber; count ++) {
+         if (!check[count])
+             continue;
+ 
+-        if (sources[count]->getSyncMode() == SYNC_NONE) {
++        if (sources[count]->getPreferredSyncMode() == SYNC_NONE) {
+             check[count] = 0;
+         }
+     }
+         
+     if (isToExit(check, sourcesNumber)) {
+-        // error. no source to sync
+-        ret = lastErrorCode = ERR_NO_SOURCE_TO_SYNC;
+-        bsprintf(lastErrorMsg, ERRMSG_NO_SOURCE_TO_SYNC);
++        if (!ret) {
++            // error: no source to sync
++            ret = lastErrorCode = ERR_NO_SOURCE_TO_SYNC;
++            bsprintf(lastErrorMsg, ERRMSG_NO_SOURCE_TO_SYNC);
++        }
+ 
+         goto finally;
+     }
+@@ -285,6 +310,17 @@
+             cred = credentialHandler.getClientCredential();             
+             bstrcpy(credentialInfo, cred->getAuthentication()->getData(NULL));
+         }
++
++        // actively send out device infos?
++        if (putDevInf) {
++            AbstractCommand* put = syncMLBuilder.prepareDevInf(NULL, *devInf);
++            if (put) {
++                commands->add(*put);
++                delete put;
++            }
++            putDevInf = FALSE;
++        }
++        
+         // "cred" only contains an encoded strings as username, also
+         // need the original username for LocName
+         syncml = syncMLBuilder.prepareInitObject(credentialHandler.getUsername(), cred, alerts, commands);
+@@ -307,7 +343,8 @@
+         if (transportAgent == NULL) {
+             transportAgent = TransportAgentFactory::getTransportAgent(url, proxy);
+             transportAgent->setReadBufferSize(readBufferSize);
+-            transportAgent->setUserAgent(userAgent);            
++            // TODO: change API of TransportAgent to use const
++            transportAgent->setUserAgent((BCHAR *)config.getAccessConfig().getUserAgent());
+             
+             if (maxMsgSize > 0) {
+                 transportAgent->setMaxMsgSize(maxMsgSize);
+@@ -468,7 +505,68 @@
+                 commands->add(*status);
+                 deleteStatus(&status);    
+             }
+-        }  
++        }
++
++        //
++        // Process Put/Get commands
++        //
++        list = syncml->getSyncBody()->getCommands();
++        int cmdindex;
++        for (cmdindex = 0; cmdindex < list->size(); cmdindex++) {
++            AbstractCommand* cmd = (AbstractCommand*)list->get(cmdindex);
++            BCHAR* name = cmd->getName();
++            if (name) {
++                BOOL isPut = !bstrcmp(name, PUT);
++                BOOL isGet = !bstrcmp(name, GET);
++
++                if (isGet || isPut) {
++                    int statusCode = 200; // if set, then send it (on by default)
++
++                    if (isGet) {
++                        Get *get = (Get *)cmd;
++                        ArrayList *items = get->getItems();
++                        BOOL sendDevInf = FALSE;
++
++                        Results results;
++                        for (int i = 0; i < items->size(); i++) {
++                            Item *item = (Item *)items->get(i);
++                        
++                            // we are not very picky: as long as the Item is
++                            // called "./devinf11" as required by the standard
++                            // we return our device infos
++                            Target *target = item->getTarget();
++                            if (target && target->getLocURI() &&
++                                !bstrcmp(target->getLocURI(),
++                                         DEVINF_URI)) {
++                                sendDevInf = TRUE;
++                            } else {
++                                LOG.debug(T("ignoring request to Get item #%d"), i);
++                            }
++                        }
++
++                        // cannot send if we have nothing, then simply acknowledge the request,
++                        // but ignore it
++                        if (sendDevInf && devInf) {
++                            AbstractCommand *result = syncMLBuilder.prepareDevInf(cmd, *devInf);
++                            if (result) {
++                                commands->add(*result);
++                                delete result;
++                            }
++                        }
++                    } else {
++                        // simply acknowledge Put
++                    }
++
++                    if (statusCode) {
++                        status = syncMLBuilder.prepareCmdStatus(*cmd, statusCode);
++                        if (status) {
++                            commands->add(*status);
++                            deleteStatus(&status);    
++                        }
++                    }
++                }
++            }
++        }
+         
+         //
+         // Client Authentication. The auth of the client on the server
+@@ -517,6 +615,7 @@
+ 
+     config.getAccessConfig().setClientNonce(credentialHandler.getClientNonce(NULL));
+     config.getAccessConfig().setServerNonce(credentialHandler.getServerNonce(NULL));
++    config.getAccessConfig().setDevInfHash(devInfHash);
+     
+     if (isToExit(check, sourcesNumber)) {
+         // error. no source to sync
+@@ -538,6 +637,9 @@
+     if (initMsg) {
+         safeDelete(&initMsg);
+     }
++    if (devInfStr) {
++        delete devInfStr;
++    }
+ 
+     deleteSyncML(&syncml);
+     deleteCred(&cred);
+@@ -700,7 +802,7 @@
+             } else {
+                 // TBD: if we are using vcard/icalendar, we need to 
+                 // set the encoding to PLAIN
+-                if (bstrcmp(_wcc(sources[count]->getEncoding()), B64_ENCODING) == 0) {
++                if (bstrcmp(sources[count]->getConfig().getEncoding(), B64_ENCODING) == 0) {
+                     syncMLBuilder.setEncoding(B64);
+                 } else {
+                     syncMLBuilder.setEncoding(PLAIN);
+@@ -758,13 +860,13 @@
+                                     syncMLBuilder.prepareModificationCommand(
+                                                             REPLACE_COMMAND_NAME, 
+                                                             syncItem,
+-                                                            sources[count]->getType()
++                                                            sources[count]->getConfig().getType()
+                                                   );
+                             } else {
+                                 syncMLBuilder.addItem(modificationCommand,
+                                                       REPLACE_COMMAND_NAME,
+                                                       syncItem, 
+-                                                      sources[count]->getType());
++                                                      sources[count]->getConfig().getType());
+                             }
+ 
+                             if (syncItem) {
+@@ -818,10 +920,10 @@
+                             }
+                             if (modificationCommand == NULL) {
+                                 modificationCommand = syncMLBuilder.prepareModificationCommand(REPLACE_COMMAND_NAME, 
+-                                        syncItem, sources[count]->getType());
++                                                                                               syncItem, sources[count]->getConfig().getType());
+                             } else {
+                                 syncMLBuilder.addItem(modificationCommand, REPLACE_COMMAND_NAME, syncItem, 
+-                                        sources[count]->getType());
++                                                      sources[count]->getConfig().getType());
+                             }
+ 
+                             if (syncItem) {
+@@ -861,10 +963,10 @@
+                                 }
+                                 if (modificationCommand == NULL) {
+                                     modificationCommand = syncMLBuilder.prepareModificationCommand(ADD_COMMAND_NAME, 
+-                                            syncItem, sources[count]->getType());
++                                                                                                   syncItem, sources[count]->getConfig().getType());
+                                 } else {
+                                     syncMLBuilder.addItem(modificationCommand, ADD_COMMAND_NAME, 
+-                                            syncItem, sources[count]->getType());
++                                                          syncItem, sources[count]->getConfig().getType());
+                                 }
+ 
+                                 if (syncItem) {
+@@ -908,10 +1010,10 @@
+                                 }
+                                 if (modificationCommand == NULL) {
+                                     modificationCommand = syncMLBuilder.prepareModificationCommand(REPLACE_COMMAND_NAME, 
+-                                            syncItem, sources[count]->getType());
++                                                                                                   syncItem, sources[count]->getConfig().getType());
+                                 } else {
+                                     syncMLBuilder.addItem(modificationCommand, REPLACE_COMMAND_NAME, 
+-                                            syncItem, sources[count]->getType());
++                                                          syncItem, sources[count]->getConfig().getType());
+                                 }
+ 
+                                 if (syncItem) {                            
+@@ -955,10 +1057,10 @@
+                                 }
+                                 if (modificationCommand == NULL) {
+                                     modificationCommand = syncMLBuilder.prepareModificationCommand(DELETE_COMMAND_NAME, 
+-                                            syncItem, sources[count]->getType());
++                                                                                                   syncItem, sources[count]->getConfig().getType());
+                                 } else {
+                                     syncMLBuilder.addItem(modificationCommand, DELETE_COMMAND_NAME, 
+-                                            syncItem, sources[count]->getType());
++                                            syncItem, sources[count]->getConfig().getType());
+                                 }
+ 
+                                 if (syncItem) {                            
+@@ -1365,7 +1467,7 @@
+                 lastErrorCode = sret;
+             }
+         }        
+-    }         
++    }
+             
+  finally:
+ 
+@@ -1404,46 +1506,26 @@
+ }
+ 
+ BOOL SyncManager::readSyncSourceDefinition(SyncSource& source) {
+-    SyncSourceConfig ssc;
+     BCHAR anchor[DIM_ANCHOR];
+     
+-    if (config.getSyncSourceConfig(_wcc(source.getName()), ssc) == FALSE) {
++    if (config.getSyncSourceConfig(_wcc(source.getName()), source.getConfig()) == FALSE) {
+         return FALSE;
+     }
+ 
+-    /* This check could be removed because the sync type is decided later from server.
+-       This kind of sync should be read by the settings
+-       So, the follow code was used in the previous version of the api.
+-
+-    // syncMode set only if value has no good value...
+-    if (source.getPreferredSyncMode() == NULL ||
+-        source.getPreferredSyncMode() < 0     ||
+-        source.getPreferredSyncMode() > 210      )  {
+-
+-        //source.setPreferredSyncMode(syncModeCode(ssc.getSync()));
+-    }
+-    */
+-    source.setPreferredSyncMode(syncModeCode(ssc.getSync()));
++    SyncSourceConfig& ssc(source.getConfig());
+ 
+-    source.setType(ssc.getType());
+-    source.setLastSync(ssc.getLast());
++    // only copy properties which either have a different format
++    // or are expected to change during the synchronization
+     timestampToAnchor(ssc.getLast(), anchor);
+     source.setLastAnchor(anchor);
+     timestampToAnchor(source.getNextSync(), anchor);
+     source.setNextAnchor(anchor);
+ 
+-    wchar_t *remuri = toWideChar(ssc.getURI());
+-    wchar_t *enc = toWideChar(ssc.getEncoding());
+-    source.setRemoteURI(remuri);
+-    source.setEncoding(enc);
+-
+-    delete [] remuri; delete [] enc;
+-
+     return TRUE;
+ }
+ 
+ 
+-BOOL SyncManager::commitChanges(SyncSource& source) {
++BOOL SyncManager::commitChanges(SyncSource& source) { 
+     unsigned int n = config.getSyncSourceConfigsCount();
+     SyncSourceConfig* configs = config.getSyncSourceConfigs();
+ 
+@@ -1664,5 +1746,3 @@
+     }
+     
+ }
+-
+-
 --- native/src/c++/common/spds/SyncMLBuilder.cpp~devinfo
 +++ native/src/c++/common/spds/SyncMLBuilder.cpp
 @@ -216,7 +216,7 @@
@@ -575,10 +1448,38 @@ While implementing this, several related changes were made:
      SourceRef*    sou        = new SourceRef(_wcc(source.getName()));
      targetRefs->add(*tar);
      sourceRefs->add(*sou);
-@@ -383,13 +383,86 @@
+@@ -355,12 +355,114 @@
      return s;
  }
  
++/*
++* Return the status against an arbitrary command.
++*/
++Status* SyncMLBuilder::prepareCmdStatus(AbstractCommand &cmd, int status) {
++    /*
++    <Status>\n
++        <CmdID>2</CmdID>\n
++        <MsgRef>1</MsgRef>
++        <CmdRef>1</CmdRef>
++        <Cmd>cmd</Cmd>\n
++        <Data>status</Data>\n
++    </Status>
++    */
++    
++    ++cmdID;
++
++    CmdID commandID(itow(cmdID));
++    Data d(status);
++    char *msgRefStr = itow(msgRef);
++    ArrayList empty;
++
++    Status* s = new Status(&commandID, msgRefStr, cmd.getCmdID()->getCmdID(), cmd.getName(), &empty, &empty, NULL, NULL, &d, NULL);
++    
++    delete [] msgRefStr;
++    
++    return s;
++}
++
 +AbstractCommand *SyncMLBuilder::prepareDevInf(AbstractCommand *cmd, DevInf &devInf)
 +{
 +    AbstractCommand *res = NULL;
@@ -652,7 +1553,7 @@ While implementing this, several related changes were made:
 +    return res;
 +}
 +
- 
++
  Alert* SyncMLBuilder::prepareRequestAlert(SyncSource& s) {
      
      ++cmdID;
@@ -663,7 +1564,7 @@ While implementing this, several related changes were made:
      Source* sou          = new Source(_wcc(s.getName()));     
      Item* item           = new Item(tar, sou, NULL, NULL, FALSE);
  
-@@ -412,7 +485,7 @@
+@@ -383,7 +485,7 @@
  
      CmdID* commandID     = new CmdID(itow(cmdID));
      int data             = s.getPreferredSyncMode();
@@ -672,7 +1573,7 @@ While implementing this, several related changes were made:
      Source* sou          = new Source(_wcc(s.getName()));
  
      //
-@@ -731,7 +804,7 @@
+@@ -702,7 +804,7 @@
      ++cmdID;
  
      CmdID* commandID     = new CmdID(itow(cmdID));
@@ -681,7 +1582,7 @@ While implementing this, several related changes were made:
      Source* sou          = new Source(_wcc(source.getName())); 
      ArrayList* list      = new ArrayList();  
      Sync* sync           = NULL;
-@@ -759,7 +832,7 @@
+@@ -730,7 +832,7 @@
      */
      ++cmdID;
      CmdID* commandID     = new CmdID(itow(cmdID));    
@@ -690,6 +1591,29 @@ While implementing this, several related changes were made:
      Source* sou          = new Source(_wcc(s.getName()));
      ArrayList* mapItems  = new ArrayList();
      Map* map = new Map(commandID, tar, sou, NULL, NULL, mapItems);
+--- native/src/c++/common/spds/SyncMLProcessor.cpp~devinfo
++++ native/src/c++/common/spds/SyncMLProcessor.cpp
+@@ -195,9 +195,17 @@
+             for (k = 0; k < items->size(); k++) {
+                 item = (Item*)items->get(k);
+                 if (item) {
+-                    wchar_t *uri = toWideChar(item->getSource()->getLocURI());
+-                    source.setItemStatus(uri, val);
+-                    delete [] uri;
++                    Source* itemSource = item->getSource();
++                    if (itemSource) {
++                        wchar_t *uri = toWideChar(itemSource->getLocURI());
++                        source.setItemStatus(uri, val);
++                        delete [] uri;
++                    } else {
++                        // the item might consist of additional information, as in:
++                        // <SourceRef>pas-id-44B544A600000092</SourceRef>
++                        // <Data>200</Data>
++                        // <Item><Data>Conflict resolved by server</Data></Item>
++                    }
+                 }
+             }
+             items = s->getSourceRef();
 --- native/src/c++/common/spds/SyncSourceConfig.cpp~devinfo
 +++ native/src/c++/common/spds/SyncSourceConfig.cpp
 @@ -54,12 +54,8 @@
@@ -791,12 +1715,20 @@ While implementing this, several related changes were made:
  void SyncSourceConfig::setEncoding(const BCHAR* s) {
 --- native/src/c++/common/spds/SyncSource.cpp~devinfo
 +++ native/src/c++/common/spds/SyncSource.cpp
-@@ -22,17 +22,16 @@
+@@ -20,19 +20,23 @@
+ #include "base/util/utils.h"
+ #include "base/Log.h"
  #include "client/Sync4jClient.h"
- 
- SyncSource::SyncSource(const wchar_t* sourceName) {
++#include "spds/spdsutils.h"
++
++SyncSource::SyncSource(const wchar_t* sourceName, const SyncSourceConfig *sc) {
 +    name = NULL;
 +
++    if (sc) {
++        config.assign(*sc);
++    }
+ 
+-SyncSource::SyncSource(const wchar_t* sourceName) {
      if ((sourceName == NULL) || (*sourceName == 0)) {
          lastErrorCode = ERR_PARAMETER_IS_EMPTY;
          bsprintf(lastErrorMsg, T("name cannot be empty (NULL or 0-length)"));
@@ -812,7 +1744,7 @@ While implementing this, several related changes were made:
  
      syncMode = SYNC_NONE;
      lastSync = 0;
-@@ -40,7 +39,6 @@
+@@ -40,7 +44,6 @@
      
      errorHandler = NULL;
      filter       = NULL;
@@ -820,7 +1752,7 @@ While implementing this, several related changes were made:
  }
  
  /**
-@@ -50,11 +48,6 @@
+@@ -50,11 +53,6 @@
      if (name) {
          delete [] name;
      }
@@ -832,7 +1764,19 @@ While implementing this, several related changes were made:
      if (filter) {
         delete filter;
      }
-@@ -115,78 +108,6 @@
+@@ -97,6 +95,11 @@
+      return name;
+  }
+ 
++void SyncSource::setConfig(const SyncSourceConfig& sc) {
++    config.assign(sc);
++    setPreferredSyncMode(syncModeCode(sc.getSync()));
++}
++
+ /*
+  * Sets the synchronization mode required for the
+  * SyncSource.
+@@ -115,78 +118,6 @@
  }
  
  /*
@@ -911,7 +1855,31 @@ While implementing this, several related changes were made:
   * Sets the server imposed synchronization mode for the SyncSource.
   *
   * @param syncMode - sync synchronization mode
-@@ -312,3 +233,28 @@
+@@ -202,18 +133,13 @@
+     return syncMode;
+ }
+ 
+-/*
+- * Ends the synchronization of the specified source.
+- *
+- * @param source - the SyncSource to sync
+- 
+-int SyncSource::endSync(SyncSource& source) {
+-    //
+-    // TBD
+-    //
++int SyncSource::beginSync() {
++    return 0;
++}
++
++int SyncSource::endSync() {
+     return 0;
+ }
+-*/
+ 
+ /*
+  * Returns the timestamp in milliseconds of the last synchronization.
+@@ -313,3 +239,28 @@
          filter->setClause(f->getClause());
      }
  }
@@ -1281,6 +2249,36 @@ While implementing this, several related changes were made:
      
      if (!ctCaps || !NotZeroArrayLenght(1, ctCaps))
          return NULL;
+--- native/src/c++/posix/http/CurlTransportAgent.cpp~devinfo
++++ native/src/c++/posix/http/CurlTransportAgent.cpp
+@@ -65,7 +65,6 @@
+         curl_easy_setopt(easyhandle, CURLOPT_ERRORBUFFER, this->curlerrortxt );
+         curl_easy_setopt(easyhandle, CURLOPT_AUTOREFERER, TRUE);
+         curl_easy_setopt(easyhandle, CURLOPT_FOLLOWLOCATION, TRUE);
+-        curl_easy_setopt(easyhandle, CURLOPT_USERAGENT, userAgent[0] ? userAgent : "Funambol POSIX SyncML client");
+         if (proxy.host[0]) {
+             curl_easy_setopt(easyhandle, CURLOPT_PROXY, proxy.host);
+             if (proxy.port) {
+@@ -77,8 +76,19 @@
+             }
+         }
+     }
++    setUserAgent("Funambol POSIX SyncML client");
++}
++
++void CurlTransportAgent::setUserAgent(BCHAR* ua) {
++    if (ua) {
++        TransportAgent::setUserAgent(ua);
++        if (easyhandle) {
++            curl_easy_setopt(easyhandle, CURLOPT_USERAGENT, userAgent);
++        }
++    }
+ }
+ 
++
+ CurlTransportAgent::~CurlTransportAgent() {
+     if (easyhandle) {
+         curl_easy_cleanup(easyhandle);
 --- native/src/include/common/base/util/utils.h~devinfo
 +++ native/src/include/common/base/util/utils.h
 @@ -136,7 +136,7 @@
@@ -1292,30 +2290,187 @@ While implementing this, several related changes were made:
  
  /*
   * Return a filename composed by the system temp dir and the name given
+--- native/src/include/common/client/DMTClientConfig.h~devinfo
++++ native/src/include/common/client/DMTClientConfig.h
+@@ -26,13 +26,20 @@
+ #include "spds/SyncSourceConfig.h"
+ #include "spdm/ManagementNode.h"
+ 
++class DMTree;
+ 
+ /**
+  * This class is an extension of SyncManagerConfig that is DM tree aware; this
+  * means that configuration properties are read/stored from/to the DM tree.
+  */
+ class DMTClientConfig : public SyncManagerConfig {
+-    
++    private:
++        DMTree* dmt;
++        ManagementNode* syncMLNode;
++        ManagementNode* sourcesNode;
++
++        void initialize();
++
+     protected:
+         BCHAR* rootContext;
+ 
+@@ -49,14 +56,50 @@
+ 
+         ~DMTClientConfig() EXTRA_SECTION_01;
+ 
+-        BOOL getSyncSourceConfig(
++        virtual BOOL getSyncSourceConfig(
+                 const BCHAR* name,
+                 SyncSourceConfig& sc,
+                 BOOL refresh = FALSE) EXTRA_SECTION_01;
+-       
+-        BOOL read() EXTRA_SECTION_01;
+-        BOOL save() EXTRA_SECTION_01;
+ 
++        virtual BOOL read() EXTRA_SECTION_01;
++        virtual BOOL save() EXTRA_SECTION_01;
++
++        /**
++         * Opens the configuration backend associated with the root context.
++         * Calling on an open config does nothing.
++         *
++         * @return TRUE for success
++         */
++        virtual BOOL open() EXTRA_SECTION_01;
++
++        /**
++         * Provides access to the "syncml" configuration node,
++         * can be used to read/write custom configuration options.
++         * Config must have been opened before.
++         *
++         * @return node pointer owned by config and valid while the config is open
++         */
++        virtual ManagementNode* getSyncMLNode() EXTRA_SECTION_01;
++
++        /**
++         * Gets number of sync source configurations, -1 if not open.
++         */
++        virtual int getNumSources() EXTRA_SECTION_01;
++
++        /**
++         * Get the specified sync source configuration.
++         *
++         * @param index    number of the requested sync source configuration
++         * @return node pointer owned by config and valid while the config is open
++         */
++        virtual ManagementNode* getSyncSourceNode(int index) EXTRA_SECTION_01;
++
++        /**
++         * Closes the configuration backend. Frees all resources associated
++         * with and invalidates all ManagementNode pointers returned by this
++         * config.
++         */
++        virtual void close() EXTRA_SECTION_01;
+ };
+ 
+ #endif
 --- native/src/include/common/client/Sync4jClient.h~devinfo
 +++ native/src/include/common/client/Sync4jClient.h
-@@ -56,17 +56,6 @@
-         // set a custom error handler
-         virtual void setErrorHandler(ErrorHandler& e);
+@@ -25,56 +25,277 @@
+     #include "base/util/ArrayList.h"
+     #include "client/DMTClientConfig.h"
+     #include "spds/SyncSource.h"
++    #include "spdm/ManagementNode.h"
+     #include "spds/constants.h"
  
--        /**
--         * Optionally get a short version string describing the client, f.i.
--         * "Foo SyncML Client 1.0"
--         *
--         * Currently used as HTTP transport agent unless overriddent by the
--         * userAgent config property, will later also be embedded in device infos
--         * sent to server.
--         *
--         * @return a pointer to a string owned by the client, NULL if not available
--         */
--        virtual const BCHAR *getClientID() { return NULL; }
+     class SyncManager;
++    class AccessConfig;
++    class DevInf;
  
-         /*
-          * Execute a synchronization on the specified sources.
-@@ -77,6 +66,100 @@
-          */
-         virtual int sync(SyncSource** sources);
- 
+     /**
+-     * This class wrap the common operations requested by the client to
+-     * handle a synchronization. It uses the signleton pattern to make
++     * This class wraps the common operations executed by a typical
++     * client. It contains default implementations for calls invoked
++     * by the library core to parameterize or control the
++     * synchronization. A client can override these calls by
++     * subclassing SyncClient and using an instance of its own class
++     * instead.
++     * 
++     * Warning: the library contains global data in several different
++     * places. Therefore it is not possible to execute multiple
++     * sessions in parallel.
++     */
++    class SyncClient {
++      public:
++        SyncClient();
++        virtual ~SyncClient();
++        
++        // set the default client configuration (using context root):
++        // when using this call the client handles the loading/saving
++        // of the configuration properties automatically
++        //
++        // @param   root     identifies the root node in a configuration
++        //                   tree with sub nodes "spds/syncml" and "spds/sources"
++        virtual void setDMConfig(const BCHAR* root);
++        
++        // set a client-provided DMTree config: in this mode
++        // the caller owns the configuration and is responsible for
++        // saving the (possibly modified) configuration after the
++        // synchronization
++        virtual void setDMConfig(DMTClientConfig& c);
++
++        // get the defined error handler
++        virtual ErrorHandler& getErrorHandler();
++        // set a custom error handler
++        virtual void setErrorHandler(ErrorHandler& e);
++
++
++        /*
++         * Execute a synchronization on the specified sources.
++         * The sources will be configured automatically using the
++         * client configuration set earlier with one of the setDMConfig()
++         * calls.
++         *
++         * @param sources - NULL terminated array of sources to sync.
++         *
++         * @return - 0 on success, an error otherwise
++         */
++        virtual int sync(SyncSource** sources);
++
++        /**
++         * Execute a synchronization with sources that are chosen based
++         * on the configuration:
++         * - calls prepareSync() to give a derived class the chance to
++         *   setup syncing and get ready for creating sources
++         * - iterates over the configuration and for
++         *   each source configuration, asks for the corresponding
++         *   client source with createSource():
++         *   the derived class creates the sources and for each of them can
++         *   modify the configuration or decide to not synchronize
++         *   the source; it is expected to remember all active sources so
++         *   that it can free them later, if necessary
++         * - calls beginSync() to give the derived class a class to do
++         *   after all sources have been configured successfully
++         * - executes the synchronization
++         *
++         * This version of the call is easier to use for clients whose
++         * sync sources are determined by the configuration or who need
++         * access to extended configuration properties because these clients
++         * can be implemented without having to copy the configuration
++         * handling code.
++         *
++         * @return 0 on success, an error otherwise
++         */
++        virtual int sync();
++
++        /**
++         * Gathers the various bits and pieces known about the client and
++         * its sources and builds a SyncML devinfo 1.1 instance.
++         *
++         * For simplicity reasons this function is called for the currently
++         * active sync sources, changing them between runs thus causes
++         * a (valid!) retransmission of the device info.
++         *
++         * @param sources     NULL terminated array of sync sources
++         * @return device infos, to be deleted by caller, or NULL if unavailable
++         */
++        virtual DevInf *createDeviceInfo(SyncSource **sources) EXTRA_SECTION_01;
 +
 +        /*********************************************************************
 +         * The following calls provide information about the client that the
@@ -1410,9 +2565,187 @@ While implementing this, several related changes were made:
 +        /* virtual const BCHAR *getCapabilities() { return NULL; } */
 +
 +
-       private:
-         SyncManager* syncManager;
-         ErrorHandler* errorHandler;
++      protected:
++        /**
++         * A callback into a derived class which is called after
++         * reading the SyncML configuration and before creating sources.
++         * Not used by the sync(SyncSource**) call.
++         *
++         * @param config   a copy of the SyncML and client configuration
++         * @param node     a config node handle that can be used to read
++         *                 client specific properties (only valid during
++         *                 this call)
++         * @return 0 for success, an error code otherwise - an error code
++         *         aborts the whole synchronization
++         */
++        virtual int prepareSync(const AccessConfig &config,
++                                ManagementNode &node) {
++            return ERR_NONE;
++        }
++
++        /**
++         * A factory method that is used by the sync() call to create
++         * the sync sources that are to be synchronized. Not used by the
++         * sync(SyncSource**) call.
++         *
++         * @param name     name of the sync source
++         * @param config   a copy of the source's configuration: this
++         *                 includes all properties that the client library
++         *                 knows and uses itself (only valid during this call)
++         * @param node     a config node handle that can be used
++         *                 to read client specific properties (only valid
++         *                 during this call)
++         * @retval source  the sync source created by the client or NULL if
++         *                 there is no sync source currently associated with
++         *                 the config or it is inactive; instance is owned
++         *                 by the creator and has to be freed after the sync
++         * @return 0 for success, an error code otherwise - an error code
++         *         aborts the whole synchronization and the value of *source is
++         *         ignored
++         */
++        virtual int createSyncSource(const char *name,
++                                     const SyncSourceConfig &config,
++                                     ManagementNode &node,
++                                     SyncSource **source) {
++            *source = NULL;
++            return ERR_UNSPECIFIED;
++        }
++
++        /**
++         * Callback invoked after creating all sources.
++         * @return 0 for success, an error code otherwise - an error code stops
++         *         immediately
++         */
++        virtual int beginSync() {
++            return ERR_NONE;
++        }
++
++      private:
++        // fallback error handler which is used if no custom handler gets installed
++        ErrorHandler *defaultErrorHandler;
++        // custom error handler which overrides the default one
++        ErrorHandler *customErrorHandler;
++        // configuration of this client, set by setDMConfig()
++        DMTClientConfig *config;
++        // depending on how it was set, the config has to be saved and freed or not
++        BOOL isOurConfig;
++    };
++
++
++    /**
++     * This is the legacy API. It uses the singleton pattern to make
+      * sure that only one instance of the client is active on the client
+      * program. 
+      */
+-    class Sync4jClient {
++     class Sync4jClient : public SyncClient {
+ 
+         public:
+             // get and release singleton instance
+             static Sync4jClient& getInstance();
+             static void dispose();
+-            // set the default client configuration (using context root)
+-            void setDMConfig(const BCHAR* root);
+-            // set a client-provided DMTree config
+-            void setDMConfig(DMTClientConfig& c);
+-
+-            // get the defined error handler
+-            ErrorHandler& getErrorHandler();
+-            // set a custom error handler
+-            void setErrorHandler(ErrorHandler& e);
+-
+-            /*
+-             * Start a synchronization on the specified sources.
+-             *
+-             * @param sources - NULL terminated array of sources to sync.
+-             *
+-             * @return - 0 on success, an error otherwise
+-             */
+-            int sync(SyncSource** sources);
+-
+-            /*
+-             * Used to start the sync process. The argument is an array of SyncSource
+-             * that have to be synched
+-             *
+-             * @param sources the SyncSource& array
+-             */
+-            int sync(ArrayList& sources);
+ 
+         private:
+ 
+             static Sync4jClient* instance;
+ 
+-            SyncManager* syncManager;
+-            ErrorHandler* errorHandler;
+-
+             // private constructor and destructor
+             Sync4jClient();
+             ~Sync4jClient();
+--- native/src/include/common/http/TransportAgent.h~devinfo
++++ native/src/include/common/http/TransportAgent.h
+@@ -73,52 +73,52 @@
+          *
+          * @param url the new target url
+          */
+-        void setURL(URL& newURL) EXTRA_SECTION_03;
++        virtual void setURL(URL& newURL) EXTRA_SECTION_03;
+ 
+         /*
+          * Returns the url.
+          */
+-        URL& getURL() EXTRA_SECTION_03;
++        virtual URL& getURL() EXTRA_SECTION_03;
+ 
+         /**
+          * Sets the connection timeout
+          *
+          * @param t the new timeout in seconds
+          */
+-        void setTimeout(unsigned int t) EXTRA_SECTION_03;
++        virtual void setTimeout(unsigned int t) EXTRA_SECTION_03;
+ 
+         /**
+          * Returns the connection timeout
+          */
+-        unsigned int getTimeout() EXTRA_SECTION_03;
++        virtual unsigned int getTimeout() EXTRA_SECTION_03;
+         
+         /**
+          * Sets the max msg size
+          *
+          * @param t the new msx msg size in bytes
+          */
+-        void setMaxMsgSize(unsigned int t) EXTRA_SECTION_03;
++        virtual void setMaxMsgSize(unsigned int t) EXTRA_SECTION_03;
+          
+         /**
+          * Returns the max msg size
+          */
+-        unsigned int getMaxMsgSize()EXTRA_SECTION_03;
++        virtual unsigned int getMaxMsgSize()EXTRA_SECTION_03;
+ 
+         /**
+          * Sets the buffer size
+          *
+          * @param t the buffer size size in bytes
+          */
+-        void setReadBufferSize(unsigned int t) EXTRA_SECTION_03;
++        virtual void setReadBufferSize(unsigned int t) EXTRA_SECTION_03;
+         
+-        void setUserAgent(BCHAR* ua);
++        virtual void setUserAgent(BCHAR* ua);
+ 
+-        BCHAR* getUserAgent();
++        virtual BCHAR* getUserAgent();
+ 
+         /**
+          * Returns the buffer size
+          */
+-        unsigned int getReadBufferSize()EXTRA_SECTION_03;
++        virtual unsigned int getReadBufferSize()EXTRA_SECTION_03;
+ 
+ 
+         /*
 --- native/src/include/common/spdm/constants.h~devinfo
 +++ native/src/include/common/spdm/constants.h
 @@ -45,6 +45,7 @@
@@ -1431,6 +2764,20 @@ While implementing this, several related changes were made:
  
  
  #endif
+--- native/src/include/common/spdm/ManagementNode.h~devinfo
++++ native/src/include/common/spdm/ManagementNode.h
+@@ -106,6 +106,11 @@
+          */
+         virtual BCHAR *getFullName();
+ 
++        /**
++         * Returns the node name itself without the context.
++         */
++        virtual const BCHAR *getName();
++
+         // ---------------------------------------------------- Abstract methods
+ 
+         /*
 --- native/src/include/common/spds/AccessConfig.h~devinfo
 +++ native/src/include/common/spds/AccessConfig.h
 @@ -33,6 +33,7 @@
@@ -1441,40 +2788,253 @@ While implementing this, several related changes were made:
          unsigned long beginTimestamp   ;
          unsigned long endTimestamp     ;
          SyncMode      firstTimeSyncMode;
-@@ -217,6 +218,9 @@
+@@ -76,7 +77,7 @@
+          *         the memory itself.
+          *
           */
-         unsigned long getEndSync() EXTRA_SECTION_02;
+-        const BCHAR* getUsername(const BCHAR* buf = NULL) EXTRA_SECTION_02;
++        const BCHAR* getUsername(const BCHAR* buf = NULL) const EXTRA_SECTION_02;
  
+         /**
+          *  Sets the username value. The given data are copied in an internal
+@@ -90,7 +91,7 @@
+         /**
+          * Returns the password value.
+          */
+-        const BCHAR* getPassword(const BCHAR* buf = NULL) EXTRA_SECTION_02;
++        const BCHAR* getPassword(const BCHAR* buf = NULL) const EXTRA_SECTION_02;
+ 
+         /**
+          * Sets a new password value. The given data are copied in an internal
+@@ -104,7 +105,7 @@
+         /**
+          * Returns the deviceId value.
+          */
+-        const BCHAR* getDeviceId(const BCHAR* buf = NULL) EXTRA_SECTION_02;
++        const BCHAR* getDeviceId(const BCHAR* buf = NULL) const EXTRA_SECTION_02;
+ 
+         /**
+          * Sets a new  deviceId value. The given data are copied in an internal
+@@ -119,7 +120,7 @@
+          * Returns the SyncMode that the sync engine should your the first time
+          * a source is synced
+          */
+-        SyncMode getFirstTimeSyncMode() EXTRA_SECTION_02;
++        SyncMode getFirstTimeSyncMode() const EXTRA_SECTION_02;
+ 
+         /**
+          * Sets the SyncMode that the sync engine should your the first time
+@@ -132,7 +133,7 @@
+         /**
+          * Should the sync engine use a HTTP proxy?
+          */
+-        BOOL getUseProxy() EXTRA_SECTION_02;
++        BOOL getUseProxy() const EXTRA_SECTION_02;
+ 
+         /**
+          * Sets if the sync engine should use a HTTP proxy to access the server.
+@@ -144,7 +145,7 @@
+         /**
+          * Returns the proxyHost value.
+          */
+-        const BCHAR* getProxyHost(const BCHAR* buf = NULL) EXTRA_SECTION_02;
++        const BCHAR* getProxyHost(const BCHAR* buf = NULL) const EXTRA_SECTION_02;
+ 
+         /**
+          * Sets a new proxyHost value.
+@@ -156,7 +157,7 @@
+         /**
+          * Returns the proxyUsername value.
+          */
+-        BCHAR* getProxyUsername(const BCHAR* buf = NULL) EXTRA_SECTION_02;
++        BCHAR* getProxyUsername(const BCHAR* buf = NULL) const EXTRA_SECTION_02;
+ 
+         /**
+          * Sets a new proxyUsername value.
+@@ -168,7 +169,7 @@
+         /**
+          * Returns the proxyPassword value.
+          */
+-        BCHAR* getProxyPassword(const BCHAR* buf = NULL) EXTRA_SECTION_02;
++        BCHAR* getProxyPassword(const BCHAR* buf = NULL) const EXTRA_SECTION_02;
+ 
+         /**
+          * Sets a new proxyPassword value.
+@@ -182,7 +183,7 @@
+          * (or HTTP://) or https:// (or HTTPS://), http:// is prepended to the
+          * given string.
+          */
+-        const BCHAR* getSyncURL(const BCHAR* buf = NULL) EXTRA_SECTION_02;
++        const BCHAR* getSyncURL(const BCHAR* buf = NULL) const EXTRA_SECTION_02;
+ 
+         /**
+          * Sets a new the syncURL value. The given data are copied in an internal
+@@ -203,7 +204,7 @@
+         /**
+          * Returns the beginSync timestamp
+          */
+-        unsigned long getBeginSync() EXTRA_SECTION_02;
++        unsigned long getBeginSync() const EXTRA_SECTION_02;
+ 
+         /**
+          * Sets the new "endSync" timestamp.
+@@ -215,56 +216,59 @@
+         /**
+          * Returns the endSync timestamp
+          */
+-        unsigned long getEndSync() EXTRA_SECTION_02;
++        unsigned long getEndSync() const EXTRA_SECTION_02;
+ 
+-        BOOL getServerAuthRequired() EXTRA_SECTION_02;
 +        const BCHAR* getDevInfHash() const EXTRA_SECTION_02;
 +        void setDevInfHash(const BCHAR *devInfHash) EXTRA_SECTION_02;
 +
-         BOOL getServerAuthRequired() EXTRA_SECTION_02;
++        BOOL getServerAuthRequired() const EXTRA_SECTION_02;
  
          void setServerAuthRequired(BOOL v) EXTRA_SECTION_02;
+ 
+-        const BCHAR* getClientAuthType(const BCHAR* buf = NULL) EXTRA_SECTION_02;
++        const BCHAR* getClientAuthType(const BCHAR* buf = NULL) const EXTRA_SECTION_02;
+ 
+         void setClientAuthType(const BCHAR* v) EXTRA_SECTION_02;
+ 
+-        const BCHAR* getServerAuthType(const BCHAR* buf = NULL) EXTRA_SECTION_02;
++        const BCHAR* getServerAuthType(const BCHAR* buf = NULL) const EXTRA_SECTION_02;
+ 
+         void setServerAuthType(const BCHAR* v) EXTRA_SECTION_02;
+ 
+-        const BCHAR* getServerPWD(const BCHAR* buf = NULL) EXTRA_SECTION_02;
++        const BCHAR* getServerPWD(const BCHAR* buf = NULL) const EXTRA_SECTION_02;
+ 
+         void setServerPWD(const BCHAR* v) EXTRA_SECTION_02;
+ 
+-        const BCHAR* getServerID(const BCHAR* buf = NULL) EXTRA_SECTION_02;
++        const BCHAR* getServerID(const BCHAR* buf = NULL) const EXTRA_SECTION_02;
+ 
+         void setServerID(const BCHAR* v) EXTRA_SECTION_02;
+ 
+-        const BCHAR* getServerNonce(const BCHAR* buf = NULL) EXTRA_SECTION_02;
++        const BCHAR* getServerNonce(const BCHAR* buf = NULL) const EXTRA_SECTION_02;
+ 
+         void setServerNonce(const BCHAR* v) EXTRA_SECTION_02;
+ 
+-        const BCHAR* getClientNonce(const BCHAR* buf = NULL) EXTRA_SECTION_02;
++        const BCHAR* getClientNonce(const BCHAR* buf = NULL) const EXTRA_SECTION_02;
+ 
+         void setClientNonce(const BCHAR* v) EXTRA_SECTION_02;
+ 
+         void setMaxMsgSize(unsigned long msgSize) EXTRA_SECTION_02;
+ 
+-        unsigned long getMaxMsgSize() EXTRA_SECTION_02;
++        unsigned long getMaxMsgSize() const EXTRA_SECTION_02;
+ 
+         void setMaxModPerMsg(unsigned long msgSize) EXTRA_SECTION_02;
+ 
+-        unsigned long getMaxModPerMsg() EXTRA_SECTION_02;
++        unsigned long getMaxModPerMsg() const EXTRA_SECTION_02;
+         
+         void setReadBufferSize(unsigned long bufferSize);
+ 
+-        unsigned long getReadBufferSize();
++        unsigned long getReadBufferSize() const EXTRA_SECTION_02;
+ 
+-        const BCHAR* getUserAgent();
++        const BCHAR* getUserAgent() const EXTRA_SECTION_02;
+ 
+-        void setUserAgent(const BCHAR* v);
++        void setUserAgent(const BCHAR* v) EXTRA_SECTION_02;
+ 
+         /**
+          * Has some of this values changed?
+          */
+-        unsigned int getDirty() EXTRA_SECTION_02;
++        unsigned int getDirty() const EXTRA_SECTION_02;
+ 
+         /**
+          * Sets the values of this object with with the values from the given
+@@ -277,7 +281,7 @@
+         /**
+          * Should the sync engine use a HTTP proxy?
+          */
+-        BOOL getEncryption() EXTRA_SECTION_02;
++        BOOL getEncryption() const EXTRA_SECTION_02;
+ 
+         /**
+          * Sets if the sync engine should use a HTTP proxy to access the server.
 --- native/src/include/common/spds/SyncManager.h~devinfo
 +++ native/src/include/common/spds/SyncManager.h
-@@ -115,6 +115,14 @@
-         char* processItemContent(const BCHAR* data, const BCHAR* encodings, long* size) EXTRA_SECTION_01;
-         void decodeSyncItemContent(char** c, TransformationInfo& info, const BCHAR* encoding) EXTRA_SECTION_01;
-         BOOL checkForServerChanges(SyncML* syncml, ArrayList &statusList) EXTRA_SECTION_01;
-+
-+        /**
-+         * gathers the various bits and pieces the SyncManager knows
-+         * about the client and builds a SyncML devinfo 1.1 instance.
-+         *
-+         * @return device infos, to be deleted by caller
-+         */
-+        DevInf *buildDeviceInfo() EXTRA_SECTION_01;
- };
+@@ -29,8 +29,6 @@
+ #include "spds/CredentialHandler.h"
+ #include "spds/CredentialHandler.h"
  
- #endif
+-
+-
+ typedef enum {
+                 STATE_START        = 0,
+                 STATE_PKG1_SENDING = 1,
+@@ -41,14 +39,28 @@
+                 STATE_PKG5_SENT    = 6
+              } SyncManagerState ;
+ 
+-
++//
++// This is the core class which encodes the flow of messages between
++// client and server throughout a session. It is configured via the
++// DMTClientConfig with which it is constructed by the
++// SyncClient::setDMConfig() and the (optional) DevInf provided
++// to it by the client.
++//
+ class SyncManager {
+ 
+     public:
+-        SyncManager(SyncManagerConfig* config) EXTRA_SECTION_01;
+-        SyncManager(SyncManagerConfig& config) EXTRA_SECTION_01;
++        /**
++         * Initialize a new sync manager. Parameters provided to it
++         * have to remain valid while this sync manager exists.
++         *
++         * @param config     required configuration
++         * @param devinf     optional device information which will
++         *                   be sent to the server if it has changed or
++         *                   the server asks for it
++         */
++        SyncManager(SyncManagerConfig& config, DevInf *devinf = NULL) EXTRA_SECTION_01;
+         ~SyncManager() EXTRA_SECTION_01;
+-        
++
+         int prepareSync(SyncSource** sources) EXTRA_SECTION_01;
+         
+         int sync() EXTRA_SECTION_01;
+@@ -65,7 +77,9 @@
+             BCHAR* dataType;
+         };
+ 
++        DevInf* devInf;
+         SyncManagerConfig& config;
++
+         CredentialHandler credentialHandler;
+         SyncMLBuilder syncMLBuilder;
+         SyncMLProcessor syncMLProcessor;
+@@ -84,7 +98,6 @@
+         
+         BCHAR syncURL [512];
+         BCHAR deviceId[32];  
+-        BCHAR userAgent[128];        
+         unsigned int maxMsgSize;    // the max message size. If 0 it is not set
+         unsigned int maxModPerMsg;  // the max modification per message
+         unsigned int readBufferSize; // the size of the buffer to store chunk of incoming stream.
 --- native/src/include/common/spds/SyncMLBuilder.h~devinfo
 +++ native/src/include/common/spds/SyncMLBuilder.h
-@@ -109,7 +109,13 @@
-          * Prepare the status for an arbitrary command
-          */
-         Status* prepareCmdStatus(AbstractCommand &cmd, int status) EXTRA_SECTION_01;
+@@ -104,7 +104,18 @@
+         * Prepare the status for Sync command
+         */
+         Status*  prepareSyncStatus(SyncSource& source, Sync* sync) EXTRA_SECTION_01;
 -                        
++
++        /**
++         * Prepare the status for an arbitrary command
++         */
++        Status* prepareCmdStatus(AbstractCommand &cmd, int status) EXTRA_SECTION_01;
 +
 +        /**
 +         * Prepare either a Result with the device infos (if command given) or
@@ -1602,7 +3162,20 @@ While implementing this, several related changes were made:
      BCHAR next[DIM_ANCHOR];
      BCHAR last[DIM_ANCHOR];
  
-@@ -66,39 +65,57 @@
+@@ -50,9 +49,10 @@
+     /**
+      * Constructor: create a SyncSource with the specified name
+      *
+-     * @param name - the name of the SyncSource
++     * @param name   the name of the SyncSource
++     * @param sc     optional configuration for the sync source
+      */
+-    SyncSource(const wchar_t* name) EXTRA_SECTION_01;
++    SyncSource(const wchar_t* name, const SyncSourceConfig* sc = NULL) EXTRA_SECTION_01;
+ 
+     // Destructor
+     virtual ~SyncSource() EXTRA_SECTION_01;
+@@ -66,39 +66,55 @@
       */
      const wchar_t *getName() EXTRA_SECTION_01;
  
@@ -1620,12 +3193,12 @@ While implementing this, several related changes were made:
 +     * These properties are stored in a local copy which will not be
 +     * written back into the permanent config, with a few exceptions:
 +     * properties related to mananging sync sessions like lastAnchor
-+     * arer written back into the config by the library afer a
++     * are written back into the config by the library afer a
 +     * successful synchronization.
 +     *
 +     * A client developer is not required to modify these calls,
-+     * but he can use and/or update the properties in
-+     * prepareSync().
++     * but he can use and/or update the properties before the
++     * synchronization starts.
 +     *********************************************************/
 +
 +    // read-only access to configuration
@@ -1636,17 +3209,15 @@ While implementing this, several related changes were made:
 +    SyncSourceConfig& getConfig() EXTRA_SECTION_01 {
 +        return config;
 +    }
-+    // overwrite complete configuration, use read-write access to
-+    // modify individual attributes instead
-+    void setConfig(const SyncSourceConfig& sc) EXTRA_SECTION_01 {
-+        config.assign(sc);
-+    }
++    // initialize sync source from complete configuration
++    void setConfig(const SyncSourceConfig& sc) EXTRA_SECTION_01;
  
      /*
       * Get & Set the preferred synchronization mode for the SyncSource.
 +     *
-+     * Taken initially from the configuration, it can then in prepareSync()
-+     * be modified by the SyncSource itself.
++     * Taken initially from the configuration by setConfig(), it can then
++     * be modified by the client. The code synchronization code itself
++     * reads this value, but it doesn't modify it.
       */
      SyncMode getPreferredSyncMode() EXTRA_SECTION_01;
      void setPreferredSyncMode(SyncMode syncMode) EXTRA_SECTION_01;
@@ -1679,7 +3250,7 @@ While implementing this, several related changes were made:
       * Get & Set the timestamp in milliseconds of the last synchronization.
       * The reference time of the timestamp is platform specific.
       */
-@@ -125,12 +142,6 @@
+@@ -125,12 +141,6 @@
      void setNextAnchor(const BCHAR* next) EXTRA_SECTION_01;
      
      /*
@@ -1692,10 +3263,11 @@ While implementing this, several related changes were made:
      * Gets filter
      *
      * @return  the current filter's value
-@@ -146,6 +157,14 @@
+@@ -146,28 +156,48 @@
      */
      void setFilter(SourceFilter* f);
  
+-
 +    /******************************************************
 +     * The following methods are virtual because a
 +     * derived SyncSource is expected to override or
@@ -1705,9 +3277,51 @@ While implementing this, several related changes were made:
 +     *****************************************************/
 +    
      /*
-      * Called by the engine from inside SyncClient::sync()
-      * right after initializing the SyncSource with its
-@@ -289,7 +308,56 @@
+-     * Called by the engine at the begin of the sync.
++     * Called by the engine from inside SyncClient::sync()
++     * at the begin of the sync.
++     *
+      * The SyncSource can do every initialization it needs.
++     * The server has been contacted, so in particular
++     * getSyncMode() can now be used to find out what
++     * the sync mode for this synchronization run will be.
++     * After this call the iterators for SyncItems must return
++     * valid results for the current sync mode.
++     *
+      * The synchronization stops if this function return a non-zero value.
+      * 
+      * @return - 0 on success, an error otherwise
+      */
+-    virtual int beginSync() = 0 EXTRA_SECTION_01;
++    virtual int beginSync() EXTRA_SECTION_01;
+     
+     /*
+-     * Called by the engine at the begin of the sync.
+-     * The SyncSource can do any needed commit action to save the state of
+-     * the items.
+-     * The engine commits to the server the changes applied in the transaction 
+-     * only if this function return 0
++     * Called by the engine from inside SyncClient::sync()
++     * at the end of the sync.
++     *
++     * The SyncSource can do any needed commit action to save
++     * the state of the items. The engine commits to the server
++     * the changes applied in the transaction only if this function
++     * return 0.
++     *
++     * FIXME: the return code is currently ignored by the sync engine
+      * 
+      * @return - 0 on success, an error otherwise
+      */
+-    virtual int endSync() = 0 EXTRA_SECTION_01;
++    virtual int endSync() EXTRA_SECTION_01;
+         
+     virtual void setItemStatus(const wchar_t* key, int status) = 0 EXTRA_SECTION_01;
++
+     /*
+      * Return the key of the first SyncItem of all.
+      * It is used in case of refresh sync 
+@@ -260,7 +290,56 @@
       * ArrayElement implementation
       */
      virtual ArrayElement* clone() EXTRA_SECTION_01 = 0;
@@ -1996,3 +3610,13 @@ While implementing this, several related changes were made:
  
  // Commands
  #define ALERT               T("Alert"            )
+--- native/src/include/posix/http/CurlTransportAgent.h~devinfo
++++ native/src/include/posix/http/CurlTransportAgent.h
+@@ -55,6 +55,7 @@
+         ~CurlTransportAgent();
+ 
+         char* sendMessage(const char* msg);
++        void setUserAgent(BCHAR* ua);
+ 
+     };
+ 

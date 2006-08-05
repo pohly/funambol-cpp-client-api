@@ -131,7 +131,7 @@ other) servers:
      clientAuthType = stringdup(t);
 --- native/src/c++/common/spds/SyncManager.cpp~synthesis
 +++ native/src/c++/common/spds/SyncManager.cpp
-@@ -296,11 +296,13 @@
+@@ -281,11 +281,13 @@
                  }
                  alerts->add(*alert);
                  deleteAlert(&alert);
@@ -148,7 +148,7 @@ other) servers:
          if (syncml == NULL) {
              ret = lastErrorCode;
              goto finally;
-@@ -340,13 +342,25 @@
+@@ -325,13 +327,25 @@
          deleteCred(&cred);
  
          responseMsg = transportAgent->sendMessage(initMsg);
@@ -175,7 +175,7 @@ other) servers:
              }
              goto finally;
          }
-@@ -385,7 +399,14 @@
+@@ -370,7 +384,14 @@
              if (!check[count])
                  continue;
  
@@ -191,7 +191,7 @@ other) servers:
              if (ret == -1 || ret == 404 || ret == 415) {
                  lastErrorCode = ret;
                  bsprintf(logmsg, T("AlertStatus from server %d"), ret);
-@@ -469,7 +490,7 @@
+@@ -454,7 +475,7 @@
          //
          clientChal = syncMLProcessor.getChal(syncml->getSyncBody());
  
@@ -200,7 +200,7 @@ other) servers:
              if (clientChal == NULL) {
                  requestedAuthType = credentialHandler.getClientAuthType();
              } else {
-@@ -541,6 +562,88 @@
+@@ -526,6 +547,88 @@
      return ret;
  }
  
@@ -289,7 +289,7 @@ other) servers:
  int SyncManager::sync() {
  
      BCHAR* msg         = NULL;
-@@ -965,6 +1068,19 @@
+@@ -950,6 +1053,19 @@
                  break;
              }
  
@@ -309,7 +309,7 @@ other) servers:
              // deleteSyncML(&syncml);
  
          } while (last == FALSE);
-@@ -1055,73 +1171,9 @@
+@@ -1040,73 +1156,9 @@
              commands->add(*status);
              deleteStatus(&status); 
  
