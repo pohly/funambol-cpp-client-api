@@ -1,3 +1,9 @@
+
+2006-08-09:
+    magi: applied patches sync-mode-names,item-type,64bit-errors,synthesis,single-tag.
+          modified Credential LocName issue instead of passing parameter to some methods
+          removed <![CDATA[ ... ]]> FileData and FolderData formatter because the CDATA is in the Formatter.cpp          
+
 Funambol SDK C++ 3.0.20
 ------------------------- 
 2006-07-21:

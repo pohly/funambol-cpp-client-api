@@ -489,8 +489,14 @@ SyncHdr* SyncMLBuilder::prepareSyncHdr(Cred* cred) {
     SessionID* sessID    = new SessionID(ltow(sessionID));
     BCHAR*   messageID = itow(msgID);
     Target*    tar       = new Target(target);
-    Source*    sou       = new Source(device);       
+    Source*    sou       = NULL; 
     Meta* meta           = NULL;
+
+    if (cred && bstrcmp(cred->getType(NULL), AUTH_TYPE_MD5) == 0)      
+        sou = new Source(device, cred->getUsername());        
+    else
+        sou = new Source(device);
+    
 
     if (maxMsgSize > 0) {
         MetInf* metInf = new MetInf(NULL, NULL, NULL, NULL, 
@@ -628,13 +634,22 @@ ArrayList* SyncMLBuilder::prepareItem(SyncItem* syncItem, const BCHAR* type, BCH
 /*
 * Prepare an empty modification command without any commands. They will be added with the insertItem method
 */
-ModificationCommand* SyncMLBuilder::prepareModificationCommand(BCHAR* COMMAND, SyncItem* syncItem, const BCHAR* type) {        
+ModificationCommand* SyncMLBuilder::prepareModificationCommand(BCHAR* COMMAND, SyncItem* syncItem, const BCHAR* defaultType) {        
     
     if (syncItem == NULL) {
          return NULL;
     }
     ++cmdID;
     CmdID* commandID     = new CmdID(itow(cmdID));
+
+    // The item should determine its type itself.
+    // Only fallback to the default type configured for its
+    // source if (broken?) SyncSources do not set a in their
+    // items.
+    const BCHAR *type = _wcc(syncItem->getDataType());
+    if (!type || !type[0]) {
+        type = defaultType;
+    }
 
     ModificationCommand* ret = NULL;
     MetInf* metInf       = new MetInf(NULL, (BCHAR*)type, NULL, NULL, 
@@ -667,12 +682,21 @@ ModificationCommand* SyncMLBuilder::prepareModificationCommand(BCHAR* COMMAND, S
 /*
 * Add another item into the 
 */
-void SyncMLBuilder::addItem(ModificationCommand* modificationCommand, BCHAR* COMMAND, SyncItem* syncItem, const BCHAR* type) {        
+void SyncMLBuilder::addItem(ModificationCommand* modificationCommand, BCHAR* COMMAND, SyncItem* syncItem, const BCHAR* defaultType) {        
     
     if (syncItem == NULL || modificationCommand == NULL) {
          return;
     }       
     
+    // The item should determine its type itself.
+    // Only fallback to the default type configured for its
+    // source if (broken?) SyncSources do not set a in their
+    // items.
+    const BCHAR *type = _wcc(syncItem->getDataType());
+    if (!type || !type[0]) {
+        type = defaultType;
+    }
+
     ArrayList* list = modificationCommand->getItems();
     ArrayList* tmpList = prepareItem(syncItem, type, COMMAND);
     list->add(tmpList);

@@ -170,7 +170,7 @@ char* FolderData::format() {
 
     out.reserve(150);
     
-    out = T("<![CDATA[\n<Folder>\n");
+    out = T("<Folder>\n");
     if (name.length() > 0)
         out += XMLProcessor::makeElement(FOLDER_NAME, _wcc(name));
     if (created.length() > 0)
@@ -203,7 +203,7 @@ char* FolderData::format() {
     if (role.length() > 0)
         out += XMLProcessor::makeElement(FOLDER_ROLE, _wcc(role));
     
-    out += T("</Folder>\n]]>\n");
+    out += T("</Folder>\n");
     return stringdup(out.c_str());
 }
 

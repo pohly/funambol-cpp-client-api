@@ -36,7 +36,7 @@ class Formatter {
     // ---------------------------------------------------------- Public data    
     public:
         
-        static StringBuffer*    getValue            (BCHAR* tagName, BCHAR* value);
+        static StringBuffer*    getValue            (BCHAR* tagName, BCHAR* value, BCHAR *params = NULL);
         static StringBuffer*    getValue            (BCHAR* tagName, const BCHAR* value);
         static StringBuffer*    getValue            (BCHAR* tagName, StringBuffer* value);
         static StringBuffer*    getValue            (BCHAR* tagName, long value);

@@ -120,6 +120,8 @@
 #define TARGET_PARENT       T("TargetParent"     )
 #define SOURCE_PARENT       T("SourceParent"     )
 
+// parameters 
+#define METINFO             T("xmlns='syncml:metinf'")
 
 
 // Commands

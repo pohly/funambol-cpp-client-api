@@ -73,7 +73,9 @@
          */        
         
         void setUsername(const BCHAR* t) EXTRA_SECTION_01;
+        const BCHAR* getUsername() EXTRA_SECTION_01;
         void setPassword(const BCHAR* t) EXTRA_SECTION_01;
+        const BCHAR* getPassword() EXTRA_SECTION_01;
         void setClientAuthType(const BCHAR* t) EXTRA_SECTION_01;
         void setClientNonce(const BCHAR* t) EXTRA_SECTION_01;
         const BCHAR* getClientAuthType(BCHAR* t=0 /* deprecated */) EXTRA_SECTION_01;

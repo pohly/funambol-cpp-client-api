@@ -183,10 +183,64 @@ BCHAR* XMLProcessor::getContent(const BCHAR* xml,
         return 0;
     }
 
-    ret = new BCHAR[endPos - startPos + 1];
+    // figure out whether the text that we are about to copy
+    // contains further elements; if not, treat it as a leaf
+    // element and decode entities
+    BOOL isLeaf = TRUE;
+    unsigned int pos = startPos;
+    while (pos < endPos) {
+        if (xml[pos] == '<') {
+            isLeaf = FALSE;
+            break;
+        }
+        pos++;
+    }
 
-    bstrncpy(ret, xml+startPos, endPos - startPos);
-    ret[endPos - startPos] = 0;
+    const BCHAR cdataStart[] = T("<![CDATA[");
+    const int cdataStartLen = sizeof(cdataStart) - 1;
+    const BCHAR cdataEnd[] = T("]]>");
+    const int cdataEndLen = sizeof(cdataEnd) - 1;
+
+    // strip CDATA markers at start and end?
+    if (!isLeaf &&
+        endPos - pos > cdataStartLen + cdataEndLen &&
+        !bstrncmp(xml + pos, cdataStart, cdataStartLen)) {
+        // yep, copy content verbatim;
+        // search real end of data first
+        pos += cdataStartLen;
+        unsigned int cdataEndPos = endPos;
+        while (cdataEndPos - cdataEndLen > pos) {
+            if (!bstrncmp(xml + cdataEndPos - cdataEndLen,
+                          cdataEnd,
+                          cdataEndLen)) {
+                // found "]]>"
+                cdataEndPos -= cdataEndLen;
+                break;
+            }
+            cdataEndPos--;
+        }
+        
+        ret = new BCHAR[cdataEndPos - pos + 1];
+        bstrncpy(ret, xml + pos, cdataEndPos - pos);
+        ret[cdataEndPos - pos] = 0;
+    } else if (isLeaf) {
+        // Decode content of final element:
+        // might contain escaped special characters.
+        //
+        // This must _not_ be done for tags which contain other
+        // tags because then we might destroy the content of e.g.
+        // <Add><Data><![CDATA[ literal entity &amp; ]]></Data></Add>
+        //
+        StringBuffer tmp(xml+startPos, endPos - startPos);
+        tmp.replaceAll("&amp;", "&");
+        tmp.replaceAll("&lt;", "<");
+        ret = stringdup(tmp.c_str());
+    } else {
+        size_t len = endPos - startPos;
+        ret = new BCHAR [len + 1];
+        memcpy( ret, xml + startPos, len * sizeof(BCHAR));
+        ret[len] = 0;
+    }
 
     return ret;
 }
@@ -582,7 +636,16 @@ BCHAR* XMLProcessor::getElementContentLevel(BCHAR*      xml   ,
     p1 = p2 = xml;
     
     for (i = 0; i < xmlLength; i ++) {
-        
+        if (!bstrncmp(p1 + i, T("<![CDATA["), bstrlen(T("<![CDATA[")))) {
+            // skip over content
+            while(p1[i]) {
+                i++;
+                if (!bstrcmp(p1 + i, T("]]>"))) {
+                    i += bstrlen(T("]]>"));
+                    break;
+                }
+            }
+        }
         if (p1[i] == '<') {
             openBracket = TRUE;
             previousIndex = i;
@@ -590,10 +653,11 @@ BCHAR* XMLProcessor::getElementContentLevel(BCHAR*      xml   ,
 
         } else if (p1[i] == '/') {
             if (previousIndex == (i - 1)) {
-                // <.../>                
+                // </...>                
                 preCloseBracket = TRUE;
             } else {
-                // TBD  </...>
+                // might be <.../>, which will be checked below
+                // with p1[i - 1] == '/'
             }
 
         } else if (p1[i] == '>') {  
@@ -605,7 +669,10 @@ BCHAR* XMLProcessor::getElementContentLevel(BCHAR*      xml   ,
                 if (preCloseBracket) {
                     closeTag = TRUE;
                 }
-                else { 
+                else if (openBracket && p1[i - 1] == '/') {
+                    // <.../>: do not change levels or open tag,
+                    // it has been closed already
+                } else {
                     openTag = TRUE;                    
                 }
                 closeBracket = TRUE;

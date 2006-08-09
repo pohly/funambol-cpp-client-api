@@ -130,12 +130,12 @@ class SyncMLBuilder {
         /*
         * Prepare a ADD, REPLACE, DEL command using the syncItem passed by the source
         */ 
-        ModificationCommand* prepareModificationCommand(BCHAR* COMMAND, SyncItem* item, const BCHAR* type) EXTRA_SECTION_01;
+        ModificationCommand* prepareModificationCommand(BCHAR* COMMAND, SyncItem* item, const BCHAR* defaultType) EXTRA_SECTION_01;
         
         /*
         * Add a SyncItem into the modificationCommand. It is responsible to collapse if needed
         */
-        void addItem(ModificationCommand* modificationCommand, BCHAR* COMMAND, SyncItem* syncItem, const BCHAR* type) EXTRA_SECTION_01;
+        void addItem(ModificationCommand* modificationCommand, BCHAR* COMMAND, SyncItem* syncItem, const BCHAR* defaultType) EXTRA_SECTION_01;
         
         /*
         * Reset the cmdID counter

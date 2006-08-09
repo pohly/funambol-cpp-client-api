@@ -77,13 +77,17 @@ StringBuffer* Formatter::getValue(BCHAR* tagName, const BCHAR* value) {
 * Returns a StringBuffer giving the tag and the value as wchar.
 * To use for generic simple value
 */
-StringBuffer* Formatter::getValue(BCHAR* tagName, BCHAR* value) {    
+StringBuffer* Formatter::getValue(BCHAR* tagName, BCHAR* value, BCHAR *params) {    
     if (!value)
         return NULL;
 
-    BCHAR* t1 = new BCHAR[bstrlen(tagName) + 3]; // <  >  0
+    BCHAR* t1 = new BCHAR[bstrlen(tagName) + 3 + (params ? 1 + bstrlen(params) : 0)]; // <  >  0
     BCHAR* t2 = new BCHAR[bstrlen(tagName) + 5]; // </ > \n 0
-    bsprintf(t1, T("<%s>"), tagName);
+    if (params) {
+        bsprintf(t1, T("<%s %s>"), tagName, params);
+    } else {
+        bsprintf(t1, T("<%s>"), tagName);
+    }
     bsprintf(t2, T("</%s>\n"), tagName);
 
     StringBuffer* s = new StringBuffer(t1);
@@ -269,8 +273,8 @@ StringBuffer* Formatter::getMetInf(MetInf* metInf) {
 
     // get all the values
 
-    format       = getValue(FORMAT, metInf->getFormat(NULL));
-    type         = getValue(TYPE,   metInf->getType(NULL)); 
+    format       = getValue(FORMAT, metInf->getFormat(NULL), METINFO);
+    type         = getValue(TYPE,   metInf->getType(NULL), METINFO); 
     mark         = getValue(MARK,   metInf->getMark(NULL));
     
     anchor       = getAnchor(metInf->getAnchor());
@@ -350,7 +354,7 @@ StringBuffer* Formatter::getAnchor(Anchor* anchor) {
     buf->append(tmp);
     if (tmp) { delete tmp; tmp = NULL; }
         
-    ret = getValue(ANCHOR, buf);    
+    ret = getValue(ANCHOR, (BCHAR *)buf->c_str(), METINFO);    
     
     if (buf) {delete buf; buf = NULL; }
     return ret;    
@@ -1728,10 +1732,22 @@ StringBuffer* Formatter::getData(ComplexData* data) {
         s.append(anchor);
         s.append(devInf);
     } else {
-        StringBuffer tmp(data->getData());
-        tmp.replaceAll("&", "&amp;");
-        tmp.replaceAll("<", "&lt;");
-        s.append(tmp);        
+        if (data->getData() == NULL || bstrlen(data->getData()) == 0) {
+            //nothing to do. For mailfilter
+        }
+        // it avoid error for the closing tag of CDATA
+        else if (data->getData() && bstrstr(data->getData(), "]]>") == NULL ) {
+            
+            s.append("<![CDATA[");
+            s.append(data->getData());
+            s.append("]]>");
+            
+        } else {
+            StringBuffer tmp(data->getData());            
+            tmp.replaceAll("&", "&amp;");
+            tmp.replaceAll("<", "&lt;");
+            s.append(tmp);
+        }
     }
 
     deleteAllStringBuffer(2, &anchor, &devInf);

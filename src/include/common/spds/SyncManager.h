@@ -98,6 +98,7 @@ class SyncManager {
         Status *processSyncItem(Item* item, const CommandInfo &cmdInfo) EXTRA_SECTION_01;
         char* processItemContent(const BCHAR* data, const BCHAR* encodings, long* size) EXTRA_SECTION_01;
         void decodeSyncItemContent(char** c, TransformationInfo& info, const BCHAR* encoding) EXTRA_SECTION_01;
+        BOOL checkForServerChanges(SyncML* syncml, ArrayList &statusList) EXTRA_SECTION_01;
 };
 
 #endif

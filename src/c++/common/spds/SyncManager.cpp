@@ -281,10 +281,12 @@ int SyncManager::prepareSync(SyncSource** s) {
                 }
                 alerts->add(*alert);
                 deleteAlert(&alert);
-            }                        
+            }
             cred = credentialHandler.getClientCredential();             
-            bstrcpy(credentialInfo, cred->getAuthentication()->getData(NULL));            
+            bstrcpy(credentialInfo, cred->getAuthentication()->getData(NULL));
         }
+        // "cred" only contains an encoded strings as username, also
+        // need the original username for LocName
         syncml = syncMLBuilder.prepareInitObject(cred, alerts, commands);
         if (syncml == NULL) {
             ret = lastErrorCode;
@@ -325,13 +327,25 @@ int SyncManager::prepareSync(SyncSource** s) {
         deleteCred(&cred);
 
         responseMsg = transportAgent->sendMessage(initMsg);
-        if (responseMsg == NULL) {
+        // Non-existant or empty reply?
+        // Synthesis server replies with empty message to
+        // a message that it cannot parse.
+        if (responseMsg == NULL || !responseMsg[0]) {
+            if (responseMsg) {
+                delete [] responseMsg;
+                responseMsg = NULL;
+            }
+
             // This is an error only is it is not an AddressChange
             if ( addressChange && lastErrorCode == ERR_READING_CONTENT ) {
                 ret = 0;
             }
             else {
+                // use last error code if one has been set (might not be the case)
                 ret = lastErrorCode;
+                if (!ret) {
+                    ret = ERR_READING_CONTENT;
+                }
             }
             goto finally;
         }
@@ -370,7 +384,14 @@ int SyncManager::prepareSync(SyncSource** s) {
             if (!check[count])
                 continue;
 
-            ret = syncMLProcessor.processAlertStatus(*sources[count], syncml, alerts);
+            int sourceRet = syncMLProcessor.processAlertStatus(*sources[count], syncml, alerts);
+            if (isAuthFailed(ret) && sourceRet == -1) {
+                // Synthesis server does not include SourceRefs if
+                // authentication failed. Remember the authentication
+                // failure in that case, otherwise we'll never get to the getChal() below.
+            } else {
+                ret = sourceRet;
+            }
             if (ret == -1 || ret == 404 || ret == 415) {
                 lastErrorCode = ret;
                 bsprintf(logmsg, T("AlertStatus from server %d"), ret);
@@ -454,7 +475,7 @@ int SyncManager::prepareSync(SyncSource** s) {
         //
         clientChal = syncMLProcessor.getChal(syncml->getSyncBody());
 
-        if (isAuthFailed(ret)) {                        
+        if (isAuthFailed(ret)) {
             if (clientChal == NULL) {
                 requestedAuthType = credentialHandler.getClientAuthType();
             } else {
@@ -525,6 +546,88 @@ finally:
     deleteChal(&serverChal);    
     return ret;
 }
+
+//
+// utility function to process any <Sync> command that the server might
+// have included in its <SyncBody>
+//
+// @param syncml       the server response
+// @param statusList   list to which statuses for changes are to be added
+// @return TRUE if a fatal error occurred
+//
+BOOL SyncManager::checkForServerChanges(SyncML* syncml, ArrayList &statusList)
+{
+    BOOL result = FALSE;
+    
+    // Danger, danger: count is a member variable!
+    // It has to be because that's the context for some of
+    // the other methods. Modifying it has to be careful to
+    // restore the initial value before returning because
+    // our caller might use it, too.
+    int oldCount = this->count;
+    
+    for (count = 0; count < sourcesNumber; count ++) {
+        if (!check [count])
+            continue;
+
+        Sync* sync = syncMLProcessor.processSyncResponse(*sources[count], syncml);
+
+        if (sync) {
+            ArrayList* items = sync->getCommands();
+            Status* status = syncMLBuilder.prepareSyncStatus(*sources[count], sync);
+            statusList.add(*status);
+            deleteStatus(&status);
+
+            ArrayList* previousStatus = new ArrayList();
+            for (int i = 0; i < items->size(); i++) {
+                CommandInfo cmdInfo;
+                ModificationCommand* modificationCommand = (ModificationCommand*)(items->get(i));
+                Meta* meta = modificationCommand->getMeta();
+                ArrayList* list = modificationCommand->getItems();
+                        
+                cmdInfo.commandName = modificationCommand->getName();
+                cmdInfo.cmdRef = modificationCommand->getCmdID()->getCmdID();
+
+                if (meta) {
+                    cmdInfo.dataType = meta->getType();
+                    cmdInfo.format = meta->getFormat(); 
+                }
+                else {
+                    cmdInfo.dataType = 0;
+                    cmdInfo.format = 0;
+                }
+
+                for (int j = 0; j < list->size(); j++) {
+                    Item *item = (Item*)list->get(j);
+                    if (item == NULL) {
+                        LOG.error("SyncManager::sync() - unexpected NULL item.");
+                        result = TRUE;
+                        goto finally;
+                    }
+
+                    //
+                    // set the syncItem element
+                    //
+                    status = processSyncItem(item, cmdInfo);
+
+                    syncMLBuilder.addItemStatus(previousStatus, status);
+                    deleteStatus(&status);            
+                }
+
+                if (previousStatus) {
+                    statusList.add(previousStatus);
+                    deleteArrayList(&previousStatus);                    
+                }
+            }
+        }                               
+    } // End for (count = 0; count < sourcesNumber; count ++)
+
+    
+  finally:
+    this->count = oldCount;
+    return result;
+}
+
 
 int SyncManager::sync() {
 
@@ -950,6 +1053,19 @@ int SyncManager::sync() {
                 break;
             }
 
+            // The server might have included a <Sync> command without waiting
+            // for a 222 alert. If it hasn't, then nothing is done here.
+            ArrayList statusList;
+            if (checkForServerChanges(syncml, statusList)) {
+                goto finally;
+            }
+            if (statusList.size()) {
+                Status* status = syncMLBuilder.prepareSyncHdrStatus(NULL, 200);
+                commands->add(*status);
+                deleteStatus(&status);
+                commands->add(&statusList);
+            }
+
             // deleteSyncML(&syncml);
 
         } while (last == FALSE);
@@ -1040,73 +1156,9 @@ int SyncManager::sync() {
             commands->add(*status);
             deleteStatus(&status); 
 
-            /* The server should not send any alert...
-               list = syncMLProcessor.getCommands(syncml->getSyncBody(), ALERT);   
-               status = syncMLBuilder.prepareAlertStatus(*sources[0], list, 200);
-
-               if (status) {
-               commands->add(*status);
-               deleteStatus(&status);    
-               }
-               deleteArrayList(&list);
-             */
-            for (count = 0; count < sourcesNumber; count ++) {
-                if (!check[count])
-                    continue;
-
-                Sync* sync = syncMLProcessor.processSyncResponse(*sources[count], syncml);
-
-                if (sync) {
-     
-                    ArrayList* items = sync->getCommands();
-                    status = syncMLBuilder.prepareSyncStatus(*sources[count], sync);
-                    statusList.add(*status);
-                    deleteStatus(&status);
-
-                    ArrayList* previousStatus = new ArrayList();
-                    for (int i = 0; i < items->size(); i++) {
-                        CommandInfo cmdInfo;
-                        modificationCommand = (ModificationCommand*)(items->get(i));
-                        Meta* meta = modificationCommand->getMeta();
-                        ArrayList* list = modificationCommand->getItems();
-                        
-                        cmdInfo.commandName = modificationCommand->getName();
-                        cmdInfo.cmdRef = modificationCommand->getCmdID()->getCmdID();
-
-                        if (meta) {
-                            cmdInfo.dataType = meta->getType();
-                            cmdInfo.format = meta->getFormat(); 
-                        }
-                        else {
-                            cmdInfo.dataType = 0;
-                            cmdInfo.format = 0;
-                        }
-
-                        for (int j = 0; j < list->size(); j++) {
-                            Item *item = (Item*)list->get(j);
-                            if (item == NULL) {
-                                LOG.error("SyncManager::sync() - unexpected NULL item.");
-                                goto finally;
-                            }
-
-                            //
-                            // set the syncItem element
-                            //
-                            status = processSyncItem(item, cmdInfo);
-
-                            syncMLBuilder.addItemStatus(previousStatus, status);
-                            deleteStatus(&status);            
-                        }
-
-                        if (previousStatus) {
-                            statusList.add(previousStatus);
-                            deleteArrayList(&previousStatus);                    
-                        }
-
-                    }
-                }                               
-
-            } // End for (count = 0; count < sourcesNumber; count ++) 
+            if (checkForServerChanges(syncml, statusList)) {
+                goto finally;
+            }
 
             commands->add(&statusList);
 

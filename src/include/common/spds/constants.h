@@ -37,8 +37,6 @@
 
 #define ERR_REPRESENTATION  700
 
-#define TYPE_UNKNOWN "unknown"
-
 typedef enum SyncMode{
         SYNC_NONE                          = 000,
         SYNC_TWO_WAY                       = 200,

@@ -65,10 +65,19 @@ int SyncMLProcessor::processAlertStatus(SyncSource& source, SyncML* syncml, Arra
                 if (bstrcmp(s->getCmd(), ALERT) == 0) { 
                     sourceRef = (SourceRef*)(s->getSourceRef()->get(0));
 
-                    if (bstrcmp(_wcc(source.getName()),
-                                sourceRef->getValue()) == 0) {
-                        ret = getAlertStatusCode(s, _wcc(source.getName()));
-                        break;
+                    if (sourceRef) {
+                        if (bstrcmp(_wcc(source.getName()),
+                                    sourceRef->getValue()) == 0) {
+                            ret = getAlertStatusCode(s, _wcc(source.getName()));
+                            break;
+                        }
+                    } else {
+                        // Server did not include <SourceRef>, which
+                        // is a violation of the standard for commands
+                        // which were sent with <SourceRef>. Happens
+                        // with Synthesis server if authentication
+                        // failed, in which case we can simply ignore
+                        // it.
                     }
                 }
             }
@@ -99,8 +108,17 @@ int SyncMLProcessor::processServerAlert(SyncSource& source, SyncML* syncml) {
     do {
         a = getCommand(syncml->getSyncBody(), ALERT, iterator);                   
         if (a == NULL) {
-            lastErrorCode = ERR_REPRESENTATION;
-            bsprintf(lastErrorMsg, T("SyncBody/Alert not found!"));
+            // This happens with the Synthesis server's reply:
+            // instead of sending SyncBody/Alert we get SyncBody/Put
+            // with device infos and a SyncBody/Get requesting our own
+            // device infos. Ignoring the request is not correct, but
+            // allows synchronization to proceed and complete eventually
+            // without any further errors. For that to work we must not
+            // set lastErrorCode here, as it will be checked at the end of
+            // the sync.
+            //
+            // lastErrorCode = ERR_REPRESENTATION;
+            // bsprintf(lastErrorMsg, T("SyncBody/Alert not found!"));
             goto finally;
         }
         Alert* alert = (Alert*)a;

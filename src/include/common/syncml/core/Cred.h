@@ -66,7 +66,7 @@ class Cred {
          *
          * @return the username stored in this credential
          */
-        BCHAR* getUsername(BCHAR* retUsername);
+        BCHAR* getUsername(BCHAR* retUsername = NULL);
 
 
         /**

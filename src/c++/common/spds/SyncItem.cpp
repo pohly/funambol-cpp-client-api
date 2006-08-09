@@ -48,7 +48,7 @@ SyncItem::SyncItem(const wchar_t* itemKey) {
  * Initializes private members
  */
 void SyncItem::initialize() {
-    wcscpy(type, TEXT(TYPE_UNKNOWN));
+    type[0] = 0;
     data = NULL;
     size = -1;
     lastModificationTime = -1;

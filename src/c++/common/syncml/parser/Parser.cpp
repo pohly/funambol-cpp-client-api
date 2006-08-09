@@ -2083,11 +2083,8 @@ ComplexData* Parser::getComplexData(BCHAR* xml) {
         if (devInf)
             ret->setDevInf(devInf);
     }
-    else if (xml) {        
-        StringBuffer tmp(xml);
-        tmp.replaceAll("&amp;", "&");
-        tmp.replaceAll("&lt;", "<");        
-        ret = new ComplexData(tmp);
+    else if (xml) {
+        ret = new ComplexData(xml);
     }    
 
     return ret;

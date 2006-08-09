@@ -37,7 +37,7 @@
 
 static inline bool checkFlag(const char *xml, const char *field)
 {
-    size_t start = 0, end = 0;
+    unsigned int start = 0, end = 0;
     bool ret = false;
 
     if( XMLProcessor::getElementContent(xml, field, NULL, &start, &end) ) {
@@ -69,7 +69,7 @@ EmailData::EmailData()
 int EmailData::parse(const BCHAR *msg, size_t len)
 {
     int ret = 0;
-    size_t start, end;
+    unsigned int start, end;
     
     // Get attributes
     read      = checkFlag(msg, EMAIL_READ);

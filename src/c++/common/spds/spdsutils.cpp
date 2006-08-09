@@ -36,11 +36,12 @@ SyncMode syncModeCode(const BCHAR* syncMode) {
         return SYNC_ONE_WAY_FROM_SERVER;
     else if (bstrcmp(syncMode,T("one-way-client")) == 0)
         return SYNC_ONE_WAY_FROM_CLIENT;
-    else if (bstrcmp(syncMode,T("refresh")) == 0)
+    else if (bstrcmp(syncMode,T("refresh"))             == 0 ||
+             bstrcmp(syncMode,T("refresh-server"))      == 0 ||
+             bstrcmp(syncMode,T("refresh-from-server")) == 0  )
         return SYNC_REFRESH_FROM_SERVER;
-    else if (bstrcmp(syncMode,T("refresh-server")) == 0)
-        return SYNC_REFRESH_FROM_SERVER;
-    else if (bstrcmp(syncMode,T("refresh-client")) == 0)
+    else if (bstrcmp(syncMode,T("refresh-client")) == 0 ||
+             bstrcmp(syncMode,T("refresh-from-client")) == 0)
         return SYNC_REFRESH_FROM_CLIENT;
     //--------- Funambol extension --------------------
     else if (bstrcmp(syncMode, T("addrchange")) == 0)

@@ -228,7 +228,7 @@ char* FileData::format() {
 
     out.reserve(150);
     
-    out = T("<![CDATA[\n<File>\n");
+    out = T("<File>\n");
     if (name.length() > 0)
         out += XMLProcessor::makeElement(FILE_NAME, _wcc(name));
     if (created.length() > 0)
@@ -270,7 +270,7 @@ char* FileData::format() {
     }
     if (size > 0)
         out += XMLProcessor::makeElement(FILE_SIZE, size);
-    out += T("</File>\n]]>\n");
+    out += T("</File>\n");
     return stringdup(out.c_str());
 }
 

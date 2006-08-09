@@ -62,9 +62,17 @@ void CredentialHandler::setUsername(const BCHAR* t) {
     username = stringdup(t);
 }
 
+const BCHAR *CredentialHandler::getUsername() {
+    return username;
+}
+
 void CredentialHandler::setPassword(const BCHAR* t) {
     safeDel(&password);
     password = stringdup(t);
+}
+
+const BCHAR *CredentialHandler::getPassword() {
+    return password;
 }
 
 void CredentialHandler::setClientAuthType(const BCHAR* t){
@@ -140,9 +148,13 @@ Cred* CredentialHandler::getClientCredential() {
     BCHAR* credential  = NULL;
     if (bstrcmp(clientAuthType, AUTH_TYPE_BASIC) == 0) {
         auth = new Authentication(AUTH_TYPE_BASIC, username, password);
+        
     } else {
         credential = MD5CredentialData(username, password, clientNonce);
-        auth = new Authentication(AUTH_TYPE_MD5, credential);                   
+        auth = new Authentication(AUTH_TYPE_MD5, credential);    
+        // overwrite the username that for MD5 auth is the same as data
+        auth->setUsername(username);
+        auth->setPassword(password);
         if (credential) { delete [] credential; credential = NULL; }
     }
     
