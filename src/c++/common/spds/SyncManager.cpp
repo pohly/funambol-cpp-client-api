@@ -636,7 +636,6 @@ int SyncManager::sync() {
     Status* status       = NULL;
     SyncML* syncml       = NULL;
     SyncItem* syncItem   = NULL;
-    SyncItem* sItem      = NULL;
     Alert* alert         = NULL;
     ModificationCommand* modificationCommand = NULL;
     unsigned int tot     = 0; 
@@ -739,19 +738,14 @@ int SyncManager::sync() {
             switch (sources[count]->getSyncMode()) {
                 case SYNC_SLOW: 
                     {   
-                        sItem = NULL;
+                        syncItem = NULL;
                         if (tot == 0) {                    
-                            sItem = sources[count]->getFirstItem();                        
-                            if (sItem) {
-                                syncItem = (SyncItem*)sItem->clone();
-                            }
+                            syncItem = sources[count]->getFirstItem();                        
                         }
                         tot = 0;
                         do {
                             if (syncItem == NULL) {
-                                sItem = sources[count]->getNextItem();
-                                if (sItem)
-                                    syncItem = (SyncItem*)sItem->clone();                     
+                                syncItem = sources[count]->getNextItem();                   
                             }
                             if (modificationCommand == NULL) {
                                 modificationCommand = 
@@ -776,7 +770,6 @@ int SyncManager::sync() {
                                 break;
                             }
                             tot++;
-                            sItem = NULL;
                         } while( tot < maxModPerMsg);                                                    
                     }
                     break;
@@ -785,14 +778,16 @@ int SyncManager::sync() {
                     last = TRUE; 
 
                     allItemsList[count] = new ArrayList();
-                    sItem = sources[count]->getFirstItemKey();
-                    if(sItem) {
-                        allItemsList[count]->add((ArrayElement&)*sItem);
+                    syncItem = sources[count]->getFirstItemKey();
+                    if(syncItem) {
+                        allItemsList[count]->add((ArrayElement&)*syncItem);
+                        delete syncItem; syncItem = NULL;
                     }
-                    sItem = sources[count]->getNextItemKey();
-                    while(sItem) {
-                        allItemsList[count]->add((ArrayElement&)*sItem);
-                        sItem = sources[count]->getNextItemKey();	
+                    syncItem = sources[count]->getNextItemKey();
+                    while(syncItem) {
+                        allItemsList[count]->add((ArrayElement&)*syncItem);
+                        delete syncItem; syncItem = NULL;
+                        syncItem = sources[count]->getNextItemKey();	
                     } 
                     break;
 
@@ -802,19 +797,14 @@ int SyncManager::sync() {
 
                 case SYNC_REFRESH_FROM_CLIENT:
                     {   
-                        sItem = NULL;
+                        syncItem = NULL;
                         if (tot == 0) {                    
-                            sItem = sources[count]->getFirstItem();                        
-                            if (sItem) {
-                                syncItem = (SyncItem*)sItem->clone();
-                            }
+                            syncItem = sources[count]->getFirstItem();
                         }
                         tot = 0;
                         do {
                             if (syncItem == NULL) {
-                                sItem = sources[count]->getNextItem();
-                                if (sItem)
-                                    syncItem = (SyncItem*)sItem->clone();                     
+                                syncItem = sources[count]->getNextItem();                  
                             }
                             if (modificationCommand == NULL) {
                                 modificationCommand = syncMLBuilder.prepareModificationCommand(REPLACE_COMMAND_NAME, 
@@ -832,7 +822,6 @@ int SyncManager::sync() {
                                 break;
                             }
                             tot++;
-                            sItem = NULL;
                         } while( tot < maxModPerMsg);                                                    
                     }
                     break;
@@ -843,11 +832,9 @@ int SyncManager::sync() {
                         //
                         // New Item
                         //
-                        sItem = NULL;
+                        syncItem = NULL;
                         if (step == 0) {
-                            sItem = sources[count]->getFirstNewItem(); 
-                            if (sItem)
-                                syncItem = (SyncItem*)sItem->clone();
+                            syncItem = sources[count]->getFirstNewItem(); 
                             step++;
                             if (syncItem == NULL)
                                 step++;                        
@@ -855,9 +842,7 @@ int SyncManager::sync() {
                         if (step == 1) {                                                          
                             do {
                                 if (syncItem == NULL) {
-                                    sItem = sources[count]->getNextNewItem();
-                                    if (sItem)   
-                                        syncItem = (SyncItem*)sItem->clone(); 
+                                    syncItem = sources[count]->getNextNewItem();
                                 }
                                 if (modificationCommand == NULL) {
                                     modificationCommand = syncMLBuilder.prepareModificationCommand(ADD_COMMAND_NAME, 
@@ -875,7 +860,6 @@ int SyncManager::sync() {
                                     break;
                                 }
                                 tot++;
-                                sItem = NULL;
                             } while( tot < maxModPerMsg);
                         }
 
@@ -890,9 +874,7 @@ int SyncManager::sync() {
                                 modificationCommand = NULL;
                             }
 
-                            sItem = sources[count]->getFirstUpdatedItem();
-                            if (sItem)
-                                syncItem = (SyncItem*)sItem->clone();
+                            syncItem = sources[count]->getFirstUpdatedItem();
 
                             step++;
                             if (syncItem == NULL)
@@ -901,9 +883,7 @@ int SyncManager::sync() {
                         if (step == 3) {
                             do {
                                 if (syncItem == NULL) {
-                                    sItem = sources[count]->getNextUpdatedItem();
-                                    if (sItem)
-                                        syncItem = (SyncItem*)sItem->clone();
+                                    syncItem = sources[count]->getNextUpdatedItem();
 
                                 }
                                 if (modificationCommand == NULL) {
@@ -922,7 +902,6 @@ int SyncManager::sync() {
                                     break;
                                 }
                                 tot++;
-                                sItem = NULL;
                             } while( tot < maxModPerMsg);                                                      
                         } 
 
@@ -937,10 +916,7 @@ int SyncManager::sync() {
                                 modificationCommand = NULL;
                             }
 
-                            sItem = sources[count]->getFirstDeletedItem();
-
-                            if (sItem)
-                                syncItem = (SyncItem*)sItem->clone();
+                            syncItem = sources[count]->getFirstDeletedItem();
 
                             step++;
                             if (syncItem == NULL)
@@ -949,9 +925,7 @@ int SyncManager::sync() {
                         if (step == 5) {
                             do {
                                 if (syncItem == NULL) {
-                                    sItem = sources[count]->getNextDeletedItem(); 
-                                    if (sItem)
-                                        syncItem = (SyncItem*)sItem->clone();                        
+                                    syncItem = sources[count]->getNextDeletedItem();                       
                                 }
                                 if (modificationCommand == NULL) {
                                     modificationCommand = syncMLBuilder.prepareModificationCommand(DELETE_COMMAND_NAME, 
@@ -969,7 +943,6 @@ int SyncManager::sync() {
                                     break;
                                 }
                                 tot++;
-                                sItem = NULL;
                             } while( tot < maxModPerMsg);           
                         }
                         if (step == 6 && syncItem == NULL)
