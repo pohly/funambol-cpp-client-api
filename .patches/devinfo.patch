@@ -1185,7 +1185,7 @@ reply to a Get is also supported.
 +        
          // "cred" only contains an encoded strings as username, also
          // need the original username for LocName
-         syncml = syncMLBuilder.prepareInitObject(credentialHandler.getUsername(), cred, alerts, commands);
+         syncml = syncMLBuilder.prepareInitObject(cred, alerts, commands);
 @@ -307,7 +343,8 @@
          if (transportAgent == NULL) {
              transportAgent = TransportAgentFactory::getTransportAgent(url, proxy);
@@ -1284,7 +1284,7 @@ reply to a Get is also supported.
  
      deleteSyncML(&syncml);
      deleteCred(&cred);
-@@ -700,7 +802,7 @@
+@@ -699,7 +801,7 @@
              } else {
                  // TBD: if we are using vcard/icalendar, we need to 
                  // set the encoding to PLAIN
@@ -1293,7 +1293,7 @@ reply to a Get is also supported.
                      syncMLBuilder.setEncoding(B64);
                  } else {
                      syncMLBuilder.setEncoding(PLAIN);
-@@ -758,13 +860,13 @@
+@@ -752,13 +854,13 @@
                                      syncMLBuilder.prepareModificationCommand(
                                                              REPLACE_COMMAND_NAME, 
                                                              syncItem,
@@ -1309,7 +1309,7 @@ reply to a Get is also supported.
                              }
  
                              if (syncItem) {
-@@ -818,10 +920,10 @@
+@@ -808,10 +910,10 @@
                              }
                              if (modificationCommand == NULL) {
                                  modificationCommand = syncMLBuilder.prepareModificationCommand(REPLACE_COMMAND_NAME, 
@@ -1322,7 +1322,7 @@ reply to a Get is also supported.
                              }
  
                              if (syncItem) {
-@@ -861,10 +963,10 @@
+@@ -846,10 +948,10 @@
                                  }
                                  if (modificationCommand == NULL) {
                                      modificationCommand = syncMLBuilder.prepareModificationCommand(ADD_COMMAND_NAME, 
@@ -1335,7 +1335,7 @@ reply to a Get is also supported.
                                  }
  
                                  if (syncItem) {
-@@ -908,10 +1010,10 @@
+@@ -888,10 +990,10 @@
                                  }
                                  if (modificationCommand == NULL) {
                                      modificationCommand = syncMLBuilder.prepareModificationCommand(REPLACE_COMMAND_NAME, 
@@ -1348,7 +1348,7 @@ reply to a Get is also supported.
                                  }
  
                                  if (syncItem) {                            
-@@ -955,10 +1057,10 @@
+@@ -929,10 +1031,10 @@
                                  }
                                  if (modificationCommand == NULL) {
                                      modificationCommand = syncMLBuilder.prepareModificationCommand(DELETE_COMMAND_NAME, 
@@ -1361,7 +1361,7 @@ reply to a Get is also supported.
                                  }
  
                                  if (syncItem) {                            
-@@ -1365,7 +1467,7 @@
+@@ -1338,7 +1440,7 @@
                  lastErrorCode = sret;
              }
          }        
@@ -1370,7 +1370,7 @@ reply to a Get is also supported.
              
   finally:
  
-@@ -1404,46 +1506,26 @@
+@@ -1377,46 +1479,26 @@
  }
  
  BOOL SyncManager::readSyncSourceDefinition(SyncSource& source) {
@@ -1422,7 +1422,7 @@ reply to a Get is also supported.
      unsigned int n = config.getSyncSourceConfigsCount();
      SyncSourceConfig* configs = config.getSyncSourceConfigs();
  
-@@ -1664,5 +1746,3 @@
+@@ -1637,5 +1719,3 @@
      }
      
  }
@@ -1573,7 +1573,7 @@ reply to a Get is also supported.
      Source* sou          = new Source(_wcc(s.getName()));
  
      //
-@@ -702,7 +804,7 @@
+@@ -708,7 +810,7 @@
      ++cmdID;
  
      CmdID* commandID     = new CmdID(itow(cmdID));
@@ -1582,7 +1582,7 @@ reply to a Get is also supported.
      Source* sou          = new Source(_wcc(source.getName())); 
      ArrayList* list      = new ArrayList();  
      Sync* sync           = NULL;
-@@ -730,7 +832,7 @@
+@@ -736,7 +838,7 @@
      */
      ++cmdID;
      CmdID* commandID     = new CmdID(itow(cmdID));    
@@ -2133,7 +2133,7 @@ reply to a Get is also supported.
      cred      = getCred    (put->getCred());
      meta      = getMeta    (put->getMeta());
      items     = getItems   (put->getItems());        
-@@ -1762,7 +1762,7 @@
+@@ -1775,7 +1775,7 @@
      
      if (!devInf)
          return NULL;
@@ -2142,7 +2142,7 @@ reply to a Get is also supported.
      StringBuffer* ret = NULL;
      StringBuffer* s   = NULL;
      
-@@ -1825,7 +1825,8 @@
+@@ -1838,7 +1838,8 @@
          s->append(supportNumberOfChanges);            
      }
  
@@ -2152,7 +2152,7 @@ reply to a Get is also supported.
      
      deleteAllStringBuffer(16, &s, &verDTD, &man, &mod, &oem, &fwV, &swV, &hwV, 
                                &devID, &devTyp, &dataStores, &ctCaps, &exts, &utc, 
-@@ -1961,7 +1962,10 @@
+@@ -1974,7 +1975,10 @@
      
      sourceRef   = getSourceRef(dataStore->getSourceRef());
      displayName = getValue(DISPLAY_NAME, dataStore->getDisplayName(NULL));
@@ -2164,7 +2164,7 @@ reply to a Get is also supported.
      rxPref      = getContentTypeInfo(dataStore->getRxPref(), RX_PREF);
      rx          = getContentTypeInfos(dataStore->getRx(), RX);
      txPref      = getContentTypeInfo(dataStore->getTxPref(), TX_PREF);
-@@ -1973,7 +1977,9 @@
+@@ -1986,7 +1990,9 @@
          s = new StringBuffer();
          s->append(sourceRef);
          s->append(displayName);
@@ -2175,7 +2175,7 @@ reply to a Get is also supported.
          s->append(rxPref);
          s->append(rx);
          s->append(txPref);
-@@ -2217,6 +2223,73 @@
+@@ -2230,6 +2236,73 @@
  * 
  */
  StringBuffer* Formatter::getCTCaps(ArrayList* ctCaps) {
