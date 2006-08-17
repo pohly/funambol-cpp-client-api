@@ -89,6 +89,7 @@ int FileData::parse(const char *syncmlData, size_t len)
     s->replaceAll(T("&gt;"), T(">"));
     s->replaceAll(T("&amp;"), T("&"));
     
+	/*
     // Get the CDATA content
     if(XMLProcessor::getElementContent(s->c_str(), T("CDATA"), NULL, &start, &end) == 0) {
         LOG.error(T("FileData: can't find outer CDATA section."));
@@ -97,6 +98,13 @@ int FileData::parse(const char *syncmlData, size_t len)
     StringBuffer msg = s->substr(start, end-start);
     
     delete s;
+	*/
+
+	if(XMLProcessor::getElementContent(s->c_str(), T("File"), NULL, &start, &end) == 0) {
+		LOG.error(T("FileData: can't find outer FILE section."));
+		return -1;
+	}
+	StringBuffer msg = s->substr(start, end-start);
 
     // Get attributes
     if( XMLProcessor::getElementContent (msg, FILE_HIDDEN, NULL, &start, &end) ) {
@@ -200,6 +208,8 @@ int FileData::parse(const char *syncmlData, size_t len)
         name = msg.substr(start, end-start);
     }
     else name = TEXT("");
+        
+	delete s; 
         
     return ret;
 }
