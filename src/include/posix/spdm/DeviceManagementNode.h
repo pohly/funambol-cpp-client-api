@@ -37,6 +37,7 @@
 class DeviceManagementNode : public ManagementNode {
     ArrayList *lines;
     BOOL modified;
+    char *prefix;
 
     class line : public ArrayElement {
         char *str;
@@ -54,8 +55,10 @@ class DeviceManagementNode : public ManagementNode {
     int cwdfd;
 
     // change into directory which holds config file,
-    // creating directories if necessary
-    void gotoDir();
+    // creating directories if necessary for writing
+    //
+    // @return TRUE for success, FALSE for error - call returnFromDir() in both cases
+    BOOL gotoDir(BOOL read);
 
     // return to original directory after a gotoDir()
     void returnFromDir();

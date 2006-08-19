@@ -69,7 +69,9 @@ DeviceManagementNode::~DeviceManagementNode() {
     }
 }
 
-void DeviceManagementNode::gotoDir() {
+BOOL DeviceManagementNode::gotoDir(BOOL read) {
+    BOOL success = TRUE;
+
     returnFromDir();
     cwdfd = open(".", O_RDONLY);
 
@@ -89,7 +91,13 @@ void DeviceManagementNode::gotoDir() {
         if (*curr) {
             if (chdir(curr)) {
                 if (errno == ENOENT) {
-                    mkdir(curr, 0777);
+                    if (!read) {
+                        mkdir(curr, 0777);
+                    } else {
+                        // failed
+                        success = FALSE;
+                        break;
+                    }
                 }
                 chdir(curr);
             }
@@ -97,6 +105,8 @@ void DeviceManagementNode::gotoDir() {
         curr = nextdir;
     } while (curr);
     delete [] dirs;
+
+    return success;
 }
 
 void DeviceManagementNode::returnFromDir() {
@@ -113,43 +123,44 @@ void DeviceManagementNode::update(BOOL read) {
         return;
     }
 
-    gotoDir();
-    FILE *file = read ?
-        fopen("config.txt", "r") :
-        fopen("config.txt.tmp", "w");
-    if (read) {
-        char buffer[512];
+    if (gotoDir(read)) {
+        FILE *file = read ?
+            fopen("config.txt", "r") :
+            fopen("config.txt.tmp", "w");
+        if (read) {
+            char buffer[512];
         
-        lines->clear();
-        if (file) {
-            while (fgets(buffer, sizeof(buffer), file)) {
-                char *eol = strchr(buffer, '\n');
-                *eol = 0;
-                line newline(buffer);
-                lines->add(newline);
-            }
-        }
-    } else {
-        if (file) {
-            int i = 0;
-    
-            while (TRUE) {
-                line *curr = (line *)lines->get(i);
-                if (!curr) {
-                    break;
+            lines->clear();
+            if (file) {
+                while (fgets(buffer, sizeof(buffer), file)) {
+                    char *eol = strchr(buffer, '\n');
+                    *eol = 0;
+                    line newline(buffer);
+                    lines->add(newline);
                 }
-                fprintf(file, "%s\n", curr->getLine());
-                
-                i++;
             }
-            fflush(file);
-            if (!ferror(file)) {
-                rename("config.txt.tmp", "config.txt");
+        } else {
+            if (file) {
+                int i = 0;
+    
+                while (TRUE) {
+                    line *curr = (line *)lines->get(i);
+                    if (!curr) {
+                        break;
+                    }
+                    fprintf(file, "%s\n", curr->getLine());
+                
+                    i++;
+                }
+                fflush(file);
+                if (!ferror(file)) {
+                    rename("config.txt.tmp", "config.txt");
+                }
             }
         }
-    }
-    if (file) {
-        fclose(file);
+        if (file) {
+            fclose(file);
+        }
     }
     returnFromDir();
 }
@@ -204,15 +215,16 @@ wchar_t *DeviceManagementNode::getPropertyValue(const wchar_t* property) {
 int DeviceManagementNode::getChildrenMaxCount() {
     int count = 0;
     
-    gotoDir();
-    DIR *dir = opendir(".");
-    if (dir) {
-        struct dirent *entry;
-        for (entry = readdir(dir); entry; entry = readdir(dir)) {
-            if (isNode(entry)) 
-                count++;
+    if (gotoDir(TRUE)) {
+        DIR *dir = opendir(".");
+        if (dir) {
+            struct dirent *entry;
+            for (entry = readdir(dir); entry; entry = readdir(dir)) {
+                if (isNode(entry)) 
+                    count++;
+            }
+            closedir(dir);
         }
-        closedir(dir);
     }
     returnFromDir();
 
@@ -226,25 +238,26 @@ wchar_t **DeviceManagementNode::getChildrenNames() {
 
     int size = getChildrenMaxCount();
     if (size) {
-        gotoDir();
-        DIR *dir = opendir(".");
-        if (dir) {
-            struct dirent *entry;
-            int i = 0;
-            childrenName = new wchar_t*[size];
+        if (gotoDir(TRUE)) {
+            DIR *dir = opendir(".");
+            if (dir) {
+                struct dirent *entry;
+                int i = 0;
+                childrenName = new wchar_t*[size];
 
-            // restart reading, but this time copy file names
-            rewinddir(dir);
-            for (entry = readdir(dir); entry && (i < size) ; entry = readdir(dir)) {
-                if (isNode(entry)) {
-                    childrenName[i] = stringdup(entry->d_name);
-                    i++;
+                // restart reading, but this time copy file names
+                rewinddir(dir);
+                for (entry = readdir(dir); entry && (i < size) ; entry = readdir(dir)) {
+                    if (isNode(entry)) {
+                        childrenName[i] = stringdup(entry->d_name);
+                        i++;
+                    }
                 }
+                closedir(dir);
             }
-            closedir(dir);
         }
+        returnFromDir();
     }
-    returnFromDir();
     return childrenName;
 }
 
