@@ -201,5 +201,6 @@ vpath %.cpp $(srcdir)/../../../src/c++/common/base             \
 
 vpath %.c   $(srcdir)/../../../src/c++/common/base
 
-AM_LDFLAGS = `curl-config --libs`
+AM_LDFLAGS = @CURL_LDFLAGS@
+AM_CXXFLAGS = @CURL_CFLAGS@
 AM_CPPFLAGS = -I$(srcdir)/../../../src/include/posix -I$(srcdir)/../../../src/include/common -DAUTOTOOLS
