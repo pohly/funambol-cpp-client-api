@@ -1,4 +1,4 @@
-Funambol SDK C++ 3.0.20
+Funambol SDK C++ 3.0.21
 ------------------------- 
 2006-08-30
      - magi: modified PPC2003TransportAgent. The FunctionHttpSendRequest doesn't set lastErrorCode anymore
