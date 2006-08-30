@@ -1,5 +1,13 @@
 Funambol SDK C++ 3.0.20
 ------------------------- 
+2006-08-30
+     - magi: modified PPC2003TransportAgent. The FunctionHttpSendRequest doesn't set lastErrorCode anymore
+2006-08-08:
+     - toccy: improved Win32TransportAgent. Fixed proxy authentication process.
+
+
+Funambol SDK C++ 3.0.20
+------------------------- 
 2006-07-21:
 
      - magi: improved PocketPC Transport Agent. It avoids the blocks if server respons fails. 

@@ -88,7 +88,7 @@ DWORD WINAPI WorkerFunctionHttpOpenRequest( IN LPVOID vThreadParm);
 #endif
 
 DWORD WINAPI WorkerFunctionInternetReadFile(IN LPVOID vThreadParm);
-DWORD WINAPI WorkerFunctionHttpSendRequest( IN PARM_HTTP_SEND_REQUEST vThreadParm);
+DWORD WINAPI FunctionHttpSendRequest( IN PARM_HTTP_SEND_REQUEST vParm);
 
 int sumRead, previousNumRead;
 int sumByteSent, previousNumWrite;
@@ -294,7 +294,7 @@ BCHAR* PPC2003TransportAgent::sendMessage(const BCHAR* msg) {
 
         for (k = 0; k < MAX_SEND_RETRIES; k++) {         
             
-            r = WorkerFunctionHttpSendRequest(threadParmHttpSendRequest);
+            r = FunctionHttpSendRequest(threadParmHttpSendRequest);
             if (r == 8001) {
                 LOG.info("Network error in writing data from client: retry %i time...", k + 1);  
             } else {
@@ -506,8 +506,8 @@ BCHAR* PPC2003TransportAgent::sendMessage(const BCHAR* msg) {
 * The function try to send a message with HttpSendRequest . It was called by a thread in the main
 * procedure. 
 */
-DWORD WINAPI WorkerFunctionHttpSendRequest(IN PARM_HTTP_SEND_REQUEST vThreadParm) {
-    ENTERING(T("WorkerFunctionHttpSendRequest"));
+DWORD WINAPI FunctionHttpSendRequest(IN PARM_HTTP_SEND_REQUEST vParm) {
+    ENTERING(T("FunctionHttpSendRequest"));
     int status        = -1;   
     DWORD size        = 0; 
     INTERNET_BUFFERS BufferIn;
@@ -516,42 +516,40 @@ DWORD WINAPI WorkerFunctionHttpSendRequest(IN PARM_HTTP_SEND_REQUEST vThreadParm
     char  pBuffer[1024 + 1];
     memset(pBuffer, 0, 1024+1);
     char* ptrBuffer = NULL;   
-    BCHAR dbg[200];
+    BCHAR dbg[300];
     sumByteSent = 0;
     DWORD ret = 0;
 
-    PARM_HTTP_SEND_REQUEST pThreadParm;
+    PARM_HTTP_SEND_REQUEST pParm;
     
-    pThreadParm = (PARM_HTTP_SEND_REQUEST)vThreadParm;
+    pParm = (PARM_HTTP_SEND_REQUEST)vParm;
         
     BufferIn.dwStructSize       = sizeof( INTERNET_BUFFERS ); // Must be set or error will occur
     BufferIn.Next               = NULL; 
-    BufferIn.lpcszHeader        = pThreadParm.pHeaders;
-    BufferIn.dwHeadersLength    = pThreadParm.headersLength;
-    BufferIn.dwHeadersTotal     = pThreadParm.headersLength;
+    BufferIn.lpcszHeader        = pParm.pHeaders;
+    BufferIn.dwHeadersLength    = pParm.headersLength;
+    BufferIn.dwHeadersTotal     = pParm.headersLength;
     BufferIn.lpvBuffer          = NULL;                
     BufferIn.dwBufferLength     = 0;
-    BufferIn.dwBufferTotal      = pThreadParm.msgLength; // This is the only member used other than dwStructSize
+    BufferIn.dwBufferTotal      = pParm.msgLength; // This is the only member used other than dwStructSize
     BufferIn.dwOffsetLow        = 0;
     BufferIn.dwOffsetHigh       = 0;
     
     if(!HttpSendRequestEx( request, &BufferIn, NULL, HSR_INITIATE, 0)) {   
-        lastErrorCode = 8001;        
-        bsprintf (lastErrorMsg, T("%s: %d"), T("HttpSendRequestEx error"), GetLastError());
-        LOG.debug(lastErrorMsg);     
-        ret =  lastErrorCode;
+        ret = 8001;        
+        bsprintf (dbg, T("%s: %d"), T("HttpSendRequestEx error"), GetLastError());
+        LOG.debug(dbg);             
         goto finally;
     }        
 
-    ptrBuffer = pThreadParm.pMsg;
+    ptrBuffer = pParm.pMsg;
     
     do {        
         strncpy (pBuffer, ptrBuffer, 1024);
         if (!InternetWriteFile (request, pBuffer, strlen(pBuffer), &dwBytesWritten)) {
-            lastErrorCode = 8001;
-            bsprintf(lastErrorMsg, T("%s: %d"), T("InternetWriteFile error"), GetLastError());    
-            LOG.debug(lastErrorMsg);
-            ret =  lastErrorCode;
+            ret = 8001;
+            bsprintf(dbg, T("%s: %d"), T("InternetWriteFile error"), GetLastError());    
+            LOG.debug(dbg);            
             goto finally;
         } else {          
            //LOG.debug(T("InternetWriteFile success..."));
@@ -592,12 +590,12 @@ DWORD WINAPI WorkerFunctionHttpSendRequest(IN PARM_HTTP_SEND_REQUEST vThreadParm
         }
         
         sumByteSent += dwBytesWritten;
-        bsprintf(dbg, "WorkerFunctionHttpSendRequest: total byte sent: %i", sumByteSent);
+        bsprintf(dbg, "FunctionHttpSendRequest: total byte sent: %i", sumByteSent);
         LOG.debug(dbg);
 
         ptrBuffer = ptrBuffer + (dwBytesWritten * (sizeof(char)));
 
-        if (sumByteSent < pThreadParm.msgLength) {
+        if (sumByteSent < pParm.msgLength) {
             
         } else {
             
@@ -613,12 +611,12 @@ finally:
     LOG.debug("Now HttpEndRequest is called");
     if(!HttpEndRequest(request, NULL, 0, 0))
     {        
-        bsprintf(lastErrorMsg, T("%s: %d"), T("HttpEndRequest"), GetLastError());    
-        LOG.debug(lastErrorMsg);     
-        ret = lastErrorCode; 
+        bsprintf(dbg, T("%s: %d"), T("HttpEndRequest"), GetLastError());    
+        LOG.debug(dbg); 
+        ret = 8001;
        
     }
-    EXITING(T("WorkerFunctionHttpSendRequest"));
+    EXITING(T("FunctionHttpSendRequest"));
     return ret;
 
 }
