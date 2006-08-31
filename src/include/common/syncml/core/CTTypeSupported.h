@@ -31,7 +31,9 @@ class CTTypeSupported : public ArrayElement{
     private:
     BCHAR* ctType;
     ArrayList* ctPropParams;    // CTPropParam[]   
-        
+
+    void initialize();
+    
     public:
         
     CTTypeSupported();

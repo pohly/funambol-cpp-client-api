@@ -49,7 +49,7 @@ class ContentTypeInfo : public ArrayElement {
          *                specification - NOT NULL
          *
          */
-        ContentTypeInfo(BCHAR* ctType, BCHAR* verCT);
+        ContentTypeInfo(const BCHAR* ctType, const BCHAR* verCT);
 
         /**
          * Gets the content type properties
@@ -63,7 +63,7 @@ class ContentTypeInfo : public ArrayElement {
          *
          * @param ctType the content type properties
          */
-        void setCTType(BCHAR* ctType);
+        void setCTType(const BCHAR* ctType);
 
         /**
          * Gets the version of the content type
@@ -77,7 +77,7 @@ class ContentTypeInfo : public ArrayElement {
          *
          * @param verCT the version of the content type
          */
-        void setVerCT(BCHAR* verCT);
+        void setVerCT(const BCHAR* verCT);
 
         ArrayElement* clone();
 };

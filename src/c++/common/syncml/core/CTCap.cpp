@@ -60,7 +60,12 @@ void CTCap::setCTTypeSupported(ArrayList* ctTypeSupported) {
     if (this->ctTypeSupported) {
         this->ctTypeSupported->clear(); 
     }
-    this->ctTypeSupported = ctTypeSupported->clone();
+    if (ctTypeSupported) {
+        this->ctTypeSupported = ctTypeSupported->clone();
+    }
+    else {
+        this->ctTypeSupported = NULL;
+    }
 }
    
 ArrayElement* CTCap::clone() {

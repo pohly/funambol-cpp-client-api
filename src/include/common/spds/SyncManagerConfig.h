@@ -20,6 +20,7 @@
 
 #include "base/fscapi.h"
 #include "spds/AccessConfig.h"
+#include "spds/DeviceConfig.h"
 #include "spds/SyncSourceConfig.h"
 
 /**
@@ -31,6 +32,7 @@ class SyncManagerConfig {
     protected:
 
         AccessConfig accessConfig;
+        DeviceConfig deviceConfig;
         SyncSourceConfig* sourceConfigs;
 
         unsigned int sourceConfigsCount;
@@ -47,11 +49,15 @@ class SyncManagerConfig {
 
         virtual SyncSourceConfig* getSyncSourceConfigs() EXTRA_SECTION_01;
         virtual BOOL getSyncSourceConfig(const BCHAR* name, SyncSourceConfig& sc, BOOL refresh = FALSE) EXTRA_SECTION_01;
+        virtual BOOL getSyncSourceConfig(unsigned int i, SyncSourceConfig& sc, BOOL refresh = FALSE)    EXTRA_SECTION_01;
 		virtual BOOL setSyncSourceConfig(SyncSourceConfig& sc) EXTRA_SECTION_01;
         virtual unsigned int getSyncSourceConfigsCount() EXTRA_SECTION_01;
 
 		virtual AccessConfig& getAccessConfig() EXTRA_SECTION_01;
 		virtual void setAccessConfig(AccessConfig& ac) EXTRA_SECTION_01;
+
+        virtual DeviceConfig& getDeviceConfig() EXTRA_SECTION_01;
+		virtual void setDeviceConfig(DeviceConfig& dc) EXTRA_SECTION_01;
 
         BOOL isEncryption() EXTRA_SECTION_01;
         

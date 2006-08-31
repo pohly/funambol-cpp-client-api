@@ -80,6 +80,10 @@ int ManagementNode::setFullName(const BCHAR *fullname) {
 	return 0;
 }
 
+const BCHAR *ManagementNode::getName() {
+    return name;
+}
+
 /*
  * Returns how many children belong to this node.
  *

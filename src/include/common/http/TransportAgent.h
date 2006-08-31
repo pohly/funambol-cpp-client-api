@@ -73,52 +73,52 @@
          *
          * @param url the new target url
          */
-        void setURL(URL& newURL) EXTRA_SECTION_03;
+        virtual void setURL(URL& newURL) EXTRA_SECTION_03;
 
         /*
          * Returns the url.
          */
-        URL& getURL() EXTRA_SECTION_03;
+        virtual URL& getURL() EXTRA_SECTION_03;
 
         /**
          * Sets the connection timeout
          *
          * @param t the new timeout in seconds
          */
-        void setTimeout(unsigned int t) EXTRA_SECTION_03;
+        virtual void setTimeout(unsigned int t) EXTRA_SECTION_03;
 
         /**
          * Returns the connection timeout
          */
-        unsigned int getTimeout() EXTRA_SECTION_03;
+        virtual unsigned int getTimeout() EXTRA_SECTION_03;
         
         /**
          * Sets the max msg size
          *
          * @param t the new msx msg size in bytes
          */
-        void setMaxMsgSize(unsigned int t) EXTRA_SECTION_03;
+        virtual void setMaxMsgSize(unsigned int t) EXTRA_SECTION_03;
          
         /**
          * Returns the max msg size
          */
-        unsigned int getMaxMsgSize()EXTRA_SECTION_03;
+        virtual unsigned int getMaxMsgSize()EXTRA_SECTION_03;
 
         /**
          * Sets the buffer size
          *
          * @param t the buffer size size in bytes
          */
-        void setReadBufferSize(unsigned int t) EXTRA_SECTION_03;
+        virtual void setReadBufferSize(unsigned int t) EXTRA_SECTION_03;
         
-        void setUserAgent(BCHAR* ua);
+        virtual void setUserAgent(const BCHAR* ua);
 
-        BCHAR* getUserAgent();
+        virtual BCHAR* getUserAgent();
 
         /**
          * Returns the buffer size
          */
-        unsigned int getReadBufferSize()EXTRA_SECTION_03;
+        virtual unsigned int getReadBufferSize()EXTRA_SECTION_03;
 
 
         /*

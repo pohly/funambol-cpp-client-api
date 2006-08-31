@@ -78,21 +78,21 @@ class DevInf {
          *
          */
         DevInf(VerDTD* verDTD,
-                    BCHAR* man,
-                    BCHAR* mod,
-                    BCHAR* oem,
-                    BCHAR* fwV,
-                    BCHAR* swV,
-                    BCHAR* hwV,
-                    BCHAR* devID,
-                    BCHAR* devTyp,
-                    ArrayList* dataStores,
-                    ArrayList* ctCap,
-                    ArrayList* ext,
-                    BOOL utc,
-                    BOOL supportLargeObjs,
-                    BOOL supportNumberOfChanges,
-                    SyncCap* syncCap);
+               const  BCHAR* man,
+               const BCHAR* mod,
+               const BCHAR* oem,
+               const BCHAR* fwV,
+               const BCHAR* swV,
+               const BCHAR* hwV,
+               const BCHAR* devID,
+               const BCHAR* devTyp,
+               ArrayList* dataStores,
+               ArrayList* ctCap,
+               ArrayList* ext,
+               BOOL utc,
+               BOOL supportLargeObjs,
+               BOOL supportNumberOfChanges,
+               SyncCap* syncCap);
 
         // ---------------------------------------------------------- Public methods
         /**
@@ -122,7 +122,7 @@ class DevInf {
          * @param man the device manufacturer property
          *
          */
-        void setMan(BCHAR* man);
+        void setMan(const BCHAR* man);
 
         /**
          * Gets the model name of device
@@ -137,7 +137,7 @@ class DevInf {
          * @param mod the device model property
          *
          */
-        void setMod(BCHAR* mod);
+        void setMod(const BCHAR* mod);
 
         /**
          * Gets the Original Equipment Manufacturer of the device
@@ -152,7 +152,7 @@ class DevInf {
          * @param oem the Original Equipment Manufacturer of the device
          *
          */
-        void setOEM(BCHAR* oem);
+        void setOEM(const BCHAR* oem);
 
         /**
          * Gets the firmware version property
@@ -167,7 +167,7 @@ class DevInf {
          * @param fwV the firmware version property
          *
          */
-        void setFwV(BCHAR* fwV);
+        void setFwV(const BCHAR* fwV);
 
         /**
          * Gets the software version property
@@ -182,7 +182,7 @@ class DevInf {
          * @param swV the software version property
          *
          */
-        void setSwV(BCHAR* swV);
+        void setSwV(const BCHAR* swV);
 
         /**
          * Gets the hardware version property
@@ -197,7 +197,7 @@ class DevInf {
          * @param hwV the hardware version property
          *
          */
-        void setHwV(BCHAR* hwV);
+        void setHwV(const BCHAR* hwV);
 
         /**
          * Gets the device identifier
@@ -212,7 +212,7 @@ class DevInf {
          * @param devID the device identifier
          *
          */
-        void setDevID(BCHAR* devID);
+        void setDevID(const BCHAR* devID);
 
         /**
          * Gets the device type
@@ -227,7 +227,7 @@ class DevInf {
          * @param devTyp the device type
          *
          */
-        void setDevTyp(BCHAR* devTyp);
+        void setDevTyp(const BCHAR* devTyp);
 
         /**
          * Gets the array of datastore

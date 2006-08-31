@@ -64,21 +64,32 @@ static bool isToExit(int* check, int size) {
     return true;
 }
 
-SyncManager::SyncManager(SyncManagerConfig* c) : config(*c) {
-    initialize();
-}
-
 SyncManager::SyncManager(SyncManagerConfig& c) : config(c) {
     initialize();
 }
 
 void SyncManager::initialize() {
-    AccessConfig& c = config.getAccessConfig();   
-    
-    credentialHandler = CredentialHandler();
+    // set all values which are checked by the destructor;
+    // previously some pointers were only set later, leading to
+    // uninitialized memory reads and potential crashes when
+    // constructing a SyncManager, but not using it
+    transportAgent = NULL;
+    mappings       = NULL;
+    sources        = NULL;
+    currentState   = STATE_START;
+    mappings       = NULL;
+    check          = NULL;
+    sourcesNumber  = 0;
+    sources        = NULL;
+    count          = 0;
+    commands       = NULL;
+    devInf         = NULL;
 
+    AccessConfig& c = config.getAccessConfig();   
+    DeviceConfig& dc = config.getDeviceConfig();
+    
     bstrncpy(syncURL, c.getSyncURL(), 511);
-    bstrncpy(deviceId, c.getDeviceId(), 31);
+    bstrncpy(deviceId, dc.getDevID(), 31);
     
     credentialHandler.setUsername           (c.getUsername());
     credentialHandler.setPassword           (c.getPassword());
@@ -91,15 +102,7 @@ void SyncManager::initialize() {
     credentialHandler.setServerAuthType     (c.getServerAuthType());
     credentialHandler.setServerAuthRequired (c.getServerAuthRequired());
             
-    transportAgent = NULL;
-    
-    currentState = STATE_START;
-
     commands = new ArrayList();
-    mappings      = NULL;
-    check         = NULL;
-    sourcesNumber = 0;
-    count         = 0;
 
     maxMsgSize   = c.getMaxMsgSize();
     maxModPerMsg = 150;  // dafault value
@@ -111,12 +114,6 @@ void SyncManager::initialize() {
     if (c.getReadBufferSize() > 0)
         readBufferSize = c.getReadBufferSize();
     
-    memset(userAgent, 0, 128*sizeof(BCHAR));
-    bstrcpy(userAgent, c.getUserAgent());
-    if (bstrlen(userAgent) == 0) {
-        bstrcpy(userAgent, BCHAR_USER_AGENT);
-    }
-                  
     syncMLBuilder.set(syncURL, deviceId, maxMsgSize);
     memset(credentialInfo, 0, 256*sizeof(BCHAR));
 }
@@ -142,6 +139,9 @@ SyncManager::~SyncManager() {
         // This deletes only SyncSource array
         // We DON'T want to release SyncSource objects here!
         delete [] sources;
+    }
+    if (devInf) {
+        delete devInf;
     }
 }
 
@@ -176,6 +176,9 @@ int SyncManager::prepareSync(SyncSource** s) {
     Cred*   cred                = NULL;
     Alert*  alert               = NULL;
     SyncSource** buf            = NULL;
+    StringBuffer* devInfStr     = NULL;
+    BOOL putDevInf              = FALSE;
+    BCHAR devInfHash[16 * 4 +1]; // worst case factor base64 is four
     const BCHAR *syncURL;
     
     syncURL = config.getAccessConfig().getSyncURL(); //sizeof(syncURL));
@@ -226,20 +229,50 @@ int SyncManager::prepareSync(SyncSource** s) {
             check[count] = 0;
         }
     }
+
+    // Create the device informations.
+    devInf = createDeviceInfo();
+
+    // check device information for changes
+    if (devInf) {
+        char md5[16];
+        devInfStr = Formatter::getDevInf(devInf);
+        LOG.debug(T("devinfo: %s"), devInfStr->c_str());
+        calculateMD5(devInfStr->c_str(), devInfStr->length(), md5);
+        devInfHash[b64_encode(devInfHash, md5, sizeof(md5))] = 0;
+        LOG.debug(T("devinfo hash: %s"), devInfHash);
+
+        // compare against previous device info hash:
+        // if different, then the local config has changed and
+        // infos should be sent again
+        if (bstrcmp(devInfHash, config.getDeviceConfig().getDevInfHash())) {
+            putDevInf = TRUE;
+        }
+        LOG.debug(T("devinfo %s"), putDevInf ? T("changed, retransmit") : T("unchanged, no need to send"));
+    } else {
+        LOG.debug(T("no devinfo available"));
+    }
+
+    // have device infos changed since the last time that they were
+    // sent or is this the initial sync?
     
+
+    // disable all SyncSources without a preferred sync mode
     for (count = 0; count < sourcesNumber; count ++) {
         if (!check[count])
             continue;
 
-        if (sources[count]->getSyncMode() == SYNC_NONE) {
+        if (sources[count]->getPreferredSyncMode() == SYNC_NONE) {
             check[count] = 0;
         }
     }
         
     if (isToExit(check, sourcesNumber)) {
-        // error. no source to sync
-        ret = lastErrorCode = ERR_NO_SOURCE_TO_SYNC;
-        bsprintf(lastErrorMsg, ERRMSG_NO_SOURCE_TO_SYNC);
+        if (!ret) {
+            // error: no source to sync
+            ret = lastErrorCode = ERR_NO_SOURCE_TO_SYNC;
+            bsprintf(lastErrorMsg, ERRMSG_NO_SOURCE_TO_SYNC);
+        }
 
         goto finally;
     }
@@ -285,6 +318,17 @@ int SyncManager::prepareSync(SyncSource** s) {
             cred = credentialHandler.getClientCredential();             
             bstrcpy(credentialInfo, cred->getAuthentication()->getData(NULL));
         }
+
+        // actively send out device infos?
+        if (putDevInf) {
+            AbstractCommand* put = syncMLBuilder.prepareDevInf(NULL, *devInf);
+            if (put) {
+                commands->add(*put);
+                delete put;
+            }
+            putDevInf = FALSE;
+        }
+        
         // "cred" only contains an encoded strings as username, also
         // need the original username for LocName
         syncml = syncMLBuilder.prepareInitObject(cred, alerts, commands);
@@ -307,7 +351,10 @@ int SyncManager::prepareSync(SyncSource** s) {
         if (transportAgent == NULL) {
             transportAgent = TransportAgentFactory::getTransportAgent(url, proxy);
             transportAgent->setReadBufferSize(readBufferSize);
-            transportAgent->setUserAgent(userAgent);            
+            // Here we also ensure that the user agent string is valid
+            const BCHAR* ua = getUserAgent(config);
+            transportAgent->setUserAgent(ua);
+            delete [] ua; ua = NULL;
             
             if (maxMsgSize > 0) {
                 transportAgent->setMaxMsgSize(maxMsgSize);
@@ -468,7 +515,68 @@ int SyncManager::prepareSync(SyncSource** s) {
                 commands->add(*status);
                 deleteStatus(&status);    
             }
-        }  
+        }
+
+        //
+        // Process Put/Get commands
+        //
+        list = syncml->getSyncBody()->getCommands();
+        int cmdindex;
+        for (cmdindex = 0; cmdindex < list->size(); cmdindex++) {
+            AbstractCommand* cmd = (AbstractCommand*)list->get(cmdindex);
+            BCHAR* name = cmd->getName();
+            if (name) {
+                BOOL isPut = !bstrcmp(name, PUT);
+                BOOL isGet = !bstrcmp(name, GET);
+
+                if (isGet || isPut) {
+                    int statusCode = 200; // if set, then send it (on by default)
+
+                    if (isGet) {
+                        Get *get = (Get *)cmd;
+                        ArrayList *items = get->getItems();
+                        BOOL sendDevInf = FALSE;
+
+                        Results results;
+                        for (int i = 0; i < items->size(); i++) {
+                            Item *item = (Item *)items->get(i);
+                        
+                            // we are not very picky: as long as the Item is
+                            // called "./devinf11" as required by the standard
+                            // we return our device infos
+                            Target *target = item->getTarget();
+                            if (target && target->getLocURI() &&
+                                !bstrcmp(target->getLocURI(),
+                                         DEVINF_URI)) {
+                                sendDevInf = TRUE;
+                            } else {
+                                LOG.debug(T("ignoring request to Get item #%d"), i);
+                            }
+                        }
+
+                        // cannot send if we have nothing, then simply acknowledge the request,
+                        // but ignore it
+                        if (sendDevInf && devInf) {
+                            AbstractCommand *result = syncMLBuilder.prepareDevInf(cmd, *devInf);
+                            if (result) {
+                                commands->add(*result);
+                                delete result;
+                            }
+                        }
+                    } else {
+                        // simply acknowledge Put
+                    }
+
+                    if (statusCode) {
+                        status = syncMLBuilder.prepareCmdStatus(*cmd, statusCode);
+                        if (status) {
+                            commands->add(*status);
+                            deleteStatus(&status);    
+                        }
+                    }
+                }
+            }
+        }
         
         //
         // Client Authentication. The auth of the client on the server
@@ -517,6 +625,7 @@ int SyncManager::prepareSync(SyncSource** s) {
 
     config.getAccessConfig().setClientNonce(credentialHandler.getClientNonce(NULL));
     config.getAccessConfig().setServerNonce(credentialHandler.getServerNonce(NULL));
+    config.getDeviceConfig().setDevInfHash(devInfHash);
     
     if (isToExit(check, sourcesNumber)) {
         // error. no source to sync
@@ -537,6 +646,9 @@ finally:
     }
     if (initMsg) {
         safeDelete(&initMsg);
+    }
+    if (devInfStr) {
+        delete devInfStr;
     }
 
     deleteSyncML(&syncml);
@@ -699,7 +811,7 @@ int SyncManager::sync() {
             } else {
                 // TBD: if we are using vcard/icalendar, we need to 
                 // set the encoding to PLAIN
-                if (bstrcmp(_wcc(sources[count]->getEncoding()), B64_ENCODING) == 0) {
+                if (bstrcmp(sources[count]->getConfig().getEncoding(), B64_ENCODING) == 0) {
                     syncMLBuilder.setEncoding(B64);
                 } else {
                     syncMLBuilder.setEncoding(PLAIN);
@@ -752,13 +864,13 @@ int SyncManager::sync() {
                                     syncMLBuilder.prepareModificationCommand(
                                                             REPLACE_COMMAND_NAME, 
                                                             syncItem,
-                                                            sources[count]->getType()
+                                                            sources[count]->getConfig().getType()
                                                   );
                             } else {
                                 syncMLBuilder.addItem(modificationCommand,
                                                       REPLACE_COMMAND_NAME,
                                                       syncItem, 
-                                                      sources[count]->getType());
+                                                      sources[count]->getConfig().getType());
                             }
 
                             if (syncItem) {
@@ -808,10 +920,10 @@ int SyncManager::sync() {
                             }
                             if (modificationCommand == NULL) {
                                 modificationCommand = syncMLBuilder.prepareModificationCommand(REPLACE_COMMAND_NAME, 
-                                        syncItem, sources[count]->getType());
+                                                                                               syncItem, sources[count]->getConfig().getType());
                             } else {
                                 syncMLBuilder.addItem(modificationCommand, REPLACE_COMMAND_NAME, syncItem, 
-                                        sources[count]->getType());
+                                                      sources[count]->getConfig().getType());
                             }
 
                             if (syncItem) {
@@ -846,10 +958,10 @@ int SyncManager::sync() {
                                 }
                                 if (modificationCommand == NULL) {
                                     modificationCommand = syncMLBuilder.prepareModificationCommand(ADD_COMMAND_NAME, 
-                                            syncItem, sources[count]->getType());
+                                                                                                   syncItem, sources[count]->getConfig().getType());
                                 } else {
                                     syncMLBuilder.addItem(modificationCommand, ADD_COMMAND_NAME, 
-                                            syncItem, sources[count]->getType());
+                                                          syncItem, sources[count]->getConfig().getType());
                                 }
 
                                 if (syncItem) {
@@ -888,10 +1000,10 @@ int SyncManager::sync() {
                                 }
                                 if (modificationCommand == NULL) {
                                     modificationCommand = syncMLBuilder.prepareModificationCommand(REPLACE_COMMAND_NAME, 
-                                            syncItem, sources[count]->getType());
+                                                                                                   syncItem, sources[count]->getConfig().getType());
                                 } else {
                                     syncMLBuilder.addItem(modificationCommand, REPLACE_COMMAND_NAME, 
-                                            syncItem, sources[count]->getType());
+                                                          syncItem, sources[count]->getConfig().getType());
                                 }
 
                                 if (syncItem) {                            
@@ -929,10 +1041,10 @@ int SyncManager::sync() {
                                 }
                                 if (modificationCommand == NULL) {
                                     modificationCommand = syncMLBuilder.prepareModificationCommand(DELETE_COMMAND_NAME, 
-                                            syncItem, sources[count]->getType());
+                                                                                                   syncItem, sources[count]->getConfig().getType());
                                 } else {
                                     syncMLBuilder.addItem(modificationCommand, DELETE_COMMAND_NAME, 
-                                            syncItem, sources[count]->getType());
+                                            syncItem, sources[count]->getConfig().getType());
                                 }
 
                                 if (syncItem) {                            
@@ -1338,7 +1450,7 @@ int SyncManager::endSync() {
                 lastErrorCode = sret;
             }
         }        
-    }         
+    }
             
  finally:
 
@@ -1362,8 +1474,7 @@ int SyncManager::endSync() {
     BCHAR g[768]; bsprintf(g, "ret: %i, lastErrorCode: %i, lastErrorMessage: %s", ret, lastErrorCode, lastErrorMsg); LOG.debug(g);
     //
     // This commitSync is not used because the saving of the configuration
-    // is done into the Sync4jClient.
-    // The operation of save the config is ONLY for the default config (the DMConfig)
+    // is done by the Client.
     //
     //config.save();
     if (ret){
@@ -1377,46 +1488,26 @@ int SyncManager::endSync() {
 }
 
 BOOL SyncManager::readSyncSourceDefinition(SyncSource& source) {
-    SyncSourceConfig ssc;
     BCHAR anchor[DIM_ANCHOR];
     
-    if (config.getSyncSourceConfig(_wcc(source.getName()), ssc) == FALSE) {
+    if (config.getSyncSourceConfig(_wcc(source.getName()), source.getConfig()) == FALSE) {
         return FALSE;
     }
 
-    /* This check could be removed because the sync type is decided later from server.
-       This kind of sync should be read by the settings
-       So, the follow code was used in the previous version of the api.
+    SyncSourceConfig& ssc(source.getConfig());
 
-    // syncMode set only if value has no good value...
-    if (source.getPreferredSyncMode() == NULL ||
-        source.getPreferredSyncMode() < 0     ||
-        source.getPreferredSyncMode() > 210      )  {
-
-        //source.setPreferredSyncMode(syncModeCode(ssc.getSync()));
-    }
-    */
-    source.setPreferredSyncMode(syncModeCode(ssc.getSync()));
-
-    source.setType(ssc.getType());
-    source.setLastSync(ssc.getLast());
+    // only copy properties which either have a different format
+    // or are expected to change during the synchronization
     timestampToAnchor(ssc.getLast(), anchor);
     source.setLastAnchor(anchor);
     timestampToAnchor(source.getNextSync(), anchor);
     source.setNextAnchor(anchor);
 
-    wchar_t *remuri = toWideChar(ssc.getURI());
-    wchar_t *enc = toWideChar(ssc.getEncoding());
-    source.setRemoteURI(remuri);
-    source.setEncoding(enc);
-
-    delete [] remuri; delete [] enc;
-
     return TRUE;
 }
 
 
-BOOL SyncManager::commitChanges(SyncSource& source) {
+BOOL SyncManager::commitChanges(SyncSource& source) { 
     unsigned int n = config.getSyncSourceConfigsCount();
     SyncSourceConfig* configs = config.getSyncSourceConfigs();
 
@@ -1639,3 +1730,203 @@ exit:
 }
 
 
+/*
+ * Creates the device info for this client and sources.
+ */
+DevInf *SyncManager::createDeviceInfo()
+{
+    const BCHAR *rxType, *rxVer,
+        *txType, *txVer;
+
+    // check that essential information is available
+    // for each source
+    for (SyncSource **source = sources;
+         *source;
+         source++) {
+        
+        (*sources)->getPreferredTypes(rxType, rxVer,
+                                      txType, txVer);
+
+        if (!rxType || !rxVer || !txType || !txVer) {
+            return NULL;
+        }
+    }
+    
+    DevInf *devinfo = new DevInf();
+    //
+    // Copy devInf params from current Config.
+    //
+    VerDTD v(config.getDeviceConfig().getVerDTD());
+    devinfo->setVerDTD(&v);
+    devinfo->setMan(config.getDeviceConfig().getMan());
+    devinfo->setMod(config.getDeviceConfig().getMod());
+    devinfo->setOEM(config.getDeviceConfig().getOem());
+    devinfo->setFwV(config.getDeviceConfig().getFwv());
+    devinfo->setSwV(config.getDeviceConfig().getSwv());
+    devinfo->setHwV(config.getDeviceConfig().getHwv());
+    devinfo->setDevID(config.getDeviceConfig().getDevID());
+    devinfo->setDevTyp(config.getDeviceConfig().getDevType());
+    devinfo->setUTC(config.getDeviceConfig().getUtc());
+    devinfo->setSupportLargeObjs(config.getDeviceConfig().getLoSupport());
+    devinfo->setSupportNumberOfChanges(config.getDeviceConfig().getNocSupport());
+
+    static const struct {
+        SyncMode mode;
+        int type;
+    } mapping[] = {
+        { SYNC_TWO_WAY, 1 },             // Support of 'two-way sync'
+        { SYNC_SLOW, 2 },                // Support of 'slow two-way sync'
+        { SYNC_ONE_WAY_FROM_CLIENT, 3 }, // Support of 'one-way sync from client only'
+        { SYNC_REFRESH_FROM_CLIENT, 4 }, // Support of 'refresh sync from client only'
+        { SYNC_ONE_WAY_FROM_SERVER, 5 }, // Support of 'one-way sync from server only'
+        { SYNC_REFRESH_FROM_SERVER, 6 }, // Support of 'refresh sync from server only'
+        // 7, // Support of 'server alerted sync'
+        { SYNC_NONE, -1 }
+    };
+
+    ArrayList dataStores;
+    for (SyncSource **source = sources;
+         *source;
+         source++) {
+        ArrayList syncModeList;
+        const BCHAR *syncModes = (*source)->getConfig().getSyncModes();
+        if (syncModes) {
+            BCHAR buffer[80];
+            const BCHAR *mode = syncModes;
+
+            while (*mode) {
+                // skip leading spaces and commas
+                while (isspace(*mode) || *mode == ',') {
+                    mode++;
+                }
+                // fast-forward to comma
+                const BCHAR *eostr = mode;
+                while (*eostr && *eostr != ',') {
+                    eostr++;
+                }
+                // strip spaces directly before comma
+                while (eostr > mode && isspace(eostr[-1])) {
+                    eostr--;
+                }
+                // make temporary copy (mode is read-only)
+                size_t len = eostr - mode;
+                if (len > sizeof(buffer) - 1) {
+                    len = sizeof(buffer) - 1;
+                }
+                memcpy(buffer, mode, sizeof(BCHAR) * len);
+                buffer[len] = 0;
+                SyncMode sm = syncModeCode(buffer);
+                for (int i = 0; mapping[i].type >= 0; i++) {
+                    if (mapping[i].mode == sm) {
+                        SyncType syncType(mapping[i].type);
+                        syncModeList.add(syncType);
+                        break;
+                    }
+                }
+
+                // next item
+                mode = eostr;
+            }
+        }
+
+        char* name = toMultibyte((*source)->getName());
+        SourceRef sourceRef(name);
+        delete [] name; name = NULL;
+
+        (*sources)->getPreferredTypes(rxType, rxVer,
+                                      txType, txVer);
+        ContentTypeInfo rxPref(rxType, rxVer);
+        ArrayList rx;
+        fillContentTypeInfoList(rx, (*source)->getRecvTypes());
+        ContentTypeInfo txPref(txType, txVer);
+        ArrayList tx;
+        fillContentTypeInfoList(rx, (*source)->getSendTypes());
+        SyncCap syncCap(&syncModeList);
+        DataStore dataStore(&sourceRef,
+                            NULL,
+                            -1,
+                            &rxPref,
+                            &rx,
+                            &txPref,
+                            &tx,
+                            NULL,
+                            &syncCap);
+        dataStores.add(dataStore);
+    }
+    devinfo->setDataStore(&dataStores);
+
+#if 0
+    // dummy CTCap - has no effect because Formatter::getCTCaps() has
+    // not be implemented yet
+    ArrayList empty;
+    ArrayList ctPropParams;
+    CTPropParam param(T("X-FOO"),
+                      NULL, 0, NULL, &empty);
+    ctPropParams.add(param);
+    CTTypeSupported cttType(T("text/x-foo"), &ctPropParams);
+    ArrayList ctCap;
+    ctCap.add(cttType);
+    devinfo->setCTCap(&ctCap);
+#endif
+
+    return devinfo;
+}
+
+
+// copy from SyncSource::getSend/RecvTypes() format into array list
+// of ContentTypeInfos
+static void fillContentTypeInfoList(ArrayList &l, const BCHAR** types)
+{
+    const BCHAR** curr;
+    
+    l.clear();
+    if (!types) {
+        return;
+    }
+
+    curr = types;
+    while (curr[0] && curr[1]) {
+        ContentTypeInfo cti(curr[0], curr[1]);
+        l.add(cti);
+        curr += 2;
+    }
+}
+
+/*
+ * Ensure that the user agent string is valid.
+ * If property 'user agent' is empty, it is replaced by 'mod' and 'SwV'
+ * properties from DeviceConfig. 
+ * If also 'mod' property is empty, return a default user agent.
+ *
+ * @param config: reference to the current SyncManagerConfig
+ * @return      : user agent property as a new BCHAR*
+ *                (need to be freed by the caller)
+ */
+const BCHAR* SyncManager::getUserAgent(SyncManagerConfig& config) {
+
+    BCHAR* ret;
+    StringBuffer userAgent(config.getAccessConfig().getUserAgent());
+    StringBuffer buffer;
+    
+    if (userAgent.length()) {
+        ret = stringdup(userAgent.c_str());
+    }
+    // Use 'mod + SwV' parameters for user agent
+    else {
+        const BCHAR* mod = config.getDeviceConfig().getMod();
+        const BCHAR* swV = config.getDeviceConfig().getSwv();
+        if (mod) {
+            buffer.append(mod);
+            if (swV) {
+                buffer.append(" ");
+                buffer.append(swV);
+            }
+            ret = stringdup(buffer.c_str());
+        } else {
+            // Default user agent value
+            ret = stringdup(BCHAR_USER_AGENT);
+        }
+    }
+
+    return ret;
+}

@@ -30,6 +30,7 @@ TransportAgent::TransportAgent(URL& newURL, Proxy& proxy, unsigned int timeout, 
     url     = newURL ;
     timeout = timeout;
     maxmsgsize  = maxmsgsize;
+    userAgent[0] = 0;
 }
 
 TransportAgent::~TransportAgent() {
@@ -67,7 +68,7 @@ unsigned int TransportAgent::getReadBufferSize() {
     return readBufferSize;
 }
 
-void TransportAgent::setUserAgent(BCHAR* ua) {
+void TransportAgent::setUserAgent(const BCHAR* ua) {
     if (ua) 
         bstrcpy(userAgent, ua);
 }

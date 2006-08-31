@@ -136,7 +136,7 @@ BCHAR* MD5CredentialData(BCHAR* userName, BCHAR* password, BCHAR* nonce);
 /*
 * Calculates the digest given the token and its lenght
 */
-char* calculateMD5(void* token, int len, char* wdigest);
+char* calculateMD5(const void* token, int len, char* wdigest);
 
 /*
  * Return a filename composed by the system temp dir and the name given

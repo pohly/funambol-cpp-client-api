@@ -54,12 +54,8 @@ SyncSourceConfig::~SyncSourceConfig() {
 }
 
 
-const BCHAR* SyncSourceConfig::getName(BCHAR* buf) const {
-    if (buf == NULL) {
-        return name;
-    }
-
-    return bstrcpy(buf, name);
+const BCHAR* SyncSourceConfig::getName() const {
+    return name;
 }
 
 void SyncSourceConfig::setName(const BCHAR* n) {
@@ -67,12 +63,10 @@ void SyncSourceConfig::setName(const BCHAR* n) {
     name = stringdup(n);
 }
 
-const BCHAR* SyncSourceConfig::getURI(BCHAR* buf) const {
-    if (buf == NULL) {
-        return uri;
-    }
-
-    return bstrcpy(buf, uri);
+const BCHAR* SyncSourceConfig::getURI() const {
+    return uri ? uri :
+        name ? name :
+        "";
 }
 
 void SyncSourceConfig::setURI(const BCHAR* u) {
@@ -81,12 +75,10 @@ void SyncSourceConfig::setURI(const BCHAR* u) {
 }
 
 
-const BCHAR* SyncSourceConfig::getSyncModes(BCHAR* buf) const {
-    if (buf == NULL) {
-        return syncModes;
-    }
-
-    return bstrcpy(buf, syncModes);
+const BCHAR* SyncSourceConfig::getSyncModes() const {
+    return syncModes ? syncModes :
+        "";
+        
 }
 
 void SyncSourceConfig::setSyncModes(const BCHAR* s) {
@@ -98,12 +90,9 @@ void SyncSourceConfig::setSyncModes(const BCHAR* s) {
     }
 }
 
-const BCHAR* SyncSourceConfig::getType(BCHAR* buf) const {
-    if (buf == NULL) {
-        return type;
-    }
-
-    return bstrcpy(buf, type);
+const BCHAR* SyncSourceConfig::getType() const {
+    return type ? type :
+        "";
 }
 
 void SyncSourceConfig::setType(const BCHAR* t) {
@@ -115,12 +104,9 @@ void SyncSourceConfig::setType(const BCHAR* t) {
     }
 }
 
-const BCHAR* SyncSourceConfig::getSync(BCHAR* buf) const {
-    if (buf == NULL) {
-        return sync;
-    }
-
-    return bstrcpy(buf, sync);
+const BCHAR* SyncSourceConfig::getSync() const {
+    return sync ? sync :
+        "";
 }
 
 void SyncSourceConfig::setSync(const BCHAR *s) {
@@ -140,12 +126,9 @@ unsigned long SyncSourceConfig::getLast() const {
     return (unsigned long)last;
 }
 
-const BCHAR* SyncSourceConfig::getEncoding(BCHAR* buf) const {
-     if (buf == NULL) {
-        return encodings;
-    }
-
-    return bstrcpy(buf, encodings); 
+const BCHAR* SyncSourceConfig::getEncoding() const {
+    return encodings ? encodings :
+        "";
 }
         
 void SyncSourceConfig::setEncoding(const BCHAR* s) {
@@ -154,6 +137,13 @@ void SyncSourceConfig::setEncoding(const BCHAR* s) {
     if (s) {
         encodings = stringdup(s);
     }
+}
+
+CTCap SyncSourceConfig::getCtCap() const {
+    return ctCap;
+}
+void SyncSourceConfig::setCtCap(CTCap v){
+    ctCap.setCTTypeSupported(v.getCTTypeSupported());
 }
 
 // ------------------------------------------------------------- Private methods
@@ -166,4 +156,5 @@ void SyncSourceConfig::assign(const SyncSourceConfig& sc) {
     setSync     (sc.getSync     ());
     setLast     (sc.getLast     ());
     setEncoding (sc.getEncoding ());
+    setCtCap    (sc.getCtCap    ());
 }

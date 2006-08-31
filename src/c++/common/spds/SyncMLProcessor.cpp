@@ -195,9 +195,17 @@ int SyncMLProcessor::processItemStatus(SyncSource& source, SyncBody* syncBody) {
             for (k = 0; k < items->size(); k++) {
                 item = (Item*)items->get(k);
                 if (item) {
-                    wchar_t *uri = toWideChar(item->getSource()->getLocURI());
-                    source.setItemStatus(uri, val);
-                    delete [] uri;
+                    Source* itemSource = item->getSource();
+                    if (itemSource) {
+                        wchar_t *uri = toWideChar(itemSource->getLocURI());
+                        source.setItemStatus(uri, val);
+                        delete [] uri;
+                    } else {
+                        // the item might consist of additional information, as in:
+                        // <SourceRef>pas-id-44B544A600000092</SourceRef>
+                        // <Data>200</Data>
+                        // <Item><Data>Conflict resolved by server</Data></Item>
+                    }
                 }
             }
             items = s->getSourceRef();

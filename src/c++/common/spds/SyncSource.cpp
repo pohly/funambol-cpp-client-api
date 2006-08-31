@@ -19,28 +19,34 @@
 #include "spds/SyncSource.h"
 #include "base/util/utils.h"
 #include "base/Log.h"
-#include "client/Sync4jClient.h"
+#include "client/SyncClient.h"
+#include "spds/spdsutils.h"
 
-SyncSource::SyncSource(const wchar_t* sourceName) {
+SyncSource::SyncSource(const wchar_t* sourceName, const SyncSourceConfig *sc) {
+    name = NULL;
+
+    if (sc) {
+        config.assign(*sc);
+        setPreferredSyncMode(syncModeCode(sc->getSync()));
+    }
+    else {
+        syncMode = SYNC_NONE;
+    }
+
     if ((sourceName == NULL) || (*sourceName == 0)) {
         lastErrorCode = ERR_PARAMETER_IS_EMPTY;
         bsprintf(lastErrorMsg, T("name cannot be empty (NULL or 0-length)"));
         goto finally;
     }
-
     name = wstrdup(sourceName);
-    remoteURI = wstrdup(sourceName);
 
-    *type = *next = *last = 0;
-    finally:
+  finally:
 
-    syncMode = SYNC_NONE;
     lastSync = 0;
 	nextSync = 0;
     
-    errorHandler = NULL;
+    //errorHandler = NULL;
     filter       = NULL;
-    encoding     = NULL;
 }
 
 /**
@@ -50,52 +56,23 @@ SyncSource::~SyncSource() {
     if (name) {
         delete [] name;
     }
-
-    if (remoteURI) {
-        delete [] remoteURI;
-    }
-
     if (filter) {
        delete filter;
     }
 }
 
-/*
- * Gets the Error Handler for the SyncSource, if the attribute is set,
- * otherwise return the one of Sync4JClient as a default (using a static
- * method call).
- * 
- * @return  A reference to the ErrorHandler to be used by the SyncSource.
- */
-ErrorHandler& SyncSource::getErrorHandler() {
-    if (errorHandler) 
-        return *errorHandler;
-    
-    return Sync4jClient::getInstance().getErrorHandler();
-}
 
 /*
- * Sets the Error Handler for the SyncSource
- * 
- * @param e: a reference to the ErrorHandler to be used by the SyncSource.
- */
-void SyncSource::setErrorHandler(ErrorHandler& e) {
-    errorHandler = &e;
-}
-
-/*
- * Returns the source name. If sourceName is <> NULL, the source name is copied
- * in it. If sourceName is <> NULL the returned value is sourceName. Otherwise,
- * the returned value is the internal buffer pointer. Note that this will be
- * released at object automatic destruction.
- *
- * @param sourceName - the buffer where the name will be copied (if != NULL) - NULL
- * @param dim - buffer size
- *
+ * Returns the source name.
  */
 const wchar_t *SyncSource::getName() {
      return name;
  }
+
+void SyncSource::setConfig(const SyncSourceConfig& sc) {
+    config.assign(sc);
+    setPreferredSyncMode(syncModeCode(sc.getSync()));
+}
 
 /*
  * Sets the synchronization mode required for the
@@ -115,78 +92,6 @@ SyncMode SyncSource::getPreferredSyncMode() {
 }
 
 /*
- * Sets the synchronization mode required for the
- * SyncSource.
- *
- * @param syncMode - sync synchronization mode
- */
-void SyncSource::setRemoteURI(const wchar_t* uri) {
-    if (remoteURI) {
-        delete [] remoteURI;
-    }
-
-    if (uri) {
-        remoteURI = wstrdup(uri);
-    } else {
-        remoteURI = wstrdup(TEXT(""));
-    }
-}
-
-/*
- * Returns the preferred synchronization mode for the SyncSource
- */
-const wchar_t* SyncSource::getRemoteURI() {   
-    return remoteURI;   
-}
-
-
-/*
- * Sets the encoding parameter
- *
- * @param ecnc - encoding
- */
-void SyncSource::setEncoding(const wchar_t* enc) {
-    if (encoding) {
-        delete [] encoding;
-    }
-
-    if (enc) {
-        encoding = wstrdup(enc);
-    } else {
-        encoding = wstrdup(TEXT(""));
-    }
-}
-
-/*
- * Returns the preferred synchronization mode for the SyncSource
- */
-const wchar_t* SyncSource::getEncoding() {   
-    return encoding;   
-}
-
-/*
- * Sets the mime type standard for the source items
- *
- * @param mimeType the mime type
- */
-void SyncSource::setType(const BCHAR* mimeType) {
-    bstrncpy(type, (mimeType == NULL) ? T("") : mimeType, DIM_MIME_TYPE);
-    type[DIM_MIME_TYPE-1] = 0;
-}
-
-/*
- * Returns the items data mime type. If type is NULL, the pointer to the
- * internal buffer is returned, otherwise the value is copied in the
- * given buffer, which is also returned to the caller.
- *
- * @param mimeType the buffer where to copy the mime type value
- */
-const BCHAR* SyncSource::getType() {
-        return type;
-}
-
-
-/*
  * Sets the server imposed synchronization mode for the SyncSource.
  *
  * @param syncMode - sync synchronization mode
@@ -202,18 +107,13 @@ SyncMode SyncSource::getSyncMode() {
     return syncMode;
 }
 
-/*
- * Ends the synchronization of the specified source.
- *
- * @param source - the SyncSource to sync
- 
-int SyncSource::endSync(SyncSource& source) {
-    //
-    // TBD
-    //
+int SyncSource::beginSync() {
     return 0;
 }
-*/
+
+int SyncSource::endSync() {
+    return 0;
+}
 
 /*
  * Returns the timestamp in milliseconds of the last synchronization.
@@ -312,4 +212,29 @@ void SyncSource::setFilter(SourceFilter* f) {
         filter->setInclusive(f->isInclusive());
         filter->setClause(f->getClause());
     }
+}
+
+void SyncSource::getPreferredTypes(const BCHAR*& recvType,
+                                   const BCHAR*& recvVersion,
+                                   const BCHAR*& sendType,
+                                   const BCHAR*& sendVersion)
+{
+    const BCHAR *type = config.getType();
+    const BCHAR *ver;
+
+    recvType =
+        sendType = type;
+    if (!bstrcmp(type, "text/x-vcard")) {
+        ver = "2.1";
+    } else if (!bstrcmp(type, "text/vcard")) {
+        ver = "3.0";
+    } else if (!bstrcmp(type, "text/x-calendar")) {
+        ver = "1.0";
+    }else if (!bstrcmp(type, "text/calendar")) {
+        ver = "2.0";
+    } else {
+        ver = "";
+    }
+    sendVersion =
+        recvVersion = ver;
 }

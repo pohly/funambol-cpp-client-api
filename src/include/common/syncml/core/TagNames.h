@@ -88,7 +88,7 @@
 #define SUPPORT_NUMBER_OF_CHANGES T("SupportNumberOfChanges")
 #define NUMBER_OF_CHANGES   T("NumberOfChanges")
 #define SUPPORT_LARGE_OBJECT T("LargeObject"              )
-#define UTC                 T("Utc"              )
+#define UTC                 T("UTC"              )
 #define DATA_STORE          T("DataStore"        )
 #define MAN                 T("Man"              )
 #define MOD                 T("Mod"              )
@@ -96,7 +96,7 @@
 #define FWV                 T("FwV"              )
 #define SWV                 T("SwV"              )
 #define HWV                 T("HwV"              )
-#define DEV_ID              T("DevId"            )
+#define DEV_ID              T("DevID"            )
 #define DEV_TYP             T("DevTyp"           )
 #define DEV_INF             T("DevInf"           )
 #define DISPLAY_NAME        T("DisplayName"      )
@@ -121,8 +121,12 @@
 #define SOURCE_PARENT       T("SourceParent"     )
 
 // parameters 
-#define METINFO             T("xmlns='syncml:metinf'")
+#define METINFO             T("xmlns=\"syncml:metinf\"")
+#define DEVINF              T("xmlns=\"syncml:devinf\"")
 
+// special values
+#define DEVINF_URI          T("./devinf11")
+#define DEVINF_FORMAT       T("application/vnd.syncml-devinf+xml")
 
 // Commands
 #define ALERT               T("Alert"            )

@@ -21,8 +21,7 @@
  
 
 CTTypeSupported::CTTypeSupported(){
-    ctType       = NULL;
-    ctPropParams = NULL;    // CTPropParam[]   
+    initialize();
 }
 
 CTTypeSupported::~CTTypeSupported() {
@@ -43,8 +42,14 @@ CTTypeSupported::~CTTypeSupported() {
  *
  */
 CTTypeSupported::CTTypeSupported(BCHAR* ctType, ArrayList* ctPropParams ) {
-     setCTType(ctType);
-     setCTPropParams(ctPropParams);
+    initialize();
+    setCTType(ctType);
+    setCTPropParams(ctPropParams);
+}
+
+void CTTypeSupported::initialize() {
+    ctType       = NULL;
+    ctPropParams = NULL;
 }
 
 

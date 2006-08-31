@@ -50,6 +50,14 @@ void SyncManagerConfig::setAccessConfig(AccessConfig& ac) {
     accessConfig.assign(ac);
 }
 
+DeviceConfig& SyncManagerConfig::getDeviceConfig() {
+    return deviceConfig;
+}
+
+void SyncManagerConfig::setDeviceConfig(DeviceConfig& dc) {
+    deviceConfig.assign(dc);
+}
+
 BOOL SyncManagerConfig::getSyncSourceConfig(const BCHAR* name, SyncSourceConfig& sc, BOOL refresh) {
     if ((name == NULL) || (bstrlen(name) == 0)) {
         return FALSE;
@@ -57,12 +65,21 @@ BOOL SyncManagerConfig::getSyncSourceConfig(const BCHAR* name, SyncSourceConfig&
 
     for (unsigned int i=0; i<sourceConfigsCount; ++i) {
         if (bstrcmp(sourceConfigs[i].getName(), name) == 0) {
-            sc.assign(sourceConfigs[i]);
+            sc = sourceConfigs[i];
             return TRUE;
         }
     }
 
     return FALSE;
+}
+
+BOOL SyncManagerConfig::getSyncSourceConfig(unsigned int i, SyncSourceConfig& sc, BOOL refresh) {
+    if (i >= sourceConfigsCount) {
+        return FALSE;
+    }
+
+    sc = sourceConfigs[i];
+    return TRUE;
 }
 
 

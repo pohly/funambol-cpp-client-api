@@ -26,7 +26,6 @@ class AccessConfig {
     private:
         BCHAR*        username         ;
         BCHAR*        password         ;
-        BCHAR*        deviceId         ;
         BOOL          useProxy         ;
         BCHAR*        proxyHost        ;
         int           proxyPort        ;
@@ -52,6 +51,9 @@ class AccessConfig {
         BOOL encryption                ;  // F = FALSE, T = TRUE
         BCHAR*        userAgent        ;
 
+        BOOL checkConn                 ;
+        unsigned int responseTimeout   ;
+
         unsigned int dirty;
 
         /**
@@ -76,7 +78,7 @@ class AccessConfig {
          *         the memory itself.
          *
          */
-        const BCHAR* getUsername(const BCHAR* buf = NULL) EXTRA_SECTION_02;
+        const BCHAR* getUsername() const EXTRA_SECTION_02;
 
         /**
          *  Sets the username value. The given data are copied in an internal
@@ -90,7 +92,7 @@ class AccessConfig {
         /**
          * Returns the password value.
          */
-        const BCHAR* getPassword(const BCHAR* buf = NULL) EXTRA_SECTION_02;
+        const BCHAR* getPassword() const EXTRA_SECTION_02;
 
         /**
          * Sets a new password value. The given data are copied in an internal
@@ -102,24 +104,10 @@ class AccessConfig {
         void setPassword(const BCHAR* password) EXTRA_SECTION_02;
 
         /**
-         * Returns the deviceId value.
-         */
-        const BCHAR* getDeviceId(const BCHAR* buf = NULL) EXTRA_SECTION_02;
-
-        /**
-         * Sets a new  deviceId value. The given data are copied in an internal
-         * buffer so that the caller is assured that the given address can be
-         * released after the call.
-         *
-         * @param deviceId the new deviceId value
-         */
-        void setDeviceId(const BCHAR* deviceId) EXTRA_SECTION_02;
-
-        /**
          * Returns the SyncMode that the sync engine should your the first time
          * a source is synced
          */
-        SyncMode getFirstTimeSyncMode() EXTRA_SECTION_02;
+        SyncMode getFirstTimeSyncMode() const EXTRA_SECTION_02;
 
         /**
          * Sets the SyncMode that the sync engine should your the first time
@@ -132,7 +120,7 @@ class AccessConfig {
         /**
          * Should the sync engine use a HTTP proxy?
          */
-        BOOL getUseProxy() EXTRA_SECTION_02;
+        BOOL getUseProxy() const EXTRA_SECTION_02;
 
         /**
          * Sets if the sync engine should use a HTTP proxy to access the server.
@@ -144,7 +132,7 @@ class AccessConfig {
         /**
          * Returns the proxyHost value.
          */
-        const BCHAR* getProxyHost(const BCHAR* buf = NULL) EXTRA_SECTION_02;
+        const BCHAR* getProxyHost() const EXTRA_SECTION_02;
 
         /**
          * Sets a new proxyHost value.
@@ -153,10 +141,13 @@ class AccessConfig {
          */
         void setProxyHost(const BCHAR* proxyHost) EXTRA_SECTION_02;
 
+        int getProxyPort() const EXTRA_SECTION_02;
+        void setProxyPort(int v) EXTRA_SECTION_02;
+
         /**
          * Returns the proxyUsername value.
          */
-        BCHAR* getProxyUsername(const BCHAR* buf = NULL) EXTRA_SECTION_02;
+        BCHAR* getProxyUsername() const EXTRA_SECTION_02;
 
         /**
          * Sets a new proxyUsername value.
@@ -168,7 +159,7 @@ class AccessConfig {
         /**
          * Returns the proxyPassword value.
          */
-        BCHAR* getProxyPassword(const BCHAR* buf = NULL) EXTRA_SECTION_02;
+        BCHAR* getProxyPassword() const EXTRA_SECTION_02;
 
         /**
          * Sets a new proxyPassword value.
@@ -182,7 +173,7 @@ class AccessConfig {
          * (or HTTP://) or https:// (or HTTPS://), http:// is prepended to the
          * given string.
          */
-        const BCHAR* getSyncURL(const BCHAR* buf = NULL) EXTRA_SECTION_02;
+        const BCHAR* getSyncURL() const EXTRA_SECTION_02;
 
         /**
          * Sets a new the syncURL value. The given data are copied in an internal
@@ -203,7 +194,7 @@ class AccessConfig {
         /**
          * Returns the beginSync timestamp
          */
-        unsigned long getBeginSync() EXTRA_SECTION_02;
+        unsigned long getBeginSync() const EXTRA_SECTION_02;
 
         /**
          * Sets the new "endSync" timestamp.
@@ -215,56 +206,63 @@ class AccessConfig {
         /**
          * Returns the endSync timestamp
          */
-        unsigned long getEndSync() EXTRA_SECTION_02;
+        unsigned long getEndSync() const EXTRA_SECTION_02;
 
-        BOOL getServerAuthRequired() EXTRA_SECTION_02;
+        BOOL getServerAuthRequired() const EXTRA_SECTION_02;
 
         void setServerAuthRequired(BOOL v) EXTRA_SECTION_02;
 
-        const BCHAR* getClientAuthType(const BCHAR* buf = NULL) EXTRA_SECTION_02;
+        const BCHAR* getClientAuthType() const EXTRA_SECTION_02;
 
         void setClientAuthType(const BCHAR* v) EXTRA_SECTION_02;
 
-        const BCHAR* getServerAuthType(const BCHAR* buf = NULL) EXTRA_SECTION_02;
+        const BCHAR* getServerAuthType() const EXTRA_SECTION_02;
 
         void setServerAuthType(const BCHAR* v) EXTRA_SECTION_02;
 
-        const BCHAR* getServerPWD(const BCHAR* buf = NULL) EXTRA_SECTION_02;
+        const BCHAR* getServerPWD() const EXTRA_SECTION_02;
 
         void setServerPWD(const BCHAR* v) EXTRA_SECTION_02;
 
-        const BCHAR* getServerID(const BCHAR* buf = NULL) EXTRA_SECTION_02;
+        const BCHAR* getServerID() const EXTRA_SECTION_02;
 
         void setServerID(const BCHAR* v) EXTRA_SECTION_02;
 
-        const BCHAR* getServerNonce(const BCHAR* buf = NULL) EXTRA_SECTION_02;
+        const BCHAR* getServerNonce() const EXTRA_SECTION_02;
 
         void setServerNonce(const BCHAR* v) EXTRA_SECTION_02;
 
-        const BCHAR* getClientNonce(const BCHAR* buf = NULL) EXTRA_SECTION_02;
+        const BCHAR* getClientNonce() const EXTRA_SECTION_02;
 
         void setClientNonce(const BCHAR* v) EXTRA_SECTION_02;
 
         void setMaxMsgSize(unsigned long msgSize) EXTRA_SECTION_02;
 
-        unsigned long getMaxMsgSize() EXTRA_SECTION_02;
+        unsigned long getMaxMsgSize() const EXTRA_SECTION_02;
 
         void setMaxModPerMsg(unsigned long msgSize) EXTRA_SECTION_02;
 
-        unsigned long getMaxModPerMsg() EXTRA_SECTION_02;
+        unsigned long getMaxModPerMsg() const EXTRA_SECTION_02;
         
         void setReadBufferSize(unsigned long bufferSize);
 
-        unsigned long getReadBufferSize();
+        unsigned long getReadBufferSize() const EXTRA_SECTION_02;
 
-        const BCHAR* getUserAgent();
+        const BCHAR* getUserAgent() const EXTRA_SECTION_02;
 
-        void setUserAgent(const BCHAR* v);
+        void setUserAgent(const BCHAR* v) EXTRA_SECTION_02;
+
+
+        void setCheckConn(BOOL v) EXTRA_SECTION_02;
+        BOOL getCheckConn() const EXTRA_SECTION_02;
+
+        void setResponseTimeout(unsigned int bufferSize)    EXTRA_SECTION_02;
+        unsigned int getResponseTimeout() const             EXTRA_SECTION_02;
 
         /**
          * Has some of this values changed?
          */
-        unsigned int getDirty() EXTRA_SECTION_02;
+        unsigned int getDirty() const EXTRA_SECTION_02;
 
         /**
          * Sets the values of this object with with the values from the given
@@ -272,12 +270,12 @@ class AccessConfig {
          *
          * @param config the new value.
          */
-        void assign(AccessConfig& s) EXTRA_SECTION_02;
+        void assign(const AccessConfig& s) EXTRA_SECTION_02;
 
         /**
          * Should the sync engine use a HTTP proxy?
          */
-        BOOL getEncryption() EXTRA_SECTION_02;
+        BOOL getEncryption() const EXTRA_SECTION_02;
 
         /**
          * Sets if the sync engine should use a HTTP proxy to access the server.
@@ -285,6 +283,14 @@ class AccessConfig {
          * @param useProxy FALSE for not use a proxy, TRUE otherwise
          */
         void setEncryption(BOOL useEncryption) EXTRA_SECTION_02;
+
+        /*
+         * Assign operator
+         */
+        AccessConfig& operator = (const AccessConfig& ac) {
+            assign(ac);
+            return *this;
+        }
 
 };
 

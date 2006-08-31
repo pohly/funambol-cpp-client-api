@@ -45,7 +45,7 @@ ContentTypeInfo::~ContentTypeInfo() {
  *                specification - NOT NULL
  *
  */
-ContentTypeInfo::ContentTypeInfo(BCHAR* ctType, BCHAR* verCT) {
+ContentTypeInfo::ContentTypeInfo(const BCHAR* ctType, const BCHAR* verCT) {
     
     this->ctType = NULL;
     this->verCT  = NULL;
@@ -77,7 +77,7 @@ BCHAR* ContentTypeInfo::getCTType(BCHAR* retCTType) {
  *
  * @param ctType the content type properties
  */
-void ContentTypeInfo::setCTType(BCHAR* ctType) {
+void ContentTypeInfo::setCTType(const BCHAR* ctType) {
     if (this->ctType) {
         delete [] this->ctType; this->ctType = NULL;
     }
@@ -101,7 +101,7 @@ BCHAR* ContentTypeInfo::getVerCT(BCHAR* retVerCT) {
  *
  * @param verCT the version of the content type
  */
-void ContentTypeInfo::setVerCT(BCHAR* verCT) {
+void ContentTypeInfo::setVerCT(const BCHAR* verCT) {
     if (this->verCT) {
         delete [] this->verCT; this->verCT = NULL;
     }

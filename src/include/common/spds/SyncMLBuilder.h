@@ -104,7 +104,18 @@ class SyncMLBuilder {
         * Prepare the status for Sync command
         */
         Status*  prepareSyncStatus(SyncSource& source, Sync* sync) EXTRA_SECTION_01;
-                        
+
+        /**
+         * Prepare the status for an arbitrary command
+         */
+        Status* prepareCmdStatus(AbstractCommand &cmd, int status) EXTRA_SECTION_01;
+
+        /**
+         * Prepare either a Result with the device infos (if command given) or
+         * a Put.
+         */
+        AbstractCommand *prepareDevInf(AbstractCommand *cmd, DevInf &devInf) EXTRA_SECTION_01;
+        
         /*
         * Prepare the Sync object. It doesn't contain any items. It is to prepare the insert of items
         */

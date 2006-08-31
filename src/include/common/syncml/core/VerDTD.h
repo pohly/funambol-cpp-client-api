@@ -46,7 +46,7 @@ class VerDTD {
      * @param value the version - NOT NULL
      *
      */
-    VerDTD(BCHAR* value);
+    VerDTD(const BCHAR* value);
 
     // ---------------------------------------------------------- Public methods
 
@@ -55,7 +55,7 @@ class VerDTD {
      *
      * @return value properties
      */
-    BCHAR* getValue(BCHAR* retValue);
+    BCHAR* getValue();
 
     /**
      * Sets the version of DTD

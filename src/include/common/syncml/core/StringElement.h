@@ -39,7 +39,7 @@ class StringElement : public ArrayElement {
     // ---------------------------------------------------------- Protected data    
     public:
                 
-        StringElement(BCHAR* value);
+        StringElement(const BCHAR* value);
         ~StringElement();
 
 
@@ -58,7 +58,7 @@ class StringElement : public ArrayElement {
          * @param value the value of experimental meta information
          *
          */
-        void setValue(BCHAR* value);
+        void setValue(const BCHAR* value);
         
         ArrayElement* clone();
 

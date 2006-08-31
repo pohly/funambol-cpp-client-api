@@ -32,7 +32,6 @@ AccessConfig::AccessConfig() {
     
     username   = NULL;
     password   = NULL;
-    deviceId   = NULL;
     proxyHost  = NULL;
     syncURL    = NULL;
 
@@ -53,6 +52,9 @@ AccessConfig::AccessConfig() {
     userAgent             = NULL;
     proxyUsername         = NULL;
     proxyPassword         = NULL;
+
+    checkConn             = FALSE;
+    responseTimeout       = 0;
 }
 
 AccessConfig::AccessConfig(AccessConfig& s) {
@@ -62,7 +64,6 @@ AccessConfig::AccessConfig(AccessConfig& s) {
 AccessConfig::~AccessConfig() {
 	safeDelete(&username );
 	safeDelete(&password );
-	safeDelete(&deviceId );
 	safeDelete(&proxyHost);
 	safeDelete(&syncURL  );
     
@@ -77,7 +78,7 @@ AccessConfig::~AccessConfig() {
     safeDelete(&proxyPassword       );
 }
 
-BOOL AccessConfig::getServerAuthRequired() {
+BOOL AccessConfig::getServerAuthRequired() const {
     return isServerAuthRequired;
 }
 
@@ -87,12 +88,8 @@ void AccessConfig::setServerAuthRequired(BOOL v) {
     dirty |= DIRTY_SERVERAUTH_REQUIRED;
 }
 
-const BCHAR* AccessConfig::getServerAuthType(const BCHAR* buf) {
-    if (buf == NULL) {
-        return serverAuthType;
-    }
-
-    return bstrcpy((BCHAR*)buf, serverAuthType);
+const BCHAR* AccessConfig::getServerAuthType() const {
+    return serverAuthType;
 }
 
 
@@ -101,12 +98,8 @@ void AccessConfig::setServerAuthType(const BCHAR* v){
 }
 
 
-const BCHAR* AccessConfig::getClientAuthType(const BCHAR* buf) {
-    if (buf == NULL) {
-        return clientAuthType;
-    }
-
-    return bstrcpy((BCHAR*)buf, clientAuthType);
+const BCHAR* AccessConfig::getClientAuthType() const {
+    return clientAuthType;
 }
 
 
@@ -116,12 +109,8 @@ void AccessConfig::setClientAuthType(const BCHAR* v){
     dirty |= DIRTY_CLIENTAUTHTYPE; 
 }
 
-const BCHAR* AccessConfig::getServerPWD(const BCHAR* buf) {
-    if (buf == NULL) {
-		return serverPWD;
-    }
-
-    return bstrcpy((BCHAR*)buf, serverPWD);
+const BCHAR* AccessConfig::getServerPWD() const {
+    return serverPWD;
 }
 
 
@@ -131,12 +120,8 @@ void AccessConfig::setServerPWD(const BCHAR* v){
     dirty |= DIRTY_SERVERPWD;
 }
 
-const BCHAR* AccessConfig::getServerID(const BCHAR* buf) {
-    if (buf == NULL) {
-		return serverID;
-    }
-
-    return bstrcpy((BCHAR*)buf, serverID);
+const BCHAR* AccessConfig::getServerID() const {
+    return serverID;
 }
 
 
@@ -146,12 +131,8 @@ void AccessConfig::setServerID(const BCHAR* v){
     dirty |= DIRTY_SERVERID;
 }
 
-const BCHAR* AccessConfig::getServerNonce(const BCHAR* buf) {
-    if (buf == NULL) {
-		return serverNonce;
-    }
-
-    return bstrcpy((BCHAR*)buf, serverNonce);;
+const BCHAR* AccessConfig::getServerNonce() const {
+    return serverNonce;
 }
 
 
@@ -161,12 +142,8 @@ void AccessConfig::setServerNonce(const BCHAR* v){
     dirty |= DIRTY_SERVER_NONCE;
 }
 
-const BCHAR* AccessConfig::getClientNonce(const BCHAR* buf) {
-    if (buf == NULL) {
-		return clientNonce;
-    }
-
-    return bstrcpy((BCHAR*)buf, clientNonce);
+const BCHAR* AccessConfig::getClientNonce() const {
+    return clientNonce;
 }
 
 
@@ -176,12 +153,8 @@ void AccessConfig::setClientNonce(const BCHAR* v){
     dirty |= DIRTY_CLIENT_NONCE;
 }
 
-const BCHAR* AccessConfig::getUsername(const BCHAR* buf) {
-    if (buf == NULL) {
-		return username;
-    }
-
-    return bstrcpy((BCHAR*)buf, username);
+const BCHAR* AccessConfig::getUsername() const {
+    return username;
 }
 
 
@@ -192,12 +165,8 @@ void AccessConfig::setUsername(const BCHAR* v){
 }
 
 
-const BCHAR* AccessConfig::getPassword(const BCHAR* buf) {
-    if (buf == NULL) {
-		return password;
-    }
-
-    return bstrcpy((BCHAR*)buf, password);
+const BCHAR* AccessConfig::getPassword() const {
+    return password;
 }
 
 void AccessConfig::setPassword(const BCHAR* v) {	
@@ -206,22 +175,7 @@ void AccessConfig::setPassword(const BCHAR* v) {
     dirty |= DIRTY_PASSWORD;
 }
 
-
-const BCHAR* AccessConfig::getDeviceId(const BCHAR* buf) {
-    if (buf == NULL) {
-		return deviceId;
-    }
-
-    return bstrcpy((BCHAR*)buf, deviceId);
-}
-
-void AccessConfig::setDeviceId(const BCHAR* v) {	
-	set(&deviceId, v);
-	
-    dirty |= DIRTY_DEVICE_ID;
-}
-
-SyncMode AccessConfig::getFirstTimeSyncMode() {
+SyncMode AccessConfig::getFirstTimeSyncMode() const {
     return firstTimeSyncMode;
 }
 
@@ -231,7 +185,7 @@ void AccessConfig::setFirstTimeSyncMode(SyncMode v) {
     dirty |= DIRTY_FIRST_TIME_SYNC_MODE;
 }
 
-BOOL AccessConfig::getUseProxy() {
+BOOL AccessConfig::getUseProxy() const {
     return useProxy;
 }
 
@@ -241,12 +195,8 @@ void AccessConfig::setUseProxy(BOOL v) {
     dirty |= DIRTY_USE_PROXY;
 }
 
-const BCHAR* AccessConfig::getProxyHost(const BCHAR* buf) {
-    if (buf == NULL) {
-		return proxyHost;
-	}
-
-    return bstrcpy((BCHAR*)buf, proxyHost);
+const BCHAR* AccessConfig::getProxyHost() const {
+    return proxyHost;
 }
 
 void AccessConfig::setProxyHost(const BCHAR* v) {
@@ -255,32 +205,33 @@ void AccessConfig::setProxyHost(const BCHAR* v) {
     dirty |= DIRTY_PROXY_HOST;
 }
 
+int AccessConfig::getProxyPort() const {
+    return proxyPort;
+}
 
-BCHAR* AccessConfig::getProxyUsername(const BCHAR* buf) {
-    if (buf == NULL) {
-		return proxyUsername;
-	}
+void AccessConfig::setProxyPort(int v) {
+	proxyPort = v;
+	
+    dirty |= DIRTY_PROXY_PORT;
+}
 
-    return bstrcpy((BCHAR*)buf, proxyUsername);
+BCHAR* AccessConfig::getProxyUsername() const {
+    return proxyUsername;
 }
 
 void AccessConfig::setProxyUsername(const BCHAR* v) {
 	set(&proxyUsername, v);
 }
 
-BCHAR* AccessConfig::getProxyPassword(const BCHAR* buf) {
-    if (buf == NULL) {
-		return proxyPassword;
-	}
-
-    return bstrcpy((BCHAR*)buf, proxyPassword);
+BCHAR* AccessConfig::getProxyPassword() const {
+    return proxyPassword;
 }
 
 void AccessConfig::setProxyPassword(const BCHAR* v) {
 	set(&proxyPassword, v);
 }
 
-const BCHAR* AccessConfig::getUserAgent() {    
+const BCHAR* AccessConfig::getUserAgent() const {    
     return userAgent;	
 }
 
@@ -288,12 +239,24 @@ void AccessConfig::setUserAgent(const BCHAR* v) {
 	set(&userAgent, v);	    
 }
 
-const BCHAR* AccessConfig::getSyncURL(const BCHAR* buf) {
-    if (buf == NULL) {
-		return syncURL;
-	}
 
-    return bstrcpy((BCHAR*)buf, syncURL);
+unsigned int AccessConfig::getResponseTimeout() const {
+    return responseTimeout;
+}
+void AccessConfig::setResponseTimeout(unsigned int v) {
+	responseTimeout = v;
+}
+
+BOOL AccessConfig::getCheckConn() const {
+    return checkConn;
+}
+void AccessConfig::setCheckConn(BOOL v) {
+	checkConn = v;
+}
+
+
+const BCHAR* AccessConfig::getSyncURL() const {
+    return syncURL;
 }
 
 void AccessConfig::setSyncURL(const BCHAR* v) {	
@@ -325,7 +288,7 @@ void AccessConfig::setBeginSync(unsigned long timestamp) {
     dirty |= DIRTY_SYNC_BEGIN;
 }
 
-unsigned long AccessConfig::getBeginSync() {
+unsigned long AccessConfig::getBeginSync() const {
     return beginTimestamp;
 }
 
@@ -333,7 +296,7 @@ void AccessConfig::setMaxMsgSize(unsigned long msgSize) {
     maxMsgSize = msgSize;
 }
 
-unsigned long AccessConfig::getMaxMsgSize() {
+unsigned long AccessConfig::getMaxMsgSize() const {
     return maxMsgSize;
 }
 
@@ -341,7 +304,7 @@ void AccessConfig::setReadBufferSize(unsigned long bufferSize) {
     readBufferSize = bufferSize;
 }
 
-unsigned long AccessConfig::getReadBufferSize() {
+unsigned long AccessConfig::getReadBufferSize() const {
     return readBufferSize;
 }
 
@@ -349,7 +312,7 @@ void AccessConfig::setMaxModPerMsg(unsigned long mod){
     maxModPerMsg = mod;
 }
 
-unsigned long AccessConfig::getMaxModPerMsg() {
+unsigned long AccessConfig::getMaxModPerMsg() const {
     return maxModPerMsg;
 }
 
@@ -358,11 +321,12 @@ void AccessConfig::setEndSync(unsigned long timestamp) {
     dirty |= DIRTY_SYNC_END;
 }
 
-unsigned long AccessConfig::getEndSync() {
+unsigned long AccessConfig::getEndSync() const {
     return endTimestamp;
 }
 
-unsigned int AccessConfig::getDirty() {
+
+unsigned int AccessConfig::getDirty() const {
     return dirty;
 }
 
@@ -378,7 +342,7 @@ void AccessConfig::set(BCHAR** buf, const BCHAR* v) {
 	bstrcpy(*buf, v);
 }
 
-BOOL AccessConfig::getEncryption() {
+BOOL AccessConfig::getEncryption() const {
     return encryption;   
 }
 
@@ -391,12 +355,12 @@ void AccessConfig::setEncryption(BOOL useEncryption) {
     encryption = useEncryption;   
 }
 
-void AccessConfig::assign(AccessConfig& s) {
+void AccessConfig::assign(const AccessConfig& s) {
 	setUsername (s.getUsername() );
 	setPassword (s.getPassword() );
 	setSyncURL  (s.getSyncURL()  );
 	setProxyHost(s.getProxyHost());
-	setDeviceId (s.getDeviceId() );
+    setProxyPort(s.getProxyPort());
     setUserAgent(s.getUserAgent());
 
     setProxyUsername(s.getProxyUsername());
@@ -416,6 +380,8 @@ void AccessConfig::assign(AccessConfig& s) {
     setMaxModPerMsg(s.getMaxModPerMsg());
     setReadBufferSize(s.getReadBufferSize());
     setEncryption  (s.getEncryption()  );
+    setCheckConn(s.getCheckConn());
+    setResponseTimeout(s.getResponseTimeout());
 
 	dirty = s.getDirty();
 }

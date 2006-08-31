@@ -28,7 +28,6 @@
 
 #define PROPERTY_USERNAME              T("username"         )
 #define PROPERTY_PASSWORD              T("password"         )
-#define PROPERTY_DEVICE_ID             T("deviceId"         )
 #define PROPERTY_FIRST_TIME_SYNC_MODE  T("firstTimeSyncMode")
 #define PROPERTY_USE_PROXY             T("useProxy"         )
 #define PROPERTY_PROXY_HOST            T("proxyHost"        )
@@ -45,6 +44,7 @@
 #define PROPERTY_SOURCE_TYPE           T("type"             )
 #define PROPERTY_SOURCE_SYNC           T("sync"             )
 #define PROPERTY_SOURCE_LAST_SYNC      T("last"             )
+#define PROPERTY_SOURCE_CTCAP          T("ctCap"            )
 #define PROPERTY_SERVER_NONCE          T("serverNonce"      ) 
 #define PROPERTY_CLIENT_NONCE          T("clientNonce"      )
 #define PROPERTY_SERVER_ID             T("serverID"         )
@@ -66,9 +66,27 @@
 #define PROPERTY_SOURCE_ENCODING       T("encoding"         )
 #define PROPERTY_READ_BUFFER_SIZE      T("readBufferSize"   )
 #define PROPERTY_USER_AGENT            T("userAgent"        )
+#define PROPERTY_CHECK_CONN            T("checkConn"        )
+#define PROPERTY_RESPONSE_TIMEOUT      T("responseTimeout"  )
 
 
-
+// DeviceConfig properties
+#define PROPERTY_VER_DTD                    T("verDTD"          )
+#define PROPERTY_MANUFACTURER               T("man"             )
+#define PROPERTY_MODEL                      T("mod"             )
+#define PROPERTY_OEM                        T("oem"             )
+#define PROPERTY_FIRMWARE_VERSION           T("fwv"             )
+#define PROPERTY_SOFTWARE_VERSION           T("swv"             )
+#define PROPERTY_HARDWARE_VERSION           T("hwv"             )
+#define PROPERTY_DEVICE_ID                  T("devID"           )
+#define PROPERTY_DEVICE_TYPE                T("devType"         )
+#define PROPERTY_DS_VERSION                 T("dsV"             )
+#define PROPERTY_UTC                        T("utc"             )
+#define PROPERTY_LARGE_OBJECT_SUPPORT       T("loSupport"       )
+#define PROPERTY_NUMBER_OF_CHANGES_SUPPORT  T("nocSupport"      )
+#define PROPERTY_LOG_LEVEL                  T("logLevel"        )
+#define PROPERTY_MAX_OBJ_SIZE               T("maxObjSize"      )
+#define PROPERTY_DEVINF_HASH                T("devInfHash"      )
         
 
         
@@ -90,6 +108,7 @@
 #define DIRTY_SERVERPWD                0x08000 
 #define DIRTY_CLIENTAUTHTYPE           0x10000 
 #define DIRTY_SERVERAUTH_REQUIRED      0x20000
+#define DIRTY_DEV_INF_HASH             0x40000
 
 
 #endif

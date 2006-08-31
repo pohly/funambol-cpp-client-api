@@ -486,7 +486,7 @@ StringBuffer* Formatter::getVerDTD(VerDTD* verDTD) {
         return NULL;
 
     StringBuffer* s = NULL;
-    s = getValue(VER_DTD, verDTD->getValue(NULL));    
+    s = getValue(VER_DTD, verDTD->getValue());    
     return s;    
 }
 
@@ -1423,7 +1423,7 @@ StringBuffer* Formatter::getPut(Put* put) {
 
     cmdID     = getCmdID   (put->getCmdID());
     noResp    = getValue   (NO_RESP, put->getNoResp());
-    lang      = getValue   (LANG, put->getNoResp());    
+    lang      = getValue   (LANG, put->getLang());    
     cred      = getCred    (put->getCred());
     meta      = getMeta    (put->getMeta());
     items     = getItems   (put->getItems());        
@@ -1775,7 +1775,7 @@ StringBuffer* Formatter::getDevInf(DevInf* devInf) {
     
     if (!devInf)
         return NULL;
-    
+
     StringBuffer* ret = NULL;
     StringBuffer* s   = NULL;
     
@@ -1838,7 +1838,8 @@ StringBuffer* Formatter::getDevInf(DevInf* devInf) {
         s->append(supportNumberOfChanges);            
     }
 
-    ret = getValue(DEV_INF, s);
+    // TODO: getValue() should accept const strings
+    ret = getValue((BCHAR *)DEV_INF, (BCHAR *)s->c_str(), (BCHAR *)DEVINF);
     
     deleteAllStringBuffer(16, &s, &verDTD, &man, &mod, &oem, &fwV, &swV, &hwV, 
                               &devID, &devTyp, &dataStores, &ctCaps, &exts, &utc, 
@@ -1974,7 +1975,10 @@ StringBuffer* Formatter::getDataStore(DataStore* dataStore) {
     
     sourceRef   = getSourceRef(dataStore->getSourceRef());
     displayName = getValue(DISPLAY_NAME, dataStore->getDisplayName(NULL));
-    maxGUIDSize = getValue(MAX_GUID_SIZE, dataStore->getMaxGUIDSize());
+    int maxGUIDSizeVal = dataStore->getMaxGUIDSize();
+    maxGUIDSize = maxGUIDSizeVal > 0 ?
+        getValue(MAX_GUID_SIZE, maxGUIDSizeVal) :
+        new StringBuffer;
     rxPref      = getContentTypeInfo(dataStore->getRxPref(), RX_PREF);
     rx          = getContentTypeInfos(dataStore->getRx(), RX);
     txPref      = getContentTypeInfo(dataStore->getTxPref(), TX_PREF);
@@ -1986,7 +1990,9 @@ StringBuffer* Formatter::getDataStore(DataStore* dataStore) {
         s = new StringBuffer();
         s->append(sourceRef);
         s->append(displayName);
-        s->append(maxGUIDSize);
+        if (maxGUIDSize->length()) {
+            s->append(maxGUIDSize);
+        }
         s->append(rxPref);
         s->append(rx);
         s->append(txPref);
@@ -2230,6 +2236,73 @@ StringBuffer* Formatter::getSourceRef(SourceRef* sourceRef) {
 * 
 */
 StringBuffer* Formatter::getCTCaps(ArrayList* ctCaps) {
+#if 0
+    return new StringBuffer(
+        "<CTCap>"
+        "<CTType>text/x-vcard</CTType>"
+        "<PropName>BEGIN</PropName>"
+        "<ValEnum>VCARD</ValEnum>"
+        "<PropName>VERSION</PropName>"
+        "<ValEnum>2.1</ValEnum>"
+        "<PropName>END</PropName>"
+        "<ValEnum>VCARD</ValEnum>"
+        "<PropName>N</PropName>"
+        "<PropName>TEL</PropName>"
+        "<ParamName>PREF</ParamName>"
+        "<ParamName>WORK</ParamName>"
+        "<ParamName>HOME</ParamName>"
+        "<ParamName>VOICE</ParamName>"
+        "<ParamName>FAX</ParamName>"
+        "<ParamName>CELL</ParamName>"
+        "<PropName>NOTE</PropName>"
+        "<PropName>URL</PropName>"
+        "<PropName>EMAIL</PropName>"
+        "<PropName>ADR</PropName>"
+        "</CTCap>"
+        "<CTCap>"
+        "<CTType>text/x-vcalendar</CTType>"
+        "<PropName>BEGIN</PropName>"
+        "<ValEnum>VCALENDAR</ValEnum>"
+        "<ValEnum>VEVENT</ValEnum>"
+        "<ValEnum>VTODO</ValEnum>"
+        "<PropName>VERSION</PropName>"
+        "<ValEnum>1.0</ValEnum>"
+        "<PropName>END</PropName>"
+        "<ValEnum>VCALENDAR</ValEnum>"
+        "<ValEnum>VEVENT</ValEnum>"
+        "<ValEnum>VTODO</ValEnum>"
+        "<PropName>DTSTART</PropName>"
+        "<PropName>DTEND</PropName>"
+        "<PropName>SUMMARY</PropName>"
+        "<PropName>DESCRIPTION</PropName>"
+        "<PropName>DUE</PropName>"
+        "<PropName>AALARM</PropName>"
+        "<PropName>DALARM</PropName>"
+        "<PropName>RRULE</PropName>"
+        "<PropName>CATEGORIES</PropName>"
+        "<ParamName>SPECIAL OCCASION</ParamName>"
+        "<ParamName>MEETING</ParamName>"
+        "<ParamName>PHONE CALL</ParamName>"
+        "<ParamName>MISCELLANEOUS</ParamName>"
+        "<ParamName>REMINDER</ParamName>"
+        "<PropName>LOCATION</PropName>"
+        "<PropName>STATUS</PropName>"
+        "<ParamName>NEEDS ACTION</ParamName>"
+        "<ParamName>COMPLETED</ParamName>"
+        "<PropName>PRIORITY</PropName>"
+        "<ParamName>1</ParamName>"
+        "<ParamName>2</ParamName>"
+        "<ParamName>3</ParamName>"
+        "<PropName>EXDATE</PropName>"
+        "</CTCap>"
+        "<CTCap>"
+        "<CTType>text/plain</CTType>"
+        "<PropName></PropName>"
+        "<DataType>chr</DataType>"
+        "<Size>3000</Size>"
+        "</CTCap>" );
+#endif
+
     
     if (!ctCaps || !NotZeroArrayLenght(1, ctCaps))
         return NULL;

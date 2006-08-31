@@ -21,8 +21,12 @@
  
 
 CTPropParam::CTPropParam() {
+    initialize();
+}
+
+void CTPropParam::initialize() {
     propName        = NULL;
-    valEnum         = NULL;       //String[]
+    valEnum         = NULL;
     displayName     = NULL;
     dataType        = NULL;
     size            = 0;
@@ -43,7 +47,7 @@ CTPropParam::CTPropParam(BCHAR*   propName,
                         ArrayList* valEnum,
                         BCHAR*   displayName,
                         ArrayList* ctParameters) {
-
+    initialize();
     setPropName(propName);
     setValEnum(valEnum);
     setContentTypeParameters(ctParameters);
@@ -73,10 +77,11 @@ CTPropParam::CTPropParam(BCHAR* propName,
                    int size,
                    BCHAR* displayName,
                    ArrayList* ctParameters) {
-
+    initialize();
     setPropName(propName);
     setContentTypeParameters(ctParameters);
-    
+
+    this->valEnum      = new ArrayList();
     this->dataType     = stringdup(dataType);
     this->size         = size;
     this->displayName  = stringdup(displayName);

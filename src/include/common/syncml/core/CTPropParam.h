@@ -35,7 +35,9 @@ class CTPropParam : public ArrayElement{
         BCHAR*   dataType;
         int size;
         ArrayList* ctParameters; //ContentTypeParameter[]
-    
+
+        void initialize();
+        
     // ---------------------------------------------------------- Protected data    
     public:
         CTPropParam();

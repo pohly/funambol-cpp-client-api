@@ -25,7 +25,7 @@
 #include "base/util/utils.h"
 #include "syncml/core/StringElement.h"
  
-StringElement::StringElement(BCHAR* value) {
+StringElement::StringElement(const BCHAR* value) {
     this->value = NULL;
     setValue(value);
 }
@@ -56,7 +56,7 @@ BCHAR* StringElement::getValue(BCHAR* retValue) {
  * @param value the value of string element
  *
  */
-void StringElement::setValue(BCHAR* value) {
+void StringElement::setValue(const BCHAR* value) {
     if (value) {
         delete [] this->value; this->value = NULL;
     }        

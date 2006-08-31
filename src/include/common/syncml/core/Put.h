@@ -66,7 +66,7 @@ class Put : public ItemizedCommand {
          * @return the preferred language
          *
          */
-        BCHAR* getLang(BCHAR* retLang);
+        BCHAR* getLang(BCHAR* retLang = NULL);
     
         /**
          * Sets the preferred language

@@ -296,7 +296,7 @@ BCHAR* MD5CredentialData(BCHAR* userName, BCHAR* password, BCHAR* nonce) {
 
 
 
-char* calculateMD5(void* token, int len, char* wdigest) {
+char* calculateMD5(const void* token, int len, char* wdigest) {
 
     //algo for md5 digest
     char dig [18];

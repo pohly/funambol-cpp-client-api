@@ -36,9 +36,8 @@ VerDTD::~VerDTD() {
  * @param value the version - NOT NULL
  *
  */
-VerDTD::VerDTD(BCHAR* value) {
-    this->value = NULL;
-    setValue(value);
+VerDTD::VerDTD(const BCHAR* value) {
+    this->value = stringdup(value);
 }
 
 // ---------------------------------------------------------- Public methods
@@ -48,11 +47,8 @@ VerDTD::VerDTD(BCHAR* value) {
  *
  * @return value properties
  */
-BCHAR* VerDTD::getValue(BCHAR* retValue) {
-    if (retValue == NULL) {
-        return value;
-    }
-    return bstrcpy(retValue, value);
+BCHAR* VerDTD::getValue() {
+    return value;
 }
 
 /**

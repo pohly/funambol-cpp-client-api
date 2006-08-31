@@ -106,6 +106,11 @@ class ManagementNode : public ArrayElement {
          */
         virtual BCHAR *getFullName();
 
+        /**
+         * Returns the node name itself without the context.
+         */
+        virtual const BCHAR *getName();
+
         // ---------------------------------------------------- Abstract methods
 
         /*

@@ -26,6 +26,7 @@
 #include "spds/constants.h"
 #include "spds/SyncItem.h"
 #include "spds/SyncStatus.h"
+#include "spds/SyncSourceConfig.h"
 
 class SyncSource : public ArrayElement {
 
@@ -34,25 +35,26 @@ private:
     unsigned long lastSync;
     unsigned long nextSync;
     wchar_t*      name;
-    wchar_t*      remoteURI;
-    wchar_t*      encoding;
 
-    BCHAR type[DIM_MIME_TYPE];
     BCHAR next[DIM_ANCHOR];
     BCHAR last[DIM_ANCHOR];
 
-    ErrorHandler* errorHandler;
+    //ErrorHandler* errorHandler;
 
     SourceFilter* filter;
+
+protected:
+    SyncSourceConfig config;
 
 public:
 
     /**
      * Constructor: create a SyncSource with the specified name
      *
-     * @param name - the name of the SyncSource
+     * @param name   the name of the SyncSource
+     * @param sc     optional configuration for the sync source
      */
-    SyncSource(const wchar_t* name) EXTRA_SECTION_01;
+    SyncSource(const wchar_t* name, const SyncSourceConfig* sc = NULL) EXTRA_SECTION_01;
 
     // Destructor
     virtual ~SyncSource() EXTRA_SECTION_01;
@@ -66,37 +68,53 @@ public:
      */
     const wchar_t *getName() EXTRA_SECTION_01;
 
-    /*
-     * Get & Set remoteURI attribute.
-     */
-    void setRemoteURI(const wchar_t* uri) EXTRA_SECTION_01;
-    const wchar_t* getRemoteURI() EXTRA_SECTION_01;
+    /**********************************************************
+     * Most of the configurable properties are read
+     * by the client library from the config (in
+     * SyncClient::setDMConfig()) and then copied into the
+     * sync source.
+     *
+     * These properties are stored in a local copy which will not be
+     * written back into the permanent config, with a few exceptions:
+     * properties related to mananging sync sessions like lastAnchor
+     * are written back into the config by the library afer a
+     * successful synchronization.
+     *
+     * A client developer is not required to modify these calls,
+     * but he can use and/or update the properties before the
+     * synchronization starts.
+     *********************************************************/
+
+    // read-only access to configuration
+    const SyncSourceConfig& getConfig() const EXTRA_SECTION_01 {
+        return config;
+    }
+    // read-write access to configuration
+    SyncSourceConfig& getConfig() EXTRA_SECTION_01 {
+        return config;
+    }
+    // initialize sync source from complete configuration
+    void setConfig(const SyncSourceConfig& sc) EXTRA_SECTION_01;
 
     /*
      * Get & Set the preferred synchronization mode for the SyncSource.
+     *
+     * Taken initially from the configuration by setConfig(), it can then
+     * be modified by the client. The code synchronization code itself
+     * reads this value, but it doesn't modify it.
      */
     SyncMode getPreferredSyncMode() EXTRA_SECTION_01;
     void setPreferredSyncMode(SyncMode syncMode) EXTRA_SECTION_01;
 
     /*
      * Get & Sets the server imposed synchronization mode for the SyncSource.
+     *
+     * Agreed upon with the server during the initial exchange with the server.
+     * The SyncSource can react to it in beginSync(), in particular it must wipe
+     * its local data during a refresh from server.
      */
     SyncMode getSyncMode() EXTRA_SECTION_01;
     void setSyncMode(SyncMode syncMode) EXTRA_SECTION_01;
-
-    /*
-     * Sets the mime type standard for the source items
-     *
-     * @param type the mime type
-     */
-    void setType(const BCHAR* type) EXTRA_SECTION_01;
-    /*
-     * Gets the standard mime type for the source items.
-     *
-     * @return - the source name (a pointer to the object buffer,
-     *           will be released at object destruction)
-     */
-    const BCHAR* getType() EXTRA_SECTION_01;
 
     /*
      * Get & Set the timestamp in milliseconds of the last synchronization.
@@ -125,12 +143,6 @@ public:
     void setNextAnchor(const BCHAR* next) EXTRA_SECTION_01;
     
     /*
-     * Get & Set encoding attribute.
-     */
-    void setEncoding(const wchar_t* enc) EXTRA_SECTION_01;
-    const wchar_t* getEncoding() EXTRA_SECTION_01;
-
-    /*
     * Gets filter
     *
     * @return  the current filter's value
@@ -146,28 +158,48 @@ public:
     */
     void setFilter(SourceFilter* f);
 
-
+    /******************************************************
+     * The following methods are virtual because a
+     * derived SyncSource is expected to override or
+     * implement them. Only the pure virtual methods
+     * really have to be implemented, the others have
+     * reasonable defaults.
+     *****************************************************/
+    
     /*
-     * Called by the engine at the begin of the sync.
+     * Called by the engine from inside SyncClient::sync()
+     * at the begin of the sync.
+     *
      * The SyncSource can do every initialization it needs.
+     * The server has been contacted, so in particular
+     * getSyncMode() can now be used to find out what
+     * the sync mode for this synchronization run will be.
+     * After this call the iterators for SyncItems must return
+     * valid results for the current sync mode.
+     *
      * The synchronization stops if this function return a non-zero value.
      * 
      * @return - 0 on success, an error otherwise
      */
-    virtual int beginSync() = 0 EXTRA_SECTION_01;
+    virtual int beginSync() EXTRA_SECTION_01;
     
     /*
-     * Called by the engine at the begin of the sync.
-     * The SyncSource can do any needed commit action to save the state of
-     * the items.
-     * The engine commits to the server the changes applied in the transaction 
-     * only if this function return 0
+     * Called by the engine from inside SyncClient::sync()
+     * at the end of the sync.
+     *
+     * The SyncSource can do any needed commit action to save
+     * the state of the items. The engine commits to the server
+     * the changes applied in the transaction only if this function
+     * return 0.
+     *
+     * FIXME: the return code is currently ignored by the sync engine
      * 
      * @return - 0 on success, an error otherwise
      */
-    virtual int endSync() = 0 EXTRA_SECTION_01;
+    virtual int endSync() EXTRA_SECTION_01;
         
     virtual void setItemStatus(const wchar_t* key, int status) = 0 EXTRA_SECTION_01;
+
     /*
      * Return the key of the first SyncItem of all.
      * It is used in case of refresh sync 
@@ -247,20 +279,69 @@ public:
      * 
      * @return  A reference to the ErrorHandler to be used by the SyncSource.
      */
-    virtual ErrorHandler& getErrorHandler() EXTRA_SECTION_01;
+    //virtual ErrorHandler& getErrorHandler() EXTRA_SECTION_01;
     
     /*
      * Sets the Error Handler for the SyncSource
      * 
      * @param e: a reference to the ErrorHandler to be used by the SyncSource.
      */
-    virtual void setErrorHandler(ErrorHandler& e) EXTRA_SECTION_01;
+    //virtual void setErrorHandler(ErrorHandler& e) EXTRA_SECTION_01;
 
     /**
      * ArrayElement implementation
      */
     virtual ArrayElement* clone() EXTRA_SECTION_01 = 0;
-                                         
+
+    /****************** meta information about SyncSource ****************/
+
+    /**
+     * Return information about preferred types for item during send
+     * and receive.
+     *
+     * The default implementation assumes that the configured
+     * type (getConfig().getType()) is also the preferred one for
+     * both direction. However, it has to determine the version to
+     * comply with the SyncML specs and this only works for:
+     * - text/x-vcard -> 2.1
+     * - text/vcard -> 3.0
+     * - text/x-calendar -> 1.0
+     * - text/calendar -> 2.0
+     *
+     * For all other, unknown types the version is set to an empty string.
+     *
+     * These values are all required. Returning NULL for any of them prevents
+     * sending of device infos.
+     *
+     * @retval recvType     preferred item type for receiving information
+     * @retval recvVersion  version string corresponding to recvType
+     * @retval sendType     preferred item type for sending information
+     * @retval sendVersion  version string corresponding to sendType
+     */
+    virtual void getPreferredTypes(const BCHAR*& recvType,
+                                   const BCHAR*& recvVersion,
+                                   const BCHAR*& sendType,
+                                   const BCHAR*& sendVersion) EXTRA_SECTION_01;
+
+    /**
+     * Return information about all supported types for sending
+     * items (optional).
+     *
+     * The default implementation returns the preferred type as the
+     * only available type.
+     *
+     * @return NULL if not further specified, otherwise a NULL terminated
+     *         array with type/version pairs for each supported type:
+     *         { "text/x-vcard", "2.1",
+     *           "text/vcard", "3.0",
+     *           NULL }
+     */
+    virtual const BCHAR** getSendTypes() EXTRA_SECTION_01 { return NULL; }
+
+    /**
+     * Same as getSendTypes() for receiving items.
+     */
+    virtual const BCHAR** getRecvTypes() EXTRA_SECTION_01 { return NULL; }
 };
 
 #endif

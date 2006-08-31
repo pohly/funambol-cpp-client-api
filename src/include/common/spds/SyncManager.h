@@ -29,8 +29,6 @@
 #include "spds/CredentialHandler.h"
 #include "spds/CredentialHandler.h"
 
-
-
 typedef enum {
                 STATE_START        = 0,
                 STATE_PKG1_SENDING = 1,
@@ -42,18 +40,45 @@ typedef enum {
              } SyncManagerState ;
 
 
+static void fillContentTypeInfoList(ArrayList &l, const BCHAR** types);
+
+
+//
+// This is the core class which encodes the flow of messages between
+// client and server throughout a session. It is configured via the
+// DMTClientConfig with which it is constructed by the
+// SyncClient::setDMConfig() and the (optional) DevInf provided
+// to it by the client.
+//
 class SyncManager {
 
     public:
-        SyncManager(SyncManagerConfig* config) EXTRA_SECTION_01;
+        /**
+         * Initialize a new sync manager. Parameters provided to it
+         * have to remain valid while this sync manager exists.
+         *
+         * @param config     required configuration
+         */
         SyncManager(SyncManagerConfig& config) EXTRA_SECTION_01;
         ~SyncManager() EXTRA_SECTION_01;
-        
+
         int prepareSync(SyncSource** sources) EXTRA_SECTION_01;
         
         int sync() EXTRA_SECTION_01;
         
         int endSync() EXTRA_SECTION_01;
+
+        /**
+         * Gathers the various bits and pieces known about the client and
+         * its sources and builds a SyncML devinfo 1.1 instance.
+         *
+         * For simplicity reasons this function is called for the currently
+         * active sync sources, changing them between runs thus causes
+         * a (valid!) retransmission of the device info.
+         *
+         * @return device infos, to be deleted by caller, or NULL if unavailable
+         */
+        virtual DevInf *createDeviceInfo() EXTRA_SECTION_01;
 
     private:
 
@@ -65,7 +90,9 @@ class SyncManager {
             BCHAR* dataType;
         };
 
+        DevInf* devInf;
         SyncManagerConfig& config;
+
         CredentialHandler credentialHandler;
         SyncMLBuilder syncMLBuilder;
         SyncMLProcessor syncMLProcessor;
@@ -84,7 +111,6 @@ class SyncManager {
         
         BCHAR syncURL [512];
         BCHAR deviceId[32];  
-        BCHAR userAgent[128];        
         unsigned int maxMsgSize;    // the max message size. If 0 it is not set
         unsigned int maxModPerMsg;  // the max modification per message
         unsigned int readBufferSize; // the size of the buffer to store chunk of incoming stream.
@@ -99,6 +125,8 @@ class SyncManager {
         char* processItemContent(const BCHAR* data, const BCHAR* encodings, long* size) EXTRA_SECTION_01;
         void decodeSyncItemContent(char** c, TransformationInfo& info, const BCHAR* encoding) EXTRA_SECTION_01;
         BOOL checkForServerChanges(SyncML* syncml, ArrayList &statusList) EXTRA_SECTION_01;
+
+        const BCHAR* getUserAgent(SyncManagerConfig& config) EXTRA_SECTION_01;
 };
 
 #endif

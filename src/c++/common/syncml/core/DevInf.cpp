@@ -68,14 +68,14 @@ DevInf::~DevInf() {
 *
 */
 DevInf::DevInf(VerDTD* verDTD,
-        BCHAR* man,
-        BCHAR* mod,
-        BCHAR* oem,
-        BCHAR* fwV,
-        BCHAR* swV,
-        BCHAR* hwV,
-        BCHAR* devID,
-        BCHAR* devTyp,
+        const BCHAR* man,
+        const BCHAR* mod,
+        const BCHAR* oem,
+        const BCHAR* fwV,
+        const BCHAR* swV,
+        const BCHAR* hwV,
+        const BCHAR* devID,
+        const BCHAR* devTyp,
         ArrayList* dataStores,
         ArrayList* ctCap,
         ArrayList* ext,
@@ -173,7 +173,7 @@ BCHAR* DevInf::getMan(BCHAR* retMan) {
 * @param man the device manufacturer property
 *
 */
-void DevInf::setMan(BCHAR* man) {
+void DevInf::setMan(const BCHAR* man) {
     if (this->man) {
         delete [] this->man; this->man = NULL;
     }
@@ -198,7 +198,7 @@ BCHAR* DevInf::getMod(BCHAR* retMod) {
 * @param mod the device model property
 *
 */
-void DevInf::setMod(BCHAR* mod) {
+void DevInf::setMod(const BCHAR* mod) {
     if (this->mod) {
         delete [] this->mod; this->mod = NULL;
     }
@@ -223,7 +223,7 @@ BCHAR* DevInf::getOEM(BCHAR* retOem) {
 * @param oem the Original Equipment Manufacturer of the device
 *
 */
-void DevInf::setOEM(BCHAR* oem) {
+void DevInf::setOEM(const BCHAR* oem) {
     if (this->oem) {
         delete [] this->oem; this->oem = NULL;
     }
@@ -248,7 +248,7 @@ BCHAR* DevInf::getFwV(BCHAR* retFwV) {
 * @param fwV the firmware version property
 *
 */
-void DevInf::setFwV(BCHAR* fwV) {
+void DevInf::setFwV(const BCHAR* fwV) {
     if (this->fwV) {
         delete [] this->fwV; this->fwV = NULL;
     }
@@ -273,7 +273,7 @@ BCHAR* DevInf::getSwV(BCHAR* retSwV) {
 * @param swV the software version property
 *
 */
-void DevInf::setSwV(BCHAR* swV) {
+void DevInf::setSwV(const BCHAR* swV) {
     if (this->swV) {
         delete [] this->swV; this->swV = NULL;
     }
@@ -298,7 +298,7 @@ BCHAR* DevInf::getHwV(BCHAR* retHwv) {
 * @param hwV the hardware version property
 *
 */
-void DevInf::setHwV(BCHAR* hwV) {
+void DevInf::setHwV(const BCHAR* hwV) {
     if (this->hwV) {
         delete [] this->hwV; this->hwV = NULL;
     }
@@ -323,7 +323,7 @@ BCHAR* DevInf::getDevID(BCHAR* retDevID) {
 * @param devID the device identifier
 *
 */
-void DevInf::setDevID(BCHAR* devID) {
+void DevInf::setDevID(const BCHAR* devID) {
     if (devID == NULL) {
             // TBD
     } else {
@@ -352,7 +352,7 @@ BCHAR* DevInf::getDevTyp(BCHAR* retDevTyp) {
 * @param devTyp the device type
 *
 */
-void DevInf::setDevTyp(BCHAR* devTyp) {
+void DevInf::setDevTyp(const BCHAR* devTyp) {
     if (devTyp == NULL) {
             // TBD
     } else {

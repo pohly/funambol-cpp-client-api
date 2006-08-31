@@ -216,7 +216,7 @@ Status* SyncMLBuilder::prepareSyncStatus(SyncSource& source, Sync* sync) {
     CmdID* cmdRef            = sync->getCmdID();
 
     
-    TargetRef*    tar        = new TargetRef(_wcc(source.getRemoteURI()));
+    TargetRef*    tar        = new TargetRef(source.getConfig().getURI());
     SourceRef*    sou        = new SourceRef(_wcc(source.getName()));
     targetRefs->add(*tar);
     sourceRefs->add(*sou);
@@ -300,7 +300,7 @@ Status* SyncMLBuilder::prepareAlertStatus(SyncSource& source, ArrayList* alerts,
     ArrayList*    targetRefs = new ArrayList();
     ArrayList*    sourceRefs = new ArrayList();
     
-    TargetRef*    tar        = new TargetRef(_wcc(source.getRemoteURI()));
+    TargetRef*    tar        = new TargetRef(source.getConfig().getURI());
     SourceRef*    sou        = new SourceRef(_wcc(source.getName()));
     targetRefs->add(*tar);
     sourceRefs->add(*sou);
@@ -355,12 +355,114 @@ Status* SyncMLBuilder::prepareAlertStatus(SyncSource& source, ArrayList* alerts,
     return s;
 }
 
+/*
+* Return the status against an arbitrary command.
+*/
+Status* SyncMLBuilder::prepareCmdStatus(AbstractCommand &cmd, int status) {
+    /*
+    <Status>\n
+        <CmdID>2</CmdID>\n
+        <MsgRef>1</MsgRef>
+        <CmdRef>1</CmdRef>
+        <Cmd>cmd</Cmd>\n
+        <Data>status</Data>\n
+    </Status>
+    */
+    
+    ++cmdID;
+
+    CmdID commandID(itow(cmdID));
+    Data d(status);
+    char *msgRefStr = itow(msgRef);
+    ArrayList empty;
+
+    Status* s = new Status(&commandID, msgRefStr, cmd.getCmdID()->getCmdID(), cmd.getName(), &empty, &empty, NULL, NULL, &d, NULL);
+    
+    delete [] msgRefStr;
+    
+    return s;
+}
+
+AbstractCommand *SyncMLBuilder::prepareDevInf(AbstractCommand *cmd, DevInf &devInf)
+{
+    AbstractCommand *res = NULL;
+    char *msgRefStr = NULL;
+
+    Source source(DEVINF_URI);
+    Meta meta;
+    meta.setType(DEVINF_FORMAT);
+    // meta.setFormat(T("xml"));
+    ComplexData complexData;
+    complexData.setDevInf(&devInf);
+    Item item(NULL,
+              &source,
+              NULL,
+              &complexData,
+              FALSE);
+    
+
+    ++cmdID;
+    CmdID commandID(itow(cmdID));
+    ArrayList items;
+    items.add(item);
+
+    if (cmd) {
+        /*
+          <Result>
+          <CmdID>2</CmdID>
+          <MsgRef>1</MsgRef>
+          <CmdRef>4</CmdRef>
+          <Meta><Type xmlns='syncml:metinf'>application/vnd.syncml-devinf+xml</Type></Meta>
+          <Item>
+            <SourceRef><LocURI>./devinf11</LocURI></SourceRef>
+            <Data>
+              <DevInf>...</DevInf>
+            </Data>
+          </Item>
+          </Result>
+        */
+
+        msgRefStr = itow(msgRef);
+        ArrayList empty;
+        res = new Results(&commandID,
+                          msgRefStr,
+                          cmd->getCmdID()->getCmdID(),
+                          &meta,
+                          &empty,
+                          &empty,
+                          &items);
+    } else {
+        /*
+          <Put>
+            <CmdID>2</CmdID>
+            <Meta><Type xmlns='syncml:metinf'>application/vnd.syncml-devinf+xml</Type></Meta>
+            <Item>
+              <Source><LocURI>./devinf11</LocURI></Source>
+              <Data>
+                <DevInf xmlns='syncml:devinf'>...</DevInf>
+              </Data>
+            </Item>
+          </Put>
+        */
+
+        res = new Put(&commandID,
+                      FALSE,
+                      NULL,
+                      NULL,
+                      &meta,
+                      &items);
+    }
+    safeDelete(&msgRefStr);
+    return res;
+}
+
+
 Alert* SyncMLBuilder::prepareRequestAlert(SyncSource& s) {
     
     ++cmdID;
 
     CmdID* commandID     = new CmdID(itow(cmdID));    
-    Target* tar          = new Target(_wcc(s.getRemoteURI()));
+    Target* tar          = new Target(s.getConfig().getURI());
     Source* sou          = new Source(_wcc(s.getName()));     
     Item* item           = new Item(tar, sou, NULL, NULL, FALSE);
 
@@ -383,7 +485,7 @@ Alert* SyncMLBuilder::prepareInitAlert(SyncSource& s) {
 
     CmdID* commandID     = new CmdID(itow(cmdID));
     int data             = s.getPreferredSyncMode();
-    Target* tar          = new Target(_wcc(s.getRemoteURI()));    
+    Target* tar          = new Target(s.getConfig().getURI());
     Source* sou          = new Source(_wcc(s.getName()));
 
     //
@@ -708,7 +810,7 @@ Sync* SyncMLBuilder::prepareSyncCommand(SyncSource& source) {
     ++cmdID;
 
     CmdID* commandID     = new CmdID(itow(cmdID));
-    Target* tar          = new Target(_wcc(source.getRemoteURI()));
+    Target* tar          = new Target(source.getConfig().getURI());
     Source* sou          = new Source(_wcc(source.getName())); 
     ArrayList* list      = new ArrayList();  
     Sync* sync           = NULL;
@@ -736,7 +838,7 @@ Map* SyncMLBuilder::prepareMapCommand(SyncSource& s) {
     */
     ++cmdID;
     CmdID* commandID     = new CmdID(itow(cmdID));    
-    Target* tar          = new Target(_wcc(s.getRemoteURI()));
+    Target* tar          = new Target(s.getConfig().getURI());
     Source* sou          = new Source(_wcc(s.getName()));
     ArrayList* mapItems  = new ArrayList();
     Map* map = new Map(commandID, tar, sou, NULL, NULL, mapItems);

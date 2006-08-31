@@ -56,6 +56,11 @@ typedef enum SyncMode{
 
 #define CONTEXT_SPDS_SYNCML  "/spds/syncml"
 #define CONTEXT_SPDS_SOURCES "/spds/sources"
+#define CONTEXT_CONN         "/Conn"
+#define CONTEXT_AUTH         "/Auth"
+#define CONTEXT_DEV_INFO     "/DevInfo"
+#define CONTEXT_DEV_DETAIL   "/DevDetail"
+#define CONTEXT_EXT          "/Ext"
 
 //-------------------------------------------------------
 // Status codes

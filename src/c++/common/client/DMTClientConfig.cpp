@@ -28,12 +28,20 @@
 #include "spdm/ManagementNode.h"
 
 
+void DMTClientConfig::initialize() {
+    dmt = NULL;
+    syncMLNode = NULL;
+    sourcesNode = NULL;
+}
+
 DMTClientConfig::DMTClientConfig() : SyncManagerConfig() {
+    initialize();
     rootContext = 0;
 }
 
 
 DMTClientConfig::DMTClientConfig(const BCHAR* root): SyncManagerConfig() {
+    initialize();
     rootContext = new BCHAR[bstrlen(root)+1];
     bstrcpy(rootContext, root);
 }
@@ -43,6 +51,7 @@ DMTClientConfig::~DMTClientConfig() {
     if (rootContext) {
         delete [] rootContext;
     }
+    close();
 }
 
 BOOL DMTClientConfig::getSyncSourceConfig(
@@ -87,33 +96,16 @@ BOOL DMTClientConfig::read() {
     //
     // Reading syncml node
     //
-    BCHAR nodeName[DIM_MANAGEMENT_PATH];
+    //BCHAR nodeName[DIM_MANAGEMENT_PATH];
 
-    bsprintf(nodeName, T("%s%s"), rootContext, T(CONTEXT_SPDS_SYNCML));
-
-    DMTree* dmt = DMTreeFactory::getDMTree(rootContext);
-
-    ManagementNode *node = dmt->getManagementNode(nodeName);
-    
-    if ( ! node ) {
-        lastErrorCode = ERR_INVALID_CONTEXT;
-        bsprintf(lastErrorMsg, ERRMSG_INVALID_CONTEXT, nodeName);
-        goto finally;
+    if (!open()) {
+        return FALSE;
     }
 
-    readAccessConfig(*node);
-    delete node;
-    node = 0;
+    readAccessConfig(*syncMLNode);
+    readDeviceConfig(*syncMLNode);
 
-    bstrcpy(nodeName, rootContext); bstrcat(nodeName, T(CONTEXT_SPDS_SOURCES));
-
-    node = dmt->getManagementNode(nodeName);
-    if ( ! node ) {
-        lastErrorCode = ERR_INVALID_CONTEXT;
-        bsprintf(lastErrorMsg, ERRMSG_INVALID_CONTEXT, nodeName);
-        goto finally;
-    }
-    n = node->getChildrenMaxCount();
+    n = sourcesNode->getChildrenMaxCount();
 
     //
     // Let's remove previously created config objects and reinitialize
@@ -127,20 +119,14 @@ BOOL DMTClientConfig::read() {
 
     for (i=0; i<n; ++i) {
         // node owns children, we must not delete them
-        readSourceConfig(i, *(node->getChild(i)) );
+        readSourceConfig(i, *(sourcesNode->getChild(i)) );
     }
 
     ret = TRUE;
 
-finally:
+//finally:
 
-    if (dmt) {
-        delete dmt;
-    }
-    if (node) {
-        delete node;
-    }
-
+    close();
     return ret;
 }
 
@@ -148,12 +134,11 @@ finally:
 BOOL DMTClientConfig::save() {
     BOOL ret = FALSE;
     unsigned int i = 0;
-    BCHAR nodeName[DIM_MANAGEMENT_PATH];
-	ManagementNode *node = 0;
-
-    DMTree* dmt = DMTreeFactory::getDMTree(rootContext);
 
     LOG.debug(DBG_WRITING_CONFIG_TO_DM);
+    if (!open()) {
+        return FALSE;
+    }
 
     if (accessConfig.getDirty()) {
         resetError();
@@ -161,207 +146,552 @@ BOOL DMTClientConfig::save() {
         //
         // SyncML management node
         //
-        bstrcpy(nodeName, rootContext); bstrcat(nodeName, T(CONTEXT_SPDS_SYNCML));
-        
-        node = dmt->getManagementNode(nodeName);
-        if ( ! node ) {
-            lastErrorCode = ERR_INVALID_CONTEXT;
-            bsprintf(lastErrorMsg, ERRMSG_INVALID_CONTEXT, nodeName);
-            goto finally;
-        }
-
-        saveAccessConfig(*node);
-
-        delete node;
-        node = 0;
+        saveAccessConfig(*syncMLNode);
     }
-
     //
     // TBD: handle the dirty flag
     //
 
+    saveDeviceConfig(*syncMLNode);
+
     //
     // Sources management node
     //
-    bstrcpy(nodeName, rootContext); bstrcat(nodeName, T(CONTEXT_SPDS_SOURCES));
-
-    node = dmt->getManagementNode(nodeName);
-    if ( ! node ) {
-        lastErrorCode = ERR_INVALID_CONTEXT;
-        bsprintf(lastErrorMsg, ERRMSG_INVALID_CONTEXT, nodeName);
-        goto finally;
-    }
-
     for(i=0; i<sourceConfigsCount; ++i) {
-        saveSourceConfig(i, *(node->getChild(i)) );
+        saveSourceConfig(i, *(sourcesNode->getChild(i)) );
 
         if (lastErrorCode != ERR_NONE) {
             goto finally;
         }
     }
-    delete node;
-    node = 0;
 
     ret = (lastErrorCode == ERR_NONE);
 
 finally:
 
+    close();
+    return ret;
+}
+
+BOOL DMTClientConfig::open() {
+    BCHAR nodeName[DIM_MANAGEMENT_PATH];
+    nodeName[0] = 0;
+
+    dmt = DMTreeFactory::getDMTree(rootContext);
+
+    bsprintf(nodeName, T("%s%s"), rootContext, T(CONTEXT_SPDS_SYNCML));
+    syncMLNode = dmt->getManagementNode(nodeName);
+    if (!syncMLNode ) {
+        goto failed;
+    }
+    
+    bsprintf(nodeName, T("%s%s"), rootContext, T(CONTEXT_SPDS_SOURCES));
+    sourcesNode = dmt->getManagementNode(nodeName);
+    if (!sourcesNode) {
+        goto failed;
+    }
+
+    return TRUE;
+
+failed:
+    lastErrorCode = ERR_INVALID_CONTEXT;
+    bsprintf(lastErrorMsg, ERRMSG_INVALID_CONTEXT, nodeName);
+    close();
+    return FALSE;
+}
+
+ManagementNode* DMTClientConfig::getSyncMLNode() {
+    return syncMLNode;
+}
+
+int DMTClientConfig::getNumSources() {
+    return sourcesNode ?
+        sourcesNode->getChildrenMaxCount() :
+        -1;
+}
+
+ManagementNode* DMTClientConfig::getSyncSourceNode(int index) {
+    return sourcesNode ?
+        sourcesNode->getChild(index) :
+        NULL;
+}
+
+void DMTClientConfig::close() {
+    if (syncMLNode) {
+        delete syncMLNode;
+        syncMLNode = NULL;
+    }
+    if (sourcesNode) {
+        delete sourcesNode;
+        sourcesNode = NULL;
+    }
     if (dmt) {
         delete dmt;
+        dmt = NULL;
     }
+}
+
+
+/*
+ * Read Access Config properties stored in DMTree.
+ * Access properties are placed in 3 nodes under syncML node
+ * (Auth - Conn - Ext)
+ *
+ * @param n: the 'syncml' node (parent node)
+ * @return : TRUE if config is correctly read
+ */
+BOOL DMTClientConfig::readAccessConfig(ManagementNode& n) {
+
+    BOOL ret = TRUE;
+    BCHAR *tmp;
+    BCHAR nodeName[DIM_MANAGEMENT_PATH];
+    nodeName[0] = 0;
+    ManagementNode* node;
+
+    BCHAR syncMLContext[DIM_MANAGEMENT_PATH];
+    bsprintf(syncMLContext, T("%s"), n.getFullName());
+
+    //
+    // Auth properties
+    //
+    bsprintf(nodeName, T("%s%s"), syncMLContext, T(CONTEXT_AUTH));
+    node = dmt->getManagementNode(nodeName);
     if (node) {
-        delete node;
+
+        tmp = node->getPropertyValue(PROPERTY_USERNAME);
+        accessConfig.setUsername(tmp);
+        delete [] tmp;
+
+        tmp = node->getPropertyValue(PROPERTY_PASSWORD);
+        accessConfig.setPassword(tmp);
+        delete [] tmp;
+
+        tmp = node->getPropertyValue(PROPERTY_SERVER_ID);     
+        accessConfig.setServerID(tmp);
+        delete [] tmp;
+
+        tmp = node->getPropertyValue(PROPERTY_SERVER_PWD);     
+        accessConfig.setServerPWD(tmp);
+        delete [] tmp;
+
+        tmp = node->getPropertyValue(PROPERTY_SERVER_NONCE);     
+        accessConfig.setServerNonce(tmp);
+        delete [] tmp;
+
+        tmp = node->getPropertyValue(PROPERTY_CLIENT_NONCE);     
+        accessConfig.setClientNonce(tmp);
+        delete [] tmp;
+
+        tmp = node->getPropertyValue(PROPERTY_CLIENT_AUTH_TYPE);     
+        accessConfig.setClientAuthType(tmp);
+        delete [] tmp;
+
+        tmp = node->getPropertyValue(PROPERTY_SERVER_AUTH_TYPE);     
+        accessConfig.setServerAuthType(tmp);
+        delete [] tmp;
+
+        tmp = node->getPropertyValue(PROPERTY_IS_SERVER_REQUIRED);     
+        accessConfig.setServerAuthRequired((*tmp == '1') ? TRUE : FALSE);
+        delete [] tmp;
+
+        delete node; 
+        node = NULL;
+    }
+    else {
+        ret = FALSE;
+    }
+
+    //
+    // Conn properties
+    //
+    bsprintf(nodeName, T("%s%s"), syncMLContext, T(CONTEXT_CONN));
+    node = dmt->getManagementNode(nodeName);
+    if (node) {
+    
+        tmp = node->getPropertyValue(PROPERTY_SYNC_URL);
+        accessConfig.setSyncURL(tmp);
+        delete [] tmp;
+
+        tmp = node->getPropertyValue(PROPERTY_USE_PROXY);     
+        accessConfig.setUseProxy((*tmp == '1') ? TRUE : FALSE);
+        delete [] tmp;
+
+        tmp = node->getPropertyValue(PROPERTY_PROXY_HOST);     
+        accessConfig.setProxyHost(tmp);
+        delete [] tmp;
+
+        tmp = node->getPropertyValue(PROPERTY_PROXY_PORT);     
+        accessConfig.setProxyPort(bstrtol(tmp, NULL, 10));
+        delete [] tmp;
+
+        tmp = node->getPropertyValue(PROPERTY_PROXY_USERNAME);     
+        accessConfig.setProxyUsername(tmp);
+        delete [] tmp;
+
+        tmp = node->getPropertyValue(PROPERTY_PROXY_PASSWORD);     
+        accessConfig.setProxyPassword(tmp);
+        delete [] tmp;
+
+        tmp = node->getPropertyValue(PROPERTY_CHECK_CONN);     
+        accessConfig.setCheckConn((*tmp == '1') ? TRUE : FALSE);
+        delete [] tmp;
+
+        tmp = node->getPropertyValue(PROPERTY_RESPONSE_TIMEOUT);     
+        accessConfig.setResponseTimeout(bstrtol(tmp, NULL, 10));
+        delete [] tmp;
+
+        tmp = node->getPropertyValue(PROPERTY_READ_BUFFER_SIZE);     
+        accessConfig.setReadBufferSize(bstrtol(tmp, NULL, 10));
+        delete [] tmp;
+        
+        tmp = node->getPropertyValue(PROPERTY_USER_AGENT);     
+        accessConfig.setUserAgent(tmp);
+        delete [] tmp;
+
+        delete node; 
+        node = NULL;
+    }
+    else {
+        ret = FALSE;
+    }
+
+    //
+    // Ext properties (other misc props)
+    //
+    bsprintf(nodeName, T("%s%s"), syncMLContext, T(CONTEXT_EXT));
+    node = dmt->getManagementNode(nodeName);
+    if (node) {
+
+        tmp = node->getPropertyValue(PROPERTY_FIRST_TIME_SYNC_MODE);
+        SyncMode i = (SyncMode)(*tmp ? bstrtol(tmp, NULL, 10) : 0);
+        accessConfig.setFirstTimeSyncMode(i);   
+        delete [] tmp;
+
+        tmp = node->getPropertyValue(PROPERTY_MAX_MSG_SIZE);     
+        accessConfig.setMaxMsgSize(bstrtol(tmp, NULL, 10));
+        delete [] tmp;
+
+        tmp = node->getPropertyValue(PROPERTY_ENCRYPTION);     
+        accessConfig.setEncryption((*tmp == '1') ? TRUE : FALSE);
+        delete [] tmp;
+        
+        tmp = node->getPropertyValue(PROPERTY_SYNC_BEGIN);     
+        accessConfig.setBeginSync(bstrtol(tmp, NULL, 10));
+        delete [] tmp;
+
+        tmp = node->getPropertyValue(PROPERTY_SYNC_END);     
+        accessConfig.setEndSync(bstrtol(tmp, NULL, 10));
+        delete [] tmp;
+
+        tmp = node->getPropertyValue(PROPERTY_MAX_MOD_PER_MSG);     
+        accessConfig.setMaxModPerMsg(bstrtol(tmp, NULL, 10));
+        delete [] tmp;
+
+        delete node; 
+        node = NULL;
+    }
+    else {
+        ret = FALSE;
+    }
+
+    return TRUE;
+}
+
+/*
+ * Save Access Config properties in DMTree.
+ * Access properties are placed in 3 nodes under syncML node
+ * (Auth - Conn - Ext)
+ *
+ * @param n: the 'syncml' node (parent node)
+ */
+void DMTClientConfig::saveAccessConfig(ManagementNode& n) {
+
+    BCHAR buf[512];
+    ManagementNode* node;
+    BCHAR nodeName[DIM_MANAGEMENT_PATH];
+
+    BCHAR syncMLContext[DIM_MANAGEMENT_PATH];
+    bsprintf(syncMLContext, T("%s"), n.getFullName());
+
+    //
+    // Auth properties
+    //
+    bsprintf(nodeName, T("%s%s"), syncMLContext, T(CONTEXT_AUTH));
+    node = dmt->getManagementNode(nodeName);
+    if (node) {
+        node->setPropertyValue(PROPERTY_USERNAME, accessConfig.getUsername());
+        node->setPropertyValue(PROPERTY_PASSWORD, accessConfig.getPassword());
+        node->setPropertyValue(PROPERTY_SERVER_ID, accessConfig.getServerID());
+        node->setPropertyValue(PROPERTY_SERVER_PWD, accessConfig.getServerPWD());
+        node->setPropertyValue(PROPERTY_SERVER_NONCE, accessConfig.getServerNonce());
+        node->setPropertyValue(PROPERTY_CLIENT_NONCE, accessConfig.getClientNonce());
+        node->setPropertyValue(PROPERTY_CLIENT_AUTH_TYPE, accessConfig.getClientAuthType());
+        node->setPropertyValue(PROPERTY_SERVER_AUTH_TYPE, accessConfig.getServerAuthType());
+        node->setPropertyValue(PROPERTY_IS_SERVER_REQUIRED,
+		                      (accessConfig.getServerAuthRequired() ? T("1") : T("0") ) ); 
+        delete node; 
+        node = NULL;
+    }
+
+    //
+    // Conn properties
+    //
+    bsprintf(nodeName, T("%s%s"), syncMLContext, T(CONTEXT_CONN));
+    node = dmt->getManagementNode(nodeName);
+    if (node) {
+
+        node->setPropertyValue(PROPERTY_SYNC_URL, accessConfig.getSyncURL());
+        node->setPropertyValue(PROPERTY_USE_PROXY,
+		                      (accessConfig.getUseProxy() ? T("1"): T("0")) );
+        node->setPropertyValue(PROPERTY_PROXY_HOST, accessConfig.getProxyHost());
+        bsprintf(buf, T("%lu"), accessConfig.getProxyPort());
+        node->setPropertyValue(PROPERTY_PROXY_PORT, buf);
+        node->setPropertyValue(PROPERTY_PROXY_USERNAME, accessConfig.getProxyUsername());
+        node->setPropertyValue(PROPERTY_PROXY_PASSWORD, accessConfig.getProxyPassword());
+        node->setPropertyValue(PROPERTY_CHECK_CONN,
+		                      (accessConfig.getCheckConn() ? T("1"): T("0")) );
+        bsprintf(buf, T("%lu"), accessConfig.getResponseTimeout());
+        node->setPropertyValue(PROPERTY_RESPONSE_TIMEOUT, buf); 
+        bsprintf(buf, T("%lu"), accessConfig.getReadBufferSize());
+        node->setPropertyValue(PROPERTY_READ_BUFFER_SIZE, buf);  
+        node->setPropertyValue(PROPERTY_USER_AGENT, accessConfig.getUserAgent());
+        delete node; 
+        node = NULL;
+    }
+
+    //
+    // Ext properties (other misc props)
+    //
+    bsprintf(nodeName, T("%s%s"), syncMLContext, T(CONTEXT_EXT));
+    node = dmt->getManagementNode(nodeName);
+    if (node) {
+        bsprintf(buf, T("%lu"), accessConfig.getFirstTimeSyncMode());
+        node->setPropertyValue(PROPERTY_FIRST_TIME_SYNC_MODE, buf);
+
+        bsprintf(buf, T("%lu"), accessConfig.getMaxMsgSize());
+        node->setPropertyValue(PROPERTY_MAX_MSG_SIZE, buf);
+
+        node->setPropertyValue(PROPERTY_ENCRYPTION,
+		                      (accessConfig.getEncryption() ? T("1") : T("0") ) ); 
+        
+        timestampToAnchor(accessConfig.getBeginSync(), buf);
+        node->setPropertyValue(PROPERTY_SYNC_BEGIN, buf);
+
+        timestampToAnchor(accessConfig.getEndSync(), buf);
+        node->setPropertyValue(PROPERTY_SYNC_END, buf);
+
+        bsprintf(buf, T("%lu"), accessConfig.getMaxModPerMsg());
+        node->setPropertyValue(PROPERTY_MAX_MOD_PER_MSG, buf);
+    
+        delete node; 
+        node = NULL;
+    }
+}
+
+
+/*
+ * Read Device Config properties stored in DMTree.
+ * Device properties are placed in 3 nodes under syncML node
+ * (DevInfo - DevDetail - Ext)
+ *
+ * @param n: the 'syncml' node (parent node)
+ * @return : TRUE if config is correctly read
+ */
+BOOL DMTClientConfig::readDeviceConfig(ManagementNode& n) {
+
+    BOOL ret = TRUE;
+    BCHAR *tmp;
+    BCHAR nodeName[DIM_MANAGEMENT_PATH];
+    nodeName[0] = 0;
+    ManagementNode* node;
+
+    BCHAR syncMLContext[DIM_MANAGEMENT_PATH];
+    bsprintf(syncMLContext, T("%s"), n.getFullName());
+
+    //
+    // DevInfo properties
+    //
+    bsprintf(nodeName, T("%s%s"), syncMLContext, T(CONTEXT_DEV_INFO));
+    node = dmt->getManagementNode(nodeName);
+    if (node) {
+
+        tmp = node->getPropertyValue(PROPERTY_DEVICE_ID);
+        deviceConfig.setDevID(tmp);
+        delete [] tmp;
+
+        tmp = node->getPropertyValue(PROPERTY_MANUFACTURER);
+        deviceConfig.setMan(tmp);
+        delete [] tmp;
+
+        tmp = node->getPropertyValue(PROPERTY_MODEL);
+        deviceConfig.setMod(tmp);
+        delete [] tmp;
+
+        tmp = node->getPropertyValue(PROPERTY_DS_VERSION);
+        deviceConfig.setDsV(tmp);
+        delete [] tmp;
+
+        delete node; 
+        node = NULL;
+    }
+    else {
+        ret = FALSE;
+    }
+    
+    //
+    // DevDetail properties
+    //
+    bsprintf(nodeName, T("%s%s"), syncMLContext, T(CONTEXT_DEV_DETAIL));
+    node = dmt->getManagementNode(nodeName);
+    if (node) {
+
+        tmp = node->getPropertyValue(PROPERTY_DEVICE_TYPE);
+        deviceConfig.setDevType(tmp);
+        delete [] tmp;
+    
+        tmp = node->getPropertyValue(PROPERTY_OEM);
+        deviceConfig.setOem(tmp);
+        delete [] tmp;
+
+        tmp = node->getPropertyValue(PROPERTY_FIRMWARE_VERSION);
+        deviceConfig.setFwv(tmp);
+        delete [] tmp;
+
+        tmp = node->getPropertyValue(PROPERTY_SOFTWARE_VERSION);
+        deviceConfig.setSwv(tmp);
+        delete [] tmp;
+
+        tmp = node->getPropertyValue(PROPERTY_HARDWARE_VERSION);
+        deviceConfig.setHwv(tmp);
+        delete [] tmp;
+
+        tmp = node->getPropertyValue(PROPERTY_LARGE_OBJECT_SUPPORT);
+        deviceConfig.setLoSupport((*tmp == '1') ? TRUE : FALSE);
+        delete [] tmp;
+
+        delete node; 
+        node = NULL;
+    }
+    else {
+        ret = FALSE;
+    }
+
+    //
+    // Ext properties (other misc props)
+    //
+    bsprintf(nodeName, T("%s%s"), syncMLContext, T(CONTEXT_EXT));
+    node = dmt->getManagementNode(nodeName);
+    if (node) {
+
+        tmp = node->getPropertyValue(PROPERTY_VER_DTD);
+        deviceConfig.setVerDTD(tmp);
+        delete [] tmp;
+
+        tmp = node->getPropertyValue(PROPERTY_UTC);
+        deviceConfig.setUtc((*tmp == '1') ? TRUE : FALSE);
+        delete [] tmp;
+
+        tmp = node->getPropertyValue(PROPERTY_NUMBER_OF_CHANGES_SUPPORT);
+        deviceConfig.setNocSupport((*tmp == '1') ? TRUE : FALSE);
+        delete [] tmp;
+
+        tmp = node->getPropertyValue(PROPERTY_LOG_LEVEL);
+        LogLevel l = (LogLevel)bstrtol(tmp, NULL, 10);
+        deviceConfig.setLogLevel(l);
+        delete [] tmp;
+
+        tmp = node->getPropertyValue(PROPERTY_MAX_OBJ_SIZE);
+        deviceConfig.setMaxObjSize(bstrtol(tmp, NULL, 10));
+        delete [] tmp;
+
+        tmp = node->getPropertyValue(PROPERTY_DEVINF_HASH);
+        deviceConfig.setDevInfHash(tmp);
+        delete [] tmp;
+
+        delete node; 
+        node = NULL;
+    }
+    else {
+        ret = FALSE;
     }
 
     return ret;
 }
 
-BOOL DMTClientConfig::readAccessConfig(ManagementNode& n) {
 
-    BCHAR *tmp;
-    
-    tmp = n.getPropertyValue(PROPERTY_USERNAME);
-    accessConfig.setUsername(tmp);
-    delete [] tmp;
-
-    tmp = n.getPropertyValue(PROPERTY_PASSWORD);
-    accessConfig.setPassword(tmp);
-    delete [] tmp;
-
-    tmp = n.getPropertyValue(PROPERTY_DEVICE_ID);
-    accessConfig.setDeviceId(tmp);
-    delete [] tmp;
-
-    tmp = n.getPropertyValue(PROPERTY_SYNC_URL);
-    accessConfig.setSyncURL(tmp);
-    delete [] tmp;
-   
-    tmp = n.getPropertyValue(PROPERTY_FIRST_TIME_SYNC_MODE);
-    SyncMode i = (SyncMode)(*tmp ? bstrtol(tmp, NULL, 10) : 0);
-    accessConfig.setFirstTimeSyncMode(i);   
-    delete [] tmp;
-    
-    tmp = n.getPropertyValue(PROPERTY_SYNC_BEGIN);     
-    accessConfig.setBeginSync(bstrtol(tmp, NULL, 10));
-    delete [] tmp;
-
-    tmp = n.getPropertyValue(PROPERTY_SYNC_END);     
-    accessConfig.setEndSync(bstrtol(tmp, NULL, 10));
-    delete [] tmp;
-
-    tmp = n.getPropertyValue(PROPERTY_USE_PROXY);     
-    accessConfig.setUseProxy((*tmp == 'T') ? TRUE : FALSE);
-    delete [] tmp;
-
-    tmp = n.getPropertyValue(PROPERTY_PROXY_HOST);     
-    accessConfig.setProxyHost(tmp);
-    delete [] tmp;
-
-    tmp = n.getPropertyValue(PROPERTY_PROXY_USERNAME);     
-    accessConfig.setProxyUsername(tmp);
-    delete [] tmp;
-
-    tmp = n.getPropertyValue(PROPERTY_PROXY_PASSWORD);     
-    accessConfig.setProxyPassword(tmp);
-    delete [] tmp;
-
-    tmp = n.getPropertyValue(PROPERTY_SERVER_NONCE);     
-    accessConfig.setServerNonce(tmp);
-    delete [] tmp;
-
-    tmp = n.getPropertyValue(PROPERTY_CLIENT_NONCE);     
-    accessConfig.setClientNonce(tmp);
-    delete [] tmp;
-
-    tmp = n.getPropertyValue(PROPERTY_SERVER_ID);     
-    accessConfig.setServerID(tmp);
-    delete [] tmp;
-
-    tmp = n.getPropertyValue(PROPERTY_SERVER_PWD);     
-    accessConfig.setServerPWD(tmp);
-    delete [] tmp;
-
-    tmp = n.getPropertyValue(PROPERTY_CLIENT_AUTH_TYPE);     
-    accessConfig.setClientAuthType(tmp);
-    delete [] tmp;
-
-    tmp = n.getPropertyValue(PROPERTY_SERVER_AUTH_TYPE);     
-    accessConfig.setServerAuthType(tmp);
-    delete [] tmp;
-
-    tmp = n.getPropertyValue(PROPERTY_IS_SERVER_REQUIRED);     
-    accessConfig.setServerAuthRequired((*tmp == 'T') ? TRUE : FALSE);
-    delete [] tmp;
-
-    tmp = n.getPropertyValue(PROPERTY_MAX_MSG_SIZE);     
-    accessConfig.setMaxMsgSize(bstrtol(tmp, NULL, 10));
-    delete [] tmp;
-
-    tmp = n.getPropertyValue(PROPERTY_MAX_MOD_PER_MSG);     
-    accessConfig.setMaxModPerMsg(bstrtol(tmp, NULL, 10));
-    delete [] tmp;
-    
-    tmp = n.getPropertyValue(PROPERTY_ENCRYPTION);     
-    accessConfig.setEncryption((*tmp == 'T') ? TRUE : FALSE);
-    delete [] tmp;
-    
-    tmp = n.getPropertyValue(PROPERTY_READ_BUFFER_SIZE);     
-    accessConfig.setReadBufferSize(bstrtol(tmp, NULL, 10));
-    delete [] tmp;
-    
-    tmp = n.getPropertyValue(PROPERTY_USER_AGENT);     
-    accessConfig.setUserAgent(tmp);
-    delete [] tmp;
-
-    return TRUE;
-}
-
-void DMTClientConfig::saveAccessConfig(ManagementNode& n) {
+/*
+ * Save Device Config properties in DMTree.
+ * Device properties are placed in 3 nodes under syncML node
+ * (DevInfo - DevDetail - Ext)
+ *
+ * @param n: the 'syncml' node (parent node)
+ */
+void DMTClientConfig::saveDeviceConfig(ManagementNode& n) {
 
     BCHAR buf[512];
+    ManagementNode* node;
+    BCHAR nodeName[DIM_MANAGEMENT_PATH];
 
-    n.setPropertyValue(PROPERTY_USERNAME, accessConfig.getUsername());
-    n.setPropertyValue(PROPERTY_PASSWORD, accessConfig.getPassword());
-    n.setPropertyValue(PROPERTY_DEVICE_ID, accessConfig.getDeviceId());
-    n.setPropertyValue(PROPERTY_SYNC_URL, accessConfig.getSyncURL());
+    BCHAR syncMLContext[DIM_MANAGEMENT_PATH];
+    bsprintf(syncMLContext, T("%s"), n.getFullName());
 
-    bsprintf(buf, T("%lu"), accessConfig.getFirstTimeSyncMode());
-    n.setPropertyValue(PROPERTY_FIRST_TIME_SYNC_MODE, buf);
-    
-    timestampToAnchor(accessConfig.getBeginSync(), buf);
-    n.setPropertyValue(PROPERTY_SYNC_BEGIN, buf);
+    //
+    // DevInfo properties
+    //
+    bsprintf(nodeName, T("%s%s"), syncMLContext, T(CONTEXT_DEV_INFO));
+    node = dmt->getManagementNode(nodeName);
+    if (node) {
+        node->setPropertyValue(PROPERTY_DEVICE_ID, deviceConfig.getDevID());
+        node->setPropertyValue(PROPERTY_MANUFACTURER, deviceConfig.getMan());
+        node->setPropertyValue(PROPERTY_MODEL, deviceConfig.getMod());
+        node->setPropertyValue(PROPERTY_DS_VERSION, deviceConfig.getDsV());
+        delete node; 
+        node = NULL;
+    }
 
-    timestampToAnchor(accessConfig.getEndSync(), buf);
-    n.setPropertyValue(PROPERTY_SYNC_END, buf);
+    //
+    // DevDetail properties
+    //
+    bsprintf(nodeName, T("%s%s"), syncMLContext, T(CONTEXT_DEV_DETAIL));
+    node = dmt->getManagementNode(nodeName);
+    if (node) {
+        node->setPropertyValue(PROPERTY_DEVICE_TYPE, deviceConfig.getDevType());
+        node->setPropertyValue(PROPERTY_OEM, deviceConfig.getOem());
+        node->setPropertyValue(PROPERTY_FIRMWARE_VERSION, deviceConfig.getFwv());
+        node->setPropertyValue(PROPERTY_SOFTWARE_VERSION, deviceConfig.getSwv());
+        node->setPropertyValue(PROPERTY_HARDWARE_VERSION, deviceConfig.getHwv());
+        node->setPropertyValue(PROPERTY_LARGE_OBJECT_SUPPORT, 
+                              (deviceConfig.getLoSupport() ? T("1"): T("0")) );
+        delete node; 
+        node = NULL;
+    }
 
-    n.setPropertyValue(PROPERTY_USE_PROXY,
-		(accessConfig.getUseProxy() ? T("T"): T("F")) );     
-    n.setPropertyValue(PROPERTY_PROXY_HOST, accessConfig.getProxyHost());   
-    n.setPropertyValue(PROPERTY_PROXY_USERNAME, accessConfig.getProxyUsername()); 
-    n.setPropertyValue(PROPERTY_PROXY_PASSWORD, accessConfig.getProxyPassword()); 
-    n.setPropertyValue(PROPERTY_SERVER_NONCE, accessConfig.getServerNonce());
-    n.setPropertyValue(PROPERTY_CLIENT_NONCE, accessConfig.getClientNonce());
-    n.setPropertyValue(PROPERTY_SERVER_ID, accessConfig.getServerID());
-    n.setPropertyValue(PROPERTY_SERVER_PWD, accessConfig.getServerPWD());
-    n.setPropertyValue(PROPERTY_CLIENT_AUTH_TYPE, accessConfig.getClientAuthType());
-    n.setPropertyValue(PROPERTY_SERVER_AUTH_TYPE, accessConfig.getServerAuthType());
-    n.setPropertyValue(PROPERTY_IS_SERVER_REQUIRED,
-		(accessConfig.getServerAuthRequired() ? T("T") : T("F") ) ); 
+    //
+    // Ext properties (other misc props)
+    //
+    bsprintf(nodeName, T("%s%s"), syncMLContext, T(CONTEXT_EXT));
+    node = dmt->getManagementNode(nodeName);
+    if (node) {
+        node->setPropertyValue(PROPERTY_VER_DTD, deviceConfig.getVerDTD());
+        node->setPropertyValue(PROPERTY_DEVINF_HASH, deviceConfig.getDevInfHash());
+        node->setPropertyValue(PROPERTY_UTC, 
+                              (deviceConfig.getUtc() ? T("1"): T("0")) );
+        node->setPropertyValue(PROPERTY_NUMBER_OF_CHANGES_SUPPORT, 
+                              (deviceConfig.getNocSupport() ? T("1"): T("0")) );
 
-    bsprintf(buf, T("%lu"), accessConfig.getMaxMsgSize());
-    n.setPropertyValue(PROPERTY_MAX_MSG_SIZE, buf);     
-    
-    bsprintf(buf, T("%lu"), accessConfig.getReadBufferSize());
-    n.setPropertyValue(PROPERTY_READ_BUFFER_SIZE, buf);     
+        bsprintf(buf, T("%lu"), deviceConfig.getLogLevel());
+        node->setPropertyValue(PROPERTY_LOG_LEVEL, buf);
+        
+        bsprintf(buf, T("%lu"), deviceConfig.getMaxObjSize());
+        node->setPropertyValue(PROPERTY_MAX_OBJ_SIZE, buf);
 
-    bsprintf(buf, T("%lu"), accessConfig.getMaxModPerMsg());
-    n.setPropertyValue(PROPERTY_MAX_MOD_PER_MSG, buf);
-    
-    n.setPropertyValue(PROPERTY_ENCRYPTION,
-		(accessConfig.getEncryption() ? T("T") : T("F") ) ); 
-
-    n.setPropertyValue(PROPERTY_USER_AGENT, accessConfig.getUserAgent());
+        delete node; 
+        node = NULL;
+    }
 }
+
+
+
 
 BOOL DMTClientConfig::readSourceConfig(int i, ManagementNode& n) {    
 
@@ -395,6 +725,9 @@ BOOL DMTClientConfig::readSourceConfig(int i, ManagementNode& n) {
     sourceConfigs[i].setEncoding(tmp);
     delete [] tmp;
 
+    // *** TBD ***
+    // CTCap c = getCtCap that is stored somewhere...
+    //sourceConfigs[i].setCtCap(c);
     
     return TRUE;
 }
@@ -411,7 +744,10 @@ void DMTClientConfig::saveSourceConfig(int i, ManagementNode& n) {
     n.setPropertyValue(PROPERTY_SOURCE_ENCODING, sourceConfigs[i].getEncoding());    
 
     timestampToAnchor(sourceConfigs[i].getLast(), buf); 
-    n.setPropertyValue(PROPERTY_SOURCE_LAST_SYNC, buf);    
+    n.setPropertyValue(PROPERTY_SOURCE_LAST_SYNC, buf);   
 
+    // *** TBD ***
+    // CTCap c = sourceConfigs[i].getCtCap();
+    // saveCtCap() somewhere...
 }
 
