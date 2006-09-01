@@ -238,6 +238,10 @@ int SyncManager::prepareSync(SyncSource** s) {
         char md5[16];
         devInfStr = Formatter::getDevInf(devInf);
         LOG.debug(T("devinfo: %s"), devInfStr->c_str());
+        // Add syncUrl to devInfHash, so hash changes if syncUrl has changed
+        devInfStr->append("<SyncURL>");
+        devInfStr->append(config.getAccessConfig().getSyncURL());
+        devInfStr->append("</SyncURL>");
         calculateMD5(devInfStr->c_str(), devInfStr->length(), md5);
         devInfHash[b64_encode(devInfHash, md5, sizeof(md5))] = 0;
         LOG.debug(T("devinfo hash: %s"), devInfHash);
