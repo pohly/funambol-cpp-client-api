@@ -1,4 +1,19 @@
 
+2006-08-31
+     - toccy: applied devinfo.patch (pohly) and changed SyncClient/config logic:
+              * added Client capabilities handling (DevInf tag): 'createDefInf()' inside SyncManager.prepareSync()
+              * changed DMTree structure: now settings under 5 nodes (Auth-Conn-DevInfo-DevDetail-Ext)
+              * Sync4jClient class renamed as SyncClient
+              * config object managed by client (not by SyncClient)
+              * the config object passed to SyncClient and then to SyncManager is a SyncManagerConfig (was DMTClientConfig)
+              * added method SyncClient::sync(BCHAR** sourceNames = NULL)
+              * added DeviceConfig class for all device config settings
+              * added methods in SyncManagerConfig: 'getDeviceConfig()' and 'setDeviceConfig(&c)'.
+              * added DefaultConfigFactory class to generate default Config objects in case that the configuration can't be read correctly.
+              * added SyncSourceConfig object inside SyncSource (settings copied from config in the constructor)
+              * userAgent string generated from 'mod + swV' properties if the 'userAgent' property is empty
+              * added methods 'readDeviceConfig()' 'saveDeviceConfig()' in DMTClientConfig class.
+
 2006-08-30:
      - magi: modified PPC2003TransportAgent. The FunctionHttpSendRequest doesn't set lastErrorCode anymore
 
