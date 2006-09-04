@@ -250,8 +250,8 @@ void Authentication::setData(BCHAR* data) {
 
         if (encode) {
             unsigned long len = 0;
-            len = utf8len(data);
-            char* tmp = wc2utf8(data, NULL, 0);        
+            len = strlen(data);
+            char* tmp = stringdup(data);        
             char* b64tmp2 = new char[(len/3+1)<<2];
             len = b64_encode(b64tmp2, tmp, len);                        
             char* b64tmp = new char[len + 1];
@@ -260,7 +260,7 @@ void Authentication::setData(BCHAR* data) {
             if (this->data) {
                 delete [] this->data; this->data = NULL;
             }
-            this->data = utf82wc(b64tmp, NULL, 0);                         
+            this->data = stringdup(b64tmp);                         
             
             clearData = new BCHAR[bstrlen(data) + 1];
             bsprintf(clearData, data);
@@ -277,12 +277,12 @@ void Authentication::setData(BCHAR* data) {
             
         } else {
             unsigned long len = 0;
-            len = utf8len(data);
-            char* tmp = wc2utf8(data, NULL, 0);        
+            len = strlen(data);
+            char* tmp = stringdup(data);        
             char* b64tmp = new char[len];
             len = b64_decode(b64tmp, tmp);                                            
             
-            clearData = utf82wc(b64tmp, NULL, 0);
+            clearData = stringdup(b64tmp);
             if (this->data) {
                 delete [] this->data; this->data = NULL;
             }

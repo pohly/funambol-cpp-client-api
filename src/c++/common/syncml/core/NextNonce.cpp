@@ -85,14 +85,12 @@ void NextNonce::setWValue(BCHAR* wnonce) {
 
     if (wnonce) {       
         unsigned long len = 0;
-        len = utf8len(wnonce);
-        char* tmp    = wc2utf8(wnonce, NULL, 0);        
+        len = strlen(wnonce);
         char* b64tmp = new char[len];
-        len = b64_decode(b64tmp, tmp);    
+        len = b64_decode(b64tmp, wnonce);    
 
         setValue(b64tmp, len);
         
-        delete [] tmp; tmp = NULL;
         delete [] b64tmp; b64tmp = NULL;
     }
                    
@@ -105,7 +103,6 @@ BCHAR* NextNonce::getValueAsBase64() {
     if (value == NULL) 
         return NULL;
     
-    BCHAR* ret  = NULL;   
     char* b64Cred = NULL;
     int c = ((size/3+1)<<2) + 1;
     unsigned int len = 0;
@@ -113,12 +110,8 @@ BCHAR* NextNonce::getValueAsBase64() {
     b64Cred = new char[c];   
     len = b64_encode(b64Cred, value, size);
     b64Cred[len] = 0;
-    
-    ret = utf82wc(b64Cred, NULL, (long unsigned int)-1);
-    
-    delete [] b64Cred; b64Cred = NULL;
 
-    return ret;
+    return b64Cred;
 
 }
 

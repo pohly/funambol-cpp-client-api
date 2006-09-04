@@ -67,50 +67,6 @@ inline BOOL isNotEmpty(const BCHAR* s) {
     return (s && (bstrlen(s) > 0));
 }
 
-/**
- * Returns the number of bytes required to store the UTF-8 string
- * corresponding to the given BCHAR string. If the string could not be
- * converted, -1 is returned.
- *
- * @param s the original string
- */
-long int utf8len(const BCHAR* s) EXTRA_SECTION_00;
-
-/**
- * Converts the given wchar string in UTF-8. The real implementation
- * is platform specific and should go in <platform>adapter.cpp.
- * It is supposed that the destination buffer is either big enough to
- * contain the converted data or NULL; in the latter case the needed
- * space is allocated using the new C++ operator and must be discarded
- * by the caller with the delete operator.
- * This function return the pointer to the destination buffer (d or the new
- * allocated one) in case of success or NULL in case the conversion was not
- * possible.
- *
- * @param s source string
- * @param d destination buffer or NULL
- * @param dsize size of the destination buffer (ignored if d is null)
- *
- */
-char* wc2utf8(const BCHAR* s, char* d = NULL, unsigned long dsize = 0) EXTRA_SECTION_00;
-
-/**
- * Converts the given UTF-8 string in BCHAR. The real implementation
- * is platform specific and should go in <platform>adapter.cpp.
- * It is supposed that the destination buffer is either big enough to
- * contain the converted data or NULL; in the latter case the needed
- * space is allocated using the new C++ operator and must be discarded
- * by the caller with the delete operator.
- * This function return the pointer to the destination buffer (d or the new
- * allocated one) in case of success or NULL in case the conversion was not
- * possible.
- *
- * @param s source string
- * @param d destination buffer or NULL
- * @param dsize size of the destination buffer (ignored if d is null)
- *
- */
-BCHAR* utf82wc(const char* s, BCHAR* d = NULL, unsigned long dsize = 0) EXTRA_SECTION_00;
 
 /*
 * compare two BCHAR array ignoring the case of the char

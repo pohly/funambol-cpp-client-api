@@ -49,7 +49,7 @@ char* DESEncoder::transform(char* data, TransformationInfo& info) {
 
     DWORD dwParam = 0;
 
-    char* password = wc2utf8(info.password, NULL, 0);
+    char* password = stringdup(info.password);
 
     // -----------------------------------------------------
 

@@ -141,7 +141,7 @@ static const char *getLine(const char *msg, char **line) {
 int uudecode(const BCHAR *msg, char **binmsg, size_t *binlen)
 {
     // Convert the string
-    char *buf = wc2utf8(msg);
+    char *buf = stringdup(msg);
     if (!buf)
         return -1;
 
@@ -208,7 +208,7 @@ int convertAndSave(const BCHAR *filename,
                    const BCHAR *s,
                    const BCHAR *encoding)
 {
-    char *buf, *name = wc2utf8(filename);
+    char *buf, *name = stringdup(filename);
     bool binary = true;
     size_t len;
 
@@ -222,13 +222,13 @@ int convertAndSave(const BCHAR *filename,
         }
         binary = true;
     }
-    else if( bstrcmp(encoding, T("ISO-8859-1")) == 0 ) {
-        // TODO
-        buf = wc2utf8(s);
-        len = strlen(buf);        
-    }
+    // TODO
+    //else if( bstrcmp(encoding, T("ISO-8859-1")) == 0 ) {
+    //    buf = stringdup(s);
+    //    len = strlen(buf);        
+    //}
     else {      // Default UTF-8
-        buf = wc2utf8(s);
+        buf = stringdup(s);
         len = strlen(buf);
     }
     saveFile(name, buf, len, binary);

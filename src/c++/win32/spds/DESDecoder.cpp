@@ -44,7 +44,7 @@ char* DESDecoder::transform(char* data, TransformationInfo& info) {
                             // of the same size of a DWORD
     DWORD dwParam = 0;
 
-    char* password = wc2utf8(info.password, NULL, 0);
+    char* password = stringdup(info.password);
 
     // --------------------------------------------------------
 
