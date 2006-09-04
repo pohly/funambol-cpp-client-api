@@ -143,37 +143,6 @@ const BCHAR *brfind(const BCHAR *s1, const BCHAR *s2, size_t len)
 	return NULL;
 }
 
-#if 0
-/**
- * @brief       Convert a UTF-8 char buffer with specified
- *              to a wchar string. Source buffer MAY not be
- *              NULL-termimated.
- *
- * @param s     source buffer
- * @param ssize source buffer lenght
- * @param d     destination buffer
- * @param dsize destination buffer lenght
- *
- * @return
- */
-BCHAR* charBuf2wc(
-        const char* s, unsigned long ssize,
-        BCHAR* d, unsigned long dsize)
-{
-    BCHAR *ret=NULL;
-
-    if (s) {
-        // allocate char string and make sure it is null-terminated
-        char *str = new char[ssize+1];
-        strncpy(str, s, ssize);
-        str[ssize]='\0';
-
-        ret=utf82wc(str,d,dsize);
-        delete [] str;
-    }
-    return ret;
-}
-#endif
 
 /**
  * Convert an unsigned long to an anchor.
@@ -234,13 +203,11 @@ BCHAR* MD5CredentialData(BCHAR* userName, BCHAR* password, BCHAR* nonce) {
 
     int len = 0, lenNonce = 0, totLen = 0;
 
-    char token       [64];
     char cnonce      [64];
     char digest      [16];
     char base64      [64];
     char base64Nonce [64];
-    BCHAR wnonce   [64];
-    BCHAR wtoken   [64];
+    BCHAR token      [512];
     BCHAR* md5Digest = NULL;
     char ch          [3];
     char* dig = NULL;
@@ -249,16 +216,11 @@ BCHAR* MD5CredentialData(BCHAR* userName, BCHAR* password, BCHAR* nonce) {
     memset(base64,      0, 64);
     memset(base64Nonce, 0, 64);
     memset(cnonce,      0, 64);
-    memset(token,       0, 64);
-    memset(wtoken,     0,  64);
+    memset(token,       0, 512);
     sprintf(ch, ":");
 
-    bsprintf(wtoken, T("%s:%s"), userName
-                                  , password
-                                  );
-
-    len = utf8len(wtoken);
-    wc2utf8(wtoken, token, len);
+    bsprintf(token, T("%s:%s"), userName, password);
+    len = bstrlen(token);
 
     // H(username:password)
     calculateMD5((void*)token, len, digest);
@@ -266,13 +228,9 @@ BCHAR* MD5CredentialData(BCHAR* userName, BCHAR* password, BCHAR* nonce) {
     // B64(H(username:password))
     len = b64_encode((char*)base64, digest, 16);
 
-    memset(digest, 0, 16);
-
-    bsprintf(wnonce, T("%s"), nonce);
-    lenNonce = utf8len(wnonce);
-    wc2utf8(wnonce, cnonce, lenNonce);
-
-    // decode wnonce from stored base64 to bin
+    
+    // decode nonce from stored base64 to bin
+    bstrcpy(cnonce, nonce);
     lenNonce = b64_decode(cnonce, cnonce);
 
     memcpy(base64Nonce, base64, len);
@@ -281,17 +239,13 @@ BCHAR* MD5CredentialData(BCHAR* userName, BCHAR* password, BCHAR* nonce) {
 
     totLen = len + 1 + lenNonce;
 
+    memset(digest, 0, 16);
     calculateMD5(base64Nonce, totLen, digest);
-
     b64_encode(base64, digest, 16);
 
-    // return value in wchar...
-    md5Digest = new BCHAR[33];
-
-    utf82wc(base64, md5Digest, 33);
-
+    // return new value
+    md5Digest = stringdup(base64);
     return md5Digest;
-
 }
 
 
