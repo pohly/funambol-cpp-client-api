@@ -44,7 +44,7 @@
 #include "http/constants.h"
 #include "http/errors.h"
 #include "http/Win32TransportAgent.h"
-
+#include "event/fireEvent.h"
 
 #define ENTERING(func) //bsprintf(logmsg, "Entering %ls", func); LOG.debug(logmsg)
 #define EXITING(func)  //bsprintf(logmsg, "Exiting %ls", func);  LOG.debug(logmsg)
@@ -185,11 +185,16 @@ BCHAR* Win32TransportAgent::sendMessage(const BCHAR* msg) {
     //
     for (int i=0;; i++) {
 
+        // Fire Send Data Begin Transport Event
+        fireTransportEvent(contentLength, SEND_DATA_BEGIN);
+
         // Send a request to the HTTP server.
         if (!HttpSendRequest (request, headers, wcslen(headers), (void*)msg, contentLength)) {
             
             // Retry: some proxy need to resend the http request.
             if (GetLastError() == ERROR_INTERNET_CONNECTION_RESET) {
+                // Fire Send Data Begin Transport Event
+                fireTransportEvent(contentLength, SEND_DATA_BEGIN);
                 if (!HttpSendRequest (request, headers, wcslen(headers), (void*)msg, contentLength)) {
                     lastErrorCode = ERR_CONNECT;
                     bsprintf (lastErrorMsg, T("%s: %d"), T("HttpSendRequest Error"), GetLastError());
@@ -198,8 +203,10 @@ BCHAR* Win32TransportAgent::sendMessage(const BCHAR* msg) {
                 }
             }
         }
-        LOG.debug(MESSAGE_SENT);
 
+        LOG.debug(MESSAGE_SENT);
+        // Fire Send Data End Transport Event
+        fireTransportEvent(contentLength, SEND_DATA_END);
 
         // Check the status code.
         size = sizeof(status);
@@ -300,6 +307,9 @@ BCHAR* Win32TransportAgent::sendMessage(const BCHAR* msg) {
         goto exit;
     }
 
+    // Fire Data Received Transport Event
+    fireTransportEvent(size, RECEIVE_DATA_BEGIN);
+
     // Allocate a block of memory for lpHeadersW.
     response = new BCHAR[contentLength+1];
 	p = response;
@@ -314,13 +324,17 @@ BCHAR* Win32TransportAgent::sendMessage(const BCHAR* msg) {
 
         if (read != 0) {
             bufferA[read] = 0;
-
             bstrcpy(p, bufferA);
             p += strlen(bufferA);
+
+            // Fire Data Received Transport Event
+            fireTransportEvent(read, DATA_RECEIVED);
         }
 
     } while (read);
 
+    // Fire Receive Data End Transport Event
+    fireTransportEvent(size, RECEIVE_DATA_END);
     LOG.debug(T("Response read"));
 	LOG.debug("%s", response); 
 

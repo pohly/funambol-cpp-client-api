@@ -31,6 +31,9 @@
 #include "syncml/core/TagNames.h"
 #include "syncml/core/ObjectDel.h"
 
+#include "event/fireEvent.h"
+
+
 /**
  * Is the given status code an error status code? Error codes are the ones
  * outside the range 200-299.
@@ -181,6 +184,9 @@ int SyncManager::prepareSync(SyncSource** s) {
     BCHAR devInfHash[16 * 4 +1]; // worst case factor base64 is four
     const BCHAR *syncURL;
     
+    // Fire Sync Begin Event
+    fireSyncEvent(NULL, SYNC_BEGIN);
+
     syncURL = config.getAccessConfig().getSyncURL(); //sizeof(syncURL));
 
     URL url(syncURL);
@@ -220,6 +226,7 @@ int SyncManager::prepareSync(SyncSource** s) {
     syncMLBuilder.resetMessageID();
     unsigned long timestamp = (unsigned long)time(NULL);
     config.getAccessConfig().setBeginSync(timestamp);
+
     for (count = 0; count < sourcesNumber; count ++) {
         if (readSyncSourceDefinition(*sources[count]) == false) {
             ret = lastErrorCode = ERR_SOURCE_DEFINITION_NOT_FOUND;
@@ -349,7 +356,7 @@ int SyncManager::prepareSync(SyncSource** s) {
 
         LOG.debug(MSG_INITIALIZATATION_MESSAGE);
         LOG.debug("%s", initMsg);
-
+        
         currentState = STATE_PKG1_SENDING;
 
         if (transportAgent == NULL) {
@@ -376,6 +383,9 @@ int SyncManager::prepareSync(SyncSource** s) {
         deleteChal(&serverChal);
         deleteArrayList(&commands);
         deleteCred(&cred);
+
+        //Fire Initialization Event
+        fireSyncEvent(NULL, SEND_INITIALIZATION);
 
         responseMsg = transportAgent->sendMessage(initMsg);
         // Non-existant or empty reply?
@@ -516,6 +526,9 @@ int SyncManager::prepareSync(SyncSource** s) {
 
             status = syncMLBuilder.prepareAlertStatus(*sources[count], list, authStatusCode);    
             if (status) {
+		        // Fire Sync Status Event : Client Sets Status for server
+                fireSyncStatusEvent(status->getName(), status->getStatusCode(), sources[count]->getConfig().getURI(), NULL , CLIENT_STATUS);
+
                 commands->add(*status);
                 deleteStatus(&status);    
             }
@@ -638,9 +651,15 @@ int SyncManager::prepareSync(SyncSource** s) {
     }
 
     currentState = STATE_PKG1_SENT;
-    
+
+ 
 // ---------------------------------------------------------------------------------------
 finally:
+
+    if(ret) {
+        //Fire Sync Error Event
+        fireSyncEvent(lastErrorMsg, SYNC_ERROR);
+    }
 
     if (respURI) {
         delete [] respURI;
@@ -691,7 +710,11 @@ BOOL SyncManager::checkForServerChanges(SyncML* syncml, ArrayList &statusList)
         if (sync) {
             ArrayList* items = sync->getCommands();
             Status* status = syncMLBuilder.prepareSyncStatus(*sources[count], sync);
-            statusList.add(*status);
+            
+			// Fire Sync Status Event : Client Sets Status for server
+			fireSyncStatusEvent(status->getName(), status->getStatusCode(), sources[count]->getConfig().getURI(), NULL, CLIENT_STATUS);
+
+			statusList.add(*status);
             deleteStatus(&status);
 
             ArrayList* previousStatus = new ArrayList();
@@ -792,6 +815,9 @@ int SyncManager::sync() {
         last = FALSE;        
         iterator++;
 
+        // Fire SyncSource event: BEGIN sync of a syncsource
+        fireSyncSourceEvent(sources[count]->getConfig().getURI(), sources[count]->getSyncMode(), SYNC_SOURCE_BEGIN);
+
         if ( sources[count]->beginSync() ) {
             // Error from SyncSource
             lastErrorCode = ERR_UNSPECIFIED;
@@ -831,6 +857,10 @@ int SyncManager::sync() {
             if (commands->isEmpty()) {
 
                 status = syncMLBuilder.prepareSyncHdrStatus(NULL, 200);
+
+		        // Fire Sync Status Event : Client Sets Status for server
+                fireSyncStatusEvent(status->getName(), status->getStatusCode(), sources[count]->getConfig().getURI(), NULL, CLIENT_STATUS);
+
                 commands->add(*status);
                 deleteStatus(&status);
 
@@ -953,7 +983,11 @@ int SyncManager::sync() {
                             syncItem = sources[count]->getFirstNewItem(); 
                             step++;
                             if (syncItem == NULL)
-                                step++;                        
+                                step++;  
+                            else {
+				                // Fire Sync Item Event - New Item Detected
+                                fireSyncItemEvent(sources[count]->getConfig().getURI(), syncItem->getKey(), ITEM_ADDED_BY_CLIENT);
+                            }
                         }
                         if (step == 1) {                                                          
                             do {
@@ -969,6 +1003,8 @@ int SyncManager::sync() {
                                 }
 
                                 if (syncItem) {
+                                    // Fire Sync Item Event - New Item Detected
+                                    fireSyncItemEvent(sources[count]->getConfig().getURI(), syncItem->getKey(), ITEM_ADDED_BY_CLIENT);
                                     delete syncItem; syncItem = NULL;
                                 }
                                 else {
@@ -995,12 +1031,16 @@ int SyncManager::sync() {
                             step++;
                             if (syncItem == NULL)
                                 step++;    
+                            else {
+                                // Fire Sync Item Event - Item Updated
+                                fireSyncItemEvent(sources[count]->getConfig().getURI(), syncItem->getKey(), ITEM_UPDATED_BY_CLIENT);
+                            }
+
                         }
                         if (step == 3) {
-                            do {
+                            do {				
                                 if (syncItem == NULL) {
                                     syncItem = sources[count]->getNextUpdatedItem();
-
                                 }
                                 if (modificationCommand == NULL) {
                                     modificationCommand = syncMLBuilder.prepareModificationCommand(REPLACE_COMMAND_NAME, 
@@ -1010,7 +1050,9 @@ int SyncManager::sync() {
                                                           syncItem, sources[count]->getConfig().getType());
                                 }
 
-                                if (syncItem) {                            
+                                if (syncItem) {  
+                                    // Fire Sync Item Event - Item Updated
+                                    fireSyncItemEvent(sources[count]->getConfig().getURI(), syncItem->getKey(), ITEM_UPDATED_BY_CLIENT);
                                     delete syncItem; syncItem = NULL;
                                 }
                                 else {
@@ -1037,6 +1079,10 @@ int SyncManager::sync() {
                             step++;
                             if (syncItem == NULL)
                                 step++;    
+                            else {
+                                // Fire Sync Item Event - Item Deleted
+                                fireSyncItemEvent(sources[count]->getConfig().getURI(), syncItem->getKey(), ITEM_DELETED_BY_CLIENT);
+                            }
                         }
                         if (step == 5) {
                             do {
@@ -1051,7 +1097,9 @@ int SyncManager::sync() {
                                             syncItem, sources[count]->getConfig().getType());
                                 }
 
-                                if (syncItem) {                            
+                                if (syncItem) {
+                                    // Fire Sync Item Event - Item Deleted
+                                    fireSyncItemEvent(sources[count]->getConfig().getURI(), syncItem->getKey(), ITEM_DELETED_BY_CLIENT);
                                     delete syncItem; syncItem = NULL;
                                 }
                                 else {
@@ -1094,9 +1142,11 @@ int SyncManager::sync() {
             }
 
             // Synchronization message:
-
             LOG.debug(MSG_MODIFICATION_MESSAGE);
             LOG.debug("%s", msg);
+
+            //Fire Modifications Event
+            fireSyncEvent(NULL, SEND_MODIFICATION);
 
             responseMsg = transportAgent->sendMessage(msg);
             if (responseMsg == NULL) {
@@ -1159,6 +1209,9 @@ int SyncManager::sync() {
 
         } while (last == FALSE);
 
+        // Fire SyncSourceEvent: END sync of a syncsource
+        fireSyncSourceEvent(sources[count]->getConfig().getURI(), sources[count]->getSyncMode(), SYNC_SOURCE_END);
+
     } // end for (count = 0; count < sourcesNumber; count ++)
     
     if (isToExit(check, sourcesNumber)) {
@@ -1183,7 +1236,12 @@ int SyncManager::sync() {
     if ((FALSE == isFinalfromServer) && (TRUE == isAtLeastOneSourceCorrect))
     {
         status = syncMLBuilder.prepareSyncHdrStatus(NULL, 200);
-        commands->add(*status);
+       
+        // Fire Sync Status Event : Client Sets Status for server
+        // Cannot pass itemkey or source URI as this status is just an alert for the server
+        fireSyncStatusEvent(status->getName(), status->getStatusCode(), NULL, NULL, CLIENT_STATUS);
+
+	    commands->add(*status);
         deleteStatus(&status); 
         for (count = 0; count < sourcesNumber; count ++) {
             if(!check[count])
@@ -1207,7 +1265,8 @@ int SyncManager::sync() {
         if (responseMsg == NULL) {
             ret=lastErrorCode;
             goto finally;
-        }      
+        } 
+
         // increment the msgRef after every send message
         syncMLBuilder.increaseMsgRef();
         syncMLBuilder.resetCommandID();
@@ -1242,6 +1301,11 @@ int SyncManager::sync() {
             ArrayList statusList;
 
             status = syncMLBuilder.prepareSyncHdrStatus(NULL, 200);
+
+	        // Fire Sync Status Event : Client Sets Status for server
+            // Cannot pass itemkey or source URI as this status is just an alert for the server
+            fireSyncStatusEvent(status->getName(), status->getStatusCode(), NULL , NULL, CLIENT_STATUS);
+
             commands->add(*status);
             deleteStatus(&status); 
 
@@ -1289,8 +1353,9 @@ int SyncManager::sync() {
                 ret = 0;
             }        
         } while (last == FALSE);
-
     }
+
+
 finally:
 
     if (isAtLeastOneSourceCorrect == TRUE)
@@ -1303,6 +1368,11 @@ finally:
     {
         ret = -1;
         LOG.debug("sources not available");
+    }
+
+    if (ret) {
+        //Fire Sync Error Event
+        fireSyncEvent(lastErrorMsg, SYNC_ERROR);
     }
     return ret;
 }
@@ -1346,7 +1416,11 @@ int SyncManager::endSync() {
                 tot = -1;
                 if (commands->isEmpty()) {
                     status = syncMLBuilder.prepareSyncHdrStatus(NULL, 200);
-                    commands->add(*status);
+                   
+		            // Fire Sync Status Event : Client Sets Status for server
+                    fireSyncStatusEvent(status->getName(), status->getStatusCode(), sources[count]->getConfig().getURI(), NULL, CLIENT_STATUS);
+
+		            commands->add(*status);
                     deleteStatus(&status); 
 
                     /* The server should not send any alert...
@@ -1395,6 +1469,9 @@ int SyncManager::endSync() {
 
                 LOG.debug(T("Mapping"));
                 LOG.debug("%s", mapMsg);
+
+                //Fire Finalization Event
+                fireSyncEvent(NULL, SEND_FINALIZATION);
 
                 responseMsg = transportAgent->sendMessage(mapMsg);
                 if (responseMsg == NULL) {
@@ -1454,13 +1531,14 @@ int SyncManager::endSync() {
                 lastErrorCode = sret;
             }
         }        
-    }
-            
+    }         
+        
  finally:
 
     for (count = 0; count < sourcesNumber; count ++) {
         if (!check[count])
             continue;
+   
         commitChanges(*sources[count]);
     }
     /*
@@ -1472,16 +1550,19 @@ int SyncManager::endSync() {
         delete [] mappings; mappings = NULL;
     }
     */
+
     config.getAccessConfig().setEndSync((unsigned long)time(NULL));
     safeDelete(&responseMsg);
     safeDelete(&mapMsg);
     BCHAR g[768]; bsprintf(g, "ret: %i, lastErrorCode: %i, lastErrorMessage: %s", ret, lastErrorCode, lastErrorMsg); LOG.debug(g);
-    //
-    // This commitSync is not used because the saving of the configuration
-    // is done by the Client.
-    //
-    //config.save();
+
+	// Fire Sync End Event
+    fireSyncEvent(NULL, SYNC_END);
+
     if (ret){
+        //Fire Sync Error Event
+        fireSyncEvent(lastErrorMsg, SYNC_ERROR);
+
         return ret;
     }
     else if (lastErrorCode){
@@ -1629,10 +1710,17 @@ Status *SyncManager::processSyncItem(Item* item, const CommandInfo &cmdInfo)
 
     // Process item ------------------------------------------------------------
     Status *status = 0;
-    if ( bstrcmp(cmdInfo.commandName, ADD) == 0) {   
+    if ( bstrcmp(cmdInfo.commandName, ADD) == 0) {  
+        // Fire Sync Item Event - New Item Added by Server
+        fireSyncItemEvent(sources[count]->getConfig().getURI(), syncItem.getKey(), ITEM_ADDED_BY_SERVER);
+
         syncItem.setState(SYNC_STATE_NEW);
         code = sources[count]->addItem(syncItem);      
         status = syncMLBuilder.prepareItemStatus(ADD, itemName, cmdInfo.cmdRef, code);
+
+	    // Fire Sync Status Event : Client Sets Status for server
+        fireSyncStatusEvent(status->getName(), status->getStatusCode(), sources[count]->getConfig().getURI(), syncItem.getKey(), CLIENT_STATUS);
+
         // If the add was successful, set the id mapping
         if (code >= 200 && code <= 299) {
             BCHAR *key = toMultibyte(syncItem.getKey());
@@ -1641,15 +1729,27 @@ Status *SyncManager::processSyncItem(Item* item, const CommandInfo &cmdInfo)
             delete [] key;
         }                    
     }
-    else if (bstrcmp(cmdInfo.commandName, REPLACE) == 0) {        
+    else if (bstrcmp(cmdInfo.commandName, REPLACE) == 0) {  
+        // Fire Sync Item Event - Item Updated by Server
+        fireSyncItemEvent(sources[count]->getConfig().getURI(), syncItem.getKey(), ITEM_UPDATED_BY_SERVER);
+
         syncItem.setState(SYNC_STATE_UPDATED);
         code = sources[count]->updateItem(syncItem);
         status = syncMLBuilder.prepareItemStatus(REPLACE, itemName, cmdInfo.cmdRef, code);                
+
+	    // Fire Sync Status Event : Client Sets Status for server
+        fireSyncStatusEvent(status->getName(), status->getStatusCode(), sources[count]->getConfig().getURI(), syncItem.getKey(), CLIENT_STATUS);
     }
     else if (bstrcmp(cmdInfo.commandName, DEL) == 0) {
+        // Fire Sync Item Event - Item Deleted by Server
+        fireSyncItemEvent(sources[count]->getConfig().getURI(), syncItem.getKey(), ITEM_DELETED_BY_SERVER);
+
         syncItem.setState(SYNC_STATE_DELETED);
         code = sources[count]->deleteItem(syncItem);        
-        status = syncMLBuilder.prepareItemStatus(DEL, itemName, cmdInfo.cmdRef, code);            
+        status = syncMLBuilder.prepareItemStatus(DEL, itemName, cmdInfo.cmdRef, code);           
+	    
+        // Fire Sync Status Event : Client Sets Status for server
+        fireSyncStatusEvent(status->getName(), status->getStatusCode(), sources[count]->getConfig().getURI(), syncItem.getKey(), CLIENT_STATUS);
     }                
     return status;
 }
@@ -1663,7 +1763,7 @@ char* SyncManager::processItemContent(const BCHAR* toConvert,
     BCHAR* encoding = NULL;
     TransformationInfo info;
 
-    char* c = wc2utf8(toConvert);
+    char* c = stringdup(toConvert);
     info.size = strlen(c);
     info.password = credentialInfo; //(BCHAR*)config.getAccessConfig().getPassword();
 
