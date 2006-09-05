@@ -888,7 +888,6 @@ void SyncMLBuilder::setEncPassword(const BCHAR* pwd) {
 BCHAR* SyncMLBuilder::encodeDESB64(char* data, TransformationInfo& info) {
     char*    des = NULL;
     char*    b64 = NULL;
-    BCHAR* ret = NULL;
 
     DataTransformer* dtdes = DataTransformerFactory::getEncoder(T("des"));
     DataTransformer* dtb64 = DataTransformerFactory::getEncoder(T("b64"));
@@ -909,11 +908,6 @@ BCHAR* SyncMLBuilder::encodeDESB64(char* data, TransformationInfo& info) {
         goto exit;
     }
 
-    //
-    // We now translate it into a wchar zero-terminated string 
-    //
-    ret = utf82wc(b64, NULL, 0);
-
     ++info.size;
     // info.size = (bstrlen(ret)+1)*sizeof(BCHAR);
 
@@ -924,10 +918,6 @@ exit:
         delete [] des; des = NULL;
     }
 
-    if (b64) {
-        delete [] b64; b64 = NULL;
-    }
-
     if (dtdes) {
         delete dtdes;
     }
@@ -936,12 +926,11 @@ exit:
         delete dtb64;
     }
 
-    return ret;
+    return b64;
 }
 
 BCHAR* SyncMLBuilder::encodeB64(char* data, TransformationInfo& info) {
     char*    b64 = NULL;
-    BCHAR* ret = NULL;
     DataTransformer* dtb64 = DataTransformerFactory::getEncoder(T("b64"));
 
     if (dtb64 == NULL) {
@@ -950,25 +939,15 @@ BCHAR* SyncMLBuilder::encodeB64(char* data, TransformationInfo& info) {
 
     b64 = dtb64->transform((char*)data, info);
 
-    //
-    // We now translate it into a wchar zero-terminated string 
-    //
-    ret = utf82wc(b64);
-
     ++info.size;
     // info.size = (bstrlen(ret)+1)*sizeof(BCHAR);
 
 exit:
-
-    if (b64) {
-        delete [] b64; b64 = NULL;
-    }
-
     if (dtb64) {
         delete dtb64;
     }
 
-    return ret;
+    return b64;
 }
 
 /*
