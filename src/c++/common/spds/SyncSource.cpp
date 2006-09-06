@@ -214,6 +214,10 @@ void SyncSource::setFilter(SourceFilter* f) {
     }
 }
 
+
+#if 0
+// Not used: values retrieved from type and version attributes
+// of SyncSourceConfig.
 void SyncSource::getPreferredTypes(const BCHAR*& recvType,
                                    const BCHAR*& recvVersion,
                                    const BCHAR*& sendType,
@@ -238,3 +242,4 @@ void SyncSource::getPreferredTypes(const BCHAR*& recvType,
     sendVersion =
         recvVersion = ver;
 }
+#endif

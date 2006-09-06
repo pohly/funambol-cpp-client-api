@@ -295,33 +295,6 @@ public:
 
     /****************** meta information about SyncSource ****************/
 
-    /**
-     * Return information about preferred types for item during send
-     * and receive.
-     *
-     * The default implementation assumes that the configured
-     * type (getConfig().getType()) is also the preferred one for
-     * both direction. However, it has to determine the version to
-     * comply with the SyncML specs and this only works for:
-     * - text/x-vcard -> 2.1
-     * - text/vcard -> 3.0
-     * - text/x-calendar -> 1.0
-     * - text/calendar -> 2.0
-     *
-     * For all other, unknown types the version is set to an empty string.
-     *
-     * These values are all required. Returning NULL for any of them prevents
-     * sending of device infos.
-     *
-     * @retval recvType     preferred item type for receiving information
-     * @retval recvVersion  version string corresponding to recvType
-     * @retval sendType     preferred item type for sending information
-     * @retval sendVersion  version string corresponding to sendType
-     */
-    virtual void getPreferredTypes(const BCHAR*& recvType,
-                                   const BCHAR*& recvVersion,
-                                   const BCHAR*& sendType,
-                                   const BCHAR*& sendVersion) EXTRA_SECTION_01;
 
     /**
      * Return information about all supported types for sending
