@@ -31,7 +31,7 @@
 #include "syncml/core/TagNames.h"
 #include "syncml/core/ObjectDel.h"
 
-#include "event/fireEvent.h"
+#include "event/FireEvent.h"
 
 
 /**
@@ -2034,3 +2034,4 @@ const BCHAR* SyncManager::getUserAgent(SyncManagerConfig& config) {
 
     return ret;
 }
+

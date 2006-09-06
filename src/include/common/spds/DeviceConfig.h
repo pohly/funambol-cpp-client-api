@@ -21,7 +21,7 @@
 #include "base/fscapi.h"
 #include "spds/constants.h"
 #include "syncml/core/VerDTD.h"
-#include "base/log.h"
+#include "base/Log.h"
 
 class DeviceConfig {
     
