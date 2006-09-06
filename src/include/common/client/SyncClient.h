@@ -54,16 +54,8 @@
         SyncClient(SyncManagerConfig& c);
         virtual ~SyncClient();
         
-        //// set the default client configuration (using context root):
-        //// when using this call the client handles the loading/saving
-        //// of the configuration properties automatically
-        ////
-        //// @param   root     identifies the root node in a configuration
-        ////                   tree with sub nodes "spds/syncml" and "spds/sources"
-        //virtual void setDMConfig(const BCHAR* root);
-        //
-        // set a client-provided DMTree config: in this mode
-        // the caller owns the configuration and is responsible for
+        // Set a client-provided configuration.
+        // The caller owns the configuration and is responsible for
         // saving the (possibly modified) configuration after the
         // synchronization
         virtual void setConfig(SyncManagerConfig& c);
