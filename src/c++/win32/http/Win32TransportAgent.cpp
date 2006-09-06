@@ -44,7 +44,7 @@
 #include "http/constants.h"
 #include "http/errors.h"
 #include "http/Win32TransportAgent.h"
-#include "event/fireEvent.h"
+#include "event/FireEvent.h"
 
 #define ENTERING(func) //bsprintf(logmsg, "Entering %ls", func); LOG.debug(logmsg)
 #define EXITING(func)  //bsprintf(logmsg, "Exiting %ls", func);  LOG.debug(logmsg)
