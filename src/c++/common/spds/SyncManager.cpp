@@ -1848,8 +1848,10 @@ DevInf *SyncManager::createDeviceInfo()
          *source;
          source++) {
         
-        (*sources)->getPreferredTypes(rxType, rxVer,
-                                      txType, txVer);
+        rxType = (*sources)->getConfig().getType();
+        txType = (*sources)->getConfig().getType();
+        rxVer  = (*sources)->getConfig().getVersion();
+        txVer  = (*sources)->getConfig().getVersion();
 
         if (!rxType || !rxVer || !txType || !txVer) {
             return NULL;
@@ -1937,8 +1939,11 @@ DevInf *SyncManager::createDeviceInfo()
         SourceRef sourceRef(name);
         delete [] name; name = NULL;
 
-        (*sources)->getPreferredTypes(rxType, rxVer,
-                                      txType, txVer);
+        rxType = (*sources)->getConfig().getType();
+        txType = (*sources)->getConfig().getType();
+        rxVer  = (*sources)->getConfig().getVersion();
+        txVer  = (*sources)->getConfig().getVersion();
+        
         ContentTypeInfo rxPref(rxType, rxVer);
         ArrayList rx;
         fillContentTypeInfoList(rx, (*source)->getRecvTypes());

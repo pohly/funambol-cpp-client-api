@@ -35,6 +35,7 @@
         BCHAR* type     ;
         BCHAR* sync     ;
         BCHAR* encodings;
+        BCHAR* version  ;
         CTCap  ctCap    ;
 
         unsigned long last;
@@ -128,6 +129,20 @@
          * Returns the default syncMode as one of the strings above.
          */
         void setEncoding(const BCHAR* s) EXTRA_SECTION_02;
+
+
+        /*
+         * Returns the SyncSource version.
+         */
+        const BCHAR* getVersion() const EXTRA_SECTION_02;
+
+        /*
+         * Sets the SyncSource version
+         *
+         * @param v the new version
+         */
+        void setVersion(const BCHAR* n) EXTRA_SECTION_02;
+
 
         CTCap getCtCap() const           EXTRA_SECTION_02;
         void setCtCap(CTCap v)           EXTRA_SECTION_02;

@@ -101,6 +101,9 @@ SyncSourceConfig* DefaultConfigFactory::getSyncSourceConfig(const BCHAR* name) {
     sc->setEncoding             (T("b64"));
     sc->setLast                 (0);
 
+    // *** TBD: by now empty ***
+    sc->setVersion              (T(""));
+
     if (!bstrcmp(name, T("contact"))){
         sc->setURI              (T("scard"));
         sc->setType             (T("text/x-s4j-sifc"));

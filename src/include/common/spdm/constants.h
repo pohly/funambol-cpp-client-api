@@ -42,6 +42,7 @@
 #define PROPERTY_SOURCE_URI            T("uri"              )
 #define PROPERTY_SOURCE_SYNC_MODES     T("syncModes"        )
 #define PROPERTY_SOURCE_TYPE           T("type"             )
+#define PROPERTY_SOURCE_VERSION        T("version"          )
 #define PROPERTY_SOURCE_SYNC           T("sync"             )
 #define PROPERTY_SOURCE_LAST_SYNC      T("last"             )
 #define PROPERTY_SOURCE_CTCAP          T("ctCap"            )

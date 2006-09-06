@@ -727,6 +727,10 @@ BOOL DMTClientConfig::readSourceConfig(int i, ManagementNode& n) {
         sourceConfigs[i].setType(tmp);
         delete [] tmp;
 
+        tmp = node->getPropertyValue(PROPERTY_SOURCE_VERSION);    
+        sourceConfigs[i].setVersion(tmp);
+        delete [] tmp;
+
         tmp = node->getPropertyValue(PROPERTY_SOURCE_LAST_SYNC);    
         sourceConfigs[i].setLast( ((*tmp) ? bstrtol(tmp, NULL, 10) : 0) );
         delete [] tmp;
@@ -771,6 +775,7 @@ void DMTClientConfig::saveSourceConfig(int i, ManagementNode& n) {
         node->setPropertyValue(PROPERTY_SOURCE_NAME, sourceConfigs[i].getName());    
         node->setPropertyValue(PROPERTY_SOURCE_URI, sourceConfigs[i].getURI());
         node->setPropertyValue(PROPERTY_SOURCE_TYPE, sourceConfigs[i].getType());
+        node->setPropertyValue(PROPERTY_SOURCE_VERSION, sourceConfigs[i].getVersion());
         node->setPropertyValue(PROPERTY_SOURCE_SYNC_MODES, sourceConfigs[i].getSyncModes());
         node->setPropertyValue(PROPERTY_SOURCE_SYNC, sourceConfigs[i].getSync());    
         node->setPropertyValue(PROPERTY_SOURCE_ENCODING, sourceConfigs[i].getEncoding());    

@@ -29,6 +29,7 @@ SyncSourceConfig::SyncSourceConfig() {
     type      = NULL;
     sync      = NULL;
     encodings = NULL;
+    version   = NULL;
 }
 
 SyncSourceConfig::~SyncSourceConfig() {
@@ -47,9 +48,11 @@ SyncSourceConfig::~SyncSourceConfig() {
     if (sync) {
         delete [] sync;
     }
-
     if (encodings) {
         delete [] encodings;
+    }
+    if (version) {
+        delete [] version;
     }
 }
 
@@ -139,6 +142,15 @@ void SyncSourceConfig::setEncoding(const BCHAR* s) {
     }
 }
 
+const BCHAR* SyncSourceConfig::getVersion() const {
+    return version;
+}
+void SyncSourceConfig::setVersion(const BCHAR* v) {
+    safeDelete(&version);
+    version = stringdup(v);
+}
+
+
 CTCap SyncSourceConfig::getCtCap() const {
     return ctCap;
 }
@@ -156,5 +168,6 @@ void SyncSourceConfig::assign(const SyncSourceConfig& sc) {
     setSync     (sc.getSync     ());
     setLast     (sc.getLast     ());
     setEncoding (sc.getEncoding ());
+    setVersion  (sc.getVersion  ());
     setCtCap    (sc.getCtCap    ());
 }
