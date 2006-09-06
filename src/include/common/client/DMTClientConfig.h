@@ -50,7 +50,7 @@ class DMTClientConfig : public SyncManagerConfig {
         void saveAccessConfig(ManagementNode& n) EXTRA_SECTION_01;
         BOOL readDeviceConfig(ManagementNode& n) EXTRA_SECTION_01;
         void saveDeviceConfig(ManagementNode& n) EXTRA_SECTION_01;
-        BOOL readSourceConfig(int i, ManagementNode& n) EXTRA_SECTION_01; 
+        BOOL readSourceConfig(int i, ManagementNode& n) EXTRA_SECTION_01;
         void saveSourceConfig(int i, ManagementNode& n) EXTRA_SECTION_01;
 
     public:

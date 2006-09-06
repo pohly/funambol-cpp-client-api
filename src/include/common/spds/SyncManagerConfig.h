@@ -42,6 +42,8 @@ class SyncManagerConfig {
          */
         BOOL encryption;
 
+        virtual BOOL addSyncSourceConfig(SyncSourceConfig& sc) EXTRA_SECTION_01;
+
     public:
  
         SyncManagerConfig() EXTRA_SECTION_01;

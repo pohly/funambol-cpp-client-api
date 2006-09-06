@@ -93,15 +93,52 @@ BOOL SyncManagerConfig::setSyncSourceConfig(SyncSourceConfig& sc) {
 
     if (i >= sourceConfigsCount) {
         //
-        // Not found!
+        // Not found! -> add the SyncSourceConfig.
         //
-        return FALSE;
+        return addSyncSourceConfig(sc);
     }
 
     sourceConfigs[i].assign(sc);
 
     //dirty |= DIRTY_SYNC_SOURCE;
 
+    return TRUE;
+}
+
+
+/* 
+ * Add the passed SyncSourceConfig (the object is copied).
+ * If SyncSourceConfig name is already present (match name) the
+ * config is replaced with the given one. 
+ * Otherwise it is added in the sourceConfig array.
+ */
+BOOL SyncManagerConfig::addSyncSourceConfig(SyncSourceConfig& sc) {
+    
+    unsigned int i;
+
+    // copy array in a tmp buffer
+    SyncSourceConfig* s = new SyncSourceConfig[sourceConfigsCount];
+    for (i=0; i<sourceConfigsCount; i++)
+        s[i].assign(sourceConfigs[i]);
+
+    // delete old one, create new (+1 element)
+    if (sourceConfigs) {
+        delete [] sourceConfigs;
+    }
+    sourceConfigs = new SyncSourceConfig[sourceConfigsCount+1];
+
+    // copy back.
+    for (i=0; i<sourceConfigsCount; i++)
+        sourceConfigs[i].assign(s[i]);
+    // This is the new one.
+    sourceConfigs[sourceConfigsCount].assign(sc);
+    sourceConfigsCount ++;
+
+    if (s) {
+        delete [] s;
+    }
+
+    //dirty |= DIRTY_SYNC_SOURCE;
     return TRUE;
 }
 

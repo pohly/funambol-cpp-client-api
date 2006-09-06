@@ -119,7 +119,7 @@ BOOL DMTClientConfig::read() {
 
     for (i=0; i<n; ++i) {
         // node owns children, we must not delete them
-        readSourceConfig(i, *(sourcesNode->getChild(i)) );
+        readSourceConfig(i, *(sourcesNode) );
     }
 
     ret = TRUE;
@@ -158,7 +158,7 @@ BOOL DMTClientConfig::save() {
     // Sources management node
     //
     for(i=0; i<sourceConfigsCount; ++i) {
-        saveSourceConfig(i, *(sourcesNode->getChild(i)) );
+        saveSourceConfig(i, *(sourcesNode) );
 
         if (lastErrorCode != ERR_NONE) {
             goto finally;
@@ -692,62 +692,97 @@ void DMTClientConfig::saveDeviceConfig(ManagementNode& n) {
 
 
 
-
+/*
+ * Read Source Config properties in DMTree for the desired Source.
+ * Source properties are placed in specific node under sources node.
+ *
+ * @param i   : the index of SyncSource
+ * @param n   : the sourceNode (parent node)
+ */
 BOOL DMTClientConfig::readSourceConfig(int i, ManagementNode& n) {    
 
     BCHAR *tmp;
+    ManagementNode* node;
 
-    tmp = n.getPropertyValue(PROPERTY_SOURCE_NAME);    
-    sourceConfigs[i].setName(tmp);
-    delete [] tmp;
+    node = n.getChild(i);
 
-    tmp = n.getPropertyValue(PROPERTY_SOURCE_URI);    
-    sourceConfigs[i].setURI(tmp);
-    delete [] tmp;
+    if (node) {
+        tmp = node->getPropertyValue(PROPERTY_SOURCE_NAME);    
+        sourceConfigs[i].setName(tmp);
+        delete [] tmp;
 
-    tmp = n.getPropertyValue(PROPERTY_SOURCE_SYNC_MODES);    
-    sourceConfigs[i].setSyncModes(tmp);
-    delete [] tmp;
+        tmp = node->getPropertyValue(PROPERTY_SOURCE_URI);    
+        sourceConfigs[i].setURI(tmp);
+        delete [] tmp;
 
-    tmp = n.getPropertyValue(PROPERTY_SOURCE_SYNC);    
-    sourceConfigs[i].setSync(tmp);
-    delete [] tmp;
+        tmp = node->getPropertyValue(PROPERTY_SOURCE_SYNC_MODES);    
+        sourceConfigs[i].setSyncModes(tmp);
+        delete [] tmp;
 
-    tmp = n.getPropertyValue(PROPERTY_SOURCE_TYPE);    
-    sourceConfigs[i].setType(tmp);
-    delete [] tmp;
+        tmp = node->getPropertyValue(PROPERTY_SOURCE_SYNC);    
+        sourceConfigs[i].setSync(tmp);
+        delete [] tmp;
 
-    tmp = n.getPropertyValue(PROPERTY_SOURCE_LAST_SYNC);    
-    sourceConfigs[i].setLast( ((*tmp) ? bstrtol(tmp, NULL, 10) : 0) );
-    delete [] tmp;
-    
-    tmp = n.getPropertyValue(PROPERTY_SOURCE_ENCODING);    
-    sourceConfigs[i].setEncoding(tmp);
-    delete [] tmp;
+        tmp = node->getPropertyValue(PROPERTY_SOURCE_TYPE);    
+        sourceConfigs[i].setType(tmp);
+        delete [] tmp;
 
-    // *** TBD ***
-    // CTCap c = getCtCap that is stored somewhere...
-    //sourceConfigs[i].setCtCap(c);
-    
+        tmp = node->getPropertyValue(PROPERTY_SOURCE_LAST_SYNC);    
+        sourceConfigs[i].setLast( ((*tmp) ? bstrtol(tmp, NULL, 10) : 0) );
+        delete [] tmp;
+        
+        tmp = node->getPropertyValue(PROPERTY_SOURCE_ENCODING);    
+        sourceConfigs[i].setEncoding(tmp);
+        delete [] tmp;
+
+        // *** TBD ***
+        // CTCap c = getCtCap that is stored somewhere...
+        //sourceConfigs[i].setCtCap(c);
+    }
     return TRUE;
 }
 
+
+/*
+ * Save Source Config properties in DMTree for the desired Source.
+ * Source properties are placed in specific node under sources node.
+ * Note:
+ * if the node for the current source is not found, it is created.
+ *
+ * @param i   : the index of SyncSource
+ * @param n   : the sourceNode (parent node)
+ */
 void DMTClientConfig::saveSourceConfig(int i, ManagementNode& n) {
 
     BCHAR buf[512];
+    ManagementNode* node;
+    BCHAR nodeName[DIM_MANAGEMENT_PATH];
 
-    n.setPropertyValue(PROPERTY_SOURCE_NAME, sourceConfigs[i].getName());    
-    n.setPropertyValue(PROPERTY_SOURCE_URI, sourceConfigs[i].getURI());
-    n.setPropertyValue(PROPERTY_SOURCE_TYPE, sourceConfigs[i].getType());
-    n.setPropertyValue(PROPERTY_SOURCE_SYNC_MODES, sourceConfigs[i].getSyncModes());
-    n.setPropertyValue(PROPERTY_SOURCE_SYNC, sourceConfigs[i].getSync());    
-    n.setPropertyValue(PROPERTY_SOURCE_ENCODING, sourceConfigs[i].getEncoding());    
+    if (n.getChild(i) == NULL) {
+        // Create node from Source name.
+        bsprintf(nodeName, T("%s/%s"), n.getFullName(), sourceConfigs[i].getName());
+        node = dmt->getManagementNode(nodeName);
+    }
+    else {
+        node = (ManagementNode*)n.getChild(i)->clone();
+    }
 
-    timestampToAnchor(sourceConfigs[i].getLast(), buf); 
-    n.setPropertyValue(PROPERTY_SOURCE_LAST_SYNC, buf);   
+    if (node) {
+        node->setPropertyValue(PROPERTY_SOURCE_NAME, sourceConfigs[i].getName());    
+        node->setPropertyValue(PROPERTY_SOURCE_URI, sourceConfigs[i].getURI());
+        node->setPropertyValue(PROPERTY_SOURCE_TYPE, sourceConfigs[i].getType());
+        node->setPropertyValue(PROPERTY_SOURCE_SYNC_MODES, sourceConfigs[i].getSyncModes());
+        node->setPropertyValue(PROPERTY_SOURCE_SYNC, sourceConfigs[i].getSync());    
+        node->setPropertyValue(PROPERTY_SOURCE_ENCODING, sourceConfigs[i].getEncoding());    
 
-    // *** TBD ***
-    // CTCap c = sourceConfigs[i].getCtCap();
-    // saveCtCap() somewhere...
+        timestampToAnchor(sourceConfigs[i].getLast(), buf); 
+        node->setPropertyValue(PROPERTY_SOURCE_LAST_SYNC, buf);   
+
+        // *** TBD ***
+        // CTCap c = sourceConfigs[i].getCtCap();
+        // saveCtCap() somewhere...
+
+        delete node; 
+    }
 }
 
