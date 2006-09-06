@@ -31,3 +31,4 @@ char* B64Decoder::transform(char* data, TransformationInfo& info) {
 
     return data;
 }
+
