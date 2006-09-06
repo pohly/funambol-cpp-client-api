@@ -231,7 +231,7 @@ static bool getBodyPart(StringBuffer &rfcBody, StringBuffer &boundary,
             if (begin != StringBuffer::npos && end != StringBuffer::npos) {
                 part = part.substr(begin, end-begin);
                 LOG.debug("Bodypart is multipart/alternative: "
-                    "getting first alternative only: \n%s\n", part);
+                    "getting first alternative only: \n%s\n", part.c_str() );
             }
 		}
     }
