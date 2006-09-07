@@ -16,7 +16,7 @@ nobase_pkginclude_HEADERS = \
     common/base/util/XMLProcessor.h \
     common/base/util/WString.h \
     common/client/DMTClientConfig.h \
-    common/client/Sync4jClient.h \
+    common/client/SyncClient.h \
     common/filter/Clause.h \
     common/filter/LogicalClause.h \
     common/filter/SourceFilter.h \
@@ -26,6 +26,7 @@ nobase_pkginclude_HEADERS = \
     common/http/URL.h \
     common/http/errors.h \
     common/spds/AccessConfig.h \
+    common/spds/DeviceConfig.h \
     common/spdm/constants.h \
     common/spdm/errors.h \
     common/spdm/DMTree.h \
@@ -44,6 +45,9 @@ nobase_pkginclude_HEADERS = \
     common/spds/spdsutils.h \
     common/spds/constants.h \
     common/spds/errors.h \
+    common/syncml/core/CTCap.h \
+    common/syncml/core/CTTypeSupported.h \
+    common/syncml/core/VerDTD.h \
     common/vocl/VConverter.h \
     common/vocl/VObject.h \
     common/vocl/VProperty.h \

@@ -20,6 +20,23 @@ SOURCES_BASE = \
     LogErrorHandler.cpp \
     md5.c
 
+SOURCES_EVENT = \
+    BaseEvent.cpp \
+    FireEvent.cpp \
+    Listener.cpp \
+    ManageListener.cpp \
+    SetListener.cpp \
+    SyncEvent.cpp \
+    SyncItemEvent.cpp \
+    SyncItemListener.cpp \
+    SyncListener.cpp \
+    SyncSourceEvent.cpp \
+    SyncSourceListener.cpp \
+    SyncStatusEvent.cpp \
+    SyncStatusListener.cpp \
+    TransportEvent.cpp \
+    TransportListener.cpp
+
 SOURCES_FRAMEWORK = \
     Formatter.cpp \
     AbstractCommand.cpp \
@@ -117,6 +134,7 @@ SOURCES_SPDS = \
     CredentialHandler.cpp \
     DataTransformerFactory.cpp \
     DataTransformer.cpp \
+    DeviceConfig.cpp \
     B64Decoder.cpp \
     B64Encoder.cpp \
     DESDecoder.cpp \
@@ -138,7 +156,7 @@ SOURCES_SPDS = \
 
 SOURCES_CLIENT = \
     DMTClientConfig.cpp \
-    Sync4jClient.cpp
+    SyncClient.cpp
 
 SOURCES_VOCL = \
     VConverter.cpp \
@@ -168,7 +186,7 @@ SOURCES_VOCL = \
     vCardConverter.cpp \
     vCardProperty.cpp
 
-libsync4j_la_SOURCES = $(SOURCES_BASE) $(SOURCES_FRAMEWORK) $(SOURCES_HTTP) $(SOURCES_SPDM) $(SOURCES_SPDS) $(SOURCES_CLIENT) $(SOURCES_VOCL)
+libsync4j_la_SOURCES = $(SOURCES_BASE) $(SOURCES_EVENT) $(SOURCES_FRAMEWORK) $(SOURCES_HTTP) $(SOURCES_SPDM) $(SOURCES_SPDS) $(SOURCES_CLIENT) $(SOURCES_VOCL)
 libsync4j_la_LDFLAGS = -version-info 3:0
 
 client_SOURCES = client.cpp TestSyncSource.cpp TestSyncSource2.cpp
@@ -184,6 +202,7 @@ vpath %.cpp $(srcdir)/../../../src/c++/common/base             \
             $(srcdir)/../../../src/c++/common/base/util        \
             $(srcdir)/../../../src/c++/common/client           \
             $(srcdir)/../../../src/c++/common/examples         \
+            $(srcdir)/../../../src/c++/common/event            \
             $(srcdir)/../../../src/c++/common/filter           \
             $(srcdir)/../../../src/c++/common/syncml/formatter \
             $(srcdir)/../../../src/c++/common/syncml/core      \
