@@ -1,0 +1,152 @@
+temporary patch until SyncClient API stabilizes
+#
+# Patch managed by http://www.holgerschurig.de/patcher.html
+#
+
+--- native/src/include/common/client/SyncClient.h~client
++++ native/src/include/common/client/SyncClient.h
+@@ -21,16 +21,10 @@
+ 
+     #include "base/fscapi.h"
+     #include "base/Log.h"
+-    #include "base/ErrorHandler.h"
+-    #include "base/util/ArrayList.h"
+-    #include "client/DMTClientConfig.h"
+     #include "spds/SyncSource.h"
+-    #include "spdm/ManagementNode.h"
+     #include "spds/constants.h"
+ 
+-    class SyncManager;
+-    class AccessConfig;
+-    class DevInf;
++    class SyncManagerConfig;
+ 
+     /**
+      * This class wraps the common operations executed by a typical
+@@ -46,32 +40,20 @@
+      */
+     class SyncClient {
+       public:
+-        /*
+-         * Constructor for SyncClient.
+-         *
+-         * @param  c    a reference to SyncManager configuration.
+-         */
+-        SyncClient(SyncManagerConfig& c);
++        SyncClient();
+         virtual ~SyncClient();
+         
+-        // Set a client-provided configuration.
+-        // The caller owns the configuration and is responsible for
+-        // saving the (possibly modified) configuration after the
+-        // synchronization
+-        virtual void setConfig(SyncManagerConfig& c);
+-
+-
+         /*
+          * Execute a synchronization on the specified sources.
+-         * The sources will be configured automatically using the
+-         * client configuration set earlier in the constructor or
+-         * with the setConfig() method.
++         * The sources must have been configured already using the same
++         * configuration that is also given to this call.
+          *
++         * @param config    the configuration to be used for this sync
+          * @param sources - NULL terminated array of sources to sync.
+          *
+          * @return - 0 on success, an error otherwise
+          */
+-        virtual int sync(SyncSource** sources);
++        virtual int sync(SyncManagerConfig& config, SyncSource** sources);
+ 
+         /**
+          * Execute a synchronization with sources that are chosen based
+@@ -90,12 +72,13 @@
+          * sync sources are determined by the configuration or by an array
+          * of desired sources to sync
+          *
++         * @param config        the configuration to be used for this sync
+          * @param  sourceNames: optional, a NULL terminated array of source names that
+          *                      we want to sync. If NULL, sources to sync are chosen
+          *                      from the configuration.
+          * @return 0 on success, an error otherwise
+          */
+-        virtual int sync(BCHAR** sourceNames = NULL);
++        virtual int sync(SyncManagerConfig& config, BCHAR** sourceNames = NULL);
+ 
+ 
+       protected:
+@@ -155,11 +138,7 @@
+         virtual int endSync(SyncSource **source) {
+             return ERR_NONE;
+         }
+-
+-
+-        // configuration of this client
+-        SyncManagerConfig& config;
+-    };
++   };
+ 
+ 
+ #endif
+--- native/src/c++/common/client/SyncClient.cpp~client
++++ native/src/c++/common/client/SyncClient.cpp
+@@ -26,7 +26,7 @@
+ #include "syncml/core/CTPropParam.h"
+ 
+ //--------------------------------------------------- Constructor & Destructor
+-SyncClient::SyncClient(SyncManagerConfig& c) : config(c) {
++SyncClient::SyncClient() {
+ }
+ 
+ SyncClient::~SyncClient() {
+@@ -34,19 +34,7 @@
+ 
+ //------------------------------------------------------------- Public Methods
+ 
+-/*
+- * Set config from user defined Config
+- */
+-void SyncClient::setConfig(SyncManagerConfig& c) {
+-    config = c;
+-}
+-
+-
+-/*
+-* Used to start the sync process. The argument is an array of SyncSources
+-* that have to be synched with the sync process
+-*/
+-int SyncClient::sync(SyncSource** sources) {
++int SyncClient::sync(SyncManagerConfig& config, SyncSource** sources) {
+ 
+     resetError();
+     int ret = 0;
+@@ -81,18 +69,7 @@
+ }
+ 
+ 
+-/*
+- * Start the sync process.
+- * SyncSources are managed (created, initialized, deleted) inside 
+- * this method. When SyncSource array is ready, the method 'sync(sources**)'
+- * is called to start the sync process.
+- *
+- * @param sourceNames: optional, a NULL terminated array of source names that
+- *                     we want to sync. If NULL, sources to sync are chosen
+- *                     from the configuration object (config).
+- * @return:            0 on success, an error otherwise
+- */
+-int SyncClient::sync(BCHAR** sourceNames) {
++int SyncClient::sync(SyncManagerConfig& config, BCHAR** sourceNames) {
+     SyncSource **sources = NULL;
+     const BCHAR* currName;
+     int currSource = 0, numActive = 0, numSources = 0;
+@@ -163,7 +140,7 @@
+     //
+     // ready to synchronize
+     //
+-    ret = sync(sources);
++    ret = sync(config, sources);
+     if (ret) {
+         goto finally;
+     }
