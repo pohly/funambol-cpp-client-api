@@ -46,12 +46,134 @@ class DMTClientConfig : public SyncManagerConfig {
 
         DMTClientConfig() EXTRA_SECTION_01;
 
-        BOOL readAccessConfig(ManagementNode& n) EXTRA_SECTION_01;
-        void saveAccessConfig(ManagementNode& n) EXTRA_SECTION_01;
-        BOOL readDeviceConfig(ManagementNode& n) EXTRA_SECTION_01;
-        void saveDeviceConfig(ManagementNode& n) EXTRA_SECTION_01;
-        BOOL readSourceConfig(int i, ManagementNode& n) EXTRA_SECTION_01;
-        void saveSourceConfig(int i, ManagementNode& n) EXTRA_SECTION_01;
+        /* top level functions */
+        virtual BOOL readAccessConfig(ManagementNode& n) EXTRA_SECTION_01;
+        virtual void saveAccessConfig(ManagementNode& n) EXTRA_SECTION_01;
+        virtual BOOL readDeviceConfig(ManagementNode& n) EXTRA_SECTION_01;
+        virtual void saveDeviceConfig(ManagementNode& n) EXTRA_SECTION_01;
+        virtual BOOL readSourceConfig(int i, ManagementNode& n) EXTRA_SECTION_01;
+        virtual void saveSourceConfig(int i, ManagementNode& n) EXTRA_SECTION_01;
+
+        /* functions called by the functions above to save some parts of the config */
+
+
+        /**
+         * @param syncmlNode     the "spds/syncml" node
+         * @param authNode       the "spds/syncml/auth" node
+         */
+        virtual BOOL readAuthConfig(ManagementNode& syncMLNode,
+                                    ManagementNode& authNode) EXTRA_SECTION_01;
+        /**
+         * @param syncmlNode     the "spds/syncml" node
+         * @param authNode       the "spds/syncml/auth" node
+         */
+        virtual void saveAuthConfig(ManagementNode& syncMLNode,
+                                    ManagementNode& authNode) EXTRA_SECTION_01;
+ 
+        /**
+         * @param syncmlNode     the "spds/syncml" node
+         * @param connNode       the "spds/syncml/conn" node
+         */
+        virtual BOOL readConnConfig(ManagementNode& syncMLNode,
+                                    ManagementNode& connNode) EXTRA_SECTION_01;
+        /**
+         * @param syncmlNode     the "spds/syncml" node
+         * @param connNode       the "spds/syncml/conn" node
+         */
+        virtual void saveConnConfig(ManagementNode& syncMLNode,
+                                    ManagementNode& connNode) EXTRA_SECTION_01;
+ 
+        /**
+         * @param syncmlNode     the "spds/syncml" node
+         * @param extNode        the "spds/syncml/ext" node
+         */
+        virtual BOOL readExtAccessConfig(ManagementNode& syncMLNode,
+                                         ManagementNode& extNode) EXTRA_SECTION_01;
+        /**
+         * @param syncmlNode     the "spds/syncml" node
+         * @param extNode        the "spds/syncml/ext" node
+         */
+        virtual void saveExtAccessConfig(ManagementNode& syncMLNode,
+                                         ManagementNode& extNode) EXTRA_SECTION_01;
+ 
+        /**
+         * @param syncmlNode     the "spds/syncml" node
+         * @param devInfoNode    the "spds/syncml/devinfo" node
+         */
+        virtual BOOL readDevInfoConfig(ManagementNode& syncMLNode,
+                                       ManagementNode& devInfoNode) EXTRA_SECTION_01;
+        /**
+         * @param syncmlNode     the "spds/syncml" node
+         * @param devInfoNode    the "spds/syncml/devinfo" node
+         */
+        virtual void saveDevInfoConfig(ManagementNode& syncMLNode,
+                                       ManagementNode& devInfoNode) EXTRA_SECTION_01;
+         
+        /**
+         * @param syncmlNode     the "spds/syncml" node
+         * @param DevDetailNode  the "spds/syncml/devdetail" node
+         */
+        virtual BOOL readDevDetailConfig(ManagementNode& syncMLNode,
+                                         ManagementNode& devDetailNode) EXTRA_SECTION_01;
+        /**
+         * @param syncmlNode     the "spds/syncml" node
+         * @param devDetailNode  the "spds/syncml/devdetail" node
+         */
+        virtual void saveDevDetailConfig(ManagementNode& syncMLNode,
+                                         ManagementNode& devDetailNode) EXTRA_SECTION_01;
+ 
+        /**
+         * @param syncmlNode     the "spds/syncml" node
+         * @param extNode        the "spds/syncml/ext" node
+         */
+        virtual BOOL readExtDevConfig(ManagementNode& syncMLNode,
+                                      ManagementNode& extNode) EXTRA_SECTION_01;
+        /**
+         * @param syncmlNode     the "spds/syncml" node
+         * @param extNode        the "spds/syncml/ext" node
+         */
+        virtual void saveExtDevConfig(ManagementNode& syncMLNode,
+                                      ManagementNode& extNode) EXTRA_SECTION_01;
+
+        /**
+         * reads variables that the library uses internally, like anchors
+         *
+         * @param sourcesNode    the "spds/sources" node
+         * @param sourceNode     the "spds/sources/<source name>" node
+         */
+        virtual BOOL readSourceVars(int i,
+                                    ManagementNode& sourcesNode,
+                                    ManagementNode& sourceNode);
+
+        /**
+         * saves variables that the library uses internally, like anchors
+         *
+         * @param sourcesNode    the "spds/sources" node
+         * @param sourceNode     the "spds/sources/<source name>" node
+         */
+        virtual void saveSourceVars(int i,
+                                    ManagementNode& sourcesNode,
+                                    ManagementNode& sourceNode);
+
+        /**
+         * reads the normal properties of a sync source, i.e. excluding variables like anchors
+         *
+         * @param sourcesNode    the "spds/sources" node
+         * @param sourceNode     the "spds/sources/<source name>" node
+         */
+        virtual BOOL readSourceConfig(int i,
+                                      ManagementNode& sourcesNode,
+                                      ManagementNode& sourceNode);
+
+        /**
+         * reads the normal properties of a sync source, i.e. excluding variables like anchors
+         *
+         * @param sourcesNode    the "spds/sources" node
+         * @param sourceNode     the "spds/sources/<source name>" node
+         */
+        virtual void saveSourceConfig(int i,
+                                      ManagementNode& sourcesNode,
+                                      ManagementNode& sourceNode);
 
     public:
 
