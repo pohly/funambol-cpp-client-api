@@ -21,16 +21,9 @@
 
     #include "base/fscapi.h"
     #include "base/Log.h"
-    #include "base/ErrorHandler.h"
-    #include "base/util/ArrayList.h"
-    #include "client/DMTClientConfig.h"
+    #include "spds/SyncManagerConfig.h"
     #include "spds/SyncSource.h"
-    #include "spdm/ManagementNode.h"
     #include "spds/constants.h"
-
-    class SyncManager;
-    class AccessConfig;
-    class DevInf;
 
     /**
      * This class wraps the common operations executed by a typical
@@ -46,32 +39,21 @@
      */
     class SyncClient {
       public:
-        /*
-         * Constructor for SyncClient.
-         *
-         * @param  c    a reference to SyncManager configuration.
-         */
-        SyncClient(SyncManagerConfig& c);
-        virtual ~SyncClient();
-        
-        // Set a client-provided configuration.
-        // The caller owns the configuration and is responsible for
-        // saving the (possibly modified) configuration after the
-        // synchronization
-        virtual void setConfig(SyncManagerConfig& c);
 
+        SyncClient();
+        virtual ~SyncClient();
 
         /*
          * Execute a synchronization on the specified sources.
          * The sources will be configured automatically using the
-         * client configuration set earlier in the constructor or
-         * with the setConfig() method.
+         * client configuration set in the constructor.
          *
+         * @param config  - the configuration to be used for this sync
          * @param sources - NULL terminated array of sources to sync.
          *
          * @return - 0 on success, an error otherwise
          */
-        virtual int sync(SyncSource** sources);
+        virtual int sync(SyncManagerConfig& config, SyncSource** sources);
 
         /**
          * Execute a synchronization with sources that are chosen based
@@ -90,12 +72,13 @@
          * sync sources are determined by the configuration or by an array
          * of desired sources to sync
          *
+         * @param  config:      the configuration to be used for this sync
          * @param  sourceNames: optional, a NULL terminated array of source names that
          *                      we want to sync. If NULL, sources to sync are chosen
          *                      from the configuration.
          * @return 0 on success, an error otherwise
          */
-        virtual int sync(BCHAR** sourceNames = NULL);
+        virtual int sync(SyncManagerConfig& config, char** sourceNames = NULL);
 
 
       protected:
@@ -155,10 +138,6 @@
         virtual int endSync(SyncSource **source) {
             return ERR_NONE;
         }
-
-
-        // configuration of this client
-        SyncManagerConfig& config;
     };
 
 

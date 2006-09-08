@@ -26,7 +26,7 @@
 #include "syncml/core/CTPropParam.h"
 
 //--------------------------------------------------- Constructor & Destructor
-SyncClient::SyncClient(SyncManagerConfig& c) : config(c) {
+SyncClient::SyncClient() {
 }
 
 SyncClient::~SyncClient() {
@@ -35,18 +35,10 @@ SyncClient::~SyncClient() {
 //------------------------------------------------------------- Public Methods
 
 /*
- * Set config from user defined Config
- */
-void SyncClient::setConfig(SyncManagerConfig& c) {
-    config = c;
-}
-
-
-/*
 * Used to start the sync process. The argument is an array of SyncSources
 * that have to be synched with the sync process
 */
-int SyncClient::sync(SyncSource** sources) {
+int SyncClient::sync(SyncManagerConfig& config, SyncSource** sources) {
 
     resetError();
     int ret = 0;
@@ -55,7 +47,7 @@ int SyncClient::sync(SyncSource** sources) {
 
     if ((ret = syncManager.prepareSync(sources))) {
         BCHAR dbg[256];
-        bsprintf(dbg, T("Error in preparing sync: %s"), lastErrorMsg);//
+        bsprintf(dbg, T("Error in preparing sync: %s"), lastErrorMsg);
         LOG.error(dbg);
         
         goto finally;
@@ -92,7 +84,7 @@ int SyncClient::sync(SyncSource** sources) {
  *                     from the configuration object (config).
  * @return:            0 on success, an error otherwise
  */
-int SyncClient::sync(BCHAR** sourceNames) {
+int SyncClient::sync(SyncManagerConfig& config, char** sourceNames) {
     SyncSource **sources = NULL;
     const BCHAR* currName;
     int currSource = 0, numActive = 0, numSources = 0;
@@ -127,15 +119,17 @@ int SyncClient::sync(BCHAR** sourceNames) {
         if (sourceNames) {
             currName = sourceNames[currSource];
             if (!config.getSyncSourceConfig(currName, sc)) {
-                ret = lastErrorCode;
-                goto finally;
+                if (sources)
+                    delete [] sources;
+                return lastErrorCode;
             }
         }
         // use all available sources from config
         else {
             if (!config.getSyncSourceConfig(currSource, sc)) {
-                ret = lastErrorCode;
-                goto finally;
+                if (sources)
+                    delete [] sources;
+                return lastErrorCode;
             }
             currName = sc.getName();
         }
@@ -163,7 +157,7 @@ int SyncClient::sync(BCHAR** sourceNames) {
     //
     // ready to synchronize
     //
-    ret = sync(sources);
+    ret = sync(config, sources);
     if (ret) {
         goto finally;
     }
