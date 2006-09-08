@@ -364,6 +364,7 @@ int SyncManager::prepareSync(SyncSource** s) {
             transportAgent->setReadBufferSize(readBufferSize);
             // Here we also ensure that the user agent string is valid
             const BCHAR* ua = getUserAgent(config);
+            LOG.debug("User Agent = %s", ua);
             transportAgent->setUserAgent(ua);
             delete [] ua; ua = NULL;
             
@@ -2024,9 +2025,9 @@ const BCHAR* SyncManager::getUserAgent(SyncManagerConfig& config) {
     else {
         const BCHAR* mod = config.getDeviceConfig().getMod();
         const BCHAR* swV = config.getDeviceConfig().getSwv();
-        if (mod) {
+        if (mod && strcmp(mod, "")) {
             buffer.append(mod);
-            if (swV) {
+            if (swV && strcmp(swV, "")) {
                 buffer.append(" ");
                 buffer.append(swV);
             }
