@@ -170,10 +170,10 @@ int main(int argc, char** argv) {
     //
     // Create the SyncClient passing the config.
     //
-    SyncClient sampleClient(config);
+    SyncClient sampleClient;
 
     // SYNC!
-    if( sampleClient.sync(ssArray) ) {
+    if( sampleClient.sync(config, ssArray) ) {
         LOG.error("Error in sync.");
     }
 
