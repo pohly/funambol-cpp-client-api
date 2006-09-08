@@ -1,1 +1,0 @@
-temporary patch until SyncClient API stabilizes
