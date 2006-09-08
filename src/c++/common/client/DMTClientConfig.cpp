@@ -243,7 +243,6 @@ void DMTClientConfig::close() {
 BOOL DMTClientConfig::readAccessConfig(ManagementNode& n) {
 
     BOOL ret = TRUE;
-    BCHAR *tmp;
     BCHAR nodeName[DIM_MANAGEMENT_PATH];
     nodeName[0] = 0;
     ManagementNode* node;
@@ -364,7 +363,6 @@ void DMTClientConfig::saveAccessConfig(ManagementNode& n) {
 BOOL DMTClientConfig::readDeviceConfig(ManagementNode& n) {
 
     BOOL ret = TRUE;
-    BCHAR *tmp;
     BCHAR nodeName[DIM_MANAGEMENT_PATH];
     nodeName[0] = 0;
     ManagementNode* node;
@@ -484,7 +482,6 @@ void DMTClientConfig::saveDeviceConfig(ManagementNode& n) {
  */
 BOOL DMTClientConfig::readSourceConfig(int i, ManagementNode& n) {    
 
-    BCHAR *tmp;
     ManagementNode* node;
 
     node = n.getChild(i);
@@ -513,7 +510,6 @@ BOOL DMTClientConfig::readSourceConfig(int i, ManagementNode& n) {
  */
 void DMTClientConfig::saveSourceConfig(int i, ManagementNode& n) {
 
-    BCHAR buf[512];
     ManagementNode* node;
     BCHAR nodeName[DIM_MANAGEMENT_PATH];
 
