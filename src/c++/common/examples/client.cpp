@@ -24,7 +24,7 @@
 #include "base/util/StringBuffer.h"
 #include "spds/spdsutils.h"
 #include "spds/constants.h"
-#include "client/Sync4jClient.h"
+#include "client/SyncClient.h"
 #include "client/DMTClientConfig.h"
 #include "examples/TestSyncSource.h"
 #include "examples/TestSyncSource2.h"
@@ -36,32 +36,34 @@
 #include "filter/WhereClause.h"
 #include "syncml/core/core.h"
 #include "syncml/formatter/Formatter.h"
+#include "spds/DefaultConfigFactory.h"
 
 #include "examples/MySyncListener.h"
 #include "examples/MySyncSourceListener.h"
 #include "examples/MySyncStatusListener.h"
 #include "examples/MySyncItemListener.h"
 #include "examples/MyTransportListener.h"
-
 #include "event/SetListener.h"
-
 
 // Define the test configuration
 #include "examples/config.h"
+
 
 void testFilter();
 void testClause();
 void testConfigFilter();
 void testEncryption();
-
+void createConfig(DMTClientConfig& config);
 static void testXMLProcessor();
 
-//#define APPLICATION_URI T("Funambol/examples/dummy")
-#define APPLICATION_URI T("Funambol/SyncclientPIM")
 
+#define APPLICATION_URI T("Funambol/SyncclientPIM")
 #define LOG_TITLE		T("Funambol Win32 Example Log")
 #define LOG_PATH		T(".")
 #define LOG_LEVEL		LOG_LEVEL_DEBUG
+#define SOURCE_NAME     T("briefcase")
+#define WSOURCE_NAME    TEXT("briefcase")
+#define DEVICE_ID       T("Funambol Win32 Example")
 
 
 // Define DEBUG_SETTINGS in your project to create a default configuration
@@ -115,24 +117,84 @@ int main(int argc, char** argv) {
     convertAndSave(TEXT("message_out.xml"), content, TEXT("base64"));
 #endif
 
-#ifdef TEST_SYNCSOURCE
-	Sync4jClient& s4j = Sync4jClient::getInstance();
-    s4j.setDMConfig(APPLICATION_URI);
-    
-	
-    TestSyncSource source = TestSyncSource(TEXT("briefcase"));           
-    //TestSyncSource2 source2 = TestSyncSource2(TEXT("contact"));           
-    //TestSyncSource source3 = TestSyncSource(TEXT("notExisting"));           
 
-    SyncSource** ssArray = new SyncSource*[2];
+#ifdef TEST_EVENT_HANDLING
+
+    //
+    // Set listeners:
+    //
+    MySyncListener*       listener1 = new MySyncListener();
+    MySyncSourceListener* listener2 = new MySyncSourceListener();
+    MySyncStatusListener* listener3 = new MySyncStatusListener();
+    MySyncItemListener*   listener4 = new MySyncItemListener();
+    MyTransportListener*  listener5 = new MyTransportListener();
+
+    setSyncListener      (listener1);
+    setSyncSourceListener(listener2);
+    setSyncStatusListener(listener3);
+    setSyncItemListener  (listener4);
+    setTransportListener (listener5);
+
+    #ifndef TEST_SYNCSOURCE
+    #define TEST_SYNCSOURCE  1
+    #endif
+
+#endif
+
+// ------------- Main sample client ------------------------
+#ifdef TEST_SYNCSOURCE
+    
+    //
+    // Create the configuration.
+    //
+    DMTClientConfig config(APPLICATION_URI); 
+ 
+    // Read config from registry.
+    if (!config.read() || 
+        bstrcmp(config.getDeviceConfig().getDevID(), DEVICE_ID)) {
+        // Config not found -> generate a default config
+        createConfig(config);
+    }
+
+    SyncSourceConfig sc;
+    config.getSyncSourceConfig(SOURCE_NAME, sc);
+	
+    //
+    // Create the SyncSource passing its name and SyncSourceConfig.
+    //
+    TestSyncSource source(WSOURCE_NAME, &sc);
+    SyncSource* ssArray[2];
     ssArray[0] = &source;
-    //ssArray[1] = &source2;
-    //ssArray[2] = &source3;
     ssArray[1] = NULL;
-    if( s4j.sync(ssArray) ) {
+
+    //
+    // Create the SyncClient passing the config.
+    //
+    SyncClient sampleClient(config);
+
+    // SYNC!
+    if( sampleClient.sync(ssArray) ) {
         LOG.error("Error in sync.");
     }
-    s4j.dispose();
+
+    // Save config to registry.
+    config.save();
+
+#endif
+// ----------------------------------------------------------
+
+
+#ifdef TEST_EVENT_HANDLING
+
+    //
+    // Unset Listeners
+    //
+    unsetSyncListener      ();
+    unsetSyncSourceListener();
+    unsetSyncStatusListener();
+    unsetSyncItemListener  ();
+    unsetTransportListener ();
+
 #endif
 
     
@@ -165,41 +227,6 @@ int main(int argc, char** argv) {
 #endif
 
 
-#ifdef TEST_EVENT_HANDLING
-
-    Sync4jClient& s4j = Sync4jClient::getInstance();
-    s4j.setDMConfig(APPLICATION_URI);
-
-    SetListener * set = new SetListener();
-
-    MySyncListener * listener1 = new MySyncListener();
-    set->setSyncListener(listener1);
-
-    MySyncSourceListener * listener2 = new MySyncSourceListener();
-    set->setSyncSourceListener(listener2);
-
-    MySyncStatusListener * listener3 = new MySyncStatusListener();
-    set->setSyncStatusListener(listener3);
-
-    MySyncItemListener * listener4 = new MySyncItemListener();
-    set->setSyncItemListener(listener4);
-
-    MyTransportListener * listener5 = new MyTransportListener();
-    set->setTransportListener(listener5); 
-    TestSyncSource2 source2 = TestSyncSource2(TEXT("contact"));
-
-    SyncSource** ssArray = new SyncSource*[2];
-    ssArray[0] = &source2;
-
-    ssArray[1] = NULL;
-    s4j.sync(ssArray);
-
-    set->unsetSyncListener();
-    set->unsetSyncSourceListener();
-    set->unsetSyncStatusListener();
-    set->unsetSyncItemListener();
-    set->unsetTransportListener();
-#endif
 
 #ifdef TEST_XMLPROCESSOR
     testXMLProcessor();
@@ -277,3 +304,28 @@ static void testXMLProcessor(void)
     if (empty)
         delete [] empty;
 }
+
+
+//
+// Function to create a default config.
+//
+void createConfig(DMTClientConfig& config) {
+
+    AccessConfig* ac = DefaultConfigFactory::getAccessConfig();
+    config.setAccessConfig(*ac);
+    delete ac;
+
+    DeviceConfig* dc = DefaultConfigFactory::getDeviceConfig();
+    dc->setDevID(DEVICE_ID);     // So next time won't be generated, we always save config at the end.
+    dc->setMan  ("Funambol");
+    config.setDeviceConfig(*dc);
+    delete dc;
+
+    SyncSourceConfig* sc = DefaultConfigFactory::getSyncSourceConfig(SOURCE_NAME);
+    sc->setEncoding("text/plain");
+    sc->setType    ("text/plain");
+    sc->setURI     ("briefcase");
+    config.setSyncSourceConfig(*sc);
+    delete sc;
+}
+

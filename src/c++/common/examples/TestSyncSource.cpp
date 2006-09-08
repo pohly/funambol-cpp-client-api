@@ -95,7 +95,7 @@ int setModifiedItemsEmpty() {
 }
 
 
-TestSyncSource::TestSyncSource(const wchar_t* name) : SyncSource(name){
+TestSyncSource::TestSyncSource(const wchar_t* name, const SyncSourceConfig *sc) : SyncSource(name, sc) {
 }
 
 TestSyncSource::~TestSyncSource() {
@@ -113,7 +113,7 @@ SyncItem* TestSyncSource::getFirstItem() {
         return NULL;
     }    
     all = 0;
-    return (SyncItem*)items[all];    
+    return (SyncItem*)items[all]->clone();    
 }
 
 /*
@@ -126,7 +126,7 @@ SyncItem* TestSyncSource::getNextItem() {
     if (all == items.size()) {
         return NULL;
     }        
-    return (SyncItem*)items.get(all);  
+    return (SyncItem*)items.get(all)->clone();  
 }
 
 SyncItem* TestSyncSource::getFirstNewItem() {
@@ -135,7 +135,7 @@ SyncItem* TestSyncSource::getFirstNewItem() {
         return NULL;
     }    
     cnew = 0;
-    return (SyncItem*)newItems.get(cnew);    
+    return (SyncItem*)newItems.get(cnew)->clone();    
 }
 
 SyncItem* TestSyncSource::getNextNewItem() {    
@@ -143,7 +143,7 @@ SyncItem* TestSyncSource::getNextNewItem() {
     if (cnew == newItems.size()) {
         return NULL;
     }        
-    return (SyncItem*)newItems.get(cnew);
+    return (SyncItem*)newItems.get(cnew)->clone();
 }
 
 SyncItem* TestSyncSource::getFirstUpdatedItem() {
@@ -152,7 +152,7 @@ SyncItem* TestSyncSource::getFirstUpdatedItem() {
         return NULL;
     }    
     cupdated = 0;
-    return (SyncItem*)updatedItems.get(cupdated);    
+    return (SyncItem*)updatedItems.get(cupdated)->clone();    
 }
 
 SyncItem* TestSyncSource::getNextUpdatedItem() {    
@@ -160,7 +160,7 @@ SyncItem* TestSyncSource::getNextUpdatedItem() {
     if (cupdated == updatedItems.size()) {
         return NULL;
     }        
-    return (SyncItem*)updatedItems.get(cupdated);
+    return (SyncItem*)updatedItems.get(cupdated)->clone();
 }
 
 SyncItem* TestSyncSource::getFirstDeletedItem() {
@@ -169,7 +169,7 @@ SyncItem* TestSyncSource::getFirstDeletedItem() {
         return NULL;
     }    
     cdeleted = 0;
-    return (SyncItem*)deletedItems.get(cdeleted);    
+    return (SyncItem*)deletedItems.get(cdeleted)->clone();    
 }
 
 SyncItem* TestSyncSource::getNextDeletedItem() {    
@@ -177,7 +177,7 @@ SyncItem* TestSyncSource::getNextDeletedItem() {
     if (cdeleted == deletedItems.size()) {
         return NULL;
     }        
-    return (SyncItem*)deletedItems.get(cdeleted);
+    return (SyncItem*)deletedItems.get(cdeleted)->clone();
 }
 
 void TestSyncSource::setItemStatus(const wchar_t* key, int status) {

@@ -35,7 +35,7 @@ public:
      *
      * @param name - the name of the SyncSource
      */
-    TestSyncSource(const wchar_t* name) EXTRA_SECTION_01;
+    TestSyncSource(const wchar_t* name, const SyncSourceConfig *sc)  EXTRA_SECTION_01;
 
     // TestSyncSource
     ~TestSyncSource() EXTRA_SECTION_01;

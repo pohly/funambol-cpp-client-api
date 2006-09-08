@@ -22,7 +22,7 @@
 // Warning: the config will be overridden at each run !
 // #define DEBUG_SETTINGS       1
 
-// Test a simple sync with two sync sources
+// Test a simple sync with one sync source
 #define TEST_SYNCSOURCE      1
 
 // Test the encryption routines
@@ -36,7 +36,7 @@
 
 
 // Test the Event Handling Framework
-//#define TEST_EVENT_HANDLING 1
+#define TEST_EVENT_HANDLING 1
 
 // Test filters
 //#define TEST_FILTER 1
