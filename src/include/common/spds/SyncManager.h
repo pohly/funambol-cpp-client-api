@@ -40,7 +40,7 @@ typedef enum {
              } SyncManagerState ;
 
 
-static void fillContentTypeInfoList(ArrayList &l, const BCHAR** types);
+static void fillContentTypeInfoList(ArrayList &l, const BCHAR* types);
 
 
 //

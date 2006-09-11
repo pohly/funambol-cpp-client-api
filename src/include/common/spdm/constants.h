@@ -65,6 +65,7 @@
 #define PROPERTY_SOURCE_SENT           T("Sent"             )
 #define PROPERTY_ENCRYPTION            T("encryption"       )
 #define PROPERTY_SOURCE_ENCODING       T("encoding"         )
+#define PROPERTY_SOURCE_SUPP_TYPES     T("supportedTypes"   )
 #define PROPERTY_READ_BUFFER_SIZE      T("readBufferSize"   )
 #define PROPERTY_USER_AGENT            T("userAgent"        )
 #define PROPERTY_CHECK_CONN            T("checkConn"        )

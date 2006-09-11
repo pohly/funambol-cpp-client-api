@@ -100,6 +100,7 @@ SyncSourceConfig* DefaultConfigFactory::getSyncSourceConfig(const BCHAR* name) {
     sc->setSync                 (T("two-way"));
     sc->setEncoding             (T("b64"));
     sc->setLast                 (0);
+    sc->setSupportedTypes       (T(""));
 
     // *** TBD: by now empty ***
     sc->setVersion              (T(""));

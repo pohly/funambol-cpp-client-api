@@ -1947,10 +1947,10 @@ DevInf *SyncManager::createDeviceInfo()
         
         ContentTypeInfo rxPref(rxType, rxVer);
         ArrayList rx;
-        fillContentTypeInfoList(rx, (*source)->getRecvTypes());
+        fillContentTypeInfoList(rx, (*source)->getConfig().getSupportedTypes());
         ContentTypeInfo txPref(txType, txVer);
         ArrayList tx;
-        fillContentTypeInfoList(rx, (*source)->getSendTypes());
+        fillContentTypeInfoList(tx, (*source)->getConfig().getSupportedTypes());
         SyncCap syncCap(&syncModeList);
         DataStore dataStore(&sourceRef,
                             NULL,
@@ -1983,22 +1983,65 @@ DevInf *SyncManager::createDeviceInfo()
 }
 
 
-// copy from SyncSource::getSend/RecvTypes() format into array list
-// of ContentTypeInfos
-static void fillContentTypeInfoList(ArrayList &l, const BCHAR** types)
-{
-    const BCHAR** curr;
-    
+/* Copy from SyncSourceConfig::getSupportedTypes() format into array list
+ * of ContentTypeInfos.
+ * @param types: formatted string of 'type:version' for each supported type
+ *               i.e. "text/x-s4j-sifc:1.0,text/x-vcard:2.1"
+ * @param l    : arraylist of ContentTypeInfo, to fill
+ */
+static void fillContentTypeInfoList(ArrayList &l, const BCHAR* types) { 
+ 
     l.clear();
     if (!types) {
         return;
     }
 
-    curr = types;
-    while (curr[0] && curr[1]) {
-        ContentTypeInfo cti(curr[0], curr[1]);
+    char typeName[80];
+    char typeVersion[20];
+    const BCHAR* curr = types;
+    const BCHAR* eostr = NULL;
+    size_t len = 0;
+
+    while (*curr) {
+        // -------- Type Name ----------
+        // skip leading spaces and commas
+        while (isspace(*curr) || *curr == ',') {
+            curr++;
+        }
+        // fast-forward to colon (next separator)
+        eostr = curr;
+        while (*eostr && *eostr != ':') {
+            eostr++;
+        }
+        // copy type name
+        len = eostr - curr;
+        strncpy(typeName, curr, len);
+        typeName[len] = 0;
+    
+        // ------- Type Version ---------
+        curr = eostr;
+
+        // skip leading spaces and colon
+        while (isspace(*curr) || *curr == ':') {
+            curr++;
+        }
+        // fast-forward to comma (next separator)
+        eostr = curr;
+        while (*eostr && *eostr != ',') {
+            eostr++;
+        }
+        // copy type version
+        len = eostr - curr;
+        strncpy(typeVersion, curr, len);
+        typeVersion[len] = 0;
+
+        //
+        // Add contentTypeInfo
+        //
+        ContentTypeInfo cti(typeName, typeVersion);
         l.add(cti);
-        curr += 2;
+
+        curr = eostr;
     }
 }
 

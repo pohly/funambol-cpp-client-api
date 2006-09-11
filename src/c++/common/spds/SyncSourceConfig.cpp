@@ -23,13 +23,14 @@
 
 
 SyncSourceConfig::SyncSourceConfig() {
-    name      = NULL;
-    uri       = NULL;
-    syncModes = NULL;
-    type      = NULL;
-    sync      = NULL;
-    encodings = NULL;
-    version   = NULL;
+    name            = NULL;
+    uri             = NULL;
+    syncModes       = NULL;
+    type            = NULL;
+    sync            = NULL;
+    encodings       = NULL;
+    version         = NULL;
+    supportedTypes  = NULL;
 }
 
 SyncSourceConfig::~SyncSourceConfig() {
@@ -53,6 +54,9 @@ SyncSourceConfig::~SyncSourceConfig() {
     }
     if (version) {
         delete [] version;
+    }
+    if (supportedTypes) {
+        delete [] supportedTypes;
     }
 }
 
@@ -150,6 +154,13 @@ void SyncSourceConfig::setVersion(const BCHAR* v) {
     version = stringdup(v);
 }
 
+const BCHAR* SyncSourceConfig::getSupportedTypes() const {
+    return supportedTypes;
+}
+void SyncSourceConfig::setSupportedTypes(const BCHAR* s) {
+    safeDelete(&supportedTypes);
+    supportedTypes = stringdup(s);
+}
 
 CTCap SyncSourceConfig::getCtCap() const {
     return ctCap;
@@ -161,13 +172,14 @@ void SyncSourceConfig::setCtCap(CTCap v){
 // ------------------------------------------------------------- Private methods
 
 void SyncSourceConfig::assign(const SyncSourceConfig& sc) {
-    setName     (sc.getName     ());
-    setURI      (sc.getURI      ());
-    setSyncModes(sc.getSyncModes());
-    setType     (sc.getType     ());
-    setSync     (sc.getSync     ());
-    setLast     (sc.getLast     ());
-    setEncoding (sc.getEncoding ());
-    setVersion  (sc.getVersion  ());
-    setCtCap    (sc.getCtCap    ());
+    setName          (sc.getName          ());
+    setURI           (sc.getURI           ());
+    setSyncModes     (sc.getSyncModes     ());
+    setType          (sc.getType          ());
+    setSync          (sc.getSync          ());
+    setLast          (sc.getLast          ());
+    setEncoding      (sc.getEncoding      ());
+    setVersion       (sc.getVersion       ());
+    setSupportedTypes(sc.getSupportedTypes());
+    setCtCap         (sc.getCtCap         ());
 }

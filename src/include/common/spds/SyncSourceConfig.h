@@ -29,14 +29,15 @@
 
     protected:
 
-        BCHAR* name     ;
-        BCHAR* uri      ;
-        BCHAR* syncModes;
-        BCHAR* type     ;
-        BCHAR* sync     ;
-        BCHAR* encodings;
-        BCHAR* version  ;
-        CTCap  ctCap    ;
+        BCHAR* name          ;
+        BCHAR* uri           ;
+        BCHAR* syncModes     ;
+        BCHAR* type          ;
+        BCHAR* sync          ;
+        BCHAR* encodings     ;
+        BCHAR* version       ;
+        BCHAR* supportedTypes;
+        CTCap  ctCap         ;
 
         unsigned long last;
 
@@ -143,6 +144,20 @@
          */
         void setVersion(const BCHAR* n) EXTRA_SECTION_02;
 
+
+        /*
+         * Returns the supported source types for this source.
+         */
+        const BCHAR* getSupportedTypes() const EXTRA_SECTION_02;
+
+        /*
+         * Sets the supported source types for this source.
+         *
+         * @param s: the supported types string:
+         *           a sequence of type:version separated by commas
+         *           "text/x-s4j-sifc:1.0,text/x-vcard:2.1,..."
+         */
+        void setSupportedTypes(const BCHAR* s) EXTRA_SECTION_02;
 
         CTCap getCtCap() const           EXTRA_SECTION_02;
         void setCtCap(CTCap v)           EXTRA_SECTION_02;
