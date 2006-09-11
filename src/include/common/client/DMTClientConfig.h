@@ -34,16 +34,16 @@ class DMTree;
  * means that configuration properties are read/stored from/to the DM tree.
  */
 class DMTClientConfig : public SyncManagerConfig {
-    private:
+
+    protected:
+
+        BCHAR* rootContext;
+
         DMTree* dmt;
         ManagementNode* syncMLNode;
         ManagementNode* sourcesNode;
 
         void initialize();
-
-    protected:
-        BCHAR* rootContext;
-
         DMTClientConfig() EXTRA_SECTION_01;
 
         /* top level functions */
