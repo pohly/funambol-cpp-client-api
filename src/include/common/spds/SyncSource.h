@@ -293,28 +293,6 @@ public:
      */
     virtual ArrayElement* clone() EXTRA_SECTION_01 = 0;
 
-    /****************** meta information about SyncSource ****************/
-
-
-    /**
-     * Return information about all supported types for sending
-     * items (optional).
-     *
-     * The default implementation returns the preferred type as the
-     * only available type.
-     *
-     * @return NULL if not further specified, otherwise a NULL terminated
-     *         array with type/version pairs for each supported type:
-     *         { "text/x-vcard", "2.1",
-     *           "text/vcard", "3.0",
-     *           NULL }
-     */
-    virtual const BCHAR** getSendTypes() EXTRA_SECTION_01 { return NULL; }
-
-    /**
-     * Same as getSendTypes() for receiving items.
-     */
-    virtual const BCHAR** getRecvTypes() EXTRA_SECTION_01 { return NULL; }
 };
 
 #endif

@@ -213,33 +213,3 @@ void SyncSource::setFilter(SourceFilter* f) {
         filter->setClause(f->getClause());
     }
 }
-
-
-#if 0
-// Not used: values retrieved from type and version attributes
-// of SyncSourceConfig.
-void SyncSource::getPreferredTypes(const BCHAR*& recvType,
-                                   const BCHAR*& recvVersion,
-                                   const BCHAR*& sendType,
-                                   const BCHAR*& sendVersion)
-{
-    const BCHAR *type = config.getType();
-    const BCHAR *ver;
-
-    recvType =
-        sendType = type;
-    if (!bstrcmp(type, "text/x-vcard")) {
-        ver = "2.1";
-    } else if (!bstrcmp(type, "text/vcard")) {
-        ver = "3.0";
-    } else if (!bstrcmp(type, "text/x-calendar")) {
-        ver = "1.0";
-    }else if (!bstrcmp(type, "text/calendar")) {
-        ver = "2.0";
-    } else {
-        ver = "";
-    }
-    sendVersion =
-        recvVersion = ver;
-}
-#endif
