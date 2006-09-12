@@ -25,6 +25,7 @@
 #include "spds/SyncMLProcessor.h"
 #include "spds/spdsutils.h"
 
+#include "event/FireEvent.h"
 
 /*
  * This class is responsible for the processing of the incoming messages.
@@ -42,7 +43,12 @@ SyncML* SyncMLProcessor::processMsg(BCHAR* msg) {
 
 
 int SyncMLProcessor::processSyncHdrStatus(SyncML* syncml) {
-    return getStatusCode(syncml->getSyncBody(), NULL, SYNC_HDR);
+    int ret = getStatusCode(syncml->getSyncBody(), NULL, SYNC_HDR);
+    
+    // Fire Sync Status Event: syncHdr status from server
+    fireSyncStatusEvent(SYNC_HDR, ret, NULL, NULL , SERVER_STATUS);
+
+    return ret;
 }
 
 int SyncMLProcessor::processAlertStatus(SyncSource& source, SyncML* syncml, ArrayList* alerts) {
@@ -83,6 +89,9 @@ int SyncMLProcessor::processAlertStatus(SyncSource& source, SyncML* syncml, Arra
             }
         }
     }
+
+    // Fire a syncStatus event: Alert status from server
+    fireSyncStatusEvent(ALERT, ret, source.getConfig().getURI(), NULL, SERVER_STATUS);
 
     return ret;
 
@@ -171,9 +180,11 @@ int SyncMLProcessor::processItemStatus(SyncSource& source, SyncBody* syncBody) {
         if (bstrcmp(name, SYNC) == 0){
             char *srcname = toMultibyte(source.getName());
             int alertStatus = getAlertStatusCode(s, srcname);
-            
             delete [] srcname;
             
+			// Fire Sync Status Event: sync status from server
+            fireSyncStatusEvent(SYNC, s->getStatusCode(), source.getConfig().getURI(), NULL, SERVER_STATUS);            
+
             if(alertStatus < 0 || alertStatus >=300){
                 if ((ret = alertStatus) < 0)
                     LOG.error("processItemStatus: status not found in SYNC");
@@ -198,6 +209,9 @@ int SyncMLProcessor::processItemStatus(SyncSource& source, SyncBody* syncBody) {
                     Source* itemSource = item->getSource();
                     if (itemSource) {
                         wchar_t *uri = toWideChar(itemSource->getLocURI());
+                        // Fire Sync Status Event: item status from server
+                        fireSyncStatusEvent(s->getCmd(), s->getStatusCode(), source.getConfig().getURI(), uri, SERVER_STATUS);
+                        
                         source.setItemStatus(uri, val);
                         delete [] uri;
                     } else {
@@ -213,6 +227,9 @@ int SyncMLProcessor::processItemStatus(SyncSource& source, SyncBody* syncBody) {
                 sourceRef = (SourceRef*)items->get(k);
                 if (sourceRef) {
                     WCHAR *srcref = toWideChar(sourceRef->getValue());
+			        // Fire Sync Status Event: item status from server
+                    fireSyncStatusEvent(s->getCmd(), s->getStatusCode(), source.getConfig().getURI(), srcref, SERVER_STATUS);
+
                     source.setItemStatus(srcref, val);
                     delete [] srcref;
                 }
@@ -278,6 +295,10 @@ int SyncMLProcessor::processMapResponse(SyncSource& source, SyncBody* syncBody) 
     //
     // TBD
     ret = getStatusCode(syncBody, &source, SYNC_HDR);
+
+    // Fire Sync Status Event: map status from server (TBD)
+    //fireSyncStatusEvent(MAP, ret, source.getConfig().getURI(), NULL, SERVER_STATUS); 
+
     if ((ret < 200) || (ret >299)) {
         goto finally;
     }

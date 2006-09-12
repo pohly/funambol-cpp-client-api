@@ -454,6 +454,7 @@ int SyncManager::prepareSync(SyncSource** s) {
             } else {
                 ret = sourceRet;
             }
+
             if (ret == -1 || ret == 404 || ret == 415) {
                 lastErrorCode = ret;
                 bsprintf(logmsg, T("AlertStatus from server %d"), ret);
@@ -527,9 +528,6 @@ int SyncManager::prepareSync(SyncSource** s) {
 
             status = syncMLBuilder.prepareAlertStatus(*sources[count], list, authStatusCode);    
             if (status) {
-		        // Fire Sync Status Event : Client Sets Status for server
-                fireSyncStatusEvent(status->getName(), status->getStatusCode(), sources[count]->getConfig().getURI(), NULL , CLIENT_STATUS);
-
                 commands->add(*status);
                 deleteStatus(&status);    
             }
@@ -588,6 +586,9 @@ int SyncManager::prepareSync(SyncSource** s) {
                     if (statusCode) {
                         status = syncMLBuilder.prepareCmdStatus(*cmd, statusCode);
                         if (status) {
+		                    // Fire Sync Status Event: status from client
+                            fireSyncStatusEvent(status->getName(), status->getStatusCode(), sources[count]->getConfig().getURI(), NULL , CLIENT_STATUS);
+
                             commands->add(*status);
                             deleteStatus(&status);    
                         }
@@ -709,12 +710,12 @@ BOOL SyncManager::checkForServerChanges(SyncML* syncml, ArrayList &statusList)
         Sync* sync = syncMLProcessor.processSyncResponse(*sources[count], syncml);
 
         if (sync) {
+            // Fire SyncSource event: BEGIN sync of a syncsource (server modifications)
+            // (fire only if <sync> tag exist)
+            fireSyncSourceEvent(sources[count]->getConfig().getURI(), sources[count]->getSyncMode(), SYNC_SOURCE_BEGIN);
+
             ArrayList* items = sync->getCommands();
             Status* status = syncMLBuilder.prepareSyncStatus(*sources[count], sync);
-            
-			// Fire Sync Status Event : Client Sets Status for server
-			fireSyncStatusEvent(status->getName(), status->getStatusCode(), sources[count]->getConfig().getURI(), NULL, CLIENT_STATUS);
-
 			statusList.add(*status);
             deleteStatus(&status);
 
@@ -759,6 +760,9 @@ BOOL SyncManager::checkForServerChanges(SyncML* syncml, ArrayList &statusList)
                     deleteArrayList(&previousStatus);                    
                 }
             }
+        // Fire SyncSourceEvent: END sync of a syncsource (server modifications)
+        fireSyncSourceEvent(sources[count]->getConfig().getURI(), sources[count]->getSyncMode(), SYNC_SOURCE_END);
+
         }                               
     } // End for (count = 0; count < sourcesNumber; count ++)
 
@@ -816,7 +820,7 @@ int SyncManager::sync() {
         last = FALSE;        
         iterator++;
 
-        // Fire SyncSource event: BEGIN sync of a syncsource
+        // Fire SyncSource event: BEGIN sync of a syncsource (client modifications)
         fireSyncSourceEvent(sources[count]->getConfig().getURI(), sources[count]->getSyncMode(), SYNC_SOURCE_BEGIN);
 
         if ( sources[count]->beginSync() ) {
@@ -858,10 +862,6 @@ int SyncManager::sync() {
             if (commands->isEmpty()) {
 
                 status = syncMLBuilder.prepareSyncHdrStatus(NULL, 200);
-
-		        // Fire Sync Status Event : Client Sets Status for server
-                fireSyncStatusEvent(status->getName(), status->getStatusCode(), sources[count]->getConfig().getURI(), NULL, CLIENT_STATUS);
-
                 commands->add(*status);
                 deleteStatus(&status);
 
@@ -1169,7 +1169,6 @@ int SyncManager::sync() {
 
             isFinalfromServer = syncml->isLastMessage();
             ret = syncMLProcessor.processSyncHdrStatus(syncml);
-
             if (isErrorStatus(ret)) {
                 lastErrorCode = ret;
                 bsprintf(lastErrorMsg, T("Server Failure: server returned error code %i"), ret);
@@ -1210,7 +1209,7 @@ int SyncManager::sync() {
 
         } while (last == FALSE);
 
-        // Fire SyncSourceEvent: END sync of a syncsource
+        // Fire SyncSourceEvent: END sync of a syncsource (client modifications)
         fireSyncSourceEvent(sources[count]->getConfig().getURI(), sources[count]->getSyncMode(), SYNC_SOURCE_END);
 
     } // end for (count = 0; count < sourcesNumber; count ++)
@@ -1237,11 +1236,6 @@ int SyncManager::sync() {
     if ((FALSE == isFinalfromServer) && (TRUE == isAtLeastOneSourceCorrect))
     {
         status = syncMLBuilder.prepareSyncHdrStatus(NULL, 200);
-       
-        // Fire Sync Status Event : Client Sets Status for server
-        // Cannot pass itemkey or source URI as this status is just an alert for the server
-        fireSyncStatusEvent(status->getName(), status->getStatusCode(), NULL, NULL, CLIENT_STATUS);
-
 	    commands->add(*status);
         deleteStatus(&status); 
         for (count = 0; count < sourcesNumber; count ++) {
@@ -1284,7 +1278,6 @@ int SyncManager::sync() {
             goto finally;
         }  
         ret = syncMLProcessor.processSyncHdrStatus(syncml);
-
         if (isErrorStatus(ret)) {
             lastErrorCode = ret;
             bsprintf(lastErrorMsg, T("Server Failure: server returned error code %i"), ret);
@@ -1302,11 +1295,6 @@ int SyncManager::sync() {
             ArrayList statusList;
 
             status = syncMLBuilder.prepareSyncHdrStatus(NULL, 200);
-
-	        // Fire Sync Status Event : Client Sets Status for server
-            // Cannot pass itemkey or source URI as this status is just an alert for the server
-            fireSyncStatusEvent(status->getName(), status->getStatusCode(), NULL , NULL, CLIENT_STATUS);
-
             commands->add(*status);
             deleteStatus(&status); 
 
@@ -1417,10 +1405,6 @@ int SyncManager::endSync() {
                 tot = -1;
                 if (commands->isEmpty()) {
                     status = syncMLBuilder.prepareSyncHdrStatus(NULL, 200);
-                   
-		            // Fire Sync Status Event : Client Sets Status for server
-                    fireSyncStatusEvent(status->getName(), status->getStatusCode(), sources[count]->getConfig().getURI(), NULL, CLIENT_STATUS);
-
 		            commands->add(*status);
                     deleteStatus(&status); 
 
@@ -1719,8 +1703,8 @@ Status *SyncManager::processSyncItem(Item* item, const CommandInfo &cmdInfo)
         code = sources[count]->addItem(syncItem);      
         status = syncMLBuilder.prepareItemStatus(ADD, itemName, cmdInfo.cmdRef, code);
 
-	    // Fire Sync Status Event : Client Sets Status for server
-        fireSyncStatusEvent(status->getName(), status->getStatusCode(), sources[count]->getConfig().getURI(), syncItem.getKey(), CLIENT_STATUS);
+	    // Fire Sync Status Event: item status from client
+        fireSyncStatusEvent(status->getCmd(), status->getStatusCode(), sources[count]->getConfig().getURI(), syncItem.getKey(), CLIENT_STATUS);
 
         // If the add was successful, set the id mapping
         if (code >= 200 && code <= 299) {
@@ -1738,8 +1722,8 @@ Status *SyncManager::processSyncItem(Item* item, const CommandInfo &cmdInfo)
         code = sources[count]->updateItem(syncItem);
         status = syncMLBuilder.prepareItemStatus(REPLACE, itemName, cmdInfo.cmdRef, code);                
 
-	    // Fire Sync Status Event : Client Sets Status for server
-        fireSyncStatusEvent(status->getName(), status->getStatusCode(), sources[count]->getConfig().getURI(), syncItem.getKey(), CLIENT_STATUS);
+	    // Fire Sync Status Event: item status from client
+        fireSyncStatusEvent(status->getCmd(), status->getStatusCode(), sources[count]->getConfig().getURI(), syncItem.getKey(), CLIENT_STATUS);
     }
     else if (bstrcmp(cmdInfo.commandName, DEL) == 0) {
         // Fire Sync Item Event - Item Deleted by Server
@@ -1749,8 +1733,8 @@ Status *SyncManager::processSyncItem(Item* item, const CommandInfo &cmdInfo)
         code = sources[count]->deleteItem(syncItem);        
         status = syncMLBuilder.prepareItemStatus(DEL, itemName, cmdInfo.cmdRef, code);           
 	    
-        // Fire Sync Status Event : Client Sets Status for server
-        fireSyncStatusEvent(status->getName(), status->getStatusCode(), sources[count]->getConfig().getURI(), syncItem.getKey(), CLIENT_STATUS);
+        // Fire Sync Status Event: item status from client
+        fireSyncStatusEvent(status->getCmd(), status->getStatusCode(), sources[count]->getConfig().getURI(), syncItem.getKey(), CLIENT_STATUS);
     }                
     return status;
 }
