@@ -64,6 +64,17 @@ StringBuffer* Formatter::getValue(BCHAR* tagName, BOOL value) {
     return s;    
 }
 
+/*
+ * Returns a StringBuffer giving the tag and the value. 
+ * Returns NULL if value's length is 0.
+ */
+StringBuffer* Formatter::getValueNotEmpty(BCHAR* tagName, const BCHAR* value) {
+    if (!strlen(value)) {
+        return NULL;
+    }
+    return getValue(tagName, (BCHAR*)value);
+}
+
 
 /*
 * Returns a StringBuffer giving the tag and the value as wchar. To use for generic simple value
@@ -1799,20 +1810,25 @@ StringBuffer* Formatter::getDevInf(DevInf* devInf) {
 
     StringBuffer* syncCap   = NULL;
 
-    verDTD  = getVerDTD   (devInf->getVerDTD());        
-    man     = getValue    (MAN, devInf->getMan(NULL));
-    mod     = getValue    (MOD, devInf->getMod(NULL));
-    oem     = getValue    (OEM, devInf->getOEM(NULL));
-    fwV     = getValue    (FWV, devInf->getFwV(NULL));
-    swV     = getValue    (SWV, devInf->getSwV(NULL));
-    hwV     = getValue    (HWV, devInf->getHwV(NULL));
-    devID   = getValue    (DEV_ID, devInf->getDevID(NULL));
-    devTyp  = getValue    (DEV_TYP, devInf->getDevTyp(NULL));
+    // verDTD must always be sent!
+    verDTD  = getVerDTD         (devInf->getVerDTD());
+
+    // These elements should not be inserted if value is empty.
+    man     = getValueNotEmpty  (MAN, devInf->getMan(NULL));
+    mod     = getValueNotEmpty  (MOD, devInf->getMod(NULL));
+    oem     = getValueNotEmpty  (OEM, devInf->getOEM(NULL));
+    fwV     = getValueNotEmpty  (FWV, devInf->getFwV(NULL));
+    swV     = getValueNotEmpty  (SWV, devInf->getSwV(NULL));
+    hwV     = getValueNotEmpty  (HWV, devInf->getHwV(NULL));
+    devID   = getValueNotEmpty  (DEV_ID, devInf->getDevID(NULL));
+    devTyp  = getValueNotEmpty  (DEV_TYP, devInf->getDevTyp(NULL));
+
     dataStores = getDataStores(devInf->getDataStore());
     syncCap    = getSyncCap(devInf->getSyncCap());
     ctCaps     = getCTCaps(devInf->getCTCap());
     exts       = getExts(devInf->getExt());
 
+    // These elements are inserted empty if the boolean value is true. 
     utc                     = getValue    (UTC, devInf->getUTC());
     supportLargeObjs        = getValue    (SUPPORT_LARGE_OBJECT, devInf->getSupportLargeObjs());
     supportNumberOfChanges  = getValue    (SUPPORT_NUMBER_OF_CHANGES, devInf->getSupportNumberOfChanges());

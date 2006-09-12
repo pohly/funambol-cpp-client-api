@@ -41,6 +41,7 @@ class Formatter {
         static StringBuffer*    getValue            (BCHAR* tagName, StringBuffer* value);
         static StringBuffer*    getValue            (BCHAR* tagName, long value);
         static StringBuffer*    getValue            (BCHAR* tagName, BOOL value);
+        static StringBuffer*    getValueNotEmpty    (BCHAR* tagName, const BCHAR* value);
         
         static StringBuffer*    getSyncML           (SyncML*        syncML);
         static StringBuffer*    getSyncHdr          (SyncHdr*       syncHdr);
