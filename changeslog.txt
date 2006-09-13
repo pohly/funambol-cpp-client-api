@@ -1,4 +1,18 @@
 
+2006-09-11
+     - toccy: config object passed to SyncClient as parameter of sync() methods
+              added properties 'version' and 'supportedTypes' in SyncSourceConfig
+              adapted win32 example to new API logic (SyncClient-config)
+
+2006-09-07
+     - pholy: restructured DMTClientConfig with smaller functions
+
+2006-09-06
+     - toccy: added firing events in SyncManager/TransportAgents for event handling
+              removed utf8len/utf82wc/wc2utf8 functions
+              modified SyncManagerConfig to set a SyncSourceConfig not already present in config
+              added syncUrl property to generate devInfHash (if syncUrl changes, devInfHash changes)
+
 2006-08-31
      - toccy: applied devinfo.patch (pohly) and changed SyncClient/config logic:
               * added Client capabilities handling (DevInf tag): 'createDefInf()' inside SyncManager.prepareSync()
