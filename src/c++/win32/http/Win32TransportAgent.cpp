@@ -183,14 +183,20 @@ BCHAR* Win32TransportAgent::sendMessage(const BCHAR* msg) {
     // Try 5 times to send http request: used to retry sending request in case
     // of authentication (proxy/server).
     //
-    for (int i=0; i<MAX_AUTH_ATTEMPT; i++) {
+    for (int i=0;; i++) {
 
         // Send a request to the HTTP server.
         if (!HttpSendRequest (request, headers, wcslen(headers), (void*)msg, contentLength)) {
-            lastErrorCode = ERR_CONNECT;
-            bsprintf (lastErrorMsg, T("%s: %d"), T("HttpSendRequest Error"), GetLastError());
-		    LOG.error(lastErrorMsg);
-            goto exit;
+            
+            // Retry: some proxy need to resend the http request.
+            if (GetLastError() == ERROR_INTERNET_CONNECTION_RESET) {
+                if (!HttpSendRequest (request, headers, wcslen(headers), (void*)msg, contentLength)) {
+                    lastErrorCode = ERR_CONNECT;
+                    bsprintf (lastErrorMsg, T("%s: %d"), T("HttpSendRequest Error"), GetLastError());
+                    LOG.error(lastErrorMsg);
+                    goto exit;
+                }
+            }
         }
         LOG.debug(MESSAGE_SENT);
 
@@ -204,11 +210,20 @@ BCHAR* Win32TransportAgent::sendMessage(const BCHAR* msg) {
                        NULL);
 
         //
-        // OK (200)
+        // OK (200) -> OUT
         //
         if (status == HTTP_STATUS_OK) {
             break;
         }
+
+        //
+        // 5th error -> OUT
+        //
+        if (i == MAX_AUTH_ATTEMPT) {
+            LOG.error("HTTP Authentication failed: bad username or password.");
+            break;
+        }
+
 
         //
         // Proxy Authentication Required (407) / Server Authentication Required (401).
@@ -251,7 +266,7 @@ BCHAR* Win32TransportAgent::sendMessage(const BCHAR* msg) {
         }
         
         //
-        // Other HTTP errors
+        // Other HTTP errors -> OUT
         //
         else {
             break;
