@@ -35,7 +35,7 @@ DeviceConfig::DeviceConfig() {
     devID           = NULL;
     devType         = NULL;
     dsV             = NULL;
-    utc             = FALSE;
+    utc             = TRUE;
     loSupport       = FALSE;
     nocSupport      = FALSE;
     logLevel        = LOG_LEVEL_INFO;

@@ -22,37 +22,74 @@
 #include "spds/constants.h"
 
 
+/*
+ * -------------------------- AccessConfig class -----------------------------
+ * This class groups all configuration properties to estabilish a 
+ * connection with a sync server.
+ * AccessConfig is a part of SyncManagerConfig (along with DeviceConfig 
+ * and an array of SyncSourceConfig).
+ *
+ * Class members:
+ * --------------
+ * username             : string for username
+ * password             : string for password
+ * useProxy             : Should the sync engine use a HTTP proxy?
+ * proxyHost            : the host for proxy connection
+ * proxyPort            : the port for proxy connection
+ * proxyUsername        : the proxy username (if proxy needs authentication)
+ * proxyPassword        : the proxy password (if proxy needs authentication)
+ * beginTimestamp       : The beginSync timestamp
+ * endTimestamp         : The endSync timestamp
+ * firstTimeSyncMode    : The SyncMode that the sync engine should use 
+ *                        the first time a source is synced
+ * serverNonce          : The server nonce value: from client to server
+ * clientNonce          : The client nonce value: from server to client
+ * serverID             : the server ID value
+ * serverPWD            : the server password
+ * clientAuthType       : the type of client authentication used by client
+ * isServerAuthRequired : Does the server require authentication?
+ * maxMsgSize           : The maximum message size (Byte) accepted for XML 
+ *                        messages received from server (server to client)
+ * maxModPerMsg         : The maximum number of modifications sent in each XML 
+ *                        message from client to server
+ * readBufferSize       : 
+ * encryption           : Do we use ciphering?
+ * userAgent            : The user agent string, will be attached to http 
+ *                        messages to identify the client on server side.
+ *                        It shoud be a short description with the client 
+ *                        name plus its version
+ * checkConn            : 
+ * responseTimeout      : 
+ * dirty                : The dirty flag, used to select which properties 
+ *                        have been modified. Not used by now (T.B.D)
+ */
 class AccessConfig {
     private:
-        BCHAR*        username         ;
-        BCHAR*        password         ;
-        BOOL          useProxy         ;
-        BCHAR*        proxyHost        ;
-        int           proxyPort        ;
-        BCHAR*        proxyUsername    ;
-        BCHAR*        proxyPassword    ;
-        BCHAR*        syncURL          ;
-        unsigned long beginTimestamp   ;
-        unsigned long endTimestamp     ;
-        SyncMode      firstTimeSyncMode;
-
-        // added for authentication improvments
-        BCHAR* serverNonce           ;  // from client to server
-        BCHAR* clientNonce           ;  // from server to client
-        BCHAR* serverID              ;
-        BCHAR* serverPWD             ;
-        BCHAR* clientAuthType        ;
-        BCHAR* serverAuthType        ;
-        BOOL isServerAuthRequired      ;  // F = FALSE, T = TRUE
-
-        unsigned long maxMsgSize       ;
-        unsigned long maxModPerMsg     ;
-        unsigned long readBufferSize   ;
-        BOOL encryption                ;  // F = FALSE, T = TRUE
-        BCHAR*        userAgent        ;
-
-        BOOL checkConn                 ;
-        unsigned int responseTimeout   ;
+        BCHAR*          username            ;
+        BCHAR*          password            ;
+        BOOL            useProxy            ;
+        BCHAR*          proxyHost           ;
+        int             proxyPort           ;
+        BCHAR*          proxyUsername       ;
+        BCHAR*          proxyPassword       ;
+        BCHAR*          syncURL             ;
+        unsigned long   beginTimestamp      ;
+        unsigned long   endTimestamp        ;
+        SyncMode        firstTimeSyncMode   ;
+        BCHAR*          serverNonce         ;
+        BCHAR*          clientNonce         ;
+        BCHAR*          serverID            ;
+        BCHAR*          serverPWD           ;
+        BCHAR*          clientAuthType      ;
+        BCHAR*          serverAuthType      ;
+        BOOL            isServerAuthRequired;
+        unsigned long   maxMsgSize          ;
+        unsigned long   maxModPerMsg        ;
+        unsigned long   readBufferSize      ;
+        BOOL            encryption          ;
+        BCHAR*          userAgent           ;
+        BOOL            checkConn           ;
+        unsigned int    responseTimeout     ;
 
         unsigned int dirty;
 
@@ -104,13 +141,13 @@ class AccessConfig {
         void setPassword(const BCHAR* password) EXTRA_SECTION_02;
 
         /**
-         * Returns the SyncMode that the sync engine should your the first time
+         * Returns the SyncMode that the sync engine should use the first time
          * a source is synced
          */
         SyncMode getFirstTimeSyncMode() const EXTRA_SECTION_02;
 
         /**
-         * Sets the SyncMode that the sync engine should your the first time
+         * Sets the SyncMode that the sync engine should use the first time
          * a source is synced
          *
          * @param syncMode the new sync mode
@@ -272,16 +309,7 @@ class AccessConfig {
          */
         void assign(const AccessConfig& s) EXTRA_SECTION_02;
 
-        /**
-         * Should the sync engine use a HTTP proxy?
-         */
         BOOL getEncryption() const EXTRA_SECTION_02;
-
-        /**
-         * Sets if the sync engine should use a HTTP proxy to access the server.
-         *
-         * @param useProxy FALSE for not use a proxy, TRUE otherwise
-         */
         void setEncryption(BOOL useEncryption) EXTRA_SECTION_02;
 
         /*

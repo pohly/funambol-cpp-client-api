@@ -25,7 +25,42 @@
     #include "spds/constants.h"
     #include "syncml/core/CTCap.h"
 
-    class SyncSourceConfig {
+/*
+ * ------------------------------- SyncSourceConfig class -----------------------------------
+ * This class groups all configuration properties for a SyncSource.
+ * SyncSourceConfig is a part of SyncManagerConfig (along with AccessConfig 
+ * and an array of DeviceConfig).
+ *
+ * Class members:
+ * --------------
+ * name             : the SyncSource name
+ * uri              : the SyncSource URI
+ * syncModes        : Specifies all supported sync modes for the given source.
+ *                    The form is a comma separated list of modes.
+ *                    Sync modes can be one of "slow", "two-way", "one-way-server", 
+ *                    "one-way-client", "refresh-from-server", "refresh-from-client", "addrchange".
+ * type             : The source type used by client. This is one of types specified 
+ *                    in 'supportedTypes' property.
+ * sync             : This is the current sync mode used by the client. 
+ *                    The parameter MUST be one of the sync modes specified in property 'syncModes'.
+ * encodings        : Specifies how the content of an item should be encoded. 
+ *                    The form of this parameter is a semi-column separated list of formats 
+ *                    that must be applied in sequence from the leftmost to the rightmost. 
+ *                    For example, if format is "des;b64", when  the item will be output in 
+ *                    the message, the content must be first transformed with the “des” encoder 
+ *                    and than with the b64 encoder.
+ * version          : The version of the source type used by client.
+ * supportedTypes   : A string rapresenting the source types (with versions) supported by the SyncSource. 
+ *                    The string must be formatted as a sequence of "type:version" separated by commas ','. 
+ *                    For example: "text/x-vcard:2.1,text/vcard:3.0".
+ *                    The version can be left empty, for example: "text/x-s4j-sifc:".
+ *                    Supported types will be sent used for the <DevInf>.
+ * ctCap            : Specifies the content type capabilities for this SyncSource.
+ *                    Not implemented yet. (T.B.D.)
+ * last             : Long value that specifies the last timestamp for this source.
+ *
+ */
+class SyncSourceConfig {
 
     protected:
 

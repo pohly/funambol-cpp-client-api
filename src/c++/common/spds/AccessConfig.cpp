@@ -37,22 +37,20 @@ AccessConfig::AccessConfig() {
 
     endTimestamp = beginTimestamp = 0;
 
-    serverNonce           = NULL;  // from client to server
-    clientNonce           = NULL;  // from server to client
+    serverNonce           = NULL;
+    clientNonce           = NULL;
     serverID              = NULL;
     serverPWD             = NULL;
     clientAuthType        = NULL;
     serverAuthType        = NULL;
-    isServerAuthRequired  = FALSE;  // F = FALSE, T = TRUE
-
+    isServerAuthRequired  = FALSE;
     maxMsgSize            = 0;
     maxModPerMsg          = 0;
-    encryption            = FALSE;  // F = FALSE, T = TRUE
+    encryption            = FALSE;
     readBufferSize        = 0;
     userAgent             = NULL;
     proxyUsername         = NULL;
     proxyPassword         = NULL;
-
     checkConn             = FALSE;
     responseTimeout       = 0;
 }
