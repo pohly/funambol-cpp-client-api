@@ -79,7 +79,7 @@ DeviceConfig* DefaultConfigFactory::getDeviceConfig() {
     dc->setDevID                (T("funambol-client"));
     dc->setDevType              (T("workstation"));
     dc->setDsV                  (T(""));
-    dc->setUtc                  (FALSE);
+    dc->setUtc                  (TRUE);
     dc->setLoSupport            (FALSE);
     dc->setNocSupport           (FALSE);
     dc->setLogLevel             (LOG_LEVEL_INFO);
@@ -101,8 +101,6 @@ SyncSourceConfig* DefaultConfigFactory::getSyncSourceConfig(const BCHAR* name) {
     sc->setEncoding             (T("b64"));
     sc->setLast                 (0);
     sc->setSupportedTypes       (T(""));
-
-    // *** TBD: by now empty ***
     sc->setVersion              (T(""));
 
     if (!bstrcmp(name, T("contact"))){
