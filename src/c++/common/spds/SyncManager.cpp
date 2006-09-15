@@ -587,7 +587,7 @@ int SyncManager::prepareSync(SyncSource** s) {
                         status = syncMLBuilder.prepareCmdStatus(*cmd, statusCode);
                         if (status) {
 		                    // Fire Sync Status Event: status from client
-                            fireSyncStatusEvent(status->getName(), status->getStatusCode(), sources[count]->getConfig().getURI(), NULL , CLIENT_STATUS);
+                            fireSyncStatusEvent(status->getCmd(), status->getStatusCode(), NULL, NULL , CLIENT_STATUS);
 
                             commands->add(*status);
                             deleteStatus(&status);    
