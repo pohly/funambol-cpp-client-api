@@ -125,21 +125,27 @@ void* SyncItem::setData(const void* itemData, long dataSize) {
         delete [] data; data = NULL;
     }
 
-    if (itemData == NULL) {
-        size = 0;
-        return NULL;
-    }
+    size = dataSize;
 
-    data = new char[dataSize + 1];
+    // Backward compatibility with clients which include the nul-byte?
+    if (itemData && size && ((char *)itemData)[size - 1] == '\0') {
+        // ignore the trailing nul-byte
+        size--;
+    }
+    
+    data = new char[size + 1];
     if (data == NULL) {
         lastErrorCode = ERR_NOT_ENOUGH_MEMORY;
         bsprintf(lastErrorMsg, ERRMSG_NOT_ENOUGH_MEMORY, dataSize);
         return NULL;
     }
 
-    size = dataSize;
-    memcpy(data, itemData, size);
-	data[size] = 0;
+    if (itemData) {
+        memcpy(data, itemData, size);
+        data[size] = 0;
+    } else {
+        memset(data, 0, size + 1);
+    }
 
     return data;
 }

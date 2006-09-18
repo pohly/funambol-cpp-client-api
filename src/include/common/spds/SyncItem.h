@@ -102,24 +102,42 @@
         long getModificationTime() EXTRA_SECTION_01;
 
         /*
-         * Sets the SyncItem content data. The passed data are copied into an
+         * Sets the SyncItem content data. The passed data is copied into an
          * internal buffer so that the caller can release the buffer after
          * calling setData().
+         *
+         * The data currently cannot contain nul-bytes because it is
+         * treated like a C-style string. The size parameter should
+         * not include the nul-byte which terminates C strings, so
+         * pass size==0 for an empty string. A nul-byte is always
+         * appended at the end of the data automatically.
+         *
+         * Older versions of this API required that clients include
+         * the nul-byte in the string; to be backwards compatible, this
+         * behavior is still accepted by this call which then simply
+         * reduces the size by one byte.
+         *
+         * @param data        memory to be copied, may be NULL; in that case an empty buffer is allocated
+         * @param size        length of the given data or, if data is NULL, the desired buffer size
          */
         void* setData(const void* data, long size) EXTRA_SECTION_01;
 
         /*
-         * Returns the SyncItem data buffer.
+         * Returns the SyncItem data buffer, in read-write mode.
+         *
+         * There is guaranteed to be a nul-byte after the data which
+         * is not included in the data size.
          */
         void* getData() EXTRA_SECTION_01;
 
         /*
-         * Returns the SyncItem data size.
+         * Returns the amount of bytes stored in the item,
+         * excluding the implicit nul-byte after the real data.
          */
         long getDataSize() EXTRA_SECTION_01;
         
          /*
-         * Sets the SyncItem data size.
+         * Sets the SyncItem data size without changing the data buffer.
          *
          * @param s the new size
          */
