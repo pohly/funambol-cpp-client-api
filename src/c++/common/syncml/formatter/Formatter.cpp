@@ -24,13 +24,13 @@
 /*
 * Returns a StringBuffer giving the tag and the value as long. To use for generic simple value
 */
-StringBuffer* Formatter::getValue(BCHAR* tagName, long value) {    
+StringBuffer* Formatter::getValue(const BCHAR* tagName, long value, const BCHAR *params) {    
     if (!value)
         return NULL;
 
-    BCHAR* t1 = new BCHAR[bstrlen(tagName) + 3]; // <  >  0
+    BCHAR* t1 = new BCHAR[bstrlen(tagName) + 3 + (params ? bstrlen(params) + 1 : 0)]; // <  >  0 plus optional parameters
     BCHAR* t2 = new BCHAR[bstrlen(tagName) + 5]; // </ > \n 0
-    bsprintf(t1, T("<%s>"), tagName);
+    bsprintf(t1, T("<%s%s%s>"), tagName, params ? " " : "", params ? params : "");
     bsprintf(t2, T("</%s>\n"), tagName);
 
     StringBuffer* s = new StringBuffer();
@@ -46,20 +46,16 @@ StringBuffer* Formatter::getValue(BCHAR* tagName, long value) {
 /*
 * Returns a StringBuffer giving the tag and the value as BOOL. If true return only the tag, nothing otherwise
 */
-StringBuffer* Formatter::getValue(BCHAR* tagName, BOOL value) {    
+StringBuffer* Formatter::getValue(const BCHAR* tagName, BOOL value, const BCHAR *params) {    
     if (!value)
         return NULL;
 
-    BCHAR* t1 = new BCHAR[bstrlen(tagName) + 3]; // <  >  0
-    BCHAR* t2 = new BCHAR[bstrlen(tagName) + 5]; // </ > \n 0
-    bsprintf(t1, T("<%s>"), tagName);
-    bsprintf(t2, T("</%s>\n"), tagName);
+    BCHAR* t1 = new BCHAR[bstrlen(tagName) + 4 + (params ? bstrlen(params) + 1 : 0)]; // <  />  plus optional parameters
+    bsprintf(t1, T("<%s%s%s/>"), tagName, params ? " " : "", params ? params : "");
 
     StringBuffer* s = new StringBuffer();
     s->append(t1);        
-    s->append(t2);    
     safeDel(&t1);
-    safeDel(&t2);
 
     return s;    
 }
@@ -68,19 +64,11 @@ StringBuffer* Formatter::getValue(BCHAR* tagName, BOOL value) {
  * Returns a StringBuffer giving the tag and the value. 
  * Returns NULL if value's length is 0.
  */
-StringBuffer* Formatter::getValueNotEmpty(BCHAR* tagName, const BCHAR* value) {
+StringBuffer* Formatter::getValueNotEmpty(const BCHAR* tagName, const BCHAR* value, const BCHAR *params) {
     if (!strlen(value)) {
         return NULL;
     }
-    return getValue(tagName, (BCHAR*)value);
-}
-
-
-/*
-* Returns a StringBuffer giving the tag and the value as wchar. To use for generic simple value
-*/
-StringBuffer* Formatter::getValue(BCHAR* tagName, const BCHAR* value) {    
-    return getValue(tagName, (BCHAR*) value);
+    return getValue(tagName, value, params);
 }
 
 
@@ -88,17 +76,13 @@ StringBuffer* Formatter::getValue(BCHAR* tagName, const BCHAR* value) {
 * Returns a StringBuffer giving the tag and the value as wchar.
 * To use for generic simple value
 */
-StringBuffer* Formatter::getValue(BCHAR* tagName, BCHAR* value, BCHAR *params) {    
+StringBuffer* Formatter::getValue(const BCHAR* tagName, const BCHAR* value, const BCHAR *params) {    
     if (!value)
         return NULL;
 
     BCHAR* t1 = new BCHAR[bstrlen(tagName) + 3 + (params ? 1 + bstrlen(params) : 0)]; // <  >  0
     BCHAR* t2 = new BCHAR[bstrlen(tagName) + 5]; // </ > \n 0
-    if (params) {
-        bsprintf(t1, T("<%s %s>"), tagName, params);
-    } else {
-        bsprintf(t1, T("<%s>"), tagName);
-    }
+    bsprintf(t1, T("<%s%s%s>"), tagName, params ? " " : "", params ? params : "");
     bsprintf(t2, T("</%s>\n"), tagName);
 
     StringBuffer* s = new StringBuffer(t1);
@@ -117,13 +101,13 @@ StringBuffer* Formatter::getValue(BCHAR* tagName, BCHAR* value, BCHAR *params) {
 /*
 * Returns a StringBuffer giving the tag and the value as StringBuffer. To use to include other stuffs
 */
-StringBuffer* Formatter::getValue(BCHAR* tagName, StringBuffer* value) {    
+StringBuffer* Formatter::getValue(const BCHAR* tagName, StringBuffer* value, const BCHAR *params) {    
     if (!value)
         return NULL;
 
-    BCHAR* t1 = new BCHAR[bstrlen(tagName) + 3]; // <  >  0
+    BCHAR* t1 = new BCHAR[bstrlen(tagName) + 3 + (params ? bstrlen(params) + 1 : 0)]; // <  >  0 plus optional parameters
     BCHAR* t2 = new BCHAR[bstrlen(tagName) + 5]; // </ > \n 0
-    bsprintf(t1, T("<%s>"), tagName);
+    bsprintf(t1, T("<%s%s%s>"), tagName, params ? " " : "", params ? params : "");
     bsprintf(t2, T("</%s>\n"), tagName);
 
     StringBuffer* s = new StringBuffer();
@@ -293,9 +277,9 @@ StringBuffer* Formatter::getMetInf(MetInf* metInf) {
 
     nextNonce    = getNextNonce(metInf->getNextNonce());
     
-    maxMsgSize   = getValue(MAX_MESSAGE_SIZE, metInf->getMaxMsgSize());
-    maxObjSize   = getValue(MAX_OBJ_SIZE, metInf->getMaxObjSize());
-    size         = getValue(SIZE,         metInf->getSize());             
+    maxMsgSize   = getValue(MAX_MESSAGE_SIZE, metInf->getMaxMsgSize(), METINFO);
+    maxObjSize   = getValue(MAX_OBJ_SIZE, metInf->getMaxObjSize(), METINFO);
+    size         = getValue(SIZE,         metInf->getSize(), METINFO);             
         
     //emi          = getEMI(xml);
     mem          = getMem(metInf->getMem());    

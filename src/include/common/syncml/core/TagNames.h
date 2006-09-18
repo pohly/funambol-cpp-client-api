@@ -87,7 +87,7 @@
 #define PUT                 T("Put"              )
 #define SUPPORT_NUMBER_OF_CHANGES T("SupportNumberOfChanges")
 #define NUMBER_OF_CHANGES   T("NumberOfChanges")
-#define SUPPORT_LARGE_OBJECT T("LargeObject"              )
+#define SUPPORT_LARGE_OBJECT T("SupportLargeObjs")
 #define UTC                 T("UTC"              )
 #define DATA_STORE          T("DataStore"        )
 #define MAN                 T("Man"              )

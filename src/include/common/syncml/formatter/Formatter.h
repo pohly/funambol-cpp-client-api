@@ -36,12 +36,11 @@ class Formatter {
     // ---------------------------------------------------------- Public data    
     public:
         
-        static StringBuffer*    getValue            (BCHAR* tagName, BCHAR* value, BCHAR *params = NULL);
-        static StringBuffer*    getValue            (BCHAR* tagName, const BCHAR* value);
-        static StringBuffer*    getValue            (BCHAR* tagName, StringBuffer* value);
-        static StringBuffer*    getValue            (BCHAR* tagName, long value);
-        static StringBuffer*    getValue            (BCHAR* tagName, BOOL value);
-        static StringBuffer*    getValueNotEmpty    (BCHAR* tagName, const BCHAR* value);
+        static StringBuffer*    getValue            (const BCHAR* tagName, const BCHAR* value, const BCHAR *params = NULL);
+        static StringBuffer*    getValue            (const BCHAR* tagName, StringBuffer* value, const BCHAR *params = NULL);
+        static StringBuffer*    getValue            (const BCHAR* tagName, long value, const BCHAR *params = NULL);
+        static StringBuffer*    getValue            (const BCHAR* tagName, BOOL value, const BCHAR *params = NULL);
+        static StringBuffer*    getValueNotEmpty    (const BCHAR* tagName, const BCHAR* value, const BCHAR *params = NULL);
         
         static StringBuffer*    getSyncML           (SyncML*        syncML);
         static StringBuffer*    getSyncHdr          (SyncHdr*       syncHdr);
