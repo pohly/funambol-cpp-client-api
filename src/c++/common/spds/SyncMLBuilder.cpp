@@ -33,7 +33,7 @@
 
 SyncMLBuilder::SyncMLBuilder() {
     initialize();
-    set(NULL, NULL, 0);
+    set(NULL, NULL);
 }
 
 SyncMLBuilder::~SyncMLBuilder() {
@@ -43,16 +43,15 @@ SyncMLBuilder::~SyncMLBuilder() {
 }
 
 
-SyncMLBuilder::SyncMLBuilder(BCHAR* t, BCHAR* d, unsigned long msgSize) {
+SyncMLBuilder::SyncMLBuilder(BCHAR* t, BCHAR* d) {
     initialize();
-    set(t, d, msgSize);
+    set(t, d);
 }
 
-void SyncMLBuilder::set(BCHAR* t, BCHAR* d, unsigned long msgSize) {    
+void SyncMLBuilder::set(BCHAR* t, BCHAR* d) {    
 
     target   = stringdup(t);   
     device   = stringdup(d);   
-    maxMsgSize = msgSize;
 }
 
 void SyncMLBuilder::initialize() {
@@ -60,7 +59,6 @@ void SyncMLBuilder::initialize() {
     msgRef    = 0         ;
     msgID     = 0         ;
     cmdID     = 0         ;
-    maxMsgSize = 0        ;      
     encoding   = PLAIN    ;
     encPassword = NULL    ;
 }
@@ -469,7 +467,7 @@ AbstractCommand *SyncMLBuilder::prepareDevInf(AbstractCommand *cmd, DevInf &devI
 }
 
 
-Alert* SyncMLBuilder::prepareRequestAlert(SyncSource& s) {
+Alert* SyncMLBuilder::prepareAlert(SyncSource& s, int code) {
     
     ++cmdID;
 
@@ -480,7 +478,7 @@ Alert* SyncMLBuilder::prepareRequestAlert(SyncSource& s) {
 
     ArrayList* list      = new ArrayList();    
     list->add(*item);    
-    Alert* alert         = new Alert(commandID, false, NULL, 222, list);
+    Alert* alert         = new Alert(commandID, false, NULL, code, list);
     
     deleteTarget(&tar);
     deleteSource(&sou);
@@ -594,7 +592,7 @@ Alert* SyncMLBuilder::prepareAddrChangeAlert(SyncSource& s) {
     return alert;
 }
 
-SyncHdr* SyncMLBuilder::prepareSyncHdr(Cred* cred) {
+SyncHdr* SyncMLBuilder::prepareSyncHdr(Cred* cred, unsigned long maxMsgSize, unsigned long maxObjSize) {
 
     ++msgID;
 
@@ -612,10 +610,10 @@ SyncHdr* SyncMLBuilder::prepareSyncHdr(Cred* cred) {
         sou = new Source(device);
     
 
-    if (maxMsgSize > 0) {
+    if (maxMsgSize > 0 || maxObjSize > 0) {
         MetInf* metInf = new MetInf(NULL, NULL, NULL, NULL, 
                                     NULL, NULL, NULL, maxMsgSize,
-                                    NULL, NULL, NULL); 
+                                    maxObjSize, NULL, NULL); 
         meta = new Meta();
         meta->setMetInf(metInf);
         deleteMetInf(&metInf);
@@ -633,9 +631,9 @@ SyncHdr* SyncMLBuilder::prepareSyncHdr(Cred* cred) {
     return syncHdr;    
 }
 
-SyncML* SyncMLBuilder::prepareInitObject(Cred* cred, ArrayList* alerts, ArrayList* commands) {
+SyncML* SyncMLBuilder::prepareInitObject(Cred* cred, ArrayList* alerts, ArrayList* commands, unsigned long maxMsgSize, unsigned long maxObjSize) {
 
-    SyncHdr* syncHdr     = prepareSyncHdr(cred);
+    SyncHdr* syncHdr     = prepareSyncHdr(cred, maxMsgSize, maxObjSize);
     SyncML*  syncml      = NULL;               
     ArrayList* list      = new ArrayList();
     SyncBody* syncBody   = NULL;
@@ -678,31 +676,42 @@ SyncML* SyncMLBuilder::prepareSyncML(ArrayList* commands, BOOL final) {
     return syncml;
 }
 
-ComplexData* SyncMLBuilder::getComplexData(SyncItem* syncItem) {
+ComplexData* SyncMLBuilder::getComplexData(SyncItem* syncItem,
+                                           long &syncItemOffset, long maxBytes, long &sentBytes) {
     
         BCHAR* t   = NULL;
         TransformationInfo info;
         ComplexData* data = NULL;
 
-        info.size = syncItem->getDataSize();
+        info.size = syncItem->getDataSize() - syncItemOffset;
+        if (info.size && info.size > maxBytes) {
+            info.size = maxBytes;
+            if (info.size < 1) {
+                // ensure that at least one byte is sent even if maxBytes is 0 or negative,
+                // otherwise no progress is made
+                info.size = 1;
+            }
+        }
+        sentBytes = info.size;
         info.password = encPassword;
         if (encoding == DESB64) {
             char* tt = new char[info.size + 1];
             memset(tt, 0, info.size + 1);            
-            memcpy(tt, syncItem->getData(), syncItem->getDataSize());                        
+            memcpy(tt, (char *)syncItem->getData() + syncItemOffset, sentBytes);                        
             t = encodeDESB64(tt, info);
             delete [] tt;
         } else if (encoding == B64) {
             char* tt = new char[info.size + 1];
             memset(tt, 0, info.size + 1);            
-            memcpy(tt, syncItem->getData(), syncItem->getDataSize());            
+            memcpy(tt, (char *)syncItem->getData() + syncItemOffset, sentBytes);            
             t = encodeB64(tt, info);
             delete [] tt;
         } else {
             t = new BCHAR[info.size + 1];
             memset(t, 0, info.size + 1);            
-            memcpy(t, syncItem->getData(), syncItem->getDataSize());
+            memcpy(t, (char *)syncItem->getData() + syncItemOffset, sentBytes);
         }
+        syncItemOffset += sentBytes;
                            
         data = new ComplexData(t);
         
@@ -713,26 +722,38 @@ ComplexData* SyncMLBuilder::getComplexData(SyncItem* syncItem) {
 }
 
 
-ArrayList* SyncMLBuilder::prepareItem(SyncItem* syncItem, const BCHAR* type, BCHAR* COMMAND) {
+ArrayList* SyncMLBuilder::prepareItem(SyncItem* syncItem,
+                                      long &syncItemOffset, long maxBytes, long &sentBytes,
+                                      const BCHAR* type, BCHAR* COMMAND) {
     ArrayList* list = new ArrayList();            
     
     Source* sou = new Source(_wcc(syncItem->getKey()));
     ComplexData* data = NULL;
     Meta m;
+    BOOL hasMoreData = FALSE;
+    BOOL isFirstChunk = !syncItemOffset;
     if (bstrcmp(DELETE_COMMAND_NAME, COMMAND) != 0) {       
         if (encoding == DESB64) {
             m.setFormat(T("des;b64"));         
         } else if (encoding == B64) {
             m.setFormat(T("b64"));            
         } 
-        data = getComplexData(syncItem);
-
+        data = getComplexData(syncItem, syncItemOffset, maxBytes, sentBytes);
+        hasMoreData = syncItemOffset < syncItem->getDataSize();
+        if (isFirstChunk && hasMoreData) {
+            // must send size, but only in first chunk of this item
+            m.setSize(syncItem->getDataSize());
+        }
+    } else {
+        // skip all item data for deleted items
+        syncItemOffset = syncItem->getDataSize();
+        sentBytes = 0;
     }
     
     BCHAR *tparent = toMultibyte(syncItem->getTargetParent());
     BCHAR *sparent = toMultibyte(syncItem->getSourceParent());
 
-    Item* item = new Item(NULL, sou, tparent, sparent, &m, data, FALSE);
+    Item* item = new Item(NULL, sou, tparent, sparent, &m, data, hasMoreData);
     list->add(*item);
 
     delete [] tparent;
@@ -745,16 +766,12 @@ ArrayList* SyncMLBuilder::prepareItem(SyncItem* syncItem, const BCHAR* type, BCH
     return list;   
 }
 
-/*
-* Prepare an empty modification command without any commands. They will be added with the insertItem method
-*/
-ModificationCommand* SyncMLBuilder::prepareModificationCommand(BCHAR* COMMAND, SyncItem* syncItem, const BCHAR* defaultType) {        
-    
+long SyncMLBuilder::addItem(ModificationCommand* &modificationCommand,
+                            long &syncItemOffset, long maxBytes,
+                            BCHAR* COMMAND, SyncItem* syncItem, const BCHAR* defaultType) {           
     if (syncItem == NULL) {
-         return NULL;
+         return 0;
     }
-    ++cmdID;
-    CmdID* commandID     = new CmdID(itow(cmdID));
 
     // The item should determine its type itself.
     // Only fallback to the default type configured for its
@@ -765,56 +782,36 @@ ModificationCommand* SyncMLBuilder::prepareModificationCommand(BCHAR* COMMAND, S
         type = defaultType;
     }
 
-    ModificationCommand* ret = NULL;
-    MetInf* metInf       = new MetInf(NULL, (BCHAR*)type, NULL, NULL, 
-                                      NULL, NULL, NULL, NULL, NULL, NULL, NULL); 
-    Meta* meta           = new Meta();
-    meta->setMetInf(metInf);
+    if (!modificationCommand) {
+        ++cmdID;
+        CmdID commandID(itow(cmdID));
+        ModificationCommand* ret = NULL;
+        MetInf metInf(NULL, (BCHAR*)type, NULL, NULL, 
+                      NULL, NULL, NULL, NULL, NULL, NULL, NULL); 
+        Meta meta;
+        
+        meta.setMetInf(&metInf);
     
-    ArrayList* list = new ArrayList();
-    if (syncItem) {
-        ArrayList* tmpList = prepareItem(syncItem, type, COMMAND);
-        list->add(tmpList);
-        deleteArrayList(&tmpList);
-    }
-    if (bstrcmp(ADD_COMMAND_NAME, COMMAND) == 0)
-        ret = new Add(commandID, FALSE, NULL, meta, list);
-    else if (bstrcmp(REPLACE_COMMAND_NAME, COMMAND) == 0){
-        ret = new Replace(commandID, FALSE, NULL, meta, list);
-    } else if (bstrcmp(DELETE_COMMAND_NAME, COMMAND) == 0) {
-        ret = new Delete(commandID, FALSE, FALSE, FALSE, NULL, meta, list);
-    }
-    
-    deleteMetInf(&metInf);
-    deleteCmdID(&commandID);
-    deleteArrayList(&list);
-    deleteMeta(&meta);
-
-    return ret;
-}
-
-/*
-* Add another item into the 
-*/
-void SyncMLBuilder::addItem(ModificationCommand* modificationCommand, BCHAR* COMMAND, SyncItem* syncItem, const BCHAR* defaultType) {        
-    
-    if (syncItem == NULL || modificationCommand == NULL) {
-         return;
-    }       
-    
-    // The item should determine its type itself.
-    // Only fallback to the default type configured for its
-    // source if (broken?) SyncSources do not set a in their
-    // items.
-    const BCHAR *type = _wcc(syncItem->getDataType());
-    if (!type || !type[0]) {
-        type = defaultType;
+        if (bstrcmp(ADD_COMMAND_NAME, COMMAND) == 0)
+            modificationCommand = new Add(&commandID, FALSE, NULL, &meta, NULL);
+        else if (bstrcmp(REPLACE_COMMAND_NAME, COMMAND) == 0){
+            modificationCommand = new Replace(&commandID, FALSE, NULL, &meta, NULL);
+        } else if (bstrcmp(DELETE_COMMAND_NAME, COMMAND) == 0) {
+            modificationCommand = new Delete(&commandID, FALSE, FALSE, FALSE, NULL, &meta, NULL);
+        }
     }
 
     ArrayList* list = modificationCommand->getItems();
-    ArrayList* tmpList = prepareItem(syncItem, type, COMMAND);
+    // assert(syncItemOffset >= 0);
+    // assert(syncItemOffset <= syncItem->getDataSize();
+    long sentBytes = 0;
+    ArrayList* tmpList = prepareItem(syncItem, syncItemOffset, maxBytes, sentBytes, type, COMMAND);
+    // assert(syncItemOffset >= 0);
+    // assert(syncItemOffset <= syncItem->getDataSize();
     list->add(tmpList);
     deleteArrayList(&tmpList);
+
+    return sentBytes;
 }
 
 Sync* SyncMLBuilder::prepareSyncCommand(SyncSource& source) {            

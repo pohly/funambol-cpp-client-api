@@ -38,7 +38,7 @@ class SyncMLBuilder {
     public:
         SyncMLBuilder() EXTRA_SECTION_01;
         ~SyncMLBuilder() EXTRA_SECTION_01;
-        SyncMLBuilder(BCHAR* t, BCHAR* d, unsigned long msgSize) EXTRA_SECTION_01;
+        SyncMLBuilder(BCHAR* t, BCHAR* d) EXTRA_SECTION_01;
         
         /*
          * Convert the SyncML object into an xml message
@@ -51,20 +51,28 @@ class SyncMLBuilder {
         SyncML*  prepareSyncML(ArrayList* commands, BOOL final) EXTRA_SECTION_01;
          
         /*
-        * Set init parameters
+        * Set init parameters.
+        *
         */
-        void     set(BCHAR* t, BCHAR* d, unsigned long msgSize) EXTRA_SECTION_01;
+        void     set(BCHAR* t, BCHAR* d) EXTRA_SECTION_01;
         
         /*
         * Prepare the init SyncML* message with credential and db alert to sync
+        *
+        * @param maxMsgSize       used as MaxMsgSize value in Meta part of the message unless 0
+        * @param maxObjSize       used as MaxObjSize value in Meta part of the message unless 0
         */
-        SyncML*  prepareInitObject(Cred* cred, ArrayList* alerts, ArrayList* commands) EXTRA_SECTION_01;
+        SyncML*  prepareInitObject(Cred* cred, ArrayList* alerts, ArrayList* commands,
+                                   unsigned long maxMsgSize = 0, unsigned long maxObjSize = 0) EXTRA_SECTION_01;
         
         /*
         * Prepare the SyncHdr message with credential if not null
+        *
+        * @param maxMsgSize       used as MaxMsgSize value in Meta part of the message unless 0
+        * @param maxObjSize       used as MaxObjSize value in Meta part of the message unless 0
         */        
-        SyncHdr* prepareSyncHdr(Cred* cred) EXTRA_SECTION_01;
-        
+        SyncHdr* prepareSyncHdr(Cred* cred, unsigned long maxMsgSize = 0, unsigned long maxObjSize = 0) EXTRA_SECTION_01;
+
         /*
         * Prepare the init alert
         */
@@ -76,10 +84,11 @@ class SyncMLBuilder {
         Alert*   prepareAddrChangeAlert(SyncSource& source) EXTRA_SECTION_01;
         
         /*
-        * Prepare alert with 222 code to request the server items
+        * Prepare alert with a specific code, defaults to 222 which requests
+        * the server changes.
         */ 
-        Alert*   prepareRequestAlert(SyncSource& source) EXTRA_SECTION_01;
-        
+        Alert*   prepareAlert(SyncSource& source, int code=222) EXTRA_SECTION_01;
+
         /*
         * Prepare the status for Sync Header
         */ 
@@ -130,8 +139,15 @@ class SyncMLBuilder {
         * Prepare the MapItem. It could contain only one MapItem
         */
         MapItem* prepareMapItem(SyncMap* syncMap) EXTRA_SECTION_01;
-        
-        ArrayList* prepareItem(SyncItem* syncItem, const BCHAR* type, BCHAR* COMMAND);
+
+        /*
+         * @param[in, out] syncItemOffset           number of bytes of item data already sent, continue there and update it
+         * @param maxBytes                          maximum amount of item data to send; always send at least one byte to ensure progress
+         * @param[out] sentBytes                    number of bytes actually included in message
+         */
+        ArrayList* prepareItem(SyncItem* syncItem,
+                               long &syncItemOffset, long maxBytes, long &sentBytes,
+                               const BCHAR* type, BCHAR* COMMAND);
 
         /*
         * Add the MapItem to the Map command.
@@ -139,14 +155,22 @@ class SyncMLBuilder {
         void     addMapItem(Map* map, MapItem* mapItem) EXTRA_SECTION_01;
         
         /*
-        * Prepare a ADD, REPLACE, DEL command using the syncItem passed by the source
-        */ 
-        ModificationCommand* prepareModificationCommand(BCHAR* COMMAND, SyncItem* item, const BCHAR* defaultType) EXTRA_SECTION_01;
-        
-        /*
-        * Add a SyncItem into the modificationCommand. It is responsible to collapse if needed
+        * Add a SyncItem into the modificationCommand. It is responsible to collapse if needed.
+        * If the modificationCommand is NULL, then this is the first item and modificationCommand
+        * is initialized.
+        *
+        * @param[in, out] modificationCommand      new items are added here, created if necessary
+        * @param[in, out] syncItemOffset           number of bytes of item data already sent, continue there and update it
+        * @param maxBytes                          maximum amount of item data to send; always send at least one byte to ensure progress
+        * @param COMMAND                           REPLACE_COMMAND_NAME, ADD_COMMAND_NAME, DELETE_COMMAND_NAME
+        * @param syncItem                          item to be added, NULL causes the call to return without doing anything
+        * @param defaultType                       fallback if the syncItem does not define a type
+        * @return number of bytes of item data included
         */
-        void addItem(ModificationCommand* modificationCommand, BCHAR* COMMAND, SyncItem* syncItem, const BCHAR* defaultType) EXTRA_SECTION_01;
+        long addItem(ModificationCommand* &modificationCommand,
+                     long &syncItemOffset, long maxBytes,
+                     BCHAR* COMMAND, SyncItem* syncItem,
+                     const BCHAR* defaultType) EXTRA_SECTION_01;
         
         /*
         * Reset the cmdID counter
@@ -192,7 +216,6 @@ class SyncMLBuilder {
 
         BCHAR* target;
         BCHAR* device;
-        unsigned long maxMsgSize;        
         BCHAR* encPassword;
 
         unsigned long sessionID;
@@ -204,7 +227,7 @@ class SyncMLBuilder {
 
         BCHAR* encodeB64(char* data, TransformationInfo& info);   
         BCHAR* encodeDESB64(char* data, TransformationInfo& info);
-        ComplexData* getComplexData(SyncItem* syncItem);
+        ComplexData* getComplexData(SyncItem* syncItem, long &syncItemOffset, long maxBytes, long &sentBytes);
 
 };
 

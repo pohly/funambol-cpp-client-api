@@ -88,6 +88,7 @@ class SyncManager {
             BCHAR *cmdRef;
             BCHAR* format;
             BCHAR* dataType;
+            long size;
         };
 
         DevInf* devInf;
@@ -111,17 +112,41 @@ class SyncManager {
         
         BCHAR syncURL [512];
         BCHAR deviceId[32];  
-        unsigned int maxMsgSize;    // the max message size. If 0 it is not set
+        unsigned int maxMsgSize;    // the max message size. If 0 it is not set. Setting it implies LargeObject support.
+        unsigned int maxObjSize;    // The maximum object size. The server gets this in the Meta init message and should obey it.
+        BOOL loSupport;             // enable support for large objects - without it large outgoing items are not split
         unsigned int maxModPerMsg;  // the max modification per message
         unsigned int readBufferSize; // the size of the buffer to store chunk of incoming stream.
         BCHAR  credentialInfo[256]; // used to store info for the des;b64 encription
+
+        // Handling of incomplete incoming objects by processSyncItem().
+        // Always active, even if Large Object support is off,
+        // just in case the server happens to rely on it.
+        // 
+        class IncomingSyncItem : public SyncItem {
+          public:
+            IncomingSyncItem(const wchar_t* key,
+                             const CommandInfo &cmdInfo,
+                             int currentSource) :
+                SyncItem(key),
+                offset(0),
+                cmdName(cmdInfo.commandName),
+                cmdRef(cmdInfo.cmdRef),
+                sourceIndex(currentSource) {
+            }
+            
+            long offset;                // number of bytes already received, append at this point
+            const StringBuffer cmdName; // name of the command which started the incomplete item
+            const StringBuffer cmdRef;  // reference of the command which started the incomplete item
+            const int sourceIndex;      // the index of the source to which the incomplete item belongs
+        } *incomingItem;       // sync item which is not complete yet, more data expected
     
         void initialize() EXTRA_SECTION_01;
         BOOL readSyncSourceDefinition(SyncSource& source) EXTRA_SECTION_01;
         BOOL commitChanges(SyncSource& source) EXTRA_SECTION_01;
         int assignSources(SyncSource** sources) EXTRA_SECTION_01;
         
-        Status *processSyncItem(Item* item, const CommandInfo &cmdInfo) EXTRA_SECTION_01;
+        Status *processSyncItem(Item* item, const CommandInfo &cmdInfo, SyncMLBuilder &syncMLBuilder) EXTRA_SECTION_01;
         char* processItemContent(const BCHAR* data, const BCHAR* encodings, long* size) EXTRA_SECTION_01;
         void decodeSyncItemContent(char** c, TransformationInfo& info, const BCHAR* encoding) EXTRA_SECTION_01;
         BOOL checkForServerChanges(SyncML* syncml, ArrayList &statusList) EXTRA_SECTION_01;

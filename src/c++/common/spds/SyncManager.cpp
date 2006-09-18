@@ -33,6 +33,7 @@
 
 #include "event/FireEvent.h"
 
+#include <limits.h>
 
 /**
  * Is the given status code an error status code? Error codes are the ones
@@ -87,6 +88,7 @@ void SyncManager::initialize() {
     count          = 0;
     commands       = NULL;
     devInf         = NULL;
+    incomingItem   = NULL;
 
     AccessConfig& c = config.getAccessConfig();   
     DeviceConfig& dc = config.getDeviceConfig();
@@ -108,6 +110,8 @@ void SyncManager::initialize() {
     commands = new ArrayList();
 
     maxMsgSize   = c.getMaxMsgSize();
+    maxObjSize   = dc.getMaxObjSize();
+    loSupport    = dc.getLoSupport();
     maxModPerMsg = 150;  // dafault value
     readBufferSize = 5000; // default value    
 
@@ -117,7 +121,7 @@ void SyncManager::initialize() {
     if (c.getReadBufferSize() > 0)
         readBufferSize = c.getReadBufferSize();
     
-    syncMLBuilder.set(syncURL, deviceId, maxMsgSize);
+    syncMLBuilder.set(syncURL, deviceId);
     memset(credentialInfo, 0, 256*sizeof(BCHAR));
 }
 
@@ -145,6 +149,9 @@ SyncManager::~SyncManager() {
     }
     if (devInf) {
         delete devInf;
+    }
+    if (incomingItem) {
+        delete incomingItem;
     }
 }
 
@@ -342,7 +349,7 @@ int SyncManager::prepareSync(SyncSource** s) {
         
         // "cred" only contains an encoded strings as username, also
         // need the original username for LocName
-        syncml = syncMLBuilder.prepareInitObject(cred, alerts, commands);
+        syncml = syncMLBuilder.prepareInitObject(cred, alerts, commands, maxMsgSize, maxObjSize);
         if (syncml == NULL) {
             ret = lastErrorCode;
             goto finally;
@@ -731,11 +738,13 @@ BOOL SyncManager::checkForServerChanges(SyncML* syncml, ArrayList &statusList)
 
                 if (meta) {
                     cmdInfo.dataType = meta->getType();
-                    cmdInfo.format = meta->getFormat(); 
+                    cmdInfo.format = meta->getFormat();
+                    cmdInfo.size = meta->getSize();
                 }
                 else {
                     cmdInfo.dataType = 0;
                     cmdInfo.format = 0;
+                    cmdInfo.size = 0;
                 }
 
                 for (int j = 0; j < list->size(); j++) {
@@ -749,10 +758,12 @@ BOOL SyncManager::checkForServerChanges(SyncML* syncml, ArrayList &statusList)
                     //
                     // set the syncItem element
                     //
-                    status = processSyncItem(item, cmdInfo);
+                    status = processSyncItem(item, cmdInfo, syncMLBuilder);
 
-                    syncMLBuilder.addItemStatus(previousStatus, status);
-                    deleteStatus(&status);            
+                    if (status) {
+                        syncMLBuilder.addItemStatus(previousStatus, status);
+                        deleteStatus(&status);
+                    }
                 }
 
                 if (previousStatus) {
@@ -779,7 +790,10 @@ int SyncManager::sync() {
     BCHAR* responseMsg = NULL;
     Status* status       = NULL;
     SyncML* syncml       = NULL;
+    /** Current item to be transmitted. Might be split across multiple messages if LargeObjectSupport is on. */
     SyncItem* syncItem   = NULL;
+    /** number of bytes already transmitted from syncItem */
+    long syncItemOffset  = 0;
     Alert* alert         = NULL;
     ModificationCommand* modificationCommand = NULL;
     unsigned int tot     = 0; 
@@ -815,6 +829,8 @@ int SyncManager::sync() {
         if (!check[count])
             continue;
 
+        // note: tot == 0 is used to detect when to start iterating over
+        // items from the beginning
         tot  = 0;
         step = 0;
         last = FALSE;        
@@ -835,6 +851,7 @@ int SyncManager::sync() {
             isAtLeastOneSourceCorrect = TRUE;
         }
 
+        // keep sending changes for current source until done with it
         do {
 
             //
@@ -877,40 +894,61 @@ int SyncManager::sync() {
                  */
             }
 
+            // Accumulate changes for the current sync source until either
+            // - maximum number of items per message exceeded (tot >= maxModPerMsg)
+            // - an item cannot be sent completely because the message size would be exceeded
+            //
+            // In each loop iteration at least one change must be sent to ensure progress.
+            // Keeping track of the current message size is a heuristic which assumes a constant
+            // overhead for each message and change item and then adds the actual item data sent.
             deleteSyncML(&syncml);
-
+            static long msgOverhead = 2000;
+            static long changeOverhead = 150;
+            long msgSize = 0;
             Sync* sync = syncMLBuilder.prepareSyncCommand(*sources[count]);
             ArrayList* list = new ArrayList();
 
             switch (sources[count]->getSyncMode()) {
                 case SYNC_SLOW: 
-                    {   
-                        syncItem = NULL;
-                        if (tot == 0) {                    
-                            syncItem = sources[count]->getFirstItem();                        
+                    {
+                        if (syncItem == NULL) {
+                            if (tot == 0) {
+                                syncItem = sources[count]->getFirstItem();                        
+                                syncItemOffset = 0;
+                            }
                         }
                         tot = 0;
                         do {
                             if (syncItem == NULL) {
-                                syncItem = sources[count]->getNextItem();                   
+                                syncItem = sources[count]->getNextItem();
+                                syncItemOffset = 0;
                             }
-                            if (modificationCommand == NULL) {
-                                modificationCommand = 
-                                    syncMLBuilder.prepareModificationCommand(
-                                                            REPLACE_COMMAND_NAME, 
-                                                            syncItem,
-                                                            sources[count]->getConfig().getType()
-                                                  );
-                            } else {
+
+                            if (tot &&
+                                maxMsgSize &&
+                                syncItem &&
+                                msgSize + changeOverhead + syncItem->getDataSize() - syncItemOffset > maxMsgSize) {
+                                // avoid adding another item that exceeds the message size
+                                break;
+                            }
+                            
+                            msgSize += changeOverhead;
+                            msgSize +=
                                 syncMLBuilder.addItem(modificationCommand,
+                                                      syncItemOffset,
+                                                      (maxMsgSize && loSupport) ? (maxMsgSize - msgSize) : LONG_MAX,
                                                       REPLACE_COMMAND_NAME,
                                                       syncItem, 
                                                       sources[count]->getConfig().getType());
-                            }
 
                             if (syncItem) {
-                                // the item is only the pointer not another instance. to save mem
-                                delete syncItem; syncItem = NULL;
+                                if (syncItemOffset == syncItem->getDataSize()) {
+                                    // the item is only the pointer not another instance. to save mem
+                                    delete syncItem; syncItem = NULL;
+                                } else {
+                                    // assert(msgSize >= maxMsgSize);
+                                    break;
+                                }
                             }
                             else {
                                 last = TRUE;
@@ -944,25 +982,42 @@ int SyncManager::sync() {
 
                 case SYNC_REFRESH_FROM_CLIENT:
                     {   
-                        syncItem = NULL;
-                        if (tot == 0) {                    
-                            syncItem = sources[count]->getFirstItem();
+                        if (syncItem == NULL) {
+                            if (tot == 0) {                    
+                                syncItem = sources[count]->getFirstItem();
+                                syncItemOffset = 0;
+                            }
                         }
                         tot = 0;
                         do {
                             if (syncItem == NULL) {
                                 syncItem = sources[count]->getNextItem();                  
+                                syncItemOffset = 0;
                             }
-                            if (modificationCommand == NULL) {
-                                modificationCommand = syncMLBuilder.prepareModificationCommand(REPLACE_COMMAND_NAME, 
-                                                                                               syncItem, sources[count]->getConfig().getType());
-                            } else {
-                                syncMLBuilder.addItem(modificationCommand, REPLACE_COMMAND_NAME, syncItem, 
+                            
+                            if (tot &&
+                                maxMsgSize &&
+                                syncItem &&
+                                msgSize + changeOverhead + syncItem->getDataSize() - syncItemOffset > maxMsgSize) {
+                                // avoid adding another item that exceeds the message size
+                                break;
+                            }
+                            
+                            msgSize += changeOverhead;
+                            msgSize +=
+                                syncMLBuilder.addItem(modificationCommand,
+                                                      syncItemOffset,
+                                                      (maxMsgSize && loSupport) ? (maxMsgSize - msgSize) : LONG_MAX,
+                                                      REPLACE_COMMAND_NAME, syncItem, 
                                                       sources[count]->getConfig().getType());
-                            }
 
                             if (syncItem) {
-                                delete syncItem; syncItem = NULL;// the item is only the pointer not another instance. to save mem                        
+                                if (syncItemOffset == syncItem->getDataSize()) {
+                                    delete syncItem; syncItem = NULL;// the item is only the pointer not another instance. to save mem
+                                } else {
+                                    // assert(msgSize >= maxMsgSize);
+                                    break;
+                                }
                             }
                             else {
                                 last = TRUE;
@@ -979,9 +1034,10 @@ int SyncManager::sync() {
                         //
                         // New Item
                         //
-                        syncItem = NULL;
                         if (step == 0) {
+                            // assert(syncItem == NULL);
                             syncItem = sources[count]->getFirstNewItem(); 
+                            syncItemOffset = 0;
                             step++;
                             if (syncItem == NULL)
                                 step++;  
@@ -994,19 +1050,34 @@ int SyncManager::sync() {
                             do {
                                 if (syncItem == NULL) {
                                     syncItem = sources[count]->getNextNewItem();
-                                }
-                                if (modificationCommand == NULL) {
-                                    modificationCommand = syncMLBuilder.prepareModificationCommand(ADD_COMMAND_NAME, 
-                                                                                                   syncItem, sources[count]->getConfig().getType());
-                                } else {
-                                    syncMLBuilder.addItem(modificationCommand, ADD_COMMAND_NAME, 
-                                                          syncItem, sources[count]->getConfig().getType());
+                                    syncItemOffset = 0;
                                 }
 
+                                if (tot &&
+                                    maxMsgSize &&
+                                    syncItem &&
+                                    msgSize + changeOverhead + syncItem->getDataSize() - syncItemOffset > maxMsgSize) {
+                                    // avoid adding another item that exceeds the message size
+                                    break;
+                                }
+                            
+                                msgSize += changeOverhead;
+                                msgSize +=
+                                    syncMLBuilder.addItem(modificationCommand,
+                                                          syncItemOffset,
+                                                          (maxMsgSize && loSupport) ? (maxMsgSize - msgSize) : LONG_MAX,
+                                                          ADD_COMMAND_NAME, 
+                                                          syncItem, sources[count]->getConfig().getType());
+
                                 if (syncItem) {
-                                    // Fire Sync Item Event - New Item Detected
-                                    fireSyncItemEvent(sources[count]->getConfig().getURI(), syncItem->getKey(), ITEM_ADDED_BY_CLIENT);
-                                    delete syncItem; syncItem = NULL;
+                                    if (syncItemOffset == syncItem->getDataSize()) {
+                                        // Fire Sync Item Event - New Item Detected
+                                        fireSyncItemEvent(sources[count]->getConfig().getURI(), syncItem->getKey(), ITEM_ADDED_BY_CLIENT);
+                                        delete syncItem; syncItem = NULL;
+                                    } else {
+                                        // assert(msgSize >= maxMsgSize);
+                                        break;
+                                    }
                                 }
                                 else {
                                     step++;
@@ -1027,7 +1098,9 @@ int SyncManager::sync() {
                                 modificationCommand = NULL;
                             }
 
+                            // assert(syncItem == NULL);
                             syncItem = sources[count]->getFirstUpdatedItem();
+                            syncItemOffset = 0;
 
                             step++;
                             if (syncItem == NULL)
@@ -1042,19 +1115,35 @@ int SyncManager::sync() {
                             do {				
                                 if (syncItem == NULL) {
                                     syncItem = sources[count]->getNextUpdatedItem();
-                                }
-                                if (modificationCommand == NULL) {
-                                    modificationCommand = syncMLBuilder.prepareModificationCommand(REPLACE_COMMAND_NAME, 
-                                                                                                   syncItem, sources[count]->getConfig().getType());
-                                } else {
-                                    syncMLBuilder.addItem(modificationCommand, REPLACE_COMMAND_NAME, 
-                                                          syncItem, sources[count]->getConfig().getType());
+                                    syncItemOffset = 0;
                                 }
 
+                                if (tot &&
+                                    maxMsgSize &&
+                                    syncItem &&
+                                    msgSize + changeOverhead + syncItem->getDataSize() - syncItemOffset > maxMsgSize) {
+                                    // avoid adding another item that exceeds the message size
+                                    break;
+                                }
+                            
+
+                                msgSize += changeOverhead;
+                                msgSize +=
+                                    syncMLBuilder.addItem(modificationCommand,
+                                                          syncItemOffset,
+                                                          (maxMsgSize && loSupport) ? (maxMsgSize - msgSize) : LONG_MAX,
+                                                          REPLACE_COMMAND_NAME, 
+                                                          syncItem, sources[count]->getConfig().getType());
+
                                 if (syncItem) {  
-                                    // Fire Sync Item Event - Item Updated
-                                    fireSyncItemEvent(sources[count]->getConfig().getURI(), syncItem->getKey(), ITEM_UPDATED_BY_CLIENT);
-                                    delete syncItem; syncItem = NULL;
+                                    if (syncItemOffset == syncItem->getDataSize()) {
+                                        // Fire Sync Item Event - Item Updated
+                                        fireSyncItemEvent(sources[count]->getConfig().getURI(), syncItem->getKey(), ITEM_UPDATED_BY_CLIENT);
+                                        delete syncItem; syncItem = NULL;
+                                    } else {
+                                        // assert(msgSize >= maxMsgSize);
+                                        break;
+                                    }
                                 }
                                 else {
                                     step++;
@@ -1076,6 +1165,7 @@ int SyncManager::sync() {
                             }
 
                             syncItem = sources[count]->getFirstDeletedItem();
+                            syncItemOffset = 0;
 
                             step++;
                             if (syncItem == NULL)
@@ -1089,19 +1179,34 @@ int SyncManager::sync() {
                             do {
                                 if (syncItem == NULL) {
                                     syncItem = sources[count]->getNextDeletedItem();                       
-                                }
-                                if (modificationCommand == NULL) {
-                                    modificationCommand = syncMLBuilder.prepareModificationCommand(DELETE_COMMAND_NAME, 
-                                                                                                   syncItem, sources[count]->getConfig().getType());
-                                } else {
-                                    syncMLBuilder.addItem(modificationCommand, DELETE_COMMAND_NAME, 
-                                            syncItem, sources[count]->getConfig().getType());
+                                    syncItemOffset = 0;
                                 }
 
+                                if (tot &&
+                                    maxMsgSize &&
+                                    syncItem &&
+                                    msgSize + changeOverhead + syncItem->getDataSize() - syncItemOffset > maxMsgSize) {
+                                    // avoid adding another item that exceeds the message size
+                                    break;
+                                }
+
+                                msgSize += changeOverhead;
+                                msgSize +=
+                                    syncMLBuilder.addItem(modificationCommand,
+                                                          syncItemOffset,
+                                                          (maxMsgSize && loSupport) ? (maxMsgSize - msgSize) : LONG_MAX,
+                                                          DELETE_COMMAND_NAME, 
+                                                          syncItem, sources[count]->getConfig().getType());
+
                                 if (syncItem) {
-                                    // Fire Sync Item Event - Item Deleted
-                                    fireSyncItemEvent(sources[count]->getConfig().getURI(), syncItem->getKey(), ITEM_DELETED_BY_CLIENT);
-                                    delete syncItem; syncItem = NULL;
+                                    if (syncItemOffset == syncItem->getDataSize()) {
+                                        // Fire Sync Item Event - Item Deleted
+                                        fireSyncItemEvent(sources[count]->getConfig().getURI(), syncItem->getKey(), ITEM_DELETED_BY_CLIENT);
+                                        delete syncItem; syncItem = NULL;
+                                    } else {
+                                        // assert(msgSize >= maxMsgSize);
+                                        break;
+                                    }
                                 }
                                 else {
                                     step++;
@@ -1143,7 +1248,11 @@ int SyncManager::sync() {
             }
 
             // Synchronization message:
-            LOG.debug(MSG_MODIFICATION_MESSAGE);
+            long realMsgSize = strlen(msg);
+            LOG.debug("%s estimated size %ld, allowed size %ld, real size %ld / estimated size %ld = %ld%%",
+                      MSG_MODIFICATION_MESSAGE,
+                      msgSize, maxMsgSize, realMsgSize, msgSize,
+                      msgSize ? (100 * realMsgSize / msgSize) : 100);
             LOG.debug("%s", msg);
 
             //Fire Modifications Event
@@ -1244,7 +1353,7 @@ int SyncManager::sync() {
             if ((sources[count]->getSyncMode() != SYNC_ONE_WAY_FROM_CLIENT) &&
                 (sources[count]->getSyncMode() != SYNC_REFRESH_FROM_CLIENT))
             {
-                alert = syncMLBuilder.prepareRequestAlert(*sources[count]);
+                alert = syncMLBuilder.prepareAlert(*sources[count]);
                 commands->add(*alert);
                 deleteAlert(&alert);
             }
@@ -1625,17 +1734,11 @@ finally:
 
 }
 
-/**
- * Buid a new SyncItem, using the data in Item
- *
- * @param item - the item data
- * @param format - the format specified in the command, or NULL
- * @return - the new SyncItem. Must be deleted by the caller
- */
-Status *SyncManager::processSyncItem(Item* item, const CommandInfo &cmdInfo)
+Status *SyncManager::processSyncItem(Item* item, const CommandInfo &cmdInfo, SyncMLBuilder &syncMLBuilder)
 {
     int code = 0;
     const BCHAR* itemName;
+    Status *status = 0;
 
     Source* s = item->getSource();
     if (s) { 
@@ -1648,94 +1751,202 @@ Status *SyncManager::processSyncItem(Item* item, const CommandInfo &cmdInfo)
 
     // Fill item -------------------------------------------------
     wchar_t *iname = toWideChar(itemName);
-    SyncItem syncItem(iname);
-    delete [] iname;
-
-    ComplexData *cdata = item->getData();
-    if (cdata) {
-        BCHAR* data = cdata->getData();
-        BCHAR* format = 0;
-
-        //
-        // Retrieving how the content has been encoded
-        // and then processing the content accordingly
-        //
-        if (cmdInfo.format) {
-            format = cmdInfo.format;
-        }
-        else {
-            Meta* m = item->getMeta();
-            if (m) {
-                format = m->getFormat();                            
+    BOOL append = TRUE;
+    if (incomingItem) {
+        BOOL newItem = FALSE;
+        
+        if (iname) {
+            if (incomingItem->getKey()) {
+                if(strcmp(incomingItem->getKey(), iname)) {
+                    // another item before old one is complete
+                    newItem = TRUE;
+                }
+            } else {
+                incomingItem->setKey(iname);
             }
         }
-        if (format) {
+
+        // if no error yet, also check for the same command and same source
+        if (incomingItem->cmdName.c_str() && strcmp(incomingItem->cmdName.c_str(), cmdInfo.commandName) ||
+            count != incomingItem->sourceIndex) {
+            newItem = TRUE;
+        }
+        if (newItem) {
+            // send 223 alert:
+            //
+            // "The Alert should contain the source and/or target information from
+            // the original command to enable the sender to identify the failed command."
+            //
+            // The target information is the one from the item's source.
+            Alert *alert = syncMLBuilder.prepareAlert(*sources[incomingItem->sourceIndex], 223);
+            commands->add(*alert);
+            delete alert;
+
+            delete incomingItem;
+            incomingItem = NULL;
+        }
+    } else {
+        incomingItem = new IncomingSyncItem(iname, cmdInfo, count);
+
+        // incomplete item?
+        if (item->isMoreData()) {
+            // reserve buffer in advance, append below
+            long size = cmdInfo.size;
+            if (size < 0 || maxObjSize && size > maxObjSize) {
+                // invalid size, "Request entity too large"
+                status = syncMLBuilder.prepareItemStatus(cmdInfo.commandName, itemName, cmdInfo.cmdRef, 416);
+                delete incomingItem;
+                incomingItem = NULL;
+            } else {
+                incomingItem->setData(NULL, size);
+            }
+        } else {
+            // simply copy all data below
+            append = FALSE;
+        }
+    }
+    delete [] iname;
+
+    if (incomingItem) {
+        ComplexData *cdata = item->getData();
+        if (cdata) {
+            BCHAR* data = cdata->getData();
+            BCHAR* format = 0;
+
+            //
+            // Retrieving how the content has been encoded
+            // and then processing the content accordingly
+            //
+            if (cmdInfo.format) {
+                format = cmdInfo.format;
+            }
+            else {
+                Meta* m = item->getMeta();
+                if (m) {
+                    format = m->getFormat();                            
+                }
+            }
+
+            // figure out final item data (might be encoded)
             long size = 0;
-            char *convertedData = processItemContent(data, format, &size);
-            syncItem.setData(convertedData, size);
-            delete [] convertedData;
+            char *convertedData = NULL;
+            char *dataToAdd = NULL;
+            if (format) {
+                dataToAdd =
+                    convertedData = processItemContent(data, format, &size);
+            } else {
+                dataToAdd = data;
+                size = strlen(data);
+            }
+
+            // append or set new data
+            if (append) {
+                if (size + incomingItem->offset > incomingItem->getDataSize()) {
+                    // overflow, signal error: "Size mismatch"
+                    status = syncMLBuilder.prepareItemStatus(cmdInfo.commandName, itemName, cmdInfo.cmdRef, 424);
+                    delete incomingItem;
+                    incomingItem = NULL;
+                } else {
+                    memcpy((char *)incomingItem->getData() + incomingItem->offset, dataToAdd, size);
+                }
+            } else {
+                incomingItem->setData(dataToAdd, size);
+            }
+            if (incomingItem) {
+                incomingItem->offset += size;
+            }
+
+            if (convertedData) {
+                delete [] convertedData;
+            }
         }
-        else {
-            syncItem.setData(data, strlen(data));
+    }
+
+    if (incomingItem) {
+        if (cmdInfo.dataType) {
+            wchar_t *dtype = toWideChar(cmdInfo.dataType);
+            incomingItem->setDataType(dtype);
+            delete [] dtype;
         }
-    }
-    if (cmdInfo.dataType) {
-        wchar_t *dtype = toWideChar(cmdInfo.dataType);
-        syncItem.setDataType(dtype);
-        delete [] dtype;
-    }
-    wchar_t *sparent = toWideChar(item->getSourceParent());
-    syncItem.setSourceParent(sparent);
-    delete [] sparent;
-    wchar_t *tparent = toWideChar(item->getTargetParent());
-    syncItem.setTargetParent(tparent);
-    delete [] tparent;
+        wchar_t *sparent = toWideChar(item->getSourceParent());
+        incomingItem->setSourceParent(sparent);
+        delete [] sparent;
+        wchar_t *tparent = toWideChar(item->getTargetParent());
+        incomingItem->setTargetParent(tparent);
+        delete [] tparent;
 
-    syncItem.setModificationTime(sources[count]->getNextSync());
+        incomingItem->setModificationTime(sources[count]->getNextSync());
 
-    // Process item ------------------------------------------------------------
-    Status *status = 0;
-    if ( bstrcmp(cmdInfo.commandName, ADD) == 0) {  
-        // Fire Sync Item Event - New Item Added by Server
-        fireSyncItemEvent(sources[count]->getConfig().getURI(), syncItem.getKey(), ITEM_ADDED_BY_SERVER);
+        if (!item->isMoreData()) {
+            // sanity check: is the item complete?
+            if (incomingItem->offset == incomingItem->getDataSize()) {
+                // Process item ------------------------------------------------------------
+                if ( bstrcmp(cmdInfo.commandName, ADD) == 0) {  
+                    // Fire Sync Item Event - New Item Added by Server
+                    fireSyncItemEvent(sources[count]->getConfig().getURI(), incomingItem->getKey(), ITEM_ADDED_BY_SERVER);
 
-        syncItem.setState(SYNC_STATE_NEW);
-        code = sources[count]->addItem(syncItem);      
-        status = syncMLBuilder.prepareItemStatus(ADD, itemName, cmdInfo.cmdRef, code);
+                    incomingItem->setState(SYNC_STATE_NEW);
+                    code = sources[count]->addItem(*incomingItem);      
+                    status = syncMLBuilder.prepareItemStatus(ADD, itemName, cmdInfo.cmdRef, code);
 
-	    // Fire Sync Status Event: item status from client
-        fireSyncStatusEvent(status->getCmd(), status->getStatusCode(), sources[count]->getConfig().getURI(), syncItem.getKey(), CLIENT_STATUS);
+                    // Fire Sync Status Event: item status from client
+                    fireSyncStatusEvent(status->getCmd(), status->getStatusCode(), sources[count]->getConfig().getURI(), incomingItem->getKey(), CLIENT_STATUS);
 
-        // If the add was successful, set the id mapping
-        if (code >= 200 && code <= 299) {
-            BCHAR *key = toMultibyte(syncItem.getKey());
-            SyncMap syncMap(item->getSource()->getLocURI(), key);
-            mappings[count]->add(syncMap);
-            delete [] key;
-        }                    
-    }
-    else if (bstrcmp(cmdInfo.commandName, REPLACE) == 0) {  
-        // Fire Sync Item Event - Item Updated by Server
-        fireSyncItemEvent(sources[count]->getConfig().getURI(), syncItem.getKey(), ITEM_UPDATED_BY_SERVER);
+                    // If the add was successful, set the id mapping
+                    if (code >= 200 && code <= 299) {
+                        BCHAR *key = toMultibyte(incomingItem->getKey());
+                        SyncMap syncMap(item->getSource()->getLocURI(), key);
+                        mappings[count]->add(syncMap);
+                        delete [] key;
+                    }                    
+                }
+                else if (bstrcmp(cmdInfo.commandName, REPLACE) == 0) {  
+                    // Fire Sync Item Event - Item Updated by Server
+                    fireSyncItemEvent(sources[count]->getConfig().getURI(), incomingItem->getKey(), ITEM_UPDATED_BY_SERVER);
 
-        syncItem.setState(SYNC_STATE_UPDATED);
-        code = sources[count]->updateItem(syncItem);
-        status = syncMLBuilder.prepareItemStatus(REPLACE, itemName, cmdInfo.cmdRef, code);                
+                    incomingItem->setState(SYNC_STATE_UPDATED);
+                    code = sources[count]->updateItem(*incomingItem);
+                    status = syncMLBuilder.prepareItemStatus(REPLACE, itemName, cmdInfo.cmdRef, code);                
+            
+                    // Fire Sync Status Event: item status from client
+                    fireSyncStatusEvent(status->getCmd(), status->getStatusCode(), sources[count]->getConfig().getURI(), incomingItem->getKey(), CLIENT_STATUS);
+                }
+                else if (bstrcmp(cmdInfo.commandName, DEL) == 0) {
+                    // Fire Sync Item Event - Item Deleted by Server
+                    fireSyncItemEvent(sources[count]->getConfig().getURI(), incomingItem->getKey(), ITEM_DELETED_BY_SERVER);
 
-	    // Fire Sync Status Event: item status from client
-        fireSyncStatusEvent(status->getCmd(), status->getStatusCode(), sources[count]->getConfig().getURI(), syncItem.getKey(), CLIENT_STATUS);
-    }
-    else if (bstrcmp(cmdInfo.commandName, DEL) == 0) {
-        // Fire Sync Item Event - Item Deleted by Server
-        fireSyncItemEvent(sources[count]->getConfig().getURI(), syncItem.getKey(), ITEM_DELETED_BY_SERVER);
-
-        syncItem.setState(SYNC_STATE_DELETED);
-        code = sources[count]->deleteItem(syncItem);        
-        status = syncMLBuilder.prepareItemStatus(DEL, itemName, cmdInfo.cmdRef, code);           
+                    incomingItem->setState(SYNC_STATE_DELETED);
+                    code = sources[count]->deleteItem(*incomingItem);        
+                    status = syncMLBuilder.prepareItemStatus(DEL, itemName, cmdInfo.cmdRef, code);           
 	    
-        // Fire Sync Status Event: item status from client
-        fireSyncStatusEvent(status->getCmd(), status->getStatusCode(), sources[count]->getConfig().getURI(), syncItem.getKey(), CLIENT_STATUS);
-    }                
+                    // Fire Sync Status Event: item status from client
+                    fireSyncStatusEvent(status->getCmd(), status->getStatusCode(), sources[count]->getConfig().getURI(), incomingItem->getKey(), CLIENT_STATUS);
+                }
+
+                delete incomingItem;
+                incomingItem = NULL;
+            } else {
+                // error: incomplete item, but no more data - "Size Mismatch"
+                status = syncMLBuilder.prepareItemStatus(cmdInfo.commandName, itemName, cmdInfo.cmdRef, 424);
+                delete incomingItem;
+                incomingItem = NULL;
+            }
+        } else {
+            // keep the item, tell server "Chunked item accepted and buffered"
+            status = syncMLBuilder.prepareItemStatus(cmdInfo.commandName, itemName, cmdInfo.cmdRef, 214);
+        }
+    }
+
+    if (incomingItem) {
+        // Make sure that more data comes by asking for it.
+        // The standard says that if there are other commands, the 222 alert
+        // may be omitted, but because that's hard to determine here we always
+        // send it, just to be on the safe side.
+        Alert *alert = syncMLBuilder.prepareAlert(*sources[count], 222);
+        commands->add(*alert);
+        delete alert;
+    }
+    
     return status;
 }
 
@@ -1858,7 +2069,7 @@ DevInf *SyncManager::createDeviceInfo()
     devinfo->setDevID(config.getDeviceConfig().getDevID());
     devinfo->setDevTyp(config.getDeviceConfig().getDevType());
     devinfo->setUTC(config.getDeviceConfig().getUtc());
-    devinfo->setSupportLargeObjs(config.getDeviceConfig().getLoSupport());
+    devinfo->setSupportLargeObjs(loSupport);
     devinfo->setSupportNumberOfChanges(config.getDeviceConfig().getNocSupport());
 
     static const struct {
