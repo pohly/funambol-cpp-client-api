@@ -52,14 +52,15 @@
  *                        messages received from server (server to client)
  * maxModPerMsg         : The maximum number of modifications sent in each XML 
  *                        message from client to server
- * readBufferSize       : 
+ * readBufferSize       : Specifies the value for the size of the buffer used 
+ *                        to store the incoming stream from server (byte)
  * encryption           : Do we use ciphering?
  * userAgent            : The user agent string, will be attached to http 
  *                        messages to identify the client on server side.
  *                        It shoud be a short description with the client 
  *                        name plus its version
- * checkConn            : 
- * responseTimeout      : 
+ * checkConn            : Do we need to check if the GPRS connection is available?          <-- **** still used? ****
+ * responseTimeout      : The number of seconds of waiting response timeout
  * dirty                : The dirty flag, used to select which properties 
  *                        have been modified. Not used by now (T.B.D)
  */
