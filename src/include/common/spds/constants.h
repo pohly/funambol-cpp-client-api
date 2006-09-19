@@ -49,7 +49,7 @@ typedef enum SyncMode{
         SYNC_ONE_WAY_FROM_CLIENT_BY_SERVER = 207,
         SYNC_REFRESH_FROM_CLIENT_BY_SERVER = 208,
         SYNC_ONE_WAY_FROM_SERVER_BY_SERVER = 209,
-        SYNC_REFRESG_FROM_SERVER_BY_SERVER = 210,
+        SYNC_REFRESH_FROM_SERVER_BY_SERVER = 210,
         //---Funambol extension-----------------
         SYNC_ADDR_CHANGE_NOTIFICATION      = 745
 } SyncMode;

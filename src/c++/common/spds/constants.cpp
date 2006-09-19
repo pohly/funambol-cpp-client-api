@@ -55,7 +55,7 @@ char* retSyncMode(SyncMode sm)
 		case SYNC_ONE_WAY_FROM_SERVER_BY_SERVER:
 			return T("209");
 			break;
-		case SYNC_REFRESG_FROM_SERVER_BY_SERVER:
+		case SYNC_REFRESH_FROM_SERVER_BY_SERVER:
 			return T("210");
 			break;
 		default:
