@@ -70,8 +70,6 @@
 #undef WCHAR
 #define WCHAR char
 
-typedef char WCHAR;
-
 #define wsprintf sprintf
 #define _wfopen fopen
 #define wprintf printf
