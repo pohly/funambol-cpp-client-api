@@ -31,16 +31,16 @@
  * @param name - the node name
  *
  */
-ManagementNode::ManagementNode(const BCHAR* parent, const BCHAR* name) {
+ManagementNode::ManagementNode(const char* parent, const char* name) {
     context = stringdup(parent);
     this->name = stringdup(name);
 }
 
-ManagementNode::ManagementNode(const BCHAR* fullname) {
+ManagementNode::ManagementNode(const char* fullname) {
     if(setFullName(fullname)){
-        BCHAR msg[512];
+        char msg[512];
 
-        bsprintf(msg, T("Invalid context: %s"), fullname);
+        sprintf(msg, T("Invalid context: %s"), fullname);
         //TODO call ErrorHandler XXX
         LOG.error(msg);
     }
@@ -56,31 +56,31 @@ ManagementNode::~ManagementNode() {
 /*
  * Returns the full node name (in a new-allocated buffer)
  */
-BCHAR * ManagementNode::getFullName(){
-    BCHAR *ret = new BCHAR[bstrlen(context)+bstrlen(name)+2];
+char * ManagementNode::getFullName(){
+    char *ret = new char[strlen(context)+strlen(name)+2];
 
-    bsprintf(ret, T("%s/%s"), context, name);
+    sprintf(ret, T("%s/%s"), context, name);
 	return ret;
 }
 
-int ManagementNode::setFullName(const BCHAR *fullname) {
-    BCHAR* p;
+int ManagementNode::setFullName(const char *fullname) {
+    char* p;
 	int len;
 
-    p = bstrrchr((BCHAR*)fullname, CHR('/'));
+    p = strrchr((char*)fullname, CHR('/'));
 
     if ( !p )
         return -1;
 
 	len = p-fullname;
     context = stringdup(fullname, len);
-	p++; len=bstrlen(fullname)-len;
+	p++; len=strlen(fullname)-len;
 	name = stringdup(p, len);
 	
 	return 0;
 }
 
-const BCHAR *ManagementNode::getName() {
+const char *ManagementNode::getName() {
     return name;
 }
 

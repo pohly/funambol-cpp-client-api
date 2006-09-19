@@ -52,14 +52,14 @@ class Email : public ArrayElement {
         bool getReplied() { return replied; }
         void setReplied(bool r) { replied=r; }
         
-        const BCHAR * getReceived() { return received; }
-        void setReceived(const BCHAR * v) { received=v; }
+        const char * getReceived() { return received; }
+        void setReceived(const char * v) { received=v; }
 
-        const BCHAR * getCreated() { return created; }
-        void setCreated(const BCHAR * v) { created=v; }
+        const char * getCreated() { return created; }
+        void setCreated(const char * v) { created=v; }
 
-        const BCHAR * getModified() { return modified; }
-        void setModified(const BCHAR * v) { modified=v; }
+        const char * getModified() { return modified; }
+        void setModified(const char * v) { modified=v; }
 
         bool getDeleted() { return deleted; }
         void setDeleted(bool v) { deleted=v; }
@@ -71,8 +71,8 @@ class Email : public ArrayElement {
         void setMailMessage(const MailMessage& v) { emailItem = v; }
 
     // ---------------------------------------------------------- Public Methods
-        int parse(const BCHAR *syncmlData) { return 0; }          // TODO
-        BCHAR *format()                     { return wcsdup(T("")); } // TODO
+        int parse(const char *syncmlData) { return 0; }          // TODO
+        char *format()                     { return wcsdup(T("")); } // TODO
 
         ArrayElement* clone() { return new Email(*this); }
    

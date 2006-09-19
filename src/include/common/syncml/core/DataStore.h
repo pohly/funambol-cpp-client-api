@@ -33,7 +33,7 @@ class DataStore : public ArrayElement {
      // ------------------------------------------------------------ Private data
     private:
         SourceRef*       sourceRef;
-        BCHAR*         displayName;
+        char*          displayName;
         long             maxGUIDSize;
         ContentTypeInfo* rxPref;
         ArrayList*       rx; // ContentTypeInfo[]
@@ -72,7 +72,7 @@ class DataStore : public ArrayElement {
          *
          */
         DataStore(SourceRef* sourceRef,
-                  BCHAR* displayName,
+                  char*  displayName,
                   long maxGUIDSize,
                   ContentTypeInfo* rxPref,
                   ArrayList* rx,
@@ -101,7 +101,7 @@ class DataStore : public ArrayElement {
          *
          * @return the displayName properties
          */
-        BCHAR* getDisplayName(BCHAR* retDisplayName);
+        char*  getDisplayName(char*  retDisplayName);
 
         /**
          * Sets the displayName property
@@ -109,7 +109,7 @@ class DataStore : public ArrayElement {
          * @param displayName the displauName property
          *
          */
-        void setDisplayName(BCHAR* displayName);
+        void setDisplayName(char*  displayName);
 
         /**
          * Gets the maxGUIDSize properties

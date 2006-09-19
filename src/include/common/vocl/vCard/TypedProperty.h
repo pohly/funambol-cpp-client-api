@@ -33,7 +33,7 @@ class TypedProperty : public ArrayElement {
 
     protected:
         vCardProperty* p;
-        wchar_t*  t;
+        WCHAR*  t;
 
     // -------------------------------------------- Constructors and Destructors
     public:
@@ -67,14 +67,14 @@ class TypedProperty : public ArrayElement {
          *
          * @return the property type for this property
          */
-        wchar_t* getType(wchar_t* buf = NULL, int size = -1);
+        WCHAR* getType(WCHAR* buf = NULL, int size = -1);
 
         /**
          * Sets the property type
          *
          * @param type the property type
          */
-        void setType(wchar_t* type);
+        void setType(WCHAR* type);
 
         /**
          * Creates a new instance of TypedProperty from the content of this

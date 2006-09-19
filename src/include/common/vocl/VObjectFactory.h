@@ -6,7 +6,7 @@
 class VObjectFactory {
 
 public:
-    static VObject* createInstance(wchar_t* objType, wchar_t* objversion);
+    static VObject* createInstance(WCHAR* objType, WCHAR* objversion);
 };
 
 #endif

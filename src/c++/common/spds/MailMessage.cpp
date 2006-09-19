@@ -44,55 +44,55 @@
 #define CHARSET     T("charset=")
 
 // Header names' length
-static const unsigned char FROM_LEN = bstrlen(FROM);
-static const unsigned char TO_LEN   = bstrlen(TO);
-static const unsigned char CC_LEN   = bstrlen(CC);
-static const unsigned char BCC_LEN  = bstrlen(BCC);
-static const unsigned char DATE_LEN  = bstrlen(DATE);
-static const unsigned char SUBJECT_LEN = bstrlen(SUBJECT);
-static const unsigned char MIMETYPE_LEN = bstrlen(MIMETYPE);
-static const unsigned char MIMEVERS_LEN = bstrlen(MIMEVERS);
-static const unsigned char MESSAGEID_LEN = bstrlen(MESSAGEID);
-static const unsigned char DISPOSITION_LEN = bstrlen(DISPOSITION);
-static const unsigned char ENCODING_LEN = bstrlen(ENCODING);
+static const unsigned char FROM_LEN = strlen(FROM);
+static const unsigned char TO_LEN   = strlen(TO);
+static const unsigned char CC_LEN   = strlen(CC);
+static const unsigned char BCC_LEN  = strlen(BCC);
+static const unsigned char DATE_LEN  = strlen(DATE);
+static const unsigned char SUBJECT_LEN = strlen(SUBJECT);
+static const unsigned char MIMETYPE_LEN = strlen(MIMETYPE);
+static const unsigned char MIMEVERS_LEN = strlen(MIMEVERS);
+static const unsigned char MESSAGEID_LEN = strlen(MESSAGEID);
+static const unsigned char DISPOSITION_LEN = strlen(DISPOSITION);
+static const unsigned char ENCODING_LEN = strlen(ENCODING);
 
 //---------------------------------------------------------------- Accessors
 
-const BCHAR *MailMessage::getTo() const { return to.c_str(); } 
-void MailMessage::setTo(const BCHAR *to) { this->to = to; } 
+const char *MailMessage::getTo() const { return to.c_str(); } 
+void MailMessage::setTo(const char *to) { this->to = to; } 
 
-const BCHAR *MailMessage::getFrom() const { return from.c_str(); } 
-void MailMessage::setFrom(const BCHAR *from) { this->from = from; } 
+const char *MailMessage::getFrom() const { return from.c_str(); } 
+void MailMessage::setFrom(const char *from) { this->from = from; } 
 
-const BCHAR *MailMessage::getCc() const { return cc.c_str(); } 
-void MailMessage::setCc(const BCHAR *cc) { this->cc = cc; } 
+const char *MailMessage::getCc() const { return cc.c_str(); } 
+void MailMessage::setCc(const char *cc) { this->cc = cc; } 
 
-const BCHAR *MailMessage::getBcc() const { return bcc.c_str(); } 
-void MailMessage::setBcc(const BCHAR *bcc) { this->bcc = bcc; } 
+const char *MailMessage::getBcc() const { return bcc.c_str(); } 
+void MailMessage::setBcc(const char *bcc) { this->bcc = bcc; } 
 
-//        int addHeader(const BCHAR *name, const BCHAR *content);
-const BCHAR *MailMessage::getSubject() const { return subject.c_str(); }
-void MailMessage::setSubject(const BCHAR *subj) { subject = subj; }
+//        int addHeader(const char *name, const char *content);
+const char *MailMessage::getSubject() const { return subject.c_str(); }
+void MailMessage::setSubject(const char *subj) { subject = subj; }
 
 const BasicTime& MailMessage::getDate() const { return date; }
 void MailMessage::setDate(const BasicTime& v) { date = v; }
 
 const BasicTime& MailMessage::getReceived() const { return received; }
 
-const BCHAR * MailMessage::getContentType() const { return contentType; }
-void MailMessage::setContentType(const BCHAR *val) { contentType = val; }
+const char * MailMessage::getContentType() const { return contentType; }
+void MailMessage::setContentType(const char *val) { contentType = val; }
 
-const BCHAR * MailMessage::getBoundary() const { return boundary; }
-void MailMessage::setBoundary(const BCHAR *val) { boundary = val; }
+const char * MailMessage::getBoundary() const { return boundary; }
+void MailMessage::setBoundary(const char *val) { boundary = val; }
 
-const BCHAR * MailMessage::getMimeVersion() const { return mimeVersion; }
-void MailMessage::setMimeVersion(const BCHAR *val) { mimeVersion = val; }
+const char * MailMessage::getMimeVersion() const { return mimeVersion; }
+void MailMessage::setMimeVersion(const char *val) { mimeVersion = val; }
 
-const BCHAR * MailMessage::getMessageId() const { return messageId; }
-void MailMessage::setMessageId(const BCHAR *val) { messageId = val; }
+const char * MailMessage::getMessageId() const { return messageId; }
+void MailMessage::setMessageId(const char *val) { messageId = val; }
         
-const BCHAR* MailMessage::getEntryID() { return entryId.c_str(); }
-void MailMessage::setEntryID(const BCHAR* id) { entryId = id; }
+const char* MailMessage::getEntryID() { return entryId.c_str(); }
+void MailMessage::setEntryID(const char* id) { entryId = id; }
 
 BodyPart & MailMessage::getBody() { return body; }
 void MailMessage::setBody(BodyPart &body) { this->body = body; }
@@ -148,7 +148,7 @@ static StringBuffer formatBodyPart(const BodyPart &part)
     ret += NL;
     // Content
     if( part.getFilename() ) {
-        BCHAR *content = loadAndConvert(part.getContent(), part.getEncoding());
+        char *content = loadAndConvert(part.getContent(), part.getEncoding());
         ret += content;
         delete [] content;
     }
@@ -268,7 +268,7 @@ static bool getBodyPart(StringBuffer &rfcBody, StringBuffer &boundary,
 
         // These ones are parameters, and can appear on the same line.
         if( line->ifind(T("filename=")) != StringBuffer::npos ) {
-            size_t begin = line->find("filename=") + bstrlen("filename=");
+            size_t begin = line->find("filename=") + strlen("filename=");
             size_t end = begin;
             size_t quote = line->find(T("\""), begin);
             if (quote != StringBuffer::npos){
@@ -286,7 +286,7 @@ static bool getBodyPart(StringBuffer &rfcBody, StringBuffer &boundary,
         else {
             size_t begin=line->ifind(CHARSET);
             if( begin != StringBuffer::npos ) {
-                begin += bstrlen(CHARSET);
+                begin += strlen(CHARSET);
                 size_t end = begin;
                 size_t quote = line->find(T("\""), begin);
                 if (quote != StringBuffer::npos){
@@ -305,17 +305,17 @@ static bool getBodyPart(StringBuffer &rfcBody, StringBuffer &boundary,
 
     }
     // move to the beginning of the content
-    hdrlen += bstrlen(newline);
+    hdrlen += strlen(newline);
     // get bodypart content 
     if( !ret.getFilename() ) {
 		// this is not an attachment
-        if( bstrcmp(ret.getEncoding(), T("quoted-printable")) == 0 ) {
-            BCHAR *decoded = qp_decode( part.substr(hdrlen) );
+        if( strcmp(ret.getEncoding(), T("quoted-printable")) == 0 ) {
+            char *decoded = qp_decode( part.substr(hdrlen) );
             ret.setContent ( decoded );
             delete [] decoded;
         }
-        else if ( bstrcmp(ret.getEncoding(), T("base64")) == 0 ) {
-            BCHAR *decoded = "";
+        else if ( strcmp(ret.getEncoding(), T("base64")) == 0 ) {
+            char *decoded = "";
             size_t len = 0;
             if( uudecode( part.substr(hdrlen), &decoded, &len ) ) {
                 LOG.error("Error decoding content");
@@ -349,11 +349,11 @@ static bool getBodyPart(StringBuffer &rfcBody, StringBuffer &boundary,
 
 static void generateBoundary(StringBuffer& boundary)
 {
-    BCHAR buf[40];
+    char buf[40];
 	int i;
 
     *buf = '=';
-    memset(buf+1, '-', 9*sizeof(BCHAR));
+    memset(buf+1, '-', 9*sizeof(char));
     for(i=10; i<36; i++) {
         buf[i] = '0' + rand() % 10;
     }
@@ -365,7 +365,7 @@ static bool isAscii(const char *str){
     if(!str)
         return true;
 
-    for(size_t i = 0; i < bstrlen(str); i++) {
+    for(size_t i = 0; i < strlen(str); i++) {
         if ( ! isprint(str[i]) ){
 			return false;
         }
@@ -379,7 +379,7 @@ static bool isAscii(const char *str){
 /**
  * Format a mailmessage in a RFC2822 string
  */
-BCHAR * MailMessage::format() {
+char * MailMessage::format() {
 
     // If the message is empty, return null
     if ( empty() ) {
@@ -401,8 +401,8 @@ BCHAR * MailMessage::format() {
             if (headers.size() > 0) {
                 StringBuffer *line; int j = 0;
                 for (line=(StringBuffer *)headers.front(); line; line=(StringBuffer *)headers.next() ) {                                                  
-                    if (bstrstr(line->c_str(), T("format=")) != 0 
-                        || bstrstr(line->c_str(),T("reply-type=")) != 0 ) {
+                    if (strstr(line->c_str(), T("format=")) != 0 
+                        || strstr(line->c_str(),T("reply-type=")) != 0 ) {
                             contentType.append(T("; "));
                             line->replaceAll(T(";"), T(" "));
                             contentType.append(line->c_str());                     
@@ -440,7 +440,7 @@ BCHAR * MailMessage::format() {
         // FIXME
         // If the length of the encoded subject is bigger then 75 chars,
         // additional encoded words are needed, as required by rfc2047        
-        BCHAR* qp = 0;
+        char* qp = 0;
         qp = qp_encode(subject.c_str());
         ret += "=?utf-8?Q?";
         ret += qp;
@@ -491,7 +491,7 @@ BCHAR * MailMessage::format() {
 }
 
 
-int MailMessage::parse(const BCHAR *rfc2822, size_t len) {
+int MailMessage::parse(const char *rfc2822, size_t len) {
     StringBuffer s(rfc2822, len);
     int rc;
     
@@ -513,13 +513,13 @@ int MailMessage::parse(const BCHAR *rfc2822, size_t len) {
     else {
         body.setMimeType(contentType);
         // FIXME: handle all encodings, not only quoted-printable
-        if( bstrcmp(body.getEncoding(), T("quoted-printable")) == 0 ) {
-            BCHAR *decoded = qp_decode( rfcbody );
+        if( strcmp(body.getEncoding(), T("quoted-printable")) == 0 ) {
+            char *decoded = qp_decode( rfcbody );
             body.setContent ( decoded );
             delete [] decoded;
         }
-        else if ( bstrcmp(body.getEncoding(), T("base64")) == 0 ) {
-            BCHAR *decoded = NULL;
+        else if ( strcmp(body.getEncoding(), T("base64")) == 0 ) {
+            char *decoded = NULL;
             size_t len = 0;
             rc = uudecode( rfcbody, &decoded, &len ) ;
             if( !rc ) {
@@ -571,7 +571,7 @@ StringBuffer decodeWordFromHeader(StringBuffer encodedWord, StringBuffer& charse
     StringBuffer encText = encodedWord.substr(encTextStart);
     if (_stricmp(encoding.c_str(), "Q") == 0) {
         // quoted-printable
-        BCHAR* dec = qp_decode(encText.c_str());
+        char* dec = qp_decode(encText.c_str());
         decodedWord.append(dec);
         decodedWord.replaceAll("_", " ");         
     }
@@ -645,7 +645,7 @@ int MailMessage::parseHeaders(StringBuffer &rfcHeaders) {
                 StringBuffer charset;
                 StringBuffer decoded = decodeWordFromHeader(subject.substr(startPos, endPos - startPos), charset);
                 subject.replace(subject.substr(startPos, endPos + 2), decoded); 
-                wchar_t* wsubject = toWideChar(subject.c_str(), charset); 
+                WCHAR* wsubject = toWideChar(subject.c_str(), charset); 
                 subject = toMultibyte(wsubject);                
             }
         }
@@ -698,7 +698,7 @@ int MailMessage::parseHeaders(StringBuffer &rfcHeaders) {
                     StringBuffer charset;
                     StringBuffer decoded = decodeWordFromHeader(tmp.substr(startPos, endPos - startPos), charset);
                     tmp.replace(tmp.substr(startPos, endPos + 2), decoded); 
-                    wchar_t* wline = toWideChar(tmp.c_str(), charset); 
+                    WCHAR* wline = toWideChar(tmp.c_str(), charset); 
                     tmp = toMultibyte(wline);                
                     subject.append(tmp.substr(1));
                 }
@@ -718,7 +718,7 @@ int MailMessage::parseHeaders(StringBuffer &rfcHeaders) {
         else {
             size_t begin=line->ifind(CHARSET);
             if( begin != StringBuffer::npos ) {
-                begin += bstrlen(CHARSET);
+                begin += strlen(CHARSET);
                 size_t end = begin;
                 size_t quote = line->find(T("\""), begin);
                 if (quote != StringBuffer::npos){
@@ -789,7 +789,7 @@ ArrayElement* MailMessage::clone() {
 }
 
 
-void MailMessage::setHeaders(const BCHAR* chExtraHeaders) 
+void MailMessage::setHeaders(const char* chExtraHeaders) 
 {
     if(chExtraHeaders){
         StringBuffer extraHeaders(chExtraHeaders);
@@ -801,12 +801,12 @@ void MailMessage::setHeaders(const BCHAR* chExtraHeaders)
 /**
  * The result must be deleted by caller
  */
-BCHAR* MailMessage::getHeaders()
+char* MailMessage::getHeaders()
 {
     if( headers.size() ) {
         StringBuffer buff;    
         buff.join(headers, "\n");            
-        BCHAR* strHeaders = stringdup(buff.c_str(), buff.length() -1);
+        char* strHeaders = stringdup(buff.c_str(), buff.length() -1);
         return strHeaders;
     }
     else return 0;

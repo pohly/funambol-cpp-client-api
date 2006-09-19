@@ -25,7 +25,7 @@
 
 Log LOG = Log(false);
 
-wchar_t logmsg[512];
+WCHAR logmsg[512];
 
 Log::Log(BOOL resetLog) {
     if (resetLog) {
@@ -36,17 +36,17 @@ Log::Log(BOOL resetLog) {
 Log::~Log() {
 }
 
-void Log::error(const wchar_t* msg) {
+void Log::error(const WCHAR* msg) {
     printMessage(LOG_ERROR, msg);
 }
 
-void Log::info(const wchar_t* msg) {
+void Log::info(const WCHAR* msg) {
     if (logLevel >= LOG_LEVEL_INFO) {
         printMessage(LOG_INFO, msg);
     }
 }
 
-void Log::debug(const wchar_t* msg) {
+void Log::debug(const WCHAR* msg) {
     if (logLevel >= LOG_LEVEL_DEBUG) {
         printMessage(LOG_DEBUG, msg);
     }
@@ -57,8 +57,8 @@ void Log::debug(const wchar_t* msg) {
  * directly in the device debugger. Note that maybe some devices do not have
  * such feature.
  */
-void Log::trace(const wchar_t* msg) {
-    wchar_t* m = new wchar_t[wcslen(msg) + 10];
+void Log::trace(const WCHAR* msg) {
+    WCHAR* m = new WCHAR[wcslen(msg) + 10];
     wcsprintf(m, "%s\n", msg);
     DbgMessage(m);
     delete [] m;
@@ -83,8 +83,8 @@ void Log::reset() {
     db.create();
 }
 
-void Log::printMessage(const wchar_t* level, const wchar_t* msg) {
-    wchar_t* m = new wchar_t[wcslen(level) + wcslen(msg) + 20];
+void Log::printMessage(const WCHAR* level, const WCHAR* msg) {
+    WCHAR* m = new WCHAR[wcslen(level) + wcslen(msg) + 20];
 
     wcsprintf(m, TEXT("%s - %s\n"), level, msg);
 

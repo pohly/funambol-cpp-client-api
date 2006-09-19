@@ -33,7 +33,7 @@ ArrayList deletedItems2;
 int setAllItems2() {
     
     SyncItem item;
-    wchar_t name[64];
+    WCHAR name[64];
     char data[128];   
         
     for (int i = 0; i < 4; ++i) {
@@ -95,7 +95,7 @@ int setModifiedItems2Empty() {
 }
 
 
-TestSyncSource2::TestSyncSource2(const wchar_t* name, const SyncSourceConfig *sc) : SyncSource(name, sc) {
+TestSyncSource2::TestSyncSource2(const WCHAR* name, const SyncSourceConfig *sc) : SyncSource(name, sc) {
 }
 
 TestSyncSource2::~TestSyncSource2() {
@@ -180,7 +180,7 @@ SyncItem* TestSyncSource2::getNextDeletedItem() {
     return (SyncItem*)deletedItems2.get(cdeleted)->clone();
 }
 
-void TestSyncSource2::setItemStatus(const wchar_t* key, int status) {
+void TestSyncSource2::setItemStatus(const WCHAR* key, int status) {
     sprintf(logmsg, T("key: %s, status: %i"), key, status);
     LOG.debug(logmsg);
 }
@@ -196,7 +196,7 @@ int TestSyncSource2::addItem(SyncItem& item) {
     LOG.info(data);
     delete [] data;
     
-    wchar_t *luid = new wchar_t[wcslen(item.getKey())+10];
+    WCHAR *luid = new WCHAR[wcslen(item.getKey())+10];
     wsprintf(luid, TEXT("%s-luid"), item.getKey());
     item.setKey(luid);
     delete [] luid;

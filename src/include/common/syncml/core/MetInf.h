@@ -33,11 +33,11 @@ class MetInf {
     
      // ------------------------------------------------------------ Private data
     private:
-        BCHAR*     format    ;
-        BCHAR*     type      ;
-        BCHAR*     mark      ;
+        char*      format    ;
+        char*      type      ;
+        char*      mark      ;
         Anchor*      anchor    ;
-        BCHAR*     version   ;
+        char*      version   ;
         NextNonce*   nextNonce ;
         long         maxMsgSize;
         long         maxObjSize;
@@ -60,12 +60,12 @@ class MetInf {
          * @param memoryInfo memory information
          *
          */
-        void set(BCHAR*    format    ,
-                 BCHAR*    type      ,
-                 BCHAR*    mark      ,
+        void set(char*     format    ,
+                 char*     type      ,
+                 char*     mark      ,
                  long        size      ,
                  Anchor*     anchor    ,
-                 BCHAR*    version   ,
+                 char*     version   ,
                  NextNonce*  nonce     ,
                  long        maxMsgSize,
                  long        maxObjSize,
@@ -95,12 +95,12 @@ class MetInf {
      * @param mem the memory information
      *
      */
-    MetInf(BCHAR*    format    ,
-           BCHAR*    type      ,
-           BCHAR*    mark      ,
+    MetInf(char*     format    ,
+           char*     type      ,
+           char*     mark      ,
            long        size      ,
            Anchor*     anchor    ,
-           BCHAR*    version   ,
+           char*     version   ,
            NextNonce*  nonce     ,
            long        maxMsgSize,
            long        maxObjSize,
@@ -127,42 +127,42 @@ class MetInf {
      *
      * @return format
      */
-    BCHAR* getFormat(BCHAR* retformat);
+    char*  getFormat(char*  retformat);
 
     /**
      * Sets format
      *
      * @param format the new format value
      */
-    void setFormat(BCHAR* format);
+    void setFormat(char*  format);
 
     /**
      * Returns type
      *
      * @return type
      */
-    BCHAR* getType(BCHAR* retType);
+    char*  getType(char*  retType);
 
     /**
      * Sets type
      *
      * @param type the new type value
      */
-    void setType(BCHAR* type);
+    void setType(char*  type);
     
     /**
      * Returns mark
      *
      * @return mark
      */
-    BCHAR* getMark(BCHAR* retMark) ;
+    char*  getMark(char*  retMark) ;
 
     /**
      * Sets mark
      *
      * @param mark the new mark value
      */
-    void setMark(BCHAR* mark);
+    void setMark(char*  mark);
 
      /**
      * Sets emi
@@ -260,14 +260,14 @@ class MetInf {
 	 *
 	 * @return version
 	 */
-	BCHAR* getVersion(BCHAR* retVersion);
+	char*  getVersion(char*  retVersion);
 
 	/**
 	 * Sets version
 	 *
 	 * @param version the new version value
 	 */
-	void setVersion(BCHAR* version);
+	void setVersion(char*  version);
 
 	MetInf* clone();
 

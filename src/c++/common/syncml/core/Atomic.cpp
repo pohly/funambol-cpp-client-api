@@ -20,8 +20,8 @@
 #include "syncml/core/Atomic.h"
      
 Atomic::Atomic() {
-    COMMAND_NAME = new BCHAR[bstrlen(ATOMIC_COMMAND_NAME) + 1];
-    bsprintf(COMMAND_NAME, ATOMIC_COMMAND_NAME);
+    COMMAND_NAME = new char[strlen(ATOMIC_COMMAND_NAME) + 1];
+    sprintf(COMMAND_NAME, ATOMIC_COMMAND_NAME);
     commands = new ArrayList();
 }
 
@@ -49,8 +49,8 @@ Atomic::Atomic( CmdID*     cmdID,
                 ArrayList* commands) : AbstractCommand(cmdID) {
     
     this->commands = new ArrayList();
-    COMMAND_NAME = new BCHAR[bstrlen(ATOMIC_COMMAND_NAME) + 1];
-    bsprintf(COMMAND_NAME, ATOMIC_COMMAND_NAME);
+    COMMAND_NAME = new char[strlen(ATOMIC_COMMAND_NAME) + 1];
+    sprintf(COMMAND_NAME, ATOMIC_COMMAND_NAME);
 
     setNoResp(noResp);
     setMeta(meta);
@@ -95,7 +95,7 @@ void Atomic::setCommands(ArrayList* commands) {
 *
 * @return the command name property
 */ 
-BCHAR* Atomic::getName() {
+char* Atomic::getName() {
     return COMMAND_NAME;
 }
 

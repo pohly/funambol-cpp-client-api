@@ -26,20 +26,20 @@
 
 //--------------------------------------------------------------- Static functions
 
-static const BCHAR *findElementContent(const BCHAR *xml,
-                          const BCHAR *openTag, const BCHAR *closeTag,
+static const char *findElementContent(const char *xml,
+                          const char *openTag, const char *closeTag,
                           unsigned int* pos     ,
                           unsigned int* startPos,
                           unsigned int* endPos  )
 {
-    const BCHAR *p1, *p2, *xmlptr = xml;
+    const char *p1, *p2, *xmlptr = xml;
 
     if (pos) {
         *pos = 0;
     }
 
     do {
-        p1 = bstrstr(xmlptr, openTag);
+        p1 = strstr(xmlptr, openTag);
         p2 = NULL;
 
         if (!p1) {
@@ -48,7 +48,7 @@ static const BCHAR *findElementContent(const BCHAR *xml,
             return 0;
         }
         
-        p1 += bstrlen(openTag); // move to end of tag
+        p1 += strlen(openTag); // move to end of tag
 
         // Check the tag type
         switch( *p1 ){
@@ -77,7 +77,7 @@ static const BCHAR *findElementContent(const BCHAR *xml,
                     return 0;
                 }
                 // Find the closing tag
-                p2 = bstrstr(p1, closeTag);
+                p2 = strstr(p1, closeTag);
                 break;
             case '/':
                 p1++;
@@ -93,7 +93,7 @@ static const BCHAR *findElementContent(const BCHAR *xml,
                 break;
             case '\n':
                 p1++;
-                p2 = bstrstr(p1, closeTag);
+                p2 = strstr(p1, closeTag);
                 break;
             default:
                 // This is not the searched tag, search again
@@ -124,40 +124,40 @@ static const BCHAR *findElementContent(const BCHAR *xml,
     if (pos) {
         *pos = p2-xml;
         if (closeTag){
-            *pos += bstrlen(closeTag);
+            *pos += strlen(closeTag);
         }
     }
 
     return p1;
 }
 
-const BCHAR* XMLProcessor::getElementContent(const BCHAR* xml,
-                                       const BCHAR* tag,
+const char* XMLProcessor::getElementContent(const char* xml,
+                                       const char* tag,
                                        unsigned int* pos,
                                        unsigned int* startPos,
                                        unsigned int* endPos  )
 {        
-    BCHAR *openTag = 0;
-    BCHAR *closeTag = 0;
+    char *openTag = 0;
+    char *closeTag = 0;
     
     if (!xml) {
         return 0;
     }
 
-    size_t l = bstrlen(tag);
+    size_t l = strlen(tag);
 
-    if(bstrcmp(tag, T("CDATA")) == 0) {
+    if(strcmp(tag, T("CDATA")) == 0) {
         openTag = stringdup(T("<![CDATA["));
         closeTag = stringdup(T("]]>"));
     }
     else {
-        openTag = new BCHAR[l+10];
-        closeTag = new BCHAR[l+10];
-        bsprintf(openTag, T("<%s"), tag);
-        bsprintf(closeTag, T("</%s>"), tag);
+        openTag = new char[l+10];
+        closeTag = new char[l+10];
+        sprintf(openTag, T("<%s"), tag);
+        sprintf(closeTag, T("</%s>"), tag);
     }
 
-    const BCHAR *ret = findElementContent(xml, openTag, closeTag, pos, startPos, endPos);
+    const char *ret = findElementContent(xml, openTag, closeTag, pos, startPos, endPos);
 
     if (openTag)
         delete [] openTag;
@@ -167,11 +167,11 @@ const BCHAR* XMLProcessor::getElementContent(const BCHAR* xml,
     return ret;
 }
 
-BCHAR* XMLProcessor::getContent(const BCHAR* xml,
+char* XMLProcessor::getContent(const char* xml,
                                 unsigned int startPos,
                                 unsigned int endPos  ) {
 
-    BCHAR * ret = NULL;
+    char * ret = NULL;
 
     if (!xml) {
         return 0;
@@ -179,7 +179,7 @@ BCHAR* XMLProcessor::getContent(const BCHAR* xml,
     if (endPos < startPos) {
         return 0;
     }
-    if (bstrlen(xml) < endPos - startPos) {
+    if (strlen(xml) < endPos - startPos) {
         return 0;
     }
 
@@ -196,21 +196,21 @@ BCHAR* XMLProcessor::getContent(const BCHAR* xml,
         pos++;
     }
 
-    const BCHAR cdataStart[] = T("<![CDATA[");
+    const char cdataStart[] = T("<![CDATA[");
     const int cdataStartLen = sizeof(cdataStart) - 1;
-    const BCHAR cdataEnd[] = T("]]>");
+    const char cdataEnd[] = T("]]>");
     const int cdataEndLen = sizeof(cdataEnd) - 1;
 
     // strip CDATA markers at start and end?
     if (!isLeaf &&
         endPos - pos > cdataStartLen + cdataEndLen &&
-        !bstrncmp(xml + pos, cdataStart, cdataStartLen)) {
+        !strncmp(xml + pos, cdataStart, cdataStartLen)) {
         // yep, copy content verbatim;
         // search real end of data first
         pos += cdataStartLen;
         unsigned int cdataEndPos = endPos;
         while (cdataEndPos - cdataEndLen > pos) {
-            if (!bstrncmp(xml + cdataEndPos - cdataEndLen,
+            if (!strncmp(xml + cdataEndPos - cdataEndLen,
                           cdataEnd,
                           cdataEndLen)) {
                 // found "]]>"
@@ -220,8 +220,8 @@ BCHAR* XMLProcessor::getContent(const BCHAR* xml,
             cdataEndPos--;
         }
         
-        ret = new BCHAR[cdataEndPos - pos + 1];
-        bstrncpy(ret, xml + pos, cdataEndPos - pos);
+        ret = new char[cdataEndPos - pos + 1];
+        strncpy(ret, xml + pos, cdataEndPos - pos);
         ret[cdataEndPos - pos] = 0;
     } else if (isLeaf) {
         // Decode content of final element:
@@ -237,16 +237,16 @@ BCHAR* XMLProcessor::getContent(const BCHAR* xml,
         ret = stringdup(tmp.c_str());
     } else {
         size_t len = endPos - startPos;
-        ret = new BCHAR [len + 1];
-        memcpy( ret, xml + startPos, len * sizeof(BCHAR));
+        ret = new char [len + 1];
+        memcpy( ret, xml + startPos, len * sizeof(char));
         ret[len] = 0;
     }
 
     return ret;
 }
 
-BCHAR* XMLProcessor::getElementContent(const BCHAR* xml,
-                                       const BCHAR* tag,
+char* XMLProcessor::getElementContent(const char* xml,
+                                       const char* tag,
                                        unsigned int* pos)
 {
     unsigned int start, end;
@@ -261,7 +261,7 @@ BCHAR* XMLProcessor::getElementContent(const BCHAR* xml,
 * It returns the number of the tag in the xml string
 */
 
-int XMLProcessor::countElementTag(BCHAR* xml, BCHAR* tag) {
+int XMLProcessor::countElementTag(char* xml, char* tag) {
 
     unsigned int count = 0, pos = 0, previous = 0;
     
@@ -279,15 +279,15 @@ int XMLProcessor::countElementTag(BCHAR* xml, BCHAR* tag) {
 * the name of the token. 
 * If <tag xmlns...> it returns "tag"
 * The "pos" argument will contain the position of the close <tag/>
-* The return value is a new BCHAR* and must be fred by the caller. If no tag is found, NULL is returned
+* The return value is a new char* and must be fred by the caller. If no tag is found, NULL is returned
 */
-BCHAR* XMLProcessor::getNextTag(BCHAR* xml, int* pos) {
+char* XMLProcessor::getNextTag(char* xml, int* pos) {
     
-    BCHAR* p1, *p2, *p4, *p3 = NULL, *ret = NULL;
+    char* p1, *p2, *p4, *p3 = NULL, *ret = NULL;
     p1 = p2 = p4 = xml;
     int i = 0, k = 0, len = 0;
     BOOL found = FALSE;
-    len = bstrlen(xml);     
+    len = strlen(xml);     
     
     for (i = 0; i < len; i++) {
         if (found) {
@@ -317,8 +317,8 @@ BCHAR* XMLProcessor::getNextTag(BCHAR* xml, int* pos) {
                 if (p3) {                    
                     p1 = p3;
                 }
-                ret = new BCHAR[(p1)-(p2)];
-                bstrncpy(ret, p2+1, (p1)-(p2+1));
+                ret = new char[(p1)-(p2)];
+                strncpy(ret, p2+1, (p1)-(p2+1));
                 ret[(p1)-(p2+1)] = 0;
                 return ret;
                 break;
@@ -335,18 +335,18 @@ BCHAR* XMLProcessor::getNextTag(BCHAR* xml, int* pos) {
 /*
 * count the number of "&" (passed as a string) in the token. 
 */
-int XMLProcessor::countAnd(BCHAR* token) {
+int XMLProcessor::countAnd(char* token) {
     return countChar(token, T("&"));
 }
 
-int XMLProcessor::countChar(BCHAR* token, BCHAR* element) {
+int XMLProcessor::countChar(char* token, char* element) {
 
-    BCHAR* p1, *p2;
+    char* p1, *p2;
     p1 = p2 = token;
     int i = 0, k = 0, len = 0;
 
-    while (bstrstr(p1, element) != NULL) {
-        len = bstrlen(p2);        
+    while (strstr(p1, element) != NULL) {
+        len = strlen(p2);        
         for (k = 0; k < len; k++) {             
             if (*p1 == 0) {
                 break;
@@ -386,15 +386,15 @@ int XMLProcessor::countChar(BCHAR* token, BCHAR* element) {
  </SyncBody>
 */
 
-BCHAR* XMLProcessor::getElementContentExcept(BCHAR*      xmlPtr    ,
-                                               BCHAR*      tag       ,
-                                               BCHAR*      except    ,
+char* XMLProcessor::getElementContentExcept(char*      xmlPtr    ,
+                                               char*      tag       ,
+                                               char*      except    ,
                                                unsigned int* post) {
     
-    BCHAR*  ret    = NULL;
-    const BCHAR*  found  = NULL;
-    BCHAR*  xml    = NULL;
-    BCHAR** array = NULL;
+    char*  ret    = NULL;
+    const char*  found  = NULL;
+    char*  xml    = NULL;
+    char** array = NULL;
     int*  validElement = NULL;   
     int count        = 0, countTag = 0;
     BOOL notValid  = FALSE;
@@ -419,7 +419,7 @@ BCHAR* XMLProcessor::getElementContentExcept(BCHAR*      xmlPtr    ,
     count = countAnd(except);    
     count++;
     
-    array = new BCHAR*[count + 1];
+    array = new char*[count + 1];
 	int l;
     for (l = 0; l <= count; l++) {
         array[l] = NULL;
@@ -434,13 +434,13 @@ BCHAR* XMLProcessor::getElementContentExcept(BCHAR*      xmlPtr    ,
         }
     }
 
-    BCHAR* internal = stringdup(except);
-    BCHAR* p1, *p2;
+    char* internal = stringdup(except);
+    char* p1, *p2;
     p1 = p2 = internal;
     int i = 0, k = 0, len = 0;
 
-    while (bstrstr(p2, T("&")) != NULL) {
-        len = bstrlen(p2);        
+    while (strstr(p2, T("&")) != NULL) {
+        len = strlen(p2);        
         for (k = 0; k < len; k++) {             
             if (*p1 == 0) {
                 break;
@@ -516,7 +516,7 @@ BCHAR* XMLProcessor::getElementContentExcept(BCHAR*      xmlPtr    ,
         } while(array[i] != NULL);
 
         if (count > 1) {
-            BCHAR* tmp = stringdup(array[0]);
+            char* tmp = stringdup(array[0]);
     
             for (int m = 0; m < count - 1; m++) {
                 if (array[m]) { delete [] array[m]; array[m] = NULL; }
@@ -581,7 +581,7 @@ BCHAR* XMLProcessor::getElementContentExcept(BCHAR*      xmlPtr    ,
 * Note the startLevel declaration and initialization to -1 value
 *
 *
-*    BCHAR* p = NULL;
+*    char* p = NULL;
 *    unsigned int pos = 0, previous = 0;
 *    int startLevel = -1;
 *    while ((p = XMLProcessor::getElementContentLevel(&xml[pos], T("Add"), 0, &startLevel, &pos)) != NULL) {        
@@ -591,15 +591,15 @@ BCHAR* XMLProcessor::getElementContentExcept(BCHAR*      xmlPtr    ,
 *
 */
 
-BCHAR* XMLProcessor::getElementContentLevel(BCHAR*      xml   ,
-                                              BCHAR*      tag   ,                                              
+char* XMLProcessor::getElementContentLevel(char*      xml   ,
+                                              char*      tag   ,                                              
                                               unsigned int* pos, 
                                               int           lev ,   
                                               int*          startLevel)  {
     
-    BCHAR* p1       = NULL;
-    BCHAR* p2       = NULL;
-    BCHAR* ret      = NULL;
+    char* p1       = NULL;
+    char* p2       = NULL;
+    char* ret      = NULL;
     BOOL openBracket  = FALSE;  // <
     BOOL closeBracket = FALSE;  // >
     BOOL aloneBracket = FALSE;  // </
@@ -607,7 +607,7 @@ BCHAR* XMLProcessor::getElementContentLevel(BCHAR*      xml   ,
     BOOL openTag      = FALSE;
     BOOL closeTag     = FALSE;
 
-    BCHAR tagNameFound[40];
+    char tagNameFound[40];
     
     int level               = -1;
     unsigned int xmlLength  = (unsigned int)-1;
@@ -623,8 +623,8 @@ BCHAR* XMLProcessor::getElementContentLevel(BCHAR*      xml   ,
         return getElementContent(xml, tag, pos);
     }        
    
-    xmlLength = bstrlen(xml);
-    l = bstrlen(tag);
+    xmlLength = strlen(xml);
+    l = strlen(tag);
 
     if (pos != NULL) {
         *pos = 0;
@@ -636,12 +636,12 @@ BCHAR* XMLProcessor::getElementContentLevel(BCHAR*      xml   ,
     p1 = p2 = xml;
     
     for (i = 0; i < xmlLength; i ++) {
-        if (!bstrncmp(p1 + i, T("<![CDATA["), bstrlen(T("<![CDATA[")))) {
+        if (!strncmp(p1 + i, T("<![CDATA["), strlen(T("<![CDATA[")))) {
             // skip over content
             while(p1[i]) {
                 i++;
-                if (!bstrcmp(p1 + i, T("]]>"))) {
-                    i += bstrlen(T("]]>"));
+                if (!strcmp(p1 + i, T("]]>"))) {
+                    i += strlen(T("]]>"));
                     break;
                 }
             }
@@ -699,9 +699,9 @@ BCHAR* XMLProcessor::getElementContentLevel(BCHAR*      xml   ,
         }         
           if (openTag && openBracket && closeBracket) {
             int n = (&p1[i] - p2 - 1);
-            bstrncpy(tagNameFound, p2 + 1, n);         
+            strncpy(tagNameFound, p2 + 1, n);         
             tagNameFound[n] = 0;
-            if (bstrcmp(tagNameFound, tag) == 0 && (level == lev)) {
+            if (strcmp(tagNameFound, tag) == 0 && (level == lev)) {
                 unsigned int internalPos;
                 ret = getElementContent(p2, tag, &internalPos);
                 if (pos) {
@@ -737,46 +737,46 @@ finally:
  * @param startPos - return value - the start pos of the attribute list
  * @param endPos - return value - the end position of the attribute list
  */
-const BCHAR* XMLProcessor::getElementAttributes(const BCHAR* xml,
-                                          const BCHAR* tag,
+const char* XMLProcessor::getElementAttributes(const char* xml,
+                                          const char* tag,
                                           unsigned int* startPos,
                                           unsigned int* endPos, 
                                           bool escaped) {
         
-    const BCHAR* p1 = NULL;
-    const BCHAR* p2 = NULL;
+    const char* p1 = NULL;
+    const char* p2 = NULL;
     BOOL charFound  = FALSE;
-    unsigned int l = bstrlen(tag);
+    unsigned int l = strlen(tag);
 
     // example ot tag with attribute list
     // <body enc="base64">
-    BCHAR *openTag = 0; //<tag
+    char *openTag = 0; //<tag
     
     if (!xml) {
         goto finally;
     }
 
-    if(bstrcmp(tag, T("CDATA")) == 0) {
+    if(strcmp(tag, T("CDATA")) == 0) {
         goto finally;
     }
     else {
-        openTag = new BCHAR[l+10];
+        openTag = new char[l+10];
         if (escaped){
-            bsprintf(openTag, T("&lt;%s "), tag);
+            sprintf(openTag, T("&lt;%s "), tag);
         }
         else{
-            bsprintf(openTag, T("<%s "), tag);
+            sprintf(openTag, T("<%s "), tag);
         }
     }
 
-    p1 = bstrstr(xml, openTag);
+    p1 = strstr(xml, openTag);
 
     if (!p1) {
         LOG.info("XMLProcessor: tag %s not found", tag);
         goto finally;
     }
     // move to the beginning of the attribute list
-    p1 += bstrlen(openTag);
+    p1 += strlen(openTag);
 
     // find the end of the tag
     for (p2 = p1; *p2 != '>'; p2++) {
@@ -803,7 +803,7 @@ const BCHAR* XMLProcessor::getElementAttributes(const BCHAR* xml,
 }
 
 
-StringBuffer XMLProcessor::makeElement(const BCHAR* tag, const BCHAR* val, const BCHAR* attr)
+StringBuffer XMLProcessor::makeElement(const char* tag, const char* val, const char* attr)
 {
     StringBuffer s;
         
@@ -812,9 +812,9 @@ StringBuffer XMLProcessor::makeElement(const BCHAR* tag, const BCHAR* val, const
     if (!val[0])
         return s;
     
-    size_t len = bstrlen(tag);
-    BCHAR* t1 = new BCHAR[len + 4]; // <  >  0, whitout closing >
-    BCHAR* t2 = new BCHAR[len + 6]; // </ > \n 0
+    size_t len = strlen(tag);
+    char* t1 = new char[len + 4]; // <  >  0, whitout closing >
+    char* t2 = new char[len + 6]; // </ > \n 0
 
     sprintf(t1, T("<%s"), tag);    
     sprintf(t2, T("</%s>\n"), tag);
@@ -835,8 +835,8 @@ StringBuffer XMLProcessor::makeElement(const BCHAR* tag, const BCHAR* val, const
 }
 
 
-StringBuffer XMLProcessor::makeElement(const BCHAR* tag, 
-                                    const BCHAR* val,
+StringBuffer XMLProcessor::makeElement(const char* tag, 
+                                    const char* val,
                                     ArrayList attrList) {
 
     StringBuffer s;

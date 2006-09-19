@@ -30,7 +30,7 @@
 /**
  * Creates an empty property
  */
-vCardProperty::vCardProperty (wchar_t* v) {
+vCardProperty::vCardProperty (WCHAR* v) {
     encoding      = NULL;
     language      = NULL;
     chrset        = NULL;
@@ -55,7 +55,7 @@ vCardProperty::~vCardProperty() {
     }
 }
 
-wchar_t* vCardProperty::getEncoding (wchar_t* buf, int size) {
+WCHAR* vCardProperty::getEncoding (WCHAR* buf, int size) {
     if (buf == NULL) {
         return encoding;
     }
@@ -69,7 +69,7 @@ wchar_t* vCardProperty::getEncoding (wchar_t* buf, int size) {
     return buf;
 }
 
-wchar_t* vCardProperty::getLanguage (wchar_t* buf, int size) {
+WCHAR* vCardProperty::getLanguage (WCHAR* buf, int size) {
     if (buf == NULL) {
         return language;
     }
@@ -83,7 +83,7 @@ wchar_t* vCardProperty::getLanguage (wchar_t* buf, int size) {
     return buf;
 }
 
-wchar_t* vCardProperty::getValue (wchar_t* buf, int size) {
+WCHAR* vCardProperty::getValue (WCHAR* buf, int size) {
     if (buf == NULL) {
         return value;
     }
@@ -97,7 +97,7 @@ wchar_t* vCardProperty::getValue (wchar_t* buf, int size) {
     return buf;
 }
 
-wchar_t* vCardProperty::getCharset (wchar_t* buf, int size) {
+WCHAR* vCardProperty::getCharset (WCHAR* buf, int size) {
     if (buf == NULL) {
         return chrset;
     }
@@ -111,24 +111,24 @@ wchar_t* vCardProperty::getCharset (wchar_t* buf, int size) {
     return buf;
 }
 
-void vCardProperty::setEncoding (wchar_t* e) {
+void vCardProperty::setEncoding (WCHAR* e) {
     set(&encoding, e);
 }
 
-void vCardProperty::setLanguage (wchar_t* l) {
+void vCardProperty::setLanguage (WCHAR* l) {
     set(&language, l);
 }
 
-void vCardProperty::setValue (wchar_t* v) {
+void vCardProperty::setValue (WCHAR* v) {
     set(&value, v);
 }
 
-void vCardProperty::setCharset (wchar_t* c) {
+void vCardProperty::setCharset (WCHAR* c) {
     set(&chrset, c);
 }
 
 
-void vCardProperty::set(wchar_t** property, wchar_t* v) {
+void vCardProperty::set(WCHAR** property, WCHAR* v) {
     if (*property) {
         delete [] *property;
     }

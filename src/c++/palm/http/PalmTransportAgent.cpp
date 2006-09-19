@@ -62,13 +62,13 @@ void PalmTransportAgent::init() {
 
 }
 
-wchar_t* PalmTransportAgent::sendMessage(wchar_t* msg) {
+WCHAR* PalmTransportAgent::sendMessage(WCHAR* msg) {
 
     int status = 0;
 
     char*    body    = NULL;
     char*    content = NULL;
-    wchar_t* ret     = NULL;
+    WCHAR* ret     = NULL;
 
     int contentLength = 0;
 

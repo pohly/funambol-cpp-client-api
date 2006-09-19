@@ -29,7 +29,7 @@
 class Atomic : public AbstractCommand {
      // ------------------------------------------------------------ Private data
     private:
-       BCHAR* COMMAND_NAME;
+       char*  COMMAND_NAME;
        ArrayList* commands;
     
     // ---------------------------------------------------------- Public data    
@@ -71,7 +71,7 @@ class Atomic : public AbstractCommand {
      *
      * @return the command name property
      */ 
-    BCHAR* getName();
+    char*  getName();
 
     ArrayElement* clone();    
    

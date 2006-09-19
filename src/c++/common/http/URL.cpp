@@ -31,7 +31,7 @@
  *
  * @param url the URL
  */
-URL::URL(const BCHAR* url) : fullURL(NULL), protocol(NULL), host(NULL), resource(NULL){
+URL::URL(const char* url) : fullURL(NULL), protocol(NULL), host(NULL), resource(NULL){
     setURL(url);
 }
 
@@ -64,7 +64,7 @@ void URL::setURL(URL& url) {
     setURL(url.fullURL, url.protocol, url.host, url.resource, url.port);
 }
 
-void URL::setURL(BCHAR* u, BCHAR* p, BCHAR* h, BCHAR*r, unsigned int port) {
+void URL::setURL(char* u, char* p, char* h, char*r, unsigned int port) {
     if (fullURL) {
         delete [] fullURL; fullURL = NULL;
     }
@@ -107,27 +107,27 @@ void URL::setURL(BCHAR* u, BCHAR* p, BCHAR* h, BCHAR*r, unsigned int port) {
     }
 }
 
-void URL::setURL(const BCHAR* url) {
-    if ((url == NULL) || (bstrlen(url) == 0)) {
+void URL::setURL(const char* url) {
+    if ((url == NULL) || (strlen(url) == 0)) {
         return;
     }
 
     int size;
 
-    BCHAR* s = NULL;
-    BCHAR* q = NULL;
+    char* s = NULL;
+    char* q = NULL;
 
     //
     // protocol (mandatory)
     //
-    s = bstrstr((BCHAR*)url, T("://"));
+    s = strstr((char*)url, T("://"));
     if ((s == NULL) || (s == url)) {
         return;
     }
 
     size = s-url;
-    BCHAR* p = new BCHAR[size+1];
-    bstrncpy(p, url, size);  p[size] = 0;
+    char* p = new char[size+1];
+    strncpy(p, url, size);  p[size] = 0;
 
     //
     // server (mandatory)
@@ -135,35 +135,35 @@ void URL::setURL(const BCHAR* url) {
     // port (optional)
     //
     s += 3;
-    q = bstrstr(s, T("/"));
+    q = strstr(s, T("/"));
     if (q == NULL) {
-        size = bstrlen(s);
+        size = strlen(s);
     } else {
         size = q-s;
     }
-    BCHAR* h = new BCHAR[size+1];    
-    bstrncpy(h, s, size); h[size] = 0;
+    char* h = new char[size+1];    
+    strncpy(h, s, size); h[size] = 0;
 
     unsigned int port = (unsigned int)-1;
-    s = bstrstr(h, T(":"));
+    s = strstr(h, T(":"));
     if (s) {
-        port = bstrtol(s+1, NULL, 10);
+        port = strtol(s+1, NULL, 10);
         *s = 0;
     }
 
     //
     // resource
     //
-    size = q ? bstrlen(q) : 0;
-    BCHAR* r = new BCHAR[size+1];
-    if (size) bstrncpy(r, q, size); r[size] = 0;
+    size = q ? strlen(q) : 0;
+    char* r = new char[size+1];
+    if (size) strncpy(r, q, size); r[size] = 0;
 
     //
     // fullURL
     //
-    size = bstrlen(url);
-    BCHAR* u = new BCHAR[size+1];
-    bstrcpy(u, url);
+    size = strlen(url);
+    char* u = new char[size+1];
+    strcpy(u, url);
 
     setURL(u, p, h, r, port);
 
@@ -186,14 +186,14 @@ URL& URL::operator= (URL& url) {
     setURL(url); return *this;
 }
 
-URL& URL::operator= (const BCHAR* url) {
+URL& URL::operator= (const char* url) {
     setURL(url); return *this;
 }
 
 BOOL URL::isSecure() {
-   BCHAR* t = strtolower(protocol);
+   char* t = strtolower(protocol);
 
-   BOOL ret = (bstrcmp(t, T("https")) == 0);
+   BOOL ret = (strcmp(t, T("https")) == 0);
 
    delete [] t; t = NULL;
 

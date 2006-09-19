@@ -91,7 +91,7 @@ DeviceConfig* DefaultConfigFactory::getDeviceConfig() {
 
 
 
-SyncSourceConfig* DefaultConfigFactory::getSyncSourceConfig(const BCHAR* name) {
+SyncSourceConfig* DefaultConfigFactory::getSyncSourceConfig(const char* name) {
 
     SyncSourceConfig* sc = new SyncSourceConfig();
 
@@ -103,19 +103,19 @@ SyncSourceConfig* DefaultConfigFactory::getSyncSourceConfig(const BCHAR* name) {
     sc->setSupportedTypes       (T(""));
     sc->setVersion              (T(""));
 
-    if (!bstrcmp(name, T("contact"))){
+    if (!strcmp(name, T("contact"))){
         sc->setURI              (T("scard"));
         sc->setType             (T("text/x-s4j-sifc"));
     }
-    else if (!bstrcmp(name, T("calendar"))){
+    else if (!strcmp(name, T("calendar"))){
         sc->setURI              (T("scal"));
         sc->setType             (T("text/x-s4j-sife"));
     }
-    else if (!bstrcmp(name, T("task"))){
+    else if (!strcmp(name, T("task"))){
         sc->setURI              (T("stask"));
         sc->setType             (T("text/x-s4j-sift"));
     }
-    else if (!bstrcmp(name, T("note"))){
+    else if (!strcmp(name, T("note"))){
         sc->setURI              (T("snote"));
         sc->setType             (T("text/x-s4j-sifn"));
     }

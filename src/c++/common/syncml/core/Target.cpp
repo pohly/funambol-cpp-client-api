@@ -44,7 +44,7 @@ Target::~Target() {
  * @param filter a filter to be applied for this target; it defaults to NULL
  *
  */
-Target::Target(const BCHAR* locURI, const BCHAR* locName, const Filter* filter)
+Target::Target(const char* locURI, const char* locName, const Filter* filter)
     : locURI(NULL), locName(NULL), filter(NULL) {
     set(locURI, locName, filter);
 }
@@ -55,11 +55,11 @@ Target::Target(const BCHAR* locURI, const BCHAR* locName, const Filter* filter)
  * @param locURI the locURI - NOT NULL
  *
  */
-Target::Target(const BCHAR* locURI) : locURI(NULL), locName(NULL), filter(NULL) {
+Target::Target(const char* locURI) : locURI(NULL), locName(NULL), filter(NULL) {
     set(locURI, NULL, NULL);
 }
 
-void Target::set(const BCHAR* locURI, const BCHAR* locName, const Filter* filter) {
+void Target::set(const char* locURI, const char* locName, const Filter* filter) {
     setLocURI(locURI);
     setLocName(locName);
     setFilter((Filter*)filter);
@@ -71,7 +71,7 @@ void Target::set(const BCHAR* locURI, const BCHAR* locName, const Filter* filter
 /** Gets locURI properties
  * @return locURI properties
  */
-const BCHAR* Target::getLocURI() {
+const char* Target::getLocURI() {
     return locURI;
 }
 
@@ -79,7 +79,7 @@ const BCHAR* Target::getLocURI() {
  * Sets locURI property
  * @param locURI the locURI
  */
-void Target::setLocURI(const BCHAR* locURI) {
+void Target::setLocURI(const char* locURI) {
     if (locURI == NULL) {
         // TBD
     }
@@ -93,7 +93,7 @@ void Target::setLocURI(const BCHAR* locURI) {
  * Gets locName properties
  * @return locName properties
  */
-const BCHAR* Target::getLocName() {
+const char* Target::getLocName() {
     return locName;
 }
 
@@ -101,7 +101,7 @@ const BCHAR* Target::getLocName() {
  * Sets locName property
  * @param locName the locURI
  */
-void Target::setLocName(const BCHAR* locName) {
+void Target::setLocName(const char* locName) {
     if (this->locName ) {
         delete [] this->locName ; this->locName  = NULL;
     }

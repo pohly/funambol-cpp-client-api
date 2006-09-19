@@ -29,7 +29,7 @@ DeviceManagementRecord::DeviceManagementRecord(int ndx = -1) {
     size   = 0   ;
 }
 
-DeviceManagementRecord::DeviceManagementRecord(int i, wchar_t* data, unsigned int size) {
+DeviceManagementRecord::DeviceManagementRecord(int i, WCHAR* data, unsigned int size) {
     index = i;
     setData(data, size);
 }
@@ -40,7 +40,7 @@ DeviceManagementRecord::~DeviceManagementRecord() {
     }
 }
 
-void DeviceManagementRecord::setData(wchar_t* data, unsigned int s) {
+void DeviceManagementRecord::setData(WCHAR* data, unsigned int s) {
     if (record) {
         delete [] record; record = NULL;
         size = 0;
@@ -52,7 +52,7 @@ void DeviceManagementRecord::setData(wchar_t* data, unsigned int s) {
 
     size = s;
 
-    record = new wchar_t[size];
+    record = new WCHAR[size];
 
     memcpy(record, data, size);
 }
@@ -61,10 +61,10 @@ void DeviceManagementRecord::setData(AccessManagementNode& n) {
     //
     // First of all, calculate the record size
     //
-    wchar_t v[256];
-    wchar_t l[ 32];
-    wchar_t b[ 32];
-    wchar_t e[ 32];
+    WCHAR v[256];
+    WCHAR l[ 32];
+    WCHAR b[ 32];
+    WCHAR e[ 32];
     unsigned int len = 0;
 
     AccessConfig& ac = n.getAccessConfig();
@@ -85,8 +85,8 @@ void DeviceManagementRecord::setData(AccessManagementNode& n) {
     // Now we create the record data
     //
 
-    wchar_t* data = new wchar_t[len];
-    wchar_t* p = data;
+    WCHAR* data = new WCHAR[len];
+    WCHAR* p = data;
 
     n.getFullName (p, len); p += (wcslen(p)+1);
     ac.getUsername(p,  -1); p += (wcslen(p)+1);
@@ -105,7 +105,7 @@ void DeviceManagementRecord::setData(AccessManagementNode& n) {
     wcscpy(p, b); p += (wcslen(b)+1);
     wcscpy(p, e);
 
-    setData(data, len*sizeof(wchar_t));
+    setData(data, len*sizeof(WCHAR));
 
     delete [] data;
 }
@@ -114,8 +114,8 @@ void DeviceManagementRecord::setData(SourceManagementNode& n) {
     //
     // First of all, calculate the record size
     //
-    wchar_t v[256];
-    wchar_t l[12];
+    WCHAR v[256];
+    WCHAR l[12];
     unsigned int len = 0;
 
     SyncSourceConfig& ssc = n.getSourceConfig();
@@ -131,8 +131,8 @@ void DeviceManagementRecord::setData(SourceManagementNode& n) {
     //
     // Now we create the record data
     //
-    wchar_t* data = new wchar_t[len];
-    wchar_t* p = data;
+    WCHAR* data = new WCHAR[len];
+    WCHAR* p = data;
 
     n.getFullName   (p, len) ; p += (wcslen(p)+1);
     ssc.getName     (p)      ; p += (wcslen(p)+1);
@@ -142,7 +142,7 @@ void DeviceManagementRecord::setData(SourceManagementNode& n) {
     ssc.getSync     (p)      ; p += (wcslen(p)+1);
     wcscpy          (p, l)   ;
 
-    setData(data, len*sizeof(wchar_t));
+    setData(data, len*sizeof(WCHAR));
 
     delete [] data;
 }
@@ -155,7 +155,7 @@ void DeviceManagementRecord::setData(ManagementObject& o) {
     ArrayList& properties = o.getProperties();
     KeyValuePair* property = NULL;
 
-    wchar_t v[256];
+    WCHAR v[256];
     o.getFullName(v, sizeof(v)); len = (wcslen(v)+1);
 
     int l = properties.size();
@@ -169,8 +169,8 @@ void DeviceManagementRecord::setData(ManagementObject& o) {
     //
     // Now we create the record data
     //
-    wchar_t* data = new wchar_t[len];
-    wchar_t* p = data;
+    WCHAR* data = new WCHAR[len];
+    WCHAR* p = data;
 
     wcscpy(p, v); p += (wcslen(p)+1);
     for (int i=0; i<l; ++i) {
@@ -179,12 +179,12 @@ void DeviceManagementRecord::setData(ManagementObject& o) {
         wcscpy(p, property->getValue()); p += (wcslen(p)+1);
     }
 
-    setData(data, len*sizeof(wchar_t));
+    setData(data, len*sizeof(WCHAR));
 
     delete [] data;
 }
 
-wchar_t* DeviceManagementRecord::getData() {
+WCHAR* DeviceManagementRecord::getData() {
     return record;
 }
 
@@ -197,7 +197,7 @@ unsigned int DeviceManagementRecord::getFieldNumber() {
         return 0;
     }
 
-    wchar_t* p = record;
+    WCHAR* p = record;
     unsigned int n = 0;
 
     while ((p-record)<size) {
@@ -209,7 +209,7 @@ unsigned int DeviceManagementRecord::getFieldNumber() {
     return n;
 }
 
-wchar_t* DeviceManagementRecord::getField(unsigned int n) {
+WCHAR* DeviceManagementRecord::getField(unsigned int n) {
     if ((record == NULL) || (n == 0) || (n > getFieldNumber())) {
         //
         // field not found!
@@ -217,7 +217,7 @@ wchar_t* DeviceManagementRecord::getField(unsigned int n) {
         return NULL;
     }
 
-    wchar_t* p = record;
+    WCHAR* p = record;
 
     for (unsigned int i = 0; i<(n-1); ++i) {
         p += (wcslen(p) + 1);
@@ -231,7 +231,7 @@ BOOL DeviceManagementRecord::getAccessManagementNode(AccessManagementNode& n) {
         return FALSE;
     }
 
-    wchar_t* v = NULL;
+    WCHAR* v = NULL;
     AccessConfig& ac = n.getAccessConfig();
 
     ac.setUsername(getField(2));
@@ -256,7 +256,7 @@ BOOL DeviceManagementRecord::getSourceManagementNode(SourceManagementNode& n) {
         return FALSE;
     }
 
-    wchar_t* v = NULL;
+    WCHAR* v = NULL;
     SyncSourceConfig& c = n.getSourceConfig();
 
     c.setName     (getField(2))           ;

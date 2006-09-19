@@ -32,7 +32,7 @@ PropParam::~PropParam() {
 }
 
 
-PropParam::PropParam(BCHAR* paramName, BCHAR* dataType, ArrayList* valEnums, BCHAR* displayName) {
+PropParam::PropParam(char* paramName, char* dataType, ArrayList* valEnums, char* displayName) {
     this->paramName   = NULL;
     this->dataType    = NULL;
     this->displayName = NULL;
@@ -51,12 +51,12 @@ PropParam::PropParam(BCHAR* paramName, BCHAR* dataType, ArrayList* valEnums, BCH
  * @return  the current displayName's value
  *
  */
-BCHAR* PropParam::getDisplayName(BCHAR* displayName) {
+char* PropParam::getDisplayName(char* displayName) {
     if (displayName == NULL) {
         return this->displayName;
     }
 
-    return bstrcpy(displayName, this->displayName);
+    return strcpy(displayName, this->displayName);
 }
 
 /*
@@ -65,7 +65,7 @@ BCHAR* PropParam::getDisplayName(BCHAR* displayName) {
  * @param displayName the new value
  *
  */
-void PropParam::setDisplayName(BCHAR* displayName) {
+void PropParam::setDisplayName(char* displayName) {
     if (this->displayName) {
         delete [] this->displayName; this->displayName = NULL;
     }
@@ -82,12 +82,12 @@ void PropParam::setDisplayName(BCHAR* displayName) {
  * @return  the current paramName's value
  *
  */
-BCHAR* PropParam::getParamName(BCHAR* paramName) {
+char* PropParam::getParamName(char* paramName) {
     if (paramName == NULL) {
         return this->paramName;
     }
 
-    return bstrcpy(paramName, this->paramName);
+    return strcpy(paramName, this->paramName);
 }
 
 /*
@@ -96,7 +96,7 @@ BCHAR* PropParam::getParamName(BCHAR* paramName) {
  * @param paramName the new value
  *
  */
-void PropParam::setParamName(BCHAR* paramName) {
+void PropParam::setParamName(char* paramName) {
     if (this->paramName) {
         delete [] this->paramName; this->paramName = NULL;
     }
@@ -112,12 +112,12 @@ void PropParam::setParamName(BCHAR* paramName) {
  * @return  the current dataType's value
  *
  */
-BCHAR* PropParam::getDataType(BCHAR* dataType) {
+char* PropParam::getDataType(char* dataType) {
     if (dataType == NULL) {
         return this->dataType;
     }
 
-    return bstrcpy(dataType, this->dataType);
+    return strcpy(dataType, this->dataType);
 }
 
 /*
@@ -126,7 +126,7 @@ BCHAR* PropParam::getDataType(BCHAR* dataType) {
  * @param dataType the new value
  *
  */
-void PropParam::setDataType(BCHAR* dataType) {
+void PropParam::setDataType(char* dataType) {
     if (this->dataType) {
         delete [] this->dataType; this->dataType = NULL;
     }

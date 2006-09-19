@@ -22,8 +22,8 @@
 
 Sequence::Sequence() {
     
-    COMMAND_NAME = new BCHAR[bstrlen(SEQUENCE_COMMAND_NAME) + 1];
-    bsprintf(COMMAND_NAME, SEQUENCE_COMMAND_NAME);    
+    COMMAND_NAME = new char[strlen(SEQUENCE_COMMAND_NAME) + 1];
+    sprintf(COMMAND_NAME, SEQUENCE_COMMAND_NAME);    
     this->commands = new ArrayList();
 }
 
@@ -51,8 +51,8 @@ Sequence::Sequence(CmdID*       cmdID ,
             Meta*        meta  ,
             ArrayList*   commands) : AbstractCommand(cmdID, noResp) {
     
-    COMMAND_NAME = new BCHAR[bstrlen(SEQUENCE_COMMAND_NAME) + 1];
-    bsprintf(COMMAND_NAME, SEQUENCE_COMMAND_NAME);
+    COMMAND_NAME = new char[strlen(SEQUENCE_COMMAND_NAME) + 1];
+    sprintf(COMMAND_NAME, SEQUENCE_COMMAND_NAME);
     this->commands = new ArrayList();
 
     setMeta(meta);
@@ -97,7 +97,7 @@ void Sequence::setCommands(ArrayList* commands) {
 *
 * @return the command name
 */
-BCHAR* Sequence::getName(){
+char* Sequence::getName(){
     return COMMAND_NAME;
 }
 

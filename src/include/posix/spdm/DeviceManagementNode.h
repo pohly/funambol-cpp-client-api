@@ -78,8 +78,8 @@ class DeviceManagementNode : public ManagementNode {
          * @param name - the node name
          *
          */
-        DeviceManagementNode(const wchar_t* parent, const wchar_t *leafName);
-        DeviceManagementNode(const wchar_t* fullName);
+        DeviceManagementNode(const WCHAR* parent, const WCHAR *leafName);
+        DeviceManagementNode(const WCHAR* fullName);
 
         DeviceManagementNode(const DeviceManagementNode &other);
         virtual ~DeviceManagementNode();
@@ -92,7 +92,7 @@ class DeviceManagementNode : public ManagementNode {
          *
          * @param property - the property name
          */
-        virtual wchar_t* getPropertyValue(const wchar_t* property);
+        virtual WCHAR* getPropertyValue(const WCHAR* property);
 
 
         /*
@@ -101,12 +101,12 @@ class DeviceManagementNode : public ManagementNode {
          * @param property - the property name
          * @param value - the property value (zero terminated string)
          */
-        virtual void setPropertyValue(const wchar_t* property, const wchar_t* value);
+        virtual void setPropertyValue(const WCHAR* property, const WCHAR* value);
 
         /*
          * Returns the children's name of the parent node. 
          */
-        wchar_t **getChildrenNames();
+        WCHAR **getChildrenNames();
 
         /*
          * Find how many children are defined for this node in the underlying

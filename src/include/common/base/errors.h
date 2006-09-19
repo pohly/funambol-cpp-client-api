@@ -40,7 +40,7 @@
 //
 // extern int  lastErrorCode;
 // extern char lastErrorMsg[];
-// extern BCHAR lastErrorMsg[];
+// extern char lastErrorMsg[];
  
 // void resetError();
 

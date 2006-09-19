@@ -48,7 +48,7 @@ void ComplexData::initialize() {
 * @param data the data
 *
 */
-ComplexData::ComplexData(const BCHAR* data) : Data(data) {
+ComplexData::ComplexData(const char* data) : Data(data) {
     initialize();
 }
 

@@ -46,7 +46,7 @@ class DeviceManager {
          * The DMTreeManager is created with the 'new' C++ operator and must be
          * discarded by the caller with the operator 'delete'.
          */
-        DMTreeManager* const getDMTreeManager(const BCHAR* node);
+        DMTreeManager* const getDMTreeManager(const char*  node);
 };
 
 #endif

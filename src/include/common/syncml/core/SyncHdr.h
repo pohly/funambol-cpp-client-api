@@ -35,14 +35,14 @@ class SyncHdr {
     
      // ------------------------------------------------------------ Private data
     private:
-        BCHAR*    COMMAND_NAME;
+        char*     COMMAND_NAME;
         VerDTD*     verDTD   ;
         VerProto*   verProto ;
         SessionID*  sessionID;
-        BCHAR*    msgID    ;
+        char*     msgID    ;
         Target*     target   ;
         Source*     source   ;
-        BCHAR*    respURI  ;
+        char*     respURI  ;
         BOOL        noResp   ;
         Cred*       cred     ;
         Meta*       meta     ;
@@ -71,10 +71,10 @@ class SyncHdr {
         SyncHdr(VerDTD*      verDTD,
                 VerProto*    verProto,
                 SessionID*   sessionID,
-                BCHAR*     msgID,
+                char*      msgID,
                 Target*      target,
                 Source*      source,
-                BCHAR*     respURI,
+                char*      respURI,
                 BOOL         noResp,
                 Cred*        cred,
                 Meta*        meta);
@@ -128,14 +128,14 @@ class SyncHdr {
          *
          * @return msgID the message identifier
          */
-        BCHAR* getMsgID(BCHAR* retMsgID);
+        char*  getMsgID(char*  retMsgID);
 
         /**
          * Sets the message identifier
          *
          * @param msgID the message identifier
          */
-        void setMsgID(BCHAR* msgID);
+        void setMsgID(char*  msgID);
 
         /**
          * Gets the Target object
@@ -170,14 +170,14 @@ class SyncHdr {
          *
          * @return respURI the response URI
          */
-        BCHAR* getRespURI(BCHAR* respURI);
+        char*  getRespURI(char*  respURI);
 
         /**
          * Sets the response URI.
          *
          * @param uri the new response URI; NOT NULL
          */
-        void setRespURI(BCHAR* uri);
+        void setRespURI(char*  uri);
 
         /**
          * Gets noResp property
@@ -228,7 +228,7 @@ class SyncHdr {
          */
         void setMeta(Meta* meta);
 
-        BCHAR* getName();
+        char*  getName();
         
         SyncHdr* clone();
 };

@@ -22,8 +22,8 @@
 
 Map::Map() {    
     
-    COMMAND_NAME = new BCHAR[bstrlen(MAP_COMMAND_NAME) + 1];
-    bsprintf(COMMAND_NAME, MAP_COMMAND_NAME);
+    COMMAND_NAME = new char[strlen(MAP_COMMAND_NAME) + 1];
+    sprintf(COMMAND_NAME, MAP_COMMAND_NAME);
     initialize();    
 }
 
@@ -62,8 +62,8 @@ Map::Map(CmdID* cmdID,
     setSource  (source  );
     setMapItems(mapItems);
     
-    COMMAND_NAME = new BCHAR[bstrlen(MAP_COMMAND_NAME) + 1];
-    bsprintf(COMMAND_NAME, MAP_COMMAND_NAME);
+    COMMAND_NAME = new char[strlen(MAP_COMMAND_NAME) + 1];
+    sprintf(COMMAND_NAME, MAP_COMMAND_NAME);
 }
 
 void Map::initialize() {
@@ -158,7 +158,7 @@ void Map::setMapItems(ArrayList* mapItems) {
 *
 * @return the command name
 */
-BCHAR* Map::getName() {
+char* Map::getName() {
     return COMMAND_NAME;
 }
 

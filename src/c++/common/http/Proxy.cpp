@@ -23,12 +23,12 @@ Proxy::Proxy() {
 }
 
 
-Proxy::Proxy(BCHAR* proxyHost, int proxyPort) {
+Proxy::Proxy(char* proxyHost, int proxyPort) {
     setProxy(proxyHost, proxyPort, NULL, NULL);
 }
 
 
-Proxy::Proxy(BCHAR* proxyHost, int proxyPort, BCHAR* proxyUser, BCHAR* proxyPassword){
+Proxy::Proxy(char* proxyHost, int proxyPort, char* proxyUser, char* proxyPassword){
     setProxy(proxyHost, proxyPort, proxyUser, proxyPassword);
 }
 
@@ -37,32 +37,32 @@ void Proxy::setProxy(Proxy& newProxy) {
 }
 
 
-void Proxy::setProxy(BCHAR* proxyHost    ,
+void Proxy::setProxy(char* proxyHost    ,
                      int      proxyPort    ,
-                     BCHAR* proxyUser    ,
-                     BCHAR* proxyPassword) {
+                     char* proxyUser    ,
+                     char* proxyPassword) {
     if (proxyHost != NULL) {
-        bstrncpy((BCHAR*)host, (const BCHAR*)proxyHost, DIM_HOSTNAME);
+        strncpy((char*)host, (const char*)proxyHost, DIM_HOSTNAME);
         host[DIM_HOSTNAME-1] = 0;
     } else {
-        memset(host, 0, DIM_HOSTNAME*sizeof(BCHAR));
-        //bstrcpy((BCHAR*)host, (const BCHAR*)"");
+        memset(host, 0, DIM_HOSTNAME*sizeof(char));
+        //strcpy((char*)host, (const char*)"");
     }
 
     if (proxyUser != NULL){
-        bstrncpy((BCHAR*)user, (const BCHAR*)proxyUser, DIM_USERNAME);
+        strncpy((char*)user, (const char*)proxyUser, DIM_USERNAME);
         user[DIM_USERNAME-1] = 0;
     } else {
-        memset(user, 0, DIM_USERNAME*sizeof(BCHAR));
-        //bstrcpy((BCHAR*)user, (BCHAR*)"");
+        memset(user, 0, DIM_USERNAME*sizeof(char));
+        //strcpy((char*)user, (char*)"");
     }
 
     if (proxyPassword != NULL){
-        bstrncpy((BCHAR*)password,(const BCHAR*) proxyPassword, DIM_PASSWORD);
+        strncpy((char*)password,(const char*) proxyPassword, DIM_PASSWORD);
         password[DIM_PASSWORD-1] = 0;
     } else {
-        memset(password, 0, DIM_PASSWORD*sizeof(BCHAR));
-        //bstrcpy((BCHAR*)password, (const BCHAR*)"");
+        memset(password, 0, DIM_PASSWORD*sizeof(char));
+        //strcpy((char*)password, (const char*)"");
     }
     port = proxyPort;
 }

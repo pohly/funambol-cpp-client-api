@@ -46,23 +46,23 @@ int SyncClient::sync(SyncManagerConfig& config, SyncSource** sources) {
     SyncManager syncManager(config);
 
     if ((ret = syncManager.prepareSync(sources))) {
-        BCHAR dbg[256];
-        bsprintf(dbg, T("Error in preparing sync: %s"), lastErrorMsg);
+        char dbg[256];
+        sprintf(dbg, T("Error in preparing sync: %s"), lastErrorMsg);
         LOG.error(dbg);
         
         goto finally;
     }
        
     if ((ret = syncManager.sync())) {   
-        BCHAR dbg[256];
-        bsprintf(dbg, T("Error in syncing: %s"), lastErrorMsg);
+        char dbg[256];
+        sprintf(dbg, T("Error in syncing: %s"), lastErrorMsg);
         LOG.error(dbg);
         goto finally;
     }
 
     if ((ret = syncManager.endSync())) {       
-        BCHAR dbg[256];
-        bsprintf(dbg, T("Error in ending sync: %s"), lastErrorMsg);
+        char dbg[256];
+        sprintf(dbg, T("Error in ending sync: %s"), lastErrorMsg);
         LOG.error(dbg);
         goto finally;
     }
@@ -86,7 +86,7 @@ int SyncClient::sync(SyncManagerConfig& config, SyncSource** sources) {
  */
 int SyncClient::sync(SyncManagerConfig& config, char** sourceNames) {
     SyncSource **sources = NULL;
-    const BCHAR* currName;
+    const char* currName;
     int currSource = 0, numActive = 0, numSources = 0;
     int ret = 0;
 

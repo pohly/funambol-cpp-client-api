@@ -93,7 +93,7 @@ void testConfigFilter() {
             MessageBox(0, TEXT("There must be an error..."), TEXT("Config to filter"), MB_OK);
         } else {
             StringBuffer* sb = Formatter::getFilter(f);
-            wchar_t *msg = toWideChar(sb->c_str());
+            WCHAR *msg = toWideChar(sb->c_str());
 
             MessageBox(0, msg, TEXT("Config to filter"), MB_OK);
 
@@ -125,7 +125,7 @@ void testConfigFilter() {
             MessageBox(0, TEXT("There must be an error..."), TEXT("10Kb body, no attachment"), MB_OK);
         } else {
             StringBuffer* sb = Formatter::getFilter(f);
-            wchar_t *msg = toWideChar(sb->c_str());
+            WCHAR *msg = toWideChar(sb->c_str());
             MessageBox(0, msg, TEXT("10Kb body, no attachment"), MB_OK);
 
             delete sb; 
@@ -155,7 +155,7 @@ void testConfigFilter() {
             MessageBox(0, TEXT("There must be an error..."), TEXT("10Kb body, attachment up to 25Kb"), MB_OK);
         } else {
             StringBuffer* sb = Formatter::getFilter(f);
-            wchar_t *msg = toWideChar(sb->c_str());
+            WCHAR *msg = toWideChar(sb->c_str());
 
             MessageBox(0, msg, TEXT("10Kb body, attachment up to 25Kb"), MB_OK);
 
@@ -174,7 +174,7 @@ void testConfigFilter() {
     //
     // TODAY's emails, no attachments
     //
-    wchar_t* TODAY = TEXT("20051211T000000Z");
+    WCHAR* TODAY = TEXT("20051211T000000Z");
     MessageBox(0, TEXT("TODAY's emails, no attachments"), TEXT("Config to filter"), MB_OK);
     
     filter = ClauseUtil::createSourceFilter(TODAY, -1, 0);
@@ -187,7 +187,7 @@ void testConfigFilter() {
             MessageBox(0, TEXT("There must be an error..."), TEXT("TODAY's emails, no attachments"), MB_OK);
         } else {
             StringBuffer* sb = Formatter::getFilter(f);
-            wchar_t *msg = toWideChar(sb->c_str());
+            WCHAR *msg = toWideChar(sb->c_str());
 
             MessageBox(0, msg, TEXT("TODAY's emails, no attachments"), MB_OK);
 
@@ -231,7 +231,7 @@ void testConfigFilter() {
             MessageBox(0, TEXT("There must be an error..."), TEXT("All in one"), MB_OK);
         } else {
             StringBuffer* sb = Formatter::getFilter(f);
-            wchar_t *msg = toWideChar(sb->c_str());
+            WCHAR *msg = toWideChar(sb->c_str());
 
             MessageBox(0, msg, TEXT("All in one"), MB_OK);
 

@@ -28,10 +28,10 @@ class ContentTypeParameter : public ArrayElement {
     
      // ------------------------------------------------------------ Private data
     private:
-        BCHAR*   paramName;
+        char*    paramName;
         ArrayList* valEnum;   //String[]
-        BCHAR*   displayName;
-        BCHAR*   dataType;
+        char*    displayName;
+        char*    dataType;
         int size;
     
     // ---------------------------------------------------------- Protected data    
@@ -52,9 +52,9 @@ class ContentTypeParameter : public ArrayElement {
          *                  specification
          *
          */
-        ContentTypeParameter(BCHAR* paramName,
+        ContentTypeParameter(char*  paramName,
                              ArrayList* valEnum, 
-                             BCHAR* displayName);
+                             char*  displayName);
 
         /**
          * Creates a new ContentTypeParameter object with the given name, data type,
@@ -70,10 +70,10 @@ class ContentTypeParameter : public ArrayElement {
          *                  specification
          *
          */
-        ContentTypeParameter(BCHAR* paramName,
-                             BCHAR* dataType,
+        ContentTypeParameter(char*  paramName,
+                             char*  dataType,
                              int size,
-                             BCHAR* displayName);
+                             char*  displayName);
 
         
         /**
@@ -81,14 +81,14 @@ class ContentTypeParameter : public ArrayElement {
          *
          * @return the parameter name propeties
          */
-        BCHAR*  getParamName(BCHAR* retParamName);
+        char*   getParamName(char*  retParamName);
     
         /**
          * Sets the param name property
          *
          * @param paramName the param name property
          */
-        void setParamName(BCHAR* paramName);
+        void setParamName(char*  paramName);
     
         /**
          * Gets the array of value for parameter
@@ -109,7 +109,7 @@ class ContentTypeParameter : public ArrayElement {
          *
          * @return the display name propeties
          */
-        BCHAR* getDisplayName(BCHAR* retDisplayName);
+        char*  getDisplayName(char*  retDisplayName);
     
         /**
          * Sets the display name of a given content type parameter
@@ -117,14 +117,14 @@ class ContentTypeParameter : public ArrayElement {
          * @param displayName the display name of a given content type parameter
          *
          */
-        void setDisplayName(BCHAR* displayName);
+        void setDisplayName(char*  displayName);
     
         /**
          * Gets the data type propeties
          *
          * @return the data type propeties
          */
-        BCHAR* getDataType(BCHAR* retDataType);
+        char*  getDataType(char*  retDataType);
     
         /**
          * Sets the data type of a given content type parameter
@@ -132,7 +132,7 @@ class ContentTypeParameter : public ArrayElement {
          * @param dataType the data type of a given content type parameter
          *
          */
-        void setDataType(BCHAR* dataType);
+        void setDataType(char*  dataType);
     
         /**
          * Gets the size propeties

@@ -29,7 +29,7 @@ class Add : public ModificationCommand {
     
      // ------------------------------------------------------------ Private data
     private:
-        BCHAR* COMMAND_NAME;
+        char*  COMMAND_NAME;
     
     // ---------------------------------------------------------- Public data    
     public:
@@ -62,7 +62,7 @@ class Add : public ModificationCommand {
          *
          * @return the command name property
          */    
-        BCHAR* getName();
+        char*  getName();
 
         ArrayElement* clone();
    

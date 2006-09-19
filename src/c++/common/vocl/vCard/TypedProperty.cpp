@@ -46,7 +46,7 @@ void TypedProperty::setProperty(vCardProperty& prop) {
     p = prop.clone();
 }
 
-wchar_t* TypedProperty::getType(wchar_t* buf, int size) {
+WCHAR* TypedProperty::getType(WCHAR* buf, int size) {
     if (buf == NULL) {
         return t;
     }
@@ -60,7 +60,7 @@ wchar_t* TypedProperty::getType(wchar_t* buf, int size) {
     return buf;
 }
 
-void TypedProperty::setType(wchar_t* type) {
+void TypedProperty::setType(WCHAR* type) {
     if (t) delete [] t;
     t = wstrdup(type);
 }

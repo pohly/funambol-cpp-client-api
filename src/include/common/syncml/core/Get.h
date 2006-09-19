@@ -28,8 +28,8 @@
 class Get : public ItemizedCommand {
     
     private:       
-        BCHAR* lang;
-        BCHAR* COMMAND_NAME;
+        char*  lang;
+        char*  COMMAND_NAME;
     
     public:
        
@@ -50,7 +50,7 @@ class Get : public ItemizedCommand {
          */
         Get(CmdID* cmdID,
             BOOL noResp,
-            BCHAR* lang,
+            char*  lang,
             Cred* cred,
             Meta* meta,
             ArrayList* items);
@@ -62,21 +62,21 @@ class Get : public ItemizedCommand {
          * @return the preferred language
          *
          */
-        BCHAR* getLang(BCHAR* retLang);
+        char*  getLang(char*  retLang);
     
         /**
          * Sets the preferred language
          *
          * @param lang new preferred language
          */
-        void setLang(BCHAR* lang);
+        void setLang(char*  lang);
 
         /**
          * Gets the command name property
          *
          * @return the command name property
          */   
-        BCHAR* getName();
+        char*  getName();
     
         ArrayElement* clone();
 

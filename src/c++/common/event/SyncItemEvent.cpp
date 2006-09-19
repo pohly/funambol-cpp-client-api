@@ -19,7 +19,7 @@
 #include "event/SyncItemEvent.h"
 #include "base/util/utils.h"
 
-SyncItemEvent::SyncItemEvent(const wchar_t* key, const char* uri, int type, unsigned long date) : BaseEvent(type, date) {
+SyncItemEvent::SyncItemEvent(const WCHAR* key, const char* uri, int type, unsigned long date) : BaseEvent(type, date) {
 
     itemKey = wstrdup(key);
     sourceURI = stringdup(uri);
@@ -41,6 +41,6 @@ const char* SyncItemEvent::getSourceURI() const{
     return sourceURI;
 }
 
-const wchar_t* SyncItemEvent::getItemKey() const{
+const WCHAR* SyncItemEvent::getItemKey() const{
     return itemKey;
 }

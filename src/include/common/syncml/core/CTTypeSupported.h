@@ -29,7 +29,7 @@ class CTTypeSupported : public ArrayElement{
     
      // ------------------------------------------------------------ Private data
     private:
-    BCHAR* ctType;
+    char*  ctType;
     ArrayList* ctPropParams;    // CTPropParam[]   
 
     void initialize();
@@ -47,7 +47,7 @@ class CTTypeSupported : public ArrayElement{
      *                     content type parameters - NOT NULL
      *
      */
-    CTTypeSupported(BCHAR* ctType, ArrayList* ctPropParams );
+    CTTypeSupported(char*  ctType, ArrayList* ctPropParams );
     
     
     /**
@@ -55,14 +55,14 @@ class CTTypeSupported : public ArrayElement{
      *
      * @return a CTType String
      */
-    BCHAR* getCTType(BCHAR* retCTType);
+    char*  getCTType(char*  retCTType);
     
     /**
      * Sets a CTType object
      *
      * @param ctType a CTType object
      */
-    void setCTType(BCHAR* ctType);
+    void setCTType(char*  ctType);
     
     /**
      * Gets an array of content type properties and parameters

@@ -30,15 +30,15 @@
 
     private:
 
-        BCHAR* username;
-        BCHAR* password;
-        BCHAR* clientAuthType;
-        BCHAR* clientNonce;
+        char*  username;
+        char*  password;
+        char*  clientAuthType;
+        char*  clientNonce;
         
-        BCHAR* serverID;
-        BCHAR* serverPWD;
-        BCHAR* serverAuthType;
-        BCHAR* serverNonce;
+        char*  serverID;
+        char*  serverPWD;
+        char*  serverAuthType;
+        char*  serverNonce;
         
         BOOL isServerAuthRequired;
 
@@ -62,7 +62,7 @@
          *
          * @param key - the key
          */
-        CredentialHandler(const BCHAR* key) EXTRA_SECTION_01;
+        CredentialHandler(const char*  key) EXTRA_SECTION_01;
 
         /*
          * Returns the SyncItem's key. If key is NULL, the internal buffer is
@@ -72,21 +72,21 @@
          * @param key - buffer where the key will be stored
          */        
         
-        void setUsername(const BCHAR* t) EXTRA_SECTION_01;
-        const BCHAR* getUsername() EXTRA_SECTION_01;
-        void setPassword(const BCHAR* t) EXTRA_SECTION_01;
-        const BCHAR* getPassword() EXTRA_SECTION_01;
-        void setClientAuthType(const BCHAR* t) EXTRA_SECTION_01;
-        void setClientNonce(const BCHAR* t) EXTRA_SECTION_01;
-        const BCHAR* getClientAuthType(BCHAR* t=0 /* deprecated */) EXTRA_SECTION_01;
-        const BCHAR* getClientNonce(BCHAR* t=0 /* deprecated */) EXTRA_SECTION_01;
+        void setUsername(const char*  t) EXTRA_SECTION_01;
+        const char*  getUsername() EXTRA_SECTION_01;
+        void setPassword(const char*  t) EXTRA_SECTION_01;
+        const char*  getPassword() EXTRA_SECTION_01;
+        void setClientAuthType(const char*  t) EXTRA_SECTION_01;
+        void setClientNonce(const char*  t) EXTRA_SECTION_01;
+        const char*  getClientAuthType(char*  t=0 /* deprecated */) EXTRA_SECTION_01;
+        const char*  getClientNonce(char*  t=0 /* deprecated */) EXTRA_SECTION_01;
 
-        void setServerID(const BCHAR* t) EXTRA_SECTION_01;
-        void setServerPWD(const BCHAR* t) EXTRA_SECTION_01;
-        void setServerAuthType(const BCHAR* t) EXTRA_SECTION_01;
-        void setServerNonce(const BCHAR* t) EXTRA_SECTION_01;
-        const BCHAR* getServerAuthType(BCHAR* t=0 /* deprecated */) EXTRA_SECTION_01;
-        const BCHAR* getServerNonce(BCHAR* t=0 /* deprecated */) EXTRA_SECTION_01;
+        void setServerID(const char*  t) EXTRA_SECTION_01;
+        void setServerPWD(const char*  t) EXTRA_SECTION_01;
+        void setServerAuthType(const char*  t) EXTRA_SECTION_01;
+        void setServerNonce(const char*  t) EXTRA_SECTION_01;
+        const char*  getServerAuthType(char*  t=0 /* deprecated */) EXTRA_SECTION_01;
+        const char*  getServerNonce(char*  t=0 /* deprecated */) EXTRA_SECTION_01;
         
         void setServerAuthRequired(BOOL t) EXTRA_SECTION_01;
         BOOL getServerAuthRequired() EXTRA_SECTION_01;

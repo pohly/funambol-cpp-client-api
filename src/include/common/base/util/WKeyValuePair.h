@@ -29,7 +29,7 @@
 class WKeyValuePair : public ArrayElement {
     public:
 
-        WKeyValuePair(const wchar_t* key = NULL, const wchar_t* value = NULL) EXTRA_SECTION_00;
+        WKeyValuePair(const WCHAR* key = NULL, const WCHAR* value = NULL) EXTRA_SECTION_00;
         ~WKeyValuePair() EXTRA_SECTION_00;
 
         ArrayElement* clone() EXTRA_SECTION_00;
@@ -41,7 +41,7 @@ class WKeyValuePair : public ArrayElement {
          *
          * @param key the new key
          */
-        void setKey(const wchar_t* key) EXTRA_SECTION_00;
+        void setKey(const WCHAR* key) EXTRA_SECTION_00;
 
         /**
          * Sets the value. The string is duplicated so that the caller can
@@ -51,21 +51,21 @@ class WKeyValuePair : public ArrayElement {
          * @param value the new value
          */
 
-        void setValue(const wchar_t* value) EXTRA_SECTION_00;
+        void setValue(const WCHAR* value) EXTRA_SECTION_00;
 
         /**
          * Returns the key (the internal buffer address is returned).
          */
-        wchar_t* getKey() EXTRA_SECTION_00;
+        WCHAR* getKey() EXTRA_SECTION_00;
 
         /**
          * Returns the value (the internal buffer address is returned).
          */
-        wchar_t* getValue() EXTRA_SECTION_00;
+        WCHAR* getValue() EXTRA_SECTION_00;
 
     private:
-        wchar_t* k;
-        wchar_t* v;
+        WCHAR* k;
+        WCHAR* v;
 };
 
 #endif

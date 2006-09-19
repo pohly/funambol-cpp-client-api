@@ -49,16 +49,16 @@ WMDMTreeManager::WMDMTreeManager() {
  * The ManagementNode is created with the new operator and must be
  * discarded by the caller with the operator delete.
  */
-ManagementNode* const WMDMTreeManager::getManagementNode(const wchar_t* node) {
-    wchar_t context[DIM_MANAGEMENT_PATH];
-    wchar_t leafName   [DIM_MANAGEMENT_PATH];
+ManagementNode* const WMDMTreeManager::getManagementNode(const WCHAR* node) {
+    WCHAR context[DIM_MANAGEMENT_PATH];
+    WCHAR leafName   [DIM_MANAGEMENT_PATH];
 
     wmemset(context, 0, DIM_MANAGEMENT_PATH);
     wmemset(leafName,    0, DIM_MANAGEMENT_PATH);
 
     getNodeName(node, leafName, DIM_MANAGEMENT_PATH);
     getNodeContext(node, context, DIM_MANAGEMENT_PATH);
-    wchar_t logmsg[512];
+    WCHAR logmsg[512];
     if (wcscmp(leafName, SYNCML) == 0) {
         wcsprintf(logmsg, TEXT("Settings..."), node);
         LOG.debug(logmsg);
@@ -89,14 +89,14 @@ ManagementNode* const WMDMTreeManager::getManagementNode(const wchar_t* node) {
 
         DeviceManagementNode dmn;
 
-        wchar_t** children = NULL;
-        int nc = dmn.getChildrenCount((wchar_t*)node);
+        WCHAR** children = NULL;
+        int nc = dmn.getChildrenCount((WCHAR*)node);
         int i = 0;
         if (nc > 0) {
-            children = new wchar_t*[nc];
+            children = new WCHAR*[nc];
         }
 
-        dmn.getChildrenName((wchar_t*)node, children, &nc);
+        dmn.getChildrenName((WCHAR*)node, children, &nc);
 
         for (i = 0; i < nc; i++) {
 
@@ -124,9 +124,9 @@ void WMDMTreeManager::setManagementNode(ManagementNode& n) {
 
     LOG.info(TEXT("in setManagementNode"));
 
-    wchar_t nodeName [DIM_MANAGEMENT_PATH];
-    wchar_t context  [DIM_MANAGEMENT_PATH];
-    wchar_t leafName [DIM_MANAGEMENT_PATH];
+    WCHAR nodeName [DIM_MANAGEMENT_PATH];
+    WCHAR context  [DIM_MANAGEMENT_PATH];
+    WCHAR leafName [DIM_MANAGEMENT_PATH];
 
     wmemset(context,     0, DIM_MANAGEMENT_PATH);
     wmemset(leafName,    0, DIM_MANAGEMENT_PATH);

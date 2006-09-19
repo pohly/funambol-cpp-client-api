@@ -33,13 +33,13 @@ iCalConverter::~iCalConverter() {
     }
 }
 
-void iCalConverter::setSource(wchar_t* inputICalendar) {
+void iCalConverter::setSource(WCHAR* inputICalendar) {
     if(iCalendar) {
         delete[] iCalendar;
         iCalendar = NULL;
     }
     if(inputICalendar) {
-        iCalendar = new wchar_t[wcslen(inputICalendar) + 1];
+        iCalendar = new WCHAR[wcslen(inputICalendar) + 1];
         wcscpy(iCalendar, inputICalendar);
     }
     if(calendar) {
@@ -56,7 +56,7 @@ void iCalConverter::setSource(Calendar& inputCalendar) {
     }
 }
 
-void iCalConverter::getICalendar(wchar_t* ouputICalendar) {
+void iCalConverter::getICalendar(WCHAR* ouputICalendar) {
     if(iCalendar) {
         if(!ouputICalendar)
             return;
@@ -74,7 +74,7 @@ void iCalConverter::getCalendar(Calendar** outputCalendar) {
         *outputCalendar = NULL;
 }
 
-bool iCalConverter::convert(wchar_t* errorDescription, long* errorCode) {
+bool iCalConverter::convert(WCHAR* errorDescription, long* errorCode) {
     if(!errorDescription)
         return NULL;
     wcscpy(errorDescription,TEXT(""));
@@ -220,7 +220,7 @@ bool iCalConverter::convert(wchar_t* errorDescription, long* errorCode) {
     return true;
 }
 
-Event* iCalConverter::extractEvent(VObject* vo, wchar_t* errorDescription, long* errorCode) {
+Event* iCalConverter::extractEvent(VObject* vo, WCHAR* errorDescription, long* errorCode) {
     int i,m;
 	int beginEvent = -1;
     int endEvent = -1;
@@ -259,7 +259,7 @@ Event* iCalConverter::extractEvent(VObject* vo, wchar_t* errorDescription, long*
     return ret;
 }
 
-ToDo* iCalConverter::extractTask(VObject* vo, wchar_t* errorDescription, long* errorCode) {
+ToDo* iCalConverter::extractTask(VObject* vo, WCHAR* errorDescription, long* errorCode) {
     int i,m;
 	int beginTask = -1;
     int endTask = -1;
@@ -322,7 +322,7 @@ void iCalConverter::extractAlarm(VObject* vo){
         }
 } 
 
-bool iCalConverter::validateEvent(Event* ev, wchar_t* errorDescription, long* errorCode) {
+bool iCalConverter::validateEvent(Event* ev, WCHAR* errorDescription, long* errorCode) {
   //validate BEGIN, END, UID 
     if(wcscmp(ev->getProperty(0)->getName(), TEXT("BEGIN")) ||
         wcscmp(ev->getProperty(0)->getValue(), TEXT("VEVENT"))) {
@@ -353,7 +353,7 @@ bool iCalConverter::validateEvent(Event* ev, wchar_t* errorDescription, long* er
     }
     return true;
 }
-bool iCalConverter::validateTodo(ToDo* task, wchar_t* errorDescription, long* errorCode) {
+bool iCalConverter::validateTodo(ToDo* task, WCHAR* errorDescription, long* errorCode) {
     //validate BEGIN, END, UID 
     if(wcscmp(task->getProperty(0)->getName(), TEXT("BEGIN")) ||
         wcscmp(task->getProperty(0)->getValue(), TEXT("VTODO"))) {
@@ -384,7 +384,7 @@ bool iCalConverter::validateTodo(ToDo* task, wchar_t* errorDescription, long* er
     }
     return true;
 }
-bool iCalConverter::validatePropery(VProperty* vp, wchar_t* errorDescription, long* errorCode) { 
+bool iCalConverter::validatePropery(VProperty* vp, WCHAR* errorDescription, long* errorCode) { 
     
     if(!wcscmp(vp->getName(), TEXT("CLASS"))) {
         if(!wcsstr(CLASS_PROPERTY_VALUE, vp->getValue()) &&
@@ -634,8 +634,8 @@ bool iCalConverter::validatePropery(VProperty* vp, wchar_t* errorDescription, lo
                 }
         }
         if(vp->containsParameter(TEXT("VALUE")) && !wcscmp(vp->getParameterValue(TEXT("VALUE")), TEXT("DATE"))) {
-            wchar_t seps[] = TEXT(",");
-            wchar_t *token;
+            WCHAR seps[] = TEXT(",");
+            WCHAR *token;
             token = wcstok( vp->getValue(), seps );
             while( token != NULL ) {
                 if(!validateDate(token)) {
@@ -661,7 +661,7 @@ bool iCalConverter::validatePropery(VProperty* vp, wchar_t* errorDescription, lo
     }
     else if(!wcscmp(vp->getName(), TEXT("REQUEST-STATUS"))) {
         //statcode ";" statdesc [";" extdata]
-        wchar_t* value = new wchar_t[wcslen(vp->getName())+1];
+        WCHAR* value = new WCHAR[wcslen(vp->getName())+1];
         wcscpy(value, vp->getName());
         if(!isdigit(value[0]) || value[1] != '.' || !wcschr(value, ';')) {
             *errorCode = ERROR_INVALID_PROPERTY_VALUE;
@@ -706,7 +706,7 @@ bool iCalConverter::validatePropery(VProperty* vp, wchar_t* errorDescription, lo
             }
         } 
         else if(vp->containsParameter(TEXT("VALUE")) && !wcscmp(vp->getParameterValue(TEXT("VALUE")), TEXT("PERIOD"))) {
-            wchar_t* delimiter;
+            WCHAR* delimiter;
             delimiter = wcschr(vp->getValue(), '/');
             if(!delimiter) {
                 *errorCode = ERROR_INVALID_PROPERTY_VALUE;
@@ -730,27 +730,27 @@ bool iCalConverter::validatePropery(VProperty* vp, wchar_t* errorDescription, lo
     return true;
 }
 
-bool iCalConverter::validateGeo(wchar_t* geo) {
+bool iCalConverter::validateGeo(WCHAR* geo) {
     if(!geo)
         return false;
 
     //expected format: longitude;latitude
-    wchar_t* pDest = NULL; 
+    WCHAR* pDest = NULL; 
     pDest = wcschr(geo, ';');
 
     if(!pDest)
         return false;
 
-    wchar_t* longitude = new wchar_t[wcslen(geo)+1];
+    WCHAR* longitude = new WCHAR[wcslen(geo)+1];
     wcsncpy(longitude, geo, pDest-geo);
 
-    wchar_t* latitude = new wchar_t[wcslen(geo)+1];
+    WCHAR* latitude = new WCHAR[wcslen(geo)+1];
     if(++pDest)
         wcscpy(latitude, pDest);
     else
         return false;
 
-	wchar_t* stopstring;
+	WCHAR* stopstring;
    // double lon = _wtof(longitude);
    // double lat = _wtof(latitude);
 
@@ -763,7 +763,7 @@ bool iCalConverter::validateGeo(wchar_t* geo) {
     return true;
 }
 
-bool iCalConverter::validateDT(wchar_t* dt) {
+bool iCalConverter::validateDT(WCHAR* dt) {
     //1997 06 30 T 23 59 60 Z
     int len = int(wcslen(dt));
     if(len != 15 && len != 16)
@@ -777,8 +777,8 @@ bool iCalConverter::validateDT(wchar_t* dt) {
     if(dt[8] != 'T')
         return false;
 
-    wchar_t* date; 
-    date = new wchar_t[9];
+    WCHAR* date; 
+    date = new WCHAR[9];
     wcsncpy(date, dt, 8);
     date[8] = 0;
     if(!validateDate(date)) {
@@ -787,21 +787,21 @@ bool iCalConverter::validateDT(wchar_t* dt) {
     }
     delete [] date;
 
-    wchar_t hour[2];
+    WCHAR hour[2];
     hour[0] = dt[9];
     hour[1] = dt[10];
     int h = _wtoi(hour);
     if(h < 0 || h > 23)
         return false;
 
-    wchar_t min[2];
+    WCHAR min[2];
     min[0] = dt[11];
     min[1] = dt[12];
     int m = _wtoi(min);
     if(m < 0 || m > 59) 
         return false;
     
-    wchar_t sec[2];
+    WCHAR sec[2];
     sec[0] = dt[13];
     sec[1] = dt[14];
     int s = _wtoi(sec);
@@ -812,11 +812,11 @@ bool iCalConverter::validateDT(wchar_t* dt) {
 
 }
 
-bool iCalConverter::validateDate(wchar_t* date) {
+bool iCalConverter::validateDate(WCHAR* date) {
     if(wcslen(date) != 8)
         return false;
     
-    wchar_t month[2];
+    WCHAR month[2];
     month[0] = date[4];
     month[1] = date[5];
     int mo = _wtoi(month);
@@ -824,7 +824,7 @@ bool iCalConverter::validateDate(wchar_t* date) {
     if(mo > 12 || mo < 1)
         return false;
 
-    wchar_t day[2];
+    WCHAR day[2];
     day[0] = date[6];
     day[1] = date[7];
 
@@ -835,14 +835,14 @@ bool iCalConverter::validateDate(wchar_t* date) {
     return true;
 }
 
-bool iCalConverter::validateRecur(wchar_t* recur) {
+bool iCalConverter::validateRecur(WCHAR* recur) {
     
     if(wcsstr(recur, TEXT("FREQ")) != recur)
         return false;
 
-    wchar_t seps[] = TEXT(";");
-    wchar_t* token;
-    wchar_t* delimiter;
+    WCHAR seps[] = TEXT(";");
+    WCHAR* token;
+    WCHAR* delimiter;
 
     token = wcstok( recur, seps );
     while( token != NULL ) {
@@ -850,7 +850,7 @@ bool iCalConverter::validateRecur(wchar_t* recur) {
         if(!delimiter)
             return false;
         int len = int(wcslen(token));
-        wchar_t* item = new wchar_t[len + 1];
+        WCHAR* item = new WCHAR[len + 1];
         wcsncpy(item, token, delimiter - token);
         item[delimiter - token] = 0;
         
@@ -860,7 +860,7 @@ bool iCalConverter::validateRecur(wchar_t* recur) {
         }
 
         if(!wcscmp(item, TEXT("FREQ"))) {
-            wchar_t* value = new wchar_t[len + 1];
+            WCHAR* value = new WCHAR[len + 1];
             wcscpy(value, ++delimiter);
             if(!wcsstr(FREQUENCY_VALUES_LIST, value)) {
                 delete [] value; value = NULL;

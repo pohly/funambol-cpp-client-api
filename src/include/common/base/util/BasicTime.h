@@ -75,8 +75,8 @@ class BasicTime : public ArrayElement {
     int set(int yy, int mon, int dd, int wd,
             int hh, int mm, int ss, int tzh, int tzm);
             
-    int parseRfc822(const BCHAR *date);
-    BCHAR *formatRfc822() const ;
+    int parseRfc822(const char *date);
+    char *formatRfc822() const ;
 
     ArrayElement *clone();
 

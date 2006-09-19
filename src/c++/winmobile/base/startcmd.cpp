@@ -25,9 +25,9 @@
 
 // retrieve the Funambol program path and set it in a static
 // buffer. Return the buffer
-const wchar_t *getProgramPath()
+const WCHAR *getProgramPath()
 {
-    static wchar_t path[MAX_PATH] = TEXT("");
+    static WCHAR path[MAX_PATH] = TEXT("");
 
     if (!path[0]) {
         SHGetSpecialFolderPath(NULL, path, CSIDL_PROGRAM_FILES , FALSE);
@@ -41,16 +41,16 @@ const wchar_t *getProgramPath()
  * Start a command in a new process and return the pid
  * or 0 in case of error.
  */
-unsigned long startcmd(const wchar_t *app, const wchar_t *cmdline) 
+unsigned long startcmd(const WCHAR *app, const WCHAR *cmdline) 
 {
-    const wchar_t *path = getProgramPath();
+    const WCHAR *path = getProgramPath();
     PROCESS_INFORMATION procinfo;
     
-    wchar_t *cmd = new wchar_t[wcslen(path)+wcslen(app)+5];
+    WCHAR *cmd = new WCHAR[wcslen(path)+wcslen(app)+5];
     wsprintf(cmd, TEXT("%s\\%s"), path, app);
 
-    BCHAR dbg[200];
-    bsprintf(dbg, T("Running: %ls %ls\n"), cmd, cmdline);
+    char dbg[200];
+    sprintf(dbg, T("Running: %ls %ls\n"), cmd, cmdline);
     LOG.error(dbg);
     if( CreateProcess( cmd, cmdline, 
                        NULL, NULL, FALSE, 0,

@@ -20,9 +20,9 @@
 #include "base/fscapi.h"
 #include "base/Log.h"
 
-inline int TimeFormatter(const SYSTEMTIME t, BCHAR* out) {
+inline int TimeFormatter(const SYSTEMTIME t, char*  out) {
                 
-    return bsprintf(out, T("%02d%02d%02d%02d"),
+    return sprintf(out, T("%02d%02d%02d%02d"),
                          t.wDay, t.wHour, t.wMinute, t.wSecond);
 }
 
@@ -34,16 +34,16 @@ unsigned int time(void* unused) {
     // year + month
     int t = st.wYear + st.wMonth;
     
-    BCHAR tttt[20];
+    char tttt[20];
 
     TimeFormatter(st, tttt);
 
-    unsigned int l = bstrtol(tttt, NULL, 10);
+    unsigned int l = strtol(tttt, NULL, 10);
     
     l += l + t;
     return l;
     
-    bsprintf(tttt, T("Low %u"), l);
+    sprintf(tttt, T("Low %u"), l);
     LOG.debug(tttt);
     
 }

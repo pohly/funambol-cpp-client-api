@@ -34,13 +34,13 @@ vCardConverter::~vCardConverter() {
     }
 }
 
-void vCardConverter::setSource(wchar_t* inputCard) {
+void vCardConverter::setSource(WCHAR* inputCard) {
     if(vCard) {
         delete[] vCard;
         vCard = NULL;
     }
     if(inputCard) {
-        vCard = new wchar_t[wcslen(inputCard) + 1];
+        vCard = new WCHAR[wcslen(inputCard) + 1];
         wcscpy(vCard, inputCard);
     }
     if(contact) {
@@ -59,7 +59,7 @@ void vCardConverter::setSource(Contact& inputContact) {
     }
 }
 
-void vCardConverter::getvCard(wchar_t* outputCard) {
+void vCardConverter::getvCard(WCHAR* outputCard) {
     if(vCard) {
         if(!outputCard)
             return;
@@ -77,7 +77,7 @@ void vCardConverter::getContact(Contact** outputContact) {
         *outputContact = NULL;
 }
 
-bool vCardConverter::convert(wchar_t* errorDescription, long* errorCode) {
+bool vCardConverter::convert(WCHAR* errorDescription, long* errorCode) {
     if(!errorDescription)
         return NULL;
     wcscpy(errorDescription,TEXT(""));
@@ -94,7 +94,7 @@ bool vCardConverter::convert(wchar_t* errorDescription, long* errorCode) {
         }           
     }
     if (vCard) {
-        wchar_t* vCardCopy = new wchar_t[wcslen(vCard) + 1];
+        WCHAR* vCardCopy = new WCHAR[wcslen(vCard) + 1];
         wcscpy(vCardCopy, vCard);
         Contact* invalidatedContact = (Contact*)VConverter::parse(vCardCopy);
         if (invalidatedContact && validate((VObject*)invalidatedContact, errorDescription, errorCode))
@@ -107,7 +107,7 @@ bool vCardConverter::convert(wchar_t* errorDescription, long* errorCode) {
    return true;
 }
 
-bool vCardConverter::validate(VObject* vObject, wchar_t* errorDescription, long* errorCode) {
+bool vCardConverter::validate(VObject* vObject, WCHAR* errorDescription, long* errorCode) {
     
     //validate begin, end, N and FN properties
     if(wcscmp(vObject->getProperty(0)->getName(), TEXT("BEGIN")) ||
@@ -168,7 +168,7 @@ bool vCardConverter::validate(VObject* vObject, wchar_t* errorDescription, long*
     return true;
 }
 
-bool vCardConverter::validateProperty21(VProperty* prop, wchar_t* errorDescription, long* errorCode) {
+bool vCardConverter::validateProperty21(VProperty* prop, WCHAR* errorDescription, long* errorCode) {
 
     if(!wcsstr(VCARD21_PROPERTIES_LIST, prop->getName()) &&
         wcsstr(prop->getName(),TEXT("X-")) != prop->getName()) {
@@ -208,7 +208,7 @@ bool vCardConverter::validateProperty21(VProperty* prop, wchar_t* errorDescripti
     
     //address and label properties
     if(!wcscmp(prop->getName(), TEXT("ADR")) || !wcscmp(prop->getName(), TEXT("LABEL"))) {
-        wchar_t *addressParameterList = new wchar_t[wcslen(PARAMTER21_LIST) + wcslen(ADDRESS21_TYPES) + 1];
+        WCHAR *addressParameterList = new WCHAR[wcslen(PARAMTER21_LIST) + wcslen(ADDRESS21_TYPES) + 1];
         wcscpy(addressParameterList, PARAMTER21_LIST);
         wcscat(addressParameterList, ADDRESS21_TYPES);
         for(int i = 0; i < prop->parameterCount(); i++)           
@@ -224,7 +224,7 @@ bool vCardConverter::validateProperty21(VProperty* prop, wchar_t* errorDescripti
    
     //telephone number
     if(!wcscmp(prop->getName(), TEXT("TEL"))) {
-        wchar_t *telParameterList = new wchar_t[wcslen(PARAMTER21_LIST) + wcslen(TEL21_TYPES) + 1];
+        WCHAR *telParameterList = new WCHAR[wcslen(PARAMTER21_LIST) + wcslen(TEL21_TYPES) + 1];
         wcscpy(telParameterList, PARAMTER21_LIST);
         wcscat(telParameterList, TEL21_TYPES);
         for(int i = 0; i < prop->parameterCount(); i++)
@@ -280,7 +280,7 @@ bool vCardConverter::validateProperty21(VProperty* prop, wchar_t* errorDescripti
     return true;
 }
 
-bool vCardConverter::validateProperty30(VProperty* prop, wchar_t* errorDescription, long* errorCode) {
+bool vCardConverter::validateProperty30(VProperty* prop, WCHAR* errorDescription, long* errorCode) {
     
     if(!wcsstr(VCARD30_PROPERTIES_LIST, prop->getName()) &&
         wcsstr(prop->getName(),TEXT("X-")) != prop->getName()) {
@@ -373,15 +373,15 @@ bool vCardConverter::validateProperty30(VProperty* prop, wchar_t* errorDescripti
     return true;
 }
 
-bool vCardConverter::checkType(wchar_t* types, wchar_t* typesList) {
+bool vCardConverter::checkType(WCHAR* types, WCHAR* typesList) {
     
     if (!types)
         return true;
 
 
-    wchar_t seps[] = TEXT(",");
-    wchar_t* token;
-    wchar_t* copyTypes = new wchar_t[wcslen(types)+1];
+    WCHAR seps[] = TEXT(",");
+    WCHAR* token;
+    WCHAR* copyTypes = new WCHAR[wcslen(types)+1];
     wcscpy(copyTypes, types);
 
     token = wcstok( copyTypes, seps );
@@ -398,13 +398,13 @@ bool vCardConverter::checkType(wchar_t* types, wchar_t* typesList) {
     return true;
 }
 
-bool vCardConverter::validateTZ(wchar_t* timeZone) {
+bool vCardConverter::validateTZ(WCHAR* timeZone) {
     //("+" / "-") time-hour ":" time-minute
     //time-hour    = 2DIGIT;00-23
     //time-minute  = 2DIGIT;00-59
     
-    wchar_t tzHour[3] = TEXT("");
-    wchar_t tzMin[3] = TEXT("");
+    WCHAR tzHour[3] = TEXT("");
+    WCHAR tzMin[3] = TEXT("");
 
     if(!wcschr(timeZone,':'))
         return false;
@@ -437,27 +437,27 @@ bool vCardConverter::validateTZ(wchar_t* timeZone) {
     return true;
 }
 
-bool vCardConverter::validateGeo(wchar_t* geo) {
+bool vCardConverter::validateGeo(WCHAR* geo) {
     if(!geo)
         return false;
     
     //expected format: longitude;latitude
-    wchar_t* pDest = NULL; 
+    WCHAR* pDest = NULL; 
     pDest = wcschr(geo, ';');
     
     if(!pDest)
         return false;
     
-    wchar_t* longitude = new wchar_t[wcslen(geo)+1];
+    WCHAR* longitude = new WCHAR[wcslen(geo)+1];
     wcsncpy(longitude, geo, pDest-geo);
 
-    wchar_t* latitude = new wchar_t[wcslen(geo)+1];
+    WCHAR* latitude = new WCHAR[wcslen(geo)+1];
     if(++pDest)
         wcscpy(latitude, pDest);
     else
         return false;
 
-	wchar_t* stopstring;
+	WCHAR* stopstring;
    // double lon = _wtof(longitude);
    // double lat = _wtof(latitude);
 

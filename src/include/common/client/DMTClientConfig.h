@@ -37,7 +37,7 @@ class DMTClientConfig : public SyncManagerConfig {
 
     protected:
 
-        BCHAR* rootContext;
+        char*  rootContext;
 
         DMTree* dmt;
         ManagementNode* syncMLNode;
@@ -177,12 +177,12 @@ class DMTClientConfig : public SyncManagerConfig {
 
     public:
 
-        DMTClientConfig(const BCHAR* root) EXTRA_SECTION_01;
+        DMTClientConfig(const char*  root) EXTRA_SECTION_01;
 
         ~DMTClientConfig() EXTRA_SECTION_01;
 
         virtual BOOL getSyncSourceConfig(
-                const BCHAR* name,
+                const char*  name,
                 SyncSourceConfig& sc,
                 BOOL refresh = FALSE) EXTRA_SECTION_01;
 

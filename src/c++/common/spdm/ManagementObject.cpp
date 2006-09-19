@@ -21,15 +21,15 @@
 #include "spdm/ManagementObject.h"
 
 
-ManagementObject::ManagementObject( const wchar_t* context,
-                                    const wchar_t* name   )
+ManagementObject::ManagementObject( const WCHAR* context,
+                                    const WCHAR* name   )
 : LeafManagementNode (context, name) {
 }
 
 ManagementObject::~ManagementObject() {
 }
 
-void ManagementObject::getPropertyValue(const wchar_t* p, wchar_t* v, int size) {
+void ManagementObject::getPropertyValue(const WCHAR* p, WCHAR* v, int size) {
     KeyValuePair* property = NULL;
 
     int l = properties.size();
@@ -43,8 +43,8 @@ void ManagementObject::getPropertyValue(const wchar_t* p, wchar_t* v, int size) 
 
 }
 
-void ManagementObject::setPropertyValue(const wchar_t* p, wchar_t* v) {
-    KeyValuePair property((wchar_t*)p, v);
+void ManagementObject::setPropertyValue(const WCHAR* p, WCHAR* v) {
+    KeyValuePair property((WCHAR*)p, v);
 
     properties.add(property);
 }

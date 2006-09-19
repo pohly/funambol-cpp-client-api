@@ -1,6 +1,6 @@
 #include "StringElement.h"
 
-StringElement::StringElement(wchar_t* v) {
+StringElement::StringElement(WCHAR* v) {
     value = (v) ? stringdup(v) : NULL;
 }
 
@@ -10,14 +10,14 @@ StringElement::~StringElement() {
     }
 }
 
-void StringElement::setValue(wchar_t* v) {
+void StringElement::setValue(WCHAR* v) {
     if (value) {
         delete [] value;
     }
     value = (v) ? stringdup(v) : NULL;
 }
 
-wchar_t* StringElement::getValue(wchar_t* buf, int size) {
+WCHAR* StringElement::getValue(WCHAR* buf, int size) {
 
     if (buf == NULL) {
         return value;

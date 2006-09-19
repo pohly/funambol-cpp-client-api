@@ -35,11 +35,11 @@ class StringElement : public ArrayElement {
      // ------------------------------------------------------------ Private data
     private:
       
-        BCHAR* value;
+        char*  value;
     // ---------------------------------------------------------- Protected data    
     public:
                 
-        StringElement(const BCHAR* value);
+        StringElement(const char*  value);
         ~StringElement();
 
 
@@ -49,7 +49,7 @@ class StringElement : public ArrayElement {
          * 
          * @return the value of string element
          */
-        BCHAR* getValue(BCHAR* retValue);
+        char*  getValue(char*  retValue);
 
     
         /**
@@ -58,7 +58,7 @@ class StringElement : public ArrayElement {
          * @param value the value of experimental meta information
          *
          */
-        void setValue(const BCHAR* value);
+        void setValue(const char*  value);
         
         ArrayElement* clone();
 

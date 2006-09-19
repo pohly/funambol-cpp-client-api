@@ -29,7 +29,7 @@ class Exec : public ModificationCommand {
     
      // ------------------------------------------------------------ Private data
     private:
-        BCHAR* COMMAND_NAME;
+        char*  COMMAND_NAME;
 
     
     // ---------------------------------------------------------- Public data    
@@ -59,7 +59,7 @@ class Exec : public ModificationCommand {
          *
          * @return the command name property
          */   
-        BCHAR* getName();
+        char*  getName();
 
         /**
          * Gets an Item object

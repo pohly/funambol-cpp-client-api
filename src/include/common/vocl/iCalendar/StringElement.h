@@ -7,13 +7,13 @@
 class StringElement : public ArrayElement {
 
 private:
-    wchar_t* value;
+    WCHAR* value;
 
 public:
-    StringElement(wchar_t* v = NULL);
+    StringElement(WCHAR* v = NULL);
     ~StringElement();
     ArrayElement* clone();
-    void setValue (wchar_t* value);
-    wchar_t* getValue(wchar_t* buf = NULL, int size = -1);
+    void setValue (WCHAR* value);
+    WCHAR* getValue(WCHAR* buf = NULL, int size = -1);
 };
 #endif

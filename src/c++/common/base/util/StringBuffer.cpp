@@ -34,26 +34,26 @@ void abort(const char *msg)
     fclose(f);
     exit(1);
 }
-size_t charlen = sizeof(BCHAR);
+size_t charlen = sizeof(char);
     if(charlen != 2) {
         abort("Panic: wide char size in not 2");
     }
     
 #endif
 
-StringBuffer::StringBuffer(const BCHAR* str, size_t len) {
+StringBuffer::StringBuffer(const char* str, size_t len) {
     size = 0;
     s = 0;
 
     // if the given string is null, leave this null,
     // otherwise set it, even empty.
     if (str) {
-        size_t slen = bstrlen(str);
+        size_t slen = strlen(str);
         size_t newlen = (len > slen) ? slen : len ; 
 
         if(newlen) {
             getmem(newlen);
-            bstrncpy(s, str, newlen);
+            strncpy(s, str, newlen);
             s[newlen]=0;
         }
         else {  // empty string
@@ -73,37 +73,37 @@ StringBuffer::~StringBuffer() {
     freemem();
 }
 
-StringBuffer& StringBuffer::append(const BCHAR* sNew) {
+StringBuffer& StringBuffer::append(const char* sNew) {
     if (sNew == NULL) {
         return *this;
     }
 
-    unsigned long len = bstrlen(sNew);
+    unsigned long len = strlen(sNew);
 
     if (len == 0) {
         return *this;
     }
     if (s) {
-        getmem(bstrlen(s) + len);
-        bstrcat(s, sNew);
+        getmem(strlen(s) + len);
+        strcat(s, sNew);
     }
     else {
         getmem(len);
-        bstrcpy(s, sNew);
+        strcpy(s, sNew);
     }
 
     return *this;
 }
 
 StringBuffer& StringBuffer::append(unsigned long i, BOOL sign) {
-    BCHAR v[12];
+    char v[12];
 
     if (sign) {
-        // bsprintf(v, "%ld", i);
-        bsprintf(v, T("%ld"), i);
+        // sprintf(v, "%ld", i);
+        sprintf(v, T("%ld"), i);
     } else {
-        // bsprintf(v, "%lu", i);
-        bsprintf(v, T("%lu"), i);
+        // sprintf(v, "%lu", i);
+        sprintf(v, T("%lu"), i);
     }
 
     append(v);
@@ -122,18 +122,18 @@ StringBuffer& StringBuffer::append(StringBuffer* str) {
         return *this;
 }
 
-StringBuffer& StringBuffer::set(const BCHAR* sNew) {
+StringBuffer& StringBuffer::set(const char* sNew) {
     if (sNew) {
-        size_t len = bstrlen(sNew);
+        size_t len = strlen(sNew);
         if ( len ) {
             getmem( len );
-            bstrcpy(s, sNew);
+            strcpy(s, sNew);
         }
         else if (s) {
             s[0]=0; // just make the string empty
         } else {
             getmem( 2 );
-            bstrcpy(s, "");
+            strcpy(s, "");
         }
     }
     else {
@@ -143,10 +143,10 @@ StringBuffer& StringBuffer::set(const BCHAR* sNew) {
     return *this;
 }
 
-const BCHAR* StringBuffer::getChars() const { return s; }
+const char* StringBuffer::getChars() const { return s; }
 
 unsigned long StringBuffer::length() const {
-    return (s) ? bstrlen(s) : 0;
+    return (s) ? strlen(s) : 0;
 }
 
 StringBuffer& StringBuffer::reset() {
@@ -154,24 +154,24 @@ StringBuffer& StringBuffer::reset() {
     return *this;
 }
 
-size_t StringBuffer::find(const BCHAR *str, size_t pos) const 
+size_t StringBuffer::find(const char *str, size_t pos) const 
 {
     if (pos >= length())
         return npos;
-    BCHAR *p = bstrstr(s+pos, str);
+    char *p = strstr(s+pos, str);
     if(!p)
         return npos;
     return (p-s);
 }
 
-size_t StringBuffer::ifind(const BCHAR *str, size_t pos) const
+size_t StringBuffer::ifind(const char *str, size_t pos) const
 {
     if (pos >= length())
         return npos;
-    BCHAR *ls = strtolower(s+pos);
-    BCHAR *lstr = strtolower(str);
+    char *ls = strtolower(s+pos);
+    char *lstr = strtolower(str);
 
-    BCHAR *p = bstrstr(ls, lstr);
+    char *p = strstr(ls, lstr);
     
     size_t ret = (p) ? p-ls : npos;
 
@@ -181,12 +181,12 @@ size_t StringBuffer::ifind(const BCHAR *str, size_t pos) const
     return ret;
 }
 
-size_t StringBuffer::rfind(const BCHAR *str, size_t pos) const 
+size_t StringBuffer::rfind(const char *str, size_t pos) const 
 {
     /*
     if (pos >= length())
         return npos;
-    const BCHAR *p = brfind(s+pos, str);
+    const char *p = brfind(s+pos, str);
     if(!p)
         return npos;
     return (p-s);
@@ -214,7 +214,7 @@ size_t StringBuffer::rfind(const BCHAR *str, size_t pos) const
 }
 
 
-size_t StringBuffer::replace(const BCHAR *from, const BCHAR *to, size_t pos) 
+size_t StringBuffer::replace(const char *from, const char *to, size_t pos) 
 {
 	size_t ret = npos;
 
@@ -224,11 +224,11 @@ size_t StringBuffer::replace(const BCHAR *from, const BCHAR *to, size_t pos)
     if(pos>=length())
         return npos;
 
-    BCHAR *p = bstrstr(s+pos, from);
+    char *p = strstr(s+pos, from);
     if (p) {
         size_t fpos = p - s;
-        size_t flen = bstrlen(from), tlen = bstrlen(to);
-        BCHAR *tail = 0;
+        size_t flen = strlen(from), tlen = strlen(to);
+        char *tail = 0;
         int ldiff = tlen - flen ;
 
         // reallocate if needed
@@ -236,14 +236,14 @@ size_t StringBuffer::replace(const BCHAR *from, const BCHAR *to, size_t pos)
         p = s + fpos;            // ensure that p is valid again 
         // check is there is a remainder after the replaced token
         if( p[flen] ) {
-            tail = new BCHAR[length()];
-            bstrcpy(tail, p+flen);
+            tail = new char[length()];
+            strcpy(tail, p+flen);
         }
         // copy to in place of from
-        bstrcpy(p, to);
+        strcpy(p, to);
         // copy the remainder of old string, if there is one
         if( tail ) {
-            bstrcpy(p+tlen, tail);
+            strcpy(p+tlen, tail);
             delete [] tail;
         }
 		ret = p - s;
@@ -252,7 +252,7 @@ size_t StringBuffer::replace(const BCHAR *from, const BCHAR *to, size_t pos)
 }
 
 // TODO: implement some smarter argorithm to avoid multiple reallocations
-int StringBuffer::replaceAll(const BCHAR *from, const BCHAR *to, size_t pos) {
+int StringBuffer::replaceAll(const char *from, const char *to, size_t pos) {
     int i=0;
     int len = strlen(to);
     size_t next;
@@ -263,18 +263,18 @@ int StringBuffer::replaceAll(const BCHAR *from, const BCHAR *to, size_t pos) {
     return i;
 }
 
-ArrayList& StringBuffer::split(ArrayList &tokens, const BCHAR *separator) const {
+ArrayList& StringBuffer::split(ArrayList &tokens, const char *separator) const {
     tokens.clear();
-    size_t seplen = bstrlen(separator);
-    BCHAR *base = s;
-    BCHAR *p = bstrstr( base, separator );
+    size_t seplen = strlen(separator);
+    char *base = s;
+    char *p = strstr( base, separator );
 
     while( p )
     {
         StringBuffer token(base, p-base);
         tokens.add( token );
         base = p + seplen;
-        p = bstrstr( base, separator );
+        p = strstr( base, separator );
     }
     StringBuffer token(base);
     tokens.add( token );
@@ -282,9 +282,9 @@ ArrayList& StringBuffer::split(ArrayList &tokens, const BCHAR *separator) const 
     return tokens;
 }
 
-StringBuffer& StringBuffer::join(ArrayList &tokens, const BCHAR *separator) {
+StringBuffer& StringBuffer::join(ArrayList &tokens, const char *separator) {
     StringBuffer *line;
-    size_t totlen = 0, seplen = bstrlen(separator);
+    size_t totlen = 0, seplen = strlen(separator);
     // Calc total size
     for (line=(StringBuffer *)tokens.front();
 		 line;
@@ -304,7 +304,7 @@ StringBuffer& StringBuffer::join(ArrayList &tokens, const BCHAR *separator) {
 }
 
 StringBuffer StringBuffer::substr(size_t pos, size_t len) const {
-    if(pos > bstrlen(s))
+    if(pos > strlen(s))
         return StringBuffer(T(""));
 
 	return (StringBuffer(s+pos, len));
@@ -315,7 +315,7 @@ void StringBuffer::reserve(size_t len) {
 }
 
 StringBuffer& StringBuffer::upperCase() {
-    BCHAR* p = NULL;
+    char* p = NULL;
 
     for(p = s; *p; p++) {
         *p=toupper(*p);
@@ -325,7 +325,7 @@ StringBuffer& StringBuffer::upperCase() {
 }
 
 StringBuffer& StringBuffer::lowerCase() {
-    BCHAR* p = NULL;
+    char* p = NULL;
 
     for(p = s; *p; p++) {
         *p=tolower(*p);
@@ -337,7 +337,7 @@ StringBuffer& StringBuffer::lowerCase() {
 /**
  * Perform case insensitive compare
  */
-bool StringBuffer::icmp(const BCHAR *sc) const {
+bool StringBuffer::icmp(const char *sc) const {
     return wcscmpIgnoreCase(s, sc);
 }
 
@@ -357,29 +357,29 @@ bool StringBuffer::null() const { return (s==0); }
 
 
 // Member Operators
-StringBuffer& StringBuffer::operator= (const BCHAR* sc)
+StringBuffer& StringBuffer::operator= (const char* sc)
     { return set(sc); }
 StringBuffer& StringBuffer::operator= (const StringBuffer& sb)
     { return set(sb); }
-StringBuffer& StringBuffer::operator+= (const BCHAR* sc)
+StringBuffer& StringBuffer::operator+= (const char* sc)
     { append(sc); return *this; }
 StringBuffer& StringBuffer::operator+= (const StringBuffer& s)
     { append(s); return *this; }
-bool  StringBuffer::operator== (const BCHAR* sc) const
+bool  StringBuffer::operator== (const char* sc) const
 {
     if(!s)
         return (sc) ? false : true ;
     if (!sc)
         return false;
 
-    return bstrcmp(s, sc) == 0;
+    return strcmp(s, sc) == 0;
 }
 bool  StringBuffer::operator== (const StringBuffer& sb) const
 {
     return *this == sb.c_str();
 }
 
-bool  StringBuffer::operator!= (const BCHAR* sc) const
+bool  StringBuffer::operator!= (const char* sc) const
 {
     return !(*this == sc);
 }
@@ -390,7 +390,7 @@ bool  StringBuffer::operator!= (const StringBuffer& s) const
 
 
 // Function operators
-StringBuffer operator+(const StringBuffer& x, const BCHAR *y)
+StringBuffer operator+(const StringBuffer& x, const char *y)
 {
   StringBuffer result(x);
   result.append(y);
@@ -408,7 +408,7 @@ void StringBuffer::getmem(size_t len)
         // Remember the old length (0 for the null string)
         size_t oldlen = length();
         // Realloc the string (like malloc when s is null)
-        s = (BCHAR *)realloc(s, (len+1) * sizeof(BCHAR) );
+        s = (char *)realloc(s, (len+1) * sizeof(char) );
         //StringBuffer_memcount += (len-size);
         size = len;
         // Make sure s is terminated at the old position 

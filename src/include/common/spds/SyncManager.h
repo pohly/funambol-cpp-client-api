@@ -40,7 +40,7 @@ typedef enum {
              } SyncManagerState ;
 
 
-static void fillContentTypeInfoList(ArrayList &l, const BCHAR* types);
+static void fillContentTypeInfoList(ArrayList &l, const char*  types);
 
 
 //
@@ -84,10 +84,10 @@ class SyncManager {
 
         // Struct used to pass command info to the method processSyncItem
         struct CommandInfo {
-            BCHAR* commandName;
-            BCHAR *cmdRef;
-            BCHAR* format;
-            BCHAR* dataType;
+            char*  commandName;
+            char *cmdRef;
+            char*  format;
+            char*  dataType;
             long size;
         };
 
@@ -110,14 +110,14 @@ class SyncManager {
         
 		ArrayList** allItemsList;
         
-        BCHAR syncURL [512];
-        BCHAR deviceId[32];  
+        char syncURL [512];
+        char deviceId[32];  
         unsigned int maxMsgSize;    // the max message size. If 0 it is not set. Setting it implies LargeObject support.
         unsigned int maxObjSize;    // The maximum object size. The server gets this in the Meta init message and should obey it.
         BOOL loSupport;             // enable support for large objects - without it large outgoing items are not split
         unsigned int maxModPerMsg;  // the max modification per message
         unsigned int readBufferSize; // the size of the buffer to store chunk of incoming stream.
-        BCHAR  credentialInfo[256]; // used to store info for the des;b64 encription
+        char  credentialInfo[256]; // used to store info for the des;b64 encription
 
         // Handling of incomplete incoming objects by processSyncItem().
         // Always active, even if Large Object support is off,
@@ -125,7 +125,7 @@ class SyncManager {
         // 
         class IncomingSyncItem : public SyncItem {
           public:
-            IncomingSyncItem(const wchar_t* key,
+            IncomingSyncItem(const WCHAR* key,
                              const CommandInfo &cmdInfo,
                              int currentSource) :
                 SyncItem(key),
@@ -147,11 +147,11 @@ class SyncManager {
         int assignSources(SyncSource** sources) EXTRA_SECTION_01;
         
         Status *processSyncItem(Item* item, const CommandInfo &cmdInfo, SyncMLBuilder &syncMLBuilder) EXTRA_SECTION_01;
-        char* processItemContent(const BCHAR* data, const BCHAR* encodings, long* size) EXTRA_SECTION_01;
-        void decodeSyncItemContent(char** c, TransformationInfo& info, const BCHAR* encoding) EXTRA_SECTION_01;
+        char* processItemContent(const char*  data, const char*  encodings, long* size) EXTRA_SECTION_01;
+        void decodeSyncItemContent(char** c, TransformationInfo& info, const char*  encoding) EXTRA_SECTION_01;
         BOOL checkForServerChanges(SyncML* syncml, ArrayList &statusList) EXTRA_SECTION_01;
 
-        const BCHAR* getUserAgent(SyncManagerConfig& config) EXTRA_SECTION_01;
+        const char*  getUserAgent(SyncManagerConfig& config) EXTRA_SECTION_01;
 };
 
 #endif

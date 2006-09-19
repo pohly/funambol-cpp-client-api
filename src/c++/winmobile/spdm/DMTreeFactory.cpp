@@ -37,6 +37,6 @@ DMTreeFactory::DMTreeFactory() {
  *
  * @param root the root of the management tree
  */
-DMTree* DMTreeFactory::getDMTree(const BCHAR* root) {
+DMTree* DMTreeFactory::getDMTree(const char*  root) {
     return new DMTree(root);
 }

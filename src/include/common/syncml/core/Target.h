@@ -28,11 +28,11 @@ class Target {
     
     // ------------------------------------------------------------ Private data
     private:
-        BCHAR* locURI;
-        BCHAR* locName;
+        char*  locURI;
+        char*  locName;
         Filter*  filter;
         
-        void set(const BCHAR* locURI, const BCHAR* locName, const Filter* filter);
+        void set(const char*  locURI, const char*  locName, const Filter* filter);
 
     // ---------------------------------------------------------- Protected data    
     public:
@@ -46,7 +46,7 @@ class Target {
      * @param filter a filter to be applied for this target; it defaults to NULL
      *
      */
-    Target(const BCHAR* locURI, const BCHAR* locName, const Filter* filter = NULL);
+    Target(const char*  locURI, const char*  locName, const Filter* filter = NULL);
 
     /**
      * Creates a new Target object with the given locURI
@@ -54,7 +54,7 @@ class Target {
      * @param locURI the locURI - NOT NULL
      *
      */
-    Target(const BCHAR* locURI);
+    Target(const char*  locURI);
     
     Target();
     ~Target();
@@ -65,25 +65,25 @@ class Target {
     /** Gets locURI properties
      * @return locURI properties
      */
-    const BCHAR* getLocURI();
+    const char*  getLocURI();
 
     /**
      * Sets locURI property
      * @param locURI the locURI
      */
-    void setLocURI(const BCHAR* locURI);
+    void setLocURI(const char*  locURI);
 
     /**
      * Gets locName properties
      * @return locName properties
      */
-    const BCHAR* getLocName();
+    const char*  getLocName();
 
     /**
      * Sets locName property
      * @param locName the locURI
      */
-    void setLocName(const BCHAR* locName);
+    void setLocName(const char*  locName);
 
     /**
      * Gets filter

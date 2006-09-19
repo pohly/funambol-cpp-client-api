@@ -786,7 +786,7 @@ ArrayElement* Event::clone() {
 
     return (ArrayElement*)ret;
 }
-wchar_t* Event::toString() {
+WCHAR* Event::toString() {
     if(propertiesCount()<1 || 
         wcscmp(getProperty(0)->getName(),TEXT("BEGIN")) ||
         wcscmp(getProperty(0)->getValue(),TEXT("VEVENT")) ||
@@ -846,10 +846,10 @@ iCalProperty* Event::getiCalPropertyFromVProperty(VProperty* vp) {
 
         ArrayList* xParamList = NULL;
         WKeyValuePair* xTagParam = NULL;
-        wchar_t* xParamName = NULL;
+        WCHAR* xParamName = NULL;
         for(int i = 0; i < vp->parameterCount(); i++) {
             if(wcsstr(vp->getParameter(i),TEXT("X-")) == vp->getParameter(i)) {
-                xParamName = new wchar_t[wcslen(vp->getParameter(i)) + 1];
+                xParamName = new WCHAR[wcslen(vp->getParameter(i)) + 1];
                 wcscpy(xParamName, vp->getParameter(i));
 
                 xTagParam = new WKeyValuePair();
@@ -873,7 +873,7 @@ iCalProperty* Event::getiCalPropertyFromVProperty(VProperty* vp) {
         return NULL;
 
 }
-VProperty* Event::getVPropertyFromiCalProperty(wchar_t* name, iCalProperty* prop) {
+VProperty* Event::getVPropertyFromiCalProperty(WCHAR* name, iCalProperty* prop) {
     if(name && prop) {
         VProperty *vprop = new VProperty(name, prop->getValue());
 

@@ -56,7 +56,7 @@
         unsigned int timeout;
         unsigned int maxmsgsize;
         unsigned int readBufferSize;
-        BCHAR userAgent[128];
+        char userAgent[128];
 
     public:
         TransportAgent() EXTRA_SECTION_03;
@@ -111,9 +111,9 @@
          */
         virtual void setReadBufferSize(unsigned int t) EXTRA_SECTION_03;
         
-        virtual void setUserAgent(const BCHAR* ua);
+        virtual void setUserAgent(const char*  ua);
 
-        virtual BCHAR* getUserAgent();
+        virtual char*  getUserAgent();
 
         /**
          * Returns the buffer size
@@ -128,7 +128,7 @@
          * In case of an error, NULL is returned and lastErrorCode/Msg
          * is set.
          */
-        virtual BCHAR* sendMessage(const BCHAR* msg) = 0;
+        virtual char*  sendMessage(const char*  msg) = 0;
 
     };
 

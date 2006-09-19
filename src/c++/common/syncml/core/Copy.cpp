@@ -21,8 +21,8 @@
  
 
 Copy::Copy() {
-    COMMAND_NAME = new BCHAR[bstrlen(COPY_COMMAND_NAME) + 1];
-    bsprintf(COMMAND_NAME, COPY_COMMAND_NAME);
+    COMMAND_NAME = new char[strlen(COPY_COMMAND_NAME) + 1];
+    sprintf(COMMAND_NAME, COPY_COMMAND_NAME);
 }
 Copy::~Copy() {
     if (COMMAND_NAME) {
@@ -50,8 +50,8 @@ Copy::Copy(CmdID* cmdID,
     setNoResp(noResp); 
     setCred(cred);
 
-    COMMAND_NAME = new BCHAR[bstrlen(COPY_COMMAND_NAME) + 1];
-    bsprintf(COMMAND_NAME, COPY_COMMAND_NAME);
+    COMMAND_NAME = new char[strlen(COPY_COMMAND_NAME) + 1];
+    sprintf(COMMAND_NAME, COPY_COMMAND_NAME);
 
 
 }
@@ -63,7 +63,7 @@ Copy::Copy(CmdID* cmdID,
  *
  * @return the command name property
  */    
-BCHAR* Copy::getName() {
+char* Copy::getName() {
     return COMMAND_NAME;
 }
 

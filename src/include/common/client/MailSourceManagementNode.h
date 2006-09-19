@@ -29,11 +29,11 @@ class MailSourceManagementNode : public DeviceManagementNode {
     public:
         // ------------------------------------------ Constructors & destructors
 
-        MailSourceManagementNode( const BCHAR*    context,
-                                  const BCHAR*    name   ) EXTRA_SECTION_02;
+        MailSourceManagementNode( const char*     context,
+                                  const char*     name   ) EXTRA_SECTION_02;
 
-        MailSourceManagementNode( const BCHAR*    context,
-                                  const BCHAR*    name   ,
+        MailSourceManagementNode( const char*     context,
+                                  const char*     name   ,
                                   MailSyncSourceConfig& config ) EXTRA_SECTION_02;
 
         ~MailSourceManagementNode() EXTRA_SECTION_02;

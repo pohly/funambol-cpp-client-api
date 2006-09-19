@@ -24,10 +24,10 @@
 #include "base/quoted-printable.h"
 
 
-VObject* VConverter::parse(wchar_t* buffer) {
+VObject* VConverter::parse(WCHAR* buffer) {
 
-	wchar_t *objType = extractObjectType(buffer);
-	wchar_t *objVersion = extractObjectVersion(buffer);
+	WCHAR *objType = extractObjectType(buffer);
+	WCHAR *objVersion = extractObjectVersion(buffer);
     if(!objType)
         return NULL;        
 
@@ -35,7 +35,7 @@ VObject* VConverter::parse(wchar_t* buffer) {
     VProperty *prop;
 
     // Unfolding
-    wchar_t* buffCopy = unfolding(buffer);
+    WCHAR* buffCopy = unfolding(buffer);
 
     while ( true ) {
         prop = readFieldHeader(buffCopy);
@@ -53,10 +53,10 @@ VObject* VConverter::parse(wchar_t* buffer) {
     return vo;
 }
 
-VProperty* VConverter::readFieldHeader(wchar_t* buffer) {
+VProperty* VConverter::readFieldHeader(WCHAR* buffer) {
 
-    wchar_t* headerIndex = NULL;
-    wchar_t* quotaIndex = NULL;
+    WCHAR* headerIndex = NULL;
+    WCHAR* quotaIndex = NULL;
     quotaIndex = wcschr(buffer, '"');
     headerIndex = wcschr(buffer, ':');
 
@@ -92,7 +92,7 @@ VProperty* VConverter::readFieldHeader(wchar_t* buffer) {
 
     VProperty* prop = new VProperty(NULL);
 
-    wchar_t* header = new wchar_t[wcslen(buffer) + 1];
+    WCHAR* header = new WCHAR[wcslen(buffer) + 1];
     buffer[headerIndex - buffer] = '\0';
     wcscpy(header, buffer);
     // Shift the remaing string to the front of the buffer.
@@ -104,20 +104,20 @@ VProperty* VConverter::readFieldHeader(wchar_t* buffer) {
 
     //if the header is folded (in .ics files)
     //we need to remove the folding
-    wchar_t* headerFolding = NULL;
+    WCHAR* headerFolding = NULL;
     if(headerFolding = wcsstr(header, TEXT("\n "))) {
         header[headerFolding - header] = '\0';
     }
 
-    wchar_t seps[] = TEXT(";");
-    wchar_t *token;
+    WCHAR seps[] = TEXT(";");
+    WCHAR *token;
     bool first = true;
 
 	token = wcstok( header, seps );
 	while( token != NULL ) {
         if (first) {
 
-            wchar_t* group = new wchar_t[wcslen(token) + 1];
+            WCHAR* group = new WCHAR[wcslen(token) + 1];
             if(extractGroup(token, group)) 
                 prop->addParameter(TEXT("GROUP"), group);
             else
@@ -126,17 +126,17 @@ VProperty* VConverter::readFieldHeader(wchar_t* buffer) {
             first = false;
         }
         else {
-            wchar_t* paramIndex;
+            WCHAR* paramIndex;
             paramIndex = wcschr(token, '=');
 
             if(paramIndex) {
-                wchar_t* paramName = new wchar_t[wcslen(token) + 1];
+                WCHAR* paramName = new WCHAR[wcslen(token) + 1];
                 token[paramIndex - token] = '\0';
                 wcscpy(paramName, token);
                 ++paramIndex;
                 memmove(token, paramIndex, (wcslen(paramIndex) + 1) * sizeof(*paramIndex));
 
-                wchar_t* paramVal = new wchar_t[wcslen(token) + 1];
+                WCHAR* paramVal = new WCHAR[wcslen(token) + 1];
                 wcscpy(paramVal, token);
                 prop->addParameter(paramName, paramVal);
                 
@@ -156,16 +156,16 @@ VProperty* VConverter::readFieldHeader(wchar_t* buffer) {
     return prop;
 }
 
-bool VConverter::readFieldBody(wchar_t* buffer, VProperty* vprop) {
+bool VConverter::readFieldBody(WCHAR* buffer, VProperty* vprop) {
 
     int i      = 0;
     int j      = 0;
     int len    = 0;
     int offset = 0;
     bool ret   = false;
-    wchar_t* value     = NULL;
-    wchar_t* allValues = NULL;
-    wchar_t* c         = NULL;
+    WCHAR* value     = NULL;
+    WCHAR* allValues = NULL;
+    WCHAR* c         = NULL;
 
     // Get length of all values
     while (buffer[i] != '\0') {
@@ -189,7 +189,7 @@ bool VConverter::readFieldBody(wchar_t* buffer, VProperty* vprop) {
     }
 
     // This is a string with all values for this property (to parse)
-    allValues = new wchar_t[len + 1];
+    allValues = new WCHAR[len + 1];
     wcsncpy(allValues, buffer, len);
     allValues[len] = 0;
 
@@ -205,7 +205,7 @@ bool VConverter::readFieldBody(wchar_t* buffer, VProperty* vprop) {
 	    delete [] buf;
 
 	    if (dec) {
-            wchar_t* wdecoded = toWideChar(dec);
+            WCHAR* wdecoded = toWideChar(dec);
             delete [] dec;
 
             if (wdecoded) {
@@ -233,7 +233,7 @@ bool VConverter::readFieldBody(wchar_t* buffer, VProperty* vprop) {
 	    delete [] buf;
 
 	    if (dec) {
-            wchar_t* wdecoded = toWideChar(dec);
+            WCHAR* wdecoded = toWideChar(dec);
             delete [] dec;
 
             if (wdecoded) {
@@ -248,7 +248,7 @@ bool VConverter::readFieldBody(wchar_t* buffer, VProperty* vprop) {
     }
 
     // This is a buffer for each single value
-    value = new wchar_t[len + 1];
+    value = new WCHAR[len + 1];
     wcscpy(value, TEXT(""));
 
     //
@@ -304,8 +304,8 @@ finally:
 
 
 
-wchar_t* VConverter::extractObjectProperty(wchar_t* buffer, const wchar_t *property,
-                                           wchar_t * &buffCopy, size_t &buffCopyLen) {
+WCHAR* VConverter::extractObjectProperty(WCHAR* buffer, const WCHAR *property,
+                                           WCHAR * &buffCopy, size_t &buffCopyLen) {
 
     // Memory handling in extractObjectType() and
     // extractObjectVersion() was broken:
@@ -322,19 +322,19 @@ wchar_t* VConverter::extractObjectProperty(wchar_t* buffer, const wchar_t *prope
         if (buffCopy) {
             delete [] buffCopy;
         }
-        buffCopy = new wchar_t[len];
+        buffCopy = new WCHAR[len];
         buffCopyLen = len;
     }
     wcscpy(buffCopy, buffer);
 
-    wchar_t seps[] = TEXT(":\n");
-    wchar_t *token;
+    WCHAR seps[] = TEXT(":\n");
+    WCHAR *token;
 
     token = wcstok( buffCopy, seps );
     while (token != NULL) {
         if(!wcscmp(token, TEXT("BEGIN"))) {
             token = wcstok( NULL, seps );
-            wchar_t* index = wcschr(token,'\r');
+            WCHAR* index = wcschr(token,'\r');
             if(index)
                 token[index-token] = '\0';
             return token;
@@ -345,8 +345,8 @@ wchar_t* VConverter::extractObjectProperty(wchar_t* buffer, const wchar_t *prope
     return NULL;
 }
 
-wchar_t* VConverter::extractObjectType(wchar_t* buffer) {
-    static wchar_t* buffCopy;
+WCHAR* VConverter::extractObjectType(WCHAR* buffer) {
+    static WCHAR* buffCopy;
     static size_t buffCopyLen;
     
     return extractObjectProperty(buffer, TEXT("BEGIN"),
@@ -354,17 +354,17 @@ wchar_t* VConverter::extractObjectType(wchar_t* buffer) {
 }
 
 
-wchar_t* VConverter::extractObjectVersion(wchar_t* buffer) {
-    static wchar_t* buffCopy;
+WCHAR* VConverter::extractObjectVersion(WCHAR* buffer) {
+    static WCHAR* buffCopy;
     static size_t buffCopyLen;
 
     return extractObjectProperty(buffer, TEXT("VERSION"),
                                  buffCopy, buffCopyLen);    
 }
 
-bool VConverter::extractGroup(wchar_t* propertyName, wchar_t* propertyGroup) {
+bool VConverter::extractGroup(WCHAR* propertyName, WCHAR* propertyGroup) {
     
-    wchar_t* groupIndex;
+    WCHAR* groupIndex;
     groupIndex = wcschr(propertyName, '.');
 
     if(!groupIndex)

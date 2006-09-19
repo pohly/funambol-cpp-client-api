@@ -74,7 +74,7 @@
          * Sends the given SyncML message to the server specified
          * by the instal property 'url'. Returns the response status code.
          */
-        BCHAR* sendMessage(const BCHAR* msg);
+        char*  sendMessage(const char*  msg);
     };
 
 #endif

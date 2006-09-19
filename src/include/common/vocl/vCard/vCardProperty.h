@@ -19,7 +19,7 @@
 
 //
 // @author Stefano Fornari @ Funambol
-// @version $Id: vCardProperty.h,v 1.2 2006-03-22 12:06:25 gazza Exp $
+// @version $Id: vCardProperty.h,v 1.3 2006-09-19 12:59:41 toccy Exp $
 //
 #include <string.h>
 
@@ -37,10 +37,10 @@ class vCardProperty {
     // ------------------------------------------------------------ Private data
 
     private:
-        wchar_t* encoding     ;
-        wchar_t* language     ;
-        wchar_t* value        ;
-        wchar_t* chrset       ;
+        WCHAR* encoding     ;
+        WCHAR* language     ;
+        WCHAR* value        ;
+        WCHAR* chrset       ;
 
         /**
          * Sets internal members releasing the currently allocated memory (if
@@ -51,14 +51,14 @@ class vCardProperty {
          *                 allocated memory
          * @param v the value to set into the property
          */
-        void set(wchar_t** property, wchar_t* v);
+        void set(WCHAR** property, WCHAR* v);
 
     // -------------------------------------------- Constructors and Destructors
     public:
         /**
          * Creates property without parameters but with the specified value
          */
-        vCardProperty (wchar_t* v = NULL);
+        vCardProperty (WCHAR* v = NULL);
 
         ~vCardProperty();
 
@@ -72,7 +72,7 @@ class vCardProperty {
          *
          * @return the encoding parameter of this property
          */
-        wchar_t* getEncoding (wchar_t* buf = NULL, int size = -1);
+        WCHAR* getEncoding (WCHAR* buf = NULL, int size = -1);
 
         /**
          * Returns the language parameter of this property
@@ -82,7 +82,7 @@ class vCardProperty {
          *
          * @return the language parameter of this property
          */
-        wchar_t* getLanguage (wchar_t* buf = NULL, int size = -1);
+        WCHAR* getLanguage (WCHAR* buf = NULL, int size = -1);
 
         /**
          * Returns the value parameter of this property
@@ -92,7 +92,7 @@ class vCardProperty {
          *
          * @return the value parameter of this property
          */
-        wchar_t* getValue (wchar_t* buf = NULL, int size = -1);
+        WCHAR* getValue (WCHAR* buf = NULL, int size = -1);
 
         /**
          * Returns the charset parameter of this property
@@ -102,35 +102,35 @@ class vCardProperty {
          *
          * @return the charset parameter of this property
          */
-        wchar_t* getCharset (wchar_t* buf = NULL, int size = -1);
+        WCHAR* getCharset (WCHAR* buf = NULL, int size = -1);
 
         /**
          * Sets the encoding parameter of this property
          *
          * @param encoding the encoding to set
          */
-        void setEncoding (wchar_t* encoding);
+        void setEncoding (WCHAR* encoding);
 
         /**
          * Sets the language parameter of this property
          *
          * @param language the language to set
          */
-        void setLanguage (wchar_t* language);
+        void setLanguage (WCHAR* language);
 
         /**
          * Sets the value parameter of this property
          *
          * @param value the value to set
          */
-        void setValue (wchar_t* value);
+        void setValue (WCHAR* value);
 
         /**
          * Sets the charset parameter of this property
          *
          * @param chrset the charset to set
          */
-        void setCharset (wchar_t* chrset);
+        void setCharset (WCHAR* chrset);
 
 
         /**

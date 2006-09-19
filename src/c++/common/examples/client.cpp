@@ -109,7 +109,7 @@ int main(int argc, char** argv) {
 #endif
 
 #ifdef TEST_ENCODE
-    wchar_t *content = loadAndConvert(TEXT("message.xml"), TEXT("base64"));
+    WCHAR *content = loadAndConvert(TEXT("message.xml"), TEXT("base64"));
     if(!content) {
         fprintf(stderr, "Error in uudecode.");
         exit(1);
@@ -151,7 +151,7 @@ int main(int argc, char** argv) {
  
     // Read config from registry.
     if (!config.read() || 
-        bstrcmp(config.getDeviceConfig().getDevID(), DEVICE_ID)) {
+        strcmp(config.getDeviceConfig().getDevID(), DEVICE_ID)) {
         // Config not found -> generate a default config
         createConfig(config);
     }

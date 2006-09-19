@@ -21,7 +21,7 @@
 #include "base/util/utils.h"
 
 struct Codepage {
-    const BCHAR *name;
+    const char *name;
     int  codepage_id;
 };
 
@@ -287,9 +287,9 @@ static Codepage encodings[] = {
 // TODO: get temp dir !
 #define TEMPROOT TEXT("C:\\WINDOWS\\TEMP")
 
-wchar_t *mkTempFileName(const wchar_t *name)
+WCHAR *mkTempFileName(const WCHAR *name)
 {
-	wchar_t *ret = new wchar_t[wcslen(TEMPROOT)+wcslen(name)+3] ;
+	WCHAR *ret = new WCHAR[wcslen(TEMPROOT)+wcslen(name)+3] ;
 	wsprintf(ret, TEXT("%s\\%s"), TEMPROOT, name);
 	FILE *f;
     int i;
@@ -317,10 +317,10 @@ wchar_t *mkTempFileName(const wchar_t *name)
  * @param name - a file name, without path
  * @return - a full pathname, allocated with new[], or NULL on error
  */
-BCHAR *mkTempFileName(const BCHAR *name)
+char *mkTempFileName(const char *name)
 {
-    wchar_t tmpPath[64];
-    wchar_t tmpFileName[MAX_PATH];  // System constants for the path
+    WCHAR tmpPath[64];
+    WCHAR tmpFileName[MAX_PATH];  // System constants for the path
 
     GetTempPath(64, tmpPath);
     int ret = GetTempFileName(tmpPath, L"fun", 0, tmpFileName);
@@ -394,24 +394,24 @@ bool saveFile(const char *filename,
     return true;
 }
 
-static int findCodePage(const BCHAR *encoding)
+static int findCodePage(const char *encoding)
 {
     if (encoding){
   	    for(int i=0; encodings[i].name; i++) {
-	        if(bstricmp(encodings[i].name, encoding)) {
+	        if(_stricmp(encodings[i].name, encoding)) {
                 // Found
                 return encodings[i].codepage_id;
 	        }
         }
         // Not found
-        bsprintf(logmsg, T("Invalid encoding: %s"), encoding);
+        sprintf(logmsg, T("Invalid encoding: %s"), encoding);
         LOG.error(logmsg);
     }
     // Default encoding
     return CP_UTF8;
 }
 
-static size_t getLenEncoding(const wchar_t* s, int codepage)
+static size_t getLenEncoding(const WCHAR* s, int codepage)
 {
     if (!s)
         return 0;
@@ -426,12 +426,12 @@ static size_t getLenEncoding(const wchar_t* s, int codepage)
     return (k != 0) ? (long)k : -1;
 }
 
-size_t getLenEncoding(const WCHAR* s, const BCHAR* encoding)
+size_t getLenEncoding(const WCHAR* s, const char* encoding)
 {
     return getLenEncoding( s, findCodePage(encoding) );
 }
 
-char* toMultibyte(const WCHAR *wc, const BCHAR *encoding)
+char* toMultibyte(const WCHAR *wc, const char *encoding)
 {
 	if (!wc) {
         return NULL;
@@ -460,15 +460,15 @@ char* toMultibyte(const WCHAR *wc, const BCHAR *encoding)
     return ret;
 }
 
-wchar_t* toWideChar(const char *mb, const BCHAR *encoding) {
+WCHAR* toWideChar(const char *mb, const char *encoding) {
 
 	if (mb == NULL) {
         return NULL;
     }
 
     unsigned long dsize = strlen(mb); 
-    wchar_t *ret = new wchar_t[dsize+1];
-    memset(ret, 0, (dsize + 1)*sizeof(wchar_t));
+    WCHAR *ret = new WCHAR[dsize+1];
+    memset(ret, 0, (dsize + 1)*sizeof(WCHAR));
     
     if (!dsize)
         return ret;

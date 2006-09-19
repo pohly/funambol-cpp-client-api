@@ -32,20 +32,20 @@ DWORD WINAPI WorkerFunctionHttpSendRequest( IN LPVOID vThreadParm);
 
 typedef struct
 {
-    wchar_t* pHost;
+    WCHAR* pHost;
     INTERNET_PORT nServerPort;  
 
 } PARM_INTERNET_CONNECT;
 
 typedef struct
 {
-    wchar_t* pResource;
+    WCHAR* pResource;
     
 } PARM_HTTP_OPEN_REQUEST;
 
 typedef struct
 {
-    wchar_t* pHeaders;
+    WCHAR* pHeaders;
     int      headersLength;
     char*    pMsg;
     int      msgLength;
@@ -55,7 +55,7 @@ typedef struct
 
 
 int sumRead, previousNumRead;
-wchar_t* response;
+WCHAR* response;
 BOOL cont;
 
 HINTERNET inet       = NULL,
@@ -73,9 +73,9 @@ HINTERNET inet       = NULL,
  *
  * @param s the string to translate
  */
-void toUTF(wchar_t* s) {
+void toUTF(WCHAR* s) {
     int l = wcslen(s);
-    wchar_t* w = s;
+    WCHAR* w = s;
     char*    c = (char*)s;
 
     while (l--) {
@@ -138,7 +138,7 @@ unsigned int TransportAgent::getResponseTimeout() {
  *
  * Use getResponse() to get the server response.
  */
-wchar_t* TransportAgent::sendMessage(wchar_t* msg) {
+WCHAR* TransportAgent::sendMessage(WCHAR* msg) {
     
     
     int status        = -1;
@@ -255,7 +255,7 @@ wchar_t* TransportAgent::sendMessage(wchar_t* msg) {
     //
     // Prepares headers
     //
-    wchar_t headers[512];
+    WCHAR headers[512];
 
     contentLength = wcslen(msg);
     wsprintf(headers, TEXT("Content-Type: %s\r\nContent-Length: %d"), TEXT(SYNCML_CONTENT_TYPE), contentLength);
@@ -341,7 +341,7 @@ wchar_t* TransportAgent::sendMessage(wchar_t* msg) {
     }   
     
     // Allocate a block of memory for lpHeadersW.
-    response = new wchar_t[contentLength+1];   
+    response = new WCHAR[contentLength+1];   
     if (response == NULL) {
         lastErrorCode = ERR_NOT_ENOUGH_MEMORY;
         wsprintf(lastErrorMsg, TEXT("Not enough memory to allocate a buffer for the server response: %d required"), contentLength);
@@ -424,7 +424,7 @@ URL TransportAgent::getURL() {
  * Use releaseResponseBuffer() to release the memory buffer.
  */
 
-wchar_t* TransportAgent::getResponse();
+WCHAR* TransportAgent::getResponse();
 
 /*
  * Releases the response buffer allocated by sendMessage().
@@ -438,7 +438,7 @@ wchar_t* TransportAgent::getResponse();
 */
 
 DWORD WINAPI WorkerFunctionInternetReadFile(IN LPVOID vThreadParm) {
-    wchar_t* p        = NULL;
+    WCHAR* p        = NULL;
     p = response;
     (*p) = 0;
     char bufferA[5000+1];

@@ -32,11 +32,11 @@ class Search : public AbstractCommand{
     
      // ------------------------------------------------------------ Private data
     private:       
-        BCHAR*    COMMAND_NAME;
+        char*     COMMAND_NAME;
         BOOL        noResults;
         Target*     target   ;
         ArrayList*  sources; // Source[]. It is an ArrayList of SourceArray object. Every one contains a Source object
-        BCHAR*    lang;
+        char*     lang;
         Data*       data;       
     
     // ---------------------------------------------------------- Public data    
@@ -66,7 +66,7 @@ class Search : public AbstractCommand{
                Cred*       cred     ,
                Target*     target   ,
                ArrayList*  sources  ,
-               BCHAR*    lang     ,
+               char*     lang     ,
                Meta*       meta     ,
                Data*       data     );    
     
@@ -125,14 +125,14 @@ class Search : public AbstractCommand{
          * @return the preferred language
          *
          */
-        BCHAR* getLang(BCHAR* retLang = NULL);
+        char*  getLang(char*  retLang = NULL);
     
         /**
          * Sets the preferred language
          *
          * @param lang the preferred language
          */
-        void setLang(BCHAR* lang);
+        void setLang(char*  lang);
         
         /**
          * Returns data
@@ -155,7 +155,7 @@ class Search : public AbstractCommand{
          *
          * @return the command name
          */
-        BCHAR* getName();
+        char*  getName();
 
         ArrayElement* clone();    
    

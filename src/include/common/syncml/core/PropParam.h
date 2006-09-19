@@ -26,10 +26,10 @@ class PropParam : public ArrayElement {
     // ------------------------------------------------------- Private interface
 private:
 
-    BCHAR* paramName;
-    BCHAR* dataType;
+    char*  paramName;
+    char*  dataType;
     ArrayList* valEnums;
-    BCHAR* displayName;
+    char*  displayName;
 
 
 
@@ -60,7 +60,7 @@ public:
      * @param p2 values enum
      * @param p3 display name
      */
-    PropParam(BCHAR* p0, BCHAR* p1, ArrayList* p2, BCHAR* p3);
+    PropParam(char*  p0, char*  p1, ArrayList* p2, char*  p3);
 
 
 
@@ -68,14 +68,14 @@ public:
      * getDisplayName
      * 
      */
-    BCHAR* getDisplayName(BCHAR* displayName = NULL);
+    char*  getDisplayName(char*  displayName = NULL);
 
 
     /*
      * getParamName
      * 
      */
-    BCHAR* getParamName(BCHAR* paramName = NULL);
+    char*  getParamName(char*  paramName = NULL);
 
 
     /*
@@ -83,14 +83,14 @@ public:
      * 
      * @param p0
      */
-    void setParamName(BCHAR* p0);
+    void setParamName(char*  p0);
 
 
     /*
      * getDataType
      * 
      */
-    BCHAR* getDataType(BCHAR* dataType = NULL);
+    char*  getDataType(char*  dataType = NULL);
 
 
     /*
@@ -98,7 +98,7 @@ public:
      * 
      * @param p0
      */
-    void setDataType(BCHAR* p0);
+    void setDataType(char*  p0);
 
 
     /*
@@ -121,7 +121,7 @@ public:
      * 
      * @param p0
      */
-    void setDisplayName(BCHAR* p0);
+    void setDisplayName(char*  p0);
 
     /*
      * Creates a clone of this instance

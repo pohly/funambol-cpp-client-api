@@ -33,14 +33,14 @@ class DevInf {
      // ------------------------------------------------------------ Private data
     private:
         VerDTD* verDTD;
-        BCHAR* man;
-        BCHAR* mod;
-        BCHAR* oem;
-        BCHAR* fwV;
-        BCHAR* swV;
-        BCHAR* hwV;
-        BCHAR* devID;
-        BCHAR* devTyp;
+        char*  man;
+        char*  mod;
+        char*  oem;
+        char*  fwV;
+        char*  swV;
+        char*  hwV;
+        char*  devID;
+        char*  devTyp;
         ArrayList* dataStores;  //DataStore[]
         ArrayList* ctCap;       // CTCap[]
         ArrayList* ext;         // Ext[]
@@ -78,14 +78,14 @@ class DevInf {
          *
          */
         DevInf(VerDTD* verDTD,
-               const  BCHAR* man,
-               const BCHAR* mod,
-               const BCHAR* oem,
-               const BCHAR* fwV,
-               const BCHAR* swV,
-               const BCHAR* hwV,
-               const BCHAR* devID,
-               const BCHAR* devTyp,
+               const  char*  man,
+               const char*  mod,
+               const char*  oem,
+               const char*  fwV,
+               const char*  swV,
+               const char*  hwV,
+               const char*  devID,
+               const char*  devTyp,
                ArrayList* dataStores,
                ArrayList* ctCap,
                ArrayList* ext,
@@ -114,7 +114,7 @@ class DevInf {
          *
          * @return the device manufacturer property
          */
-        BCHAR* getMan(BCHAR* retMan);
+        char*  getMan(char*  retMan);
 
         /**
          * Sets the device manufacturer property
@@ -122,14 +122,14 @@ class DevInf {
          * @param man the device manufacturer property
          *
          */
-        void setMan(const BCHAR* man);
+        void setMan(const char*  man);
 
         /**
          * Gets the model name of device
          *
          * @return the model name of device
          */
-        BCHAR* getMod(BCHAR* retMod);
+        char*  getMod(char*  retMod);
 
         /**
          * Sets the device model property
@@ -137,14 +137,14 @@ class DevInf {
          * @param mod the device model property
          *
          */
-        void setMod(const BCHAR* mod);
+        void setMod(const char*  mod);
 
         /**
          * Gets the Original Equipment Manufacturer of the device
          *
          * @return the OEM property
          */
-        BCHAR* getOEM(BCHAR* retOem);
+        char*  getOEM(char*  retOem);
 
         /**
          * Sets the Original Equipment Manufacturer of the device
@@ -152,14 +152,14 @@ class DevInf {
          * @param oem the Original Equipment Manufacturer of the device
          *
          */
-        void setOEM(const BCHAR* oem);
+        void setOEM(const char*  oem);
 
         /**
          * Gets the firmware version property
          *
          * @return the firmware version property
          */
-        BCHAR* getFwV(BCHAR* retFwV);
+        char*  getFwV(char*  retFwV);
 
         /**
          * Sets the firmware version property
@@ -167,14 +167,14 @@ class DevInf {
          * @param fwV the firmware version property
          *
          */
-        void setFwV(const BCHAR* fwV);
+        void setFwV(const char*  fwV);
 
         /**
          * Gets the software version property
          *
          * @return the software version property
          */
-        BCHAR* getSwV(BCHAR* retSwV);
+        char*  getSwV(char*  retSwV);
 
         /**
          * Sets the software version property
@@ -182,14 +182,14 @@ class DevInf {
          * @param swV the software version property
          *
          */
-        void setSwV(const BCHAR* swV);
+        void setSwV(const char*  swV);
 
         /**
          * Gets the hardware version property
          *
          * @return the hardware version property
          */
-        BCHAR* getHwV(BCHAR* retHwv);
+        char*  getHwV(char*  retHwv);
 
         /**
          * Sets the hardware version property
@@ -197,14 +197,14 @@ class DevInf {
          * @param hwV the hardware version property
          *
          */
-        void setHwV(const BCHAR* hwV);
+        void setHwV(const char*  hwV);
 
         /**
          * Gets the device identifier
          *
          * @return the device identifier
          */
-        BCHAR* getDevID(BCHAR* retDevID);
+        char*  getDevID(char*  retDevID);
 
         /**
          * Sets the device identifier
@@ -212,14 +212,14 @@ class DevInf {
          * @param devID the device identifier
          *
          */
-        void setDevID(const BCHAR* devID);
+        void setDevID(const char*  devID);
 
         /**
          * Gets the device type
          *
          * @return the device type
          */
-        BCHAR* getDevTyp(BCHAR* retDevTyp);
+        char*  getDevTyp(char*  retDevTyp);
 
         /**
          * Sets the device type
@@ -227,7 +227,7 @@ class DevInf {
          * @param devTyp the device type
          *
          */
-        void setDevTyp(const BCHAR* devTyp);
+        void setDevTyp(const char*  devTyp);
 
         /**
          * Gets the array of datastore

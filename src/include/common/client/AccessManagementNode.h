@@ -29,19 +29,19 @@ class AccessManagementNode : public DeviceManagementNode {
     public:
         // ------------------------------------------ Constructors & destructors
 
-        AccessManagementNode( const wchar_t*   context,
-                              const wchar_t*   name   ) EXTRA_SECTION_02;
+        AccessManagementNode( const WCHAR*   context,
+                              const WCHAR*   name   ) EXTRA_SECTION_02;
 
-        AccessManagementNode( const wchar_t*   context,
-                              const wchar_t*   name   ,
+        AccessManagementNode( const WCHAR*   context,
+                              const WCHAR*   name   ,
                               AccessConfig& config ) EXTRA_SECTION_02;
 
         ~AccessManagementNode() EXTRA_SECTION_02;
 
         // ------------------------------------------------------------- Methods
 
-        void getPropertyValue(const wchar_t* property, wchar_t* v, int size) EXTRA_SECTION_02;
-        void setPropertyValue(const wchar_t* property, wchar_t* value) EXTRA_SECTION_02;
+        void getPropertyValue(const WCHAR* property, WCHAR* v, int size) EXTRA_SECTION_02;
+        void setPropertyValue(const WCHAR* property, WCHAR* value) EXTRA_SECTION_02;
 
         AccessConfig& getAccessConfig() EXTRA_SECTION_02;
         void setAccessConfig(AccessConfig& c) EXTRA_SECTION_02;

@@ -25,38 +25,21 @@
 
 #include <winsock.h>
 
-#define EXTRA_SECTION_00  
-#define EXTRA_SECTION_01  
-#define EXTRA_SECTION_02  
-#define EXTRA_SECTION_03  
-#define EXTRA_SECTION_04  
-#define EXTRA_SECTION_05  
-#define EXTRA_SECTION_06  
+#define EXTRA_SECTION_00
+#define EXTRA_SECTION_01
+#define EXTRA_SECTION_02
+#define EXTRA_SECTION_03
+#define EXTRA_SECTION_04
+#define EXTRA_SECTION_05
+#define EXTRA_SECTION_06
 
 #define __declspec(ignore)
 
 #define T(_x) _x
 #define CHR(_x)  _x
 
-#undef BCHAR
-typedef char BCHAR;
+
 typedef wchar_t WCHAR;
-
-#define bsprintf sprintf 
-
-#define bstrlen strlen
-#define bstrcpy strcpy
-#define bstrcat strcat
-#define bstrstr strstr
-#define bstrchr strchr
-#define bstrrchr strrchr
-#define bscanf scanf
-#define bstrcmp strcmp
-#define bstricmp _stricmp
-#define bstrncpy strncpy
-#define bstrncmp strncmp
-#define bstrtol strtol
-#define bstrtoul strtoul
 
 
 

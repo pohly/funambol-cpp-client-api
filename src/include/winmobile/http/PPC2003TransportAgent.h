@@ -72,7 +72,7 @@
          * In case of an error, NULL is returned and lastErrorCode/Msg
          * is set.
          */
-        BCHAR* sendMessage(const BCHAR* msg);
+        char*  sendMessage(const char*  msg);
     };
 
 #endif

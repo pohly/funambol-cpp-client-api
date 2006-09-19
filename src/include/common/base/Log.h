@@ -33,13 +33,13 @@
         LOG_LEVEL_DEBUG = 2
     } LogLevel;
 
-    extern BCHAR logmsg[];
+    extern char logmsg[];
 
     class Log {
 
     private:
 
-        void printMessage(const BCHAR* level, const BCHAR* msg, va_list argList);
+        void printMessage(const char*  level, const char*  msg, va_list argList);
 
         /*
          * Which log level is set?
@@ -48,18 +48,18 @@
 
     public:
     
-        Log(BOOL reset = FALSE, BCHAR* path = NULL, BCHAR* name = NULL);
+        Log(BOOL reset = FALSE, char*  path = NULL, char*  name = NULL);
         ~Log();
         
-        void setLogPath(BCHAR* configLogPath);
-        void setLogName(BCHAR* configLogName);
+        void setLogPath(char*  configLogPath);
+        void setLogName(char*  configLogName);
         
-        void error(const BCHAR* msg, ...);
-        void info(const BCHAR* msg, ...);
-        void debug(const BCHAR* msg, ...);
-        void trace(const BCHAR* msg);
+        void error(const char*  msg, ...);
+        void info(const char*  msg, ...);
+        void debug(const char*  msg, ...);
+        void trace(const char*  msg);
 
-        void reset(const BCHAR* title = NULL);
+        void reset(const char*  title = NULL);
 
         void setLevel(LogLevel level);
 
@@ -68,7 +68,7 @@
         BOOL isLoggable(LogLevel level);
 
         // FIXME!
-        void printMessageW(const char* level, const wchar_t* msg, va_list argList);
+        void printMessageW(const char* level, const WCHAR* msg, va_list argList);
 
     };
 

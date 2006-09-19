@@ -72,43 +72,43 @@ class MailMessage : public ArrayElement {
     public:
 
         // Headers
-        const BCHAR *getTo() const;
-        void setTo(const BCHAR *to);
+        const char *getTo() const;
+        void setTo(const char *to);
 
-        const BCHAR *getFrom() const;
-        void setFrom(const BCHAR *from);
+        const char *getFrom() const;
+        void setFrom(const char *from);
 
-        const BCHAR *getCc() const;
-        void setCc(const BCHAR *cc);
+        const char *getCc() const;
+        void setCc(const char *cc);
 
-        const BCHAR *getBcc() const ;
-        void setBcc(const BCHAR *bcc);
+        const char *getBcc() const ;
+        void setBcc(const char *bcc);
 
-        const BCHAR *getSubject() const ;
-        void setSubject(const BCHAR *subj);
+        const char *getSubject() const ;
+        void setSubject(const char *subj);
 		
         const BasicTime& getDate() const ;
         void setDate(const BasicTime& d);
 		
         const BasicTime& getReceived() const ;
 
-        const BCHAR * getContentType() const ;
-        void setContentType(const BCHAR *val);
+        const char * getContentType() const ;
+        void setContentType(const char *val);
 
-        const BCHAR * getBoundary() const ;
-        void setBoundary(const BCHAR *val);
+        const char * getBoundary() const ;
+        void setBoundary(const char *val);
 
-        const BCHAR * getMimeVersion() const ;
-        void setMimeVersion(const BCHAR *val);
+        const char * getMimeVersion() const ;
+        void setMimeVersion(const char *val);
         
-        const BCHAR * getMessageId() const ;
-        void setMessageId(const BCHAR *val);
+        const char * getMessageId() const ;
+        void setMessageId(const char *val);
         
-		const BCHAR* getEntryID();
-		void setEntryID(const BCHAR* id);
+		const char*  getEntryID();
+		void setEntryID(const char*  id);
 
-        void setHeaders(const BCHAR* extraHeaders); 
-        BCHAR* getHeaders();
+        void setHeaders(const char*  extraHeaders); 
+        char*  getHeaders();
 
         // Body
 		BodyPart & getBody();
@@ -123,8 +123,8 @@ class MailMessage : public ArrayElement {
         int attachmentCount();
 
         // Conversion methods
-        BCHAR *format();
-        int parse(const BCHAR *rfc2822, size_t len = StringBuffer::npos);
+        char *format();
+        int parse(const char *rfc2822, size_t len = StringBuffer::npos);
 
         /*
          * Return true if the message is empty

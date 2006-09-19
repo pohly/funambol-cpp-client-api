@@ -34,10 +34,10 @@ private:
     SyncMode      syncMode;
     unsigned long lastSync;
     unsigned long nextSync;
-    wchar_t*      name;
+    WCHAR*      name;
 
-    BCHAR next[DIM_ANCHOR];
-    BCHAR last[DIM_ANCHOR];
+    char next[DIM_ANCHOR];
+    char last[DIM_ANCHOR];
 
     //ErrorHandler* errorHandler;
 
@@ -54,7 +54,7 @@ public:
      * @param name   the name of the SyncSource
      * @param sc     optional configuration for the sync source
      */
-    SyncSource(const wchar_t* name, const SyncSourceConfig* sc = NULL) EXTRA_SECTION_01;
+    SyncSource(const WCHAR* name, const SyncSourceConfig* sc = NULL) EXTRA_SECTION_01;
 
     // Destructor
     virtual ~SyncSource() EXTRA_SECTION_01;
@@ -66,7 +66,7 @@ public:
      *           will be released at object destruction)
      *
      */
-    const wchar_t *getName() EXTRA_SECTION_01;
+    const WCHAR *getName() EXTRA_SECTION_01;
 
     /**********************************************************
      * Most of the configurable properties are read
@@ -133,14 +133,14 @@ public:
     /*
      * Gets & Sets the last anchor associated to the source
      */
-    void setLastAnchor(const BCHAR* last) EXTRA_SECTION_01;
-    const BCHAR* getLastAnchor() EXTRA_SECTION_01;
+    void setLastAnchor(const char*  last) EXTRA_SECTION_01;
+    const char*  getLastAnchor() EXTRA_SECTION_01;
 
     /*
      * Gets & Sets the next anchor associated to the source
      */
-    const BCHAR* getNextAnchor() EXTRA_SECTION_01;
-    void setNextAnchor(const BCHAR* next) EXTRA_SECTION_01;
+    const char*  getNextAnchor() EXTRA_SECTION_01;
+    void setNextAnchor(const char*  next) EXTRA_SECTION_01;
     
     /*
     * Gets filter
@@ -198,7 +198,7 @@ public:
      */
     virtual int endSync() EXTRA_SECTION_01;
         
-    virtual void setItemStatus(const wchar_t* key, int status) = 0 EXTRA_SECTION_01;
+    virtual void setItemStatus(const WCHAR* key, int status) = 0 EXTRA_SECTION_01;
 
     /*
      * Return the key of the first SyncItem of all.

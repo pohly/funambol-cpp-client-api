@@ -3,7 +3,7 @@
 	ProjectType="Visual C++"
 	Version="8,00"
 	Name="win32"
-	ProjectGUID="{4CDC4B10-4BF3-4F0F-8BFD-0C72658D6DDC}"
+	ProjectGUID="{D279EE74-36FB-4C4C-8F29-04947825C53E}"
 	RootNamespace="win32"
 	>
 	<Platforms>
@@ -3416,4 +3416,6 @@
 			>
 		</Filter>
 	</Files>
+	<Globals>
+	</Globals>
 </VisualStudioProject>

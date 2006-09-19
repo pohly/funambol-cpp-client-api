@@ -36,7 +36,7 @@
 SyncMLProcessor::SyncMLProcessor() : XMLProcessor() {
 }
 
-SyncML* SyncMLProcessor::processMsg(BCHAR* msg) {
+SyncML* SyncMLProcessor::processMsg(char* msg) {
     SyncML* syncml      = Parser::getSyncML(msg);
     return syncml;
 }
@@ -55,7 +55,7 @@ int SyncMLProcessor::processAlertStatus(SyncSource& source, SyncML* syncml, Arra
 
     int ret = -1;
     ArrayList* list     = new ArrayList();
-    BCHAR* name = NULL;
+    char* name = NULL;
     Status* s     = NULL;
     Data* data    = NULL;
     SourceRef* sourceRef    = NULL;
@@ -66,13 +66,13 @@ int SyncMLProcessor::processAlertStatus(SyncSource& source, SyncML* syncml, Arra
         for (int i = 0; i < list->size(); i++) {
             // is returned the pointer to the element not a new element
             name = ((AbstractCommand*)(list->get(i)))->getName();
-            if (name && bstrcmp(name, STATUS) == 0) {
+            if (name && strcmp(name, STATUS) == 0) {
                 s = (Status*)list->get(i);
-                if (bstrcmp(s->getCmd(), ALERT) == 0) { 
+                if (strcmp(s->getCmd(), ALERT) == 0) { 
                     sourceRef = (SourceRef*)(s->getSourceRef()->get(0));
 
                     if (sourceRef) {
-                        if (bstrcmp(_wcc(source.getName()),
+                        if (strcmp(_wcc(source.getName()),
                                     sourceRef->getValue()) == 0) {
                             ret = getAlertStatusCode(s, _wcc(source.getName()));
                             break;
@@ -127,7 +127,7 @@ int SyncMLProcessor::processServerAlert(SyncSource& source, SyncML* syncml) {
             // the sync.
             //
             // lastErrorCode = ERR_REPRESENTATION;
-            // bsprintf(lastErrorMsg, T("SyncBody/Alert not found!"));
+            // sprintf(lastErrorMsg, T("SyncBody/Alert not found!"));
             goto finally;
         }
         Alert* alert = (Alert*)a;
@@ -136,11 +136,11 @@ int SyncMLProcessor::processServerAlert(SyncSource& source, SyncML* syncml) {
 
         for (int i = 0; i < itemList->size(); i++) {
             item = (Item*)getArrayElement(itemList, i);
-            const BCHAR *locURI = ((Target*)item->getTarget())->getLocURI();
-            if (bstrcmp( locURI, _wcc(source.getName()) ) == 0) {                   
+            const char *locURI = ((Target*)item->getTarget())->getLocURI();
+            if (strcmp( locURI, _wcc(source.getName()) ) == 0) {                   
                 if (alert->getData() == NULL) {
                     lastErrorCode = ERR_REPRESENTATION;
-                    bsprintf(lastErrorMsg, T("SyncBody/Alert/Data not found!"));
+                    sprintf(lastErrorMsg, T("SyncBody/Alert/Data not found!"));
                     goto finally;
                 }
 
@@ -167,7 +167,7 @@ int SyncMLProcessor::processItemStatus(SyncSource& source, SyncBody* syncBody) {
     Item* item       = NULL;
     SourceRef* sourceRef = NULL;
     Status* s = NULL;
-    BCHAR* name = NULL;
+    char* name = NULL;
     Data* data = NULL;
     int ret = 0;
 
@@ -177,7 +177,7 @@ int SyncMLProcessor::processItemStatus(SyncSource& source, SyncBody* syncBody) {
         s = (Status*)list->get(i);
         name = s->getCmd();    
         data = s->getData();
-        if (bstrcmp(name, SYNC) == 0){
+        if (strcmp(name, SYNC) == 0){
             char *srcname = toMultibyte(source.getName());
             int alertStatus = getAlertStatusCode(s, srcname);
             delete [] srcname;
@@ -195,20 +195,20 @@ int SyncMLProcessor::processItemStatus(SyncSource& source, SyncBody* syncBody) {
             
         }         
         
-        else if (bstrcmp(name, ADD) == 0 ||
-            bstrcmp(name, REPLACE) == 0 ||
-            bstrcmp(name, DEL) == 0) {
+        else if (strcmp(name, ADD) == 0 ||
+            strcmp(name, REPLACE) == 0 ||
+            strcmp(name, DEL) == 0) {
 
             int k;
 
             items = s->getItems();
-            long val = bstrtol(data->getData() , NULL, 10);
+            long val = strtol(data->getData() , NULL, 10);
             for (k = 0; k < items->size(); k++) {
                 item = (Item*)items->get(k);
                 if (item) {
                     Source* itemSource = item->getSource();
                     if (itemSource) {
-                        wchar_t *uri = toWideChar(itemSource->getLocURI());
+                        WCHAR *uri = toWideChar(itemSource->getLocURI());
                         // Fire Sync Status Event: item status from server
                         fireSyncStatusEvent(s->getCmd(), s->getStatusCode(), source.getConfig().getURI(), uri, SERVER_STATUS);
                         
@@ -262,8 +262,8 @@ Sync* SyncMLProcessor::processSyncResponse(SyncSource& source, SyncML* syncml) {
 
     while((a = getCommand(syncml->getSyncBody(), SYNC, iterator)) != NULL){  
         sync = (Sync*)a;
-        const BCHAR *locuri = ((Target*)(sync->getTarget()))->getLocURI();
-        if (bstrcmp(locuri, _wcc(source.getName())) == 0) {                   
+        const char *locuri = ((Target*)(sync->getTarget()))->getLocURI();
+        if (strcmp(locuri, _wcc(source.getName())) == 0) {                   
             break;
         }  
         sync = NULL;
@@ -317,9 +317,9 @@ finally:
  *
  * @param SyncHdr - the SyncHdr object - NOT NULL
  */
-BCHAR* SyncMLProcessor::getRespURI(SyncHdr* syncHdr) {
+char* SyncMLProcessor::getRespURI(SyncHdr* syncHdr) {
     
-    BCHAR* respURI = NULL;
+    char* respURI = NULL;
     
     if (syncHdr == NULL) {
         goto finally;
@@ -335,18 +335,18 @@ finally:
 Chal* SyncMLProcessor::getChal(SyncBody* syncBody) {    
     
     ArrayList* list = syncBody->getCommands();
-    BCHAR* name = NULL;
+    char* name = NULL;
     Status* s     = NULL;
     Chal* chal    = NULL;
 
     for (int i = 0; i < list->size(); i++) {
         name = ((AbstractCommand*)(list->get(i)))->getName();    // is returned the pointer to the element not a new element
-        if (name && bstrcmp(name, STATUS) == 0) {
+        if (name && strcmp(name, STATUS) == 0) {
             s = (Status*)list->get(i);
-            if (bstrcmp(s->getCmd(NULL), SYNC_HDR) == 0) {
-                if (bstrcmp(s->getCmdRef(NULL), T("0")) != 0) {
+            if (strcmp(s->getCmd(NULL), SYNC_HDR) == 0) {
+                if (strcmp(s->getCmdRef(NULL), T("0")) != 0) {
 
-                    bsprintf(lastErrorMsg, T("Status/CmdRef either not found or not referring to SyncHeader!"));
+                    sprintf(lastErrorMsg, T("Status/CmdRef either not found or not referring to SyncHeader!"));
                     lastErrorCode = ERR_REPRESENTATION;
                     goto finally;
                 }      
@@ -372,7 +372,7 @@ finally:
 * Return an array list of commands of the given command name. It return an ArrayList that have to be 
 * discarded by the caller
 */
-ArrayList* SyncMLProcessor::getCommands(SyncBody* syncBody, BCHAR* commandName) {
+ArrayList* SyncMLProcessor::getCommands(SyncBody* syncBody, char* commandName) {
         
     ArrayList* ret = new ArrayList();
     AbstractCommand* a = NULL;
@@ -412,18 +412,18 @@ ArrayElement* SyncMLProcessor::getArrayElement(ArrayList* list, int index) {
 * Return the index number of occurrence of this command. If doesn't exists return NULL;
 * The first command has number 0.
 */
-AbstractCommand* SyncMLProcessor::getCommand(SyncBody* syncBody, BCHAR* commandName, int index) {
+AbstractCommand* SyncMLProcessor::getCommand(SyncBody* syncBody, char* commandName, int index) {
       
     int iterator = 0, found = 0;
     ArrayList* list     = syncBody->getCommands();
     int l = list->size();
     AbstractCommand* a  = NULL;
-    BCHAR* name = NULL;
+    char* name = NULL;
     do {
         a = (AbstractCommand*)getArrayElement(list, iterator);
         if (a) {
             name = a->getName();    // is returned the pointer to the element not a new element
-            if (name && bstrcmp(name, commandName) == 0) {                       
+            if (name && strcmp(name, commandName) == 0) {                       
                 if (found == index)
                     break;
                 else
@@ -437,23 +437,23 @@ AbstractCommand* SyncMLProcessor::getCommand(SyncBody* syncBody, BCHAR* commandN
 }
 
 
-int SyncMLProcessor::getStatusCode(SyncBody* syncBody, SyncSource* source, BCHAR* commandName) {    
+int SyncMLProcessor::getStatusCode(SyncBody* syncBody, SyncSource* source, char* commandName) {    
     int ret = -1;
     
     ArrayList* list = syncBody->getCommands();
-    BCHAR* name = NULL;
+    char* name = NULL;
     Status* s     = NULL;
     Data* data    = NULL;
 
     for (int i = 0; i < list->size(); i++) {
         name = ((AbstractCommand*)(list->get(i)))->getName();    // is returned the pointer to the element not a new element
-        if (name && bstrcmp(name, STATUS) == 0) {
+        if (name && strcmp(name, STATUS) == 0) {
             s = (Status*)list->get(i);
-            if (bstrcmp(s->getCmd(), commandName) == 0) {
-                if (bstrcmp(commandName, SYNC_HDR) == 0) {
+            if (strcmp(s->getCmd(), commandName) == 0) {
+                if (strcmp(commandName, SYNC_HDR) == 0) {
                     ret = getSyncHeaderStatusCode(s);
-                } else if (bstrcmp(commandName, ALERT) == 0) {
-                    ret = getAlertStatusCode(s, (BCHAR*)source->getName());
+                } else if (strcmp(commandName, ALERT) == 0) {
+                    ret = getAlertStatusCode(s, (char*)source->getName());
                 }    
                 break;
             }                                 
@@ -478,9 +478,9 @@ int SyncMLProcessor::getSyncHeaderStatusCode(Status* s) {
     if (s == NULL) 
         goto finally;
 
-    if (bstrcmp(s->getCmdRef(NULL), T("0")) != 0) {
+    if (strcmp(s->getCmdRef(NULL), T("0")) != 0) {
 
-        bsprintf(lastErrorMsg, T("Status/CmdRef either not found or not referring to SyncHeader!"));
+        sprintf(lastErrorMsg, T("Status/CmdRef either not found or not referring to SyncHeader!"));
         lastErrorCode = ERR_REPRESENTATION;
         goto finally;
     }                
@@ -490,11 +490,11 @@ int SyncMLProcessor::getSyncHeaderStatusCode(Status* s) {
          //
         // It should not happen
         //
-        bsprintf(lastErrorMsg, T("Status/Data not found!"));
+        sprintf(lastErrorMsg, T("Status/Data not found!"));
         lastErrorCode = ERR_REPRESENTATION;
         goto finally;
     }
-    ret = bstrtol(data->getData() , NULL, 10);    
+    ret = strtol(data->getData() , NULL, 10);    
                                 
 
 finally:
@@ -509,7 +509,7 @@ finally:
  * @param sourceName - the name of the source
  */
 
- int SyncMLProcessor::getAlertStatusCode(Status* s, const BCHAR* sourceName) {
+ int SyncMLProcessor::getAlertStatusCode(Status* s, const char* sourceName) {
     int ret = -1;
     
     Data* data    = NULL;
@@ -519,17 +519,17 @@ finally:
         goto finally;
 
     sourceRefs = s->getSourceRef();
-    if (bstrcmp(((SourceRef*)(sourceRefs->get(0)))->getValue(), sourceName) == 0) {                    
+    if (strcmp(((SourceRef*)(sourceRefs->get(0)))->getValue(), sourceName) == 0) {                    
         data = s->getData();
         if (data->getData(NULL) == NULL) {
             //
             // It should not happen
             //
-            bsprintf(lastErrorMsg, T("Status/Data not found!"));
+            sprintf(lastErrorMsg, T("Status/Data not found!"));
             lastErrorCode = ERR_REPRESENTATION;
             goto finally;
         }
-        ret = bstrtol(data->getData(), NULL, 10);        
+        ret = strtol(data->getData(), NULL, 10);        
     }                
 
 finally:

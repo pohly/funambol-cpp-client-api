@@ -29,7 +29,7 @@
 class Results : public ResponseCommand {
     
     private:               
-        BCHAR* COMMAND_NAME;    
+        char*  COMMAND_NAME;    
     
     // ---------------------------------------------------------- Public data    
     public:
@@ -50,8 +50,8 @@ class Results : public ResponseCommand {
          *
          */
         Results(CmdID*      cmdID,
-                BCHAR*    msgRef,
-                BCHAR*    cmdRef,
+                char*     msgRef,
+                char*     cmdRef,
                 Meta*       meta,
                 ArrayList*  targetRef,  // it could be and arraylist with only the first element assigned
                 ArrayList*  sourceRef,  // it could be and arraylist with only the first element assigned
@@ -62,7 +62,7 @@ class Results : public ResponseCommand {
          *
          * @return the command name
          */
-        BCHAR* getName();
+        char*  getName();
 
         ArrayElement* clone();
    

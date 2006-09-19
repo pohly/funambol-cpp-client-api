@@ -20,8 +20,8 @@
 #include "syncml/core/Delete.h"
  
 Delete::Delete() {
-    COMMAND_NAME = new BCHAR[bstrlen(DELETE_COMMAND_NAME) + 1];
-    bsprintf(COMMAND_NAME, DELETE_COMMAND_NAME);
+    COMMAND_NAME = new char[strlen(DELETE_COMMAND_NAME) + 1];
+    sprintf(COMMAND_NAME, DELETE_COMMAND_NAME);
     
 
 }
@@ -60,8 +60,8 @@ Delete::Delete(CmdID* cmdID,
     setArchive(archive);
     setSftDel(sftDel);
 
-    COMMAND_NAME = new BCHAR[bstrlen(DELETE_COMMAND_NAME) + 1];
-    bsprintf(COMMAND_NAME, DELETE_COMMAND_NAME);
+    COMMAND_NAME = new char[strlen(DELETE_COMMAND_NAME) + 1];
+    sprintf(COMMAND_NAME, DELETE_COMMAND_NAME);
 }
 
 /**
@@ -69,7 +69,7 @@ Delete::Delete(CmdID* cmdID,
 *
 * @return the command name property
 */    
-BCHAR* Delete::getName() {
+char* Delete::getName() {
     return COMMAND_NAME;
 }
 

@@ -20,7 +20,7 @@
 #include "base/util/utils.h"
 #include "base/util/WKeyValuePair.h"
 
-WKeyValuePair::WKeyValuePair(const wchar_t* key, const wchar_t* value) {
+WKeyValuePair::WKeyValuePair(const WCHAR* key, const WCHAR* value) {
     k = (key  ) ? wstrdup(key  ) : NULL;
     v = (value) ? wstrdup(value) : NULL;
 }
@@ -30,21 +30,21 @@ WKeyValuePair::~WKeyValuePair() {
     if (v) delete [] v; v = NULL;
 }
 
-void WKeyValuePair::setKey(const wchar_t* key) {
+void WKeyValuePair::setKey(const WCHAR* key) {
     if (k) delete[] k; k = NULL;
 
     k = (key) ? wstrdup(key) : NULL;
 }
 
-wchar_t* WKeyValuePair::getKey() {
+WCHAR* WKeyValuePair::getKey() {
     return k;
 }
 
-wchar_t* WKeyValuePair::getValue() {
+WCHAR* WKeyValuePair::getValue() {
     return v;
 }
 
-void WKeyValuePair::setValue(const wchar_t* value) {
+void WKeyValuePair::setValue(const WCHAR* value) {
     if (v) delete[] v; v = NULL;
 
     k = (value) ? wstrdup(value) : NULL;

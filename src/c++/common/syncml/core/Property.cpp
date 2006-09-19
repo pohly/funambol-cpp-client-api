@@ -40,7 +40,7 @@ Property::~Property() {
     if (valEnums)   delete valEnums  ;
 }
 
-Property::Property(BCHAR* p0, BCHAR* p1, long p2, long p3, BOOL p4, ArrayList* p5, BCHAR* p6, ArrayList* p7) {
+Property::Property(char* p0, char* p1, long p2, long p3, BOOL p4, ArrayList* p5, char* p6, ArrayList* p7) {
     propName    = (p0) ? stringdup(p0) : NULL;
     dataType    = (p1) ? stringdup(p1) : NULL;
     maxOccur    = p2;
@@ -51,15 +51,15 @@ Property::Property(BCHAR* p0, BCHAR* p1, long p2, long p3, BOOL p4, ArrayList* p
     propParams  = (p7) ? p7->clone() : NULL;
 }
 
-BCHAR* Property::getDisplayName(BCHAR* displayName) {
+char* Property::getDisplayName(char* displayName) {
     if (displayName == NULL) {
         return this->displayName;
     }
 
-    return bstrcpy(displayName, this->displayName);
+    return strcpy(displayName, this->displayName);
 }
 
-void Property::setDisplayName(BCHAR* displayName) {
+void Property::setDisplayName(char* displayName) {
     if (this->displayName) {
         delete this->displayName; this->displayName = NULL;
     }
@@ -75,12 +75,12 @@ void Property::setDisplayName(BCHAR* displayName) {
  * @return  the current propName's value
  *
  */
-BCHAR* Property::getPropName(BCHAR* propName) {
+char* Property::getPropName(char* propName) {
     if (propName == NULL) {
         return this->propName;
     }
 
-    return bstrcpy(propName, this->propName);
+    return strcpy(propName, this->propName);
 }
 
 /*
@@ -89,7 +89,7 @@ BCHAR* Property::getPropName(BCHAR* propName) {
  * @param propName the new value
  *
  */
-void Property::setPropName(BCHAR* propName) {
+void Property::setPropName(char* propName) {
     if (this->propName) {
         delete this->propName; this->propName = NULL;
     }
@@ -105,12 +105,12 @@ void Property::setPropName(BCHAR* propName) {
  * @return  the current dataType's value
  *
  */
-BCHAR* Property::getDataType(BCHAR* dataType) {
+char* Property::getDataType(char* dataType) {
     if (dataType == NULL) {
         return this->dataType;
     }
 
-    return bstrcpy(dataType, this->dataType);
+    return strcpy(dataType, this->dataType);
 }
 
 /*
@@ -119,7 +119,7 @@ BCHAR* Property::getDataType(BCHAR* dataType) {
  * @param dataType the new value
  *
  */
-void Property::setDataType(BCHAR* dataType) {
+void Property::setDataType(char* dataType) {
     if (this->dataType) {
         delete this->dataType; this->dataType = NULL;
     }

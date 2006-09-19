@@ -66,31 +66,31 @@ class VObject {
 
 private:
 
-    wchar_t* version;
-    wchar_t* productID;
+    WCHAR* version;
+    WCHAR* productID;
     ArrayList* properties;
-    void set(wchar_t**, wchar_t*);
+    void set(WCHAR**, WCHAR*);
 
 public:       
 
     VObject();
     ~VObject();
-    void setVersion (wchar_t* ver);
-    void setProdID (wchar_t* prodID);
-    wchar_t* getVersion();
-    wchar_t* getProdID();
+    void setVersion (WCHAR* ver);
+    void setProdID (WCHAR* prodID);
+    WCHAR* getVersion();
+    WCHAR* getProdID();
     void addProperty(VProperty* property);
     void addFirstProperty(VProperty* property);
     void insertProperty(VProperty* property);
     bool removeProperty(int index);
-    void removeProperty(wchar_t* propName);
-    void removeAllProperies(wchar_t* propName);
+    void removeProperty(WCHAR* propName);
+    void removeAllProperies(WCHAR* propName);
     //removes all properties having name - propName;
-    bool containsProperty(wchar_t* propName);
+    bool containsProperty(WCHAR* propName);
     int propertiesCount();
     VProperty* getProperty(int index);
-    VProperty* getProperty(wchar_t* propName);
-    wchar_t* toString();
+    VProperty* getProperty(WCHAR* propName);
+    WCHAR* toString();
 
     // Patrick Ohly:
     //

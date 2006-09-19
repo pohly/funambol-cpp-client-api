@@ -79,7 +79,7 @@ void testFilter() {
     Filter filter(&meta, &field, &record, T("filter-type"));
 
     StringBuffer* sb = Formatter::getFilter(&filter);
-    wchar_t *msg = toWideChar(sb->c_str());
+    WCHAR *msg = toWideChar(sb->c_str());
 
     MessageBox(0, msg, TEXT("Filter"), MB_OK);
 

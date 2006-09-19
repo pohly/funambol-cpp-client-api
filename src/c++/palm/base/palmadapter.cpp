@@ -31,7 +31,7 @@
     #include <stddef.h>
 
     void *operator new(size_t s, char* file, int line) {
-        wchar_t m[256];
+        WCHAR m[256];
 
         MemHandle h = MemHandleNew(s);
 
@@ -58,7 +58,7 @@
     }
 
     void operator delete(void* p) {
-        wchar_t m[216];
+        WCHAR m[216];
 
         // /** WARNING: this sloooooowwwwssss doooowwwwnnnn things
         wcsprintf(m, "delete - p:%lx\n", (long)p);
@@ -79,7 +79,7 @@
 
 #endif
 
-long utf8len(const wchar_t* s) {
+long utf8len(const WCHAR* s) {
     if ((s == NULL) || (wcslen(s) == 0)) {
         return 0;
     }
@@ -108,7 +108,7 @@ long utf8len(const wchar_t* s) {
     return (err == errNone) ? (long)lenDst : -1;
 }
 
-char* wc2utf8(const wchar_t* s, char* d = NULL, unsigned long dsize = 0) {
+char* wc2utf8(const WCHAR* s, char* d = NULL, unsigned long dsize = 0) {
     //
     // First of all, if s is NULL, just return NULL.
     // Then, if d is NULL, let's allocate the required memory to contain the
@@ -153,11 +153,11 @@ char* wc2utf8(const wchar_t* s, char* d = NULL, unsigned long dsize = 0) {
     return (err == errNone) ? d : NULL;
 }
 
-wchar_t* utf82wc(const char* s, wchar_t* d = NULL, unsigned long dsize = 0) {
+WCHAR* utf82wc(const char* s, WCHAR* d = NULL, unsigned long dsize = 0) {
     //
     // First of all, if s is NULL, just return NULL.
     // Then, if d is NULL, let's allocate the required memory to contain the
-    // wchar_t string.
+    // WCHAR string.
     //
     if (s == NULL) {
         return NULL;
@@ -165,7 +165,7 @@ wchar_t* utf82wc(const char* s, wchar_t* d = NULL, unsigned long dsize = 0) {
 
     if (d == NULL) {
         dsize = strlen(s);
-        d = new wchar_t[dsize+1];
+        d = new WCHAR[dsize+1];
     }
 
     //
@@ -173,7 +173,7 @@ wchar_t* utf82wc(const char* s, wchar_t* d = NULL, unsigned long dsize = 0) {
     //
     Err err = errNone;
     UInt16 lenSrc = dsize;
-    UInt16 lenDst = (dsize+1)*sizeof(wchar_t); // lets' include \0
+    UInt16 lenDst = (dsize+1)*sizeof(WCHAR); // lets' include \0
     UInt32 encoding;
 
     FtrGet(sysFtrCreator, sysFtrNumEncoding, &encoding);

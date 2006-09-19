@@ -40,7 +40,7 @@ class DMTreeManager {
          * which node is given, the result is either an instance
          * of SourceManagementNode or AccessManagementNode.
          */
-        virtual ManagementNode* const getManagementNode(const BCHAR* node)=0;
+        virtual ManagementNode* const getManagementNode(const char*  node)=0;
 
         /*
          * Stores the content of the node permanently in the DMTree

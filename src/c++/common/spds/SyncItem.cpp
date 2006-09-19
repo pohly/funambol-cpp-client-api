@@ -38,7 +38,7 @@ SyncItem::SyncItem() {
  *
  * @param key - the key
  */
-SyncItem::SyncItem(const wchar_t* itemKey) {
+SyncItem::SyncItem(const WCHAR* itemKey) {
     initialize();
     wcsncpy(key, itemKey, DIM_KEY);
     key[DIM_KEY-1] = 0;
@@ -79,7 +79,7 @@ SyncItem::~SyncItem() {
  *
  * @param key - buffer where the key will be stored
  */
-wchar_t* SyncItem::getKey() {
+WCHAR* SyncItem::getKey() {
         return key;
     }
 
@@ -89,7 +89,7 @@ wchar_t* SyncItem::getKey() {
  *
  * @param key - the key
  */
-void SyncItem::setKey(const wchar_t* itemKey) {
+void SyncItem::setKey(const WCHAR* itemKey) {
     wcsncpy(key, itemKey, DIM_KEY);
     key[DIM_KEY-1] = 0;
 }
@@ -136,7 +136,7 @@ void* SyncItem::setData(const void* itemData, long dataSize) {
     data = new char[size + 1];
     if (data == NULL) {
         lastErrorCode = ERR_NOT_ENOUGH_MEMORY;
-        bsprintf(lastErrorMsg, ERRMSG_NOT_ENOUGH_MEMORY, dataSize);
+        sprintf(lastErrorMsg, ERRMSG_NOT_ENOUGH_MEMORY, dataSize);
         return NULL;
     }
 
@@ -176,7 +176,7 @@ void SyncItem::setDataSize(long s) {
  *
  * @param - type the content mimetype
  */
-void SyncItem::setDataType(const wchar_t* mimeType) {
+void SyncItem::setDataType(const WCHAR* mimeType) {
     wcsncpy(type, mimeType, DIM_MIME_TYPE);
     type[DIM_MIME_TYPE-1] = 0;
 }
@@ -185,7 +185,7 @@ void SyncItem::setDataType(const wchar_t* mimeType) {
  * Returns the SyncItem data mime type.
  *
  */
-wchar_t* SyncItem::getDataType() {
+WCHAR* SyncItem::getDataType() {
     return type;
 }
 
@@ -210,7 +210,7 @@ SyncState SyncItem::getState() {
  *
  * @return the taregtParent property value
  */
-wchar_t* SyncItem::getTargetParent(wchar_t* parent) {
+WCHAR* SyncItem::getTargetParent(WCHAR* parent) {
     if (parent == NULL) {
         return targetParent;
     }
@@ -222,7 +222,7 @@ wchar_t* SyncItem::getTargetParent(wchar_t* parent) {
  *
  * @param parent the taregtParent property
  */
-void SyncItem::setTargetParent(const wchar_t* parent) {
+void SyncItem::setTargetParent(const WCHAR* parent) {
     if (targetParent) {
         delete [] targetParent; targetParent = NULL;
     }
@@ -234,7 +234,7 @@ void SyncItem::setTargetParent(const wchar_t* parent) {
  *
  * @return the sourceParent property value
  */
-wchar_t* SyncItem::getSourceParent(wchar_t* parent) {
+WCHAR* SyncItem::getSourceParent(WCHAR* parent) {
     if (parent == NULL) {
         return sourceParent;
     }
@@ -246,7 +246,7 @@ wchar_t* SyncItem::getSourceParent(wchar_t* parent) {
  *
  * @param parent the sourceParent property
  */
-void SyncItem::setSourceParent(const wchar_t* parent) {
+void SyncItem::setSourceParent(const WCHAR* parent) {
     if (sourceParent) {
         delete [] sourceParent; sourceParent = NULL;
     }

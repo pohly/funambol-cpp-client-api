@@ -41,26 +41,26 @@ VObject::~VObject() {
     }
 }
 
-void VObject::set(wchar_t** p, wchar_t* v) {
+void VObject::set(WCHAR** p, WCHAR* v) {
     if (*p) {
         delete [] *p;
     }
     *p = (v) ? wstrdup(v) : NULL;
 }
 
-void VObject::setVersion(wchar_t* ver) {
+void VObject::setVersion(WCHAR* ver) {
     set(&version, ver);
 }
 
-void VObject::setProdID(wchar_t* prodID) {
+void VObject::setProdID(WCHAR* prodID) {
     set(&productID, prodID);
 }
 
-wchar_t* VObject::getVersion() {
+WCHAR* VObject::getVersion() {
     return version;
 }
 
-wchar_t* VObject::getProdID() {
+WCHAR* VObject::getProdID() {
     return productID;
 }
 
@@ -79,7 +79,7 @@ bool VObject::removeProperty(int index) {
     return true;
 }
 
-void VObject::removeProperty(wchar_t* propName) {
+void VObject::removeProperty(WCHAR* propName) {
     for (int i=0; i<properties->size(); i++) {
         VProperty *property; 
         property = (VProperty* )properties->get(i);
@@ -90,7 +90,7 @@ void VObject::removeProperty(wchar_t* propName) {
     }
 }
 
-bool VObject::containsProperty(wchar_t* propName) {
+bool VObject::containsProperty(WCHAR* propName) {
     for (int i=0; i<properties->size(); i++) {
         VProperty *property; 
         property = (VProperty* )properties->get(i);
@@ -105,7 +105,7 @@ VProperty* VObject::getProperty(int index) {
     return (VProperty*)properties->get(index);
 }
 
-VProperty* VObject::getProperty(wchar_t* propName) {
+VProperty* VObject::getProperty(WCHAR* propName) {
     for (int i=0; i<properties->size(); i++) {
         
         VProperty *property; 
@@ -121,9 +121,9 @@ VProperty* VObject::getProperty(wchar_t* propName) {
 /*
  * Returns the VCard - iCal string fro this VObject.
  * Note:
- * The returned wchar_t* is new allocated, must be freed by the caller.
+ * The returned WCHAR* is new allocated, must be freed by the caller.
  */
-wchar_t* VObject::toString() {
+WCHAR* VObject::toString() {
     
     WString strVObject;
 
@@ -141,8 +141,8 @@ wchar_t* VObject::toString() {
 
     for (int i=0; i<properties->size(); i++) {
         VProperty *prop = getProperty(i);
-        wchar_t* propString = prop->toString(version);
-        wchar_t* valueConv = NULL;
+        WCHAR* propString = prop->toString(version);
+        WCHAR* valueConv = NULL;
 
         // Folding
         if (useFolding && wcslen(propString) > VCARD_MAX_LINE_LEN) {
@@ -163,7 +163,7 @@ wchar_t* VObject::toString() {
     }		    
 
     // memory must be free by caller with delete []
-    wchar_t *str = wstrdup(strVObject);
+    WCHAR *str = wstrdup(strVObject);
     return str;
 }
 
@@ -184,7 +184,7 @@ void VObject::addFirstProperty(VProperty* property) {
     properties->add(0,(ArrayElement&)*property);
 }
 
-void VObject::removeAllProperies(wchar_t* propName) {
+void VObject::removeAllProperies(WCHAR* propName) {
     for(int i = 0, m = propertiesCount(); i < m ; i++)
         if(!wcscmp(getProperty(i)->getName(), propName)) {
             removeProperty(i);
@@ -196,7 +196,7 @@ void VObject::removeAllProperies(wchar_t* propName) {
 
 // Patrick Ohly: hack below, see header file
 
-static int hex2int( wchar_t x )
+static int hex2int( WCHAR x )
 {
     return (x >= '0' && x <= '9') ? x - '0' :
         (x >= 'A' && x <= 'F') ? x - 'A' + 10 :
@@ -215,20 +215,20 @@ void VObject::toNativeEncoding()
 
     for (int index = propertiesCount() - 1; index >= 0; index--) {
         VProperty *vprop = getProperty(index);
-        wchar_t *foreign = vprop->getValue();
+        WCHAR *foreign = vprop->getValue();
         // the native encoding is always shorter than the foreign one
-        wchar_t *native = new wchar_t[wcslen(foreign) + 1];
+        WCHAR *native = new WCHAR[wcslen(foreign) + 1];
 
         if (vprop->equalsEncoding(TEXT("QUOTED-PRINTABLE"))) {
             int in = 0, out = 0;
-            wchar_t curr;
+            WCHAR curr;
 
             // this is a very crude quoted-printable decoder,
             // based on Wikipedia's explanation of quoted-printable
             while ((curr = foreign[in]) != 0) {
                 in++;
                 if (curr == '=') {
-                    wchar_t values[2];
+                    WCHAR values[2];
                     values[0] = foreign[in];
                     in++;
                     if (!values[0]) {
@@ -269,7 +269,7 @@ void VObject::toNativeEncoding()
 
         // decode escaped characters after backslash:
         // \n is line break only in 3.0
-        wchar_t curr;
+        WCHAR curr;
         int in = 0, out = 0;
         while ((curr = native[in]) != 0) {
             in++;
@@ -319,7 +319,7 @@ void VObject::toNativeEncoding()
         //   value might differ between 2.1 and 3.0 (quotation marks allowed in
         //   3.0 but not 2.1) and thus would require extra code to convert it;
         //   when charsets really get supported this needs to be addressed
-        wchar_t *charset = vprop->getParameterValue(TEXT("CHARSET"));
+        WCHAR *charset = vprop->getParameterValue(TEXT("CHARSET"));
         if (charset) {
             // proper decoding of the value and the property value text
             // would go here, for the time being we just remove the
@@ -348,11 +348,11 @@ void VObject::fromNativeEncoding()
             vprop->removeParameter(TEXT("ENCODING"));
         }
 
-        wchar_t *native = vprop->getValue();
+        WCHAR *native = vprop->getValue();
         // in the worst case every comma/linebreak is replaced with
         // two characters and each \n with =0D=0A
-        wchar_t *foreign = new wchar_t[6 * wcslen(native) + 1];
-        wchar_t curr;
+        WCHAR *foreign = new WCHAR[6 * wcslen(native) + 1];
+        WCHAR curr;
         int in = 0, out = 0;
         // line break is encoded with either one or two
         // characters on different platforms

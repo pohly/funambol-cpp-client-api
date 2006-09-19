@@ -31,13 +31,13 @@ class StringBuffer: public ArrayElement {
         // Constant value for an invalid pos (returned by find and rfind)
         static const size_t npos;
 
-        StringBuffer(const BCHAR* str = NULL, size_t len = npos) EXTRA_SECTION_00;
+        StringBuffer(const char*  str = NULL, size_t len = npos) EXTRA_SECTION_00;
 
         StringBuffer(const StringBuffer &sb) EXTRA_SECTION_00;
 
         ~StringBuffer() EXTRA_SECTION_00;
 
-        StringBuffer& append(const BCHAR*) EXTRA_SECTION_00;
+        StringBuffer& append(const char* ) EXTRA_SECTION_00;
 
         StringBuffer& append(unsigned long u, BOOL sign = TRUE) EXTRA_SECTION_00;
 
@@ -45,7 +45,7 @@ class StringBuffer: public ArrayElement {
 
         StringBuffer& append(StringBuffer* str) EXTRA_SECTION_00;
 
-        StringBuffer& set(const BCHAR*) EXTRA_SECTION_00;
+        StringBuffer& set(const char* ) EXTRA_SECTION_00;
 
         /**
          * Release the string buffer.
@@ -53,31 +53,31 @@ class StringBuffer: public ArrayElement {
         StringBuffer& reset() EXTRA_SECTION_00;
 
         /**
-         * Get the BCHAR array, same as the cast operator
+         * Get the char array, same as the cast operator
          */
-        const BCHAR* getChars() const EXTRA_SECTION_00;
-        inline const BCHAR* c_str() const { return s; } EXTRA_SECTION_00;
+        const char*  getChars() const EXTRA_SECTION_00;
+        inline const char*  c_str() const { return s; } EXTRA_SECTION_00;
 
         /**
          * Find the first occurrence of substring str.
          *
          * @return - the position or StringBuffer::npos if not found.
          */
-        size_t find(const BCHAR *str, size_t pos = 0) const EXTRA_SECTION_00;
+        size_t find(const char *str, size_t pos = 0) const EXTRA_SECTION_00;
 
         /**
          * Find the first occurrence of substring str, using case insensitive compare.
          *
          * @return - the position or StringBuffer::npos if not found.
          */
-        size_t ifind(const BCHAR *str, size_t pos = 0) const EXTRA_SECTION_00;
+        size_t ifind(const char *str, size_t pos = 0) const EXTRA_SECTION_00;
 
         /**
          * Find the last occurrence of substring str.
          *
          * @return - the position or StringBuffer::npos if not found.
          */
-        size_t rfind(const BCHAR *str, size_t pos = 0) const EXTRA_SECTION_00;
+        size_t rfind(const char *str, size_t pos = 0) const EXTRA_SECTION_00;
 
         /**
          * Replace the first occurrence of substring 'from' with string 'to'.
@@ -85,13 +85,13 @@ class StringBuffer: public ArrayElement {
          * @return - the position of the first token replaced or StringBuffer::npos if
          *           not found.
          */
-        size_t replace(const BCHAR *from, const BCHAR *to, size_t pos = 0) EXTRA_SECTION_00;
+        size_t replace(const char *from, const char *to, size_t pos = 0) EXTRA_SECTION_00;
         /**
          * Replace all the occurrences of substring 'from' with string 'to'.
          *
          * @return - the number of tokens replaced 
          */
-        int replaceAll(const BCHAR *from, const BCHAR *to, size_t pos = 0) EXTRA_SECTION_00;
+        int replaceAll(const char *from, const char *to, size_t pos = 0) EXTRA_SECTION_00;
 
         /**
          * Splits string on each occurrence of any of the characters in 
@@ -100,7 +100,7 @@ class StringBuffer: public ArrayElement {
          * @return - the position or StringBuffer::npos if not found.
          */
         ArrayList &split (ArrayList &tokens,
-                          const BCHAR *delimiters = T(" ")) const EXTRA_SECTION_00;
+                          const char *delimiters = T(" ")) const EXTRA_SECTION_00;
 
         /**
          * Joins all the tokens in the given ArrayList, using separator to
@@ -108,7 +108,7 @@ class StringBuffer: public ArrayElement {
          *
          * @return - the StringBuffer
          */
-        StringBuffer& join(ArrayList &tokens, const BCHAR *separator);
+        StringBuffer& join(ArrayList &tokens, const char *separator);
 
         /**
          * Return the substring between pos and pos+len.
@@ -142,7 +142,7 @@ class StringBuffer: public ArrayElement {
         /**
          * Perform case insensitive compare
          */
-        bool icmp(const BCHAR *sc) const EXTRA_SECTION_00 ;
+        bool icmp(const char *sc) const EXTRA_SECTION_00 ;
 
         /** 
          * True if the string is null or empty
@@ -162,19 +162,19 @@ class StringBuffer: public ArrayElement {
         /**
          * Class operators
          */
-        StringBuffer& operator= (const BCHAR* sc) EXTRA_SECTION_00 ;
+        StringBuffer& operator= (const char*  sc) EXTRA_SECTION_00 ;
         StringBuffer& operator= (const StringBuffer& s) EXTRA_SECTION_00 ;
-        StringBuffer& operator+= (const BCHAR* sc) EXTRA_SECTION_00 ;
+        StringBuffer& operator+= (const char*  sc) EXTRA_SECTION_00 ;
         StringBuffer& operator+= (const StringBuffer& s) EXTRA_SECTION_00 ;
-        bool operator== (const BCHAR* sc) const EXTRA_SECTION_00 ;
+        bool operator== (const char*  sc) const EXTRA_SECTION_00 ;
         bool operator== (const StringBuffer& sb) const EXTRA_SECTION_00 ;
-        bool operator!= (const BCHAR* sc) const EXTRA_SECTION_00 ;
+        bool operator!= (const char*  sc) const EXTRA_SECTION_00 ;
         bool operator!= (const StringBuffer& s) const EXTRA_SECTION_00 ;
         
-        operator const BCHAR*() const { return s; } EXTRA_SECTION_00 ;
+        operator const char* () const { return s; } EXTRA_SECTION_00 ;
         
     private:
-        BCHAR* s;
+        char*  s;
         size_t size;
 
         // Allocator
@@ -183,7 +183,7 @@ class StringBuffer: public ArrayElement {
         void freemem();
 };
 
-StringBuffer operator+(const StringBuffer& x, const BCHAR *y);
+StringBuffer operator+(const StringBuffer& x, const char *y);
 
 #endif
 

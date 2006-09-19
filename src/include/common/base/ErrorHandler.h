@@ -36,7 +36,7 @@ class ErrorHandler {
          *
          * @return None.
          */
-        virtual void warning(int code, const BCHAR* msg) = 0;
+        virtual void warning(int code, const char*  msg) = 0;
 
         /**
          * @brief Handle an error condition
@@ -48,7 +48,7 @@ class ErrorHandler {
          *
          * @return true if the synchronization must be stopped.
          */
-        virtual bool error(int code, const BCHAR* msg) = 0;
+        virtual bool error(int code, const char*  msg) = 0;
         
         /**
          * @brief Handle a fatal error
@@ -60,7 +60,7 @@ class ErrorHandler {
          *
          * @return None
          */
-        virtual void fatalError(int code, const BCHAR* msg) = 0;
+        virtual void fatalError(int code, const char*  msg) = 0;
 
         /**
          * @brief clone the error handler object.

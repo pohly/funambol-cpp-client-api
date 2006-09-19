@@ -40,7 +40,7 @@
  *
  * @return the corresponding CGI query string
  */
-const BCHAR* ClauseUtil::toCGIQuery(Clause& clause) {
+const char* ClauseUtil::toCGIQuery(Clause& clause) {
     StringBuffer query;
 
     ArrayList* operands = NULL;
@@ -223,7 +223,7 @@ Filter* ClauseUtil::toFilter(SourceFilter& sourceFilter) {
         ComplexData recordData;
 
         recordMeta.setType(T("syncml:filtertype-cgi"));
-        BCHAR* query = (BCHAR*)toCGIQuery(*recordClause);
+        char* query = (char*)toCGIQuery(*recordClause);
         recordData.setData(query);
         safeDelete(&query);
 
@@ -284,7 +284,7 @@ Filter* ClauseUtil::toFilter(SourceFilter& sourceFilter) {
   *
   * 
   */
-  SourceFilter* ClauseUtil::createSourceFilter(const wchar_t* since, int bodySize, int attachSize) {
+  SourceFilter* ClauseUtil::createSourceFilter(const WCHAR* since, int bodySize, int attachSize) {
     if ((since == NULL) && (bodySize == -1) && (attachSize == -1)) {
         //
         // No filter is needed

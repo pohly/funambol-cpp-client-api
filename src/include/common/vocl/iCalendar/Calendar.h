@@ -20,7 +20,7 @@ private:
     ArrayList* todos;
     void set(iCalProperty** oldProperty, iCalProperty& newProperty);
     iCalProperty* getiCalPropertyFromVProperty(VProperty* vp);
-    VProperty* getVPropertyFromiCalProperty(wchar_t* name, iCalProperty* prop);
+    VProperty* getVPropertyFromiCalProperty(WCHAR* name, iCalProperty* prop);
 
 public:
     Calendar();
@@ -41,7 +41,7 @@ public:
     ArrayList* getXTags();
     ArrayList* getEvents();
     ArrayList* getToDos();
-    wchar_t* toString();
+    WCHAR* toString();
 
     ArrayElement* clone();
 };

@@ -25,8 +25,8 @@
 #include "spds/MailMessage.h"
 #include "spds/EmailData.h"
 
-// Read a text file and convert it from UTF-8 to wchar_t
-static int readFromFile(const char* path, wchar_t **message, size_t *len)
+// Read a text file and convert it from UTF-8 to WCHAR
+static int readFromFile(const char* path, WCHAR **message, size_t *len)
 {
     char *msg = 0;
     size_t msglen;
@@ -52,9 +52,9 @@ int main(int argc, char** argv)
 #endif
 {
     size_t msglen=0;
-    wchar_t *name[10], *msg=0;
+    WCHAR *name[10], *msg=0;
     int i;
-    const wchar_t *attach;
+    const WCHAR *attach;
 
 #ifdef _WIN32_WCE
     name[0] = stringdup(TEXT("message.xml"));
@@ -73,7 +73,7 @@ int main(int argc, char** argv)
     for (i=0; name[i]; i++) {
         msg = loadAndConvert(name[i]);
         if( !msg ){
-            wchar_t dbg[256];
+            WCHAR dbg[256];
             wsprintf(dbg, TEXT("Can't open file %s\n"), name[i]);
 	        LOG.error(dbg);
             continue;
@@ -86,7 +86,7 @@ int main(int argc, char** argv)
 
         delete [] msg;
 
-        wchar_t outname[10];
+        WCHAR outname[10];
         wsprintf(outname, TEXT("msgout%d.xml"), i);
         if ( convertAndSave( outname, em.format() ) ) {
             fprintf(stderr, "Error in convertAndSave(em)\n");

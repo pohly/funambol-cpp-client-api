@@ -30,7 +30,7 @@ class Replace : public ModificationCommand {
     
      // ------------------------------------------------------------ Private data
     private:
-        BCHAR* COMMAND_NAME;
+        char*  COMMAND_NAME;
     
     public:
         
@@ -58,7 +58,7 @@ class Replace : public ModificationCommand {
          *
          * @return the command name
          */
-        BCHAR* getName();
+        char*  getName();
 
         ArrayElement* clone();
    

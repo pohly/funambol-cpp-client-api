@@ -60,7 +60,7 @@ class DefaultConfigFactory {
          * @return: SyncSourceConfig pointer allocated new, so it must 
          *          be freed by the caller.
          */
-        static SyncSourceConfig* getSyncSourceConfig(const BCHAR* name) EXTRA_SECTION_01;
+        static SyncSourceConfig* getSyncSourceConfig(const char*  name) EXTRA_SECTION_01;
 };
 
 #endif

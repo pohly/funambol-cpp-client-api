@@ -35,7 +35,7 @@ class SyncStatusEvent : public SyncItemEvent {
 public:
 
     // Constructor
-    SyncStatusEvent(int code, const char* cmd, const wchar_t* key, const char* uri, int type, unsigned long date);
+    SyncStatusEvent(int code, const char* cmd, const WCHAR* key, const char* uri, int type, unsigned long date);
 
     // Destructor
     ~SyncStatusEvent();

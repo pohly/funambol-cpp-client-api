@@ -77,27 +77,27 @@ int BasicTime::set(int yy, int mon, int dd, int wd,
  *               / ( ("+" / "-") 4DIGIT )        ; Local differential
  *                                               ;  hours+min. (HHMM)
 **/
-int BasicTime::parseRfc822(const BCHAR *date)
+int BasicTime::parseRfc822(const char *date)
 {
-	const BCHAR *days[] = {
+	const char *days[] = {
         T("Sun"), T("Mon"), T("Tue"), T("Wed"),
         T("Thu"), T("Fri"), T("Sat")
     };
-	const BCHAR *months[] = {
+	const char *months[] = {
         T("Jan"), T("Feb"), T("Mar"), T("Apr"),
         T("May"), T("Jun"), T("Jul"), T("Aug"),
         T("Sep"), T("Oct"), T("Nov"), T("Dec")
     };
-	BCHAR dayOfWeek[6] = T("---,");
-	BCHAR mon[4] = T("---");
-	BCHAR time[10] = T("00:00:00");
-	BCHAR timeZone[20] = T("GMT");
+	char dayOfWeek[6] = T("---,");
+	char mon[4] = T("---");
+	char time[10] = T("00:00:00");
+	char timeZone[20] = T("GMT");
 
     int ret;
     
     // Wed Feb 01 14:40:45 Europe/Amsterdam 2006
 	// do we have day of week?
-    const BCHAR *pdate = bstrstr( date, T(",") );
+    const char *pdate = strstr( date, T(",") );
 	if ( pdate == 0 ) {
 		ret=sscanf(date, T("%d %s %d %s %s"),
             &day, mon, &year, time, timeZone);
@@ -118,7 +118,7 @@ int BasicTime::parseRfc822(const BCHAR *date)
     // Get month
     int i;
 	for (i = 0; i < 12; i++) {
-		if ( bstrcmp(months[i], mon) == 0 ) {
+		if ( strcmp(months[i], mon) == 0 ) {
             month = i+1;
 			break;
         }
@@ -132,27 +132,27 @@ int BasicTime::parseRfc822(const BCHAR *date)
 
 	// hh:mm:ss -------------------------
 	// do we have sec?
-	if (bstrlen(time) > 6 && time[5] == ':')
+	if (strlen(time) > 6 && time[5] == ':')
 		sscanf(time, T("%d:%d:%d"), &hour, &min, &sec);
 	else
 		sscanf(time, T("%d:%d"), &hour, &min);
 
 	// Timezone ---------------------------------
-    if ( bstrcmp(timeZone, T("GMT")) ) {
+    if ( strcmp(timeZone, T("GMT")) ) {
 		// is this explicit time?
 		if ( timeZone[0] == '+' || timeZone[0]== '-' ) {
-			BCHAR wcH[4] = T("+00");
-			BCHAR wcM[4] = T("00");
+			char wcH[4] = T("+00");
+			char wcM[4] = T("00");
 
 			// get hour
-			if ( bstrlen(timeZone) > 3) {
+			if ( strlen(timeZone) > 3) {
 				wcH[0] = timeZone[0];
 				wcH[1] = timeZone[1];
 				wcH[2] = timeZone[2];
 				wcH[3] = '\0';
 			}
 			// get min
-			if ( bstrlen(timeZone) >= 5)	{
+			if ( strlen(timeZone) >= 5)	{
 				wcM[0] = timeZone[3];
 				wcM[1] = timeZone[4];
 				wcM[2] = '\0';
@@ -161,18 +161,18 @@ int BasicTime::parseRfc822(const BCHAR *date)
 			tzMin = atoi(wcM);
 		}
 		// otherwise it could be one string with the time
-		else if ( bstrcmp(timeZone, T("EDT")) )
+		else if ( strcmp(timeZone, T("EDT")) )
 			tzHour = -4;
-		else if ( bstrcmp(timeZone, T("EST"))
-                  ||  bstrcmp(timeZone, T("CDT")) )
+		else if ( strcmp(timeZone, T("EST"))
+                  ||  strcmp(timeZone, T("CDT")) )
 			tzHour = -5;
-		else if ( bstrcmp(timeZone, T("CST"))
-                  ||  bstrcmp(timeZone, T("MDT")) )
+		else if ( strcmp(timeZone, T("CST"))
+                  ||  strcmp(timeZone, T("MDT")) )
 			tzHour = -6;
-		else if ( bstrcmp(timeZone, T("MST"))
-                  ||  bstrcmp(timeZone, T("PDT")) )
+		else if ( strcmp(timeZone, T("MST"))
+                  ||  strcmp(timeZone, T("PDT")) )
 			tzHour = -7;
-		else if ( bstrcmp(timeZone, T("PST")) )
+		else if ( strcmp(timeZone, T("PST")) )
 			tzHour = -8;
 	}
 
@@ -181,19 +181,19 @@ int BasicTime::parseRfc822(const BCHAR *date)
 }
 
 // Date: Fri, 01 Aug 2003 14:04:55 +0800
-BCHAR *BasicTime::formatRfc822() const {
-	const BCHAR *days[] = {
+char *BasicTime::formatRfc822() const {
+	const char *days[] = {
         T("Sun"), T("Mon"), T("Tue"), T("Wed"),
         T("Thu"), T("Fri"), T("Sat"), T("Sun")
     };
-	const BCHAR *months[] = {
+	const char *months[] = {
         T("Jan"), T("Feb"), T("Mar"), T("Apr"),
         T("May"), T("Jun"), T("Jul"), T("Aug"),
         T("Sep"), T("Oct"), T("Nov"), T("Dec")
     };
-    BCHAR *ret = new BCHAR[30];
+    char *ret = new char[30];
 
-    bsprintf(ret, T("%s, %d %s %d %02d:%02d:%02d %+03d%02d"),
+    sprintf(ret, T("%s, %d %s %d %02d:%02d:%02d %+03d%02d"),
                   days[weekday], day, months[month-1], year, hour, min, sec,
                   tzHour, tzMin);
 

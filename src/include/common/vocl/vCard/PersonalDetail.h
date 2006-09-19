@@ -19,7 +19,7 @@
 
 //
 // @author Stefano Fornari @ Funambol
-// @version $Id: PersonalDetail.h,v 1.1 2006-01-12 11:39:35 nichele Exp $
+// @version $Id: PersonalDetail.h,v 1.2 2006-09-19 12:59:41 toccy Exp $
 //
 
 
@@ -43,11 +43,11 @@ class PersonalDetail {
         Address*       otherAddress ;
         ContactDetail* contactDetail;
         vCardProperty* photo        ;
-        wchar_t*       spouse       ;
-        wchar_t*       children     ;
-        wchar_t*       anniversary  ;
-        wchar_t*       birthday     ;
-        wchar_t*       gender       ;
+        WCHAR*       spouse       ;
+        WCHAR*       children     ;
+        WCHAR*       anniversary  ;
+        WCHAR*       birthday     ;
+        WCHAR*       gender       ;
 
         /**
          * Sets internal members releasing the currently allocated memory (if
@@ -58,7 +58,7 @@ class PersonalDetail {
          *                 allocated memory
          * @param v the value to set into the property
          */
-        void set(wchar_t** p, wchar_t* v);
+        void set(WCHAR** p, WCHAR* v);
 
     // -------------------------------------------- Constructors and Destructors
     public:
@@ -117,7 +117,7 @@ class PersonalDetail {
          *
          * @return the spouse for this Personal Detail
          */
-        wchar_t* getSpouse(wchar_t* buf = NULL, int size = -1);
+        WCHAR* getSpouse(WCHAR* buf = NULL, int size = -1);
 
         /**
          * Returns the children for this Personal Detail
@@ -127,7 +127,7 @@ class PersonalDetail {
          *
          * @return the children for this Personal Detail
          */
-        wchar_t* getChildren(wchar_t* buf = NULL, int size = -1);
+        WCHAR* getChildren(WCHAR* buf = NULL, int size = -1);
 
         /**
          * Returns the anniversary for this Personal Detail
@@ -137,7 +137,7 @@ class PersonalDetail {
          *
          * @return the anniversary for this Personal Detail
          */
-        wchar_t* getAnniversary(wchar_t* buf = NULL, int size = -1);
+        WCHAR* getAnniversary(WCHAR* buf = NULL, int size = -1);
 
         /**
          * Returns the birthday for this Personal Detail
@@ -147,7 +147,7 @@ class PersonalDetail {
          *
          * @return the birthday for this Personal Detail
          */
-        wchar_t* getBirthday(wchar_t* buf = NULL, int size = -1);
+        WCHAR* getBirthday(WCHAR* buf = NULL, int size = -1);
 
         /**
          * Returns the gender for this Personal Detail
@@ -157,7 +157,7 @@ class PersonalDetail {
          *
          * @return the gender for this Personal Detail
          */
-        wchar_t* getGender(wchar_t* buf = NULL, int size = -1);
+        WCHAR* getGender(WCHAR* buf = NULL, int size = -1);
 
         /**
          * Returns the photo for this Personal Detail
@@ -177,35 +177,35 @@ class PersonalDetail {
          *
          * @param spouse the spouse to set
          */
-        void setSpouse (wchar_t* spouse);
+        void setSpouse (WCHAR* spouse);
 
         /**
          * Sets the children for this Personal Detail
          *
          * @param children the children to set
          */
-        void setChildren (wchar_t* children);
+        void setChildren (WCHAR* children);
 
         /**
          * Sets the anniversary for this Personal Detail
          *
          * @param anniversary the anniversary to set
          */
-        void setAnniversary (wchar_t* anniversary);
+        void setAnniversary (WCHAR* anniversary);
 
         /**
          * Sets the birthday for this Personal Detail
          *
          * @param birthday the spouse to set
          */
-        void setBirthday (wchar_t* birthday);
+        void setBirthday (WCHAR* birthday);
 
         /**
          * Sets the gender for this Personal Detail
          *
          * @param gender the gender to set
          */
-        void setGender (wchar_t* gender);
+        void setGender (WCHAR* gender);
 
         /**
          * Creates and returns a new PeronalDetail object. The object is created with

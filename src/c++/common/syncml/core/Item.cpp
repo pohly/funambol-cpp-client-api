@@ -59,8 +59,8 @@ void Item::initialize() {
  */
 Item::Item( Target* target,
             Source* source,
-            BCHAR* tParent,
-            BCHAR* sParent,
+            char* tParent,
+            char* sParent,
             Meta*   meta  ,
             ComplexData* data,
             BOOL moreData) {
@@ -239,11 +239,11 @@ void Item::setMoreData(BOOL moreData) {
  *
  * @return the taregtParent property value
  */
-BCHAR* Item::getTargetParent(BCHAR* parent) {
+char* Item::getTargetParent(char* parent) {
     if (parent == NULL) {
         return targetParent;
     }
-    return bstrcpy(parent, targetParent);
+    return strcpy(parent, targetParent);
 }
 
 /**
@@ -251,7 +251,7 @@ BCHAR* Item::getTargetParent(BCHAR* parent) {
  *
  * @param parent the taregtParent property
  */
-void Item::setTargetParent(BCHAR* parent) {
+void Item::setTargetParent(char* parent) {
     if (targetParent) {
         delete [] targetParent; targetParent = NULL;
     }
@@ -263,11 +263,11 @@ void Item::setTargetParent(BCHAR* parent) {
  *
  * @return the sourceParent property value
  */
-BCHAR* Item::getSourceParent(BCHAR* parent) {
+char* Item::getSourceParent(char* parent) {
     if (parent == NULL) {
         return sourceParent;
     }
-    return bstrcpy(parent, sourceParent);
+    return strcpy(parent, sourceParent);
 }
 
 /**
@@ -275,7 +275,7 @@ BCHAR* Item::getSourceParent(BCHAR* parent) {
  *
  * @param parent the sourceParent property
  */
-void Item::setSourceParent(BCHAR* parent) {
+void Item::setSourceParent(char* parent) {
     if (sourceParent) {
         delete [] sourceParent; sourceParent = NULL;
     }

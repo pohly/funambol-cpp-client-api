@@ -96,7 +96,7 @@ void PersonalDetail::setOtherAddress(Address& a) {
     otherAddress = a.clone();
 }
 
-wchar_t* PersonalDetail::getSpouse(wchar_t* buf, int size) {
+WCHAR* PersonalDetail::getSpouse(WCHAR* buf, int size) {
     if (buf == NULL) {
         return spouse;
     }
@@ -110,7 +110,7 @@ wchar_t* PersonalDetail::getSpouse(wchar_t* buf, int size) {
     return buf;
 }
 
-wchar_t* PersonalDetail::getChildren(wchar_t* buf, int size) {
+WCHAR* PersonalDetail::getChildren(WCHAR* buf, int size) {
     if (buf == NULL) {
         return children;
     }
@@ -124,7 +124,7 @@ wchar_t* PersonalDetail::getChildren(wchar_t* buf, int size) {
     return buf;
 }
 
-wchar_t* PersonalDetail::getAnniversary(wchar_t* buf, int size) {
+WCHAR* PersonalDetail::getAnniversary(WCHAR* buf, int size) {
     if (buf == NULL) {
         return anniversary;
     }
@@ -138,7 +138,7 @@ wchar_t* PersonalDetail::getAnniversary(wchar_t* buf, int size) {
     return buf;
 }
 
-wchar_t* PersonalDetail::getBirthday(wchar_t* buf, int size) {
+WCHAR* PersonalDetail::getBirthday(WCHAR* buf, int size) {
     if (buf == NULL) {
         return birthday;
     }
@@ -152,7 +152,7 @@ wchar_t* PersonalDetail::getBirthday(wchar_t* buf, int size) {
     return buf;
 }
 
-wchar_t* PersonalDetail::getGender(wchar_t* buf, int size) {
+WCHAR* PersonalDetail::getGender(WCHAR* buf, int size) {
     if (buf == NULL) {
         return gender;
     }
@@ -176,23 +176,23 @@ void PersonalDetail::setPhoto(vCardProperty& p) {
     photo = p.clone();
 }
 
-void PersonalDetail::setSpouse (wchar_t* s) {
+void PersonalDetail::setSpouse (WCHAR* s) {
     set(&spouse, s);
 }
 
-void PersonalDetail::setChildren (wchar_t* c) {
+void PersonalDetail::setChildren (WCHAR* c) {
     set(&children, c);
 }
 
-void PersonalDetail::setAnniversary (wchar_t* a) {
+void PersonalDetail::setAnniversary (WCHAR* a) {
     set(&anniversary, a);
 }
 
-void PersonalDetail::setBirthday (wchar_t* b) {
+void PersonalDetail::setBirthday (WCHAR* b) {
     set(&birthday, b);
 }
 
-void PersonalDetail::setGender (wchar_t* g) {
+void PersonalDetail::setGender (WCHAR* g) {
     set(&gender, g);
 }
 
@@ -230,7 +230,7 @@ PersonalDetail* PersonalDetail::clone() {
     return ret;
 }
 
-void PersonalDetail::set(wchar_t** p, wchar_t* v) {
+void PersonalDetail::set(WCHAR** p, WCHAR* v) {
     if(*p)
         delete *p;
     *p = wstrdup(v);

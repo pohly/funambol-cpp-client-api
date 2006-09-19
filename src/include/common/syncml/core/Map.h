@@ -30,7 +30,7 @@ class Map : public AbstractCommand {
     
      // ------------------------------------------------------------ Private data
     private:
-        BCHAR* COMMAND_NAME;
+        char*  COMMAND_NAME;
         Target*    target;
         Source*    source;
         ArrayList* mapItems; //MapItem[]
@@ -113,7 +113,7 @@ class Map : public AbstractCommand {
          *
          * @return the command name
          */
-        BCHAR* getName();
+        char*  getName();
     
         ArrayElement* clone();
 };

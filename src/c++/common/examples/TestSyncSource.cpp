@@ -33,7 +33,7 @@ ArrayList deletedItems;
 int setAllItems() {
     
     SyncItem item;
-    wchar_t name[64];
+    WCHAR name[64];
     char data[128];   
         
     for (int i = 0; i < 4; ++i) {
@@ -95,7 +95,7 @@ int setModifiedItemsEmpty() {
 }
 
 
-TestSyncSource::TestSyncSource(const wchar_t* name, const SyncSourceConfig *sc) : SyncSource(name, sc) {
+TestSyncSource::TestSyncSource(const WCHAR* name, const SyncSourceConfig *sc) : SyncSource(name, sc) {
 }
 
 TestSyncSource::~TestSyncSource() {
@@ -180,13 +180,13 @@ SyncItem* TestSyncSource::getNextDeletedItem() {
     return (SyncItem*)deletedItems.get(cdeleted)->clone();
 }
 
-void TestSyncSource::setItemStatus(const wchar_t* key, int status) {
-    bsprintf(logmsg, T("key: %ls, status: %i"), key, status);
+void TestSyncSource::setItemStatus(const WCHAR* key, int status) {
+    sprintf(logmsg, T("key: %ls, status: %i"), key, status);
     LOG.debug(logmsg);
 }
 
 int TestSyncSource::addItem(SyncItem& item) {
-    bsprintf(logmsg, T("added item: %ls"), item.getKey());
+    sprintf(logmsg, T("added item: %ls"), item.getKey());
     LOG.info(logmsg);
     
     LOG.info(T("Data:"));
@@ -196,7 +196,7 @@ int TestSyncSource::addItem(SyncItem& item) {
     LOG.info(data);
     delete [] data;
     
-    wchar_t *luid = new wchar_t[wcslen(item.getKey())+10];
+    WCHAR *luid = new WCHAR[wcslen(item.getKey())+10];
     wsprintf(luid, TEXT("%s-luid"), item.getKey());
     item.setKey(luid);
     
@@ -204,7 +204,7 @@ int TestSyncSource::addItem(SyncItem& item) {
 }
 
 int TestSyncSource::updateItem(SyncItem& item) {
-    bsprintf(logmsg, T("updated item: %ls"), item.getKey());
+    sprintf(logmsg, T("updated item: %ls"), item.getKey());
     LOG.info(logmsg);
     
     LOG.info(T("Data:"));
@@ -218,18 +218,18 @@ int TestSyncSource::updateItem(SyncItem& item) {
 }
 
 int TestSyncSource::deleteItem(SyncItem& item) {
-    bsprintf(logmsg, T("deleted item: %ls"), item.getKey());
+    sprintf(logmsg, T("deleted item: %ls"), item.getKey());
     LOG.debug(logmsg);
     return 200;
 }
 
 int TestSyncSource::beginSync() {
-    bsprintf(logmsg, T("Begin sync TestSyncSource"));
+    sprintf(logmsg, T("Begin sync TestSyncSource"));
     LOG.debug(logmsg);
     return 0;
 }
 int TestSyncSource::endSync() {
-    bsprintf(logmsg, T("End sync TestSyncSource"));
+    sprintf(logmsg, T("End sync TestSyncSource"));
     LOG.debug(logmsg);
     return 0;
 }

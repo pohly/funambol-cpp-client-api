@@ -52,8 +52,8 @@ Alert::Alert( CmdID* cmdID,
 
 void Alert::initialize() {    
     data = 0;
-    COMMAND_NAME = new BCHAR[bstrlen(ALERT_COMMAND_NAME) + 1];
-    bsprintf(COMMAND_NAME, ALERT_COMMAND_NAME);    
+    COMMAND_NAME = new char[strlen(ALERT_COMMAND_NAME) + 1];
+    sprintf(COMMAND_NAME, ALERT_COMMAND_NAME);    
 }
 
 /**
@@ -79,7 +79,7 @@ void Alert::setData(int data) {
 *
 * @return the command name property
 */    
-BCHAR* Alert::getName() {
+char* Alert::getName() {
     return COMMAND_NAME;
 }
 

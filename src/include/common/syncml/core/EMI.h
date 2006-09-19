@@ -29,11 +29,11 @@ class EMI : public ArrayElement {
      // ------------------------------------------------------------ Private data
     private:
       
-        BCHAR* value;
+        char*  value;
     // ---------------------------------------------------------- Protected data    
     public:
                 
-        EMI(BCHAR* value);
+        EMI(char*  value);
         ~EMI();
 
 
@@ -43,7 +43,7 @@ class EMI : public ArrayElement {
          * 
          * @return the value of experimental meta information
          */
-        BCHAR* getValue(BCHAR* retValue);
+        char*  getValue(char*  retValue);
 
     
         /**
@@ -52,7 +52,7 @@ class EMI : public ArrayElement {
          * @param value the value of experimental meta information
          *
          */
-        void setValue(BCHAR* value);
+        void setValue(char*  value);
         
         ArrayElement* clone();
 

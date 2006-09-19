@@ -27,10 +27,10 @@
 #include "syncml/core/TagNames.h"
 
 
-// void deleteAll              (int count, BCHAR** s, ...);
+// void deleteAll              (int count, char** s, ...);
 void deleteStringBuffer     (StringBuffer** s);
 //void deleteAllStringBuffer  (int count, StringBuffer** s, ...);
-// BOOL NotNullCheck           (int count, BCHAR* s, ...);
+// BOOL NotNullCheck           (int count, char*  s, ...);
 BOOL NotZeroCheck           (int count, int s, ...);
 //BOOL NotZeroArrayLenght     (int count, ArrayList* s, ...);
 // BOOL NotZeroStringBufferLenght(int count, StringBuffer* s, ...); //XXX
@@ -117,28 +117,28 @@ BOOL NotZeroArrayLenght(int count, ArrayList* s);
 BOOL NotZeroArrayLenght(int count, ArrayList* s, ArrayList* s1);
 BOOL NotZeroArrayLenght(int count, ArrayList* s, ArrayList* s1, ArrayList* s2);
 
-BOOL SingleNotNullCheck(BCHAR* s);
-BOOL NotNullCheck(int count, BCHAR* s);
-BOOL NotNullCheck(int count, BCHAR* s, BCHAR* s1);
-BOOL NotNullCheck(int count, BCHAR* s, BCHAR* s1, BCHAR* s2);
-BOOL NotNullCheck(int count, BCHAR* s, BCHAR* s1, BCHAR* s2, BCHAR* s3);
-BOOL NotNullCheck(int count, BCHAR* s, BCHAR* s1, BCHAR* s2, BCHAR* s3, BCHAR* s4);
-BOOL NotNullCheck(int count, BCHAR* s, BCHAR* s1, BCHAR* s2, BCHAR* s3, BCHAR* s4, BCHAR* s5);
-BOOL NotNullCheck(int count, BCHAR* s, BCHAR* s1, BCHAR* s2, BCHAR* s3, BCHAR* s4, BCHAR* s5, BCHAR* s6);
-BOOL NotNullCheck(int count, BCHAR* s, BCHAR* s1, BCHAR* s2, BCHAR* s3, BCHAR* s4, BCHAR* s5, BCHAR* s6, BCHAR* s7);
-BOOL NotNullCheck(int count, BCHAR* s, BCHAR* s1, BCHAR* s2, BCHAR* s3, BCHAR* s4, BCHAR* s5, BCHAR* s6, BCHAR* s7, BCHAR* s8);
-BOOL NotNullCheck(int count, BCHAR* s, BCHAR* s1, BCHAR* s2, BCHAR* s3, BCHAR* s4, BCHAR* s5, BCHAR* s6, BCHAR* s7, BCHAR* s8, BCHAR* s9);
-BOOL NotNullCheck(int count, BCHAR* s, BCHAR* s1, BCHAR* s2, BCHAR* s3, BCHAR* s4, BCHAR* s5, BCHAR* s6, BCHAR* s7, BCHAR* s8, BCHAR* s9, BCHAR* s10);
+BOOL SingleNotNullCheck(char*  s);
+BOOL NotNullCheck(int count, char*  s);
+BOOL NotNullCheck(int count, char*  s, char*  s1);
+BOOL NotNullCheck(int count, char*  s, char*  s1, char*  s2);
+BOOL NotNullCheck(int count, char*  s, char*  s1, char*  s2, char*  s3);
+BOOL NotNullCheck(int count, char*  s, char*  s1, char*  s2, char*  s3, char*  s4);
+BOOL NotNullCheck(int count, char*  s, char*  s1, char*  s2, char*  s3, char*  s4, char*  s5);
+BOOL NotNullCheck(int count, char*  s, char*  s1, char*  s2, char*  s3, char*  s4, char*  s5, char*  s6);
+BOOL NotNullCheck(int count, char*  s, char*  s1, char*  s2, char*  s3, char*  s4, char*  s5, char*  s6, char*  s7);
+BOOL NotNullCheck(int count, char*  s, char*  s1, char*  s2, char*  s3, char*  s4, char*  s5, char*  s6, char*  s7, char*  s8);
+BOOL NotNullCheck(int count, char*  s, char*  s1, char*  s2, char*  s3, char*  s4, char*  s5, char*  s6, char*  s7, char*  s8, char*  s9);
+BOOL NotNullCheck(int count, char*  s, char*  s1, char*  s2, char*  s3, char*  s4, char*  s5, char*  s6, char*  s7, char*  s8, char*  s9, char*  s10);
 
-void deleteAll(int count, BCHAR** s);
-void deleteAll(int count, BCHAR** s, BCHAR** s1);
-void deleteAll(int count, BCHAR** s, BCHAR** s1, BCHAR** s2);
-void deleteAll(int count, BCHAR** s, BCHAR** s1, BCHAR** s2, BCHAR** s3);
-void deleteAll(int count, BCHAR** s, BCHAR** s1, BCHAR** s2, BCHAR** s3, BCHAR** s4);
-void deleteAll(int count, BCHAR** s, BCHAR** s1, BCHAR** s2, BCHAR** s3, BCHAR** s4, BCHAR** s5);
-void deleteAll(int count, BCHAR** s, BCHAR** s1, BCHAR** s2, BCHAR** s3, BCHAR** s4, BCHAR** s5, BCHAR** s6);
-void deleteAll(int count, BCHAR** s, BCHAR** s1, BCHAR** s2, BCHAR** s3, BCHAR** s4, BCHAR** s5, BCHAR** s6, BCHAR** s7);
-void deleteAll(int count, BCHAR** s, BCHAR** s1, BCHAR** s2, BCHAR** s3, BCHAR** s4, BCHAR** s5, BCHAR** s6, BCHAR** s7, BCHAR** s8);
+void deleteAll(int count, char** s);
+void deleteAll(int count, char** s, char** s1);
+void deleteAll(int count, char** s, char** s1, char** s2);
+void deleteAll(int count, char** s, char** s1, char** s2, char** s3);
+void deleteAll(int count, char** s, char** s1, char** s2, char** s3, char** s4);
+void deleteAll(int count, char** s, char** s1, char** s2, char** s3, char** s4, char** s5);
+void deleteAll(int count, char** s, char** s1, char** s2, char** s3, char** s4, char** s5, char** s6);
+void deleteAll(int count, char** s, char** s1, char** s2, char** s3, char** s4, char** s5, char** s6, char** s7);
+void deleteAll(int count, char** s, char** s1, char** s2, char** s3, char** s4, char** s5, char** s6, char** s7, char** s8);
 
 BOOL NotZeroSingleStringBufferLenght(StringBuffer* s);
 BOOL NotZeroStringBufferLenght(int count, StringBuffer* s);

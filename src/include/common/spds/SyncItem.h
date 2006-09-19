@@ -39,14 +39,14 @@
         char* data;
         long size;
 
-        wchar_t key[DIM_KEY];
-        wchar_t type[DIM_MIME_TYPE];
+        WCHAR key[DIM_KEY];
+        WCHAR type[DIM_MIME_TYPE];
 
         long lastModificationTime;
         SyncState state;
 
-        wchar_t* targetParent;
-        wchar_t* sourceParent;
+        WCHAR* targetParent;
+        WCHAR* sourceParent;
 
         /**
          * Initializes private members
@@ -67,7 +67,7 @@
          *
          * @param key - the key
          */
-        SyncItem(const wchar_t* key) EXTRA_SECTION_01;
+        SyncItem(const WCHAR* key) EXTRA_SECTION_01;
 
         /*
          * Returns the SyncItem's key. If key is NULL, the internal buffer is
@@ -76,7 +76,7 @@
          *
          * @param key - buffer where the key will be stored
          */
-        wchar_t* getKey() EXTRA_SECTION_01;
+        WCHAR* getKey() EXTRA_SECTION_01;
 
         /*
          * Changes the SyncItem key. The key must not be longer than DIM_KEY
@@ -84,7 +84,7 @@
          *
          * @param key - the key
          */
-        void setKey(const wchar_t* key) EXTRA_SECTION_01;
+        void setKey(const WCHAR* key) EXTRA_SECTION_01;
 
         /*
          * Sets the SyncItem modification timestamp. timestamp is a milliseconds
@@ -148,12 +148,12 @@
          *
          * @param - type the content mimetype
          */
-        void setDataType(const wchar_t* type) EXTRA_SECTION_01;
+        void setDataType(const WCHAR* type) EXTRA_SECTION_01;
 
         /*
          * Returns the SyncItem data mime type.
          */
-        wchar_t* getDataType() EXTRA_SECTION_01;
+        WCHAR* getDataType() EXTRA_SECTION_01;
 
         /*
          * Sets the SyncItem state
@@ -172,7 +172,7 @@
          *
          * @return the SyncItem target parent
          */
-        wchar_t* getTargetParent(wchar_t* parent = NULL) EXTRA_SECTION_01;
+        WCHAR* getTargetParent(WCHAR* parent = NULL) EXTRA_SECTION_01;
     
         /**
          * Sets the SyncItem targetParent
@@ -180,14 +180,14 @@
          * @param parent the target parent
          *
          */
-        void setTargetParent(const wchar_t* parent) EXTRA_SECTION_01;    
+        void setTargetParent(const WCHAR* parent) EXTRA_SECTION_01;    
 
         /**
          * Returns the SyncItem sourceParent
          *
          * @return the SyncItem source parent
          */
-        wchar_t* getSourceParent(wchar_t* parent = NULL) EXTRA_SECTION_01;
+        WCHAR* getSourceParent(WCHAR* parent = NULL) EXTRA_SECTION_01;
     
         /**
          * Sets the SyncItem sourceParent
@@ -195,7 +195,7 @@
          * @param parent the source parent
          *
          */
-        void setSourceParent(const wchar_t* parent) EXTRA_SECTION_01;
+        void setSourceParent(const WCHAR* parent) EXTRA_SECTION_01;
 
         /**
          * Creates a new instance of SyncItem from the content of this

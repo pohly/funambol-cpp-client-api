@@ -46,8 +46,8 @@
 #include "http/Win32TransportAgent.h"
 #include "event/FireEvent.h"
 
-#define ENTERING(func) //bsprintf(logmsg, "Entering %ls", func); LOG.debug(logmsg)
-#define EXITING(func)  //bsprintf(logmsg, "Exiting %ls", func);  LOG.debug(logmsg)
+#define ENTERING(func) //sprintf(logmsg, "Entering %ls", func); LOG.debug(logmsg)
+#define EXITING(func)  //sprintf(logmsg, "Exiting %ls", func);  LOG.debug(logmsg)
 
 
 /*
@@ -81,7 +81,7 @@ Win32TransportAgent::~Win32TransportAgent(){}
  * if it was not possible initialize the connection.
  *
  */
-BCHAR* Win32TransportAgent::sendMessage(const BCHAR* msg) {
+char* Win32TransportAgent::sendMessage(const char* msg) {
 
     ENTERING(L"TransportAgent::sendMessage");
     
@@ -92,10 +92,10 @@ BCHAR* Win32TransportAgent::sendMessage(const BCHAR* msg) {
     char bufferA[5000+1];
     int status = -1;
     int contentLength = 0;
-	wchar_t* wurlHost;
-    wchar_t* wurlResource;
-    BCHAR* response = NULL;
-    BCHAR* p        = NULL;
+	WCHAR* wurlHost;
+    WCHAR* wurlResource;
+    char* response = NULL;
+    char* p        = NULL;
 
     DWORD size  = 0,
           read  = 0,
@@ -120,13 +120,13 @@ BCHAR* Win32TransportAgent::sendMessage(const BCHAR* msg) {
     //
     // Open Internet connection.
     //
-	wchar_t* ua = toWideChar(userAgent);
+	WCHAR* ua = toWideChar(userAgent);
     inet = InternetOpen (ua, INTERNET_OPEN_TYPE_PRECONFIG, NULL, 0, 0);
 	if (ua) {delete [] ua; ua = NULL; }
 
     if (!inet) {
         lastErrorCode = ERR_NETWORK_INIT;
-        bsprintf (lastErrorMsg, T("%s: %d"), T("InternetOpen Error"), GetLastError());
+        sprintf (lastErrorMsg, T("%s: %d"), T("InternetOpen Error"), GetLastError());
 		LOG.error(lastErrorMsg);
         goto exit;
     }   
@@ -146,7 +146,7 @@ BCHAR* Win32TransportAgent::sendMessage(const BCHAR* msg) {
                                         0,
                                         0))) {
       lastErrorCode = ERR_CONNECT;
-      bsprintf (lastErrorMsg, T("%s: %d"), T("InternetConnect Error"), GetLastError());
+      sprintf (lastErrorMsg, T("%s: %d"), T("InternetConnect Error"), GetLastError());
 	  LOG.error(lastErrorMsg);
       goto exit;
     }
@@ -164,7 +164,7 @@ BCHAR* Win32TransportAgent::sendMessage(const BCHAR* msg) {
                                      acceptTypes,
                                      flags, 0))) {
       lastErrorCode = ERR_CONNECT;
-      bsprintf (lastErrorMsg, T("%s: %d"), T("HttpOpenRequest Error"), GetLastError());
+      sprintf (lastErrorMsg, T("%s: %d"), T("HttpOpenRequest Error"), GetLastError());
 	  LOG.error(lastErrorMsg);
       goto exit;
     }
@@ -173,9 +173,9 @@ BCHAR* Win32TransportAgent::sendMessage(const BCHAR* msg) {
     //
     // Prepares headers
     //
-    wchar_t headers[512];
+    WCHAR headers[512];
 
-    contentLength = bstrlen(msg);
+    contentLength = strlen(msg);
     wsprintf(headers, TEXT("Content-Type: %s\r\nContent-Length: %d"), SYNCML_CONTENT_TYPE, contentLength);
 
 
@@ -197,7 +197,7 @@ BCHAR* Win32TransportAgent::sendMessage(const BCHAR* msg) {
                 fireTransportEvent(contentLength, SEND_DATA_BEGIN);
                 if (!HttpSendRequest (request, headers, wcslen(headers), (void*)msg, contentLength)) {
                     lastErrorCode = ERR_CONNECT;
-                    bsprintf (lastErrorMsg, T("%s: %d"), T("HttpSendRequest Error"), GetLastError());
+                    sprintf (lastErrorMsg, T("%s: %d"), T("HttpSendRequest Error"), GetLastError());
                     LOG.error(lastErrorMsg);
                     goto exit;
                 }
@@ -243,8 +243,8 @@ BCHAR* Win32TransportAgent::sendMessage(const BCHAR* msg) {
             
             // Automatic authentication (user/pass stored in win reg key).
             if (strcmp(proxy.user, "") && strcmp(proxy.password, "")) {
-                wchar_t* wUser = toWideChar(proxy.user);
-                wchar_t* wPwd  = toWideChar(proxy.password);
+                WCHAR* wUser = toWideChar(proxy.user);
+                WCHAR* wPwd  = toWideChar(proxy.password);
 
                 InternetSetOption(request, INTERNET_OPTION_PROXY_USERNAME, wUser, wcslen(wUser)+1);
                 InternetSetOption(request, INTERNET_OPTION_PROXY_PASSWORD, wPwd,  wcslen(wPwd)+1);
@@ -283,7 +283,7 @@ BCHAR* Win32TransportAgent::sendMessage(const BCHAR* msg) {
     // If wrong status, exit immediately.
     if (status != HTTP_STATUS_OK) {
         lastErrorCode = ERR_HTTP;
-        bsprintf(lastErrorMsg, T("HTTP request error: %d"), status);
+        sprintf(lastErrorMsg, T("HTTP request error: %d"), status);
         LOG.error("%s", lastErrorMsg);
         goto exit;
     }
@@ -302,7 +302,7 @@ BCHAR* Win32TransportAgent::sendMessage(const BCHAR* msg) {
 
     if (contentLength <= 0) {
         lastErrorCode = ERR_READING_CONTENT;
-        bsprintf(lastErrorMsg, T("Invalid content-length: %d"), contentLength);
+        sprintf(lastErrorMsg, T("Invalid content-length: %d"), contentLength);
 		LOG.error(lastErrorMsg);
         goto exit;
     }
@@ -311,20 +311,20 @@ BCHAR* Win32TransportAgent::sendMessage(const BCHAR* msg) {
     fireTransportEvent(size, RECEIVE_DATA_BEGIN);
 
     // Allocate a block of memory for lpHeadersW.
-    response = new BCHAR[contentLength+1];
+    response = new char[contentLength+1];
 	p = response;
     (*p) = 0;
     do {
         if (!InternetReadFile (request, (LPVOID)bufferA, 5000, &read)) {
             lastErrorCode = ERR_READING_CONTENT;
-            bsprintf(lastErrorMsg, T("%s: %d"), T("InternetReadFile Error"), GetLastError());
+            sprintf(lastErrorMsg, T("%s: %d"), T("InternetReadFile Error"), GetLastError());
 			LOG.error(lastErrorMsg);
             goto exit;
         }
 
         if (read != 0) {
             bufferA[read] = 0;
-            bstrcpy(p, bufferA);
+            strcpy(p, bufferA);
             p += strlen(bufferA);
 
             // Fire Data Received Transport Event

@@ -24,15 +24,15 @@
 #include "client/AccessManagementNode.h"
 
 
-AccessManagementNode::AccessManagementNode(const BCHAR*   context,
-                                           const BCHAR*   name   )
-    : DeviceManagementNode((BCHAR*)context, (BCHAR*)name) {
+AccessManagementNode::AccessManagementNode(const char*    context,
+                                           const char*    name   )
+    : DeviceManagementNode((char* )context, (char* )name) {
 }
 
-AccessManagementNode::AccessManagementNode(const BCHAR*   context,
-                                           const BCHAR*   name   ,
+AccessManagementNode::AccessManagementNode(const char*    context,
+                                           const char*    name   ,
                                            AccessConfig&    c      )
-    : DeviceManagementNode((BCHAR*)context, (BCHAR*)name) {
+    : DeviceManagementNode((char* )context, (char* )name) {
     config.assign(c);
 }
 
@@ -41,7 +41,7 @@ AccessManagementNode::~AccessManagementNode() {
 }
 
 
-void AccessManagementNode::getPropertyValue(const BCHAR* property, BCHAR* v, int size) {
+void AccessManagementNode::getPropertyValue(const char*  property, char*  v, int size) {
     if (property == NULL) {
         return;
     }
@@ -79,7 +79,7 @@ void AccessManagementNode::getPropertyValue(const BCHAR* property, BCHAR* v, int
 }
 
 
-void AccessManagementNode::setPropertyValue(const BCHAR* property, BCHAR* value) {
+void AccessManagementNode::setPropertyValue(const char*  property, char*  value) {
     if (property == NULL) {
         return;
     }

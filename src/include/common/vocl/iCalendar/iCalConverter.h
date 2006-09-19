@@ -41,26 +41,26 @@
 
 class iCalConverter { 
 private:
-    wchar_t* iCalendar;
+    WCHAR* iCalendar;
     Calendar* calendar; 
-    bool validateEvent(Event*, wchar_t* error, long* errorCode);
-    bool validateTodo(ToDo*, wchar_t* error, long* errorCode);
-    bool validatePropery(VProperty*, wchar_t* error, long* errorCode);
-    Event* extractEvent(VObject* vo, wchar_t* errorDescription, long* errorCode);
-    ToDo* extractTask(VObject* vo, wchar_t* errorDescription, long* errorCode);
-    bool validateGeo(wchar_t* geo);
-    bool validateDT(wchar_t* dt);
-    bool validateDate(wchar_t* date);
-    bool validateRecur(wchar_t* recur);
+    bool validateEvent(Event*, WCHAR* error, long* errorCode);
+    bool validateTodo(ToDo*, WCHAR* error, long* errorCode);
+    bool validatePropery(VProperty*, WCHAR* error, long* errorCode);
+    Event* extractEvent(VObject* vo, WCHAR* errorDescription, long* errorCode);
+    ToDo* extractTask(VObject* vo, WCHAR* errorDescription, long* errorCode);
+    bool validateGeo(WCHAR* geo);
+    bool validateDT(WCHAR* dt);
+    bool validateDate(WCHAR* date);
+    bool validateRecur(WCHAR* recur);
     void extractAlarm(VObject* vo);
 
 public:
     iCalConverter();
     ~iCalConverter();
-    void setSource(wchar_t* inputICalendar);
+    void setSource(WCHAR* inputICalendar);
     void setSource(Calendar& inputCalendar);
-    void getICalendar(wchar_t* vCard);
+    void getICalendar(WCHAR* vCard);
     void getCalendar(Calendar** outputContact);
-    bool convert(wchar_t* error, long* errorCode);
+    bool convert(WCHAR* error, long* errorCode);
 };
 #endif

@@ -25,7 +25,7 @@ DataTransformer::DataTransformer() : name(NULL) {
 
 }
 
-DataTransformer::DataTransformer(BCHAR* n) {
+DataTransformer::DataTransformer(char* n) {
     name = stringdup(n);
 }
 
@@ -33,7 +33,7 @@ DataTransformer::~DataTransformer() {
     safeDelete(&name);
 }
 
-void DataTransformer::setName(BCHAR* n) {
+void DataTransformer::setName(char* n) {
     if (name) {
         safeDelete(&name);
     }
@@ -41,9 +41,9 @@ void DataTransformer::setName(BCHAR* n) {
     name = stringdup(n);
 }
 
-BCHAR* DataTransformer::getName(BCHAR* n) {
+char* DataTransformer::getName(char* n) {
     if (n && name) {
-        return bstrcpy(n, name);
+        return strcpy(n, name);
     }
 
     return name;

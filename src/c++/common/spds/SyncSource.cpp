@@ -22,7 +22,7 @@
 #include "client/SyncClient.h"
 #include "spds/spdsutils.h"
 
-SyncSource::SyncSource(const wchar_t* sourceName, const SyncSourceConfig *sc) {
+SyncSource::SyncSource(const WCHAR* sourceName, const SyncSourceConfig *sc) {
     name = NULL;
 
     if (sc) {
@@ -35,7 +35,7 @@ SyncSource::SyncSource(const wchar_t* sourceName, const SyncSourceConfig *sc) {
 
     if ((sourceName == NULL) || (*sourceName == 0)) {
         lastErrorCode = ERR_PARAMETER_IS_EMPTY;
-        bsprintf(lastErrorMsg, T("name cannot be empty (NULL or 0-length)"));
+        sprintf(lastErrorMsg, T("name cannot be empty (NULL or 0-length)"));
         goto finally;
     }
     name = wstrdup(sourceName);
@@ -65,7 +65,7 @@ SyncSource::~SyncSource() {
 /*
  * Returns the source name.
  */
-const wchar_t *SyncSource::getName() {
+const WCHAR *SyncSource::getName() {
      return name;
  }
 
@@ -152,8 +152,8 @@ void SyncSource::setNextSync(unsigned long timestamp) {
  *
  * @param lastAnchor last anchor
  */
-void SyncSource::setLastAnchor(const BCHAR* lastAnchor) {
-    bstrncpy(last, (lastAnchor != NULL) ? lastAnchor : T(""), DIM_ANCHOR);
+void SyncSource::setLastAnchor(const char* lastAnchor) {
+    strncpy(last, (lastAnchor != NULL) ? lastAnchor : T(""), DIM_ANCHOR);
     next[DIM_ANCHOR-1] = 0;
 }
 
@@ -162,7 +162,7 @@ void SyncSource::setLastAnchor(const BCHAR* lastAnchor) {
  * internal buffer address is returned, otherwise the value is copied
  * in the given buffer and the buffer address is returned.
  */
-const BCHAR* SyncSource::getLastAnchor() {
+const char* SyncSource::getLastAnchor() {
     return last;
 }
 
@@ -171,8 +171,8 @@ const BCHAR* SyncSource::getLastAnchor() {
  *
  * @param next next anchor
  */
-void SyncSource::setNextAnchor(const BCHAR* nextAnchor) {
-    bstrncpy(next, (nextAnchor != NULL) ? nextAnchor : T(""), DIM_ANCHOR);
+void SyncSource::setNextAnchor(const char* nextAnchor) {
+    strncpy(next, (nextAnchor != NULL) ? nextAnchor : T(""), DIM_ANCHOR);
     next[DIM_ANCHOR-1] = 0;
 }
 
@@ -181,7 +181,7 @@ void SyncSource::setNextAnchor(const BCHAR* nextAnchor) {
  * internal buffer address is returned, otherwise the value is copied
  * in the given buffer and the buffer address is returned.
  */
-const BCHAR* SyncSource::getNextAnchor() {
+const char* SyncSource::getNextAnchor() {
     return next;
 }
 

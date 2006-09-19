@@ -26,81 +26,81 @@
 class iCalProperty : public ArrayElement {
 
 private:
-    wchar_t* altre;         //Alternate text representation
-    wchar_t* cn;            //Common name
-    wchar_t* cutype;        //Calendar user type
-    wchar_t* delegatedFrom; //Delegator
-    wchar_t* delegatedTo;   //Delegatee
-    wchar_t* dir;           //Directory entry
-    wchar_t* encoding;      //Inline encoding
-    wchar_t* formattype;    //Format type
-    wchar_t* fbtype;        //free-busy type
-    wchar_t* language;      //Language for text
-    wchar_t* member;        //Group or list membership
-    wchar_t* partstat;      //Participation status
-    wchar_t* range;         //Recurrence identifier range
-    wchar_t* trigrel;       //Alarm trigger relationship
-    wchar_t* related;       //Relationship type
-    wchar_t* role;          //Participation role
-    wchar_t* rsvp;          //RSVP expectation
-    wchar_t* sentby;        //Sent by
-    wchar_t* tzid;          //Reference to time zone object
-    wchar_t* valuetype;     //Property value data type
-    wchar_t* value;         //the value of property  
+    WCHAR* altre;         //Alternate text representation
+    WCHAR* cn;            //Common name
+    WCHAR* cutype;        //Calendar user type
+    WCHAR* delegatedFrom; //Delegator
+    WCHAR* delegatedTo;   //Delegatee
+    WCHAR* dir;           //Directory entry
+    WCHAR* encoding;      //Inline encoding
+    WCHAR* formattype;    //Format type
+    WCHAR* fbtype;        //free-busy type
+    WCHAR* language;      //Language for text
+    WCHAR* member;        //Group or list membership
+    WCHAR* partstat;      //Participation status
+    WCHAR* range;         //Recurrence identifier range
+    WCHAR* trigrel;       //Alarm trigger relationship
+    WCHAR* related;       //Relationship type
+    WCHAR* role;          //Participation role
+    WCHAR* rsvp;          //RSVP expectation
+    WCHAR* sentby;        //Sent by
+    WCHAR* tzid;          //Reference to time zone object
+    WCHAR* valuetype;     //Property value data type
+    WCHAR* value;         //the value of property  
     ArrayList* xParams;
 
-    void set(wchar_t** property, wchar_t* v);
+    void set(WCHAR** property, WCHAR* v);
 
 public:
-    iCalProperty (wchar_t* v = NULL);
+    iCalProperty (WCHAR* v = NULL);
     ~iCalProperty();
 
     // ---------------------------------------------------------- Public methods
 
-    wchar_t* getAltre (wchar_t* buf = NULL, int size = -1);
-    wchar_t* getCn (wchar_t* buf = NULL, int size = -1);
-    wchar_t* getCutype (wchar_t* buf = NULL, int size = -1);
-    wchar_t* getDelegatedFrom (wchar_t* buf = NULL, int size = -1);
-    wchar_t* getDelegatedTo (wchar_t* buf = NULL, int size = -1);
-    wchar_t* getDir (wchar_t* buf = NULL, int size = -1);
-    wchar_t* getEncoding (wchar_t* buf = NULL, int size = -1);
-    wchar_t* getFormatType (wchar_t* buf = NULL, int size = -1);
-    wchar_t* getFbType (wchar_t* buf = NULL, int size = -1);
-    wchar_t* getLanguage (wchar_t* buf = NULL, int size = -1);
-    wchar_t* getMember (wchar_t* buf = NULL, int size = -1);
-    wchar_t* getPartStat (wchar_t* buf = NULL, int size = -1);
-    wchar_t* getRange (wchar_t* buf = NULL, int size = -1);
-    wchar_t* getTrigRel (wchar_t* buf = NULL, int size = -1);
-    wchar_t* getRelated (wchar_t* buf = NULL, int size = -1);
-    wchar_t* getRole (wchar_t* buf = NULL, int size = -1);
-    wchar_t* getRsvp (wchar_t* buf = NULL, int size = -1);
-    wchar_t* getSentBy (wchar_t* buf = NULL, int size = -1);
-    wchar_t* getTzID (wchar_t* buf = NULL, int size = -1);
-    wchar_t* getValueType (wchar_t* buf = NULL, int size = -1);
-    wchar_t* getValue (wchar_t* buf = NULL, int size = -1);
+    WCHAR* getAltre (WCHAR* buf = NULL, int size = -1);
+    WCHAR* getCn (WCHAR* buf = NULL, int size = -1);
+    WCHAR* getCutype (WCHAR* buf = NULL, int size = -1);
+    WCHAR* getDelegatedFrom (WCHAR* buf = NULL, int size = -1);
+    WCHAR* getDelegatedTo (WCHAR* buf = NULL, int size = -1);
+    WCHAR* getDir (WCHAR* buf = NULL, int size = -1);
+    WCHAR* getEncoding (WCHAR* buf = NULL, int size = -1);
+    WCHAR* getFormatType (WCHAR* buf = NULL, int size = -1);
+    WCHAR* getFbType (WCHAR* buf = NULL, int size = -1);
+    WCHAR* getLanguage (WCHAR* buf = NULL, int size = -1);
+    WCHAR* getMember (WCHAR* buf = NULL, int size = -1);
+    WCHAR* getPartStat (WCHAR* buf = NULL, int size = -1);
+    WCHAR* getRange (WCHAR* buf = NULL, int size = -1);
+    WCHAR* getTrigRel (WCHAR* buf = NULL, int size = -1);
+    WCHAR* getRelated (WCHAR* buf = NULL, int size = -1);
+    WCHAR* getRole (WCHAR* buf = NULL, int size = -1);
+    WCHAR* getRsvp (WCHAR* buf = NULL, int size = -1);
+    WCHAR* getSentBy (WCHAR* buf = NULL, int size = -1);
+    WCHAR* getTzID (WCHAR* buf = NULL, int size = -1);
+    WCHAR* getValueType (WCHAR* buf = NULL, int size = -1);
+    WCHAR* getValue (WCHAR* buf = NULL, int size = -1);
     ArrayList* getXParam();
 
-    void setAltre (wchar_t* v);
-    void setCn (wchar_t* v);
-    void setCutype (wchar_t* v);
-    void setDelegatedFrom (wchar_t* v);
-    void setDelegatedTo (wchar_t* v);
-    void setDir (wchar_t* v);
-    void setEncoding (wchar_t* v);
-    void setFormatType (wchar_t* v);
-    void setFbType (wchar_t* v);
-    void setLanguage (wchar_t* v);
-    void setMember (wchar_t* v);
-    void setPartStat (wchar_t* v);
-    void setRange (wchar_t* v);
-    void setTrigRel (wchar_t* v);
-    void setRelated (wchar_t* v);
-    void setRole (wchar_t* v);
-    void setRsvp (wchar_t* v);
-    void setSentBy (wchar_t* v);
-    void setTzID (wchar_t* v);
-    void setValueType (wchar_t* v);
-    void setValue (wchar_t* v);
+    void setAltre (WCHAR* v);
+    void setCn (WCHAR* v);
+    void setCutype (WCHAR* v);
+    void setDelegatedFrom (WCHAR* v);
+    void setDelegatedTo (WCHAR* v);
+    void setDir (WCHAR* v);
+    void setEncoding (WCHAR* v);
+    void setFormatType (WCHAR* v);
+    void setFbType (WCHAR* v);
+    void setLanguage (WCHAR* v);
+    void setMember (WCHAR* v);
+    void setPartStat (WCHAR* v);
+    void setRange (WCHAR* v);
+    void setTrigRel (WCHAR* v);
+    void setRelated (WCHAR* v);
+    void setRole (WCHAR* v);
+    void setRsvp (WCHAR* v);
+    void setSentBy (WCHAR* v);
+    void setTzID (WCHAR* v);
+    void setValueType (WCHAR* v);
+    void setValue (WCHAR* v);
     void setXParam(ArrayList& list);
 
     ArrayElement* clone();

@@ -20,7 +20,7 @@
 #include "base/util/utils.h"
 #include "syncml/core/Anchor.h"
 
-Anchor::Anchor(const BCHAR* last, const BCHAR* next) {
+Anchor::Anchor(const char* last, const char* next) {
     this->last = stringdup(last);
     this->next = stringdup(next);
 }
@@ -35,25 +35,25 @@ Anchor::~Anchor() {
 }
 
 
-void Anchor::setLast(const BCHAR* last) {
+void Anchor::setLast(const char* last) {
 	if (last) {
 		delete [] this->last;
 	}
 	this->last = stringdup(last);
 }
 
-const BCHAR* Anchor::getLast() {    
+const char* Anchor::getLast() {    
     return last;
 }
 
-void Anchor::setNext(const BCHAR* next) {
+void Anchor::setNext(const char* next) {
 	if (next) {
 		delete [] this->next;
 	}
 	this->last = stringdup(last);
 }
 
-const BCHAR* Anchor::getNext() {
+const char* Anchor::getNext() {
    return next;
 }
 

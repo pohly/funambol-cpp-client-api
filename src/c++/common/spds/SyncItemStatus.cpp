@@ -32,10 +32,10 @@ SyncItemStatus::SyncItemStatus() {
  *
  * @param key - the key
  */
-SyncItemStatus::SyncItemStatus(BCHAR* itemStatusKey){
+SyncItemStatus::SyncItemStatus(char* itemStatusKey){
     
-    key = new BCHAR[bstrlen(itemStatusKey)+1];
-    bstrcpy(key, itemStatusKey);
+    key = new char[strlen(itemStatusKey)+1];
+    strcpy(key, itemStatusKey);
     
     data    = 0;
     cmdID   = 0;
@@ -64,12 +64,12 @@ SyncItemStatus::~SyncItemStatus() {
  *
  * @param key - buffer where the key will be stored
  */
-BCHAR* SyncItemStatus::getKey(BCHAR* itemStatusKey) {
+char* SyncItemStatus::getKey(char* itemStatusKey) {
     if (itemStatusKey == NULL) {
         return key;
     }
 
-    return bstrcpy(itemStatusKey, key);
+    return strcpy(itemStatusKey, key);
 }
 
 /*
@@ -78,12 +78,12 @@ BCHAR* SyncItemStatus::getKey(BCHAR* itemStatusKey) {
  *
  * @param key - the key
  */
-void SyncItemStatus::setKey(BCHAR* itemStatusKey) {
+void SyncItemStatus::setKey(char* itemStatusKey) {
 	if (key) {
 		delete [] key;
 	}
-	key = new BCHAR[bstrlen(itemStatusKey)+1];
-    bstrcpy(key, itemStatusKey);
+	key = new char[strlen(itemStatusKey)+1];
+    strcpy(key, itemStatusKey);
 }
 
  /*
@@ -93,12 +93,12 @@ void SyncItemStatus::setKey(BCHAR* itemStatusKey) {
  *
  * @param itemStatusCmd - buffer where the itemStatusCmd will be stored
  */
-BCHAR* SyncItemStatus::getCmd(BCHAR* itemStatusCmd) {
+char* SyncItemStatus::getCmd(char* itemStatusCmd) {
     if (itemStatusCmd == NULL) {
         return cmd;
     }
 
-    return bstrcpy(itemStatusCmd, cmd);
+    return strcpy(itemStatusCmd, cmd);
 }
 
 
@@ -108,12 +108,12 @@ BCHAR* SyncItemStatus::getCmd(BCHAR* itemStatusCmd) {
  *
  * @param itemStatusCmd - the itemStatusCmd
  */
-void SyncItemStatus::setCmd(BCHAR* itemStatusCmd) {
+void SyncItemStatus::setCmd(char* itemStatusCmd) {
     if (cmd) {
 		delete [] cmd;
 	}
-	cmd = new BCHAR[bstrlen(itemStatusCmd)+1];
-    bstrcpy(cmd, itemStatusCmd);
+	cmd = new char[strlen(itemStatusCmd)+1];
+    strcpy(cmd, itemStatusCmd);
 
 }
 

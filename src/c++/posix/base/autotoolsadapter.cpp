@@ -53,7 +53,7 @@ char* utf82wc(const char* s, char* d, unsigned long dsize) {
     //
     // First of all, if s is NULL, just return NULL.
     // Then, if d is NULL, let's allocate the required memory to contain the
-    // wchar_t string.
+    // WCHAR string.
     //
     if (s == NULL) {
         return NULL;
@@ -62,7 +62,7 @@ char* utf82wc(const char* s, char* d, unsigned long dsize) {
     if (d == NULL) {
         // get the right lenght with a NULL dest
         dsize = strlen (s);
-        d = new wchar_t[dsize+1];
+        d = new WCHAR[dsize+1];
     }
     
 
@@ -134,13 +134,13 @@ bool readFile(const char* path, char **message, size_t *len, bool binary)
 }
 
 // TODO: convert to the specified encoding, assuming wc is UTF-8
-char* toMultibyte(const WCHAR *wc, const BCHAR *encoding)
+char* toMultibyte(const WCHAR *wc, const char *encoding)
 {
     return stringdup(wc);
 }
 
 // TODO: convert to UTF-8 from the specified encoding
-wchar_t* toWideChar(const char *mb, const BCHAR *encoding)
+WCHAR* toWideChar(const char *mb, const char *encoding)
 {
     return stringdup(mb);
 }
@@ -150,9 +150,9 @@ wchar_t* toWideChar(const char *mb, const BCHAR *encoding)
 // an open file, the file has to be closed. This exposes
 // the possibility for an attacker to replace the file
 // before it is opened again if /tmp has incorrect permissions.
-BCHAR *mkTempFileName(const BCHAR *name)
+char *mkTempFileName(const char *name)
 {
-    BCHAR *filename = new BCHAR[strlen("/tmp/") + strlen(name) + strlen(".XXXXXX") + 1];
+    char *filename = new char[strlen("/tmp/") + strlen(name) + strlen(".XXXXXX") + 1];
     int fd;
 
     sprintf(filename, "/tmp/%s.XXXXXX", name );

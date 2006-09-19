@@ -128,10 +128,10 @@ ArrayList* Calendar::getEvents() {
 ArrayList* Calendar::getToDos() {
     return todos;
 }
-wchar_t* Calendar::toString() {
+WCHAR* Calendar::toString() {
     
-    wchar_t eol[] = TEXT("\r\n");
-    wchar_t* ret = new wchar_t[ICALENDAR_BUFFER];
+    WCHAR eol[] = TEXT("\r\n");
+    WCHAR* ret = new WCHAR[ICALENDAR_BUFFER];
     wcscpy(ret, TEXT("BEGIN:VCALENDAR\r\n"));
     if(version) {
         wcscat(ret, TEXT("VERSION:"));
@@ -234,10 +234,10 @@ iCalProperty* Calendar::getiCalPropertyFromVProperty(VProperty* vp) {
 
         ArrayList* xParamList = NULL;
         WKeyValuePair* xTagParam = NULL;
-        wchar_t* xParamName = NULL;
+        WCHAR* xParamName = NULL;
         for(int i = 0; i < vp->parameterCount(); i++) {
             if(wcsstr(vp->getParameter(i),TEXT("X-")) == vp->getParameter(i)) {
-                xParamName = new wchar_t[wcslen(vp->getParameter(i)) + 1];
+                xParamName = new WCHAR[wcslen(vp->getParameter(i)) + 1];
                 wcscpy(xParamName, vp->getParameter(i));
 
                 xTagParam = new WKeyValuePair();
@@ -261,7 +261,7 @@ iCalProperty* Calendar::getiCalPropertyFromVProperty(VProperty* vp) {
         return NULL;
 
 }
-VProperty* Calendar::getVPropertyFromiCalProperty(wchar_t* name, iCalProperty* prop) {
+VProperty* Calendar::getVPropertyFromiCalProperty(WCHAR* name, iCalProperty* prop) {
     if(name && prop) {
         VProperty *vprop = new VProperty(name, prop->getValue());
 

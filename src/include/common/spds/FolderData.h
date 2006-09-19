@@ -63,23 +63,23 @@ class FolderData : public ArrayElement {
         ~FolderData();
 
     // ---------------------------------------------------------- Accessors  
-		/*const wchar_t* getFolder() { return folder; }
-		void setFolder(const wchar_t* v) { folder = v; } */
+		/*const WCHAR* getFolder() { return folder; }
+		void setFolder(const WCHAR* v) { folder = v; } */
 
-		const wchar_t* getName() { return name; }
-		void setName(const wchar_t* v) { name = v; }
+		const WCHAR* getName() { return name; }
+		void setName(const WCHAR* v) { name = v; }
 
-		const wchar_t* getCreated() { return created; }
-		void setCreated(const wchar_t* v) { created = v; }
+		const WCHAR* getCreated() { return created; }
+		void setCreated(const WCHAR* v) { created = v; }
 
-		const wchar_t* getModified() { return modified; }
-		void setModified(const wchar_t* v) { modified = v; }
+		const WCHAR* getModified() { return modified; }
+		void setModified(const WCHAR* v) { modified = v; }
 
-		const wchar_t* getAccessed() { return accessed; }
-		void setAccessed(const wchar_t* v) { accessed = v; }
+		const WCHAR* getAccessed() { return accessed; }
+		void setAccessed(const WCHAR* v) { accessed = v; }
 
-		const wchar_t* getAttributes() { return attributes; }
-		void setAttributes(const wchar_t* v) { attributes = v; }
+		const WCHAR* getAttributes() { return attributes; }
+		void setAttributes(const WCHAR* v) { attributes = v; }
 		
 		bool getHidded() { return hidden; }
 		void setHidden(bool v) { hidden = v; }
@@ -102,8 +102,8 @@ class FolderData : public ArrayElement {
 		bool getExecutable() { return executable; }
 		void setExecutable(bool v) { executable = v; }
 
-		const wchar_t* getRole() { return role; }
-		void setRole(const wchar_t* v) { role = v; } 
+		const WCHAR* getRole() { return role; }
+		void setRole(const WCHAR* v) { role = v; } 
         
         
     // ----------------------------------------------------- Public Methods

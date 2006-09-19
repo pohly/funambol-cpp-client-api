@@ -61,13 +61,13 @@ private:
     ArrayList* xProp;
     void set(iCalProperty** oldProperty, iCalProperty& newProperty);
     iCalProperty* getiCalPropertyFromVProperty(VProperty* vp);
-    VProperty* getVPropertyFromiCalProperty(wchar_t* name, iCalProperty* prop);     
+    VProperty* getVPropertyFromiCalProperty(WCHAR* name, iCalProperty* prop);     
 
 public:
 
     Event();
     ~Event();
-    wchar_t* toString();
+    WCHAR* toString();
     void setClass(iCalProperty& a);
     void setCreated(iCalProperty& a);
     void setDescription(iCalProperty& a);

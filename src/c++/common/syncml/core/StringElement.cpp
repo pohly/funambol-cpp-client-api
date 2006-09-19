@@ -25,7 +25,7 @@
 #include "base/util/utils.h"
 #include "syncml/core/StringElement.h"
  
-StringElement::StringElement(const BCHAR* value) {
+StringElement::StringElement(const char* value) {
     this->value = NULL;
     setValue(value);
 }
@@ -42,11 +42,11 @@ StringElement::~StringElement() {
  * 
  * @return the value of string element
  */
-BCHAR* StringElement::getValue(BCHAR* retValue) {
+char* StringElement::getValue(char* retValue) {
     if (retValue == NULL) {
         return value;
     }
-    return bstrcpy(retValue, value);
+    return strcpy(retValue, value);
 
 }
     
@@ -56,7 +56,7 @@ BCHAR* StringElement::getValue(BCHAR* retValue) {
  * @param value the value of string element
  *
  */
-void StringElement::setValue(const BCHAR* value) {
+void StringElement::setValue(const char* value) {
     if (value) {
         delete [] this->value; this->value = NULL;
     }        

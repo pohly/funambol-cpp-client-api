@@ -20,7 +20,7 @@
 #include "base/fscapi.h"
 #include "base/quoted-printable.h"
 
-static int hex2int( BCHAR x )
+static int hex2int( char x )
 {
     return (x >= '0' && x <= '9') ? x - '0' :
         (x >= 'A' && x <= 'F') ? x - 'A' + 10 :
@@ -28,11 +28,11 @@ static int hex2int( BCHAR x )
         0;
 }
 
-BCHAR *qp_decode(const BCHAR *qp)
+char *qp_decode(const char *qp)
 {
-    const BCHAR *in;
-    BCHAR *ret = new BCHAR[bstrlen(qp)+1];
-    BCHAR *out = ret;
+    const char *in;
+    char *ret = new char[strlen(qp)+1];
+    char *out = ret;
 
     for (in = qp; *in; in++ ) {
         // Handle encoded chars
@@ -71,12 +71,12 @@ BCHAR *qp_decode(const BCHAR *qp)
 }
 
 // A simple version of qp_encoding
-BCHAR *qp_encode(const BCHAR *qp) {
-	BCHAR QP_DIGITS[] = T("0123456789ABCDEF");
-	BCHAR* ret = new BCHAR[bstrlen(qp)*3+1];
+char *qp_encode(const char *qp) {
+	char QP_DIGITS[] = T("0123456789ABCDEF");
+	char* ret = new char[strlen(qp)*3+1];
 	int i = 0;
 
-	const BCHAR *in;
+	const char *in;
 	for (in = qp; *in; in++ ) {
 		if ( (0x21 <= in[0]) & (in[0] <= 0x7e) && in[0] != '=' ) {
             ret[i] = *in;
@@ -97,8 +97,8 @@ BCHAR *qp_encode(const BCHAR *qp) {
 	return ret;
 }
 
-bool qp_isNeed(const BCHAR *in) {
-	for(int i = 0; i < int(bstrlen(in)); i++) 
+bool qp_isNeed(const char *in) {
+	for(int i = 0; i < int(strlen(in)); i++) 
 		if ( (0x21 > in[i]) || (in[i] > 0x7e) || in[i] == '=' )
 			return true;
 	

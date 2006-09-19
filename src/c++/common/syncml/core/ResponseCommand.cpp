@@ -46,8 +46,8 @@ ResponseCommand::~ResponseCommand()  {
  * if any of the NOT NULL parameter is null
  */
 ResponseCommand::ResponseCommand(CmdID*         cmdID     ,
-                                 const BCHAR*   msgRef    ,
-                                 const BCHAR*   cmdRef    ,
+                                 const char*   msgRef    ,
+                                 const char*   cmdRef    ,
                                  ArrayList*     targetRefs,
                                  ArrayList*     sourceRefs,
                                  ArrayList*     items      )
@@ -66,11 +66,11 @@ ResponseCommand::ResponseCommand(CmdID*         cmdID     ,
  * @return the message reference
  *
  */
-BCHAR* ResponseCommand::getMsgRef(BCHAR* retGetMsgRef) {
+char* ResponseCommand::getMsgRef(char* retGetMsgRef) {
     if (retGetMsgRef == NULL) {
         return msgRef;
     }    
-    return bstrcpy(retGetMsgRef, msgRef);
+    return strcpy(retGetMsgRef, msgRef);
 }
 
 /**
@@ -78,7 +78,7 @@ BCHAR* ResponseCommand::getMsgRef(BCHAR* retGetMsgRef) {
  *
  * @param msgRef message reference
  */
-void ResponseCommand::setMsgRef(const BCHAR* msgRef) {
+void ResponseCommand::setMsgRef(const char* msgRef) {
      if (this->msgRef) {
         delete [] this->msgRef; this->msgRef = NULL;
     }
@@ -91,11 +91,11 @@ void ResponseCommand::setMsgRef(const BCHAR* msgRef) {
  * @return the command reference
  *
  */
-BCHAR* ResponseCommand::getCmdRef(BCHAR* retGetCmdRef) {
+char* ResponseCommand::getCmdRef(char* retGetCmdRef) {
     if (retGetCmdRef == NULL) {
         return cmdRef;
     }
-    return bstrcpy(retGetCmdRef, cmdRef);
+    return strcpy(retGetCmdRef, cmdRef);
 }
 
 /**
@@ -104,7 +104,7 @@ BCHAR* ResponseCommand::getCmdRef(BCHAR* retGetCmdRef) {
  * @param cmdRef commandreference - NOT NULL
  *
  */
-void ResponseCommand::setCmdRef(const BCHAR* cmdRef) {
+void ResponseCommand::setCmdRef(const char* cmdRef) {
      if (this->cmdRef) {
          delete [] this->cmdRef; this->cmdRef = NULL;
      }

@@ -30,7 +30,7 @@
 class Sequence : public AbstractCommand {
     
     private:               
-        BCHAR* COMMAND_NAME;       
+        char*  COMMAND_NAME;       
         ArrayList* commands;
     
     // ---------------------------------------------------------- Public data    
@@ -74,7 +74,7 @@ class Sequence : public AbstractCommand {
          *
          * @return the command name
          */
-        BCHAR* getName();
+        char*  getName();
         
         ArrayElement* clone();
 };

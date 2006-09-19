@@ -22,8 +22,8 @@
 
 SyncHdr::SyncHdr() {
 
-    COMMAND_NAME = new BCHAR[bstrlen(SYNCHDR_COMMAND_NAME) + 1];
-    bsprintf(COMMAND_NAME, SYNCHDR_COMMAND_NAME);
+    COMMAND_NAME = new char[strlen(SYNCHDR_COMMAND_NAME) + 1];
+    sprintf(COMMAND_NAME, SYNCHDR_COMMAND_NAME);
          
     verDTD      = NULL;
     verProto    = NULL;
@@ -70,10 +70,10 @@ SyncHdr::~SyncHdr() {
 SyncHdr::SyncHdr(VerDTD*      verDTD,
                 VerProto*    verProto,
                 SessionID*   sessionID,
-                BCHAR*     msgID,
+                char*     msgID,
                 Target*      target,
                 Source*      source,
-                BCHAR*     respURI,
+                char*     respURI,
                 BOOL         noResp,
                 Cred*        cred,
                 Meta*        meta) {
@@ -89,8 +89,8 @@ SyncHdr::SyncHdr(VerDTD*      verDTD,
     this->meta        = NULL;
     this->noResp      = FALSE;  
 
-    COMMAND_NAME = new BCHAR[bstrlen(SYNCHDR_COMMAND_NAME) + 1];
-    bsprintf(COMMAND_NAME, SYNCHDR_COMMAND_NAME);
+    COMMAND_NAME = new char[strlen(SYNCHDR_COMMAND_NAME) + 1];
+    sprintf(COMMAND_NAME, SYNCHDR_COMMAND_NAME);
     setMsgID(msgID);
     setVerDTD(verDTD);
     setVerProto(verProto);
@@ -187,11 +187,11 @@ void SyncHdr::setSessionID(SessionID* sessionID) {
 *
 * @return msgID the message identifier
 */
-BCHAR* SyncHdr::getMsgID(BCHAR* retMsgID) {
+char* SyncHdr::getMsgID(char* retMsgID) {
     if (retMsgID == NULL) {
         return msgID;
     }
-    return bstrcpy(retMsgID, msgID);
+    return strcpy(retMsgID, msgID);
 }
 
 
@@ -200,7 +200,7 @@ BCHAR* SyncHdr::getMsgID(BCHAR* retMsgID) {
 *
 * @param msgID the message identifier
 */
-void SyncHdr::setMsgID(BCHAR* msgID) {
+void SyncHdr::setMsgID(char* msgID) {
     if (this->msgID) {
         delete [] this->msgID; this->msgID = NULL;
     }
@@ -262,11 +262,11 @@ void SyncHdr::setSource(Source* source) {
 *
 * @return respURI the response URI
 */
-BCHAR* SyncHdr::getRespURI(BCHAR* retRespURI) {
+char* SyncHdr::getRespURI(char* retRespURI) {
      if (retRespURI == NULL) {
         return respURI;
     }
-    return bstrcpy(retRespURI, respURI);
+    return strcpy(retRespURI, respURI);
 }
 
 
@@ -275,7 +275,7 @@ BCHAR* SyncHdr::getRespURI(BCHAR* retRespURI) {
 *
 * @param uri the new response URI; NOT NULL
 */
-void SyncHdr::setRespURI(BCHAR* uri) {
+void SyncHdr::setRespURI(char* uri) {
     if (this->respURI) {
         delete [] this->respURI; this->respURI = NULL;
     }
@@ -359,7 +359,7 @@ void SyncHdr::setMeta(Meta* meta) {
     }
 }
 
-BCHAR* SyncHdr::getName() {
+char* SyncHdr::getName() {
     return COMMAND_NAME;
 
 }

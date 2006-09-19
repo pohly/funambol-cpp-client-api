@@ -37,11 +37,11 @@
 
 
 // ------------ Public functions --------------
-wchar_t* escapeSpecialChars(const wchar_t* inputString, wchar_t* version);
+WCHAR* escapeSpecialChars(const WCHAR* inputString, WCHAR* version);
 char*    convertToQP(const char* input, int start);
-bool     encodingIsNeed(const BCHAR *in);
-wchar_t* folding(const wchar_t* inputString, const int maxLine);
-wchar_t* unfolding(const wchar_t* inputString);
+bool     encodingIsNeed(const char *in);
+WCHAR* folding(const WCHAR* inputString, const int maxLine);
+WCHAR* unfolding(const WCHAR* inputString);
 
 
 
@@ -51,48 +51,48 @@ class VProperty : public ArrayElement {
 
 private:
 
-    wchar_t* name;
-    void set(wchar_t** p, const wchar_t* v);
+    WCHAR* name;
+    void set(WCHAR** p, const WCHAR* v);
 
     ArrayList* parameters;
     ArrayList* values;
 
     // This is only used as a buffer for 'getValue()'
-    wchar_t* valueBuf;
+    WCHAR* valueBuf;
 
  public:       
 	
-    VProperty(wchar_t* propName , wchar_t* propValue  = NULL);
+    VProperty(WCHAR* propName , WCHAR* propValue  = NULL);
     ~VProperty();
     ArrayElement* clone();
-    void setName (const wchar_t* name);
-    wchar_t* getName(wchar_t* buf = NULL, int size = -1);
+    void setName (const WCHAR* name);
+    WCHAR* getName(WCHAR* buf = NULL, int size = -1);
 
-    void addValue(const wchar_t* value);
+    void addValue(const WCHAR* value);
     bool removeValue(const int index);
-    wchar_t* getValue(int index);
+    WCHAR* getValue(int index);
     int valueCount();
 
     // For back-compatibility (to remove)
-    wchar_t* getValue(wchar_t* buf = NULL);
-    void setValue (const wchar_t* value);
-    wchar_t* getPropComponent(int i);
+    WCHAR* getValue(WCHAR* buf = NULL);
+    void setValue (const WCHAR* value);
+    WCHAR* getPropComponent(int i);
 
-    void addParameter(const wchar_t* paramName, const wchar_t* paramValue);
-    void removeParameter(wchar_t* paramName);
-    bool containsParameter(wchar_t* paramName);
+    void addParameter(const WCHAR* paramName, const WCHAR* paramValue);
+    void removeParameter(WCHAR* paramName);
+    bool containsParameter(WCHAR* paramName);
     // Warning: the name does not always uniquely identify
     // the parameter, some of them may occur multiple times.
     // Use getParameterValue(int index) to get the value which
     // corresponds to a specific parameter.
-    wchar_t* getParameterValue(wchar_t* paramName);
-    wchar_t* getParameterValue(int index);
-    wchar_t* getParameter(int index);
+    WCHAR* getParameterValue(WCHAR* paramName);
+    WCHAR* getParameterValue(int index);
+    WCHAR* getParameter(int index);
     int parameterCount();
-    bool equalsEncoding(wchar_t* encoding);
-    //wchar_t* getPropComponent(int i);
-    bool isType(wchar_t* type);
-    wchar_t* toString(wchar_t* version = NULL);
+    bool equalsEncoding(WCHAR* encoding);
+    //WCHAR* getPropComponent(int i);
+    bool isType(WCHAR* type);
+    WCHAR* toString(WCHAR* version = NULL);
 
  };
 

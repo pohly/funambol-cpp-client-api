@@ -75,7 +75,7 @@ void Authentication::initialize() {
  * @param data the data of authentication
  *
  */
-Authentication::Authentication(Meta* meta, BCHAR* data){
+Authentication::Authentication(Meta* meta, char* data){
     initialize();
     
     this->meta = meta->clone();
@@ -90,7 +90,7 @@ Authentication::Authentication(Meta* meta, BCHAR* data){
  * @param data the data of authentication
  *
  */
-Authentication::Authentication(BCHAR* type, BCHAR* data) {
+Authentication::Authentication(char* type, char* data) {
     initialize();
     
     createAuthentication(type, data);
@@ -104,8 +104,8 @@ Authentication::Authentication(BCHAR* type, BCHAR* data) {
  * @param encode true if data is encoded, false otherwise
  *
  */
-Authentication::Authentication(BCHAR* type,
-                      BCHAR* data,
+Authentication::Authentication(char* type,
+                      char* data,
                       BOOL encode) {
 
     
@@ -124,9 +124,9 @@ Authentication::Authentication(BCHAR* type,
  * @param password the password
  *
  */
-Authentication::Authentication(BCHAR* type,
-                      BCHAR* username,
-                      BCHAR* password) {
+Authentication::Authentication(char* type,
+                      char* username,
+                      char* password) {
     
     
     initialize();
@@ -136,27 +136,27 @@ Authentication::Authentication(BCHAR* type,
     }
 
     encode = TRUE;
-    BCHAR auth[DIM_512];
-    bsprintf(auth, T("%s:%s"), username, password);
+    char auth[DIM_512];
+    sprintf(auth, T("%s:%s"), username, password);
     createAuthentication(type, auth);
 
 }
 
-void Authentication::createAuthentication(BCHAR* type, BCHAR* data) {
+void Authentication::createAuthentication(char* type, char* data) {
     
     BOOL del = FALSE;    
 
-    if (bstrstr(AUTH_SUPPORTED_TYPES, type) == NULL) {
-        type = new BCHAR[DIM_64];
-        bsprintf(type, AUTH_TYPE_BASIC);         
+    if (strstr(AUTH_SUPPORTED_TYPES, type) == NULL) {
+        type = new char[DIM_64];
+        sprintf(type, AUTH_TYPE_BASIC);         
         del = TRUE;
     }
 
-    if (bstrcmp(type, AUTH_TYPE_BASIC) == 0) {
+    if (strcmp(type, AUTH_TYPE_BASIC) == 0) {
         this->setType(AUTH_TYPE_BASIC);
         this->setFormat(FORMAT_B64);
         this->setData(data);
-    } else if (bstrcmp(type, AUTH_TYPE_MD5) == 0) {
+    } else if (strcmp(type, AUTH_TYPE_MD5) == 0) {
         this->setType(AUTH_TYPE_MD5);
         this->setData(data);
     }
@@ -171,7 +171,7 @@ void Authentication::createAuthentication(BCHAR* type, BCHAR* data) {
  *
  * @return the type property
  */
-BCHAR* Authentication::getType(BCHAR* retType) {
+char* Authentication::getType(char* retType) {
     
     if (meta == NULL) {
         return NULL;
@@ -184,7 +184,7 @@ BCHAR* Authentication::getType(BCHAR* retType) {
  *
  * @param type the type property
  */
-void Authentication::setType(BCHAR* type) {
+void Authentication::setType(char* type) {
     if (meta == NULL) {
         meta = new Meta();
     }
@@ -197,7 +197,7 @@ void Authentication::setType(BCHAR* type) {
  *
  * @return the format property
  */
-BCHAR* Authentication::getFormat(BCHAR* retFormat) {
+char* Authentication::getFormat(char* retFormat) {
     if (meta == NULL) {
         return NULL;
     }
@@ -210,7 +210,7 @@ BCHAR* Authentication::getFormat(BCHAR* retFormat) {
  *
  * @param format the format property
  */
-void Authentication::setFormat(BCHAR* format) {
+void Authentication::setFormat(char* format) {
     if (meta == NULL) {
         meta = new Meta();
     }
@@ -222,12 +222,12 @@ void Authentication::setFormat(BCHAR* format) {
  *
  * @return the data property
  */
-BCHAR* Authentication::getData(BCHAR* retData) {
+char* Authentication::getData(char* retData) {
     
     if (retData == NULL) {
         return data;
     }
-    return bstrcpy(retData, data);
+    return strcpy(retData, data);
 }
 
 /**
@@ -236,17 +236,17 @@ BCHAR* Authentication::getData(BCHAR* retData) {
  * @param data the data property
  *
  */
-void Authentication::setData(BCHAR* data) {
+void Authentication::setData(char* data) {
 
     if (data == NULL) {
         // TBD
         return;
     }
     
-    BCHAR* type = this->getType(NULL);
+    char* type = this->getType(NULL);
 
-    if (bstrcmp(type,AUTH_TYPE_BASIC) == 0) {
-        BCHAR* clearData = NULL;
+    if (strcmp(type,AUTH_TYPE_BASIC) == 0) {
+        char* clearData = NULL;
 
         if (encode) {
             unsigned long len = 0;
@@ -262,8 +262,8 @@ void Authentication::setData(BCHAR* data) {
             }
             this->data = stringdup(b64tmp);                         
             
-            clearData = new BCHAR[bstrlen(data) + 1];
-            bsprintf(clearData, data);
+            clearData = new char[strlen(data) + 1];
+            sprintf(clearData, data);
             
             if (b64tmp2) {                
                 delete [] b64tmp2; b64tmp2 = NULL;
@@ -286,8 +286,8 @@ void Authentication::setData(BCHAR* data) {
             if (this->data) {
                 delete [] this->data; this->data = NULL;
             }
-            //this->data = new BCHAR[bstrlen(clearData) + 1];            
-            //bsprintf(this->data, clearData);
+            //this->data = new char[strlen(clearData) + 1];            
+            //sprintf(this->data, clearData);
             this->data = stringdup(data);
 
             if (tmp) {
@@ -298,8 +298,8 @@ void Authentication::setData(BCHAR* data) {
             }            
         }
         
-        unsigned int len = bstrlen(clearData);
-        BCHAR* p1 = clearData;
+        unsigned int len = strlen(clearData);
+        char* p1 = clearData;
         BOOL charFound = FALSE;
         for (unsigned int k = 0; k < len; k++) {             
             if (*p1 == 0) {
@@ -317,14 +317,14 @@ void Authentication::setData(BCHAR* data) {
             this->setUsername(clearData);
             this->setPassword(NULL);
         } else {
-            BCHAR* p2 = p1 - 1;
+            char* p2 = p1 - 1;
             *p2 = 0;
-            if (bstrlen(clearData) > 0 ) {
+            if (strlen(clearData) > 0 ) {
                 this->setUsername(clearData);
             } else {
                 this->setUsername(T(""));
             }
-            if (bstrlen(p1) > 0) {
+            if (strlen(p1) > 0) {
                 this->setPassword(p1);
             } else {
                 this->setPassword(T(""));
@@ -334,7 +334,7 @@ void Authentication::setData(BCHAR* data) {
         if (clearData) { delete [] clearData; clearData = NULL; }
     }
 
-    if (bstrcmp(type, AUTH_TYPE_MD5) == 0) {
+    if (strcmp(type, AUTH_TYPE_MD5) == 0) {
         if (meta->getFormat(NULL) == NULL) {
             this->setFormat(FORMAT_B64);
         }
@@ -349,11 +349,11 @@ void Authentication::setData(BCHAR* data) {
 *
 * @return the username property
 */
-BCHAR* Authentication::getUsername(BCHAR* retUsername) {
+char* Authentication::getUsername(char* retUsername) {
     if (retUsername == NULL) {
         return username;
     }
-    return bstrcpy(retUsername, username);
+    return strcpy(retUsername, username);
 
 
 }
@@ -363,7 +363,7 @@ BCHAR* Authentication::getUsername(BCHAR* retUsername) {
 *
 * @param username the username property
 */
-void Authentication::setUsername(BCHAR* username) {
+void Authentication::setUsername(char* username) {
     if (this->username) {
         delete [] this->username; this->username = NULL;
     }
@@ -375,11 +375,11 @@ void Authentication::setUsername(BCHAR* username) {
 *
 * @return the password property
 */
-BCHAR* Authentication::getPassword(BCHAR* retPassword) {
+char* Authentication::getPassword(char* retPassword) {
     if (retPassword == NULL) {
         return password;
     }
-    return bstrcpy(retPassword, password);
+    return strcpy(retPassword, password);
 }
 
 /**
@@ -387,7 +387,7 @@ BCHAR* Authentication::getPassword(BCHAR* retPassword) {
 *
 * @param password the password property
 */
-void Authentication::setPassword(BCHAR* password) {
+void Authentication::setPassword(char* password) {
     if (this->password) {
         delete [] this->password; this->password = NULL;
     }
@@ -446,11 +446,11 @@ void Authentication::setMeta(Meta* meta) {
  *
  * @return deviceId the device identificator
  */
-BCHAR* Authentication::getDeviceId(BCHAR* retDeviceId) {
+char* Authentication::getDeviceId(char* retDeviceId) {
     if (retDeviceId == NULL) {
         return deviceId;
     }
-    return bstrcpy(retDeviceId, deviceId);
+    return strcpy(retDeviceId, deviceId);
 
 
 }
@@ -460,7 +460,7 @@ BCHAR* Authentication::getDeviceId(BCHAR* retDeviceId) {
  *
  * @param deviceId the device identificator
  */
-void Authentication::setDeviceId(BCHAR* deviceId) {
+void Authentication::setDeviceId(char* deviceId) {
     if (this->deviceId) {
         delete [] this->deviceId; this->deviceId = NULL;
     }
@@ -473,11 +473,11 @@ void Authentication::setDeviceId(BCHAR* deviceId) {
  *
  * @return syncMLVerProto the SyncML Protocol version.
  */
-BCHAR* Authentication::getSyncMLVerProto(BCHAR* retSyncMLVerProto) {
+char* Authentication::getSyncMLVerProto(char* retSyncMLVerProto) {
     if (retSyncMLVerProto == NULL) {
         return syncMLVerProto;
     }
-    return bstrcpy(retSyncMLVerProto, syncMLVerProto);    
+    return strcpy(retSyncMLVerProto, syncMLVerProto);    
 }
 
 /**
@@ -487,7 +487,7 @@ BCHAR* Authentication::getSyncMLVerProto(BCHAR* retSyncMLVerProto) {
  * @param syncMLVerProto the SyncML Protocol version.
  *
  */
-void Authentication::setSyncMLVerProto(BCHAR* syncMLVerProto) {
+void Authentication::setSyncMLVerProto(char* syncMLVerProto) {
     if (this->syncMLVerProto) {
         delete [] this->syncMLVerProto; this->syncMLVerProto = NULL;
     }
@@ -499,18 +499,18 @@ void Authentication::setSyncMLVerProto(BCHAR* syncMLVerProto) {
  *
  * @return principalId the principal identificator
  */
-BCHAR* Authentication::getPrincipalId(BCHAR* retPrincipalId) {
+char* Authentication::getPrincipalId(char* retPrincipalId) {
     if (retPrincipalId == NULL) {
         return principalId;
     }
-    return bstrcpy(retPrincipalId, principalId);    
+    return strcpy(retPrincipalId, principalId);    
 }
 /**
  * Sets the principal identificator
  *
  * @param principalId the principal identificator
  */
-void Authentication::setPrincipalId(BCHAR* principalId) {
+void Authentication::setPrincipalId(char* principalId) {
      if (this->principalId) {
         delete [] this->principalId; this->principalId = NULL;
     }

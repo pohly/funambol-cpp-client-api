@@ -35,7 +35,7 @@ public:
      *
      * @param name - the name of the SyncSource
      */
-    TestSyncSource2(const wchar_t* name, const SyncSourceConfig *sc) EXTRA_SECTION_01;
+    TestSyncSource2(const WCHAR* name, const SyncSourceConfig *sc) EXTRA_SECTION_01;
 
     // TestSyncSource
     ~TestSyncSource2() EXTRA_SECTION_01;
@@ -104,7 +104,7 @@ public:
 
     SyncItem* getNextDeletedItem() EXTRA_SECTION_01;
     
-    void setItemStatus(const wchar_t* key, int status) EXTRA_SECTION_01;
+    void setItemStatus(const WCHAR* key, int status) EXTRA_SECTION_01;
     
     int addItem(SyncItem& item) EXTRA_SECTION_01;
    

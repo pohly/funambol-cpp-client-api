@@ -20,30 +20,30 @@
 #include "base/util/utils.h"
 
 /*
- * Deletes the given BCHAR[] buffer if it is not NULL
+ * Deletes the given char[] buffer if it is not NULL
  * and sets the pointer to NULL
  *
  */
-void safeDelete(BCHAR* p[]) {
+void safeDelete(char* p[]) {
     if (*p) {
         delete [] *p; *p = NULL;
     }
 }
 
-void safeDel(BCHAR** p) {
+void safeDel(char** p) {
     if (*p) {
         delete [] *p; *p = NULL;
     }
 }
 
-BCHAR* stringdup(const BCHAR* s, size_t len)
+char* stringdup(const char* s, size_t len)
 {
     if ( !s )
         return NULL;
 
-    int l = (len==STRINGDUP_NOLEN)?bstrlen(s):len;
+    int l = (len==STRINGDUP_NOLEN)?strlen(s):len;
 
-    BCHAR* news = new BCHAR[l+1];
+    char* news = new char[l+1];
 
     strncpy(news, s, l);
     news[l]=0;
@@ -51,14 +51,14 @@ BCHAR* stringdup(const BCHAR* s, size_t len)
     return news;
 }
 
-wchar_t* wstrdup(const wchar_t* s, size_t len)
+WCHAR* wstrdup(const WCHAR* s, size_t len)
 {
     if ( !s )
         return NULL;
 
     int l = (len==STRINGDUP_NOLEN)?wcslen(s):len;
 
-    wchar_t* news = new wchar_t[l+1];
+    WCHAR* news = new WCHAR[l+1];
 
     wcsncpy(news, s, l);
     news[l]=0;
@@ -66,10 +66,10 @@ wchar_t* wstrdup(const wchar_t* s, size_t len)
     return news;
 }
 
-BCHAR* strtolower(const BCHAR *s)
+char* strtolower(const char *s)
 {
-    BCHAR* l = NULL;
-    BCHAR* p = NULL;
+    char* l = NULL;
+    char* p = NULL;
 
     for(l = p = stringdup(s); *p; ++p) {
         *p=tolower(*p);
@@ -77,10 +77,10 @@ BCHAR* strtolower(const BCHAR *s)
     return l;
 }
 
-BCHAR* strtoupper(const BCHAR *s)
+char* strtoupper(const char *s)
 {
-    BCHAR* u = NULL;
-    BCHAR* p = NULL;
+    char* u = NULL;
+    char* p = NULL;
 
     for(u = p = stringdup(s); *p; ++p) {
         *p=toupper(*p);
@@ -89,10 +89,10 @@ BCHAR* strtoupper(const BCHAR *s)
 }
 
 
-wchar_t* wcstolower(const wchar_t *s)
+WCHAR* wcstolower(const WCHAR *s)
 {
-    wchar_t* l = NULL;
-    wchar_t* p = NULL;
+    WCHAR* l = NULL;
+    WCHAR* p = NULL;
 
     for(l = p = wstrdup(s); *p; ++p) {
         *p=towlower(*p);
@@ -101,10 +101,10 @@ wchar_t* wcstolower(const wchar_t *s)
     return l;
 }
 
-wchar_t* wcstoupper(const wchar_t *s)
+WCHAR* wcstoupper(const WCHAR *s)
 {
-    wchar_t* u = NULL;
-    wchar_t* p = NULL;
+    WCHAR* u = NULL;
+    WCHAR* p = NULL;
 
     for(u = p = wstrdup(s); *p; ++p) {
         *p=towupper(*p);
@@ -116,9 +116,9 @@ wchar_t* wcstoupper(const wchar_t *s)
 /**
  * find a substring from the end, with optional string lenght
  */
-const BCHAR *brfind(const BCHAR *s1, const BCHAR *s2, size_t len)
+const char *brfind(const char *s1, const char *s2, size_t len)
 {
-	const BCHAR *sc1, *sc2, *ps1;
+	const char *sc1, *sc2, *ps1;
 
     if (!s1)
         return NULL;
@@ -150,19 +150,19 @@ const BCHAR *brfind(const BCHAR *s1, const BCHAR *s2, size_t len)
  * @param timestamp the timestamo to convert into an anchor
  * @param anchor where the anchor will be written
  */
-void timestampToAnchor(unsigned long timestamp, BCHAR* anchor) {
-    bsprintf(anchor, T("%lu"), timestamp);
+void timestampToAnchor(unsigned long timestamp, char* anchor) {
+    sprintf(anchor, T("%lu"), timestamp);
 }
 
-bool wcscmpIgnoreCase(const BCHAR* p, const BCHAR* q) {
+bool wcscmpIgnoreCase(const char* p, const char* q) {
 
     bool ret = false;
     if (p == NULL || q == NULL)
         return ret;
 
     unsigned int lenp = 0, lenq = 0;
-    lenp = bstrlen(p);
-    lenq = bstrlen(q);
+    lenp = strlen(p);
+    lenq = strlen(q);
 
     if (lenp != lenq) {
         return ret;
@@ -177,17 +177,17 @@ bool wcscmpIgnoreCase(const BCHAR* p, const BCHAR* q) {
 }
 
 
-BCHAR* itow(int i) {
-    BCHAR* ret = new BCHAR[10];
-    memset(ret, 0, 10*sizeof(BCHAR) );
-    bsprintf(ret, T("%i"), i);
+char* itow(int i) {
+    char* ret = new char[10];
+    memset(ret, 0, 10*sizeof(char) );
+    sprintf(ret, T("%i"), i);
     return ret;
 }
 
-BCHAR* ltow(long i) {
-    BCHAR* ret = new BCHAR[20];
-    memset(ret, 0, 20*sizeof(BCHAR));
-    bsprintf(ret, T("%i"), i);
+char* ltow(long i) {
+    char* ret = new char[20];
+    memset(ret, 0, 20*sizeof(char));
+    sprintf(ret, T("%i"), i);
     return ret;
 }
 
@@ -199,7 +199,7 @@ BCHAR* ltow(long i) {
 * Data: H (B64(H(username:password)):nonce)
 */
 
-BCHAR* MD5CredentialData(BCHAR* userName, BCHAR* password, BCHAR* nonce) {
+char* MD5CredentialData(char* userName, char* password, char* nonce) {
 
     int len = 0, lenNonce = 0, totLen = 0;
 
@@ -207,8 +207,8 @@ BCHAR* MD5CredentialData(BCHAR* userName, BCHAR* password, BCHAR* nonce) {
     char digest      [16];
     char base64      [64];
     char base64Nonce [64];
-    BCHAR token      [512];
-    BCHAR* md5Digest = NULL;
+    char token      [512];
+    char* md5Digest = NULL;
     char ch          [3];
     char* dig = NULL;
 
@@ -219,8 +219,8 @@ BCHAR* MD5CredentialData(BCHAR* userName, BCHAR* password, BCHAR* nonce) {
     memset(token,       0, 512);
     sprintf(ch, ":");
 
-    bsprintf(token, T("%s:%s"), userName, password);
-    len = bstrlen(token);
+    sprintf(token, T("%s:%s"), userName, password);
+    len = strlen(token);
 
     // H(username:password)
     calculateMD5((void*)token, len, digest);
@@ -230,7 +230,7 @@ BCHAR* MD5CredentialData(BCHAR* userName, BCHAR* password, BCHAR* nonce) {
 
     
     // decode nonce from stored base64 to bin
-    bstrcpy(cnonce, nonce);
+    strcpy(cnonce, nonce);
     lenNonce = b64_decode(cnonce, cnonce);
 
     memcpy(base64Nonce, base64, len);

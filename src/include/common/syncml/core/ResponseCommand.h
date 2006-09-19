@@ -31,12 +31,12 @@ class ResponseCommand : public ItemizedCommand {
         /**
          * Message reference
          */
-        BCHAR* msgRef;
+        char*  msgRef;
     
         /** 
          * Command reference
          */
-        BCHAR* cmdRef;
+        char*  cmdRef;
     
         /**
          * Target references
@@ -68,8 +68,8 @@ class ResponseCommand : public ItemizedCommand {
          */
         ResponseCommand(
                 CmdID*              cmdID     ,
-                const BCHAR*        msgRef    ,
-                const BCHAR*        cmdRef    ,
+                const char*         msgRef    ,
+                const char*         cmdRef    ,
                 ArrayList*          targetRefs,
                 ArrayList*          sourceRefs,
                 ArrayList*          items      );
@@ -81,14 +81,14 @@ class ResponseCommand : public ItemizedCommand {
          * @return the message reference
          *
          */
-        BCHAR* getMsgRef(BCHAR* retGetMsgRef);
+        char*  getMsgRef(char*  retGetMsgRef);
     
         /**
          * Sets the message reference
          *
          * @param msgRef message reference
          */
-        void setMsgRef(const BCHAR* msgRef);
+        void setMsgRef(const char*  msgRef);
     
         /**
          * Returns the command reference
@@ -96,7 +96,7 @@ class ResponseCommand : public ItemizedCommand {
          * @return the command reference
          *
          */
-        BCHAR* getCmdRef(BCHAR* retGetCmdRef);
+        char*  getCmdRef(char*  retGetCmdRef);
     
         /**
          * Sets the command reference
@@ -104,7 +104,7 @@ class ResponseCommand : public ItemizedCommand {
          * @param cmdRef commandreference - NOT NULL
          *
          */
-        void setCmdRef(const BCHAR* cmdRef);
+        void setCmdRef(const char*  cmdRef);
     
         /**
          * Returns the target references
@@ -141,7 +141,7 @@ class ResponseCommand : public ItemizedCommand {
          *
          * @return the command name
          */
-        virtual BCHAR* getName() = 0;
+        virtual char*  getName() = 0;
 
         virtual ArrayElement* clone() = 0;
    

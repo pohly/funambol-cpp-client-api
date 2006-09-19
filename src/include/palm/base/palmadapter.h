@@ -44,7 +44,7 @@
 #define TRUE true
 #define NO_STD_IO
 
-#define wchar_t char
+#define WCHAR char
 
 #define wcscat(s1, s2) StrCat(s1, s2)
 #define wcschr(s1, c1) StrChr(s1, c1)
@@ -60,26 +60,26 @@
 
 #define atoi(s1) StrAToI(s1);
 
-inline long wcstol(wchar_t* s1, wchar_t **endptr = NULL, int base = 10);
-inline void memcpy(wchar_t* p1, wchar_t* p2, unsigned long i1);
-inline void wcsprintf(wchar_t* s, wchar_t* format, ...);
-inline void wcstolwr(wchar_t* s);
+inline long wcstol(WCHAR* s1, WCHAR **endptr = NULL, int base = 10);
+inline void memcpy(WCHAR* p1, WCHAR* p2, unsigned long i1);
+inline void wcsprintf(WCHAR* s, WCHAR* format, ...);
+inline void wcstolwr(WCHAR* s);
 inline char toupper(char c);
 inline unsigned long time(void* ignored);
-inline unsigned long wcslen(const wchar_t* s);
+inline unsigned long wcslen(const WCHAR* s);
 
-inline long wcstol(wchar_t* s1, wchar_t **endptr = NULL, int base = 10) {
+inline long wcstol(WCHAR* s1, WCHAR **endptr = NULL, int base = 10) {
     return StrAToI(s1);
 }
 
-inline void memcpy(wchar_t* p1, wchar_t* p2, unsigned long i1) {
+inline void memcpy(WCHAR* p1, WCHAR* p2, unsigned long i1) {
     for (unsigned long i=0; i<i1; ++i) {
         *p1 = *p2;
         ++p1; ++p2;
     }
 }
 
-inline void wcsprintf(wchar_t* s, wchar_t* format, ...) {
+inline void wcsprintf(WCHAR* s, WCHAR* format, ...) {
     va_list args;
 
     va_start( args, format );
@@ -89,7 +89,7 @@ inline void wcsprintf(wchar_t* s, wchar_t* format, ...) {
     va_end(args);
 }
 
-inline const wchar_t* wcsrchr(const wchar_t* s, wchar_t c) {
+inline const WCHAR* wcsrchr(const WCHAR* s, WCHAR c) {
     FrmCustomAlert(200, "wcsrchr", s, "");
     if (s == NULL) {
         return NULL;
@@ -104,8 +104,8 @@ inline const wchar_t* wcsrchr(const wchar_t* s, wchar_t c) {
     return NULL;
 }
 
-inline void wcstolwr(wchar_t* s) {
-    wchar_t dest[StrLen(s)+1];
+inline void wcstolwr(WCHAR* s) {
+    WCHAR dest[StrLen(s)+1];
 
     StrToLower(dest, s);
     StrCopy(s, dest);
@@ -127,7 +127,7 @@ inline unsigned long time(void* ignored) {
 /**
  * NOTE: we cannot use StrLen, since it just returns a UInt16!!!
  */
-inline unsigned long wcslen(const wchar_t* s) {
+inline unsigned long wcslen(const WCHAR* s) {
     for (unsigned long l = 0; l<0xFFFF; ++l) {
         if (s[l] == 0) {
             return l;

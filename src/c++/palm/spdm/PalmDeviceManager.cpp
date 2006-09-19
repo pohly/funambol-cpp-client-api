@@ -48,8 +48,8 @@ ManagementNode* PalmDeviceManager::getManagementNode(char* node) {
     //
     // Let's separate node's name from context
     //
-    wchar_t context[DIM_MANAGEMENT_PATH>>3];
-    wchar_t leafName[DIM_MANAGEMENT_PATH>>3];
+    WCHAR context[DIM_MANAGEMENT_PATH>>3];
+    WCHAR leafName[DIM_MANAGEMENT_PATH>>3];
 
     getNodeContext(node, context, sizeof(context));
     getNodeName(node, leafName, sizeof(leafName));
@@ -93,7 +93,7 @@ ManagementNode* PalmDeviceManager::getManagementNode(char* node) {
         DeviceManagementRecord record;
 
         int pos = -1;
-        wchar_t sourceName[DIM_MANAGEMENT_PATH>>3];
+        WCHAR sourceName[DIM_MANAGEMENT_PATH>>3];
         while ((pos = findChildRecord(node, record, pos+1)) >= 0) {
             getNodeName(record.getField(1), sourceName, sizeof(sourceName));
             s = new SourceManagementNode(node, sourceName);
@@ -121,7 +121,7 @@ ManagementNode* PalmDeviceManager::getManagementNode(char* node) {
         DeviceManagementRecord record;
         ArrayList properties;
 
-        wchar_t context[DIM_MANAGEMENT_PATH], name[DIM_MANAGEMENT_PATH];
+        WCHAR context[DIM_MANAGEMENT_PATH], name[DIM_MANAGEMENT_PATH];
         if (findNodeRecord(node, record)) {
             getNodeContext(node, context, sizeof(context));
             getNodeName(node, name, sizeof(name));
@@ -143,7 +143,7 @@ ManagementNode* PalmDeviceManager::getManagementNode(char* node) {
 void PalmDeviceManager::setManagementNode(ManagementNode& n) {
     DeviceManagementRecord record;
 
-    wchar_t nodeName[DIM_MANAGEMENT_PATH];
+    WCHAR nodeName[DIM_MANAGEMENT_PATH];
     n.getFullName(nodeName, DIM_MANAGEMENT_PATH-1);
 
     resetError();

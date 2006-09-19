@@ -19,12 +19,12 @@
  
 #include "syncml/parser/Parser.h"
  
-SyncML* Parser::getSyncML(BCHAR* xml) {
+SyncML* Parser::getSyncML(char* xml) {
     SyncBody* syncBody = NULL;
     SyncHdr*  syncHdr  = NULL;
     SyncML*   syncML   = NULL; 
     unsigned int pos = 0;
-    BCHAR* t = NULL;
+    char* t = NULL;
     t = XMLProcessor::getElementContent(xml, SYNC_HDR, &pos);
     syncHdr  = getSyncHdr (t);
     if (t) { delete [] t; t = NULL; }
@@ -40,7 +40,7 @@ SyncML* Parser::getSyncML(BCHAR* xml) {
      
 }
 
-SyncHdr* Parser::getSyncHdr(BCHAR* xml) {
+SyncHdr* Parser::getSyncHdr(char* xml) {
          
     SessionID*   sessionID = NULL;
     VerDTD*      verDTD    = NULL;
@@ -48,15 +48,15 @@ SyncHdr* Parser::getSyncHdr(BCHAR* xml) {
     Source*      source    = NULL;
     Target*      target    = NULL;
     Cred*        cred      = NULL;
-    BCHAR*     respURI   = NULL;
-    BCHAR*     msgID     = NULL;
+    char*     respURI   = NULL;
+    char*     msgID     = NULL;
     BOOL         noResp    = NULL;             
-    BCHAR*     tmp       = NULL;
+    char*     tmp       = NULL;
     Meta*        meta      = NULL;
 
     SyncHdr*     ret       = NULL;
     unsigned int pos = 0;
-    BCHAR* t = NULL;
+    char* t = NULL;
     
     t = XMLProcessor::getElementContent(xml, SESSION_ID, NULL);
     sessionID = getSessionID(t);
@@ -102,7 +102,7 @@ SyncHdr* Parser::getSyncHdr(BCHAR* xml) {
     return ret;    
 }
 
-Cred* Parser::getCred(BCHAR* xml) {
+Cred* Parser::getCred(char* xml) {
     Cred* ret              = NULL;
     Authentication* auth   = NULL;    
     
@@ -116,14 +116,14 @@ Cred* Parser::getCred(BCHAR* xml) {
     return ret;
 }
 
-Authentication* Parser::getAuthentication(BCHAR* xml) {
+Authentication* Parser::getAuthentication(char* xml) {
     Authentication* ret        = NULL;
     
-    BCHAR* data       = NULL;    
+    char* data       = NULL;    
     Meta*  meta       = NULL;
     
     unsigned int pos = 0;
-    BCHAR* t = NULL;
+    char* t = NULL;
 
     data = XMLProcessor::getElementContent (xml, DATA , NULL);
     t = XMLProcessor::getElementContentLevel (xml, META , NULL);
@@ -138,7 +138,7 @@ Authentication* Parser::getAuthentication(BCHAR* xml) {
     return ret;
 }
 
-Meta* Parser::getMeta(BCHAR* xml) {
+Meta* Parser::getMeta(char* xml) {
     Meta* ret        = NULL;
     MetInf* metInf   = NULL;    
     
@@ -153,14 +153,14 @@ Meta* Parser::getMeta(BCHAR* xml) {
     return ret;
 }
 
-MetInf* Parser::getMetInf(BCHAR* xml) {
+MetInf* Parser::getMetInf(char* xml) {
     MetInf* ret             = NULL;
     
-    BCHAR*     format     = NULL;
-    BCHAR*     type       = NULL;
-    BCHAR*     mark       = NULL;
+    char*     format     = NULL;
+    char*     type       = NULL;
+    char*     mark       = NULL;
     Anchor*      anchor     = NULL;
-    BCHAR*     version    = NULL;
+    char*     version    = NULL;
     NextNonce*   nextNonce  = NULL;
     long         maxMsgSize = 0;
     long         maxObjSize = 0;
@@ -168,9 +168,9 @@ MetInf* Parser::getMetInf(BCHAR* xml) {
     ArrayList*   emi        = NULL;
     Mem*         mem        = NULL; 
     
-    BCHAR*         maxMsgSizeW   = NULL;
-    BCHAR*         maxObjSizeW   = NULL;
-    BCHAR*         sizeW         = NULL;    
+    char*         maxMsgSizeW   = NULL;
+    char*         maxObjSizeW   = NULL;
+    char*         sizeW         = NULL;    
     
     // get all the values
 
@@ -187,13 +187,13 @@ MetInf* Parser::getMetInf(BCHAR* xml) {
     sizeW        = XMLProcessor::getElementContent (xml, SIZE             , NULL);
         
     if (maxMsgSizeW) {
-        maxMsgSize = bstrtol(maxMsgSizeW, NULL, 10);
+        maxMsgSize = strtol(maxMsgSizeW, NULL, 10);
     }
     if (maxObjSizeW) {
-        maxObjSize = bstrtol(maxObjSizeW, NULL, 10);
+        maxObjSize = strtol(maxObjSizeW, NULL, 10);
     }
     if (sizeW) {
-        size = bstrtol(sizeW, NULL, 10);
+        size = strtol(sizeW, NULL, 10);
     }
         
     emi          = getEMI(xml);
@@ -222,14 +222,14 @@ MetInf* Parser::getMetInf(BCHAR* xml) {
 }
 
 
-ArrayList* Parser::getSources(BCHAR* xml) {
+ArrayList* Parser::getSources(char* xml) {
     
     Source* source = NULL; 
     SourceArray* sourceArray = NULL;
     unsigned int pos = 0, previous = 0;
     ArrayList* list = new ArrayList();
 
-    BCHAR* t = NULL;
+    char* t = NULL;
     t = XMLProcessor::getElementContent(&xml[pos], SOURCE, &pos);
     while ((source = getSource(t)) != NULL) {
         if (source) {
@@ -248,10 +248,10 @@ ArrayList* Parser::getSources(BCHAR* xml) {
 }
 
 
-Source* Parser::getSource(BCHAR* xml) {
+Source* Parser::getSource(char* xml) {
     Source* ret      = NULL;
-    BCHAR* locURI  = NULL;
-    BCHAR* locName = NULL;
+    char* locURI  = NULL;
+    char* locName = NULL;
     locURI  = XMLProcessor::getElementContent (xml, LOC_URI, NULL);
     locName = XMLProcessor::getElementContent (xml, LOC_NAME, NULL);
     
@@ -265,10 +265,10 @@ Source* Parser::getSource(BCHAR* xml) {
     return ret;
 }
 
-Target* Parser::getTarget(BCHAR* xml) {
+Target* Parser::getTarget(char* xml) {
     Target*  ret      = NULL;
-    BCHAR* locURI   = NULL;
-    BCHAR* locName  = NULL;
+    char* locURI   = NULL;
+    char* locName  = NULL;
     
     locURI  = XMLProcessor::getElementContent (xml, LOC_URI, NULL);
     locName = XMLProcessor::getElementContent (xml, LOC_NAME, NULL);
@@ -283,10 +283,10 @@ Target* Parser::getTarget(BCHAR* xml) {
     return ret;
 }
 
-Anchor* Parser::getAnchor(BCHAR* xml) {
+Anchor* Parser::getAnchor(char* xml) {
     Anchor*  ret    = NULL;
-    BCHAR* last   = NULL;
-    BCHAR* next   = NULL;
+    char* last   = NULL;
+    char* next   = NULL;
     
     last  = XMLProcessor::getElementContent (xml, LAST, NULL);
     next  = XMLProcessor::getElementContent (xml, NEXT, NULL);
@@ -301,9 +301,9 @@ Anchor* Parser::getAnchor(BCHAR* xml) {
     return ret;   
 }
 
-NextNonce* Parser::getNextNonce(BCHAR* xml) {
+NextNonce* Parser::getNextNonce(char* xml) {
     NextNonce* ret   = NULL;
-    BCHAR* value   = NULL;   
+    char* value   = NULL;   
     
     value  = XMLProcessor::getElementContent (xml, NEXT_NONCE, NULL);
 
@@ -316,11 +316,11 @@ NextNonce* Parser::getNextNonce(BCHAR* xml) {
     return ret;   
 }
 
-Mem* Parser::getMem(BCHAR* xml) {
+Mem* Parser::getMem(char* xml) {
     Mem* ret            = NULL;
-    BCHAR* freeMemW   = NULL;   
-    BCHAR* sharedMemW = NULL;
-    BCHAR* freeIDW    = NULL;
+    char* freeMemW   = NULL;   
+    char* sharedMemW = NULL;
+    char* freeIDW    = NULL;
         
     BOOL    sharedMem   = NULL;
     long    freeMem     = 0;
@@ -335,13 +335,13 @@ Mem* Parser::getMem(BCHAR* xml) {
     isToCreate = NotNullCheck(3, freeMemW, sharedMemW, freeIDW);
 
     if (freeMemW != NULL) {
-        freeMem = bstrtol(freeMemW, NULL, 10);
+        freeMem = strtol(freeMemW, NULL, 10);
     }
     if (freeIDW != NULL) {
-        freeID = bstrtol(freeIDW, NULL, 10);
+        freeID = strtol(freeIDW, NULL, 10);
     } 
     if (sharedMemW != NULL) {
-        sharedMem = bstrtol(sharedMemW, NULL, 10);
+        sharedMem = strtol(sharedMemW, NULL, 10);
     }
     
     if (isToCreate) {
@@ -356,7 +356,7 @@ Mem* Parser::getMem(BCHAR* xml) {
 }
 
 
-SessionID* Parser::getSessionID(BCHAR* content) {
+SessionID* Parser::getSessionID(char* content) {
     SessionID* ret = NULL;
     if (content) {
         ret = new SessionID(content);
@@ -364,7 +364,7 @@ SessionID* Parser::getSessionID(BCHAR* content) {
     return ret;
 }
 
-VerDTD* Parser::getVerDTD(BCHAR* content) {
+VerDTD* Parser::getVerDTD(char* content) {
     VerDTD* ret = NULL;
     if (content) {
         ret = new VerDTD(content);
@@ -372,7 +372,7 @@ VerDTD* Parser::getVerDTD(BCHAR* content) {
     return ret;
 }
 
-VerProto* Parser::getVerProto(BCHAR* content) {
+VerProto* Parser::getVerProto(char* content) {
     VerProto* ret = NULL;
     if (content) {
         ret = new VerProto(content);
@@ -380,13 +380,13 @@ VerProto* Parser::getVerProto(BCHAR* content) {
     return ret;
 }
 
-SyncBody* Parser::getSyncBody(BCHAR* xml) {
+SyncBody* Parser::getSyncBody(char* xml) {
     
     SyncBody* syncBody   = NULL;
     BOOL finalMsg        = FALSE;
     ArrayList* commands;
     unsigned int pos = 0;
-    BCHAR* t = NULL;
+    char* t = NULL;
     commands = getCommands(xml);
     t = XMLProcessor::getElementContent(xml, FINAL_MSG, NULL);
     finalMsg = getFinalMsg(t);
@@ -408,7 +408,7 @@ SyncBody* Parser::getSyncBody(BCHAR* xml) {
 * Atomic
 * Sync
 */
-Sequence* Parser::getSequence(BCHAR* xml) {    
+Sequence* Parser::getSequence(char* xml) {    
 
     Sequence* ret           = NULL;
         
@@ -427,7 +427,7 @@ Sequence* Parser::getSequence(BCHAR* xml) {
     ArrayList* list     = new ArrayList(); 
     unsigned int pos = 0, previous = 0;
 
-    BCHAR* t = NULL;
+    char* t = NULL;
     t = XMLProcessor::getElementContent(xml, CMD_ID, NULL);
     cmdID = getCmdID(t);
     if (t) {delete [] t; t = NULL;}
@@ -526,7 +526,7 @@ Sequence* Parser::getSequence(BCHAR* xml) {
     }        
     deleteArrayList(&list);
 
-    BCHAR* element = XMLProcessor::getElementContentLevel (xml,  SYNC, NULL);
+    char* element = XMLProcessor::getElementContentLevel (xml,  SYNC, NULL);
 
     if (element) {       
         sync = getSync(element);
@@ -574,7 +574,7 @@ Sequence* Parser::getSequence(BCHAR* xml) {
 * Sync
 * Sequence
 */
-Atomic* Parser::getAtomic(BCHAR* xml) {    
+Atomic* Parser::getAtomic(char* xml) {    
 
     Atomic* ret             = NULL;
 
@@ -584,7 +584,7 @@ Atomic* Parser::getAtomic(BCHAR* xml) {
     ArrayList* commands     = new ArrayList(); 
     Sync* sync              = NULL;
     Sequence* sequence      = NULL;
-    BCHAR* element = NULL;
+    char* element = NULL;
     
     Alert* alert            = NULL;
     Map*   map              = NULL;
@@ -593,7 +593,7 @@ Atomic* Parser::getAtomic(BCHAR* xml) {
 
     ArrayList* list     = new ArrayList(); 
     unsigned int pos = 0, previous = 0;
-    BCHAR* t = NULL;
+    char* t = NULL;
     t = XMLProcessor::getElementContent(xml, CMD_ID, NULL);
     cmdID    = getCmdID(t);
     if (t) {delete [] t; t = NULL;}
@@ -747,7 +747,7 @@ Atomic* Parser::getAtomic(BCHAR* xml) {
 *    Sync   
 */
 
-Sync* Parser::getSync(BCHAR* xml) {    
+Sync* Parser::getSync(char* xml) {    
 
     Sync* ret               = NULL;
     Sequence* sequence      = NULL;
@@ -760,10 +760,10 @@ Sync* Parser::getSync(BCHAR* xml) {
     Source* source          = NULL;
     ArrayList* commands     = new ArrayList();   
     long numberOfChanges    = 0;
-    BCHAR* numberOfChangesW = NULL;
+    char* numberOfChangesW = NULL;
 
     unsigned int pos = 0;
-    BCHAR* t = NULL;
+    char* t = NULL;
     t = XMLProcessor::getElementContent(xml, CMD_ID,  NULL);
     cmdID    = getCmdID      (t);
     if (t) {delete [] t; t = NULL;}
@@ -778,7 +778,7 @@ Sync* Parser::getSync(BCHAR* xml) {
     if (t) {delete [] t; t = NULL;}
     numberOfChangesW = XMLProcessor::getElementContent (xml,  NUMBER_OF_CHANGES ,NULL);
     if (numberOfChangesW) {
-        numberOfChanges = bstrtol(numberOfChangesW, NULL, 10);
+        numberOfChanges = strtol(numberOfChangesW, NULL, 10);
     }
 
     t = XMLProcessor::getElementContent (xml, CRED   ,NULL);
@@ -789,7 +789,7 @@ Sync* Parser::getSync(BCHAR* xml) {
     if (t) {delete [] t; t = NULL;}
     commands = getCommonCommandList(xml, T("Atomic&Sequence"));
     
-    BCHAR* element = XMLProcessor::getElementContentExcept(xml,  SEQUENCE, T("Atomic"), NULL);
+    char* element = XMLProcessor::getElementContentExcept(xml,  SEQUENCE, T("Atomic"), NULL);
     
     if (element) {
         sequence = getSequence(element);
@@ -831,7 +831,7 @@ Sync* Parser::getSync(BCHAR* xml) {
     return ret;
 }
 
-ArrayList* Parser::getCommonCommandList(BCHAR* xml, BCHAR* except) {
+ArrayList* Parser::getCommonCommandList(char* xml, char* except) {
 
     ArrayList* commands = new ArrayList();
     ArrayList* list = new ArrayList();
@@ -884,7 +884,7 @@ ArrayList* Parser::getCommonCommandList(BCHAR* xml, BCHAR* except) {
     return commands;
 }
 
-Copy* Parser::getCopy(BCHAR* xml) {
+Copy* Parser::getCopy(char* xml) {
     Copy* ret = NULL;
         
     CmdID*      cmdID   = NULL;
@@ -894,7 +894,7 @@ Copy* Parser::getCopy(BCHAR* xml) {
     ArrayList*  items   = NULL;
 
     unsigned int pos = 0;
-    BCHAR* t = NULL;
+    char* t = NULL;
     t = XMLProcessor::getElementContent (xml, CMD_ID , NULL);
     cmdID   = getCmdID     (t);
     if (t) {delete [] t; t = NULL;}
@@ -926,7 +926,7 @@ Copy* Parser::getCopy(BCHAR* xml) {
 }
 
 
-Add* Parser::getAdd(BCHAR* xml) {
+Add* Parser::getAdd(char* xml) {
     Add* ret = NULL;
 
     CmdID*      cmdID   = NULL;
@@ -936,7 +936,7 @@ Add* Parser::getAdd(BCHAR* xml) {
     ArrayList*  items   = NULL;
     
     unsigned int pos = 0;
-    BCHAR* t = NULL;
+    char* t = NULL;
     t = XMLProcessor::getElementContent (xml, CMD_ID , NULL);
     cmdID   = getCmdID     (t);
     if (t) {delete [] t; t = NULL;}
@@ -967,7 +967,7 @@ Add* Parser::getAdd(BCHAR* xml) {
     return ret;
 }
 
-Delete* Parser::getDelete(BCHAR* xml) {
+Delete* Parser::getDelete(char* xml) {
     Delete* ret = NULL;
        
     CmdID*      cmdID   = NULL;
@@ -979,7 +979,7 @@ Delete* Parser::getDelete(BCHAR* xml) {
     ArrayList*  items   = NULL;
 
     unsigned int pos = 0;
-    BCHAR* t = NULL;
+    char* t = NULL;
     t = XMLProcessor::getElementContent (xml, CMD_ID , NULL);
     cmdID   = getCmdID     (t);
     if (t) {delete [] t; t = NULL;}
@@ -1010,7 +1010,7 @@ Delete* Parser::getDelete(BCHAR* xml) {
     return ret;
 }
 
-Replace* Parser::getReplace(BCHAR* xml) {
+Replace* Parser::getReplace(char* xml) {
     Replace* ret = NULL;
 
     CmdID*      cmdID   = NULL;
@@ -1020,7 +1020,7 @@ Replace* Parser::getReplace(BCHAR* xml) {
     ArrayList*  items   = NULL;
 
     unsigned int pos = 0;
-    BCHAR* t = NULL;
+    char* t = NULL;
     t = XMLProcessor::getElementContent (xml, CMD_ID , NULL);
     cmdID   = getCmdID     (t);
     if (t) {delete [] t; t = NULL;}
@@ -1051,14 +1051,14 @@ Replace* Parser::getReplace(BCHAR* xml) {
     return ret;
 }
 
-MapItem* Parser::getMapItem(BCHAR* xml) {
+MapItem* Parser::getMapItem(char* xml) {
     MapItem* ret = NULL;
     
     Target*    target = NULL;
     Source*    source = NULL;
     
     unsigned int pos = 0;
-    BCHAR* t = NULL;
+    char* t = NULL;
     t = XMLProcessor::getElementContent(xml, TARGET,NULL);
     target   = getTarget(t);
     if (t) {delete [] t; t = NULL;}
@@ -1080,13 +1080,13 @@ MapItem* Parser::getMapItem(BCHAR* xml) {
 /*
 * Returns an ArrayList of mapItem command
 */
-ArrayList* Parser::getMapItems(BCHAR* xml) {
+ArrayList* Parser::getMapItems(char* xml) {
     
     MapItem* mapItem = NULL;    
     unsigned int pos = 0, previous = 0;
     ArrayList* list = new ArrayList();
 
-    BCHAR* t = NULL;
+    char* t = NULL;
     t = XMLProcessor::getElementContent(&xml[pos], MAP_ITEM, &pos);
     while ((mapItem = getMapItem(t)) != NULL) {
         if (mapItem) {
@@ -1102,7 +1102,7 @@ ArrayList* Parser::getMapItems(BCHAR* xml) {
     return list;   
 }
 
-Map* Parser::getMap(BCHAR* xml) {
+Map* Parser::getMap(char* xml) {
     Map* ret = NULL;
 
     CmdID*     cmdID  = NULL;
@@ -1114,7 +1114,7 @@ Map* Parser::getMap(BCHAR* xml) {
     ArrayList* mapItems; //MapItem[]
     
     unsigned int pos = 0;
-    BCHAR* t = NULL;
+    char* t = NULL;
     t = XMLProcessor::getElementContent (xml, CMD_ID , NULL);
     cmdID   = getCmdID(t);
     if (t) {delete [] t; t = NULL;}
@@ -1157,7 +1157,7 @@ Map* Parser::getMap(BCHAR* xml) {
 /*
 * Returns an ArrayList of copy command
 */
-ArrayList* Parser::getCopies(BCHAR* xml, BCHAR* except) {
+ArrayList* Parser::getCopies(char* xml, char* except) {
     
     Copy* copy = NULL;    
     unsigned int pos = 0, previous = 0;
@@ -1166,7 +1166,7 @@ ArrayList* Parser::getCopies(BCHAR* xml, BCHAR* except) {
    /*
     * except is set to SYNC if we are looking for Copy commands external from <sync> tag
     */
-    BCHAR* t = NULL;
+    char* t = NULL;
     t = XMLProcessor::getElementContentExcept(&xml[pos], COPY, except, &pos);
     while ((copy = getCopy(t)) != NULL) {
         if (copy) {
@@ -1187,12 +1187,12 @@ ArrayList* Parser::getCopies(BCHAR* xml, BCHAR* except) {
 /*
 * Returns an ArrayList of add command
 */
-ArrayList* Parser::getAdds(BCHAR* xml, BCHAR* except) {
+ArrayList* Parser::getAdds(char* xml, char* except) {
     
     Add* add         = NULL;    
     unsigned int pos = 0, previous = 0;
     ArrayList* list  = NULL;
-    BCHAR* t         = NULL;
+    char* t         = NULL;
    /*
     * except is set to SYNC if we are looking for Add commands external from <sync> tag
     */
@@ -1216,12 +1216,12 @@ ArrayList* Parser::getAdds(BCHAR* xml, BCHAR* except) {
 /*
 * Returns an ArrayList of Replace commands
 */
-ArrayList* Parser::getReplaces(BCHAR* xml, BCHAR* except) {
+ArrayList* Parser::getReplaces(char* xml, char* except) {
     
     Replace* replace = NULL;    
     unsigned int pos = 0, previous = 0;
     ArrayList* list = NULL;
-    BCHAR* t        = NULL;
+    char* t        = NULL;
 
     t = XMLProcessor::getElementContentExcept(&xml[pos], REPLACE, except, &pos);
     while ((replace = getReplace(t)) != NULL) {
@@ -1243,12 +1243,12 @@ ArrayList* Parser::getReplaces(BCHAR* xml, BCHAR* except) {
 /*
 * Returns an ArrayList of Dels command
 */
-ArrayList* Parser::getDels(BCHAR* xml, BCHAR* except) {
+ArrayList* Parser::getDels(char* xml, char* except) {
     
     Delete* del        = NULL;    
     unsigned int pos   = 0, previous = 0;
     ArrayList* list    = NULL;
-    BCHAR* t           = NULL;
+    char* t           = NULL;
 
     t = XMLProcessor::getElementContentExcept(&xml[pos], DEL, except, &pos);
     while ((del = getDelete(t)) != NULL) {
@@ -1285,7 +1285,7 @@ Commands of SyncBody tag
     Status  
     Sync
 */
-ArrayList* Parser::getCommands(BCHAR* xml) {    
+ArrayList* Parser::getCommands(char* xml) {    
     ArrayList* ret    = new ArrayList();
     
     ArrayList* list     = NULL;
@@ -1302,7 +1302,7 @@ ArrayList* Parser::getCommands(BCHAR* xml) {
     Atomic* atomic      = NULL;
     Sync* sync          = NULL;
     unsigned int pos = 0, previous = 0;
-    BCHAR* t            = NULL;
+    char* t            = NULL;
 
 
     // Status
@@ -1564,7 +1564,7 @@ ArrayList* Parser::getCommands(BCHAR* xml) {
     return ret;
 }
 
-Status* Parser::getStatus(BCHAR* xml) {
+Status* Parser::getStatus(char* xml) {
     
     if (!xml)
         return NULL;
@@ -1572,9 +1572,9 @@ Status* Parser::getStatus(BCHAR* xml) {
     Status*     ret         = NULL;
     
     CmdID*      cmdID       = NULL;
-    BCHAR*    msgRef      = NULL;
-    BCHAR*    cmdRef      = NULL;
-    BCHAR*    cmd         = NULL;
+    char*    msgRef      = NULL;
+    char*    cmdRef      = NULL;
+    char*    cmd         = NULL;
     ArrayList*  targetRefs  = new ArrayList();
     ArrayList*  sourceRefs  = new ArrayList();
     Cred*       cred        = NULL;
@@ -1583,7 +1583,7 @@ Status* Parser::getStatus(BCHAR* xml) {
     ArrayList*  items       = new ArrayList();
 
     unsigned int pos = 0;
-    BCHAR* t = NULL;
+    char* t = NULL;
     t = XMLProcessor::getElementContent (xml, CMD_ID , NULL);
     cmdID = getCmdID(t);
     if (t) {delete [] t; t = NULL;}
@@ -1626,7 +1626,7 @@ Status* Parser::getStatus(BCHAR* xml) {
     return ret;   
 }
 
-Chal* Parser::getChal(BCHAR* xml) {
+Chal* Parser::getChal(char* xml) {
     
     Chal* ret  = NULL;
     Meta* meta = NULL;
@@ -1641,12 +1641,12 @@ Chal* Parser::getChal(BCHAR* xml) {
     return ret;
 }
 
-ArrayList* Parser::getTargetRefs(BCHAR* xml) {
+ArrayList* Parser::getTargetRefs(char* xml) {
     ArrayList* list = new ArrayList();
     TargetRef* targetRef = NULL;
     unsigned int pos = 0, previous = 0;
 
-    BCHAR* t = NULL;
+    char* t = NULL;
     t = XMLProcessor::getElementContent(&xml[pos], TARGET_REF, &pos);
     while ((targetRef = getTargetRef(t)) != NULL) {
         if (targetRef) {
@@ -1663,12 +1663,12 @@ ArrayList* Parser::getTargetRefs(BCHAR* xml) {
     return list;
 }
 
-ArrayList* Parser::getSourceRefs(BCHAR* xml) {
+ArrayList* Parser::getSourceRefs(char* xml) {
     ArrayList* list = new ArrayList();
     SourceRef* sourceRef = NULL;
     unsigned int pos = 0, previous = 0;
 
-    BCHAR* t = NULL;
+    char* t = NULL;
     t = XMLProcessor::getElementContent(&xml[pos], SOURCE_REF, &pos);
     while ((sourceRef = getSourceRef(t)) != NULL) {
         if (sourceRef) {
@@ -1684,7 +1684,7 @@ ArrayList* Parser::getSourceRefs(BCHAR* xml) {
     return list;
 }
 
-SourceRef* Parser::getSourceRef(BCHAR* xml) {    
+SourceRef* Parser::getSourceRef(char* xml) {    
     SourceRef* ret = NULL;        
     Source* source;   
     
@@ -1698,7 +1698,7 @@ SourceRef* Parser::getSourceRef(BCHAR* xml) {
     return ret;
 }
 
-TargetRef* Parser::getTargetRef(BCHAR* xml) {    
+TargetRef* Parser::getTargetRef(char* xml) {    
     TargetRef* ret = NULL;        
     Target* target;   
     
@@ -1712,13 +1712,13 @@ TargetRef* Parser::getTargetRef(BCHAR* xml) {
     return ret;
 }
 
-Alert* Parser::getAlert(BCHAR* xml) {
+Alert* Parser::getAlert(char* xml) {
     
     Alert* ret = NULL;
     ArrayList* items = new ArrayList();    
     
     unsigned int pos = 0;
-    BCHAR* t = NULL;
+    char* t = NULL;
     t = XMLProcessor::getElementContent (xml, CMD_ID , NULL);
     CmdID* cmdID     = getCmdID   (t);
     if(t) {delete [] t; t = NULL;}
@@ -1744,7 +1744,7 @@ Alert* Parser::getAlert(BCHAR* xml) {
     return ret;
 }
 
-Exec* Parser::getExec(BCHAR* xml) {
+Exec* Parser::getExec(char* xml) {
     
     Exec* ret = NULL;
     
@@ -1754,7 +1754,7 @@ Exec* Parser::getExec(BCHAR* xml) {
     ArrayList*  items   = new ArrayList();
 
     unsigned int pos = 0;
-    BCHAR* t = NULL;
+    char* t = NULL;
     t = XMLProcessor::getElementContent (xml, CMD_ID , NULL);
     cmdID     = getCmdID   (t);
     if(t) {delete [] t; t = NULL;}
@@ -1777,13 +1777,13 @@ Exec* Parser::getExec(BCHAR* xml) {
     return ret;
 }
 
-Get* Parser::getGet(BCHAR* xml) {
+Get* Parser::getGet(char* xml) {
        
     Get* ret = NULL;    
     ArrayList* items = NULL;    
     
     unsigned int pos = 0;
-    BCHAR* t = NULL;
+    char* t = NULL;
     t = XMLProcessor::getElementContent (xml, CMD_ID , NULL);
     CmdID* cmdID     = getCmdID   (t);
     if(t) {delete [] t; t = NULL;}
@@ -1796,7 +1796,7 @@ Get* Parser::getGet(BCHAR* xml) {
     t = XMLProcessor::getElementContentLevel (xml, META ,   NULL);
     Meta*  meta      = getMeta    (t);
     if(t) {delete [] t; t = NULL;}    
-    BCHAR* lang    = XMLProcessor::getElementContent        (xml, LANG, NULL);
+    char* lang    = XMLProcessor::getElementContent        (xml, LANG, NULL);
     items = getItems(xml);
 
     if (NotNullCheck(1, lang)  || (cred) 
@@ -1816,13 +1816,13 @@ Get* Parser::getGet(BCHAR* xml) {
     return ret;
 }
 
-Put* Parser::getPut(BCHAR* xml) {
+Put* Parser::getPut(char* xml) {
     
     Put* ret = NULL;    
     ArrayList* items = NULL;    
     
     unsigned int pos = 0;
-    BCHAR* t = NULL;
+    char* t = NULL;
     t = XMLProcessor::getElementContent (xml, CMD_ID , NULL);
     CmdID* cmdID     = getCmdID   (t);
     if(t) {delete [] t; t = NULL;}
@@ -1835,7 +1835,7 @@ Put* Parser::getPut(BCHAR* xml) {
     t = XMLProcessor::getElementContentLevel (xml, META ,   NULL);
     Meta*  meta      = getMeta    (t);
     if(t) {delete [] t; t = NULL;}
-    BCHAR* lang    = XMLProcessor::getElementContent        (xml, LANG, NULL);        
+    char* lang    = XMLProcessor::getElementContent        (xml, LANG, NULL);        
     items = getItems(xml);
 
     if (NotNullCheck(1, lang)  || (cred) 
@@ -1855,7 +1855,7 @@ Put* Parser::getPut(BCHAR* xml) {
     return ret;
 }
 
-Search* Parser::getSearch(BCHAR* xml) {    
+Search* Parser::getSearch(char* xml) {    
     
     Search*     ret      = NULL;
     CmdID*      cmdID    = NULL;
@@ -1864,12 +1864,12 @@ Search* Parser::getSearch(BCHAR* xml) {
     Cred*       cred     = NULL;
     Target*     target   = NULL;
     ArrayList*  sources  = new ArrayList();  // an Array of SourceArray object
-    BCHAR*    lang     = NULL;
+    char*    lang     = NULL;
     Meta*       meta     = NULL;
     Data*       data     = NULL;
     
     unsigned int pos = 0;
-    BCHAR* t = NULL;
+    char* t = NULL;
     t = XMLProcessor::getElementContent (xml, CMD_ID , NULL);
     cmdID     = getCmdID   (t);
     if (t) { delete [] t; t = NULL;}
@@ -1912,22 +1912,22 @@ Search* Parser::getSearch(BCHAR* xml) {
   return ret;
 }
 
-Results* Parser::getResult(BCHAR* xml) {
+Results* Parser::getResult(char* xml) {
     
     if (!xml)
         return NULL;
     
     Results*    ret         = NULL;        
     CmdID*      cmdID       = NULL;
-    BCHAR*    msgRef      = NULL;
-    BCHAR*    cmdRef      = NULL;
+    char*    msgRef      = NULL;
+    char*    cmdRef      = NULL;
     Meta*       meta        = NULL;   
     ArrayList*  targetRefs  = new ArrayList(); // it could be an array with only a value
     ArrayList*  sourceRefs  = new ArrayList();
     ArrayList*  items       = new ArrayList();
 
     unsigned int pos = 0;
-    BCHAR* t = NULL;
+    char* t = NULL;
     t = XMLProcessor::getElementContent (xml, CMD_ID , NULL);
     cmdID           = getCmdID     (t);
     if (t) {delete [] t; t = NULL;}    
@@ -1960,12 +1960,12 @@ Results* Parser::getResult(BCHAR* xml) {
 //
 // return and array list of items
 //
-ArrayList* Parser::getItems(BCHAR* xml) {
+ArrayList* Parser::getItems(char* xml) {
 
     Item* item = NULL;
     ArrayList* items = NULL;
     unsigned int pos = 0, previous = 0;
-    BCHAR*      t       = NULL;
+    char*      t       = NULL;
     
     t = XMLProcessor::getElementContent(&xml[pos], ITEM, &pos);    
     while ((item = getItem(t)) != NULL) {
@@ -1985,16 +1985,16 @@ ArrayList* Parser::getItems(BCHAR* xml) {
     return items;    
 }
 
-Item* Parser::getItem(BCHAR* xml) {    
+Item* Parser::getItem(char* xml) {    
     Item*   ret       = NULL;
     Target* target    = NULL;
     Source* source    = NULL;
     Meta*   meta      = NULL;
     ComplexData* data = NULL;
     BOOL moreData     = FALSE;  
-    BCHAR* targetParent = NULL;
-    BCHAR* sourceParent = NULL;
-    BCHAR*      t       = NULL;   
+    char* targetParent = NULL;
+    char* sourceParent = NULL;
+    char*      t       = NULL;   
     unsigned int pos = 0;
     t = XMLProcessor::getElementContent(xml, TARGET,NULL);
     target   = getTarget     (t);
@@ -2034,15 +2034,15 @@ Item* Parser::getItem(BCHAR* xml) {
     return ret;
 }
 
-int Parser::getDataCode(BCHAR* content) {    
+int Parser::getDataCode(char* content) {    
    int ret = 0;
    if (content) {
-        ret = bstrtol(content, NULL, 10);
+        ret = strtol(content, NULL, 10);
    }
    return ret;
 }
 
-Data* Parser::getData(BCHAR* content) {    
+Data* Parser::getData(char* content) {    
    Data* ret = 0;
    if (content) {
         ret = new Data(content);
@@ -2050,7 +2050,7 @@ Data* Parser::getData(BCHAR* content) {
    return ret;
 }
 
-BOOL Parser::getFinalMsg(BCHAR* content) {    
+BOOL Parser::getFinalMsg(char* content) {    
     BOOL ret = FALSE;
     if (content) {
         ret = TRUE;
@@ -2058,7 +2058,7 @@ BOOL Parser::getFinalMsg(BCHAR* content) {
     return ret;
 }
 
-CmdID* Parser::getCmdID(BCHAR* content) {
+CmdID* Parser::getCmdID(char* content) {
     CmdID* ret = NULL;
     if (content) {
         ret = new CmdID(content);
@@ -2066,7 +2066,7 @@ CmdID* Parser::getCmdID(BCHAR* content) {
     return ret;
 }
 
-ComplexData* Parser::getComplexData(BCHAR* xml) {
+ComplexData* Parser::getComplexData(char* xml) {
     
     ComplexData* ret = NULL;
     Anchor* anchor   = NULL;
@@ -2090,21 +2090,21 @@ ComplexData* Parser::getComplexData(BCHAR* xml) {
     return ret;
 }
 
-DevInf* Parser::getDevInf(BCHAR* xml) {
+DevInf* Parser::getDevInf(char* xml) {
     DevInf* ret             = NULL;
     DataStore* dataStore    = NULL;
     CTCap* ctCap            = NULL;
     Ext* ext                = NULL;
 
     VerDTD* verDTD          = NULL;
-    BCHAR* man            = NULL;
-    BCHAR* mod            = NULL;
-    BCHAR* oem            = NULL;
-    BCHAR* fwV            = NULL;
-    BCHAR* swV            = NULL;
-    BCHAR* hwV            = NULL;
-    BCHAR* devId          = NULL;
-    BCHAR* devTyp         = NULL;
+    char* man            = NULL;
+    char* mod            = NULL;
+    char* oem            = NULL;
+    char* fwV            = NULL;
+    char* swV            = NULL;
+    char* hwV            = NULL;
+    char* devId          = NULL;
+    char* devTyp         = NULL;
     ArrayList* dataStores   = NULL;       // DataStore[]
     ArrayList* ctCaps       = NULL;       // CTCap[]
     ArrayList* exts         = NULL;       // Ext[]
@@ -2113,10 +2113,10 @@ DevInf* Parser::getDevInf(BCHAR* xml) {
     BOOL supportNumberOfChanges = NULL;     // if present they Support NumberOfChanges
     SyncCap* syncCap        = NULL;
     
-    BCHAR* value          = NULL;
+    char* value          = NULL;
     
     unsigned int pos = 0;
-    BCHAR* t = NULL;
+    char* t = NULL;
     t = XMLProcessor::getElementContent(xml, VER_DTD,NULL);
     verDTD = getVerDTD(t);
     if (t) {delete [] t; t = NULL;}
@@ -2245,10 +2245,10 @@ DevInf* Parser::getDevInf(BCHAR* xml) {
 * This CTCap is no nested as a usual XML. See syncml_devinf_v11_20020215.pdf
 *
 */
-Ext* Parser::getExt(BCHAR* xml) {
+Ext* Parser::getExt(char* xml) {
     Ext* ret = NULL;
-    BCHAR* XNam         = NULL;
-    BCHAR* value        = NULL;
+    char* XNam         = NULL;
+    char* value        = NULL;
     ArrayList* list     = NULL;
     StringElement* s    = NULL;
     unsigned int pos = 0, previous = 0;
@@ -2279,13 +2279,13 @@ Ext* Parser::getExt(BCHAR* xml) {
     return ret;
 }
 
-DataStore* Parser::getDataStore(BCHAR* xml) {
+DataStore* Parser::getDataStore(char* xml) {
     DataStore* ret = NULL;
     
     SourceRef*       sourceRef      = NULL;
-    BCHAR*           displayName    = NULL;
+    char*           displayName    = NULL;
     long             maxGUIDSize    = 0;
-    BCHAR*           maxGUIDSizeW   = NULL;
+    char*           maxGUIDSizeW   = NULL;
     ContentTypeInfo* rxPref         = NULL;
     ArrayList*       rx             = NULL; // ContentTypeInfo[]
     ContentTypeInfo* txPref         = NULL;;
@@ -2296,14 +2296,14 @@ DataStore* Parser::getDataStore(BCHAR* xml) {
     ContentTypeInfo* x              = NULL;
     
     unsigned int pos = 0;
-    BCHAR* t = NULL;
+    char* t = NULL;
     t = XMLProcessor::getElementContent(xml, SOURCE_REF,  NULL);
     sourceRef   = getSourceRef(t);
     if (t) {delete [] t; t = NULL;}    
     displayName = XMLProcessor::getElementContent(xml, DISPLAY_NAME,             NULL);
     maxGUIDSizeW = XMLProcessor::getElementContent(xml, MAX_GUID_SIZE,           NULL);
     if (maxGUIDSizeW) {
-        maxGUIDSize = bstrtol(maxGUIDSizeW, NULL, 10);
+        maxGUIDSize = strtol(maxGUIDSizeW, NULL, 10);
     }
     t = XMLProcessor::getElementContent(xml, RX_PREF,  NULL);
     rxPref = getContentTypeInfo(t);
@@ -2379,14 +2379,14 @@ DataStore* Parser::getDataStore(BCHAR* xml) {
 }
 
 
-SyncCap* Parser::getSyncCap(BCHAR* xml) {
+SyncCap* Parser::getSyncCap(char* xml) {
     
     SyncCap* ret            = NULL;
     SyncType* syncType      = NULL;
     ArrayList* list         = NULL;
 
     unsigned int pos = 0, previous = 0;
-    BCHAR* t = NULL;
+    char* t = NULL;
     t = XMLProcessor::getElementContent(&xml[pos], SYNC_TYPE, &pos);
     while ((syncType = getSyncType(t)) != NULL) {
         if (syncType) {
@@ -2411,13 +2411,13 @@ SyncCap* Parser::getSyncCap(BCHAR* xml) {
     return ret;
 }
 
-SyncType* Parser::getSyncType(BCHAR* content) {
+SyncType* Parser::getSyncType(char* content) {
     
     SyncType* ret            = NULL;    
     int value                = 0;
   
     if (content) {
-         value = bstrtol(content, NULL, 10);
+         value = strtol(content, NULL, 10);
          if (value >= 1 && value <= 7) {
              ret = new SyncType(value);
          }
@@ -2427,11 +2427,11 @@ SyncType* Parser::getSyncType(BCHAR* content) {
 }
 
 
-ContentTypeInfo* Parser::getContentTypeInfo(BCHAR* xml) {
+ContentTypeInfo* Parser::getContentTypeInfo(char* xml) {
     
     ContentTypeInfo* ret = NULL;
-    BCHAR* ctType      = NULL;
-    BCHAR* verCT       = NULL;     
+    char* ctType      = NULL;
+    char* verCT       = NULL;     
 
     ctType = XMLProcessor::getElementContent(xml, CT_TYPE,             NULL);
     verCT  = XMLProcessor::getElementContent(xml, VER_CT,             NULL);
@@ -2445,12 +2445,12 @@ ContentTypeInfo* Parser::getContentTypeInfo(BCHAR* xml) {
     return ret;
 }
 
-DSMem* Parser::getDSMem(BCHAR* xml) {    
+DSMem* Parser::getDSMem(char* xml) {    
     
     DSMem* ret          = NULL;
-    BCHAR* maxMemW   = NULL;   
-    BCHAR* sharedMemW = NULL;
-    BCHAR* maxIDW    = NULL;
+    char* maxMemW   = NULL;   
+    char* sharedMemW = NULL;
+    char* maxIDW    = NULL;
         
     BOOL    sharedMem   = NULL;
     long    maxMem     = 0;
@@ -2465,13 +2465,13 @@ DSMem* Parser::getDSMem(BCHAR* xml) {
     isToCreate = NotNullCheck(3, maxMemW, sharedMemW, maxIDW);
 
     if (maxMemW != NULL) {
-        maxMem = bstrtol(maxMemW, NULL, 10);
+        maxMem = strtol(maxMemW, NULL, 10);
     }
     if (maxIDW != NULL) {
-        maxID = bstrtol(maxIDW, NULL, 10);
+        maxID = strtol(maxIDW, NULL, 10);
     } 
     if (sharedMemW != NULL) {
-        sharedMem = bstrtol(sharedMemW, NULL, 10);
+        sharedMem = strtol(sharedMemW, NULL, 10);
     }
     
     if (isToCreate) {
@@ -2486,14 +2486,14 @@ DSMem* Parser::getDSMem(BCHAR* xml) {
 
 }
 
-BOOL Parser::getNoResp(BCHAR* content) {    
+BOOL Parser::getNoResp(char* content) {    
   if (content)
       return TRUE;
   else
       return FALSE;
 }
 
-BOOL Parser::getNoResults(BCHAR* content) {    
+BOOL Parser::getNoResults(char* content) {    
     
     if (content)
         return TRUE;
@@ -2501,7 +2501,7 @@ BOOL Parser::getNoResults(BCHAR* content) {
         return FALSE;
 }
 
-BOOL Parser::getMoreData(BCHAR* content) {
+BOOL Parser::getMoreData(char* content) {
      if (content)
         return TRUE;
     else    
@@ -2514,7 +2514,7 @@ BOOL Parser::getMoreData(BCHAR* content) {
 * TBD
 *
 */
-CTCap* Parser::getCTCap(BCHAR* xml) {
+CTCap* Parser::getCTCap(char* xml) {
     CTCap* ret = NULL;
     CTTypeSupported* ctTypeSupported = NULL;
 
@@ -2526,7 +2526,7 @@ CTCap* Parser::getCTCap(BCHAR* xml) {
 //
 // TBD 
 //
-ArrayList* Parser::getEMI(BCHAR* content) {
+ArrayList* Parser::getEMI(char* content) {
     ArrayList* ret = NULL;    
     return ret;
 }

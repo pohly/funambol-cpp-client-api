@@ -140,14 +140,14 @@ SN_Errors SyncNotification::parse (const char *msg, int len)
     serverId = stringdup(p, server_id_len);
     IncP(server_id_len);
 
-    //BCHAR dbg[256];
-    //bsprintf(dbg, T("serverId: %s"), serverId);
+    //char dbg[256];
+    //sprintf(dbg, T("serverId: %s"), serverId);
     //LOG.debug(dbg);
 
     // get num sync
     numSyncs = (*p)>>4;
     IncP(1);
-    //bsprintf(dbg, T("numSyncs: %d"), numSyncs);
+    //sprintf(dbg, T("numSyncs: %d"), numSyncs);
     //LOG.debug(dbg);
 
     // allocate syncalert objects
@@ -156,7 +156,7 @@ SN_Errors SyncNotification::parse (const char *msg, int len)
 
     // Init all sync items
     for(int i=0; i<numSyncs; i++){
-        BCHAR *tmps;
+        char *tmps;
         sync_body *sync;
         unsigned char server_URI_len;
         int ret;
@@ -196,7 +196,7 @@ int SyncNotification::getSessionId() {
     return sessionId;
 }
 
-const BCHAR *SyncNotification::getServerId() {
+const char *SyncNotification::getServerId() {
     return serverId;
 }
 

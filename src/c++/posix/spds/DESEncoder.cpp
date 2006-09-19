@@ -65,7 +65,7 @@ char* DESEncoder::transform(char* data, TransformationInfo& info)
 
     if (res == FALSE) {
         lastErrorCode = ERR_DT_FAILURE;
-        bsprintf(lastErrorMsg, ERRMSG_DT_FAILURE, GetLastError());
+        sprintf(lastErrorMsg, ERRMSG_DT_FAILURE, GetLastError());
         goto exit;
     }
 
@@ -80,7 +80,7 @@ char* DESEncoder::transform(char* data, TransformationInfo& info)
 
     if (res == FALSE) {
         lastErrorCode = ERR_DT_FAILURE;
-        bsprintf(lastErrorMsg, ERRMSG_DT_FAILURE, GetLastError());
+        sprintf(lastErrorMsg, ERRMSG_DT_FAILURE, GetLastError());
         goto exit;
     }
 
@@ -94,7 +94,7 @@ char* DESEncoder::transform(char* data, TransformationInfo& info)
 
     if (res == FALSE) {
         lastErrorCode = ERR_DT_FAILURE;
-        bsprintf(lastErrorMsg, ERRMSG_DT_FAILURE, GetLastError());
+        sprintf(lastErrorMsg, ERRMSG_DT_FAILURE, GetLastError());
         goto exit;
     }
 
@@ -109,7 +109,7 @@ char* DESEncoder::transform(char* data, TransformationInfo& info)
 
     if (res == FALSE) {
         lastErrorCode = ERR_DT_FAILURE;
-        bsprintf(lastErrorMsg, ERRMSG_DT_FAILURE, GetLastError());
+        sprintf(lastErrorMsg, ERRMSG_DT_FAILURE, GetLastError());
         goto exit;
     }
 
@@ -124,7 +124,7 @@ char* DESEncoder::transform(char* data, TransformationInfo& info)
 
     if (res == FALSE) {
         lastErrorCode = ERR_DT_FAILURE;
-        bsprintf(lastErrorMsg, ERRMSG_DT_FAILURE, GetLastError());
+        sprintf(lastErrorMsg, ERRMSG_DT_FAILURE, GetLastError());
         goto exit;
     }
 
@@ -139,7 +139,7 @@ char* DESEncoder::transform(char* data, TransformationInfo& info)
 
     if (res == FALSE) {
         lastErrorCode = ERR_DT_FAILURE;
-        bsprintf(lastErrorMsg, ERRMSG_DT_FAILURE, GetLastError());
+        sprintf(lastErrorMsg, ERRMSG_DT_FAILURE, GetLastError());
         goto exit;
     }
 
@@ -159,7 +159,7 @@ char* DESEncoder::transform(char* data, TransformationInfo& info)
 
     if ((res == FALSE) && (GetLastError() != ERROR_MORE_DATA)) {
         lastErrorCode = ERR_DT_FAILURE;
-        bsprintf(lastErrorMsg, ERRMSG_DT_FAILURE, GetLastError());
+        sprintf(lastErrorMsg, ERRMSG_DT_FAILURE, GetLastError());
         goto exit;
     }
 
@@ -180,7 +180,7 @@ char* DESEncoder::transform(char* data, TransformationInfo& info)
 
     if (res == FALSE) {
         lastErrorCode = ERR_DT_FAILURE;
-        bsprintf(lastErrorMsg, ERRMSG_DT_FAILURE, GetLastError());
+        sprintf(lastErrorMsg, ERRMSG_DT_FAILURE, GetLastError());
         goto exit;
     }
 

@@ -39,8 +39,8 @@ class WhereClause : public Clause {
     // ------------------------------------------------------- Private interface
 private:
 
-    BCHAR*            property     ;
-    BCHAR*            value        ;
+    char*             property     ;
+    char*             value        ;
     WhereClauseOperator op           ;
     BOOL                caseSensitive;
 
@@ -65,7 +65,7 @@ public:
      * @param o
      * @param s
      */
-    WhereClause(const BCHAR* property, const BCHAR* value, WhereClauseOperator o, BOOL p3);
+    WhereClause(const char*  property, const char*  value, WhereClauseOperator o, BOOL p3);
 
 
     /*
@@ -79,14 +79,14 @@ public:
      *
      * @param p0
      */
-    void setProperty(BCHAR* p);
+    void setProperty(char*  p);
 
 
     /*
      * getProperty
      *
      */
-    BCHAR* getProperty(BCHAR* p = NULL);
+    char*  getProperty(char*  p = NULL);
 
 
 
@@ -95,14 +95,14 @@ public:
      *
      * @param p0
      */
-    void setValue(BCHAR* v);
+    void setValue(char*  v);
 
 
     /*
      * getvalue
      *
      */
-    BCHAR* getValue(BCHAR* v = NULL);
+    char*  getValue(char*  v = NULL);
 
 
     /*

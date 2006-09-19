@@ -86,88 +86,88 @@ void AccessConfig::setServerAuthRequired(BOOL v) {
     dirty |= DIRTY_SERVERAUTH_REQUIRED;
 }
 
-const BCHAR* AccessConfig::getServerAuthType() const {
+const char* AccessConfig::getServerAuthType() const {
     return serverAuthType;
 }
 
 
-void AccessConfig::setServerAuthType(const BCHAR* v){
+void AccessConfig::setServerAuthType(const char* v){
 	set(&serverAuthType, v);	    
 }
 
 
-const BCHAR* AccessConfig::getClientAuthType() const {
+const char* AccessConfig::getClientAuthType() const {
     return clientAuthType;
 }
 
 
-void AccessConfig::setClientAuthType(const BCHAR* v){
+void AccessConfig::setClientAuthType(const char* v){
 	set(&clientAuthType, v);
 	
     dirty |= DIRTY_CLIENTAUTHTYPE; 
 }
 
-const BCHAR* AccessConfig::getServerPWD() const {
+const char* AccessConfig::getServerPWD() const {
     return serverPWD;
 }
 
 
-void AccessConfig::setServerPWD(const BCHAR* v){
+void AccessConfig::setServerPWD(const char* v){
 	set(&serverPWD, v);
 	
     dirty |= DIRTY_SERVERPWD;
 }
 
-const BCHAR* AccessConfig::getServerID() const {
+const char* AccessConfig::getServerID() const {
     return serverID;
 }
 
 
-void AccessConfig::setServerID(const BCHAR* v){
+void AccessConfig::setServerID(const char* v){
 	set(&serverID, v);
 	
     dirty |= DIRTY_SERVERID;
 }
 
-const BCHAR* AccessConfig::getServerNonce() const {
+const char* AccessConfig::getServerNonce() const {
     return serverNonce;
 }
 
 
-void AccessConfig::setServerNonce(const BCHAR* v){
+void AccessConfig::setServerNonce(const char* v){
 	set(&serverNonce, v);
 	
     dirty |= DIRTY_SERVER_NONCE;
 }
 
-const BCHAR* AccessConfig::getClientNonce() const {
+const char* AccessConfig::getClientNonce() const {
     return clientNonce;
 }
 
 
-void AccessConfig::setClientNonce(const BCHAR* v){
+void AccessConfig::setClientNonce(const char* v){
 	set(&clientNonce, v);
 	
     dirty |= DIRTY_CLIENT_NONCE;
 }
 
-const BCHAR* AccessConfig::getUsername() const {
+const char* AccessConfig::getUsername() const {
     return username;
 }
 
 
-void AccessConfig::setUsername(const BCHAR* v){
+void AccessConfig::setUsername(const char* v){
 	set(&username, v);
 	
     dirty |= DIRTY_USERNAME;
 }
 
 
-const BCHAR* AccessConfig::getPassword() const {
+const char* AccessConfig::getPassword() const {
     return password;
 }
 
-void AccessConfig::setPassword(const BCHAR* v) {	
+void AccessConfig::setPassword(const char* v) {	
 	set(&password, v);
 	 
     dirty |= DIRTY_PASSWORD;
@@ -193,11 +193,11 @@ void AccessConfig::setUseProxy(BOOL v) {
     dirty |= DIRTY_USE_PROXY;
 }
 
-const BCHAR* AccessConfig::getProxyHost() const {
+const char* AccessConfig::getProxyHost() const {
     return proxyHost;
 }
 
-void AccessConfig::setProxyHost(const BCHAR* v) {
+void AccessConfig::setProxyHost(const char* v) {
 	set(&proxyHost, v);
 	
     dirty |= DIRTY_PROXY_HOST;
@@ -213,27 +213,27 @@ void AccessConfig::setProxyPort(int v) {
     dirty |= DIRTY_PROXY_PORT;
 }
 
-BCHAR* AccessConfig::getProxyUsername() const {
+char* AccessConfig::getProxyUsername() const {
     return proxyUsername;
 }
 
-void AccessConfig::setProxyUsername(const BCHAR* v) {
+void AccessConfig::setProxyUsername(const char* v) {
 	set(&proxyUsername, v);
 }
 
-BCHAR* AccessConfig::getProxyPassword() const {
+char* AccessConfig::getProxyPassword() const {
     return proxyPassword;
 }
 
-void AccessConfig::setProxyPassword(const BCHAR* v) {
+void AccessConfig::setProxyPassword(const char* v) {
 	set(&proxyPassword, v);
 }
 
-const BCHAR* AccessConfig::getUserAgent() const {    
+const char* AccessConfig::getUserAgent() const {    
     return userAgent;	
 }
 
-void AccessConfig::setUserAgent(const BCHAR* v) {
+void AccessConfig::setUserAgent(const char* v) {
 	set(&userAgent, v);	    
 }
 
@@ -253,11 +253,11 @@ void AccessConfig::setCheckConn(BOOL v) {
 }
 
 
-const BCHAR* AccessConfig::getSyncURL() const {
+const char* AccessConfig::getSyncURL() const {
     return syncURL;
 }
 
-void AccessConfig::setSyncURL(const BCHAR* v) {	
+void AccessConfig::setSyncURL(const char* v) {	
 	//
 	// Checks if the url starts with http(s)://; if not, http:// is prepended
 	//
@@ -265,13 +265,13 @@ void AccessConfig::setSyncURL(const BCHAR* v) {
 	
 	// Adds default protocol if not set AND the string is not empty
     if (*syncURL							&&
-		bstrncmp(syncURL, T("http://"), 7)  && 
-	    bstrncmp(syncURL, T("HTTP://"), 7)  &&
-	    bstrncmp(syncURL, T("https://"), 8) &&
-	    bstrncmp(syncURL, T("HTTPS://"), 8) ) {
+		strncmp(syncURL, T("http://"), 7)  && 
+	    strncmp(syncURL, T("HTTP://"), 7)  &&
+	    strncmp(syncURL, T("https://"), 8) &&
+	    strncmp(syncURL, T("HTTPS://"), 8) ) {
         
-		BCHAR* dest = new BCHAR[bstrlen(syncURL)+8];
-        bsprintf(dest, T("http://%s"), syncURL );
+		char* dest = new char[strlen(syncURL)+8];
+        sprintf(dest, T("http://%s"), syncURL );
 		
 		set(&syncURL, dest);
 
@@ -328,16 +328,16 @@ unsigned int AccessConfig::getDirty() const {
     return dirty;
 }
 
-void AccessConfig::set(BCHAR** buf, const BCHAR* v) {
+void AccessConfig::set(char** buf, const char* v) {
 	safeDelete(buf);
 	
 	if (v == NULL) {
 		v = T("");
 	}
-	int len = bstrlen(v);
-	*buf = new BCHAR[len+2];
+	int len = strlen(v);
+	*buf = new char[len+2];
 	
-	bstrcpy(*buf, v);
+	strcpy(*buf, v);
 }
 
 BOOL AccessConfig::getEncryption() const {

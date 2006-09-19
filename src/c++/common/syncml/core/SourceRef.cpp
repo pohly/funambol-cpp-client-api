@@ -40,7 +40,7 @@ SourceRef::~SourceRef() {
  * @param value the referenced value - NULL ALLOWED
  *
  */
-SourceRef::SourceRef(const BCHAR* value) {
+SourceRef::SourceRef(const char* value) {
     this->value  = NULL;
     this->source = NULL;
     setValue(value);
@@ -67,7 +67,7 @@ SourceRef::SourceRef(Source* source) {
  *
  * @return the value
  */
-const BCHAR* SourceRef::getValue() {    
+const char* SourceRef::getValue() {    
         return value;
     }
 
@@ -76,7 +76,7 @@ const BCHAR* SourceRef::getValue() {
  *
  * @param value the reference value - NULL
  */
-void SourceRef::setValue(const BCHAR* value) {
+void SourceRef::setValue(const char* value) {
     if (this->value) {
         delete [] this->value; this->value = NULL;
     }

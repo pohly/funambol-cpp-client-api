@@ -28,9 +28,9 @@
 */
 
 
-wchar_t* readContentFromFile(wchar_t* path) {
+WCHAR* readContentFromFile(WCHAR* path) {
 
-	wchar_t wfilename [256];    
+	WCHAR wfilename [256];    
 
     int position = 0;
     int len = 0;
@@ -39,9 +39,9 @@ wchar_t* readContentFromFile(wchar_t* path) {
     DWORD lpFileSizeHigh;
     DWORD dwSize;
   
-	wchar_t line[2048];
+	WCHAR line[2048];
 	FILE* f;
-	wchar_t* ptr = NULL;
+	WCHAR* ptr = NULL;
        
 	
     file = CreateFile(wfilename, GENERIC_READ, FILE_SHARE_READ | FILE_SHARE_WRITE,
@@ -50,7 +50,7 @@ wchar_t* readContentFromFile(wchar_t* path) {
     
     if( file ) {
         dwSize = GetFileSize(file, &lpFileSizeHigh);    
-        ptr = new wchar_t[dwSize + 1];
+        ptr = new WCHAR[dwSize + 1];
         wmemset(ptr, 0, dwSize);
     } else {
         
@@ -85,7 +85,7 @@ finally:
 
 
 
-void writeTextToTextFile(wchar_t* fName, wchar_t* text) {
+void writeTextToTextFile(WCHAR* fName, WCHAR* text) {
     
     FILE* f;
 	   
@@ -109,7 +109,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLin
 int main(int argc, char** argv) {
 #endif
     
-    wchar_t* xml = readContentFromFile(TEXT("sourceSync.txt"));
+    WCHAR* xml = readContentFromFile(TEXT("sourceSync.txt"));
       
     SyncML* syncML = NULL;
  

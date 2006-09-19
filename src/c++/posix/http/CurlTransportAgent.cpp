@@ -79,7 +79,7 @@ CurlTransportAgent::CurlTransportAgent(URL& newURL, Proxy& newProxy, unsigned in
     setUserAgent("Funambol POSIX SyncML client");
 }
 
-void CurlTransportAgent::setUserAgent(BCHAR* ua) {
+void CurlTransportAgent::setUserAgent(char*  ua) {
     if (ua) {
         TransportAgent::setUserAgent(ua);
         if (easyhandle) {
@@ -163,7 +163,7 @@ char* CurlTransportAgent::sendMessage(const char* msg) {
     LOG.debug(logmsg);
     
     curl_slist *slist=NULL;
-    wchar_t *response = NULL;
+    WCHAR *response = NULL;
     CURLcode code;
     char contenttype[256];
     sprintf(contenttype, "Content-Type: %s", SYNCML_CONTENT_TYPE);

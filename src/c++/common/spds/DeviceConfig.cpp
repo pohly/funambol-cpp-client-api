@@ -65,16 +65,16 @@ DeviceConfig::~DeviceConfig() {
 }
 
 
-void DeviceConfig::set(BCHAR** buf, const BCHAR* v) {
+void DeviceConfig::set(char** buf, const char* v) {
 	safeDelete(buf);
 	
 	if (v == NULL) {
 		v = T("");
 	}
-	int len = bstrlen(v);
-	*buf = new BCHAR[len+2];
+	int len = strlen(v);
+	*buf = new char[len+2];
 	
-	bstrcpy(*buf, v);
+	strcpy(*buf, v);
 }
 
 
@@ -89,73 +89,73 @@ void DeviceConfig::set(BCHAR** buf, const BCHAR* v) {
  *      buffer so that the caller is assured that the 
  *      given address can be released after the call.
  */
-const BCHAR* DeviceConfig::getVerDTD() const {
+const char* DeviceConfig::getVerDTD() const {
     return verDTD;
 }
-void DeviceConfig::setVerDTD(const BCHAR* v){
+void DeviceConfig::setVerDTD(const char* v){
 	set(&verDTD, v);
 }
 
-const BCHAR* DeviceConfig::getMan() const {
+const char* DeviceConfig::getMan() const {
     return man;
 }
-void DeviceConfig::setMan(const BCHAR* v){
+void DeviceConfig::setMan(const char* v){
 	set(&man, v);
 }
 
-const BCHAR* DeviceConfig::getMod() const {
+const char* DeviceConfig::getMod() const {
     return mod;
 }
-void DeviceConfig::setMod(const BCHAR* v){
+void DeviceConfig::setMod(const char* v){
 	set(&mod, v);
 }
 
-const BCHAR* DeviceConfig::getOem() const {
+const char* DeviceConfig::getOem() const {
     return oem;
 }
-void DeviceConfig::setOem(const BCHAR* v){
+void DeviceConfig::setOem(const char* v){
 	set(&oem, v);
 }
 
-const BCHAR* DeviceConfig::getFwv() const {
+const char* DeviceConfig::getFwv() const {
     return fwv;
 }
-void DeviceConfig::setFwv(const BCHAR* v){
+void DeviceConfig::setFwv(const char* v){
 	set(&fwv, v);
 }
 
-const BCHAR* DeviceConfig::getSwv() const {
+const char* DeviceConfig::getSwv() const {
     return swv;
 }
-void DeviceConfig::setSwv(const BCHAR* v){
+void DeviceConfig::setSwv(const char* v){
 	set(&swv, v);
 }
 
-const BCHAR* DeviceConfig::getHwv() const {
+const char* DeviceConfig::getHwv() const {
     return hwv;
 }
-void DeviceConfig::setHwv(const BCHAR* v){
+void DeviceConfig::setHwv(const char* v){
 	set(&hwv, v);
 }
 
-const BCHAR* DeviceConfig::getDevID() const {
+const char* DeviceConfig::getDevID() const {
     return devID;
 }
-void DeviceConfig::setDevID(const BCHAR* v){
+void DeviceConfig::setDevID(const char* v){
 	set(&devID, v);
 }
 
-const BCHAR* DeviceConfig::getDevType() const {
+const char* DeviceConfig::getDevType() const {
     return devType;
 }
-void DeviceConfig::setDevType(const BCHAR* v){
+void DeviceConfig::setDevType(const char* v){
 	set(&devType, v);
 }
 
-const BCHAR* DeviceConfig::getDsV() const {
+const char* DeviceConfig::getDsV() const {
     return dsV;
 }
-void DeviceConfig::setDsV(const BCHAR* v){
+void DeviceConfig::setDsV(const char* v){
 	set(&dsV, v);
 }
 
@@ -194,10 +194,10 @@ void DeviceConfig::setMaxObjSize(unsigned int v) {
     maxObjSize = v;
 }
 
-const BCHAR* DeviceConfig::getDevInfHash() const {
+const char* DeviceConfig::getDevInfHash() const {
     return devInfHash;
 }
-void DeviceConfig::setDevInfHash(const BCHAR *v) {
+void DeviceConfig::setDevInfHash(const char *v) {
     set(&devInfHash, v);
 }
 

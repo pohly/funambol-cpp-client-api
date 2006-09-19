@@ -25,12 +25,12 @@ class Anchor {
     
     // ------------------------------------------------------------ Private data
     private:
-        BCHAR* last;
-        BCHAR* next;
+        char*  last;
+        char*  next;
     // ---------------------------------------------------------- Protected data    
     public:
     
-        Anchor(const BCHAR* last, const BCHAR* next);
+        Anchor(const char*  last, const char*  next);
         ~Anchor();
 
         /**
@@ -38,7 +38,7 @@ class Anchor {
      *
      * @return the last property
      */
-     const BCHAR* getLast();
+     const char*  getLast();
 
     /**
      * Sets the last property
@@ -46,14 +46,14 @@ class Anchor {
      * @param last the last property
      *
      */
-    void setLast(const BCHAR* last);
+    void setLast(const char*  last);
     
     /**
      * Gets the next property
      *
      * @return the next property
      */
-    const BCHAR* getNext();
+    const char*  getNext();
     
     /**
      * Sets the next property
@@ -61,7 +61,7 @@ class Anchor {
      * @param next the next property
      *
      */
-    void setNext(const BCHAR* next);
+    void setNext(const char*  next);
 
 
     Anchor* clone();

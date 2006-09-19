@@ -51,7 +51,7 @@
          * by the instal property 'url'. Returns the response status code.
          * Use getResponse() to get the server response.
          */
-        wchar_t* sendMessage(wchar_t* msg);
+        WCHAR* sendMessage(WCHAR* msg);
     };
 
 #endif

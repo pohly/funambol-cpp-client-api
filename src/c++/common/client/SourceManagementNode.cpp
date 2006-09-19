@@ -24,13 +24,13 @@
 #include "client/SourceManagementNode.h"
 
 
-SourceManagementNode::SourceManagementNode(const BCHAR*   context,
-                                           const BCHAR*   name   )
+SourceManagementNode::SourceManagementNode(const char*    context,
+                                           const char*    name   )
     : DeviceManagementNode(context, name) {
 }
 
-SourceManagementNode::SourceManagementNode(const BCHAR*    context,
-                                           const BCHAR*    name   ,
+SourceManagementNode::SourceManagementNode(const char*     context,
+                                           const char*     name   ,
                                            SyncSourceConfig& c      )
     : DeviceManagementNode(context, name) {
     config.assign(c);
@@ -39,28 +39,28 @@ SourceManagementNode::SourceManagementNode(const BCHAR*    context,
 SourceManagementNode::~SourceManagementNode() {}
 
 
-void SourceManagementNode::getPropertyValue(const BCHAR* property, BCHAR* v, int size) {
+void SourceManagementNode::getPropertyValue(const char*  property, char*  v, int size) {
     if (property == NULL) {
         return;
     }
 
-    if (bstrcmp(property, PROPERTY_SOURCE_NAME) == 0) {
+    if (strcmp(property, PROPERTY_SOURCE_NAME) == 0) {
         config.getName(v);
-    } else if (bstrcmp(property, PROPERTY_SOURCE_URI)==0) {
+    } else if (strcmp(property, PROPERTY_SOURCE_URI)==0) {
         config.getURI(v);
-    } else if (bstrcmp(property, PROPERTY_SOURCE_SYNC_MODES)==0) {
+    } else if (strcmp(property, PROPERTY_SOURCE_SYNC_MODES)==0) {
         config.getSyncModes(v);
-    } else if (bstrcmp(property, PROPERTY_SOURCE_SYNC)==0) {
+    } else if (strcmp(property, PROPERTY_SOURCE_SYNC)==0) {
         config.getSync(v);
-    } else if (bstrcmp(property, PROPERTY_SOURCE_LAST_SYNC)==0) {
+    } else if (strcmp(property, PROPERTY_SOURCE_LAST_SYNC)==0) {
         timestampToAnchor(config.getLast(), v);
-    } else if (bstrcmp(property, PROPERTY_SOURCE_TYPE)==0) {
+    } else if (strcmp(property, PROPERTY_SOURCE_TYPE)==0) {
         config.getType(v);
     }
 }
 
 
-void SourceManagementNode::setPropertyValue(const BCHAR* property, const BCHAR* value) {
+void SourceManagementNode::setPropertyValue(const char*  property, const char*  value) {
 
 }
 

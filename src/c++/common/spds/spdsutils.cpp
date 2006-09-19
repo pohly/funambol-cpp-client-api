@@ -22,29 +22,29 @@
 #include "base/quoted-printable.h"
 
 // Base64 encoding for files (with newline)
-BCHAR *uuencode(const char *msg, int len);
+char *uuencode(const char *msg, int len);
 
-SyncMode syncModeCode(const BCHAR* syncMode) {
+SyncMode syncModeCode(const char* syncMode) {
 
-    if (bstrcmp(syncMode,T("slow")) == 0)
+    if (strcmp(syncMode,T("slow")) == 0)
         return SYNC_SLOW;
-    else if (bstrcmp(syncMode,T("two-way")) == 0)
+    else if (strcmp(syncMode,T("two-way")) == 0)
         return SYNC_TWO_WAY;
-    else if (bstrcmp(syncMode,T("one-way")) == 0)
+    else if (strcmp(syncMode,T("one-way")) == 0)
         return SYNC_ONE_WAY_FROM_SERVER;
-    else if (bstrcmp(syncMode,T("one-way-server")) == 0)
+    else if (strcmp(syncMode,T("one-way-server")) == 0)
         return SYNC_ONE_WAY_FROM_SERVER;
-    else if (bstrcmp(syncMode,T("one-way-client")) == 0)
+    else if (strcmp(syncMode,T("one-way-client")) == 0)
         return SYNC_ONE_WAY_FROM_CLIENT;
-    else if (bstrcmp(syncMode,T("refresh"))             == 0 ||
-             bstrcmp(syncMode,T("refresh-server"))      == 0 ||
-             bstrcmp(syncMode,T("refresh-from-server")) == 0  )
+    else if (strcmp(syncMode,T("refresh"))             == 0 ||
+             strcmp(syncMode,T("refresh-server"))      == 0 ||
+             strcmp(syncMode,T("refresh-from-server")) == 0  )
         return SYNC_REFRESH_FROM_SERVER;
-    else if (bstrcmp(syncMode,T("refresh-client")) == 0 ||
-             bstrcmp(syncMode,T("refresh-from-client")) == 0)
+    else if (strcmp(syncMode,T("refresh-client")) == 0 ||
+             strcmp(syncMode,T("refresh-from-client")) == 0)
         return SYNC_REFRESH_FROM_CLIENT;
     //--------- Funambol extension --------------------
-    else if (bstrcmp(syncMode, T("addrchange")) == 0)
+    else if (strcmp(syncMode, T("addrchange")) == 0)
         return SYNC_ADDR_CHANGE_NOTIFICATION;
     return SYNC_NONE;
 }
@@ -138,7 +138,7 @@ static const char *getLine(const char *msg, char **line) {
 
 // This functions works for standard encoded files with new line every
 // 72 characters. It does not work if the line length is not multiple of 4.
-int uudecode(const BCHAR *msg, char **binmsg, size_t *binlen)
+int uudecode(const char *msg, char **binmsg, size_t *binlen)
 {
     // Convert the string
     char *buf = stringdup(msg);
@@ -171,17 +171,17 @@ int uudecode(const BCHAR *msg, char **binmsg, size_t *binlen)
     return 0;
 }
 
-BCHAR *loadAndConvert(const BCHAR *filename, const BCHAR *encoding)
+char *loadAndConvert(const char *filename, const char *encoding)
 {
     char *msg = 0;
     bool binary = true;
     size_t msglen=0;
-    BCHAR *ret = 0;
+    char *ret = 0;
     
     if(!filename)
         return 0;
 
-    if( bstrcmp(encoding, T("base64")) == 0 ) {
+    if( strcmp(encoding, T("base64")) == 0 ) {
         binary = true;
     }
 
@@ -189,11 +189,11 @@ BCHAR *loadAndConvert(const BCHAR *filename, const BCHAR *encoding)
     if(!readFile(filename, &msg, &msglen, binary))
         return 0;
     // Encode the file
-    if( bstrcmp(encoding, T("base64")) == 0 ) {
+    if( strcmp(encoding, T("base64")) == 0 ) {
         ret = uuencode(msg, msglen);
         delete [] msg;
     }
-    else if( bstrcmp(encoding, T("quoted-printable")) == 0 ) {
+    else if( strcmp(encoding, T("quoted-printable")) == 0 ) {
         if(qp_isNeed(msg))
             ret = qp_encode(msg);
         delete [] msg;
@@ -204,9 +204,9 @@ BCHAR *loadAndConvert(const BCHAR *filename, const BCHAR *encoding)
     return ret;
 }
 
-int convertAndSave(const BCHAR *filename,
-                   const BCHAR *s,
-                   const BCHAR *encoding)
+int convertAndSave(const char *filename,
+                   const char *s,
+                   const char *encoding)
 {
     char *buf, *name = stringdup(filename);
     bool binary = true;
@@ -216,14 +216,14 @@ int convertAndSave(const BCHAR *filename,
         return -1;
 
     // Decode the file
-    if( bstrcmp(encoding, T("base64")) == 0 ) {
+    if( strcmp(encoding, T("base64")) == 0 ) {
         if( uudecode(s, &buf, &len) ) {
             return -1;
         }
         binary = true;
     }
     // TODO
-    //else if( bstrcmp(encoding, T("ISO-8859-1")) == 0 ) {
+    //else if( strcmp(encoding, T("ISO-8859-1")) == 0 ) {
     //    buf = stringdup(s);
     //    len = strlen(buf);        
     //}
@@ -237,17 +237,17 @@ int convertAndSave(const BCHAR *filename,
     return 0;
 }
 
-BCHAR *getSourceName(const BCHAR *uri)
+char *getSourceName(const char *uri)
 {
 #if 0
 // FIXME
-    BCHAR nodeName = new BCHAR[];
-    bstrcpy(nodeName, rootContext); bstrcat(nodeName, T(CONTEXT_SPDS_SOURCES));
+    char nodeName = new char[];
+    strcpy(nodeName, rootContext); strcat(nodeName, T(CONTEXT_SPDS_SOURCES));
 
     node = dmt->getManagementNode(nodeName);
     if ( ! node ) {
         lastErrorCode = ERR_INVALID_CONTEXT;
-        bsprintf(lastErrorMsg, ERRMSG_INVALID_CONTEXT, nodeName);
+        sprintf(lastErrorMsg, ERRMSG_INVALID_CONTEXT, nodeName);
         goto finally;
     }
     n = node->getChildrenMaxCount();

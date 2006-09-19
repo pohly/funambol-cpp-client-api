@@ -28,8 +28,8 @@
 class Put : public ItemizedCommand {
     
     private:       
-        BCHAR* lang;
-        BCHAR* COMMAND_NAME;
+        char*  lang;
+        char*  COMMAND_NAME;
     
        
     
@@ -51,7 +51,7 @@ class Put : public ItemizedCommand {
          */
         Put( CmdID* cmdID,
                     BOOL noResp,
-                    BCHAR* lang,
+                    char*  lang,
                     Cred* cred,
                     Meta* meta,
                     ArrayList* items ); // items[]
@@ -66,21 +66,21 @@ class Put : public ItemizedCommand {
          * @return the preferred language
          *
          */
-        BCHAR* getLang(BCHAR* retLang = NULL);
+        char*  getLang(char*  retLang = NULL);
     
         /**
          * Sets the preferred language
          *
          * @param lang new preferred language
          */
-         void setLang(BCHAR* lang);
+         void setLang(char*  lang);
     
         /**
          * Returns the command name
          *
          * @return the command name
          */
-         BCHAR* getName();
+         char*  getName();
     
          ArrayElement* clone();
    

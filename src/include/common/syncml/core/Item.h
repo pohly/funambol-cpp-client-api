@@ -35,8 +35,8 @@ class Item : public ArrayElement {
     private:
         Target*      target;
         Source*      source;
-        BCHAR*     targetParent;
-        BCHAR*     sourceParent;
+        char*      targetParent;
+        char*      sourceParent;
         Meta*        meta;
         ComplexData* data;
         BOOL         moreData;  
@@ -61,8 +61,8 @@ class Item : public ArrayElement {
          */
         Item(Target* target,
              Source* source,
-             BCHAR* targetParent,
-             BCHAR* sourceParent,
+             char*  targetParent,
+             char*  sourceParent,
              Meta*   meta  ,
              ComplexData* data,
              BOOL moreData);
@@ -117,7 +117,7 @@ class Item : public ArrayElement {
          *
          * @return the item target parent
          */
-        BCHAR* getTargetParent(BCHAR* parent = NULL);
+        char*  getTargetParent(char*  parent = NULL);
     
         /**
          * Sets the item targetParent
@@ -125,14 +125,14 @@ class Item : public ArrayElement {
          * @param parent the target parent
          *
          */
-        void setTargetParent(BCHAR* parent);    
+        void setTargetParent(char*  parent);    
 
         /**
          * Returns the item sourceParent
          *
          * @return the item source parent
          */
-        BCHAR* getSourceParent(BCHAR* parent = NULL);
+        char*  getSourceParent(char*  parent = NULL);
     
         /**
          * Sets the item sourceParent
@@ -140,7 +140,7 @@ class Item : public ArrayElement {
          * @param parent the source parent
          *
          */
-        void setSourceParent(BCHAR* parent);
+        void setSourceParent(char*  parent);
     
         /**
          * Returns the item meta element

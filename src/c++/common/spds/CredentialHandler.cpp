@@ -57,81 +57,81 @@ CredentialHandler::~CredentialHandler() {
 
 }
 
-void CredentialHandler::setUsername(const BCHAR* t) {
+void CredentialHandler::setUsername(const char* t) {
     safeDel(&username);
     username = stringdup(t);
 }
 
-const BCHAR *CredentialHandler::getUsername() {
+const char *CredentialHandler::getUsername() {
     return username;
 }
 
-void CredentialHandler::setPassword(const BCHAR* t) {
+void CredentialHandler::setPassword(const char* t) {
     safeDel(&password);
     password = stringdup(t);
 }
 
-const BCHAR *CredentialHandler::getPassword() {
+const char *CredentialHandler::getPassword() {
     return password;
 }
 
-void CredentialHandler::setClientAuthType(const BCHAR* t){
+void CredentialHandler::setClientAuthType(const char* t){
     safeDel(&clientAuthType);
     clientAuthType = stringdup(t);
 }
 
-const BCHAR* CredentialHandler::getClientAuthType(BCHAR* t){    
+const char* CredentialHandler::getClientAuthType(char* t){    
     if (t == NULL) {
         return clientAuthType;
     }
-    return bstrcpy(t, clientAuthType);    
+    return strcpy(t, clientAuthType);    
 }
 
 
-void CredentialHandler::setClientNonce(const BCHAR* t){
+void CredentialHandler::setClientNonce(const char* t){
     safeDel(&clientNonce);
     clientNonce = stringdup(t);
 }
 
-const BCHAR* CredentialHandler::getClientNonce(BCHAR* t) {
+const char* CredentialHandler::getClientNonce(char* t) {
      if (t == NULL) {
         return clientNonce;
     }
-    return bstrcpy(t, clientNonce);        
+    return strcpy(t, clientNonce);        
 }
 
-void CredentialHandler::setServerID(const BCHAR* t) {
+void CredentialHandler::setServerID(const char* t) {
     safeDel(&serverID);
     serverID = stringdup(t);
 }
 
-void CredentialHandler::setServerPWD(const BCHAR* t) {
+void CredentialHandler::setServerPWD(const char* t) {
     safeDel(&serverPWD);
     serverPWD = stringdup(t);
 }
 
-void CredentialHandler::setServerAuthType(const BCHAR* t) {
+void CredentialHandler::setServerAuthType(const char* t) {
     safeDel(&serverAuthType);
     serverAuthType = stringdup(t);
 }
 
-const BCHAR* CredentialHandler::getServerAuthType(BCHAR* t) {
+const char* CredentialHandler::getServerAuthType(char* t) {
      if (t == NULL) {
         return serverAuthType;
     }
-    return bstrcpy(t, serverAuthType);        
+    return strcpy(t, serverAuthType);        
 }
 
-void CredentialHandler::setServerNonce(const BCHAR* t) {
+void CredentialHandler::setServerNonce(const char* t) {
     safeDel(&serverNonce);
     serverNonce = stringdup(t); 
 }
 
-const BCHAR* CredentialHandler::getServerNonce(BCHAR* t) {
+const char* CredentialHandler::getServerNonce(char* t) {
      if (t == NULL) {
         return serverNonce;
     }
-    return bstrcpy(t, serverNonce);        
+    return strcpy(t, serverNonce);        
 }
 
 void CredentialHandler::setServerAuthRequired(BOOL t) {
@@ -145,8 +145,8 @@ BOOL CredentialHandler::getServerAuthRequired() {
 Cred* CredentialHandler::getClientCredential() {
     
     Authentication* auth = NULL;
-    BCHAR* credential  = NULL;
-    if (bstrcmp(clientAuthType, AUTH_TYPE_BASIC) == 0) {
+    char* credential  = NULL;
+    if (strcmp(clientAuthType, AUTH_TYPE_BASIC) == 0) {
         auth = new Authentication(AUTH_TYPE_BASIC, username, password);
         
     } else {
@@ -176,8 +176,8 @@ Cred* CredentialHandler::getServerCredential() {
     
     Authentication* auth = NULL;
     Cred* cred           = NULL;
-    BCHAR* credential  = NULL;
-    if (bstrcmp(serverAuthType, AUTH_TYPE_BASIC) == 0) {
+    char* credential  = NULL;
+    if (strcmp(serverAuthType, AUTH_TYPE_BASIC) == 0) {
         auth = new Authentication(AUTH_TYPE_BASIC, serverID, serverPWD);
     } else {
         credential = MD5CredentialData(serverID, serverPWD, serverNonce);
@@ -200,7 +200,7 @@ BOOL CredentialHandler::performServerAuth(Cred* cred) {
         goto finally;
     }    
     
-    if (bstrcmp(cred->getData(NULL), currentCred->getData(NULL)) == 0) {
+    if (strcmp(cred->getData(NULL), currentCred->getData(NULL)) == 0) {
         ret = TRUE;
     }
 finally:
@@ -212,10 +212,10 @@ Chal* CredentialHandler::getServerChal(BOOL isServerAuthenticated) {
     
     Chal* chal = NULL;
 
-    if (bstrcmp(serverAuthType, AUTH_TYPE_BASIC) == 0 && isServerAuthenticated == FALSE) {
+    if (strcmp(serverAuthType, AUTH_TYPE_BASIC) == 0 && isServerAuthenticated == FALSE) {
         chal = Chal::getBasicChal();
 
-    } else if (bstrcmp(serverAuthType, AUTH_TYPE_MD5) == 0) { // MD5
+    } else if (strcmp(serverAuthType, AUTH_TYPE_MD5) == 0) { // MD5
         chal = Chal::getMD5Chal();
         char nonce[16];
         generateNonce(nonce);

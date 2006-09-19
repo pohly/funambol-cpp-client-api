@@ -26,13 +26,13 @@ class Property : public ArrayElement {
     // ------------------------------------------------------- Private interface
 private:
 
-    BCHAR* propName;
-    BCHAR* dataType;
+    char*  propName;
+    char*  dataType;
     long maxOccur;
     long maxSize;
     BOOL noTruncate;  // -1 undefined, 0 FALSE, 1 TRUE
     ArrayList* valEnums;
-    BCHAR* displayName;
+    char*  displayName;
     ArrayList* propParams;
 
 
@@ -65,20 +65,20 @@ public:
      * @param p6
      * @param p7
      */
-    Property(BCHAR* p0, BCHAR* p1, long p2, long p3, BOOL p4, ArrayList* p5, BCHAR* p6, ArrayList* p7);
+    Property(char*  p0, char*  p1, long p2, long p3, BOOL p4, ArrayList* p5, char*  p6, ArrayList* p7);
 
 
     /*
      * getDisplayName
      *
      */
-    BCHAR* getDisplayName(BCHAR* displayName = NULL);
+    char*  getDisplayName(char*  displayName = NULL);
 
     /*
      * getPropName
      *
      */
-    BCHAR* getPropName(BCHAR* propName = NULL);
+    char*  getPropName(char*  propName = NULL);
 
 
     /*
@@ -86,14 +86,14 @@ public:
      *
      * @param p0
      */
-    void setPropName(BCHAR* propName);
+    void setPropName(char*  propName);
 
 
     /*
      * getDataType
      *
      */
-    BCHAR* getDataType(BCHAR* dataType = NULL);
+    char*  getDataType(char*  dataType = NULL);
 
 
     /*
@@ -101,7 +101,7 @@ public:
      *
      * @param p0
      */
-    void setDataType(BCHAR* p0);
+    void setDataType(char*  p0);
 
 
     /*
@@ -176,7 +176,7 @@ public:
      *
      * @param p0
      */
-    void setDisplayName(BCHAR* p0);
+    void setDisplayName(char*  p0);
 
 
     /*

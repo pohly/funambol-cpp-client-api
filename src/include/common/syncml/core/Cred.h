@@ -45,28 +45,28 @@ class Cred {
          *
          * @return type property
          */
-        BCHAR* getType(BCHAR* retType);
+        char*  getType(char*  retType);
 
         /**
          * Gets format property
          *
          * @return format property
          */
-        BCHAR* getFormat(BCHAR* retFormat);
+        char*  getFormat(char*  retFormat);
 
         /**
          * Gets data property
          *
          * @return data property
          */
-        BCHAR* getData(BCHAR* retData);
+        char*  getData(char*  retData);
 
         /**
          * Gets the username stored in this credential
          *
          * @return the username stored in this credential
          */
-        BCHAR* getUsername(BCHAR* retUsername = NULL);
+        char*  getUsername(char*  retUsername = NULL);
 
 
         /**
@@ -78,7 +78,7 @@ class Cred {
          *
          * @return the corresponding Authentication object.
          */
-        Authentication* createAuthentication(BCHAR* data, BCHAR* type);
+        Authentication* createAuthentication(char*  data, char*  type);
 
         /**
          * Gets the Authentication object.

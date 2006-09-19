@@ -72,7 +72,7 @@ bool fireSyncSourceEvent(const char* sourceURI, SyncMode mode, int type);
  * @return          : TRUE if no errors, 
  *                    FALSE if syncitemListener not instantiated, or 'type' wrong
  */
-bool fireSyncItemEvent(const char* sourceURI, const wchar_t* itemKey, int type);
+bool fireSyncItemEvent(const char* sourceURI, const WCHAR* itemKey, int type);
 
 /*
  * Fire a SyncStatusEvent.
@@ -85,7 +85,7 @@ bool fireSyncItemEvent(const char* sourceURI, const wchar_t* itemKey, int type);
  * @return          : TRUE if no errors, 
  *                    FALSE if syncstatusListener not instantiated, or 'type' wrong
  */
-bool fireSyncStatusEvent(const char* command, int statusCode, const char* uri, const wchar_t* itemKey, int type);
+bool fireSyncStatusEvent(const char* command, int statusCode, const char* uri, const WCHAR* itemKey, int type);
 
 
 #endif

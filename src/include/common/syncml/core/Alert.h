@@ -35,7 +35,7 @@ class Alert : public ItemizedCommand {
      // ------------------------------------------------------------ Private data
     private:
        int data;
-       BCHAR* COMMAND_NAME;
+       char*  COMMAND_NAME;
        void initialize(); 
 
     // ---------------------------------------------------------- Public data    
@@ -80,7 +80,7 @@ class Alert : public ItemizedCommand {
          *
          * @return the command name property
          */    
-        BCHAR* getName();
+        char*  getName();
 
         ArrayElement* clone();
         

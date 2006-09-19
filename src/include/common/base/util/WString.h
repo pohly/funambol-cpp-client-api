@@ -32,13 +32,13 @@ class WString: public ArrayElement {
         // Constant value for an invalid pos (returned by find and rfind)
         static const size_t npos;
 
-        WString(const wchar_t* str = NULL, size_t len = npos) EXTRA_SECTION_00;
+        WString(const WCHAR* str = NULL, size_t len = npos) EXTRA_SECTION_00;
 
         WString(const WString &sb) EXTRA_SECTION_00;
 
         ~WString() EXTRA_SECTION_00;
 
-        WString& append(const wchar_t*) EXTRA_SECTION_00;
+        WString& append(const WCHAR*) EXTRA_SECTION_00;
 
         WString& append(unsigned long u, BOOL sign = TRUE) EXTRA_SECTION_00;
 
@@ -46,7 +46,7 @@ class WString: public ArrayElement {
 
         WString& append(WString* str) EXTRA_SECTION_00;
 
-        WString& set(const wchar_t*) EXTRA_SECTION_00;
+        WString& set(const WCHAR*) EXTRA_SECTION_00;
 
         /**
          * Release the string buffer.
@@ -54,24 +54,24 @@ class WString: public ArrayElement {
         WString& reset() EXTRA_SECTION_00;
 
         /**
-         * Get the wchar_t array, same as the cast operator
+         * Get the WCHAR array, same as the cast operator
          */
-        const wchar_t* getChars() const EXTRA_SECTION_00;
-        inline const wchar_t* c_str() const { return s; } EXTRA_SECTION_00;
+        const WCHAR* getChars() const EXTRA_SECTION_00;
+        inline const WCHAR* c_str() const { return s; } EXTRA_SECTION_00;
 
         /**
          * Find the first occurrence of substring str.
          *
          * @return - the position or WString::npos if not found.
          */
-        size_t find(const wchar_t *str, size_t pos = 0) const EXTRA_SECTION_00;
+        size_t find(const WCHAR *str, size_t pos = 0) const EXTRA_SECTION_00;
 
         /**
          * Find the first occurrence of substring str, using case insensitive compare.
          *
          * @return - the position or WString::npos if not found.
          */
-        size_t ifind(const wchar_t *str, size_t pos = 0) const EXTRA_SECTION_00;
+        size_t ifind(const WCHAR *str, size_t pos = 0) const EXTRA_SECTION_00;
 
         /**
          * Replace the first occurrence of substring 'from' with string 'to'.
@@ -79,13 +79,13 @@ class WString: public ArrayElement {
          * @return - the position of the first token replaced or WString::npos if
          *           not found.
          */
-        size_t replace(const wchar_t *from, const wchar_t *to, size_t pos = 0) EXTRA_SECTION_00;
+        size_t replace(const WCHAR *from, const WCHAR *to, size_t pos = 0) EXTRA_SECTION_00;
         /**
          * Replace all the occurrences of substring 'from' with string 'to'.
          *
          * @return - the number of tokens replaced 
          */
-        int replaceAll(const wchar_t *from, const wchar_t *to, size_t pos = 0) EXTRA_SECTION_00;
+        int replaceAll(const WCHAR *from, const WCHAR *to, size_t pos = 0) EXTRA_SECTION_00;
 
         /**
          * Splits string on each occurrence of any of the characters in 
@@ -94,7 +94,7 @@ class WString: public ArrayElement {
          * @return - the position or WString::npos if not found.
          */
         ArrayList &split (ArrayList &tokens,
-                          const wchar_t *delimiters = TEXT(" ")) const EXTRA_SECTION_00;
+                          const WCHAR *delimiters = TEXT(" ")) const EXTRA_SECTION_00;
 
         /**
          * Joins all the tokens in the given ArrayList, using separator to
@@ -102,7 +102,7 @@ class WString: public ArrayElement {
          *
          * @return - the WString
          */
-        WString& join(ArrayList &tokens, const wchar_t *separator);
+        WString& join(ArrayList &tokens, const WCHAR *separator);
 
         /**
          * Return the substring between pos and pos+len.
@@ -136,7 +136,7 @@ class WString: public ArrayElement {
         /**
          * Perform case insensitive compare
          */
-        bool icmp(const wchar_t *sc) const EXTRA_SECTION_00 ;
+        bool icmp(const WCHAR *sc) const EXTRA_SECTION_00 ;
 
         /** 
          * True if the string is null or empty
@@ -156,23 +156,23 @@ class WString: public ArrayElement {
         /**
          * Class operators
          */
-        WString& operator= (const wchar_t* sc) EXTRA_SECTION_00 ;
+        WString& operator= (const WCHAR* sc) EXTRA_SECTION_00 ;
         WString& operator= (const WString& s) EXTRA_SECTION_00 ;
         WString& operator= (const StringBuffer& s) EXTRA_SECTION_00 ;
-        WString& operator+= (const wchar_t* sc) EXTRA_SECTION_00 ;
+        WString& operator+= (const WCHAR* sc) EXTRA_SECTION_00 ;
         WString& operator+= (const WString& s) EXTRA_SECTION_00 ;
         WString& operator+= (const StringBuffer& s) EXTRA_SECTION_00 ;
-        bool operator== (const wchar_t* sc) const EXTRA_SECTION_00 ;
+        bool operator== (const WCHAR* sc) const EXTRA_SECTION_00 ;
         bool operator== (const WString& sb) const EXTRA_SECTION_00 ;
         bool operator== (const StringBuffer& sb) const EXTRA_SECTION_00 ;
-        bool operator!= (const wchar_t* sc) const EXTRA_SECTION_00 ;
+        bool operator!= (const WCHAR* sc) const EXTRA_SECTION_00 ;
         bool operator!= (const WString& s) const EXTRA_SECTION_00 ;
         bool operator!= (const StringBuffer& sb) const EXTRA_SECTION_00 ;
         
-        inline operator const wchar_t*() const { return s; } EXTRA_SECTION_00 ;
+        inline operator const WCHAR*() const { return s; } EXTRA_SECTION_00 ;
         
     private:
-        wchar_t* s;
+        WCHAR* s;
         size_t size;
 
         // Allocator
@@ -181,7 +181,7 @@ class WString: public ArrayElement {
         void freemem();
 };
 
-WString operator+(const WString& x, const wchar_t *y);
+WString operator+(const WString& x, const WCHAR *y);
 
 #endif
 

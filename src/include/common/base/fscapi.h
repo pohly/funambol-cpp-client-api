@@ -77,7 +77,7 @@
       #define new new(__FILE__, __LINE__)
     #endif
     
-    extern BCHAR lastErrorMsg[];
+    extern char lastErrorMsg[];
     extern int  lastErrorCode;
 
     void resetError();

@@ -42,7 +42,7 @@ static inline bool checkFlag(const char *xml, const char *field)
 
     if( XMLProcessor::getElementContent(xml, field, NULL, &start, &end) ) {
 
-        ret = ( bstrncmp(xml+start, T("true"), end-start) == 0 ) ;
+        ret = ( strncmp(xml+start, T("true"), end-start) == 0 ) ;
     }
     return ret;
 }
@@ -66,7 +66,7 @@ EmailData::EmailData()
 *       
 */
 
-int EmailData::parse(const BCHAR *msg, size_t len)
+int EmailData::parse(const char *msg, size_t len)
 {
     int ret = 0;
     unsigned int start, end;
@@ -126,7 +126,7 @@ int EmailData::parse(const BCHAR *msg, size_t len)
             }
         }
         // okay, move the start pointer to the end of
-        item_start += bstrlen("![CDATA[");
+        item_start += strlen("![CDATA[");
         
         ret=emailItem.parse( item.c_str()+item_start, item_end - item_start );
 
@@ -138,7 +138,7 @@ int EmailData::parse(const BCHAR *msg, size_t len)
     return ret;
 }
 
-BCHAR *EmailData::format() {
+char *EmailData::format() {
     StringBuffer out;
 
     out.reserve(150);
@@ -152,7 +152,7 @@ BCHAR *EmailData::format() {
     out += XMLProcessor::makeElement(EMAIL_TMOD, modified);
     out += XMLProcessor::makeElement(EMAIL_DELE, deleted);
     out += XMLProcessor::makeElement(EMAIL_FLAG, flagged);
-    BCHAR *item = emailItem.format();
+    char *item = emailItem.format();
     if ( item ) {
     out += T("<emailitem>\n<![CDATA[");
         out += item;

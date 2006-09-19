@@ -44,12 +44,12 @@ Meta::~Meta() {
 }
 
 
-void Meta::set(BCHAR*    format    ,
-               BCHAR*    type      ,
-               BCHAR*    mark      ,
+void Meta::set(char*    format    ,
+               char*    type      ,
+               char*    mark      ,
                long        size      ,
                Anchor*     anchor    ,
-               BCHAR*    version   ,
+               char*    version   ,
                NextNonce*  nonce     ,
                long        maxMsgSize,
                long        maxObjSize,
@@ -117,11 +117,11 @@ void Meta::setSize(long size) {
  *
  * @return format
  */
-BCHAR* Meta::getFormat(BCHAR* retFormat) {
+char* Meta::getFormat(char* retFormat) {
 	if (retFormat == NULL) {
         return getMetInf()->getFormat(NULL);
     }
-    return bstrcpy(retFormat, getMetInf()->getFormat(NULL));
+    return strcpy(retFormat, getMetInf()->getFormat(NULL));
     
 }
 
@@ -130,7 +130,7 @@ BCHAR* Meta::getFormat(BCHAR* retFormat) {
  *
  * @param format the new format value
  */
-void Meta::setFormat(BCHAR* format) {
+void Meta::setFormat(char* format) {
     getMetInf()->setFormat(format);
 }
 
@@ -139,11 +139,11 @@ void Meta::setFormat(BCHAR* format) {
  *
  * @return type
  */
-BCHAR* Meta::getType(BCHAR* retType) {
+char* Meta::getType(char* retType) {
 	if (retType == NULL) {
         return getMetInf()->getType(NULL);
     }
-    return bstrcpy(retType, getMetInf()->getType(NULL));   
+    return strcpy(retType, getMetInf()->getType(NULL));   
 }
 
 /**
@@ -151,7 +151,7 @@ BCHAR* Meta::getType(BCHAR* retType) {
  *
  * @param type the new type value
  */
-void Meta::setType(BCHAR* type) {
+void Meta::setType(char* type) {
     getMetInf()->setType(type);
 }
 
@@ -160,11 +160,11 @@ void Meta::setType(BCHAR* type) {
  *
  * @return mark
  */
-BCHAR* Meta::getMark(BCHAR* retMark){
+char* Meta::getMark(char* retMark){
 	if (retMark == NULL) {
         return getMetInf()->getMark(NULL);
     }
-    return bstrcpy(retMark, getMetInf()->getMark(NULL));  
+    return strcpy(retMark, getMetInf()->getMark(NULL));  
     
 }
 
@@ -173,7 +173,7 @@ BCHAR* Meta::getMark(BCHAR* retMark){
  *
  * @param mark the new mark value
  */
-void Meta::setMark(BCHAR* mark) {
+void Meta::setMark(char* mark) {
     getMetInf()->setMark(mark);
 }
 
@@ -183,11 +183,11 @@ void Meta::setMark(BCHAR* mark) {
  *
  * @return version
  */
-BCHAR* Meta::getVersion(BCHAR* retVersion) {
+char* Meta::getVersion(char* retVersion) {
     if (retVersion == NULL) {
         return getMetInf()->getVersion(NULL);
     }
-    return bstrcpy(retVersion, getMetInf()->getVersion(NULL));  
+    return strcpy(retVersion, getMetInf()->getVersion(NULL));  
 }
 
 /**
@@ -195,7 +195,7 @@ BCHAR* Meta::getVersion(BCHAR* retVersion) {
  *
  * @param version the new version value
  */
-void Meta::setVersion(BCHAR* version) {
+void Meta::setVersion(char* version) {
     getMetInf()->setVersion(version);
 }
 

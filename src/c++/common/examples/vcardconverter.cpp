@@ -66,8 +66,8 @@ int main( int argc, char **argv )
     }
     auto_array<char> vcard(buffer);
 
-    // convert to wchar_t
-    auto_array<wchar_t> wvcard(toWideChar(vcard));
+    // convert to WCHAR
+    auto_array<WCHAR> wvcard(toWideChar(vcard));
     fwprintf(stdout, sep, TEXT("original vcard"));
     fwprintf(stdout, TEXT("%s\n"), wvcard.get());
     fwprintf(stdout, sep2);
@@ -91,7 +91,7 @@ int main( int argc, char **argv )
              fileas ? fileas->getValue() : TEXT("<not set>"));
 
     // convert into the other version, then back again
-    wchar_t *versions[2];
+    WCHAR *versions[2];
     if (!wcscmp(vobj->getVersion(), TEXT("3.0"))) {
         versions[0] = TEXT("2.1");
         versions[1] = TEXT("3.0");

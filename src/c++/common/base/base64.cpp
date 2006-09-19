@@ -85,7 +85,7 @@ input[], int *n)
 
         if (input[1] == b64_pad) {
             lastErrorCode = ERR_UNSPECIFIED;
-            bsprintf(lastErrorMsg, ERRMSG_B64_ORPHANED_BITS);
+            sprintf(lastErrorMsg, ERRMSG_B64_ORPHANED_BITS);
             return;
         }
 
@@ -94,7 +94,7 @@ input[], int *n)
 
         if ((t1 == NULL) || (t2 == NULL)) {
             lastErrorCode = ERR_UNSPECIFIED;
-            bsprintf(lastErrorMsg, ERRMSG_B64_GARBAGE);
+            sprintf(lastErrorMsg, ERRMSG_B64_GARBAGE);
         }
 
         output[(*n)++] = ((t1 - b64_tbl) << 2) | ((t2 - b64_tbl) >> 4);
@@ -106,7 +106,7 @@ input[], int *n)
 
         if (t1 == NULL) {
             lastErrorCode = ERR_UNSPECIFIED;
-            bsprintf(lastErrorMsg, ERRMSG_B64_GARBAGE);
+            sprintf(lastErrorMsg, ERRMSG_B64_GARBAGE);
             return;
         }
 
@@ -119,7 +119,7 @@ input[], int *n)
 
         if (t2 == NULL) {
             lastErrorCode = ERR_UNSPECIFIED;
-            bsprintf(lastErrorMsg, ERRMSG_B64_GARBAGE);
+            sprintf(lastErrorMsg, ERRMSG_B64_GARBAGE);
             return;
         }
 

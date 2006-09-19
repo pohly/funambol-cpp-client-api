@@ -22,7 +22,7 @@
 #include "spds/SyncMap.h"
 
 
-SyncMap::SyncMap(const BCHAR *g, const BCHAR* l) {
+SyncMap::SyncMap(const char *g, const char* l) {
     guid = stringdup(g);
     luid = stringdup(l);
 }
@@ -45,7 +45,7 @@ SyncMap::~SyncMap() {
  * @param luid - the buffer where the luid is copied to. It must be
  *               big enough
  */
-const BCHAR* SyncMap::getGUID() {
+const char* SyncMap::getGUID() {
     return guid;
 }
 
@@ -53,7 +53,7 @@ const BCHAR* SyncMap::getGUID() {
 /*
  * Returns the luid of this mapping
  */
-const BCHAR* SyncMap::getLUID() {
+const char* SyncMap::getLUID() {
     return luid;
 }
 
@@ -63,7 +63,7 @@ const BCHAR* SyncMap::getLUID() {
  *
  * @param guid the new value
  */
-void SyncMap::setGUID(const BCHAR* g) {
+void SyncMap::setGUID(const char* g) {
     if (guid) {
         delete [] guid;
     }
@@ -79,7 +79,7 @@ void SyncMap::setGUID(const BCHAR* g) {
  *
  * @param luid the new value
  */
-void SyncMap::setLUID(const BCHAR* l) {
+void SyncMap::setLUID(const char* l) {
     if (luid) {
         delete [] luid;
     }
@@ -91,14 +91,14 @@ void SyncMap::setLUID(const BCHAR* l) {
 
 /**
  * Sets a new value for the LUID property (as unsigned int). It internally
- * calls setLUID(BCHAR*)
+ * calls setLUID(char*)
  *
  * @param luid the new value
  */
 void SyncMap::setLUID(unsigned long l) {
-    BCHAR ls[12];
+    char ls[12];
 
-    bsprintf(ls, T("%lu"), l);
+    sprintf(ls, T("%lu"), l);
     setLUID(ls);
 }
 

@@ -57,7 +57,7 @@ DataStore::~DataStore() {
  *
  */
 DataStore::DataStore(SourceRef* sourceRef,
-                      BCHAR* displayName,
+                      char* displayName,
                       long maxGUIDSize,
                       ContentTypeInfo* rxPref,
                       ArrayList* rx,
@@ -122,11 +122,11 @@ void DataStore::setSourceRef(SourceRef* sourceRef) {
  *
  * @return the displayName properties
  */
-BCHAR* DataStore::getDisplayName(BCHAR* retDisplayName) {
+char* DataStore::getDisplayName(char* retDisplayName) {
     if (retDisplayName == NULL) {
         return displayName;
     }
-    return bstrcpy(retDisplayName, displayName);
+    return strcpy(retDisplayName, displayName);
 }
 
 /**
@@ -135,7 +135,7 @@ BCHAR* DataStore::getDisplayName(BCHAR* retDisplayName) {
  * @param displayName the displauName property
  *
  */
-void DataStore::setDisplayName(BCHAR* displayName) {
+void DataStore::setDisplayName(char* displayName) {
     if (this->displayName) {
         delete [] this->displayName; this->displayName = NULL;
     }

@@ -31,63 +31,63 @@
 #define TEXT_PLAIN_ENCODING T("text/plain")
 
 /*
- * Deletes the given BCHAR*[] buffer if it is not NULL
+ * Deletes the given char* [] buffer if it is not NULL
  * and sets the pointer to NULL
  *
  */
-void safeDelete(BCHAR* p[]) EXTRA_SECTION_00;
+void safeDelete(char*  p[]) EXTRA_SECTION_00;
 
-void safeDel(BCHAR** p) EXTRA_SECTION_00;
+void safeDel(char** p) EXTRA_SECTION_00;
 
-void timestampToAnchor(unsigned long timestamp, BCHAR* anchor) EXTRA_SECTION_00;
+void timestampToAnchor(unsigned long timestamp, char*  anchor) EXTRA_SECTION_00;
 
 char* stringdup(const char* s, size_t len = STRINGDUP_NOLEN) EXTRA_SECTION_00 ;
-wchar_t* wstrdup(const wchar_t* s, size_t len = STRINGDUP_NOLEN) EXTRA_SECTION_00;
+WCHAR* wstrdup(const WCHAR* s, size_t len = STRINGDUP_NOLEN) EXTRA_SECTION_00;
 
-BCHAR* strtolower(const BCHAR *s) EXTRA_SECTION_00;
+char*  strtolower(const char *s) EXTRA_SECTION_00;
 
-BCHAR* wcstoupper(const BCHAR *s) EXTRA_SECTION_00;
+char*  wcstoupper(const char *s) EXTRA_SECTION_00;
 
 /**
  * find a substring from the end, with optional string lenght
  */
-const BCHAR *brfind(const BCHAR *s1, const BCHAR *s2, size_t len=STRINGDUP_NOLEN) EXTRA_SECTION_00 ;
+const char *brfind(const char *s1, const char *s2, size_t len=STRINGDUP_NOLEN) EXTRA_SECTION_00 ;
 
 /**
  * Returns TRUE is the given string is NULL or zero-length
  */
-inline BOOL isEmpty(const BCHAR* s) {
-    return ((s == NULL) || (bstrlen(s) == 0));
+inline BOOL isEmpty(const char*  s) {
+    return ((s == NULL) || (strlen(s) == 0));
 }
 
 /**
  * Returns TRUE is the given string is NULL or zero-length
  */
-inline BOOL isNotEmpty(const BCHAR* s) {
-    return (s && (bstrlen(s) > 0));
+inline BOOL isNotEmpty(const char*  s) {
+    return (s && (strlen(s) > 0));
 }
 
 
 /*
-* compare two BCHAR array ignoring the case of the char
+* compare two char array ignoring the case of the char
 */
-bool wcscmpIgnoreCase(const BCHAR* p, const BCHAR* q);
+bool wcscmpIgnoreCase(const char*  p, const char*  q);
 
 /*
-* Converts a integer into a BCHAR*
+* Converts a integer into a char* 
 */
-BCHAR* itow(int i);
+char*  itow(int i);
 
 /*
-* Converts a integer into a BCHAR*
+* Converts a integer into a char* 
 */
-BCHAR* ltow(long i);
+char*  ltow(long i);
 
 /*
 * Method to create the cred data given the username, password and nonce
 * It uses the calculateMD5 to calculate the MD5 using the alghoritm.
 */
-BCHAR* MD5CredentialData(BCHAR* userName, BCHAR* password, BCHAR* nonce);
+char*  MD5CredentialData(char*  userName, char*  password, char*  nonce);
 
 /*
 * Calculates the digest given the token and its lenght
@@ -103,7 +103,7 @@ char* calculateMD5(const void* token, int len, char* wdigest);
  * @param name - a file name, without path
  * @return - a full pathname, allocated with new[], or NULL on error
  */
-BCHAR *mkTempFileName(const BCHAR *name);
+char *mkTempFileName(const char *name);
 
 /*
  * Write len bytes from buffer to the file 'filename'.
@@ -138,16 +138,16 @@ size_t fgetsize(FILE *f);
  */
 bool readFile(const char* path, char **message, size_t *len, bool binary = false );
 
-long int getLenEncoding(const BCHAR* s, BCHAR* encoding);
-char *toMultibyte(const WCHAR *wc, const BCHAR *encoding = 0 );
-WCHAR *toWideChar(const char *mb, const BCHAR *encoding = 0 );
+long int getLenEncoding(const char*  s, char*  encoding);
+char *toMultibyte(const WCHAR *wc, const char *encoding = 0 );
+WCHAR *toWideChar(const char *mb, const char *encoding = 0 );
 
 
 // Wide Char Convert: inline function used to convert a wchar
 // in char, using a static buffer to store the converted string.
 //
 // BEWARE: the string is deleted and re-used at each call.
-inline const char *_wcc(const wchar_t *wc, const char *enc=0) {
+inline const char *_wcc(const WCHAR *wc, const char *enc=0) {
     static char* encodeBuf = 0;
 
     if (encodeBuf){

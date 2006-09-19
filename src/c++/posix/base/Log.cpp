@@ -80,20 +80,20 @@ void setLogFile(const char* name, BOOL redirectStderr)
 * return a the time to write into log file. If complete is true, it return 
 * the date too, else only hours, minutes, seconds and milliseconds
 */ 
-static BCHAR* getCurrentTime(BOOL complete) {
+static char*  getCurrentTime(BOOL complete) {
     time_t t = time(NULL);
     struct tm *sys_time = localtime(&t);
 
-    BCHAR *fmtComplete = T("%04d-%02d-%02d %02d:%02d:%02d");
-    BCHAR *fmt         = T("%02d:%02d:%02d");
+    char *fmtComplete = T("%04d-%02d-%02d %02d:%02d:%02d");
+    char *fmt         = T("%02d:%02d:%02d");
 
-    BCHAR* ret = new BCHAR [64];
+    char*  ret = new char [64];
 
     if (complete) {
-        bsprintf(ret, fmtComplete, sys_time->tm_year, sys_time->tm_mon, sys_time->tm_mday,  
+        sprintf(ret, fmtComplete, sys_time->tm_year, sys_time->tm_mon, sys_time->tm_mday,  
                 sys_time->tm_hour, sys_time->tm_min, sys_time->tm_sec);
     } else {
-        bsprintf(ret, fmt, sys_time->tm_hour, sys_time->tm_min, sys_time->tm_sec);
+        sprintf(ret, fmt, sys_time->tm_hour, sys_time->tm_min, sys_time->tm_sec);
     }
     return ret;
 }
@@ -101,7 +101,7 @@ static BCHAR* getCurrentTime(BOOL complete) {
 
 //---------------------------------------------------------------------- Constructors
 
-Log::Log(BOOL resetLog, BCHAR* path, BCHAR* name) {
+Log::Log(BOOL resetLog, char*  path, char*  name) {
 
     setLogPath(path);
     setLogName(name);
@@ -118,32 +118,32 @@ Log::~Log() {
 
 //---------------------------------------------------------------------- Public methods
 
-void Log::setLogPath(BCHAR* configLogPath) {
+void Log::setLogPath(char*  configLogPath) {
     if (configLogPath != NULL) {
-        bsprintf(logPath, T("%s/"), configLogPath); 
+        sprintf(logPath, T("%s/"), configLogPath); 
     } else {
-        bsprintf(logPath, T("%s"), T("./"));
+        sprintf(logPath, T("%s"), T("./"));
     }
 }
 
-void Log::setLogName(BCHAR* configLogName) {
+void Log::setLogName(char*  configLogName) {
     
     if (configLogName != NULL) {
-        bsprintf(logName, T("%s"), configLogName); 
+        sprintf(logName, T("%s"), configLogName); 
     }
     else {
-        bsprintf(logName, T("%s"), LOG_NAME);         
+        sprintf(logName, T("%s"), LOG_NAME);         
     }
 }
 
-void Log::error(const BCHAR* msg, ...) {    
+void Log::error(const char*  msg, ...) {    
     va_list argList;
     va_start (argList, msg);
     printMessage(LOG_ERROR, msg, argList);    
     va_end(argList);
 }
 
-void Log::info(const BCHAR* msg, ...) {
+void Log::info(const char*  msg, ...) {
     if (logLevel >= LOG_LEVEL_INFO) {
         va_list argList;
 	    va_start (argList, msg);
@@ -153,7 +153,7 @@ void Log::info(const BCHAR* msg, ...) {
     }
 }
 
-void Log::debug(const BCHAR* msg, ...) {
+void Log::debug(const char*  msg, ...) {
     if (logLevel >= LOG_LEVEL_DEBUG) {
 	    va_list argList;
         va_start (argList, msg);
@@ -163,7 +163,7 @@ void Log::debug(const BCHAR* msg, ...) {
     }
 }
 
-void Log::trace(const BCHAR* msg) { 
+void Log::trace(const char*  msg) { 
 }
 
 void Log::setLevel(LogLevel level) {
@@ -178,9 +178,9 @@ BOOL Log::isLoggable(LogLevel level) {
     return (level >= logLevel);
 }
 
-void Log::printMessage(const BCHAR* level, const BCHAR* msg, va_list argList) {       
+void Log::printMessage(const char*  level, const char*  msg, va_list argList) {       
     
-    wchar_t* currentTime = NULL;
+    WCHAR* currentTime = NULL;
 
     currentTime = getCurrentTime(false);
     if (!logFileStdout && !logFile) {
@@ -195,12 +195,12 @@ void Log::printMessage(const BCHAR* level, const BCHAR* msg, va_list argList) {
     delete[] currentTime;
 }
 
-// This is used by clients to log using wchar_t. Redirected to printmessage for
+// This is used by clients to log using WCHAR. Redirected to printmessage for
 // posix.
-void Log::printMessageW(const BCHAR* level, const BCHAR* msg, va_list argList)
+void Log::printMessageW(const char*  level, const char*  msg, va_list argList)
 {       printMessage(level, msg, argList); }
 
-void Log::reset(const BCHAR* title) {
+void Log::reset(const char*  title) {
     if (!logFileStdout && !logFile) {
         setLogFile(logPath, logName, false);
     }

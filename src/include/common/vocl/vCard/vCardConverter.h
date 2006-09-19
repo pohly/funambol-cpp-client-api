@@ -32,23 +32,23 @@
 class vCardConverter {
 
 private:
-    wchar_t* vCard;
+    WCHAR* vCard;
     Contact* contact;
-    bool validateTZ(wchar_t* timeZone);
-    bool validateGeo(wchar_t* geo);
-    bool checkType(wchar_t* types, wchar_t* typesList);
-    bool validateProperty21(VProperty* prop, wchar_t* errorDescription, long* errorCode);
-    bool validateProperty30(VProperty* prop, wchar_t* errorDescription, long* errorCode);
+    bool validateTZ(WCHAR* timeZone);
+    bool validateGeo(WCHAR* geo);
+    bool checkType(WCHAR* types, WCHAR* typesList);
+    bool validateProperty21(VProperty* prop, WCHAR* errorDescription, long* errorCode);
+    bool validateProperty30(VProperty* prop, WCHAR* errorDescription, long* errorCode);
 
 public:
     vCardConverter();
     ~vCardConverter();
-    void setSource(wchar_t* inputCard);
+    void setSource(WCHAR* inputCard);
     void setSource(Contact& inputContact);
-    void getvCard(wchar_t* vCard);
+    void getvCard(WCHAR* vCard);
     void getContact(Contact** outputContact);
-    bool convert(wchar_t* error, long* errorCode);
-    bool validate(VObject*, wchar_t* error, long* errorCode);
+    bool convert(WCHAR* error, long* errorCode);
+    bool validate(VObject*, WCHAR* error, long* errorCode);
     
 };
 #endif

@@ -22,19 +22,19 @@
 #include "spds/DESEncoder.h"
 #include "spds/DESDecoder.h"
 
-DataTransformer* DataTransformerFactory::getEncoder(const BCHAR* name) {
+DataTransformer* DataTransformerFactory::getEncoder(const char* name) {
     DataTransformer* ret = NULL;
 
     if (isSupportedEncoder(name) == FALSE) {
         lastErrorCode = ERR_DT_UNKNOWN;
-        bsprintf (lastErrorMsg, ERRMSG_DT_UNKNOWN, name);
+        sprintf (lastErrorMsg, ERRMSG_DT_UNKNOWN, name);
         goto exit;
-    } else if (bstrcmp(name, DT_B64) == 0) {
+    } else if (strcmp(name, DT_B64) == 0) {
         //
         // base 64 encoder
         //
         ret = new B64Encoder();
-    } else if (bstrcmp(name, DT_DES) == 0) {
+    } else if (strcmp(name, DT_DES) == 0) {
         //
         // DES encoder
         //
@@ -46,19 +46,19 @@ exit:
     return ret;
 }
 
-DataTransformer* DataTransformerFactory::getDecoder(const BCHAR* name) {
+DataTransformer* DataTransformerFactory::getDecoder(const char* name) {
     DataTransformer* ret = NULL;
 
     if (isSupportedDecoder(name) == FALSE) {
         lastErrorCode = ERR_DT_UNKNOWN;
-        bsprintf (lastErrorMsg, ERRMSG_DT_UNKNOWN, name);
+        sprintf (lastErrorMsg, ERRMSG_DT_UNKNOWN, name);
         goto exit;
-    } else if (bstrcmp(name, DT_B64) == 0) {
+    } else if (strcmp(name, DT_B64) == 0) {
         //
         // base 64 decoder
         //
         ret = new B64Decoder();
-    } else if (bstrcmp(name, DT_DES) == 0) {
+    } else if (strcmp(name, DT_DES) == 0) {
         //
         // DES decoder
         //
@@ -70,13 +70,13 @@ exit:
     return ret;
 }
 
-BOOL DataTransformerFactory::isSupportedEncoder(const BCHAR* name) {
-    BCHAR* t = new BCHAR[bstrlen(name)+2];
+BOOL DataTransformerFactory::isSupportedEncoder(const char* name) {
+    char* t = new char[strlen(name)+2];
 
-    bsprintf(t, T("%s;"), name);
-    //bstrcpy(t, name); bstrcat(t, T(";"));
+    sprintf(t, T("%s;"), name);
+    //strcpy(t, name); strcat(t, T(";"));
 
-    BOOL ret = (bstrstr(DF_FORMATTERS, t) != NULL);
+    BOOL ret = (strstr(DF_FORMATTERS, t) != NULL);
 
     delete [] t;
 
@@ -84,7 +84,7 @@ BOOL DataTransformerFactory::isSupportedEncoder(const BCHAR* name) {
 
 }
 
-BOOL DataTransformerFactory::isSupportedDecoder(const BCHAR* name) {
+BOOL DataTransformerFactory::isSupportedDecoder(const char* name) {
     //
     // Currently, same encoders/decoders are supported
     //

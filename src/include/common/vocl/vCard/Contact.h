@@ -57,9 +57,9 @@ class Contact : public VObject {
          *                 allocated memory
          * @param v the value to set into the property
          */
-        void set(wchar_t** p, wchar_t* v);
+        void set(WCHAR** p, WCHAR* v);
         vCardProperty* getPropertyFromVProperty(VProperty* vp);
-        VProperty* getVPropertyFromProperty(wchar_t* name, vCardProperty* prop);
+        VProperty* getVPropertyFromProperty(WCHAR* name, vCardProperty* prop);
         VProperty* composeVAddress(Address* adr);
         Address* composeAddress(VProperty* vp, int type);
         Address* addLabelAddress(VProperty* vp, int type);        
@@ -77,7 +77,7 @@ class Contact : public VObject {
          *
          * @return the uid of this contact or NULL if not specified
          */
-        wchar_t* getUID(wchar_t* buf = NULL, int size = -1);
+        WCHAR* getUID(WCHAR* buf = NULL, int size = -1);
 
         /**
          * Returns the timezone for this contact
@@ -87,7 +87,7 @@ class Contact : public VObject {
          *
          * @return the timezone for this contact or NULL if not specified
          */
-        wchar_t* getTimezone (wchar_t* buf = NULL, int size = -1);
+        WCHAR* getTimezone (WCHAR* buf = NULL, int size = -1);
 
         /**
          * Returns the note for this contact
@@ -110,7 +110,7 @@ class Contact : public VObject {
          *
          * @return the revision of this contact of NULL if not specified
          */
-        wchar_t* getRevision(wchar_t* buf = NULL, int size = -1);
+        WCHAR* getRevision(WCHAR* buf = NULL, int size = -1);
 
         /**
          * Returns the name of this contact
@@ -156,24 +156,24 @@ class Contact : public VObject {
          *
          * @param uid the UID to set
          */
-        void setUID (wchar_t* uid);
+        void setUID (WCHAR* uid);
 
         /**
          * Sets the timezone for this contact
          *
          * @param timezone the timezone to set
          */
-        void setTimezone (wchar_t* tz);
+        void setTimezone (WCHAR* tz);
 
         /**
          * Sets the revision of this contact
          *
          * @param revision the revision to set
          */
-        void setRevision (wchar_t* revision);
+        void setRevision (WCHAR* revision);
         
         Contact* clone();
-        wchar_t* toString();
+        WCHAR* toString();
 };
 
 #endif

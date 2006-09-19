@@ -23,7 +23,7 @@
 #include "vocl/iCalendar/Event.h"
 #include "vocl/iCalendar/ToDo.h"
 
-VObject* VObjectFactory::createInstance(wchar_t* objType, wchar_t* objVersion) {
+VObject* VObjectFactory::createInstance(WCHAR* objType, WCHAR* objVersion) {
 
     if(!objType)
         return new VObject();

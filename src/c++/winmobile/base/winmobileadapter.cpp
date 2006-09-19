@@ -21,7 +21,7 @@
 #include "base/util/utils.h"
 
 struct Codepage {
-    const BCHAR *name;
+    const char *name;
     int  codepage_id;
 };
 
@@ -282,11 +282,11 @@ static Codepage encodings[] = {
 };
 
 
-long utf8len(const BCHAR* s) {
-     return s ? bstrlen(s) : 0;
+long utf8len(const char*  s) {
+     return s ? strlen(s) : 0;
 }
 
-char* wc2utf8(const BCHAR* s, char* d, unsigned long dsize) {
+char* wc2utf8(const char*  s, char* d, unsigned long dsize) {
     
     //
     // First of all, if s is NULL, just return NULL.
@@ -302,17 +302,17 @@ char* wc2utf8(const BCHAR* s, char* d, unsigned long dsize) {
         d = new char[dsize+1];
     }        
     
-    bstrcpy( d, s );
+    strcpy( d, s );
                                     
     return d;
 }
 
-BCHAR*utf82wc(const char* s, BCHAR* d, unsigned long dsize) {
+char* utf82wc(const char* s, char*  d, unsigned long dsize) {
               
     //
     // First of all, if s is NULL, just return NULL.
     // Then, if d is NULL, let's allocate the required memory to contain the
-    // BCHAR string.
+    // char string.
     //
     if (s == NULL) {
         return NULL;
@@ -321,10 +321,10 @@ BCHAR*utf82wc(const char* s, BCHAR* d, unsigned long dsize) {
     if (d == NULL) {
         // get the right lenght with a NULL dest
         dsize = strlen (s);
-        d = new BCHAR[dsize+1];
+        d = new char[dsize+1];
     }
 
-    bstrcpy(d, s);
+    strcpy(d, s);
 
     return d;    
 }
@@ -338,10 +338,10 @@ BCHAR*utf82wc(const char* s, BCHAR* d, unsigned long dsize) {
  * @param name - a file name, without path
  * @return - a full pathname, allocated with new[], or NULL on error
  */
-BCHAR *mkTempFileName(const BCHAR *name)
+char *mkTempFileName(const char *name)
 {
-    wchar_t tmpPath[64];
-    wchar_t tmpFileName[MAX_PATH];  // System constants for the path
+    WCHAR tmpPath[64];
+    WCHAR tmpFileName[MAX_PATH];  // System constants for the path
 
     GetTempPath(64, tmpPath);
     int ret = GetTempFileName(tmpPath, L"fun", 0, tmpFileName);
@@ -413,24 +413,24 @@ bool saveFile(const char *filename,
     return true;
 }
 
-static int findCodePage(const BCHAR *encoding)
+static int findCodePage(const char *encoding)
 {
     if (encoding){
         for(int i=0; encodings[i].name; i++) {
-            if(bstricmp(encodings[i].name, encoding) == 0) {
+            if(_stricmp(encodings[i].name, encoding) == 0) {
                 // Found
                 return encodings[i].codepage_id;
             }
         }
         // Not found
-        bsprintf(logmsg, T("Invalid encoding: %s"), encoding);
+        sprintf(logmsg, T("Invalid encoding: %s"), encoding);
         LOG.error(logmsg);
     }
     // Default encoding
     return CP_UTF8;
 }
 
-static size_t getLenEncoding(const wchar_t* s, int codepage)
+static size_t getLenEncoding(const WCHAR* s, int codepage)
 {
     if (!s)
         return 0;
@@ -445,12 +445,12 @@ static size_t getLenEncoding(const wchar_t* s, int codepage)
     return (k != 0) ? (long)k : -1;
 }
 
-size_t getLenEncoding(const WCHAR* s, const BCHAR* encoding)
+size_t getLenEncoding(const WCHAR* s, const char*  encoding)
 {
     return getLenEncoding( s, findCodePage(encoding) );
 }
 
-char* toMultibyte(const WCHAR *wc, const BCHAR *encoding)
+char* toMultibyte(const WCHAR *wc, const char *encoding)
 {
     if (!wc) {
         return 0;
@@ -479,15 +479,15 @@ char* toMultibyte(const WCHAR *wc, const BCHAR *encoding)
     return ret;
 }
 
-wchar_t* toWideChar(const char *mb, const BCHAR *encoding) {
+WCHAR* toWideChar(const char *mb, const char *encoding) {
 
     if (!mb) {
         return 0;
     }
 
     unsigned long dsize = strlen(mb); 
-    wchar_t *ret = new wchar_t[dsize+2];
-    memset(ret, 0, (dsize + 1)*sizeof(wchar_t));
+    WCHAR *ret = new WCHAR[dsize+2];
+    memset(ret, 0, (dsize + 1)*sizeof(WCHAR));
     
     if (!dsize)
         return ret;

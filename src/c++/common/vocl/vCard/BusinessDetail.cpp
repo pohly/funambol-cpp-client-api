@@ -71,7 +71,7 @@ ArrayList* BusinessDetail::getTitles() {
     return titles;
 }
 
-void BusinessDetail::setTitles(wchar_t* titleArray[], int n) {
+void BusinessDetail::setTitles(WCHAR* titleArray[], int n) {
     if (titles) {
         titles->clear();
     } else {
@@ -127,7 +127,7 @@ void BusinessDetail::setContactDetail(ContactDetail& cd) {
     contactDetail = cd.clone();
 }
 
-wchar_t* BusinessDetail::getManager(wchar_t* buf, int size) {
+WCHAR* BusinessDetail::getManager(WCHAR* buf, int size) {
     if (buf == NULL) {
         return manager;
     }
@@ -141,7 +141,7 @@ wchar_t* BusinessDetail::getManager(wchar_t* buf, int size) {
     return buf;
 }
 
-wchar_t* BusinessDetail::getAssistant(wchar_t* buf, int size) {
+WCHAR* BusinessDetail::getAssistant(WCHAR* buf, int size) {
     if (buf == NULL) {
         return assistant;
     }
@@ -163,15 +163,15 @@ void BusinessDetail::setLogo(vCardProperty& p) {
     set(&logo, p);
 }
 
-void BusinessDetail::setManager (wchar_t* m) {
+void BusinessDetail::setManager (WCHAR* m) {
     set(&manager, m);
 }
 
-void BusinessDetail::setAssistant (wchar_t* a) {
+void BusinessDetail::setAssistant (WCHAR* a) {
     set(&assistant, a);
 }
 
-void BusinessDetail::set(wchar_t** p, wchar_t* v) {
+void BusinessDetail::set(WCHAR** p, WCHAR* v) {
     if(*p)
         delete *p;
     *p = wstrdup(v);

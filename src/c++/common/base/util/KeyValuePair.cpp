@@ -20,7 +20,7 @@
 #include "base/util/utils.h"
 #include "base/util/KeyValuePair.h"
 
-KeyValuePair::KeyValuePair(const BCHAR* key, const BCHAR* value) {
+KeyValuePair::KeyValuePair(const char* key, const char* value) {
     k = (key  ) ? stringdup(key  ) : NULL;
     v = (value) ? stringdup(value) : NULL;
 }
@@ -30,22 +30,22 @@ KeyValuePair::~KeyValuePair() {
     if (v) delete [] v; v = NULL;
 }
 
-void KeyValuePair::setKey(const BCHAR* key) {
+void KeyValuePair::setKey(const char* key) {
     if (k)
         delete[] k;
 
     k = stringdup(key);
 }
 
-const BCHAR* KeyValuePair::getKey() {
+const char* KeyValuePair::getKey() {
     return k;
 }
 
-const BCHAR* KeyValuePair::getValue() {
+const char* KeyValuePair::getValue() {
     return v;
 }
 
-void KeyValuePair::setValue(const BCHAR* value) {
+void KeyValuePair::setValue(const char* value) {
     if (v)
         delete[] v;
 

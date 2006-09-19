@@ -30,10 +30,10 @@
 class Status : public ResponseCommand {
     
     private:               
-        BCHAR*  COMMAND_NAME;
+        char*   COMMAND_NAME;
         Chal*     chal;
         Data*     data;
-        BCHAR*  cmd;
+        char*   cmd;
         
         void initialize();
     
@@ -63,9 +63,9 @@ class Status : public ResponseCommand {
          *
          */
         Status(  CmdID*        cmdID     ,
-                 const BCHAR*  msgRef    ,
-                 const BCHAR*  cmdRef    ,
-                 const BCHAR*  cmd       ,
+                 const char*   msgRef    ,
+                 const char*   cmdRef    ,
+                 const char*   cmd       ,
                  ArrayList*    targetRefs,
                  ArrayList*    sourceRefs,
                  Cred*         cred      ,
@@ -110,7 +110,7 @@ class Status : public ResponseCommand {
          *
          * @return the cmd element
          */
-        BCHAR* getCmd(BCHAR* retCmd = 0);
+        char*  getCmd(char*  retCmd = 0);
     
         /**
          * Sets the cmd element
@@ -118,7 +118,7 @@ class Status : public ResponseCommand {
          * @param cmd the new cmd element - NOT NULL
          *         
          */
-        void setCmd(const BCHAR* cmd);
+        void setCmd(const char*  cmd);
     
         /**
          * Returns the status code as int
@@ -132,7 +132,7 @@ class Status : public ResponseCommand {
          *
          * @return the command name
          */
-        BCHAR* getName();
+        char*  getName();
 
         ArrayElement* clone();   
 };

@@ -66,23 +66,23 @@ class FileData : public ArrayElement {
         ~FileData();
 
     // ---------------------------------------------------------- Accessors  
-		const wchar_t* getFile() { return file; }
-		void setFile(const wchar_t* v) { file = v; } 
+		const WCHAR* getFile() { return file; }
+		void setFile(const WCHAR* v) { file = v; } 
 
-		const wchar_t* getName() { return name; }
-		void setName(const wchar_t* v) { name = v; }
+		const WCHAR* getName() { return name; }
+		void setName(const WCHAR* v) { name = v; }
 
-		const wchar_t* getCreated() { return created; }
-		void setCreated(const wchar_t* v) { created = v; }
+		const WCHAR* getCreated() { return created; }
+		void setCreated(const WCHAR* v) { created = v; }
 
-		const wchar_t* getModified() { return modified; }
-		void setModified(const wchar_t* v) { modified = v; }
+		const WCHAR* getModified() { return modified; }
+		void setModified(const WCHAR* v) { modified = v; }
 
-		const wchar_t* getAccessed() { return accessed; }
-		void setAccessed(const wchar_t* v) { accessed = v; }
+		const WCHAR* getAccessed() { return accessed; }
+		void setAccessed(const WCHAR* v) { accessed = v; }
 
-		const wchar_t* getAttributes() { return file; }
-		void setAttributes(const wchar_t* v) { attributes = v; }
+		const WCHAR* getAttributes() { return file; }
+		void setAttributes(const WCHAR* v) { attributes = v; }
 		
 		bool getHiddied() { return hidden; }
 		void setHidden(bool v) { hidden = v; }
@@ -105,14 +105,14 @@ class FileData : public ArrayElement {
 		bool getExecutable() { return executable; }
 		void setExecutable(bool v) { executable = v; }
 
-		const wchar_t* getCttype() { return cttype; }
-		void setCttype(const wchar_t* v) { cttype = v; } 
+		const WCHAR* getCttype() { return cttype; }
+		void setCttype(const WCHAR* v) { cttype = v; } 
 
         const char* getBody() { return body; }
 		void setBody(const char* v, int len);
 
-		const wchar_t* getEnc() { return enc; }
-		void setEnc(const wchar_t* v) { enc = v; } 
+		const WCHAR* getEnc() { return enc; }
+		void setEnc(const WCHAR* v) { enc = v; } 
 		
 		int getSize() { return size; }
 		void setSize(int v) { size = v; }

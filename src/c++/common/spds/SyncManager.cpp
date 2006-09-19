@@ -93,8 +93,8 @@ void SyncManager::initialize() {
     AccessConfig& c = config.getAccessConfig();   
     DeviceConfig& dc = config.getDeviceConfig();
     
-    bstrncpy(syncURL, c.getSyncURL(), 511);
-    bstrncpy(deviceId, dc.getDevID(), 31);
+    strncpy(syncURL, c.getSyncURL(), 511);
+    strncpy(deviceId, dc.getDevID(), 31);
     
     credentialHandler.setUsername           (c.getUsername());
     credentialHandler.setPassword           (c.getPassword());
@@ -122,7 +122,7 @@ void SyncManager::initialize() {
         readBufferSize = c.getReadBufferSize();
     
     syncMLBuilder.set(syncURL, deviceId);
-    memset(credentialInfo, 0, 256*sizeof(BCHAR));
+    memset(credentialInfo, 0, 256*sizeof(char));
 }
 
 SyncManager::~SyncManager() {
@@ -161,14 +161,14 @@ SyncManager::~SyncManager() {
 
 int SyncManager::prepareSync(SyncSource** s) {
     
-    BCHAR* initMsg            = NULL;
-    BCHAR* respURI            = NULL;
-    BCHAR* responseMsg        = NULL;
+    char* initMsg               = NULL;
+    char* respURI               = NULL;
+    char* responseMsg           = NULL;
     SyncML*  syncml             = NULL;
     int ret                     = 0;
     int serverRet               = 0;
     int count                   = 0;    
-    const BCHAR* requestedAuthType  = NULL;
+    const char* requestedAuthType  = NULL;
     ArrayList* list             = new ArrayList();
     ArrayList* alerts           = new ArrayList();
     
@@ -188,8 +188,8 @@ int SyncManager::prepareSync(SyncSource** s) {
     SyncSource** buf            = NULL;
     StringBuffer* devInfStr     = NULL;
     BOOL putDevInf              = FALSE;
-    BCHAR devInfHash[16 * 4 +1]; // worst case factor base64 is four
-    const BCHAR *syncURL;
+    char devInfHash[16 * 4 +1]; // worst case factor base64 is four
+    const char *syncURL;
     
     // Fire Sync Begin Event
     fireSyncEvent(NULL, SYNC_BEGIN);
@@ -201,14 +201,14 @@ int SyncManager::prepareSync(SyncSource** s) {
 
     // Set proxy username/password if proxy is used.
     if (config.getAccessConfig().getUseProxy()) {
-        //BCHAR* proxyHost = config.getAccessConfig().getProxyHost();
+        //char* proxyHost = config.getAccessConfig().getProxyHost();
         //int    proxyPort = config.getAccessConfig().getProxyPort();
-        BCHAR* proxyUser = config.getAccessConfig().getProxyUsername();
-        BCHAR* proxyPwd  = config.getAccessConfig().getProxyPassword();
+        char* proxyUser = config.getAccessConfig().getProxyUsername();
+        char* proxyPwd  = config.getAccessConfig().getProxyPassword();
         proxy.setProxy(NULL, 0, proxyUser, proxyPwd);
     }
     
-    const BCHAR* sourceName = NULL;
+    const char* sourceName = NULL;
     
     sourcesNumber = assignSources(s);
     check = new int[sourcesNumber + 1];
@@ -220,10 +220,10 @@ int SyncManager::prepareSync(SyncSource** s) {
     check[sourcesNumber] = 0;
 
     // --- INFO
-    bsprintf(logmsg, MSG_SYNC_URL, syncURL);
+    sprintf(logmsg, MSG_SYNC_URL, syncURL);
     LOG.info(logmsg);
     for (count = 0; count < sourcesNumber; count++) {
-        bsprintf(logmsg, MSG_PREPARING_SYNC, _wcc(sources[count]->getName()));
+        sprintf(logmsg, MSG_PREPARING_SYNC, _wcc(sources[count]->getName()));
         LOG.info(logmsg);
     }
     // ---
@@ -237,7 +237,7 @@ int SyncManager::prepareSync(SyncSource** s) {
     for (count = 0; count < sourcesNumber; count ++) {
         if (readSyncSourceDefinition(*sources[count]) == false) {
             ret = lastErrorCode = ERR_SOURCE_DEFINITION_NOT_FOUND;
-            bsprintf(lastErrorMsg, ERRMSG_SOURCE_DEFINITION_NOT_FOUND,
+            sprintf(lastErrorMsg, ERRMSG_SOURCE_DEFINITION_NOT_FOUND,
                                    _wcc(sources[count]->getName()));
             LOG.debug(lastErrorMsg);
             check[count] = 0;
@@ -263,7 +263,7 @@ int SyncManager::prepareSync(SyncSource** s) {
         // compare against previous device info hash:
         // if different, then the local config has changed and
         // infos should be sent again
-        if (bstrcmp(devInfHash, config.getDeviceConfig().getDevInfHash())) {
+        if (strcmp(devInfHash, config.getDeviceConfig().getDevInfHash())) {
             putDevInf = TRUE;
         }
         LOG.debug(T("devinfo %s"), putDevInf ? T("changed, retransmit") : T("unchanged, no need to send"));
@@ -289,7 +289,7 @@ int SyncManager::prepareSync(SyncSource** s) {
         if (!ret) {
             // error: no source to sync
             ret = lastErrorCode = ERR_NO_SOURCE_TO_SYNC;
-            bsprintf(lastErrorMsg, ERRMSG_NO_SOURCE_TO_SYNC);
+            sprintf(lastErrorMsg, ERRMSG_NO_SOURCE_TO_SYNC);
         }
 
         goto finally;
@@ -308,7 +308,7 @@ int SyncManager::prepareSync(SyncSource** s) {
 
         // credential of the client
         if (isClientAuthenticated == FALSE) {
-            BCHAR anc[DIM_ANCHOR];
+            char anc[DIM_ANCHOR];
             timestamp = (unsigned long)time(NULL);
             for (count = 0; count < sourcesNumber; count ++) {
                 if (!check[count])
@@ -334,7 +334,7 @@ int SyncManager::prepareSync(SyncSource** s) {
                 deleteAlert(&alert);
             }
             cred = credentialHandler.getClientCredential();             
-            bstrcpy(credentialInfo, cred->getAuthentication()->getData(NULL));
+            strcpy(credentialInfo, cred->getAuthentication()->getData(NULL));
         }
 
         // actively send out device infos?
@@ -370,7 +370,7 @@ int SyncManager::prepareSync(SyncSource** s) {
             transportAgent = TransportAgentFactory::getTransportAgent(url, proxy);
             transportAgent->setReadBufferSize(readBufferSize);
             // Here we also ensure that the user agent string is valid
-            const BCHAR* ua = getUserAgent(config);
+            const char* ua = getUserAgent(config);
             LOG.debug("User Agent = %s", ua);
             transportAgent->setUserAgent(ua);
             delete [] ua; ua = NULL;
@@ -444,7 +444,7 @@ int SyncManager::prepareSync(SyncSource** s) {
 
         } else if (isErrorStatus(ret) && ! isAuthFailed(ret)) {
             lastErrorCode = ret;
-            bsprintf(logmsg, T("Error from server %d"), ret);
+            sprintf(logmsg, T("Error from server %d"), ret);
             LOG.error(logmsg);
             goto finally;
         }
@@ -464,7 +464,7 @@ int SyncManager::prepareSync(SyncSource** s) {
 
             if (ret == -1 || ret == 404 || ret == 415) {
                 lastErrorCode = ret;
-                bsprintf(logmsg, T("AlertStatus from server %d"), ret);
+                sprintf(logmsg, T("AlertStatus from server %d"), ret);
                 LOG.error(logmsg);
                 check[count] = 0;   
             }
@@ -507,7 +507,7 @@ int SyncManager::prepareSync(SyncSource** s) {
                     authStatusCode = 212;                    
                 }
                 else {
-                    if (bstrcmp(credentialHandler.getServerAuthType(NULL), AUTH_TYPE_MD5) == 0 ||
+                    if (strcmp(credentialHandler.getServerAuthType(NULL), AUTH_TYPE_MD5) == 0 ||
                         serverAuthRetries == 1)
                     {
                         serverChal   = credentialHandler.getServerChal(isServerAuthenticated);
@@ -547,10 +547,10 @@ int SyncManager::prepareSync(SyncSource** s) {
         int cmdindex;
         for (cmdindex = 0; cmdindex < list->size(); cmdindex++) {
             AbstractCommand* cmd = (AbstractCommand*)list->get(cmdindex);
-            BCHAR* name = cmd->getName();
+            char* name = cmd->getName();
             if (name) {
-                BOOL isPut = !bstrcmp(name, PUT);
-                BOOL isGet = !bstrcmp(name, GET);
+                BOOL isPut = !strcmp(name, PUT);
+                BOOL isGet = !strcmp(name, GET);
 
                 if (isGet || isPut) {
                     int statusCode = 200; // if set, then send it (on by default)
@@ -569,7 +569,7 @@ int SyncManager::prepareSync(SyncSource** s) {
                             // we return our device infos
                             Target *target = item->getTarget();
                             if (target && target->getLocURI() &&
-                                !bstrcmp(target->getLocURI(),
+                                !strcmp(target->getLocURI(),
                                          DEVINF_URI)) {
                                 sendDevInf = TRUE;
                             } else {
@@ -615,12 +615,12 @@ int SyncManager::prepareSync(SyncSource** s) {
             } else {
                 requestedAuthType = clientChal->getType(NULL);
             }
-            if (bstrcmp(credentialHandler.getClientAuthType(NULL),requestedAuthType) != 0 ) {           
-                if (clientChal && bstrcmp(requestedAuthType, AUTH_TYPE_MD5) == 0) {
+            if (strcmp(credentialHandler.getClientAuthType(NULL),requestedAuthType) != 0 ) {           
+                if (clientChal && strcmp(requestedAuthType, AUTH_TYPE_MD5) == 0) {
                     credentialHandler.setClientNonce(clientChal->getNextNonce()->getValueAsBase64());
                 }                 
             } else { 
-                if (bstrcmp(requestedAuthType, AUTH_TYPE_MD5) == 0 && clientAuthRetries == 1)  {
+                if (strcmp(requestedAuthType, AUTH_TYPE_MD5) == 0 && clientAuthRetries == 1)  {
                     credentialHandler.setClientNonce(clientChal->getNextNonce()->getValueAsBase64());
                  
                 } else {
@@ -633,7 +633,7 @@ int SyncManager::prepareSync(SyncSource** s) {
             clientAuthRetries++;            
 
        } else {            
-            if (clientChal && bstrcmp(clientChal->getType(NULL), AUTH_TYPE_MD5) == 0) {                    
+            if (clientChal && strcmp(clientChal->getType(NULL), AUTH_TYPE_MD5) == 0) {                    
                 credentialHandler.setClientNonce(clientChal->getNextNonce()->getValueAsBase64());                
             }
             isClientAuthenticated = TRUE;
@@ -786,8 +786,8 @@ BOOL SyncManager::checkForServerChanges(SyncML* syncml, ArrayList &statusList)
 
 int SyncManager::sync() {
 
-    BCHAR* msg         = NULL;
-    BCHAR* responseMsg = NULL;
+    char* msg            = NULL;
+    char* responseMsg    = NULL;
     Status* status       = NULL;
     SyncML* syncml       = NULL;
     /** Current item to be transmitted. Might be split across multiple messages if LargeObjectSupport is on. */
@@ -863,7 +863,7 @@ int SyncManager::sync() {
             } else {
                 // TBD: if we are using vcard/icalendar, we need to 
                 // set the encoding to PLAIN
-                if (bstrcmp(sources[count]->getConfig().getEncoding(), B64_ENCODING) == 0) {
+                if (strcmp(sources[count]->getConfig().getEncoding(), B64_ENCODING) == 0) {
                     syncMLBuilder.setEncoding(B64);
                 } else {
                     syncMLBuilder.setEncoding(PLAIN);
@@ -1280,7 +1280,7 @@ int SyncManager::sync() {
             ret = syncMLProcessor.processSyncHdrStatus(syncml);
             if (isErrorStatus(ret)) {
                 lastErrorCode = ret;
-                bsprintf(lastErrorMsg, T("Server Failure: server returned error code %i"), ret);
+                sprintf(lastErrorMsg, T("Server Failure: server returned error code %i"), ret);
                 LOG.error(lastErrorMsg);
                 goto finally;
 
@@ -1389,7 +1389,7 @@ int SyncManager::sync() {
         ret = syncMLProcessor.processSyncHdrStatus(syncml);
         if (isErrorStatus(ret)) {
             lastErrorCode = ret;
-            bsprintf(lastErrorMsg, T("Server Failure: server returned error code %i"), ret);
+            sprintf(lastErrorMsg, T("Server Failure: server returned error code %i"), ret);
             LOG.error(lastErrorMsg);
             goto finally;
         }
@@ -1444,7 +1444,7 @@ int SyncManager::sync() {
 
                 if (isErrorStatus(ret)) {
                     lastErrorCode = ret;
-                    bsprintf(lastErrorMsg, T("Server Failure: server returned error code %i"), ret);
+                    sprintf(lastErrorMsg, T("Server Failure: server returned error code %i"), ret);
                     LOG.error(lastErrorMsg);
                     goto finally;
                 }
@@ -1478,8 +1478,8 @@ finally:
 
 int SyncManager::endSync() {
 
-    BCHAR* mapMsg         = NULL;
-    BCHAR* responseMsg    = NULL;
+    char* mapMsg            = NULL;
+    char* responseMsg       = NULL;
     SyncML*  syncml         = NULL;
     BOOL     last           = TRUE;
     int ret                 = 0;   
@@ -1591,7 +1591,7 @@ int SyncManager::endSync() {
 
                 if (isErrorStatus(ret)) {
                     lastErrorCode = ret;
-                    bsprintf(lastErrorMsg, T("Server Failure: server returned error code %i"), ret);
+                    sprintf(lastErrorMsg, T("Server Failure: server returned error code %i"), ret);
                     LOG.error(lastErrorMsg);
                     goto finally;
                 }
@@ -1648,7 +1648,7 @@ int SyncManager::endSync() {
     config.getAccessConfig().setEndSync((unsigned long)time(NULL));
     safeDelete(&responseMsg);
     safeDelete(&mapMsg);
-    BCHAR g[768]; bsprintf(g, "ret: %i, lastErrorCode: %i, lastErrorMessage: %s", ret, lastErrorCode, lastErrorMsg); LOG.debug(g);
+    char g[768]; sprintf(g, "ret: %i, lastErrorCode: %i, lastErrorMessage: %s", ret, lastErrorCode, lastErrorMsg); LOG.debug(g);
 
 	// Fire Sync End Event
     fireSyncEvent(NULL, SYNC_END);
@@ -1667,7 +1667,7 @@ int SyncManager::endSync() {
 }
 
 BOOL SyncManager::readSyncSourceDefinition(SyncSource& source) {
-    BCHAR anchor[DIM_ANCHOR];
+    char anchor[DIM_ANCHOR];
     
     if (config.getSyncSourceConfig(_wcc(source.getName()), source.getConfig()) == FALSE) {
         return FALSE;
@@ -1690,17 +1690,17 @@ BOOL SyncManager::commitChanges(SyncSource& source) {
     unsigned int n = config.getSyncSourceConfigsCount();
     SyncSourceConfig* configs = config.getSyncSourceConfigs();
 
-    const BCHAR* name = _wcc(source.getName());
+    const char* name = _wcc(source.getName());
     unsigned long next = source.getNextSync();
 
-    BCHAR anchor[DIM_ANCHOR];
+    char anchor[DIM_ANCHOR];
     timestampToAnchor(next, anchor);
 
-    bsprintf(logmsg, DBG_COMMITTING_SOURCE, name, anchor);
+    sprintf(logmsg, DBG_COMMITTING_SOURCE, name, anchor);
     LOG.debug(logmsg);
 
     for (unsigned int i = 0; i<n; ++i) {
-        if (bstrcmp(name, configs[i].getName()) == NULL) {
+        if (strcmp(name, configs[i].getName()) == NULL) {
             configs[i].setLast(next);
             return TRUE;
         }
@@ -1737,7 +1737,7 @@ finally:
 Status *SyncManager::processSyncItem(Item* item, const CommandInfo &cmdInfo, SyncMLBuilder &syncMLBuilder)
 {
     int code = 0;
-    const BCHAR* itemName;
+    const char* itemName;
     Status *status = 0;
 
     Source* s = item->getSource();
@@ -1750,7 +1750,7 @@ Status *SyncManager::processSyncItem(Item* item, const CommandInfo &cmdInfo, Syn
     }
 
     // Fill item -------------------------------------------------
-    wchar_t *iname = toWideChar(itemName);
+    WCHAR *iname = toWideChar(itemName);
     BOOL append = TRUE;
     if (incomingItem) {
         BOOL newItem = FALSE;
@@ -1810,8 +1810,8 @@ Status *SyncManager::processSyncItem(Item* item, const CommandInfo &cmdInfo, Syn
     if (incomingItem) {
         ComplexData *cdata = item->getData();
         if (cdata) {
-            BCHAR* data = cdata->getData();
-            BCHAR* format = 0;
+            char* data = cdata->getData();
+            char* format = 0;
 
             //
             // Retrieving how the content has been encoded
@@ -1864,14 +1864,14 @@ Status *SyncManager::processSyncItem(Item* item, const CommandInfo &cmdInfo, Syn
 
     if (incomingItem) {
         if (cmdInfo.dataType) {
-            wchar_t *dtype = toWideChar(cmdInfo.dataType);
+            WCHAR *dtype = toWideChar(cmdInfo.dataType);
             incomingItem->setDataType(dtype);
             delete [] dtype;
         }
-        wchar_t *sparent = toWideChar(item->getSourceParent());
+        WCHAR *sparent = toWideChar(item->getSourceParent());
         incomingItem->setSourceParent(sparent);
         delete [] sparent;
-        wchar_t *tparent = toWideChar(item->getTargetParent());
+        WCHAR *tparent = toWideChar(item->getTargetParent());
         incomingItem->setTargetParent(tparent);
         delete [] tparent;
 
@@ -1881,7 +1881,7 @@ Status *SyncManager::processSyncItem(Item* item, const CommandInfo &cmdInfo, Syn
             // sanity check: is the item complete?
             if (incomingItem->offset == incomingItem->getDataSize()) {
                 // Process item ------------------------------------------------------------
-                if ( bstrcmp(cmdInfo.commandName, ADD) == 0) {  
+                if ( strcmp(cmdInfo.commandName, ADD) == 0) {  
                     // Fire Sync Item Event - New Item Added by Server
                     fireSyncItemEvent(sources[count]->getConfig().getURI(), incomingItem->getKey(), ITEM_ADDED_BY_SERVER);
 
@@ -1894,13 +1894,13 @@ Status *SyncManager::processSyncItem(Item* item, const CommandInfo &cmdInfo, Syn
 
                     // If the add was successful, set the id mapping
                     if (code >= 200 && code <= 299) {
-                        BCHAR *key = toMultibyte(incomingItem->getKey());
+                        char *key = toMultibyte(incomingItem->getKey());
                         SyncMap syncMap(item->getSource()->getLocURI(), key);
                         mappings[count]->add(syncMap);
                         delete [] key;
                     }                    
                 }
-                else if (bstrcmp(cmdInfo.commandName, REPLACE) == 0) {  
+                else if (strcmp(cmdInfo.commandName, REPLACE) == 0) {  
                     // Fire Sync Item Event - Item Updated by Server
                     fireSyncItemEvent(sources[count]->getConfig().getURI(), incomingItem->getKey(), ITEM_UPDATED_BY_SERVER);
 
@@ -1911,7 +1911,7 @@ Status *SyncManager::processSyncItem(Item* item, const CommandInfo &cmdInfo, Syn
                     // Fire Sync Status Event: item status from client
                     fireSyncStatusEvent(status->getCmd(), status->getStatusCode(), sources[count]->getConfig().getURI(), incomingItem->getKey(), CLIENT_STATUS);
                 }
-                else if (bstrcmp(cmdInfo.commandName, DEL) == 0) {
+                else if (strcmp(cmdInfo.commandName, DEL) == 0) {
                     // Fire Sync Item Event - Item Deleted by Server
                     fireSyncItemEvent(sources[count]->getConfig().getURI(), incomingItem->getKey(), ITEM_DELETED_BY_SERVER);
 
@@ -1950,18 +1950,18 @@ Status *SyncManager::processSyncItem(Item* item, const CommandInfo &cmdInfo, Syn
     return status;
 }
 
-char* SyncManager::processItemContent(const BCHAR* toConvert,
-                                      const BCHAR* format,
+char* SyncManager::processItemContent(const char* toConvert,
+                                      const char* format,
                                       long *size) {
     
-    BCHAR* p = NULL;
-    BCHAR* encodings = stringdup(format);
-    BCHAR* encoding = NULL;
+    char* p = NULL;
+    char* encodings = stringdup(format);
+    char* encoding = NULL;
     TransformationInfo info;
 
     char* c = stringdup(toConvert);
     info.size = strlen(c);
-    info.password = credentialInfo; //(BCHAR*)config.getAccessConfig().getPassword();
+    info.password = credentialInfo; //(char*)config.getAccessConfig().getPassword();
 
     while ((p = strrchr(encodings, CHR(';')))) {
         encoding = p+1;
@@ -1972,7 +1972,7 @@ char* SyncManager::processItemContent(const BCHAR* toConvert,
         *p = 0;
     }
 
-    if (bstrlen(encodings) > 0) {
+    if (strlen(encodings) > 0) {
         decodeSyncItemContent(&c, info, encodings);
     }
     c[info.size] = 0;
@@ -1985,7 +1985,7 @@ char* SyncManager::processItemContent(const BCHAR* toConvert,
 
 void SyncManager::decodeSyncItemContent(char** c,
                                         TransformationInfo& info,
-                                        const BCHAR* encoding) {
+                                        const char* encoding) {
     
     char* decodedData = NULL;
    
@@ -2035,7 +2035,7 @@ exit:
  */
 DevInf *SyncManager::createDeviceInfo()
 {
-    const BCHAR *rxType, *rxVer,
+    const char *rxType, *rxVer,
         *txType, *txVer;
 
     // check that essential information is available
@@ -2091,10 +2091,10 @@ DevInf *SyncManager::createDeviceInfo()
          *source;
          source++) {
         ArrayList syncModeList;
-        const BCHAR *syncModes = (*source)->getConfig().getSyncModes();
+        const char *syncModes = (*source)->getConfig().getSyncModes();
         if (syncModes) {
-            BCHAR buffer[80];
-            const BCHAR *mode = syncModes;
+            char buffer[80];
+            const char *mode = syncModes;
 
             while (*mode) {
                 // skip leading spaces and commas
@@ -2102,7 +2102,7 @@ DevInf *SyncManager::createDeviceInfo()
                     mode++;
                 }
                 // fast-forward to comma
-                const BCHAR *eostr = mode;
+                const char *eostr = mode;
                 while (*eostr && *eostr != ',') {
                     eostr++;
                 }
@@ -2115,7 +2115,7 @@ DevInf *SyncManager::createDeviceInfo()
                 if (len > sizeof(buffer) - 1) {
                     len = sizeof(buffer) - 1;
                 }
-                memcpy(buffer, mode, sizeof(BCHAR) * len);
+                memcpy(buffer, mode, sizeof(char) * len);
                 buffer[len] = 0;
                 SyncMode sm = syncModeCode(buffer);
                 for (int i = 0; mapping[i].type >= 0; i++) {
@@ -2184,7 +2184,7 @@ DevInf *SyncManager::createDeviceInfo()
  *               i.e. "text/x-s4j-sifc:1.0,text/x-vcard:2.1"
  * @param l    : arraylist of ContentTypeInfo, to fill
  */
-static void fillContentTypeInfoList(ArrayList &l, const BCHAR* types) { 
+static void fillContentTypeInfoList(ArrayList &l, const char* types) { 
  
     l.clear();
     if (!types) {
@@ -2193,8 +2193,8 @@ static void fillContentTypeInfoList(ArrayList &l, const BCHAR* types) {
 
     char typeName[80];
     char typeVersion[20];
-    const BCHAR* curr = types;
-    const BCHAR* eostr = NULL;
+    const char* curr = types;
+    const char* eostr = NULL;
     size_t len = 0;
 
     while (*curr) {
@@ -2247,12 +2247,12 @@ static void fillContentTypeInfoList(ArrayList &l, const BCHAR* types) {
  * If also 'mod' property is empty, return a default user agent.
  *
  * @param config: reference to the current SyncManagerConfig
- * @return      : user agent property as a new BCHAR*
+ * @return      : user agent property as a new char*
  *                (need to be freed by the caller)
  */
-const BCHAR* SyncManager::getUserAgent(SyncManagerConfig& config) {
+const char* SyncManager::getUserAgent(SyncManagerConfig& config) {
 
-    BCHAR* ret;
+    char* ret;
     StringBuffer userAgent(config.getAccessConfig().getUserAgent());
     StringBuffer buffer;
     
@@ -2261,8 +2261,8 @@ const BCHAR* SyncManager::getUserAgent(SyncManagerConfig& config) {
     }
     // Use 'mod + SwV' parameters for user agent
     else {
-        const BCHAR* mod = config.getDeviceConfig().getMod();
-        const BCHAR* swV = config.getDeviceConfig().getSwv();
+        const char* mod = config.getDeviceConfig().getMod();
+        const char* swV = config.getDeviceConfig().getSwv();
         if (mod && strcmp(mod, "")) {
             buffer.append(mod);
             if (swV && strcmp(swV, "")) {
@@ -2272,7 +2272,7 @@ const BCHAR* SyncManager::getUserAgent(SyncManagerConfig& config) {
             ret = stringdup(buffer.c_str());
         } else {
             // Default user agent value
-            ret = stringdup(BCHAR_USER_AGENT);
+            ret = stringdup(CHAR_USER_AGENT);
         }
     }
 

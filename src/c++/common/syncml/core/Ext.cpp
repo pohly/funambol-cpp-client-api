@@ -41,7 +41,7 @@ Ext::~Ext() {
 *                  element
 *
 */
-Ext::Ext(BCHAR* xNam, ArrayList* xVal) {
+Ext::Ext(char* xNam, ArrayList* xVal) {
     initialize();
     setXNam(xNam);
     setXVal(xVal);
@@ -57,11 +57,11 @@ void Ext::initialize() {
 *
 * @return the name of the extension
 */
-BCHAR* Ext::getXNam(BCHAR* retXNam) {
+char* Ext::getXNam(char* retXNam) {
     if (retXNam == NULL) {
         return xNam;
     }
-    return bstrcpy(retXNam, xNam);
+    return strcpy(retXNam, xNam);
 
 }
 
@@ -71,7 +71,7 @@ BCHAR* Ext::getXNam(BCHAR* retXNam) {
 * @param xNam the name of extension
 *
 */
-void Ext::setXNam(BCHAR* xNam) {
+void Ext::setXNam(char* xNam) {
     if (this->xNam) {
         delete [] this->xNam; this->xNam = NULL;
     }

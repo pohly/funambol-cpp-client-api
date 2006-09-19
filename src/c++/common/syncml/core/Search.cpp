@@ -21,8 +21,8 @@
  
 Search::Search() {
     
-    COMMAND_NAME = new BCHAR[bstrlen(SEARCH_COMMAND_NAME) + 1];
-    bsprintf(COMMAND_NAME, SEARCH_COMMAND_NAME);
+    COMMAND_NAME = new char[strlen(SEARCH_COMMAND_NAME) + 1];
+    sprintf(COMMAND_NAME, SEARCH_COMMAND_NAME);
 
     noResults = FALSE;
     target    = NULL;
@@ -59,13 +59,13 @@ Search::Search(CmdID*      cmdID    ,
                Cred*       cred     ,
                Target*     target   ,
                ArrayList*  sources  ,
-               BCHAR*    lang     ,
+               char*    lang     ,
                Meta*       meta     ,
                Data*       data     ) : AbstractCommand(cmdID, noResp)  {
     
     
-    COMMAND_NAME = new BCHAR[bstrlen(SEARCH_COMMAND_NAME) + 1];
-    bsprintf(COMMAND_NAME, SEARCH_COMMAND_NAME);
+    COMMAND_NAME = new char[strlen(SEARCH_COMMAND_NAME) + 1];
+    sprintf(COMMAND_NAME, SEARCH_COMMAND_NAME);
     
     this->noResults = FALSE;
     this->target    = NULL;
@@ -169,11 +169,11 @@ void Search::setSources(ArrayList* sources) {
 * @return the preferred language
 *
 */
-BCHAR* Search::getLang(BCHAR* retLang) {
+char* Search::getLang(char* retLang) {
     if (retLang == NULL) {
         return lang;
     }
-    return bstrcpy(retLang, lang);
+    return strcpy(retLang, lang);
 }
 
 /**
@@ -181,7 +181,7 @@ BCHAR* Search::getLang(BCHAR* retLang) {
 *
 * @param lang the preferred language
 */
-void Search::setLang(BCHAR* lang) {
+void Search::setLang(char* lang) {
     if (this->lang) {
         delete [] this->lang; this->lang = NULL;
     }
@@ -220,7 +220,7 @@ void Search::setData(Data* data) {
 *
 * @return the command name
 */
-BCHAR* Search::getName() {
+char* Search::getName() {
     return COMMAND_NAME;
 }
 

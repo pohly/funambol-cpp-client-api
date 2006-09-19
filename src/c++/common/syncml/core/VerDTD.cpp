@@ -36,7 +36,7 @@ VerDTD::~VerDTD() {
  * @param value the version - NOT NULL
  *
  */
-VerDTD::VerDTD(const BCHAR* value) {
+VerDTD::VerDTD(const char* value) {
     this->value = stringdup(value);
 }
 
@@ -47,7 +47,7 @@ VerDTD::VerDTD(const BCHAR* value) {
  *
  * @return value properties
  */
-BCHAR* VerDTD::getValue() {
+char* VerDTD::getValue() {
     return value;
 }
 
@@ -56,7 +56,7 @@ BCHAR* VerDTD::getValue() {
  *
  * @param value the version of DTD
  */
-void VerDTD::setValue(BCHAR* value) {
+void VerDTD::setValue(char* value) {
     if (this->value) {
         delete [] this->value; this->value = NULL;
     }

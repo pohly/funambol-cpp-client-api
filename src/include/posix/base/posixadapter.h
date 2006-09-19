@@ -66,28 +66,11 @@
 
 #define SYNC4J_LINEBREAK "\n"
 
-/* map wchar_t and its functions back to standard functions */
-#undef wchar_t
-#define wchar_t char
-#undef BCHAR
-typedef char BCHAR;
+/* map WCHAR and its functions back to standard functions */
+#undef WCHAR
+#define WCHAR char
+
 typedef char WCHAR;
-
-#define bsprintf sprintf 
-
-#define bstrlen strlen
-#define bstrcpy strcpy
-#define bstrcat strcat
-#define bstrstr strstr
-#define bstrchr strchr
-#define bstrrchr strrchr
-#define bscanf scanf
-#define bstrcmp strcmp
-#define bstricmp _stricmp
-#define bstrncpy strncpy
-#define bstrncmp strncmp
-#define bstrtol strtol
-#define bstrtoul strtoul
 
 #define wsprintf sprintf
 #define _wfopen fopen

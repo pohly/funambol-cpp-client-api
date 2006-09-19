@@ -47,7 +47,7 @@ public:
      *
      * @return the corresponding CGI query string
      */
-    static const BCHAR* toCGIQuery(Clause& clause);
+    static const char*  toCGIQuery(Clause& clause);
 
     /**
      * Creates the filter clause given download age, body size and attach size
@@ -57,7 +57,7 @@ public:
      * @param bodySize body size
      * @param attachSize attachment size
      */
-    static SourceFilter* createSourceFilter(const wchar_t* since, int bodySize, int attachSize);
+    static SourceFilter* createSourceFilter(const WCHAR* since, int bodySize, int attachSize);
 
 };
 

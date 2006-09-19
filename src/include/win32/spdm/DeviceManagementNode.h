@@ -47,8 +47,8 @@ class DeviceManagementNode: public ManagementNode {
          * @param name - the node name
          *
          */
-        DeviceManagementNode(const BCHAR* parent, const BCHAR* name);
-        DeviceManagementNode(const BCHAR* fullName);  
+        DeviceManagementNode(const char*  parent, const char*  name);
+        DeviceManagementNode(const char*  fullName);  
         ~DeviceManagementNode();
 
         // --------------------------------------------------- Public methods
@@ -57,7 +57,7 @@ class DeviceManagementNode: public ManagementNode {
          *
          * @param property - the property name
          */
-        BCHAR* getPropertyValue(const BCHAR* property);
+        char*  getPropertyValue(const char*  property);
 
         /*
          * Sets a property value.
@@ -65,12 +65,12 @@ class DeviceManagementNode: public ManagementNode {
          * @param property - the property name
          * @param value - the property value (zero terminated string)
          */
-        void setPropertyValue(const BCHAR* property, const BCHAR* value);
+        void setPropertyValue(const char*  property, const char*  value);
 
         /*
          * Returns the children's name of the parent node. 
          */
-        BCHAR **getChildrenNames();
+        char **getChildrenNames();
 
         /*
          * Find how many children are defined for this node in the underlying

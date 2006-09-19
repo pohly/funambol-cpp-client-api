@@ -55,7 +55,7 @@ class DeviceManagementRecord {
          * @param data the content of the record
          * @param size the sice of the content
          */
-        DeviceManagementRecord(int index, wchar_t* data, unsigned int size) EXTRA_SECTION_03;
+        DeviceManagementRecord(int index, WCHAR* data, unsigned int size) EXTRA_SECTION_03;
         DeviceManagementRecord(int index = -1) EXTRA_SECTION_03;
         ~DeviceManagementRecord() EXTRA_SECTION_03;
 
@@ -69,7 +69,7 @@ class DeviceManagementRecord {
          * Returns the n-th fields (1 based). Returns NULL if n is greater than
          * the number of the fields in the record.
          */
-        wchar_t* getField(unsigned int n) EXTRA_SECTION_03;
+        WCHAR* getField(unsigned int n) EXTRA_SECTION_03;
 
         /**
          * Sets the record data to the given data.
@@ -77,7 +77,7 @@ class DeviceManagementRecord {
          * @param data the content of the record
          * @param size the sice of the content
          */
-        void setData(wchar_t* data, unsigned int size) EXTRA_SECTION_03;
+        void setData(WCHAR* data, unsigned int size) EXTRA_SECTION_03;
 
         /**
          * Sets the record data to the given AccessConfig
@@ -103,7 +103,7 @@ class DeviceManagementRecord {
         /**
          * Returns the record data
          */
-        wchar_t* getData() EXTRA_SECTION_03;
+        WCHAR* getData() EXTRA_SECTION_03;
 
         /**
          * Returns the record size
@@ -164,7 +164,7 @@ class DeviceManagementRecord {
 
         // -------------------------------------------------------- Private data
 
-        wchar_t* record;
+        WCHAR* record;
         int index;
         unsigned int size;
 

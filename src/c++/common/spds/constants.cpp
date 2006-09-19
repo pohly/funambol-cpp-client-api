@@ -18,7 +18,7 @@
 
 #include "spds/constants.h"
 
-BCHAR* retSyncMode(SyncMode sm)
+char* retSyncMode(SyncMode sm)
 {
 	switch (sm)
 	{

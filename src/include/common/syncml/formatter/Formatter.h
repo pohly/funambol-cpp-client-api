@@ -36,11 +36,11 @@ class Formatter {
     // ---------------------------------------------------------- Public data    
     public:
         
-        static StringBuffer*    getValue            (const BCHAR* tagName, const BCHAR* value, const BCHAR *params = NULL);
-        static StringBuffer*    getValue            (const BCHAR* tagName, StringBuffer* value, const BCHAR *params = NULL);
-        static StringBuffer*    getValue            (const BCHAR* tagName, long value, const BCHAR *params = NULL);
-        static StringBuffer*    getValue            (const BCHAR* tagName, BOOL value, const BCHAR *params = NULL);
-        static StringBuffer*    getValueNotEmpty    (const BCHAR* tagName, const BCHAR* value, const BCHAR *params = NULL);
+        static StringBuffer*    getValue            (const char*  tagName, const char*  value, const char *params = NULL);
+        static StringBuffer*    getValue            (const char*  tagName, StringBuffer* value, const char *params = NULL);
+        static StringBuffer*    getValue            (const char*  tagName, long value, const char *params = NULL);
+        static StringBuffer*    getValue            (const char*  tagName, BOOL value, const char *params = NULL);
+        static StringBuffer*    getValueNotEmpty    (const char*  tagName, const char*  value, const char *params = NULL);
         
         static StringBuffer*    getSyncML           (SyncML*        syncML);
         static StringBuffer*    getSyncHdr          (SyncHdr*       syncHdr);
@@ -52,8 +52,8 @@ class Formatter {
         static StringBuffer*    getSource           (Source*        source);
         static StringBuffer*    getCred             (Cred*          cred);
         static StringBuffer*    getMeta             (Meta*          meta);
-        static StringBuffer*    getMsgID            (BCHAR*       value);
-        static StringBuffer*    getRespURI          (BCHAR*       value);
+        static StringBuffer*    getMsgID            (char*        value);
+        static StringBuffer*    getRespURI          (char*        value);
         static StringBuffer*    getAuthentication   (Authentication* auth);
         static StringBuffer*    getAnchor           (Anchor*        anchor);
         static StringBuffer*    getMetInf           (MetInf*        metInf);
@@ -76,8 +76,8 @@ class Formatter {
         static StringBuffer*    getSourceRefs       (ArrayList* sourceRefs);
         static StringBuffer*    getTargetRefs       (ArrayList* targetRefs);
         static StringBuffer*    getDSMem            (DSMem* dsMem);
-        static StringBuffer*    getContentTypeInfos (ArrayList* contentTypeInfos, BCHAR* TAG);
-        static StringBuffer*    getContentTypeInfo  (ContentTypeInfo* contentTypeInfo, BCHAR* TAG);
+        static StringBuffer*    getContentTypeInfos (ArrayList* contentTypeInfos, char*  TAG);
+        static StringBuffer*    getContentTypeInfo  (ContentTypeInfo* contentTypeInfo, char*  TAG);
         static StringBuffer*    getSyncCap          (SyncCap* syncCap);
         static StringBuffer*    getSyncTypes        (ArrayList* syncTypes);
         static StringBuffer*    getSyncType         (SyncType* syncType);
@@ -113,7 +113,7 @@ class Formatter {
         static StringBuffer*    getSourceArray      (SourceArray* sourceArray);
         static StringBuffer*    getExtraCommandList (ArrayList* commands);
         static StringBuffer*    getSequence         (Sequence* sequence);
-        static StringBuffer*    getSpecificCommand  (ArrayList* commands, BCHAR* commandName);
+        static StringBuffer*    getSpecificCommand  (ArrayList* commands, char*  commandName);
         static StringBuffer*    getAtomic           (Atomic* atomic);
         static StringBuffer*    getFilter           (Filter* filter);
         static StringBuffer*    getProperty         (Property* property);

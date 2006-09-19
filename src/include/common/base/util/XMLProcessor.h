@@ -51,7 +51,7 @@ public:
      * @param pos (OUTPUT) the position where the tag is found (ignored if NULL)
      *
      */
-    static BCHAR* getElementContent(const BCHAR* xml, const BCHAR* tag, unsigned int* pos = NULL) EXTRA_SECTION_00;
+    static char*  getElementContent(const char*  xml, const char*  tag, unsigned int* pos = NULL) EXTRA_SECTION_00;
 
     /*
      * It's like getElementContent but it doesn't allocate new memory.
@@ -62,7 +62,7 @@ public:
      * @param startPos (OUTPUT) the start position of the tag content (ignored if NULL)
      * @param endPos (OUTPUT) the end position of the tag content (ignored if NULL)
      */
-    static const BCHAR* getElementContent(const BCHAR* xml, const BCHAR* tag,
+    static const char*  getElementContent(const char*  xml, const char*  tag,
                     unsigned int* pos, unsigned int* startPos, unsigned int* endPos) EXTRA_SECTION_00;
     
     /*
@@ -74,19 +74,19 @@ public:
      * @param startPos (OUTPUT) the start position of the tag content (ignored if NULL)
      * @param endPos (OUTPUT) the end position of the tag content (ignored if NULL)
      */
-    static const BCHAR* getEscapedElementContent(const BCHAR* xml, const BCHAR* tag,
+    static const char*  getEscapedElementContent(const char*  xml, const char*  tag,
                     unsigned int* pos, unsigned int* startPos, unsigned int* endPos) EXTRA_SECTION_00;
     
     /*
     * It returns the number of the tag in the xml string
     */
-    static int countElementTag(BCHAR* xml, BCHAR* tag) EXTRA_SECTION_00;
+    static int countElementTag(char*  xml, char*  tag) EXTRA_SECTION_00;
     
-    static int countAnd(BCHAR* token) EXTRA_SECTION_00;
+    static int countAnd(char*  token) EXTRA_SECTION_00;
 
-    static int countChar(BCHAR* token, BCHAR* element) EXTRA_SECTION_00;
+    static int countChar(char*  token, char*  element) EXTRA_SECTION_00;
     
-    static BCHAR* getNextTag(BCHAR* xml, int* pos);
+    static char*  getNextTag(char*  xml, int* pos);
    /*
     * it's as getElementContent but it doesn't get the content of a tag if
     * the parent match except.
@@ -110,13 +110,13 @@ public:
     *   </Atomic>
     * </SyncBody>
     */
-    static BCHAR* getElementContentExcept(BCHAR*      xml       ,
-                                            BCHAR*      tag       ,
-                                            BCHAR*      except    ,
+    static char*  getElementContentExcept(char*       xml       ,
+                                            char*       tag       ,
+                                            char*       except    ,
                                             unsigned int* pos) EXTRA_SECTION_00;
 
-    static BCHAR* getElementContentLevel(BCHAR*      xml,
-                                           BCHAR*      tag,
+    static char*  getElementContentLevel(char*       xml,
+                                           char*       tag,
                                            unsigned int* pos,
                                            int           lev = 0 ,  // the root value level
                                            int* startLevel   = NULL) EXTRA_SECTION_00;
@@ -133,7 +133,7 @@ public:
      *
      */
 
-    static BCHAR* getContent(const BCHAR* xml, unsigned int startPos, unsigned int endPos) EXTRA_SECTION_00;
+    static char*  getContent(const char*  xml, unsigned int startPos, unsigned int endPos) EXTRA_SECTION_00;
     
     /**
      * Create an XML element with the specified tag and value.
@@ -141,7 +141,7 @@ public:
      * @param tag - the tag we want the content
      * @param val - the element value
      */
-    //static StringBuffer makeElement(const wchar_t* tag, const wchar_t* val) EXTRA_SECTION_00;
+    //static StringBuffer makeElement(const WCHAR* tag, const WCHAR* val) EXTRA_SECTION_00;
 
     /**
      * Create an XML element with the specified tag, value and attribute list.
@@ -150,9 +150,9 @@ public:
      * @param val - the element value
      * @param attr - attribute list, already formated - ex: enc="base64"
      */
-    static StringBuffer makeElement(const BCHAR* tag, 
-                                    const BCHAR* val,
-                                    const BCHAR* attr = NULL) EXTRA_SECTION_00;
+    static StringBuffer makeElement(const char*  tag, 
+                                    const char*  val,
+                                    const char*  attr = NULL) EXTRA_SECTION_00;
 
     /**
      * Create an XML element with the specified tag, value and attribute list.
@@ -161,21 +161,21 @@ public:
      * @param val - the element value
      * @param attr - attribute list, pairs of name and value
      */
-    static StringBuffer makeElement(const BCHAR* tag, 
-                                    const BCHAR* val,
+    static StringBuffer makeElement(const char*  tag, 
+                                    const char*  val,
                                     ArrayList attrList) EXTRA_SECTION_00;
 
 	/**
 	 * Same with bool value
 	 */
-    static StringBuffer makeElement(const BCHAR* tag, bool val) {
+    static StringBuffer makeElement(const char*  tag, bool val) {
         return makeElement( tag, (val?T("true"):T("false")) ) EXTRA_SECTION_00 ;
     }
 
     /**
 	 * Same with integer value
 	 */
-	static StringBuffer makeElement(const BCHAR* tag, int val) {
+	static StringBuffer makeElement(const char*  tag, int val) {
         return makeElement( tag, StringBuffer().append(val) ) EXTRA_SECTION_00 ;
     }
     
@@ -191,9 +191,9 @@ public:
      * @param endPos (OUTPUT) the end position of the tag attributes (ignored if NULL)
      *
     */
-    static const BCHAR* getElementAttributes(
-                                         const BCHAR* xml,
-                                         const BCHAR* tag,
+    static const char*  getElementAttributes(
+                                         const char*  xml,
+                                         const char*  tag,
                                          unsigned int*  startPos, 
                                          unsigned int*  endPos,
                                          bool escaped = false) EXTRA_SECTION_00;

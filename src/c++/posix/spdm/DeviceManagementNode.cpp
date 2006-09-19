@@ -44,7 +44,7 @@ DeviceManagementNode::DeviceManagementNode(const char* parent, const char *leafN
     update(TRUE);
 }
 
-DeviceManagementNode::DeviceManagementNode(const wchar_t *node)
+DeviceManagementNode::DeviceManagementNode(const WCHAR *node)
     : ManagementNode(node)
 {
     lines = new ArrayList;
@@ -179,11 +179,11 @@ static int strnicmp( const char *a, const char *b, int len ) {
 
 /*
  * Returns the value of the given property
- * the value is returned as a new wchar_t array and must be fred by the user
+ * the value is returned as a new WCHAR array and must be fred by the user
  *
  * @param property - the property name
  */
-wchar_t *DeviceManagementNode::getPropertyValue(const wchar_t* property) {
+WCHAR *DeviceManagementNode::getPropertyValue(const WCHAR* property) {
     int i = 0;
     
     while (TRUE) {
@@ -233,8 +233,8 @@ int DeviceManagementNode::getChildrenMaxCount() {
 
 
 
-wchar_t **DeviceManagementNode::getChildrenNames() {
-    wchar_t **childrenName = 0;
+WCHAR **DeviceManagementNode::getChildrenNames() {
+    WCHAR **childrenName = 0;
 
     int size = getChildrenMaxCount();
     if (size) {
@@ -243,7 +243,7 @@ wchar_t **DeviceManagementNode::getChildrenNames() {
             if (dir) {
                 struct dirent *entry;
                 int i = 0;
-                childrenName = new wchar_t*[size];
+                childrenName = new WCHAR*[size];
 
                 // restart reading, but this time copy file names
                 rewinddir(dir);
@@ -267,7 +267,7 @@ wchar_t **DeviceManagementNode::getChildrenNames() {
  * @param property - the property name
  * @param value - the property value (zero terminated string)
  */
-void DeviceManagementNode::setPropertyValue(const wchar_t* property, const wchar_t* newvalue) {
+void DeviceManagementNode::setPropertyValue(const WCHAR* property, const WCHAR* newvalue) {
     int i = 0;
     
     while (TRUE) {

@@ -20,8 +20,8 @@
 #include "syncml/core/Add.h"
  
 Add::Add() {
-    COMMAND_NAME = new BCHAR[bstrlen(ADD_COMMAND_NAME) + 1];
-    bsprintf(COMMAND_NAME, ADD_COMMAND_NAME);
+    COMMAND_NAME = new char[strlen(ADD_COMMAND_NAME) + 1];
+    sprintf(COMMAND_NAME, ADD_COMMAND_NAME);
 }
 
 Add::~Add() {
@@ -51,8 +51,8 @@ Add::Add(CmdID* cmdID,
     setNoResp(noResp); 
     setCred(cred);
     
-    COMMAND_NAME = new BCHAR[bstrlen(ADD_COMMAND_NAME) + 1];
-    bsprintf(COMMAND_NAME, ADD_COMMAND_NAME);
+    COMMAND_NAME = new char[strlen(ADD_COMMAND_NAME) + 1];
+    sprintf(COMMAND_NAME, ADD_COMMAND_NAME);
 }
 
 
@@ -61,7 +61,7 @@ Add::Add(CmdID* cmdID,
  *
  * @return the command name property
  */    
-BCHAR* Add::getName() {
+char* Add::getName() {
     return COMMAND_NAME;
 }
 

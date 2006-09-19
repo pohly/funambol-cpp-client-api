@@ -19,16 +19,16 @@
 #include "base/fscapi.h"
 #include "spdm/spdmutils.h"
 
-static const BCHAR* last(const BCHAR* s, BCHAR c) EXTRA_SECTION_02;
+static const char* last(const char* s, char c) EXTRA_SECTION_02;
 
 
 
-static const BCHAR* last(const BCHAR* s, BCHAR c) {
+static const char* last(const char* s, char c) {
     if (s == NULL) {
         return NULL;
     }
 
-    for (unsigned long i = bstrlen(s)-1; i>=0; --i) {
+    for (unsigned long i = strlen(s)-1; i>=0; --i) {
         if (s[i] == c) {
             return &s[i];
         }
@@ -48,17 +48,17 @@ int minimum (int i1, int i2) {
  * @param name - the buffer that will contain the node name
  * @param size - buffer size
  */
-void getNodeName(const BCHAR* node, BCHAR* name, int size) {
-    const BCHAR* p;
+void getNodeName(const char* node, char* name, int size) {
+    const char* p;
 
     p = last(node, CHR('/'));
 
     if (p == NULL) {
-        bstrncpy(name, node, size-1);
+        strncpy(name, node, size-1);
         return;
     }
 
-    bstrncpy(name, p+1, size);
+    strncpy(name, p+1, size);
 }
 
 /*
@@ -68,8 +68,8 @@ void getNodeName(const BCHAR* node, BCHAR* name, int size) {
  * @param context - the buffer that will contain the node context
  * @param size - buffer size
  */
-void getNodeConT(const BCHAR* node, BCHAR* context, int size) {
-    const BCHAR* p;
+void getNodeConT(const char* node, char* context, int size) {
+    const char* p;
 
     p = last(node, CHR('/'));
 
@@ -78,6 +78,6 @@ void getNodeConT(const BCHAR* node, BCHAR* context, int size) {
         return;
     }
 
-    bstrncpy(context, node, min((p-node), size));
+    strncpy(context, node, min((p-node), size));
 }
 

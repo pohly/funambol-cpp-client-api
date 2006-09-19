@@ -51,7 +51,7 @@ Contact::~Contact() {
  *
  * @return the uid of this contact or NULL if not specified
  */
-wchar_t* Contact::getUID(wchar_t* buf, int size) {
+WCHAR* Contact::getUID(WCHAR* buf, int size) {
     
     if(!containsProperty(TEXT("UID")))
         return NULL;
@@ -69,7 +69,7 @@ wchar_t* Contact::getUID(wchar_t* buf, int size) {
     return buf;
 }
 
-wchar_t* Contact::getTimezone (wchar_t* buf, int size) {
+WCHAR* Contact::getTimezone (WCHAR* buf, int size) {
 
     if(!containsProperty(TEXT("TZ")))
         return NULL;
@@ -140,7 +140,7 @@ void Contact::setNotes(ArrayList& list) {
     }
 }
 
-wchar_t* Contact::getRevision (wchar_t* buf, int size) {
+WCHAR* Contact::getRevision (WCHAR* buf, int size) {
     if(!containsProperty(TEXT("REV")))
         return NULL;
 
@@ -238,7 +238,7 @@ void Contact::setName(Name& n) {
         removeProperty(TEXT("NICKNAME"));
     
     if(name) {
-        wchar_t *nameProp = new wchar_t[MAX_VPROPERTY_VALUE + 1];
+        WCHAR *nameProp = new WCHAR[MAX_VPROPERTY_VALUE + 1];
         wcscpy(nameProp,TEXT(""));
         if(name->getLastName()) 
             wcscat(nameProp,name->getLastName()->getValue());            
@@ -283,7 +283,7 @@ void Contact::setName(Name& n) {
 
 BusinessDetail* Contact::getBusinessDetail () {
     if(!businessDetail) {
-        wchar_t* titles[MAX_TITLES];
+        WCHAR* titles[MAX_TITLES];
         int titlesIndex = 0;
         ArrayList* phones = NULL;
         ArrayList* emails = NULL;
@@ -324,7 +324,7 @@ BusinessDetail* Contact::getBusinessDetail () {
                 }
             if(!wcscmp(getProperty(i)->getName(), TEXT("TITLE")))
                 if(getProperty(i)->getValue()) {
-                    titles[titlesIndex] = new wchar_t[MAX_VPROPERTY_VALUE + 1];
+                    titles[titlesIndex] = new WCHAR[MAX_VPROPERTY_VALUE + 1];
                     wcscpy(titles[titlesIndex], getProperty(i)->getValue());
                     titlesIndex++;
                 }
@@ -889,28 +889,28 @@ void Contact::setPersonalDetail(PersonalDetail& d) {
     }
 }
 
-void Contact::setUID (wchar_t* u) {    
+void Contact::setUID (WCHAR* u) {    
     if (containsProperty(TEXT("UID")))
         getProperty(TEXT("UID"))->setValue(u);
     else
         insertProperty(new VProperty(TEXT("UID"),u));
 }
 
-void Contact::setTimezone (wchar_t* tz) {
+void Contact::setTimezone (WCHAR* tz) {
     if (containsProperty(TEXT("TZ")))
         getProperty(TEXT("TZ"))->setValue(tz);
     else
         insertProperty(new VProperty(TEXT("TZ"),tz));
 }
 
-void Contact::setRevision (wchar_t* r) {
+void Contact::setRevision (WCHAR* r) {
     if (containsProperty(TEXT("REV")))
         getProperty(TEXT("REV"))->setValue(r);
     else
         insertProperty(new VProperty(TEXT("REV"),r));
 }
 
-void Contact::set(wchar_t** p, wchar_t* v) {
+void Contact::set(WCHAR** p, WCHAR* v) {
     if(*p)
         delete *p;
     *p = wstrdup(v);
@@ -936,7 +936,7 @@ vCardProperty* Contact::getPropertyFromVProperty(VProperty* vp) {
     return NULL;    
 }
 
-VProperty* Contact::getVPropertyFromProperty(wchar_t*name, vCardProperty* prop) {
+VProperty* Contact::getVPropertyFromProperty(WCHAR*name, vCardProperty* prop) {
     if(prop && name) {
         VProperty *vprop = new VProperty(name, prop->getValue());
         if(prop->getCharset())
@@ -952,24 +952,24 @@ VProperty* Contact::getVPropertyFromProperty(wchar_t*name, vCardProperty* prop) 
 }
 
 VProperty* Contact::composeVAddress(Address* adr) {
-    wchar_t *addressValue = new wchar_t[MAX_VPROPERTY_VALUE + 1];
-    wchar_t *encoding = NULL;
-    wchar_t *language = NULL;
-    wchar_t *charset = NULL;
+    WCHAR *addressValue = new WCHAR[MAX_VPROPERTY_VALUE + 1];
+    WCHAR *encoding = NULL;
+    WCHAR *language = NULL;
+    WCHAR *charset = NULL;
 
     wcscpy(addressValue,TEXT(""));
     if(adr->getPostOfficeAddress()) {
         wcscat(addressValue, adr->getPostOfficeAddress()->getValue());
         if(adr->getPostOfficeAddress()->getCharset()) {
-            charset = new wchar_t[MAX_VPROPERTY_VALUE +1 ];
+            charset = new WCHAR[MAX_VPROPERTY_VALUE +1 ];
             wcscpy(charset, adr->getPostOfficeAddress()->getCharset());
         }
         if(adr->getPostOfficeAddress()->getLanguage()) {
-            language = new wchar_t[MAX_VPROPERTY_VALUE + 1];
+            language = new WCHAR[MAX_VPROPERTY_VALUE + 1];
             wcscpy(language, adr->getPostOfficeAddress()->getLanguage());
         }
         if(adr->getPostOfficeAddress()->getEncoding()) {
-            encoding = new wchar_t[MAX_VPROPERTY_VALUE +1 ];
+            encoding = new WCHAR[MAX_VPROPERTY_VALUE +1 ];
             wcscpy(encoding, adr->getPostOfficeAddress()->getEncoding());
         }
     }
@@ -978,17 +978,17 @@ VProperty* Contact::composeVAddress(Address* adr) {
         wcscat(addressValue, adr->getRoomNumber()->getValue());
         if(!charset)
             if(adr->getRoomNumber()->getCharset()) {
-                charset = new wchar_t[MAX_VPROPERTY_VALUE + 1];
+                charset = new WCHAR[MAX_VPROPERTY_VALUE + 1];
                 wcscpy(charset, adr->getRoomNumber()->getCharset());
             }
         if(!language)
             if(adr->getRoomNumber()->getLanguage()) {
-                language = new wchar_t[MAX_VPROPERTY_VALUE + 1];
+                language = new WCHAR[MAX_VPROPERTY_VALUE + 1];
                 wcscpy(language, adr->getRoomNumber()->getLanguage());
             }
         if(!encoding)
             if(adr->getRoomNumber()->getEncoding()) {
-                encoding = new wchar_t[MAX_VPROPERTY_VALUE + 1];
+                encoding = new WCHAR[MAX_VPROPERTY_VALUE + 1];
                 wcscpy(encoding, adr->getRoomNumber()->getEncoding());
             }
     }
@@ -997,17 +997,17 @@ VProperty* Contact::composeVAddress(Address* adr) {
         wcscat(addressValue, adr->getStreet()->getValue());
         if(!charset)
             if(adr->getStreet()->getCharset()) {
-                charset = new wchar_t[MAX_VPROPERTY_VALUE + 1];
+                charset = new WCHAR[MAX_VPROPERTY_VALUE + 1];
                 wcscpy(charset, adr->getStreet()->getCharset());
             }
         if(!language)
             if(adr->getStreet()->getLanguage()) {
-                language = new wchar_t[MAX_VPROPERTY_VALUE + 1];
+                language = new WCHAR[MAX_VPROPERTY_VALUE + 1];
                 wcscpy(language, adr->getStreet()->getLanguage());
             }
         if(!encoding)
             if(adr->getStreet()->getEncoding()) {
-                encoding = new wchar_t[MAX_VPROPERTY_VALUE + 1];
+                encoding = new WCHAR[MAX_VPROPERTY_VALUE + 1];
                 wcscpy(encoding, adr->getStreet()->getEncoding());
             }
     }
@@ -1016,17 +1016,17 @@ VProperty* Contact::composeVAddress(Address* adr) {
         wcscat(addressValue, adr->getCity()->getValue());
         if(!charset)
             if(adr->getCity()->getCharset()) {
-                charset = new wchar_t[MAX_VPROPERTY_VALUE + 1];
+                charset = new WCHAR[MAX_VPROPERTY_VALUE + 1];
                 wcscpy(charset, adr->getCity()->getCharset());
             }
         if(!language)
             if(adr->getCity()->getLanguage()) {
-                language = new wchar_t[MAX_VPROPERTY_VALUE + 1];
+                language = new WCHAR[MAX_VPROPERTY_VALUE + 1];
                 wcscpy(language, adr->getCity()->getLanguage());
             }
         if(!encoding)
             if(adr->getCity()->getEncoding()) {
-                encoding = new wchar_t[MAX_VPROPERTY_VALUE + 1];
+                encoding = new WCHAR[MAX_VPROPERTY_VALUE + 1];
                 wcscpy(encoding, adr->getCity()->getEncoding());
             }
     }
@@ -1035,17 +1035,17 @@ VProperty* Contact::composeVAddress(Address* adr) {
         wcscat(addressValue, adr->getState()->getValue());
         if(!charset)
             if(adr->getState()->getCharset()) {
-                charset = new wchar_t[MAX_VPROPERTY_VALUE + 1];
+                charset = new WCHAR[MAX_VPROPERTY_VALUE + 1];
                 wcscpy(charset, adr->getState()->getCharset());
             }
         if(!language)
             if(adr->getState()->getLanguage()) {
-                language = new wchar_t[MAX_VPROPERTY_VALUE + 1];
+                language = new WCHAR[MAX_VPROPERTY_VALUE + 1];
                 wcscpy(language, adr->getState()->getLanguage());
             }
         if(!encoding)
             if(adr->getState()->getEncoding()) {
-                encoding = new wchar_t[MAX_VPROPERTY_VALUE + 1];
+                encoding = new WCHAR[MAX_VPROPERTY_VALUE + 1];
                 wcscpy(encoding, adr->getState()->getEncoding());
             }
     }
@@ -1054,17 +1054,17 @@ VProperty* Contact::composeVAddress(Address* adr) {
         wcscat(addressValue, adr->getPostalCode()->getValue());
         if(!charset)
             if(adr->getPostalCode()->getCharset()) {
-                charset = new wchar_t[MAX_VPROPERTY_VALUE + 1];
+                charset = new WCHAR[MAX_VPROPERTY_VALUE + 1];
                 wcscpy(charset, adr->getPostalCode()->getCharset());
             }
         if(!language)
             if(adr->getPostalCode()->getLanguage()) {
-                language = new wchar_t[MAX_VPROPERTY_VALUE + 1];
+                language = new WCHAR[MAX_VPROPERTY_VALUE + 1];
                 wcscpy(language, adr->getPostalCode()->getLanguage());
             }
         if(!encoding)
             if(adr->getPostalCode()->getEncoding()) {
-                encoding = new wchar_t[MAX_VPROPERTY_VALUE + 1];
+                encoding = new WCHAR[MAX_VPROPERTY_VALUE + 1];
                 wcscpy(encoding, adr->getPostalCode()->getEncoding());
             }
     }
@@ -1073,17 +1073,17 @@ VProperty* Contact::composeVAddress(Address* adr) {
         wcscat(addressValue, adr->getCountry()->getValue());
         if(!charset)
             if(adr->getCountry()->getCharset()) {
-                charset = new wchar_t[MAX_VPROPERTY_VALUE + 1];
+                charset = new WCHAR[MAX_VPROPERTY_VALUE + 1];
                 wcscpy(charset, adr->getCountry()->getCharset());
             }
         if(!language)
             if(adr->getCountry()->getLanguage()) {
-                language = new wchar_t[MAX_VPROPERTY_VALUE + 1];
+                language = new WCHAR[MAX_VPROPERTY_VALUE + 1];
                 wcscpy(language, adr->getCountry()->getLanguage());
             }
         if(!encoding)
             if(adr->getCountry()->getEncoding()) {
-                encoding = new wchar_t[MAX_VPROPERTY_VALUE + 1];
+                encoding = new WCHAR[MAX_VPROPERTY_VALUE + 1];
                 wcscpy(encoding, adr->getCountry()->getEncoding());
             }
     }
@@ -1229,7 +1229,7 @@ Contact* Contact::clone() {
     return ret;
 }
 
-wchar_t* Contact::toString() {
+WCHAR* Contact::toString() {
     if(!containsProperty(TEXT("BEGIN")) && !containsProperty(TEXT("VERSION")) && !containsProperty(TEXT("END"))) {
         //this means the Contact was created with new, not using vConverter::parse
         //we need to add BEGIN, VERSION, END to VObject properties

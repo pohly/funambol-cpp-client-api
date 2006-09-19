@@ -24,7 +24,7 @@ Filter::Filter() : meta(NULL), field(NULL), record(NULL), filterType(NULL) {
 Filter::Filter(Meta*    m,
                Item*    f,
                Item*    r,
-               BCHAR* t): meta(NULL), field(NULL), record(NULL), filterType(NULL) {
+               char* t): meta(NULL), field(NULL), record(NULL), filterType(NULL) {
     setMeta(m);
     setField(f);
     setRecord(r);
@@ -76,14 +76,14 @@ void Filter::setRecord(Item* r) {
     }
 }
 
-BCHAR* Filter::getFilterType(BCHAR* t) {
+char* Filter::getFilterType(char* t) {
     if (t == NULL) {
         return filterType;
     }
-    return bstrcpy(t, filterType);
+    return strcpy(t, filterType);
 }
 
-void Filter::setFilterType(BCHAR* t) {
+void Filter::setFilterType(char* t) {
     if (filterType) {
         delete [] filterType; filterType = NULL;
     }

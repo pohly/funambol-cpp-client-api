@@ -38,11 +38,11 @@
 #include "spdm/ManagementNode.h"
 
 #if 0 //def _WIN32_WCE
-static wchar_t *convertSlashes(const wchar_t* str) {
+static WCHAR *convertSlashes(const WCHAR* str) {
     int i, len;
 
     len = wcslen(str);
-    wchar_t *ret = new wchar_t[len+1];
+    WCHAR *ret = new WCHAR[len+1];
 
     for (i=0; i<len; ++i) {
         if (str[i] == L'/') {
@@ -62,12 +62,12 @@ static wchar_t *convertSlashes(const wchar_t* str) {
  * @param property - the property name
  * @param value - the property value (zero terminated string)
  */
-static void setProperty(wchar_t* context, wchar_t* property, wchar_t* value) {
+static void setProperty(WCHAR* context, WCHAR* property, WCHAR* value) {
 
     HKEY key;
     DWORD res;
 
-    wchar_t *fullContext = convertSlashes(context);
+    WCHAR *fullContext = convertSlashes(context);
 
     RegCreateKeyEx(
             HKEY_LOCAL_MACHINE,
@@ -91,7 +91,7 @@ static void setProperty(wchar_t* context, wchar_t* property, wchar_t* value) {
             NULL,
             REG_SZ,  // we currently support only strings
             (UCHAR*)value,
-            (wcslen(value)+1)*sizeof(wchar_t*)
+            (wcslen(value)+1)*sizeof(WCHAR*)
             );
 
 finally:

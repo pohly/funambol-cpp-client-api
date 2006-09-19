@@ -22,7 +22,7 @@
 #include "vocl/VProperty.h"
 #include "base/quoted-printable.h"
 
-VProperty::VProperty(wchar_t* propname, wchar_t* propvalue) {
+VProperty::VProperty(WCHAR* propname, WCHAR* propvalue) {
     
     name = (propname) ? wstrdup(propname) : NULL;
 
@@ -52,13 +52,13 @@ VProperty::~VProperty() {
     }
 }	 
 
-void VProperty::setName (const wchar_t* s) {
+void VProperty::setName (const WCHAR* s) {
     
     set(&name, s);
 }
 
 
-wchar_t* VProperty::getName(wchar_t* buf, int size) {
+WCHAR* VProperty::getName(WCHAR* buf, int size) {
     
     if (buf == NULL) {
         return name;
@@ -74,7 +74,7 @@ wchar_t* VProperty::getName(wchar_t* buf, int size) {
     return buf;
 }
 
-void VProperty::addValue(const wchar_t* value) {
+void VProperty::addValue(const WCHAR* value) {
 	
     // Empty strings are accepted
     if(value) {
@@ -94,7 +94,7 @@ bool VProperty::removeValue(const int index) {
 
 // Returned value is a pointer to internal buffer,
 // copy it if must have a different life cycle.
-wchar_t* VProperty::getValue(int index) {
+WCHAR* VProperty::getValue(int index) {
     
     if (valueBuf) {
         delete [] valueBuf; valueBuf = NULL;
@@ -102,7 +102,7 @@ wchar_t* VProperty::getValue(int index) {
 
     WString* wsValue = (WString*)values->get(index);
     if (wsValue) {
-        valueBuf = new wchar_t[wsValue->length() + 1];
+        valueBuf = new WCHAR[wsValue->length() + 1];
         wcscpy(valueBuf, wsValue->c_str());
     }
 
@@ -116,7 +116,7 @@ int VProperty::valueCount() {
 
 
 ////////// Only for compatibility
-wchar_t* VProperty::getValue(wchar_t* buf) {
+WCHAR* VProperty::getValue(WCHAR* buf) {
 
     if (!buf) {
         return getValue(0);
@@ -130,20 +130,20 @@ wchar_t* VProperty::getValue(wchar_t* buf) {
 }
 
 
-void VProperty::setValue(const wchar_t* value) {
+void VProperty::setValue(const WCHAR* value) {
 
     addValue(value);
 
 }
 
-wchar_t* VProperty::getPropComponent(int i) {
+WCHAR* VProperty::getPropComponent(int i) {
     
     return getValue(i-1);
 }
 //////////////////////////////////
 
 
-void VProperty::addParameter (const wchar_t* paramName, const wchar_t* paramValue) {
+void VProperty::addParameter (const WCHAR* paramName, const WCHAR* paramValue) {
 	
     if(paramName) {
     WKeyValuePair *parameter = new WKeyValuePair(paramName, paramValue);
@@ -153,7 +153,7 @@ void VProperty::addParameter (const wchar_t* paramName, const wchar_t* paramValu
     }
 }
 
-void VProperty::removeParameter(wchar_t* paramName) {
+void VProperty::removeParameter(WCHAR* paramName) {
     
     if (parameters != NULL) {
         for (int i=0; i<parameters->size(); i++){
@@ -166,7 +166,7 @@ void VProperty::removeParameter(wchar_t* paramName) {
         }
     }
 }
-bool VProperty::containsParameter(wchar_t* paramName) {
+bool VProperty::containsParameter(WCHAR* paramName) {
     
     if (parameters != NULL) {
         for (int i=0; i<parameters->size(); i++){
@@ -180,7 +180,7 @@ bool VProperty::containsParameter(wchar_t* paramName) {
 
     return false;
 }
-wchar_t* VProperty::getParameterValue(wchar_t* paramName) {
+WCHAR* VProperty::getParameterValue(WCHAR* paramName) {
     
     if (parameters != NULL) {
 	    for (int i=0; i<parameters->size(); i++) {
@@ -193,7 +193,7 @@ wchar_t* VProperty::getParameterValue(wchar_t* paramName) {
 
     return NULL;
 }
-wchar_t* VProperty::getParameterValue(int index) {
+WCHAR* VProperty::getParameterValue(int index) {
     
     if (parameters != NULL) {
         WKeyValuePair *parameter;
@@ -204,7 +204,7 @@ wchar_t* VProperty::getParameterValue(int index) {
     return NULL;
 }
 
-void VProperty::set(wchar_t** p, const wchar_t* v) {
+void VProperty::set(WCHAR** p, const WCHAR* v) {
 	
     if (*p) {
         delete [] *p;
@@ -245,16 +245,16 @@ int VProperty::parameterCount() {
 
 
 /*
- * Returns a wchar_t* string of this VProperty, based on vCard-vCal specifications.
+ * Returns a WCHAR* string of this VProperty, based on vCard-vCal specifications.
  * Here values of the property are encoded / special chars are escaped according to
  * vCard-vCal 2.1/3.0 specifications.
  * @param version: vCard version "2.1" or "3.0" - we have different specs
  *                 (if not defined, default will be 2.1)
  *
  * Note:
- * The returned wchar_t* is new allocated, must be freed by the caller.
+ * The returned WCHAR* is new allocated, must be freed by the caller.
  */
-wchar_t* VProperty::toString(wchar_t* version) {
+WCHAR* VProperty::toString(WCHAR* version) {
 
     bool is_30 = false;
     if (version) {
@@ -342,7 +342,7 @@ wchar_t* VProperty::toString(wchar_t* version) {
 
 
         // Get all values in one single string
-        wchar_t *value, *valueConv;
+        WCHAR *value, *valueConv;
         for (int i=0; i<valueCount(); i++) {
             if (i>0) {
                 valueString.append(TEXT(";"));
@@ -363,7 +363,7 @@ wchar_t* VProperty::toString(wchar_t* version) {
             
             char* s  = toMultibyte(valueString.c_str());
             char* qp = convertToQP(s, 0);
-            wchar_t* qpValueString = toWideChar(qp);
+            WCHAR* qpValueString = toWideChar(qp);
             if(qpValueString)
 			    propertyString.append(qpValueString);
             else
@@ -383,7 +383,7 @@ wchar_t* VProperty::toString(wchar_t* version) {
             int len = strlen(s);
             char* base64 = new char[2*len + 1];
             b64_encode(base64, s, len);
-            wchar_t* b64ValueString = toWideChar(base64);
+            WCHAR* b64ValueString = toWideChar(base64);
             
             propertyString.append(b64ValueString);
             // Extra line break: required for v.2.1 / optional for v.3.0
@@ -404,21 +404,21 @@ wchar_t* VProperty::toString(wchar_t* version) {
 
 finally:
     // memory must be free by caller with delete []
-    wchar_t *str = wstrdup(propertyString);
+    WCHAR *str = wstrdup(propertyString);
     return str;
 }
 
 
 
 
-wchar_t* VProperty::getParameter(int index){
+WCHAR* VProperty::getParameter(int index){
 
     WKeyValuePair *parameter;
     parameter = (WKeyValuePair*)parameters->get(index);
     return parameter->getKey();
 }
 
-bool VProperty::equalsEncoding(wchar_t* encoding) {
+bool VProperty::equalsEncoding(WCHAR* encoding) {
 
     if ((encoding != NULL) && ((containsParameter(TEXT("ENCODING")) && 
 		!wcscmp(getParameterValue(TEXT("ENCODING")),encoding)) || 
@@ -429,13 +429,13 @@ bool VProperty::equalsEncoding(wchar_t* encoding) {
 
 
 
-bool VProperty::isType(wchar_t* type) {
+bool VProperty::isType(WCHAR* type) {
     if(containsParameter(type))
         return true;
     if(containsParameter(TEXT("TYPE")) && getParameterValue(TEXT("TYPE"))) {
 
-        wchar_t seps[] = TEXT(",");
-        wchar_t* token;
+        WCHAR seps[] = TEXT(",");
+        WCHAR* token;
 
         token = wcstok(getParameterValue(TEXT("TYPE")), seps );
 
@@ -449,8 +449,8 @@ bool VProperty::isType(wchar_t* type) {
 
     if(containsParameter(TEXT("type")) && getParameterValue(TEXT("type"))) {
 
-        wchar_t seps[] = TEXT(",");
-        wchar_t* token;
+        WCHAR seps[] = TEXT(",");
+        WCHAR* token;
 
         token = wcstok(getParameterValue(TEXT("type")), seps );
 
@@ -550,8 +550,8 @@ char* convertToQP(const char* input, int start) {
 
 
 // Returns true if special encoding is needed for the string 'in'.
-bool encodingIsNeed(const BCHAR *in) {
-	for(int i = 0; i < int(bstrlen(in)); i++) 
+bool encodingIsNeed(const char *in) {
+	for(int i = 0; i < int(strlen(in)); i++) 
 		if ( (in[i] < 0x20) || (in[i] > 0x7f))
 			return true;
 	
@@ -569,14 +569,14 @@ bool encodingIsNeed(const BCHAR *in) {
  *                     (if not defined, default will be 2.1)
 * @return             : the new allocated string with escaped chars
 * Note: 
-*      returns new allocated wchar_t*, must be freed by the caller.
+*      returns new allocated WCHAR*, must be freed by the caller.
 */
-wchar_t* escapeSpecialChars(const wchar_t* inputString, wchar_t* version) {
+WCHAR* escapeSpecialChars(const WCHAR* inputString, WCHAR* version) {
 
     int i, j, inputLen, outputLen;
     inputLen  = wcslen(inputString);
-    wchar_t* wc = new wchar_t[2];
-    wchar_t charsToEscape[4];
+    WCHAR* wc = new WCHAR[2];
+    WCHAR charsToEscape[4];
 
     bool is_30 = false;
     if (version) {
@@ -598,7 +598,7 @@ wchar_t* escapeSpecialChars(const wchar_t* inputString, wchar_t* version) {
         if (wcsstr(charsToEscape, wc))
             outputLen ++;
     }
-    wchar_t* outputString = new wchar_t[outputLen+1];
+    WCHAR* outputString = new WCHAR[outputLen+1];
 
 
     // Now escape special characters (add back-slash)
@@ -630,32 +630,32 @@ wchar_t* escapeSpecialChars(const wchar_t* inputString, wchar_t* version) {
 /*
  * Folding of long lines. Output string is splitted into multiple
  * lines, delimited by the RFC-822 line break ("\r\n").
- * @param inputString : input wchar_t string of text
+ * @param inputString : input WCHAR string of text
  * @param maxLine     : the length of lines in the output string
- * @return            : output wchar_t string with folded lines (new allocated)
+ * @return            : output WCHAR string with folded lines (new allocated)
  *
  * Note:
- *      returns new allocated wchar_t*, must be freed by the caller.
+ *      returns new allocated WCHAR*, must be freed by the caller.
  */
-wchar_t* folding(const wchar_t* inputString, const int maxLine) {
+WCHAR* folding(const WCHAR* inputString, const int maxLine) {
 
     // "\r\n" followed by a white space as line ending (RFC 2425)
-    wchar_t newLine[4];
+    WCHAR newLine[4];
     wcscpy(newLine, RFC822_LINE_BREAK);
     wcscat(newLine, TEXT(" \0"));
     int outputLen = 0, i = 0;
     int inputLen  = wcslen(inputString);
-    wchar_t* outputString;
+    WCHAR* outputString;
 
     // No folding needed
     if (inputLen <= maxLine) {
-        outputString = new wchar_t[inputLen + 1];
+        outputString = new WCHAR[inputLen + 1];
         wcscpy(outputString, inputString);
         goto finally;
     }
 
     outputLen = inputLen + (int)(inputLen/maxLine + 1)*wcslen(newLine);
-    outputString = new wchar_t[outputLen + 1];
+    outputString = new WCHAR[outputLen + 1];
     outputString[0] = 0;
 
     for (i=0; i<inputLen; i += maxLine) {
@@ -673,16 +673,16 @@ finally:
 /*
  * Unfolding a logical line. Input string is splitted into multiple
  * lines, delimited by the RFC-822 line break ("\r\n") followed by one space.
- * @param inputString : input  wchar_t string with folded lines
- * @return            : output wchar_t string unfolded (new allocated)
+ * @param inputString : input  WCHAR string with folded lines
+ * @return            : output WCHAR string unfolded (new allocated)
  *
  * Note:
- *      returns new allocated wchar_t*, must be freed by the caller.
+ *      returns new allocated WCHAR*, must be freed by the caller.
  */
-wchar_t* unfolding(const wchar_t* inputString) {
+WCHAR* unfolding(const WCHAR* inputString) {
 
     int inputLen  = wcslen(inputString);
-    wchar_t* outputString = new wchar_t[inputLen + 1];
+    WCHAR* outputString = new WCHAR[inputLen + 1];
     outputString[0] = 0;
 
     int j=0;

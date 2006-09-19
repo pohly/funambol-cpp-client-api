@@ -29,7 +29,7 @@ class Delete : public ModificationCommand {
     
      // ------------------------------------------------------------ Private data
     private:
-        BCHAR* COMMAND_NAME;
+        char*  COMMAND_NAME;
         BOOL archive;
         BOOL sftDel;
     
@@ -66,7 +66,7 @@ class Delete : public ModificationCommand {
          *
          * @return the command name property
          */    
-        BCHAR* getName();
+        char*  getName();
 
         /**
          * Gets the Archive property

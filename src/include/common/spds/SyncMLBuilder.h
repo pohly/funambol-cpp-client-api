@@ -38,12 +38,12 @@ class SyncMLBuilder {
     public:
         SyncMLBuilder() EXTRA_SECTION_01;
         ~SyncMLBuilder() EXTRA_SECTION_01;
-        SyncMLBuilder(BCHAR* t, BCHAR* d) EXTRA_SECTION_01;
+        SyncMLBuilder(char*  t, char*  d) EXTRA_SECTION_01;
         
         /*
          * Convert the SyncML object into an xml message
          */
-        BCHAR* prepareMsg(SyncML* syncml) EXTRA_SECTION_01;        
+        char*  prepareMsg(SyncML* syncml) EXTRA_SECTION_01;        
         
         /*
          * Convert the SyncML object into an xml message
@@ -54,7 +54,7 @@ class SyncMLBuilder {
         * Set init parameters.
         *
         */
-        void     set(BCHAR* t, BCHAR* d) EXTRA_SECTION_01;
+        void     set(char*  t, char*  d) EXTRA_SECTION_01;
         
         /*
         * Prepare the init SyncML* message with credential and db alert to sync
@@ -102,7 +102,7 @@ class SyncMLBuilder {
         /*
         * Prepare the status for Item command. COMMAND could be ADD, REPLACE, DEL
         */
-        Status*  prepareItemStatus(const BCHAR* COMMAND, const BCHAR* key, const BCHAR* cmdRef, int code) EXTRA_SECTION_01;
+        Status*  prepareItemStatus(const char*  COMMAND, const char*  key, const char*  cmdRef, int code) EXTRA_SECTION_01;
         
         /*
         * Add the status to the corrent list of commands. It is responsible to collapse the status if needed
@@ -147,7 +147,7 @@ class SyncMLBuilder {
          */
         ArrayList* prepareItem(SyncItem* syncItem,
                                long &syncItemOffset, long maxBytes, long &sentBytes,
-                               const BCHAR* type, BCHAR* COMMAND);
+                               const char*  type, char*  COMMAND);
 
         /*
         * Add the MapItem to the Map command.
@@ -169,8 +169,8 @@ class SyncMLBuilder {
         */
         long addItem(ModificationCommand* &modificationCommand,
                      long &syncItemOffset, long maxBytes,
-                     BCHAR* COMMAND, SyncItem* syncItem,
-                     const BCHAR* defaultType) EXTRA_SECTION_01;
+                     char*  COMMAND, SyncItem* syncItem,
+                     const char*  defaultType) EXTRA_SECTION_01;
         
         /*
         * Reset the cmdID counter
@@ -203,7 +203,7 @@ class SyncMLBuilder {
          *
          * @param pwd encryption password - NOT NULL
          */
-        void setEncPassword(const BCHAR* pwd);
+        void setEncPassword(const char*  pwd);
         
         /*
         * reset MsgRef counter
@@ -214,9 +214,9 @@ class SyncMLBuilder {
 
         void initialize();
 
-        BCHAR* target;
-        BCHAR* device;
-        BCHAR* encPassword;
+        char*  target;
+        char*  device;
+        char*  encPassword;
 
         unsigned long sessionID;
         unsigned int  msgID    ;
@@ -225,8 +225,8 @@ class SyncMLBuilder {
         
         DataEncoding encoding;
 
-        BCHAR* encodeB64(char* data, TransformationInfo& info);   
-        BCHAR* encodeDESB64(char* data, TransformationInfo& info);
+        char*  encodeB64(char* data, TransformationInfo& info);   
+        char*  encodeDESB64(char* data, TransformationInfo& info);
         ComplexData* getComplexData(SyncItem* syncItem, long &syncItemOffset, long maxBytes, long &sentBytes);
 
 };

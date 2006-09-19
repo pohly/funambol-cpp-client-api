@@ -34,15 +34,15 @@ class ManagementObject : public LeafManagementNode {
 
     public:
         // ------------------------------------------ Constructors & destructors
-        ManagementObject( const BCHAR*   context,
-                          const BCHAR*   name   ) EXTRA_SECTION_02;
+        ManagementObject( const char*    context,
+                          const char*    name   ) EXTRA_SECTION_02;
 
         ~ManagementObject() EXTRA_SECTION_02;
 
         // ------------------------------------------------------------- Methods
 
-        void getPropertyValue(const BCHAR* property, BCHAR* v, int size) EXTRA_SECTION_02;
-        void setPropertyValue(const BCHAR* property, BCHAR* value) EXTRA_SECTION_02;
+        void getPropertyValue(const char*  property, char*  v, int size) EXTRA_SECTION_02;
+        void setPropertyValue(const char*  property, char*  value) EXTRA_SECTION_02;
 
         /**
          * Returns the ManagementObject's properties as an ArrayList of

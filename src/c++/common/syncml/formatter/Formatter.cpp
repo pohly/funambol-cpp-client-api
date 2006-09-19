@@ -24,14 +24,14 @@
 /*
 * Returns a StringBuffer giving the tag and the value as long. To use for generic simple value
 */
-StringBuffer* Formatter::getValue(const BCHAR* tagName, long value, const BCHAR *params) {    
+StringBuffer* Formatter::getValue(const char* tagName, long value, const char *params) {    
     if (!value)
         return NULL;
 
-    BCHAR* t1 = new BCHAR[bstrlen(tagName) + 3 + (params ? bstrlen(params) + 1 : 0)]; // <  >  0 plus optional parameters
-    BCHAR* t2 = new BCHAR[bstrlen(tagName) + 5]; // </ > \n 0
-    bsprintf(t1, T("<%s%s%s>"), tagName, params ? " " : "", params ? params : "");
-    bsprintf(t2, T("</%s>\n"), tagName);
+    char* t1 = new char[strlen(tagName) + 3 + (params ? strlen(params) + 1 : 0)]; // <  >  0 plus optional parameters
+    char* t2 = new char[strlen(tagName) + 5]; // </ > \n 0
+    sprintf(t1, T("<%s%s%s>"), tagName, params ? " " : "", params ? params : "");
+    sprintf(t2, T("</%s>\n"), tagName);
 
     StringBuffer* s = new StringBuffer();
     s->append(t1);       
@@ -46,12 +46,12 @@ StringBuffer* Formatter::getValue(const BCHAR* tagName, long value, const BCHAR 
 /*
 * Returns a StringBuffer giving the tag and the value as BOOL. If true return only the tag, nothing otherwise
 */
-StringBuffer* Formatter::getValue(const BCHAR* tagName, BOOL value, const BCHAR *params) {    
+StringBuffer* Formatter::getValue(const char* tagName, BOOL value, const char *params) {    
     if (!value)
         return NULL;
 
-    BCHAR* t1 = new BCHAR[bstrlen(tagName) + 4 + (params ? bstrlen(params) + 1 : 0)]; // <  />  plus optional parameters
-    bsprintf(t1, T("<%s%s%s/>"), tagName, params ? " " : "", params ? params : "");
+    char* t1 = new char[strlen(tagName) + 4 + (params ? strlen(params) + 1 : 0)]; // <  />  plus optional parameters
+    sprintf(t1, T("<%s%s%s/>"), tagName, params ? " " : "", params ? params : "");
 
     StringBuffer* s = new StringBuffer();
     s->append(t1);        
@@ -64,7 +64,7 @@ StringBuffer* Formatter::getValue(const BCHAR* tagName, BOOL value, const BCHAR 
  * Returns a StringBuffer giving the tag and the value. 
  * Returns NULL if value's length is 0.
  */
-StringBuffer* Formatter::getValueNotEmpty(const BCHAR* tagName, const BCHAR* value, const BCHAR *params) {
+StringBuffer* Formatter::getValueNotEmpty(const char* tagName, const char* value, const char *params) {
     if (!strlen(value)) {
         return NULL;
     }
@@ -76,18 +76,18 @@ StringBuffer* Formatter::getValueNotEmpty(const BCHAR* tagName, const BCHAR* val
 * Returns a StringBuffer giving the tag and the value as wchar.
 * To use for generic simple value
 */
-StringBuffer* Formatter::getValue(const BCHAR* tagName, const BCHAR* value, const BCHAR *params) {    
+StringBuffer* Formatter::getValue(const char* tagName, const char* value, const char *params) {    
     if (!value)
         return NULL;
 
-    BCHAR* t1 = new BCHAR[bstrlen(tagName) + 3 + (params ? 1 + bstrlen(params) : 0)]; // <  >  0
-    BCHAR* t2 = new BCHAR[bstrlen(tagName) + 5]; // </ > \n 0
-    bsprintf(t1, T("<%s%s%s>"), tagName, params ? " " : "", params ? params : "");
-    bsprintf(t2, T("</%s>\n"), tagName);
+    char* t1 = new char[strlen(tagName) + 3 + (params ? 1 + strlen(params) : 0)]; // <  >  0
+    char* t2 = new char[strlen(tagName) + 5]; // </ > \n 0
+    sprintf(t1, T("<%s%s%s>"), tagName, params ? " " : "", params ? params : "");
+    sprintf(t2, T("</%s>\n"), tagName);
 
     StringBuffer* s = new StringBuffer(t1);
 
-    if (bstrcmp(value, EMPTY_VALUE) != 0)
+    if (strcmp(value, EMPTY_VALUE) != 0)
         s->append(value);
 
     s->append(t2);
@@ -101,14 +101,14 @@ StringBuffer* Formatter::getValue(const BCHAR* tagName, const BCHAR* value, cons
 /*
 * Returns a StringBuffer giving the tag and the value as StringBuffer. To use to include other stuffs
 */
-StringBuffer* Formatter::getValue(const BCHAR* tagName, StringBuffer* value, const BCHAR *params) {    
+StringBuffer* Formatter::getValue(const char* tagName, StringBuffer* value, const char *params) {    
     if (!value)
         return NULL;
 
-    BCHAR* t1 = new BCHAR[bstrlen(tagName) + 3 + (params ? bstrlen(params) + 1 : 0)]; // <  >  0 plus optional parameters
-    BCHAR* t2 = new BCHAR[bstrlen(tagName) + 5]; // </ > \n 0
-    bsprintf(t1, T("<%s%s%s>"), tagName, params ? " " : "", params ? params : "");
-    bsprintf(t2, T("</%s>\n"), tagName);
+    char* t1 = new char[strlen(tagName) + 3 + (params ? strlen(params) + 1 : 0)]; // <  >  0 plus optional parameters
+    char* t2 = new char[strlen(tagName) + 5]; // </ > \n 0
+    sprintf(t1, T("<%s%s%s>"), tagName, params ? " " : "", params ? params : "");
+    sprintf(t2, T("</%s>\n"), tagName);
 
     StringBuffer* s = new StringBuffer();
     s->append(t1);
@@ -349,7 +349,7 @@ StringBuffer* Formatter::getAnchor(Anchor* anchor) {
     buf->append(tmp);
     if (tmp) { delete tmp; tmp = NULL; }
         
-    ret = getValue(ANCHOR, (BCHAR *)buf->c_str(), METINFO);    
+    ret = getValue(ANCHOR, (char *)buf->c_str(), METINFO);    
     
     if (buf) {delete buf; buf = NULL; }
     return ret;    
@@ -518,35 +518,35 @@ StringBuffer* Formatter::getExtraCommandList(ArrayList* commands) {
     StringBuffer*   map             = NULL;
     StringBuffer*   alert           = NULL;
     StringBuffer*   get             = NULL;
-    BCHAR*          name            = NULL;
+    char*          name            = NULL;
     StringBuffer*   tmp             = NULL;
     /*
     * Use the name of the command to get the proper action to invoke
     */
     for (int i = 0; i < commands->size(); i++) {
         name = ((AbstractCommand*)(commands->get(i)))->getName();    
-        if (name && bstrcmp(name, EXEC) == 0) {
+        if (name && strcmp(name, EXEC) == 0) {
             if (!exec) {
                 exec = new StringBuffer();
             }
             tmp = getExec((Exec*)commands->get(i));
             exec->append(tmp);
             if (tmp) { delete tmp; tmp = NULL; }
-        } else if (name && bstrcmp(name, ALERT) == 0) {
+        } else if (name && strcmp(name, ALERT) == 0) {
             if (!alert) {
                 alert = new StringBuffer();
             }
             tmp = getAlert((Alert*)commands->get(i));
             alert->append(tmp);
             if (tmp) { delete tmp; tmp = NULL; }
-        } else if (name && bstrcmp(name, GET) == 0) {
+        } else if (name && strcmp(name, GET) == 0) {
             if (!get) {
                 get = new StringBuffer();
             }
             tmp = getGet((Get*)commands->get(i));
             get->append(tmp);
             if (tmp) { delete tmp; tmp = NULL; }
-        } else if (name && bstrcmp(name, MAP) == 0) {
+        } else if (name && strcmp(name, MAP) == 0) {
             if (!map) {
                 map = new StringBuffer();
             }
@@ -584,21 +584,21 @@ StringBuffer* Formatter::getCommonCommandList(ArrayList* commands) {
     StringBuffer*   dels            = NULL;
     StringBuffer*   replaces        = NULL;
     StringBuffer*   copies          = NULL;
-    BCHAR*          name            = NULL;
+    char*          name            = NULL;
     StringBuffer*   tmp             = NULL;
     /*
     * Use the name of the command to get the proper action to invoke
     */
     for (int i = 0; i < commands->size(); i++) {
         name = ((AbstractCommand*)(commands->get(i)))->getName();    
-        if (name && bstrcmp(name, COPY) == 0) {
+        if (name && strcmp(name, COPY) == 0) {
             if (!copies) {
                 copies = new StringBuffer();
             }
             tmp = getCopy((Copy*)commands->get(i));
             copies->append(tmp);
             if (tmp) { delete tmp; tmp = NULL; }
-        } else if (name && bstrcmp(name, ADD) == 0) {
+        } else if (name && strcmp(name, ADD) == 0) {
             if (!adds) {
                 adds = new StringBuffer();
             }
@@ -606,14 +606,14 @@ StringBuffer* Formatter::getCommonCommandList(ArrayList* commands) {
             adds->append(tmp);
             if (tmp) { delete tmp; tmp = NULL; }
 
-        } else if (name && bstrcmp(name, DEL) == 0) {
+        } else if (name && strcmp(name, DEL) == 0) {
             if (!dels) {
                 dels = new StringBuffer();
             }
             tmp = getDelete((Delete*)commands->get(i));
             dels->append(tmp);
             if (tmp) { delete tmp; tmp = NULL; }
-        } else if (name && bstrcmp(name, REPLACE) == 0) {
+        } else if (name && strcmp(name, REPLACE) == 0) {
             if (!replaces) {
                 replaces = new StringBuffer();
             }
@@ -637,32 +637,32 @@ StringBuffer* Formatter::getCommonCommandList(ArrayList* commands) {
 /*
 * Used to retrieve a specific command like SYNC or ATOMIC or SEQUENCE
 */
-StringBuffer* Formatter::getSpecificCommand(ArrayList* commands, BCHAR* commandName) {
+StringBuffer* Formatter::getSpecificCommand(ArrayList* commands, char* commandName) {
     
     StringBuffer*   s               = NULL;        
     StringBuffer*   ret             = NULL;   
-    BCHAR*          name            = NULL;
+    char*          name            = NULL;
     StringBuffer*   tmp             = NULL;
     /*
     * Use the name of the command to get the proper action to invoke
     */
     for (int i = 0; i < commands->size(); i++) {
         name = ((AbstractCommand*)(commands->get(i)))->getName();    
-        if (name && bstrcmp(name, SYNC) == 0 && bstrcmp(SYNC, commandName) == 0) {
+        if (name && strcmp(name, SYNC) == 0 && strcmp(SYNC, commandName) == 0) {
             if (!ret) {
                 ret = new StringBuffer();
             }
             tmp = getSync((Sync*)commands->get(i));
             ret->append(tmp);
             if (tmp) { delete tmp; tmp = NULL; }
-        } else if (name && bstrcmp(name, ATOMIC) == 0 && bstrcmp(ATOMIC, commandName) == 0) {
+        } else if (name && strcmp(name, ATOMIC) == 0 && strcmp(ATOMIC, commandName) == 0) {
             if (!ret) {
                 ret = new StringBuffer();
             }
             tmp = getAtomic((Atomic*)commands->get(i));
             ret->append(tmp);
             if (tmp) { delete tmp; tmp = NULL; }
-        } else if (name && bstrcmp(name, SEQUENCE) == 0 && bstrcmp(SEQUENCE, commandName) == 0) {
+        } else if (name && strcmp(name, SEQUENCE) == 0 && strcmp(SEQUENCE, commandName) == 0) {
             if (!ret) {
                 ret = new StringBuffer();
             }
@@ -688,7 +688,7 @@ StringBuffer* Formatter::getSyncBody(SyncBody* syncBody) {
     StringBuffer*   ret             = NULL;
     StringBuffer*   s               = NULL;    
     ArrayList*      commands        = NULL;
-    BCHAR* name                     = NULL;
+    char* name                     = NULL;
 
     StringBuffer*   alerts          = NULL;
     StringBuffer*   statusArray     = NULL;    
@@ -714,77 +714,77 @@ StringBuffer* Formatter::getSyncBody(SyncBody* syncBody) {
     */
     for (int i = 0; i < commands->size(); i++) {
         name = ((AbstractCommand*)(commands->get(i)))->getName();    
-        if (name && bstrcmp(name, STATUS) == 0) {
+        if (name && strcmp(name, STATUS) == 0) {
             if (!statusArray) {
                 statusArray = new StringBuffer();
             }
             tmp = getStatus((Status*)commands->get(i));
             statusArray->append(tmp);
             if (tmp) { delete tmp; tmp = NULL; }
-        } else if (name && bstrcmp(name, ALERT) == 0) {
+        } else if (name && strcmp(name, ALERT) == 0) {
             if (!alerts) {
                 alerts = new StringBuffer();
             }
             tmp = getAlert((Alert*)commands->get(i));
             alerts->append(tmp);
             if (tmp) { delete tmp; tmp = NULL; }
-        } else if (name && bstrcmp(name, SYNC) == 0) {
+        } else if (name && strcmp(name, SYNC) == 0) {
             if (!sync) {
                 sync = new StringBuffer();
             }
             tmp = getSync((Sync*)commands->get(i));
             sync->append(tmp);
             if (tmp) { delete tmp; tmp = NULL; }
-        } else if (name && bstrcmp(name, MAP) == 0) {
+        } else if (name && strcmp(name, MAP) == 0) {
             if (!map) {
                 map = new StringBuffer();
             }
             tmp = getMap((Map*)commands->get(i));
             map->append(tmp);
             if (tmp) { delete tmp; tmp = NULL; }
-        } else if (name && bstrcmp(name, EXEC) == 0) {
+        } else if (name && strcmp(name, EXEC) == 0) {
             if (!exec) {
                 exec = new StringBuffer();
             }
             tmp = getExec((Exec*)commands->get(i));
             exec->append(tmp);
             if (tmp) { delete tmp; tmp = NULL; }
-        } else if (name && bstrcmp(name, GET) == 0) {
+        } else if (name && strcmp(name, GET) == 0) {
             if (!get) {
                 get = new StringBuffer();
             }
             tmp = getGet((Get*)commands->get(i));
             get->append(tmp);
             if (tmp) { delete tmp; tmp = NULL; }
-        } else if (name && bstrcmp(name, RESULTS) == 0) {
+        } else if (name && strcmp(name, RESULTS) == 0) {
             if (!results) {
                 results = new StringBuffer();
             }
             tmp = getResults((Results*)commands->get(i));
             results->append(tmp);
             if (tmp) { delete tmp; tmp = NULL; }
-        } else if (name && bstrcmp(name, PUT) == 0) {
+        } else if (name && strcmp(name, PUT) == 0) {
             if (!put) {
                 put = new StringBuffer();
             }
             tmp = getPut((Put*)commands->get(i));
             put->append(tmp);
             if (tmp) { delete tmp; tmp = NULL; }
-        } else if (name && bstrcmp(name, SEARCH) == 0) {
+        } else if (name && strcmp(name, SEARCH) == 0) {
             if (!search) {
                 search = new StringBuffer();
             }
             tmp = getSearch((Search*)commands->get(i));
             search->append(tmp);
             if (tmp) { delete tmp; tmp = NULL; }
-        } else if (name && bstrcmp(name, SEQUENCE) == 0) {
+        } else if (name && strcmp(name, SEQUENCE) == 0) {
             if (!sequence) {
                 sequence = new StringBuffer();
             }
             tmp = getSequence((Sequence*)commands->get(i));
             sequence->append(tmp);
             if (tmp) { delete tmp; tmp = NULL; }
-        } else if (name && bstrcmp(name, ATOMIC) == 0) {
+        } else if (name && strcmp(name, ATOMIC) == 0) {
             if (!atomic) {
                 atomic = new StringBuffer();
             }
@@ -1701,7 +1701,7 @@ StringBuffer* Formatter::getData(Data* data) {
     
     StringBuffer* ret       = NULL;
     StringBuffer* s         = NULL;
-    BCHAR* simpleData     = NULL;
+    char* simpleData     = NULL;
 
     if ((simpleData = data->getData(NULL)) != NULL) {        
         s = new StringBuffer();
@@ -1727,11 +1727,11 @@ StringBuffer* Formatter::getData(ComplexData* data) {
         s.append(anchor);
         s.append(devInf);
     } else {
-        if (data->getData() == NULL || bstrlen(data->getData()) == 0) {
+        if (data->getData() == NULL || strlen(data->getData()) == 0) {
             //nothing to do. For mailfilter
         }
         // it avoid error for the closing tag of CDATA
-        else if (data->getData() && bstrstr(data->getData(), "]]>") == NULL ) {
+        else if (data->getData() && strstr(data->getData(), "]]>") == NULL ) {
             
             s.append("<![CDATA[");
             s.append(data->getData());
@@ -1839,7 +1839,7 @@ StringBuffer* Formatter::getDevInf(DevInf* devInf) {
     }
 
     // TODO: getValue() should accept const strings
-    ret = getValue((BCHAR *)DEV_INF, (BCHAR *)s->c_str(), (BCHAR *)DEVINF);
+    ret = getValue((char *)DEV_INF, (char *)s->c_str(), (char *)DEVINF);
     
     deleteAllStringBuffer(16, &s, &verDTD, &man, &mod, &oem, &fwV, &swV, &hwV, 
                               &devID, &devTyp, &dataStores, &ctCaps, &exts, &utc, 
@@ -2092,7 +2092,7 @@ StringBuffer* Formatter::getDSMem(DSMem* dsMem) {
 }
 
 
-StringBuffer* Formatter::getContentTypeInfos(ArrayList* contentTypeInfos, BCHAR* TAG) {
+StringBuffer* Formatter::getContentTypeInfos(ArrayList* contentTypeInfos, char* TAG) {
     
     if (!contentTypeInfos || !NotZeroArrayLenght(1, contentTypeInfos))
         return NULL;
@@ -2109,7 +2109,7 @@ StringBuffer* Formatter::getContentTypeInfos(ArrayList* contentTypeInfos, BCHAR*
 }
 
 
-StringBuffer* Formatter::getContentTypeInfo(ContentTypeInfo* contentTypeInfo, BCHAR* TAG) {
+StringBuffer* Formatter::getContentTypeInfo(ContentTypeInfo* contentTypeInfo, char* TAG) {
     
     if (!contentTypeInfo)
         return NULL;
@@ -2159,10 +2159,10 @@ StringBuffer* Formatter::getTargetRef(TargetRef* targetRef) {
     StringBuffer* ret = NULL;
     StringBuffer* s   = NULL;
     
-    BCHAR*       value  = NULL;
+    char*       value  = NULL;
     StringBuffer*  target = NULL;
     
-    if ((value = (BCHAR*)targetRef->getValue()) != NULL) {
+    if ((value = (char*)targetRef->getValue()) != NULL) {
         ;  // the value value is arleady set.
     } else {
         target = getTarget(targetRef->getTarget());
@@ -2206,10 +2206,10 @@ StringBuffer* Formatter::getSourceRef(SourceRef* sourceRef) {
     StringBuffer* ret = NULL;
     StringBuffer* s   = NULL;
     
-    BCHAR*       value  = NULL;
+    char*       value  = NULL;
     StringBuffer*  source = NULL;
     
-    if ((value = (BCHAR*)sourceRef->getValue()) != NULL) {
+    if ((value = (char*)sourceRef->getValue()) != NULL) {
         ;  // the value value is arleady set.
     } else {
         source = getSource(sourceRef->getSource());
@@ -2354,7 +2354,7 @@ StringBuffer* Formatter::getPropParam(PropParam* p) {
     if (enums) {
         StringBuffer* t = NULL;
         for(int i=0; i<enums->size(); ++i) {
-            t = getValue(VAL_ENUM, (BCHAR*)enums->get(i));
+            t = getValue(VAL_ENUM, (char*)enums->get(i));
             valEnums.append(t);
             delete t; t = NULL;
         }
@@ -2419,7 +2419,7 @@ StringBuffer* Formatter::getProperty(Property* p) {
     if (enums) {
         StringBuffer* t = NULL;
         for(int i=0; i<enums->size(); ++i) {
-            t = getValue(VAL_ENUM, (BCHAR*)enums->get(i));
+            t = getValue(VAL_ENUM, (char*)enums->get(i));
             valEnums.append(t);
             delete t; t = NULL;
         }

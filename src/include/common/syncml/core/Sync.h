@@ -33,7 +33,7 @@ class Sync : public AbstractCommand {
     
      // ------------------------------------------------------------ Private data
     private:
-        BCHAR* COMMAND_NAME;
+        char*  COMMAND_NAME;
         Target* target;
         Source* source;
         ArrayList* commands;
@@ -132,7 +132,7 @@ class Sync : public AbstractCommand {
          */
         void setNumberOfChanges(long numberOfChanges) ;
     
-        BCHAR* getName();
+        char*  getName();
 
         ArrayElement* clone();
 

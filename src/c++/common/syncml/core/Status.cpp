@@ -48,9 +48,9 @@ Status::~Status() {
 *
 */
 Status::Status(CmdID*        cmdID     ,
-               const BCHAR*  msgRef    ,
-               const BCHAR*  cmdRef    ,
-               const BCHAR*  cmd       ,
+               const char*  msgRef    ,
+               const char*  cmdRef    ,
+               const char*  cmd       ,
                ArrayList*    targetRefs,
                ArrayList*    sourceRefs,
                Cred*         cred      ,
@@ -73,8 +73,8 @@ Status::Status(CmdID*        cmdID     ,
 
 void Status::initialize() {
     
-    COMMAND_NAME = new BCHAR[bstrlen(STATUS_COMMAND_NAME) + 1];
-    bsprintf(COMMAND_NAME, STATUS_COMMAND_NAME);
+    COMMAND_NAME = new char[strlen(STATUS_COMMAND_NAME) + 1];
+    sprintf(COMMAND_NAME, STATUS_COMMAND_NAME);
     
     chal        = NULL;
     data        = NULL;
@@ -138,11 +138,11 @@ void Status::setData(Data* data) {
 *
 * @return the cmd element
 */
-BCHAR* Status::getCmd(BCHAR* retCmd) {
+char* Status::getCmd(char* retCmd) {
     if (retCmd == NULL) {
         return cmd;
     }
-    return bstrcpy(retCmd, cmd);
+    return strcpy(retCmd, cmd);
 }
 
 /**
@@ -151,7 +151,7 @@ BCHAR* Status::getCmd(BCHAR* retCmd) {
 * @param cmd the new cmd element - NOT NULL
 *         
 */
-void Status::setCmd(const BCHAR* cmd) {
+void Status::setCmd(const char* cmd) {
     if (cmd == NULL) {
         // TBD
     } else { 
@@ -168,7 +168,7 @@ void Status::setCmd(const BCHAR* cmd) {
 * @return the status code as int
 */
 int Status::getStatusCode() {
-    return bstrtol(data->getData(NULL), NULL, 10);
+    return strtol(data->getData(NULL), NULL, 10);
     
 }
 
@@ -177,7 +177,7 @@ int Status::getStatusCode() {
 *
 * @return the command name
 */
-BCHAR* Status::getName() {
+char* Status::getName() {
     return COMMAND_NAME;
 }
 

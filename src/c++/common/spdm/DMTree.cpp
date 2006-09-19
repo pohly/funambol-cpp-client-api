@@ -36,7 +36,7 @@
 /*
  * Constructor
  */
-DMTree::DMTree(const BCHAR *rootContext) {
+DMTree::DMTree(const char *rootContext) {
     root = stringdup(rootContext);
 }
 
@@ -48,7 +48,7 @@ DMTree::~DMTree() {
         delete [] root;
 }
 
-bool DMTree::isLeaf(const BCHAR *node) {
+bool DMTree::isLeaf(const char *node) {
     DeviceManagementNode dmn(node);
     
     return (dmn.getChildrenMaxCount() == 0);
@@ -63,7 +63,7 @@ bool DMTree::isLeaf(const BCHAR *node) {
  * The ManagementNode is created with the new operator and must be
  * discarded by the caller with the operator delete.
  */
-ManagementNode* DMTree::getManagementNode(const BCHAR* node) {
+ManagementNode* DMTree::getManagementNode(const char* node) {
 
     //LOG.debug(node);
     
@@ -72,7 +72,7 @@ ManagementNode* DMTree::getManagementNode(const BCHAR* node) {
     int childrenCount = n->getChildrenMaxCount();
 
     if (childrenCount) {
-        BCHAR** childrenNames = n->getChildrenNames();
+        char** childrenNames = n->getChildrenNames();
 		
 		if (!childrenNames){
 			LOG.error(T("Error in getChildrenNames"));
@@ -99,9 +99,9 @@ void DMTree::setManagementNode(ManagementNode& n) {
 
     LOG.info(T("in setManagementNode"));
 
-    BCHAR nodeName [DIM_MANAGEMENT_PATH];
-    BCHAR context  [DIM_MANAGEMENT_PATH];
-    BCHAR leafName [DIM_MANAGEMENT_PATH];
+    char nodeName [DIM_MANAGEMENT_PATH];
+    char context  [DIM_MANAGEMENT_PATH];
+    char leafName [DIM_MANAGEMENT_PATH];
 
     wmemset(context,     0, DIM_MANAGEMENT_PATH);
     wmemset(leafName,    0, DIM_MANAGEMENT_PATH);

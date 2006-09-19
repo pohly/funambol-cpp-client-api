@@ -28,7 +28,7 @@
 class SyncItemEvent : public BaseEvent {
 
     // Itemkey of the object getting synced
-    wchar_t* itemKey;
+    WCHAR* itemKey;
 
     // Source URI
     char* sourceURI;
@@ -36,7 +36,7 @@ class SyncItemEvent : public BaseEvent {
 public:
 
     // Constructor
-    SyncItemEvent(const wchar_t* key, const char* uri, int type, unsigned long date);
+    SyncItemEvent(const WCHAR* key, const char* uri, int type, unsigned long date);
 
     // Destructor
     ~SyncItemEvent();
@@ -45,7 +45,7 @@ public:
     const char* getSourceURI() const;
 
     // get the sync item key
-    const wchar_t* getItemKey() const;
+    const WCHAR* getItemKey() const;
 
 };
 

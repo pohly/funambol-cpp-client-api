@@ -25,23 +25,23 @@ BodyPart::BodyPart() {
     encoding = T("8bit");
 }
 
-const BCHAR * BodyPart::getMimeType() const { return (mimeType.c_str()); }
-void BodyPart::setMimeType(const BCHAR *type) { mimeType = type; }
+const char * BodyPart::getMimeType() const { return (mimeType.c_str()); }
+void BodyPart::setMimeType(const char *type) { mimeType = type; }
 
-const BCHAR * BodyPart::getEncoding() const { return (encoding.c_str()); }
-void BodyPart::setEncoding(const BCHAR *enc) { encoding = enc; }
+const char * BodyPart::getEncoding() const { return (encoding.c_str()); }
+void BodyPart::setEncoding(const char *enc) { encoding = enc; }
 
-const BCHAR * BodyPart::getCharset() const { return (charset.c_str()); }
-void BodyPart::setCharset(const BCHAR *cs) { charset = cs; }
+const char * BodyPart::getCharset() const { return (charset.c_str()); }
+void BodyPart::setCharset(const char *cs) { charset = cs; }
 
-const BCHAR * BodyPart::getContent() const { return content.c_str(); }
-void BodyPart::setContent(const BCHAR *cont) { content = cont; }
+const char * BodyPart::getContent() const { return content.c_str(); }
+void BodyPart::setContent(const char *cont) { content = cont; }
 
-const BCHAR *BodyPart::getDisposition() const { return disposition.c_str(); }
-void BodyPart::setDisposition(const BCHAR *disp) { disposition = disp; }
+const char *BodyPart::getDisposition() const { return disposition.c_str(); }
+void BodyPart::setDisposition(const char *disp) { disposition = disp; }
 
-const BCHAR *BodyPart::getFilename() const { return filename.c_str(); }
-void BodyPart::setFilename(const BCHAR *name) { filename = name; }
+const char *BodyPart::getFilename() const { return filename.c_str(); }
+void BodyPart::setFilename(const char *name) { filename = name; }
 
 ArrayElement* BodyPart::clone() {
     BodyPart *p = new BodyPart();

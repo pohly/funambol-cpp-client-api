@@ -61,67 +61,67 @@ SyncSourceConfig::~SyncSourceConfig() {
 }
 
 
-const BCHAR* SyncSourceConfig::getName() const {
+const char* SyncSourceConfig::getName() const {
     return name;
 }
 
-void SyncSourceConfig::setName(const BCHAR* n) {
+void SyncSourceConfig::setName(const char* n) {
     safeDelete(&name);
     name = stringdup(n);
 }
 
-const BCHAR* SyncSourceConfig::getURI() const {
+const char* SyncSourceConfig::getURI() const {
     return uri ? uri :
         name ? name :
         "";
 }
 
-void SyncSourceConfig::setURI(const BCHAR* u) {
+void SyncSourceConfig::setURI(const char* u) {
     safeDelete(&uri);
     uri = stringdup(u);
 }
 
 
-const BCHAR* SyncSourceConfig::getSyncModes() const {
+const char* SyncSourceConfig::getSyncModes() const {
     return syncModes ? syncModes :
         "";
         
 }
 
-void SyncSourceConfig::setSyncModes(const BCHAR* s) {
+void SyncSourceConfig::setSyncModes(const char* s) {
     safeDelete(&syncModes);
 
     if (s) {
-        syncModes = new BCHAR[bstrlen(s)+1];
-        bstrcpy(syncModes, s);
+        syncModes = new char[strlen(s)+1];
+        strcpy(syncModes, s);
     }
 }
 
-const BCHAR* SyncSourceConfig::getType() const {
+const char* SyncSourceConfig::getType() const {
     return type ? type :
         "";
 }
 
-void SyncSourceConfig::setType(const BCHAR* t) {
+void SyncSourceConfig::setType(const char* t) {
     safeDelete(&type);
 
     if (t) {
-        type = new BCHAR[bstrlen(t)+1];
-        bstrcpy(type, t);
+        type = new char[strlen(t)+1];
+        strcpy(type, t);
     }
 }
 
-const BCHAR* SyncSourceConfig::getSync() const {
+const char* SyncSourceConfig::getSync() const {
     return sync ? sync :
         "";
 }
 
-void SyncSourceConfig::setSync(const BCHAR *s) {
+void SyncSourceConfig::setSync(const char *s) {
     safeDelete(&sync);
 
     if (s) {
-        sync = new BCHAR[bstrlen(s)+1];
-        bstrcpy(sync, s);
+        sync = new char[strlen(s)+1];
+        strcpy(sync, s);
     }
 }
 
@@ -133,12 +133,12 @@ unsigned long SyncSourceConfig::getLast() const {
     return (unsigned long)last;
 }
 
-const BCHAR* SyncSourceConfig::getEncoding() const {
+const char* SyncSourceConfig::getEncoding() const {
     return encodings ? encodings :
         "";
 }
         
-void SyncSourceConfig::setEncoding(const BCHAR* s) {
+void SyncSourceConfig::setEncoding(const char* s) {
     safeDelete(&encodings);
 
     if (s) {
@@ -146,18 +146,18 @@ void SyncSourceConfig::setEncoding(const BCHAR* s) {
     }
 }
 
-const BCHAR* SyncSourceConfig::getVersion() const {
+const char* SyncSourceConfig::getVersion() const {
     return version;
 }
-void SyncSourceConfig::setVersion(const BCHAR* v) {
+void SyncSourceConfig::setVersion(const char* v) {
     safeDelete(&version);
     version = stringdup(v);
 }
 
-const BCHAR* SyncSourceConfig::getSupportedTypes() const {
+const char* SyncSourceConfig::getSupportedTypes() const {
     return supportedTypes;
 }
-void SyncSourceConfig::setSupportedTypes(const BCHAR* s) {
+void SyncSourceConfig::setSupportedTypes(const char* s) {
     safeDelete(&supportedTypes);
     supportedTypes = stringdup(s);
 }

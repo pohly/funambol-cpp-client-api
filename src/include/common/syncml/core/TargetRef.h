@@ -30,8 +30,8 @@ class TargetRef : public ArrayElement{
     
      // ------------------------------------------------------------ Private data
     private:
-        BCHAR* value;
-        BCHAR* query;
+        char*  value;
+        char*  query;
         Target* target;   
 
         void initialize();
@@ -39,7 +39,7 @@ class TargetRef : public ArrayElement{
         /*
         * Used to set the query field in the clone method
         */
-        void setQuery(BCHAR* val);
+        void setQuery(char*  val);
 
     // ---------------------------------------------------------- Protected data    
     public:
@@ -54,7 +54,7 @@ class TargetRef : public ArrayElement{
          * @param value the referenced value - NULL ALLOWED
          *         
          */
-        TargetRef(const BCHAR* value);
+        TargetRef(const char*  value);
 
         /**
          * Creates a new TargetRef object from an existing target.
@@ -72,14 +72,14 @@ class TargetRef : public ArrayElement{
          *
          * @return the value
          */
-        const BCHAR* getValue();
+        const char*  getValue();
 
         /**
          * Sets the reference value. If value is null, the empty string is adopted.
          *
          * @param value the reference value - NULL
          */
-        void setValue(const BCHAR* value);
+        void setValue(const char*  value);
 
         /**
          * Gets the Target property

@@ -31,7 +31,7 @@ LogErrorHandler::~LogErrorHandler() {
  *
  * @return None.
  */
-void LogErrorHandler::warning(int code, const BCHAR* msg) {
+void LogErrorHandler::warning(int code, const char* msg) {
 
 }
 
@@ -45,7 +45,7 @@ void LogErrorHandler::warning(int code, const BCHAR* msg) {
  *
  * @return true if the synchronization must be stopped.
  */
-bool LogErrorHandler::error(int code, const BCHAR* msg) {
+bool LogErrorHandler::error(int code, const char* msg) {
     return FALSE;
 }
 
@@ -59,7 +59,7 @@ bool LogErrorHandler::error(int code, const BCHAR* msg) {
  *
  * @return None
  */
-void LogErrorHandler::fatalError(int code, const BCHAR* msg) {
+void LogErrorHandler::fatalError(int code, const char* msg) {
 
 }
 

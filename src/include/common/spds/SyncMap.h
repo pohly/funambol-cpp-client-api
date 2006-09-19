@@ -26,23 +26,23 @@
 class SyncMap : public ArrayElement {
 
     private:
-        BCHAR* luid;
-        BCHAR* guid;
+        char*  luid;
+        char*  guid;
 
     public:
-        SyncMap(const BCHAR* guid = NULL, const BCHAR* luid = NULL) EXTRA_SECTION_01;
+        SyncMap(const char*  guid = NULL, const char*  luid = NULL) EXTRA_SECTION_01;
         ~SyncMap() EXTRA_SECTION_01;
 
         /*
          * Returns the guid of this mapping. 
          */
-        const BCHAR* getGUID() EXTRA_SECTION_01;
+        const char*  getGUID() EXTRA_SECTION_01;
 
 
         /*
          * Returns the luid of this mapping.
          */
-        const BCHAR* getLUID() EXTRA_SECTION_01;
+        const char*  getLUID() EXTRA_SECTION_01;
 
         /**
          * Sets a new value for the LUID property. The value is copied in the
@@ -50,11 +50,11 @@ class SyncMap : public ArrayElement {
          *
          * @param luid the new value
          */
-        void setLUID(const BCHAR* luid) EXTRA_SECTION_01;
+        void setLUID(const char*  luid) EXTRA_SECTION_01;
 
         /**
          * Sets a new value for the LUID property (as unsigned int). It internally
-         * calls setLUID(BCHAR*)
+         * calls setLUID(char* )
          *
          * @param luid the new value
          */
@@ -67,7 +67,7 @@ class SyncMap : public ArrayElement {
          *
          * @param guid the new value
          */
-        void setGUID(const BCHAR* guid) EXTRA_SECTION_01;
+        void setGUID(const char*  guid) EXTRA_SECTION_01;
 
         /**
          * Creates a new instance of SyncMap from the content of this

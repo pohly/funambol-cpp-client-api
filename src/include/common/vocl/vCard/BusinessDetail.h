@@ -26,7 +26,7 @@
 #include "vocl/vCard/ContactDetail.h"
 #include "vocl/vCard/vCardProperty.h"
 
-typedef wchar_t* WSTRING;
+typedef WCHAR* WSTRING;
 /**
  * An object containing the business details of a contact
  *
@@ -42,8 +42,8 @@ class BusinessDetail {
         vCardProperty*      company;
         vCardProperty*      department;
         vCardProperty*      logo;
-        wchar_t*       manager;
-        wchar_t*       assistant;
+        WCHAR*       manager;
+        WCHAR*       assistant;
 
         /**
          * Sets the given property address to a clone of the given property. If
@@ -64,7 +64,7 @@ class BusinessDetail {
          *                 allocated memory
          * @param v the value to set into the property
          */
-        void set(wchar_t** p, wchar_t* v);
+        void set(WCHAR** p, WCHAR* v);
 
 
     // -------------------------------------------- Constructors and Destructors
@@ -101,7 +101,7 @@ class BusinessDetail {
          * Sets the titles. The given titles are cloned, so that the
          * caller can independently release them as needed.
          */
-        void setTitles(wchar_t* titleArray[], int n);
+        void setTitles(WCHAR* titleArray[], int n);
 
         /**
          * Returns the address for this Businnes Detail
@@ -164,7 +164,7 @@ class BusinessDetail {
          * @return the internal buffer if manager was NULL, manager otherwise
          *
          */
-        wchar_t* getManager(wchar_t* manager = NULL, int size=-1);
+        WCHAR* getManager(WCHAR* manager = NULL, int size=-1);
 
         /**
          * Returns the assistant for this Businnes Detail
@@ -174,7 +174,7 @@ class BusinessDetail {
          *
          * @return the internal buffer if manager was NULL, manager otherwise
          */
-        wchar_t* getAssistant(wchar_t* assistant = NULL, int size=-1);
+        WCHAR* getAssistant(WCHAR* assistant = NULL, int size=-1);
 
         /**
          * Returns the logo for this Businnes Detail
@@ -194,14 +194,14 @@ class BusinessDetail {
          *
          * @param manager the manager to set
          */
-        void setManager (wchar_t* manager);
+        void setManager (WCHAR* manager);
 
         /**
          * Sets the assistant for this Businnes Detail
          *
          * @param assistant the assistant to set
          */
-        void setAssistant (wchar_t* assistant);
+        void setAssistant (WCHAR* assistant);
 
         /**
          * Creates and returns a new BusinessDetail object. The object is created with

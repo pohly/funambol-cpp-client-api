@@ -68,11 +68,11 @@ unsigned int TransportAgent::getReadBufferSize() {
     return readBufferSize;
 }
 
-void TransportAgent::setUserAgent(const BCHAR* ua) {
+void TransportAgent::setUserAgent(const char* ua) {
     if (ua) 
-        bstrcpy(userAgent, ua);
+        strcpy(userAgent, ua);
 }
 
-BCHAR* TransportAgent::getUserAgent() {
+char* TransportAgent::getUserAgent() {
     return stringdup(userAgent);
 }

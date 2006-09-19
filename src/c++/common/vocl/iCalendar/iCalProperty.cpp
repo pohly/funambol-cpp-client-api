@@ -19,7 +19,7 @@
 #include "base/util/utils.h"
 #include "vocl/iCalendar/iCalProperty.h"
 
-iCalProperty::iCalProperty (wchar_t* v) {
+iCalProperty::iCalProperty (WCHAR* v) {
      altre         = NULL;
      cn            = NULL;
      cutype        = NULL;
@@ -114,7 +114,7 @@ iCalProperty::~iCalProperty() {
     }
 }
 
-wchar_t* iCalProperty::getAltre (wchar_t* buf, int size) {
+WCHAR* iCalProperty::getAltre (WCHAR* buf, int size) {
     if (buf == NULL) {
         return altre;
     }
@@ -125,7 +125,7 @@ wchar_t* iCalProperty::getAltre (wchar_t* buf, int size) {
     }
     return buf;
 }
-wchar_t* iCalProperty::getCn (wchar_t* buf, int size) {
+WCHAR* iCalProperty::getCn (WCHAR* buf, int size) {
     if (buf == NULL) {
         return cn;
     }
@@ -136,7 +136,7 @@ wchar_t* iCalProperty::getCn (wchar_t* buf, int size) {
     }
     return buf;
 }
-wchar_t* iCalProperty::getCutype (wchar_t* buf, int size) {
+WCHAR* iCalProperty::getCutype (WCHAR* buf, int size) {
     if (buf == NULL) {
         return cutype;
     }
@@ -147,7 +147,7 @@ wchar_t* iCalProperty::getCutype (wchar_t* buf, int size) {
     }
     return buf;
 }
-wchar_t* iCalProperty::getDelegatedFrom (wchar_t* buf, int size) {
+WCHAR* iCalProperty::getDelegatedFrom (WCHAR* buf, int size) {
     if (buf == NULL) {
         return delegatedFrom;
     }
@@ -158,7 +158,7 @@ wchar_t* iCalProperty::getDelegatedFrom (wchar_t* buf, int size) {
     }
     return buf;
 }
-wchar_t* iCalProperty::getDelegatedTo (wchar_t* buf, int size) {
+WCHAR* iCalProperty::getDelegatedTo (WCHAR* buf, int size) {
     if (buf == NULL) {
         return delegatedTo;
     }
@@ -169,7 +169,7 @@ wchar_t* iCalProperty::getDelegatedTo (wchar_t* buf, int size) {
     }
     return buf;
 }
-wchar_t* iCalProperty::getDir (wchar_t* buf, int size) {
+WCHAR* iCalProperty::getDir (WCHAR* buf, int size) {
     if (buf == NULL) {
         return dir;
     }
@@ -180,7 +180,7 @@ wchar_t* iCalProperty::getDir (wchar_t* buf, int size) {
     }
     return buf;
 }
-wchar_t* iCalProperty::getEncoding (wchar_t* buf, int size) {
+WCHAR* iCalProperty::getEncoding (WCHAR* buf, int size) {
     if (buf == NULL) {
         return encoding;
     }
@@ -191,7 +191,7 @@ wchar_t* iCalProperty::getEncoding (wchar_t* buf, int size) {
     }
     return buf;
 }
-wchar_t* iCalProperty::getFormatType (wchar_t* buf, int size) {
+WCHAR* iCalProperty::getFormatType (WCHAR* buf, int size) {
     if (buf == NULL) {
         return formattype;
     }
@@ -202,7 +202,7 @@ wchar_t* iCalProperty::getFormatType (wchar_t* buf, int size) {
     }
     return buf;
 }
-wchar_t* iCalProperty::getFbType (wchar_t* buf, int size) {
+WCHAR* iCalProperty::getFbType (WCHAR* buf, int size) {
     if (buf == NULL) {
         return fbtype;
     }
@@ -213,7 +213,7 @@ wchar_t* iCalProperty::getFbType (wchar_t* buf, int size) {
     }
     return buf;
 }
-wchar_t* iCalProperty::getLanguage (wchar_t* buf, int size) {
+WCHAR* iCalProperty::getLanguage (WCHAR* buf, int size) {
     if (buf == NULL) {
         return language;
     }
@@ -224,7 +224,7 @@ wchar_t* iCalProperty::getLanguage (wchar_t* buf, int size) {
     }
     return buf;
 }
-wchar_t* iCalProperty::getMember (wchar_t* buf, int size) {
+WCHAR* iCalProperty::getMember (WCHAR* buf, int size) {
     if (buf == NULL) {
         return member;
     }
@@ -235,7 +235,7 @@ wchar_t* iCalProperty::getMember (wchar_t* buf, int size) {
     }
     return buf;
 }
-wchar_t* iCalProperty::getPartStat (wchar_t* buf, int size) {
+WCHAR* iCalProperty::getPartStat (WCHAR* buf, int size) {
     if (buf == NULL) {
         return partstat;
     }
@@ -246,7 +246,7 @@ wchar_t* iCalProperty::getPartStat (wchar_t* buf, int size) {
     }
     return buf;
 }
-wchar_t* iCalProperty::getRange (wchar_t* buf, int size) {
+WCHAR* iCalProperty::getRange (WCHAR* buf, int size) {
     if (buf == NULL) {
         return range;
     }
@@ -257,7 +257,7 @@ wchar_t* iCalProperty::getRange (wchar_t* buf, int size) {
     }
     return buf;
 }
-wchar_t* iCalProperty::getTrigRel (wchar_t* buf, int size) {
+WCHAR* iCalProperty::getTrigRel (WCHAR* buf, int size) {
     if (buf == NULL) {
         return trigrel;
     }
@@ -268,7 +268,7 @@ wchar_t* iCalProperty::getTrigRel (wchar_t* buf, int size) {
     }
     return buf;
 }
-wchar_t* iCalProperty::getRelated (wchar_t* buf, int size) {
+WCHAR* iCalProperty::getRelated (WCHAR* buf, int size) {
     if (buf == NULL) {
         return related;
     }
@@ -279,7 +279,7 @@ wchar_t* iCalProperty::getRelated (wchar_t* buf, int size) {
     }
     return buf;
 }
-wchar_t* iCalProperty::getRole (wchar_t* buf, int size) {
+WCHAR* iCalProperty::getRole (WCHAR* buf, int size) {
     if (buf == NULL) {
         return role;
     }
@@ -290,7 +290,7 @@ wchar_t* iCalProperty::getRole (wchar_t* buf, int size) {
     }
     return buf;
 }
-wchar_t* iCalProperty::getRsvp (wchar_t* buf, int size) {
+WCHAR* iCalProperty::getRsvp (WCHAR* buf, int size) {
     if (buf == NULL) {
         return rsvp;
     }
@@ -301,7 +301,7 @@ wchar_t* iCalProperty::getRsvp (wchar_t* buf, int size) {
     }
     return buf;
 }
-wchar_t* iCalProperty::getSentBy (wchar_t* buf, int size) {
+WCHAR* iCalProperty::getSentBy (WCHAR* buf, int size) {
     if (buf == NULL) {
         return sentby;
     }
@@ -312,7 +312,7 @@ wchar_t* iCalProperty::getSentBy (wchar_t* buf, int size) {
     }
     return buf;
 }
-wchar_t* iCalProperty::getTzID (wchar_t* buf, int size) {
+WCHAR* iCalProperty::getTzID (WCHAR* buf, int size) {
     if (buf == NULL) {
         return tzid;
     }
@@ -323,7 +323,7 @@ wchar_t* iCalProperty::getTzID (wchar_t* buf, int size) {
     }
     return buf;
 }
-wchar_t* iCalProperty::getValueType (wchar_t* buf, int size) {
+WCHAR* iCalProperty::getValueType (WCHAR* buf, int size) {
     if (buf == NULL) {
         return valuetype;
     }
@@ -337,7 +337,7 @@ wchar_t* iCalProperty::getValueType (wchar_t* buf, int size) {
 ArrayList* iCalProperty::getXParam () {
     return xParams;
 }
-wchar_t* iCalProperty::getValue (wchar_t* buf, int size) {
+WCHAR* iCalProperty::getValue (WCHAR* buf, int size) {
     if (buf == NULL) {
         return value;
     }
@@ -349,64 +349,64 @@ wchar_t* iCalProperty::getValue (wchar_t* buf, int size) {
     return buf;
 }
 
-void iCalProperty::setAltre (wchar_t* e) {
+void iCalProperty::setAltre (WCHAR* e) {
     set(&altre, e);
 }
-void iCalProperty::setCn (wchar_t* e) {
+void iCalProperty::setCn (WCHAR* e) {
     set(&cn, e);
 }
-void iCalProperty::setCutype (wchar_t* e) {
+void iCalProperty::setCutype (WCHAR* e) {
     set(&cutype, e);
 }
-void iCalProperty::setDelegatedFrom (wchar_t* e) {
+void iCalProperty::setDelegatedFrom (WCHAR* e) {
     set(&delegatedFrom, e);
 }
-void iCalProperty::setDelegatedTo (wchar_t* e) {
+void iCalProperty::setDelegatedTo (WCHAR* e) {
     set(&delegatedTo, e);
 }
-void iCalProperty::setDir (wchar_t* e) {
+void iCalProperty::setDir (WCHAR* e) {
     set(&dir, e);
 }
-void iCalProperty::setEncoding (wchar_t* e) {
+void iCalProperty::setEncoding (WCHAR* e) {
     set(&encoding, e);
 }
-void iCalProperty::setFormatType (wchar_t* e) {
+void iCalProperty::setFormatType (WCHAR* e) {
     set(&formattype, e);
 }
-void iCalProperty::setFbType (wchar_t* e) {
+void iCalProperty::setFbType (WCHAR* e) {
     set(&fbtype, e);
 }
-void iCalProperty::setLanguage (wchar_t* e) {
+void iCalProperty::setLanguage (WCHAR* e) {
     set(&language, e);
 }
-void iCalProperty::setMember (wchar_t* e) {
+void iCalProperty::setMember (WCHAR* e) {
     set(&member, e);
 }
-void iCalProperty::setPartStat (wchar_t* e) {
+void iCalProperty::setPartStat (WCHAR* e) {
     set(&partstat, e);
 }
-void iCalProperty::setRange (wchar_t* e) {
+void iCalProperty::setRange (WCHAR* e) {
     set(&range, e);
 }
-void iCalProperty::setTrigRel (wchar_t* e) {
+void iCalProperty::setTrigRel (WCHAR* e) {
     set(&trigrel, e);
 }
-void iCalProperty::setRelated (wchar_t* e) {
+void iCalProperty::setRelated (WCHAR* e) {
     set(&related, e);
 }
-void iCalProperty::setRole (wchar_t* e) {
+void iCalProperty::setRole (WCHAR* e) {
     set(&role, e);
 }
-void iCalProperty::setRsvp (wchar_t* e) {
+void iCalProperty::setRsvp (WCHAR* e) {
     set(&rsvp, e);
 }
-void iCalProperty::setSentBy (wchar_t* e) {
+void iCalProperty::setSentBy (WCHAR* e) {
     set(&sentby, e);
 }
-void iCalProperty::setTzID (wchar_t* e) {
+void iCalProperty::setTzID (WCHAR* e) {
     set(&tzid, e);
 }
-void iCalProperty::setValueType (wchar_t* e) {
+void iCalProperty::setValueType (WCHAR* e) {
     set(&valuetype, e);
 }
 void iCalProperty::setXParam (ArrayList& list) {
@@ -421,11 +421,11 @@ void iCalProperty::setXParam (ArrayList& list) {
         xParams->add(*list[i]);
     }
 }
-void iCalProperty::setValue (wchar_t* e) {
+void iCalProperty::setValue (WCHAR* e) {
     set(&value, e);
 }
 
-void iCalProperty::set(wchar_t** property, wchar_t* v) {
+void iCalProperty::set(WCHAR** property, WCHAR* v) {
     if (*property) {
         delete [] *property;
     }

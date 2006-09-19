@@ -29,10 +29,10 @@ class CTPropParam : public ArrayElement{
     
      // ------------------------------------------------------------ Private data
     private:
-        BCHAR*   propName;
+        char*    propName;
         ArrayList* valEnum;       //String[]
-        BCHAR*   displayName;
-        BCHAR*   dataType;
+        char*    displayName;
+        char*    dataType;
         int size;
         ArrayList* ctParameters; //ContentTypeParameter[]
 
@@ -43,9 +43,9 @@ class CTPropParam : public ArrayElement{
         CTPropParam();
         ~CTPropParam();
 
-        CTPropParam(BCHAR*   propName,
+        CTPropParam(char*    propName,
                     ArrayList* valEnum,
-                    BCHAR*   displayName,
+                    char*    displayName,
                     ArrayList* ctParameters);
 
     
@@ -64,10 +64,10 @@ class CTPropParam : public ArrayElement{
          * @param ctParameters the array of content type parameters - NOT NULL
          *
          */
-        CTPropParam(BCHAR* propName,
-                           BCHAR* dataType,
+        CTPropParam(char*  propName,
+                           char*  dataType,
                            int size,
-                           BCHAR* displayName,
+                           char*  displayName,
                            ArrayList* ctParameters);
         // ---------------------------------------------------------- Public methods
 
@@ -76,14 +76,14 @@ class CTPropParam : public ArrayElement{
          *
          * @return the property name
          */
-        BCHAR* getPropName(BCHAR* retPropName);
+        char*  getPropName(char*  retPropName);
     
         /**
          * Sets the property name
          *
          * @param propName the property name
          */
-        void setPropName(BCHAR* propName);
+        void setPropName(char*  propName);
     
         /**
          * Gets the array of value for the property
@@ -104,28 +104,28 @@ class CTPropParam : public ArrayElement{
          *
          * @return the display name property
          */
-        BCHAR* getDisplayName(BCHAR* retDisplayName);
+        char*  getDisplayName(char*  retDisplayName);
     
         /**
          * Sets the display name of a given content type property
          *
          * @param displayName the display name of a given content type property
          */
-        void setDisplayName(BCHAR* displayName);
+        void setDisplayName(char*  displayName);
     
         /**
          * Gets the data type propeties
          *
          * @return the data type propeties
          */
-        BCHAR* getDataType(BCHAR* retDataType);
+        char*  getDataType(char*  retDataType);
     
         /**
          * Sets the data type of a given content type property
          *
          * @param dataType the data type of a given content type property
          */
-        void setDataType(BCHAR* dataType);
+        void setDataType(char*  dataType);
 
         /**
          * Gets the size propeties

@@ -30,7 +30,7 @@ class Ext : public ArrayElement {
     
      // ------------------------------------------------------------ Private data
     private:
-        BCHAR* xNam;
+        char*  xNam;
         ArrayList* xVal;   // String[]
         void initialize();
 
@@ -52,14 +52,14 @@ class Ext : public ArrayElement {
          *                  element
          *
          */
-        Ext(BCHAR* xNam, ArrayList* xVal);
+        Ext(char*  xNam, ArrayList* xVal);
         
         /**
          * Gets the name of the extension
          *
          * @return the name of the extension
          */
-        BCHAR* getXNam(BCHAR* retXNam);
+        char*  getXNam(char*  retXNam);
 
         /**
          * Sets the name of extension
@@ -67,7 +67,7 @@ class Ext : public ArrayElement {
          * @param xNam the name of extension
          *
          */
-        void setXNam(BCHAR* xNam);
+        void setXNam(char*  xNam);
 
         /**
          * Gets an array of extension values, if exist

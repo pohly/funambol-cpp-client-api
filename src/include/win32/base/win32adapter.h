@@ -36,25 +36,8 @@
 #define T(_x) _x
 #define CHR(_x)  _x
 
-#define BCHAR char
-//typedef char BCHAR;
 typedef wchar_t WCHAR;
 
-#define bsprintf sprintf 
-#define bstrlen strlen
-#define bstrcpy strcpy
-#define bstrcat strcat
-#define bstrstr strstr
-#define bstrchr strchr
-#define bstrrchr strrchr
-#define bscanf scanf
-#define bstrcmp strcmp
-#define bstricmp _stricmp
-#define bstrncmp strncmp
-
-#define bstrncpy strncpy
-#define bstrtol strtol
-#define bstrtoul strtoul
 
 void printMemLeaks();
 
