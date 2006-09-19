@@ -1757,7 +1757,7 @@ Status *SyncManager::processSyncItem(Item* item, const CommandInfo &cmdInfo, Syn
         
         if (iname) {
             if (incomingItem->getKey()) {
-                if(strcmp(incomingItem->getKey(), iname)) {
+                if(wcscmp(incomingItem->getKey(), iname)) {
                     // another item before old one is complete
                     newItem = TRUE;
                 }
