@@ -56,7 +56,7 @@ nobase_pkginclude_HEADERS = \
 # fix header files for public distribution
 $(nobase_pkginclude_HEADERS): % : ../../../src/include/%
 	mkdir -p `dirname $@`
-	sed -e 's/wchar_t/char/g' -e 's/BCHAR/char/g' -e 's/= *NULL/= 0/g' -e 's/__declspec([^)]*)//g' -e 's/__cdecl//g' -e 's/EXTRA_SECTION_[0123456789]*//g' -e 's/BOOL/int/g' -e 's/FALSE/0/g' -e 's/TRUE/1/g' $< >$@
+	sed -e 's/WCHAR/char/g' -e 's/= *NULL/= 0/g' -e 's/__declspec([^)]*)//g' -e 's/__cdecl//g' -e 's/EXTRA_SECTION_[0123456789]*//g' -e 's/BOOL/int/g' -e 's/FALSE/0/g' -e 's/TRUE/1/g' $< >$@
 
 clean : cleancopies
 cleancopies :
