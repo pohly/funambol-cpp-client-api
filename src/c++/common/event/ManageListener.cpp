@@ -59,7 +59,7 @@ ManageListener::~ManageListener() {
 }
 
 
-//Public Methods
+//--------------------- Public Methods ----------------------
 
 /*
  * Get, or create, ManageListener instance
@@ -79,3 +79,102 @@ void ManageListener::dispose() {
 	}
 	instance = NULL;
 }
+
+
+//
+// Get listeners (return internal pointer):
+//
+SyncListener* ManageListener::getSyncListener() {
+    return synclistener;
+}
+TransportListener* ManageListener::getTransportListener() {
+    return transportlistener;
+}
+SyncSourceListener* ManageListener::getSyncSourceListener() {
+    return syncsourcelistener;
+}
+SyncItemListener* ManageListener::getSyncItemListener() {
+    return syncitemlistener;
+}
+SyncStatusListener* ManageListener::getSyncStatusListener() {
+    return syncstatuslistener;
+}
+
+
+
+//
+// Set listeners:
+//
+void ManageListener::setSyncListener(SyncListener* listener) {
+    if(synclistener) {
+        delete synclistener;
+    }
+    synclistener = listener;
+}
+
+void ManageListener::setTransportListener(TransportListener* listener) {
+    if(transportlistener) {
+        delete transportlistener;
+    }
+    transportlistener = listener;
+}
+
+void ManageListener::setSyncSourceListener(SyncSourceListener* listener) {
+    if(syncsourcelistener) {
+        delete syncsourcelistener;
+    }
+    syncsourcelistener = listener;
+}
+
+void ManageListener::setSyncItemListener(SyncItemListener* listener) {
+    if(syncitemlistener) {
+        delete syncitemlistener;
+    }
+    syncitemlistener = listener;
+}
+
+void ManageListener::setSyncStatusListener(SyncStatusListener* listener) {
+    if(syncstatuslistener) {
+        delete syncstatuslistener;
+    }
+    syncstatuslistener = listener;
+}
+
+//
+// Unset listeners:
+//
+void ManageListener::unsetSyncListener() {
+    if(synclistener) {
+        delete synclistener;
+        synclistener = NULL;
+    }
+}
+
+void ManageListener::unsetTransportListener() {
+    if(transportlistener) {
+        delete transportlistener;
+        transportlistener = NULL;
+    }
+}
+
+void ManageListener::unsetSyncSourceListener() {
+    if(syncsourcelistener) {
+        delete syncsourcelistener;
+        syncsourcelistener = NULL;
+    }
+}
+
+void ManageListener::unsetSyncItemListener() {
+    if(syncitemlistener) {
+        delete syncitemlistener;
+        syncitemlistener = NULL;
+    }
+}
+
+void ManageListener::unsetSyncStatusListener() {
+    if(syncstatuslistener) {
+        delete syncstatuslistener;
+        syncstatuslistener = NULL;
+    }
+}
+

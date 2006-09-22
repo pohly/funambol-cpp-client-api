@@ -32,10 +32,8 @@
  */
 class ManageListener {
 
-public:
-    //get and release singleton instance
-    static ManageListener & getInstance();
-    static void dispose();
+private:
+    static ManageListener *instance;
 
     //Registered Listeners : At present only one Listener per event family
     SyncListener*       synclistener;
@@ -44,12 +42,34 @@ public:
     SyncItemListener*   syncitemlistener;
     SyncSourceListener* syncsourcelistener;
 
-private:
-    static ManageListener *instance;
-
     //private constructor & destructor
     ManageListener();
     ~ManageListener();
+
+
+public:
+    //get and release singleton instance
+    static ManageListener & getInstance();
+    static void dispose();
+
+    SyncListener*       getSyncListener();
+    TransportListener*  getTransportListener();
+    SyncSourceListener* getSyncSourceListener();
+    SyncItemListener*   getSyncItemListener();
+    SyncStatusListener* getSyncStatusListener();
+
+    void setSyncListener      (SyncListener* listener);
+    void setTransportListener (TransportListener* listener);
+    void setSyncSourceListener(SyncSourceListener* listener);
+    void setSyncItemListener  (SyncItemListener* listener);
+    void setSyncStatusListener(SyncStatusListener* listener);
+
+    void unsetSyncListener();
+    void unsetTransportListener();
+    void unsetSyncSourceListener();
+    void unsetSyncItemListener();
+    void unsetSyncStatusListener();
+
 };
 
 #endif

@@ -27,7 +27,8 @@
 bool fireSyncEvent(const char* msg, int type) {
 
     ManageListener& manage = ManageListener::getInstance();
-    if(manage.synclistener == NULL) {
+    SyncListener* listener = manage.getSyncListener();
+    if(listener == NULL) {
         return FALSE;
     }
 
@@ -40,22 +41,22 @@ bool fireSyncEvent(const char* msg, int type) {
 
     switch(type) {
       case SYNC_BEGIN:
-          manage.synclistener->syncBegin(event);
+          listener->syncBegin(event);
           break;
       case SYNC_END:
-          manage.synclistener->syncEnd(event);
+          listener->syncEnd(event);
           break;
       case SEND_INITIALIZATION:
-          manage.synclistener->sendInitialization(event);
+          listener->sendInitialization(event);
           break;
       case SEND_MODIFICATION:
-          manage.synclistener->sendModifications(event);
+          listener->sendModifications(event);
           break;
       case SEND_FINALIZATION:
-          manage.synclistener->sendFinalization(event);
+          listener->sendFinalization(event);
           break;
       case SYNC_ERROR:
-          manage.synclistener->syncError(event);
+          listener->syncError(event);
           break;
       default:
           return FALSE;
@@ -71,7 +72,8 @@ bool fireSyncEvent(const char* msg, int type) {
 bool fireTransportEvent(unsigned long size, int type) {
 
     ManageListener& manage = ManageListener::getInstance();
-    if(manage.transportlistener == NULL) {
+    TransportListener* listener = manage.getTransportListener();
+    if(listener == NULL) {
         return FALSE;
     }
 
@@ -81,19 +83,19 @@ bool fireTransportEvent(unsigned long size, int type) {
 
     switch(type) {
         case SEND_DATA_BEGIN:
-          manage.transportlistener->sendDataBegin(event);
+          listener->sendDataBegin(event);
           break;
         case SEND_DATA_END:
-          manage.transportlistener->syncDataEnd(event);
+          listener->syncDataEnd(event);
           break;
         case RECEIVE_DATA_BEGIN:
-          manage.transportlistener->receiveDataBegin(event);
+          listener->receiveDataBegin(event);
           break;
         case RECEIVE_DATA_END:
-          manage.transportlistener->receiveDataEnd(event);
+          listener->receiveDataEnd(event);
           break;
         case DATA_RECEIVED:
-          manage.transportlistener->receivingData(event);
+          listener->receivingData(event);
           break;
         default:
           return FALSE;
@@ -109,7 +111,8 @@ bool fireTransportEvent(unsigned long size, int type) {
 bool fireSyncSourceEvent(const char* sourceURI, SyncMode mode, int type) {
 
     ManageListener& manage = ManageListener::getInstance();
-    if(manage.syncsourcelistener == NULL) {
+    SyncSourceListener* listener = manage.getSyncSourceListener();
+    if(listener == NULL) {
         return FALSE;
     }
 
@@ -119,10 +122,10 @@ bool fireSyncSourceEvent(const char* sourceURI, SyncMode mode, int type) {
 
     switch(type) {
       case SYNC_SOURCE_BEGIN:
-          manage.syncsourcelistener->syncSourceBegin(event);
+          listener->syncSourceBegin(event);
           break;
       case SYNC_SOURCE_END:
-          manage.syncsourcelistener->syncSourceEnd(event);
+          listener->syncSourceEnd(event);
           break;
       default:
           return FALSE;
@@ -138,7 +141,8 @@ bool fireSyncSourceEvent(const char* sourceURI, SyncMode mode, int type) {
 bool fireSyncItemEvent(const char* sourceURI,const WCHAR* itemKey, int type) {
 
     ManageListener& manage = ManageListener::getInstance();
-    if(manage.syncitemlistener == NULL) {
+    SyncItemListener* listener = manage.getSyncItemListener();
+    if(listener == NULL) {
         return FALSE;
     }
 
@@ -148,22 +152,22 @@ bool fireSyncItemEvent(const char* sourceURI,const WCHAR* itemKey, int type) {
 
     switch(type) {
         case ITEM_ADDED_BY_SERVER:
-          manage.syncitemlistener->itemAddedByServer(event);
+          listener->itemAddedByServer(event);
           break;
         case ITEM_DELETED_BY_SERVER:
-          manage.syncitemlistener->itemDeletedByServer(event);
+          listener->itemDeletedByServer(event);
           break;
         case ITEM_UPDATED_BY_SERVER:
-          manage.syncitemlistener->itemUpdatedByServer(event);
+          listener->itemUpdatedByServer(event);
           break;
         case ITEM_ADDED_BY_CLIENT:
-          manage.syncitemlistener->itemAddedByClient(event);
+          listener->itemAddedByClient(event);
           break;
         case ITEM_DELETED_BY_CLIENT:
-          manage.syncitemlistener->itemDeletedByClient(event);
+          listener->itemDeletedByClient(event);
           break;
         case ITEM_UPDATED_BY_CLIENT:
-          manage.syncitemlistener->itemUpdatedByClient(event);
+          listener->itemUpdatedByClient(event);
           break;
         default:
           return FALSE;
@@ -179,7 +183,8 @@ bool fireSyncItemEvent(const char* sourceURI,const WCHAR* itemKey, int type) {
 bool fireSyncStatusEvent(const char* command, int statusCode, const char* uri, const WCHAR* itemKey, int type) {
 
     ManageListener& manage = ManageListener::getInstance();
-    if(manage.syncstatuslistener == NULL) {
+    SyncStatusListener* listener = manage.getSyncStatusListener();
+    if(listener == NULL) {
         return FALSE;
     }
 
@@ -189,10 +194,10 @@ bool fireSyncStatusEvent(const char* command, int statusCode, const char* uri, c
 
     switch(type) {
         case CLIENT_STATUS:
-            manage.syncstatuslistener->statusSending(event);
+            listener->statusSending(event);
             break;
         case SERVER_STATUS:
-            manage.syncstatuslistener->statusReceived(event);
+            listener->statusReceived(event);
             break;
         default:
             return FALSE;

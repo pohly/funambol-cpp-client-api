@@ -25,27 +25,27 @@
 //
 void setSyncListener(SyncListener* listener) {
     ManageListener& manage = ManageListener::getInstance();
-    manage.synclistener = listener;
+    manage.setSyncListener(listener);
 }
 
 void setTransportListener(TransportListener* listener) {
     ManageListener& manage = ManageListener::getInstance();
-    manage.transportlistener = listener;
+    manage.setTransportListener(listener);
 }
 
 void setSyncSourceListener(SyncSourceListener* listener) {
     ManageListener& manage = ManageListener::getInstance();
-    manage.syncsourcelistener = listener;
+    manage.setSyncSourceListener(listener);
 }
 
 void setSyncItemListener(SyncItemListener* listener) {
     ManageListener& manage = ManageListener::getInstance();
-    manage.syncitemlistener = listener;
+    manage.setSyncItemListener(listener);
 }
 
 void setSyncStatusListener(SyncStatusListener* listener) {
     ManageListener& manage = ManageListener::getInstance();
-    manage.syncstatuslistener = listener;
+    manage.setSyncStatusListener(listener);
 }
 
 //
@@ -53,41 +53,26 @@ void setSyncStatusListener(SyncStatusListener* listener) {
 //
 void unsetSyncListener() {
     ManageListener& manage = ManageListener::getInstance();
-    if(manage.synclistener) {
-        delete manage.synclistener;
-        manage.synclistener = NULL;
-    }
+    manage.unsetSyncListener();
 }
 
 void unsetTransportListener() {
     ManageListener& manage = ManageListener::getInstance();
-    if(manage.transportlistener) {
-        delete manage.transportlistener;
-        manage.transportlistener = NULL;
-    }
+    manage.unsetTransportListener();
 }
 
 void unsetSyncSourceListener() {
     ManageListener& manage = ManageListener::getInstance();
-    if(manage.syncsourcelistener) {
-        delete manage.syncsourcelistener;
-        manage.syncsourcelistener = NULL;
-    }
+    manage.unsetSyncSourceListener();
 }
 
 void unsetSyncItemListener() {
     ManageListener& manage = ManageListener::getInstance();
-    if(manage.syncitemlistener) {
-        delete manage.syncitemlistener;
-        manage.syncitemlistener = NULL;
-    }
+    manage.unsetSyncItemListener();
 }
 
 void unsetSyncStatusListener() {
     ManageListener& manage = ManageListener::getInstance();
-    if(manage.syncstatuslistener) {
-        delete manage.syncstatuslistener;
-        manage.syncstatuslistener = NULL;
-    }
+    manage.unsetSyncStatusListener();
 }
 
