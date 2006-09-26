@@ -1880,7 +1880,8 @@ Status *SyncManager::processSyncItem(Item* item, const CommandInfo &cmdInfo, Syn
 
         if (!item->isMoreData()) {
             // sanity check: is the item complete?
-            if (incomingItem->offset == incomingItem->getDataSize()) {
+            // >= is used because for deleted items the server might have sent -1 (Synthesis server does that).
+            if (incomingItem->offset >= incomingItem->getDataSize()) {
                 // Process item ------------------------------------------------------------
                 if ( strcmp(cmdInfo.commandName, ADD) == 0) {  
                     // Fire Sync Item Event - New Item Added by Server
