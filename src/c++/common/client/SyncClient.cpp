@@ -44,7 +44,7 @@ int SyncClient::sync(SyncManagerConfig& config, SyncSource** sources) {
     int ret = 0;
 
     SyncManager syncManager(config);
-
+    
     if ((ret = syncManager.prepareSync(sources))) {
         char dbg[256];
         sprintf(dbg, T("Error in preparing sync: %s"), lastErrorMsg);
@@ -52,11 +52,23 @@ int SyncClient::sync(SyncManagerConfig& config, SyncSource** sources) {
         
         goto finally;
     }
-       
+    
+    ret = continueAfterPrepareSync();
+    if (ret) {
+        LOG.error("SyncClient: continueAfterPrepareSync returns error code: %d.", ret);
+        goto finally;
+    }
+
     if ((ret = syncManager.sync())) {   
         char dbg[256];
         sprintf(dbg, T("Error in syncing: %s"), lastErrorMsg);
         LOG.error(dbg);
+        goto finally;
+    }
+
+    ret = continueAfterSync();
+    if (ret) {
+        LOG.error("SyncClient: continueAfterSync returns error code: %d.", ret);
         goto finally;
     }
 

@@ -138,6 +138,23 @@
         virtual int endSync(SyncSource **source) {
             return ERR_NONE;
         }
+
+        /**
+         * Callback invoked after the prepareSync function.
+         * @return 0 for success, an error code otherwise - an error code stops
+         *         immediately
+         */
+        virtual int continueAfterPrepareSync() {
+            return ERR_NONE;
+        }
+
+        /**
+         * Callback invoked after the sync function.
+         * @return: 0 for success, an error code otherwise
+         */
+        virtual int continueAfterSync() {
+            return ERR_NONE;
+        }
     };
 
 
