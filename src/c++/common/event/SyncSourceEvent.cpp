@@ -20,10 +20,11 @@
 #include "event/SyncSourceEvent.h"
 #include "base/util/utils.h"
 
-SyncSourceEvent::SyncSourceEvent(const char* uri, int mode, int type, unsigned long date) : BaseEvent(type, date) {
+SyncSourceEvent::SyncSourceEvent(const char* uri, const char* sourcename, int mode, int type, unsigned long date) : BaseEvent(type, date) {
 
     sourceURI = stringdup(uri);
     syncMode  = mode;
+    name = stringdup(sourcename); 
 }
 
 SyncSourceEvent::~SyncSourceEvent() {
@@ -31,6 +32,10 @@ SyncSourceEvent::~SyncSourceEvent() {
     if(sourceURI) {
         delete [] sourceURI;
         sourceURI = NULL;
+    }
+    if(name) {
+        delete [] name;
+        name = NULL;
     }
 }
 
@@ -40,4 +45,8 @@ const char* SyncSourceEvent::getSourceURI() const{
 
 int SyncSourceEvent::getSyncMode() {
     return syncMode;
+}
+
+const char* SyncSourceEvent::getSourceName() const{
+    return name;
 }

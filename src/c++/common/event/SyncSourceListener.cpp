@@ -31,3 +31,4 @@ SyncSourceListener::SyncSourceListener() : Listener() {}
 
 void SyncSourceListener::syncSourceBegin(SyncSourceEvent& event) {}
 void SyncSourceListener::syncSourceEnd  (SyncSourceEvent& event) {}
+void SyncSourceListener::syncSourceSyncModeRequested  (SyncSourceEvent& event) {}

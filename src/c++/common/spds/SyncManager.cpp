@@ -644,6 +644,7 @@ int SyncManager::prepareSync(SyncSource** s) {
                 if (isErrorStatus(ret)) {
                     check[count] = 0;   
                 }
+                fireSyncSourceEvent(sources[count]->getConfig().getURI(), sources[count]->getConfig().getName(), sources[count]->getSyncMode(), SYNC_SOURCE_SYNCMODE_REQUESTED);
             }  
        }
     
@@ -719,7 +720,7 @@ BOOL SyncManager::checkForServerChanges(SyncML* syncml, ArrayList &statusList)
         if (sync) {
             // Fire SyncSource event: BEGIN sync of a syncsource (server modifications)
             // (fire only if <sync> tag exist)
-            fireSyncSourceEvent(sources[count]->getConfig().getURI(), sources[count]->getSyncMode(), SYNC_SOURCE_BEGIN);
+            fireSyncSourceEvent(sources[count]->getConfig().getURI(), sources[count]->getConfig().getName(), sources[count]->getSyncMode(), SYNC_SOURCE_BEGIN);
 
             ArrayList* items = sync->getCommands();
             Status* status = syncMLBuilder.prepareSyncStatus(*sources[count], sync);
@@ -772,7 +773,7 @@ BOOL SyncManager::checkForServerChanges(SyncML* syncml, ArrayList &statusList)
                 }
             }
         // Fire SyncSourceEvent: END sync of a syncsource (server modifications)
-        fireSyncSourceEvent(sources[count]->getConfig().getURI(), sources[count]->getSyncMode(), SYNC_SOURCE_END);
+        fireSyncSourceEvent(sources[count]->getConfig().getURI(), sources[count]->getConfig().getName(), sources[count]->getSyncMode(), SYNC_SOURCE_END);
 
         }                               
     } // End for (count = 0; count < sourcesNumber; count ++)
@@ -837,7 +838,7 @@ int SyncManager::sync() {
         iterator++;
 
         // Fire SyncSource event: BEGIN sync of a syncsource (client modifications)
-        fireSyncSourceEvent(sources[count]->getConfig().getURI(), sources[count]->getSyncMode(), SYNC_SOURCE_BEGIN);
+        fireSyncSourceEvent(sources[count]->getConfig().getURI(), sources[count]->getConfig().getName(), sources[count]->getSyncMode(), SYNC_SOURCE_BEGIN);
 
         if ( sources[count]->beginSync() ) {
             // Error from SyncSource
@@ -1319,7 +1320,7 @@ int SyncManager::sync() {
         } while (last == FALSE);
 
         // Fire SyncSourceEvent: END sync of a syncsource (client modifications)
-        fireSyncSourceEvent(sources[count]->getConfig().getURI(), sources[count]->getSyncMode(), SYNC_SOURCE_END);
+        fireSyncSourceEvent(sources[count]->getConfig().getURI(), sources[count]->getConfig().getName(), sources[count]->getSyncMode(), SYNC_SOURCE_END);
 
     } // end for (count = 0; count < sourcesNumber; count ++)
     

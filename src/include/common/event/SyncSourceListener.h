@@ -38,6 +38,9 @@ public:
 
     // listen for the Sync End Event
     virtual void syncSourceEnd(SyncSourceEvent& event);
+    
+    // listen for the SyncMode requested by the server
+    virtual void SyncSourceListener::syncSourceSyncModeRequested  (SyncSourceEvent& event);
 };
 
 #endif

@@ -32,10 +32,14 @@ class SyncSourceEvent : public BaseEvent {
     // Sync Mode
     int syncMode;
 
+    // source name
+    char* name;
+
+
 public:
 
     // Constructor
-    SyncSourceEvent(const char* uri, int mode, int type, unsigned long date);
+    SyncSourceEvent(const char* uri, const char* sourcename, int mode, int type, unsigned long date);
 
     // Destructor
     ~SyncSourceEvent();
@@ -45,5 +49,8 @@ public:
 
     // get the sync mode
     int getSyncMode();
+
+    // get the source name
+    const char* getSourceName() const;
 };
 #endif
