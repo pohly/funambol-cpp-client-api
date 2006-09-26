@@ -32,6 +32,8 @@ MailSyncSourceConfig::MailSyncSourceConfig() {
     downloadAge = 0;
     bodySize    = 0;
     attachSize  = 0;
+
+    schedule = 0;
 }
 
 MailSyncSourceConfig::~MailSyncSourceConfig() {
@@ -102,7 +104,13 @@ int MailSyncSourceConfig::getSent() const {
     return sent;
 }
 
+void MailSyncSourceConfig::setSchedule(int v) {
+    schedule = v;
+}
 
+int MailSyncSourceConfig::getSchedule() const {
+    return schedule;
+}
 
 // ------------------------------------------------------------- Private methods
 
@@ -123,5 +131,6 @@ void MailSyncSourceConfig::assign(const MailSyncSourceConfig& sc) {
     setSent(sc.getSent());
     setTrash(sc.getTrash());
     setDraft(sc.getDraft());
+    setSchedule(sc.getSchedule());
 
 }

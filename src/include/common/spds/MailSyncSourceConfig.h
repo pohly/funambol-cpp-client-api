@@ -64,6 +64,11 @@
         int draft;
         int trash;
         int sent;
+        
+        /*
+        * it represent the time of the schedule
+        */
+        int schedule;
 
     public:
 
@@ -138,6 +143,10 @@
         void setSent(int v) EXTRA_SECTION_02;
 
         int  getSent() const EXTRA_SECTION_02;
+
+        void setSchedule(int v) EXTRA_SECTION_02;
+
+        int  getSchedule() const EXTRA_SECTION_02;
  
 
         /**
