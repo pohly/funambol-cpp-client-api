@@ -32,3 +32,5 @@ SyncSourceListener::SyncSourceListener() : Listener() {}
 void SyncSourceListener::syncSourceBegin(SyncSourceEvent& event) {}
 void SyncSourceListener::syncSourceEnd  (SyncSourceEvent& event) {}
 void SyncSourceListener::syncSourceSyncModeRequested  (SyncSourceEvent& event) {}
+void SyncSourceListener::syncSourceTotalClientItems  (SyncSourceEvent& event) {}
+void SyncSourceListener::syncSourceTotalServerItems  (SyncSourceEvent& event) {}

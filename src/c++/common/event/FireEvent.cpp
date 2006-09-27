@@ -108,7 +108,7 @@ bool fireTransportEvent(unsigned long size, int type) {
 //
 // Fire a SyncSourceEvent
 //
-bool fireSyncSourceEvent(const char* sourceURI, const char* sourceName, SyncMode mode, int type) {
+bool fireSyncSourceEvent(const char* sourceURI, const char* sourceName, SyncMode mode, int data, int type) {
 
     ManageListener& manage = ManageListener::getInstance();
     SyncSourceListener* listener = manage.getSyncSourceListener();
@@ -118,7 +118,7 @@ bool fireSyncSourceEvent(const char* sourceURI, const char* sourceName, SyncMode
 
     unsigned long timestamp = (unsigned long)time(NULL);
     // Create event (object alive in the scope of this function)
-    SyncSourceEvent event(sourceURI, sourceName, mode, type, timestamp);
+    SyncSourceEvent event(sourceURI, sourceName, mode, data, type, timestamp);
 
     switch(type) {
       case SYNC_SOURCE_BEGIN:
@@ -126,9 +126,14 @@ bool fireSyncSourceEvent(const char* sourceURI, const char* sourceName, SyncMode
           break;
       case SYNC_SOURCE_END:
           listener->syncSourceEnd(event);
-    case SYNC_SOURCE_SYNCMODE_REQUESTED:
+      case SYNC_SOURCE_SYNCMODE_REQUESTED:
           listener->syncSourceSyncModeRequested(event);
           break;
+      case SYNC_SOURCE_TOTAL_CLIENT_ITEMS:
+          listener->syncSourceTotalClientItems(event);
+          break;
+      case SYNC_SOURCE_TOTAL_SERVER_ITEMS:
+          listener->syncSourceTotalServerItems(event);
           break;
       default:
           return FALSE;

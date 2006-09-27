@@ -58,11 +58,12 @@ bool fireTransportEvent(unsigned long size, int type);
  * @param sourceURI : the source being synchronized 
  * @param sourceName: the source name being synchronized
  * @param mode      : type of the performed sync
+ * @param data      : data information returned
  * @param type      : the type of event to fire (see event/constants.h)
  * @return          : TRUE if no errors, 
  *                    FALSE if syncsourceListener not instantiated, or 'type' wrong
  */
-bool fireSyncSourceEvent(const char* sourceURI, const char* sourceName, SyncMode mode, int type);
+bool fireSyncSourceEvent(const char* sourceURI, const char* sourceName, SyncMode mode, int data, int type);
 
 /*
  * Fire a SyncItemEvent.
