@@ -39,9 +39,11 @@
 #define RECEIVE_DATA_END            0x0015
 
 //Sync Source Events
-#define SYNC_SOURCE_BEGIN           0x0021
-#define SYNC_SOURCE_END             0x0022
+#define SYNC_SOURCE_BEGIN              0x0021
+#define SYNC_SOURCE_END                0x0022
 #define SYNC_SOURCE_SYNCMODE_REQUESTED 0x0023
+#define SYNC_SOURCE_TOTAL_CLIENT_ITEMS 0x0024
+#define SYNC_SOURCE_TOTAL_SERVER_ITEMS 0x0025
 
 //Sync Item Events
 #define ITEM_ADDED_BY_SERVER        0x0031
