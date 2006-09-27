@@ -56,19 +56,30 @@ inline static bool isAuthFailed(int status) {
 
 /**
  * Return true if there's no more work to do
- *
- * @param check - the array of flags to set
- * @param size - the size of the array
+ * (if no source has a correct status)
  */
-static bool isToExit(int* check, int size) {
-    for (int i = 0; i < size; i++) {
-        if (check[i] == 1) 
+bool SyncManager::isToExit() {
+    for (int i = 0; i < sourcesNumber; i++) {
+        if (sources[i]->getReport()->checkState() == true) 
             return false; 
     }
     return true;
 }
 
-SyncManager::SyncManager(SyncManagerConfig& c) : config(c) {
+/*
+ * Utility to set a SyncSource state + errorCode + errorMsg.
+ */
+void SyncManager::setSourceStateAndError(unsigned int index, SourceState  state,
+                                         unsigned int code,  const char*  msg) {
+
+    sources[index]->getReport()->setState(state);
+    sources[index]->getReport()->setLastErrorCode(code);
+    sources[index]->getReport()->setLastErrorMsg(msg);
+}
+
+
+
+SyncManager::SyncManager(SyncManagerConfig& c, SyncReport& report) : config(c), syncReport(report) {
     initialize();
 }
 
@@ -82,7 +93,6 @@ void SyncManager::initialize() {
     sources        = NULL;
     currentState   = STATE_START;
     mappings       = NULL;
-    check          = NULL;
     sourcesNumber  = 0;
     sources        = NULL;
     count          = 0;
@@ -131,9 +141,6 @@ SyncManager::~SyncManager() {
     }
     if (commands) {
         commands->clear(); delete commands; commands = NULL;
-    }
-    if (check) {
-        delete [] check; check = NULL;
     }
     if (mappings) {
         for (int i=0; i<sourcesNumber; i++) {
@@ -211,13 +218,10 @@ int SyncManager::prepareSync(SyncSource** s) {
     const char* sourceName = NULL;
     
     sourcesNumber = assignSources(s);
-    check = new int[sourcesNumber + 1];
     mappings = new ArrayList*[sourcesNumber + 1];
     for (count = 0; count < sourcesNumber; count++) {
-        check[count] = 1;
         mappings[count] = new ArrayList();
     }
-    check[sourcesNumber] = 0;
 
     // --- INFO
     sprintf(logmsg, MSG_SYNC_URL, syncURL);
@@ -240,7 +244,8 @@ int SyncManager::prepareSync(SyncSource** s) {
             sprintf(lastErrorMsg, ERRMSG_SOURCE_DEFINITION_NOT_FOUND,
                                    _wcc(sources[count]->getName()));
             LOG.debug(lastErrorMsg);
-            check[count] = 0;
+
+            setSourceStateAndError(count, SOURCE_INACTIVE, ERR_SOURCE_DEFINITION_NOT_FOUND, lastErrorMsg);
         }
     }
 
@@ -277,15 +282,15 @@ int SyncManager::prepareSync(SyncSource** s) {
 
     // disable all SyncSources without a preferred sync mode
     for (count = 0; count < sourcesNumber; count ++) {
-        if (!check[count])
+        if (!sources[count]->getReport()->checkState())
             continue;
 
         if (sources[count]->getPreferredSyncMode() == SYNC_NONE) {
-            check[count] = 0;
+            sources[count]->getReport()->setState(SOURCE_INACTIVE);
         }
     }
         
-    if (isToExit(check, sourcesNumber)) {
+    if (isToExit()) {
         if (!ret) {
             // error: no source to sync
             ret = lastErrorCode = ERR_NO_SOURCE_TO_SYNC;
@@ -311,7 +316,7 @@ int SyncManager::prepareSync(SyncSource** s) {
             char anc[DIM_ANCHOR];
             timestamp = (unsigned long)time(NULL);
             for (count = 0; count < sourcesNumber; count ++) {
-                if (!check[count])
+                if (!sources[count]->getReport()->checkState())
                     continue;
                 sources[count]->setNextSync(timestamp);
                 timestampToAnchor(sources[count]->getNextSync(), anc);
@@ -450,7 +455,7 @@ int SyncManager::prepareSync(SyncSource** s) {
         }
 
         for (count = 0; count < sourcesNumber; count ++) {
-            if (!check[count])
+            if (!sources[count]->getReport()->checkState())
                 continue;
 
             int sourceRet = syncMLProcessor.processAlertStatus(*sources[count], syncml, alerts);
@@ -464,12 +469,12 @@ int SyncManager::prepareSync(SyncSource** s) {
 
             if (ret == -1 || ret == 404 || ret == 415) {
                 lastErrorCode = ret;
-                sprintf(logmsg, T("AlertStatus from server %d"), ret);
+                sprintf(logmsg, T("Alert Status from server = %d"), ret);
                 LOG.error(logmsg);
-                check[count] = 0;   
+                setSourceStateAndError(count, SOURCE_ERROR, ret, logmsg);
             }
         } 
-        if (isToExit(check, sourcesNumber)) {
+        if (isToExit()) {
             // error. no source to sync
             ret = lastErrorCode;
             goto finally;
@@ -530,7 +535,7 @@ int SyncManager::prepareSync(SyncSource** s) {
         deleteStatus(&status);
         list = syncMLProcessor.getCommands(syncml->getSyncBody(), ALERT);    
         for (count = 0; count < sourcesNumber; count ++) {
-            if (!check[count])
+            if (!sources[count]->getReport()->checkState())
                 continue;
 
             status = syncMLBuilder.prepareAlertStatus(*sources[count], list, authStatusCode);    
@@ -638,13 +643,15 @@ int SyncManager::prepareSync(SyncSource** s) {
             }
             isClientAuthenticated = TRUE;
             for (count = 0; count < sourcesNumber; count ++) {
-                if (!check[count])
+                if (!sources[count]->getReport()->checkState())
                     continue;
                 ret = syncMLProcessor.processServerAlert(*sources[count], syncml);
                 if (isErrorStatus(ret)) {
-                    check[count] = 0;   
+                    sprintf(logmsg, T("AlertStatus from server %d"), ret);
+                    LOG.error(logmsg);
+                    setSourceStateAndError(count, SOURCE_ERROR, ret, logmsg); 
                 }
-                fireSyncSourceEvent(sources[count]->getConfig().getURI(), sources[count]->getConfig().getName(), sources[count]->getSyncMode(), SYNC_SOURCE_SYNCMODE_REQUESTED);
+                fireSyncSourceEvent(sources[count]->getConfig().getURI(), sources[count]->getConfig().getName(), sources[count]->getSyncMode(), 0, SYNC_SOURCE_SYNCMODE_REQUESTED);
             }  
        }
     
@@ -654,7 +661,7 @@ int SyncManager::prepareSync(SyncSource** s) {
     config.getAccessConfig().setServerNonce(credentialHandler.getServerNonce(NULL));
     config.getDeviceConfig().setDevInfHash(devInfHash);
     
-    if (isToExit(check, sourcesNumber)) {
+    if (isToExit()) {
         // error. no source to sync
         ret = -1;
         goto finally;
@@ -712,7 +719,7 @@ BOOL SyncManager::checkForServerChanges(SyncML* syncml, ArrayList &statusList)
     int oldCount = this->count;
     
     for (count = 0; count < sourcesNumber; count ++) {
-        if (!check [count])
+        if (!sources[count]->getReport()->checkState())
             continue;
 
         Sync* sync = syncMLProcessor.processSyncResponse(*sources[count], syncml);
@@ -720,7 +727,7 @@ BOOL SyncManager::checkForServerChanges(SyncML* syncml, ArrayList &statusList)
         if (sync) {
             // Fire SyncSource event: BEGIN sync of a syncsource (server modifications)
             // (fire only if <sync> tag exist)
-            fireSyncSourceEvent(sources[count]->getConfig().getURI(), sources[count]->getConfig().getName(), sources[count]->getSyncMode(), SYNC_SOURCE_BEGIN);
+            fireSyncSourceEvent(sources[count]->getConfig().getURI(), sources[count]->getConfig().getName(), sources[count]->getSyncMode(), 0, SYNC_SOURCE_BEGIN);
 
             ArrayList* items = sync->getCommands();
             Status* status = syncMLBuilder.prepareSyncStatus(*sources[count], sync);
@@ -773,7 +780,7 @@ BOOL SyncManager::checkForServerChanges(SyncML* syncml, ArrayList &statusList)
                 }
             }
         // Fire SyncSourceEvent: END sync of a syncsource (server modifications)
-        fireSyncSourceEvent(sources[count]->getConfig().getURI(), sources[count]->getConfig().getName(), sources[count]->getSyncMode(), SYNC_SOURCE_END);
+        fireSyncSourceEvent(sources[count]->getConfig().getURI(), sources[count]->getConfig().getName(), sources[count]->getSyncMode(), 0, SYNC_SOURCE_END);
 
         }                               
     } // End for (count = 0; count < sourcesNumber; count ++)
@@ -821,13 +828,13 @@ int SyncManager::sync() {
     // The real number of source to sync
     for (count = 0; count < sourcesNumber; count ++) {
         allItemsList[count] = NULL;
-        if (!check[count])
+        if (!sources[count]->getReport()->checkState())
             continue;
         toSync++;
     }
 
     for (count = 0; count < sourcesNumber; count ++) {
-        if (!check[count])
+        if (!sources[count]->getReport()->checkState())
             continue;
 
         // note: tot == 0 is used to detect when to start iterating over
@@ -838,13 +845,16 @@ int SyncManager::sync() {
         iterator++;
 
         // Fire SyncSource event: BEGIN sync of a syncsource (client modifications)
-        fireSyncSourceEvent(sources[count]->getConfig().getURI(), sources[count]->getConfig().getName(), sources[count]->getSyncMode(), SYNC_SOURCE_BEGIN);
+        fireSyncSourceEvent(sources[count]->getConfig().getURI(), sources[count]->getConfig().getName(), sources[count]->getSyncMode(), 0, SYNC_SOURCE_BEGIN);
 
         if ( sources[count]->beginSync() ) {
             // Error from SyncSource
             lastErrorCode = ERR_UNSPECIFIED;
             ret = lastErrorCode;
-            check[count]=0;            
+            // syncsource should have set its own errors. If not, set default error.
+            if (sources[count]->getReport()->checkState()) {
+                setSourceStateAndError(count, SOURCE_ERROR, ERR_UNSPECIFIED, "Error in begin sync");
+            }
             continue;
         }
         else
@@ -1297,7 +1307,7 @@ int SyncManager::sync() {
                 LOG.error("Error #%d in source %s", itemret, name);
                 delete [] name;
                 // skip the source, and set an error
-                check[count] = 0;
+                setSourceStateAndError(count, SOURCE_ERROR, itemret, "Error in sync status sent by server.");
                 lastErrorCode = itemret;
                 break;
             }
@@ -1320,11 +1330,11 @@ int SyncManager::sync() {
         } while (last == FALSE);
 
         // Fire SyncSourceEvent: END sync of a syncsource (client modifications)
-        fireSyncSourceEvent(sources[count]->getConfig().getURI(), sources[count]->getConfig().getName(), sources[count]->getSyncMode(), SYNC_SOURCE_END);
+        fireSyncSourceEvent(sources[count]->getConfig().getURI(), sources[count]->getConfig().getName(), sources[count]->getSyncMode(), 0, SYNC_SOURCE_END);
 
     } // end for (count = 0; count < sourcesNumber; count ++)
     
-    if (isToExit(check, sourcesNumber)) {
+    if (isToExit()) {
         // error. no source to sync
         ret = lastErrorCode;
         goto finally;
@@ -1349,7 +1359,7 @@ int SyncManager::sync() {
 	    commands->add(*status);
         deleteStatus(&status); 
         for (count = 0; count < sourcesNumber; count ++) {
-            if(!check[count])
+            if(!sources[count]->getReport()->checkState())
                 continue;
             if ((sources[count]->getSyncMode() != SYNC_ONE_WAY_FROM_CLIENT) &&
                 (sources[count]->getSyncMode() != SYNC_REFRESH_FROM_CLIENT))
@@ -1493,7 +1503,7 @@ int SyncManager::endSync() {
 
     // The real number of source to sync
     for (count = 0; count < sourcesNumber; count ++) {
-        if (!check[count])
+        if (!sources[count]->getReport()->checkState())
             continue;
         if ((sources[count]->getSyncMode()) != SYNC_ONE_WAY_FROM_CLIENT &&
             (sources[count]->getSyncMode()) != SYNC_REFRESH_FROM_CLIENT )
@@ -1502,7 +1512,7 @@ int SyncManager::endSync() {
     }
 
     for (count = 0; count < sourcesNumber; count ++) {
-        if (!check[count])
+        if (!sources[count]->getReport()->checkState())
             continue;
 
         if ((sources[count]->getSyncMode()) != SYNC_ONE_WAY_FROM_CLIENT &&
@@ -1631,7 +1641,7 @@ int SyncManager::endSync() {
  finally:
 
     for (count = 0; count < sourcesNumber; count ++) {
-        if (!check[count])
+        if (!sources[count]->getReport()->checkState())
             continue;
    
         commitChanges(*sources[count]);
@@ -1893,6 +1903,8 @@ Status *SyncManager::processSyncItem(Item* item, const CommandInfo &cmdInfo, Syn
 
                     // Fire Sync Status Event: item status from client
                     fireSyncStatusEvent(status->getCmd(), status->getStatusCode(), sources[count]->getConfig().getURI(), incomingItem->getKey(), CLIENT_STATUS);
+                    // Update SyncReport
+                    sources[count]->getReport()->addItem(CLIENT, COMMAND_ADD, incomingItem->getKey(), status->getStatusCode());
 
                     // If the add was successful, set the id mapping
                     if (code >= 200 && code <= 299) {
@@ -1912,6 +1924,8 @@ Status *SyncManager::processSyncItem(Item* item, const CommandInfo &cmdInfo, Syn
             
                     // Fire Sync Status Event: item status from client
                     fireSyncStatusEvent(status->getCmd(), status->getStatusCode(), sources[count]->getConfig().getURI(), incomingItem->getKey(), CLIENT_STATUS);
+                    // Update SyncReport
+                    sources[count]->getReport()->addItem(CLIENT, COMMAND_REPLACE, incomingItem->getKey(), status->getStatusCode());
                 }
                 else if (strcmp(cmdInfo.commandName, DEL) == 0) {
                     // Fire Sync Item Event - Item Deleted by Server
@@ -1923,6 +1937,8 @@ Status *SyncManager::processSyncItem(Item* item, const CommandInfo &cmdInfo, Syn
 	    
                     // Fire Sync Status Event: item status from client
                     fireSyncStatusEvent(status->getCmd(), status->getStatusCode(), sources[count]->getConfig().getURI(), incomingItem->getKey(), CLIENT_STATUS);
+                    // Update SyncReport
+                    sources[count]->getReport()->addItem(CLIENT, COMMAND_DELETE, incomingItem->getKey(), status->getStatusCode());
                 }
 
                 delete incomingItem;
