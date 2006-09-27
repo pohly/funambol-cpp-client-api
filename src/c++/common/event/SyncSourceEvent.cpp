@@ -25,7 +25,7 @@ SyncSourceEvent::SyncSourceEvent(const char* uri, const char* sourcename, int mo
     sourceURI = stringdup(uri);
     syncMode  = mode;
     name = stringdup(sourcename); 
-    data = 0;
+    this.data = data;
 }
 
 SyncSourceEvent::~SyncSourceEvent() {
