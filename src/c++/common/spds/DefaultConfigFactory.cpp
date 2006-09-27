@@ -56,7 +56,7 @@ AccessConfig* DefaultConfigFactory::getAccessConfig() {
     ac->setMaxModPerMsg         (100);
     ac->setReadBufferSize       (0);
     ac->setUserAgent            (T(""));
-    ac->setCheckConn            (FALSE);
+    ac->setCheckConn            (TRUE);
     ac->setResponseTimeout      (0);
     ac->setEncryption           (FALSE);
 
