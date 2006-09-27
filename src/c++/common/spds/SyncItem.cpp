@@ -133,6 +133,12 @@ void* SyncItem::setData(const void* itemData, long dataSize) {
         size--;
     }
     
+    // Not yet set.
+    if (size == -1) {
+        data = NULL;
+        return data;
+    }
+
     data = new char[size + 1];
     if (data == NULL) {
         lastErrorCode = ERR_NOT_ENOUGH_MEMORY;
