@@ -43,8 +43,19 @@ int SyncClient::sync(SyncManagerConfig& config, SyncSource** sources) {
     resetError();
     int ret = 0;
 
-    SyncManager syncManager(config);
-    
+    // Synchronization report.
+    syncReport.setSyncSourceReports(config);
+    // Set source report on each SyncSource (assign pointer)
+    int i=0;
+    while (sources[i]) {
+        char* name = toMultibyte(sources[i]->getName());
+        sources[i]->setReport(syncReport.getSyncSourceReport(name));
+        delete[] name;
+        i++;
+    }
+
+    SyncManager syncManager(config, syncReport);
+
     if ((ret = syncManager.prepareSync(sources))) {
         char dbg[256];
         sprintf(dbg, T("Error in preparing sync: %s"), lastErrorMsg);
@@ -79,7 +90,11 @@ int SyncClient::sync(SyncManagerConfig& config, SyncSource** sources) {
         goto finally;
     }
        
-  finally:
+finally:
+    
+    // Update SyncReport with last error from sync
+    syncReport.setLastErrorCode(lastErrorCode);
+    syncReport.setLastErrorMsg(lastErrorMsg);
 
     return ret;
 }
@@ -188,5 +203,10 @@ finally:
     }
 
     return ret;
+}
+
+
+SyncReport* SyncClient::getSyncReport() {
+    return &syncReport;
 }
 

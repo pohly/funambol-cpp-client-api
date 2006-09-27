@@ -27,6 +27,7 @@
     #include "syncml/core/TagNames.h"
     #include "syncml/core/ObjectDel.h"
     #include "syncml/parser/Parser.h"
+    #include "spds/SyncReport.h"
 
     /*
      * This class is responsible for the processing of the incoming messages.

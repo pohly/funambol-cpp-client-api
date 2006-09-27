@@ -23,7 +23,8 @@
 #include "spds/spdsutils.h"
 
 SyncSource::SyncSource(const WCHAR* sourceName, const SyncSourceConfig *sc) {
-    name = NULL;
+    name   = NULL;
+    report = NULL;
 
     if (sc) {
         config.assign(*sc);
@@ -59,6 +60,7 @@ SyncSource::~SyncSource() {
     if (filter) {
        delete filter;
     }
+    report = NULL;
 }
 
 
@@ -73,6 +75,19 @@ void SyncSource::setConfig(const SyncSourceConfig& sc) {
     config.assign(sc);
     setPreferredSyncMode(syncModeCode(sc.getSync()));
 }
+
+
+// Return pointer to report object
+SyncSourceReport* SyncSource::getReport() {
+    return report;
+}
+
+// Set the report pointer with the given one 
+// (no copy, only assign the pointer to the external one)
+void SyncSource::setReport(SyncSourceReport* sr) {
+    report = sr;
+}
+
 
 /*
  * Sets the synchronization mode required for the

@@ -211,6 +211,8 @@ int SyncMLProcessor::processItemStatus(SyncSource& source, SyncBody* syncBody) {
                         WCHAR *uri = toWideChar(itemSource->getLocURI());
                         // Fire Sync Status Event: item status from server
                         fireSyncStatusEvent(s->getCmd(), s->getStatusCode(), source.getConfig().getURI(), uri, SERVER_STATUS);
+                        // Update SyncReport
+                        source.getReport()->addItem(SERVER, s->getCmd(), uri, s->getStatusCode());
                         
                         source.setItemStatus(uri, val);
                         delete [] uri;
@@ -229,6 +231,8 @@ int SyncMLProcessor::processItemStatus(SyncSource& source, SyncBody* syncBody) {
                     WCHAR *srcref = toWideChar(sourceRef->getValue());
 			        // Fire Sync Status Event: item status from server
                     fireSyncStatusEvent(s->getCmd(), s->getStatusCode(), source.getConfig().getURI(), srcref, SERVER_STATUS);
+                    // Update SyncReport
+                    source.getReport()->addItem(SERVER, s->getCmd(), srcref, s->getStatusCode());
 
                     source.setItemStatus(srcref, val);
                     delete [] srcref;

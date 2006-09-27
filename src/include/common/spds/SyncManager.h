@@ -28,6 +28,8 @@
 #include "spds/SyncMLProcessor.h"
 #include "spds/CredentialHandler.h"
 #include "spds/CredentialHandler.h"
+#include "spds/SyncReport.h"
+
 
 typedef enum {
                 STATE_START        = 0,
@@ -58,8 +60,9 @@ class SyncManager {
          * have to remain valid while this sync manager exists.
          *
          * @param config     required configuration
+         * @param report     sync report reference to store sync results
          */
-        SyncManager(SyncManagerConfig& config) EXTRA_SECTION_01;
+        SyncManager(SyncManagerConfig& c, SyncReport& report) EXTRA_SECTION_01;
         ~SyncManager() EXTRA_SECTION_01;
 
         int prepareSync(SyncSource** sources) EXTRA_SECTION_01;
@@ -93,6 +96,7 @@ class SyncManager {
 
         DevInf* devInf;
         SyncManagerConfig& config;
+        SyncReport& syncReport;
 
         CredentialHandler credentialHandler;
         SyncMLBuilder syncMLBuilder;
@@ -104,7 +108,9 @@ class SyncManager {
         ArrayList* commands;
         ArrayList** mappings;
 
-        int* check;
+        // Now using sources[i].checkState() method
+        //int* check;
+
         int  sourcesNumber;
         int  count;
         
@@ -152,6 +158,9 @@ class SyncManager {
         BOOL checkForServerChanges(SyncML* syncml, ArrayList &statusList) EXTRA_SECTION_01;
 
         const char*  getUserAgent(SyncManagerConfig& config) EXTRA_SECTION_01;
+        bool isToExit();
+        void setSourceStateAndError(unsigned int index, SourceState  state,
+                                    unsigned int code,  const char*  msg);
 };
 
 #endif

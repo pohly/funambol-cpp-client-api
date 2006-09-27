@@ -24,6 +24,7 @@
     #include "spds/SyncManagerConfig.h"
     #include "spds/SyncSource.h"
     #include "spds/constants.h"
+    #include "spds/SyncReport.h"
 
     /**
      * This class wraps the common operations executed by a typical
@@ -79,6 +80,13 @@
          * @return 0 on success, an error otherwise
          */
         virtual int sync(SyncManagerConfig& config, char** sourceNames = NULL);
+
+        /*
+         * Returns a pointer to the internal syncReport.
+         * Used to get detailed results on the executed synchronization.
+         * Must be called after sync() method.
+         */
+        SyncReport* getSyncReport();
 
 
       protected:
@@ -155,6 +163,10 @@
         virtual int continueAfterSync() {
             return ERR_NONE;
         }
+        
+        // The report of the synchronization process.
+        // Sources reports are initializated during sync(sources**) call.
+        SyncReport syncReport;
     };
 
 

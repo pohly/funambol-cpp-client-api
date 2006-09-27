@@ -27,6 +27,7 @@
 #include "spds/SyncItem.h"
 #include "spds/SyncStatus.h"
 #include "spds/SyncSourceConfig.h"
+#include "spds/SyncSourceReport.h"
 
 class SyncSource : public ArrayElement {
 
@@ -45,6 +46,7 @@ private:
 
 protected:
     SyncSourceConfig config;
+    SyncSourceReport* report;
 
 public:
 
@@ -52,9 +54,9 @@ public:
      * Constructor: create a SyncSource with the specified name
      *
      * @param name   the name of the SyncSource
-     * @param sc     optional configuration for the sync source
+     * @param sc     configuration for the sync source
      */
-    SyncSource(const WCHAR* name, const SyncSourceConfig* sc = NULL) EXTRA_SECTION_01;
+    SyncSource(const WCHAR* name, const SyncSourceConfig* sc) EXTRA_SECTION_01;
 
     // Destructor
     virtual ~SyncSource() EXTRA_SECTION_01;
@@ -95,6 +97,14 @@ public:
     }
     // initialize sync source from complete configuration
     void setConfig(const SyncSourceConfig& sc) EXTRA_SECTION_01;
+
+
+    // Return pointer to report object
+    SyncSourceReport* getReport() EXTRA_SECTION_01;
+
+    // Set the report pointer with the given one 
+    // (no copy, only assign the pointer to the external one)
+    void setReport(SyncSourceReport* sr) EXTRA_SECTION_01;
 
     /*
      * Get & Set the preferred synchronization mode for the SyncSource.

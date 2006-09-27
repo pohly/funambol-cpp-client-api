@@ -1,0 +1,242 @@
+/*
+ * Copyright (C) 2003-2006 Funambol
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ */
+
+
+#include "spds/SyncSourceReport.h"
+#include "spds/SyncReport.h"
+#include "spds/ItemReport.h"
+
+
+//--------------------------------------------------- Constructor & Destructor
+SyncSourceReport::SyncSourceReport(const char* name) {
+
+    lastErrorCode  = ERR_NONE;
+    lastErrorMsg   = NULL;
+    sourceName     = NULL;
+    state          = SOURCE_ACTIVE;
+
+    if (name) {
+        setSourceName(name);
+    }
+
+    clientAddItems = new ArrayList();
+    clientModItems = new ArrayList();
+    clientDelItems = new ArrayList();
+
+    serverAddItems = new ArrayList();
+    serverModItems = new ArrayList();
+    serverDelItems = new ArrayList();
+}
+
+SyncSourceReport::SyncSourceReport(SyncSourceReport& ssr) {
+    assign(ssr);
+}
+
+SyncSourceReport::~SyncSourceReport() {
+
+    if (lastErrorMsg) {
+        delete [] lastErrorMsg;
+        lastErrorMsg = NULL;
+    }
+    if (sourceName) {
+        delete [] sourceName;
+        sourceName = NULL;
+    }
+
+    clientAddItems->clear();
+    clientModItems->clear();
+    clientDelItems->clear();
+
+    serverAddItems->clear();
+    serverModItems->clear();
+    serverDelItems->clear();
+}
+
+
+
+//------------------------------------------------------------- Public Methods
+
+const int SyncSourceReport::getLastErrorCode() const {
+    return lastErrorCode;
+}
+void SyncSourceReport::setLastErrorCode(const int code) {
+    lastErrorCode = code;
+
+    if (state == SOURCE_ACTIVE) {
+        state = SOURCE_ERROR;
+    }
+}
+
+const SourceState SyncSourceReport::getState() const {
+    return state;
+}
+void SyncSourceReport::setState(const SourceState s) {
+    state = s;
+}
+
+const char* SyncSourceReport::getLastErrorMsg() const {
+    return lastErrorMsg;
+}
+void SyncSourceReport::setLastErrorMsg(const char* msg) {
+    if (lastErrorMsg) {
+        delete [] lastErrorMsg;
+        lastErrorMsg = NULL;
+    }
+    lastErrorMsg = stringdup(msg);
+}
+
+const char* SyncSourceReport::getSourceName() const {
+    return sourceName;
+}
+void SyncSourceReport::setSourceName(const char* name) {
+    if (sourceName) {
+        delete [] sourceName;
+        sourceName = NULL;
+    }
+    sourceName = stringdup(name);
+}
+
+
+bool SyncSourceReport::checkState() {
+    if (state == SOURCE_ACTIVE) { 
+        return true;
+    }
+    return false;
+}
+
+
+
+ItemReport* SyncSourceReport::getItemReport(const char* target, const char* command, unsigned int index) {
+
+    ArrayList* list = getList(target, command);
+    return (ItemReport*)list->get(index);
+}
+
+
+void SyncSourceReport::addItem(const char* target, const char* command, const WCHAR* ID, const int status) {
+
+    // Create the ItemReport element
+    ItemReport element(ID, status);
+
+    // Add element in the corresponding list
+    ArrayList* list = getList(target, command);
+    list->add(element);
+}
+
+
+int SyncSourceReport::getItemReportCount(const char* target, const char* command) {
+    ArrayList* list = getList(target, command);
+    return list->size();
+}
+
+int SyncSourceReport::getItemReportSuccessfulCount(const char* target, const char* command) {
+    
+    ArrayList* list = getList(target, command);
+    ItemReport* e;
+
+    // Scan for succesful codes
+    int good = 0;
+    if (list->size() > 0) {
+        e = (ItemReport*)list->front();
+        if ( isSuccessful(e->getStatus()) ) good++;
+        for (int i=1; i<list->size(); i++) {
+            e = (ItemReport*)list->next();
+            if ( isSuccessful(e->getStatus()) ) good++;
+        }
+    }
+    return good;
+}
+
+
+int SyncSourceReport::getItemReportFailedCount(const char* target, const char* command) {
+    
+    ArrayList* list = getList(target, command);
+    if (list->size() == 0) {
+        return 0;
+    }
+    int good = getItemReportSuccessfulCount(target, command);
+    return (list->size() - good);
+}
+
+
+
+ArrayList* SyncSourceReport::getList(const char* target, const char* command) const {
+    ArrayList* ret;
+
+    if (!strcmp(target, CLIENT)) {
+        if (!strcmp(command, COMMAND_ADD)) {
+            ret = clientAddItems;
+        }
+        else if (!strcmp(command, COMMAND_REPLACE)) {
+            ret = clientModItems;
+        }
+        else if (!strcmp(command, COMMAND_DELETE)) {
+            ret = clientDelItems;
+        }
+        else {
+            // error
+        }
+    }
+    else if (!strcmp(target, SERVER)) {
+        if (!strcmp(command, COMMAND_ADD)) {
+            ret = serverAddItems;
+        }
+        else if (!strcmp(command, COMMAND_REPLACE)) {
+            ret = serverModItems;
+        }
+        else if (!strcmp(command, COMMAND_DELETE)) {
+            ret = serverDelItems;
+        }
+        else {
+            // error
+        }
+    }
+    else {
+        // error
+    }
+
+    return ret;
+}
+
+
+
+void SyncSourceReport::assign(const SyncSourceReport& ssr) {
+
+    setLastErrorCode(ssr.getLastErrorCode());
+    setLastErrorMsg (ssr.getLastErrorMsg ());
+    setSourceName   (ssr.getSourceName   ());
+    setState        (ssr.getState        ());
+
+    clientAddItems = ssr.getList(CLIENT, COMMAND_ADD);
+    clientModItems = ssr.getList(CLIENT, COMMAND_REPLACE);
+    clientDelItems = ssr.getList(CLIENT, COMMAND_DELETE);
+
+    serverAddItems = ssr.getList(SERVER, COMMAND_ADD);
+    serverModItems = ssr.getList(SERVER, COMMAND_REPLACE);
+    serverDelItems = ssr.getList(SERVER, COMMAND_DELETE);
+}
+
+
+//------------------------------------------------------------- Private Methods
+
+bool SyncSourceReport::isSuccessful(const int status) {
+    if (status >= 200 && status <= 299) 
+        return true;
+    else 
+        return false;
+}
