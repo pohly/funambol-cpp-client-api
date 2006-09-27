@@ -268,6 +268,15 @@ Sync* SyncMLProcessor::processSyncResponse(SyncSource& source, SyncML* syncml) {
         sync = (Sync*)a;
         const char *locuri = ((Target*)(sync->getTarget()))->getLocURI();
         if (strcmp(locuri, _wcc(source.getName())) == 0) {                   
+            
+            //
+            // To handle the NumberOfChanges. The default is -1 that means the server doesn't send
+            // any tag <NumberOfChanges>. Whit value >= 0 the value is correct
+            //
+    
+            long noc = sync->getNumberOfChanges();
+            fireSyncSourceEvent(source.getConfig().getURI(), source.getConfig().getName(), source.getSyncMode(), noc, SYNC_SOURCE_TOTAL_SERVER_ITEMS);
+
             break;
         }  
         sync = NULL;
