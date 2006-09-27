@@ -759,7 +759,7 @@ Sync* Parser::getSync(char* xml) {
     Target* target          = NULL;
     Source* source          = NULL;
     ArrayList* commands     = new ArrayList();   
-    long numberOfChanges    = 0;
+    long numberOfChanges    = -1;
     char* numberOfChangesW = NULL;
 
     unsigned int pos = 0;
