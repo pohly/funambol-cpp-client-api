@@ -199,7 +199,7 @@ char*  PPC2003TransportAgent::sendMessage(const char*  msg) {
     connection = NULL,
     request    = NULL;
 
-    DWORD flags = INTERNET_FLAG_RELOAD | INTERNET_FLAG_NO_CACHE_WRITE | INTERNET_FLAG_NO_COOKIES;
+    DWORD flags = INTERNET_FLAG_RELOAD | INTERNET_FLAG_NO_CACHE_WRITE | INTERNET_FLAG_NO_COOKIES | INTERNET_FLAG_KEEP_CONNECTION;
 
 	LPCWSTR acceptTypes[2] = {TEXT("*/*"), NULL};
 
