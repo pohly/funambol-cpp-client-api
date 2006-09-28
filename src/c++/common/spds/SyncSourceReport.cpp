@@ -25,10 +25,7 @@
 //--------------------------------------------------- Constructor & Destructor
 SyncSourceReport::SyncSourceReport(const char* name) {
 
-    lastErrorCode  = ERR_NONE;
-    lastErrorMsg   = NULL;
-    sourceName     = NULL;
-    state          = SOURCE_ACTIVE;
+    initialize();
 
     if (name) {
         setSourceName(name);
@@ -44,6 +41,7 @@ SyncSourceReport::SyncSourceReport(const char* name) {
 }
 
 SyncSourceReport::SyncSourceReport(SyncSourceReport& ssr) {
+    initialize();
     assign(ssr);
 }
 
@@ -231,6 +229,27 @@ ArrayList* SyncSourceReport::getList(const char* target, const char* command) co
 }
 
 
+//------------------------------------------------------------- Private Methods
+
+bool SyncSourceReport::isSuccessful(const int status) {
+    if (status >= 200 && status <= 299) 
+        return true;
+    else 
+        return false;
+}
+
+void SyncSourceReport::initialize() {
+    lastErrorCode  = ERR_NONE;
+    lastErrorMsg   = NULL;
+    sourceName     = NULL;
+    state          = SOURCE_ACTIVE;
+    clientAddItems = NULL;
+    clientModItems = NULL;
+    clientDelItems = NULL;
+    serverAddItems = NULL;
+    serverModItems = NULL;
+    serverDelItems = NULL;
+}
 
 void SyncSourceReport::assign(const SyncSourceReport& ssr) {
 
@@ -239,21 +258,11 @@ void SyncSourceReport::assign(const SyncSourceReport& ssr) {
     setSourceName   (ssr.getSourceName   ());
     setState        (ssr.getState        ());
 
-    clientAddItems = ssr.getList(CLIENT, COMMAND_ADD);
-    clientModItems = ssr.getList(CLIENT, COMMAND_REPLACE);
-    clientDelItems = ssr.getList(CLIENT, COMMAND_DELETE);
+    clientAddItems = ssr.getList(CLIENT, COMMAND_ADD)->clone();
+    clientModItems = ssr.getList(CLIENT, COMMAND_REPLACE)->clone();
+    clientDelItems = ssr.getList(CLIENT, COMMAND_DELETE)->clone();
 
-    serverAddItems = ssr.getList(SERVER, COMMAND_ADD);
-    serverModItems = ssr.getList(SERVER, COMMAND_REPLACE);
-    serverDelItems = ssr.getList(SERVER, COMMAND_DELETE);
-}
-
-
-//------------------------------------------------------------- Private Methods
-
-bool SyncSourceReport::isSuccessful(const int status) {
-    if (status >= 200 && status <= 299) 
-        return true;
-    else 
-        return false;
+    serverAddItems = ssr.getList(SERVER, COMMAND_ADD)->clone();
+    serverModItems = ssr.getList(SERVER, COMMAND_REPLACE)->clone();
+    serverDelItems = ssr.getList(SERVER, COMMAND_DELETE)->clone();
 }

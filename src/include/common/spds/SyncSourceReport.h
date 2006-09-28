@@ -57,6 +57,14 @@ private:
     // Return true if status is [200 <-> 299] (successful)
     bool isSuccessful(const int status);
 
+    // Initialize members.
+    void initialize();
+
+    /*
+     * Assign this object with the given SyncReport
+     * @param sr the syncReport object
+     */
+    void assign(const SyncSourceReport& ssr);
 
 public:
     SyncSourceReport(const char* name = NULL);
@@ -95,11 +103,6 @@ public:
     // To switch on the right list, based on target and command.
     ArrayList* getList(const char* target, const char* command) const;
 
-    /*
-     * Initialize this object with the given SyncSourceReport
-     * @param ssr the SyncSourceReport object
-     */
-    void assign(const SyncSourceReport& ssr);
 
     /*
      * Assign operator

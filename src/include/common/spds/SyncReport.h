@@ -46,6 +46,16 @@ private:
     SyncSourceReport* ssReport;
     unsigned int ssReportCount;
 
+
+    // Initialize members.
+    void initialize();
+
+    /*
+     * Assign this object with the given SyncReport
+     * @param sr the syncReport object
+     */
+    void assign(const SyncReport& sr);
+
 public:
     SyncReport();
     SyncReport(SyncReport& sr);
@@ -66,12 +76,6 @@ public:
     // Create ssReport array from config.
     void setSyncSourceReports(SyncManagerConfig& config);
     
-
-    /*
-     * Initialize this object with the given SyncReport
-     * @param sr the syncReport object
-     */
-    void assign(const SyncReport& sr);
 
     /*
      * Assign operator

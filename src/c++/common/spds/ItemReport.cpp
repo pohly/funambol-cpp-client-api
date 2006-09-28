@@ -33,6 +33,9 @@ ItemReport::ItemReport(const WCHAR* luid, const int statusCode) {
 }
 
 ItemReport::ItemReport(ItemReport& ir) {
+    status = 0;
+    id  = NULL;
+
     assign(ir);
 }
 
@@ -70,7 +73,7 @@ ArrayElement* ItemReport::clone() {
     return it;
 }
 
-
+//------------------------------------------------------------- Private Methods
 void ItemReport::assign(const ItemReport& ir) {
     setId    (ir.getId    ());
     setStatus(ir.getStatus());

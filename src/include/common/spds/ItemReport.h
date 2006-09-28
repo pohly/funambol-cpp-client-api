@@ -33,6 +33,12 @@ private:
     int  status;
     WCHAR* id;
 
+    /*
+     * Assign this object with the given ItemReport
+     * @param ir: the ItemReport object
+     */
+    void assign(const ItemReport& ir);
+
 public:
     ItemReport();
     ItemReport(ItemReport& ir);
@@ -47,12 +53,6 @@ public:
 
     ArrayElement* clone();
 
-
-    /*
-     * Initialize this object with the given ItemReport
-     * @param ir: the ItemReport object
-     */
-    void assign(const ItemReport& ir);
 
     /*
      * Assign operator

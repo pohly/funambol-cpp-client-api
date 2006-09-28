@@ -22,21 +22,16 @@
 //--------------------------------------------------- Constructor & Destructor
 
 SyncReport::SyncReport() {
-    lastErrorCode  = ERR_NONE;
-    lastErrorMsg   = NULL;
-    ssReportCount  = 0;
-    ssReport       = NULL;
+    initialize();
 }
 
 SyncReport::SyncReport(SyncReport& sr) {
+    initialize();
     assign(sr);
 }
 
 SyncReport::SyncReport(SyncManagerConfig& config) {
-
-    lastErrorCode  = ERR_NONE;
-    lastErrorMsg   = NULL;
-
+    initialize();
     setSyncSourceReports(config);
 }
 
@@ -51,6 +46,7 @@ SyncReport::~SyncReport() {
         ssReport = NULL;
     }
 }
+
 
 //------------------------------------------------------------- Public Methods
 
@@ -111,6 +107,16 @@ SyncSourceReport* SyncReport::getSyncSourceReport(unsigned int index) const {
 
 const unsigned int SyncReport::getSyncSourceReportCount() const {
     return ssReportCount;
+}
+
+
+//------------------------------------------------------------- Private Methods
+
+void SyncReport::initialize() {
+    lastErrorCode  = ERR_NONE;
+    lastErrorMsg   = NULL;
+    ssReportCount  = 0;
+    ssReport       = NULL;
 }
 
 void SyncReport::assign(const SyncReport& sr) {
