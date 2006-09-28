@@ -926,6 +926,10 @@ int SyncManager::sync() {
                             if (tot == 0) {
                                 syncItem = sources[count]->getFirstItem();                        
                                 syncItemOffset = 0;
+                                if (syncItem) {
+                                    // Fire Sync Item Event - Item sent as Updated
+                                    fireSyncItemEvent(sources[count]->getConfig().getURI(), syncItem->getKey(), ITEM_UPDATED_BY_CLIENT);
+                                }
                             }
                         }
                         tot = 0;
@@ -933,6 +937,10 @@ int SyncManager::sync() {
                             if (syncItem == NULL) {
                                 syncItem = sources[count]->getNextItem();
                                 syncItemOffset = 0;
+                                if (syncItem) {
+                                    // Fire Sync Item Event - Item sent as Updated
+                                    fireSyncItemEvent(sources[count]->getConfig().getURI(), syncItem->getKey(), ITEM_UPDATED_BY_CLIENT);
+                                }
                             }
 
                             if (tot &&
@@ -997,6 +1005,10 @@ int SyncManager::sync() {
                             if (tot == 0) {                    
                                 syncItem = sources[count]->getFirstItem();
                                 syncItemOffset = 0;
+                                if (syncItem) {
+                                    // Fire Sync Item Event - Item sent as Updated
+                                    fireSyncItemEvent(sources[count]->getConfig().getURI(), syncItem->getKey(), ITEM_UPDATED_BY_CLIENT);
+                                }
                             }
                         }
                         tot = 0;
@@ -1004,6 +1016,10 @@ int SyncManager::sync() {
                             if (syncItem == NULL) {
                                 syncItem = sources[count]->getNextItem();                  
                                 syncItemOffset = 0;
+                                if (syncItem) {
+                                    // Fire Sync Item Event - Item sent as Updated
+                                    fireSyncItemEvent(sources[count]->getConfig().getURI(), syncItem->getKey(), ITEM_UPDATED_BY_CLIENT);
+                                }
                             }
                             
                             if (tot &&
