@@ -54,7 +54,7 @@ void ItemReport::setId(const WCHAR* v) {
         id = NULL;
     }
 
-	id = _wcsdup(v);
+	id = wstrdup(v);
 }
 
 const int ItemReport::getStatus() const {
