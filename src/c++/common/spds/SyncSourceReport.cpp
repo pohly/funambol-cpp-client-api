@@ -124,6 +124,10 @@ bool SyncSourceReport::checkState() {
 ItemReport* SyncSourceReport::getItemReport(const char* target, const char* command, unsigned int index) {
 
     ArrayList* list = getList(target, command);
+
+    if (index<0 || index >= list->size()) {
+        return NULL;
+    }
     return (ItemReport*)list->get(index);
 }
 
@@ -135,6 +139,19 @@ void SyncSourceReport::addItem(const char* target, const char* command, const WC
 
     // Add element in the corresponding list
     ArrayList* list = getList(target, command);
+
+
+    // If the element is already present -> no add, only replace status with the new one.
+    ItemReport* ie = NULL;
+    for (unsigned int i=0; i<list->size(); i++) {
+        ie = getItemReport(target, command, i);
+        if ( !wcscmp(element.getId(), ie->getId()) ) {
+            ie->setStatus(status);
+            return;
+        }
+    }
+    
+    // If here, element is new -> add.
     list->add(element);
 }
 
