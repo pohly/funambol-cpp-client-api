@@ -141,6 +141,7 @@ SOURCES_SPDS = \
     DESEncoder.cpp \
     EmailData.cpp \
     FileData.cpp \
+    ItemReport.cpp \
     MailMessage.cpp \
     SyncManagerConfig.cpp \
     SyncItem.cpp \
@@ -149,8 +150,10 @@ SOURCES_SPDS = \
     SyncMLProcessor.cpp \
     SyncManager.cpp \
     SyncMap.cpp \
+    SyncReport.cpp \
     SyncSource.cpp \
     SyncSourceConfig.cpp \
+    SyncSourceReport.cpp \
     spdsutils.cpp \
     constants.cpp
 

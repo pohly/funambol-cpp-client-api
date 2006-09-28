@@ -17,6 +17,7 @@ nobase_pkginclude_HEADERS = \
     common/base/util/WString.h \
     common/client/DMTClientConfig.h \
     common/client/SyncClient.h \
+    common/event/constants.h \
     common/filter/Clause.h \
     common/filter/LogicalClause.h \
     common/filter/SourceFilter.h \
@@ -32,6 +33,7 @@ nobase_pkginclude_HEADERS = \
     common/spdm/DMTree.h \
     common/spdm/ManagementNode.h \
     common/spds/CredentialHandler.h \
+    common/spds/ItemReport.h \
     common/spds/SyncSourceConfig.h \
     common/spds/SyncItem.h \
     common/spds/SyncItemStatus.h \
@@ -40,7 +42,9 @@ nobase_pkginclude_HEADERS = \
     common/spds/SyncManager.h \
     common/spds/SyncManagerConfig.h \
     common/spds/SyncMap.h \
+    common/spds/SyncReport.h \
     common/spds/SyncSource.h \
+    common/spds/SyncSourceReport.h \
     common/spds/SyncStatus.h \
     common/spds/spdsutils.h \
     common/spds/constants.h \
