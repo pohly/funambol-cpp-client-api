@@ -31,16 +31,16 @@ class ItemReport : public ArrayElement {
 
 private:
     int  status;
-    wchar_t* id;
+    WCHAR* id;
 
 public:
     ItemReport();
     ItemReport(ItemReport& ir);
-    ItemReport(const wchar_t* luid, const int statusCode);
+    ItemReport(const WCHAR* luid, const int statusCode);
     virtual ~ItemReport();
 
     const wchar_t* getId() const;
-    void setId(const wchar_t* v);
+    void setId(const WCHAR* v);
 
     const int getStatus() const;
     void setStatus(const int v);
