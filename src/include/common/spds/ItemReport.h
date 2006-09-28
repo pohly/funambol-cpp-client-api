@@ -45,7 +45,7 @@ public:
     ItemReport(const WCHAR* luid, const int statusCode);
     virtual ~ItemReport();
 
-    const wchar_t* getId() const;
+    const WCHAR* getId() const;
     void setId(const WCHAR* v);
 
     const int getStatus() const;
