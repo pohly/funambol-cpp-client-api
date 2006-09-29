@@ -130,13 +130,25 @@ size_t fgetsize(FILE *f);
  * Read the content
  *
  * @param name - the file name
- * @param buffer (out) - new allocated buffer with the file content
+ * @param message (out) - new allocated buffer with the file content
  * @param len - length of the read content
  * @param binary - if true the file has to be opened in binary mode
  *
  * @return - true if file is succesfully read
  */
-bool readFile(const char* path, char **message, size_t *len, bool binary = false );
+bool readFile(const char* name, char **message, size_t *len, bool binary = false );
+
+/*
+ * Read the content of a directory
+ *
+ * @param name - the dir name
+ * @param count (out) - number of files in dir
+ * @param onlyCount - optional, if true only set the nuber of files (count)
+ *
+ * @return - new allocated array of fileNames (NULL if errors)
+ */
+char** readDir(char* name, int *count, bool onlyCount = false);
+
 
 long int getLenEncoding(const char*  s, char*  encoding);
 char *toMultibyte(const WCHAR *wc, const char *encoding = 0 );

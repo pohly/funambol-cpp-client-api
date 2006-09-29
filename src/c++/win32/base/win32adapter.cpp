@@ -394,6 +394,84 @@ bool saveFile(const char *filename,
     return true;
 }
 
+
+
+char** readDir(char* name, int *count, bool onlyCount) {
+
+    *count = 0;
+    char** fileNames = NULL;
+    WIN32_FIND_DATA FileData;
+    HANDLE hFind;
+    DWORD dwAttrs;
+    WCHAR toFind    [512];
+    WCHAR szNewPath [512];
+    szNewPath[0] = 0;
+    bool fFinished = false;
+    
+    //
+    // Get number of files
+    //
+    if (!onlyCount) {
+        int i=0;
+        readDir(name, &i, true);
+        if (i>0) 
+            fileNames = new char*[i];
+        else
+            return NULL;
+    }
+    
+    WCHAR* wname = toWideChar(name);
+    wsprintf(toFind, TEXT("%s\\*.*"), wname);
+    
+
+    //
+    // Get file names from dir
+    //
+    hFind = FindFirstFile(toFind, &FileData);
+    if (hFind == INVALID_HANDLE_VALUE) {
+        LOG.error("Invalid handle for retrieve files from %s", name);
+        *count = 0;
+        fileNames = NULL;
+        goto finally;
+    }
+    else {
+        while (!fFinished) {
+            wsprintf(szNewPath, TEXT("%s/%s"), wname, FileData.cFileName);
+            dwAttrs = GetFileAttributes(szNewPath);
+
+             if (   (dwAttrs & FILE_ATTRIBUTE_DIRECTORY) 
+                 || (dwAttrs & FILE_ATTRIBUTE_HIDDEN)
+                 || (dwAttrs & FILE_ATTRIBUTE_SYSTEM) ) {
+             }// nothing
+             else {
+                 if (!onlyCount) {
+                    fileNames[*count] = toMultibyte(FileData.cFileName);
+                 }
+                (*count) ++;
+            }
+
+            if (!FindNextFile(hFind, &FileData)) {
+			    if (GetLastError() == ERROR_NO_MORE_FILES){
+				    fFinished = true;
+			    }
+		    }
+	    }
+        // Close the search handle.
+	    FindClose(hFind);
+    }
+
+finally:
+    if (wname) {
+        delete [] wname;
+        wname = NULL;
+    }
+    return fileNames;
+}
+
+
+
+
+
 static int findCodePage(const char *encoding)
 {
     if (encoding){
