@@ -410,8 +410,8 @@ int SyncManager::prepareSync(SyncSource** s) {
                 responseMsg = NULL;
             }
 
-            // This is an error only is it is not an AddressChange
             if ( addressChange && lastErrorCode == ERR_READING_CONTENT ) {
+                // This is not an error if it's an AddressChange
                 ret = 0;
             }
             else {
