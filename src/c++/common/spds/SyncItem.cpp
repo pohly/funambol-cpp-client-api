@@ -128,10 +128,10 @@ void* SyncItem::setData(const void* itemData, long dataSize) {
     size = dataSize;
 
     // Backward compatibility with clients which include the nul-byte?
-    if (itemData && size && ((char *)itemData)[size - 1] == '\0') {
+    //if (itemData && size && ((char *)itemData)[size - 1] == '\0') {
         // ignore the trailing nul-byte
-        size--;
-    }
+        //size--;
+    //}
     
     // Not yet set.
     if (size == -1) {
