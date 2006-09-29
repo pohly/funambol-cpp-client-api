@@ -410,6 +410,10 @@
 						>
 					</File>
 					<File
+						RelativePath="..\..\src\c++\common\base\util\ItemContainer.cpp"
+						>
+					</File>
+					<File
 						RelativePath="..\..\src\c++\common\base\util\KeyValuePair.cpp"
 						>
 						<FileConfiguration
@@ -911,6 +915,14 @@
 					</FileConfiguration>
 				</File>
 				<File
+					RelativePath="..\..\src\c++\common\spds\FileData.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\c++\common\spds\ItemReport.cpp"
+					>
+				</File>
+				<File
 					RelativePath="..\..\src\c++\common\spds\MailMessage.cpp"
 					>
 					<FileConfiguration
@@ -1113,6 +1125,10 @@
 					</FileConfiguration>
 				</File>
 				<File
+					RelativePath="..\..\src\c++\common\spds\SyncReport.cpp"
+					>
+				</File>
+				<File
 					RelativePath="..\..\src\c++\common\spds\SyncSource.cpp"
 					>
 					<FileConfiguration
@@ -1155,6 +1171,10 @@
 							PreprocessorDefinitions=""
 						/>
 					</FileConfiguration>
+				</File>
+				<File
+					RelativePath="..\..\src\c++\common\spds\SyncSourceReport.cpp"
+					>
 				</File>
 			</Filter>
 			<Filter
