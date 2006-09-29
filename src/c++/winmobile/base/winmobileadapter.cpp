@@ -287,7 +287,7 @@ long utf8len(const char*  s) {
 }
 
 char* wc2utf8(const char*  s, char* d, unsigned long dsize) {
-    
+
     //
     // First of all, if s is NULL, just return NULL.
     // Then, if d is NULL, let's allocate the required memory to contain the
@@ -296,19 +296,19 @@ char* wc2utf8(const char*  s, char* d, unsigned long dsize) {
     if (s == NULL) {
         return NULL;
     }
-    
+
     if (d == NULL) {
         dsize = utf8len(s);
         d = new char[dsize+1];
-    }        
-    
+    }
+
     strcpy( d, s );
-                                    
+
     return d;
 }
 
 char* utf82wc(const char* s, char*  d, unsigned long dsize) {
-              
+
     //
     // First of all, if s is NULL, just return NULL.
     // Then, if d is NULL, let's allocate the required memory to contain the
@@ -317,7 +317,7 @@ char* utf82wc(const char* s, char*  d, unsigned long dsize) {
     if (s == NULL) {
         return NULL;
     }
-   
+
     if (d == NULL) {
         // get the right lenght with a NULL dest
         dsize = strlen (s);
@@ -326,11 +326,11 @@ char* utf82wc(const char* s, char*  d, unsigned long dsize) {
 
     strcpy(d, s);
 
-    return d;    
+    return d;
 }
 
 /*
- * Return a filename composed by the system temp dir and the name given 
+ * Return a filename composed by the system temp dir and the name given
  * in input. If the file exists, try to add a digit 0-9.
  * If this fails too, return NULL (there's must be something wrong in
  * the calling program)
@@ -345,8 +345,8 @@ char *mkTempFileName(const char *name)
 
     GetTempPath(64, tmpPath);
     int ret = GetTempFileName(tmpPath, L"fun", 0, tmpFileName);
-    
-    if (ret == 0) { // function GetTempFileName fails 
+
+    if (ret == 0) { // function GetTempFileName fails
         LOG.error("mkTempFileName: error in GetTempFileName");
         return 0;
     }
@@ -382,7 +382,7 @@ bool readFile(const char* path, char **message, size_t *len, bool binary)
     *len=fread(msg, sizeof(char), msglen, f);
     if(ferror(f)){
         delete [] msg;
-        return false; 
+        return false;
     }
     fclose(f);
 
@@ -411,6 +411,12 @@ bool saveFile(const char *filename,
     fclose(f);
 
     return true;
+}
+
+
+// TBD: dummy implementation!
+char** readDir(char* name, int *count, bool onlyCount) {
+    return NULL;
 }
 
 static int findCodePage(const char *encoding)
@@ -473,7 +479,7 @@ char* toMultibyte(const WCHAR *wc, const char *encoding)
 
     ret = new char[blen+1];
 
-    blen = WideCharToMultiByte(codepage, 0, wc, wlen, ret, blen, 0, 0); 
+    blen = WideCharToMultiByte(codepage, 0, wc, wlen, ret, blen, 0, 0);
     ret[blen] = 0;
 
     return ret;
@@ -485,16 +491,16 @@ WCHAR* toWideChar(const char *mb, const char *encoding) {
         return 0;
     }
 
-    unsigned long dsize = strlen(mb); 
+    unsigned long dsize = strlen(mb);
     WCHAR *ret = new WCHAR[dsize+2];
     memset(ret, 0, (dsize + 1)*sizeof(WCHAR));
-    
+
     if (!dsize)
         return ret;
 
     int codepage = findCodePage(encoding);
     unsigned long k = 0;
-    
+
     k = MultiByteToWideChar(codepage, 0, mb, -1, ret, dsize + 1);
     if( !k ) {
         LOG.error("toWideChar: error %d \n\tConverting: %s\n\tWith encoding %s",
@@ -506,7 +512,7 @@ WCHAR* toWideChar(const char *mb, const char *encoding) {
             delete [] ret; ret = 0;
         }
     }
-    
+
     return ret;
 }
 

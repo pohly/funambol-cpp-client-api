@@ -28,7 +28,7 @@ long utf8len(const char* s) {
 }
 
 char* wc2utf8(const char* s, char* d, unsigned long dsize) {
-    
+
     //
     // First of all, if s is NULL, just return NULL.
     // Then, if d is NULL, let's allocate the required memory to contain the
@@ -37,19 +37,19 @@ char* wc2utf8(const char* s, char* d, unsigned long dsize) {
     if (s == NULL) {
         return NULL;
     }
-    
+
     if (d == NULL) {
         dsize = utf8len(s);
         d = new char[dsize+1];
-    }        
-    
+    }
+
 	 wcscpy( d, s );
-                                    
+
     return d;
 }
 
 char* utf82wc(const char* s, char* d, unsigned long dsize) {
-              
+
     //
     // First of all, if s is NULL, just return NULL.
     // Then, if d is NULL, let's allocate the required memory to contain the
@@ -58,19 +58,19 @@ char* utf82wc(const char* s, char* d, unsigned long dsize) {
     if (s == NULL) {
         return NULL;
     }
-   
+
     if (d == NULL) {
         // get the right lenght with a NULL dest
         dsize = strlen (s);
         d = new WCHAR[dsize+1];
     }
-    
+
 
 
     wcscpy(d, s);
 
     return d;
-    
+
 }
 
 bool saveFile(const char *filename, const char *buffer, size_t len, bool binary)
@@ -131,6 +131,12 @@ bool readFile(const char* path, char **message, size_t *len, bool binary)
     }
 
     return res;
+}
+
+
+// TBD: dummy implementation!
+char** readDir(char* name, int *count, bool onlyCount) {
+    return NULL;
 }
 
 // TODO: convert to the specified encoding, assuming wc is UTF-8
