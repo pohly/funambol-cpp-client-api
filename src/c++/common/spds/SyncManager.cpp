@@ -1871,6 +1871,8 @@ Status *SyncManager::processSyncItem(Item* item, const CommandInfo &cmdInfo, Syn
                 if (size + incomingItem->offset > incomingItem->getDataSize()) {
                     // overflow, signal error: "Size mismatch"
                     status = syncMLBuilder.prepareItemStatus(cmdInfo.commandName, itemName, cmdInfo.cmdRef, 424);
+                    sprintf(lastErrorMsg, "Item size mismatch: real size = %d, declared size = %d", incomingItem->offset, incomingItem->getDataSize());
+                    lastErrorCode = OBJECT_SIZE_MISMATCH;
                     delete incomingItem;
                     incomingItem = NULL;
                 } else {
@@ -1962,6 +1964,8 @@ Status *SyncManager::processSyncItem(Item* item, const CommandInfo &cmdInfo, Syn
             } else {
                 // error: incomplete item, but no more data - "Size Mismatch"
                 status = syncMLBuilder.prepareItemStatus(cmdInfo.commandName, itemName, cmdInfo.cmdRef, 424);
+                sprintf(lastErrorMsg, "Item size mismatch: real size = %d, declared size = %d", incomingItem->offset, incomingItem->getDataSize());
+                lastErrorCode = OBJECT_SIZE_MISMATCH;
                 delete incomingItem;
                 incomingItem = NULL;
             }
