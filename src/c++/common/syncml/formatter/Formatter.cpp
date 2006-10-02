@@ -1828,14 +1828,16 @@ StringBuffer* Formatter::getDevInf(DevInf* devInf) {
         s->append(swV);        
         s->append(hwV);        
         s->append(devID);        
-        s->append(devTyp);    
+        s->append(devTyp);  
+        s->append(utc);    
+        s->append(supportLargeObjs);    
+        s->append(supportNumberOfChanges);    
         s->append(dataStores);
         s->append(ctCaps);
         s->append(exts);
         s->append(syncCap);
-        s->append(utc);    
-        s->append(supportLargeObjs);    
-        s->append(supportNumberOfChanges);            
+        
+                
     }
 
     // TODO: getValue() should accept const strings
