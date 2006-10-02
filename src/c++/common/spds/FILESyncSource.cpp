@@ -85,11 +85,9 @@ const char* FILESyncSource::getDir() {
 
 
 /////////////////////////////////////////////////////////////////////////////////////////
-/*
-* Return the first SyncItem of all. It is used in case of slow or refresh sync 
-* and retrieve the entire data source content.
-*/
-SyncItem* FILESyncSource::getFirstItem() {
+
+
+int FILESyncSource::beginSync() {
 
     //
     // Get file list.
@@ -98,7 +96,7 @@ SyncItem* FILESyncSource::getFirstItem() {
     char** fileNames = readDir(dir, &count);
     if (!fileNames || count==0) {
         LOG.debug("No files in dir '%s'", dir);
-        return NULL;
+        return 0;
     }
     LOG.info("The client number of files to sync are %i", count);
 
@@ -107,7 +105,7 @@ SyncItem* FILESyncSource::getFirstItem() {
     }
 
     //
-    // Create arraylist (empty data) from file names.
+    // Create ArrayList ALL (empty data) from file names.
     //
     for (int i=0; i<count; i++) {
         if (fileNames[i]) {
@@ -116,19 +114,31 @@ SyncItem* FILESyncSource::getFirstItem() {
             c->addItemToAllItems(s);
             delete s;
             delete [] wname;
+            delete [] fileNames[i];
         }
     }
+    if (fileNames) {
+        delete [] fileNames;  
+        fileNames = NULL;
+    }
+    return 0;    
+}
 
 
-    //
-    // Get first item.
-    //
+/*
+* Return the first SyncItem of all. It is used in case of slow or refresh sync 
+* and retrieve the entire data source content.
+*/
+SyncItem* FILESyncSource::getFirstItem() {
+    if (c == NULL) {
+        return NULL;
+    }
     if (c->getAllItemsSize() == 0) {
         return NULL;
-    }        
+    }  
+
     call = 0;
     SyncItem* syncItem = (SyncItem*)c->getAllItems()->get(call)->clone();
-
 
     //
     // Set data from file content, return syncItem (freed by API)
@@ -148,12 +158,12 @@ SyncItem* FILESyncSource::getFirstItem() {
 * and retrieve the entire data source content.
 */
 SyncItem* FILESyncSource::getNextItem() {
-
-    if (c == NULL)
+    if (c == NULL) {
         return NULL;
-
-    if (c->getAllItemsSize() == 0)
+    }
+    if (c->getAllItemsSize() == 0) {
         return NULL;
+    }
 
     call++;
     if (call >= c->getAllItemsSize()) {
@@ -387,9 +397,6 @@ int FILESyncSource::deleteItem(SyncItem& item) {
     return ret;    
 }
 
-int FILESyncSource::beginSync() {
-    return 0;    
-}
 
 int FILESyncSource::endSync() {
     //
