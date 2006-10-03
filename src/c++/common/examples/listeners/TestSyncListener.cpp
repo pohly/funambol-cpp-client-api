@@ -17,40 +17,34 @@
  */
 
 
-#include "examples/MySyncListener.h"
+#include "examples/listeners/TestSyncListener.h"
 
-void MySyncListener::syncBegin(SyncEvent &event) {
-
+void TestSyncListener::syncBegin(SyncEvent &event) {
     printf("SyncEvent occurred.\n");
     printf("Syncing successfully began at %ld.\n\n", event.getDate());
 }
 
-void MySyncListener::syncEnd(SyncEvent &event) {
-
+void TestSyncListener::syncEnd(SyncEvent &event) {
     printf("SyncEvent occurred.\n");
     printf("Syncing successfully ended at %ld.\n\n", event.getDate());
 }
 
-void MySyncListener::sendInitialization( SyncEvent &event) {
-
+void TestSyncListener::sendInitialization( SyncEvent &event) {
     printf("SyncEvent occurred.\n");
     printf("Initializations done at %ld.\n\n", event.getDate());
 }
 
-void MySyncListener::sendModifications(SyncEvent &event) {
-
+void TestSyncListener::sendModifications(SyncEvent &event) {
     printf("SyncEvent occurred.\n");
     printf("Modifications processed at %ld.\n\n", event.getDate());
 }
 
-void MySyncListener::sendFinalization(SyncEvent &event) {
-
+void TestSyncListener::sendFinalization(SyncEvent &event) {
     printf("SyncEvent occurred.\n");
     printf("final package set & processed at %ld.\n\n", event.getDate());
 }
 
-void MySyncListener::syncError(SyncEvent &event) {
-
+void TestSyncListener::syncError(SyncEvent &event) {
     printf("SyncEvent occurred.\n");
     printf("Sync Error %s occured began at %ld.\n\n", event.getMessage(), event.getDate());
 }

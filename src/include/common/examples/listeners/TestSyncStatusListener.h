@@ -16,19 +16,17 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-#include <stdio.h>
-#include "examples/MySyncSourceListener.h"
 
-void MySyncSourceListener::syncSourceBegin(SyncSourceEvent &event) {
+#ifndef INCL_TEST_STATUS_LISTENER
+#define INCL_TEST_STATUS_LISTENER
 
-    printf("SyncSourceEvent occurred.\n");
-    printf("Syncing Source %s in syncmode %d successfully began at %ld.\n\n", event.getSourceURI(), event.getSyncMode(), event.getDate());
-}
+#include "event/SyncStatusListener.h"
 
-void MySyncSourceListener::syncSourceEnd(SyncSourceEvent &event) {
+class TestSyncStatusListener : public SyncStatusListener {
 
-    printf("SyncSourceEvent occurred.\n");
-    printf("Syncing Source %s in syncmode %d successfully ended at %ld.\n\n", event.getSourceURI(), event.getSyncMode(), event.getDate());
-}
+    void statusReceived(SyncStatusEvent& event);
+    void statusSending (SyncStatusEvent& event);
 
+};
 
+#endif

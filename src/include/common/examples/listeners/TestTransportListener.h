@@ -17,19 +17,19 @@
  */
 
 
-#ifndef INCL_MY_LISTENER
-#define INCL_MY_LISTENER
+#ifndef INCL_TEST_TRANSPORT_LISTENER
+#define INCL_TEST_TRANSPORT_LISTENER
 
-#include "event/SyncListener.h"
+#include "event/TransportListener.h"
 
-	class MySyncListener : public SyncListener {
+class TestTransportListener : public TransportListener {
 
-		void syncBegin(SyncEvent &event);
-		void syncEnd(SyncEvent &event);
-		void sendInitialization(SyncEvent &event);
-		void sendModifications(SyncEvent &event);
-		void sendFinalization(SyncEvent &event);
-		void syncError(SyncEvent &event);
-	};
+    void sendDataBegin   (TransportEvent& event);
+    void syncDataEnd     (TransportEvent& event);
+    void receiveDataBegin(TransportEvent& event);
+    void receivingData   (TransportEvent& event);
+    void receiveDataEnd  (TransportEvent& event);
+
+};
 
 #endif

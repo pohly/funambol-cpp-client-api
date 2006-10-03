@@ -17,15 +17,18 @@
  */
 
 
-#ifndef INCL_MY_STATUS_LISTENER
-#define INCL_MY_STATUS_LISTENER
+#ifndef INCL_TEST_SOURCE_LISTENER
+#define INCL_TEST_SOURCE_LISTENER
 
-#include "event/SyncStatusListener.h"
+#include "event/SyncSourceListener.h"
 
-	class MySyncStatusListener : public SyncStatusListener {
+class TestSyncSourceListener : public SyncSourceListener {
 
-		//void statusReceived(SyncStatusEvent &event);
-		void statusSending(SyncStatusEvent &event);
-	};
+    void syncSourceBegin             (SyncSourceEvent& event);
+    void syncSourceEnd               (SyncSourceEvent& event);
+    void syncSourceSyncModeRequested (SyncSourceEvent& event);
+    void syncSourceTotalClientItems  (SyncSourceEvent& event);
+    void syncSourceTotalServerItems  (SyncSourceEvent& event);
+};
 
 #endif

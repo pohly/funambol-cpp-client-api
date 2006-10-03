@@ -16,10 +16,14 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-#include "examples/MySyncStatusListener.h"
+#include "examples/listeners/TestSyncStatusListener.h"
 
-void MySyncStatusListener::statusSending(SyncStatusEvent &event) {
-
+void TestSyncStatusListener::statusReceived(SyncStatusEvent &event) {
     printf("SyncStatusEvent occurred.\n");
-    printf("Client Status %s with code %d for Server at %ld.\n\n", event.getCommand(), event.getStatusCode(), event.getDate());
+    printf("Server %s with code %d for uri=%s (item key = %ls).\n\n", event.getCommand(), event.getStatusCode(), event.getSourceURI(), event.getItemKey());
+}
+
+void TestSyncStatusListener::statusSending(SyncStatusEvent &event) {
+    printf("SyncStatusEvent occurred.\n");
+    printf("Client Status %s with code %d for uri=%s (item key = %ls).\n\n", event.getCommand(), event.getStatusCode(), event.getSourceURI(), event.getItemKey());
 }

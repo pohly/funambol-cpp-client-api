@@ -17,19 +17,20 @@
  */
 
 
-#ifndef INCL_MY_ITEM_LISTENER
-#define INCL_MY_ITEM_LISTENER
+#ifndef INCL_TEST_LISTENER
+#define INCL_TEST_LISTENER
 
-#include "event/SyncItemListener.h"
+#include "event/SyncListener.h"
 
-	class MySyncItemListener : public SyncItemListener {
+class TestSyncListener : public SyncListener {
 
-		void itemAddedByServer(SyncItemEvent &event);
-		void itemDeletedByServer(SyncItemEvent &event);
-		void itemUpdatedByServer(SyncItemEvent &event);
-		void itemAddedByClient(SyncItemEvent &event);
-		void itemDeletedByClient(SyncItemEvent &event);
-		void itemUpdatedByClient(SyncItemEvent &event);
-	};
+    void syncBegin         (SyncEvent& event);
+    void syncEnd           (SyncEvent& event);
+    void sendInitialization(SyncEvent& event);
+    void sendModifications (SyncEvent& event);
+    void sendFinalization  (SyncEvent& event);
+    void syncError         (SyncEvent& event);
+
+};
 
 #endif

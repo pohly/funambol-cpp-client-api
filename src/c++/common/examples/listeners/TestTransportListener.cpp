@@ -17,28 +17,29 @@
  */
 
 #include "stdio.h"
-#include "examples/MyTransportListener.h"
+#include "examples/listeners/TestTransportListener.h"
 
-void MyTransportListener::sendDataBegin(TransportEvent &event) {
-
+void TestTransportListener::sendDataBegin(TransportEvent &event) {
     printf("TransportEvent occurred.\n");
     printf("Sending Data of size %d began at %ld.\n\n",event.getDataSize(), event.getDate());
 }
 
-void MyTransportListener::receiveDataBegin(TransportEvent &event) {
+void TestTransportListener::syncDataEnd(TransportEvent &event) {
+    printf("TransportEvent occurred.\n");
+    printf("Sync Data of size %d finished at %ld.\n\n",event.getDataSize(), event.getDate());
+}
 
+void TestTransportListener::receiveDataBegin(TransportEvent &event) {
     printf("TransportEvent occurred.\n");
     printf("Begun Receiving Data of size %d began at %ld.\n\n",event.getDataSize(), event.getDate());
 }
 
-void MyTransportListener::receivingData(TransportEvent &event) {
-
+void TestTransportListener::receivingData(TransportEvent &event) {
     printf("TransportEvent occurred.\n");
     printf("Receiving Data of size %d began at %ld.\n\n",event.getDataSize(), event.getDate());
 }
 
-void MyTransportListener::receiveDataEnd(TransportEvent &event) {
-
+void TestTransportListener::receiveDataEnd(TransportEvent &event) {
     printf("TransportEvent occurred.\n");
     printf("Receiving Data done of size %d began at %ld.\n\n",event.getDataSize(), event.getDate());
 }
