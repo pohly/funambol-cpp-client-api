@@ -60,7 +60,7 @@ inline static bool isAuthFailed(int status) {
  */
 bool SyncManager::isToExit() {
     for (int i = 0; i < sourcesNumber; i++) {
-        if (sources[i]->getReport()->checkState() == true) 
+        if (sources[i]->getReport() && sources[i]->getReport()->checkState() == true) 
             return false; 
     }
     return true;
@@ -72,9 +72,14 @@ bool SyncManager::isToExit() {
 void SyncManager::setSourceStateAndError(unsigned int index, SourceState  state,
                                          unsigned int code,  const char*  msg) {
 
-    sources[index]->getReport()->setState(state);
-    sources[index]->getReport()->setLastErrorCode(code);
-    sources[index]->getReport()->setLastErrorMsg(msg);
+    SyncSourceReport* report = sources[index]->getReport();
+
+    if (!report) {
+        return;
+    }
+    report->setState(state);
+    report->setLastErrorCode(code);
+    report->setLastErrorMsg(msg);
 }
 
 
@@ -282,7 +287,7 @@ int SyncManager::prepareSync(SyncSource** s) {
 
     // disable all SyncSources without a preferred sync mode
     for (count = 0; count < sourcesNumber; count ++) {
-        if (!sources[count]->getReport()->checkState())
+        if (!sources[count]->getReport() || !sources[count]->getReport()->checkState())
             continue;
 
         if (sources[count]->getPreferredSyncMode() == SYNC_NONE) {
@@ -316,7 +321,7 @@ int SyncManager::prepareSync(SyncSource** s) {
             char anc[DIM_ANCHOR];
             timestamp = (unsigned long)time(NULL);
             for (count = 0; count < sourcesNumber; count ++) {
-                if (!sources[count]->getReport()->checkState())
+                if (!sources[count]->getReport() || !sources[count]->getReport()->checkState())
                     continue;
                 sources[count]->setNextSync(timestamp);
                 timestampToAnchor(sources[count]->getNextSync(), anc);
@@ -455,7 +460,7 @@ int SyncManager::prepareSync(SyncSource** s) {
         }
 
         for (count = 0; count < sourcesNumber; count ++) {
-            if (!sources[count]->getReport()->checkState())
+            if (!sources[count]->getReport() || !sources[count]->getReport()->checkState())
                 continue;
 
             int sourceRet = syncMLProcessor.processAlertStatus(*sources[count], syncml, alerts);
@@ -535,7 +540,7 @@ int SyncManager::prepareSync(SyncSource** s) {
         deleteStatus(&status);
         list = syncMLProcessor.getCommands(syncml->getSyncBody(), ALERT);    
         for (count = 0; count < sourcesNumber; count ++) {
-            if (!sources[count]->getReport()->checkState())
+            if (!sources[count]->getReport() || !sources[count]->getReport()->checkState())
                 continue;
 
             status = syncMLBuilder.prepareAlertStatus(*sources[count], list, authStatusCode);    
@@ -643,7 +648,7 @@ int SyncManager::prepareSync(SyncSource** s) {
             }
             isClientAuthenticated = TRUE;
             for (count = 0; count < sourcesNumber; count ++) {
-                if (!sources[count]->getReport()->checkState())
+                if (!sources[count]->getReport() || !sources[count]->getReport()->checkState())
                     continue;
                 ret = syncMLProcessor.processServerAlert(*sources[count], syncml);
                 if (isErrorStatus(ret)) {
@@ -719,7 +724,7 @@ BOOL SyncManager::checkForServerChanges(SyncML* syncml, ArrayList &statusList)
     int oldCount = this->count;
     
     for (count = 0; count < sourcesNumber; count ++) {
-        if (!sources[count]->getReport()->checkState())
+        if (!sources[count]->getReport() || !sources[count]->getReport()->checkState())
             continue;
 
         Sync* sync = syncMLProcessor.processSyncResponse(*sources[count], syncml);
@@ -828,13 +833,13 @@ int SyncManager::sync() {
     // The real number of source to sync
     for (count = 0; count < sourcesNumber; count ++) {
         allItemsList[count] = NULL;
-        if (!sources[count]->getReport()->checkState())
+        if (!sources[count]->getReport() || !sources[count]->getReport()->checkState())
             continue;
         toSync++;
     }
 
     for (count = 0; count < sourcesNumber; count ++) {
-        if (!sources[count]->getReport()->checkState())
+        if (!sources[count]->getReport() || !sources[count]->getReport()->checkState())
             continue;
 
         // note: tot == 0 is used to detect when to start iterating over
@@ -852,7 +857,7 @@ int SyncManager::sync() {
             lastErrorCode = ERR_UNSPECIFIED;
             ret = lastErrorCode;
             // syncsource should have set its own errors. If not, set default error.
-            if (sources[count]->getReport()->checkState()) {
+            if (!sources[count]->getReport() || sources[count]->getReport()->checkState()) {
                 setSourceStateAndError(count, SOURCE_ERROR, ERR_UNSPECIFIED, "Error in begin sync");
             }
             continue;
@@ -1363,7 +1368,7 @@ int SyncManager::sync() {
 	    commands->add(*status);
         deleteStatus(&status); 
         for (count = 0; count < sourcesNumber; count ++) {
-            if(!sources[count]->getReport()->checkState())
+            if(!sources[count]->getReport() || !sources[count]->getReport()->checkState())
                 continue;
             if ((sources[count]->getSyncMode() != SYNC_ONE_WAY_FROM_CLIENT) &&
                 (sources[count]->getSyncMode() != SYNC_REFRESH_FROM_CLIENT))
@@ -1507,7 +1512,7 @@ int SyncManager::endSync() {
 
     // The real number of source to sync
     for (count = 0; count < sourcesNumber; count ++) {
-        if (!sources[count]->getReport()->checkState())
+        if (!sources[count]->getReport() || !sources[count]->getReport()->checkState())
             continue;
         if ((sources[count]->getSyncMode()) != SYNC_ONE_WAY_FROM_CLIENT &&
             (sources[count]->getSyncMode()) != SYNC_REFRESH_FROM_CLIENT )
@@ -1516,7 +1521,7 @@ int SyncManager::endSync() {
     }
 
     for (count = 0; count < sourcesNumber; count ++) {
-        if (!sources[count]->getReport()->checkState())
+        if (!sources[count]->getReport() || !sources[count]->getReport()->checkState())
             continue;
 
         if ((sources[count]->getSyncMode()) != SYNC_ONE_WAY_FROM_CLIENT &&
@@ -1645,7 +1650,7 @@ int SyncManager::endSync() {
  finally:
 
     for (count = 0; count < sourcesNumber; count ++) {
-        if (!sources[count]->getReport()->checkState())
+        if (!sources[count]->getReport() || !sources[count]->getReport()->checkState())
             continue;
    
         commitChanges(*sources[count]);
