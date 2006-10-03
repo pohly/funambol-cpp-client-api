@@ -38,11 +38,11 @@
 #include "syncml/formatter/Formatter.h"
 #include "spds/DefaultConfigFactory.h"
 
-#include "examples/MySyncListener.h"
-#include "examples/MySyncSourceListener.h"
-#include "examples/MySyncStatusListener.h"
-#include "examples/MySyncItemListener.h"
-#include "examples/MyTransportListener.h"
+#include "examples/listeners/TestSyncListener.h"
+#include "examples/listeners/TestSyncSourceListener.h"
+#include "examples/listeners/TestSyncStatusListener.h"
+#include "examples/listeners/TestSyncItemListener.h"
+#include "examples/listeners/TestTransportListener.h"
 #include "event/SetListener.h"
 
 // Define the test configuration
@@ -123,11 +123,11 @@ int main(int argc, char** argv) {
     //
     // Set listeners:
     //
-    MySyncListener*       listener1 = new MySyncListener();
-    MySyncSourceListener* listener2 = new MySyncSourceListener();
-    MySyncStatusListener* listener3 = new MySyncStatusListener();
-    MySyncItemListener*   listener4 = new MySyncItemListener();
-    MyTransportListener*  listener5 = new MyTransportListener();
+    TestSyncListener*       listener1 = new TestSyncListener();
+    TestSyncSourceListener* listener2 = new TestSyncSourceListener();
+    TestSyncStatusListener* listener3 = new TestSyncStatusListener();
+    TestSyncItemListener*   listener4 = new TestSyncItemListener();
+    TestTransportListener*  listener5 = new TestTransportListener();
 
     setSyncListener      (listener1);
     setSyncSourceListener(listener2);
