@@ -62,12 +62,12 @@ MetInf::~MetInf() {
 }
 
 
-void MetInf::set(  char*  format    ,
-                   char*    type      ,
-                   char*    mark      ,
+void MetInf::set(  const char*  format   ,
+                   const char*    type   ,
+                   const char*    mark   ,
                    long        size      ,
                    Anchor*     anchor    ,
-                   char*    version   ,
+                   const char*    version,
                    NextNonce*  nonce     ,
                    long        maxMsgSize,
                    long        maxObjSize,
@@ -159,7 +159,7 @@ char* MetInf::getFormat(char* retFormat) {
  *
  * @param format the new format value
  */
-void MetInf::setFormat(char* format) {
+void MetInf::setFormat(const char* format) {
     if (this->format) {
         delete [] this->format; this->format = NULL;           
     }
@@ -183,7 +183,7 @@ char* MetInf::getType(char* retType) {
  *
  * @param type the new type value
  */
-void MetInf::setType(char* type) {
+void MetInf::setType(const char* type) {
      if (this->type) {
         delete [] this->type; this->type = NULL;           
      }
@@ -207,7 +207,7 @@ char* MetInf::getMark(char* retMark) {
  *
  * @param mark the new mark value
  */
-void MetInf::setMark(char* mark){
+void MetInf::setMark(const char* mark){
     if (this->mark) {
         delete [] this->mark; this->mark = NULL;           
     }
@@ -343,7 +343,7 @@ char* MetInf::getVersion(char* retVersion) {
  *
  * @param version the new version value
  */
-void MetInf::setVersion(char* version) {
+void MetInf::setVersion(const char* version) {
     if (this->version) {
         delete [] this->version; this->version = NULL;           
     }

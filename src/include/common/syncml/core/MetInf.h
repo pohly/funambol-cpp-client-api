@@ -60,12 +60,12 @@ class MetInf {
          * @param memoryInfo memory information
          *
          */
-        void set(char*     format    ,
-                 char*     type      ,
-                 char*     mark      ,
+        void set(const char*     format,
+                 const char*     type  ,
+                 const char*     mark  ,
                  long        size      ,
                  Anchor*     anchor    ,
-                 char*     version   ,
+                 const char*    version,
                  NextNonce*  nonce     ,
                  long        maxMsgSize,
                  long        maxObjSize,
@@ -134,7 +134,7 @@ class MetInf {
      *
      * @param format the new format value
      */
-    void setFormat(char*  format);
+    void setFormat(const char*  format);
 
     /**
      * Returns type
@@ -148,7 +148,7 @@ class MetInf {
      *
      * @param type the new type value
      */
-    void setType(char*  type);
+    void setType(const char*  type);
     
     /**
      * Returns mark
@@ -162,7 +162,7 @@ class MetInf {
      *
      * @param mark the new mark value
      */
-    void setMark(char*  mark);
+    void setMark(const char*  mark);
 
      /**
      * Sets emi
@@ -267,7 +267,7 @@ class MetInf {
 	 *
 	 * @param version the new version value
 	 */
-	void setVersion(char*  version);
+	void setVersion(const char*  version);
 
 	MetInf* clone();
 

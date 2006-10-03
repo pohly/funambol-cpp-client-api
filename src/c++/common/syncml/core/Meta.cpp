@@ -44,12 +44,12 @@ Meta::~Meta() {
 }
 
 
-void Meta::set(char*    format    ,
-               char*    type      ,
-               char*    mark      ,
+void Meta::set(const char*    format ,
+               const char*    type   ,
+               const char*    mark   ,
                long        size      ,
                Anchor*     anchor    ,
-               char*    version   ,
+               const char*    version,
                NextNonce*  nonce     ,
                long        maxMsgSize,
                long        maxObjSize,
@@ -130,7 +130,7 @@ char* Meta::getFormat(char* retFormat) {
  *
  * @param format the new format value
  */
-void Meta::setFormat(char* format) {
+void Meta::setFormat(const char* format) {
     getMetInf()->setFormat(format);
 }
 
@@ -151,7 +151,7 @@ char* Meta::getType(char* retType) {
  *
  * @param type the new type value
  */
-void Meta::setType(char* type) {
+void Meta::setType(const char* type) {
     getMetInf()->setType(type);
 }
 
@@ -173,7 +173,7 @@ char* Meta::getMark(char* retMark){
  *
  * @param mark the new mark value
  */
-void Meta::setMark(char* mark) {
+void Meta::setMark(const char* mark) {
     getMetInf()->setMark(mark);
 }
 
@@ -195,7 +195,7 @@ char* Meta::getVersion(char* retVersion) {
  *
  * @param version the new version value
  */
-void Meta::setVersion(char* version) {
+void Meta::setVersion(const char* version) {
     getMetInf()->setVersion(version);
 }
 

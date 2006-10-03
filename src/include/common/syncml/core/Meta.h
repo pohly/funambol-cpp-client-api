@@ -34,12 +34,12 @@ class Meta {
     private:
        MetInf* metInf;
        
-       void set(char*     format    ,
-                char*     type      ,
-                char*     mark      ,
+       void set(const char*     format,
+                const char*     type  ,
+                const char*     mark  ,
                 long        size      ,
                 Anchor*     anchor    ,
-                char*     version   ,
+                const char*     version,
                 NextNonce*  nonce     ,
                 long        maxMsgSize,
                 long        maxObjSize,
@@ -92,7 +92,7 @@ class Meta {
 		 *
 		 * @param format the new format value
 		 */
-		void setFormat(char*  format);
+		void setFormat(const char*  format);
 
 		/**
 		 * Returns type
@@ -106,7 +106,7 @@ class Meta {
 		 *
 		 * @param type the new type value
 		 */
-		void setType(char*  type);
+		void setType(const char*  type);
 
 		/**
 		 * Returns mark
@@ -120,7 +120,7 @@ class Meta {
 		 *
 		 * @param mark the new mark value
 		 */
-		void setMark(char*  mark);
+		void setMark(const char*  mark);
 
 		/**
 		 * Returns version
@@ -134,7 +134,7 @@ class Meta {
 		 *
 		 * @param version the new version value
 		 */
-		void setVersion(char*  version);
+		void setVersion(const char*  version);
 
 		
 		/**
