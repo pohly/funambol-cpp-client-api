@@ -45,7 +45,7 @@ private:
     SourceFilter* filter;
 
 protected:
-    SyncSourceConfig config;
+    SyncSourceConfig& config;
     SyncSourceReport* report;
 
 public:
@@ -54,9 +54,16 @@ public:
      * Constructor: create a SyncSource with the specified name
      *
      * @param name   the name of the SyncSource
-     * @param sc     configuration for the sync source
+     * @param sc     configuration for the sync source: the instance
+     *               must remain valid throughout the lifetime of the
+     *               sync source because it keeps a reference to it
+     *               and uses it as its own. A NULL pointer is allowed
+     *               for unit testing outside of the sync framework;
+     *               the sync source then references a global config
+     *               instance to avoid crashes, but modifying that config
+     *               will not make much sense.
      */
-    SyncSource(const WCHAR* name, const SyncSourceConfig* sc) EXTRA_SECTION_01;
+    SyncSource(const WCHAR* name, SyncSourceConfig* sc) EXTRA_SECTION_01;
 
     // Destructor
     virtual ~SyncSource() EXTRA_SECTION_01;
@@ -95,7 +102,9 @@ public:
     SyncSourceConfig& getConfig() EXTRA_SECTION_01 {
         return config;
     }
-    // initialize sync source from complete configuration
+    // initialize sync source from complete configuration:
+    // copies all settings into the config referenced by the
+    // sync source
     void setConfig(const SyncSourceConfig& sc) EXTRA_SECTION_01;
 
 

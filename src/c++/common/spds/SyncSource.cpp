@@ -22,18 +22,15 @@
 #include "client/SyncClient.h"
 #include "spds/spdsutils.h"
 
-SyncSource::SyncSource(const WCHAR* sourceName, const SyncSourceConfig *sc) {
+static SyncSourceConfig defaultConfig;
+
+SyncSource::SyncSource(const WCHAR* sourceName, SyncSourceConfig *sc) :
+    config(sc ? *sc : defaultConfig)
+{
     name   = NULL;
     report = NULL;
 
-    if (sc) {
-        config.assign(*sc);
-        setPreferredSyncMode(syncModeCode(sc->getSync()));
-    }
-    else {
-        syncMode = SYNC_NONE;
-    }
-
+    setPreferredSyncMode(sc ? syncModeCode(sc->getSync()) : SYNC_NONE);
     if ((sourceName == NULL) || (*sourceName == 0)) {
         lastErrorCode = ERR_PARAMETER_IS_EMPTY;
         sprintf(lastErrorMsg, T("name cannot be empty (NULL or 0-length)"));
