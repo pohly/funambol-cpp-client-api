@@ -172,6 +172,10 @@ void SyncSourceConfig::setCtCap(CTCap v){
 // ------------------------------------------------------------- Private methods
 
 void SyncSourceConfig::assign(const SyncSourceConfig& sc) {
+    if (&sc == this) {
+        return;
+    }
+
     setName          (sc.getName          ());
     setURI           (sc.getURI           ());
     setSyncModes     (sc.getSyncModes     ());
