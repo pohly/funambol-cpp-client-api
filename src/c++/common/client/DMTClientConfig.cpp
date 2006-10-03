@@ -672,10 +672,6 @@ BOOL DMTClientConfig::readExtAccessConfig(ManagementNode& syncMLNode,
     accessConfig.setMaxMsgSize(strtol(tmp, NULL, 10));
     delete [] tmp;
 
-    tmp = extNode.getPropertyValue(PROPERTY_ENCRYPTION);     
-    accessConfig.setEncryption((*tmp == '1') ? TRUE : FALSE);
-    delete [] tmp;
-        
     tmp = extNode.getPropertyValue(PROPERTY_SYNC_BEGIN);     
     accessConfig.setBeginSync(strtol(tmp, NULL, 10));
     delete [] tmp;
@@ -701,9 +697,6 @@ void DMTClientConfig::saveExtAccessConfig(ManagementNode& syncMLNode,
     sprintf(buf, T("%lu"), accessConfig.getMaxMsgSize());
     extNode.setPropertyValue(PROPERTY_MAX_MSG_SIZE, buf);
 
-    extNode.setPropertyValue(PROPERTY_ENCRYPTION,
-                             (accessConfig.getEncryption() ? T("1") : T("0") ) ); 
-        
     timestampToAnchor(accessConfig.getBeginSync(), buf);
     extNode.setPropertyValue(PROPERTY_SYNC_BEGIN, buf);
 

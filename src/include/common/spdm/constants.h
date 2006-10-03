@@ -63,7 +63,6 @@
 #define PROPERTY_SOURCE_DRAFT          T("Draft"            )
 #define PROPERTY_SOURCE_TRASH          T("Trash"            )
 #define PROPERTY_SOURCE_SENT           T("Sent"             )
-#define PROPERTY_ENCRYPTION            T("encryption"       )
 #define PROPERTY_SOURCE_ENCODING       T("encoding"         )
 #define PROPERTY_SOURCE_SUPP_TYPES     T("supportedTypes"   )
 #define PROPERTY_READ_BUFFER_SIZE      T("readBufferSize"   )

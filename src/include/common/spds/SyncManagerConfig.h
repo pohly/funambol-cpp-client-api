@@ -61,8 +61,6 @@ class SyncManagerConfig {
         virtual DeviceConfig& getDeviceConfig() EXTRA_SECTION_01;
 		virtual void setDeviceConfig(DeviceConfig& dc) EXTRA_SECTION_01;
 
-        BOOL isEncryption() EXTRA_SECTION_01;
-        
         BOOL isDirty() EXTRA_SECTION_01;
 
 };

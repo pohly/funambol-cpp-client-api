@@ -153,14 +153,23 @@ class SyncManager {
         int assignSources(SyncSource** sources) EXTRA_SECTION_01;
         
         Status *processSyncItem(Item* item, const CommandInfo &cmdInfo, SyncMLBuilder &syncMLBuilder) EXTRA_SECTION_01;
-        char* processItemContent(const char*  data, const char*  encodings, long* size) EXTRA_SECTION_01;
-        void decodeSyncItemContent(char** c, TransformationInfo& info, const char*  encoding) EXTRA_SECTION_01;
         BOOL checkForServerChanges(SyncML* syncml, ArrayList &statusList) EXTRA_SECTION_01;
 
         const char*  getUserAgent(SyncManagerConfig& config) EXTRA_SECTION_01;
         bool isToExit();
         void setSourceStateAndError(unsigned int index, SourceState  state,
                                     unsigned int code,  const char*  msg);
+
+          
+        /**
+         * A wrapper around the sync source's first/next iterator functions.
+         * By default the data is encoded according to the "encoding"
+         * SyncSourceConfig property, unless the SyncSource already set an encoding.
+         *
+         * In case of an error the error is logged and the item is set to NULL, just as
+         * if the source itself had returned NULL.
+         */
+        SyncItem* getItem(SyncSource& source, SyncItem* (SyncSource::* getItem)());
 };
 
 #endif

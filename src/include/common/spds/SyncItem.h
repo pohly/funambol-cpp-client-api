@@ -37,6 +37,7 @@
     private:
 
         char* data;
+        char* encoding;
         long size;
 
         WCHAR key[DIM_KEY];
@@ -106,16 +107,24 @@
          * internal buffer so that the caller can release the buffer after
          * calling setData().
          *
-         * The data currently cannot contain nul-bytes because it is
-         * treated like a C-style string. The size parameter should
+         * Data which is to be sent as it is currently cannot contain nul-bytes
+         * because it is treated like a C-style string. The size parameter should
          * not include the nul-byte which terminates C strings, so
          * pass size==0 for an empty string. A nul-byte is always
          * appended at the end of the data automatically.
          *
-         * Older versions of this API required that clients include
-         * the nul-byte in the string; to be backwards compatible, this
-         * behavior is still accepted by this call which then simply
-         * reduces the size by one byte.
+         * Binary data can be sent if it is encoded during transmission. The client
+         * can decide which encoding to use like this:
+         * - setData() with binary data
+         * - changeEncoding(SyncItem::encodings::...)
+         * or
+         * - setData() with data that is already encoded in some way
+         * - setDataEncoding(<the encoding name>) 
+         *
+         * If the client neither changes nor sets the encoding, then
+         * the default encoding specified in the SyncSource's
+         * configuration is automatically applied by the client
+         * library.
          *
          * @param data        memory to be copied, may be NULL; in that case an empty buffer is allocated
          * @param size        length of the given data or, if data is NULL, the desired buffer size
@@ -142,6 +151,41 @@
          * @param s the new size
          */
         void setDataSize(long s) EXTRA_SECTION_01;
+
+        /**
+         * Sets the encoding of the data _without_ changing the data itself.
+         * The only use of calling this directly in a SyncML client is to
+         * send data in an encoding that the library itself does not support.
+         * Otherwise changeDataEncoding() should be used if the default behavior
+         * is not sufficient.
+         *
+         * @param encoding      this string is sent to the server and must be
+         *                      supported by it, see the constants in SyncItem::encoding
+         *                      for supported values; NULL means plain data
+         */
+        void setDataEncoding(const char* encoding) EXTRA_SECTION_01;
+
+        /**
+         * Gets the encoding of the data. May return NULL if none has been set.
+         *
+         * Note that for incoming items the client library automatically converts
+         * to plain encoding unless the server uses an unknown encoding.
+         */
+        const char* getDataEncoding() EXTRA_SECTION_01;
+
+        /**
+         * Changes the encoding and the data currently stored in the item.
+         * Transformation to and from the encodings listed in SyncItem::encoding
+         * are supported.
+         *
+         * Some encodings may require additional information (TBD).
+         *
+         * @param encoding         see SyncItem::encoding for valid encodings
+         * @param credentialInfo   optional additional information: password for DES encryption
+         * @return error code, usually caused by unsupported encoding either of
+         *         the current data or the requested new encoding
+         */
+        int changeDataEncoding(const char* encoding, const char* credentialInfo = NULL) EXTRA_SECTION_01;
 
         /*
          * Sets the SyncItem data mime type
@@ -204,7 +248,33 @@
          */
         ArrayElement* clone() EXTRA_SECTION_01;
 
+        /**
+         * valid encodings for changeDataEncoding() and some helper functions
+         */
+        struct encodings {
+            static const char* const plain;      /**< data is transferred as it is */
+            static const char* const escaped;    /**< base64 encoded during transfer */
+            static const char* const des;        /**< not yet implemented:
+                                                      encrypted with DES and then base64 encoded; beware,
+                                                      non-standard and only supported by some servers */
 
+            /** helper function which turns NULL into plain */
+            static const char* encodingString(const char* encoding) {
+                return encoding ? encoding : plain;
+            }
+
+            /** returns true if and only if the encoding is one of the supported ones */
+            static const BOOL isSupported(const char* encoding) {
+                const char* enc = encodingString(encoding);
+                return !strcmp(enc, plain) ||
+                    !strcmp(enc, escaped) ||
+                    !strcmp(enc, des);
+            }
+        };
+
+      private:
+        /** encode or decode the item's data with the named transformation */
+        int transformData(const char* name, BOOL encode, const char* password);
     };
 
 #endif

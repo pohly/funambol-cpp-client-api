@@ -146,8 +146,3 @@ BOOL SyncManagerConfig::addSyncSourceConfig(SyncSourceConfig& sc) {
 BOOL SyncManagerConfig::isDirty() {
     return accessConfig.getDirty();
 }
-
-BOOL SyncManagerConfig::isEncryption() {
-    return accessConfig.getEncryption();
-}
-

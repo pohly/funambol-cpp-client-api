@@ -26,13 +26,6 @@
 #include "syncml/core/ObjectDel.h"
 #include "syncml/formatter/Formatter.h"
 
-enum DataEncoding {
-    PLAIN  = 0,
-    B64    = 1,
-    DES    = 2,
-    DESB64 = 3
-};
-
 class SyncMLBuilder {
 
     public:
@@ -188,23 +181,6 @@ class SyncMLBuilder {
         
         void resetMessageID() EXTRA_SECTION_01;
         
-        /**
-         * Sets the items content encoding
-         */
-        void setEncoding(DataEncoding e) EXTRA_SECTION_01;
-
-        /**
-         * Returns the items content encoding
-         */
-        DataEncoding getEncoding() EXTRA_SECTION_01;
-
-        /**
-         * Sets the encryption password
-         *
-         * @param pwd encryption password - NOT NULL
-         */
-        void setEncPassword(const char*  pwd);
-        
         /*
         * reset MsgRef counter
         */
@@ -216,17 +192,12 @@ class SyncMLBuilder {
 
         char*  target;
         char*  device;
-        char*  encPassword;
 
         unsigned long sessionID;
         unsigned int  msgID    ;
         unsigned int  cmdID    ;
         unsigned int  msgRef   ;
         
-        DataEncoding encoding;
-
-        char*  encodeB64(char* data, TransformationInfo& info);   
-        char*  encodeDESB64(char* data, TransformationInfo& info);
         ComplexData* getComplexData(SyncItem* syncItem, long &syncItemOffset, long maxBytes, long &sentBytes);
 
 };

@@ -54,7 +54,6 @@
  *                        message from client to server
  * readBufferSize       : Specifies the value for the size of the buffer used 
  *                        to store the incoming stream from server (byte)
- * encryption           : Do we use ciphering?
  * userAgent            : The user agent string, will be attached to http 
  *                        messages to identify the client on server side.
  *                        It shoud be a short description with the client 
@@ -87,7 +86,6 @@ class AccessConfig {
         unsigned long   maxMsgSize          ;
         unsigned long   maxModPerMsg        ;
         unsigned long   readBufferSize      ;
-        BOOL            encryption          ;
         char*           userAgent           ;
         BOOL            checkConn           ;
         unsigned int    responseTimeout     ;
@@ -309,9 +307,6 @@ class AccessConfig {
          * @param config the new value.
          */
         void assign(const AccessConfig& s) EXTRA_SECTION_02;
-
-        BOOL getEncryption() const EXTRA_SECTION_02;
-        void setEncryption(BOOL useEncryption) EXTRA_SECTION_02;
 
         /*
          * Assign operator

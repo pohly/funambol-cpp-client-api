@@ -43,12 +43,9 @@
  *                    in 'supportedTypes' property.
  * sync             : This is the current sync mode used by the client. 
  *                    The parameter MUST be one of the sync modes specified in property 'syncModes'.
- * encodings        : Specifies how the content of an item should be encoded. 
- *                    The form of this parameter is a semi-column separated list of formats 
- *                    that must be applied in sequence from the leftmost to the rightmost. 
- *                    For example, if format is "des;b64", when  the item will be output in 
- *                    the message, the content must be first transformed with the “des” encoder 
- *                    and than with the b64 encoder.
+ * encodings        : Specifies how the content of an outgoing item should be encoded by the client library
+ *                    if the sync source does not set an encoding itself. Valid values are listed in
+ *                    SyncItem::encodings.
  * version          : The version of the source type used by client.
  * supportedTypes   : A string rapresenting the source types (with versions) supported by the SyncSource. 
  *                    The string must be formatted as a sequence of "type:version" separated by commas ','. 
@@ -160,10 +157,6 @@ class SyncSourceConfig {
          *
          */
         const char*  getEncoding() const EXTRA_SECTION_02;
-        
-        /*
-         * Returns the default syncMode as one of the strings above.
-         */
         void setEncoding(const char*  s) EXTRA_SECTION_02;
 
 

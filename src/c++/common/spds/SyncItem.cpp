@@ -23,6 +23,11 @@
 
 #include "base/util/utils.h"
 #include "spds/SyncItem.h"
+#include "spds/DataTransformerFactory.h"
+
+const char* const SyncItem::encodings::plain = "bin";
+const char* const SyncItem::encodings::escaped = "b64";
+const char* const SyncItem::encodings::des = "des;b64";
 
 /*
  * Default constructor
@@ -50,6 +55,7 @@ SyncItem::SyncItem(const WCHAR* itemKey) {
 void SyncItem::initialize() {
     type[0] = 0;
     data = NULL;
+    encoding = NULL;
     size = -1;
     lastModificationTime = -1;
     key[0] = 0;
@@ -64,12 +70,121 @@ SyncItem::~SyncItem() {
     if (data) {
         delete [] data; data = NULL;
     }
+    if (encoding) {
+        delete [] encoding; encoding = NULL;
+    }
     if (targetParent) {
         delete [] targetParent; targetParent = NULL;
     }
     if (sourceParent) {
         delete [] sourceParent; sourceParent = NULL;
     }
+}
+
+const char* SyncItem::getDataEncoding() {
+    return encoding;
+}
+
+void SyncItem::setDataEncoding(const char* enc) {
+    if (encoding) {
+        delete [] encoding;
+    }
+    encoding = stringdup(enc);
+}
+
+
+
+int SyncItem::changeDataEncoding(const char* enc, const char* credentialInfo) {
+    int res = ERR_NONE;
+
+    // nothing to be done?
+    if (getDataSize() <= 0 ||
+        !strcmp(encodings::encodingString(encoding), encodings::encodingString(enc))) {
+        return ERR_NONE;
+    }
+
+    // sanity check: both encodings must be valid
+    if (!encodings::isSupported(enc) ||
+        !encodings::isSupported(encoding)) {
+        return ERR_UNSPECIFIED;
+    }
+
+    // always convert to plain encoding first
+    if (strcmp(encodings::encodingString(encoding), encodings::plain)) {
+        if (!strcmp(encoding, encodings::escaped) ||
+            !strcmp(encoding, encodings::des)) {
+            res = transformData("b64", FALSE, credentialInfo);
+            if (res) {
+                return res;
+            }
+        }
+        if (!strcmp(encoding, encodings::des)) {
+            res = transformData("des", FALSE, credentialInfo);
+            if (res) {
+                return res;
+            }
+        }
+        setDataEncoding(encodings::plain);
+    }
+
+    // now convert to new encoding
+    if (strcmp(encodings::encodingString(encoding), encodings::encodingString(enc))) {
+        if (!strcmp(enc, encodings::des)) {
+            res = transformData("des", TRUE, credentialInfo);
+            if (res) {
+                return res;
+            }
+        }
+        if (!strcmp(enc, encodings::escaped) ||
+            !strcmp(enc, encodings::des)) {
+            res = transformData("b64", TRUE, credentialInfo);
+            if (res) {
+                return res;
+            }
+        }
+
+        setDataEncoding(encodings::encodingString(enc));
+    }
+
+    return ERR_NONE;
+}
+
+int SyncItem::transformData(const char* name, BOOL encode, const char* password)
+{
+    char* buffer = NULL;
+    DataTransformer *dt = encode ?
+        DataTransformerFactory::getEncoder(name) :
+        DataTransformerFactory::getDecoder(name);
+    TransformationInfo info;
+    int res = ERR_NONE;
+    
+    if (dt == NULL) {
+        res = lastErrorCode;
+        goto exit;
+    }
+
+    info.size = getDataSize();
+    info.password = password;
+    buffer = dt->transform((char*)getData(), info);
+    if (!buffer) {
+        res = lastErrorCode;
+        goto exit;
+    }
+    // danger, transformer may or may not have manipulated the data in place
+    if (info.newReturnedData) {
+        setData(buffer, info.size);
+    } else {
+        buffer = NULL;
+    }
+
+  exit:
+    if (buffer) {
+        delete [] buffer;
+    }
+    if (dt) {
+        delete dt;
+    }
+    return res;
 }
 
 /*

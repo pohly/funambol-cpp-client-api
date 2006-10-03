@@ -869,24 +869,6 @@ int SyncManager::sync() {
 
         // keep sending changes for current source until done with it
         do {
-
-            //
-            // Sets the proper encoding for the content of the items.
-            //
-            if (config.isEncryption()) {
-                syncMLBuilder.setEncPassword(credentialInfo);
-                syncMLBuilder.setEncoding(DESB64);
-            } else {
-                // TBD: if we are using vcard/icalendar, we need to 
-                // set the encoding to PLAIN
-                if (strcmp(sources[count]->getConfig().getEncoding(), B64_ENCODING) == 0) {
-                    syncMLBuilder.setEncoding(B64);
-                } else {
-                    syncMLBuilder.setEncoding(PLAIN);
-                }   
-
-            }
-
             if (modificationCommand) {
                 delete modificationCommand; 
                 modificationCommand = NULL;
@@ -929,7 +911,7 @@ int SyncManager::sync() {
                     {
                         if (syncItem == NULL) {
                             if (tot == 0) {
-                                syncItem = sources[count]->getFirstItem();                        
+                                syncItem = getItem(*sources[count], &SyncSource::getFirstItem);
                                 syncItemOffset = 0;
                                 if (syncItem) {
                                     // Fire Sync Item Event - Item sent as Updated
@@ -940,7 +922,7 @@ int SyncManager::sync() {
                         tot = 0;
                         do {
                             if (syncItem == NULL) {
-                                syncItem = sources[count]->getNextItem();
+                                syncItem = getItem(*sources[count], &SyncSource::getNextItem);
                                 syncItemOffset = 0;
                                 if (syncItem) {
                                     // Fire Sync Item Event - Item sent as Updated
@@ -987,16 +969,16 @@ int SyncManager::sync() {
                     last = TRUE; 
 
                     allItemsList[count] = new ArrayList();
-                    syncItem = sources[count]->getFirstItemKey();
+                    syncItem = getItem(*sources[count], &SyncSource::getFirstItemKey);
                     if(syncItem) {
                         allItemsList[count]->add((ArrayElement&)*syncItem);
                         delete syncItem; syncItem = NULL;
                     }
-                    syncItem = sources[count]->getNextItemKey();
+                    syncItem = getItem(*sources[count], &SyncSource::getNextItemKey);
                     while(syncItem) {
                         allItemsList[count]->add((ArrayElement&)*syncItem);
                         delete syncItem; syncItem = NULL;
-                        syncItem = sources[count]->getNextItemKey();	
+                        syncItem = getItem(*sources[count], &SyncSource::getNextItemKey);	
                     } 
                     break;
 
@@ -1008,7 +990,7 @@ int SyncManager::sync() {
                     {   
                         if (syncItem == NULL) {
                             if (tot == 0) {                    
-                                syncItem = sources[count]->getFirstItem();
+                                syncItem = getItem(*sources[count], &SyncSource::getFirstItem);
                                 syncItemOffset = 0;
                                 if (syncItem) {
                                     // Fire Sync Item Event - Item sent as Updated
@@ -1019,7 +1001,7 @@ int SyncManager::sync() {
                         tot = 0;
                         do {
                             if (syncItem == NULL) {
-                                syncItem = sources[count]->getNextItem();                  
+                                syncItem = getItem(*sources[count], &SyncSource::getNextItem);
                                 syncItemOffset = 0;
                                 if (syncItem) {
                                     // Fire Sync Item Event - Item sent as Updated
@@ -1068,7 +1050,7 @@ int SyncManager::sync() {
                         //
                         if (step == 0) {
                             // assert(syncItem == NULL);
-                            syncItem = sources[count]->getFirstNewItem(); 
+                            syncItem = getItem(*sources[count], &SyncSource::getFirstNewItem);
                             syncItemOffset = 0;
                             step++;
                             if (syncItem == NULL)
@@ -1077,7 +1059,7 @@ int SyncManager::sync() {
                         if (step == 1) {                                                          
                             do {
                                 if (syncItem == NULL) {
-                                    syncItem = sources[count]->getNextNewItem();
+                                    syncItem = getItem(*sources[count], &SyncSource::getNextNewItem);
                                     syncItemOffset = 0;
                                 }
 
@@ -1127,7 +1109,7 @@ int SyncManager::sync() {
                             }
 
                             // assert(syncItem == NULL);
-                            syncItem = sources[count]->getFirstUpdatedItem();
+                            syncItem = getItem(*sources[count], &SyncSource::getFirstUpdatedItem);
                             syncItemOffset = 0;
 
                             step++;
@@ -1138,7 +1120,7 @@ int SyncManager::sync() {
                         if (step == 3) {
                             do {				
                                 if (syncItem == NULL) {
-                                    syncItem = sources[count]->getNextUpdatedItem();
+                                    syncItem = getItem(*sources[count], &SyncSource::getNextUpdatedItem);
                                     syncItemOffset = 0;
                                 }
 
@@ -1188,7 +1170,7 @@ int SyncManager::sync() {
                                 modificationCommand = NULL;
                             }
 
-                            syncItem = sources[count]->getFirstDeletedItem();
+                            syncItem = getItem(*sources[count], &SyncSource::getFirstDeletedItem);
                             syncItemOffset = 0;
 
                             step++;
@@ -1198,7 +1180,7 @@ int SyncManager::sync() {
                         if (step == 5) {
                             do {
                                 if (syncItem == NULL) {
-                                    syncItem = sources[count]->getNextDeletedItem();                       
+                                    syncItem = getItem(*sources[count], &SyncSource::getNextDeletedItem);
                                     syncItemOffset = 0;
                                 }
 
@@ -1754,6 +1736,26 @@ finally:
 
 }
 
+SyncItem* SyncManager::getItem(SyncSource& source, SyncItem* (SyncSource::* getItemFunction)()) {
+    SyncItem *syncItem = (source.*getItemFunction)();
+
+    if (!syncItem) {
+        return NULL;
+    }
+
+    // change encoding automatically?
+    const char* enc = source.getConfig().getEncoding();
+    if (!syncItem->getDataEncoding() &&
+        enc &&
+        enc[0]) {
+        if (syncItem->changeDataEncoding(enc, credentialInfo)) {
+            delete syncItem;
+            syncItem = NULL;
+        }
+    }
+    return syncItem;
+}
+
 Status *SyncManager::processSyncItem(Item* item, const CommandInfo &cmdInfo, SyncMLBuilder &syncMLBuilder)
 {
     int code = 0;
@@ -1834,8 +1836,9 @@ Status *SyncManager::processSyncItem(Item* item, const CommandInfo &cmdInfo, Syn
             char* format = 0;
 
             //
-            // Retrieving how the content has been encoded
-            // and then processing the content accordingly
+            // Retrieving how the content has been encoded.
+            // Remember that in the item and convert it once it is
+            // complete.
             //
             if (cmdInfo.format) {
                 format = cmdInfo.format;
@@ -1846,20 +1849,12 @@ Status *SyncManager::processSyncItem(Item* item, const CommandInfo &cmdInfo, Syn
                     format = m->getFormat();                            
                 }
             }
-
-            // figure out final item data (might be encoded)
-            long size = 0;
-            char *convertedData = NULL;
-            char *dataToAdd = NULL;
-            if (format) {
-                dataToAdd =
-                    convertedData = processItemContent(data, format, &size);
-            } else {
-                dataToAdd = data;
-                size = strlen(data);
+            if (format && !incomingItem->getDataEncoding()) {
+                incomingItem->setDataEncoding(format);
             }
 
             // append or set new data
+            long size = strlen(data);
             if (append) {
                 if (size + incomingItem->offset > incomingItem->getDataSize()) {
                     // overflow, signal error: "Size mismatch"
@@ -1869,17 +1864,13 @@ Status *SyncManager::processSyncItem(Item* item, const CommandInfo &cmdInfo, Syn
                     delete incomingItem;
                     incomingItem = NULL;
                 } else {
-                    memcpy((char *)incomingItem->getData() + incomingItem->offset, dataToAdd, size);
+                    memcpy((char *)incomingItem->getData() + incomingItem->offset, data, size);
                 }
             } else {
-                incomingItem->setData(dataToAdd, size);
+                incomingItem->setData(data, size);
             }
             if (incomingItem) {
                 incomingItem->offset += size;
-            }
-
-            if (convertedData) {
-                delete [] convertedData;
             }
         }
     }
@@ -1903,6 +1894,10 @@ Status *SyncManager::processSyncItem(Item* item, const CommandInfo &cmdInfo, Syn
             // sanity check: is the item complete?
             // >= is used because for deleted items the server might have sent -1 (Synthesis server does that).
             if (incomingItem->offset >= incomingItem->getDataSize()) {
+                // attempt to transform into plain format, if that fails let the client deal with
+                // the encoded content
+                incomingItem->changeDataEncoding(SyncItem::encodings::plain, credentialInfo);
+
                 // Process item ------------------------------------------------------------
                 if ( strcmp(cmdInfo.commandName, ADD) == 0) {  
                     // Fire Sync Item Event - New Item Added by Server
@@ -1980,86 +1975,6 @@ Status *SyncManager::processSyncItem(Item* item, const CommandInfo &cmdInfo, Syn
     
     return status;
 }
-
-char* SyncManager::processItemContent(const char* toConvert,
-                                      const char* format,
-                                      long *size) {
-    
-    char* p = NULL;
-    char* encodings = stringdup(format);
-    char* encoding = NULL;
-    TransformationInfo info;
-
-    char* c = stringdup(toConvert);
-    info.size = strlen(c);
-    info.password = credentialInfo; //(char*)config.getAccessConfig().getPassword();
-
-    while ((p = strrchr(encodings, CHR(';')))) {
-        encoding = p+1;
-        decodeSyncItemContent(&c, info, encoding);
-        if (lastErrorCode != ERR_NONE) {
-            break;
-        }
-        *p = 0;
-    }
-
-    if (strlen(encodings) > 0) {
-        decodeSyncItemContent(&c, info, encodings);
-    }
-    c[info.size] = 0;
-    *size = info.size;
-    
-    if (encodings) { delete [] encodings; encodings = NULL; }
-    return c;
-    
-}
-
-void SyncManager::decodeSyncItemContent(char** c,
-                                        TransformationInfo& info,
-                                        const char* encoding) {
-    
-    char* decodedData = NULL;
-   
-    resetError();
-   
-    DataTransformer* dt = DataTransformerFactory::getDecoder(encoding);
-
-    if (dt == NULL) {
-        //
-        // lastErrorCode contains already the error
-        //
-        goto exit;
-    }
-    
-    decodedData = dt->transform(*c, info);
-
-    if (lastErrorCode == ERR_UNSPECIFIED) {
-        goto exit;
-    }
-    
-    //
-    // If the transformer has allocated new memory, we set it into the 
-    // sync item, otherwise we just need to adjust the data size.
-    //
-    if (info.newReturnedData) {   
-        /// FIXME!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-        strncpy(*c, decodedData, info.size);
-        if (decodedData) {
-            delete [] decodedData;
-        }
-        
-    } else {               
-       
-    }       
-
-exit:
-
-    if (dt) {
-        delete dt;
-    }
-    
-}
-
 
 /*
  * Creates the device info for this client and sources.

@@ -284,7 +284,6 @@ public:
 
     virtual SyncItem* getNextDeletedItem() = 0 EXTRA_SECTION_01;
 
-    
     virtual int addItem(SyncItem& item) = 0 EXTRA_SECTION_01;
    
     virtual int updateItem(SyncItem& item) = 0 EXTRA_SECTION_01;

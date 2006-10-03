@@ -46,7 +46,6 @@ AccessConfig::AccessConfig() {
     isServerAuthRequired  = FALSE;
     maxMsgSize            = 0;
     maxModPerMsg          = 0;
-    encryption            = FALSE;
     readBufferSize        = 0;
     userAgent             = NULL;
     proxyUsername         = NULL;
@@ -340,19 +339,6 @@ void AccessConfig::set(char** buf, const char* v) {
 	strcpy(*buf, v);
 }
 
-BOOL AccessConfig::getEncryption() const {
-    return encryption;   
-}
-
-/**
- * Sets if the sync engine should use a HTTP proxy to access the server.
- *
- * @param useProxy FALSE for not use a proxy, TRUE otherwise
- */
-void AccessConfig::setEncryption(BOOL useEncryption) {
-    encryption = useEncryption;   
-}
-
 void AccessConfig::assign(const AccessConfig& s) {
 	setUsername (s.getUsername() );
 	setPassword (s.getPassword() );
@@ -377,7 +363,6 @@ void AccessConfig::assign(const AccessConfig& s) {
     setMaxMsgSize(s.getMaxMsgSize());
     setMaxModPerMsg(s.getMaxModPerMsg());
     setReadBufferSize(s.getReadBufferSize());
-    setEncryption  (s.getEncryption()  );
     setCheckConn(s.getCheckConn());
     setResponseTimeout(s.getResponseTimeout());
 
