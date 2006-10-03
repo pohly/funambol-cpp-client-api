@@ -1067,11 +1067,7 @@ int SyncManager::sync() {
                             syncItemOffset = 0;
                             step++;
                             if (syncItem == NULL)
-                                step++;  
-                            else {
-				                // Fire Sync Item Event - New Item Detected
-                                fireSyncItemEvent(sources[count]->getConfig().getURI(), syncItem->getKey(), ITEM_ADDED_BY_CLIENT);
-                            }
+                                step++;
                         }
                         if (step == 1) {                                                          
                             do {
@@ -1131,11 +1127,7 @@ int SyncManager::sync() {
 
                             step++;
                             if (syncItem == NULL)
-                                step++;    
-                            else {
-                                // Fire Sync Item Event - Item Updated
-                                fireSyncItemEvent(sources[count]->getConfig().getURI(), syncItem->getKey(), ITEM_UPDATED_BY_CLIENT);
-                            }
+                                step++;
 
                         }
                         if (step == 3) {
@@ -1196,11 +1188,7 @@ int SyncManager::sync() {
 
                             step++;
                             if (syncItem == NULL)
-                                step++;    
-                            else {
-                                // Fire Sync Item Event - Item Deleted
-                                fireSyncItemEvent(sources[count]->getConfig().getURI(), syncItem->getKey(), ITEM_DELETED_BY_CLIENT);
-                            }
+                                step++;
                         }
                         if (step == 5) {
                             do {
