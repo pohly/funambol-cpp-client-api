@@ -55,6 +55,7 @@ void testConfigFilter();
 void testEncryption();
 void createConfig(DMTClientConfig& config);
 static void testXMLProcessor();
+void printReport(SyncReport* sr, char* sourceName);
 
 
 #define APPLICATION_URI T("Funambol/SyncclientPIM")
@@ -176,6 +177,9 @@ int main(int argc, char** argv) {
     if( sampleClient.sync(config, ssArray) ) {
         LOG.error("Error in sync.");
     }
+
+    // Print sync results.
+    printReport(sampleClient.getSyncReport(), SOURCE_NAME);
 
     // Save config to registry.
     config.save();
@@ -329,3 +333,62 @@ void createConfig(DMTClientConfig& config) {
     delete sc;
 }
 
+
+
+
+#include "base/util/StringBuffer.h"
+//
+// Prints a formatted report for the synchronization process.
+//
+void printReport(SyncReport* sr, char* sourceName) {
+
+    StringBuffer res;
+    char tmp[512];
+
+    res =      "===========================================================\n";
+    res.append("================   SYNCHRONIZATION REPORT   ===============\n");
+    res.append("===========================================================\n");
+
+    sprintf(tmp, "Last error code = %d\n", sr->getLastErrorCode());
+    res.append(tmp);
+    sprintf(tmp, "Last error msg  = %s\n\n", sr->getLastErrorMsg());
+    res.append(tmp);
+
+    res.append("----------|--------CLIENT---------|--------SERVER---------|\n");
+    res.append("  Source  |  NEW  |  MOD  |  DEL  |  NEW  |  MOD  |  DEL  |\n");
+    res.append("----------|-----------------------------------------------|\n");
+
+    int sourceNumber = 1;
+    for (unsigned int i=0; i<sourceNumber; i++) {
+        SyncSourceReport* ssr = sr->getSyncSourceReport(sourceName);
+
+        sprintf(tmp, "%10s|", ssr->getSourceName());
+        res.append(tmp);
+        sprintf(tmp, "%3d/%3d|", ssr->getItemReportSuccessfulCount(CLIENT, COMMAND_ADD), ssr->getItemReportCount(CLIENT, COMMAND_ADD));
+        res.append(tmp);
+        sprintf(tmp, "%3d/%3d|", ssr->getItemReportSuccessfulCount(CLIENT, COMMAND_REPLACE), ssr->getItemReportCount(CLIENT, COMMAND_REPLACE));
+        res.append(tmp);
+        sprintf(tmp, "%3d/%3d|", ssr->getItemReportSuccessfulCount(CLIENT, COMMAND_DELETE), ssr->getItemReportCount(CLIENT, COMMAND_DELETE));
+        res.append(tmp);
+
+        sprintf(tmp, "%3d/%3d|", ssr->getItemReportSuccessfulCount(SERVER, COMMAND_ADD), ssr->getItemReportCount(SERVER, COMMAND_ADD));
+        res.append(tmp);
+        sprintf(tmp, "%3d/%3d|", ssr->getItemReportSuccessfulCount(SERVER, COMMAND_REPLACE), ssr->getItemReportCount(SERVER, COMMAND_REPLACE));
+        res.append(tmp);
+        sprintf(tmp, "%3d/%3d|\n", ssr->getItemReportSuccessfulCount(SERVER, COMMAND_DELETE), ssr->getItemReportCount(SERVER, COMMAND_DELETE));
+        res.append(tmp);
+        res.append("----------|-----------------------------------------------|\n\n");
+
+        sprintf(tmp, "%s:\n----------", ssr->getSourceName());
+        res.append(tmp);
+        sprintf(tmp, "\nSource State    = %d\n", ssr->getState());
+        res.append(tmp);
+        sprintf(tmp, "Last error code = %d\n", ssr->getLastErrorCode());
+        res.append(tmp);
+        sprintf(tmp, "Last error msg  = %s\n\n", ssr->getLastErrorMsg());
+        res.append(tmp);
+    }
+
+
+    printf("\n%s", res.c_str());
+}
