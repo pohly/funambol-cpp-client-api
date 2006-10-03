@@ -40,9 +40,9 @@
 
         BOOL newReturnedData;
         long size;
-        char*  username;
-        char*  password;
-        char*  sourceName;
+        const char*  username;
+        const char*  password;
+        const char*  sourceName;
 
         TransformationInfo() : newReturnedData(FALSE)
                              , size(-1)
