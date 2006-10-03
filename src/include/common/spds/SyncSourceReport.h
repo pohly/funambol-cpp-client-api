@@ -34,21 +34,39 @@ typedef enum SourceState{
         SOURCE_ERROR        = 2,
 } SourceState;
 
+
 /*
- *
+ * ----------------- SyncSourceReport Class ------------------------
+ * SyncSourceReport class rapresents the report of each 
+ * SyncSource synchronized. It is used to store the sync results 
+ * for a specific syncsource, its state (active/inactive/error) and
+ * the status of each item synchronized (both on client and server side).
  */
 class SyncSourceReport {
 
 private:
+
+    // The error code of the last error occurred for this source.
     int         lastErrorCode;
+
+    // The error message of the last error occurred for this source.
     char*       lastErrorMsg;
+
+    // The source name.
     char*       sourceName;
+
+    // The source state, possible values:
+    // 0 = SOURCE_ACTIVE   -> used in synchronization
+    // 1 = SOURCE_INACTIVE -> ignored in synchronization
+    // 2 = SOURCE_ERROR    -> error occurred, will be skipped in sync
     SourceState state;
 
+    // List of ItemReports for client modifications
     ArrayList*  clientAddItems;
     ArrayList*  clientModItems;
     ArrayList*  clientDelItems;
 
+    // List of ItemReports for server modifications
     ArrayList*  serverAddItems;
     ArrayList*  serverModItems;
     ArrayList*  serverDelItems;
@@ -57,7 +75,7 @@ private:
     // Return true if status is [200 <-> 299] (successful)
     bool isSuccessful(const int status);
 
-    // Initialize members.
+    // Function to initialize members.
     void initialize();
 
     /*
@@ -66,7 +84,9 @@ private:
      */
     void assign(const SyncSourceReport& ssr);
 
+
 public:
+
     SyncSourceReport(const char* name = NULL);
     SyncSourceReport(SyncSourceReport& ssr);
     virtual ~SyncSourceReport();
@@ -81,28 +101,62 @@ public:
     void setLastErrorMsg (const char* msg);
     void setSourceName   (const char* name);
 
-    // Returns true if source is active (state = SOURCE_ACTIVE).
+    /*
+     * Check the state of this source.
+     * Returns true if source is active (state = SOURCE_ACTIVE).
+     */
     bool checkState();
 
 
-    // Get internal pointer to the Item report #index.
+    /*
+     * Get internal pointer to a specific ItemReport.
+     * 
+     * @param target : to select if client/server side          (values = CLIENT - SERVER)
+     * @param command: to select the desired list of ItemReport (values = Add - Replace - Delete)
+     * @param index  : the index of desired item inside the list
+     *
+     */
     ItemReport* getItemReport(const char* target, const char* command, unsigned int index);
 
-    // Return number of ItemReport for a specific list (based on target, command).
+
+    /*
+     * Return the total number of ItemReport for a specific list.
+     *
+     * @param target : to select if client/server side          (values = CLIENT - SERVER)
+     * @param command: to select the desired list of ItemReport (values = Add - Replace - Delete)
+     *
+     */
     int getItemReportCount          (const char* target, const char* command);
+    // Only for successful reports.
     int getItemReportSuccessfulCount(const char* target, const char* command);
+    // Only for failed reports.
     int getItemReportFailedCount    (const char* target, const char* command);
 
-    // target  = CLIENT/SERVER
-    // command = Add/Replace/Delete
-    // ID      = LUID of item                \ ItemReport element
-    // status  = status code (201/500/...)   / ******************
+
+    /*
+     * Used to add an ItemReport to a specific list.
+     * This function is called inside API to store the status of each item
+     * added/modified/deleted on client and on server.
+     *
+     * @param target : to select if client/server side          (values = CLIENT - SERVER)
+     * @param command: to select the desired list of ItemReport (values = Add - Replace - Delete)
+     * @param ID     : the LUID of item                         (used to create the ItemReport element)
+     * @param status : the status code of the operation         (used to create the ItemReport element)
+     *
+     */
     void addItem(const char* target, const char* command, const WCHAR* ID, const int status);
 
 
-    // To switch on the right list, based on target and command.
-    ArrayList* getList(const char* target, const char* command) const;
 
+    /*
+     * Utility to switch on the right list, based on target and command.
+     *
+     * @param target : to select if client/server side          (values = CLIENT - SERVER)
+     * @param command: to select the desired list of ItemReport (values = Add - Replace - Delete)
+     * @return       : a pointer to the desired ArrayList
+     *
+     */
+    ArrayList* getList(const char* target, const char* command) const;
 
     /*
      * Assign operator

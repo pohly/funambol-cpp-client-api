@@ -33,21 +33,34 @@
 
 
 /*
+ * ------------------------- SyncReport Class ---------------------------
+ * The SyncReport class is used to summarize all results of a single synchronization. 
+ * During the synchronization process, all results about different operations 
+ * are stored in a SyncReport object, so the client will be able to get these 
+ * informations at the end. 
+ * Accessing this object a client can easily know for example the outcome 
+ * of each source synchronized, retrieve the number of items modified 
+ * on both sides, and the status code of each one.
  *
  */
 class SyncReport {
 
 private:
-    int   lastErrorCode;
-    char* lastErrorMsg;
 
+    // The error code of the last error occurred.
+    int   lastErrorCode;
+
+    // The error message of the last error occurred.
+    char* lastErrorMsg;
 
     // Array of report for each SyncSource.
     SyncSourceReport* ssReport;
     unsigned int ssReportCount;
 
 
-    // Initialize members.
+    /*
+     * Function to initialize members.
+     */
     void initialize();
 
     /*
@@ -56,9 +69,12 @@ private:
      */
     void assign(const SyncReport& sr);
 
+
 public:
+
     SyncReport();
     SyncReport(SyncReport& sr);
+    // Constructor passing a given configuration: setSyncSourceReports() is called.
     SyncReport(SyncManagerConfig& config);
     virtual ~SyncReport();
 
@@ -69,13 +85,23 @@ public:
     void setLastErrorCode(const int code);
     void setLastErrorMsg (const char* msg);
 
-    // Return pointer to internal object given the source name or index
+    // Return pointer to internal SyncSourceReport object given the source name or index
     SyncSourceReport* getSyncSourceReport(const char* name)   const;
     SyncSourceReport* getSyncSourceReport(unsigned int index) const;
     
-    // Create ssReport array from config.
+
+    /*
+     * Create ssReport array from config.
+     * The array is allocated new, will be freed in the desctructor.
+     * SyncSourceReports are all owned here by SyncReport, each 
+     * SyncSource object has a link to its correspondent (external) 
+     * report, but does not own it.
+     * SyncSourceReports are linked during SyncClient::sync().
+     * 
+     * @param config: the SyncManager config to get source number/names.
+     */
     void setSyncSourceReports(SyncManagerConfig& config);
-    
+
 
     /*
      * Assign operator

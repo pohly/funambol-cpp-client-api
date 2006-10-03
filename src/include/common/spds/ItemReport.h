@@ -25,13 +25,21 @@
 
 
 /*
- *
+ * ----------------- ItemReport Class ------------------------
+ * temReport class rapresents the result information on a 
+ * single item synchronized, such as the luid of the item 
+ * and its status code (200/201/500...)
  */
 class ItemReport : public ArrayElement {
 
 private:
+
+    // The status code of the operation executed.
     int  status;
+
+    // The LUID of item.
     WCHAR* id;
+
 
     /*
      * Assign this object with the given ItemReport
@@ -39,7 +47,9 @@ private:
      */
     void assign(const ItemReport& ir);
 
+
 public:
+
     ItemReport();
     ItemReport(ItemReport& ir);
     ItemReport(const WCHAR* luid, const int statusCode);
@@ -52,7 +62,6 @@ public:
     void setStatus(const int v);
 
     ArrayElement* clone();
-
 
     /*
      * Assign operator
