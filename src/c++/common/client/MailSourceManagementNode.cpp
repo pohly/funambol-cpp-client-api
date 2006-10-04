@@ -60,6 +60,8 @@ MailSyncSourceConfig& MailSourceManagementNode::getMailSourceConfig(BOOL refresh
         config.setOutbox((int)strtol(getPropertyValue(PROPERTY_SOURCE_OUTBOX), &c, 10));
         config.setSent((int)strtol(getPropertyValue(PROPERTY_SOURCE_SENT), &c, 10));
         config.setSchedule((int)strtol(getPropertyValue(PROPERTY_SOURCE_SCHEDULE), &c, 10));
+        config.setEncryption(getPropertyValue(PROPERTY_SOURCE_ENCRYPTION));
+
     }
 
     return config;
@@ -97,6 +99,8 @@ void MailSourceManagementNode::setMailSourceConfig(MailSyncSourceConfig& c) {
     setPropertyValue(PROPERTY_SOURCE_DRAFT, t);
     sprintf(t, T("%d"), c.getSchedule());
     setPropertyValue(PROPERTY_SOURCE_SCHEDULE, t);
+    
+    setPropertyValue(PROPERTY_SOURCE_ENCRYPTION,       (char* )c.getEncryption());
 
 }
 

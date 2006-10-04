@@ -70,6 +70,7 @@
 #define PROPERTY_CHECK_CONN            T("checkConn"        )
 #define PROPERTY_RESPONSE_TIMEOUT      T("responseTimeout"  )
 #define PROPERTY_SOURCE_SCHEDULE       T("schedule"         )
+#define PROPERTY_SOURCE_ENCRYPTION     T("encryption"       )
 
 // DeviceConfig properties
 #define PROPERTY_VER_DTD                    T("verDTD"          )

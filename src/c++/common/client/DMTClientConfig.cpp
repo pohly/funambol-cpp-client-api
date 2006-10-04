@@ -899,7 +899,11 @@ BOOL DMTClientConfig::readSourceConfig(int i,
     tmp = sourceNode.getPropertyValue(PROPERTY_SOURCE_ENCODING);    
     sourceConfigs[i].setEncoding(tmp);
     delete [] tmp;
-
+    
+    tmp = sourceNode.getPropertyValue(PROPERTY_SOURCE_ENCRYPTION);    
+    sourceConfigs[i].setEncryption(tmp);
+    delete [] tmp;
+    
     tmp = sourceNode.getPropertyValue(PROPERTY_SOURCE_SUPP_TYPES);    
     sourceConfigs[i].setSupportedTypes(tmp);
     delete [] tmp;
@@ -918,4 +922,6 @@ void DMTClientConfig::saveSourceConfig(int i,
     sourceNode.setPropertyValue(PROPERTY_SOURCE_SYNC, sourceConfigs[i].getSync());    
     sourceNode.setPropertyValue(PROPERTY_SOURCE_ENCODING, sourceConfigs[i].getEncoding());    
     sourceNode.setPropertyValue(PROPERTY_SOURCE_SUPP_TYPES, sourceConfigs[i].getSupportedTypes());
+    sourceNode.setPropertyValue(PROPERTY_SOURCE_ENCRYPTION, sourceConfigs[i].getEncryption());
+
 }
