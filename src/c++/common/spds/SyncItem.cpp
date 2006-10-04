@@ -185,6 +185,7 @@ int SyncItem::transformData(const char* name, BOOL encode, const char* password)
         setData(buffer, info.size);
     } else {
         buffer = NULL;
+        setDataSize(info.size);
     }
 
   exit:
