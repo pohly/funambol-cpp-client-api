@@ -181,8 +181,8 @@ class DMTClientConfig : public SyncManagerConfig {
 
         ~DMTClientConfig() EXTRA_SECTION_01;
 
-        SyncSourceConfig* getSyncSourceConfig(const char* name, BOOL refresh) EXTRA_SECTION_01;
-        SyncSourceConfig* getSyncSourceConfig(unsigned int i,   BOOL refresh) EXTRA_SECTION_01;
+        SyncSourceConfig* getSyncSourceConfig(const char* name, BOOL refresh = FALSE) EXTRA_SECTION_01;
+        SyncSourceConfig* getSyncSourceConfig(unsigned int i,   BOOL refresh = FALSE) EXTRA_SECTION_01;
 
         virtual BOOL read() EXTRA_SECTION_01;
         virtual BOOL save() EXTRA_SECTION_01;
