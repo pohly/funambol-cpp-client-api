@@ -39,6 +39,9 @@ MailSyncSourceConfig::MailSyncSourceConfig() {
 MailSyncSourceConfig::~MailSyncSourceConfig() {
 }
 
+MailSyncSourceConfig::MailSyncSourceConfig(MailSyncSourceConfig& c) {
+    assign(c);
+}
 
 void MailSyncSourceConfig::setDownloadAge(int age) {
     downloadAge = age;
