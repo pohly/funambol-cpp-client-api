@@ -68,11 +68,6 @@ const WCHAR *SyncSource::getName() {
      return name;
  }
 
-void SyncSource::setConfig(const SyncSourceConfig& sc) {
-    config.assign(sc);
-    setPreferredSyncMode(syncModeCode(sc.getSync()));
-}
-
 
 // Return pointer to report object
 SyncSourceReport* SyncSource::getReport() {

@@ -102,10 +102,6 @@ public:
     SyncSourceConfig& getConfig() EXTRA_SECTION_01 {
         return config;
     }
-    // initialize sync source from complete configuration:
-    // copies all settings into the config referenced by the
-    // sync source
-    void setConfig(const SyncSourceConfig& sc) EXTRA_SECTION_01;
 
 
     // Return pointer to report object
