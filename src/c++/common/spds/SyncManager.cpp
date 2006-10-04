@@ -767,6 +767,14 @@ BOOL SyncManager::checkForServerChanges(SyncML* syncml, ArrayList &statusList)
                         result = TRUE;
                         goto finally;
                     }
+                    // Size might have been included in either the command or the item meta information.
+                    // The check for size > 0 is necessary because the function returns 0 even if no
+                    // size information was sent by the server - that's okay, for items that really have
+                    // size 0 the value doesn't matter as they shouldn't be split into chunks.
+                    Meta *itemMeta = item->getMeta();
+                    if (itemMeta && itemMeta->getSize() > 0) {
+                        cmdInfo.size = itemMeta->getSize();
+                    }
 
                     //
                     // set the syncItem element
@@ -1960,7 +1968,7 @@ Status *SyncManager::processSyncItem(Item* item, const CommandInfo &cmdInfo, Syn
             }
         } else {
             // keep the item, tell server "Chunked item accepted and buffered"
-            status = syncMLBuilder.prepareItemStatus(cmdInfo.commandName, itemName, cmdInfo.cmdRef, 214);
+            status = syncMLBuilder.prepareItemStatus(cmdInfo.commandName, itemName, cmdInfo.cmdRef, 213);
         }
     }
 
