@@ -66,7 +66,7 @@ public:
      *
      * @param name - the name of the SyncSource
      */
-    FILESyncSource(const wchar_t* name, const SyncSourceConfig* sc);
+    FILESyncSource(const wchar_t* name, SyncSourceConfig* sc);
 
     // Destructor
     virtual ~FILESyncSource();

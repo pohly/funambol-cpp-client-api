@@ -31,7 +31,7 @@ static int cupdated;
 static int cdeleted;
 
 
-FILESyncSource::FILESyncSource(const wchar_t* name, const SyncSourceConfig* sc) : SyncSource(name, sc) {
+FILESyncSource::FILESyncSource(const wchar_t* name, SyncSourceConfig* sc) : SyncSource(name, sc) {
     c    = NULL; 
     path = NULL;
     dir  = NULL;
@@ -315,7 +315,7 @@ int FILESyncSource::addItem(SyncItem& item) {
     char* data = (char*)item.getData();
     size_t len = item.getDataSize();
 
-    if (!file.parse(data, len)) {
+    if (file.parse(data, len)) {
         sprintf(lastErrorMsg, "Error parsing item from server");
         report->setLastErrorCode(ERR_BAD_FILE_CONTENT);
         report->setLastErrorMsg(lastErrorMsg);

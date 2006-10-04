@@ -44,8 +44,6 @@ int main(int argc, char** argv) {
         // generate a default config
         createConfig(config);
     }
-    SyncSourceConfig sc;
-    config.getSyncSourceConfig(SOURCE_NAME, sc);
 
     /////////////////////////////////////////////
     // TMP: reset config last time stamp! -> always slow
@@ -56,7 +54,7 @@ int main(int argc, char** argv) {
     //
     // Create the SyncSource passing its name and SyncSourceConfig.
     //
-    FILESyncSource fileSource(WSOURCE_NAME, &sc);
+    FILESyncSource fileSource(WSOURCE_NAME, config.getSyncSourceConfig(SOURCE_NAME));
     fileSource.setDir(dir);
 
     SyncSource* ssArray[2];
@@ -105,7 +103,7 @@ void createConfig(DMTClientConfig& config) {
     delete dc;
 
     SyncSourceConfig* sc = DefaultConfigFactory::getSyncSourceConfig(SOURCE_NAME);
-    sc->setEncoding ("plain/text");
+    sc->setEncoding ("bin");
     sc->setType     ("application/*");
     sc->setURI      ("briefcase");
     sc->setSyncModes(T("slow"));        // TBD: by now only slow
