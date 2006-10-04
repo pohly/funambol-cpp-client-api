@@ -1744,13 +1744,14 @@ SyncItem* SyncManager::getItem(SyncSource& source, SyncItem* (SyncSource::* getI
     }
 
     // change encoding automatically?
-    const char* enc = source.getConfig().getEncoding();
-    if (!syncItem->getDataEncoding() &&
-        enc &&
-        enc[0]) {
-        if (syncItem->changeDataEncoding(enc, credentialInfo)) {
-            delete syncItem;
-            syncItem = NULL;
+    const char* encoding   = source.getConfig().getEncoding();
+    const char* encryption = source.getConfig().getEncryption();
+    if (!syncItem->getDataEncoding()) {
+        if ( (encoding && encoding[0]) || (encryption && encryption[0]) ) {
+            if (syncItem->changeDataEncoding(encoding, encryption, credentialInfo)) {
+                delete syncItem;
+                syncItem = NULL;
+            }
         }
     }
     return syncItem;
@@ -1896,7 +1897,7 @@ Status *SyncManager::processSyncItem(Item* item, const CommandInfo &cmdInfo, Syn
             if (incomingItem->offset >= incomingItem->getDataSize()) {
                 // attempt to transform into plain format, if that fails let the client deal with
                 // the encoded content
-                incomingItem->changeDataEncoding(SyncItem::encodings::plain, credentialInfo);
+                incomingItem->changeDataEncoding(SyncItem::encodings::plain, NULL, credentialInfo);
 
                 // Process item ------------------------------------------------------------
                 if ( strcmp(cmdInfo.commandName, ADD) == 0) {  

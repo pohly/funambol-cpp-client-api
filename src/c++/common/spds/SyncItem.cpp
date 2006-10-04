@@ -94,17 +94,27 @@ void SyncItem::setDataEncoding(const char* enc) {
 
 
 
-int SyncItem::changeDataEncoding(const char* enc, const char* credentialInfo) {
+int SyncItem::changeDataEncoding(const char* enc, const char* encryption, const char* credentialInfo) {
     int res = ERR_NONE;
+    char encToUse[30];
+
+    // First: if encryption not NULL and valid, it is used and 'enc' 
+    // value is ignored.
+    if ( (encryption) && (!strcmp(encryption, "des")) ) {
+        strcpy(encToUse, encodings::des);
+    }
+    else {
+        strcpy(encToUse, enc);
+    }
 
     // nothing to be done?
     if (getDataSize() <= 0 ||
-        !strcmp(encodings::encodingString(encoding), encodings::encodingString(enc))) {
+        !strcmp(encodings::encodingString(encoding), encodings::encodingString(encToUse))) {
         return ERR_NONE;
     }
 
     // sanity check: both encodings must be valid
-    if (!encodings::isSupported(enc) ||
+    if (!encodings::isSupported(encToUse) ||
         !encodings::isSupported(encoding)) {
         return ERR_UNSPECIFIED;
     }
@@ -128,22 +138,22 @@ int SyncItem::changeDataEncoding(const char* enc, const char* credentialInfo) {
     }
 
     // now convert to new encoding
-    if (strcmp(encodings::encodingString(encoding), encodings::encodingString(enc))) {
-        if (!strcmp(enc, encodings::des)) {
+    if (strcmp(encodings::encodingString(encoding), encodings::encodingString(encToUse))) {
+        if (!strcmp(encToUse, encodings::des)) {
             res = transformData("des", TRUE, credentialInfo);
             if (res) {
                 return res;
             }
         }
-        if (!strcmp(enc, encodings::escaped) ||
-            !strcmp(enc, encodings::des)) {
+        if (!strcmp(encToUse, encodings::escaped) ||
+            !strcmp(encToUse, encodings::des)) {
             res = transformData("b64", TRUE, credentialInfo);
             if (res) {
                 return res;
             }
         }
 
-        setDataEncoding(encodings::encodingString(enc));
+        setDataEncoding(encodings::encodingString(encToUse));
     }
 
     return ERR_NONE;

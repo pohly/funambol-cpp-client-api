@@ -102,6 +102,7 @@ SyncSourceConfig* DefaultConfigFactory::getSyncSourceConfig(const char* name) {
     sc->setLast                 (0);
     sc->setSupportedTypes       (T(""));
     sc->setVersion              (T(""));
+    sc->setEncryption           (T(""));
 
     if (!strcmp(name, T("contact"))){
         sc->setURI              (T("scard"));

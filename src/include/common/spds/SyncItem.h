@@ -181,11 +181,15 @@
          * Some encodings may require additional information (TBD).
          *
          * @param encoding         see SyncItem::encoding for valid encodings
+         * @param encryption       if not NULL, this is the encryption to be used. Encrypted data
+         *                         is then encoded in base64 to be sent in syncML messages, so if
+         *                         this value is not NULL the 'encoding' parameter is ignored.
+         *                         Actually the only valid value is "des".
          * @param credentialInfo   optional additional information: password for DES encryption
          * @return error code, usually caused by unsupported encoding either of
          *         the current data or the requested new encoding
          */
-        int changeDataEncoding(const char* encoding, const char* credentialInfo = NULL) EXTRA_SECTION_01;
+        int changeDataEncoding(const char* encoding, const char* encryption, const char* credentialInfo = NULL) EXTRA_SECTION_01;
 
         /*
          * Sets the SyncItem data mime type
