@@ -43,7 +43,15 @@ int SyncClient::sync(SyncManagerConfig& config, SyncSource** sources) {
     resetError();
     int ret = 0;
 
+    if (!config.getSyncSourceConfigsCount()) {
+        sprintf(lastErrorMsg, "Error in sync() - configuration not set correctly.");
+        LOG.error(lastErrorMsg);
+        return 1;
+    }
+
+    //
     // Synchronization report.
+    //
     syncReport.setSyncSourceReports(config);
     // Set source report on each SyncSource (assign pointer)
     int i=0;
@@ -57,10 +65,7 @@ int SyncClient::sync(SyncManagerConfig& config, SyncSource** sources) {
     SyncManager syncManager(config, syncReport);
 
     if ((ret = syncManager.prepareSync(sources))) {
-        char dbg[256];
-        sprintf(dbg, T("Error in preparing sync: %s"), lastErrorMsg);
-        LOG.error(dbg);
-        
+        LOG.error("Error in preparing sync: %s", lastErrorMsg);
         goto finally;
     }
     
@@ -71,9 +76,7 @@ int SyncClient::sync(SyncManagerConfig& config, SyncSource** sources) {
     }
 
     if ((ret = syncManager.sync())) {   
-        char dbg[256];
-        sprintf(dbg, T("Error in syncing: %s"), lastErrorMsg);
-        LOG.error(dbg);
+        LOG.error("Error in syncing: %s", lastErrorMsg);
         goto finally;
     }
 
@@ -84,9 +87,7 @@ int SyncClient::sync(SyncManagerConfig& config, SyncSource** sources) {
     }
 
     if ((ret = syncManager.endSync())) {       
-        char dbg[256];
-        sprintf(dbg, T("Error in ending sync: %s"), lastErrorMsg);
-        LOG.error(dbg);
+        LOG.error("Error in ending sync: %s", lastErrorMsg);
         goto finally;
     }
        
@@ -112,6 +113,7 @@ finally:
  * @return:            0 on success, an error otherwise
  */
 int SyncClient::sync(SyncManagerConfig& config, char** sourceNames) {
+    SyncSourceConfig* sc = NULL;
     SyncSource **sources = NULL;
     const char* currName;
     int currSource = 0, numActive = 0, numSources = 0;
@@ -141,11 +143,10 @@ int SyncClient::sync(SyncManagerConfig& config, char** sourceNames) {
     // wants to have synchronized
     while (currSource < numSources) {
         
-        SyncSourceConfig sc;
         // use only sources indicated in 'sourceNames' param
         if (sourceNames) {
             currName = sourceNames[currSource];
-            if (!config.getSyncSourceConfig(currName, sc)) {
+            if (! (sc = config.getSyncSourceConfig(currName)) ) {
                 if (sources)
                     delete [] sources;
                 return lastErrorCode;
@@ -153,12 +154,12 @@ int SyncClient::sync(SyncManagerConfig& config, char** sourceNames) {
         }
         // use all available sources from config
         else {
-            if (!config.getSyncSourceConfig(currSource, sc)) {
+            if (! (sc = config.getSyncSourceConfig(currSource)) ) {
                 if (sources)
                     delete [] sources;
                 return lastErrorCode;
             }
-            currName = sc.getName();
+            currName = sc->getName();
         }
 
         ret = createSyncSource(currName, currSource, sc, sources + numActive);

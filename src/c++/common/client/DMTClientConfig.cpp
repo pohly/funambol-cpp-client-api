@@ -54,13 +54,9 @@ DMTClientConfig::~DMTClientConfig() {
     close();
 }
 
-BOOL DMTClientConfig::getSyncSourceConfig(
-						const char* name,
-						SyncSourceConfig &sc,
-						BOOL refresh)
-{
+SyncSourceConfig* DMTClientConfig::getSyncSourceConfig(const char* name, BOOL refresh) {
     if ((name == NULL) || (strlen(name) == 0)) {
-        return FALSE;
+        return NULL;
     }
 
     //
@@ -77,12 +73,32 @@ BOOL DMTClientConfig::getSyncSourceConfig(
 
     for (unsigned int i=0; i<sourceConfigsCount; ++i) {
         if (strcmp(sourceConfigs[i].getName(), name) == 0) {
-            sc.assign(sourceConfigs[i]);
-            return TRUE;
+            return &sourceConfigs[i];
         }
     }
 
     return FALSE;
+}
+
+
+SyncSourceConfig* DMTClientConfig::getSyncSourceConfig(unsigned int i, BOOL refresh) {
+    if (i >= sourceConfigsCount) {
+        return NULL;
+    }
+
+    //
+    // If refresh is true, we need to re-read the syncsource settings
+    // from the DM tree.
+    //
+    // PS: for now we use a brute force approach so that we refresh the
+    // entire configuration. A better implementation would be to just
+    // refresh the single source.
+    //
+    if (refresh) {
+      read();
+    }
+
+    return &sourceConfigs[i];
 }
 
 

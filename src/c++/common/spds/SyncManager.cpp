@@ -1671,7 +1671,7 @@ int SyncManager::endSync() {
 BOOL SyncManager::readSyncSourceDefinition(SyncSource& source) {
     char anchor[DIM_ANCHOR];
     
-    if (config.getSyncSourceConfig(_wcc(source.getName()), source.getConfig()) == FALSE) {
+    if (config.getSyncSourceConfig(_wcc(source.getName())) == NULL) {
         return FALSE;
     }
 

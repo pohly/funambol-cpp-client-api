@@ -112,9 +112,11 @@
          * @param name     name of the sync source
          * @param pos      position of the SyncSource in the SSConfig array
          *                 (index: 0 - numSources-1)
-         * @param config   a copy of the source's configuration: this
+         * @param config   a pointer to the source's configuration: this
          *                 includes all properties that the client library
          *                 knows and uses itself (only valid during this call)
+         *                 This pointer is owned by SyncManagerConfig, sources uses it
+         *                 to initialize the internal config by reference.
          * @retval source  the sync source created by the client or NULL if
          *                 there is no sync source currently associated with
          *                 the config or it is inactive; instance is a new SyncSource*
@@ -124,7 +126,7 @@
          *         ignored
          */
         virtual int createSyncSource(const char *name, const int pos,
-                                     const SyncSourceConfig &config,
+                                     SyncSourceConfig* config,
                                      SyncSource **source) {
             *source = NULL;
             return ERR_UNSPECIFIED;

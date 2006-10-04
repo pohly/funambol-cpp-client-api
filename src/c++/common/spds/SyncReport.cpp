@@ -56,10 +56,10 @@ void SyncReport::setSyncSourceReports(SyncManagerConfig& config) {
     ssReportCount = config.getSyncSourceConfigsCount();
     ssReport = new SyncSourceReport[ssReportCount];
 
-    SyncSourceConfig sc;
+    SyncSourceConfig* sc = NULL;
     for (unsigned int i=0; i<ssReportCount; i++) {
-        config.getSyncSourceConfig(i, sc);
-        ssReport[i].setSourceName(sc.getName());
+        sc = config.getSyncSourceConfig(i);
+        ssReport[i].setSourceName(sc->getName());
     }
 }
 
