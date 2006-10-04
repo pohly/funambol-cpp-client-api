@@ -121,6 +121,12 @@ void MailSyncSourceConfig::assign(const MailSyncSourceConfig& sc) {
     setType     (sc.getType     ());
     setSync     (sc.getSync     ());
     setLast     (sc.getLast     ());
+    
+    setEncoding      (sc.getEncoding      ());
+    setVersion       (sc.getVersion       ());
+    setSupportedTypes(sc.getSupportedTypes());
+    setCtCap         (sc.getCtCap         ());
+    setEncryption    (sc.getEncryption    ());
 
     setDownloadAge(sc.getDownloadAge());
     setBodySize(sc.getBodySize());

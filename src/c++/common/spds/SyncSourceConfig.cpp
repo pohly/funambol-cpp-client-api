@@ -31,6 +31,8 @@ SyncSourceConfig::SyncSourceConfig() {
     encodings       = NULL;
     version         = NULL;
     supportedTypes  = NULL;
+    encryption      = NULL;
+
 }
 
 SyncSourceConfig::~SyncSourceConfig() {
@@ -57,6 +59,9 @@ SyncSourceConfig::~SyncSourceConfig() {
     }
     if (supportedTypes) {
         delete [] supportedTypes;
+    }
+    if (encryption) {
+        delete [] encryption;
     }
 }
 
@@ -169,6 +174,15 @@ void SyncSourceConfig::setCtCap(CTCap v){
     ctCap.setCTTypeSupported(v.getCTTypeSupported());
 }
 
+const char* SyncSourceConfig::getEncryption() const {
+    return encryption;
+}
+
+void SyncSourceConfig::setEncryption(const char* n) {
+    safeDelete(&encryption);
+    encryption = stringdup(n);
+}
+
 // ------------------------------------------------------------- Private methods
 
 void SyncSourceConfig::assign(const SyncSourceConfig& sc) {
@@ -186,4 +200,5 @@ void SyncSourceConfig::assign(const SyncSourceConfig& sc) {
     setVersion       (sc.getVersion       ());
     setSupportedTypes(sc.getSupportedTypes());
     setCtCap         (sc.getCtCap         ());
+    setEncryption    (sc.getEncryption    ());
 }

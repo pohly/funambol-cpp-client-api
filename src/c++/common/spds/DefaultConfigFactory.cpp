@@ -58,7 +58,7 @@ AccessConfig* DefaultConfigFactory::getAccessConfig() {
     ac->setUserAgent            (T(""));
     ac->setCheckConn            (TRUE);
     ac->setResponseTimeout      (0);
-    ac->setEncryption           (FALSE);
+    //ac->setEncryption           (FALSE);
 
     return ac;
 }

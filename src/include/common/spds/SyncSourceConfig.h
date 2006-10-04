@@ -70,6 +70,7 @@ class SyncSourceConfig {
         char*  version       ;
         char*  supportedTypes;
         CTCap  ctCap         ;
+        char*  encryption    ;
 
         unsigned long last;
 
@@ -201,6 +202,18 @@ class SyncSourceConfig {
          * Returns the last sync timestamp
          */
         unsigned long getLast() const EXTRA_SECTION_02;
+        
+         /*
+         * Returns the encryption type
+         */
+        const char* getEncryption() const EXTRA_SECTION_02;
+        
+        /*
+         * Sets the encryption type
+         *
+         * @param n the encryption type
+         */
+        void setEncryption(const char* n) EXTRA_SECTION_02;
 
         /**
          * Initialize this object with the given SyncSourceConfig
