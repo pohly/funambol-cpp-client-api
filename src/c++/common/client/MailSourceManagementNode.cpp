@@ -48,7 +48,11 @@ MailSyncSourceConfig& MailSourceManagementNode::getMailSourceConfig(BOOL refresh
         config.setSyncModes(getPropertyValue(PROPERTY_SOURCE_SYNC_MODES));
         config.setSync(getPropertyValue(PROPERTY_SOURCE_SYNC));
         config.setType(getPropertyValue(PROPERTY_SOURCE_TYPE));
-
+        
+        config.setVersion(getPropertyValue(PROPERTY_SOURCE_VERSION));
+        config.setEncoding(getPropertyValue(PROPERTY_SOURCE_ENCODING));
+        config.setSupportedTypes(getPropertyValue(PROPERTY_SOURCE_SUPP_TYPES));
+            
         config.setLast(strtol(getPropertyValue(PROPERTY_SOURCE_LAST_SYNC), &c, 10));
         config.setDownloadAge((int)strtol(getPropertyValue(PROPERTY_SOURCE_DOWNLOAD_AGE), &c, 10));
         config.setBodySize((int)strtol(getPropertyValue(PROPERTY_SOURCE_BODY_SIZE), &c, 10));
@@ -61,7 +65,7 @@ MailSyncSourceConfig& MailSourceManagementNode::getMailSourceConfig(BOOL refresh
         config.setSent((int)strtol(getPropertyValue(PROPERTY_SOURCE_SENT), &c, 10));
         config.setSchedule((int)strtol(getPropertyValue(PROPERTY_SOURCE_SCHEDULE), &c, 10));
         config.setEncryption(getPropertyValue(PROPERTY_SOURCE_ENCRYPTION));
-
+        
     }
 
     return config;
@@ -77,6 +81,10 @@ void MailSourceManagementNode::setMailSourceConfig(MailSyncSourceConfig& c) {
     setPropertyValue(PROPERTY_SOURCE_SYNC_MODES, (char* )c.getSyncModes());
     setPropertyValue(PROPERTY_SOURCE_SYNC,       (char* )c.getSync());
     setPropertyValue(PROPERTY_SOURCE_TYPE,       (char* )c.getType());
+
+    setPropertyValue(PROPERTY_SOURCE_VERSION,    (char* )c.getVersion());
+    setPropertyValue(PROPERTY_SOURCE_ENCODING,   (char* )c.getEncoding());
+    setPropertyValue(PROPERTY_SOURCE_SUPP_TYPES, (char* )c.getSupportedTypes());
 
     sprintf(t, T("%ld"), c.getLast());
     setPropertyValue(PROPERTY_SOURCE_LAST_SYNC, t);
