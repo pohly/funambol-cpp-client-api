@@ -355,7 +355,7 @@ char*  PPC2003TransportAgent::sendMessage(const char*  msg) {
         LOG.debug(READING_RESPONSE);
 
         // Fire Data Received Transport Event
-        fireTransportEvent(size, RECEIVE_DATA_BEGIN);
+        fireTransportEvent(contentLengthResponse, RECEIVE_DATA_BEGIN);
 
         sprintf(logmsg, T("Content-length: %d"), contentLengthResponse);
         LOG.debug(logmsg);
@@ -474,7 +474,7 @@ char*  PPC2003TransportAgent::sendMessage(const char*  msg) {
     }
 
     // Fire Receive Data End Transport Event
-    fireTransportEvent(size, RECEIVE_DATA_END);
+    fireTransportEvent(contentLengthResponse, RECEIVE_DATA_END);
 
     LOG.debug(T("Response read"));
     LOG.debug("%s", response);
