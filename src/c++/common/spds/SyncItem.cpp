@@ -25,7 +25,8 @@
 #include "spds/SyncItem.h"
 #include "spds/DataTransformerFactory.h"
 
-const char* const SyncItem::encodings::plain = "bin";
+const char* const SyncItem::encodings::plain = "plain/text";
+const char* const SyncItem::encodings::bin = "bin";
 const char* const SyncItem::encodings::escaped = "b64";
 const char* const SyncItem::encodings::des = "des;b64";
 
@@ -252,12 +253,6 @@ void* SyncItem::setData(const void* itemData, long dataSize) {
     }
 
     size = dataSize;
-
-    // Backward compatibility with clients which include the nul-byte?
-    //if (itemData && size && ((char *)itemData)[size - 1] == '\0') {
-        // ignore the trailing nul-byte
-        //size--;
-    //}
     
     // Not yet set.
     if (size == -1) {
@@ -274,7 +269,7 @@ void* SyncItem::setData(const void* itemData, long dataSize) {
 
     if (itemData) {
         memcpy(data, itemData, size);
-        data[size] = 0;
+        data[size] = 0;  // FIXME: needed?
     } else {
         memset(data, 0, size + 1);
     }
