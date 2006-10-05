@@ -308,7 +308,7 @@ char* Win32TransportAgent::sendMessage(const char* msg) {
     }
 
     // Fire Data Received Transport Event
-    fireTransportEvent(size, RECEIVE_DATA_BEGIN);
+    fireTransportEvent(contentLength, RECEIVE_DATA_BEGIN);
 
     // Allocate a block of memory for lpHeadersW.
     response = new char[contentLength+1];
@@ -318,6 +318,14 @@ char* Win32TransportAgent::sendMessage(const char* msg) {
         if (!InternetReadFile (request, (LPVOID)bufferA, 5000, &read)) {
             lastErrorCode = ERR_READING_CONTENT;
             sprintf(lastErrorMsg, T("%s: %d"), T("InternetReadFile Error"), GetLastError());
+			LOG.error(lastErrorMsg);
+            goto exit;
+        }
+
+        // Sanity check: some proxy could send additional bytes... (*** FIXME: find non blocking solution ***)
+        if ( (strlen(response) + read) > contentLength) {
+            lastErrorCode = ERR_READING_CONTENT;
+            sprintf(lastErrorMsg, T("InternetReadFile Error: response read (%d) is bigger than content declared (%d)."), strlen(response) + read, contentLength);
 			LOG.error(lastErrorMsg);
             goto exit;
         }
@@ -334,7 +342,7 @@ char* Win32TransportAgent::sendMessage(const char* msg) {
     } while (read);
 
     // Fire Receive Data End Transport Event
-    fireTransportEvent(size, RECEIVE_DATA_END);
+    fireTransportEvent(contentLength, RECEIVE_DATA_END);
     LOG.debug(T("Response read"));
 	LOG.debug("%s", response); 
 
