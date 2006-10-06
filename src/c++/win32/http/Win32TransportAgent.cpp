@@ -330,7 +330,7 @@ char* Win32TransportAgent::sendMessage(const char* msg) {
 
         if (read > 0) {
             bufferA[read] = 0;
-            strcpy(p, bufferA);
+            strcpy(p, bufferA);         // here copy also the last '0' byte -> strlen(rensponse) make sense.
             p += strlen(bufferA);
 
             // Fire Data Received Transport Event
