@@ -322,15 +322,13 @@ char* Win32TransportAgent::sendMessage(const char* msg) {
             goto exit;
         }
 
-        // Sanity check: some proxy could send additional bytes... (*** FIXME: find non blocking solution ***)
+        // Sanity check: some proxy could send additional bytes...
         if ( (strlen(response) + read) > contentLength) {
-            lastErrorCode = ERR_READING_CONTENT;
-            sprintf(lastErrorMsg, T("InternetReadFile Error: response read (%d) is bigger than content declared (%d)."), strlen(response) + read, contentLength);
-			LOG.error(lastErrorMsg);
-            goto exit;
+            // Correct 'read' value to be sure we won't overflow the 'rensponse' buffer.
+            read = contentLength - strlen(response);
         }
 
-        if (read != 0) {
+        if (read > 0) {
             bufferA[read] = 0;
             strcpy(p, bufferA);
             p += strlen(bufferA);
