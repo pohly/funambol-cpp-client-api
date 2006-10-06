@@ -26,7 +26,7 @@
 #include "spds/SyncStatus.h"
 #include "spds/SyncSource.h"
 
-class /*__declspec(dllexport)*/ TestSyncSource2 : public SyncSource {
+class TestSyncSource2 : public SyncSource {
        
 public:
 
@@ -34,8 +34,9 @@ public:
      * Constructor: create a SyncSource with the specified name
      *
      * @param name - the name of the SyncSource
+     * @param sc   - the SyncSourceConfig
      */
-    TestSyncSource2(const WCHAR* name, const SyncSourceConfig *sc) EXTRA_SECTION_01;
+    TestSyncSource2(const WCHAR* name, SyncSourceConfig *sc) EXTRA_SECTION_01;
 
     // TestSyncSource
     ~TestSyncSource2() EXTRA_SECTION_01;

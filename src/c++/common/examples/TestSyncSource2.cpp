@@ -95,7 +95,7 @@ int setModifiedItems2Empty() {
 }
 
 
-TestSyncSource2::TestSyncSource2(const WCHAR* name, const SyncSourceConfig *sc) : SyncSource(name, sc) {
+TestSyncSource2::TestSyncSource2(const WCHAR* name, SyncSourceConfig *sc) : SyncSource(name, sc) {
 }
 
 TestSyncSource2::~TestSyncSource2() {

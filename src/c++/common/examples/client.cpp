@@ -156,14 +156,11 @@ int main(int argc, char** argv) {
         // Config not found -> generate a default config
         createConfig(config);
     }
-
-    SyncSourceConfig sc;
-    config.getSyncSourceConfig(SOURCE_NAME, sc);
 	
     //
-    // Create the SyncSource passing its name and SyncSourceConfig.
+    // Create the SyncSource passing its name and its config.
     //
-    TestSyncSource source(WSOURCE_NAME, &sc);
+    TestSyncSource source(WSOURCE_NAME, config.getSyncSourceConfig(SOURCE_NAME));
     SyncSource* ssArray[2];
     ssArray[0] = &source;
     ssArray[1] = NULL;
@@ -326,8 +323,8 @@ void createConfig(DMTClientConfig& config) {
     delete dc;
 
     SyncSourceConfig* sc = DefaultConfigFactory::getSyncSourceConfig(SOURCE_NAME);
-    sc->setEncoding("text/plain");
-    sc->setType    ("text/plain");
+    sc->setEncoding("plain/text");
+    sc->setType    ("text");
     sc->setURI     ("briefcase");
     config.setSyncSourceConfig(*sc);
     delete sc;

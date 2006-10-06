@@ -34,8 +34,9 @@ public:
      * Constructor: create a SyncSource with the specified name
      *
      * @param name - the name of the SyncSource
+     * @param sc   - the SyncSourceConfig
      */
-    TestSyncSource(const WCHAR* name, const SyncSourceConfig *sc)  EXTRA_SECTION_01;
+    TestSyncSource(const WCHAR* name, SyncSourceConfig *sc)  EXTRA_SECTION_01;
 
     // TestSyncSource
     ~TestSyncSource() EXTRA_SECTION_01;
