@@ -54,6 +54,9 @@
  *                    Supported types will be sent used for the <DevInf>.
  * ctCap            : Specifies the content type capabilities for this SyncSource.
  *                    Not implemented yet. (T.B.D.)
+ * encryption       : Specifies if the content of an outgoing item should be ecrypted. 
+ *                    If this property is not empty and valid, the 'encodings' value is ignored 
+ *                    for outgoing items. The only valid value is "des".
  * last             : Long value that specifies the last timestamp for this source.
  *
  */
