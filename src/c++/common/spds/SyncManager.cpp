@@ -462,11 +462,15 @@ int SyncManager::prepareSync(SyncSource** s) {
             }
             if (bstrcmp(credentialHandler.getClientAuthType(NULL),requestedAuthType) != 0 ) {           
                 if (clientChal && bstrcmp(requestedAuthType, AUTH_TYPE_MD5) == 0) {
-                    credentialHandler.setClientNonce(clientChal->getNextNonce()->getValueAsBase64());
+                    if (clientChal->getNextNonce()) {
+                        credentialHandler.setClientNonce(clientChal->getNextNonce()->getValueAsBase64());
+                    }
                 }                 
             } else { 
                 if (bstrcmp(requestedAuthType, AUTH_TYPE_MD5) == 0 && clientAuthRetries == 1)  {
-                    credentialHandler.setClientNonce(clientChal->getNextNonce()->getValueAsBase64());
+                    if (clientChal->getNextNonce()) {
+                        credentialHandler.setClientNonce(clientChal->getNextNonce()->getValueAsBase64());
+                    }
                  
                 } else {
                     ret = 401;
@@ -478,8 +482,10 @@ int SyncManager::prepareSync(SyncSource** s) {
             clientAuthRetries++;            
 
        } else {            
-            if (clientChal && bstrcmp(clientChal->getType(NULL), AUTH_TYPE_MD5) == 0) {                    
-                credentialHandler.setClientNonce(clientChal->getNextNonce()->getValueAsBase64());                
+            if (clientChal && bstrcmp(clientChal->getType(NULL), AUTH_TYPE_MD5) == 0) {  
+                if (clientChal->getNextNonce()) {
+                    credentialHandler.setClientNonce(clientChal->getNextNonce()->getValueAsBase64());  
+                }
             }
             isClientAuthenticated = TRUE;
             for (count = 0; count < sourcesNumber; count ++) {
