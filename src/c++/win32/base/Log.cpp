@@ -78,6 +78,8 @@ Log::Log(BOOL resetLog, BCHAR* path, BCHAR* name) {
 
     setLogPath(path);
     setLogName(name);
+    memset(logDir, 0, 512*sizeof(BCHAR));
+    bsprintf(logDir, T("%s%s"), logPath, logName);
 	if (resetLog) {
         reset(LOG_NAME);
     }
@@ -151,9 +153,7 @@ void Log::printMessage(const BCHAR* level, const BCHAR* msg, va_list argList) {
 void Log::reset(const BCHAR* title) {
     
     BCHAR* currentTime = getCurrentTime(true);
-    memset(logDir, 0, 512*sizeof(BCHAR));
-    bsprintf(logDir, T("%s%s"), logPath, logName);
-    logFile = fopen(logDir, T("w+"));      
+    logFile = fopen(logDir, T("w+"));
     fprintf(logFile, T("%s - # %s\n\n"), currentTime, title);
     fclose(logFile);
 
