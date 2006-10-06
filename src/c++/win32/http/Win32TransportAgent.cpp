@@ -312,6 +312,12 @@ BCHAR* Win32TransportAgent::sendMessage(const BCHAR* msg) {
             goto exit;
         }
 
+        // Sanity check: some proxy could send additional bytes...
+        if ( (strlen(response) + read) > contentLength) {
+            // Correct 'read' value to be sure we won't overflow the 'rensponse' buffer.
+            read = contentLength - strlen(response);
+        }
+
         if (read != 0) {
             bufferA[read] = 0;
 
