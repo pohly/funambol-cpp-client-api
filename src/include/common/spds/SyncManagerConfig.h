@@ -37,11 +37,6 @@ class SyncManagerConfig {
 
         unsigned int sourceConfigsCount;
 
-        /**
-         * Should the content items be encrypted
-         */
-        BOOL encryption;
-
         virtual BOOL addSyncSourceConfig(SyncSourceConfig& sc) EXTRA_SECTION_01;
 
     public:
