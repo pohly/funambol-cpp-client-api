@@ -161,7 +161,7 @@ void SyncSource::setNextSync(unsigned long timestamp) {
  */
 void SyncSource::setLastAnchor(const char* lastAnchor) {
     strncpy(last, (lastAnchor != NULL) ? lastAnchor : T(""), DIM_ANCHOR);
-    next[DIM_ANCHOR-1] = 0;
+    last[DIM_ANCHOR-1] = 0;
 }
 
 /*
