@@ -69,25 +69,27 @@ bool fireSyncSourceEvent(const char* sourceURI, const char* sourceName, SyncMode
  * Fire a SyncItemEvent.
  *
  * @param sourceURI : the source the item belongs to
+ * @param name      : the source name
  * @param itemKey   : the item key (GUID from the server)
  * @param type      : the type of event to fire (see event/constants.h)
  * @return          : TRUE if no errors, 
  *                    FALSE if syncitemListener not instantiated, or 'type' wrong
  */
-bool fireSyncItemEvent(const char* sourceURI, const WCHAR* itemKey, int type);
+bool fireSyncItemEvent(const char* sourceURI, const char* name, const WCHAR* itemKey, int type);
 
 /*
  * Fire a SyncStatusEvent.
  *
  * @param command   : the command the status relates to
  * @param statusCode: the status code
+ * @param name      : the source name
  * @param uri       : the source uri
  * @param itemKey   : the key of the item this status relates to if it is in response of a modification command
  * @param type      : the type of event to fire (see event/constants.h)
  * @return          : TRUE if no errors, 
  *                    FALSE if syncstatusListener not instantiated, or 'type' wrong
  */
-bool fireSyncStatusEvent(const char* command, int statusCode, const char* uri, const WCHAR* itemKey, int type);
+bool fireSyncStatusEvent(const char* command, int statusCode, const char* name, const char* uri, const WCHAR* itemKey, int type);
 
 
 #endif

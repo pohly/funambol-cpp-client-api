@@ -181,7 +181,7 @@ Status* SyncMLBuilder::prepareSyncHdrStatus(Chal*chal, int d) {
     Status* s = new Status(commandID, itow(msgRef), T("0"), SYNC_HDR, targetRefs, sourceRefs, NULL, chal, data, NULL);
 
     // Fire Sync Status Event: syncHdr status from client
-    fireSyncStatusEvent(SYNC_HDR, s->getStatusCode(), NULL, NULL , CLIENT_STATUS);
+    fireSyncStatusEvent(SYNC_HDR, s->getStatusCode(), NULL, NULL, NULL , CLIENT_STATUS);
     
     safeDelete(&cmdid);
     deleteCmdID(&commandID);
@@ -216,7 +216,7 @@ Status* SyncMLBuilder::prepareSyncStatus(SyncSource& source, Sync* sync) {
     Status* s = new Status(commandID, itow(msgRef), cmdRef->getCmdID(), SYNC, targetRefs, sourceRefs, NULL, NULL, d, NULL);
 
     // Fire Sync Status Event: sync status from client
-    fireSyncStatusEvent(SYNC, s->getStatusCode(), source.getConfig().getURI(), NULL, CLIENT_STATUS);
+    fireSyncStatusEvent(SYNC, s->getStatusCode(), source.getConfig().getName(), source.getConfig().getURI(), NULL, CLIENT_STATUS);
 
     deleteCmdID(&commandID);
     deleteArrayList(&targetRefs);
@@ -336,7 +336,7 @@ Status* SyncMLBuilder::prepareAlertStatus(SyncSource& source, ArrayList* alerts,
     Status* s = new Status(commandID, itow(msgRef), cmdRef->getCmdID(), ALERT, targetRefs, sourceRefs, NULL, NULL, d, items);
 		        
     // Fire Sync Status Event: alert status from client
-    fireSyncStatusEvent(ALERT, s->getStatusCode(), source.getConfig().getURI(), NULL , CLIENT_STATUS);
+    fireSyncStatusEvent(ALERT, s->getStatusCode(), source.getConfig().getName(), source.getConfig().getURI(), NULL , CLIENT_STATUS);
 
     deleteCmdID(&commandID);
     deleteArrayList(&targetRefs);
@@ -376,7 +376,7 @@ Status* SyncMLBuilder::prepareCmdStatus(AbstractCommand &cmd, int status) {
     Status* s = new Status(&commandID, msgRefStr, cmd.getCmdID()->getCmdID(), cmd.getName(), &empty, &empty, NULL, NULL, &d, NULL);
     
     // Fire Sync Status Event: status from client
-    fireSyncStatusEvent(s->getCmd(), s->getStatusCode(), NULL, NULL , CLIENT_STATUS);
+    fireSyncStatusEvent(s->getCmd(), s->getStatusCode(), NULL, NULL, NULL , CLIENT_STATUS);
 
     delete [] msgRefStr;
     return s;

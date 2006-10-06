@@ -604,7 +604,7 @@ int SyncManager::prepareSync(SyncSource** s) {
                         status = syncMLBuilder.prepareCmdStatus(*cmd, statusCode);
                         if (status) {
 		                    // Fire Sync Status Event: status from client
-                            fireSyncStatusEvent(status->getCmd(), status->getStatusCode(), NULL, NULL , CLIENT_STATUS);
+                            fireSyncStatusEvent(status->getCmd(), status->getStatusCode(), NULL, NULL, NULL , CLIENT_STATUS);
 
                             commands->add(*status);
                             deleteStatus(&status);    
@@ -929,7 +929,7 @@ int SyncManager::sync() {
                                 syncItemOffset = 0;
                                 if (syncItem) {
                                     // Fire Sync Item Event - Item sent as Updated
-                                    fireSyncItemEvent(sources[count]->getConfig().getURI(), syncItem->getKey(), ITEM_UPDATED_BY_CLIENT);
+                                    fireSyncItemEvent(sources[count]->getConfig().getURI(), sources[count]->getConfig().getName(), syncItem->getKey(), ITEM_UPDATED_BY_CLIENT);
                                 }
                             }
                         }
@@ -940,7 +940,7 @@ int SyncManager::sync() {
                                 syncItemOffset = 0;
                                 if (syncItem) {
                                     // Fire Sync Item Event - Item sent as Updated
-                                    fireSyncItemEvent(sources[count]->getConfig().getURI(), syncItem->getKey(), ITEM_UPDATED_BY_CLIENT);
+                                    fireSyncItemEvent(sources[count]->getConfig().getURI(), sources[count]->getConfig().getName(), syncItem->getKey(), ITEM_UPDATED_BY_CLIENT);
                                 }
                             }
 
@@ -1008,7 +1008,7 @@ int SyncManager::sync() {
                                 syncItemOffset = 0;
                                 if (syncItem) {
                                     // Fire Sync Item Event - Item sent as Updated
-                                    fireSyncItemEvent(sources[count]->getConfig().getURI(), syncItem->getKey(), ITEM_UPDATED_BY_CLIENT);
+                                    fireSyncItemEvent(sources[count]->getConfig().getURI(), sources[count]->getConfig().getName(), syncItem->getKey(), ITEM_UPDATED_BY_CLIENT);
                                 }
                             }
                         }
@@ -1019,7 +1019,7 @@ int SyncManager::sync() {
                                 syncItemOffset = 0;
                                 if (syncItem) {
                                     // Fire Sync Item Event - Item sent as Updated
-                                    fireSyncItemEvent(sources[count]->getConfig().getURI(), syncItem->getKey(), ITEM_UPDATED_BY_CLIENT);
+                                    fireSyncItemEvent(sources[count]->getConfig().getURI(), sources[count]->getConfig().getName(), syncItem->getKey(), ITEM_UPDATED_BY_CLIENT);
                                 }
                             }
                             
@@ -1096,7 +1096,7 @@ int SyncManager::sync() {
                                 if (syncItem) {
                                     if (syncItemOffset == syncItem->getDataSize()) {
                                         // Fire Sync Item Event - New Item Detected
-                                        fireSyncItemEvent(sources[count]->getConfig().getURI(), syncItem->getKey(), ITEM_ADDED_BY_CLIENT);
+                                        fireSyncItemEvent(sources[count]->getConfig().getURI(), sources[count]->getConfig().getName(), syncItem->getKey(), ITEM_ADDED_BY_CLIENT);
                                         delete syncItem; syncItem = NULL;
                                     } else {
                                         // assert(msgSize >= maxMsgSize);
@@ -1158,7 +1158,7 @@ int SyncManager::sync() {
                                 if (syncItem) {  
                                     if (syncItemOffset == syncItem->getDataSize()) {
                                         // Fire Sync Item Event - Item Updated
-                                        fireSyncItemEvent(sources[count]->getConfig().getURI(), syncItem->getKey(), ITEM_UPDATED_BY_CLIENT);
+                                        fireSyncItemEvent(sources[count]->getConfig().getURI(), sources[count]->getConfig().getName(), syncItem->getKey(), ITEM_UPDATED_BY_CLIENT);
                                         delete syncItem; syncItem = NULL;
                                     } else {
                                         // assert(msgSize >= maxMsgSize);
@@ -1217,7 +1217,7 @@ int SyncManager::sync() {
                                 if (syncItem) {
                                     if (syncItemOffset == syncItem->getDataSize()) {
                                         // Fire Sync Item Event - Item Deleted
-                                        fireSyncItemEvent(sources[count]->getConfig().getURI(), syncItem->getKey(), ITEM_DELETED_BY_CLIENT);
+                                        fireSyncItemEvent(sources[count]->getConfig().getURI(), sources[count]->getConfig().getName(), syncItem->getKey(), ITEM_DELETED_BY_CLIENT);
                                         delete syncItem; syncItem = NULL;
                                     } else {
                                         // assert(msgSize >= maxMsgSize);
@@ -1916,14 +1916,14 @@ Status *SyncManager::processSyncItem(Item* item, const CommandInfo &cmdInfo, Syn
                 // Process item ------------------------------------------------------------
                 if ( strcmp(cmdInfo.commandName, ADD) == 0) {  
                     // Fire Sync Item Event - New Item Added by Server
-                    fireSyncItemEvent(sources[count]->getConfig().getURI(), incomingItem->getKey(), ITEM_ADDED_BY_SERVER);
+                    fireSyncItemEvent(sources[count]->getConfig().getURI(), sources[count]->getConfig().getName(), incomingItem->getKey(), ITEM_ADDED_BY_SERVER);
 
                     incomingItem->setState(SYNC_STATE_NEW);
                     code = sources[count]->addItem(*incomingItem);      
                     status = syncMLBuilder.prepareItemStatus(ADD, itemName, cmdInfo.cmdRef, code);
 
                     // Fire Sync Status Event: item status from client
-                    fireSyncStatusEvent(status->getCmd(), status->getStatusCode(), sources[count]->getConfig().getURI(), incomingItem->getKey(), CLIENT_STATUS);
+                    fireSyncStatusEvent(status->getCmd(), status->getStatusCode(), sources[count]->getConfig().getName(), sources[count]->getConfig().getURI(), incomingItem->getKey(), CLIENT_STATUS);
                     // Update SyncReport
                     sources[count]->getReport()->addItem(CLIENT, COMMAND_ADD, incomingItem->getKey(), status->getStatusCode());
 
@@ -1937,27 +1937,27 @@ Status *SyncManager::processSyncItem(Item* item, const CommandInfo &cmdInfo, Syn
                 }
                 else if (strcmp(cmdInfo.commandName, REPLACE) == 0) {  
                     // Fire Sync Item Event - Item Updated by Server
-                    fireSyncItemEvent(sources[count]->getConfig().getURI(), incomingItem->getKey(), ITEM_UPDATED_BY_SERVER);
+                    fireSyncItemEvent(sources[count]->getConfig().getURI(), sources[count]->getConfig().getName(), incomingItem->getKey(), ITEM_UPDATED_BY_SERVER);
 
                     incomingItem->setState(SYNC_STATE_UPDATED);
                     code = sources[count]->updateItem(*incomingItem);
                     status = syncMLBuilder.prepareItemStatus(REPLACE, itemName, cmdInfo.cmdRef, code);                
             
                     // Fire Sync Status Event: item status from client
-                    fireSyncStatusEvent(status->getCmd(), status->getStatusCode(), sources[count]->getConfig().getURI(), incomingItem->getKey(), CLIENT_STATUS);
+                    fireSyncStatusEvent(status->getCmd(), status->getStatusCode(), sources[count]->getConfig().getName(), sources[count]->getConfig().getURI(), incomingItem->getKey(), CLIENT_STATUS);
                     // Update SyncReport
                     sources[count]->getReport()->addItem(CLIENT, COMMAND_REPLACE, incomingItem->getKey(), status->getStatusCode());
                 }
                 else if (strcmp(cmdInfo.commandName, DEL) == 0) {
                     // Fire Sync Item Event - Item Deleted by Server
-                    fireSyncItemEvent(sources[count]->getConfig().getURI(), incomingItem->getKey(), ITEM_DELETED_BY_SERVER);
+                    fireSyncItemEvent(sources[count]->getConfig().getURI(), sources[count]->getConfig().getName(), incomingItem->getKey(), ITEM_DELETED_BY_SERVER);
 
                     incomingItem->setState(SYNC_STATE_DELETED);
                     code = sources[count]->deleteItem(*incomingItem);        
                     status = syncMLBuilder.prepareItemStatus(DEL, itemName, cmdInfo.cmdRef, code);           
 	    
                     // Fire Sync Status Event: item status from client
-                    fireSyncStatusEvent(status->getCmd(), status->getStatusCode(), sources[count]->getConfig().getURI(), incomingItem->getKey(), CLIENT_STATUS);
+                    fireSyncStatusEvent(status->getCmd(), status->getStatusCode(), sources[count]->getConfig().getName(), sources[count]->getConfig().getURI(), incomingItem->getKey(), CLIENT_STATUS);
                     // Update SyncReport
                     sources[count]->getReport()->addItem(CLIENT, COMMAND_DELETE, incomingItem->getKey(), status->getStatusCode());
                 }

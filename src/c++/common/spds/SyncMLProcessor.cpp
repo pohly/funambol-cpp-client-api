@@ -46,7 +46,7 @@ int SyncMLProcessor::processSyncHdrStatus(SyncML* syncml) {
     int ret = getStatusCode(syncml->getSyncBody(), NULL, SYNC_HDR);
     
     // Fire Sync Status Event: syncHdr status from server
-    fireSyncStatusEvent(SYNC_HDR, ret, NULL, NULL , SERVER_STATUS);
+    fireSyncStatusEvent(SYNC_HDR, ret, NULL, NULL, NULL , SERVER_STATUS);
 
     return ret;
 }
@@ -91,7 +91,7 @@ int SyncMLProcessor::processAlertStatus(SyncSource& source, SyncML* syncml, Arra
     }
 
     // Fire a syncStatus event: Alert status from server
-    fireSyncStatusEvent(ALERT, ret, source.getConfig().getURI(), NULL, SERVER_STATUS);
+    fireSyncStatusEvent(ALERT, ret, source.getConfig().getName(), source.getConfig().getURI(), NULL, SERVER_STATUS);
 
     return ret;
 
@@ -183,7 +183,7 @@ int SyncMLProcessor::processItemStatus(SyncSource& source, SyncBody* syncBody) {
             delete [] srcname;
             
 			// Fire Sync Status Event: sync status from server
-            fireSyncStatusEvent(SYNC, s->getStatusCode(), source.getConfig().getURI(), NULL, SERVER_STATUS);            
+            fireSyncStatusEvent(SYNC, s->getStatusCode(), source.getConfig().getName(), source.getConfig().getURI(), NULL, SERVER_STATUS);            
 
             if(alertStatus < 0 || alertStatus >=300){
                 if ((ret = alertStatus) < 0)
@@ -210,7 +210,7 @@ int SyncMLProcessor::processItemStatus(SyncSource& source, SyncBody* syncBody) {
                     if (itemSource) {
                         WCHAR *uri = toWideChar(itemSource->getLocURI());
                         // Fire Sync Status Event: item status from server
-                        fireSyncStatusEvent(s->getCmd(), s->getStatusCode(), source.getConfig().getURI(), uri, SERVER_STATUS);
+                        fireSyncStatusEvent(s->getCmd(), s->getStatusCode(), source.getConfig().getName(), source.getConfig().getURI(), uri, SERVER_STATUS);
                         // Update SyncReport
                         source.getReport()->addItem(SERVER, s->getCmd(), uri, s->getStatusCode());
                         
@@ -230,7 +230,7 @@ int SyncMLProcessor::processItemStatus(SyncSource& source, SyncBody* syncBody) {
                 if (sourceRef) {
                     WCHAR *srcref = toWideChar(sourceRef->getValue());
 			        // Fire Sync Status Event: item status from server
-                    fireSyncStatusEvent(s->getCmd(), s->getStatusCode(), source.getConfig().getURI(), srcref, SERVER_STATUS);
+                    fireSyncStatusEvent(s->getCmd(), s->getStatusCode(), source.getConfig().getName(), source.getConfig().getURI(), srcref, SERVER_STATUS);
                     // Update SyncReport
                     source.getReport()->addItem(SERVER, s->getCmd(), srcref, s->getStatusCode());
 

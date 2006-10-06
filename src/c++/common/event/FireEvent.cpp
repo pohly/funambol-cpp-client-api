@@ -146,7 +146,7 @@ bool fireSyncSourceEvent(const char* sourceURI, const char* sourceName, SyncMode
 //
 // Fire a SyncItemEvent
 //
-bool fireSyncItemEvent(const char* sourceURI,const WCHAR* itemKey, int type) {
+bool fireSyncItemEvent(const char* sourceURI, const char* sourcename, const WCHAR* itemKey, int type) {
 
     ManageListener& manage = ManageListener::getInstance();
     SyncItemListener* listener = manage.getSyncItemListener();
@@ -156,7 +156,7 @@ bool fireSyncItemEvent(const char* sourceURI,const WCHAR* itemKey, int type) {
 
     unsigned long timestamp = (unsigned long)time(NULL);
     // Create event (object alive in the scope of this function)
-    SyncItemEvent event(itemKey, sourceURI, type, timestamp);
+    SyncItemEvent event(itemKey, sourcename, sourceURI, type, timestamp);
 
     switch(type) {
         case ITEM_ADDED_BY_SERVER:
@@ -188,7 +188,7 @@ bool fireSyncItemEvent(const char* sourceURI,const WCHAR* itemKey, int type) {
 //
 // Fire a SyncStatusEvent
 //
-bool fireSyncStatusEvent(const char* command, int statusCode, const char* uri, const WCHAR* itemKey, int type) {
+bool fireSyncStatusEvent(const char* command, int statusCode, const char* name, const char* uri, const WCHAR* itemKey, int type) {
 
     ManageListener& manage = ManageListener::getInstance();
     SyncStatusListener* listener = manage.getSyncStatusListener();
@@ -198,7 +198,7 @@ bool fireSyncStatusEvent(const char* command, int statusCode, const char* uri, c
 
     unsigned long timestamp = (unsigned long)time(NULL);
     // Create event (object alive in the scope of this function)
-    SyncStatusEvent event(statusCode, command, itemKey, uri, type, timestamp);
+    SyncStatusEvent event(statusCode, command, itemKey, name, uri, type, timestamp);
 
     switch(type) {
         case CLIENT_STATUS:

@@ -33,16 +33,22 @@ class SyncItemEvent : public BaseEvent {
     // Source URI
     char* sourceURI;
 
+    // Source name
+    char* sourcename;
+
 public:
 
     // Constructor
-    SyncItemEvent(const WCHAR* key, const char* uri, int type, unsigned long date);
+    SyncItemEvent(const WCHAR* key, const char* name, const char* uri, int type, unsigned long date);
 
     // Destructor
     ~SyncItemEvent();
 
     // get the source uri
     const char* getSourceURI() const;
+
+    // get the source uri
+    const char* getSourceName() const;
 
     // get the sync item key
     const WCHAR* getItemKey() const;

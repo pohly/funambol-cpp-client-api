@@ -20,7 +20,7 @@
 #include "event/SyncStatusEvent.h"
 #include "base/util/utils.h"
 
-SyncStatusEvent::SyncStatusEvent(int code, const char* cmd, const WCHAR* key, const char* uri, int type, unsigned long date) : SyncItemEvent( key, uri, type, date) {
+SyncStatusEvent::SyncStatusEvent(int code, const char* cmd, const WCHAR* key, const char* name, const char* uri, int type, unsigned long date) : SyncItemEvent( key, name, uri, type, date) {
     statusCode = code;
     command = stringdup(cmd);
 }
