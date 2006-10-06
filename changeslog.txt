@@ -1,4 +1,30 @@
 
+2006-10-06
+     - toccy: fixed Win32TransportAgent with a sanity check on rensponse read (proxy related issue)
+              moved 'encryption' property from AccessConfig to SyncSourceConfig (it's a source property)
+              encryption changed from boolean to string ("des" is the only accepted value now)
+              SyncManagerConfig::getSyncSourceConfig() now returns a pointer to internal object
+
+2006-10-03
+     - pholy: added Large Object support (items splitted if bigger than maxMsgSize)
+              moved encoding/decoding of item data into SyncItem::changeDataEncoding
+              added SyncManager::getItem(), a wrapper around the various SyncItem methods for outgoing items
+
+2006-09-29
+     - toccy: first add of fileSync project: sync of generic files from a directory (only slow sync now)
+              added SyncReport: owned by SyncClient, collect all synchronization results
+                - lastErrorCode/Msg is copied into SyncReport
+                - sources error/state is stored in each SyncSourceReport
+                - each item status is stored in arraylists inside each SyncSourceReport
+              
+2006-09-27
+     - magi:  added SyncSource events for: NOC by server - NOC by client - SyncMode requested
+              added SyncClient methods to alert user if slow sync requested (empty default implementation)
+
+2006-09-19
+     - toccy: replace all: [BCHAR -> char]  [wchar_t -> WCHAR]
+              removed unused functions (bsprintf, bstrcpy,...)
+ 
 2006-09-11
      - toccy: config object passed to SyncClient as parameter of sync() methods
               added properties 'version' and 'supportedTypes' in SyncSourceConfig
@@ -8,7 +34,7 @@
      - pholy: restructured DMTClientConfig with smaller functions
 
 2006-09-06
-     - toccy: added firing events in SyncManager/TransportAgents for event handling
+     - toccy: EVENT HANDLING: added firing events in SyncManager/TransportAgents for event handling
               removed utf8len/utf82wc/wc2utf8 functions
               modified SyncManagerConfig to set a SyncSourceConfig not already present in config
               added syncUrl property to generate devInfHash (if syncUrl changes, devInfHash changes)
