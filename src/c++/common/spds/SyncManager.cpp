@@ -1925,87 +1925,74 @@ Status *SyncManager::processSyncItem(Item* item, const CommandInfo &cmdInfo, Syn
 
         if (!item->isMoreData()) {
 
-            // for deleted items the server might have sent -1 (Synthesis server does that).
-            if (incomingItem->getDataSize() != -1) {
 
-                if (append) {
-                    // Warning if data mismatch (only log).
-                    testIfDataSizeMismatch(incomingItem->getDataSize(), incomingItem->offset);
-                }
-                
-                // Set the item size to the real size received.
-                // (more space was allocated for the item data, to be tolerant to small
-                // error in size declared by server)
-                incomingItem->setDataSize(incomingItem->offset);
-
-                // attempt to transform into plain format, if that fails let the client deal with
-                // the encoded content
-                incomingItem->changeDataEncoding(SyncItem::encodings::plain, NULL, credentialInfo);
-
-                // Process item ------------------------------------------------------------
-                if ( strcmp(cmdInfo.commandName, ADD) == 0) {  
-                    // Fire Sync Item Event - New Item Added by Server
-                    fireSyncItemEvent(sources[count]->getConfig().getURI(), sources[count]->getConfig().getName(), incomingItem->getKey(), ITEM_ADDED_BY_SERVER);
-
-                    incomingItem->setState(SYNC_STATE_NEW);
-                    code = sources[count]->addItem(*incomingItem);      
-                    status = syncMLBuilder.prepareItemStatus(ADD, itemName, cmdInfo.cmdRef, code);
-
-                    // Fire Sync Status Event: item status from client
-                    fireSyncStatusEvent(status->getCmd(), status->getStatusCode(), sources[count]->getConfig().getName(), sources[count]->getConfig().getURI(), incomingItem->getKey(), CLIENT_STATUS);
-                    // Update SyncReport
-                    sources[count]->getReport()->addItem(CLIENT, COMMAND_ADD, incomingItem->getKey(), status->getStatusCode());
-
-                    // If the add was successful, set the id mapping
-                    if (code >= 200 && code <= 299) {
-                        char *key = toMultibyte(incomingItem->getKey());
-                        SyncMap syncMap(item->getSource()->getLocURI(), key);
-                        mappings[count]->add(syncMap);
-                        delete [] key;
-                    }                    
-                }
-                else if (strcmp(cmdInfo.commandName, REPLACE) == 0) {  
-                    // Fire Sync Item Event - Item Updated by Server
-                    fireSyncItemEvent(sources[count]->getConfig().getURI(), sources[count]->getConfig().getName(), incomingItem->getKey(), ITEM_UPDATED_BY_SERVER);
-
-                    incomingItem->setState(SYNC_STATE_UPDATED);
-                    code = sources[count]->updateItem(*incomingItem);
-                    status = syncMLBuilder.prepareItemStatus(REPLACE, itemName, cmdInfo.cmdRef, code);                
-            
-                    // Fire Sync Status Event: item status from client
-                    fireSyncStatusEvent(status->getCmd(), status->getStatusCode(), sources[count]->getConfig().getName(), sources[count]->getConfig().getURI(), incomingItem->getKey(), CLIENT_STATUS);
-                    // Update SyncReport
-                    sources[count]->getReport()->addItem(CLIENT, COMMAND_REPLACE, incomingItem->getKey(), status->getStatusCode());
-                }
-                else if (strcmp(cmdInfo.commandName, DEL) == 0) {
-                    // Fire Sync Item Event - Item Deleted by Server
-                    fireSyncItemEvent(sources[count]->getConfig().getURI(), sources[count]->getConfig().getName(), incomingItem->getKey(), ITEM_DELETED_BY_SERVER);
-
-                    incomingItem->setState(SYNC_STATE_DELETED);
-                    code = sources[count]->deleteItem(*incomingItem);        
-                    status = syncMLBuilder.prepareItemStatus(DEL, itemName, cmdInfo.cmdRef, code);           
-	    
-                    // Fire Sync Status Event: item status from client
-                    fireSyncStatusEvent(status->getCmd(), status->getStatusCode(), sources[count]->getConfig().getName(), sources[count]->getConfig().getURI(), incomingItem->getKey(), CLIENT_STATUS);
-                    // Update SyncReport
-                    sources[count]->getReport()->addItem(CLIENT, COMMAND_DELETE, incomingItem->getKey(), status->getStatusCode());
-                }
-
-                delete incomingItem;
-                incomingItem = NULL;
+            if (append) {
+                // Warning if data mismatch (only log).
+                testIfDataSizeMismatch(incomingItem->getDataSize(), incomingItem->offset);
             }
             
-            // Not used: now accept items smaller than declared size (size is adjusted on data size received). 
-            // else {
-            //    // error: incomplete item, but no more data - "Size Mismatch"
-            //    status = syncMLBuilder.prepareItemStatus(cmdInfo.commandName, itemName, cmdInfo.cmdRef, 424);
-            //    sprintf(lastErrorMsg, "Item size mismatch: real size = %d, declared size = %d", incomingItem->offset, incomingItem->getDataSize());
-            //    lastErrorCode = OBJECT_SIZE_MISMATCH;
-            //    delete incomingItem;
-            //    incomingItem = NULL;
-            //}
+            // Set the item size to the real size received.
+            // (more space was allocated for the item data, to be tolerant to small
+            // error in size declared by server)
+            incomingItem->setDataSize(incomingItem->offset);
 
-        } else {
+            // attempt to transform into plain format, if that fails let the client deal with
+            // the encoded content
+            incomingItem->changeDataEncoding(SyncItem::encodings::plain, NULL, credentialInfo);
+
+            // Process item ------------------------------------------------------------
+            if ( strcmp(cmdInfo.commandName, ADD) == 0) {  
+                // Fire Sync Item Event - New Item Added by Server
+                fireSyncItemEvent(sources[count]->getConfig().getURI(), sources[count]->getConfig().getName(), incomingItem->getKey(), ITEM_ADDED_BY_SERVER);
+
+                incomingItem->setState(SYNC_STATE_NEW);
+                code = sources[count]->addItem(*incomingItem);      
+                status = syncMLBuilder.prepareItemStatus(ADD, itemName, cmdInfo.cmdRef, code);
+
+                // Fire Sync Status Event: item status from client
+                fireSyncStatusEvent(status->getCmd(), status->getStatusCode(), sources[count]->getConfig().getName(), sources[count]->getConfig().getURI(), incomingItem->getKey(), CLIENT_STATUS);
+                // Update SyncReport
+                sources[count]->getReport()->addItem(CLIENT, COMMAND_ADD, incomingItem->getKey(), status->getStatusCode());
+
+                // If the add was successful, set the id mapping
+                if (code >= 200 && code <= 299) {
+                    char *key = toMultibyte(incomingItem->getKey());
+                    SyncMap syncMap(item->getSource()->getLocURI(), key);
+                    mappings[count]->add(syncMap);
+                    delete [] key;
+                }                    
+            }
+            else if (strcmp(cmdInfo.commandName, REPLACE) == 0) {  
+                // Fire Sync Item Event - Item Updated by Server
+                fireSyncItemEvent(sources[count]->getConfig().getURI(), sources[count]->getConfig().getName(), incomingItem->getKey(), ITEM_UPDATED_BY_SERVER);
+
+                incomingItem->setState(SYNC_STATE_UPDATED);
+                code = sources[count]->updateItem(*incomingItem);
+                status = syncMLBuilder.prepareItemStatus(REPLACE, itemName, cmdInfo.cmdRef, code);                
+        
+                // Fire Sync Status Event: item status from client
+                fireSyncStatusEvent(status->getCmd(), status->getStatusCode(), sources[count]->getConfig().getName(), sources[count]->getConfig().getURI(), incomingItem->getKey(), CLIENT_STATUS);
+                // Update SyncReport
+                sources[count]->getReport()->addItem(CLIENT, COMMAND_REPLACE, incomingItem->getKey(), status->getStatusCode());
+            }
+            else if (strcmp(cmdInfo.commandName, DEL) == 0) {
+                // Fire Sync Item Event - Item Deleted by Server
+                fireSyncItemEvent(sources[count]->getConfig().getURI(), sources[count]->getConfig().getName(), incomingItem->getKey(), ITEM_DELETED_BY_SERVER);
+
+                incomingItem->setState(SYNC_STATE_DELETED);
+                code = sources[count]->deleteItem(*incomingItem);        
+                status = syncMLBuilder.prepareItemStatus(DEL, itemName, cmdInfo.cmdRef, code);           
+    
+                // Fire Sync Status Event: item status from client
+                fireSyncStatusEvent(status->getCmd(), status->getStatusCode(), sources[count]->getConfig().getName(), sources[count]->getConfig().getURI(), incomingItem->getKey(), CLIENT_STATUS);
+                // Update SyncReport
+                sources[count]->getReport()->addItem(CLIENT, COMMAND_DELETE, incomingItem->getKey(), status->getStatusCode());
+            }
+
+            delete incomingItem;
+            incomingItem = NULL;
+        }
+        else {
             // keep the item, tell server "Chunked item accepted and buffered"
             status = syncMLBuilder.prepareItemStatus(cmdInfo.commandName, itemName, cmdInfo.cmdRef, 213);
         }
