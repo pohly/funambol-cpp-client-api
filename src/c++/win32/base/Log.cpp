@@ -29,13 +29,50 @@ char logDir[512];
 char logName[128];
 char logPath[256];   
 
+
+Log::Log(BOOL resetLog, char* path, char* name) {
+
+    setLogPath(path);
+    setLogName(name);
+
+    memset(logDir, 0, 512*sizeof(char));
+    sprintf(logDir, T("%s%s"), logPath, logName);
+
+    //
+    // Test to ensure the log file is writable...
+    //
+    logFile = fopen(logDir, T("a+"));
+    if (logFile == NULL) {
+        char tmp[512];
+        sprintf(tmp, "Unable to write log file: \"%s\".\nPlease check your user's permissions.", logDir);
+        WCHAR* wtmp = toWideChar(tmp);
+        MessageBox (NULL, wtmp, TEXT("Funambol Win32 Plugin"), MB_SETFOREGROUND |MB_OK);
+        delete [] wtmp;
+    }
+    else {
+        fclose(logFile);
+
+	    if (resetLog) {
+            reset(LOG_NAME);
+        }
+    }
+}
+
+
+Log::~Log() {
+    if (logFile != NULL) {
+        fclose(logFile);
+    }
+}
+
+
 void Log::setLogPath(char* configLogPath) {
     
-    memset(logPath, 0, 512*sizeof(char));
+    memset(logPath, 0, 256*sizeof(char));
     if (configLogPath != NULL) {
-        sprintf(logPath, T("%s/"), configLogPath); 
+        sprintf(logPath, "%s", configLogPath); 
     } else {
-        sprintf(logPath, T("%s"), T("./"));
+        sprintf(logPath, "./");
     }
 }
 
@@ -43,9 +80,9 @@ void Log::setLogName(char* configLogName) {
     
     memset(logName, 0, 128*sizeof(char));
     if (configLogName != NULL) {
-        sprintf(logName, T("%s"), configLogName); 
+        sprintf(logName, "%s", configLogName); 
     } else {
-        sprintf(logName, T("%s"), LOG_NAME);         
+        sprintf(logName, "%s", LOG_NAME);         
     }
 }
 
@@ -74,22 +111,7 @@ char* getCurrentTime(BOOL complete) {
 }
 
 
-Log::Log(BOOL resetLog, char* path, char* name) {
 
-    setLogPath(path);
-    setLogName(name);
-    memset(logDir, 0, 512*sizeof(char));
-    sprintf(logDir, T("%s%s"), logPath, logName);
-	if (resetLog) {
-        reset(LOG_NAME);
-    }
-}
-
-Log::~Log() {
-    if (logFile != NULL) {
-        fclose(logFile);
-    }
-}
 
 void Log::error(const char* msg, ...) {    
     va_list argList;
@@ -136,6 +158,8 @@ LogLevel Log::getLevel() {
 BOOL Log::isLoggable(LogLevel level) {
     return (level >= logLevel);
 }
+
+
 
 void Log::printMessage(const char* level, const char* msg, va_list argList) {       
     
