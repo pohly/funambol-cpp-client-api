@@ -42,6 +42,10 @@ typedef enum {
              } SyncManagerState ;
 
 
+// Tolerance to data size for incoming items (106%) -> will be allocated some more space.
+#define DATA_SIZE_TOLERANCE      1.06
+
+
 static void fillContentTypeInfoList(ArrayList &l, const char*  types);
 
 
@@ -159,6 +163,11 @@ class SyncManager {
         bool isToExit();
         void setSourceStateAndError(unsigned int index, SourceState  state,
                                     unsigned int code,  const char*  msg);
+
+
+        // Used to reserve some more space (DATA_SIZE_TOLERANCE) for incoming items.
+        long getToleranceDataSize(long size);
+        bool testIfDataSizeMismatch(long allocatedSize, long receivedSize);
 
           
         /**

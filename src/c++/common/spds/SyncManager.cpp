@@ -83,6 +83,24 @@ void SyncManager::setSourceStateAndError(unsigned int index, SourceState  state,
 }
 
 
+// Used to reserve some more space (DATA_SIZE_TOLERANCE) for incoming items.
+// This is used to add a little tolerance to the data size of items sent by
+// server in case of large object (item splitted in multiple chunks).
+long SyncManager::getToleranceDataSize(long size) {
+    return (long)(size*DATA_SIZE_TOLERANCE + 0.5);
+}
+
+
+// Used to verify if data size of incoming item is different from the one declared.
+bool SyncManager::testIfDataSizeMismatch(long allocatedSize, long receivedSize) {
+    long declaredSize = (long) (allocatedSize/DATA_SIZE_TOLERANCE + 0.5);
+    if (declaredSize != receivedSize) {
+        LOG.info("WARNING! Item size mismatch: real size = %d, declared size = %d", receivedSize, declaredSize);
+        return true;
+    }
+    return false;
+}
+
 
 SyncManager::SyncManager(SyncManagerConfig& c, SyncReport& report) : config(c), syncReport(report) {
     initialize();
@@ -1835,7 +1853,7 @@ Status *SyncManager::processSyncItem(Item* item, const CommandInfo &cmdInfo, Syn
                 delete incomingItem;
                 incomingItem = NULL;
             } else {
-                incomingItem->setData(NULL, size);
+                incomingItem->setData(NULL, getToleranceDataSize(size));
             }
         } else {
             // simply copy all data below
@@ -1874,7 +1892,7 @@ Status *SyncManager::processSyncItem(Item* item, const CommandInfo &cmdInfo, Syn
                 if (size + incomingItem->offset > incomingItem->getDataSize()) {
                     // overflow, signal error: "Size mismatch"
                     status = syncMLBuilder.prepareItemStatus(cmdInfo.commandName, itemName, cmdInfo.cmdRef, 424);
-                    sprintf(lastErrorMsg, "Item size mismatch: real size = %d, declared size = %d", incomingItem->offset, incomingItem->getDataSize());
+                    sprintf(lastErrorMsg, "Item size mismatch: real size = %d, declared size = %d", size + incomingItem->offset, incomingItem->getDataSize());
                     lastErrorCode = OBJECT_SIZE_MISMATCH;
                     delete incomingItem;
                     incomingItem = NULL;
@@ -1906,9 +1924,20 @@ Status *SyncManager::processSyncItem(Item* item, const CommandInfo &cmdInfo, Syn
         incomingItem->setModificationTime(sources[count]->getNextSync());
 
         if (!item->isMoreData()) {
-            // sanity check: is the item complete?
-            // >= is used because for deleted items the server might have sent -1 (Synthesis server does that).
-            if (incomingItem->offset >= incomingItem->getDataSize()) {
+
+            // for deleted items the server might have sent -1 (Synthesis server does that).
+            if (incomingItem->getDataSize() != -1) {
+
+                if (append) {
+                    // Warning if data mismatch (only log).
+                    testIfDataSizeMismatch(incomingItem->getDataSize(), incomingItem->offset);
+                }
+                
+                // Set the item size to the real size received.
+                // (more space was allocated for the item data, to be tolerant to small
+                // error in size declared by server)
+                incomingItem->setDataSize(incomingItem->offset);
+
                 // attempt to transform into plain format, if that fails let the client deal with
                 // the encoded content
                 incomingItem->changeDataEncoding(SyncItem::encodings::plain, NULL, credentialInfo);
@@ -1964,14 +1993,18 @@ Status *SyncManager::processSyncItem(Item* item, const CommandInfo &cmdInfo, Syn
 
                 delete incomingItem;
                 incomingItem = NULL;
-            } else {
-                // error: incomplete item, but no more data - "Size Mismatch"
-                status = syncMLBuilder.prepareItemStatus(cmdInfo.commandName, itemName, cmdInfo.cmdRef, 424);
-                sprintf(lastErrorMsg, "Item size mismatch: real size = %d, declared size = %d", incomingItem->offset, incomingItem->getDataSize());
-                lastErrorCode = OBJECT_SIZE_MISMATCH;
-                delete incomingItem;
-                incomingItem = NULL;
             }
+            
+            // Not used: now accept items smaller than declared size (size is adjusted on data size received). 
+            // else {
+            //    // error: incomplete item, but no more data - "Size Mismatch"
+            //    status = syncMLBuilder.prepareItemStatus(cmdInfo.commandName, itemName, cmdInfo.cmdRef, 424);
+            //    sprintf(lastErrorMsg, "Item size mismatch: real size = %d, declared size = %d", incomingItem->offset, incomingItem->getDataSize());
+            //    lastErrorCode = OBJECT_SIZE_MISMATCH;
+            //    delete incomingItem;
+            //    incomingItem = NULL;
+            //}
+
         } else {
             // keep the item, tell server "Chunked item accepted and buffered"
             status = syncMLBuilder.prepareItemStatus(cmdInfo.commandName, itemName, cmdInfo.cmdRef, 213);
