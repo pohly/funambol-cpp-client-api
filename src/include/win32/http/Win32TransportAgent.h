@@ -75,6 +75,9 @@
          * by the instal property 'url'. Returns the response status code.
          */
         char*  sendMessage(const char*  msg);
+
+    private:
+        char* getHttpErrorMessage(DWORD errorCode);
     };
 
 #endif

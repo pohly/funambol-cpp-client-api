@@ -126,8 +126,10 @@ char* Win32TransportAgent::sendMessage(const char* msg) {
 
     if (!inet) {
         lastErrorCode = ERR_NETWORK_INIT;
-        sprintf (lastErrorMsg, T("%s: %d"), T("InternetOpen Error"), GetLastError());
-		LOG.error(lastErrorMsg);
+        DWORD code = GetLastError();
+        char* msg = getHttpErrorMessage(code);
+        sprintf (lastErrorMsg, "InternetOpen Error: %d - %s", code, msg);
+		delete msg;
         goto exit;
     }   
     LOG.debug(T("Connecting to %s:%d"), url.host, url.port);
@@ -145,10 +147,12 @@ char* Win32TransportAgent::sendMessage(const char* msg) {
                                         INTERNET_SERVICE_HTTP,
                                         0,
                                         0))) {
-      lastErrorCode = ERR_CONNECT;
-      sprintf (lastErrorMsg, T("%s: %d"), T("InternetConnect Error"), GetLastError());
-	  LOG.error(lastErrorMsg);
-      goto exit;
+        lastErrorCode = ERR_CONNECT;
+        DWORD code = GetLastError();
+        char* msg = getHttpErrorMessage(code);
+        sprintf (lastErrorMsg, "InternetConnect Error: %d - %s", code, msg);
+        delete msg;
+        goto exit;
     }
     LOG.debug(T("Requesting resource %s"), url.resource);
 
@@ -163,10 +167,12 @@ char* Win32TransportAgent::sendMessage(const char* msg) {
                                      NULL,
                                      acceptTypes,
                                      flags, 0))) {
-      lastErrorCode = ERR_CONNECT;
-      sprintf (lastErrorMsg, T("%s: %d"), T("HttpOpenRequest Error"), GetLastError());
-	  LOG.error(lastErrorMsg);
-      goto exit;
+        lastErrorCode = ERR_CONNECT;
+        DWORD code = GetLastError();
+        char* msg = getHttpErrorMessage(code);
+        sprintf (lastErrorMsg, "HttpOpenRequest Error: %d - %s", code, msg);
+        delete msg;
+        goto exit;
     }
 
 
@@ -190,17 +196,28 @@ char* Win32TransportAgent::sendMessage(const char* msg) {
 
         // Send a request to the HTTP server.
         if (!HttpSendRequest (request, headers, wcslen(headers), (void*)msg, contentLength)) {
-            
-            // Retry: some proxy need to resend the http request.
-            if (GetLastError() == ERROR_INTERNET_CONNECTION_RESET) {
+            DWORD code = GetLastError();
+
+            if (code == ERROR_INTERNET_CONNECTION_RESET) {
                 // Fire Send Data Begin Transport Event
                 fireTransportEvent(contentLength, SEND_DATA_BEGIN);
+
+                // Retry: some proxy need to resend the http request.
                 if (!HttpSendRequest (request, headers, wcslen(headers), (void*)msg, contentLength)) {
                     lastErrorCode = ERR_CONNECT;
-                    sprintf (lastErrorMsg, T("%s: %d"), T("HttpSendRequest Error"), GetLastError());
-                    LOG.error(lastErrorMsg);
+                    char* msg = getHttpErrorMessage(code);
+                    sprintf (lastErrorMsg, "HttpSendRequest Error: %d - %s", code, msg);
+                    delete [] msg;
                     goto exit;
                 }
+            }
+            // This is another type of error (e.g. cannot find server) -> exit
+            else {
+                lastErrorCode = ERR_CONNECT;
+                char* msg = getHttpErrorMessage(code);
+                sprintf (lastErrorMsg, "HttpSendRequest Error: %d - %s", code, msg);
+                delete [] msg;
+                goto exit;
             }
         }
 
@@ -316,9 +333,11 @@ char* Win32TransportAgent::sendMessage(const char* msg) {
     (*p) = 0;
     do {
         if (!InternetReadFile (request, (LPVOID)bufferA, 5000, &read)) {
+            DWORD code = GetLastError();
             lastErrorCode = ERR_READING_CONTENT;
-            sprintf(lastErrorMsg, T("%s: %d"), T("InternetReadFile Error"), GetLastError());
-			LOG.error(lastErrorMsg);
+            char* msg = getHttpErrorMessage(code);
+            sprintf(lastErrorMsg, "InternetReadFile Error: %d - %s", code, msg);
+			delete [] msg;
             goto exit;
         }
 
@@ -368,3 +387,23 @@ exit:
 
     return response;
 }
+
+
+// Utility function to retrieve the correspondant message for the Wininet error code passed.
+// Pointer returned is allocated new, must be freed by caller.
+char* Win32TransportAgent::getHttpErrorMessage(DWORD errorCode) {
+    
+    char* errorMessage = new char[512];
+    FormatMessageA(
+                FORMAT_MESSAGE_FROM_HMODULE,
+                GetModuleHandleA("wininet.dll"),
+                errorCode,
+                MAKELANGID(LANG_NEUTRAL, SUBLANG_SYS_DEFAULT),
+                errorMessage, 
+                512, 
+                NULL);
+
+    return errorMessage;
+}
+
+
