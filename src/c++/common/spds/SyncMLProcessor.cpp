@@ -144,10 +144,10 @@ int SyncMLProcessor::processServerAlert(SyncSource& source, SyncML* syncml) {
                     goto finally;
                 }
 
-            source.setSyncMode((SyncMode)alert->getData());
-            ret = 0;
-            found = TRUE;
-            break;        
+                source.setSyncMode((SyncMode)alert->getData());
+                ret = 0;
+                found = TRUE;
+                break;        
             }
         }                        
         iterator++;
@@ -160,6 +160,41 @@ finally:
     
     return ret;
 }
+
+
+char** SyncMLProcessor::getSortedSourcesFromServer(SyncML* syncml, int sourcesNumber) {
+    
+    char** sourceList = new char*[sourcesNumber+1];
+    int iterator        = 0;
+    AbstractCommand* a  = NULL;   
+    Item* item          = NULL;
+    ArrayList* list     = new ArrayList();  
+
+    do {
+        a = getCommand(syncml->getSyncBody(), ALERT, iterator);                   
+        if (a == NULL) {
+            goto finally;
+        }
+        Alert* alert = (Alert*)a;
+        Item* item = NULL;
+        ArrayList* itemList = alert->getItems();
+
+        for (int i = 0; i < itemList->size(); i++) {
+            item = (Item*)getArrayElement(itemList, i);
+            const char *locURI = ((Target*)item->getTarget())->getLocURI();
+            sourceList[iterator] = stringdup(locURI);
+        }                        
+        iterator++;
+
+    } while(a);
+   
+finally:
+    sourceList[iterator] = NULL;
+    return sourceList;
+}
+
+
+
 
 int SyncMLProcessor::processItemStatus(SyncSource& source, SyncBody* syncBody) {
     

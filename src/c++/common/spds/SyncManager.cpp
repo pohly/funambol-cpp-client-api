@@ -156,6 +156,8 @@ void SyncManager::initialize() {
     
     syncMLBuilder.set(syncURL, deviceId);
     memset(credentialInfo, 0, 256*sizeof(char));
+
+    sortedSourcesFromServer = NULL;
 }
 
 SyncManager::~SyncManager() {
@@ -182,6 +184,14 @@ SyncManager::~SyncManager() {
     }
     if (incomingItem) {
         delete incomingItem;
+    }
+    if (sortedSourcesFromServer) {
+        int i=0;
+        while (sortedSourcesFromServer[i]) {
+            delete [] sortedSourcesFromServer[i];
+            i++;
+        }
+        delete [] sortedSourcesFromServer;
     }
 }
 
@@ -670,7 +680,15 @@ int SyncManager::prepareSync(SyncSource** s) {
                     credentialHandler.setClientNonce(clientChal->getNextNonce()->getValueAsBase64()); 
                 }
             }
-            isClientAuthenticated = TRUE;
+            isClientAuthenticated = TRUE; 
+
+            // Get sorted source list from Alert commands sent by server.
+            if (sortedSourcesFromServer) {
+                delete [] sortedSourcesFromServer;
+                sortedSourcesFromServer = NULL;
+            }
+            sortedSourcesFromServer = syncMLProcessor.getSortedSourcesFromServer(syncml, sourcesNumber);
+
             for (count = 0; count < sourcesNumber; count ++) {
                 if (!sources[count]->getReport() || !sources[count]->getReport()->checkState())
                     continue;
@@ -747,7 +765,30 @@ BOOL SyncManager::checkForServerChanges(SyncML* syncml, ArrayList &statusList)
     // our caller might use it, too.
     int oldCount = this->count;
     
-    for (count = 0; count < sourcesNumber; count ++) {
+
+    //
+    // Get the server modifications for each syncsource. 
+    // We need to work on syncsources in the same order as the server sends them.
+    // (use 'sortedSourcesFromServer' list of source names)
+    //
+    char* sourceUri = NULL;
+    int i=0;
+    while (sortedSourcesFromServer[i]) {
+
+        sourceUri = sortedSourcesFromServer[i];
+
+        // Retrieve the correspondent index for this syncsource.
+        for (count = 0; count < sourcesNumber; count ++) {
+            if ( !strcmp(sourceUri, sources[count]->getConfig().getName()) ) {
+                break;
+            }
+        }
+        if (count >= sourcesNumber) {
+            LOG.error("Source uri not recognized: %s", sourceUri);
+            goto finally;
+        }
+
+
         if (!sources[count]->getReport() || !sources[count]->getReport()->checkState())
             continue;
 
@@ -819,8 +860,9 @@ BOOL SyncManager::checkForServerChanges(SyncML* syncml, ArrayList &statusList)
         // Fire SyncSourceEvent: END sync of a syncsource (server modifications)
         fireSyncSourceEvent(sources[count]->getConfig().getURI(), sources[count]->getConfig().getName(), sources[count]->getSyncMode(), 0, SYNC_SOURCE_END);
 
-        }                               
-    } // End for (count = 0; count < sourcesNumber; count ++)
+        }  
+        i++;
+    } // End: while (sortedSourcesFromServer[i])
 
     
   finally:

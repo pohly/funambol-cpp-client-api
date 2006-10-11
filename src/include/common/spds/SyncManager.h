@@ -117,6 +117,12 @@ class SyncManager {
 
         int  sourcesNumber;
         int  count;
+
+        /* A list of syncsource names from server. The server sends sources 
+         * modifications sorted as alerts in this list. This array is retrieved from 
+         * SyncMLProcessor::getSortedSourcesFromServer.
+         */
+       char** sortedSourcesFromServer;
         
 		ArrayList** allItemsList;
         
@@ -168,7 +174,6 @@ class SyncManager {
         // Used to reserve some more space (DATA_SIZE_TOLERANCE) for incoming items.
         long getToleranceDataSize(long size);
         bool testIfDataSizeMismatch(long allocatedSize, long receivedSize);
-
           
         /**
          * A wrapper around the sync source's first/next iterator functions.

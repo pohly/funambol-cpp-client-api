@@ -139,7 +139,10 @@
          */
         ArrayList* getCommands(SyncBody* syncBody, char*  commandName) EXTRA_SECTION_01;
        
-
+        /* To retrieve a (NULL terminated) list of source names from list of Alert commands from server.
+         * @return: a new array of source names (NULL terminated) - must be freed by the caller.
+         */
+        char** getSortedSourcesFromServer(SyncML* syncml, int sourcesNumber);
     };
 
 #endif
