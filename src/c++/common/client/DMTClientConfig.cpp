@@ -264,7 +264,9 @@ BOOL DMTClientConfig::readAccessConfig(ManagementNode& n) {
     ManagementNode* node;
 
     char syncMLContext[DIM_MANAGEMENT_PATH];
-    sprintf(syncMLContext, T("%s"), n.getFullName());
+    char* fn = n.getFullName();
+    sprintf(syncMLContext, T("%s"), fn);
+    delete [] fn;
 
     //
     // Auth properties
@@ -331,7 +333,9 @@ void DMTClientConfig::saveAccessConfig(ManagementNode& n) {
     char nodeName[DIM_MANAGEMENT_PATH];
 
     char syncMLContext[DIM_MANAGEMENT_PATH];
-    sprintf(syncMLContext, T("%s"), n.getFullName());
+    char* fn = n.getFullName();
+    sprintf(syncMLContext, T("%s"), fn);
+    delete [] fn;
 
     //
     // Auth properties
@@ -384,8 +388,9 @@ BOOL DMTClientConfig::readDeviceConfig(ManagementNode& n) {
     ManagementNode* node;
 
     char syncMLContext[DIM_MANAGEMENT_PATH];
-    sprintf(syncMLContext, T("%s"), n.getFullName());
-
+    char* fn = n.getFullName();
+    sprintf(syncMLContext, T("%s"), fn);
+    delete [] fn;
     //
     // DevInfo properties
     //
@@ -451,7 +456,9 @@ void DMTClientConfig::saveDeviceConfig(ManagementNode& n) {
     char nodeName[DIM_MANAGEMENT_PATH];
 
     char syncMLContext[DIM_MANAGEMENT_PATH];
-    sprintf(syncMLContext, T("%s"), n.getFullName());
+    char* fn = n.getFullName();
+    sprintf(syncMLContext, T("%s"), fn);
+    delete [] fn;
 
     //
     // DevInfo properties
@@ -531,7 +538,9 @@ void DMTClientConfig::saveSourceConfig(int i, ManagementNode& n) {
 
     if (n.getChild(i) == NULL) {
         // Create node from Source name.
-        sprintf(nodeName, T("%s/%s"), n.getFullName(), sourceConfigs[i].getName());
+        char* fn = n.getFullName();
+        sprintf(nodeName, T("%s/%s"), fn, sourceConfigs[i].getName());
+        delete [] fn;
         node = dmt->getManagementNode(nodeName);
     }
     else {
