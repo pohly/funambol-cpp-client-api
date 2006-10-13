@@ -148,7 +148,7 @@ int uudecode(const char *msg, char **binmsg, size_t *binlen)
     const char *cursor = buf;
     char *line;
     // Make room for the destination (3/4 of the original)
-    int outlen = strlen(buf)/3 * 4 + 1;
+    int outlen = strlen(buf)/4 * 3 + 1;
     char *out = new char[outlen+1];
     memset(out, 0, outlen);
     int len = 0, nl=0;
