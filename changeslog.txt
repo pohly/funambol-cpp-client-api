@@ -1,3 +1,8 @@
+2006-10-05
+     - toccy: fix for bug #306200: Win32TransportAgent: added safe check on size of data received (can be wrong with some proxy)
+              fix for bug #306246: added safe checks on existance of NextNonce tag, during auth procedure.
+
+
 Funambol SDK C++ 3.0.21
 ------------------------- 
 2006-08-30
