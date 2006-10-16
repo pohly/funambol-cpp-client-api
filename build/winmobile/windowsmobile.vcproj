@@ -440,7 +440,7 @@
 			/>
 			<Tool
 				Name="VCCodeSignTool"
-				AuthenticodeSignature="true"
+				AuthenticodeSignature="false"
 				Certificate="SHA-1 Hash=B9BF8516CAA9F6D74F0EFE82148878C137DA2C81|B9BF8516CAA9F6D74F0EFE82148878C137DA2C81"
 			/>
 			<Tool
@@ -13281,6 +13281,4 @@
 			</File>
 		</Filter>
 	</Files>
-	<Globals>
-	</Globals>
 </VisualStudioProject>
