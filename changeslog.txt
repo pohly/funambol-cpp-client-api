@@ -1,3 +1,7 @@
+2006-10-11
+     - toccy: added tolerance of 6% on size of incoming items in case of large object
+              improved Win32TransportAgent: added http error message explanations associated to error codes
+              added an array of syncsource names in SyncManager: "sortedSourcesFromServer" ....
 
 2006-10-06
      - toccy: fixed Win32TransportAgent with a sanity check on rensponse read (proxy related issue)
