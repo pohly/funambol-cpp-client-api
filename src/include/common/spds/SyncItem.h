@@ -257,7 +257,6 @@
          */
         struct encodings {
             static const char* const plain;      /**< data is transferred as it is */
-            static const char* const bin;        /**< data is transferred as it is (same as plain) */
             static const char* const escaped;    /**< base64 encoded during transfer */
             static const char* const des;        /**< encrypted with DES and then base64 encoded; beware,
                                                       non-standard and only supported by some servers */
@@ -271,7 +270,6 @@
             static const BOOL isSupported(const char* encoding) {
                 const char* enc = encodingString(encoding);
                 return !strcmp(enc, plain) ||
-                    !strcmp(enc, bin) ||
                     !strcmp(enc, escaped) ||
                     !strcmp(enc, des);
             }

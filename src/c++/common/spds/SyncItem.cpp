@@ -25,8 +25,7 @@
 #include "spds/SyncItem.h"
 #include "spds/DataTransformerFactory.h"
 
-const char* const SyncItem::encodings::plain = "plain/text";
-const char* const SyncItem::encodings::bin = "bin";
+const char* const SyncItem::encodings::plain = "bin";
 const char* const SyncItem::encodings::escaped = "b64";
 const char* const SyncItem::encodings::des = "des;b64";
 
