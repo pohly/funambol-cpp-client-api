@@ -155,7 +155,7 @@ void SyncManager::initialize() {
         readBufferSize = c.getReadBufferSize();
     
     syncMLBuilder.set(syncURL, deviceId);
-    memset(credentialInfo, 0, 256*sizeof(char));
+    memset(credentialInfo, 0, 1024*sizeof(char));
 
     sortedSourcesFromServer = NULL;
 }
