@@ -478,7 +478,7 @@ Alert* SyncMLBuilder::prepareAlert(SyncSource& s, int code) {
     return alert;
 }
 
-Alert* SyncMLBuilder::prepareInitAlert(SyncSource& s) {
+Alert* SyncMLBuilder::prepareInitAlert(SyncSource& s, unsigned long maxObjSize) {
     
     ++cmdID;
 
@@ -497,10 +497,11 @@ Alert* SyncMLBuilder::prepareInitAlert(SyncSource& s) {
         tar->setFilter(filter);
         delete filter; filter = NULL;
     }
-    
+       
+
     Anchor*    anchor    = new Anchor(s.getLastAnchor(), s.getNextAnchor());    
     MetInf* metInf       = new MetInf(NULL, NULL, NULL, NULL, 
-                               anchor, NULL, NULL, NULL, NULL, NULL, NULL); 
+                            anchor, NULL, NULL, NULL, maxObjSize > 0 ? maxObjSize : NULL,  NULL, NULL); 
     Meta* meta           = new Meta();
     meta->setMetInf(metInf);
     Item* item           = new Item(tar, sou, meta, NULL, FALSE);

@@ -366,7 +366,7 @@ int SyncManager::prepareSync(SyncSource** s) {
                                             // address change notification
                 }
                 else {
-                    alert = syncMLBuilder.prepareInitAlert(*sources[count]);
+                    alert = syncMLBuilder.prepareInitAlert(*sources[count], maxObjSize);
                 }
                 alerts->add(*alert);
                 deleteAlert(&alert);
