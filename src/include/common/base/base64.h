@@ -24,5 +24,28 @@
 int b64_encode(char *dest, void *src, int len);
 int b64_decode(void *dest, const char *src);
 
+class StringBuffer;
+
+/**
+ * Encode arbitrary data into b64 encoded, nul-terminated string.
+ *
+ * @retval dest    string buffer for encoded string
+ * @param src      binary data
+ * @len            number of bytes
+ */
+void b64_encode(StringBuffer &dest, void *src, int len);
+
+/**
+ * Decode b64 encoded, nul-terminated string into the original
+ * binary data.
+ *
+ * @retval len       number of valid bytes in dest, not counting the extra nul-byte
+ * @param src        nul-terminated input string
+ * @return address of the dynamically allocated buffer,
+ *         has to be freed by caller with delete [];
+ *         always contains nul-byte after original data
+ */
+void * b64_decode(int & len, const char *src);
+
 #endif /* BASE64_H */
 

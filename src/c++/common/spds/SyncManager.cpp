@@ -19,6 +19,7 @@
 #include "base/Log.h"
 #include "base/debug.h"
 #include "base/util/utils.h"
+#include "base/base64.h"
 #include "base/messages.h"
 #include "http/TransportAgentFactory.h"
 #include "spds/constants.h"
@@ -34,6 +35,39 @@
 #include "event/FireEvent.h"
 
 #include <limits.h>
+
+const char SyncManager::encodedKeyPrefix[] = "funambol-b64-";
+
+void SyncManager::decodeItemKey(SyncItem *syncItem)
+{
+    char *key;
+    
+    if (syncItem &&
+        (key = syncItem->getKey()) != NULL &&
+        !strncmp(key, encodedKeyPrefix, strlen(encodedKeyPrefix))) {
+        int len;
+        char *decoded = (char *)b64_decode(len, key + strlen(encodedKeyPrefix));
+        LOG.debug("replacing encoded key '%s' with unsafe key '%s'", key, decoded);
+        syncItem->setKey(decoded);
+        delete [] decoded;
+    }
+}
+
+void SyncManager::encodeItemKey(SyncItem *syncItem)
+{
+    char *key;
+    
+    if (syncItem &&
+        (key = syncItem->getKey()) != NULL &&
+        (strchr(key, '<') || strchr(key, '&'))) {
+        StringBuffer encoded;
+        b64_encode(encoded, key, strlen(key));
+        StringBuffer newkey(encodedKeyPrefix);
+        newkey += encoded;
+        LOG.debug("replacing unsafe key '%s' with encoded key '%s'", key, newkey.c_str());
+        syncItem->setKey(newkey.c_str());
+    }
+}
 
 /**
  * Is the given status code an error status code? Error codes are the ones
@@ -1828,6 +1862,10 @@ SyncItem* SyncManager::getItem(SyncSource& source, SyncItem* (SyncSource::* getI
             }
         }
     }
+
+    // the client might have used a key which is not safe for SyncML, encode it if necessary
+    encodeItemKey(syncItem);
+    
     return syncItem;
 }
 
@@ -1991,6 +2029,9 @@ Status *SyncManager::processSyncItem(Item* item, const CommandInfo &cmdInfo, Syn
                 code = sources[count]->addItem(*incomingItem);      
                 status = syncMLBuilder.prepareItemStatus(ADD, itemName, cmdInfo.cmdRef, code);
 
+                // new client key might be unsafe, encode it in that case
+                encodeItemKey(incomingItem);
+                
                 // Fire Sync Status Event: item status from client
                 fireSyncStatusEvent(status->getCmd(), status->getStatusCode(), sources[count]->getConfig().getName(), sources[count]->getConfig().getURI(), incomingItem->getKey(), CLIENT_STATUS);
                 // Update SyncReport
@@ -2005,6 +2046,10 @@ Status *SyncManager::processSyncItem(Item* item, const CommandInfo &cmdInfo, Syn
                 }                    
             }
             else if (strcmp(cmdInfo.commandName, REPLACE) == 0) {  
+                // item key as stored on the server might have been encoded by library,
+                // check that before passing to client
+                decodeItemKey(incomingItem);
+                
                 // Fire Sync Item Event - Item Updated by Server
                 fireSyncItemEvent(sources[count]->getConfig().getURI(), sources[count]->getConfig().getName(), incomingItem->getKey(), ITEM_UPDATED_BY_SERVER);
 
@@ -2018,6 +2063,10 @@ Status *SyncManager::processSyncItem(Item* item, const CommandInfo &cmdInfo, Syn
                 sources[count]->getReport()->addItem(CLIENT, COMMAND_REPLACE, incomingItem->getKey(), status->getStatusCode());
             }
             else if (strcmp(cmdInfo.commandName, DEL) == 0) {
+                // item key as stored on the server might have been encoded by library,
+                // check that before passing to client
+                decodeItemKey(incomingItem);
+
                 // Fire Sync Item Event - Item Deleted by Server
                 fireSyncItemEvent(sources[count]->getConfig().getURI(), sources[count]->getConfig().getName(), incomingItem->getKey(), ITEM_DELETED_BY_SERVER);
 

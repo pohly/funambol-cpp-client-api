@@ -18,6 +18,7 @@
 #include <string.h>
 
 #include "base/fscapi.h"
+#include "base/util/StringBuffer.h"
 
 static const char b64_tbl[] =
         "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
@@ -50,6 +51,9 @@ input[], int n)
 /**
  * Encodes the given src string in Base64. It returns the encoded string size.
  *
+ * Warning: don't use this function unless you know exactly how large the output
+ * is going to be.
+ * 
  * @param dest where the encoded string will be stored
  * @param src the string to encode
  * @param len src length
@@ -69,6 +73,19 @@ int __cdecl b64_encode(char *dest, void *src, int len)
         }
 
         return outsz;
+}
+
+void b64_encode(StringBuffer &dest, void *src, int len)
+{
+    // "magic" formular copied from B64Encoder::transform()
+    char *buffer = new char[((len/3+1)<<2) + 32];
+    int destlen = b64_encode(buffer, src, len);
+    buffer[destlen] = 0;
+
+    // it would be nice to use the StringBuffer's buffer directly,
+    // but StringBuffer API does not allow that
+    dest = buffer;
+    delete [] buffer;
 }
 
 /* base64 decode a group of 4 input chars into a group of between 0 and
@@ -142,4 +159,12 @@ int b64_decode(void *dest, const char *src)
         }
 
         return outsz;
+}
+
+void * b64_decode(int & len, const char *src)
+{
+    char * dest = new char[strlen(src) + 1];
+    len = b64_decode((void *)dest, src);
+    dest[len] = 0;
+    return (void *)dest;
 }
