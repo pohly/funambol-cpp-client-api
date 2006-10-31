@@ -1,7 +1,7 @@
 +---------------------------------+----------------------------------------+-----------------------+
 | TAG/BRANCH                      | DESCRIPTION                            | DATA                  | 
 +---------------------------------+----------------------------------------+-----------------------+ 
-| b_funambol31                    | stabilization for 3.1, owner toccy     |                       |
+| b_funambol31                    | stabilization for 3.1, owner magi      |                       |
 | funambol31head                  | base version for b_funambol31 on HEAD  |                       |
 +---------------------------------+----------------------------------------+-----------------------+ 
 | syncevolution-0-4               | SyncEvolution 0.4                      | 2006-10-10            |

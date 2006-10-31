@@ -1,3 +1,13 @@
+2006-10-31
+     - magi:  merge modifications from branch b_funambol31. 
+              fixed in SyncManager credentialInfo property to handle username/password greater then 256 chars
+              fixed MaxObjSize position. It has to be put in every source Alert and not only in the Header
+                The header is fine for the DM but not for DS. Without the fix the MaxObjSize was not consider by
+                the server.
+              improved FileData. fixed memory leak
+              added new constructor in StringBuffer
+              
+
 2006-10-11
      - toccy: added tolerance of 6% on size of incoming items in case of large object
               improved Win32TransportAgent: added http error message explanations associated to error codes

@@ -429,3 +429,27 @@ void StringBuffer::freemem()
     size = 0;
 }
 
+/*
+* Create a StringBuffer with a sequence of len chars.
+* useful to have a string buffer directly from a SyncItem.getData(), SyncItem.getDataSize()
+*/
+
+StringBuffer::StringBuffer(const void* str, size_t len) {
+    
+    size = 0;
+    s = 0;
+
+    // if the given string is null, leave this null,
+    // otherwise set it, even empty.
+    if (str && len > 0) {
+                                
+        getmem(len);
+        strncpy(s, (const char*)str, len);
+        s[len]=0;
+    }
+    else {  // empty string
+        getmem(1);
+        s[0] = 0;
+    
+    }
+}

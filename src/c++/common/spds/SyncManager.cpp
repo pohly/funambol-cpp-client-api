@@ -155,7 +155,7 @@ void SyncManager::initialize() {
         readBufferSize = c.getReadBufferSize();
     
     syncMLBuilder.set(syncURL, deviceId);
-    memset(credentialInfo, 0, 256*sizeof(char));
+    memset(credentialInfo, 0, 1024*sizeof(char));
 
     sortedSourcesFromServer = NULL;
 }
@@ -366,7 +366,7 @@ int SyncManager::prepareSync(SyncSource** s) {
                                             // address change notification
                 }
                 else {
-                    alert = syncMLBuilder.prepareInitAlert(*sources[count]);
+                    alert = syncMLBuilder.prepareInitAlert(*sources[count], maxObjSize);
                 }
                 alerts->add(*alert);
                 deleteAlert(&alert);

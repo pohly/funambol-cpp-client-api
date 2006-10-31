@@ -77,11 +77,25 @@ FileData::~FileData()
     cttype.reset();
             
 }
-int FileData::parse(const char *syncmlData, size_t len)
+
+int FileData::parse(const void *syncmlData, size_t len) {
+    StringBuffer* s = new StringBuffer(syncmlData, len);
+    return parse(s);
+
+
+}
+
+int FileData::parse(const char *syncmlData, size_t len) {
+    StringBuffer* s = new StringBuffer(syncmlData, len);
+    return parse(s);
+
+}
+
+int FileData::parse(StringBuffer* s)
 {
     int ret = 0;
     unsigned int start, end;        
-    StringBuffer* s = new StringBuffer(syncmlData, len);
+    //StringBuffer* s = new StringBuffer(syncmlData, len);
     StringBuffer bodyattr;
 
     // FIXME: remove these replace once the server has fixed the message.
@@ -228,6 +242,7 @@ void FileData::setBody(const char* v, int len)
         memset(base64, 0, encodeLen + 1);           
         b64_encode(base64, (char*)v, len);    
         body = base64;
+        delete [] base64; 
     }
 }
 

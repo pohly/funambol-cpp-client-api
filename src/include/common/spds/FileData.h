@@ -117,8 +117,12 @@ class FileData : public ArrayElement {
 		int getSize() { return size; }
 		void setSize(int v) { size = v; }
         
+        int parse(StringBuffer* s) ;
+
     // ----------------------------------------------------- Public Methods
         int parse(const char *syncmlData, size_t len = WString::npos) ;
+        int parse(const void *syncmlData, size_t len) ;
+        
         char *format() ;
 
         ArrayElement* clone() { return new FileData(*this); }

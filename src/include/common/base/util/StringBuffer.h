@@ -35,6 +35,8 @@ class StringBuffer: public ArrayElement {
 
         StringBuffer(const StringBuffer &sb) EXTRA_SECTION_00;
 
+        StringBuffer(const void* str, size_t len) EXTRA_SECTION_00;
+
         ~StringBuffer() EXTRA_SECTION_00;
 
         StringBuffer& append(const char* ) EXTRA_SECTION_00;

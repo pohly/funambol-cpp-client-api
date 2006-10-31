@@ -69,7 +69,7 @@ class SyncMLBuilder {
         /*
         * Prepare the init alert
         */
-        Alert*   prepareInitAlert(SyncSource& source) EXTRA_SECTION_01;
+        Alert*   prepareInitAlert(SyncSource& source, unsigned long maxObjSize = 0) EXTRA_SECTION_01;
         
         /*
         * Prepare the special init alert for Address Change Notification
