@@ -89,6 +89,21 @@ class SyncManager {
 
     private:
 
+        // SyncManager makes local key safe to use in SyncML by
+        // encoding it as b64 if it contains special characters. The
+        // SyncML standard says that the key should be a "URI" or
+        // "URN"; we interpret that less strictly as "do not
+        // include characters which actually break XML".
+        //
+        // Encoded keys are sent as "funambol-b64-<encoded original
+        // key>". When receiving a key from the server it is only decoded
+        // if it contains this magic tag, therefore an updated client
+        // remains compatible with a server that already contains keys.
+        static const char encodedKeyPrefix[];
+
+        void encodeItemKey(SyncItem *syncItem);
+        void decodeItemKey(SyncItem *syncItem);
+
         // Struct used to pass command info to the method processSyncItem
         struct CommandInfo {
             char*  commandName;

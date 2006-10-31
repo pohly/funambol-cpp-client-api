@@ -1,5 +1,12 @@
 2006-10-31
      - magi:  merge modifications from branch b_funambol31. 
+              Applied Patrick's patch to handle the key with non permitted xml chars.
+              see bug http://forge.objectweb.org/tracker/index.php?func=detail&aid=306335&group_id=96&atid=100096
+              for details
+
+
+2006-10-31
+     - magi:  merge modifications from branch b_funambol31. 
               fixed in SyncManager credentialInfo property to handle username/password greater then 256 chars
               fixed MaxObjSize position. It has to be put in every source Alert and not only in the Header
                 The header is fine for the DM but not for DS. Without the fix the MaxObjSize was not consider by
