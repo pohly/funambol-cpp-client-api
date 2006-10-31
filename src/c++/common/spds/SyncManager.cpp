@@ -43,13 +43,16 @@ void SyncManager::decodeItemKey(SyncItem *syncItem)
     char *key;
     
     if (syncItem &&
-        (key = syncItem->getKey()) != NULL &&
+        (key = toMultibyte(syncItem->getKey())) != NULL &&
         !strncmp(key, encodedKeyPrefix, strlen(encodedKeyPrefix))) {
         int len;
         char *decoded = (char *)b64_decode(len, key + strlen(encodedKeyPrefix));
         LOG.debug("replacing encoded key '%s' with unsafe key '%s'", key, decoded);
-        syncItem->setKey(decoded);
+        WCHAR* t = toWideChar(decoded);
+        syncItem->setKey(t);
         delete [] decoded;
+        delete [] key;
+        delete [] t;
     }
 }
 
@@ -58,14 +61,17 @@ void SyncManager::encodeItemKey(SyncItem *syncItem)
     char *key;
     
     if (syncItem &&
-        (key = syncItem->getKey()) != NULL &&
+        (key = toMultibyte(syncItem->getKey())) != NULL &&
         (strchr(key, '<') || strchr(key, '&'))) {
         StringBuffer encoded;
         b64_encode(encoded, key, strlen(key));
         StringBuffer newkey(encodedKeyPrefix);
         newkey += encoded;
         LOG.debug("replacing unsafe key '%s' with encoded key '%s'", key, newkey.c_str());
-        syncItem->setKey(newkey.c_str());
+        WCHAR* t = toWideChar(newkey.c_str());
+        syncItem->setKey(t);
+        delete [] key;
+        delete [] t;
     }
 }
 
