@@ -84,16 +84,24 @@ static char*  getCurrentTime(BOOL complete) {
     time_t t = time(NULL);
     struct tm *sys_time = localtime(&t);
 
-    char *fmtComplete = T("%04d-%02d-%02d %02d:%02d:%02d");
-    char *fmt         = T("%02d:%02d:%02d");
+    char *fmtComplete = T("%04d-%02d-%02d %02d:%02d:%02d GMT %c%d:%02d");
+    char *fmt         = T("%02d:%02d:%02d GMT %c%d:%02d");
 
     char*  ret = new char [64];
 
+    // calculate offset from UTC/GMT in hours:min, positive value means east of Greenwich (e.g. CET = GMT +1)
+    char direction = timezone < 0 ? '+' : '-';
+    long seconds = labs(timezone);
+    int hours = seconds / 60 / 60;
+    int minutes = (seconds / 60) % 60;
+    
     if (complete) {
         sprintf(ret, fmtComplete, sys_time->tm_year, sys_time->tm_mon, sys_time->tm_mday,  
-                sys_time->tm_hour, sys_time->tm_min, sys_time->tm_sec);
+                sys_time->tm_hour, sys_time->tm_min, sys_time->tm_sec,
+                direction, hours, minutes);
     } else {
-        sprintf(ret, fmt, sys_time->tm_hour, sys_time->tm_min, sys_time->tm_sec);
+        sprintf(ret, fmt, sys_time->tm_hour, sys_time->tm_min, sys_time->tm_sec,
+                direction, hours, minutes);
     }
     return ret;
 }
