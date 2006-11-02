@@ -1736,11 +1736,11 @@ int SyncManager::endSync() {
                 }
             }
 
-            int sret = sources[count]->endSync();
-            if (sret) {
-                lastErrorCode = sret;
-            }
         }        
+        int sret = sources[count]->endSync();
+        if (sret) {
+            lastErrorCode = sret;
+        }
     }         
         
  finally:

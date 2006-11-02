@@ -38,18 +38,28 @@ static char logPath[256] = "\\" ;
 static char*  getCurrentTime(BOOL complete) {
     
     SYSTEMTIME sys_time;   
+    TIME_ZONE_INFORMATION timezone;
     GetLocalTime(&sys_time);
+    GetTimeZoneInformation(&timezone);
 
-    char fmtComplete[] = T("%04d-%02d-%02d %02d:%02d:%02d:%03d");
-    char fmt[]         = T("%02d:%02d:%02d:%03d");
+    char fmtComplete[] = T("%04d-%02d-%02d %02d:%02d:%02d GMT %c%d:%02d");
+    char fmt[]         = T("%02d:%02d:%02d GMT %c%d:%02d");
 
     char*  ret = new char [64];
 
+    // calculate offset from UTC/GMT in hours:min, positive value means east of Greenwich (e.g. CET = GMT +1)
+    
+    char direction = timezone.Bias < 0 ? '+' : '-';    
+    int hours = abs(timezone.Bias / 60) ;
+    int minutes = abs(timezone.Bias % 60);
+
     if (complete) {
         sprintf(ret, fmtComplete, sys_time.wYear, sys_time.wMonth, sys_time.wDay,
-                 sys_time.wHour, sys_time.wMinute, sys_time.wSecond, sys_time.wMilliseconds);
+                 sys_time.wHour, sys_time.wMinute, sys_time.wSecond,
+                direction, hours, minutes);
     } else {
-        sprintf(ret, fmt, sys_time.wHour, sys_time.wMinute, sys_time.wSecond, sys_time.wMilliseconds);
+        sprintf(ret, fmt, sys_time.wHour, sys_time.wMinute, sys_time.wSecond, 
+                direction, hours, minutes);
     }
     return ret;
 }

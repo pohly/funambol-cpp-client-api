@@ -1,5 +1,10 @@
 2006-10-31
      - magi:  merge modifications from branch b_funambol31. 
+              modified LOG timestamp for posix, winmobile and win32 platform. 
+              Now it get the gmt info. 
+              Fixed SyncManager for update_remote_data syncmode
+2006-10-31
+     - magi:  merge modifications from branch b_funambol31. 
               Applied Patrick's patch to handle the key with non permitted xml chars.
               see bug http://forge.objectweb.org/tracker/index.php?func=detail&aid=306335&group_id=96&atid=100096
               for details
