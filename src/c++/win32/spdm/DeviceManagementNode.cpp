@@ -58,7 +58,7 @@ char* DeviceManagementNode::getPropertyValue(const char* prop) {
     ULONG dim = 0;
 
     RegCreateKeyEx(
-            HKEY_LOCAL_MACHINE,
+            HKEY_CURRENT_USER,
             fullContext,
             0,
             NULL,
@@ -124,7 +124,7 @@ int DeviceManagementNode::getChildrenMaxCount() {
     ULONG howMany = 0;
 
     RegOpenKeyEx(
-            HKEY_LOCAL_MACHINE,
+            HKEY_CURRENT_USER,
             fullContext,
             0,
             KEY_READ,
@@ -170,7 +170,7 @@ char **DeviceManagementNode::getChildrenNames() {
     HRESULT ret;
 
     RegCreateKeyEx(
-            HKEY_LOCAL_MACHINE,
+            HKEY_CURRENT_USER,
             fullContext,
             0,
             NULL,
@@ -241,7 +241,7 @@ void DeviceManagementNode::setPropertyValue(const char* prop, const char* value)
     TCHAR *p, *v;
 
     RegCreateKeyEx(
-            HKEY_LOCAL_MACHINE,
+            HKEY_CURRENT_USER,
             fullContext,
             0,
             NULL,
