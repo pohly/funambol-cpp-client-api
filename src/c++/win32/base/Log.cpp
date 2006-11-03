@@ -36,7 +36,7 @@ Log::Log(BOOL resetLog, char* path, char* name) {
     setLogName(name);
 
     memset(logDir, 0, 512*sizeof(char));
-    sprintf(logDir, T("%s%s"), logPath, logName);
+    sprintf(logDir, T("%s\\%s"), logPath, logName);
 
     //
     // Test to ensure the log file is writable...

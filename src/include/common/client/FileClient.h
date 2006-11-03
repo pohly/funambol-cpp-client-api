@@ -50,7 +50,7 @@
 
 #define APPLICATION_URI         T("Funambol/SyncclientFILE")
 #define LOG_TITLE		        T("Funambol FILEClient Log")
-#define LOG_PATH		        T("./")
+#define LOG_PATH		        T(".")
 #define LOG_LEVEL		        LOG_LEVEL_DEBUG
 #define SOURCE_NAME             T("briefcase")
 #define WSOURCE_NAME            TEXT("briefcase")
