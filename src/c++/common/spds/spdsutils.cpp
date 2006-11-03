@@ -32,9 +32,11 @@ SyncMode syncModeCode(const char* syncMode) {
         return SYNC_TWO_WAY;
     else if (strcmp(syncMode,T("one-way")) == 0)
         return SYNC_ONE_WAY_FROM_SERVER;
-    else if (strcmp(syncMode,T("one-way-server")) == 0)
+    else if (strcmp(syncMode,T("one-way-server")) == 0 ||
+             strcmp(syncMode,T("one-way-from-server")) == 0 )
         return SYNC_ONE_WAY_FROM_SERVER;
-    else if (strcmp(syncMode,T("one-way-client")) == 0)
+    else if (strcmp(syncMode,T("one-way-client")) == 0 ||
+             strcmp(syncMode,T("one-way-from-client")) == 0)
         return SYNC_ONE_WAY_FROM_CLIENT;
     else if (strcmp(syncMode,T("refresh"))             == 0 ||
              strcmp(syncMode,T("refresh-server"))      == 0 ||
