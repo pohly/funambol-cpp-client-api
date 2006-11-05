@@ -48,7 +48,7 @@ class StringBuffer: public ArrayElement {
         StringBuffer& append(StringBuffer* str) EXTRA_SECTION_00;
 
         StringBuffer& set(const char* ) EXTRA_SECTION_00;
-
+                
         /**
          * Release the string buffer.
          */

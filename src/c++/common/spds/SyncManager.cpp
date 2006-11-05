@@ -1735,7 +1735,7 @@ int SyncManager::endSync() {
                     }
                 }
             }
-
+            
         }        
         int sret = sources[count]->endSync();
         if (sret) {

@@ -497,7 +497,7 @@ Alert* SyncMLBuilder::prepareInitAlert(SyncSource& s, unsigned long maxObjSize) 
         tar->setFilter(filter);
         delete filter; filter = NULL;
     }
-    
+       
 
     Anchor*    anchor    = new Anchor(s.getLastAnchor(), s.getNextAnchor());    
     MetInf* metInf       = new MetInf(NULL, NULL, NULL, NULL, 

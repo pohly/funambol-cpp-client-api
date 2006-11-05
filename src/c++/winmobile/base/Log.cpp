@@ -46,7 +46,7 @@ static char*  getCurrentTime(BOOL complete) {
     char fmt[]         = T("%02d:%02d:%02d GMT %c%d:%02d");
 
     char*  ret = new char [64];
-
+    
     // calculate offset from UTC/GMT in hours:min, positive value means east of Greenwich (e.g. CET = GMT +1)
     
     char direction = timezone.Bias < 0 ? '+' : '-';    
