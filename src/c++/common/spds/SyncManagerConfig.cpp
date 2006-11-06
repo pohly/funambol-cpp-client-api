@@ -112,12 +112,15 @@ BOOL SyncManagerConfig::setSyncSourceConfig(SyncSourceConfig& sc) {
  */
 BOOL SyncManagerConfig::addSyncSourceConfig(SyncSourceConfig& sc) {
     
-    unsigned int i;
+    unsigned int i = 0;
+    SyncSourceConfig* s = NULL;
 
     // copy array in a tmp buffer
-    SyncSourceConfig* s = new SyncSourceConfig[sourceConfigsCount];
-    for (i=0; i<sourceConfigsCount; i++)
-        s[i].assign(sourceConfigs[i]);
+    if (sourceConfigsCount>0) {
+        s = new SyncSourceConfig[sourceConfigsCount];
+        for (i=0; i<sourceConfigsCount; i++)
+            s[i].assign(sourceConfigs[i]);
+    }
 
     // delete old one, create new (+1 element)
     if (sourceConfigs) {
