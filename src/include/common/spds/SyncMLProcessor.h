@@ -143,6 +143,11 @@
          * @return: a new array of source names (NULL terminated) - must be freed by the caller.
          */
         char** getSortedSourcesFromServer(SyncML* syncml, int sourcesNumber);
+
+        /* To retrieve a Sync pointer from ArrayList of Sync objects. 
+         * It gets the order like the server sends
+         */        
+        Sync* getSyncResponse(SyncML* syncml, int index);
     };
 
 #endif

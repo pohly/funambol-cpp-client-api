@@ -827,14 +827,30 @@ BOOL SyncManager::checkForServerChanges(SyncML* syncml, ArrayList &statusList)
             LOG.error("Source uri not recognized: %s", sourceUri);
             goto finally;
         }
+        
 
-
-        if (!sources[count]->getReport() || !sources[count]->getReport()->checkState())
-            continue;
-
-        Sync* sync = syncMLProcessor.processSyncResponse(*sources[count], syncml);
-
+        // Sync* sync = syncMLProcessor.processSyncResponse(*sources[count], syncml);
+        Sync* sync = syncMLProcessor.getSyncResponse(syncml, i);
+        
         if (sync) {
+            const char *locuri = ((Target*)(sync->getTarget()))->getLocURI();
+
+            for (int k = 0; k < sourcesNumber; k++) {        
+                if (strcmp(locuri, sources[k]->getConfig().getName()) == 0) {
+                    count = k;
+                    break;
+                }  
+            }
+            if (count >= sourcesNumber) {
+                LOG.error("Source uri not recognized: %s", sourceUri);
+                goto finally;
+            }
+
+            if (!sources[count]->getReport() || !sources[count]->getReport()->checkState())
+                continue;
+        }
+                
+        if (sync) { 
             // Fire SyncSource event: BEGIN sync of a syncsource (server modifications)
             // (fire only if <sync> tag exist)
             fireSyncSourceEvent(sources[count]->getConfig().getURI(), sources[count]->getConfig().getName(), sources[count]->getSyncMode(), 0, SYNC_SOURCE_BEGIN);
@@ -1888,7 +1904,7 @@ Status *SyncManager::processSyncItem(Item* item, const CommandInfo &cmdInfo, Syn
     else {
         Target* t = item->getTarget();                
         itemName = t->getLocURI();
-    }
+    }        
 
     // Fill item -------------------------------------------------
     WCHAR *iname = toWideChar(itemName);
