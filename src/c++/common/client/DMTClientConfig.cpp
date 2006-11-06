@@ -130,7 +130,9 @@ BOOL DMTClientConfig::read() {
     if (sourceConfigs) {
         delete [] sourceConfigs;
     }
-    sourceConfigs = new SyncSourceConfig[n];
+    if (n>0) {
+        sourceConfigs = new SyncSourceConfig[n];
+    }
     sourceConfigsCount = n;
 
     for (i=0; i<n; ++i) {
@@ -175,15 +177,9 @@ BOOL DMTClientConfig::save() {
     //
     for(i=0; i<sourceConfigsCount; ++i) {
         saveSourceConfig(i, *(sourcesNode) );
-
-        if (lastErrorCode != ERR_NONE) {
-            goto finally;
-        }
     }
 
     ret = (lastErrorCode == ERR_NONE);
-
-finally:
 
     close();
     return ret;
