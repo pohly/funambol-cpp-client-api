@@ -40,13 +40,13 @@ public:
     virtual void syncSourceEnd(SyncSourceEvent& event);
     
     // listen for the SyncMode requested by the server
-    virtual void SyncSourceListener::syncSourceSyncModeRequested  (SyncSourceEvent& event);
+    virtual void syncSourceSyncModeRequested  (SyncSourceEvent& event);
 
     // listen for total client items (number of changes) sent by Client.
-    virtual void SyncSourceListener::syncSourceTotalClientItems  (SyncSourceEvent& event);
+    virtual void syncSourceTotalClientItems  (SyncSourceEvent& event);
 
     // listen for total server items (number of changes) sent by Server.
-    virtual void SyncSourceListener::syncSourceTotalServerItems  (SyncSourceEvent& event);
+    virtual void syncSourceTotalServerItems  (SyncSourceEvent& event);
 };
 
 #endif
