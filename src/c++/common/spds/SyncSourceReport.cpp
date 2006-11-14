@@ -74,10 +74,6 @@ const int SyncSourceReport::getLastErrorCode() const {
 }
 void SyncSourceReport::setLastErrorCode(const int code) {
     lastErrorCode = code;
-
-    if (state == SOURCE_ACTIVE) {
-        state = SOURCE_ERROR;
-    }
 }
 
 const SourceState SyncSourceReport::getState() const {
