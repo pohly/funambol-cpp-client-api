@@ -77,7 +77,7 @@ SyncSourceConfig* DMTClientConfig::getSyncSourceConfig(const char* name, BOOL re
         }
     }
 
-    return FALSE;
+    return NULL;
 }
 
 
