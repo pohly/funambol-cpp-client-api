@@ -846,8 +846,10 @@ BOOL SyncManager::checkForServerChanges(SyncML* syncml, ArrayList &statusList)
                 goto finally;
             }
 
-            if (!sources[count]->getReport() || !sources[count]->getReport()->checkState())
+            if (!sources[count]->getReport() || !sources[count]->getReport()->checkState()) {
+                i++;             
                 continue;
+            }
         }
                 
         if (sync) { 
