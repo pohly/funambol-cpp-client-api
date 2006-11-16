@@ -843,18 +843,7 @@ BOOL SyncManager::checkForServerChanges(SyncML* syncml, ArrayList &statusList)
         
         if (sync) {
             const char *locuri = ((Target*)(sync->getTarget()))->getLocURI();
-            if (strcmp(prevSourceName, "") == 0) {
-                strcpy(prevSourceName, locuri);                            
-            }
-            if (strcmp(prevSourceName, locuri) == 0) {
-                // nothing to do
-            } else {
-                isFiredSyncEventBEGIN = FALSE;                
-                fireSyncSourceEvent(prevSourceUri, prevSourceName, prevSyncMode, 0, SYNC_SOURCE_END);                
-                strcpy(prevSourceName, locuri);   
-                
-            }
-
+           
             for (int k = 0; k < sourcesNumber; k++) {        
                 if (strcmp(locuri, sources[k]->getConfig().getName()) == 0) {
                     count = k;
@@ -869,6 +858,17 @@ BOOL SyncManager::checkForServerChanges(SyncML* syncml, ArrayList &statusList)
             if (!sources[count]->getReport() || !sources[count]->getReport()->checkState()) {
                 i++;             
                 continue;
+            }
+            
+            if (strcmp(prevSourceName, "") == 0) {
+                strcpy(prevSourceName, locuri);                            
+            }
+            if (strcmp(prevSourceName, locuri) == 0) {
+                // nothing to do
+            } else {
+                isFiredSyncEventBEGIN = FALSE;                
+                fireSyncSourceEvent(prevSourceUri, prevSourceName, prevSyncMode, 0, SYNC_SOURCE_END);                
+                strcpy(prevSourceName, locuri);                   
             }
         }
                 
@@ -1461,6 +1461,10 @@ int SyncManager::sync() {
                 lastErrorCode = itemret;
                 break;
             }
+            
+            // Fire SyncSourceEvent: END sync of a syncsource (client modifications)
+            if (last)
+                fireSyncSourceEvent(sources[count]->getConfig().getURI(), sources[count]->getConfig().getName(), sources[count]->getSyncMode(), 0, SYNC_SOURCE_END);
 
             // The server might have included a <Sync> command without waiting
             // for a 222 alert. If it hasn't, then nothing is done here.
@@ -1480,7 +1484,7 @@ int SyncManager::sync() {
         } while (last == FALSE);
 
         // Fire SyncSourceEvent: END sync of a syncsource (client modifications)
-        //fireSyncSourceEvent(sources[count]->getConfig().getURI(), sources[count]->getConfig().getName(), sources[count]->getSyncMode(), 0, SYNC_SOURCE_END);
+        // fireSyncSourceEvent(sources[count]->getConfig().getURI(), sources[count]->getConfig().getName(), sources[count]->getSyncMode(), 0, SYNC_SOURCE_END);
 
     } // end for (count = 0; count < sourcesNumber; count ++)
     
