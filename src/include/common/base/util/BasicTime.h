@@ -82,6 +82,7 @@ class BasicTime : public ArrayElement {
 
     BasicTime& operator=(const BasicTime& d);
     bool operator==(const BasicTime& d) const;
+    bool operator!=(const BasicTime& d) const { return !(*this == d); }
 
 
 };
