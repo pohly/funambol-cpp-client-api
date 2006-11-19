@@ -66,7 +66,7 @@ static char*  getCurrentTime(BOOL complete) {
 
 //---------------------------------------------------------------------- Constructors
 
-Log::Log(BOOL resetLog, char*  path, char*  name) {
+Log::Log(BOOL resetLog, const char*  path, const char*  name) {
 
     setLogPath(path);
     setLogName(name);
@@ -83,7 +83,7 @@ Log::~Log() {
 
 //---------------------------------------------------------------------- Public methods
 
-void Log::setLogPath(char*  configLogPath) {
+void Log::setLogPath(const char*  configLogPath) {
     
     if (configLogPath != NULL) {
         sprintf(logPath, T("%s/"), configLogPath); 
@@ -92,7 +92,7 @@ void Log::setLogPath(char*  configLogPath) {
     }
 }
 
-void Log::setLogName(char*  configLogName) {
+void Log::setLogName(const char*  configLogName) {
     
     if (configLogName != NULL) {
         sprintf(logName, T("%s"), configLogName); 

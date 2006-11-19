@@ -30,7 +30,7 @@ char logName[128];
 char logPath[256];   
 
 
-Log::Log(BOOL resetLog, char* path, char* name) {
+Log::Log(BOOL resetLog, const char* path, const char* name) {
 
     setLogPath(path);
     setLogName(name);
@@ -66,7 +66,7 @@ Log::~Log() {
 }
 
 
-void Log::setLogPath(char* configLogPath) {
+void Log::setLogPath(const char* configLogPath) {
     
     memset(logPath, 0, 256*sizeof(char));
     if (configLogPath != NULL) {
@@ -76,7 +76,7 @@ void Log::setLogPath(char* configLogPath) {
     }
 }
 
-void Log::setLogName(char* configLogName) {
+void Log::setLogName(const char* configLogName) {
     
     memset(logName, 0, 128*sizeof(char));
     if (configLogName != NULL) {

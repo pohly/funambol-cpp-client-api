@@ -48,11 +48,11 @@
 
     public:
     
-        Log(BOOL reset = FALSE, char*  path = NULL, char*  name = NULL);
+        Log(BOOL reset = FALSE, const char*  path = NULL, const char*  name = NULL);
         ~Log();
         
-        void setLogPath(char*  configLogPath);
-        void setLogName(char*  configLogName);
+        void setLogPath(const char*  configLogPath);
+        void setLogName(const char*  configLogName);
         
         void error(const char*  msg, ...);
         void info(const char*  msg, ...);
