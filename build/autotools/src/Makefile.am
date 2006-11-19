@@ -1,4 +1,6 @@
-EXTRA_PROGRAMS = client vcardconverter
+EXTRA_PROGRAMS = client vcardconverter client-test
+check_PROGRAMS = @CPPUNIT_TESTS@
+TESTS = @CPPUNIT_TESTS@
 lib_LTLIBRARIES = libsync4j.la
 
 SOURCES_BASE = \
@@ -189,7 +191,9 @@ SOURCES_VOCL = \
     vCardConverter.cpp \
     vCardProperty.cpp
 
-libsync4j_la_SOURCES = $(SOURCES_BASE) $(SOURCES_EVENT) $(SOURCES_FRAMEWORK) $(SOURCES_HTTP) $(SOURCES_SPDM) $(SOURCES_SPDS) $(SOURCES_CLIENT) $(SOURCES_VOCL)
+SOURCES_LIBSYNC4J = $(SOURCES_BASE) $(SOURCES_EVENT) $(SOURCES_FRAMEWORK) $(SOURCES_HTTP) $(SOURCES_SPDM) $(SOURCES_SPDS) $(SOURCES_CLIENT) $(SOURCES_VOCL)
+
+libsync4j_la_SOURCES = $(SOURCES_LIBSYNC4J)
 libsync4j_la_LDFLAGS = -version-info 3:0
 
 client_SOURCES = client.cpp TestSyncSource.cpp TestSyncSource2.cpp
@@ -198,8 +202,18 @@ client_LDADD = libsync4j.la
 vcardconverter_SOURCES = vcardconverter.cpp
 vcardconverter_LDADD = libsync4j.la
 
+# With --disable-shared autotools links against libsync4j.a which does not
+# pull any of the test suites into the test binary, so they would not be
+# executed. The workaround is to explicitly set them as undefined on the
+# link line.
+client_test_SOURCES = client-test-main.cpp
+client_test_LDFLAGS = `nm .libs/libsync4j.a | grep funambolAutoRegisterRegistry | sed -e 's/.* /-u /'`
+client_test_LDADD = libsync4j.la
+
 #NotifProcessorTest_SOURCES = NotifProcessorTest.cpp
 #NotifProcessorTest_LDADD = libsync4j.la
+
+
 
 vpath %.cpp $(srcdir)/../../../src/c++/common/base             \
             $(srcdir)/../../../src/c++/common/base/util        \
@@ -213,6 +227,7 @@ vpath %.cpp $(srcdir)/../../../src/c++/common/base             \
             $(srcdir)/../../../src/c++/common/http             \
             $(srcdir)/../../../src/c++/common/spdm             \
             $(srcdir)/../../../src/c++/common/spds             \
+            $(srcdir)/../../../src/c++/common/test             \
             $(srcdir)/../../../src/c++/common/vocl             \
             $(srcdir)/../../../src/c++/common/vocl/iCalendar   \
             $(srcdir)/../../../src/c++/common/vocl/vCard       \
@@ -223,6 +238,6 @@ vpath %.cpp $(srcdir)/../../../src/c++/common/base             \
 
 vpath %.c   $(srcdir)/../../../src/c++/common/base
 
-AM_LDFLAGS = @CURL_LDFLAGS@
-AM_CXXFLAGS = @CURL_CFLAGS@
+AM_LDFLAGS = @CURL_LDFLAGS@ @CPPUNIT_LDFLAGS@
+AM_CXXFLAGS = @CURL_CFLAGS@ @CPPUNIT_CXXFLAGS@
 AM_CPPFLAGS = -I$(srcdir)/../../../src/include/posix -I$(srcdir)/../../../src/include/common -DAUTOTOOLS

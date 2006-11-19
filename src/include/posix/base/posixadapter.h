@@ -36,6 +36,10 @@
 // For ntoh functions
 #include <netinet/in.h>
 
+// Workaround for wchar defines below: unit testing may depend
+// on standard header files. Include its header file first.
+#include <base/test.h>
+
 // Cygwin version of gcc does have these builtin
 #ifndef __CYGWIN__
 # define __declspec(x)
