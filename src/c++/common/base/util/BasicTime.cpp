@@ -16,6 +16,8 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
+#include <base/test.h>
+
 #include "base/util/BasicTime.h"
 
 BasicTime::BasicTime() {
@@ -191,7 +193,7 @@ char *BasicTime::formatRfc822() const {
         T("May"), T("Jun"), T("Jul"), T("Aug"),
         T("Sep"), T("Oct"), T("Nov"), T("Dec")
     };
-    char *ret = new char[30];
+    char *ret = new char[60]; // FIXME: avoid sprintf and static size
 
     sprintf(ret, T("%s, %d %s %d %02d:%02d:%02d %+03d%02d"),
                   days[weekday], day, months[month-1], year, hour, min, sec,
@@ -232,3 +234,63 @@ bool BasicTime::operator==(const BasicTime& o) const {
     );
 }
 
+#ifdef ENABLE_UNIT_TESTS
+
+
+class BasicTimeTest : public CppUnit::TestFixture {
+    CPPUNIT_TEST_SUITE(BasicTimeTest);
+    CPPUNIT_TEST(testEqual);
+    CPPUNIT_TEST(testConversion);
+    CPPUNIT_TEST_SUITE_END();
+
+public:
+    void setUp() {
+        // millenium.set(2000, 01, 01, 6,
+        //              00, 00, 00,
+        //              00, 00);
+        millenium.setYear(2000);
+        buffer = NULL;
+    }
+    void tearDown() {
+        if (buffer) {
+            delete [] buffer;
+        }
+    }
+
+protected:
+    void testEqual() {
+        BasicTime empty;
+        CPPUNIT_ASSERT(empty != millenium);
+
+        BasicTime copy(millenium);
+        CPPUNIT_ASSERT(millenium == copy);
+        copy = millenium;
+        CPPUNIT_ASSERT(millenium == copy);
+    }
+    
+    void testConversion() {
+        buffer = millenium.formatRfc822();
+
+        BasicTime copy;
+        CPPUNIT_ASSERT_EQUAL(0, copy.parseRfc822(buffer));
+        CPPUNIT_ASSERT(millenium == copy);
+        delete [] buffer; buffer = NULL;
+
+        CPPUNIT_ASSERT_EQUAL(-1, copy.parseRfc822("this is garbage"));
+
+        static const char convertStr[] = "Mon, 6 Nov 2006 20:30:15 +0100";
+        BasicTime convert;
+        CPPUNIT_ASSERT_EQUAL(0, convert.parseRfc822(convertStr));
+        buffer = convert.formatRfc822();
+        CPPUNIT_ASSERT(!strcmp(buffer, convertStr));
+        delete [] buffer; buffer = NULL;
+    }
+
+private:
+    BasicTime millenium;
+    char *buffer;
+};
+
+FUNAMBOL_TEST_SUITE_REGISTRATION(BasicTimeTest);
+
+#endif
