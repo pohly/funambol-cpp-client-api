@@ -39,21 +39,23 @@ Log::Log(BOOL resetLog, const char* path, const char* name) {
     sprintf(logDir, T("%s\\%s"), logPath, logName);
 
     //
-    // Test to ensure the log file is writable...
+    // Test to ensure the log file is writable (only if path is set)
     //
-    logFile = fopen(logDir, T("a+"));
-    if (logFile == NULL) {
-        char tmp[512];
-        sprintf(tmp, "Unable to write log file: \"%s\".\nPlease check your user's permissions.", logDir);
-        WCHAR* wtmp = toWideChar(tmp);
-        MessageBox (NULL, wtmp, TEXT("Funambol Win32 Plugin"), MB_SETFOREGROUND |MB_OK);
-        delete [] wtmp;
-    }
-    else {
-        fclose(logFile);
+    if (path) {
+        logFile = fopen(logDir, T("a+"));
+        if (logFile == NULL) {
+            char tmp[512];
+            sprintf(tmp, "Unable to write log file: \"%s\".\nPlease check your user's permissions.", logDir);
+            WCHAR* wtmp = toWideChar(tmp);
+            MessageBox(NULL, wtmp, TEXT("Funambol"), MB_SETFOREGROUND | MB_OK);
+            delete [] wtmp;
+        }
+        else {
+            fclose(logFile);
 
-	    if (resetLog) {
-            reset(LOG_NAME);
+            if (resetLog) {
+                reset(LOG_NAME);
+            }
         }
     }
 }
@@ -72,7 +74,7 @@ void Log::setLogPath(const char* configLogPath) {
     if (configLogPath != NULL) {
         sprintf(logPath, "%s", configLogPath); 
     } else {
-        sprintf(logPath, "./");
+        sprintf(logPath, ".");
     }
 }
 
