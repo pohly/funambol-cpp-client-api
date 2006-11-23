@@ -25,15 +25,15 @@
 #include "spds/EmailData.h"
 
 
-#define EMAIL_READ  T("read")
-#define EMAIL_FORW  T("forwarded")
-#define EMAIL_REPL  T("replied")
-#define EMAIL_TREC  T("received")
-#define EMAIL_TCRE  T("created")
-#define EMAIL_TMOD  T("modified")
-#define EMAIL_DELE  T("deleted")
-#define EMAIL_FLAG  T("flagged")
-#define EMAIL_ITEM  T("emailitem")
+#define EMAIL_READ  "read"
+#define EMAIL_FORW  "forwarded"
+#define EMAIL_REPL  "replied"
+#define EMAIL_TREC  "received"
+#define EMAIL_TCRE  "created"
+#define EMAIL_TMOD  "modified"
+#define EMAIL_DELE  "deleted"
+#define EMAIL_FLAG  "flagged"
+#define EMAIL_ITEM  "emailitem"
 
 static inline bool checkFlag(const char *xml, const char *field)
 {
