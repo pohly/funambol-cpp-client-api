@@ -22,7 +22,7 @@
 #include "vocl/VProperty.h"
 #include "base/quoted-printable.h"
 
-VProperty::VProperty(WCHAR* propname, WCHAR* propvalue) {
+VProperty::VProperty(const WCHAR* propname, const WCHAR* propvalue) {
     
     name = (propname) ? wstrdup(propname) : NULL;
 

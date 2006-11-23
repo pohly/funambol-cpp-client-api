@@ -62,7 +62,7 @@ private:
 
  public:       
 	
-    VProperty(WCHAR* propName , WCHAR* propValue  = NULL);
+    VProperty(const WCHAR* propName , const WCHAR* propValue  = NULL);
     ~VProperty();
     ArrayElement* clone();
     void setName (const WCHAR* name);

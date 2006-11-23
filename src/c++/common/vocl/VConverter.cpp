@@ -24,7 +24,7 @@
 #include "base/quoted-printable.h"
 
 
-VObject* VConverter::parse(WCHAR* buffer) {
+VObject* VConverter::parse(const WCHAR* buffer) {
 
 	WCHAR *objType = extractObjectType(buffer);
 	WCHAR *objVersion = extractObjectVersion(buffer);
@@ -304,7 +304,7 @@ finally:
 
 
 
-WCHAR* VConverter::extractObjectProperty(WCHAR* buffer, const WCHAR *property,
+WCHAR* VConverter::extractObjectProperty(const WCHAR* buffer, const WCHAR *property,
                                            WCHAR * &buffCopy, size_t &buffCopyLen) {
 
     // Memory handling in extractObjectType() and
@@ -345,7 +345,7 @@ WCHAR* VConverter::extractObjectProperty(WCHAR* buffer, const WCHAR *property,
     return NULL;
 }
 
-WCHAR* VConverter::extractObjectType(WCHAR* buffer) {
+WCHAR* VConverter::extractObjectType(const WCHAR* buffer) {
     static WCHAR* buffCopy;
     static size_t buffCopyLen;
     
@@ -354,7 +354,7 @@ WCHAR* VConverter::extractObjectType(WCHAR* buffer) {
 }
 
 
-WCHAR* VConverter::extractObjectVersion(WCHAR* buffer) {
+WCHAR* VConverter::extractObjectVersion(const WCHAR* buffer) {
     static WCHAR* buffCopy;
     static size_t buffCopyLen;
 
