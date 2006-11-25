@@ -26,22 +26,22 @@
 
 
 #define FOLDER_ITEM       TEXT("Folder")
-#define FOLDER_HIDDEN     T("h")
-#define FOLDER_SYSTEM     T("s") 
-#define FOLDER_ARCHIVED   T("a")
-#define FOLDER_DELETE     T("d")
-#define FOLDER_WRITABLE   T("w")
-#define FOLDER_READABLE   T("r")
-#define FOLDER_EXECUTABLE T("e")
-#define FOLDER_ACCESSED   T("accessed")
-#define FOLDER_ATTRIBUTES T("attributes")
-#define FOLDER_ROLE       T("role")
-#define FOLDER_MODIFIED   T("modified")
-#define FOLDER_NAME       T("name")
-#define FOLDER_CREATED    T("created")
-#define FOLDER_EXT    T("ext")
-#define FOLDER_XNAM    T("XNam")
-#define FOLDER_XVAL    T("XVal")
+#define FOLDER_HIDDEN     "h"
+#define FOLDER_SYSTEM     "s" 
+#define FOLDER_ARCHIVED   "a"
+#define FOLDER_DELETE     "d"
+#define FOLDER_WRITABLE   "w"
+#define FOLDER_READABLE   "r"
+#define FOLDER_EXECUTABLE "e"
+#define FOLDER_ACCESSED   "accessed"
+#define FOLDER_ATTRIBUTES "attributes"
+#define FOLDER_ROLE       "role"
+#define FOLDER_MODIFIED   "modified"
+#define FOLDER_NAME       "name"
+#define FOLDER_CREATED    "created"
+#define FOLDER_EXT    "ext"
+#define FOLDER_XNAM    "XNam"
+#define FOLDER_XVAL    "XVal"
 
 
 FolderData::FolderData()
@@ -80,48 +80,48 @@ int FolderData::parse(const char *syncmlData, size_t len)
     unsigned int start, end;        
     StringBuffer msg(syncmlData, len);
 
-    msg.replaceAll(T("&lt;"), T("<"));
-    msg.replaceAll(T("&amp;"), T("&"));
+    msg.replaceAll("&lt;", "<");
+    msg.replaceAll("&amp;", "&");
     
     // Get attributes
     if( XMLProcessor::getElementContent (msg, FOLDER_HIDDEN, NULL, &start, &end) ) {
-        hidden = ( strncmp(msg.c_str()+start, T("true"), end-start) == 0 ) ;
+        hidden = ( strncmp(msg.c_str()+start, "true", end-start) == 0 ) ;
         isHiddenPresent = true;
     }
     else hidden = false;
 
     if( XMLProcessor::getElementContent (msg, FOLDER_SYSTEM, NULL, &start, &end) ) {
-        system = ( strncmp(msg.c_str()+start, T("true"), end-start) == 0 ) ;
+        system = ( strncmp(msg.c_str()+start, "true", end-start) == 0 ) ;
         isSystemPresent = true;
     }
     else system = false;
 
     if( XMLProcessor::getElementContent (msg, FOLDER_ARCHIVED, NULL, &start, &end) ) {
-        archived = ( strncmp(msg.c_str()+start, T("true"), end-start) == 0 ) ;
+        archived = ( strncmp(msg.c_str()+start, "true", end-start) == 0 ) ;
         isArchivedPresent = true;
     }
     else archived = false;
     
     if( XMLProcessor::getElementContent (msg, FOLDER_DELETE, NULL, &start, &end) ) {
-        deleted = ( strncmp(msg.c_str()+start, T("true"), end-start) == 0 ) ;
+        deleted = ( strncmp(msg.c_str()+start, "true", end-start) == 0 ) ;
         isDeletedPresent = true;
     }
     else deleted = false;
 
     if( XMLProcessor::getElementContent (msg, FOLDER_WRITABLE, NULL, &start, &end) ) {
-        writable = ( strncmp(msg.c_str()+start, T("true"), end-start) == 0 ) ;
+        writable = ( strncmp(msg.c_str()+start, "true", end-start) == 0 ) ;
         isWritablePresent = true;
     }
     else writable = false;
 
     if( XMLProcessor::getElementContent (msg, FOLDER_READABLE, NULL, &start, &end) ) {
-        readable = ( strncmp(msg.c_str()+start, T("true"), end-start) == 0 ) ;
+        readable = ( strncmp(msg.c_str()+start, "true", end-start) == 0 ) ;
         isReadablePresent = true;
     }
     else readable = false;
 
     if( XMLProcessor::getElementContent (msg, FOLDER_EXECUTABLE, NULL, &start, &end) ) {
-        executable = ( strncmp(msg.c_str()+start, T("true"), end-start) == 0 ) ;
+        executable = ( strncmp(msg.c_str()+start, "true", end-start) == 0 ) ;
         isExecutablePresent = true;
     }
     else executable = false;
@@ -170,7 +170,7 @@ char* FolderData::format() {
 
     out.reserve(150);
     
-    out = T("<Folder>\n");
+    out = "<Folder>\n";
     if (name.length() > 0)
         out += XMLProcessor::makeElement(FOLDER_NAME, _wcc(name));
     if (created.length() > 0)
@@ -203,7 +203,7 @@ char* FolderData::format() {
     if (role.length() > 0)
         out += XMLProcessor::makeElement(FOLDER_ROLE, _wcc(role));
     
-    out += T("</Folder>\n");
+    out += "</Folder>\n";
     return stringdup(out.c_str());
 }
 

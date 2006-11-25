@@ -82,30 +82,30 @@ int BasicTime::set(int yy, int mon, int dd, int wd,
 int BasicTime::parseRfc822(const char *date)
 {
 	const char *days[] = {
-        T("Sun"), T("Mon"), T("Tue"), T("Wed"),
-        T("Thu"), T("Fri"), T("Sat")
+        "Sun", "Mon", "Tue", "Wed",
+        "Thu", "Fri", "Sat"
     };
 	const char *months[] = {
-        T("Jan"), T("Feb"), T("Mar"), T("Apr"),
-        T("May"), T("Jun"), T("Jul"), T("Aug"),
-        T("Sep"), T("Oct"), T("Nov"), T("Dec")
+        "Jan", "Feb", "Mar", "Apr",
+        "May", "Jun", "Jul", "Aug",
+        "Sep", "Oct", "Nov", "Dec"
     };
-	char dayOfWeek[6] = T("---,");
-	char mon[4] = T("---");
-	char time[10] = T("00:00:00");
-	char timeZone[20] = T("GMT");
+	char dayOfWeek[6] = "---,";
+	char mon[4] = "---";
+	char time[10] = "00:00:00";
+	char timeZone[20] = "GMT";
 
     int ret;
     
     // Wed Feb 01 14:40:45 Europe/Amsterdam 2006
 	// do we have day of week?
-    const char *pdate = strstr( date, T(",") );
+    const char *pdate = strstr( date, "," );
 	if ( pdate == 0 ) {
-		ret=sscanf(date, T("%d %s %d %s %s"),
+		ret=sscanf(date, "%d %s %d %s %s",
             &day, mon, &year, time, timeZone);
     }
 	else {
-		ret=sscanf(date, T("%s %d %s %d %s %s"),
+		ret=sscanf(date, "%s %d %s %d %s %s",
             dayOfWeek, &day, mon, &year, time, timeZone);
     }
     // Trap parsing error
@@ -135,16 +135,16 @@ int BasicTime::parseRfc822(const char *date)
 	// hh:mm:ss -------------------------
 	// do we have sec?
 	if (strlen(time) > 6 && time[5] == ':')
-		sscanf(time, T("%d:%d:%d"), &hour, &min, &sec);
+		sscanf(time, "%d:%d:%d", &hour, &min, &sec);
 	else
-		sscanf(time, T("%d:%d"), &hour, &min);
+		sscanf(time, "%d:%d", &hour, &min);
 
 	// Timezone ---------------------------------
-    if ( strcmp(timeZone, T("GMT")) ) {
+    if ( strcmp(timeZone, "GMT") ) {
 		// is this explicit time?
 		if ( timeZone[0] == '+' || timeZone[0]== '-' ) {
-			char wcH[4] = T("+00");
-			char wcM[4] = T("00");
+			char wcH[4] = "+00";
+			char wcM[4] = "00";
 
 			// get hour
 			if ( strlen(timeZone) > 3) {
@@ -163,18 +163,18 @@ int BasicTime::parseRfc822(const char *date)
 			tzMin = atoi(wcM);
 		}
 		// otherwise it could be one string with the time
-		else if ( strcmp(timeZone, T("EDT")) )
+		else if ( strcmp(timeZone, "EDT") )
 			tzHour = -4;
-		else if ( strcmp(timeZone, T("EST"))
-                  ||  strcmp(timeZone, T("CDT")) )
+		else if ( strcmp(timeZone, "EST")
+                  ||  strcmp(timeZone, "CDT") )
 			tzHour = -5;
-		else if ( strcmp(timeZone, T("CST"))
-                  ||  strcmp(timeZone, T("MDT")) )
+		else if ( strcmp(timeZone, "CST")
+                  ||  strcmp(timeZone, "MDT") )
 			tzHour = -6;
-		else if ( strcmp(timeZone, T("MST"))
-                  ||  strcmp(timeZone, T("PDT")) )
+		else if ( strcmp(timeZone, "MST")
+                  ||  strcmp(timeZone, "PDT") )
 			tzHour = -7;
-		else if ( strcmp(timeZone, T("PST")) )
+		else if ( strcmp(timeZone, "PST") )
 			tzHour = -8;
 	}
 
@@ -185,17 +185,17 @@ int BasicTime::parseRfc822(const char *date)
 // Date: Fri, 01 Aug 2003 14:04:55 +0800
 char *BasicTime::formatRfc822() const {
 	const char *days[] = {
-        T("Sun"), T("Mon"), T("Tue"), T("Wed"),
-        T("Thu"), T("Fri"), T("Sat"), T("Sun")
+        "Sun", "Mon", "Tue", "Wed",
+        "Thu", "Fri", "Sat", "Sun"
     };
 	const char *months[] = {
-        T("Jan"), T("Feb"), T("Mar"), T("Apr"),
-        T("May"), T("Jun"), T("Jul"), T("Aug"),
-        T("Sep"), T("Oct"), T("Nov"), T("Dec")
+        "Jan", "Feb", "Mar", "Apr",
+        "May", "Jun", "Jul", "Aug",
+        "Sep", "Oct", "Nov", "Dec"
     };
     char *ret = new char[60]; // FIXME: avoid sprintf and static size
 
-    sprintf(ret, T("%s, %d %s %d %02d:%02d:%02d %+03d%02d"),
+    sprintf(ret, "%s, %d %s %d %02d:%02d:%02d %+03d%02d",
                   days[weekday], day, months[month-1], year, hour, min, sec,
                   tzHour, tzMin);
 

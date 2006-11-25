@@ -132,7 +132,7 @@ char* Win32TransportAgent::sendMessage(const char* msg) {
 		delete msg;
         goto exit;
     }   
-    LOG.debug(T("Connecting to %s:%d"), url.host, url.port);
+    LOG.debug("Connecting to %s:%d", url.host, url.port);
 
 
     //
@@ -154,7 +154,7 @@ char* Win32TransportAgent::sendMessage(const char* msg) {
         delete msg;
         goto exit;
     }
-    LOG.debug(T("Requesting resource %s"), url.resource);
+    LOG.debug("Requesting resource %s", url.resource);
 
     //
     // Open an HTTP request handle.
@@ -300,7 +300,7 @@ char* Win32TransportAgent::sendMessage(const char* msg) {
     // If wrong status, exit immediately.
     if (status != HTTP_STATUS_OK) {
         lastErrorCode = ERR_HTTP;
-        sprintf(lastErrorMsg, T("HTTP request error: %d"), status);
+        sprintf(lastErrorMsg, "HTTP request error: %d", status);
         LOG.error("%s", lastErrorMsg);
         goto exit;
     }
@@ -315,11 +315,11 @@ char* Win32TransportAgent::sendMessage(const char* msg) {
 
     // ====================== Reading Response ==============================
     LOG.debug(READING_RESPONSE);
-    LOG.debug(T("Content-length: %d"), contentLength);
+    LOG.debug("Content-length: %d", contentLength);
 
     if (contentLength <= 0) {
         lastErrorCode = ERR_READING_CONTENT;
-        sprintf(lastErrorMsg, T("Invalid content-length: %d"), contentLength);
+        sprintf(lastErrorMsg, "Invalid content-length: %d", contentLength);
 		LOG.error(lastErrorMsg);
         goto exit;
     }
@@ -360,7 +360,7 @@ char* Win32TransportAgent::sendMessage(const char* msg) {
 
     // Fire Receive Data End Transport Event
     fireTransportEvent(contentLength, RECEIVE_DATA_END);
-    LOG.debug(T("Response read"));
+    LOG.debug("Response read");
 	LOG.debug("%s", response); 
 
 

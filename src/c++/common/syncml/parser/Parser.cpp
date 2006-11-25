@@ -84,7 +84,7 @@ SyncHdr* Parser::getSyncHdr(char* xml) {
     tmp = XMLProcessor::getElementContent(xml, NO_RESP, NULL);
 
     if (tmp) {
-        wcscmpIgnoreCase(tmp, T("TRUE")) ? noResp = TRUE : noResp = FALSE;            
+        wcscmpIgnoreCase(tmp, "TRUE") ? noResp = TRUE : noResp = FALSE;            
     } 
     ret = new SyncHdr(verDTD, verProto, sessionID, msgID, target, source, respURI, noResp, cred, meta);                
         
@@ -438,7 +438,7 @@ Sequence* Parser::getSequence(char* xml) {
     noResp   = getNoResp(t);
     if (t) {delete [] t; t = NULL;}
     // list of commands that must not be leaf of Sync and Atomic
-    commands = getCommonCommandList(xml, T("Atomic&Sync"));    
+    commands = getCommonCommandList(xml, "Atomic&Sync");    
 
     // Alert
     pos = 0, previous = 0;
@@ -604,7 +604,7 @@ Atomic* Parser::getAtomic(char* xml) {
     noResp   = getNoResp(t);
     if (t) {delete [] t; t = NULL;}
     // list of commands that must not be leaf of Sync and Atomic
-    commands = getCommonCommandList(xml, T("Sync&Sequence"));
+    commands = getCommonCommandList(xml, "Sync&Sequence");
     
     // Alert
     pos = 0, previous = 0;
@@ -787,9 +787,9 @@ Sync* Parser::getSync(char* xml) {
     t = XMLProcessor::getElementContent (xml, NO_RESP, NULL);
     noResp   = getNoResp    (t);
     if (t) {delete [] t; t = NULL;}
-    commands = getCommonCommandList(xml, T("Atomic&Sequence"));
+    commands = getCommonCommandList(xml, "Atomic&Sequence");
     
-    char* element = XMLProcessor::getElementContentExcept(xml,  SEQUENCE, T("Atomic"), NULL);
+    char* element = XMLProcessor::getElementContentExcept(xml,  SEQUENCE, "Atomic", NULL);
     
     if (element) {
         sequence = getSequence(element);
@@ -800,7 +800,7 @@ Sync* Parser::getSync(char* xml) {
         safeDel(&element);
     }
 
-    element = XMLProcessor::getElementContentExcept(xml,  ATOMIC, T("Atomic&Sequence"), NULL);
+    element = XMLProcessor::getElementContentExcept(xml,  ATOMIC, "Atomic&Sequence", NULL);
     
     if (element) {
         atomic = getAtomic(element);
@@ -1498,7 +1498,7 @@ ArrayList* Parser::getCommands(char* xml) {
     deleteArrayList(&list);
 
     // get the Sync commands. not belonging to Atomic and Sequence
-    //sync = getSync(XMLProcessor::getElementContentExcept (xml, SYNC, T("Atomic&Sequence"), NULL));
+    //sync = getSync(XMLProcessor::getElementContentExcept (xml, SYNC, "Atomic&Sequence", NULL));
     
     //if (sync) {
     //    ret->add(*sync);
@@ -1507,7 +1507,7 @@ ArrayList* Parser::getCommands(char* xml) {
     
     // Sync
     pos = 0, previous = 0;
-    t = XMLProcessor::getElementContentExcept(&xml[pos], SYNC, T("Atomic&Sequence"), &pos);
+    t = XMLProcessor::getElementContentExcept(&xml[pos], SYNC, "Atomic&Sequence", &pos);
     while ((sync = getSync(t)) != NULL) {
         if (sync) {
             if (!list)
@@ -1518,7 +1518,7 @@ ArrayList* Parser::getCommands(char* xml) {
         pos += previous;
         previous = pos;     
         if (t) { delete [] t; t = NULL; }
-        t = XMLProcessor::getElementContentExcept(&xml[pos], SYNC, T("Atomic&Sequence"), &pos);
+        t = XMLProcessor::getElementContentExcept(&xml[pos], SYNC, "Atomic&Sequence", &pos);
     }
     if (t) { delete [] t; t = NULL; }
     
@@ -1532,7 +1532,7 @@ ArrayList* Parser::getCommands(char* xml) {
 
 
     // get the Sequence commands. Not belonging to Atomic and Sync
-    t = XMLProcessor::getElementContentExcept(xml, SEQUENCE, T("Atomic&Sync"), &pos);
+    t = XMLProcessor::getElementContentExcept(xml, SEQUENCE, "Atomic&Sync", &pos);
     sequence = getSequence(t);
     if (t) {delete [] t; t = NULL;}
     
@@ -1542,7 +1542,7 @@ ArrayList* Parser::getCommands(char* xml) {
     }
     
     // get the Sequence commands. Not belonging to Sequence and Sync and Atomic
-    t = XMLProcessor::getElementContentExcept(xml, ATOMIC, T("Atomic&Sync&Sequence"), &pos);
+    t = XMLProcessor::getElementContentExcept(xml, ATOMIC, "Atomic&Sync&Sequence", &pos);
     atomic = getAtomic(t);   
     if (t) {delete [] t; t = NULL;}
     
@@ -1552,7 +1552,7 @@ ArrayList* Parser::getCommands(char* xml) {
     }
     
     
-    list = getCommonCommandList(xml, T("Atomic&Sync&Sequence"));
+    list = getCommonCommandList(xml, "Atomic&Sync&Sequence");
 
     if (list && list->size() > 0) {
         for (int i = 0; i < list->size(); i++) {
@@ -2193,7 +2193,7 @@ DevInf* Parser::getDevInf(char* xml) {
     // The large object value depends on SUPPORT_LARGE_OBJECT tag.
     //
     if ((value = XMLProcessor::getElementContent(xml, SUPPORT_LARGE_OBJECT, NULL)) != NULL) {
-        if (wcscmpIgnoreCase(value, T("TRUE"))) {
+        if (wcscmpIgnoreCase(value, "TRUE")) {
             supportLargeObjs = TRUE;
         }
         safeDel(&value);
@@ -2203,7 +2203,7 @@ DevInf* Parser::getDevInf(char* xml) {
     // The large object value depends on SUPPORT_NUMBER_OF_CHANGES tag. 
     //    
     if ((value = XMLProcessor::getElementContent(xml, SUPPORT_NUMBER_OF_CHANGES, NULL)) != NULL) {
-        if (wcscmpIgnoreCase(value, T("TRUE"))) {
+        if (wcscmpIgnoreCase(value, "TRUE")) {
             supportNumberOfChanges = TRUE;
         }
         safeDel(&value);
@@ -2213,7 +2213,7 @@ DevInf* Parser::getDevInf(char* xml) {
     // The large object value depends on UTC tag.
     //
     if ((value = XMLProcessor::getElementContent(xml, UTC, NULL)) != NULL) {
-        if (wcscmpIgnoreCase(value, T("TRUE"))) {
+        if (wcscmpIgnoreCase(value, "TRUE")) {
             utc = TRUE;
         }
         safeDel(&value);

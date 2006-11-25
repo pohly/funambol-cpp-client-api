@@ -37,7 +37,6 @@
 #define EXTRA_SECTION_06  __attribute__ ((section ("c06")))
 
 #define TEXT(t) t
-#define CHR(c) c
 #define __declspec(ignore)
 #define __cdecl
 #define FALSE false

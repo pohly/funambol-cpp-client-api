@@ -30,11 +30,11 @@
 
 #define ERR_TRANSPORT_LAST              2999
 
-#define ERRMSG_NETWORK_INIT T("Network initialization error")
-#define ERRMSG_CONNECT T("Connection failure")
-#define ERRMSG_HOST_NOT_FOUND T("Host not found")
-#define ERRMSG_READING_CONTENT T("Error reading content")
-#define ERRMSG_WRITING_CONTENT T("Error writing content")
-#define ERRMSG_HTTP_MISSING_CONTENT_LENGTH T("Missing Content-Length header")
+#define ERRMSG_NETWORK_INIT "Network initialization error"
+#define ERRMSG_CONNECT "Connection failure"
+#define ERRMSG_HOST_NOT_FOUND "Host not found"
+#define ERRMSG_READING_CONTENT "Error reading content"
+#define ERRMSG_WRITING_CONTENT "Error writing content"
+#define ERRMSG_HTTP_MISSING_CONTENT_LENGTH "Missing Content-Length header"
 #define ERRMSG_SERVER_ERROR ("Server error")
 #endif

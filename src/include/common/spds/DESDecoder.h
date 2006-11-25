@@ -20,7 +20,7 @@
 
     #include "spds/DataTransformer.h"
 
-    #define DT_DES T("des")
+    #define DT_DES "des"
 
     struct DESDecInfo {
         long size;

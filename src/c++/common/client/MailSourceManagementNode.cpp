@@ -86,26 +86,26 @@ void MailSourceManagementNode::setMailSourceConfig(MailSyncSourceConfig& c) {
     setPropertyValue(PROPERTY_SOURCE_ENCODING,   (char* )c.getEncoding());
     setPropertyValue(PROPERTY_SOURCE_SUPP_TYPES, (char* )c.getSupportedTypes());
 
-    sprintf(t, T("%ld"), c.getLast());
+    sprintf(t, "%ld", c.getLast());
     setPropertyValue(PROPERTY_SOURCE_LAST_SYNC, t);
-    sprintf(t, T("%d"), c.getDownloadAge());
+    sprintf(t, "%d", c.getDownloadAge());
     setPropertyValue(PROPERTY_SOURCE_DOWNLOAD_AGE, t);
-    sprintf(t, T("%d"), c.getBodySize());
+    sprintf(t, "%d", c.getBodySize());
     setPropertyValue(PROPERTY_SOURCE_BODY_SIZE, t);
-    sprintf(t, T("%d"), c.getAttachSize());
+    sprintf(t, "%d", c.getAttachSize());
     setPropertyValue(PROPERTY_SOURCE_ATTACH_SIZE, t);
 
-    sprintf(t, T("%d"), c.getInbox());
+    sprintf(t, "%d", c.getInbox());
     setPropertyValue(PROPERTY_SOURCE_INBOX, t);
-    sprintf(t, T("%d"), c.getOutbox());
+    sprintf(t, "%d", c.getOutbox());
     setPropertyValue(PROPERTY_SOURCE_OUTBOX, t);
-    sprintf(t, T("%d"), c.getTrash());
+    sprintf(t, "%d", c.getTrash());
     setPropertyValue(PROPERTY_SOURCE_TRASH, t);
-    sprintf(t, T("%d"), c.getSent());
+    sprintf(t, "%d", c.getSent());
     setPropertyValue(PROPERTY_SOURCE_SENT, t);
-    sprintf(t, T("%d"), c.getDraft());
+    sprintf(t, "%d", c.getDraft());
     setPropertyValue(PROPERTY_SOURCE_DRAFT, t);
-    sprintf(t, T("%d"), c.getSchedule());
+    sprintf(t, "%d", c.getSchedule());
     setPropertyValue(PROPERTY_SOURCE_SCHEDULE, t);
     
     setPropertyValue(PROPERTY_SOURCE_ENCRYPTION,       (char* )c.getEncryption());

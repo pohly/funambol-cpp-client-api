@@ -97,8 +97,8 @@ const char* TargetRef::getValue() {
  */
  void TargetRef::setValue(const char* valuer) {
     if (valuer == NULL) {
-        this->value = stringdup(T(""));
-        this->query = stringdup(T(""));
+        this->value = stringdup("");
+        this->query = stringdup("");
     } else {
         unsigned int qMark = strlen(valuer);
         char* value = stringdup(valuer);
@@ -125,7 +125,7 @@ const char* TargetRef::getValue() {
             if (this->query) { 
                 delete [] this->query; this->query = NULL; 
             } 
-            this->query = stringdup(T(""));
+            this->query = stringdup("");
         } else {
             char* p2 = p1 - 1;
             *p2 = 0;

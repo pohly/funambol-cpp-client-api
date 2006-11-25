@@ -25,7 +25,7 @@
 #include "syncml/core/AbstractCommand.h"
 
 
-#define SEQUENCE_COMMAND_NAME T("Sequence")
+#define SEQUENCE_COMMAND_NAME "Sequence"
 
 class Sequence : public AbstractCommand {
     

@@ -115,7 +115,7 @@ SN_Errors SyncNotification::parse (const char *msg, int len)
     const char *p=msg, *end=msg+len;          // message cursor and boundary
 
     //LOG.setLevel(LOG_LEVEL_DEBUG);
-    //LOG.debug(T("SyncNotification::parse START...."));
+    //LOG.debug("SyncNotification::parse START....");
 
     if(!msg){
         return SNErr_NullValue;
@@ -134,20 +134,20 @@ SN_Errors SyncNotification::parse (const char *msg, int len)
     sessionId = hdr->s.session_id;
     server_id_len = hdr->s.server_id_len;
     IncP(8);
-    //LOG.debug(T("After header."));
+    //LOG.debug("After header.");
 
     // get server identifier
     serverId = stringdup(p, server_id_len);
     IncP(server_id_len);
 
     //char dbg[256];
-    //sprintf(dbg, T("serverId: %s"), serverId);
+    //sprintf(dbg, "serverId: %s", serverId);
     //LOG.debug(dbg);
 
     // get num sync
     numSyncs = (*p)>>4;
     IncP(1);
-    //sprintf(dbg, T("numSyncs: %d"), numSyncs);
+    //sprintf(dbg, "numSyncs: %d", numSyncs);
     //LOG.debug(dbg);
 
     // allocate syncalert objects

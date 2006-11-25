@@ -27,7 +27,7 @@
 #include "syncml/core/Target.h"
 
 
-#define SYNC_COMMAND_NAME T("Sync")
+#define SYNC_COMMAND_NAME "Sync"
 
 class Sync : public AbstractCommand {
     

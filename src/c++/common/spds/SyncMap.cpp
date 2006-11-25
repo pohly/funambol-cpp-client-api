@@ -98,7 +98,7 @@ void SyncMap::setLUID(const char* l) {
 void SyncMap::setLUID(unsigned long l) {
     char ls[12];
 
-    sprintf(ls, T("%lu"), l);
+    sprintf(ls, "%lu", l);
     setLUID(ls);
 }
 

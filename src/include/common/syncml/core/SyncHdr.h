@@ -29,7 +29,7 @@
 #include "syncml/core/Cred.h"
 #include "syncml/core/Meta.h"
 
-#define SYNCHDR_COMMAND_NAME T("SyncHdr")
+#define SYNCHDR_COMMAND_NAME "SyncHdr"
 
 class SyncHdr {
     

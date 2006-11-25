@@ -22,10 +22,10 @@
 
 #include "base/fscapi.h"
 
-#define PAGER       T("pager"      );
-#define HANDHELD    T("handheld"   );
-#define PDA         T("pda"        );
-#define PHONE       T("phone"      );
-#define SMARTPHONE  T("smartphone" );
-#define SERVER      T("server"     );
-#define WORKSTATION T("workstation");
+#define PAGER       "pager";
+#define HANDHELD    "handheld";
+#define PDA         "pda";
+#define PHONE       "phone";
+#define SMARTPHONE  "smartphone";
+#define SERVER      "server";
+#define WORKSTATION "workstation";

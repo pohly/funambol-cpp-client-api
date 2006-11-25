@@ -31,9 +31,9 @@
 #define ERR_PARAMETER_IS_NULL   1002
 #define ERR_WRONG_PARAMETERS    1003
 
-#define ERRMSG_B64_GARBAGE              T("Garbage found, giving up")
-#define ERRMSG_B64_ORPHANED_BITS        T("Orphaned bits ignored")
-#define ERRMSG_NOT_ENOUGH_MEMORY        T("Not enough memory (%d bytes required)")
+#define ERRMSG_B64_GARBAGE              "Garbage found, giving up"
+#define ERRMSG_B64_ORPHANED_BITS        "Orphaned bits ignored"
+#define ERRMSG_NOT_ENOUGH_MEMORY        "Not enough memory (%d bytes required)"
 
 //
 // moved into fscapi.h

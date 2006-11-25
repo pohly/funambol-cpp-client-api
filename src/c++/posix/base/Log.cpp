@@ -84,8 +84,8 @@ static char*  getCurrentTime(BOOL complete) {
     time_t t = time(NULL);
     struct tm *sys_time = localtime(&t);
 
-    char *fmtComplete = T("%04d-%02d-%02d %02d:%02d:%02d GMT %c%d:%02d");
-    char *fmt         = T("%02d:%02d:%02d GMT %c%d:%02d");
+    char *fmtComplete = "%04d-%02d-%02d %02d:%02d:%02d GMT %c%d:%02d";
+    char *fmt         = "%02d:%02d:%02d GMT %c%d:%02d";
 
     char*  ret = new char [64];
 
@@ -128,19 +128,19 @@ Log::~Log() {
 
 void Log::setLogPath(const char*  configLogPath) {
     if (configLogPath != NULL) {
-        sprintf(logPath, T("%s/"), configLogPath); 
+        sprintf(logPath, "%s/", configLogPath); 
     } else {
-        sprintf(logPath, T("%s"), T("./"));
+        sprintf(logPath, "%s", "./");
     }
 }
 
 void Log::setLogName(const char*  configLogName) {
     
     if (configLogName != NULL) {
-        sprintf(logName, T("%s"), configLogName); 
+        sprintf(logName, "%s", configLogName); 
     }
     else {
-        sprintf(logName, T("%s"), LOG_NAME);         
+        sprintf(logName, "%s", LOG_NAME);         
     }
 }
 

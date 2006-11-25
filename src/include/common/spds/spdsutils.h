@@ -30,12 +30,12 @@ char *uuencode(const char *msg, int len);
  * it in filename.
  */
 int convertAndSave(const char *filename, const char *str,
-                  const char *encoding = T("UTF-8")) EXTRA_SECTION_02;
+                  const char *encoding = "UTF-8") EXTRA_SECTION_02;
 
 /* 
  * Load a file and convert its content according to encoding.
  */
 char *loadAndConvert(const char *filename,
-                        const char *encoding = T("UTF-8")) EXTRA_SECTION_02;
+                        const char *encoding = "UTF-8") EXTRA_SECTION_02;
 
 #endif

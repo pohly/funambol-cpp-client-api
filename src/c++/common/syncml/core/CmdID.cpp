@@ -55,7 +55,7 @@ CmdID::~CmdID() {
  */
 CmdID::CmdID(long cmdID) {
     char t[64];
-    sprintf(t, T("%i"), cmdID);
+    sprintf(t, "%i", cmdID);
     this->cmdID = stringdup(t);
 }
 

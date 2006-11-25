@@ -23,7 +23,7 @@
 #include "base/fscapi.h"
 #include "syncml/core/ModificationCommand.h"
 
-#define ADD_COMMAND_NAME T("Add")
+#define ADD_COMMAND_NAME "Add"
 
 class Add : public ModificationCommand {
     

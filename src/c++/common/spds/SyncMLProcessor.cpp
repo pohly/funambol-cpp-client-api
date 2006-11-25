@@ -127,7 +127,7 @@ int SyncMLProcessor::processServerAlert(SyncSource& source, SyncML* syncml) {
             // the sync.
             //
             // lastErrorCode = ERR_REPRESENTATION;
-            // sprintf(lastErrorMsg, T("SyncBody/Alert not found!"));
+            // sprintf(lastErrorMsg, "SyncBody/Alert not found!");
             goto finally;
         }
         Alert* alert = (Alert*)a;
@@ -140,7 +140,7 @@ int SyncMLProcessor::processServerAlert(SyncSource& source, SyncML* syncml) {
             if (strcmp( locURI, _wcc(source.getName()) ) == 0) {                   
                 if (alert->getData() == NULL) {
                     lastErrorCode = ERR_REPRESENTATION;
-                    sprintf(lastErrorMsg, T("SyncBody/Alert/Data not found!"));
+                    sprintf(lastErrorMsg, "SyncBody/Alert/Data not found!");
                     goto finally;
                 }
 
@@ -392,9 +392,9 @@ Chal* SyncMLProcessor::getChal(SyncBody* syncBody) {
         if (name && strcmp(name, STATUS) == 0) {
             s = (Status*)list->get(i);
             if (strcmp(s->getCmd(NULL), SYNC_HDR) == 0) {
-                if (strcmp(s->getCmdRef(NULL), T("0")) != 0) {
+                if (strcmp(s->getCmdRef(NULL), "0") != 0) {
 
-                    sprintf(lastErrorMsg, T("Status/CmdRef either not found or not referring to SyncHeader!"));
+                    sprintf(lastErrorMsg, "Status/CmdRef either not found or not referring to SyncHeader!");
                     lastErrorCode = ERR_REPRESENTATION;
                     goto finally;
                 }      
@@ -526,9 +526,9 @@ int SyncMLProcessor::getSyncHeaderStatusCode(Status* s) {
     if (s == NULL) 
         goto finally;
 
-    if (strcmp(s->getCmdRef(NULL), T("0")) != 0) {
+    if (strcmp(s->getCmdRef(NULL), "0") != 0) {
 
-        sprintf(lastErrorMsg, T("Status/CmdRef either not found or not referring to SyncHeader!"));
+        sprintf(lastErrorMsg, "Status/CmdRef either not found or not referring to SyncHeader!");
         lastErrorCode = ERR_REPRESENTATION;
         goto finally;
     }                
@@ -538,7 +538,7 @@ int SyncMLProcessor::getSyncHeaderStatusCode(Status* s) {
          //
         // It should not happen
         //
-        sprintf(lastErrorMsg, T("Status/Data not found!"));
+        sprintf(lastErrorMsg, "Status/Data not found!");
         lastErrorCode = ERR_REPRESENTATION;
         goto finally;
     }
@@ -573,7 +573,7 @@ finally:
             //
             // It should not happen
             //
-            sprintf(lastErrorMsg, T("Status/Data not found!"));
+            sprintf(lastErrorMsg, "Status/Data not found!");
             lastErrorCode = ERR_REPRESENTATION;
             goto finally;
         }

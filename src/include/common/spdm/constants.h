@@ -26,69 +26,69 @@
 #define MAX_VALUE_NAME 512
 
 
-#define PROPERTY_USERNAME              T("username"         )
-#define PROPERTY_PASSWORD              T("password"         )
-#define PROPERTY_FIRST_TIME_SYNC_MODE  T("firstTimeSyncMode")
-#define PROPERTY_USE_PROXY             T("useProxy"         )
-#define PROPERTY_PROXY_HOST            T("proxyHost"        )
-#define PROPERTY_PROXY_PORT            T("proxyPort"        )
-#define PROPERTY_PROXY_USERNAME        T("proxyUsername"    )
-#define PROPERTY_PROXY_PASSWORD        T("proxyPassword"    )
-#define PROPERTY_SERVER_NAME           T("serverName"       )
-#define PROPERTY_SYNC_URL              T("syncUrl"          )
-#define PROPERTY_SYNC_BEGIN            T("begin"            )
-#define PROPERTY_SYNC_END              T("end"              )
-#define PROPERTY_SOURCE_NAME           T("name"             )
-#define PROPERTY_SOURCE_URI            T("uri"              )
-#define PROPERTY_SOURCE_SYNC_MODES     T("syncModes"        )
-#define PROPERTY_SOURCE_TYPE           T("type"             )
-#define PROPERTY_SOURCE_VERSION        T("version"          )
-#define PROPERTY_SOURCE_SYNC           T("sync"             )
-#define PROPERTY_SOURCE_LAST_SYNC      T("last"             )
-#define PROPERTY_SOURCE_CTCAP          T("ctCap"            )
-#define PROPERTY_SERVER_NONCE          T("serverNonce"      ) 
-#define PROPERTY_CLIENT_NONCE          T("clientNonce"      )
-#define PROPERTY_SERVER_ID             T("serverID"         )
-#define PROPERTY_SERVER_PWD            T("serverPWD"        )
-#define PROPERTY_CLIENT_AUTH_TYPE      T("clientAuthType"   )
-#define PROPERTY_SERVER_AUTH_TYPE      T("serverAuthType"   )
-#define PROPERTY_IS_SERVER_REQUIRED    T("isServerAuthRequired")
-#define PROPERTY_MAX_MSG_SIZE          T("maxMsgSize"       )
-#define PROPERTY_MAX_MOD_PER_MSG       T("maxModPerMsg"     )
-#define PROPERTY_SOURCE_DOWNLOAD_AGE   T("downloadAge"      )
-#define PROPERTY_SOURCE_BODY_SIZE      T("bodySize"         )
-#define PROPERTY_SOURCE_ATTACH_SIZE    T("attachSize"       )
-#define PROPERTY_SOURCE_INBOX          T("Inbox"            )
-#define PROPERTY_SOURCE_OUTBOX         T("Outbox"           )
-#define PROPERTY_SOURCE_DRAFT          T("Draft"            )
-#define PROPERTY_SOURCE_TRASH          T("Trash"            )
-#define PROPERTY_SOURCE_SENT           T("Sent"             )
-#define PROPERTY_SOURCE_ENCODING       T("encoding"         )
-#define PROPERTY_SOURCE_SUPP_TYPES     T("supportedTypes"   )
-#define PROPERTY_READ_BUFFER_SIZE      T("readBufferSize"   )
-#define PROPERTY_USER_AGENT            T("userAgent"        )
-#define PROPERTY_CHECK_CONN            T("checkConn"        )
-#define PROPERTY_RESPONSE_TIMEOUT      T("responseTimeout"  )
-#define PROPERTY_SOURCE_SCHEDULE       T("schedule"         )
-#define PROPERTY_SOURCE_ENCRYPTION     T("encryption"       )
+#define PROPERTY_USERNAME              "username"
+#define PROPERTY_PASSWORD              "password"
+#define PROPERTY_FIRST_TIME_SYNC_MODE  "firstTimeSyncMode"
+#define PROPERTY_USE_PROXY             "useProxy"
+#define PROPERTY_PROXY_HOST            "proxyHost"
+#define PROPERTY_PROXY_PORT            "proxyPort"
+#define PROPERTY_PROXY_USERNAME        "proxyUsername"
+#define PROPERTY_PROXY_PASSWORD        "proxyPassword"
+#define PROPERTY_SERVER_NAME           "serverName"
+#define PROPERTY_SYNC_URL              "syncUrl"
+#define PROPERTY_SYNC_BEGIN            "begin"
+#define PROPERTY_SYNC_END              "end"
+#define PROPERTY_SOURCE_NAME           "name"
+#define PROPERTY_SOURCE_URI            "uri"
+#define PROPERTY_SOURCE_SYNC_MODES     "syncModes"
+#define PROPERTY_SOURCE_TYPE           "type"
+#define PROPERTY_SOURCE_VERSION        "version"
+#define PROPERTY_SOURCE_SYNC           "sync"
+#define PROPERTY_SOURCE_LAST_SYNC      "last"
+#define PROPERTY_SOURCE_CTCAP          "ctCap"
+#define PROPERTY_SERVER_NONCE          "serverNonce" 
+#define PROPERTY_CLIENT_NONCE          "clientNonce"
+#define PROPERTY_SERVER_ID             "serverID"
+#define PROPERTY_SERVER_PWD            "serverPWD"
+#define PROPERTY_CLIENT_AUTH_TYPE      "clientAuthType"
+#define PROPERTY_SERVER_AUTH_TYPE      "serverAuthType"
+#define PROPERTY_IS_SERVER_REQUIRED    "isServerAuthRequired"
+#define PROPERTY_MAX_MSG_SIZE          "maxMsgSize"
+#define PROPERTY_MAX_MOD_PER_MSG       "maxModPerMsg"
+#define PROPERTY_SOURCE_DOWNLOAD_AGE   "downloadAge"
+#define PROPERTY_SOURCE_BODY_SIZE      "bodySize"
+#define PROPERTY_SOURCE_ATTACH_SIZE    "attachSize"
+#define PROPERTY_SOURCE_INBOX          "Inbox"
+#define PROPERTY_SOURCE_OUTBOX         "Outbox"
+#define PROPERTY_SOURCE_DRAFT          "Draft"
+#define PROPERTY_SOURCE_TRASH          "Trash"
+#define PROPERTY_SOURCE_SENT           "Sent"
+#define PROPERTY_SOURCE_ENCODING       "encoding"
+#define PROPERTY_SOURCE_SUPP_TYPES     "supportedTypes"
+#define PROPERTY_READ_BUFFER_SIZE      "readBufferSize"
+#define PROPERTY_USER_AGENT            "userAgent"
+#define PROPERTY_CHECK_CONN            "checkConn"
+#define PROPERTY_RESPONSE_TIMEOUT      "responseTimeout"
+#define PROPERTY_SOURCE_SCHEDULE       "schedule"
+#define PROPERTY_SOURCE_ENCRYPTION     "encryption"
 
 // DeviceConfig properties
-#define PROPERTY_VER_DTD                    T("verDTD"          )
-#define PROPERTY_MANUFACTURER               T("man"             )
-#define PROPERTY_MODEL                      T("mod"             )
-#define PROPERTY_OEM                        T("oem"             )
-#define PROPERTY_FIRMWARE_VERSION           T("fwv"             )
-#define PROPERTY_SOFTWARE_VERSION           T("swv"             )
-#define PROPERTY_HARDWARE_VERSION           T("hwv"             )
-#define PROPERTY_DEVICE_ID                  T("devID"           )
-#define PROPERTY_DEVICE_TYPE                T("devType"         )
-#define PROPERTY_DS_VERSION                 T("dsV"             )
-#define PROPERTY_UTC                        T("utc"             )
-#define PROPERTY_LARGE_OBJECT_SUPPORT       T("loSupport"       )
-#define PROPERTY_NUMBER_OF_CHANGES_SUPPORT  T("nocSupport"      )
-#define PROPERTY_LOG_LEVEL                  T("logLevel"        )
-#define PROPERTY_MAX_OBJ_SIZE               T("maxObjSize"      )
-#define PROPERTY_DEVINF_HASH                T("devInfHash"      )
+#define PROPERTY_VER_DTD                    "verDTD"
+#define PROPERTY_MANUFACTURER               "man"
+#define PROPERTY_MODEL                      "mod"
+#define PROPERTY_OEM                        "oem"
+#define PROPERTY_FIRMWARE_VERSION           "fwv"
+#define PROPERTY_SOFTWARE_VERSION           "swv"
+#define PROPERTY_HARDWARE_VERSION           "hwv"
+#define PROPERTY_DEVICE_ID                  "devID"
+#define PROPERTY_DEVICE_TYPE                "devType"
+#define PROPERTY_DS_VERSION                 "dsV"
+#define PROPERTY_UTC                        "utc"
+#define PROPERTY_LARGE_OBJECT_SUPPORT       "loSupport"
+#define PROPERTY_NUMBER_OF_CHANGES_SUPPORT  "nocSupport"
+#define PROPERTY_LOG_LEVEL                  "logLevel"
+#define PROPERTY_MAX_OBJ_SIZE               "maxObjSize"
+#define PROPERTY_DEVINF_HASH                "devInfHash"
         
 
         

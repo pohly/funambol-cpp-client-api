@@ -21,11 +21,11 @@
 
     #include "fscapi.h"
 
-    #define LOG_ERROR T("ERROR")
-    #define LOG_INFO  T("INFO" )
-    #define LOG_DEBUG T("DEBUG")
+    #define LOG_ERROR "ERROR"
+    #define LOG_INFO  "INFO"
+    #define LOG_DEBUG "DEBUG"
 
-    #define LOG_NAME T("synclog.txt")
+    #define LOG_NAME "synclog.txt"
 
     typedef enum {
         LOG_LEVEL_NONE  = 0,

@@ -32,26 +32,26 @@
 // to update it to UTF8 strings when used with such content. 
 //
 void testEncryption() {
-    char* clearText = T("This is clear text.\nLet's see if encryption/decryption works!");
-    char* password = T("dummypassword");
+    char* clearText = "This is clear text.\nLet's see if encryption/decryption works!";
+    char* password = "dummypassword";
 
-    DataTransformer* b64e = DataTransformerFactory::getEncoder(T("b64"));
-    DataTransformer* b64d = DataTransformerFactory::getDecoder(T("b64"));
-    DataTransformer* dese = DataTransformerFactory::getEncoder(T("des"));
-    DataTransformer* desd = DataTransformerFactory::getDecoder(T("des"));
+    DataTransformer* b64e = DataTransformerFactory::getEncoder("b64");
+    DataTransformer* b64d = DataTransformerFactory::getDecoder("b64");
+    DataTransformer* dese = DataTransformerFactory::getEncoder("des");
+    DataTransformer* desd = DataTransformerFactory::getDecoder("des");
 
     TransformationInfo infoe, infod;
 
     infoe.size = strlen(clearText)*sizeof(char);
     infoe.password = password;
 
-    LOG.info(T("Clear text"));
+    LOG.info("Clear text");
     LOG.info(clearText);
 
     char* desText = dese->transform(clearText, infoe);
     char* b64Text = b64e->transform(desText, infoe);
 
-    LOG.info(T("Clear text"));    
+    LOG.info("Clear text");    
     LOG.info(b64Text);
 
     delete [] desText;
@@ -65,7 +65,7 @@ void testEncryption() {
     strncpy(clearString, clearText, infod.size/sizeof(char));
     clearString[infod.size/sizeof(char)] = 0;
 
-    LOG.info(T("Clear text"));
+    LOG.info("Clear text");
     LOG.info(clearString);
 
     delete [] clearString; delete [] clearText; 

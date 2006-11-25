@@ -37,16 +37,16 @@
 
 void testFilter() {
 	Meta meta;
-    meta.setType(T("text/v-card"));
+    meta.setType("text/v-card");
 
     //
     // Record filter
     //
     Item record;
     Meta recordMeta;
-    ComplexData recordData(T("modified&EQ;all"));    
+    ComplexData recordData("modified&EQ;all");    
 
-    recordMeta.setType(T("syncml:filtertype-cgi"));
+    recordMeta.setType("syncml:filtertype-cgi");
     record.setMeta(&recordMeta);
     record.setData(&recordData);
 
@@ -60,23 +60,23 @@ void testFilter() {
     ComplexData fieldData;
     PropParam param;
 
-    param.setParamName(T("texttype"));
+    param.setParamName("texttype");
     fieldParameters.add(param);
-    param.setParamName(T("attachtype"));
+    param.setParamName("attachtype");
     fieldParameters.add(param);
 
-    fieldProperty.setPropName(T("emailitem"));
+    fieldProperty.setPropName("emailitem");
     fieldProperty.setMaxSize(20000);
     fieldProperty.setPropParams(&fieldParameters);
     fieldProperties.add(fieldProperty);
     
-    fieldMeta.setType(T("application/vnd.syncml-devinf+xml"));
+    fieldMeta.setType("application/vnd.syncml-devinf+xml");
     fieldData.setProperties(&fieldProperties);
 
     field.setMeta(&fieldMeta);
     field.setData(&fieldData);
 
-    Filter filter(&meta, &field, &record, T("filter-type"));
+    Filter filter(&meta, &field, &record, "filter-type");
 
     StringBuffer* sb = Formatter::getFilter(&filter);
     WCHAR *msg = toWideChar(sb->c_str());

@@ -26,7 +26,7 @@
 #include "syncml/core/Data.h"
 #include "syncml/core/Target.h"
 
-#define SEARCH_COMMAND_NAME T("Search")
+#define SEARCH_COMMAND_NAME "Search"
 
 class Search : public AbstractCommand{
     

@@ -23,7 +23,7 @@
 #include "base/fscapi.h"
 #include "syncml/core/ItemizedCommand.h"
 
-#define GET_COMMAND_NAME T("Get")
+#define GET_COMMAND_NAME "Get"
 
 class Get : public ItemizedCommand {
     

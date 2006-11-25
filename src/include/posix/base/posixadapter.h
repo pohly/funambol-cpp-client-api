@@ -53,8 +53,6 @@
 //# define TEXT(String) (String)
 //# endif
 #define TEXT(_x) _x
-#define CHR(_x)  _x
-#define T(_x) _x
 
 #define EXTRA_SECTION_00
 #define EXTRA_SECTION_01

@@ -151,7 +151,7 @@ const char *brfind(const char *s1, const char *s2, size_t len)
  * @param anchor where the anchor will be written
  */
 void timestampToAnchor(unsigned long timestamp, char* anchor) {
-    sprintf(anchor, T("%lu"), timestamp);
+    sprintf(anchor, "%lu", timestamp);
 }
 
 bool wcscmpIgnoreCase(const char* p, const char* q) {
@@ -180,14 +180,14 @@ bool wcscmpIgnoreCase(const char* p, const char* q) {
 char* itow(int i) {
     char* ret = new char[10];
     memset(ret, 0, 10*sizeof(char) );
-    sprintf(ret, T("%i"), i);
+    sprintf(ret, "%i", i);
     return ret;
 }
 
 char* ltow(long i) {
     char* ret = new char[20];
     memset(ret, 0, 20*sizeof(char));
-    sprintf(ret, T("%i"), i);
+    sprintf(ret, "%i", i);
     return ret;
 }
 
@@ -219,7 +219,7 @@ char* MD5CredentialData(char* userName, char* password, char* nonce) {
     memset(token,       0, 512);
     sprintf(ch, ":");
 
-    sprintf(token, T("%s:%s"), userName, password);
+    sprintf(token, "%s:%s", userName, password);
     len = strlen(token);
 
     // H(username:password)

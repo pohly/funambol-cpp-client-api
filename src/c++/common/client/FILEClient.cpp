@@ -106,7 +106,7 @@ void createConfig(DMTClientConfig& config) {
     sc->setEncoding ("bin");
     sc->setType     ("application/*");
     sc->setURI      ("briefcase");
-    sc->setSyncModes(T("slow"));        // TBD: by now only slow
+    sc->setSyncModes("slow");        // TBD: by now only slow
     config.setSyncSourceConfig(*sc);
     delete sc;
 }

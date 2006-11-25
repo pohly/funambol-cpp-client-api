@@ -191,13 +191,13 @@ BOOL DMTClientConfig::open() {
 
     dmt = DMTreeFactory::getDMTree(rootContext);
 
-    sprintf(nodeName, T("%s%s"), rootContext, T(CONTEXT_SPDS_SYNCML));
+    sprintf(nodeName, "%s%s", rootContext, CONTEXT_SPDS_SYNCML);
     syncMLNode = dmt->getManagementNode(nodeName);
     if (!syncMLNode ) {
         goto failed;
     }
     
-    sprintf(nodeName, T("%s%s"), rootContext, T(CONTEXT_SPDS_SOURCES));
+    sprintf(nodeName, "%s%s", rootContext, CONTEXT_SPDS_SOURCES);
     sourcesNode = dmt->getManagementNode(nodeName);
     if (!sourcesNode) {
         goto failed;
@@ -261,13 +261,13 @@ BOOL DMTClientConfig::readAccessConfig(ManagementNode& n) {
 
     char syncMLContext[DIM_MANAGEMENT_PATH];
     char* fn = n.getFullName();
-    sprintf(syncMLContext, T("%s"), fn);
+    sprintf(syncMLContext, "%s", fn);
     delete [] fn;
 
     //
     // Auth properties
     //
-    sprintf(nodeName, T("%s%s"), syncMLContext, T(CONTEXT_AUTH));
+    sprintf(nodeName, "%s%s", syncMLContext, CONTEXT_AUTH);
     node = dmt->getManagementNode(nodeName);
     if (node) {
         if (!readAuthConfig(n, *node)) {
@@ -283,7 +283,7 @@ BOOL DMTClientConfig::readAccessConfig(ManagementNode& n) {
     //
     // Conn properties
     //
-    sprintf(nodeName, T("%s%s"), syncMLContext, T(CONTEXT_CONN));
+    sprintf(nodeName, "%s%s", syncMLContext, CONTEXT_CONN);
     node = dmt->getManagementNode(nodeName);
     if (node) {
         if (!readConnConfig(n, *node)) {
@@ -299,7 +299,7 @@ BOOL DMTClientConfig::readAccessConfig(ManagementNode& n) {
     //
     // Ext properties (other misc props)
     //
-    sprintf(nodeName, T("%s%s"), syncMLContext, T(CONTEXT_EXT));
+    sprintf(nodeName, "%s%s", syncMLContext, CONTEXT_EXT);
     node = dmt->getManagementNode(nodeName);
     if (node) {
         if (!readExtAccessConfig(n, *node)) {
@@ -330,13 +330,13 @@ void DMTClientConfig::saveAccessConfig(ManagementNode& n) {
 
     char syncMLContext[DIM_MANAGEMENT_PATH];
     char* fn = n.getFullName();
-    sprintf(syncMLContext, T("%s"), fn);
+    sprintf(syncMLContext, "%s", fn);
     delete [] fn;
 
     //
     // Auth properties
     //
-    sprintf(nodeName, T("%s%s"), syncMLContext, T(CONTEXT_AUTH));
+    sprintf(nodeName, "%s%s", syncMLContext, CONTEXT_AUTH);
     node = dmt->getManagementNode(nodeName);
     if (node) {
         saveAuthConfig(n, *node);
@@ -347,7 +347,7 @@ void DMTClientConfig::saveAccessConfig(ManagementNode& n) {
     //
     // Conn properties
     //
-    sprintf(nodeName, T("%s%s"), syncMLContext, T(CONTEXT_CONN));
+    sprintf(nodeName, "%s%s", syncMLContext, CONTEXT_CONN);
     node = dmt->getManagementNode(nodeName);
     if (node) {
         saveConnConfig(n, *node);
@@ -358,7 +358,7 @@ void DMTClientConfig::saveAccessConfig(ManagementNode& n) {
     //
     // Ext properties (other misc props)
     //
-    sprintf(nodeName, T("%s%s"), syncMLContext, T(CONTEXT_EXT));
+    sprintf(nodeName, "%s%s", syncMLContext, CONTEXT_EXT);
     node = dmt->getManagementNode(nodeName);
     if (node) {
         saveExtAccessConfig(n, *node);
@@ -385,12 +385,12 @@ BOOL DMTClientConfig::readDeviceConfig(ManagementNode& n) {
 
     char syncMLContext[DIM_MANAGEMENT_PATH];
     char* fn = n.getFullName();
-    sprintf(syncMLContext, T("%s"), fn);
+    sprintf(syncMLContext, "%s", fn);
     delete [] fn;
     //
     // DevInfo properties
     //
-    sprintf(nodeName, T("%s%s"), syncMLContext, T(CONTEXT_DEV_INFO));
+    sprintf(nodeName, "%s%s", syncMLContext, CONTEXT_DEV_INFO);
     node = dmt->getManagementNode(nodeName);
     if (node) {
         if (!readDevInfoConfig(n, *node)) {
@@ -406,7 +406,7 @@ BOOL DMTClientConfig::readDeviceConfig(ManagementNode& n) {
     //
     // DevDetail properties
     //
-    sprintf(nodeName, T("%s%s"), syncMLContext, T(CONTEXT_DEV_DETAIL));
+    sprintf(nodeName, "%s%s", syncMLContext, CONTEXT_DEV_DETAIL);
     node = dmt->getManagementNode(nodeName);
     if (node) {
         if (!readDevDetailConfig(n, *node)) {
@@ -422,7 +422,7 @@ BOOL DMTClientConfig::readDeviceConfig(ManagementNode& n) {
     //
     // Ext properties (other misc props)
     //
-    sprintf(nodeName, T("%s%s"), syncMLContext, T(CONTEXT_EXT));
+    sprintf(nodeName, "%s%s", syncMLContext, CONTEXT_EXT);
     node = dmt->getManagementNode(nodeName);
     if (node) {
         if (!readExtDevConfig(n, *node)) {
@@ -453,13 +453,13 @@ void DMTClientConfig::saveDeviceConfig(ManagementNode& n) {
 
     char syncMLContext[DIM_MANAGEMENT_PATH];
     char* fn = n.getFullName();
-    sprintf(syncMLContext, T("%s"), fn);
+    sprintf(syncMLContext, "%s", fn);
     delete [] fn;
 
     //
     // DevInfo properties
     //
-    sprintf(nodeName, T("%s%s"), syncMLContext, T(CONTEXT_DEV_INFO));
+    sprintf(nodeName, "%s%s", syncMLContext, CONTEXT_DEV_INFO);
     node = dmt->getManagementNode(nodeName);
     if (node) {
         saveDevInfoConfig(n, *node);
@@ -470,7 +470,7 @@ void DMTClientConfig::saveDeviceConfig(ManagementNode& n) {
     //
     // DevDetail properties
     //
-    sprintf(nodeName, T("%s%s"), syncMLContext, T(CONTEXT_DEV_DETAIL));
+    sprintf(nodeName, "%s%s", syncMLContext, CONTEXT_DEV_DETAIL);
     node = dmt->getManagementNode(nodeName);
     if (node) {
         saveDevDetailConfig(n, *node);
@@ -481,7 +481,7 @@ void DMTClientConfig::saveDeviceConfig(ManagementNode& n) {
     //
     // Ext properties (other misc props)
     //
-    sprintf(nodeName, T("%s%s"), syncMLContext, T(CONTEXT_EXT));
+    sprintf(nodeName, "%s%s", syncMLContext, CONTEXT_EXT);
     node = dmt->getManagementNode(nodeName);
     if (node) {
         saveExtDevConfig(n, *node);
@@ -535,7 +535,7 @@ void DMTClientConfig::saveSourceConfig(int i, ManagementNode& n) {
     if (n.getChild(i) == NULL) {
         // Create node from Source name.
         char* fn = n.getFullName();
-        sprintf(nodeName, T("%s/%s"), fn, sourceConfigs[i].getName());
+        sprintf(nodeName, "%s/%s", fn, sourceConfigs[i].getName());
         delete [] fn;
         node = dmt->getManagementNode(nodeName);
     }
@@ -609,7 +609,7 @@ void DMTClientConfig::saveAuthConfig(ManagementNode& syncMLNode,
     authNode.setPropertyValue(PROPERTY_CLIENT_AUTH_TYPE, accessConfig.getClientAuthType());
     authNode.setPropertyValue(PROPERTY_SERVER_AUTH_TYPE, accessConfig.getServerAuthType());
     authNode.setPropertyValue(PROPERTY_IS_SERVER_REQUIRED,
-                              (accessConfig.getServerAuthRequired() ? T("1") : T("0") ) ); 
+                              (accessConfig.getServerAuthRequired() ? "1" : "0" ) ); 
 }
 
 BOOL DMTClientConfig::readConnConfig(ManagementNode& syncMLNode,
@@ -665,17 +665,17 @@ void DMTClientConfig::saveConnConfig(ManagementNode& syncMLNode,
 
     connNode.setPropertyValue(PROPERTY_SYNC_URL, accessConfig.getSyncURL());
     connNode.setPropertyValue(PROPERTY_USE_PROXY,
-                              (accessConfig.getUseProxy() ? T("1"): T("0")) );
+                              (accessConfig.getUseProxy() ? "1": "0") );
     connNode.setPropertyValue(PROPERTY_PROXY_HOST, accessConfig.getProxyHost());
-    sprintf(buf, T("%lu"), accessConfig.getProxyPort());
+    sprintf(buf, "%lu", accessConfig.getProxyPort());
     connNode.setPropertyValue(PROPERTY_PROXY_PORT, buf);
     connNode.setPropertyValue(PROPERTY_PROXY_USERNAME, accessConfig.getProxyUsername());
     connNode.setPropertyValue(PROPERTY_PROXY_PASSWORD, accessConfig.getProxyPassword());
     connNode.setPropertyValue(PROPERTY_CHECK_CONN,
-                              (accessConfig.getCheckConn() ? T("1"): T("0")) );
-    sprintf(buf, T("%lu"), accessConfig.getResponseTimeout());
+                              (accessConfig.getCheckConn() ? "1": "0") );
+    sprintf(buf, "%lu", accessConfig.getResponseTimeout());
     connNode.setPropertyValue(PROPERTY_RESPONSE_TIMEOUT, buf); 
-    sprintf(buf, T("%lu"), accessConfig.getReadBufferSize());
+    sprintf(buf, "%lu", accessConfig.getReadBufferSize());
     connNode.setPropertyValue(PROPERTY_READ_BUFFER_SIZE, buf);  
     connNode.setPropertyValue(PROPERTY_USER_AGENT, accessConfig.getUserAgent());
 }
@@ -712,10 +712,10 @@ void DMTClientConfig::saveExtAccessConfig(ManagementNode& syncMLNode,
                                           ManagementNode& extNode) {
     char buf[512];
 
-    sprintf(buf, T("%lu"), accessConfig.getFirstTimeSyncMode());
+    sprintf(buf, "%lu", accessConfig.getFirstTimeSyncMode());
     extNode.setPropertyValue(PROPERTY_FIRST_TIME_SYNC_MODE, buf);
 
-    sprintf(buf, T("%lu"), accessConfig.getMaxMsgSize());
+    sprintf(buf, "%lu", accessConfig.getMaxMsgSize());
     extNode.setPropertyValue(PROPERTY_MAX_MSG_SIZE, buf);
 
     timestampToAnchor(accessConfig.getBeginSync(), buf);
@@ -724,7 +724,7 @@ void DMTClientConfig::saveExtAccessConfig(ManagementNode& syncMLNode,
     timestampToAnchor(accessConfig.getEndSync(), buf);
     extNode.setPropertyValue(PROPERTY_SYNC_END, buf);
 
-    sprintf(buf, T("%lu"), accessConfig.getMaxModPerMsg());
+    sprintf(buf, "%lu", accessConfig.getMaxModPerMsg());
     extNode.setPropertyValue(PROPERTY_MAX_MOD_PER_MSG, buf);
 }
 
@@ -798,7 +798,7 @@ void DMTClientConfig::saveDevDetailConfig(ManagementNode& syncMLNode,
     devDetailNode.setPropertyValue(PROPERTY_SOFTWARE_VERSION, deviceConfig.getSwv());
     devDetailNode.setPropertyValue(PROPERTY_HARDWARE_VERSION, deviceConfig.getHwv());
     devDetailNode.setPropertyValue(PROPERTY_LARGE_OBJECT_SUPPORT, 
-                                   (deviceConfig.getLoSupport() ? T("1"): T("0")) );
+                                   (deviceConfig.getLoSupport() ? "1": "0") );
 }
 
 BOOL DMTClientConfig::readExtDevConfig(ManagementNode& syncMLNode,
@@ -840,14 +840,14 @@ void DMTClientConfig::saveExtDevConfig(ManagementNode& syncMLNode,
     extNode.setPropertyValue(PROPERTY_VER_DTD, deviceConfig.getVerDTD());
     extNode.setPropertyValue(PROPERTY_DEVINF_HASH, deviceConfig.getDevInfHash());
     extNode.setPropertyValue(PROPERTY_UTC, 
-                             (deviceConfig.getUtc() ? T("1"): T("0")) );
+                             (deviceConfig.getUtc() ? "1": "0") );
     extNode.setPropertyValue(PROPERTY_NUMBER_OF_CHANGES_SUPPORT, 
-                             (deviceConfig.getNocSupport() ? T("1"): T("0")) );
+                             (deviceConfig.getNocSupport() ? "1": "0") );
 
-    sprintf(buf, T("%lu"), deviceConfig.getLogLevel());
+    sprintf(buf, "%lu", deviceConfig.getLogLevel());
     extNode.setPropertyValue(PROPERTY_LOG_LEVEL, buf);
         
-    sprintf(buf, T("%lu"), deviceConfig.getMaxObjSize());
+    sprintf(buf, "%lu", deviceConfig.getMaxObjSize());
     extNode.setPropertyValue(PROPERTY_MAX_OBJ_SIZE, buf);
 }
 

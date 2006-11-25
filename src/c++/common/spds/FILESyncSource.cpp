@@ -300,7 +300,7 @@ SyncItem* FILESyncSource::getNextDeletedItem() {
 
 
 void FILESyncSource::setItemStatus(const wchar_t* key, int status) {
-    LOG.debug(T("item key: %ls, status: %i"), key, status);    
+    LOG.debug("item key: %ls, status: %i", key, status);    
 }
 
 
@@ -338,7 +338,7 @@ int FILESyncSource::addItem(SyncItem& item) {
             return STC_COMMAND_FAILED;
         }       
         ret = STC_ITEM_ADDED;
-        LOG.debug(T("Added item: %ls"), file.getName());    
+        LOG.debug("Added item: %ls", file.getName());    
 
     }
     return ret;
@@ -374,7 +374,7 @@ int FILESyncSource::updateItem(SyncItem& item) {
 
     if (h == 0) {
         ret = STC_OK;
-        LOG.debug(T("updated item: %S"), item.getKey());
+        LOG.debug("updated item: %S", item.getKey());
     }
     return ret;
 }
@@ -392,7 +392,7 @@ int FILESyncSource::deleteItem(SyncItem& item) {
     
     if (h == 0) {
         ret = STC_OK;
-        LOG.debug(T("deleted item: %S"), item.getKey());
+        LOG.debug("deleted item: %S", item.getKey());
     }
     return ret;    
 }

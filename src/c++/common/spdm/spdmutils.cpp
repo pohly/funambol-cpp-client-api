@@ -51,7 +51,7 @@ int minimum (int i1, int i2) {
 void getNodeName(const char* node, char* name, int size) {
     const char* p;
 
-    p = last(node, CHR('/'));
+    p = last(node, '/');
 
     if (p == NULL) {
         strncpy(name, node, size-1);
@@ -71,7 +71,7 @@ void getNodeName(const char* node, char* name, int size) {
 void getNodeConT(const char* node, char* context, int size) {
     const char* p;
 
-    p = last(node, CHR('/'));
+    p = last(node, '/');
 
     if (p == NULL) {
         *context = 0;

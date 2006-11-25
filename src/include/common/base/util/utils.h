@@ -27,8 +27,8 @@
 // Default len for stringdup (means: use source string len)
 #define STRINGDUP_NOLEN 0xFFFFFFFF
 
-#define B64_ENCODING        T("b64")
-#define TEXT_PLAIN_ENCODING T("text/plain")
+#define B64_ENCODING        "b64"
+#define TEXT_PLAIN_ENCODING "text/plain"
 
 /*
  * Deletes the given char* [] buffer if it is not NULL

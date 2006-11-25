@@ -40,8 +40,8 @@
 void testClause() {
     SourceFilter filter;
 
-    WhereClause where1(T("CompanyName"), T("funambol"), EQ, FALSE);
-    WhereClause where2(T("FirstName"), T("ste"), CONTAIN, TRUE);
+    WhereClause where1("CompanyName", "funambol", EQ, FALSE);
+    WhereClause where2("FirstName", "ste", CONTAIN, TRUE);
 
     ArrayList operands;
 
@@ -62,12 +62,12 @@ void testClause() {
 
     filter.setClause(recordOnly);
     filter.setInclusive(FALSE);
-    filter.setType(T("text/x-s4j-sifc"));
+    filter.setType("text/x-s4j-sifc");
 
     Filter* f = ClauseUtil::toFilter(filter);
 
     StringBuffer* sb = Formatter::getFilter(f);
-    LOG.info(T("Record only filter"));
+    LOG.info("Record only filter");
     LOG.info(sb->c_str());
     
     delete f; delete sb;
@@ -79,12 +79,12 @@ void testClause() {
     ArrayList fieldProperties, fieldParameters;
     PropParam param;
 
-    param.setParamName(T("texttype"));
+    param.setParamName("texttype");
     fieldParameters.add(param);
-    param.setParamName(T("attachtype"));
+    param.setParamName("attachtype");
     fieldParameters.add(param);
 
-    fieldProperty.setPropName(T("emailitem"));
+    fieldProperty.setPropName("emailitem");
     fieldProperty.setMaxSize(20000);
     fieldProperty.setPropParams(&fieldParameters);
     fieldProperties.add(fieldProperty);
@@ -103,7 +103,7 @@ void testClause() {
     f = ClauseUtil::toFilter(filter);
     sb = Formatter::getFilter(f);
 
-    LOG.info(T("Field only filter"));
+    LOG.info("Field only filter");
     LOG.info(sb->c_str());
 
     delete f; delete sb;
@@ -122,7 +122,7 @@ void testClause() {
     f = ClauseUtil::toFilter(filter);
     sb = Formatter::getFilter(f);
 
-    LOG.info(T("Field and record filter"));
+    LOG.info("Field and record filter");
     LOG.info(sb->c_str());
 
     delete f; delete sb;

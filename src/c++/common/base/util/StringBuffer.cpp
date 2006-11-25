@@ -100,10 +100,10 @@ StringBuffer& StringBuffer::append(unsigned long i, BOOL sign) {
 
     if (sign) {
         // sprintf(v, "%ld", i);
-        sprintf(v, T("%ld"), i);
+        sprintf(v, "%ld", i);
     } else {
         // sprintf(v, "%lu", i);
-        sprintf(v, T("%lu"), i);
+        sprintf(v, "%lu", i);
     }
 
     append(v);
@@ -305,7 +305,7 @@ StringBuffer& StringBuffer::join(ArrayList &tokens, const char *separator) {
 
 StringBuffer StringBuffer::substr(size_t pos, size_t len) const {
     if(pos > strlen(s))
-        return StringBuffer(T(""));
+        return StringBuffer("");
 
 	return (StringBuffer(s+pos, len));
 }

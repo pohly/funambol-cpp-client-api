@@ -264,13 +264,13 @@ void AccessConfig::setSyncURL(const char* v) {
 	
 	// Adds default protocol if not set AND the string is not empty
     if (*syncURL							&&
-		strncmp(syncURL, T("http://"), 7)  && 
-	    strncmp(syncURL, T("HTTP://"), 7)  &&
-	    strncmp(syncURL, T("https://"), 8) &&
-	    strncmp(syncURL, T("HTTPS://"), 8) ) {
+		strncmp(syncURL, "http://", 7)  && 
+	    strncmp(syncURL, "HTTP://", 7)  &&
+	    strncmp(syncURL, "https://", 8) &&
+	    strncmp(syncURL, "HTTPS://", 8) ) {
         
 		char* dest = new char[strlen(syncURL)+8];
-        sprintf(dest, T("http://%s"), syncURL );
+        sprintf(dest, "http://%s", syncURL );
 		
 		set(&syncURL, dest);
 
@@ -331,7 +331,7 @@ void AccessConfig::set(char** buf, const char* v) {
 	safeDelete(buf);
 	
 	if (v == NULL) {
-		v = T("");
+		v = "";
 	}
 	int len = strlen(v);
 	*buf = new char[len+2];

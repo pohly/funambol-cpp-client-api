@@ -23,7 +23,7 @@
 #include "base/fscapi.h"
 #include "syncml/core/ItemizedCommand.h"
 
-#define PUT_COMMAND_NAME T("Put")
+#define PUT_COMMAND_NAME "Put"
 
 class Put : public ItemizedCommand {
     

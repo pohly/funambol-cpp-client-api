@@ -181,15 +181,15 @@ SyncItem* TestSyncSource2::getNextDeletedItem() {
 }
 
 void TestSyncSource2::setItemStatus(const WCHAR* key, int status) {
-    sprintf(logmsg, T("key: %s, status: %i"), key, status);
+    sprintf(logmsg, "key: %s, status: %i", key, status);
     LOG.debug(logmsg);
 }
 
 int TestSyncSource2::addItem(SyncItem& item) {
-    sprintf(logmsg, T("added item: %ls"), item.getKey());
+    sprintf(logmsg, "added item: %ls", item.getKey());
     LOG.info(logmsg);
     
-    LOG.info(T("Data:"));
+    LOG.info("Data:");
     char *data = new char [item.getDataSize()];
     memcpy(data, item.getData(), item.getDataSize());
     data[item.getDataSize()] = 0;
@@ -205,10 +205,10 @@ int TestSyncSource2::addItem(SyncItem& item) {
 
 int TestSyncSource2::updateItem(SyncItem& item) {
     
-    sprintf(logmsg, T("updated item: %ls"), item.getKey());
+    sprintf(logmsg, "updated item: %ls", item.getKey());
     LOG.info(logmsg);
     
-    LOG.info(T("Data:"));
+    LOG.info("Data:");
     char *data = new char [item.getDataSize()];
     memcpy(data, item.getData(), item.getDataSize());
     data[item.getDataSize()] = 0;
@@ -220,17 +220,17 @@ int TestSyncSource2::updateItem(SyncItem& item) {
 }
 
 int TestSyncSource2::deleteItem(SyncItem& item) {
-    sprintf(logmsg, T("deleted item: %s"), item.getKey());
+    sprintf(logmsg, "deleted item: %s", item.getKey());
     LOG.debug(logmsg);
     return 200;
 }
 
 int TestSyncSource2::beginSync() {
-    LOG.debug(T("Begin sync TestSyncSource2"));
+    LOG.debug("Begin sync TestSyncSource2");
     return 0;
 }
 int TestSyncSource2::endSync() {
-    LOG.debug(T("End sync TestSyncSource2"));
+    LOG.debug("End sync TestSyncSource2");
     return 0;
 }
 

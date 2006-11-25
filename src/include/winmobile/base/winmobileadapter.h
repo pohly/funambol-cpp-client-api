@@ -35,10 +35,6 @@
 
 #define __declspec(ignore)
 
-#define T(_x) _x
-#define CHR(_x)  _x
-
-
 typedef wchar_t WCHAR;
 
 

@@ -146,15 +146,15 @@ const char* XMLProcessor::getElementContent(const char* xml,
 
     size_t l = strlen(tag);
 
-    if(strcmp(tag, T("CDATA")) == 0) {
-        openTag = stringdup(T("<![CDATA["));
-        closeTag = stringdup(T("]]>"));
+    if(strcmp(tag, "CDATA") == 0) {
+        openTag = stringdup("<![CDATA[");
+        closeTag = stringdup("]]>");
     }
     else {
         openTag = new char[l+10];
         closeTag = new char[l+10];
-        sprintf(openTag, T("<%s"), tag);
-        sprintf(closeTag, T("</%s>"), tag);
+        sprintf(openTag, "<%s", tag);
+        sprintf(closeTag, "</%s>", tag);
     }
 
     const char *ret = findElementContent(xml, openTag, closeTag, pos, startPos, endPos);
@@ -196,9 +196,9 @@ char* XMLProcessor::getContent(const char* xml,
         pos++;
     }
 
-    const char cdataStart[] = T("<![CDATA[");
+    const char cdataStart[] = "<![CDATA[";
     const int cdataStartLen = sizeof(cdataStart) - 1;
-    const char cdataEnd[] = T("]]>");
+    const char cdataEnd[] = "]]>";
     const int cdataEndLen = sizeof(cdataEnd) - 1;
 
     // strip CDATA markers at start and end?
@@ -336,7 +336,7 @@ char* XMLProcessor::getNextTag(char* xml, int* pos) {
 * count the number of "&" (passed as a string) in the token. 
 */
 int XMLProcessor::countAnd(char* token) {
-    return countChar(token, T("&"));
+    return countChar(token, "&");
 }
 
 int XMLProcessor::countChar(char* token, char* element) {
@@ -368,7 +368,7 @@ int XMLProcessor::countChar(char* token, char* element) {
 * The parent can be more than one. They have to be separated by &
 * i.e.  
 *
-* getElementContentExcept(xmlPtr, T("Add"), T("Sync&Atomic"), &post)
+* getElementContentExcept(xmlPtr, "Add", "Sync&Atomic", &post)
 *
 * The function returns "... to keep ... " content only 
 *
@@ -439,7 +439,7 @@ char* XMLProcessor::getElementContentExcept(char*      xmlPtr    ,
     p1 = p2 = internal;
     int i = 0, k = 0, len = 0;
 
-    while (strstr(p2, T("&")) != NULL) {
+    while (strstr(p2, "&") != NULL) {
         len = strlen(p2);        
         for (k = 0; k < len; k++) {             
             if (*p1 == 0) {
@@ -584,7 +584,7 @@ char* XMLProcessor::getElementContentExcept(char*      xmlPtr    ,
 *    char* p = NULL;
 *    unsigned int pos = 0, previous = 0;
 *    int startLevel = -1;
-*    while ((p = XMLProcessor::getElementContentLevel(&xml[pos], T("Add"), 0, &startLevel, &pos)) != NULL) {        
+*    while ((p = XMLProcessor::getElementContentLevel(&xml[pos], "Add", 0, &startLevel, &pos)) != NULL) {        
 *        pos += previous;
 *        previous = pos;                
 *    }
@@ -636,12 +636,12 @@ char* XMLProcessor::getElementContentLevel(char*      xml   ,
     p1 = p2 = xml;
     
     for (i = 0; i < xmlLength; i ++) {
-        if (!strncmp(p1 + i, T("<![CDATA["), strlen(T("<![CDATA[")))) {
+        if (!strncmp(p1 + i, "<![CDATA[", strlen("<![CDATA["))) {
             // skip over content
             while(p1[i]) {
                 i++;
-                if (!strcmp(p1 + i, T("]]>"))) {
-                    i += strlen(T("]]>"));
+                if (!strcmp(p1 + i, "]]>")) {
+                    i += strlen("]]>");
                     break;
                 }
             }
@@ -756,16 +756,16 @@ const char* XMLProcessor::getElementAttributes(const char* xml,
         goto finally;
     }
 
-    if(strcmp(tag, T("CDATA")) == 0) {
+    if(strcmp(tag, "CDATA") == 0) {
         goto finally;
     }
     else {
         openTag = new char[l+10];
         if (escaped){
-            sprintf(openTag, T("&lt;%s "), tag);
+            sprintf(openTag, "&lt;%s ", tag);
         }
         else{
-            sprintf(openTag, T("<%s "), tag);
+            sprintf(openTag, "<%s ", tag);
         }
     }
 
@@ -816,8 +816,8 @@ StringBuffer XMLProcessor::makeElement(const char* tag, const char* val, const c
     char* t1 = new char[len + 4]; // <  >  0, whitout closing >
     char* t2 = new char[len + 6]; // </ > \n 0
 
-    sprintf(t1, T("<%s"), tag);    
-    sprintf(t2, T("</%s>\n"), tag);
+    sprintf(t1, "<%s", tag);    
+    sprintf(t2, "</%s>\n", tag);
 
     s = t1; 
     if (attr != NULL)

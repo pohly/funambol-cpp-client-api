@@ -58,13 +58,13 @@ static void testXMLProcessor();
 void printReport(SyncReport* sr, char* sourceName);
 
 
-#define APPLICATION_URI T("Funambol/SyncclientPIM")
-#define LOG_TITLE		T("Funambol Win32 Example Log")
-#define LOG_PATH		T(".")
+#define APPLICATION_URI "Funambol/SyncclientPIM"
+#define LOG_TITLE		"Funambol Win32 Example Log"
+#define LOG_PATH		"."
 #define LOG_LEVEL		LOG_LEVEL_DEBUG
-#define SOURCE_NAME     T("briefcase")
+#define SOURCE_NAME     "briefcase"
 #define WSOURCE_NAME    TEXT("briefcase")
-#define DEVICE_ID       T("Funambol Win32 Example")
+#define DEVICE_ID       "Funambol Win32 Example"
 
 
 // Define DEBUG_SETTINGS in your project to create a default configuration

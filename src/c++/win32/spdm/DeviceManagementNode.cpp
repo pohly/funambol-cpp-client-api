@@ -71,7 +71,7 @@ char* DeviceManagementNode::getPropertyValue(const char* prop) {
 
     if (key == 0) {
         lastErrorCode = ERR_INVALID_CONTEXT;
-        sprintf(lastErrorMsg, T("Invalid context path: %ls"), fullContext);
+        sprintf(lastErrorMsg, "Invalid context path: %ls", fullContext);
         goto finally;
     }
 
@@ -102,7 +102,7 @@ char* DeviceManagementNode::getPropertyValue(const char* prop) {
             delete [] buf;
 		}
     }
-    //else MessageBox(NULL,  T("Error"), T("getConfigParameter"), MB_OK);
+    //else MessageBox(NULL,  "Error", "getConfigParameter", MB_OK);
 
     if (!ret) 
         ret = stringdup("");
@@ -133,7 +133,7 @@ int DeviceManagementNode::getChildrenMaxCount() {
 
     if (key == 0) {
         lastErrorCode = ERR_INVALID_CONTEXT;
-        sprintf(lastErrorMsg, T("Invalid context path: %s"), fullContext);
+        sprintf(lastErrorMsg, "Invalid context path: %s", fullContext);
 
         goto finally;
     }
@@ -183,7 +183,7 @@ char **DeviceManagementNode::getChildrenNames() {
 
     if (key == 0) {
         lastErrorCode = ERR_INVALID_CONTEXT;
-        sprintf(lastErrorMsg, T("Invalid context path: %s"), fullContext);
+        sprintf(lastErrorMsg, "Invalid context path: %s", fullContext);
         goto finally;
     }
 
@@ -207,7 +207,7 @@ char **DeviceManagementNode::getChildrenNames() {
             }
             else {
                 lastErrorCode = GetLastError();
-                strcpy(lastErrorMsg, T("Error enumerating children nodes"));
+                strcpy(lastErrorMsg, "Error enumerating children nodes");
                 goto finally;
             }
         }
@@ -255,7 +255,7 @@ void DeviceManagementNode::setPropertyValue(const char* prop, const char* value)
 
     if (key == 0) {
         lastErrorCode = ERR_INVALID_CONTEXT;
-        sprintf(lastErrorMsg, T("Invalid context path: %s"), fullContext);
+        sprintf(lastErrorMsg, "Invalid context path: %s", fullContext);
         goto finally;
     }
 
@@ -310,7 +310,7 @@ static WCHAR *toWindows(const char* str) {
 void DeviceManagementNode::setFullContext() { 
     int len = strlen(context)+strlen(name)+1;
     char *ctx;
-    const char swkey[] = T("Software");
+    const char swkey[] = "Software";
 
 	if (fullContext)
 		delete [] fullContext;
@@ -318,11 +318,11 @@ void DeviceManagementNode::setFullContext() {
     if (strstr(context, swkey) == NULL) {
         len += strlen(swkey)+1;
         ctx = new char[len+1];
-        sprintf(ctx, T("%s/%s/%s"), swkey, context, name);
+        sprintf(ctx, "%s/%s/%s", swkey, context, name);
     }
     else {
         ctx = new char[len+1];
-        sprintf(ctx, T("%s/%s"), context, name);
+        sprintf(ctx, "%s/%s", context, name);
     }
     fullContext = toWindows(ctx);
     delete [] ctx;

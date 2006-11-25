@@ -23,7 +23,7 @@
 #include "base/fscapi.h"
 #include "syncml/core/ModificationCommand.h"
 
-#define EXEC_COMMAND_NAME T("Exec")
+#define EXEC_COMMAND_NAME "Exec"
 
 class Exec : public ModificationCommand {
     

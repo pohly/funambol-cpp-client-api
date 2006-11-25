@@ -23,7 +23,7 @@
 #include "base/fscapi.h"
 #include "syncml/core/ModificationCommand.h"
 
-#define DELETE_COMMAND_NAME T("Delete")
+#define DELETE_COMMAND_NAME "Delete"
 
 class Delete : public ModificationCommand {
     

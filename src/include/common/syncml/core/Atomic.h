@@ -24,7 +24,7 @@
 #include "syncml/core/AbstractCommand.h"
 
 
-#define ATOMIC_COMMAND_NAME T("Atomic")
+#define ATOMIC_COMMAND_NAME "Atomic"
 
 class Atomic : public AbstractCommand {
      // ------------------------------------------------------------ Private data

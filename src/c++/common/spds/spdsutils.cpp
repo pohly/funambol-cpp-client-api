@@ -26,27 +26,27 @@ char *uuencode(const char *msg, int len);
 
 SyncMode syncModeCode(const char* syncMode) {
 
-    if (strcmp(syncMode,T("slow")) == 0)
+    if (strcmp(syncMode,"slow") == 0)
         return SYNC_SLOW;
-    else if (strcmp(syncMode,T("two-way")) == 0)
+    else if (strcmp(syncMode,"two-way") == 0)
         return SYNC_TWO_WAY;
-    else if (strcmp(syncMode,T("one-way")) == 0)
+    else if (strcmp(syncMode,"one-way") == 0)
         return SYNC_ONE_WAY_FROM_SERVER;
-    else if (strcmp(syncMode,T("one-way-server")) == 0 ||
-             strcmp(syncMode,T("one-way-from-server")) == 0 )
+    else if (strcmp(syncMode,"one-way-server") == 0 ||
+             strcmp(syncMode,"one-way-from-server") == 0 )
         return SYNC_ONE_WAY_FROM_SERVER;
-    else if (strcmp(syncMode,T("one-way-client")) == 0 ||
-             strcmp(syncMode,T("one-way-from-client")) == 0)
+    else if (strcmp(syncMode,"one-way-client") == 0 ||
+             strcmp(syncMode,"one-way-from-client") == 0)
         return SYNC_ONE_WAY_FROM_CLIENT;
-    else if (strcmp(syncMode,T("refresh"))             == 0 ||
-             strcmp(syncMode,T("refresh-server"))      == 0 ||
-             strcmp(syncMode,T("refresh-from-server")) == 0  )
+    else if (strcmp(syncMode,"refresh")             == 0 ||
+             strcmp(syncMode,"refresh-server")      == 0 ||
+             strcmp(syncMode,"refresh-from-server") == 0  )
         return SYNC_REFRESH_FROM_SERVER;
-    else if (strcmp(syncMode,T("refresh-client")) == 0 ||
-             strcmp(syncMode,T("refresh-from-client")) == 0)
+    else if (strcmp(syncMode,"refresh-client") == 0 ||
+             strcmp(syncMode,"refresh-from-client") == 0)
         return SYNC_REFRESH_FROM_CLIENT;
     //--------- Funambol extension --------------------
-    else if (strcmp(syncMode, T("addrchange")) == 0)
+    else if (strcmp(syncMode, "addrchange") == 0)
         return SYNC_ADDR_CHANGE_NOTIFICATION;
     return SYNC_NONE;
 }
@@ -183,7 +183,7 @@ char *loadAndConvert(const char *filename, const char *encoding)
     if(!filename)
         return 0;
 
-    if( strcmp(encoding, T("base64")) == 0 ) {
+    if( strcmp(encoding, "base64") == 0 ) {
         binary = true;
     }
 
@@ -191,11 +191,11 @@ char *loadAndConvert(const char *filename, const char *encoding)
     if(!readFile(filename, &msg, &msglen, binary))
         return 0;
     // Encode the file
-    if( strcmp(encoding, T("base64")) == 0 ) {
+    if( strcmp(encoding, "base64") == 0 ) {
         ret = uuencode(msg, msglen);
         delete [] msg;
     }
-    else if( strcmp(encoding, T("quoted-printable")) == 0 ) {
+    else if( strcmp(encoding, "quoted-printable") == 0 ) {
         if(qp_isNeed(msg))
             ret = qp_encode(msg);
         delete [] msg;
@@ -218,14 +218,14 @@ int convertAndSave(const char *filename,
         return -1;
 
     // Decode the file
-    if( strcmp(encoding, T("base64")) == 0 ) {
+    if( strcmp(encoding, "base64") == 0 ) {
         if( uudecode(s, &buf, &len) ) {
             return -1;
         }
         binary = true;
     }
     // TODO
-    //else if( strcmp(encoding, T("ISO-8859-1")) == 0 ) {
+    //else if( strcmp(encoding, "ISO-8859-1") == 0 ) {
     //    buf = stringdup(s);
     //    len = strlen(buf);        
     //}
@@ -244,7 +244,7 @@ char *getSourceName(const char *uri)
 #if 0
 // FIXME
     char nodeName = new char[];
-    strcpy(nodeName, rootContext); strcat(nodeName, T(CONTEXT_SPDS_SOURCES));
+    strcpy(nodeName, rootContext); strcat(nodeName, CONTEXT_SPDS_SOURCES);
 
     node = dmt->getManagementNode(nodeName);
     if ( ! node ) {

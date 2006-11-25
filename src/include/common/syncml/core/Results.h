@@ -24,7 +24,7 @@
 #include "base/util/ArrayList.h"
 #include "syncml/core/ResponseCommand.h"
 
-#define RESULTS_COMMAND_NAME T("Results")
+#define RESULTS_COMMAND_NAME "Results"
 
 class Results : public ResponseCommand {
     

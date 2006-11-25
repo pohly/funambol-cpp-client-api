@@ -25,7 +25,7 @@
 #include "syncml/core/Chal.h"
 #include "syncml/core/Data.h"
 
-#define STATUS_COMMAND_NAME T("Status")
+#define STATUS_COMMAND_NAME "Status"
 
 class Status : public ResponseCommand {
     

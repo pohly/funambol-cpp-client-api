@@ -72,7 +72,7 @@ class Email : public ArrayElement {
 
     // ---------------------------------------------------------- Public Methods
         int parse(const char *syncmlData) { return 0; }          // TODO
-        char *format()                     { return wcsdup(T("")); } // TODO
+        char *format()                     { return wcsdup(""); } // TODO
 
         ArrayElement* clone() { return new Email(*this); }
    

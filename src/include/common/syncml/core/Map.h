@@ -24,7 +24,7 @@
 #include "syncml/core/AbstractCommand.h"
 #include "syncml/core/ModificationCommand.h"
 
-#define MAP_COMMAND_NAME T("Map")
+#define MAP_COMMAND_NAME "Map"
 
 class Map : public AbstractCommand {
     

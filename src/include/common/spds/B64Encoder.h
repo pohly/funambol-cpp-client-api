@@ -20,7 +20,7 @@
 
     #include "spds/DataTransformer.h"
 
-    #define DT_B64 T("b64")
+    #define DT_B64 "b64"
 
     class B64Encoder : public DataTransformer {
         public:

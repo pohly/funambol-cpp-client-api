@@ -24,7 +24,7 @@
 
 #include "syncml/core/ModificationCommand.h"
 
-#define COPY_COMMAND_NAME T("Copy")
+#define COPY_COMMAND_NAME "Copy"
 
 class Copy : public ModificationCommand {
     

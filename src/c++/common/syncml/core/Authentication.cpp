@@ -137,7 +137,7 @@ Authentication::Authentication(char* type,
 
     encode = TRUE;
     char auth[DIM_512];
-    sprintf(auth, T("%s:%s"), username, password);
+    sprintf(auth, "%s:%s", username, password);
     createAuthentication(type, auth);
 
 }
@@ -322,12 +322,12 @@ void Authentication::setData(char* data) {
             if (strlen(clearData) > 0 ) {
                 this->setUsername(clearData);
             } else {
-                this->setUsername(T(""));
+                this->setUsername("");
             }
             if (strlen(p1) > 0) {
                 this->setPassword(p1);
             } else {
-                this->setPassword(T(""));
+                this->setPassword("");
             }
             
         }

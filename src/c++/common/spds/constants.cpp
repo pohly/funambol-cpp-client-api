@@ -23,40 +23,40 @@ char* retSyncMode(SyncMode sm)
 	switch (sm)
 	{
 		case SYNC_NONE:
-			return T("000");
+			return "000";
 			break;
 		case SYNC_TWO_WAY:
-			return T("200");
+			return "200";
 			break;
 		case SYNC_SLOW:
-			return T("201");
+			return "201";
 			break;
 		case SYNC_ONE_WAY_FROM_CLIENT:
-			return T("202");
+			return "202";
 			break;
 		case SYNC_REFRESH_FROM_CLIENT:
-			return T("203");
+			return "203";
 			break;
 		case SYNC_ONE_WAY_FROM_SERVER:
-			return T("204");
+			return "204";
 			break;
 		case SYNC_REFRESH_FROM_SERVER:
-			return T("205");
+			return "205";
 			break;
 		case SYNC_TWO_WAY_BY_SERVER:
-			return T("206");
+			return "206";
 			break;
 		case SYNC_ONE_WAY_FROM_CLIENT_BY_SERVER:
-			return T("207");
+			return "207";
 			break;
 		case SYNC_REFRESH_FROM_CLIENT_BY_SERVER:
-			return T("208");
+			return "208";
 			break;
 		case SYNC_ONE_WAY_FROM_SERVER_BY_SERVER:
-			return T("209");
+			return "209";
 			break;
 		case SYNC_REFRESH_FROM_SERVER_BY_SERVER:
-			return T("210");
+			return "210";
 			break;
 		default:
 			return NULL;

@@ -36,13 +36,13 @@ Log::Log(BOOL resetLog, const char* path, const char* name) {
     setLogName(name);
 
     memset(logDir, 0, 512*sizeof(char));
-    sprintf(logDir, T("%s\\%s"), logPath, logName);
+    sprintf(logDir, "%s\\%s", logPath, logName);
 
     //
     // Test to ensure the log file is writable (only if path is set)
     //
     if (path) {
-        logFile = fopen(logDir, T("a+"));
+        logFile = fopen(logDir, "a+");
         if (logFile == NULL) {
             char tmp[512];
             sprintf(tmp, "Unable to write log file: \"%s\".\nPlease check your user's permissions.", logDir);
@@ -99,8 +99,8 @@ char* getCurrentTime(BOOL complete) {
     GetLocalTime(&sys_time);
     GetTimeZoneInformation(&timezone);
 
-    char fmtComplete[] = T("%04d-%02d-%02d %02d:%02d:%02d GMT %c%d:%02d");
-    char fmt[]         = T("%02d:%02d:%02d GMT %c%d:%02d");
+    char fmtComplete[] = "%04d-%02d-%02d %02d:%02d:%02d GMT %c%d:%02d";
+    char fmt[]         = "%02d:%02d:%02d GMT %c%d:%02d";
 
     char* ret = new char [64];
     
@@ -174,11 +174,11 @@ BOOL Log::isLoggable(LogLevel level) {
 void Log::printMessage(const char* level, const char* msg, va_list argList) {       
     
 	char* currentTime = getCurrentTime(false);    
-    logFile = fopen(logDir, T("a+"));       
+    logFile = fopen(logDir, "a+");       
 	
-	fprintf(logFile, T("%s [%s] - "), currentTime, level); 		
+	fprintf(logFile, "%s [%s] - ", currentTime, level); 		
     vfprintf(logFile, msg, argList);	
-	fprintf(logFile, T("\n")); 
+	fprintf(logFile, "\n"); 
 	fclose(logFile);
 
     delete[] currentTime;	
@@ -187,8 +187,8 @@ void Log::printMessage(const char* level, const char* msg, va_list argList) {
 void Log::reset(const char* title) {
     
     char* currentTime = getCurrentTime(true);
-    logFile = fopen(logDir, T("w+"));      
-    fprintf(logFile, T("%s - # %s\n\n"), currentTime, title);
+    logFile = fopen(logDir, "w+");      
+    fprintf(logFile, "%s - # %s\n\n", currentTime, title);
     fclose(logFile);
 
     delete[] currentTime;    

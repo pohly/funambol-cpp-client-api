@@ -37,10 +37,10 @@
 #define ERR_ANOTHER_SYNC        810
 
 
-#define ERRMSG_SERVER_FAILURE   T("The server returned error code %d")
-#define ERRMSG_DT_UNKNOWN       T("Data transformer '%s' unknown")
-#define ERRMSG_DT_FAILURE       T("Data transformer error: %lx")
+#define ERRMSG_SERVER_FAILURE   "The server returned error code %d"
+#define ERRMSG_DT_UNKNOWN       "Data transformer '%s' unknown"
+#define ERRMSG_DT_FAILURE       "Data transformer error: %lx"
 
-#define ERRMSG_ANOPTHER_SYNC    T("Another sync in progress")
+#define ERRMSG_ANOPTHER_SYNC    "Another sync in progress"
 
 #endif

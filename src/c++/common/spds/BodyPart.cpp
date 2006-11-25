@@ -20,9 +20,9 @@
 #include "spds/BodyPart.h"
 
 BodyPart::BodyPart() {
-    mimeType = T("text/plain");
-    charset  = T("UTF-8");
-    encoding = T("8bit");
+    mimeType = "text/plain";
+    charset  = "UTF-8";
+    encoding = "8bit";
 }
 
 const char * BodyPart::getMimeType() const { return (mimeType.c_str()); }

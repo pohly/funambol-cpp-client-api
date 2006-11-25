@@ -24,7 +24,7 @@
 #include "base/util/ArrayElement.h"
 #include "syncml/core/ModificationCommand.h"
 
-#define REPLACE_COMMAND_NAME T("Replace")
+#define REPLACE_COMMAND_NAME "Replace"
 
 class Replace : public ModificationCommand {
     

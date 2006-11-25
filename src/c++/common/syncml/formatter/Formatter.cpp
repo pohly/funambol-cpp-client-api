@@ -19,7 +19,7 @@
 #include "syncml/formatter/Formatter.h"
 #include "base/Log.h"
 
-#define EMPTY_VALUE  T("__EMPTY__")
+#define EMPTY_VALUE  "__EMPTY__"
 
 /*
 * Returns a StringBuffer giving the tag and the value as long. To use for generic simple value
@@ -30,8 +30,8 @@ StringBuffer* Formatter::getValue(const char* tagName, long value, const char *p
 
     char* t1 = new char[strlen(tagName) + 3 + (params ? strlen(params) + 1 : 0)]; // <  >  0 plus optional parameters
     char* t2 = new char[strlen(tagName) + 5]; // </ > \n 0
-    sprintf(t1, T("<%s%s%s>"), tagName, params ? " " : "", params ? params : "");
-    sprintf(t2, T("</%s>\n"), tagName);
+    sprintf(t1, "<%s%s%s>", tagName, params ? " " : "", params ? params : "");
+    sprintf(t2, "</%s>\n", tagName);
 
     StringBuffer* s = new StringBuffer();
     s->append(t1);       
@@ -51,7 +51,7 @@ StringBuffer* Formatter::getValue(const char* tagName, BOOL value, const char *p
         return NULL;
 
     char* t1 = new char[strlen(tagName) + 4 + (params ? strlen(params) + 1 : 0)]; // <  />  plus optional parameters
-    sprintf(t1, T("<%s%s%s/>"), tagName, params ? " " : "", params ? params : "");
+    sprintf(t1, "<%s%s%s/>", tagName, params ? " " : "", params ? params : "");
 
     StringBuffer* s = new StringBuffer();
     s->append(t1);        
@@ -82,8 +82,8 @@ StringBuffer* Formatter::getValue(const char* tagName, const char* value, const 
 
     char* t1 = new char[strlen(tagName) + 3 + (params ? 1 + strlen(params) : 0)]; // <  >  0
     char* t2 = new char[strlen(tagName) + 5]; // </ > \n 0
-    sprintf(t1, T("<%s%s%s>"), tagName, params ? " " : "", params ? params : "");
-    sprintf(t2, T("</%s>\n"), tagName);
+    sprintf(t1, "<%s%s%s>", tagName, params ? " " : "", params ? params : "");
+    sprintf(t2, "</%s>\n", tagName);
 
     StringBuffer* s = new StringBuffer(t1);
 
@@ -107,8 +107,8 @@ StringBuffer* Formatter::getValue(const char* tagName, StringBuffer* value, cons
 
     char* t1 = new char[strlen(tagName) + 3 + (params ? strlen(params) + 1 : 0)]; // <  >  0 plus optional parameters
     char* t2 = new char[strlen(tagName) + 5]; // </ > \n 0
-    sprintf(t1, T("<%s%s%s>"), tagName, params ? " " : "", params ? params : "");
-    sprintf(t2, T("</%s>\n"), tagName);
+    sprintf(t1, "<%s%s%s>", tagName, params ? " " : "", params ? params : "");
+    sprintf(t2, "</%s>\n", tagName);
 
     StringBuffer* s = new StringBuffer();
     s->append(t1);
@@ -135,11 +135,11 @@ StringBuffer* Formatter::getSyncML(SyncML* syncML) {
     sHdr  = getSyncHdr (syncML->getSyncHdr ());
     sBody = getSyncBody(syncML->getSyncBody());
     
-    sML = new StringBuffer(T("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"));
-    sML->append(T("<SyncML>\n"));    
+    sML = new StringBuffer("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
+    sML->append("<SyncML>\n");    
     sML->append(sHdr);
     sML->append(sBody);
-    sML->append(T("</SyncML>"));
+    sML->append("</SyncML>");
     
     deleteAllStringBuffer(2,&sHdr, &sBody);
 

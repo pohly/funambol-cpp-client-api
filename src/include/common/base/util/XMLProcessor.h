@@ -93,7 +93,7 @@ public:
     * The parent can be more than one. They have to be separated by &
     * i.e.  
     *
-    * getElementContentExcept(xmlPtr, T("Add"), T("Sync&Atomic"), &post)
+    * getElementContentExcept(xmlPtr, "Add", "Sync&Atomic", &post)
     *
     * The function returns "... to keep ... " content only 
     *
@@ -169,7 +169,7 @@ public:
 	 * Same with bool value
 	 */
     static StringBuffer makeElement(const char*  tag, bool val) {
-        return makeElement( tag, (val?T("true"):T("false")) ) EXTRA_SECTION_00 ;
+        return makeElement( tag, (val?"true":"false") ) EXTRA_SECTION_00 ;
     }
 
     /**

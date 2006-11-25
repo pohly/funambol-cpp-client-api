@@ -28,7 +28,7 @@
 #include "syncml/core/CmdID.h"
 #include "syncml/core/ItemizedCommand.h"
 
-#define ALERT_COMMAND_NAME T("Alert")
+#define ALERT_COMMAND_NAME "Alert"
 
 class Alert : public ItemizedCommand {
     

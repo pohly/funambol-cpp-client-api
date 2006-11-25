@@ -102,7 +102,7 @@ class StringBuffer: public ArrayElement {
          * @return - the position or StringBuffer::npos if not found.
          */
         ArrayList &split (ArrayList &tokens,
-                          const char *delimiters = T(" ")) const EXTRA_SECTION_00;
+                          const char *delimiters = " ") const EXTRA_SECTION_00;
 
         /**
          * Joins all the tokens in the given ArrayList, using separator to

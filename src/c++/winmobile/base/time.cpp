@@ -22,7 +22,7 @@
 
 inline int TimeFormatter(const SYSTEMTIME t, char*  out) {
                 
-    return sprintf(out, T("%02d%02d%02d%02d"),
+    return sprintf(out, "%02d%02d%02d%02d",
                          t.wDay, t.wHour, t.wMinute, t.wSecond);
 }
 
@@ -43,7 +43,7 @@ unsigned int time(void* unused) {
     l += l + t;
     return l;
     
-    sprintf(tttt, T("Low %u"), l);
+    sprintf(tttt, "Low %u", l);
     LOG.debug(tttt);
     
 }

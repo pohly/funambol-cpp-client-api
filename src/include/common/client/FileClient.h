@@ -48,15 +48,15 @@
 //#include "event/SetListener.h"
 
 
-#define APPLICATION_URI         T("Funambol/SyncclientFILE")
-#define LOG_TITLE		        T("Funambol FILEClient Log")
-#define LOG_PATH		        T(".")
+#define APPLICATION_URI         "Funambol/SyncclientFILE"
+#define LOG_TITLE		        "Funambol FILEClient Log"
+#define LOG_PATH		        "."
 #define LOG_LEVEL		        LOG_LEVEL_DEBUG
-#define SOURCE_NAME             T("briefcase")
+#define SOURCE_NAME             "briefcase"
 #define WSOURCE_NAME            TEXT("briefcase")
-#define DEVICE_ID               T("Funambol FILEClient")
-#define SW_VERSION              T("1.0")
-//#define FILE_USER_AGENT         T("Funambol FILEClient 1.0")
+#define DEVICE_ID               "Funambol FILEClient"
+#define SW_VERSION              "1.0"
+//#define FILE_USER_AGENT         "Funambol FILEClient 1.0"
 
 
 // Function to create a default config.

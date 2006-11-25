@@ -50,7 +50,7 @@ unsigned long startcmd(const WCHAR *app, const WCHAR *cmdline)
     wsprintf(cmd, TEXT("%s\\%s"), path, app);
 
     char dbg[200];
-    sprintf(dbg, T("Running: %ls %ls\n"), cmd, cmdline);
+    sprintf(dbg, "Running: %ls %ls\n", cmd, cmdline);
     LOG.error(dbg);
     if( CreateProcess( cmd, cmdline, 
                        NULL, NULL, FALSE, 0,

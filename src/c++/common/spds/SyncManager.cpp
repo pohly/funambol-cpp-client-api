@@ -329,14 +329,14 @@ int SyncManager::prepareSync(SyncSource** s) {
     if (devInf) {
         char md5[16];
         devInfStr = Formatter::getDevInf(devInf);
-        LOG.debug(T("devinfo: %s"), devInfStr->c_str());
+        LOG.debug("devinfo: %s", devInfStr->c_str());
         // Add syncUrl to devInfHash, so hash changes if syncUrl has changed
         devInfStr->append("<SyncURL>");
         devInfStr->append(config.getAccessConfig().getSyncURL());
         devInfStr->append("</SyncURL>");
         calculateMD5(devInfStr->c_str(), devInfStr->length(), md5);
         devInfHash[b64_encode(devInfHash, md5, sizeof(md5))] = 0;
-        LOG.debug(T("devinfo hash: %s"), devInfHash);
+        LOG.debug("devinfo hash: %s", devInfHash);
 
         // compare against previous device info hash:
         // if different, then the local config has changed and
@@ -344,9 +344,9 @@ int SyncManager::prepareSync(SyncSource** s) {
         if (strcmp(devInfHash, config.getDeviceConfig().getDevInfHash())) {
             putDevInf = TRUE;
         }
-        LOG.debug(T("devinfo %s"), putDevInf ? T("changed, retransmit") : T("unchanged, no need to send"));
+        LOG.debug("devinfo %s", putDevInf ? "changed, retransmit" : "unchanged, no need to send");
     } else {
-        LOG.debug(T("no devinfo available"));
+        LOG.debug("no devinfo available");
     }
 
     // have device infos changed since the last time that they were
@@ -507,7 +507,7 @@ int SyncManager::prepareSync(SyncSource** s) {
         
         if (syncml == NULL) {
             ret = lastErrorCode;
-            LOG.error(T("Error processing alert response."));
+            LOG.error("Error processing alert response.");
             goto finally;
         }
         
@@ -517,12 +517,12 @@ int SyncManager::prepareSync(SyncSource** s) {
 
         if (ret == -1) {
             ret = lastErrorCode;
-            LOG.error(T("Error processing SyncHdr Status"));
+            LOG.error("Error processing SyncHdr Status");
             goto finally;
 
         } else if (isErrorStatus(ret) && ! isAuthFailed(ret)) {
             lastErrorCode = ret;
-            sprintf(logmsg, T("Error from server %d"), ret);
+            sprintf(logmsg, "Error from server %d", ret);
             LOG.error(logmsg);
             goto finally;
         }
@@ -542,7 +542,7 @@ int SyncManager::prepareSync(SyncSource** s) {
 
             if (ret == -1 || ret == 404 || ret == 415) {
                 lastErrorCode = ret;
-                sprintf(logmsg, T("Alert Status from server = %d"), ret);
+                sprintf(logmsg, "Alert Status from server = %d", ret);
                 LOG.error(logmsg);
                 setSourceStateAndError(count, SOURCE_ERROR, ret, logmsg);
             }
@@ -593,7 +593,7 @@ int SyncManager::prepareSync(SyncSource** s) {
                         
                     } else {
                         ret = -1;   //XXX
-                        LOG.error(T("Server not authenticated"));
+                        LOG.error("Server not authenticated");
                         goto finally;
                     }
                     serverAuthRetries++;
@@ -651,7 +651,7 @@ int SyncManager::prepareSync(SyncSource** s) {
                                          DEVINF_URI)) {
                                 sendDevInf = TRUE;
                             } else {
-                                LOG.debug(T("ignoring request to Get item #%d"), i);
+                                LOG.debug("ignoring request to Get item #%d", i);
                             }
                         }
 
@@ -707,7 +707,7 @@ int SyncManager::prepareSync(SyncSource** s) {
                  
                 } else {
                     ret = 401;
-                    LOG.error(T("Client not authenticated"));
+                    LOG.error("Client not authenticated");
                     goto finally;
                 }                                    
             }
@@ -734,7 +734,7 @@ int SyncManager::prepareSync(SyncSource** s) {
                     continue;
                 ret = syncMLProcessor.processServerAlert(*sources[count], syncml);
                 if (isErrorStatus(ret)) {
-                    sprintf(logmsg, T("AlertStatus from server %d"), ret);
+                    sprintf(logmsg, "AlertStatus from server %d", ret);
                     LOG.error(logmsg);
                     setSourceStateAndError(count, SOURCE_ERROR, ret, logmsg); 
                 }
@@ -1396,7 +1396,7 @@ int SyncManager::sync() {
             ret = syncMLProcessor.processSyncHdrStatus(syncml);
             if (isErrorStatus(ret)) {
                 lastErrorCode = ret;
-                sprintf(lastErrorMsg, T("Server Failure: server returned error code %i"), ret);
+                sprintf(lastErrorMsg, "Server Failure: server returned error code %i", ret);
                 LOG.error(lastErrorMsg);
                 goto finally;
 
@@ -1478,7 +1478,7 @@ int SyncManager::sync() {
         syncml = syncMLBuilder.prepareSyncML(commands, last);
         msg    = syncMLBuilder.prepareMsg(syncml);        
 
-        LOG.debug(T("Alert to request server changes"));
+        LOG.debug("Alert to request server changes");
         LOG.debug("%s", msg);
 
         responseMsg = transportAgent->sendMessage(msg);
@@ -1505,7 +1505,7 @@ int SyncManager::sync() {
         ret = syncMLProcessor.processSyncHdrStatus(syncml);
         if (isErrorStatus(ret)) {
             lastErrorCode = ret;
-            sprintf(lastErrorMsg, T("Server Failure: server returned error code %i"), ret);
+            sprintf(lastErrorMsg, "Server Failure: server returned error code %i", ret);
             LOG.error(lastErrorMsg);
             goto finally;
         }
@@ -1534,7 +1534,7 @@ int SyncManager::sync() {
                 syncml = syncMLBuilder.prepareSyncML(commands, last);
                 msg    = syncMLBuilder.prepareMsg(syncml);        
 
-                LOG.debug(T("Status to the server"));
+                LOG.debug("Status to the server");
                 LOG.debug("%s", msg);
 
                 responseMsg = transportAgent->sendMessage(msg);
@@ -1560,7 +1560,7 @@ int SyncManager::sync() {
 
                 if (isErrorStatus(ret)) {
                     lastErrorCode = ret;
-                    sprintf(lastErrorMsg, T("Server Failure: server returned error code %i"), ret);
+                    sprintf(lastErrorMsg, "Server Failure: server returned error code %i", ret);
                     LOG.error(lastErrorMsg);
                     goto finally;
                 }
@@ -1677,7 +1677,7 @@ int SyncManager::endSync() {
                 syncml = syncMLBuilder.prepareSyncML(commands, iterator != toSync ? FALSE : last);
                 mapMsg = syncMLBuilder.prepareMsg(syncml);                   
 
-                LOG.debug(T("Mapping"));
+                LOG.debug("Mapping");
                 LOG.debug("%s", mapMsg);
 
                 //Fire Finalization Event
@@ -1707,7 +1707,7 @@ int SyncManager::endSync() {
 
                 if (isErrorStatus(ret)) {
                     lastErrorCode = ret;
-                    sprintf(lastErrorMsg, T("Server Failure: server returned error code %i"), ret);
+                    sprintf(lastErrorMsg, "Server Failure: server returned error code %i", ret);
                     LOG.error(lastErrorMsg);
                     goto finally;
                 }
@@ -2243,10 +2243,10 @@ DevInf *SyncManager::createDeviceInfo()
     // not be implemented yet
     ArrayList empty;
     ArrayList ctPropParams;
-    CTPropParam param(T("X-FOO"),
+    CTPropParam param("X-FOO",
                       NULL, 0, NULL, &empty);
     ctPropParams.add(param);
-    CTTypeSupported cttType(T("text/x-foo"), &ctPropParams);
+    CTTypeSupported cttType("text/x-foo", &ctPropParams);
     ArrayList ctCap;
     ctCap.add(cttType);
     devinfo->setCTCap(&ctCap);

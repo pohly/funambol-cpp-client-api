@@ -178,7 +178,7 @@ Status* SyncMLBuilder::prepareSyncHdrStatus(Chal*chal, int d) {
     targetRefs->add(*tar);
     sourceRefs->add(*sou);
 
-    Status* s = new Status(commandID, itow(msgRef), T("0"), SYNC_HDR, targetRefs, sourceRefs, NULL, chal, data, NULL);
+    Status* s = new Status(commandID, itow(msgRef), "0", SYNC_HDR, targetRefs, sourceRefs, NULL, chal, data, NULL);
 
     // Fire Sync Status Event: syncHdr status from client
     fireSyncStatusEvent(SYNC_HDR, s->getStatusCode(), NULL, NULL, NULL , CLIENT_STATUS);
@@ -390,7 +390,7 @@ AbstractCommand *SyncMLBuilder::prepareDevInf(AbstractCommand *cmd, DevInf &devI
     Source source(DEVINF_URI);
     Meta meta;
     meta.setType(DEVINF_FORMAT);
-    // meta.setFormat(T("xml"));
+    // meta.setFormat("xml");
     ComplexData complexData;
     complexData.setDevInf(&devInf);
     Item item(NULL,
@@ -537,7 +537,7 @@ Alert* SyncMLBuilder::prepareAddrChangeAlert(SyncSource& s) {
             memcpy (syncData, (char*)syncItem->getData(), size);
              
             ComplexData addr( syncData );
-            Target target( T("") );
+            Target target( "" );
             Source source(_wcc(syncItem->getKey()));
             // Build Item
             Item item(&target, &source, NULL, &addr, FALSE);
@@ -557,7 +557,7 @@ Alert* SyncMLBuilder::prepareAddrChangeAlert(SyncSource& s) {
             // Add the syncItem data as zero terminated string
             StringBuffer itemData(syncData, size);
             ComplexData addr( itemData.c_str() );
-            Target target( T("") );
+            Target target( "" );
             Source source(syncItem->getKey());
             // Build Item
             Item item(&target, &source, NULL, &addr, FALSE);
@@ -586,8 +586,8 @@ SyncHdr* SyncMLBuilder::prepareSyncHdr(Cred* cred, unsigned long maxMsgSize, uns
 
     ++msgID;
 
-    VerDTD*    verDTD    = new VerDTD(T("1.1"));
-    VerProto*  verProto  = new VerProto(T("SyncML/1.1"));
+    VerDTD*    verDTD    = new VerDTD("1.1");
+    VerProto*  verProto  = new VerProto("SyncML/1.1");
     SessionID* sessID    = new SessionID(ltow(sessionID));
     char*   messageID = itow(msgID);
     Target*    tar       = new Target(target);

@@ -40,7 +40,7 @@ ManagementNode::ManagementNode(const char* fullname) {
     if(setFullName(fullname)){
         char msg[512];
 
-        sprintf(msg, T("Invalid context: %s"), fullname);
+        sprintf(msg, "Invalid context: %s", fullname);
         //TODO call ErrorHandler XXX
         LOG.error(msg);
     }
@@ -59,7 +59,7 @@ ManagementNode::~ManagementNode() {
 char * ManagementNode::getFullName(){
     char *ret = new char[strlen(context)+strlen(name)+2];
 
-    sprintf(ret, T("%s/%s"), context, name);
+    sprintf(ret, "%s/%s", context, name);
 	return ret;
 }
 
@@ -67,7 +67,7 @@ int ManagementNode::setFullName(const char *fullname) {
     char* p;
 	int len;
 
-    p = strrchr((char*)fullname, CHR('/'));
+    p = strrchr((char*)fullname, '/');
 
     if ( !p )
         return -1;

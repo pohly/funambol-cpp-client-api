@@ -42,7 +42,7 @@ static inline bool checkFlag(const char *xml, const char *field)
 
     if( XMLProcessor::getElementContent(xml, field, NULL, &start, &end) ) {
 
-        ret = ( strncmp(xml+start, T("true"), end-start) == 0 ) ;
+        ret = ( strncmp(xml+start, "true", end-start) == 0 ) ;
     }
     return ret;
 }
@@ -81,17 +81,17 @@ int EmailData::parse(const char *msg, size_t len)
     if( XMLProcessor::getElementContent (msg, EMAIL_TREC, NULL, &start, &end) ) {
         received = StringBuffer(msg+start, end-start);
     }
-    else received = T("");
+    else received = "";
 
     if( XMLProcessor::getElementContent (msg, EMAIL_TCRE, NULL, &start, &end) ) {
         created = StringBuffer(msg+start, end-start);
     }
-    else created = T("");
+    else created = "";
 
     if( XMLProcessor::getElementContent (msg, EMAIL_TMOD, NULL, &start, &end) ) {
         modified = StringBuffer(msg+start, end-start);
     }
-    else modified = T("");    
+    else modified = "";    
 
     // Get content
     if( XMLProcessor::getElementContent(msg, EMAIL_ITEM, NULL, &start, &end) ) {
@@ -110,7 +110,7 @@ int EmailData::parse(const char *msg, size_t len)
         // item must start with CDATA
         size_t item_start = item.find("![CDATA");
         if(item_start > 10){
-            LOG.error(T("EMailData: can't find inner CDATA section."));
+            LOG.error("EMailData: can't find inner CDATA section.");
             return -1;
         }
         size_t item_end = item.rfind("]]>");
@@ -121,7 +121,7 @@ int EmailData::parse(const char *msg, size_t len)
         if(item.length() - item_end > 10){
             item_end = item.rfind("]]&gt;");
             if(item.length() - item_end > 10){
-                LOG.error(T("EMailData: can't find CDATA end tag."));
+                LOG.error("EMailData: can't find CDATA end tag.");
                 return -2;
             }
         }
@@ -132,7 +132,7 @@ int EmailData::parse(const char *msg, size_t len)
 
     }
     else {
-        LOG.info(T("EMailData: no <emailitem> tag."));
+        LOG.info("EMailData: no <emailitem> tag.");
         // It is not an error, just log it for info.
     }
     return ret;
@@ -143,7 +143,7 @@ char *EmailData::format() {
 
     out.reserve(150);
         
-    out = T("<Email>\n");
+    out = "<Email>\n";
     out += XMLProcessor::makeElement(EMAIL_READ, read);
     out += XMLProcessor::makeElement(EMAIL_FORW, forwarded);
     out += XMLProcessor::makeElement(EMAIL_REPL, replied);
@@ -154,12 +154,12 @@ char *EmailData::format() {
     out += XMLProcessor::makeElement(EMAIL_FLAG, flagged);
     char *item = emailItem.format();
     if ( item ) {
-    out += T("<emailitem>\n<![CDATA[");
+    out += "<emailitem>\n<![CDATA[";
         out += item;
         delete [] item;
-        out += T("]]&gt;\n</emailitem>\n");
+        out += "]]&gt;\n</emailitem>\n";
     }
-    out += T("</Email>\n");
+    out += "</Email>\n";
     return stringdup(out.c_str());
 }
 

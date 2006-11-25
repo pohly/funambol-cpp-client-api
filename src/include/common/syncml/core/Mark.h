@@ -22,10 +22,10 @@
 
 #include "base/fscapi.h"
 
-#define DRAFT     T("draft")
-#define FINAL     T("final"   )
-#define DELETE    T("delete"  )
-#define UNDELETE  T("undelete")
-#define READ      T("read"    )
-#define UNREAD    T("unread"  )
+#define DRAFT     "draft"
+#define FINAL     "final"
+#define DELETE    "delete"
+#define UNDELETE  "undelete"
+#define READ      "read"
+#define UNREAD    "unread"
 

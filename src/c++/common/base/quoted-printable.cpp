@@ -72,7 +72,7 @@ char *qp_decode(const char *qp)
 
 // A simple version of qp_encoding
 char *qp_encode(const char *qp) {
-	char QP_DIGITS[] = T("0123456789ABCDEF");
+	char QP_DIGITS[] = "0123456789ABCDEF";
 	char* ret = new char[strlen(qp)*3+1];
 	int i = 0;
 

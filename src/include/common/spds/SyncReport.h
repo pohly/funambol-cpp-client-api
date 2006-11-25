@@ -28,8 +28,8 @@
 
 
 // To notify if status comes from Client or server
-#define CLIENT      T("Client")
-#define SERVER      T("Server")
+#define CLIENT      "Client"
+#define SERVER      "Server"
 
 
 /*

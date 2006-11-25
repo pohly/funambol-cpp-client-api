@@ -120,7 +120,7 @@ void URL::setURL(const char* url) {
     //
     // protocol (mandatory)
     //
-    s = strstr((char*)url, T("://"));
+    s = strstr((char*)url, "://");
     if ((s == NULL) || (s == url)) {
         return;
     }
@@ -135,7 +135,7 @@ void URL::setURL(const char* url) {
     // port (optional)
     //
     s += 3;
-    q = strstr(s, T("/"));
+    q = strstr(s, "/");
     if (q == NULL) {
         size = strlen(s);
     } else {
@@ -145,7 +145,7 @@ void URL::setURL(const char* url) {
     strncpy(h, s, size); h[size] = 0;
 
     unsigned int port = (unsigned int)-1;
-    s = strstr(h, T(":"));
+    s = strstr(h, ":");
     if (s) {
         port = strtol(s+1, NULL, 10);
         *s = 0;
@@ -193,7 +193,7 @@ URL& URL::operator= (const char* url) {
 BOOL URL::isSecure() {
    char* t = strtolower(protocol);
 
-   BOOL ret = (strcmp(t, T("https")) == 0);
+   BOOL ret = (strcmp(t, "https") == 0);
 
    delete [] t; t = NULL;
 

@@ -54,13 +54,13 @@ void testConfigFilter() {
         config.setBodySize(-1);
         config.setAttachSize(-1);
 
-        MailSourceManagementNode node(T("sources"), T("mail"), config);
+        MailSourceManagementNode node("sources", "mail", config);
     }
    
     //
     // Now we can read the config and than create the needed clause
     //
-    MailSourceManagementNode node(T("sources"), T("mail"));
+    MailSourceManagementNode node("sources", "mail");
     MailSyncSourceConfig& config = node.getMailSourceConfig(TRUE);
 
 
@@ -216,7 +216,7 @@ void testConfigFilter() {
         config.setBodySize(5);
         config.setAttachSize(30);
 
-        MailSourceManagementNode node(T("sources"), T("mail"), config);
+        MailSourceManagementNode node("sources", "mail", config);
     }
     
     config = node.getMailSourceConfig(TRUE); // reread from the DM

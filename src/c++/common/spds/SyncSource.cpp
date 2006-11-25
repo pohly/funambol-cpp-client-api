@@ -33,7 +33,7 @@ SyncSource::SyncSource(const WCHAR* sourceName, SyncSourceConfig *sc) :
     setPreferredSyncMode(sc ? syncModeCode(sc->getSync()) : SYNC_NONE);
     if ((sourceName == NULL) || (*sourceName == 0)) {
         lastErrorCode = ERR_PARAMETER_IS_EMPTY;
-        sprintf(lastErrorMsg, T("name cannot be empty (NULL or 0-length)"));
+        sprintf(lastErrorMsg, "name cannot be empty (NULL or 0-length)");
         goto finally;
     }
     name = wstrdup(sourceName);
@@ -160,7 +160,7 @@ void SyncSource::setNextSync(unsigned long timestamp) {
  * @param lastAnchor last anchor
  */
 void SyncSource::setLastAnchor(const char* lastAnchor) {
-    strncpy(last, (lastAnchor != NULL) ? lastAnchor : T(""), DIM_ANCHOR);
+    strncpy(last, (lastAnchor != NULL) ? lastAnchor : "", DIM_ANCHOR);
     last[DIM_ANCHOR-1] = 0;
 }
 
@@ -179,7 +179,7 @@ const char* SyncSource::getLastAnchor() {
  * @param next next anchor
  */
 void SyncSource::setNextAnchor(const char* nextAnchor) {
-    strncpy(next, (nextAnchor != NULL) ? nextAnchor : T(""), DIM_ANCHOR);
+    strncpy(next, (nextAnchor != NULL) ? nextAnchor : "", DIM_ANCHOR);
     next[DIM_ANCHOR-1] = 0;
 }
 

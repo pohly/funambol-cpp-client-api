@@ -119,29 +119,29 @@ int settings(const char *rootContext)
         goto finally;
     }
 
-    node->setPropertyValue(T("deviceId"), T(""));
-    node->setPropertyValue(T("username"), T("guest"));
-    node->setPropertyValue(T("password"), T("guest"));
-    node->setPropertyValue(T("syncUrl"), T("http://192.168.0.xx:8080/funambol/ds"));
-    node->setPropertyValue(T("serverName"), T("http://192.168.0.xx:8080"));
-    node->setPropertyValue(T("beginTimestamp"), T("0"));
-    node->setPropertyValue(T("endTimestamp"), T("0"));
-    node->setPropertyValue(T("sourceCount"), T("0"));
-    node->setPropertyValue(T("responseTimeout"), T("0"));
-    node->setPropertyValue(T("checkConn"), T("1"));
-    node->setPropertyValue(T("firstTimeSyncMode"), T("0"));
-    node->setPropertyValue(T("proxyHost"), T(""));
-    node->setPropertyValue(T("proxyPort"), T(""));
-    node->setPropertyValue(T("useProxy"), T(""));
-    node->setPropertyValue(T("clientNonce"), T("cGlwcG8="));
-    node->setPropertyValue(T("serverNonce"), T("VGB8YHQ6U25lWmAuR3Z3bw=="));
-    node->setPropertyValue(T("serverID"), T("funambol"));
-    node->setPropertyValue(T("serverPWD"), T("funambol"));
-    node->setPropertyValue(T("isServerAuthRequired"), T("F"));
-    node->setPropertyValue(T("clientAuthType"), T("syncml:auth-basic"));
-    node->setPropertyValue(T("serverAuthType"), T("syncml:auth-basic"));
-    node->setPropertyValue(T("maxMsgSize"), T("122880"));
-    node->setPropertyValue(T("maxModPerMsg"), T("20"));
+    node->setPropertyValue("deviceId", "");
+    node->setPropertyValue("username", "guest");
+    node->setPropertyValue("password", "guest");
+    node->setPropertyValue("syncUrl", "http://192.168.0.xx:8080/funambol/ds");
+    node->setPropertyValue("serverName", "http://192.168.0.xx:8080");
+    node->setPropertyValue("beginTimestamp", "0");
+    node->setPropertyValue("endTimestamp", "0");
+    node->setPropertyValue("sourceCount", "0");
+    node->setPropertyValue("responseTimeout", "0");
+    node->setPropertyValue("checkConn", "1");
+    node->setPropertyValue("firstTimeSyncMode", "0");
+    node->setPropertyValue("proxyHost", "");
+    node->setPropertyValue("proxyPort", "");
+    node->setPropertyValue("useProxy", "");
+    node->setPropertyValue("clientNonce", "cGlwcG8=");
+    node->setPropertyValue("serverNonce", "VGB8YHQ6U25lWmAuR3Z3bw==");
+    node->setPropertyValue("serverID", "funambol");
+    node->setPropertyValue("serverPWD", "funambol");
+    node->setPropertyValue("isServerAuthRequired", "F");
+    node->setPropertyValue("clientAuthType", "syncml:auth-basic");
+    node->setPropertyValue("serverAuthType", "syncml:auth-basic");
+    node->setPropertyValue("maxMsgSize", "122880");
+    node->setPropertyValue("maxModPerMsg", "20");
     
     delete node;
 
@@ -154,14 +154,14 @@ int settings(const char *rootContext)
         goto finally;
     }
 
-    node->setPropertyValue(T("sync"), T("two-way"));
-    node->setPropertyValue(T("last"), T("0"));
-    node->setPropertyValue(T("name"), T("contact"));
-    node->setPropertyValue(T("type"), T("text/x-s4j-sifc"));
-    node->setPropertyValue(T("syncModes"), T("slow,two-way,refresh"));
-    node->setPropertyValue(T("uri"), T("scard"));
-    node->setPropertyValue(T("useSIF"), T("1"));
-    node->setPropertyValue(T("encoding"), T("b64"));
+    node->setPropertyValue("sync", "two-way");
+    node->setPropertyValue("last", "0");
+    node->setPropertyValue("name", "contact");
+    node->setPropertyValue("type", "text/x-s4j-sifc");
+    node->setPropertyValue("syncModes", "slow,two-way,refresh");
+    node->setPropertyValue("uri", "scard");
+    node->setPropertyValue("useSIF", "1");
+    node->setPropertyValue("encoding", "b64");
 
     delete node;
 
@@ -174,14 +174,14 @@ int settings(const char *rootContext)
         goto finally;
     }
 
-    node->setPropertyValue(T("sync"), T("none"));
-    node->setPropertyValue(T("last"), T("0"));
-    node->setPropertyValue(T("name"), T("calendar"));
-    node->setPropertyValue(T("type"), T("text/x-s4j-sife"));
-    node->setPropertyValue(T("syncModes"), T("slow,two-way,refresh"));
-    node->setPropertyValue(T("uri"),  T("scal"));
-    node->setPropertyValue(T("useSIF"), T("1"));
-    node->setPropertyValue(T("encoding"), T("b64"));
+    node->setPropertyValue("sync", "none");
+    node->setPropertyValue("last", "0");
+    node->setPropertyValue("name", "calendar");
+    node->setPropertyValue("type", "text/x-s4j-sife");
+    node->setPropertyValue("syncModes", "slow,two-way,refresh");
+    node->setPropertyValue("uri",  "scal");
+    node->setPropertyValue("useSIF", "1");
+    node->setPropertyValue("encoding", "b64");
 
     delete node;
 
@@ -194,14 +194,14 @@ int settings(const char *rootContext)
         goto finally;
     }
 
-    node->setPropertyValue(T("sync"), T("none"));
-    node->setPropertyValue(T("last"), T("0"));
-    node->setPropertyValue(T("name"), T("task"));
-    node->setPropertyValue(T("type"), T("text/x-s4j-sift"));
-    node->setPropertyValue(T("syncModes"), T("slow,two-way,refresh"));
-    node->setPropertyValue(T("uri"),  T("stask"));
-    node->setPropertyValue(T("useSIF"), T("1"));
-    node->setPropertyValue(T("encoding"), T("b64"));
+    node->setPropertyValue("sync", "none");
+    node->setPropertyValue("last", "0");
+    node->setPropertyValue("name", "task");
+    node->setPropertyValue("type", "text/x-s4j-sift");
+    node->setPropertyValue("syncModes", "slow,two-way,refresh");
+    node->setPropertyValue("uri",  "stask");
+    node->setPropertyValue("useSIF", "1");
+    node->setPropertyValue("encoding", "b64");
 
     delete node;
 
@@ -214,14 +214,14 @@ int settings(const char *rootContext)
         goto finally;
     }
 
-    node->setPropertyValue(T("sync"), T("none"));
-    node->setPropertyValue(T("last"), T("0"));
-    node->setPropertyValue(T("name"), T("note"));
-    node->setPropertyValue(T("type"), T("text/x-s4j-sifn"));
-    node->setPropertyValue(T("syncModes"), T("slow,two-way,refresh"));
-    node->setPropertyValue(T("uri"),  T("stask"));
-    node->setPropertyValue(T("useSIF"), T("1"));
-    node->setPropertyValue(T("encoding"), T("b64"));
+    node->setPropertyValue("sync", "none");
+    node->setPropertyValue("last", "0");
+    node->setPropertyValue("name", "note");
+    node->setPropertyValue("type", "text/x-s4j-sifn");
+    node->setPropertyValue("syncModes", "slow,two-way,refresh");
+    node->setPropertyValue("uri",  "stask");
+    node->setPropertyValue("useSIF", "1");
+    node->setPropertyValue("encoding", "b64");
 
     delete node;
 
@@ -234,14 +234,14 @@ int settings(const char *rootContext)
         goto finally;
     }
 
-    node->setPropertyValue(T("sync"), T("none"));
-    node->setPropertyValue(T("last"), T("0"));
-    node->setPropertyValue(T("name"), T("briefcase"));
-    node->setPropertyValue(T("type"), T("application/*"));
-    node->setPropertyValue(T("syncModes"), T("slow,two-way,refresh"));
-    node->setPropertyValue(T("uri"),  T("briefcase"));
-    node->setPropertyValue(T("useSIF"), T("1"));
-    node->setPropertyValue(T("encoding"), T("b64"));
+    node->setPropertyValue("sync", "none");
+    node->setPropertyValue("last", "0");
+    node->setPropertyValue("name", "briefcase");
+    node->setPropertyValue("type", "application/*");
+    node->setPropertyValue("syncModes", "slow,two-way,refresh");
+    node->setPropertyValue("uri",  "briefcase");
+    node->setPropertyValue("useSIF", "1");
+    node->setPropertyValue("encoding", "b64");
 
     delete node;
 
@@ -254,22 +254,22 @@ int settings(const char *rootContext)
         goto finally;
     }
 
-    node->setPropertyValue(T("sync"), T("none"));
-    node->setPropertyValue(T("last"), T("0"));
-    node->setPropertyValue(T("name"), T("mail"));
-    node->setPropertyValue(T("type"), T("application/vnd.omads-email+xml"));
-    node->setPropertyValue(T("syncModes"), T("slow,two-way,refresh"));
-    node->setPropertyValue(T("uri"), T("mail"));
-    node->setPropertyValue(T("useSIF"), T("1"));
-    node->setPropertyValue(T("encoding"), T("text/plain"));
-    node->setPropertyValue(T("Inbox" ), T("1" ) );
-    node->setPropertyValue(T("Outbox" ), T("1" ) );
-    node->setPropertyValue(T("Trash" ), T("0" ) );
-    node->setPropertyValue(T("Sent" ), T("1" ) );
-    node->setPropertyValue(T("Draft" ), T("0" ) );
-    node->setPropertyValue(T("attachSize" ), T("-1" ) );
-    node->setPropertyValue(T("bodySyze" ), T("-1" ) );
-    node->setPropertyValue(T("downloadAge" ), T("-1" ) );
+    node->setPropertyValue("sync", "none");
+    node->setPropertyValue("last", "0");
+    node->setPropertyValue("name", "mail");
+    node->setPropertyValue("type", "application/vnd.omads-email+xml");
+    node->setPropertyValue("syncModes", "slow,two-way,refresh");
+    node->setPropertyValue("uri", "mail");
+    node->setPropertyValue("useSIF", "1");
+    node->setPropertyValue("encoding", "text/plain");
+    node->setPropertyValue("Inbox", "1" );
+    node->setPropertyValue("Outbox", "1" );
+    node->setPropertyValue("Trash", "0" );
+    node->setPropertyValue("Sent", "1" );
+    node->setPropertyValue("Draft", "0" );
+    node->setPropertyValue("attachSize", "-1" );
+    node->setPropertyValue("bodySyze", "-1" );
+    node->setPropertyValue("downloadAge", "-1" );
     
 finally:
     if (node)

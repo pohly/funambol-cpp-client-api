@@ -25,7 +25,7 @@
 
     #include "spds/DataTransformer.h"
 
-    #define DF_FORMATTERS T("b64;des;")
+    #define DF_FORMATTERS "b64;des;"
 
 
     class DataTransformerFactory {

@@ -69,7 +69,7 @@ void DeviceConfig::set(char** buf, const char* v) {
 	safeDelete(buf);
 	
 	if (v == NULL) {
-		v = T("");
+		v = "";
 	}
 	int len = strlen(v);
 	*buf = new char[len+2];

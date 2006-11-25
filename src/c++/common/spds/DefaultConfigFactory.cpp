@@ -34,28 +34,28 @@ AccessConfig* DefaultConfigFactory::getAccessConfig() {
 
     AccessConfig* ac = new AccessConfig();
 
-    ac->setUsername             (T("guest"));
-    ac->setPassword             (T("guest"));
+    ac->setUsername             ("guest");
+    ac->setPassword             ("guest");
     ac->setFirstTimeSyncMode    (SYNC_NONE);
     ac->setUseProxy             (FALSE);
-    ac->setProxyHost            (T(""));
+    ac->setProxyHost            ("");
     ac->setProxyPort            (8080);
-    ac->setProxyUsername        (T(""));
-    ac->setProxyPassword        (T(""));
-    ac->setSyncURL              (T("http://localhost:8080/funambol/ds"));
+    ac->setProxyUsername        ("");
+    ac->setProxyPassword        ("");
+    ac->setSyncURL              ("http://localhost:8080/funambol/ds");
     ac->setBeginSync            (0);
     ac->setEndSync              (0);
     ac->setServerAuthRequired   (FALSE);
-    ac->setClientAuthType       (T("syncml:auth-basic"));
-    ac->setServerAuthType       (T("syncml:auth-basic"));
-    ac->setServerPWD            (T("funambol"));
-    ac->setServerID             (T("funambol"));
-    ac->setServerNonce          (T(""));
-    ac->setClientNonce          (T(""));
+    ac->setClientAuthType       ("syncml:auth-basic");
+    ac->setServerAuthType       ("syncml:auth-basic");
+    ac->setServerPWD            ("funambol");
+    ac->setServerID             ("funambol");
+    ac->setServerNonce          ("");
+    ac->setClientNonce          ("");
     ac->setMaxMsgSize           (10000);
     ac->setMaxModPerMsg         (100);
     ac->setReadBufferSize       (0);
-    ac->setUserAgent            (T(""));
+    ac->setUserAgent            ("");
     ac->setCheckConn            (TRUE);
     ac->setResponseTimeout      (0);
     //ac->setEncryption           (FALSE);
@@ -69,22 +69,22 @@ DeviceConfig* DefaultConfigFactory::getDeviceConfig() {
 
     DeviceConfig* dc = new DeviceConfig();
 
-    dc->setVerDTD               (T("1.1"));
-    dc->setMan                  (T(""));
-    dc->setMod                  (T(""));
-    dc->setOem                  (T(""));
-    dc->setFwv                  (T(""));
-    dc->setSwv                  (T(""));
-    dc->setHwv                  (T(""));
-    dc->setDevID                (T("funambol-client"));
-    dc->setDevType              (T("workstation"));
-    dc->setDsV                  (T(""));
+    dc->setVerDTD               ("1.1");
+    dc->setMan                  ("");
+    dc->setMod                  ("");
+    dc->setOem                  ("");
+    dc->setFwv                  ("");
+    dc->setSwv                  ("");
+    dc->setHwv                  ("");
+    dc->setDevID                ("funambol-client");
+    dc->setDevType              ("workstation");
+    dc->setDsV                  ("");
     dc->setUtc                  (TRUE);
     dc->setLoSupport            (FALSE);
     dc->setNocSupport           (FALSE);
     dc->setLogLevel             (LOG_LEVEL_INFO);
     dc->setMaxObjSize           (0);
-    dc->setDevInfHash           (T(""));
+    dc->setDevInfHash           ("");
 
     return dc;
 }
@@ -96,29 +96,29 @@ SyncSourceConfig* DefaultConfigFactory::getSyncSourceConfig(const char* name) {
     SyncSourceConfig* sc = new SyncSourceConfig();
 
     sc->setName                 (name);
-    sc->setSyncModes            (T("slow,two-way"));
-    sc->setSync                 (T("two-way"));
-    sc->setEncoding             (T("b64"));
+    sc->setSyncModes            ("slow,two-way");
+    sc->setSync                 ("two-way");
+    sc->setEncoding             ("b64");
     sc->setLast                 (0);
-    sc->setSupportedTypes       (T(""));
-    sc->setVersion              (T(""));
-    sc->setEncryption           (T(""));
+    sc->setSupportedTypes       ("");
+    sc->setVersion              ("");
+    sc->setEncryption           ("");
 
-    if (!strcmp(name, T("contact"))){
-        sc->setURI              (T("scard"));
-        sc->setType             (T("text/x-s4j-sifc"));
+    if (!strcmp(name, "contact")){
+        sc->setURI              ("scard");
+        sc->setType             ("text/x-s4j-sifc");
     }
-    else if (!strcmp(name, T("calendar"))){
-        sc->setURI              (T("scal"));
-        sc->setType             (T("text/x-s4j-sife"));
+    else if (!strcmp(name, "calendar")){
+        sc->setURI              ("scal");
+        sc->setType             ("text/x-s4j-sife");
     }
-    else if (!strcmp(name, T("task"))){
-        sc->setURI              (T("stask"));
-        sc->setType             (T("text/x-s4j-sift"));
+    else if (!strcmp(name, "task")){
+        sc->setURI              ("stask");
+        sc->setType             ("text/x-s4j-sift");
     }
-    else if (!strcmp(name, T("note"))){
-        sc->setURI              (T("snote"));
-        sc->setType             (T("text/x-s4j-sifn"));
+    else if (!strcmp(name, "note")){
+        sc->setURI              ("snote");
+        sc->setType             ("text/x-s4j-sifn");
     }
 
     // *** TBD ***

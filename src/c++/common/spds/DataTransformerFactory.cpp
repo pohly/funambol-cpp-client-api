@@ -73,8 +73,8 @@ exit:
 BOOL DataTransformerFactory::isSupportedEncoder(const char* name) {
     char* t = new char[strlen(name)+2];
 
-    sprintf(t, T("%s;"), name);
-    //strcpy(t, name); strcat(t, T(";"));
+    sprintf(t, "%s;", name);
+    //strcpy(t, name); strcat(t, ";");
 
     BOOL ret = (strstr(DF_FORMATTERS, t) != NULL);
 

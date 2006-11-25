@@ -26,22 +26,22 @@
 
 
 #define FILE_ITEM       TEXT("File")
-#define FILE_HIDDEN     T("h")
-#define FILE_SYSTEM     T("s") 
-#define FILE_ARCHIVED   T("a")
-#define FILE_DELETE     T("d")
-#define FILE_WRITABLE   T("w")
-#define FILE_READABLE   T("r")
-#define FILE_EXECUTABLE T("e")
-#define FILE_ACCESSED   T("accessed")
-#define FILE_ATTRIBUTES T("attributes")
-#define FILE_BODY       T("body")
-#define FILE_CTTYTPE    T("cttype")
-#define FILE_ENC        T("enc")
-#define FILE_MODIFIED   T("modified")
-#define FILE_NAME       T("name")
-#define FILE_SIZE       T("size")
-#define FILE_CREATED    T("created")
+#define FILE_HIDDEN     "h"
+#define FILE_SYSTEM     "s" 
+#define FILE_ARCHIVED   "a"
+#define FILE_DELETE     "d"
+#define FILE_WRITABLE   "w"
+#define FILE_READABLE   "r"
+#define FILE_EXECUTABLE "e"
+#define FILE_ACCESSED   "accessed"
+#define FILE_ATTRIBUTES "attributes"
+#define FILE_BODY       "body"
+#define FILE_CTTYTPE    "cttype"
+#define FILE_ENC        "enc"
+#define FILE_MODIFIED   "modified"
+#define FILE_NAME       "name"
+#define FILE_SIZE       "size"
+#define FILE_CREATED    "created"
 
 
 FileData::FileData()
@@ -99,14 +99,14 @@ int FileData::parse(StringBuffer* s)
     StringBuffer bodyattr;
 
     // FIXME: remove these replace once the server has fixed the message.
-    s->replaceAll(T("&lt;"), T("<"));
-    s->replaceAll(T("&gt;"), T(">"));
-    s->replaceAll(T("&amp;"), T("&"));
+    s->replaceAll("&lt;", "<");
+    s->replaceAll("&gt;", ">");
+    s->replaceAll("&amp;", "&");
     
 	/*
     // Get the CDATA content
-    if(XMLProcessor::getElementContent(s->c_str(), T("CDATA"), NULL, &start, &end) == 0) {
-        LOG.error(T("FileData: can't find outer CDATA section."));
+    if(XMLProcessor::getElementContent(s->c_str(), "CDATA", NULL, &start, &end) == 0) {
+        LOG.error("FileData: can't find outer CDATA section.");
         return -1;
     }
     StringBuffer msg = s->substr(start, end-start);
@@ -114,51 +114,51 @@ int FileData::parse(StringBuffer* s)
     delete s;
 	*/
 
-	if(XMLProcessor::getElementContent(s->c_str(), T("File"), NULL, &start, &end) == 0) {
-		LOG.error(T("FileData: can't find outer FILE section."));
+	if(XMLProcessor::getElementContent(s->c_str(), "File", NULL, &start, &end) == 0) {
+		LOG.error("FileData: can't find outer FILE section.");
 		return -1;
 	}
 	StringBuffer msg = s->substr(start, end-start);
 
     // Get attributes
     if( XMLProcessor::getElementContent (msg, FILE_HIDDEN, NULL, &start, &end) ) {
-        hidden = ( strncmp(msg.c_str()+start, T("true"), end-start) == 0 ) ;
+        hidden = ( strncmp(msg.c_str()+start, "true", end-start) == 0 ) ;
         isHiddenPresent = true;
     }
     else hidden = false;
 
     if( XMLProcessor::getElementContent (msg, FILE_SYSTEM, NULL, &start, &end) ) {
-        system = ( strncmp(msg.c_str()+start, T("true"), end-start) == 0 ) ;
+        system = ( strncmp(msg.c_str()+start, "true", end-start) == 0 ) ;
         isSystemPresent = true;
     }
     else system = false;
 
     if( XMLProcessor::getElementContent (msg, FILE_ARCHIVED, NULL, &start, &end) ) {
-        archived = ( strncmp(msg.c_str()+start, T("true"), end-start) == 0 ) ;
+        archived = ( strncmp(msg.c_str()+start, "true", end-start) == 0 ) ;
         isArchivedPresent = true;
     }
     else archived = false;
     
     if( XMLProcessor::getElementContent (msg, FILE_DELETE, NULL, &start, &end) ) {
-        deleted = ( strncmp(msg.c_str()+start, T("true"), end-start) == 0 ) ;
+        deleted = ( strncmp(msg.c_str()+start, "true", end-start) == 0 ) ;
         isDeletedPresent = true;
     }
     else deleted = false;
 
     if( XMLProcessor::getElementContent (msg, FILE_WRITABLE, NULL, &start, &end) ) {
-        writable = ( strncmp(msg.c_str()+start, T("true"), end-start) == 0 ) ;
+        writable = ( strncmp(msg.c_str()+start, "true", end-start) == 0 ) ;
         isWritablePresent = true;
     }
     else writable = false;
 
     if( XMLProcessor::getElementContent (msg, FILE_READABLE, NULL, &start, &end) ) {
-        readable = ( strncmp(msg.c_str()+start, T("true"), end-start) == 0 ) ;
+        readable = ( strncmp(msg.c_str()+start, "true", end-start) == 0 ) ;
         isReadablePresent = true;
     }
     else readable = false;
 
     if( XMLProcessor::getElementContent (msg, FILE_EXECUTABLE, NULL, &start, &end) ) {
-        executable = ( strncmp(msg.c_str()+start, T("true"), end-start) == 0 ) ;
+        executable = ( strncmp(msg.c_str()+start, "true", end-start) == 0 ) ;
         isExecutablePresent = true;
     }
     else executable = false;
@@ -253,7 +253,7 @@ char* FileData::format() {
 
     out.reserve(150);
     
-    out = T("<File>\n");
+    out = "<File>\n";
     if (name.length() > 0)
         out += XMLProcessor::makeElement(FILE_NAME, _wcc(name));
     if (created.length() > 0)
@@ -295,7 +295,7 @@ char* FileData::format() {
     }
     if (size > 0)
         out += XMLProcessor::makeElement(FILE_SIZE, size);
-    out += T("</File>\n");
+    out += "</File>\n";
     return stringdup(out.c_str());
 }
 

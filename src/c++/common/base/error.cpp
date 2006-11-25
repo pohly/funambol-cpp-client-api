@@ -25,5 +25,5 @@ char lastErrorMsg[DIM_ERROR_MESSAGE];
 
 void resetError() {
 	lastErrorCode = ERR_NONE;
-	strcpy(lastErrorMsg, T(""));
+	strcpy(lastErrorMsg, "");
 }

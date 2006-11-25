@@ -75,7 +75,7 @@ ManagementNode* DMTree::getManagementNode(const char* node) {
         char** childrenNames = n->getChildrenNames();
 		
 		if (!childrenNames){
-			LOG.error(T("Error in getChildrenNames"));
+			LOG.error("Error in getChildrenNames");
 			return NULL;
 		}
         int i = 0;
@@ -97,7 +97,7 @@ void DMTree::setManagementNode(ManagementNode& n) {
 
     DeviceManagementNode dmn;
 
-    LOG.info(T("in setManagementNode"));
+    LOG.info("in setManagementNode");
 
     char nodeName [DIM_MANAGEMENT_PATH];
     char context  [DIM_MANAGEMENT_PATH];

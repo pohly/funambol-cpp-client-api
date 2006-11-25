@@ -26,22 +26,22 @@
 //------------------------------------------------------------------ Defines
 
 // Headers names
-#define NL          T("\n")
-#define FROM        T("From: ")
-#define TO          T("To: ")
-#define CC          T("CC: ")
-#define BCC         T("BCC: ")
-#define DATE        T("Date: ")
-#define RECEIVED    T("Received:")
-#define SUBJECT     T("Subject: ")
-#define MIMETYPE    T("Content-Type: ")
-#define MIMEVERS    T("Mime-Version: ")
-#define MESSAGEID   T("Message-ID: ")
-#define DISPOSITION T("Content-Disposition:")
-#define ENCODING    T("Content-Transfer-Encoding: ")
+#define NL          "\n"
+#define FROM        "From: "
+#define TO          "To: "
+#define CC          "CC: "
+#define BCC         "BCC: "
+#define DATE        "Date: "
+#define RECEIVED    "Received:"
+#define SUBJECT     "Subject: "
+#define MIMETYPE    "Content-Type: "
+#define MIMEVERS    "Mime-Version: "
+#define MESSAGEID   "Message-ID: "
+#define DISPOSITION "Content-Disposition:"
+#define ENCODING    "Content-Transfer-Encoding: "
 
-#define MULTIPART   T("multipart/")
-#define CHARSET     T("charset=")
+#define MULTIPART   "multipart/"
+#define CHARSET     "charset="
 
 // Header names' length
 static const unsigned char FROM_LEN = strlen(FROM);
@@ -123,26 +123,26 @@ static StringBuffer formatBodyPart(const BodyPart &part)
 {
     StringBuffer ret;
 
-    LOG.debug(T("FormatBodyPart START"));
+    LOG.debug("FormatBodyPart START");
 
     ret = MIMETYPE; 
-    ret += part.getMimeType(); ret += T(";\n");
+    ret += part.getMimeType(); ret += ";\n";
     if( part.getFilename() ) {
-        ret += T("        name=\""); ret += part.getFilename(); ret += T("\"\n");
+        ret += "        name=\""; ret += part.getFilename(); ret += "\"\n";
     }
     if( part.getEncoding() ) {
         ret += ENCODING; ret += part.getEncoding(); ret += NL;
     }
     if( part.getFilename() ) {
         if( part.getDisposition() ) {
-            ret += DISPOSITION; ret += part.getDisposition(); ret += T(";\n");
+            ret += DISPOSITION; ret += part.getDisposition(); ret += ";\n";
         }
         else {
-            ret += DISPOSITION; ret += T("attachment;\n");
+            ret += DISPOSITION; ret += "attachment;\n";
         }
         
-        ret += T("      filename=\""); ret += part.getFilename();
-        ret += T("\"\n");
+        ret += "      filename=\""; ret += part.getFilename();
+        ret += "\"\n";
     }
     // End of part headers
     ret += NL;
@@ -155,15 +155,15 @@ static StringBuffer formatBodyPart(const BodyPart &part)
     else
         ret += part.getContent();
 
-    LOG.debug(T("FormatBodyPart END"));
+    LOG.debug("FormatBodyPart END");
     return ret;
 }
 
 inline static size_t findNewLine(StringBuffer &str, size_t offset) {
-    size_t nl = str.find(T("\n"), offset)+1;
+    size_t nl = str.find("\n", offset)+1;
     if(nl == StringBuffer::npos)
         return nl;
-    return (str[nl] == CHR('\r')) ? nl+1 : nl ;
+    return (str[nl] == '\r') ? nl+1 : nl ;
 }
 
 static size_t getHeadersLen(StringBuffer &s, StringBuffer &newline)
@@ -203,7 +203,7 @@ static size_t getHeadersLen(StringBuffer &s, StringBuffer &newline)
 static bool getBodyPart(StringBuffer &rfcBody, StringBuffer &boundary,
                        BodyPart &ret, size_t &next)
 {   
-    LOG.debug(T("getBodyPart START"));
+    LOG.debug("getBodyPart START");
 
     // The part starts on the next line
     size_t begin = findNewLine(rfcBody, next);
@@ -216,13 +216,13 @@ static bool getBodyPart(StringBuffer &rfcBody, StringBuffer &boundary,
     // get the part
     StringBuffer part = rfcBody.substr(begin, next-begin);
     // If it is a multipart alternative part, get the text part only.
-    if(part.ifind(T("Content-Type: multipart/alternative")) != StringBuffer::npos) {
-        size_t b_pos = part.ifind(T("boundary="));
+    if(part.ifind("Content-Type: multipart/alternative") != StringBuffer::npos) {
+        size_t b_pos = part.ifind("boundary=");
         if( b_pos != StringBuffer::npos ) {
-			size_t begin = part.find(T("=\""), b_pos) + 2 ;
-			size_t end = part.find(T("\""), begin) ;
+			size_t begin = part.find("=\"", b_pos) + 2 ;
+			size_t end = part.find("\"", begin) ;
 
-			StringBuffer inner_boundary(T("\n--"));
+			StringBuffer inner_boundary("\n--");
             inner_boundary += part.substr( begin, end-begin );
 
             begin = part.find(inner_boundary, end);
@@ -252,7 +252,7 @@ static bool getBodyPart(StringBuffer &rfcBody, StringBuffer &boundary,
     for ( line=(StringBuffer *)lines.front();
 		  line;
 		  line=(StringBuffer *)lines.next() ) {
-        if( *line == T("\r") )
+        if( *line == "\r" )
             continue;
         // The first empty line marks the end of the header section
         //if( line->empty() ){
@@ -267,18 +267,18 @@ static bool getBodyPart(StringBuffer &rfcBody, StringBuffer &boundary,
            ret.setEncoding(line->substr(ENCODING_LEN));
 
         // These ones are parameters, and can appear on the same line.
-        if( line->ifind(T("filename=")) != StringBuffer::npos ) {
+        if( line->ifind("filename=") != StringBuffer::npos ) {
             size_t begin = line->find("filename=") + strlen("filename=");
             size_t end = begin;
-            size_t quote = line->find(T("\""), begin);
+            size_t quote = line->find("\"", begin);
             if (quote != StringBuffer::npos){
                 begin = quote + 1;
-                end = line->find(T("\""), begin) ;
+                end = line->find("\"", begin) ;
             }
             else {
-                end = line->find(T(";"), begin) ;
+                end = line->find(";", begin) ;
                 if (end == StringBuffer::npos) {
-                    end = line->find(T(" "), begin);
+                    end = line->find(" ", begin);
                 }
             }
 			ret.setFilename( line->substr(begin, end-begin) );
@@ -288,15 +288,15 @@ static bool getBodyPart(StringBuffer &rfcBody, StringBuffer &boundary,
             if( begin != StringBuffer::npos ) {
                 begin += strlen(CHARSET);
                 size_t end = begin;
-                size_t quote = line->find(T("\""), begin);
+                size_t quote = line->find("\"", begin);
                 if (quote != StringBuffer::npos){
                     begin = quote + 1;
-                    end = line->find(T("\""), begin) ;
+                    end = line->find("\"", begin) ;
                 }
                 else {
-                    end = line->find(T(";"), begin) ;
+                    end = line->find(";", begin) ;
                     if (end == StringBuffer::npos) {
-                        end = line->find(T(" "), begin);
+                        end = line->find(" ", begin);
                     }
                 }
                 ret.setCharset( line->substr( begin, end-begin ) );
@@ -309,12 +309,12 @@ static bool getBodyPart(StringBuffer &rfcBody, StringBuffer &boundary,
     // get bodypart content 
     if( !ret.getFilename() ) {
 		// this is not an attachment
-        if( strcmp(ret.getEncoding(), T("quoted-printable")) == 0 ) {
+        if( strcmp(ret.getEncoding(), "quoted-printable") == 0 ) {
             char *decoded = qp_decode( part.substr(hdrlen) );
             ret.setContent ( decoded );
             delete [] decoded;
         }
-        else if ( strcmp(ret.getEncoding(), T("base64")) == 0 ) {
+        else if ( strcmp(ret.getEncoding(), "base64") == 0 ) {
             char *decoded = "";
             size_t len = 0;
             if( uudecode( part.substr(hdrlen), &decoded, &len ) ) {
@@ -327,21 +327,21 @@ static bool getBodyPart(StringBuffer &rfcBody, StringBuffer &boundary,
             ret.setContent ( part.substr(hdrlen) );
     }
     else {
-        LOG.debug(T("Attachment"));
+        LOG.debug("Attachment");
         ret.setContent( mkTempFileName( ret.getFilename() ) );
         LOG.debug("%s", ret.getContent());
         StringBuffer p = part.substr(hdrlen);
         if (p.length()) {
-            LOG.debug(T("Saving..."));
+            LOG.debug("Saving...");
             if( convertAndSave(ret.getContent(), p.c_str(), ret.getEncoding()) ) {
-                LOG.error(T("Error in convertAndSave"));
+                LOG.error("Error in convertAndSave");
             }
             else {
-                LOG.debug(T("convertAndSave success"));
+                LOG.debug("convertAndSave success");
             }    
         }
 	}
-    LOG.debug(T("getBodyPart END"));
+    LOG.debug("getBodyPart END");
 
     // return true if there are more parts
 	return (next != StringBuffer::npos);
@@ -383,17 +383,17 @@ char * MailMessage::format() {
 
     // If the message is empty, return null
     if ( empty() ) {
-        LOG.debug(T("MailMessage::format: empty message."));
+        LOG.debug("MailMessage::format: empty message.");
         return 0;
     }
 
     StringBuffer ret;
 
-    LOG.debug(T("MailMessage::format START"));
+    LOG.debug("MailMessage::format START");
 
     if ( contentType.empty() ) {
         if ( attachments.size() ) {
-            contentType = T("multipart/mixed");
+            contentType = "multipart/mixed";
         }
         else {
             contentType = body.getMimeType();
@@ -401,10 +401,10 @@ char * MailMessage::format() {
             if (headers.size() > 0) {
                 StringBuffer *line; int j = 0;
                 for (line=(StringBuffer *)headers.front(); line; line=(StringBuffer *)headers.next() ) {                                                  
-                    if (strstr(line->c_str(), T("format=")) != 0 
-                        || strstr(line->c_str(),T("reply-type=")) != 0 ) {
-                            contentType.append(T("; "));
-                            line->replaceAll(T(";"), T(" "));
+                    if (strstr(line->c_str(), "format=") != 0 
+                        || strstr(line->c_str(),"reply-type=") != 0 ) {
+                            contentType.append("; ");
+                            line->replaceAll(";", " ");
                             contentType.append(line->c_str());                     
                             headers.removeElementAt(j);
                             j--;
@@ -416,7 +416,7 @@ char * MailMessage::format() {
         }
     }
     if ( mimeVersion.empty() ) {
-        mimeVersion = T("1.0");
+        mimeVersion = "1.0";
     }
 
     // Add generics headers
@@ -451,15 +451,15 @@ char * MailMessage::format() {
         ret += subject; 
     }
     ret += NL;
-    ret += MIMETYPE; ret += contentType; ret+= T("; ");
+    ret += MIMETYPE; ret += contentType; ret+= "; ";
     if (contentType.ifind(MULTIPART) != StringBuffer::npos ){
         if ( boundary.empty() ) {
             generateBoundary(boundary);
         }
-        ret += T("\n boundary=\""); ret += boundary; 
-        ret += T("\"\n\nThis is a multi-part message in MIME format.\n");
+        ret += "\n boundary=\""; ret += boundary; 
+        ret += "\"\n\nThis is a multi-part message in MIME format.\n";
         // Prepare a string with the boundary on a line alone
-        StringBuffer bound = T("\n--"); bound += boundary;
+        StringBuffer bound = "\n--"; bound += boundary;
         // Body
         ret += bound; ret += NL;
         ret += formatBodyPart(body);
@@ -473,7 +473,7 @@ char * MailMessage::format() {
             ret += formatBodyPart(*part);
             ret += bound; 
         }
-        ret += T("--\n");
+        ret += "--\n";
     }
     else {
         // Body
@@ -486,7 +486,7 @@ char * MailMessage::format() {
         ret += NL;
         ret += body.getContent(); ret += NL;
     }
-    LOG.debug(T("MailMessage::format END"));
+    LOG.debug("MailMessage::format END");
 	return stringdup(ret.c_str());
 }
 
@@ -495,7 +495,7 @@ int MailMessage::parse(const char *rfc2822, size_t len) {
     StringBuffer s(rfc2822, len);
     int rc;
     
-    LOG.debug(T("MailMessage::parse START"));
+    LOG.debug("MailMessage::parse START");
 
     size_t hdrlen = getHeadersLen(s, newline);
 
@@ -513,12 +513,12 @@ int MailMessage::parse(const char *rfc2822, size_t len) {
     else {
         body.setMimeType(contentType);
         // FIXME: handle all encodings, not only quoted-printable
-        if( strcmp(body.getEncoding(), T("quoted-printable")) == 0 ) {
+        if( strcmp(body.getEncoding(), "quoted-printable") == 0 ) {
             char *decoded = qp_decode( rfcbody );
             body.setContent ( decoded );
             delete [] decoded;
         }
-        else if ( strcmp(body.getEncoding(), T("base64")) == 0 ) {
+        else if ( strcmp(body.getEncoding(), "base64") == 0 ) {
             char *decoded = NULL;
             size_t len = 0;
             rc = uudecode( rfcbody, &decoded, &len ) ;
@@ -530,7 +530,7 @@ int MailMessage::parse(const char *rfc2822, size_t len) {
         else body.setContent(rfcbody);
     }
 
-    LOG.debug(T("MailMessage::parse END"));
+    LOG.debug("MailMessage::parse END");
     return rc;
 }
 
@@ -595,14 +595,14 @@ int MailMessage::parseHeaders(StringBuffer &rfcHeaders) {
     BOOL firstReceivedMatched = FALSE;
     BOOL receivedExtracted = FALSE;
     BOOL subjectParsing = FALSE;
-    LOG.debug(T("parseHeaders START"));
+    LOG.debug("parseHeaders START");
 
     rfcHeaders.split(lines, newline);
 
     for ( line=(StringBuffer *)lines.front();
 		  line;
 		  line=(StringBuffer *)lines.next() ) {
-        if( *line == T("\r") )
+        if( *line == "\r" )
             break;
         // The first empty line marks the end of the header section
         if( line->empty() ){
@@ -630,7 +630,7 @@ int MailMessage::parseHeaders(StringBuffer &rfcHeaders) {
         else if ( line->ifind(DATE) == 0 ) {
             subjectParsing = FALSE;        
             if( date.parseRfc822(line->substr(DATE_LEN)) ) {
-                LOG.error(T("Error parsing date"));
+                LOG.error("Error parsing date");
                 return 500;
             }
         }
@@ -662,7 +662,7 @@ int MailMessage::parseHeaders(StringBuffer &rfcHeaders) {
             subjectParsing = FALSE;
         }
         else if( line->ifind(MIMETYPE) == 0 ) {
-            size_t len = line->find(T(";")) - MIMETYPE_LEN ;
+            size_t len = line->find(";") - MIMETYPE_LEN ;
             contentType = line->substr(MIMETYPE_LEN, len);
             subjectParsing = FALSE;
         }            
@@ -710,9 +710,9 @@ int MailMessage::parseHeaders(StringBuffer &rfcHeaders) {
 
         // These ones are parameters, and can appear on the same line.
         // FIXME: Should be a sub-parsing of content-type.
-        if( line->ifind(T("boundary=")) != StringBuffer::npos ) {
-			size_t begin = line->find(T("=\"")) + 2 ;
-			size_t end = line->find(T("\""), begin) ;
+        if( line->ifind("boundary=") != StringBuffer::npos ) {
+			size_t begin = line->find("=\"") + 2 ;
+			size_t end = line->find("\"", begin) ;
 			boundary = line->substr( begin, end-begin );
 		}
         else {
@@ -720,15 +720,15 @@ int MailMessage::parseHeaders(StringBuffer &rfcHeaders) {
             if( begin != StringBuffer::npos ) {
                 begin += strlen(CHARSET);
                 size_t end = begin;
-                size_t quote = line->find(T("\""), begin);
+                size_t quote = line->find("\"", begin);
                 if (quote != StringBuffer::npos){
                     begin = quote + 1;
-                    end = line->find(T("\""), begin) ;
+                    end = line->find("\"", begin) ;
                 }
                 else {
-                    end = line->find(T(";"), begin) ;
+                    end = line->find(";", begin) ;
                     if (end == StringBuffer::npos) {
-                        end = line->find(T(" "), begin);
+                        end = line->find(" ", begin);
                     }
                 }
                 body.setCharset( line->substr( begin, end-begin ) );
@@ -744,7 +744,7 @@ int MailMessage::parseHeaders(StringBuffer &rfcHeaders) {
     if( received == BasicTime() ){
         received = date;
     }
-    LOG.debug(T("parseHeaders END"));
+    LOG.debug("parseHeaders END");
 
 	// FIXME: should check for mandatory headers before return 0
 	return 0;
@@ -756,10 +756,10 @@ int MailMessage::parseBodyParts(StringBuffer &rfcBody) {
     BodyPart part;
     // The boundary is the one defined in the headers preceded by
     // a newline and two hypens
-    StringBuffer bound(T("\n--"));
+    StringBuffer bound("\n--");
     bound += boundary;
 
-    LOG.debug(T("parseBodyParts START"));
+    LOG.debug("parseBodyParts START");
 
     size_t nextBoundary = rfcBody.find(bound);
     getBodyPart(rfcBody, bound, body, nextBoundary);
@@ -775,7 +775,7 @@ int MailMessage::parseBodyParts(StringBuffer &rfcBody) {
         }
     }
 
-    LOG.debug(T("parseBodyParts END"));
+    LOG.debug("parseBodyParts END");
     return 0;
 }
 
