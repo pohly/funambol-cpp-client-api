@@ -49,7 +49,7 @@ DeviceManagementNode::~DeviceManagementNode()
  *
  * @param property - the property name
  */
-char* DeviceManagementNode::getPropertyValue(const char* prop) {
+char* DeviceManagementNode::readPropertyValue(const char* prop) {
     HKEY key = NULL;    
     DWORD res;	
     long err = 0;

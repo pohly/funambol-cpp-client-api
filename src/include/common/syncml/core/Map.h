@@ -113,7 +113,7 @@ class Map : public AbstractCommand {
          *
          * @return the command name
          */
-        char*  getName();
+        const char* getName();
     
         ArrayElement* clone();
 };

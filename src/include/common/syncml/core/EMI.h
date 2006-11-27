@@ -43,7 +43,7 @@ class EMI : public ArrayElement {
          * 
          * @return the value of experimental meta information
          */
-        char*  getValue(char*  retValue);
+        const char* getValue();
 
     
         /**
@@ -52,7 +52,7 @@ class EMI : public ArrayElement {
          * @param value the value of experimental meta information
          *
          */
-        void setValue(char*  value);
+        void setValue(const char* value);
         
         ArrayElement* clone();
 

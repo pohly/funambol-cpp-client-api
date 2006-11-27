@@ -58,11 +58,8 @@ void CTTypeSupported::initialize() {
  *
  * @return a CTType String
  */
-char* CTTypeSupported::getCTType(char* retCTType) {
-    if (retCTType == NULL) {
-        return ctType;
-    }
-    return strcpy(retCTType, ctType);
+const char* CTTypeSupported::getCTType() {
+    return ctType;
 }
 
 /**
@@ -70,7 +67,7 @@ char* CTTypeSupported::getCTType(char* retCTType) {
  *
  * @param ctType a CTType object
  */
-void CTTypeSupported::setCTType(char* ctType) {
+void CTTypeSupported::setCTType(const char*ctType) {
      if (this->ctType) {
         delete [] this->ctType; this->ctType = NULL;
     }

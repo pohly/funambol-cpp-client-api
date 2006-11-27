@@ -51,10 +51,10 @@ public:
      * @param pos (OUTPUT) the position where the tag is found (ignored if NULL)
      *
      */
-    static char*  getElementContent(const char*  xml, const char*  tag, unsigned int* pos = NULL) EXTRA_SECTION_00;
+    static char* copyElementContent(const char*  xml, const char*  tag, unsigned int* pos = NULL) EXTRA_SECTION_00;
 
     /*
-     * It's like getElementContent but it doesn't allocate new memory.
+     * It's like copyElementContent but it doesn't allocate new memory.
      *
      * @param xml the xml fragment
      * @param tag the tag we want the content
@@ -66,34 +66,22 @@ public:
                     unsigned int* pos, unsigned int* startPos, unsigned int* endPos) EXTRA_SECTION_00;
     
     /*
-     * It's like getElementContent above but it works on escaped XML tags.
-     *
-     * @param xml the xml fragment
-     * @param tag the tag we want the content
-     * @param pos (OUTPUT) the position where the tag is found (ignored if NULL)
-     * @param startPos (OUTPUT) the start position of the tag content (ignored if NULL)
-     * @param endPos (OUTPUT) the end position of the tag content (ignored if NULL)
-     */
-    static const char*  getEscapedElementContent(const char*  xml, const char*  tag,
-                    unsigned int* pos, unsigned int* startPos, unsigned int* endPos) EXTRA_SECTION_00;
-    
-    /*
     * It returns the number of the tag in the xml string
     */
-    static int countElementTag(char*  xml, char*  tag) EXTRA_SECTION_00;
+    static int countElementTag(const char*  xml, const char*  tag) EXTRA_SECTION_00;
     
-    static int countAnd(char*  token) EXTRA_SECTION_00;
+    static int countAnd(const char*  token) EXTRA_SECTION_00;
 
-    static int countChar(char*  token, char*  element) EXTRA_SECTION_00;
+    static int countChar(const char*  token, const char*  element) EXTRA_SECTION_00;
     
-    static char*  getNextTag(char*  xml, int* pos);
+    static const char* getNextTag(const char* xml, int* pos);
    /*
-    * it's as getElementContent but it doesn't get the content of a tag if
+    * it's as copyElementContent but it doesn't get the content of a tag if
     * the parent match except.
     * The parent can be more than one. They have to be separated by &
     * i.e.  
     *
-    * getElementContentExcept(xmlPtr, "Add", "Sync&Atomic", &post)
+    * copyElementContentExcept(xmlPtr, "Add", "Sync&Atomic", &post)
     *
     * The function returns "... to keep ... " content only 
     *
@@ -110,22 +98,22 @@ public:
     *   </Atomic>
     * </SyncBody>
     */
-    static char*  getElementContentExcept(char*       xml       ,
-                                            char*       tag       ,
-                                            char*       except    ,
-                                            unsigned int* pos) EXTRA_SECTION_00;
+    static char* copyElementContentExcept(const char* xml       ,
+                                          const char* tag       ,
+                                          const char* except    ,
+                                          unsigned int* pos) EXTRA_SECTION_00;
 
-    static char*  getElementContentLevel(char*       xml,
-                                           char*       tag,
-                                           unsigned int* pos,
-                                           int           lev = 0 ,  // the root value level
-                                           int* startLevel   = NULL) EXTRA_SECTION_00;
+    static char* copyElementContentLevel(const char* xml,
+                                         const char* tag,
+                                         unsigned int* pos,
+                                         int           lev = 0 ,  // the root value level
+                                         int* startLevel   = NULL) EXTRA_SECTION_00;
 
     /*
      * It returns the content of the buffer specified by startPos (initial position)
      * and and endPos (the end position)
      *
-     * It allocates new memory that has to be freed by caller.
+     * It allocates new memory that has to be freed by caller with delete [].
      *
      * @param xml the xml fragment
      * @param startPos the start position of the tag content
@@ -133,7 +121,7 @@ public:
      *
      */
 
-    static char*  getContent(const char*  xml, unsigned int startPos, unsigned int endPos) EXTRA_SECTION_00;
+    static char* copyContent(const char*  xml, unsigned int startPos, unsigned int endPos) EXTRA_SECTION_00;
     
     /**
      * Create an XML element with the specified tag and value.

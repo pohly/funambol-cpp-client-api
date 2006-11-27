@@ -80,7 +80,7 @@ class Alert : public ItemizedCommand {
          *
          * @return the command name property
          */    
-        char*  getName();
+        const char* getName();
 
         ArrayElement* clone();
         

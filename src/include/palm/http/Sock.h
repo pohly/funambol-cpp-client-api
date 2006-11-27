@@ -52,7 +52,7 @@ class Sock {
         Err receiveData() EXTRA_SECTION_03;
 
         // gestione dati ricevuti
-        char* getContent() EXTRA_SECTION_03;
+        const char* getContent() EXTRA_SECTION_03;
         UInt16 getContentLength() EXTRA_SECTION_03;
 
     private:

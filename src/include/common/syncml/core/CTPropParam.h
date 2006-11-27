@@ -76,14 +76,14 @@ class CTPropParam : public ArrayElement{
          *
          * @return the property name
          */
-        char*  getPropName(char*  retPropName);
+        const char* getPropName();
     
         /**
          * Sets the property name
          *
          * @param propName the property name
          */
-        void setPropName(char*  propName);
+        void setPropName(const char* propName);
     
         /**
          * Gets the array of value for the property
@@ -104,28 +104,28 @@ class CTPropParam : public ArrayElement{
          *
          * @return the display name property
          */
-        char*  getDisplayName(char*  retDisplayName);
+        const char* getDisplayName();
     
         /**
          * Sets the display name of a given content type property
          *
          * @param displayName the display name of a given content type property
          */
-        void setDisplayName(char*  displayName);
+        void setDisplayName(const char* displayName);
     
         /**
          * Gets the data type propeties
          *
          * @return the data type propeties
          */
-        char*  getDataType(char*  retDataType);
+        const char* getDataType();
     
         /**
          * Sets the data type of a given content type property
          *
          * @param dataType the data type of a given content type property
          */
-        void setDataType(char*  dataType);
+        void setDataType(const char* dataType);
 
         /**
          * Gets the size propeties

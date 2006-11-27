@@ -32,7 +32,7 @@ class PalmDeviceManager : public DeviceManager  {
 
     public:
         PalmDeviceManager() EXTRA_SECTION_00;
-        ManagementNode* getManagementNode(char* node) EXTRA_SECTION_00;
+        ManagementNode* getManagementNode(const char* node) EXTRA_SECTION_00;
         void setManagementNode(ManagementNode& n) EXTRA_SECTION_00;
 
     private:

@@ -67,7 +67,7 @@ void DevInfData::setDevInf(DevInf* devInf) {
 
 DevInfData* DevInfData::clone() {
     DevInfData* ret = new DevInfData(devInf);
-    ret->setData(getData(NULL));
+    ret->setData(getData());
     return ret;
 
 }

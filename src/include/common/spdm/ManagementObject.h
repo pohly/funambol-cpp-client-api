@@ -41,8 +41,8 @@ class ManagementObject : public LeafManagementNode {
 
         // ------------------------------------------------------------- Methods
 
-        void getPropertyValue(const char*  property, char*  v, int size) EXTRA_SECTION_02;
-        void setPropertyValue(const char*  property, char*  value) EXTRA_SECTION_02;
+        void getPropertyValue(const char*  property, char* v, int size) EXTRA_SECTION_02;
+        void setPropertyValue(const char*  property, const char* value) EXTRA_SECTION_02;
 
         /**
          * Returns the ManagementObject's properties as an ArrayList of

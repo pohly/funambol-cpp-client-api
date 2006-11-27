@@ -85,7 +85,7 @@ class Meta {
 		 *
 		 * @return format
 		 */
-		char*  getFormat(char*  retFormat=0);
+		const char* getFormat();
 
 		/**
 		 * Sets format
@@ -99,7 +99,7 @@ class Meta {
 		 *
 		 * @return type
 		 */
-		char*  getType(char*  retType=0);
+		const char* getType();
 
 		/**
 		 * Sets type
@@ -113,7 +113,7 @@ class Meta {
 		 *
 		 * @return mark
 		 */
-		char*  getMark(char*  retMark=0);
+		const char* getMark();
 
 		/**
 		 * Sets mark
@@ -127,7 +127,7 @@ class Meta {
 		 *
 		 * @return version
 		 */
-		char*  getVersion(char*  retVersion=0);
+		const char* getVersion();
 
 		/**
 		 * Sets version

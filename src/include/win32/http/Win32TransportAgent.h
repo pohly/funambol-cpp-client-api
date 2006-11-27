@@ -77,7 +77,7 @@
         char*  sendMessage(const char*  msg);
 
     private:
-        char* getHttpErrorMessage(DWORD errorCode);
+        char* createHttpErrorMessage(DWORD errorCode);
     };
 
 #endif

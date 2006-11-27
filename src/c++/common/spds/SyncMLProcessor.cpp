@@ -55,7 +55,7 @@ int SyncMLProcessor::processAlertStatus(SyncSource& source, SyncML* syncml, Arra
 
     int ret = -1;
     ArrayList* list     = new ArrayList();
-    char* name = NULL;
+    const char* name = NULL;
     Status* s     = NULL;
     Data* data    = NULL;
     SourceRef* sourceRef    = NULL;
@@ -202,7 +202,7 @@ int SyncMLProcessor::processItemStatus(SyncSource& source, SyncBody* syncBody) {
     Item* item       = NULL;
     SourceRef* sourceRef = NULL;
     Status* s = NULL;
-    char* name = NULL;
+    const char* name = NULL;
     Data* data = NULL;
     int ret = 0;
 
@@ -365,14 +365,14 @@ finally:
  *
  * @param SyncHdr - the SyncHdr object - NOT NULL
  */
-char* SyncMLProcessor::getRespURI(SyncHdr* syncHdr) {
+const char* SyncMLProcessor::getRespURI(SyncHdr* syncHdr) {
     
     char* respURI = NULL;
     
     if (syncHdr == NULL) {
         goto finally;
     }
-    respURI = stringdup(syncHdr->getRespURI(NULL));
+    respURI = stringdup(syncHdr->getRespURI());
     
 finally:
 
@@ -383,7 +383,7 @@ finally:
 Chal* SyncMLProcessor::getChal(SyncBody* syncBody) {    
     
     ArrayList* list = syncBody->getCommands();
-    char* name = NULL;
+    const char* name = NULL;
     Status* s     = NULL;
     Chal* chal    = NULL;
 
@@ -391,8 +391,8 @@ Chal* SyncMLProcessor::getChal(SyncBody* syncBody) {
         name = ((AbstractCommand*)(list->get(i)))->getName();    // is returned the pointer to the element not a new element
         if (name && strcmp(name, STATUS) == 0) {
             s = (Status*)list->get(i);
-            if (strcmp(s->getCmd(NULL), SYNC_HDR) == 0) {
-                if (strcmp(s->getCmdRef(NULL), "0") != 0) {
+            if (strcmp(s->getCmd(), SYNC_HDR) == 0) {
+                if (strcmp(s->getCmdRef(), "0") != 0) {
 
                     sprintf(lastErrorMsg, "Status/CmdRef either not found or not referring to SyncHeader!");
                     lastErrorCode = ERR_REPRESENTATION;
@@ -420,7 +420,7 @@ finally:
 * Return an array list of commands of the given command name. It return an ArrayList that have to be 
 * discarded by the caller
 */
-ArrayList* SyncMLProcessor::getCommands(SyncBody* syncBody, char* commandName) {
+ArrayList* SyncMLProcessor::getCommands(SyncBody* syncBody, const char*commandName) {
         
     ArrayList* ret = new ArrayList();
     AbstractCommand* a = NULL;
@@ -460,13 +460,13 @@ ArrayElement* SyncMLProcessor::getArrayElement(ArrayList* list, int index) {
 * Return the index number of occurrence of this command. If doesn't exists return NULL;
 * The first command has number 0.
 */
-AbstractCommand* SyncMLProcessor::getCommand(SyncBody* syncBody, char* commandName, int index) {
+AbstractCommand* SyncMLProcessor::getCommand(SyncBody* syncBody, const char*commandName, int index) {
       
     int iterator = 0, found = 0;
     ArrayList* list     = syncBody->getCommands();
     int l = list->size();
     AbstractCommand* a  = NULL;
-    char* name = NULL;
+    const char* name = NULL;
     do {
         a = (AbstractCommand*)getArrayElement(list, iterator);
         if (a) {
@@ -485,11 +485,11 @@ AbstractCommand* SyncMLProcessor::getCommand(SyncBody* syncBody, char* commandNa
 }
 
 
-int SyncMLProcessor::getStatusCode(SyncBody* syncBody, SyncSource* source, char* commandName) {    
+int SyncMLProcessor::getStatusCode(SyncBody* syncBody, SyncSource* source, const char*commandName) {    
     int ret = -1;
     
     ArrayList* list = syncBody->getCommands();
-    char* name = NULL;
+    const char* name = NULL;
     Status* s     = NULL;
     Data* data    = NULL;
 
@@ -526,7 +526,7 @@ int SyncMLProcessor::getSyncHeaderStatusCode(Status* s) {
     if (s == NULL) 
         goto finally;
 
-    if (strcmp(s->getCmdRef(NULL), "0") != 0) {
+    if (strcmp(s->getCmdRef(), "0") != 0) {
 
         sprintf(lastErrorMsg, "Status/CmdRef either not found or not referring to SyncHeader!");
         lastErrorCode = ERR_REPRESENTATION;
@@ -534,7 +534,7 @@ int SyncMLProcessor::getSyncHeaderStatusCode(Status* s) {
     }                
     
     data = s->getData();
-    if (data->getData(NULL) == NULL) {
+    if (data->getData() == NULL) {
          //
         // It should not happen
         //
@@ -569,7 +569,7 @@ finally:
     sourceRefs = s->getSourceRef();
     if (strcmp(((SourceRef*)(sourceRefs->get(0)))->getValue(), sourceName) == 0) {                    
         data = s->getData();
-        if (data->getData(NULL) == NULL) {
+        if (data->getData() == NULL) {
             //
             // It should not happen
             //

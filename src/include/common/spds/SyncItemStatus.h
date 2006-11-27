@@ -56,10 +56,8 @@
          * Returns the SyncItemStatus's key. If key is NULL, the internal buffer is
          * returned; if key is not NULL, the value is copied in the caller
          * allocated buffer and the given buffer pointer is returned.
-         *
-         * @param key - buffer where the key will be stored
          */
-        char*  getKey(char*  key) EXTRA_SECTION_01;
+        const char* getKey() EXTRA_SECTION_01;
 
         /*
          * Changes the SyncItemStatus key. The key must not be longer than DIM_KEY_SYNC_ITEM_STATUS
@@ -67,16 +65,14 @@
          *
          * @param key - the key
          */
-        void setKey(char*  key) EXTRA_SECTION_01;
+        void setKey(const char* key) EXTRA_SECTION_01;
 
          /*
          * Returns the SyncItemStatus's command name. If cmd is NULL, the internal buffer is
          * returned; if cmd is not NULL, the value is copied in the caller
          * allocated buffer and the given buffer pointer is returned.
-         *
-         * @param cmd - buffer where the cmd will be stored
          */
-        char*  getCmd(char*  cmd) EXTRA_SECTION_01;
+        const char* getCmd() EXTRA_SECTION_01;
 
         /*
          * Changes the SyncItemStatus cmd. The cmd must not be longer than DIM_COMMAND_SYNC_ITEM_STATUS
@@ -84,7 +80,7 @@
          *
          * @param cmd - the cmd
          */
-        void setCmd(char*  cmd) EXTRA_SECTION_01;
+        void setCmd(const char* cmd) EXTRA_SECTION_01;
 
 
         /*

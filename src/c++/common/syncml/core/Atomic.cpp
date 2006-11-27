@@ -95,7 +95,7 @@ void Atomic::setCommands(ArrayList* commands) {
 *
 * @return the command name property
 */ 
-char* Atomic::getName() {
+const char* Atomic::getName() {
     return COMMAND_NAME;
 }
 

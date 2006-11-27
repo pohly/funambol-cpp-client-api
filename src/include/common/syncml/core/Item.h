@@ -117,7 +117,7 @@ class Item : public ArrayElement {
          *
          * @return the item target parent
          */
-        char*  getTargetParent(char*  parent = NULL);
+        const char* getTargetParent();
     
         /**
          * Sets the item targetParent
@@ -125,14 +125,14 @@ class Item : public ArrayElement {
          * @param parent the target parent
          *
          */
-        void setTargetParent(char*  parent);    
+        void setTargetParent(const char* parent);    
 
         /**
          * Returns the item sourceParent
          *
          * @return the item source parent
          */
-        char*  getSourceParent(char*  parent = NULL);
+        const char* getSourceParent();
     
         /**
          * Sets the item sourceParent
@@ -140,7 +140,7 @@ class Item : public ArrayElement {
          * @param parent the source parent
          *
          */
-        void setSourceParent(char*  parent);
+        void setSourceParent(const char* parent);
     
         /**
          * Returns the item meta element

@@ -94,11 +94,8 @@ CTPropParam::CTPropParam(char* propName,
  *
  * @return the property name
  */
-char* CTPropParam::getPropName(char* retPropName) {
-    if (retPropName == NULL) {
-        return propName;
-    }
-    return strcpy(retPropName, propName);
+const char* CTPropParam::getPropName() {
+    return propName;
 }
 
 /**
@@ -106,7 +103,7 @@ char* CTPropParam::getPropName(char* retPropName) {
  *
  * @param propName the property name
  */
-void CTPropParam::setPropName(char* propName) {
+void CTPropParam::setPropName(const char*propName) {
     if (this->propName) {
         delete [] this->propName; this->propName = NULL;
     }
@@ -140,11 +137,8 @@ void CTPropParam::setValEnum(ArrayList* valEnum) {
  *
  * @return the display name property
  */
-char* CTPropParam::getDisplayName(char* retDisplayName) {
-    if (retDisplayName == NULL) {
-        return displayName;
-    }
-    return strcpy(retDisplayName, displayName);
+const char* CTPropParam::getDisplayName() {
+    return displayName;
 }
 
 /**
@@ -152,7 +146,7 @@ char* CTPropParam::getDisplayName(char* retDisplayName) {
  *
  * @param displayName the display name of a given content type property
  */
-void CTPropParam::setDisplayName(char* displayName) {
+void CTPropParam::setDisplayName(const char*displayName) {
     if (this->displayName) {
         delete [] this->displayName; this->displayName = NULL;
     }
@@ -164,11 +158,8 @@ void CTPropParam::setDisplayName(char* displayName) {
  *
  * @return the data type propeties
  */
-char* CTPropParam::getDataType(char* retDataType) {
-    if (retDataType == NULL) {
-        return dataType;
-    }
-    return strcpy(retDataType, dataType);
+const char* CTPropParam::getDataType() {
+    return dataType;
 }
 
 /**
@@ -176,7 +167,7 @@ char* CTPropParam::getDataType(char* retDataType) {
  *
  * @param dataType the data type of a given content type property
  */
-void CTPropParam::setDataType(char* dataType) {
+void CTPropParam::setDataType(const char*dataType) {
     if (this->dataType) {
         delete [] this->dataType; this->dataType = NULL;
     }

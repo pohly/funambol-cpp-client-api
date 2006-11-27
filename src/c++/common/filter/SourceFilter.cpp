@@ -84,11 +84,8 @@ void SourceFilter::setClause(LogicalClause& clause) {
  *
  * @return type
  */
-char* SourceFilter::getType(char* buf) {
-	if (buf == NULL) {
-        return type;
-    }
-    return strcpy(buf, type);   
+const char* SourceFilter::getType() {
+    return type;
 }
 
 /**
@@ -96,7 +93,7 @@ char* SourceFilter::getType(char* buf) {
  *
  * @param type the new type value
  */
-void SourceFilter::setType(char* type) {
+void SourceFilter::setType(const char*type) {
     if (this->type) {
         delete [] this->type; this->type = NULL;
     }

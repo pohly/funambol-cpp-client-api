@@ -47,7 +47,7 @@ class SyncMLBuilder {
         * Set init parameters.
         *
         */
-        void     set(char*  t, char*  d) EXTRA_SECTION_01;
+        void     set(const char* t, const char* d) EXTRA_SECTION_01;
         
         /*
         * Prepare the init SyncML* message with credential and db alert to sync

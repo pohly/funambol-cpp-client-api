@@ -132,10 +132,10 @@ static const char *findElementContent(const char *xml,
 }
 
 const char* XMLProcessor::getElementContent(const char* xml,
-                                       const char* tag,
-                                       unsigned int* pos,
-                                       unsigned int* startPos,
-                                       unsigned int* endPos  )
+                                            const char* tag,
+                                            unsigned int* pos,
+                                            unsigned int* startPos,
+                                            unsigned int* endPos  )
 {        
     char *openTag = 0;
     char *closeTag = 0;
@@ -167,7 +167,7 @@ const char* XMLProcessor::getElementContent(const char* xml,
     return ret;
 }
 
-char* XMLProcessor::getContent(const char* xml,
+char* XMLProcessor::copyContent(const char* xml,
                                 unsigned int startPos,
                                 unsigned int endPos  ) {
 
@@ -245,14 +245,14 @@ char* XMLProcessor::getContent(const char* xml,
     return ret;
 }
 
-char* XMLProcessor::getElementContent(const char* xml,
+char* XMLProcessor::copyElementContent(const char* xml,
                                        const char* tag,
                                        unsigned int* pos)
 {
     unsigned int start, end;
 
     if( getElementContent (xml, tag, pos, &start, &end) ) {
-        return getContent(xml, start, end);
+        return copyContent(xml, start, end);
     }
     return 0;
 }
@@ -261,7 +261,7 @@ char* XMLProcessor::getElementContent(const char* xml,
 * It returns the number of the tag in the xml string
 */
 
-int XMLProcessor::countElementTag(char* xml, char* tag) {
+int XMLProcessor::countElementTag(const char* xml, const char* tag) {
 
     unsigned int count = 0, pos = 0, previous = 0;
     
@@ -281,9 +281,10 @@ int XMLProcessor::countElementTag(char* xml, char* tag) {
 * The "pos" argument will contain the position of the close <tag/>
 * The return value is a new char* and must be fred by the caller. If no tag is found, NULL is returned
 */
-char* XMLProcessor::getNextTag(char* xml, int* pos) {
+const char* XMLProcessor::getNextTag(const char*xml, int* pos) {
     
-    char* p1, *p2, *p4, *p3 = NULL, *ret = NULL;
+    const char* p1, *p2, *p4, *p3 = NULL;
+    char* ret = NULL;
     p1 = p2 = p4 = xml;
     int i = 0, k = 0, len = 0;
     BOOL found = FALSE;
@@ -335,13 +336,13 @@ char* XMLProcessor::getNextTag(char* xml, int* pos) {
 /*
 * count the number of "&" (passed as a string) in the token. 
 */
-int XMLProcessor::countAnd(char* token) {
+int XMLProcessor::countAnd(const char* token) {
     return countChar(token, "&");
 }
 
-int XMLProcessor::countChar(char* token, char* element) {
+int XMLProcessor::countChar(const char* token, const char* element) {
 
-    char* p1, *p2;
+    const char* p1, *p2;
     p1 = p2 = token;
     int i = 0, k = 0, len = 0;
 
@@ -386,14 +387,14 @@ int XMLProcessor::countChar(char* token, char* element) {
  </SyncBody>
 */
 
-char* XMLProcessor::getElementContentExcept(char*      xmlPtr    ,
-                                               char*      tag       ,
-                                               char*      except    ,
-                                               unsigned int* post) {
+char* XMLProcessor::copyElementContentExcept(const char*xmlPtr    ,
+                                             const char*tag       ,
+                                             const char*except    ,
+                                             unsigned int* post) {
     
     char*  ret    = NULL;
     const char*  found  = NULL;
-    char*  xml    = NULL;
+    const char*  xml    = NULL;
     char** array = NULL;
     int*  validElement = NULL;   
     int count        = 0, countTag = 0;
@@ -410,7 +411,7 @@ char* XMLProcessor::getElementContentExcept(char*      xmlPtr    ,
     }     
     
     if (except == NULL) {
-        ret = getElementContent(xml, tag, &pos);
+        ret = copyElementContent(xml, tag, &pos);
         if (post) {
             *post = pos;
         }
@@ -471,7 +472,7 @@ char* XMLProcessor::getElementContentExcept(char*      xmlPtr    ,
             k = 0;
 
             pos = 0, previous = 0;
-            while ((ret = getElementContent(&xml[pos], tag, &pos)) != NULL) {    
+            while ((ret = copyElementContent(&xml[pos], tag, &pos)) != NULL) {    
             
                 if (validElement && validElement[k] == 1) {
                     pos += previous;
@@ -591,15 +592,15 @@ char* XMLProcessor::getElementContentExcept(char*      xmlPtr    ,
 *
 */
 
-char* XMLProcessor::getElementContentLevel(char*      xml   ,
-                                              char*      tag   ,                                              
-                                              unsigned int* pos, 
-                                              int           lev ,   
-                                              int*          startLevel)  {
+char* XMLProcessor::copyElementContentLevel(const char*xml   ,
+                                            const char*tag   ,                                              
+                                            unsigned int* pos, 
+                                            int           lev ,   
+                                            int*          startLevel)  {
     
-    char* p1       = NULL;
-    char* p2       = NULL;
-    char* ret      = NULL;
+    const char* p1 = NULL;
+    const char* p2 = NULL;
+    char* ret = NULL;
     BOOL openBracket  = FALSE;  // <
     BOOL closeBracket = FALSE;  // >
     BOOL aloneBracket = FALSE;  // </
@@ -620,7 +621,7 @@ char* XMLProcessor::getElementContentLevel(char*      xml   ,
     }
     
     if (lev < 0) {
-        return getElementContent(xml, tag, pos);
+        return copyElementContent(xml, tag, pos);
     }        
    
     xmlLength = strlen(xml);
@@ -703,7 +704,7 @@ char* XMLProcessor::getElementContentLevel(char*      xml   ,
             tagNameFound[n] = 0;
             if (strcmp(tagNameFound, tag) == 0 && (level == lev)) {
                 unsigned int internalPos;
-                ret = getElementContent(p2, tag, &internalPos);
+                ret = copyElementContent(p2, tag, &internalPos);
                 if (pos) {
                     *pos = p2 - xml + internalPos;                    
                 }

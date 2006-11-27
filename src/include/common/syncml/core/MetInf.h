@@ -95,12 +95,12 @@ class MetInf {
      * @param mem the memory information
      *
      */
-    MetInf(char*     format    ,
-           char*     type      ,
-           char*     mark      ,
+    MetInf(const char*     format    ,
+           const char*     type      ,
+           const char*     mark      ,
            long        size      ,
            Anchor*     anchor    ,
-           char*     version   ,
+           const char*     version   ,
            NextNonce*  nonce     ,
            long        maxMsgSize,
            long        maxObjSize,
@@ -127,7 +127,7 @@ class MetInf {
      *
      * @return format
      */
-    char*  getFormat(char*  retformat);
+    const char* getFormat();
 
     /**
      * Sets format
@@ -141,7 +141,7 @@ class MetInf {
      *
      * @return type
      */
-    char*  getType(char*  retType);
+    const char* getType();
 
     /**
      * Sets type
@@ -155,7 +155,7 @@ class MetInf {
      *
      * @return mark
      */
-    char*  getMark(char*  retMark) ;
+    const char* getMark() ;
 
     /**
      * Sets mark
@@ -260,7 +260,7 @@ class MetInf {
 	 *
 	 * @return version
 	 */
-	char*  getVersion(char*  retVersion);
+	const char* getVersion();
 
 	/**
 	 * Sets version

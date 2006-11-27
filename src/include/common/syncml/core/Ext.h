@@ -59,7 +59,7 @@ class Ext : public ArrayElement {
          *
          * @return the name of the extension
          */
-        char*  getXNam(char*  retXNam);
+        const char* getXNam();
 
         /**
          * Sets the name of extension
@@ -67,7 +67,7 @@ class Ext : public ArrayElement {
          * @param xNam the name of extension
          *
          */
-        void setXNam(char*  xNam);
+        void setXNam(const char* xNam);
 
         /**
          * Gets an array of extension values, if exist

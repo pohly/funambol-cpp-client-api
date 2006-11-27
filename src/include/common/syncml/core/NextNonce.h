@@ -51,9 +51,9 @@ class NextNonce {
 
     void* setValue(void* argValue, unsigned long size);        
     
-    void setWValue(char*  wnonce);
+    void setWValue(const char* wnonce);
 
-    char*  getValueAsBase64();
+    const char* getValueAsBase64();
 
     NextNonce* clone();
 };

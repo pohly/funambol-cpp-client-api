@@ -55,14 +55,14 @@ class VerDTD {
      *
      * @return value properties
      */
-    char*  getValue();
+    const char* getValue();
 
     /**
      * Sets the version of DTD
      *
      * @param value the version of DTD
      */
-    void setValue(char*  value);
+    void setValue(const char* value);
 
     VerDTD* clone();
 

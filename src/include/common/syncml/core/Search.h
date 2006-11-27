@@ -125,14 +125,14 @@ class Search : public AbstractCommand{
          * @return the preferred language
          *
          */
-        char*  getLang(char*  retLang = NULL);
+        const char* getLang();
     
         /**
          * Sets the preferred language
          *
          * @param lang the preferred language
          */
-        void setLang(char*  lang);
+        void setLang(const char* lang);
         
         /**
          * Returns data
@@ -155,7 +155,7 @@ class Search : public AbstractCommand{
          *
          * @return the command name
          */
-        char*  getName();
+        const char* getName();
 
         ArrayElement* clone();    
    

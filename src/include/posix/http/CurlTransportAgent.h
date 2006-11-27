@@ -55,7 +55,7 @@
         ~CurlTransportAgent();
 
         char* sendMessage(const char* msg);
-        void setUserAgent(char*  ua);
+        void setUserAgent(const char* ua);
 
     };
 

@@ -97,7 +97,7 @@ void Sequence::setCommands(ArrayList* commands) {
 *
 * @return the command name
 */
-char* Sequence::getName(){
+const char* Sequence::getName(){
     return COMMAND_NAME;
 }
 

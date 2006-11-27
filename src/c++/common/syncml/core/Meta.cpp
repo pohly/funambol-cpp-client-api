@@ -117,12 +117,8 @@ void Meta::setSize(long size) {
  *
  * @return format
  */
-char* Meta::getFormat(char* retFormat) {
-	if (retFormat == NULL) {
-        return getMetInf()->getFormat(NULL);
-    }
-    return strcpy(retFormat, getMetInf()->getFormat(NULL));
-    
+const char* Meta::getFormat() {
+    return getMetInf()->getFormat();
 }
 
 /**
@@ -139,11 +135,8 @@ void Meta::setFormat(const char* format) {
  *
  * @return type
  */
-char* Meta::getType(char* retType) {
-	if (retType == NULL) {
-        return getMetInf()->getType(NULL);
-    }
-    return strcpy(retType, getMetInf()->getType(NULL));   
+const char* Meta::getType() {
+    return getMetInf()->getType();
 }
 
 /**
@@ -160,12 +153,8 @@ void Meta::setType(const char* type) {
  *
  * @return mark
  */
-char* Meta::getMark(char* retMark){
-	if (retMark == NULL) {
-        return getMetInf()->getMark(NULL);
-    }
-    return strcpy(retMark, getMetInf()->getMark(NULL));  
-    
+const char* Meta::getMark() {
+    return getMetInf()->getMark();
 }
 
 /**
@@ -183,11 +172,8 @@ void Meta::setMark(const char* mark) {
  *
  * @return version
  */
-char* Meta::getVersion(char* retVersion) {
-    if (retVersion == NULL) {
-        return getMetInf()->getVersion(NULL);
-    }
-    return strcpy(retVersion, getMetInf()->getVersion(NULL));  
+const char* Meta::getVersion() {
+    return getMetInf()->getVersion();
 }
 
 /**
@@ -315,7 +301,7 @@ void Meta::setEMI(ArrayList* emi) {
 Meta* Meta::clone() {
     Meta* ret = new Meta();
 
-    MetInf* retMetInf = new MetInf(getFormat(NULL), getType(NULL), getMark(NULL), getSize(), getAnchor(), getVersion(NULL), 
+    MetInf* retMetInf = new MetInf(getFormat(), getType(), getMark(), getSize(), getAnchor(), getVersion(), 
                    getNextNonce(), getMaxMsgSize(), getMaxObjSize(), getEMI(), getMem());
     ret->setMetInf(retMetInf);
     

@@ -106,10 +106,10 @@ class SyncManager {
 
         // Struct used to pass command info to the method processSyncItem
         struct CommandInfo {
-            char*  commandName;
-            char *cmdRef;
-            char*  format;
-            char*  dataType;
+            const char*  commandName;
+            const char *cmdRef;
+            const char*  format;
+            const char*  dataType;
             long size;
         };
 

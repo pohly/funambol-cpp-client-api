@@ -68,11 +68,8 @@ Put::Put(CmdID* cmdID,
 * @return the preferred language
 *
 */
-char* Put::getLang(char* retLang) {
-    if (retLang == NULL) {
-        return lang;
-    }
-    return strcpy(retLang, lang);
+const char* Put::getLang() {
+    return lang;
 }
 
 /**
@@ -80,7 +77,7 @@ char* Put::getLang(char* retLang) {
 *
 * @param lang new preferred language
 */
-void Put::setLang(char* lang) {
+void Put::setLang(const char*lang) {
     if (this->lang) {
         delete [] this->lang; this->lang = NULL;
     }
@@ -92,7 +89,7 @@ void Put::setLang(char* lang) {
 *
 * @return the command name
 */
-char* Put::getName() {
+const char* Put::getName() {
     return COMMAND_NAME;
 }
 

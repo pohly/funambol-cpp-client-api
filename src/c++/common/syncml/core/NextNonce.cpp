@@ -77,7 +77,7 @@ long NextNonce::getValueSize() {
     return size;
 }
 
-void NextNonce::setWValue(char* wnonce) {
+void NextNonce::setWValue(const char*wnonce) {
     if (wvalue) {
         delete [] wvalue; wvalue = NULL;
     }
@@ -98,7 +98,7 @@ void NextNonce::setWValue(char* wnonce) {
 
 
 
-char* NextNonce::getValueAsBase64() {
+const char* NextNonce::getValueAsBase64() {
     
     if (value == NULL) 
         return NULL;

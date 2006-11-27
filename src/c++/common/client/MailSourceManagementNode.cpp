@@ -42,29 +42,49 @@ MailSourceManagementNode::~MailSourceManagementNode() {
 MailSyncSourceConfig& MailSourceManagementNode::getMailSourceConfig(BOOL refresh) {
     if (refresh) {
         char*  c = NULL;
+        char* tmp;
 
-        config.setName(getPropertyValue(PROPERTY_SOURCE_NAME));
-        config.setURI(getPropertyValue(PROPERTY_SOURCE_URI));
-        config.setSyncModes(getPropertyValue(PROPERTY_SOURCE_SYNC_MODES));
-        config.setSync(getPropertyValue(PROPERTY_SOURCE_SYNC));
-        config.setType(getPropertyValue(PROPERTY_SOURCE_TYPE));
+        config.setName((tmp = readPropertyValue(PROPERTY_SOURCE_NAME)));
+        safeDel(&tmp);
+        config.setURI((tmp = readPropertyValue(PROPERTY_SOURCE_URI)));
+        safeDel(&tmp);
+        config.setSyncModes((tmp = readPropertyValue(PROPERTY_SOURCE_SYNC_MODES)));
+        safeDel(&tmp);
+        config.setSync((tmp = readPropertyValue(PROPERTY_SOURCE_SYNC)));
+        safeDel(&tmp);
+        config.setType((tmp = readPropertyValue(PROPERTY_SOURCE_TYPE)));
+        safeDel(&tmp);
         
-        config.setVersion(getPropertyValue(PROPERTY_SOURCE_VERSION));
-        config.setEncoding(getPropertyValue(PROPERTY_SOURCE_ENCODING));
-        config.setSupportedTypes(getPropertyValue(PROPERTY_SOURCE_SUPP_TYPES));
-            
-        config.setLast(strtol(getPropertyValue(PROPERTY_SOURCE_LAST_SYNC), &c, 10));
-        config.setDownloadAge((int)strtol(getPropertyValue(PROPERTY_SOURCE_DOWNLOAD_AGE), &c, 10));
-        config.setBodySize((int)strtol(getPropertyValue(PROPERTY_SOURCE_BODY_SIZE), &c, 10));
-        config.setAttachSize((int)strtol(getPropertyValue(PROPERTY_SOURCE_ATTACH_SIZE), &c, 10));
+        config.setVersion((tmp = readPropertyValue(PROPERTY_SOURCE_VERSION)));
+        safeDel(&tmp);
+        config.setEncoding((tmp = readPropertyValue(PROPERTY_SOURCE_ENCODING)));
+        safeDel(&tmp);
+        config.setSupportedTypes((tmp = readPropertyValue(PROPERTY_SOURCE_SUPP_TYPES)));
+        safeDel(&tmp);
+                                 
+        config.setLast(strtol((tmp = readPropertyValue(PROPERTY_SOURCE_LAST_SYNC)), &c, 10));
+        safeDel(&tmp);
+        config.setDownloadAge((int)strtol((tmp = readPropertyValue(PROPERTY_SOURCE_DOWNLOAD_AGE)), &c, 10));
+        safeDel(&tmp);
+        config.setBodySize((int)strtol((tmp = readPropertyValue(PROPERTY_SOURCE_BODY_SIZE)), &c, 10));
+        safeDel(&tmp);
+        config.setAttachSize((int)strtol((tmp = readPropertyValue(PROPERTY_SOURCE_ATTACH_SIZE)), &c, 10));
+        safeDel(&tmp);
 
-        config.setInbox((int)strtol(getPropertyValue(PROPERTY_SOURCE_INBOX), &c, 10));
-        config.setDraft((int)strtol(getPropertyValue(PROPERTY_SOURCE_DRAFT), &c, 10));
-        config.setTrash((int)strtol(getPropertyValue(PROPERTY_SOURCE_TRASH), &c, 10));
-        config.setOutbox((int)strtol(getPropertyValue(PROPERTY_SOURCE_OUTBOX), &c, 10));
-        config.setSent((int)strtol(getPropertyValue(PROPERTY_SOURCE_SENT), &c, 10));
-        config.setSchedule((int)strtol(getPropertyValue(PROPERTY_SOURCE_SCHEDULE), &c, 10));
-        config.setEncryption(getPropertyValue(PROPERTY_SOURCE_ENCRYPTION));
+        config.setInbox((int)strtol((tmp = readPropertyValue(PROPERTY_SOURCE_INBOX)), &c, 10));
+        safeDel(&tmp);
+        config.setDraft((int)strtol((tmp = readPropertyValue(PROPERTY_SOURCE_DRAFT)), &c, 10));
+        safeDel(&tmp);
+        config.setTrash((int)strtol((tmp = readPropertyValue(PROPERTY_SOURCE_TRASH)), &c, 10));
+        safeDel(&tmp);
+        config.setOutbox((int)strtol((tmp = readPropertyValue(PROPERTY_SOURCE_OUTBOX)), &c, 10));
+        safeDel(&tmp);
+        config.setSent((int)strtol((tmp = readPropertyValue(PROPERTY_SOURCE_SENT)), &c, 10));
+        safeDel(&tmp);
+        config.setSchedule((int)strtol((tmp = readPropertyValue(PROPERTY_SOURCE_SCHEDULE)), &c, 10));
+        safeDel(&tmp);
+        config.setEncryption((tmp = readPropertyValue(PROPERTY_SOURCE_ENCRYPTION)));
+        safeDel(&tmp);
         
     }
 

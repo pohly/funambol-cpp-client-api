@@ -37,7 +37,7 @@ class Proxy {
         Proxy(char*  host, int port, char*  user, char*  password) EXTRA_SECTION_03;
 
         void setProxy(Proxy& proxy) EXTRA_SECTION_03;
-        void setProxy(char*  proxyHost, int proxyPort, char*  proxyUser, char*  proxyPassword) EXTRA_SECTION_03;
+        void setProxy(const char* proxyHost, int proxyPort, const char* proxyUser, const char* proxyPassword) EXTRA_SECTION_03;
 
         Proxy& operator= (Proxy& proxy) { setProxy(proxy); return *this;}
     };

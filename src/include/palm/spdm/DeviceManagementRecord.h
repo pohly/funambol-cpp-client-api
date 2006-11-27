@@ -69,7 +69,7 @@ class DeviceManagementRecord {
          * Returns the n-th fields (1 based). Returns NULL if n is greater than
          * the number of the fields in the record.
          */
-        WCHAR* getField(unsigned int n) EXTRA_SECTION_03;
+        const WCHAR* getField(unsigned int n) EXTRA_SECTION_03;
 
         /**
          * Sets the record data to the given data.
@@ -77,7 +77,7 @@ class DeviceManagementRecord {
          * @param data the content of the record
          * @param size the sice of the content
          */
-        void setData(WCHAR* data, unsigned int size) EXTRA_SECTION_03;
+        void setData(const WCHAR* data, unsigned int size) EXTRA_SECTION_03;
 
         /**
          * Sets the record data to the given AccessConfig
@@ -103,7 +103,7 @@ class DeviceManagementRecord {
         /**
          * Returns the record data
          */
-        WCHAR* getData() EXTRA_SECTION_03;
+        const WCHAR* getData() EXTRA_SECTION_03;
 
         /**
          * Returns the record size

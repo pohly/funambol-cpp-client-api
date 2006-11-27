@@ -44,12 +44,8 @@ Cred::Cred(Authentication* auth) {
  *
  * @return type property
  */
-char* Cred::getType(char* retType) {
-
-    if (retType == NULL) {
-        return authentication->getType(NULL);
-    }
-    return strcpy(retType, authentication->getType(NULL));
+const char* Cred::getType() {
+    return authentication ? authentication->getType() : NULL;
 }
 
 /**
@@ -57,11 +53,8 @@ char* Cred::getType(char* retType) {
  *
  * @return format property
  */
-char* Cred::getFormat(char* retFormat) {
-    if (retFormat == NULL) {
-        return authentication->getFormat(NULL);
-    }
-    return strcpy(retFormat, authentication->getFormat(NULL));
+const char* Cred::getFormat() {
+    return authentication ? authentication->getFormat() : NULL;
 }
 
 /**
@@ -69,11 +62,8 @@ char* Cred::getFormat(char* retFormat) {
  *
  * @return data property
  */
-char* Cred::getData(char* retData) {
- if (retData == NULL) {
-        return authentication->getData(NULL);
-    }
-    return strcpy(retData, authentication->getData(NULL));
+const char* Cred::getData() {
+    return authentication ? authentication->getData() : NULL;
 }
 
 /**
@@ -81,11 +71,8 @@ char* Cred::getData(char* retData) {
  *
  * @return the username stored in this credential
  */
-char* Cred::getUsername(char* retUsername) {
-    if (retUsername == NULL) {
-        return authentication->getUsername(NULL);
-    }
-    return strcpy(retUsername, authentication->getUsername(NULL));
+const char* Cred::getUsername() {
+    return authentication ? authentication->getUsername() : NULL;
 }
 
 

@@ -56,12 +56,12 @@ class WKeyValuePair : public ArrayElement {
         /**
          * Returns the key (the internal buffer address is returned).
          */
-        WCHAR* getKey() EXTRA_SECTION_00;
+        const WCHAR* getKey() EXTRA_SECTION_00;
 
         /**
          * Returns the value (the internal buffer address is returned).
          */
-        WCHAR* getValue() EXTRA_SECTION_00;
+        const WCHAR* getValue() EXTRA_SECTION_00;
 
     private:
         WCHAR* k;

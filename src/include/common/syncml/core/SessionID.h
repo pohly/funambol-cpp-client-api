@@ -42,7 +42,7 @@ class SessionID {
      * @param sessionID the identifier of session - NOT NULL
      *
      */
-    SessionID(char*  sessionID);
+    SessionID(const char*  sessionID);
 
     // ---------------------------------------------------------- Public methods
 
@@ -51,14 +51,14 @@ class SessionID {
      *
      * @return sessionID the session identifier
      */
-    char*  getSessionID(char*  retSessionID);
+    const char* getSessionID();
 
     /**
      * Sets the session identifier
      *
      * @param sessionID the session identifier
      */
-    void setSessionID(char*  sessionID);
+    void setSessionID(const char* sessionID);
 
     SessionID* clone();
        

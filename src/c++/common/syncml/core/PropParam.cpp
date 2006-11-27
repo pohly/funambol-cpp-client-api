@@ -51,12 +51,8 @@ PropParam::PropParam(char* paramName, char* dataType, ArrayList* valEnums, char*
  * @return  the current displayName's value
  *
  */
-char* PropParam::getDisplayName(char* displayName) {
-    if (displayName == NULL) {
-        return this->displayName;
-    }
-
-    return strcpy(displayName, this->displayName);
+const char* PropParam::getDisplayName() {
+    return displayName;
 }
 
 /*
@@ -65,7 +61,7 @@ char* PropParam::getDisplayName(char* displayName) {
  * @param displayName the new value
  *
  */
-void PropParam::setDisplayName(char* displayName) {
+void PropParam::setDisplayName(const char*displayName) {
     if (this->displayName) {
         delete [] this->displayName; this->displayName = NULL;
     }
@@ -82,12 +78,8 @@ void PropParam::setDisplayName(char* displayName) {
  * @return  the current paramName's value
  *
  */
-char* PropParam::getParamName(char* paramName) {
-    if (paramName == NULL) {
-        return this->paramName;
-    }
-
-    return strcpy(paramName, this->paramName);
+const char* PropParam::getParamName() {
+    return paramName;
 }
 
 /*
@@ -96,7 +88,7 @@ char* PropParam::getParamName(char* paramName) {
  * @param paramName the new value
  *
  */
-void PropParam::setParamName(char* paramName) {
+void PropParam::setParamName(const char*paramName) {
     if (this->paramName) {
         delete [] this->paramName; this->paramName = NULL;
     }
@@ -112,12 +104,8 @@ void PropParam::setParamName(char* paramName) {
  * @return  the current dataType's value
  *
  */
-char* PropParam::getDataType(char* dataType) {
-    if (dataType == NULL) {
-        return this->dataType;
-    }
-
-    return strcpy(dataType, this->dataType);
+const char* PropParam::getDataType() {
+    return dataType;
 }
 
 /*
@@ -126,7 +114,7 @@ char* PropParam::getDataType(char* dataType) {
  * @param dataType the new value
  *
  */
-void PropParam::setDataType(char* dataType) {
+void PropParam::setDataType(const char*dataType) {
     if (this->dataType) {
         delete [] this->dataType; this->dataType = NULL;
     }

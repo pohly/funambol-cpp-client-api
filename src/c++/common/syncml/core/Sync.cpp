@@ -185,7 +185,7 @@ void Sync::setNumberOfChanges(long numberOfChanges) {
     this->numberOfChanges = numberOfChanges;
 }
 
-char* Sync::getName() {
+const char* Sync::getName() {
     return COMMAND_NAME;
 }
 

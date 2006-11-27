@@ -63,7 +63,7 @@ Copy::Copy(CmdID* cmdID,
  *
  * @return the command name property
  */    
-char* Copy::getName() {
+const char* Copy::getName() {
     return COMMAND_NAME;
 }
 

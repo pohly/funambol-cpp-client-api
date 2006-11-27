@@ -57,7 +57,7 @@ Replace::Replace(CmdID *cmdID   ,
  *
  * @return the command name
  */
-char* Replace::getName(){
+const char* Replace::getName(){
     return COMMAND_NAME;
 }
 

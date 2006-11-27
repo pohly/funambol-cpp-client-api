@@ -44,13 +44,13 @@
          * Get the size in bytes of this HTTP header
          */
         unsigned int getSize() EXTRA_SECTION_03;
-        char* getVersion() EXTRA_SECTION_03;
+        const char* getVersion() EXTRA_SECTION_03;
         unsigned int getStatus() EXTRA_SECTION_03;
-        char* getStatusMessage() EXTRA_SECTION_03;
-        char* getContent() EXTRA_SECTION_03;
+        const char* getStatusMessage() EXTRA_SECTION_03;
+        const char* getContent() EXTRA_SECTION_03;
         unsigned int getHeadersCount() EXTRA_SECTION_03;
         char** getHeader(unsigned int index) EXTRA_SECTION_03;
-        char* getHeaderValue(const char* header) EXTRA_SECTION_03;
+        const char* getHeaderValue(const char* header) EXTRA_SECTION_03;
 
         /*
          * Returns the content lenght specified with the header Content-length.

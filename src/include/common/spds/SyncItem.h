@@ -77,7 +77,7 @@
          *
          * @param key - buffer where the key will be stored
          */
-        WCHAR* getKey() EXTRA_SECTION_01;
+        const WCHAR* getKey() EXTRA_SECTION_01;
 
         /*
          * Changes the SyncItem key. The key must not be longer than DIM_KEY
@@ -201,7 +201,7 @@
         /*
          * Returns the SyncItem data mime type.
          */
-        WCHAR* getDataType() EXTRA_SECTION_01;
+        const WCHAR* getDataType() EXTRA_SECTION_01;
 
         /*
          * Sets the SyncItem state
@@ -220,7 +220,7 @@
          *
          * @return the SyncItem target parent
          */
-        WCHAR* getTargetParent(WCHAR* parent = NULL) EXTRA_SECTION_01;
+        const WCHAR* getTargetParent() EXTRA_SECTION_01;
     
         /**
          * Sets the SyncItem targetParent
@@ -235,7 +235,7 @@
          *
          * @return the SyncItem source parent
          */
-        WCHAR* getSourceParent(WCHAR* parent = NULL) EXTRA_SECTION_01;
+        const WCHAR* getSourceParent() EXTRA_SECTION_01;
     
         /**
          * Sets the SyncItem sourceParent

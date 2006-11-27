@@ -158,7 +158,7 @@ void Map::setMapItems(ArrayList* mapItems) {
 *
 * @return the command name
 */
-char* Map::getName() {
+const char* Map::getName() {
     return COMMAND_NAME;
 }
 

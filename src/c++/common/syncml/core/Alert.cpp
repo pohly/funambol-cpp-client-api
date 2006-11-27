@@ -79,7 +79,7 @@ void Alert::setData(int data) {
 *
 * @return the command name property
 */    
-char* Alert::getName() {
+const char* Alert::getName() {
     return COMMAND_NAME;
 }
 

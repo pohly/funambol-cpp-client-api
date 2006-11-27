@@ -35,7 +35,7 @@ SessionID::~SessionID() {
 * @param sessionID the identifier of session - NOT NULL
 *
 */
-SessionID::SessionID(char* sessionID) {
+SessionID::SessionID(const char* sessionID) {
     this->sessionID = NULL;
     setSessionID(sessionID);
 }
@@ -45,11 +45,8 @@ SessionID::SessionID(char* sessionID) {
 *
 * @return sessionID the session identifier
 */
-char* SessionID::getSessionID(char* retSessionID) {
-     if (retSessionID == NULL) {
-        return sessionID;
-    }
-    return strcpy(retSessionID, sessionID);
+const char* SessionID::getSessionID() {
+    return sessionID;
 }
 
 
@@ -58,7 +55,7 @@ char* SessionID::getSessionID(char* retSessionID) {
 *
 * @param sessionID the session identifier
 */
-void SessionID::setSessionID(char* sessionID) {
+void SessionID::setSessionID(const char*sessionID) {
     if (this->sessionID) {
         delete [] this->sessionID; this->sessionID = NULL;
     }

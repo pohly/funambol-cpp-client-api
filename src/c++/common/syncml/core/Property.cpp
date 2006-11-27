@@ -51,15 +51,11 @@ Property::Property(char* p0, char* p1, long p2, long p3, BOOL p4, ArrayList* p5,
     propParams  = (p7) ? p7->clone() : NULL;
 }
 
-char* Property::getDisplayName(char* displayName) {
-    if (displayName == NULL) {
-        return this->displayName;
-    }
-
-    return strcpy(displayName, this->displayName);
+const char* Property::getDisplayName() {
+    return displayName;
 }
 
-void Property::setDisplayName(char* displayName) {
+void Property::setDisplayName(const char*displayName) {
     if (this->displayName) {
         delete this->displayName; this->displayName = NULL;
     }
@@ -75,12 +71,8 @@ void Property::setDisplayName(char* displayName) {
  * @return  the current propName's value
  *
  */
-char* Property::getPropName(char* propName) {
-    if (propName == NULL) {
-        return this->propName;
-    }
-
-    return strcpy(propName, this->propName);
+const char* Property::getPropName() {
+    return propName;
 }
 
 /*
@@ -89,7 +81,7 @@ char* Property::getPropName(char* propName) {
  * @param propName the new value
  *
  */
-void Property::setPropName(char* propName) {
+void Property::setPropName(const char*propName) {
     if (this->propName) {
         delete this->propName; this->propName = NULL;
     }
@@ -105,12 +97,8 @@ void Property::setPropName(char* propName) {
  * @return  the current dataType's value
  *
  */
-char* Property::getDataType(char* dataType) {
-    if (dataType == NULL) {
-        return this->dataType;
-    }
-
-    return strcpy(dataType, this->dataType);
+const char* Property::getDataType() {
+    return dataType;
 }
 
 /*
@@ -119,7 +107,7 @@ char* Property::getDataType(char* dataType) {
  * @param dataType the new value
  *
  */
-void Property::setDataType(char* dataType) {
+void Property::setDataType(const char*dataType) {
     if (this->dataType) {
         delete this->dataType; this->dataType = NULL;
     }

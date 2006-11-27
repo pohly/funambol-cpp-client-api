@@ -128,14 +128,14 @@ class SyncHdr {
          *
          * @return msgID the message identifier
          */
-        char*  getMsgID(char*  retMsgID);
+        const char* getMsgID();
 
         /**
          * Sets the message identifier
          *
          * @param msgID the message identifier
          */
-        void setMsgID(char*  msgID);
+        void setMsgID(const char* msgID);
 
         /**
          * Gets the Target object
@@ -170,14 +170,14 @@ class SyncHdr {
          *
          * @return respURI the response URI
          */
-        char*  getRespURI(char*  respURI);
+        const char* getRespURI();
 
         /**
          * Sets the response URI.
          *
          * @param uri the new response URI; NOT NULL
          */
-        void setRespURI(char*  uri);
+        void setRespURI(const char* uri);
 
         /**
          * Gets noResp property
@@ -228,7 +228,7 @@ class SyncHdr {
          */
         void setMeta(Meta* meta);
 
-        char*  getName();
+        const char* getName();
         
         SyncHdr* clone();
 };

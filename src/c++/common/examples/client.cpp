@@ -293,7 +293,7 @@ static void testXMLProcessor(void)
     LOG.debug("Attrlist: '%s'", buf);
 
     // Get 'emptytag' content, that should be empty
-    char *empty = XMLProcessor::getElementContent(doc, "emptytag");
+    const char*empty = XMLProcessor::getElementContent(doc, "emptytag");
     if(!empty){
         LOG.error("TEST FAILED.");
         return;
@@ -337,7 +337,7 @@ void createConfig(DMTClientConfig& config) {
 //
 // Prints a formatted report for the synchronization process.
 //
-void printReport(SyncReport* sr, char* sourceName) {
+void printReport(SyncReport* sr, const char*sourceName) {
 
     StringBuffer res;
     char tmp[512];

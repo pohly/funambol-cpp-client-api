@@ -76,14 +76,11 @@ void Filter::setRecord(Item* r) {
     }
 }
 
-char* Filter::getFilterType(char* t) {
-    if (t == NULL) {
-        return filterType;
-    }
-    return strcpy(t, filterType);
+const char* Filter::getFilterType() {
+    return filterType;
 }
 
-void Filter::setFilterType(char* t) {
+void Filter::setFilterType(const char*t) {
     if (filterType) {
         delete [] filterType; filterType = NULL;
     }

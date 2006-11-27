@@ -31,7 +31,7 @@ CmdID::CmdID() {
  * @param cmdID the cmdID of CmdID - NOT NULL
  *
  */
-CmdID::CmdID(char* cmdID) {
+CmdID::CmdID(const char* cmdID) {
 
     this->cmdID = NULL;
     if ((cmdID == NULL) || (strlen(cmdID) == 0)) {
@@ -64,7 +64,7 @@ CmdID::CmdID(long cmdID) {
  *
  * @return cmdID properties
  */
-char* CmdID::getCmdID() {
+const char* CmdID::getCmdID() {
     return cmdID;
 }
 

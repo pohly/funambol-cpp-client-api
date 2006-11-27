@@ -71,7 +71,7 @@ class Atomic : public AbstractCommand {
      *
      * @return the command name property
      */ 
-    char*  getName();
+    const char* getName();
 
     ArrayElement* clone();    
    

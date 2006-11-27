@@ -212,7 +212,7 @@ void AccessConfig::setProxyPort(int v) {
     dirty |= DIRTY_PROXY_PORT;
 }
 
-char* AccessConfig::getProxyUsername() const {
+const char* AccessConfig::getProxyUsername() const {
     return proxyUsername;
 }
 
@@ -220,7 +220,7 @@ void AccessConfig::setProxyUsername(const char* v) {
 	set(&proxyUsername, v);
 }
 
-char* AccessConfig::getProxyPassword() const {
+const char* AccessConfig::getProxyPassword() const {
     return proxyPassword;
 }
 

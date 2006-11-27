@@ -44,8 +44,8 @@ Results::~Results() {
 *
 */
 Results::Results(CmdID*      cmdID,
-                 char*    msgRef,
-                 char*    cmdRef,
+                 const char*    msgRef,
+                 const char*    cmdRef,
                  Meta*       meta,
                  ArrayList*  targetRef,
                  ArrayList*  sourceRef,
@@ -66,12 +66,12 @@ Results::Results(CmdID*      cmdID,
 *
 * @return the command name
 */
-char* Results::getName() {
+const char* Results::getName() {
     return COMMAND_NAME;
 }
 
 ArrayElement* Results::clone() {
-    Results* ret = new Results(getCmdID(), getMsgRef(NULL), getCmdRef(NULL),
+    Results* ret = new Results(getCmdID(), getMsgRef(), getCmdRef(),
                                getMeta(), getTargetRef(), getSourceRef(), getItems());
     ret->setMeta(getMeta());
     return ret;

@@ -56,7 +56,7 @@ class ContentTypeInfo : public ArrayElement {
          *
          * @return the content type properties
          */
-        char*  getCTType(char*  retCTType);
+        const char* getCTType();
     
         /**
          * Sets the content type properties
@@ -70,7 +70,7 @@ class ContentTypeInfo : public ArrayElement {
          *
          * @return the version of the content type
          */
-        char*  getVerCT(char*  retVerCT);
+        const char* getVerCT();
 
         /**
          * Sets the version of the content type

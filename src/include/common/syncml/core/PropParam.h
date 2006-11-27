@@ -68,14 +68,14 @@ public:
      * getDisplayName
      * 
      */
-    char*  getDisplayName(char*  displayName = NULL);
+    const char* getDisplayName();
 
 
     /*
      * getParamName
      * 
      */
-    char*  getParamName(char*  paramName = NULL);
+    const char* getParamName();
 
 
     /*
@@ -83,14 +83,14 @@ public:
      * 
      * @param p0
      */
-    void setParamName(char*  p0);
+    void setParamName(const char* p0);
 
 
     /*
      * getDataType
      * 
      */
-    char*  getDataType(char*  dataType = NULL);
+    const char* getDataType();
 
 
     /*
@@ -98,7 +98,7 @@ public:
      * 
      * @param p0
      */
-    void setDataType(char*  p0);
+    void setDataType(const char* p0);
 
 
     /*
@@ -121,7 +121,7 @@ public:
      * 
      * @param p0
      */
-    void setDisplayName(char*  p0);
+    void setDisplayName(const char* p0);
 
     /*
      * Creates a clone of this instance

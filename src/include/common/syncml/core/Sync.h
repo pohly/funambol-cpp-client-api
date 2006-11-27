@@ -132,7 +132,7 @@ class Sync : public AbstractCommand {
          */
         void setNumberOfChanges(long numberOfChanges) ;
     
-        char*  getName();
+        const char* getName();
 
         ArrayElement* clone();
 

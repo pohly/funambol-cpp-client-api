@@ -80,11 +80,8 @@ void CredentialHandler::setClientAuthType(const char* t){
     clientAuthType = stringdup(t);
 }
 
-const char* CredentialHandler::getClientAuthType(char* t){    
-    if (t == NULL) {
-        return clientAuthType;
-    }
-    return strcpy(t, clientAuthType);    
+const char* CredentialHandler::getClientAuthType(){    
+    return clientAuthType;
 }
 
 
@@ -93,11 +90,8 @@ void CredentialHandler::setClientNonce(const char* t){
     clientNonce = stringdup(t);
 }
 
-const char* CredentialHandler::getClientNonce(char* t) {
-     if (t == NULL) {
-        return clientNonce;
-    }
-    return strcpy(t, clientNonce);        
+const char* CredentialHandler::getClientNonce() {
+    return clientNonce;
 }
 
 void CredentialHandler::setServerID(const char* t) {
@@ -115,11 +109,8 @@ void CredentialHandler::setServerAuthType(const char* t) {
     serverAuthType = stringdup(t);
 }
 
-const char* CredentialHandler::getServerAuthType(char* t) {
-     if (t == NULL) {
-        return serverAuthType;
-    }
-    return strcpy(t, serverAuthType);        
+const char* CredentialHandler::getServerAuthType() {
+    return serverAuthType;
 }
 
 void CredentialHandler::setServerNonce(const char* t) {
@@ -127,11 +118,8 @@ void CredentialHandler::setServerNonce(const char* t) {
     serverNonce = stringdup(t); 
 }
 
-const char* CredentialHandler::getServerNonce(char* t) {
-     if (t == NULL) {
-        return serverNonce;
-    }
-    return strcpy(t, serverNonce);        
+const char* CredentialHandler::getServerNonce() {
+    return serverNonce;
 }
 
 void CredentialHandler::setServerAuthRequired(BOOL t) {
@@ -200,7 +188,7 @@ BOOL CredentialHandler::performServerAuth(Cred* cred) {
         goto finally;
     }    
     
-    if (strcmp(cred->getData(NULL), currentCred->getData(NULL)) == 0) {
+    if (strcmp(cred->getData(), currentCred->getData()) == 0) {
         ret = TRUE;
     }
 finally:

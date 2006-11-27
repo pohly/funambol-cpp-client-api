@@ -72,13 +72,13 @@ public:
      * getDisplayName
      *
      */
-    char*  getDisplayName(char*  displayName = NULL);
+    const char* getDisplayName();
 
     /*
      * getPropName
      *
      */
-    char*  getPropName(char*  propName = NULL);
+    const char* getPropName();
 
 
     /*
@@ -86,14 +86,14 @@ public:
      *
      * @param p0
      */
-    void setPropName(char*  propName);
+    void setPropName(const char* propName);
 
 
     /*
      * getDataType
      *
      */
-    char*  getDataType(char*  dataType = NULL);
+    const char* getDataType();
 
 
     /*
@@ -101,7 +101,7 @@ public:
      *
      * @param p0
      */
-    void setDataType(char*  p0);
+    void setDataType(const char* p0);
 
 
     /*
@@ -176,7 +176,7 @@ public:
      *
      * @param p0
      */
-    void setDisplayName(char*  p0);
+    void setDisplayName(const char* p0);
 
 
     /*

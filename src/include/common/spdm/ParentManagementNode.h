@@ -64,7 +64,7 @@
          * @param buf - the buffer for the value
          * @param len - the buffer size
          */
-        void getPropertyValue(const char*  property, char*  buf, int size) EXTRA_SECTION_02;
+        void getPropertyValue(const char*  property, const char* buf, int size) EXTRA_SECTION_02;
 
 
         /*
@@ -73,7 +73,7 @@
          * @param property - the property name
          * @param value - the property value (zero terminated string)
          */
-        void setPropertyValue(const char*  property, char*  value) EXTRA_SECTION_02;
+        void setPropertyValue(const char*  property, const char* value) EXTRA_SECTION_02;
 
         /*
          * Returns this node's children.

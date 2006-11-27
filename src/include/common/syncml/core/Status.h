@@ -110,7 +110,7 @@ class Status : public ResponseCommand {
          *
          * @return the cmd element
          */
-        char*  getCmd(char*  retCmd = 0);
+        const char* getCmd();
     
         /**
          * Sets the cmd element
@@ -132,7 +132,7 @@ class Status : public ResponseCommand {
          *
          * @return the command name
          */
-        char*  getName();
+        const char* getName();
 
         ArrayElement* clone();   
 };

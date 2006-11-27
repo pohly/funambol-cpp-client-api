@@ -36,11 +36,11 @@ void WKeyValuePair::setKey(const WCHAR* key) {
     k = (key) ? wstrdup(key) : NULL;
 }
 
-WCHAR* WKeyValuePair::getKey() {
+const WCHAR* WKeyValuePair::getKey() {
     return k;
 }
 
-WCHAR* WKeyValuePair::getValue() {
+const WCHAR* WKeyValuePair::getValue() {
     return v;
 }
 

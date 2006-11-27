@@ -69,7 +69,7 @@ Delete::Delete(CmdID* cmdID,
 *
 * @return the command name property
 */    
-char* Delete::getName() {
+const char* Delete::getName() {
     return COMMAND_NAME;
 }
 

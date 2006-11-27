@@ -159,12 +159,8 @@ void DevInf::setVerDTD(VerDTD* verDTD) {
 *
 * @return the device manufacturer property
 */
-char* DevInf::getMan(char* retMan) {
-    if (retMan == NULL) {
-        return man;
-    }
-    return strcpy(retMan, man);
-
+const char* DevInf::getMan() {
+    return man;
 }
 
 /**
@@ -185,11 +181,8 @@ void DevInf::setMan(const char* man) {
 *
 * @return the model name of device
 */
-char* DevInf::getMod(char* retMod) {
-    if (retMod == NULL) {
-        return mod;
-    }
-    return strcpy(retMod, mod);
+const char* DevInf::getMod() {
+    return mod;
 }
 
 /**
@@ -210,11 +203,8 @@ void DevInf::setMod(const char* mod) {
 *
 * @return the OEM property
 */
-char* DevInf::getOEM(char* retOem) {
-    if (retOem == NULL) {
-        return oem;
-    }
-    return strcpy(retOem, oem);
+const char* DevInf::getOEM() {
+    return oem;
 }
 
 /**
@@ -235,11 +225,8 @@ void DevInf::setOEM(const char* oem) {
 *
 * @return the firmware version property
 */
-char* DevInf::getFwV(char* retFwV) {
-    if (retFwV == NULL) {
-        return fwV;
-    }
-    return strcpy(retFwV, fwV);
+const char* DevInf::getFwV() {
+    return fwV;
 }
 
 /**
@@ -260,11 +247,8 @@ void DevInf::setFwV(const char* fwV) {
 *
 * @return the software version property
 */
-char* DevInf::getSwV(char* retSwV) {
-    if (retSwV == NULL) {
-        return swV;
-    }
-    return strcpy(retSwV, swV);
+const char* DevInf::getSwV() {
+    return swV;
 }
 
 /**
@@ -285,11 +269,8 @@ void DevInf::setSwV(const char* swV) {
 *
 * @return the hardware version property
 */
-char* DevInf::getHwV(char* retHwv) {
-    if (retHwv == NULL) {
-        return hwV;
-    }
-    return strcpy(retHwv, hwV);
+const char* DevInf::getHwV() {
+    return hwV;
 }
 
 /**
@@ -310,11 +291,8 @@ void DevInf::setHwV(const char* hwV) {
 *
 * @return the device identifier
 */
-char* DevInf::getDevID(char* retDevID) {
-    if (retDevID == NULL) {
-        return devID;
-    }
-    return strcpy(retDevID, devID);
+const char* DevInf::getDevID() {
+    return devID;
 }
 
 /**
@@ -339,11 +317,8 @@ void DevInf::setDevID(const char* devID) {
 *
 * @return the device type
 */
-char* DevInf::getDevTyp(char* retDevTyp) {
-    if (retDevTyp == NULL) {
-        return devTyp;
-    }
-    return strcpy(retDevTyp, devTyp);
+const char* DevInf::getDevTyp() {
+    return devTyp;
 }
 
 /**

@@ -101,10 +101,11 @@ class ManagementNode : public ArrayElement {
 		virtual int getChildrenCount();
 
         /*
-         * Returns the full node name
+         * Returns the full node name in a newly allocated buffer,
+         * caller must free it with delete [].
          *
          */
-        virtual char *getFullName();
+        virtual char* createFullName();
 
         /**
          * Returns the node name itself without the context.
@@ -133,7 +134,7 @@ class ManagementNode : public ArrayElement {
          *
          * @return - the property value. MUST be deleted by the caller with delete []
          */
-        virtual char *getPropertyValue(const char*  property) = 0;
+        virtual char* readPropertyValue(const char*  property) = 0;
 
         /*
          * Sets a property value.

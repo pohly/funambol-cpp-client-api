@@ -80,7 +80,7 @@ void setLogFile(const char* name, BOOL redirectStderr)
 * return a the time to write into log file. If complete is true, it return 
 * the date too, else only hours, minutes, seconds and milliseconds
 */ 
-static char*  getCurrentTime(BOOL complete) {
+static char* createCurrentTime(BOOL complete) {
     time_t t = time(NULL);
     struct tm *sys_time = localtime(&t);
 
@@ -190,7 +190,7 @@ void Log::printMessage(const char*  level, const char*  msg, va_list argList) {
     
     WCHAR* currentTime = NULL;
 
-    currentTime = getCurrentTime(false);
+    currentTime = createCurrentTime(false);
     if (!logFileStdout && !logFile) {
         reset();
     }

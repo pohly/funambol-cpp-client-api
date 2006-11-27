@@ -55,14 +55,14 @@ class CTTypeSupported : public ArrayElement{
      *
      * @return a CTType String
      */
-    char*  getCTType(char*  retCTType);
+    const char* getCTType();
     
     /**
      * Sets a CTType object
      *
      * @param ctType a CTType object
      */
-    void setCTType(char*  ctType);
+    void setCTType(const char* ctType);
     
     /**
      * Gets an array of content type properties and parameters

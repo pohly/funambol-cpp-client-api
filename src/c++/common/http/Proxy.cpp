@@ -37,10 +37,10 @@ void Proxy::setProxy(Proxy& newProxy) {
 }
 
 
-void Proxy::setProxy(char* proxyHost    ,
+void Proxy::setProxy(const char*proxyHost    ,
                      int      proxyPort    ,
-                     char* proxyUser    ,
-                     char* proxyPassword) {
+                     const char*proxyUser    ,
+                     const char*proxyPassword) {
     if (proxyHost != NULL) {
         strncpy((char*)host, (const char*)proxyHost, DIM_HOSTNAME);
         host[DIM_HOSTNAME-1] = 0;

@@ -39,7 +39,7 @@ class TargetRef : public ArrayElement{
         /*
         * Used to set the query field in the clone method
         */
-        void setQuery(char*  val);
+        void setQuery(const char* val);
 
     // ---------------------------------------------------------- Protected data    
     public:

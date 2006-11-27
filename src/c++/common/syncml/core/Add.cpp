@@ -61,7 +61,7 @@ Add::Add(CmdID* cmdID,
  *
  * @return the command name property
  */    
-char* Add::getName() {
+const char* Add::getName() {
     return COMMAND_NAME;
 }
 

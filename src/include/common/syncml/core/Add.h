@@ -62,7 +62,7 @@ class Add : public ModificationCommand {
          *
          * @return the command name property
          */    
-        char*  getName();
+        const char* getName();
 
         ArrayElement* clone();
    

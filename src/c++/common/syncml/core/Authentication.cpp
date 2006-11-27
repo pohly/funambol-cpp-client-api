@@ -44,13 +44,13 @@ Authentication::~Authentication() {
 Authentication::Authentication(Authentication* auth) {
     
     initialize();
-    this->data            = stringdup(auth->getData(NULL));
-    this->username        = stringdup(auth->getUsername(NULL));
-    this->password        = stringdup(auth->getPassword(NULL));
+    this->data            = stringdup(auth->getData());
+    this->username        = stringdup(auth->getUsername());
+    this->password        = stringdup(auth->getPassword());
     this->encode          = auth->encode;
-    this->deviceId        = stringdup(auth->getDeviceId(NULL));
-    this->syncMLVerProto  = stringdup(auth->getSyncMLVerProto(NULL));
-    this->principalId     = stringdup(auth->getPrincipalId(NULL));
+    this->deviceId        = stringdup(auth->getDeviceId());
+    this->syncMLVerProto  = stringdup(auth->getSyncMLVerProto());
+    this->principalId     = stringdup(auth->getPrincipalId());
     this->meta            = auth->getMeta()->clone();
 
 }
@@ -75,11 +75,11 @@ void Authentication::initialize() {
  * @param data the data of authentication
  *
  */
-Authentication::Authentication(Meta* meta, char* data){
+Authentication::Authentication(Meta* meta, const char* data){
     initialize();
     
     this->meta = meta->clone();
-    createAuthentication(meta->getType(NULL), data);
+    createAuthentication(meta->getType(), data);
 
 }
 
@@ -90,7 +90,7 @@ Authentication::Authentication(Meta* meta, char* data){
  * @param data the data of authentication
  *
  */
-Authentication::Authentication(char* type, char* data) {
+Authentication::Authentication(const char* type, const char* data) {
     initialize();
     
     createAuthentication(type, data);
@@ -104,9 +104,9 @@ Authentication::Authentication(char* type, char* data) {
  * @param encode true if data is encoded, false otherwise
  *
  */
-Authentication::Authentication(char* type,
-                      char* data,
-                      BOOL encode) {
+Authentication::Authentication(const char* type,
+                               const char* data,
+                               BOOL encode) {
 
     
     initialize();
@@ -124,9 +124,9 @@ Authentication::Authentication(char* type,
  * @param password the password
  *
  */
-Authentication::Authentication(char* type,
-                      char* username,
-                      char* password) {
+Authentication::Authentication(const char* type,
+                               const char* username,
+                               const char* password) {
     
     
     initialize();
@@ -142,27 +142,24 @@ Authentication::Authentication(char* type,
 
 }
 
-void Authentication::createAuthentication(char* type, char* data) {
+void Authentication::createAuthentication(const char* type, const char* data) {
     
-    BOOL del = FALSE;    
-
+    const char* realtype;
+    
     if (strstr(AUTH_SUPPORTED_TYPES, type) == NULL) {
-        type = new char[DIM_64];
-        sprintf(type, AUTH_TYPE_BASIC);         
-        del = TRUE;
+        // invalid parameter? fall back to basic authentication
+        realtype = AUTH_TYPE_BASIC;
+    } else {
+        realtype = type;
     }
 
-    if (strcmp(type, AUTH_TYPE_BASIC) == 0) {
+    if (strcmp(realtype, AUTH_TYPE_BASIC) == 0) {
         this->setType(AUTH_TYPE_BASIC);
         this->setFormat(FORMAT_B64);
         this->setData(data);
-    } else if (strcmp(type, AUTH_TYPE_MD5) == 0) {
+    } else if (strcmp(realtype, AUTH_TYPE_MD5) == 0) {
         this->setType(AUTH_TYPE_MD5);
         this->setData(data);
-    }
-    
-    if (del) {
-        delete [] type; type = NULL;
     }
 }
 
@@ -171,12 +168,12 @@ void Authentication::createAuthentication(char* type, char* data) {
  *
  * @return the type property
  */
-char* Authentication::getType(char* retType) {
+const char* Authentication::getType() {
     
     if (meta == NULL) {
         return NULL;
     }
-    return meta->getType(retType);
+    return meta->getType();
 }
 
 /**
@@ -184,7 +181,7 @@ char* Authentication::getType(char* retType) {
  *
  * @param type the type property
  */
-void Authentication::setType(char* type) {
+void Authentication::setType(const char*type) {
     if (meta == NULL) {
         meta = new Meta();
     }
@@ -197,11 +194,11 @@ void Authentication::setType(char* type) {
  *
  * @return the format property
  */
-char* Authentication::getFormat(char* retFormat) {
+const char* Authentication::getFormat() {
     if (meta == NULL) {
         return NULL;
     }
-    return meta->getFormat(retFormat);
+    return meta->getFormat();
 
 }
 
@@ -210,7 +207,7 @@ char* Authentication::getFormat(char* retFormat) {
  *
  * @param format the format property
  */
-void Authentication::setFormat(char* format) {
+void Authentication::setFormat(const char*format) {
     if (meta == NULL) {
         meta = new Meta();
     }
@@ -222,12 +219,9 @@ void Authentication::setFormat(char* format) {
  *
  * @return the data property
  */
-char* Authentication::getData(char* retData) {
+const char* Authentication::getData() {
     
-    if (retData == NULL) {
-        return data;
-    }
-    return strcpy(retData, data);
+    return data;
 }
 
 /**
@@ -236,14 +230,14 @@ char* Authentication::getData(char* retData) {
  * @param data the data property
  *
  */
-void Authentication::setData(char* data) {
+void Authentication::setData(const char*data) {
 
     if (data == NULL) {
         // TBD
         return;
     }
     
-    char* type = this->getType(NULL);
+    const char* type = this->getType();
 
     if (strcmp(type,AUTH_TYPE_BASIC) == 0) {
         char* clearData = NULL;
@@ -335,7 +329,7 @@ void Authentication::setData(char* data) {
     }
 
     if (strcmp(type, AUTH_TYPE_MD5) == 0) {
-        if (meta->getFormat(NULL) == NULL) {
+        if (meta->getFormat() == NULL) {
             this->setFormat(FORMAT_B64);
         }
         this->setUsername(data);
@@ -349,13 +343,8 @@ void Authentication::setData(char* data) {
 *
 * @return the username property
 */
-char* Authentication::getUsername(char* retUsername) {
-    if (retUsername == NULL) {
-        return username;
-    }
-    return strcpy(retUsername, username);
-
-
+const char* Authentication::getUsername() {
+    return username;
 }
 
 /**
@@ -363,7 +352,7 @@ char* Authentication::getUsername(char* retUsername) {
 *
 * @param username the username property
 */
-void Authentication::setUsername(char* username) {
+void Authentication::setUsername(const char*username) {
     if (this->username) {
         delete [] this->username; this->username = NULL;
     }
@@ -375,11 +364,8 @@ void Authentication::setUsername(char* username) {
 *
 * @return the password property
 */
-char* Authentication::getPassword(char* retPassword) {
-    if (retPassword == NULL) {
-        return password;
-    }
-    return strcpy(retPassword, password);
+const char* Authentication::getPassword() {
+    return password;
 }
 
 /**
@@ -387,7 +373,7 @@ char* Authentication::getPassword(char* retPassword) {
 *
 * @param password the password property
 */
-void Authentication::setPassword(char* password) {
+void Authentication::setPassword(const char*password) {
     if (this->password) {
         delete [] this->password; this->password = NULL;
     }
@@ -446,13 +432,8 @@ void Authentication::setMeta(Meta* meta) {
  *
  * @return deviceId the device identificator
  */
-char* Authentication::getDeviceId(char* retDeviceId) {
-    if (retDeviceId == NULL) {
-        return deviceId;
-    }
-    return strcpy(retDeviceId, deviceId);
-
-
+const char* Authentication::getDeviceId() {
+    return deviceId;
 }
 
 /**
@@ -460,7 +441,7 @@ char* Authentication::getDeviceId(char* retDeviceId) {
  *
  * @param deviceId the device identificator
  */
-void Authentication::setDeviceId(char* deviceId) {
+void Authentication::setDeviceId(const char*deviceId) {
     if (this->deviceId) {
         delete [] this->deviceId; this->deviceId = NULL;
     }
@@ -473,11 +454,8 @@ void Authentication::setDeviceId(char* deviceId) {
  *
  * @return syncMLVerProto the SyncML Protocol version.
  */
-char* Authentication::getSyncMLVerProto(char* retSyncMLVerProto) {
-    if (retSyncMLVerProto == NULL) {
-        return syncMLVerProto;
-    }
-    return strcpy(retSyncMLVerProto, syncMLVerProto);    
+const char* Authentication::getSyncMLVerProto() {
+    return syncMLVerProto;
 }
 
 /**
@@ -487,7 +465,7 @@ char* Authentication::getSyncMLVerProto(char* retSyncMLVerProto) {
  * @param syncMLVerProto the SyncML Protocol version.
  *
  */
-void Authentication::setSyncMLVerProto(char* syncMLVerProto) {
+void Authentication::setSyncMLVerProto(const char*syncMLVerProto) {
     if (this->syncMLVerProto) {
         delete [] this->syncMLVerProto; this->syncMLVerProto = NULL;
     }
@@ -499,18 +477,15 @@ void Authentication::setSyncMLVerProto(char* syncMLVerProto) {
  *
  * @return principalId the principal identificator
  */
-char* Authentication::getPrincipalId(char* retPrincipalId) {
-    if (retPrincipalId == NULL) {
-        return principalId;
-    }
-    return strcpy(retPrincipalId, principalId);    
+const char* Authentication::getPrincipalId() {
+    return principalId;
 }
 /**
  * Sets the principal identificator
  *
  * @param principalId the principal identificator
  */
-void Authentication::setPrincipalId(char* principalId) {
+void Authentication::setPrincipalId(const char*principalId) {
      if (this->principalId) {
         delete [] this->principalId; this->principalId = NULL;
     }

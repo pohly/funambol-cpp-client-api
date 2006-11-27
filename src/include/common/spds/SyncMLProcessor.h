@@ -40,7 +40,7 @@
         /*
          * It include the common part of getSyncHdrStatusCode and getAlertStatusCode
          */
-        int getStatusCode(SyncBody* syncBody, SyncSource* source, char*  commandName) EXTRA_SECTION_01;        
+        int getStatusCode(SyncBody* syncBody, SyncSource* source, const char* commandName) EXTRA_SECTION_01;        
         /*
          * Returns the status code for the SyncHeader command included
          * in the message sent by the client.
@@ -59,7 +59,7 @@
         /*
         * Return the command of the given commandName
         */
-        AbstractCommand* getCommand(SyncBody* syncBody, char*  commandName, int index) EXTRA_SECTION_01;
+        AbstractCommand* getCommand(SyncBody* syncBody, const char* commandName, int index) EXTRA_SECTION_01;
         
          /*
         * To get a generic array element. It returns the <index> arrayElement it founds.
@@ -132,12 +132,12 @@
          *
          * @param msg - the SyncHdr message - NOT NULL
          */
-        char*  getRespURI(SyncHdr* msg) EXTRA_SECTION_01;
+        const char* getRespURI(SyncHdr* msg) EXTRA_SECTION_01;
 
         /*
          * Returns an ArrayList containing the command given by commandName. It uses the getCommand method
          */
-        ArrayList* getCommands(SyncBody* syncBody, char*  commandName) EXTRA_SECTION_01;
+        ArrayList* getCommands(SyncBody* syncBody, const char* commandName) EXTRA_SECTION_01;
        
         /* To retrieve a (NULL terminated) list of source names from list of Alert commands from server.
          * @return: a new array of source names (NULL terminated) - must be freed by the caller.

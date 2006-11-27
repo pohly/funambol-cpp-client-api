@@ -33,7 +33,7 @@ DataTransformer::~DataTransformer() {
     safeDelete(&name);
 }
 
-void DataTransformer::setName(char* n) {
+void DataTransformer::setName(const char*n) {
     if (name) {
         safeDelete(&name);
     }
@@ -41,11 +41,7 @@ void DataTransformer::setName(char* n) {
     name = stringdup(n);
 }
 
-char* DataTransformer::getName(char* n) {
-    if (n && name) {
-        return strcpy(n, name);
-    }
-
+const char* DataTransformer::getName() {
     return name;
 }
 

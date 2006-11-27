@@ -92,7 +92,7 @@ void Log::setLogName(const char* configLogName) {
 * return a the time to write into log file. If complete is true, it return 
 * the date too, else only hours, minutes, seconds and milliseconds
 */ 
-char* getCurrentTime(BOOL complete) {
+static char* createCurrentTime(BOOL complete) {
     
     SYSTEMTIME sys_time;   
     TIME_ZONE_INFORMATION timezone;
@@ -173,7 +173,7 @@ BOOL Log::isLoggable(LogLevel level) {
 
 void Log::printMessage(const char* level, const char* msg, va_list argList) {       
     
-	char* currentTime = getCurrentTime(false);    
+	char* currentTime = createCurrentTime(false);    
     logFile = fopen(logDir, "a+");       
 	
 	fprintf(logFile, "%s [%s] - ", currentTime, level); 		
@@ -186,7 +186,7 @@ void Log::printMessage(const char* level, const char* msg, va_list argList) {
 
 void Log::reset(const char* title) {
     
-    char* currentTime = getCurrentTime(true);
+    char* currentTime = createCurrentTime(true);
     logFile = fopen(logDir, "w+");      
     fprintf(logFile, "%s - # %s\n\n", currentTime, title);
     fclose(logFile);

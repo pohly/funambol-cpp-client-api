@@ -92,7 +92,7 @@ class DeviceManagementNode : public ManagementNode {
          *
          * @param property - the property name
          */
-        virtual WCHAR* getPropertyValue(const WCHAR* property);
+        virtual char* readPropertyValue(const WCHAR* property);
 
 
         /*

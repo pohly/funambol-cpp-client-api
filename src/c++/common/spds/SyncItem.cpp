@@ -205,7 +205,7 @@ int SyncItem::transformData(const char* name, BOOL encode, const char* password)
  *
  * @param key - buffer where the key will be stored
  */
-WCHAR* SyncItem::getKey() {
+const WCHAR* SyncItem::getKey() {
         return key;
     }
 
@@ -311,7 +311,7 @@ void SyncItem::setDataType(const WCHAR* mimeType) {
  * Returns the SyncItem data mime type.
  *
  */
-WCHAR* SyncItem::getDataType() {
+const WCHAR* SyncItem::getDataType() {
     return type;
 }
 
@@ -336,11 +336,8 @@ SyncState SyncItem::getState() {
  *
  * @return the taregtParent property value
  */
-WCHAR* SyncItem::getTargetParent(WCHAR* parent) {
-    if (parent == NULL) {
-        return targetParent;
-    }
-    return wcscpy(parent, targetParent);
+const WCHAR* SyncItem::getTargetParent() {
+    return targetParent;
 }
 
 /**
@@ -360,11 +357,8 @@ void SyncItem::setTargetParent(const WCHAR* parent) {
  *
  * @return the sourceParent property value
  */
-WCHAR* SyncItem::getSourceParent(WCHAR* parent) {
-    if (parent == NULL) {
-        return sourceParent;
-    }
-    return wcscpy(parent, sourceParent);
+const WCHAR* SyncItem::getSourceParent() {
+    return sourceParent;
 }
 
 /**

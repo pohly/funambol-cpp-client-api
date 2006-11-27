@@ -42,12 +42,8 @@ StringElement::~StringElement() {
  * 
  * @return the value of string element
  */
-char* StringElement::getValue(char* retValue) {
-    if (retValue == NULL) {
-        return value;
-    }
-    return strcpy(retValue, value);
-
+const char* StringElement::getValue() {
+    return value;
 }
     
 /**

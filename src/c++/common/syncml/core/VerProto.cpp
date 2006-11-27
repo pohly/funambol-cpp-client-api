@@ -35,7 +35,7 @@ VerProto::~VerProto() {
  * @param version the protocol version - NOT NULL
  *
  */
-VerProto::VerProto(char* version) {
+VerProto::VerProto(const char* version) {
     this->version = NULL;
     setVersion(version);
 }
@@ -46,11 +46,8 @@ VerProto::VerProto(char* version) {
  * @return the protocol version - NOT NULL
  *
  */
-char* VerProto::getVersion(char* retVersion) {
-    if (retVersion == NULL) {
-        return version;
-    }
-    return strcpy(retVersion, version);
+const char* VerProto::getVersion() {
+    return version;
 }
 
 /**
@@ -59,7 +56,7 @@ char* VerProto::getVersion(char* retVersion) {
  * @param version the protocol version - NOT NULL
  *
  */
-void VerProto::setVersion(char* version) {
+void VerProto::setVersion(const char*version) {
     
     if (version == NULL) {
         // TBD

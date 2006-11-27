@@ -44,6 +44,6 @@
         URL& operator= (const char*  url) EXTRA_SECTION_03;
 
     protected:
-        void setURL(char*  u, char*  p, char*  h, char* r, unsigned int port) EXTRA_SECTION_03;
+        void setURL(const char* u, const char* p, const char* h, const char* r, unsigned int port) EXTRA_SECTION_03;
     };
 #endif

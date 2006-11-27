@@ -54,7 +54,7 @@ class SyncMap : public ArrayElement {
 
         /**
          * Sets a new value for the LUID property (as unsigned int). It internally
-         * calls setLUID(char* )
+         * calls setLUID(const char* )
          *
          * @param luid the new value
          */

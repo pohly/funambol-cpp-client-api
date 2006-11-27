@@ -38,7 +38,7 @@ PalmDeviceManager::PalmDeviceManager() : DeviceManager() {
 }
 
 
-ManagementNode* PalmDeviceManager::getManagementNode(char* node) {
+ManagementNode* PalmDeviceManager::getManagementNode(const char*node) {
     if (node==NULL) {
         return NULL;
     }

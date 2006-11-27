@@ -38,8 +38,8 @@ Chal::Chal(Meta* meta) {
     // type and format are pointers to meta.type and meta.format
     // fields. They are fred in the destructor
     //
-    char* type         = meta->getType(NULL);
-    char* format       = meta->getFormat(NULL);
+    const char* type         = meta->getType();
+    const char* format       = meta->getFormat();
     
     if (type == NULL) {
         // TBD
@@ -102,11 +102,8 @@ void Chal::setNextNonce(NextNonce* nextNonce) {
  *
  * @return authentication type.
  */
-char* Chal::getType(char* retType) {
-    if (retType == NULL) {
-        return meta->getType(NULL);
-    }
-    return strcpy(retType, meta->getType(NULL));
+const char* Chal::getType() {
+    return meta->getType();
 }
 
 /**
@@ -114,11 +111,8 @@ char* Chal::getType(char* retType) {
  *
  * @return format the authentication format
  */
-char* Chal::getFormat(char* retFormat) {
-     if (retFormat == NULL) {
-        return meta->getFormat(NULL);
-    }
-    return strcpy(retFormat, meta->getFormat(NULL));    
+const char* Chal::getFormat() {
+    return meta->getFormat();
 }
 
 /**

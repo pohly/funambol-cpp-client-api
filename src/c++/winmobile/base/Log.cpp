@@ -35,7 +35,7 @@ static char logPath[256] = "\\" ;
 * return a the time to write into log file. If complete is true, it return 
 * the date too, else only hours, minutes, seconds and milliseconds
 */ 
-static char*  getCurrentTime(BOOL complete) {
+static char* createCurrentTime(BOOL complete) {
     
     SYSTEMTIME sys_time;   
     TIME_ZONE_INFORMATION timezone;
@@ -146,7 +146,7 @@ BOOL Log::isLoggable(LogLevel level) {
 
 void Log::printMessage(const char*  level, const char*  msg, va_list argList) {       
     
-	char*  currentTime = getCurrentTime(false);    
+	char*  currentTime = createCurrentTime(false);    
     logFile = fopen(logFullName, "a+");       
 	
 	fprintf(logFile, "%s [%s] - ", currentTime, level); 		
@@ -159,7 +159,7 @@ void Log::printMessage(const char*  level, const char*  msg, va_list argList) {
 
 void Log::printMessageW(const char* level, const WCHAR* msg, va_list argList) {       
     
-	char*  currentTime = getCurrentTime(false);    
+	char*  currentTime = createCurrentTime(false);    
     logFile = fopen(logFullName, "a+");       
 	
 	fprintf(logFile, "%s [%s] - ", currentTime, level);
@@ -176,7 +176,7 @@ void Log::reset(const char*  title) {
     
     const char *t = (title) ? title : "Funambol SDK C++ Log";
 
-    char*  currentTime = getCurrentTime(true);
+    char*  currentTime = createCurrentTime(true);
     memset(logFullName, 0, 512*sizeof(char));
     sprintf(logFullName, "%s%s", logPath, logName);
     logFile = fopen(logFullName, "w+");      
@@ -190,7 +190,7 @@ void Log::reset(const char*  title) {
 /*
 void Log::printMessage(const char*  level, const char*  msg) {           	
 	
-    char*  currentTime = getCurrentTime(false);
+    char*  currentTime = createCurrentTime(false);
     logFile     = _wfopen(logPath, TEXT("a+"));       
     fwprintf(logFile, TEXT("%s [%s] - %s\n"), currentTime, level, msg); fflush(logFile);
 	fclose(logFile);

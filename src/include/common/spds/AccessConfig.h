@@ -99,7 +99,7 @@ class AccessConfig {
          * @param buf the destination buffer
          * @param v the new value (CAN BE NULL)
          */
-        void set(char** buf, const char*  v) EXTRA_SECTION_02;
+        void set(char* * buf, const char*  v) EXTRA_SECTION_02;
 
     public:
 
@@ -183,7 +183,7 @@ class AccessConfig {
         /**
          * Returns the proxyUsername value.
          */
-        char*  getProxyUsername() const EXTRA_SECTION_02;
+        const char* getProxyUsername() const EXTRA_SECTION_02;
 
         /**
          * Sets a new proxyUsername value.
@@ -195,7 +195,7 @@ class AccessConfig {
         /**
          * Returns the proxyPassword value.
          */
-        char*  getProxyPassword() const EXTRA_SECTION_02;
+        const char* getProxyPassword() const EXTRA_SECTION_02;
 
         /**
          * Sets a new proxyPassword value.

@@ -24,12 +24,12 @@ MetInf::MetInf() {
         NULL, NULL, NULL);
 }
 
-MetInf::MetInf(char*    format    ,
-               char*    type      ,
-               char*    mark      ,
+MetInf::MetInf(const char*    format    ,
+               const char*    type      ,
+               const char*    mark      ,
                long        size      ,
                Anchor*     anchor    ,
-               char*    version   ,
+               const char*    version   ,
                NextNonce*  nonce     ,
                long        maxMsgSize,
                long        maxObjSize,
@@ -146,12 +146,8 @@ void MetInf::setSize(long size) {
  *
  * @return format
  */
-char* MetInf::getFormat(char* retFormat) {
-	
-	if (retFormat == NULL) {
-        return format;
-    }
-    return strcpy(retFormat, type);
+const char* MetInf::getFormat() {
+    return format;
 }
 
 /**
@@ -171,11 +167,8 @@ void MetInf::setFormat(const char* format) {
  *
  * @return type
  */
-char* MetInf::getType(char* retType) {
-	if (retType == NULL) {
-        return type;
-    }
-    return strcpy(retType, type);
+const char* MetInf::getType() {
+    return type;
 }
 
 /**
@@ -195,11 +188,8 @@ void MetInf::setType(const char* type) {
  *
  * @return mark
  */
-char* MetInf::getMark(char* retMark) {
-	if (retMark == NULL) {
-        return mark;
-    }
-    return strcpy(retMark, mark);
+const char* MetInf::getMark() {
+    return mark;
 }
 
 /**
@@ -330,12 +320,8 @@ void MetInf::setMaxObjSize(long maxObjSize) {
  *
  * @return version
  */
-char* MetInf::getVersion(char* retVersion) {
-	if (retVersion == NULL) {
-        return version;
-    }
-    return strcpy(retVersion, version);
-    
+const char* MetInf::getVersion() {
+    return version;
 }
 
 /**

@@ -167,8 +167,8 @@ StringBuffer* Formatter::getSyncHdr(SyncHdr* syncHdr) {
     source    = getSource   (syncHdr->getSource());
     target    = getTarget   (syncHdr->getTarget());    
     cred      = getCred     (syncHdr->getCred());
-    msgID     = getValue    (MSG_ID,  syncHdr->getMsgID(NULL));
-    respURI   = getValue    (RESP_URI, syncHdr->getRespURI(NULL));
+    msgID     = getValue    (MSG_ID,  syncHdr->getMsgID());
+    respURI   = getValue    (RESP_URI, syncHdr->getRespURI());
     meta      = getMeta     (syncHdr->getMeta());
     
     if (NotZeroStringBufferLenght(9, sessionID, verDTD, verProto, source, target, cred, msgID, respURI, meta)) {
@@ -217,7 +217,7 @@ StringBuffer* Formatter::getAuthentication(Authentication* auth) {
     StringBuffer* data         = NULL;
     StringBuffer* meta         = NULL;
     
-    data = getValue(DATA, auth->getData(NULL));
+    data = getValue(DATA, auth->getData());
     meta = getMeta(auth->getMeta());
     
     if (NotZeroStringBufferLenght(2, data, meta)) {
@@ -268,12 +268,12 @@ StringBuffer* Formatter::getMetInf(MetInf* metInf) {
 
     // get all the values
 
-    format       = getValue(FORMAT, metInf->getFormat(NULL), METINFO);
-    type         = getValue(TYPE,   metInf->getType(NULL), METINFO); 
-    mark         = getValue(MARK,   metInf->getMark(NULL));
+    format       = getValue(FORMAT, metInf->getFormat(), METINFO);
+    type         = getValue(TYPE,   metInf->getType(), METINFO); 
+    mark         = getValue(MARK,   metInf->getMark());
     
     anchor       = getAnchor(metInf->getAnchor());
-    version      = getValue(VERSIONSTR, metInf->getVersion(NULL)); 
+    version      = getValue(VERSIONSTR, metInf->getVersion()); 
 
     nextNonce    = getNextNonce(metInf->getNextNonce());
     
@@ -472,7 +472,7 @@ StringBuffer* Formatter::getSessionID(SessionID* sessionID) {
         return NULL;
 
     StringBuffer* s = NULL;
-    s = getValue(SESSION_ID, sessionID->getSessionID(NULL));    
+    s = getValue(SESSION_ID, sessionID->getSessionID());    
     return s;    
 }
 
@@ -499,7 +499,7 @@ StringBuffer* Formatter::getVerProto(VerProto* verProto) {
         return NULL;
 
     StringBuffer* s = NULL;
-    s = getValue(VER_PROTO, verProto->getVersion(NULL));
+    s = getValue(VER_PROTO, verProto->getVersion());
     return s;    
 }
 
@@ -518,7 +518,7 @@ StringBuffer* Formatter::getExtraCommandList(ArrayList* commands) {
     StringBuffer*   map             = NULL;
     StringBuffer*   alert           = NULL;
     StringBuffer*   get             = NULL;
-    char*          name            = NULL;
+    const char*     name            = NULL;
     StringBuffer*   tmp             = NULL;
     /*
     * Use the name of the command to get the proper action to invoke
@@ -584,7 +584,7 @@ StringBuffer* Formatter::getCommonCommandList(ArrayList* commands) {
     StringBuffer*   dels            = NULL;
     StringBuffer*   replaces        = NULL;
     StringBuffer*   copies          = NULL;
-    char*          name            = NULL;
+    const char*    name            = NULL;
     StringBuffer*   tmp             = NULL;
     /*
     * Use the name of the command to get the proper action to invoke
@@ -637,11 +637,11 @@ StringBuffer* Formatter::getCommonCommandList(ArrayList* commands) {
 /*
 * Used to retrieve a specific command like SYNC or ATOMIC or SEQUENCE
 */
-StringBuffer* Formatter::getSpecificCommand(ArrayList* commands, char* commandName) {
+StringBuffer* Formatter::getSpecificCommand(ArrayList* commands, const char*commandName) {
     
     StringBuffer*   s               = NULL;        
     StringBuffer*   ret             = NULL;   
-    char*          name            = NULL;
+    const char*    name             = NULL;
     StringBuffer*   tmp             = NULL;
     /*
     * Use the name of the command to get the proper action to invoke
@@ -688,7 +688,7 @@ StringBuffer* Formatter::getSyncBody(SyncBody* syncBody) {
     StringBuffer*   ret             = NULL;
     StringBuffer*   s               = NULL;    
     ArrayList*      commands        = NULL;
-    char* name                     = NULL;
+    const char*     name            = NULL;
 
     StringBuffer*   alerts          = NULL;
     StringBuffer*   statusArray     = NULL;    
@@ -1456,8 +1456,8 @@ StringBuffer* Formatter::getResults(Results* results) {
     StringBuffer*        sourceRefs  = NULL;
     
     cmdID     = getCmdID   (results->getCmdID());
-    msgRef    = getValue   (MSG_REF, results->getMsgRef(NULL));
-    cmdRef    = getValue   (CMD_REF, results->getCmdRef(NULL));
+    msgRef    = getValue   (MSG_REF, results->getMsgRef());
+    cmdRef    = getValue   (CMD_REF, results->getCmdRef());
     meta      = getMeta    (results->getMeta());
     items     = getItems   (results->getItems());        
     sourceRefs = getSourceRefs(results->getSourceRef());
@@ -1523,9 +1523,9 @@ StringBuffer* Formatter::getStatus(Status* status) {
     StringBuffer*        chal        = NULL;
     
     cmdID     = getCmdID   (status->getCmdID());
-    msgRef    = getValue   (MSG_REF, status->getMsgRef(NULL));
-    cmdRef    = getValue   (CMD_REF, status->getCmdRef(NULL));
-    cmd       = getValue   (CMD     , status->getCmd(NULL));
+    msgRef    = getValue   (MSG_REF, status->getMsgRef());
+    cmdRef    = getValue   (CMD_REF, status->getCmdRef());
+    cmd       = getValue   (CMD     , status->getCmd());
     items     = getItems   (status->getItems());        
     cred      = getCred    (status->getCred());
     sourceRefs = getSourceRefs(status->getSourceRef());
@@ -1701,9 +1701,9 @@ StringBuffer* Formatter::getData(Data* data) {
     
     StringBuffer* ret       = NULL;
     StringBuffer* s         = NULL;
-    char* simpleData     = NULL;
+    const char* simpleData  = NULL;
 
-    if ((simpleData = data->getData(NULL)) != NULL) {        
+    if ((simpleData = data->getData()) != NULL) {        
         s = new StringBuffer();
         s->append(simpleData);
         ret = getValue(DATA, s);     
@@ -1798,14 +1798,14 @@ StringBuffer* Formatter::getDevInf(DevInf* devInf) {
     verDTD  = getVerDTD         (devInf->getVerDTD());
 
     // These elements should not be inserted if value is empty.
-    man     = getValueNotEmpty  (MAN, devInf->getMan(NULL));
-    mod     = getValueNotEmpty  (MOD, devInf->getMod(NULL));
-    oem     = getValueNotEmpty  (OEM, devInf->getOEM(NULL));
-    fwV     = getValueNotEmpty  (FWV, devInf->getFwV(NULL));
-    swV     = getValueNotEmpty  (SWV, devInf->getSwV(NULL));
-    hwV     = getValueNotEmpty  (HWV, devInf->getHwV(NULL));
-    devID   = getValueNotEmpty  (DEV_ID, devInf->getDevID(NULL));
-    devTyp  = getValueNotEmpty  (DEV_TYP, devInf->getDevTyp(NULL));
+    man     = getValueNotEmpty  (MAN, devInf->getMan());
+    mod     = getValueNotEmpty  (MOD, devInf->getMod());
+    oem     = getValueNotEmpty  (OEM, devInf->getOEM());
+    fwV     = getValueNotEmpty  (FWV, devInf->getFwV());
+    swV     = getValueNotEmpty  (SWV, devInf->getSwV());
+    hwV     = getValueNotEmpty  (HWV, devInf->getHwV());
+    devID   = getValueNotEmpty  (DEV_ID, devInf->getDevID());
+    devTyp  = getValueNotEmpty  (DEV_TYP, devInf->getDevTyp());
 
     dataStores = getDataStores(devInf->getDataStore());
     syncCap    = getSyncCap(devInf->getSyncCap());
@@ -1884,7 +1884,7 @@ StringBuffer* Formatter::getExt(Ext* ext) {
     StringBuffer*  xNam    = NULL;
     StringBuffer*  xVals   = NULL;
     
-    xNam  = getValue (XNAM, ext->getXNam(NULL));
+    xNam  = getValue (XNAM, ext->getXNam());
     xVals = getXVals (ext->getXVal());
     
     if (NotZeroStringBufferLenght(2, xNam, xVals)) {
@@ -1929,7 +1929,7 @@ StringBuffer* Formatter::getXVal(StringElement* xVal) {
         return NULL;
     
     StringBuffer* ret = NULL;               
-    ret  = getValue (XVAL, xVal->getValue(NULL));               
+    ret  = getValue (XVAL, xVal->getValue());               
     return ret;
 }
 
@@ -1976,7 +1976,7 @@ StringBuffer* Formatter::getDataStore(DataStore* dataStore) {
     StringBuffer*    syncCap        = NULL;  
     
     sourceRef   = getSourceRef(dataStore->getSourceRef());
-    displayName = getValue(DISPLAY_NAME, dataStore->getDisplayName(NULL));
+    displayName = getValue(DISPLAY_NAME, dataStore->getDisplayName());
     int maxGUIDSizeVal = dataStore->getMaxGUIDSize();
     maxGUIDSize = maxGUIDSizeVal > 0 ?
         getValue(MAX_GUID_SIZE, maxGUIDSizeVal) :
@@ -2094,7 +2094,7 @@ StringBuffer* Formatter::getDSMem(DSMem* dsMem) {
 }
 
 
-StringBuffer* Formatter::getContentTypeInfos(ArrayList* contentTypeInfos, char* TAG) {
+StringBuffer* Formatter::getContentTypeInfos(ArrayList* contentTypeInfos, const char*TAG) {
     
     if (!contentTypeInfos || !NotZeroArrayLenght(1, contentTypeInfos))
         return NULL;
@@ -2111,7 +2111,7 @@ StringBuffer* Formatter::getContentTypeInfos(ArrayList* contentTypeInfos, char* 
 }
 
 
-StringBuffer* Formatter::getContentTypeInfo(ContentTypeInfo* contentTypeInfo, char* TAG) {
+StringBuffer* Formatter::getContentTypeInfo(ContentTypeInfo* contentTypeInfo, const char*TAG) {
     
     if (!contentTypeInfo)
         return NULL;
@@ -2122,8 +2122,8 @@ StringBuffer* Formatter::getContentTypeInfo(ContentTypeInfo* contentTypeInfo, ch
     StringBuffer*  ctType  = NULL;
     StringBuffer*  verCT   = NULL;
     
-    ctType  = getValue (CT_TYPE, contentTypeInfo->getCTType(NULL));
-    verCT   = getValue (VER_CT, contentTypeInfo->getVerCT(NULL));
+    ctType  = getValue (CT_TYPE, contentTypeInfo->getCTType());
+    verCT   = getValue (VER_CT, contentTypeInfo->getVerCT());
     
     if (NotZeroStringBufferLenght(2, ctType, verCT)) {
         s = new StringBuffer();

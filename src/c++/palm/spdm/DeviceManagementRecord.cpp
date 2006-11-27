@@ -40,7 +40,7 @@ DeviceManagementRecord::~DeviceManagementRecord() {
     }
 }
 
-void DeviceManagementRecord::setData(WCHAR* data, unsigned int s) {
+void DeviceManagementRecord::setData(const WCHAR*data, unsigned int s) {
     if (record) {
         delete [] record; record = NULL;
         size = 0;
@@ -184,7 +184,7 @@ void DeviceManagementRecord::setData(ManagementObject& o) {
     delete [] data;
 }
 
-WCHAR* DeviceManagementRecord::getData() {
+const WCHAR* DeviceManagementRecord::getData() {
     return record;
 }
 
@@ -209,7 +209,7 @@ unsigned int DeviceManagementRecord::getFieldNumber() {
     return n;
 }
 
-WCHAR* DeviceManagementRecord::getField(unsigned int n) {
+const WCHAR* DeviceManagementRecord::getField(unsigned int n) {
     if ((record == NULL) || (n == 0) || (n > getFieldNumber())) {
         //
         // field not found!

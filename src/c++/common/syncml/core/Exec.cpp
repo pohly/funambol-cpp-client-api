@@ -59,7 +59,7 @@ Exec::Exec(CmdID*   cmdID,
  *
  * @return the command name property
  */   
-char* Exec::getName() {
+const char* Exec::getName() {
     return COMMAND_NAME;
 }
 

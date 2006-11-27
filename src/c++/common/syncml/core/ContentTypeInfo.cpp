@@ -65,11 +65,8 @@ ContentTypeInfo::ContentTypeInfo(const char* ctType, const char* verCT) {
  *
  * @return the content type properties
  */
-char* ContentTypeInfo::getCTType(char* retCTType) {
-    if (retCTType == NULL) {
-        return ctType;
-    }
-    return strcpy(retCTType, ctType);
+const char* ContentTypeInfo::getCTType() {
+    return ctType;
 }
 
 /**
@@ -89,11 +86,8 @@ void ContentTypeInfo::setCTType(const char* ctType) {
  *
  * @return the version of the content type
  */
-char* ContentTypeInfo::getVerCT(char* retVerCT) {
-    if (retVerCT == NULL) {
-        return verCT;
-    }
-    return strcpy(retVerCT, verCT);
+const char* ContentTypeInfo::getVerCT() {
+    return verCT;
 }
 
 /**

@@ -41,7 +41,7 @@ class VerProto {
          * @param version the protocol version - NOT NULL
          *
          */
-        VerProto(char*  version);            
+        VerProto(const char*  version);            
     
         /**
          * Returns the protocol version.
@@ -49,7 +49,7 @@ class VerProto {
          * @return the protocol version - NOT NULL
          *
          */
-        char*  getVersion(char*  retVersion);
+        const char* getVersion();
     
         /**
          * Sets the protol version.
@@ -57,7 +57,7 @@ class VerProto {
          * @param version the protocol version - NOT NULL
          *
          */
-        void setVersion(char*  version);        
+        void setVersion(const char* version);        
         
         VerProto* clone();
    

@@ -239,11 +239,8 @@ void Item::setMoreData(BOOL moreData) {
  *
  * @return the taregtParent property value
  */
-char* Item::getTargetParent(char* parent) {
-    if (parent == NULL) {
-        return targetParent;
-    }
-    return strcpy(parent, targetParent);
+const char* Item::getTargetParent() {
+    return targetParent;
 }
 
 /**
@@ -251,7 +248,7 @@ char* Item::getTargetParent(char* parent) {
  *
  * @param parent the taregtParent property
  */
-void Item::setTargetParent(char* parent) {
+void Item::setTargetParent(const char*parent) {
     if (targetParent) {
         delete [] targetParent; targetParent = NULL;
     }
@@ -263,11 +260,8 @@ void Item::setTargetParent(char* parent) {
  *
  * @return the sourceParent property value
  */
-char* Item::getSourceParent(char* parent) {
-    if (parent == NULL) {
-        return sourceParent;
-    }
-    return strcpy(parent, sourceParent);
+const char* Item::getSourceParent() {
+    return sourceParent;
 }
 
 /**
@@ -275,7 +269,7 @@ char* Item::getSourceParent(char* parent) {
  *
  * @param parent the sourceParent property
  */
-void Item::setSourceParent(char* parent) {
+void Item::setSourceParent(const char*parent) {
     if (sourceParent) {
         delete [] sourceParent; sourceParent = NULL;
     }

@@ -78,15 +78,15 @@
         const char*  getPassword() EXTRA_SECTION_01;
         void setClientAuthType(const char*  t) EXTRA_SECTION_01;
         void setClientNonce(const char*  t) EXTRA_SECTION_01;
-        const char*  getClientAuthType(char*  t=0 /* deprecated */) EXTRA_SECTION_01;
-        const char*  getClientNonce(char*  t=0 /* deprecated */) EXTRA_SECTION_01;
+        const char*  getClientAuthType() EXTRA_SECTION_01;
+        const char*  getClientNonce() EXTRA_SECTION_01;
 
         void setServerID(const char*  t) EXTRA_SECTION_01;
         void setServerPWD(const char*  t) EXTRA_SECTION_01;
         void setServerAuthType(const char*  t) EXTRA_SECTION_01;
         void setServerNonce(const char*  t) EXTRA_SECTION_01;
-        const char*  getServerAuthType(char*  t=0 /* deprecated */) EXTRA_SECTION_01;
-        const char*  getServerNonce(char*  t=0 /* deprecated */) EXTRA_SECTION_01;
+        const char*  getServerAuthType() EXTRA_SECTION_01;
+        const char*  getServerNonce() EXTRA_SECTION_01;
         
         void setServerAuthRequired(BOOL t) EXTRA_SECTION_01;
         BOOL getServerAuthRequired() EXTRA_SECTION_01;

@@ -56,11 +56,11 @@ ManagementNode::~ManagementNode() {
 /*
  * Returns the full node name (in a new-allocated buffer)
  */
-char * ManagementNode::getFullName(){
-    char *ret = new char[strlen(context)+strlen(name)+2];
-
+char* ManagementNode::createFullName(){
+    char*ret = new char[strlen(context)+strlen(name)+2];
+    
     sprintf(ret, "%s/%s", context, name);
-	return ret;
+    return ret;
 }
 
 int ManagementNode::setFullName(const char *fullname) {

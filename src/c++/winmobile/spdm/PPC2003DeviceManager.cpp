@@ -61,7 +61,7 @@ PPC2003DeviceManager::PPC2003DeviceManager() : DeviceManager() {
  * The ManagementNode is created with the new operator and must be
  * discarded by the caller with the operator delete.
  */
-ManagementNode* PPC2003DeviceManager::getManagementNode(WCHAR* node) {
+ManagementNode* PPC2003DeviceManager::getManagementNode(const WCHAR*node) {
     WCHAR context[DIM_MANAGEMENT_PATH];
     WCHAR leafName   [DIM_MANAGEMENT_PATH];
 

@@ -57,7 +57,7 @@ class DeviceManagementNode: public ManagementNode {
          *
          * @param property - the property name
          */
-        char*  getPropertyValue(const char*  property);
+        char* readPropertyValue(const char*  property);
 
         /*
          * Sets a property value.

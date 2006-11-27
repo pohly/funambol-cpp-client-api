@@ -50,8 +50,8 @@ class Results : public ResponseCommand {
          *
          */
         Results(CmdID*      cmdID,
-                char*     msgRef,
-                char*     cmdRef,
+                const char*     msgRef,
+                const char*     cmdRef,
                 Meta*       meta,
                 ArrayList*  targetRef,  // it could be and arraylist with only the first element assigned
                 ArrayList*  sourceRef,  // it could be and arraylist with only the first element assigned
@@ -62,7 +62,7 @@ class Results : public ResponseCommand {
          *
          * @return the command name
          */
-        char*  getName();
+        const char* getName();
 
         ArrayElement* clone();
    

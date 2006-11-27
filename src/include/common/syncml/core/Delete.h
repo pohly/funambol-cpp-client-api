@@ -66,7 +66,7 @@ class Delete : public ModificationCommand {
          *
          * @return the command name property
          */    
-        char*  getName();
+        const char* getName();
 
         /**
          * Gets the Archive property

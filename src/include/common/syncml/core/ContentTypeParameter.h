@@ -81,14 +81,14 @@ class ContentTypeParameter : public ArrayElement {
          *
          * @return the parameter name propeties
          */
-        char*   getParamName(char*  retParamName);
+        const char* getParamName();
     
         /**
          * Sets the param name property
          *
          * @param paramName the param name property
          */
-        void setParamName(char*  paramName);
+        void setParamName(const char* paramName);
     
         /**
          * Gets the array of value for parameter
@@ -109,7 +109,7 @@ class ContentTypeParameter : public ArrayElement {
          *
          * @return the display name propeties
          */
-        char*  getDisplayName(char*  retDisplayName);
+        const char* getDisplayName();
     
         /**
          * Sets the display name of a given content type parameter
@@ -117,14 +117,14 @@ class ContentTypeParameter : public ArrayElement {
          * @param displayName the display name of a given content type parameter
          *
          */
-        void setDisplayName(char*  displayName);
+        void setDisplayName(const char* displayName);
     
         /**
          * Gets the data type propeties
          *
          * @return the data type propeties
          */
-        char*  getDataType(char*  retDataType);
+        const char* getDataType();
     
         /**
          * Sets the data type of a given content type parameter
@@ -132,7 +132,7 @@ class ContentTypeParameter : public ArrayElement {
          * @param dataType the data type of a given content type parameter
          *
          */
-        void setDataType(char*  dataType);
+        void setDataType(const char* dataType);
     
         /**
          * Gets the size propeties

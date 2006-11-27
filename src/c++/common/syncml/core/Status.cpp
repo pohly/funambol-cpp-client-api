@@ -138,11 +138,8 @@ void Status::setData(Data* data) {
 *
 * @return the cmd element
 */
-char* Status::getCmd(char* retCmd) {
-    if (retCmd == NULL) {
-        return cmd;
-    }
-    return strcpy(retCmd, cmd);
+const char* Status::getCmd() {
+    return cmd;
 }
 
 /**
@@ -168,7 +165,7 @@ void Status::setCmd(const char* cmd) {
 * @return the status code as int
 */
 int Status::getStatusCode() {
-    return strtol(data->getData(NULL), NULL, 10);
+    return strtol(data->getData(), NULL, 10);
     
 }
 
@@ -177,12 +174,12 @@ int Status::getStatusCode() {
 *
 * @return the command name
 */
-char* Status::getName() {
+const char* Status::getName() {
     return COMMAND_NAME;
 }
 
 ArrayElement* Status::clone() {
-    Status* ret = new Status(getCmdID(), getMsgRef(NULL), getCmdRef(NULL), getCmd(NULL), getTargetRef(),
+    Status* ret = new Status(getCmdID(), getMsgRef(), getCmdRef(), getCmd(), getTargetRef(),
                              getSourceRef(), getCred(), chal, data, getItems());
     return ret;
 }

@@ -187,11 +187,8 @@ void SyncHdr::setSessionID(SessionID* sessionID) {
 *
 * @return msgID the message identifier
 */
-char* SyncHdr::getMsgID(char* retMsgID) {
-    if (retMsgID == NULL) {
-        return msgID;
-    }
-    return strcpy(retMsgID, msgID);
+const char* SyncHdr::getMsgID() {
+    return msgID;
 }
 
 
@@ -200,7 +197,7 @@ char* SyncHdr::getMsgID(char* retMsgID) {
 *
 * @param msgID the message identifier
 */
-void SyncHdr::setMsgID(char* msgID) {
+void SyncHdr::setMsgID(const char*msgID) {
     if (this->msgID) {
         delete [] this->msgID; this->msgID = NULL;
     }
@@ -262,11 +259,8 @@ void SyncHdr::setSource(Source* source) {
 *
 * @return respURI the response URI
 */
-char* SyncHdr::getRespURI(char* retRespURI) {
-     if (retRespURI == NULL) {
-        return respURI;
-    }
-    return strcpy(retRespURI, respURI);
+const char* SyncHdr::getRespURI() {
+    return respURI;
 }
 
 
@@ -275,7 +269,7 @@ char* SyncHdr::getRespURI(char* retRespURI) {
 *
 * @param uri the new response URI; NOT NULL
 */
-void SyncHdr::setRespURI(char* uri) {
+void SyncHdr::setRespURI(const char*uri) {
     if (this->respURI) {
         delete [] this->respURI; this->respURI = NULL;
     }
@@ -359,7 +353,7 @@ void SyncHdr::setMeta(Meta* meta) {
     }
 }
 
-char* SyncHdr::getName() {
+const char* SyncHdr::getName() {
     return COMMAND_NAME;
 
 }

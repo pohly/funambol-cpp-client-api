@@ -327,7 +327,7 @@ NetIPAddr GetIPAddress(Char* hostName,UInt16 netRefNum,Int32 timeOut)
 }
 
 
-char* Sock::getContent()
+const char* Sock::getContent()
 {
     return content;
 }

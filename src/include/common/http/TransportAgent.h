@@ -113,7 +113,7 @@
         
         virtual void setUserAgent(const char*  ua);
 
-        virtual char*  getUserAgent();
+        virtual const char* getUserAgent();
 
         /**
          * Returns the buffer size

@@ -67,7 +67,7 @@ class Data {
      *
      * @return the data properties
      */
-    char*  getData(char*  retData = NULL);
+    const char* getData();
 
     Data* clone();
 };

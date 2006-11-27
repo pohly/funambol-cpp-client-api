@@ -242,7 +242,7 @@ SyncManager::~SyncManager() {
 int SyncManager::prepareSync(SyncSource** s) {
     
     char* initMsg               = NULL;
-    char* respURI               = NULL;
+    const char* respURI         = NULL;
     char* responseMsg           = NULL;
     SyncML*  syncml             = NULL;
     int ret                     = 0;
@@ -283,8 +283,8 @@ int SyncManager::prepareSync(SyncSource** s) {
     if (config.getAccessConfig().getUseProxy()) {
         //char* proxyHost = config.getAccessConfig().getProxyHost();
         //int    proxyPort = config.getAccessConfig().getProxyPort();
-        char* proxyUser = config.getAccessConfig().getProxyUsername();
-        char* proxyPwd  = config.getAccessConfig().getProxyPassword();
+        const char* proxyUser = config.getAccessConfig().getProxyUsername();
+        const char* proxyPwd  = config.getAccessConfig().getProxyPassword();
         proxy.setProxy(NULL, 0, proxyUser, proxyPwd);
     }
     
@@ -412,7 +412,7 @@ int SyncManager::prepareSync(SyncSource** s) {
                 deleteAlert(&alert);
             }
             cred = credentialHandler.getClientCredential();             
-            strcpy(credentialInfo, cred->getAuthentication()->getData(NULL));
+            strcpy(credentialInfo, cred->getAuthentication()->getData());
         }
 
         // actively send out device infos?
@@ -585,7 +585,7 @@ int SyncManager::prepareSync(SyncSource** s) {
                     authStatusCode = 212;                    
                 }
                 else {
-                    if (strcmp(credentialHandler.getServerAuthType(NULL), AUTH_TYPE_MD5) == 0 ||
+                    if (strcmp(credentialHandler.getServerAuthType(), AUTH_TYPE_MD5) == 0 ||
                         serverAuthRetries == 1)
                     {
                         serverChal   = credentialHandler.getServerChal(isServerAuthenticated);
@@ -625,7 +625,7 @@ int SyncManager::prepareSync(SyncSource** s) {
         int cmdindex;
         for (cmdindex = 0; cmdindex < list->size(); cmdindex++) {
             AbstractCommand* cmd = (AbstractCommand*)list->get(cmdindex);
-            char* name = cmd->getName();
+            const char* name = cmd->getName();
             if (name) {
                 BOOL isPut = !strcmp(name, PUT);
                 BOOL isGet = !strcmp(name, GET);
@@ -691,9 +691,9 @@ int SyncManager::prepareSync(SyncSource** s) {
             if (clientChal == NULL) {
                 requestedAuthType = credentialHandler.getClientAuthType();
             } else {
-                requestedAuthType = clientChal->getType(NULL);
+                requestedAuthType = clientChal->getType();
             }
-            if (strcmp(credentialHandler.getClientAuthType(NULL),requestedAuthType) != 0 ) {           
+            if (strcmp(credentialHandler.getClientAuthType(),requestedAuthType) != 0 ) {           
                 if (clientChal && strcmp(requestedAuthType, AUTH_TYPE_MD5) == 0) {
                     if (clientChal->getNextNonce()) {
                         credentialHandler.setClientNonce(clientChal->getNextNonce()->getValueAsBase64());
@@ -715,7 +715,7 @@ int SyncManager::prepareSync(SyncSource** s) {
             clientAuthRetries++;            
 
        } else {            
-            if (clientChal && strcmp(clientChal->getType(NULL), AUTH_TYPE_MD5) == 0) {    
+            if (clientChal && strcmp(clientChal->getType(), AUTH_TYPE_MD5) == 0) {    
                 if (clientChal->getNextNonce()) {
                     credentialHandler.setClientNonce(clientChal->getNextNonce()->getValueAsBase64()); 
                 }
@@ -744,8 +744,8 @@ int SyncManager::prepareSync(SyncSource** s) {
     
     } while(isClientAuthenticated == FALSE || isServerAuthenticated == FALSE);
 
-    config.getAccessConfig().setClientNonce(credentialHandler.getClientNonce(NULL));
-    config.getAccessConfig().setServerNonce(credentialHandler.getServerNonce(NULL));
+    config.getAccessConfig().setClientNonce(credentialHandler.getClientNonce());
+    config.getAccessConfig().setServerNonce(credentialHandler.getServerNonce());
     config.getDeviceConfig().setDevInfHash(devInfHash);
     
     if (isToExit()) {
@@ -1951,8 +1951,8 @@ Status *SyncManager::processSyncItem(Item* item, const CommandInfo &cmdInfo, Syn
     if (incomingItem) {
         ComplexData *cdata = item->getData();
         if (cdata) {
-            char* data = cdata->getData();
-            char* format = 0;
+            const char* data = cdata->getData();
+            const char* format = 0;
 
             //
             // Retrieving how the content has been encoded.

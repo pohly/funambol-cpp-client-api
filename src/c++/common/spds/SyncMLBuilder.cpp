@@ -47,7 +47,7 @@ SyncMLBuilder::SyncMLBuilder(char* t, char* d) {
     set(t, d);
 }
 
-void SyncMLBuilder::set(char* t, char* d) {    
+void SyncMLBuilder::set(const char*t, const char*d) {    
 
     target   = stringdup(t);   
     device   = stringdup(d);   
@@ -88,9 +88,9 @@ void SyncMLBuilder::addItemStatus(ArrayList* previousStatus, Status* status) {
     for (int i = 0; i < previousStatus->size(); i++) {
     
         s = (Status*)previousStatus->get(i);
-        if ((strcmp(s->getCmd(NULL), status->getCmd(NULL)) == 0) &&
-            (strcmp(s->getData()->getData(NULL), status->getData()->getData(NULL)) == 0) &&  
-            (strcmp(s->getCmdRef(NULL), status->getCmdRef(NULL)) == 0) ) {                    
+        if ((strcmp(s->getCmd(), status->getCmd()) == 0) &&
+            (strcmp(s->getData()->getData(), status->getData()->getData()) == 0) &&  
+            (strcmp(s->getCmdRef(), status->getCmdRef()) == 0) ) {                    
                     list = s->getItems();
                     for (int j = 0; j < status->getItems()->size(); j++) {                        
                         list->add(*((Item*)(status->getItems())->get(j)));  
@@ -236,14 +236,14 @@ Status* SyncMLBuilder::prepareSyncStatus(SyncSource& source, Sync* sync) {
 */
 Status* SyncMLBuilder::prepareAlertStatus(SyncSource& source, ArrayList* alerts, int authStatusCode) {
     /*
-    next = source.getNextAnchor(NULL);
+    next = source.getNextAnchor();
     <Status>\n
         <CmdID>2</CmdID>\n
         <MsgRef>1</MsgRef>
         <CmdRef>1</CmdRef>
         <Cmd>Alert</Cmd>\n
         <TargetRef>
-            sb.append(source.getRemoteURI(NULL));
+            sb.append(source.getRemoteURI());
         </TargetRef>\n
         <SourceRef>
             sb.append(source.getName(NULL, -1));
@@ -594,7 +594,7 @@ SyncHdr* SyncMLBuilder::prepareSyncHdr(Cred* cred, unsigned long maxMsgSize, uns
     Source*    sou       = NULL; 
     Meta* meta           = NULL;
 
-    if (cred && strcmp(cred->getType(NULL), AUTH_TYPE_MD5) == 0)      
+    if (cred && strcmp(cred->getType(), AUTH_TYPE_MD5) == 0)      
         sou = new Source(device, cred->getUsername());        
     else
         sou = new Source(device);

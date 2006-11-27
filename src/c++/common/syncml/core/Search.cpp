@@ -169,11 +169,8 @@ void Search::setSources(ArrayList* sources) {
 * @return the preferred language
 *
 */
-char* Search::getLang(char* retLang) {
-    if (retLang == NULL) {
-        return lang;
-    }
-    return strcpy(retLang, lang);
+const char* Search::getLang() {
+    return lang;
 }
 
 /**
@@ -181,7 +178,7 @@ char* Search::getLang(char* retLang) {
 *
 * @param lang the preferred language
 */
-void Search::setLang(char* lang) {
+void Search::setLang(const char*lang) {
     if (this->lang) {
         delete [] this->lang; this->lang = NULL;
     }
@@ -220,7 +217,7 @@ void Search::setData(Data* data) {
 *
 * @return the command name
 */
-char* Search::getName() {
+const char* Search::getName() {
     return COMMAND_NAME;
 }
 

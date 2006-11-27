@@ -46,12 +46,8 @@ WhereClause::~WhereClause() {
  * @return  the current property's value
  *
  */
-char* WhereClause::getProperty(char* property) {
-    if (property == NULL) {
-        return this->property;
-    }
-
-    return strcpy(property, this->property);
+const char* WhereClause::getProperty() {
+    return property;
 }
 
 /*
@@ -60,7 +56,7 @@ char* WhereClause::getProperty(char* property) {
  * @param property the new value
  *
  */
-void WhereClause::setProperty(char* property) {
+void WhereClause::setProperty(const char*property) {
     if (this->property) {
         delete this->property; this->property = NULL;
     }
@@ -76,12 +72,8 @@ void WhereClause::setProperty(char* property) {
  * @return  the current value's value
  *
  */
-char* WhereClause::getValue(char* value) {
-    if (value == NULL) {
-        return this->value;
-    }
-
-    return strcpy(value, this->value);
+const char* WhereClause::getValue() {
+    return value;
 }
 
 /*
@@ -90,7 +82,7 @@ char* WhereClause::getValue(char* value) {
  * @param value the new value
  *
  */
-void WhereClause::setValue(char* value) {
+void WhereClause::setValue(const char*value) {
     if (this->value) {
         delete this->value; this->value = NULL;
     }

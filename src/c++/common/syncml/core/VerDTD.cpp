@@ -47,7 +47,7 @@ VerDTD::VerDTD(const char* value) {
  *
  * @return value properties
  */
-char* VerDTD::getValue() {
+const char* VerDTD::getValue() {
     return value;
 }
 
@@ -56,7 +56,7 @@ char* VerDTD::getValue() {
  *
  * @param value the version of DTD
  */
-void VerDTD::setValue(char* value) {
+void VerDTD::setValue(const char*value) {
     if (this->value) {
         delete [] this->value; this->value = NULL;
     }

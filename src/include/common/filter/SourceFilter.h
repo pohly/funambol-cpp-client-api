@@ -98,14 +98,14 @@ public:
      *
      * @return type
      */
-    char*  getType(char*  buf = NULL);
+    const char* getType();
 
     /**
      * Sets type
      *
      * @param type the new type value
      */
-    void setType(char*  type);
+    void setType(const char* type);
 
 };
 

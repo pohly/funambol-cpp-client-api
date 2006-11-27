@@ -79,14 +79,14 @@ public:
      *
      * @param p0
      */
-    void setProperty(char*  p);
+    void setProperty(const char* p);
 
 
     /*
      * getProperty
      *
      */
-    char*  getProperty(char*  p = NULL);
+    const char* getProperty();
 
 
 
@@ -95,14 +95,14 @@ public:
      *
      * @param p0
      */
-    void setValue(char*  v);
+    void setValue(const char* v);
 
 
     /*
      * getvalue
      *
      */
-    char*  getValue(char*  v = NULL);
+    const char* getValue();
 
 
     /*

@@ -114,7 +114,7 @@ class DevInf {
          *
          * @return the device manufacturer property
          */
-        char*  getMan(char*  retMan);
+        const char* getMan();
 
         /**
          * Sets the device manufacturer property
@@ -129,7 +129,7 @@ class DevInf {
          *
          * @return the model name of device
          */
-        char*  getMod(char*  retMod);
+        const char* getMod();
 
         /**
          * Sets the device model property
@@ -144,7 +144,7 @@ class DevInf {
          *
          * @return the OEM property
          */
-        char*  getOEM(char*  retOem);
+        const char* getOEM();
 
         /**
          * Sets the Original Equipment Manufacturer of the device
@@ -159,7 +159,7 @@ class DevInf {
          *
          * @return the firmware version property
          */
-        char*  getFwV(char*  retFwV);
+        const char* getFwV();
 
         /**
          * Sets the firmware version property
@@ -174,7 +174,7 @@ class DevInf {
          *
          * @return the software version property
          */
-        char*  getSwV(char*  retSwV);
+        const char* getSwV();
 
         /**
          * Sets the software version property
@@ -189,7 +189,7 @@ class DevInf {
          *
          * @return the hardware version property
          */
-        char*  getHwV(char*  retHwv);
+        const char* getHwV();
 
         /**
          * Sets the hardware version property
@@ -204,7 +204,7 @@ class DevInf {
          *
          * @return the device identifier
          */
-        char*  getDevID(char*  retDevID);
+        const char* getDevID();
 
         /**
          * Sets the device identifier
@@ -219,7 +219,7 @@ class DevInf {
          *
          * @return the device type
          */
-        char*  getDevTyp(char*  retDevTyp);
+        const char* getDevTyp();
 
         /**
          * Sets the device type

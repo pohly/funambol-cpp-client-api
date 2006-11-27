@@ -29,7 +29,7 @@ ManagementObject::ManagementObject( const WCHAR* context,
 ManagementObject::~ManagementObject() {
 }
 
-void ManagementObject::getPropertyValue(const WCHAR* p, WCHAR* v, int size) {
+void ManagementObject::getPropertyValue(const WCHAR* p, WCHAR*v, int size) {
     KeyValuePair* property = NULL;
 
     int l = properties.size();
@@ -43,7 +43,7 @@ void ManagementObject::getPropertyValue(const WCHAR* p, WCHAR* v, int size) {
 
 }
 
-void ManagementObject::setPropertyValue(const WCHAR* p, WCHAR* v) {
+void ManagementObject::setPropertyValue(const WCHAR* p, const WCHAR*v) {
     KeyValuePair property((WCHAR*)p, v);
 
     properties.add(property);

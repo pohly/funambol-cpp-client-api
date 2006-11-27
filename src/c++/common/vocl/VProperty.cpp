@@ -187,7 +187,7 @@ WCHAR* VProperty::getParameterValue(WCHAR* paramName) {
             WKeyValuePair *parameter; 
             parameter = (WKeyValuePair* )parameters->get(i);
             if(!wcscmp(parameter->getKey(), paramName))
-                return (parameter->getValue());
+                return ((WCHAR *)parameter->getValue());
         }
     }
 
@@ -198,7 +198,7 @@ WCHAR* VProperty::getParameterValue(int index) {
     if (parameters != NULL) {
         WKeyValuePair *parameter;
         parameter = (WKeyValuePair*)parameters->get(index);
-        return parameter ? parameter->getValue() : NULL;
+        return parameter ? (WCHAR *)parameter->getValue() : NULL;
     }
 
     return NULL;
@@ -415,7 +415,7 @@ WCHAR* VProperty::getParameter(int index){
 
     WKeyValuePair *parameter;
     parameter = (WKeyValuePair*)parameters->get(index);
-    return parameter->getKey();
+    return (WCHAR *)parameter->getKey();
 }
 
 bool VProperty::equalsEncoding(WCHAR* encoding) {

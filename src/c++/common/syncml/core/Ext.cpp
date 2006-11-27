@@ -57,12 +57,8 @@ void Ext::initialize() {
 *
 * @return the name of the extension
 */
-char* Ext::getXNam(char* retXNam) {
-    if (retXNam == NULL) {
-        return xNam;
-    }
-    return strcpy(retXNam, xNam);
-
+const char* Ext::getXNam() {
+    return xNam;
 }
 
 /**
@@ -71,7 +67,7 @@ char* Ext::getXNam(char* retXNam) {
 * @param xNam the name of extension
 *
 */
-void Ext::setXNam(char* xNam) {
+void Ext::setXNam(const char*xNam) {
     if (this->xNam) {
         delete [] this->xNam; this->xNam = NULL;
     }

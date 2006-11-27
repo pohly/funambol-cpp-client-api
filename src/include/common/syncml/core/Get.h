@@ -62,21 +62,21 @@ class Get : public ItemizedCommand {
          * @return the preferred language
          *
          */
-        char*  getLang(char*  retLang);
+        const char* getLang();
     
         /**
          * Sets the preferred language
          *
          * @param lang new preferred language
          */
-        void setLang(char*  lang);
+        void setLang(const char* lang);
 
         /**
          * Gets the command name property
          *
          * @return the command name property
          */   
-        char*  getName();
+        const char* getName();
     
         ArrayElement* clone();
 

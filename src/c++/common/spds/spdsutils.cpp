@@ -239,7 +239,7 @@ int convertAndSave(const char *filename,
     return 0;
 }
 
-char *getSourceName(const char *uri)
+const char* getSourceName(const char *uri)
 {
 #if 0
 // FIXME

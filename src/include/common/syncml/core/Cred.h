@@ -45,28 +45,28 @@ class Cred {
          *
          * @return type property
          */
-        char*  getType(char*  retType);
+        const char* getType();
 
         /**
          * Gets format property
          *
          * @return format property
          */
-        char*  getFormat(char*  retFormat);
+        const char* getFormat();
 
         /**
          * Gets data property
          *
          * @return data property
          */
-        char*  getData(char*  retData);
+        const char* getData();
 
         /**
          * Gets the username stored in this credential
          *
          * @return the username stored in this credential
          */
-        char*  getUsername(char*  retUsername = NULL);
+        const char* getUsername();
 
 
         /**

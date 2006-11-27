@@ -122,11 +122,8 @@ void DataStore::setSourceRef(SourceRef* sourceRef) {
  *
  * @return the displayName properties
  */
-char* DataStore::getDisplayName(char* retDisplayName) {
-    if (retDisplayName == NULL) {
-        return displayName;
-    }
-    return strcpy(retDisplayName, displayName);
+const char* DataStore::getDisplayName() {
+    return displayName;
 }
 
 /**
@@ -135,7 +132,7 @@ char* DataStore::getDisplayName(char* retDisplayName) {
  * @param displayName the displauName property
  *
  */
-void DataStore::setDisplayName(char* displayName) {
+void DataStore::setDisplayName(const char*displayName) {
     if (this->displayName) {
         delete [] this->displayName; this->displayName = NULL;
     }

@@ -424,7 +424,7 @@ URL TransportAgent::getURL() {
  * Use releaseResponseBuffer() to release the memory buffer.
  */
 
-WCHAR* TransportAgent::getResponse();
+const WCHAR* TransportAgent::getResponse();
 
 /*
  * Releases the response buffer allocated by sendMessage().

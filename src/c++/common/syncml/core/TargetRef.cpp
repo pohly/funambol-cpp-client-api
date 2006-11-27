@@ -70,7 +70,7 @@ void TargetRef::initialize() {
  
 }
 
-void TargetRef::setQuery(char* val) {
+void TargetRef::setQuery(const char*val) {
     if (query) {
         delete [] query; query = NULL;
     }

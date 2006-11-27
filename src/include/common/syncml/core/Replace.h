@@ -58,7 +58,7 @@ class Replace : public ModificationCommand {
          *
          * @return the command name
          */
-        char*  getName();
+        const char* getName();
 
         ArrayElement* clone();
    

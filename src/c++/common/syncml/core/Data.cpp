@@ -78,11 +78,8 @@ void Data::setData(const char* data) {
 *
 * @return the data properties
 */
-char* Data::getData(char* retData) {
-    if (retData == NULL) {
-        return data;
-    }
-    return strcpy(retData, data);
+const char* Data::getData() {
+    return data;
 }
 
 Data* Data::clone() {

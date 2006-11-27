@@ -66,11 +66,8 @@ ResponseCommand::ResponseCommand(CmdID*         cmdID     ,
  * @return the message reference
  *
  */
-char* ResponseCommand::getMsgRef(char* retGetMsgRef) {
-    if (retGetMsgRef == NULL) {
-        return msgRef;
-    }    
-    return strcpy(retGetMsgRef, msgRef);
+const char* ResponseCommand::getMsgRef() {
+    return msgRef;
 }
 
 /**
@@ -91,11 +88,8 @@ void ResponseCommand::setMsgRef(const char* msgRef) {
  * @return the command reference
  *
  */
-char* ResponseCommand::getCmdRef(char* retGetCmdRef) {
-    if (retGetCmdRef == NULL) {
-        return cmdRef;
-    }
-    return strcpy(retGetCmdRef, cmdRef);
+const char* ResponseCommand::getCmdRef() {
+    return cmdRef;
 }
 
 /**

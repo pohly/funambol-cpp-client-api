@@ -47,7 +47,7 @@ class CmdID {
      * @param cmdID the cmdID of CmdID - NOT NULL
      *
      */
-    CmdID(char*  cmdID);
+    CmdID(const char*  cmdID);
 
     /**
      * Creates a new CmdID object with the given numeric cmdID
@@ -64,7 +64,7 @@ class CmdID {
      *
      * @return cmdID properties
      */
-    char*  getCmdID();
+    const char* getCmdID();
 
     CmdID* clone();
 

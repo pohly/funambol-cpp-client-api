@@ -68,13 +68,13 @@
 
         virtual ~DataTransformer() EXTRA_SECTION_01;
 
-        static DataTransformer* getEncoder(char*  name) EXTRA_SECTION_01;
-        static DataTransformer* getDecoder(char*  name) EXTRA_SECTION_01;
+        static DataTransformer* getEncoder(const char* name) EXTRA_SECTION_01;
+        static DataTransformer* getDecoder(const char* name) EXTRA_SECTION_01;
         static BOOL isSupportedEncoder(char*  name) EXTRA_SECTION_01;
         static BOOL isSupportedDecoder(char*  name) EXTRA_SECTION_01;
 
-        void setName(char*  name) EXTRA_SECTION_01;
-        char*  getName(char*  name = NULL) EXTRA_SECTION_01;
+        void setName(const char* name) EXTRA_SECTION_01;
+        const char* getName() EXTRA_SECTION_01;
 
         /**
          * Performs the transformation. data is the pointer to the

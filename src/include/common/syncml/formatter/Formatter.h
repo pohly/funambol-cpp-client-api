@@ -52,8 +52,8 @@ class Formatter {
         static StringBuffer*    getSource           (Source*        source);
         static StringBuffer*    getCred             (Cred*          cred);
         static StringBuffer*    getMeta             (Meta*          meta);
-        static StringBuffer*    getMsgID            (char*        value);
-        static StringBuffer*    getRespURI          (char*        value);
+        static StringBuffer*    getMsgID            (const char* value);
+        static StringBuffer*    getRespURI          (const char* value);
         static StringBuffer*    getAuthentication   (Authentication* auth);
         static StringBuffer*    getAnchor           (Anchor*        anchor);
         static StringBuffer*    getMetInf           (MetInf*        metInf);
@@ -76,8 +76,8 @@ class Formatter {
         static StringBuffer*    getSourceRefs       (ArrayList* sourceRefs);
         static StringBuffer*    getTargetRefs       (ArrayList* targetRefs);
         static StringBuffer*    getDSMem            (DSMem* dsMem);
-        static StringBuffer*    getContentTypeInfos (ArrayList* contentTypeInfos, char*  TAG);
-        static StringBuffer*    getContentTypeInfo  (ContentTypeInfo* contentTypeInfo, char*  TAG);
+        static StringBuffer*    getContentTypeInfos (ArrayList* contentTypeInfos, const char* TAG);
+        static StringBuffer*    getContentTypeInfo  (ContentTypeInfo* contentTypeInfo, const char* TAG);
         static StringBuffer*    getSyncCap          (SyncCap* syncCap);
         static StringBuffer*    getSyncTypes        (ArrayList* syncTypes);
         static StringBuffer*    getSyncType         (SyncType* syncType);
@@ -113,7 +113,7 @@ class Formatter {
         static StringBuffer*    getSourceArray      (SourceArray* sourceArray);
         static StringBuffer*    getExtraCommandList (ArrayList* commands);
         static StringBuffer*    getSequence         (Sequence* sequence);
-        static StringBuffer*    getSpecificCommand  (ArrayList* commands, char*  commandName);
+        static StringBuffer*    getSpecificCommand  (ArrayList* commands, const char* commandName);
         static StringBuffer*    getAtomic           (Atomic* atomic);
         static StringBuffer*    getFilter           (Filter* filter);
         static StringBuffer*    getProperty         (Property* property);

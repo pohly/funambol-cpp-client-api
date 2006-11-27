@@ -37,12 +37,8 @@ EMI::~EMI() {
  * 
  * @return the value of experimental meta information
  */
-char* EMI::getValue(char* retValue) {
-    if (retValue == NULL) {
-        return value;
-    }
-    return strcpy(retValue, value);
-
+const char* EMI::getValue() {
+    return value;
 }
     
 /**
@@ -51,7 +47,7 @@ char* EMI::getValue(char* retValue) {
  * @param value the value of experimental meta information
  *
  */
-void EMI::setValue(char* value) {
+void EMI::setValue(const char*value) {
     if (value == NULL || strlen(value) == 0) {
         // tbd
     }        

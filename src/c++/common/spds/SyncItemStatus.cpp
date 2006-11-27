@@ -64,12 +64,8 @@ SyncItemStatus::~SyncItemStatus() {
  *
  * @param key - buffer where the key will be stored
  */
-char* SyncItemStatus::getKey(char* itemStatusKey) {
-    if (itemStatusKey == NULL) {
-        return key;
-    }
-
-    return strcpy(itemStatusKey, key);
+const char* SyncItemStatus::getKey() {
+    return key;
 }
 
 /*
@@ -78,7 +74,7 @@ char* SyncItemStatus::getKey(char* itemStatusKey) {
  *
  * @param key - the key
  */
-void SyncItemStatus::setKey(char* itemStatusKey) {
+void SyncItemStatus::setKey(const char*itemStatusKey) {
 	if (key) {
 		delete [] key;
 	}
@@ -93,12 +89,8 @@ void SyncItemStatus::setKey(char* itemStatusKey) {
  *
  * @param itemStatusCmd - buffer where the itemStatusCmd will be stored
  */
-char* SyncItemStatus::getCmd(char* itemStatusCmd) {
-    if (itemStatusCmd == NULL) {
-        return cmd;
-    }
-
-    return strcpy(itemStatusCmd, cmd);
+const char* SyncItemStatus::getCmd() {
+    return cmd;
 }
 
 
@@ -108,7 +100,7 @@ char* SyncItemStatus::getCmd(char* itemStatusCmd) {
  *
  * @param itemStatusCmd - the itemStatusCmd
  */
-void SyncItemStatus::setCmd(char* itemStatusCmd) {
+void SyncItemStatus::setCmd(const char*itemStatusCmd) {
     if (cmd) {
 		delete [] cmd;
 	}

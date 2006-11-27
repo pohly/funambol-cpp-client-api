@@ -101,7 +101,7 @@ class DataStore : public ArrayElement {
          *
          * @return the displayName properties
          */
-        char*  getDisplayName(char*  retDisplayName);
+        const char* getDisplayName();
 
         /**
          * Sets the displayName property
@@ -109,7 +109,7 @@ class DataStore : public ArrayElement {
          * @param displayName the displauName property
          *
          */
-        void setDisplayName(char*  displayName);
+        void setDisplayName(const char* displayName);
 
         /**
          * Gets the maxGUIDSize properties

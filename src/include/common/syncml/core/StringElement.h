@@ -49,7 +49,7 @@ class StringElement : public ArrayElement {
          * 
          * @return the value of string element
          */
-        char*  getValue(char*  retValue);
+        const char* getValue();
 
     
         /**

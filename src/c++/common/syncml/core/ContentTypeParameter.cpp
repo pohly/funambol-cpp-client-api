@@ -91,11 +91,8 @@ ContentTypeParameter::ContentTypeParameter(char* paramName,
  *
  * @return the parameter name propeties
  */
-char* ContentTypeParameter::getParamName(char* retParamName) {
-    if (retParamName == NULL) {
-        return paramName;
-    }
-    return strcpy(retParamName, paramName);
+const char* ContentTypeParameter::getParamName() {
+    return paramName;
 }
 
 /**
@@ -103,7 +100,7 @@ char* ContentTypeParameter::getParamName(char* retParamName) {
  *
  * @param paramName the param name property
  */
-void ContentTypeParameter::setParamName(char* paramName) {
+void ContentTypeParameter::setParamName(const char*paramName) {
     if (this->paramName) {
         delete [] this->paramName; this->paramName = NULL;
     }
@@ -139,11 +136,8 @@ void ContentTypeParameter::setValEnum(ArrayList* valEnum) {
  *
  * @return the display name propeties
  */
-char* ContentTypeParameter::getDisplayName(char* retDisplayName) {
-    if (retDisplayName == NULL) {
-        return displayName;
-    }
-    return strcpy(retDisplayName, displayName);
+const char* ContentTypeParameter::getDisplayName() {
+    return displayName;
 }
 
 /**
@@ -152,7 +146,7 @@ char* ContentTypeParameter::getDisplayName(char* retDisplayName) {
  * @param displayName the display name of a given content type parameter
  *
  */
-void ContentTypeParameter::setDisplayName(char* displayName) {
+void ContentTypeParameter::setDisplayName(const char*displayName) {
     if (this->displayName) {
         delete [] this->displayName; this->displayName = NULL;
     }
@@ -164,11 +158,8 @@ void ContentTypeParameter::setDisplayName(char* displayName) {
  *
  * @return the data type propeties
  */
-char* ContentTypeParameter::getDataType(char* retDataType) {
-    if (retDataType == NULL) {
-        return dataType;
-    }
-    return strcpy(retDataType, dataType);
+const char* ContentTypeParameter::getDataType() {
+    return dataType;
 }
 
 /**
@@ -177,7 +168,7 @@ char* ContentTypeParameter::getDataType(char* retDataType) {
  * @param dataType the data type of a given content type parameter
  *
  */
-void ContentTypeParameter::setDataType(char* dataType) {
+void ContentTypeParameter::setDataType(const char*dataType) {
     if (this->dataType) {
         delete [] this->dataType; this->dataType = NULL;
     }

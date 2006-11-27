@@ -69,11 +69,8 @@ Get::Get(CmdID* cmdID,
 * @return the preferred language
 *
 */
-char* Get::getLang(char* retLang) {
-    if (retLang == NULL) {
-        return lang;
-    }
-    return strcpy(retLang, lang);
+const char* Get::getLang() {
+    return lang;
 }
 
 /**
@@ -81,7 +78,7 @@ char* Get::getLang(char* retLang) {
 *
 * @param lang new preferred language
 */
-void Get::setLang(char* lang) {
+void Get::setLang(const char*lang) {
     if (this->lang) {
         delete [] this->lang; this->lang = NULL;
     }
@@ -93,7 +90,7 @@ void Get::setLang(char* lang) {
 *
 * @return the command name property
 */   
-char* Get::getName() {
+const char* Get::getName() {
     return COMMAND_NAME;
 }
 

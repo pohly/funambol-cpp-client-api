@@ -66,21 +66,21 @@ class Put : public ItemizedCommand {
          * @return the preferred language
          *
          */
-        char*  getLang(char*  retLang = NULL);
+        const char* getLang();
     
         /**
          * Sets the preferred language
          *
          * @param lang new preferred language
          */
-         void setLang(char*  lang);
+         void setLang(const char* lang);
     
         /**
          * Returns the command name
          *
          * @return the command name
          */
-         char*  getName();
+         const char* getName();
     
          ArrayElement* clone();
    

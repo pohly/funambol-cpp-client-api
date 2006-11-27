@@ -102,7 +102,7 @@ class DeviceConfig {
          * @param buf the destination buffer
          * @param v the new value (CAN BE NULL)
          */
-        void set(char** buf, const char*  v) EXTRA_SECTION_02;
+        void set(char* * buf, const char*  v) EXTRA_SECTION_02;
 
 
     public:

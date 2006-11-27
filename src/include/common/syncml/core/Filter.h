@@ -112,7 +112,7 @@ class Filter {
          *
          * @return the filter type
          */
-        char*  getFilterType(char*  type = NULL);
+        const char* getFilterType();
     
         /**
          * Sets the filter type
@@ -120,7 +120,7 @@ class Filter {
          * @param the filter type
          *
          */
-        void setFilterType(char*  type);
+        void setFilterType(const char* type);
 
         /**
          * Creates a clone of this Filter

@@ -141,7 +141,7 @@ finally:
 
 }
 
-char* HTTPHeader::getVersion() {
+const char* HTTPHeader::getVersion() {
     return version;
 }
 
@@ -149,11 +149,11 @@ unsigned int HTTPHeader::getStatus() {
     return status;
 }
 
-char* HTTPHeader::getStatusMessage() {
+const char* HTTPHeader::getStatusMessage() {
     return statusMessage;
 }
 
-char* HTTPHeader::getContent() {
+const char* HTTPHeader::getContent() {
     return content;
 }
 
@@ -169,7 +169,7 @@ char** HTTPHeader::getHeader(unsigned int index) {
     return headers[index];
 }
 
-char* HTTPHeader::getHeaderValue(const char* header) {
+const char* HTTPHeader::getHeaderValue(const char* header) {
     char h1[DIM_HEADER], h2[DIM_HEADER];
     unsigned int j;
 
@@ -207,7 +207,7 @@ char* HTTPHeader::getHeaderValue(const char* header) {
  *
  */
 int HTTPHeader::getContentLength() {
-    char *length = getHeaderValue("content-length");
+    const char *length = getHeaderValue("content-length");
 
     if (length == NULL) {
         return -1;

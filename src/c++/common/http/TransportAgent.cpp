@@ -73,6 +73,6 @@ void TransportAgent::setUserAgent(const char* ua) {
         strcpy(userAgent, ua);
 }
 
-char* TransportAgent::getUserAgent() {
+const char* TransportAgent::getUserAgent() {
     return stringdup(userAgent);
 }

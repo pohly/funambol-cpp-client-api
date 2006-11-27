@@ -81,7 +81,7 @@ class ResponseCommand : public ItemizedCommand {
          * @return the message reference
          *
          */
-        char*  getMsgRef(char*  retGetMsgRef);
+        const char* getMsgRef();
     
         /**
          * Sets the message reference
@@ -96,7 +96,7 @@ class ResponseCommand : public ItemizedCommand {
          * @return the command reference
          *
          */
-        char*  getCmdRef(char*  retGetCmdRef);
+        const char* getCmdRef();
     
         /**
          * Sets the command reference
@@ -141,7 +141,7 @@ class ResponseCommand : public ItemizedCommand {
          *
          * @return the command name
          */
-        virtual char*  getName() = 0;
+        virtual const char* getName() = 0;
 
         virtual ArrayElement* clone() = 0;
    

@@ -801,7 +801,7 @@ void MailMessage::setHeaders(const char* chExtraHeaders)
 /**
  * The result must be deleted by caller
  */
-char* MailMessage::getHeaders()
+const char* MailMessage::getHeaders()
 {
     if( headers.size() ) {
         StringBuffer buff;    

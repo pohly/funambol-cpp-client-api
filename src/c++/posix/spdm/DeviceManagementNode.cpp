@@ -183,7 +183,7 @@ static int strnicmp( const char *a, const char *b, int len ) {
  *
  * @param property - the property name
  */
-WCHAR *DeviceManagementNode::getPropertyValue(const WCHAR* property) {
+char* DeviceManagementNode::readPropertyValue(const WCHAR* property) {
     int i = 0;
     
     while (TRUE) {
