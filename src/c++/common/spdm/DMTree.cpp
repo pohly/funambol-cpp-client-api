@@ -92,34 +92,4 @@ ManagementNode* DMTree::getManagementNode(const char* node) {
     return n;
 }
 
-/*
-void DMTree::setManagementNode(ManagementNode& n) {
-
-    DeviceManagementNode dmn;
-
-    LOG.info("in setManagementNode");
-
-    char nodeName [DIM_MANAGEMENT_PATH];
-    char context  [DIM_MANAGEMENT_PATH];
-    char leafName [DIM_MANAGEMENT_PATH];
-
-    wmemset(context,     0, DIM_MANAGEMENT_PATH);
-    wmemset(leafName,    0, DIM_MANAGEMENT_PATH);
-
-    n.getFullName(nodeName, DIM_MANAGEMENT_PATH-1);
-    getNodeName(nodeName, leafName, DIM_MANAGEMENT_PATH);
-    getNodeConT(nodeName, context, DIM_MANAGEMENT_PATH);
-
-    resetError();
-
-    if (wcscmp(leafName, SYNCML) == 0) {
-        dmn.setAccessManagementNode((AccessManagementNode&)n);
-
-    } else  {
-        dmn.setSourceManagementNode((SourceManagementNode&)n);
-    }
-
-}
-*/
-
 
