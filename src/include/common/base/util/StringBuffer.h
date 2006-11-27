@@ -61,8 +61,9 @@ class StringBuffer: public ArrayElement {
         inline const char*  c_str() const { return s; } EXTRA_SECTION_00;
 
         /**
-         * Find the first occurrence of substring str.
+         * Find the first occurrence of substring str, starting from pos.
          *
+         * @param - start position
          * @return - the position or StringBuffer::npos if not found.
          */
         size_t find(const char *str, size_t pos = 0) const EXTRA_SECTION_00;
