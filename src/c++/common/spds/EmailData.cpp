@@ -94,7 +94,12 @@ int EmailData::parse(const char *msg, size_t len)
     else modified = T("");    
 
     // Get content
-    if( XMLProcessor::getElementContent(msg, EMAIL_ITEM, NULL, &start, &end) ) {
+    StringBuffer itemtmp(msg);
+    start = itemtmp.find("<emailitem");
+    end = itemtmp.rfind("</emailitem>");
+    if (start != StringBuffer::npos && end != StringBuffer::npos) { 
+        itemtmp = NULL;
+    //if( XMLProcessor::getElementContent(msg, EMAIL_ITEM, NULL, &start, &end) ) {
 		StringBuffer item(msg+start, end-start);        
         unsigned int startAttr=0, endAttr=0;
         size_t itemlen = end-start;
@@ -109,7 +114,7 @@ int EmailData::parse(const char *msg, size_t len)
         }
         // item must start with CDATA
         size_t item_start = item.find("![CDATA");
-        if(item_start > 10){
+        if(item_start > 50){ // it could be <emailitem ENC="QUOTED-PRINTABLE"><![CDATA[
             LOG.error(T("EMailData: can't find inner CDATA section."));
             return -1;
         }
