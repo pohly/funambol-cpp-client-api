@@ -132,7 +132,8 @@ class ManagementNode : public ArrayElement {
          *
          * @param property - the property name
          *
-         * @return - the property value. MUST be deleted by the caller with delete []
+         * @return - the property value. MUST be deleted by the caller with delete [];
+         *           never NULL, for non-existant properties an empty string is returned
          */
         virtual char* readPropertyValue(const char*  property) = 0;
 
