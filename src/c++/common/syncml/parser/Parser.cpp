@@ -907,7 +907,7 @@ Copy* Parser::getCopy(char* xml) {
     t = XMLProcessor::getElementContent (xml, NO_RESP, NULL);
     noResp  = getNoResp    (t);
     if (t) {delete [] t; t = NULL;}
-    items = getItems(xml);
+    items = getItems(xml, COPY);
     
     if ((cmdID) || 
         (cred)  || 
@@ -949,7 +949,7 @@ Add* Parser::getAdd(char* xml) {
     t = XMLProcessor::getElementContent (xml, NO_RESP, NULL);
     noResp  = getNoResp    (t);
     if (t) {delete [] t; t = NULL;}
-    items = getItems(xml);
+    items = getItems(xml, ADD);
     
     if ((cmdID) || 
         (cred)  || 
@@ -992,7 +992,7 @@ Delete* Parser::getDelete(char* xml) {
     t = XMLProcessor::getElementContent (xml, NO_RESP, NULL);
     noResp  = getNoResp    (t);
     if (t) {delete [] t; t = NULL;}
-    items = getItems(xml);
+    items = getItems(xml, DEL);
     
     if ((cmdID) || 
         (cred)  || 
@@ -1033,7 +1033,7 @@ Replace* Parser::getReplace(char* xml) {
     t = XMLProcessor::getElementContent (xml, NO_RESP, NULL);
     noResp  = getNoResp    (t);
     if (t) {delete [] t; t = NULL;}
-    items = getItems(xml);
+    items = getItems(xml, REPLACE);
     
     if ((cmdID) || 
         (cred)  || 
@@ -1960,7 +1960,7 @@ Results* Parser::getResult(char* xml) {
 //
 // return and array list of items
 //
-ArrayList* Parser::getItems(char* xml) {
+ArrayList* Parser::getItems(char* xml, const char* command) {
 
     Item* item = NULL;
     ArrayList* items = NULL;
@@ -1968,7 +1968,7 @@ ArrayList* Parser::getItems(char* xml) {
     char*      t       = NULL;
     
     t = XMLProcessor::getElementContent(&xml[pos], ITEM, &pos);    
-    while ((item = getItem(t)) != NULL) {
+    while ((item = getItem(t, command)) != NULL) {
         if (item) {
             if (!items)
                 items = new ArrayList();
@@ -1985,7 +1985,7 @@ ArrayList* Parser::getItems(char* xml) {
     return items;    
 }
 
-Item* Parser::getItem(char* xml) {    
+Item* Parser::getItem(char* xml, const char* command) {    
     Item*   ret       = NULL;
     Target* target    = NULL;
     Source* source    = NULL;
@@ -2007,7 +2007,7 @@ Item* Parser::getItem(char* xml) {
     if (t) {delete [] t; t = NULL;}
     
     t = XMLProcessor::getElementContent(xml, COMPLEX_DATA,NULL);
-    data     = getComplexData(t);
+    data     = getComplexData(t, command);
     if (t) { delete [] t; t = NULL; } 
     
     t = XMLProcessor::getElementContent(xml, MORE_DATA,NULL);
@@ -2066,27 +2066,38 @@ CmdID* Parser::getCmdID(char* content) {
     return ret;
 }
 
-ComplexData* Parser::getComplexData(char* xml) {
+ComplexData* Parser::getComplexData(char* xml, const char* command) {
     
     ComplexData* ret = NULL;
     Anchor* anchor   = NULL;
     DevInf* devInf   = NULL;
     
-    anchor = getAnchor(xml);
-    devInf = getDevInf(xml);    
-    
-    if (anchor || devInf) {
-        ret = new ComplexData(NULL); 
-    
-        if (anchor) 
-            ret->setAnchor(anchor);
-        if (devInf)
-            ret->setDevInf(devInf);
+    if (command && 
+            (strcmp(command, ADD) == 0 ||
+             strcmp(command, REPLACE) == 0 ||
+             strcmp(command, DEL) == 0 ||
+             strcmp(command, COPY) == 0 ) ) {
+        
+        if (xml) {
+            ret = new ComplexData(xml);
+        }                        
     }
-    else if (xml) {
-        ret = new ComplexData(xml);
-    }    
-
+    else {
+        anchor = getAnchor(xml);
+        devInf = getDevInf(xml);    
+    
+        if (anchor || devInf) {
+            ret = new ComplexData(NULL); 
+        
+            if (anchor) 
+                ret->setAnchor(anchor);
+            if (devInf)
+                ret->setDevInf(devInf);
+        }
+        else if (xml) {
+            ret = new ComplexData(xml);
+        }    
+    }
     return ret;
 }
 
