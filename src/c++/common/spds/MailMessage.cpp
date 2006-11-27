@@ -366,11 +366,52 @@ static bool isAscii(const char *str){
         return true;
 
     for(size_t i = 0; i < strlen(str); i++) {
-        if ( ! isprint(str[i]) ){
+        if (str[i] < 32 || str[i] > 126 ){
 			return false;
         }
     }
 	return true;
+}
+
+/*
+* It encodes if needed and folds
+*/
+StringBuffer encodeHeader(StringBuffer line){
+    
+    if(isAscii(line))
+        return line;
+
+    StringBuffer ret;
+    StringBuffer tmp;
+    StringBuffer startPattern("=?utf-8?Q?");
+    StringBuffer endPattern("?=");    
+    StringBuffer foldingPattern("\r\n ");
+    int foldingLen = 64;
+
+    char* qp = 0;
+    qp = qp_encode(line);
+    
+    tmp += startPattern;
+    tmp += qp;    
+    delete [] qp;
+
+    // folding action
+    unsigned long p = 0;        
+    while(p + foldingLen < tmp.length()) {
+        ret.append(tmp.substr(p, foldingLen));
+        ret.append(foldingPattern);
+        ret.append(startPattern);
+        p += foldingLen;
+    } 
+    
+    if (ret.length() > 0)
+        tmp.append(tmp.substr(p, tmp.length() - p));            
+    
+    ret = tmp;
+    ret.append(endPattern);
+
+    return ret;
+
 }
 
 
@@ -415,7 +456,7 @@ char * MailMessage::format() {
 
         }
     }
-    if ( mimeVersion.empty() ) {
+    if (mimeVersion.empty()) {
         mimeVersion = T("1.0");
     }
 
@@ -435,21 +476,9 @@ char * MailMessage::format() {
     }
     ret += DATE; ret += date.formatRfc822(); ret += NL;
     ret += SUBJECT; 
-    if (!isAscii(subject))
-    {
-        // FIXME
-        // If the length of the encoded subject is bigger then 75 chars,
-        // additional encoded words are needed, as required by rfc2047        
-        char* qp = 0;
-        qp = qp_encode(subject.c_str());
-        ret += "=?utf-8?Q?";
-        ret += qp;
-        ret += "?=";
-        delete [] qp;
-    }
-    else {
-        ret += subject; 
-    }
+    
+    ret += encodeHeader(subject);
+    
     ret += NL;
     ret += MIMETYPE; ret += contentType; ret+= T("; ");
     if (contentType.ifind(MULTIPART) != StringBuffer::npos ){
@@ -534,54 +563,73 @@ int MailMessage::parse(const char *rfc2822, size_t len) {
     return rc;
 }
 
-BOOL hasLineEncodedWords(StringBuffer line, size_t* startPos, size_t* endPos)
+StringBuffer decodeHeader(StringBuffer line)
 {
-    BOOL has = FALSE;
-    if (!line.empty()) {
-        *startPos = line.find("=?");
-        size_t firstMark = line.substr(*startPos + 2).find("?") + *startPos + 2;
-        if (StringBuffer::npos != firstMark) {
-            size_t secondMark = line.substr(firstMark + 1).find("?") + firstMark + 1;
-            if (StringBuffer::npos != secondMark) {
-                *endPos = line.substr(secondMark + 1).find("?=") + secondMark + 1;
-                if ((StringBuffer::npos != *endPos) && 
-                    (StringBuffer::npos != *startPos) && 
-                    (*endPos > *startPos)) /*&& 
-                    (endPos - startPos) <= 73)*/ // uncomment when the 75 maximum length 
-                                                 // for an encoded word fix will be applied
-                                                 // in format() method       
-                {
-                    has = TRUE; LOG.debug("TRUE");
-                }        
+    if (!line || line.empty()) {
+        return line;
+    }
+
+    size_t startPos = 0;
+    StringBuffer ret;
+    StringBuffer charset;
+    while( (startPos = line.find("=?", startPos)) != StringBuffer::npos) {
+        // Skip the '=?'
+        startPos += 2;
+        // Find the first '?'
+        size_t firstMark = line.find("?", startPos);
+        if (firstMark == StringBuffer::npos) {
+            LOG.error("Invalid encoded header");
+            return line;
+        }
+        // Find the second '?'
+        size_t secondMark = line.find("?", firstMark+1);
+        if (secondMark == StringBuffer::npos) {
+            LOG.error("Invalid encoded header");
+            return line;
+        }
+        // Find the final '?='
+        size_t endPos = line.find("?=", secondMark+1);
+        if (endPos == StringBuffer::npos) {
+            LOG.error("Invalid encoded header");
+            return line;
+        }
+
+        charset = line.substr(startPos, firstMark - startPos);
+        StringBuffer encoding = line.substr(firstMark+1, secondMark - (firstMark + 1));
+        StringBuffer text = line.substr(secondMark+1, endPos - (secondMark + 1));
+            
+        if (encoding == "Q") {
+            // quoted-printable
+            text.replaceAll("_", " ");
+            char* dec = qp_decode(text);
+            if (startPos >= 2 &&  ret.length() == 0) {
+                ret += line.substr(0, startPos - 2);
             }
+
+            ret += dec;
+            delete [] dec;
+        }
+        else if (encoding == "B"){
+            // base64
+            char* dec = new char[text.length()];
+            int len = b64_decode((void *)dec, text);
+            dec[len]=0;
+            ret += dec;
+            delete [] dec;
         }
     }
-    return has;
-}
-
-StringBuffer decodeWordFromHeader(StringBuffer encodedWord, StringBuffer& charset)
-{
-    StringBuffer decodedWord;
-    unsigned int charsetStart = 2;
-    unsigned int encodingStart = encodedWord.substr(charsetStart).find("?") + charsetStart + 1;
-    unsigned int encTextStart = encodedWord.substr(encodingStart).find("?") + encodingStart + 1;
-
-    charset = encodedWord.substr(charsetStart, encodingStart - charsetStart - 1);
-    StringBuffer encoding = encodedWord.substr(encodingStart, encTextStart - encodingStart - 1);
-    StringBuffer encText = encodedWord.substr(encTextStart);
-    if (_stricmp(encoding.c_str(), "Q") == 0) {
-        // quoted-printable
-        char* dec = qp_decode(encText.c_str());
-        decodedWord.append(dec);
-        decodedWord.replaceAll("_", " ");         
+    
+    if (ret.length() == 0) {
+        ret += line;
     }
-    else if (_stricmp(encoding.c_str(), "B") == 0){
-        // base64
-        int len = b64_decode((void *)encText.c_str(), encText.c_str());
-        decodedWord.append(encText.substr(0, len));
-    }
-    else { }
-    return decodedWord;
+
+    WCHAR* wret = toWideChar(ret, charset); 
+    ret.set(NULL);   
+    char* t = toMultibyte(wret);
+    ret.set(t);
+    if (wret) {delete [] wret;}
+    if (t) {delete [] t;}
+    return ret;
 }
 
 
@@ -592,17 +640,25 @@ int MailMessage::parseHeaders(StringBuffer &rfcHeaders) {
     ArrayList lines;
     const StringBuffer *line;
     StringBuffer strReceived;
-    BOOL firstReceivedMatched = FALSE;
     BOOL receivedExtracted = FALSE;
-    BOOL subjectParsing = FALSE;
     LOG.debug(T("parseHeaders START"));
+
+    // Join header parts using \t or 8 blank
+    StringBuffer joinlinetab(newline);
+    StringBuffer joinlinespaces(newline);
+
+    joinlinetab+="\t";
+    joinlinespaces+=" ";  // 8 blanks
+
+    rfcHeaders.replaceAll(joinlinetab, " ");
+    rfcHeaders.replaceAll(joinlinespaces, " ");
 
     rfcHeaders.split(lines, newline);
 
     for ( line=(StringBuffer *)lines.front();
 		  line;
 		  line=(StringBuffer *)lines.next() ) {
-        if( *line == T("\r") )
+        if( *line == "\r" )
             break;
         // The first empty line marks the end of the header section
         if( line->empty() ){
@@ -613,131 +669,82 @@ int MailMessage::parseHeaders(StringBuffer &rfcHeaders) {
         
         if( line->ifind(TO) == 0 ){
             to = line->substr(TO_LEN);
-            subjectParsing = FALSE;
         }
         else if( line->ifind(FROM) == 0 ) {
             from = line->substr(FROM_LEN);
-            subjectParsing = FALSE;
         }
         else if( line->ifind(CC) == 0 ) {
             cc = line->substr(CC_LEN);
-            subjectParsing = FALSE;
         }
         else if( line->ifind(BCC) == 0 ) {
             bcc = line->substr(BCC_LEN);
-            subjectParsing = FALSE;
         }
         else if ( line->ifind(DATE) == 0 ) {
-            subjectParsing = FALSE;        
+            //subjectParsing = FALSE;        
             if( date.parseRfc822(line->substr(DATE_LEN)) ) {
                 LOG.error(T("Error parsing date"));
                 return 500;
             }
         }
         else if( line->ifind(SUBJECT) == 0 ) {
-            subject = line->substr(SUBJECT_LEN);
             
-            LOG.debug("SUBJECT: %s", subject.c_str());
-
-            subjectParsing = TRUE;        
-            size_t startPos, endPos;
-            if (!subject.empty()&& (TRUE == hasLineEncodedWords(subject, &startPos, &endPos))) {
-                StringBuffer charset;
-                StringBuffer decoded = decodeWordFromHeader(subject.substr(startPos, endPos - startPos), charset);
-                subject.replace(subject.substr(startPos, endPos + 2), decoded); 
-                WCHAR* wsubject = toWideChar(subject.c_str(), charset); 
-                subject = toMultibyte(wsubject);                
-            }
+            subject = decodeHeader(line->substr(SUBJECT_LEN));
+            LOG.debug("SUBJECT: %s", subject);          
         }
         else if( line->ifind(ENCODING) == 0 ) {  // it is here for single part only
             body.setEncoding(line->substr(ENCODING_LEN));
-            subjectParsing = FALSE;
         }
         else if(line->ifind(MIMEVERS) == 0 ) {
             mimeVersion = line->substr(MIMEVERS_LEN);
-            subjectParsing = FALSE;
         }
         else if(line->ifind(MESSAGEID) == 0 ) {
             messageId = line->substr(MESSAGEID_LEN);
-            subjectParsing = FALSE;
         }
         else if( line->ifind(MIMETYPE) == 0 ) {
             size_t len = line->find(T(";")) - MIMETYPE_LEN ;
             contentType = line->substr(MIMETYPE_LEN, len);
-            subjectParsing = FALSE;
+            // Save boundary for multipart
+            size_t begin = line->ifind("boundary=");
+            size_t end = StringBuffer::npos;
+
+            if( begin != StringBuffer::npos ) {
+                begin += strlen("boundary=\"");
+			    end = line->find(T("\""), begin) ;
+			    boundary = line->substr( begin, end-begin );
+		    }
+            else {
+                begin=line->ifind(CHARSET);
+                if( begin != StringBuffer::npos ) {
+                    begin += strlen(CHARSET);
+                    size_t end = begin;
+                    size_t quote = line->find(T("\""), begin);
+                    if (quote != StringBuffer::npos){
+                        begin = quote + 1;
+                        end = line->find(T("\""), begin) ;
+                    }
+                    else {
+                        end = line->find(T(";"), begin) ;
+                        if (end == StringBuffer::npos) {
+                            end = line->find(T(" "), begin);
+                        }
+                    }
+                    body.setCharset( line->substr( begin, end-begin ) );
+                }
+            }
         }            
         else if(line->ifind(RECEIVED) == 0) {
             if (!receivedExtracted) {
                 strReceived = line->substr(line->ifind(";") );
-                firstReceivedMatched = TRUE;
-                unknown = true;
-                if (!strReceived.empty())                    
-                {
+                
+                if (!strReceived.empty()) {
                     received.parseRfc822(strReceived.substr(2));
-                    firstReceivedMatched = FALSE;
                     receivedExtracted = TRUE;
                 }
             }
         }
         else {
-            if (firstReceivedMatched) {
-                strReceived = line->substr(line->ifind("; "));
-                if (!strReceived.empty())
-                {
-                    received.parseRfc822(strReceived.substr(2));
-                    firstReceivedMatched = FALSE;
-                    receivedExtracted = TRUE;
-                    unknown = true;
-                }
-                unknown = true;
-            }
-            else if (subjectParsing) {
-                size_t startPos, endPos;
-                StringBuffer tmp = line->c_str();
-                if (TRUE == hasLineEncodedWords(tmp, &startPos, &endPos)) {
-                    StringBuffer charset;
-                    StringBuffer decoded = decodeWordFromHeader(tmp.substr(startPos, endPos - startPos), charset);
-                    tmp.replace(tmp.substr(startPos, endPos + 2), decoded); 
-                    WCHAR* wline = toWideChar(tmp.c_str(), charset); 
-                    tmp = toMultibyte(wline);                
-                    subject.append(tmp.substr(1));
-                }
-            }
-            else {
-                unknown = true;
-            }            
+            headers.add(*(StringBuffer *)line);
         }            
-
-        // These ones are parameters, and can appear on the same line.
-        // FIXME: Should be a sub-parsing of content-type.
-        if( line->ifind(T("boundary=")) != StringBuffer::npos ) {
-			size_t begin = line->find(T("=\"")) + 2 ;
-			size_t end = line->find(T("\""), begin) ;
-			boundary = line->substr( begin, end-begin );
-		}
-        else {
-            size_t begin=line->ifind(CHARSET);
-            if( begin != StringBuffer::npos ) {
-                begin += strlen(CHARSET);
-                size_t end = begin;
-                size_t quote = line->find(T("\""), begin);
-                if (quote != StringBuffer::npos){
-                    begin = quote + 1;
-                    end = line->find(T("\""), begin) ;
-                }
-                else {
-                    end = line->find(T(";"), begin) ;
-                    if (end == StringBuffer::npos) {
-                        end = line->find(T(" "), begin);
-                    }
-                }
-                body.setCharset( line->substr( begin, end-begin ) );
-            }
-            else if(unknown) {
-                StringBuffer s(line->c_str());
-                headers.add(s);
-            }
-	    }
         
     }
     // If received was not found, copy send date
