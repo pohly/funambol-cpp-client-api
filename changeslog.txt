@@ -1,3 +1,12 @@
+2006-11-28
+     - magi:  merge modifications from branch b_funambol31.               
+              Fixed SyncManager and SyncmlProcessor issues to handle 
+                begin and end sync source events
+              Improved EmailData and MailMessage classes
+              Fixed Parser.cpp issue to avoid bug if the Data contains syncml log
+              Improved ppcTransportAgent to handle Server error code 500
+              Log.cpp modified for GMT +00:00 instead of GMT -00:00
+              
 2006-10-31
      - magi:  merge modifications from branch b_funambol31. 
               modified LOG timestamp for posix, winmobile and win32 platform. 

@@ -907,7 +907,7 @@ Copy* Parser::getCopy(const char*xml) {
     t = XMLProcessor::copyElementContent (xml, NO_RESP, NULL);
     noResp  = getNoResp    (t);
     if (t) {delete [] t; t = NULL;}
-    items = getItems(xml);
+    items = getItems(xml, COPY);
     
     if ((cmdID) || 
         (cred)  || 
@@ -949,7 +949,7 @@ Add* Parser::getAdd(const char*xml) {
     t = XMLProcessor::copyElementContent (xml, NO_RESP, NULL);
     noResp  = getNoResp    (t);
     if (t) {delete [] t; t = NULL;}
-    items = getItems(xml);
+    items = getItems(xml, ADD);
     
     if ((cmdID) || 
         (cred)  || 
@@ -992,7 +992,7 @@ Delete* Parser::getDelete(const char*xml) {
     t = XMLProcessor::copyElementContent (xml, NO_RESP, NULL);
     noResp  = getNoResp    (t);
     if (t) {delete [] t; t = NULL;}
-    items = getItems(xml);
+    items = getItems(xml, DEL);
     
     if ((cmdID) || 
         (cred)  || 
@@ -1033,7 +1033,7 @@ Replace* Parser::getReplace(const char*xml) {
     t = XMLProcessor::copyElementContent (xml, NO_RESP, NULL);
     noResp  = getNoResp    (t);
     if (t) {delete [] t; t = NULL;}
-    items = getItems(xml);
+    items = getItems(xml, REPLACE);
     
     if ((cmdID) || 
         (cred)  || 
@@ -1960,7 +1960,7 @@ Results* Parser::getResult(const char*xml) {
 //
 // return and array list of items
 //
-ArrayList* Parser::getItems(const char*xml) {
+ArrayList* Parser::getItems(const char*xml, const char* command) {
 
     Item* item = NULL;
     ArrayList* items = NULL;
@@ -1985,7 +1985,7 @@ ArrayList* Parser::getItems(const char*xml) {
     return items;    
 }
 
-Item* Parser::getItem(const char*xml) {    
+Item* Parser::getItem(const char*xml, const char* command) {    
     Item*   ret       = NULL;
     Target* target    = NULL;
     Source* source    = NULL;
@@ -2066,27 +2066,38 @@ CmdID* Parser::getCmdID(const char*content) {
     return ret;
 }
 
-ComplexData* Parser::getComplexData(const char*xml) {
+ComplexData* Parser::getComplexData(const char*xml, const char* command) {
     
     ComplexData* ret = NULL;
     Anchor* anchor   = NULL;
     DevInf* devInf   = NULL;
     
-    anchor = getAnchor(xml);
-    devInf = getDevInf(xml);    
-    
-    if (anchor || devInf) {
-        ret = new ComplexData(NULL); 
-    
-        if (anchor) 
-            ret->setAnchor(anchor);
-        if (devInf)
-            ret->setDevInf(devInf);
+    if (command && 
+            (strcmp(command, ADD) == 0 ||
+             strcmp(command, REPLACE) == 0 ||
+             strcmp(command, DEL) == 0 ||
+             strcmp(command, COPY) == 0 ) ) {
+        
+        if (xml) {
+            ret = new ComplexData(xml);
+        }                        
     }
-    else if (xml) {
-        ret = new ComplexData(xml);
-    }    
-
+    else {
+       anchor = getAnchor(xml);
+       devInf = getDevInf(xml);    
+       
+       if (anchor || devInf) {
+           ret = new ComplexData(NULL); 
+       
+           if (anchor) 
+               ret->setAnchor(anchor);
+           if (devInf)
+               ret->setDevInf(devInf);
+       }
+       else if (xml) {
+           ret = new ComplexData(xml);
+       }    
+    }
     return ret;
 }
 

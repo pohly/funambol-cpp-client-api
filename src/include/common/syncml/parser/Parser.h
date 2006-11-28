@@ -54,9 +54,9 @@ class Parser {
         static BOOL             getNoResp           (const char* xml);
         static BOOL             getNoResults        (const char* xml);
         static CmdID*           getCmdID            (const char* xml);
-        static Item*            getItem             (const char* xml);
-        static ArrayList*       getItems            (const char* xml);
-        static ComplexData*     getComplexData      (const char* xml);
+        static Item*            getItem             (const char* xml, const char* command = NULL);
+        static ArrayList*       getItems            (const char* xml, const char* command = NULL);
+        static ComplexData*     getComplexData      (const char* xml, const char* command = NULL);
         static BOOL             getMoreData         (const char* xml);
         static Status*          getStatus           (const char* xml);
         static DevInf*          getDevInf           (const char* xml);

@@ -326,7 +326,13 @@ char*  PPC2003TransportAgent::sendMessage(const char*  msg) {
                     sprintf(lastErrorMsg, "Network error: the handle supplied is not in the correct state. %d", status);
                     LOG.debug(lastErrorMsg);
                     goto exit;
-                } else if (status != STATUS_OK) {
+                } else if (status == HTTP_STATUS_SERVER_ERROR ) {
+                    lastErrorCode = ERR_SERVER_ERROR;
+                    sprintf(lastErrorMsg, "HTTP server error: %d. Server failure.", status);
+                    LOG.debug(lastErrorMsg);
+                    goto exit;   
+                }
+                else if (status != STATUS_OK) {
                     lastErrorCode = ERR_READING_CONTENT;
                     sprintf(lastErrorMsg, "HTTP request error: %d", status);
                     LOG.debug(lastErrorMsg);
@@ -377,36 +383,6 @@ char*  PPC2003TransportAgent::sendMessage(const char*  msg) {
             goto exit;
 
         }
-
-        /*
-	    p = response;
-        (*p) = 0;
-        do {
-            if (!InternetReadFile (request, (LPVOID)bufferA, readBufferSize, &read)) {
-                lastErrorCode = ERR_READING_CONTENT;
-                sprintf(lastErrorMsg, "%s: %d", "InternetReadFile Error", GetLastError());
-			    LOG.error(lastErrorMsg);
-                goto exit;
-            }
-
-            if (read != 0) {
-                recsize += read;
-                if(recsize > contentLengthResponse) {
-                    lastErrorCode = ERR_READING_CONTENT;
-                    sprintf(lastErrorMsg, "Message size greater than content-lenght.");
-                    LOG.debug(lastErrorMsg);
-                    goto exit;
-                }
-
-                LOG.debug("Size: %d", recsize);
-
-                bufferA[read] = 0;
-                strcpy(p, bufferA);
-                p += strlen(bufferA);
-            }
-
-        } while (read);
-        */
 
         cont = TRUE;
         hThread = CreateThread(

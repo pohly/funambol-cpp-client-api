@@ -37,7 +37,12 @@
 #include <limits.h>
 
 const char SyncManager::encodedKeyPrefix[] = "funambol-b64-";
+char prevSourceName[64];
+char prevSourceUri[64];
+SyncMode prevSyncMode;
 
+BOOL isFiredSyncEventBEGIN;
+BOOL isFiredSyncEventEND;
 void SyncManager::decodeItemKey(SyncItem *syncItem)
 {
     char *key;
@@ -196,8 +201,12 @@ void SyncManager::initialize() {
     
     syncMLBuilder.set(syncURL, deviceId);
     memset(credentialInfo, 0, 1024*sizeof(char));
-
     sortedSourcesFromServer = NULL;
+    prevSourceName[0] = 0;
+    prevSourceUri[0] = 0;
+    prevSyncMode = SYNC_NONE;    
+    isFiredSyncEventBEGIN = FALSE;
+
 }
 
 SyncManager::~SyncManager() {
@@ -829,15 +838,51 @@ BOOL SyncManager::checkForServerChanges(SyncML* syncml, ArrayList &statusList)
         }
 
 
-        if (!sources[count]->getReport() || !sources[count]->getReport()->checkState())
-            continue;
+        // Sync* sync = syncMLProcessor.processSyncResponse(*sources[count], syncml);
+        Sync* sync = syncMLProcessor.getSyncResponse(syncml, i);
+        
+        if (sync) {
+            const char *locuri = ((Target*)(sync->getTarget()))->getLocURI();
+           
+            for (int k = 0; k < sourcesNumber; k++) {        
+                if (strcmp(locuri, sources[k]->getConfig().getName()) == 0) {
+                    count = k;
+                    break;
+                }  
+            }
+            if (count >= sourcesNumber) {
+                LOG.error("Source uri not recognized: %s", sourceUri);
+                goto finally;
+            }
 
-        Sync* sync = syncMLProcessor.processSyncResponse(*sources[count], syncml);
+            if (!sources[count]->getReport() || !sources[count]->getReport()->checkState()) {
+                i++;             
+            continue;
+            }
+
+            if (strcmp(prevSourceName, "") == 0) {
+                strcpy(prevSourceName, locuri);                            
+            }
+            if (strcmp(prevSourceName, locuri) == 0) {
+                // nothing to do
+            } else {
+                isFiredSyncEventBEGIN = FALSE;                
+                fireSyncSourceEvent(prevSourceUri, prevSourceName, prevSyncMode, 0, SYNC_SOURCE_END);                
+                strcpy(prevSourceName, locuri);                   
+            }
+        }
 
         if (sync) {
             // Fire SyncSource event: BEGIN sync of a syncsource (server modifications)
             // (fire only if <sync> tag exist)
+            if (isFiredSyncEventBEGIN == FALSE) {
             fireSyncSourceEvent(sources[count]->getConfig().getURI(), sources[count]->getConfig().getName(), sources[count]->getSyncMode(), 0, SYNC_SOURCE_BEGIN);
+                strcpy(prevSourceUri,  sources[count]->getConfig().getURI());
+                prevSyncMode = sources[count]->getSyncMode();
+                long noc = sync->getNumberOfChanges();
+                fireSyncSourceEvent(sources[count]->getConfig().getURI(), sources[count]->getConfig().getName(), sources[count]->getSyncMode(), noc, SYNC_SOURCE_TOTAL_SERVER_ITEMS);
+                isFiredSyncEventBEGIN = TRUE;
+            }
 
             ArrayList* items = sync->getCommands();
             Status* status = syncMLBuilder.prepareSyncStatus(*sources[count], sync);
@@ -898,7 +943,7 @@ BOOL SyncManager::checkForServerChanges(SyncML* syncml, ArrayList &statusList)
                 }
             }
         // Fire SyncSourceEvent: END sync of a syncsource (server modifications)
-        fireSyncSourceEvent(sources[count]->getConfig().getURI(), sources[count]->getConfig().getName(), sources[count]->getSyncMode(), 0, SYNC_SOURCE_END);
+        //fireSyncSourceEvent(sources[count]->getConfig().getURI(), sources[count]->getConfig().getName(), sources[count]->getSyncMode(), 0, SYNC_SOURCE_END);
 
         }  
         i++;
@@ -1417,6 +1462,10 @@ int SyncManager::sync() {
                 break;
             }
 
+            // Fire SyncSourceEvent: END sync of a syncsource (client modifications)
+            if (last)
+                fireSyncSourceEvent(sources[count]->getConfig().getURI(), sources[count]->getConfig().getName(), sources[count]->getSyncMode(), 0, SYNC_SOURCE_END);
+
             // The server might have included a <Sync> command without waiting
             // for a 222 alert. If it hasn't, then nothing is done here.
             ArrayList statusList;
@@ -1435,7 +1484,7 @@ int SyncManager::sync() {
         } while (last == FALSE);
 
         // Fire SyncSourceEvent: END sync of a syncsource (client modifications)
-        fireSyncSourceEvent(sources[count]->getConfig().getURI(), sources[count]->getConfig().getName(), sources[count]->getSyncMode(), 0, SYNC_SOURCE_END);
+        // fireSyncSourceEvent(sources[count]->getConfig().getURI(), sources[count]->getConfig().getName(), sources[count]->getSyncMode(), 0, SYNC_SOURCE_END);
 
     } // end for (count = 0; count < sourcesNumber; count ++)
     
@@ -1574,6 +1623,7 @@ finally:
 
     if (isAtLeastOneSourceCorrect == TRUE)
     {
+        fireSyncSourceEvent(prevSourceUri, prevSourceName, prevSyncMode, 0, SYNC_SOURCE_END);
         safeDelete(&responseMsg);
         safeDelete(&msg);    
         deleteSyncML(&syncml);    

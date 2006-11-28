@@ -585,3 +585,21 @@ finally:
 
 }
 
+/*
+ * Processes the initialization response. Returns 0 in case of success, an
+ * error code in case of error.
+ *
+ * @param msg the response from the server
+ */
+
+Sync* SyncMLProcessor::getSyncResponse(SyncML* syncml, int index) {    
+            
+    AbstractCommand* a  = NULL;           
+    Sync* sync          = NULL;   
+
+    a = getCommand(syncml->getSyncBody(), SYNC, index);
+    sync = (Sync*)a;
+                               
+    return sync;
+ 
+}

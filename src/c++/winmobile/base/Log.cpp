@@ -49,7 +49,7 @@ static char* createCurrentTime(BOOL complete) {
     
     // calculate offset from UTC/GMT in hours:min, positive value means east of Greenwich (e.g. CET = GMT +1)
     
-    char direction = timezone.Bias < 0 ? '+' : '-';    
+    char direction = timezone.Bias <= 0 ? '+' : '-';    
     int hours = abs(timezone.Bias / 60) ;
     int minutes = abs(timezone.Bias % 60);
 
@@ -186,16 +186,4 @@ void Log::reset(const char*  title) {
     delete[] currentTime;    
 }
 
-
-/*
-void Log::printMessage(const char*  level, const char*  msg) {           	
-	
-    char*  currentTime = createCurrentTime(false);
-    logFile     = _wfopen(logPath, TEXT("a+"));       
-    fwprintf(logFile, TEXT("%s [%s] - %s\n"), currentTime, level, msg); fflush(logFile);
-	fclose(logFile);
-    delete[] currentTime;
-	
-}
-*/
 
