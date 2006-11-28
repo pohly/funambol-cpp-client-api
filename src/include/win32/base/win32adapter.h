@@ -23,7 +23,7 @@
 #include <stdio.h>
 
 // signed/unsigned mismatch
-#pragma warning(disable:4018)
+// #pragma warning(disable:4018)
 
 #define EXTRA_SECTION_00
 #define EXTRA_SECTION_01
