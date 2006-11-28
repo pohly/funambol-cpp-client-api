@@ -90,7 +90,7 @@ void VObject::removeProperty(WCHAR* propName) {
     }
 }
 
-bool VObject::containsProperty(WCHAR* propName) {
+bool VObject::containsProperty(const WCHAR* propName) {
     for (int i=0; i<properties->size(); i++) {
         VProperty *property; 
         property = (VProperty* )properties->get(i);
@@ -105,7 +105,7 @@ VProperty* VObject::getProperty(int index) {
     return (VProperty*)properties->get(index);
 }
 
-VProperty* VObject::getProperty(WCHAR* propName) {
+VProperty* VObject::getProperty(const WCHAR* propName) {
     for (int i=0; i<properties->size(); i++) {
         
         VProperty *property; 

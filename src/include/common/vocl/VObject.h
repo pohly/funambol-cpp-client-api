@@ -86,10 +86,10 @@ public:
     void removeProperty(WCHAR* propName);
     void removeAllProperies(WCHAR* propName);
     //removes all properties having name - propName;
-    bool containsProperty(WCHAR* propName);
+    bool containsProperty(const WCHAR* propName);
     int propertiesCount();
     VProperty* getProperty(int index);
-    VProperty* getProperty(WCHAR* propName);
+    VProperty* getProperty(const WCHAR* propName);
     WCHAR* toString();
 
     // Patrick Ohly:
