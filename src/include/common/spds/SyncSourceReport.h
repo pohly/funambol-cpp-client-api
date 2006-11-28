@@ -116,7 +116,7 @@ public:
      * @param index  : the index of desired item inside the list
      *
      */
-    ItemReport* getItemReport(const char* target, const char* command, unsigned int index);
+    ItemReport* getItemReport(const char* target, const char* command, int index);
 
 
     /*

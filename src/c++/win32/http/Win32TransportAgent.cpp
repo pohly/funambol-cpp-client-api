@@ -91,7 +91,7 @@ char* Win32TransportAgent::sendMessage(const char* msg) {
 
     char bufferA[5000+1];
     int status = -1;
-    int contentLength = 0;
+    unsigned int contentLength = 0;
 	WCHAR* wurlHost;
     WCHAR* wurlResource;
     char* response = NULL;
