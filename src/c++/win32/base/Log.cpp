@@ -175,22 +175,23 @@ void Log::printMessage(const char* level, const char* msg, va_list argList) {
     
 	char* currentTime = createCurrentTime(false);    
     logFile = fopen(logDir, "a+");       
-	
-	fprintf(logFile, "%s [%s] - ", currentTime, level); 		
-    vfprintf(logFile, msg, argList);	
-	fprintf(logFile, "\n"); 
-	fclose(logFile);
-
+    if (logFile) {
+	    fprintf(logFile, "%s [%s] - ", currentTime, level); 		
+        vfprintf(logFile, msg, argList);	
+	    fprintf(logFile, "\n"); 
+	    fclose(logFile);
+    }
     delete[] currentTime;	
 }
 
 void Log::reset(const char* title) {
     
     char* currentTime = createCurrentTime(true);
-    logFile = fopen(logDir, "w+");      
-    fprintf(logFile, "%s - # %s\n\n", currentTime, title);
-    fclose(logFile);
-
+    logFile = fopen(logDir, "w+");
+    if (logFile) {
+        fprintf(logFile, "%s - # %s\n\n", currentTime, title);
+        fclose(logFile);
+    }
     delete[] currentTime;    
 }
 
