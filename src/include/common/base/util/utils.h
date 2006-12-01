@@ -24,6 +24,8 @@
 #include "base/md5.h"
 #include "base/base64.h"
 
+#include <stdio.h>
+
 // Default len for stringdup (means: use source string len)
 #define STRINGDUP_NOLEN 0xFFFFFFFF
 

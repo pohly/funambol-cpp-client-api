@@ -25,6 +25,8 @@
     #include "spds/constants.h"
     #include "spds/SyncStatus.h"
 
+    #include <string.h>
+
     typedef enum {
         SYNC_STATE_NEW     = 'N',
         SYNC_STATE_UPDATED = 'U',
