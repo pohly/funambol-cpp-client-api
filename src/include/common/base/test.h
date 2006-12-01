@@ -44,7 +44,7 @@
 // all tests and link them into the test binary
 #define FUNAMBOL_TEST_SUITE_REGISTRATION( ATestFixtureType ) \
     CPPUNIT_TEST_SUITE_REGISTRATION( ATestFixtureType ); \
-	extern "C" int funambolAutoRegisterRegistry ## ATestFixtureType = 12345
+    extern "C" { int funambolAutoRegisterRegistry ## ATestFixtureType = 12345; }
 
 
 // until a better solution is found use the helper function from TestMain.cpp
