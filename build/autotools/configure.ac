@@ -51,4 +51,4 @@ if test $enable_integration_tests == "yes"; then
 fi
 
 
-AC_OUTPUT(Makefile src/Makefile include/Makefile)
+AC_OUTPUT(Makefile src/Makefile include/Makefile test/Makefile)

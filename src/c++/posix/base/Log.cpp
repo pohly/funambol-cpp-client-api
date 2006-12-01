@@ -209,9 +209,7 @@ void Log::printMessageW(const char*  level, const char*  msg, va_list argList)
 {       printMessage(level, msg, argList); }
 
 void Log::reset(const char*  title) {
-    if (!logFileStdout && !logFile) {
-        setLogFile(logPath, logName, false);
-    }
+    setLogFile(logPath, logName, false);
     
     if (logFile) {
         ftruncate(fileno(logFile), 0);

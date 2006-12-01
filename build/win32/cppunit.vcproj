@@ -180,7 +180,7 @@
 			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}"
 			>
 			<File
-				RelativePath="..\..\src\c++\common\test\client-test-main.cpp"
+				RelativePath="..\..\test\client-test-main.cpp"
 				>
 			</File>
 			<File
@@ -208,7 +208,7 @@
 				>
 				<Tool
 					Name="VCCustomBuildTool"
-					CommandLine="python gentests.py output\win32-dbg\win32.lib tests.c"
+					CommandLine="python gentests.py output\win32-dbg\win32.lib tests.c&#x0D;&#x0A;"
 					AdditionalDependencies="output\cppunit-dbg\win32.lib"
 					Outputs="tests.c"
 				/>
@@ -218,7 +218,7 @@
 				>
 				<Tool
 					Name="VCCustomBuildTool"
-					CommandLine="python gentests.py output\win32\win32.lib tests.c"
+					CommandLine="python gentests.py output\win32\win32.lib tests.c&#x0D;&#x0A;"
 					AdditionalDependencies="output\cppunit\win32.lib"
 					Outputs="$(IntDir)\tests.c"
 				/>

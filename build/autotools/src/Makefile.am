@@ -1,6 +1,5 @@
-EXTRA_PROGRAMS = client vcardconverter client-test
+EXTRA_PROGRAMS = vcardconverter
 check_PROGRAMS = @CPPUNIT_TESTS@
-TESTS = @CPPUNIT_TESTS@
 lib_LTLIBRARIES = libsync4j.la
 
 SOURCES_BASE = \
@@ -196,19 +195,12 @@ SOURCES_LIBSYNC4J = $(SOURCES_BASE) $(SOURCES_EVENT) $(SOURCES_FRAMEWORK) $(SOUR
 libsync4j_la_SOURCES = $(SOURCES_LIBSYNC4J)
 libsync4j_la_LDFLAGS = -version-info 3:0
 
-client_SOURCES = client.cpp TestSyncSource.cpp TestSyncSource2.cpp
-client_LDADD = libsync4j.la
+# client_SOURCES = client.cpp TestSyncSource.cpp TestSyncSource2.cpp
+# client_LDADD = libsync4j.la
 
 vcardconverter_SOURCES = vcardconverter.cpp
 vcardconverter_LDADD = libsync4j.la
 
-# With --disable-shared autotools links against libsync4j.a which does not
-# pull any of the test suites into the test binary, so they would not be
-# executed. The workaround is to explicitly set them as undefined on the
-# link line.
-client_test_SOURCES = client-test-main.cpp
-client_test_LDFLAGS = `nm .libs/libsync4j.a | grep funambolAutoRegisterRegistry | sed -e 's/.* /-u /'`
-client_test_LDADD = libsync4j.la
 
 #NotifProcessorTest_SOURCES = NotifProcessorTest.cpp
 #NotifProcessorTest_LDADD = libsync4j.la

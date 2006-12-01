@@ -16,6 +16,12 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
+#ifdef HAVE_CONFIG_H
+# include <config.h>
+#endif
+
+#include "base/test.h"
+
 #include <cppunit/CompilerOutputter.h>
 #include <cppunit/ui/text/TestRunner.h>
 #include <cppunit/TestListener.h>
@@ -24,13 +30,7 @@
 #include <cppunit/extensions/TestFactoryRegistry.h>
 #include <cppunit/extensions/HelperMacros.h>
 
-#ifdef AUTOTOOLS
-# include <config.h>
-#endif
-
-#include <base/fscapi.h>
 #include <base/Log.h>
-#include <base/test.h>
 
 #include <stdlib.h>
 #include <stdio.h>
@@ -41,6 +41,18 @@
 #include <string>
 #include <stdexcept>
 using namespace std;
+
+void simplifyFilename(string &filename)
+{
+    size_t pos = 0;
+    while (true) {
+        pos = filename.find(":", pos);
+        if (pos == filename.npos ) {
+            break;
+        }
+        filename.replace(pos, 1, "_");
+    }
+}
 
 class ClientOutputter : public CppUnit::CompilerOutputter {
 public:
@@ -99,7 +111,7 @@ public:
         if (m_alarmSeconds > 0) {
             alarm(m_alarmSeconds);
         }
-#endif HAVE_SIGNAL_H
+#endif
     }
 
     void addFailure(const CppUnit::TestFailure &failure) {
@@ -143,15 +155,16 @@ const string &getCurrentTest() {
     return syncListener.getCurrentTest();
 }
 
-void simplifyFilename(string &filename)
+static void printTests(CppUnit::Test *test, int indention)
 {
-    size_t pos = 0;
-    while (true) {
-        pos = filename.find(":", pos);
-        if (pos == filename.npos ) {
-            break;
-        }
-        filename.replace(pos, 1, "_");
+    if (!test) {
+        return;
+    }
+
+    std::string name = test->getName();
+    printf("%*s%s\n", indention * 3, "", name.c_str());
+    for (int i = 0; i < test->getChildTestCount(); i++) {
+        printTests(test->getChildTestAt(i), indention+1);
     }
 }
 
@@ -160,6 +173,16 @@ int main(int argc, char* argv[])
   // Get the top level suite from the registry
   CppUnit::Test *suite = CppUnit::TestFactoryRegistry::getRegistry().makeTest();
 
+  if (argc >= 2 && (!strcmp(argv[1], "-h") || !strcmp(argv[1], "--help"))) {
+      printf("usage: %s [test name]+\n\n"
+             "Without arguments all available tests are run.\n"
+             "Otherwise only the tests or group of tests listed are run.\n"
+             "Here is the test hierarchy of this test program:\n",
+             argv[0]);
+      printTests(suite, 1);
+      return 0;
+  }
+  
   // Adds the test to the list of test to run
   CppUnit::TextUi::TestRunner runner;
   runner.addTest( suite );

@@ -8,6 +8,7 @@ nobase_pkginclude_HEADERS = \
     common/base/fscapi.h \
     common/base/md5.h \
     common/base/base64.h \
+    common/base/test.h \
     common/base/util/utils.h \
     common/base/util/ArrayElement.h \
     common/base/util/ArrayList.h \
@@ -60,7 +61,9 @@ nobase_pkginclude_HEADERS = \
 # fix header files for public distribution
 $(nobase_pkginclude_HEADERS): % : ../../../src/include/%
 	mkdir -p `dirname $@`
-	sed -e 's/WCHAR/char/g' -e 's/= *NULL/= 0/g' -e 's/__declspec([^)]*)//g' -e 's/__cdecl//g' -e 's/EXTRA_SECTION_[0123456789]*//g' -e 's/BOOL/int/g' -e 's/FALSE/0/g' -e 's/TRUE/1/g' $< >$@
+	rm -f $@
+	if [ "$(@F)" == "Log.h" ]; then echo '#include <stdarg.h>' >>$@; fi
+	sed -e 's/WCHAR/char/g' -e 's/= *NULL/= 0/g' -e 's/__declspec([^)]*)//g' -e 's/__cdecl//g' -e 's/EXTRA_SECTION_[0123456789]*//g' -e 's/BOOL/int/g' -e 's/FALSE/0/g' -e 's/TRUE/1/g' $< >>$@
 
 clean : cleancopies
 cleancopies :
