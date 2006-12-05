@@ -28,7 +28,7 @@
  * itself is not derived from SyncClient. This gives a user of this
  * framework the freedom to implement it in two different ways:
  * - implement a class derived from both SyncClient and ClientTest
- * - add testing to an existing subclass of SyncClient by implementing
+ * - add testing of an existing subclass of SyncClient by implementing
  *   a ClientTest which uses that subclass
  *
  * The client is expected to support change tracking for multiple
@@ -45,6 +45,16 @@
  * tests or to check server modifications done by client A with a
  * synchronization against client B. In those tests client A is mapped
  * to the first data source and client B to the second one.
+ *
+ * Finally the SyncSource API is used in slightly different ways which
+ * go beyond what is normally expected from a SyncSource implementation:
+ * - beginSync() may be called without setting a sync mode:
+ *   when SyncSource::getSyncMode() returns SYNC_NONE the source is
+ *   expected to make itself ready to iterate over all, new, updated and
+ *   deleted items
+ * - items may be added via SyncSource::addItem() with a type of "raw":
+ *   this implies that the type is the one used for items in the
+ *   ClientTest::Config below
  *
  * Handling configuration and creating classes is entirely done by the
  * subclass of ClientTest, the frameworks makes no assumptions
@@ -67,6 +77,16 @@ class ClientTest {
      * client-test-main.cpp.
      */
     virtual void registerTests();
+
+    /**
+     * utility function for dumping items which are C strings with blank lines as separator
+     */
+    static int dump(ClientTest &client, SyncSource &source, const char *file);
+
+    /**
+     * utility function for importing items with blank lines as separator
+     */
+    static int import(ClientTest &client, SyncSource &source, const char *file);
 
     /**
      * Information about a data source. For the sake of simplicity all
@@ -152,6 +172,11 @@ class ClientTest {
         const char *uniqueProperties;
 
         /**
+         * the number of items to create during stress tests
+         */
+        int numItems;
+
+        /**
          * This is a single property in templateItem which can be extended
          * to increase the size of generated items.
          */
@@ -190,6 +215,47 @@ class ClientTest {
          * test is run without expecting a certain merge result.
          */
         const char *mergeItem2;
+
+        /**
+         * called to dump all items into a file, required by tests which need
+         * to compare items
+         *
+         * ClientTest::dump can be used: it will simply dump all items of the source
+         * with a blank line as separator.
+         *
+         * @param source     sync source A already created and with beginSync() called
+         * @param file       a file name
+         * @return error code, 0 for success
+         */
+        int (*dump)(ClientTest &client, SyncSource &source, const char *file);
+
+        /**
+         * import test items: which these are is determined entirely by
+         * the implementor, but tests work best if several complex items are
+         * imported
+         *
+         * ClientTest::import can be used if the file contains items separated by
+         * empty lines.
+         *
+         * @param source     sync source A already created and with beginSync() called
+         * @param file       the name of the file to import
+         * @return error code, 0 for success
+         */
+        int (*import)(ClientTest &client, SyncSource &source, const char *file);
+        
+        /**
+         * a function which compares two files with items in the format used by "dump"
+         *
+         * @param fileA      first file name
+         * @param fileB      second file name
+         * @return true if the content of the files is considered equal
+         */
+        bool (*compare)(ClientTest &client, const char *fileA, const char *fileB);
+
+        /**
+         * a file with test cases in the format expected by import and compare
+         */
+        const char *testcases;
     };
     
     /**
@@ -238,7 +304,7 @@ class ClientTest {
         long maxMsgSize = 0,
         long maxObjSize = 0,
         bool loSupport = false,
-        const char *encoding = NULL) = 0;
+        const char *encoding = 0) = 0;
 
   private:
     /**
