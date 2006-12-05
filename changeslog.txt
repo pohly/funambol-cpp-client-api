@@ -1,3 +1,39 @@
+Funambol SDK C++ 3.1.1
+------------------------- 
+2006-12-05                  
+        stable version to be delivered
+        
+2006-11-28                  
+              Fixed SyncManager and SyncmlProcessor issues to handle 
+                begin and end sync source events
+              Improved EmailData and MailMessage classes
+              Fixed Parser.cpp issue to avoid bug if the Data contains syncml log
+              Improved ppcTransportAgent to handle Server error code 500
+              Log.cpp modified for GMT +00:00 instead of GMT -00:00
+              
+2006-10-31     
+              modified LOG timestamp for posix, winmobile and win32 platform. 
+              Now it get the gmt info. 
+              Fixed SyncManager for update_remote_data syncmode
+2006-10-31     
+              Applied Patrick's patch to handle the key with non permitted xml chars.
+              see bug http://forge.objectweb.org/tracker/index.php?func=detail&aid=306335&group_id=96&atid=100096
+              for details
+
+
+2006-10-31     
+              fixed in SyncManager credentialInfo property to handle username/password greater then 256 chars
+              fixed MaxObjSize position. It has to be put in every source Alert and not only in the Header
+                The header is fine for the DM but not for DS. Without the fix the MaxObjSize was not consider by
+                the server.
+              improved FileData. fixed memory leak
+              added new constructor in StringBuffer
+              
+
+2006-10-11
+     - toccy: added tolerance of 6% on size of incoming items in case of large object
+              improved Win32TransportAgent: added http error message explanations associated to error codes
+              added an array of syncsource names in SyncManager: "sortedSourcesFromServer" ....     
 
 2006-10-06
      - toccy: fixed Win32TransportAgent with a sanity check on rensponse read (proxy related issue)
