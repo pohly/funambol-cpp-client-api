@@ -46,8 +46,8 @@
 #include "http/Win32TransportAgent.h"
 #include "event/FireEvent.h"
 
-#define ENTERING(func) //sprintf(logmsg, "Entering %ls", func); LOG.debug(logmsg)
-#define EXITING(func)  //sprintf(logmsg, "Exiting %ls", func);  LOG.debug(logmsg)
+#define ENTERING(func) // LOG.debug("Entering %ls", func);
+#define EXITING(func)  // LOG.debug("Exiting %ls", func);
 
 
 /*
@@ -84,6 +84,10 @@ Win32TransportAgent::~Win32TransportAgent(){}
 char* Win32TransportAgent::sendMessage(const char* msg) {
 
     ENTERING(L"TransportAgent::sendMessage");
+    if (!msg) {
+        sprintf(lastErrorMsg, "TransportAgent::sendMessage error: NULL message.");
+        goto exit;
+    }
     
     HINTERNET inet       = NULL,
               connection = NULL,
@@ -127,9 +131,9 @@ char* Win32TransportAgent::sendMessage(const char* msg) {
     if (!inet) {
         lastErrorCode = ERR_NETWORK_INIT;
         DWORD code = GetLastError();
-        char* msg = createHttpErrorMessage(code);
-        sprintf (lastErrorMsg, "InternetOpen Error: %d - %s", code, msg);
-		delete [] msg;
+        char* tmp = createHttpErrorMessage(code);
+        sprintf (lastErrorMsg, "InternetOpen Error: %d - %s", code, tmp);
+		delete [] tmp;
         goto exit;
     }   
     LOG.debug("Connecting to %s:%d", url.host, url.port);
@@ -149,9 +153,9 @@ char* Win32TransportAgent::sendMessage(const char* msg) {
                                         0))) {
         lastErrorCode = ERR_CONNECT;
         DWORD code = GetLastError();
-        char* msg = createHttpErrorMessage(code);
-        sprintf (lastErrorMsg, "InternetConnect Error: %d - %s", code, msg);
-        delete [] msg;
+        char* tmp = createHttpErrorMessage(code);
+        sprintf (lastErrorMsg, "InternetConnect Error: %d - %s", code, tmp);
+        delete [] tmp;
         goto exit;
     }
     LOG.debug("Requesting resource %s", url.resource);
@@ -169,9 +173,9 @@ char* Win32TransportAgent::sendMessage(const char* msg) {
                                      flags, 0))) {
         lastErrorCode = ERR_CONNECT;
         DWORD code = GetLastError();
-        char* msg = createHttpErrorMessage(code);
-        sprintf (lastErrorMsg, "HttpOpenRequest Error: %d - %s", code, msg);
-        delete [] msg;
+        char* tmp = createHttpErrorMessage(code);
+        sprintf (lastErrorMsg, "HttpOpenRequest Error: %d - %s", code, tmp);
+        delete [] tmp;
         goto exit;
     }
 
@@ -205,18 +209,18 @@ char* Win32TransportAgent::sendMessage(const char* msg) {
                 // Retry: some proxy need to resend the http request.
                 if (!HttpSendRequest (request, headers, wcslen(headers), (void*)msg, contentLength)) {
                     lastErrorCode = ERR_CONNECT;
-                    char* msg = createHttpErrorMessage(code);
-                    sprintf (lastErrorMsg, "HttpSendRequest Error: %d - %s", code, msg);
-                    delete [] msg;
+                    char* tmp = createHttpErrorMessage(code);
+                    sprintf (lastErrorMsg, "HttpSendRequest Error: %d - %s", code, tmp);
+                    delete [] tmp;
                     goto exit;
                 }
             }
             // This is another type of error (e.g. cannot find server) -> exit
             else {
                 lastErrorCode = ERR_CONNECT;
-                char* msg = createHttpErrorMessage(code);
-                sprintf (lastErrorMsg, "HttpSendRequest Error: %d - %s", code, msg);
-                delete [] msg;
+                char* tmp = createHttpErrorMessage(code);
+                sprintf (lastErrorMsg, "HttpSendRequest Error: %d - %s", code, tmp);
+                delete [] tmp;
                 goto exit;
             }
         }
@@ -335,9 +339,9 @@ char* Win32TransportAgent::sendMessage(const char* msg) {
         if (!InternetReadFile (request, (LPVOID)bufferA, 5000, &read)) {
             DWORD code = GetLastError();
             lastErrorCode = ERR_READING_CONTENT;
-            char* msg = createHttpErrorMessage(code);
-            sprintf(lastErrorMsg, "InternetReadFile Error: %d - %s", code, msg);
-			delete [] msg;
+            char* tmp = createHttpErrorMessage(code);
+            sprintf(lastErrorMsg, "InternetReadFile Error: %d - %s", code, tmp);
+			delete [] tmp;
             goto exit;
         }
 
