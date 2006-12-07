@@ -84,15 +84,6 @@ Win32TransportAgent::~Win32TransportAgent(){}
 char* Win32TransportAgent::sendMessage(const char* msg) {
 
     ENTERING(L"TransportAgent::sendMessage");
-    if (!msg) {
-        sprintf(lastErrorMsg, "TransportAgent::sendMessage error: NULL message.");
-        goto exit;
-    }
-    
-    HINTERNET inet       = NULL,
-              connection = NULL,
-              request    = NULL;
-
     char bufferA[5000+1];
     int status = -1;
     unsigned int contentLength = 0;
@@ -100,6 +91,23 @@ char* Win32TransportAgent::sendMessage(const char* msg) {
     WCHAR* wurlResource;
     char* response = NULL;
     char* p        = NULL;
+    HINTERNET inet       = NULL,
+              connection = NULL,
+              request    = NULL;
+
+
+    // Check sending msg and host.
+    if (!msg) {
+        lastErrorCode = ERR_NETWORK_INIT;
+        sprintf(lastErrorMsg, "TransportAgent::sendMessage error: NULL message.");
+        goto exit;
+    }
+    if (!(url.host) || strlen(url.host) == 0) {
+        lastErrorCode = ERR_HOST_NOT_FOUND;
+        sprintf(lastErrorMsg, "TransportAgent::sendMessage error: %s.", ERRMSG_HOST_NOT_FOUND);
+        goto exit;
+    }
+
 
     DWORD size  = 0,
           read  = 0,
@@ -398,6 +406,8 @@ exit:
 char* Win32TransportAgent::createHttpErrorMessage(DWORD errorCode) {
     
     char* errorMessage = new char[512];
+    memset(errorMessage, 0, 512);
+
     FormatMessageA(
                 FORMAT_MESSAGE_FROM_HMODULE,
                 GetModuleHandleA("wininet.dll"),
@@ -407,6 +417,9 @@ char* Win32TransportAgent::createHttpErrorMessage(DWORD errorCode) {
                 512, 
                 NULL);
 
+    if (!errorMessage || strlen(errorMessage) == 0) {
+        sprintf(errorMessage, "Unknown error.");
+    }
     return errorMessage;
 }
 
