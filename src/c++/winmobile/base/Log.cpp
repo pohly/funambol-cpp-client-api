@@ -20,6 +20,7 @@
 #include "base/Log.h"
 #include "base/util/utils.h"
 
+#define FUNAMBOL_HEADER "Funambol Windows Mobile Plug-in Log"
 Log LOG = Log(false);
 
 char logmsg[512];
@@ -71,7 +72,7 @@ Log::Log(BOOL resetLog, const char*  path, const char*  name) {
     setLogPath(path);
     setLogName(name);
 	if (resetLog) {
-        reset("Funambol WindowsMobile Plugin Log");
+        reset(FUNAMBOL_HEADER);
     }
 }
 
@@ -174,7 +175,7 @@ void Log::printMessageW(const char* level, const WCHAR* msg, va_list argList) {
 
 void Log::reset(const char*  title) {
     
-    const char *t = (title) ? title : "Funambol SDK C++ Log";
+    const char *t = (title) ? title : FUNAMBOL_HEADER;
 
     char*  currentTime = createCurrentTime(true);
     memset(logFullName, 0, 512*sizeof(char));

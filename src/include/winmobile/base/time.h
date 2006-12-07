@@ -20,4 +20,5 @@
     #define INCL_PPC_TIME
 
     unsigned int time(void* unused);
+    unsigned long getTime();
 #endif

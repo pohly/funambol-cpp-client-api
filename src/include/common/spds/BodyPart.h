@@ -50,6 +50,7 @@ class BodyPart : public ArrayElement {
         // or a path name to a temp file for the attachment
         const char *getContent() const ;
         void setContent(const char *cont) ;
+        void setContent(StringBuffer sb);
 
         // For multipart message.
         // Values: inline, attachment

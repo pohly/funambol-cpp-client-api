@@ -2478,11 +2478,11 @@ StringBuffer* Formatter::getFilter(Filter* filter) {
 
     if (NotZeroStringBufferLenght(4, type, meta, record, field)) {
         StringBuffer* ret = NULL;
-
-        s.append(type);
-        s.append(meta);
+        
         s.append(ret = getValue(RECORD, record)); delete ret; ret = NULL;
         s.append(ret = getValue(FIELD, field)); delete ret; ret = NULL;
+        s.append(meta);
+        s.append(type);        
     }
 
     deleteAllStringBuffer(4, &type, &meta, &record, &field);

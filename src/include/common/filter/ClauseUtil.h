@@ -59,6 +59,14 @@ public:
      */
     static SourceFilter* createSourceFilter(const WCHAR* since, int bodySize, int attachSize);
 
+    /**
+     * Creates the filter clause given an the luid and max download size
+     *
+     * @param luid the id of the mail     
+     * @param size the max size of the mail
+     */
+
+    static SourceFilter* createSourceFilterInclusive(const char* luid, int size);
 };
 
 #endif

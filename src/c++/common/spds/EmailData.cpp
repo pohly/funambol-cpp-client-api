@@ -34,7 +34,7 @@
 #define EMAIL_DELE  "deleted"
 #define EMAIL_FLAG  "flagged"
 #define EMAIL_ITEM  "emailitem"
-#define EMAIL_ITEM_START  "<emailitem>"
+#define EMAIL_ITEM_START  "<emailitem"
 #define EMAIL_ITEM_END  "</emailitem>"
 
 
@@ -57,6 +57,25 @@ EmailData::EmailData()
     replied = false;
     deleted = false;
     flagged = false;
+    remainingBodySize = 0;
+    remainingAttachNumber = 0;
+    remainingAttachments = NULL;
+    extMailData = NULL;   
+    totalEmailSize = 0;
+    isMailPartial = false;
+}
+
+EmailData::~EmailData()
+{
+    if (extMailData) { 
+        delete extMailData; 
+        extMailData = NULL; 
+    }
+    if (remainingAttachments) {
+        remainingAttachments->clear(); 
+        delete remainingAttachments; 
+        remainingAttachments = NULL;
+    }
 }
 
 /*
@@ -72,8 +91,9 @@ EmailData::EmailData()
 int EmailData::parse(const char *msg, size_t len)
 {
     int ret = 0;
-    unsigned int start, end;
-    
+    unsigned int start = 0, end = 0;
+    isMailPartial = false;
+
     // Get attributes
     read      = checkFlag(msg, EMAIL_READ);
     forwarded = checkFlag(msg, EMAIL_FORW);
@@ -101,6 +121,7 @@ int EmailData::parse(const char *msg, size_t len)
     start = itemtmp.find(EMAIL_ITEM_START);
     end = itemtmp.rfind(EMAIL_ITEM_END);
     if (start != StringBuffer::npos && end != StringBuffer::npos) { 
+        totalEmailSize = itemtmp.length(); // the size of the current piece of mail
         itemtmp = NULL;
     //if( XMLProcessor::getElementContent(msg, EMAIL_ITEM, NULL, &start, &end) ) {
 		StringBuffer item(msg+start, end-start);        
@@ -143,6 +164,84 @@ int EmailData::parse(const char *msg, size_t len)
         LOG.info("EMailData: no <emailitem> tag.");
         // It is not an error, just log it for info.
     }
+    
+    char tmpExt[] = "<Ext><XNam>x-funambol-body</XNam><XVal>15000</XVal></Ext> \
+                     <Ext><XNam>x-funambol-attach-n</XNam><XVal>1</XVal></Ext> \
+                     <Ext><XNam>x-funambol-attach</XNam><XVal>att1.txt</XVal><XVal>10000</XVal></Ext>";
+    
+    //char tmpExt[] = "";
+    // find the Ext stuffs
+    if (end != StringBuffer::npos) {
+        unsigned int pos = end;
+        start = 0, end = 0; 
+        unsigned int previous = 0;
+        char* ext = NULL;
+        
+        // for try
+        pos = 0;
+        
+        while( (ext = XMLProcessor::copyElementContent(&tmpExt[pos], "Ext", &pos)) ) { // for try
+        //while( (ext = XMLProcessor::copyElementContent(&msg[pos], "Ext", &pos)) ) {            
+            char* xnam = XMLProcessor::copyElementContent(ext, "XNam", 0); 
+            if (!xnam) 
+                break;
+
+            if (strcmp(xnam, "x-funambol-body") == 0) {
+                char* val = XMLProcessor::copyElementContent(ext, "XVal", 0);
+                if (val) {
+                    setRemainingBodySize(atol(val));
+                    totalEmailSize += atol(val);
+                    delete [] val; val = NULL;
+                    isMailPartial = true;
+                }
+            } else if (strcmp(xnam, "x-funambol-attach-n") == 0) {
+                char* val = XMLProcessor::copyElementContent(ext, "XVal", 0);
+                if (val) {
+                    setRemainingAttachNumber(atol(val));
+                    delete [] val; val = NULL;
+                    isMailPartial = true;
+                } 
+            } else if (strcmp(xnam, "x-funambol-attach") == 0) {
+                if (!remainingAttachments) {
+                    remainingAttachments = new ArrayList();
+                }
+                extMailData = new ExtMailData();
+                unsigned int from = 0, previous = 0;
+                char* val = XMLProcessor::copyElementContent(ext, "XVal", &from);
+                if (val) {
+                    extMailData->attachName = stringdup(val);                    
+                    delete [] val; val = NULL;
+                } 
+                val = XMLProcessor::copyElementContent(&ext[from], "XVal", &from);
+                if (val) {
+                    extMailData->attachSize = atol(val);
+                    totalEmailSize += atol(val);
+                    delete [] val; val = NULL;
+                }
+                if (extMailData->attachName && extMailData->attachSize != 0) {
+                    remainingAttachments->add(*extMailData);
+                    isMailPartial = true;
+                }
+                delete extMailData;
+                extMailData = NULL;
+            }
+            
+            pos += previous;
+            previous = pos; 
+
+            if (xnam) {
+                delete [] xnam; xnam = NULL;
+            }
+            if (ext) {
+                delete [] ext; ext = NULL;
+            }
+
+        }            
+        
+    }
+
+
+
     return ret;
 }
 

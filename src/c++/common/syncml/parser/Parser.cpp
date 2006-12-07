@@ -1968,7 +1968,7 @@ ArrayList* Parser::getItems(const char*xml, const char* command) {
     char*      t       = NULL;
     
     t = XMLProcessor::copyElementContent(&xml[pos], ITEM, &pos);    
-    while ((item = getItem(t)) != NULL) {
+    while ((item = getItem(t, command)) != NULL) {
         if (item) {
             if (!items)
                 items = new ArrayList();
@@ -2007,7 +2007,7 @@ Item* Parser::getItem(const char*xml, const char* command) {
     if (t) {delete [] t; t = NULL;}
     
     t = XMLProcessor::copyElementContent(xml, COMPLEX_DATA,NULL);
-    data     = getComplexData(t);
+    data     = getComplexData(t,command);
     if (t) { delete [] t; t = NULL; } 
     
     t = XMLProcessor::copyElementContent(xml, MORE_DATA,NULL);

@@ -40,6 +40,8 @@
 
 **/
 
+//#define USE_ZLIB
+
 #include "base/Log.h"
 #include "base/messages.h"
 #include "base/util/utils.h"
@@ -52,6 +54,9 @@
 #include "spdm/spdmutils.h"
 #include "event/FireEvent.h"
 
+#ifdef USE_ZLIB
+    #include "zlib.h"
+#endif
 
 #define TIME  500
 #define TIMEOUT 300000  // 5 min
@@ -59,7 +64,7 @@
 #define ERR_HTTP_TIME_OUT 2007
 #define MAX_SEND_RETRIES 3
 #define MAX_RETRIES 2
-
+#define SESSION_TIMEOUT 1200
 
 typedef struct
 {
@@ -94,6 +99,13 @@ DWORD WINAPI FunctionHttpSendRequest( IN PARM_HTTP_SEND_REQUEST vParm);
 int sumRead, previousNumRead;
 int sumByteSent, previousNumWrite;
 BOOL cont;
+unsigned long lastSentTime;
+
+#ifdef USE_ZLIB
+    BOOL isToDeflate; // to be zipped
+    BOOL isFirstMessage;
+    BOOL isToInflate; // to be unzipped
+#endif
 
 #define ENTERING(func) sprintf(logmsg, "Entering %s", func); LOG.debug(logmsg)
 #define EXITING(func)  sprintf(logmsg, "Exiting %s", func);  LOG.debug(logmsg)
@@ -121,13 +133,18 @@ PPC2003TransportAgent::PPC2003TransportAgent(URL& newURL, Proxy& newProxy,
                                              unsigned int maxResponseTimeout,
                                              unsigned int maxmsgsize) : TransportAgent() {
 
-    url   = newURL  ;
+#ifdef USE_ZLIB
+    isToDeflate = FALSE;
+    isFirstMessage = TRUE;    
+#endif
 
+    url   = newURL  ;
     if (maxResponseTimeout == 0) {
         setTimeout(DEFAULT_MAX_TIMEOUT);
     } else {
         setTimeout(maxResponseTimeout);
     }
+    lastSentTime = getTime();
 
     // used by default. check connection before...
     if (!EstablishConnection()) {
@@ -160,7 +177,7 @@ char* bufferA = NULL;
 char*  response = NULL;
 
 char*  PPC2003TransportAgent::sendMessage(const char*  msg) {
-
+        
     int status        = -1;
     int contentLength = 0, contentLengthResponse = 0;
     DWORD compare     = 0;
@@ -171,6 +188,13 @@ char*  PPC2003TransportAgent::sendMessage(const char*  msg) {
 
     response = NULL;
     bufferA = NULL;
+    
+    if ((getTime() - lastSentTime) > SESSION_TIMEOUT) {
+        LOG.error("Server Session timeout (%i secs) reached: don't send message", SESSION_TIMEOUT);
+        goto exit;
+    } else {
+        lastSentTime = getTime();
+    }
 
     bufferA = new char[readBufferSize+1];
     memset(bufferA, 0, (readBufferSize+1) * sizeof(char));
@@ -269,10 +293,79 @@ char*  PPC2003TransportAgent::sendMessage(const char*  msg) {
     // Prepares headers
     //
     WCHAR headers[512];
-
     contentLength = strlen(msg);
+    
+#ifdef USE_ZLIB
+    char* compr = NULL;
+    /*
+    * Say the client can accept the zipped content but the first message is clear
+    */
+    if (isFirstMessage || !isToDeflate) { 
+        wsprintf(headers, TEXT("Content-Type: %s\r\nContent-Length: %d\r\nAccept-Encoding: deflate"),
+                      SYNCML_CONTENT_TYPE, contentLength);    
+        isFirstMessage = false;
+    
+    } else if (isToDeflate) {
+        z_stream c_stream;
+        int err;
+        compr = new char[contentLength];
+        int uncompressedContentLenght = 0;
+
+        c_stream.zalloc = (alloc_func)0;
+        c_stream.zfree = (free_func)0;
+        c_stream.opaque = (voidpf)0;
+        
+        err = deflateInit(&c_stream, Z_DEFAULT_COMPRESSION);
+        if (err != Z_OK) {
+            LOG.error("Transport Agent: Error in deflateInit");
+            goto exit;
+        }
+
+        c_stream.next_in  = (Bytef*)msg;
+        c_stream.next_out = (Bytef*)compr;
+        
+        while (c_stream.total_in != (uLong)contentLength && c_stream.total_out < contentLength) {
+            c_stream.avail_in = c_stream.avail_out = 1; /* force small buffers */
+            err = deflate(&c_stream, Z_NO_FLUSH);
+            if (err != Z_OK) {
+                LOG.error("Transport Agent: Error in deflate");
+                goto exit;
+            }
+        }
+        
+        for (;;) {
+            c_stream.avail_out = 1;
+            err = deflate(&c_stream, Z_FINISH);
+            if (err == Z_STREAM_END) break;
+            if (err != Z_OK) {
+                LOG.error("Transport Agent: Error in deflate");
+                goto exit;
+            }            
+        }
+
+        err = deflateEnd(&c_stream);                    
+        if (err != Z_OK) 
+            goto exit;               
+
+        delete [] msg;
+        msg = compr;
+        
+        uncompressedContentLenght = contentLength;
+        contentLength = c_stream.total_out;
+
+        wsprintf(headers, TEXT("Content-Type: %s\r\nContent-Length: %d\r\nAccept-Encoding: deflate\r\nUncompressed-Content-Length: %d\r\nContent-Encoding: deflate"),
+                      SYNCML_CONTENT_TYPE, contentLength, uncompressedContentLenght);                                    
+                      
+    }
+#endif
+
+#ifndef USE_ZLIB
+    
     wsprintf(headers, TEXT("Content-Type: %s\r\nContent-Length: %d"),
                       SYNCML_CONTENT_TYPE, contentLength);
+
+#endif
+
     toLog = toMultibyte(headers);
     LOG.debug(toLog);
     if (toLog) { delete [] toLog; toLog = NULL; }
@@ -287,14 +380,17 @@ char*  PPC2003TransportAgent::sendMessage(const char*  msg) {
     threadParmHttpSendRequest.headersLength  = wcslen(headers);
     threadParmHttpSendRequest.pMsg           = (char *)msg;
     threadParmHttpSendRequest.msgLength      = contentLength;
+    
+       
+    //
+    //
+    //
+    int uncompressedContentLenght = 0;
+    DWORD dwSize = 512;    
 
-    //
-    //
-    //
     for (numretries = 0; numretries < MAX_RETRIES; numretries++) {
 
         for (k = 0; k < MAX_SEND_RETRIES; k++) {
-
             // Fire Send Data Begin Transport Event
             fireTransportEvent(contentLength, SEND_DATA_BEGIN);
 
@@ -357,6 +453,54 @@ char*  PPC2003TransportAgent::sendMessage(const char*  msg) {
                            (LPDWORD)&contentLengthResponse,
                            (LPDWORD)&size,
                            NULL);
+               
+#ifdef USE_ZLIB 
+
+        wchar_t* wbuffer = new wchar_t[1024];
+        DWORD ddsize = 1024;
+        if (!HttpQueryInfo(request,HTTP_QUERY_RAW_HEADERS_CRLF ,(LPVOID)wbuffer,&ddsize,NULL))
+        if (ERROR_HTTP_HEADER_NOT_FOUND == GetLastError()) {
+            isToDeflate = FALSE;
+        }
+        delete [] wbuffer; wbuffer = NULL;
+               
+        // isToDeflate to be set
+        dwSize = 512;
+        wchar_t* buffer = new wchar_t[dwSize];     
+        memset(buffer, 0, dwSize*sizeof(wchar_t));
+                       
+        wcscpy(buffer, TEXT("Accept-Encoding"));
+        HttpQueryInfo(request,HTTP_QUERY_CUSTOM,(LPVOID)buffer,&dwSize,NULL);
+        if (ERROR_HTTP_HEADER_NOT_FOUND == GetLastError()) {
+            isToDeflate = FALSE;
+        } else {
+            isToDeflate = TRUE;
+        }	
+        
+        memset(buffer, 0, dwSize*sizeof(wchar_t));
+        wcscpy(buffer, TEXT("Content-Encoding"));
+        HttpQueryInfo(request,HTTP_QUERY_CUSTOM,(LPVOID)buffer,&dwSize,NULL);
+        if (GetLastError() == ERROR_HTTP_HEADER_NOT_FOUND) {
+            isToInflate = FALSE;
+        } else {
+            if (wcscmp(buffer, TEXT("deflate")) == 0)
+                isToInflate = TRUE;
+            else
+                isToInflate = FALSE;
+        }
+
+        memset(buffer, 0, dwSize*sizeof(wchar_t));
+        wcscpy(buffer, TEXT("Uncompressed-Content-Length"));
+
+        HttpQueryInfo(request,HTTP_QUERY_CUSTOM,(LPVOID)buffer,&dwSize,NULL);
+        if (GetLastError() == ERROR_HTTP_HEADER_NOT_FOUND) {
+            isToInflate = FALSE;
+        } else {
+            uncompressedContentLenght = wcstol(buffer, NULL, 10);
+        }	        	
+
+        delete [] buffer;
+#endif
 
         LOG.debug(READING_RESPONSE);
 
@@ -452,6 +596,47 @@ char*  PPC2003TransportAgent::sendMessage(const char*  msg) {
     // Fire Receive Data End Transport Event
     fireTransportEvent(contentLengthResponse, RECEIVE_DATA_END);
 
+#ifdef USE_ZLIB
+
+    if (isToInflate) {
+        char* uncompr = new char[uncompressedContentLenght + 1];        
+        int uncomprLen = uncompressedContentLenght; //1024;
+        memset(uncompr, 0, uncompressedContentLenght);
+        z_stream d_stream;
+        int err = 0;
+       
+        d_stream.zalloc = (alloc_func)0;
+        d_stream.zfree = (free_func)0;
+        d_stream.opaque = (voidpf)0;
+
+        d_stream.next_in  = (Byte*)response; // compressed buffer
+        d_stream.avail_in = (uInt)contentLengthResponse;  // compressed buffer lenght
+               
+        err = inflateInit(&d_stream);
+        
+        for (;;) {
+            d_stream.next_out = (Byte*)uncompr;            
+	        d_stream.avail_out = (uInt)uncomprLen;
+            err = inflate(&d_stream, Z_NO_FLUSH);
+
+            if (err == Z_STREAM_END) 
+                break;      
+            if (err == Z_BUF_ERROR) {
+                LOG.error("Transport Agent: error in inflating: Z_BUF_ERROR");
+                goto exit;
+            }
+        }
+        err = inflateEnd(&d_stream);
+        
+        if (err == Z_OK) {
+            delete [] response;
+            response = uncompr;
+        
+        }               
+    }
+
+#endif
+
     LOG.debug("Response read");
     LOG.debug("%s", response);
 
@@ -534,10 +719,21 @@ DWORD WINAPI FunctionHttpSendRequest(IN PARM_HTTP_SEND_REQUEST vParm) {
     }
 
     ptrBuffer = pParm.pMsg;
-
+    int remainigByte = BufferIn.dwBufferTotal;
+    int bufferlen = 0;
     do {
-        strncpy (pBuffer, ptrBuffer, 1024);
-        if (!InternetWriteFile (request, pBuffer, strlen(pBuffer), &dwBytesWritten)) {
+
+        memset(pBuffer, 0, 1024+1);
+        if (remainigByte < 1024) {
+            memcpy(pBuffer, ptrBuffer, remainigByte);
+            bufferlen = remainigByte;
+        }
+        else {
+            memcpy(pBuffer, ptrBuffer, 1024);
+            bufferlen = 1024;
+        }
+        
+        if (!InternetWriteFile (request, pBuffer, bufferlen, &dwBytesWritten)) {
             ret = 8001;
             sprintf(dbg, "%s: %d", "InternetWriteFile error", GetLastError());
             LOG.debug(dbg);
@@ -585,6 +781,7 @@ DWORD WINAPI FunctionHttpSendRequest(IN PARM_HTTP_SEND_REQUEST vParm) {
         LOG.debug(dbg);
 
         ptrBuffer = ptrBuffer + (dwBytesWritten * (sizeof(char)));
+        remainigByte = remainigByte - dwBytesWritten;
 
         if (sumByteSent < pParm.msgLength) {
 
@@ -637,11 +834,14 @@ DWORD WINAPI WorkerFunctionInternetReadFile(IN LPVOID vThreadParm) {
         if (read != 0) {
             recsize += read;
             LOG.debug("Size: %d", recsize);
-            bufferA[read] = 0;
 
+            memcpy(p, bufferA, read);
+            p += read;
+            /*
+            bufferA[read] = 0;
             strcpy(p, bufferA);
             p += strlen(bufferA);
-
+            */
             // Fire Data Received Transport Event
             fireTransportEvent(read, DATA_RECEIVED);
         }

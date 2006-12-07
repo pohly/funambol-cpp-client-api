@@ -284,7 +284,7 @@ Filter* ClauseUtil::toFilter(SourceFilter& sourceFilter) {
   *
   * 
   */
-  SourceFilter* ClauseUtil::createSourceFilter(const WCHAR* since, int bodySize, int attachSize) {
+SourceFilter* ClauseUtil::createSourceFilter(const WCHAR* since, int bodySize, int attachSize) {
     if ((since == NULL) && (bodySize == -1) && (attachSize == -1)) {
         //
         // No filter is needed
@@ -410,6 +410,70 @@ Filter* ClauseUtil::toFilter(SourceFilter& sourceFilter) {
 
     SourceFilter* filter = new SourceFilter();
     filter->setClause(clause);
+
+    return filter;
+}
+
+SourceFilter* ClauseUtil::createSourceFilterInclusive(const char* luid, int size) {
+    
+    if (!luid) {
+        //
+        // No filter is needed
+        //
+        return NULL;
+    }
+
+    ArrayList operands;
+
+    //
+    // FIELD CLAUSE(S)
+    // ---------------
+    //
+    
+    ArrayList properties;
+
+    Property p;
+    p.setPropName("emailitem");            
+    ArrayList params;                        
+
+    PropParam textParam;
+    textParam.setParamName("texttype");
+    params.add(textParam);              
+
+    PropParam attachParam;
+    attachParam.setParamName("attachtype");        
+    params.add(attachParam);
+    p.setPropParams(params);
+
+    p.setMaxSize(size*1024);
+    properties.add(p);    
+         
+    if (properties.size() == 0) {
+        AllClause all;
+        operands.add(all);
+    } else {
+        FieldClause fieldClause(properties);
+        operands.add(fieldClause);
+    }
+
+    //
+    // RECORD CLAUSE
+    // -------------
+    // 
+
+    if (luid) {        
+        WhereClause recordClause("&LUID", luid, EQ, FALSE);
+        operands.add(recordClause);        
+    } else {
+        AllClause all;
+        operands.add(all);
+    }
+
+    LogicalClause clause(AND, operands);
+
+    SourceFilter* filter = new SourceFilter();
+    filter->setClause(clause);
+    filter->setInclusive(TRUE);
 
     return filter;
 }

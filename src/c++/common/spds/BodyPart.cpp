@@ -36,6 +36,8 @@ void BodyPart::setCharset(const char *cs) { charset = cs; }
 
 const char * BodyPart::getContent() const { return content.c_str(); }
 void BodyPart::setContent(const char *cont) { content = cont; }
+void BodyPart::setContent(StringBuffer sb) { content += sb; }
+
 
 const char *BodyPart::getDisposition() const { return disposition.c_str(); }
 void BodyPart::setDisposition(const char *disp) { disposition = disp; }

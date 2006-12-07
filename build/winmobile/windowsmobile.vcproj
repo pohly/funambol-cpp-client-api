@@ -3,7 +3,7 @@
 	ProjectType="Visual C++"
 	Version="8,00"
 	Name="windowsmobile"
-	ProjectGUID="{F920CBE6-3CEB-4334-9AB6-104CF1C2B94D}"
+	ProjectGUID="{4E03F2CD-31F3-4EA8-81E4-AC267456C910}"
 	RootNamespace="windowsmobile"
 	>
 	<Platforms>
@@ -486,7 +486,7 @@
 				Name="VCCLCompilerTool"
 				ExecutionBucket="7"
 				Optimization="0"
-				AdditionalIncludeDirectories="..\..\src\include\winmobile,..\..\src\include\common"
+				AdditionalIncludeDirectories="..\..\src\include\winmobile,..\..\src\include\common,..\..\..\tools\zlib"
 				PreprocessorDefinitions="DEBUG;_WIN32_WCE=$(CEVER);$(CePlatform);ARM;_ARM_;ARMV4;UNDER_CE=$(CEVER);UNICODE;_LIB"
 				RuntimeLibrary="1"
 				EnableFunctionLevelLinking="true"
@@ -12962,6 +12962,70 @@
 					>
 				</File>
 			</Filter>
+			<Filter
+				Name="zlib"
+				>
+				<File
+					RelativePath="..\..\..\tools\zlib\adler32.c"
+					>
+				</File>
+				<File
+					RelativePath="..\..\..\tools\zlib\compress.c"
+					>
+				</File>
+				<File
+					RelativePath="..\..\..\tools\zlib\crc32.c"
+					>
+				</File>
+				<File
+					RelativePath="..\..\..\tools\zlib\deflate.c"
+					>
+				</File>
+				<File
+					RelativePath="..\..\..\tools\zlib\gzio.c"
+					>
+				</File>
+				<File
+					RelativePath="..\..\..\tools\zlib\infblock.c"
+					>
+				</File>
+				<File
+					RelativePath="..\..\..\tools\zlib\infcodes.c"
+					>
+				</File>
+				<File
+					RelativePath="..\..\..\tools\zlib\inffast.c"
+					>
+				</File>
+				<File
+					RelativePath="..\..\..\tools\zlib\inflate.c"
+					>
+				</File>
+				<File
+					RelativePath="..\..\..\tools\zlib\inftrees.c"
+					>
+				</File>
+				<File
+					RelativePath="..\..\..\tools\zlib\infutil.c"
+					>
+				</File>
+				<File
+					RelativePath="..\..\..\tools\zlib\minigzip.c"
+					>
+				</File>
+				<File
+					RelativePath="..\..\..\tools\zlib\trees.c"
+					>
+				</File>
+				<File
+					RelativePath="..\..\..\tools\zlib\uncompr.c"
+					>
+				</File>
+				<File
+					RelativePath="..\..\..\tools\zlib\zutil.c"
+					>
+				</File>
+			</Filter>
 		</Filter>
 		<Filter
 			Name="Header Files"
@@ -13279,6 +13343,56 @@
 				RelativePath="..\..\src\include\common\base\util\XMLProcessor.h"
 				>
 			</File>
+			<Filter
+				Name="zlib"
+				>
+				<File
+					RelativePath="..\..\..\tools\zlib\deflate.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\..\tools\zlib\infblock.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\..\tools\zlib\infcodes.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\..\tools\zlib\inffast.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\..\tools\zlib\inffixed.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\..\tools\zlib\inftrees.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\..\tools\zlib\infutil.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\..\tools\zlib\trees.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\..\tools\zlib\zconf.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\..\tools\zlib\zlib.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\..\tools\zlib\zutil.h"
+					>
+				</File>
+			</Filter>
 		</Filter>
 	</Files>
+	<Globals>
+	</Globals>
 </VisualStudioProject>

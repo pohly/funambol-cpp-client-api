@@ -48,4 +48,18 @@ unsigned int time(void* unused) {
     
 }
 
+/*
+* return the time in seconds using only the HH:mm:ss. It is useful for the transport agent
+* to understand if retry or not to send the message to the server again. If time is greater then 20 mins
+* it is not needed because the server session is already ended.
+*/ 
+
+unsigned long getTime() {
+    SYSTEMTIME st;    
+    GetSystemTime(&st);        
+    unsigned long t = st.wSecond + (st.wMinute * 60) + 
+                     (st.wHour * 60 * 60) + (st.wDay * 24 * 60 * 60);    
+    return t;
+    
+}
 

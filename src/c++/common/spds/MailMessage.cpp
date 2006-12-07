@@ -366,7 +366,7 @@ static bool isAscii(const char *str){
         return true;
 
     for(size_t i = 0; i < strlen(str); i++) {
-        if ( ! isprint(str[i]) ){
+        if (str[i] < 32 || str[i] > 126 ){
 			return false;
         }
     }
