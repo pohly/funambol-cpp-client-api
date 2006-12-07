@@ -118,7 +118,7 @@
 				Optimization="2"
 				InlineFunctionExpansion="1"
 				AdditionalIncludeDirectories="..\,..\..\src\include\win32,..\..\src\include\common"
-				PreprocessorDefinitions="WIN32;NDEBUG;UNICODE;_LIB"
+				PreprocessorDefinitions="WIN32;NDEBUG;UNICODE;_LIB;_CRT_SECURE_NO_DEPRECATE;_CRT_NON_CONFORMING_SWPRINTFS"
 				StringPooling="true"
 				RuntimeLibrary="0"
 				EnableFunctionLevelLinking="true"
@@ -3436,6 +3436,4 @@
 			>
 		</Filter>
 	</Files>
-	<Globals>
-	</Globals>
 </VisualStudioProject>
