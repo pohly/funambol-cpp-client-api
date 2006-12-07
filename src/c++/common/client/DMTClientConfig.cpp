@@ -175,6 +175,7 @@ BOOL DMTClientConfig::save() {
     //
     // Sources management node
     //
+    lastErrorCode = ERR_NONE;
     for(i=0; i<sourceConfigsCount; ++i) {
         saveSourceConfig(i, *(sourcesNode) );
     }
