@@ -19,6 +19,7 @@
 #ifndef INCL_TESTSYNCCLIENT
 #define INCL_TESTSYNCCLIENT
 
+#include <string>
 #include "spds/SyncSource.h"
 
 /**
@@ -64,7 +65,7 @@
  */
 class ClientTest {
   public:
-    ClientTest();
+    ClientTest(int serverSleepSec = 0, const std::string &serverLog= "");
     virtual ~ClientTest();
     
     /**
@@ -147,14 +148,6 @@ class ClientTest {
          *   added/updated/deleted items is as expected
          */
         createsource_t createSourceB;
-
-        /**
-         * Time the server needs before it correctly handles another
-         * connection. Some servers use time stamps to track modifications
-         * and get confused when connections are made to quickly after
-         * another.
-         */
-        int serverDelaySeconds;
 
         /**
          * The framework can generate vCard and vCalendar/iCalendar items
@@ -284,6 +277,13 @@ class ClientTest {
     virtual ClientTest *getClientB() = 0;
 
     /**
+     * Returning true enables tests which only work if the server is
+     * a Funambol server which supports the "b64" encoding of items
+     * on the transport level.
+     */
+    virtual bool isB64Enabled() = 0;
+    
+    /**
      * Execute a synchronization with the selected sync sources
      * and the selected synchronization options. The log file
      * in LOG has been set up already for the synchronization run
@@ -296,7 +296,7 @@ class ClientTest {
      * @param encoding     if non-NULL, then let client library transform all items
      *                     into this format
      *
-     * @return - 0 on success, an error otherwise
+     * @return - 0 on success, an error otherwise (may also throw an exception)
      */
     virtual int sync(
         const int *sources,
@@ -305,6 +305,30 @@ class ClientTest {
         long maxObjSize = 0,
         bool loSupport = false,
         const char *encoding = 0) = 0;
+
+    /**
+     * This is called after successful sync() calls (res == 0) as well
+     * as after unsuccessful ones (res != 1). The default implementation
+     * sleeps for the number of seconds specified when constructing this
+     * instance and copies the server log if one was named.
+     *
+     * @param res       result of sync()
+     * @param logname   base name of the current sync log (without ".client.[AB].log" suffix)
+     */
+    virtual void postSync(int res, const std::string &logname);
+
+  protected:
+    /**
+     * time to sleep in postSync()
+     */
+    int serverSleepSeconds;
+
+    /**
+     * server log file which is copied by postSync() and then
+     * truncated (Unix only, Windows does not allow such access
+     * to an open file)
+     */
+    std::string serverLogFileName;
 
   private:
     /**
