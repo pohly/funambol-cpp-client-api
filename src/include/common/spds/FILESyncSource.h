@@ -37,9 +37,6 @@ class FILESyncSource : public SyncSource {
 
 protected:
 
-    // The path where the application is running.
-    char* path;
-
     // The dir in which the files are and that are to be synced.
     char* dir;
 
@@ -54,9 +51,6 @@ protected:
 
 public:
     
-    void setPath(const char* p);
-    const char* getPath();
-
     void setDir(const char* p);
     const char* getDir();
 
@@ -66,7 +60,7 @@ public:
      *
      * @param name - the name of the SyncSource
      */
-    FILESyncSource(const wchar_t* name, SyncSourceConfig* sc);
+    FILESyncSource(const WCHAR* name, SyncSourceConfig* sc);
 
     // Destructor
     virtual ~FILESyncSource();
@@ -129,7 +123,7 @@ public:
     int updateItem(SyncItem& item);
     int deleteItem(SyncItem& item);
    
-    void setItemStatus(const wchar_t* key, int status);
+    void setItemStatus(const WCHAR* key, int status);
 
     int beginSync();
     int endSync();

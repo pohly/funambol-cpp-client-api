@@ -20,7 +20,6 @@
 #include "base/util/utils.h"
 #include "base/Log.h"
 #include "spds/FileData.h"
-#include <direct.h>
 
 #include "spds/FILESyncSource.h"
 
@@ -30,15 +29,9 @@ static int cnew;
 static int cupdated;
 static int cdeleted;
 
-
-FILESyncSource::FILESyncSource(const wchar_t* name, SyncSourceConfig* sc) : SyncSource(name, sc) {
+FILESyncSource::FILESyncSource(const WCHAR* name, SyncSourceConfig* sc) : SyncSource(name, sc) {
     c    = NULL; 
-    path = NULL;
     dir  = NULL;
-
-    char* tmp = _getcwd(NULL, 0);
-    setPath(tmp);
-    delete [] tmp;
 
     setDir(".");
 }
@@ -48,10 +41,6 @@ FILESyncSource::~FILESyncSource() {
         delete c; 
         c = NULL;
     }
-    if (path) {
-        delete [] path;
-        path = NULL;
-    }
     if(dir) {
         delete [] dir;
         dir = NULL;
@@ -59,17 +48,6 @@ FILESyncSource::~FILESyncSource() {
 }
 
 
-
-void FILESyncSource::setPath(const char* p) {
-    if (path)
-        delete [] path;
-
-    path = (p) ? stringdup(p) : stringdup("\\");
-}
-
-const char* FILESyncSource::getPath() {
-    return path;
-}
 
 void FILESyncSource::setDir(const char* p) {
     if (dir)
@@ -299,7 +277,7 @@ SyncItem* FILESyncSource::getNextDeletedItem() {
 
 
 
-void FILESyncSource::setItemStatus(const wchar_t* key, int status) {
+void FILESyncSource::setItemStatus(const WCHAR* key, int status) {
     LOG.debug("item key: %ls, status: %i", key, status);    
 }
 
@@ -309,9 +287,10 @@ void FILESyncSource::setItemStatus(const wchar_t* key, int status) {
 
 
 int FILESyncSource::addItem(SyncItem& item) {
-    
-    FileData file;
+
+    // format is the custom XML format understood by FileData
     int ret = STC_COMMAND_FAILED;
+    FileData file;
     char* data = (char*)item.getData();
     size_t len = item.getDataSize();
 
@@ -339,7 +318,6 @@ int FILESyncSource::addItem(SyncItem& item) {
         }       
         ret = STC_ITEM_ADDED;
         LOG.debug("Added item: %ls", file.getName());    
-
     }
     return ret;
 }
@@ -354,7 +332,7 @@ int FILESyncSource::updateItem(SyncItem& item) {
     FileData file;
     char* data      = NULL;
     long h          = 0;
-    wchar_t* encod  = NULL;
+    WCHAR* encod  = NULL;
     int size = 0;
     int res = 0;
     size = item.getDataSize();    
@@ -362,7 +340,7 @@ int FILESyncSource::updateItem(SyncItem& item) {
     memset(data, 0, size + 1);
     memcpy(data, item.getData(), size);
     res = file.parse((data));
-    encod = (wchar_t*)file.getEnc();
+    encod = (WCHAR*)file.getEnc();
     delete [] data;
 
     if (wcslen(encod) > 0) {        
@@ -412,13 +390,11 @@ void FILESyncSource::assign(FILESyncSource& s) {
     setLastAnchor(s.getLastAnchor());
     setNextAnchor(s.getNextAnchor());
     setFilter(s.getFilter());
-    setPath(getPath());
     setDir(getDir());
 }
 
 ArrayElement* FILESyncSource::clone() {
     FILESyncSource* s = new FILESyncSource(getName(), &(getConfig()));
-    s->setPath(getPath());
 
     s->assign(*this);
 
