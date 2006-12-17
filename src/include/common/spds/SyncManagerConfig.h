@@ -58,6 +58,15 @@ class SyncManagerConfig {
 
         BOOL isDirty() EXTRA_SECTION_01;
 
+        /**
+         * Initializes the access and device config with default values from DefaultConfigFactory.
+         */
+        void setClientDefaults();
+
+        /**
+         * Initializes the given source with default values from DefaultConfigFactory.
+         */
+        void setSourceDefaults(const char* name);
 };
 
 #endif

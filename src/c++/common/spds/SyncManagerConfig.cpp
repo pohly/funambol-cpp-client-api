@@ -21,6 +21,7 @@
 #include "base/errors.h"
 #include "base/Log.h"
 #include "spds/SyncManagerConfig.h"
+#include "spds/DefaultConfigFactory.h"
 
 
 SyncManagerConfig::SyncManagerConfig() {
@@ -146,4 +147,20 @@ BOOL SyncManagerConfig::addSyncSourceConfig(SyncSourceConfig& sc) {
 
 BOOL SyncManagerConfig::isDirty() {
     return accessConfig.getDirty();
+}
+
+void SyncManagerConfig::setClientDefaults() {
+    AccessConfig* ac = DefaultConfigFactory::getAccessConfig();
+    setAccessConfig(*ac);
+    delete ac;
+
+    DeviceConfig* dc = DefaultConfigFactory::getDeviceConfig();
+    setDeviceConfig(*dc);
+    delete dc;
+}
+
+void SyncManagerConfig::setSourceDefaults(const char* name) {
+    SyncSourceConfig* sc = DefaultConfigFactory::getSyncSourceConfig(name);
+    setSyncSourceConfig(*sc);
+    delete sc;
 }
