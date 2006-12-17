@@ -18,6 +18,7 @@ SOURCES_BASE = \
     quoted-printable.cpp \
     error.cpp \
     ErrorHandler.cpp \
+    ItemContainer.cpp \
     LogErrorHandler.cpp \
     md5.c
 
@@ -140,10 +141,13 @@ SOURCES_SPDS = \
     B64Encoder.cpp \
     DESDecoder.cpp \
     DESEncoder.cpp \
+    DefaultConfigFactory.cpp \
     EmailData.cpp \
+    FILESyncSource.cpp \
     FileData.cpp \
     ItemReport.cpp \
     MailMessage.cpp \
+    RawFILESyncSource.cpp \
     SyncManagerConfig.cpp \
     SyncItem.cpp \
     SyncItemStatus.cpp \

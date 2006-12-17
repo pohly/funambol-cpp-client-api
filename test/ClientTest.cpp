@@ -126,10 +126,33 @@ static void importItem(SyncSource *source, std::string &data)
         item.setData( data.c_str(), data.size() + 1 );
         item.setDataType( "raw" );
         SOURCE_ASSERT_EQUAL(source, 200, source->addItem(item));
-        CPPUNIT_ASSERT(item.getKey() != NULL);
+        CPPUNIT_ASSERT(item.getKey() != 0);
         CPPUNIT_ASSERT(strlen(item.getKey()) > 0);
     }
 }
+
+/**
+ * helper class to encapsulate ClientTest::Config::createsource_t
+ * pointer and the corresponding parameters
+ */
+class CreateSource {
+public:
+    CreateSource(ClientTest::Config::createsource_t createSourceParam, ClientTest &clientParam, int sourceParam, bool isSourceAParam) :
+        createSource(createSourceParam),
+        client(clientParam),
+        source(sourceParam),
+        isSourceA(isSourceAParam) {}
+
+    SyncSource *operator() () {
+        CPPUNIT_ASSERT(createSource);
+        return createSource(client, source, isSourceA);
+    }
+
+    const ClientTest::Config::createsource_t createSource;
+    ClientTest &client;
+    const int source;
+    const bool isSourceA;
+};
 
 
 /**
@@ -151,13 +174,23 @@ public:
     /** the client we are testing */
     ClientTest &client;
 
-    /** configuration for the source that we are testing in that client */
-    ClientTest::Config config;
+    /** number of the source we are testing in that client */
+    const int source;
+    
+    /** configuration that corresponds to source */
+    const ClientTest::Config config;
 
-    LocalTests(const std::string &name, ClientTest &cl, ClientTest::Config &co) :
+    /** helper funclets to create sources */
+    CreateSource createSourceA, createSourceB;
+    
+    LocalTests(const std::string &name, ClientTest &cl, int sourceParam, ClientTest::Config &co) :
         CppUnit::TestSuite(name),
         client(cl),
-        config(co) {}
+        source(sourceParam),
+        config(co),
+        createSourceA(co.createSourceA, cl, sourceParam, true),
+        createSourceB(co.createSourceB, cl, sourceParam, false)
+        {}
 
     /** adds the supported tests to the instance itself */
     void addTests() {
@@ -197,11 +230,9 @@ public:
      * opens source and inserts the given item; can be called
      * regardless whether the data source already contains items or not
      */
-    void insert(ClientTest::Config::createsource_t createSource, const char *data) {
-        CPPUNIT_ASSERT(createSource);
-
+    void insert(CreateSource createSource, const char *data) {
         // create source
-        std::auto_ptr<SyncSource> source((*createSource)(client));
+        std::auto_ptr<SyncSource> source(createSource());
         CPPUNIT_ASSERT(source.get() != 0);
 
         // count number of already existing items
@@ -221,10 +252,10 @@ public:
         // two possible results:
         // - a new item was added
         // - the item was matched against an existing one
-        CPPUNIT_ASSERT_NO_THROW(source.reset((*createSource)(client)));
+        CPPUNIT_ASSERT_NO_THROW(source.reset(createSource()));
         CPPUNIT_ASSERT(source.get() != 0);
         SOURCE_ASSERT(source.get(), source->beginSync() == 0);
-        CPPUNIT_ASSERT(status == STC_OK || status == STC_CONFLICT_RESOLVED_WITH_MERGE);
+        CPPUNIT_ASSERT(status == STC_OK || status == STC_ITEM_ADDED || status == STC_CONFLICT_RESOLVED_WITH_MERGE);
         CPPUNIT_ASSERT_EQUAL(numItems + (status == STC_CONFLICT_RESOLVED_WITH_MERGE ? 0 : 1),
                              countItems(source.get()));
         CPPUNIT_ASSERT(countNewItems(source.get()) == 0);
@@ -246,12 +277,12 @@ public:
     }
 
     /** assumes that exactly one element is currently inserted and updates it with the given item */
-    void update(ClientTest::Config::createsource_t createSource, const char *data) {
-        CPPUNIT_ASSERT(createSource);
+    void update(CreateSource createSource, const char *data) {
+        CPPUNIT_ASSERT(createSource.createSource);
         CPPUNIT_ASSERT(data);
 
         // create source
-        std::auto_ptr<SyncSource> source((*createSource)(client));
+        std::auto_ptr<SyncSource> source(createSource());
         CPPUNIT_ASSERT(source.get() != 0);
         SOURCE_ASSERT(source.get(), source->beginSync() == 0);
 
@@ -266,7 +297,7 @@ public:
         CPPUNIT_ASSERT_NO_THROW(source.reset());
 
         // check that the right changes are reported when reopening the source
-        SOURCE_ASSERT_NO_FAILURE(source.get(), source.reset((*createSource)(client)));
+        SOURCE_ASSERT_NO_FAILURE(source.get(), source.reset(createSource()));
         SOURCE_ASSERT(source.get(), source->beginSync() == 0 );
         CPPUNIT_ASSERT_EQUAL(1, countItems(source.get()));
         CPPUNIT_ASSERT_EQUAL(0, countNewItems(source.get()));
@@ -280,11 +311,11 @@ public:
     }
 
     /** deletes all items locally via sync source */
-    void deleteAll(ClientTest::Config::createsource_t createSource) {
-        CPPUNIT_ASSERT(createSource);
+    void deleteAll(CreateSource createSource) {
+        CPPUNIT_ASSERT(createSource.createSource);
 
         // create source
-        std::auto_ptr<SyncSource> source((*createSource)(client));
+        std::auto_ptr<SyncSource> source(createSource());
         CPPUNIT_ASSERT(source.get() != 0);
         SOURCE_ASSERT(source.get(), source->beginSync() == 0);
 
@@ -300,7 +331,7 @@ public:
         CPPUNIT_ASSERT_NO_THROW(source.reset());
 
         // check that all items are gone
-        SOURCE_ASSERT_NO_FAILURE(source.get(), source.reset((*createSource)(client)));
+        SOURCE_ASSERT_NO_FAILURE(source.get(), source.reset(createSource()));
         SOURCE_ASSERT_EQUAL(source.get(), 0, source->beginSync());
         SOURCE_ASSERT_MESSAGE(
             "should be empty now",
@@ -332,7 +363,7 @@ public:
             sourceFile = getCurrentTest() + ".source.test.dat";
             simplifyFilename(sourceFile);
             std::auto_ptr<SyncSource> source;
-            SOURCE_ASSERT_NO_FAILURE(source.get(), source.reset(config.createSourceA(client)));
+            SOURCE_ASSERT_NO_FAILURE(source.get(), source.reset(createSourceA()));
             SOURCE_ASSERT_EQUAL(source.get(), 0, source->beginSync());
             SOURCE_ASSERT_EQUAL(source.get(), 0, config.dump(client, *source.get(), sourceFile.c_str()));
             SOURCE_ASSERT_EQUAL(source.get(), 0, source->endSync());
@@ -358,12 +389,12 @@ public:
      * @param size            minimum size for new items
      * @return number of items inserted
      */
-    int insertManyItems(ClientTest::Config::createsource_t createSource, int startIndex = 1, int numItems = 0, int size = -1) {
+    int insertManyItems(CreateSource createSource, int startIndex = 1, int numItems = 0, int size = -1) {
         CPPUNIT_ASSERT(config.templateItem);
         CPPUNIT_ASSERT(config.uniqueProperties);
 
         std::auto_ptr<SyncSource> source;
-        SOURCE_ASSERT_NO_FAILURE(source.get(), source.reset(config.createSourceA(client)));
+        SOURCE_ASSERT_NO_FAILURE(source.get(), source.reset(createSourceA()));
         SOURCE_ASSERT_EQUAL(source.get(), 0, source->beginSync());
         CPPUNIT_ASSERT(startIndex > 1 || !countItems(source.get()));
 
@@ -445,7 +476,7 @@ public:
         // check requirements
         CPPUNIT_ASSERT(config.createSourceA);
 
-        std::auto_ptr<SyncSource> source((*config.createSourceA)(client));
+        std::auto_ptr<SyncSource> source(createSourceA());
         CPPUNIT_ASSERT(source.get() != 0);
         CPPUNIT_ASSERT_NO_THROW(source.reset());
     }
@@ -456,7 +487,7 @@ public:
         CPPUNIT_ASSERT(config.createSourceA);
 
         // open source
-        std::auto_ptr<SyncSource> source(config.createSourceA(client));
+        std::auto_ptr<SyncSource> source(createSourceA());
         SOURCE_ASSERT_EQUAL(source.get(), 0, source->beginSync());
         SOURCE_ASSERT_MESSAGE(
             "iterating twice should produce identical results",
@@ -470,7 +501,7 @@ public:
         CPPUNIT_ASSERT(config.insertItem);
         CPPUNIT_ASSERT(config.createSourceA);
 
-        insert(config.createSourceA, config.insertItem);
+        insert(createSourceA, config.insertItem);
     }
 
     // delete all items
@@ -480,8 +511,8 @@ public:
         CPPUNIT_ASSERT(config.createSourceA);
 
         // make sure there is something to delete, then delete again
-        insert(config.createSourceA, config.insertItem);
-        deleteAll(config.createSourceA);
+        insert(createSourceA, config.insertItem);
+        deleteAll(createSourceA);
     }
 
     // clean database, then insert
@@ -498,7 +529,7 @@ public:
         
         testLocalDeleteAll();
         testSimpleInsert();
-        update(config.createSourceA, config.updateItem);
+        update(createSourceA, config.updateItem);
     }
         
     // complex sequence of changes
@@ -511,13 +542,13 @@ public:
 
         // clean changes in sync source B by creating and closing it
         std::auto_ptr<SyncSource> source;
-        SOURCE_ASSERT_NO_FAILURE(source.get(), source.reset(config.createSourceB(client)));
+        SOURCE_ASSERT_NO_FAILURE(source.get(), source.reset(createSourceB()));
         SOURCE_ASSERT_EQUAL(source.get(), 0, source->beginSync());
         SOURCE_ASSERT_EQUAL(source.get(), 0, source->endSync());
         CPPUNIT_ASSERT_NO_THROW(source.reset());
 
         // no new changes now
-        SOURCE_ASSERT_NO_FAILURE(source.get(), source.reset(config.createSourceB(client)));
+        SOURCE_ASSERT_NO_FAILURE(source.get(), source.reset(createSourceB()));
         SOURCE_ASSERT_EQUAL(source.get(), 0, source->beginSync());
         SOURCE_ASSERT_EQUAL(source.get(), 1, countItems(source.get()));
         SOURCE_ASSERT_EQUAL(source.get(), 0, countNewItems(source.get()));
@@ -529,8 +560,8 @@ public:
         CPPUNIT_ASSERT_NO_THROW(source.reset());
 
         // delete item again via sync source A
-        deleteAll(config.createSourceA);
-        SOURCE_ASSERT_NO_FAILURE(source.get(), source.reset(config.createSourceB(client)));
+        deleteAll(createSourceA);
+        SOURCE_ASSERT_NO_FAILURE(source.get(), source.reset(createSourceB()));
         SOURCE_ASSERT_EQUAL(source.get(), 0, source->beginSync());
         SOURCE_ASSERT_EQUAL(source.get(), 0, countItems(source.get()));
         SOURCE_ASSERT_EQUAL(source.get(), 0, countNewItems(source.get()));
@@ -546,7 +577,7 @@ public:
 
         // insert another item via sync source A
         testSimpleInsert();
-        SOURCE_ASSERT_NO_FAILURE(source.get(), source.reset(config.createSourceB(client)));
+        SOURCE_ASSERT_NO_FAILURE(source.get(), source.reset(createSourceB()));
         SOURCE_ASSERT_EQUAL(source.get(), 0, source->beginSync());
         SOURCE_ASSERT_EQUAL(source.get(), 1, countItems(source.get()));
         SOURCE_ASSERT_EQUAL(source.get(), 1, countNewItems(source.get()));
@@ -562,8 +593,8 @@ public:
         CPPUNIT_ASSERT_NO_THROW(source.reset());
 
         // update item via sync source A
-        update(config.createSourceA, config.updateItem);
-        SOURCE_ASSERT_NO_FAILURE(source.get(), source.reset(config.createSourceB(client)));
+        update(createSourceA, config.updateItem);
+        SOURCE_ASSERT_NO_FAILURE(source.get(), source.reset(createSourceB()));
         SOURCE_ASSERT_EQUAL(source.get(), 0, source->beginSync());
         SOURCE_ASSERT_EQUAL(source.get(), 1, countItems(source.get()));
         SOURCE_ASSERT_EQUAL(source.get(), 0, countNewItems(source.get()));
@@ -590,7 +621,7 @@ public:
 
         // import via sync source A
         std::auto_ptr<SyncSource> source;
-        SOURCE_ASSERT_NO_FAILURE(source.get(), source.reset(config.createSourceA(client)));
+        SOURCE_ASSERT_NO_FAILURE(source.get(), source.reset(createSourceA()));
         SOURCE_ASSERT_EQUAL(source.get(), 0, source->beginSync());
         SOURCE_ASSERT_EQUAL(source.get(), 0, config.import(client, *source.get(), config.testcases));
         SOURCE_ASSERT_EQUAL(source.get(), 0, source->endSync());
@@ -598,7 +629,7 @@ public:
 
         // export again and compare against original file
         std::auto_ptr<SyncSource> copy;
-        SOURCE_ASSERT_NO_FAILURE(copy.get(), copy.reset(config.createSourceA(client)));
+        SOURCE_ASSERT_NO_FAILURE(copy.get(), copy.reset(createSourceA()));
         compareDatabases(config.testcases, *copy.get());
         CPPUNIT_ASSERT_NO_THROW(source.reset());
     }
@@ -618,21 +649,21 @@ public:
         CPPUNIT_ASSERT(config.templateItem);
         CPPUNIT_ASSERT(config.uniqueProperties);
         
-        deleteAll(config.createSourceA);
+        deleteAll(createSourceA);
 
         // check that everything is empty, also resets change counter of sync source B
         std::auto_ptr<SyncSource> copy;
-        SOURCE_ASSERT_NO_FAILURE(copy.get(), copy.reset(config.createSourceB(client)));
+        SOURCE_ASSERT_NO_FAILURE(copy.get(), copy.reset(createSourceB()));
         SOURCE_ASSERT_EQUAL(copy.get(), 0, copy->beginSync());
         SOURCE_ASSERT_EQUAL(copy.get(), 0, countItems(copy.get()));
         SOURCE_ASSERT_EQUAL(copy.get(), 0, copy->endSync());
         CPPUNIT_ASSERT_NO_THROW(copy.reset());
 
         // now insert plenty of items
-        int numItems = insertManyItems(config.createSourceA);
+        int numItems = insertManyItems(createSourceA);
 
         // check that exactly this number of items is listed as new
-        SOURCE_ASSERT_NO_FAILURE(copy.get(), copy.reset(config.createSourceB(client)));
+        SOURCE_ASSERT_NO_FAILURE(copy.get(), copy.reset(createSourceB()));
         SOURCE_ASSERT_EQUAL(copy.get(), 0, copy->beginSync());
         SOURCE_ASSERT_EQUAL(copy.get(), numItems, countItems(copy.get()));
         SOURCE_ASSERT_EQUAL(copy.get(), numItems, countNewItems(copy.get()));
@@ -642,10 +673,10 @@ public:
         CPPUNIT_ASSERT_NO_THROW(copy.reset());
 
         // delete all items
-        deleteAll(config.createSourceA);
+        deleteAll(createSourceA);
 
         // verify again
-        SOURCE_ASSERT_NO_FAILURE(copy.get(), copy.reset(config.createSourceB(client)));
+        SOURCE_ASSERT_NO_FAILURE(copy.get(), copy.reset(createSourceB()));
         SOURCE_ASSERT_EQUAL(copy.get(), 0, countItems(copy.get()));
         SOURCE_ASSERT_EQUAL(copy.get(), 0, countNewItems(copy.get()));
         SOURCE_ASSERT_EQUAL(copy.get(), 0, countUpdatedItems(copy.get()));
@@ -677,7 +708,7 @@ public:
 
             if (config.sourceName) {
                 sourceArray[sources.size()] = *it;
-                sources.push_back(std::pair<int,LocalTests *>(*it, new LocalTests(config.sourceName, cl, config)));
+                sources.push_back(std::pair<int,LocalTests *>(*it, new LocalTests(config.sourceName, cl, *it, config)));
             }
         }
         sourceArray[sources.size()] = -1;
@@ -706,7 +737,7 @@ public:
     /** adds the supported tests to the instance itself */
     void addTests() {
         if (sources.size()) {
-            ClientTest::Config &config(sources[0].second->config);
+            const ClientTest::Config &config(sources[0].second->config);
 
             ADD_TEST(SyncTests, testTwoWaySync);
             ADD_TEST(SyncTests, testSlowSync);
@@ -784,7 +815,7 @@ private:
              it1 != sources.end() && it2 != accessClientB->sources.end();
              ++it1, ++it2) {
             std::auto_ptr<SyncSource> copy;
-            SOURCE_ASSERT_NO_FAILURE(copy.get(), copy.reset(it2->second->config.createSourceB(accessClientB->client)));
+            SOURCE_ASSERT_NO_FAILURE(copy.get(), copy.reset(it2->second->createSourceB()));
             it1->second->compareDatabases(NULL, *copy.get());
             CPPUNIT_ASSERT_NO_THROW(copy.reset());
         }
@@ -800,19 +831,19 @@ private:
          case DELETE_ALL_SYNC:
             // a refresh from server would slightly reduce the amount of data exchanged, but not all servers support it
             for (it = sources.begin(); it != sources.end(); ++it) {
-                it->second->deleteAll(it->second->config.createSourceA);
+                it->second->deleteAll(it->second->createSourceA);
             }
             sync(SYNC_TWO_WAY, ".deleteall.init");
             // now that client and server are in sync, delete locally and sync again
             for (it = sources.begin(); it != sources.end(); ++it) {
-                it->second->deleteAll(it->second->config.createSourceA);
+                it->second->deleteAll(it->second->createSourceA);
             }
             sync(SYNC_TWO_WAY, ".deleteall.twoway");
             break;
          case DELETE_ALL_REFRESH:
             // delete locally and then tell the server to "copy" the empty databases
             for (it = sources.begin(); it != sources.end(); ++it) {
-                it->second->deleteAll(it->second->config.createSourceA);
+                it->second->deleteAll(it->second->createSourceA);
             }
             sync(SYNC_REFRESH_FROM_CLIENT, ".deleteall.refreshserver");
             break;
@@ -848,7 +879,7 @@ private:
     void refreshClient() {
         source_it it;
         for (it = sources.begin(); it != sources.end(); ++it) {
-            it->second->deleteAll(it->second->config.createSourceA);
+            it->second->deleteAll(it->second->createSourceA);
         }
         sync(SYNC_SLOW, ".refresh");
     }
@@ -892,7 +923,7 @@ private:
         // nothing stored locally?
         for (it = sources.begin(); it != sources.end(); ++it) {
             std::auto_ptr<SyncSource> source;
-            SOURCE_ASSERT_NO_FAILURE(source.get(), source.reset(it->second->config.createSourceA(client)));
+            SOURCE_ASSERT_NO_FAILURE(source.get(), source.reset(it->second->createSourceA()));
             SOURCE_ASSERT_EQUAL(source.get(), 0, source->beginSync());
             SOURCE_ASSERT_EQUAL(source.get(), 0, countItems(source.get()));
             SOURCE_ASSERT_EQUAL(source.get(), 0, source->endSync());
@@ -903,7 +934,7 @@ private:
         sync(SYNC_SLOW, ".check.client.log");
         for (it = sources.begin(); it != sources.end(); ++it) {
             std::auto_ptr<SyncSource> source;
-            SOURCE_ASSERT_NO_FAILURE(source.get(), source.reset(it->second->config.createSourceA(client)));
+            SOURCE_ASSERT_NO_FAILURE(source.get(), source.reset(it->second->createSourceA()));
             SOURCE_ASSERT_EQUAL(source.get(), 0, source->beginSync());
             SOURCE_ASSERT_EQUAL(source.get(), 0, countItems(source.get()));
             SOURCE_ASSERT_EQUAL(source.get(), 0, source->endSync());
@@ -927,7 +958,7 @@ private:
         // check
         for (it = sources.begin(); it != sources.end(); ++it) {
             std::auto_ptr<SyncSource> source;
-            SOURCE_ASSERT_NO_FAILURE(source.get(), source.reset(it->second->config.createSourceA(client)));
+            SOURCE_ASSERT_NO_FAILURE(source.get(), source.reset(it->second->createSourceA()));
             SOURCE_ASSERT_EQUAL(source.get(), 0, source->beginSync());
             SOURCE_ASSERT_EQUAL(source.get(), 0, countItems(source.get()));
             SOURCE_ASSERT_EQUAL(source.get(), 0, source->endSync());
@@ -948,7 +979,7 @@ private:
             it->second->testSimpleInsert();
         }
         for (it = sources.begin(); it != sources.end(); ++it) {
-            it->second->deleteAll(it->second->config.createSourceA);
+            it->second->deleteAll(it->second->createSourceA);
         }
         for (it = sources.begin(); it != sources.end(); ++it) {
             it->second->testSimpleInsert();
@@ -975,7 +1006,7 @@ private:
 
         source_it it;
         for (it = sources.begin(); it != sources.end(); ++it) {
-            it->second->update(it->second->config.createSourceA, it->second->config.updateItem);
+            it->second->update(it->second->createSourceA, it->second->config.updateItem);
         }
 
         sync(SYNC_TWO_WAY, ".update");
@@ -993,7 +1024,7 @@ private:
 
         source_it it;
         for (it = sources.begin(); it != sources.end(); ++it) {
-            it->second->update(it->second->config.createSourceA, it->second->config.complexUpdateItem);
+            it->second->update(it->second->createSourceA, it->second->config.complexUpdateItem);
         }
 
         sync(SYNC_TWO_WAY, ".update");
@@ -1011,7 +1042,7 @@ private:
         // delete it on A
         source_it it;
         for (it = sources.begin(); it != sources.end(); ++it) {
-            it->second->deleteAll(it->second->config.createSourceA);
+            it->second->deleteAll(it->second->createSourceA);
         }
 
         // transfer change from A to server to B
@@ -1021,7 +1052,7 @@ private:
         // check client B: shouldn't have any items now
         for (it = sources.begin(); it != sources.end(); ++it) {
             std::auto_ptr<SyncSource> copy;
-            SOURCE_ASSERT_NO_FAILURE(copy.get(), copy.reset(it->second->config.createSourceA(client)));
+            SOURCE_ASSERT_NO_FAILURE(copy.get(), copy.reset(it->second->createSourceA()));
             SOURCE_ASSERT_EQUAL(copy.get(), 0, copy->beginSync());
             SOURCE_ASSERT_EQUAL(copy.get(), 0, countItems(copy.get()));
             SOURCE_ASSERT_EQUAL(copy.get(), 0, copy->endSync());
@@ -1038,12 +1069,12 @@ private:
         // update in client A
         source_it it;
         for (it = sources.begin(); it != sources.end(); ++it) {
-            it->second->update(it->second->config.createSourceA, it->second->config.mergeItem1);
+            it->second->update(it->second->createSourceA, it->second->config.mergeItem1);
         }
 
         // update in client B
         for (it = accessClientB->sources.begin(); it != accessClientB->sources.end(); ++it) {
-            it->second->update(it->second->config.createSourceA, it->second->config.mergeItem2);
+            it->second->update(it->second->createSourceA, it->second->config.mergeItem2);
         }
 
         // send change to server from client A (no conflict), then from B (conflict)
@@ -1053,7 +1084,7 @@ private:
         // figure out how the conflict during ".recv" was handled
         for (it = accessClientB->sources.begin(); it != accessClientB->sources.end(); ++it) {
             std::auto_ptr<SyncSource> copy;
-            SOURCE_ASSERT_NO_FAILURE(copy.get(), copy.reset(it->second->config.createSourceA(client)));
+            SOURCE_ASSERT_NO_FAILURE(copy.get(), copy.reset(it->second->createSourceA()));
             SOURCE_ASSERT_EQUAL(copy.get(), 0, copy->beginSync());
             int numItems;
             SOURCE_ASSERT_NO_FAILURE(copy.get(), numItems = countItems(copy.get()));
@@ -1116,7 +1147,7 @@ private:
         for (it = sources.begin(); it != sources.end(); ++it) {
             if (it->second->config.createSourceB) {
                 std::auto_ptr<SyncSource> source;
-                SOURCE_ASSERT_NO_FAILURE(source.get(), source.reset(it->second->config.createSourceB(client)));
+                SOURCE_ASSERT_NO_FAILURE(source.get(), source.reset(it->second->createSourceB()));
                 SOURCE_ASSERT_EQUAL(source.get(), 0, source->beginSync());
                 SOURCE_ASSERT_EQUAL(source.get(), 0, countItems(source.get()));
                 SOURCE_ASSERT_EQUAL(source.get(), 0, source->endSync());
@@ -1126,7 +1157,7 @@ private:
         for (it = accessClientB->sources.begin(); it != accessClientB->sources.end(); ++it) {
             if (it->second->config.createSourceB) {
                 std::auto_ptr<SyncSource> source;
-                SOURCE_ASSERT_NO_FAILURE(source.get(), source.reset(it->second->config.createSourceB(accessClientB->client)));
+                SOURCE_ASSERT_NO_FAILURE(source.get(), source.reset(it->second->createSourceB()));
                 SOURCE_ASSERT_EQUAL(source.get(), 0, source->beginSync());
                 SOURCE_ASSERT_EQUAL(source.get(), 0, countItems(source.get()));
                 SOURCE_ASSERT_EQUAL(source.get(), 0, source->endSync());
@@ -1136,13 +1167,13 @@ private:
 
         // add one item on first client, copy to server, and check change tracking via second source
         for (it = sources.begin(); it != sources.end(); ++it) {
-            it->second->insertManyItems(it->second->config.createSourceA, 1, 1);
+            it->second->insertManyItems(it->second->createSourceA, 1, 1);
         }
         sync(SYNC_TWO_WAY, ".send");
         for (it = sources.begin(); it != sources.end(); ++it) {
             if (it->second->config.createSourceB) {
                 std::auto_ptr<SyncSource> source;
-                SOURCE_ASSERT_NO_FAILURE(source.get(), source.reset(it->second->config.createSourceB(client)));
+                SOURCE_ASSERT_NO_FAILURE(source.get(), source.reset(it->second->createSourceB()));
                 SOURCE_ASSERT_EQUAL(source.get(), 0, source->beginSync());
                 SOURCE_ASSERT_EQUAL(source.get(), 1, countItems(source.get()));
                 SOURCE_ASSERT_EQUAL(source.get(), 1, countNewItems(source.get()));
@@ -1156,11 +1187,11 @@ private:
         // add a different item on second client, one-way-from-server
         // => one item added locally, none sent to server
         for (it = accessClientB->sources.begin(); it != accessClientB->sources.end(); ++it) {
-            it->second->insertManyItems(it->second->config.createSourceA, 2, 1);
+            it->second->insertManyItems(it->second->createSourceA, 2, 1);
 
             if (it->second->config.createSourceB) {
                 std::auto_ptr<SyncSource> source;
-                SOURCE_ASSERT_NO_FAILURE(source.get(), source.reset(it->second->config.createSourceB(accessClientB->client)));
+                SOURCE_ASSERT_NO_FAILURE(source.get(), source.reset(it->second->createSourceB()));
                 SOURCE_ASSERT_EQUAL(source.get(), 0, source->beginSync());
                 SOURCE_ASSERT_EQUAL(source.get(), 1, countItems(source.get()));
                 SOURCE_ASSERT_EQUAL(source.get(), 1, countNewItems(source.get()));
@@ -1174,7 +1205,7 @@ private:
         for (it = accessClientB->sources.begin(); it != accessClientB->sources.end(); ++it) {
             if (it->second->config.createSourceB) {
                 std::auto_ptr<SyncSource> source;
-                SOURCE_ASSERT_NO_FAILURE(source.get(), source.reset(it->second->config.createSourceB(accessClientB->client)));
+                SOURCE_ASSERT_NO_FAILURE(source.get(), source.reset(it->second->createSourceB()));
                 SOURCE_ASSERT_EQUAL(source.get(), 0, source->beginSync());
                 SOURCE_ASSERT_EQUAL(source.get(), 2, countItems(source.get()));
                 SOURCE_ASSERT_EQUAL(source.get(), 1, countNewItems(source.get()));
@@ -1191,7 +1222,7 @@ private:
         for (it = sources.begin(); it != sources.end(); ++it) {
             if (it->second->config.createSourceB) {
                 std::auto_ptr<SyncSource> source;
-                SOURCE_ASSERT_NO_FAILURE(source.get(), source.reset(it->second->config.createSourceB(client)));
+                SOURCE_ASSERT_NO_FAILURE(source.get(), source.reset(it->second->createSourceB()));
                 SOURCE_ASSERT_EQUAL(source.get(), 0, source->beginSync());
                 SOURCE_ASSERT_EQUAL(source.get(), 1, countItems(source.get()));
                 SOURCE_ASSERT_EQUAL(source.get(), 0, countNewItems(source.get()));
@@ -1204,11 +1235,11 @@ private:
 
         // delete items on clientA, sync to server
         for (it = sources.begin(); it != sources.end(); ++it) {
-            it->second->deleteAll(it->second->config.createSourceA);
+            it->second->deleteAll(it->second->createSourceA);
 
             if (it->second->config.createSourceB) {
                 std::auto_ptr<SyncSource> source;
-                SOURCE_ASSERT_NO_FAILURE(source.get(), source.reset(it->second->config.createSourceB(client)));
+                SOURCE_ASSERT_NO_FAILURE(source.get(), source.reset(it->second->createSourceB()));
                 SOURCE_ASSERT_EQUAL(source.get(), 0, source->beginSync());
                 SOURCE_ASSERT_EQUAL(source.get(), 0, countItems(source.get()));
                 SOURCE_ASSERT_EQUAL(source.get(), 0, countNewItems(source.get()));
@@ -1222,7 +1253,7 @@ private:
         for (it = sources.begin(); it != sources.end(); ++it) {
             if (it->second->config.createSourceB) {
                 std::auto_ptr<SyncSource> source;
-                SOURCE_ASSERT_NO_FAILURE(source.get(), source.reset(it->second->config.createSourceB(client)));
+                SOURCE_ASSERT_NO_FAILURE(source.get(), source.reset(it->second->createSourceB()));
                 SOURCE_ASSERT_EQUAL(source.get(), 0, source->beginSync());
                 SOURCE_ASSERT_EQUAL(source.get(), 0, countItems(source.get()));
                 SOURCE_ASSERT_EQUAL(source.get(), 0, countNewItems(source.get()));
@@ -1239,7 +1270,7 @@ private:
         for (it = accessClientB->sources.begin(); it != accessClientB->sources.end(); ++it) {
             if (it->second->config.createSourceB) {
                 std::auto_ptr<SyncSource> source;
-                SOURCE_ASSERT_NO_FAILURE(source.get(), source.reset(it->second->config.createSourceB(accessClientB->client)));
+                SOURCE_ASSERT_NO_FAILURE(source.get(), source.reset(it->second->createSourceB()));
                 SOURCE_ASSERT_EQUAL(source.get(), 0, source->beginSync());
                 SOURCE_ASSERT_EQUAL(source.get(), 1, countItems(source.get()));
                 SOURCE_ASSERT_EQUAL(source.get(), 0, countNewItems(source.get()));
@@ -1271,7 +1302,7 @@ private:
         for (it = sources.begin(); it != sources.end(); ++it) {
             if (it->second->config.createSourceB) {
                 std::auto_ptr<SyncSource> source;
-                SOURCE_ASSERT_NO_FAILURE(source.get(), source.reset(it->second->config.createSourceB(client)));
+                SOURCE_ASSERT_NO_FAILURE(source.get(), source.reset(it->second->createSourceB()));
                 SOURCE_ASSERT_EQUAL(source.get(), 0, source->beginSync());
                 SOURCE_ASSERT_EQUAL(source.get(), 0, countItems(source.get()));
                 SOURCE_ASSERT_EQUAL(source.get(), 0, source->endSync());
@@ -1281,7 +1312,7 @@ private:
         for (it = accessClientB->sources.begin(); it != accessClientB->sources.end(); ++it) {
             if (it->second->config.createSourceB) {
                 std::auto_ptr<SyncSource> source;
-                SOURCE_ASSERT_NO_FAILURE(source.get(), source.reset(it->second->config.createSourceB(accessClientB->client)));
+                SOURCE_ASSERT_NO_FAILURE(source.get(), source.reset(it->second->createSourceB()));
                 SOURCE_ASSERT_EQUAL(source.get(), 0, source->beginSync());
                 SOURCE_ASSERT_EQUAL(source.get(), 0, countItems(source.get()));
                 SOURCE_ASSERT_EQUAL(source.get(), 0, source->endSync());
@@ -1291,13 +1322,13 @@ private:
 
         // add one item on first client, copy to server, and check change tracking via second source
         for (it = sources.begin(); it != sources.end(); ++it) {
-            it->second->insertManyItems(it->second->config.createSourceA, 1, 1);
+            it->second->insertManyItems(it->second->createSourceA, 1, 1);
         }
         sync(SYNC_TWO_WAY, ".send");
         for (it = sources.begin(); it != sources.end(); ++it) {
             if (it->second->config.createSourceB) {
                 std::auto_ptr<SyncSource> source;
-                SOURCE_ASSERT_NO_FAILURE(source.get(), source.reset(it->second->config.createSourceB(client)));
+                SOURCE_ASSERT_NO_FAILURE(source.get(), source.reset(it->second->createSourceB()));
                 SOURCE_ASSERT_EQUAL(source.get(), 0, source->beginSync());
                 SOURCE_ASSERT_EQUAL(source.get(), 1, countItems(source.get()));
                 SOURCE_ASSERT_EQUAL(source.get(), 1, countNewItems(source.get()));
@@ -1311,11 +1342,11 @@ private:
         // add a different item on second client, one-way-from-client
         // => no item added locally, one sent to server
         for (it = accessClientB->sources.begin(); it != accessClientB->sources.end(); ++it) {
-            it->second->insertManyItems(it->second->config.createSourceA, 2, 1);
+            it->second->insertManyItems(it->second->createSourceA, 2, 1);
 
             if (it->second->config.createSourceB) {
                 std::auto_ptr<SyncSource> source;
-                SOURCE_ASSERT_NO_FAILURE(source.get(), source.reset(it->second->config.createSourceB(accessClientB->client)));
+                SOURCE_ASSERT_NO_FAILURE(source.get(), source.reset(it->second->createSourceB()));
                 SOURCE_ASSERT_EQUAL(source.get(), 0, source->beginSync());
                 SOURCE_ASSERT_EQUAL(source.get(), 1, countItems(source.get()));
                 SOURCE_ASSERT_EQUAL(source.get(), 1, countNewItems(source.get()));
@@ -1329,7 +1360,7 @@ private:
         for (it = accessClientB->sources.begin(); it != accessClientB->sources.end(); ++it) {
             if (it->second->config.createSourceB) {
                 std::auto_ptr<SyncSource> source;
-                SOURCE_ASSERT_NO_FAILURE(source.get(), source.reset(it->second->config.createSourceB(accessClientB->client)));
+                SOURCE_ASSERT_NO_FAILURE(source.get(), source.reset(it->second->createSourceB()));
                 SOURCE_ASSERT_EQUAL(source.get(), 0, source->beginSync());
                 SOURCE_ASSERT_EQUAL(source.get(), 1, countItems(source.get()));
                 SOURCE_ASSERT_EQUAL(source.get(), 0, countNewItems(source.get()));
@@ -1346,7 +1377,7 @@ private:
         for (it = sources.begin(); it != sources.end(); ++it) {
             if (it->second->config.createSourceB) {
                 std::auto_ptr<SyncSource> source;
-                SOURCE_ASSERT_NO_FAILURE(source.get(), source.reset(it->second->config.createSourceB(client)));
+                SOURCE_ASSERT_NO_FAILURE(source.get(), source.reset(it->second->createSourceB()));
                 SOURCE_ASSERT_EQUAL(source.get(), 0, source->beginSync());
                 SOURCE_ASSERT_EQUAL(source.get(), 2, countItems(source.get()));
                 SOURCE_ASSERT_EQUAL(source.get(), 1, countNewItems(source.get()));
@@ -1359,11 +1390,11 @@ private:
 
         // delete items on client B, sync to server
         for (it = accessClientB->sources.begin(); it != accessClientB->sources.end(); ++it) {
-            it->second->deleteAll(it->second->config.createSourceA);
+            it->second->deleteAll(it->second->createSourceA);
 
             if (it->second->config.createSourceB) {
                 std::auto_ptr<SyncSource> source;
-                SOURCE_ASSERT_NO_FAILURE(source.get(), source.reset(it->second->config.createSourceB(accessClientB->client)));
+                SOURCE_ASSERT_NO_FAILURE(source.get(), source.reset(it->second->createSourceB()));
                 SOURCE_ASSERT_EQUAL(source.get(), 0, source->beginSync());
                 SOURCE_ASSERT_EQUAL(source.get(), 0, countItems(source.get()));
                 SOURCE_ASSERT_EQUAL(source.get(), 0, countNewItems(source.get()));
@@ -1377,7 +1408,7 @@ private:
         for (it = accessClientB->sources.begin(); it != accessClientB->sources.end(); ++it) {
             if (it->second->config.createSourceB) {
                 std::auto_ptr<SyncSource> source;
-                SOURCE_ASSERT_NO_FAILURE(source.get(), source.reset(it->second->config.createSourceB(accessClientB->client)));
+                SOURCE_ASSERT_NO_FAILURE(source.get(), source.reset(it->second->createSourceB()));
                 SOURCE_ASSERT_EQUAL(source.get(), 0, source->beginSync());
                 SOURCE_ASSERT_EQUAL(source.get(), 0, countItems(source.get()));
                 SOURCE_ASSERT_EQUAL(source.get(), 0, countNewItems(source.get()));
@@ -1394,7 +1425,7 @@ private:
         for (it = sources.begin(); it != sources.end(); ++it) {
             if (it->second->config.createSourceB) {
                 std::auto_ptr<SyncSource> source;
-                SOURCE_ASSERT_NO_FAILURE(source.get(), source.reset(it->second->config.createSourceB(client)));
+                SOURCE_ASSERT_NO_FAILURE(source.get(), source.reset(it->second->createSourceB()));
                 SOURCE_ASSERT_EQUAL(source.get(), 0, source->beginSync());
                 SOURCE_ASSERT_EQUAL(source.get(), 1, countItems(source.get()));
                 SOURCE_ASSERT_EQUAL(source.get(), 0, countNewItems(source.get()));
@@ -1443,13 +1474,13 @@ private:
         // add item
         source_it it;
         for (it = sources.begin(); it != sources.end(); ++it) {
-            it->second->insert(it->second->config.createSourceA, it->second->config.insertItem);
+            it->second->insert(it->second->createSourceA, it->second->config.insertItem);
         }
         sync(SYNC_TWO_WAY, ".add");
 
         // update it
         for (it = sources.begin(); it != sources.end(); ++it) {
-            it->second->insert(it->second->config.createSourceB, it->second->config.updateItem);
+            it->second->insert(it->second->createSourceB, it->second->config.updateItem);
         }
         sync(SYNC_TWO_WAY, ".update");
 
@@ -1492,7 +1523,7 @@ private:
         // import artificial data
         source_it it;
         for (it = sources.begin(); it != sources.end(); ++it) {
-            it->second->insertManyItems(it->second->config.createSourceA);
+            it->second->insertManyItems(it->second->createSourceA);
         }
     
         // send data to server
@@ -1532,7 +1563,7 @@ private:
             for (int i = 0; i < 2; i++ ) {
                 int size = 1;
                 while (size < 2 * maxMsgSize) {
-                    it->second->insertManyItems(it->second->config.createSourceA, item, 1, strlen(it->second->config.templateItem) + 10 + size);
+                    it->second->insertManyItems(it->second->createSourceA, item, 1, strlen(it->second->config.templateItem) + 10 + size);
                     size *= 2;
                     item++;
                 }
@@ -1565,7 +1596,14 @@ private:
               const char *encoding = 0) {
         int res = 0;
         static int syncCounter = 0;
+        static std::string lastTest;
         std::stringstream logstream;
+
+        // reset counter when switching tests
+        if (lastTest != getCurrentTest()) {
+            syncCounter = 0;
+            lastTest = getCurrentTest();
+        }
 
         logstream << std::setw(4) << std::setfill('0') << syncCounter << "_" << getCurrentTest() << logprefix;
         std::string logname = logstream.str();
@@ -1616,7 +1654,7 @@ public:
             client.getSourceConfig(source, config);
             if (config.sourceName) {
                 LocalTests *sourcetests =
-                    new LocalTests(tests->getName() + "::" + config.sourceName, client, config);
+                    new LocalTests(tests->getName() + "::" + config.sourceName, client, source, config);
                 sourcetests->addTests();
                 tests->addTest(sourcetests);
             }
@@ -1717,6 +1755,13 @@ int ClientTest::import(ClientTest &client, SyncSource &source, const char *file)
     return 0;
 }
 
+bool ClientTest::compare(ClientTest &client, const char *fileA, const char *fileB)
+{
+    std::string cmdstr = std::string("perl synccompare.pl ") + fileA + " " + fileB;
+    return system(cmdstr.c_str()) == 0;
+}
+
+
 #ifndef WIN32
 #include <fcntl.h>
 #endif
@@ -1739,4 +1784,245 @@ void ClientTest::postSync(int res, const std::string &logname)
         }
     }
 #endif
+}
+
+void ClientTest::getTestData(const char *type, Config &config)
+{
+    memset(&config, 0, sizeof(config));
+
+    if (!strcmp(type, "vcard30")) {
+        config.sourceName = "vcard30";
+        config.type = "text/vcard";
+        config.insertItem =
+            "BEGIN:VCARD\n"
+            "VERSION:3.0\n"
+            "TITLE:tester\n"
+            "FN:John Doe\n"
+            "N:Doe;John;;;\n"
+            "TEL;TYPE=WORK;TYPE=VOICE:business 1\n"
+            "X-EVOLUTION-FILE-AS:Doe\\, John\n"
+            "X-MOZILLA-HTML:FALSE\n"
+            "NOTE:\n"
+            "END:VCARD\n";
+        config.updateItem =
+            "BEGIN:VCARD\n"
+            "VERSION:3.0\n"
+            "TITLE:tester\n"
+            "FN:Joan Doe\n"
+            "N:Doe;Joan;;;\n"
+            "X-EVOLUTION-FILE-AS:Doe\\, Joan\n"
+            "TEL;TYPE=WORK;TYPE=VOICE:business 2\n"
+            "BDAY:2006-01-08\n"
+            "X-MOZILLA-HTML:TRUE\n"
+            "END:VCARD\n";
+        /* adds a second phone number: */
+        config.complexUpdateItem =
+            "BEGIN:VCARD\n"
+            "VERSION:3.0\n"
+            "TITLE:tester\n"
+            "FN:Joan Doe\n"
+            "N:Doe;Joan;;;\n"
+            "X-EVOLUTION-FILE-AS:Doe\\, Joan\n"
+            "TEL;TYPE=WORK;TYPE=VOICE:business 1\n"
+            "TEL;TYPE=HOME;TYPE=VOICE:home 2\n"
+            "BDAY:2006-01-08\n"
+            "X-MOZILLA-HTML:TRUE\n"
+            "END:VCARD\n";
+        /* add a telephone number, email and X-AIM to initial item */
+        config.mergeItem1 =
+            "BEGIN:VCARD\n"
+            "VERSION:3.0\n"
+            "TITLE:tester\n"
+            "FN:John Doe\n"
+            "N:Doe;John;;;\n"
+            "X-EVOLUTION-FILE-AS:Doe\\, John\n"
+            "X-MOZILLA-HTML:FALSE\n"
+            "TEL;TYPE=WORK;TYPE=VOICE:business 1\n"
+            "EMAIL:john.doe@work.com\n"
+            "X-AIM:AIM JOHN\n"
+            "END:VCARD\n";
+        config.mergeItem2 =
+            "BEGIN:VCARD\n"
+            "VERSION:3.0\n"
+            "TITLE:developer\n"
+            "FN:John Doe\n"
+            "N:Doe;John;;;\n"
+            "X-EVOLUTION-FILE-AS:Doe\\, John\n"
+            "X-MOZILLA-HTML:TRUE\n"
+            "BDAY:2006-01-08\n"
+            "END:VCARD\n";
+        config.templateItem = config.insertItem;
+        config.uniqueProperties = "FN:N:X-EVOLUTION-FILE-AS";
+        config.sizeProperty = "NOTE";
+        config.import = import;
+        config.dump = dump;
+        config.compare = compare;
+        config.testcases = "testcases/vcard30.vcf";
+    } else if(!strcmp(type, "ical20")) {
+        config.sourceName = "ical20";
+        config.type = "text/x-vcalendar";
+        config.insertItem =
+            "BEGIN:VCALENDAR\n"
+            "PRODID:-//Ximian//NONSGML Evolution Calendar//EN\n"
+            "VERSION:2.0\n"
+            "METHOD:PUBLISH\n"
+            "BEGIN:VEVENT\n"
+            "SUMMARY:phone meeting\n"
+            "DTEND;20060406T163000Z\n"
+            "DTSTART;20060406T160000Z\n"
+            "UID:1234567890!@#$%^&*()<>@dummy\n"
+            "DTSTAMP:20060406T211449Z\n"
+            "LAST-MODIFIED:20060409T213201\n"
+            "CREATED:20060409T213201\n"
+            "LOCATION:my office\n"
+            "DESCRIPTION:let's talk\n"
+            "CLASS:PUBLIC\n"
+            "TRANSP:OPAQUE\n"
+            "SEQUENCE:1\n"
+            "END:VEVENT\n"
+            "END:VCALENDAR\n";
+        config.updateItem =
+            "BEGIN:VCALENDAR\n"
+            "PRODID:-//Ximian//NONSGML Evolution Calendar//EN\n"
+            "VERSION:2.0\n"
+            "METHOD:PUBLISH\n"
+            "BEGIN:VEVENT\n"
+            "SUMMARY:meeting on site\n"
+            "DTEND;20060406T163000Z\n"
+            "DTSTART;20060406T160000Z\n"
+            "UID:1234567890!@#$%^&*()<>@dummy\n"
+            "DTSTAMP:20060406T211449Z\n"
+            "LAST-MODIFIED:20060409T213201\n"
+            "CREATED:20060409T213201\n"
+            "LOCATION:big meeting room\n"
+            "DESCRIPTION:nice to see you\n"
+            "CLASS:PUBLIC\n"
+            "TRANSP:OPAQUE\n"
+            "SEQUENCE:1\n"
+            "END:VEVENT\n"
+            "END:VCALENDAR\n";
+        /* change location in insertItem in testMerge() */
+        config.mergeItem1 =
+            "BEGIN:VCALENDAR\n"
+            "PRODID:-//Ximian//NONSGML Evolution Calendar//EN\n"
+            "VERSION:2.0\n"
+            "METHOD:PUBLISH\n"
+            "BEGIN:VEVENT\n"
+            "SUMMARY:phone meeting\n"
+            "DTEND;20060406T163000Z\n"
+            "DTSTART;20060406T160000Z\n"
+            "UID:1234567890!@#$%^&*()<>@dummy\n"
+            "DTSTAMP:20060406T211449Z\n"
+            "LAST-MODIFIED:20060409T213201\n"
+            "CREATED:20060409T213201\n"
+            "LOCATION:calling from home\n"
+            "DESCRIPTION:let's talk\n"
+            "CLASS:PUBLIC\n"
+            "TRANSP:OPAQUE\n"
+            "SEQUENCE:1\n"
+            "END:VEVENT\n"
+            "END:VCALENDAR\n";
+        config.mergeItem2 =
+            "BEGIN:VCALENDAR\n"
+            "PRODID:-//Ximian//NONSGML Evolution Calendar//EN\n"
+            "VERSION:2.0\n"
+            "METHOD:PUBLISH\n"
+            "BEGIN:VEVENT\n"
+            "SUMMARY:phone meeting\n"
+            "DTEND;20060406T163000Z\n"
+            "DTSTART;20060406T160000Z\n"
+            "UID:1234567890!@#$%^&*()<>@dummy\n"
+            "DTSTAMP:20060406T211449Z\n"
+            "LAST-MODIFIED:20060409T213201\n"
+            "CREATED:20060409T213201\n"
+            "LOCATION:my office\n"
+            "DESCRIPTION:what the heck\\, let's even shout a bit\n"
+            "CLASS:PUBLIC\n"
+            "TRANSP:OPAQUE\n"
+            "SEQUENCE:1\n"
+            "END:VEVENT\n"
+            "END:VCALENDAR\n";
+        config.templateItem = config.insertItem;
+        config.uniqueProperties = "SUMMARY:UID";
+        config.sizeProperty = "DESCRIPTION";
+        config.import = import;
+        config.dump = dump;
+        config.compare = compare;
+        config.testcases = "testcases/ical20.ics";
+    } else if(!strcmp(type, "itodo20")) {
+        config.sourceName = "itodo20";
+        config.type = "text/x-vcalendar";
+        config.insertItem =
+            "BEGIN:VCALENDAR\n"
+            "PRODID:-//Ximian//NONSGML Evolution Calendar//EN\n"
+            "VERSION:2.0\n"
+            "METHOD:PUBLISH\n"
+            "BEGIN:VTODO\n"
+            "UID:20060417T173712Z-4360-727-1-2730@gollum\n"
+            "DTSTAMP:20060417T173712Z\n"
+            "SUMMARY:do me\n"
+            "DESCRIPTION:to be done\n"
+            "PRIORITY:0\n"
+            "STATUS:IN-PROCESS\n"
+            "CREATED:20060417T173712\n"
+            "LAST-MODIFIED:20060417T173712\n"
+            "END:VTODO\n"
+            "END:VCALENDAR\n";
+        config.updateItem =
+            "BEGIN:VCALENDAR\n"
+            "PRODID:-//Ximian//NONSGML Evolution Calendar//EN\n"
+            "VERSION:2.0\n"
+            "METHOD:PUBLISH\n"
+            "BEGIN:VTODO\n"
+            "UID:20060417T173712Z-4360-727-1-2730@gollum\n"
+            "DTSTAMP:20060417T173712Z\n"
+            "SUMMARY:do me ASAP\n"
+            "DESCRIPTION:to be done\n"
+            "PRIORITY:1\n"
+            "STATUS:IN-PROCESS\n"
+            "CREATED:20060417T173712\n"
+            "LAST-MODIFIED:20060417T173712\n"
+            "END:VTODO\n"
+            "END:VCALENDAR\n";
+        /* change summary in insertItem in testMerge() */
+        config.mergeItem1 =
+            "BEGIN:VCALENDAR\n"
+            "PRODID:-//Ximian//NONSGML Evolution Calendar//EN\n"
+            "VERSION:2.0\n"
+            "METHOD:PUBLISH\n"
+            "BEGIN:VTODO\n"
+            "UID:20060417T173712Z-4360-727-1-2730@gollum\n"
+            "DTSTAMP:20060417T173712Z\n"
+            "SUMMARY:do me please\\, please\n"
+            "DESCRIPTION:to be done\n"
+            "PRIORITY:0\n"
+            "STATUS:IN-PROCESS\n"
+            "CREATED:20060417T173712\n"
+            "LAST-MODIFIED:20060417T173712\n"
+            "END:VTODO\n"
+            "END:VCALENDAR\n";
+        config.mergeItem2 =
+            "BEGIN:VCALENDAR\n"
+            "PRODID:-//Ximian//NONSGML Evolution Calendar//EN\n"
+            "VERSION:2.0\n"
+            "METHOD:PUBLISH\n"
+            "BEGIN:VTODO\n"
+            "UID:20060417T173712Z-4360-727-1-2730@gollum\n"
+            "DTSTAMP:20060417T173712Z\n"
+            "SUMMARY:do me\n"
+            "DESCRIPTION:to be done\n"
+            "PRIORITY:7\n"
+            "STATUS:IN-PROCESS\n"
+            "CREATED:20060417T173712\n"
+            "LAST-MODIFIED:20060417T173712\n"
+            "END:VTODO\n"
+            "END:VCALENDAR\n";
+        config.templateItem = config.insertItem;
+        config.uniqueProperties = "SUMMARY:UID";
+        config.sizeProperty = "DESCRIPTION";
+        config.import = import;
+        config.dump = dump;
+        config.compare = compare;
+        config.testcases = "testcases/itodo20.ics";
+    }
 }

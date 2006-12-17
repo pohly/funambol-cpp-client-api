@@ -90,6 +90,28 @@ class ClientTest {
     static int import(ClientTest &client, SyncSource &source, const char *file);
 
     /**
+     * utility function for comparing vCard and iCal files with the external
+     * synccompare.pl Perl script
+     */
+    static bool compare(ClientTest &client, const char *fileA, const char *fileB);
+    
+    struct Config;
+    
+    /**
+     * A derived class can use this call to get default test
+     * cases, but still has to add callbacks which create sources
+     * and execute a sync session.
+     *
+     * Some of the test cases are compiled into the library, other
+     * depend on the auxiliary files from the "test" directory.
+     * Currently supported types:
+     * - vcard30 = vCard 3.0 contacts
+     * - ical20 = iCal 2.0 events
+     * - itodo20 = iCal 2.0 tasks
+     */
+    static void getTestData(const char *type, Config &config);
+
+    /**
      * Information about a data source. For the sake of simplicity all
      * items pointed to are owned by the ClientTest and must
      * remain valid throughout a test session. Not setting a pointer
@@ -121,8 +143,11 @@ class ClientTest {
          * the sync source's desctructor should not thow exceptions.
          *
          * @param client    the same instance to which this config belongs
+         * @param source    index of the data source (from 0 to ClientTest::getNumSources() - 1)
+         * @param isSourceA true if the requested SyncSource is the first one accessing that
+         *                  data, otherwise the second
          */
-        typedef SyncSource *(*createsource_t)(ClientTest &client);
+        typedef SyncSource *(*createsource_t)(ClientTest &client, int source, bool isSourceA);
 
         /**
          * Creates a sync source which references the primary database;
@@ -249,6 +274,12 @@ class ClientTest {
          * a file with test cases in the format expected by import and compare
          */
         const char *testcases;
+
+        /**
+         * the item type normally used by the source (not used by the tests
+         * themselves; client-test.cpp uses it to initialize source configs)
+         */
+        const char *type;
     };
     
     /**

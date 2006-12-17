@@ -18,6 +18,7 @@
 
 #include <sys/stat.h>
 #include <unistd.h>
+#include <dirent.h>
 
 #include "base/Log.h"
 #include "base/util/utils.h"
@@ -82,7 +83,7 @@ bool saveFile(const char *filename, const char *buffer, size_t len, bool binary)
     if(!f)
         return false;
 
-    if (fwrite(buffer, len, sizeof(char), f) != len) {
+    if (fwrite(buffer, sizeof(char), len, f) != len) {
         fclose(f);
         return false;
     }
@@ -134,9 +135,40 @@ bool readFile(const char* path, char **message, size_t *len, bool binary)
 }
 
 
-// TBD: dummy implementation!
 char** readDir(char* name, int *count, bool onlyCount) {
-    return NULL;
+    char **entries = NULL;
+    *count = 0;
+    
+    // count entries
+    int total = 0;
+    DIR *dir = opendir(name);
+    if (dir) {
+        struct dirent *entry = readdir(dir);
+        while (entry) {
+            if (strcmp(entry->d_name, ".") &&
+                strcmp(entry->d_name, "..")) {
+                total++;
+            }
+            entry = readdir(dir);
+        }
+
+        if (!onlyCount && total) {
+            entries = new char *[total];
+
+            rewinddir(dir);
+            entry = readdir(dir);
+            while (entry && *count < total) {
+                if (strcmp(entry->d_name, ".") &&
+                    strcmp(entry->d_name, "..")) {
+                    entries[*count] = stringdup(entry->d_name);
+                    ++*count;
+                }
+                entry = readdir(dir);
+            }
+        }
+    }
+
+    return entries;
 }
 
 // TODO: convert to the specified encoding, assuming wc is UTF-8
