@@ -229,6 +229,12 @@ ManagementNode* DMTClientConfig::getSyncSourceNode(int index) {
         NULL;
 }
 
+ManagementNode* DMTClientConfig::getSyncSourceNode(const char* name) {
+    return sourcesNode ?
+        sourcesNode->getChild(name) :
+        NULL;
+}
+
 void DMTClientConfig::close() {
     if (syncMLNode) {
         delete syncMLNode;

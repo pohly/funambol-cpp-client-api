@@ -37,7 +37,6 @@ class RawFILESyncSource : public FILESyncSource {
 
     int addItem(SyncItem& item);
     int updateItem(SyncItem& item);
-    int deleteItem(SyncItem& item);
 
   protected:
     bool setItemData(SyncItem* syncItem);

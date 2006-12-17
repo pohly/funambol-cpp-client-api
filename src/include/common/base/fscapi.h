@@ -87,6 +87,11 @@
     // may be overridden by adapter header files above
     # define SYNC4J_LINEBREAK TEXT("\r\n")
     #endif
+
+    #ifndef WCHAR_PRINTF
+    /** use in format string like this: printf( "str '%" WCHAR_PRINTF "'", (WCHAR *)foo) */
+    # define WCHAR_PRINTF "ls"
+    #endif
     
 #endif
 

@@ -99,6 +99,15 @@ ManagementNode * ManagementNode::getChild(int index) {
     return (ManagementNode *)children[index];
 }
 
+ManagementNode * ManagementNode::getChild(const char* name) {
+    for (int index = 0; index < children.size(); index++) {
+        if (!strcmp(((ManagementNode *)children[index])->getName(), name)) {
+            return (ManagementNode *)children[index];
+        }
+    }
+    return NULL;
+}
+
 /*
  * Adds a new child. A clone of the given node is created internally, so that 
  * the caller is free to release node as soon as it wants.

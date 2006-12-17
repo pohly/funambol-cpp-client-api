@@ -24,23 +24,14 @@
 #include "spds/FILESyncSource.h"
 
 
-static int call;
-static int cnew;
-static int cupdated;
-static int cdeleted;
-
 FILESyncSource::FILESyncSource(const WCHAR* name, SyncSourceConfig* sc) : SyncSource(name, sc) {
-    c    = NULL; 
     dir  = NULL;
+    fileNode = NULL;
 
     setDir(".");
 }
 
 FILESyncSource::~FILESyncSource() {
-    if (c) {
-        delete c; 
-        c = NULL;
-    }
     if(dir) {
         delete [] dir;
         dir = NULL;
@@ -66,35 +57,75 @@ const char* FILESyncSource::getDir() {
 
 
 int FILESyncSource::beginSync() {
+    allItems.items.clear();
+    deletedItems.items.clear();
+    newItems.items.clear();
+    updatedItems.items.clear();
 
+    
     //
     // Get file list.
     //
     int count;
     char** fileNames = readDir(dir, &count);
-    if (!fileNames || count==0) {
-        LOG.debug("No files in dir '%s'", dir);
-        return 0;
-    }
     LOG.info("The client number of files to sync are %i", count);
 
-    if (c == NULL) {
-        c = new ItemContainer();
-    }
-
     //
-    // Create ArrayList ALL (empty data) from file names.
+    // Create array list with empty data from file names.
     //
     for (int i=0; i<count; i++) {
         if (fileNames[i]) {
             WCHAR* wname = toWideChar(fileNames[i]);
             SyncItem* s = new SyncItem(wname);
-            c->addItemToAllItems(s);
+            allItems.items.add(*s);
+
+            if (fileNode) {
+                char completeName[512];
+                sprintf(completeName, "%s/%s", dir, fileNames[i]);
+                unsigned long fileModTime = getFileModTime(completeName);
+                unsigned long serverModTime = getServerModTime(fileNames[i]);
+
+                if (!serverModTime) {
+                    // added file
+                    newItems.items.add(*s);
+                } else if (serverModTime < fileModTime) {
+                    // updated file
+                    updatedItems.items.add(*s);
+                }
+            }
+
             delete s;
             delete [] wname;
             delete [] fileNames[i];
         }
     }
+
+    if (fileNode) {
+        // iterate over all files stored on server (i.e. those with non-zero time stamp property)
+        // and check which of these have been deleted locally
+        //
+        // TODO: currently impossible with the ManagementNode interface, have to guess file names (works
+        // for RawFILESyncSource)
+
+        for (int key = 0; key < 1000; key++) {
+            char keystr[80];
+            sprintf(keystr, "%d", key);
+
+            if (getServerModTime(keystr)) {
+                char completeName[512];
+                sprintf(completeName, "%s/%s", dir, keystr);
+                if (!getFileModTime(completeName)) {
+                    // file no longer exists locally
+                    WCHAR* wname = toWideChar(keystr);
+                    SyncItem* s = new SyncItem(wname);
+                    deletedItems.items.add(*s);
+                    delete s;
+                    delete wname;
+                }
+            }
+        }
+    }
+    
     if (fileNames) {
         delete [] fileNames;  
         fileNames = NULL;
@@ -102,26 +133,17 @@ int FILESyncSource::beginSync() {
     return 0;    
 }
 
-
-/*
-* Return the first SyncItem of all. It is used in case of slow or refresh sync 
-* and retrieve the entire data source content.
-*/
-SyncItem* FILESyncSource::getFirstItem() {
-    if (c == NULL) {
+SyncItem* FILESyncSource::getFirst(ItemIteratorContainer& container, BOOL getData) {
+    container.index = 0;
+    if (container.index >= container.items.size()) {
         return NULL;
     }
-    if (c->getAllItemsSize() == 0) {
-        return NULL;
-    }  
-
-    call = 0;
-    SyncItem* syncItem = (SyncItem*)c->getAllItems()->get(call)->clone();
+    SyncItem* syncItem = (SyncItem*)container.items.get(container.index)->clone();
 
     //
     // Set data from file content, return syncItem (freed by API)
     //
-    if (setItemData(syncItem)){
+    if (!getData || setItemData(syncItem)){
         return syncItem;
     }
     else {
@@ -130,27 +152,15 @@ SyncItem* FILESyncSource::getFirstItem() {
     }
 }
 
-
-/*
-* Return the next SyncItem of all. It is used in case of slow or refresh sync 
-* and retrieve the entire data source content.
-*/
-SyncItem* FILESyncSource::getNextItem() {
-    if (c == NULL) {
+SyncItem* FILESyncSource::getNext(ItemIteratorContainer& container, BOOL getData) {
+    container.index++;
+    if (container.index >= container.items.size()) {
         return NULL;
     }
-    if (c->getAllItemsSize() == 0) {
-        return NULL;
-    }
-
-    call++;
-    if (call >= c->getAllItemsSize()) {
-        return NULL;
-    }
-    SyncItem* syncItem = (SyncItem*)c->getAllItems()->get(call)->clone();
+    SyncItem* syncItem = (SyncItem*)container.items.get(container.index)->clone();
 
     // Set data from file content, return syncItem (freed by API)
-    if (setItemData(syncItem)){
+    if (!getData || setItemData(syncItem)){
         return syncItem;
     }
     else {
@@ -159,126 +169,18 @@ SyncItem* FILESyncSource::getNextItem() {
     }
 }
 
-
-
-SyncItem* FILESyncSource::getFirstItemKey() {
-    return NULL;
-}
-SyncItem* FILESyncSource::getNextItemKey() {
-    return NULL;
-}
-
-
-SyncItem* FILESyncSource::getFirstNewItem() {
-    ///// TBD //////
-    return NULL;
-    ////////////////
-
-    if (c == NULL) {
-        c = new ItemContainer();
+unsigned long FILESyncSource::getServerModTime(const char* keystr) {
+    unsigned long modtime = 0;
+    if (fileNode) {
+        char* timestr = fileNode->readPropertyValue(keystr);
+        modtime = anchorToTimestamp(timestr);
+        delete [] timestr;
     }
-
-    //
-    // get new/mod/del list -> c
-    //
-   
-     //Log the number of item to sync from client
-    LOG.info("The client number of new files to sync are %i", c->getNewItemsSize());
-    LOG.info("The client number of updated files to sync are %i", c->getUpdatedItemsSize());
-    LOG.info("The client number of deleted files to sync are %i", c->getDeletedItemsSize());
-
-   
-    if (c->getNewItemsSize() == 0) {
-        return NULL;
-    }    
-    cnew = 0;
-    ArrayList* list = c->getNewItems(); 
-	return (SyncItem*)list->get(cnew)->clone();    
+    return modtime;
 }
-
-SyncItem* FILESyncSource::getNextNewItem() { 
-    ///// TBD //////
-    return NULL;
-    ////////////////
-
-    if (c == NULL)
-        return NULL;
-
-    cnew++;
-    if (cnew >= c->getNewItemsSize()) {
-        return NULL;
-    }        
-	return (SyncItem*)c->getNewItems()->get(cnew)->clone();  
-}
-
-SyncItem* FILESyncSource::getFirstUpdatedItem() {
-    ///// TBD //////
-    return NULL;
-    ////////////////
-
-    if (c == NULL) {
-        c = new ItemContainer();
-    }
-
-    if (c->getUpdatedItemsSize() == 0) {
-        return NULL;
-    }    
-    cupdated = 0;
-    ArrayList* list = c->getUpdatedItems();         
-	return (SyncItem*)list->get(cupdated)->clone();          
-}
-
-SyncItem* FILESyncSource::getNextUpdatedItem() {
-    ///// TBD //////
-    return NULL;
-    ////////////////
-
-    if (c == NULL)
-        return NULL;
-
-    cupdated++;
-    if (cupdated >= c->getUpdatedItemsSize()) {
-        return NULL;
-    }          
-	return (SyncItem*)c->getUpdatedItems()->get(cupdated)->clone();  
-}
-
-SyncItem* FILESyncSource::getFirstDeletedItem() {
-    ///// TBD //////
-    return NULL;
-    ////////////////
-
-    if (c == NULL) {
-        c = new ItemContainer();
-    }
-
-    if (c->getDeletedItemsSize() == 0) {
-        return NULL;
-    }    
-    cdeleted = 0;
-    ArrayList* list = c->getDeletedItems();    
-	return (SyncItem*)list->get(cdeleted)->clone();      
-}
-
-SyncItem* FILESyncSource::getNextDeletedItem() {
-    ///// TBD //////
-    return NULL;
-    ////////////////
-
-    if (c == NULL)
-        return NULL;
-
-    cdeleted++;
-    if (cdeleted >= c->getDeletedItemsSize()) {
-        return NULL;
-    }
-	return (SyncItem*)c->getDeletedItems()->get(cdeleted)->clone();    
-}
-
-
 
 void FILESyncSource::setItemStatus(const WCHAR* key, int status) {
-    LOG.debug("item key: %ls, status: %i", key, status);    
+    LOG.debug("item key: %" WCHAR_PRINTF ", status: %i", key, status);    
 }
 
 
@@ -303,23 +205,34 @@ int FILESyncSource::addItem(SyncItem& item) {
     }
 
 
-    if (file.getSize() > 0) {
+    if (file.getSize() >= 0) {
         //
         // Save item on FS
         //
         char completeName[512];
-        sprintf(completeName, "%s/%ls", dir, file.getName());
+        sprintf(completeName, "%s/%" WCHAR_PRINTF, dir, file.getName());
         if (!saveFile(completeName, file.getBody(), file.getSize(), true)) {
-            sprintf(lastErrorMsg, "Error saving file %ls", file.getName());
+            sprintf(lastErrorMsg, "Error saving file %" WCHAR_PRINTF, file.getName());
             report->setLastErrorCode(ERR_FILE_SYSTEM);
             report->setLastErrorMsg(lastErrorMsg);
             report->setState(SOURCE_ERROR);
             return STC_COMMAND_FAILED;
         }       
-        ret = STC_ITEM_ADDED;
-        LOG.debug("Added item: %ls", file.getName());    
+        ret = addedItem(item, file.getName());
+        LOG.debug("Added item: %" WCHAR_PRINTF, file.getName());    
     }
     return ret;
+}
+
+int FILESyncSource::addedItem(SyncItem& item, const WCHAR* key) {
+    item.setKey(key);
+
+    // remember this item so that endSync() can store its time stamp
+    SyncItem smallitem;
+    smallitem.setKey(key);
+    allItems.items.add(smallitem);
+
+    return STC_ITEM_ADDED;
 }
 
 int FILESyncSource::updateItem(SyncItem& item) {
@@ -358,38 +271,45 @@ int FILESyncSource::updateItem(SyncItem& item) {
 }
 
 int FILESyncSource::deleteItem(SyncItem& item) {
-    ////// TBD ////////
-    return STC_COMMAND_FAILED;
-    ///////////////////
-
     int ret = STC_COMMAND_FAILED;
-    long h = 1;
-    //
-    // h = delete item from FS
-    //
-    
-    if (h == 0) {
+
+    char completeName[512];
+    sprintf(completeName, "%s/%" WCHAR_PRINTF, dir, item.getKey());
+    if (!unlink(completeName)) {
         ret = STC_OK;
-        LOG.debug("deleted item: %S", item.getKey());
     }
-    return ret;    
+
+    return ret;
 }
 
 
 int FILESyncSource::endSync() {
-    //
-    // write current file name and time of writing in file.db
-    //
+    if (fileNode) {
+        SyncItem* item;
+
+        // reset information about deleted items
+        for (item = getFirst(deletedItems, FALSE); item; item = getNext(deletedItems, FALSE)) {
+            fileNode->setPropertyValue(item->getKey(), "");
+            delete item;
+        }
+
+        // update information about each file that currently exists on the server
+        for (item = getFirst(allItems, FALSE); item; item = getNext(allItems, FALSE)) {
+            char completeName[512];
+            sprintf(completeName, "%s/%" WCHAR_PRINTF, dir, item->getKey());
+            unsigned long modTime = getFileModTime(completeName);
+            char anchor[30];
+            timestampToAnchor(modTime, anchor);
+            fileNode->setPropertyValue(item->getKey(), anchor);
+            delete item;
+        }
+    }
+
     return 0;
 }
 
 void FILESyncSource::assign(FILESyncSource& s) {
-    setSyncMode(s.getSyncMode());
-    setLastSync(s.getLastSync());
-    setNextSync(s.getNextSync());
-    setLastAnchor(s.getLastAnchor());
-    setNextAnchor(s.getNextAnchor());
-    setFilter(s.getFilter());
+    SyncSource::assign(s);
     setDir(getDir());
 }
 
@@ -412,7 +332,7 @@ bool FILESyncSource::setItemData(SyncItem* syncItem) {
     //
     // Get file content.
     //
-    sprintf(fileName, "%s/%ls", dir, syncItem->getKey());
+    sprintf(fileName, "%s/%" WCHAR_PRINTF, dir, syncItem->getKey());
     if (!readFile(fileName, &content, &len, true)) {
         sprintf(lastErrorMsg, "Error opening the file '%s'", fileName);
         report->setLastErrorCode(ERR_FILE_SYSTEM);

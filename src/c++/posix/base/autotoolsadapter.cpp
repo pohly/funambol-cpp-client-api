@@ -171,6 +171,15 @@ char** readDir(char* name, int *count, bool onlyCount) {
     return entries;
 }
 
+unsigned long getFileModTime(const char* name)
+{
+    struct stat buf;
+    
+    return stat(name, &buf) ? 0 :
+        buf.st_ctime > buf.st_mtime ? buf.st_ctime :
+        buf.st_mtime;
+}
+
 // TODO: convert to the specified encoding, assuming wc is UTF-8
 char* toMultibyte(const WCHAR *wc, const char *encoding)
 {

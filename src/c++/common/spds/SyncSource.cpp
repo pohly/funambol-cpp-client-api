@@ -220,3 +220,13 @@ void SyncSource::setFilter(SourceFilter* f) {
         filter->setClause(f->getClause());
     }
 }
+
+void SyncSource::assign(SyncSource& s) {
+    setSyncMode(s.getSyncMode());
+    setLastSync(s.getLastSync());
+    setNextSync(s.getNextSync());
+    setLastAnchor(s.getLastAnchor());
+    setNextAnchor(s.getNextAnchor());
+    setFilter(s.getFilter());
+}
+

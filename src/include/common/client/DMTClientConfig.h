@@ -218,6 +218,11 @@ class DMTClientConfig : public SyncManagerConfig {
         virtual ManagementNode* getSyncSourceNode(int index) EXTRA_SECTION_01;
 
         /**
+         * Get the specified sync source configuration by name.
+         */
+        virtual ManagementNode* getSyncSourceNode(const char* name) EXTRA_SECTION_01;
+
+        /**
          * Closes the configuration backend. Frees all resources associated
          * with and invalidates all ManagementNode pointers returned by this
          * config.

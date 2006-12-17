@@ -48,6 +48,11 @@ protected:
     SyncSourceConfig& config;
     SyncSourceReport* report;
 
+    /**
+     * copies all elements, to be used by derived class' clone() implementation
+     */
+    void assign(SyncSource& s);
+    
 public:
 
     /**
@@ -306,7 +311,6 @@ public:
      * ArrayElement implementation
      */
     virtual ArrayElement* clone() EXTRA_SECTION_01 = 0;
-
 };
 
 #endif

@@ -46,7 +46,7 @@ int RawFILESyncSource::addItem(SyncItem& item) {
                 char keystr[80];
                 sprintf(keystr, "%d", key);
                 item.setKey(keystr);
-                return STC_ITEM_ADDED;
+                return addedItem(item, keystr);
             }
         } else {
             fclose(fh);
@@ -56,15 +56,17 @@ int RawFILESyncSource::addItem(SyncItem& item) {
 }
 
 int RawFILESyncSource::updateItem(SyncItem& item) {
-    ////// TBD ////////
-    return STC_COMMAND_FAILED;
-    ///////////////////
-}
-
-int RawFILESyncSource::deleteItem(SyncItem& item) {
-    ////// TBD ////////
-    return STC_COMMAND_FAILED;
-    ///////////////////
+    char completeName[512];
+    sprintf(completeName, "%s/%" WCHAR_PRINTF, dir, item.getKey());
+    if (!saveFile(completeName, (const char *)item.getData(), item.getDataSize(), TRUE)) {
+        sprintf(lastErrorMsg, "Error saving file %s", completeName);
+        report->setLastErrorCode(ERR_FILE_SYSTEM);
+        report->setLastErrorMsg(lastErrorMsg);
+        report->setState(SOURCE_ERROR);
+        return STC_COMMAND_FAILED;
+    } else {
+        return STC_OK;
+    }
 }
 
 bool RawFILESyncSource::setItemData(SyncItem* syncItem) {
@@ -77,7 +79,7 @@ bool RawFILESyncSource::setItemData(SyncItem* syncItem) {
     //
     // Get file content.
     //
-    sprintf(fileName, "%s/%ls", dir, syncItem->getKey());
+    sprintf(fileName, "%s/%" WCHAR_PRINTF, dir, syncItem->getKey());
     if (!readFile(fileName, &content, &len, true)) {
         sprintf(lastErrorMsg, "Error opening the file '%s'", fileName);
         report->setLastErrorCode(ERR_FILE_SYSTEM);

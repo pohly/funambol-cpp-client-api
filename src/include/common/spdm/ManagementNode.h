@@ -89,6 +89,11 @@ class ManagementNode : public ArrayElement {
         virtual ManagementNode * getChild(int index);
 
         /**
+         * Returns the node's child with the given name, NULL if not found.
+         */
+        virtual ManagementNode * getChild(const char* name);
+
+        /**
          * Add a new child to this node.
          *
          * @param child - the ManagementNode to add

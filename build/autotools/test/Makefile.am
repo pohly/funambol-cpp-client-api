@@ -17,6 +17,12 @@ client_test_SOURCES = client-test-main.cpp client-test.cpp ClientTest.cpp
 client_test_LDFLAGS = `nm ../src/.libs/libsync4j.a | grep funambolAutoRegisterRegistry | sed -e 's/.* /-u /'`
 # client_test_LDADD = libsync4j.la
 
+check: link-test-files
+
+link-test-files:
+	@ [ -e synccompare.pl ] || ln -s $(srcdir)/../../../test/synccompare.pl .
+	@ [ -d testcases ] || ln -s $(srcdir)/../../../test/testcases .
+
 # also install files in a test sub directory
 nobase_pkginclude_HEADERS = \
 	test/ClientTest.h \

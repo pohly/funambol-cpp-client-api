@@ -144,14 +144,14 @@ const char *brfind(const char *s1, const char *s2, size_t len)
 }
 
 
-/**
- * Convert an unsigned long to an anchor.
- *
- * @param timestamp the timestamo to convert into an anchor
- * @param anchor where the anchor will be written
- */
-void timestampToAnchor(unsigned long timestamp, char* anchor) {
+void timestampToAnchor(unsigned long timestamp, char anchor[21]) {
     sprintf(anchor, "%lu", timestamp);
+}
+
+unsigned long anchorToTimestamp(const char* anchor) {
+    unsigned long timestamp;
+
+    return sscanf(anchor, "%lu", &timestamp) == 1 ? timestamp : 0;
 }
 
 bool wcscmpIgnoreCase(const char* p, const char* q) {

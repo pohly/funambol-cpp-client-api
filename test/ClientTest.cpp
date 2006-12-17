@@ -125,7 +125,9 @@ static void importItem(SyncSource *source, std::string &data)
         SyncItem item;
         item.setData( data.c_str(), data.size() + 1 );
         item.setDataType( "raw" );
-        SOURCE_ASSERT_EQUAL(source, 200, source->addItem(item));
+        int status;
+        SOURCE_ASSERT_NO_FAILURE(source, status = source->addItem(item));
+        CPPUNIT_ASSERT(status == STC_OK || status == STC_ITEM_ADDED);
         CPPUNIT_ASSERT(item.getKey() != 0);
         CPPUNIT_ASSERT(strlen(item.getKey()) > 0);
     }
@@ -245,6 +247,7 @@ public:
         SOURCE_ASSERT_NO_FAILURE(source.get(), status = source->addItem(item));
         CPPUNIT_ASSERT(item.getKey() != 0);
         CPPUNIT_ASSERT(strlen(item.getKey()) > 0);
+        SOURCE_ASSERT(source.get(), source->endSync() == 0);
 
         // delete source again
         CPPUNIT_ASSERT_NO_THROW(source.reset());
@@ -292,7 +295,7 @@ public:
         SOURCE_ASSERT_NO_FAILURE(source.get(), item.reset(source->getFirstItem()) );
         CPPUNIT_ASSERT(item.get());
         item->setData(data, strlen(data) + 1);
-        SOURCE_ASSERT_NO_FAILURE(source.get(), source->updateItem(*item) );
+        SOURCE_ASSERT_EQUAL(source.get(), (int)STC_OK, source->updateItem(*item));
         SOURCE_ASSERT(source.get(), source->endSync() == 0);
         CPPUNIT_ASSERT_NO_THROW(source.reset());
 
@@ -320,11 +323,10 @@ public:
         SOURCE_ASSERT(source.get(), source->beginSync() == 0);
 
         // delete all items
-        SOURCE_ASSERT(source.get(), source->beginSync() == 0 );
         std::auto_ptr<SyncItem> item;
         SOURCE_ASSERT_NO_FAILURE(source.get(), item.reset(source->getFirstItem()));
         while (item.get()) {
-            SOURCE_ASSERT_NO_FAILURE(source.get(), source->deleteItem( *item ) );
+            SOURCE_ASSERT_EQUAL(source.get(), (int)STC_OK, source->deleteItem(*item));
             SOURCE_ASSERT_NO_FAILURE(source.get(), item.reset(source->getNextItem()));
         }
         SOURCE_ASSERT(source.get(), source->endSync() == 0);

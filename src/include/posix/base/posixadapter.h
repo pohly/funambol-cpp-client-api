@@ -71,6 +71,7 @@
 /* map WCHAR and its functions back to standard functions */
 #undef WCHAR
 #define WCHAR char
+#define WCHAR_PRINTF "s"
 
 #define wsprintf sprintf
 #define _wfopen fopen

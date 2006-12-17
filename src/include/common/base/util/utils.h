@@ -41,7 +41,18 @@ void safeDelete(char*  p[]) EXTRA_SECTION_00;
 
 void safeDel(char** p) EXTRA_SECTION_00;
 
-void timestampToAnchor(unsigned long timestamp, char*  anchor) EXTRA_SECTION_00;
+/**
+ * Convert an unsigned long to an anchor.
+ *
+ * @param timestamp the timestamp to convert into an anchor
+ * @param anchor where the anchor will be written (has to be at least 21 characters long)
+ */
+void timestampToAnchor(unsigned long timestamp, char anchor[21]) EXTRA_SECTION_00;
+
+/**
+ * inverse operation for timestampToAnchor(), returns 0 if not a valid anchor
+ */
+unsigned long anchorToTimestamp(const char* anchor) EXTRA_SECTION_00;
 
 char* stringdup(const char* s, size_t len = STRINGDUP_NOLEN) EXTRA_SECTION_00 ;
 WCHAR* wstrdup(const WCHAR* s, size_t len = STRINGDUP_NOLEN) EXTRA_SECTION_00;
@@ -150,6 +161,13 @@ bool readFile(const char* name, char **message, size_t *len, bool binary = false
  * @return - new allocated array of fileNames (NULL if errors)
  */
 char** readDir(char* name, int *count, bool onlyCount = false);
+
+/**
+ * Returns the most recent time stamp of file content or attribute
+ * modifications, 0 in case of error. The time stamp must use the same
+ * time base as time().
+ */
+unsigned long getFileModTime(const char* name);
 
 
 long int getLenEncoding(const char*  s, const char* encoding);

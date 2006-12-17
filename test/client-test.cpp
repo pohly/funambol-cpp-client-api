@@ -82,6 +82,7 @@
  * is stored with the same base name and .server.log as suffix. 
  */
 
+#include "spdm/DeviceManagementNode.h"
 #include "spds/RawFILESyncSource.h"
 #include "client/DMTClientConfig.h"
 #include "test/ClientTest.h"
@@ -134,7 +135,6 @@ public:
             dc.setDevID(id == "1" ? "sc-api-nat" : "sc-pim-ppc");
         }
         for (int source = 0; source < sources.size(); source++) {
-            
             SyncSourceConfig* sc = config->getSyncSourceConfig(sources[source].c_str());
             if (!sc) {
                 config->setSourceDefaults(sources[source].c_str());
@@ -148,6 +148,7 @@ public:
             sc->setType(testconfig.type);
         }
         config->save();
+        config->open();
 
         if (id == "1") {
             /* we are the primary client, create a second one */
@@ -195,18 +196,34 @@ private:
     static SyncSource *createSource(ClientTest &client, int source, bool isSourceA) {
         class RawFILESyncSourceWithReport : public RawFILESyncSource {
         public:
-            RawFILESyncSourceWithReport(const WCHAR* name, SyncSourceConfig* sc) :
-                RawFILESyncSource(name, sc) {
+            RawFILESyncSourceWithReport(const char* nodeName, const char* name, SyncSourceConfig* sc) :
+                RawFILESyncSource(name, sc),
+                fileNode(nodeName) {
                 setReport(&report);
+                setFileNode(&fileNode);
+                /*
+                 * Keeping track if changes is done via time() with a resolution of seconds.
+                 * Sleep a bit to ensure that enough time passes.
+                 */
+                sleep(1);
             }
+
         private:
             SyncSourceReport report;
+            DeviceManagementNode fileNode;
         };
 
         TestFileSource &testFileSource((TestFileSource &)client);
         CPPUNIT_ASSERT(source < testFileSource.sources.size());
-        FILESyncSource *ss = new RawFILESyncSourceWithReport(testFileSource.sources[source].c_str(),
-                                                             testFileSource.config->getSyncSourceConfig(testFileSource.sources[source].c_str()));
+        ManagementNode *sourceNode = testFileSource.config->getSyncSourceNode(testFileSource.sources[source].c_str());
+        CPPUNIT_ASSERT(sourceNode);
+        char *fullName = sourceNode->createFullName();
+        std::string nodeName = std::string(fullName) + "/changes_" + (isSourceA ? "A" : "B");
+        delete [] fullName;
+        FILESyncSource *ss = new RawFILESyncSourceWithReport(
+            nodeName.c_str(),
+            testFileSource.sources[source].c_str(),
+            testFileSource.config->getSyncSourceConfig(testFileSource.sources[source].c_str()));
         mkdir(testFileSource.sources[source].c_str(), S_IRWXU);
         ss->setDir(testFileSource.sources[source].c_str());
 

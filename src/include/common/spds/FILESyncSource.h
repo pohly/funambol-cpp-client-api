@@ -25,6 +25,7 @@
 #include "spds/SyncMap.h"
 #include "spds/SyncStatus.h"
 #include "spds/SyncSource.h"
+#include "spdm/ManagementNode.h"
 #include "base/util/ItemContainer.h"
 
 
@@ -40,14 +41,22 @@ protected:
     // The dir in which the files are and that are to be synced.
     char* dir;
 
-    // The container object that contain all, new, update and deleted items
-    ItemContainer* c;
-            
     // The copy is protected
     FILESyncSource(SyncSource& s);
 
-    // Retur true if data correctly set.
-    bool setItemData(SyncItem* syncItem);
+    // Return true if data correctly set: syncItem->getKey() contains
+    // the file name relative to dir, copying its content into
+    // the items data can be overriden by derived classes.
+    virtual bool setItemData(SyncItem* syncItem);
+
+    /**
+     * must be called for each successfully added item
+     *
+     * @param item     the added item
+     * @param key      the key of that item
+     * @return SyncML status code, STC_ITEM_ADDED on success
+     */
+    int addedItem(SyncItem& item, const WCHAR* key);
 
 public:
     
@@ -70,53 +79,53 @@ public:
      * It is used in case of slow or refresh sync 
      * and retrieve the entire data source content.
      */
-    SyncItem* getFirstItem();
+    SyncItem* getFirstItem() { return getFirst(allItems); }
 
     /*
      * Return the next SyncItem of all.
      * It is used in case of slow or refresh sync 
      * and retrieve the entire data source content.
      */
-    SyncItem* getNextItem();
+    SyncItem* getNextItem() { return getNext(allItems); }
 
     /*
      * Return the first SyncItem of new one. It is used in case of fast sync 
      * and retrieve the new data source content.
      */
-    SyncItem* getFirstNewItem();
+    SyncItem* getFirstNewItem() { return getFirst(newItems); }
 
     /*
      * Return the next SyncItem of new one. It is used in case of fast sync 
      * and retrieve the new data source content.
      */
-    SyncItem* getNextNewItem();
+    SyncItem* getNextNewItem() { return getNext(newItems); }
 
     /*
      * Return the first SyncItem of updated one. It is used in case of fast sync 
      * and retrieve the new data source content.
      */
-    SyncItem* getFirstUpdatedItem() ;
+    SyncItem* getFirstUpdatedItem() { return getFirst(updatedItems); }
 
     /*
      * Return the next SyncItem of updated one. It is used in case of fast sync 
      * and retrieve the new data source content.
      */
-    SyncItem* getNextUpdatedItem();
+    SyncItem* getNextUpdatedItem() { return getNext(updatedItems); }
 
     /*
      * Return the first SyncItem of updated one. It is used in case of fast sync 
      * and retrieve the new data source content.
      */
-    SyncItem* getFirstDeletedItem();
+    SyncItem* getFirstDeletedItem() { return getFirst(deletedItems, FALSE); }
 
     /*
      * Return the next SyncItem of updated one. It is used in case of fast sync 
      * and retrieve the new data source content.
      */
-    SyncItem* getNextDeletedItem();
+    SyncItem* getNextDeletedItem() { return getNext(deletedItems, FALSE); }
     
-    SyncItem* getFirstItemKey();
-    SyncItem* getNextItemKey();
+    SyncItem* getFirstItemKey() { return getFirst(allItems, FALSE); }
+    SyncItem* getNextItemKey() { return getNext(allItems, FALSE); }
 
 
     int addItem(SyncItem& item);
@@ -130,6 +139,36 @@ public:
 
     void assign(FILESyncSource& s);
     ArrayElement* clone();
+
+    /**
+     * Tracking changes requires persistent storage: for each item sent
+     * to the server a property is set to the item's modification time.
+     *
+     * The caller is responsible for storing these properties after
+     * a successful sync and continues to own the node instance itself.
+     *
+     * During the next beginSync() the information will be used to
+     * identify added, updated and deleted items.
+     */
+    void setFileNode(ManagementNode *mn) { fileNode = mn; }
+    ManagementNode *getFileNode() { return fileNode; }
+
+  private:
+    // Lists of all, new, update and deleted items
+    // together with the current index.
+    struct ItemIteratorContainer {
+        ArrayList items;
+        int index;
+    } allItems, newItems, updatedItems, deletedItems;
+
+    // an optional node in which file dates are stored to track changes
+    ManagementNode* fileNode;
+
+    /** returns time stored in fileNode for the given key, 0 if not found */
+    unsigned long getServerModTime(const char* keystr);
+            
+    SyncItem* getFirst(ItemIteratorContainer& container, BOOL getData = TRUE);
+    SyncItem* getNext(ItemIteratorContainer& container, BOOL getData = TRUE);
 };
 
 #endif
