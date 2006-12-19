@@ -165,9 +165,9 @@ int EmailData::parse(const char *msg, size_t len)
         // It is not an error, just log it for info.
     }
     
-    char tmpExt[] = "<Ext><XNam>x-funambol-body</XNam><XVal>15000</XVal></Ext> \
-                     <Ext><XNam>x-funambol-attach-n</XNam><XVal>1</XVal></Ext> \
-                     <Ext><XNam>x-funambol-attach</XNam><XVal>att1.txt</XVal><XVal>10000</XVal></Ext>";
+    //char tmpExt[] = "<Ext><XNam>x-funambol-body</XNam><XVal>15000</XVal></Ext> \
+    //                 <Ext><XNam>x-funambol-attach-n</XNam><XVal>1</XVal></Ext> \
+    //                 <Ext><XNam>x-funambol-attach</XNam><XVal>att1.txt</XVal><XVal>10000</XVal></Ext>";
     
     //char tmpExt[] = "";
     // find the Ext stuffs
@@ -178,10 +178,10 @@ int EmailData::parse(const char *msg, size_t len)
         char* ext = NULL;
         
         // for try
-        pos = 0;
+        //pos = 0;
         
-        while( (ext = XMLProcessor::copyElementContent(&tmpExt[pos], "Ext", &pos)) ) { // for try
-        //while( (ext = XMLProcessor::copyElementContent(&msg[pos], "Ext", &pos)) ) {            
+        //while( (ext = XMLProcessor::copyElementContent(&tmpExt[pos], "Ext", &pos)) ) { // for try
+        while( (ext = XMLProcessor::copyElementContent(&msg[pos], "Ext", &pos)) ) {            
             char* xnam = XMLProcessor::copyElementContent(ext, "XNam", 0); 
             if (!xnam) 
                 break;
