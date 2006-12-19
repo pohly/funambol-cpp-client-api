@@ -3,7 +3,7 @@
 	ProjectType="Visual C++"
 	Version="8,00"
 	Name="windowsmobile"
-	ProjectGUID="{4E03F2CD-31F3-4EA8-81E4-AC267456C910}"
+	ProjectGUID="{F920CBE6-3CEB-4334-9AB6-104CF1C2B94D}"
 	RootNamespace="windowsmobile"
 	>
 	<Platforms>
@@ -141,7 +141,7 @@
 				ExecutionBucket="7"
 				Optimization="2"
 				InlineFunctionExpansion="1"
-				AdditionalIncludeDirectories="..\..\src\include\winmobile,..\..\src\include\common"
+				AdditionalIncludeDirectories="..\..\src\include\winmobile,..\..\src\include\common,..\..\..\tools\zlib"
 				PreprocessorDefinitions="_WIN32_WCE=$(CEVER);$(CePlatform);NDEBUG;ARM;_ARM_;ARMV4;UNDER_CE=$(CEVER);UNICODE;_LIB"
 				StringPooling="true"
 				RuntimeLibrary="0"
@@ -13152,6 +13152,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\src\include\common\http\errors.h"
+				>
+			</File>
+			<File
 				RelativePath="..\..\src\include\common\spds\errors.h"
 				>
 			</File>
@@ -13161,10 +13165,6 @@
 			</File>
 			<File
 				RelativePath="..\..\src\include\common\base\errors.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\include\common\http\errors.h"
 				>
 			</File>
 			<File

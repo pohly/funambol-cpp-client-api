@@ -40,7 +40,7 @@
 
 **/
 
-//#define USE_ZLIB
+#define USE_ZLIB
 
 #include "base/Log.h"
 #include "base/messages.h"
