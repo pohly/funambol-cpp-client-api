@@ -6,7 +6,19 @@
 #include "spds/SyncItem.h"
 #include "spds/SyncItemStatus.h"
 
+/**
+ * returns the SyncMode corresponding to the string,
+ * SYNC_NONE if string is invalid
+ *
+ * @param syncMode      one of the keywords valid as config parameter (see documentation of config)
+ */
 SyncMode syncModeCode(const char*  syncMode) EXTRA_SECTION_02;
+
+/**
+ * returns the config keyword corresponding to the sync mode,
+ * empty string if invalid
+ */
+const char *syncModeKeyword(SyncMode syncMode) EXTRA_SECTION_02;
 
 /*
  * Translates an ArrayList object into an array of SyncItemStatus*.

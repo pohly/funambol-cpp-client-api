@@ -51,6 +51,20 @@ SyncMode syncModeCode(const char* syncMode) {
     return SYNC_NONE;
 }
 
+const char *syncModeKeyword(SyncMode syncMode) {
+    switch (syncMode) {
+     case SYNC_SLOW: return "slow";
+     case SYNC_TWO_WAY: return "two-way";
+     case SYNC_ONE_WAY_FROM_SERVER: return "one-way-from-server";
+     case SYNC_ONE_WAY_FROM_CLIENT: return "one-way-from-client";
+     case SYNC_REFRESH_FROM_SERVER: return "refresh-from-server";
+     case SYNC_REFRESH_FROM_CLIENT: return "refresh-from-client";
+     case SYNC_ADDR_CHANGE_NOTIFICATION: return "addrchange";
+    }
+
+    return "";
+}
+
 
 SyncItemStatus** toSyncItemStatusArray(ArrayList& items) {
 
