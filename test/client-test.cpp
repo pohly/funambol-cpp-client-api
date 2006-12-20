@@ -84,7 +84,9 @@
 
 #include "spdm/DeviceManagementNode.h"
 #include "spds/RawFILESyncSource.h"
+#include "spds/spdsutils.h"
 #include "client/DMTClientConfig.h"
+#include "client/SyncClient.h"
 #include "test/ClientTest.h"
 
 #include <string>
@@ -126,17 +128,20 @@ public:
         }
 
         // get configuration and set obligatory fields
+        LOG.setLevel(LOG_LEVEL_DEBUG);
         std::string root = std::string("client-test/") + server + "_" + id;
         config.reset(new DMTClientConfig(root.c_str()));
         config->read();
         DeviceConfig &dc(config->getDeviceConfig());
         if (!strlen(dc.getDevID())) {
+            // no configuration yet
             config->setClientDefaults();
-            dc.setDevID(id == "1" ? "sc-api-nat" : "sc-pim-ppc");
+            dc.setDevID(id == "A" ? "sc-api-nat" : "sc-pim-ppc");
         }
         for (int source = 0; source < sources.size(); source++) {
             SyncSourceConfig* sc = config->getSyncSourceConfig(sources[source].c_str());
             if (!sc) {
+                // no configuration yet
                 config->setSourceDefaults(sources[source].c_str());
                 sc = config->getSyncSourceConfig(sources[source].c_str());
                 CPPUNIT_ASSERT(sc);
@@ -150,9 +155,9 @@ public:
         config->save();
         config->open();
 
-        if (id == "1") {
+        if (id == "A") {
             /* we are the primary client, create a second one */
-            clientB.reset(new TestFileSource("2"));
+            clientB.reset(new TestFileSource("B"));
         }
     }
     
@@ -176,15 +181,46 @@ public:
         return false;
     }
 
-    virtual int sync(const int*, SyncMode, long int, long int, bool, const char*) {
-        return 1;
+    virtual int sync(
+        const int *activeSources,
+        SyncMode syncMode,
+        long maxMsgSize,
+        long maxObjSize,
+        bool loSupport,
+        const char *encoding = 0) {
+        SyncSource **syncSources = new SyncSource *[sources.size() + 1];
+        int source;
+        memset(syncSources, 0, sizeof(syncSources[0]) * (sources.size() + 1));
+
+        for (source = 0; activeSources[source] >= 0 && source < sources.size(); source++) {
+            // rewrite configuration as needed for test
+            SyncSourceConfig *sourceConfig = config->getSyncSourceConfig(sources[source].c_str());
+            CPPUNIT_ASSERT(sourceConfig);
+            sourceConfig->setSync(syncModeKeyword(syncMode));
+            sourceConfig->setEncoding(encoding);
+            config->getAccessConfig().setMaxMsgSize(maxMsgSize);
+            config->getDeviceConfig().setMaxObjSize(maxObjSize);
+            config->getDeviceConfig().setLoSupport(loSupport);
+
+            // create sync source using the third change tracking for syncs
+            syncSources[source] = createSource(source, "S");
+        }
+
+        SyncClient client;
+        int res = client.sync(*config, syncSources);
+
+        for (source = 0; syncSources[source]; source++) {
+            delete syncSources[source];
+        }
+
+        return res;
     }
 
 private:
-    /** either "1" or "2" for first respectively second client */
+    /** either "A" or "B" for first respectively second client */
     std::string clientID;
 
-    /** only in "1": pointer to second client */
+    /** only in "A": pointer to second client */
     std::auto_ptr<TestFileSource> clientB;
 
     /** vector of enabled sync sources, identified by a name which SyncClient::getConfig() supports */
@@ -194,6 +230,11 @@ private:
     std::auto_ptr<DMTClientConfig> config;
 
     static SyncSource *createSource(ClientTest &client, int source, bool isSourceA) {
+        // hand work over to real member function
+        ((TestFileSource &)client).createSource(source, isSourceA ? "A" : "B");
+    }
+
+    SyncSource *createSource(int source, const char *trackingSuffix) {
         class RawFILESyncSourceWithReport : public RawFILESyncSource {
         public:
             RawFILESyncSourceWithReport(const char* nodeName, const char* name, SyncSourceConfig* sc) :
@@ -207,25 +248,24 @@ private:
                  */
                 sleep(1);
             }
-
         private:
             SyncSourceReport report;
             DeviceManagementNode fileNode;
         };
 
-        TestFileSource &testFileSource((TestFileSource &)client);
-        CPPUNIT_ASSERT(source < testFileSource.sources.size());
-        ManagementNode *sourceNode = testFileSource.config->getSyncSourceNode(testFileSource.sources[source].c_str());
+        CPPUNIT_ASSERT(source < sources.size());
+        ManagementNode *sourceNode = config->getSyncSourceNode(sources[source].c_str());
         CPPUNIT_ASSERT(sourceNode);
         char *fullName = sourceNode->createFullName();
-        std::string nodeName = std::string(fullName) + "/changes_" + (isSourceA ? "A" : "B");
+        std::string nodeName = std::string(fullName) + "/changes_" + trackingSuffix;
+        std::string dirName = sources[source] + "_" + clientID;
         delete [] fullName;
         FILESyncSource *ss = new RawFILESyncSourceWithReport(
             nodeName.c_str(),
-            testFileSource.sources[source].c_str(),
-            testFileSource.config->getSyncSourceConfig(testFileSource.sources[source].c_str()));
-        mkdir(testFileSource.sources[source].c_str(), S_IRWXU);
-        ss->setDir(testFileSource.sources[source].c_str());
+            sources[source].c_str(),
+            config->getSyncSourceConfig(sources[source].c_str()));
+        mkdir(dirName.c_str(), S_IRWXU);
+        ss->setDir(dirName.c_str());
 
         return ss;
     }
@@ -239,7 +279,7 @@ private:
 static class RegisterTest {
 public:
     RegisterTest() :
-        testFileSource("1") {
+        testFileSource("A") {
         testFileSource.registerTests();
     }
 

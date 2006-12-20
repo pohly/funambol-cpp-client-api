@@ -36,9 +36,11 @@
  * servers. Although the framework always always tests against the
  * same server, for most tests it is necessary to access the database
  * without affecting the next synchronization with the server. This is
- * done by asking the client for another sync source which it must
- * create in a suitable way - pretty much as if the client was
- * synchronized against different server.
+ * done by asking the client for two different sync sources via
+ * Config::createSourceA and Config::createSourceB which have to
+ * create them in a suitable way - pretty much as if the client was
+ * synchronized against different server. A third, different change
+ * tracking is needed for real synchronizations of the data.
  *
  * Furthermore the client is expected to support multiple data sources
  * of the same kind, f.i. two different address books. This is used to
@@ -324,8 +326,8 @@ class ClientTest {
      * @param syncMode     the synchronization mode to be used
      * @param maxMsgSize   >0: enable the maximum message size, else disable it
      * @param maxObjSize   same as maxMsgSize for maximum object size
-     * @param encoding     if non-NULL, then let client library transform all items
-     *                     into this format
+     * @param encoding     if non-empty, then let client library transform all items
+     *                     into this format (guaranteed to be not NULL)
      *
      * @return - 0 on success, an error otherwise (may also throw an exception)
      */
@@ -335,7 +337,7 @@ class ClientTest {
         long maxMsgSize = 0,
         long maxObjSize = 0,
         bool loSupport = false,
-        const char *encoding = 0) = 0;
+        const char *encoding = "") = 0;
 
     /**
      * This is called after successful sync() calls (res == 0) as well

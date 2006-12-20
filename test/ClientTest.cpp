@@ -1595,7 +1595,7 @@ private:
               long maxMsgSize = 0,
               long maxObjSize = 0,
               bool loSupport = false,
-              const char *encoding = 0) {
+              const char *encoding = "") {
         int res = 0;
         static int syncCounter = 0;
         static std::string lastTest;
