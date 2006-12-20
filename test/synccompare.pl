@@ -22,7 +22,7 @@ use strict;
 use encoding 'utf8';
 
 # ignore differences caused by specific servers?
-my $server = $ENV{TEST_EVOLUTION_SERVER} || "";
+my $server = $ENV{CLIENT_TEST_SERVER} || "funambol";
 my $scheduleworld = $server =~ /scheduleworld/;
 my $synthesis = $server =~ /synthesis/;
 my $egroupware = $server =~ /egroupware/;
