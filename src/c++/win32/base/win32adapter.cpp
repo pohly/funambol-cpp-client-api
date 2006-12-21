@@ -19,6 +19,7 @@
 #include <stdio.h>
 #include "base/Log.h"
 #include "base/util/utils.h"
+#include <sys/stat.h>
 
 struct Codepage {
     const char *name;
@@ -469,7 +470,10 @@ finally:
 }
 
 
-
+unsigned long getFileModTime(const char* name) {
+	struct _stat buffer;
+	return _stat(name, &buffer) ? 0 : (unsigned long)buffer.st_mtime;
+}
 
 
 static int findCodePage(const char *encoding)
