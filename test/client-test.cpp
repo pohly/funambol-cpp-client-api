@@ -76,8 +76,8 @@
  *    CLIENT_TEST_LOG=/opt/Funambol-3.0/ds-server/logs/funambol_ds.log \
  *    CLIENT_TEST_SOURCES=vcard30 \
  *    ./client-test
- * will create files with the suffix .client.1.log for synchronizations with
- * the first client and .client.2.log for the second client. The base name
+ * will create files with the suffix .client.A.log for synchronizations with
+ * the first client and .client.B.log for the second client. The base name
  * of these files is unique, so the corresponding part of the server log
  * is stored with the same base name and .server.log as suffix. 
  */
