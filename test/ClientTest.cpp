@@ -123,13 +123,13 @@ static void importItem(SyncSource *source, std::string &data)
     CPPUNIT_ASSERT(source);
     if (data.size()) {
         SyncItem item;
-        item.setData( data.c_str(), data.size() + 1 );
-        item.setDataType( "raw" );
+        item.setData( data.c_str(), (long)data.size() + 1 );
+        item.setDataType( TEXT("raw") );
         int status;
         SOURCE_ASSERT_NO_FAILURE(source, status = source->addItem(item));
         CPPUNIT_ASSERT(status == STC_OK || status == STC_ITEM_ADDED);
         CPPUNIT_ASSERT(item.getKey() != 0);
-        CPPUNIT_ASSERT(strlen(item.getKey()) > 0);
+        CPPUNIT_ASSERT(wcslen(item.getKey()) > 0);
     }
 }
 
@@ -242,11 +242,11 @@ public:
         int numItems;
         CPPUNIT_ASSERT_NO_THROW(numItems = countItems(source.get()));
         SyncItem item;
-        item.setData(data, strlen(data));
+        item.setData(data, (long)strlen(data));
         int status;
         SOURCE_ASSERT_NO_FAILURE(source.get(), status = source->addItem(item));
         CPPUNIT_ASSERT(item.getKey() != 0);
-        CPPUNIT_ASSERT(strlen(item.getKey()) > 0);
+        CPPUNIT_ASSERT(wcslen(item.getKey()) > 0);
         SOURCE_ASSERT(source.get(), source->endSync() == 0);
 
         // delete source again
@@ -294,7 +294,7 @@ public:
         std::auto_ptr<SyncItem> item;
         SOURCE_ASSERT_NO_FAILURE(source.get(), item.reset(source->getFirstItem()) );
         CPPUNIT_ASSERT(item.get());
-        item->setData(data, strlen(data) + 1);
+        item->setData(data, (long)strlen(data) + 1);
         SOURCE_ASSERT_EQUAL(source.get(), (int)STC_OK, source->updateItem(*item));
         SOURCE_ASSERT(source.get(), source->endSync() == 0);
         CPPUNIT_ASSERT_NO_THROW(source.reset());
@@ -309,8 +309,8 @@ public:
         std::auto_ptr<SyncItem> modifiedItem;
         SOURCE_ASSERT_NO_FAILURE(source.get(), modifiedItem.reset(source->getFirstItem()) );
         CPPUNIT_ASSERT(modifiedItem.get());
-        CPPUNIT_ASSERT( strlen( item->getKey() ) );
-        CPPUNIT_ASSERT( !strcmp( item->getKey(), modifiedItem->getKey() ) );
+        CPPUNIT_ASSERT( wcslen( item->getKey() ) );
+        CPPUNIT_ASSERT( !wcscmp( item->getKey(), modifiedItem->getKey() ) );
     }
 
     /** deletes all items locally via sync source */
@@ -439,8 +439,8 @@ public:
                 }
                 prop = nextProp + 1;
             }
-            if (size > 0 && data.size() < size) {
-                int additionalBytes = size - data.size();
+            if (size > 0 && (int)data.size() < size) {
+                int additionalBytes = size - (int)data.size();
                 int added = 0;
 
                 CPPUNIT_ASSERT(config.sizeProperty);
@@ -571,9 +571,9 @@ public:
         SOURCE_ASSERT_EQUAL(source.get(), 1, countDeletedItems(source.get()));
         std::auto_ptr<SyncItem> deletedItem;
         SOURCE_ASSERT_NO_FAILURE(source.get(), deletedItem.reset(source->getFirstDeletedItem()));
-        CPPUNIT_ASSERT( strlen( item->getKey() ) );
-        CPPUNIT_ASSERT( strlen( deletedItem->getKey() ) );
-        CPPUNIT_ASSERT( !strcmp( item->getKey(), deletedItem->getKey() ) );
+        CPPUNIT_ASSERT( wcslen( item->getKey() ) );
+        CPPUNIT_ASSERT( wcslen( deletedItem->getKey() ) );
+        CPPUNIT_ASSERT( !wcscmp( item->getKey(), deletedItem->getKey() ) );
         SOURCE_ASSERT_EQUAL(source.get(), 0, source->endSync());
         CPPUNIT_ASSERT_NO_THROW(source.reset());
 
@@ -588,9 +588,9 @@ public:
         SOURCE_ASSERT_NO_FAILURE(source.get(), item.reset(source->getFirstItem()));
         std::auto_ptr<SyncItem> newItem;
         SOURCE_ASSERT_NO_FAILURE(source.get(), newItem.reset(source->getFirstNewItem()));
-        CPPUNIT_ASSERT( strlen( item->getKey() ) );
-        CPPUNIT_ASSERT( strlen( newItem->getKey() ) );
-        CPPUNIT_ASSERT( !strcmp( item->getKey(), newItem->getKey() ) );
+        CPPUNIT_ASSERT( wcslen( item->getKey() ) );
+        CPPUNIT_ASSERT( wcslen( newItem->getKey() ) );
+        CPPUNIT_ASSERT( !wcscmp( item->getKey(), newItem->getKey() ) );
         SOURCE_ASSERT_EQUAL(source.get(), 0, source->endSync());
         CPPUNIT_ASSERT_NO_THROW(source.reset());
 
@@ -604,9 +604,9 @@ public:
         SOURCE_ASSERT_EQUAL(source.get(), 0, countDeletedItems(source.get()));
         std::auto_ptr<SyncItem> updatedItem;
         SOURCE_ASSERT_NO_FAILURE(source.get(), updatedItem.reset(source->getFirstUpdatedItem()));
-        CPPUNIT_ASSERT( strlen( item->getKey() ) );
-        CPPUNIT_ASSERT( strlen( updatedItem->getKey() ) );
-        CPPUNIT_ASSERT( !strcmp( item->getKey(), updatedItem->getKey() ) );
+        CPPUNIT_ASSERT( wcslen( item->getKey() ) );
+        CPPUNIT_ASSERT( wcslen( updatedItem->getKey() ) );
+        CPPUNIT_ASSERT( !wcscmp( item->getKey(), updatedItem->getKey() ) );
         SOURCE_ASSERT_EQUAL(source.get(), 0, source->endSync());
         CPPUNIT_ASSERT_NO_THROW(source.reset());
     }
@@ -1565,7 +1565,7 @@ private:
             for (int i = 0; i < 2; i++ ) {
                 int size = 1;
                 while (size < 2 * maxMsgSize) {
-                    it->second->insertManyItems(it->second->createSourceA, item, 1, strlen(it->second->config.templateItem) + 10 + size);
+                    it->second->insertManyItems(it->second->createSourceA, item, 1, (int)strlen(it->second->config.templateItem) + 10 + size);
                     size *= 2;
                     item++;
                 }
@@ -1770,9 +1770,11 @@ bool ClientTest::compare(ClientTest &client, const char *fileA, const char *file
 
 void ClientTest::postSync(int res, const std::string &logname)
 {
+#ifdef WIN32
+	Sleep(serverSleepSeconds * 1000);
+#else
     sleep(serverSleepSeconds);
 
-#ifndef WIN32
     // make a copy of the server's log (if found), then truncate it
     if (serverLogFileName.size()) {
         int fd = open(serverLogFileName.c_str(), O_RDWR);

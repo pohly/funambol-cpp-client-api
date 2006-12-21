@@ -275,7 +275,13 @@ int FILESyncSource::deleteItem(SyncItem& item) {
 
     char completeName[512];
     sprintf(completeName, "%s/%" WCHAR_PRINTF, dir, item.getKey());
-    if (!unlink(completeName)) {
+    if (
+#ifdef WIN32
+		!_unlink(completeName)
+#else
+		!unlink(completeName)
+#endif
+		) {
         ret = STC_OK;
     }
 
@@ -289,7 +295,9 @@ int FILESyncSource::endSync() {
 
         // reset information about deleted items
         for (item = getFirst(deletedItems, FALSE); item; item = getNext(deletedItems, FALSE)) {
-            fileNode->setPropertyValue(item->getKey(), "");
+			char *tmp = toMultibyte(item->getKey());
+            fileNode->setPropertyValue(tmp, "");
+			delete [] tmp;
             delete item;
         }
 
@@ -300,7 +308,9 @@ int FILESyncSource::endSync() {
             unsigned long modTime = getFileModTime(completeName);
             char anchor[30];
             timestampToAnchor(modTime, anchor);
-            fileNode->setPropertyValue(item->getKey(), anchor);
+			char *tmp = toMultibyte(item->getKey());
+            fileNode->setPropertyValue(tmp, anchor);
+			delete [] tmp;
             delete item;
         }
     }
@@ -347,11 +357,11 @@ bool FILESyncSource::setItemData(SyncItem* syncItem) {
     if (content) {
         FileData file;
         file.setName(syncItem->getKey());
-        file.setSize(len);
+        file.setSize((int)len);
         file.setEnc(TEXT("base64"));
         file.setBody(content, (int)len);
         char* encContent = file.format();
-        syncItem->setData(encContent, strlen(encContent));
+        syncItem->setData(encContent, (int)strlen(encContent));
         delete [] encContent;
         encContent = NULL;
         //syncItem->setData(content, (long)len);

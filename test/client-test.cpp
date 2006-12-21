@@ -88,13 +88,16 @@
 #include "client/DMTClientConfig.h"
 #include "client/SyncClient.h"
 #include "test/ClientTest.h"
+#include "base/test.h"
 
 #include <string>
 #include <vector>
 #include <iomanip>
 #include <memory>
 
-#include <unistd.h>
+#ifdef WIN32
+#include <direct.h>
+#endif
 #include <sys/stat.h>
 
 class TestFileSource : public ClientTest {
@@ -138,7 +141,7 @@ public:
             config->setClientDefaults();
             dc.setDevID(id == "A" ? "sc-api-nat" : "sc-pim-ppc");
         }
-        for (int source = 0; source < sources.size(); source++) {
+        for (int source = 0; source < (int)sources.size(); source++) {
             SyncSourceConfig* sc = config->getSyncSourceConfig(sources[source].c_str());
             if (!sc) {
                 // no configuration yet
@@ -162,7 +165,7 @@ public:
     }
     
     virtual int getNumSources() {
-        return sources.size();
+        return (int)sources.size();
     }
 
     virtual void getSourceConfig(int source, Config &config) {
@@ -192,7 +195,7 @@ public:
         int source;
         memset(syncSources, 0, sizeof(syncSources[0]) * (sources.size() + 1));
 
-        for (source = 0; activeSources[source] >= 0 && source < sources.size(); source++) {
+        for (source = 0; activeSources[source] >= 0 && source < (int)sources.size(); source++) {
             // rewrite configuration as needed for test
             SyncSourceConfig *sourceConfig = config->getSyncSourceConfig(sources[source].c_str());
             CPPUNIT_ASSERT(sourceConfig);
@@ -231,13 +234,13 @@ private:
 
     static SyncSource *createSource(ClientTest &client, int source, bool isSourceA) {
         // hand work over to real member function
-        ((TestFileSource &)client).createSource(source, isSourceA ? "A" : "B");
+        return ((TestFileSource &)client).createSource(source, isSourceA ? "A" : "B");
     }
 
     SyncSource *createSource(int source, const char *trackingSuffix) {
         class RawFILESyncSourceWithReport : public RawFILESyncSource {
         public:
-            RawFILESyncSourceWithReport(const char* nodeName, const char* name, SyncSourceConfig* sc) :
+            RawFILESyncSourceWithReport(const char* nodeName, const WCHAR* name, SyncSourceConfig* sc) :
                 RawFILESyncSource(name, sc),
                 fileNode(nodeName) {
                 setReport(&report);
@@ -246,25 +249,35 @@ private:
                  * Keeping track if changes is done via time() with a resolution of seconds.
                  * Sleep a bit to ensure that enough time passes.
                  */
+#ifdef WIN32
+				Sleep(1000);
+#else
                 sleep(1);
+#endif
             }
         private:
             SyncSourceReport report;
             DeviceManagementNode fileNode;
         };
 
-        CPPUNIT_ASSERT(source < sources.size());
+        CPPUNIT_ASSERT(source < (int)sources.size());
         ManagementNode *sourceNode = config->getSyncSourceNode(sources[source].c_str());
         CPPUNIT_ASSERT(sourceNode);
         char *fullName = sourceNode->createFullName();
         std::string nodeName = std::string(fullName) + "/changes_" + trackingSuffix;
         std::string dirName = sources[source] + "_" + clientID;
+		WCHAR *name = toWideChar(sources[source].c_str());
         delete [] fullName;
         FILESyncSource *ss = new RawFILESyncSourceWithReport(
             nodeName.c_str(),
-            sources[source].c_str(),
+            name,
             config->getSyncSourceConfig(sources[source].c_str()));
-        mkdir(dirName.c_str(), S_IRWXU);
+		delete [] name;
+#ifdef WIN32
+        _mkdir(dirName.c_str());
+#else
+		mkdir(dirName.c_str(), S_IRWXU);
+#endif
         ss->setDir(dirName.c_str());
 
         return ss;

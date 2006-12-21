@@ -43,8 +43,8 @@ int RawFILESyncSource::addItem(SyncItem& item) {
                 report->setState(SOURCE_ERROR);
                 return STC_COMMAND_FAILED;
             } else {
-                char keystr[80];
-                sprintf(keystr, "%d", key);
+                WCHAR keystr[80];
+                swprintf(keystr, TEXT("%d"), key);
                 item.setKey(keystr);
                 return addedItem(item, keystr);
             }
@@ -92,8 +92,10 @@ bool RawFILESyncSource::setItemData(SyncItem* syncItem) {
     // Set data
     //
     if (content) {
-        syncItem->setData(content, len);
-        syncItem->setDataType(config.getType());
+        syncItem->setData(content, (long)len);
+		WCHAR *tmp = toWideChar(config.getType());
+        syncItem->setDataType(tmp);
+		delete [] tmp;
         delete [] content; 
         content = NULL;
     }
