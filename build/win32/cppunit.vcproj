@@ -20,6 +20,7 @@
 			OutputDirectory=".\output\cppunit-dbg"
 			IntermediateDirectory=".\output\cppunit-dbg-object"
 			ConfigurationType="1"
+			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC60.vsprops"
 			CharacterSet="1"
 			>
 			<Tool
@@ -40,8 +41,8 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="..\..\src\include\common;..\..\src\include\win32;..\..\..\..\..\cppunit-1.12.0\include"
-				PreprocessorDefinitions="_CRT_SECURE_NO_DEPRECATE,ENABLE_UNIT_TESTS,ENABLE_INTEGRATION_TESTS"
+				AdditionalIncludeDirectories=".;..\..\;..\..\src\include\common;..\..\src\include\win32;..\..\..\..\..\cppunit-1.12.0\include"
+				PreprocessorDefinitions="WIN32;_DEBUG_;_CRT_SECURE_NO_DEPRECATE;CRT_SECURE_NO_DEPRECATE,ENABLE_UNIT_TESTS,ENABLE_INTEGRATION_TESTS;_CRT_NON_CONFORMING_SWPRINTFS"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="1"
@@ -61,7 +62,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="cppunitd.lib"
+				AdditionalDependencies="cppunitd.lib wininet.lib wsock32.lib Netapi32.lib"
 				LinkIncremental="2"
 				AdditionalLibraryDirectories="&quot;..\..\..\..\..\cppunit-1.12.0\lib&quot;"
 				IgnoreDefaultLibraryNames=""
@@ -119,7 +120,8 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
-				PreprocessorDefinitions="_CRT_SECURE_NO_DEPRECATE,ENABLE_UNIT_TESTS,ENABLE_INTEGRATION_TESTS"
+				AdditionalIncludeDirectories=".;..\..\;..\..\src\include\common;..\..\src\include\win32;..\..\..\..\..\cppunit-1.12.0\include"
+				PreprocessorDefinitions="WIN32;NDEBUG;_CRT_SECURE_NO_DEPRECATE;_CRT_SECURE_NO_DEPRECATE,ENABLE_UNIT_TESTS,ENABLE_INTEGRATION_TESTS;_CRT_NON_CONFORMING_SWPRINTFS"
 				RuntimeLibrary="0"
 				UsePrecompiledHeader="2"
 				WarningLevel="3"
@@ -137,7 +139,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="cppunitd.lib"
+				AdditionalDependencies="cppunitd.lib wininet.lib wsock32.lib Netapi32.lib"
 				LinkIncremental="1"
 				GenerateDebugInformation="true"
 				SubSystem="1"
@@ -184,6 +186,22 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\test\client-test.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\test\ClientTest.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\c++\common\spds\FILESyncSource.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\c++\common\spds\RawFILESyncSource.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\tests.c"
 				>
 			</File>
@@ -199,6 +217,73 @@
 			Filter="rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav"
 			UniqueIdentifier="{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}"
 			>
+		</Filter>
+		<Filter
+			Name="Testcases"
+			>
+			<File
+				RelativePath="..\..\test\testcases\ical20.ics"
+				>
+				<FileConfiguration
+					Name="Debug|Win32"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+						CommandLine="xcopy $InputFileName $TargetDir"
+						Outputs="$TargetDir/$InputFileName"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+						CommandLine="xcopy $InputFileName $TargetDir"
+					/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\test\testcases\itodo20.ics"
+				>
+				<FileConfiguration
+					Name="Debug|Win32"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+						CommandLine="xcopy $InputFileName $TargetDir"
+						Outputs="$TargetDir/$InputFileName"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+						CommandLine="xcopy $InputFileName $TargetDir"
+					/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\test\testcases\vcard30.vcf"
+				>
+				<FileConfiguration
+					Name="Debug|Win32"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+						CommandLine="xcopy $InputFileName $TargetDir"
+						Outputs="$TargetDir/$InputFileName"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+						CommandLine="xcopy $InputFileName $TargetDir"
+					/>
+				</FileConfiguration>
+			</File>
 		</Filter>
 		<File
 			RelativePath=".\gentests.py"
@@ -223,6 +308,10 @@
 					Outputs="$(IntDir)\tests.c"
 				/>
 			</FileConfiguration>
+		</File>
+		<File
+			RelativePath="..\..\test\synccompare.pl"
+			>
 		</File>
 	</Files>
 	<Globals>
