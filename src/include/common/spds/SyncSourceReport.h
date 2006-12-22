@@ -126,11 +126,13 @@ public:
      * @param command: to select the desired list of ItemReport (values = Add - Replace - Delete)
      *
      */
-    int getItemReportCount          (const char* target, const char* command);
+    int getItemReportCount            (const char* target, const char* command);
     // Only for successful reports.
-    int getItemReportSuccessfulCount(const char* target, const char* command);
+    int getItemReportSuccessfulCount  (const char* target, const char* command);
     // Only for failed reports.
-    int getItemReportFailedCount    (const char* target, const char* command);
+    int getItemReportFailedCount      (const char* target, const char* command);
+    // Only for code = 418 (ALREADY_EXIST)
+    int getItemReportAlreadyExistCount(const char* target, const char* command);
 
 
     /*

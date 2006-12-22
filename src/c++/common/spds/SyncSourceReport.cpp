@@ -185,6 +185,25 @@ int SyncSourceReport::getItemReportFailedCount(const char* target, const char* c
 }
 
 
+int SyncSourceReport::getItemReportAlreadyExistCount(const char* target, const char* command) {
+    
+    ArrayList* list = getList(target, command);
+    ItemReport* e;
+
+    // Scan for code 418 = ALREADY_EXISTS
+    int found = 0;
+    if (list->size() > 0) {
+        e = (ItemReport*)list->front();
+        if (e->getStatus() == ALREADY_EXISTS) found++;
+        for (int i=1; i<list->size(); i++) {
+            e = (ItemReport*)list->next();
+            if (e->getStatus() == ALREADY_EXISTS) found++;
+        }
+    }
+    return found;
+}
+
+
 
 ArrayList* SyncSourceReport::getList(const char* target, const char* command) const {
     ArrayList* ret;
@@ -228,7 +247,7 @@ ArrayList* SyncSourceReport::getList(const char* target, const char* command) co
 //------------------------------------------------------------- Private Methods
 
 bool SyncSourceReport::isSuccessful(const int status) {
-    if (status >= 200 && status <= 299) 
+    if (status >= 200 && status < 500) 
         return true;
     else 
         return false;
