@@ -55,7 +55,7 @@
 				ExecutionBucket="7"
 				Optimization="2"
 				InlineFunctionExpansion="1"
-				AdditionalIncludeDirectories="..\..\src\include\winmobile,..\..\src\include\common"
+				AdditionalIncludeDirectories="..\..\src\include\winmobile,..\..\src\include\common,..\..\..\tools\zlib"
 				PreprocessorDefinitions="_WIN32_WCE=$(CEVER);$(CePlatform);NDEBUG;ARM;_ARM_;ARMV4;UNDER_CE=$(CEVER);UNICODE;_LIB"
 				StringPooling="true"
 				RuntimeLibrary="0"
@@ -228,7 +228,7 @@
 				ExecutionBucket="7"
 				Optimization="2"
 				InlineFunctionExpansion="1"
-				AdditionalIncludeDirectories="..\..\src\include\winmobile,..\..\src\include\common"
+				AdditionalIncludeDirectories="..\..\src\include\winmobile,..\..\src\include\common,..\..\..\tools\zlib"
 				PreprocessorDefinitions="_WIN32_WCE=$(CEVER);$(CePlatform);NDEBUG;ARM;_ARM_;ARMV4;UNDER_CE=$(CEVER);UNICODE;_LIB"
 				StringPooling="true"
 				RuntimeLibrary="0"
@@ -315,7 +315,7 @@
 				ExecutionBucket="7"
 				Optimization="2"
 				InlineFunctionExpansion="1"
-				AdditionalIncludeDirectories="..\..\src\include\winmobile,..\..\src\include\common"
+				AdditionalIncludeDirectories="..\..\src\include\winmobile,..\..\src\include\common,..\..\..\tools\zlib"
 				PreprocessorDefinitions="_WIN32_WCE=$(CEVER);$(CePlatform);NDEBUG;ARM;_ARM_;ARMV4;UNDER_CE=$(CEVER);UNICODE;_LIB"
 				StringPooling="true"
 				RuntimeLibrary="0"
@@ -400,7 +400,7 @@
 				Name="VCCLCompilerTool"
 				ExecutionBucket="7"
 				Optimization="0"
-				AdditionalIncludeDirectories="..\..\src\include\winmobile,..\..\src\include\common"
+				AdditionalIncludeDirectories="..\..\src\include\winmobile,..\..\src\include\common,..\..\..\tools\zlib"
 				PreprocessorDefinitions="DEBUG;_WIN32_WCE=$(CEVER);$(CePlatform);ARM;_ARM_;ARMV4;UNDER_CE=$(CEVER);UNICODE;_LIB"
 				RuntimeLibrary="1"
 				EnableFunctionLevelLinking="true"
@@ -571,7 +571,7 @@
 				Name="VCCLCompilerTool"
 				ExecutionBucket="7"
 				Optimization="0"
-				AdditionalIncludeDirectories="..\..\src\include\winmobile,..\..\src\include\common"
+				AdditionalIncludeDirectories="..\..\src\include\winmobile,..\..\src\include\common,..\..\..\tools\zlib"
 				PreprocessorDefinitions="DEBUG;_WIN32_WCE=$(CEVER);$(CePlatform);ARM;_ARM_;ARMV4;UNDER_CE=$(CEVER);UNICODE;_LIB"
 				RuntimeLibrary="1"
 				EnableFunctionLevelLinking="true"
@@ -656,7 +656,7 @@
 				Name="VCCLCompilerTool"
 				ExecutionBucket="7"
 				Optimization="0"
-				AdditionalIncludeDirectories="..\..\src\include\winmobile,..\..\src\include\common"
+				AdditionalIncludeDirectories="..\..\src\include\winmobile,..\..\src\include\common,..\..\..\tools\zlib"
 				PreprocessorDefinitions="DEBUG;_WIN32_WCE=$(CEVER);$(CePlatform);ARM;_ARM_;ARMV4;UNDER_CE=$(CEVER);UNICODE;_LIB"
 				RuntimeLibrary="1"
 				EnableFunctionLevelLinking="true"
@@ -13152,19 +13152,19 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\include\common\http\errors.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\include\common\spds\errors.h"
-				>
-			</File>
-			<File
 				RelativePath="..\..\src\include\common\spdm\errors.h"
 				>
 			</File>
 			<File
 				RelativePath="..\..\src\include\common\base\errors.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\include\common\http\errors.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\include\common\spds\errors.h"
 				>
 			</File>
 			<File
