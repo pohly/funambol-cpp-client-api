@@ -1655,25 +1655,36 @@ int SyncManager::endSync() {
     unsigned int iterator   = 0;
     unsigned int toSync     = 0;
     int i = 0, tot = -1;
-
+    
     // The real number of source to sync
     for (count = 0; count < sourcesNumber; count ++) {
         if (!sources[count]->getReport() || !sources[count]->getReport()->checkState())
             continue;
-        if ((sources[count]->getSyncMode()) != SYNC_ONE_WAY_FROM_CLIENT &&
-            (sources[count]->getSyncMode()) != SYNC_REFRESH_FROM_CLIENT )
-
+        /*
+        if (  ( (sources[count]->getSyncMode()) != SYNC_ONE_WAY_FROM_CLIENT &&
+                (sources[count]->getSyncMode()) != SYNC_REFRESH_FROM_CLIENT 
+               )                      
+           )
+        */
         toSync++;
     }
-
+    
     for (count = 0; count < sourcesNumber; count ++) {
         if (!sources[count]->getReport() || !sources[count]->getReport()->checkState())
             continue;
-
-        if ((sources[count]->getSyncMode()) != SYNC_ONE_WAY_FROM_CLIENT &&
-                (sources[count]->getSyncMode()) != SYNC_REFRESH_FROM_CLIENT )
-        {
-            iterator++;
+        
+        iterator++;
+        if (  (sources[count]->getSyncMode() == SYNC_ONE_WAY_FROM_CLIENT && 
+                commands->isEmpty() && mappings[count]->size() == 0) ||
+                (sources[count]->getSyncMode() == SYNC_REFRESH_FROM_CLIENT && 
+                commands->isEmpty() && mappings[count]->size() == 0)                   
+                ) {
+            
+            
+        } else {
+            
+            // put at the end of the if
+             
             last = FALSE;
             i = 0;
             do {
@@ -1725,6 +1736,7 @@ int SyncManager::endSync() {
                     commands->add(*map);
 
                 syncml = syncMLBuilder.prepareSyncML(commands, iterator != toSync ? FALSE : last);
+                //syncml = syncMLBuilder.prepareSyncML(commands, last);
                 mapMsg = syncMLBuilder.prepareMsg(syncml);                   
 
                 LOG.debug("Mapping");
@@ -1786,7 +1798,8 @@ int SyncManager::endSync() {
                 }
             }
             
-        }        
+        }  
+        
         int sret = sources[count]->endSync();
         if (sret) {
             lastErrorCode = sret;
