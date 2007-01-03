@@ -1,3 +1,9 @@
+2007-01-03
+     - magi:  fixed objectweb bug #306397. Modification in SyncManager.cpp to handle the refresh-from-client
+              and update-from-client.
+              Added modification in EmailData parsing to handle properly the subject decoding.
+              Commented the Ext feature for V6
+
 2006-11-28
      - magi:  merge modifications from branch b_funambol31.               
               Fixed SyncManager and SyncmlProcessor issues to handle 
