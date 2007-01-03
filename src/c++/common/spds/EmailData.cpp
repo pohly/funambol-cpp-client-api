@@ -164,7 +164,7 @@ int EmailData::parse(const char *msg, size_t len)
         LOG.info("EMailData: no <emailitem> tag.");
         // It is not an error, just log it for info.
     }
-    
+#if 0
     //char tmpExt[] = "<Ext><XNam>x-funambol-body</XNam><XVal>15000</XVal></Ext> \
     //                 <Ext><XNam>x-funambol-attach-n</XNam><XVal>1</XVal></Ext> \
     //                 <Ext><XNam>x-funambol-attach</XNam><XVal>att1.txt</XVal><XVal>10000</XVal></Ext>";
@@ -239,7 +239,7 @@ int EmailData::parse(const char *msg, size_t len)
         }            
         
     }
-
+#endif
 
 
     return ret;

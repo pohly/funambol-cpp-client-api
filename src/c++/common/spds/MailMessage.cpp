@@ -614,9 +614,14 @@ StringBuffer decodeHeader(StringBuffer line) {
             char* dec = new char[text.length()];
             int len = b64_decode((void *)dec, text);
             dec[len]=0;
+            if (startPos >= 2 &&  ret.length() == 0) {
+                ret += line.substr(0, startPos - 2);
+            }
             ret += dec;
             delete [] dec;
         }
+
+        startPos = endPos;
     }
     
     if (ret.length() == 0) {
@@ -689,7 +694,7 @@ int MailMessage::parseHeaders(StringBuffer &rfcHeaders) {
         else if( line->ifind(SUBJECT) == 0 ) {
 
             subject = decodeHeader(line->substr(SUBJECT_LEN));
-            LOG.debug("SUBJECT: %s", subject);          
+            LOG.debug("SUBJECT: %s", subject.c_str());          
         }
         else if( line->ifind(ENCODING) == 0 ) {  // it is here for single part only
             body.setEncoding(line->substr(ENCODING_LEN));
