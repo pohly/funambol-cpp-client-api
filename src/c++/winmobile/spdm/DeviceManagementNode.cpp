@@ -273,7 +273,7 @@ void DeviceManagementNode::setPropertyValue(const char*  prop, const char*  valu
 
     delete [] p;
     delete [] v;
-    
+    RegFlushKey(key);
 finally:
 
     if (key != 0) {
