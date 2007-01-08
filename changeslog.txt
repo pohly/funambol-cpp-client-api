@@ -1,3 +1,8 @@
+2007-01-08
+     - magi:  modified windows mobile DeviceManagementNode. It uses the RegFlushKey instruction to store
+              the settings permanently also after a soft release. 
+              Modification in EmailData to resume the Ext tag
+    
 2007-01-03
      - magi:  fixed objectweb bug #306397. Modification in SyncManager.cpp to handle the refresh-from-client
               and update-from-client.
