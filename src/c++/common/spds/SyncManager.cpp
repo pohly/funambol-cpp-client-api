@@ -1792,7 +1792,8 @@ int SyncManager::endSync() {
                 for(int i = 0; i < size; i++) {
                     SyncItem* syncItem = (SyncItem*)((SyncItem*)allItemsList[count]->get(i));
                     if(syncItem) {
-                        sources[count]->deleteItem(*syncItem);
+                        int code = sources[count]->deleteItem(*syncItem);
+                        sources[count]->getReport()->addItem(CLIENT, COMMAND_DELETE, syncItem->getKey(), code);
                         delete syncItem;
                     }
                 }
