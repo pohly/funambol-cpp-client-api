@@ -462,6 +462,7 @@ char*  PPC2003TransportAgent::sendMessage(const char*  msg) {
         if (ERROR_HTTP_HEADER_NOT_FOUND == GetLastError()) {
             isToDeflate = FALSE;
         }
+        LOG.debug("HEADER: %S", wbuffer);
         delete [] wbuffer; wbuffer = NULL;
                
         // isToDeflate to be set

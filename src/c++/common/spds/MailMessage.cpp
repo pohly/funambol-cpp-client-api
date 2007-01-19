@@ -649,13 +649,12 @@ int MailMessage::parseHeaders(StringBuffer &rfcHeaders) {
     LOG.debug("parseHeaders START");
 
     // Join header parts using \t or 8 blank
-    StringBuffer joinlinetab(newline);
+    StringBuffer joinlinetab("\t");
+    rfcHeaders.replaceAll(joinlinetab, " ");
+    
     StringBuffer joinlinespaces(newline);
-
-    joinlinetab+="\t";
     joinlinespaces+=" ";  // 8 blanks
 
-    rfcHeaders.replaceAll(joinlinetab, " ");
     rfcHeaders.replaceAll(joinlinespaces, " ");
 
     rfcHeaders.split(lines, newline);
