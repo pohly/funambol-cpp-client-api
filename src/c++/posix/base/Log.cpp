@@ -30,12 +30,19 @@ static BOOL logFileStdout = FALSE;
 
 static char logName[1024] = LOG_NAME;
 static char logPath[1024] = "/tmp" ;   
+static BOOL logRedirectStderr = FALSE;
 
 // a copy of stderr before it was redirected
 static int fderr = -1;
 
 
 void setLogFile(const char *path, const char* name, BOOL redirectStderr) {
+    strncpy(logName, name ? name : "", sizeof(logName));
+    logName[sizeof(logName) - 1] = 0;
+    strncpy(logPath, path ? path : "", sizeof(logPath));
+    logPath[sizeof(logPath) - 1] = 0;
+    logRedirectStderr = redirectStderr;
+
     if (logFile) {
         fclose(logFile);
         logFile = NULL;
@@ -209,7 +216,7 @@ void Log::printMessageW(const char*  level, const char*  msg, va_list argList)
 {       printMessage(level, msg, argList); }
 
 void Log::reset(const char*  title) {
-    setLogFile(logPath, logName, false);
+    setLogFile(logPath, logName, logRedirectStderr);
     
     if (logFile) {
         ftruncate(fileno(logFile), 0);
