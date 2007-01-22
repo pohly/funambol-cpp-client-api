@@ -3,7 +3,7 @@
 	ProjectType="Visual C++"
 	Version="8,00"
 	Name="windowsmobile"
-	ProjectGUID="{4E03F2CD-31F3-4EA8-81E4-AC267456C910}"
+	ProjectGUID="{F920CBE6-3CEB-4334-9AB6-104CF1C2B94D}"
 	RootNamespace="windowsmobile"
 	>
 	<Platforms>

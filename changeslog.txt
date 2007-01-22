@@ -1,3 +1,8 @@
+Funambol SDK C++ 6.0.1
+------------------------
+2007-01-22
+     - magi:  fixed emailMessage issues in decoding mail fields with tab char inside
+
 2007-01-08
      - magi:  modified windows mobile DeviceManagementNode. It uses the RegFlushKey instruction to store
               the settings permanently also after a soft release. 
