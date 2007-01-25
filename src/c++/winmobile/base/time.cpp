@@ -20,15 +20,23 @@
 #include "base/fscapi.h"
 #include "base/Log.h"
 
+#if 0
 inline int TimeFormatter(const SYSTEMTIME t, char*  out) {
                 
     return sprintf(out, "%02d%02d%02d%02d",
                          t.wDay, t.wHour, t.wMinute, t.wSecond);
 }
+#endif
 
+/**
+ * Implementation of the unix time() function for Windows.
+ *
+ * @param unused not used by this implementation, callers should use always NULL
+ * @return the seconds since 01/01/1970.
+ */
 unsigned int time(void* unused) {
     SYSTEMTIME st;
-    
+#if 0    
     GetSystemTime(&st);
     
     // year + month
@@ -45,14 +53,26 @@ unsigned int time(void* unused) {
     
     sprintf(tttt, "Low %u", l);
     LOG.debug(tttt);
-    
+#else
+    FILETIME ft;
+
+    GetSystemTime(&st);
+    SystemTimeToFileTime(&st, &ft);
+    // Convert FILETIME to time_t
+    __int64 llTmp;
+    memcpy (&llTmp, &ft, sizeof (__int64));
+    llTmp = (llTmp - 116444736000000000) / 10000000;
+    return (time_t) llTmp;
+#endif
 }
 
-/*
-* return the time in seconds using only the HH:mm:ss. It is useful for the transport agent
-* to understand if retry or not to send the message to the server again. If time is greater then 20 mins
-* it is not needed because the server session is already ended.
-*/ 
+/**
+ * Returns the time in seconds using only the HH:mm:ss. It is useful for the transport agent
+ * to understand if retry or not to send the message to the server again. If time is greater then 20 mins
+ * it is not needed because the server session is already ended.
+ *
+ * @return the time in seconds using only the HH:mm:ss
+ */ 
 
 unsigned long getTime() {
     SYSTEMTIME st;    
