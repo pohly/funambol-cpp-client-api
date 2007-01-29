@@ -3,7 +3,7 @@
 	ProjectType="Visual C++"
 	Version="8,00"
 	Name="windowsmobile"
-	ProjectGUID="{F920CBE6-3CEB-4334-9AB6-104CF1C2B94D}"
+	ProjectGUID="{4E03F2CD-31F3-4EA8-81E4-AC267456C910}"
 	RootNamespace="windowsmobile"
 	>
 	<Platforms>
@@ -13152,10 +13152,6 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\include\common\base\errors.h"
-				>
-			</File>
-			<File
 				RelativePath="..\..\src\include\common\http\errors.h"
 				>
 			</File>
@@ -13165,6 +13161,10 @@
 			</File>
 			<File
 				RelativePath="..\..\src\include\common\spdm\errors.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\include\common\base\errors.h"
 				>
 			</File>
 			<File

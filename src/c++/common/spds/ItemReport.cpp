@@ -25,17 +25,20 @@
 ItemReport::ItemReport() {
     status = 0;
     id  = NULL;
+    statusMessage = NULL;
 }
-ItemReport::ItemReport(const WCHAR* luid, const int statusCode) {
+ItemReport::ItemReport(const WCHAR* luid, const int statusCode, const WCHAR* statusMess) {
     id  = NULL;
+    statusMessage = NULL;
     setStatus(statusCode);
     setId(luid);
+    setStatusMessage(statusMess);
 }
 
 ItemReport::ItemReport(ItemReport& ir) {
     status = 0;
     id  = NULL;
-
+    statusMessage = NULL;
     assign(ir);
 }
 
@@ -43,6 +46,10 @@ ItemReport::~ItemReport() {
     if (id) {
         delete [] id; 
         id = NULL;
+    }
+    if (statusMessage) {
+        delete [] statusMessage; 
+        statusMessage = NULL;
     }
 }
 
@@ -67,9 +74,20 @@ void ItemReport::setStatus(const int v) {
     status = v;
 }
 
+const WCHAR* ItemReport::getStatusMessage() const {
+    return statusMessage;
+}
+void ItemReport::setStatusMessage(const WCHAR* v) {
+    if (statusMessage) {
+        delete [] statusMessage; 
+        statusMessage = NULL;
+    }
+
+	statusMessage = wstrdup(v);
+}
 
 ArrayElement* ItemReport::clone() {
-    ItemReport* it = new ItemReport(getId(), getStatus());
+    ItemReport* it = new ItemReport(getId(), getStatus(), getStatusMessage());
     return it;
 }
 
@@ -77,4 +95,5 @@ ArrayElement* ItemReport::clone() {
 void ItemReport::assign(const ItemReport& ir) {
     setId    (ir.getId    ());
     setStatus(ir.getStatus());
+    setStatusMessage(ir.getStatusMessage());
 }

@@ -126,10 +126,10 @@ ItemReport* SyncSourceReport::getItemReport(const char* target, const char* comm
 }
 
 
-void SyncSourceReport::addItem(const char* target, const char* command, const WCHAR* ID, const int status) {
+void SyncSourceReport::addItem(const char* target, const char* command, const WCHAR* ID, const int status, const WCHAR* statusMessage) {
 
     // Create the ItemReport element
-    ItemReport element(ID, status);
+    ItemReport element(ID, status, statusMessage);
 
     // Add element in the corresponding list
     ArrayList* list = getList(target, command);

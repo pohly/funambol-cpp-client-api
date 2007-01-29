@@ -35,13 +35,16 @@
 #define RECEIVED    "Received:"
 #define SUBJECT     "Subject: "
 #define MIMETYPE    "Content-Type: "
+#define CT_NAME     "name="
+#define CT_CHARSET  "charset="
 #define MIMEVERS    "Mime-Version: "
 #define MESSAGEID   "Message-ID: "
 #define DISPOSITION "Content-Disposition:"
+#define CD_FILENAME "filename="
 #define ENCODING    "Content-Transfer-Encoding: "
 
 #define MULTIPART   "multipart/"
-#define CHARSET     "charset="
+
 
 // Header names' length
 static const unsigned char FROM_LEN = strlen(FROM);
@@ -128,7 +131,7 @@ static StringBuffer formatBodyPart(const BodyPart &part)
     ret = MIMETYPE; 
     ret += part.getMimeType(); ret += ";\n";
     if( part.getFilename() ) {
-        ret += "        name=\""; ret += part.getFilename(); ret += "\"\n";
+        ret += "        "; ret += CT_NAME; ret += "\""; ret += part.getFilename(); ret += "\"\n";
     }
     if( part.getEncoding() ) {
         ret += ENCODING; ret += part.getEncoding(); ret += NL;
@@ -141,7 +144,7 @@ static StringBuffer formatBodyPart(const BodyPart &part)
             ret += DISPOSITION; ret += "attachment;\n";
         }
         
-        ret += "      filename=\""; ret += part.getFilename();
+        ret += "      "; ret += CD_FILENAME; ret += "\""; ret += part.getFilename();
         ret += "\"\n";
     }
     // End of part headers
@@ -191,6 +194,38 @@ static size_t getHeadersLen(StringBuffer &s, StringBuffer &newline)
     }
     return hdrlen;
 }
+
+
+static StringBuffer getTokenValue(const StringBuffer* line, const char* token) {
+    
+    size_t begin = line->find(token) + strlen(token);
+    size_t end = begin;
+    size_t quote = line->find("\"", begin);
+    size_t semicolon = line->find(";", begin);
+
+    if (quote != StringBuffer::npos){
+        if (semicolon != StringBuffer::npos) {
+            if (quote < semicolon) {
+                begin = quote + 1;
+                end = line->find("\"", begin) ;
+            } else {                            
+                end = line->find(";", begin) ;
+            }
+        } else {
+            begin = quote + 1;
+            end = line->find("\"", begin) ;  
+        }                    
+    } else {
+        end = line->find(";", begin) ;
+        if (end == StringBuffer::npos) {
+            end = line->find(" ", begin);
+        }
+    }
+    StringBuffer ret = line->substr(begin, end-begin);
+    return ret;
+}
+
+
 
 /**
  * Get the next bodypart from the message body string.
@@ -259,49 +294,22 @@ static bool getBodyPart(StringBuffer &rfcBody, StringBuffer &boundary,
         //    break;
         //}
         // Process the headers
-        if( line->ifind(MIMETYPE) == 0 )
-           ret.setMimeType(line->substr(MIMETYPE_LEN));
-        else if( line->ifind(DISPOSITION) == 0 )
-           ret.setDisposition(line->substr(DISPOSITION_LEN));
-        else if( line->ifind(ENCODING) == 0 )
-           ret.setEncoding(line->substr(ENCODING_LEN));
+        if( line->ifind(MIMETYPE) == 0 ) {
 
-        // These ones are parameters, and can appear on the same line.
-        if( line->ifind("filename=") != StringBuffer::npos ) {
-            size_t begin = line->find("filename=") + strlen("filename=");
-            size_t end = begin;
-            size_t quote = line->find("\"", begin);
-            if (quote != StringBuffer::npos){
-                begin = quote + 1;
-                end = line->find("\"", begin) ;
-            }
-            else {
-                end = line->find(";", begin) ;
-                if (end == StringBuffer::npos) {
-                    end = line->find(" ", begin);
-                }
-            }
-			ret.setFilename( line->substr(begin, end-begin) );
-		}
-        else {
-            size_t begin=line->ifind(CHARSET);
-            if( begin != StringBuffer::npos ) {
-                begin += strlen(CHARSET);
-                size_t end = begin;
-                size_t quote = line->find("\"", begin);
-                if (quote != StringBuffer::npos){
-                    begin = quote + 1;
-                    end = line->find("\"", begin) ;
-                }
-                else {
-                    end = line->find(";", begin) ;
-                    if (end == StringBuffer::npos) {
-                        end = line->find(" ", begin);
-                    }
-                }
-                ret.setCharset( line->substr( begin, end-begin ) );
-            }
-		}
+            ret.setMimeType(getTokenValue(line, MIMETYPE));             
+            ret.setName( getTokenValue(line, CT_NAME));
+            ret.setCharset(getTokenValue(line, CT_CHARSET));
+        }
+           
+        else if( line->ifind(DISPOSITION) == 0 ) {
+            ret.setDisposition( getTokenValue(line, DISPOSITION));
+            ret.setFilename( getTokenValue(line, CD_FILENAME));            
+        }
+           
+        else if( line->ifind(ENCODING) == 0 ) {
+            ret.setDisposition( getTokenValue(line, ENCODING));            
+                       
+        }                  
 
     }
     // move to the beginning of the content
@@ -507,7 +515,7 @@ char * MailMessage::format() {
     else {
         // Body
         if(body.getCharset())
-            ret += CHARSET; ret += body.getCharset(); ret += NL;
+            ret += CT_CHARSET; ret += body.getCharset(); ret += NL;
         if( body.getEncoding() )
             ret += ENCODING; ret += body.getEncoding();
         // end of headers
@@ -672,16 +680,16 @@ int MailMessage::parseHeaders(StringBuffer &rfcHeaders) {
         bool unknown=false;
         
         if( line->ifind(TO) == 0 ){
-            to = line->substr(TO_LEN);
+            to = decodeHeader(line->substr(TO_LEN));
         }
         else if( line->ifind(FROM) == 0 ) {
-            from = line->substr(FROM_LEN);
+            from = decodeHeader(line->substr(FROM_LEN));
         }
         else if( line->ifind(CC) == 0 ) {
-            cc = line->substr(CC_LEN);
+            cc = decodeHeader(line->substr(CC_LEN));
         }
         else if( line->ifind(BCC) == 0 ) {
-            bcc = line->substr(BCC_LEN);
+            bcc = decodeHeader(line->substr(BCC_LEN));
         }
         else if ( line->ifind(DATE) == 0 ) {
             //subjectParsing = FALSE;        
@@ -717,9 +725,9 @@ int MailMessage::parseHeaders(StringBuffer &rfcHeaders) {
 			    boundary = line->substr( begin, end-begin );
 		    }
             else {
-                    begin=line->ifind(CHARSET);
+                    begin=line->ifind(CT_CHARSET);
                 if( begin != StringBuffer::npos ) {
-                    begin += strlen(CHARSET);
+                    begin += strlen(CT_CHARSET);
                     size_t end = begin;
                     size_t quote = line->find("\"", begin);
                     if (quote != StringBuffer::npos){
@@ -751,7 +759,7 @@ int MailMessage::parseHeaders(StringBuffer &rfcHeaders) {
         }            
         
     }
-    // If received was not found, copy send date
+    // If received was not found, copy send date   
     if( received == BasicTime() ){
         received = date;
     }
@@ -790,9 +798,10 @@ int MailMessage::parseBodyParts(StringBuffer &rfcBody) {
     return 0;
 }
 
-// Return true if the instance is empty (a valid MailMessage must have a messageId)
+// Return true if the instance is empty (a valid MailMessage must have a valid date that is not
+// the default 1/1/1970)
 bool MailMessage::empty() {
-    return ( this->messageId.empty() );
+    return ( this->getDate() == BasicTime() );
 }
 
 ArrayElement* MailMessage::clone() {

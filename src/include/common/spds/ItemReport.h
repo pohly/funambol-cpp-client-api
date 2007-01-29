@@ -40,6 +40,13 @@ private:
     // The LUID of item.
     WCHAR* id;
 
+    // The message associated to the status. It can be referred to the whole sync process if the error
+    // is on the sync header (for example a 506 status code in the sync header) or to a single item as a 
+    // 500 status code on an inserting item. 
+    // in the first case the last error message and code must be set. In the other cases only the status 
+    // 
+    WCHAR* statusMessage;
+
 
     /*
      * Assign this object with the given ItemReport
@@ -52,7 +59,7 @@ public:
 
     ItemReport();
     ItemReport(ItemReport& ir);
-    ItemReport(const WCHAR* luid, const int statusCode);
+    ItemReport(const WCHAR* luid, const int statusCode, const WCHAR* statusMess);
     virtual ~ItemReport();
 
     const WCHAR* getId() const;
@@ -60,6 +67,9 @@ public:
 
     const int getStatus() const;
     void setStatus(const int v);
+
+    const WCHAR* getStatusMessage() const;
+    void setStatusMessage(const WCHAR* v);
 
     ArrayElement* clone();
 

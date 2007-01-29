@@ -28,6 +28,7 @@ class BodyPart : public ArrayElement {
         StringBuffer charset;
         StringBuffer content;
         StringBuffer disposition;
+        StringBuffer name;
         StringBuffer filename;
 
     public:
@@ -50,7 +51,8 @@ class BodyPart : public ArrayElement {
         // or a path name to a temp file for the attachment
         const char *getContent() const ;
         void setContent(const char *cont) ;
-        void setContent(StringBuffer sb);
+
+        void appendContent(const char *text);
 
         // For multipart message.
         // Values: inline, attachment
@@ -61,6 +63,12 @@ class BodyPart : public ArrayElement {
         // It is the name of the file attached (without path)
         const char *getFilename() const ;
         void setFilename(const char *type) ;
+
+        // For multipart message.
+        // It is the visible name of the attachement (can be the subject
+        // of an attached mail, for instance)
+        const char *getName() const ;
+        void setName(const char *type) ;
 
 		ArrayElement* clone() ;
 };

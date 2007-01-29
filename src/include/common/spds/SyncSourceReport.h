@@ -144,9 +144,10 @@ public:
      * @param command: to select the desired list of ItemReport (values = Add - Replace - Delete)
      * @param ID     : the LUID of item                         (used to create the ItemReport element)
      * @param status : the status code of the operation         (used to create the ItemReport element)
+     * @param statusMessage : the status message associated to the operation         (used to create the ItemReport element)
      *
      */
-    void addItem(const char* target, const char* command, const WCHAR* ID, const int status);
+    void addItem(const char* target, const char* command, const WCHAR* ID, const int status, const WCHAR* statusMessage);
 
 
 

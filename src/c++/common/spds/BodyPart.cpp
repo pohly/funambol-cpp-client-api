@@ -36,7 +36,7 @@ void BodyPart::setCharset(const char *cs) { charset = cs; }
 
 const char * BodyPart::getContent() const { return content.c_str(); }
 void BodyPart::setContent(const char *cont) { content = cont; }
-void BodyPart::setContent(StringBuffer sb) { content += sb; }
+void BodyPart::appendContent(const char *text) { content += text; }
 
 
 const char *BodyPart::getDisposition() const { return disposition.c_str(); }
@@ -45,6 +45,9 @@ void BodyPart::setDisposition(const char *disp) { disposition = disp; }
 const char *BodyPart::getFilename() const { return filename.c_str(); }
 void BodyPart::setFilename(const char *name) { filename = name; }
 
+const char *BodyPart::getName() const { return name.c_str(); }
+void BodyPart::setName(const char *name) { this->name = name; }
+
 ArrayElement* BodyPart::clone() {
     BodyPart *p = new BodyPart();
     p->setMimeType(mimeType);
@@ -52,6 +55,7 @@ ArrayElement* BodyPart::clone() {
     p->setContent(content);
     p->setDisposition(disposition);
     p->setFilename(filename);
+    p->setName(name);
 
     return p;
 }

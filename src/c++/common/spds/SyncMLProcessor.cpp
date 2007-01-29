@@ -217,17 +217,39 @@ int SyncMLProcessor::processItemStatus(SyncSource& source, SyncBody* syncBody) {
             int alertStatus = getAlertStatusCode(s, srcname);
             delete [] srcname;
             
-			// Fire Sync Status Event: sync status from server
+            /*
+            * Try to find if the server send a message together the error code if any
+            * The items in the status message should be always one...
+            */
+            char *statusMessage = NULL;
+            items = s->getItems();            
+			for (int k = 0; k < items->size(); k++) {
+                item = (Item*)items->get(k);
+                if (item) {
+                    ComplexData* cd = item->getData();
+                    if (cd) {
+                        statusMessage = stringdup(cd->getData());
+                    }
+                }
+            }
+            // Fire Sync Status Event: sync status from server
             fireSyncStatusEvent(SYNC, s->getStatusCode(), source.getConfig().getName(), source.getConfig().getURI(), NULL, SERVER_STATUS);            
 
             if(alertStatus < 0 || alertStatus >=300){
+                if (statusMessage) {
+                    strcpy(lastErrorMsg, statusMessage);
+                } else {
+                    strcpy(lastErrorMsg, "Error in sync status sent by server.");    
+                }
                 if ((ret = alertStatus) < 0)
                     LOG.error("processItemStatus: status not found in SYNC");
                 else
                     LOG.error("processItemStatus: server sent status %d in SYNC", alertStatus);                
                 break;            
             }
-            
+            if (statusMessage) {
+                delete [] statusMessage;
+            }
         }         
         
         else if (strcmp(name, ADD) == 0 ||
@@ -244,13 +266,22 @@ int SyncMLProcessor::processItemStatus(SyncSource& source, SyncBody* syncBody) {
                     Source* itemSource = item->getSource();
                     if (itemSource) {
                         WCHAR *uri = toWideChar(itemSource->getLocURI());
+
+                        ComplexData* cd = item->getData();
+                        WCHAR *statusMessage = NULL;
+                        if (cd) {
+                            statusMessage = toWideChar(cd->getData());
+                        }
+                        
                         // Fire Sync Status Event: item status from server
                         fireSyncStatusEvent(s->getCmd(), s->getStatusCode(), source.getConfig().getName(), source.getConfig().getURI(), uri, SERVER_STATUS);
                         // Update SyncReport
-                        source.getReport()->addItem(SERVER, s->getCmd(), uri, s->getStatusCode());
+                        source.getReport()->addItem(SERVER, s->getCmd(), uri, s->getStatusCode(), statusMessage);
                         
                         source.setItemStatus(uri, val);
                         delete [] uri;
+                        if (statusMessage)
+                            delete [] statusMessage;
                     } else {
                         // the item might consist of additional information, as in:
                         // <SourceRef>pas-id-44B544A600000092</SourceRef>
@@ -267,7 +298,7 @@ int SyncMLProcessor::processItemStatus(SyncSource& source, SyncBody* syncBody) {
 			        // Fire Sync Status Event: item status from server
                     fireSyncStatusEvent(s->getCmd(), s->getStatusCode(), source.getConfig().getName(), source.getConfig().getURI(), srcref, SERVER_STATUS);
                     // Update SyncReport
-                    source.getReport()->addItem(SERVER, s->getCmd(), srcref, s->getStatusCode());
+                    source.getReport()->addItem(SERVER, s->getCmd(), srcref, s->getStatusCode(), NULL);
 
                     source.setItemStatus(srcref, val);
                     delete [] srcref;

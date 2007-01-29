@@ -1457,7 +1457,7 @@ int SyncManager::sync() {
                 LOG.error("Error #%d in source %s", itemret, name);
                 delete [] name;
                 // skip the source, and set an error
-                setSourceStateAndError(count, SOURCE_ERROR, itemret, "Error in sync status sent by server.");
+                setSourceStateAndError(count, SOURCE_ERROR, itemret, lastErrorMsg);
                 lastErrorCode = itemret;
                 break;
             }
@@ -1793,7 +1793,7 @@ int SyncManager::endSync() {
                     SyncItem* syncItem = (SyncItem*)((SyncItem*)allItemsList[count]->get(i));
                     if(syncItem) {
                         int code = sources[count]->deleteItem(*syncItem);
-                        sources[count]->getReport()->addItem(CLIENT, COMMAND_DELETE, syncItem->getKey(), code);
+                        sources[count]->getReport()->addItem(CLIENT, COMMAND_DELETE, syncItem->getKey(), code, NULL);
                         delete syncItem;
                     }
                 }
@@ -2105,7 +2105,7 @@ Status *SyncManager::processSyncItem(Item* item, const CommandInfo &cmdInfo, Syn
                 // Fire Sync Status Event: item status from client
                 fireSyncStatusEvent(status->getCmd(), status->getStatusCode(), sources[count]->getConfig().getName(), sources[count]->getConfig().getURI(), incomingItem->getKey(), CLIENT_STATUS);
                 // Update SyncReport
-                sources[count]->getReport()->addItem(CLIENT, COMMAND_ADD, incomingItem->getKey(), status->getStatusCode());
+                sources[count]->getReport()->addItem(CLIENT, COMMAND_ADD, incomingItem->getKey(), status->getStatusCode(), NULL);
 
                 // If the add was successful, set the id mapping
                 if (code >= 200 && code <= 299) {
@@ -2130,7 +2130,7 @@ Status *SyncManager::processSyncItem(Item* item, const CommandInfo &cmdInfo, Syn
                 // Fire Sync Status Event: item status from client
                 fireSyncStatusEvent(status->getCmd(), status->getStatusCode(), sources[count]->getConfig().getName(), sources[count]->getConfig().getURI(), incomingItem->getKey(), CLIENT_STATUS);
                 // Update SyncReport
-                sources[count]->getReport()->addItem(CLIENT, COMMAND_REPLACE, incomingItem->getKey(), status->getStatusCode());
+                sources[count]->getReport()->addItem(CLIENT, COMMAND_REPLACE, incomingItem->getKey(), status->getStatusCode(), NULL);
             }
             else if (strcmp(cmdInfo.commandName, DEL) == 0) {
                 // item key as stored on the server might have been encoded by library,
@@ -2147,7 +2147,7 @@ Status *SyncManager::processSyncItem(Item* item, const CommandInfo &cmdInfo, Syn
                 // Fire Sync Status Event: item status from client
                 fireSyncStatusEvent(status->getCmd(), status->getStatusCode(), sources[count]->getConfig().getName(), sources[count]->getConfig().getURI(), incomingItem->getKey(), CLIENT_STATUS);
                 // Update SyncReport
-                sources[count]->getReport()->addItem(CLIENT, COMMAND_DELETE, incomingItem->getKey(), status->getStatusCode());
+                sources[count]->getReport()->addItem(CLIENT, COMMAND_DELETE, incomingItem->getKey(), status->getStatusCode(), NULL);
             }
 
             delete incomingItem;
