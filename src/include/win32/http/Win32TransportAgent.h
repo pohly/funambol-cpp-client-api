@@ -52,6 +52,7 @@
 
 
     #define MAX_AUTH_ATTEMPT        5       // Max number of attempts sending http requests.
+    #define MAX_SERVER_TIMEOUT      10      // 10 minutes to receive a rensponse from server.
 
 
     /*

@@ -197,6 +197,11 @@ char* Win32TransportAgent::sendMessage(const char* msg) {
     wsprintf(headers, TEXT("Content-Type: %s\r\nContent-Length: %d"), SYNCML_CONTENT_TYPE, contentLength);
 
 
+    // Timeout to receive a rensponse from server = 10 min.
+    DWORD timeout = MAX_SERVER_TIMEOUT *60*1000;
+    InternetSetOption(request, INTERNET_OPTION_RECEIVE_TIMEOUT, &timeout, sizeof(DWORD));
+
+
     //
     // Try 5 times to send http request: used to retry sending request in case
     // of authentication (proxy/server).
