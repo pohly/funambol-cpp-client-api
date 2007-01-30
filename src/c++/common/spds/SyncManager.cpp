@@ -306,11 +306,9 @@ int SyncManager::prepareSync(SyncSource** s) {
     }
 
     // --- INFO
-    sprintf(logmsg, MSG_SYNC_URL, syncURL);
-    LOG.info(logmsg);
+    LOG.info(MSG_SYNC_URL, syncURL);
     for (count = 0; count < sourcesNumber; count++) {
-        sprintf(logmsg, MSG_PREPARING_SYNC, _wcc(sources[count]->getName()));
-        LOG.info(logmsg);
+        LOG.info(MSG_PREPARING_SYNC, _wcc(sources[count]->getName()));
     }
     // ---
 
@@ -531,8 +529,7 @@ int SyncManager::prepareSync(SyncSource** s) {
 
         } else if (isErrorStatus(ret) && ! isAuthFailed(ret)) {
             lastErrorCode = ret;
-            sprintf(logmsg, "Error from server %d", ret);
-            LOG.error(logmsg);
+            LOG.error("Error from server %d", ret);
             goto finally;
         }
 
@@ -1876,8 +1873,7 @@ BOOL SyncManager::commitChanges(SyncSource& source) {
     char anchor[DIM_ANCHOR];
     timestampToAnchor(next, anchor);
 
-    sprintf(logmsg, DBG_COMMITTING_SOURCE, name, anchor);
-    LOG.debug(logmsg);
+    LOG.debug(DBG_COMMITTING_SOURCE, name, anchor);
 
     for (unsigned int i = 0; i<n; ++i) {
         if (strcmp(name, configs[i].getName()) == NULL) {
