@@ -307,7 +307,7 @@ static bool getBodyPart(StringBuffer &rfcBody, StringBuffer &boundary,
         }
            
         else if( line->ifind(ENCODING) == 0 ) {
-            ret.setDisposition( getTokenValue(line, ENCODING));            
+            ret.setEncoding( getTokenValue(line, ENCODING));            
                        
         }                  
 
