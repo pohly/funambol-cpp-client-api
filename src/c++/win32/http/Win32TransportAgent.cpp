@@ -316,9 +316,17 @@ char* Win32TransportAgent::sendMessage(const char* msg) {
 
     // If wrong status, exit immediately.
     if (status != HTTP_STATUS_OK) {
-        lastErrorCode = ERR_HTTP;
-        sprintf(lastErrorMsg, "HTTP request error: %d", status);
-        LOG.error("%s", lastErrorMsg);
+        if (status == HTTP_STATUS_NOT_FOUND) {
+            lastErrorCode = ERR_HTTP_NOT_FOUND;
+            sprintf(lastErrorMsg, "HTTP request error: resource not found (status %d)", status);
+        }
+        else {
+            lastErrorCode = ERR_HTTP;
+            DWORD code = GetLastError();
+            char* tmp = createHttpErrorMessage(code);
+            sprintf(lastErrorMsg, "HTTP request error (status received = %d): %s (code %d)", status, tmp, code);
+		    delete [] tmp;
+        }
         goto exit;
     }
 
