@@ -198,6 +198,10 @@ static size_t getHeadersLen(StringBuffer &s, StringBuffer &newline)
 
 static StringBuffer getTokenValue(const StringBuffer* line, const char* token) {
     
+    StringBuffer ret("");
+    if (line->find(token) == StringBuffer::npos)
+        return ret;
+
     size_t begin = line->find(token) + strlen(token);
     size_t end = begin;
     size_t quote = line->find("\"", begin);
@@ -221,7 +225,7 @@ static StringBuffer getTokenValue(const StringBuffer* line, const char* token) {
             end = line->find(" ", begin);
         }
     }
-    StringBuffer ret = line->substr(begin, end-begin);
+    ret = line->substr(begin, end-begin);
     return ret;
 }
 
@@ -278,6 +282,14 @@ static bool getBodyPart(StringBuffer &rfcBody, StringBuffer &boundary,
 
     // Get headers
     StringBuffer headers = part.substr(0, hdrlen);
+
+    // Join header parts using \t or 8 blank
+    StringBuffer joinlinetab("\t");
+    headers.replaceAll(joinlinetab, " ");    
+    StringBuffer joinlinespaces(newline);
+    joinlinespaces+=" ";  // 8 blanks
+    headers.replaceAll(joinlinespaces, " ");
+
     ArrayList lines;
     const StringBuffer *line;
     
@@ -294,26 +306,30 @@ static bool getBodyPart(StringBuffer &rfcBody, StringBuffer &boundary,
         //    break;
         //}
         // Process the headers
-        if( line->ifind(MIMETYPE) == 0 ) {
-
-            ret.setMimeType(getTokenValue(line, MIMETYPE));             
-            ret.setName( getTokenValue(line, CT_NAME));
-            ret.setCharset(getTokenValue(line, CT_CHARSET));
+        if( line->ifind(MIMETYPE) == 0 ) {  // it must at the beginning
+            ret.setMimeType(getTokenValue(line, MIMETYPE));            
+            if (line->ifind(CT_NAME) != StringBuffer::npos) {
+                ret.setName( getTokenValue(line, CT_NAME));
+            }
+            if (line->ifind(CT_CHARSET) != StringBuffer::npos ) {
+                ret.setCharset(getTokenValue(line, CT_CHARSET));
+            }
         }
            
         else if( line->ifind(DISPOSITION) == 0 ) {
             ret.setDisposition( getTokenValue(line, DISPOSITION));
-            ret.setFilename( getTokenValue(line, CD_FILENAME));            
+            if (line->ifind(CD_FILENAME) != StringBuffer::npos ) {
+                ret.setFilename(getTokenValue(line, CD_FILENAME));
+            }                 
         }
            
         else if( line->ifind(ENCODING) == 0 ) {
-            ret.setEncoding( getTokenValue(line, ENCODING));            
-                       
+            ret.setEncoding( getTokenValue(line, ENCODING));                                   
         }                  
 
     }
     // move to the beginning of the content
-    hdrlen += strlen(newline);
+    hdrlen += strlen(newline) + strlen(newline); // added 2 new line that separate the bodyparts
     // get bodypart content 
     if( !ret.getFilename() ) {
 		// this is not an attachment
@@ -331,8 +347,23 @@ static bool getBodyPart(StringBuffer &rfcBody, StringBuffer &boundary,
             ret.setContent ( decoded );
             delete [] decoded;
         }
-        else
-            ret.setContent ( part.substr(hdrlen) );
+        else {
+            bool found = true;
+            if (part.substr(hdrlen).length() < 6) {
+                StringBuffer s(part.substr(hdrlen));
+                for (unsigned int i = 0; i < s.length(); i++) {
+                    if (s.c_str()[i] != '\r' && s.c_str()[i] != '\n') {
+                        found = true;
+                        break;
+                    } else {
+                        found = false;
+                    }
+                }                
+            } 
+            if (found) {
+                ret.setContent ( part.substr(hdrlen) );        
+            }
+        }
     }
     else {
         LOG.debug("Attachment");
@@ -791,6 +822,7 @@ int MailMessage::parseBodyParts(StringBuffer &rfcBody) {
                 attachments.add(part);
             }
             else LOG.error("Empty content in attachment.");
+            part = BodyPart();
         }
     }
 
