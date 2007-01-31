@@ -42,43 +42,44 @@
 **/
 
 #ifndef INCL_WIN32_TRANSPORT_AGENT
-    #define INCL_WIN32_TRANSPORT_AGENT
+#define INCL_WIN32_TRANSPORT_AGENT
 
-    #include "base/fscapi.h"
+#include "base/fscapi.h"
+#include "http/URL.h"
+#include "http/Proxy.h"
+#include "http/TransportAgent.h"
 
-    #include "http/URL.h"
-    #include "http/Proxy.h"
-    #include "http/TransportAgent.h"
+
+#define MAX_AUTH_ATTEMPT        5       // Max number of attempts sending http requests.
+#define MAX_SERVER_TIMEOUT      10      // 10 minutes to receive a rensponse from server.
+
+#define ERR_HTTP_NOT_FOUND      ERR_TRANSPORT_BASE+60
 
 
-    #define MAX_AUTH_ATTEMPT        5       // Max number of attempts sending http requests.
-    #define MAX_SERVER_TIMEOUT      10      // 10 minutes to receive a rensponse from server.
+/*
+* This class is the transport agent responsible for messages exchange
+* over an HTTP connection.
+* This is a generic abtract class which is not bound to any paltform
+*/
 
+class Win32TransportAgent : public TransportAgent {
+
+
+public:
+    Win32TransportAgent();
+    Win32TransportAgent(URL& url, Proxy& proxy, 
+        unsigned int responseTimeout = DEFAULT_MAX_TIMEOUT, 
+        unsigned int msxmsgsize = DEFAULT_MAX_MSG_SIZE);
+    ~Win32TransportAgent();
 
     /*
-     * This class is the transport agent responsible for messages exchange
-     * over an HTTP connection.
-     * This is a generic abtract class which is not bound to any paltform
-     */
+    * Sends the given SyncML message to the server specified
+    * by the instal property 'url'. Returns the response status code.
+    */
+    char*  sendMessage(const char*  msg);
 
-    class Win32TransportAgent : public TransportAgent {
-
-
-    public:
-        Win32TransportAgent();
-        Win32TransportAgent(URL& url, Proxy& proxy, 
-                            unsigned int responseTimeout = DEFAULT_MAX_TIMEOUT, 
-                            unsigned int msxmsgsize = DEFAULT_MAX_MSG_SIZE);
-        ~Win32TransportAgent();
-
-        /*
-         * Sends the given SyncML message to the server specified
-         * by the instal property 'url'. Returns the response status code.
-         */
-        char*  sendMessage(const char*  msg);
-
-    private:
-        char* createHttpErrorMessage(DWORD errorCode);
-    };
+private:
+    char* createHttpErrorMessage(DWORD errorCode);
+};
 
 #endif
