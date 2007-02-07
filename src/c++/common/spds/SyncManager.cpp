@@ -712,8 +712,9 @@ int SyncManager::prepareSync(SyncSource** s) {
                     }
                  
                 } else {
-                    ret = 401;
-                    LOG.error("Client not authenticated");
+                    lastErrorCode = 401;
+                    sprintf(lastErrorMsg, "Client not authenticated");
+                    ret = lastErrorCode;
                     goto finally;
                 }                                    
             }
