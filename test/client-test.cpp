@@ -197,7 +197,7 @@ public:
 
         for (source = 0; activeSources[source] >= 0 && source < (int)sources.size(); source++) {
             // rewrite configuration as needed for test
-            SyncSourceConfig *sourceConfig = config->getSyncSourceConfig(sources[source].c_str());
+            SyncSourceConfig *sourceConfig = config->getSyncSourceConfig(sources[activeSources[source]].c_str());
             CPPUNIT_ASSERT(sourceConfig);
             sourceConfig->setSync(syncModeKeyword(syncMode));
             sourceConfig->setEncoding(encoding);
