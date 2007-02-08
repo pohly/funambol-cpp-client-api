@@ -32,6 +32,7 @@
 #include <iomanip>
 #include <fstream>
 #include <iostream>
+#include <algorithm>
 
 /** execute _x and then check the status of the _source pointer */
 #define SOURCE_ASSERT_NO_FAILURE(_source, _x) \
@@ -741,6 +742,15 @@ public:
         if (sources.size()) {
             const ClientTest::Config &config(sources[0].second->config);
 
+            // run this test first, even if it is more complex:
+            // if it works, all the following tests will run with
+            // the server in a deterministic state
+            if (config.createSourceA) {
+                if (config.insertItem) {
+                    ADD_TEST(SyncTests, testDeleteAllRefresh);
+                }
+            }
+
             ADD_TEST(SyncTests, testTwoWaySync);
             ADD_TEST(SyncTests, testSlowSync);
             ADD_TEST(SyncTests, testRefreshFromServerSync);
@@ -748,7 +758,6 @@ public:
 
             if (config.createSourceA) {
                 if (config.insertItem) {
-                    ADD_TEST(SyncTests, testDeleteAllRefresh);
                     ADD_TEST(SyncTests, testRefreshSemantic);
                     ADD_TEST(SyncTests, testRefreshStatus);
 
@@ -1680,7 +1689,40 @@ public:
         }
         alltests->addTest(tests);
         tests = 0;
-        
+
+        // create sync tests with all sources enabled, unless we only have one:
+        // that would be identical to the test above
+        std::vector<int> sources;
+        std::string name, name_reversed;
+        for (source=0; source < client.getNumSources(); source++) {
+            ClientTest::Config config;
+            client.getSourceConfig(source, config);
+            if (config.sourceName) {
+                sources.push_back(source);
+                if (name.size() > 0) {
+                    name += "_";
+                    name_reversed = std::string("_") + name_reversed;
+                }
+                name += config.sourceName;
+                name_reversed = config.sourceName + name_reversed;
+            }
+        }
+        if (sources.size() > 1) {
+            SyncTests *synctests =
+                new SyncTests(alltests->getName() + "::Sync::" + name, client, sources);
+            synctests->addTests();
+            alltests->addTest(synctests);
+            synctests = 0;
+
+            // now also in reversed order - who knows, it might make a difference
+            std::reverse(sources.begin(), sources.end());
+            synctests =
+                new SyncTests(alltests->getName() + "::Sync::" + name_reversed, client, sources);
+            synctests->addTests();
+            alltests->addTest(synctests);
+            synctests = 0;
+        }
+
         return alltests;
     }
 
