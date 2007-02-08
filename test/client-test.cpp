@@ -192,12 +192,12 @@ public:
         bool loSupport,
         const char *encoding = 0) {
         SyncSource **syncSources = new SyncSource *[sources.size() + 1];
-        int source;
+        int index, numsources = 0;
         memset(syncSources, 0, sizeof(syncSources[0]) * (sources.size() + 1));
 
-        for (source = 0; activeSources[source] >= 0 && source < (int)sources.size(); source++) {
+        for (index = 0; activeSources[index] >= 0 && index < (int)sources.size(); index++) {
             // rewrite configuration as needed for test
-            SyncSourceConfig *sourceConfig = config->getSyncSourceConfig(sources[activeSources[source]].c_str());
+            SyncSourceConfig *sourceConfig = config->getSyncSourceConfig(sources[activeSources[index]].c_str());
             CPPUNIT_ASSERT(sourceConfig);
             sourceConfig->setSync(syncModeKeyword(syncMode));
             sourceConfig->setEncoding(encoding);
@@ -206,13 +206,13 @@ public:
             config->getDeviceConfig().setLoSupport(loSupport);
 
             // create sync source using the third change tracking for syncs
-            syncSources[source] = createSource(source, "S");
+            syncSources[numsources++] = createSource(activeSources[index], "S");
         }
 
         SyncClient client;
         int res = client.sync(*config, syncSources);
 
-        for (source = 0; syncSources[source]; source++) {
+        for (int source = 0; syncSources[source]; source++) {
             delete syncSources[source];
         }
 
