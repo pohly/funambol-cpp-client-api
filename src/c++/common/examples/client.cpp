@@ -250,7 +250,7 @@ static void testXMLProcessor(void)
     const char *p = 0;
 
     // Get 'document' tag
-    char *doc = XMLProcessor::getElementContent(xml1, "document", &pos);
+    char *doc = XMLProcessor::copyElementContent(xml1, "document", &pos);
     LOG.debug("Document: '%s'", doc);
     LOG.debug("xml[pos]= '%s'", xml1 + pos);
 
@@ -293,7 +293,7 @@ static void testXMLProcessor(void)
     LOG.debug("Attrlist: '%s'", buf);
 
     // Get 'emptytag' content, that should be empty
-    const char*empty = XMLProcessor::getElementContent(doc, "emptytag");
+    const char*empty = XMLProcessor::copyElementContent(doc, "emptytag");
     if(!empty){
         LOG.error("TEST FAILED.");
         return;

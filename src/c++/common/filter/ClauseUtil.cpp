@@ -477,3 +477,4 @@ SourceFilter* ClauseUtil::createSourceFilterInclusive(const char* luid, int size
 
     return filter;
 }
+
