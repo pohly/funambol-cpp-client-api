@@ -1,6 +1,8 @@
-2007-01-29
-     - magi:  Added msg field in ItemReport and in SyncSourceReport. Modified function call where needed.
-              Modification in BodyPart and MailMessage to handle and optimized properly     
+Funambol SDK C++ 6.0.2
+------------------------
+
+2007-02-09
+     alpha release
 
 
 Funambol SDK C++ 6.0.1

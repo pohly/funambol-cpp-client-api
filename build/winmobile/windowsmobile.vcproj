@@ -574,6 +574,7 @@
 				AdditionalIncludeDirectories="..\..\src\include\winmobile,..\..\src\include\common,..\..\..\tools\zlib"
 				PreprocessorDefinitions="DEBUG;_WIN32_WCE=$(CEVER);$(CePlatform);ARM;_ARM_;ARMV4;UNDER_CE=$(CEVER);UNICODE;_LIB"
 				RuntimeLibrary="1"
+				BufferSecurityCheck="false"
 				EnableFunctionLevelLinking="true"
 				UsePrecompiledHeader="0"
 				PrecompiledHeaderFile="$(PlatformName)\$(ConfigurationName)/windowsmobile.pch"
@@ -13152,10 +13153,6 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\include\common\http\errors.h"
-				>
-			</File>
-			<File
 				RelativePath="..\..\src\include\common\spds\errors.h"
 				>
 			</File>
@@ -13165,6 +13162,10 @@
 			</File>
 			<File
 				RelativePath="..\..\src\include\common\base\errors.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\include\common\http\errors.h"
 				>
 			</File>
 			<File
