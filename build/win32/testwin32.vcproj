@@ -279,6 +279,30 @@
 				RelativePath="..\..\src\include\common\examples\TestSyncSource2.h"
 				>
 			</File>
+			<Filter
+				Name="listeners"
+				>
+				<File
+					RelativePath="..\..\src\c++\common\examples\listeners\TestSyncItemListener.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\c++\common\examples\listeners\TestSyncListener.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\c++\common\examples\listeners\TestSyncSourceListener.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\c++\common\examples\listeners\TestSyncStatusListener.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\c++\common\examples\listeners\TestTransportListener.cpp"
+					>
+				</File>
+			</Filter>
 		</Filter>
 		<Filter
 			Name="Header Files"
