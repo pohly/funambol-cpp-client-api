@@ -55,7 +55,7 @@ void testConfigFilter();
 void testEncryption();
 void createConfig(DMTClientConfig& config);
 static void testXMLProcessor();
-void printReport(SyncReport* sr, char* sourceName);
+void printReport(SyncReport* sr, const char* sourceName);
 
 
 #define APPLICATION_URI "Funambol/SyncclientPIM"
