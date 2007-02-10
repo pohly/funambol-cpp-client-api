@@ -1,5 +1,4 @@
 EXTRA_PROGRAMS = vcardconverter
-check_PROGRAMS = @CPPUNIT_TESTS@
 lib_LTLIBRARIES = libsync4j.la
 
 SOURCES_BASE = \
