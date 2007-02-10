@@ -35,18 +35,6 @@ END:VCALENDAR
 BEGIN:VCALENDAR
 VERSION:1.0
 BEGIN:VEVENT
-ATTENDEE;CUTYPE=INDIVIDUAL;ROLE=REQ-PARTICIPANT;PARTSTAT=ACCEPTED;RSVP=TRUE;CN="Patrick Ohly";LANGUAGE=en:MAILTO:Patrick.Ohly@gmx.de
-ATTENDEE;CUTYPE=INDIVIDUAL;ROLE=REQ-PARTICIPANT;PARTSTAT=NEEDS-ACTION;RSVP=TRUE;LANGUAGE=en:MAILTO:john@bar.com
-DTSTART:20060406T193000Z
-DTEND:20060406T200000Z
-SUMMARY:meeting invitation
-TRANSP:OPAQUE
-END:VEVENT
-END:VCALENDAR
-
-BEGIN:VCALENDAR
-VERSION:1.0
-BEGIN:VEVENT
 DTSTART:20060405T220000Z
 DTEND:20060407T220000Z
 SUMMARY:two day event
@@ -75,34 +63,6 @@ DTEND:20060406T143000Z
 LOCATION:my office
 SUMMARY:phone meeting
 TRANSP:OPAQUE
-END:VEVENT
-END:VCALENDAR
-
-BEGIN:VCALENDAR
-VERSION:1.0
-BEGIN:VEVENT
-DESCRIPTION:recurrs seven times, excluding (but counting) Friday and Saturday
-DTSTART:20060406T183000Z
-DTEND:20060406T190000Z
-EXDATE:20060407T000000Z
-EXDATE:20060408T000000Z
-RRULE:D1 #7
-SUMMARY:recurrence, weekly, with exceptions
-TRANSP:OPAQUE
-END:VEVENT
-END:VCALENDAR
-
-BEGIN:VCALENDAR
-VERSION:1.0
-BEGIN:VEVENT
-CATEGORIES:Business\,test
-DESCRIPTION;CHARSET=UTF-8;ENCODING=QUOTED-PRINTABLE:this is an appointment with plenty of fields set, and special attributes...=0A=0Aempty line above, line=0Abreak=0A=0Aspecial characters:=0Aa-umlaut =C3=A4=0Aexclamation mark !=0Aampersand disabled=0Ahash #=0Aleft angle bracket disabled=0Aright angle bracket disabled=0Aleft square bracket [=0Aright square bracket ]=0Aleft bracket (=0Aright bracket )=0Abackslash \=0Abackslash lf \n=0Abackslash cr \r=0Astar *=0Acarret ^=0Apercent %=0Atilde ~=0Atick `=0Abacktick `=0Adouble quotation - not tested because Evolution encodes it incorrectly=0Asingle quotation '=0Acolon :=0Asemicolon ;=0Acomma ,=0A
-DTSTART:20060406T190000Z
-DTEND:20060406T193000Z
-LOCATION:virtual
-SUMMARY:all fields
-TRANSP:TRANSPARENT
-DALARM:20060406T180000Z
 END:VEVENT
 END:VCALENDAR
 
