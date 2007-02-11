@@ -142,17 +142,19 @@ public:
             dc.setDevID(id == "A" ? "sc-api-nat" : "sc-pim-ppc");
         }
         for (int source = 0; source < (int)sources.size(); source++) {
+            ClientTest::Config testconfig;
+            getSourceConfig(source, testconfig);
+            CPPUNIT_ASSERT(testconfig.type);
+
             SyncSourceConfig* sc = config->getSyncSourceConfig(sources[source].c_str());
             if (!sc) {
                 // no configuration yet
                 config->setSourceDefaults(sources[source].c_str());
                 sc = config->getSyncSourceConfig(sources[source].c_str());
+                sc->setURI(testconfig.uri);
                 CPPUNIT_ASSERT(sc);
             }
 
-            ClientTest::Config testconfig;
-            getSourceConfig(source, testconfig);
-            CPPUNIT_ASSERT(testconfig.type);
             sc->setType(testconfig.type);
         }
         config->save();

@@ -127,6 +127,11 @@ class ClientTest {
         const char *sourceName;
 
         /**
+         * A default URI to be used when creating a client config.
+         */
+        const char *uri;
+
+        /**
          * A member function of a subclass which is called to create a
          * sync source referencing the data. This is used in tests of
          * the SyncSource API itself as well as in tests which need to

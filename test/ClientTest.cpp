@@ -124,7 +124,7 @@ static void importItem(SyncSource *source, std::string &data)
     CPPUNIT_ASSERT(source);
     if (data.size()) {
         SyncItem item;
-        item.setData( data.c_str(), (long)data.size() + 1 );
+        item.setData( data.c_str(), (long)data.size() );
         item.setDataType( TEXT("raw") );
         int status;
         SOURCE_ASSERT_NO_FAILURE(source, status = source->addItem(item));
@@ -443,6 +443,9 @@ public:
             if (size > 0 && (int)data.size() < size) {
                 int additionalBytes = size - (int)data.size();
                 int added = 0;
+                /* vCard 2.1 and vCal 1.0 need quoted-printable line breaks */
+                bool quoted = data.find("VERSION:1.0") != data.npos ||
+                    data.find("VERSION:2.1");
 
                 CPPUNIT_ASSERT(config.sizeProperty);
                 
@@ -450,6 +453,11 @@ public:
                 size_t off = data.find(config.sizeProperty);
                 CPPUNIT_ASSERT(off != data.npos);
                 std::stringstream stuffing;
+                if (quoted) {
+                    stuffing << ";ENCODING=QUOTED-PRINTABLE:";
+                } else {
+                    stuffing << ":";
+                }
                 while(added < additionalBytes) {
                     int linelen = 0;
                    
@@ -459,10 +467,17 @@ public:
                         added++;
                         linelen++;
                     }
-                    stuffing << "x\\nx";
-                    added += 4;
+                    // insert line breaks to allow folding
+                    if (quoted) {
+                        stuffing << "x=0D=0Ax";
+                        added += 8;
+                    } else {
+                        stuffing << "x\\nx";
+                        added += 4;
+                    }
                 }
-                data.insert(off + 1 + strlen(config.sizeProperty), stuffing.str());
+                off = data.find(":", off);
+                data.replace(off, 1, stuffing.str());
             }
             
             importItem(source.get(), data);
@@ -1781,17 +1796,20 @@ int ClientTest::import(ClientTest &client, SyncSource &source, const char *file)
     CPPUNIT_ASSERT(input.is_open());
     std::string data, line;
     while (input) {
+        bool wasend = false;
         do {
             getline(input, line);
             CPPUNIT_ASSERT(!input.bad());
-            // empty line marks end of record
-            if (line != "\r" && line.size() > 0) {
+            // empty lines directly after line which starts with END mark end of record;
+            // check for END necessary becayse vCard 2.1 ENCODING=BASE64 may have empty lines in body of VCARD!
+            if (line != "\r" && line.size() > 0 || !wasend) {
                 data += line;
                 data += "\n";
             } else {
                 importItem(&source, data);
                 data = "";
             }
+            wasend = !line.compare(0, 4, "END:");
         } while(!input.eof());
     }
     importItem(&source, data);
@@ -1838,6 +1856,7 @@ void ClientTest::getTestData(const char *type, Config &config)
 
     if (!strcmp(type, "vcard30")) {
         config.sourceName = "vcard30";
+        config.uri = "card3"; // ScheduleWorld
         config.type = "text/vcard";
         config.insertItem =
             "BEGIN:VCARD\n"
@@ -1904,8 +1923,73 @@ void ClientTest::getTestData(const char *type, Config &config)
         config.dump = dump;
         config.compare = compare;
         config.testcases = "testcases/vcard30.vcf";
+    } else if (!strcmp(type, "vcard21")) {
+        config.sourceName = "vcard21";
+        config.uri = "card"; // Funambol
+        config.type = "text/x-vcard";
+        config.insertItem =
+            "BEGIN:VCARD\n"
+            "VERSION:2.1\n"
+            "TITLE:tester\n"
+            "FN:John Doe\n"
+            "N:Doe;John;;;\n"
+            "TEL;TYPE=WORK;TYPE=VOICE:business 1\n"
+            "X-MOZILLA-HTML:FALSE\n"
+            "NOTE:\n"
+            "END:VCARD\n";
+        config.updateItem =
+            "BEGIN:VCARD\n"
+            "VERSION:2.1\n"
+            "TITLE:tester\n"
+            "FN:Joan Doe\n"
+            "N:Doe;Joan;;;\n"
+            "TEL;TYPE=WORK;TYPE=VOICE:business 2\n"
+            "BDAY:2006-01-08\n"
+            "X-MOZILLA-HTML:TRUE\n"
+            "END:VCARD\n";
+        /* adds a second phone number: */
+        config.complexUpdateItem =
+            "BEGIN:VCARD\n"
+            "VERSION:2.1\n"
+            "TITLE:tester\n"
+            "FN:Joan Doe\n"
+            "N:Doe;Joan;;;\n"
+            "TEL;TYPE=WORK;TYPE=VOICE:business 1\n"
+            "TEL;TYPE=HOME;TYPE=VOICE:home 2\n"
+            "BDAY:2006-01-08\n"
+            "X-MOZILLA-HTML:TRUE\n"
+            "END:VCARD\n";
+        /* add a telephone number, email and X-AIM to initial item */
+        config.mergeItem1 =
+            "BEGIN:VCARD\n"
+            "VERSION:2.1\n"
+            "TITLE:tester\n"
+            "FN:John Doe\n"
+            "N:Doe;John;;;\n"
+            "X-MOZILLA-HTML:FALSE\n"
+            "TEL;TYPE=WORK;TYPE=VOICE:business 1\n"
+            "EMAIL:john.doe@work.com\n"
+            "X-AIM:AIM JOHN\n"
+            "END:VCARD\n";
+        config.mergeItem2 =
+            "BEGIN:VCARD\n"
+            "VERSION:2.1\n"
+            "TITLE:developer\n"
+            "FN:John Doe\n"
+            "N:Doe;John;;;\n"
+            "X-MOZILLA-HTML:TRUE\n"
+            "BDAY:2006-01-08\n"
+            "END:VCARD\n";
+        config.templateItem = config.insertItem;
+        config.uniqueProperties = "FN:N";
+        config.sizeProperty = "NOTE";
+        config.import = import;
+        config.dump = dump;
+        config.compare = compare;
+        config.testcases = "testcases/vcard21.vcf";
     } else if(!strcmp(type, "ical20")) {
         config.sourceName = "ical20";
+        config.uri = "cal2"; // ScheduleWorld
         config.type = "text/x-vcalendar";
         config.insertItem =
             "BEGIN:VCALENDAR\n"
@@ -1914,8 +1998,8 @@ void ClientTest::getTestData(const char *type, Config &config)
             "METHOD:PUBLISH\n"
             "BEGIN:VEVENT\n"
             "SUMMARY:phone meeting\n"
-            "DTEND;20060406T163000Z\n"
-            "DTSTART;20060406T160000Z\n"
+            "DTEND:20060406T163000Z\n"
+            "DTSTART:20060406T160000Z\n"
             "UID:1234567890!@#$%^&*()<>@dummy\n"
             "DTSTAMP:20060406T211449Z\n"
             "LAST-MODIFIED:20060409T213201\n"
@@ -1934,8 +2018,8 @@ void ClientTest::getTestData(const char *type, Config &config)
             "METHOD:PUBLISH\n"
             "BEGIN:VEVENT\n"
             "SUMMARY:meeting on site\n"
-            "DTEND;20060406T163000Z\n"
-            "DTSTART;20060406T160000Z\n"
+            "DTEND:20060406T163000Z\n"
+            "DTSTART:20060406T160000Z\n"
             "UID:1234567890!@#$%^&*()<>@dummy\n"
             "DTSTAMP:20060406T211449Z\n"
             "LAST-MODIFIED:20060409T213201\n"
@@ -1955,8 +2039,8 @@ void ClientTest::getTestData(const char *type, Config &config)
             "METHOD:PUBLISH\n"
             "BEGIN:VEVENT\n"
             "SUMMARY:phone meeting\n"
-            "DTEND;20060406T163000Z\n"
-            "DTSTART;20060406T160000Z\n"
+            "DTEND:20060406T163000Z\n"
+            "DTSTART:20060406T160000Z\n"
             "UID:1234567890!@#$%^&*()<>@dummy\n"
             "DTSTAMP:20060406T211449Z\n"
             "LAST-MODIFIED:20060409T213201\n"
@@ -1975,8 +2059,8 @@ void ClientTest::getTestData(const char *type, Config &config)
             "METHOD:PUBLISH\n"
             "BEGIN:VEVENT\n"
             "SUMMARY:phone meeting\n"
-            "DTEND;20060406T163000Z\n"
-            "DTSTART;20060406T160000Z\n"
+            "DTEND:20060406T163000Z\n"
+            "DTSTART:20060406T160000Z\n"
             "UID:1234567890!@#$%^&*()<>@dummy\n"
             "DTSTAMP:20060406T211449Z\n"
             "LAST-MODIFIED:20060409T213201\n"
@@ -1995,8 +2079,69 @@ void ClientTest::getTestData(const char *type, Config &config)
         config.dump = dump;
         config.compare = compare;
         config.testcases = "testcases/ical20.ics";
+    } if(!strcmp(type, "vcal10")) {
+        config.sourceName = "vcal10";
+        config.uri = "cal"; // Funambol 3.0
+        config.type = "text/x-vcalendar";
+        config.insertItem =
+            "BEGIN:VCALENDAR\n"
+            "VERSION:1.0\n"
+            "BEGIN:VEVENT\n"
+            "SUMMARY:phone meeting\n"
+            "DTEND:20060406T163000Z\n"
+            "DTSTART:20060406T160000Z\n"
+            "DTSTAMP:20060406T211449Z\n"
+            "LOCATION:my office\n"
+            "DESCRIPTION:let's talk\n"
+            "END:VEVENT\n"
+            "END:VCALENDAR\n";
+        config.updateItem =
+            "BEGIN:VCALENDAR\n"
+            "VERSION:1.0\n"
+            "BEGIN:VEVENT\n"
+            "SUMMARY:meeting on site\n"
+            "DTEND:20060406T163000Z\n"
+            "DTSTART:20060406T160000Z\n"
+            "DTSTAMP:20060406T211449Z\n"
+            "LOCATION:big meeting room\n"
+            "DESCRIPTION:nice to see you\n"
+            "END:VEVENT\n"
+            "END:VCALENDAR\n";
+        /* change location in insertItem in testMerge() */
+        config.mergeItem1 =
+            "BEGIN:VCALENDAR\n"
+            "VERSION:1.0\n"
+            "BEGIN:VEVENT\n"
+            "SUMMARY:phone meeting\n"
+            "DTEND:20060406T163000Z\n"
+            "DTSTART:20060406T160000Z\n"
+            "DTSTAMP:20060406T211449Z\n"
+            "LOCATION:calling from home\n"
+            "DESCRIPTION:let's talk\n"
+            "END:VEVENT\n"
+            "END:VCALENDAR\n";
+        config.mergeItem2 =
+            "BEGIN:VCALENDAR\n"
+            "VERSION:1.0\n"
+            "BEGIN:VEVENT\n"
+            "SUMMARY:phone meeting\n"
+            "DTEND:20060406T163000Z\n"
+            "DTSTART:20060406T160000Z\n"
+            "DTSTAMP:20060406T211449Z\n"
+            "LOCATION:my office\n"
+            "DESCRIPTION:what the heck, let's even shout a bit\n"
+            "END:VEVENT\n"
+            "END:VCALENDAR\n";
+        config.templateItem = config.insertItem;
+        config.uniqueProperties = "SUMMARY:UID";
+        config.sizeProperty = "DESCRIPTION";
+        config.import = import;
+        config.dump = dump;
+        config.compare = compare;
+        config.testcases = "testcases/vcal10.ics";
     } else if(!strcmp(type, "itodo20")) {
         config.sourceName = "itodo20";
+        config.uri = "task2"; // ScheduleWorld
         config.type = "text/x-vcalendar";
         config.insertItem =
             "BEGIN:VCALENDAR\n"
