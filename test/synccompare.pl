@@ -55,6 +55,9 @@ sub Normalize {
     # UID may differ, but only in vCards
     s/(VCARD.*)^UID:[^\n]*\n/$1/msg;
 
+    # expand <foo> shortcuts to TYPE=<foo>
+    while (s/^(ADR|EMAIL|TEL)([^:\n]*);(HOME|OTHER|WORK|PARCEL|INTERNET|CAR|VOICE|CELL|PAGER)/$1;TYPE=$3/mg) {}
+
     # the distinction between an empty and a missing property
     # is vague and handled differently, so ignore empty properties
     s/^[^:\n]*:;*\n//mg;
@@ -124,6 +127,11 @@ sub Normalize {
       s/^ORG:([^;:\n]+)(;[^\n]*)/ORG:$1/mg;
     }
 
+    if ($funambol) {
+      # only preserves ORG "Company";"Department", but loses "Office"
+      s/^ORG:([^;:\n]+)(;[^;:\n]*)(;[^\n]*)/ORG:$1$2/mg;
+    }
+
     if ($synthesis) {
       # does not preserve certain properties
       s/^(FN|BDAY|X-MOZILLA-HTML|X-EVOLUTION-FILE-AS|X-AIM|NICKNAME|PHOTO|CALURI)(;[^:;\n]*)*:.*\r?\n?//gm;
@@ -148,6 +156,9 @@ sub Normalize {
     if ($funambol) {
       # several properties are not preserved
       s/^(FN|X-MOZILLA-HTML|PHOTO)(;[^:;\n]*)*:.*\r?\n?//gm;
+
+      # quoted-printable line breaks are =0D=0A, not just single =0A
+      s/(?<!=0D)=0A/=0D=0A/g;
     }
 
     if ($funambol || $egroupware) {
