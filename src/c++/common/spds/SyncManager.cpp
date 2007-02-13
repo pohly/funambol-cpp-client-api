@@ -419,7 +419,8 @@ int SyncManager::prepareSync(SyncSource** s) {
                 deleteAlert(&alert);
             }
             cred = credentialHandler.getClientCredential();             
-            strcpy(credentialInfo, cred->getAuthentication()->getData());
+            strcpy(credentialInfo, cred->getAuthentication()->getPassword());
+
         }
 
         // actively send out device infos?
