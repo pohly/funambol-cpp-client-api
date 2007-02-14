@@ -325,7 +325,7 @@ int SyncManager::prepareSync(SyncSource** s) {
                                    _wcc(sources[count]->getName()));
             LOG.debug(lastErrorMsg);
 
-            setSourceStateAndError(count, SOURCE_INACTIVE, ERR_SOURCE_DEFINITION_NOT_FOUND, lastErrorMsg);
+            setSourceStateAndError(count, SOURCE_ERROR, ERR_SOURCE_DEFINITION_NOT_FOUND, lastErrorMsg);
         }
     }
 

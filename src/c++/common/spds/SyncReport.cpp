@@ -53,6 +53,9 @@ SyncReport::~SyncReport() {
 // Create ssReport array from config.
 void SyncReport::setSyncSourceReports(SyncManagerConfig& config) {
 
+    // create one report for each configured sync source, even
+    // if it is not active: it is set to inactive below and needs
+    // to be activated if it is actually part of the sync
     ssReportCount = config.getSyncSourceConfigsCount();
     ssReport = new SyncSourceReport[ssReportCount];
 
@@ -60,6 +63,7 @@ void SyncReport::setSyncSourceReports(SyncManagerConfig& config) {
     for (unsigned int i=0; i<ssReportCount; i++) {
         sc = config.getSyncSourceConfig(i);
         ssReport[i].setSourceName(sc->getName());
+        ssReport[i].setState(SOURCE_INACTIVE);
     }
 }
 

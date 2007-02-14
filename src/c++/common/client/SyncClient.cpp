@@ -57,7 +57,10 @@ int SyncClient::sync(SyncManagerConfig& config, SyncSource** sources) {
     int i=0;
     while (sources[i]) {
         char* name = toMultibyte(sources[i]->getName());
-        sources[i]->setReport(syncReport.getSyncSourceReport(name));
+        SyncSourceReport *ssr = syncReport.getSyncSourceReport(name);
+        ssr->setState(SOURCE_ACTIVE);
+        sources[i]->setReport(ssr);
+        
         delete[] name;
         i++;
     }
