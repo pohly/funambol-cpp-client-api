@@ -189,6 +189,7 @@ public:
     virtual int sync(
         const int *activeSources,
         SyncMode syncMode,
+        const CheckSyncReport &checkReport,
         long maxMsgSize,
         long maxObjSize,
         bool loSupport,
@@ -213,6 +214,8 @@ public:
 
         SyncClient client;
         int res = client.sync(*config, syncSources);
+        CPPUNIT_ASSERT(client.getSyncReport());
+        checkReport.check(*client.getSyncReport());
 
         for (int source = 0; syncSources[source]; source++) {
             delete syncSources[source];

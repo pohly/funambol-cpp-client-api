@@ -21,6 +21,34 @@
 
 #include <string>
 #include "spds/SyncSource.h"
+#include "spds/SyncReport.h"
+
+/**
+ * This class encapsulates logging and checking of a SyncReport.
+ * When constructed with default parameters, no checking will be done.
+ * Otherwise the sync report has to contain exactly the expected result.
+ * When multiple sync sources are active, _all_ of them have to behave
+ * alike (which is how the tests are constructed).
+ *
+ * No item is ever supposed to fail.
+ */
+class CheckSyncReport {
+  public:
+    CheckSyncReport(int clAdded = -1, int clUpdated = -1, int clDeleted = -1,
+                    int srAdded = -1, int srUpdated = -1, int srDeleted = -1) :
+        clientAdded(clAdded),
+        clientUpdated(clUpdated),
+        clientDeleted(clDeleted),
+        serverAdded(srAdded),
+        serverUpdated(srUpdated),
+        serverDeleted(srDeleted)
+        {}
+
+    const int clientAdded, clientUpdated, clientDeleted,
+        serverAdded, serverUpdated, serverDeleted;
+
+    virtual void check(SyncReport &report) const;
+};
 
 /**
  * This is the interface expected by the testing framework for sync
@@ -329,6 +357,9 @@ class ClientTest {
      *
      * @param sources      a -1 terminated array of sync source indices
      * @param syncMode     the synchronization mode to be used
+     * @param checkReport  has to be called after a successful or unsuccessful sync,
+     *                     will dump the report and (optionally) check the result;
+     *                     beware, the later may throw exceptions inside CPPUNIT macros
      * @param maxMsgSize   >0: enable the maximum message size, else disable it
      * @param maxObjSize   same as maxMsgSize for maximum object size
      * @param encoding     if non-empty, then let client library transform all items
@@ -339,6 +370,7 @@ class ClientTest {
     virtual int sync(
         const int *sources,
         SyncMode syncMode,
+        const CheckSyncReport &checkReport,
         long maxMsgSize = 0,
         long maxObjSize = 0,
         bool loSupport = false,
@@ -376,5 +408,13 @@ class ClientTest {
      */
     void *factory;
 };
+
+/** assert equality, include string in message if unequal */
+#define CLIENT_TEST_EQUAL( _prefix, \
+                           _expected, \
+                           _actual ) \
+    CPPUNIT_ASSERT_EQUAL_MESSAGE( std::string(_prefix) + ": " + #_expected + " == " + #_actual, \
+                                  _expected, \
+                                  _actual )
 
 #endif
