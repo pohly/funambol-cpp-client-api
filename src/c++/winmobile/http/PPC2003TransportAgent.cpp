@@ -65,6 +65,7 @@
 #define MAX_SEND_RETRIES 3
 #define MAX_RETRIES 2
 #define SESSION_TIMEOUT 1200
+#define OFFSET_TOLERANCE 1024
 
 typedef struct
 {
@@ -111,7 +112,6 @@ unsigned long lastSentTime;
 #define EXITING(func)  sprintf(logmsg, "Exiting %s", func);  LOG.debug(logmsg)
 
 BOOL UseHttpSendReqEx(HINTERNET hRequest, DWORD dwPostSize);
-#define BUFFSIZE 500
 
 HINTERNET inet       = NULL,
           connection = NULL,
@@ -324,7 +324,7 @@ char*  PPC2003TransportAgent::sendMessage(const char*  msg) {
         c_stream.next_in  = (Bytef*)msg;
         c_stream.next_out = (Bytef*)compr;
         
-        while (c_stream.total_in != (uLong)contentLength && c_stream.total_out < contentLength) {
+        while (c_stream.total_in != (uLong)contentLength && c_stream.total_out < (uLong)contentLength) {
             c_stream.avail_in = c_stream.avail_out = 1; /* force small buffers */
             err = deflate(&c_stream, Z_NO_FLUSH);
             if (err != Z_OK) {
@@ -506,21 +506,25 @@ char*  PPC2003TransportAgent::sendMessage(const char*  msg) {
         LOG.debug(READING_RESPONSE);
 
         // Fire Data Received Transport Event
-        fireTransportEvent(contentLengthResponse, RECEIVE_DATA_BEGIN);
-
+        fireTransportEvent(contentLengthResponse, RECEIVE_DATA_BEGIN);        
         sprintf(logmsg, "Content-length: %d", contentLengthResponse);
         LOG.debug(logmsg);
 
         if (contentLengthResponse <= 0) {
-            lastErrorCode = ERR_READING_CONTENT;
-            sprintf(lastErrorMsg, "Invalid content-length: %d", contentLengthResponse);
-            LOG.error(lastErrorMsg);
-            goto exit;
-        }
+            if (maxmsgsize > 0) {
+                LOG.debug("Invalid content-length sent by server. Try use the maxMsgSize %d: ", maxmsgsize);
+                contentLengthResponse = maxmsgsize;
+            } else {
+                LOG.error("Invalid content-length sent by server and MaxMsgSize is %d: ", maxmsgsize);
+                lastErrorCode = ERR_READING_CONTENT;
+                sprintf(lastErrorMsg, "Invalid content-length: %d", contentLengthResponse);
+                LOG.error(lastErrorMsg);
+                goto exit;
+            }                         
+        } 
 
         // Allocate a block of memory for lpHeadersW.
         response = new char[contentLengthResponse+1];
-        memset (response, 0, (contentLengthResponse+1)*sizeof(char));
         if (response == NULL) {
             lastErrorCode = ERR_NOT_ENOUGH_MEMORY;
             sprintf(lastErrorMsg, "Not enough memory to allocate a buffer for the server response: %d required", contentLengthResponse);
@@ -528,7 +532,8 @@ char*  PPC2003TransportAgent::sendMessage(const char*  msg) {
             goto exit;
 
         }
-
+        memset (response, 0, (contentLengthResponse+1)*sizeof(char));
+        
         cont = TRUE;
         hThread = CreateThread(
                      NULL,                      // Pointer to thread security attributes
@@ -596,7 +601,7 @@ char*  PPC2003TransportAgent::sendMessage(const char*  msg) {
 
     // Fire Receive Data End Transport Event
     fireTransportEvent(contentLengthResponse, RECEIVE_DATA_END);
-
+        
 #ifdef USE_ZLIB
 
     if (isToInflate) {
@@ -636,7 +641,22 @@ char*  PPC2003TransportAgent::sendMessage(const char*  msg) {
         }               
     }
 
+#endif        
+        
+#ifndef USE_ZLIB
+    //
+    // Try to optimize the response array to pass back to the sync manager
+    // It is used only where the zlib is not used because the original response is already deleted.    
+    //
+    int len = strlen(response);
+    if (len + OFFSET_TOLERANCE < contentLengthResponse) {
+        char* newRes = new char[len + 1];
+        strcpy(newRes, response);
+        delete [] response;
+        response = newRes;
+    }    
 #endif
+
 
     LOG.debug("Response read");
     LOG.debug("%s", response);
@@ -818,7 +838,7 @@ finally:
 DWORD WINAPI WorkerFunctionInternetReadFile(IN LPVOID vThreadParm) {
     ENTERING("WorkerFunctionInternetReadFile");
     char*  p        = NULL;
-    p = response;
+    p = response;    
     (*p) = 0;
     DWORD size = 0, read = 0;
     int recsize = 0;
@@ -834,15 +854,10 @@ DWORD WINAPI WorkerFunctionInternetReadFile(IN LPVOID vThreadParm) {
 
         if (read != 0) {
             recsize += read;
-            LOG.debug("Size: %d", recsize);
+            LOG.debug("Size: %d", recsize);                       
 
             memcpy(p, bufferA, read);
-            p += read;
-            /*
-            bufferA[read] = 0;
-            strcpy(p, bufferA);
-            p += strlen(bufferA);
-            */
+            p += read;            
             // Fire Data Received Transport Event
             fireTransportEvent(read, DATA_RECEIVED);
         }
