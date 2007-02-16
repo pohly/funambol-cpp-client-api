@@ -107,6 +107,15 @@ int BasicTime::parseRfc822(const char *date)
 	else {
 		ret=sscanf(date, "%s %d %s %d %s %s",
             dayOfWeek, &day, mon, &year, time, timeZone);
+        if (ret >= 1 && ret < 6) {
+            // it can be an error in the format: Mon,12 Feb 2007 09:00:01 +0100
+            // the comma is attached to the day
+            if (*(pdate + 1) != ' ') {
+                ret = sscanf(pdate + 1, "%d %s %d %s %s",
+                    &day, mon, &year, time, timeZone);
+
+            }
+        }
     }
     // Trap parsing error
     if(ret == EOF || ret == 0){
