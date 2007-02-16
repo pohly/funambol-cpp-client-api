@@ -407,6 +407,8 @@ exit:
     if ((status != STATUS_OK) && (response !=NULL)) {
         delete [] response; response = NULL;
     }
+    if (wurlHost)     delete [] wurlHost;
+    if (wurlResource) delete [] wurlResource;
 
     EXITING(L"TransportAgent::sendMessage");
 
