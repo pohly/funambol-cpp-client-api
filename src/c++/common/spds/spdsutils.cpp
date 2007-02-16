@@ -21,6 +21,9 @@
 #include "spds/spdsutils.h"
 #include "base/quoted-printable.h"
 
+#define BASE64 "base64"
+#define QUOTED_PRINTABLE "quoted-printable"
+
 // Base64 encoding for files (with newline)
 char *uuencode(const char *msg, int len);
 
@@ -205,11 +208,11 @@ char *loadAndConvert(const char *filename, const char *encoding)
     if(!readFile(filename, &msg, &msglen, binary))
         return 0;
     // Encode the file
-    if( strcmp(encoding, "base64") == 0 ) {
+    if( strcmp(encoding, BASE64) == 0 ) {
         ret = uuencode(msg, msglen);
         delete [] msg;
     }
-    else if( strcmp(encoding, "quoted-printable") == 0 ) {
+    else if( strcmp(encoding, QUOTED_PRINTABLE) == 0 ) {
         if(qp_isNeed(msg))
             ret = qp_encode(msg);
         delete [] msg;
@@ -232,17 +235,19 @@ int convertAndSave(const char *filename,
         return -1;
 
     // Decode the file
-    if( strcmp(encoding, "base64") == 0 ) {
+    if( strcmp(encoding, BASE64) == 0 ) {
         if( uudecode(s, &buf, &len) ) {
             return -1;
         }
         binary = true;
-    }
-    // TODO
-    //else if( strcmp(encoding, "ISO-8859-1") == 0 ) {
-    //    buf = stringdup(s);
-    //    len = strlen(buf);        
-    //}
+    } else if( strcmp(encoding, QUOTED_PRINTABLE) == 0 ) {
+        if (s == NULL)
+            return -1;
+
+        buf = qp_decode(s);            
+        len = strlen(buf);
+        binary = true;
+    }    
     else {      // Default UTF-8
         buf = stringdup(s);
         len = strlen(buf);
