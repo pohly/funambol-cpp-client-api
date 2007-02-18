@@ -166,6 +166,7 @@ char** readDir(char* name, int *count, bool onlyCount) {
                 entry = readdir(dir);
             }
         }
+        closedir(dir);
     }
 
     return entries;
