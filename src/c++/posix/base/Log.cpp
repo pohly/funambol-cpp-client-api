@@ -37,10 +37,14 @@ static int fderr = -1;
 
 
 void setLogFile(const char *path, const char* name, BOOL redirectStderr) {
-    strncpy(logName, name ? name : "", sizeof(logName));
-    logName[sizeof(logName) - 1] = 0;
-    strncpy(logPath, path ? path : "", sizeof(logPath));
-    logPath[sizeof(logPath) - 1] = 0;
+    if (logName != name) {
+        strncpy(logName, name ? name : "", sizeof(logName));
+        logName[sizeof(logName) - 1] = 0;
+    }
+    if (logPath != path) {
+        strncpy(logPath, path ? path : "", sizeof(logPath));
+        logPath[sizeof(logPath) - 1] = 0;
+    }
     logRedirectStderr = redirectStderr;
 
     if (logFile) {
