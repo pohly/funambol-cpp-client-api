@@ -123,7 +123,7 @@
 				AdditionalIncludeDirectories=".;..\..\;..\..\src\include\common;..\..\src\include\win32;..\..\..\..\..\cppunit-1.12.0\include"
 				PreprocessorDefinitions="WIN32;NDEBUG;_CRT_SECURE_NO_DEPRECATE;_CRT_SECURE_NO_DEPRECATE,ENABLE_UNIT_TESTS,ENABLE_INTEGRATION_TESTS;_CRT_NON_CONFORMING_SWPRINTFS"
 				RuntimeLibrary="0"
-				UsePrecompiledHeader="2"
+				UsePrecompiledHeader="0"
 				WarningLevel="3"
 				Detect64BitPortabilityProblems="true"
 				DebugInformationFormat="3"
@@ -229,7 +229,7 @@
 					>
 					<Tool
 						Name="VCCustomBuildTool"
-						CommandLine="xcopy $InputFileName $TargetDir"
+						CommandLine="xcopy $InputFileName $TargetDir&#x0D;&#x0A;"
 						Outputs="$TargetDir/$InputFileName"
 					/>
 				</FileConfiguration>
@@ -238,7 +238,7 @@
 					>
 					<Tool
 						Name="VCCustomBuildTool"
-						CommandLine="xcopy $InputFileName $TargetDir"
+						CommandLine="xcopy $InputFileName $TargetDir&#x0D;&#x0A;"
 					/>
 				</FileConfiguration>
 			</File>
@@ -250,7 +250,7 @@
 					>
 					<Tool
 						Name="VCCustomBuildTool"
-						CommandLine="xcopy $InputFileName $TargetDir"
+						CommandLine="xcopy $InputFileName $TargetDir&#x0D;&#x0A;"
 						Outputs="$TargetDir/$InputFileName"
 					/>
 				</FileConfiguration>
@@ -259,9 +259,17 @@
 					>
 					<Tool
 						Name="VCCustomBuildTool"
-						CommandLine="xcopy $InputFileName $TargetDir"
+						CommandLine="xcopy $InputFileName $TargetDir&#x0D;&#x0A;"
 					/>
 				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\test\testcases\vcal10.ics"
+				>
+			</File>
+			<File
+				RelativePath="..\..\test\testcases\vcard21.vcf"
+				>
 			</File>
 			<File
 				RelativePath="..\..\test\testcases\vcard30.vcf"
@@ -271,7 +279,7 @@
 					>
 					<Tool
 						Name="VCCustomBuildTool"
-						CommandLine="xcopy $InputFileName $TargetDir"
+						CommandLine="xcopy $InputFileName $TargetDir&#x0D;&#x0A;"
 						Outputs="$TargetDir/$InputFileName"
 					/>
 				</FileConfiguration>
@@ -280,7 +288,7 @@
 					>
 					<Tool
 						Name="VCCustomBuildTool"
-						CommandLine="xcopy $InputFileName $TargetDir"
+						CommandLine="xcopy $InputFileName $TargetDir&#x0D;&#x0A;"
 					/>
 				</FileConfiguration>
 			</File>
@@ -293,9 +301,10 @@
 				>
 				<Tool
 					Name="VCCustomBuildTool"
-					CommandLine="python gentests.py output\win32-dbg\win32.lib tests.c&#x0D;&#x0A;"
+					Description="extracting list of unit tests from lib"
+					CommandLine="python gentests.py output\win32-dbg\win32.lib tests.c"
 					AdditionalDependencies="output\cppunit-dbg\win32.lib"
-					Outputs="tests.c"
+					Outputs="$(IntDir)\tests.c"
 				/>
 			</FileConfiguration>
 			<FileConfiguration
@@ -303,8 +312,9 @@
 				>
 				<Tool
 					Name="VCCustomBuildTool"
-					CommandLine="python gentests.py output\win32\win32.lib tests.c&#x0D;&#x0A;"
-					AdditionalDependencies="output\cppunit\win32.lib"
+					Description="extracting list of unit tests from lib"
+					CommandLine="python gentests.py output\win32-rel\win32.lib tests.c"
+					AdditionalDependencies="output\win32-rel\win32.lib"
 					Outputs="$(IntDir)\tests.c"
 				/>
 			</FileConfiguration>
@@ -312,6 +322,26 @@
 		<File
 			RelativePath="..\..\test\synccompare.pl"
 			>
+			<FileConfiguration
+				Name="Debug|Win32"
+				>
+				<Tool
+					Name="VCCustomBuildTool"
+					Description="copying test files"
+					CommandLine="xcopy ..\..\test $(OutDir) /y /e"
+					Outputs="$(OutDir)\synccompare.pl"
+				/>
+			</FileConfiguration>
+			<FileConfiguration
+				Name="Release|Win32"
+				>
+				<Tool
+					Name="VCCustomBuildTool"
+					Description="copying test files"
+					CommandLine="xcopy ..\..\test $(OutDir) /y /e"
+					Outputs="$(OutDir)\synccompare.pl"
+				/>
+			</FileConfiguration>
 		</File>
 	</Files>
 	<Globals>
