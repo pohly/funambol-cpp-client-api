@@ -120,7 +120,7 @@ int FILESyncSource::beginSync() {
                     SyncItem* s = new SyncItem(wname);
                     deletedItems.items.add(*s);
                     delete s;
-                    delete wname;
+                    delete [] wname;
                 }
             }
         }
