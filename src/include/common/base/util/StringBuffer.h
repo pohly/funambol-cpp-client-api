@@ -21,6 +21,8 @@
 
 #include "base/util/ArrayElement.h"
 
+#include <stdarg.h>
+
 class ArrayList;
 
 /**
@@ -48,7 +50,32 @@ class StringBuffer: public ArrayElement {
         StringBuffer& append(StringBuffer* str) EXTRA_SECTION_00;
 
         StringBuffer& set(const char* ) EXTRA_SECTION_00;
-                
+
+        /**
+         * Executes a sprintf(), overwriting the current string buffer
+         * and enlarging it as necessary. The parameters are that of a
+         * normal sprintf().
+         */
+        StringBuffer& sprintf(const char* format, ...) EXTRA_SECTION_00
+#ifdef __GNUC__
+            /* enables GCC checking of format <-> parameter mismatches */
+            __attribute__ ((format (printf, 2, 3)))
+#endif
+            ;
+
+        /**
+         * Executes a vsprintf(), overwriting the current string
+         * buffer and enlarging it as necessary. The parameters are
+         * that of a normal vsprintf().
+         */
+        StringBuffer& vsprintf(const char* format, va_list ap) EXTRA_SECTION_00
+#ifdef __GNUC__
+            /* enables GCC checking of format <-> parameter mismatches */
+            __attribute__ ((format (printf, 2, 0)))
+#endif
+            ;
+
+
         /**
          * Release the string buffer.
          */

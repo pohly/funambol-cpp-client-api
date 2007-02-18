@@ -20,6 +20,9 @@
 #include "base/messages.h"
 #include "base/util/utils.h"
 #include "base/util/StringBuffer.h"
+#include "base/test.h"
+
+#include <stdio.h>
 
 const size_t StringBuffer::npos = 0xFFFFFFFF;
 static size_t growup = 5;
@@ -96,17 +99,7 @@ StringBuffer& StringBuffer::append(const char* sNew) {
 }
 
 StringBuffer& StringBuffer::append(unsigned long i, BOOL sign) {
-    char v[12];
-
-    if (sign) {
-        // sprintf(v, "%ld", i);
-        sprintf(v, "%ld", i);
-    } else {
-        // sprintf(v, "%lu", i);
-        sprintf(v, "%lu", i);
-    }
-
-    append(v);
+    append(StringBuffer().sprintf(sign ? "%ld" : "%lu", i));
 
     return *this;
 }
@@ -142,6 +135,51 @@ StringBuffer& StringBuffer::set(const char* sNew) {
     
     return *this;
 }
+
+StringBuffer& StringBuffer::sprintf(const char* format, ...) {
+    va_list ap;
+    
+    va_start(ap, format);
+    this->vsprintf(format, ap);
+    va_end(ap);
+
+    return *this;
+}
+
+StringBuffer& StringBuffer::vsprintf(const char* format, va_list ap) {
+    va_list aq;
+
+    // ensure minimal size for first iteration
+    int realsize = 255;
+
+    do {
+        // make a copy to keep ap valid for further iterations
+#ifdef va_copy
+        va_copy(aq, ap);
+#else
+        aq = ap;
+#endif
+
+        if (size < (unsigned long)realsize) {
+            s = (char*)realloc(s, (realsize + 1) * sizeof(char));
+            size = realsize;
+        }
+
+        realsize = vsnprintf(s, size + 1, format, aq);
+        if (realsize == -1) {
+            // old-style vnsprintf: exact len unknown, try again with doubled size
+            realsize = size * 2;
+        }
+        va_end(aq);
+    } while((unsigned long)realsize > size);
+
+    // free extra memory
+    s = (char*)realloc(s, (realsize + 1) * sizeof(char));
+    size = realsize;
+
+    return *this;
+}
+
 
 const char* StringBuffer::getChars() const { return s; }
 
@@ -453,3 +491,43 @@ StringBuffer::StringBuffer(const void* str, size_t len) {
     
     }
 }
+
+
+#ifdef ENABLE_UNIT_TESTS
+
+class StringBufferTest : public CppUnit::TestFixture {
+    CPPUNIT_TEST_SUITE(StringBufferTest);
+    CPPUNIT_TEST(testSprintf);
+    CPPUNIT_TEST_SUITE_END();
+
+private:
+    void testSprintf() {
+        StringBuffer buf;
+
+        buf.sprintf("foo %s %d", "bar", 42);
+        CPPUNIT_ASSERT(buf == "foo bar 42");
+
+        buf = doSprintf("foo %s %d", "bar", 42);
+        CPPUNIT_ASSERT(buf == "foo bar 42");
+
+        for (unsigned long size = 1; size < (1<<10); size *= 2) {
+            buf.sprintf("%*s", (int)size, "");
+            CPPUNIT_ASSERT_EQUAL(size, buf.length());
+        }
+    }
+
+    StringBuffer doSprintf(const char* format, ...) {
+        va_list ap;
+        StringBuffer buf;
+
+        va_start(ap, format);
+        buf.vsprintf(format, ap);
+        va_end(ap);
+
+        return buf;
+    }
+};
+
+FUNAMBOL_TEST_SUITE_REGISTRATION(StringBufferTest);
+
+#endif
