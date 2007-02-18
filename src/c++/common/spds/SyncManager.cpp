@@ -1110,7 +1110,7 @@ int SyncManager::sync() {
                                     // the item is only the pointer not another instance. to save mem
                                     delete syncItem; syncItem = NULL;
                                 } else {
-                                    // assert(msgSize >= maxMsgSize);
+                                    assert(msgSize >= maxMsgSize);
                                     break;
                                 }
                             }
@@ -1187,7 +1187,7 @@ int SyncManager::sync() {
                                 if (syncItemOffset == syncItem->getDataSize()) {
                                     delete syncItem; syncItem = NULL;// the item is only the pointer not another instance. to save mem
                                 } else {
-                                    // assert(msgSize >= maxMsgSize);
+                                    assert(msgSize >= maxMsgSize);
                                     break;
                                 }
                             }
@@ -1207,7 +1207,7 @@ int SyncManager::sync() {
                         // New Item
                         //
                         if (step == 0) {
-                            // assert(syncItem == NULL);
+                            assert(syncItem == NULL);
                             syncItem = getItem(*sources[count], &SyncSource::getFirstNewItem);
                             syncItemOffset = 0;
                             step++;
@@ -1243,7 +1243,7 @@ int SyncManager::sync() {
                                         fireSyncItemEvent(sources[count]->getConfig().getURI(), sources[count]->getConfig().getName(), syncItem->getKey(), ITEM_ADDED_BY_CLIENT);
                                         delete syncItem; syncItem = NULL;
                                     } else {
-                                        // assert(msgSize >= maxMsgSize);
+                                        assert(msgSize >= maxMsgSize);
                                         break;
                                     }
                                 }
@@ -1266,7 +1266,7 @@ int SyncManager::sync() {
                                 modificationCommand = NULL;
                             }
 
-                            // assert(syncItem == NULL);
+                            assert(syncItem == NULL);
                             syncItem = getItem(*sources[count], &SyncSource::getFirstUpdatedItem);
                             syncItemOffset = 0;
 
@@ -1305,7 +1305,7 @@ int SyncManager::sync() {
                                         fireSyncItemEvent(sources[count]->getConfig().getURI(), sources[count]->getConfig().getName(), syncItem->getKey(), ITEM_UPDATED_BY_CLIENT);
                                         delete syncItem; syncItem = NULL;
                                     } else {
-                                        // assert(msgSize >= maxMsgSize);
+                                        assert(msgSize >= maxMsgSize);
                                         break;
                                     }
                                 }
@@ -1364,7 +1364,7 @@ int SyncManager::sync() {
                                         fireSyncItemEvent(sources[count]->getConfig().getURI(), sources[count]->getConfig().getName(), syncItem->getKey(), ITEM_DELETED_BY_CLIENT);
                                         delete syncItem; syncItem = NULL;
                                     } else {
-                                        // assert(msgSize >= maxMsgSize);
+                                        assert(msgSize >= maxMsgSize);
                                         break;
                                     }
                                 }

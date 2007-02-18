@@ -31,6 +31,14 @@ AC_ARG_ENABLE(integration-tests,
               AS_HELP_STRING([--enable-integration-tests],
                              [enables tests outside of the library (can be used together with normal builds of the library)]),
               enable_integration_tests="$enableval", enable_integration_tests="no")
+AC_ARG_ENABLE(assert,
+              AS_HELP_STRING([--enable-assert],
+                             [turn on assertions]),
+              enable_assert="$enableval", enable_assert="no")
+
+if test $enable_assert == "no"; then
+        AC_DEFINE(NDEBUG, 1, [Define to 1 if assertions should be disabled.])
+fi
 
 # cppunit needed?
 if test $enable_unit_tests == "yes" || test $enable_integration_tests == yes; then
