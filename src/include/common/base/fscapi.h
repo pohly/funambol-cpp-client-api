@@ -92,6 +92,24 @@
     /** use in format string like this: printf( "str '%" WCHAR_PRINTF "'", (WCHAR *)foo) */
     # define WCHAR_PRINTF "ls"
     #endif
+
+    /**
+     * All platforms are expected to have assert.h and provide
+     * assert() in it. However, controlling whether assertions are
+     * enabled or not depends on the specific platform.
+     *
+     * On Windows, the Visual Studio project file enables assertions
+     * in debug builds and disables them in release builds.
+     *
+     * On systems using the autotools build, the --enable-assert
+     * option must be used to enable assertions. To be compatible with
+     * previous revisions they are disabled by default.
+     *
+     * @warning Source files should always include assert.h via
+     * fscapi.h so that the platform specific code above has a chance
+     * to control assertions.
+     */
+    #include <assert.h>
     
 #endif
 
