@@ -265,7 +265,7 @@ const char* getSourceName(const char *uri)
     char nodeName = new char[];
     strcpy(nodeName, rootContext); strcat(nodeName, CONTEXT_SPDS_SOURCES);
 
-    node = dmt->getManagementNode(nodeName);
+    node = dmt->readManagementNode(nodeName);
     if ( ! node ) {
         lastErrorCode = ERR_INVALID_CONTEXT;
         sprintf(lastErrorMsg, ERRMSG_INVALID_CONTEXT, nodeName);

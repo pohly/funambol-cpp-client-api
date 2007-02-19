@@ -193,13 +193,13 @@ BOOL DMTClientConfig::open() {
     dmt = DMTreeFactory::getDMTree(rootContext);
 
     sprintf(nodeName, "%s%s", rootContext, CONTEXT_SPDS_SYNCML);
-    syncMLNode = dmt->getManagementNode(nodeName);
+    syncMLNode = dmt->readManagementNode(nodeName);
     if (!syncMLNode ) {
         goto failed;
     }
     
     sprintf(nodeName, "%s%s", rootContext, CONTEXT_SPDS_SOURCES);
-    sourcesNode = dmt->getManagementNode(nodeName);
+    sourcesNode = dmt->readManagementNode(nodeName);
     if (!sourcesNode) {
         goto failed;
     }
@@ -275,7 +275,7 @@ BOOL DMTClientConfig::readAccessConfig(ManagementNode& n) {
     // Auth properties
     //
     sprintf(nodeName, "%s%s", syncMLContext, CONTEXT_AUTH);
-    node = dmt->getManagementNode(nodeName);
+    node = dmt->readManagementNode(nodeName);
     if (node) {
         if (!readAuthConfig(n, *node)) {
             ret = FALSE;
@@ -291,7 +291,7 @@ BOOL DMTClientConfig::readAccessConfig(ManagementNode& n) {
     // Conn properties
     //
     sprintf(nodeName, "%s%s", syncMLContext, CONTEXT_CONN);
-    node = dmt->getManagementNode(nodeName);
+    node = dmt->readManagementNode(nodeName);
     if (node) {
         if (!readConnConfig(n, *node)) {
             ret = FALSE;
@@ -307,7 +307,7 @@ BOOL DMTClientConfig::readAccessConfig(ManagementNode& n) {
     // Ext properties (other misc props)
     //
     sprintf(nodeName, "%s%s", syncMLContext, CONTEXT_EXT);
-    node = dmt->getManagementNode(nodeName);
+    node = dmt->readManagementNode(nodeName);
     if (node) {
         if (!readExtAccessConfig(n, *node)) {
             ret = FALSE;
@@ -344,7 +344,7 @@ void DMTClientConfig::saveAccessConfig(ManagementNode& n) {
     // Auth properties
     //
     sprintf(nodeName, "%s%s", syncMLContext, CONTEXT_AUTH);
-    node = dmt->getManagementNode(nodeName);
+    node = dmt->readManagementNode(nodeName);
     if (node) {
         saveAuthConfig(n, *node);
         delete node; 
@@ -355,7 +355,7 @@ void DMTClientConfig::saveAccessConfig(ManagementNode& n) {
     // Conn properties
     //
     sprintf(nodeName, "%s%s", syncMLContext, CONTEXT_CONN);
-    node = dmt->getManagementNode(nodeName);
+    node = dmt->readManagementNode(nodeName);
     if (node) {
         saveConnConfig(n, *node);
         delete node; 
@@ -366,7 +366,7 @@ void DMTClientConfig::saveAccessConfig(ManagementNode& n) {
     // Ext properties (other misc props)
     //
     sprintf(nodeName, "%s%s", syncMLContext, CONTEXT_EXT);
-    node = dmt->getManagementNode(nodeName);
+    node = dmt->readManagementNode(nodeName);
     if (node) {
         saveExtAccessConfig(n, *node);
         delete node; 
@@ -398,7 +398,7 @@ BOOL DMTClientConfig::readDeviceConfig(ManagementNode& n) {
     // DevInfo properties
     //
     sprintf(nodeName, "%s%s", syncMLContext, CONTEXT_DEV_INFO);
-    node = dmt->getManagementNode(nodeName);
+    node = dmt->readManagementNode(nodeName);
     if (node) {
         if (!readDevInfoConfig(n, *node)) {
             ret = FALSE;
@@ -414,7 +414,7 @@ BOOL DMTClientConfig::readDeviceConfig(ManagementNode& n) {
     // DevDetail properties
     //
     sprintf(nodeName, "%s%s", syncMLContext, CONTEXT_DEV_DETAIL);
-    node = dmt->getManagementNode(nodeName);
+    node = dmt->readManagementNode(nodeName);
     if (node) {
         if (!readDevDetailConfig(n, *node)) {
             ret = FALSE;
@@ -430,7 +430,7 @@ BOOL DMTClientConfig::readDeviceConfig(ManagementNode& n) {
     // Ext properties (other misc props)
     //
     sprintf(nodeName, "%s%s", syncMLContext, CONTEXT_EXT);
-    node = dmt->getManagementNode(nodeName);
+    node = dmt->readManagementNode(nodeName);
     if (node) {
         if (!readExtDevConfig(n, *node)) {
             ret = FALSE;
@@ -467,7 +467,7 @@ void DMTClientConfig::saveDeviceConfig(ManagementNode& n) {
     // DevInfo properties
     //
     sprintf(nodeName, "%s%s", syncMLContext, CONTEXT_DEV_INFO);
-    node = dmt->getManagementNode(nodeName);
+    node = dmt->readManagementNode(nodeName);
     if (node) {
         saveDevInfoConfig(n, *node);
         delete node; 
@@ -478,7 +478,7 @@ void DMTClientConfig::saveDeviceConfig(ManagementNode& n) {
     // DevDetail properties
     //
     sprintf(nodeName, "%s%s", syncMLContext, CONTEXT_DEV_DETAIL);
-    node = dmt->getManagementNode(nodeName);
+    node = dmt->readManagementNode(nodeName);
     if (node) {
         saveDevDetailConfig(n, *node);
         delete node; 
@@ -489,7 +489,7 @@ void DMTClientConfig::saveDeviceConfig(ManagementNode& n) {
     // Ext properties (other misc props)
     //
     sprintf(nodeName, "%s%s", syncMLContext, CONTEXT_EXT);
-    node = dmt->getManagementNode(nodeName);
+    node = dmt->readManagementNode(nodeName);
     if (node) {
         saveExtDevConfig(n, *node);
         delete node; 
@@ -544,7 +544,7 @@ void DMTClientConfig::saveSourceConfig(int i, ManagementNode& n) {
         char* fn = n.createFullName();
         sprintf(nodeName, "%s/%s", fn, sourceConfigs[i].getName());
         delete [] fn;
-        node = dmt->getManagementNode(nodeName);
+        node = dmt->readManagementNode(nodeName);
     }
     else {
         node = (ManagementNode*)n.getChild(i)->clone();

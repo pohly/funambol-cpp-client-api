@@ -63,7 +63,7 @@ bool DMTree::isLeaf(const char *node) {
  * The ManagementNode is created with the new operator and must be
  * discarded by the caller with the operator delete.
  */
-ManagementNode* DMTree::getManagementNode(const char* node) {
+ManagementNode* DMTree::readManagementNode(const char* node) {
 
     //LOG.debug(node);
     

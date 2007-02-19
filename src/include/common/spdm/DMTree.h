@@ -46,7 +46,7 @@
          * The ManagementNode is created with the new operator and must be
          * discarded by the caller with the operator delete.
          */
-        virtual ManagementNode* getManagementNode(const char*  node);
+        virtual ManagementNode* readManagementNode(const char*  node);
 
         void setManagementNode(ManagementNode& n);
 
