@@ -37,7 +37,9 @@
 
 typedef wchar_t WCHAR;
 
-
+/* Map snprintf and vsnprintf to winmobile functions */
+#define snprintf _snprintf
+#define vsnprintf _vsnprintf
 
 /* some of the code compares NULL against integers, which
    fails if NULL is defined as (void *)0 */
