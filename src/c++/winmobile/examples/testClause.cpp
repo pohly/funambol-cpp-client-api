@@ -23,7 +23,7 @@
 #include "base/util/StringBuffer.h"
 #include "spds/spdsutils.h"
 #include "spds/constants.h"
-#include "client/Sync4jClient.h"
+#include "client/SyncClient.h"
 #include "client/DMTClientConfig.h"
 #include "examples/TestSyncSource.h"
 #include "examples/TestSyncSource2.h"

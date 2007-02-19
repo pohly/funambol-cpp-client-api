@@ -23,7 +23,7 @@
 #include "base/Log.h"
 #include "base/util/ArrayList.h"
 #include "base/util/StringBuffer.h"
-#include "client/Sync4jClient.h"
+#include "client/SyncClient.h"
 #include "client/DMTClientConfig.h"
 #include "client/MailSourceManagementNode.h"
 #include "examples/TestSyncSource.h"
