@@ -56,7 +56,6 @@
 
     #ifdef _WIN32_WCE
         #include "base/time.h"
-        //#include "base/PPC2003adapter.h" 
         #include "base/winmobileadapter.h" 
     #endif
 
