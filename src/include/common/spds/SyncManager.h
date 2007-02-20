@@ -106,10 +106,10 @@ class SyncManager {
 
         // Struct used to pass command info to the method processSyncItem
         struct CommandInfo {
-            const char*  commandName;
-            const char *cmdRef;
-            const char*  format;
-            const char*  dataType;
+            const char* commandName;
+            const char* cmdRef;
+            const char* format;
+            const char* dataType;
             long size;
         };
 
@@ -137,7 +137,7 @@ class SyncManager {
          * modifications sorted as alerts in this list. This array is retrieved from 
          * SyncMLProcessor::getSortedSourcesFromServer.
          */
-       char** sortedSourcesFromServer;
+        char** sortedSourcesFromServer;
         
 		ArrayList** allItemsList;
         

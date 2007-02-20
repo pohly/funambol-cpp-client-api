@@ -105,8 +105,9 @@ inline static bool isAuthFailed(int status) {
  */
 bool SyncManager::isToExit() {
     for (int i = 0; i < sourcesNumber; i++) {
-        if (sources[i]->getReport() && sources[i]->getReport()->checkState() == true) 
+        if (sources[i]->getReport()->checkState() == true) {
             return false; 
+        }
     }
     return true;
 }
@@ -119,9 +120,6 @@ void SyncManager::setSourceStateAndError(unsigned int index, SourceState  state,
 
     SyncSourceReport* report = sources[index]->getReport();
 
-    if (!report) {
-        return;
-    }
     report->setState(state);
     report->setLastErrorCode(code);
     report->setLastErrorMsg(msg);
@@ -162,7 +160,6 @@ void SyncManager::initialize() {
     currentState   = STATE_START;
     mappings       = NULL;
     sourcesNumber  = 0;
-    sources        = NULL;
     count          = 0;
     commands       = NULL;
     devInf         = NULL;
@@ -278,16 +275,32 @@ int SyncManager::prepareSync(SyncSource** s) {
     StringBuffer* devInfStr     = NULL;
     BOOL putDevInf              = FALSE;
     char devInfHash[16 * 4 +1]; // worst case factor base64 is four
-    const char *syncURL;
     
+    lastErrorCode = 0;
+
     // Fire Sync Begin Event
     fireSyncEvent(NULL, SYNC_BEGIN);
 
-    syncURL = config.getAccessConfig().getSyncURL(); //sizeof(syncURL));
-
-    URL url(syncURL);
+    URL url(config.getAccessConfig().getSyncURL());
     Proxy proxy;
+    LOG.info(MSG_SYNC_URL, syncURL);
 
+    // Copy and validate given 
+    sourcesNumber = assignSources(s);
+    if (lastErrorCode) {
+        ret = lastErrorCode;    // set when a source has an invalid config
+    }
+
+    if (isToExit()) {
+        if (!ret) {
+            // error: no source to sync
+            ret = lastErrorCode = ERR_NO_SOURCE_TO_SYNC;
+            sprintf(lastErrorMsg, ERRMSG_NO_SOURCE_TO_SYNC);
+        }
+
+        goto finally;
+    }
+    
     // Set proxy username/password if proxy is used.
     if (config.getAccessConfig().getUseProxy()) {
         //char* proxyHost = config.getAccessConfig().getProxyHost();
@@ -297,37 +310,17 @@ int SyncManager::prepareSync(SyncSource** s) {
         proxy.setProxy(NULL, 0, proxyUser, proxyPwd);
     }
     
-    const char* sourceName = NULL;
-    
-    sourcesNumber = assignSources(s);
     mappings = new ArrayList*[sourcesNumber + 1];
     for (count = 0; count < sourcesNumber; count++) {
         mappings[count] = new ArrayList();
-    }
-
-    // --- INFO
-    LOG.info(MSG_SYNC_URL, syncURL);
-    for (count = 0; count < sourcesNumber; count++) {
         LOG.info(MSG_PREPARING_SYNC, _wcc(sources[count]->getName()));
     }
-    // ---
 
     syncMLBuilder.resetMessageID();
     syncMLBuilder.resetCommandID();
     syncMLBuilder.resetMessageID();
     unsigned long timestamp = (unsigned long)time(NULL);
     config.getAccessConfig().setBeginSync(timestamp);
-
-    for (count = 0; count < sourcesNumber; count ++) {
-        if (readSyncSourceDefinition(*sources[count]) == false) {
-            ret = lastErrorCode = ERR_SOURCE_DEFINITION_NOT_FOUND;
-            sprintf(lastErrorMsg, ERRMSG_SOURCE_DEFINITION_NOT_FOUND,
-                                   _wcc(sources[count]->getName()));
-            LOG.debug(lastErrorMsg);
-
-            setSourceStateAndError(count, SOURCE_ERROR, ERR_SOURCE_DEFINITION_NOT_FOUND, lastErrorMsg);
-        }
-    }
 
     // Create the device informations.
     devInf = createDeviceInfo();
@@ -356,33 +349,11 @@ int SyncManager::prepareSync(SyncSource** s) {
         LOG.debug("no devinfo available");
     }
 
-    // have device infos changed since the last time that they were
-    // sent or is this the initial sync?
-    
-
-    // disable all SyncSources without a preferred sync mode
-    for (count = 0; count < sourcesNumber; count ++) {
-        if (!sources[count]->getReport() || !sources[count]->getReport()->checkState())
-            continue;
-
-        if (sources[count]->getPreferredSyncMode() == SYNC_NONE) {
-            sources[count]->getReport()->setState(SOURCE_INACTIVE);
-        }
-    }
-        
-    if (isToExit()) {
-        if (!ret) {
-            // error: no source to sync
-            ret = lastErrorCode = ERR_NO_SOURCE_TO_SYNC;
-            sprintf(lastErrorMsg, ERRMSG_NO_SOURCE_TO_SYNC);
-        }
-
-        goto finally;
-    }
-          
-    if (isServerAuthRequired == FALSE) 
+    if (isServerAuthRequired == FALSE) {
         isServerAuthenticated = TRUE;
+    }
 
+    // Authentication
     do {
         deleteCred(&cred);
         deleteAlert(&alert);
@@ -396,7 +367,7 @@ int SyncManager::prepareSync(SyncSource** s) {
             char anc[DIM_ANCHOR];
             timestamp = (unsigned long)time(NULL);
             for (count = 0; count < sourcesNumber; count ++) {
-                if (!sources[count]->getReport() || !sources[count]->getReport()->checkState())
+                if (!sources[count]->getReport()->checkState())
                     continue;
                 sources[count]->setNextSync(timestamp);
                 timestampToAnchor(sources[count]->getNextSync(), anc);
@@ -535,7 +506,7 @@ int SyncManager::prepareSync(SyncSource** s) {
         }
 
         for (count = 0; count < sourcesNumber; count ++) {
-            if (!sources[count]->getReport() || !sources[count]->getReport()->checkState())
+            if (!sources[count]->getReport()->checkState())
                 continue;
 
             int sourceRet = syncMLProcessor.processAlertStatus(*sources[count], syncml, alerts);
@@ -615,7 +586,7 @@ int SyncManager::prepareSync(SyncSource** s) {
         deleteStatus(&status);
         list = syncMLProcessor.getCommands(syncml->getSyncBody(), ALERT);    
         for (count = 0; count < sourcesNumber; count ++) {
-            if (!sources[count]->getReport() || !sources[count]->getReport()->checkState())
+            if (!sources[count]->getReport()->checkState())
                 continue;
 
             status = syncMLBuilder.prepareAlertStatus(*sources[count], list, authStatusCode);    
@@ -738,7 +709,7 @@ int SyncManager::prepareSync(SyncSource** s) {
             sortedSourcesFromServer = syncMLProcessor.getSortedSourcesFromServer(syncml, sourcesNumber);
 
             for (count = 0; count < sourcesNumber; count ++) {
-                if (!sources[count]->getReport() || !sources[count]->getReport()->checkState())
+                if (!sources[count]->getReport()->checkState())
                     continue;
                 ret = syncMLProcessor.processServerAlert(*sources[count], syncml);
                 if (isErrorStatus(ret)) {
@@ -746,7 +717,10 @@ int SyncManager::prepareSync(SyncSource** s) {
                     LOG.error(logmsg);
                     setSourceStateAndError(count, SOURCE_ERROR, ret, logmsg); 
                 }
-                fireSyncSourceEvent(sources[count]->getConfig().getURI(), sources[count]->getConfig().getName(), sources[count]->getSyncMode(), 0, SYNC_SOURCE_SYNCMODE_REQUESTED);
+                fireSyncSourceEvent(sources[count]->getConfig().getURI(),
+                                    sources[count]->getConfig().getName(),
+                                    sources[count]->getSyncMode(),
+                                    0, SYNC_SOURCE_SYNCMODE_REQUESTED);
             }  
        }
     
@@ -758,7 +732,12 @@ int SyncManager::prepareSync(SyncSource** s) {
     
     if (isToExit()) {
         // error. no source to sync
-        ret = -1;
+        if (!ret) {
+            // error: no source to sync
+            ret = lastErrorCode = ERR_NO_SOURCE_TO_SYNC;
+            sprintf(lastErrorMsg, ERRMSG_NO_SOURCE_TO_SYNC);
+        }
+
         goto finally;
     }
 
@@ -854,17 +833,15 @@ BOOL SyncManager::checkForServerChanges(SyncML* syncml, ArrayList &statusList)
                 goto finally;
             }
 
-            if (!sources[count]->getReport() || !sources[count]->getReport()->checkState()) {
+            if (!sources[count]->getReport()->checkState()) {
                 i++;             
-            continue;
+                continue;
             }
 
             if (strcmp(prevSourceName, "") == 0) {
                 strcpy(prevSourceName, locuri);                            
             }
-            if (strcmp(prevSourceName, locuri) == 0) {
-                // nothing to do
-            } else {
+            if (strcmp(prevSourceName, locuri) != 0) {
                 isFiredSyncEventBEGIN = FALSE;                
                 fireSyncSourceEvent(prevSourceUri, prevSourceName, prevSyncMode, 0, SYNC_SOURCE_END);                
                 strcpy(prevSourceName, locuri);                   
@@ -875,11 +852,18 @@ BOOL SyncManager::checkForServerChanges(SyncML* syncml, ArrayList &statusList)
             // Fire SyncSource event: BEGIN sync of a syncsource (server modifications)
             // (fire only if <sync> tag exist)
             if (isFiredSyncEventBEGIN == FALSE) {
-            fireSyncSourceEvent(sources[count]->getConfig().getURI(), sources[count]->getConfig().getName(), sources[count]->getSyncMode(), 0, SYNC_SOURCE_BEGIN);
+                fireSyncSourceEvent(sources[count]->getConfig().getURI(),
+                        sources[count]->getConfig().getName(),
+                        sources[count]->getSyncMode(), 0, SYNC_SOURCE_BEGIN);
+
                 strcpy(prevSourceUri,  sources[count]->getConfig().getURI());
                 prevSyncMode = sources[count]->getSyncMode();
+
                 long noc = sync->getNumberOfChanges();
-                fireSyncSourceEvent(sources[count]->getConfig().getURI(), sources[count]->getConfig().getName(), sources[count]->getSyncMode(), noc, SYNC_SOURCE_TOTAL_SERVER_ITEMS);
+                fireSyncSourceEvent(sources[count]->getConfig().getURI(),
+                        sources[count]->getConfig().getName(),
+                        sources[count]->getSyncMode(), noc, SYNC_SOURCE_TOTAL_SERVER_ITEMS);
+
                 isFiredSyncEventBEGIN = TRUE;
             }
 
@@ -912,7 +896,7 @@ BOOL SyncManager::checkForServerChanges(SyncML* syncml, ArrayList &statusList)
                 for (int j = 0; j < list->size(); j++) {
                     Item *item = (Item*)list->get(j);
                     if (item == NULL) {
-                        LOG.error("SyncManager::sync() - unexpected NULL item.");
+                        LOG.error("SyncManager::checkForServerChanges() - unexpected NULL item.");
                         result = TRUE;
                         goto finally;
                     }
@@ -977,7 +961,7 @@ int SyncManager::sync() {
     BOOL isFinalfromServer = FALSE;
     BOOL isAtLeastOneSourceCorrect = FALSE;
 
-    //for refresh from server sync
+    //for refresh from server sync (TO BE REMOVED?)
     allItemsList = new ArrayList*[sourcesNumber]; 
 
     //
@@ -988,16 +972,16 @@ int SyncManager::sync() {
         currentState = STATE_PKG3_SENDING;
     }
 
-    // The real number of source to sync
+    // The real number of source to sync (XXX REMOVE ME)
     for (count = 0; count < sourcesNumber; count ++) {
-        allItemsList[count] = NULL;
-        if (!sources[count]->getReport() || !sources[count]->getReport()->checkState())
+        if (!sources[count]->getReport()->checkState())
             continue;
         toSync++;
     }
 
     for (count = 0; count < sourcesNumber; count ++) {
-        if (!sources[count]->getReport() || !sources[count]->getReport()->checkState())
+        allItemsList[count] = NULL;
+        if (!sources[count]->getReport()->checkState())
             continue;
 
         // note: tot == 0 is used to detect when to start iterating over
@@ -1015,13 +999,12 @@ int SyncManager::sync() {
             lastErrorCode = ERR_UNSPECIFIED;
             ret = lastErrorCode;
             // syncsource should have set its own errors. If not, set default error.
-            if (!sources[count]->getReport() || sources[count]->getReport()->checkState()) {
+            if (sources[count]->getReport()->checkState()) {
                 setSourceStateAndError(count, SOURCE_ERROR, ERR_UNSPECIFIED, "Error in begin sync");
             }
             continue;
         }
-        else
-        {
+        else {
             isAtLeastOneSourceCorrect = TRUE;
         }
 
@@ -1506,14 +1489,14 @@ int SyncManager::sync() {
     //
     // send 222 alert code to retrieve the item from server
     //    
-    if ((FALSE == isFinalfromServer) && (TRUE == isAtLeastOneSourceCorrect))
-    {
+    if ( !isFinalfromServer && isAtLeastOneSourceCorrect ) {
         status = syncMLBuilder.prepareSyncHdrStatus(NULL, 200);
 	    commands->add(*status);
         deleteStatus(&status); 
         for (count = 0; count < sourcesNumber; count ++) {
-            if(!sources[count]->getReport() || !sources[count]->getReport()->checkState())
+            if(!sources[count]->getReport()->checkState()) { 
                 continue;
+            }
             if ((sources[count]->getSyncMode() != SYNC_ONE_WAY_FROM_CLIENT) &&
                 (sources[count]->getSyncMode() != SYNC_REFRESH_FROM_CLIENT))
             {
@@ -1531,6 +1514,7 @@ int SyncManager::sync() {
 
         responseMsg = transportAgent->sendMessage(msg);
         if (responseMsg == NULL) {
+            LOG.debug("SyncManager::sync(): null responseMsg");
             ret=lastErrorCode;
             goto finally;
         } 
@@ -1547,6 +1531,7 @@ int SyncManager::sync() {
         deleteArrayList(&commands);
 
         if (syncml == NULL) {
+            LOG.debug("SyncManager::sync(): null syncml");
             ret = lastErrorCode;
             goto finally;
         }  
@@ -1657,20 +1642,16 @@ int SyncManager::endSync() {
     
     // The real number of source to sync
     for (count = 0; count < sourcesNumber; count ++) {
-        if (!sources[count]->getReport() || !sources[count]->getReport()->checkState())
+        if (!sources[count]->getReport()->checkState()) {
             continue;
-        /*
-        if (  ( (sources[count]->getSyncMode()) != SYNC_ONE_WAY_FROM_CLIENT &&
-                (sources[count]->getSyncMode()) != SYNC_REFRESH_FROM_CLIENT 
-               )                      
-           )
-        */
+        }
         toSync++;
     }
     
     for (count = 0; count < sourcesNumber; count ++) {
-        if (!sources[count]->getReport() || !sources[count]->getReport()->checkState())
+        if (!sources[count]->getReport()->checkState()) {
             continue;
+        }
         
         iterator++;
         if (  (sources[count]->getSyncMode() == SYNC_ONE_WAY_FROM_CLIENT && 
@@ -1809,7 +1790,7 @@ int SyncManager::endSync() {
  finally:
 
     for (count = 0; count < sourcesNumber; count ++) {
-        if (!sources[count]->getReport() || !sources[count]->getReport()->checkState())
+        if (!sources[count]->getReport()->checkState())
             continue;
    
         commitChanges(*sources[count]);
@@ -1887,29 +1868,60 @@ BOOL SyncManager::commitChanges(SyncSource& source) {
     return FALSE;
 }
 
+/**
+ * This method copies the valid sources into the member <code>sources</code>.
+ * The check done before the source is put in the list are:
+ * - must have a SyncSourceReport
+ * - must have a SyncSourceConfig
+ * - the preferred syncmode must be different from SYNC_NONE
+ *
+ * Sets lastErrorCode.
 
-int SyncManager::assignSources(SyncSource** sources) {
+ * @return the number of active sources
+ */
+int SyncManager::assignSources(SyncSource** srclist) {
     
-    int count = 0, i = 0;
+    int n = 0, i = 0, activeSources = 0;
     
-    if (sources == NULL)
-        goto finally;;    
-
-    while(1) {
-        if (sources[count])
-            count++;
-        else
-            break;
-    }
-    this->sources = new SyncSource*[count + 1];
-    for (i = 0; i < count + 1; i++) {
-        this->sources[i] = sources[i];
+    if (!srclist) {
+        return 0;
     }
 
-finally:
+    // Count sources 
+    while (srclist[n]) n++;
+    
+    // Allocate the array (use max value anyway)
+    this->sources = new SyncSource*[n+1];
+    
+    // Copy source pointers (only valid ones)
+    for (i = 0; i < n; i++) {
+        const char* name = srclist[i]->getConfig().getName();
+        // Check valid report
+        if ( !srclist[i]->getReport() ) {
+            LOG.error("No SyncSourceReport for source: ", name);
+            continue;
+        }
+        // Check valid config
+        if ( !readSyncSourceDefinition(*srclist[i]) ) {
 
-    return count;
+            lastErrorCode = ERR_SOURCE_DEFINITION_NOT_FOUND;
+            sprintf(lastErrorMsg, ERRMSG_SOURCE_DEFINITION_NOT_FOUND, name);
+            LOG.debug(lastErrorMsg);
 
+            setSourceStateAndError(i, SOURCE_ERROR,
+                                   ERR_SOURCE_DEFINITION_NOT_FOUND, lastErrorMsg);
+            continue;
+        }
+        // Check source active
+        if (srclist[i]->getPreferredSyncMode() != SYNC_NONE) {
+            srclist[i]->getReport()->setState(SOURCE_ACTIVE);
+            // Ok, store the source in the active list
+            this->sources[activeSources++] = srclist[i];
+        }
+    }
+    this->sources[activeSources] = 0;   // Terminate the array
+
+    return activeSources;
 }
 
 SyncItem* SyncManager::getItem(SyncSource& source, SyncItem* (SyncSource::* getItemFunction)()) {
@@ -1970,8 +1982,10 @@ Status *SyncManager::processSyncItem(Item* item, const CommandInfo &cmdInfo, Syn
         }
 
         // if no error yet, also check for the same command and same source
-        if (incomingItem->cmdName.c_str() && strcmp(incomingItem->cmdName.c_str(), cmdInfo.commandName) ||
+        if (incomingItem->cmdName.c_str() &&
+            strcmp(incomingItem->cmdName.c_str(), cmdInfo.commandName) ||
             count != incomingItem->sourceIndex) {
+
             newItem = TRUE;
         }
         if (newItem) {
@@ -2175,19 +2189,16 @@ Status *SyncManager::processSyncItem(Item* item, const CommandInfo &cmdInfo, Syn
  */
 DevInf *SyncManager::createDeviceInfo()
 {
-    const char *rxType, *rxVer,
-        *txType, *txVer;
+    const char *rxType, *rxVer, *txType, *txVer;
 
     // check that essential information is available
     // for each source
-    for (SyncSource **source = sources;
-         *source;
-         source++) {
+    for (SyncSource **source = sources;  *source;  source++) {
         
-        rxType = (*sources)->getConfig().getType();
-        txType = (*sources)->getConfig().getType();
-        rxVer  = (*sources)->getConfig().getVersion();
-        txVer  = (*sources)->getConfig().getVersion();
+        rxType = (*source)->getConfig().getType();
+        txType = (*source)->getConfig().getType();
+        rxVer  = (*source)->getConfig().getVersion();
+        txVer  = (*source)->getConfig().getVersion();
 
         if (!rxType || !rxVer || !txType || !txVer) {
             return NULL;
@@ -2275,10 +2286,10 @@ DevInf *SyncManager::createDeviceInfo()
         SourceRef sourceRef(name);
         delete [] name; name = NULL;
 
-        rxType = (*sources)->getConfig().getType();
-        txType = (*sources)->getConfig().getType();
-        rxVer  = (*sources)->getConfig().getVersion();
-        txVer  = (*sources)->getConfig().getVersion();
+        rxType = (*source)->getConfig().getType();
+        txType = (*source)->getConfig().getType();
+        rxVer  = (*source)->getConfig().getVersion();
+        txVer  = (*source)->getConfig().getVersion();
         
         ContentTypeInfo rxPref(rxType, rxVer);
         ArrayList rx;

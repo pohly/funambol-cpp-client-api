@@ -114,7 +114,6 @@ bool SyncSourceReport::checkState() {
 }
 
 
-
 ItemReport* SyncSourceReport::getItemReport(const char* target, const char* command, int index) {
 
     ArrayList* list = getList(target, command);
@@ -126,7 +125,8 @@ ItemReport* SyncSourceReport::getItemReport(const char* target, const char* comm
 }
 
 
-void SyncSourceReport::addItem(const char* target, const char* command, const WCHAR* ID, const int status, const WCHAR* statusMessage) {
+void SyncSourceReport::addItem(const char* target, const char* command, const WCHAR* ID,
+                               const int status, const WCHAR* statusMessage) {
 
     // Create the ItemReport element
     ItemReport element(ID, status, statusMessage);
@@ -257,7 +257,7 @@ void SyncSourceReport::initialize() {
     lastErrorCode  = ERR_NONE;
     lastErrorMsg   = NULL;
     sourceName     = NULL;
-    state          = SOURCE_ACTIVE;
+    state          = SOURCE_INACTIVE;
     clientAddItems = NULL;
     clientModItems = NULL;
     clientDelItems = NULL;
