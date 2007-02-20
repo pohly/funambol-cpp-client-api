@@ -356,7 +356,7 @@ void printReport(SyncReport* sr, const char*sourceName) {
     res.append("----------|-----------------------------------------------|\n");
 
     int sourceNumber = 1;
-    for (unsigned int i=0; i<sourceNumber; i++) {
+    for (int i=0; i<sourceNumber; i++) {
         SyncSourceReport* ssr = sr->getSyncSourceReport(sourceName);
 
         sprintf(tmp, "%10s|", ssr->getSourceName());
