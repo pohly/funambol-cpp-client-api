@@ -25,7 +25,7 @@
  * DMTreeManager is an abstract class for which implementors have to provide a
  * concrete implementation. It provides the ability to retrieve and store
  * objects into the DM platform specific repository. Note that the object
- * returned by getManagementNode() is created with the standard C++ new operator
+ * returned by readManagementNode() is created with the standard C++ new operator
  * and must be deleted by the caller with the standard C++ delete operator.
  */
 class DMTreeManager {
@@ -40,7 +40,7 @@ class DMTreeManager {
          * which node is given, the result is either an instance
          * of SourceManagementNode or AccessManagementNode.
          */
-        virtual ManagementNode* const getManagementNode(const char*  node)=0;
+        virtual ManagementNode* const readManagementNode(const char*  node)=0;
 
         /*
          * Stores the content of the node permanently in the DMTree
