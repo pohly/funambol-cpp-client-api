@@ -2,29 +2,23 @@ API TODO LIST
 -------------
 
 1) Features SyncML:
-    1 Large Object Support
     1 Handle status of items (if an item was sent successful don't send it again)
     2 SyncML DM: implement tree and new syncml classes
     3 Suspend/resume (3.5)
 
 2) Interoperability/portability:
-    1 Apply the patches for Synthesis and verify them with the other
-      plugins.
-    1 Implement devinfo (the SyncML objects are already there, changes needed
-      in Parser/Formatter and API).
     1 64 bits support
     1 char / wchar use.
-        2 remove wchar
+        2 remove wchar (70% done...)
 
 
 3) API interface:
     1 Make object ownership more clear (use of const, inline documentation)
-    1 The SyncItems are created by the source and release by the engine
-    1 Event Handling (create default implementation)
-    1 SyncSource failure handling
     2 VOCL support for vCard 3.0 and iCal 2.1... 
 
 4) Improvement
     2 Memory handling
+    2 Make the SyncSourceReport owned by the SyncSource and copied to the
+      SyncReport at the end.
 
 
