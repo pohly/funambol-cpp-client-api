@@ -41,8 +41,8 @@
 
 **/
 
-#ifndef INCL_PPC2003_TRANSPORT_AGENT
-    #define INCL_PPC2003_TRANSPORT_AGENT
+#ifndef INCL_WM_TRANSPORT_AGENT
+    #define INCL_WM_TRANSPORT_AGENT
 
     #include "base/fscapi.h"
 
@@ -57,13 +57,13 @@
      * This is a generic abtract class which is not bound to any paltform
      */
 
-    class PPC2003TransportAgent : public TransportAgent {
+    class WMTransportAgent : public TransportAgent {
 
 
     public:
-        PPC2003TransportAgent();
-        PPC2003TransportAgent(URL& url, Proxy& proxy, unsigned int responseTimeout = DEFAULT_MAX_TIMEOUT, unsigned int maxmsgsize = DEFAULT_MAX_MSG_SIZE);
-        ~PPC2003TransportAgent();
+        WMTransportAgent();
+        WMTransportAgent(URL& url, Proxy& proxy, unsigned int responseTimeout = DEFAULT_MAX_TIMEOUT, unsigned int maxmsgsize = DEFAULT_MAX_MSG_SIZE);
+        ~WMTransportAgent();
 
         /*
          * Sends the given SyncML message to the server specified

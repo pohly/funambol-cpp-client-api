@@ -48,7 +48,7 @@
 
 #include "http/constants.h"
 #include "http/errors.h"
-#include "http/PPC2003TransportAgent.h"
+#include "http/WMTransportAgent.h"
 
 #include "http/GPRSConnection.h"
 #include "spdm/spdmutils.h"
@@ -129,7 +129,7 @@ HINTERNET inet       = NULL,
  * @param url the url where messages will be sent with sendMessage()
  * @param proxy proxy information or NULL if no proxy should be used
  */
-PPC2003TransportAgent::PPC2003TransportAgent(URL& newURL, Proxy& newProxy,
+WMTransportAgent::WMTransportAgent(URL& newURL, Proxy& newProxy,
                                              unsigned int maxResponseTimeout,
                                              unsigned int maxmsgsize) : TransportAgent() {
 
@@ -161,7 +161,7 @@ PPC2003TransportAgent::PPC2003TransportAgent(URL& newURL, Proxy& newProxy,
 }
 
 
-PPC2003TransportAgent::~PPC2003TransportAgent(){}
+WMTransportAgent::~WMTransportAgent(){}
 
 
 /*
@@ -176,7 +176,7 @@ int bufferSize = 0; // copy the readBufferSize member value
 char* bufferA = NULL;
 char*  response = NULL;
 
-char*  PPC2003TransportAgent::sendMessage(const char*  msg) {
+char*  WMTransportAgent::sendMessage(const char*  msg) {
         
     int status        = -1;
     int contentLength = 0, contentLengthResponse = 0;

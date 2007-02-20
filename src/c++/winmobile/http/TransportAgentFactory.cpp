@@ -17,9 +17,9 @@
  */
 
 #include "http/TransportAgentFactory.h"
-#include "http/PPC2003TransportAgent.h"
+#include "http/WMTransportAgent.h"
 
 
 TransportAgent* TransportAgentFactory::getTransportAgent(URL& url, Proxy& proxy, unsigned int timeout, unsigned int maxmsgsize) {
-    return new PPC2003TransportAgent(url, proxy);
+    return new WMTransportAgent(url, proxy);
 }
