@@ -275,6 +275,7 @@ int SyncManager::prepareSync(SyncSource** s) {
     StringBuffer* devInfStr     = NULL;
     BOOL putDevInf              = FALSE;
     char devInfHash[16 * 4 +1]; // worst case factor base64 is four
+    unsigned long timestamp = (unsigned long)time(NULL);
     
     lastErrorCode = 0;
 
@@ -319,7 +320,6 @@ int SyncManager::prepareSync(SyncSource** s) {
     syncMLBuilder.resetMessageID();
     syncMLBuilder.resetCommandID();
     syncMLBuilder.resetMessageID();
-    unsigned long timestamp = (unsigned long)time(NULL);
     config.getAccessConfig().setBeginSync(timestamp);
 
     // Create the device informations.
