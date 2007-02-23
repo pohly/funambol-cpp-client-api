@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2003-2006 Funambol
+ * Copyright (C) 2003-2007 Funambol
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -19,7 +19,7 @@
 
 //
 // @author Stefano Fornari @ Funambol
-// @version $Id: ContactDetail.h,v 1.1 2006-01-12 11:39:35 nichele Exp $
+// @version $Id: ContactDetail.h,v 1.2 2007-02-23 14:22:54 toccy Exp $
 //
 
 #ifndef INCL_PIM_CONTACT_DETAIL

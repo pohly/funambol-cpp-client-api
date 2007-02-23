@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2003-2006 Funambol
+ * Copyright (C) 2003-2007 Funambol
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -19,7 +19,7 @@
 
 //
 // @author Stefano Fornari @ Funambol
-// @version $Id: vCardProperty.h,v 1.3 2006-09-19 12:59:41 toccy Exp $
+// @version $Id: vCardProperty.h,v 1.4 2007-02-23 14:22:54 toccy Exp $
 //
 #include <string.h>
 
