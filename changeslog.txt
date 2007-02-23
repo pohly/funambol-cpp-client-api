@@ -1,3 +1,8 @@
+
+2007-02-23
+     - toccy: Win32TransportAgent - fixed bug #306633: Content-length not available cause client to crash
+
+
 Funambol SDK C++ 6.0.2
 ------------------------
 
@@ -7,6 +12,9 @@ Funambol SDK C++ 6.0.2
 
 Funambol SDK C++ 6.0.1
 ------------------------
+2007-01-30
+     - toccy: Win32TransportAgent - added a timeout of 10min to receive a response from server during sync.
+
 2007-01-22
      - magi:  fixed emailMessage issues in decoding mail fields with tab char inside
 
