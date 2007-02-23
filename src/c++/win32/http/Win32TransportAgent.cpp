@@ -45,6 +45,7 @@
 #include "http/errors.h"
 #include "http/Win32TransportAgent.h"
 #include "event/FireEvent.h"
+#include "base/util/StringBuffer.h"
 
 #define ENTERING(func) // LOG.debug("Entering %ls", func);
 #define EXITING(func)  // LOG.debug("Exiting %ls", func);
@@ -89,7 +90,6 @@ char* Win32TransportAgent::sendMessage(const char* msg) {
     unsigned int contentLength = 0;
 	WCHAR* wurlHost;
     WCHAR* wurlResource;
-    char* response = NULL;
     char* p        = NULL;
     HINTERNET inet       = NULL,
               connection = NULL,
@@ -330,6 +330,8 @@ char* Win32TransportAgent::sendMessage(const char* msg) {
         goto exit;
     }
 
+    //Initialize response
+    contentLength=0;
     HttpQueryInfo (request,
                    HTTP_QUERY_CONTENT_LENGTH | HTTP_QUERY_FLAG_NUMBER,
                    (LPDWORD)&contentLength,
@@ -339,43 +341,44 @@ char* Win32TransportAgent::sendMessage(const char* msg) {
 
 
     // ====================== Reading Response ==============================
+	
     LOG.debug(READING_RESPONSE);
     LOG.debug("Content-length: %d", contentLength);
-
+	
     if (contentLength <= 0) {
         lastErrorCode = ERR_READING_CONTENT;
-        sprintf(lastErrorMsg, "Invalid content-length: %d", contentLength);
-		LOG.error(lastErrorMsg);
-        goto exit;
+        sprintf(lastErrorMsg, "Undefined content-length: %d", contentLength);
+        LOG.debug(lastErrorMsg);
     }
+	
 
-    // Fire Data Received Transport Event
+    // Fire Data Received Transport Event.  Warning, contentLength can be unknown
     fireTransportEvent(contentLength, RECEIVE_DATA_BEGIN);
 
-    // Allocate a block of memory for lpHeadersW.
-    response = new char[contentLength+1];
-	p = response;
-    (*p) = 0;
+    StringBuffer * sb = new StringBuffer();
+    if(contentLength > 0) {
+        sb->reserve(contentLength+1);
+    }
+
     do {
         if (!InternetReadFile (request, (LPVOID)bufferA, 5000, &read)) {
             DWORD code = GetLastError();
             lastErrorCode = ERR_READING_CONTENT;
             char* tmp = createHttpErrorMessage(code);
             sprintf(lastErrorMsg, "InternetReadFile Error: %d - %s", code, tmp);
-			delete [] tmp;
+            delete [] tmp;
             goto exit;
-        }
+		}
 
         // Sanity check: some proxy could send additional bytes...
-        if ( (strlen(response) + read) > contentLength) {
+        if ( contentLength > 0 && (sb->length() + read) > contentLength) {
             // Correct 'read' value to be sure we won't overflow the 'rensponse' buffer.
-            read = contentLength - strlen(response);
+            read = contentLength - sb->length();
         }
 
         if (read > 0) {
             bufferA[read] = 0;
-            strcpy(p, bufferA);         // here copy also the last '0' byte -> strlen(rensponse) make sense.
-            p += strlen(bufferA);
+            sb->append(bufferA);
 
             // Fire Data Received Transport Event
             fireTransportEvent(read, DATA_RECEIVED);
@@ -383,10 +386,14 @@ char* Win32TransportAgent::sendMessage(const char* msg) {
 
     } while (read);
 
+    // Allocate response
+    char* response = stringdup(sb->c_str());
+    delete sb;sb=NULL;
+
     // Fire Receive Data End Transport Event
     fireTransportEvent(contentLength, RECEIVE_DATA_END);
     LOG.debug("Response read");
-	LOG.debug("%s", response); 
+    LOG.debug("%s", response); 
 
 
 exit:
