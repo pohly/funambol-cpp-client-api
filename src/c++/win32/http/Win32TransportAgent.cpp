@@ -91,6 +91,7 @@ char* Win32TransportAgent::sendMessage(const char* msg) {
 	WCHAR* wurlHost;
     WCHAR* wurlResource;
     char* p        = NULL;
+    char* response = NULL;
     HINTERNET inet       = NULL,
               connection = NULL,
               request    = NULL;
@@ -387,7 +388,7 @@ char* Win32TransportAgent::sendMessage(const char* msg) {
     } while (read);
 
     // Allocate response
-    char* response = stringdup(sb->c_str());
+    response = stringdup(sb->c_str());
     delete sb;sb=NULL;
 
     // Fire Receive Data End Transport Event
