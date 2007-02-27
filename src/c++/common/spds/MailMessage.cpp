@@ -199,10 +199,10 @@ static size_t getHeadersLen(StringBuffer &s, StringBuffer &newline)
 static StringBuffer getTokenValue(const StringBuffer* line, const char* token) {
     
     StringBuffer ret("");
-    if (line->find(token) == StringBuffer::npos)
+    if (line->ifind(token) == StringBuffer::npos)
         return ret;
 
-    size_t begin = line->find(token) + strlen(token);
+    size_t begin = line->ifind(token) + strlen(token);
     size_t end = begin;
     size_t quote = line->find("\"", begin);
     size_t semicolon = line->find(";", begin);
@@ -225,7 +225,8 @@ static StringBuffer getTokenValue(const StringBuffer* line, const char* token) {
             end = line->find(" ", begin);
         }
     }
-    ret = line->substr(begin, end-begin);
+    ret = line->substr(begin, end-begin);    
+    ret = ret.lowerCase();
     return ret;
 }
 
@@ -333,12 +334,12 @@ static bool getBodyPart(StringBuffer &rfcBody, StringBuffer &boundary,
     // get bodypart content 
     if( !ret.getFilename() ) {
 		// this is not an attachment
-        if( strcmp(ret.getEncoding(), "quoted-printable") == 0 ) {
+        if(ret.getEncoding() && strcmp(ret.getEncoding(), "quoted-printable") == 0 ) {
             char *decoded = qp_decode( part.substr(hdrlen) );
             ret.setContent ( decoded );
             delete [] decoded;
         }
-        else if ( strcmp(ret.getEncoding(), "base64") == 0 ) {
+        else if (ret.getEncoding() && strcmp(ret.getEncoding(), "base64") == 0 ) {
             char *decoded = "";
             size_t len = 0;
             if( uudecode( part.substr(hdrlen), &decoded, &len ) ) {
