@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="Windows-1252"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="8,00"
+	Version="8.00"
 	Name="testwindowsmobile"
 	ProjectGUID="{8E8959A9-409A-4B8D-A8F1-4F731C894129}"
 	RootNamespace="testwindowsmobile"
@@ -687,6 +687,14 @@
 				</FileConfiguration>
 			</File>
 			<File
+				RelativePath="..\..\src\c++\common\examples\listeners\TestSyncItemListener.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\c++\common\examples\listeners\TestSyncListener.cpp"
+				>
+			</File>
+			<File
 				RelativePath="..\..\src\c++\common\examples\TestSyncSource.cpp"
 				>
 				<FileConfiguration
@@ -776,6 +784,18 @@
 			</File>
 			<File
 				RelativePath="..\..\src\include\common\examples\TestSyncSource2.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\c++\common\examples\listeners\TestSyncSourceListener.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\c++\common\examples\listeners\TestSyncStatusListener.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\c++\common\examples\listeners\TestTransportListener.cpp"
 				>
 			</File>
 		</Filter>
