@@ -31,21 +31,21 @@ SyncMode syncModeCode(const char* syncMode) {
 
     if (strcmp(syncMode,"slow") == 0)
         return SYNC_SLOW;
-    else if (strcmp(syncMode,"two-way") == 0)
+    else if (strcmp(syncMode,"two-way") == 0)               
         return SYNC_TWO_WAY;
-    else if (strcmp(syncMode,"one-way") == 0)
+    else if (strcmp(syncMode,"one-way") == 0)               // deprecated
         return SYNC_ONE_WAY_FROM_SERVER;
-    else if (strcmp(syncMode,"one-way-server") == 0 ||
+    else if (strcmp(syncMode,"one-way-server") == 0 ||      // deprecated
              strcmp(syncMode,"one-way-from-server") == 0 )
         return SYNC_ONE_WAY_FROM_SERVER;
-    else if (strcmp(syncMode,"one-way-client") == 0 ||
+    else if (strcmp(syncMode,"one-way-client") == 0 ||      // deprecated
              strcmp(syncMode,"one-way-from-client") == 0)
         return SYNC_ONE_WAY_FROM_CLIENT;
-    else if (strcmp(syncMode,"refresh")             == 0 ||
-             strcmp(syncMode,"refresh-server")      == 0 ||
+    else if (strcmp(syncMode,"refresh")             == 0 || // deprecated
+             strcmp(syncMode,"refresh-server")      == 0 || // deprecated
              strcmp(syncMode,"refresh-from-server") == 0  )
         return SYNC_REFRESH_FROM_SERVER;
-    else if (strcmp(syncMode,"refresh-client") == 0 ||
+    else if (strcmp(syncMode,"refresh-client") == 0 ||      // deprecated
              strcmp(syncMode,"refresh-from-client") == 0)
         return SYNC_REFRESH_FROM_CLIENT;
     //--------- Funambol extension --------------------
