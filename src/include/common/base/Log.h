@@ -68,7 +68,7 @@
         BOOL isLoggable(LogLevel level);
 
         // FIXME!
-        void printMessageW(const char* level, const WCHAR* msg, va_list argList);
+        //void printMessageW(const char* level, const WCHAR* msg, va_list argList);
 
     };
 

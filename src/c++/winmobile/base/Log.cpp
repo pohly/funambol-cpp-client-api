@@ -30,7 +30,7 @@ static char logFullName[512] = "\\" LOG_NAME ;
 static char logName[128] = LOG_NAME;
 static char logPath[256] = "\\" ;   
 
-//---------------------------------------------------------------------- Static Functions
+//-------------------------------------------------------------- Static Functions
 
 /*
 * return a the time to write into log file. If complete is true, it return 
@@ -48,7 +48,8 @@ static char* createCurrentTime(BOOL complete) {
 
     char*  ret = new char [64];
     
-    // calculate offset from UTC/GMT in hours:min, positive value means east of Greenwich (e.g. CET = GMT +1)
+    // calculate offset from UTC/GMT in hours:min, positive value
+    // means east of Greenwich (e.g. CET = GMT +1)
     
     char direction = timezone.Bias <= 0 ? '+' : '-';    
     int hours = abs(timezone.Bias / 60) ;
@@ -65,7 +66,7 @@ static char* createCurrentTime(BOOL complete) {
     return ret;
 }
 
-//---------------------------------------------------------------------- Constructors
+//------------------------------------------------------------------ Constructors
 
 Log::Log(BOOL resetLog, const char*  path, const char*  name) {
 
@@ -82,7 +83,7 @@ Log::~Log() {
     }
 }
 
-//---------------------------------------------------------------------- Public methods
+//---------------------------------------------------------------- Public methods
 
 void Log::setLogPath(const char*  configLogPath) {
     
@@ -145,7 +146,7 @@ BOOL Log::isLoggable(LogLevel level) {
     return (level >= logLevel);
 }
 
-void Log::printMessage(const char*  level, const char*  msg, va_list argList) {       
+void Log::printMessage(const char*  level, const char*  msg, va_list argList) {
     
 	char*  currentTime = createCurrentTime(false);    
     logFile = fopen(logFullName, "a+");       
@@ -157,21 +158,6 @@ void Log::printMessage(const char*  level, const char*  msg, va_list argList) {
 
     delete[] currentTime;	
 }
-
-void Log::printMessageW(const char* level, const WCHAR* msg, va_list argList) {       
-    
-	char*  currentTime = createCurrentTime(false);    
-    logFile = fopen(logFullName, "a+");       
-	
-	fprintf(logFile, "%s [%s] - ", currentTime, level);
-    // Write the WCHAR parameters
-    vfwprintf(logFile, msg, argList);	
-	fprintf(logFile, "\n"); 
-	fclose(logFile);
-
-    delete[] currentTime;	
-}
-
 
 void Log::reset(const char*  title) {
     
