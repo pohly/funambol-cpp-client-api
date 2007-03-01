@@ -130,6 +130,71 @@ void SyncReport::initialize() {
     ssReport       = NULL;
 }
 
+void SyncReport::toString(StringBuffer &str, BOOL verbose) {
+    StringBuffer tmp;
+    
+    str += "===========================================================\n";
+    str += "================   SYNCHRONIZATION REPORT   ===============\n";
+    str += "===========================================================\n";
+
+    str += tmp.sprintf("Last error code = %d\n", getLastErrorCode());
+    str += tmp.sprintf("Last error msg  = %s\n\n", getLastErrorMsg());
+
+    str += "----------|--------CLIENT---------|--------SERVER---------|\n";
+    str += "  Source  |  NEW  |  MOD  |  DEL  |  NEW  |  MOD  |  DEL  |\n";
+    str += "----------|-----------------------------------------------|\n";
+    for (unsigned int i=0; getSyncSourceReport(i); i++) {
+        SyncSourceReport* ssr = getSyncSourceReport(i);
+
+        if (ssr->getState() == SOURCE_INACTIVE) {
+            continue;
+        }
+
+        str += tmp.sprintf("%10s|", ssr->getSourceName());
+        str += tmp.sprintf("%3d/%3d|", ssr->getItemReportSuccessfulCount(CLIENT, COMMAND_ADD), ssr->getItemReportCount(CLIENT, COMMAND_ADD));
+        str += tmp.sprintf("%3d/%3d|", ssr->getItemReportSuccessfulCount(CLIENT, COMMAND_REPLACE), ssr->getItemReportCount(CLIENT, COMMAND_REPLACE));
+        str += tmp.sprintf("%3d/%3d|", ssr->getItemReportSuccessfulCount(CLIENT, COMMAND_DELETE), ssr->getItemReportCount(CLIENT, COMMAND_DELETE));
+
+        str += tmp.sprintf("%3d/%3d|", ssr->getItemReportSuccessfulCount(SERVER, COMMAND_ADD), ssr->getItemReportCount(SERVER, COMMAND_ADD));
+        str += tmp.sprintf("%3d/%3d|", ssr->getItemReportSuccessfulCount(SERVER, COMMAND_REPLACE), ssr->getItemReportCount(SERVER, COMMAND_REPLACE));
+        str += tmp.sprintf("%3d/%3d|\n", ssr->getItemReportSuccessfulCount(SERVER, COMMAND_DELETE), ssr->getItemReportCount(SERVER, COMMAND_DELETE));
+        str += "----------|-----------------------------------------------|\n";
+    }
+    str += "\n";
+        
+    for (unsigned int i=0; getSyncSourceReport(i); i++) {
+        SyncSourceReport* ssr = getSyncSourceReport(i);
+
+        if (ssr->getState() == SOURCE_INACTIVE) {
+            continue;
+        }
+        
+        str += tmp.sprintf("%s:\n----------\n", ssr->getSourceName());
+        str += tmp.sprintf("   Source State    = %d\n", ssr->getState());
+        str += tmp.sprintf("   Last error code = %d\n", ssr->getLastErrorCode());
+        str += tmp.sprintf("   Last error msg  = %s\n", ssr->getLastErrorMsg());
+        for (const char* const* target = SyncSourceReport::targets;
+             *target;
+             target++) {
+            for (const char* const* commands = SyncSourceReport::commands;
+                 *commands;
+                 commands++) {
+                ArrayList* items = ssr->getList(*target, *commands);
+                for (ItemReport *item = (ItemReport*)items->front();
+                     item;
+                     item = (ItemReport*)items->next()) {
+                    str += tmp.sprintf("   %s %s: id '%" WCHAR_PRINTF "' status %d %" WCHAR_PRINTF "\n",
+                                       *target, *commands,
+                                       item->getId(),
+                                       item->getStatus(),
+                                       item->getStatusMessage() ? item->getStatusMessage() : TEXT(""));
+                }
+            }
+        }
+    }
+    str += "\n";
+}
+
 void SyncReport::assign(const SyncReport& sr) {
 
     setLastErrorCode(sr.getLastErrorCode());

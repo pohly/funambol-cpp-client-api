@@ -774,12 +774,12 @@ long SyncMLBuilder::addItem(ModificationCommand* &modificationCommand,
     }
 
     ArrayList* list = modificationCommand->getItems();
-    assert(syncItemOffset >= 0);
-    assert(syncItemOffset <= syncItem->getDataSize());
+    // assert(syncItemOffset >= 0);
+    // assert(syncItemOffset <= syncItem->getDataSize());
     long sentBytes = 0;
     ArrayList* tmpList = prepareItem(syncItem, syncItemOffset, maxBytes, sentBytes, type, COMMAND);
-    assert(syncItemOffset >= 0);
-    assert(syncItemOffset <= syncItem->getDataSize());
+    // assert(syncItemOffset >= 0);
+    // assert(syncItemOffset <= syncItem->getDataSize());
     list->add(tmpList);
     deleteArrayList(&tmpList);
 

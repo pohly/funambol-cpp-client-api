@@ -21,6 +21,7 @@
 
 #include "base/fscapi.h"
 #include "base/Log.h"
+#include "base/util/StringBuffer.h"
 #include "spds/SyncSource.h"
 #include "spds/constants.h"
 #include "spds/SyncSourceReport.h"
@@ -102,6 +103,15 @@ public:
      */
     void setSyncSourceReports(SyncManagerConfig& config);
 
+    /**
+     * Appends a textual representation of the sync report at the end
+     * of the string buffer, without clearing it first.
+     *
+     * @param str      buffer to which text gets appended
+     * @param verbose  if true, then detailed information about each item is
+     *                 printed, otherwise only a summary
+     */
+    void toString(StringBuffer &str, BOOL verbose = FALSE);
 
     /*
      * Assign operator

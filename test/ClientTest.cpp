@@ -2228,65 +2228,15 @@ void CheckSyncReport::check(SyncReport &report) const
     // first dump the report - beware, this is a direct copy of code from client.cpp,
     // needs to be refactored
 
-    StringBuffer res;
-    char tmp[512];
-
-    res =      "===========================================================\n";
-    res.append("================   SYNCHRONIZATION REPORT   ===============\n");
-    res.append("===========================================================\n");
-
-    sprintf(tmp, "Last error code = %d\n", report.getLastErrorCode());
-    res.append(tmp);
-    sprintf(tmp, "Last error msg  = %s\n\n", report.getLastErrorMsg());
-    res.append(tmp);
-
-    res.append("----------|--------CLIENT---------|--------SERVER---------|\n");
-    res.append("  Source  |  NEW  |  MOD  |  DEL  |  NEW  |  MOD  |  DEL  |\n");
-    res.append("----------|-----------------------------------------------|\n");
-
-    for (unsigned int i=0; report.getSyncSourceReport(i); i++) {
-        SyncSourceReport* ssr = report.getSyncSourceReport(i);
-
-        if (ssr->getState() == SOURCE_INACTIVE) {
-            continue;
-        }
-
-        sprintf(tmp, "%10s|", ssr->getSourceName());
-        res.append(tmp);
-        sprintf(tmp, "%3d/%3d|", ssr->getItemReportSuccessfulCount(CLIENT, COMMAND_ADD), ssr->getItemReportCount(CLIENT, COMMAND_ADD));
-        res.append(tmp);
-        sprintf(tmp, "%3d/%3d|", ssr->getItemReportSuccessfulCount(CLIENT, COMMAND_REPLACE), ssr->getItemReportCount(CLIENT, COMMAND_REPLACE));
-        res.append(tmp);
-        sprintf(tmp, "%3d/%3d|", ssr->getItemReportSuccessfulCount(CLIENT, COMMAND_DELETE), ssr->getItemReportCount(CLIENT, COMMAND_DELETE));
-        res.append(tmp);
-
-        sprintf(tmp, "%3d/%3d|", ssr->getItemReportSuccessfulCount(SERVER, COMMAND_ADD), ssr->getItemReportCount(SERVER, COMMAND_ADD));
-        res.append(tmp);
-        sprintf(tmp, "%3d/%3d|", ssr->getItemReportSuccessfulCount(SERVER, COMMAND_REPLACE), ssr->getItemReportCount(SERVER, COMMAND_REPLACE));
-        res.append(tmp);
-        sprintf(tmp, "%3d/%3d|\n", ssr->getItemReportSuccessfulCount(SERVER, COMMAND_DELETE), ssr->getItemReportCount(SERVER, COMMAND_DELETE));
-        res.append(tmp);
-        res.append("----------|-----------------------------------------------|\n\n");
-
-        sprintf(tmp, "%s:\n----------", ssr->getSourceName());
-        res.append(tmp);
-        sprintf(tmp, "\nSource State    = %d\n", ssr->getState());
-        res.append(tmp);
-        sprintf(tmp, "Last error code = %d\n", ssr->getLastErrorCode());
-        res.append(tmp);
-        sprintf(tmp, "Last error msg  = %s\n\n", ssr->getLastErrorMsg());
-        res.append(tmp);
-    }
-
-    res.append("----------|--------CLIENT---------|--------SERVER---------|\n");
-    res.append("          |  NEW  |  MOD  |  DEL  |  NEW  |  MOD  |  DEL  |\n");
-    res.append("----------|-----------------------------------------------|\n");
-    sprintf(tmp, "Expected  |  %3d  |  %3d  |  %3d  |  %3d  |  %3d  |  %3d  |\n",
-            clientAdded, clientUpdated, clientDeleted,
-            serverAdded, serverUpdated, serverDeleted);
-    res.append(tmp);
-
-    LOG.info("%s", res.c_str());
+    StringBuffer str, tmp;
+    report.toString(str, TRUE);
+    str += "----------|--------CLIENT---------|--------SERVER---------|\n";
+    str += "          |  NEW  |  MOD  |  DEL  |  NEW  |  MOD  |  DEL  |\n";
+    str += "----------|-----------------------------------------------|\n";
+    str += tmp.sprintf("Expected  |  %3d  |  %3d  |  %3d  |  %3d  |  %3d  |  %3d  |\n",
+                       clientAdded, clientUpdated, clientDeleted,
+                       serverAdded, serverUpdated, serverDeleted);
+    LOG.info("%s", str.c_str());
 
     // this code is intentionally duplicated to produce nicer CPPUNIT asserts
     for (unsigned int i=0; report.getSyncSourceReport(i); i++) {

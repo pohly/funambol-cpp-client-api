@@ -21,6 +21,20 @@
 #include "spds/SyncReport.h"
 #include "spds/ItemReport.h"
 
+const char* const SyncSourceReport::targets[] = {
+    CLIENT,
+    SERVER,
+    NULL
+};
+    
+const char* const SyncSourceReport::commands[] = {
+    COMMAND_ADD,
+    COMMAND_REPLACE,
+    COMMAND_DELETE,
+    NULL
+};
+
+
 
 //--------------------------------------------------- Constructor & Destructor
 SyncSourceReport::SyncSourceReport(const char* name) {

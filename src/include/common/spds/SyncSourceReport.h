@@ -161,6 +161,16 @@ public:
      */
     ArrayList* getList(const char* target, const char* command) const;
 
+    /**
+     * all valid strings for "target", NULL terminated
+     */
+    static const char* const targets[];
+    
+    /**
+     * all valid strings for "command", NULL terminated
+     */
+    static const char* const commands[];
+    
     /*
      * Assign operator
      */
