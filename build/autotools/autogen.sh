@@ -1,6 +1,6 @@
 #!/bin/sh
 
-libtoolize -c -f
+${LIBTOOLIZE:-libtoolize} -c -f
 aclocal
 autoheader
 automake -a -c -f
