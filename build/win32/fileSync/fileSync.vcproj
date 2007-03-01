@@ -183,7 +183,7 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\..\src\c++\common\spds\FILESyncSource.cpp"
+				RelativePath="..\..\..\src\c++\common\client\FileSyncSource.cpp"
 				>
 			</File>
 		</Filter>
@@ -197,7 +197,7 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\..\src\include\common\spds\FILESyncSource.h"
+				RelativePath="..\..\..\src\include\common\client\FileSyncSource.h"
 				>
 			</File>
 		</Filter>

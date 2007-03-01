@@ -21,17 +21,17 @@
 #include "base/Log.h"
 #include "spds/FileData.h"
 
-#include "spds/FILESyncSource.h"
+#include "client/FileSyncSource.h"
 
 
-FILESyncSource::FILESyncSource(const WCHAR* name, SyncSourceConfig* sc) : SyncSource(name, sc) {
+FileSyncSource::FileSyncSource(const WCHAR* name, SyncSourceConfig* sc) : SyncSource(name, sc) {
     dir  = NULL;
     fileNode = NULL;
 
     setDir(".");
 }
 
-FILESyncSource::~FILESyncSource() {
+FileSyncSource::~FileSyncSource() {
     if(dir) {
         delete [] dir;
         dir = NULL;
@@ -40,14 +40,14 @@ FILESyncSource::~FILESyncSource() {
 
 
 
-void FILESyncSource::setDir(const char* p) {
+void FileSyncSource::setDir(const char* p) {
     if (dir)
         delete [] dir;
 
     dir = (p) ? stringdup(p) : stringdup("\\");
 }
 
-const char* FILESyncSource::getDir() {
+const char* FileSyncSource::getDir() {
     return dir;
 }
 
@@ -56,7 +56,7 @@ const char* FILESyncSource::getDir() {
 /////////////////////////////////////////////////////////////////////////////////////////
 
 
-int FILESyncSource::beginSync() {
+int FileSyncSource::beginSync() {
     allItems.items.clear();
     deletedItems.items.clear();
     newItems.items.clear();
@@ -105,7 +105,7 @@ int FILESyncSource::beginSync() {
         // and check which of these have been deleted locally
         //
         // TODO: currently impossible with the ManagementNode interface, have to guess file names (works
-        // for RawFILESyncSource)
+        // for RawFileSyncSource)
 
         for (int key = 0; key < 1000; key++) {
             char keystr[80];
@@ -133,7 +133,7 @@ int FILESyncSource::beginSync() {
     return 0;    
 }
 
-SyncItem* FILESyncSource::getFirst(ItemIteratorContainer& container, BOOL getData) {
+SyncItem* FileSyncSource::getFirst(ItemIteratorContainer& container, BOOL getData) {
     container.index = 0;
     if (container.index >= container.items.size()) {
         return NULL;
@@ -152,7 +152,7 @@ SyncItem* FILESyncSource::getFirst(ItemIteratorContainer& container, BOOL getDat
     }
 }
 
-SyncItem* FILESyncSource::getNext(ItemIteratorContainer& container, BOOL getData) {
+SyncItem* FileSyncSource::getNext(ItemIteratorContainer& container, BOOL getData) {
     container.index++;
     if (container.index >= container.items.size()) {
         return NULL;
@@ -169,7 +169,7 @@ SyncItem* FILESyncSource::getNext(ItemIteratorContainer& container, BOOL getData
     }
 }
 
-unsigned long FILESyncSource::getServerModTime(const char* keystr) {
+unsigned long FileSyncSource::getServerModTime(const char* keystr) {
     unsigned long modtime = 0;
     if (fileNode) {
         char* timestr = fileNode->readPropertyValue(keystr);
@@ -179,7 +179,7 @@ unsigned long FILESyncSource::getServerModTime(const char* keystr) {
     return modtime;
 }
 
-void FILESyncSource::setItemStatus(const WCHAR* key, int status) {
+void FileSyncSource::setItemStatus(const WCHAR* key, int status) {
     LOG.debug("item key: %" WCHAR_PRINTF ", status: %i", key, status);    
 }
 
@@ -188,7 +188,7 @@ void FILESyncSource::setItemStatus(const WCHAR* key, int status) {
 //////////////////////////////////////////////////////////////////////////////////////////
 
 
-int FILESyncSource::addItem(SyncItem& item) {
+int FileSyncSource::addItem(SyncItem& item) {
 
     // format is the custom XML format understood by FileData
     int ret = STC_COMMAND_FAILED;
@@ -224,7 +224,7 @@ int FILESyncSource::addItem(SyncItem& item) {
     return ret;
 }
 
-int FILESyncSource::addedItem(SyncItem& item, const WCHAR* key) {
+int FileSyncSource::addedItem(SyncItem& item, const WCHAR* key) {
     item.setKey(key);
 
     // remember this item so that endSync() can store its time stamp
@@ -235,7 +235,7 @@ int FILESyncSource::addedItem(SyncItem& item, const WCHAR* key) {
     return STC_ITEM_ADDED;
 }
 
-int FILESyncSource::updateItem(SyncItem& item) {
+int FileSyncSource::updateItem(SyncItem& item) {
     ////// TBD ////////
     return STC_COMMAND_FAILED;
     ///////////////////
@@ -270,7 +270,7 @@ int FILESyncSource::updateItem(SyncItem& item) {
     return ret;
 }
 
-int FILESyncSource::deleteItem(SyncItem& item) {
+int FileSyncSource::deleteItem(SyncItem& item) {
     int ret = STC_COMMAND_FAILED;
 
     char completeName[512];
@@ -289,7 +289,7 @@ int FILESyncSource::deleteItem(SyncItem& item) {
 }
 
 
-int FILESyncSource::endSync() {
+int FileSyncSource::endSync() {
     if (fileNode) {
         SyncItem* item;
 
@@ -318,13 +318,13 @@ int FILESyncSource::endSync() {
     return 0;
 }
 
-void FILESyncSource::assign(FILESyncSource& s) {
+void FileSyncSource::assign(FileSyncSource& s) {
     SyncSource::assign(s);
     setDir(getDir());
 }
 
-ArrayElement* FILESyncSource::clone() {
-    FILESyncSource* s = new FILESyncSource(getName(), &(getConfig()));
+ArrayElement* FileSyncSource::clone() {
+    FileSyncSource* s = new FileSyncSource(getName(), &(getConfig()));
 
     s->assign(*this);
 
@@ -332,7 +332,7 @@ ArrayElement* FILESyncSource::clone() {
 }
 
 
-bool FILESyncSource::setItemData(SyncItem* syncItem) {
+bool FileSyncSource::setItemData(SyncItem* syncItem) {
 
     bool ret = true;
     size_t len;

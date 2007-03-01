@@ -141,11 +141,11 @@ SOURCES_SPDS = \
     DESEncoder.cpp \
     DefaultConfigFactory.cpp \
     EmailData.cpp \
-    FILESyncSource.cpp \
+    FileSyncSource.cpp \
     FileData.cpp \
     ItemReport.cpp \
     MailMessage.cpp \
-    RawFILESyncSource.cpp \
+    RawFileSyncSource.cpp \
     SyncManagerConfig.cpp \
     SyncItem.cpp \
     SyncItemStatus.cpp \

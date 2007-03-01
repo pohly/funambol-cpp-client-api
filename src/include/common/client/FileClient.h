@@ -28,7 +28,7 @@
 #include "client/DMTClientConfig.h"
 #include "spds/DefaultConfigFactory.h"
 
-#include "spds/FILESyncSource.h"
+#include "client/FileSyncSource.h"
 
 //#include "filter/AllClause.h"
 //#include "filter/ClauseUtil.h"

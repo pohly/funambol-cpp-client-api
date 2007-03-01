@@ -21,13 +21,13 @@
 #include "base/Log.h"
 #include "spds/FileData.h"
 
-#include "spds/RawFILESyncSource.h"
+#include "client/RawFileSyncSource.h"
 
 
-RawFILESyncSource::RawFILESyncSource(const WCHAR* name, SyncSourceConfig* sc) : FILESyncSource(name, sc) {
+RawFileSyncSource::RawFileSyncSource(const WCHAR* name, SyncSourceConfig* sc) : FileSyncSource(name, sc) {
 }
 
-int RawFILESyncSource::addItem(SyncItem& item) {
+int RawFileSyncSource::addItem(SyncItem& item) {
     char completeName[512];
     int key = 0;
 
@@ -55,7 +55,7 @@ int RawFILESyncSource::addItem(SyncItem& item) {
     }
 }
 
-int RawFILESyncSource::updateItem(SyncItem& item) {
+int RawFileSyncSource::updateItem(SyncItem& item) {
     char completeName[512];
     sprintf(completeName, "%s/%" WCHAR_PRINTF, dir, item.getKey());
     if (!saveFile(completeName, (const char *)item.getData(), item.getDataSize(), TRUE)) {
@@ -69,7 +69,7 @@ int RawFILESyncSource::updateItem(SyncItem& item) {
     }
 }
 
-bool RawFILESyncSource::setItemData(SyncItem* syncItem) {
+bool RawFileSyncSource::setItemData(SyncItem* syncItem) {
 
     bool ret = true;
     size_t len;

@@ -17,8 +17,8 @@
  */
 
 /**
- * This code uses the ClientTest and FILESyncSource to test real
- * synchronization against a server. More than one FILESyncSource can
+ * This code uses the ClientTest and RawFileSyncSource to test real
+ * synchronization against a server. More than one RawFileSyncSource can
  * be active at once and each of them may (but does not have to be)
  * used for different kinds of data. The name of the source determines
  * which data is stored in it: it must be something supported by the
@@ -83,7 +83,7 @@
  */
 
 #include "spdm/DeviceManagementNode.h"
-#include "spds/RawFILESyncSource.h"
+#include "client/RawFileSyncSource.h"
 #include "spds/spdsutils.h"
 #include "client/DMTClientConfig.h"
 #include "client/SyncClient.h"
@@ -243,10 +243,10 @@ private:
     }
 
     SyncSource *createSource(int source, const char *trackingSuffix) {
-        class RawFILESyncSourceWithReport : public RawFILESyncSource {
+        class RawFileSyncSourceWithReport : public RawFileSyncSource {
         public:
-            RawFILESyncSourceWithReport(const char* nodeName, const WCHAR* name, SyncSourceConfig* sc) :
-                RawFILESyncSource(name, sc),
+            RawFileSyncSourceWithReport(const char* nodeName, const WCHAR* name, SyncSourceConfig* sc) :
+                RawFileSyncSource(name, sc),
                 fileNode(nodeName) {
                 setReport(&report);
                 setFileNode(&fileNode);
@@ -273,7 +273,7 @@ private:
         std::string dirName = sources[source] + "_" + clientID;
 		WCHAR *name = toWideChar(sources[source].c_str());
         delete [] fullName;
-        FILESyncSource *ss = new RawFILESyncSourceWithReport(
+        FileSyncSource *ss = new RawFileSyncSourceWithReport(
             nodeName.c_str(),
             name,
             config->getSyncSourceConfig(sources[source].c_str()));

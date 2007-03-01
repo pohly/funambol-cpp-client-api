@@ -54,7 +54,7 @@ int main(int argc, char** argv) {
     //
     // Create the SyncSource passing its name and SyncSourceConfig.
     //
-    FILESyncSource fileSource(WSOURCE_NAME, config.getSyncSourceConfig(SOURCE_NAME));
+    FileSyncSource fileSource(WSOURCE_NAME, config.getSyncSourceConfig(SOURCE_NAME));
     fileSource.setDir(dir);
 
     SyncSource* ssArray[2];

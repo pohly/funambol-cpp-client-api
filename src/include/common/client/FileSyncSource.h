@@ -34,7 +34,7 @@
 #define ERR_BAD_FILE_CONTENT        3
 
 
-class FILESyncSource : public SyncSource {
+class FileSyncSource : public SyncSource {
 
 protected:
 
@@ -42,7 +42,7 @@ protected:
     char* dir;
 
     // The copy is protected
-    FILESyncSource(SyncSource& s);
+    FileSyncSource(SyncSource& s);
 
     // Return true if data correctly set: syncItem->getKey() contains
     // the file name relative to dir, copying its content into
@@ -69,10 +69,10 @@ public:
      *
      * @param name - the name of the SyncSource
      */
-    FILESyncSource(const WCHAR* name, SyncSourceConfig* sc);
+    FileSyncSource(const WCHAR* name, SyncSourceConfig* sc);
 
     // Destructor
-    virtual ~FILESyncSource();
+    virtual ~FileSyncSource();
     
     /*
      * Return the first SyncItem of all.
@@ -137,7 +137,7 @@ public:
     int beginSync();
     int endSync();
 
-    void assign(FILESyncSource& s);
+    void assign(FileSyncSource& s);
     ArrayElement* clone();
 
     /**

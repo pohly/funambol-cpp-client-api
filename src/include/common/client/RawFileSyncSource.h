@@ -19,10 +19,10 @@
 #ifndef INCL_RAW_FILE_SYNC_SOURCE
 #define INCL_RAW_FILE_SYNC_SOURCE
 
-#include "spds/FILESyncSource.h"
+#include "client/FileSyncSource.h"
 
 /**
- * In contrast to the FILESyncSource this class does not
+ * In contrast to the FileSyncSource this class does not
  * wrap the file content and attributes in an XML format
  * when exchanging it with the server. Therefore it can
  * be used as a peer for a servers addressbook or calendar
@@ -31,9 +31,9 @@
  * The type of the items is taken from the sync source
  * type property.
  */
-class RawFILESyncSource : public FILESyncSource {
+class RawFileSyncSource : public FileSyncSource {
   public:
-    RawFILESyncSource(const WCHAR* name, SyncSourceConfig* sc);
+    RawFileSyncSource(const WCHAR* name, SyncSourceConfig* sc);
 
     int addItem(SyncItem& item);
     int updateItem(SyncItem& item);
