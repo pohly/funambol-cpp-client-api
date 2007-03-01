@@ -126,8 +126,7 @@ SOURCES_SPDM = \
     DMTree.cpp \
     DMTreeFactory.cpp \
     DeviceManagementNode.cpp \
-    ManagementNode.cpp \
-    spdmutils.cpp
+    ManagementNode.cpp 
 
 SOURCES_SPDS = \
     AccessConfig.cpp \
@@ -158,8 +157,7 @@ SOURCES_SPDS = \
     SyncSource.cpp \
     SyncSourceConfig.cpp \
     SyncSourceReport.cpp \
-    spdsutils.cpp \
-    constants.cpp
+    spdsutils.cpp 
 
 SOURCES_CLIENT = \
     DMTClientConfig.cpp \

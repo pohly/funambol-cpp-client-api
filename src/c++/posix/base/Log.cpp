@@ -214,10 +214,6 @@ void Log::printMessage(const char*  level, const char*  msg, va_list argList) {
     delete[] currentTime;
 }
 
-// This is used by clients to log using WCHAR. Redirected to printmessage for
-// posix.
-void Log::printMessageW(const char*  level, const char*  msg, va_list argList)
-{       printMessage(level, msg, argList); }
 
 void Log::reset(const char*  title) {
     setLogFile(logPath, logName, logRedirectStderr);
