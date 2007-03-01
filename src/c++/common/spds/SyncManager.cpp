@@ -169,7 +169,7 @@ void SyncManager::initialize() {
     DeviceConfig& dc = config.getDeviceConfig();
     
     strncpy(syncURL, c.getSyncURL(), 511);
-    strncpy(deviceId, dc.getDevID(), 31);
+    strncpy(deviceId, dc.getDevID(), 511);
     
     credentialHandler.setUsername           (c.getUsername());
     credentialHandler.setPassword           (c.getPassword());
