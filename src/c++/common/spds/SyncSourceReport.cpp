@@ -220,7 +220,8 @@ int SyncSourceReport::getItemReportAlreadyExistCount(const char* target, const c
 
 
 ArrayList* SyncSourceReport::getList(const char* target, const char* command) const {
-    ArrayList* ret;
+
+    ArrayList* ret = NULL;
 
     if (!strcmp(target, CLIENT)) {
         if (!strcmp(command, COMMAND_ADD)) {
