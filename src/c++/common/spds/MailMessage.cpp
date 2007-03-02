@@ -196,7 +196,7 @@ static size_t getHeadersLen(StringBuffer &s, StringBuffer &newline)
 }
 
 
-static StringBuffer getTokenValue(const StringBuffer* line, const char* token) {
+static StringBuffer getTokenValue(const StringBuffer* line, const char* token, bool toLower = true) {
     
     StringBuffer ret("");
     if (line->ifind(token) == StringBuffer::npos)
@@ -226,7 +226,9 @@ static StringBuffer getTokenValue(const StringBuffer* line, const char* token) {
         }
     }
     ret = line->substr(begin, end-begin);    
-    ret = ret.lowerCase();
+    if (toLower) {
+        ret = ret.lowerCase();
+    }
     return ret;
 }
 
@@ -745,8 +747,25 @@ int MailMessage::parseHeaders(StringBuffer &rfcHeaders) {
             messageId = line->substr(MESSAGEID_LEN);
         }
         else if( line->ifind(MIMETYPE) == 0 ) {
+            
+            StringBuffer sb = getTokenValue(line, MIMETYPE);
+            
+            if (sb.length() > 0)
+                contentType = sb;
+
+            sb.reset();
+            sb = getTokenValue(line, "boundary=", false);
+            
+            if (sb.length() > 0) {
+                boundary = sb;
+            } else {
+                body.setCharset(getTokenValue(line, CT_CHARSET));
+            }
+            /*
+            
             size_t len = line->find(";") - MIMETYPE_LEN ;
             contentType = line->substr(MIMETYPE_LEN, len);
+
             // Save boundary for multipart
             size_t begin = line->ifind("boundary=");
             size_t end = StringBuffer::npos;
@@ -775,6 +794,7 @@ int MailMessage::parseHeaders(StringBuffer &rfcHeaders) {
                     body.setCharset( line->substr( begin, end-begin ) );
                 }
             }
+            */
 	    }
         else if(line->ifind(RECEIVED) == 0) {
             if (!receivedExtracted) {
