@@ -17,9 +17,10 @@ client_test_SOURCES = client-test-main.cpp client-test.cpp ClientTest.cpp
 client_test_LDFLAGS = `nm ../src/.libs/libsync4j.a | grep funambolAutoRegisterRegistry | sed -e 's/.* /-u /'`
 # client_test_LDADD = libsync4j.la
 
-check: link-test-files
-
-link-test-files:
+# ensure that files are in the current directory before the check runs
+check-am check: client-test-files
+.PHONY: client-test-files
+client-test-files:
 	@ [ -e synccompare.pl ] || ln -s $(srcdir)/../../../test/synccompare.pl .
 	@ [ -d testcases ] || ln -s $(srcdir)/../../../test/testcases .
 
