@@ -23,6 +23,8 @@
 #include "spds/SyncSource.h"
 #include "spds/SyncReport.h"
 
+#ifdef ENABLE_INTEGRATION_TESTS
+
 /**
  * This class encapsulates logging and checking of a SyncReport.
  * When constructed with default parameters, no checking will be done.
@@ -417,4 +419,5 @@ class ClientTest {
                                   _expected, \
                                   _actual )
 
-#endif
+#endif // ENABLE_INTEGRATION_TESTS
+#endif // INCL_TESTSYNCCLIENT

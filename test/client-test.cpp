@@ -100,6 +100,8 @@
 #endif
 #include <sys/stat.h>
 
+#ifdef ENABLE_INTEGRATION_TESTS
+
 class TestFileSource : public ClientTest {
 public:
     TestFileSource(const std::string &id) :
@@ -304,3 +306,5 @@ public:
 private:
     TestFileSource testFileSource;
 } registerTest;
+
+#endif // ENABLE_INTEGRATION_TESTS

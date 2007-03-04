@@ -20,11 +20,11 @@
 # include <config.h>
 #endif
 
+#ifdef ENABLE_INTEGRATION_TESTS
+
 #include "ClientTest.h"
 #include "base/test.h"
 #include "base/util/StringBuffer.h"
-
-#ifdef ENABLE_INTEGRATION_TESTS
 
 #include <memory>
 #include <vector>
@@ -1750,14 +1750,10 @@ private:
     ClientTest &client;
 };
 
-#endif // ENABLE_INTEGRATION_TESTS
-
 void ClientTest::registerTests()
 {
-#ifdef ENABLE_INTEGRATION_TESTS
     factory = (void *)new ClientTestFactory(*this);
     CppUnit::TestFactoryRegistry::getRegistry().registerFactory((CppUnit::TestFactory *)factory);
-#endif
 }
 
 ClientTest::ClientTest(int serverSleepSec, const std::string &serverLog) :
@@ -1770,11 +1766,9 @@ ClientTest::ClientTest(int serverSleepSec, const std::string &serverLog) :
 ClientTest::~ClientTest()
 {
     if(factory) {
-#ifdef ENABLE_INTEGRATION_TESTS
         CppUnit::TestFactoryRegistry::getRegistry().unregisterFactory((CppUnit::TestFactory *)factory);
         delete (CppUnit::TestFactory *)factory;
         factory = 0;
-#endif
     }
 }
 
@@ -2275,3 +2269,5 @@ void CheckSyncReport::check(SyncReport &report) const
     }
     LOG.debug("Done with checking sync report.");
 }
+
+#endif // ENABLE_INTEGRATION_TESTS
