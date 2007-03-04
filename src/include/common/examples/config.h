@@ -16,6 +16,9 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
+#ifndef INCL_CONFIG_H
+#define INCL_CONFIG_H
+
 // Use these defines to activate the desired test code
 
 // Set this to create a test DM tree using the code in settings.cpp
@@ -43,3 +46,5 @@
 
 // Test XMLProcessor class
 //#define TEST_XMLPROCESSOR 1
+
+#endif // INCL_CONFIG_H

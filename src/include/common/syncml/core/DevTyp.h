@@ -29,3 +29,5 @@
 #define SMARTPHONE  "smartphone";
 #define SERVER      "server";
 #define WORKSTATION "workstation";
+
+#endif // INCL_DEV_TYP

@@ -29,3 +29,4 @@
 #define READ      "read"
 #define UNREAD    "unread"
 
+#endif // INCL_MARK

@@ -16,6 +16,8 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
+#ifndef INCL_FILE_CLIENT
+#define INCL_FILE_CLIENT
 
 #include "base/fscapi.h"
 #include "base/messages.h"
@@ -62,3 +64,4 @@
 // Function to create a default config.
 void createConfig(DMTClientConfig& config);
 
+#endif // INCL_FILE_CLIENT

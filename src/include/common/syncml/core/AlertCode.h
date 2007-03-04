@@ -16,6 +16,8 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
+#ifndef INCL_ALERT_CODE
+#define INCL_ALERT_CODE
 
 #include "base/fscapi.h"
 
@@ -92,3 +94,4 @@ BOOL isClientOnlyCode(int code) {
          );
 }
 
+#endif // INCL_ALERT_CODE
