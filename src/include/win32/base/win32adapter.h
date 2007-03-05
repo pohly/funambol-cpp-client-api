@@ -35,6 +35,7 @@
 
 typedef wchar_t WCHAR;
 
+#define snwprintf _snwprintf
 
 void printMemLeaks();
 
