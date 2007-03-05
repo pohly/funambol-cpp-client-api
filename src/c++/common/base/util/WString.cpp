@@ -100,9 +100,9 @@ WString& WString::append(unsigned long i, BOOL sign) {
     WCHAR v[12];
 
     if (sign) {
-        swprintf(v, 11, TEXT("%ld"), i);
+        snwprintf(v, 11, TEXT("%ld"), i);
     } else {
-        swprintf(v, 11, TEXT("%lu"), i);
+        snwprintf(v, 11, TEXT("%lu"), i);
     }
 
     append(v);
