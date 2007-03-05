@@ -1,5 +1,6 @@
 /*
- * Copyright (C) 2003-2007 Funambol
+ * Copyright (C) 2005-2006 Funambol
+ * Author Patrick Ohly
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -46,14 +47,6 @@
 # define __cdecl
 #endif
 
-//#ifdef ENABLE_NLS
-//# include <libintl.h>
-//# define TEXT(String) gettext (String)
-//#else
-//# define TEXT(String) (String)
-//# endif
-#define TEXT(_x) _x
-
 #define EXTRA_SECTION_00
 #define EXTRA_SECTION_01
 #define EXTRA_SECTION_02
@@ -66,43 +59,67 @@
 #define TRUE 1
 #define FALSE 0
 
-#define SYNC4J_LINEBREAK "\n"
+// Enable the fix for encoding when building for posix
+#define VOCL_ENCODING_FIX
+
+
+#ifdef USE_WCHAR
+
+#       undef WCHAR
+#       define WCHAR wchar_t
+#       define WCHAR_PRINTF "s"
+#       define TEXT(_x) L##_x
+
+// FIXME: remove this and adapt VOCL.
+WCHAR *wcstok(WCHAR *s, const WCHAR *delim);
+
+inline int _wtoi(const WCHAR *s) { return (int)wcstol(s, NULL, 10); }
+
+#define _wcsicmp wcscasecmp
+#define wcsicmp wcscasecmp
+
+#else
 
 /* map WCHAR and its functions back to standard functions */
-#undef WCHAR
-#define WCHAR char
-#define WCHAR_PRINTF "s"
+#       undef WCHAR
+#       define WCHAR char
+#       define WCHAR_PRINTF "s"
+#       define TEXT(_x) _x
 
-#define wsprintf sprintf
-#define _wfopen fopen
-#define wprintf printf
-#define fwprintf fprintf
-#define wsprintf sprintf
-#define swprintf sprintf
-#define wcscpy strcpy
-#define wcsncpy strncpy
-#define wcsncmp strncmp
-#define wcslen strlen
-#define wcstol strtol
-#define wcstoul strtoul
-#define wcsstr strstr
-#define wcscmp strcmp
-#define wcstok strtok
-inline char towlower(char x) { return tolower(x); }
-inline char towupper(char x) { return toupper(x); }
-#define wmemmove memmove
-#define wmemcpy memcpy
-#define wmemcmp memcmp
-#define wmemset memset
-#define wcschr strchr
-#define wcsrchr strrchr
-#define wcscat strcat
-#define wcsncat strncat
-#define _wtoi atoi
-#define wcstod strtod
-#define wcsicmp strcasecmp
-#define _wcsicmp strcasecmp
-#define _stricmp strcasecmp
+#       define SYNC4J_LINEBREAK "\n"
+
+#       define wsprintf sprintf
+#       define _wfopen fopen
+#       define wprintf printf
+#       define fwprintf fprintf
+#       define wsprintf sprintf
+#       define swprintf snprintf
+#       define wcscpy strcpy
+#       define wcsncpy strncpy
+#       define wcsncmp strncmp
+#       define wcslen strlen
+#       define wcstol strtol
+#       define wcstoul strtoul
+#       define wcsstr strstr
+#       define wcscmp strcmp
+#       define wcstok strtok
+        inline char towlower(char x) { return tolower(x); }
+        inline char towupper(char x) { return toupper(x); }
+#       define wmemmove memmove
+#       define wmemcpy memcpy
+#       define wmemcmp memcmp
+#       define wmemset memset
+#       define wcschr strchr
+#       define wcsrchr strrchr
+#       define wcscat strcat
+#       define wcsncat strncat
+#       define _wtoi atoi
+#       define wcstod strtod
+#       define wcsicmp strcasecmp
+#       define _wcsicmp strcasecmp
+#       define _stricmp strcasecmp
+
+#endif
 
 /* some of the code compares NULL against integers, which
    fails if NULL is defined as (void *)0 */

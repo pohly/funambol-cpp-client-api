@@ -155,15 +155,14 @@ int CurlTransportAgent::debugCallback(CURL *easyhandle, curl_infotype type, char
 char* CurlTransportAgent::sendMessage(const char* msg) {
     if (!easyhandle) {
         lastErrorCode = ERR_NETWORK_INIT;
-        strcpy(lastErrorMsg, TEXT("libcurl error init error"));
+        strcpy(lastErrorMsg, "libcurl error init error");
         return NULL;
     }
 
-    wsprintf(logmsg, TEXT("Requesting resource %s at %s:%d"), url.resource, url.host, url.port);
-    LOG.debug(logmsg);
+    LOG.debug("Requesting resource %s at %s:%d", url.resource, url.host, url.port);
     
     curl_slist *slist=NULL;
-    WCHAR *response = NULL;
+    char *response = NULL;
     CURLcode code;
     char contenttype[256];
     sprintf(contenttype, "Content-Type: %s", SYNCML_CONTENT_TYPE);
@@ -181,12 +180,11 @@ char* CurlTransportAgent::sendMessage(const char* msg) {
         (code = curl_easy_perform(easyhandle))) {
         delete [] responsebuffer;
         lastErrorCode = ERR_HTTP;
-        sprintf(lastErrorMsg, TEXT("libcurl error %d, %.250s"),
-                code, curlerrortxt);
+        sprintf(lastErrorMsg, "libcurl error %d, %.250s", code, curlerrortxt);
     } else {
         response = responsebuffer;
         LOG.debug(response);
-        LOG.debug(TEXT("Response read"));   
+        LOG.debug("Response read");
     }
     responsebuffer = NULL;
     responsebuffersize = 0;
@@ -197,3 +195,4 @@ char* CurlTransportAgent::sendMessage(const char* msg) {
 
     return response;
 }
+

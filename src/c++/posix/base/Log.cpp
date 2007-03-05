@@ -199,7 +199,7 @@ BOOL Log::isLoggable(LogLevel level) {
 
 void Log::printMessage(const char*  level, const char*  msg, va_list argList) {       
     
-    WCHAR* currentTime = NULL;
+    char* currentTime = NULL;
 
     currentTime = createCurrentTime(false);
     if (!logFileStdout && !logFile) {

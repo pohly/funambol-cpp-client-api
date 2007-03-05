@@ -40,6 +40,17 @@ if test $enable_assert == "no"; then
         AC_DEFINE(NDEBUG, 1, [Define to 1 if assertions should be disabled.])
 fi
 
+# Optionally use wchar_t for unicode strings
+AC_ARG_ENABLE(wchar,
+              AS_HELP_STRING([--enable-wchar],
+                             [enable Unicode wchar usage]),
+              enable_wchar="$enableval", enable_wchar="no")
+
+if test $enable_wchar == "yes"; then
+        AC_DEFINE(USE_WCHAR, 1, [Define to 1 if unicode wchar_t should be used.])
+        AC_CHECK_HEADERS(wchar.h)
+fi
+
 # cppunit needed?
 if test $enable_unit_tests == "yes" || test $enable_integration_tests == yes; then
         CPPUNIT_CXXFLAGS=`cppunit-config --cflags` || AC_MSG_ERROR("cppunit-config --cflags failed - is it installed?")

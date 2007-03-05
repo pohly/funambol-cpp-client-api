@@ -48,6 +48,9 @@
 #define ERROR_ILLEGAL_PARAMETER      105L
 #define ERROR_INVALID_PROPERTY_VALUE 106L
 
+class WString;
+
+
 class vCardConverter {
 
 private:
@@ -56,8 +59,8 @@ private:
     bool validateTZ(WCHAR* timeZone);
     bool validateGeo(WCHAR* geo);
     bool checkType(WCHAR* types, WCHAR* typesList);
-    bool validateProperty21(VProperty* prop, WCHAR* errorDescription, long* errorCode);
-    bool validateProperty30(VProperty* prop, WCHAR* errorDescription, long* errorCode);
+    bool validateProperty21(VProperty* prop, WString& errorDescription, long* errorCode);
+    bool validateProperty30(VProperty* prop, WString& errorDescription, long* errorCode);
 
 public:
     vCardConverter();
@@ -66,8 +69,8 @@ public:
     void setSource(Contact& inputContact);
     void getvCard(WCHAR* vCard);
     void getContact(Contact** outputContact);
-    bool convert(WCHAR* error, long* errorCode);
-    bool validate(VObject*, WCHAR* error, long* errorCode);
+    bool convert(WString& error, long* errorCode);
+    bool validate(VObject*, WString& error, long* errorCode);
     
 };
 #endif

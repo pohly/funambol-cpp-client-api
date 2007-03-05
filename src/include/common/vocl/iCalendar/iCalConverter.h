@@ -24,6 +24,8 @@
 #include "vocl/iCalendar/Calendar.h"
 #include "vocl/VConverter.h"
 
+class WString;
+
 #define EVENT_PROPERTIES_LIST TEXT("BEGIN,CLASS,CREATED,DESCRIPTION,DTSTART,GEO,LAST-MODIFIED,LOCATION,ORGANIZER,PRIORITY,") \
                                    TEXT("DTSTAMP,SEQUENCE,STATUS,SUMMARY,TRANSP,UID,URL,RECURRENCE-ID,DTEND,DURATION,ATTACH,ATTENDEE,") \
                                    TEXT("CATEGORIES,COMMENT,CONTACT,EXDATE,EXRULE,REQUEST-STATUS,RELATED,RESOURCES,RDATE,RRULE,END,GROUP")
@@ -62,11 +64,11 @@ class iCalConverter {
 private:
     WCHAR* iCalendar;
     Calendar* calendar; 
-    bool validateEvent(Event*, WCHAR* error, long* errorCode);
-    bool validateTodo(ToDo*, WCHAR* error, long* errorCode);
-    bool validatePropery(VProperty*, WCHAR* error, long* errorCode);
-    Event* extractEvent(VObject* vo, WCHAR* errorDescription, long* errorCode);
-    ToDo* extractTask(VObject* vo, WCHAR* errorDescription, long* errorCode);
+    bool validateEvent(Event*, WString& error, long* errorCode);
+    bool validateTodo(ToDo*, WString& error, long* errorCode);
+    bool validatePropery(VProperty*, WString& error, long* errorCode);
+    Event* extractEvent(VObject* vo, WString& errorDescription, long* errorCode);
+    ToDo* extractTask(VObject* vo, WString& errorDescription, long* errorCode);
     bool validateGeo(WCHAR* geo);
     bool validateDT(WCHAR* dt);
     bool validateDate(WCHAR* date);
@@ -80,6 +82,6 @@ public:
     void setSource(Calendar& inputCalendar);
     void getICalendar(WCHAR* vCard);
     void getCalendar(Calendar** outputContact);
-    bool convert(WCHAR* error, long* errorCode);
+    bool convert(WString& error, long* errorCode);
 };
 #endif

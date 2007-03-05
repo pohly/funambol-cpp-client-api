@@ -44,7 +44,7 @@ int RawFileSyncSource::addItem(SyncItem& item) {
                 return STC_COMMAND_FAILED;
             } else {
                 WCHAR keystr[80];
-                swprintf(keystr, TEXT("%d"), key);
+                swprintf(keystr, 80, TEXT("%d"), key);
                 item.setKey(keystr);
                 return addedItem(item, keystr);
             }

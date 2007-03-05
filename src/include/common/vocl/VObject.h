@@ -111,6 +111,8 @@ public:
     VProperty* getProperty(const WCHAR* propName);
     WCHAR* toString();
 
+#ifdef VOCL_ENCODING_FIX
+
     // Patrick Ohly:
     //
     // Normally the class does not change the encoding
@@ -153,6 +155,9 @@ public:
     // object.
     //
     void fromNativeEncoding();
+
+#endif
+
 };
 
 

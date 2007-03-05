@@ -193,6 +193,7 @@ void VObject::removeAllProperies(WCHAR* propName) {
         }
 }
 
+#ifdef VOCL_ENCODING_FIX
 
 // Patrick Ohly: hack below, see header file
 
@@ -388,7 +389,7 @@ void VObject::fromNativeEncoding()
                 if (doquoted &&
                     (curr == '=' || (unsigned char)curr >= 128)) {
                     // escape = and non-ASCII characters
-                    wsprintf(foreign + out, TEXT("=%02X"), (unsigned int)(unsigned char)curr);
+                    swprintf(foreign + out, 4, TEXT("=%02X"), (unsigned int)(unsigned char)curr);
                     out += 3;
                 } else if (!wcsncmp(native + in - 1,
                                     SYNC4J_LINEBREAK,
@@ -420,3 +421,6 @@ void VObject::fromNativeEncoding()
         }
     }
 }
+
+#endif
+

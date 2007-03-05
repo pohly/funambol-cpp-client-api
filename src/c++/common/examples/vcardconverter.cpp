@@ -31,6 +31,7 @@
 #include "vocl/VConverter.h"
 #include "vocl/vCard/vCardConverter.h"
 #include "base/util/utils.h"
+#include "base/util/WString.h"
 
 // very simply auto_ptr for arrays
 template <class T> class auto_array {
@@ -50,8 +51,8 @@ template <class T> class auto_array {
 
 int main( int argc, char **argv )
 {
-    char *sep = TEXT("--------------- %s -----------------------\n");
-    char *sep2 = TEXT("-----------------------------------------------------------\n");
+    WCHAR *sep = TEXT("--------------- %s -----------------------\n");
+    WCHAR *sep2 = TEXT("-----------------------------------------------------------\n");
 
     if (argc != 2) {
         fprintf(stdout, "usage: %s <vcard file>\n", argv[0]);
@@ -109,13 +110,13 @@ int main( int argc, char **argv )
             VProperty *vprop = vobj->getProperty(property);
 
             // replace 3.0 ENCODING=B with 2.1 ENCODING=BASE64 and vice versa
-            char *encoding = vprop->getParameterValue("ENCODING");
+            WCHAR *encoding = vprop->getParameterValue(TEXT("ENCODING"));
             if (encoding &&
                 (!wcsicmp(TEXT("B"), encoding) || !wcsicmp(TEXT("BASE64"), encoding))) {
-                vprop->removeParameter("ENCODING");
-                vprop->addParameter("ENCODING",
+                vprop->removeParameter(TEXT("ENCODING"));
+                vprop->addParameter(TEXT("ENCODING"),
                                     !wcscmp(versions[index], TEXT("2.1")) ?
-                                    "BASE64" : "b");
+                                    TEXT("BASE64") : TEXT("b"));
             }
         }
 
@@ -134,13 +135,16 @@ int main( int argc, char **argv )
     converter.setSource(wvcard);
     Contact *contactPtr;
     long errorCode;
-    if (!converter.convert(lastErrorMsg, &errorCode)) {
-        fwprintf(stdout, TEXT("converter failed: %s (%ld)\n"), lastErrorMsg, errorCode);
+    WString error;
+    if (!converter.convert(error, &errorCode)) {
+        fwprintf(stdout, TEXT("converter failed: %s (%ld)\n"),
+                 error.c_str(), errorCode);
         return 1;
     }
     converter.getContact(&contactPtr);
     std::auto_ptr<Contact> contact(contactPtr);
     wvcard = contact->toString();
+
     fwprintf(stdout, sep, TEXT("after parsing"));
     fwprintf(stdout, TEXT("%s\n"), wvcard.get());
     fwprintf(stdout, sep2);

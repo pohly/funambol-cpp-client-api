@@ -24,6 +24,8 @@
 class ArrayList;
 class StringBuffer;
 
+#define DEFAULT_DELIMITER (const WCHAR* )TEXT(" ")
+
 /**
  * Awful implementation of a WString!
  */
@@ -94,7 +96,7 @@ class WString: public ArrayElement {
          * @return - the position or WString::npos if not found.
          */
         ArrayList &split (ArrayList &tokens,
-                          const WCHAR *delimiters = TEXT(" ")) const EXTRA_SECTION_00;
+                          const WCHAR *delimiters = DEFAULT_DELIMITER ) const EXTRA_SECTION_00;
 
         /**
          * Joins all the tokens in the given ArrayList, using separator to

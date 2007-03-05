@@ -18,7 +18,7 @@
  */
 
 #include "vocl/vCard/vCardConverter.h"
-
+#include "base/util/WString.h"
 
 vCardConverter::vCardConverter() {
     vCard = NULL;
@@ -77,10 +77,8 @@ void vCardConverter::getContact(Contact** outputContact) {
         *outputContact = NULL;
 }
 
-bool vCardConverter::convert(WCHAR* errorDescription, long* errorCode) {
-    if(!errorDescription)
-        return NULL;
-    wcscpy(errorDescription,TEXT(""));
+bool vCardConverter::convert(WString& errorDescription, long* errorCode) {
+    errorDescription = TEXT("");
     *errorCode = ERROR_SUCCESS;
 
     if(!contact && !vCard)
@@ -95,7 +93,7 @@ bool vCardConverter::convert(WCHAR* errorDescription, long* errorCode) {
     }
     if (vCard) {
         WCHAR* vCardCopy = new WCHAR[wcslen(vCard) + 1];
-        wcscpy(vCardCopy, vCard);
+        vCardCopy =  vCard;
         Contact* invalidatedContact = (Contact*)VConverter::parse(vCardCopy);
         if (invalidatedContact && validate((VObject*)invalidatedContact, errorDescription, errorCode))
             contact = invalidatedContact->clone();
@@ -107,29 +105,29 @@ bool vCardConverter::convert(WCHAR* errorDescription, long* errorCode) {
    return true;
 }
 
-bool vCardConverter::validate(VObject* vObject, WCHAR* errorDescription, long* errorCode) {
+bool vCardConverter::validate(VObject* vObject, WString& errorDescription, long* errorCode) {
     
     //validate begin, end, N and FN properties
     if(wcscmp(vObject->getProperty(0)->getName(), TEXT("BEGIN")) ||
         wcscmp(vObject->getProperty(0)->getValue(), TEXT("VCARD"))) {
         *errorCode = ERROR_KEY_PROPERTY_MISSING;
-        wcscpy(errorDescription, TEXT("'BEGIN' property is missing"));
+        errorDescription =  TEXT("'BEGIN' property is missing");
         return false;
         }
     if(wcscmp(vObject->getProperty(vObject->propertiesCount()-1)->getName(), TEXT("END")) ||
         wcscmp(vObject->getProperty(vObject->propertiesCount()-1)->getValue(), TEXT("VCARD"))) {
         *errorCode = ERROR_KEY_PROPERTY_MISSING;
-        wcscpy(errorDescription, TEXT("'END' property is missing"));
+        errorDescription =  TEXT("'END' property is missing");
         return false;
         }
     if(!vObject->containsProperty(TEXT("N"))) { 
         *errorCode = ERROR_KEY_PROPERTY_MISSING;
-        wcscpy(errorDescription, TEXT("'N' property is missing"));
+        errorDescription =  TEXT("'N' property is missing");
         return false;
     }
     if(!vObject->containsProperty(TEXT("FN"))) { 
         *errorCode = ERROR_KEY_PROPERTY_MISSING;
-        wcscpy(errorDescription, TEXT("'FN' property is missing"));
+        errorDescription =  TEXT("'FN' property is missing");
         return false;
     }
 
@@ -137,7 +135,7 @@ bool vCardConverter::validate(VObject* vObject, WCHAR* errorDescription, long* e
     if(vObject->containsProperty(TEXT("VERSION"))) {
         if(!vObject->getProperty(TEXT("VERSION"))->getValue()) {
             *errorCode = ERROR_ILLEGAL_VERSION_NUMBER;
-            wcscpy(errorDescription, TEXT("Version number is missing"));
+            errorDescription =  TEXT("Version number is missing");
             return false; 
         }
         if(!wcscmp(vObject->getProperty(TEXT("VERSION"))->getValue(), TEXT("2.1")))
@@ -154,26 +152,28 @@ bool vCardConverter::validate(VObject* vObject, WCHAR* errorDescription, long* e
         //VERSION property is neither 2.1 nor 3.0
         else {
             *errorCode = ERROR_ILLEGAL_VERSION_NUMBER;
-            swprintf(errorDescription, TEXT("Illegal version number : %s"), vObject->getProperty(TEXT("VERSION"))->getValue());
+            errorDescription = TEXT("Illegal version number : %s");
+            errorDescription += vObject->getProperty(TEXT("VERSION"))->getValue();
             return false; 
         }
     }
     //Version property is missing
     else {
         *errorCode = ERROR_KEY_PROPERTY_MISSING;
-        wcscpy(errorDescription, TEXT("'VERSION' property is missing"));
+        errorDescription =  TEXT("'VERSION' property is missing");
         return false;
     }
 
     return true;
 }
 
-bool vCardConverter::validateProperty21(VProperty* prop, WCHAR* errorDescription, long* errorCode) {
+bool vCardConverter::validateProperty21(VProperty* prop, WString& errorDescription, long* errorCode) {
 
     if(!wcsstr(VCARD21_PROPERTIES_LIST, prop->getName()) &&
         wcsstr(prop->getName(),TEXT("X-")) != prop->getName()) {
         *errorCode = ERROR_ILLEGAL_PROPERTY_NAME;
-        swprintf(errorDescription, TEXT("Illegal property name : %s"), prop->getName());
+        errorDescription = TEXT("Illegal property name : %s");
+        errorDescription += prop->getName();
         return false;
     }
 
@@ -186,7 +186,8 @@ bool vCardConverter::validateProperty21(VProperty* prop, WCHAR* errorDescription
         wcscmp(prop->getParameterValue(TEXT("ENCODING")), TEXT("QUOTED-PRINTABLE")) &&
         wcscmp(prop->getParameterValue(TEXT("ENCODING")), TEXT("8BIT"))) {
         *errorCode = ERROR_UNSUPPORTED_ENCODING;
-        swprintf(errorDescription, TEXT("Unsupported property encoding : %s"), prop->getParameterValue(TEXT("ENCODING")));
+        errorDescription = TEXT("Unsupported property encoding : %s");
+        errorDescription += prop->getParameterValue(TEXT("ENCODING"));
         return false;
     }
         
@@ -194,7 +195,8 @@ bool vCardConverter::validateProperty21(VProperty* prop, WCHAR* errorDescription
     if(!wcscmp(prop->getName(), TEXT("PHOTO")) && prop->containsParameter(TEXT("TYPE")))
         if(prop->getParameterValue(TEXT("TYPE")) && !wcsstr(PHOTO21_TYPES, prop->getParameterValue(TEXT("TYPE")))) {
             *errorCode = ERROR_ILLEGAL_TYPE_PARAMETER;
-            swprintf(errorDescription, TEXT("Illegal PHOTO type parameter : %s"), prop->getParameterValue(TEXT("TYPE")));
+            errorDescription = TEXT("Illegal PHOTO type parameter : %s");
+            errorDescription += prop->getParameterValue(TEXT("TYPE"));
             return false;
         }        
 
@@ -202,7 +204,8 @@ bool vCardConverter::validateProperty21(VProperty* prop, WCHAR* errorDescription
     if(!wcscmp(prop->getName(), TEXT("LOGO")) && prop->containsParameter(TEXT("TYPE")))
         if(prop->getParameterValue(TEXT("TYPE")) && !wcsstr(PHOTO21_TYPES, prop->getParameterValue(TEXT("TYPE")))) {
             *errorCode = ERROR_ILLEGAL_TYPE_PARAMETER;
-            swprintf(errorDescription, TEXT("Illegal LOGO type parameter : %s"), prop->getParameterValue(TEXT("TYPE")));
+            errorDescription = TEXT("Illegal LOGO type parameter : %s");
+            errorDescription += prop->getParameterValue(TEXT("TYPE"));
             return false;
         }       
     
@@ -216,7 +219,8 @@ bool vCardConverter::validateProperty21(VProperty* prop, WCHAR* errorDescription
                 wcsstr(prop->getParameter(i),TEXT("X-")) != prop->getParameter(i)) {
                 delete [] addressParameterList; addressParameterList = NULL;
                 *errorCode = ERROR_ILLEGAL_PARAMETER;
-                swprintf(errorDescription, TEXT("Illegal ADDRESS parameter : %s"), prop->getParameter(i));
+                errorDescription = TEXT("Illegal ADDRESS parameter : %s");
+                errorDescription += prop->getParameter(i);
                 return false;
             }    
         delete [] addressParameterList; addressParameterList = NULL;
@@ -232,7 +236,8 @@ bool vCardConverter::validateProperty21(VProperty* prop, WCHAR* errorDescription
                 wcsstr(prop->getParameter(i),TEXT("X-")) != prop->getParameter(i)) {
                 delete [] telParameterList; telParameterList = NULL;
                 *errorCode = ERROR_ILLEGAL_PARAMETER;
-                swprintf(errorDescription, TEXT("Illegal TEL parameter : %s"), prop->getParameter(i));
+                errorDescription = TEXT("Illegal TEL parameter : %s");
+                errorDescription += prop->getParameter(i);
                 return false;
             }
         delete [] telParameterList; telParameterList = NULL;
@@ -242,7 +247,8 @@ bool vCardConverter::validateProperty21(VProperty* prop, WCHAR* errorDescription
     if(!wcscmp(prop->getName(), TEXT("EMAIL")) && prop->containsParameter(TEXT("TYPE")) &&
         !wcsstr(EMAIL21_TYPES, prop->getParameterValue(TEXT("TYPE")))) {
         *errorCode = ERROR_ILLEGAL_TYPE_PARAMETER;
-        swprintf(errorDescription, TEXT("Illegal EMAIL type parameter : %s"), prop->getParameterValue(TEXT("TYPE")));
+        errorDescription = TEXT("Illegal EMAIL type parameter : %s");
+        errorDescription += prop->getParameterValue(TEXT("TYPE"));
         return false;
     }
 
@@ -250,7 +256,8 @@ bool vCardConverter::validateProperty21(VProperty* prop, WCHAR* errorDescription
     if(!wcscmp(prop->getName(), TEXT("SOUND")) && prop->containsParameter(TEXT("TYPE")) &&
         !wcsstr(SOUND21_TYPES, prop->getParameterValue(TEXT("TYPE")))) {
         *errorCode = ERROR_ILLEGAL_TYPE_PARAMETER;
-        swprintf(errorDescription, TEXT("Illegal SOUND type parameter : %s"), prop->getParameterValue(TEXT("TYPE")));
+        errorDescription = TEXT("Illegal SOUND type parameter : %s");
+        errorDescription += prop->getParameterValue(TEXT("TYPE"));
         return false;
     }
 
@@ -258,7 +265,8 @@ bool vCardConverter::validateProperty21(VProperty* prop, WCHAR* errorDescription
     if(!wcscmp(prop->getName(), TEXT("KEY")) && prop->containsParameter(TEXT("TYPE")) &&
         !wcsstr(KEY_TYPES, prop->getParameterValue(TEXT("TYPE")))) {
         *errorCode = ERROR_ILLEGAL_TYPE_PARAMETER;
-        swprintf(errorDescription, TEXT("Illegal KEY type parameter : %s"), prop->getParameterValue(TEXT("TYPE")));
+        errorDescription = TEXT("Illegal KEY type parameter : %s");
+        errorDescription += prop->getParameterValue(TEXT("TYPE"));
         return false;
     }
         
@@ -266,7 +274,8 @@ bool vCardConverter::validateProperty21(VProperty* prop, WCHAR* errorDescription
     if(!wcscmp(prop->getName(), TEXT("GEO")) && prop->getValue())
          if(!validateGeo(prop->getValue())) {
             *errorCode = ERROR_INVALID_PROPERTY_VALUE;
-            swprintf(errorDescription, TEXT("Property GEO, Invalid value format : %s"), prop->getValue());
+            errorDescription = TEXT("Property GEO, Invalid value format : %s");
+            errorDescription += prop->getValue();
             return false;
         }
         
@@ -274,18 +283,20 @@ bool vCardConverter::validateProperty21(VProperty* prop, WCHAR* errorDescription
     if(!wcscmp(prop->getName(), TEXT("TZ")) && prop->getValue())
         if(!validateTZ(prop->getValue())) {
             *errorCode = ERROR_INVALID_PROPERTY_VALUE;
-            swprintf(errorDescription, TEXT("Property TZ, Invalid value format : %s"), prop->getValue());
+            errorDescription = TEXT("Property TZ, Invalid value format : %s");
+            errorDescription += prop->getValue();
             return false;
         }
     return true;
 }
 
-bool vCardConverter::validateProperty30(VProperty* prop, WCHAR* errorDescription, long* errorCode) {
+bool vCardConverter::validateProperty30(VProperty* prop, WString& errorDescription, long* errorCode) {
     
     if(!wcsstr(VCARD30_PROPERTIES_LIST, prop->getName()) &&
         wcsstr(prop->getName(),TEXT("X-")) != prop->getName()) {
         *errorCode = ERROR_ILLEGAL_PROPERTY_NAME;
-        swprintf(errorDescription, TEXT("Illegal property name : %s"), prop->getName());
+        errorDescription = TEXT("Illegal property name : %s");
+        errorDescription += prop->getName();
         return false;
     }
 
@@ -297,13 +308,15 @@ bool vCardConverter::validateProperty30(VProperty* prop, WCHAR* errorDescription
             if(!wcsstr(PARAMTER30_LIST,prop->getParameter(i)) &&
                 wcsstr(prop->getParameter(i),TEXT("X-")) != prop->getParameter(i)) {
                 *errorCode = ERROR_ILLEGAL_PARAMETER;
-                swprintf(errorDescription, TEXT("Illegal ADDRESS parameter : %s"), prop->getParameter(i));
+                errorDescription = TEXT("Illegal ADDRESS parameter : %s");
+                errorDescription += prop->getParameter(i);
                 return false;
             }           
             if(!wcscmp(prop->getParameter(i),TEXT("TYPE")) && prop->getParameterValue(TEXT("TYPE")) &&
                 !checkType(prop->getParameterValue(TEXT("TYPE")), ADDRESS30_TYPES)) {
                 *errorCode = ERROR_ILLEGAL_TYPE_PARAMETER;
-                swprintf(errorDescription, TEXT("Illegal ADDRESSS type parameter : %s"), prop->getParameterValue(TEXT("TYPE")));
+                errorDescription = TEXT("Illegal ADDRESSS type parameter : %s");
+                errorDescription += prop->getParameterValue(TEXT("TYPE"));
                 return false;
             }
 
@@ -314,13 +327,15 @@ bool vCardConverter::validateProperty30(VProperty* prop, WCHAR* errorDescription
             if(!wcsstr(PARAMTER30_LIST,prop->getParameter(i)) &&
                 wcsstr(prop->getParameter(i),TEXT("X-")) != prop->getParameter(i)) {
                     *errorCode = ERROR_ILLEGAL_PARAMETER;
-                    swprintf(errorDescription, TEXT("Illegal LABEL parameter : %s"), prop->getParameter(i));
+                    errorDescription = TEXT("Illegal LABEL parameter : %s");
+                    errorDescription += prop->getParameter(i);
                     return false;
                 }           
                 if(!wcscmp(prop->getParameter(i),TEXT("TYPE")) && prop->getParameterValue(TEXT("TYPE")) &&
                     !checkType(prop->getParameterValue(TEXT("TYPE")), ADDRESS30_TYPES)) {
                     *errorCode = ERROR_ILLEGAL_TYPE_PARAMETER;
-                    swprintf(errorDescription, TEXT("Illegal LABEL type parameter : %s"), prop->getParameterValue(TEXT("TYPE")));
+                    errorDescription = TEXT("Illegal LABEL type parameter : %s");
+                    errorDescription += prop->getParameterValue(TEXT("TYPE"));
                     return false;
                }
 
@@ -331,13 +346,15 @@ bool vCardConverter::validateProperty30(VProperty* prop, WCHAR* errorDescription
             if(!wcsstr(PARAMTER30_LIST,prop->getParameter(i)) &&
                 wcsstr(prop->getParameter(i),TEXT("X-")) != prop->getParameter(i)) {
                 *errorCode = ERROR_ILLEGAL_PARAMETER;
-                swprintf(errorDescription, TEXT("Illegal TEL parameter : %s"), prop->getParameter(i));
+                errorDescription = TEXT("Illegal TEL parameter : %s");
+                errorDescription += prop->getParameter(i);
                 return false; 
             }
             if(!wcscmp(prop->getParameter(i),TEXT("TYPE")) && prop->getParameterValue(TEXT("TYPE")) &&
                 !checkType(prop->getParameterValue(TEXT("TYPE")), TEL30_TYPES)) {
                 *errorCode = ERROR_ILLEGAL_TYPE_PARAMETER;
-                swprintf(errorDescription, TEXT("Illegal TEL type parameter : %s"), prop->getParameterValue(TEXT("TYPE")));
+                errorDescription = TEXT("Illegal TEL type parameter : %s");
+                errorDescription += prop->getParameterValue(TEXT("TYPE"));
                 return false;
             }                
         }
@@ -345,28 +362,32 @@ bool vCardConverter::validateProperty30(VProperty* prop, WCHAR* errorDescription
     if(!wcscmp(prop->getName(), TEXT("EMAIL")) && prop->containsParameter(TEXT("TYPE")) && 
         prop->getParameterValue(TEXT("TYPE")) && !checkType(prop->getParameterValue(TEXT("TYPE")), EMAIL30_TYPES)) {
         *errorCode = ERROR_ILLEGAL_TYPE_PARAMETER;
-        swprintf(errorDescription, TEXT("Illegal EMAIL type parameter : %s"), prop->getParameterValue(TEXT("TYPE")));
+        errorDescription = TEXT("Illegal EMAIL type parameter : %s");
+        errorDescription += prop->getParameterValue(TEXT("TYPE"));
         return false;
     }
         
     if(!wcscmp(prop->getName(), TEXT("KEY")) && prop->containsParameter(TEXT("TYPE")) &&
         prop->getParameterValue(TEXT("TYPE")) && !wcsstr(KEY_TYPES, prop->getParameterValue(TEXT("TYPE")))) {
         *errorCode = ERROR_ILLEGAL_TYPE_PARAMETER;
-        swprintf(errorDescription, TEXT("Illegal KEY type parameter : %s"), prop->getParameterValue(TEXT("TYPE")));
+        errorDescription = TEXT("Illegal KEY type parameter : %s");
+        errorDescription += prop->getParameterValue(TEXT("TYPE"));
         return false;
      }
         
     if(!wcscmp(prop->getName(), TEXT("GEO")) && prop->getValue()) 
          if(!validateGeo(prop->getValue())) {
             *errorCode = ERROR_INVALID_PROPERTY_VALUE;
-            swprintf(errorDescription, TEXT("Property GEO, Invalid value format : %s"), prop->getValue());
+            errorDescription = TEXT("Property GEO, Invalid value format : %s");
+            errorDescription += prop->getValue();
             return false;
         }
     
     if(!wcscmp(prop->getName(), TEXT("TZ")) && prop->getValue())
         if(!validateTZ(prop->getValue())) {
             *errorCode = ERROR_INVALID_PROPERTY_VALUE;
-            swprintf(errorDescription, TEXT("Property GEO, Invalid value format : %s"), prop->getValue());
+            errorDescription = TEXT("Property GEO, Invalid value format : %s");
+            errorDescription += prop->getValue();
             return false;
         }
     

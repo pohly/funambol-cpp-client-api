@@ -23,9 +23,9 @@
 #include "base/Log.h"
 #include "base/util/utils.h"
 
-
+#if 0
 long utf8len(const char* s) {
-	 return s ? wcslen(s) : 0;
+	 return s ? strlen(s) : 0;
 }
 
 char* wc2utf8(const char* s, char* d, unsigned long dsize) {
@@ -49,7 +49,7 @@ char* wc2utf8(const char* s, char* d, unsigned long dsize) {
     return d;
 }
 
-char* utf82wc(const char* s, char* d, unsigned long dsize) {
+WCHAR* utf82wc(const char* s, char* d, unsigned long dsize) {
 
     //
     // First of all, if s is NULL, just return NULL.
@@ -73,6 +73,7 @@ char* utf82wc(const char* s, char* d, unsigned long dsize) {
     return d;
 
 }
+#endif
 
 bool saveFile(const char *filename, const char *buffer, size_t len, bool binary)
 {
@@ -166,7 +167,6 @@ char** readDir(char* name, int *count, bool onlyCount) {
                 entry = readdir(dir);
             }
         }
-        closedir(dir);
     }
 
     return entries;
@@ -184,14 +184,51 @@ unsigned long getFileModTime(const char* name)
 // TODO: convert to the specified encoding, assuming wc is UTF-8
 char* toMultibyte(const WCHAR *wc, const char *encoding)
 {
+#ifdef USE_WCHAR
+    size_t length = wcstombs(NULL, wc, 0) + 1;
+    if(length == -1) {
+        LOG.error("toMultibyte: invalid string.");
+        return strdup("");
+    }
+    char* ret = new char[length];
+    wcstombs(ret, wc, length);
+
+    return ret;
+#else
     return stringdup(wc);
+#endif
 }
 
 // TODO: convert to UTF-8 from the specified encoding
 WCHAR* toWideChar(const char *mb, const char *encoding)
 {
+#ifdef USE_WCHAR
+    size_t length = mbstowcs(NULL, mb, 0) + 1;
+    if(length == -1) {
+        LOG.error("toWideChar: invalid string.");
+        return wcsdup(TEXT(""));
+    }
+    WCHAR* ret = new WCHAR[length];
+    mbstowcs(ret, mb, length);
+
+    return ret;
+#else
     return stringdup(mb);
+#endif
 }
+
+#ifdef USE_WCHAR
+// FIXME-----------------------------------------------------------------------
+//Overloading thread-safe version of wcstok (defined in Linux) to make it
+//work like the non-thread safe version available on Windows (same as strtok).
+// FIXME: adjust VOCL code to NOT use this but String::split and remove it!!
+//-----------------------------------------------------------------------------
+WCHAR *wcstok(WCHAR *s, const WCHAR *delim)
+{
+    static WCHAR *state = 0;
+    return wcstok(s, delim, &state);
+}
+#endif
 
 // Implemented using mkstemp() with a template hard-coded
 // to /tmp. Because the API of mkTempFileName() cannot return
@@ -213,3 +250,4 @@ char *mkTempFileName(const char *name)
         return filename;
     }
 }
+

@@ -634,3 +634,4 @@ Sync* SyncMLProcessor::getSyncResponse(SyncML* syncml, int index) {
     return sync;
  
 }
+
