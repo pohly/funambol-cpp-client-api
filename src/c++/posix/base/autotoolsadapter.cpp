@@ -23,57 +23,6 @@
 #include "base/Log.h"
 #include "base/util/utils.h"
 
-#if 0
-long utf8len(const char* s) {
-	 return s ? strlen(s) : 0;
-}
-
-char* wc2utf8(const char* s, char* d, unsigned long dsize) {
-
-    //
-    // First of all, if s is NULL, just return NULL.
-    // Then, if d is NULL, let's allocate the required memory to contain the
-    // utf8 string.
-    //
-    if (s == NULL) {
-        return NULL;
-    }
-
-    if (d == NULL) {
-        dsize = utf8len(s);
-        d = new char[dsize+1];
-    }
-
-	 wcscpy( d, s );
-
-    return d;
-}
-
-WCHAR* utf82wc(const char* s, char* d, unsigned long dsize) {
-
-    //
-    // First of all, if s is NULL, just return NULL.
-    // Then, if d is NULL, let's allocate the required memory to contain the
-    // WCHAR string.
-    //
-    if (s == NULL) {
-        return NULL;
-    }
-
-    if (d == NULL) {
-        // get the right lenght with a NULL dest
-        dsize = strlen (s);
-        d = new WCHAR[dsize+1];
-    }
-
-
-
-    wcscpy(d, s);
-
-    return d;
-
-}
-#endif
 
 bool saveFile(const char *filename, const char *buffer, size_t len, bool binary)
 {
