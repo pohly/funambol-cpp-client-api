@@ -77,6 +77,7 @@ inline int _wtoi(const WCHAR *s) { return (int)wcstol(s, NULL, 10); }
 
 #define _wcsicmp wcscasecmp
 #define wcsicmp wcscasecmp
+#define snwprintf swprintf
 
 #else
 
@@ -94,6 +95,7 @@ inline int _wtoi(const WCHAR *s) { return (int)wcstol(s, NULL, 10); }
 #       define fwprintf fprintf
 #       define wsprintf sprintf
 #       define swprintf snprintf
+#       define snwprintf snprintf
 #       define wcscpy strcpy
 #       define wcsncpy strncpy
 #       define wcsncmp strncmp
