@@ -26,6 +26,7 @@
 
 #ifndef INCL_FSCAPI
     #define INCL_FSCAPI
+/** @cond DEV */
 
     #ifdef AUTOTOOLS
         #include "base/posixadapter.h"
@@ -110,6 +111,7 @@
      */
     #include <assert.h>
     
+/** @endcond */
 #endif
 
 

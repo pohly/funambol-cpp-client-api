@@ -18,6 +18,7 @@
 
 #ifndef _BASE64_H
 #define _BASE64_H
+/** @cond DEV */
 
 #include "base/fscapi.h"
 
@@ -47,5 +48,6 @@ void b64_encode(StringBuffer &dest, void *src, int len);
  */
 void * b64_decode(int & len, const char *src);
 
+/** @endcond */
 #endif /* BASE64_H */
 

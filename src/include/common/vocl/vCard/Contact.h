@@ -19,6 +19,7 @@
 
 #ifndef INCL_PIM_CONTACT
 #define INCL_PIM_CONTACT
+/** @cond DEV */
 
 #include "base/fscapi.h"
 #include "base/util/ArrayList.h"
@@ -176,4 +177,5 @@ class Contact : public VObject {
         WCHAR* toString();
 };
 
+/** @endcond */
 #endif

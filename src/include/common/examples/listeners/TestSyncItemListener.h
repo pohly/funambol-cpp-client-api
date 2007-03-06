@@ -19,6 +19,7 @@
 
 #ifndef INCL_TEST_ITEM_LISTENER
 #define INCL_TEST_ITEM_LISTENER
+/** @cond DEV */
 
 #include "event/SyncItemListener.h"
 
@@ -33,4 +34,5 @@ class TestSyncItemListener : public SyncItemListener {
 
 };
 
+/** @endcond */
 #endif

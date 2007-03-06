@@ -18,6 +18,7 @@
 
 #ifndef INCL_WIN32_DMT_MANAGER
     #define INCL_WIN32_DMT_MANAGER
+/** @cond DEV */
 
     #include "spdm/Constants.h"
     #include "spdm/DMTreeManager.h"
@@ -52,4 +53,5 @@
 
     };
 
+/** @endcond */
 #endif

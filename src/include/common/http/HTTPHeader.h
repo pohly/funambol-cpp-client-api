@@ -23,6 +23,7 @@
 
 #ifndef INCL_HTTP_HEADER
     #define INCL_HTTP_HEADER
+/** @cond DEV */
 
     #define DIM_HEADERS 50
     #define MSG_BAD_PROTOCOL "BAD PROTOCOL"
@@ -59,4 +60,5 @@
          */
         int getContentLength() EXTRA_SECTION_03;
     };
+/** @endcond */
 #endif

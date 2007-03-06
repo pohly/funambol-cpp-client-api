@@ -17,6 +17,7 @@
  */
 #ifndef INCL_DM_CONFIG
 #define INCL_DM_CONFIG
+/** @cond DEV */
 
 #include "base/fscapi.h"
 #include "http/constants.h"
@@ -230,4 +231,5 @@ class DMTClientConfig : public SyncManagerConfig {
         virtual void close() EXTRA_SECTION_01;
 };
 
+/** @endcond */
 #endif

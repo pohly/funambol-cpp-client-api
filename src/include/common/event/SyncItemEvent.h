@@ -19,6 +19,7 @@
 
 #ifndef INCL_SYNC_ITEM_EVENT
 #define INCL_SYNC_ITEM_EVENT
+/** @cond DEV */
 
 #include "event/BaseEvent.h"
 #include "spds/SyncItem.h"
@@ -55,4 +56,5 @@ public:
 
 };
 
+/** @endcond */
 #endif

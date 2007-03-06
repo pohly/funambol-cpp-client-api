@@ -18,6 +18,7 @@
 
 #ifndef INCL_FILE_SYNC_SOURCE
 #define INCL_FILE_SYNC_SOURCE
+/** @cond DEV */
 
 #include "base/fscapi.h"
 #include "spds/constants.h"
@@ -171,4 +172,5 @@ public:
     SyncItem* getNext(ItemIteratorContainer& container, BOOL getData = TRUE);
 };
 
+/** @endcond */
 #endif

@@ -17,6 +17,7 @@
  */
 #ifndef INCL_MAIL_MESSAGE
     #define INCL_MAIL_MESSAGE
+/** @cond DEV */
 
 #include "base/util/ArrayList.h"
 #include "base/util/StringBuffer.h"
@@ -136,4 +137,5 @@ class MailMessage : public ArrayElement {
 
 };
 
+/** @endcond */
 #endif

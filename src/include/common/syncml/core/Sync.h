@@ -19,6 +19,7 @@
 
 #ifndef INCL_SYNC
 #define INCL_SYNC
+/** @cond DEV */
 
 #include "base/fscapi.h"
 #include "base/util/ArrayList.h"
@@ -139,4 +140,5 @@ class Sync : public AbstractCommand {
    
 };
 
+/** @endcond */
 #endif

@@ -18,6 +18,7 @@
 
 #ifndef INCL_ALLCLAUSE
 #define INCL_ALLCLAUSE
+/** @cond DEV */
 
 #include "filter/Clause.h"
 
@@ -44,4 +45,5 @@ public:
 };
 
 
+/** @endcond */
 #endif

@@ -18,6 +18,7 @@
 
 #ifndef INCL_AUTOTOOLS_LOG
 # define INCL_AUTOTOOLS_LOG
+/** @cond DEV */
 
 #include <base/fscapi.h>
 
@@ -46,4 +47,5 @@ void setLogFile(const char *path, const char* name, BOOL redirectStderr = FALSE)
 /** traditional version of setLogFile() which writes in the current directory */
 void setLogFile(const char* name, BOOL redirectStderr = FALSE);
 
+/** @endcond */
 #endif

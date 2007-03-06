@@ -19,6 +19,7 @@
 
 #ifndef INCL_AUTOTOOLS_ADAPTER
 #define INCL_AUTOTOOLS_ADAPTER
+/** @cond DEV */
 
 
 /*
@@ -131,5 +132,6 @@ inline int _wtoi(const WCHAR *s) { return (int)wcstol(s, NULL, 10); }
 #define min(x,y) ( (x) < (y) ? (x) : (y) )
 #define max(x,y) ( (x) > (y) ? (x) : (y) )
 
+/** @endcond */
 #endif
 

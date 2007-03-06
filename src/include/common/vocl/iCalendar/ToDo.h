@@ -19,6 +19,7 @@
 
 #ifndef INCL_ICALENDAR_TODO
 #define INCL_ICALENDAR_TODO
+/** @cond DEV */
 
 #include "vocl/VObject.h"
 #include "vocl/iCalendar/iCalProperty.h"
@@ -138,4 +139,5 @@ public:
 	ArrayElement* clone();
 
 };
+/** @endcond */
 #endif

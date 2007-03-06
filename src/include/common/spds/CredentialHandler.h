@@ -18,6 +18,7 @@
 
  #ifndef INCL_CREDENTIAL_HANDLER
     #define INCL_CREDENTIAL_HANDLER
+/** @cond DEV */
 
     #include "base/fscapi.h"
     #include "base/constants.h"
@@ -98,4 +99,5 @@
 
     };
 
+/** @endcond */
 #endif

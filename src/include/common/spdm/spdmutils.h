@@ -18,6 +18,7 @@
 
  #ifndef INCL_DEVICE_MANAGER_UTIL_SPDM
     #define INCL_DEVICE_MANAGER_UTIL_SPDM
+/** @cond DEV */
 
     #include "base/fscapi.h"
 
@@ -39,4 +40,5 @@
      */
     void getNodeConT(const char*  node, const char* context, int size) EXTRA_SECTION_02;
 
+/** @endcond */
 #endif

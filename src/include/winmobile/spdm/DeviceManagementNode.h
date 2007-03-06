@@ -18,6 +18,7 @@
 
 #ifndef INCL_WINMOBILE_DEVICE_MANAGEMENT_NODE
 #define INCL_WINMOBILE_DEVICE_MANAGEMENT_NODE
+/** @cond DEV */
 
 
 #include "base/fscapi.h"
@@ -86,4 +87,5 @@ class DeviceManagementNode: public ManagementNode {
 
 };
 
+/** @endcond */
 #endif

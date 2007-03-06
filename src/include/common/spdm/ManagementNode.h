@@ -18,6 +18,7 @@
 
 #ifndef INCL_MANAGEMENT_NODE
 #define INCL_MANAGEMENT_NODE
+/** @cond DEV */
 
 #include "base/fscapi.h"
 #include "base/util/ArrayElement.h"
@@ -158,5 +159,6 @@ class ManagementNode : public ArrayElement {
 
 };
 
+/** @endcond */
 #endif
 

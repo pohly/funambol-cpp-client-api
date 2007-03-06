@@ -19,6 +19,7 @@
 
 #ifndef INCL_ATOMIC
 #define INCL_ATOMIC
+/** @cond DEV */
 
 #include "base/fscapi.h"
 #include "syncml/core/AbstractCommand.h"
@@ -77,4 +78,5 @@ class Atomic : public AbstractCommand {
    
 };
 
+/** @endcond */
 #endif

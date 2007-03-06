@@ -19,6 +19,7 @@
 // SyncML Status Codes definition
 #ifndef INCL_SYNC_STATUS
 #define INCL_SYNC_STATUS
+/** @cond DEV */
 
 enum SyncStatus {
     STC_INVALID_CODE                                  = 0,
@@ -102,5 +103,6 @@ enum SyncStatus {
     STC_SESSION_ABORTED                               = 20000
 };
 
+/** @endcond */
 #endif
 

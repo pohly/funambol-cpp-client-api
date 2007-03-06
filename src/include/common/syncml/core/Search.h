@@ -19,6 +19,7 @@
 
 #ifndef INCL_SEARCH
 #define INCL_SEARCH
+/** @cond DEV */
 
 #include "base/fscapi.h"
 #include "base/util/ArrayList.h"
@@ -161,4 +162,5 @@ class Search : public AbstractCommand{
    
 };
 
+/** @endcond */
 #endif

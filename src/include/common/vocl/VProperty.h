@@ -19,6 +19,7 @@
 
 #ifndef INCL_VIRTUAL_PROPERTY
 #define INCL_VIRTUAL_PROPERTY
+/** @cond DEV */
 
 #include "base/fscapi.h"
 #include "base/util/WKeyValuePair.h"
@@ -96,4 +97,5 @@ private:
 
  };
 
+/** @endcond */
 #endif

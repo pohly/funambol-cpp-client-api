@@ -19,6 +19,7 @@
 
 #ifndef INCL_DEVINF_ITEM
 #define INCL_DEVINF_ITEM
+/** @cond DEV */
 
 #include "base/fscapi.h"
 #include "syncml/core/Item.h"
@@ -121,4 +122,5 @@ class DevInfItem : public Item {
    
 };
 
+/** @endcond */
 #endif

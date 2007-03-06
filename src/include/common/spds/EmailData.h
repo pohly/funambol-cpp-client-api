@@ -19,6 +19,7 @@
 
 #ifndef INCL_MAIL
 #define INCL_MAIL
+/** @cond DEV */
 
 #include "base/util/ArrayElement.h"
 #include "base/util/StringBuffer.h"
@@ -136,5 +137,6 @@ class EmailData : public ArrayElement {
    
 };
 
+/** @endcond */
 #endif
 

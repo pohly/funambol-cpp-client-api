@@ -19,6 +19,7 @@
 
 #ifndef INCL_EXEC
 #define INCL_EXEC
+/** @cond DEV */
 
 #include "base/fscapi.h"
 #include "syncml/core/ModificationCommand.h"
@@ -72,4 +73,5 @@ class Exec : public ModificationCommand {
 
 };
 
+/** @endcond */
 #endif

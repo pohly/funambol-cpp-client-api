@@ -19,6 +19,7 @@
 
 #ifndef INCL_SYNC_ITEM_LISTENER
 #define INCL_SYNC_ITEM_LISTENER
+/** @cond DEV */
 
 #include "event/SyncItemEvent.h"
 #include "event/Listener.h"
@@ -53,5 +54,6 @@ public:
     virtual void itemUpdatedByClient(SyncItemEvent& event);
 };
 
+/** @endcond */
 #endif
 

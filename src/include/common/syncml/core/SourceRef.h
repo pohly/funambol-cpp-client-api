@@ -19,6 +19,7 @@
 
 #ifndef INCL_SOURCE_REF
 #define INCL_SOURCE_REF
+/** @cond DEV */
 
 #include "base/fscapi.h"
 #include "base/util/ArrayElement.h"
@@ -89,4 +90,5 @@ class SourceRef : public ArrayElement{
    
 };
 
+/** @endcond */
 #endif

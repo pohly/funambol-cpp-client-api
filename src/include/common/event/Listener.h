@@ -19,6 +19,7 @@
 
 #ifndef INCL_LISTENER
 #define INCL_LISTENER
+/** @cond DEV */
 
 
 /* The base class for all Listeners. This has to be derived by all types of
@@ -32,4 +33,5 @@ class Listener {
         Listener();
 };
 
+/** @endcond */
 #endif

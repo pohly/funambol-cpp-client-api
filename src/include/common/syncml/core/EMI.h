@@ -20,6 +20,7 @@
 
 #ifndef INCL_EMI
 #define INCL_EMI
+/** @cond DEV */
 
 #include "base/fscapi.h"
 #include "base/util/ArrayElement.h"
@@ -58,4 +59,5 @@ class EMI : public ArrayElement {
 
 };
 
+/** @endcond */
 #endif

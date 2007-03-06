@@ -19,6 +19,7 @@
 
 #ifndef INCL_PUT
 #define INCL_PUT
+/** @cond DEV */
 
 #include "base/fscapi.h"
 #include "syncml/core/ItemizedCommand.h"
@@ -86,4 +87,5 @@ class Put : public ItemizedCommand {
    
 };
 
+/** @endcond */
 #endif

@@ -19,6 +19,7 @@
 
 #ifndef INCL_SYNC_ML
 #define INCL_SYNC_ML
+/** @cond DEV */
 
 #include "base/fscapi.h"
 #include "syncml/core/SyncHdr.h"
@@ -98,4 +99,5 @@ class SyncML {
    
 };
 
+/** @endcond */
 #endif

@@ -19,6 +19,7 @@
 
 #ifndef INCL_BASE_UTIL_ARRAY_LIST
 #define INCL_BASE_UTIL_ARRAY_LIST
+/** @cond DEV */
 
 #include "base/fscapi.h"
 
@@ -173,4 +174,5 @@ class ArrayList {
         ArrayList* clone();
 	    
 };
+/** @endcond */
 #endif

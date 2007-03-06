@@ -18,6 +18,7 @@
 
 #ifndef INCL_SPDS_UTIL
 #define INCL_SPDS_UTIL
+/** @cond DEV */
 
 #include "base/util/ArrayList.h"
 #include "spds/constants.h"
@@ -76,4 +77,5 @@ int convertAndSave(const char *filename, const char *str,
 char *loadAndConvert(const char *filename,
                         const char *encoding = "UTF-8") EXTRA_SECTION_02;
 
+/** @endcond */
 #endif

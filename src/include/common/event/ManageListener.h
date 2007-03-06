@@ -19,6 +19,7 @@
 
 #ifndef INCL_MANAGE_LISTENER
 #define INCL_MANAGE_LISTENER
+/** @cond DEV */
 
 #include "event/SyncListener.h"
 #include "event/SyncItemListener.h"
@@ -72,4 +73,5 @@ public:
 
 };
 
+/** @endcond */
 #endif

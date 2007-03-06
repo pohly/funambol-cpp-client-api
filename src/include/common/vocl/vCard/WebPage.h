@@ -19,12 +19,13 @@
 
 //
 // @author Stefano Fornari @ Funambol
-// @version $Id: WebPage.h,v 1.2 2007-02-23 14:22:54 toccy Exp $
+// @version $Id: WebPage.h,v 1.3 2007-03-06 20:51:05 pohly Exp $
 //
 
 
 #ifndef INCL_PIM_WEB_PAGE
 #define INCL_PIM_WEB_PAGE
+/** @cond DEV */
 
 #include "TypedProperty.h"
 
@@ -67,4 +68,5 @@ class WebPage : public TypedProperty {
 
 };
 
+/** @endcond */
 #endif

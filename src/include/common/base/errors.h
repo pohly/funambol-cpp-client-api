@@ -17,6 +17,7 @@
  */
 #ifndef INCL_COMMON_ERRORS
 #define INCL_COMMON_ERRORS
+/** @cond DEV */
 
 #include "spdm/errors.h"
 #include "spds/errors.h"
@@ -46,4 +47,5 @@
 
 
 
+/** @endcond */
 #endif

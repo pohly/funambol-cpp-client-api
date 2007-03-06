@@ -19,6 +19,7 @@
 
 #ifndef INCL_SYNC_CAP
 #define INCL_SYNC_CAP
+/** @cond DEV */
 
 #include "base/fscapi.h"
 #include "base/util/ArrayList.h"
@@ -61,4 +62,5 @@ class SyncCap {
    
 };
 
+/** @endcond */
 #endif

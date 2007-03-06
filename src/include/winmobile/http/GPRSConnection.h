@@ -18,6 +18,7 @@
 
 #ifndef INCL_GPRS_CONN
     #define INCL_GPRS_CONN
+/** @cond DEV */
        
         #define ERR_INTERNET_CONNECTION_MISSING       2005
 
@@ -28,4 +29,5 @@
         
         BOOL EstablishConnection();
 
+/** @endcond */
 #endif

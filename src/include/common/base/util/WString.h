@@ -18,6 +18,7 @@
 
 #ifndef INCL_WSTRING
 #define INCL_WSTRING
+/** @cond DEV */
 
 #include "base/util/ArrayElement.h"
 
@@ -185,5 +186,6 @@ class WString: public ArrayElement {
 
 WString operator+(const WString& x, const WCHAR *y);
 
+/** @endcond */
 #endif
 

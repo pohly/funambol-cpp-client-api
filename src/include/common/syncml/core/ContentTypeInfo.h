@@ -19,6 +19,7 @@
 
 #ifndef INCL_CONTENT_TYPE_INFO
 #define INCL_CONTENT_TYPE_INFO
+/** @cond DEV */
 
 #include "base/fscapi.h"
 #include "base/util/ArrayElement.h"
@@ -82,4 +83,5 @@ class ContentTypeInfo : public ArrayElement {
         ArrayElement* clone();
 };
 
+/** @endcond */
 #endif

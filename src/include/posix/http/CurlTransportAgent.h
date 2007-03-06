@@ -18,6 +18,7 @@
 
 #ifndef INCL_CURL_TRANSPORT_AGENT
     #define INCL_CURL_TRANSPORT_AGENT
+/** @cond DEV */
 
     #include "base/fscapi.h"
 
@@ -58,4 +59,5 @@
 
     };
 
+/** @endcond */
 #endif

@@ -18,6 +18,7 @@
 
 #ifndef INCL_STARTCMD_H
 #define INCL_STARTCMD_H
+/** @cond DEV */
 
 // Funambol default program dir
 #define PROGRAM_DIR TEXT("Funambol")
@@ -28,5 +29,6 @@ const WCHAR *getProgramPath();
 unsigned long startcmd(const WCHAR *app, const WCHAR *cmdline) ;
 int waitProcess(unsigned long pid, time_t timeout);
 
+/** @endcond */
 #endif
 

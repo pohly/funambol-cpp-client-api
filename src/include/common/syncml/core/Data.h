@@ -19,6 +19,7 @@
 
 #ifndef INCL_DATA
 #define INCL_DATA
+/** @cond DEV */
 
 #include "base/fscapi.h"
 #include "syncml/core/Constants.h"
@@ -72,4 +73,5 @@ class Data {
     Data* clone();
 };
 
+/** @endcond */
 #endif

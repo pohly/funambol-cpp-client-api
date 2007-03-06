@@ -19,6 +19,7 @@
 
 #ifndef INCL_CONTAINER
 #define INCL_CONTAINER
+/** @cond DEV */
 
 #include "base/fscapi.h"
 #include "base/util/ArrayList.h"
@@ -90,4 +91,5 @@ public:
 
 };
 
+/** @endcond */
 #endif

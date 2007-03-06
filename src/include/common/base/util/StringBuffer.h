@@ -18,6 +18,7 @@
 
 #ifndef INCL_BASE_STRING_BUFFER
 #define INCL_BASE_STRING_BUFFER
+/** @cond DEV */
 
 #include "base/util/ArrayElement.h"
 
@@ -215,5 +216,6 @@ class StringBuffer: public ArrayElement {
 
 StringBuffer operator+(const StringBuffer& x, const char *y);
 
+/** @endcond */
 #endif
 

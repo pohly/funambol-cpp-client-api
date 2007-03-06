@@ -19,6 +19,7 @@
 
 #ifndef INCL_EXT
 #define INCL_EXT
+/** @cond DEV */
 
 #include "base/fscapi.h"
 #include "base/util/ArrayList.h"
@@ -88,4 +89,5 @@ class Ext : public ArrayElement {
    
 };
 
+/** @endcond */
 #endif

@@ -43,6 +43,7 @@
 
 #ifndef INCL_WIN32_TRANSPORT_AGENT
 #define INCL_WIN32_TRANSPORT_AGENT
+/** @cond DEV */
 
 #include "base/fscapi.h"
 #include "http/URL.h"
@@ -82,4 +83,5 @@ private:
     char* createHttpErrorMessage(DWORD errorCode);
 };
 
+/** @endcond */
 #endif

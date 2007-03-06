@@ -19,6 +19,7 @@
 
 #ifndef INCL_PIM_TYPED_PROPERTY
 #define INCL_PIM_TYPED_PROPERTY
+/** @cond DEV */
 
 #include "base/util/ArrayElement.h"
 #include "vocl/vCard/vCardProperty.h"
@@ -84,4 +85,5 @@ class TypedProperty : public ArrayElement {
         ArrayElement* clone() { return NULL;}; //FIXME
 };
 
+/** @endcond */
 #endif

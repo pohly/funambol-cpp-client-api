@@ -20,6 +20,7 @@
 
 #ifndef INCL_PALM_ADAPTER
 #define INCL_PALM_ADAPTER
+/** @cond DEV */
 
 #include <unix_stdarg.h>
 
@@ -136,4 +137,5 @@ inline unsigned long wcslen(const WCHAR* s) {
     return 0xFFFF;
 }
 
+/** @endcond */
 #endif

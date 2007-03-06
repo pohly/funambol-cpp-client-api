@@ -19,6 +19,7 @@
 
 #ifndef INCL_ITEM
 #define INCL_ITEM
+/** @cond DEV */
 
 #include "base/fscapi.h"
 #include "base/util/ArrayElement.h"
@@ -200,4 +201,5 @@ class Item : public ArrayElement {
    
 };
 
+/** @endcond */
 #endif

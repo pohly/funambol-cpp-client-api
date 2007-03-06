@@ -17,6 +17,7 @@
  */
  #ifndef INCL_DES_ENCODER
     #define INCL_DES_ENCODER
+/** @cond DEV */
 
     #include "spds/DataTransformer.h"
 
@@ -43,5 +44,6 @@
          */
         char* transform(char* data, TransformationInfo& info);
     };
+/** @endcond */
  #endif
 

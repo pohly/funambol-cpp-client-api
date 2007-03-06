@@ -19,6 +19,7 @@
 
 #ifndef INCL_ICALENDAR_PROPERTY
 #define INCL_ICALENDAR_PROPERTY
+/** @cond DEV */
 
 #include "base/fscapi.h"
 #include "base/util/ArrayList.h"
@@ -106,4 +107,5 @@ public:
     ArrayElement* clone();
 };
 
+/** @endcond */
 #endif

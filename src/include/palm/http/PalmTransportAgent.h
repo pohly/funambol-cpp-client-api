@@ -18,6 +18,7 @@
 
 #ifndef INCL_PALM_TRANSPORT_AGENT
     #define INCL_PALM_TRANSPORT_AGENT
+/** @cond DEV */
 
     #include "base/fscapi.h"
 
@@ -54,4 +55,5 @@
         WCHAR* sendMessage(WCHAR* msg);
     };
 
+/** @endcond */
 #endif

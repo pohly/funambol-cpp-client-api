@@ -19,6 +19,7 @@
 
 #ifndef INCL_RESPONSE_COMMAND
 #define INCL_RESPONSE_COMMAND
+/** @cond DEV */
 
 #include "base/fscapi.h"
 #include "syncml/core/ItemizedCommand.h"
@@ -147,4 +148,5 @@ class ResponseCommand : public ItemizedCommand {
    
 };
 
+/** @endcond */
 #endif

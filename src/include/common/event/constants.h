@@ -18,6 +18,7 @@
 
 #ifndef INCL_EVENT_CONSTANTS
 #define INCL_EVENT_CONSTANTS
+/** @cond DEV */
 
 //
 // Event Codes
@@ -69,4 +70,5 @@
 #define SYNC_ITEM_LISTENER          4
 
 
+/** @endcond */
 #endif

@@ -18,6 +18,7 @@
 
 #ifndef INCL_SET_LISTENER
 #define INCL_SET_LISTENER
+/** @cond DEV */
 
 #include "event/SyncListener.h"
 #include "event/SyncSourceListener.h"
@@ -62,4 +63,5 @@ void unsetSyncItemListener();
 void unsetSyncStatusListener();
 
 
+/** @endcond */
 #endif

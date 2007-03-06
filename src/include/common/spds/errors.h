@@ -18,6 +18,7 @@
 
 #ifndef INCL_SPDS_ERRORS
 #define INCL_SPDS_ERRORS
+/** @cond DEV */
 
 #define ERR_PROTOCOL_ERROR      400
 #define ERR_AUTH_NOT_AUTHORIZED 401
@@ -43,4 +44,5 @@
 
 #define ERRMSG_ANOPTHER_SYNC    "Another sync in progress"
 
+/** @endcond */
 #endif

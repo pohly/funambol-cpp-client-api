@@ -17,6 +17,7 @@
  */
 #ifndef INCL_ACCESS_CONFIG
 #define INCL_ACCESS_CONFIG
+/** @cond DEV */
 
 #include "base/fscapi.h"
 #include "spds/constants.h"
@@ -318,4 +319,5 @@ class AccessConfig {
 
 };
 
+/** @endcond */
 #endif

@@ -17,6 +17,7 @@
  */
 #ifndef INCL_PROPPARAM
 #define INCL_PROPPARAM
+/** @cond DEV */
 
 #include "base/fscapi.h"
 #include "base/util/ArrayList.h"
@@ -134,4 +135,5 @@ public:
 };
 
 
+/** @endcond */
 #endif

@@ -19,6 +19,7 @@
 
 #ifndef INCL_SYNC_SOURCE_EVENT
 #define INCL_SYNC_SOURCE_EVENT
+/** @cond DEV */
 
 #include "event/BaseEvent.h"
 #include "event/constants.h"
@@ -59,4 +60,5 @@ public:
     // get the data
     int getData();
 };
+/** @endcond */
 #endif

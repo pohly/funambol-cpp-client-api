@@ -19,6 +19,7 @@
 
 #ifndef INCL_SEQUENCE
 #define INCL_SEQUENCE
+/** @cond DEV */
 
 #include "base/fscapi.h"
 #include "base/util/ArrayList.h"
@@ -79,5 +80,6 @@ class Sequence : public AbstractCommand {
         ArrayElement* clone();
 };
 
+/** @endcond */
 #endif
 

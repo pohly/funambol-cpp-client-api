@@ -19,6 +19,7 @@
 
 #ifndef INCL_DATA_STORE
 #define INCL_DATA_STORE
+/** @cond DEV */
 
 #include "base/fscapi.h"
 #include "base/util/ArrayList.h"
@@ -210,4 +211,5 @@ class DataStore : public ArrayElement {
    
 };
 
+/** @endcond */
 #endif

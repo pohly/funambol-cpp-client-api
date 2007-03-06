@@ -20,6 +20,7 @@
 
 #ifndef INCL_FILTER
 #define INCL_FILTER
+/** @cond DEV */
 
 #include "syncml/core/Item.h"
 #include "syncml/core/Meta.h"
@@ -130,4 +131,5 @@ class Filter {
         Filter* clone();
 };
 
+/** @endcond */
 #endif

@@ -19,6 +19,7 @@
 
 #ifndef INCL_TEST_TRANSPORT_LISTENER
 #define INCL_TEST_TRANSPORT_LISTENER
+/** @cond DEV */
 
 #include "event/TransportListener.h"
 
@@ -32,4 +33,5 @@ class TestTransportListener : public TransportListener {
 
 };
 
+/** @endcond */
 #endif

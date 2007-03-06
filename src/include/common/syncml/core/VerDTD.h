@@ -19,6 +19,7 @@
 
 #ifndef INCL_VER_DTD
 #define INCL_VER_DTD
+/** @cond DEV */
 
 #include "base/fscapi.h"
 
@@ -68,4 +69,5 @@ class VerDTD {
 
 };
 
+/** @endcond */
 #endif

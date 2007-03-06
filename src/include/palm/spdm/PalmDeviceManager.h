@@ -17,6 +17,7 @@
  */
 #ifndef INCL_PALM_DEVICE_MANAGER
 #define INCL_PALM_DEVICE_MANAGER
+/** @cond DEV */
 
 
 #include "base/fscapi.h"
@@ -68,4 +69,5 @@ class PalmDeviceManager : public DeviceManager  {
 
 };
 
+/** @endcond */
 #endif

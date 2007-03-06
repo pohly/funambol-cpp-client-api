@@ -19,6 +19,7 @@
 
 #ifndef INCL_VIRTUAL_CARD_CONVERTER
 #define INCL_VIRTUAL_CARD_CONVERTER
+/** @cond DEV */
 
 #include "base/fscapi.h"
 #include "vocl/vCard/Contact.h"
@@ -73,4 +74,5 @@ public:
     bool validate(VObject*, WString& error, long* errorCode);
     
 };
+/** @endcond */
 #endif

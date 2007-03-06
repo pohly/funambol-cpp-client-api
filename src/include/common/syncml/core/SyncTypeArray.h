@@ -19,6 +19,7 @@
 
 #ifndef INCL_SYNC_TYPE_ARRAY
 #define INCL_SYNC_TYPE_ARRAY
+/** @cond DEV */
 
 #include "base/fscapi.h"
 #include "base/util/ArrayList.h"
@@ -51,4 +52,5 @@ class SyncTypeArray {
    
 };
 
+/** @endcond */
 #endif

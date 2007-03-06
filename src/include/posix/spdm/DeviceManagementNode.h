@@ -18,6 +18,7 @@
 
 #ifndef INCL_POSIX_DEVICE_MANAGEMENT_NODE
 #define INCL_POSIX_DEVICE_MANAGEMENT_NODE
+/** @cond DEV */
 
 #include "base/fscapi.h"
 #include "base/util/ArrayElement.h"
@@ -123,4 +124,5 @@ class DeviceManagementNode : public ManagementNode {
 
 };
 
+/** @endcond */
 #endif

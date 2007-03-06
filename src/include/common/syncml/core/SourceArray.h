@@ -19,6 +19,7 @@
 
 #ifndef INCL_SOURCE_ARRAY
 #define INCL_SOURCE_ARRAY
+/** @cond DEV */
 
 #include "base/fscapi.h"
 #include "base/util/ArrayElement.h"
@@ -70,4 +71,5 @@ class SourceArray : public ArrayElement {
    
 };
 
+/** @endcond */
 #endif

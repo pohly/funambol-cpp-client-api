@@ -19,6 +19,7 @@
 
 #ifndef INCL_DEVINF
 #define INCL_DEVINF
+/** @cond DEV */
 
 #include "base/fscapi.h"
 #include "base/util/ArrayList.h"
@@ -347,4 +348,5 @@ class DevInf {
    
 };
 
+/** @endcond */
 #endif

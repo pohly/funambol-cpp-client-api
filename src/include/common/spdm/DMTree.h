@@ -18,6 +18,7 @@
 
 #ifndef INCL_DMTREE
     #define INCL_DMTREE
+/** @cond DEV */
 
     #include "spdm/constants.h"
     #include "spdm/ManagementNode.h"
@@ -52,5 +53,6 @@
 
     };
 
+/** @endcond */
 #endif
 

@@ -19,6 +19,7 @@
 
 #ifndef INCL_VIRTUAL_CONVERTER
 #define INCL_VIRTUAL_CONVERTER
+/** @cond DEV */
 
 #include "VObject.h"
 
@@ -44,4 +45,5 @@ private:
     static bool extractGroup(WCHAR* propertyName, WCHAR* propertyGroup);
     
 };
+/** @endcond */
 #endif

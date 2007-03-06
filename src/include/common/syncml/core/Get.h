@@ -19,6 +19,7 @@
 
 #ifndef INCL_GET
 #define INCL_GET
+/** @cond DEV */
 
 #include "base/fscapi.h"
 #include "syncml/core/ItemizedCommand.h"
@@ -83,4 +84,5 @@ class Get : public ItemizedCommand {
        
 };
 
+/** @endcond */
 #endif

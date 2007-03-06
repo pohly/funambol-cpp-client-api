@@ -19,6 +19,7 @@
 
 #ifndef INCL_VER_PROTO
 #define INCL_VER_PROTO
+/** @cond DEV */
 
 #include "base/fscapi.h"
 
@@ -63,4 +64,5 @@ class VerProto {
    
 };
 
+/** @endcond */
 #endif

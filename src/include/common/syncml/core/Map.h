@@ -19,6 +19,7 @@
 
 #ifndef INCL_MAP
 #define INCL_MAP
+/** @cond DEV */
 
 #include "base/fscapi.h"
 #include "syncml/core/AbstractCommand.h"
@@ -118,4 +119,5 @@ class Map : public AbstractCommand {
         ArrayElement* clone();
 };
 
+/** @endcond */
 #endif

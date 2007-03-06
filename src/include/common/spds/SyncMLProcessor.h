@@ -18,6 +18,7 @@
 
 #ifndef INCL_SYNCML_PROCESSOR
     #define INCL_SYNCML_PROCESSOR
+/** @cond DEV */
 
     #include "base/util/ArrayList.h"
     #include "base/util/XMLProcessor.h"
@@ -150,4 +151,5 @@
         Sync* getSyncResponse(SyncML* syncml, int index);
     };
 
+/** @endcond */
 #endif

@@ -18,6 +18,7 @@
 
 #ifndef INCL_FIRE_EVENTS
 #define INCL_FIRE_EVENTS
+/** @cond DEV */
 
 #include "event/BaseEvent.h"
 #include "event/SyncEvent.h"
@@ -92,4 +93,5 @@ bool fireSyncItemEvent(const char* sourceURI, const char* name, const WCHAR* ite
 bool fireSyncStatusEvent(const char* command, int statusCode, const char* name, const char* uri, const WCHAR* itemKey, int type);
 
 
+/** @endcond */
 #endif

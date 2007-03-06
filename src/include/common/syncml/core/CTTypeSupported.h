@@ -19,6 +19,7 @@
 
 #ifndef INCL_CTTYPE_SUPPORTED
 #define INCL_CTTYPE_SUPPORTED
+/** @cond DEV */
 
 #include "base/fscapi.h"
 #include "base/util/ArrayList.h"
@@ -84,4 +85,5 @@ class CTTypeSupported : public ArrayElement{
    
 };
 
+/** @endcond */
 #endif

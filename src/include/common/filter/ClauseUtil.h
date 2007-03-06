@@ -18,6 +18,7 @@
 
 #ifndef INCL_CLAUSECONVERTER
 #define INCL_CLAUSECONVERTER
+/** @cond DEV */
 
 #include "filter/LogicalClause.h"
 #include "filter/SourceFilter.h"
@@ -69,4 +70,5 @@ public:
     static SourceFilter* createSourceFilterInclusive(const char* luid, int size);
 };
 
+/** @endcond */
 #endif

@@ -19,6 +19,7 @@
 
 #ifndef INCL_CTPROP_PARAM
 #define INCL_CTPROP_PARAM
+/** @cond DEV */
 
 #include "base/fscapi.h"
 #include "base/util/ArrayList.h"
@@ -160,4 +161,5 @@ class CTPropParam : public ArrayElement{
         ArrayElement* clone();
 };
 
+/** @endcond */
 #endif

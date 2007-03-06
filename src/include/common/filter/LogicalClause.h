@@ -17,6 +17,7 @@
  */
 #ifndef INCL_LOGICALCLAUSE
 #define INCL_LOGICALCLAUSE
+/** @cond DEV */
 
 #include "base/util/ArrayList.h"
 #include "filter/Clause.h"
@@ -109,4 +110,5 @@ public:
 };
 
 
+/** @endcond */
 #endif

@@ -19,6 +19,7 @@
 
 #ifndef INCL_AUTHENTICATION
 #define INCL_AUTHENTICATION
+/** @cond DEV */
 
 #include "base/fscapi.h"
 #include "base/util/utils.h"
@@ -249,4 +250,5 @@ class Authentication {
 
 };
 
+/** @endcond */
 #endif

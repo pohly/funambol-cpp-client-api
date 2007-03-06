@@ -18,6 +18,7 @@
 
 #ifndef INCL_ERROR_HANDLER
 #define INCL_ERROR_HANDLER
+/** @cond DEV */
 
 #include "base/fscapi.h"
 
@@ -87,5 +88,6 @@ class ErrorHandler {
         int lastError;
 };
 
+/** @endcond */
 #endif
 

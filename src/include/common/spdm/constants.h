@@ -18,6 +18,7 @@
 
 #ifndef INCL_SPDM_CONSTANTS
 #define INCL_SPDM_CONSTANTS
+/** @cond DEV */
 
 #define DIM_MANAGEMENT_PATH 512	
 #define DIM_PROPERTY_NAME    64
@@ -113,4 +114,5 @@
 #define DIRTY_DEV_INF_HASH             0x40000
 
 
+/** @endcond */
 #endif

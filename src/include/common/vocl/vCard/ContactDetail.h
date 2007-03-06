@@ -19,11 +19,12 @@
 
 //
 // @author Stefano Fornari @ Funambol
-// @version $Id: ContactDetail.h,v 1.2 2007-02-23 14:22:54 toccy Exp $
+// @version $Id: ContactDetail.h,v 1.3 2007-03-06 20:51:05 pohly Exp $
 //
 
 #ifndef INCL_PIM_CONTACT_DETAIL
 #define INCL_PIM_CONTACT_DETAIL
+/** @cond DEV */
 
 #include "base/util/ArrayList.h"
 
@@ -98,4 +99,5 @@ class ContactDetail {
 
 };
 
+/** @endcond */
 #endif

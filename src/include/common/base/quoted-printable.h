@@ -17,11 +17,13 @@
  */
 #ifndef INCL_QUOTED_PRINTABLE_H
 #define INCL_QUOTED_PRINTABLE_H
+/** @cond DEV */
 
 char *qp_decode(const char *qp);
 char *qp_encode(const char *qp);
 
 bool qp_isNeed(const char *in);
 
+/** @endcond */
 #endif
 

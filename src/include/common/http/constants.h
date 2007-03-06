@@ -18,6 +18,7 @@
  
 #ifndef INCL_HTTP_CONSTANTS
 #define INCL_HTTP_CONSTANTS
+/** @cond DEV */
 
 #define METHOD_GET          TEXT("GET")
 #define METHOD_POST         TEXT("POST")
@@ -44,4 +45,5 @@
 #define STATUS_OK   200
 
 
+/** @endcond */
 #endif

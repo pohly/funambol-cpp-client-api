@@ -18,6 +18,7 @@
 
 #ifndef INCL_MAIL_SOURCE_MANAGEMENT_NODE
 #define INCL_MAIL_SOURCE_MANAGEMENT_NODE
+/** @cond DEV */
 
 #include "spdm/constants.h"
 #include "spdm/DeviceManagementNode.h"
@@ -64,4 +65,5 @@ class MailSourceManagementNode : public DeviceManagementNode {
         MailSyncSourceConfig config;
 };
 
+/** @endcond */
 #endif

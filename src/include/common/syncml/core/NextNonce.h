@@ -19,6 +19,7 @@
 
 #ifndef INCL_NEXT_NONCE
 #define INCL_NEXT_NONCE
+/** @cond DEV */
 
 #include "base/fscapi.h"
 #include "base/util/utils.h"
@@ -58,4 +59,5 @@ class NextNonce {
     NextNonce* clone();
 };
 
+/** @endcond */
 #endif

@@ -18,6 +18,7 @@
 
 #ifndef INCL_DEVICE_MANAGER_FACTORY
     #define INCL_DEVICE_MANAGER_FACTORY
+/** @cond DEV */
 
     #include "spdm/DeviceManager.h"
 
@@ -43,4 +44,5 @@
 
     };
 
+/** @endcond */
 #endif

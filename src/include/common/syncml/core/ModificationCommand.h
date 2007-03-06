@@ -19,6 +19,7 @@
 
 #ifndef INCL_MODIFICATION_COMMAND
 #define INCL_MODIFICATION_COMMAND
+/** @cond DEV */
 
 #include "base/fscapi.h"
 #include "syncml/core/ItemizedCommand.h"
@@ -48,4 +49,5 @@ class ModificationCommand : public ItemizedCommand {
    
 };
 
+/** @endcond */
 #endif

@@ -18,6 +18,7 @@
 
 #ifndef INCL_ANCHOR
 #define INCL_ANCHOR
+/** @cond DEV */
 
 #include "base/fscapi.h"
 
@@ -68,4 +69,5 @@ class Anchor {
 
 };
 
+/** @endcond */
 #endif

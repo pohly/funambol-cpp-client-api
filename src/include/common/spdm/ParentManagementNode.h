@@ -20,6 +20,7 @@
 
 #ifndef INCL_PARENT_MANAGEMENT_NODE
     #define INCL_PARENT_MANAGEMENT_NODE
+/** @cond DEV */
 
     #include "base/fscapi.h"
     #include "base/util/ArrayList.h"
@@ -120,4 +121,5 @@
         // -------------------------------------------------------- Private data
     };
 
+/** @endcond */
 #endif

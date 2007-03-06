@@ -18,6 +18,7 @@
 
 #ifndef INCL_SYNCSOURCEREPORT
 #define INCL_SYNCSOURCEREPORT
+/** @cond DEV */
 
 #include "base/fscapi.h"
 #include "base/Log.h"
@@ -180,5 +181,6 @@ public:
     }
 };
 
+/** @endcond */
 #endif
 

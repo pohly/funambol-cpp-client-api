@@ -18,6 +18,7 @@
 
 #ifndef INCL_SYNC_MANAGER
 #define INCL_SYNC_MANAGER
+/** @cond DEV */
 
 #include "base/util/ArrayList.h"
 #include "http/TransportAgent.h"
@@ -201,5 +202,6 @@ class SyncManager {
         SyncItem* getItem(SyncSource& source, SyncItem* (SyncSource::* getItem)());
 };
 
+/** @endcond */
 #endif
 

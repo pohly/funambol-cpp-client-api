@@ -19,6 +19,7 @@
 
 #ifndef INCL_DEVINF_DATA
 #define INCL_DEVINF_DATA
+/** @cond DEV */
 
 #include "base/fscapi.h"
 #include "syncml/core/DevInf.h"
@@ -62,4 +63,5 @@ class DevInfData : public Data {
         DevInfData* clone();
 };
 
+/** @endcond */
 #endif

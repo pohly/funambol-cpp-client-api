@@ -19,6 +19,7 @@
 
 #ifndef INCL_SYNC_LISTENER
 #define INCL_SYNC_LISTENER
+/** @cond DEV */
 
 #include "event/SyncEvent.h"
 #include "event/Listener.h"
@@ -54,5 +55,6 @@ public:
     virtual void syncError(SyncEvent& event);
 };
 
+/** @endcond */
 #endif
 

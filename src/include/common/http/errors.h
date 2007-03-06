@@ -17,6 +17,7 @@
  */
 #ifndef INCL_HTTP_ERRORS
 #define INCL_HTTP_ERRORS
+/** @cond DEV */
 
 #define ERR_TRANSPORT_BASE              2000
 #define ERR_NETWORK_INIT                ERR_TRANSPORT_BASE
@@ -37,4 +38,5 @@
 #define ERRMSG_WRITING_CONTENT "Error writing content"
 #define ERRMSG_HTTP_MISSING_CONTENT_LENGTH "Missing Content-Length header"
 #define ERRMSG_SERVER_ERROR ("Server error")
+/** @endcond */
 #endif

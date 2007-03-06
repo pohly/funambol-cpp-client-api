@@ -20,6 +20,7 @@
 
 #ifndef INCL_SYNC_SOURCE_CONFIG
     #define INCL_SYNC_SOURCE_CONFIG
+/** @cond DEV */
 
     #include "base/fscapi.h"
     #include "spds/constants.h"
@@ -234,4 +235,5 @@ class SyncSourceConfig {
         }
     };
 
+/** @endcond */
 #endif

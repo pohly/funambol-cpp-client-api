@@ -19,6 +19,7 @@
 
 #ifndef INCL_TARGET_REF
 #define INCL_TARGET_REF
+/** @cond DEV */
 
 #include "base/fscapi.h"
 #include "base/util/ArrayElement.h"
@@ -98,4 +99,5 @@ class TargetRef : public ArrayElement{
         ArrayElement* clone();
 };
 
+/** @endcond */
 #endif

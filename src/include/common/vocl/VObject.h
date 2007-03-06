@@ -19,6 +19,7 @@
 
 #ifndef INCL_VIRTUAL_OBJECT
 #define INCL_VIRTUAL_OBJECT
+/** @cond DEV */
 
 #include "VProperty.h"
 
@@ -161,4 +162,5 @@ public:
 };
 
 
+/** @endcond */
 #endif

@@ -18,6 +18,7 @@
 
 #ifndef INCL_TESTSYNCCLIENT
 #define INCL_TESTSYNCCLIENT
+/** @cond DEV */
 
 #include <string>
 #include "spds/SyncSource.h"
@@ -420,4 +421,5 @@ class ClientTest {
                                   _actual )
 
 #endif // ENABLE_INTEGRATION_TESTS
+/** @endcond */
 #endif // INCL_TESTSYNCCLIENT

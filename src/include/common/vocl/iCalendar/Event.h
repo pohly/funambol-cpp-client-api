@@ -19,6 +19,7 @@
 
 #ifndef INCL_ICALENDAR_EVENT
 #define INCL_ICALENDAR_EVENT
+/** @cond DEV */
 
 #include "base/util/ArrayElement.h"
 #include "vocl/VObject.h"
@@ -138,4 +139,5 @@ public:
 
 };
 
+/** @endcond */
 #endif

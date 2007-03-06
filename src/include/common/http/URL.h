@@ -17,6 +17,7 @@
  */
 #ifndef INCL_HTTP_URL
     #define INCL_HTTP_URL
+/** @cond DEV */
 
     #include "base/fscapi.h"
     #include "base/constants.h"
@@ -46,4 +47,5 @@
     protected:
         void setURL(const char* u, const char* p, const char* h, const char* r, unsigned int port) EXTRA_SECTION_03;
     };
+/** @endcond */
 #endif

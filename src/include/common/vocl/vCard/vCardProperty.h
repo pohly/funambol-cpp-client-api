@@ -19,12 +19,13 @@
 
 //
 // @author Stefano Fornari @ Funambol
-// @version $Id: vCardProperty.h,v 1.4 2007-02-23 14:22:54 toccy Exp $
+// @version $Id: vCardProperty.h,v 1.5 2007-03-06 20:51:05 pohly Exp $
 //
 #include <string.h>
 
 #ifndef INCL_PIM_PROPERTY
 #define INCL_PIM_PROPERTY
+/** @cond DEV */
 
 #include "base/fscapi.h"
 
@@ -141,4 +142,5 @@ class vCardProperty {
         vCardProperty* clone();
 };
 
+/** @endcond */
 #endif

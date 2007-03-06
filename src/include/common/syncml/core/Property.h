@@ -17,6 +17,7 @@
  */
 #ifndef INCL_PROPERTY
 #define INCL_PROPERTY
+/** @cond DEV */
 
 #include "base/fscapi.h"
 #include "base/util/ArrayList.h"
@@ -212,4 +213,5 @@ public:
 };
 
 
+/** @endcond */
 #endif

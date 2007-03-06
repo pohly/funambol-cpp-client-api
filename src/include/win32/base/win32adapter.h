@@ -18,6 +18,7 @@
 
 #ifndef INCL_WIN32_ADAPTER
 #define INCL_WIN32_ADAPTER
+/** @cond DEV */
 
 #include <stdarg.h>
 #include <stdio.h>
@@ -39,4 +40,5 @@ typedef wchar_t WCHAR;
 
 void printMemLeaks();
 
+/** @endcond */
 #endif

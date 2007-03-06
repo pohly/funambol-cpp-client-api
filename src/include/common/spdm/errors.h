@@ -17,6 +17,7 @@
  */
 #ifndef INCL_SPDM_ERRORS
 #define INCL_SPDM_ERRORS
+/** @cond DEV */
 
 #define ERR_INVALID_CONTEXT             10000
 #define ERR_SOURCE_DEFINITION_NOT_FOUND 10001
@@ -30,4 +31,5 @@
 #define ERRMSG_NO_SOURCE_TO_SYNC "No sources to synchronize"
 #define ERRMSG_ITEM_ERROR           "An error occurred on one or more items."
 
+/** @endcond */
 #endif

@@ -19,6 +19,7 @@
 
 #ifndef INCL_SYNC_TYPE
 #define INCL_SYNC_TYPE
+/** @cond DEV */
 
 #include "base/fscapi.h"
 #include "base/util/ArrayElement.h"
@@ -64,4 +65,5 @@ class SyncType : public ArrayElement {
    
 };
 
+/** @endcond */
 #endif

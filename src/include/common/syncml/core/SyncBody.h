@@ -19,6 +19,7 @@
 
 #ifndef INCL_SYNC_BODY
 #define INCL_SYNC_BODY
+/** @cond DEV */
 
 #include "base/fscapi.h"
 #include "base/util/ArrayList.h"
@@ -96,4 +97,5 @@ class SyncBody {
         SyncBody* clone();
 };
 
+/** @endcond */
 #endif

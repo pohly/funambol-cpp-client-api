@@ -18,6 +18,7 @@
 
 #ifndef INCL_SYNCCLIENT
     #define INCL_SYNCCLIENT
+/** @cond DEV */
 
     #include "base/fscapi.h"
     #include "base/Log.h"
@@ -172,5 +173,6 @@
     };
 
 
+/** @endcond */
 #endif
 

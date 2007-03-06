@@ -18,6 +18,7 @@
 
 #ifndef INCL_FILTERCLAUSE
 #define INCL_FILTERCLAUSE
+/** @cond DEV */
 
 #include "filter/LogicalClause.h"
 
@@ -110,4 +111,5 @@ public:
 };
 
 
+/** @endcond */
 #endif

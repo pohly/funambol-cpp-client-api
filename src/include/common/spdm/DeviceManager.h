@@ -17,6 +17,7 @@
  */
 #ifndef INCL_DEVICE_MANAGER
 #define INCL_DEVICE_MANAGER
+/** @cond DEV */
 
 #include "base/constants.h"
 #include "spdm/DMTreeManager.h"
@@ -49,4 +50,5 @@ class DeviceManager {
         DMTreeManager* const getDMTreeManager(const char*  node);
 };
 
+/** @endcond */
 #endif

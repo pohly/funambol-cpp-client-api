@@ -17,6 +17,7 @@
  */
 #ifndef INCL_HTTP_PROXY
 #define INCL_HTTP_PROXY
+/** @cond DEV */
 
 #include "base/fscapi.h"
 #include "base/constants.h"
@@ -41,4 +42,5 @@ class Proxy {
 
         Proxy& operator= (Proxy& proxy) { setProxy(proxy); return *this;}
     };
+/** @endcond */
 #endif

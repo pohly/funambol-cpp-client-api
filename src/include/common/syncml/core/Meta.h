@@ -20,6 +20,7 @@
 
 #ifndef INCL_META
 #define INCL_META
+/** @cond DEV */
 
 #include "base/fscapi.h"
 #include "syncml/core/MetInf.h"
@@ -229,4 +230,5 @@ class Meta {
         Meta* clone();
 };
 
+/** @endcond */
 #endif

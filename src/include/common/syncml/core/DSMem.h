@@ -19,6 +19,7 @@
 
 #ifndef INCL_DSMEM
 #define INCL_DSMEM
+/** @cond DEV */
 
 #include "base/fscapi.h"
 
@@ -101,4 +102,5 @@ class DSMem {
         DSMem* clone();
 };
 
+/** @endcond */
 #endif

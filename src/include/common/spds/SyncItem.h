@@ -18,6 +18,7 @@
 
  #ifndef INCL_SYNC_ITEM
     #define INCL_SYNC_ITEM
+/** @cond DEV */
 
     #include "base/fscapi.h"
     #include "base/constants.h"
@@ -282,4 +283,5 @@
         int transformData(const char* name, BOOL encode, const char* password);
     };
 
+/** @endcond */
 #endif

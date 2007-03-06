@@ -19,6 +19,7 @@
 
 #ifndef INCL_CRED
 #define INCL_CRED
+/** @cond DEV */
 
 #include "base/fscapi.h"
 #include "syncml/core/Authentication.h"
@@ -98,4 +99,5 @@ class Cred {
         Cred* clone();
 };
 
+/** @endcond */
 #endif

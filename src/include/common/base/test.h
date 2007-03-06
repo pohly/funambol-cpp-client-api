@@ -23,6 +23,7 @@
 
 #ifndef INCL_TEST_H
 #define INCL_TEST_H
+/** @cond DEV */
 
 #ifdef AUTOTOOLS
 # include <config.h>
@@ -56,4 +57,5 @@ extern void simplifyFilename(std::string &filename);
 
 #endif // ENABLE_UNIT_TESTS
 
+/** @endcond */
 #endif // INCL_TEST_H

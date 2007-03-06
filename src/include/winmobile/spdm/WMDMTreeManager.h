@@ -18,6 +18,7 @@
 
 #ifndef INCL_WINDOWSMOBILE_DMT_MANAGER
     #define INCL_WINDOWSMOBILE_DMT_MANAGER
+/** @cond DEV */
 
     #include "spdm/constants.h"
     #include "spdm/DMTreeManager.h"
@@ -52,4 +53,5 @@
 
     };
 
+/** @endcond */
 #endif

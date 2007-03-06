@@ -17,6 +17,7 @@
  */
 #ifndef INCL_BODY_PART
 #define INCL_BODY_PART
+/** @cond DEV */
 
 #include "base/util/ArrayElement.h"
 #include "base/util/StringBuffer.h"
@@ -73,5 +74,6 @@ class BodyPart : public ArrayElement {
 		ArrayElement* clone() ;
 };
 
+/** @endcond */
 #endif
 

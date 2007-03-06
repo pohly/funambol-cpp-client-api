@@ -24,6 +24,7 @@
 
 #ifndef INCL_NOTIF_PROCESSOR
 #define INCL_NOTIF_PROCESSOR
+/** @cond DEV */
 
 #include "syncml/core/SyncAlert.h"
 
@@ -91,5 +92,6 @@ class SyncNotification {
         void reset(bool free);
 };
 
+/** @endcond */
 #endif
 

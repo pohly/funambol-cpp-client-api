@@ -20,6 +20,7 @@
 
 #ifndef INCL_BASE_DEBUG
 #define INCL_BASE_DEBUG
+/** @cond DEV */
 
 #include "base/fscapi.h"
 
@@ -55,4 +56,5 @@
 #define DBG_READING_DONE "Reading done"
 #define DBG_RECEIVED_CONTENT "Response:"
 #define DBG_HTTP_HEADERS "Request HTTP headers:"
+/** @endcond */
 #endif

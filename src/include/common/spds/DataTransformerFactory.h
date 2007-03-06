@@ -22,6 +22,7 @@
 
  #ifndef INCL_DATA_TRANSFORMER_FACTORY
     #define INCL_DATA_TRANSFORMER_FACTORY
+/** @cond DEV */
 
     #include "spds/DataTransformer.h"
 
@@ -39,4 +40,5 @@
 
     };
 
+/** @endcond */
 #endif

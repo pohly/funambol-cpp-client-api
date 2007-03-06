@@ -19,6 +19,7 @@
 
 #ifndef INCL_CONTENT_TYPE_PARAMETER
 #define INCL_CONTENT_TYPE_PARAMETER
+/** @cond DEV */
 
 #include "base/fscapi.h"
 #include "base/util/ArrayList.h"
@@ -153,4 +154,5 @@ class ContentTypeParameter : public ArrayElement {
    
 };
 
+/** @endcond */
 #endif

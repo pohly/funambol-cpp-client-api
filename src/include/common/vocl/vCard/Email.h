@@ -19,12 +19,13 @@
 
 //
 // @author Stefano Fornari @ Funambol
-// @version $Id: Email.h,v 1.2 2007-02-23 14:22:54 toccy Exp $
+// @version $Id: Email.h,v 1.3 2007-03-06 20:51:05 pohly Exp $
 //
 
 
 #ifndef INCL_PIM_EMAIL
 #define INCL_PIM_EMAIL
+/** @cond DEV */
 
 #include "base/util/ArrayElement.h"
 #include "vocl/vCard/TypedProperty.h"
@@ -69,4 +70,5 @@ class Email : public TypedProperty {
         ArrayElement* clone() ;
 };
 
+/** @endcond */
 #endif

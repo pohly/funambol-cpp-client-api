@@ -19,6 +19,7 @@
 
 #ifndef INCL_DEV_TYP
 #define INCL_DEV_TYP
+/** @cond DEV */
 
 #include "base/fscapi.h"
 
@@ -30,4 +31,5 @@
 #define SERVER      "server";
 #define WORKSTATION "workstation";
 
+/** @endcond */
 #endif // INCL_DEV_TYP

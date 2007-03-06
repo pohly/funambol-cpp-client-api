@@ -20,6 +20,7 @@
 
 #ifndef INCL_METINF
 #define INCL_METINF
+/** @cond DEV */
 
 #include "base/fscapi.h"
 #include "base/util/ArrayList.h"
@@ -273,4 +274,5 @@ class MetInf {
 
 };
 
+/** @endcond */
 #endif

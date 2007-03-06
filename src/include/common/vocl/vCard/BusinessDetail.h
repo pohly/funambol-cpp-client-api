@@ -19,6 +19,7 @@
 
 #ifndef INCL_PIM_BUSINESS_DETAIL
 #define INCL_PIM_BUSINESS_DETAIL
+/** @cond DEV */
 
 #include "base/fscapi.h"
 #include "base/util/ArrayList.h"
@@ -212,4 +213,5 @@ class BusinessDetail {
 
 };
 
+/** @endcond */
 #endif

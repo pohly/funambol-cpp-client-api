@@ -19,6 +19,7 @@
 
 #ifndef INCL_SYNC_ALERT
 #define INCL_SYNC_ALERT
+/** @cond DEV */
 
 #include "base/fscapi.h"
 
@@ -67,5 +68,6 @@ class SyncAlert {
         friend class SyncNotification;
 };
 
+/** @endcond */
 #endif
 

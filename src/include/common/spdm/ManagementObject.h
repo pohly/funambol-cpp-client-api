@@ -19,6 +19,7 @@
 
 #ifndef INCL_MANAGEMENT_OBJECT
 #define INCL_MANAGEMENT_OBJECT
+/** @cond DEV */
 
 #include "base/util/ArrayList.h"
 #include "base/util/KeyValuePair.h"
@@ -58,4 +59,5 @@ class ManagementObject : public LeafManagementNode {
         ArrayList properties;
 };
 
+/** @endcond */
 #endif

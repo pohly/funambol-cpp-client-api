@@ -19,6 +19,7 @@
 
 #ifndef INCL_CTCAP
 #define INCL_CTCAP
+/** @cond DEV */
 
 #include "base/fscapi.h"
 #include "base/util/ArrayList.h"
@@ -65,4 +66,5 @@ class CTCap : public ArrayElement {
    
 };
 
+/** @endcond */
 #endif

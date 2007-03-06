@@ -18,6 +18,7 @@
 
 #ifndef INCL_ITEMREPORT
 #define INCL_ITEMREPORT
+/** @cond DEV */
 
 #include "base/fscapi.h"
 #include "base/Log.h"
@@ -82,5 +83,6 @@ public:
     }
 };
 
+/** @endcond */
 #endif
 

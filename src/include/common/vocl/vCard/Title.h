@@ -19,12 +19,13 @@
 
 //
 // @author Stefano Fornari @ Funambol
-// @version $Id: Title.h,v 1.2 2007-02-23 14:22:54 toccy Exp $
+// @version $Id: Title.h,v 1.3 2007-03-06 20:51:05 pohly Exp $
 //
 
 
 #ifndef INCL_PIM_TITLE
 #define INCL_PIM_TITLE
+/** @cond DEV */
 
 #include "TypedProperty.h"
 
@@ -66,4 +67,5 @@ class Title : public TypedProperty {
         ArrayElement* clone() ; //FIXME
 };
 
+/** @endcond */
 #endif

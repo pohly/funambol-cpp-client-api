@@ -20,6 +20,7 @@
 
 #ifndef INCL_SPDS_CONSTANTS
 #define INCL_SPDS_CONSTANTS
+/** @cond DEV */
 
 #include "base/fscapi.h"
 
@@ -156,4 +157,5 @@ typedef enum SyncMode{
 
 char*  retSyncMode(SyncMode) EXTRA_SECTION_01;
 
+/** @endcond */
 #endif

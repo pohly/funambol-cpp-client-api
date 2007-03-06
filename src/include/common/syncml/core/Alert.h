@@ -19,6 +19,7 @@
 
 #ifndef INCL_ALERT
 #define INCL_ALERT
+/** @cond DEV */
 
 #include "base/fscapi.h"
 #include "base/util/ArrayList.h"
@@ -86,4 +87,5 @@ class Alert : public ItemizedCommand {
         
 };
 
+/** @endcond */
 #endif

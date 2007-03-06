@@ -19,6 +19,7 @@
 
 #ifndef INCL_TEST_LISTENER
 #define INCL_TEST_LISTENER
+/** @cond DEV */
 
 #include "event/SyncListener.h"
 
@@ -33,4 +34,5 @@ class TestSyncListener : public SyncListener {
 
 };
 
+/** @endcond */
 #endif

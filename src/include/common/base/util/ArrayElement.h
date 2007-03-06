@@ -20,6 +20,7 @@
 
 #ifndef INCL_BASE_UTIL_ARRAY_ELEMENT
 #define INCL_BASE_UTIL_ARRAY_ELEMENT
+/** @cond DEV */
 
 #include "base/fscapi.h"
 
@@ -34,4 +35,5 @@ class ArrayElement {
         virtual ArrayElement* clone() = 0;
 };
 
+/** @endcond */
 #endif

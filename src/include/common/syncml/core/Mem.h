@@ -20,6 +20,7 @@
 
 #ifndef INCL_MEM
 #define INCL_MEM
+/** @cond DEV */
 
 #include "base/fscapi.h"
 #include "syncml/core/Mem.h"
@@ -104,4 +105,5 @@ class Mem {
         
 };
 
+/** @endcond */
 #endif

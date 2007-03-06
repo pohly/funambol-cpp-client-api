@@ -18,6 +18,7 @@
 
 #ifndef INCL_SOCK
 #define INCL_SOCK
+/** @cond DEV */
 
 #include "base/fscapi.h"
 #include "base/constants.h"
@@ -74,4 +75,5 @@ class Sock {
 NetIPAddr GetIPAddress(Char* hostName,UInt16 netRefNum,Int32 timeOut);
 
 
+/** @endcond */
 #endif

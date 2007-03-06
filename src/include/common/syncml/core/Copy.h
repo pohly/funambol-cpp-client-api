@@ -19,6 +19,7 @@
 
 #ifndef INCL_COPY
 #define INCL_COPY
+/** @cond DEV */
 
 #include "base/fscapi.h"
 
@@ -67,4 +68,5 @@ class Copy : public ModificationCommand {
         ArrayElement* clone();
 };
 
+/** @endcond */
 #endif

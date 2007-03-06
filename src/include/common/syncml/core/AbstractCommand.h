@@ -20,6 +20,7 @@
 
 #ifndef INCL_ABSTRACT_COMMAND
 #define INCL_ABSTRACT_COMMAND
+/** @cond DEV */
 
 #include "base/fscapi.h"
 #include "base/util/ArrayElement.h"
@@ -147,4 +148,5 @@ class AbstractCommand : public ArrayElement {
         
 };
 
+/** @endcond */
 #endif

@@ -19,6 +19,7 @@
 
 #ifndef INCL_TEST_SOURCE_LISTENER
 #define INCL_TEST_SOURCE_LISTENER
+/** @cond DEV */
 
 #include "event/SyncSourceListener.h"
 
@@ -31,4 +32,5 @@ class TestSyncSourceListener : public SyncSourceListener {
     void syncSourceTotalServerItems  (SyncSourceEvent& event);
 };
 
+/** @endcond */
 #endif

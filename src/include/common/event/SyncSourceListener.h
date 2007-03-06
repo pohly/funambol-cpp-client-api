@@ -19,6 +19,7 @@
 
 #ifndef INCL_SYNC_SOURCE_LISTENER
 #define INCL_SYNC_SOURCE_LISTENER
+/** @cond DEV */
 
 #include "event/SyncSourceEvent.h"
 #include "event/Listener.h"
@@ -49,5 +50,6 @@ public:
     virtual void syncSourceTotalServerItems  (SyncSourceEvent& event);
 };
 
+/** @endcond */
 #endif
 

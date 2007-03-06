@@ -18,6 +18,7 @@
 
 #ifndef INCL_TRANSPORT_AGENT
     #define INCL_TRANSPORT_AGENT
+/** @cond DEV */
 
     #include "base/fscapi.h"
 
@@ -132,4 +133,5 @@
 
     };
 
+/** @endcond */
 #endif

@@ -19,6 +19,7 @@
 
 #ifndef INCL_ICALENDAR_CALENDAR
 #define INCL_ICALENDAR_CALENDAR
+/** @cond DEV */
 
 #define ICALENDAR_BUFFER 30000
 
@@ -65,4 +66,5 @@ public:
     ArrayElement* clone();
 };
 
+/** @endcond */
 #endif

@@ -18,6 +18,7 @@
 
 #ifndef INCL_LOG_ERROR_HANDLER
 #define INCL_LOG_ERROR_HANDLER
+/** @cond DEV */
 
 #include "base/fscapi.h"
 #include "base/ErrorHandler.h"
@@ -71,5 +72,6 @@ class LogErrorHandler: public ErrorHandler {
         ErrorHandler* clone();
 };
 
+/** @endcond */
 #endif
 

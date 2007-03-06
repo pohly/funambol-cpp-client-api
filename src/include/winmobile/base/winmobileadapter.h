@@ -18,6 +18,7 @@
 
 #ifndef INCL_WINMOBILE_ADAPTER
 #define INCL_WINMOBILE_ADAPTER
+/** @cond DEV */
 
 
 #include <stdarg.h>
@@ -47,5 +48,6 @@ typedef wchar_t WCHAR;
 #undef NULL
 #define NULL 0
 
+/** @endcond */
 #endif
 

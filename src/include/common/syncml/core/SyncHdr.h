@@ -19,6 +19,7 @@
 
 #ifndef INCL_SYNC_HDR
 #define INCL_SYNC_HDR
+/** @cond DEV */
 
 #include "base/fscapi.h"
 #include "syncml/core/VerDTD.h"
@@ -233,4 +234,5 @@ class SyncHdr {
         SyncHdr* clone();
 };
 
+/** @endcond */
 #endif

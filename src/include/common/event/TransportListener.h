@@ -19,6 +19,7 @@
 
 #ifndef INCL_TRANSPORT_LISTENER
 #define INCL_TRANSPORT_LISTENER
+/** @cond DEV */
 
 #include "event/TransportEvent.h"
 #include "event/Listener.h"
@@ -51,5 +52,6 @@ public:
     virtual void receiveDataEnd(TransportEvent& event);
 };
 
+/** @endcond */
 #endif
 

@@ -18,6 +18,7 @@
 
  #ifndef INCL_SYNC_ITEM_STATUS
     #define INCL_SYNC_ITEM_STATUS
+/** @cond DEV */
 
     #include "base/fscapi.h"
     #include "base/constants.h"
@@ -137,4 +138,5 @@
 
     };
 
+/** @endcond */
 #endif

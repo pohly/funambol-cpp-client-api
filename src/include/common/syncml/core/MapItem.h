@@ -19,6 +19,7 @@
 
 #ifndef INCL_MAP_ITEM
 #define INCL_MAP_ITEM
+/** @cond DEV */
 
 #include "base/fscapi.h"
 #include "base/util/ArrayElement.h"
@@ -86,4 +87,5 @@ class MapItem : public ArrayElement {
    
 };
 
+/** @endcond */
 #endif

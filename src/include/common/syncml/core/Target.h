@@ -18,6 +18,7 @@
 
 #ifndef INCL_TARGET
 #define INCL_TARGET
+/** @cond DEV */
 
 #include "base/fscapi.h"
 
@@ -108,4 +109,5 @@ class Target {
 
 };
 
+/** @endcond */
 #endif

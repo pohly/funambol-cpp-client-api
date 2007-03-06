@@ -19,6 +19,7 @@
 
 #ifndef INCL_TAG_NAMES
 #define INCL_TAG_NAMES
+/** @cond DEV */
 
 // The class includes the name of the tag that are used into the parser
 
@@ -147,6 +148,7 @@
 #define VAL_ENUM            "ValEnum"
 #define FILTER_TYPE         "FilterType"
 
+/** @endcond */
 #endif
 
 

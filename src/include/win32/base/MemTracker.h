@@ -18,6 +18,7 @@
 
 #ifndef INCL_WIN32_MEMTRACKER
 #define INCL_WIN32_MEMTRACKER
+/** @cond DEV */
 
 
 #define MAX_LENGHT_FILE     256
@@ -77,4 +78,5 @@ public:
 };
 
 
+/** @endcond */
 #endif

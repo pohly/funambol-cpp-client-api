@@ -19,6 +19,7 @@
 
 #ifndef INCL_COMPLEX_DATA
 #define INCL_COMPLEX_DATA
+/** @cond DEV */
 
 #include "base/fscapi.h"
 #include "base/util/ArrayList.h"
@@ -102,4 +103,5 @@ class ComplexData : public Data {
    
 };
 
+/** @endcond */
 #endif

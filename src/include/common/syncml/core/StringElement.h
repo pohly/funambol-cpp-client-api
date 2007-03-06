@@ -25,6 +25,7 @@
 
 #ifndef INCL_STRING_ELEMENT
 #define INCL_STRING_ELEMENT
+/** @cond DEV */
 
 #include "base/fscapi.h"
 #include "base/util/ArrayElement.h"
@@ -64,4 +65,5 @@ class StringElement : public ArrayElement {
 
 };
 
+/** @endcond */
 #endif

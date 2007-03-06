@@ -19,6 +19,7 @@
 
 #ifndef INCL_MARK
 #define INCL_MARK
+/** @cond DEV */
 
 #include "base/fscapi.h"
 
@@ -29,4 +30,5 @@
 #define READ      "read"
 #define UNREAD    "unread"
 
+/** @endcond */
 #endif // INCL_MARK

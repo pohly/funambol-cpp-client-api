@@ -19,6 +19,7 @@
 
 #ifndef INCL_FOLDERDATA
 #define INCL_FOLDERDATA
+/** @cond DEV */
 
 #include "base/util/ArrayElement.h"
 #include "base/util/WString.h"
@@ -114,5 +115,6 @@ class FolderData : public ArrayElement {
    
 };
 
+/** @endcond */
 #endif
 

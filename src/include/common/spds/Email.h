@@ -19,6 +19,7 @@
 
 #ifndef INCL_MAIL
 #define INCL_MAIL
+/** @cond DEV */
 
 #include "base/fscapi.h"
 #include "base/util/ArrayElement.h"
@@ -78,5 +79,6 @@ class Email : public ArrayElement {
    
 };
 
+/** @endcond */
 #endif
 

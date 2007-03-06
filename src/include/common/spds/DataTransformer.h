@@ -29,6 +29,7 @@
 
  #ifndef INCL_DATA_TRANSFORMER
     #define INCL_DATA_TRANSFORMER
+/** @cond DEV */
 
     #include "base/fscapi.h"
 
@@ -93,4 +94,5 @@
 
     };
 
+/** @endcond */
 #endif

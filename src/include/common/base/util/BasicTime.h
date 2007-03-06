@@ -17,6 +17,7 @@
  */
 #ifndef INCL_BASIC_TIME
     #define INCL_BASIC_TIME
+/** @cond DEV */
 
 #include "base/fscapi.h"
 #include "base/util/ArrayElement.h"
@@ -86,4 +87,5 @@ class BasicTime : public ArrayElement {
 
 
 };
+/** @endcond */
 #endif

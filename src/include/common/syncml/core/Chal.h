@@ -19,6 +19,7 @@
 
 #ifndef INCL_CHAL
 #define INCL_CHAL
+/** @cond DEV */
 
 #include "base/fscapi.h"
 #include "base/util/utils.h"
@@ -106,4 +107,5 @@ class Chal {
    
 };
 
+/** @endcond */
 #endif

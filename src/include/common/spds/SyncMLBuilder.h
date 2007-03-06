@@ -18,6 +18,7 @@
 
 #ifndef INCL_SYNCML_BUILDER
 #define INCL_SYNCML_BUILDER
+/** @cond DEV */
 
 #include "spds/DataTransformer.h"
 #include "spds/SyncSource.h"
@@ -202,4 +203,5 @@ class SyncMLBuilder {
 
 };
 
+/** @endcond */
 #endif

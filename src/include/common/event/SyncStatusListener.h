@@ -19,6 +19,7 @@
 
 #ifndef INCL_SYNC_STATUS_LISTENER
 #define INCL_SYNC_STATUS_LISTENER
+/** @cond DEV */
 
 #include "event/SyncStatusEvent.h"
 #include "event/Listener.h"
@@ -40,5 +41,6 @@ public:
     virtual void statusSending(SyncStatusEvent& event);
 };
 
+/** @endcond */
 #endif
 

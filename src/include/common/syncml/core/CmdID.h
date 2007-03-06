@@ -20,6 +20,7 @@
 
 #ifndef INCL_CMD_ID
 #define INCL_CMD_ID
+/** @cond DEV */
 
 #include "base/fscapi.h"
 
@@ -70,4 +71,5 @@ class CmdID {
 
 };
 
+/** @endcond */
 #endif

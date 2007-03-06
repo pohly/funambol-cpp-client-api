@@ -18,6 +18,7 @@
 
 #ifndef INCL_CONFIG_H
 #define INCL_CONFIG_H
+/** @cond DEV */
 
 // Use these defines to activate the desired test code
 
@@ -47,4 +48,5 @@
 // Test XMLProcessor class
 //#define TEST_XMLPROCESSOR 1
 
+/** @endcond */
 #endif // INCL_CONFIG_H

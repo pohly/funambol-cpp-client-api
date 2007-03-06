@@ -19,6 +19,7 @@
 
 #ifndef INCL_STATUS
 #define INCL_STATUS
+/** @cond DEV */
 
 #include "base/fscapi.h"
 #include "syncml/core/ResponseCommand.h"
@@ -137,4 +138,5 @@ class Status : public ResponseCommand {
         ArrayElement* clone();   
 };
 
+/** @endcond */
 #endif

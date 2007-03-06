@@ -18,6 +18,7 @@
 
 #ifndef INCL_WHERECLAUSE
 #define INCL_WHERECLAUSE
+/** @cond DEV */
 
 #include "base/fscapi.h"
 #include "filter/Clause.h"
@@ -145,4 +146,5 @@ public:
 };
 
 
+/** @endcond */
 #endif

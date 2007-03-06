@@ -18,6 +18,7 @@
 
 #ifndef INCL_SYNC_SOURCE
 #define INCL_SYNC_SOURCE
+/** @cond DEV */
 
 #include "base/fscapi.h"
 #include "base/ErrorHandler.h"
@@ -313,4 +314,5 @@ public:
     virtual ArrayElement* clone() EXTRA_SECTION_01 = 0;
 };
 
+/** @endcond */
 #endif

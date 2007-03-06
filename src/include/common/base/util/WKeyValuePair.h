@@ -19,6 +19,7 @@
 
 #ifndef INCL_KEY_VALUE_PAIR
 #define INCL_KEY_VALUE_PAIR
+/** @cond DEV */
 
 #include "base/fscapi.h"
 #include "base/util/ArrayElement.h"
@@ -68,4 +69,5 @@ class WKeyValuePair : public ArrayElement {
         WCHAR* v;
 };
 
+/** @endcond */
 #endif

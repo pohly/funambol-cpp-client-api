@@ -18,6 +18,7 @@
 
 #ifndef INCL_BASE_UTILS
 #define INCL_BASE_UTILS
+/** @cond DEV */
 
 #include "base/fscapi.h"
 #include "base/util/ArrayList.h"
@@ -193,4 +194,5 @@ inline const char *_wcc(const WCHAR *wc, const char *enc=0) {
 }
 
 
+/** @endcond */
 #endif

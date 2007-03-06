@@ -19,6 +19,7 @@
 
 #ifndef INCL_SYNC_STATUS_EVENT
 #define INCL_SYNC_STATUS_EVENT
+/** @cond DEV */
 
 #include "event/SyncItemEvent.h"
 #include "event/constants.h"
@@ -46,4 +47,5 @@ public:
     // get the command the status related to
     const char* getCommand() const;
 };
+/** @endcond */
 #endif

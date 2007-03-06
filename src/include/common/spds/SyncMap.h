@@ -18,6 +18,7 @@
 
  #ifndef INCL_SYNC_MAP
     #define INCL_SYNC_MAP
+/** @cond DEV */
 
     #include "base/fscapi.h"
     #include "base/util/ArrayElement.h"
@@ -77,4 +78,5 @@ class SyncMap : public ArrayElement {
         ArrayElement* clone() EXTRA_SECTION_01;
     };
 
+/** @endcond */
 #endif

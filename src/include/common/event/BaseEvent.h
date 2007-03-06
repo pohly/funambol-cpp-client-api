@@ -19,6 +19,7 @@
 
 #ifndef INCL_BASE_EVENT
 #define INCL_BASE_EVENT
+/** @cond DEV */
 
 
 /*
@@ -50,5 +51,6 @@ public:
 
 };
 
+/** @endcond */
 #endif
 

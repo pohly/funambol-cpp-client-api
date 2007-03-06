@@ -19,6 +19,7 @@
 
 #ifndef INCL_DELETE
 #define INCL_DELETE
+/** @cond DEV */
 
 #include "base/fscapi.h"
 #include "syncml/core/ModificationCommand.h"
@@ -106,4 +107,5 @@ class Delete : public ModificationCommand {
    
 };
 
+/** @endcond */
 #endif

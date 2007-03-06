@@ -18,6 +18,7 @@
 
 #ifndef INCL_FIELDCLAUSE
 #define INCL_FIELDCLAUSE
+/** @cond DEV */
 
 #include "base/util/ArrayList.h"
 #include "filter/Clause.h"
@@ -102,4 +103,5 @@ public:
 };
 
 
+/** @endcond */
 #endif

@@ -19,6 +19,7 @@
 
 #ifndef INCL_REPLACE
 #define INCL_REPLACE
+/** @cond DEV */
 
 #include "base/fscapi.h"
 #include "base/util/ArrayElement.h"
@@ -64,4 +65,5 @@ class Replace : public ModificationCommand {
    
 };
 
+/** @endcond */
 #endif

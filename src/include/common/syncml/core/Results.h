@@ -19,6 +19,7 @@
 
 #ifndef INCL_RESULTS
 #define INCL_RESULTS
+/** @cond DEV */
 
 #include "base/fscapi.h"
 #include "base/util/ArrayList.h"
@@ -68,4 +69,5 @@ class Results : public ResponseCommand {
    
 };
 
+/** @endcond */
 #endif

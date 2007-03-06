@@ -19,6 +19,7 @@
 
 #ifndef INCL_XML_PROCESSOR
 #define INCL_XML_PROCESSOR
+/** @cond DEV */
 
 #include "base/fscapi.h"
 #include "base/util/StringBuffer.h"
@@ -188,5 +189,6 @@ public:
 
 };
 
+/** @endcond */
 #endif
 

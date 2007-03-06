@@ -18,6 +18,7 @@
 
 #ifndef INCL_SYNC_EVENT
 #define INCL_SYNC_EVENT
+/** @cond DEV */
 
 #include "event/BaseEvent.h"
 #include "event/constants.h"
@@ -45,4 +46,5 @@ public:
 
 };
 
+/** @endcond */
 #endif

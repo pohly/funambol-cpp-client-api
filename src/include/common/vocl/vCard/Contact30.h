@@ -19,6 +19,7 @@
 
 #ifndef INCL_CONTACT_VERSION_30
 #define INCL_CONTACT_VERSION_30
+/** @cond DEV */
 
 #include "Contact.h"
 
@@ -26,4 +27,5 @@ class Contact30 : public Contact {
 public:
     Contact30();
 };
+/** @endcond */
 #endif

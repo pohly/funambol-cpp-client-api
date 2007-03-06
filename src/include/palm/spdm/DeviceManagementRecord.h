@@ -17,6 +17,7 @@
  */
 #ifndef INCL_PALM_DEVICE_MANAGEMENT_RECORD
 #define INCL_PALM_DEVICE_MANAGER_RECORD
+/** @cond DEV */
 
 /**
  * This class represents a record of a device management entry. Since in PalmOS
@@ -170,4 +171,5 @@ class DeviceManagementRecord {
 
 };
 
+/** @endcond */
 #endif

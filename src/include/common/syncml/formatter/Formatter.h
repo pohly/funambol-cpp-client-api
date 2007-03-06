@@ -19,6 +19,7 @@
 
 #ifndef INCL_FORMATTER
 #define INCL_FORMATTER
+/** @cond DEV */
 
 #include "base/fscapi.h"
 #include "base/util/utils.h"
@@ -121,6 +122,7 @@ class Formatter {
 
 };
 
+/** @endcond */
 #endif
 
 

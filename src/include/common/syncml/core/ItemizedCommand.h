@@ -19,6 +19,7 @@
 
 #ifndef INCL_ITEMIZED_COMMAND
 #define INCL_ITEMIZED_COMMAND
+/** @cond DEV */
 
 #include "base/fscapi.h"
 #include "base/util/ArrayList.h"
@@ -101,4 +102,5 @@ class ItemizedCommand : public AbstractCommand {
         virtual ArrayElement* clone() = 0;
 };  
 
+/** @endcond */
 #endif

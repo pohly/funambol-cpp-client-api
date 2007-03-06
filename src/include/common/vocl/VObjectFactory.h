@@ -19,6 +19,7 @@
 
 #ifndef INCL_VIRTUAL_OBJECT_FACTORY
 #define INCL_VIRTUAL_OBJECT_FACTORY
+/** @cond DEV */
 
 #include "VObject.h"
 
@@ -28,4 +29,5 @@ public:
     static VObject* createInstance(WCHAR* objType, WCHAR* objversion);
 };
 
+/** @endcond */
 #endif

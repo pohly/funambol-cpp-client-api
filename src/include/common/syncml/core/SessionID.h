@@ -19,6 +19,7 @@
 
 #ifndef INCL_SESSION_ID
 #define INCL_SESSION_ID
+/** @cond DEV */
 
 #include "base/fscapi.h"
 
@@ -64,4 +65,5 @@ class SessionID {
        
 };
 
+/** @endcond */
 #endif

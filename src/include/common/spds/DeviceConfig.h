@@ -17,6 +17,7 @@
  */
 #ifndef INCL_DEVICE_CONFIG
 #define INCL_DEVICE_CONFIG
+/** @cond DEV */
 
 #include "base/fscapi.h"
 #include "spds/constants.h"
@@ -188,4 +189,5 @@ class DeviceConfig {
         }
 };
 
+/** @endcond */
 #endif

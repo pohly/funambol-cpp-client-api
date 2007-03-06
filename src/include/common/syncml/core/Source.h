@@ -19,6 +19,7 @@
 
 #ifndef INCL_SOURCE
 #define INCL_SOURCE
+/** @cond DEV */
 
 #include "base/fscapi.h"
 
@@ -91,4 +92,5 @@ class Source {
    
 };
 
+/** @endcond */
 #endif

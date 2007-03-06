@@ -18,7 +18,9 @@
 
 #ifndef INCL_PPC_TIME
     #define INCL_PPC_TIME
+/** @cond DEV */
 
     unsigned int time(void* unused);
     unsigned long getTime();
+/** @endcond */
 #endif

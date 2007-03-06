@@ -17,6 +17,7 @@
  */
 #ifndef INCL_WIN32_DEVICE_MANAGEMENT_NODE
 #define INCL_WIN32_DEVICE_MANAGEMENT_NODE
+/** @cond DEV */
 
 
 
@@ -86,4 +87,5 @@ class DeviceManagementNode: public ManagementNode {
 
 };
 
+/** @endcond */
 #endif

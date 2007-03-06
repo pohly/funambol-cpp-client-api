@@ -17,6 +17,7 @@
  */
 #ifndef INCL_SYNC_CONFIG
 #define INCL_SYNC_CONFIG
+/** @cond DEV */
 
 #include "base/fscapi.h"
 #include "spds/AccessConfig.h"
@@ -69,4 +70,5 @@ class SyncManagerConfig {
         void setSourceDefaults(const char* name);
 };
 
+/** @endcond */
 #endif

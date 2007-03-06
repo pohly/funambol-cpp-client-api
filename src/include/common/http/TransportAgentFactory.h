@@ -18,6 +18,7 @@
 
 #ifndef INCL_TRANSPORT_AGENT_FACTORY
     #define INCL_TRANSPORT_AGENT_FACTORY
+/** @cond DEV */
 
     #include "base/fscapi.h"
 
@@ -39,4 +40,5 @@
                                                      unsigned int maxmsgsize = DEFAULT_MAX_MSG_SIZE) EXTRA_SECTION_03;
     };
 
+/** @endcond */
 #endif

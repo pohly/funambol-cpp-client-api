@@ -17,6 +17,7 @@
  */
  #ifndef INCL_B64_DECODER
     #define INCL_B64_DECODER
+/** @cond DEV */
 
     #include "spds/DataTransformer.h"
 
@@ -39,5 +40,6 @@
         char* transform(char* data, TransformationInfo& info);
     };
 
+/** @endcond */
  #endif
 

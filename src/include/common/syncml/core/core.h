@@ -18,6 +18,7 @@
 
 #ifndef INCL_CORE
 #define INCL_CORE
+/** @cond DEV */
 
 //
 // framework classes
@@ -71,4 +72,5 @@
 #include "syncml/core/VerProto.h"
 #include "syncml/core/VerDTD.h"
 
+/** @endcond */
 #endif

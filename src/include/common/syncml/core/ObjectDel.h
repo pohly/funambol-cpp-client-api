@@ -19,6 +19,7 @@
 
 #ifndef INCL_OBJECT_DEL
 #define INCL_OBJECT_DEL
+/** @cond DEV */
 
 #include "base/fscapi.h"
 #include "base/util/ArrayList.h"
@@ -185,6 +186,7 @@ BOOL NotZeroStringBufferLenght(int count, StringBuffer* s, StringBuffer* s1, Str
                                          StringBuffer* s8, StringBuffer* s9, StringBuffer* s10, StringBuffer* s11,
                                          StringBuffer* s12, StringBuffer* s13, StringBuffer* s14, StringBuffer* s15,
                                          StringBuffer* s16) ;
+/** @endcond */
 #endif
 
 

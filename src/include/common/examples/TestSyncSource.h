@@ -18,6 +18,7 @@
 
 #ifndef INCL_TEST_SYNC_SOURCE
 #define INCL_TEST_SYNC_SOURCE
+/** @cond DEV */
 
 #include "base/fscapi.h"
 #include "spds/constants.h"
@@ -117,4 +118,5 @@ public:
     ArrayElement* clone() { return 0; }
 };
 
+/** @endcond */
 #endif

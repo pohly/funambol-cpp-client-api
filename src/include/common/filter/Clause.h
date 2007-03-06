@@ -18,6 +18,7 @@
 
 #ifndef INCL_CLAUSE
 #define INCL_CLAUSE
+/** @cond DEV */
 
 #include "base/util/ArrayElement.h"
 
@@ -49,4 +50,5 @@ public:
 };
 
 
+/** @endcond */
 #endif

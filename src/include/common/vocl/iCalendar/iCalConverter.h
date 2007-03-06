@@ -19,6 +19,7 @@
 
 #ifndef INCL_VIRTUAL_CALENDAR_CONVERTER
 #define INCL_VIRTUAL_CALENDAR_CONVERTER
+/** @cond DEV */
 
 #include "base/fscapi.h"
 #include "vocl/iCalendar/Calendar.h"
@@ -84,4 +85,5 @@ public:
     void getCalendar(Calendar** outputContact);
     bool convert(WString& error, long* errorCode);
 };
+/** @endcond */
 #endif

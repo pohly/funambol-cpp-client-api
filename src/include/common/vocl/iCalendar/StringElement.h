@@ -19,6 +19,7 @@
 
 #ifndef INCL_STRING_ELEMENT
 #define INCL_STRING_ELEMENT
+/** @cond DEV */
 
 #include "ArrayElement.h"
 #include <string.h>
@@ -35,4 +36,5 @@ public:
     void setValue (WCHAR* value);
     WCHAR* getValue(WCHAR* buf = NULL, int size = -1);
 };
+/** @endcond */
 #endif

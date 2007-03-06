@@ -17,6 +17,7 @@
  */
 #ifndef INCL_DEVICE_MANAGER
 #define INCL_DEVICE_MANAGER
+/** @cond DEV */
 
 #include "spdm/DMTree.h"
 
@@ -48,4 +49,5 @@ class DMTreeFactory {
         static DMTree* getDMTree(const char*  node);
 };
 
+/** @endcond */
 #endif

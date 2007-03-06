@@ -18,6 +18,7 @@
 
 #ifndef INCL_ALERT_CODE
 #define INCL_ALERT_CODE
+/** @cond DEV */
 
 #include "base/fscapi.h"
 
@@ -94,4 +95,5 @@ BOOL isClientOnlyCode(int code) {
          );
 }
 
+/** @endcond */
 #endif // INCL_ALERT_CODE

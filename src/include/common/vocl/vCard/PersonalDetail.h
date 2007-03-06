@@ -19,12 +19,13 @@
 
 //
 // @author Stefano Fornari @ Funambol
-// @version $Id: PersonalDetail.h,v 1.3 2007-02-23 14:22:54 toccy Exp $
+// @version $Id: PersonalDetail.h,v 1.4 2007-03-06 20:51:05 pohly Exp $
 //
 
 
 #ifndef INCL_PIM_PERSONAL_DETAIL
 #define INCL_PIM_PERSONAL_DETAIL
+/** @cond DEV */
 
 #include "Address.h"
 #include "ContactDetail.h"
@@ -215,4 +216,5 @@ class PersonalDetail {
         PersonalDetail* clone();
 };
 
+/** @endcond */
 #endif

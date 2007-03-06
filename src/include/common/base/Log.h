@@ -18,6 +18,7 @@
 
 #ifndef INCL_LOG
     #define INCL_LOG
+/** @cond DEV */
 
     #include "fscapi.h"
 
@@ -73,4 +74,5 @@
     };
 
     extern Log LOG;
+/** @endcond */
 #endif

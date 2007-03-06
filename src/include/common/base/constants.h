@@ -17,6 +17,7 @@
  */
 #ifndef INCL_FSCAPI_CONSTANTS
 #define INCL_FSCAPI_CONSTANTS
+/** @cond DEV */
 
 #define SOURCES                 "sources"
 #define SYNCML                  "syncml"
@@ -31,4 +32,5 @@
   #define NULL 0x00
 #endif
 
+/** @endcond */
 #endif

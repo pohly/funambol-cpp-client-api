@@ -19,6 +19,7 @@
 
 #ifndef INCL_PARSER
 #define INCL_PARSER
+/** @cond DEV */
 
 #include "base/fscapi.h"
 #include "base/util/utils.h"
@@ -95,6 +96,7 @@ class Parser {
         static ArrayList*       getSources          (const char* xml);
 };
 
+/** @endcond */
 #endif
 
 

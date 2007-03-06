@@ -19,12 +19,13 @@
 
 //
 // @author Stefano Fornari @ Funambol
-// @version $Id: Phone.h,v 1.2 2007-02-23 14:22:54 toccy Exp $
+// @version $Id: Phone.h,v 1.3 2007-03-06 20:51:05 pohly Exp $
 //
 
 
 #ifndef INCL_PIM_PHONE
 #define INCL_PIM_PHONE
+/** @cond DEV */
 
 #include "TypedProperty.h"
 
@@ -66,4 +67,5 @@ class Phone : public TypedProperty {
         ArrayElement* clone() ; //FIXME
 };
 
+/** @endcond */
 #endif

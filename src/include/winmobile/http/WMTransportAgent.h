@@ -43,6 +43,7 @@
 
 #ifndef INCL_WM_TRANSPORT_AGENT
     #define INCL_WM_TRANSPORT_AGENT
+/** @cond DEV */
 
     #include "base/fscapi.h"
 
@@ -75,4 +76,5 @@
         char*  sendMessage(const char*  msg);
     };
 
+/** @endcond */
 #endif

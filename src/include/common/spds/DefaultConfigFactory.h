@@ -17,6 +17,7 @@
  */
 #ifndef INCL_DEF_CONFIG
 #define INCL_DEF_CONFIG
+/** @cond DEV */
 
 #include "base/fscapi.h"
 #include "spds/AccessConfig.h"
@@ -63,4 +64,5 @@ class DefaultConfigFactory {
         static SyncSourceConfig* getSyncSourceConfig(const char*  name) EXTRA_SECTION_01;
 };
 
+/** @endcond */
 #endif

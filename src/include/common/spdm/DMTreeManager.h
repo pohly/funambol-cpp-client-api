@@ -17,6 +17,7 @@
  */
 #ifndef INCL_DM_TREE_MANAGER
 #define INCL_DM_TREE_MANAGER
+/** @cond DEV */
 
 #include "base/constants.h"
 #include "spdm/ManagementNode.h"
@@ -48,4 +49,5 @@ class DMTreeManager {
         virtual void setManagementNode(ManagementNode& n)=0;
 };
 
+/** @endcond */
 #endif

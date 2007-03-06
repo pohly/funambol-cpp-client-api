@@ -19,6 +19,7 @@
 
 #ifndef INCL_CORE_CONSTANTS
 #define INCL_CORE_CONSTANTS
+/** @cond DEV */
 
 #include "base/fscapi.h"
 
@@ -40,4 +41,5 @@
 #define AUTH_SUPPORTED_TYPES  "syncml:auth-md5,syncml:auth-basic"
 
 
+/** @endcond */
 #endif

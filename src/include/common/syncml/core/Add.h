@@ -19,6 +19,7 @@
 
 #ifndef INCL_ADD
 #define INCL_ADD
+/** @cond DEV */
 
 #include "base/fscapi.h"
 #include "syncml/core/ModificationCommand.h"
@@ -68,4 +69,5 @@ class Add : public ModificationCommand {
    
 };
 
+/** @endcond */
 #endif

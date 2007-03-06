@@ -18,6 +18,7 @@
 
 #ifndef INCL_BASE_MESSAGES
 #define INCL_BASE_MESSAGES
+/** @cond DEV */
 
 #include "base/fscapi.h"
 
@@ -71,4 +72,5 @@
 #define MESSAGE_SENT                            "Message sent"
 #define READING_RESPONSE                        "Reading response..."   
 
+/** @endcond */
 #endif

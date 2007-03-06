@@ -19,6 +19,7 @@
 
 #ifndef INCL_FILEDATA
 #define INCL_FILEDATA
+/** @cond DEV */
 
 #include "base/util/ArrayElement.h"
 #include "base/util/WString.h"
@@ -129,5 +130,6 @@ class FileData : public ArrayElement {
    
 };
 
+/** @endcond */
 #endif
 

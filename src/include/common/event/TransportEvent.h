@@ -18,6 +18,7 @@
 
 #ifndef INCL_TRANSPORT_EVENT
 #define INCL_TRANSPORT_EVENT
+/** @cond DEV */
 
 #include "event/BaseEvent.h"
 
@@ -37,4 +38,5 @@ public:
 };
 
 
+/** @endcond */
 #endif
