@@ -187,11 +187,7 @@ void SyncManager::initialize() {
     maxMsgSize   = c.getMaxMsgSize();
     maxObjSize   = dc.getMaxObjSize();
     loSupport    = dc.getLoSupport();
-    maxModPerMsg = 150;  // dafault value
     readBufferSize = 5000; // default value    
-
-    if (c.getMaxModPerMsg() > 0)
-        maxModPerMsg = c.getMaxModPerMsg();
     
     if (c.getReadBufferSize() > 0)
         readBufferSize = c.getReadBufferSize();
@@ -1033,9 +1029,8 @@ int SyncManager::sync() {
                  */
             }
 
-            // Accumulate changes for the current sync source until either
-            // - maximum number of items per message exceeded (tot >= maxModPerMsg)
-            // - an item cannot be sent completely because the message size would be exceeded
+            // Accumulate changes for the current sync source until
+            // an item cannot be sent completely because the message size would be exceeded
             //
             // In each loop iteration at least one change must be sent to ensure progress.
             // Keeping track of the current message size is a heuristic which assumes a constant
@@ -1102,7 +1097,7 @@ int SyncManager::sync() {
                                 break;
                             }
                             tot++;
-                        } while( tot < maxModPerMsg);                                                    
+                        } while(msgSize < maxMsgSize);                                                    
                     }
                     break;
 
@@ -1179,7 +1174,7 @@ int SyncManager::sync() {
                                 break;
                             }
                             tot++;
-                        } while( tot < maxModPerMsg);                                                    
+                        } while(msgSize < maxMsgSize);
                     }
                     break;
 
@@ -1235,7 +1230,7 @@ int SyncManager::sync() {
                                     break;
                                 }
                                 tot++;
-                            } while( tot < maxModPerMsg);
+                            } while(msgSize < maxMsgSize);
                         }
 
                         //
@@ -1297,7 +1292,7 @@ int SyncManager::sync() {
                                     break;
                                 }
                                 tot++;
-                            } while( tot < maxModPerMsg);                                                      
+                            } while( msgSize < maxMsgSize);                                                      
                         } 
 
                         //
@@ -1356,7 +1351,7 @@ int SyncManager::sync() {
                                     break;
                                 }
                                 tot++;
-                            } while( tot < maxModPerMsg);           
+                            } while(msgSize < maxMsgSize);           
                         }
                         if (step == 6 && syncItem == NULL)
                             last = TRUE;
@@ -1696,19 +1691,7 @@ int SyncManager::endSync() {
                     tot++;
                     MapItem* mapItem = syncMLBuilder.prepareMapItem((SyncMap*)mappings[count]->get(i));
                     syncMLBuilder.addMapItem(map, mapItem);
-
-                    deleteMapItem(&mapItem);                        
-
-                    if (tot == ((int)maxModPerMsg - 1)) {
-                        i++;
-                        last = FALSE;
-                        break; 
-
-                    }
-                    last = TRUE;
-                }
-
-                if (i == mappings[count]->size()) {
+                    deleteMapItem(&mapItem);
                     last = TRUE;
                 }
 
