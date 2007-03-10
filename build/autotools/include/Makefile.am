@@ -15,6 +15,7 @@ nobase_pkginclude_HEADERS = \
     common/base/util/KeyValuePair.h \
     common/base/util/WKeyValuePair.h \
     common/base/util/XMLProcessor.h \
+    common/base/util/StringBuffer.h \
     common/base/util/WString.h \
     common/client/DMTClientConfig.h \
     common/client/SyncClient.h \
