@@ -72,7 +72,7 @@ Log::Log(BOOL resetLog, const char*  path, const char*  name) {
 
     setLogPath(path);
     setLogName(name);
-	if (resetLog) {
+    if (resetLog) {
         reset(FUNAMBOL_HEADER);
     }
 }
