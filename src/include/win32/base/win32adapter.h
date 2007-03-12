@@ -23,8 +23,6 @@
 #include <stdarg.h>
 #include <stdio.h>
 
-// signed/unsigned mismatch
-// #pragma warning(disable:4018)
 
 #define EXTRA_SECTION_00
 #define EXTRA_SECTION_01
@@ -36,6 +34,8 @@
 
 typedef wchar_t WCHAR;
 
+// Define this to the implementation of the sprintf variant with
+// size check for wide char.
 #define snwprintf _snwprintf
 
 void printMemLeaks();
