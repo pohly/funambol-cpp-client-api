@@ -281,54 +281,6 @@ static Codepage encodings[] = {
     { NULL, 0 }
 };
 
-
-long utf8len(const char*  s) {
-     return s ? strlen(s) : 0;
-}
-
-char* wc2utf8(const char*  s, char* d, unsigned long dsize) {
-
-    //
-    // First of all, if s is NULL, just return NULL.
-    // Then, if d is NULL, let's allocate the required memory to contain the
-    // utf8 string.
-    //
-    if (s == NULL) {
-        return NULL;
-    }
-
-    if (d == NULL) {
-        dsize = utf8len(s);
-        d = new char[dsize+1];
-    }
-
-    strcpy( d, s );
-
-    return d;
-}
-
-char* utf82wc(const char* s, char*  d, unsigned long dsize) {
-
-    //
-    // First of all, if s is NULL, just return NULL.
-    // Then, if d is NULL, let's allocate the required memory to contain the
-    // char string.
-    //
-    if (s == NULL) {
-        return NULL;
-    }
-
-    if (d == NULL) {
-        // get the right lenght with a NULL dest
-        dsize = strlen (s);
-        d = new char[dsize+1];
-    }
-
-    strcpy(d, s);
-
-    return d;
-}
-
 /*
  * Return a filename composed by the system temp dir and the name given
  * in input. If the file exists, try to add a digit 0-9.
@@ -474,8 +426,10 @@ char* toMultibyte(const WCHAR *wc, const char *encoding)
     int codepage = findCodePage(encoding);
     size_t blen = getLenEncoding(wc, codepage);
 
-    if(blen <= 0)
-        return 0;
+    if(blen <= 0) {
+        LOG.error("Invalid encoding");
+        return stringdup("");
+    }
 
     ret = new char[blen+1];
 
