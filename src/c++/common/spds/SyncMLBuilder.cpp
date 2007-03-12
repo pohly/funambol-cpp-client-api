@@ -625,17 +625,16 @@ SyncML* SyncMLBuilder::prepareInitObject(Cred* cred, ArrayList* alerts, ArrayLis
 
     SyncHdr* syncHdr     = prepareSyncHdr(cred, maxMsgSize, maxObjSize);
     SyncML*  syncml      = NULL;               
-    ArrayList* list      = new ArrayList();
+    ArrayList* list      = NULL;
     SyncBody* syncBody   = NULL;
 
-    if (!commands->isEmpty()) {
-        list = commands->clone();
-    }    
+    // Clone commands, even if empty. The result is a list anyway.
+    list = commands->clone();
+
     if (alerts && alerts->size() > 0) {
         for (int k = 0; k < alerts->size(); k++)
             list->add(*(Alert*)alerts->get(k));        
     }
-        
     
     syncBody   = new SyncBody(list, TRUE);
     deleteArrayList(&list);
