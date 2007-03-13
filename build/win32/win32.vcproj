@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="Windows-1252"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="8.00"
+	Version="8,00"
 	Name="win32"
 	ProjectGUID="{D279EE74-36FB-4C4C-8F29-04947825C53E}"
 	RootNamespace="win32"
@@ -42,8 +42,8 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="..\..\src\include\common,..\..\src\include\win32,..\..\..\..\..\cppunit-1.12.0\include"
-				PreprocessorDefinitions="WIN32;_DEBUG;_MBCS;UNICODE;_LIB;NO_CRIT_MSGBOX;_CRT_SECURE_NO_DEPRECATE;_CRT_NON_CONFORMING_SWPRINTFS;DISABLE_UNIT_TESTS"
+				AdditionalIncludeDirectories="..\..\src\include\common;..\..\src\include\win32;&quot;..\..\..\..\..\cppunit-1.12.0\include&quot;;..\..\..\..\tools\zlib"
+				PreprocessorDefinitions="WIN32;_DEBUG;_MBCS;UNICODE;_LIB;NO_CRIT_MSGBOX;_CRT_SECURE_NO_DEPRECATE;_CRT_NON_CONFORMING_SWPRINTFS;DISABLE_UNIT_TESTS;USE_ZLIB"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="1"
@@ -69,6 +69,7 @@
 			<Tool
 				Name="VCLibrarianTool"
 				OutputFile=".\output\win32-dbg\win32.lib"
+				AdditionalLibraryDirectories=""
 				SuppressStartupBanner="true"
 			/>
 			<Tool
@@ -3382,6 +3383,66 @@
 				</File>
 				<File
 					RelativePath="..\..\src\c++\common\event\TransportListener.cpp"
+					>
+				</File>
+			</Filter>
+			<Filter
+				Name="zlib"
+				>
+				<File
+					RelativePath="..\..\..\..\tools\zlib\adler32.c"
+					>
+				</File>
+				<File
+					RelativePath="..\..\..\..\tools\zlib\compress.c"
+					>
+				</File>
+				<File
+					RelativePath="..\..\..\..\tools\zlib\crc32.c"
+					>
+				</File>
+				<File
+					RelativePath="..\..\..\..\tools\zlib\deflate.c"
+					>
+				</File>
+				<File
+					RelativePath="..\..\..\..\tools\zlib\gzio.c"
+					>
+				</File>
+				<File
+					RelativePath="..\..\..\..\tools\zlib\infblock.c"
+					>
+				</File>
+				<File
+					RelativePath="..\..\..\..\tools\zlib\infcodes.c"
+					>
+				</File>
+				<File
+					RelativePath="..\..\..\..\tools\zlib\inffast.c"
+					>
+				</File>
+				<File
+					RelativePath="..\..\..\..\tools\zlib\inflate.c"
+					>
+				</File>
+				<File
+					RelativePath="..\..\..\..\tools\zlib\inftrees.c"
+					>
+				</File>
+				<File
+					RelativePath="..\..\..\..\tools\zlib\infutil.c"
+					>
+				</File>
+				<File
+					RelativePath="..\..\..\..\tools\zlib\trees.c"
+					>
+				</File>
+				<File
+					RelativePath="..\..\..\..\tools\zlib\uncompr.c"
+					>
+				</File>
+				<File
+					RelativePath="..\..\..\..\tools\zlib\zutil.c"
 					>
 				</File>
 			</Filter>

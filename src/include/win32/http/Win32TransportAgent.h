@@ -53,8 +53,11 @@
 
 #define MAX_AUTH_ATTEMPT        5       // Max number of attempts sending http requests.
 #define MAX_SERVER_TIMEOUT      10      // 10 minutes to receive a rensponse from server.
+#define BUFFER_READ_BLOCK       5000    // [bytes] InternetReadFile() will read blocks of data.
 
 #define ERR_HTTP_NOT_FOUND      ERR_TRANSPORT_BASE+60
+#define ERR_HTTP_INFLATE        ERR_TRANSPORT_BASE+70
+#define ERR_HTTP_DEFLATE        ERR_TRANSPORT_BASE+71
 
 
 /*
@@ -70,16 +73,20 @@ public:
     Win32TransportAgent();
     Win32TransportAgent(URL& url, Proxy& proxy, 
         unsigned int responseTimeout = DEFAULT_MAX_TIMEOUT, 
-        unsigned int msxmsgsize = DEFAULT_MAX_MSG_SIZE);
+        unsigned int maxmsgsize = DEFAULT_MAX_MSG_SIZE);
     ~Win32TransportAgent();
 
     /*
     * Sends the given SyncML message to the server specified
-    * by the instal property 'url'. Returns the response status code.
+    * by the install property 'url'. Returns the response status code.
     */
     char*  sendMessage(const char*  msg);
 
 private:
+    BOOL isToDeflate;           // to be zipped
+    BOOL isFirstMessage;        // first message is clear
+    BOOL isToInflate;           // to be unzipped
+
     char* createHttpErrorMessage(DWORD errorCode);
 };
 
