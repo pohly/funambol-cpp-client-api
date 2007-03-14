@@ -1,4 +1,7 @@
 
+2007-03-13
+     - toccy: Win32TransportAgent - added support for gzip compression on SyncML messages
+
 2007-02-23
      - toccy: Win32TransportAgent - fixed bug #306633: Content-length not available cause client to crash
 
