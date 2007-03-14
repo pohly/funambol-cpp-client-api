@@ -158,7 +158,6 @@ void SyncManager::initialize() {
     mappings       = NULL;
     sources        = NULL;
     currentState   = STATE_START;
-    mappings       = NULL;
     sourcesNumber  = 0;
     count          = 0;
     commands       = NULL;
@@ -1634,6 +1633,9 @@ int SyncManager::endSync() {
     unsigned int iterator   = 0;
     unsigned int toSync     = 0;
     int i = 0, tot = -1;
+
+    // rough (pessimistic) estimation of 400 bytes per map item    
+    int maxMapItems = maxMsgSize / 400;
     
     // The real number of source to sync
     for (count = 0; count < sourcesNumber; count ++) {
@@ -1655,7 +1657,7 @@ int SyncManager::endSync() {
                 commands->isEmpty() && mappings[count]->size() == 0)                   
                 ) {
             
-            
+
         } else {
             
             // put at the end of the if
@@ -1666,32 +1668,37 @@ int SyncManager::endSync() {
                 tot = -1;
                 if (commands->isEmpty()) {
                     status = syncMLBuilder.prepareSyncHdrStatus(NULL, 200);
-		            commands->add(*status);
+                    commands->add(*status);
                     deleteStatus(&status); 
-
-                    /* The server should not send any alert...
-                       list = syncMLProcessor.getCommands(syncml->getSyncBody(), ALERT);   
-                       status = syncMLBuilder.prepareAlertStatus(*sources[0], list, 200);
-                       if (status) {
-                       commands->add(*status);
-                       deleteStatus(&status);    
-                       }
-                       deleteArrayList(&list),
-                     */
                 }
 
-                if (mappings[count]->size() > 0)
+                if (mappings[count]->size() > 0) {
                     map = syncMLBuilder.prepareMapCommand(*sources[count]);
-                else if (iterator != toSync)
+                }
+                else if (iterator != toSync) {
                     break;
-                else
+                }
+                else {
                     last = TRUE;
+                }
 
-                for (i; i < mappings[count]->size(); i++) {                                                      
+                for (; i < mappings[count]->size(); i++) {                                                      
                     tot++;
                     MapItem* mapItem = syncMLBuilder.prepareMapItem((SyncMap*)mappings[count]->get(i));
                     syncMLBuilder.addMapItem(map, mapItem);
-                    deleteMapItem(&mapItem);
+
+                    deleteMapItem(&mapItem);                        
+
+                    if (tot == ((int)maxMapItems - 1)) {
+                        i++;
+                        last = FALSE;
+                        break; 
+
+                    }
+                    last = TRUE;
+                }
+
+                if (i == mappings[count]->size()) {
                     last = TRUE;
                 }
 
@@ -1721,7 +1728,7 @@ int SyncManager::endSync() {
                 safeDelete(&mapMsg);
 
                 syncml = syncMLProcessor.processMsg(responseMsg);
-                safeDelete(&responseMsg);
+                delete [] responseMsg; responseMsg = NULL;
                 deleteArrayList(&commands);
 
                 if (syncml == NULL) {
@@ -1791,9 +1798,9 @@ int SyncManager::endSync() {
     config.getAccessConfig().setEndSync((unsigned long)time(NULL));
     safeDelete(&responseMsg);
     safeDelete(&mapMsg);
-    char g[768]; sprintf(g, "ret: %i, lastErrorCode: %i, lastErrorMessage: %s", ret, lastErrorCode, lastErrorMsg); LOG.debug(g);
+    LOG.debug("ret: %i, lastErrorCode: %i, lastErrorMessage: %s", ret, lastErrorCode, lastErrorMsg);
 
-	// Fire Sync End Event
+    // Fire Sync End Event
     fireSyncEvent(NULL, SYNC_END);
 
     if (ret){
