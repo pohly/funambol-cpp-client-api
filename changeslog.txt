@@ -1,9 +1,13 @@
 
 2007-03-13
-     - toccy: Win32TransportAgent - added support for gzip compression on SyncML messages
+    - toccy: Win32TransportAgent - added support for gzip compression on SyncML
+             messages
+    - toccy: use maxMsgSize to send items instead of maxModPerMsg
+    - gazza: use maxMsgSize to send mappings.
 
 2007-02-23
-     - toccy: Win32TransportAgent - fixed bug #306633: Content-length not available cause client to crash
+     - toccy: Win32TransportAgent - fixed bug #306633: Content-length not
+              available cause client to crash
 
 
 Funambol SDK C++ 6.0.2
@@ -234,7 +238,7 @@ Funambol SDK C++ 3.0.0
            Completed MailMessage format (multipart)
 
 2005-12-05:
-  - gazza: implemented class MailMessage, with basic MIME parsing, for e-mail
+  - gazza: implemented class MailMchangeslog.txtessage, with basic MIME parsing, for e-mail
            sync. Classes StringBuffer and ArrayList enhanced with new
            operators and methods for use in the parser.
            SyncManager now checks beginSync() retcode.
