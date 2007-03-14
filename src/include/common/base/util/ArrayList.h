@@ -128,7 +128,7 @@ class ArrayList {
          * Note that the retuned element will be released at list destruction.
          * Clone it if it must have a different life cycle.
          *
-         * @return - the first element of the array, or NULL if beyond the last.
+         * @return - the next element of the array, or NULL if beyond the last.
          */
         ArrayElement* next() EXTRA_SECTION_00;
 
@@ -138,7 +138,7 @@ class ArrayList {
          * Note that the retuned element will be released at list destruction.
          * Clone it if it must have a different life cycle.
          *
-         * @return - the first element of the array, or NULL if before the first.
+         * @return - the previous element of the array, or NULL if before the first.
          */
         ArrayElement* prev() EXTRA_SECTION_00;
 
