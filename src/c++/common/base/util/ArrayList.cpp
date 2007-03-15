@@ -231,10 +231,13 @@ int ArrayList::size() {
 }
 
 ArrayElement* ArrayList::front() {
-	iterator = head;
-	return (iterator) ? iterator->e : 0 ;
+    iterator = head;
+    return (iterator) ? iterator->e : 0 ;
 }
 ArrayElement* ArrayList::next() {
+    if(!iterator) {
+        return 0;
+    }
     iterator = iterator->n;
     return (iterator) ? iterator->e : 0 ;
 }
