@@ -1,4 +1,8 @@
 
+2007-03-14
+    - gazza: potential null pointer access fixed in ArrayList
+    - gazza: WMTransportAgent reworked
+
 2007-03-13
     - toccy: Win32TransportAgent - added support for gzip compression on SyncML
              messages
