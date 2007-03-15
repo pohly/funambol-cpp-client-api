@@ -19,8 +19,8 @@
 
 /**
 
- How to test SSL connections on WindowsMobile 2003 device/emulator
- -----------------------------------------------------------------
+ How to test SSL connections 
+ ----------------------------
 
  On the server:
  1) create the keystore:
@@ -42,39 +42,62 @@
 **/
 
 #ifndef INCL_WM_TRANSPORT_AGENT
-    #define INCL_WM_TRANSPORT_AGENT
+#define INCL_WM_TRANSPORT_AGENT
 /** @cond DEV */
 
-    #include "base/fscapi.h"
+#include "base/fscapi.h"
+#include "http/URL.h"
+#include "http/Proxy.h"
+#include "http/TransportAgent.h"
 
-    #include "http/URL.h"
-    #include "http/Proxy.h"
-    #include "http/TransportAgent.h"
+/** Max number of attempts sending http requests. */
+#define MAX_RETRIES             3
+/** 10 minutes to receive a rensponse from server. */
+#define MAX_SERVER_TIMEOUT      10
+/** Number of bytes for the InternetReadFile() buffer. */
+#define BUFFER_READ_BLOCK       5000
 
+// FIXME: should these go to http/errors.h ?
+#define ERR_HTTP_TIME_OUT       ERR_TRANSPORT_BASE+ 7
+#define ERR_HTTP_NOT_FOUND      ERR_TRANSPORT_BASE+60
+#define ERR_HTTP_INFLATE        ERR_TRANSPORT_BASE+70
+#define ERR_HTTP_DEFLATE        ERR_TRANSPORT_BASE+71
+
+
+/*
+ * This class is the transport agent responsible for messages exchange
+ * over an HTTP connection.
+ * This is a generic abtract class which is not bound to any paltform
+ */
+
+class WMTransportAgent : public TransportAgent {
+
+
+public:
+    WMTransportAgent();
+    WMTransportAgent(URL& url, Proxy& proxy, 
+                     unsigned int responseTimeout = DEFAULT_MAX_TIMEOUT,
+                     unsigned int maxmsgsize = DEFAULT_MAX_MSG_SIZE);
+    ~WMTransportAgent();
 
     /*
-     * This class is the transport agent responsible for messages exchange
-     * over an HTTP connection.
-     * This is a generic abtract class which is not bound to any paltform
+     * Sends the given SyncML message to the server specified
+     * by the install property 'url'. Returns the server's response.
+     * The response string has to be freed with delete [].
+     * In case of an error, NULL is returned and lastErrorCode/Msg
+     * is set.
      */
+    char*  sendMessage(const char*  msg);
 
-    class WMTransportAgent : public TransportAgent {
+private:
 
+#ifdef USE_ZLIB
+    BOOL isToDeflate;           // to be zipped
+    BOOL isFirstMessage;        // first message is clear
+    BOOL isToInflate;           // to be unzipped
+#endif
 
-    public:
-        WMTransportAgent();
-        WMTransportAgent(URL& url, Proxy& proxy, unsigned int responseTimeout = DEFAULT_MAX_TIMEOUT, unsigned int maxmsgsize = DEFAULT_MAX_MSG_SIZE);
-        ~WMTransportAgent();
-
-        /*
-         * Sends the given SyncML message to the server specified
-         * by the install property 'url'. Returns the server's response.
-         * The response string has to be freed with delete [].
-         * In case of an error, NULL is returned and lastErrorCode/Msg
-         * is set.
-         */
-        char*  sendMessage(const char*  msg);
-    };
+};
 
 /** @endcond */
 #endif
