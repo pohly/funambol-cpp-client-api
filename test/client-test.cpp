@@ -16,6 +16,11 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
+/** @cond API */
+/** @addtogroup ClientTest */
+/** @{ */
+
+
 /**
  * This code uses the ClientTest and RawFileSyncSource to test real
  * synchronization against a server. More than one RawFileSyncSource can
@@ -47,16 +52,21 @@
  *                     (only works on Unix)
  *
  * For example, on Linux running
- *    CLIENT_TEST_SERVER=funambol CLIENT_TEST_SOURCES=vcard30,ical20 ./client-test
+ * @verbatim
+CLIENT_TEST_SERVER=funambol CLIENT_TEST_SOURCES=vcard30,ical20 ./client-test
+@endverbatim
+ *
  * expects the following configuration layout:
- * ~/.sync4j/client-test/
- *                       funambol_1/spds/
- *                                       syncml/config.text
- *                                       sources/
- *                                               vcard30/config.txt
- *                                               ical20/config.txt
- *                       funambol_1/spds/
- *                                       <same as for funambol_1>
+ * @verbatim
+~/.sync4j/client-test/
+                      funambol_1/spds/
+                                      syncml/config.text
+                                      sources/
+                                              vcard30/config.txt
+                                              ical20/config.txt
+                      funambol_1/spds/
+                                      <same as for funambol_1>
+@endverbatim
  *
  * If any of the configuration nodes does not exist yet, then it will
  * be created, but further information may have to be added, in
@@ -72,10 +82,13 @@
  * a "client-data" directory created in the current working directory.
  *
  * Here is an example of using the CLIENT_TEST_LOG:
- *    CLIENT_TEST_SERVER=funambol \
- *    CLIENT_TEST_LOG=/opt/Funambol-3.0/ds-server/logs/funambol_ds.log \
- *    CLIENT_TEST_SOURCES=vcard30 \
- *    ./client-test
+ * @verbatim
+CLIENT_TEST_SERVER=funambol \
+CLIENT_TEST_LOG=/opt/Funambol-3.0/ds-server/logs/funambol_ds.log \
+CLIENT_TEST_SOURCES=vcard30 \
+   ./client-test
+@endverbatim
+ *
  * will create files with the suffix .client.A.log for synchronizations with
  * the first client and .client.B.log for the second client. The base name
  * of these files is unique, so the corresponding part of the server log
@@ -307,4 +320,6 @@ private:
     TestFileSource testFileSource;
 } registerTest;
 
+/** @} */
+/** @endcond */
 #endif // ENABLE_INTEGRATION_TESTS

@@ -16,6 +16,10 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
+/** @cond API */
+/** @addtogroup ClientTest */
+/** @{ */
+
 #ifdef HAVE_CONFIG_H
 # include <config.h>
 #endif
@@ -354,7 +358,7 @@ public:
      *
      * @param refFile      existing file with source reference items, NULL uses a dump of sync source A instead
      * @param copy         a sync source which contains the copied items, begin/endSync will be called
-     * @param raiseAssertion raise assertion if comparison yields differences (defaults to true)
+     * @param raiseAssert  raise assertion if comparison yields differences (defaults to true)
      */
     void compareDatabases(const char *refFile, SyncSource &copy, bool raiseAssert = true) {
         CPPUNIT_ASSERT(config.dump);
@@ -387,7 +391,7 @@ public:
      * insert artificial items, number of them determined by TEST_EVOLUTION_NUM_ITEMS
      * unless passed explicitly
      *
-     * @param config          determines which client is modified
+     * @param createSource    a factory for the sync source that is to be used
      * @param startIndex      IDs are generated starting with this value
      * @param numItems        number of items to be inserted if non-null, otherwise TEST_EVOLUTION_NUM_ITEMS is used
      * @param size            minimum size for new items
@@ -2270,4 +2274,6 @@ void CheckSyncReport::check(SyncReport &report) const
     LOG.debug("Done with checking sync report.");
 }
 
+/** @} */
+/** @endcond */
 #endif // ENABLE_INTEGRATION_TESTS

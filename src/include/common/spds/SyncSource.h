@@ -18,7 +18,9 @@
 
 #ifndef INCL_SYNC_SOURCE
 #define INCL_SYNC_SOURCE
-/** @cond DEV */
+/** @cond API */
+/** @addtogroup Client */
+/** @{ */
 
 #include "base/fscapi.h"
 #include "base/ErrorHandler.h"
@@ -30,6 +32,11 @@
 #include "spds/SyncSourceConfig.h"
 #include "spds/SyncSourceReport.h"
 
+/**
+ * This is the main API that a SyncML client developer needs to implement
+ * to let the sync engine access the client's data. Each client may provide
+ * access to one or more sources.
+ */
 class SyncSource : public ArrayElement {
 
 private:
@@ -100,24 +107,30 @@ public:
      * synchronization starts.
      *********************************************************/
 
-    // read-only access to configuration
+    /** read-only access to configuration */
     const SyncSourceConfig& getConfig() const EXTRA_SECTION_01 {
         return config;
     }
-    // read-write access to configuration
+    /** read-write access to configuration */
     SyncSourceConfig& getConfig() EXTRA_SECTION_01 {
         return config;
     }
 
 
-    // Return pointer to report object
+    /**
+     * Return pointer to report object.
+     */
     SyncSourceReport* getReport() EXTRA_SECTION_01;
 
-    // Set the report pointer with the given one 
-    // (no copy, only assign the pointer to the external one)
+    /**
+     * Set the report pointer with the given one
+     * (no copy, only assign the pointer to the external one)
+     *
+     * @param sr   the report for this sync source
+     */
     void setReport(SyncSourceReport* sr) EXTRA_SECTION_01;
 
-    /*
+    /**
      * Get & Set the preferred synchronization mode for the SyncSource.
      *
      * Taken initially from the configuration by setConfig(), it can then
@@ -127,7 +140,7 @@ public:
     SyncMode getPreferredSyncMode() EXTRA_SECTION_01;
     void setPreferredSyncMode(SyncMode syncMode) EXTRA_SECTION_01;
 
-    /*
+    /**
      * Get & Sets the server imposed synchronization mode for the SyncSource.
      *
      * Agreed upon with the server during the initial exchange with the server.
@@ -137,46 +150,43 @@ public:
     SyncMode getSyncMode() EXTRA_SECTION_01;
     void setSyncMode(SyncMode syncMode) EXTRA_SECTION_01;
 
-    /*
+    /**
      * Get & Set the timestamp in milliseconds of the last synchronization.
      * The reference time of the timestamp is platform specific.
      */
     unsigned long getLastSync() EXTRA_SECTION_01;
     void setLastSync(unsigned long timestamp) EXTRA_SECTION_01;
 
-    /*
+    /**
      * Gets & Sets the timestamp in milliseconds of the next synchronization.
      * The reference time of the timestamp is platform specific.
      */
     unsigned long getNextSync() EXTRA_SECTION_01;
     void setNextSync(unsigned long timestamp) EXTRA_SECTION_01;
 
-    /*
+    /**
      * Gets & Sets the last anchor associated to the source
      */
     void setLastAnchor(const char*  last) EXTRA_SECTION_01;
     const char*  getLastAnchor() EXTRA_SECTION_01;
 
-    /*
+    /**
      * Gets & Sets the next anchor associated to the source
      */
     const char*  getNextAnchor() EXTRA_SECTION_01;
     void setNextAnchor(const char*  next) EXTRA_SECTION_01;
     
-    /*
-    * Gets filter
-    *
-    * @return  the current filter's value
-    *
-    */
+    /**
+     * Gets filter
+     */
     SourceFilter* getFilter();
 
-    /*
-    * Sets filter
-    *
-    * @param filter the new value
-    *
-    */
+    /**
+     * Sets filter
+     *
+     * @param f the new filter
+     *
+     */
     void setFilter(SourceFilter* f);
 
     /******************************************************
@@ -187,7 +197,7 @@ public:
      * reasonable defaults.
      *****************************************************/
     
-    /*
+    /**
      * Called by the engine from inside SyncClient::sync()
      * at the begin of the sync.
      *
@@ -204,7 +214,7 @@ public:
      */
     virtual int beginSync() EXTRA_SECTION_01;
     
-    /*
+    /**
      * Called by the engine from inside SyncClient::sync()
      * at the end of the sync.
      *
@@ -218,95 +228,109 @@ public:
      * @return - 0 on success, an error otherwise
      */
     virtual int endSync() EXTRA_SECTION_01;
-        
+
+    /**
+     * called by the sync engine with the status returned by the
+     * server for a certain item that the client sent to the server
+     *
+     * @param key      the local key of the item
+     * @param status   the SyncML status returned by the server
+     */
     virtual void setItemStatus(const WCHAR* key, int status) = 0 EXTRA_SECTION_01;
 
-    /*
+    /**
      * Return the key of the first SyncItem of all.
      * It is used in case of refresh sync 
      * and retrieve all the keys of the data source.
      */
     virtual SyncItem* getFirstItemKey() = 0 EXTRA_SECTION_01;
 
-    /*
+    /**
      * Return the key of the next SyncItem of all.
      * It is used in case of refresh sync 
      * and retrieve all the keys of the data source.
      */
     virtual SyncItem* getNextItemKey() = 0 EXTRA_SECTION_01;
 
-    /*
+    /**
      * Return the first SyncItem of all.
      * It is used in case of slow sync
      * and retrieve the entire data source content.
      */
     virtual SyncItem* getFirstItem() = 0 EXTRA_SECTION_01;
 
-    /*
+    /**
      * Return the next SyncItem of all.
      * It is used in case of slow sync
      * and retrieve the entire data source content.
      */
     virtual SyncItem* getNextItem() = 0 EXTRA_SECTION_01;
 
-    /*
+    /**
      * Return the first SyncItem of new one. It is used in case of fast sync 
      * and retrieve the new data source content.
      */
     virtual SyncItem* getFirstNewItem() = 0 EXTRA_SECTION_01;
 
-    /*
+    /**
      * Return the next SyncItem of new one. It is used in case of fast sync 
      * and retrieve the new data source content.
      */
     virtual SyncItem* getNextNewItem() = 0 EXTRA_SECTION_01;
 
-    /*
+    /**
      * Return the first SyncItem of updated one. It is used in case of fast sync 
      * and retrieve the new data source content.
      */
     virtual SyncItem* getFirstUpdatedItem() = 0 EXTRA_SECTION_01;
 
-    /*
+    /**
      * Return the next SyncItem of updated one. It is used in case of fast sync 
      * and retrieve the new data source content.
      */
     virtual SyncItem* getNextUpdatedItem() = 0 EXTRA_SECTION_01;
 
-    /*
+    /**
      * Return the first SyncItem of updated one. It is used in case of fast sync 
      * and retrieve the new data source content.
      */
     virtual SyncItem* getFirstDeletedItem() = 0 EXTRA_SECTION_01;
 
-    /*
+    /**
      * Return the next SyncItem of updated one. It is used in case of fast sync 
      * and retrieve the new data source content.
      */
-
     virtual SyncItem* getNextDeletedItem() = 0 EXTRA_SECTION_01;
 
+    /**
+     * Called by the sync engine to add an item that the server has sent.
+     * The sync source is expected to add it to its database, then set the
+     * key to the local key assigned to the new item. Alternatively
+     * the sync source can match the new item against one of the existing
+     * items and return that key.
+     *
+     * @param item    the item as sent by the server
+     * @return SyncML status code
+     */
     virtual int addItem(SyncItem& item) = 0 EXTRA_SECTION_01;
-   
+
+    /**
+     * Called by the sync engine to update an item that the source already
+     * should have. The item's key is the local key of that item.
+     *
+     * @param item    the item as sent by the server
+     * @return SyncML status code
+     */
     virtual int updateItem(SyncItem& item) = 0 EXTRA_SECTION_01;
 
+    /**
+     * Called by the sync engine to update an item that the source already
+     * should have. The item's key is the local key of that item, no data is
+     * provided.
+     *
+     * @param item    the item as sent by the server
+     */
     virtual int deleteItem(SyncItem& item) = 0 EXTRA_SECTION_01;
-
-    /*
-     * Gets the Error Handler for the SyncSource, if the attribute is set,
-     * otherwise return the one of Sync4JClient as a default (using a static
-     * method call).
-     * 
-     * @return  A reference to the ErrorHandler to be used by the SyncSource.
-     */
-    //virtual ErrorHandler& getErrorHandler() EXTRA_SECTION_01;
-    
-    /*
-     * Sets the Error Handler for the SyncSource
-     * 
-     * @param e: a reference to the ErrorHandler to be used by the SyncSource.
-     */
-    //virtual void setErrorHandler(ErrorHandler& e) EXTRA_SECTION_01;
 
     /**
      * ArrayElement implementation
@@ -314,5 +338,6 @@ public:
     virtual ArrayElement* clone() EXTRA_SECTION_01 = 0;
 };
 
+/** @} */
 /** @endcond */
 #endif

@@ -18,7 +18,9 @@
 
 #ifndef INCL_SYNCCLIENT
     #define INCL_SYNCCLIENT
-/** @cond DEV */
+/** @cond API */
+/** @addtogroup Client */
+/** @{ */
 
     #include "base/fscapi.h"
     #include "base/Log.h"
@@ -172,7 +174,7 @@
         SyncReport syncReport;
     };
 
-
+/** @} */
 /** @endcond */
 #endif
 

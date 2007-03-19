@@ -18,7 +18,9 @@
 
 #ifndef INCL_FILE_CLIENT
 #define INCL_FILE_CLIENT
-/** @cond DEV */
+/** @cond API */
+/** @addtogroup Client */
+/** @{ */
 
 #include "base/fscapi.h"
 #include "base/messages.h"
@@ -65,5 +67,6 @@
 // Function to create a default config.
 void createConfig(DMTClientConfig& config);
 
+/** @} */
 /** @endcond */
 #endif // INCL_FILE_CLIENT

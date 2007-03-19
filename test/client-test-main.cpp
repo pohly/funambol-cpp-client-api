@@ -16,6 +16,10 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
+/** @cond API */
+/** @addtogroup ClientTest */
+/** @{ */
+
 #ifdef HAVE_CONFIG_H
 # include <config.h>
 #endif
@@ -220,3 +224,6 @@ int main(int argc, char* argv[])
       return 1;
   }
 }
+
+/** @} */
+/** @endcond */

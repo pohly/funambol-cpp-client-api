@@ -157,6 +157,7 @@ public:
     //
     void fromNativeEncoding();
 
+/** @endcond */
 #endif
 
 };

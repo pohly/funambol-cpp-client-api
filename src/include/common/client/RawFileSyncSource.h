@@ -18,7 +18,9 @@
 
 #ifndef INCL_RAW_FILE_SYNC_SOURCE
 #define INCL_RAW_FILE_SYNC_SOURCE
-/** @cond DEV */
+/** @cond API */
+/** @addtogroup Client */
+/** @{ */
 
 #include "client/FileSyncSource.h"
 
@@ -44,5 +46,6 @@ class RawFileSyncSource : public FileSyncSource {
 };
 
 
+/** @} */
 /** @endcond */
 #endif // INCL_RAW_FILE_SYNC_SOURCE

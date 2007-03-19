@@ -18,7 +18,9 @@
 
 #ifndef INCL_TESTSYNCCLIENT
 #define INCL_TESTSYNCCLIENT
-/** @cond DEV */
+/** @cond API */
+/** @addtogroup Client */
+/** @{ */
 
 #include <string>
 #include "spds/SyncSource.h"
@@ -30,7 +32,7 @@
  * This class encapsulates logging and checking of a SyncReport.
  * When constructed with default parameters, no checking will be done.
  * Otherwise the sync report has to contain exactly the expected result.
- * When multiple sync sources are active, _all_ of them have to behave
+ * When multiple sync sources are active, @b all of them have to behave
  * alike (which is how the tests are constructed).
  *
  * No item is ever supposed to fail.
@@ -358,20 +360,21 @@ class ClientTest {
      * in LOG has been set up already for the synchronization run
      * and should not be changed by the client.
      *
-     * @param sources      a -1 terminated array of sync source indices
+     * @param activeSources a -1 terminated array of sync source indices
      * @param syncMode     the synchronization mode to be used
      * @param checkReport  has to be called after a successful or unsuccessful sync,
      *                     will dump the report and (optionally) check the result;
      *                     beware, the later may throw exceptions inside CPPUNIT macros
      * @param maxMsgSize   >0: enable the maximum message size, else disable it
      * @param maxObjSize   same as maxMsgSize for maximum object size
+     * @param loSupport    if TRUE, then the sync is expected to enable Large Object support
      * @param encoding     if non-empty, then let client library transform all items
      *                     into this format (guaranteed to be not NULL)
      *
      * @return - 0 on success, an error otherwise (may also throw an exception)
      */
     virtual int sync(
-        const int *sources,
+        const int *activeSources,
         SyncMode syncMode,
         const CheckSyncReport &checkReport,
         long maxMsgSize = 0,
@@ -421,5 +424,7 @@ class ClientTest {
                                   _actual )
 
 #endif // ENABLE_INTEGRATION_TESTS
+
+/** @} */
 /** @endcond */
 #endif // INCL_TESTSYNCCLIENT

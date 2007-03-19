@@ -18,7 +18,9 @@
 
 #ifndef INCL_SYNC_MANAGER
 #define INCL_SYNC_MANAGER
-/** @cond DEV */
+/** @cond API */
+/** @addtogroup Client */
+/** @{ */
 
 #include "base/util/ArrayList.h"
 #include "http/TransportAgent.h"
@@ -50,13 +52,13 @@ typedef enum {
 static void fillContentTypeInfoList(ArrayList &l, const char*  types);
 
 
-//
-// This is the core class which encodes the flow of messages between
-// client and server throughout a session. It is configured via the
-// DMTClientConfig with which it is constructed by the
-// SyncClient::setDMConfig() and the (optional) DevInf provided
-// to it by the client.
-//
+/**
+ * This is the core class which encodes the flow of messages between
+ * client and server throughout a session. It is configured via the
+ * DMTClientConfig with which it is constructed by the
+ * SyncClient::setDMConfig() and the (optional) DevInf provided
+ * to it by the client.
+ */
 class SyncManager {
 
     public:
@@ -67,7 +69,7 @@ class SyncManager {
          * @param config     required configuration
          * @param report     sync report reference to store sync results
          */
-        SyncManager(SyncManagerConfig& c, SyncReport& report) EXTRA_SECTION_01;
+        SyncManager(SyncManagerConfig& config, SyncReport& report) EXTRA_SECTION_01;
         ~SyncManager() EXTRA_SECTION_01;
 
         int prepareSync(SyncSource** sources) EXTRA_SECTION_01;
@@ -202,6 +204,7 @@ class SyncManager {
         SyncItem* getItem(SyncSource& source, SyncItem* (SyncSource::* getItem)());
 };
 
+/** @} */
 /** @endcond */
 #endif
 

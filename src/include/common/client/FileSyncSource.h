@@ -18,7 +18,9 @@
 
 #ifndef INCL_FILE_SYNC_SOURCE
 #define INCL_FILE_SYNC_SOURCE
-/** @cond DEV */
+/** @cond API */
+/** @addtogroup Client */
+/** @{ */
 
 #include "base/fscapi.h"
 #include "spds/constants.h"
@@ -34,6 +36,13 @@
 #define ERR_NO_FILES_TO_SYNC        2
 #define ERR_BAD_FILE_CONTENT        3
 
+/**
+ * Synchronizes the content of files in a certain directory and the
+ * file attributes using a certain XML format.
+ *
+ * @todo document what that XML format is
+ * @todo updateItem() is not implemented
+ */
 
 class FileSyncSource : public SyncSource {
 
@@ -60,86 +69,16 @@ protected:
     int addedItem(SyncItem& item, const WCHAR* key);
 
 public:
-    
-    void setDir(const char* p);
-    const char* getDir();
-
+    FileSyncSource(const WCHAR* name, SyncSourceConfig* sc);
+    virtual ~FileSyncSource();
 
     /**
-     * Constructor: create a SyncSource with the specified name
+     * The directory synchronized by this source.
      *
-     * @param name - the name of the SyncSource
+     * @param p      an absolute or relative path to the directory
      */
-    FileSyncSource(const WCHAR* name, SyncSourceConfig* sc);
-
-    // Destructor
-    virtual ~FileSyncSource();
-    
-    /*
-     * Return the first SyncItem of all.
-     * It is used in case of slow or refresh sync 
-     * and retrieve the entire data source content.
-     */
-    SyncItem* getFirstItem() { return getFirst(allItems); }
-
-    /*
-     * Return the next SyncItem of all.
-     * It is used in case of slow or refresh sync 
-     * and retrieve the entire data source content.
-     */
-    SyncItem* getNextItem() { return getNext(allItems); }
-
-    /*
-     * Return the first SyncItem of new one. It is used in case of fast sync 
-     * and retrieve the new data source content.
-     */
-    SyncItem* getFirstNewItem() { return getFirst(newItems); }
-
-    /*
-     * Return the next SyncItem of new one. It is used in case of fast sync 
-     * and retrieve the new data source content.
-     */
-    SyncItem* getNextNewItem() { return getNext(newItems); }
-
-    /*
-     * Return the first SyncItem of updated one. It is used in case of fast sync 
-     * and retrieve the new data source content.
-     */
-    SyncItem* getFirstUpdatedItem() { return getFirst(updatedItems); }
-
-    /*
-     * Return the next SyncItem of updated one. It is used in case of fast sync 
-     * and retrieve the new data source content.
-     */
-    SyncItem* getNextUpdatedItem() { return getNext(updatedItems); }
-
-    /*
-     * Return the first SyncItem of updated one. It is used in case of fast sync 
-     * and retrieve the new data source content.
-     */
-    SyncItem* getFirstDeletedItem() { return getFirst(deletedItems, FALSE); }
-
-    /*
-     * Return the next SyncItem of updated one. It is used in case of fast sync 
-     * and retrieve the new data source content.
-     */
-    SyncItem* getNextDeletedItem() { return getNext(deletedItems, FALSE); }
-    
-    SyncItem* getFirstItemKey() { return getFirst(allItems, FALSE); }
-    SyncItem* getNextItemKey() { return getNext(allItems, FALSE); }
-
-
-    int addItem(SyncItem& item);
-    int updateItem(SyncItem& item);
-    int deleteItem(SyncItem& item);
-   
-    void setItemStatus(const WCHAR* key, int status);
-
-    int beginSync();
-    int endSync();
-
-    void assign(FileSyncSource& s);
-    ArrayElement* clone();
+    void setDir(const char* p);
+    const char* getDir();
 
     /**
      * Tracking changes requires persistent storage: for each item sent
@@ -153,6 +92,27 @@ public:
      */
     void setFileNode(ManagementNode *mn) { fileNode = mn; }
     ManagementNode *getFileNode() { return fileNode; }
+
+    /* SyncSource interface implementations follow */
+    
+    SyncItem* getFirstItem() { return getFirst(allItems); }
+    SyncItem* getNextItem() { return getNext(allItems); }
+    SyncItem* getFirstNewItem() { return getFirst(newItems); }
+    SyncItem* getNextNewItem() { return getNext(newItems); }
+    SyncItem* getFirstUpdatedItem() { return getFirst(updatedItems); }
+    SyncItem* getNextUpdatedItem() { return getNext(updatedItems); }
+    SyncItem* getFirstDeletedItem() { return getFirst(deletedItems, FALSE); }
+    SyncItem* getNextDeletedItem() { return getNext(deletedItems, FALSE); }
+    SyncItem* getFirstItemKey() { return getFirst(allItems, FALSE); }
+    SyncItem* getNextItemKey() { return getNext(allItems, FALSE); }
+    int addItem(SyncItem& item);
+    int updateItem(SyncItem& item);
+    int deleteItem(SyncItem& item);
+    void setItemStatus(const WCHAR* key, int status);
+    int beginSync();
+    int endSync();
+    void assign(FileSyncSource& s);
+    ArrayElement* clone();
 
   private:
     // Lists of all, new, update and deleted items
@@ -172,5 +132,6 @@ public:
     SyncItem* getNext(ItemIteratorContainer& container, BOOL getData = TRUE);
 };
 
+/** @} */
 /** @endcond */
 #endif

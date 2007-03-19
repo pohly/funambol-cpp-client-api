@@ -18,7 +18,9 @@
 
 #ifndef INCL_SYNCREPORT
 #define INCL_SYNCREPORT
-/** @cond DEV */
+/** @cond API */
+/** @addtogroup Client */
+/** @{ */
 
 #include "base/fscapi.h"
 #include "base/Log.h"
@@ -34,8 +36,7 @@
 #define SERVER      "Server"
 
 
-/*
- * ------------------------- SyncReport Class ---------------------------
+/**
  * The SyncReport class is used to summarize all results of a single synchronization. 
  * During the synchronization process, all results about different operations 
  * are stored in a SyncReport object, so the client will be able to get these 
@@ -80,19 +81,33 @@ public:
     SyncReport(SyncManagerConfig& config);
     virtual ~SyncReport();
 
+    /**
+     * Returns the last error code for the whole sync;
+     * there are other error codes attached to each
+     * sync source.
+     */
     const int          getLastErrorCode()         const;
+
+    /**
+     * the error description corresponding to getLastErrorCode(),
+     * might be NULL even if an error occurred
+     */
     const char*        getLastErrorMsg()          const;
+
+    /** returns number of sync source reports stored in this report */
     const unsigned int getSyncSourceReportCount() const;
 
     void setLastErrorCode(const int code);
     void setLastErrorMsg (const char* msg);
 
-    // Return pointer to internal SyncSourceReport object given the source name or index
+    /** return pointer to internal SyncSourceReport object given the source name */
     SyncSourceReport* getSyncSourceReport(const char* name)   const;
+
+    /** return pointer to internal SyncSourceReport object given its index (>=0, < getSyncSourceReportCount()) */
     SyncSourceReport* getSyncSourceReport(unsigned int index) const;
     
 
-    /*
+    /**
      * Create ssReport array from config.
      * The array is allocated new, will be freed in the desctructor.
      * SyncSourceReports are all owned here by SyncReport, each 
@@ -114,7 +129,7 @@ public:
      */
     void toString(StringBuffer &str, BOOL verbose = FALSE);
 
-    /*
+    /**
      * Assign operator
      */
     SyncReport& operator = (const SyncReport& sr) {
@@ -123,6 +138,7 @@ public:
     }
 };
 
+/** @} */
 /** @endcond */
 #endif
 
