@@ -1888,7 +1888,7 @@ int SyncManager::assignSources(SyncSource** srclist) {
         const char* name = srclist[i]->getConfig().getName();
         // Check valid report
         if ( !srclist[i]->getReport() ) {
-            LOG.error("No SyncSourceReport for source: ", name);
+            LOG.error("No SyncSourceReport for source: %s", name);
             continue;
         }
         // Check valid config
