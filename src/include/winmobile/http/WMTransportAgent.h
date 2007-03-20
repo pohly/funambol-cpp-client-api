@@ -52,8 +52,6 @@
 
 /** Max number of attempts sending http requests. */
 #define MAX_RETRIES             3
-/** 10 minutes to receive a rensponse from server. */
-#define MAX_SERVER_TIMEOUT      10
 /** Number of bytes for the InternetReadFile() buffer. */
 #define BUFFER_READ_BLOCK       5000
 

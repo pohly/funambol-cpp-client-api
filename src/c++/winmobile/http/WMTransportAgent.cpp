@@ -77,6 +77,7 @@ WMTransportAgent::WMTransportAgent(URL& newURL, Proxy& newProxy,
     } else {
         setTimeout(maxResponseTimeout);
     }
+    readBufferSize = DEFAULT_INTERNET_READ_BUFFER_SIZE;
 
 #ifdef USE_ZLIB
     isToDeflate = FALSE;
@@ -110,7 +111,7 @@ WMTransportAgent::~WMTransportAgent(){}
 char* WMTransportAgent::sendMessage(const char* msg) {
 
     ENTERING(L"TransportAgent::sendMessage");
-    char bufferA[5000+1];
+    char bufferA[DEFAULT_INTERNET_READ_BUFFER_SIZE+1];
     int status = -1;
     unsigned int contentLength = 0;
     WCHAR* wurlHost;
@@ -158,9 +159,9 @@ char* WMTransportAgent::sendMessage(const char* msg) {
     //
     // Open Internet connection.
     //
-	WCHAR* ua = toWideChar(userAgent);
-    inet = InternetOpen (ua, INTERNET_OPEN_TYPE_PRECONFIG, NULL, 0, 0);
-	if (ua) {delete [] ua; ua = NULL; }
+    WCHAR* ua = toWideChar(userAgent);
+    inet = InternetOpen(ua, INTERNET_OPEN_TYPE_PRECONFIG, NULL, 0, 0);
+    if (ua) {delete [] ua; ua = NULL; }
 
     if (!inet) {
         lastErrorCode = ERR_NETWORK_INIT;
@@ -261,10 +262,9 @@ char* WMTransportAgent::sendMessage(const char* msg) {
 #endif
 
 
-    // Timeout to receive a rensponse from server = 10 min.
-    DWORD timeout = MAX_SERVER_TIMEOUT *60*1000;
-    InternetSetOption(request, INTERNET_OPTION_RECEIVE_TIMEOUT, &timeout, sizeof(DWORD));
-
+    // Set response timeout
+    DWORD respTOut = getTimeout()*1000;
+    InternetSetOption(request, INTERNET_OPTION_RECEIVE_TIMEOUT, &respTOut, sizeof(DWORD));
 
     //
     // Try MAX_RETRIES times to send http request, in case of network errors
@@ -336,7 +336,6 @@ char* WMTransportAgent::sendMessage(const char* msg) {
             sprintf(lastErrorMsg, "HTTP request error: resource not found (status %d)", status);
         }
         else {
-            lastErrorCode = ERR_HTTP;
             DWORD code = GetLastError();
             sprintf(lastErrorMsg, "HTTP request error (status received = %d): code %d", status, code);
         }
@@ -428,8 +427,8 @@ char* WMTransportAgent::sendMessage(const char* msg) {
         goto exit;
     }
     memset(response, 0, contentLength);
-	p = response;
-    (*p) = 0;
+    p = response;
+    
     int realResponseLenght = 0;
 
     // Fire Data Received Transport Event.
@@ -441,7 +440,7 @@ char* WMTransportAgent::sendMessage(const char* msg) {
             lastErrorCode = ERR_READING_CONTENT;
             sprintf(lastErrorMsg, "InternetReadFile Error: %d", code);
             goto exit;
-		}
+	}
 
         // Sanity check: some proxy could send additional bytes.
             // Correct 'read' value to be sure we won't overflow the 'response' buffer.
