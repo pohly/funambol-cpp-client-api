@@ -207,6 +207,8 @@ char* Win32TransportAgent::sendMessage(const char* msg) {
 
 
 #ifdef USE_ZLIB
+    Bytef* compr = NULL;
+
     //
     // Say the client can accept the zipped content but the first message is clear
     //
@@ -220,14 +222,14 @@ char* Win32TransportAgent::sendMessage(const char* msg) {
         // DEFLATE (compress data)
         //
         uLong comprLen = contentLength;
-        Bytef* compr = new Bytef[contentLength];
+        compr = new Bytef[contentLength];
 
         // Compresses the source buffer into the destination buffer.
         int err = compress(compr, &comprLen, (Bytef*)msg, contentLength);
         if (err != Z_OK) {
             lastErrorCode = ERR_HTTP_DEFLATE;
             sprintf(lastErrorMsg, "ZLIB: error occurred compressing data.");
-            delete [] compr;  
+            delete [] compr;
             compr = NULL;
             goto exit;
         }            
@@ -392,6 +394,13 @@ char* Win32TransportAgent::sendMessage(const char* msg) {
 
 
 #ifdef USE_ZLIB 
+
+    if (compr) {
+        // Delete the compressed message sent.
+        delete [] compr;
+        compr = NULL;
+    }
+
     //
     // Read headers: get contentLenght/Uncompressed-Content-Length.
     //
@@ -547,11 +556,9 @@ exit:
     if (inet) {
         InternetCloseHandle (inet);
     }
-
     if (connection) {
         InternetCloseHandle (connection);
     }
-
     if (request) {
         InternetCloseHandle (request);
     }
