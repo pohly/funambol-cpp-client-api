@@ -52,8 +52,6 @@
 
 /** Max number of attempts sending http requests. */
 #define MAX_RETRIES             3
-/** Number of bytes for the InternetReadFile() buffer. */
-#define BUFFER_READ_BLOCK       5000
 
 // FIXME: should these go to http/errors.h ?
 #define ERR_HTTP_TIME_OUT       ERR_TRANSPORT_BASE+ 7

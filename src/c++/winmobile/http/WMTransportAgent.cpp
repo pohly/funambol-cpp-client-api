@@ -50,8 +50,8 @@
 #include "spdm/spdmutils.h"
 #include "event/FireEvent.h"
 
-#define ENTERING(func) //LOG.debug("Entering %ls", func);
-#define EXITING(func)  //LOG.debug("Exiting %ls", func);
+#define ENTERING(func) LOG.debug("Entering %ls", func);
+#define EXITING(func)  LOG.debug("Exiting %ls", func);
 
 
 #ifdef USE_ZLIB
@@ -66,18 +66,16 @@
  * @param url the url where messages will be sent with sendMessage()
  * @param proxy proxy information or NULL if no proxy should be used
  */
-WMTransportAgent::WMTransportAgent(URL& newURL, Proxy& newProxy, 
-				   unsigned int maxResponseTimeout, 
-				   unsigned int maxmsgsize) : TransportAgent(){
-    url = newURL;
-    proxy.setProxy(newProxy);
-
-    if (maxResponseTimeout == 0) {
-        setTimeout(DEFAULT_MAX_TIMEOUT);
-    } else {
-        setTimeout(maxResponseTimeout);
-    }
-    readBufferSize = DEFAULT_INTERNET_READ_BUFFER_SIZE;
+WMTransportAgent::WMTransportAgent(
+                    URL& newURL, Proxy& newProxy, 
+                    unsigned int maxResponseTimeout, 
+                    unsigned int maxmsgsize)
+            // Use base class constructor to initialize common attributes
+            : TransportAgent(newURL,
+                             newProxy,
+                             maxResponseTimeout,
+                             maxmsgsize)
+{
 
 #ifdef USE_ZLIB
     isToDeflate = FALSE;
@@ -111,12 +109,10 @@ WMTransportAgent::~WMTransportAgent(){}
 char* WMTransportAgent::sendMessage(const char* msg) {
 
     ENTERING(L"TransportAgent::sendMessage");
-    char bufferA[DEFAULT_INTERNET_READ_BUFFER_SIZE+1];
     int status = -1;
     unsigned int contentLength = 0;
     WCHAR* wurlHost;
     WCHAR* wurlResource;
-    char* p        = NULL;
     char* response = NULL;
     HINTERNET inet       = NULL,
               connection = NULL,
@@ -217,10 +213,16 @@ char* WMTransportAgent::sendMessage(const char* msg) {
     contentLength = strlen(msg);
 
     // Msg to send is the original msg by default.
-    void* msgToSend = (void*)msg;
-
+    // If compression is enabled, it will be switched to
+    // compr. We don't want to touch this pointer, so
+    // it's const (msg is also const).
+    const void* msgToSend = (const void*)msg;
 
 #ifdef USE_ZLIB
+    // This is the locally allocated buffer for the compressed message.
+    // Must be deleted after send.
+    Bytef* compr = NULL;
+
     //
     // Say the client can accept the zipped content but the first message is clear
     //
@@ -239,28 +241,24 @@ char* WMTransportAgent::sendMessage(const char* msg) {
         // Compresses the source buffer into the destination buffer.
         int err = compress(compr, &comprLen, (Bytef*)msg, contentLength);
             if (err != Z_OK) {
-            lastErrorCode = ERR_HTTP_DEFLATE;
-            sprintf(lastErrorMsg, "ZLIB: error occurred compressing data.");
-            delete [] compr;  
-            compr = NULL;
+                lastErrorCode = ERR_HTTP_DEFLATE;
+                sprintf(lastErrorMsg, "ZLIB: error occurred compressing data.");
+                delete [] compr;  
+                compr = NULL;
                 goto exit;
             }            
 
         // Msg to send is the compressed data.
-        msgToSend = (void*)compr;
+        msgToSend = (const void*)compr;
         int uncomprLenght = contentLength;
         contentLength = comprLen;
 
         wsprintf(headers, TEXT("Content-Type: %s\r\nContent-Length: %d\r\nAccept-Encoding: deflate\r\nUncompressed-Content-Length: %d\r\nContent-Encoding: deflate"),
                           SYNCML_CONTENT_TYPE, contentLength, uncomprLenght);                                    
     }
-#endif
-
-
-#ifndef USE_ZLIB
+#else
     wsprintf(headers, TEXT("Content-Type: %s\r\nContent-Length: %d"), SYNCML_CONTENT_TYPE, contentLength);
 #endif
-
 
     // Set response timeout
     DWORD respTOut = getTimeout()*1000;
@@ -275,10 +273,12 @@ char* WMTransportAgent::sendMessage(const char* msg) {
         fireTransportEvent(contentLength, SEND_DATA_BEGIN);
 
         // Send a request to the HTTP server.
-        if (!HttpSendRequest (request, headers, wcslen(headers), msgToSend, contentLength)) {
+        if (!HttpSendRequest(request, headers, wcslen(headers),
+                             (LPVOID)msgToSend, contentLength)) {
             DWORD code = GetLastError();
 
-            LOG.info("Network error writing data from client: retry %i time...", numretries + 1);
+            LOG.info("Network error (%d) writing data from client: retry %i time...",
+                     code, numretries + 1);
 
             continue;
         }
@@ -351,12 +351,18 @@ char* WMTransportAgent::sendMessage(const char* msg) {
                    NULL);
 
 
-
 #ifdef USE_ZLIB 
+    // Release the send buffer (also set msgToSend to NULL, to 
+    // avoid leaving a dangling pointer around.
+    if (compr) {
+        delete [] compr; compr = NULL;
+        msgToSend = NULL;
+    }
+
     //
     // Read headers: get contentLenght/Uncompressed-Content-Length.
     //
-    int uncompressedContentLenght = 0;
+    long uncompressedContentLenght = 0;
     wchar_t* wbuffer = new wchar_t[1024];
     DWORD ddsize = 1024;
     if (!HttpQueryInfo(request,HTTP_QUERY_RAW_HEADERS_CRLF ,(LPVOID)wbuffer,&ddsize,NULL)) {
@@ -370,17 +376,15 @@ char* WMTransportAgent::sendMessage(const char* msg) {
     // isToDeflate to be set
     DWORD dwSize = 512;
     wchar_t* buffer = new wchar_t[dwSize];     
-    memset(buffer, 0, dwSize*sizeof(wchar_t));
                    
     wcscpy(buffer, TEXT("Accept-Encoding"));
     HttpQueryInfo(request,HTTP_QUERY_CUSTOM,(LPVOID)buffer,&dwSize,NULL);
-    if (ERROR_HTTP_HEADER_NOT_FOUND == GetLastError()) {
+    if (GetLastError() == ERROR_HTTP_HEADER_NOT_FOUND) {
         isToDeflate = FALSE;
     } else {
         isToDeflate = TRUE;
     }	
     
-    memset(buffer, 0, dwSize*sizeof(wchar_t));
     wcscpy(buffer, TEXT("Content-Encoding"));
     HttpQueryInfo(request,HTTP_QUERY_CUSTOM,(LPVOID)buffer,&dwSize,NULL);
     if (GetLastError() == ERROR_HTTP_HEADER_NOT_FOUND) {
@@ -392,33 +396,43 @@ char* WMTransportAgent::sendMessage(const char* msg) {
             isToInflate = FALSE;
     }
 
-    memset(buffer, 0, dwSize*sizeof(wchar_t));
-    wcscpy(buffer, TEXT("Uncompressed-Content-Length"));
+    if(isToInflate) {
+        wcscpy(buffer, TEXT("Uncompressed-Content-Length"));
+        HttpQueryInfo(request,HTTP_QUERY_CUSTOM,(LPVOID)buffer,&dwSize,NULL);
+        if (GetLastError() == ERROR_HTTP_HEADER_NOT_FOUND) {
+            LOG.error("Error reading 'Uncompressed-Content-Length' header. "
+                      "Can't inflate data.");
+            status = ERR_HTTP_INFLATE;
+            lastErrorCode = ERR_HTTP_INFLATE;
+            goto exit;
 
-    HttpQueryInfo(request,HTTP_QUERY_CUSTOM,(LPVOID)buffer,&dwSize,NULL);
-    if (GetLastError() == ERROR_HTTP_HEADER_NOT_FOUND) {
-        isToInflate = FALSE;
-    } else {
-        uncompressedContentLenght = wcstol(buffer, NULL, 10);
-    }	        	
+        } else {
+            uncompressedContentLenght = wcstol(buffer, NULL, 10);
+            LOG.debug("Uncompressed-Content-Length: %ld", uncompressedContentLenght);
+            if(uncompressedContentLenght < 0) {
+                LOG.error("Invalid 'Uncompressed-Content-Length' header. "
+                          "Can't inflate data.");
+                status = ERR_HTTP_INFLATE;
+                lastErrorCode = ERR_HTTP_INFLATE;
+                goto exit;
+            }
+        }
+    }
 
     delete [] buffer;
     buffer = NULL;
 #endif
 
 
-//
-// ====================================== Reading Response ======================================
-//
+// ================================== Reading Response ==============================
     LOG.debug(READING_RESPONSE);
-    LOG.debug("Content-length: %d", contentLength);
+    LOG.debug("Content-length: %u", contentLength);
 	
     if (contentLength <= 0) {
-        LOG.debug("Undefined content-length = %d. Using the maxMsgSize = %d.", contentLength, maxmsgsize);
+        LOG.debug("Undefined content-length = %u. Using the maxMsgSize = %u.", contentLength, maxmsgsize);
         contentLength = maxmsgsize;
     }
 
-    // Allocate a block of memory for response read.
     response = new char[contentLength+1];
     if (response == NULL) {
         lastErrorCode = ERR_NOT_ENOUGH_MEMORY;
@@ -427,15 +441,19 @@ char* WMTransportAgent::sendMessage(const char* msg) {
         goto exit;
     }
     memset(response, 0, contentLength);
-    p = response;
-    
+
+    char* p = response;
     int realResponseLenght = 0;
+    // Allocate a block of memory for response read.
+    const unsigned int bufsize = getReadBufferSize();
+    char* bufferA = new char[bufsize+1];
 
     // Fire Data Received Transport Event.
     fireTransportEvent(contentLength, RECEIVE_DATA_BEGIN);
 
+
     do {
-        if (!InternetReadFile(request, (LPVOID)bufferA, BUFFER_READ_BLOCK, &read)) {
+        if (!InternetReadFile(request, (LPVOID)bufferA, bufsize, &read)) {
             DWORD code = GetLastError();
             lastErrorCode = ERR_READING_CONTENT;
             sprintf(lastErrorMsg, "InternetReadFile Error: %d", code);
@@ -443,14 +461,14 @@ char* WMTransportAgent::sendMessage(const char* msg) {
 	}
 
         // Sanity check: some proxy could send additional bytes.
-            // Correct 'read' value to be sure we won't overflow the 'response' buffer.
+        // Correct 'read' value to be sure we won't overflow the 'response' buffer.
         if ((realResponseLenght + read) > contentLength) {
             LOG.debug("Warning! %d bytes read -> truncating data to content-lenght = %d.", (realResponseLenght + read), contentLength);
             read = contentLength - realResponseLenght;
         }
 
         if (read > 0) {
-            memcpy(p, bufferA, read);               // Note: memcopy exactly the bytes read (could be no readable chars...)
+            memcpy(p, bufferA, read);    // Note: memcopy exactly the bytes read (could be no readable chars...)
             p += read;
             realResponseLenght += read;
 
@@ -459,6 +477,9 @@ char* WMTransportAgent::sendMessage(const char* msg) {
         }
 
     } while (read);
+
+    // free read buffer
+    delete [] bufferA; bufferA = 0;
 
     if (realResponseLenght <= 0) {
         lastErrorCode = ERR_READING_CONTENT;
@@ -472,6 +493,7 @@ char* WMTransportAgent::sendMessage(const char* msg) {
     // Fire Receive Data End Transport Event
     fireTransportEvent(contentLength, RECEIVE_DATA_END);
 
+    //------------------------------------------------------------- Response read
 
 #ifdef USE_ZLIB
     if (isToInflate) {
@@ -492,6 +514,7 @@ char* WMTransportAgent::sendMessage(const char* msg) {
         else if (err < 0) {
             delete [] response;
             response = NULL;
+            status = ERR_HTTP_INFLATE;
             lastErrorCode = ERR_HTTP_INFLATE;
             sprintf(lastErrorMsg, "ZLIB: error occurred decompressing data from Server.");
             goto exit;
@@ -515,11 +538,18 @@ exit:
         InternetCloseHandle (request);
     }
 
-    if ((status != STATUS_OK) && (response !=NULL)) {
+    if ((status != STATUS_OK) && (response != NULL)) {
         delete [] response; response = NULL;
     }
     if (wurlHost)     delete [] wurlHost;
     if (wurlResource) delete [] wurlResource;
+    if (bufferA)      delete [] bufferA;
+
+#ifdef USE_ZLIB
+    if (compr)        delete [] compr;
+    if (buffer)       delete [] buffer;
+    if (wbuffer)      delete [] wbuffer;
+#endif
 
     EXITING(L"TransportAgent::sendMessage");
 

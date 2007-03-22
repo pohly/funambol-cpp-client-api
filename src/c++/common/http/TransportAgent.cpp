@@ -23,13 +23,20 @@
 TransportAgent::TransportAgent() {
     timeout = DEFAULT_MAX_TIMEOUT;
     maxmsgsize = DEFAULT_MAX_MSG_SIZE;
+    readBufferSize = DEFAULT_INTERNET_READ_BUFFER_SIZE;
     userAgent[0] = 0;
 }
 
-TransportAgent::TransportAgent(URL& newURL, Proxy& proxy, unsigned int timeout, unsigned int maxmsgsize) {
-    url     = newURL ;
+TransportAgent::TransportAgent(URL& newURL,
+                               Proxy& newProxy,
+                               unsigned int timeout,
+                               unsigned int maxmsgsize) {
+
+    url = newURL;
+    proxy.setProxy(newProxy);
     timeout = timeout;
     maxmsgsize  = maxmsgsize;
+    readBufferSize = DEFAULT_INTERNET_READ_BUFFER_SIZE;
     userAgent[0] = 0;
 }
 

@@ -30,10 +30,10 @@
         char*  protocol;
         char*  host    ;
         char*  resource;
-        int      port    ;
+        int    port    ;
 
         URL() EXTRA_SECTION_03;
-        URL(const char*  url) EXTRA_SECTION_03;
+        URL(const char* url) EXTRA_SECTION_03;
         ~URL() EXTRA_SECTION_03;
 
         void setURL(URL& url) EXTRA_SECTION_03;

@@ -31,13 +31,14 @@
      * This is a factory class for the platform specific TransportAgent.
      * It must be specifically implemented for any classes
      */
-
     class TransportAgentFactory {
 
         public:
-            static TransportAgent* getTransportAgent(URL& url, Proxy& proxy, 
-                                                     unsigned int responseTimeout = DEFAULT_MAX_TIMEOUT, 
-                                                     unsigned int maxmsgsize = DEFAULT_MAX_MSG_SIZE) EXTRA_SECTION_03;
+            static TransportAgent* getTransportAgent(
+                                        URL& url,
+                                        Proxy& proxy, 
+                                        unsigned int responseTimeout = DEFAULT_MAX_TIMEOUT, 
+                                        unsigned int maxmsgsize = DEFAULT_MAX_MSG_SIZE) EXTRA_SECTION_03;
     };
 
 /** @endcond */
