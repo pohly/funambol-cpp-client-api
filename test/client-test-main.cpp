@@ -82,7 +82,7 @@ public:
         struct sigaction action;
         memset(&action, 0, sizeof(action));
         action.sa_handler = alarmTriggered;
-        action.sa_flags = SA_NOMASK;
+        action.sa_flags = SA_NODEFER;
         sigaction(SIGALRM, &action, NULL);
 #endif
     }
