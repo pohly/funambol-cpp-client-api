@@ -38,7 +38,6 @@ SyncCap::~SyncCap() {
  *
  */
 SyncCap::SyncCap(ArrayList* syncTypes) {
-    this->syncType = new ArrayList();
     this->syncType = syncTypes->clone();
 }
     

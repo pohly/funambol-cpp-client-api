@@ -763,6 +763,7 @@ finally:
     deleteSyncML(&syncml);
     deleteCred(&cred);
     deleteAlert(&alert);
+    deleteArrayList(&alerts);
     deleteStatus(&status);
     deleteChal(&serverChal);    
     return ret;
@@ -1629,7 +1630,6 @@ int SyncManager::endSync() {
     int ret                 = 0;   
     Map* map                = NULL;
     Status* status          = NULL;
-    ArrayList* list         = new ArrayList();
     unsigned int iterator   = 0;
     unsigned int toSync     = 0;
     int i = 0, tot = -1;

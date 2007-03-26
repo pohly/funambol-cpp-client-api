@@ -54,14 +54,13 @@ int SyncMLProcessor::processSyncHdrStatus(SyncML* syncml) {
 int SyncMLProcessor::processAlertStatus(SyncSource& source, SyncML* syncml, ArrayList* alerts) {
 
     int ret = -1;
-    ArrayList* list     = new ArrayList();
     const char* name = NULL;
     Status* s     = NULL;
     Data* data    = NULL;
     SourceRef* sourceRef    = NULL;
 
     if (alerts->size()) {
-        list = syncml->getSyncBody()->getCommands();
+        ArrayList* list = syncml->getSyncBody()->getCommands();
         
         for (int i = 0; i < list->size(); i++) {
             // is returned the pointer to the element not a new element
@@ -110,7 +109,6 @@ int SyncMLProcessor::processServerAlert(SyncSource& source, SyncML* syncml) {
     int iterator        = 0;
     AbstractCommand* a  = NULL;   
     Item* item          = NULL;
-    ArrayList* list     = new ArrayList();
     BOOL found          = FALSE;    
 
     ret = 0;
@@ -167,8 +165,7 @@ char** SyncMLProcessor::getSortedSourcesFromServer(SyncML* syncml, int sourcesNu
     char** sourceList = new char*[sourcesNumber+1];
     int iterator        = 0;
     AbstractCommand* a  = NULL;   
-    Item* item          = NULL;
-    ArrayList* list     = new ArrayList();  
+    Item* item          = NULL;  
 
     do {
         a = getCommand(syncml->getSyncBody(), ALERT, iterator);                   
@@ -591,13 +588,12 @@ finally:
  int SyncMLProcessor::getAlertStatusCode(Status* s, const char* sourceName) {
     int ret = -1;
     
-    Data* data    = NULL;
-    ArrayList* sourceRefs = new ArrayList();
+    Data* data = NULL;
     
     if (s == NULL)
         goto finally;
 
-    sourceRefs = s->getSourceRef();
+    ArrayList* sourceRefs = s->getSourceRef();
     if (strcmp(((SourceRef*)(sourceRefs->get(0)))->getValue(), sourceName) == 0) {                    
         data = s->getData();
         if (data->getData() == NULL) {
