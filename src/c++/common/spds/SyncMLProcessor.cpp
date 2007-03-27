@@ -585,15 +585,15 @@ finally:
  * @param sourceName - the name of the source
  */
 
- int SyncMLProcessor::getAlertStatusCode(Status* s, const char* sourceName) {
+int SyncMLProcessor::getAlertStatusCode(Status* s, const char* sourceName) {
     int ret = -1;
-    
-    Data* data = NULL;
-    
-    if (s == NULL)
-        goto finally;
+    if (s == NULL) {
+        return ret;
+    }
 
+    Data* data = NULL;
     ArrayList* sourceRefs = s->getSourceRef();
+ 
     if (strcmp(((SourceRef*)(sourceRefs->get(0)))->getValue(), sourceName) == 0) {                    
         data = s->getData();
         if (data->getData() == NULL) {
@@ -602,14 +602,10 @@ finally:
             //
             sprintf(lastErrorMsg, "Status/Data not found!");
             lastErrorCode = ERR_REPRESENTATION;
-            goto finally;
+            return ret;
         }
         ret = strtol(data->getData(), NULL, 10);        
     }                
-
-finally:
-    return ret;
-
 }
 
 /*
