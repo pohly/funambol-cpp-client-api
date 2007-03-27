@@ -74,6 +74,8 @@ Win32TransportAgent::Win32TransportAgent(URL& newURL, Proxy& newProxy,
          setTimeout(maxResponseTimeout);
      }
 
+     readBufferSize = DEFAULT_INTERNET_READ_BUFFER_SIZE;
+
      isToDeflate    = FALSE;
      isFirstMessage = TRUE;
      isToInflate    = FALSE;
@@ -92,7 +94,7 @@ Win32TransportAgent::~Win32TransportAgent(){}
 char* Win32TransportAgent::sendMessage(const char* msg) {
 
     ENTERING(L"TransportAgent::sendMessage");
-    char bufferA[BUFFER_READ_BLOCK+1];
+    char* bufferA = new char[readBufferSize+1];
     int status = -1;
     unsigned int contentLength = 0;
     WCHAR* wurlHost;
@@ -250,9 +252,9 @@ char* Win32TransportAgent::sendMessage(const char* msg) {
 #endif
 
 
-    // Timeout to receive a rensponse from server = 10 min.
-    DWORD timeout = MAX_SERVER_TIMEOUT *60*1000;
-    InternetSetOption(request, INTERNET_OPTION_RECEIVE_TIMEOUT, &timeout, sizeof(DWORD));
+    // Timeout to receive a rensponse from server (default = 5 min).
+    DWORD timeoutMsec = timeout*1000;
+    InternetSetOption(request, INTERNET_OPTION_RECEIVE_TIMEOUT, &timeoutMsec, sizeof(DWORD));
 
 
     //
@@ -483,7 +485,7 @@ char* Win32TransportAgent::sendMessage(const char* msg) {
     fireTransportEvent(contentLength, RECEIVE_DATA_BEGIN);
 
     do {
-        if (!InternetReadFile(request, (LPVOID)bufferA, BUFFER_READ_BLOCK, &read)) {
+        if (!InternetReadFile(request, (LPVOID)bufferA, readBufferSize, &read)) {
             DWORD code = GetLastError();
             lastErrorCode = ERR_READING_CONTENT;
             char* tmp = createHttpErrorMessage(code);
@@ -568,6 +570,7 @@ exit:
     }
     if (wurlHost)     delete [] wurlHost;
     if (wurlResource) delete [] wurlResource;
+    if (bufferA)      delete [] bufferA;
 
     EXITING(L"TransportAgent::sendMessage");
 

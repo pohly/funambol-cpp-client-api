@@ -52,8 +52,6 @@
 
 
 #define MAX_AUTH_ATTEMPT        5       // Max number of attempts sending http requests.
-#define MAX_SERVER_TIMEOUT      10      // 10 minutes to receive a rensponse from server.
-#define BUFFER_READ_BLOCK       5000    // [bytes] InternetReadFile() will read blocks of data.
 
 #define ERR_HTTP_NOT_FOUND      ERR_TRANSPORT_BASE+60
 #define ERR_HTTP_INFLATE        ERR_TRANSPORT_BASE+70
