@@ -21,5 +21,5 @@
 
 
 TransportAgent* TransportAgentFactory::getTransportAgent(URL& url, Proxy& proxy, unsigned int timeout, unsigned int maxmsgsize) {
-    return new Win32TransportAgent(url, proxy);
+    return new Win32TransportAgent(url, proxy, timeout, maxmsgsize);
 }
