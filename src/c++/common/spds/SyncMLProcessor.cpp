@@ -605,7 +605,9 @@ int SyncMLProcessor::getAlertStatusCode(Status* s, const char* sourceName) {
             return ret;
         }
         ret = strtol(data->getData(), NULL, 10);        
-    }                
+    }   
+
+    return ret;   
 }
 
 /*
