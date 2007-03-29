@@ -33,7 +33,9 @@
  * ClientTest class (see ClientTest::getSourceConfig() for more
  * information):
  * - vcard30 = vCard 3.0 contacts
+ * - vcard21 = vCard 2.1 contacts
  * - ical20 = iCalendar 2.0 calendar events
+ * - vcal10 = vCalendar 1.0 calendar events
  * - itodo20 = iCalendar 2.0 tasks
  *
  * Configuration is done by environment variables which indicate which
@@ -53,7 +55,7 @@
  *
  * For example, on Linux running
  * @verbatim
-CLIENT_TEST_SERVER=funambol CLIENT_TEST_SOURCES=vcard30,ical20 ./client-test
+CLIENT_TEST_SERVER=funambol CLIENT_TEST_SOURCES=vcard21,vcal10 ./client-test
 @endverbatim
  *
  * expects the following configuration layout:
@@ -62,8 +64,8 @@ CLIENT_TEST_SERVER=funambol CLIENT_TEST_SOURCES=vcard30,ical20 ./client-test
                       funambol_1/spds/
                                       syncml/config.text
                                       sources/
-                                              vcard30/config.txt
-                                              ical20/config.txt
+                                              vcard21/config.txt
+                                              vcal10/config.txt
                       funambol_1/spds/
                                       <same as for funambol_1>
 @endverbatim
@@ -85,7 +87,7 @@ CLIENT_TEST_SERVER=funambol CLIENT_TEST_SOURCES=vcard30,ical20 ./client-test
  * @verbatim
 CLIENT_TEST_SERVER=funambol \
 CLIENT_TEST_LOG=/opt/Funambol-3.0/ds-server/logs/funambol_ds.log \
-CLIENT_TEST_SOURCES=vcard30 \
+CLIENT_TEST_SOURCES=vcard21 \
    ./client-test
 @endverbatim
  *
