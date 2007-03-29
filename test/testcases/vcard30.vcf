@@ -1,5 +1,14 @@
 BEGIN:VCARD
 VERSION:3.0
+NICKNAME:user17
+NOTE:triggers parser bug in Funambol 3.0: trailing = is mistaken for soft line break=
+FN:parserbug=
+N:parserbug=
+X-EVOLUTION-FILE-AS:parserbug=
+END:VCARD
+
+BEGIN:VCARD
+VERSION:3.0
 NICKNAME:user16
 NOTE:test case with empty email
 FN:incomplete
