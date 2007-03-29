@@ -20,6 +20,7 @@
 
 use strict;
 use encoding 'utf8';
+use Algorithm::Diff;
 
 # ignore differences caused by specific servers?
 my $server = $ENV{CLIENT_TEST_SERVER} || "funambol";
@@ -36,9 +37,10 @@ sub Usage {
   print "Also works for iCalendar files.\n";
 }
 
+# parameters: file handle with input, width to use for reformatted lines
+# returns list of lines without line breaks
 sub Normalize {
   my $in = shift;
-  my $out = shift;
   my $width = shift;
 
   $_ = join( "", <$in> );
@@ -220,13 +222,13 @@ sub Normalize {
     push @items, ${$formatted[0]}[0];
   }
 
-  print $out join( "\n\n", sort @items ), "\n";
+  return split( /\n/, join( "\n\n", sort @items ));
 }
 
 # number of columns available for output:
 # try tput without printing the shells error if not found,
 # default to 80
-my $columns = `which tput >/dev/null && tput cols 2>/dev/null`;
+my $columns = `which tput >/dev/null 2>/dev/null && tput cols`;
 if ($? || !$columns) {
   $columns = 80;
 }
@@ -239,31 +241,55 @@ if($#ARGV > 1) {
   # comparison
 
   my ($file1, $file2) = ($ARGV[0], $ARGV[1]);
-  my $normal1 = `mktemp`;
-  my $normal2 = `mktemp`;
-  chomp($normal1);
-  chomp($normal2);
 
   open(IN1, "<:utf8", $file1) || die "$file1: $!";
   open(IN2, "<:utf8", $file2) || die "$file2: $!";
-  open(OUT1, ">:utf8", $normal1) || die "$normal1: $!";
-  open(OUT2, ">:utf8", $normal2) || die "$normal2: $!";
   my $singlewidth = int(($columns - 3) / 2);
   $columns = $singlewidth * 2 + 3;
-  Normalize(*IN1{IO}, *OUT1{IO}, $singlewidth);
-  Normalize(*IN2{IO}, *OUT2{IO}, $singlewidth);
+  my @normal1 = Normalize(*IN1{IO}, $singlewidth);
+  my @normal2 = Normalize(*IN2{IO}, $singlewidth);
   close(IN1);
   close(IN2);
-  close(OUT1);
-  close(OUT2);
 
   # Produce output where each line is marked as old (aka remove) with o,
   # as new (aka added) with n, and as unchanged with u at the beginning.
   # This allows simpler processing below.
-  $_ = `diff "--old-line-format=o %L" "--new-line-format=n %L" "--unchanged-line-format=u %L" "$normal1" "$normal2"`;
-  my $res = $?;
+  my $res = 0;
+  if (0) {
+    # $_ = `diff "--old-line-format=o %L" "--new-line-format=n %L" "--unchanged-line-format=u %L" "$normal1" "$normal2"`;
+    # $res = $?;
+  } else {
+    # convert into same format as diff above - this allows reusing the
+    # existing output formatting code
+    my $diffs_ref = Algorithm::Diff::sdiff(\@normal1, \@normal2);
+    @_ = ();
+    my $hunk;
+    foreach $hunk ( @{$diffs_ref} ) {
+      my ($type, $left, $right) = @{$hunk};
+      if ($type eq "-") {
+        push @_, "o $left";
+        $res = 1;
+      } elsif ($type eq "+") {
+        push @_, "n $right";
+        $res = 1;
+      } elsif ($type eq "c") {
+        push @_, "o $left";
+        push @_, "n $right";
+        $res = 1;
+      } else {
+        push @_, "u $left";
+      }
+    }
+
+    $_ = join("\n", @_);
+  }
 
   if ($res) {
+    printf "%*s | %s\n", $singlewidth, "before sync", "after sync";
+    printf "%*s <\n", $singlewidth, "removed during sync";
+    printf "%*s > %s\n", $singlewidth, "", "added during sync";
+    print "-" x $columns, "\n";
+
     # fix confusing output like:
     # BEGIN:VCARD                             BEGIN:VCARD
     #                                      >  N:new;entry
@@ -287,11 +313,21 @@ if($#ARGV > 1) {
     # n
     # n BEGIN:VCARD
     #
+    # The alternative case is also possible:
+    # o END:VCARD
+    # o 
+    # o BEGIN:VCARD
+    # o N:old;entry
+    # u END:VCARD
 
+    # case one above
     while( s/^u BEGIN:(VCARD|VCALENDAR)\n((?:^n .*\n)+?)^n BEGIN:/n BEGIN:$1\n$2u BEGIN:/m) {}
-    
-    # same for the other way around
+    # same for the other direction
     while( s/^u BEGIN:(VCARD|VCALENDAR)\n((?:^o .*\n)+?)^o BEGIN:/o BEGIN:$1\n$2u BEGIN:/m) {}
+
+    # case two
+    while( s/^o END:(VCARD|VCALENDAR)\n((?:^o .*\n)+?)^u END:/u END:$1\n$2o END:/m) {}
+    while( s/^n END:(VCARD|VCALENDAR)\n((?:^n .*\n)+?)^u END:/u END:$1\n$2n END:/m) {}
 
     # split at end of each record
     my $spaces = " " x $singlewidth;
@@ -332,8 +368,8 @@ if($#ARGV > 1) {
     }
   }
 
-  unlink($normal1);
-  unlink($normal2);
+  # unlink($normal1);
+  # unlink($normal2);
   exit($res ? 1 : 0);
 } else {
   # normalize
@@ -345,5 +381,5 @@ if($#ARGV > 1) {
     $in = *STDIN{IO};
   }
 
-  Normalize($in, *STDOUT{IO}, $columns);
+  print STDOUT join("\n", Normalize($in, $columns)), "\n";
 }

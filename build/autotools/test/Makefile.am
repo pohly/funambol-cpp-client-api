@@ -23,9 +23,21 @@ check-am check: client-test-files
 client-test-files:
 	@ [ -e synccompare.pl ] || ln -s $(srcdir)/../../../test/synccompare.pl .
 	@ [ -d testcases ] || ln -s $(srcdir)/../../../test/testcases .
+	@ [ -d Algorithm ] || ln -s $(srcdir)/../../../test/Algorithm
 
 # also install files in a test sub directory
 nobase_pkginclude_HEADERS = \
+        test/Algorithm/Artistic \
+        test/Algorithm/copyright \
+        test/Algorithm/Diff.pm \
+        test/Algorithm/README \
+	test/testcases/ical20.ics \
+	test/testcases/itodo20.ics \
+	test/testcases/vcal10.ics \
+	test/testcases/vcard21.vcf \
+	test/testcases/vcard30.vcf \
+        test/README.txt \
+        test/synccompare.pl \
 	test/ClientTest.h \
 	test/ClientTest.cpp \
 	test/client-test-main.cpp
