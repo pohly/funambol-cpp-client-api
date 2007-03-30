@@ -34,8 +34,8 @@ TransportAgent::TransportAgent(URL& newURL,
 
     url = newURL;
     proxy.setProxy(newProxy);
-    timeout = timeout;
-    maxmsgsize  = maxmsgsize;
+    this->timeout = timeout;
+    this->maxmsgsize  = maxmsgsize;
     readBufferSize = DEFAULT_INTERNET_READ_BUFFER_SIZE;
     userAgent[0] = 0;
 }
