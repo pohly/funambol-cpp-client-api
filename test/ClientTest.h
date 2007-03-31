@@ -52,7 +52,14 @@ class CheckSyncReport {
     const int clientAdded, clientUpdated, clientDeleted,
         serverAdded, serverUpdated, serverDeleted;
 
-    virtual void check(SyncReport &report) const;
+    /**
+     * checks that the sync completed as expected and throws
+     * CPPUnit exceptions if something is wrong
+     *
+     * @param res     return code from SyncClient::sync()
+     * @param report  the sync report stored in the SyncClient
+     */
+    virtual void check(int res, SyncReport &report) const;
 };
 
 /**
@@ -371,7 +378,7 @@ class ClientTest {
      * @param encoding     if non-empty, then let client library transform all items
      *                     into this format (guaranteed to be not NULL)
      *
-     * @return - 0 on success, an error otherwise (may also throw an exception)
+     * @return return code of SyncClient::sync()
      */
     virtual int sync(
         const int *activeSources,

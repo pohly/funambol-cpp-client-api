@@ -2221,12 +2221,11 @@ void ClientTest::getTestData(const char *type, Config &config)
     }
 }
 
-void CheckSyncReport::check(SyncReport &report) const
-{
-    // first dump the report - beware, this is a direct copy of code from client.cpp,
-    // needs to be refactored
-
+void CheckSyncReport::check(int res, SyncReport &report) const
+{    
+    // first dump the report
     StringBuffer str, tmp;
+
     report.toString(str, TRUE);
     str += "----------|--------CLIENT---------|--------SERVER---------|\n";
     str += "          |  NEW  |  MOD  |  DEL  |  NEW  |  MOD  |  DEL  |\n";
@@ -2235,6 +2234,8 @@ void CheckSyncReport::check(SyncReport &report) const
                        clientAdded, clientUpdated, clientDeleted,
                        serverAdded, serverUpdated, serverDeleted);
     LOG.info("%s", str.c_str());
+
+    CPPUNIT_ASSERT_MESSAGE("synchronization failed", !res);
 
     // this code is intentionally duplicated to produce nicer CPPUNIT asserts
     for (unsigned int i=0; report.getSyncSourceReport(i); i++) {
