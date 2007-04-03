@@ -144,8 +144,8 @@ class SyncManager {
         
 		ArrayList** allItemsList;
         
-        StringBuffer* syncURL;
-        StringBuffer* deviceId;  
+        StringBuffer syncURL;
+        StringBuffer deviceId;  
         int maxMsgSize;    // the max message size. If 0 it is not set. Setting it implies LargeObject support.
         int maxObjSize;    // The maximum object size. The server gets this in the Meta init message and should obey it.
         BOOL loSupport;             // enable support for large objects - without it large outgoing items are not split

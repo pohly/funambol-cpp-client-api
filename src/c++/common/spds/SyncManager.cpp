@@ -167,8 +167,8 @@ void SyncManager::initialize() {
     AccessConfig& c = config.getAccessConfig();   
     DeviceConfig& dc = config.getDeviceConfig();
     
-    syncURL  = new StringBuffer(c.getSyncURL());
-    deviceId = new StringBuffer(dc.getDevID());
+    syncURL = c.getSyncURL();
+    deviceId = dc.getDevID();
     
     credentialHandler.setUsername           (c.getUsername());
     credentialHandler.setPassword           (c.getPassword());
@@ -191,7 +191,7 @@ void SyncManager::initialize() {
     if (c.getReadBufferSize() > 0)
         readBufferSize = c.getReadBufferSize();
     
-    syncMLBuilder.set(syncURL->c_str(), deviceId->c_str());
+    syncMLBuilder.set(syncURL.c_str(), deviceId.c_str());
     memset(credentialInfo, 0, 1024*sizeof(char));
     sortedSourcesFromServer = NULL;
     prevSourceName[0] = 0;
@@ -233,12 +233,6 @@ SyncManager::~SyncManager() {
             i++;
         }
         delete [] sortedSourcesFromServer;
-    }
-    if (deviceId) {
-        delete deviceId;
-    }
-    if (syncURL) {
-        delete syncURL;
     }
 }
 
@@ -285,7 +279,7 @@ int SyncManager::prepareSync(SyncSource** s) {
 
     URL url(config.getAccessConfig().getSyncURL());
     Proxy proxy;
-    LOG.info(MSG_SYNC_URL, syncURL->c_str());
+    LOG.info(MSG_SYNC_URL, syncURL.c_str());
 
     // Copy and validate given 
     sourcesNumber = assignSources(s);
