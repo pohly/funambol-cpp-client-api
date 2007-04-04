@@ -89,14 +89,15 @@ private:
     WCHAR* version;
     WCHAR* productID;
     ArrayList* properties;
-    void set(WCHAR**, WCHAR*);
+    void set(WCHAR**, const WCHAR*);
 
 public:       
 
     VObject();
+    VObject(const WCHAR* prodID, const WCHAR* ver);
     ~VObject();
-    void setVersion (WCHAR* ver);
-    void setProdID (WCHAR* prodID);
+    void setVersion (const WCHAR* ver);
+    void setProdID (const WCHAR* prodID);
     WCHAR* getVersion();
     WCHAR* getProdID();
     void addProperty(VProperty* property);

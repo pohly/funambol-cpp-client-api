@@ -29,6 +29,20 @@ VObject::VObject() {
     properties = new ArrayList();
 }
 
+VObject::VObject(const WCHAR* prodID, const WCHAR* ver) {
+    
+    productID = NULL;
+    version = NULL;
+
+    if (prodID) {
+        setProdID(prodID);
+    }
+    if (ver) {
+        setVersion(ver);
+    }
+    properties = new ArrayList();
+}
+
 VObject::~VObject() {
     if (productID) {
         delete [] productID; productID = NULL;
@@ -41,18 +55,18 @@ VObject::~VObject() {
     }
 }
 
-void VObject::set(WCHAR** p, WCHAR* v) {
+void VObject::set(WCHAR** p, const WCHAR* v) {
     if (*p) {
         delete [] *p;
     }
     *p = (v) ? wstrdup(v) : NULL;
 }
 
-void VObject::setVersion(WCHAR* ver) {
+void VObject::setVersion(const WCHAR* ver) {
     set(&version, ver);
 }
 
-void VObject::setProdID(WCHAR* prodID) {
+void VObject::setProdID(const WCHAR* prodID) {
     set(&productID, prodID);
 }
 
