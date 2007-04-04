@@ -43,5 +43,5 @@ VObject* VObjectFactory::createInstance(WCHAR* objType, WCHAR* objVersion) {
     else if(!wcscmp(objType, TEXT("VTIMEZONE"))
         return new Timezone();
     */
-    else return new VObject();
+    else return new VObject(objType, objVersion);
 }
