@@ -332,7 +332,7 @@ WCHAR* VConverter::extractObjectProperty(const WCHAR* buffer, const WCHAR *prope
 
     token = wcstok( buffCopy, seps );
     while (token != NULL) {
-        if(!wcscmp(token, TEXT("BEGIN"))) {
+        if(!wcscmp(token, property)) {
             token = wcstok( NULL, seps );
             WCHAR* index = wcschr(token,'\r');
             if(index)
