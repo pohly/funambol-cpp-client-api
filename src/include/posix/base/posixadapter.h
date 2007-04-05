@@ -66,10 +66,12 @@
 
 #ifdef USE_WCHAR
 
-#       undef WCHAR
-#       define WCHAR wchar_t
-#       define WCHAR_PRINTF "s"
-#       define TEXT(_x) L##_x
+#undef WCHAR
+#include <wchar.h>
+
+#define WCHAR wchar_t
+#define WCHAR_PRINTF "s"
+#define TEXT(_x) L##_x
 
 // FIXME: remove this and adapt VOCL.
 WCHAR *wcstok(WCHAR *s, const WCHAR *delim);
