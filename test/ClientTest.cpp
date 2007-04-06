@@ -864,7 +864,7 @@ private:
             for (it = sources.begin(); it != sources.end(); ++it) {
                 it->second->deleteAll(it->second->createSourceA);
             }
-            sync(SYNC_TWO_WAY, ".deleteall.init");
+            sync(SYNC_SLOW, ".deleteall.init");
             // now that client and server are in sync, delete locally and sync again
             for (it = sources.begin(); it != sources.end(); ++it) {
                 it->second->deleteAll(it->second->createSourceA);
