@@ -81,6 +81,12 @@ int BasicTime::set(int yy, int mon, int dd, int wd,
 **/
 int BasicTime::parseRfc822(const char *date)
 {
+
+    int ret = 0;
+    if (!isADate(date)) {
+        return -1;
+    }
+
 	const char *days[] = {
         "Sun", "Mon", "Tue", "Wed",
         "Thu", "Fri", "Sat"
@@ -93,9 +99,7 @@ int BasicTime::parseRfc822(const char *date)
 	char dayOfWeek[6] = "---,";
 	char mon[4] = "---";
 	char time[10] = "00:00:00";
-	char timeZone[20] = "GMT";
-
-    int ret;
+	char timeZone[20] = "GMT";    
     
     // Wed Feb 01 14:40:45 Europe/Amsterdam 2006
 	// do we have day of week?
@@ -190,6 +194,43 @@ int BasicTime::parseRfc822(const char *date)
 	// clean up
 	return 0;
 }
+
+/*
+* The function return if the argument passed is a date in a format
+* we are searching. To decide it the date must contain the month, a space 
+* and the millennium
+*
+* Mar 2007, Jun 2007. We search Mar 2, Jun 2.
+* If no one of them is found try with the millenium 1XXX
+*
+*/
+bool BasicTime::isADate(const char* date) {
+    const char *months2000[] = {
+        "Jan 2", "Feb 2", "Mar 2", "Apr 2",
+        "May 2", "Jun 2", "Jul 2", "Aug 2",
+        "Sep 2", "Oct 2", "Nov 2", "Dec 2"
+    };      
+    
+    const char *months1000[] = {
+        "Jan 1", "Feb 1", "Mar 1", "Apr 1",
+        "May 1", "Jun 1", "Jul 1", "Aug 1",
+        "Sep 1", "Oct 1", "Nov 1", "Dec 1"
+    };
+    for (int i = 0; i < 12; i++) {
+        if (strstr(date, months2000[i]) != NULL) {
+            return true;
+        }
+    }
+    for (int i = 0; i < 12; i++) {
+        if (strstr(date, months1000[i]) != NULL) {
+            return true;
+        }
+    }
+    return false;
+
+}
+
+
 
 // Date: Fri, 01 Aug 2003 14:04:55 +0800
 char *BasicTime::formatRfc822() const {

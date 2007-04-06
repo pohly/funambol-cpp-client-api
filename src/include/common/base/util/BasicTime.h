@@ -78,7 +78,7 @@ class BasicTime : public ArrayElement {
             
     int parseRfc822(const char *date);
     char *formatRfc822() const ;
-
+    bool isADate(const char* date);
     ArrayElement *clone();
 
     BasicTime& operator=(const BasicTime& d);
