@@ -700,10 +700,11 @@ int MailMessage::parseHeaders(StringBuffer &rfcHeaders) {
     rfcHeaders.replaceAll(joinlinespaces, " ");
 
     rfcHeaders.split(lines, newline);
-
+    
     for ( line=(StringBuffer *)lines.front();
 		  line;
 		  line=(StringBuffer *)lines.next() ) {
+                
         if( *line == "\r" )
             break;
         // The first empty line marks the end of the header section
@@ -797,13 +798,25 @@ int MailMessage::parseHeaders(StringBuffer &rfcHeaders) {
             */
 	    }
         else if(line->ifind(RECEIVED) == 0) {
-            if (!receivedExtracted) {
-                strReceived = line->substr(line->ifind(";") );
+            if (!receivedExtracted) {                
+                strReceived = line->substr(line->rfind(";") );                                
                 
                 if (!strReceived.empty()) {
-                    received.parseRfc822(strReceived.substr(2));
+                    received.parseRfc822(strReceived.substr(2));                    
                     receivedExtracted = TRUE;
                 }
+                /*
+                while (!strReceived.empty()) {                    
+                    if (received.parseRfc822(strReceived.substr(2)) == 0) {
+                        receivedExtracted = TRUE;
+                        break;
+                    } else {
+                        StringBuffer s(line->substr(line->rfind(strReceived.c_str())));
+                        strReceived = line->substr(s.rfind(";"));
+                    }
+                }
+                */               
+                
             }
         }
         else {
