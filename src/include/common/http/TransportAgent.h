@@ -31,10 +31,10 @@
     #define DEFAULT_MAX_TIMEOUT 300
 
     //
-    // the max_msg_size parameter. If 0 the max msg size is not specified by the client.
+    // The max_msg_size parameter. Default is 512k.
     // The value is expressed in byte
     //
-    #define DEFAULT_MAX_MSG_SIZE 0    
+    #define DEFAULT_MAX_MSG_SIZE 512000    
 
     //
     // This is the default value for the size of the buffer used to store the 

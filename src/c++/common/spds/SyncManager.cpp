@@ -183,7 +183,14 @@ void SyncManager::initialize() {
             
     commands = new ArrayList();
 
+    responseTimeout = c.getResponseTimeout();
+    if (responseTimeout <= 0) {
+        responseTimeout = DEFAULT_MAX_TIMEOUT;
+    }
     maxMsgSize   = c.getMaxMsgSize();
+    if (maxMsgSize <= 0) {
+        maxMsgSize = DEFAULT_MAX_MSG_SIZE;
+    }
     maxObjSize   = dc.getMaxObjSize();
     loSupport    = dc.getLoSupport();
     readBufferSize = 5000; // default value    
@@ -418,19 +425,15 @@ int SyncManager::prepareSync(SyncSource** s) {
         currentState = STATE_PKG1_SENDING;
 
         if (transportAgent == NULL) {
-            transportAgent = TransportAgentFactory::getTransportAgent(url, proxy);
+            transportAgent = TransportAgentFactory::getTransportAgent(url, proxy, responseTimeout, maxMsgSize);
             transportAgent->setReadBufferSize(readBufferSize);
             // Here we also ensure that the user agent string is valid
             const char* ua = getUserAgent(config);
             LOG.debug("User Agent = %s", ua);
             transportAgent->setUserAgent(ua);
             delete [] ua; ua = NULL;
-            
-            if (maxMsgSize > 0) {
-                transportAgent->setMaxMsgSize(maxMsgSize);
-            }
-            
-        } else {
+        } 
+        else {
             transportAgent->setURL(url);
         }
         if (lastErrorCode != 0) { // connection: lastErrorCode = 2005: Impossible to establish internet connection
