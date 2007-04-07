@@ -68,6 +68,7 @@
 
 #undef WCHAR
 #include <wchar.h>
+#include <wctype.h>
 
 #define WCHAR wchar_t
 #define WCHAR_PRINTF "s"
