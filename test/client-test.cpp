@@ -20,6 +20,25 @@
 /** @addtogroup ClientTest */
 /** @{ */
 
+#include "spdm/DeviceManagementNode.h"
+#include "client/RawFileSyncSource.h"
+#include "spds/spdsutils.h"
+#include "client/DMTClientConfig.h"
+#include "client/SyncClient.h"
+#include "test/ClientTest.h"
+#include "base/test.h"
+
+#include <string>
+#include <vector>
+#include <iomanip>
+#include <memory>
+
+#ifdef WIN32
+#include <direct.h>
+#endif
+#include <sys/stat.h>
+
+#ifdef ENABLE_INTEGRATION_TESTS
 
 /**
  * This code uses the ClientTest and RawFileSyncSource to test real
@@ -30,7 +49,7 @@
  * ClientTest class, because that is where the test data comes from.
  *
  * At least the following kinds of data are currently supported by the
- * ClientTest class (see ClientTest::getSourceConfig() for more
+ * ClientTest class (see ClientTest::getTestData() for more
  * information):
  * - vcard30 = vCard 3.0 contacts
  * - vcard21 = vCard 2.1 contacts
@@ -96,27 +115,6 @@ CLIENT_TEST_SOURCES=vcard21 \
  * of these files is unique, so the corresponding part of the server log
  * is stored with the same base name and .server.log as suffix. 
  */
-
-#include "spdm/DeviceManagementNode.h"
-#include "client/RawFileSyncSource.h"
-#include "spds/spdsutils.h"
-#include "client/DMTClientConfig.h"
-#include "client/SyncClient.h"
-#include "test/ClientTest.h"
-#include "base/test.h"
-
-#include <string>
-#include <vector>
-#include <iomanip>
-#include <memory>
-
-#ifdef WIN32
-#include <direct.h>
-#endif
-#include <sys/stat.h>
-
-#ifdef ENABLE_INTEGRATION_TESTS
-
 class TestFileSource : public ClientTest {
 public:
     TestFileSource(const std::string &id) :

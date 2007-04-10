@@ -148,7 +148,9 @@ class ClientTest {
      * depend on the auxiliary files from the "test" directory.
      * Currently supported types:
      * - vcard30 = vCard 3.0 contacts
+     * - vcard21 = vCard 2.1 contacts
      * - ical20 = iCal 2.0 events
+     * - vcal10 = vCal 1.0 events
      * - itodo20 = iCal 2.0 tasks
      */
     static void getTestData(const char *type, Config &config);
