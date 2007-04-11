@@ -275,8 +275,8 @@ Status* SyncMLBuilder::prepareAlertStatus(SyncSource& source, ArrayList* alerts,
         a = (Alert*)alerts->get(i);
         list = a->getItems();
         if (list->size() == 1) {
-            item = (Item*)list->get(0);
-            if (strcmp(item->getTarget()->getLocURI(), _wcc(source.getName())) == 0) {
+            Item* it = (Item*)list->get(0);
+            if (strcmp(it->getTarget()->getLocURI(), _wcc(source.getName())) == 0) {
                 found = TRUE;
             }
         }
