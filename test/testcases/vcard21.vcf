@@ -239,7 +239,7 @@ X-EVOLUTION-MANAGER:
 X-EVOLUTION-ASSISTANT:
 NICKNAME:user2
 X-EVOLUTION-SPOUSE:
-NOTE;ENCODING=QUOTED-PRINTABLE:This user tests some of the advanced aspects of vcards:=0D=0A- non-ASCII characters (with umlauts in the name)=0D=0A- line break (in this note and the mailing address)=0D=0A- long lines (in this note)=0D=0A- special characters (in this note)=0D=0A- tabs (in this note)=0D=0A=0D=0AVery long line, very very long this time... still not finished... blah blah blah blah blah 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16=0D=0A=0D=0Acomma ,=0D=0Acolon :=0D=0Asemicolon \;=0D=0Abackslash \\=0D=0A=0D=0AThe same, in the middle of a line:=0D=0Acomma , comma=0D=0Acolon : colon=0D=0Asemicolon \; semicolon=0D=0Abackslash \\ backslash=0D=0A=0D=0AA tab 	tab done=0D=0A	line starts with tab=0D=0A
+NOTE;ENCODING=QUOTED-PRINTABLE:This user tests some of the advanced aspects of vcards:=0D=0A- non-ASCII characters (with umlauts in the name)=0D=0A- line break (in this note and the mailing address)=0D=0A- long lines (in this note)=0D=0A- special characters (in this note)=0D=0A- tabs (in this note)=0D=0A=0D=0AVery long line, very very long this time... still not finished... blah blah blah blah blah 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16=0D=0A=0D=0Acomma ,=0D=0Acolon :=0D=0Asemicolon \;=0D=0Abackslash \\=0D=0A=0D=0AThe same, in the middle of a line:=0D=0Acomma , comma=0D=0Acolon : colon=0D=0Asemicolon \; semicolon=0D=0Abackslash \\ backslash=0D=0A=0D=0AA tab 	tab done=0D=0A	line starts with tab
 FN;ENCODING=QUOTED-PRINTABLE;CHARSET=UTF-8:Umlaut =C3=84 =C3=96 =C3=9C =C3=9F
 N;ENCODING=QUOTED-PRINTABLE;CHARSET=UTF-8:=C3=9C;=C3=84;=C3=96;Umlaut;=C3=9F
 X-EVOLUTION-FILE-AS;ENCODING=QUOTED-PRINTABLE;CHARSET=UTF-8:=C3=9C, =C3=84

@@ -91,7 +91,7 @@ NOTE:This user tests some of the advanced aspects of vcards:\n- non-ASCII c
  8 9 10 11 12 13 14 15 16\n\ncomma \,\ncolon :\nsemicolon \;\nbackslash 
  \\\n\nThe same\, in the middle of a line:\ncomma \, comma\ncolon : col
  on\nsemicolon \; semicolon\nbackslash \\ backslash\n\nA tab 	tab done\n	
- line starts with tab\n
+ line starts with tab
 FN:Umlaut Ä Ö Ü ß
 N:Ü;Ä;Ö;Umlaut;ß
 X-EVOLUTION-FILE-AS:Ü\, Ä
