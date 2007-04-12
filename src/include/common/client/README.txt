@@ -1,3 +1,4 @@
+/* -*-C-*- */
 /** @cond API */
 /**
  * @defgroup Client Sync Client
