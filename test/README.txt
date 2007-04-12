@@ -23,7 +23,8 @@
  * The test runner "client-test" is implemented in
  * client-test-main.cpp. It automatically assembles all CPPUnit tests
  * it was linked against and runs them all if started without
- * parameters. Output is ASCII.  "-h|--help" print some usage
+ * parameters. Output is ASCII. The return code indicates success or
+ * failure of any test. "-h|--help" print some usage
  * information and a full list of all available tests.  Tests or test
  * groups as printed in that list can be given as command line
  * parameters to run just these tests. Because tests do not
@@ -31,6 +32,11 @@
  * be passed parameters via environment variables. See the
  * description of TestFileSource for further information about running
  * those end-to-end synchronization tests.
+ *
+ * The test runner itself also understands some environment variables:
+ * CLIENT_TEST_FAILURES can be set to a comma separated list of tests
+ * which are allowed to fail without affecting the return code of the
+ * test runner.
  *
  * On Linux the test runner supports setting a timeout which is triggered
  * if a test runs for more than the number of seconds set in the
