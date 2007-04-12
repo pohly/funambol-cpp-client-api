@@ -450,7 +450,7 @@ public:
                 int added = 0;
                 /* vCard 2.1 and vCal 1.0 need quoted-printable line breaks */
                 bool quoted = data.find("VERSION:1.0") != data.npos ||
-                    data.find("VERSION:2.1");
+                    data.find("VERSION:2.1") != data.npos;
 
                 CPPUNIT_ASSERT(config.sizeProperty);
                 
