@@ -29,6 +29,10 @@
 #define ERR_HTTP_MISSING_CONTENT_LENGTH ERR_TRANSPORT_BASE+51
 #define ERR_SERVER_ERROR                ERR_TRANSPORT_BASE+52
 
+#define ERR_HTTP_STATUS_NOT_OK          ERR_TRANSPORT_BASE+53
+#define ERR_CREDENTIAL                  401
+#define ERR_CLIENT_NOT_NOTIFIABLE       420
+
 #define ERR_TRANSPORT_LAST              2999
 
 #define ERRMSG_NETWORK_INIT "Network initialization error"

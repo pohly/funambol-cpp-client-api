@@ -277,9 +277,27 @@ char* WMTransportAgent::sendMessage(const char* msg) {
                              (LPVOID)msgToSend, contentLength)) {
             DWORD code = GetLastError();
 
+            if (code == 12002) {
+                lastErrorCode = ERR_HTTP_TIME_OUT;
+                sprintf(lastErrorMsg, "Network error: the request has timed out. %d", code);
+                LOG.debug(lastErrorMsg);
+                goto exit;
+            }
+            else if (code == 12019) {
+                lastErrorCode = ERR_HTTP_TIME_OUT;
+                sprintf(lastErrorMsg, "Network error: the handle supplied is not in the correct state. %d", code);
+                LOG.debug(lastErrorMsg);
+                goto exit;
+            }
+            else if (code == ERROR_INTERNET_CANNOT_CONNECT) { // 12029
+                lastErrorCode = ERROR_INTERNET_CANNOT_CONNECT;
+                sprintf(lastErrorMsg, "Network error: the attempt to connect to the server failed. %d", code);
+                LOG.debug(lastErrorMsg);
+                goto exit;
+            }
             LOG.info("Network error (%d) writing data from client: retry %i time...",
                      code, numretries + 1);
-
+           
             continue;
         }
 
@@ -298,27 +316,31 @@ char* WMTransportAgent::sendMessage(const char* msg) {
         if (status == HTTP_ERROR) { // 400 bad request error. retry to send the message
             LOG.info("Network error in server receiving data. "
                      "Server responds 400: retry %i time...", numretries + 1);
-        }
-        else if (status == 12002) {
-            lastErrorCode = ERR_HTTP_TIME_OUT;
-            sprintf(lastErrorMsg, "Network error: the request has timed out. %d", status);
-            LOG.debug(lastErrorMsg);
-            goto exit;
-        }
-        else if (status == 12019) {
-            lastErrorCode = ERR_HTTP_TIME_OUT;
-            sprintf(lastErrorMsg, "Network error: the handle supplied is not in the correct state. %d", status);
-            LOG.debug(lastErrorMsg);
-            goto exit;
-        }
+        }        
         else if (status == HTTP_STATUS_SERVER_ERROR ) {
             lastErrorCode = ERR_SERVER_ERROR;
             sprintf(lastErrorMsg, "HTTP server error: %d. Server failure.", status);
             LOG.debug(lastErrorMsg);
             goto exit;   
         }
+        
+        // to handle the http error code for the tcp/ip notification with wrong credential
+        else if (status == ERR_CREDENTIAL) {  // 401
+            lastErrorCode = ERR_CREDENTIAL;
+            sprintf(lastErrorMsg, "HTTP server error: %d. Wrong credential.", status);
+            LOG.debug(lastErrorMsg);
+            goto exit;   
+        }
+        // to handle the http error code for the tcp/ip notification and client not notifiable
+        else if (status == ERR_CLIENT_NOT_NOTIFIABLE) { // 420
+            lastErrorCode = ERR_CLIENT_NOT_NOTIFIABLE;
+            sprintf(lastErrorMsg, "HTTP server error: %d. Client not notifiable.", status);
+            LOG.debug(lastErrorMsg);
+            goto exit;   
+        }
         else if (status != STATUS_OK) {
-            lastErrorCode = ERR_READING_CONTENT;
+            lastErrorCode = ERR_HTTP_STATUS_NOT_OK;
+            //lastErrorCode = ERR_READING_CONTENT;
             sprintf(lastErrorMsg, "HTTP request error: %d", status);
             LOG.debug(lastErrorMsg);
             goto exit;
@@ -337,6 +359,7 @@ char* WMTransportAgent::sendMessage(const char* msg) {
         }
         else {
             DWORD code = GetLastError();
+            lastErrorCode = ERR_HTTP_STATUS_NOT_OK;
             sprintf(lastErrorMsg, "HTTP request error (status received = %d): code %d", status, code);
         }
         goto exit;

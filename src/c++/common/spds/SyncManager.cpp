@@ -461,14 +461,16 @@ int SyncManager::prepareSync(SyncSource** s) {
 
             if ( addressChange && lastErrorCode == ERR_READING_CONTENT ) {
                 // This is not an error if it's an AddressChange
-                ret = 0;
+                ret = 0;                
             }
             else {
-                // use last error code if one has been set (might not be the case)
+                // use last error code if one has been set (might not be the case)                
                 ret = lastErrorCode;
+                /*
                 if (!ret) {
                     ret = ERR_READING_CONTENT;
                 }
+                */
             }
             goto finally;
         }
