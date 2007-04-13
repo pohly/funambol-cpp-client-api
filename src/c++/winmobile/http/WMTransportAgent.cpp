@@ -486,7 +486,8 @@ char* WMTransportAgent::sendMessage(const char* msg) {
         // Sanity check: some proxy could send additional bytes.
         // Correct 'read' value to be sure we won't overflow the 'response' buffer.
         if ((realResponseLenght + read) > contentLength) {
-            LOG.debug("Warning! %d bytes read -> truncating data to content-lenght = %d.", (realResponseLenght + read), contentLength);
+            LOG.info("Warning! %d bytes read -> truncating data to content-lenght = %d.",
+                        (realResponseLenght + read), contentLength);
             read = contentLength - realResponseLenght;
         }
 
@@ -506,12 +507,18 @@ char* WMTransportAgent::sendMessage(const char* msg) {
 
     if (realResponseLenght <= 0) {
         lastErrorCode = ERR_READING_CONTENT;
-        sprintf(lastErrorMsg, "Error reading HTTP response from Server: received data of size = %d.", realResponseLenght);
+        sprintf(lastErrorMsg,
+                    "Error reading HTTP response from Server: received data of size = %d.",
+                    realResponseLenght);
         goto exit;
     }
 
-    // Should be already the same...
-    contentLength = realResponseLenght;
+    // Log bytes read if different from content length
+    if (realResponseLenght != contentLength) {
+        LOG.info("Bytes read: ", realResponseLenght);
+        // Should be already the same...
+        contentLength = realResponseLenght;
+    }
 
     // Fire Receive Data End Transport Event
     fireTransportEvent(contentLength, RECEIVE_DATA_END);
@@ -532,9 +539,11 @@ char* WMTransportAgent::sendMessage(const char* msg) {
         if (err == Z_OK) {
             delete [] response;
             response = (char*)uncompr;
-            response[uncompressedContentLenght] = 0;
+            response[uncomprLen] = 0;
         }   
         else if (err < 0) {
+            LOG.error("Error from zlib: %s", zError(err));
+
             delete [] response;
             response = NULL;
             status = ERR_HTTP_INFLATE;
