@@ -16,7 +16,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-/**
+/*
  How to test SSL connections 
  ----------------------------
 
@@ -37,7 +37,7 @@
  1) Copy myroot.cer in a device/emulator directory
  2) Click on it to import the certificate as a trusted CA
 
-**/
+*/
 
 #include "base/Log.h"
 #include "base/messages.h"
