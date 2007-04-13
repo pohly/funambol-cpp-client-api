@@ -4,6 +4,17 @@ Funambol SDK C++ 6.0.6
 2007-04-13
     - magi: fixed return codes in WMTransportAgent
 
+2007-04-11
+    - toccy: fixed bug inside SyncMLBuider::prepareAlertStatus(), caused crash if (authStatusCode < 400)
+
+2007-04-06
+    - toccy: changed 'maxMsgSize' default value to 512k
+             'responseTimout' from configuration is now passed to transportAgent constructor
+
+2007-03-26
+    - toccy: fixed some memory leaks
+
+
 Funambol SDK C++ 6.0.4
 -----------------------
 
