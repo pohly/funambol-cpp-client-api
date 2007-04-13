@@ -1,3 +1,11 @@
+Funambol SDK C++ 6.0.6
+-----------------------
+
+2007-04-13
+    - magi: fixed return codes in WMTransportAgent
+
+Funambol SDK C++ 6.0.4
+-----------------------
 
 2007-03-14
     - gazza: potential null pointer access fixed in ArrayList
