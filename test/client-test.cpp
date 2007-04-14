@@ -96,6 +96,13 @@ CLIENT_TEST_SERVER=funambol CLIENT_TEST_SOURCES=vcard21,vcal10 ./client-test
  * - server user name, password
  * - sources uri
  *
+ * The CLIENT_TEST_SERVER also has another meaning: it is used as hint
+ * by the synccompare.pl script and causes it to automatically ignore
+ * known, acceptable data modifications caused by sending an item to
+ * a server and back again. Currently the script recognizes "funambol",
+ * "scheduleworld", "synthesis" and "egroupware" as special server
+ * names.
+ *
  * The two configurations are used to simulate synchronization between
  * two different clients.
  *
