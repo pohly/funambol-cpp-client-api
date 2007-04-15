@@ -54,8 +54,10 @@ sub Normalize {
     # ignore charset specifications, assume UTF-8
     s/;CHARSET="?UTF-8"?//g;
 
-    # UID may differ, but only in vCards
-    s/(VCARD.*)^UID:[^\n]*\n/$1/msg;
+    # UID may differ, but only in vCards and journal entries:
+    # in calendar events the UID needs to be preserved to handle
+    # meeting invitations/replies correctly
+    s/((VCARD|VJOURNAL).*)^UID:[^\n]*\n/$1/msg;
 
     # expand <foo> shortcuts to TYPE=<foo>
     while (s/^(ADR|EMAIL|TEL)([^:\n]*);(HOME|OTHER|WORK|PARCEL|INTERNET|CAR|VOICE|CELL|PAGER)/$1;TYPE=$3/mg) {}
