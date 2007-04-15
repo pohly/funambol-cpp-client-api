@@ -36,6 +36,7 @@ nobase_pkginclude_HEADERS = \
 	test/testcases/vcal10.ics \
 	test/testcases/vcard21.vcf \
 	test/testcases/vcard30.vcf \
+	test/testcases/imemo20.ics \
         test/README.txt \
         test/synccompare.pl \
 	test/ClientTest.h \
