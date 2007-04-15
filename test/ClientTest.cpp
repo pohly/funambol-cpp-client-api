@@ -237,6 +237,9 @@ public:
     /**
      * opens source and inserts the given item; can be called
      * regardless whether the data source already contains items or not
+     *
+     * The type of the item is unset; it is assumed that the source
+     * can handle that.
      */
     void insert(CreateSource createSource, const char *data) {
         // create source
@@ -285,7 +288,11 @@ public:
 #endif
     }
 
-    /** assumes that exactly one element is currently inserted and updates it with the given item */
+    /**
+     * assumes that exactly one element is currently inserted and updates it with the given item
+     *
+     * The type of the item is cleared, as in insert() above.
+     */
     void update(CreateSource createSource, const char *data) {
         CPPUNIT_ASSERT(createSource.createSource);
         CPPUNIT_ASSERT(data);
@@ -301,6 +308,7 @@ public:
         SOURCE_ASSERT_NO_FAILURE(source.get(), item.reset(source->getFirstItem()) );
         CPPUNIT_ASSERT(item.get());
         item->setData(data, (long)strlen(data) + 1);
+        item->setDataType(TEXT(""));
         SOURCE_ASSERT_EQUAL(source.get(), (int)STC_OK, source->updateItem(*item));
         SOURCE_ASSERT(source.get(), source->endSync() == 0);
         CPPUNIT_ASSERT_NO_THROW(source.reset());
