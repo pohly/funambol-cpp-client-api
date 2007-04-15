@@ -459,6 +459,7 @@ public:
                 /* vCard 2.1 and vCal 1.0 need quoted-printable line breaks */
                 bool quoted = data.find("VERSION:1.0") != data.npos ||
                     data.find("VERSION:2.1") != data.npos;
+                size_t toreplace = 1;
 
                 CPPUNIT_ASSERT(config.sizeProperty);
                 
@@ -471,6 +472,17 @@ public:
                 } else {
                     stuffing << ":";
                 }
+
+                // insert after the first line, it often acts as the summary
+                if (data.find("BEGIN:VJOURNAL") != data.npos) {
+                    size_t start = data.find(":", off);
+                    CPPUNIT_ASSERT( start != data.npos );
+                    size_t eol = data.find("\\n", off);
+                    CPPUNIT_ASSERT( eol != data.npos );
+                    stuffing << data.substr(start + 1, eol - start + 1);
+                    toreplace += eol - start + 1;
+                }
+                
                 while(added < additionalBytes) {
                     int linelen = 0;
                    
@@ -490,7 +502,7 @@ public:
                     }
                 }
                 off = data.find(":", off);
-                data.replace(off, 1, stuffing.str());
+                data.replace(off, toreplace, stuffing.str());
             }
             
             importItem(source.get(), data);
