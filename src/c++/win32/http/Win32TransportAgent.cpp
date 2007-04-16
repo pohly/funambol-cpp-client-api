@@ -263,18 +263,34 @@ char* Win32TransportAgent::sendMessage(const char* msg) {
     //
     for (int i=0;; i++) {
 
-        // Fire Send Data Begin Transport Event
-        fireTransportEvent(contentLength, SEND_DATA_BEGIN);
+        // 5th error -> OUT
+        if (i == MAX_AUTH_ATTEMPT) {
+            lastErrorCode = ERR_HTTP;
+            sprintf(lastErrorMsg, "HttpSendRequest error: %d attempts failed.", i);
+            LOG.error(lastErrorMsg);
+            goto exit;
+        }
 
+        //
         // Send a request to the HTTP server.
+        //
+        fireTransportEvent(contentLength, SEND_DATA_BEGIN);
         if (!HttpSendRequest (request, headers, wcslen(headers), msgToSend, contentLength)) {
             DWORD code = GetLastError();
 
-            if (code == ERROR_INTERNET_CONNECTION_RESET) {
-                // Fire Send Data Begin Transport Event
-                fireTransportEvent(contentLength, SEND_DATA_BEGIN);
+            if (code == ERROR_INTERNET_OFFLINE_MODE) {
+                // IExplorer in offline mode: retry.
+                LOG.debug("Offline mode detected: retry sending request");
+                WCHAR* wurl = toWideChar(url.fullURL);
+                InternetGoOnline(wurl, NULL, NULL);
+                delete [] wurl;
+                continue;
+            }
+            else if (code == ERROR_INTERNET_CONNECTION_RESET) {
+                // Some proxy need to resend the http request.
+                LOG.debug("Error internet connection reset: retry sending request");
 
-                // Retry: some proxy need to resend the http request.
+                fireTransportEvent(contentLength, SEND_DATA_BEGIN);
                 if (!HttpSendRequest (request, headers, wcslen(headers), msgToSend, contentLength)) {
                     lastErrorCode = ERR_CONNECT;
                     char* tmp = createHttpErrorMessage(code);
@@ -283,8 +299,8 @@ char* Win32TransportAgent::sendMessage(const char* msg) {
                     goto exit;
                 }
             }
-            // This is another type of error (e.g. cannot find server) -> exit
             else {
+                // This is another type of error (e.g. cannot find server) -> exit
                 lastErrorCode = ERR_CONNECT;
                 char* tmp = createHttpErrorMessage(code);
                 sprintf (lastErrorMsg, "HttpSendRequest Error: %d - %s", code, tmp);
@@ -309,14 +325,6 @@ char* Win32TransportAgent::sendMessage(const char* msg) {
         // OK (200) -> OUT
         //
         if (status == HTTP_STATUS_OK) {
-            break;
-        }
-
-        //
-        // 5th error -> OUT
-        //
-        if (i == MAX_AUTH_ATTEMPT) {
-            LOG.error("HTTP Authentication failed: bad username or password.");
             break;
         }
 

@@ -57,6 +57,8 @@
 #define ERR_HTTP_INFLATE        ERR_TRANSPORT_BASE+70
 #define ERR_HTTP_DEFLATE        ERR_TRANSPORT_BASE+71
 
+#define ERROR_INTERNET_OFFLINE_MODE     0x0002      // Not sure why it's not defined under wininet.h ...
+
 
 /*
 * This class is the transport agent responsible for messages exchange
