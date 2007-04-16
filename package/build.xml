@@ -20,7 +20,7 @@
  
  <?html version="1.0" enconding="UTF-8"?>
 
-<!-- $Id: build.xml,v 1.5 2007-02-23 14:22:55 toccy Exp $
+<!-- $Id: build.xml,v 1.6 2007-04-16 13:11:36 mvitolo Exp $
 =============================================================================
 Forge file for Funambol C++ API
 
@@ -55,6 +55,14 @@ Forge file for Funambol C++ API
     
     <!--target name="no-checkout" depends="clean, mkdirs, build, forge"/-->
     <target name="no-checkout" depends="clean, mkdirs, build, forge-no-checkout"/>
+
+    <!--
+    ========================================================================
+      ALL-DOC
+    ========================================================================
+    -->
+    <target name="all-docs" depends="clean, mkdirs, build, checkout, create-docs, forge"/>
+
     <!--
     ========================================================================
       MKMDIRS
@@ -146,6 +154,7 @@ Forge file for Funambol C++ API
             <exclude name="**/*.ncb*"/> <!-- project extension-->   
             <exclude name="**/CVS/"/> <!-- CVS-->                           
             <exclude name="**/CVS/**"/> <!-- CVS-->                           
+            <exclude name="**/latex/**"/>                            
         </fileset>             
       </copy>
       <!--
@@ -165,4 +174,22 @@ Forge file for Funambol C++ API
       <delete dir="output"/>
     </target>
 
+
+    <!--
+    ========================================================================
+    CREATE DOCS
+    ========================================================================
+    -->
+    <target name="create-docs" depends="init">
+      <echo message="Creating documentation with doxygen" />
+	        <exec dir="output/${cppapi.modulename}/docs" executable="doxygen" >
+        	  <arg line="../docs/Doxyfile" />
+	          <env key="FUNAMBOL_NATIVE_ROOT" path="output/${cppapi.modulename}/" />
+	          <env key="ENABLED_SECTIONS" value="API" />
+	          <env key="HAVE_DOT" value="YES" />
+        	</exec>
+    </target>
+
+
 </project>
+
