@@ -1731,8 +1731,6 @@ public:
                 tests->addTest(synctests);
             }
         }
-        alltests->addTest(tests);
-        tests = 0;
 
         // create sync tests with all sources enabled, unless we only have one:
         // that would be identical to the test above
@@ -1753,20 +1751,23 @@ public:
         }
         if (sources.size() > 1) {
             SyncTests *synctests =
-                new SyncTests(alltests->getName() + "::Sync::" + name, client, sources);
+                new SyncTests(tests->getName() + "::" + name, client, sources);
             synctests->addTests();
-            alltests->addTest(synctests);
+            tests->addTest(synctests);
             synctests = 0;
 
             // now also in reversed order - who knows, it might make a difference
             std::reverse(sources.begin(), sources.end());
             synctests =
-                new SyncTests(alltests->getName() + "::Sync::" + name_reversed, client, sources);
+                new SyncTests(tests->getName() + "::" + name_reversed, client, sources);
             synctests->addTests();
-            alltests->addTest(synctests);
+            tests->addTest(synctests);
             synctests = 0;
         }
-
+        
+        alltests->addTest(tests);
+        tests = 0;
+        
         return alltests;
     }
 
