@@ -500,7 +500,7 @@ int SyncManager::prepareSync(SyncSource** s) {
 
         } else if (isErrorStatus(ret) && ! isAuthFailed(ret)) {
             lastErrorCode = ret;
-            LOG.error("Error from server %d", ret);
+            sprintf(lastErrorMsg, "Error from server: status = %d", ret);
             goto finally;
         }
 
