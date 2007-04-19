@@ -51,13 +51,14 @@
 #include "http/TransportAgent.h"
 
 
-#define MAX_AUTH_ATTEMPT        5       // Max number of attempts sending http requests.
+#define MAX_AUTH_ATTEMPT                5                       // Max number of attempts sending http requests.
 
-#define ERR_HTTP_NOT_FOUND      ERR_TRANSPORT_BASE+60
-#define ERR_HTTP_INFLATE        ERR_TRANSPORT_BASE+70
-#define ERR_HTTP_DEFLATE        ERR_TRANSPORT_BASE+71
+#define ERR_HTTP_NOT_FOUND              ERR_TRANSPORT_BASE+60
+#define ERR_HTTP_REQUEST_TIMEOUT        ERR_TRANSPORT_BASE+61
+#define ERR_HTTP_INFLATE                ERR_TRANSPORT_BASE+70
+#define ERR_HTTP_DEFLATE                ERR_TRANSPORT_BASE+71
 
-#define ERROR_INTERNET_OFFLINE_MODE     0x0002      // Not sure why it's not defined under wininet.h ...
+#define ERROR_INTERNET_OFFLINE_MODE     0x0002                  // Not sure why it's not defined under wininet.h ...
 
 
 /*

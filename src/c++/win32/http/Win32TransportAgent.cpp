@@ -381,13 +381,17 @@ char* Win32TransportAgent::sendMessage(const char* msg) {
     if (status != HTTP_STATUS_OK) {
         if (status == HTTP_STATUS_NOT_FOUND) {
             lastErrorCode = ERR_HTTP_NOT_FOUND;
-            sprintf(lastErrorMsg, "HTTP request error: resource not found (status %d)", status);
+            sprintf(lastErrorMsg, "HttpQueryInfo error: resource not found (status %d)", status);
+        }
+        else if (status == HTTP_STATUS_REQUEST_TIMEOUT) {
+            lastErrorCode = ERR_HTTP_REQUEST_TIMEOUT;
+            sprintf(lastErrorMsg, "HttpQueryInfo error: server timed out waiting for request (status %d)", status);
         }
         else {
             lastErrorCode = ERR_HTTP;
             DWORD code = GetLastError();
             char* tmp = createHttpErrorMessage(code);
-            sprintf(lastErrorMsg, "HTTP request error (status received = %d): %s (code %d)", status, tmp, code);
+            sprintf(lastErrorMsg, "HttpQueryInfo error (status received = %d): %s (code %d)", status, tmp, code);
 		    delete [] tmp;
         }
         goto exit;
