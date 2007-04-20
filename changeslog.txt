@@ -1,3 +1,8 @@
+2007-04-16
+    - toccy: Win32TransportAgent, added check for windows offline mode (IExplorer).
+             If is offline, call 'InternetGoOnline' to ask the user to connect (retry 5 times)
+
+
 Funambol SDK C++ 6.0.6
 -----------------------
 
