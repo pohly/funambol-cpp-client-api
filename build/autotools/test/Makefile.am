@@ -25,8 +25,14 @@ client-test-files:
 	@ [ -d testcases ] || ln -s $(srcdir)/../../../test/testcases .
 	@ [ -d Algorithm ] || ln -s $(srcdir)/../../../test/Algorithm
 
-# also install files in a test sub directory
-nobase_pkginclude_HEADERS = \
+# also install files in a test sub directory:
+# in source files the API internal definitions need to
+# be removed so that the files can be used externally
+source_files = \
+	test/ClientTest.h \
+	test/ClientTest.cpp \
+	test/client-test-main.cpp
+verbatim_files = \
         test/Algorithm/Artistic \
         test/Algorithm/copyright \
         test/Algorithm/Diff.pm \
@@ -38,12 +44,20 @@ nobase_pkginclude_HEADERS = \
 	test/testcases/vcard30.vcf \
 	test/testcases/imemo20.ics \
         test/README.txt \
-        test/synccompare.pl \
-	test/ClientTest.h \
-	test/ClientTest.cpp \
-	test/client-test-main.cpp
+        test/synccompare.pl
+
+nobase_pkginclude_HEADERS = \
+	$(source_files) \
+	$(verbatim_files)
+
+CLEANFILES = $(nobase_pkginclude_HEADERS)
 
 # fix files for public distribution
-$(nobase_pkginclude_HEADERS): % : ../../../%
-	mkdir -p `dirname $@`
+$(source_files): %: ../../../%
+	mkdir -p ${@D}
 	sed -e 's/WCHAR/char/g' -e 's/= *NULL/= 0/g' -e 's/__declspec([^)]*)//g' -e 's/__cdecl//g' -e 's/EXTRA_SECTION_[0123456789]*//g' -e 's/BOOL/int/g' -e 's/FALSE/0/g' -e 's/TRUE/1/g' $< >$@
+
+# just copy for distribution
+$(verbatim_files): %: ../../../%
+	mkdir -p ${@D}
+	cp $< $@
