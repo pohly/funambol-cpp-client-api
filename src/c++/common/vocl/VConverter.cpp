@@ -185,6 +185,10 @@ bool VConverter::readFieldBody(WCHAR* buffer, VProperty* vprop) {
 
 
     if (!len) {
+        // This field is empty, we MUST consider it adding an empty value
+        // so any value on client will be deleted.
+        vprop->addValue(TEXT(""));
+        ret = true;
         goto finally;
     }
 
