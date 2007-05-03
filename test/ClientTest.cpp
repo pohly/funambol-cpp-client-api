@@ -2247,7 +2247,7 @@ void CheckSyncReport::check(int res, SyncReport &report) const
     // first dump the report
     StringBuffer str, tmp;
 
-    report.toString(str, TRUE);
+    report.toString(str, 1);
     str += "----------|--------CLIENT---------|--------SERVER---------|\n";
     str += "          |  NEW  |  MOD  |  DEL  |  NEW  |  MOD  |  DEL  |\n";
     str += "----------|-----------------------------------------------|\n";
