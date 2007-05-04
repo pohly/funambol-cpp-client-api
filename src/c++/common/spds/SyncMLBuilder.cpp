@@ -139,9 +139,17 @@ Status* SyncMLBuilder::prepareItemStatus(const char* COMMAND,
     CmdID* commandID  = new CmdID(cmdid);    
     ArrayList* empty  = new ArrayList();    
     Data*      data   = new Data(code);    
-    ArrayList* list   = new ArrayList();                
-    Source* sou       = new Source(key);   
-    Item* item        = new Item(NULL, sou, NULL, NULL, FALSE);
+    ArrayList* list   = new ArrayList();  
+
+    Source* sou = NULL;
+    Target* tar = NULL;
+    if (!strcmp(COMMAND, ADD)) {
+        sou = new Source(key);
+    }
+    else {
+        tar = new Target(key);
+    }
+    Item* item = new Item(tar, sou, NULL, NULL, FALSE);
     list->add(*item);
 
     char *mRef = itow(msgRef);
@@ -151,7 +159,8 @@ Status* SyncMLBuilder::prepareItemStatus(const char* COMMAND,
     safeDelete(&cmdid);
     deleteCmdID(&commandID);
     deleteData(&data);
-    deleteSource(&sou);    
+    deleteSource(&sou); 
+    deleteTarget(&tar);
     deleteItem(&item);
     deleteArrayList(&empty);
     deleteArrayList(&list);
