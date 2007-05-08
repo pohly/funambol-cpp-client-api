@@ -170,6 +170,9 @@ sub Normalize {
       s/^(NOTE(;[^:;\n]*)*:.{0,160}).*(\r?\n?)/$1$3/gm;
     }
 
+    # treat X-MOZILLA-HTML=FALSE as if the property didn't exist
+    s/^X-MOZILLA-HTML:FALSE\r?\n?//gm;
+
     my @formatted = ();
 
     # Modify lines to cover not more than
