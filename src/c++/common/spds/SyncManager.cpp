@@ -1505,7 +1505,7 @@ int SyncManager::sync() {
             }
         }
 
-        syncml = syncMLBuilder.prepareSyncML(commands, last);
+        syncml = syncMLBuilder.prepareSyncML(commands, FALSE);
         msg    = syncMLBuilder.prepareMsg(syncml);        
 
         LOG.debug("Alert to request server changes");
