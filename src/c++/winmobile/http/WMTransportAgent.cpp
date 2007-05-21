@@ -50,8 +50,8 @@
 #include "spdm/spdmutils.h"
 #include "event/FireEvent.h"
 
-#define ENTERING(func) LOG.debug("Entering %ls", func);
-#define EXITING(func)  LOG.debug("Exiting %ls", func);
+#define ENTERING(func) //LOG.debug("Entering %ls", func);
+#define EXITING(func)  //LOG.debug("Exiting %ls", func);
 
 
 #ifdef USE_ZLIB
