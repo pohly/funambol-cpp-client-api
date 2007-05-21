@@ -113,7 +113,7 @@ int settings(const char *rootContext)
     // Access config parameters
     sprintf(nodeName, "%s%s", rootContext, CONTEXT_SPDS_SYNCML);
 
-    ManagementNode *node = dmt->getManagementNode(nodeName);
+    ManagementNode *node = dmt->readManagementNode(nodeName);
     if ( ! node ) {
         lastErrorCode = ERR_INVALID_CONTEXT;
         goto finally;
@@ -122,8 +122,8 @@ int settings(const char *rootContext)
     node->setPropertyValue("deviceId", "");
     node->setPropertyValue("username", "guest");
     node->setPropertyValue("password", "guest");
-    node->setPropertyValue("syncUrl", "http://192.168.0.xx:8080/funambol/ds");
-    node->setPropertyValue("serverName", "http://192.168.0.xx:8080");
+    node->setPropertyValue("syncUrl", "http://192.168.1.11:8080/funambol/ds");
+    node->setPropertyValue("serverName", "http://192.168.1.11:8080");
     node->setPropertyValue("beginTimestamp", "0");
     node->setPropertyValue("endTimestamp", "0");
     node->setPropertyValue("sourceCount", "0");
@@ -148,7 +148,7 @@ int settings(const char *rootContext)
     // Contact sync source parameters
     sprintf(nodeName, "%s%s", rootContext, "/spds/sources/contacts");
 
-    node = dmt->getManagementNode(nodeName);
+    node = dmt->readManagementNode(nodeName);
     if ( ! node ) {
         lastErrorCode = ERR_INVALID_CONTEXT;
         goto finally;
@@ -168,7 +168,7 @@ int settings(const char *rootContext)
     // Appointments sync source parameters
     sprintf(nodeName, "%s%s", rootContext, "/spds/sources/appointments");
 
-    node = dmt->getManagementNode(nodeName);
+    node = dmt->readManagementNode(nodeName);
     if ( ! node ) {
         lastErrorCode = ERR_INVALID_CONTEXT;
         goto finally;
@@ -188,7 +188,7 @@ int settings(const char *rootContext)
     // Tasks sync source parameters
     sprintf(nodeName, "%s%s", rootContext, "/spds/sources/tasks");
 
-    node = dmt->getManagementNode(nodeName);
+    node = dmt->readManagementNode(nodeName);
     if ( ! node ) {
         lastErrorCode = ERR_INVALID_CONTEXT;
         goto finally;
@@ -208,7 +208,7 @@ int settings(const char *rootContext)
     // Notes sync source parameters
     sprintf(nodeName, "%s%s", rootContext, "/spds/sources/notes");
 
-    node = dmt->getManagementNode(nodeName);
+    node = dmt->readManagementNode(nodeName);
     if ( ! node ) {
         lastErrorCode = ERR_INVALID_CONTEXT;
         goto finally;
@@ -228,13 +228,13 @@ int settings(const char *rootContext)
     // Briefcase sync source parameters
     sprintf(nodeName, "%s%s", rootContext, "/spds/sources/briefcase");
 
-    node = dmt->getManagementNode(nodeName);
+    node = dmt->readManagementNode(nodeName);
     if ( ! node ) {
         lastErrorCode = ERR_INVALID_CONTEXT;
         goto finally;
     }
 
-    node->setPropertyValue("sync", "none");
+    node->setPropertyValue("sync", "two-way");
     node->setPropertyValue("last", "0");
     node->setPropertyValue("name", "briefcase");
     node->setPropertyValue("type", "application/*");
@@ -248,7 +248,7 @@ int settings(const char *rootContext)
     // Mail sync source parameters
     sprintf(nodeName, "%s%s", rootContext, "/spds/sources/mails");
 
-    node = dmt->getManagementNode(nodeName);
+    node = dmt->readManagementNode(nodeName);
     if ( ! node ) {
         lastErrorCode = ERR_INVALID_CONTEXT;
         goto finally;

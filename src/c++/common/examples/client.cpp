@@ -17,6 +17,9 @@
  */
 
 #include "base/fscapi.h"
+// Define the test configuration
+#include "examples/config.h"
+
 //#include "crtdbg.h"
 #include "base/messages.h"
 #include "base/Log.h"
@@ -26,8 +29,10 @@
 #include "spds/constants.h"
 #include "client/SyncClient.h"
 #include "client/DMTClientConfig.h"
+#ifdef TEST_SYNCSOURCE
 #include "examples/TestSyncSource.h"
 #include "examples/TestSyncSource2.h"
+#endif
 #include "filter/AllClause.h"
 #include "filter/ClauseUtil.h"
 #include "filter/LogicalClause.h"
@@ -38,24 +43,32 @@
 #include "syncml/formatter/Formatter.h"
 #include "spds/DefaultConfigFactory.h"
 
+#ifdef TEST_EVENT_HANDLING
 #include "examples/listeners/TestSyncListener.h"
 #include "examples/listeners/TestSyncSourceListener.h"
 #include "examples/listeners/TestSyncStatusListener.h"
 #include "examples/listeners/TestSyncItemListener.h"
 #include "examples/listeners/TestTransportListener.h"
 #include "event/SetListener.h"
+#endif
 
-// Define the test configuration
-#include "examples/config.h"
-
-
+#ifdef TEST_FILTER
 void testFilter();
+#endif
+#ifdef TEST_CLAUSE
 void testClause();
+#endif
+#ifdef TEST_CONFIG_FILTER
 void testConfigFilter();
+#endif
+#ifdef TEST_ENCRYPTION
 void testEncryption();
-void createConfig(DMTClientConfig& config);
+#endif
+#ifdef TEXT_XMLPROCESSOR
 static void testXMLProcessor();
+#endif
 
+void createConfig(DMTClientConfig& config);
 
 #define APPLICATION_URI "Funambol/SyncclientPIM"
 #define LOG_TITLE		"Funambol Win32 Example Log"
@@ -81,8 +94,8 @@ int main(int argc, char** argv) {
 
     // Init LOG
     Log(0, LOG_PATH, LOG_NAME);
-	LOG.reset(LOG_TITLE);
-    LOG.setLevel(LOG_LEVEL);
+    LOG.reset(LOG_TITLE);
+    LOG.setLevel(LOG_LEVEL_NONE);
     
 #if 0
     _CrtSetDbgFlag (ON);
@@ -236,6 +249,7 @@ int main(int argc, char** argv) {
     return 0;
 }
 
+#ifdef TEST_XMLPROCESSOR
 static void testXMLProcessor(void)
 {
     const char xml1[] = 
@@ -306,7 +320,7 @@ static void testXMLProcessor(void)
     if (empty)
         delete [] empty;
 }
-
+#endif
 
 //
 // Function to create a default config.
