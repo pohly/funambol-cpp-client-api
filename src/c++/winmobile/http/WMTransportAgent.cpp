@@ -108,11 +108,20 @@ WMTransportAgent::~WMTransportAgent(){}
  */
 char* WMTransportAgent::sendMessage(const char* msg) {
 
+    #ifdef USE_ZLIB
+    // This is the locally allocated buffer for the compressed message.
+    // Must be deleted after send.
+    Bytef* compr = NULL;
+    wchar_t* wbuffer = NULL;
+    wchar_t* buffer = NULL;
+    #endif
+    
+    char* bufferA = NULL;
     ENTERING(L"TransportAgent::sendMessage");
     int status = -1;
     unsigned int contentLength = 0;
-    WCHAR* wurlHost;
-    WCHAR* wurlResource;
+    WCHAR* wurlHost=NULL;
+    WCHAR* wurlResource=NULL;
     char* response = NULL;
     HINTERNET inet       = NULL,
               connection = NULL,
@@ -221,7 +230,7 @@ char* WMTransportAgent::sendMessage(const char* msg) {
 #ifdef USE_ZLIB
     // This is the locally allocated buffer for the compressed message.
     // Must be deleted after send.
-    Bytef* compr = NULL;
+    //Bytef* compr = NULL;
 
     //
     // Say the client can accept the zipped content but the first message is clear
@@ -236,7 +245,7 @@ char* WMTransportAgent::sendMessage(const char* msg) {
         // DEFLATE (compress data)
         //
         uLong comprLen = contentLength;
-        Bytef* compr = new Bytef[contentLength];
+        /*Bytef* */ compr = new Bytef[contentLength];
         
         // Compresses the source buffer into the destination buffer.
         int err = compress(compr, &comprLen, (Bytef*)msg, contentLength);
@@ -386,7 +395,7 @@ char* WMTransportAgent::sendMessage(const char* msg) {
     // Read headers: get contentLenght/Uncompressed-Content-Length.
     //
     long uncompressedContentLenght = 0;
-    wchar_t* wbuffer = new wchar_t[1024];
+    /*wchar_t* */ wbuffer = new wchar_t[1024];
     DWORD ddsize = 1024;
     if (!HttpQueryInfo(request,HTTP_QUERY_RAW_HEADERS_CRLF ,(LPVOID)wbuffer,&ddsize,NULL)) {
         if (ERROR_HTTP_HEADER_NOT_FOUND == GetLastError()) {
@@ -398,7 +407,7 @@ char* WMTransportAgent::sendMessage(const char* msg) {
            
     // isToDeflate to be set
     DWORD dwSize = 512;
-    wchar_t* buffer = new wchar_t[dwSize];     
+    /*wchar_t* */ buffer = new wchar_t[dwSize];     
                    
     wcscpy(buffer, TEXT("Accept-Encoding"));
     HttpQueryInfo(request,HTTP_QUERY_CUSTOM,(LPVOID)buffer,&dwSize,NULL);
@@ -469,7 +478,7 @@ char* WMTransportAgent::sendMessage(const char* msg) {
     int realResponseLenght = 0;
     // Allocate a block of memory for response read.
     const unsigned int bufsize = getReadBufferSize();
-    char* bufferA = new char[bufsize+1];
+    /*char* */ bufferA = new char[bufsize+1];
 
     // Fire Data Received Transport Event.
     fireTransportEvent(contentLength, RECEIVE_DATA_BEGIN);
