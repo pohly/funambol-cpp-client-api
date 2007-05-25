@@ -241,9 +241,10 @@ static StringBuffer getTokenValue(const StringBuffer* line, const char* token, b
  * @param boundary (in)  - mime boundary string
  * @param ret      (out) - parsed BodyPart
  * @param next     (i/o) - offset of the new boundary
+ * @param isAttach (in)  - says if the current body part is an attachment or not
  */
 static bool getBodyPart(StringBuffer &rfcBody, StringBuffer &boundary,
-                       BodyPart &ret, size_t &next)
+                       BodyPart &ret, size_t &next, bool isAttach)
 {   
     LOG.debug("getBodyPart START");
 
@@ -334,7 +335,7 @@ static bool getBodyPart(StringBuffer &rfcBody, StringBuffer &boundary,
     // move to the beginning of the content
     hdrlen += strlen(newline) + strlen(newline); // added 2 new line that separate the bodyparts
     // get bodypart content 
-    if( !ret.getFilename() ) {
+    if( isAttach == false) { // || !ret.getFilename() ) {
 		// this is not an attachment
         if(ret.getEncoding() && strcmp(ret.getEncoding(), "quoted-printable") == 0 ) {
             char *decoded = qp_decode( part.substr(hdrlen) );
@@ -846,11 +847,11 @@ int MailMessage::parseBodyParts(StringBuffer &rfcBody) {
     LOG.debug("parseBodyParts START");
 
     size_t nextBoundary = rfcBody.find(bound);
-    getBodyPart(rfcBody, bound, body, nextBoundary);
+    getBodyPart(rfcBody, bound, body, nextBoundary, false);
 
     if (contentType.ifind("multipart/alternative") == StringBuffer::npos) {        
         // If it's not multipart/alternative, get the other parts
-        while( getBodyPart(rfcBody, bound, part, nextBoundary) ) {
+        while( getBodyPart(rfcBody, bound, part, nextBoundary, true) ) {
             // some problem in the attachment?
             if( part.getContent() ) {
                 attachments.add(part);
