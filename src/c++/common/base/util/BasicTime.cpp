@@ -153,7 +153,7 @@ int BasicTime::parseRfc822(const char *date)
 		sscanf(time, "%d:%d", &hour, &min);
 
 	// Timezone ---------------------------------
-    if ( strcmp(timeZone, "GMT") ) {
+    if ( strcmp(timeZone, "GMT") != 0 && strcmp(timeZone, "UT") != 0) {
 		// is this explicit time?
 		if ( timeZone[0] == '+' || timeZone[0]== '-' ) {
 			char wcH[4] = "+00";
@@ -176,19 +176,24 @@ int BasicTime::parseRfc822(const char *date)
 			tzMin = atoi(wcM);
 		}
 		// otherwise it could be one string with the time
-		else if ( strcmp(timeZone, "EDT") )
+        else if ( strcmp(timeZone, "EDT") == 0) {
 			tzHour = -4;
-		else if ( strcmp(timeZone, "EST")
-                  ||  strcmp(timeZone, "CDT") )
+        }
+		else if ( strcmp(timeZone, "EST") == 0
+            ||  strcmp(timeZone, "CDT") == 0) {
 			tzHour = -5;
-		else if ( strcmp(timeZone, "CST")
-                  ||  strcmp(timeZone, "MDT") )
+        }
+		else if ( strcmp(timeZone, "CST") == 0
+            ||  strcmp(timeZone, "MDT") == 0) {
 			tzHour = -6;
-		else if ( strcmp(timeZone, "MST")
-                  ||  strcmp(timeZone, "PDT") )
+        }
+		else if ( strcmp(timeZone, "MST") == 0
+            ||  strcmp(timeZone, "PDT") == 0 ){
 			tzHour = -7;
-		else if ( strcmp(timeZone, "PST") )
+        }
+        else if ( strcmp(timeZone, "PST") == 0) {
 			tzHour = -8;
+        }
 	}
 
 	// clean up
