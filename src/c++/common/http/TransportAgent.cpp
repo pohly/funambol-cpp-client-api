@@ -83,3 +83,11 @@ void TransportAgent::setUserAgent(const char* ua) {
 const char* TransportAgent::getUserAgent() {
     return stringdup(userAgent);
 }
+
+void TransportAgent::setCompression(char* newCompression){
+    compression = newCompression;
+}
+
+char* TransportAgent::getCompression(){
+    return compression;
+}

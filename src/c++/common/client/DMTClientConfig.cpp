@@ -663,6 +663,10 @@ BOOL DMTClientConfig::readConnConfig(ManagementNode& syncMLNode,
     accessConfig.setUserAgent(tmp);
     delete [] tmp;
 
+    tmp = connNode.readPropertyValue(PROPERTY_ENABLE_COMPRESSION);     
+    accessConfig.setCompression(tmp);
+    delete [] tmp;
+
     return TRUE;
 }
 
@@ -685,6 +689,7 @@ void DMTClientConfig::saveConnConfig(ManagementNode& syncMLNode,
     sprintf(buf, "%lu", accessConfig.getReadBufferSize());
     connNode.setPropertyValue(PROPERTY_READ_BUFFER_SIZE, buf);  
     connNode.setPropertyValue(PROPERTY_USER_AGENT, accessConfig.getUserAgent());
+    connNode.setPropertyValue(PROPERTY_ENABLE_COMPRESSION, accessConfig.getCompression());
 }
 
 BOOL DMTClientConfig::readExtAccessConfig(ManagementNode& syncMLNode,

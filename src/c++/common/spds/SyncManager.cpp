@@ -312,7 +312,7 @@ int SyncManager::prepareSync(SyncSource** s) {
         const char* proxyPwd  = config.getAccessConfig().getProxyPassword();
         proxy.setProxy(NULL, 0, proxyUser, proxyPwd);
     }
-    
+ 
     mappings = new ArrayList*[sourcesNumber + 1];
     for (count = 0; count < sourcesNumber; count++) {
         mappings[count] = new ArrayList();
@@ -431,6 +431,7 @@ int SyncManager::prepareSync(SyncSource** s) {
             const char* ua = getUserAgent(config);
             LOG.debug("User Agent = %s", ua);
             transportAgent->setUserAgent(ua);
+            transportAgent->setCompression(config.getAccessConfig().getCompression());
             delete [] ua; ua = NULL;
         } 
         else {

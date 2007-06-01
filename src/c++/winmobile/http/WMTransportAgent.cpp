@@ -1,41 +1,41 @@
 /*
- * Copyright (C) 2003-2007 Funambol
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
- */
+* Copyright (C) 2003-2007 Funambol
+*
+* This program is free software; you can redistribute it and/or modify
+* it under the terms of the GNU General Public License as published by
+* the Free Software Foundation; either version 2 of the License, or
+* (at your option) any later version.
+*
+* This program is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+* GNU General Public License for more details.
+*
+* You should have received a copy of the GNU General Public License
+* along with this program; if not, write to the Free Software
+* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+*/
 
 /*
- How to test SSL connections 
- ----------------------------
+How to test SSL connections 
+----------------------------
 
- On the server:
- 1) create the keystore:
-    %JAVA_HOME%\bin\keytool -genkey -alias tomcat -keyalg RSA
- 2) In $CATALINA_HOME/conf/server.xml uncomment the lines:
-    <Connector className="org.apache.catalina.connector.http.HttpConnector"
-               port="8443" minProcessors="5" maxProcessors="75"
-               enableLookups="true"
-               acceptCount="10" debug="0" scheme="https" secure="true">
-      <Factory className="org.apache.catalina.net.SSLServerSocketFactory" clientAuth="false" protocol="TLS"/>
-    </Connector>
- 2) Export the certificate from the key store:
-    %JAVA_HOME%\bin\keytool -export -alias tomcat -file myroot.cer  
+On the server:
+1) create the keystore:
+%JAVA_HOME%\bin\keytool -genkey -alias tomcat -keyalg RSA
+2) In $CATALINA_HOME/conf/server.xml uncomment the lines:
+<Connector className="org.apache.catalina.connector.http.HttpConnector"
+port="8443" minProcessors="5" maxProcessors="75"
+enableLookups="true"
+acceptCount="10" debug="0" scheme="https" secure="true">
+<Factory className="org.apache.catalina.net.SSLServerSocketFactory" clientAuth="false" protocol="TLS"/>
+</Connector>
+2) Export the certificate from the key store:
+%JAVA_HOME%\bin\keytool -export -alias tomcat -file myroot.cer  
 
- On the emulator:
- 1) Copy myroot.cer in a device/emulator directory
- 2) Click on it to import the certificate as a trusted CA
+On the emulator:
+1) Copy myroot.cer in a device/emulator directory
+2) Click on it to import the certificate as a trusted CA
 
 */
 
@@ -59,22 +59,22 @@
 #endif
 
 /*
- * Constructor.
- * In this implementation newProxy is ignored, since proxy configuration
- * is taken from the WinInet subsystem.
- *
- * @param url the url where messages will be sent with sendMessage()
- * @param proxy proxy information or NULL if no proxy should be used
- */
+* Constructor.
+* In this implementation newProxy is ignored, since proxy configuration
+* is taken from the WinInet subsystem.
+*
+* @param url the url where messages will be sent with sendMessage()
+* @param proxy proxy information or NULL if no proxy should be used
+*/
 WMTransportAgent::WMTransportAgent(
-                    URL& newURL, Proxy& newProxy, 
-                    unsigned int maxResponseTimeout, 
-                    unsigned int maxmsgsize)
-            // Use base class constructor to initialize common attributes
-            : TransportAgent(newURL,
-                             newProxy,
-                             maxResponseTimeout,
-                             maxmsgsize)
+                                   URL& newURL, Proxy& newProxy, 
+                                   unsigned int maxResponseTimeout, 
+                                   unsigned int maxmsgsize)
+                                   // Use base class constructor to initialize common attributes
+                                   : TransportAgent(newURL,
+                                   newProxy,
+                                   maxResponseTimeout,
+                                   maxmsgsize)
 {
 
 #ifdef USE_ZLIB
@@ -88,8 +88,8 @@ WMTransportAgent::WMTransportAgent(
 #ifdef WIN32_PLATFORM_PSPC
         lastErrorCode = ERR_INTERNET_CONNECTION_MISSING;
         sprintf(lastErrorMsg, "%s: %d",
-                 "Internet Connection Missing",
-                 ERR_INTERNET_CONNECTION_MISSING);
+            "Internet Connection Missing",
+            ERR_INTERNET_CONNECTION_MISSING);
 #else
         LOG.error("Warning: internet connection missing.");
 #endif
@@ -101,21 +101,23 @@ WMTransportAgent::~WMTransportAgent(){}
 
 
 /*
- * Sends the given SyncML message to the server specified
- * by the instal property 'url'. Returns the response status code or -1
- * if it was not possible initialize the connection.
- *
- */
+* Sends the given SyncML message to the server specified
+* by the instal property 'url'. Returns the response status code or -1
+* if it was not possible initialize the connection.
+*
+*/
 char* WMTransportAgent::sendMessage(const char* msg) {
 
-    #ifdef USE_ZLIB
-    // This is the locally allocated buffer for the compressed message.
-    // Must be deleted after send.
-    Bytef* compr = NULL;
-    wchar_t* wbuffer = NULL;
-    wchar_t* buffer = NULL;
-    #endif
-    
+#ifdef USE_ZLIB
+
+        // This is the locally allocated buffer for the compressed message.
+        // Must be deleted after send.
+        Bytef* compr = NULL;
+        wchar_t* wbuffer = NULL;
+        wchar_t* buffer = NULL;
+
+#endif
+
     char* bufferA = NULL;
     ENTERING(L"TransportAgent::sendMessage");
     int status = -1;
@@ -124,8 +126,8 @@ char* WMTransportAgent::sendMessage(const char* msg) {
     WCHAR* wurlResource=NULL;
     char* response = NULL;
     HINTERNET inet       = NULL,
-              connection = NULL,
-              request    = NULL;
+        connection = NULL,
+        request    = NULL;
 
 
     // Check sending msg and host.
@@ -142,22 +144,22 @@ char* WMTransportAgent::sendMessage(const char* msg) {
 
 
     DWORD size  = 0,
-          read  = 0,
-          flags = INTERNET_FLAG_RELOAD | 
-                  INTERNET_FLAG_NO_CACHE_WRITE | 
-                  INTERNET_FLAG_KEEP_CONNECTION |     // This is necessary if authentication is required.
-                  INTERNET_FLAG_NO_COOKIES;           // This is used to avoid possible server errors on successive sessions.
+        read  = 0,
+        flags = INTERNET_FLAG_RELOAD | 
+        INTERNET_FLAG_NO_CACHE_WRITE | 
+        INTERNET_FLAG_KEEP_CONNECTION |     // This is necessary if authentication is required.
+        INTERNET_FLAG_NO_COOKIES;           // This is used to avoid possible server errors on successive sessions.
 
-	LPCWSTR acceptTypes[2] = {TEXT("*/*"), NULL};
-    
+    LPCWSTR acceptTypes[2] = {TEXT("*/*"), NULL};
+
 
     // Set flags for secure connection (https).
     if (url.isSecure()) {
         flags = flags
-              | INTERNET_FLAG_SECURE
-              | INTERNET_FLAG_IGNORE_CERT_CN_INVALID
-              | INTERNET_FLAG_IGNORE_CERT_DATE_INVALID
-              ;
+            | INTERNET_FLAG_SECURE
+            | INTERNET_FLAG_IGNORE_CERT_CN_INVALID
+            | INTERNET_FLAG_IGNORE_CERT_DATE_INVALID
+            ;
     }
 
 
@@ -181,37 +183,37 @@ char* WMTransportAgent::sendMessage(const char* msg) {
     //
     wurlHost = toWideChar(url.host);
     if (!(connection = InternetConnect (inet,
-                                        wurlHost,
-                                        url.port,
-                                        NULL, // username
-                                        NULL, // password
-                                        INTERNET_SERVICE_HTTP,
-                                        0,
-                                        0))) {
-        lastErrorCode = ERR_CONNECT;
-        sprintf (lastErrorMsg, "%s: %d", "InternetConnect Error", GetLastError());
-        LOG.error(lastErrorMsg);
-        goto exit;
+        wurlHost,
+        url.port,
+        NULL, // username
+        NULL, // password
+        INTERNET_SERVICE_HTTP,
+        0,
+        0))) {
+            lastErrorCode = ERR_CONNECT;
+            sprintf (lastErrorMsg, "%s: %d", "InternetConnect Error", GetLastError());
+            LOG.error(lastErrorMsg);
+            goto exit;
     }
 
-    
+
     LOG.debug("Requesting resource %s", url.resource);
 
     //
     // Open an HTTP request handle.
-	//
+    //
     wurlResource = toWideChar(url.resource);
     if (!(request = HttpOpenRequest(connection,
-                                    METHOD_POST,
-                                    wurlResource,
-                                    HTTP_VERSION,
-                                    NULL,
-                                    acceptTypes,
-                                    flags, 0))) {
-        lastErrorCode = ERR_CONNECT;
-        sprintf (lastErrorMsg, "%s: %d", "HttpOpenRequest Error", GetLastError());
-        LOG.error(lastErrorMsg);
-        goto exit;
+        METHOD_POST,
+        wurlResource,
+        HTTP_VERSION,
+        NULL,
+        acceptTypes,
+        flags, 0))) {
+            lastErrorCode = ERR_CONNECT;
+            sprintf (lastErrorMsg, "%s: %d", "HttpOpenRequest Error", GetLastError());
+            LOG.error(lastErrorMsg);
+            goto exit;
     }
 
 
@@ -228,27 +230,28 @@ char* WMTransportAgent::sendMessage(const char* msg) {
     const void* msgToSend = (const void*)msg;
 
 #ifdef USE_ZLIB
-    // This is the locally allocated buffer for the compressed message.
-    // Must be deleted after send.
-    //Bytef* compr = NULL;
+    if(strcmp(compression,"1") == 0){
+        // This is the locally allocated buffer for the compressed message.
+        // Must be deleted after send.
+        //Bytef* compr = NULL;
 
-    //
-    // Say the client can accept the zipped content but the first message is clear
-    //
-    if (isFirstMessage || !isToDeflate) { 
-        wsprintf(headers, TEXT("Content-Type: %s\r\nContent-Length: %d\r\nAccept-Encoding: deflate"),
-                          SYNCML_CONTENT_TYPE, contentLength);    
-        isFirstMessage = false;
-    }
-    else if (isToDeflate) {
         //
-        // DEFLATE (compress data)
+        // Say the client can accept the zipped content but the first message is clear
         //
-        uLong comprLen = contentLength;
-        /*Bytef* */ compr = new Bytef[contentLength];
-        
-        // Compresses the source buffer into the destination buffer.
-        int err = compress(compr, &comprLen, (Bytef*)msg, contentLength);
+        if (isFirstMessage || !isToDeflate) { 
+            wsprintf(headers, TEXT("Content-Type: %s\r\nContent-Length: %d\r\nAccept-Encoding: deflate"),
+                SYNCML_CONTENT_TYPE, contentLength);    
+            isFirstMessage = false;
+        }
+        else if (isToDeflate) {
+            //
+            // DEFLATE (compress data)
+            //
+            uLong comprLen = contentLength;
+            /*Bytef* */ compr = new Bytef[contentLength];
+
+            // Compresses the source buffer into the destination buffer.
+            int err = compress(compr, &comprLen, (Bytef*)msg, contentLength);
             if (err != Z_OK) {
                 lastErrorCode = ERR_HTTP_DEFLATE;
                 sprintf(lastErrorMsg, "ZLIB: error occurred compressing data.");
@@ -257,14 +260,17 @@ char* WMTransportAgent::sendMessage(const char* msg) {
                 goto exit;
             }            
 
-        // Msg to send is the compressed data.
-        msgToSend = (const void*)compr;
-        int uncomprLenght = contentLength;
-        contentLength = comprLen;
+            // Msg to send is the compressed data.
+            msgToSend = (const void*)compr;
+            int uncomprLenght = contentLength;
+            contentLength = comprLen;
 
-        wsprintf(headers, TEXT("Content-Type: %s\r\nContent-Length: %d\r\nAccept-Encoding: deflate\r\nUncompressed-Content-Length: %d\r\nContent-Encoding: deflate"),
-                          SYNCML_CONTENT_TYPE, contentLength, uncomprLenght);                                    
-    }
+            wsprintf(headers, TEXT("Content-Type: %s\r\nContent-Length: %d\r\nAccept-Encoding: deflate\r\nUncompressed-Content-Length: %d\r\nContent-Encoding: deflate"),
+                SYNCML_CONTENT_TYPE, contentLength, uncomprLenght);                                    
+        }
+    }else{
+        wsprintf(headers, TEXT("Content-Type: %s\r\nContent-Length: %d"), SYNCML_CONTENT_TYPE, contentLength);
+    }//end if compression
 #else
     wsprintf(headers, TEXT("Content-Type: %s\r\nContent-Length: %d"), SYNCML_CONTENT_TYPE, contentLength);
 #endif
@@ -283,31 +289,31 @@ char* WMTransportAgent::sendMessage(const char* msg) {
 
         // Send a request to the HTTP server.
         if (!HttpSendRequest(request, headers, wcslen(headers),
-                             (LPVOID)msgToSend, contentLength)) {
-            DWORD code = GetLastError();
+            (LPVOID)msgToSend, contentLength)) {
+                DWORD code = GetLastError();
 
-            if (code == 12002) {
-                lastErrorCode = ERR_HTTP_TIME_OUT;
-                sprintf(lastErrorMsg, "Network error: the request has timed out. %d", code);
-                LOG.debug(lastErrorMsg);
-                goto exit;
-            }
-            else if (code == 12019) {
-                lastErrorCode = ERR_HTTP_TIME_OUT;
-                sprintf(lastErrorMsg, "Network error: the handle supplied is not in the correct state. %d", code);
-                LOG.debug(lastErrorMsg);
-                goto exit;
-            }
-            else if (code == ERROR_INTERNET_CANNOT_CONNECT) { // 12029
-                lastErrorCode = ERROR_INTERNET_CANNOT_CONNECT;
-                sprintf(lastErrorMsg, "Network error: the attempt to connect to the server failed. %d", code);
-                LOG.debug(lastErrorMsg);
-                goto exit;
-            }
-            LOG.info("Network error (%d) writing data from client: retry %i time...",
-                     code, numretries + 1);
-           
-            continue;
+                if (code == 12002) {
+                    lastErrorCode = ERR_HTTP_TIME_OUT;
+                    sprintf(lastErrorMsg, "Network error: the request has timed out. %d", code);
+                    LOG.debug(lastErrorMsg);
+                    goto exit;
+                }
+                else if (code == 12019) {
+                    lastErrorCode = ERR_HTTP_TIME_OUT;
+                    sprintf(lastErrorMsg, "Network error: the handle supplied is not in the correct state. %d", code);
+                    LOG.debug(lastErrorMsg);
+                    goto exit;
+                }
+                else if (code == ERROR_INTERNET_CANNOT_CONNECT) { // 12029
+                    lastErrorCode = ERROR_INTERNET_CANNOT_CONNECT;
+                    sprintf(lastErrorMsg, "Network error: the attempt to connect to the server failed. %d", code);
+                    LOG.debug(lastErrorMsg);
+                    goto exit;
+                }
+                LOG.info("Network error (%d) writing data from client: retry %i time...",
+                    code, numretries + 1);
+
+                continue;
         }
 
         LOG.debug(MESSAGE_SENT);
@@ -317,14 +323,14 @@ char* WMTransportAgent::sendMessage(const char* msg) {
         // Check the status code.
         size = sizeof(status);
         HttpQueryInfo (request,
-                       HTTP_QUERY_STATUS_CODE | HTTP_QUERY_FLAG_NUMBER,
-                       (LPDWORD)&status,
-                       (LPDWORD)&size,
-                       NULL);
+            HTTP_QUERY_STATUS_CODE | HTTP_QUERY_FLAG_NUMBER,
+            (LPDWORD)&status,
+            (LPDWORD)&size,
+            NULL);
 
         if (status == HTTP_ERROR) { // 400 bad request error. retry to send the message
             LOG.info("Network error in server receiving data. "
-                     "Server responds 400: retry %i time...", numretries + 1);
+                "Server responds 400: retry %i time...", numretries + 1);
         }        
         else if (status == HTTP_STATUS_SERVER_ERROR ) {
             lastErrorCode = ERR_SERVER_ERROR;
@@ -332,7 +338,7 @@ char* WMTransportAgent::sendMessage(const char* msg) {
             LOG.debug(lastErrorMsg);
             goto exit;   
         }
-        
+
         // to handle the http error code for the tcp/ip notification with wrong credential
         else if (status == ERR_CREDENTIAL) {  // 401
             lastErrorCode = ERR_CREDENTIAL;
@@ -377,89 +383,92 @@ char* WMTransportAgent::sendMessage(const char* msg) {
     //Initialize response
     contentLength=0;
     HttpQueryInfo (request,
-                   HTTP_QUERY_CONTENT_LENGTH | HTTP_QUERY_FLAG_NUMBER,
-                   (LPDWORD)&contentLength,
-                   (LPDWORD)&size,
-                   NULL);
+        HTTP_QUERY_CONTENT_LENGTH | HTTP_QUERY_FLAG_NUMBER,
+        (LPDWORD)&contentLength,
+        (LPDWORD)&size,
+        NULL);
 
-
-#ifdef USE_ZLIB 
-    // Release the send buffer (also set msgToSend to NULL, to 
-    // avoid leaving a dangling pointer around.
-    if (compr) {
-        delete [] compr; compr = NULL;
-        msgToSend = NULL;
-    }
-
-    //
-    // Read headers: get contentLenght/Uncompressed-Content-Length.
-    //
-    long uncompressedContentLenght = 0;
-    /*wchar_t* */ wbuffer = new wchar_t[1024];
-    DWORD ddsize = 1024;
-    if (!HttpQueryInfo(request,HTTP_QUERY_RAW_HEADERS_CRLF ,(LPVOID)wbuffer,&ddsize,NULL)) {
-        if (ERROR_HTTP_HEADER_NOT_FOUND == GetLastError()) {
-            isToDeflate = FALSE;
-        }
-    }
-    LOG.debug("Header: %ls", wbuffer);
-    delete [] wbuffer; wbuffer = NULL;
-           
-    // isToDeflate to be set
-    DWORD dwSize = 512;
-    /*wchar_t* */ buffer = new wchar_t[dwSize];     
-                   
-    wcscpy(buffer, TEXT("Accept-Encoding"));
-    HttpQueryInfo(request,HTTP_QUERY_CUSTOM,(LPVOID)buffer,&dwSize,NULL);
-    if (GetLastError() == ERROR_HTTP_HEADER_NOT_FOUND) {
-        isToDeflate = FALSE;
-    } else {
-        isToDeflate = TRUE;
-    }	
     
-    wcscpy(buffer, TEXT("Content-Encoding"));
-    HttpQueryInfo(request,HTTP_QUERY_CUSTOM,(LPVOID)buffer,&dwSize,NULL);
-    if (GetLastError() == ERROR_HTTP_HEADER_NOT_FOUND) {
-        isToInflate = FALSE;
-    } else {
-        if (wcscmp(buffer, TEXT("deflate")) == 0)
-            isToInflate = TRUE;
-        else
-            isToInflate = FALSE;
-    }
+#ifdef USE_ZLIB 
+    long uncompressedContentLenght = 0;
+    if(strcmp(compression,"1")==0){
+        // Release the send buffer (also set msgToSend to NULL, to 
+        // avoid leaving a dangling pointer around.
+        if (compr) {
+            delete [] compr; compr = NULL;
+            msgToSend = NULL;
+        }
 
-    if(isToInflate) {
-        wcscpy(buffer, TEXT("Uncompressed-Content-Length"));
+        //
+        // Read headers: get contentLenght/Uncompressed-Content-Length.
+        //
+        uncompressedContentLenght = 0;
+        /*wchar_t* */ wbuffer = new wchar_t[1024];
+        DWORD ddsize = 1024;
+        if (!HttpQueryInfo(request,HTTP_QUERY_RAW_HEADERS_CRLF ,(LPVOID)wbuffer,&ddsize,NULL)) {
+            if (ERROR_HTTP_HEADER_NOT_FOUND == GetLastError()) {
+                isToDeflate = FALSE;
+            }
+        }
+        LOG.debug("Header: %ls", wbuffer);
+        delete [] wbuffer; wbuffer = NULL;
+
+        // isToDeflate to be set
+        DWORD dwSize = 512;
+        /*wchar_t* */ buffer = new wchar_t[dwSize];     
+
+        wcscpy(buffer, TEXT("Accept-Encoding"));
         HttpQueryInfo(request,HTTP_QUERY_CUSTOM,(LPVOID)buffer,&dwSize,NULL);
         if (GetLastError() == ERROR_HTTP_HEADER_NOT_FOUND) {
-            LOG.error("Error reading 'Uncompressed-Content-Length' header. "
-                      "Can't inflate data.");
-            status = ERR_HTTP_INFLATE;
-            lastErrorCode = ERR_HTTP_INFLATE;
-            goto exit;
-
+            isToDeflate = FALSE;
         } else {
-            uncompressedContentLenght = wcstol(buffer, NULL, 10);
-            LOG.debug("Uncompressed-Content-Length: %ld", uncompressedContentLenght);
-            if(uncompressedContentLenght < 0) {
-                LOG.error("Invalid 'Uncompressed-Content-Length' header. "
-                          "Can't inflate data.");
+            isToDeflate = TRUE;
+        }	
+
+        wcscpy(buffer, TEXT("Content-Encoding"));
+        HttpQueryInfo(request,HTTP_QUERY_CUSTOM,(LPVOID)buffer,&dwSize,NULL);
+        if (GetLastError() == ERROR_HTTP_HEADER_NOT_FOUND) {
+            isToInflate = FALSE;
+        } else {
+            if (wcscmp(buffer, TEXT("deflate")) == 0)
+                isToInflate = TRUE;
+            else
+                isToInflate = FALSE;
+        }
+
+        if(isToInflate) {
+            wcscpy(buffer, TEXT("Uncompressed-Content-Length"));
+            HttpQueryInfo(request,HTTP_QUERY_CUSTOM,(LPVOID)buffer,&dwSize,NULL);
+            if (GetLastError() == ERROR_HTTP_HEADER_NOT_FOUND) {
+                LOG.error("Error reading 'Uncompressed-Content-Length' header. "
+                    "Can't inflate data.");
                 status = ERR_HTTP_INFLATE;
                 lastErrorCode = ERR_HTTP_INFLATE;
                 goto exit;
+
+            } else {
+                uncompressedContentLenght = wcstol(buffer, NULL, 10);
+                LOG.debug("Uncompressed-Content-Length: %ld", uncompressedContentLenght);
+                if(uncompressedContentLenght < 0) {
+                    LOG.error("Invalid 'Uncompressed-Content-Length' header. "
+                        "Can't inflate data.");
+                    status = ERR_HTTP_INFLATE;
+                    lastErrorCode = ERR_HTTP_INFLATE;
+                    goto exit;
+                }
             }
         }
-    }
 
-    delete [] buffer;
-    buffer = NULL;
+        delete [] buffer;
+        buffer = NULL;
+    }//end if compression
 #endif
 
 
-// ================================== Reading Response ==============================
+    // ================================== Reading Response ==============================
     LOG.debug(READING_RESPONSE);
     LOG.debug("Content-length: %u", contentLength);
-	
+
     if (contentLength <= 0) {
         LOG.debug("Undefined content-length = %u. Using the maxMsgSize = %u.", contentLength, maxmsgsize);
         contentLength = maxmsgsize;
@@ -490,13 +499,13 @@ char* WMTransportAgent::sendMessage(const char* msg) {
             lastErrorCode = ERR_READING_CONTENT;
             sprintf(lastErrorMsg, "InternetReadFile Error: %d", code);
             goto exit;
-	}
+        }
 
         // Sanity check: some proxy could send additional bytes.
         // Correct 'read' value to be sure we won't overflow the 'response' buffer.
         if ((realResponseLenght + read) > contentLength) {
             LOG.info("Warning! %d bytes read -> truncating data to content-lenght = %d.",
-                        (realResponseLenght + read), contentLength);
+                (realResponseLenght + read), contentLength);
             read = contentLength - realResponseLenght;
         }
 
@@ -517,8 +526,8 @@ char* WMTransportAgent::sendMessage(const char* msg) {
     if (realResponseLenght <= 0) {
         lastErrorCode = ERR_READING_CONTENT;
         sprintf(lastErrorMsg,
-                    "Error reading HTTP response from Server: received data of size = %d.",
-                    realResponseLenght);
+            "Error reading HTTP response from Server: received data of size = %d.",
+            realResponseLenght);
         goto exit;
     }
 
@@ -535,32 +544,34 @@ char* WMTransportAgent::sendMessage(const char* msg) {
     //------------------------------------------------------------- Response read
 
 #ifdef USE_ZLIB
-    if (isToInflate) {
-        //
-        // INFLATE (decompress data)
-        //
-        uLong uncomprLen = uncompressedContentLenght;
-        Bytef* uncompr = new Bytef[uncomprLen + 1];        
+    if(strcmp(compression,"1")==0){
+        if (isToInflate) {
+            //
+            // INFLATE (decompress data)
+            //
+            uLong uncomprLen = uncompressedContentLenght;
+            Bytef* uncompr = new Bytef[uncomprLen + 1];        
 
-        // Decompresses the source buffer into the destination buffer.
-        int err = uncompress(uncompr, &uncomprLen, (Bytef*)response, contentLength);
+            // Decompresses the source buffer into the destination buffer.
+            int err = uncompress(uncompr, &uncomprLen, (Bytef*)response, contentLength);
 
-        if (err == Z_OK) {
-            delete [] response;
-            response = (char*)uncompr;
-            response[uncomprLen] = 0;
-        }   
-        else if (err < 0) {
-            LOG.error("Error from zlib: %s", zError(err));
+            if (err == Z_OK) {
+                delete [] response;
+                response = (char*)uncompr;
+                response[uncomprLen] = 0;
+            }   
+            else if (err < 0) {
+                LOG.error("Error from zlib: %s", zError(err));
 
-            delete [] response;
-            response = NULL;
-            status = ERR_HTTP_INFLATE;
-            lastErrorCode = ERR_HTTP_INFLATE;
-            sprintf(lastErrorMsg, "ZLIB: error occurred decompressing data from Server.");
-            goto exit;
+                delete [] response;
+                response = NULL;
+                status = ERR_HTTP_INFLATE;
+                lastErrorCode = ERR_HTTP_INFLATE;
+                sprintf(lastErrorMsg, "ZLIB: error occurred decompressing data from Server.");
+                goto exit;
+            }
         }
-    }
+    }//end if compression
 #endif
 
     LOG.debug("Response read:\n%s", response);
@@ -587,9 +598,11 @@ exit:
     if (bufferA)      delete [] bufferA;
 
 #ifdef USE_ZLIB
-    if (compr)        delete [] compr;
-    if (buffer)       delete [] buffer;
-    if (wbuffer)      delete [] wbuffer;
+
+        if (compr)        delete [] compr;
+        if (buffer)       delete [] buffer;
+        if (wbuffer)      delete [] wbuffer;
+
 #endif
 
     EXITING(L"TransportAgent::sendMessage");

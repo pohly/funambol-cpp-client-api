@@ -72,6 +72,7 @@
 #define PROPERTY_RESPONSE_TIMEOUT      "responseTimeout"
 #define PROPERTY_SOURCE_SCHEDULE       "schedule"
 #define PROPERTY_SOURCE_ENCRYPTION     "encryption"
+#define PROPERTY_ENABLE_COMPRESSION    "enableCompression"
 
 // DeviceConfig properties
 #define PROPERTY_VER_DTD                    "verDTD"

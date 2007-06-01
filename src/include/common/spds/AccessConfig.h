@@ -90,6 +90,7 @@ class AccessConfig {
         char*           userAgent           ;
         BOOL            checkConn           ;
         unsigned int    responseTimeout     ;
+        char*           compression         ;
 
         unsigned int dirty;
 
@@ -288,6 +289,12 @@ class AccessConfig {
         const char*  getUserAgent() const EXTRA_SECTION_02;
 
         void setUserAgent(const char*  v) EXTRA_SECTION_02;
+
+        void setCompression(const char*  v) EXTRA_SECTION_02;
+
+        char*  getCompression() const EXTRA_SECTION_02;
+
+        //void setCompression(BOOL v) EXTRA_SECTION_02;
 
 
         void setCheckConn(BOOL v) EXTRA_SECTION_02;
