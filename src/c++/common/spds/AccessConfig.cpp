@@ -45,7 +45,6 @@ AccessConfig::AccessConfig() {
     serverAuthType        = NULL;
     isServerAuthRequired  = FALSE;
     maxMsgSize            = 0;
-    maxModPerMsg          = 0;
     readBufferSize        = 0;
     userAgent             = NULL;
     proxyUsername         = NULL;
@@ -305,14 +304,6 @@ unsigned long AccessConfig::getReadBufferSize() const {
     return readBufferSize;
 }
 
-void AccessConfig::setMaxModPerMsg(unsigned long mod){
-    maxModPerMsg = mod;
-}
-
-unsigned long AccessConfig::getMaxModPerMsg() const {
-    return maxModPerMsg;
-}
-
 void AccessConfig::setEndSync(unsigned long timestamp) {
     endTimestamp = timestamp;
     dirty |= DIRTY_SYNC_END;
@@ -361,7 +352,6 @@ void AccessConfig::assign(const AccessConfig& s) {
     setServerNonce(s.getServerNonce());
     setClientNonce(s.getClientNonce());
     setMaxMsgSize(s.getMaxMsgSize());
-    setMaxModPerMsg(s.getMaxModPerMsg());
     setReadBufferSize(s.getReadBufferSize());
     setCheckConn(s.getCheckConn());
     setResponseTimeout(s.getResponseTimeout());

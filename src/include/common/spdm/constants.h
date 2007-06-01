@@ -55,7 +55,6 @@
 #define PROPERTY_SERVER_AUTH_TYPE      "serverAuthType"
 #define PROPERTY_IS_SERVER_REQUIRED    "isServerAuthRequired"
 #define PROPERTY_MAX_MSG_SIZE          "maxMsgSize"
-#define PROPERTY_MAX_MOD_PER_MSG       "maxModPerMsg"
 #define PROPERTY_SOURCE_DOWNLOAD_AGE   "downloadAge"
 #define PROPERTY_SOURCE_BODY_SIZE      "bodySize"
 #define PROPERTY_SOURCE_ATTACH_SIZE    "attachSize"

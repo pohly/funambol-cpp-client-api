@@ -713,10 +713,6 @@ BOOL DMTClientConfig::readExtAccessConfig(ManagementNode& syncMLNode,
     accessConfig.setEndSync(strtol(tmp, NULL, 10));
     delete [] tmp;
 
-    tmp = extNode.readPropertyValue(PROPERTY_MAX_MOD_PER_MSG);     
-    accessConfig.setMaxModPerMsg(strtol(tmp, NULL, 10));
-    delete [] tmp;
-
     return TRUE;
 }
 
@@ -736,8 +732,6 @@ void DMTClientConfig::saveExtAccessConfig(ManagementNode& syncMLNode,
     timestampToAnchor(accessConfig.getEndSync(), buf);
     extNode.setPropertyValue(PROPERTY_SYNC_END, buf);
 
-    sprintf(buf, "%lu", accessConfig.getMaxModPerMsg());
-    extNode.setPropertyValue(PROPERTY_MAX_MOD_PER_MSG, buf);
 }
 
 BOOL DMTClientConfig::readDevInfoConfig(ManagementNode& syncMLNode,

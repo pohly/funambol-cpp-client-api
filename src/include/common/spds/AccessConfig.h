@@ -51,8 +51,6 @@
  * isServerAuthRequired : Does the server require authentication?
  * maxMsgSize           : The maximum message size (Byte) accepted for XML 
  *                        messages received from server (server to client)
- * maxModPerMsg         : The maximum number of modifications sent in each XML 
- *                        message from client to server
  * readBufferSize       : Specifies the value for the size of the buffer used 
  *                        to store the incoming stream from server (byte)
  * userAgent            : The user agent string, will be attached to http 
@@ -85,7 +83,6 @@ class AccessConfig {
         char*           serverAuthType      ;
         BOOL            isServerAuthRequired;
         unsigned long   maxMsgSize          ;
-        unsigned long   maxModPerMsg        ;
         unsigned long   readBufferSize      ;
         char*           userAgent           ;
         BOOL            checkConn           ;
@@ -277,10 +274,6 @@ class AccessConfig {
         void setMaxMsgSize(unsigned long msgSize) EXTRA_SECTION_02;
 
         unsigned long getMaxMsgSize() const EXTRA_SECTION_02;
-
-        void setMaxModPerMsg(unsigned long msgSize) EXTRA_SECTION_02;
-
-        unsigned long getMaxModPerMsg() const EXTRA_SECTION_02;
         
         void setReadBufferSize(unsigned long bufferSize);
 

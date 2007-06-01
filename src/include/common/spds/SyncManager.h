@@ -150,7 +150,6 @@ class SyncManager {
         int maxMsgSize;       // the max message size. Default = 512k. Setting it implies LargeObject support.
         int maxObjSize;       // The maximum object size. The server gets this in the Meta init message and should obey it.
         BOOL loSupport;             // enable support for large objects - without it large outgoing items are not split
-        unsigned int maxModPerMsg;  // the max modification per message
         unsigned int readBufferSize; // the size of the buffer to store chunk of incoming stream.
         char  credentialInfo[1024]; // used to store info for the des;b64 encription
 

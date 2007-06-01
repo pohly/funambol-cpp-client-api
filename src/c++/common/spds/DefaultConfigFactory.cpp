@@ -53,7 +53,6 @@ AccessConfig* DefaultConfigFactory::getAccessConfig() {
     ac->setServerNonce          ("");
     ac->setClientNonce          ("");
     ac->setMaxMsgSize           (10000);
-    ac->setMaxModPerMsg         (100);
     ac->setReadBufferSize       (0);
     ac->setUserAgent            ("");
     ac->setCheckConn            (TRUE);
