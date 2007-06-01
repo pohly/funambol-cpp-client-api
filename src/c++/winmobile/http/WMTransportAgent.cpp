@@ -230,7 +230,7 @@ char* WMTransportAgent::sendMessage(const char* msg) {
     const void* msgToSend = (const void*)msg;
 
 #ifdef USE_ZLIB
-    if(strcmp(compression,"1") == 0){
+    if(compression){
         // This is the locally allocated buffer for the compressed message.
         // Must be deleted after send.
         //Bytef* compr = NULL;
@@ -391,7 +391,7 @@ char* WMTransportAgent::sendMessage(const char* msg) {
     
 #ifdef USE_ZLIB 
     long uncompressedContentLenght = 0;
-    if(strcmp(compression,"1")==0){
+    if(compression){
         // Release the send buffer (also set msgToSend to NULL, to 
         // avoid leaving a dangling pointer around.
         if (compr) {
@@ -544,7 +544,7 @@ char* WMTransportAgent::sendMessage(const char* msg) {
     //------------------------------------------------------------- Response read
 
 #ifdef USE_ZLIB
-    if(strcmp(compression,"1")==0){
+    if(compression){
         if (isToInflate) {
             //
             // INFLATE (decompress data)

@@ -370,8 +370,8 @@ void AccessConfig::assign(const AccessConfig& s) {
     dirty = s.getDirty();
 }
 
-void AccessConfig::setCompression(const char* v){
-        set(&compression, v);
+void AccessConfig::setCompression(BOOL v){
+        compression= v;
 }
 
 
@@ -385,7 +385,7 @@ void AccessConfig::setCompression(const char* v){
 
 
 
-char* AccessConfig::getCompression() const{
+BOOL AccessConfig::getCompression() const{
     return compression;
 }
 
