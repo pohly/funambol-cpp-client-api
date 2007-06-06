@@ -1,19 +1,19 @@
 /*
- * Copyright (C) 2003-2007 Funambol
+ * Copyright (C) 2003-2007 Funambol, Inc
  *
  * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
+ * it under the terms of the GNU General Public License version 2 as
+ * published by the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY, TITLE, NONINFRINGEMENT or FITNESS FOR A PARTICULAR
+ * PURPOSE.  See the GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ * 02111-1307  USA
  */
 
 #ifndef INCL_TRANSPORT_AGENT
@@ -34,11 +34,11 @@
     // The max_msg_size parameter. Default is 512k.
     // The value is expressed in byte
     //
-    #define DEFAULT_MAX_MSG_SIZE 512000    
+    #define DEFAULT_MAX_MSG_SIZE 512000
 
     //
-    // This is the default value for the size of the buffer used to store the 
-    // incoming stram from server. It is expressed in byte     
+    // This is the default value for the size of the buffer used to store the
+    // incoming stram from server. It is expressed in byte
     //
     #define DEFAULT_INTERNET_READ_BUFFER_SIZE  4096
 
@@ -62,9 +62,9 @@
 
     public:
         TransportAgent() EXTRA_SECTION_03;
-        TransportAgent(URL& url, 
-                       Proxy& proxy, 
-                       unsigned int responseTimeout = DEFAULT_MAX_TIMEOUT, 
+        TransportAgent(URL& url,
+                       Proxy& proxy,
+                       unsigned int responseTimeout = DEFAULT_MAX_TIMEOUT,
                        unsigned int maxmsgsize = DEFAULT_MAX_MSG_SIZE) EXTRA_SECTION_03;
 
         virtual ~TransportAgent() EXTRA_SECTION_03;
@@ -93,14 +93,14 @@
          * Returns the connection timeout
          */
         virtual unsigned int getTimeout() EXTRA_SECTION_03;
-        
+
         /**
          * Sets the max msg size
          *
          * @param t the new msx msg size in bytes
          */
         virtual void setMaxMsgSize(unsigned int t) EXTRA_SECTION_03;
-         
+
         /**
          * Returns the max msg size
          */
@@ -112,7 +112,7 @@
          * @param t the buffer size size in bytes
          */
         virtual void setReadBufferSize(unsigned int t) EXTRA_SECTION_03;
-        
+
         virtual void setUserAgent(const char*  ua);
 
         virtual void setCompression(BOOL newCompression);

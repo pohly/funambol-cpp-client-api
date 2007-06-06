@@ -1,19 +1,19 @@
 /*
- * Copyright (C) 2003-2007 Funambol
+ * Copyright (C) 2003-2007 Funambol, Inc
  *
  * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
+ * it under the terms of the GNU General Public License version 2 as
+ * published by the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY, TITLE, NONINFRINGEMENT or FITNESS FOR A PARTICULAR
+ * PURPOSE.  See the GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ * 02111-1307  USA
  */
 
 
@@ -32,27 +32,27 @@
 
 /**
  * This class implements an abstract command. It must be derived to be used by other classes.
- * 
+ *
  */
 
 class AbstractCommand : public ArrayElement {
 
-    // ---------------------------------------------------------- Protected data    
+    // ---------------------------------------------------------- Protected data
     protected:
-        
+
         CmdID*   cmdID ;
         BOOL noResp;
         Meta*    meta;
         Cred*    credential;
 
         void initialize();
-    
-    // ---------------------------------------------------------- Protected data    
+
+    // ---------------------------------------------------------- Protected data
     public:
     AbstractCommand();
 
-    AbstractCommand(CmdID* cmdID, BOOL noResp);        
-    
+    AbstractCommand(CmdID* cmdID, BOOL noResp);
+
     /**
      * Create a new AbstractCommand object with the given commandIdentifier
      *
@@ -60,28 +60,28 @@ class AbstractCommand : public ArrayElement {
      *
      */
      AbstractCommand(CmdID* cmdID);
-          
+
     /**
-     * Create a new AbstractCommand object with the given commandIdentifier 
+     * Create a new AbstractCommand object with the given commandIdentifier
      * and noResponse
      *
      * @param cmdID the command identifier - NOT NULL
      * @param noResponse true if the command doesn't require a response
      * @param meta the Meta object
      */
-     AbstractCommand(CmdID* cmdID, BOOL noResp, Meta* meta);            
+     AbstractCommand(CmdID* cmdID, BOOL noResp, Meta* meta);
 
      void set(CmdID* cmdID, BOOL noResp);
 
      virtual ~AbstractCommand();
-    
+
     /**
      * Get CommandIdentifier property
      *
      * @return the command identifier - NOT NULL
      */
      CmdID* getCmdID();
-    
+
     /**
      * Sets the CommandIdentifier property
      *
@@ -98,45 +98,45 @@ class AbstractCommand : public ArrayElement {
      BOOL isNoResp();
 
      BOOL getNoResp();
-    
+
     /**
      * Sets noResp true if no response is required
-     * 
+     *
      * @param noResp is true if no response is required
      *
      */
      void setNoResp(BOOL noResp);
-    
+
     /**
      * Gets Credential object
      *
      * @return the Credential object
-     */    
+     */
      Cred* getCred();
-    
+
     /**
      * Sets authentication credential
-     * 
+     *
      * @param cred the authentication credential
      *
      */
      void setCred(Cred* cred);
-     
+
     /**
      * Gets an Meta object
      *
      * @return an Meta object
      */
      Meta* getMeta();
-    
+
     /**
      * Sets Meta object
-     * 
+     *
      * @param meta the meta object
      *
      */
      void setMeta(Meta* meta);
-       
+
     /**
      * Get name property
      *
@@ -145,7 +145,7 @@ class AbstractCommand : public ArrayElement {
     virtual const char* getName() = 0;
 
     virtual ArrayElement* clone() = 0;
-        
+
 };
 
 /** @endcond */

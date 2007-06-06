@@ -1,26 +1,26 @@
 /*
- * Copyright (C) 2003-2007 Funambol
+ * Copyright (C) 2003-2007 Funambol, Inc.
  *
  * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
+ * it under the terms of the GNU General Public License version 2 as
+ * published by the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY, TITLE, NONINFRINGEMENT or FITNESS FOR A PARTICULAR
+ * PURPOSE.  See the GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ * 02111-1307  USA
  */
- 
- 
+
+
 #include "syncml/core/Search.h"
- 
+
 Search::Search() {
-    
+
     COMMAND_NAME = new char[strlen(SEARCH_COMMAND_NAME) + 1];
     sprintf(COMMAND_NAME, SEARCH_COMMAND_NAME);
 
@@ -28,7 +28,7 @@ Search::Search() {
     target    = NULL;
     sources   = new ArrayList();
     lang      = NULL;
-    data      = NULL;       
+    data      = NULL;
 }
 Search::~Search() {
     if (COMMAND_NAME)   { delete [] COMMAND_NAME;   COMMAND_NAME = NULL; }
@@ -62,22 +62,22 @@ Search::Search(CmdID*      cmdID    ,
                char*    lang     ,
                Meta*       meta     ,
                Data*       data     ) : AbstractCommand(cmdID, noResp)  {
-    
-    
+
+
     COMMAND_NAME = new char[strlen(SEARCH_COMMAND_NAME) + 1];
     sprintf(COMMAND_NAME, SEARCH_COMMAND_NAME);
-    
+
     this->noResults = FALSE;
     this->target    = NULL;
     this->sources   = new ArrayList();
     this->lang      = NULL;
-    this->data      = NULL; 
+    this->data      = NULL;
 
     setCred(cred);
     setMeta(meta);
     setSources(sources);
     setData(data);
-    
+
     setNoResults(noResults);
     setTarget(target);
     setLang(lang);
@@ -104,7 +104,7 @@ void Search::setNoResults(BOOL noResults) {
         this->noResults = NULL;
     } else {
         this->noResults = noResults;
-    }  
+    }
 }
 
 /**
@@ -157,8 +157,8 @@ void Search::setSources(ArrayList* sources) {
         // TBD
     } else {
         if (this->sources) {
-		    this->sources->clear(); 
-        } 
+		    this->sources->clear();
+        }
 	    this->sources = sources->clone();
     }
 }
@@ -209,7 +209,7 @@ void Search::setData(Data* data) {
             delete this->data ; this->data = NULL;
         }
         this->data = data->clone();
-    }    
+    }
 }
 
 /**
@@ -223,7 +223,7 @@ const char* Search::getName() {
 
 ArrayElement* Search::clone() {
     Search* ret = new Search(getCmdID(), getNoResp(), noResults, getCred(), target, sources,
-                             lang, getMeta(), data); 
+                             lang, getMeta(), data);
     return ret;
 }
- 
+

@@ -1,19 +1,19 @@
 /*
- * Copyright (C) 2003-2007 Funambol
+ * Copyright (C) 2003-2007 Funambol, Inc
  *
  * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
+ * it under the terms of the GNU General Public License version 2 as
+ * published by the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY, TITLE, NONINFRINGEMENT or FITNESS FOR A PARTICULAR
+ * PURPOSE.  See the GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ * 02111-1307  USA
  */
 #ifndef INCL_DEVICE_CONFIG
 #define INCL_DEVICE_CONFIG
@@ -27,55 +27,55 @@
 /*
  * ---------------------------- DeviceConfig class -------------------------------
  * This class groups all configuration properties related to the device.
- * Most of DeviceConfig properties are used to generate the 
+ * Most of DeviceConfig properties are used to generate the
  * <DevInf> element for client capabilities.
- * DeviceConfig is a part of SyncManagerConfig (along with AccessConfig 
+ * DeviceConfig is a part of SyncManagerConfig (along with AccessConfig
  * and an array of SyncSourceConfig).
  *
  * Class members:
  * --------------
- * verDTD       : Specifies the major and minor version identifier of the 
- *                Device Information DTD used in the representation 
- *                of the Device Information. The value MUST be "1.1". 
+ * verDTD       : Specifies the major and minor version identifier of the
+ *                Device Information DTD used in the representation
+ *                of the Device Information. The value MUST be "1.1".
  *                This property is mandatory.
- * man          : Specifies the name of the manufacturer of the device. 
+ * man          : Specifies the name of the manufacturer of the device.
  *                This property is optional.
- * mod          : Specifies the model name or model number of the device. 
+ * mod          : Specifies the model name or model number of the device.
  *                This property is optional.
- * oem          : Specifies the OEM (Original Equipment Manufacturer) of the device. 
+ * oem          : Specifies the OEM (Original Equipment Manufacturer) of the device.
  *                This property is optional.
  * fwv          : Specifies the firmware version of the device.
  *                This property is optional.
  * swv          : Specifies the software version of the device.
  *                This property is optional.
- * hwv          : Specifies the hardware version of the device. 
+ * hwv          : Specifies the hardware version of the device.
  *                This property is optional.
- * devID        : Specifies the identifier of the source synchronization device. 
- *                The content information MUST specify a theoretically, 
+ * devID        : Specifies the identifier of the source synchronization device.
+ *                The content information MUST specify a theoretically,
  *                globally unique identifier. This property is mandatory.
- * devType      : Specifies the type of the source synchronization device. 
- *                Type values for this element type can be e.g. "pager", 
- *                "handheld", "pda", "phone", "smartphone", "server", "workstation". 
+ * devType      : Specifies the type of the source synchronization device.
+ *                Type values for this element type can be e.g. "pager",
+ *                "handheld", "pda", "phone", "smartphone", "server", "workstation".
  *                Other values can also be specified. This property is mandatory.
- * dsV          : Specifies the implemented DS version. This property is optional.           
- * utc          : Boolean. Specifies that the device supports UTC based time. 
- *                If utc = TRUE, the server SHOULD send time in UTC format, 
+ * dsV          : Specifies the implemented DS version. This property is optional.
+ * utc          : Boolean. Specifies that the device supports UTC based time.
+ *                If utc = TRUE, the server SHOULD send time in UTC format,
  *                else MUST send in local time. Default value = TRUE.
- * loSupport    : Boolean. Specifies that the device supports handling of large objects. 
+ * loSupport    : Boolean. Specifies that the device supports handling of large objects.
  *                Default value = FALSE.
- * nocSupport   : Boolean. Specifies that the device supports number of changes. 
+ * nocSupport   : Boolean. Specifies that the device supports number of changes.
  *                Default value = FALSE.
- * logLevel     : Specifies the logging level on the device. 
- *                It can be one of 0 – 1 – 2 (none, info, debug). 
+ * logLevel     : Specifies the logging level on the device.
+ *                It can be one of 0 – 1 – 2 (none, info, debug).
  *                Default value = 1 (info).
  * maxObjSize   : Specifies the maximum object size allowed by the device.
  *                Default value = 0 (no maxObjSize set).
- * devInfHash   : This is a hash value generated from all properties that are used 
- *                for the <DevInf> element, plus the syncURL property from AccessConfig. 
+ * devInfHash   : This is a hash value generated from all properties that are used
+ *                for the <DevInf> element, plus the syncURL property from AccessConfig.
  *                Initial value = "0".
  */
 class DeviceConfig {
-    
+
     private:
 
         char*         verDTD       ;
@@ -121,7 +121,7 @@ class DeviceConfig {
          *
          * set: set the internal value.
          *      The given data are copied in an internal
-         *      buffer so that the caller is assured that the 
+         *      buffer so that the caller is assured that the
          *      given address can be released after the call.
          */
         const char*  getVerDTD() const          EXTRA_SECTION_02;

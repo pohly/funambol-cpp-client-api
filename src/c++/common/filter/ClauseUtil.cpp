@@ -1,19 +1,19 @@
 /*
- * Copyright (C) 2003-2007 Funambol
+ * Copyright (C) 2003-2007 Funambol, Inc.
  *
  * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
+ * it under the terms of the GNU General Public License version 2 as
+ * published by the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY, TITLE, NONINFRINGEMENT or FITNESS FOR A PARTICULAR
+ * PURPOSE.  See the GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ * 02111-1307  USA
  */
 
 /**
@@ -134,12 +134,12 @@ const char* ClauseUtil::toCGIQuery(Clause& clause) {
 
 /**
  * Converts a Clause to a Filter object. The Filter is allocated
- * with the new operator and must be deleted by the caller with 
+ * with the new operator and must be deleted by the caller with
  * the delete operator.
  *
  * A Filter is created by an AND LogicalClause where the first operand
  * is the field filter and the second operand is the record filter. The
- * first operand must be of type FieldClause; the latter of type 
+ * first operand must be of type FieldClause; the latter of type
  * WhereClause.
  *
  * @param clause the clause to convert
@@ -174,7 +174,7 @@ Filter* ClauseUtil::toFilter(SourceFilter& sourceFilter) {
         return NULL;
     }
 
-    FieldClause* fieldClause = (c->type == ALL_CLAUSE) 
+    FieldClause* fieldClause = (c->type == ALL_CLAUSE)
                              ? NULL
                              : (FieldClause*)c;
 
@@ -183,13 +183,13 @@ Filter* ClauseUtil::toFilter(SourceFilter& sourceFilter) {
     //
     c = (Clause*)operands->get(1);
 
-    if (  (c->type != LOGICAL_CLAUSE) 
+    if (  (c->type != LOGICAL_CLAUSE)
        && (c->type != ALL_CLAUSE)
        && (c->type != WHERE_CLAUSE)) {
         return NULL;
     }
 
-    Clause* recordClause = (c->type == ALL_CLAUSE) 
+    Clause* recordClause = (c->type == ALL_CLAUSE)
                          ? NULL
                          : c;
 
@@ -207,7 +207,7 @@ Filter* ClauseUtil::toFilter(SourceFilter& sourceFilter) {
         Item field;
         Meta fieldMeta;
         ComplexData fieldData;
-   
+
         fieldMeta.setType("application/vnd.syncml-devinf+xml");
         fieldData.setProperties(fieldClause->getProperties());
 
@@ -275,14 +275,14 @@ Filter* ClauseUtil::toFilter(SourceFilter& sourceFilter) {
   * since: keeps the same meaning
   *
   * bodySize: == 0  there is only the header of the mail. No attach is consider
-  *           == 1  there is the header and the body. AttachSize regards only the 
+  *           == 1  there is the header and the body. AttachSize regards only the
                     amount in byte of the Body. Actually it doesn't refer to attachSize.
               == -1 permits to consider the attachments too. If attachsize > 0 the filter
                     contains the amount of header + body + attachment until to attachSize.
-  * attachSize: 1   it is consider only if bodySize is -1 or 1.   
+  * attachSize: 1   it is consider only if bodySize is -1 or 1.
 
   *
-  * 
+  *
   */
 SourceFilter* ClauseUtil::createSourceFilter(const WCHAR* since, int bodySize, int attachSize) {
     if ((since == NULL) && (bodySize == -1) && (attachSize == -1)) {
@@ -298,55 +298,55 @@ SourceFilter* ClauseUtil::createSourceFilter(const WCHAR* since, int bodySize, i
     // FIELD CLAUSE(S)
     // ---------------
     //
-    
+
     ArrayList properties;
 
     if (bodySize >= 0) {
         Property p;
 
         p.setPropName("emailitem");
-               
+
         if (bodySize > 0) {
             ArrayList params;
             PropParam textParam;
             textParam.setParamName("texttype");
 
-            params.add(textParam);            
+            params.add(textParam);
             p.setPropParams(params);
 
-            if (attachSize > 0) {                
+            if (attachSize > 0) {
                 p.setMaxSize(attachSize*1024);
-            }            
+            }
         }
-        properties.add(p);    
+        properties.add(p);
 
     } else {
-        
+
         if (attachSize == -1) {
             // do nothing
         }
         else if (attachSize > 0) {
             Property p;
-             
-            p.setPropName("emailitem");            
-            ArrayList params;                        
+
+            p.setPropName("emailitem");
+            ArrayList params;
 
             PropParam textParam;
             textParam.setParamName("texttype");
-            params.add(textParam);              
+            params.add(textParam);
 
             PropParam attachParam;
-            attachParam.setParamName("attachtype");        
+            attachParam.setParamName("attachtype");
             params.add(attachParam);
-            
+
             p.setPropParams(params);
 
             p.setMaxSize(attachSize*1024);
-            properties.add(p);    
+            properties.add(p);
         }
 
     }
-    
+
 /*
     if (bodySize >= 0) {
         Property p;
@@ -369,7 +369,7 @@ SourceFilter* ClauseUtil::createSourceFilter(const WCHAR* since, int bodySize, i
         ArrayList params;
         PropParam attachParam;
         attachParam.setParamName("attachtype");
-        
+
         params.add(attachParam);
 
         Property p;
@@ -392,7 +392,7 @@ SourceFilter* ClauseUtil::createSourceFilter(const WCHAR* since, int bodySize, i
     //
     // RECORD CLAUSE
     // -------------
-    // 
+    //
     //
     // If since is not NULL we need to add a Record clause
     //
@@ -415,7 +415,7 @@ SourceFilter* ClauseUtil::createSourceFilter(const WCHAR* since, int bodySize, i
 }
 
 SourceFilter* ClauseUtil::createSourceFilterInclusive(const char* luid, int size) {
-    
+
     if (!luid) {
         //
         // No filter is needed
@@ -429,25 +429,25 @@ SourceFilter* ClauseUtil::createSourceFilterInclusive(const char* luid, int size
     // FIELD CLAUSE(S)
     // ---------------
     //
-    
+
     ArrayList properties;
 
     Property p;
-    p.setPropName("emailitem");            
-    ArrayList params;                        
+    p.setPropName("emailitem");
+    ArrayList params;
 
     PropParam textParam;
     textParam.setParamName("texttype");
-    params.add(textParam);              
+    params.add(textParam);
 
     PropParam attachParam;
-    attachParam.setParamName("attachtype");        
+    attachParam.setParamName("attachtype");
     params.add(attachParam);
     p.setPropParams(params);
 
     p.setMaxSize(size*1024);
-    properties.add(p);    
-         
+    properties.add(p);
+
     if (properties.size() == 0) {
         AllClause all;
         operands.add(all);
@@ -459,11 +459,11 @@ SourceFilter* ClauseUtil::createSourceFilterInclusive(const char* luid, int size
     //
     // RECORD CLAUSE
     // -------------
-    // 
+    //
 
-    if (luid) {        
+    if (luid) {
         WhereClause recordClause("&LUID", luid, EQ, FALSE);
-        operands.add(recordClause);        
+        operands.add(recordClause);
     } else {
         AllClause all;
         operands.add(all);

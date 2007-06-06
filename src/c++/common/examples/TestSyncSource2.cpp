@@ -1,19 +1,19 @@
 /*
- * Copyright (C) 2003-2007 Funambol
+ * Copyright (C) 2003-2007 Funambol, Inc.
  *
  * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
+ * it under the terms of the GNU General Public License version 2 as
+ * published by the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY, TITLE, NONINFRINGEMENT or FITNESS FOR A PARTICULAR
+ * PURPOSE.  See the GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ * 02111-1307  USA
  */
 
 #include "examples/TestSyncSource2.h"
@@ -31,20 +31,20 @@ ArrayList deletedItems2;
 
 
 int setAllItems2() {
-    
+
     SyncItem item;
     WCHAR name[64];
-    char data[128];   
-        
+    char data[128];
+
     for (int i = 0; i < 4; ++i) {
-    
+
         wsprintf(name, TEXT("%s%d"), TEXT("item"), i);
         sprintf(data, "This is item in test2 %d", i);
 
         item.setKey(name);
         item.setData(data  , (strlen(data))*sizeof(char));
-        Items2.add(item);              
-    }           
+        Items2.add(item);
+    }
     return 0;
 }
 
@@ -53,11 +53,11 @@ int setAllItems2Empty() {
 }
 
 int setModifiedItems2() {
-    
+
     SyncItem item;
 
     for (int i = 0; i < 4; ++i) {
-        
+
         switch (i) {
 
             case 0:
@@ -65,7 +65,7 @@ int setModifiedItems2() {
                 item.setData("This is a new item Four test2"  , 29*sizeof(char));
                 newItems2.add(item);
                 break;
-            
+
             case 1:
                 item.setKey(TEXT("item1"));
                 item.setData("This is the updated item One test2"  , 34*sizeof(char));
@@ -80,18 +80,18 @@ int setModifiedItems2() {
 
             case 3:
 
-                item.setKey(TEXT("item4"));                 
+                item.setKey(TEXT("item4"));
                 deletedItems2.add(item);
                 break;
 
-        }        
-    }    
-        
+        }
+    }
+
     return 0;
 }
 
 int setModifiedItems2Empty() {
-    return 0;    
+    return 0;
 }
 
 
@@ -102,81 +102,81 @@ TestSyncSource2::~TestSyncSource2() {
 }
 
 /*
-* Return the first SyncItem of all. It is used in case of slow or refresh sync 
+* Return the first SyncItem of all. It is used in case of slow or refresh sync
 * and retrieve the entire data source content.
 */
 
 SyncItem* TestSyncSource2::getFirstItem() {
-    
+
     setAllItems2();
     if (Items2.size() == 0) {
         return NULL;
-    }    
+    }
     all = 0;
-    return (SyncItem*)Items2[all]->clone();    
+    return (SyncItem*)Items2[all]->clone();
 }
 
 /*
-* Return the next SyncItem of all. It is used in case of slow or refresh sync 
+* Return the next SyncItem of all. It is used in case of slow or refresh sync
 * and retrieve the entire data source content.
 */
 
-SyncItem* TestSyncSource2::getNextItem() {    
+SyncItem* TestSyncSource2::getNextItem() {
     all++;
     if (all == Items2.size()) {
         return NULL;
-    }        
-    return (SyncItem*)Items2.get(all)->clone();  
+    }
+    return (SyncItem*)Items2.get(all)->clone();
 }
 
 SyncItem* TestSyncSource2::getFirstNewItem() {
     setModifiedItems2();
     if (newItems2.size() == 0) {
         return NULL;
-    }    
+    }
     cnew = 0;
-    return (SyncItem*)newItems2.get(cnew)->clone();    
+    return (SyncItem*)newItems2.get(cnew)->clone();
 }
 
-SyncItem* TestSyncSource2::getNextNewItem() {    
+SyncItem* TestSyncSource2::getNextNewItem() {
     cnew++;
     if (cnew == newItems2.size()) {
         return NULL;
-    }        
+    }
     return (SyncItem*)newItems2.get(cnew)->clone();
 }
 
 SyncItem* TestSyncSource2::getFirstUpdatedItem() {
-   
+
     if (updatedItems2.size() == 0) {
         return NULL;
-    }    
+    }
     cupdated = 0;
-    return (SyncItem*)updatedItems2.get(cupdated)->clone();    
+    return (SyncItem*)updatedItems2.get(cupdated)->clone();
 }
 
-SyncItem* TestSyncSource2::getNextUpdatedItem() {    
+SyncItem* TestSyncSource2::getNextUpdatedItem() {
     cupdated++;
     if (cupdated == updatedItems2.size()) {
         return NULL;
-    }        
+    }
     return (SyncItem*)updatedItems2.get(cupdated)->clone();
 }
 
 SyncItem* TestSyncSource2::getFirstDeletedItem() {
-   
+
     if (deletedItems2.size() == 0) {
         return NULL;
-    }    
+    }
     cdeleted = 0;
-    return (SyncItem*)deletedItems2.get(cdeleted)->clone();    
+    return (SyncItem*)deletedItems2.get(cdeleted)->clone();
 }
 
-SyncItem* TestSyncSource2::getNextDeletedItem() {    
+SyncItem* TestSyncSource2::getNextDeletedItem() {
     cdeleted++;
     if (cdeleted == deletedItems2.size()) {
         return NULL;
-    }        
+    }
     return (SyncItem*)deletedItems2.get(cdeleted)->clone();
 }
 
@@ -188,14 +188,14 @@ void TestSyncSource2::setItemStatus(const WCHAR* key, int status) {
 int TestSyncSource2::addItem(SyncItem& item) {
     sprintf(logmsg, "added item: %ls", item.getKey());
     LOG.info(logmsg);
-    
+
     LOG.info("Data:");
     char *data = new char [item.getDataSize()];
     memcpy(data, item.getData(), item.getDataSize());
     data[item.getDataSize()] = 0;
     LOG.info(data);
     delete [] data;
-    
+
     WCHAR *luid = new WCHAR[wcslen(item.getKey())+10];
     wsprintf(luid, TEXT("%s-luid"), item.getKey());
     item.setKey(luid);
@@ -204,19 +204,19 @@ int TestSyncSource2::addItem(SyncItem& item) {
 }
 
 int TestSyncSource2::updateItem(SyncItem& item) {
-    
+
     sprintf(logmsg, "updated item: %ls", item.getKey());
     LOG.info(logmsg);
-    
+
     LOG.info("Data:");
     char *data = new char [item.getDataSize()];
     memcpy(data, item.getData(), item.getDataSize());
     data[item.getDataSize()] = 0;
     LOG.info(data);
     delete [] data;
-    
+
     return 200;
-       
+
 }
 
 int TestSyncSource2::deleteItem(SyncItem& item) {
@@ -237,7 +237,7 @@ int TestSyncSource2::endSync() {
 SyncItem* TestSyncSource2::getFirstItemKey() {
     return NULL;
 }
-    
+
 SyncItem* TestSyncSource2::getNextItemKey() {
     return NULL;
 }

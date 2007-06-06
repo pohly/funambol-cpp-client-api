@@ -1,29 +1,29 @@
 /*
- * Copyright (C) 2003-2007 Funambol
+ * Copyright (C) 2003-2007 Funambol, Inc.
  *
  * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
+ * it under the terms of the GNU General Public License version 2 as
+ * published by the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY, TITLE, NONINFRINGEMENT or FITNESS FOR A PARTICULAR
+ * PURPOSE.  See the GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ * 02111-1307  USA
  */
- 
- 
+
+
 #include "syncml/core/ResponseCommand.h"
- 
+
 ResponseCommand::ResponseCommand() {
     msgRef     = NULL;
     cmdRef     = NULL;
     targetRef  = new ArrayList(); // TargetRef[]
-    sourceRef  = new ArrayList(); // SourceRef[]                        
+    sourceRef  = new ArrayList(); // SourceRef[]
 
 }
 ResponseCommand::~ResponseCommand()  {
@@ -31,7 +31,7 @@ ResponseCommand::~ResponseCommand()  {
     if (cmdRef)     { delete [] cmdRef;     cmdRef    = NULL; }
     if (targetRef)  { targetRef->clear();   } //delete targetRef; targetRef = NULL; }
     if (sourceRef)  { sourceRef->clear();   } //delete sourceRef; sourceRef = NULL; }
-    
+
 }
 
 /**
@@ -52,13 +52,13 @@ ResponseCommand::ResponseCommand(CmdID*         cmdID     ,
                                  ArrayList*     sourceRefs,
                                  ArrayList*     items      )
 : ItemizedCommand (cmdID, items)
-{  
+{
     this->msgRef     = stringdup(msgRef);
     this->cmdRef     = stringdup(cmdRef);
     this->targetRef  = targetRefs->clone();
     this->sourceRef  = sourceRefs->clone();
 }
-    
+
 
 /**
  * Returns the message reference
@@ -122,10 +122,10 @@ ArrayList* ResponseCommand::getTargetRef() {
  */
 void ResponseCommand::setTargetRef(ArrayList* targetRefs) {
     if (this->targetRef) {
-        this->targetRef->clear(); 
+        this->targetRef->clear();
     }
-    if (targetRefs != NULL) {                  
-        this->targetRef = targetRefs->clone();        
+    if (targetRefs != NULL) {
+        this->targetRef = targetRefs->clone();
     }
 }
 
@@ -146,10 +146,10 @@ ArrayList* ResponseCommand::getSourceRef(){
  */
 void ResponseCommand::setSourceRef(ArrayList* sourceRefs) {
     if (this->sourceRef) {
-        this->sourceRef->clear(); 
+        this->sourceRef->clear();
     }
-    if (sourceRefs != NULL) {                  
-        this->sourceRef = sourceRefs->clone();        
+    if (sourceRefs != NULL) {
+        this->sourceRef = sourceRefs->clone();
     }
 }
 

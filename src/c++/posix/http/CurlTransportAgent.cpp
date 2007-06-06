@@ -1,19 +1,19 @@
 /*
- * Copyright (C) 2003-2007 Funambol
+ * Copyright (C) 2003-2007 Funambol, Inc.
  *
  * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
+ * it under the terms of the GNU General Public License version 2 as
+ * published by the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY, TITLE, NONINFRINGEMENT or FITNESS FOR A PARTICULAR
+ * PURPOSE.  See the GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ * 02111-1307  USA
  */
 
 #include "base/Log.h"
@@ -32,7 +32,7 @@
 class CurlInit {
     static CURLcode initres;
     static CurlInit singleton;
-    
+
     CurlInit() { initres = curl_global_init(CURL_GLOBAL_ALL); }
     ~CurlInit() { curl_global_cleanup(); initres = CURLE_FAILED_INIT; }
 
@@ -127,7 +127,7 @@ size_t CurlTransportAgent::sendData(void *buffer, size_t size, size_t nmemb, voi
 int CurlTransportAgent::debugCallback(CURL *easyhandle, curl_infotype type, char *data, size_t size, void *unused)
 {
     BOOL isData = type == CURLINFO_DATA_IN || type == CURLINFO_DATA_OUT;
-    
+
     if (LOG.getLevel() >= LOG_LEVEL_DEBUG && !isData ||
         LOG.getLevel() > LOG_LEVEL_DEBUG) {
         char *buffer = new char[30 + size];
@@ -160,7 +160,7 @@ char* CurlTransportAgent::sendMessage(const char* msg) {
     }
 
     LOG.debug("Requesting resource %s at %s:%d", url.resource, url.host, url.port);
-    
+
     curl_slist *slist=NULL;
     char *response = NULL;
     CURLcode code;

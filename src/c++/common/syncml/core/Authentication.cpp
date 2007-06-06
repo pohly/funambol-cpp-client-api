@@ -1,22 +1,22 @@
 /*
- * Copyright (C) 2003-2007 Funambol
+ * Copyright (C) 2003-2007 Funambol, Inc.
  *
  * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
+ * it under the terms of the GNU General Public License version 2 as
+ * published by the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY, TITLE, NONINFRINGEMENT or FITNESS FOR A PARTICULAR
+ * PURPOSE.  See the GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ * 02111-1307  USA
  */
- 
- 
+
+
 #include "syncml/core/Authentication.h"
 #include "syncml/core/Constants.h"
 #include "syncml/core/Cred.h"
@@ -36,13 +36,13 @@ Authentication::~Authentication() {
      if (syncMLVerProto) {delete [] syncMLVerProto; syncMLVerProto = NULL; }
      if (principalId)    {delete [] principalId; principalId = NULL; }
      if (meta)           {delete  meta; meta = NULL; }
-     
-     encode = FALSE;     
+
+     encode = FALSE;
 
 }
 
 Authentication::Authentication(Authentication* auth) {
-    
+
     initialize();
     this->data            = stringdup(auth->getData());
     this->username        = stringdup(auth->getUsername());
@@ -54,7 +54,7 @@ Authentication::Authentication(Authentication* auth) {
     this->meta            = auth->getMeta()->clone();
 
 }
-    
+
 
 void Authentication::initialize() {
     this->data            = NULL;
@@ -77,7 +77,7 @@ void Authentication::initialize() {
  */
 Authentication::Authentication(Meta* meta, const char* data){
     initialize();
-    
+
     this->meta = meta->clone();
     createAuthentication(meta->getType(), data);
 
@@ -92,7 +92,7 @@ Authentication::Authentication(Meta* meta, const char* data){
  */
 Authentication::Authentication(const char* type, const char* data) {
     initialize();
-    
+
     createAuthentication(type, data);
 }
 
@@ -108,9 +108,9 @@ Authentication::Authentication(const char* type,
                                const char* data,
                                BOOL encode) {
 
-    
+
     initialize();
-    
+
     this->encode = encode;
     createAuthentication(type, data);
 }
@@ -127,8 +127,8 @@ Authentication::Authentication(const char* type,
 Authentication::Authentication(const char* type,
                                const char* username,
                                const char* password) {
-    
-    
+
+
     initialize();
 
     if (username == NULL || password == NULL) {
@@ -143,9 +143,9 @@ Authentication::Authentication(const char* type,
 }
 
 void Authentication::createAuthentication(const char* type, const char* data) {
-    
+
     const char* realtype;
-    
+
     if (strstr(AUTH_SUPPORTED_TYPES, type) == NULL) {
         // invalid parameter? fall back to basic authentication
         realtype = AUTH_TYPE_BASIC;
@@ -169,7 +169,7 @@ void Authentication::createAuthentication(const char* type, const char* data) {
  * @return the type property
  */
 const char* Authentication::getType() {
-    
+
     if (meta == NULL) {
         return NULL;
     }
@@ -220,7 +220,7 @@ void Authentication::setFormat(const char*format) {
  * @return the data property
  */
 const char* Authentication::getData() {
-    
+
     return data;
 }
 
@@ -236,7 +236,7 @@ void Authentication::setData(const char*data) {
         // TBD
         return;
     }
-    
+
     const char* type = this->getType();
 
     if (strcmp(type,AUTH_TYPE_BASIC) == 0) {
@@ -245,21 +245,21 @@ void Authentication::setData(const char*data) {
         if (encode) {
             unsigned long len = 0;
             len = strlen(data);
-            char* tmp = stringdup(data);        
+            char* tmp = stringdup(data);
             char* b64tmp2 = new char[(len/3+1)<<2];
-            len = b64_encode(b64tmp2, tmp, len);                        
+            len = b64_encode(b64tmp2, tmp, len);
             char* b64tmp = new char[len + 1];
             memset(b64tmp, 0, len + 1);
             strncpy(b64tmp, b64tmp2, len);
             if (this->data) {
                 delete [] this->data; this->data = NULL;
             }
-            this->data = stringdup(b64tmp);                         
-            
+            this->data = stringdup(b64tmp);
+
             clearData = new char[strlen(data) + 1];
             sprintf(clearData, data);
-            
-            if (b64tmp2) {                
+
+            if (b64tmp2) {
                 delete [] b64tmp2; b64tmp2 = NULL;
             }
             if (b64tmp) {
@@ -268,19 +268,19 @@ void Authentication::setData(const char*data) {
             if (tmp) {
                 delete [] tmp; tmp = NULL;
             }
-            
+
         } else {
             unsigned long len = 0;
             len = strlen(data);
-            char* tmp = stringdup(data);        
+            char* tmp = stringdup(data);
             char* b64tmp = new char[len];
-            len = b64_decode(b64tmp, tmp);                                            
-            
+            len = b64_decode(b64tmp, tmp);
+
             clearData = stringdup(b64tmp);
             if (this->data) {
                 delete [] this->data; this->data = NULL;
             }
-            //this->data = new char[strlen(clearData) + 1];            
+            //this->data = new char[strlen(clearData) + 1];
             //sprintf(this->data, clearData);
             this->data = stringdup(data);
 
@@ -289,13 +289,13 @@ void Authentication::setData(const char*data) {
             }
             if (b64tmp) {
                 delete [] b64tmp; b64tmp = NULL;
-            }            
+            }
         }
-        
+
         unsigned int len = strlen(clearData);
         char* p1 = clearData;
         BOOL charFound = FALSE;
-        for (unsigned int k = 0; k < len; k++) {             
+        for (unsigned int k = 0; k < len; k++) {
             if (*p1 == 0) {
                 break;
             }
@@ -303,9 +303,9 @@ void Authentication::setData(const char*data) {
                 charFound = TRUE;
                 p1 = p1 + 1;
                 break;
-            }            
+            }
             p1 = p1 + 1;
-        }        
+        }
 
         if (charFound == FALSE) {
             this->setUsername(clearData);
@@ -323,7 +323,7 @@ void Authentication::setData(const char*data) {
             } else {
                 this->setPassword("");
             }
-            
+
         }
         if (clearData) { delete [] clearData; clearData = NULL; }
     }

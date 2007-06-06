@@ -1,35 +1,35 @@
 /*
- * Copyright (C) 2003-2007 Funambol
+ * Copyright (C) 2003-2007 Funambol, Inc.
  *
  * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
+ * it under the terms of the GNU General Public License version 2 as
+ * published by the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY, TITLE, NONINFRINGEMENT or FITNESS FOR A PARTICULAR
+ * PURPOSE.  See the GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ * 02111-1307  USA
  */
- 
+
 #include "syncml/core/NextNonce.h"
- 
+
 NextNonce::NextNonce() {
     initialize();
 }
 
 NextNonce::NextNonce(void* value, unsigned long size) {
     initialize();
-    setValue(value, size);    
+    setValue(value, size);
 }
 
 NextNonce::NextNonce(char* wvalue) {
     initialize();
-    setWValue(wvalue);    
+    setWValue(wvalue);
 }
 
 NextNonce::~NextNonce() {
@@ -58,7 +58,7 @@ void* NextNonce::setValue(void* argValue, unsigned long argSize) {
     }
 
     value = new char[argSize];
-    if (value == NULL) {        
+    if (value == NULL) {
         return NULL;
     }
 
@@ -83,31 +83,31 @@ void NextNonce::setWValue(const char*wnonce) {
     }
     wvalue = stringdup(wnonce);
 
-    if (wnonce) {       
+    if (wnonce) {
         unsigned long len = 0;
         len = strlen(wnonce);
         char* b64tmp = new char[len];
-        len = b64_decode(b64tmp, wnonce);    
+        len = b64_decode(b64tmp, wnonce);
 
         setValue(b64tmp, len);
-        
+
         delete [] b64tmp; b64tmp = NULL;
     }
-                   
+
 }
 
 
 
 const char* NextNonce::getValueAsBase64() {
-    
-    if (value == NULL) 
+
+    if (value == NULL)
         return NULL;
-    
+
     char* b64Cred = NULL;
     int c = ((size/3+1)<<2) + 1;
     unsigned int len = 0;
 
-    b64Cred = new char[c];   
+    b64Cred = new char[c];
     len = b64_encode(b64Cred, value, size);
     b64Cred[len] = 0;
 

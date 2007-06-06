@@ -1,19 +1,19 @@
 /*
- * Copyright (C) 2003-2007 Funambol
+ * Copyright (C) 2003-2007 Funambol, Inc
  *
  * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
+ * it under the terms of the GNU General Public License version 2 as
+ * published by the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY, TITLE, NONINFRINGEMENT or FITNESS FOR A PARTICULAR
+ * PURPOSE.  See the GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ * 02111-1307  USA
  */
 
 
@@ -28,12 +28,12 @@
 #include "syncml/core/ObjectDel.h"
 
 class Parser {
-     
-    // ---------------------------------------------------------- Public data    
+
+    // ---------------------------------------------------------- Public data
     public:
         static SyncML*          getSyncML           (const char* xml);
         static SyncHdr*         getSyncHdr          (const char* xml);
-        static SyncBody*        getSyncBody         (const char* xml);        
+        static SyncBody*        getSyncBody         (const char* xml);
         static SessionID*       getSessionID        (const char* xml);
         static VerDTD*          getVerDTD           (const char* xml);
         static VerProto*        getVerProto         (const char* xml);
@@ -41,7 +41,7 @@ class Parser {
         static Source*          getSource           (const char* xml);
         static Cred*            getCred             (const char* xml);
         static Anchor*          getAnchor           (const char* xml);
-        static NextNonce*       getNextNonce        (const char* xml);        
+        static NextNonce*       getNextNonce        (const char* xml);
         static Mem*             getMem              (const char* xml);
         static ArrayList*       getEMI              (const char* xml);
         static Meta*            getMeta             (const char* xml);
@@ -64,11 +64,11 @@ class Parser {
         static TargetRef*       getTargetRef        (const char* xml);
         static SourceRef*       getSourceRef        (const char* xml);
         static ArrayList*       getTargetRefs       (const char* xml);
-        static ArrayList*       getSourceRefs       (const char* xml);   
-        static Chal*            getChal             (const char* xml);   
+        static ArrayList*       getSourceRefs       (const char* xml);
+        static Chal*            getChal             (const char* xml);
         static Map*             getMap              (const char* xml);
         static MapItem*         getMapItem          (const char* xml);
-        static ArrayList*       getMapItems         (const char* xml);        
+        static ArrayList*       getMapItems         (const char* xml);
         static Add*             getAdd              (const char* xml);
         static Sync*            getSync             (const char* xml);
         static Replace*         getReplace          (const char* xml);

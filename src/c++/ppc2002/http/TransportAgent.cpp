@@ -1,19 +1,19 @@
 /*
- * Copyright (C) 2003-2007 Funambol
+ * Copyright (C) 2003-2007 Funambol, Inc.
  *
  * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
+ * it under the terms of the GNU General Public License version 2 as
+ * published by the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY, TITLE, NONINFRINGEMENT or FITNESS FOR A PARTICULAR
+ * PURPOSE.  See the GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ * 02111-1307  USA
  */
 
 
@@ -33,14 +33,14 @@ DWORD WINAPI WorkerFunctionHttpSendRequest( IN LPVOID vThreadParm);
 typedef struct
 {
     WCHAR* pHost;
-    INTERNET_PORT nServerPort;  
+    INTERNET_PORT nServerPort;
 
 } PARM_INTERNET_CONNECT;
 
 typedef struct
 {
     WCHAR* pResource;
-    
+
 } PARM_HTTP_OPEN_REQUEST;
 
 typedef struct
@@ -50,7 +50,7 @@ typedef struct
     char*    pMsg;
     int      msgLength;
 
-    
+
 } PARM_HTTP_SEND_REQUEST;
 
 
@@ -98,7 +98,7 @@ void toUTF(WCHAR* s) {
  */
 TransportAgent::TransportAgent(URL& newURL, Proxy& newProxy, BOOL useCheckConnection, unsigned int maxResponseTimeout) {
     url   = newURL  ;
-    
+
     if (maxResponseTimeout == 0) {
         setResponseTimeout(DEFAULT_MAX_TIMEOUT);
     } else {
@@ -106,7 +106,7 @@ TransportAgent::TransportAgent(URL& newURL, Proxy& newProxy, BOOL useCheckConnec
     }
 
     // the flag useCheckConnection is not used by this transportAgent for PPC 2002
-        
+
 }
 
 TransportAgent::~TransportAgent(){}
@@ -139,40 +139,40 @@ unsigned int TransportAgent::getResponseTimeout() {
  * Use getResponse() to get the server response.
  */
 WCHAR* TransportAgent::sendMessage(WCHAR* msg) {
-    
-    
+
+
     int status        = -1;
     int contentLength = 0;
-    DWORD compare     = 0;    
-    DWORD size = 0, read = 0;          
-    DWORD    dwTimeout = 10000; 
+    DWORD compare     = 0;
+    DWORD size = 0, read = 0;
+    DWORD    dwTimeout = 10000;
     HANDLE   hThread;
-    DWORD    dwThreadID;    
+    DWORD    dwThreadID;
     DWORD    dwExitCode;
     cont    = TRUE;
-    int t   = 0;            
+    int t   = 0;
     unsigned int m = 0;
     BOOL queryInfo = TRUE;
 
 
-    inet = InternetOpen (TEXT(USER_AGENT), INTERNET_OPEN_TYPE_PRECONFIG, NULL, 0, 0);    
+    inet = InternetOpen (TEXT(USER_AGENT), INTERNET_OPEN_TYPE_PRECONFIG, NULL, 0, 0);
 
     if (!inet) {
         lastErrorCode = ERR_TPCIP_INIT;
         wsprintf (lastErrorMsg, TEXT("%s: %d"), TEXT("InternetOpen Error"), GetLastError());
         goto exit;
     }
-    
-    
+
+
     wsprintf(logmsg, TEXT("Connecting to %s:%d"), url.host, url.port);
     LOG.debug(logmsg);
-    
+
 
     // Open an HTTP session for a specified site by using lpszServer.
-    
+
     PARM_INTERNET_CONNECT    threadParm;
     threadParm.pHost       = url.host;
-    threadParm.nServerPort = url.port;   
+    threadParm.nServerPort = url.port;
 
     hThread = CreateThread(
                  NULL,            // Pointer to thread security attributes
@@ -182,14 +182,14 @@ WCHAR* TransportAgent::sendMessage(WCHAR* msg) {
                  0,               // Creation flags
                  &dwThreadID      // Pointer to returned thread identifier
              );
-    
-    
-    
+
+
+
     compare = WaitForSingleObject ( hThread, dwTimeout );
 
     if (compare == WAIT_TIMEOUT ) {
-        
-        LOG.debug(TEXT("InternetConnect failed: timeout error."));     
+
+        LOG.debug(TEXT("InternetConnect failed: timeout error."));
         lastErrorCode = ERR_CONNECT;
         wsprintf (lastErrorMsg, TEXT("%s: %d"), TEXT("InternetConnect timeout error"), GetLastError());
         goto exit ;
@@ -201,21 +201,21 @@ WCHAR* TransportAgent::sendMessage(WCHAR* msg) {
     // The state of the specified object (thread) is signaled
     dwExitCode = 0;
 
-    if ( !GetExitCodeThread( hThread, &dwExitCode ) ) {       
-        
+    if ( !GetExitCodeThread( hThread, &dwExitCode ) ) {
+
         lastErrorCode = ERR_CONNECT;
         wsprintf (lastErrorMsg, TEXT("%s: %d"), TEXT("InternetConnect Error"), GetLastError());
-        LOG.debug(TEXT("InternetConnect failed: closing thread error."));    
+        LOG.debug(TEXT("InternetConnect failed: closing thread error."));
         goto exit ;
     }
-    
-    CloseHandle (hThread);    
+
+    CloseHandle (hThread);
 
     wsprintf(logmsg, TEXT("Requesting resource %s"), url.resource);
     LOG.debug(logmsg);
-    
-    PARM_HTTP_OPEN_REQUEST     threadParmHttpOpenRequest;    
-    threadParmHttpOpenRequest.pResource       = url.resource;        
+
+    PARM_HTTP_OPEN_REQUEST     threadParmHttpOpenRequest;
+    threadParmHttpOpenRequest.pResource       = url.resource;
 
     hThread = CreateThread(
                  NULL,            // Pointer to thread security attributes
@@ -225,17 +225,17 @@ WCHAR* TransportAgent::sendMessage(WCHAR* msg) {
                  0,               // Creation flags
                  &dwThreadID      // Pointer to returned thread identifier
              );
-    
+
     compare = WaitForSingleObject ( hThread, dwTimeout );
     if (compare == WAIT_TIMEOUT ) {
-        
-        LOG.debug(TEXT("HttpOpenRequest failed: timeout error!"));      
+
+        LOG.debug(TEXT("HttpOpenRequest failed: timeout error!"));
         lastErrorCode = ERR_CONNECT;
         wsprintf (lastErrorMsg, TEXT("%s: %d"), TEXT("HttpOpenRequest timeout error"), GetLastError());
         goto exit;
 
     } else if (compare == WAIT_OBJECT_0){
-        
+
         LOG.debug(TEXT("HttpOpenRequest success!!"));
     }
 
@@ -243,15 +243,15 @@ WCHAR* TransportAgent::sendMessage(WCHAR* msg) {
     dwExitCode = 0;
 
     if ( !GetExitCodeThread( hThread, &dwExitCode ) ) {
-        
-        lastErrorCode = ERR_CONNECT;        
+
+        lastErrorCode = ERR_CONNECT;
         wsprintf (lastErrorMsg, TEXT("%s: %d"), TEXT("HttpOpenRequest Error"),GetLastError());
-        LOG.debug(TEXT("HttpOpenRequest failed: closing thread  error!"));            
+        LOG.debug(TEXT("HttpOpenRequest failed: closing thread  error!"));
         goto exit ;
     }
 
-    CloseHandle (hThread);    
-    
+    CloseHandle (hThread);
+
     //
     // Prepares headers
     //
@@ -259,18 +259,18 @@ WCHAR* TransportAgent::sendMessage(WCHAR* msg) {
 
     contentLength = wcslen(msg);
     wsprintf(headers, TEXT("Content-Type: %s\r\nContent-Length: %d"), TEXT(SYNCML_CONTENT_TYPE), contentLength);
-    
+
     // Send a request to the HTTP server.
     toUTF(msg);
-    
-    PARM_HTTP_SEND_REQUEST     threadParmHttpSendRequest;    
 
-    threadParmHttpSendRequest.pHeaders       = headers;        
+    PARM_HTTP_SEND_REQUEST     threadParmHttpSendRequest;
+
+    threadParmHttpSendRequest.pHeaders       = headers;
     threadParmHttpSendRequest.headersLength  = wcslen(headers);
     threadParmHttpSendRequest.pMsg           = (char*) msg;
     threadParmHttpSendRequest.msgLength      = contentLength;
-      
-    
+
+
     hThread = CreateThread(
                  NULL,                      // Pointer to thread security attributes
                  0,                         // Initial thread stack size, in bytes
@@ -279,12 +279,12 @@ WCHAR* TransportAgent::sendMessage(WCHAR* msg) {
                  0,                         // Creation flags
                  &dwThreadID                // Pointer to returned thread identifier
              );
-    
+
     compare = WaitForSingleObject (hThread, getResponseTimeout() * 1000);
-    
+
     if (compare == WAIT_TIMEOUT ) {
-        
-        LOG.debug(TEXT("HttpSendRequest failed: timeout error!"));  
+
+        LOG.debug(TEXT("HttpSendRequest failed: timeout error!"));
         lastErrorCode = ERR_HTTP_TIME_OUT;
         wsprintf (lastErrorMsg, TEXT("%s: %d"), TEXT("HttpSendRequest Error Timeout "), ERR_HTTP_TIME_OUT);
         goto exit ;
@@ -295,25 +295,25 @@ WCHAR* TransportAgent::sendMessage(WCHAR* msg) {
 
     // The state of the specified object (thread) is signaled
     dwExitCode = 0;
-    
+
     if ( !GetExitCodeThread( hThread, &dwExitCode ) ) {
-        
-        lastErrorCode = ERR_CONNECT;        
+
+        lastErrorCode = ERR_CONNECT;
         wsprintf (lastErrorMsg, TEXT("%s: %d"), TEXT("HttpSendRequest Error"),GetLastError());
         LOG.debug(TEXT("HttpSendRequest failed: closing thread error!"));
         goto exit ;
     }
 
-    CloseHandle (hThread);  
-    
+    CloseHandle (hThread);
+
     LOG.debug(MESSAGE_SENT);
-    
+
     size = sizeof(status);
     HttpQueryInfo (request,
                        HTTP_QUERY_STATUS_CODE | HTTP_QUERY_FLAG_NUMBER,
                        (LPDWORD)&status,
                        (LPDWORD)&size,
-                       NULL);    
+                       NULL);
     //
     // If status code is not OK, returns immediately, otherwise reads the response
     //
@@ -328,24 +328,24 @@ WCHAR* TransportAgent::sendMessage(WCHAR* msg) {
                    (LPDWORD)&contentLength,
                    (LPDWORD)&size,
                    NULL);
-    
+
     LOG.debug(READING_RESPONSE);
 
     wsprintf(logmsg, TEXT("Content-length: %d"), contentLength);
     LOG.debug(logmsg);
-    
+
     if (contentLength <= 0) {
         lastErrorCode = ERR_READING_CONTENT;
         wsprintf(lastErrorMsg, TEXT("Invalid content-length: %d"), contentLength);
         goto exit;
-    }   
-    
+    }
+
     // Allocate a block of memory for lpHeadersW.
-    response = new WCHAR[contentLength+1];   
+    response = new WCHAR[contentLength+1];
     if (response == NULL) {
         lastErrorCode = ERR_NOT_ENOUGH_MEMORY;
         wsprintf(lastErrorMsg, TEXT("Not enough memory to allocate a buffer for the server response: %d required"), contentLength);
-        goto exit;        
+        goto exit;
 
     }
 
@@ -357,13 +357,13 @@ WCHAR* TransportAgent::sendMessage(WCHAR* msg) {
                  0,                         // Creation flags
                  &dwThreadID                // Pointer to returned thread identifier
              );
-   
-    
-    previousNumRead = -1; 
+
+
+    previousNumRead = -1;
     sumRead = 0;
     t = 0;
     do {
-       
+
         Sleep(T);
         if (previousNumRead == sumRead) {
             t += T;
@@ -379,12 +379,12 @@ WCHAR* TransportAgent::sendMessage(WCHAR* msg) {
 
 
     } while(cont);
-     
-    LOG.debug(TEXT("Response read")); 
+
+    LOG.debug(TEXT("Response read"));
 
     exit:
     CloseHandle (hThread);
-    
+
     // Close the Internet handles.
     if (inet) {
         InternetCloseHandle (inet);
@@ -401,7 +401,7 @@ WCHAR* TransportAgent::sendMessage(WCHAR* msg) {
     if ((status != STATUS_OK) && (response !=NULL)) {
         delete [] response; response = NULL;
     }
-    
+
     if (lastErrorCode != 0 && lastErrorCode == ERR_HTTP_TIME_OUT) {
         delete [] response; response = NULL;
     }
@@ -434,7 +434,7 @@ const WCHAR* TransportAgent::getResponse();
 
  /*
 * The function try to read the content of a file with InternetReadFile . It was called by a thread in the main
-* procedure. 
+* procedure.
 */
 
 DWORD WINAPI WorkerFunctionInternetReadFile(IN LPVOID vThreadParm) {
@@ -443,15 +443,15 @@ DWORD WINAPI WorkerFunctionInternetReadFile(IN LPVOID vThreadParm) {
     (*p) = 0;
     char bufferA[5000+1];
     DWORD size = 0, read = 0;
-          
+
     do {
         sumRead += read;
         if (!InternetReadFile (request, (LPVOID)bufferA, 5000, &read)) {
             lastErrorCode = ERR_READING_CONTENT;
             wsprintf(lastErrorMsg, TEXT("%s: %d"), TEXT("InternetReadFile Error"), GetLastError());
             cont = FALSE;
-        }        
-                
+        }
+
         if (read != 0) {
             bufferA[read] = 0;
 
@@ -463,9 +463,9 @@ DWORD WINAPI WorkerFunctionInternetReadFile(IN LPVOID vThreadParm) {
             MultiByteToWideChar (CP_ACP, 0, bufferA, read, p, read);
             p[read] = 0;
             p += size -1;
-   
+
         }
-        
+
     } while (read);
     cont = FALSE;
 
@@ -474,18 +474,18 @@ DWORD WINAPI WorkerFunctionInternetReadFile(IN LPVOID vThreadParm) {
 
 /*
 * The function to open a request with HttpOpenRequest . It was called by a thread in the main
-* procedure. 
+* procedure.
 */
 
 DWORD WINAPI WorkerFunctionHttpOpenRequest(IN LPVOID vThreadParm) {
-    
+
     DWORD flags = INTERNET_FLAG_RELOAD | INTERNET_FLAG_NO_CACHE_WRITE;
     LPTSTR acceptTypes[2] = {TEXT("*/*"), NULL};
 
     PARM_HTTP_OPEN_REQUEST* pThreadParm;
     // Initialize local pointer to void pointer passed to thread
     pThreadParm = (PARM_HTTP_OPEN_REQUEST*)vThreadParm;
-        
+
     if (!(request = HttpOpenRequest (connection,
                                      METHOD_POST,
                                      pThreadParm->pResource,
@@ -497,8 +497,8 @@ DWORD WINAPI WorkerFunctionHttpOpenRequest(IN LPVOID vThreadParm) {
       wsprintf (lastErrorMsg, TEXT("%s: %d"), TEXT("HttpOpenRequest Error"), GetLastError());
       return 1; // failure
     }
-    
-    
+
+
     else {
         return 0;  // success
     }
@@ -506,24 +506,24 @@ DWORD WINAPI WorkerFunctionHttpOpenRequest(IN LPVOID vThreadParm) {
 
 /*
 * The function try to send a message with HttpSendRequest . It was called by a thread in the main
-* procedure. 
+* procedure.
 */
 DWORD WINAPI WorkerFunctionHttpSendRequest(IN LPVOID vThreadParm) {
-    
+
     PARM_HTTP_SEND_REQUEST* pThreadParm;
     // Initialize local pointer to void pointer passed to thread
     pThreadParm = (PARM_HTTP_SEND_REQUEST*)vThreadParm;
-        
-    if (!HttpSendRequest (request, 
-                          pThreadParm->pHeaders, 
-                          pThreadParm->headersLength, 
-                          pThreadParm->pMsg, 
+
+    if (!HttpSendRequest (request,
+                          pThreadParm->pHeaders,
+                          pThreadParm->headersLength,
+                          pThreadParm->pMsg,
                           pThreadParm->msgLength)) {
         lastErrorCode = ERR_CONNECT;
         wsprintf (lastErrorMsg, TEXT("%s: %d"), TEXT("HttpSendRequest Error"),GetLastError());
         return 1; // failure
     }
-        
+
     else {
         return 0;  // success
     }
@@ -533,14 +533,14 @@ DWORD WINAPI WorkerFunctionHttpSendRequest(IN LPVOID vThreadParm) {
 
 /*
 * The function try to connect to internet. It was called by a thread in the main
-* procedure. 
+* procedure.
 */
 DWORD WINAPI WorkerFunctionInternetConnect( IN LPVOID vThreadParm) {
-    
+
     PARM_INTERNET_CONNECT* pThreadParm;
     // Initialize local pointer to void pointer passed to thread
     pThreadParm = (PARM_INTERNET_CONNECT*)vThreadParm;
-        
+
     if ( !( connection  = InternetConnect (inet,
                                 pThreadParm->pHost,
                                 pThreadParm->nServerPort,
@@ -548,10 +548,10 @@ DWORD WINAPI WorkerFunctionInternetConnect( IN LPVOID vThreadParm) {
                                 NULL, // password
                                 INTERNET_SERVICE_HTTP,
                                 0,
-                                0))) 
-        {      
+                                0)))
+        {
         lastErrorCode = ERR_CONNECT;
-        wsprintf (lastErrorMsg, TEXT("%s: %d"), TEXT("InternetConnect Error"), GetLastError());        
+        wsprintf (lastErrorMsg, TEXT("%s: %d"), TEXT("InternetConnect Error"), GetLastError());
         return 1; // failure
     }
     else {

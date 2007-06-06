@@ -1,19 +1,19 @@
 /*
- * Copyright (C) 2003-2007 Funambol
+ * Copyright (C) 2003-2007 Funambol, Inc.
  *
  * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
+ * it under the terms of the GNU General Public License version 2 as
+ * published by the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY, TITLE, NONINFRINGEMENT or FITNESS FOR A PARTICULAR
+ * PURPOSE.  See the GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ * 02111-1307  USA
  */
 
 #include <windows.h>
@@ -37,8 +37,8 @@ char* DESDecoder::transform(char* data, TransformationInfo& info) {
 
     HCRYPTHASH hash=0;
 
-    DWORD size = info.size; // I reassign it to a DWORD 
-                            // just in case a long is not 
+    DWORD size = info.size; // I reassign it to a DWORD
+                            // just in case a long is not
                             // of the same size of a DWORD
     DWORD dwParam = 0;
 
@@ -91,10 +91,10 @@ char* DESDecoder::transform(char* data, TransformationInfo& info) {
 
     // Derive a session key from the hash object.
     res = CryptDeriveKey (
-        prov, 
-        CALG_DES, 
-        hash, 
-        0, 
+        prov,
+        CALG_DES,
+        hash,
+        0,
         &key
     );
 
@@ -135,11 +135,11 @@ char* DESDecoder::transform(char* data, TransformationInfo& info) {
     }
 
     res = CryptDecrypt (
-        key, 
-        0, 
-        TRUE, 
-        0, 
-        (unsigned char*)data, 
+        key,
+        0,
+        TRUE,
+        0,
+        (unsigned char*)data,
         &size
     );
 
@@ -171,5 +171,5 @@ char* DESDecoder::transform(char* data, TransformationInfo& info) {
    }
 
    return data;
-    
+
 }

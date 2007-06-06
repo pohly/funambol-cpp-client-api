@@ -1,19 +1,19 @@
 /*
- * Copyright (C) 2003-2007 Funambol
+ * Copyright (C) 2003-2007 Funambol, Inc.
  *
  * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
+ * it under the terms of the GNU General Public License version 2 as
+ * published by the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY, TITLE, NONINFRINGEMENT or FITNESS FOR A PARTICULAR
+ * PURPOSE.  See the GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ * 02111-1307  USA
  */
 
 #include <stdlib.h>
@@ -56,7 +56,7 @@ void testConfigFilter() {
 
         MailSourceManagementNode node("sources", "mail", config);
     }
-   
+
     //
     // Now we can read the config and than create the needed clause
     //
@@ -69,7 +69,7 @@ void testConfigFilter() {
     //
     MessageBox(0, TEXT("No filter"), TEXT("Config to filter"), MB_OK);
 
-    SourceFilter* filter = 
+    SourceFilter* filter =
         ClauseUtil::createSourceFilter(NULL, config.getBodySize(),config.getAttachSize());
 
     if (filter == NULL) {
@@ -82,7 +82,7 @@ void testConfigFilter() {
     // Subject only
     //
     MessageBox(0, TEXT("Subject only"), TEXT("Config to filter"), MB_OK);
-    
+
     filter = ClauseUtil::createSourceFilter(NULL, 0, -1);
 
     if (filter == NULL) {
@@ -114,7 +114,7 @@ void testConfigFilter() {
     // 10Kb body, no attachment
     //
     MessageBox(0, TEXT("10Kb body, no attachment"), TEXT("Config to filter"), MB_OK);
-    
+
     filter = ClauseUtil::createSourceFilter(NULL, 10, 0);
 
     if (filter == NULL) {
@@ -128,7 +128,7 @@ void testConfigFilter() {
             WCHAR *msg = toWideChar(sb->c_str());
             MessageBox(0, msg, TEXT("10Kb body, no attachment"), MB_OK);
 
-            delete sb; 
+            delete sb;
             delete [] msg;
         }
 
@@ -144,7 +144,7 @@ void testConfigFilter() {
     // 10Kb body, attachment up to 25Kb
     //
     MessageBox(0, TEXT("10Kb body, attachment up to 25Kb"), TEXT("Config to filter"), MB_OK);
-    
+
     filter = ClauseUtil::createSourceFilter(NULL, 10, 25);
 
     if (filter == NULL) {
@@ -176,7 +176,7 @@ void testConfigFilter() {
     //
     WCHAR* TODAY = TEXT("20051211T000000Z");
     MessageBox(0, TEXT("TODAY's emails, no attachments"), TEXT("Config to filter"), MB_OK);
-    
+
     filter = ClauseUtil::createSourceFilter(TODAY, -1, 0);
 
     if (filter == NULL) {
@@ -218,7 +218,7 @@ void testConfigFilter() {
 
         MailSourceManagementNode node("sources", "mail", config);
     }
-    
+
     config = node.getMailSourceConfig(TRUE); // reread from the DM
 
     filter = ClauseUtil::createSourceFilter(TODAY, config.getBodySize(), config.getAttachSize());

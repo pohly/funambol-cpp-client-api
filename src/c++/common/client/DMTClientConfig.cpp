@@ -1,19 +1,19 @@
 /*
- * Copyright (C) 2003-2007 Funambol
+ * Copyright (C) 2003-2007 Funambol, Inc.
  *
  * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
+ * it under the terms of the GNU General Public License version 2 as
+ * published by the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY, TITLE, NONINFRINGEMENT or FITNESS FOR A PARTICULAR
+ * PURPOSE.  See the GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ * 02111-1307  USA
  */
 
 #include "base/fscapi.h"
@@ -197,7 +197,7 @@ BOOL DMTClientConfig::open() {
     if (!syncMLNode ) {
         goto failed;
     }
-    
+
     sprintf(nodeName, "%s%s", rootContext, CONTEXT_SPDS_SOURCES);
     sourcesNode = dmt->readManagementNode(nodeName);
     if (!sourcesNode) {
@@ -280,7 +280,7 @@ BOOL DMTClientConfig::readAccessConfig(ManagementNode& n) {
         if (!readAuthConfig(n, *node)) {
             ret = FALSE;
         }
-        delete node; 
+        delete node;
         node = NULL;
     }
     else {
@@ -296,7 +296,7 @@ BOOL DMTClientConfig::readAccessConfig(ManagementNode& n) {
         if (!readConnConfig(n, *node)) {
             ret = FALSE;
         }
-        delete node; 
+        delete node;
         node = NULL;
     }
     else {
@@ -313,7 +313,7 @@ BOOL DMTClientConfig::readAccessConfig(ManagementNode& n) {
             ret = FALSE;
         }
 
-        delete node; 
+        delete node;
         node = NULL;
     }
     else {
@@ -347,7 +347,7 @@ void DMTClientConfig::saveAccessConfig(ManagementNode& n) {
     node = dmt->readManagementNode(nodeName);
     if (node) {
         saveAuthConfig(n, *node);
-        delete node; 
+        delete node;
         node = NULL;
     }
 
@@ -358,7 +358,7 @@ void DMTClientConfig::saveAccessConfig(ManagementNode& n) {
     node = dmt->readManagementNode(nodeName);
     if (node) {
         saveConnConfig(n, *node);
-        delete node; 
+        delete node;
         node = NULL;
     }
 
@@ -369,7 +369,7 @@ void DMTClientConfig::saveAccessConfig(ManagementNode& n) {
     node = dmt->readManagementNode(nodeName);
     if (node) {
         saveExtAccessConfig(n, *node);
-        delete node; 
+        delete node;
         node = NULL;
     }
 }
@@ -403,13 +403,13 @@ BOOL DMTClientConfig::readDeviceConfig(ManagementNode& n) {
         if (!readDevInfoConfig(n, *node)) {
             ret = FALSE;
         }
-        delete node; 
+        delete node;
         node = NULL;
     }
     else {
         ret = FALSE;
     }
-    
+
     //
     // DevDetail properties
     //
@@ -419,7 +419,7 @@ BOOL DMTClientConfig::readDeviceConfig(ManagementNode& n) {
         if (!readDevDetailConfig(n, *node)) {
             ret = FALSE;
         }
-        delete node; 
+        delete node;
         node = NULL;
     }
     else {
@@ -435,7 +435,7 @@ BOOL DMTClientConfig::readDeviceConfig(ManagementNode& n) {
         if (!readExtDevConfig(n, *node)) {
             ret = FALSE;
         }
-        delete node; 
+        delete node;
         node = NULL;
     }
     else {
@@ -470,7 +470,7 @@ void DMTClientConfig::saveDeviceConfig(ManagementNode& n) {
     node = dmt->readManagementNode(nodeName);
     if (node) {
         saveDevInfoConfig(n, *node);
-        delete node; 
+        delete node;
         node = NULL;
     }
 
@@ -481,7 +481,7 @@ void DMTClientConfig::saveDeviceConfig(ManagementNode& n) {
     node = dmt->readManagementNode(nodeName);
     if (node) {
         saveDevDetailConfig(n, *node);
-        delete node; 
+        delete node;
         node = NULL;
     }
 
@@ -492,7 +492,7 @@ void DMTClientConfig::saveDeviceConfig(ManagementNode& n) {
     node = dmt->readManagementNode(nodeName);
     if (node) {
         saveExtDevConfig(n, *node);
-        delete node; 
+        delete node;
         node = NULL;
     }
 }
@@ -506,7 +506,7 @@ void DMTClientConfig::saveDeviceConfig(ManagementNode& n) {
  * @param i   : the index of SyncSource
  * @param n   : the sourceNode (parent node)
  */
-BOOL DMTClientConfig::readSourceConfig(int i, ManagementNode& n) {    
+BOOL DMTClientConfig::readSourceConfig(int i, ManagementNode& n) {
 
     ManagementNode* node;
 
@@ -558,7 +558,7 @@ void DMTClientConfig::saveSourceConfig(int i, ManagementNode& n) {
         // CTCap c = sourceConfigs[i].getCtCap();
         // saveCtCap() somewhere...
 
-        delete node; 
+        delete node;
     }
 }
 
@@ -574,31 +574,31 @@ BOOL DMTClientConfig::readAuthConfig(ManagementNode& syncMLNode,
     accessConfig.setPassword(tmp);
     delete [] tmp;
 
-    tmp = authNode.readPropertyValue(PROPERTY_SERVER_ID);     
+    tmp = authNode.readPropertyValue(PROPERTY_SERVER_ID);
     accessConfig.setServerID(tmp);
     delete [] tmp;
 
-    tmp = authNode.readPropertyValue(PROPERTY_SERVER_PWD);     
+    tmp = authNode.readPropertyValue(PROPERTY_SERVER_PWD);
     accessConfig.setServerPWD(tmp);
     delete [] tmp;
 
-    tmp = authNode.readPropertyValue(PROPERTY_SERVER_NONCE);     
+    tmp = authNode.readPropertyValue(PROPERTY_SERVER_NONCE);
     accessConfig.setServerNonce(tmp);
     delete [] tmp;
 
-    tmp = authNode.readPropertyValue(PROPERTY_CLIENT_NONCE);     
+    tmp = authNode.readPropertyValue(PROPERTY_CLIENT_NONCE);
     accessConfig.setClientNonce(tmp);
     delete [] tmp;
 
-    tmp = authNode.readPropertyValue(PROPERTY_CLIENT_AUTH_TYPE);     
+    tmp = authNode.readPropertyValue(PROPERTY_CLIENT_AUTH_TYPE);
     accessConfig.setClientAuthType(tmp);
     delete [] tmp;
 
-    tmp = authNode.readPropertyValue(PROPERTY_SERVER_AUTH_TYPE);     
+    tmp = authNode.readPropertyValue(PROPERTY_SERVER_AUTH_TYPE);
     accessConfig.setServerAuthType(tmp);
     delete [] tmp;
 
-    tmp = authNode.readPropertyValue(PROPERTY_IS_SERVER_REQUIRED);     
+    tmp = authNode.readPropertyValue(PROPERTY_IS_SERVER_REQUIRED);
     accessConfig.setServerAuthRequired((*tmp == '1') ? TRUE : FALSE);
     delete [] tmp;
 
@@ -616,54 +616,54 @@ void DMTClientConfig::saveAuthConfig(ManagementNode& syncMLNode,
     authNode.setPropertyValue(PROPERTY_CLIENT_AUTH_TYPE, accessConfig.getClientAuthType());
     authNode.setPropertyValue(PROPERTY_SERVER_AUTH_TYPE, accessConfig.getServerAuthType());
     authNode.setPropertyValue(PROPERTY_IS_SERVER_REQUIRED,
-                              (accessConfig.getServerAuthRequired() ? "1" : "0" ) ); 
+                              (accessConfig.getServerAuthRequired() ? "1" : "0" ) );
 }
 
 BOOL DMTClientConfig::readConnConfig(ManagementNode& syncMLNode,
                                      ManagementNode& connNode) {
     char* tmp;
-    
+
     tmp = connNode.readPropertyValue(PROPERTY_SYNC_URL);
     accessConfig.setSyncURL(tmp);
     delete [] tmp;
 
-    tmp = connNode.readPropertyValue(PROPERTY_USE_PROXY);     
+    tmp = connNode.readPropertyValue(PROPERTY_USE_PROXY);
     accessConfig.setUseProxy((*tmp == '1') ? TRUE : FALSE);
     delete [] tmp;
 
-    tmp = connNode.readPropertyValue(PROPERTY_PROXY_HOST);     
+    tmp = connNode.readPropertyValue(PROPERTY_PROXY_HOST);
     accessConfig.setProxyHost(tmp);
     delete [] tmp;
 
-    tmp = connNode.readPropertyValue(PROPERTY_PROXY_PORT);     
+    tmp = connNode.readPropertyValue(PROPERTY_PROXY_PORT);
     accessConfig.setProxyPort(strtol(tmp, NULL, 10));
     delete [] tmp;
 
-    tmp = connNode.readPropertyValue(PROPERTY_PROXY_USERNAME);     
+    tmp = connNode.readPropertyValue(PROPERTY_PROXY_USERNAME);
     accessConfig.setProxyUsername(tmp);
     delete [] tmp;
 
-    tmp = connNode.readPropertyValue(PROPERTY_PROXY_PASSWORD);     
+    tmp = connNode.readPropertyValue(PROPERTY_PROXY_PASSWORD);
     accessConfig.setProxyPassword(tmp);
     delete [] tmp;
 
-    tmp = connNode.readPropertyValue(PROPERTY_CHECK_CONN);     
+    tmp = connNode.readPropertyValue(PROPERTY_CHECK_CONN);
     accessConfig.setCheckConn((*tmp == '1') ? TRUE : FALSE);
     delete [] tmp;
 
-    tmp = connNode.readPropertyValue(PROPERTY_RESPONSE_TIMEOUT);     
+    tmp = connNode.readPropertyValue(PROPERTY_RESPONSE_TIMEOUT);
     accessConfig.setResponseTimeout(strtol(tmp, NULL, 10));
     delete [] tmp;
 
-    tmp = connNode.readPropertyValue(PROPERTY_READ_BUFFER_SIZE);     
+    tmp = connNode.readPropertyValue(PROPERTY_READ_BUFFER_SIZE);
     accessConfig.setReadBufferSize(strtol(tmp, NULL, 10));
     delete [] tmp;
-        
-    tmp = connNode.readPropertyValue(PROPERTY_USER_AGENT);     
+
+    tmp = connNode.readPropertyValue(PROPERTY_USER_AGENT);
     accessConfig.setUserAgent(tmp);
     delete [] tmp;
 
-    tmp = connNode.readPropertyValue(PROPERTY_ENABLE_COMPRESSION);     
+    tmp = connNode.readPropertyValue(PROPERTY_ENABLE_COMPRESSION);
     accessConfig.setCompression((strcmp(tmp,  "1")==0) ? TRUE : FALSE);
     delete [] tmp;
 
@@ -685,9 +685,9 @@ void DMTClientConfig::saveConnConfig(ManagementNode& syncMLNode,
     connNode.setPropertyValue(PROPERTY_CHECK_CONN,
                               (accessConfig.getCheckConn() ? "1": "0") );
     sprintf(buf, "%lu", accessConfig.getResponseTimeout());
-    connNode.setPropertyValue(PROPERTY_RESPONSE_TIMEOUT, buf); 
+    connNode.setPropertyValue(PROPERTY_RESPONSE_TIMEOUT, buf);
     sprintf(buf, "%lu", accessConfig.getReadBufferSize());
-    connNode.setPropertyValue(PROPERTY_READ_BUFFER_SIZE, buf);  
+    connNode.setPropertyValue(PROPERTY_READ_BUFFER_SIZE, buf);
     connNode.setPropertyValue(PROPERTY_USER_AGENT, accessConfig.getUserAgent());
     connNode.setPropertyValue(PROPERTY_ENABLE_COMPRESSION, accessConfig.getCompression() ? "1": "0");
 }
@@ -695,21 +695,21 @@ void DMTClientConfig::saveConnConfig(ManagementNode& syncMLNode,
 BOOL DMTClientConfig::readExtAccessConfig(ManagementNode& syncMLNode,
                                           ManagementNode& extNode) {
     char* tmp;
-    
+
     tmp = extNode.readPropertyValue(PROPERTY_FIRST_TIME_SYNC_MODE);
     SyncMode i = (SyncMode)(*tmp ? strtol(tmp, NULL, 10) : 0);
-    accessConfig.setFirstTimeSyncMode(i);   
+    accessConfig.setFirstTimeSyncMode(i);
     delete [] tmp;
 
-    tmp = extNode.readPropertyValue(PROPERTY_MAX_MSG_SIZE);     
+    tmp = extNode.readPropertyValue(PROPERTY_MAX_MSG_SIZE);
     accessConfig.setMaxMsgSize(strtol(tmp, NULL, 10));
     delete [] tmp;
 
-    tmp = extNode.readPropertyValue(PROPERTY_SYNC_BEGIN);     
+    tmp = extNode.readPropertyValue(PROPERTY_SYNC_BEGIN);
     accessConfig.setBeginSync(strtol(tmp, NULL, 10));
     delete [] tmp;
 
-    tmp = extNode.readPropertyValue(PROPERTY_SYNC_END);     
+    tmp = extNode.readPropertyValue(PROPERTY_SYNC_END);
     accessConfig.setEndSync(strtol(tmp, NULL, 10));
     delete [] tmp;
 
@@ -737,7 +737,7 @@ void DMTClientConfig::saveExtAccessConfig(ManagementNode& syncMLNode,
 BOOL DMTClientConfig::readDevInfoConfig(ManagementNode& syncMLNode,
                                         ManagementNode& devInfoNode) {
     char* tmp;
-    
+
     tmp = devInfoNode.readPropertyValue(PROPERTY_DEVICE_ID);
     deviceConfig.setDevID(tmp);
     delete [] tmp;
@@ -764,15 +764,15 @@ void DMTClientConfig::saveDevInfoConfig(ManagementNode& syncMLNode,
     devInfoNode.setPropertyValue(PROPERTY_MODEL, deviceConfig.getMod());
     devInfoNode.setPropertyValue(PROPERTY_DS_VERSION, deviceConfig.getDsV());
 }
-        
+
 BOOL DMTClientConfig::readDevDetailConfig(ManagementNode& syncMLNode,
                                           ManagementNode& devDetailNode) {
     char* tmp;
-    
+
     tmp = devDetailNode.readPropertyValue(PROPERTY_DEVICE_TYPE);
     deviceConfig.setDevType(tmp);
     delete [] tmp;
-    
+
     tmp = devDetailNode.readPropertyValue(PROPERTY_OEM);
     deviceConfig.setOem(tmp);
     delete [] tmp;
@@ -803,14 +803,14 @@ void DMTClientConfig::saveDevDetailConfig(ManagementNode& syncMLNode,
     devDetailNode.setPropertyValue(PROPERTY_FIRMWARE_VERSION, deviceConfig.getFwv());
     devDetailNode.setPropertyValue(PROPERTY_SOFTWARE_VERSION, deviceConfig.getSwv());
     devDetailNode.setPropertyValue(PROPERTY_HARDWARE_VERSION, deviceConfig.getHwv());
-    devDetailNode.setPropertyValue(PROPERTY_LARGE_OBJECT_SUPPORT, 
+    devDetailNode.setPropertyValue(PROPERTY_LARGE_OBJECT_SUPPORT,
                                    (deviceConfig.getLoSupport() ? "1": "0") );
 }
 
 BOOL DMTClientConfig::readExtDevConfig(ManagementNode& syncMLNode,
                                        ManagementNode& extNode) {
     char* tmp;
-    
+
     tmp = extNode.readPropertyValue(PROPERTY_VER_DTD);
     deviceConfig.setVerDTD(tmp);
     delete [] tmp;
@@ -835,8 +835,8 @@ BOOL DMTClientConfig::readExtDevConfig(ManagementNode& syncMLNode,
     tmp = extNode.readPropertyValue(PROPERTY_DEVINF_HASH);
     deviceConfig.setDevInfHash(tmp);
     delete [] tmp;
-        
-    return TRUE;    
+
+    return TRUE;
 }
 
 void DMTClientConfig::saveExtDevConfig(ManagementNode& syncMLNode,
@@ -845,14 +845,14 @@ void DMTClientConfig::saveExtDevConfig(ManagementNode& syncMLNode,
 
     extNode.setPropertyValue(PROPERTY_VER_DTD, deviceConfig.getVerDTD());
     extNode.setPropertyValue(PROPERTY_DEVINF_HASH, deviceConfig.getDevInfHash());
-    extNode.setPropertyValue(PROPERTY_UTC, 
+    extNode.setPropertyValue(PROPERTY_UTC,
                              (deviceConfig.getUtc() ? "1": "0") );
-    extNode.setPropertyValue(PROPERTY_NUMBER_OF_CHANGES_SUPPORT, 
+    extNode.setPropertyValue(PROPERTY_NUMBER_OF_CHANGES_SUPPORT,
                              (deviceConfig.getNocSupport() ? "1": "0") );
 
     sprintf(buf, "%lu", deviceConfig.getLogLevel());
     extNode.setPropertyValue(PROPERTY_LOG_LEVEL, buf);
-        
+
     sprintf(buf, "%lu", deviceConfig.getMaxObjSize());
     extNode.setPropertyValue(PROPERTY_MAX_OBJ_SIZE, buf);
 }
@@ -861,12 +861,12 @@ BOOL DMTClientConfig::readSourceVars(int i,
                                      ManagementNode& sourcesNode,
                                      ManagementNode& sourceNode) {
     char* tmp;
-    
-    tmp = sourceNode.readPropertyValue(PROPERTY_SOURCE_LAST_SYNC);    
+
+    tmp = sourceNode.readPropertyValue(PROPERTY_SOURCE_LAST_SYNC);
     sourceConfigs[i].setLast( ((*tmp) ? strtol(tmp, NULL, 10) : 0) );
     delete [] tmp;
 
-    return TRUE;    
+    return TRUE;
 }
 
 void DMTClientConfig::saveSourceVars(int i,
@@ -874,48 +874,48 @@ void DMTClientConfig::saveSourceVars(int i,
                                      ManagementNode& sourceNode) {
     char buf[512];
 
-    timestampToAnchor(sourceConfigs[i].getLast(), buf); 
-    sourceNode.setPropertyValue(PROPERTY_SOURCE_LAST_SYNC, buf);   
+    timestampToAnchor(sourceConfigs[i].getLast(), buf);
+    sourceNode.setPropertyValue(PROPERTY_SOURCE_LAST_SYNC, buf);
 }
 
 BOOL DMTClientConfig::readSourceConfig(int i,
                                        ManagementNode& sourcesNode,
                                        ManagementNode& sourceNode) {
     char* tmp;
-    
-    tmp = sourceNode.readPropertyValue(PROPERTY_SOURCE_NAME);    
+
+    tmp = sourceNode.readPropertyValue(PROPERTY_SOURCE_NAME);
     sourceConfigs[i].setName(tmp);
     delete [] tmp;
 
-    tmp = sourceNode.readPropertyValue(PROPERTY_SOURCE_URI);    
+    tmp = sourceNode.readPropertyValue(PROPERTY_SOURCE_URI);
     sourceConfigs[i].setURI(tmp);
     delete [] tmp;
 
-    tmp = sourceNode.readPropertyValue(PROPERTY_SOURCE_SYNC_MODES);    
+    tmp = sourceNode.readPropertyValue(PROPERTY_SOURCE_SYNC_MODES);
     sourceConfigs[i].setSyncModes(tmp);
     delete [] tmp;
 
-    tmp = sourceNode.readPropertyValue(PROPERTY_SOURCE_SYNC);    
+    tmp = sourceNode.readPropertyValue(PROPERTY_SOURCE_SYNC);
     sourceConfigs[i].setSync(tmp);
     delete [] tmp;
 
-    tmp = sourceNode.readPropertyValue(PROPERTY_SOURCE_TYPE);    
+    tmp = sourceNode.readPropertyValue(PROPERTY_SOURCE_TYPE);
     sourceConfigs[i].setType(tmp);
     delete [] tmp;
 
-    tmp = sourceNode.readPropertyValue(PROPERTY_SOURCE_VERSION);    
+    tmp = sourceNode.readPropertyValue(PROPERTY_SOURCE_VERSION);
     sourceConfigs[i].setVersion(tmp);
     delete [] tmp;
 
-    tmp = sourceNode.readPropertyValue(PROPERTY_SOURCE_ENCODING);    
+    tmp = sourceNode.readPropertyValue(PROPERTY_SOURCE_ENCODING);
     sourceConfigs[i].setEncoding(tmp);
     delete [] tmp;
-    
-    tmp = sourceNode.readPropertyValue(PROPERTY_SOURCE_ENCRYPTION);    
+
+    tmp = sourceNode.readPropertyValue(PROPERTY_SOURCE_ENCRYPTION);
     sourceConfigs[i].setEncryption(tmp);
     delete [] tmp;
-    
-    tmp = sourceNode.readPropertyValue(PROPERTY_SOURCE_SUPP_TYPES);    
+
+    tmp = sourceNode.readPropertyValue(PROPERTY_SOURCE_SUPP_TYPES);
     sourceConfigs[i].setSupportedTypes(tmp);
     delete [] tmp;
 
@@ -925,13 +925,13 @@ BOOL DMTClientConfig::readSourceConfig(int i,
 void DMTClientConfig::saveSourceConfig(int i,
                                        ManagementNode& sourcesNode,
                                        ManagementNode& sourceNode) {
-    sourceNode.setPropertyValue(PROPERTY_SOURCE_NAME, sourceConfigs[i].getName());    
+    sourceNode.setPropertyValue(PROPERTY_SOURCE_NAME, sourceConfigs[i].getName());
     sourceNode.setPropertyValue(PROPERTY_SOURCE_URI, sourceConfigs[i].getURI());
     sourceNode.setPropertyValue(PROPERTY_SOURCE_TYPE, sourceConfigs[i].getType());
     sourceNode.setPropertyValue(PROPERTY_SOURCE_VERSION, sourceConfigs[i].getVersion());
     sourceNode.setPropertyValue(PROPERTY_SOURCE_SYNC_MODES, sourceConfigs[i].getSyncModes());
-    sourceNode.setPropertyValue(PROPERTY_SOURCE_SYNC, sourceConfigs[i].getSync());    
-    sourceNode.setPropertyValue(PROPERTY_SOURCE_ENCODING, sourceConfigs[i].getEncoding());    
+    sourceNode.setPropertyValue(PROPERTY_SOURCE_SYNC, sourceConfigs[i].getSync());
+    sourceNode.setPropertyValue(PROPERTY_SOURCE_ENCODING, sourceConfigs[i].getEncoding());
     sourceNode.setPropertyValue(PROPERTY_SOURCE_SUPP_TYPES, sourceConfigs[i].getSupportedTypes());
     sourceNode.setPropertyValue(PROPERTY_SOURCE_ENCRYPTION, sourceConfigs[i].getEncryption());
 

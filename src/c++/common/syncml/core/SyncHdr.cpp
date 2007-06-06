@@ -1,30 +1,30 @@
 /*
- * Copyright (C) 2003-2007 Funambol
+ * Copyright (C) 2003-2007 Funambol, Inc.
  *
  * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
+ * it under the terms of the GNU General Public License version 2 as
+ * published by the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY, TITLE, NONINFRINGEMENT or FITNESS FOR A PARTICULAR
+ * PURPOSE.  See the GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ * 02111-1307  USA
  */
- 
- 
+
+
 #include "syncml/core/SyncHdr.h"
- 
+
 
 SyncHdr::SyncHdr() {
 
     COMMAND_NAME = new char[strlen(SYNCHDR_COMMAND_NAME) + 1];
     sprintf(COMMAND_NAME, SYNCHDR_COMMAND_NAME);
-         
+
     verDTD      = NULL;
     verProto    = NULL;
     sessionID   = NULL;
@@ -34,7 +34,7 @@ SyncHdr::SyncHdr() {
     respURI     = NULL;
     cred        = NULL;
     meta        = NULL;
-    noResp      = FALSE;    
+    noResp      = FALSE;
 }
 
 SyncHdr::~SyncHdr() {
@@ -48,7 +48,7 @@ SyncHdr::~SyncHdr() {
     if (respURI)    { delete [] respURI;    respURI     = NULL; }
     if (cred)       { delete    cred;       cred        = NULL; }
     if (meta)       { delete    meta;       meta        = NULL; }
-    
+
     noResp = FALSE   ;
 }
 
@@ -77,7 +77,7 @@ SyncHdr::SyncHdr(VerDTD*      verDTD,
                 BOOL         noResp,
                 Cred*        cred,
                 Meta*        meta) {
-    
+
     this->verDTD      = NULL;
     this->verProto    = NULL;
     this->sessionID   = NULL;
@@ -87,7 +87,7 @@ SyncHdr::SyncHdr(VerDTD*      verDTD,
     this->respURI     = NULL;
     this->cred        = NULL;
     this->meta        = NULL;
-    this->noResp      = FALSE;  
+    this->noResp      = FALSE;
 
     COMMAND_NAME = new char[strlen(SYNCHDR_COMMAND_NAME) + 1];
     sprintf(COMMAND_NAME, SYNCHDR_COMMAND_NAME);
@@ -128,7 +128,7 @@ void SyncHdr::setVerDTD(VerDTD* verDTD) {
             delete this->verDTD; this->verDTD = NULL;
         }
         this->verDTD = verDTD->clone();
-    }    
+    }
 }
 
 /**
@@ -153,7 +153,7 @@ void SyncHdr::setVerProto(VerProto* verProto) {
             delete this->verProto; this->verProto = NULL;
         }
         this->verProto = verProto->clone();
-    }        
+    }
 }
 /**
 * Gets the session identifier
@@ -178,7 +178,7 @@ void SyncHdr::setSessionID(SessionID* sessionID) {
             delete this->sessionID; this->sessionID = NULL;
         }
         this->sessionID = sessionID->clone();
-    }   
+    }
 }
 
 
@@ -226,7 +226,7 @@ void SyncHdr::setTarget(Target* target) {
             delete this->target; this->target = NULL;
         }
         this->target = target->clone();
-    }   
+    }
 }
 
 /**
@@ -251,7 +251,7 @@ void SyncHdr::setSource(Source* source) {
             delete this->source; this->source = NULL;
         }
         this->source = source->clone();
-    }  
+    }
 }
 
 /**
@@ -304,12 +304,12 @@ void SyncHdr::setNoResp(BOOL noResp) {
         this->noResp = NULL;
     } else {
         this->noResp = noResp;
-    }  
+    }
 }
 
 /**
 * Gets the Credential property
-* 
+*
 * @return cred the Credential property
 */
 Cred* SyncHdr::getCred() {
@@ -318,21 +318,21 @@ Cred* SyncHdr::getCred() {
 
 /**
 * Sets the Credential property
-* 
+*
 * @param cred the Credential property
 */
-void SyncHdr::setCred(Cred* cred) {   
+void SyncHdr::setCred(Cred* cred) {
     if (this->cred) {
         delete this->cred; this->cred = NULL;
     }
     if (cred) {
-        this->cred = cred->clone();    
+        this->cred = cred->clone();
     }
 }
 
 /**
 * Gets the Meta property
-* 
+*
 * @return meta the Meta property
 */
 Meta* SyncHdr::getMeta() {
@@ -341,7 +341,7 @@ Meta* SyncHdr::getMeta() {
 
 /**
 * Sets the Meta property
-* 
+*
 * @param meta the Meta property
 */
 void SyncHdr::setMeta(Meta* meta) {
@@ -349,7 +349,7 @@ void SyncHdr::setMeta(Meta* meta) {
         delete this->meta; this->meta = NULL;
     }
     if (meta) {
-        this->meta = meta->clone();    
+        this->meta = meta->clone();
     }
 }
 

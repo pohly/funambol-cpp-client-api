@@ -1,24 +1,24 @@
 /*
- * Copyright (C) 2003-2007 Funambol
+ * Copyright (C) 2003-2007 Funambol, Inc.
  *
  * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
+ * it under the terms of the GNU General Public License version 2 as
+ * published by the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY, TITLE, NONINFRINGEMENT or FITNESS FOR A PARTICULAR
+ * PURPOSE.  See the GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ * 02111-1307  USA
  */
- 
+
 #include "base/util/utils.h"
 #include "syncml/core/CTPropParam.h"
- 
+
 
 CTPropParam::CTPropParam() {
     initialize();
@@ -51,23 +51,23 @@ CTPropParam::CTPropParam(char*   propName,
     setPropName(propName);
     setValEnum(valEnum);
     setContentTypeParameters(ctParameters);
-       
+
     this->displayName  = stringdup(displayName);
 
 }
 
-    
+
 /**
  * Creates a new ContentTypeProperty object with the given name, value and
  * display name
  *
- * @param propName corresponds to &lt;PropName&gt; element in the SyncML 
+ * @param propName corresponds to &lt;PropName&gt; element in the SyncML
  *                  specification - NOT NULL
- * @param dataType corresponds to &lt;DataType&gt; element in the SyncML 
+ * @param dataType corresponds to &lt;DataType&gt; element in the SyncML
  *                  specification
- * @param size corresponds to &lt;Size&gt; element in the SyncML 
+ * @param size corresponds to &lt;Size&gt; element in the SyncML
  *                  specification
- * @param displayName corresponds to &lt;DisplayName&gt; element in the SyncML 
+ * @param displayName corresponds to &lt;DisplayName&gt; element in the SyncML
  *                  specification
  * @param ctParameters the array of content type parameters - NOT NULL
  *
@@ -127,8 +127,8 @@ ArrayList* CTPropParam::getValEnum() {
  */
 void CTPropParam::setValEnum(ArrayList* valEnum) {
     if (this->valEnum) {
-		this->valEnum->clear(); 
-    } 
+		this->valEnum->clear();
+    }
 	this->valEnum = valEnum->clone();
 }
 
@@ -200,7 +200,7 @@ void CTPropParam::setSize(int size) {
  */
 ArrayList* CTPropParam::getContentTypeParameters() {
      return ctParameters;
-}   
+}
 
 /**
  * Sets an array of content type properties
@@ -210,8 +210,8 @@ ArrayList* CTPropParam::getContentTypeParameters() {
  */
 void CTPropParam::setContentTypeParameters(ArrayList* ctParameters) {
     if (this->ctParameters) {
-		this->ctParameters->clear(); 
-    } 
+		this->ctParameters->clear();
+    }
 	this->ctParameters = ctParameters->clone();
 }
 

@@ -1,19 +1,19 @@
 /*
- * Copyright (C) 2003-2007 Funambol
+ * Copyright (C) 2003-2007 Funambol, Inc
  *
  * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
+ * it under the terms of the GNU General Public License version 2 as
+ * published by the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY, TITLE, NONINFRINGEMENT or FITNESS FOR A PARTICULAR
+ * PURPOSE.  See the GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ * 02111-1307  USA
  */
 
 
@@ -27,7 +27,7 @@
 #include "spds/EmailData.h"
 
 class EmailData : public ArrayElement {
-    
+
     // ------------------------------------------------------- Private data
     private:
         bool read;
@@ -40,21 +40,21 @@ class EmailData : public ArrayElement {
         bool flagged;
 
         MailMessage emailItem;
-        
+
         // these are fields added for the inclusive filters
-        class ExtMailData : public ArrayElement {  
+        class ExtMailData : public ArrayElement {
             public:
                 ExtMailData() {
                     attachName = 0;
                     attachSize = 0;
-                }  
+                }
                 ~ExtMailData() {
                     if (attachName) {
                         delete [] attachName; attachName = NULL;
                     }
                 }
                 char*       attachName;
-                long        attachSize;  
+                long        attachSize;
                 ArrayElement* clone() {
                     ExtMailData* ret = new ExtMailData();
                     ret->attachName = stringdup(attachName);
@@ -69,14 +69,14 @@ class EmailData : public ArrayElement {
         unsigned long remainingAttachNumber;
         unsigned long totalEmailSize;
         bool isMailPartial;
-        ArrayList* remainingAttachments;        
+        ArrayList* remainingAttachments;
 
     public:
     // ------------------------------------------------------- Constructors
         EmailData();
         ~EmailData();
 
-    // ---------------------------------------------------------- Accessors  
+    // ---------------------------------------------------------- Accessors
         bool getRead() { return read; }
         void setRead(bool v) { read=v; }
 
@@ -85,7 +85,7 @@ class EmailData : public ArrayElement {
 
         bool getReplied() { return replied; }
         void setReplied(bool r) { replied=r; }
-        
+
         const char * getReceived() { return received; }
         void setReceived(const char * v) { received=v; }
 
@@ -120,7 +120,7 @@ class EmailData : public ArrayElement {
         void setTotalEmailSize(unsigned long v) { totalEmailSize = v; }
 
         bool getIsMailPartial() { return isMailPartial; }
-        
+
         const char* getAttachmentName(unsigned int index) {
             if (remainingAttachments)
                 return ((ExtMailData*)remainingAttachments->get(index))->attachName;
@@ -133,8 +133,8 @@ class EmailData : public ArrayElement {
             else
                 return NULL;
         }
-                
-   
+
+
 };
 
 /** @endcond */

@@ -1,20 +1,19 @@
-/**
- * Copyright (C) 2003-2007 Funambol
+/*
+ * Copyright (C) 2003-2007 Funambol, Inc.
  *
  * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
+ * it under the terms of the GNU General Public License version 2 as
+ * published by the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY, TITLE, NONINFRINGEMENT or FITNESS FOR A PARTICULAR
+ * PURPOSE.  See the GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston,
- * MA 02111-1307 USA
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ * 02111-1307  USA
  */
 
 #include "base/fscapi.h"
@@ -60,20 +59,20 @@ EmailData::EmailData()
     remainingBodySize = 0;
     remainingAttachNumber = 0;
     remainingAttachments = NULL;
-    extMailData = NULL;   
+    extMailData = NULL;
     totalEmailSize = 0;
     isMailPartial = false;
 }
 
 EmailData::~EmailData()
 {
-    if (extMailData) { 
-        delete extMailData; 
-        extMailData = NULL; 
+    if (extMailData) {
+        delete extMailData;
+        extMailData = NULL;
     }
     if (remainingAttachments) {
-        remainingAttachments->clear(); 
-        delete remainingAttachments; 
+        remainingAttachments->clear();
+        delete remainingAttachments;
         remainingAttachments = NULL;
     }
 }
@@ -85,7 +84,7 @@ EmailData::~EmailData()
       The rightness must be choosen by the caller. It could be or not an error
 *
 * -2: it means there is an error into the format of the <emailitem>. It must be treated as an error
-*       
+*
 */
 
 int EmailData::parse(const char *msg, size_t len)
@@ -100,7 +99,7 @@ int EmailData::parse(const char *msg, size_t len)
     replied   = checkFlag(msg, EMAIL_REPL);
     deleted   = checkFlag(msg, EMAIL_DELE);
     flagged   = checkFlag(msg, EMAIL_FLAG);
-     
+
     if( XMLProcessor::getElementContent (msg, EMAIL_TREC, NULL, &start, &end) ) {
         received = StringBuffer(msg+start, end-start);
     }
@@ -114,17 +113,17 @@ int EmailData::parse(const char *msg, size_t len)
     if( XMLProcessor::getElementContent (msg, EMAIL_TMOD, NULL, &start, &end) ) {
         modified = StringBuffer(msg+start, end-start);
     }
-    else modified = "";    
+    else modified = "";
 
     // Get content
     StringBuffer itemtmp(msg);
     start = itemtmp.find(EMAIL_ITEM_START);
     end = itemtmp.rfind(EMAIL_ITEM_END);
-    if (start != StringBuffer::npos && end != StringBuffer::npos) { 
+    if (start != StringBuffer::npos && end != StringBuffer::npos) {
         totalEmailSize = itemtmp.length(); // the size of the current piece of mail
         itemtmp = NULL;
     //if( XMLProcessor::getElementContent(msg, EMAIL_ITEM, NULL, &start, &end) ) {
-		StringBuffer item(msg+start, end-start);        
+		StringBuffer item(msg+start, end-start);
         unsigned int startAttr=0, endAttr=0;
         size_t itemlen = end-start;
 
@@ -143,7 +142,7 @@ int EmailData::parse(const char *msg, size_t len)
             return -1;
         }
         size_t item_end = item.rfind("]]>");
-        
+
         // In emailitem the last &gt; close the CDATA of emailitem tag and is escaped, so it is needed
         // to be found the follow. Usually the first is skipped
         //
@@ -156,7 +155,7 @@ int EmailData::parse(const char *msg, size_t len)
         }
         // okay, move the start pointer to the end of
         item_start += strlen("![CDATA[");
-        
+
         ret=emailItem.parse( item.c_str()+item_start, item_end - item_start );
 
     }
@@ -173,17 +172,17 @@ int EmailData::parse(const char *msg, size_t len)
     // find the Ext stuffs
     if (end != StringBuffer::npos) {
         unsigned int pos = end;
-        start = 0, end = 0; 
+        start = 0, end = 0;
         unsigned int previous = 0;
         char* ext = NULL;
-        
+
         // for try
         //pos = 0;
-        
+
         //while( (ext = XMLProcessor::copyElementContent(&tmpExt[pos], "Ext", &pos)) ) { // for try
-        while( (ext = XMLProcessor::copyElementContent(&msg[pos], "Ext", &pos)) ) {            
-            char* xnam = XMLProcessor::copyElementContent(ext, "XNam", 0); 
-            if (!xnam) 
+        while( (ext = XMLProcessor::copyElementContent(&msg[pos], "Ext", &pos)) ) {
+            char* xnam = XMLProcessor::copyElementContent(ext, "XNam", 0);
+            if (!xnam)
                 break;
 
             if (strcmp(xnam, "x-funambol-body") == 0) {
@@ -200,7 +199,7 @@ int EmailData::parse(const char *msg, size_t len)
                     setRemainingAttachNumber(atol(val));
                     delete [] val; val = NULL;
                     isMailPartial = true;
-                } 
+                }
             } else if (strcmp(xnam, "x-funambol-attach") == 0) {
                 if (!remainingAttachments) {
                     remainingAttachments = new ArrayList();
@@ -209,9 +208,9 @@ int EmailData::parse(const char *msg, size_t len)
                 unsigned int from = 0, previous = 0;
                 char* val = XMLProcessor::copyElementContent(ext, "XVal", &from);
                 if (val) {
-                    extMailData->attachName = stringdup(val);                    
+                    extMailData->attachName = stringdup(val);
                     delete [] val; val = NULL;
-                } 
+                }
                 val = XMLProcessor::copyElementContent(&ext[from], "XVal", &from);
                 if (val) {
                     extMailData->attachSize = atol(val);
@@ -225,9 +224,9 @@ int EmailData::parse(const char *msg, size_t len)
                 delete extMailData;
                 extMailData = NULL;
             }
-            
+
             pos += previous;
-            previous = pos; 
+            previous = pos;
 
             if (xnam) {
                 delete [] xnam; xnam = NULL;
@@ -236,8 +235,8 @@ int EmailData::parse(const char *msg, size_t len)
                 delete [] ext; ext = NULL;
             }
 
-        }            
-        
+        }
+
     }
 
 
@@ -249,7 +248,7 @@ char *EmailData::format() {
     StringBuffer out;
 
     out.reserve(150);
-        
+
     out = "<Email>\n";
     out += XMLProcessor::makeElement(EMAIL_READ, read);
     out += XMLProcessor::makeElement(EMAIL_FORW, forwarded);

@@ -1,19 +1,19 @@
 /*
- * Copyright (C) 2003-2007 Funambol
+ * Copyright (C) 2003-2007 Funambol, Inc
  *
  * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
+ * it under the terms of the GNU General Public License version 2 as
+ * published by the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY, TITLE, NONINFRINGEMENT or FITNESS FOR A PARTICULAR
+ * PURPOSE.  See the GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ * 02111-1307  USA
  */
 #ifndef INCL_ACCESS_CONFIG
 #define INCL_ACCESS_CONFIG
@@ -25,9 +25,9 @@
 
 /*
  * -------------------------- AccessConfig class -----------------------------
- * This class groups all configuration properties to estabilish a 
+ * This class groups all configuration properties to estabilish a
  * connection with a sync server.
- * AccessConfig is a part of SyncManagerConfig (along with DeviceConfig 
+ * AccessConfig is a part of SyncManagerConfig (along with DeviceConfig
  * and an array of SyncSourceConfig).
  *
  * Class members:
@@ -41,7 +41,7 @@
  * proxyPassword        : the proxy password (if proxy needs authentication)
  * beginTimestamp       : The beginSync timestamp
  * endTimestamp         : The endSync timestamp
- * firstTimeSyncMode    : The SyncMode that the sync engine should use 
+ * firstTimeSyncMode    : The SyncMode that the sync engine should use
  *                        the first time a source is synced
  * serverNonce          : The server nonce value: from client to server
  * clientNonce          : The client nonce value: from server to client
@@ -49,17 +49,17 @@
  * serverPWD            : the server password
  * clientAuthType       : the type of client authentication used by client
  * isServerAuthRequired : Does the server require authentication?
- * maxMsgSize           : The maximum message size (Byte) accepted for XML 
+ * maxMsgSize           : The maximum message size (Byte) accepted for XML
  *                        messages received from server (server to client)
- * readBufferSize       : Specifies the value for the size of the buffer used 
+ * readBufferSize       : Specifies the value for the size of the buffer used
  *                        to store the incoming stream from server (byte)
- * userAgent            : The user agent string, will be attached to http 
+ * userAgent            : The user agent string, will be attached to http
  *                        messages to identify the client on server side.
- *                        It shoud be a short description with the client 
+ *                        It shoud be a short description with the client
  *                        name plus its version
  * checkConn            : Do we need to check if the GPRS connection is available?          <-- **** still used? ****
  * responseTimeout      : The number of seconds of waiting response timeout
- * dirty                : The dirty flag, used to select which properties 
+ * dirty                : The dirty flag, used to select which properties
  *                        have been modified. Not used by now (T.B.D)
  */
 class AccessConfig {
@@ -274,7 +274,7 @@ class AccessConfig {
         void setMaxMsgSize(unsigned long msgSize) EXTRA_SECTION_02;
 
         unsigned long getMaxMsgSize() const EXTRA_SECTION_02;
-        
+
         void setReadBufferSize(unsigned long bufferSize);
 
         unsigned long getReadBufferSize() const EXTRA_SECTION_02;

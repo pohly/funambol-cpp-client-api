@@ -1,48 +1,48 @@
 /*
- * Copyright (C) 2003-2007 Funambol
+ * Copyright (C) 2003-2007 Funambol, Inc.
  *
  * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
+ * it under the terms of the GNU General Public License version 2 as
+ * published by the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY, TITLE, NONINFRINGEMENT or FITNESS FOR A PARTICULAR
+ * PURPOSE.  See the GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ * 02111-1307  USA
  */
- 
+
 #include "base/util/utils.h"
 #include "syncml/core/DevInf.h"
- 
+
 DevInf::DevInf() {
-    
+
     initialize();
 
 }
 DevInf::~DevInf() {
-    
-    if(verDTD) { delete verDTD ; verDTD  = NULL; }                
-    
-    if(man   )  { delete [] man   ;  man    = NULL; } 
-    if(mod   )  { delete [] mod   ;  mod    = NULL; } 
-    if(oem   )  { delete [] oem   ;  oem    = NULL; } 
-    if(fwV   )  { delete [] fwV   ;  fwV    = NULL; } 
-    if(swV   )  { delete [] swV   ;  swV    = NULL; } 
-    if(hwV   )  { delete [] hwV   ;  hwV    = NULL; } 
-    if(devID )  { delete [] devID ;  devID  = NULL; } 
-    if(devTyp)  { delete [] devTyp;  devTyp = NULL; } 
-    
-    if(dataStores) { dataStores->clear() ; } //delete dataStores; dataStores = NULL;}     //DataStore[]  
+
+    if(verDTD) { delete verDTD ; verDTD  = NULL; }
+
+    if(man   )  { delete [] man   ;  man    = NULL; }
+    if(mod   )  { delete [] mod   ;  mod    = NULL; }
+    if(oem   )  { delete [] oem   ;  oem    = NULL; }
+    if(fwV   )  { delete [] fwV   ;  fwV    = NULL; }
+    if(swV   )  { delete [] swV   ;  swV    = NULL; }
+    if(hwV   )  { delete [] hwV   ;  hwV    = NULL; }
+    if(devID )  { delete [] devID ;  devID  = NULL; }
+    if(devTyp)  { delete [] devTyp;  devTyp = NULL; }
+
+    if(dataStores) { dataStores->clear() ; } //delete dataStores; dataStores = NULL;}     //DataStore[]
     if(ctCap     ) { ctCap->clear()      ; } //delete ctCap;      ctCap = NULL;     }     // CTCap[]
     if(ext       ) { ext->clear()        ; } //delete ext;        ext = NULL;       }     // Ext[]
 
-    utc                    = FALSE;                  
-    supportLargeObjs       = FALSE;     
+    utc                    = FALSE;
+    supportLargeObjs       = FALSE;
     supportNumberOfChanges = FALSE;
 
 }
@@ -83,7 +83,7 @@ DevInf::DevInf(VerDTD* verDTD,
         BOOL supportLargeObjs,
         BOOL supportNumberOfChanges,
         SyncCap* syncCap) {
-    
+
     initialize();
 
     setVerDTD(verDTD);
@@ -107,23 +107,23 @@ DevInf::DevInf(VerDTD* verDTD,
 }
 
 void DevInf::initialize() {
-    verDTD = NULL;  
-    man    = NULL; 
-    mod    = NULL; 
-    oem    = NULL; 
-    fwV    = NULL; 
-    swV    = NULL; 
-    hwV    = NULL; 
-    devID  = NULL; 
-    devTyp = NULL; 
-    
+    verDTD = NULL;
+    man    = NULL;
+    mod    = NULL;
+    oem    = NULL;
+    fwV    = NULL;
+    swV    = NULL;
+    hwV    = NULL;
+    devID  = NULL;
+    devTyp = NULL;
+
     syncCap = NULL;
-    dataStores = new ArrayList();  //DataStore[]   
-    ctCap      = new ArrayList();  // CTCap[] 
-    ext        = new ArrayList();  // Ext[] 
-    
-    utc                    = FALSE;                  
-    supportLargeObjs       = FALSE;     
+    dataStores = new ArrayList();  //DataStore[]
+    ctCap      = new ArrayList();  // CTCap[]
+    ext        = new ArrayList();  // Ext[]
+
+    utc                    = FALSE;
+    supportLargeObjs       = FALSE;
     supportNumberOfChanges = FALSE;
 }
 
@@ -151,7 +151,7 @@ void DevInf::setVerDTD(VerDTD* verDTD) {
             delete [] this->verDTD; this->verDTD = NULL;
         }
         this->verDTD = verDTD->clone();
-    }    
+    }
 }
 
 /**
@@ -356,7 +356,7 @@ ArrayList* DevInf::getDataStore() {
 void DevInf::setDataStore(ArrayList* dataStores) {
     if (this->dataStores) {
 		this->dataStores->clear();
-    } 
+    }
     if (dataStores) {
 	    this->dataStores = dataStores->clone();
     }
@@ -379,8 +379,8 @@ ArrayList* DevInf::getCTCap() {
 */
 void DevInf::setCTCap(ArrayList* ctCap) {
     if (this->ctCap) {
-		this->ctCap->clear(); 
-    } 
+		this->ctCap->clear();
+    }
     if (ctCap) {
 	    this->ctCap = ctCap->clone();
     }
@@ -404,7 +404,7 @@ ArrayList* DevInf::getExt() {
 void DevInf::setExt(ArrayList* ext) {
     if (this->ext) {
 		this->ext->clear();
-    } 
+    }
     if (ext) {
 	    this->ext = ext->clone();
     }
@@ -429,7 +429,7 @@ void DevInf::setUTC(BOOL utc) {
         this->utc = NULL;
     } else {
         this->utc = utc;
-    }  
+    }
 }
 
 
@@ -462,7 +462,7 @@ void DevInf::setSupportLargeObjs(BOOL supportLargeObjs) {
         this->supportLargeObjs = NULL;
     } else {
         this->supportLargeObjs = supportLargeObjs;
-    }  
+    }
 }
 
 /**
@@ -494,7 +494,7 @@ void DevInf::setSupportNumberOfChanges(BOOL supportNumberOfChanges) {
         this->supportNumberOfChanges = NULL;
     } else {
         this->supportNumberOfChanges = supportNumberOfChanges;
-    }  
+    }
 }
 
 /**
@@ -521,8 +521,8 @@ SyncCap* DevInf::getSyncCap() {
 
 
 DevInf* DevInf::clone() {
-    DevInf* ret = new DevInf(verDTD, man, mod, oem, fwV, swV, hwV, devID, 
-                             devTyp, dataStores, ctCap, ext, 
+    DevInf* ret = new DevInf(verDTD, man, mod, oem, fwV, swV, hwV, devID,
+                             devTyp, dataStores, ctCap, ext,
                              utc, supportLargeObjs, supportNumberOfChanges, syncCap);
     return ret;
 }

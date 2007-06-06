@@ -1,22 +1,22 @@
 /*
- * Copyright (C) 2003-2007 Funambol
+ * Copyright (C) 2003-2007 Funambol, Inc.
  *
  * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
+ * it under the terms of the GNU General Public License version 2 as
+ * published by the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY, TITLE, NONINFRINGEMENT or FITNESS FOR A PARTICULAR
+ * PURPOSE.  See the GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ * 02111-1307  USA
  */
- 
- 
+
+
 #include "syncml/core/MetInf.h"
 
 MetInf::MetInf() {
@@ -33,9 +33,9 @@ MetInf::MetInf(const char*    format    ,
                NextNonce*  nonce     ,
                long        maxMsgSize,
                long        maxObjSize,
-               ArrayList*  emi       ,           
+               ArrayList*  emi       ,
                Mem*        mem       ) {
-    
+
     set(NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL,
         NULL, NULL, NULL);
     set(format, type, mark, size, anchor, version, nonce, maxMsgSize,
@@ -44,21 +44,21 @@ MetInf::MetInf(const char*    format    ,
 }
 
 MetInf::~MetInf() {
-	
-	if (this->format)     { delete [] this->format;    this->format = NULL; } 
+
+	if (this->format)     { delete [] this->format;    this->format = NULL; }
     if (this->type)       { delete [] this->type;      this->type = NULL; }
     if (this->mark)       { delete [] this->mark;      this->mark = NULL; }
-    if (this->anchor)     { delete    this->anchor;    this->anchor = NULL; }    
+    if (this->anchor)     { delete    this->anchor;    this->anchor = NULL; }
     if (this->version)    { delete [] this->version;   this->version = NULL; }
-    if (this->nextNonce)  { delete    this->nextNonce; this->nextNonce = NULL; }    
+    if (this->nextNonce)  { delete    this->nextNonce; this->nextNonce = NULL; }
 	if (this->mem)        { delete    this->mem;       this->mem = NULL; }
 
     if (this->emi)        { this->emi->clear(); } //delete this->emi; this->emi = NULL;}
-	
+
 	this->maxMsgSize = 0;
-    this->maxObjSize = 0;  
+    this->maxObjSize = 0;
 	this->size       = 0;
-    
+
 }
 
 
@@ -71,7 +71,7 @@ void MetInf::set(  const char*  format   ,
                    NextNonce*  nonce     ,
                    long        maxMsgSize,
                    long        maxObjSize,
-                   ArrayList*  emi       ,               
+                   ArrayList*  emi       ,
                    Mem*        mem       ) {
 
     this->format     = stringdup(format);
@@ -82,10 +82,10 @@ void MetInf::set(  const char*  format   ,
     this->version    = stringdup(version);
     this->nextNonce  = nonce->clone();
     setMaxMsgSize(maxMsgSize);
-    setMaxObjSize(maxObjSize);                
+    setMaxObjSize(maxObjSize);
 	this->mem        = mem->clone();
-    
-    
+
+
     if (emi == NULL) {
         this->emi = NULL;
     } else {
@@ -111,8 +111,8 @@ ArrayList* MetInf::getEMI() {
  */
 void MetInf::setEMI(ArrayList* emi) {
     if (this->emi) {
-		this->emi->clear();         
-    } 
+		this->emi->clear();
+    }
     if (emi) {
 	    this->emi = emi->clone();
     }
@@ -157,7 +157,7 @@ const char* MetInf::getFormat() {
  */
 void MetInf::setFormat(const char* format) {
     if (this->format) {
-        delete [] this->format; this->format = NULL;           
+        delete [] this->format; this->format = NULL;
     }
     this->format = stringdup(format);
 }
@@ -178,7 +178,7 @@ const char* MetInf::getType() {
  */
 void MetInf::setType(const char* type) {
      if (this->type) {
-        delete [] this->type; this->type = NULL;           
+        delete [] this->type; this->type = NULL;
      }
 	 this->type = stringdup(type);
 }
@@ -199,7 +199,7 @@ const char* MetInf::getMark() {
  */
 void MetInf::setMark(const char* mark){
     if (this->mark) {
-        delete [] this->mark; this->mark = NULL;           
+        delete [] this->mark; this->mark = NULL;
     }
     this->mark = stringdup(mark);
 }
@@ -245,7 +245,7 @@ void MetInf::setNextNonce(NextNonce* nextNonce) {
 		delete this->nextNonce; this->nextNonce = NULL;
 	}
     this->nextNonce = nextNonce->clone();
-    
+
 }
 
 
@@ -268,7 +268,7 @@ void MetInf::setMem(Mem* mem) {
 		delete this->mem; this->mem = NULL;
 	}
     this->mem = mem->clone();
-    
+
 }
 
 
@@ -291,7 +291,7 @@ long MetInf::getMaxMsgSize() {
 		this->maxMsgSize = maxMsgSize;
 	else
 		this->maxMsgSize = 0;
-    
+
 }
 
 /**
@@ -331,7 +331,7 @@ const char* MetInf::getVersion() {
  */
 void MetInf::setVersion(const char* version) {
     if (this->version) {
-        delete [] this->version; this->version = NULL;           
+        delete [] this->version; this->version = NULL;
     }
     this->version = stringdup(version);
 }

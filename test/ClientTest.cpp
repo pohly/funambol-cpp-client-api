@@ -1,19 +1,19 @@
 /*
- * Copyright (C) 2003-2006 Funambol
+ * Copyright (C) 2003-2007 Funambol, Inc
  *
  * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
+ * it under the terms of the GNU General Public License version 2 as
+ * published by the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY, TITLE, NONINFRINGEMENT or FITNESS FOR A PARTICULAR
+ * PURPOSE.  See the GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ * 02111-1307  USA
  */
 
 /** @cond API */
@@ -87,7 +87,7 @@ static int countAnyItems(
 
     return count;
 }
-    
+
 static int countNewItems( SyncSource *source )
 {
     int res = countAnyItems(
@@ -184,13 +184,13 @@ public:
 
     /** number of the source we are testing in that client */
     const int source;
-    
+
     /** configuration that corresponds to source */
     const ClientTest::Config config;
 
     /** helper funclets to create sources */
     CreateSource createSourceA, createSourceB;
-    
+
     LocalTests(const std::string &name, ClientTest &cl, int sourceParam, ClientTest::Config &co) :
         CppUnit::TestSuite(name),
         client(cl),
@@ -209,15 +209,15 @@ public:
                 ADD_TEST(LocalTests, testSimpleInsert);
                 ADD_TEST(LocalTests, testLocalDeleteAll);
                 ADD_TEST(LocalTests, testComplexInsert);
-                
+
                 if (config.updateItem) {
                     ADD_TEST(LocalTests, testLocalUpdate);
- 
+
                     if (config.createSourceB) {
                         ADD_TEST(LocalTests, testChanges);
                     }
                 }
- 
+
                 if (config.import &&
                     config.dump &&
                     config.compare &&
@@ -225,7 +225,7 @@ public:
                     ADD_TEST(LocalTests, testImport);
                     ADD_TEST(LocalTests, testImportDelete);
                 }
-                
+
                 if (config.templateItem &&
                     config.uniqueProperties) {
                     ADD_TEST(LocalTests, testManyChanges);
@@ -233,7 +233,7 @@ public:
             }
         }
     }
-    
+
     /**
      * opens source and inserts the given item; can be called
      * regardless whether the data source already contains items or not
@@ -372,7 +372,7 @@ public:
         CPPUNIT_ASSERT(config.dump);
 
         std::string sourceFile, copyFile;
-        
+
         if (refFile) {
             sourceFile = refFile;
         } else {
@@ -394,7 +394,7 @@ public:
 
         CPPUNIT_ASSERT(config.compare(client, sourceFile.c_str(), copyFile.c_str()));
     }
-    
+
     /**
      * insert artificial items, number of them determined by TEST_EVOLUTION_NUM_ITEMS
      * unless passed explicitly
@@ -425,7 +425,7 @@ public:
 
             prefix << std::setfill('0') << std::setw(3) << item << " ";
 
-            
+
             const char *prop = config.uniqueProperties;
             const char *nextProp;
             while (*prop) {
@@ -462,7 +462,7 @@ public:
                 size_t toreplace = 1;
 
                 CPPUNIT_ASSERT(config.sizeProperty);
-                
+
                 /* stuff the item so that it reaches at least that size */
                 size_t off = data.find(config.sizeProperty);
                 CPPUNIT_ASSERT(off != data.npos);
@@ -482,10 +482,10 @@ public:
                     stuffing << data.substr(start + 1, eol - start + 1);
                     toreplace += eol - start + 1;
                 }
-                
+
                 while(added < additionalBytes) {
                     int linelen = 0;
-                   
+
                     while(added + 4 < additionalBytes &&
                           linelen < 60) {
                         stuffing << 'x';
@@ -504,7 +504,7 @@ public:
                 off = data.find(":", off);
                 data.replace(off, toreplace, stuffing.str());
             }
-            
+
             importItem(source.get(), data);
             data = "";
         }
@@ -513,7 +513,7 @@ public:
         CPPUNIT_ASSERT_NO_THROW(source.reset());
         return lastIndex - firstIndex + 1;
     }
-    
+
     // creating sync source
     void testOpen() {
         // check requirements
@@ -569,12 +569,12 @@ public:
     void testLocalUpdate() {
         // check additional requirements
         CPPUNIT_ASSERT(config.updateItem);
-        
+
         testLocalDeleteAll();
         testSimpleInsert();
         update(createSourceA, config.updateItem);
     }
-        
+
     // complex sequence of changes
     void testChanges() {
         // check additional requirements
@@ -659,7 +659,7 @@ public:
         CPPUNIT_ASSERT(config.dump);
         CPPUNIT_ASSERT(config.compare);
         CPPUNIT_ASSERT(config.testcases);
-        
+
         testLocalDeleteAll();
 
         // import via sync source A
@@ -691,7 +691,7 @@ public:
         // check additional requirements
         CPPUNIT_ASSERT(config.templateItem);
         CPPUNIT_ASSERT(config.uniqueProperties);
-        
+
         deleteAll(createSourceA);
 
         // check that everything is empty, also resets change counter of sync source B
@@ -873,11 +873,11 @@ private:
         CPPUNIT_ASSERT(it1 == sources.end());
         CPPUNIT_ASSERT(it2 == accessClientB->sources.end());
     }
-    
+
     /** deletes all items locally and on server */
     void deleteAll(DeleteAllMode mode = DELETE_ALL_SYNC) {
         source_it it;
-        
+
         switch(mode) {
          case DELETE_ALL_SYNC:
             // a refresh from server would slightly reduce the amount of data exchanged, but not all servers support it
@@ -905,7 +905,7 @@ private:
     void doCopy() {
         // check requirements
         CPPUNIT_ASSERT(accessClientB);
-        
+
         deleteAll();
         accessClientB->deleteAll();
 
@@ -952,12 +952,12 @@ private:
     void testRefreshFromClientSync() {
         sync(SYNC_REFRESH_FROM_CLIENT);
     }
-    
+
     // delete all items, locally and on server using two-way sync
     void testDeleteAllSync() {
         deleteAll(DELETE_ALL_SYNC);
     }
-    
+
     // delete all items, locally and on server using refresh-from-client sync
     void testDeleteAllRefresh() {
         source_it it;
@@ -971,7 +971,7 @@ private:
 
         // now ensure we can delete it
         deleteAll(DELETE_ALL_SYNC);
-    
+
         // nothing stored locally?
         for (it = sources.begin(); it != sources.end(); ++it) {
             std::auto_ptr<SyncSource> source;
@@ -1084,7 +1084,7 @@ private:
         compareDatabases();
     }
 
-        
+
     // test that a two-way sync deletes the copy of an item in the other database
     void testDelete() {
         // setup client A, B and server so that they all contain the same item
@@ -1110,7 +1110,7 @@ private:
             CPPUNIT_ASSERT_NO_THROW(copy.reset());
         }
     }
-    
+
     // test what the server does when it finds that different
     // fields of the same item have been modified
     void testMerge() {
@@ -1191,7 +1191,7 @@ private:
         // no items anywhere
         deleteAll();
         accessClientB->refreshClient();
-        
+
         // check that everything is empty, also resets change tracking
         // in second sources of each client
         source_it it;
@@ -1332,7 +1332,7 @@ private:
             }
         }
     }
-    
+
     // tests one-way sync from client:
     // - get both clients and server in sync with no items anywhere
     // - add one item on first client, copy to server
@@ -1346,7 +1346,7 @@ private:
         // no items anywhere
         deleteAll();
         accessClientB->deleteAll();
-        
+
         // check that everything is empty, also resets change tracking
         // in second sources of each client
         source_it it;
@@ -1503,7 +1503,7 @@ private:
         // transfer from client A to server to client B
         sync(SYNC_TWO_WAY, ".send");
         accessClientB->refreshClient();
-        
+
         compareDatabases();
     }
 
@@ -1558,7 +1558,7 @@ private:
     void testLargeObjectEncoded() {
         doVarSizes(true, true, "b64");
     }
-    
+
     //
     // stress tests: execute some of the normal operations,
     // but with large number of artificially generated items
@@ -1576,14 +1576,14 @@ private:
         for (it = sources.begin(); it != sources.end(); ++it) {
             it->second->insertManyItems(it->second->createSourceA);
         }
-    
+
         // send data to server
         sync(SYNC_TWO_WAY, ".send", CheckSyncReport(0,0,0, -1,0,0));
 
         // ensure that client has the same data, ignoring data conversion
         // issues (those are covered by testItems())
         refreshClient();
-        
+
         // also copy to second client
         accessClientB->refreshClient();
 
@@ -1603,7 +1603,7 @@ private:
                     bool withLargeObject,
                     const char *encoding) {
         static const int maxMsgSize = 8 * 1024;
-    
+
         // clean server and client A
         deleteAll();
 
@@ -1701,7 +1701,7 @@ public:
         int source;
         CppUnit::TestSuite *alltests = new CppUnit::TestSuite("Client");
         CppUnit::TestSuite *tests;
-        
+
         // create local source tests
         tests = new CppUnit::TestSuite(alltests->getName() + "::Source");
         for (source=0; source < client.getNumSources(); source++) {
@@ -1764,10 +1764,10 @@ public:
             tests->addTest(synctests);
             synctests = 0;
         }
-        
+
         alltests->addTest(tests);
         tests = 0;
-        
+
         return alltests;
     }
 
@@ -1862,7 +1862,7 @@ void ClientTest::postSync(int res, const std::string &logname)
     // make a copy of the server's log (if found), then truncate it
     if (serverLogFileName.size()) {
         int fd = open(serverLogFileName.c_str(), O_RDWR);
-            
+
         if (fd >= 0) {
             std::string cmd = std::string("cp ") + serverLogFileName + " " + logname + ".server.log";
             system(cmd.c_str());
@@ -2243,7 +2243,7 @@ void ClientTest::getTestData(const char *type, Config &config)
 }
 
 void CheckSyncReport::check(int res, SyncReport &report) const
-{    
+{
     // first dump the report
     StringBuffer str, tmp;
 

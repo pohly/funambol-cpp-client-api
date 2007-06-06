@@ -1,19 +1,19 @@
 /*
- * Copyright (C) 2003-2007 Funambol
+ * Copyright (C) 2003-2007 Funambol, Inc
  *
  * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
+ * it under the terms of the GNU General Public License version 2 as
+ * published by the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY, TITLE, NONINFRINGEMENT or FITNESS FOR A PARTICULAR
+ * PURPOSE.  See the GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ * 02111-1307  USA
  */
 
 
@@ -33,19 +33,19 @@
 
 
 class Formatter {
-     
-    // ---------------------------------------------------------- Public data    
+
+    // ---------------------------------------------------------- Public data
     public:
-        
+
         static StringBuffer*    getValue            (const char*  tagName, const char*  value, const char *params = NULL);
         static StringBuffer*    getValue            (const char*  tagName, StringBuffer* value, const char *params = NULL);
         static StringBuffer*    getValue            (const char*  tagName, long value, const char *params = NULL);
         static StringBuffer*    getValue            (const char*  tagName, BOOL value, const char *params = NULL);
         static StringBuffer*    getValueNotEmpty    (const char*  tagName, const char*  value, const char *params = NULL);
-        
+
         static StringBuffer*    getSyncML           (SyncML*        syncML);
         static StringBuffer*    getSyncHdr          (SyncHdr*       syncHdr);
-        static StringBuffer*    getSyncBody         (SyncBody*      syncBody);        
+        static StringBuffer*    getSyncBody         (SyncBody*      syncBody);
         static StringBuffer*    getSessionID        (SessionID*     sessionID);
         static StringBuffer*    getVerDTD           (VerDTD*        verDTD);
         static StringBuffer*    getVerProto         (VerProto*      verProto);
@@ -58,10 +58,10 @@ class Formatter {
         static StringBuffer*    getAuthentication   (Authentication* auth);
         static StringBuffer*    getAnchor           (Anchor*        anchor);
         static StringBuffer*    getMetInf           (MetInf*        metInf);
-        static StringBuffer*    getNextNonce        (NextNonce*     nextNonce);        
-        static StringBuffer*    getMem              (Mem*           mem);        
+        static StringBuffer*    getNextNonce        (NextNonce*     nextNonce);
+        static StringBuffer*    getMem              (Mem*           mem);
         static StringBuffer*    getCmdID            (CmdID*         cmdID);
-        
+
         static StringBuffer*    getAlerts           (ArrayList*     alerts);
         static StringBuffer*    getAlert            (Alert*         alert);
         static StringBuffer*    getItems            (ArrayList*     items);
@@ -100,7 +100,7 @@ class Formatter {
         static StringBuffer*    getReplace          (Replace* replace);
         static StringBuffer*    getCopies           (ArrayList* copies);
         static StringBuffer*    getCopy             (Copy* copy);
-        static StringBuffer*    getCommonCommandList(ArrayList* commands);        
+        static StringBuffer*    getCommonCommandList(ArrayList* commands);
         static StringBuffer*    getSync             (Sync* sync);
         static StringBuffer*    getMapItem          (MapItem* mapItem);
         static StringBuffer*    getMapItems         (ArrayList* mapItems);
@@ -110,7 +110,7 @@ class Formatter {
         static StringBuffer*    getPut              (Put* put);
         static StringBuffer*    getResults          (Results* results);
         static StringBuffer*    getSearch           (Search* search);
-        static StringBuffer*    getSources          (ArrayList* sources);        
+        static StringBuffer*    getSources          (ArrayList* sources);
         static StringBuffer*    getSourceArray      (SourceArray* sourceArray);
         static StringBuffer*    getExtraCommandList (ArrayList* commands);
         static StringBuffer*    getSequence         (Sequence* sequence);

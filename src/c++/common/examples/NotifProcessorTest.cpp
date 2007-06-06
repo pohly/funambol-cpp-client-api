@@ -1,19 +1,19 @@
 /*
- * Copyright (C) 2003-2007 Funambol
+ * Copyright (C) 2003-2007 Funambol, Inc.
  *
  * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
+ * it under the terms of the GNU General Public License version 2 as
+ * published by the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY, TITLE, NONINFRINGEMENT or FITNESS FOR A PARTICULAR
+ * PURPOSE.  See the GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ * 02111-1307  USA
  */
 
 //#include <sys/types.h>
@@ -92,7 +92,7 @@ bool SyncNotificationTest::test(int bytenum)
     for(size_t i=bytenum; ; i+=bytenum){
         if(i>msglen) i=msglen;
         fprintf(stderr, "Try with len=%d\n", i);
-        
+
         fprintf(stderr, "Start parse (%d)\t", i);
         errcode=sn.parse(msg, i);
         fprintf(stderr, "parse finished with code: %d\n", errcode);
@@ -112,8 +112,8 @@ bool SyncNotificationTest::test(int bytenum)
     else{
         fprintf(stderr,"Version:\t%d\n", sn.getVersion());
         fprintf(stderr,"UIMode:\t%d\n", sn.getUIMode());
-        fprintf(stderr,"Initiator:\t%s\n", 
-                ( sn.getInitiator() == UserInitiated ) 
+        fprintf(stderr,"Initiator:\t%s\n",
+                ( sn.getInitiator() == UserInitiated )
                     ? "UserInitiated" : "ServerInitiated" );
         fprintf(stderr,"Session ID:\t%d (%x)\n", sn.getSessionId(), sn.getSessionId() );
         fprintf(stderr,"Server ID:\t%S\n", sn.getServerId() );
@@ -121,9 +121,9 @@ bool SyncNotificationTest::test(int bytenum)
 
         for (int i=0; i<sn.getNumSyncs(); i++){
             SyncAlert *sync;
-            
+
             sync=sn.getSyncAlert(i);
-            
+
             if( ! sync ){
                 fprintf(stderr, "Error on sync #%d\n", i);
                 return false;
@@ -159,7 +159,7 @@ int main(int argc, char** argv)
 
     SyncNotificationTest *t;
     int len;
-    
+
 //    if (argc>1) {
 //        fprintf(stderr, "Message: %s\n", argv[1]);
 //        t = new SyncNotificationTest(argv[1]);

@@ -1,21 +1,21 @@
-/**
- * Copyright (C) 2003-2007 Funambol
+/*
+ * Copyright (C) 2003-2007 Funambol, Inc.
  *
  * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
+ * it under the terms of the GNU General Public License version 2 as
+ * published by the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY, TITLE, NONINFRINGEMENT or FITNESS FOR A PARTICULAR
+ * PURPOSE.  See the GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston,
- * MA 02111-1307 USA
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ * 02111-1307  USA
  */
+
 
 #include "vocl/iCalendar/iCalConverter.h"
 #include "base/util/WString.h"
@@ -24,7 +24,7 @@
 iCalConverter::iCalConverter() {
     iCalendar = NULL;
     calendar = NULL;
-}	
+}
 
 iCalConverter::~iCalConverter() {
     if (iCalendar) {
@@ -50,7 +50,7 @@ void iCalConverter::setSource(WCHAR* inputICalendar) {
 }
 
 void iCalConverter::setSource(Calendar& inputCalendar) {
-    if(calendar)        
+    if(calendar)
         delete calendar;
     calendar = (Calendar *)inputCalendar.clone();
     if(iCalendar) {
@@ -94,7 +94,7 @@ bool iCalConverter::convert(WString& errorDescription, long* errorCode) {
             delete [] iCalendar; iCalendar = NULL;
             return false;
         }
-        
+
         if(!calendar->getVersion() || !calendar->getVersion()->getValue()) {
             *errorCode = ERROR_KEY_PROPERTY_MISSING;
             errorDescription = TEXT("'VERSION' property is missing");
@@ -102,22 +102,22 @@ bool iCalConverter::convert(WString& errorDescription, long* errorCode) {
             return false;
         }
         if(calendar->getEvents())
-            for(int i=0; i<calendar->getEvents()->size(); i++) 
+            for(int i=0; i<calendar->getEvents()->size(); i++)
                 if(!validateEvent(((Event*)calendar->getEvents()->get(i)), errorDescription, errorCode)) {
                     delete [] iCalendar; iCalendar = NULL;
                     return false;
             }
         if(calendar->getToDos())
-            for(int i=0; i<calendar->getToDos()->size(); i++) 
+            for(int i=0; i<calendar->getToDos()->size(); i++)
                 if(!validateTodo(((ToDo*)calendar->getToDos()->get(i)), errorDescription, errorCode)) {
                     delete [] iCalendar; iCalendar = NULL;
                     return false;
                 }
-  
+
         return true;
    }
     if (iCalendar) {
-        
+
         calendar = new Calendar();
         VObject* vo = VConverter::parse(iCalendar);
         if(!vo) {
@@ -128,7 +128,7 @@ bool iCalConverter::convert(WString& errorDescription, long* errorCode) {
 
         int n = vo->propertiesCount();
 
-        if(wcscmp(vo->getProperty(0)->getName(), TEXT("BEGIN")) || 
+        if(wcscmp(vo->getProperty(0)->getName(), TEXT("BEGIN")) ||
             !vo->getProperty(0)->getValue() ||
             wcscmp(vo->getProperty(0)->getValue(), TEXT("VCALENDAR"))) {
                 *errorCode = ERROR_KEY_PROPERTY_MISSING;
@@ -136,21 +136,21 @@ bool iCalConverter::convert(WString& errorDescription, long* errorCode) {
                 return false;
             }
 
-        if(wcscmp(vo->getProperty(n-1)->getName(), TEXT("END")) || 
+        if(wcscmp(vo->getProperty(n-1)->getName(), TEXT("END")) ||
             !vo->getProperty(n-1)->getValue() ||
             wcscmp(vo->getProperty(n-1)->getValue(), TEXT("VCALENDAR"))) {
                 *errorCode = ERROR_KEY_PROPERTY_MISSING;
                 errorDescription = TEXT("'END:VCALENDAR' property is missing");
                 return false;
             }
-        
+
         if(!vo->containsProperty(TEXT("VERSION"))) {
             *errorCode = ERROR_KEY_PROPERTY_MISSING;
             errorDescription = TEXT("'VERSION' property is missing");
             return false;
         }
 
-        if(vo->containsProperty(TEXT("VERSION")) && 
+        if(vo->containsProperty(TEXT("VERSION")) &&
             (!vo->getProperty(TEXT("VERSION")) || wcscmp(vo->getProperty(TEXT("VERSION"))->getValue(), TEXT("2.0")))) {
                 *errorCode = ERROR_ILLEGAL_VERSION_NUMBER;
                 if(vo->getProperty(TEXT("VERSION"))) {
@@ -160,7 +160,7 @@ bool iCalConverter::convert(WString& errorDescription, long* errorCode) {
                 else {
                     errorDescription = TEXT("Illegal version number");
                 }
-                return false; 
+                return false;
             }
         else {
             iCalProperty* prop = new iCalProperty(vo->getProperty(TEXT("VERSION"))->getValue());
@@ -181,15 +181,15 @@ bool iCalConverter::convert(WString& errorDescription, long* errorCode) {
             delete prop;
         }
 
-        if(vo->containsProperty(TEXT("CALSCALE")) || 
+        if(vo->containsProperty(TEXT("CALSCALE")) ||
             vo->getProperty(TEXT("CALSCALE"))) {
                 iCalProperty* prop = new iCalProperty(vo->getProperty(TEXT("CALSCALE"))->getValue());
                 calendar->setCalScale(*prop);
                 vo->removeProperty(TEXT("CALSCALE"));
                 delete prop;
             }
-        
-        if(vo->containsProperty(TEXT("METHOD")) || 
+
+        if(vo->containsProperty(TEXT("METHOD")) ||
             vo->getProperty(TEXT("METHOD"))) {
                 iCalProperty* prop = new iCalProperty(vo->getProperty(TEXT("METHOD"))->getValue());
                 calendar->setMethod(*prop);
@@ -207,7 +207,7 @@ bool iCalConverter::convert(WString& errorDescription, long* errorCode) {
             calendar->addEvent(ev);
             delete ev; ev = NULL;
         }
-        
+
         //extract VTODOs from vo
         ToDo* task;
         while(task = extractTask(vo, errorDescription, errorCode)) {
@@ -218,7 +218,7 @@ bool iCalConverter::convert(WString& errorDescription, long* errorCode) {
             calendar->addToDo(task);
             delete task; task = NULL;
         }
-    } 
+    }
 
     return true;
 }
@@ -231,7 +231,7 @@ Event* iCalConverter::extractEvent(VObject* vo, WString& errorDescription, long*
         if(beginEvent == -1 && !wcscmp(vo->getProperty(i)->getName(), TEXT("BEGIN")) &&
             vo->getProperty(i)->getValue() &&
             !wcscmp(vo->getProperty(i)->getValue(), TEXT("VEVENT")))
-            beginEvent = i;    
+            beginEvent = i;
         if(endEvent == -1 && !wcscmp(vo->getProperty(i)->getName(),TEXT("END")) &&
             vo->getProperty(i)->getValue() &&
             !wcscmp(vo->getProperty(i)->getValue(),TEXT("VEVENT"))) {
@@ -248,7 +248,7 @@ Event* iCalConverter::extractEvent(VObject* vo, WString& errorDescription, long*
         errorDescription = TEXT("BEGIN:VEVENT property found, but END:VEVENT is missing");
         return NULL;
     }
-    
+
     Event* ret = new Event();
     for(i = beginEvent; i <= endEvent; i++) {
         ret->addProperty(vo->getProperty(i));
@@ -256,7 +256,7 @@ Event* iCalConverter::extractEvent(VObject* vo, WString& errorDescription, long*
         --i;
         --endEvent;
     }
-    
+
     extractAlarm((VObject*) ret);
 
     return ret;
@@ -270,7 +270,7 @@ ToDo* iCalConverter::extractTask(VObject* vo, WString& errorDescription, long* e
         if(beginTask == -1 && !wcscmp(vo->getProperty(i)->getName(), TEXT("BEGIN")) &&
             vo->getProperty(i)->getValue() &&
             !wcscmp(vo->getProperty(i)->getValue(), TEXT("VTODO")))
-            beginTask = i;    
+            beginTask = i;
         if(endTask == -1 && !wcscmp(vo->getProperty(i)->getName(),TEXT("END")) &&
             vo->getProperty(i)->getValue() &&
             !wcscmp(vo->getProperty(i)->getValue(),TEXT("VTODO"))) {
@@ -287,7 +287,7 @@ ToDo* iCalConverter::extractTask(VObject* vo, WString& errorDescription, long* e
         errorDescription = TEXT("BEGIN:VTODO property found, but END:VTODO is missing");
         return NULL;
     }
-    
+
     ToDo* ret = new ToDo();
     for(i = beginTask; i <= endTask; i++) {
         ret->addProperty(vo->getProperty(i));
@@ -308,7 +308,7 @@ void iCalConverter::extractAlarm(VObject* vo){
         if(beginAlarm== -1 && !wcscmp(vo->getProperty(i)->getName(), TEXT("BEGIN")) &&
             vo->getProperty(i)->getValue() &&
             !wcscmp(vo->getProperty(i)->getValue(), TEXT("VALARM")))
-            beginAlarm = i;    
+            beginAlarm = i;
         if(endAlarm == -1 && !wcscmp(vo->getProperty(i)->getName(),TEXT("END")) &&
             vo->getProperty(i)->getValue() &&
             !wcscmp(vo->getProperty(i)->getValue(),TEXT("VALARM"))) {
@@ -323,10 +323,10 @@ void iCalConverter::extractAlarm(VObject* vo){
             --i;
             --endAlarm;
         }
-} 
+}
 
 bool iCalConverter::validateEvent(Event* ev, WString& errorDescription, long* errorCode) {
-  //validate BEGIN, END, UID 
+  //validate BEGIN, END, UID
     if(wcscmp(ev->getProperty(0)->getName(), TEXT("BEGIN")) ||
         wcscmp(ev->getProperty(0)->getValue(), TEXT("VEVENT"))) {
             *errorCode = ERROR_KEY_PROPERTY_MISSING;
@@ -339,12 +339,12 @@ bool iCalConverter::validateEvent(Event* ev, WString& errorDescription, long* er
             errorDescription = TEXT("Invalid EVENT: 'END' property is missing");
             return false;
         }
-    if(!ev->containsProperty(TEXT("UID"))) { 
+    if(!ev->containsProperty(TEXT("UID"))) {
         *errorCode = ERROR_KEY_PROPERTY_MISSING;
         errorDescription = TEXT("Invalid EVENT: 'UID' property is missing");
         return false;
-    } 
-    for(int i = 0; i < ev->propertiesCount(); i++) {                
+    }
+    for(int i = 0; i < ev->propertiesCount(); i++) {
         if(!wcsstr(EVENT_PROPERTIES_LIST, ev->getProperty(i)->getName()) &&
             wcsstr(ev->getProperty(i)->getName(),TEXT("X-")) != ev->getProperty(i)->getName()) {
                 *errorCode = ERROR_ILLEGAL_PROPERTY_NAME;
@@ -358,7 +358,7 @@ bool iCalConverter::validateEvent(Event* ev, WString& errorDescription, long* er
     return true;
 }
 bool iCalConverter::validateTodo(ToDo* task, WString& errorDescription, long* errorCode) {
-    //validate BEGIN, END, UID 
+    //validate BEGIN, END, UID
     if(wcscmp(task->getProperty(0)->getName(), TEXT("BEGIN")) ||
         wcscmp(task->getProperty(0)->getValue(), TEXT("VTODO"))) {
             *errorCode = ERROR_KEY_PROPERTY_MISSING;
@@ -371,12 +371,12 @@ bool iCalConverter::validateTodo(ToDo* task, WString& errorDescription, long* er
             errorDescription = TEXT("Invalid TODO: 'END' property is missing");
             return false;
         }
-    if(!task->containsProperty(TEXT("UID"))) { 
+    if(!task->containsProperty(TEXT("UID"))) {
         *errorCode = ERROR_KEY_PROPERTY_MISSING;
         errorDescription = TEXT("Invalid TODO: 'UID' property is missing");
         return false;
     }
-    for(int i = 0; i < task->propertiesCount(); i++) {                
+    for(int i = 0; i < task->propertiesCount(); i++) {
         if(!wcsstr(TODO_PROPERTIES_LIST, task->getProperty(i)->getName()) &&
             wcsstr(task->getProperty(i)->getName(),TEXT("X-")) != task->getProperty(i)->getName()) {
                 *errorCode = ERROR_ILLEGAL_PROPERTY_NAME;
@@ -385,12 +385,12 @@ bool iCalConverter::validateTodo(ToDo* task, WString& errorDescription, long* er
                 return false;
             }
             if(task->getProperty(i)->getValue() && !validatePropery(task->getProperty(i), errorDescription, errorCode))
-                return false; 
+                return false;
     }
     return true;
 }
-bool iCalConverter::validatePropery(VProperty* vp, WString& errorDescription, long* errorCode) { 
-    
+bool iCalConverter::validatePropery(VProperty* vp, WString& errorDescription, long* errorCode) {
+
     if(!wcscmp(vp->getName(), TEXT("CLASS"))) {
         if(!wcsstr(CLASS_PROPERTY_VALUE, vp->getValue()) &&
             wcsstr(vp->getValue(),TEXT("X-")) != vp->getValue()) {
@@ -409,7 +409,7 @@ bool iCalConverter::validatePropery(VProperty* vp, WString& errorDescription, lo
         }
     }
     else if(!wcscmp(vp->getName(), TEXT("DESCRIPTION"))) {
-        for(int i = 0; i < vp->parameterCount(); i++) 
+        for(int i = 0; i < vp->parameterCount(); i++)
             if(!wcsstr(COMMENT_PARAM_LIST, vp->getParameter(i)) &&
                 wcsstr(vp->getValue(),TEXT("X-")) != vp->getParameter(i)) {
                     *errorCode = ERROR_ILLEGAL_PARAMETER;
@@ -435,7 +435,7 @@ bool iCalConverter::validatePropery(VProperty* vp, WString& errorDescription, lo
                 errorDescription += vp->getValue();
                 return false;
             }
-        } 
+        }
         else if(!validateDT(vp->getValue()) && !validateDate(vp->getValue())) {
             *errorCode = ERROR_INVALID_PROPERTY_VALUE;
             errorDescription = TEXT("Property DTSTART, Invalid value : ");
@@ -460,7 +460,7 @@ bool iCalConverter::validatePropery(VProperty* vp, WString& errorDescription, lo
         }
     }
     else if(!wcscmp(vp->getName(), TEXT("LOCATION"))) {
-        for(int i = 0; i < vp->parameterCount(); i++) 
+        for(int i = 0; i < vp->parameterCount(); i++)
             if(!wcsstr(COMMENT_PARAM_LIST, vp->getParameter(i)) &&
                 wcsstr(vp->getValue(),TEXT("X-")) != vp->getParameter(i)) {
                     *errorCode = ERROR_ILLEGAL_PARAMETER;
@@ -470,7 +470,7 @@ bool iCalConverter::validatePropery(VProperty* vp, WString& errorDescription, lo
                 }
     }
     else if(!wcscmp(vp->getName(), TEXT("ORGANIZER"))) {
-        for(int i = 0; i < vp->parameterCount(); i++) 
+        for(int i = 0; i < vp->parameterCount(); i++)
             if(!wcsstr(ORGANIZER_PARAM_LIST, vp->getParameter(i)) &&
                 wcsstr(vp->getValue(),TEXT("X-")) != vp->getParameter(i)) {
                     *errorCode = ERROR_ILLEGAL_PARAMETER;
@@ -498,7 +498,7 @@ bool iCalConverter::validatePropery(VProperty* vp, WString& errorDescription, lo
         }
     }
     else if(!wcscmp(vp->getName(), TEXT("SUMMARY"))) {
-        for(int i = 0; i < vp->parameterCount(); i++) 
+        for(int i = 0; i < vp->parameterCount(); i++)
             if(!wcsstr(COMMENT_PARAM_LIST, vp->getParameter(i)) &&
                 wcsstr(vp->getValue(),TEXT("X-")) != vp->getParameter(i)) {
                     *errorCode = ERROR_ILLEGAL_PARAMETER;
@@ -515,9 +515,9 @@ bool iCalConverter::validatePropery(VProperty* vp, WString& errorDescription, lo
             return false;
         }
     }
-    
+
     else if(!wcscmp(vp->getName(), TEXT("RECURRENCE-ID"))) {
-        for(int i = 0; i < vp->parameterCount(); i++) { 
+        for(int i = 0; i < vp->parameterCount(); i++) {
             if(!wcsstr(DT_PARAM_LIST, vp->getParameter(i)) &&
                 wcsstr(vp->getValue(),TEXT("X-")) != vp->getParameter(i) &&
                 wcscmp(vp->getParameter(i), TEXT("RANGE"))) {
@@ -534,7 +534,7 @@ bool iCalConverter::validatePropery(VProperty* vp, WString& errorDescription, lo
                 errorDescription += vp->getValue();
                 return false;
             }
-        } 
+        }
         else if(!validateDT(vp->getValue())) {
             *errorCode = ERROR_INVALID_PROPERTY_VALUE;
             errorDescription = TEXT("Property RECURRENCE-ID, Invalid value : ");
@@ -551,7 +551,7 @@ bool iCalConverter::validatePropery(VProperty* vp, WString& errorDescription, lo
                     errorDescription += vp->getParameter(i);
                     return false;
                 }
-        }       
+        }
         if(vp->containsParameter(TEXT("VALUE")) && !wcscmp(vp->getParameterValue(TEXT("VALUE")), TEXT("DATE"))) {
             if(!validateDate(vp->getValue())) {
                 *errorCode = ERROR_INVALID_PROPERTY_VALUE;
@@ -559,7 +559,7 @@ bool iCalConverter::validatePropery(VProperty* vp, WString& errorDescription, lo
                 errorDescription += vp->getValue();
                 return false;
             }
-        } 
+        }
         else if(!validateDT(vp->getValue()) && !validateDate(vp->getValue())) {
             *errorCode = ERROR_INVALID_PROPERTY_VALUE;
             errorDescription = TEXT("Property DTEND, Invalid value : ");
@@ -568,7 +568,7 @@ bool iCalConverter::validatePropery(VProperty* vp, WString& errorDescription, lo
         }
     }
     else if(!wcscmp(vp->getName(), TEXT("DUE"))) {
-        for(int i = 0; i < vp->parameterCount(); i++) { 
+        for(int i = 0; i < vp->parameterCount(); i++) {
             if(!wcsstr(DT_PARAM_LIST, vp->getParameter(i)) &&
                 wcsstr(vp->getValue(),TEXT("X-")) != vp->getParameter(i)) {
                     *errorCode = ERROR_ILLEGAL_PARAMETER;
@@ -584,7 +584,7 @@ bool iCalConverter::validatePropery(VProperty* vp, WString& errorDescription, lo
                 errorDescription += vp->getValue();
                 return false;
             }
-        } 
+        }
         else if(!validateDT(vp->getValue())) {
             *errorCode = ERROR_INVALID_PROPERTY_VALUE;
             errorDescription = TEXT("Property DUE, Invalid value : ");
@@ -601,8 +601,8 @@ bool iCalConverter::validatePropery(VProperty* vp, WString& errorDescription, lo
         }
     }
     else if(!wcscmp(vp->getName(), TEXT("PERCENT-COMPLETE"))) {
-        if(wcslen(vp->getValue()) > 2 || 
-            (wcslen(vp->getValue()) == 1 && !isdigit(vp->getValue()[0])) || 
+        if(wcslen(vp->getValue()) > 2 ||
+            (wcslen(vp->getValue()) == 1 && !isdigit(vp->getValue()[0])) ||
             (wcslen(vp->getValue()) == 2 && (!isdigit(vp->getValue()[0]) || !isdigit(vp->getValue()[1])))) {
             *errorCode = ERROR_INVALID_PROPERTY_VALUE;
             errorDescription = TEXT("Property PERCENT, Invalid value : ");
@@ -619,8 +619,8 @@ bool iCalConverter::validatePropery(VProperty* vp, WString& errorDescription, lo
                     errorDescription += vp->getParameter(i);
                     return false;
                 }
-            if(!wcscmp(vp->getParameter(i), TEXT("ENCODING")) 
-                && wcscmp(vp->getParameterValue(TEXT("ENCODING")), TEXT("BASE64"))) { 
+            if(!wcscmp(vp->getParameter(i), TEXT("ENCODING"))
+                && wcscmp(vp->getParameterValue(TEXT("ENCODING")), TEXT("BASE64"))) {
                     *errorCode = ERROR_UNSUPPORTED_ENCODING;
                     errorDescription = TEXT("Property ATTACH, unsupported encoding : ");
                     errorDescription += vp->getParameterValue(TEXT("ENCODING"));
@@ -640,7 +640,7 @@ bool iCalConverter::validatePropery(VProperty* vp, WString& errorDescription, lo
         }
     }
     else if(!wcscmp(vp->getName(), TEXT("COMMENT"))) {
-        for(int i = 0; i < vp->parameterCount(); i++) 
+        for(int i = 0; i < vp->parameterCount(); i++)
             if(!wcsstr(COMMENT_PARAM_LIST, vp->getParameter(i)) &&
                 wcsstr(vp->getValue(),TEXT("X-")) != vp->getParameter(i)) {
                     *errorCode = ERROR_ILLEGAL_PARAMETER;
@@ -650,7 +650,7 @@ bool iCalConverter::validatePropery(VProperty* vp, WString& errorDescription, lo
                 }
     }
     else if(!wcscmp(vp->getName(), TEXT("CONTACT"))) {
-        for(int i = 0; i < vp->parameterCount(); i++) 
+        for(int i = 0; i < vp->parameterCount(); i++)
             if(!wcsstr(COMMENT_PARAM_LIST, vp->getParameter(i)) &&
                 wcsstr(vp->getValue(),TEXT("X-")) != vp->getParameter(i)) {
                     *errorCode = ERROR_ILLEGAL_PARAMETER;
@@ -681,8 +681,8 @@ bool iCalConverter::validatePropery(VProperty* vp, WString& errorDescription, lo
                     return false;
                 }
                 token = wcstok( NULL, seps );
-            }            
-        } 
+            }
+        }
         else if(!validateDT(vp->getValue())) {
             *errorCode = ERROR_INVALID_PROPERTY_VALUE;
             errorDescription = TEXT("Property EXDATE, Invalid value : ");
@@ -712,7 +712,7 @@ bool iCalConverter::validatePropery(VProperty* vp, WString& errorDescription, lo
         delete [] value;
     }
     else if(!wcscmp(vp->getName(), TEXT("RELATED-TO"))) {
-        for(int i = 0; i < vp->parameterCount(); i++) 
+        for(int i = 0; i < vp->parameterCount(); i++)
             if(wcscmp(TEXT("RELTYPE"), vp->getParameter(i)) &&
                 wcsstr(vp->getValue(),TEXT("X-")) != vp->getParameter(i)) {
                     *errorCode = ERROR_ILLEGAL_PARAMETER;
@@ -722,7 +722,7 @@ bool iCalConverter::validatePropery(VProperty* vp, WString& errorDescription, lo
                 }
     }
     else if(!wcscmp(vp->getName(), TEXT("RESOURCES"))) {
-        for(int i = 0; i < vp->parameterCount(); i++) 
+        for(int i = 0; i < vp->parameterCount(); i++)
             if(!wcsstr(COMMENT_PARAM_LIST, vp->getParameter(i)) &&
                 wcsstr(vp->getValue(),TEXT("X-")) != vp->getParameter(i)) {
                     *errorCode = ERROR_ILLEGAL_PARAMETER;
@@ -748,7 +748,7 @@ bool iCalConverter::validatePropery(VProperty* vp, WString& errorDescription, lo
                 errorDescription += vp->getValue();
                 return false;
             }
-        } 
+        }
         else if(vp->containsParameter(TEXT("VALUE")) && !wcscmp(vp->getParameterValue(TEXT("VALUE")), TEXT("PERIOD"))) {
             WCHAR* delimiter;
             delimiter = wcschr(vp->getValue(), '/');
@@ -782,7 +782,7 @@ bool iCalConverter::validateGeo(WCHAR* geo) {
         return false;
 
     //expected format: longitude;latitude
-    WCHAR* pDest = NULL; 
+    WCHAR* pDest = NULL;
     pDest = wcschr(geo, ';');
 
     if(!pDest)
@@ -820,11 +820,11 @@ bool iCalConverter::validateDT(WCHAR* dt) {
         if(dt[15] != 'Z')
             return false;
     }
-    
+
     if(dt[8] != 'T')
         return false;
 
-    WCHAR* date; 
+    WCHAR* date;
     date = new WCHAR[9];
     wcsncpy(date, dt, 8);
     date[8] = 0;
@@ -845,16 +845,16 @@ bool iCalConverter::validateDT(WCHAR* dt) {
     min[0] = dt[11];
     min[1] = dt[12];
     int m = _wtoi(min);
-    if(m < 0 || m > 59) 
+    if(m < 0 || m > 59)
         return false;
-    
+
     WCHAR sec[2];
     sec[0] = dt[13];
     sec[1] = dt[14];
     int s = _wtoi(sec);
-    if(s < 0 || s > 59) 
+    if(s < 0 || s > 59)
         return false;
-    
+
     return true;
 
 }
@@ -867,7 +867,7 @@ bool iCalConverter::validateDate(WCHAR* date) {
     month[0] = date[4];
     month[1] = date[5];
     int mo = _wtoi(month);
-    
+
     if(mo > 12 || mo < 1)
         return false;
 
@@ -883,7 +883,7 @@ bool iCalConverter::validateDate(WCHAR* date) {
 }
 
 bool iCalConverter::validateRecur(WCHAR* recur) {
-    
+
     if(wcsstr(recur, TEXT("FREQ")) != recur)
         return false;
 
@@ -893,14 +893,14 @@ bool iCalConverter::validateRecur(WCHAR* recur) {
 
     token = wcstok( recur, seps );
     while( token != NULL ) {
-        delimiter = wcschr(token, '=');  
+        delimiter = wcschr(token, '=');
         if(!delimiter)
             return false;
         int len = int(wcslen(token));
         WCHAR* item = new WCHAR[len + 1];
         wcsncpy(item, token, delimiter - token);
         item[delimiter - token] = 0;
-        
+
         if(!wcsstr(RECRUL_ITEMS_LIST, item) && wcsstr(item,TEXT("X-")) != item) {
             delete [] item; item = NULL;
             return false;
@@ -919,6 +919,6 @@ bool iCalConverter::validateRecur(WCHAR* recur) {
         delete [] item; item = NULL;
 
         token = wcstok( NULL, seps );
-    }            
+    }
     return true;
 }

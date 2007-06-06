@@ -1,19 +1,19 @@
 /*
- * Copyright (C) 2003-2007 Funambol
+ * Copyright (C) 2003-2007 Funambol, Inc.
  *
  * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
+ * it under the terms of the GNU General Public License version 2 as
+ * published by the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY, TITLE, NONINFRINGEMENT or FITNESS FOR A PARTICULAR
+ * PURPOSE.  See the GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ * 02111-1307  USA
  */
 
 #include "base/fscapi.h"
@@ -132,7 +132,7 @@ const char *brfind(const char *s1, const char *s2, size_t len)
     else {
 	    ps1 = s1 + strlen(s1);
     }
-	
+
 	while(ps1 > s1) {
 		--ps1;
         for (sc1 = ps1, sc2 = s2; *sc1 != *sc2; sc1++, sc2++) {
@@ -228,7 +228,7 @@ char* MD5CredentialData(char* userName, char* password, char* nonce) {
     // B64(H(username:password))
     len = b64_encode((char*)base64, digest, 16);
 
-    
+
     // decode nonce from stored base64 to bin
     strcpy(cnonce, nonce);
     lenNonce = b64_decode(cnonce, cnonce);

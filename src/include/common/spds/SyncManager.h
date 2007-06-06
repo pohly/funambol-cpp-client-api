@@ -1,19 +1,19 @@
 /*
- * Copyright (C) 2003-2007 Funambol
+ * Copyright (C) 2003-2007 Funambol, Inc
  *
  * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
+ * it under the terms of the GNU General Public License version 2 as
+ * published by the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY, TITLE, NONINFRINGEMENT or FITNESS FOR A PARTICULAR
+ * PURPOSE.  See the GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ * 02111-1307  USA
  */
 
 #ifndef INCL_SYNC_MANAGER
@@ -73,9 +73,9 @@ class SyncManager {
         ~SyncManager() EXTRA_SECTION_01;
 
         int prepareSync(SyncSource** sources) EXTRA_SECTION_01;
-        
+
         int sync() EXTRA_SECTION_01;
-        
+
         int endSync() EXTRA_SECTION_01;
 
         /**
@@ -136,16 +136,16 @@ class SyncManager {
         int  sourcesNumber;
         int  count;
 
-        /* A list of syncsource names from server. The server sends sources 
-         * modifications sorted as alerts in this list. This array is retrieved from 
+        /* A list of syncsource names from server. The server sends sources
+         * modifications sorted as alerts in this list. This array is retrieved from
          * SyncMLProcessor::getSortedSourcesFromServer.
          */
         char** sortedSourcesFromServer;
-        
+
 		ArrayList** allItemsList;
-        
+
         StringBuffer syncURL;
-        StringBuffer deviceId;  
+        StringBuffer deviceId;
         int responseTimeout;  // the response timeout for a rensponse from server (default = 5min) [in seconds]
         int maxMsgSize;       // the max message size. Default = 512k. Setting it implies LargeObject support.
         int maxObjSize;       // The maximum object size. The server gets this in the Meta init message and should obey it.
@@ -156,7 +156,7 @@ class SyncManager {
         // Handling of incomplete incoming objects by processSyncItem().
         // Always active, even if Large Object support is off,
         // just in case the server happens to rely on it.
-        // 
+        //
         class IncomingSyncItem : public SyncItem {
           public:
             IncomingSyncItem(const WCHAR* key,
@@ -168,18 +168,18 @@ class SyncManager {
                 cmdRef(cmdInfo.cmdRef),
                 sourceIndex(currentSource) {
             }
-            
+
             long offset;                // number of bytes already received, append at this point
             const StringBuffer cmdName; // name of the command which started the incomplete item
             const StringBuffer cmdRef;  // reference of the command which started the incomplete item
             const int sourceIndex;      // the index of the source to which the incomplete item belongs
         } *incomingItem;       // sync item which is not complete yet, more data expected
-    
+
         void initialize() EXTRA_SECTION_01;
         BOOL readSyncSourceDefinition(SyncSource& source) EXTRA_SECTION_01;
         BOOL commitChanges(SyncSource& source) EXTRA_SECTION_01;
         int assignSources(SyncSource** sources) EXTRA_SECTION_01;
-        
+
         Status *processSyncItem(Item* item, const CommandInfo &cmdInfo, SyncMLBuilder &syncMLBuilder) EXTRA_SECTION_01;
         BOOL checkForServerChanges(SyncML* syncml, ArrayList &statusList) EXTRA_SECTION_01;
 
@@ -192,7 +192,7 @@ class SyncManager {
         // Used to reserve some more space (DATA_SIZE_TOLERANCE) for incoming items.
         long getToleranceDataSize(long size);
         bool testIfDataSizeMismatch(long allocatedSize, long receivedSize);
-          
+
         /**
          * A wrapper around the sync source's first/next iterator functions.
          * By default the data is encoded according to the "encoding"

@@ -1,21 +1,21 @@
-/**
- * Copyright (C) 2003-2007 Funambol
+/*
+ * Copyright (C) 2003-2007 Funambol, Inc.
  *
  * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
+ * it under the terms of the GNU General Public License version 2 as
+ * published by the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY, TITLE, NONINFRINGEMENT or FITNESS FOR A PARTICULAR
+ * PURPOSE.  See the GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston,
- * MA 02111-1307 USA
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ * 02111-1307  USA
  */
+
 
 #include "base/util/utils.h"
 #include "base/util/WString.h"
@@ -30,7 +30,7 @@ VObject::VObject() {
 }
 
 VObject::VObject(const WCHAR* prodID, const WCHAR* ver) {
-    
+
     productID = NULL;
     version = NULL;
 
@@ -95,7 +95,7 @@ bool VObject::removeProperty(int index) {
 
 void VObject::removeProperty(WCHAR* propName) {
     for (int i=0; i<properties->size(); i++) {
-        VProperty *property; 
+        VProperty *property;
         property = (VProperty* )properties->get(i);
         if(!wcscmp(property->getName(), propName)) {
             properties->remove(i);
@@ -106,7 +106,7 @@ void VObject::removeProperty(WCHAR* propName) {
 
 bool VObject::containsProperty(const WCHAR* propName) {
     for (int i=0; i<properties->size(); i++) {
-        VProperty *property; 
+        VProperty *property;
         property = (VProperty* )properties->get(i);
         if(!wcscmp(property->getName(), propName)) {
             return true;
@@ -121,10 +121,10 @@ VProperty* VObject::getProperty(int index) {
 
 VProperty* VObject::getProperty(const WCHAR* propName) {
     for (int i=0; i<properties->size(); i++) {
-        
-        VProperty *property; 
+
+        VProperty *property;
         property = (VProperty* )properties->get(i);
-		
+
         if(!wcscmp(property->getName(), propName)) {
             return property;
         }
@@ -138,7 +138,7 @@ VProperty* VObject::getProperty(const WCHAR* propName) {
  * The returned WCHAR* is new allocated, must be freed by the caller.
  */
 WCHAR* VObject::toString() {
-    
+
     WString strVObject;
 
     BOOL is_30 = FALSE;
@@ -174,7 +174,7 @@ WCHAR* VObject::toString() {
         if (valueConv) {
             delete [] valueConv;   valueConv = NULL;
         }
-    }		    
+    }
 
     // memory must be free by caller with delete []
     WCHAR *str = wstrdup(strVObject);
@@ -267,7 +267,7 @@ void VObject::toNativeEncoding()
                             native[out - 2] = SYNC4J_LINEBREAK[0];
                             out--;
                         }
-                        
+
                         // the conversion to wchar on Windows is
                         // probably missing here
                     }
@@ -372,7 +372,7 @@ void VObject::fromNativeEncoding()
         // line break is encoded with either one or two
         // characters on different platforms
         const int linebreaklen = wcslen(SYNC4J_LINEBREAK);
-        
+
         // use backslash for special characters,
         // if necessary do quoted-printable encoding
         bool doquoted = !is_30 &&
@@ -392,7 +392,7 @@ void VObject::fromNativeEncoding()
              case '\\':
                 foreign[out] = '\\';
                 out++;
-                foreign[out] = curr; 
+                foreign[out] = curr;
                 out++;
                 break;
              case SEMICOLON_REPLACEMENT:

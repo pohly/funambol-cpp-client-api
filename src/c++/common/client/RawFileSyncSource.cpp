@@ -1,20 +1,20 @@
 /*
-* Copyright (C) 2003-2007 Funambol
-*
-* This program is free software; you can redistribute it and/or modify
-* it under the terms of the GNU General Public License as published by
-* the Free Software Foundation; either version 2 of the License, or
-* (at your option) any later version.
-*
-* This program is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-* GNU General Public License for more details.
-*
-* You should have received a copy of the GNU General Public License
-* along with this program; if not, write to the Free Software
-* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-*/
+ * Copyright (C) 2003-2007 Funambol, Inc.
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License version 2 as
+ * published by the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY, TITLE, NONINFRINGEMENT or FITNESS FOR A PARTICULAR
+ * PURPOSE.  See the GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ * 02111-1307  USA
+ */
 #include "spds/SyncItem.h"
 #include "spds/SyncItemStatus.h"
 #include "base/util/utils.h"
@@ -33,7 +33,7 @@ int RawFileSyncSource::addItem(SyncItem& item) {
 
     while(1) {
         sprintf(completeName, "%s/%d", dir, key);
-            
+
         FILE *fh = fopen(completeName, "r");
         if (!fh) {
             if (!saveFile(completeName, (const char *)item.getData(), item.getDataSize(), TRUE)) {
@@ -87,7 +87,7 @@ bool RawFileSyncSource::setItemData(SyncItem* syncItem) {
         report->setState(SOURCE_ERROR);
         return false;
     }
-    
+
     //
     // Set data
     //
@@ -96,7 +96,7 @@ bool RawFileSyncSource::setItemData(SyncItem* syncItem) {
 		WCHAR *tmp = toWideChar(config.getType());
         syncItem->setDataType(tmp);
 		delete [] tmp;
-        delete [] content; 
+        delete [] content;
         content = NULL;
     }
     return true;

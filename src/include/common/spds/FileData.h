@@ -1,19 +1,19 @@
 /*
- * Copyright (C) 2003-2007 Funambol
+ * Copyright (C) 2003-2007 Funambol, Inc
  *
  * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
+ * it under the terms of the GNU General Public License version 2 as
+ * published by the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY, TITLE, NONINFRINGEMENT or FITNESS FOR A PARTICULAR
+ * PURPOSE.  See the GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ * 02111-1307  USA
  */
 
 
@@ -26,7 +26,7 @@
 #include "base/util/StringBuffer.h"
 
 class FileData : public ArrayElement {
-    
+
     // ------------------------------------------------------- Private data
     private:
         WString file;
@@ -66,9 +66,9 @@ class FileData : public ArrayElement {
         FileData();
         ~FileData();
 
-    // ---------------------------------------------------------- Accessors  
+    // ---------------------------------------------------------- Accessors
 		const WCHAR* getFile() { return file; }
-		void setFile(const WCHAR* v) { file = v; } 
+		void setFile(const WCHAR* v) { file = v; }
 
 		const WCHAR* getName() { return name; }
 		void setName(const WCHAR* v) { name = v; }
@@ -84,7 +84,7 @@ class FileData : public ArrayElement {
 
 		const WCHAR* getAttributes() { return file; }
 		void setAttributes(const WCHAR* v) { attributes = v; }
-		
+
 		bool getHiddied() { return hidden; }
 		void setHidden(bool v) { hidden = v; }
 
@@ -99,7 +99,7 @@ class FileData : public ArrayElement {
 
 		bool getWritable() { return writable; }
 		void setWritable(bool v) { writable = v; }
-		
+
 		bool getReadable() { return readable; }
 		void setReadable(bool v) { readable = v; }
 
@@ -107,27 +107,27 @@ class FileData : public ArrayElement {
 		void setExecutable(bool v) { executable = v; }
 
 		const WCHAR* getCttype() { return cttype; }
-		void setCttype(const WCHAR* v) { cttype = v; } 
+		void setCttype(const WCHAR* v) { cttype = v; }
 
         const char* getBody() { return body; }
 		void setBody(const char* v, int len);
 
 		const WCHAR* getEnc() { return enc; }
-		void setEnc(const WCHAR* v) { enc = v; } 
-		
+		void setEnc(const WCHAR* v) { enc = v; }
+
 		int getSize() { return size; }
 		void setSize(int v) { size = v; }
-        
+
         int parse(StringBuffer* s) ;
 
     // ----------------------------------------------------- Public Methods
         int parse(const char *syncmlData, size_t len = WString::npos) ;
         int parse(const void *syncmlData, size_t len) ;
-        
+
         char *format() ;
 
         ArrayElement* clone() { return new FileData(*this); }
-   
+
 };
 
 /** @endcond */

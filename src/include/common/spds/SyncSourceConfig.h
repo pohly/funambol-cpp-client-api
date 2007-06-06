@@ -1,19 +1,19 @@
 /*
- * Copyright (C) 2003-2007 Funambol
+ * Copyright (C) 2003-2007 Funambol, Inc
  *
  * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
+ * it under the terms of the GNU General Public License version 2 as
+ * published by the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY, TITLE, NONINFRINGEMENT or FITNESS FOR A PARTICULAR
+ * PURPOSE.  See the GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ * 02111-1307  USA
  */
 
 
@@ -31,7 +31,7 @@
 
 /**
  * This class groups all configuration properties for a SyncSource.
- * SyncSourceConfig is a part of SyncManagerConfig (along with AccessConfig 
+ * SyncSourceConfig is a part of SyncManagerConfig (along with AccessConfig
  * and an array of DeviceConfig).
  */
 class SyncSourceConfig {
@@ -132,7 +132,7 @@ class SyncSourceConfig {
          * Returns the default syncMode as one of the strings above.
          */
         void setSync(const char*  s) EXTRA_SECTION_02;
-        
+
         /**
          * Specifies how the content of an outgoing item should be
          * encoded by the client library if the sync source does not
@@ -157,8 +157,8 @@ class SyncSourceConfig {
 
 
         /**
-         * A string representing the source types (with versions) supported by the SyncSource. 
-         * The string must be formatted as a sequence of "type:version" separated by commas ','. 
+         * A string representing the source types (with versions) supported by the SyncSource.
+         * The string must be formatted as a sequence of "type:version" separated by commas ','.
          * For example: "text/x-vcard:2.1,text/vcard:3.0".
          * The version can be left empty, for example: "text/x-s4j-sifc:".
          * Supported types will be sent as part of the DevInf.
@@ -186,14 +186,14 @@ class SyncSourceConfig {
          * Returns the last sync timestamp
          */
         unsigned long getLast() const EXTRA_SECTION_02;
-        
+
         /**
-         * Specifies if the content of an outgoing item should be encrypted. 
-         * If this property is not empty and valid, the 'encodings' value is ignored 
+         * Specifies if the content of an outgoing item should be encrypted.
+         * If this property is not empty and valid, the 'encodings' value is ignored
          * for outgoing items. The only valid value is "des".
          */
         const char* getEncryption() const EXTRA_SECTION_02;
-        
+
         /**
          * Sets the encryption type
          *

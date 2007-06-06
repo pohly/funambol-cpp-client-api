@@ -1,19 +1,19 @@
 /*
- * Copyright (C) 2003-2007 Funambol
+ * Copyright (C) 2003-2007 Funambol, Inc
  *
  * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
+ * it under the terms of the GNU General Public License version 2 as
+ * published by the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY, TITLE, NONINFRINGEMENT or FITNESS FOR A PARTICULAR
+ * PURPOSE.  See the GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ * 02111-1307  USA
  */
 
 #ifndef INCL_SYNCREPORT
@@ -37,12 +37,12 @@
 
 
 /**
- * The SyncReport class is used to summarize all results of a single synchronization. 
- * During the synchronization process, all results about different operations 
- * are stored in a SyncReport object, so the client will be able to get these 
- * informations at the end. 
- * Accessing this object a client can easily know for example the outcome 
- * of each source synchronized, retrieve the number of items modified 
+ * The SyncReport class is used to summarize all results of a single synchronization.
+ * During the synchronization process, all results about different operations
+ * are stored in a SyncReport object, so the client will be able to get these
+ * informations at the end.
+ * Accessing this object a client can easily know for example the outcome
+ * of each source synchronized, retrieve the number of items modified
  * on both sides, and the status code of each one.
  *
  */
@@ -105,16 +105,16 @@ public:
 
     /** return pointer to internal SyncSourceReport object given its index (>=0, < getSyncSourceReportCount()) */
     SyncSourceReport* getSyncSourceReport(unsigned int index) const;
-    
+
 
     /**
      * Create ssReport array from config.
      * The array is allocated new, will be freed in the desctructor.
-     * SyncSourceReports are all owned here by SyncReport, each 
-     * SyncSource object has a link to its correspondent (external) 
+     * SyncSourceReports are all owned here by SyncReport, each
+     * SyncSource object has a link to its correspondent (external)
      * report, but does not own it.
      * SyncSourceReports are linked during SyncClient::sync().
-     * 
+     *
      * @param config: the SyncManager config to get source number/names.
      */
     void setSyncSourceReports(SyncManagerConfig& config);

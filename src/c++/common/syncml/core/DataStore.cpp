@@ -1,24 +1,24 @@
 /*
- * Copyright (C) 2003-2007 Funambol
+ * Copyright (C) 2003-2007 Funambol, Inc.
  *
  * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
+ * it under the terms of the GNU General Public License version 2 as
+ * published by the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY, TITLE, NONINFRINGEMENT or FITNESS FOR A PARTICULAR
+ * PURPOSE.  See the GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ * 02111-1307  USA
  */
- 
+
 #include "base/util/utils.h"
 #include "syncml/core/DataStore.h"
- 
+
 DataStore::DataStore() {
     initialize();
 }
@@ -26,13 +26,13 @@ DataStore::DataStore() {
 DataStore::~DataStore() {
    if(sourceRef   )   { delete sourceRef      ;  sourceRef       = NULL; }
    if(displayName )   { delete [] displayName    ;  displayName     = NULL; }
-   maxGUIDSize = 0; 
+   maxGUIDSize = 0;
    if(rxPref      )   { delete    rxPref         ;  rxPref          = NULL; }
-   if(rx          )   { rx->clear(); } //delete rx; rx = NULL;                  } 
+   if(rx          )   { rx->clear(); } //delete rx; rx = NULL;                  }
    if(txPref      )   { delete    txPref         ;  txPref          = NULL; }
-   if(tx          )   { tx->clear(); }//delete tx; tx = NULL;                  } 
+   if(tx          )   { tx->clear(); }//delete tx; tx = NULL;                  }
    if(dsMem       )   { delete    dsMem          ;  dsMem           = NULL; }
-   if(syncCap     )   { delete    syncCap        ;  syncCap         = NULL; }  
+   if(syncCap     )   { delete    syncCap        ;  syncCap         = NULL; }
 }
 
 /**
@@ -65,7 +65,7 @@ DataStore::DataStore(SourceRef* sourceRef,
                       ArrayList* tx,
                       DSMem* dsMem,
                       SyncCap* syncCap) {
-        
+
         initialize();
         setSourceRef(sourceRef);
         setMaxGUIDSize(maxGUIDSize);
@@ -83,11 +83,11 @@ void DataStore::initialize() {
     displayName     = NULL;
     maxGUIDSize     = 0;
     rxPref          = NULL;
-    rx              = new ArrayList(); 
+    rx              = new ArrayList();
     txPref          = NULL;
-    tx              = new ArrayList(); 
+    tx              = new ArrayList();
     dsMem           = NULL;
-    syncCap         = NULL;  
+    syncCap         = NULL;
 }
 
 /**
@@ -110,9 +110,9 @@ void DataStore::setSourceRef(SourceRef* sourceRef) {
         // TBD
     } else {
         if (this->sourceRef) {
-            delete this->sourceRef; this->sourceRef = NULL;            
+            delete this->sourceRef; this->sourceRef = NULL;
         }
-    }    
+    }
     this->sourceRef = (SourceRef*)sourceRef->clone();
 
 }
@@ -136,7 +136,7 @@ void DataStore::setDisplayName(const char*displayName) {
     if (this->displayName) {
         delete [] this->displayName; this->displayName = NULL;
     }
-    this->displayName = stringdup(displayName);    
+    this->displayName = stringdup(displayName);
 }
 
 /**
@@ -166,12 +166,12 @@ ContentTypeInfo* DataStore::getRxPref() {
  *
  * @param rxPref the preferred type and version of a content type
  */
-void DataStore::setRxPref(ContentTypeInfo* rxPref) {    
+void DataStore::setRxPref(ContentTypeInfo* rxPref) {
     if (rxPref == NULL) {
         // TBD
     } else {
         if (this->rxPref) {
-            delete this->rxPref; this->rxPref = NULL;            
+            delete this->rxPref; this->rxPref = NULL;
         }
     }
     this->rxPref = (ContentTypeInfo*)rxPref->clone();
@@ -196,8 +196,8 @@ void DataStore::setRx(ArrayList* rxCTI) {
         // TBD
     } else {
         if (rx) {
-		    rx->clear(); 
-        } 
+		    rx->clear();
+        }
     	rx = rxCTI->clone();
     }
 }
@@ -222,10 +222,10 @@ void DataStore::setTxPref(ContentTypeInfo* txPref) {
         // TBD
     } else {
         if (this->txPref) {
-            delete this->txPref; this->txPref = NULL;            
+            delete this->txPref; this->txPref = NULL;
         }
         this->txPref = (ContentTypeInfo*)txPref->clone();
-    }        
+    }
 }
 
 /**
@@ -247,10 +247,10 @@ void DataStore::setTx(ArrayList* txCTI) {
         // TBD
     } else {
         if (tx) {
-		    tx->clear(); 
-        } 
+		    tx->clear();
+        }
     	tx = txCTI->clone();
-    }   
+    }
 }
 
 /**
@@ -297,9 +297,9 @@ void DataStore::setSyncCap(SyncCap* syncCap) {
      } else {
         if (this->syncCap) {
 		    delete this->syncCap; this->syncCap = NULL;
-        } 
-    	this->syncCap = syncCap->clone();        
-    }       
+        }
+    	this->syncCap = syncCap->clone();
+    }
 }
 
 ArrayElement* DataStore::clone() {
@@ -307,9 +307,9 @@ ArrayElement* DataStore::clone() {
                                     displayName ,
                                     maxGUIDSize ,
                                     rxPref      ,
-                                    rx          , 
+                                    rx          ,
                                     txPref      ,
-                                    tx          , 
+                                    tx          ,
                                     dsMem       ,
                                     syncCap     );
     return ret;

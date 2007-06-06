@@ -1,19 +1,19 @@
 /*
- * Copyright (C) 2003-2007 Funambol
+ * Copyright (C) 2003-2007 Funambol, Inc.
  *
  * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
+ * it under the terms of the GNU General Public License version 2 as
+ * published by the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY, TITLE, NONINFRINGEMENT or FITNESS FOR A PARTICULAR
+ * PURPOSE.  See the GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ * 02111-1307  USA
  */
 
 #include "base/fscapi.h"
@@ -41,7 +41,7 @@ size_t charlen = sizeof(char);
     if(charlen != 2) {
         abort("Panic: wide char size in not 2");
     }
-    
+
 #endif
 
 StringBuffer::StringBuffer(const char* str, size_t len) {
@@ -52,7 +52,7 @@ StringBuffer::StringBuffer(const char* str, size_t len) {
     // otherwise set it, even empty.
     if (str) {
         size_t slen = strlen(str);
-        size_t newlen = (len > slen) ? slen : len ; 
+        size_t newlen = (len > slen) ? slen : len ;
 
         if(newlen) {
             getmem(newlen);
@@ -111,7 +111,7 @@ StringBuffer& StringBuffer::append(StringBuffer& str) {
 StringBuffer& StringBuffer::append(StringBuffer* str) {
     if (str)
         return append(str->getChars());
-    else 
+    else
         return *this;
 }
 
@@ -132,13 +132,13 @@ StringBuffer& StringBuffer::set(const char* sNew) {
     else {
         freemem();  // release the string and set it to null
     }
-    
+
     return *this;
 }
 
 StringBuffer& StringBuffer::sprintf(const char* format, ...) {
     va_list ap;
-    
+
     va_start(ap, format);
     this->vsprintf(format, ap);
     va_end(ap);
@@ -192,7 +192,7 @@ StringBuffer& StringBuffer::reset() {
     return *this;
 }
 
-size_t StringBuffer::find(const char *str, size_t pos) const 
+size_t StringBuffer::find(const char *str, size_t pos) const
 {
     if (pos >= length())
         return npos;
@@ -210,7 +210,7 @@ size_t StringBuffer::ifind(const char *str, size_t pos) const
     char *lstr = strtolower(str);
 
     char *p = strstr(ls, lstr);
-    
+
     size_t ret = (p) ? p-ls : npos;
 
     delete [] ls;
@@ -219,7 +219,7 @@ size_t StringBuffer::ifind(const char *str, size_t pos) const
     return ret;
 }
 
-size_t StringBuffer::rfind(const char *str, size_t pos) const 
+size_t StringBuffer::rfind(const char *str, size_t pos) const
 {
     /*
     if (pos >= length())
@@ -228,31 +228,31 @@ size_t StringBuffer::rfind(const char *str, size_t pos) const
     if(!p)
         return npos;
     return (p-s);
-    */  
+    */
     if (pos >= length())
         return npos;
 
     size_t tmp = StringBuffer::npos;
     int previous = pos;
-    
+
     tmp = find(str, pos);
     if (tmp == StringBuffer::npos)
         return npos;
-        
+
     while(1) {
-        
+
         previous = tmp;
         tmp = find(str, tmp + 1);
         if (tmp == StringBuffer::npos)
-            break;        
+            break;
     }
-    
+
     return previous;
-  
+
 }
 
 
-size_t StringBuffer::replace(const char *from, const char *to, size_t pos) 
+size_t StringBuffer::replace(const char *from, const char *to, size_t pos)
 {
 	size_t ret = npos;
 
@@ -271,7 +271,7 @@ size_t StringBuffer::replace(const char *from, const char *to, size_t pos)
 
         // reallocate if needed
         getmem(length() + ldiff);
-        p = s + fpos;            // ensure that p is valid again 
+        p = s + fpos;            // ensure that p is valid again
         // check is there is a remainder after the replaced token
         if( p[flen] ) {
             tail = new char[length()];
@@ -449,8 +449,8 @@ void StringBuffer::getmem(size_t len)
         s = (char *)realloc(s, (len+1) * sizeof(char) );
         //StringBuffer_memcount += (len-size);
         size = len;
-        // Make sure s is terminated at the old position 
-        // (malloc may fill the buffer with rubbish) 
+        // Make sure s is terminated at the old position
+        // (malloc may fill the buffer with rubbish)
         s[oldlen] = 0;
         //fprintf(stderr, "\t\ts=%lx size=%ld alloc=%ld\n", s, size, alloclen);
     }
@@ -473,14 +473,14 @@ void StringBuffer::freemem()
 */
 
 StringBuffer::StringBuffer(const void* str, size_t len) {
-    
+
     size = 0;
     s = 0;
 
     // if the given string is null, leave this null,
     // otherwise set it, even empty.
     if (str && len > 0) {
-                                
+
         getmem(len);
         strncpy(s, (const char*)str, len);
         s[len]=0;
@@ -488,7 +488,7 @@ StringBuffer::StringBuffer(const void* str, size_t len) {
     else {  // empty string
         getmem(1);
         s[0] = 0;
-    
+
     }
 }
 

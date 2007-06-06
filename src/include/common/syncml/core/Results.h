@@ -1,19 +1,19 @@
 /*
- * Copyright (C) 2003-2007 Funambol
+ * Copyright (C) 2003-2007 Funambol, Inc
  *
  * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
+ * it under the terms of the GNU General Public License version 2 as
+ * published by the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY, TITLE, NONINFRINGEMENT or FITNESS FOR A PARTICULAR
+ * PURPOSE.  See the GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ * 02111-1307  USA
  */
 
 
@@ -28,15 +28,15 @@
 #define RESULTS_COMMAND_NAME "Results"
 
 class Results : public ResponseCommand {
-    
-    private:               
-        char*  COMMAND_NAME;    
-    
-    // ---------------------------------------------------------- Public data    
+
+    private:
+        char*  COMMAND_NAME;
+
+    // ---------------------------------------------------------- Public data
     public:
         Results();
         ~Results();
-    
+
         /**
          * Creates a new Results object.
          *
@@ -47,7 +47,7 @@ class Results : public ResponseCommand {
          * @param targetRef target reference
          * @param sourceRef source reference
          * @param items command items
-         *        
+         *
          *
          */
         Results(CmdID*      cmdID,
@@ -56,8 +56,8 @@ class Results : public ResponseCommand {
                 Meta*       meta,
                 ArrayList*  targetRef,  // it could be and arraylist with only the first element assigned
                 ArrayList*  sourceRef,  // it could be and arraylist with only the first element assigned
-                ArrayList*  items); //Item[] 
-        
+                ArrayList*  items); //Item[]
+
         /**
          * Returns the command name.
          *
@@ -66,7 +66,7 @@ class Results : public ResponseCommand {
         const char* getName();
 
         ArrayElement* clone();
-   
+
 };
 
 /** @endcond */

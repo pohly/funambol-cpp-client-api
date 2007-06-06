@@ -1,19 +1,19 @@
 /*
- * Copyright (C) 2003-2007 Funambol
+ * Copyright (C) 2003-2007 Funambol, Inc.
  *
  * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
+ * it under the terms of the GNU General Public License version 2 as
+ * published by the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY, TITLE, NONINFRINGEMENT or FITNESS FOR A PARTICULAR
+ * PURPOSE.  See the GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ * 02111-1307  USA
  */
 
 #include "base/fscapi.h"
@@ -81,7 +81,7 @@ void createConfig(DMTClientConfig& config);
 
 // Define DEBUG_SETTINGS in your project to create a default configuration
 // tree for the test client. WARNING: it will override any previous setting!
-// 
+//
 #ifdef DEBUG_SETTINGS
 int settings(const char *root);
 #endif
@@ -96,7 +96,7 @@ int main(int argc, char** argv) {
     Log(0, LOG_PATH, LOG_NAME);
     LOG.reset(LOG_TITLE);
     LOG.setLevel(LOG_LEVEL_NONE);
-    
+
 #if 0
     _CrtSetDbgFlag (ON);
 
@@ -156,19 +156,19 @@ int main(int argc, char** argv) {
 
 // ------------- Main sample client ------------------------
 #ifdef TEST_SYNCSOURCE
-    
+
     //
     // Create the configuration.
     //
-    DMTClientConfig config(APPLICATION_URI); 
- 
+    DMTClientConfig config(APPLICATION_URI);
+
     // Read config from registry.
-    if (!config.read() || 
+    if (!config.read() ||
         strcmp(config.getDeviceConfig().getDevID(), DEVICE_ID)) {
         // Config not found -> generate a default config
         createConfig(config);
     }
-	
+
     //
     // Create the SyncSource passing its name and its config.
     //
@@ -212,12 +212,12 @@ int main(int argc, char** argv) {
 
 #endif
 
-    
+
 #ifdef TEST_SYNC_ENCRYPTION
 	Sync4jClient& s4j = Sync4jClient::getInstance();
     s4j.setDMConfig(APPLICATION_URI);
-    
-    TestSyncSource source = TestSyncSource(TEXT("briefcase"));                             
+
+    TestSyncSource source = TestSyncSource(TEXT("briefcase"));
 
     SyncSource** ssArray = new SyncSource*[2];
     ssArray[0] = &source;
@@ -252,7 +252,7 @@ int main(int argc, char** argv) {
 #ifdef TEST_XMLPROCESSOR
 static void testXMLProcessor(void)
 {
-    const char xml1[] = 
+    const char xml1[] =
         "<document>\n\
             <LocURI>./devinf11</LocURI>\n\
             <plaintag>\n\
@@ -260,7 +260,7 @@ static void testXMLProcessor(void)
             </plaintag>\n\
             <emptytag/>\n\
          </document>" ;
-         
+
     unsigned int pos = 0, start = 0, end = 0;
     const char *p = 0;
 
@@ -314,7 +314,7 @@ static void testXMLProcessor(void)
         return;
     }
     LOG.debug("Emptytag: '%s'", empty);
-    
+
     if(doc)
         delete [] doc;
     if (empty)

@@ -1,23 +1,23 @@
 /*
-* Copyright (C) 2003-2007 Funambol
-*
-* This program is free software; you can redistribute it and/or modify
-* it under the terms of the GNU General Public License as published by
-* the Free Software Foundation; either version 2 of the License, or
-* (at your option) any later version.
-*
-* This program is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-* GNU General Public License for more details.
-*
-* You should have received a copy of the GNU General Public License
-* along with this program; if not, write to the Free Software
-* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-*/
+ * Copyright (C) 2003-2007 Funambol, Inc.
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License version 2 as
+ * published by the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY, TITLE, NONINFRINGEMENT or FITNESS FOR A PARTICULAR
+ * PURPOSE.  See the GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ * 02111-1307  USA
+ */
 
 /*
-How to test SSL connections 
+How to test SSL connections
 ----------------------------
 
 On the server:
@@ -31,7 +31,7 @@ acceptCount="10" debug="0" scheme="https" secure="true">
 <Factory className="org.apache.catalina.net.SSLServerSocketFactory" clientAuth="false" protocol="TLS"/>
 </Connector>
 2) Export the certificate from the key store:
-%JAVA_HOME%\bin\keytool -export -alias tomcat -file myroot.cer  
+%JAVA_HOME%\bin\keytool -export -alias tomcat -file myroot.cer
 
 On the emulator:
 1) Copy myroot.cer in a device/emulator directory
@@ -67,8 +67,8 @@ On the emulator:
 * @param proxy proxy information or NULL if no proxy should be used
 */
 WMTransportAgent::WMTransportAgent(
-                                   URL& newURL, Proxy& newProxy, 
-                                   unsigned int maxResponseTimeout, 
+                                   URL& newURL, Proxy& newProxy,
+                                   unsigned int maxResponseTimeout,
                                    unsigned int maxmsgsize)
                                    // Use base class constructor to initialize common attributes
                                    : TransportAgent(newURL,
@@ -80,7 +80,7 @@ WMTransportAgent::WMTransportAgent(
 #ifdef USE_ZLIB
     isToDeflate = FALSE;
     isToInflate = FALSE;
-    isFirstMessage = TRUE;    
+    isFirstMessage = TRUE;
 #endif
 
     // used by default. check connection before...
@@ -145,8 +145,8 @@ char* WMTransportAgent::sendMessage(const char* msg) {
 
     DWORD size  = 0,
         read  = 0,
-        flags = INTERNET_FLAG_RELOAD | 
-        INTERNET_FLAG_NO_CACHE_WRITE | 
+        flags = INTERNET_FLAG_RELOAD |
+        INTERNET_FLAG_NO_CACHE_WRITE |
         INTERNET_FLAG_KEEP_CONNECTION |     // This is necessary if authentication is required.
         INTERNET_FLAG_NO_COOKIES;           // This is used to avoid possible server errors on successive sessions.
 
@@ -175,7 +175,7 @@ char* WMTransportAgent::sendMessage(const char* msg) {
         sprintf (lastErrorMsg, "%s: %d", "InternetOpen Error", GetLastError());
         LOG.error(lastErrorMsg);
         goto exit;
-    }   
+    }
     LOG.debug("Connecting to %s:%d", url.host, url.port);
 
     //
@@ -238,9 +238,9 @@ char* WMTransportAgent::sendMessage(const char* msg) {
         //
         // Say the client can accept the zipped content but the first message is clear
         //
-        if (isFirstMessage || !isToDeflate) { 
+        if (isFirstMessage || !isToDeflate) {
             wsprintf(headers, TEXT("Content-Type: %s\r\nContent-Length: %d\r\nAccept-Encoding: deflate"),
-                SYNCML_CONTENT_TYPE, contentLength);    
+                SYNCML_CONTENT_TYPE, contentLength);
             isFirstMessage = false;
         }
         else if (isToDeflate) {
@@ -255,10 +255,10 @@ char* WMTransportAgent::sendMessage(const char* msg) {
             if (err != Z_OK) {
                 lastErrorCode = ERR_HTTP_DEFLATE;
                 sprintf(lastErrorMsg, "ZLIB: error occurred compressing data.");
-                delete [] compr;  
+                delete [] compr;
                 compr = NULL;
                 goto exit;
-            }            
+            }
 
             // Msg to send is the compressed data.
             msgToSend = (const void*)compr;
@@ -266,7 +266,7 @@ char* WMTransportAgent::sendMessage(const char* msg) {
             contentLength = comprLen;
 
             wsprintf(headers, TEXT("Content-Type: %s\r\nContent-Length: %d\r\nAccept-Encoding: deflate\r\nUncompressed-Content-Length: %d\r\nContent-Encoding: deflate"),
-                SYNCML_CONTENT_TYPE, contentLength, uncomprLenght);                                    
+                SYNCML_CONTENT_TYPE, contentLength, uncomprLenght);
         }
     }else{
         wsprintf(headers, TEXT("Content-Type: %s\r\nContent-Length: %d"), SYNCML_CONTENT_TYPE, contentLength);
@@ -331,12 +331,12 @@ char* WMTransportAgent::sendMessage(const char* msg) {
         if (status == HTTP_ERROR) { // 400 bad request error. retry to send the message
             LOG.info("Network error in server receiving data. "
                 "Server responds 400: retry %i time...", numretries + 1);
-        }        
+        }
         else if (status == HTTP_STATUS_SERVER_ERROR ) {
             lastErrorCode = ERR_SERVER_ERROR;
             sprintf(lastErrorMsg, "HTTP server error: %d. Server failure.", status);
             LOG.debug(lastErrorMsg);
-            goto exit;   
+            goto exit;
         }
 
         // to handle the http error code for the tcp/ip notification with wrong credential
@@ -344,14 +344,14 @@ char* WMTransportAgent::sendMessage(const char* msg) {
             lastErrorCode = ERR_CREDENTIAL;
             sprintf(lastErrorMsg, "HTTP server error: %d. Wrong credential.", status);
             LOG.debug(lastErrorMsg);
-            goto exit;   
+            goto exit;
         }
         // to handle the http error code for the tcp/ip notification and client not notifiable
         else if (status == ERR_CLIENT_NOT_NOTIFIABLE) { // 420
             lastErrorCode = ERR_CLIENT_NOT_NOTIFIABLE;
             sprintf(lastErrorMsg, "HTTP server error: %d. Client not notifiable.", status);
             LOG.debug(lastErrorMsg);
-            goto exit;   
+            goto exit;
         }
         else if (status != STATUS_OK) {
             lastErrorCode = ERR_HTTP_STATUS_NOT_OK;
@@ -388,11 +388,11 @@ char* WMTransportAgent::sendMessage(const char* msg) {
         (LPDWORD)&size,
         NULL);
 
-    
-#ifdef USE_ZLIB 
+
+#ifdef USE_ZLIB
     long uncompressedContentLenght = 0;
     if(compression){
-        // Release the send buffer (also set msgToSend to NULL, to 
+        // Release the send buffer (also set msgToSend to NULL, to
         // avoid leaving a dangling pointer around.
         if (compr) {
             delete [] compr; compr = NULL;
@@ -415,7 +415,7 @@ char* WMTransportAgent::sendMessage(const char* msg) {
 
         // isToDeflate to be set
         DWORD dwSize = 512;
-        /*wchar_t* */ buffer = new wchar_t[dwSize];     
+        /*wchar_t* */ buffer = new wchar_t[dwSize];
 
         wcscpy(buffer, TEXT("Accept-Encoding"));
         HttpQueryInfo(request,HTTP_QUERY_CUSTOM,(LPVOID)buffer,&dwSize,NULL);
@@ -423,7 +423,7 @@ char* WMTransportAgent::sendMessage(const char* msg) {
             isToDeflate = FALSE;
         } else {
             isToDeflate = TRUE;
-        }	
+        }
 
         wcscpy(buffer, TEXT("Content-Encoding"));
         HttpQueryInfo(request,HTTP_QUERY_CUSTOM,(LPVOID)buffer,&dwSize,NULL);
@@ -550,7 +550,7 @@ char* WMTransportAgent::sendMessage(const char* msg) {
             // INFLATE (decompress data)
             //
             uLong uncomprLen = uncompressedContentLenght;
-            Bytef* uncompr = new Bytef[uncomprLen + 1];        
+            Bytef* uncompr = new Bytef[uncomprLen + 1];
 
             // Decompresses the source buffer into the destination buffer.
             int err = uncompress(uncompr, &uncomprLen, (Bytef*)response, contentLength);
@@ -559,7 +559,7 @@ char* WMTransportAgent::sendMessage(const char* msg) {
                 delete [] response;
                 response = (char*)uncompr;
                 response[uncomprLen] = 0;
-            }   
+            }
             else if (err < 0) {
                 LOG.error("Error from zlib: %s", zError(err));
 

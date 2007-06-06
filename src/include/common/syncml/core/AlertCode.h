@@ -1,19 +1,19 @@
 /*
- * Copyright (C) 2003-2007 Funambol
+ * Copyright (C) 2003-2007 Funambol, Inc
  *
  * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
+ * it under the terms of the GNU General Public License version 2 as
+ * published by the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY, TITLE, NONINFRINGEMENT or FITNESS FOR A PARTICULAR
+ * PURPOSE.  See the GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ * 02111-1307  USA
  */
 
 #ifndef INCL_ALERT_CODE
@@ -40,17 +40,17 @@
 #define NO_END_OF_DATA                 223
 
 
-    
+
 /**
 * Determines if the given code is an initialization code, such as one of:
 * <ul>
-*   <li> TWO_WAY                      
-*   <li> SLOW                         
-*   <li> ONE_WAY_FROM_CLIENT          
-*   <li> REFRESH_FROM_CLIENT          
-*   <li> ONE_WAY_FROM_SERVER          
-*   <li> REFRESH_FROM_SERVER        
-*   <li> TWO_WAY_BY_SERVER          
+*   <li> TWO_WAY
+*   <li> SLOW
+*   <li> ONE_WAY_FROM_CLIENT
+*   <li> REFRESH_FROM_CLIENT
+*   <li> ONE_WAY_FROM_SERVER
+*   <li> REFRESH_FROM_SERVER
+*   <li> TWO_WAY_BY_SERVER
 *   <li> ONE_WAY_FROM_CLIENT_BY_SERVE
 *   <li> REFRESH_FROM_CLIENT_BY_SERVER
 *   <li> ONE_WAY_FROM_SERVER_BY_SERVER
@@ -76,9 +76,9 @@ BOOL isInitializationCode(int code) {
          );
 }
 
-   
+
 /**
-* Determines if the given code represents a client only action, such as is 
+* Determines if the given code represents a client only action, such as is
 * one of:
 * <ul>
 *   <li>ONE_WAY_FROM_CLIENT</li>

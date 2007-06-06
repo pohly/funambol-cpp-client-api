@@ -1,19 +1,19 @@
 /*
- * Copyright (C) 2003-2007 Funambol
+ * Copyright (C) 2003-2007 Funambol, Inc.
  *
  * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
+ * it under the terms of the GNU General Public License version 2 as
+ * published by the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY, TITLE, NONINFRINGEMENT or FITNESS FOR A PARTICULAR
+ * PURPOSE.  See the GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ * 02111-1307  USA
  */
 
 
@@ -29,7 +29,7 @@ MemTracker::~MemTracker() {}
 
 // Add alloc informations to the list.
 void MemTracker::addTrack(DWORD addr,  DWORD asize,  const char *fname, DWORD lnum) {
-	
+
 	AllocInfo info;
 	strncpy(info.file, fname, MAX_LENGHT_FILE-1);
 	info.address = addr;
@@ -42,11 +42,11 @@ void MemTracker::addTrack(DWORD addr,  DWORD asize,  const char *fname, DWORD ln
 
 // Remove alloc informations from the list by the given address.
 void MemTracker::removeTrack(DWORD addr) {
-	
+
 	int size = allocList.size();
     if (!size)
 		return;
-	
+
     if ( addr == ((AllocInfo*)allocList.front())->address ) {
         allocList.remove(0);
         return;
@@ -59,7 +59,7 @@ void MemTracker::removeTrack(DWORD addr) {
 			    break;
             }
 	    }
-    }	    
+    }
 }
 
 
@@ -97,7 +97,7 @@ void MemTracker::dumpUnfreed() {
 // Functions to enable/disable tracking of memory leaks.
 // Note: need to disable trackers when calling add/removeTracker
 //       to avoid loops into new/delete operators!
-// 
+//
 void MemTracker::enableMemTracker() {
     tracking = TRUE;
 }

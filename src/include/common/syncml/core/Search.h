@@ -1,19 +1,19 @@
 /*
- * Copyright (C) 2003-2007 Funambol
+ * Copyright (C) 2003-2007 Funambol, Inc
  *
  * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
+ * it under the terms of the GNU General Public License version 2 as
+ * published by the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY, TITLE, NONINFRINGEMENT or FITNESS FOR A PARTICULAR
+ * PURPOSE.  See the GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ * 02111-1307  USA
  */
 
 
@@ -30,22 +30,22 @@
 #define SEARCH_COMMAND_NAME "Search"
 
 class Search : public AbstractCommand{
-    
+
      // ------------------------------------------------------------ Private data
-    private:       
+    private:
         char*     COMMAND_NAME;
         BOOL        noResults;
         Target*     target   ;
         ArrayList*  sources; // Source[]. It is an ArrayList of SourceArray object. Every one contains a Source object
         char*     lang;
-        Data*       data;       
-    
-    // ---------------------------------------------------------- Public data    
-    public:    
-    
+        Data*       data;
+
+    // ---------------------------------------------------------- Public data
+    public:
+
         Search();
         ~Search();
-    
+
         /**
          * Creates a new Search object.
          *
@@ -58,7 +58,7 @@ class Search : public AbstractCommand{
          * @param lang preferred language
          * @param meta meta data - NOT NULL
          * @param data contains the search grammar - NOT NULL
-         *         
+         *
          *
          */
         Search(CmdID*      cmdID    ,
@@ -69,8 +69,8 @@ class Search : public AbstractCommand{
                ArrayList*  sources  ,
                char*     lang     ,
                Meta*       meta     ,
-               Data*       data     );    
-    
+               Data*       data     );
+
         /**
          * Returns noResults
          *
@@ -78,40 +78,40 @@ class Search : public AbstractCommand{
          *
          */
         BOOL isNoResults();
-    
+
         /**
          * Sets noResults
          *
          * @param noResults the noResults value
          */
         void setNoResults(BOOL noResults);
-    
+
         /**
          * Gets the Boolean value of noResults property
          *
          * @return noResults if boolean value is true, otherwise null
          */
         BOOL getNoResults();
-    
+
         /**
          * Returns target property
          * @return target the Target property
          */
         Target* getTarget();
-    
+
         /**
          * Sets target property
          *
          * @param target the target property
          */
         void setTarget(Target* target);
-    
+
         /**
          * Returns command sources
          * @return command sources
          */
         ArrayList* getSources();
-    
+
         /**
          * Sets command sources
          *
@@ -119,7 +119,7 @@ class Search : public AbstractCommand{
          *
          */
         void setSources(ArrayList* sources);
-    
+
         /**
          * Returns the preferred language
          *
@@ -127,14 +127,14 @@ class Search : public AbstractCommand{
          *
          */
         const char* getLang();
-    
+
         /**
          * Sets the preferred language
          *
          * @param lang the preferred language
          */
         void setLang(const char* lang);
-        
+
         /**
          * Returns data
          *
@@ -142,7 +142,7 @@ class Search : public AbstractCommand{
          *
          */
         Data* getData();
-    
+
         /**
          * Sets data
          *
@@ -150,7 +150,7 @@ class Search : public AbstractCommand{
          *
          */
         void setData(Data* data);
-    
+
         /**
          * Returns the command name
          *
@@ -158,8 +158,8 @@ class Search : public AbstractCommand{
          */
         const char* getName();
 
-        ArrayElement* clone();    
-   
+        ArrayElement* clone();
+
 };
 
 /** @endcond */

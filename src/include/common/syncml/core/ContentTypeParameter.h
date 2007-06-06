@@ -1,19 +1,19 @@
 /*
- * Copyright (C) 2003-2007 Funambol
+ * Copyright (C) 2003-2007 Funambol, Inc
  *
  * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
+ * it under the terms of the GNU General Public License version 2 as
+ * published by the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY, TITLE, NONINFRINGEMENT or FITNESS FOR A PARTICULAR
+ * PURPOSE.  See the GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ * 02111-1307  USA
  */
 
 
@@ -26,7 +26,7 @@
 #include "syncml/core/StringElement.h"
 
 class ContentTypeParameter : public ArrayElement {
-    
+
      // ------------------------------------------------------------ Private data
     private:
         char*    paramName;
@@ -34,10 +34,10 @@ class ContentTypeParameter : public ArrayElement {
         char*    displayName;
         char*    dataType;
         int size;
-    
-    // ---------------------------------------------------------- Protected data    
+
+    // ---------------------------------------------------------- Protected data
     public:
-        
+
         ContentTypeParameter();
         ~ContentTypeParameter();
 
@@ -45,29 +45,29 @@ class ContentTypeParameter : public ArrayElement {
          * Creates a new ContentTypeParameter object with the given name, value and
          * display name
          *
-         * @param paramName corresponds to &lt;ParamName&gt; element in the SyncML 
+         * @param paramName corresponds to &lt;ParamName&gt; element in the SyncML
          *                  specification - NOT NULL
-         * @param valEnum   corresponds to &lt;ValEnum&gt; element in the SyncML 
+         * @param valEnum   corresponds to &lt;ValEnum&gt; element in the SyncML
          *                  specification
-         * @param displayName corresponds to &lt;DisplayName&gt; element in the SyncML 
+         * @param displayName corresponds to &lt;DisplayName&gt; element in the SyncML
          *                  specification
          *
          */
         ContentTypeParameter(char*  paramName,
-                             ArrayList* valEnum, 
+                             ArrayList* valEnum,
                              char*  displayName);
 
         /**
          * Creates a new ContentTypeParameter object with the given name, data type,
          * size, display name
          *
-         * @param paramName corresponds to &lt;ParamName&gt; element in the SyncML 
+         * @param paramName corresponds to &lt;ParamName&gt; element in the SyncML
          *                  specification - NOT NULL
-         * @param dataType  corresponds to &lt;DataType&gt; element in the SyncML 
+         * @param dataType  corresponds to &lt;DataType&gt; element in the SyncML
          *                  specification
-         * @param size      corresponds to &lt;Size&gt; element in the SyncML 
+         * @param size      corresponds to &lt;Size&gt; element in the SyncML
          *                  specification
-         * @param displayName corresponds to &lt;DisplayName&gt; element in the SyncML 
+         * @param displayName corresponds to &lt;DisplayName&gt; element in the SyncML
          *                  specification
          *
          */
@@ -76,42 +76,42 @@ class ContentTypeParameter : public ArrayElement {
                              int size,
                              char*  displayName);
 
-        
+
         /**
          * Gets the parameter name propeties
          *
          * @return the parameter name propeties
          */
         const char* getParamName();
-    
+
         /**
          * Sets the param name property
          *
          * @param paramName the param name property
          */
         void setParamName(const char* paramName);
-    
+
         /**
          * Gets the array of value for parameter
          *
          * @return the array of value for parameter
          */
         ArrayList* getValEnum();
-    
+
         /**
          * Sets the array of enumerated value property
          *
          * @param valEnum the array of enumerated value property
          */
         void setValEnum(ArrayList* valEnum);
-    
+
         /**
          * Gets the display name propeties
          *
          * @return the display name propeties
          */
         const char* getDisplayName();
-    
+
         /**
          * Sets the display name of a given content type parameter
          *
@@ -119,14 +119,14 @@ class ContentTypeParameter : public ArrayElement {
          *
          */
         void setDisplayName(const char* displayName);
-    
+
         /**
          * Gets the data type propeties
          *
          * @return the data type propeties
          */
         const char* getDataType();
-    
+
         /**
          * Sets the data type of a given content type parameter
          *
@@ -134,14 +134,14 @@ class ContentTypeParameter : public ArrayElement {
          *
          */
         void setDataType(const char* dataType);
-    
+
         /**
          * Gets the size propeties
          *
          * @return the size propeties
          */
         int getSize();
-    
+
         /**
          * Sets the size of a given content type parameter
          *
@@ -151,7 +151,7 @@ class ContentTypeParameter : public ArrayElement {
         void setSize(int size);
 
         ArrayElement* clone();
-   
+
 };
 
 /** @endcond */

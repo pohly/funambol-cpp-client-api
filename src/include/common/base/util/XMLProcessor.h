@@ -1,21 +1,20 @@
-/**
- * Copyright (C) 2003-2007 Funambol
+/*
+ * Copyright (C) 2003-2007 Funambol, Inc
  *
  * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
+ * it under the terms of the GNU General Public License version 2 as
+ * published by the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY, TITLE, NONINFRINGEMENT or FITNESS FOR A PARTICULAR
+ * PURPOSE.  See the GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ * 02111-1307  USA
  */
-
 
 #ifndef INCL_XML_PROCESSOR
 #define INCL_XML_PROCESSOR
@@ -65,26 +64,26 @@ public:
      */
     static const char*  getElementContent(const char*  xml, const char*  tag,
                     unsigned int* pos, unsigned int* startPos, unsigned int* endPos) EXTRA_SECTION_00;
-    
+
     /*
     * It returns the number of the tag in the xml string
     */
     static int countElementTag(const char*  xml, const char*  tag) EXTRA_SECTION_00;
-    
+
     static int countAnd(const char*  token) EXTRA_SECTION_00;
 
     static int countChar(const char*  token, const char*  element) EXTRA_SECTION_00;
-    
+
     static const char* getNextTag(const char* xml, int* pos);
    /*
     * it's as copyElementContent but it doesn't get the content of a tag if
     * the parent match except.
     * The parent can be more than one. They have to be separated by &
-    * i.e.  
+    * i.e.
     *
     * copyElementContentExcept(xmlPtr, "Add", "Sync&Atomic", &post)
     *
-    * The function returns "... to keep ... " content only 
+    * The function returns "... to keep ... " content only
     *
     * <SyncBody>
     *   <Sync>
@@ -123,7 +122,7 @@ public:
      */
 
     static char* copyContent(const char*  xml, unsigned int startPos, unsigned int endPos) EXTRA_SECTION_00;
-    
+
     /**
      * Create an XML element with the specified tag and value.
      *
@@ -139,7 +138,7 @@ public:
      * @param val - the element value
      * @param attr - attribute list, already formated - ex: enc="base64"
      */
-    static StringBuffer makeElement(const char*  tag, 
+    static StringBuffer makeElement(const char*  tag,
                                     const char*  val,
                                     const char*  attr = NULL) EXTRA_SECTION_00;
 
@@ -150,7 +149,7 @@ public:
      * @param val - the element value
      * @param attr - attribute list, pairs of name and value
      */
-    static StringBuffer makeElement(const char*  tag, 
+    static StringBuffer makeElement(const char*  tag,
                                     const char*  val,
                                     ArrayList attrList) EXTRA_SECTION_00;
 
@@ -167,11 +166,11 @@ public:
 	static StringBuffer makeElement(const char*  tag, int val) {
         return makeElement( tag, StringBuffer().append(val) ) EXTRA_SECTION_00 ;
     }
-    
+
     /**
      * Extracts the attributes list from a tag into an XML message. It is supposed that the
      * message is a valid XML message. It returns NULL in case the tag is not
-     * found or the XML fragment is not in the expected form. The calling function must 
+     * found or the XML fragment is not in the expected form. The calling function must
      * further parse the resultto extract attribute name and value
      *
      * @param xml the xml fragment
@@ -183,7 +182,7 @@ public:
     static const char*  getElementAttributes(
                                          const char*  xml,
                                          const char*  tag,
-                                         unsigned int*  startPos, 
+                                         unsigned int*  startPos,
                                          unsigned int*  endPos,
                                          bool escaped = false) EXTRA_SECTION_00;
 

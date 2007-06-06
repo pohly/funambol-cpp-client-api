@@ -1,19 +1,19 @@
 /*
- * Copyright (C) 2003-2007 Funambol
+ * Copyright (C) 2003-2007 Funambol, Inc.
  *
  * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
+ * it under the terms of the GNU General Public License version 2 as
+ * published by the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY, TITLE, NONINFRINGEMENT or FITNESS FOR A PARTICULAR
+ * PURPOSE.  See the GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ * 02111-1307  USA
  */
 
 #include "base/fscapi.h"
@@ -61,17 +61,17 @@ static const unsigned char ENCODING_LEN = strlen(ENCODING);
 
 //---------------------------------------------------------------- Accessors
 
-const char *MailMessage::getTo() const { return to.c_str(); } 
-void MailMessage::setTo(const char *to) { this->to = to; } 
+const char *MailMessage::getTo() const { return to.c_str(); }
+void MailMessage::setTo(const char *to) { this->to = to; }
 
-const char *MailMessage::getFrom() const { return from.c_str(); } 
-void MailMessage::setFrom(const char *from) { this->from = from; } 
+const char *MailMessage::getFrom() const { return from.c_str(); }
+void MailMessage::setFrom(const char *from) { this->from = from; }
 
-const char *MailMessage::getCc() const { return cc.c_str(); } 
-void MailMessage::setCc(const char *cc) { this->cc = cc; } 
+const char *MailMessage::getCc() const { return cc.c_str(); }
+void MailMessage::setCc(const char *cc) { this->cc = cc; }
 
-const char *MailMessage::getBcc() const { return bcc.c_str(); } 
-void MailMessage::setBcc(const char *bcc) { this->bcc = bcc; } 
+const char *MailMessage::getBcc() const { return bcc.c_str(); }
+void MailMessage::setBcc(const char *bcc) { this->bcc = bcc; }
 
 //        int addHeader(const char *name, const char *content);
 const char *MailMessage::getSubject() const { return subject.c_str(); }
@@ -93,7 +93,7 @@ void MailMessage::setMimeVersion(const char *val) { mimeVersion = val; }
 
 const char * MailMessage::getMessageId() const { return messageId; }
 void MailMessage::setMessageId(const char *val) { messageId = val; }
-        
+
 const char* MailMessage::getEntryID() { return entryId.c_str(); }
 void MailMessage::setEntryID(const char* id) { entryId = id; }
 
@@ -122,13 +122,13 @@ int MailMessage::attachmentCount() {
 
 //----------------------------------------------------------- Static Functions
 
-static StringBuffer formatBodyPart(const BodyPart &part) 
+static StringBuffer formatBodyPart(const BodyPart &part)
 {
     StringBuffer ret;
 
     LOG.debug("FormatBodyPart START");
 
-    ret = MIMETYPE; 
+    ret = MIMETYPE;
     ret += part.getMimeType(); ret += ";\n";
     if( part.getFilename() ) {
         ret += "        "; ret += CT_NAME; ret += "\""; ret += part.getFilename(); ret += "\"\n";
@@ -143,7 +143,7 @@ static StringBuffer formatBodyPart(const BodyPart &part)
         else {
             ret += DISPOSITION; ret += "attachment;\n";
         }
-        
+
         ret += "      "; ret += CD_FILENAME; ret += "\""; ret += part.getFilename();
         ret += "\"\n";
     }
@@ -183,7 +183,7 @@ static size_t getHeadersLen(StringBuffer &s, StringBuffer &newline)
         pos1--;
     }
     newline = s.substr(pos1, pos2-pos1);
-    
+
     StringBuffer emptyline = newline + newline ;
 
     // Split headers and body
@@ -197,7 +197,7 @@ static size_t getHeadersLen(StringBuffer &s, StringBuffer &newline)
 
 
 static StringBuffer getTokenValue(const StringBuffer* line, const char* token, bool toLower = true) {
-    
+
     StringBuffer ret("");
     if (line->ifind(token) == StringBuffer::npos)
         return ret;
@@ -212,20 +212,20 @@ static StringBuffer getTokenValue(const StringBuffer* line, const char* token, b
             if (quote < semicolon) {
                 begin = quote + 1;
                 end = line->find("\"", begin) ;
-            } else {                            
+            } else {
                 end = line->find(";", begin) ;
             }
         } else {
             begin = quote + 1;
-            end = line->find("\"", begin) ;  
-        }                    
+            end = line->find("\"", begin) ;
+        }
     } else {
         end = line->find(";", begin) ;
         if (end == StringBuffer::npos) {
             end = line->find(" ", begin);
         }
     }
-    ret = line->substr(begin, end-begin);    
+    ret = line->substr(begin, end-begin);
     if (toLower) {
         ret = ret.lowerCase();
     }
@@ -245,7 +245,7 @@ static StringBuffer getTokenValue(const StringBuffer* line, const char* token, b
  */
 static bool getBodyPart(StringBuffer &rfcBody, StringBuffer &boundary,
                        BodyPart &ret, size_t &next, bool isAttach)
-{   
+{
     LOG.debug("getBodyPart START");
 
     // The part starts on the next line
@@ -289,14 +289,14 @@ static bool getBodyPart(StringBuffer &rfcBody, StringBuffer &boundary,
 
     // Join header parts using \t or 8 blank
     StringBuffer joinlinetab("\t");
-    headers.replaceAll(joinlinetab, " ");    
+    headers.replaceAll(joinlinetab, " ");
     StringBuffer joinlinespaces(newline);
     joinlinespaces+=" ";  // 8 blanks
     headers.replaceAll(joinlinespaces, " ");
 
     ArrayList lines;
     const StringBuffer *line;
-    
+
     // parse the bodypart headers
     headers.split(lines, newline);
 
@@ -311,7 +311,7 @@ static bool getBodyPart(StringBuffer &rfcBody, StringBuffer &boundary,
         //}
         // Process the headers
         if( line->ifind(MIMETYPE) == 0 ) {  // it must at the beginning
-            ret.setMimeType(getTokenValue(line, MIMETYPE));            
+            ret.setMimeType(getTokenValue(line, MIMETYPE));
             if (line->ifind(CT_NAME) != StringBuffer::npos) {
                 ret.setName( getTokenValue(line, CT_NAME));
             }
@@ -319,22 +319,22 @@ static bool getBodyPart(StringBuffer &rfcBody, StringBuffer &boundary,
                 ret.setCharset(getTokenValue(line, CT_CHARSET));
             }
         }
-           
+
         else if( line->ifind(DISPOSITION) == 0 ) {
             ret.setDisposition( getTokenValue(line, DISPOSITION));
             if (line->ifind(CD_FILENAME) != StringBuffer::npos ) {
                 ret.setFilename(getTokenValue(line, CD_FILENAME));
-            }                 
+            }
         }
-           
+
         else if( line->ifind(ENCODING) == 0 ) {
-            ret.setEncoding( getTokenValue(line, ENCODING));                                   
-        }                  
+            ret.setEncoding( getTokenValue(line, ENCODING));
+        }
 
     }
     // move to the beginning of the content
     hdrlen += strlen(newline) + strlen(newline); // added 2 new line that separate the bodyparts
-    // get bodypart content 
+    // get bodypart content
     if( isAttach == false) { // || !ret.getFilename() ) {
 		// this is not an attachment
         if(ret.getEncoding() && strcmp(ret.getEncoding(), "quoted-printable") == 0 ) {
@@ -362,10 +362,10 @@ static bool getBodyPart(StringBuffer &rfcBody, StringBuffer &boundary,
                     } else {
                         found = false;
                     }
-                }                
-            } 
+                }
+            }
             if (found) {
-                ret.setContent ( part.substr(hdrlen) );        
+                ret.setContent ( part.substr(hdrlen) );
             }
         }
     }
@@ -381,7 +381,7 @@ static bool getBodyPart(StringBuffer &rfcBody, StringBuffer &boundary,
             }
             else {
                 LOG.debug("convertAndSave success");
-            }    
+            }
         }
 	}
     LOG.debug("getBodyPart END");
@@ -420,36 +420,36 @@ static bool isAscii(const char *str){
 * It encodes if needed and folds
 */
 StringBuffer encodeHeader(StringBuffer line){
-    
+
     if(isAscii(line))
         return line;
 
     StringBuffer ret;
     StringBuffer tmp;
     StringBuffer startPattern("=?utf-8?Q?");
-    StringBuffer endPattern("?=");    
+    StringBuffer endPattern("?=");
     StringBuffer foldingPattern("\r\n ");
     int foldingLen = 64;
 
     char* qp = 0;
     qp = qp_encode(line);
-    
+
     tmp += startPattern;
-    tmp += qp;    
+    tmp += qp;
     delete [] qp;
 
     // folding action
-    unsigned long p = 0;        
+    unsigned long p = 0;
     while(p + foldingLen < tmp.length()) {
         ret.append(tmp.substr(p, foldingLen));
         ret.append(foldingPattern);
         ret.append(startPattern);
         p += foldingLen;
-    } 
-    
+    }
+
     if (ret.length() > 0)
-        tmp.append(tmp.substr(p, tmp.length() - p));            
-    
+        tmp.append(tmp.substr(p, tmp.length() - p));
+
     ret = tmp;
     ret.append(endPattern);
 
@@ -484,12 +484,12 @@ char * MailMessage::format() {
 
             if (headers.size() > 0) {
                 StringBuffer *line; int j = 0;
-                for (line=(StringBuffer *)headers.front(); line; line=(StringBuffer *)headers.next() ) {                                                  
-                    if (strstr(line->c_str(), "format=") != 0 
+                for (line=(StringBuffer *)headers.front(); line; line=(StringBuffer *)headers.next() ) {
+                    if (strstr(line->c_str(), "format=") != 0
                         || strstr(line->c_str(),"reply-type=") != 0 ) {
                             contentType.append("; ");
                             line->replaceAll(";", " ");
-                            contentType.append(line->c_str());                     
+                            contentType.append(line->c_str());
                             headers.removeElementAt(j);
                             j--;
                          }
@@ -518,17 +518,17 @@ char * MailMessage::format() {
         ret += BCC; ret += bcc; ret += NL;
     }
     ret += DATE; ret += date.formatRfc822(); ret += NL;
-    ret += SUBJECT; 
-    
+    ret += SUBJECT;
+
     ret += encodeHeader(subject);
-    
+
     ret += NL;
     ret += MIMETYPE; ret += contentType; ret+= "; ";
     if (contentType.ifind(MULTIPART) != StringBuffer::npos ){
         if ( boundary.empty() ) {
             generateBoundary(boundary);
         }
-        ret += "\n boundary=\""; ret += boundary; 
+        ret += "\n boundary=\""; ret += boundary;
         ret += "\"\n\nThis is a multi-part message in MIME format.\n";
         // Prepare a string with the boundary on a line alone
         StringBuffer bound = "\n--"; bound += boundary;
@@ -543,7 +543,7 @@ char * MailMessage::format() {
               part=(BodyPart *)attachments.next() ) {
             ret += NL;
             ret += formatBodyPart(*part);
-            ret += bound; 
+            ret += bound;
         }
         ret += "--\n";
     }
@@ -554,7 +554,7 @@ char * MailMessage::format() {
         if( body.getEncoding() )
             ret += ENCODING; ret += body.getEncoding();
         // end of headers
-        ret += NL;  
+        ret += NL;
         ret += NL;
         ret += body.getContent(); ret += NL;
     }
@@ -566,14 +566,14 @@ char * MailMessage::format() {
 int MailMessage::parse(const char *rfc2822, size_t len) {
     StringBuffer s(rfc2822, len);
     int rc;
-    
+
     LOG.debug("MailMessage::parse START");
 
     size_t hdrlen = getHeadersLen(s, newline);
 
     StringBuffer headers = s.substr(0, hdrlen);
     StringBuffer rfcbody = s.substr(hdrlen);
-    
+
     rc = parseHeaders(headers);
     if(rc)
         return rc;
@@ -640,7 +640,7 @@ StringBuffer decodeHeader(StringBuffer line) {
         charset = line.substr(startPos, firstMark - startPos);
         StringBuffer encoding = line.substr(firstMark+1, secondMark - (firstMark + 1));
         StringBuffer text = line.substr(secondMark+1, endPos - (secondMark + 1));
-            
+
         if (encoding == "Q") {
             // quoted-printable
             text.replaceAll("_", " ");
@@ -666,13 +666,13 @@ StringBuffer decodeHeader(StringBuffer line) {
 
         startPos = endPos;
     }
-    
+
     if (ret.length() == 0) {
         ret += line;
     }
 
-    WCHAR* wret = toWideChar(ret, charset); 
-    ret.set(NULL);   
+    WCHAR* wret = toWideChar(ret, charset);
+    ret.set(NULL);
     char* t = toMultibyte(wret);
     ret.set(t);
     if (wret) {delete [] wret;}
@@ -694,18 +694,18 @@ int MailMessage::parseHeaders(StringBuffer &rfcHeaders) {
     // Join header parts using \t or 8 blank
     StringBuffer joinlinetab("\t");
     rfcHeaders.replaceAll(joinlinetab, " ");
-    
+
     StringBuffer joinlinespaces(newline);
     joinlinespaces+=" ";  // 8 blanks
 
     rfcHeaders.replaceAll(joinlinespaces, " ");
 
     rfcHeaders.split(lines, newline);
-    
+
     for ( line=(StringBuffer *)lines.front();
 		  line;
 		  line=(StringBuffer *)lines.next() ) {
-                
+
         if( *line == "\r" )
             break;
         // The first empty line marks the end of the header section
@@ -714,7 +714,7 @@ int MailMessage::parseHeaders(StringBuffer &rfcHeaders) {
         }
         // Process the headers
         bool unknown=false;
-        
+
         if( line->ifind(TO) == 0 ){
             to = decodeHeader(line->substr(TO_LEN));
         }
@@ -728,7 +728,7 @@ int MailMessage::parseHeaders(StringBuffer &rfcHeaders) {
             bcc = decodeHeader(line->substr(BCC_LEN));
         }
         else if ( line->ifind(DATE) == 0 ) {
-            //subjectParsing = FALSE;        
+            //subjectParsing = FALSE;
             if( date.parseRfc822(line->substr(DATE_LEN)) ) {
                 LOG.error("Error parsing date");
                 return 500;
@@ -737,7 +737,7 @@ int MailMessage::parseHeaders(StringBuffer &rfcHeaders) {
         else if( line->ifind(SUBJECT) == 0 ) {
 
             subject = decodeHeader(line->substr(SUBJECT_LEN));
-            LOG.debug("SUBJECT: %s", subject.c_str());          
+            LOG.debug("SUBJECT: %s", subject.c_str());
         }
         else if( line->ifind(ENCODING) == 0 ) {  // it is here for single part only
             body.setEncoding(line->substr(ENCODING_LEN));
@@ -749,22 +749,22 @@ int MailMessage::parseHeaders(StringBuffer &rfcHeaders) {
             messageId = line->substr(MESSAGEID_LEN);
         }
         else if( line->ifind(MIMETYPE) == 0 ) {
-            
+
             StringBuffer sb = getTokenValue(line, MIMETYPE);
-            
+
             if (sb.length() > 0)
                 contentType = sb;
 
             sb.reset();
             sb = getTokenValue(line, "boundary=", false);
-            
+
             if (sb.length() > 0) {
                 boundary = sb;
             } else {
                 body.setCharset(getTokenValue(line, CT_CHARSET));
             }
             /*
-            
+
             size_t len = line->find(";") - MIMETYPE_LEN ;
             contentType = line->substr(MIMETYPE_LEN, len);
 
@@ -799,15 +799,15 @@ int MailMessage::parseHeaders(StringBuffer &rfcHeaders) {
             */
 	    }
         else if(line->ifind(RECEIVED) == 0) {
-            if (!receivedExtracted) {                
-                strReceived = line->substr(line->rfind(";") );                                
-                
+            if (!receivedExtracted) {
+                strReceived = line->substr(line->rfind(";") );
+
                 if (!strReceived.empty()) {
-                    received.parseRfc822(strReceived.substr(2));                    
+                    received.parseRfc822(strReceived.substr(2));
                     receivedExtracted = TRUE;
                 }
                 /*
-                while (!strReceived.empty()) {                    
+                while (!strReceived.empty()) {
                     if (received.parseRfc822(strReceived.substr(2)) == 0) {
                         receivedExtracted = TRUE;
                         break;
@@ -816,16 +816,16 @@ int MailMessage::parseHeaders(StringBuffer &rfcHeaders) {
                         strReceived = line->substr(s.rfind(";"));
                     }
                 }
-                */               
-                
+                */
+
             }
         }
         else {
             headers.add(*(StringBuffer *)line);
-        }            
-        
+        }
+
     }
-    // If received was not found, copy send date   
+    // If received was not found, copy send date
     if( received == BasicTime() ){
         received = date;
     }
@@ -849,7 +849,7 @@ int MailMessage::parseBodyParts(StringBuffer &rfcBody) {
     size_t nextBoundary = rfcBody.find(bound);
     getBodyPart(rfcBody, bound, body, nextBoundary, false);
 
-    if (contentType.ifind("multipart/alternative") == StringBuffer::npos) {        
+    if (contentType.ifind("multipart/alternative") == StringBuffer::npos) {
         // If it's not multipart/alternative, get the other parts
         while( getBodyPart(rfcBody, bound, part, nextBoundary, true) ) {
             // some problem in the attachment?
@@ -876,7 +876,7 @@ ArrayElement* MailMessage::clone() {
 }
 
 
-void MailMessage::setHeaders(const char* chExtraHeaders) 
+void MailMessage::setHeaders(const char* chExtraHeaders)
 {
     if(chExtraHeaders){
         StringBuffer extraHeaders(chExtraHeaders);
@@ -891,8 +891,8 @@ void MailMessage::setHeaders(const char* chExtraHeaders)
 const char* MailMessage::getHeaders()
 {
     if( headers.size() ) {
-        StringBuffer buff;    
-        buff.join(headers, "\n");            
+        StringBuffer buff;
+        buff.join(headers, "\n");
         char* strHeaders = stringdup(buff.c_str(), buff.length() -1);
         return strHeaders;
     }

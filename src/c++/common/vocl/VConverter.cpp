@@ -1,21 +1,21 @@
-/**
- * Copyright (C) 2003-2007 Funambol
+/*
+ * Copyright (C) 2003-2007 Funambol, Inc.
  *
  * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
+ * it under the terms of the GNU General Public License version 2 as
+ * published by the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY, TITLE, NONINFRINGEMENT or FITNESS FOR A PARTICULAR
+ * PURPOSE.  See the GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston,
- * MA 02111-1307 USA
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ * 02111-1307  USA
  */
+
 
 #include "base/util/utils.h"
 #include "vocl/VConverter.h"
@@ -29,9 +29,9 @@ VObject* VConverter::parse(const WCHAR* buffer) {
 	WCHAR *objType = extractObjectType(buffer);
 	WCHAR *objVersion = extractObjectVersion(buffer);
     if(!objType)
-        return NULL;        
+        return NULL;
 
-	VObject* vo = VObjectFactory::createInstance(objType, objVersion); 	
+	VObject* vo = VObjectFactory::createInstance(objType, objVersion);
     VProperty *prop;
 
     // Unfolding
@@ -118,11 +118,11 @@ VProperty* VConverter::readFieldHeader(WCHAR* buffer) {
         if (first) {
 
             WCHAR* group = new WCHAR[wcslen(token) + 1];
-            if(extractGroup(token, group)) 
+            if(extractGroup(token, group))
                 prop->addParameter(TEXT("GROUP"), group);
             else
                 delete [] group; group= NULL;
-            prop->setName(token);            
+            prop->setName(token);
             first = false;
         }
         else {
@@ -139,7 +139,7 @@ VProperty* VConverter::readFieldHeader(WCHAR* buffer) {
                 WCHAR* paramVal = new WCHAR[wcslen(token) + 1];
                 wcscpy(paramVal, token);
                 prop->addParameter(paramName, paramVal);
-                
+
                 delete [] paramName; paramName = NULL;
                 delete [] paramVal; paramVal = NULL;
             }
@@ -170,7 +170,7 @@ bool VConverter::readFieldBody(WCHAR* buffer, VProperty* vprop) {
     // Get length of all values
     while (buffer[i] != '\0') {
         if ((buffer[i] == '\r') || buffer[i] == '\n') {
-            
+
             // Get offset of next property
             for (j=i+1; buffer[j] != '\0'; j++) {
                 if((buffer[j] != '\r') && (buffer[j] != '\n'))
@@ -226,8 +226,8 @@ bool VConverter::readFieldBody(WCHAR* buffer, VProperty* vprop) {
     //
     // If needed, decode B64 string and copy to 'allValues'.
     //
-    if(vprop->equalsEncoding(TEXT("BASE64")) || 
-       vprop->equalsEncoding(TEXT("B")) || 
+    if(vprop->equalsEncoding(TEXT("BASE64")) ||
+       vprop->equalsEncoding(TEXT("B")) ||
        vprop->equalsEncoding(TEXT("b")) ) {
 
         char* buf = toMultibyte(allValues);
@@ -261,7 +261,7 @@ bool VConverter::readFieldBody(WCHAR* buffer, VProperty* vprop) {
     j=0;
     c = allValues;
     for (i=0; i<len; i++) {
-     
+
         // End of value
         if (c[i] == ';') {
             vprop->addValue(value);
@@ -269,7 +269,7 @@ bool VConverter::readFieldBody(WCHAR* buffer, VProperty* vprop) {
             wcscpy(value, TEXT(""));
         }
 
-        else {     
+        else {
             // Manage escaped chars: jump back-slash
             if (c[i] == '\\') {
                 if (c[i+1]=='n') {
@@ -320,7 +320,7 @@ WCHAR* VConverter::extractObjectProperty(const WCHAR* buffer, const WCHAR *prope
     //
     // This partial fix reuses previously allocated
     // memory if the function is called a second time.
-    
+
     size_t len = wcslen(buffer) + 1;
     if (buffCopyLen < len) {
         if (buffCopy) {
@@ -345,14 +345,14 @@ WCHAR* VConverter::extractObjectProperty(const WCHAR* buffer, const WCHAR *prope
         }
         token = wcstok( NULL, seps );
     }
-    
+
     return NULL;
 }
 
 WCHAR* VConverter::extractObjectType(const WCHAR* buffer) {
     static WCHAR* buffCopy;
     static size_t buffCopyLen;
-    
+
     return extractObjectProperty(buffer, TEXT("BEGIN"),
                                  buffCopy, buffCopyLen);
 }
@@ -363,11 +363,11 @@ WCHAR* VConverter::extractObjectVersion(const WCHAR* buffer) {
     static size_t buffCopyLen;
 
     return extractObjectProperty(buffer, TEXT("VERSION"),
-                                 buffCopy, buffCopyLen);    
+                                 buffCopy, buffCopyLen);
 }
 
 bool VConverter::extractGroup(WCHAR* propertyName, WCHAR* propertyGroup) {
-    
+
     WCHAR* groupIndex;
     groupIndex = wcschr(propertyName, '.');
 

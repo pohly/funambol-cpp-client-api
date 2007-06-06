@@ -1,19 +1,19 @@
 /*
- * Copyright (C) 2003-2007 Funambol
+ * Copyright (C) 2003-2007 Funambol, Inc.
  *
  * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
+ * it under the terms of the GNU General Public License version 2 as
+ * published by the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY, TITLE, NONINFRINGEMENT or FITNESS FOR A PARTICULAR
+ * PURPOSE.  See the GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ * 02111-1307  USA
  */
 
 #include <stdlib.h>
@@ -44,7 +44,7 @@ SyncML* SyncMLProcessor::processMsg(char* msg) {
 
 int SyncMLProcessor::processSyncHdrStatus(SyncML* syncml) {
     int ret = getStatusCode(syncml->getSyncBody(), NULL, SYNC_HDR);
-    
+
     // Fire Sync Status Event: syncHdr status from server
     fireSyncStatusEvent(SYNC_HDR, ret, NULL, NULL, NULL , SERVER_STATUS);
 
@@ -61,13 +61,13 @@ int SyncMLProcessor::processAlertStatus(SyncSource& source, SyncML* syncml, Arra
 
     if (alerts->size()) {
         ArrayList* list = syncml->getSyncBody()->getCommands();
-        
+
         for (int i = 0; i < list->size(); i++) {
             // is returned the pointer to the element not a new element
             name = ((AbstractCommand*)(list->get(i)))->getName();
             if (name && strcmp(name, STATUS) == 0) {
                 s = (Status*)list->get(i);
-                if (strcmp(s->getCmd(), ALERT) == 0) { 
+                if (strcmp(s->getCmd(), ALERT) == 0) {
                     sourceRef = (SourceRef*)(s->getSourceRef()->get(0));
 
                     if (sourceRef) {
@@ -104,16 +104,16 @@ int SyncMLProcessor::processAlertStatus(SyncSource& source, SyncML* syncml, Arra
  * @param msg the response from the server
  */
 int SyncMLProcessor::processServerAlert(SyncSource& source, SyncML* syncml) {
-    
+
     int ret             = -1;
     int iterator        = 0;
-    AbstractCommand* a  = NULL;   
+    AbstractCommand* a  = NULL;
     Item* item          = NULL;
-    BOOL found          = FALSE;    
+    BOOL found          = FALSE;
 
     ret = 0;
     do {
-        a = getCommand(syncml->getSyncBody(), ALERT, iterator);                   
+        a = getCommand(syncml->getSyncBody(), ALERT, iterator);
         if (a == NULL) {
             // This happens with the Synthesis server's reply:
             // instead of sending SyncBody/Alert we get SyncBody/Put
@@ -135,7 +135,7 @@ int SyncMLProcessor::processServerAlert(SyncSource& source, SyncML* syncml) {
         for (int i = 0; i < itemList->size(); i++) {
             item = (Item*)getArrayElement(itemList, i);
             const char *locURI = ((Target*)item->getTarget())->getLocURI();
-            if (strcmp( locURI, _wcc(source.getName()) ) == 0) {                   
+            if (strcmp( locURI, _wcc(source.getName()) ) == 0) {
                 if (alert->getData() == NULL) {
                     lastErrorCode = ERR_REPRESENTATION;
                     sprintf(lastErrorMsg, "SyncBody/Alert/Data not found!");
@@ -145,30 +145,30 @@ int SyncMLProcessor::processServerAlert(SyncSource& source, SyncML* syncml) {
                 source.setSyncMode((SyncMode)alert->getData());
                 ret = 0;
                 found = TRUE;
-                break;        
+                break;
             }
-        }                        
+        }
         iterator++;
         if (found)
             break;
 
     } while(a);
-   
+
 finally:
-    
+
     return ret;
 }
 
 
 char** SyncMLProcessor::getSortedSourcesFromServer(SyncML* syncml, int sourcesNumber) {
-    
+
     char** sourceList = new char*[sourcesNumber+1];
     int iterator        = 0;
-    AbstractCommand* a  = NULL;   
-    Item* item          = NULL;  
+    AbstractCommand* a  = NULL;
+    Item* item          = NULL;
 
     do {
-        a = getCommand(syncml->getSyncBody(), ALERT, iterator);                   
+        a = getCommand(syncml->getSyncBody(), ALERT, iterator);
         if (a == NULL) {
             goto finally;
         }
@@ -180,11 +180,11 @@ char** SyncMLProcessor::getSortedSourcesFromServer(SyncML* syncml, int sourcesNu
             item = (Item*)getArrayElement(itemList, i);
             const char *locURI = ((Target*)item->getTarget())->getLocURI();
             sourceList[iterator] = stringdup(locURI);
-        }                        
+        }
         iterator++;
 
     } while(a);
-   
+
 finally:
     sourceList[iterator] = NULL;
     return sourceList;
@@ -194,7 +194,7 @@ finally:
 
 
 int SyncMLProcessor::processItemStatus(SyncSource& source, SyncBody* syncBody) {
-    
+
     ArrayList* items = NULL;
     Item* item       = NULL;
     SourceRef* sourceRef = NULL;
@@ -207,19 +207,19 @@ int SyncMLProcessor::processItemStatus(SyncSource& source, SyncBody* syncBody) {
 
     for (int i = 0; i < list->size(); i++) {
         s = (Status*)list->get(i);
-        name = s->getCmd();    
+        name = s->getCmd();
         data = s->getData();
         if (strcmp(name, SYNC) == 0){
             char *srcname = toMultibyte(source.getName());
             int alertStatus = getAlertStatusCode(s, srcname);
             delete [] srcname;
-            
+
             /*
             * Try to find if the server send a message together the error code if any
             * The items in the status message should be always one...
             */
             char *statusMessage = NULL;
-            items = s->getItems();            
+            items = s->getItems();
 			for (int k = 0; k < items->size(); k++) {
                 item = (Item*)items->get(k);
                 if (item) {
@@ -230,25 +230,25 @@ int SyncMLProcessor::processItemStatus(SyncSource& source, SyncBody* syncBody) {
                 }
             }
             // Fire Sync Status Event: sync status from server
-            fireSyncStatusEvent(SYNC, s->getStatusCode(), source.getConfig().getName(), source.getConfig().getURI(), NULL, SERVER_STATUS);            
+            fireSyncStatusEvent(SYNC, s->getStatusCode(), source.getConfig().getName(), source.getConfig().getURI(), NULL, SERVER_STATUS);
 
             if(alertStatus < 0 || alertStatus >=300){
                 if (statusMessage) {
                     strcpy(lastErrorMsg, statusMessage);
                 } else {
-                    strcpy(lastErrorMsg, "Error in sync status sent by server.");    
+                    strcpy(lastErrorMsg, "Error in sync status sent by server.");
                 }
                 if ((ret = alertStatus) < 0)
                     LOG.error("processItemStatus: status not found in SYNC");
                 else
-                    LOG.error("processItemStatus: server sent status %d in SYNC", alertStatus);                
-                break;            
+                    LOG.error("processItemStatus: server sent status %d in SYNC", alertStatus);
+                break;
             }
             if (statusMessage) {
                 delete [] statusMessage;
             }
-        }         
-        
+        }
+
         else if (strcmp(name, ADD) == 0 ||
             strcmp(name, REPLACE) == 0 ||
             strcmp(name, DEL) == 0) {
@@ -269,12 +269,12 @@ int SyncMLProcessor::processItemStatus(SyncSource& source, SyncBody* syncBody) {
                         if (cd) {
                             statusMessage = toWideChar(cd->getData());
                         }
-                        
+
                         // Fire Sync Status Event: item status from server
                         fireSyncStatusEvent(s->getCmd(), s->getStatusCode(), source.getConfig().getName(), source.getConfig().getURI(), uri, SERVER_STATUS);
                         // Update SyncReport
                         source.getReport()->addItem(SERVER, s->getCmd(), uri, s->getStatusCode(), statusMessage);
-                        
+
                         source.setItemStatus(uri, val);
                         delete [] uri;
                         if (statusMessage)
@@ -304,7 +304,7 @@ int SyncMLProcessor::processItemStatus(SyncSource& source, SyncBody* syncBody) {
         }
     }
 
-    deleteArrayList(&list);    
+    deleteArrayList(&list);
     return ret;
 }
 
@@ -315,11 +315,11 @@ int SyncMLProcessor::processItemStatus(SyncSource& source, SyncBody* syncBody) {
  * @param msg the response from the server
  */
 
-Sync* SyncMLProcessor::processSyncResponse(SyncSource& source, SyncML* syncml) {    
-    
-    int iterator = 0, ret = 0;    
-    
-    AbstractCommand* a  = NULL;           
+Sync* SyncMLProcessor::processSyncResponse(SyncSource& source, SyncML* syncml) {
+
+    int iterator = 0, ret = 0;
+
+    AbstractCommand* a  = NULL;
     Sync* sync          = NULL;
 
     ret = getStatusCode(syncml->getSyncBody(), &source, SYNC_HDR);
@@ -327,29 +327,29 @@ Sync* SyncMLProcessor::processSyncResponse(SyncSource& source, SyncML* syncml) {
         goto finally;
     }
 
-    while((a = getCommand(syncml->getSyncBody(), SYNC, iterator)) != NULL){  
+    while((a = getCommand(syncml->getSyncBody(), SYNC, iterator)) != NULL){
         sync = (Sync*)a;
         const char *locuri = ((Target*)(sync->getTarget()))->getLocURI();
-        if (strcmp(locuri, _wcc(source.getName())) == 0) {                   
-            
+        if (strcmp(locuri, _wcc(source.getName())) == 0) {
+
             //
             // To handle the NumberOfChanges. The default is -1 that means the server doesn't send
             // any tag <NumberOfChanges>. Whit value >= 0 the value is correct
             //
-    
+
             long noc = sync->getNumberOfChanges();
             fireSyncSourceEvent(source.getConfig().getURI(), source.getConfig().getName(), source.getSyncMode(), noc, SYNC_SOURCE_TOTAL_SERVER_ITEMS);
 
             break;
-        }  
+        }
         sync = NULL;
         iterator++;
     }
-        
+
 finally:
-    
+
     return sync;
- 
+
 }
 
 /*
@@ -373,7 +373,7 @@ int SyncMLProcessor::processMapResponse(SyncSource& source, SyncBody* syncBody) 
     ret = getStatusCode(syncBody, &source, SYNC_HDR);
 
     // Fire Sync Status Event: map status from server (TBD)
-    //fireSyncStatusEvent(MAP, ret, source.getConfig().getURI(), NULL, SERVER_STATUS); 
+    //fireSyncStatusEvent(MAP, ret, source.getConfig().getURI(), NULL, SERVER_STATUS);
 
     if ((ret < 200) || (ret >299)) {
         goto finally;
@@ -394,22 +394,22 @@ finally:
  * @param SyncHdr - the SyncHdr object - NOT NULL
  */
 const char* SyncMLProcessor::getRespURI(SyncHdr* syncHdr) {
-    
+
     char* respURI = NULL;
-    
+
     if (syncHdr == NULL) {
         goto finally;
     }
     respURI = stringdup(syncHdr->getRespURI());
-    
+
 finally:
 
     return respURI;
 }
 
 
-Chal* SyncMLProcessor::getChal(SyncBody* syncBody) {    
-    
+Chal* SyncMLProcessor::getChal(SyncBody* syncBody) {
+
     ArrayList* list = syncBody->getCommands();
     const char* name = NULL;
     Status* s     = NULL;
@@ -425,37 +425,37 @@ Chal* SyncMLProcessor::getChal(SyncBody* syncBody) {
                     sprintf(lastErrorMsg, "Status/CmdRef either not found or not referring to SyncHeader!");
                     lastErrorCode = ERR_REPRESENTATION;
                     goto finally;
-                }      
-                
+                }
+
                 chal = s->getChal();
                 if (chal == NULL) {
                     //
                     // no chal found
                     //
                     goto finally;
-                }                
+                }
                 break;
-            }                                 
-        }    
-    }    
-   
+            }
+        }
+    }
+
 finally:
-   
+
     return chal;
-} 
+}
 
 /*
-* Return an array list of commands of the given command name. It return an ArrayList that have to be 
+* Return an array list of commands of the given command name. It return an ArrayList that have to be
 * discarded by the caller
 */
 ArrayList* SyncMLProcessor::getCommands(SyncBody* syncBody, const char*commandName) {
-        
+
     ArrayList* ret = new ArrayList();
     AbstractCommand* a = NULL;
 
-    for (int i = 0; i < syncBody->getCommands()->size(); i++) {    
+    for (int i = 0; i < syncBody->getCommands()->size(); i++) {
         a = getCommand(syncBody, commandName, i);
-        if (a) 
+        if (a)
             ret->add(*a);
     }
     return ret;
@@ -468,19 +468,19 @@ ArrayList* SyncMLProcessor::getCommands(SyncBody* syncBody, const char*commandNa
 * 0-based.
 */
 ArrayElement* SyncMLProcessor::getArrayElement(ArrayList* list, int index) {
-    
+
     if (list == NULL)
         return NULL;
 
-    ArrayElement* a     = NULL;    
+    ArrayElement* a     = NULL;
     int count           = 0;
-    for (int i = 0; i < list->size(); i++) {               
+    for (int i = 0; i < list->size(); i++) {
             if (count == index) {
                 a = list->get(i);
                 break;
-            }        
-            ++ count;         
-    }   
+            }
+            ++ count;
+    }
     return a;
 }
 
@@ -489,7 +489,7 @@ ArrayElement* SyncMLProcessor::getArrayElement(ArrayList* list, int index) {
 * The first command has number 0.
 */
 AbstractCommand* SyncMLProcessor::getCommand(SyncBody* syncBody, const char*commandName, int index) {
-      
+
     int iterator = 0, found = 0;
     ArrayList* list     = syncBody->getCommands();
     int l = list->size();
@@ -499,23 +499,23 @@ AbstractCommand* SyncMLProcessor::getCommand(SyncBody* syncBody, const char*comm
         a = (AbstractCommand*)getArrayElement(list, iterator);
         if (a) {
             name = a->getName();    // is returned the pointer to the element not a new element
-            if (name && strcmp(name, commandName) == 0) {                       
+            if (name && strcmp(name, commandName) == 0) {
                 if (found == index)
                     break;
                 else
                     found++;
-            }    
-        }        
+            }
+        }
         ++iterator;
     } while(a);
-    
+
     return a;
 }
 
 
-int SyncMLProcessor::getStatusCode(SyncBody* syncBody, SyncSource* source, const char*commandName) {    
+int SyncMLProcessor::getStatusCode(SyncBody* syncBody, SyncSource* source, const char*commandName) {
     int ret = -1;
-    
+
     ArrayList* list = syncBody->getCommands();
     const char* name = NULL;
     Status* s     = NULL;
@@ -530,12 +530,12 @@ int SyncMLProcessor::getStatusCode(SyncBody* syncBody, SyncSource* source, const
                     ret = getSyncHeaderStatusCode(s);
                 } else if (strcmp(commandName, ALERT) == 0) {
                     ret = getAlertStatusCode(s, (char*)source->getName());
-                }    
+                }
                 break;
-            }                                 
-        }    
-    }    
-   
+            }
+        }
+    }
+
     return ret;
 
 }
@@ -547,11 +547,11 @@ int SyncMLProcessor::getStatusCode(SyncBody* syncBody, SyncSource* source, const
  * @param syncBody - the SyncBody content
  */
 int SyncMLProcessor::getSyncHeaderStatusCode(Status* s) {
-    
-    int ret = -1;    
+
+    int ret = -1;
     Data* data    = NULL;
-   
-    if (s == NULL) 
+
+    if (s == NULL)
         goto finally;
 
     if (strcmp(s->getCmdRef(), "0") != 0) {
@@ -559,8 +559,8 @@ int SyncMLProcessor::getSyncHeaderStatusCode(Status* s) {
         sprintf(lastErrorMsg, "Status/CmdRef either not found or not referring to SyncHeader!");
         lastErrorCode = ERR_REPRESENTATION;
         goto finally;
-    }                
-    
+    }
+
     data = s->getData();
     if (data->getData() == NULL) {
          //
@@ -570,13 +570,13 @@ int SyncMLProcessor::getSyncHeaderStatusCode(Status* s) {
         lastErrorCode = ERR_REPRESENTATION;
         goto finally;
     }
-    ret = strtol(data->getData() , NULL, 10);    
-                                
+    ret = strtol(data->getData() , NULL, 10);
+
 
 finally:
-   
+
     return ret;
-} 
+}
 
 /*
  * Returns the status code for the Alert relative to the given source.
@@ -593,8 +593,8 @@ int SyncMLProcessor::getAlertStatusCode(Status* s, const char* sourceName) {
 
     Data* data = NULL;
     ArrayList* sourceRefs = s->getSourceRef();
- 
-    if (strcmp(((SourceRef*)(sourceRefs->get(0)))->getValue(), sourceName) == 0) {                    
+
+    if (strcmp(((SourceRef*)(sourceRefs->get(0)))->getValue(), sourceName) == 0) {
         data = s->getData();
         if (data->getData() == NULL) {
             //
@@ -604,10 +604,10 @@ int SyncMLProcessor::getAlertStatusCode(Status* s, const char* sourceName) {
             lastErrorCode = ERR_REPRESENTATION;
             return ret;
         }
-        ret = strtol(data->getData(), NULL, 10);        
-    }   
+        ret = strtol(data->getData(), NULL, 10);
+    }
 
-    return ret;   
+    return ret;
 }
 
 /*
@@ -617,15 +617,15 @@ int SyncMLProcessor::getAlertStatusCode(Status* s, const char* sourceName) {
  * @param msg the response from the server
  */
 
-Sync* SyncMLProcessor::getSyncResponse(SyncML* syncml, int index) {    
-            
-    AbstractCommand* a  = NULL;           
-    Sync* sync          = NULL;   
+Sync* SyncMLProcessor::getSyncResponse(SyncML* syncml, int index) {
+
+    AbstractCommand* a  = NULL;
+    Sync* sync          = NULL;
 
     a = getCommand(syncml->getSyncBody(), SYNC, index);
     sync = (Sync*)a;
-                               
+
     return sync;
- 
+
 }
 

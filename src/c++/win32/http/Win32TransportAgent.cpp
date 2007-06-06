@@ -1,19 +1,19 @@
 /*
- * Copyright (C) 2003-2007 Funambol
+ * Copyright (C) 2003-2007 Funambol, Inc.
  *
  * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
+ * it under the terms of the GNU General Public License version 2 as
+ * published by the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY, TITLE, NONINFRINGEMENT or FITNESS FOR A PARTICULAR
+ * PURPOSE.  See the GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ * 02111-1307  USA
  */
 
 /**
@@ -31,7 +31,7 @@
       <Factory className="org.apache.catalina.net.SSLServerSocketFactory" clientAuth="false" protocol="TLS"/>
     </Connector>
  2) Export the certificate from the key store:
-    %JAVA_HOME%\bin\keytool -export -alias tomcat -file myroot.cer  
+    %JAVA_HOME%\bin\keytool -export -alias tomcat -file myroot.cer
 
  On the client:
  1) Connect (via https) to the server using a web-browser (type "https://<server_address>:8443)
@@ -63,7 +63,7 @@
  * @param proxy proxy information or NULL if no proxy should be used
  */
 Win32TransportAgent::Win32TransportAgent(URL& newURL, Proxy& newProxy,
-                                         unsigned int maxResponseTimeout, 
+                                         unsigned int maxResponseTimeout,
                                          unsigned int maxmsgsize) : TransportAgent(){
      url = newURL;
      proxy.setProxy(newProxy);
@@ -121,13 +121,13 @@ char* Win32TransportAgent::sendMessage(const char* msg) {
 
     DWORD size  = 0,
           read  = 0,
-          flags = INTERNET_FLAG_RELOAD | 
-                  INTERNET_FLAG_NO_CACHE_WRITE | 
+          flags = INTERNET_FLAG_RELOAD |
+                  INTERNET_FLAG_NO_CACHE_WRITE |
                   INTERNET_FLAG_KEEP_CONNECTION |           // This is necessary if authentication is required.
                   INTERNET_FLAG_NO_COOKIES;                 // This is used to avoid possible server errors on successive sessions.
 
 	LPCWSTR acceptTypes[2] = {TEXT("*/*"), NULL};
-    
+
 
     // Set flags for secure connection (https).
     if (url.isSecure()) {
@@ -153,7 +153,7 @@ char* Win32TransportAgent::sendMessage(const char* msg) {
         sprintf (lastErrorMsg, "InternetOpen Error: %d - %s", code, tmp);
 		delete [] tmp;
         goto exit;
-    }   
+    }
     LOG.debug("Connecting to %s:%d", url.host, url.port);
 
 
@@ -214,11 +214,11 @@ char* Win32TransportAgent::sendMessage(const char* msg) {
     //
     // Say the client can accept the zipped content but the first message is clear
     //
-    if (isFirstMessage || !isToDeflate) { 
+    if (isFirstMessage || !isToDeflate) {
         wsprintf(headers, TEXT("Content-Type: %s\r\nContent-Length: %d\r\nAccept-Encoding: deflate"),
-                          SYNCML_CONTENT_TYPE, contentLength);    
+                          SYNCML_CONTENT_TYPE, contentLength);
         isFirstMessage = false;
-    } 
+    }
     else if (isToDeflate) {
         //
         // DEFLATE (compress data)
@@ -234,7 +234,7 @@ char* Win32TransportAgent::sendMessage(const char* msg) {
             delete [] compr;
             compr = NULL;
             goto exit;
-        }            
+        }
 
         // Msg to send is the compressed data.
         msgToSend = (void*)compr;
@@ -242,7 +242,7 @@ char* Win32TransportAgent::sendMessage(const char* msg) {
         contentLength = comprLen;
 
         wsprintf(headers, TEXT("Content-Type: %s\r\nContent-Length: %d\r\nAccept-Encoding: deflate\r\nUncompressed-Content-Length: %d\r\nContent-Encoding: deflate"),
-                          SYNCML_CONTENT_TYPE, contentLength, uncomprLenght);                                    
+                          SYNCML_CONTENT_TYPE, contentLength, uncomprLenght);
     }
 #endif
 
@@ -337,7 +337,7 @@ char* Win32TransportAgent::sendMessage(const char* msg) {
                 status == HTTP_STATUS_DENIED) {
             LOG.debug("HTTP Authentication required.");
             DWORD dwError;
-            
+
             // Automatic authentication (user/pass stored in win reg key).
             if (strcmp(proxy.user, "") && strcmp(proxy.password, "")) {
                 WCHAR* wUser = toWideChar(proxy.user);
@@ -353,13 +353,13 @@ char* Win32TransportAgent::sendMessage(const char* msg) {
 
             // Prompt dialog box.
             else {
-                dwError = InternetErrorDlg(GetDesktopWindow(), request, NULL, 
-                                           FLAGS_ERROR_UI_FILTER_FOR_ERRORS | 
+                dwError = InternetErrorDlg(GetDesktopWindow(), request, NULL,
+                                           FLAGS_ERROR_UI_FILTER_FOR_ERRORS |
                                            FLAGS_ERROR_UI_FLAGS_CHANGE_OPTIONS |
                                            FLAGS_ERROR_UI_FLAGS_GENERATE_DATA,
                                            NULL);
             }
-            
+
             if (dwError == ERROR_INTERNET_FORCE_RETRY) {
                 continue;
             }
@@ -368,7 +368,7 @@ char* Win32TransportAgent::sendMessage(const char* msg) {
                 break;
             }
         }
-        
+
         //
         // Other HTTP errors -> OUT
         //
@@ -407,7 +407,7 @@ char* Win32TransportAgent::sendMessage(const char* msg) {
 
 
 
-#ifdef USE_ZLIB 
+#ifdef USE_ZLIB
 
     if (compr) {
         // Delete the compressed message sent.
@@ -428,20 +428,20 @@ char* Win32TransportAgent::sendMessage(const char* msg) {
     }
     LOG.debug("Header: %ls", wbuffer);
     delete [] wbuffer; wbuffer = NULL;
-           
+
     // isToDeflate to be set
     DWORD dwSize = 512;
-    wchar_t* buffer = new wchar_t[dwSize];     
+    wchar_t* buffer = new wchar_t[dwSize];
     memset(buffer, 0, dwSize*sizeof(wchar_t));
-                   
+
     wcscpy(buffer, TEXT("Accept-Encoding"));
     HttpQueryInfo(request, HTTP_QUERY_CUSTOM, (LPVOID)buffer, &dwSize, NULL);
     if (ERROR_HTTP_HEADER_NOT_FOUND == GetLastError()) {
         isToDeflate = FALSE;
     } else {
         isToDeflate = TRUE;
-    }	
-    
+    }
+
     memset(buffer, 0, dwSize*sizeof(wchar_t));
     wcscpy(buffer, TEXT("Content-Encoding"));
     HttpQueryInfo(request, HTTP_QUERY_CUSTOM, (LPVOID)buffer, &dwSize, NULL);
@@ -462,7 +462,7 @@ char* Win32TransportAgent::sendMessage(const char* msg) {
         isToInflate = FALSE;
     } else {
         uncompressedContentLenght = wcstol(buffer, NULL, 10);
-    }	        	
+    }
 
     delete [] buffer;
     buffer = NULL;
@@ -474,7 +474,7 @@ char* Win32TransportAgent::sendMessage(const char* msg) {
 //
     LOG.debug(READING_RESPONSE);
     LOG.debug("Content-length: %d", contentLength);
-	
+
     if (contentLength <= 0) {
         LOG.debug("Undefined content-length = %d. Using the maxMsgSize = %d.", contentLength, maxmsgsize);
         contentLength = maxmsgsize;
@@ -543,7 +543,7 @@ char* Win32TransportAgent::sendMessage(const char* msg) {
         // INFLATE (decompress data)
         //
         uLong uncomprLen = uncompressedContentLenght;
-        Bytef* uncompr = new Bytef[uncomprLen + 1];        
+        Bytef* uncompr = new Bytef[uncomprLen + 1];
 
         // Decompresses the source buffer into the destination buffer.
         int err = uncompress(uncompr, &uncomprLen, (Bytef*)response, contentLength);
@@ -552,7 +552,7 @@ char* Win32TransportAgent::sendMessage(const char* msg) {
             delete [] response;
             response = (char*)uncompr;
             response[uncompressedContentLenght] = 0;
-        }   
+        }
         else if (err < 0) {
             delete [] response;
             response = NULL;
@@ -595,7 +595,7 @@ exit:
  * Pointer returned is allocated new, must be freed by caller.
  */
 char* Win32TransportAgent::createHttpErrorMessage(DWORD errorCode) {
-    
+
     char* errorMessage = new char[512];
     memset(errorMessage, 0, 512);
 
@@ -604,8 +604,8 @@ char* Win32TransportAgent::createHttpErrorMessage(DWORD errorCode) {
                 GetModuleHandleA("wininet.dll"),
                 errorCode,
                 MAKELANGID(LANG_NEUTRAL, SUBLANG_SYS_DEFAULT),
-                errorMessage, 
-                512, 
+                errorMessage,
+                512,
                 NULL);
 
     if (!errorMessage || strlen(errorMessage) == 0) {

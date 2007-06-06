@@ -1,19 +1,19 @@
 /*
- * Copyright (C) 2003-2007 Funambol
+ * Copyright (C) 2003-2007 Funambol, Inc.
  *
  * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
+ * it under the terms of the GNU General Public License version 2 as
+ * published by the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY, TITLE, NONINFRINGEMENT or FITNESS FOR A PARTICULAR
+ * PURPOSE.  See the GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ * 02111-1307  USA
  */
 
 #include "base/fscapi.h"
@@ -49,8 +49,8 @@ DeviceManagementNode::~DeviceManagementNode()
  * @param property - the property name
  */
 char* DeviceManagementNode::readPropertyValue(const char*  prop) {
-    HKEY key = NULL;    
-    DWORD res;	
+    HKEY key = NULL;
+    DWORD res;
     long err = 0;
     char *ret=NULL;
     TCHAR *p = toWideChar(prop);
@@ -103,7 +103,7 @@ char* DeviceManagementNode::readPropertyValue(const char*  prop) {
     }
     //else MessageBox(NULL,  "Error", "getConfigParameter", MB_OK);
 
-    if (!ret) 
+    if (!ret)
         ret = stringdup("");
 
 finally:
@@ -153,7 +153,7 @@ finally:
 
 
 /*
- * Returns the children's name of the parent node. 
+ * Returns the children's name of the parent node.
  *
  * @param children - the buffer where ManagementNode* must be stored
  * @param size - the size of the children buffer (number of ManagementNode*) in
@@ -239,7 +239,7 @@ void DeviceManagementNode::setPropertyValue(const char*  prop, const char*  valu
     DWORD res;
     TCHAR *p = NULL;
     TCHAR *v = NULL;
-    
+
     RegCreateKeyEx(
             HKEY_LOCAL_MACHINE,
             fullContext,
@@ -307,7 +307,7 @@ static WCHAR *toWindows(const char*  str) {
     return ret;
 }
 
-void DeviceManagementNode::setFullContext() { 
+void DeviceManagementNode::setFullContext() {
     int len = strlen(context)+strlen(name)+1;
     char *ctx;
     const char swkey[] = "/Software";
@@ -334,13 +334,13 @@ void DeviceManagementNode::setFullContext() {
  */
 ArrayElement* DeviceManagementNode::clone() {
 	DeviceManagementNode* ret = new DeviceManagementNode(context, name);
-	
+
 	int n = children.size();
-	
+
 	for (int i = 0; i<n; ++i) {
 		ret->addChild(*((ManagementNode*)children[i]));
 	}
-	
+
 	return ret;
 }
 

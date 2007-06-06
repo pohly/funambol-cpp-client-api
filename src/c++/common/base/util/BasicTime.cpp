@@ -1,19 +1,19 @@
 /*
- * Copyright (C) 2003-2007 Funambol
+ * Copyright (C) 2003-2007 Funambol, Inc.
  *
  * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
+ * it under the terms of the GNU General Public License version 2 as
+ * published by the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY, TITLE, NONINFRINGEMENT or FITNESS FOR A PARTICULAR
+ * PURPOSE.  See the GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ * 02111-1307  USA
  */
 
 #include <base/test.h>
@@ -99,8 +99,8 @@ int BasicTime::parseRfc822(const char *date)
 	char dayOfWeek[6] = "---,";
 	char mon[4] = "---";
 	char time[10] = "00:00:00";
-	char timeZone[20] = "GMT";    
-    
+	char timeZone[20] = "GMT";
+
     // Wed Feb 01 14:40:45 Europe/Amsterdam 2006
 	// do we have day of week?
     const char *pdate = strstr( date, "," );
@@ -202,7 +202,7 @@ int BasicTime::parseRfc822(const char *date)
 
 /*
 * The function return if the argument passed is a date in a format
-* we are searching. To decide it the date must contain the month, a space 
+* we are searching. To decide it the date must contain the month, a space
 * and the millennium
 *
 * Mar 2007, Jun 2007. We search Mar 2, Jun 2.
@@ -214,8 +214,8 @@ bool BasicTime::isADate(const char* date) {
         "Jan 2", "Feb 2", "Mar 2", "Apr 2",
         "May 2", "Jun 2", "Jul 2", "Aug 2",
         "Sep 2", "Oct 2", "Nov 2", "Dec 2"
-    };      
-    
+    };
+
     const char *months1000[] = {
         "Jan 1", "Feb 1", "Mar 1", "Apr 1",
         "May 1", "Jun 1", "Jul 1", "Aug 1",
@@ -271,7 +271,7 @@ BasicTime& BasicTime::operator=(const BasicTime& o) {
     sec = o.sec;
     tzHour = o.tzHour;
     tzMin = o.tzMin;
-    
+
     return *this;
 }
 
@@ -322,7 +322,7 @@ protected:
         copy = millenium;
         CPPUNIT_ASSERT(millenium == copy);
     }
-    
+
     void testConversion() {
         buffer = millenium.formatRfc822();
 

@@ -1,19 +1,19 @@
 /*
- * Copyright (C) 2003-2007 Funambol
+ * Copyright (C) 2003-2007 Funambol, Inc.
  *
  * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
+ * it under the terms of the GNU General Public License version 2 as
+ * published by the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY, TITLE, NONINFRINGEMENT or FITNESS FOR A PARTICULAR
+ * PURPOSE.  See the GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ * 02111-1307  USA
  */
 
 #include "client/FILEClient.h"
@@ -32,14 +32,14 @@ int main(int argc, char** argv) {
     Log(0, LOG_PATH, LOG_NAME);
 	LOG.reset(LOG_TITLE);
     LOG.setLevel(LOG_LEVEL);
-    
+
     //
     // Create the configuration.
     //
-    DMTClientConfig config(APPLICATION_URI); 
+    DMTClientConfig config(APPLICATION_URI);
 
     // Read config from registry.
-    if (!config.read() || 
+    if (!config.read() ||
         strcmp(config.getDeviceConfig().getSwv(), SW_VERSION)) {
         // generate a default config
         createConfig(config);
@@ -74,7 +74,7 @@ int main(int argc, char** argv) {
     // Save config to registry.
     config.save();
 
-    
+
     if (dir)
         delete [] dir;
 

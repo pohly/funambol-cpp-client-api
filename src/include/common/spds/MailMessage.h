@@ -1,19 +1,19 @@
 /*
- * Copyright (C) 2003-2007 Funambol
+ * Copyright (C) 2003-2007 Funambol, Inc
  *
  * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
+ * it under the terms of the GNU General Public License version 2 as
+ * published by the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY, TITLE, NONINFRINGEMENT or FITNESS FOR A PARTICULAR
+ * PURPOSE.  See the GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ * 02111-1307  USA
  */
 #ifndef INCL_MAIL_MESSAGE
     #define INCL_MAIL_MESSAGE
@@ -29,14 +29,14 @@
  * it in RFC2822/MIME encoding.
  * Some of the RFC2822 headers are handles as clas fields (To,
  * From, etc.), the others are inserted literally in the headers
- * arraylist. Any string put in this list is inserted in the 
+ * arraylist. Any string put in this list is inserted in the
  * header section of an outgoing message.
  */
 
 class MailMessage : public ArrayElement {
 
     private:
-        // Used to store the newline format used in the incoming message 
+        // Used to store the newline format used in the incoming message
         StringBuffer newline;
 
         //---------------------------------------- Message Headers
@@ -56,7 +56,7 @@ class MailMessage : public ArrayElement {
         StringBuffer messageId;
 
         ArrayList headers;
-        
+
 		// can be used by the client to store an internal msg id
 		StringBuffer entryId;
         //
@@ -86,10 +86,10 @@ class MailMessage : public ArrayElement {
 
         const char *getSubject() const ;
         void setSubject(const char *subj);
-		
+
         const BasicTime& getDate() const ;
         void setDate(const BasicTime& d);
-		
+
         const BasicTime& getReceived() const ;
 
         const char * getContentType() const ;
@@ -100,14 +100,14 @@ class MailMessage : public ArrayElement {
 
         const char * getMimeVersion() const ;
         void setMimeVersion(const char *val);
-        
+
         const char * getMessageId() const ;
         void setMessageId(const char *val);
-        
+
 		const char*  getEntryID();
 		void setEntryID(const char*  id);
 
-        void setHeaders(const char*  extraHeaders); 
+        void setHeaders(const char*  extraHeaders);
         const char* getHeaders();
 
         // Body
@@ -115,7 +115,7 @@ class MailMessage : public ArrayElement {
 		void setBody(BodyPart &body);
         //BodyPart * getAlternate();
         //void setAlternate(BodyPart &alt);
-		
+
         // Attachment
         BodyPart * getFirstAttachment() ;
         BodyPart * getNextAttachment() ;

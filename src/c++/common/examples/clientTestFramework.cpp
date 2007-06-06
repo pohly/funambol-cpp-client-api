@@ -1,19 +1,19 @@
 /*
- * Copyright (C) 2003-2007 Funambol
+ * Copyright (C) 2003-2007 Funambol, Inc.
  *
  * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
+ * it under the terms of the GNU General Public License version 2 as
+ * published by the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY, TITLE, NONINFRINGEMENT or FITNESS FOR A PARTICULAR
+ * PURPOSE.  See the GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ * 02111-1307  USA
  */
 
 #include "base/fscapi.h"
@@ -30,7 +30,7 @@
 
 WCHAR* readContentFromFile(WCHAR* path) {
 
-	WCHAR wfilename [256];    
+	WCHAR wfilename [256];
 
     int position = 0;
     int len = 0;
@@ -38,40 +38,40 @@ WCHAR* readContentFromFile(WCHAR* path) {
 	HANDLE file;
     DWORD lpFileSizeHigh;
     DWORD dwSize;
-  
+
 	WCHAR line[2048];
 	FILE* f;
 	WCHAR* ptr = NULL;
-       
-	
+
+
     file = CreateFile(wfilename, GENERIC_READ, FILE_SHARE_READ | FILE_SHARE_WRITE,
                               NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
 
-    
+
     if( file ) {
-        dwSize = GetFileSize(file, &lpFileSizeHigh);    
+        dwSize = GetFileSize(file, &lpFileSizeHigh);
         ptr = new WCHAR[dwSize + 1];
         wmemset(ptr, 0, dwSize);
     } else {
-        
+
         goto finally;
     }
-    
+
     CloseHandle(file);
 
     f = _wfopen(path, TEXT("r"));
-    
-    if (f == NULL) {        
+
+    if (f == NULL) {
         goto finally;
     }
-   
+
     while(fgetws(line, 2048, f) != NULL) {
-        
+
         len = wcslen(line);
         wcsncpy(&ptr[position], line, len);
-       
-        position = position + len;	   
-        
+
+        position = position + len;
+
     }
 
     fflush(f);
@@ -79,24 +79,24 @@ WCHAR* readContentFromFile(WCHAR* path) {
 
 finally:
 
-    return ptr;        
+    return ptr;
 
 }
 
 
 
 void writeTextToTextFile(WCHAR* fName, WCHAR* text) {
-    
+
     FILE* f;
-	   
+
 	f = _wfopen(fName, TEXT("w"));
-	
+
     if( f != NULL ) {
-       fwprintf(f, text); 
+       fwprintf(f, text);
     } else {
        MessageBox(NULL, TEXT("Error in write file"), TEXT("writeTextToTextFile"), MB_OK);
     }
-   
+
 	fflush(f);
 	fclose(f);
 
@@ -108,15 +108,15 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLin
 #else
 int main(int argc, char** argv) {
 #endif
-    
+
     WCHAR* xml = readContentFromFile(TEXT("sourceSync.txt"));
-      
+
     SyncML* syncML = NULL;
- 
-    syncML = Parser::getSyncML(xml); 
+
+    syncML = Parser::getSyncML(xml);
     StringBuffer* s = Formatter::getSyncML(syncML);
     writeTextToTextFile(TEXT("sourceSyncReversed.txt"), s->getChars());
-         
+
     return 0;
  }
 

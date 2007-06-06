@@ -1,19 +1,19 @@
 /*
- * Copyright (C) 2003-2007 Funambol
+ * Copyright (C) 2003-2007 Funambol, Inc.
  *
  * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
+ * it under the terms of the GNU General Public License version 2 as
+ * published by the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY, TITLE, NONINFRINGEMENT or FITNESS FOR A PARTICULAR
+ * PURPOSE.  See the GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ * 02111-1307  USA
  */
 
 
@@ -60,7 +60,7 @@ int SyncClient::sync(SyncManagerConfig& config, SyncSource** sources) {
         SyncSourceReport *ssr = syncReport.getSyncSourceReport(name);
         ssr->setState(SOURCE_ACTIVE);
         sources[i]->setReport(ssr);
-        
+
         delete[] name;
         i++;
     }
@@ -71,14 +71,14 @@ int SyncClient::sync(SyncManagerConfig& config, SyncSource** sources) {
         LOG.error("Error in preparing sync: %s", lastErrorMsg);
         goto finally;
     }
-    
+
     ret = continueAfterPrepareSync();
     if (ret) {
         LOG.error("SyncClient: continueAfterPrepareSync returns error code: %d.", ret);
         goto finally;
     }
 
-    if ((ret = syncManager.sync())) {   
+    if ((ret = syncManager.sync())) {
         LOG.error("Error in syncing: %s", lastErrorMsg);
         goto finally;
     }
@@ -89,13 +89,13 @@ int SyncClient::sync(SyncManagerConfig& config, SyncSource** sources) {
         goto finally;
     }
 
-    if ((ret = syncManager.endSync())) {       
+    if ((ret = syncManager.endSync())) {
         LOG.error("Error in ending sync: %s", lastErrorMsg);
         goto finally;
     }
-       
+
 finally:
-    
+
     // Update SyncReport with last error from sync
     syncReport.setLastErrorCode(lastErrorCode);
     syncReport.setLastErrorMsg(lastErrorMsg);
@@ -106,7 +106,7 @@ finally:
 
 /*
  * Start the sync process.
- * SyncSources are managed (created, initialized, deleted) inside 
+ * SyncSources are managed (created, initialized, deleted) inside
  * this method. When SyncSource array is ready, the method 'sync(sources**)'
  * is called to start the sync process.
  *
@@ -145,7 +145,7 @@ int SyncClient::sync(SyncManagerConfig& config, char** sourceNames) {
     // iterate over all configs and add those which the client
     // wants to have synchronized
     while (currSource < numSources) {
-        
+
         // use only sources indicated in 'sourceNames' param
         if (sourceNames) {
             currName = sourceNames[currSource];

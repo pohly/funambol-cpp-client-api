@@ -1,19 +1,19 @@
 /*
- * Copyright (C) 2003-2007 Funambol
+ * Copyright (C) 2003-2007 Funambol, Inc.
  *
  * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
+ * it under the terms of the GNU General Public License version 2 as
+ * published by the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY, TITLE, NONINFRINGEMENT or FITNESS FOR A PARTICULAR
+ * PURPOSE.  See the GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ * 02111-1307  USA
  */
 
 
@@ -23,39 +23,39 @@
 
 #include <objbase.h>
 #include <initguid.h>
-#include <connmgr.h>   
-#include <wininet.h>   
+#include <connmgr.h>
+#include <wininet.h>
 
 #include "http/GPRSConnection.h"
 #include "base/Log.h"
 
 
 /*
-* Method to test if connection is alive. If no one is found, it tries to establish 
-* default connection. 
+* Method to test if connection is alive. If no one is found, it tries to establish
+* default connection.
 */
 
 BOOL EstablishConnection() {
-    
-    HANDLE  phWebConnection = NULL;    
-    
+
+    HANDLE  phWebConnection = NULL;
+
     // First we check if we might have a connection
     DWORD  pdwStatus = 0;
     LOG.info("Establish connection: test internet connection status...");
     ConnMgrConnectionStatus(phWebConnection, &pdwStatus);
-    
+
     if (pdwStatus == CONNMGR_STATUS_CONNECTED) {
         LOG.info("Arleady connected");
-        //We are already connected!        
+        //We are already connected!
         return TRUE;
     }
     else {
         LOG.debug("Not connected: try to connect...");
         //We are not connected, so lets try:
-        //The CONNECTIONINFO is the structure that 
+        //The CONNECTIONINFO is the structure that
         //tells Connection Manager how we want
         //to connect
-       
+
         CONNMGR_CONNECTIONINFO sConInfo;
         memset(&sConInfo,0, sizeof(CONNMGR_CONNECTIONINFO));
         sConInfo.cbSize = sizeof(CONNMGR_CONNECTIONINFO);
@@ -86,17 +86,17 @@ BOOL EstablishConnection() {
                     if (pdwStatus == CONNMGR_STATUS_CONNECTIONCANCELED || pdwStatus == CONNMGR_STATUS_WAITINGCONNECTIONABORT) {
                         LOG.debug("Internet connection not succeded.");
                         return FALSE;
-            
+
                     }
                     Sleep(2000);
-                    
+
                     ConnMgrConnectionStatus(phWebConnection,&pdwStatus);
                     if (pdwStatus == CONNMGR_STATUS_WAITINGCONNECTION) {
                         // it is possible to do something...
                     }
-                    
+
                     if (pdwStatus == CONNMGR_STATUS_CONNECTIONCANCELED || pdwStatus == CONNMGR_STATUS_WAITINGCONNECTIONABORT) {
-                        LOG.debug("Internet connection not succeded");   
+                        LOG.debug("Internet connection not succeded");
                         return FALSE;
                     }
                 }
@@ -108,9 +108,9 @@ BOOL EstablishConnection() {
             //Connection failed!
             LOG.info("Internet connection failed.");
             return FALSE;
-           
+
         }
 
     }
-    
+
 }

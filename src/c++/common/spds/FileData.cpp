@@ -1,20 +1,19 @@
-/**
- * Copyright (C) 2003-2007 Funambol
+/*
+ * Copyright (C) 2003-2007 Funambol, Inc.
  *
  * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
+ * it under the terms of the GNU General Public License version 2 as
+ * published by the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY, TITLE, NONINFRINGEMENT or FITNESS FOR A PARTICULAR
+ * PURPOSE.  See the GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston,
- * MA 02111-1307 USA
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ * 02111-1307  USA
  */
 
 #include "base/fscapi.h"
@@ -27,7 +26,7 @@
 
 #define FILE_ITEM       TEXT("File")
 #define FILE_HIDDEN     "h"
-#define FILE_SYSTEM     "s" 
+#define FILE_SYSTEM     "s"
 #define FILE_ARCHIVED   "a"
 #define FILE_DELETE     "d"
 #define FILE_WRITABLE   "w"
@@ -67,15 +66,15 @@ FileData::FileData()
 FileData::~FileData()
 {
     accessed.reset();
-    attributes.reset();    
+    attributes.reset();
     enc.reset();
     file.reset();
     modified.reset();
     name.reset();
     created.reset();
-    body.reset();    
+    body.reset();
     cttype.reset();
-            
+
 }
 
 int FileData::parse(const void *syncmlData, size_t len) {
@@ -94,7 +93,7 @@ int FileData::parse(const char *syncmlData, size_t len) {
 int FileData::parse(StringBuffer* s)
 {
     int ret = 0;
-    unsigned int start, end;        
+    unsigned int start, end;
     //StringBuffer* s = new StringBuffer(syncmlData, len);
     StringBuffer bodyattr;
 
@@ -102,7 +101,7 @@ int FileData::parse(StringBuffer* s)
     s->replaceAll("&lt;", "<");
     s->replaceAll("&gt;", ">");
     s->replaceAll("&amp;", "&");
-    
+
 	/*
     // Get the CDATA content
     if(XMLProcessor::getElementContent(s->c_str(), "CDATA", NULL, &start, &end) == 0) {
@@ -110,7 +109,7 @@ int FileData::parse(StringBuffer* s)
         return -1;
     }
     StringBuffer msg = s->substr(start, end-start);
-    
+
     delete s;
 	*/
 
@@ -138,7 +137,7 @@ int FileData::parse(StringBuffer* s)
         isArchivedPresent = true;
     }
     else archived = false;
-    
+
     if( XMLProcessor::getElementContent (msg, FILE_DELETE, NULL, &start, &end) ) {
         deleted = ( strncmp(msg.c_str()+start, "true", end-start) == 0 ) ;
         isDeletedPresent = true;
@@ -162,7 +161,7 @@ int FileData::parse(StringBuffer* s)
         isExecutablePresent = true;
     }
     else executable = false;
-    
+
     if( XMLProcessor::getElementContent (msg, FILE_ACCESSED, NULL, &start, &end) ) {
         accessed = msg.substr(start, end-start);
     }
@@ -198,7 +197,7 @@ int FileData::parse(StringBuffer* s)
             }
             else
             {
-                int repNo = enc.replaceAll(TEXT("\""),TEXT(""));                
+                int repNo = enc.replaceAll(TEXT("\""),TEXT(""));
             }
         }
         else
@@ -206,15 +205,15 @@ int FileData::parse(StringBuffer* s)
     }
     else
         enc = TEXT("");
-    
+
     if (!enc.empty() && (enc == TEXT("base64")))
     {
-        int len = b64_decode((void *)body.c_str(), body.c_str());        
+        int len = b64_decode((void *)body.c_str(), body.c_str());
     }
-    
+
     if (!enc.empty() && (enc == TEXT("quoted-printable")))
-    {        
-        body = qp_decode(body.c_str());        
+    {
+        body = qp_decode(body.c_str());
     }
 
 
@@ -222,9 +221,9 @@ int FileData::parse(StringBuffer* s)
         name = msg.substr(start, end-start);
     }
     else name = TEXT("");
-        
-	delete s; 
-        
+
+	delete s;
+
     return ret;
 }
 
@@ -237,22 +236,22 @@ void FileData::setBody(const char* v, int len)
     else
     {
         char*   base64    = NULL;
-        int     encodeLen = lengthForB64(len);             
+        int     encodeLen = lengthForB64(len);
         base64 = new char[encodeLen + 1];
-        memset(base64, 0, encodeLen + 1);           
-        b64_encode(base64, (char*)v, len);    
+        memset(base64, 0, encodeLen + 1);
+        b64_encode(base64, (char*)v, len);
         body = base64;
-        delete [] base64; 
+        delete [] base64;
     }
 }
 
 
 char* FileData::format() {
-    
+
     StringBuffer out;
 
     out.reserve(150);
-    
+
     out = "<File>\n";
     if (name.length() > 0)
         out += XMLProcessor::makeElement(FILE_NAME, _wcc(name));
@@ -278,19 +277,19 @@ char* FileData::format() {
     if (isReadablePresent)
         attributes += XMLProcessor::makeElement(FILE_READABLE, readable);
     if (isExecutablePresent)
-        attributes += XMLProcessor::makeElement(FILE_EXECUTABLE, executable);        
+        attributes += XMLProcessor::makeElement(FILE_EXECUTABLE, executable);
     if (!attributes.empty())
-        out += XMLProcessor::makeElement(FILE_ATTRIBUTES, attributes);    
+        out += XMLProcessor::makeElement(FILE_ATTRIBUTES, attributes);
 
     if (enc.empty()){
         int len = b64_decode((void*)body.c_str(), body.c_str());
         out += XMLProcessor::makeElement(FILE_BODY, body);
     }
     else
-    {   
+    {
         ArrayList attrList;
         KeyValuePair attr("enc", _wcc(enc.c_str()));
-        attrList.add(attr);           
+        attrList.add(attr);
         out += XMLProcessor::makeElement(FILE_BODY, body.c_str(), attrList);
     }
     if (size > 0)
@@ -300,7 +299,7 @@ char* FileData::format() {
 }
 
 int FileData::lengthForB64(int len) {
-    
+
     int modules = 0;
     int ret     = 0;
 

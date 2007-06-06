@@ -1,19 +1,19 @@
 /*
- * Copyright (C) 2003-2007 Funambol
+ * Copyright (C) 2003-2007 Funambol, Inc.
  *
  * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
+ * it under the terms of the GNU General Public License version 2 as
+ * published by the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY, TITLE, NONINFRINGEMENT or FITNESS FOR A PARTICULAR
+ * PURPOSE.  See the GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ * 02111-1307  USA
  */
 
 
@@ -129,7 +129,7 @@ void DeviceManagementNode::update(BOOL read) {
             fopen("config.txt.tmp", "w");
         if (read) {
             char buffer[512];
-        
+
             lines->clear();
             if (file) {
                 while (fgets(buffer, sizeof(buffer), file)) {
@@ -142,14 +142,14 @@ void DeviceManagementNode::update(BOOL read) {
         } else {
             if (file) {
                 int i = 0;
-    
+
                 while (TRUE) {
                     line *curr = (line *)lines->get(i);
                     if (!curr) {
                         break;
                     }
                     fprintf(file, "%s\n", curr->getLine());
-                
+
                     i++;
                 }
                 fflush(file);
@@ -175,7 +175,7 @@ static int strnicmp( const char *a, const char *b, int len ) {
     }
     return 0;
 }
-    
+
 
 /*
  * Returns the value of the given property
@@ -185,7 +185,7 @@ static int strnicmp( const char *a, const char *b, int len ) {
  */
 char* DeviceManagementNode::readPropertyValue(const char* property) {
     int i = 0;
-    
+
     while (TRUE) {
         line *curr = (line *)lines->get(i);
         if (!curr) {
@@ -214,13 +214,13 @@ char* DeviceManagementNode::readPropertyValue(const char* property) {
 
 int DeviceManagementNode::getChildrenMaxCount() {
     int count = 0;
-    
+
     if (gotoDir(TRUE)) {
         DIR *dir = opendir(".");
         if (dir) {
             struct dirent *entry;
             for (entry = readdir(dir); entry; entry = readdir(dir)) {
-                if (isNode(entry)) 
+                if (isNode(entry))
                     count++;
             }
             closedir(dir);
@@ -269,7 +269,7 @@ char **DeviceManagementNode::getChildrenNames() {
  */
 void DeviceManagementNode::setPropertyValue(const char* property, const char* newvalue) {
     int i = 0;
-    
+
     while (TRUE) {
         line *curr = (line *)lines->get(i);
         if (!curr) {
@@ -278,7 +278,7 @@ void DeviceManagementNode::setPropertyValue(const char* property, const char* ne
 
         const char *start = curr->getLine();
         const char *value = start;
-            
+
         while (*value && isspace(*value)) {
             value++;
         }
@@ -304,7 +304,7 @@ void DeviceManagementNode::setPropertyValue(const char* property, const char* ne
 
         i++;
     }
-    
+
     char *newstr = new char[strlen(property) + 3 + strlen(newvalue) + 1];
     sprintf(newstr, "%s = %s", property, newvalue);
     line newline(newstr);
@@ -316,13 +316,13 @@ void DeviceManagementNode::setPropertyValue(const char* property, const char* ne
 ArrayElement* DeviceManagementNode::clone()
 {
 	DeviceManagementNode* ret = new DeviceManagementNode(context, name);
-	
+
 	int n = children.size();
-	
+
 	for (int i = 0; i<n; ++i) {
 		ret->addChild(*((ManagementNode*)children[i]));
 	}
-	
+
 	return ret;
 }
 

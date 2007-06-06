@@ -1,26 +1,26 @@
 /*
- * Copyright (C) 2003-2007 Funambol
+ * Copyright (C) 2003-2007 Funambol, Inc
  *
  * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
+ * it under the terms of the GNU General Public License version 2 as
+ * published by the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY, TITLE, NONINFRINGEMENT or FITNESS FOR A PARTICULAR
+ * PURPOSE.  See the GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ * 02111-1307  USA
  */
 
 #ifndef INCL_SPDM_CONSTANTS
 #define INCL_SPDM_CONSTANTS
 /** @cond DEV */
 
-#define DIM_MANAGEMENT_PATH 512	
+#define DIM_MANAGEMENT_PATH 512
 #define DIM_PROPERTY_NAME    64
 
 #define MAX_KEY_LENGTH 255
@@ -47,7 +47,7 @@
 #define PROPERTY_SOURCE_SYNC           "sync"
 #define PROPERTY_SOURCE_LAST_SYNC      "last"
 #define PROPERTY_SOURCE_CTCAP          "ctCap"
-#define PROPERTY_SERVER_NONCE          "serverNonce" 
+#define PROPERTY_SERVER_NONCE          "serverNonce"
 #define PROPERTY_CLIENT_NONCE          "clientNonce"
 #define PROPERTY_SERVER_ID             "serverID"
 #define PROPERTY_SERVER_PWD            "serverPWD"
@@ -90,9 +90,9 @@
 #define PROPERTY_LOG_LEVEL                  "logLevel"
 #define PROPERTY_MAX_OBJ_SIZE               "maxObjSize"
 #define PROPERTY_DEVINF_HASH                "devInfHash"
-        
 
-        
+
+
 #define DIRTY_USERNAME                 0x00001
 #define DIRTY_PASSWORD                 0x00002
 #define DIRTY_DEVICE_ID                0x00004
@@ -108,8 +108,8 @@
 #define DIRTY_CLIENT_NONCE             0x01000
 #define DIRTY_SERVER_NONCE             0x02000
 #define DIRTY_SERVERID                 0x04000
-#define DIRTY_SERVERPWD                0x08000 
-#define DIRTY_CLIENTAUTHTYPE           0x10000 
+#define DIRTY_SERVERPWD                0x08000
+#define DIRTY_CLIENTAUTHTYPE           0x10000
 #define DIRTY_SERVERAUTH_REQUIRED      0x20000
 #define DIRTY_DEV_INF_HASH             0x40000
 

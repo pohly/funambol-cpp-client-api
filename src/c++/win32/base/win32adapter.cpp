@@ -1,19 +1,19 @@
 /*
- * Copyright (C) 2003-2007 Funambol
+ * Copyright (C) 2003-2007 Funambol, Inc.
  *
  * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
+ * it under the terms of the GNU General Public License version 2 as
+ * published by the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY, TITLE, NONINFRINGEMENT or FITNESS FOR A PARTICULAR
+ * PURPOSE.  See the GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ * 02111-1307  USA
  */
 
 #include <stdio.h>
@@ -310,7 +310,7 @@ WCHAR *mkTempFileName(const WCHAR *name)
 #endif
 
 /*
- * Return a filename composed by the system temp dir and the name given 
+ * Return a filename composed by the system temp dir and the name given
  * in input. If the file exists, try to add a digit 0-9.
  * If this fails too, return NULL (there's must be something wrong in
  * the calling program)
@@ -325,8 +325,8 @@ char *mkTempFileName(const char *name)
 
     GetTempPath(64, tmpPath);
     int ret = GetTempFileName(tmpPath, L"fun", 0, tmpFileName);
-    
-    if (ret == 0) { // function GetTempFileName fails 
+
+    if (ret == 0) { // function GetTempFileName fails
         LOG.error("mkTempFileName: error in GetTempFileName");
         return 0;
     }
@@ -408,22 +408,22 @@ char** readDir(char* name, int *count, bool onlyCount) {
     WCHAR szNewPath [512];
     szNewPath[0] = 0;
     bool fFinished = false;
-    
+
     //
     // Get number of files
     //
     if (!onlyCount) {
         int i=0;
         readDir(name, &i, true);
-        if (i>0) 
+        if (i>0)
             fileNames = new char*[i];
         else
             return NULL;
     }
-    
+
     WCHAR* wname = toWideChar(name);
     wsprintf(toFind, TEXT("%s\\*.*"), wname);
-    
+
 
     //
     // Get file names from dir
@@ -440,7 +440,7 @@ char** readDir(char* name, int *count, bool onlyCount) {
             wsprintf(szNewPath, TEXT("%s/%s"), wname, FileData.cFileName);
             dwAttrs = GetFileAttributes(szNewPath);
 
-             if (   (dwAttrs & FILE_ATTRIBUTE_DIRECTORY) 
+             if (   (dwAttrs & FILE_ATTRIBUTE_DIRECTORY)
                  || (dwAttrs & FILE_ATTRIBUTE_HIDDEN)
                  || (dwAttrs & FILE_ATTRIBUTE_SYSTEM) ) {
              }// nothing
@@ -536,7 +536,7 @@ char* toMultibyte(const WCHAR *wc, const char *encoding)
 
     ret = new char[blen+1];
 
-	blen = WideCharToMultiByte(codepage, 0, wc, wlen, ret, blen, 0, 0);	
+	blen = WideCharToMultiByte(codepage, 0, wc, wlen, ret, blen, 0, 0);
 	ret[blen] = 0;
 
     return ret;
@@ -548,21 +548,21 @@ WCHAR* toWideChar(const char *mb, const char *encoding) {
         return NULL;
     }
 
-    unsigned long dsize = strlen(mb); 
+    unsigned long dsize = strlen(mb);
     WCHAR *ret = new WCHAR[dsize+1];
     memset(ret, 0, (dsize + 1)*sizeof(WCHAR));
-    
+
     if (!dsize)
         return ret;
 
     int codepage = findCodePage(encoding);
 	unsigned long k = 0;
-    
+
 	k = MultiByteToWideChar(codepage, 0, mb, strlen(mb), ret, dsize + 1);
     if(k == 0) {
         delete [] ret; ret = NULL;
     }
-	
+
     return ret;
 }
 
@@ -595,7 +595,7 @@ WCHAR* toWideChar(const char *mb, const char *encoding) {
 		    m.addTrack((DWORD)p, s, file, line);
             m.enableMemTracker();
         }
- 
+
         return p;
     }
 
@@ -612,7 +612,7 @@ WCHAR* toWideChar(const char *mb, const char *encoding) {
     }
 
     void operator delete(void* p) {
-        
+
         //fprintf(stderr, "delete - p:%lx\n", (long)p);
         if (m.isMemTracking()) {
             m.disableMemTracker();
@@ -631,7 +631,7 @@ WCHAR* toWideChar(const char *mb, const char *encoding) {
 
 
     void printMemLeaks() {
-        if (m.isMemTracking()) 
+        if (m.isMemTracking())
             m.dumpUnfreed();
     }
 

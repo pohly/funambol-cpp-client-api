@@ -1,19 +1,19 @@
 /*
- * Copyright (C) 2003-2007 Funambol
+ * Copyright (C) 2003-2007 Funambol, Inc.
  *
  * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
+ * it under the terms of the GNU General Public License version 2 as
+ * published by the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY, TITLE, NONINFRINGEMENT or FITNESS FOR A PARTICULAR
+ * PURPOSE.  See the GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ * 02111-1307  USA
  */
 
 #include "base/fscapi.h"
@@ -39,7 +39,7 @@ size_t charlen = sizeof(WCHAR);
     if(charlen != 2) {
         abort("Panic: wide char size in not 2");
     }
-    
+
 #endif
 
 WString::WString(const WCHAR* str, size_t len) {
@@ -50,7 +50,7 @@ WString::WString(const WCHAR* str, size_t len) {
     // otherwise set it, even empty.
     if (str) {
         size_t slen = wcslen(str);
-        size_t newlen = (len > slen) ? slen : len ; 
+        size_t newlen = (len > slen) ? slen : len ;
 
         if(newlen) {
             getmem(newlen);
@@ -117,7 +117,7 @@ WString& WString::append(WString& str) {
 WString& WString::append(WString* str) {
     if (str)
         return append(str->getChars());
-    else 
+    else
         return *this;
 }
 
@@ -138,7 +138,7 @@ WString& WString::set(const WCHAR* sNew) {
     else {
         freemem();  // release the string and set it to null
     }
-    
+
     return *this;
 }
 
@@ -153,7 +153,7 @@ WString& WString::reset() {
     return *this;
 }
 
-size_t WString::find(const WCHAR *str, size_t pos) const 
+size_t WString::find(const WCHAR *str, size_t pos) const
 {
     if (pos >= length())
         return npos;
@@ -172,7 +172,7 @@ size_t WString::ifind(const WCHAR *str, size_t pos) const
     WCHAR *lstr = wcstolower(str);
 
     WCHAR *p = wcsstr(ls, lstr);
-    
+
     size_t ret = (p) ? p-ls : npos;
 
     delete [] ls;
@@ -181,7 +181,7 @@ size_t WString::ifind(const WCHAR *str, size_t pos) const
     return ret;
 }
 */
-size_t WString::replace(const WCHAR *from, const WCHAR *to, size_t pos) 
+size_t WString::replace(const WCHAR *from, const WCHAR *to, size_t pos)
 {
 	size_t ret = npos;
 
@@ -197,10 +197,10 @@ size_t WString::replace(const WCHAR *from, const WCHAR *to, size_t pos)
         WCHAR *tail = 0;
         int ldiff = tlen - flen ;
 
-        // reallocate if needed 
+        // reallocate if needed
         size_t p_off = p - s;     // remember position in string
         getmem(length() + ldiff);
-        p = s + p_off;            // ensure that p is valid again 
+        p = s + p_off;            // ensure that p is valid again
         // check is there is a remainder after the replaced token
         if( p[flen] ) {
             tail = new WCHAR[length()];
@@ -329,10 +329,10 @@ WString& WString::operator= (const WString& sb)
     { return set(sb); }
 WString& WString::operator= (const StringBuffer& sb) {
     WCHAR* t = NULL;
-    t = toWideChar(sb.c_str());        
-    WString& w = set(t); 
+    t = toWideChar(sb.c_str());
+    WString& w = set(t);
     delete [] t;
-    return w;    
+    return w;
 }
 WString& WString::operator+= (const WCHAR* sc)
     { append(sc); return *this; }
@@ -370,8 +370,8 @@ void WString::getmem(size_t len)
         s = (WCHAR *)realloc(s, (len+1) * sizeof(WCHAR) );
         //WString_memcount += (len-size);
         size = len;
-        // Make sure s is terminated at the old position 
-        // (malloc may fill the buffer with rubbish) 
+        // Make sure s is terminated at the old position
+        // (malloc may fill the buffer with rubbish)
         s[oldlen] = 0;
         //fprintf(stderr, "\t\ts=%lx size=%ld alloc=%ld\n", s, size, alloclen);
     }

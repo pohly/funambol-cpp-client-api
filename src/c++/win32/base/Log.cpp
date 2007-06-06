@@ -1,19 +1,19 @@
 /*
- * Copyright (C) 2003-2007 Funambol
+ * Copyright (C) 2003-2007 Funambol, Inc.
  *
  * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
+ * it under the terms of the GNU General Public License version 2 as
+ * published by the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY, TITLE, NONINFRINGEMENT or FITNESS FOR A PARTICULAR
+ * PURPOSE.  See the GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ * 02111-1307  USA
  */
 
 
@@ -25,9 +25,9 @@ Log LOG = Log(false);
 char logmsg[512];
 
 FILE* logFile;
-char logDir[512];   
+char logDir[512];
 char logName[128];
-char logPath[256];   
+char logPath[256];
 
 
 Log::Log(BOOL resetLog, const char* path, const char* name) {
@@ -69,32 +69,32 @@ Log::~Log() {
 
 
 void Log::setLogPath(const char* configLogPath) {
-    
+
     memset(logPath, 0, 256*sizeof(char));
     if (configLogPath != NULL) {
-        sprintf(logPath, "%s", configLogPath); 
+        sprintf(logPath, "%s", configLogPath);
     } else {
         sprintf(logPath, ".");
     }
 }
 
 void Log::setLogName(const char* configLogName) {
-    
+
     memset(logName, 0, 128*sizeof(char));
     if (configLogName != NULL) {
-        sprintf(logName, "%s", configLogName); 
+        sprintf(logName, "%s", configLogName);
     } else {
-        sprintf(logName, "%s", LOG_NAME);         
+        sprintf(logName, "%s", LOG_NAME);
     }
 }
 
 /*
-* return a the time to write into log file. If complete is true, it return 
+* return a the time to write into log file. If complete is true, it return
 * the date too, else only hours, minutes, seconds and milliseconds
-*/ 
+*/
 static char* createCurrentTime(BOOL complete) {
-    
-    SYSTEMTIME sys_time;   
+
+    SYSTEMTIME sys_time;
     TIME_ZONE_INFORMATION timezone;
     GetLocalTime(&sys_time);
     GetTimeZoneInformation(&timezone);
@@ -103,10 +103,10 @@ static char* createCurrentTime(BOOL complete) {
     char fmt[]         = "%02d:%02d:%02d GMT %c%d:%02d";
 
     char* ret = new char [64];
-    
+
     // calculate offset from UTC/GMT in hours:min, positive value means east of Greenwich (e.g. CET = GMT +1)
-    
-    char direction = timezone.Bias <= 0 ? '+' : '-';    
+
+    char direction = timezone.Bias <= 0 ? '+' : '-';
     int hours = abs(timezone.Bias / 60) ;
     int minutes = abs(timezone.Bias % 60);
 
@@ -115,7 +115,7 @@ static char* createCurrentTime(BOOL complete) {
                  sys_time.wHour, sys_time.wMinute, sys_time.wSecond,
                 direction, hours, minutes);
     } else {
-        sprintf(ret, fmt, sys_time.wHour, sys_time.wMinute, sys_time.wSecond, 
+        sprintf(ret, fmt, sys_time.wHour, sys_time.wMinute, sys_time.wSecond,
                 direction, hours, minutes);
     }
     return ret;
@@ -123,10 +123,10 @@ static char* createCurrentTime(BOOL complete) {
 
 
 
-void Log::error(const char* msg, ...) {    
+void Log::error(const char* msg, ...) {
     va_list argList;
     va_start (argList, msg);
-    printMessage(LOG_ERROR, msg, argList);    
+    printMessage(LOG_ERROR, msg, argList);
     va_end(argList);
 }
 
@@ -135,7 +135,7 @@ void Log::info(const char* msg, ...) {
     if (logLevel >= LOG_LEVEL_INFO) {
         va_list argList;
 	    va_start (argList, msg);
-        printMessage(LOG_INFO, msg, argList);    
+        printMessage(LOG_INFO, msg, argList);
 	    va_end(argList);
 
     }
@@ -146,15 +146,15 @@ void Log::debug(const char* msg, ...) {
     if (logLevel >= LOG_LEVEL_DEBUG) {
 	    va_list argList;
         va_start (argList, msg);
-        printMessage(LOG_DEBUG, msg, argList);    
+        printMessage(LOG_DEBUG, msg, argList);
         va_end(argList);
-        
+
     }
 }
 
 
 
-void Log::trace(const char* msg) { 
+void Log::trace(const char* msg) {
 }
 
 void Log::setLevel(LogLevel level) {
@@ -171,28 +171,28 @@ BOOL Log::isLoggable(LogLevel level) {
 
 
 
-void Log::printMessage(const char* level, const char* msg, va_list argList) {       
-    
-	char* currentTime = createCurrentTime(false);    
-    logFile = fopen(logDir, "a+");       
+void Log::printMessage(const char* level, const char* msg, va_list argList) {
+
+	char* currentTime = createCurrentTime(false);
+    logFile = fopen(logDir, "a+");
     if (logFile) {
-	    fprintf(logFile, "%s [%s] - ", currentTime, level); 		
-        vfprintf(logFile, msg, argList);	
-	    fprintf(logFile, "\n"); 
+	    fprintf(logFile, "%s [%s] - ", currentTime, level);
+        vfprintf(logFile, msg, argList);
+	    fprintf(logFile, "\n");
 	    fclose(logFile);
     }
-    delete[] currentTime;	
+    delete[] currentTime;
 }
 
 void Log::reset(const char* title) {
-    
+
     char* currentTime = createCurrentTime(true);
     logFile = fopen(logDir, "w+");
     if (logFile) {
         fprintf(logFile, "%s - # %s\n\n", currentTime, title);
         fclose(logFile);
     }
-    delete[] currentTime;    
+    delete[] currentTime;
 }
 
 

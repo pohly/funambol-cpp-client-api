@@ -1,19 +1,19 @@
 /*
- * Copyright (C) 2003-2007 Funambol
+ * Copyright (C) 2003-2007 Funambol, Inc.
  *
  * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
+ * it under the terms of the GNU General Public License version 2 as
+ * published by the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY, TITLE, NONINFRINGEMENT or FITNESS FOR A PARTICULAR
+ * PURPOSE.  See the GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ * 02111-1307  USA
  */
 
 
@@ -135,46 +135,46 @@ int ArrayList::add(ArrayList* list) {
 }
 
 
-int ArrayList::removeElementAt(int index) {            
+int ArrayList::removeElementAt(int index) {
 
     int s = size() - 1;
-    
+
     if (index > s) {
         index = s;
     }
 
     if (index < 0) {
         return -1;
-    }    
-    
+    }
+
     //
     // deleting the existing element at the index-th position
     //
     Element* e = head;
     Element* after = NULL;
     Element* before = head;
-    
+
     for (int i=0; i<index; ++i) {
         before = e;
         e = e->n;
     }
 
-    if (e == NULL) {        
+    if (e == NULL) {
         return 0;
     }
 
-    if (e->n) {       
-        after = e->n;                 
+    if (e->n) {
+        after = e->n;
     }
-    
+
     delete e;
     e = NULL;
-    
+
     before->n = after;
-    
+
     if (index == 0) {
         head = after;
-    } 
+    }
 
     return index;
 }
@@ -256,7 +256,7 @@ ArrayElement* ArrayList::prev() {
     return e->e;
 }
 
-ArrayElement* ArrayList::back() { 
+ArrayElement* ArrayList::back() {
     for(iterator = head; iterator->n; iterator = iterator->n);
     return iterator->e;
 }
@@ -277,11 +277,11 @@ ArrayList& ArrayList::operator= (const ArrayList &v) {
 }
 
 ArrayList* ArrayList::clone() {
-    
+
     ArrayList* ret = new ArrayList();
-    int dim = size();    
+    int dim = size();
     for (int i = 0; i < dim; i++) {
-       
+
         ret->add(*((ArrayElement*)get(i)));
     }
     return ret;
@@ -298,7 +298,7 @@ bool ArrayList::remove(int index){
 	Element* beforeIndex;
 	Element* indexElement;
 	Element* afterIndex;
-	
+
 	if (index==0){
 		if(s == 1){
 			delete head;
@@ -311,7 +311,7 @@ bool ArrayList::remove(int index){
 		}
 		return true;
 	}
-	
+
 	for(int i=0; i<index-1; ++i) {
 		e = e->n;
 	}
@@ -321,7 +321,7 @@ bool ArrayList::remove(int index){
 	if (index != s-1){
 		afterIndex = indexElement->n;
 		beforeIndex->n = afterIndex;
-		delete indexElement;		
+		delete indexElement;
 	}
 	else
 	{

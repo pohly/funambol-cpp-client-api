@@ -1,19 +1,19 @@
 /*
- * Copyright (C) 2003-2007 Funambol
+ * Copyright (C) 2003-2007 Funambol, Inc
  *
  * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
+ * it under the terms of the GNU General Public License version 2 as
+ * published by the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY, TITLE, NONINFRINGEMENT or FITNESS FOR A PARTICULAR
+ * PURPOSE.  See the GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ * 02111-1307  USA
  */
 
 #ifndef INCL_BASE_STRING_BUFFER
@@ -120,12 +120,12 @@ class StringBuffer: public ArrayElement {
         /**
          * Replace all the occurrences of substring 'from' with string 'to'.
          *
-         * @return - the number of tokens replaced 
+         * @return - the number of tokens replaced
          */
         int replaceAll(const char *from, const char *to, size_t pos = 0) EXTRA_SECTION_00;
 
         /**
-         * Splits string on each occurrence of any of the characters in 
+         * Splits string on each occurrence of any of the characters in
          * delimiters.
          *
          * @return - the position or StringBuffer::npos if not found.
@@ -143,7 +143,7 @@ class StringBuffer: public ArrayElement {
 
         /**
          * Return the substring between pos and pos+len.
-         * If pos is greater then the string length, or len is 0, return an 
+         * If pos is greater then the string length, or len is 0, return an
          * empty string
          * If len is greater then the string length, the last is used.
          */
@@ -175,7 +175,7 @@ class StringBuffer: public ArrayElement {
          */
         bool icmp(const char *sc) const EXTRA_SECTION_00 ;
 
-        /** 
+        /**
          * True if the string is null or empty
          */
         bool empty() const EXTRA_SECTION_00;
@@ -184,7 +184,7 @@ class StringBuffer: public ArrayElement {
          * True if the string is null
          */
         bool null() const EXTRA_SECTION_00;
-        
+
         /**
          * Clone the string
          */
@@ -201,9 +201,9 @@ class StringBuffer: public ArrayElement {
         bool operator== (const StringBuffer& sb) const EXTRA_SECTION_00 ;
         bool operator!= (const char*  sc) const EXTRA_SECTION_00 ;
         bool operator!= (const StringBuffer& s) const EXTRA_SECTION_00 ;
-        
+
         operator const char* () const { return s; } EXTRA_SECTION_00 ;
-        
+
     private:
         char*  s;
         size_t size;

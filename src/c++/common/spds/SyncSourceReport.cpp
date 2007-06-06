@@ -1,19 +1,19 @@
 /*
- * Copyright (C) 2003-2007 Funambol
+ * Copyright (C) 2003-2007 Funambol, Inc.
  *
  * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
+ * it under the terms of the GNU General Public License version 2 as
+ * published by the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY, TITLE, NONINFRINGEMENT or FITNESS FOR A PARTICULAR
+ * PURPOSE.  See the GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ * 02111-1307  USA
  */
 
 
@@ -26,7 +26,7 @@ const char* const SyncSourceReport::targets[] = {
     SERVER,
     NULL
 };
-    
+
 const char* const SyncSourceReport::commands[] = {
     COMMAND_ADD,
     COMMAND_REPLACE,
@@ -121,7 +121,7 @@ void SyncSourceReport::setSourceName(const char* name) {
 
 
 bool SyncSourceReport::checkState() {
-    if (state == SOURCE_ACTIVE) { 
+    if (state == SOURCE_ACTIVE) {
         return true;
     }
     return false;
@@ -158,7 +158,7 @@ void SyncSourceReport::addItem(const char* target, const char* command, const WC
             return;
         }
     }
-    
+
     // If here, element is new -> add.
     list->add(element);
 }
@@ -170,7 +170,7 @@ int SyncSourceReport::getItemReportCount(const char* target, const char* command
 }
 
 int SyncSourceReport::getItemReportSuccessfulCount(const char* target, const char* command) {
-    
+
     ArrayList* list = getList(target, command);
     ItemReport* e;
 
@@ -189,7 +189,7 @@ int SyncSourceReport::getItemReportSuccessfulCount(const char* target, const cha
 
 
 int SyncSourceReport::getItemReportFailedCount(const char* target, const char* command) {
-    
+
     ArrayList* list = getList(target, command);
     if (list->size() == 0) {
         return 0;
@@ -200,7 +200,7 @@ int SyncSourceReport::getItemReportFailedCount(const char* target, const char* c
 
 
 int SyncSourceReport::getItemReportAlreadyExistCount(const char* target, const char* command) {
-    
+
     ArrayList* list = getList(target, command);
     ItemReport* e;
 
@@ -262,9 +262,9 @@ ArrayList* SyncSourceReport::getList(const char* target, const char* command) co
 //------------------------------------------------------------- Private Methods
 
 bool SyncSourceReport::isSuccessful(const int status) {
-    if (status >= 200 && status < 500) 
+    if (status >= 200 && status < 500)
         return true;
-    else 
+    else
         return false;
 }
 

@@ -1,19 +1,19 @@
 /*
- * Copyright (C) 2003-2007 Funambol
+ * Copyright (C) 2003-2007 Funambol, Inc
  *
  * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
+ * it under the terms of the GNU General Public License version 2 as
+ * published by the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY, TITLE, NONINFRINGEMENT or FITNESS FOR A PARTICULAR
+ * PURPOSE.  See the GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ * 02111-1307  USA
  */
 
 #ifndef INCL_SYNC_SOURCE
@@ -60,7 +60,7 @@ protected:
      * copies all elements, to be used by derived class' clone() implementation
      */
     void assign(SyncSource& s);
-    
+
 public:
 
     /**
@@ -175,7 +175,7 @@ public:
      */
     const char*  getNextAnchor() EXTRA_SECTION_01;
     void setNextAnchor(const char*  next) EXTRA_SECTION_01;
-    
+
     /**
      * Gets filter
      */
@@ -196,7 +196,7 @@ public:
      * really have to be implemented, the others have
      * reasonable defaults.
      *****************************************************/
-    
+
     /**
      * Called by the engine from inside SyncClient::sync()
      * at the begin of the sync.
@@ -209,11 +209,11 @@ public:
      * valid results for the current sync mode.
      *
      * The synchronization stops if this function return a non-zero value.
-     * 
+     *
      * @return - 0 on success, an error otherwise
      */
     virtual int beginSync() EXTRA_SECTION_01;
-    
+
     /**
      * Called by the engine from inside SyncClient::sync()
      * at the end of the sync.
@@ -224,7 +224,7 @@ public:
      * return 0.
      *
      * FIXME: the return code is currently ignored by the sync engine
-     * 
+     *
      * @return - 0 on success, an error otherwise
      */
     virtual int endSync() EXTRA_SECTION_01;
@@ -240,14 +240,14 @@ public:
 
     /**
      * Return the key of the first SyncItem of all.
-     * It is used in case of refresh sync 
+     * It is used in case of refresh sync
      * and retrieve all the keys of the data source.
      */
     virtual SyncItem* getFirstItemKey() = 0 EXTRA_SECTION_01;
 
     /**
      * Return the key of the next SyncItem of all.
-     * It is used in case of refresh sync 
+     * It is used in case of refresh sync
      * and retrieve all the keys of the data source.
      */
     virtual SyncItem* getNextItemKey() = 0 EXTRA_SECTION_01;
@@ -267,37 +267,37 @@ public:
     virtual SyncItem* getNextItem() = 0 EXTRA_SECTION_01;
 
     /**
-     * Return the first SyncItem of new one. It is used in case of fast sync 
+     * Return the first SyncItem of new one. It is used in case of fast sync
      * and retrieve the new data source content.
      */
     virtual SyncItem* getFirstNewItem() = 0 EXTRA_SECTION_01;
 
     /**
-     * Return the next SyncItem of new one. It is used in case of fast sync 
+     * Return the next SyncItem of new one. It is used in case of fast sync
      * and retrieve the new data source content.
      */
     virtual SyncItem* getNextNewItem() = 0 EXTRA_SECTION_01;
 
     /**
-     * Return the first SyncItem of updated one. It is used in case of fast sync 
+     * Return the first SyncItem of updated one. It is used in case of fast sync
      * and retrieve the new data source content.
      */
     virtual SyncItem* getFirstUpdatedItem() = 0 EXTRA_SECTION_01;
 
     /**
-     * Return the next SyncItem of updated one. It is used in case of fast sync 
+     * Return the next SyncItem of updated one. It is used in case of fast sync
      * and retrieve the new data source content.
      */
     virtual SyncItem* getNextUpdatedItem() = 0 EXTRA_SECTION_01;
 
     /**
-     * Return the first SyncItem of updated one. It is used in case of fast sync 
+     * Return the first SyncItem of updated one. It is used in case of fast sync
      * and retrieve the new data source content.
      */
     virtual SyncItem* getFirstDeletedItem() = 0 EXTRA_SECTION_01;
 
     /**
-     * Return the next SyncItem of updated one. It is used in case of fast sync 
+     * Return the next SyncItem of updated one. It is used in case of fast sync
      * and retrieve the new data source content.
      */
     virtual SyncItem* getNextDeletedItem() = 0 EXTRA_SECTION_01;

@@ -1,19 +1,19 @@
 /*
- * Copyright (C) 2003-2007 Funambol
+ * Copyright (C) 2003-2007 Funambol, Inc
  *
  * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
+ * it under the terms of the GNU General Public License version 2 as
+ * published by the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY, TITLE, NONINFRINGEMENT or FITNESS FOR A PARTICULAR
+ * PURPOSE.  See the GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ * 02111-1307  USA
  */
 
 
@@ -31,7 +31,7 @@
 
 
 class Item : public ArrayElement {
-    
+
      // ------------------------------------------------------------ Private data
     private:
         Target*      target;
@@ -40,15 +40,15 @@ class Item : public ArrayElement {
         char*      sourceParent;
         Meta*        meta;
         ComplexData* data;
-        BOOL         moreData;  
-        
+        BOOL         moreData;
+
         void initialize();
 
     public:
-        
+
         Item();
         ~Item();
-    
+
         /**
          * Creates a new Item object.
          *
@@ -67,7 +67,7 @@ class Item : public ArrayElement {
              Meta*   meta  ,
              ComplexData* data,
              BOOL moreData);
-        
+
         /**
          * Creates a new Item object.
          *
@@ -89,7 +89,7 @@ class Item : public ArrayElement {
          * @return the item target
          */
         Target* getTarget();
-    
+
         /**
          * Sets the item target
          *
@@ -97,14 +97,14 @@ class Item : public ArrayElement {
          *
          */
         void setTarget(Target* target);
-    
+
         /**
          * Returns the item source
          *
          * @return the item source
          */
         Source* getSource();
-    
+
         /**
          * Sets the item source
          *
@@ -119,14 +119,14 @@ class Item : public ArrayElement {
          * @return the item target parent
          */
         const char* getTargetParent();
-    
+
         /**
          * Sets the item targetParent
          *
          * @param parent the target parent
          *
          */
-        void setTargetParent(const char* parent);    
+        void setTargetParent(const char* parent);
 
         /**
          * Returns the item sourceParent
@@ -134,7 +134,7 @@ class Item : public ArrayElement {
          * @return the item source parent
          */
         const char* getSourceParent();
-    
+
         /**
          * Sets the item sourceParent
          *
@@ -142,14 +142,14 @@ class Item : public ArrayElement {
          *
          */
         void setSourceParent(const char* parent);
-    
+
         /**
          * Returns the item meta element
          *
          * @return the item meta element
          */
         Meta* getMeta();
-    
+
         /**
          * Sets the meta item
          *
@@ -165,7 +165,7 @@ class Item : public ArrayElement {
          *
          */
         ComplexData* getData();
-    
+
         /**
          * Sets the item data
          *
@@ -173,11 +173,11 @@ class Item : public ArrayElement {
          *
          */
         void setData(ComplexData* data);
-    
+
         /**
          * Gets moreData property
          *
-         * @return true if the data item is incomplete and has further chunks 
+         * @return true if the data item is incomplete and has further chunks
          *         to come, false otherwise
          */
         BOOL isMoreData();
@@ -185,7 +185,7 @@ class Item : public ArrayElement {
         /**
          * Gets the Boolean value of moreData
          *
-         * @return true if the data item is incomplete and has further chunks 
+         * @return true if the data item is incomplete and has further chunks
          *         to come, false otherwise
          */
         BOOL getMoreData();
@@ -198,7 +198,7 @@ class Item : public ArrayElement {
         void setMoreData(BOOL moreData);
 
         ArrayElement* clone();
-   
+
 };
 
 /** @endcond */

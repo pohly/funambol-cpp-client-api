@@ -1,20 +1,20 @@
 /*
-* Copyright (C) 2003-2007 Funambol
-*
-* This program is free software; you can redistribute it and/or modify
-* it under the terms of the GNU General Public License as published by
-* the Free Software Foundation; either version 2 of the License, or
-* (at your option) any later version.
-*
-* This program is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-* GNU General Public License for more details.
-*
-* You should have received a copy of the GNU General Public License
-* along with this program; if not, write to the Free Software
-* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-*/
+ * Copyright (C) 2003-2007 Funambol, Inc.
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License version 2 as
+ * published by the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY, TITLE, NONINFRINGEMENT or FITNESS FOR A PARTICULAR
+ * PURPOSE.  See the GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ * 02111-1307  USA
+ */
 
 
 #include "base/fscapi.h"
@@ -64,11 +64,11 @@ AccessConfig::~AccessConfig() {
     safeDelete(&syncURL  );
 
     safeDelete(&serverNonce         );
-    safeDelete(&clientNonce         );         
+    safeDelete(&clientNonce         );
     safeDelete(&serverID            );
     safeDelete(&serverPWD           );
-    safeDelete(&clientAuthType      );    
-    safeDelete(&serverAuthType      );  
+    safeDelete(&clientAuthType      );
+    safeDelete(&serverAuthType      );
     safeDelete(&userAgent           );
     safeDelete(&proxyUsername       );
     safeDelete(&proxyPassword       );
@@ -90,7 +90,7 @@ const char* AccessConfig::getServerAuthType() const {
 
 
 void AccessConfig::setServerAuthType(const char* v){
-    set(&serverAuthType, v);	    
+    set(&serverAuthType, v);
 }
 
 
@@ -102,7 +102,7 @@ const char* AccessConfig::getClientAuthType() const {
 void AccessConfig::setClientAuthType(const char* v){
     set(&clientAuthType, v);
 
-    dirty |= DIRTY_CLIENTAUTHTYPE; 
+    dirty |= DIRTY_CLIENTAUTHTYPE;
 }
 
 const char* AccessConfig::getServerPWD() const {
@@ -165,7 +165,7 @@ const char* AccessConfig::getPassword() const {
     return password;
 }
 
-void AccessConfig::setPassword(const char* v) {	
+void AccessConfig::setPassword(const char* v) {
     set(&password, v);
 
     dirty |= DIRTY_PASSWORD;
@@ -227,12 +227,12 @@ void AccessConfig::setProxyPassword(const char* v) {
     set(&proxyPassword, v);
 }
 
-const char* AccessConfig::getUserAgent() const {    
-    return userAgent;	
+const char* AccessConfig::getUserAgent() const {
+    return userAgent;
 }
 
 void AccessConfig::setUserAgent(const char* v) {
-    set(&userAgent, v);	    
+    set(&userAgent, v);
 }
 
 
@@ -255,7 +255,7 @@ const char* AccessConfig::getSyncURL() const {
     return syncURL;
 }
 
-void AccessConfig::setSyncURL(const char* v) {	
+void AccessConfig::setSyncURL(const char* v) {
     //
     // Checks if the url starts with http(s)://; if not, http:// is prepended
     //
@@ -263,7 +263,7 @@ void AccessConfig::setSyncURL(const char* v) {
 
     // Adds default protocol if not set AND the string is not empty
     if (*syncURL							&&
-        strncmp(syncURL, "http://", 7)  && 
+        strncmp(syncURL, "http://", 7)  &&
         strncmp(syncURL, "HTTP://", 7)  &&
         strncmp(syncURL, "https://", 8) &&
         strncmp(syncURL, "HTTPS://", 8) ) {

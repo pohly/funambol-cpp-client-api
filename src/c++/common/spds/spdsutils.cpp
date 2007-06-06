@@ -1,20 +1,20 @@
 
 /*
- * Copyright (C) 2003-2007 Funambol
+ * Copyright (C) 2003-2007 Funambol, Inc.
  *
  * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
+ * it under the terms of the GNU General Public License version 2 as
+ * published by the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY, TITLE, NONINFRINGEMENT or FITNESS FOR A PARTICULAR
+ * PURPOSE.  See the GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ * 02111-1307  USA
  */
 #include "base/fscapi.h"
 #include "base/util/utils.h"
@@ -31,7 +31,7 @@ SyncMode syncModeCode(const char* syncMode) {
 
     if (strcmp(syncMode,"slow") == 0)
         return SYNC_SLOW;
-    else if (strcmp(syncMode,"two-way") == 0)               
+    else if (strcmp(syncMode,"two-way") == 0)
         return SYNC_TWO_WAY;
     else if (strcmp(syncMode,"one-way") == 0)               // deprecated
         return SYNC_ONE_WAY_FROM_SERVER;
@@ -118,7 +118,7 @@ char *uuencode(const char *msg, int len)
         dlen += b64_encode(ret+dlen, (void *)(msg+i), step);
         ret[dlen++]='\n';
     }
-    
+
     // Terminate the string
     ret[dlen]=0;
     return ret;
@@ -148,7 +148,7 @@ static const char *getLine(const char *msg, char **line) {
     *line= new char[linelen+1];
     strncpy(*line, msg, linelen );
     (*line)[linelen]=0;
-    
+
     while (*next == '\r' || *next == '\n') {
         next++;
     }
@@ -181,7 +181,7 @@ int uudecode(const char *msg, char **binmsg, size_t *binlen)
             puts("Near the end");
         delete [] line;
     }
-    delete [] buf; 
+    delete [] buf;
     // Terminate the string
     out[len]=0;
     // Set return parameters
@@ -196,7 +196,7 @@ char *loadAndConvert(const char *filename, const char *encoding)
     bool binary = true;
     size_t msglen=0;
     char *ret = 0;
-    
+
     if(!filename)
         return 0;
 
@@ -218,7 +218,7 @@ char *loadAndConvert(const char *filename, const char *encoding)
         delete [] msg;
     }
     else {  // Default 8bit
-        ret = msg;    
+        ret = msg;
     }
     return ret;
 }
@@ -244,10 +244,10 @@ int convertAndSave(const char *filename,
         if (s == NULL)
             return -1;
 
-        buf = qp_decode(s);            
+        buf = qp_decode(s);
         len = strlen(buf);
         binary = true;
-    }    
+    }
     else {      // Default UTF-8
         buf = stringdup(s);
         len = strlen(buf);

@@ -1,19 +1,19 @@
 /*
- * Copyright (C) 2003-2007 Funambol
+ * Copyright (C) 2003-2007 Funambol, Inc
  *
  * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
+ * it under the terms of the GNU General Public License version 2 as
+ * published by the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY, TITLE, NONINFRINGEMENT or FITNESS FOR A PARTICULAR
+ * PURPOSE.  See the GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ * 02111-1307  USA
  */
 
  #ifndef INCL_CREDENTIAL_HANDLER
@@ -35,12 +35,12 @@
         char*  password;
         char*  clientAuthType;
         char*  clientNonce;
-        
+
         char*  serverID;
         char*  serverPWD;
         char*  serverAuthType;
         char*  serverNonce;
-        
+
         BOOL isServerAuthRequired;
 
         /**
@@ -71,8 +71,8 @@
          * allocated buffer and the given buffer pointer is returned.
          *
          * @param key - buffer where the key will be stored
-         */        
-        
+         */
+
         void setUsername(const char*  t) EXTRA_SECTION_01;
         const char*  getUsername() EXTRA_SECTION_01;
         void setPassword(const char*  t) EXTRA_SECTION_01;
@@ -88,10 +88,10 @@
         void setServerNonce(const char*  t) EXTRA_SECTION_01;
         const char*  getServerAuthType() EXTRA_SECTION_01;
         const char*  getServerNonce() EXTRA_SECTION_01;
-        
+
         void setServerAuthRequired(BOOL t) EXTRA_SECTION_01;
         BOOL getServerAuthRequired() EXTRA_SECTION_01;
-        
+
         Cred* getClientCredential() EXTRA_SECTION_01;
         Cred* getServerCredential() EXTRA_SECTION_01;
         Chal* getServerChal(BOOL isServerAuthenticated) EXTRA_SECTION_01;

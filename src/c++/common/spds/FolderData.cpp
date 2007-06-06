@@ -1,20 +1,19 @@
-/**
- * Copyright (C) 2003-2007 Funambol
+/*
+ * Copyright (C) 2003-2007 Funambol, Inc.
  *
  * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
+ * it under the terms of the GNU General Public License version 2 as
+ * published by the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY, TITLE, NONINFRINGEMENT or FITNESS FOR A PARTICULAR
+ * PURPOSE.  See the GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston,
- * MA 02111-1307 USA
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ * 02111-1307  USA
  */
 
 #include "base/fscapi.h"
@@ -27,7 +26,7 @@
 
 #define FOLDER_ITEM       TEXT("Folder")
 #define FOLDER_HIDDEN     "h"
-#define FOLDER_SYSTEM     "s" 
+#define FOLDER_SYSTEM     "s"
 #define FOLDER_ARCHIVED   "a"
 #define FOLDER_DELETE     "d"
 #define FOLDER_WRITABLE   "w"
@@ -72,17 +71,17 @@ FolderData::~FolderData()
     name.reset();
     created.reset();
     role.reset();
-            
+
 }
 int FolderData::parse(const char *syncmlData, size_t len)
 {
     int ret = 0;
-    unsigned int start, end;        
+    unsigned int start, end;
     StringBuffer msg(syncmlData, len);
 
     msg.replaceAll("&lt;", "<");
     msg.replaceAll("&amp;", "&");
-    
+
     // Get attributes
     if( XMLProcessor::getElementContent (msg, FOLDER_HIDDEN, NULL, &start, &end) ) {
         hidden = ( strncmp(msg.c_str()+start, "true", end-start) == 0 ) ;
@@ -101,7 +100,7 @@ int FolderData::parse(const char *syncmlData, size_t len)
         isArchivedPresent = true;
     }
     else archived = false;
-    
+
     if( XMLProcessor::getElementContent (msg, FOLDER_DELETE, NULL, &start, &end) ) {
         deleted = ( strncmp(msg.c_str()+start, "true", end-start) == 0 ) ;
         isDeletedPresent = true;
@@ -125,7 +124,7 @@ int FolderData::parse(const char *syncmlData, size_t len)
         isExecutablePresent = true;
     }
     else executable = false;
-    
+
     if( XMLProcessor::getElementContent (msg, FOLDER_ACCESSED, NULL, &start, &end) ) {
         accessed = msg.substr(start, end-start);
     }
@@ -150,7 +149,7 @@ int FolderData::parse(const char *syncmlData, size_t len)
     if( XMLProcessor::getElementContent (msg, FOLDER_NAME, NULL, &start, &end) ) {
         name = msg.substr(start, end-start);
     }
-    else{ 
+    else{
         name = TEXT("");
         ret = -1;
     }
@@ -159,17 +158,17 @@ int FolderData::parse(const char *syncmlData, size_t len)
         ;
         // In this version the extention fields are not suported
     }
-            
+
     return ret;
 }
 
 
 char* FolderData::format() {
-    
+
     StringBuffer out;
 
     out.reserve(150);
-    
+
     out = "<Folder>\n";
     if (name.length() > 0)
         out += XMLProcessor::makeElement(FOLDER_NAME, _wcc(name));
@@ -179,7 +178,7 @@ char* FolderData::format() {
         out += XMLProcessor::makeElement(FOLDER_MODIFIED, _wcc(modified));
     if (accessed.length() > 0)
         out += XMLProcessor::makeElement(FOLDER_ACCESSED, _wcc(accessed));
-    
+
     StringBuffer attributes;
 
     if (isHiddenPresent)
@@ -199,16 +198,16 @@ char* FolderData::format() {
 
     if (!attributes.empty())
         out += XMLProcessor::makeElement(FOLDER_ATTRIBUTES, attributes);
-    
+
     if (role.length() > 0)
         out += XMLProcessor::makeElement(FOLDER_ROLE, _wcc(role));
-    
+
     out += "</Folder>\n";
     return stringdup(out.c_str());
 }
 
 int FolderData::lengthForB64(int len) {
-    
+
     int modules = 0;
     int ret     = 0;
 

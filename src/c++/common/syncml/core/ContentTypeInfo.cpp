@@ -1,25 +1,25 @@
 /*
- * Copyright (C) 2003-2007 Funambol
+ * Copyright (C) 2003-2007 Funambol, Inc.
  *
  * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
+ * it under the terms of the GNU General Public License version 2 as
+ * published by the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY, TITLE, NONINFRINGEMENT or FITNESS FOR A PARTICULAR
+ * PURPOSE.  See the GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ * 02111-1307  USA
  */
- 
+
 #include "base/util/utils.h"
 #include "syncml/core/ContentTypeInfo.h"
- 
-      
+
+
 ContentTypeInfo::ContentTypeInfo() {
      ctType = NULL;
      verCT = NULL;
@@ -36,26 +36,26 @@ ContentTypeInfo::~ContentTypeInfo() {
 }
 
 /**
- * Creates a new ContentTypeCapability object with the given content type 
+ * Creates a new ContentTypeCapability object with the given content type
  * and versione
  *
- * @param ctType corresponds to &lt;CTType&gt; element in the SyncML 
+ * @param ctType corresponds to &lt;CTType&gt; element in the SyncML
  *                    specification - NOT NULL
- * @param verCT corresponds to &lt;VerCT&gt; element in the SyncML 
+ * @param verCT corresponds to &lt;VerCT&gt; element in the SyncML
  *                specification - NOT NULL
  *
  */
 ContentTypeInfo::ContentTypeInfo(const char* ctType, const char* verCT) {
-    
+
     this->ctType = NULL;
     this->verCT  = NULL;
 
     if (ctType == NULL){
         // TBD
-    }    
+    }
     if (verCT == NULL){
         // TBD
-    }        
+    }
     setCTType(ctType);
     setVerCT(verCT);
 }

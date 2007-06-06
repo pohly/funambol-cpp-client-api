@@ -1,26 +1,26 @@
 /*
- * Copyright (C) 2003-2007 Funambol
+ * Copyright (C) 2003-2007 Funambol, Inc.
  *
  * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
+ * it under the terms of the GNU General Public License version 2 as
+ * published by the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY, TITLE, NONINFRINGEMENT or FITNESS FOR A PARTICULAR
+ * PURPOSE.  See the GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ * 02111-1307  USA
  */
- 
- 
+
+
 #include "syncml/core/Status.h"
- 
-Status::Status() {    
-    
+
+Status::Status() {
+
    initialize();
 }
 Status::~Status() {
@@ -38,8 +38,8 @@ Status::~Status() {
 * @param msgRef message reference
 * @param cmdRef command reference - NOT NULL
 * @param cmd command - NOT NULL
-* @param targetRefs target references. If null 
-* @param sourceRefs source references. If null 
+* @param targetRefs target references. If null
+* @param sourceRefs source references. If null
 * @param cred authentication credentials
 * @param chal authentication challenge
 * @param data status data - NOT NULL
@@ -62,7 +62,7 @@ Status::Status(CmdID*        cmdID     ,
                                                            targetRefs,
                                                            sourceRefs,
                                                            items)  {
-    
+
     initialize();
 
     setCred(cred);
@@ -72,10 +72,10 @@ Status::Status(CmdID*        cmdID     ,
 }
 
 void Status::initialize() {
-    
+
     COMMAND_NAME = new char[strlen(STATUS_COMMAND_NAME) + 1];
     sprintf(COMMAND_NAME, STATUS_COMMAND_NAME);
-    
+
     chal        = NULL;
     data        = NULL;
     cmd         = NULL;
@@ -130,7 +130,7 @@ void Status::setData(Data* data) {
             delete this->data; this->data = NULL;
         }
         this->data = data->clone();
-    }        
+    }
 }
 
 /**
@@ -146,12 +146,12 @@ const char* Status::getCmd() {
 * Sets the cmd element
 *
 * @param cmd the new cmd element - NOT NULL
-*         
+*
 */
 void Status::setCmd(const char* cmd) {
     if (cmd == NULL) {
         // TBD
-    } else { 
+    } else {
         if (this->cmd) {
             delete [] this->cmd; this->cmd = NULL;
         }
@@ -166,7 +166,7 @@ void Status::setCmd(const char* cmd) {
 */
 int Status::getStatusCode() {
     return strtol(data->getData(), NULL, 10);
-    
+
 }
 
 /**

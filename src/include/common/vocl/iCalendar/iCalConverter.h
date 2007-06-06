@@ -1,21 +1,21 @@
-/**
- * Copyright (C) 2003-2007 Funambol
+/*
+ * Copyright (C) 2003-2007 Funambol, Inc
  *
  * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
+ * it under the terms of the GNU General Public License version 2 as
+ * published by the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY, TITLE, NONINFRINGEMENT or FITNESS FOR A PARTICULAR
+ * PURPOSE.  See the GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston,
- * MA 02111-1307 USA
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ * 02111-1307  USA
  */
+
 
 #ifndef INCL_VIRTUAL_CALENDAR_CONVERTER
 #define INCL_VIRTUAL_CALENDAR_CONVERTER
@@ -30,7 +30,7 @@ class WString;
 #define EVENT_PROPERTIES_LIST TEXT("BEGIN,CLASS,CREATED,DESCRIPTION,DTSTART,GEO,LAST-MODIFIED,LOCATION,ORGANIZER,PRIORITY,") \
                                    TEXT("DTSTAMP,SEQUENCE,STATUS,SUMMARY,TRANSP,UID,URL,RECURRENCE-ID,DTEND,DURATION,ATTACH,ATTENDEE,") \
                                    TEXT("CATEGORIES,COMMENT,CONTACT,EXDATE,EXRULE,REQUEST-STATUS,RELATED,RESOURCES,RDATE,RRULE,END,GROUP")
-   
+
 #define TODO_PROPERTIES_LIST  TEXT("BEGIN,CLASS,COMPLETED,CREATED,DESCRIPTION,DTSTAMP,DTSTART,GEO,LAST-MODIFIED,LOCATION,ORGANIZER,PERCENT-COMPLETE,") \
                                    TEXT("PRIORITY,RECURRENCE-ID,SEQUENCE,STATUS,SUMMARY,UID,URL,DUE,DURATION,ATTACH,ATTENDEE,") \
                                    TEXT("CATEGORIES,COMMENT,CONTACT,EXDATE,EXRULE,REQUEST-STATUS,RELATED,RESOURCES,RDATE,RRULE,END,GROUP")
@@ -61,10 +61,10 @@ class WString;
 //#define isdigit(c) ((c) >= '0' && (c)<= '9') FIXME
 
 
-class iCalConverter { 
+class iCalConverter {
 private:
     WCHAR* iCalendar;
-    Calendar* calendar; 
+    Calendar* calendar;
     bool validateEvent(Event*, WString& error, long* errorCode);
     bool validateTodo(ToDo*, WString& error, long* errorCode);
     bool validatePropery(VProperty*, WString& error, long* errorCode);

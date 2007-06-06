@@ -1,19 +1,19 @@
 /*
- * Copyright (C) 2003-2007 Funambol
+ * Copyright (C) 2003-2007 Funambol, Inc.
  *
  * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
+ * it under the terms of the GNU General Public License version 2 as
+ * published by the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY, TITLE, NONINFRINGEMENT or FITNESS FOR A PARTICULAR
+ * PURPOSE.  See the GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ * 02111-1307  USA
  */
 
 #include <windows.h>
@@ -39,8 +39,8 @@ char* DESEncoder::transform(char* data, TransformationInfo& info) {
 
     char* ret = NULL;
 
-    DWORD sizeIn = info.size; // I reassign it to a DWORD 
-                              // just in case a long is not 
+    DWORD sizeIn = info.size; // I reassign it to a DWORD
+                              // just in case a long is not
                               // of the same size of a DWORD
     DWORD sizeOut = 0;
 
@@ -51,10 +51,10 @@ char* DESEncoder::transform(char* data, TransformationInfo& info) {
     // -----------------------------------------------------
 
     res = CryptAcquireContext(
-        &prov, 
-        NULL, 
-        MS_ENHANCED_PROV, 
-        PROV_RSA_FULL, 
+        &prov,
+        NULL,
+        MS_ENHANCED_PROV,
+        PROV_RSA_FULL,
         CRYPT_VERIFYCONTEXT
     );
 
@@ -161,7 +161,7 @@ char* DESEncoder::transform(char* data, TransformationInfo& info) {
     // allocate and intialize the buffer
     ret = new char[sizeOut];
     memcpy(ret, data, sizeIn);
-    
+
     // Now encrypt the data
     res = CryptEncrypt(
         key,                 // Key obtained earlier
@@ -201,5 +201,5 @@ char* DESEncoder::transform(char* data, TransformationInfo& info) {
    }
 
    return ret;
-    
+
 }

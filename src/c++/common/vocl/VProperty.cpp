@@ -1,21 +1,21 @@
-/**
- * Copyright (C) 2003-2007 Funambol
+/*
+ * Copyright (C) 2003-2007 Funambol, Inc.
  *
  * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
+ * it under the terms of the GNU General Public License version 2 as
+ * published by the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY, TITLE, NONINFRINGEMENT or FITNESS FOR A PARTICULAR
+ * PURPOSE.  See the GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston,
- * MA 02111-1307 USA
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ * 02111-1307  USA
  */
+
 
 #include "base/util/utils.h"
 #include "base/util/WString.h"
@@ -23,7 +23,7 @@
 #include "base/quoted-printable.h"
 
 VProperty::VProperty(const WCHAR* propname, const WCHAR* propvalue) {
-    
+
     name = (propname) ? wstrdup(propname) : NULL;
 
     parameters = new ArrayList();
@@ -37,7 +37,7 @@ VProperty::VProperty(const WCHAR* propname, const WCHAR* propvalue) {
 }
 
 VProperty::~VProperty() {
-    
+
     if (name) {
         delete [] name; name = NULL;
     }
@@ -50,23 +50,23 @@ VProperty::~VProperty() {
     if (valueBuf) {
         delete [] valueBuf; valueBuf = NULL;
     }
-}	 
+}
 
 void VProperty::setName (const WCHAR* s) {
-    
+
     set(&name, s);
 }
 
 
 WCHAR* VProperty::getName(WCHAR* buf, int size) {
-    
+
     if (buf == NULL) {
         return name;
     }
 
     if (size >= 0) {
         wcsncpy(buf, name, size);
-    } 
+    }
     else {
         wcscpy(buf, name);
     }
@@ -75,7 +75,7 @@ WCHAR* VProperty::getName(WCHAR* buf, int size) {
 }
 
 void VProperty::addValue(const WCHAR* value) {
-	
+
     // Empty strings are accepted
     if(value) {
         WString wsVal = value;
@@ -84,7 +84,7 @@ void VProperty::addValue(const WCHAR* value) {
 }
 
 bool VProperty::removeValue(const int index) {
-    
+
 	bool ret = false;
 	if (values != NULL) {
 		ret = values->remove(index);
@@ -95,7 +95,7 @@ bool VProperty::removeValue(const int index) {
 // Returned value is a pointer to internal buffer,
 // copy it if must have a different life cycle.
 WCHAR* VProperty::getValue(int index) {
-    
+
     if (valueBuf) {
         delete [] valueBuf; valueBuf = NULL;
     }
@@ -125,7 +125,7 @@ WCHAR* VProperty::getValue(WCHAR* buf) {
     WString* wsValue = (WString*)values->get(0);
     if (wsValue) {
         wcscpy(buf, wsValue->c_str());
-    }  
+    }
     return buf;
 }
 
@@ -137,14 +137,14 @@ void VProperty::setValue(const WCHAR* value) {
 }
 
 WCHAR* VProperty::getPropComponent(int i) {
-    
+
     return getValue(i-1);
 }
 //////////////////////////////////
 
 
 void VProperty::addParameter (const WCHAR* paramName, const WCHAR* paramValue) {
-	
+
     if(paramName) {
     WKeyValuePair *parameter = new WKeyValuePair(paramName, paramValue);
     parameters->add((ArrayElement &)*parameter);
@@ -154,10 +154,10 @@ void VProperty::addParameter (const WCHAR* paramName, const WCHAR* paramValue) {
 }
 
 void VProperty::removeParameter(WCHAR* paramName) {
-    
+
     if (parameters != NULL) {
         for (int i=0; i<parameters->size(); i++){
-            WKeyValuePair *parameter; 
+            WKeyValuePair *parameter;
             parameter = (WKeyValuePair* )parameters->get(i);
             if(!wcscmp(parameter->getKey(), paramName)) {
                 parameters->remove(i);
@@ -167,10 +167,10 @@ void VProperty::removeParameter(WCHAR* paramName) {
     }
 }
 bool VProperty::containsParameter(WCHAR* paramName) {
-    
+
     if (parameters != NULL) {
         for (int i=0; i<parameters->size(); i++){
-            WKeyValuePair *parameter; 
+            WKeyValuePair *parameter;
             parameter = (WKeyValuePair* )parameters->get(i);
             if(!wcscmp(parameter->getKey(), paramName)){
                 return true;
@@ -181,10 +181,10 @@ bool VProperty::containsParameter(WCHAR* paramName) {
     return false;
 }
 WCHAR* VProperty::getParameterValue(WCHAR* paramName) {
-    
+
     if (parameters != NULL) {
 	    for (int i=0; i<parameters->size(); i++) {
-            WKeyValuePair *parameter; 
+            WKeyValuePair *parameter;
             parameter = (WKeyValuePair* )parameters->get(i);
             if(!wcscmp(parameter->getKey(), paramName))
                 return ((WCHAR *)parameter->getValue());
@@ -194,7 +194,7 @@ WCHAR* VProperty::getParameterValue(WCHAR* paramName) {
     return NULL;
 }
 WCHAR* VProperty::getParameterValue(int index) {
-    
+
     if (parameters != NULL) {
         WKeyValuePair *parameter;
         parameter = (WKeyValuePair*)parameters->get(index);
@@ -205,7 +205,7 @@ WCHAR* VProperty::getParameterValue(int index) {
 }
 
 void VProperty::set(WCHAR** p, const WCHAR* v) {
-	
+
     if (*p) {
         delete [] *p;
     }
@@ -214,10 +214,10 @@ void VProperty::set(WCHAR** p, const WCHAR* v) {
 
 ArrayElement* VProperty::clone() {
 
-    if(name) { 
+    if(name) {
 
         VProperty *cloneProperty = new VProperty(name);
-        
+
 		if(values != NULL) {
 			for (int i=0; i<valueCount(); i++) {
 				WString* valueCopy = (WString*)values->get(i)->clone();
@@ -270,7 +270,7 @@ WCHAR* VProperty::toString(WCHAR* version) {
     // Set encoding (QP/B64) parameter if necessary
     // QP encoding not allowed for vCard 3.0 (RFC 2426)
     if (is_30) {
-        if(!equalsEncoding(TEXT("BASE64")) && 
+        if(!equalsEncoding(TEXT("BASE64")) &&
            !equalsEncoding(TEXT("B")) &&
            !equalsEncoding(TEXT("b")) ) {
             for (int i=0; i<valueCount(); i++) {
@@ -330,7 +330,7 @@ WCHAR* VProperty::toString(WCHAR* version) {
                 propertyString.append(TEXT("="));
                 propertyString.append(parameter->getValue());
             }
-        }	
+        }
     }
 
     //
@@ -360,7 +360,7 @@ WCHAR* VProperty::toString(WCHAR* version) {
 
         // QUOTED-PRINTABLE encoding (of all values)
         if (equalsEncoding(TEXT("QUOTED-PRINTABLE"))) {
-            
+
             char* s  = toMultibyte(valueString.c_str());
             char* qp = convertToQP(s, 0);
             WCHAR* qpValueString = toWideChar(qp);
@@ -370,21 +370,21 @@ WCHAR* VProperty::toString(WCHAR* version) {
                 propertyString.append(valueString);
 
 		    delete [] qpValueString;
-            delete [] s; 
+            delete [] s;
             delete [] qp;
         }
 
         // BASE64 encoding (of all values)
-        else if(equalsEncoding(TEXT("BASE64")) || 
-           equalsEncoding(TEXT("B")) || 
+        else if(equalsEncoding(TEXT("BASE64")) ||
+           equalsEncoding(TEXT("B")) ||
            equalsEncoding(TEXT("b")) ) {
-            
+
             char* s  = toMultibyte(valueString.c_str());
             int len = strlen(s);
             char* base64 = new char[2*len + 1];
             b64_encode(base64, s, len);
             WCHAR* b64ValueString = toWideChar(base64);
-            
+
             propertyString.append(b64ValueString);
             // Extra line break: required for v.2.1 / optional for v.3.0
             //propertyString.append(RFC822_LINE_BREAK);
@@ -399,7 +399,7 @@ WCHAR* VProperty::toString(WCHAR* version) {
         else {
             propertyString.append(valueString);
         }
-    }		
+    }
 
 
 finally:
@@ -420,8 +420,8 @@ WCHAR* VProperty::getParameter(int index){
 
 bool VProperty::equalsEncoding(WCHAR* encoding) {
 
-    if ((encoding != NULL) && ((containsParameter(TEXT("ENCODING")) && 
-		!wcscmp(getParameterValue(TEXT("ENCODING")),encoding)) || 
+    if ((encoding != NULL) && ((containsParameter(TEXT("ENCODING")) &&
+		!wcscmp(getParameterValue(TEXT("ENCODING")),encoding)) ||
         containsParameter(encoding)))
         return true;
     return false;
@@ -477,7 +477,7 @@ bool VProperty::isType(WCHAR* type) {
  *                  (NULL if conversion failed)
  */
 char* convertToQP(const char* input, int start) {
-    
+
     int   count   = start;
 	int   maxLen  = 3*strlen(input);         // This is the max length for output string
 	char *sAppend = NULL;
@@ -495,14 +495,14 @@ char* convertToQP(const char* input, int start) {
 
 		if(!sAppend)
 			return NULL;
-		
-		for (p = sAppend; *p; p++) { 
+
+		for (p = sAppend; *p; p++) {
 			//if (count > QP_MAX_LINE_LEN) {
 			//	strcat(qpString, "=\r\n");
 			//	count = 0;
 			//}
-			//else 
-            if (*p == '\t' || *p == ' ') {							
+			//else
+            if (*p == '\t' || *p == ' ') {
 				const char *pScan = p;
 				while (*pScan && (*pScan == '\t' || *pScan == ' ')) {
 					pScan++;
@@ -551,10 +551,10 @@ char* convertToQP(const char* input, int start) {
 
 // Returns true if special encoding is needed for the string 'in'.
 bool encodingIsNeed(const char *in) {
-	for(int i = 0; i < int(strlen(in)); i++) 
+	for(int i = 0; i < int(strlen(in)); i++)
 		if ( (in[i] < 0x20) || (in[i] > 0x7f))
 			return true;
-	
+
 	return false;
 }
 
@@ -568,7 +568,7 @@ bool encodingIsNeed(const char *in) {
 * @param version      : vCard version "2.1" or "3.0" - we have different chars to escape
  *                     (if not defined, default will be 2.1)
 * @return             : the new allocated string with escaped chars
-* Note: 
+* Note:
 *      returns new allocated WCHAR*, must be freed by the caller.
 */
 WCHAR* escapeSpecialChars(const WCHAR* inputString, WCHAR* version) {
@@ -618,7 +618,7 @@ WCHAR* escapeSpecialChars(const WCHAR* inputString, WCHAR* version) {
         outputString[j] = inputString[i];
         j++;
     }
-    
+
     outputString[outputLen] = 0;
     delete [] wc;
     return outputString;

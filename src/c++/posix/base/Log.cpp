@@ -1,19 +1,19 @@
 /*
- * Copyright (C) 2003-2007 Funambol
+ * Copyright (C) 2003-2007 Funambol, Inc.
  *
  * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
+ * it under the terms of the GNU General Public License version 2 as
+ * published by the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY, TITLE, NONINFRINGEMENT or FITNESS FOR A PARTICULAR
+ * PURPOSE.  See the GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ * 02111-1307  USA
  */
 
 
@@ -29,7 +29,7 @@ static FILE* logFile = NULL;
 static BOOL logFileStdout = FALSE;
 
 static char logName[1024] = LOG_NAME;
-static char logPath[1024] = "/tmp" ;   
+static char logPath[1024] = "/tmp" ;
 static BOOL logRedirectStderr = FALSE;
 
 // a copy of stderr before it was redirected
@@ -52,20 +52,20 @@ void setLogFile(const char *path, const char* name, BOOL redirectStderr) {
         logFile = NULL;
     }
     logFileStdout = FALSE;
-    
+
     if (!strcmp(name, "-")) {
         // write to stdout
         logFileStdout = TRUE;
     } else if (path) {
         char *filename = new char[strlen(path) + strlen(name) + 3];
-        
+
         sprintf(filename, "%s/%s", path, name);
         logFile = fopen(filename, "a+" );
         delete [] filename;
     } else {
         logFile = fopen(name, "a+" );
     }
-    
+
     if (redirectStderr && logFile) {
         if (fderr == -1) {
             // remember original stderr
@@ -88,9 +88,9 @@ void setLogFile(const char* name, BOOL redirectStderr)
 }
 
 /*
-* return a the time to write into log file. If complete is true, it return 
+* return a the time to write into log file. If complete is true, it return
 * the date too, else only hours, minutes, seconds and milliseconds
-*/ 
+*/
 static char* createCurrentTime(BOOL complete) {
     time_t t = time(NULL);
     struct tm *sys_time = localtime(&t);
@@ -127,26 +127,26 @@ Log::~Log() {
 
 void Log::setLogPath(const char*  configLogPath) {
     if (configLogPath != NULL) {
-        sprintf(logPath, "%s/", configLogPath); 
+        sprintf(logPath, "%s/", configLogPath);
     } else {
         sprintf(logPath, "%s", "./");
     }
 }
 
 void Log::setLogName(const char*  configLogName) {
-    
+
     if (configLogName != NULL) {
-        sprintf(logName, "%s", configLogName); 
+        sprintf(logName, "%s", configLogName);
     }
     else {
-        sprintf(logName, "%s", LOG_NAME);         
+        sprintf(logName, "%s", LOG_NAME);
     }
 }
 
-void Log::error(const char*  msg, ...) {    
+void Log::error(const char*  msg, ...) {
     va_list argList;
     va_start (argList, msg);
-    printMessage(LOG_ERROR, msg, argList);    
+    printMessage(LOG_ERROR, msg, argList);
     va_end(argList);
 }
 
@@ -154,7 +154,7 @@ void Log::info(const char*  msg, ...) {
     if (logLevel >= LOG_LEVEL_INFO) {
         va_list argList;
 	    va_start (argList, msg);
-        printMessage(LOG_INFO, msg, argList);    
+        printMessage(LOG_INFO, msg, argList);
 	    va_end(argList);
 
     }
@@ -164,13 +164,13 @@ void Log::debug(const char*  msg, ...) {
     if (logLevel >= LOG_LEVEL_DEBUG) {
 	    va_list argList;
         va_start (argList, msg);
-        printMessage(LOG_DEBUG, msg, argList);    
+        printMessage(LOG_DEBUG, msg, argList);
         va_end(argList);
-        
+
     }
 }
 
-void Log::trace(const char*  msg) { 
+void Log::trace(const char*  msg) {
 }
 
 void Log::setLevel(LogLevel level) {
@@ -185,8 +185,8 @@ BOOL Log::isLoggable(LogLevel level) {
     return (level >= logLevel);
 }
 
-void Log::printMessage(const char*  level, const char*  msg, va_list argList) {       
-    
+void Log::printMessage(const char*  level, const char*  msg, va_list argList) {
+
     char* currentTime = NULL;
 
     currentTime = createCurrentTime(false);
@@ -196,7 +196,7 @@ void Log::printMessage(const char*  level, const char*  msg, va_list argList) {
     FILE *out = logFile ? logFile : stdout ;
     fprintf(out, "%s [%s] - ", currentTime, level );
     vfprintf(out, msg, argList);
-    fputs("\n", out); 
+    fputs("\n", out);
     fflush(out);
 
     delete[] currentTime;
@@ -205,7 +205,7 @@ void Log::printMessage(const char*  level, const char*  msg, va_list argList) {
 
 void Log::reset(const char*  title) {
     setLogFile(logPath, logName, logRedirectStderr);
-    
+
     if (logFile) {
         ftruncate(fileno(logFile), 0);
     }

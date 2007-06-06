@@ -1,19 +1,19 @@
 /*
- * Copyright (C) 2003-2007 Funambol
+ * Copyright (C) 2003-2007 Funambol, Inc
  *
  * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
+ * it under the terms of the GNU General Public License version 2 as
+ * published by the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY, TITLE, NONINFRINGEMENT or FITNESS FOR A PARTICULAR
+ * PURPOSE.  See the GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ * 02111-1307  USA
  */
 
 
@@ -26,7 +26,7 @@
 #include "base/util/StringBuffer.h"
 
 class FolderData : public ArrayElement {
-    
+
     // ------------------------------------------------------- Private data
     private:
         //WString folder;
@@ -43,7 +43,7 @@ class FolderData : public ArrayElement {
 		bool readable;
 		bool executable;
 		WString role;
-        		
+
         // represents the presence of their equivalent tag
         bool isHiddenPresent;
         bool isSystemPresent;
@@ -63,7 +63,7 @@ class FolderData : public ArrayElement {
         FolderData();
         ~FolderData();
 
-    // ---------------------------------------------------------- Accessors  
+    // ---------------------------------------------------------- Accessors
 		/*const WCHAR* getFolder() { return folder; }
 		void setFolder(const WCHAR* v) { folder = v; } */
 
@@ -81,7 +81,7 @@ class FolderData : public ArrayElement {
 
 		const WCHAR* getAttributes() { return attributes; }
 		void setAttributes(const WCHAR* v) { attributes = v; }
-		
+
 		bool getHidded() { return hidden; }
 		void setHidden(bool v) { hidden = v; }
 
@@ -96,7 +96,7 @@ class FolderData : public ArrayElement {
 
 		bool getWritable() { return writable; }
 		void setWritable(bool v) { writable = v; }
-		
+
 		bool getReadable() { return readable; }
 		void setReadable(bool v) { readable = v; }
 
@@ -104,15 +104,15 @@ class FolderData : public ArrayElement {
 		void setExecutable(bool v) { executable = v; }
 
 		const WCHAR* getRole() { return role; }
-		void setRole(const WCHAR* v) { role = v; } 
-        
-        
+		void setRole(const WCHAR* v) { role = v; }
+
+
     // ----------------------------------------------------- Public Methods
         int parse(const char *syncmlData, size_t len = WString::npos) ;
         char *format() ;
 
         ArrayElement* clone() { return new FolderData(*this); }
-   
+
 };
 
 /** @endcond */

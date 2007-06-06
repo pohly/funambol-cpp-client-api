@@ -1,20 +1,20 @@
 /*
-* Copyright (C) 2003-2007 Funambol
-*
-* This program is free software; you can redistribute it and/or modify
-* it under the terms of the GNU General Public License as published by
-* the Free Software Foundation; either version 2 of the License, or
-* (at your option) any later version.
-*
-* This program is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-* GNU General Public License for more details.
-*
-* You should have received a copy of the GNU General Public License
-* along with this program; if not, write to the Free Software
-* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-*/
+ * Copyright (C) 2003-2007 Funambol, Inc.
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License version 2 as
+ * published by the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY, TITLE, NONINFRINGEMENT or FITNESS FOR A PARTICULAR
+ * PURPOSE.  See the GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ * 02111-1307  USA
+ */
 #include "spds/SyncItem.h"
 #include "spds/SyncItemStatus.h"
 #include "base/util/utils.h"
@@ -62,7 +62,7 @@ int FileSyncSource::beginSync() {
     newItems.items.clear();
     updatedItems.items.clear();
 
-    
+
     //
     // Get file list.
     //
@@ -125,12 +125,12 @@ int FileSyncSource::beginSync() {
             }
         }
     }
-    
+
     if (fileNames) {
-        delete [] fileNames;  
+        delete [] fileNames;
         fileNames = NULL;
     }
-    return 0;    
+    return 0;
 }
 
 SyncItem* FileSyncSource::getFirst(ItemIteratorContainer& container, BOOL getData) {
@@ -180,7 +180,7 @@ unsigned long FileSyncSource::getServerModTime(const char* keystr) {
 }
 
 void FileSyncSource::setItemStatus(const WCHAR* key, int status) {
-    LOG.debug("item key: %" WCHAR_PRINTF ", status: %i", key, status);    
+    LOG.debug("item key: %" WCHAR_PRINTF ", status: %i", key, status);
 }
 
 
@@ -217,9 +217,9 @@ int FileSyncSource::addItem(SyncItem& item) {
             report->setLastErrorMsg(lastErrorMsg);
             report->setState(SOURCE_ERROR);
             return STC_COMMAND_FAILED;
-        }       
+        }
         ret = addedItem(item, file.getName());
-        LOG.debug("Added item: %" WCHAR_PRINTF, file.getName());    
+        LOG.debug("Added item: %" WCHAR_PRINTF, file.getName());
     }
     return ret;
 }
@@ -239,7 +239,7 @@ int FileSyncSource::updateItem(SyncItem& item) {
     ////// TBD ////////
     return STC_COMMAND_FAILED;
     ///////////////////
-    
+
     int ret = STC_COMMAND_FAILED;
 
     FileData file;
@@ -248,7 +248,7 @@ int FileSyncSource::updateItem(SyncItem& item) {
     WCHAR* encod  = NULL;
     int size = 0;
     int res = 0;
-    size = item.getDataSize();    
+    size = item.getDataSize();
     data = new char[size + 1];
     memset(data, 0, size + 1);
     memcpy(data, item.getData(), size);
@@ -256,12 +256,12 @@ int FileSyncSource::updateItem(SyncItem& item) {
     encod = (WCHAR*)file.getEnc();
     delete [] data;
 
-    if (wcslen(encod) > 0) {        
+    if (wcslen(encod) > 0) {
         item.setData(file.getBody(), file.getSize());
         //
         // Replace item on FS (res=h)
         //
-    }  
+    }
 
     if (h == 0) {
         ret = STC_OK;
@@ -350,7 +350,7 @@ bool FileSyncSource::setItemData(SyncItem* syncItem) {
         report->setState(SOURCE_ERROR);
         return false;
     }
-    
+
     //
     // Set data
     //
@@ -365,7 +365,7 @@ bool FileSyncSource::setItemData(SyncItem* syncItem) {
         delete [] encContent;
         encContent = NULL;
         //syncItem->setData(content, (long)len);
-        delete [] content; 
+        delete [] content;
         content = NULL;
         return true;
     }

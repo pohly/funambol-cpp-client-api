@@ -1,19 +1,19 @@
 /*
- * Copyright (C) 2003-2007 Funambol
+ * Copyright (C) 2003-2007 Funambol, Inc.
  *
  * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
+ * it under the terms of the GNU General Public License version 2 as
+ * published by the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY, TITLE, NONINFRINGEMENT or FITNESS FOR A PARTICULAR
+ * PURPOSE.  See the GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ * 02111-1307  USA
  */
 
 
@@ -98,7 +98,7 @@ int SyncItem::changeDataEncoding(const char* enc, const char* encryption, const 
     int res = ERR_NONE;
     char encToUse[30];
 
-    // First: if encryption not NULL and valid, it is used and 'enc' 
+    // First: if encryption not NULL and valid, it is used and 'enc'
     // value is ignored.
     if ( (encryption) && (!strcmp(encryption, "des")) ) {
         strcpy(encToUse, encodings::des);
@@ -167,7 +167,7 @@ int SyncItem::transformData(const char* name, BOOL encode, const char* password)
         DataTransformerFactory::getDecoder(name);
     TransformationInfo info;
     int res = ERR_NONE;
-    
+
     if (dt == NULL) {
         res = lastErrorCode;
         goto exit;
@@ -252,7 +252,7 @@ void* SyncItem::setData(const void* itemData, long dataSize) {
     }
 
     size = dataSize;
-    
+
     // Not yet set.
     if (size == -1) {
         data = NULL;
@@ -349,7 +349,7 @@ void SyncItem::setTargetParent(const WCHAR* parent) {
     if (targetParent) {
         delete [] targetParent; targetParent = NULL;
     }
-    targetParent = wstrdup(parent);  
+    targetParent = wstrdup(parent);
 }
 
 /**
@@ -370,7 +370,7 @@ void SyncItem::setSourceParent(const WCHAR* parent) {
     if (sourceParent) {
         delete [] sourceParent; sourceParent = NULL;
     }
-    sourceParent = wstrdup(parent);  
+    sourceParent = wstrdup(parent);
 }
 
 ArrayElement* SyncItem::clone() {

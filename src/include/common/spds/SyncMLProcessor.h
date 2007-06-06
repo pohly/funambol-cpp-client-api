@@ -1,19 +1,19 @@
-/**
- * Copyright (C) 2003-2007 Funambol
+/*
+ * Copyright (C) 2003-2007 Funambol, Inc
  *
  * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
+ * it under the terms of the GNU General Public License version 2 as
+ * published by the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY, TITLE, NONINFRINGEMENT or FITNESS FOR A PARTICULAR
+ * PURPOSE.  See the GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ * 02111-1307  USA
  */
 
 #ifndef INCL_SYNCML_PROCESSOR
@@ -37,31 +37,31 @@
     class __declspec(dllexport) SyncMLProcessor : public XMLProcessor {
 
     private:
-        
+
         /*
          * It include the common part of getSyncHdrStatusCode and getAlertStatusCode
          */
-        int getStatusCode(SyncBody* syncBody, SyncSource* source, const char* commandName) EXTRA_SECTION_01;        
+        int getStatusCode(SyncBody* syncBody, SyncSource* source, const char* commandName) EXTRA_SECTION_01;
         /*
          * Returns the status code for the SyncHeader command included
          * in the message sent by the client.
          *
          * @param syncBody - the SyncBody content
          */
-        int getSyncHeaderStatusCode(Status* s) EXTRA_SECTION_01; 
+        int getSyncHeaderStatusCode(Status* s) EXTRA_SECTION_01;
         /*
          * Returns the status code for the Alert relative to the given source.
          *
          * @param syncBody - the SyncBody content
          * @param sourceName - the name of the source
          */
-        int getAlertStatusCode(Status* status, const char*  sourceName) EXTRA_SECTION_01;       
-        
+        int getAlertStatusCode(Status* status, const char*  sourceName) EXTRA_SECTION_01;
+
         /*
         * Return the command of the given commandName
         */
         AbstractCommand* getCommand(SyncBody* syncBody, const char* commandName, int index) EXTRA_SECTION_01;
-        
+
          /*
         * To get a generic array element. It returns the <index> arrayElement it founds.
         * 0-based.
@@ -96,16 +96,16 @@
         * Get the chal from a syncBody object. It is used to get the auth type and next nonce if needed
         */
         Chal* getChal(SyncBody* syncBody) EXTRA_SECTION_01;
-        
+
         /*
         * Get server credential. It is used by the SyncManager to get the server credentials and check them
         */
         Cred* getServerCred(SyncHdr* syncHdr) EXTRA_SECTION_01;
-        
+
 
         /*
          * Process the SyncBody and looks for the item status of the sent items.
-         * It calls the setItemStatus method of the sync source. 
+         * It calls the setItemStatus method of the sync source.
          */
         int processItemStatus(SyncSource& source, SyncBody* syncBody) EXTRA_SECTION_01;
 
@@ -118,7 +118,7 @@
         Sync* processSyncResponse(SyncSource& source, SyncML* syncml) EXTRA_SECTION_01;
 
         /*
-         * Processes the map message response. Returns 0 in case of success. 
+         * Processes the map message response. Returns 0 in case of success.
          * Currently it return always 0. TBD
          *
          * @param source the source
@@ -139,15 +139,15 @@
          * Returns an ArrayList containing the command given by commandName. It uses the getCommand method
          */
         ArrayList* getCommands(SyncBody* syncBody, const char* commandName) EXTRA_SECTION_01;
-       
+
         /* To retrieve a (NULL terminated) list of source names from list of Alert commands from server.
          * @return: a new array of source names (NULL terminated) - must be freed by the caller.
          */
         char** getSortedSourcesFromServer(SyncML* syncml, int sourcesNumber);
 
-        /* To retrieve a Sync pointer from ArrayList of Sync objects. 
+        /* To retrieve a Sync pointer from ArrayList of Sync objects.
          * It gets the order like the server sends
-         */        
+         */
         Sync* getSyncResponse(SyncML* syncml, int index);
     };
 

@@ -1,19 +1,19 @@
 /*
- * Copyright (C) 2003-2007 Funambol
+ * Copyright (C) 2003-2007 Funambol, Inc
  *
  * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
+ * it under the terms of the GNU General Public License version 2 as
+ * published by the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY, TITLE, NONINFRINGEMENT or FITNESS FOR A PARTICULAR
+ * PURPOSE.  See the GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ * 02111-1307  USA
  */
 
 // SyncML Status Codes definition
@@ -42,7 +42,7 @@ enum SyncStatus {
     STC_CHUNKED_ITEM_ACCEPTED                         = 213,
     STC_OPERATION_CANCELLED_OK                        = 214,
     STC_NOT_EXECUTED                                  = 215,
-    STC_ATOMIC_ROLLBACK_OK                            = 216, 
+    STC_ATOMIC_ROLLBACK_OK                            = 216,
     // Redirection 3xx
     STC_MULTIPLE_CHOICES                              = 300,
     STC_MOVED_PERMANENTLY                             = 301,

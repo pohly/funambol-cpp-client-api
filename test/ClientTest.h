@@ -1,19 +1,19 @@
 /*
- * Copyright (C) 2005-2006 Funambol
+ * Copyright (C) 2005-2007 Funambol, Inc
  *
  * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
+ * it under the terms of the GNU General Public License version 2 as
+ * published by the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY, TITLE, NONINFRINGEMENT or FITNESS FOR A PARTICULAR
+ * PURPOSE.  See the GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ * 02111-1307  USA
  */
 
 #ifndef INCL_TESTSYNCCLIENT
@@ -109,7 +109,7 @@ class ClientTest {
   public:
     ClientTest(int serverSleepSec = 0, const std::string &serverLog= "");
     virtual ~ClientTest();
-    
+
     /**
      * This is the only function provided by ClientTest itself:
      * it registers tests using this instance of ClientTest for
@@ -136,9 +136,9 @@ class ClientTest {
      * synccompare.pl Perl script
      */
     static bool compare(ClientTest &client, const char *fileA, const char *fileB);
-    
+
     struct Config;
-    
+
     /**
      * A derived class can use this call to get default test
      * cases, but still has to add callbacks which create sources
@@ -204,7 +204,7 @@ class ClientTest {
          * sync tests.
          */
         createsource_t createSourceA;
-        
+
         /**
          * A second sync source also referencing the primary data
          * source, but configured so that it tracks changes
@@ -309,7 +309,7 @@ class ClientTest {
          * @return error code, 0 for success
          */
         int (*import)(ClientTest &client, SyncSource &source, const char *file);
-        
+
         /**
          * a function which compares two files with items in the format used by "dump"
          *
@@ -330,7 +330,7 @@ class ClientTest {
          */
         const char *type;
     };
-    
+
     /**
      * Data sources are enumbered from 0 to n-1 for the purpose of
      * testing. This call returns n.
@@ -362,7 +362,7 @@ class ClientTest {
      * on the transport level.
      */
     virtual bool isB64Enabled() = 0;
-    
+
     /**
      * Execute a synchronization with the selected sync sources
      * and the selected synchronization options. The log file

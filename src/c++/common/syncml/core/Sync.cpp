@@ -1,25 +1,25 @@
 /*
- * Copyright (C) 2003-2007 Funambol
+ * Copyright (C) 2003-2007 Funambol, Inc.
  *
  * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
+ * it under the terms of the GNU General Public License version 2 as
+ * published by the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY, TITLE, NONINFRINGEMENT or FITNESS FOR A PARTICULAR
+ * PURPOSE.  See the GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ * 02111-1307  USA
  */
-  
+
 #include "syncml/core/Sync.h"
 
 Sync::Sync() {
-    
+
     initialize();
 
     COMMAND_NAME = new char[strlen(SYNC_COMMAND_NAME) + 1];
@@ -44,11 +44,11 @@ Sync::~Sync() {
 * @param source the source object
 * @param meta the meta object
 * @param numberOfChanges the number of changes
-* @param commands an array of elements that must be of one of the 
+* @param commands an array of elements that must be of one of the
 *                 following types: {@link Add}, {@link Atomic},
-*                 {@link Copy}, {@link Delete}, {@link Replace}, 
+*                 {@link Copy}, {@link Delete}, {@link Replace},
 *                 {@link Sequence}
-*       
+*
 *
 */
 Sync::Sync(CmdID* cmdID,
@@ -63,12 +63,12 @@ Sync::Sync(CmdID* cmdID,
     initialize();
 
     COMMAND_NAME = new char[strlen(SYNC_COMMAND_NAME) + 1];
-    sprintf(COMMAND_NAME, SYNC_COMMAND_NAME);    
-    
-    
+    sprintf(COMMAND_NAME, SYNC_COMMAND_NAME);
+
+
     setCommands(commands);
     setCred(cred);
-    
+
     setNoResp(noResp);
     setTarget(target);
     setSource(source);
@@ -153,12 +153,12 @@ void Sync::setCommands(ArrayList* commands) {
     if (commands == NULL) {
         // TBD
         err = TRUE;
-    }        
+    }
     for (int i = 0; i < commands->size(); i++) {
         if (commands->get(i) == NULL) {
             // TBD
             err = TRUE;
-        } 
+        }
     }
     if (err == FALSE) {
         this->commands->clear();

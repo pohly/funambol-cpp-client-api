@@ -1,19 +1,19 @@
 /*
- * Copyright (C) 2003-2007 Funambol
+ * Copyright (C) 2003-2007 Funambol, Inc
  *
  * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
+ * it under the terms of the GNU General Public License version 2 as
+ * published by the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY, TITLE, NONINFRINGEMENT or FITNESS FOR A PARTICULAR
+ * PURPOSE.  See the GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ * 02111-1307  USA
  */
 
 
@@ -31,7 +31,7 @@
 #define SYNC_COMMAND_NAME "Sync"
 
 class Sync : public AbstractCommand {
-    
+
      // ------------------------------------------------------------ Private data
     private:
         char*  COMMAND_NAME;
@@ -39,9 +39,9 @@ class Sync : public AbstractCommand {
         Source* source;
         ArrayList* commands;
         long numberOfChanges;
-    
+
     public:
-        
+
         Sync();
         ~Sync();
         void initialize();
@@ -55,11 +55,11 @@ class Sync : public AbstractCommand {
          * @param source the source object
          * @param meta the meta object
          * @param numberOfChanges the number of changes
-         * @param commands an array of elements that must be of one of the 
+         * @param commands an array of elements that must be of one of the
          *                 following types: {@link Add}, {@link Atomic},
-         *                 {@link Copy}, {@link Delete}, {@link Replace}, 
+         *                 {@link Copy}, {@link Delete}, {@link Replace},
          *                 {@link Sequence}
-         *       
+         *
          *
          */
         Sync(CmdID* cmdID,
@@ -70,8 +70,8 @@ class Sync : public AbstractCommand {
                     Meta* meta,
                     long numberOfChanges,
                     ArrayList* commands);
-    
-    
+
+
         /**
          * Gets the Target object property
          *
@@ -86,14 +86,14 @@ class Sync : public AbstractCommand {
          *
          */
         void setTarget(Target* target);
-        
+
         /**
          * Gets the Source object property
          *
          * @return source the Source object property
          */
         Source* getSource();
-    
+
         /**
          * Gets the Source object property
          *
@@ -108,7 +108,7 @@ class Sync : public AbstractCommand {
          *
          */
         ArrayList* getCommands();
-    
+
         /**
          * Sets the sequenced commands. The given commands must be of the allowed
          * types.
@@ -117,7 +117,7 @@ class Sync : public AbstractCommand {
          *
          */
         void setCommands(ArrayList* commands);
-    
+
         /**
          * Gets the total number of changes
          *
@@ -125,19 +125,19 @@ class Sync : public AbstractCommand {
          */
         long getNumberOfChanges();
 
-        
+
         /**
          * Sets the numberOfChanges property
          *
          * @param numberOfChanges the total number of changes
          */
         void setNumberOfChanges(long numberOfChanges) ;
-    
+
         const char* getName();
 
         ArrayElement* clone();
 
-   
+
 };
 
 /** @endcond */

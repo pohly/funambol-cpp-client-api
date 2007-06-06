@@ -1,25 +1,25 @@
 /*
- * Copyright (C) 2003-2007 Funambol
+ * Copyright (C) 2003-2007 Funambol, Inc.
  *
  * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
+ * it under the terms of the GNU General Public License version 2 as
+ * published by the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY, TITLE, NONINFRINGEMENT or FITNESS FOR A PARTICULAR
+ * PURPOSE.  See the GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ * 02111-1307  USA
  */
- 
- 
+
+
 #include "syncml/core/SyncBody.h"
 #include "base/Log.h"
- 
+
 SyncBody::SyncBody() {
     initialize();
 }
@@ -44,7 +44,7 @@ SyncBody::~SyncBody() {
 */
 SyncBody::SyncBody(ArrayList* commands   , // AbstractCommand[]
                    BOOL       finalMsg) {
-        
+
         initialize();
         setCommands(commands);
         setFinalMsg(finalMsg);
@@ -64,7 +64,7 @@ void SyncBody::initialize() {
 ArrayList* SyncBody::getCommands() {
     return commands;
 }
-    
+
 
 /**
 * Sets the sequenced commands. The given commands must be of the allowed
@@ -78,15 +78,15 @@ void SyncBody::setCommands(ArrayList* commands) {
     if (commands == NULL) {
         LOG.error("SyncBody::setCommands: null command list");
         err = TRUE;
-    }        
+    }
     for (int i = 0; i < commands->size(); i++) {
         if (commands->get(i) == NULL) {
             LOG.error("SyncBody::setCommands: command %d is null.", i);
             err = TRUE;
-        } 
+        }
     }
     if (err == FALSE) {
-        this->commands->clear(); 
+        this->commands->clear();
         this->commands = commands->clone();
     }
 }
@@ -101,7 +101,7 @@ void SyncBody::setFinalMsg(BOOL finalMsg) {
         this->finalMsg = NULL;
     } else {
         this->finalMsg = finalMsg;
-    }  
+    }
 }
 
 /**

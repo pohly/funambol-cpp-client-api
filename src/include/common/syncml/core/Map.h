@@ -1,19 +1,19 @@
 /*
- * Copyright (C) 2003-2007 Funambol
+ * Copyright (C) 2003-2007 Funambol, Inc
  *
  * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
+ * it under the terms of the GNU General Public License version 2 as
+ * published by the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY, TITLE, NONINFRINGEMENT or FITNESS FOR A PARTICULAR
+ * PURPOSE.  See the GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ * 02111-1307  USA
  */
 
 
@@ -28,7 +28,7 @@
 #define MAP_COMMAND_NAME "Map"
 
 class Map : public AbstractCommand {
-    
+
      // ------------------------------------------------------------ Private data
     private:
         char*  COMMAND_NAME;
@@ -36,15 +36,15 @@ class Map : public AbstractCommand {
         Source*    source;
         ArrayList* mapItems; //MapItem[]
         void initialize();
-    
+
     public:
-    
-    
+
+
         // ------------------------------------------------------------ Constructors
-    
+
         Map();
         ~Map();
-    
+
         /**
          * Creates a new Map commands from its constituent information.
          *
@@ -62,14 +62,14 @@ class Map : public AbstractCommand {
             Cred* cred,
             Meta* meta,
             ArrayList* mapItems);
-          
+
         /**
          * Returns the target property
          * @return the target property
          *
          */
         Target* getTarget();
-    
+
         /**
          * Sets the target property
          *
@@ -77,14 +77,14 @@ class Map : public AbstractCommand {
          *
          */
         void setTarget(Target* target);
-    
+
         /**
          * Returns the source property
          * @return the source property
          *
          */
         Source* getSource();
-    
+
         /**
          * Sets the source property
          *
@@ -92,7 +92,7 @@ class Map : public AbstractCommand {
          *
          */
         void setSource(Source* source);
-    
+
         /**
          * Returns the map items
          *
@@ -100,7 +100,7 @@ class Map : public AbstractCommand {
          *
          */
         ArrayList* getMapItems();
-    
+
         /**
          * Sets the mapItems property
          *
@@ -108,14 +108,14 @@ class Map : public AbstractCommand {
          *
          */
         void setMapItems(ArrayList* mapItems);
-       
+
         /**
          * Returns the command name
          *
          * @return the command name
          */
         const char* getName();
-    
+
         ArrayElement* clone();
 };
 
