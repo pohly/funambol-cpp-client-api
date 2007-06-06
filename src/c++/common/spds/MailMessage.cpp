@@ -571,8 +571,8 @@ int MailMessage::parse(const char *rfc2822, size_t len) {
 
     size_t hdrlen = getHeadersLen(s, newline);
 
-    StringBuffer headers = s.substr(0, hdrlen);
-    StringBuffer rfcbody = s.substr(hdrlen);
+    StringBuffer headers = s.substr(0, hdrlen);    
+    StringBuffer rfcbody;
 
     rc = parseHeaders(headers);
     if(rc)
@@ -580,9 +580,13 @@ int MailMessage::parse(const char *rfc2822, size_t len) {
 
     if(contentType.ifind(MULTIPART) != StringBuffer::npos) {
         // Multipart message
+        rfcbody = s.substr(hdrlen);
         rc= parseBodyParts(rfcbody);
     }
     else {
+        // go to the beginning of the body
+        hdrlen = hdrlen + strlen(newline) + strlen(newline);
+        rfcbody = s.substr(hdrlen);
         body.setMimeType(contentType);
         // FIXME: handle all encodings, not only quoted-printable
         if( strcmp(body.getEncoding(), "quoted-printable") == 0 ) {
