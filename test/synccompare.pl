@@ -112,7 +112,7 @@ sub Normalize {
     # remove fields which may differ
     s/^(PRODID|CREATED|DTSTAMP|LAST-MODIFIED|REV):.*\r?\n?//gm;
     # remove optional fields
-    s/^(METHOD|X-WSS-COMPONENT|X-WSS-LUID):.*\r?\n?//gm;
+    s/^(METHOD|X-WSS-[A-Z]*):.*\r?\n?//gm;
 
     if ($scheduleworld || $egroupware || $synthesis) {
       # does not preserve X-EVOLUTION-UI-SLOT=
@@ -147,6 +147,8 @@ sub Normalize {
       if (/This is a test case which uses almost all Evolution fields/) {
         next;
       }
+      # breaks lines at semicolons, which adds white space
+      while( s/^ADR:(.*); +/ADR:$1;/gm ) {}
     }
 
     if ($egroupware) {

@@ -101,7 +101,7 @@ CALURI:
 FBURL:
 X-EVOLUTION-VIDEO-URL:
 X-MOZILLA-HTML:FALSE
-ADR;TYPE=HOME:test 5;Line 2\n;Umlaut Ä in Line 1;test 1;test 3;test 2;test 4
+ADR;TYPE=HOME:test 5;Line 2;Umlaut Ä in Line 1;test 1;test 3;test 2;test 4
 LABEL;TYPE=HOME:Umlaut Ä in Line 1\nLine 2\n\ntest 1\, test 3\ntest 2\ntest 5\ntest 4
 UID:pas-id-43C0EF0A00000002
 END:VCARD
