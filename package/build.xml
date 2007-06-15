@@ -20,14 +20,14 @@
  
  <?html version="1.0" enconding="UTF-8"?>
 
-<!-- $Id: build.xml,v 1.7 2007-06-06 08:36:01 mvitolo Exp $
+<!-- $Id: build.xml,v 1.8 2007-06-15 09:33:46 magi Exp $
 =============================================================================
 Forge file for Funambol C++ API
 
 =============================================================================
 -->
 
-<project basedir="." default="all" name="Funambol SDK C++ ">
+<project basedir="." default="inform" name="Funambol SDK C++ ">
 
     <!--
     ========================================================================
@@ -46,6 +46,14 @@ Forge file for Funambol C++ API
 
     </target>
 
+    
+  <target name="inform">       
+    <echo message="*******************************************"/>
+       <echo message=""/> 
+       <echo message="To forge without doxygen docs  : all"/>
+       <echo message="To forge with doxygen docs     : all-docs"/>       
+    <echo message="*******************************************"/>
+    </target>        
     <!--
     ========================================================================
       ALL
