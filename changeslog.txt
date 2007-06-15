@@ -6,6 +6,7 @@ Funambol SDK C++ 6.0.9
     - magi: copyright header updated.
     - magi: fixed suport for obsolete RFC2822 date syntax
     - magi: fixed enpty line at the beginning of the message
+    - magi: updated ant build 
     - teo: demo client updated
     - teo: compression of the tcp stream made configurable (for the adapter
            with compression support)
