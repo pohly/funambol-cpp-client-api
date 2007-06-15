@@ -1,3 +1,16 @@
+Funambol SDK C++ 6.0.9
+-----------------------
+
+2007-06-13
+    - gazza: old platforms removed.
+    - magi: copyright header updated.
+    - magi: fixed suport for obsolete RFC2822 date syntax
+    - magi: fixed enpty line at the beginning of the message
+    - teo: demo client updated
+    - teo: compression of the tcp stream made configurable (for the adapter
+           with compression support)
+    - pohly: tests updated
+
 Funambol SDK C++ 6.0.8
 -----------------------
 
