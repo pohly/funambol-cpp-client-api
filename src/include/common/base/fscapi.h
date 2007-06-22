@@ -38,10 +38,11 @@
     #include "base/errors.h"
 
     #if defined(_WIN32_WCE) || defined(WIN32)
-        // Insert your headers here
+        // Windows common stuff
         #define WIN32_LEAN_AND_MEAN     // Exclude rarely-used stuff from Windows headers
 
         #include <windows.h>
+        #include "base/winadapter.h"
     #endif
 
     #if defined(WIN32)
@@ -52,12 +53,10 @@
         #include <wchar.h>
         #include <time.h>
         #include <stdlib.h>
-        #include "base/win32adapter.h"
     #endif
 
     #ifdef _WIN32_WCE
         #include "base/time.h"
-        #include "base/winmobileadapter.h"
     #endif
 
     #if defined(__PALMOS__)
