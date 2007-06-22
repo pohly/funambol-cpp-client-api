@@ -2233,11 +2233,12 @@ DevInf *SyncManager::createDeviceInfo()
     };
 
     ArrayList dataStores;
-    for (SyncSource **source = sources;
-         *source;
-         source++) {
+
+    for (unsigned int k=0; k < config.getSyncSourceConfigsCount(); k++) {
+        SyncSourceConfig* ssconfig = config.getSyncSourceConfig(k);
+        
         ArrayList syncModeList;
-        const char *syncModes = (*source)->getConfig().getSyncModes();
+        const char *syncModes = ssconfig->getSyncModes();
         if (syncModes) {
             char buffer[80];
             const char *mode = syncModes;
@@ -2277,21 +2278,20 @@ DevInf *SyncManager::createDeviceInfo()
             }
         }
 
-        char* name = toMultibyte((*source)->getName());
+        const char* name = ssconfig->getName();
         SourceRef sourceRef(name);
-        delete [] name; name = NULL;
 
-        rxType = (*source)->getConfig().getType();
-        txType = (*source)->getConfig().getType();
-        rxVer  = (*source)->getConfig().getVersion();
-        txVer  = (*source)->getConfig().getVersion();
+        rxType = ssconfig->getType();
+        txType = ssconfig->getType();
+        rxVer  = ssconfig->getVersion();
+        txVer  = ssconfig->getVersion();
 
         ContentTypeInfo rxPref(rxType, rxVer);
         ArrayList rx;
-        fillContentTypeInfoList(rx, (*source)->getConfig().getSupportedTypes());
+        fillContentTypeInfoList(rx, ssconfig->getSupportedTypes());
         ContentTypeInfo txPref(txType, txVer);
         ArrayList tx;
-        fillContentTypeInfoList(tx, (*source)->getConfig().getSupportedTypes());
+        fillContentTypeInfoList(tx, ssconfig->getSupportedTypes());
         SyncCap syncCap(&syncModeList);
         DataStore dataStore(&sourceRef,
                             NULL,
