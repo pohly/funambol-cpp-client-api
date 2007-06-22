@@ -1,3 +1,10 @@
+2007-06-22
+    - toccy: win32 and winmobile source files has been unified under 'windows' dir.
+             WinTransportAgent reworked to be used both by Win32 and Winmobile plugins.
+    - toccy: devinfo is sent with informations for all sources, not only the ones currently synchronized.
+             So it will not be sent again if we add/remove a source from synchronization.
+
+
 Funambol SDK C++ 6.0.9
 -----------------------
 
