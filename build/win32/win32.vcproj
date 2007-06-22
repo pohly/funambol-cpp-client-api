@@ -42,7 +42,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="..\..\src\include\common;..\..\src\include\win32;&quot;..\..\..\..\..\cppunit-1.12.0\include&quot;;..\..\..\..\tools\zlib"
+				AdditionalIncludeDirectories="..\..\src\include\common;..\..\src\include\windows;&quot;..\..\..\..\..\cppunit-1.12.0\include&quot;;..\..\..\..\tools\zlib"
 				PreprocessorDefinitions="WIN32;_DEBUG;_MBCS;UNICODE;_LIB;NO_CRIT_MSGBOX;_CRT_SECURE_NO_DEPRECATE;_CRT_NON_CONFORMING_SWPRINTFS;DISABLE_UNIT_TESTS;USE_ZLIB"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
@@ -242,26 +242,8 @@
 					</FileConfiguration>
 				</File>
 				<File
-					RelativePath="..\..\src\c++\win32\base\Log.cpp"
+					RelativePath="..\..\src\c++\windows\base\Log.cpp"
 					>
-					<FileConfiguration
-						Name="Debug|Win32"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-							AdditionalIncludeDirectories=""
-							PreprocessorDefinitions=""
-						/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Release|Win32"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-							AdditionalIncludeDirectories=""
-							PreprocessorDefinitions=""
-						/>
-					</FileConfiguration>
 				</File>
 				<File
 					RelativePath="..\..\src\c++\common\base\LogErrorHandler.cpp"
@@ -308,7 +290,7 @@
 					</FileConfiguration>
 				</File>
 				<File
-					RelativePath="..\..\src\c++\win32\base\memTracker.cpp"
+					RelativePath="..\..\src\c++\windows\base\MemTracker.cpp"
 					>
 				</File>
 				<File
@@ -316,26 +298,8 @@
 					>
 				</File>
 				<File
-					RelativePath="..\..\src\c++\win32\base\win32adapter.cpp"
+					RelativePath="..\..\src\c++\windows\base\winadapter.cpp"
 					>
-					<FileConfiguration
-						Name="Debug|Win32"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-							AdditionalIncludeDirectories=""
-							PreprocessorDefinitions=""
-						/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Release|Win32"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-							AdditionalIncludeDirectories=""
-							PreprocessorDefinitions=""
-						/>
-					</FileConfiguration>
 				</File>
 				<Filter
 					Name="util"
@@ -560,15 +524,15 @@
 					</FileConfiguration>
 				</File>
 				<File
-					RelativePath="..\..\src\c++\win32\http\TransportAgentFactory.cpp"
+					RelativePath="..\..\src\c++\windows\http\TransportAgentFactory.cpp"
 					>
 					<FileConfiguration
 						Name="Debug|Win32"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
-							AdditionalIncludeDirectories=""
-							PreprocessorDefinitions=""
+							ObjectFile="$(IntDir)\$(InputName)1.obj"
+							XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
 						/>
 					</FileConfiguration>
 					<FileConfiguration
@@ -576,8 +540,8 @@
 						>
 						<Tool
 							Name="VCCLCompilerTool"
-							AdditionalIncludeDirectories=""
-							PreprocessorDefinitions=""
+							ObjectFile="$(IntDir)\$(InputName)1.obj"
+							XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
 						/>
 					</FileConfiguration>
 				</File>
@@ -604,26 +568,8 @@
 					</FileConfiguration>
 				</File>
 				<File
-					RelativePath="..\..\src\c++\win32\http\Win32TransportAgent.cpp"
+					RelativePath="..\..\src\c++\windows\http\WinTransportAgent.cpp"
 					>
-					<FileConfiguration
-						Name="Debug|Win32"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-							AdditionalIncludeDirectories=""
-							PreprocessorDefinitions=""
-						/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Release|Win32"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-							AdditionalIncludeDirectories=""
-							PreprocessorDefinitions=""
-						/>
-					</FileConfiguration>
 				</File>
 			</Filter>
 			<Filter
@@ -660,26 +606,8 @@
 				Name="spdm"
 				>
 				<File
-					RelativePath="..\..\src\c++\win32\spdm\DeviceManagementNode.cpp"
+					RelativePath="..\..\src\c++\windows\spdm\DeviceManagementNode.cpp"
 					>
-					<FileConfiguration
-						Name="Debug|Win32"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-							AdditionalIncludeDirectories=""
-							PreprocessorDefinitions=""
-						/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Release|Win32"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-							AdditionalIncludeDirectories=""
-							PreprocessorDefinitions=""
-						/>
-					</FileConfiguration>
 				</File>
 				<File
 					RelativePath="..\..\src\c++\common\spdm\DMtree.cpp"
@@ -704,26 +632,8 @@
 					</FileConfiguration>
 				</File>
 				<File
-					RelativePath="..\..\src\c++\win32\spdm\DMTreeFactory.cpp"
+					RelativePath="..\..\src\c++\windows\spdm\DMTreeFactory.cpp"
 					>
-					<FileConfiguration
-						Name="Debug|Win32"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-							AdditionalIncludeDirectories=""
-							PreprocessorDefinitions=""
-						/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Release|Win32"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-							AdditionalIncludeDirectories=""
-							PreprocessorDefinitions=""
-						/>
-					</FileConfiguration>
 				</File>
 				<File
 					RelativePath="..\..\src\c++\common\spdm\ManagementNode.cpp"
@@ -838,11 +748,11 @@
 					>
 				</File>
 				<File
-					RelativePath="..\..\src\c++\win32\spds\DESDecoder.cpp"
+					RelativePath="..\..\src\c++\windows\spds\DESDecoder.cpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\src\c++\win32\spds\DESEncoder.cpp"
+					RelativePath="..\..\src\c++\windows\spds\DESEncoder.cpp"
 					>
 				</File>
 				<File
