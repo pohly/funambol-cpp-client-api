@@ -61,7 +61,7 @@
 				ExecutionBucket="7"
 				Optimization="2"
 				InlineFunctionExpansion="1"
-				AdditionalIncludeDirectories="..\..\src\include\winmobile,..\..\src\include\common,..\..\..\tools\zlib"
+				AdditionalIncludeDirectories="..\..\src\include\windows,..\..\src\include\common,..\..\..\..\tools\zlib"
 				PreprocessorDefinitions="USE_ZLIB;_WIN32_WCE=$(CEVER);$(CePlatform);NDEBUG;ARM;_ARM_;ARMV4;UNDER_CE=$(CEVER);UNICODE;_LIB"
 				StringPooling="true"
 				RuntimeLibrary="0"
@@ -147,7 +147,7 @@
 				ExecutionBucket="7"
 				Optimization="2"
 				InlineFunctionExpansion="1"
-				AdditionalIncludeDirectories="..\..\src\include\winmobile,..\..\src\include\common,..\..\..\tools\zlib"
+				AdditionalIncludeDirectories="..\..\src\include\windows;..\..\src\include\common;..\..\..\..\tools\zlib"
 				PreprocessorDefinitions="USE_ZLIB;_WIN32_WCE=$(CEVER);$(CePlatform);NDEBUG;ARM;_ARM_;ARMV4;UNDER_CE=$(CEVER);UNICODE;_LIB"
 				StringPooling="true"
 				RuntimeLibrary="0"
@@ -234,7 +234,7 @@
 				ExecutionBucket="7"
 				Optimization="2"
 				InlineFunctionExpansion="1"
-				AdditionalIncludeDirectories="..\..\src\include\winmobile,..\..\src\include\common,..\..\..\tools\zlib"
+				AdditionalIncludeDirectories="..\..\src\include\windows,..\..\src\include\common,..\..\..\..\tools\zlib"
 				PreprocessorDefinitions="USE_ZLIB;_WIN32_WCE=$(CEVER);$(CePlatform);NDEBUG;ARM;_ARM_;ARMV4;UNDER_CE=$(CEVER);UNICODE;_LIB"
 				StringPooling="true"
 				RuntimeLibrary="0"
@@ -322,7 +322,7 @@
 				ExecutionBucket="7"
 				Optimization="2"
 				InlineFunctionExpansion="1"
-				AdditionalIncludeDirectories="..\..\src\include\winmobile,..\..\src\include\common,..\..\..\tools\zlib"
+				AdditionalIncludeDirectories="..\..\src\include\windows,..\..\src\include\common,..\..\..\..\tools\zlib"
 				PreprocessorDefinitions="USE_ZLIB;_WIN32_WCE=$(CEVER);$(CePlatform);NDEBUG;ARM;_ARM_;ARMV4;UNDER_CE=$(CEVER);UNICODE;_LIB"
 				StringPooling="true"
 				RuntimeLibrary="0"
@@ -409,7 +409,7 @@
 				Name="VCCLCompilerTool"
 				ExecutionBucket="7"
 				Optimization="0"
-				AdditionalIncludeDirectories="..\..\src\include\winmobile,..\..\src\include\common,..\..\..\tools\zlib"
+				AdditionalIncludeDirectories="..\..\src\include\windows,..\..\src\include\common,..\..\..\..\tools\zlib"
 				PreprocessorDefinitions="USE_ZLIB;DEBUG;_WIN32_WCE=$(CEVER);$(CePlatform);ARM;_ARM_;ARMV4;UNDER_CE=$(CEVER);UNICODE;_LIB"
 				RuntimeLibrary="1"
 				EnableFunctionLevelLinking="true"
@@ -580,7 +580,7 @@
 				Name="VCCLCompilerTool"
 				ExecutionBucket="7"
 				Optimization="0"
-				AdditionalIncludeDirectories="..\..\src\include\winmobile,..\..\src\include\common,..\..\..\tools\zlib"
+				AdditionalIncludeDirectories="..\..\src\include\windows,..\..\src\include\common,..\..\..\..\tools\zlib"
 				PreprocessorDefinitions="DEBUG;USE_ZLIB;_WIN32_WCE=$(CEVER);$(CePlatform);ARM;_ARM_;ARMV4;UNDER_CE=$(CEVER);UNICODE;_LIB"
 				RuntimeLibrary="1"
 				BufferSecurityCheck="false"
@@ -667,7 +667,7 @@
 				Name="VCCLCompilerTool"
 				ExecutionBucket="7"
 				Optimization="0"
-				AdditionalIncludeDirectories="..\..\src\include\winmobile,..\..\src\include\common,..\..\..\tools\zlib"
+				AdditionalIncludeDirectories="..\..\src\include\windows,..\..\src\include\common,..\..\..\..\tools\zlib"
 				PreprocessorDefinitions="USE_ZLIB;DEBUG;_WIN32_WCE=$(CEVER);$(CePlatform);ARM;_ARM_;ARMV4;UNDER_CE=$(CEVER);UNICODE;_LIB"
 				RuntimeLibrary="1"
 				EnableFunctionLevelLinking="true"
@@ -756,7 +756,7 @@
 				ExecutionBucket="7"
 				Optimization="2"
 				InlineFunctionExpansion="1"
-				AdditionalIncludeDirectories="..\..\src\include\winmobile,..\..\src\include\common,..\..\..\tools\zlib"
+				AdditionalIncludeDirectories="..\..\src\include\windows,..\..\src\include\common,..\..\..\..\tools\zlib"
 				PreprocessorDefinitions="USE_ZLIB;_WIN32_WCE=$(CEVER);$(CePlatform);NDEBUG;ARM;_ARM_;ARMV4;UNDER_CE=$(CEVER);UNICODE;_LIB"
 				StringPooling="true"
 				RuntimeLibrary="0"
@@ -843,7 +843,7 @@
 				ExecutionBucket="7"
 				Optimization="2"
 				InlineFunctionExpansion="1"
-				AdditionalIncludeDirectories="..\..\src\include\winmobile,..\..\src\include\common,..\..\..\tools\zlib"
+				AdditionalIncludeDirectories="..\..\src\include\windows,..\..\src\include\common,..\..\..\..\tools\zlib"
 				PreprocessorDefinitions="USE_ZLIB;_WIN32_WCE=$(CEVER);$(CePlatform);NDEBUG;ARM;_ARM_;ARMV4;UNDER_CE=$(CEVER);UNICODE;_LIB"
 				StringPooling="true"
 				RuntimeLibrary="0"
@@ -930,7 +930,7 @@
 				Name="VCCLCompilerTool"
 				ExecutionBucket="7"
 				Optimization="0"
-				AdditionalIncludeDirectories="..\..\src\include\winmobile,..\..\src\include\common,..\..\..\tools\zlib"
+				AdditionalIncludeDirectories="..\..\src\include\windows,..\..\src\include\common,..\..\..\..\tools\zlib"
 				PreprocessorDefinitions="DEBUG;USE_ZLIB;_WIN32_WCE=$(CEVER);$(CePlatform);ARM;_ARM_;ARMV4;UNDER_CE=$(CEVER);UNICODE;_LIB"
 				RuntimeLibrary="1"
 				BufferSecurityCheck="false"
@@ -1017,7 +1017,7 @@
 				Name="VCCLCompilerTool"
 				ExecutionBucket="7"
 				Optimization="0"
-				AdditionalIncludeDirectories="..\..\src\include\winmobile,..\..\src\include\common,..\..\..\tools\zlib"
+				AdditionalIncludeDirectories="..\..\src\include\windows,..\..\src\include\common,..\..\..\..\tools\zlib"
 				PreprocessorDefinitions="USE_ZLIB;DEBUG;_WIN32_WCE=$(CEVER);$(CePlatform);ARM;_ARM_;ARMV4;UNDER_CE=$(CEVER);UNICODE;_LIB"
 				RuntimeLibrary="1"
 				EnableFunctionLevelLinking="true"
@@ -18468,10 +18468,6 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\include\common\spds\constants.h"
-				>
-			</File>
-			<File
 				RelativePath="..\..\src\include\common\http\constants.h"
 				>
 			</File>
@@ -18481,6 +18477,10 @@
 			</File>
 			<File
 				RelativePath="..\..\src\include\common\spdm\constants.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\include\common\spds\constants.h"
 				>
 			</File>
 			<File
@@ -18544,10 +18544,6 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\include\common\spds\errors.h"
-				>
-			</File>
-			<File
 				RelativePath="..\..\src\include\common\spdm\errors.h"
 				>
 			</File>
@@ -18557,6 +18553,10 @@
 			</File>
 			<File
 				RelativePath="..\..\src\include\common\http\errors.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\include\common\spds\errors.h"
 				>
 			</File>
 			<File
