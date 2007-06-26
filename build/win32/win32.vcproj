@@ -118,7 +118,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="2"
 				InlineFunctionExpansion="1"
-				AdditionalIncludeDirectories="..\,..\..\src\include\win32,..\..\src\include\common;..\..\..\..\tools\zlib"
+				AdditionalIncludeDirectories="..\,..\..\src\include\windows,..\..\src\include\common;..\..\..\..\tools\zlib"
 				PreprocessorDefinitions="WIN32;NDEBUG;UNICODE;_LIB;_CRT_SECURE_NO_DEPRECATE;_CRT_NON_CONFORMING_SWPRINTFS;USE_ZLIB"
 				StringPooling="true"
 				RuntimeLibrary="0"
