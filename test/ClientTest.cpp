@@ -135,743 +135,959 @@ static void importItem(SyncSource *source, std::string &data)
     }
 }
 
-    /** adds the supported tests to the instance itself */
-    void LocalTests::addTests() {
-        if (config.createSourceA) {
-            ADD_TEST(LocalTests, testOpen);
-            ADD_TEST(LocalTests, testIterateTwice);
-            if (config.insertItem) {
-                ADD_TEST(LocalTests, testSimpleInsert);
-                ADD_TEST(LocalTests, testLocalDeleteAll);
-                ADD_TEST(LocalTests, testComplexInsert);
+/** adds the supported tests to the instance itself */
+void LocalTests::addTests() {
+    if (config.createSourceA) {
+        ADD_TEST(LocalTests, testOpen);
+        ADD_TEST(LocalTests, testIterateTwice);
+        if (config.insertItem) {
+            ADD_TEST(LocalTests, testSimpleInsert);
+            ADD_TEST(LocalTests, testLocalDeleteAll);
+            ADD_TEST(LocalTests, testComplexInsert);
 
-                if (config.updateItem) {
-                    ADD_TEST(LocalTests, testLocalUpdate);
+            if (config.updateItem) {
+                ADD_TEST(LocalTests, testLocalUpdate);
 
-                    if (config.createSourceB) {
-                        ADD_TEST(LocalTests, testChanges);
-                    }
+                if (config.createSourceB) {
+                    ADD_TEST(LocalTests, testChanges);
                 }
+            }
 
-                if (config.import &&
-                    config.dump &&
-                    config.compare &&
-                    config.testcases) {
-                    ADD_TEST(LocalTests, testImport);
-                    ADD_TEST(LocalTests, testImportDelete);
-                }
+            if (config.import &&
+                config.dump &&
+                config.compare &&
+                config.testcases) {
+                ADD_TEST(LocalTests, testImport);
+                ADD_TEST(LocalTests, testImportDelete);
+            }
 
-                if (config.templateItem &&
-                    config.uniqueProperties) {
-                    ADD_TEST(LocalTests, testManyChanges);
-                }
+            if (config.templateItem &&
+                config.uniqueProperties) {
+                ADD_TEST(LocalTests, testManyChanges);
             }
         }
     }
+}
 
-    /**
-     * opens source and inserts the given item; can be called
-     * regardless whether the data source already contains items or not
-     *
-     * The type of the item is unset; it is assumed that the source
-     * can handle that.
-     */
-    void LocalTests::insert(CreateSource createSource, const char *data) {
-        // create source
-        std::auto_ptr<SyncSource> source(createSource());
-        CPPUNIT_ASSERT(source.get() != 0);
+/**
+ * opens source and inserts the given item; can be called
+ * regardless whether the data source already contains items or not
+ *
+ * The type of the item is unset; it is assumed that the source
+ * can handle that.
+ */
+void LocalTests::insert(CreateSource createSource, const char *data) {
+    // create source
+    std::auto_ptr<SyncSource> source(createSource());
+    CPPUNIT_ASSERT(source.get() != 0);
 
-        // count number of already existing items
-        SOURCE_ASSERT(source.get(), source->beginSync() == 0);
-        int numItems;
-        CPPUNIT_ASSERT_NO_THROW(numItems = countItems(source.get()));
-        SyncItem item;
-        item.setData(data, (long)strlen(data));
-        int status;
-        SOURCE_ASSERT_NO_FAILURE(source.get(), status = source->addItem(item));
-        CPPUNIT_ASSERT(item.getKey() != 0);
-        CPPUNIT_ASSERT(wcslen(item.getKey()) > 0);
-        SOURCE_ASSERT(source.get(), source->endSync() == 0);
+    // count number of already existing items
+    SOURCE_ASSERT(source.get(), source->beginSync() == 0);
+    int numItems;
+    CPPUNIT_ASSERT_NO_THROW(numItems = countItems(source.get()));
+    SyncItem item;
+    item.setData(data, (long)strlen(data));
+    int status;
+    SOURCE_ASSERT_NO_FAILURE(source.get(), status = source->addItem(item));
+    CPPUNIT_ASSERT(item.getKey() != 0);
+    CPPUNIT_ASSERT(wcslen(item.getKey()) > 0);
+    SOURCE_ASSERT(source.get(), source->endSync() == 0);
 
-        // delete source again
-        CPPUNIT_ASSERT_NO_THROW(source.reset());
+    // delete source again
+    CPPUNIT_ASSERT_NO_THROW(source.reset());
 
-        // two possible results:
-        // - a new item was added
-        // - the item was matched against an existing one
-        CPPUNIT_ASSERT_NO_THROW(source.reset(createSource()));
-        CPPUNIT_ASSERT(source.get() != 0);
-        SOURCE_ASSERT(source.get(), source->beginSync() == 0);
-        CPPUNIT_ASSERT(status == STC_OK || status == STC_ITEM_ADDED || status == STC_CONFLICT_RESOLVED_WITH_MERGE);
-        CPPUNIT_ASSERT_EQUAL(numItems + (status == STC_CONFLICT_RESOLVED_WITH_MERGE ? 0 : 1),
-                             countItems(source.get()));
-        CPPUNIT_ASSERT(countNewItems(source.get()) == 0);
-        CPPUNIT_ASSERT(countUpdatedItems(source.get()) == 0);
-        CPPUNIT_ASSERT(countDeletedItems(source.get()) == 0);
-        SOURCE_ASSERT(source.get(), source->endSync() == 0 );
-        CPPUNIT_ASSERT_NO_THROW(source.reset());
+    // two possible results:
+    // - a new item was added
+    // - the item was matched against an existing one
+    CPPUNIT_ASSERT_NO_THROW(source.reset(createSource()));
+    CPPUNIT_ASSERT(source.get() != 0);
+    SOURCE_ASSERT(source.get(), source->beginSync() == 0);
+    CPPUNIT_ASSERT(status == STC_OK || status == STC_ITEM_ADDED || status == STC_CONFLICT_RESOLVED_WITH_MERGE);
+    CPPUNIT_ASSERT_EQUAL(numItems + (status == STC_CONFLICT_RESOLVED_WITH_MERGE ? 0 : 1),
+                         countItems(source.get()));
+    CPPUNIT_ASSERT(countNewItems(source.get()) == 0);
+    CPPUNIT_ASSERT(countUpdatedItems(source.get()) == 0);
+    CPPUNIT_ASSERT(countDeletedItems(source.get()) == 0);
+    SOURCE_ASSERT(source.get(), source->endSync() == 0 );
+    CPPUNIT_ASSERT_NO_THROW(source.reset());
 
 #if 0
-        /* source.createItem() is a SyncEvolution extension which cannot be used here */
-        SyncItem *sameItem;
-        SOURCE_ASSERT_NO_FAILURE(
-            source,
-            sameItem = source.createItem(item.getKey(), item.getState()));
-        CPPUNIT_ASSERT(sameItem != 0);
-        CPPUNIT_ASSERT(!strcmp( sameItem->getKey(), item.getKey()));
-        delete sameItem;
+    /* source.createItem() is a SyncEvolution extension which cannot be used here */
+    SyncItem *sameItem;
+    SOURCE_ASSERT_NO_FAILURE(
+        source,
+        sameItem = source.createItem(item.getKey(), item.getState()));
+    CPPUNIT_ASSERT(sameItem != 0);
+    CPPUNIT_ASSERT(!strcmp( sameItem->getKey(), item.getKey()));
+    delete sameItem;
 #endif
-    }
+}
 
-    /**
-     * assumes that exactly one element is currently inserted and updates it with the given item
-     *
-     * The type of the item is cleared, as in insert() above.
-     */
-    void LocalTests::update(CreateSource createSource, const char *data) {
-        CPPUNIT_ASSERT(createSource.createSource);
-        CPPUNIT_ASSERT(data);
+/**
+ * assumes that exactly one element is currently inserted and updates it with the given item
+ *
+ * The type of the item is cleared, as in insert() above.
+ */
+void LocalTests::update(CreateSource createSource, const char *data) {
+    CPPUNIT_ASSERT(createSource.createSource);
+    CPPUNIT_ASSERT(data);
 
-        // create source
-        std::auto_ptr<SyncSource> source(createSource());
-        CPPUNIT_ASSERT(source.get() != 0);
-        SOURCE_ASSERT(source.get(), source->beginSync() == 0);
+    // create source
+    std::auto_ptr<SyncSource> source(createSource());
+    CPPUNIT_ASSERT(source.get() != 0);
+    SOURCE_ASSERT(source.get(), source->beginSync() == 0);
 
-        // get existing item, then update it
-        SOURCE_ASSERT(source.get(), source->beginSync() == 0 );
-        std::auto_ptr<SyncItem> item;
-        SOURCE_ASSERT_NO_FAILURE(source.get(), item.reset(source->getFirstItem()) );
-        CPPUNIT_ASSERT(item.get());
-        item->setData(data, (long)strlen(data) + 1);
-        item->setDataType(TEXT(""));
-        SOURCE_ASSERT_EQUAL(source.get(), (int)STC_OK, source->updateItem(*item));
-        SOURCE_ASSERT(source.get(), source->endSync() == 0);
-        CPPUNIT_ASSERT_NO_THROW(source.reset());
+    // get existing item, then update it
+    SOURCE_ASSERT(source.get(), source->beginSync() == 0 );
+    std::auto_ptr<SyncItem> item;
+    SOURCE_ASSERT_NO_FAILURE(source.get(), item.reset(source->getFirstItem()) );
+    CPPUNIT_ASSERT(item.get());
+    item->setData(data, (long)strlen(data) + 1);
+    item->setDataType(TEXT(""));
+    SOURCE_ASSERT_EQUAL(source.get(), (int)STC_OK, source->updateItem(*item));
+    SOURCE_ASSERT(source.get(), source->endSync() == 0);
+    CPPUNIT_ASSERT_NO_THROW(source.reset());
 
-        // check that the right changes are reported when reopening the source
-        SOURCE_ASSERT_NO_FAILURE(source.get(), source.reset(createSource()));
-        SOURCE_ASSERT(source.get(), source->beginSync() == 0 );
-        CPPUNIT_ASSERT_EQUAL(1, countItems(source.get()));
-        CPPUNIT_ASSERT_EQUAL(0, countNewItems(source.get()));
-        CPPUNIT_ASSERT_EQUAL(0, countUpdatedItems(source.get()));
-        CPPUNIT_ASSERT_EQUAL(0, countDeletedItems(source.get()));
-        std::auto_ptr<SyncItem> modifiedItem;
-        SOURCE_ASSERT_NO_FAILURE(source.get(), modifiedItem.reset(source->getFirstItem()) );
-        CPPUNIT_ASSERT(modifiedItem.get());
-        CPPUNIT_ASSERT( wcslen( item->getKey() ) );
-        CPPUNIT_ASSERT( !wcscmp( item->getKey(), modifiedItem->getKey() ) );
-    }
+    // check that the right changes are reported when reopening the source
+    SOURCE_ASSERT_NO_FAILURE(source.get(), source.reset(createSource()));
+    SOURCE_ASSERT(source.get(), source->beginSync() == 0 );
+    CPPUNIT_ASSERT_EQUAL(1, countItems(source.get()));
+    CPPUNIT_ASSERT_EQUAL(0, countNewItems(source.get()));
+    CPPUNIT_ASSERT_EQUAL(0, countUpdatedItems(source.get()));
+    CPPUNIT_ASSERT_EQUAL(0, countDeletedItems(source.get()));
+    std::auto_ptr<SyncItem> modifiedItem;
+    SOURCE_ASSERT_NO_FAILURE(source.get(), modifiedItem.reset(source->getFirstItem()) );
+    CPPUNIT_ASSERT(modifiedItem.get());
+    CPPUNIT_ASSERT( wcslen( item->getKey() ) );
+    CPPUNIT_ASSERT( !wcscmp( item->getKey(), modifiedItem->getKey() ) );
+}
 
-    /** deletes all items locally via sync source */
-    void LocalTests::deleteAll(CreateSource createSource) {
-        CPPUNIT_ASSERT(createSource.createSource);
+/** deletes all items locally via sync source */
+void LocalTests::deleteAll(CreateSource createSource) {
+    CPPUNIT_ASSERT(createSource.createSource);
 
-        // create source
-        std::auto_ptr<SyncSource> source(createSource());
-        CPPUNIT_ASSERT(source.get() != 0);
-        SOURCE_ASSERT(source.get(), source->beginSync() == 0);
-
-        // delete all items
-        std::auto_ptr<SyncItem> item;
-        SOURCE_ASSERT_NO_FAILURE(source.get(), item.reset(source->getFirstItem()));
-        while (item.get()) {
-            SOURCE_ASSERT_EQUAL(source.get(), (int)STC_OK, source->deleteItem(*item));
-            SOURCE_ASSERT_NO_FAILURE(source.get(), item.reset(source->getNextItem()));
-        }
-        SOURCE_ASSERT(source.get(), source->endSync() == 0);
-        CPPUNIT_ASSERT_NO_THROW(source.reset());
-
-        // check that all items are gone
-        SOURCE_ASSERT_NO_FAILURE(source.get(), source.reset(createSource()));
-        SOURCE_ASSERT_EQUAL(source.get(), 0, source->beginSync());
-        SOURCE_ASSERT_MESSAGE(
-            "should be empty now",
-            source.get(),
-            countItems(source.get()) == 0);
-        CPPUNIT_ASSERT_EQUAL( 0, countNewItems(source.get()) );
-        CPPUNIT_ASSERT_EQUAL( 0, countUpdatedItems(source.get()) );
-        CPPUNIT_ASSERT_EQUAL( 0, countDeletedItems(source.get()) );
-        SOURCE_ASSERT_EQUAL(source.get(), 0, source->endSync());
-        CPPUNIT_ASSERT_NO_THROW(source.reset());
-    }
-
-    /**
-     * takes two databases, exports them,
-     * then compares them using synccompare
-     *
-     * @param refFile      existing file with source reference items, NULL uses a dump of sync source A instead
-     * @param copy         a sync source which contains the copied items, begin/endSync will be called
-     * @param raiseAssert  raise assertion if comparison yields differences (defaults to true)
-     */
-    void LocalTests::compareDatabases(const char *refFile, SyncSource &copy, bool raiseAssert) {
-        CPPUNIT_ASSERT(config.dump);
-
-        std::string sourceFile, copyFile;
-
-        if (refFile) {
-            sourceFile = refFile;
-        } else {
-            sourceFile = getCurrentTest() + ".source.test.dat";
-            simplifyFilename(sourceFile);
-            std::auto_ptr<SyncSource> source;
-            SOURCE_ASSERT_NO_FAILURE(source.get(), source.reset(createSourceA()));
-            SOURCE_ASSERT_EQUAL(source.get(), 0, source->beginSync());
-            SOURCE_ASSERT_EQUAL(source.get(), 0, config.dump(client, *source.get(), sourceFile.c_str()));
-            SOURCE_ASSERT_EQUAL(source.get(), 0, source->endSync());
-            CPPUNIT_ASSERT_NO_THROW(source.reset());
-        }
-
-        copyFile = getCurrentTest() + ".copy.test.dat";
-        simplifyFilename(copyFile);
-        SOURCE_ASSERT_EQUAL(&copy, 0, copy.beginSync());
-        SOURCE_ASSERT_EQUAL(&copy, 0, config.dump(client, copy, copyFile.c_str()));
-        SOURCE_ASSERT_EQUAL(&copy, 0, copy.endSync());
-
-        CPPUNIT_ASSERT(config.compare(client, sourceFile.c_str(), copyFile.c_str()));
-    }
-
-    /**
-     * insert artificial items, number of them determined by TEST_EVOLUTION_NUM_ITEMS
-     * unless passed explicitly
-     *
-     * @param createSource    a factory for the sync source that is to be used
-     * @param startIndex      IDs are generated starting with this value
-     * @param numItems        number of items to be inserted if non-null, otherwise TEST_EVOLUTION_NUM_ITEMS is used
-     * @param size            minimum size for new items
-     * @return number of items inserted
-     */
-    int LocalTests::insertManyItems(CreateSource createSource, int startIndex, int numItems, int size) {
-        CPPUNIT_ASSERT(config.templateItem);
-        CPPUNIT_ASSERT(config.uniqueProperties);
-
-        std::auto_ptr<SyncSource> source;
-        SOURCE_ASSERT_NO_FAILURE(source.get(), source.reset(createSourceA()));
-        SOURCE_ASSERT_EQUAL(source.get(), 0, source->beginSync());
-        CPPUNIT_ASSERT(startIndex > 1 || !countItems(source.get()));
-
-        int firstIndex = startIndex;
-        if (firstIndex < 0) {
-            firstIndex = 1;
-        }
-        int lastIndex = firstIndex + (numItems >= 1 ? numItems : config.numItems) - 1;
-        for (int item = firstIndex; item <= lastIndex; item++) {
-            std::string data = config.templateItem;
-            std::stringstream prefix;
-
-            prefix << std::setfill('0') << std::setw(3) << item << " ";
-
-
-            const char *prop = config.uniqueProperties;
-            const char *nextProp;
-            while (*prop) {
-                std::string curProp;
-                nextProp = strchr(prop, ':');
-                if (!nextProp) {
-                    curProp = prop;
-                } else {
-                    curProp = std::string(prop, 0, nextProp - prop);
-                }
-
-                std::string property;
-                // property is expected to not start directly at the
-                // beginning
-                property = "\n";
-                property += curProp;
-                property += ":";
-                size_t off = data.find(property);
-                if (off != data.npos) {
-                    data.insert(off + property.size(), prefix.str());
-                }
-
-                if (!nextProp) {
-                    break;
-                }
-                prop = nextProp + 1;
-            }
-            if (size > 0 && (int)data.size() < size) {
-                int additionalBytes = size - (int)data.size();
-                int added = 0;
-                /* vCard 2.1 and vCal 1.0 need quoted-printable line breaks */
-                bool quoted = data.find("VERSION:1.0") != data.npos ||
-                    data.find("VERSION:2.1") != data.npos;
-                size_t toreplace = 1;
-
-                CPPUNIT_ASSERT(config.sizeProperty);
-
-                /* stuff the item so that it reaches at least that size */
-                size_t off = data.find(config.sizeProperty);
-                CPPUNIT_ASSERT(off != data.npos);
-                std::stringstream stuffing;
-                if (quoted) {
-                    stuffing << ";ENCODING=QUOTED-PRINTABLE:";
-                } else {
-                    stuffing << ":";
-                }
-
-                // insert after the first line, it often acts as the summary
-                if (data.find("BEGIN:VJOURNAL") != data.npos) {
-                    size_t start = data.find(":", off);
-                    CPPUNIT_ASSERT( start != data.npos );
-                    size_t eol = data.find("\\n", off);
-                    CPPUNIT_ASSERT( eol != data.npos );
-                    stuffing << data.substr(start + 1, eol - start + 1);
-                    toreplace += eol - start + 1;
-                }
-
-                while(added < additionalBytes) {
-                    int linelen = 0;
-
-                    while(added + 4 < additionalBytes &&
-                          linelen < 60) {
-                        stuffing << 'x';
-                        added++;
-                        linelen++;
-                    }
-                    // insert line breaks to allow folding
-                    if (quoted) {
-                        stuffing << "x=0D=0Ax";
-                        added += 8;
-                    } else {
-                        stuffing << "x\\nx";
-                        added += 4;
-                    }
-                }
-                off = data.find(":", off);
-                data.replace(off, toreplace, stuffing.str());
-            }
-
-            importItem(source.get(), data);
-            data = "";
-        }
-
-        SOURCE_ASSERT_EQUAL(source.get(), 0, source->endSync());
-        CPPUNIT_ASSERT_NO_THROW(source.reset());
-        return lastIndex - firstIndex + 1;
-    }
-
-    // creating sync source
-    void LocalTests::testOpen() {
-        // check requirements
-        CPPUNIT_ASSERT(config.createSourceA);
-
-        std::auto_ptr<SyncSource> source(createSourceA());
-        CPPUNIT_ASSERT(source.get() != 0);
-        CPPUNIT_ASSERT_NO_THROW(source.reset());
-    }
-
-    // restart scanning of items
-    void LocalTests::testIterateTwice() {
-        // check requirements
-        CPPUNIT_ASSERT(config.createSourceA);
-
-        // open source
-        std::auto_ptr<SyncSource> source(createSourceA());
-        SOURCE_ASSERT_EQUAL(source.get(), 0, source->beginSync());
-        SOURCE_ASSERT_MESSAGE(
-            "iterating twice should produce identical results",
-            source.get(),
-            countItems(source.get()) == countItems(source.get()));
-    }
-
-    // insert one contact without clearing the source first
-    void LocalTests::testSimpleInsert() {
-        // check requirements
-        CPPUNIT_ASSERT(config.insertItem);
-        CPPUNIT_ASSERT(config.createSourceA);
-
-        insert(createSourceA, config.insertItem);
-    }
+    // create source
+    std::auto_ptr<SyncSource> source(createSource());
+    CPPUNIT_ASSERT(source.get() != 0);
+    SOURCE_ASSERT(source.get(), source->beginSync() == 0);
 
     // delete all items
-    void LocalTests::testLocalDeleteAll() {
-        // check requirements
-        CPPUNIT_ASSERT(config.insertItem);
-        CPPUNIT_ASSERT(config.createSourceA);
-
-        // make sure there is something to delete, then delete again
-        insert(createSourceA, config.insertItem);
-        deleteAll(createSourceA);
+    std::auto_ptr<SyncItem> item;
+    SOURCE_ASSERT_NO_FAILURE(source.get(), item.reset(source->getFirstItem()));
+    while (item.get()) {
+        SOURCE_ASSERT_EQUAL(source.get(), (int)STC_OK, source->deleteItem(*item));
+        SOURCE_ASSERT_NO_FAILURE(source.get(), item.reset(source->getNextItem()));
     }
+    SOURCE_ASSERT(source.get(), source->endSync() == 0);
+    CPPUNIT_ASSERT_NO_THROW(source.reset());
 
-    // clean database, then insert
-    void LocalTests::testComplexInsert() {
-        testLocalDeleteAll();
-        testSimpleInsert();
-        testIterateTwice();
-    }
+    // check that all items are gone
+    SOURCE_ASSERT_NO_FAILURE(source.get(), source.reset(createSource()));
+    SOURCE_ASSERT_EQUAL(source.get(), 0, source->beginSync());
+    SOURCE_ASSERT_MESSAGE(
+        "should be empty now",
+        source.get(),
+        countItems(source.get()) == 0);
+    CPPUNIT_ASSERT_EQUAL( 0, countNewItems(source.get()) );
+    CPPUNIT_ASSERT_EQUAL( 0, countUpdatedItems(source.get()) );
+    CPPUNIT_ASSERT_EQUAL( 0, countDeletedItems(source.get()) );
+    SOURCE_ASSERT_EQUAL(source.get(), 0, source->endSync());
+    CPPUNIT_ASSERT_NO_THROW(source.reset());
+}
 
-    // clean database, insert item, update it
-    void LocalTests::testLocalUpdate() {
-        // check additional requirements
-        CPPUNIT_ASSERT(config.updateItem);
+/**
+ * takes two databases, exports them,
+ * then compares them using synccompare
+ *
+ * @param refFile      existing file with source reference items, NULL uses a dump of sync source A instead
+ * @param copy         a sync source which contains the copied items, begin/endSync will be called
+ * @param raiseAssert  raise assertion if comparison yields differences (defaults to true)
+ */
+void LocalTests::compareDatabases(const char *refFile, SyncSource &copy, bool raiseAssert) {
+    CPPUNIT_ASSERT(config.dump);
 
-        testLocalDeleteAll();
-        testSimpleInsert();
-        update(createSourceA, config.updateItem);
-    }
+    std::string sourceFile, copyFile;
 
-    // complex sequence of changes
-    void LocalTests::testChanges() {
-        // check additional requirements
-        CPPUNIT_ASSERT(config.createSourceB);
-
-        testLocalDeleteAll();
-        testSimpleInsert();
-
-        // clean changes in sync source B by creating and closing it
-        std::auto_ptr<SyncSource> source;
-        SOURCE_ASSERT_NO_FAILURE(source.get(), source.reset(createSourceB()));
-        SOURCE_ASSERT_EQUAL(source.get(), 0, source->beginSync());
-        SOURCE_ASSERT_EQUAL(source.get(), 0, source->endSync());
-        CPPUNIT_ASSERT_NO_THROW(source.reset());
-
-        // no new changes now
-        SOURCE_ASSERT_NO_FAILURE(source.get(), source.reset(createSourceB()));
-        SOURCE_ASSERT_EQUAL(source.get(), 0, source->beginSync());
-        SOURCE_ASSERT_EQUAL(source.get(), 1, countItems(source.get()));
-        SOURCE_ASSERT_EQUAL(source.get(), 0, countNewItems(source.get()));
-        SOURCE_ASSERT_EQUAL(source.get(), 0, countUpdatedItems(source.get()));
-        SOURCE_ASSERT_EQUAL(source.get(), 0, countDeletedItems(source.get()));
-        std::auto_ptr<SyncItem> item;
-        SOURCE_ASSERT_NO_FAILURE(source.get(), item.reset(source->getFirstItem()));
-        SOURCE_ASSERT_EQUAL(source.get(), 0, source->endSync());
-        CPPUNIT_ASSERT_NO_THROW(source.reset());
-
-        // delete item again via sync source A
-        deleteAll(createSourceA);
-        SOURCE_ASSERT_NO_FAILURE(source.get(), source.reset(createSourceB()));
-        SOURCE_ASSERT_EQUAL(source.get(), 0, source->beginSync());
-        SOURCE_ASSERT_EQUAL(source.get(), 0, countItems(source.get()));
-        SOURCE_ASSERT_EQUAL(source.get(), 0, countNewItems(source.get()));
-        SOURCE_ASSERT_EQUAL(source.get(), 0, countUpdatedItems(source.get()));
-        SOURCE_ASSERT_EQUAL(source.get(), 1, countDeletedItems(source.get()));
-        std::auto_ptr<SyncItem> deletedItem;
-        SOURCE_ASSERT_NO_FAILURE(source.get(), deletedItem.reset(source->getFirstDeletedItem()));
-        CPPUNIT_ASSERT( wcslen( item->getKey() ) );
-        CPPUNIT_ASSERT( wcslen( deletedItem->getKey() ) );
-        CPPUNIT_ASSERT( !wcscmp( item->getKey(), deletedItem->getKey() ) );
-        SOURCE_ASSERT_EQUAL(source.get(), 0, source->endSync());
-        CPPUNIT_ASSERT_NO_THROW(source.reset());
-
-        // insert another item via sync source A
-        testSimpleInsert();
-        SOURCE_ASSERT_NO_FAILURE(source.get(), source.reset(createSourceB()));
-        SOURCE_ASSERT_EQUAL(source.get(), 0, source->beginSync());
-        SOURCE_ASSERT_EQUAL(source.get(), 1, countItems(source.get()));
-        SOURCE_ASSERT_EQUAL(source.get(), 1, countNewItems(source.get()));
-        SOURCE_ASSERT_EQUAL(source.get(), 0, countUpdatedItems(source.get()));
-        SOURCE_ASSERT_EQUAL(source.get(), 0, countDeletedItems(source.get()));
-        SOURCE_ASSERT_NO_FAILURE(source.get(), item.reset(source->getFirstItem()));
-        std::auto_ptr<SyncItem> newItem;
-        SOURCE_ASSERT_NO_FAILURE(source.get(), newItem.reset(source->getFirstNewItem()));
-        CPPUNIT_ASSERT( wcslen( item->getKey() ) );
-        CPPUNIT_ASSERT( wcslen( newItem->getKey() ) );
-        CPPUNIT_ASSERT( !wcscmp( item->getKey(), newItem->getKey() ) );
-        SOURCE_ASSERT_EQUAL(source.get(), 0, source->endSync());
-        CPPUNIT_ASSERT_NO_THROW(source.reset());
-
-        // update item via sync source A
-        update(createSourceA, config.updateItem);
-        SOURCE_ASSERT_NO_FAILURE(source.get(), source.reset(createSourceB()));
-        SOURCE_ASSERT_EQUAL(source.get(), 0, source->beginSync());
-        SOURCE_ASSERT_EQUAL(source.get(), 1, countItems(source.get()));
-        SOURCE_ASSERT_EQUAL(source.get(), 0, countNewItems(source.get()));
-        SOURCE_ASSERT_EQUAL(source.get(), 1, countUpdatedItems(source.get()));
-        SOURCE_ASSERT_EQUAL(source.get(), 0, countDeletedItems(source.get()));
-        std::auto_ptr<SyncItem> updatedItem;
-        SOURCE_ASSERT_NO_FAILURE(source.get(), updatedItem.reset(source->getFirstUpdatedItem()));
-        CPPUNIT_ASSERT( wcslen( item->getKey() ) );
-        CPPUNIT_ASSERT( wcslen( updatedItem->getKey() ) );
-        CPPUNIT_ASSERT( !wcscmp( item->getKey(), updatedItem->getKey() ) );
-        SOURCE_ASSERT_EQUAL(source.get(), 0, source->endSync());
-        CPPUNIT_ASSERT_NO_THROW(source.reset());
-    }
-
-    // clean database, import file, then export again and compare
-    void LocalTests::testImport() {
-        // check additional requirements
-        CPPUNIT_ASSERT(config.import);
-        CPPUNIT_ASSERT(config.dump);
-        CPPUNIT_ASSERT(config.compare);
-        CPPUNIT_ASSERT(config.testcases);
-
-        testLocalDeleteAll();
-
-        // import via sync source A
+    if (refFile) {
+        sourceFile = refFile;
+    } else {
+        sourceFile = getCurrentTest() + ".source.test.dat";
+        simplifyFilename(sourceFile);
         std::auto_ptr<SyncSource> source;
         SOURCE_ASSERT_NO_FAILURE(source.get(), source.reset(createSourceA()));
         SOURCE_ASSERT_EQUAL(source.get(), 0, source->beginSync());
-        SOURCE_ASSERT_EQUAL(source.get(), 0, config.import(client, *source.get(), config.testcases));
+        SOURCE_ASSERT_EQUAL(source.get(), 0, config.dump(client, *source.get(), sourceFile.c_str()));
         SOURCE_ASSERT_EQUAL(source.get(), 0, source->endSync());
         CPPUNIT_ASSERT_NO_THROW(source.reset());
-
-        // export again and compare against original file
-        std::auto_ptr<SyncSource> copy;
-        SOURCE_ASSERT_NO_FAILURE(copy.get(), copy.reset(createSourceA()));
-        compareDatabases(config.testcases, *copy.get());
-        CPPUNIT_ASSERT_NO_THROW(source.reset());
     }
 
-    // same as testImport() with immediate delete
-    void LocalTests::testImportDelete() {
-        testImport();
+    copyFile = getCurrentTest() + ".copy.test.dat";
+    simplifyFilename(copyFile);
+    SOURCE_ASSERT_EQUAL(&copy, 0, copy.beginSync());
+    SOURCE_ASSERT_EQUAL(&copy, 0, config.dump(client, copy, copyFile.c_str()));
+    SOURCE_ASSERT_EQUAL(&copy, 0, copy.endSync());
 
-        // delete again, because it was observed that this did not
-        // work right with calendars in SyncEvolution
-        testLocalDeleteAll();
+    CPPUNIT_ASSERT(config.compare(client, sourceFile.c_str(), copyFile.c_str()));
+}
+
+/**
+ * insert artificial items, number of them determined by TEST_EVOLUTION_NUM_ITEMS
+ * unless passed explicitly
+ *
+ * @param createSource    a factory for the sync source that is to be used
+ * @param startIndex      IDs are generated starting with this value
+ * @param numItems        number of items to be inserted if non-null, otherwise TEST_EVOLUTION_NUM_ITEMS is used
+ * @param size            minimum size for new items
+ * @return number of items inserted
+ */
+int LocalTests::insertManyItems(CreateSource createSource, int startIndex, int numItems, int size) {
+    CPPUNIT_ASSERT(config.templateItem);
+    CPPUNIT_ASSERT(config.uniqueProperties);
+
+    std::auto_ptr<SyncSource> source;
+    SOURCE_ASSERT_NO_FAILURE(source.get(), source.reset(createSourceA()));
+    SOURCE_ASSERT_EQUAL(source.get(), 0, source->beginSync());
+    CPPUNIT_ASSERT(startIndex > 1 || !countItems(source.get()));
+
+    int firstIndex = startIndex;
+    if (firstIndex < 0) {
+        firstIndex = 1;
     }
+    int lastIndex = firstIndex + (numItems >= 1 ? numItems : config.numItems) - 1;
+    for (int item = firstIndex; item <= lastIndex; item++) {
+        std::string data = config.templateItem;
+        std::stringstream prefix;
 
-    // test change tracking with large number of items
-    void LocalTests::testManyChanges() {
-        // check additional requirements
-        CPPUNIT_ASSERT(config.templateItem);
-        CPPUNIT_ASSERT(config.uniqueProperties);
-
-        deleteAll(createSourceA);
-
-        // check that everything is empty, also resets change counter of sync source B
-        std::auto_ptr<SyncSource> copy;
-        SOURCE_ASSERT_NO_FAILURE(copy.get(), copy.reset(createSourceB()));
-        SOURCE_ASSERT_EQUAL(copy.get(), 0, copy->beginSync());
-        SOURCE_ASSERT_EQUAL(copy.get(), 0, countItems(copy.get()));
-        SOURCE_ASSERT_EQUAL(copy.get(), 0, copy->endSync());
-        CPPUNIT_ASSERT_NO_THROW(copy.reset());
-
-        // now insert plenty of items
-        int numItems = insertManyItems(createSourceA);
-
-        // check that exactly this number of items is listed as new
-        SOURCE_ASSERT_NO_FAILURE(copy.get(), copy.reset(createSourceB()));
-        SOURCE_ASSERT_EQUAL(copy.get(), 0, copy->beginSync());
-        SOURCE_ASSERT_EQUAL(copy.get(), numItems, countItems(copy.get()));
-        SOURCE_ASSERT_EQUAL(copy.get(), numItems, countNewItems(copy.get()));
-        SOURCE_ASSERT_EQUAL(copy.get(), 0, countUpdatedItems(copy.get()));
-        SOURCE_ASSERT_EQUAL(copy.get(), 0, countDeletedItems(copy.get()));
-        SOURCE_ASSERT_EQUAL(copy.get(), 0, copy->endSync());
-        CPPUNIT_ASSERT_NO_THROW(copy.reset());
-
-        // delete all items
-        deleteAll(createSourceA);
-
-        // verify again
-        SOURCE_ASSERT_NO_FAILURE(copy.get(), copy.reset(createSourceB()));
-        SOURCE_ASSERT_EQUAL(copy.get(), 0, countItems(copy.get()));
-        SOURCE_ASSERT_EQUAL(copy.get(), 0, countNewItems(copy.get()));
-        SOURCE_ASSERT_EQUAL(copy.get(), 0, countUpdatedItems(copy.get()));
-        SOURCE_ASSERT_EQUAL(copy.get(), numItems, countDeletedItems(copy.get()));
-        SOURCE_ASSERT_EQUAL(copy.get(), 0, copy->endSync());
-        CPPUNIT_ASSERT_NO_THROW(copy.reset());
-    }
+        prefix << std::setfill('0') << std::setw(3) << item << " ";
 
 
-    SyncTests::SyncTests(const std::string &name, ClientTest &cl, std::vector<int> sourceIndices, bool isClientA) :
-        CppUnit::TestSuite(name),
-        client(cl) {
-        sourceArray = new int[sourceIndices.size() + 1];
-        for (std::vector<int>::iterator it = sourceIndices.begin();
-             it != sourceIndices.end();
-             ++it) {
-            ClientTest::Config config;
-            client.getSourceConfig(*it, config);
-
-            if (config.sourceName) {
-                sourceArray[sources.size()] = *it;
-                sources.push_back(std::pair<int,LocalTests *>(*it, cl.createLocalTests(config.sourceName, *it, config)));
+        const char *prop = config.uniqueProperties;
+        const char *nextProp;
+        while (*prop) {
+            std::string curProp;
+            nextProp = strchr(prop, ':');
+            if (!nextProp) {
+                curProp = prop;
+            } else {
+                curProp = std::string(prop, 0, nextProp - prop);
             }
-        }
-        sourceArray[sources.size()] = -1;
 
-        // check whether we have a second client
-        ClientTest *clientB = cl.getClientB();
-        if (clientB) {
-            accessClientB = clientB->createSyncTests(name, sourceIndices, false);
-        } else {
-            accessClientB = 0;
-        }
-    }
+            std::string property;
+            // property is expected to not start directly at the
+            // beginning
+            property = "\n";
+            property += curProp;
+            property += ":";
+            size_t off = data.find(property);
+            if (off != data.npos) {
+                data.insert(off + property.size(), prefix.str());
+            }
 
-    SyncTests::~SyncTests() {
-        for (source_it it = sources.begin();
-             it != sources.end();
-             ++it) {
-            delete it->second;
+            if (!nextProp) {
+                break;
+            }
+            prop = nextProp + 1;
         }
-        delete [] sourceArray;
-        if (accessClientB) {
-            delete accessClientB;
-        }
-    }
+        if (size > 0 && (int)data.size() < size) {
+            int additionalBytes = size - (int)data.size();
+            int added = 0;
+            /* vCard 2.1 and vCal 1.0 need quoted-printable line breaks */
+            bool quoted = data.find("VERSION:1.0") != data.npos ||
+                data.find("VERSION:2.1") != data.npos;
+            size_t toreplace = 1;
 
-    /** adds the supported tests to the instance itself */
-    void SyncTests::addTests() {
-        if (sources.size()) {
-            const ClientTest::Config &config(sources[0].second->config);
+            CPPUNIT_ASSERT(config.sizeProperty);
 
-            // run this test first, even if it is more complex:
-            // if it works, all the following tests will run with
-            // the server in a deterministic state
-            if (config.createSourceA) {
-                if (config.insertItem) {
-                    ADD_TEST(SyncTests, testDeleteAllRefresh);
+            /* stuff the item so that it reaches at least that size */
+            size_t off = data.find(config.sizeProperty);
+            CPPUNIT_ASSERT(off != data.npos);
+            std::stringstream stuffing;
+            if (quoted) {
+                stuffing << ";ENCODING=QUOTED-PRINTABLE:";
+            } else {
+                stuffing << ":";
+            }
+
+            // insert after the first line, it often acts as the summary
+            if (data.find("BEGIN:VJOURNAL") != data.npos) {
+                size_t start = data.find(":", off);
+                CPPUNIT_ASSERT( start != data.npos );
+                size_t eol = data.find("\\n", off);
+                CPPUNIT_ASSERT( eol != data.npos );
+                stuffing << data.substr(start + 1, eol - start + 1);
+                toreplace += eol - start + 1;
+            }
+
+            while(added < additionalBytes) {
+                int linelen = 0;
+
+                while(added + 4 < additionalBytes &&
+                      linelen < 60) {
+                    stuffing << 'x';
+                    added++;
+                    linelen++;
+                }
+                // insert line breaks to allow folding
+                if (quoted) {
+                    stuffing << "x=0D=0Ax";
+                    added += 8;
+                } else {
+                    stuffing << "x\\nx";
+                    added += 4;
                 }
             }
+            off = data.find(":", off);
+            data.replace(off, toreplace, stuffing.str());
+        }
 
-            ADD_TEST(SyncTests, testTwoWaySync);
-            ADD_TEST(SyncTests, testSlowSync);
-            ADD_TEST(SyncTests, testRefreshFromServerSync);
-            ADD_TEST(SyncTests, testRefreshFromClientSync);
+        importItem(source.get(), data);
+        data = "";
+    }
 
-            if (config.createSourceA) {
-                if (config.insertItem) {
-                    ADD_TEST(SyncTests, testRefreshSemantic);
-                    ADD_TEST(SyncTests, testRefreshStatus);
+    SOURCE_ASSERT_EQUAL(source.get(), 0, source->endSync());
+    CPPUNIT_ASSERT_NO_THROW(source.reset());
+    return lastIndex - firstIndex + 1;
+}
 
-                    if (accessClientB &&
-                        config.dump &&
-                        config.compare) {
-                        ADD_TEST(SyncTests, testCopy);
-                        ADD_TEST(SyncTests, testDelete);
-                        ADD_TEST(SyncTests, testAddUpdate);
-                        ADD_TEST(SyncTests, testManyItems);
+// creating sync source
+void LocalTests::testOpen() {
+    // check requirements
+    CPPUNIT_ASSERT(config.createSourceA);
 
-                        if (config.updateItem) {
-                            ADD_TEST(SyncTests, testUpdate);
+    std::auto_ptr<SyncSource> source(createSourceA());
+    CPPUNIT_ASSERT(source.get() != 0);
+    CPPUNIT_ASSERT_NO_THROW(source.reset());
+}
+
+// restart scanning of items
+void LocalTests::testIterateTwice() {
+    // check requirements
+    CPPUNIT_ASSERT(config.createSourceA);
+
+    // open source
+    std::auto_ptr<SyncSource> source(createSourceA());
+    SOURCE_ASSERT_EQUAL(source.get(), 0, source->beginSync());
+    SOURCE_ASSERT_MESSAGE(
+        "iterating twice should produce identical results",
+        source.get(),
+        countItems(source.get()) == countItems(source.get()));
+}
+
+// insert one contact without clearing the source first
+void LocalTests::testSimpleInsert() {
+    // check requirements
+    CPPUNIT_ASSERT(config.insertItem);
+    CPPUNIT_ASSERT(config.createSourceA);
+
+    insert(createSourceA, config.insertItem);
+}
+
+// delete all items
+void LocalTests::testLocalDeleteAll() {
+    // check requirements
+    CPPUNIT_ASSERT(config.insertItem);
+    CPPUNIT_ASSERT(config.createSourceA);
+
+    // make sure there is something to delete, then delete again
+    insert(createSourceA, config.insertItem);
+    deleteAll(createSourceA);
+}
+
+// clean database, then insert
+void LocalTests::testComplexInsert() {
+    testLocalDeleteAll();
+    testSimpleInsert();
+    testIterateTwice();
+}
+
+// clean database, insert item, update it
+void LocalTests::testLocalUpdate() {
+    // check additional requirements
+    CPPUNIT_ASSERT(config.updateItem);
+
+    testLocalDeleteAll();
+    testSimpleInsert();
+    update(createSourceA, config.updateItem);
+}
+
+// complex sequence of changes
+void LocalTests::testChanges() {
+    // check additional requirements
+    CPPUNIT_ASSERT(config.createSourceB);
+
+    testLocalDeleteAll();
+    testSimpleInsert();
+
+    // clean changes in sync source B by creating and closing it
+    std::auto_ptr<SyncSource> source;
+    SOURCE_ASSERT_NO_FAILURE(source.get(), source.reset(createSourceB()));
+    SOURCE_ASSERT_EQUAL(source.get(), 0, source->beginSync());
+    SOURCE_ASSERT_EQUAL(source.get(), 0, source->endSync());
+    CPPUNIT_ASSERT_NO_THROW(source.reset());
+
+    // no new changes now
+    SOURCE_ASSERT_NO_FAILURE(source.get(), source.reset(createSourceB()));
+    SOURCE_ASSERT_EQUAL(source.get(), 0, source->beginSync());
+    SOURCE_ASSERT_EQUAL(source.get(), 1, countItems(source.get()));
+    SOURCE_ASSERT_EQUAL(source.get(), 0, countNewItems(source.get()));
+    SOURCE_ASSERT_EQUAL(source.get(), 0, countUpdatedItems(source.get()));
+    SOURCE_ASSERT_EQUAL(source.get(), 0, countDeletedItems(source.get()));
+    std::auto_ptr<SyncItem> item;
+    SOURCE_ASSERT_NO_FAILURE(source.get(), item.reset(source->getFirstItem()));
+    SOURCE_ASSERT_EQUAL(source.get(), 0, source->endSync());
+    CPPUNIT_ASSERT_NO_THROW(source.reset());
+
+    // delete item again via sync source A
+    deleteAll(createSourceA);
+    SOURCE_ASSERT_NO_FAILURE(source.get(), source.reset(createSourceB()));
+    SOURCE_ASSERT_EQUAL(source.get(), 0, source->beginSync());
+    SOURCE_ASSERT_EQUAL(source.get(), 0, countItems(source.get()));
+    SOURCE_ASSERT_EQUAL(source.get(), 0, countNewItems(source.get()));
+    SOURCE_ASSERT_EQUAL(source.get(), 0, countUpdatedItems(source.get()));
+    SOURCE_ASSERT_EQUAL(source.get(), 1, countDeletedItems(source.get()));
+    std::auto_ptr<SyncItem> deletedItem;
+    SOURCE_ASSERT_NO_FAILURE(source.get(), deletedItem.reset(source->getFirstDeletedItem()));
+    CPPUNIT_ASSERT( wcslen( item->getKey() ) );
+    CPPUNIT_ASSERT( wcslen( deletedItem->getKey() ) );
+    CPPUNIT_ASSERT( !wcscmp( item->getKey(), deletedItem->getKey() ) );
+    SOURCE_ASSERT_EQUAL(source.get(), 0, source->endSync());
+    CPPUNIT_ASSERT_NO_THROW(source.reset());
+
+    // insert another item via sync source A
+    testSimpleInsert();
+    SOURCE_ASSERT_NO_FAILURE(source.get(), source.reset(createSourceB()));
+    SOURCE_ASSERT_EQUAL(source.get(), 0, source->beginSync());
+    SOURCE_ASSERT_EQUAL(source.get(), 1, countItems(source.get()));
+    SOURCE_ASSERT_EQUAL(source.get(), 1, countNewItems(source.get()));
+    SOURCE_ASSERT_EQUAL(source.get(), 0, countUpdatedItems(source.get()));
+    SOURCE_ASSERT_EQUAL(source.get(), 0, countDeletedItems(source.get()));
+    SOURCE_ASSERT_NO_FAILURE(source.get(), item.reset(source->getFirstItem()));
+    std::auto_ptr<SyncItem> newItem;
+    SOURCE_ASSERT_NO_FAILURE(source.get(), newItem.reset(source->getFirstNewItem()));
+    CPPUNIT_ASSERT( wcslen( item->getKey() ) );
+    CPPUNIT_ASSERT( wcslen( newItem->getKey() ) );
+    CPPUNIT_ASSERT( !wcscmp( item->getKey(), newItem->getKey() ) );
+    SOURCE_ASSERT_EQUAL(source.get(), 0, source->endSync());
+    CPPUNIT_ASSERT_NO_THROW(source.reset());
+
+    // update item via sync source A
+    update(createSourceA, config.updateItem);
+    SOURCE_ASSERT_NO_FAILURE(source.get(), source.reset(createSourceB()));
+    SOURCE_ASSERT_EQUAL(source.get(), 0, source->beginSync());
+    SOURCE_ASSERT_EQUAL(source.get(), 1, countItems(source.get()));
+    SOURCE_ASSERT_EQUAL(source.get(), 0, countNewItems(source.get()));
+    SOURCE_ASSERT_EQUAL(source.get(), 1, countUpdatedItems(source.get()));
+    SOURCE_ASSERT_EQUAL(source.get(), 0, countDeletedItems(source.get()));
+    std::auto_ptr<SyncItem> updatedItem;
+    SOURCE_ASSERT_NO_FAILURE(source.get(), updatedItem.reset(source->getFirstUpdatedItem()));
+    CPPUNIT_ASSERT( wcslen( item->getKey() ) );
+    CPPUNIT_ASSERT( wcslen( updatedItem->getKey() ) );
+    CPPUNIT_ASSERT( !wcscmp( item->getKey(), updatedItem->getKey() ) );
+    SOURCE_ASSERT_EQUAL(source.get(), 0, source->endSync());
+    CPPUNIT_ASSERT_NO_THROW(source.reset());
+}
+
+// clean database, import file, then export again and compare
+void LocalTests::testImport() {
+    // check additional requirements
+    CPPUNIT_ASSERT(config.import);
+    CPPUNIT_ASSERT(config.dump);
+    CPPUNIT_ASSERT(config.compare);
+    CPPUNIT_ASSERT(config.testcases);
+
+    testLocalDeleteAll();
+
+    // import via sync source A
+    std::auto_ptr<SyncSource> source;
+    SOURCE_ASSERT_NO_FAILURE(source.get(), source.reset(createSourceA()));
+    SOURCE_ASSERT_EQUAL(source.get(), 0, source->beginSync());
+    SOURCE_ASSERT_EQUAL(source.get(), 0, config.import(client, *source.get(), config.testcases));
+    SOURCE_ASSERT_EQUAL(source.get(), 0, source->endSync());
+    CPPUNIT_ASSERT_NO_THROW(source.reset());
+
+    // export again and compare against original file
+    std::auto_ptr<SyncSource> copy;
+    SOURCE_ASSERT_NO_FAILURE(copy.get(), copy.reset(createSourceA()));
+    compareDatabases(config.testcases, *copy.get());
+    CPPUNIT_ASSERT_NO_THROW(source.reset());
+}
+
+// same as testImport() with immediate delete
+void LocalTests::testImportDelete() {
+    testImport();
+
+    // delete again, because it was observed that this did not
+    // work right with calendars in SyncEvolution
+    testLocalDeleteAll();
+}
+
+// test change tracking with large number of items
+void LocalTests::testManyChanges() {
+    // check additional requirements
+    CPPUNIT_ASSERT(config.templateItem);
+    CPPUNIT_ASSERT(config.uniqueProperties);
+
+    deleteAll(createSourceA);
+
+    // check that everything is empty, also resets change counter of sync source B
+    std::auto_ptr<SyncSource> copy;
+    SOURCE_ASSERT_NO_FAILURE(copy.get(), copy.reset(createSourceB()));
+    SOURCE_ASSERT_EQUAL(copy.get(), 0, copy->beginSync());
+    SOURCE_ASSERT_EQUAL(copy.get(), 0, countItems(copy.get()));
+    SOURCE_ASSERT_EQUAL(copy.get(), 0, copy->endSync());
+    CPPUNIT_ASSERT_NO_THROW(copy.reset());
+
+    // now insert plenty of items
+    int numItems = insertManyItems(createSourceA);
+
+    // check that exactly this number of items is listed as new
+    SOURCE_ASSERT_NO_FAILURE(copy.get(), copy.reset(createSourceB()));
+    SOURCE_ASSERT_EQUAL(copy.get(), 0, copy->beginSync());
+    SOURCE_ASSERT_EQUAL(copy.get(), numItems, countItems(copy.get()));
+    SOURCE_ASSERT_EQUAL(copy.get(), numItems, countNewItems(copy.get()));
+    SOURCE_ASSERT_EQUAL(copy.get(), 0, countUpdatedItems(copy.get()));
+    SOURCE_ASSERT_EQUAL(copy.get(), 0, countDeletedItems(copy.get()));
+    SOURCE_ASSERT_EQUAL(copy.get(), 0, copy->endSync());
+    CPPUNIT_ASSERT_NO_THROW(copy.reset());
+
+    // delete all items
+    deleteAll(createSourceA);
+
+    // verify again
+    SOURCE_ASSERT_NO_FAILURE(copy.get(), copy.reset(createSourceB()));
+    SOURCE_ASSERT_EQUAL(copy.get(), 0, countItems(copy.get()));
+    SOURCE_ASSERT_EQUAL(copy.get(), 0, countNewItems(copy.get()));
+    SOURCE_ASSERT_EQUAL(copy.get(), 0, countUpdatedItems(copy.get()));
+    SOURCE_ASSERT_EQUAL(copy.get(), numItems, countDeletedItems(copy.get()));
+    SOURCE_ASSERT_EQUAL(copy.get(), 0, copy->endSync());
+    CPPUNIT_ASSERT_NO_THROW(copy.reset());
+}
+
+
+SyncTests::SyncTests(const std::string &name, ClientTest &cl, std::vector<int> sourceIndices, bool isClientA) :
+    CppUnit::TestSuite(name),
+    client(cl) {
+    sourceArray = new int[sourceIndices.size() + 1];
+    for (std::vector<int>::iterator it = sourceIndices.begin();
+         it != sourceIndices.end();
+         ++it) {
+        ClientTest::Config config;
+        client.getSourceConfig(*it, config);
+
+        if (config.sourceName) {
+            sourceArray[sources.size()] = *it;
+            sources.push_back(std::pair<int,LocalTests *>(*it, cl.createLocalTests(config.sourceName, *it, config)));
+        }
+    }
+    sourceArray[sources.size()] = -1;
+
+    // check whether we have a second client
+    ClientTest *clientB = cl.getClientB();
+    if (clientB) {
+        accessClientB = clientB->createSyncTests(name, sourceIndices, false);
+    } else {
+        accessClientB = 0;
+    }
+}
+
+SyncTests::~SyncTests() {
+    for (source_it it = sources.begin();
+         it != sources.end();
+         ++it) {
+        delete it->second;
+    }
+    delete [] sourceArray;
+    if (accessClientB) {
+        delete accessClientB;
+    }
+}
+
+/** adds the supported tests to the instance itself */
+void SyncTests::addTests() {
+    if (sources.size()) {
+        const ClientTest::Config &config(sources[0].second->config);
+
+        // run this test first, even if it is more complex:
+        // if it works, all the following tests will run with
+        // the server in a deterministic state
+        if (config.createSourceA) {
+            if (config.insertItem) {
+                ADD_TEST(SyncTests, testDeleteAllRefresh);
+            }
+        }
+
+        ADD_TEST(SyncTests, testTwoWaySync);
+        ADD_TEST(SyncTests, testSlowSync);
+        ADD_TEST(SyncTests, testRefreshFromServerSync);
+        ADD_TEST(SyncTests, testRefreshFromClientSync);
+
+        if (config.createSourceA) {
+            if (config.insertItem) {
+                ADD_TEST(SyncTests, testRefreshSemantic);
+                ADD_TEST(SyncTests, testRefreshStatus);
+
+                if (accessClientB &&
+                    config.dump &&
+                    config.compare) {
+                    ADD_TEST(SyncTests, testCopy);
+                    ADD_TEST(SyncTests, testDelete);
+                    ADD_TEST(SyncTests, testAddUpdate);
+                    ADD_TEST(SyncTests, testManyItems);
+
+                    if (config.updateItem) {
+                        ADD_TEST(SyncTests, testUpdate);
+                    }
+                    if (config.complexUpdateItem) {
+                        ADD_TEST(SyncTests, testComplexUpdate);
+                    }
+                    if (config.mergeItem1 && config.mergeItem2) {
+                        ADD_TEST(SyncTests, testMerge);
+                    }
+                    if (config.import) {
+                        ADD_TEST(SyncTests, testTwinning);
+                        ADD_TEST(SyncTests, testItems);
+                    }
+                    if (config.templateItem) {
+                        ADD_TEST(SyncTests, testMaxMsg);
+                        ADD_TEST(SyncTests, testLargeObject);
+                        ADD_TEST(SyncTests, testLargeObjectBin);
+                        if (client.isB64Enabled()) {
+                            ADD_TEST(SyncTests, testLargeObjectEncoded);
                         }
-                        if (config.complexUpdateItem) {
-                            ADD_TEST(SyncTests, testComplexUpdate);
-                        }
-                        if (config.mergeItem1 && config.mergeItem2) {
-                            ADD_TEST(SyncTests, testMerge);
-                        }
-                        if (config.import) {
-                            ADD_TEST(SyncTests, testTwinning);
-                            ADD_TEST(SyncTests, testItems);
-                        }
-                        if (config.templateItem) {
-                            ADD_TEST(SyncTests, testMaxMsg);
-                            ADD_TEST(SyncTests, testLargeObject);
-                            ADD_TEST(SyncTests, testLargeObjectBin);
-                            if (client.isB64Enabled()) {
-                                ADD_TEST(SyncTests, testLargeObjectEncoded);
-                            }
-                            ADD_TEST(SyncTests, testOneWayFromServer);
-                            ADD_TEST(SyncTests, testOneWayFromClient);
-                        }
+                        ADD_TEST(SyncTests, testOneWayFromServer);
+                        ADD_TEST(SyncTests, testOneWayFromClient);
                     }
                 }
             }
         }
     }
+}
 
-    /** compare databases of first and second client */
-    void SyncTests::compareDatabases() {
-        source_it it1;
-        source_it it2;
+/** compare databases of first and second client */
+void SyncTests::compareDatabases() {
+    source_it it1;
+    source_it it2;
 
-        CPPUNIT_ASSERT(accessClientB);
-        for (it1 = sources.begin(), it2 = accessClientB->sources.begin();
-             it1 != sources.end() && it2 != accessClientB->sources.end();
-             ++it1, ++it2) {
-            std::auto_ptr<SyncSource> copy;
-            SOURCE_ASSERT_NO_FAILURE(copy.get(), copy.reset(it2->second->createSourceB()));
-            it1->second->compareDatabases(NULL, *copy.get());
-            CPPUNIT_ASSERT_NO_THROW(copy.reset());
-        }
-        CPPUNIT_ASSERT(it1 == sources.end());
-        CPPUNIT_ASSERT(it2 == accessClientB->sources.end());
+    CPPUNIT_ASSERT(accessClientB);
+    for (it1 = sources.begin(), it2 = accessClientB->sources.begin();
+         it1 != sources.end() && it2 != accessClientB->sources.end();
+         ++it1, ++it2) {
+        std::auto_ptr<SyncSource> copy;
+        SOURCE_ASSERT_NO_FAILURE(copy.get(), copy.reset(it2->second->createSourceB()));
+        it1->second->compareDatabases(NULL, *copy.get());
+        CPPUNIT_ASSERT_NO_THROW(copy.reset());
     }
+    CPPUNIT_ASSERT(it1 == sources.end());
+    CPPUNIT_ASSERT(it2 == accessClientB->sources.end());
+}
 
-    /** deletes all items locally and on server */
-    void SyncTests::deleteAll(DeleteAllMode mode) {
-        source_it it;
+/** deletes all items locally and on server */
+void SyncTests::deleteAll(DeleteAllMode mode) {
+    source_it it;
 
-        switch(mode) {
-         case DELETE_ALL_SYNC:
-            // a refresh from server would slightly reduce the amount of data exchanged, but not all servers support it
-            for (it = sources.begin(); it != sources.end(); ++it) {
-                it->second->deleteAll(it->second->createSourceA);
-            }
-            sync(SYNC_SLOW, ".deleteall.init");
-            // now that client and server are in sync, delete locally and sync again
-            for (it = sources.begin(); it != sources.end(); ++it) {
-                it->second->deleteAll(it->second->createSourceA);
-            }
-            sync(SYNC_TWO_WAY, ".deleteall.twoway", CheckSyncReport(0,0,0, 0,0,-1));
-            break;
-         case DELETE_ALL_REFRESH:
-            // delete locally and then tell the server to "copy" the empty databases
-            for (it = sources.begin(); it != sources.end(); ++it) {
-                it->second->deleteAll(it->second->createSourceA);
-            }
-            sync(SYNC_REFRESH_FROM_CLIENT, ".deleteall.refreshserver", CheckSyncReport(0,0,0, 0,0,-1));
-            break;
-        }
-    }
-
-    /** get both clients in sync with empty server, then copy one item from client A to B */
-    void SyncTests::doCopy() {
-        // check requirements
-        CPPUNIT_ASSERT(accessClientB);
-
-        deleteAll();
-        accessClientB->deleteAll();
-
-        // insert into first database, copy to server
-        source_it it;
-        for (it = sources.begin(); it != sources.end(); ++it) {
-            it->second->testSimpleInsert();
-        }
-        sync(SYNC_TWO_WAY, ".send", CheckSyncReport(0,0,0, 1,0,0));
-
-        // copy into second database
-        accessClientB->sync(SYNC_TWO_WAY, ".recv", CheckSyncReport(1,0,0, 0,0,0));
-
-        compareDatabases();
-    }
-
-    /**
-     * replicate server database locally: same as SYNC_REFRESH_FROM_SERVER,
-     * but done with explicit local delete and then a SYNC_SLOW because some
-     * servers do no support SYNC_REFRESH_FROM_SERVER
-     */
-    void SyncTests::refreshClient() {
-        source_it it;
+    switch(mode) {
+     case DELETE_ALL_SYNC:
+        // a refresh from server would slightly reduce the amount of data exchanged, but not all servers support it
         for (it = sources.begin(); it != sources.end(); ++it) {
             it->second->deleteAll(it->second->createSourceA);
         }
-        sync(SYNC_SLOW, ".refresh", CheckSyncReport(-1,0,0, 0,0,0));
+        sync(SYNC_SLOW, ".deleteall.init");
+        // now that client and server are in sync, delete locally and sync again
+        for (it = sources.begin(); it != sources.end(); ++it) {
+            it->second->deleteAll(it->second->createSourceA);
+        }
+        sync(SYNC_TWO_WAY, ".deleteall.twoway", CheckSyncReport(0,0,0, 0,0,-1));
+        break;
+     case DELETE_ALL_REFRESH:
+        // delete locally and then tell the server to "copy" the empty databases
+        for (it = sources.begin(); it != sources.end(); ++it) {
+            it->second->deleteAll(it->second->createSourceA);
+        }
+        sync(SYNC_REFRESH_FROM_CLIENT, ".deleteall.refreshserver", CheckSyncReport(0,0,0, 0,0,-1));
+        break;
+    }
+}
+
+/** get both clients in sync with empty server, then copy one item from client A to B */
+void SyncTests::doCopy() {
+    // check requirements
+    CPPUNIT_ASSERT(accessClientB);
+
+    deleteAll();
+    accessClientB->deleteAll();
+
+    // insert into first database, copy to server
+    source_it it;
+    for (it = sources.begin(); it != sources.end(); ++it) {
+        it->second->testSimpleInsert();
+    }
+    sync(SYNC_TWO_WAY, ".send", CheckSyncReport(0,0,0, 1,0,0));
+
+    // copy into second database
+    accessClientB->sync(SYNC_TWO_WAY, ".recv", CheckSyncReport(1,0,0, 0,0,0));
+
+    compareDatabases();
+}
+
+/**
+ * replicate server database locally: same as SYNC_REFRESH_FROM_SERVER,
+ * but done with explicit local delete and then a SYNC_SLOW because some
+ * servers do no support SYNC_REFRESH_FROM_SERVER
+ */
+void SyncTests::refreshClient() {
+    source_it it;
+    for (it = sources.begin(); it != sources.end(); ++it) {
+        it->second->deleteAll(it->second->createSourceA);
+    }
+    sync(SYNC_SLOW, ".refresh", CheckSyncReport(-1,0,0, 0,0,0));
+}
+
+
+// delete all items, locally and on server using refresh-from-client sync
+void SyncTests::testDeleteAllRefresh() {
+    source_it it;
+
+    // copy something to server first; doesn't matter whether it has the
+    // item already or not, as long as it exists there afterwards
+    for (it = sources.begin(); it != sources.end(); ++it) {
+        it->second->testSimpleInsert();
+    }
+    sync(SYNC_SLOW, ".insert");
+
+    // now ensure we can delete it
+    deleteAll(DELETE_ALL_SYNC);
+
+    // nothing stored locally?
+    for (it = sources.begin(); it != sources.end(); ++it) {
+        std::auto_ptr<SyncSource> source;
+        SOURCE_ASSERT_NO_FAILURE(source.get(), source.reset(it->second->createSourceA()));
+        SOURCE_ASSERT_EQUAL(source.get(), 0, source->beginSync());
+        SOURCE_ASSERT_EQUAL(source.get(), 0, countItems(source.get()));
+        SOURCE_ASSERT_EQUAL(source.get(), 0, source->endSync());
+        CPPUNIT_ASSERT_NO_THROW(source.reset());
     }
 
+    // make sure server really deleted everything
+    sync(SYNC_SLOW, ".check", CheckSyncReport(0,0,0, 0,0,0));
+    for (it = sources.begin(); it != sources.end(); ++it) {
+        std::auto_ptr<SyncSource> source;
+        SOURCE_ASSERT_NO_FAILURE(source.get(), source.reset(it->second->createSourceA()));
+        SOURCE_ASSERT_EQUAL(source.get(), 0, source->beginSync());
+        SOURCE_ASSERT_EQUAL(source.get(), 0, countItems(source.get()));
+        SOURCE_ASSERT_EQUAL(source.get(), 0, source->endSync());
+        CPPUNIT_ASSERT_NO_THROW(source.reset());
+    }
+}
 
-    // delete all items, locally and on server using refresh-from-client sync
-    void SyncTests::testDeleteAllRefresh() {
-        source_it it;
+// test that a refresh sync of an empty server leads to an empty datatbase
+void SyncTests::testRefreshSemantic() {
+    source_it it;
 
-        // copy something to server first; doesn't matter whether it has the
-        // item already or not, as long as it exists there afterwards
-        for (it = sources.begin(); it != sources.end(); ++it) {
-            it->second->testSimpleInsert();
-        }
-        sync(SYNC_SLOW, ".insert");
+    // clean client and server
+    deleteAll();
 
-        // now ensure we can delete it
-        deleteAll(DELETE_ALL_SYNC);
+    // insert item, then refresh from empty server
+    for (it = sources.begin(); it != sources.end(); ++it) {
+        it->second->testSimpleInsert();
+    }
+    sync(SYNC_REFRESH_FROM_SERVER, "", CheckSyncReport(0,0,-1, 0,0,0));
 
-        // nothing stored locally?
-        for (it = sources.begin(); it != sources.end(); ++it) {
+    // check
+    for (it = sources.begin(); it != sources.end(); ++it) {
+        std::auto_ptr<SyncSource> source;
+        SOURCE_ASSERT_NO_FAILURE(source.get(), source.reset(it->second->createSourceA()));
+        SOURCE_ASSERT_EQUAL(source.get(), 0, source->beginSync());
+        SOURCE_ASSERT_EQUAL(source.get(), 0, countItems(source.get()));
+        SOURCE_ASSERT_EQUAL(source.get(), 0, source->endSync());
+        CPPUNIT_ASSERT_NO_THROW(source.reset());
+    }
+}
+
+// tests the following sequence of events:
+// - insert item
+// - delete all items
+// - insert one other item
+// - refresh from client
+// => no items should now be listed as new, updated or deleted for this client during another sync
+void SyncTests::testRefreshStatus() {
+    source_it it;
+
+    for (it = sources.begin(); it != sources.end(); ++it) {
+        it->second->testSimpleInsert();
+    }
+    for (it = sources.begin(); it != sources.end(); ++it) {
+        it->second->deleteAll(it->second->createSourceA);
+    }
+    for (it = sources.begin(); it != sources.end(); ++it) {
+        it->second->testSimpleInsert();
+    }
+    sync(SYNC_REFRESH_FROM_CLIENT, ".refresh-from-client", CheckSyncReport(0,0,0 /* 1,0,0 - not sure exactly what the server will be told */));
+    sync(SYNC_TWO_WAY, ".two-way", CheckSyncReport(0,0,0, 0,0,0));
+}
+
+// test that a two-way sync copies updates from database to the other client,
+// using simple data commonly supported by servers
+void SyncTests::testUpdate() {
+    CPPUNIT_ASSERT(sources.begin() != sources.end());
+    CPPUNIT_ASSERT(sources.begin()->second->config.updateItem);
+
+    // setup client A, B and server so that they all contain the same item
+    doCopy();
+
+    source_it it;
+    for (it = sources.begin(); it != sources.end(); ++it) {
+        it->second->update(it->second->createSourceA, it->second->config.updateItem);
+    }
+
+    sync(SYNC_TWO_WAY, ".update", CheckSyncReport(0,0,0, 0,1,0));
+    accessClientB->sync(SYNC_TWO_WAY, ".update", CheckSyncReport(0,1,0, 0,0,0));
+
+    compareDatabases();
+}
+
+// test that a two-way sync copies updates from database to the other client,
+// using data that some, but not all servers support, like adding a second
+// phone number to a contact
+void SyncTests::testComplexUpdate() {
+    // setup client A, B and server so that they all contain the same item
+    doCopy();
+
+    source_it it;
+    for (it = sources.begin(); it != sources.end(); ++it) {
+        it->second->update(it->second->createSourceA, it->second->config.complexUpdateItem);
+    }
+
+    sync(SYNC_TWO_WAY, ".update", CheckSyncReport(0,0,0, 0,1,0));
+    accessClientB->sync(SYNC_TWO_WAY, ".update", CheckSyncReport(0,1,0, 0,0,0));
+
+    compareDatabases();
+}
+
+
+// test that a two-way sync deletes the copy of an item in the other database
+void SyncTests::testDelete() {
+    // setup client A, B and server so that they all contain the same item
+    doCopy();
+
+    // delete it on A
+    source_it it;
+    for (it = sources.begin(); it != sources.end(); ++it) {
+        it->second->deleteAll(it->second->createSourceA);
+    }
+
+    // transfer change from A to server to B
+    sync(SYNC_TWO_WAY, ".delete", CheckSyncReport(0,0,0, 0,0,1));
+    accessClientB->sync(SYNC_TWO_WAY, ".delete", CheckSyncReport(0,0,1, 0,0,0));
+
+    // check client B: shouldn't have any items now
+    for (it = sources.begin(); it != sources.end(); ++it) {
+        std::auto_ptr<SyncSource> copy;
+        SOURCE_ASSERT_NO_FAILURE(copy.get(), copy.reset(it->second->createSourceA()));
+        SOURCE_ASSERT_EQUAL(copy.get(), 0, copy->beginSync());
+        SOURCE_ASSERT_EQUAL(copy.get(), 0, countItems(copy.get()));
+        SOURCE_ASSERT_EQUAL(copy.get(), 0, copy->endSync());
+        CPPUNIT_ASSERT_NO_THROW(copy.reset());
+    }
+}
+
+// test what the server does when it finds that different
+// fields of the same item have been modified
+void SyncTests::testMerge() {
+    // setup client A, B and server so that they all contain the same item
+    doCopy();
+
+    // update in client A
+    source_it it;
+    for (it = sources.begin(); it != sources.end(); ++it) {
+        it->second->update(it->second->createSourceA, it->second->config.mergeItem1);
+    }
+
+    // update in client B
+    for (it = accessClientB->sources.begin(); it != accessClientB->sources.end(); ++it) {
+        it->second->update(it->second->createSourceA, it->second->config.mergeItem2);
+    }
+
+    // send change to server from client A (no conflict), then from B (conflict)
+    sync(SYNC_TWO_WAY, ".send", CheckSyncReport(0,0,0, 0,1,0));
+    sync(SYNC_TWO_WAY, ".recv");
+
+    // figure out how the conflict during ".recv" was handled
+    for (it = accessClientB->sources.begin(); it != accessClientB->sources.end(); ++it) {
+        std::auto_ptr<SyncSource> copy;
+        SOURCE_ASSERT_NO_FAILURE(copy.get(), copy.reset(it->second->createSourceA()));
+        SOURCE_ASSERT_EQUAL(copy.get(), 0, copy->beginSync());
+        int numItems;
+        SOURCE_ASSERT_NO_FAILURE(copy.get(), numItems = countItems(copy.get()));
+        SOURCE_ASSERT_EQUAL(copy.get(), 0, copy->endSync());
+        CPPUNIT_ASSERT(numItems >= 1);
+        CPPUNIT_ASSERT(numItems <= 2);
+        std::cout << " " << it->second->config.sourceName << ": " << (numItems == 1 ? "conflicting items were merged" : "both of the conflicting items were preserved") << " ";
+        std::cout.flush();
+        CPPUNIT_ASSERT_NO_THROW(copy.reset());
+    }
+}
+
+// test what the server does when it has to execute a slow sync
+// with identical data on client and server:
+// expected behaviour is that nothing changes
+void SyncTests::testTwinning() {
+    // clean server and client A
+    deleteAll();
+
+    // import test data
+    source_it it;
+    for (it = sources.begin(); it != sources.end(); ++it) {
+        it->second->testImport();
+    }
+
+    // send to server
+    sync(SYNC_TWO_WAY, ".send");
+
+    // ensure that client has the same data, thus ignoring data conversion
+    // issues (those are covered by testItems())
+    refreshClient();
+
+    // copy to client B to have another copy
+    accessClientB->refreshClient();
+
+    // slow sync should not change anything
+    sync(SYNC_TWO_WAY, ".twinning");
+
+    // check
+    compareDatabases();
+}
+
+// tests one-way sync from server:
+// - get both clients and server in sync with no items anywhere
+// - add one item on first client, copy to server
+// - add a different item on second client, one-way-from-server
+// - two-way sync with first client
+// => one item on first client, two on second
+// - delete on first client, sync that to second client
+//   via two-way sync + one-way-from-server
+// => one item left on second client (the one inserted locally)
+void SyncTests::testOneWayFromServer() {
+    // no items anywhere
+    deleteAll();
+    accessClientB->refreshClient();
+
+    // check that everything is empty, also resets change tracking
+    // in second sources of each client
+    source_it it;
+    for (it = sources.begin(); it != sources.end(); ++it) {
+        if (it->second->config.createSourceB) {
             std::auto_ptr<SyncSource> source;
-            SOURCE_ASSERT_NO_FAILURE(source.get(), source.reset(it->second->createSourceA()));
+            SOURCE_ASSERT_NO_FAILURE(source.get(), source.reset(it->second->createSourceB()));
             SOURCE_ASSERT_EQUAL(source.get(), 0, source->beginSync());
             SOURCE_ASSERT_EQUAL(source.get(), 0, countItems(source.get()));
             SOURCE_ASSERT_EQUAL(source.get(), 0, source->endSync());
             CPPUNIT_ASSERT_NO_THROW(source.reset());
         }
-
-        // make sure server really deleted everything
-        sync(SYNC_SLOW, ".check", CheckSyncReport(0,0,0, 0,0,0));
-        for (it = sources.begin(); it != sources.end(); ++it) {
+    }
+    for (it = accessClientB->sources.begin(); it != accessClientB->sources.end(); ++it) {
+        if (it->second->config.createSourceB) {
             std::auto_ptr<SyncSource> source;
-            SOURCE_ASSERT_NO_FAILURE(source.get(), source.reset(it->second->createSourceA()));
+            SOURCE_ASSERT_NO_FAILURE(source.get(), source.reset(it->second->createSourceB()));
             SOURCE_ASSERT_EQUAL(source.get(), 0, source->beginSync());
             SOURCE_ASSERT_EQUAL(source.get(), 0, countItems(source.get()));
             SOURCE_ASSERT_EQUAL(source.get(), 0, source->endSync());
@@ -879,23 +1095,154 @@ static void importItem(SyncSource *source, std::string &data)
         }
     }
 
-    // test that a refresh sync of an empty server leads to an empty datatbase
-    void SyncTests::testRefreshSemantic() {
-        source_it it;
-
-        // clean client and server
-        deleteAll();
-
-        // insert item, then refresh from empty server
-        for (it = sources.begin(); it != sources.end(); ++it) {
-            it->second->testSimpleInsert();
-        }
-        sync(SYNC_REFRESH_FROM_SERVER, "", CheckSyncReport(0,0,-1, 0,0,0));
-
-        // check
-        for (it = sources.begin(); it != sources.end(); ++it) {
+    // add one item on first client, copy to server, and check change tracking via second source
+    for (it = sources.begin(); it != sources.end(); ++it) {
+        it->second->insertManyItems(it->second->createSourceA, 1, 1);
+    }
+    sync(SYNC_TWO_WAY, ".send", CheckSyncReport(0,0,0, 1,0,0));
+    for (it = sources.begin(); it != sources.end(); ++it) {
+        if (it->second->config.createSourceB) {
             std::auto_ptr<SyncSource> source;
-            SOURCE_ASSERT_NO_FAILURE(source.get(), source.reset(it->second->createSourceA()));
+            SOURCE_ASSERT_NO_FAILURE(source.get(), source.reset(it->second->createSourceB()));
+            SOURCE_ASSERT_EQUAL(source.get(), 0, source->beginSync());
+            SOURCE_ASSERT_EQUAL(source.get(), 1, countItems(source.get()));
+            SOURCE_ASSERT_EQUAL(source.get(), 1, countNewItems(source.get()));
+            SOURCE_ASSERT_EQUAL(source.get(), 0, countDeletedItems(source.get()));
+            SOURCE_ASSERT_EQUAL(source.get(), 0, countUpdatedItems(source.get()));
+            SOURCE_ASSERT_EQUAL(source.get(), 0, source->endSync());
+            CPPUNIT_ASSERT_NO_THROW(source.reset());
+        }
+    }
+
+    // add a different item on second client, one-way-from-server
+    // => one item added locally, none sent to server
+    for (it = accessClientB->sources.begin(); it != accessClientB->sources.end(); ++it) {
+        it->second->insertManyItems(it->second->createSourceA, 2, 1);
+
+        if (it->second->config.createSourceB) {
+            std::auto_ptr<SyncSource> source;
+            SOURCE_ASSERT_NO_FAILURE(source.get(), source.reset(it->second->createSourceB()));
+            SOURCE_ASSERT_EQUAL(source.get(), 0, source->beginSync());
+            SOURCE_ASSERT_EQUAL(source.get(), 1, countItems(source.get()));
+            SOURCE_ASSERT_EQUAL(source.get(), 1, countNewItems(source.get()));
+            SOURCE_ASSERT_EQUAL(source.get(), 0, countDeletedItems(source.get()));
+            SOURCE_ASSERT_EQUAL(source.get(), 0, countUpdatedItems(source.get()));
+            SOURCE_ASSERT_EQUAL(source.get(), 0, source->endSync());
+            CPPUNIT_ASSERT_NO_THROW(source.reset());
+        }
+    }
+    accessClientB->sync(SYNC_ONE_WAY_FROM_SERVER, ".recv", CheckSyncReport(1,0,0, 0,0,0));
+    for (it = accessClientB->sources.begin(); it != accessClientB->sources.end(); ++it) {
+        if (it->second->config.createSourceB) {
+            std::auto_ptr<SyncSource> source;
+            SOURCE_ASSERT_NO_FAILURE(source.get(), source.reset(it->second->createSourceB()));
+            SOURCE_ASSERT_EQUAL(source.get(), 0, source->beginSync());
+            SOURCE_ASSERT_EQUAL(source.get(), 2, countItems(source.get()));
+            SOURCE_ASSERT_EQUAL(source.get(), 1, countNewItems(source.get()));
+            SOURCE_ASSERT_EQUAL(source.get(), 0, countDeletedItems(source.get()));
+            SOURCE_ASSERT_EQUAL(source.get(), 0, countUpdatedItems(source.get()));
+            SOURCE_ASSERT_EQUAL(source.get(), 0, source->endSync());
+            CPPUNIT_ASSERT_NO_THROW(source.reset());
+        }
+    }
+
+    // two-way sync with first client for verification
+    // => no changes
+    sync(SYNC_TWO_WAY, ".check", CheckSyncReport(0,0,0, 0,0,0));
+    for (it = sources.begin(); it != sources.end(); ++it) {
+        if (it->second->config.createSourceB) {
+            std::auto_ptr<SyncSource> source;
+            SOURCE_ASSERT_NO_FAILURE(source.get(), source.reset(it->second->createSourceB()));
+            SOURCE_ASSERT_EQUAL(source.get(), 0, source->beginSync());
+            SOURCE_ASSERT_EQUAL(source.get(), 1, countItems(source.get()));
+            SOURCE_ASSERT_EQUAL(source.get(), 0, countNewItems(source.get()));
+            SOURCE_ASSERT_EQUAL(source.get(), 0, countDeletedItems(source.get()));
+            SOURCE_ASSERT_EQUAL(source.get(), 0, countUpdatedItems(source.get()));
+            SOURCE_ASSERT_EQUAL(source.get(), 0, source->endSync());
+            CPPUNIT_ASSERT_NO_THROW(source.reset());
+        }
+    }
+
+    // delete items on clientA, sync to server
+    for (it = sources.begin(); it != sources.end(); ++it) {
+        it->second->deleteAll(it->second->createSourceA);
+
+        if (it->second->config.createSourceB) {
+            std::auto_ptr<SyncSource> source;
+            SOURCE_ASSERT_NO_FAILURE(source.get(), source.reset(it->second->createSourceB()));
+            SOURCE_ASSERT_EQUAL(source.get(), 0, source->beginSync());
+            SOURCE_ASSERT_EQUAL(source.get(), 0, countItems(source.get()));
+            SOURCE_ASSERT_EQUAL(source.get(), 0, countNewItems(source.get()));
+            SOURCE_ASSERT_EQUAL(source.get(), 1, countDeletedItems(source.get()));
+            SOURCE_ASSERT_EQUAL(source.get(), 0, countUpdatedItems(source.get()));
+            SOURCE_ASSERT_EQUAL(source.get(), 0, source->endSync());
+            CPPUNIT_ASSERT_NO_THROW(source.reset());
+        }
+    }
+    sync(SYNC_TWO_WAY, ".delete", CheckSyncReport(0,0,0, 0,0,1));
+    for (it = sources.begin(); it != sources.end(); ++it) {
+        if (it->second->config.createSourceB) {
+            std::auto_ptr<SyncSource> source;
+            SOURCE_ASSERT_NO_FAILURE(source.get(), source.reset(it->second->createSourceB()));
+            SOURCE_ASSERT_EQUAL(source.get(), 0, source->beginSync());
+            SOURCE_ASSERT_EQUAL(source.get(), 0, countItems(source.get()));
+            SOURCE_ASSERT_EQUAL(source.get(), 0, countNewItems(source.get()));
+            SOURCE_ASSERT_EQUAL(source.get(), 0, countDeletedItems(source.get()));
+            SOURCE_ASSERT_EQUAL(source.get(), 0, countUpdatedItems(source.get()));
+            SOURCE_ASSERT_EQUAL(source.get(), 0, source->endSync());
+            CPPUNIT_ASSERT_NO_THROW(source.reset());
+        }
+    }
+
+    // sync the same change to second client
+    // => one item left (the one inserted locally)
+    accessClientB->sync(SYNC_ONE_WAY_FROM_SERVER, ".delete", CheckSyncReport(0,0,1, 0,0,0));
+    for (it = accessClientB->sources.begin(); it != accessClientB->sources.end(); ++it) {
+        if (it->second->config.createSourceB) {
+            std::auto_ptr<SyncSource> source;
+            SOURCE_ASSERT_NO_FAILURE(source.get(), source.reset(it->second->createSourceB()));
+            SOURCE_ASSERT_EQUAL(source.get(), 0, source->beginSync());
+            SOURCE_ASSERT_EQUAL(source.get(), 1, countItems(source.get()));
+            SOURCE_ASSERT_EQUAL(source.get(), 0, countNewItems(source.get()));
+            SOURCE_ASSERT_EQUAL(source.get(), 1, countDeletedItems(source.get()));
+            SOURCE_ASSERT_EQUAL(source.get(), 0, countUpdatedItems(source.get()));
+            SOURCE_ASSERT_EQUAL(source.get(), 0, source->endSync());
+            CPPUNIT_ASSERT_NO_THROW(source.reset());
+        }
+    }
+}
+
+// tests one-way sync from client:
+// - get both clients and server in sync with no items anywhere
+// - add one item on first client, copy to server
+// - add a different item on second client, one-way-from-client
+// - two-way sync with first client
+// => two items on first client, one on second
+// - delete on second client, sync that to first client
+//   via one-way-from-client, two-way
+// => one item left on first client (the one inserted locally)
+void SyncTests::testOneWayFromClient() {
+    // no items anywhere
+    deleteAll();
+    accessClientB->deleteAll();
+
+    // check that everything is empty, also resets change tracking
+    // in second sources of each client
+    source_it it;
+    for (it = sources.begin(); it != sources.end(); ++it) {
+        if (it->second->config.createSourceB) {
+            std::auto_ptr<SyncSource> source;
+            SOURCE_ASSERT_NO_FAILURE(source.get(), source.reset(it->second->createSourceB()));
+            SOURCE_ASSERT_EQUAL(source.get(), 0, source->beginSync());
+            SOURCE_ASSERT_EQUAL(source.get(), 0, countItems(source.get()));
+            SOURCE_ASSERT_EQUAL(source.get(), 0, source->endSync());
+            CPPUNIT_ASSERT_NO_THROW(source.reset());
+        }
+    }
+    for (it = accessClientB->sources.begin(); it != accessClientB->sources.end(); ++it) {
+        if (it->second->config.createSourceB) {
+            std::auto_ptr<SyncSource> source;
+            SOURCE_ASSERT_NO_FAILURE(source.get(), source.reset(it->second->createSourceB()));
             SOURCE_ASSERT_EQUAL(source.get(), 0, source->beginSync());
             SOURCE_ASSERT_EQUAL(source.get(), 0, countItems(source.get()));
             SOURCE_ASSERT_EQUAL(source.get(), 0, source->endSync());
@@ -903,653 +1250,306 @@ static void importItem(SyncSource *source, std::string &data)
         }
     }
 
-    // tests the following sequence of events:
-    // - insert item
-    // - delete all items
-    // - insert one other item
-    // - refresh from client
-    // => no items should now be listed as new, updated or deleted for this client during another sync
-    void SyncTests::testRefreshStatus() {
-        source_it it;
-
-        for (it = sources.begin(); it != sources.end(); ++it) {
-            it->second->testSimpleInsert();
-        }
-        for (it = sources.begin(); it != sources.end(); ++it) {
-            it->second->deleteAll(it->second->createSourceA);
-        }
-        for (it = sources.begin(); it != sources.end(); ++it) {
-            it->second->testSimpleInsert();
-        }
-        sync(SYNC_REFRESH_FROM_CLIENT, ".refresh-from-client", CheckSyncReport(0,0,0 /* 1,0,0 - not sure exactly what the server will be told */));
-        sync(SYNC_TWO_WAY, ".two-way", CheckSyncReport(0,0,0, 0,0,0));
+    // add one item on first client, copy to server, and check change tracking via second source
+    for (it = sources.begin(); it != sources.end(); ++it) {
+        it->second->insertManyItems(it->second->createSourceA, 1, 1);
     }
-
-    // test that a two-way sync copies updates from database to the other client,
-    // using simple data commonly supported by servers
-    void SyncTests::testUpdate() {
-        CPPUNIT_ASSERT(sources.begin() != sources.end());
-        CPPUNIT_ASSERT(sources.begin()->second->config.updateItem);
-
-        // setup client A, B and server so that they all contain the same item
-        doCopy();
-
-        source_it it;
-        for (it = sources.begin(); it != sources.end(); ++it) {
-            it->second->update(it->second->createSourceA, it->second->config.updateItem);
-        }
-
-        sync(SYNC_TWO_WAY, ".update", CheckSyncReport(0,0,0, 0,1,0));
-        accessClientB->sync(SYNC_TWO_WAY, ".update", CheckSyncReport(0,1,0, 0,0,0));
-
-        compareDatabases();
-    }
-
-    // test that a two-way sync copies updates from database to the other client,
-    // using data that some, but not all servers support, like adding a second
-    // phone number to a contact
-    void SyncTests::testComplexUpdate() {
-        // setup client A, B and server so that they all contain the same item
-        doCopy();
-
-        source_it it;
-        for (it = sources.begin(); it != sources.end(); ++it) {
-            it->second->update(it->second->createSourceA, it->second->config.complexUpdateItem);
-        }
-
-        sync(SYNC_TWO_WAY, ".update", CheckSyncReport(0,0,0, 0,1,0));
-        accessClientB->sync(SYNC_TWO_WAY, ".update", CheckSyncReport(0,1,0, 0,0,0));
-
-        compareDatabases();
-    }
-
-
-    // test that a two-way sync deletes the copy of an item in the other database
-    void SyncTests::testDelete() {
-        // setup client A, B and server so that they all contain the same item
-        doCopy();
-
-        // delete it on A
-        source_it it;
-        for (it = sources.begin(); it != sources.end(); ++it) {
-            it->second->deleteAll(it->second->createSourceA);
-        }
-
-        // transfer change from A to server to B
-        sync(SYNC_TWO_WAY, ".delete", CheckSyncReport(0,0,0, 0,0,1));
-        accessClientB->sync(SYNC_TWO_WAY, ".delete", CheckSyncReport(0,0,1, 0,0,0));
-
-        // check client B: shouldn't have any items now
-        for (it = sources.begin(); it != sources.end(); ++it) {
-            std::auto_ptr<SyncSource> copy;
-            SOURCE_ASSERT_NO_FAILURE(copy.get(), copy.reset(it->second->createSourceA()));
-            SOURCE_ASSERT_EQUAL(copy.get(), 0, copy->beginSync());
-            SOURCE_ASSERT_EQUAL(copy.get(), 0, countItems(copy.get()));
-            SOURCE_ASSERT_EQUAL(copy.get(), 0, copy->endSync());
-            CPPUNIT_ASSERT_NO_THROW(copy.reset());
+    sync(SYNC_TWO_WAY, ".send", CheckSyncReport(0,0,0, 1,0,0));
+    for (it = sources.begin(); it != sources.end(); ++it) {
+        if (it->second->config.createSourceB) {
+            std::auto_ptr<SyncSource> source;
+            SOURCE_ASSERT_NO_FAILURE(source.get(), source.reset(it->second->createSourceB()));
+            SOURCE_ASSERT_EQUAL(source.get(), 0, source->beginSync());
+            SOURCE_ASSERT_EQUAL(source.get(), 1, countItems(source.get()));
+            SOURCE_ASSERT_EQUAL(source.get(), 1, countNewItems(source.get()));
+            SOURCE_ASSERT_EQUAL(source.get(), 0, countDeletedItems(source.get()));
+            SOURCE_ASSERT_EQUAL(source.get(), 0, countUpdatedItems(source.get()));
+            SOURCE_ASSERT_EQUAL(source.get(), 0, source->endSync());
+            CPPUNIT_ASSERT_NO_THROW(source.reset());
         }
     }
 
-    // test what the server does when it finds that different
-    // fields of the same item have been modified
-    void SyncTests::testMerge() {
-        // setup client A, B and server so that they all contain the same item
-        doCopy();
+    // add a different item on second client, one-way-from-client
+    // => no item added locally, one sent to server
+    for (it = accessClientB->sources.begin(); it != accessClientB->sources.end(); ++it) {
+        it->second->insertManyItems(it->second->createSourceA, 2, 1);
 
-        // update in client A
-        source_it it;
-        for (it = sources.begin(); it != sources.end(); ++it) {
-            it->second->update(it->second->createSourceA, it->second->config.mergeItem1);
+        if (it->second->config.createSourceB) {
+            std::auto_ptr<SyncSource> source;
+            SOURCE_ASSERT_NO_FAILURE(source.get(), source.reset(it->second->createSourceB()));
+            SOURCE_ASSERT_EQUAL(source.get(), 0, source->beginSync());
+            SOURCE_ASSERT_EQUAL(source.get(), 1, countItems(source.get()));
+            SOURCE_ASSERT_EQUAL(source.get(), 1, countNewItems(source.get()));
+            SOURCE_ASSERT_EQUAL(source.get(), 0, countDeletedItems(source.get()));
+            SOURCE_ASSERT_EQUAL(source.get(), 0, countUpdatedItems(source.get()));
+            SOURCE_ASSERT_EQUAL(source.get(), 0, source->endSync());
+            CPPUNIT_ASSERT_NO_THROW(source.reset());
         }
-
-        // update in client B
-        for (it = accessClientB->sources.begin(); it != accessClientB->sources.end(); ++it) {
-            it->second->update(it->second->createSourceA, it->second->config.mergeItem2);
-        }
-
-        // send change to server from client A (no conflict), then from B (conflict)
-        sync(SYNC_TWO_WAY, ".send", CheckSyncReport(0,0,0, 0,1,0));
-        sync(SYNC_TWO_WAY, ".recv");
-
-        // figure out how the conflict during ".recv" was handled
-        for (it = accessClientB->sources.begin(); it != accessClientB->sources.end(); ++it) {
-            std::auto_ptr<SyncSource> copy;
-            SOURCE_ASSERT_NO_FAILURE(copy.get(), copy.reset(it->second->createSourceA()));
-            SOURCE_ASSERT_EQUAL(copy.get(), 0, copy->beginSync());
-            int numItems;
-            SOURCE_ASSERT_NO_FAILURE(copy.get(), numItems = countItems(copy.get()));
-            SOURCE_ASSERT_EQUAL(copy.get(), 0, copy->endSync());
-            CPPUNIT_ASSERT(numItems >= 1);
-            CPPUNIT_ASSERT(numItems <= 2);
-            std::cout << " " << it->second->config.sourceName << ": " << (numItems == 1 ? "conflicting items were merged" : "both of the conflicting items were preserved") << " ";
-            std::cout.flush();
-            CPPUNIT_ASSERT_NO_THROW(copy.reset());
+    }
+    accessClientB->sync(SYNC_ONE_WAY_FROM_CLIENT, ".send", CheckSyncReport(0,0,0, 1,0,0));
+    for (it = accessClientB->sources.begin(); it != accessClientB->sources.end(); ++it) {
+        if (it->second->config.createSourceB) {
+            std::auto_ptr<SyncSource> source;
+            SOURCE_ASSERT_NO_FAILURE(source.get(), source.reset(it->second->createSourceB()));
+            SOURCE_ASSERT_EQUAL(source.get(), 0, source->beginSync());
+            SOURCE_ASSERT_EQUAL(source.get(), 1, countItems(source.get()));
+            SOURCE_ASSERT_EQUAL(source.get(), 0, countNewItems(source.get()));
+            SOURCE_ASSERT_EQUAL(source.get(), 0, countDeletedItems(source.get()));
+            SOURCE_ASSERT_EQUAL(source.get(), 0, countUpdatedItems(source.get()));
+            SOURCE_ASSERT_EQUAL(source.get(), 0, source->endSync());
+            CPPUNIT_ASSERT_NO_THROW(source.reset());
         }
     }
 
-    // test what the server does when it has to execute a slow sync
-    // with identical data on client and server:
-    // expected behaviour is that nothing changes
-    void SyncTests::testTwinning() {
-        // clean server and client A
-        deleteAll();
-
-        // import test data
-        source_it it;
-        for (it = sources.begin(); it != sources.end(); ++it) {
-            it->second->testImport();
+    // two-way sync with client A for verification
+    // => receive one item
+    sync(SYNC_TWO_WAY, ".check", CheckSyncReport(1,0,0, 0,0,0));
+    for (it = sources.begin(); it != sources.end(); ++it) {
+        if (it->second->config.createSourceB) {
+            std::auto_ptr<SyncSource> source;
+            SOURCE_ASSERT_NO_FAILURE(source.get(), source.reset(it->second->createSourceB()));
+            SOURCE_ASSERT_EQUAL(source.get(), 0, source->beginSync());
+            SOURCE_ASSERT_EQUAL(source.get(), 2, countItems(source.get()));
+            SOURCE_ASSERT_EQUAL(source.get(), 1, countNewItems(source.get()));
+            SOURCE_ASSERT_EQUAL(source.get(), 0, countDeletedItems(source.get()));
+            SOURCE_ASSERT_EQUAL(source.get(), 0, countUpdatedItems(source.get()));
+            SOURCE_ASSERT_EQUAL(source.get(), 0, source->endSync());
+            CPPUNIT_ASSERT_NO_THROW(source.reset());
         }
-
-        // send to server
-        sync(SYNC_TWO_WAY, ".send");
-
-        // ensure that client has the same data, thus ignoring data conversion
-        // issues (those are covered by testItems())
-        refreshClient();
-
-        // copy to client B to have another copy
-        accessClientB->refreshClient();
-
-        // slow sync should not change anything
-        sync(SYNC_TWO_WAY, ".twinning");
-
-        // check
-        compareDatabases();
     }
 
-    // tests one-way sync from server:
-    // - get both clients and server in sync with no items anywhere
-    // - add one item on first client, copy to server
-    // - add a different item on second client, one-way-from-server
-    // - two-way sync with first client
-    // => one item on first client, two on second
-    // - delete on first client, sync that to second client
-    //   via two-way sync + one-way-from-server
-    // => one item left on second client (the one inserted locally)
-    void SyncTests::testOneWayFromServer() {
-        // no items anywhere
-        deleteAll();
-        accessClientB->refreshClient();
+    // delete items on client B, sync to server
+    for (it = accessClientB->sources.begin(); it != accessClientB->sources.end(); ++it) {
+        it->second->deleteAll(it->second->createSourceA);
 
-        // check that everything is empty, also resets change tracking
-        // in second sources of each client
-        source_it it;
-        for (it = sources.begin(); it != sources.end(); ++it) {
-            if (it->second->config.createSourceB) {
-                std::auto_ptr<SyncSource> source;
-                SOURCE_ASSERT_NO_FAILURE(source.get(), source.reset(it->second->createSourceB()));
-                SOURCE_ASSERT_EQUAL(source.get(), 0, source->beginSync());
-                SOURCE_ASSERT_EQUAL(source.get(), 0, countItems(source.get()));
-                SOURCE_ASSERT_EQUAL(source.get(), 0, source->endSync());
-                CPPUNIT_ASSERT_NO_THROW(source.reset());
-            }
+        if (it->second->config.createSourceB) {
+            std::auto_ptr<SyncSource> source;
+            SOURCE_ASSERT_NO_FAILURE(source.get(), source.reset(it->second->createSourceB()));
+            SOURCE_ASSERT_EQUAL(source.get(), 0, source->beginSync());
+            SOURCE_ASSERT_EQUAL(source.get(), 0, countItems(source.get()));
+            SOURCE_ASSERT_EQUAL(source.get(), 0, countNewItems(source.get()));
+            SOURCE_ASSERT_EQUAL(source.get(), 1, countDeletedItems(source.get()));
+            SOURCE_ASSERT_EQUAL(source.get(), 0, countUpdatedItems(source.get()));
+            SOURCE_ASSERT_EQUAL(source.get(), 0, source->endSync());
+            CPPUNIT_ASSERT_NO_THROW(source.reset());
         }
-        for (it = accessClientB->sources.begin(); it != accessClientB->sources.end(); ++it) {
-            if (it->second->config.createSourceB) {
-                std::auto_ptr<SyncSource> source;
-                SOURCE_ASSERT_NO_FAILURE(source.get(), source.reset(it->second->createSourceB()));
-                SOURCE_ASSERT_EQUAL(source.get(), 0, source->beginSync());
-                SOURCE_ASSERT_EQUAL(source.get(), 0, countItems(source.get()));
-                SOURCE_ASSERT_EQUAL(source.get(), 0, source->endSync());
-                CPPUNIT_ASSERT_NO_THROW(source.reset());
-            }
+    }
+    accessClientB->sync(SYNC_ONE_WAY_FROM_CLIENT, ".delete", CheckSyncReport(0,0,0, 0,0,1));
+    for (it = accessClientB->sources.begin(); it != accessClientB->sources.end(); ++it) {
+        if (it->second->config.createSourceB) {
+            std::auto_ptr<SyncSource> source;
+            SOURCE_ASSERT_NO_FAILURE(source.get(), source.reset(it->second->createSourceB()));
+            SOURCE_ASSERT_EQUAL(source.get(), 0, source->beginSync());
+            SOURCE_ASSERT_EQUAL(source.get(), 0, countItems(source.get()));
+            SOURCE_ASSERT_EQUAL(source.get(), 0, countNewItems(source.get()));
+            SOURCE_ASSERT_EQUAL(source.get(), 0, countDeletedItems(source.get()));
+            SOURCE_ASSERT_EQUAL(source.get(), 0, countUpdatedItems(source.get()));
+            SOURCE_ASSERT_EQUAL(source.get(), 0, source->endSync());
+            CPPUNIT_ASSERT_NO_THROW(source.reset());
         }
+    }
 
-        // add one item on first client, copy to server, and check change tracking via second source
-        for (it = sources.begin(); it != sources.end(); ++it) {
-            it->second->insertManyItems(it->second->createSourceA, 1, 1);
+    // sync the same change to client A
+    // => one item left (the one inserted locally)
+    sync(SYNC_TWO_WAY, ".delete", CheckSyncReport(0,0,1, 0,0,0));
+    for (it = sources.begin(); it != sources.end(); ++it) {
+        if (it->second->config.createSourceB) {
+            std::auto_ptr<SyncSource> source;
+            SOURCE_ASSERT_NO_FAILURE(source.get(), source.reset(it->second->createSourceB()));
+            SOURCE_ASSERT_EQUAL(source.get(), 0, source->beginSync());
+            SOURCE_ASSERT_EQUAL(source.get(), 1, countItems(source.get()));
+            SOURCE_ASSERT_EQUAL(source.get(), 0, countNewItems(source.get()));
+            SOURCE_ASSERT_EQUAL(source.get(), 1, countDeletedItems(source.get()));
+            SOURCE_ASSERT_EQUAL(source.get(), 0, countUpdatedItems(source.get()));
+            SOURCE_ASSERT_EQUAL(source.get(), 0, source->endSync());
+            CPPUNIT_ASSERT_NO_THROW(source.reset());
         }
-        sync(SYNC_TWO_WAY, ".send", CheckSyncReport(0,0,0, 1,0,0));
-        for (it = sources.begin(); it != sources.end(); ++it) {
-            if (it->second->config.createSourceB) {
-                std::auto_ptr<SyncSource> source;
-                SOURCE_ASSERT_NO_FAILURE(source.get(), source.reset(it->second->createSourceB()));
-                SOURCE_ASSERT_EQUAL(source.get(), 0, source->beginSync());
-                SOURCE_ASSERT_EQUAL(source.get(), 1, countItems(source.get()));
-                SOURCE_ASSERT_EQUAL(source.get(), 1, countNewItems(source.get()));
-                SOURCE_ASSERT_EQUAL(source.get(), 0, countDeletedItems(source.get()));
-                SOURCE_ASSERT_EQUAL(source.get(), 0, countUpdatedItems(source.get()));
-                SOURCE_ASSERT_EQUAL(source.get(), 0, source->endSync());
-                CPPUNIT_ASSERT_NO_THROW(source.reset());
-            }
-        }
+    }
+}
 
-        // add a different item on second client, one-way-from-server
-        // => one item added locally, none sent to server
-        for (it = accessClientB->sources.begin(); it != accessClientB->sources.end(); ++it) {
-            it->second->insertManyItems(it->second->createSourceA, 2, 1);
+// creates several items, transmits them back and forth and
+// then compares which of them have been preserved
+void SyncTests::testItems() {
+    // clean server and first test database
+    deleteAll();
 
-            if (it->second->config.createSourceB) {
-                std::auto_ptr<SyncSource> source;
-                SOURCE_ASSERT_NO_FAILURE(source.get(), source.reset(it->second->createSourceB()));
-                SOURCE_ASSERT_EQUAL(source.get(), 0, source->beginSync());
-                SOURCE_ASSERT_EQUAL(source.get(), 1, countItems(source.get()));
-                SOURCE_ASSERT_EQUAL(source.get(), 1, countNewItems(source.get()));
-                SOURCE_ASSERT_EQUAL(source.get(), 0, countDeletedItems(source.get()));
-                SOURCE_ASSERT_EQUAL(source.get(), 0, countUpdatedItems(source.get()));
-                SOURCE_ASSERT_EQUAL(source.get(), 0, source->endSync());
-                CPPUNIT_ASSERT_NO_THROW(source.reset());
-            }
-        }
-        accessClientB->sync(SYNC_ONE_WAY_FROM_SERVER, ".recv", CheckSyncReport(1,0,0, 0,0,0));
-        for (it = accessClientB->sources.begin(); it != accessClientB->sources.end(); ++it) {
-            if (it->second->config.createSourceB) {
-                std::auto_ptr<SyncSource> source;
-                SOURCE_ASSERT_NO_FAILURE(source.get(), source.reset(it->second->createSourceB()));
-                SOURCE_ASSERT_EQUAL(source.get(), 0, source->beginSync());
-                SOURCE_ASSERT_EQUAL(source.get(), 2, countItems(source.get()));
-                SOURCE_ASSERT_EQUAL(source.get(), 1, countNewItems(source.get()));
-                SOURCE_ASSERT_EQUAL(source.get(), 0, countDeletedItems(source.get()));
-                SOURCE_ASSERT_EQUAL(source.get(), 0, countUpdatedItems(source.get()));
-                SOURCE_ASSERT_EQUAL(source.get(), 0, source->endSync());
-                CPPUNIT_ASSERT_NO_THROW(source.reset());
-            }
-        }
+    // import data
+    source_it it;
+    for (it = sources.begin(); it != sources.end(); ++it) {
+        it->second->testImport();
+    }
 
-        // two-way sync with first client for verification
-        // => no changes
-        sync(SYNC_TWO_WAY, ".check", CheckSyncReport(0,0,0, 0,0,0));
-        for (it = sources.begin(); it != sources.end(); ++it) {
-            if (it->second->config.createSourceB) {
-                std::auto_ptr<SyncSource> source;
-                SOURCE_ASSERT_NO_FAILURE(source.get(), source.reset(it->second->createSourceB()));
-                SOURCE_ASSERT_EQUAL(source.get(), 0, source->beginSync());
-                SOURCE_ASSERT_EQUAL(source.get(), 1, countItems(source.get()));
-                SOURCE_ASSERT_EQUAL(source.get(), 0, countNewItems(source.get()));
-                SOURCE_ASSERT_EQUAL(source.get(), 0, countDeletedItems(source.get()));
-                SOURCE_ASSERT_EQUAL(source.get(), 0, countUpdatedItems(source.get()));
-                SOURCE_ASSERT_EQUAL(source.get(), 0, source->endSync());
-                CPPUNIT_ASSERT_NO_THROW(source.reset());
-            }
-        }
+    // transfer from client A to server to client B
+    sync(SYNC_TWO_WAY, ".send");
+    accessClientB->refreshClient();
 
-        // delete items on clientA, sync to server
-        for (it = sources.begin(); it != sources.end(); ++it) {
-            it->second->deleteAll(it->second->createSourceA);
+    compareDatabases();
+}
 
-            if (it->second->config.createSourceB) {
-                std::auto_ptr<SyncSource> source;
-                SOURCE_ASSERT_NO_FAILURE(source.get(), source.reset(it->second->createSourceB()));
-                SOURCE_ASSERT_EQUAL(source.get(), 0, source->beginSync());
-                SOURCE_ASSERT_EQUAL(source.get(), 0, countItems(source.get()));
-                SOURCE_ASSERT_EQUAL(source.get(), 0, countNewItems(source.get()));
-                SOURCE_ASSERT_EQUAL(source.get(), 1, countDeletedItems(source.get()));
-                SOURCE_ASSERT_EQUAL(source.get(), 0, countUpdatedItems(source.get()));
-                SOURCE_ASSERT_EQUAL(source.get(), 0, source->endSync());
-                CPPUNIT_ASSERT_NO_THROW(source.reset());
-            }
-        }
-        sync(SYNC_TWO_WAY, ".delete", CheckSyncReport(0,0,0, 0,0,1));
-        for (it = sources.begin(); it != sources.end(); ++it) {
-            if (it->second->config.createSourceB) {
-                std::auto_ptr<SyncSource> source;
-                SOURCE_ASSERT_NO_FAILURE(source.get(), source.reset(it->second->createSourceB()));
-                SOURCE_ASSERT_EQUAL(source.get(), 0, source->beginSync());
-                SOURCE_ASSERT_EQUAL(source.get(), 0, countItems(source.get()));
-                SOURCE_ASSERT_EQUAL(source.get(), 0, countNewItems(source.get()));
-                SOURCE_ASSERT_EQUAL(source.get(), 0, countDeletedItems(source.get()));
-                SOURCE_ASSERT_EQUAL(source.get(), 0, countUpdatedItems(source.get()));
-                SOURCE_ASSERT_EQUAL(source.get(), 0, source->endSync());
-                CPPUNIT_ASSERT_NO_THROW(source.reset());
-            }
-        }
+// tests the following sequence of events:
+// - both clients in sync with server
+// - client 1 adds item
+// - client 1 updates the same item
+// - client 2 gets item: the client should be asked to add the item
+//
+// However it has been observed that sometimes the item was sent as "update"
+// for a non-existant local item. This is a server bug, the client does not
+// have to handle that. See
+// http://forge.objectweb.org/tracker/?func=detail&atid=100096&aid=305018&group_id=96
+void SyncTests::testAddUpdate() {
+    // clean server and both test databases
+    deleteAll();
+    accessClientB->refreshClient();
 
-        // sync the same change to second client
-        // => one item left (the one inserted locally)
-        accessClientB->sync(SYNC_ONE_WAY_FROM_SERVER, ".delete", CheckSyncReport(0,0,1, 0,0,0));
-        for (it = accessClientB->sources.begin(); it != accessClientB->sources.end(); ++it) {
-            if (it->second->config.createSourceB) {
-                std::auto_ptr<SyncSource> source;
-                SOURCE_ASSERT_NO_FAILURE(source.get(), source.reset(it->second->createSourceB()));
-                SOURCE_ASSERT_EQUAL(source.get(), 0, source->beginSync());
-                SOURCE_ASSERT_EQUAL(source.get(), 1, countItems(source.get()));
-                SOURCE_ASSERT_EQUAL(source.get(), 0, countNewItems(source.get()));
-                SOURCE_ASSERT_EQUAL(source.get(), 1, countDeletedItems(source.get()));
-                SOURCE_ASSERT_EQUAL(source.get(), 0, countUpdatedItems(source.get()));
-                SOURCE_ASSERT_EQUAL(source.get(), 0, source->endSync());
-                CPPUNIT_ASSERT_NO_THROW(source.reset());
+    // add item
+    source_it it;
+    for (it = sources.begin(); it != sources.end(); ++it) {
+        it->second->insert(it->second->createSourceA, it->second->config.insertItem);
+    }
+    sync(SYNC_TWO_WAY, ".add", CheckSyncReport(0,0,0, 1,0,0));
+
+    // update it
+    for (it = sources.begin(); it != sources.end(); ++it) {
+        it->second->update(it->second->createSourceB, it->second->config.updateItem);
+    }
+    sync(SYNC_TWO_WAY, ".update", CheckSyncReport(0,0,0, 0,1,0));
+
+    // now download the updated item into the second client
+    accessClientB->sync(SYNC_TWO_WAY, ".recv", CheckSyncReport(1,0,0, 0,0,0));
+
+    // compare the two databases
+    compareDatabases();
+}
+
+//
+// stress tests: execute some of the normal operations,
+// but with large number of artificially generated items
+//
+
+// two-way sync with clean client/server,
+// followed by slow sync and comparison
+// via second client
+void SyncTests::testManyItems() {
+    // clean server and client A
+    deleteAll();
+
+    // import artificial data
+    source_it it;
+    for (it = sources.begin(); it != sources.end(); ++it) {
+        it->second->insertManyItems(it->second->createSourceA);
+    }
+
+    // send data to server
+    sync(SYNC_TWO_WAY, ".send", CheckSyncReport(0,0,0, -1,0,0));
+
+    // ensure that client has the same data, ignoring data conversion
+    // issues (those are covered by testItems())
+    refreshClient();
+
+    // also copy to second client
+    accessClientB->refreshClient();
+
+    // slow sync now should not change anything
+    sync(SYNC_SLOW, ".twinning");
+
+    // compare
+    compareDatabases();
+}
+
+
+/**
+ * implements testMaxMsg(), testLargeObject(), testLargeObjectEncoded()
+ * using a sequence of items with varying sizes
+ */
+void SyncTests::doVarSizes(bool withMaxMsgSize,
+                           bool withLargeObject,
+                           const char *encoding) {
+    static const int maxMsgSize = 8 * 1024;
+
+    // clean server and client A
+    deleteAll();
+
+    // insert items, doubling their size, then restart with small size
+    source_it it;
+    for (it = sources.begin(); it != sources.end(); ++it) {
+        int item = 1;
+        for (int i = 0; i < 2; i++ ) {
+            int size = 1;
+            while (size < 2 * maxMsgSize) {
+                it->second->insertManyItems(it->second->createSourceA, item, 1, (int)strlen(it->second->config.templateItem) + 10 + size);
+                size *= 2;
+                item++;
             }
         }
     }
 
-    // tests one-way sync from client:
-    // - get both clients and server in sync with no items anywhere
-    // - add one item on first client, copy to server
-    // - add a different item on second client, one-way-from-client
-    // - two-way sync with first client
-    // => two items on first client, one on second
-    // - delete on second client, sync that to first client
-    //   via one-way-from-client, two-way
-    // => one item left on first client (the one inserted locally)
-    void SyncTests::testOneWayFromClient() {
-        // no items anywhere
-        deleteAll();
-        accessClientB->deleteAll();
+    // transfer to server
+    sync(SYNC_TWO_WAY, ".send",
+         CheckSyncReport(0,0,0, -1,0,0), // number of items sent to server depends on source
+         withMaxMsgSize ? maxMsgSize : 0,
+         withMaxMsgSize ? maxMsgSize * 100 : 0,
+         withLargeObject,
+         encoding);
 
-        // check that everything is empty, also resets change tracking
-        // in second sources of each client
-        source_it it;
-        for (it = sources.begin(); it != sources.end(); ++it) {
-            if (it->second->config.createSourceB) {
-                std::auto_ptr<SyncSource> source;
-                SOURCE_ASSERT_NO_FAILURE(source.get(), source.reset(it->second->createSourceB()));
-                SOURCE_ASSERT_EQUAL(source.get(), 0, source->beginSync());
-                SOURCE_ASSERT_EQUAL(source.get(), 0, countItems(source.get()));
-                SOURCE_ASSERT_EQUAL(source.get(), 0, source->endSync());
-                CPPUNIT_ASSERT_NO_THROW(source.reset());
-            }
-        }
-        for (it = accessClientB->sources.begin(); it != accessClientB->sources.end(); ++it) {
-            if (it->second->config.createSourceB) {
-                std::auto_ptr<SyncSource> source;
-                SOURCE_ASSERT_NO_FAILURE(source.get(), source.reset(it->second->createSourceB()));
-                SOURCE_ASSERT_EQUAL(source.get(), 0, source->beginSync());
-                SOURCE_ASSERT_EQUAL(source.get(), 0, countItems(source.get()));
-                SOURCE_ASSERT_EQUAL(source.get(), 0, source->endSync());
-                CPPUNIT_ASSERT_NO_THROW(source.reset());
-            }
-        }
+    // copy to second client
+    accessClientB->sync(SYNC_REFRESH_FROM_SERVER, ".recv",
+                        CheckSyncReport(-1,0,-1, 0,0,0), // number of items received from server depends on source
+                        withLargeObject ? maxMsgSize : withMaxMsgSize ? maxMsgSize * 100 /* large enough so that server can sent the largest item */ : 0,
+                        withMaxMsgSize ? maxMsgSize * 100 : 0,
+                        withLargeObject,
+                        encoding);
 
-        // add one item on first client, copy to server, and check change tracking via second source
-        for (it = sources.begin(); it != sources.end(); ++it) {
-            it->second->insertManyItems(it->second->createSourceA, 1, 1);
-        }
-        sync(SYNC_TWO_WAY, ".send", CheckSyncReport(0,0,0, 1,0,0));
-        for (it = sources.begin(); it != sources.end(); ++it) {
-            if (it->second->config.createSourceB) {
-                std::auto_ptr<SyncSource> source;
-                SOURCE_ASSERT_NO_FAILURE(source.get(), source.reset(it->second->createSourceB()));
-                SOURCE_ASSERT_EQUAL(source.get(), 0, source->beginSync());
-                SOURCE_ASSERT_EQUAL(source.get(), 1, countItems(source.get()));
-                SOURCE_ASSERT_EQUAL(source.get(), 1, countNewItems(source.get()));
-                SOURCE_ASSERT_EQUAL(source.get(), 0, countDeletedItems(source.get()));
-                SOURCE_ASSERT_EQUAL(source.get(), 0, countUpdatedItems(source.get()));
-                SOURCE_ASSERT_EQUAL(source.get(), 0, source->endSync());
-                CPPUNIT_ASSERT_NO_THROW(source.reset());
-            }
-        }
+    // compare
+    compareDatabases();
+}
 
-        // add a different item on second client, one-way-from-client
-        // => no item added locally, one sent to server
-        for (it = accessClientB->sources.begin(); it != accessClientB->sources.end(); ++it) {
-            it->second->insertManyItems(it->second->createSourceA, 2, 1);
+void SyncTests::sync(SyncMode syncMode,
+                     const std::string &logprefix,
+                     CheckSyncReport checkReport,
+                     long maxMsgSize,
+                     long maxObjSize,
+                     bool loSupport,
+                     const char *encoding) {
+    int res = 0;
+    static int syncCounter = 0;
+    static std::string lastTest;
+    std::stringstream logstream;
 
-            if (it->second->config.createSourceB) {
-                std::auto_ptr<SyncSource> source;
-                SOURCE_ASSERT_NO_FAILURE(source.get(), source.reset(it->second->createSourceB()));
-                SOURCE_ASSERT_EQUAL(source.get(), 0, source->beginSync());
-                SOURCE_ASSERT_EQUAL(source.get(), 1, countItems(source.get()));
-                SOURCE_ASSERT_EQUAL(source.get(), 1, countNewItems(source.get()));
-                SOURCE_ASSERT_EQUAL(source.get(), 0, countDeletedItems(source.get()));
-                SOURCE_ASSERT_EQUAL(source.get(), 0, countUpdatedItems(source.get()));
-                SOURCE_ASSERT_EQUAL(source.get(), 0, source->endSync());
-                CPPUNIT_ASSERT_NO_THROW(source.reset());
-            }
-        }
-        accessClientB->sync(SYNC_ONE_WAY_FROM_CLIENT, ".send", CheckSyncReport(0,0,0, 1,0,0));
-        for (it = accessClientB->sources.begin(); it != accessClientB->sources.end(); ++it) {
-            if (it->second->config.createSourceB) {
-                std::auto_ptr<SyncSource> source;
-                SOURCE_ASSERT_NO_FAILURE(source.get(), source.reset(it->second->createSourceB()));
-                SOURCE_ASSERT_EQUAL(source.get(), 0, source->beginSync());
-                SOURCE_ASSERT_EQUAL(source.get(), 1, countItems(source.get()));
-                SOURCE_ASSERT_EQUAL(source.get(), 0, countNewItems(source.get()));
-                SOURCE_ASSERT_EQUAL(source.get(), 0, countDeletedItems(source.get()));
-                SOURCE_ASSERT_EQUAL(source.get(), 0, countUpdatedItems(source.get()));
-                SOURCE_ASSERT_EQUAL(source.get(), 0, source->endSync());
-                CPPUNIT_ASSERT_NO_THROW(source.reset());
-            }
-        }
-
-        // two-way sync with client A for verification
-        // => receive one item
-        sync(SYNC_TWO_WAY, ".check", CheckSyncReport(1,0,0, 0,0,0));
-        for (it = sources.begin(); it != sources.end(); ++it) {
-            if (it->second->config.createSourceB) {
-                std::auto_ptr<SyncSource> source;
-                SOURCE_ASSERT_NO_FAILURE(source.get(), source.reset(it->second->createSourceB()));
-                SOURCE_ASSERT_EQUAL(source.get(), 0, source->beginSync());
-                SOURCE_ASSERT_EQUAL(source.get(), 2, countItems(source.get()));
-                SOURCE_ASSERT_EQUAL(source.get(), 1, countNewItems(source.get()));
-                SOURCE_ASSERT_EQUAL(source.get(), 0, countDeletedItems(source.get()));
-                SOURCE_ASSERT_EQUAL(source.get(), 0, countUpdatedItems(source.get()));
-                SOURCE_ASSERT_EQUAL(source.get(), 0, source->endSync());
-                CPPUNIT_ASSERT_NO_THROW(source.reset());
-            }
-        }
-
-        // delete items on client B, sync to server
-        for (it = accessClientB->sources.begin(); it != accessClientB->sources.end(); ++it) {
-            it->second->deleteAll(it->second->createSourceA);
-
-            if (it->second->config.createSourceB) {
-                std::auto_ptr<SyncSource> source;
-                SOURCE_ASSERT_NO_FAILURE(source.get(), source.reset(it->second->createSourceB()));
-                SOURCE_ASSERT_EQUAL(source.get(), 0, source->beginSync());
-                SOURCE_ASSERT_EQUAL(source.get(), 0, countItems(source.get()));
-                SOURCE_ASSERT_EQUAL(source.get(), 0, countNewItems(source.get()));
-                SOURCE_ASSERT_EQUAL(source.get(), 1, countDeletedItems(source.get()));
-                SOURCE_ASSERT_EQUAL(source.get(), 0, countUpdatedItems(source.get()));
-                SOURCE_ASSERT_EQUAL(source.get(), 0, source->endSync());
-                CPPUNIT_ASSERT_NO_THROW(source.reset());
-            }
-        }
-        accessClientB->sync(SYNC_ONE_WAY_FROM_CLIENT, ".delete", CheckSyncReport(0,0,0, 0,0,1));
-        for (it = accessClientB->sources.begin(); it != accessClientB->sources.end(); ++it) {
-            if (it->second->config.createSourceB) {
-                std::auto_ptr<SyncSource> source;
-                SOURCE_ASSERT_NO_FAILURE(source.get(), source.reset(it->second->createSourceB()));
-                SOURCE_ASSERT_EQUAL(source.get(), 0, source->beginSync());
-                SOURCE_ASSERT_EQUAL(source.get(), 0, countItems(source.get()));
-                SOURCE_ASSERT_EQUAL(source.get(), 0, countNewItems(source.get()));
-                SOURCE_ASSERT_EQUAL(source.get(), 0, countDeletedItems(source.get()));
-                SOURCE_ASSERT_EQUAL(source.get(), 0, countUpdatedItems(source.get()));
-                SOURCE_ASSERT_EQUAL(source.get(), 0, source->endSync());
-                CPPUNIT_ASSERT_NO_THROW(source.reset());
-            }
-        }
-
-        // sync the same change to client A
-        // => one item left (the one inserted locally)
-        sync(SYNC_TWO_WAY, ".delete", CheckSyncReport(0,0,1, 0,0,0));
-        for (it = sources.begin(); it != sources.end(); ++it) {
-            if (it->second->config.createSourceB) {
-                std::auto_ptr<SyncSource> source;
-                SOURCE_ASSERT_NO_FAILURE(source.get(), source.reset(it->second->createSourceB()));
-                SOURCE_ASSERT_EQUAL(source.get(), 0, source->beginSync());
-                SOURCE_ASSERT_EQUAL(source.get(), 1, countItems(source.get()));
-                SOURCE_ASSERT_EQUAL(source.get(), 0, countNewItems(source.get()));
-                SOURCE_ASSERT_EQUAL(source.get(), 1, countDeletedItems(source.get()));
-                SOURCE_ASSERT_EQUAL(source.get(), 0, countUpdatedItems(source.get()));
-                SOURCE_ASSERT_EQUAL(source.get(), 0, source->endSync());
-                CPPUNIT_ASSERT_NO_THROW(source.reset());
-            }
-        }
+    // reset counter when switching tests
+    if (lastTest != getCurrentTest()) {
+        syncCounter = 0;
+        lastTest = getCurrentTest();
     }
 
-    // creates several items, transmits them back and forth and
-    // then compares which of them have been preserved
-    void SyncTests::testItems() {
-        // clean server and first test database
-        deleteAll();
+    logstream << std::setw(4) << std::setfill('0') << syncCounter << "_" << getCurrentTest() << logprefix;
+    std::string logname = logstream.str();
+    simplifyFilename(logname);
+    syncCounter++;
 
-        // import data
-        source_it it;
-        for (it = sources.begin(); it != sources.end(); ++it) {
-            it->second->testImport();
-        }
+    std::string logfile = logname + ".client." + (accessClientB ? "A" : "B") + ".log";
+    remove(logfile.c_str());
+    LOG.setLogName(logfile.c_str());
+    LOG.reset();
 
-        // transfer from client A to server to client B
-        sync(SYNC_TWO_WAY, ".send");
-        accessClientB->refreshClient();
+    try {
+        res = client.sync(sourceArray,
+                          syncMode,
+                          checkReport,
+                          maxMsgSize,
+                          maxObjSize,
+                          loSupport,
+                          encoding);
 
-        compareDatabases();
+        client.postSync(res, logname);
+    } catch (...) {
+        res = 1;
+        client.postSync(res, logname);
+
+        // this logs the original exception using CPPUnit mechanisms
+        CPPUNIT_ASSERT_NO_THROW( throw );
     }
-
-    // tests the following sequence of events:
-    // - both clients in sync with server
-    // - client 1 adds item
-    // - client 1 updates the same item
-    // - client 2 gets item: the client should be asked to add the item
-    //
-    // However it has been observed that sometimes the item was sent as "update"
-    // for a non-existant local item. This is a server bug, the client does not
-    // have to handle that. See
-    // http://forge.objectweb.org/tracker/?func=detail&atid=100096&aid=305018&group_id=96
-    void SyncTests::testAddUpdate() {
-        // clean server and both test databases
-        deleteAll();
-        accessClientB->refreshClient();
-
-        // add item
-        source_it it;
-        for (it = sources.begin(); it != sources.end(); ++it) {
-            it->second->insert(it->second->createSourceA, it->second->config.insertItem);
-        }
-        sync(SYNC_TWO_WAY, ".add", CheckSyncReport(0,0,0, 1,0,0));
-
-        // update it
-        for (it = sources.begin(); it != sources.end(); ++it) {
-            it->second->update(it->second->createSourceB, it->second->config.updateItem);
-        }
-        sync(SYNC_TWO_WAY, ".update", CheckSyncReport(0,0,0, 0,1,0));
-
-        // now download the updated item into the second client
-        accessClientB->sync(SYNC_TWO_WAY, ".recv", CheckSyncReport(1,0,0, 0,0,0));
-
-        // compare the two databases
-        compareDatabases();
-    }
-
-    //
-    // stress tests: execute some of the normal operations,
-    // but with large number of artificially generated items
-    //
-
-    // two-way sync with clean client/server,
-    // followed by slow sync and comparison
-    // via second client
-    void SyncTests::testManyItems() {
-        // clean server and client A
-        deleteAll();
-
-        // import artificial data
-        source_it it;
-        for (it = sources.begin(); it != sources.end(); ++it) {
-            it->second->insertManyItems(it->second->createSourceA);
-        }
-
-        // send data to server
-        sync(SYNC_TWO_WAY, ".send", CheckSyncReport(0,0,0, -1,0,0));
-
-        // ensure that client has the same data, ignoring data conversion
-        // issues (those are covered by testItems())
-        refreshClient();
-
-        // also copy to second client
-        accessClientB->refreshClient();
-
-        // slow sync now should not change anything
-        sync(SYNC_SLOW, ".twinning");
-
-        // compare
-        compareDatabases();
-    }
-
-
-    /**
-     * implements testMaxMsg(), testLargeObject(), testLargeObjectEncoded()
-     * using a sequence of items with varying sizes
-     */
-    void SyncTests::doVarSizes(bool withMaxMsgSize,
-                    bool withLargeObject,
-                    const char *encoding) {
-        static const int maxMsgSize = 8 * 1024;
-
-        // clean server and client A
-        deleteAll();
-
-        // insert items, doubling their size, then restart with small size
-        source_it it;
-        for (it = sources.begin(); it != sources.end(); ++it) {
-            int item = 1;
-            for (int i = 0; i < 2; i++ ) {
-                int size = 1;
-                while (size < 2 * maxMsgSize) {
-                    it->second->insertManyItems(it->second->createSourceA, item, 1, (int)strlen(it->second->config.templateItem) + 10 + size);
-                    size *= 2;
-                    item++;
-                }
-            }
-        }
-
-        // transfer to server
-        sync(SYNC_TWO_WAY, ".send",
-             CheckSyncReport(0,0,0, -1,0,0), // number of items sent to server depends on source
-             withMaxMsgSize ? maxMsgSize : 0,
-             withMaxMsgSize ? maxMsgSize * 100 : 0,
-             withLargeObject,
-             encoding);
-
-        // copy to second client
-        accessClientB->sync(SYNC_REFRESH_FROM_SERVER, ".recv",
-                            CheckSyncReport(-1,0,-1, 0,0,0), // number of items received from server depends on source
-                            withLargeObject ? maxMsgSize : withMaxMsgSize ? maxMsgSize * 100 /* large enough so that server can sent the largest item */ : 0,
-                            withMaxMsgSize ? maxMsgSize * 100 : 0,
-                            withLargeObject,
-                            encoding);
-
-        // compare
-        compareDatabases();
-    }
-
-    void SyncTests::sync(SyncMode syncMode,
-              const std::string &logprefix,
-              CheckSyncReport checkReport,
-              long maxMsgSize,
-              long maxObjSize,
-              bool loSupport,
-              const char *encoding) {
-        int res = 0;
-        static int syncCounter = 0;
-        static std::string lastTest;
-        std::stringstream logstream;
-
-        // reset counter when switching tests
-        if (lastTest != getCurrentTest()) {
-            syncCounter = 0;
-            lastTest = getCurrentTest();
-        }
-
-        logstream << std::setw(4) << std::setfill('0') << syncCounter << "_" << getCurrentTest() << logprefix;
-        std::string logname = logstream.str();
-        simplifyFilename(logname);
-        syncCounter++;
-
-        std::string logfile = logname + ".client." + (accessClientB ? "A" : "B") + ".log";
-        remove(logfile.c_str());
-        LOG.setLogName(logfile.c_str());
-        LOG.reset();
-
-        try {
-            res = client.sync(sourceArray,
-                              syncMode,
-                              checkReport,
-                              maxMsgSize,
-                              maxObjSize,
-                              loSupport,
-                              encoding);
-
-            client.postSync(res, logname);
-        } catch (...) {
-            res = 1;
-            client.postSync(res, logname);
-
-            // this logs the original exception using CPPUnit mechanisms
-            CPPUNIT_ASSERT_NO_THROW( throw );
-        }
-        CPPUNIT_ASSERT( !res );
-    }
+    CPPUNIT_ASSERT( !res );
+}
 
 
 /** generates tests on demand based on what the client supports */
@@ -1726,7 +1726,7 @@ bool ClientTest::compare(ClientTest &client, const char *fileA, const char *file
 void ClientTest::postSync(int res, const std::string &logname)
 {
 #ifdef WIN32
-	Sleep(serverSleepSeconds * 1000);
+    Sleep(serverSleepSeconds * 1000);
 #else
     sleep(serverSleepSeconds);
 
