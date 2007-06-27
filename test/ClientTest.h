@@ -23,10 +23,15 @@
 /** @{ */
 
 #include <string>
+#include <vector>
 #include "spds/SyncSource.h"
 #include "spds/SyncReport.h"
 
 #ifdef ENABLE_INTEGRATION_TESTS
+
+#include <cppunit/TestSuite.h>
+#include <cppunit/TestAssert.h>
+#include <cppunit/TestFixture.h>
 
 /**
  * This class encapsulates logging and checking of a SyncReport.
@@ -61,6 +66,9 @@ class CheckSyncReport {
      */
     virtual void check(int res, SyncReport &report) const;
 };
+
+class LocalTests;
+class SyncTests;
 
 /**
  * This is the interface expected by the testing framework for sync
@@ -111,15 +119,38 @@ class ClientTest {
     virtual ~ClientTest();
 
     /**
-     * This is the only function provided by ClientTest itself:
-     * it registers tests using this instance of ClientTest for
+     * This function registers tests using this instance of ClientTest for
      * later use during a test run.
      *
-     * Theinstance must remain valid until after the tests were
+     * The instance must remain valid until after the tests were
      * run. To run them use a separate test runner, like the one from
      * client-test-main.cpp.
      */
     virtual void registerTests();
+
+    class Config;
+
+    /**
+     * Creates an instance of LocalTests (default implementation) or a
+     * class derived from it.  LocalTests provides tests which cover
+     * the SyncSource interface and can be executed without a SyncML
+     * server. It also contains utility functions for working with
+     * SyncSources.
+     *
+     * A ClientTest implementation can, but doesn't have to extend
+     * these tests by instantiating a derived class here.
+     */
+    virtual LocalTests *createLocalTests(const std::string &name, int sourceParam, ClientTest::Config &co);
+
+    /**
+     * Creates an instance of SyncTests (default) or a class derived
+     * from it.  SyncTests provides tests which cover the actual
+     * interaction with a SyncML server.
+     *
+     * A ClientTest implementation can, but doesn't have to extend
+     * these tests by instantiating a derived class here.
+     */
+    virtual SyncTests *createSyncTests(const std::string &name, std::vector<int> sourceIndices, bool isClientA = true);
 
     /**
      * utility function for dumping items which are C strings with blank lines as separator
@@ -424,6 +455,273 @@ class ClientTest {
     void *factory;
 };
 
+/**
+ * helper class to encapsulate ClientTest::Config::createsource_t
+ * pointer and the corresponding parameters
+ */
+class CreateSource {
+public:
+    CreateSource(ClientTest::Config::createsource_t createSourceParam, ClientTest &clientParam, int sourceParam, bool isSourceAParam) :
+        createSource(createSourceParam),
+        client(clientParam),
+        source(sourceParam),
+        isSourceA(isSourceAParam) {}
+
+    SyncSource *operator() () {
+        CPPUNIT_ASSERT(createSource);
+        return createSource(client, source, isSourceA);
+    }
+
+    const ClientTest::Config::createsource_t createSource;
+    ClientTest &client;
+    const int source;
+    const bool isSourceA;
+};
+
+
+/**
+ * local test of one sync source and utility functions also used by
+ * sync tests
+ */
+class LocalTests : public CppUnit::TestSuite, public CppUnit::TestFixture {
+public:
+    /** the client we are testing */
+    ClientTest &client;
+
+    /** number of the source we are testing in that client */
+    const int source;
+
+    /** configuration that corresponds to source */
+    const ClientTest::Config config;
+
+    /** helper funclets to create sources */
+    CreateSource createSourceA, createSourceB;
+
+    LocalTests(const std::string &name, ClientTest &cl, int sourceParam, ClientTest::Config &co) :
+        CppUnit::TestSuite(name),
+        client(cl),
+        source(sourceParam),
+        config(co),
+        createSourceA(co.createSourceA, cl, sourceParam, true),
+        createSourceB(co.createSourceB, cl, sourceParam, false)
+        {}
+
+    /**
+     * adds the supported tests to the instance itself;
+     * this is the function that a derived class can override
+     * to add additional tests
+     */
+    virtual void addTests();
+
+    /**
+     * opens source and inserts the given item; can be called
+     * regardless whether the data source already contains items or not
+     *
+     * The type of the item is unset; it is assumed that the source
+     * can handle that.
+     */
+    virtual void insert(CreateSource createSource, const char *data);
+
+    /**
+     * assumes that exactly one element is currently inserted and updates it with the given item
+     *
+     * The type of the item is cleared, as in insert() above.
+     */
+    virtual void update(CreateSource createSource, const char *data);
+
+    /** deletes all items locally via sync source */
+    virtual void deleteAll(CreateSource createSource);
+
+    /**
+     * takes two databases, exports them,
+     * then compares them using synccompare
+     *
+     * @param refFile      existing file with source reference items, NULL uses a dump of sync source A instead
+     * @param copy         a sync source which contains the copied items, begin/endSync will be called
+     * @param raiseAssert  raise assertion if comparison yields differences (defaults to true)
+     */
+    virtual void compareDatabases(const char *refFile, SyncSource &copy, bool raiseAssert = true);
+
+    /**
+     * insert artificial items, number of them determined by TEST_EVOLUTION_NUM_ITEMS
+     * unless passed explicitly
+     *
+     * @param createSource    a factory for the sync source that is to be used
+     * @param startIndex      IDs are generated starting with this value
+     * @param numItems        number of items to be inserted if non-null, otherwise TEST_EVOLUTION_NUM_ITEMS is used
+     * @param size            minimum size for new items
+     * @return number of items inserted
+     */
+    virtual int insertManyItems(CreateSource createSource, int startIndex = 1, int numItems = 0, int size = -1);
+
+
+    /* for more information on the different tests see their implementation */
+    
+    virtual void testOpen();
+    virtual void testIterateTwice();
+    virtual void testSimpleInsert();
+    virtual void testLocalDeleteAll();
+    virtual void testComplexInsert();
+    virtual void testLocalUpdate();
+    virtual void testChanges();
+    virtual void testImport();
+    virtual void testImportDelete();
+    virtual void testManyChanges();
+};
+
+enum itemType {
+    NEW_ITEMS,
+    UPDATED_ITEMS,
+    DELETED_ITEMS,
+    TOTAL_ITEMS
+};
+
+/**
+ * utility function which counts items of a certain kind known to the sync source
+ * @param source      valid source ready to iterate; NULL triggers an assert
+ * @param itemType    determines which iterator functions are used
+ * @return number of valid items iterated over
+ */
+int countItemsOfType(SyncSource *source, itemType type);
+
+/**
+ * Tests synchronization with one or more sync sources enabled.
+ * When testing multiple sources at once only the first config
+ * is checked to see which tests can be executed.
+ */
+class SyncTests : public CppUnit::TestSuite, public CppUnit::TestFixture {
+public:
+    /** the client we are testing */
+    ClientTest &client;
+
+    SyncTests(const std::string &name, ClientTest &cl, std::vector<int> sourceIndices, bool isClientA = true);
+    ~SyncTests();
+
+    /** adds the supported tests to the instance itself */
+    virtual void addTests();
+
+protected:
+    /** list with all local test classes for manipulating the sources and their index in the client */
+    std::vector< std::pair<int, LocalTests *> > sources;
+    typedef std::vector< std::pair<int, LocalTests *> >::iterator source_it;
+
+    /** the indices from sources, terminated by -1 (for sync()) */
+    int *sourceArray;
+
+    /** utility functions for second client */
+    SyncTests *accessClientB;
+
+    enum DeleteAllMode {
+        DELETE_ALL_SYNC,   /**< make sure client and server are in sync,
+                              delete locally,
+                              sync again */
+        DELETE_ALL_REFRESH /**< delete locally, refresh server */
+    };
+
+    /** compare databases of first and second client */
+    virtual void compareDatabases();
+
+    /** deletes all items locally and on server */
+    virtual void deleteAll(DeleteAllMode mode = DELETE_ALL_SYNC);
+
+    /** get both clients in sync with empty server, then copy one item from client A to B */
+    virtual void doCopy();
+
+    /**
+     * replicate server database locally: same as SYNC_REFRESH_FROM_SERVER,
+     * but done with explicit local delete and then a SYNC_SLOW because some
+     * servers do no support SYNC_REFRESH_FROM_SERVER
+     */
+    virtual void refreshClient();
+
+    /* for more information on the different tests see their implementation */
+
+    // do a two-way sync without additional checks
+    virtual void testTwoWaySync() {
+        sync(SYNC_TWO_WAY);
+    }
+    
+    // do a slow sync without additional checks
+    virtual void testSlowSync() {
+        sync(SYNC_SLOW);
+    }
+    // do a refresh from server sync without additional checks
+    virtual void testRefreshFromServerSync() {
+        sync(SYNC_REFRESH_FROM_SERVER);
+    }
+
+    // do a refresh from client sync without additional checks
+    virtual void testRefreshFromClientSync() {
+        sync(SYNC_REFRESH_FROM_CLIENT);
+    }
+
+    // delete all items, locally and on server using two-way sync
+    virtual void testDeleteAllSync() {
+        deleteAll(DELETE_ALL_SYNC);
+    }
+
+    virtual void testDeleteAllRefresh();
+    virtual void testRefreshSemantic();
+    virtual void testRefreshStatus();
+
+    // test that a two-way sync copies an item from one address book into the other
+    void testCopy() {
+        doCopy();
+        compareDatabases();
+    }
+
+    virtual void testUpdate();
+    virtual void testComplexUpdate();
+    virtual void testDelete();
+    virtual void testMerge();
+    virtual void testTwinning();
+    virtual void testOneWayFromServer();
+    virtual void testOneWayFromClient();
+    virtual void testItems();
+    virtual void testAddUpdate();
+
+    // test copying with maxMsg and no large object support
+    void testMaxMsg() {
+        doVarSizes(true, false, NULL);
+    }
+    // test copying with maxMsg and large object support
+    void testLargeObject() {
+        doVarSizes(true, true, NULL);
+    }
+    // test copying with maxMsg and large object support using explicit "bin" encoding
+    void testLargeObjectBin() {
+        doVarSizes(true, true, "bin");
+    }
+    // test copying with maxMsg and large object support using B64 encoding
+    void testLargeObjectEncoded() {
+        doVarSizes(true, true, "b64");
+    }
+
+    virtual void testManyItems();
+
+
+    /**
+     * implements testMaxMsg(), testLargeObject(), testLargeObjectEncoded()
+     * using a sequence of items with varying sizes
+     */
+    virtual void doVarSizes(bool withMaxMsgSize,
+                            bool withLargeObject,
+                            const char *encoding);
+
+    /**
+     * executes a sync with the given options,
+     * checks the result and (optionally) the sync report
+     */
+    virtual void sync(SyncMode syncMode,
+                      const std::string &logprefix = "",
+                      CheckSyncReport checkReport = CheckSyncReport(),
+                      long maxMsgSize = 0,
+                      long maxObjSize = 0,
+                      bool loSupport = false,
+                      const char *encoding = "");
+};
+
+
 /** assert equality, include string in message if unequal */
 #define CLIENT_TEST_EQUAL( _prefix, \
                            _expected, \
@@ -431,6 +729,46 @@ class ClientTest {
     CPPUNIT_ASSERT_EQUAL_MESSAGE( std::string(_prefix) + ": " + #_expected + " == " + #_actual, \
                                   _expected, \
                                   _actual )
+
+/** execute _x and then check the status of the _source pointer */
+#define SOURCE_ASSERT_NO_FAILURE(_source, _x) \
+{ \
+    CPPUNIT_ASSERT_NO_THROW(_x); \
+    CPPUNIT_ASSERT((_source) && (!(_source)->getReport() || (_source)->getReport()->getState() != SOURCE_ERROR)); \
+}
+
+/** check _x for true and then the status of the _source pointer */
+#define SOURCE_ASSERT(_source, _x) \
+{ \
+    CPPUNIT_ASSERT(_x); \
+    CPPUNIT_ASSERT((_source) && (!(_source)->getReport() || (_source)->getReport()->getState() != SOURCE_ERROR)); \
+}
+
+/** check that _x evaluates to a specific value and then the status of the _source pointer */
+#define SOURCE_ASSERT_EQUAL(_source, _value, _x) \
+{ \
+    CPPUNIT_ASSERT_EQUAL(_value, _x); \
+    CPPUNIT_ASSERT((_source) && (!(_source)->getReport() || (_source)->getReport()->getState() != SOURCE_ERROR)); \
+}
+
+/** same as SOURCE_ASSERT() with a specific failure message */
+#define SOURCE_ASSERT_MESSAGE(_message, _source, _x)     \
+{ \
+    CPPUNIT_ASSERT_MESSAGE((_message), (_x)); \
+    CPPUNIT_ASSERT((_source) && (!(_source)->getReport() || (_source)->getReport()->getState() != SOURCE_ERROR)); \
+}
+
+
+/**
+ * convenience macro for adding a test name like a function,
+ * to be used inside addTests() of an instance of that class
+ *
+ * @param _class      class which contains the function
+ * @param _function   a function without parameters in that class
+ */
+#define ADD_TEST(_class, _function) \
+    addTest(new CppUnit::TestCaller<_class>(getName() + "::" #_function, &_class::_function, *this))
+
 
 #endif // ENABLE_INTEGRATION_TESTS
 
