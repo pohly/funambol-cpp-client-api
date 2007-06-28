@@ -318,22 +318,22 @@ char* WinTransportAgent::sendMessage(const char* msg) {
             sprintf(lastErrorMsg, "HttpSendRequest error %d: %s", errorCode, tmp);
             LOG.debug(lastErrorMsg);
 
-            if (errorCode == ERROR_INTERNET_OFFLINE_MODE) {                     // 00002
+            if (errorCode == ERROR_INTERNET_OFFLINE_MODE) {                     // 00002 -> retry
                 LOG.debug("Offline mode detected: go-online and retry...");
                 WCHAR* wurl = toWideChar(url.fullURL);
                 InternetGoOnline(wurl, NULL, NULL);
                 delete [] wurl;
                 continue;
             }
-            else if (errorCode == ERROR_INTERNET_TIMEOUT ||                     // 12002
-                     errorCode == ERROR_INTERNET_INCORRECT_HANDLE_STATE) {      // 12019
+            else if (errorCode == ERROR_INTERNET_TIMEOUT ||                     // 12002 -> out code 2007
+                     errorCode == ERROR_INTERNET_INCORRECT_HANDLE_STATE) {      // 12019 -> out code 2007
                 lastErrorCode = ERR_HTTP_TIME_OUT;
                 sprintf(lastErrorMsg, "Network error: the request has timed out -> exit.");
                 LOG.debug(lastErrorMsg);
                 goto exit;
             }
-            else if (errorCode == ERROR_INTERNET_CANNOT_CONNECT) {              // 12029
-                lastErrorCode = ERROR_INTERNET_CANNOT_CONNECT;
+            else if (errorCode == ERROR_INTERNET_CANNOT_CONNECT) {              // 12029 -> out code 2001
+                lastErrorCode = ERR_CONNECT;
                 sprintf(lastErrorMsg, "Network error: the attempt to connect to the server failed -> exit");
                 LOG.debug(lastErrorMsg);
                 goto exit;
@@ -357,7 +357,7 @@ char* WinTransportAgent::sendMessage(const char* msg) {
                        (LPDWORD)&size,
                        NULL);
 
-        // OK (status 200) -> OUT
+        // OK: status 200
         if (status == HTTP_STATUS_OK) {
         	LOG.debug("Data sent succesfully to server. Server responds OK");
             break;
@@ -410,7 +410,7 @@ char* WinTransportAgent::sendMessage(const char* msg) {
                      "Server responds 400: retry %i time...", numretries + 1);
             continue;
         }
-        else if (status == HTTP_STATUS_SERVER_ERROR ) {     // 500
+        else if (status == HTTP_STATUS_SERVER_ERROR ) {     // 500 -> out code 2052
             lastErrorCode = ERR_SERVER_ERROR;
             sprintf(lastErrorMsg, "HTTP server error: %d. Server failure.", status);
             LOG.debug(lastErrorMsg);
@@ -419,14 +419,14 @@ char* WinTransportAgent::sendMessage(const char* msg) {
 
         #ifdef _WIN32_WCE
         // To handle the http error code for the tcp/ip notification with wrong credential
-        else if (status == ERR_CREDENTIAL) {                // 401
+        else if (status == ERR_CREDENTIAL) {                // 401 -> out code 401
             lastErrorCode = ERR_CREDENTIAL;
             sprintf(lastErrorMsg, "HTTP server error: %d. Wrong credential.", status);
             LOG.debug(lastErrorMsg);
             goto exit;
         }
         // to handle the http error code for the tcp/ip notification and client not notifiable
-        else if (status == ERR_CLIENT_NOT_NOTIFIABLE) {     // 420
+        else if (status == ERR_CLIENT_NOT_NOTIFIABLE) {     // 420 -> out code 420
             lastErrorCode = ERR_CLIENT_NOT_NOTIFIABLE;
             sprintf(lastErrorMsg, "HTTP server error: %d. Client not notifiable.", status);
             LOG.debug(lastErrorMsg);
@@ -434,13 +434,13 @@ char* WinTransportAgent::sendMessage(const char* msg) {
         }
         #endif
         
-        else if (status == HTTP_STATUS_NOT_FOUND) {         // 404
+        else if (status == HTTP_STATUS_NOT_FOUND) {         // 404 -> out code 2060
             lastErrorCode = ERR_HTTP_NOT_FOUND;
             sprintf(lastErrorMsg, "HTTP request error: resource not found (status %d)", status);
             LOG.debug(lastErrorMsg);
             goto exit;
         }
-        else if (status == HTTP_STATUS_REQUEST_TIMEOUT) {   // 408
+        else if (status == HTTP_STATUS_REQUEST_TIMEOUT) {   // 408 -> out code 2061
             lastErrorCode = ERR_HTTP_REQUEST_TIMEOUT;
             sprintf(lastErrorMsg, "HTTP request error: server timed out waiting for request (status %d)", status);
             LOG.debug(lastErrorMsg);
@@ -448,7 +448,7 @@ char* WinTransportAgent::sendMessage(const char* msg) {
         }
         else {
         	// Other HTTP errors -> OUT
-            lastErrorCode = ERR_HTTP_STATUS_NOT_OK;
+            lastErrorCode = ERR_HTTP_STATUS_NOT_OK;         // else -> out code 2053
             DWORD code = GetLastError();
             char* tmp = createHttpErrorMessage(code);
             sprintf(lastErrorMsg, "HTTP request error: status received = %d): %s (code %d)", status, tmp, code);
@@ -460,7 +460,7 @@ char* WinTransportAgent::sendMessage(const char* msg) {
     
 
     // Too much retries -> exit
-    if (numretries == MAX_RETRIES) {
+    if (numretries == MAX_RETRIES) {                        // Network error -> out code 2001
         lastErrorCode = ERR_CONNECT;
         sprintf(lastErrorMsg, "HTTP request error: %d attempts failed.", numretries);
         LOG.error(lastErrorMsg);
