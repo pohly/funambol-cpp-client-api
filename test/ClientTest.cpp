@@ -228,7 +228,7 @@ void LocalTests::insert(CreateSource createSource, const char *data) {
  *
  * The type of the item is cleared, as in insert() above.
  */
-void LocalTests::update(CreateSource createSource, const char *data) {
+void LocalTests::update(CreateSource createSource, const char *data, bool check) {
     CPPUNIT_ASSERT(createSource.createSource);
     CPPUNIT_ASSERT(data);
 
@@ -247,6 +247,10 @@ void LocalTests::update(CreateSource createSource, const char *data) {
     SOURCE_ASSERT_EQUAL(source.get(), (int)STC_OK, source->updateItem(*item));
     SOURCE_ASSERT(source.get(), source->endSync() == 0);
     CPPUNIT_ASSERT_NO_THROW(source.reset());
+
+    if (!check) {
+        return;
+    }
 
     // check that the right changes are reported when reopening the source
     SOURCE_ASSERT_NO_FAILURE(source.get(), source.reset(createSource()));

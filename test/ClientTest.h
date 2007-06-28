@@ -526,8 +526,10 @@ public:
      * assumes that exactly one element is currently inserted and updates it with the given item
      *
      * The type of the item is cleared, as in insert() above.
+     *
+     * @param check     if true, then reopen the source and verify that the reported items are as expected
      */
-    virtual void update(CreateSource createSource, const char *data);
+    virtual void update(CreateSource createSource, const char *data, bool check = true);
 
     /** deletes all items locally via sync source */
     virtual void deleteAll(CreateSource createSource);
