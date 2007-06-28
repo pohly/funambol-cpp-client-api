@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="Windows-1252"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="8.00"
+	Version="8,00"
 	Name="testwin32"
 	ProjectGUID="{C581FD5F-8CF7-4CFA-84CA-F16314068F44}"
 	RootNamespace="testwin32"
@@ -44,7 +44,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="..\..\src\include\common,..\..\src\include\win32"
+				AdditionalIncludeDirectories="..\..\src\include\common,..\..\src\include\windows"
 				PreprocessorDefinitions="WIN32;_DEBUG;_CONSOLE;UNICODE;_CRT_SECURE_NO_DEPRECATE"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
@@ -139,7 +139,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="2"
 				InlineFunctionExpansion="1"
-				AdditionalIncludeDirectories="..\..\src\include\win32;..\..\src\include\common"
+				AdditionalIncludeDirectories="..\..\src\include\common,..\..\src\include\windows"
 				PreprocessorDefinitions="WIN32;NDEBUG;_CONSOLE;_MBCS;UNICODE;NO_CRIT_MSGBOX"
 				StringPooling="true"
 				RuntimeLibrary="0"
