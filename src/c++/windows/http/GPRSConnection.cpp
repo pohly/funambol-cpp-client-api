@@ -48,6 +48,10 @@ BOOL EstablishConnection() {
         LOG.info("Arleady connected");
         //We are already connected!
         return TRUE;
+    } else if (pdwStatus == CONNMGR_STATUS_PHONEOFF) {
+        LOG.info("phone off");
+        //We are already connected!
+        return FALSE;
     }
     else {
         LOG.debug("Not connected: try to connect...");
