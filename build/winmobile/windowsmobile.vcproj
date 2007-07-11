@@ -20,10 +20,10 @@
 			Name="Windows Mobile 5.0 Smartphone SDK (ARMV4I)"
 		/>
 		<Platform
-			Name="Windows Mobile 6 Professional SDK (ARMV4I)"
+			Name="Windows Mobile 6 Standard SDK (ARMV4I)"
 		/>
 		<Platform
-			Name="Windows Mobile 6 Standard SDK (ARMV4I)"
+			Name="Windows Mobile 6 Professional SDK (ARMV4I)"
 		/>
 	</Platforms>
 	<ToolFiles>
@@ -379,94 +379,6 @@
 			/>
 		</Configuration>
 		<Configuration
-			Name="Release|Windows Mobile 6 Professional SDK (ARMV4I)"
-			OutputDirectory="Windows Mobile 6 Professional SDK (ARMV4I)\$(ConfigurationName)"
-			IntermediateDirectory="Windows Mobile 6 Professional SDK (ARMV4I)\$(ConfigurationName)"
-			ConfigurationType="4"
-			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC60.vsprops"
-			UseOfMFC="0"
-			ATLMinimizesCRunTimeLibraryUsage="false"
-			CharacterSet="1"
-			>
-			<Tool
-				Name="VCPreBuildEventTool"
-			/>
-			<Tool
-				Name="VCCustomBuildTool"
-			/>
-			<Tool
-				Name="VCXMLDataGeneratorTool"
-			/>
-			<Tool
-				Name="VCWebServiceProxyGeneratorTool"
-			/>
-			<Tool
-				Name="VCMIDLTool"
-				TargetEnvironment="1"
-				TypeLibraryName="$(PlatformName)\$(ConfigurationName)/windowsmobile.tlb"
-				HeaderFileName=""
-			/>
-			<Tool
-				Name="VCCLCompilerTool"
-				ExecutionBucket="7"
-				Optimization="2"
-				InlineFunctionExpansion="1"
-				AdditionalIncludeDirectories="..\..\src\include\windows,..\..\src\include\common,..\..\..\..\tools\zlib"
-				PreprocessorDefinitions="USE_ZLIB;_WIN32_WCE=$(CEVER);$(CePlatform);NDEBUG;ARM;_ARM_;ARMV4;UNDER_CE=$(CEVER);UNICODE;_LIB"
-				StringPooling="true"
-				RuntimeLibrary="0"
-				EnableFunctionLevelLinking="true"
-				TreatWChar_tAsBuiltInType="true"
-				UsePrecompiledHeader="0"
-				PrecompiledHeaderFile="$(PlatformName)\$(ConfigurationName)/windowsmobile.pch"
-				AssemblerListingLocation="$(PlatformName)\$(ConfigurationName)/"
-				ObjectFile="$(PlatformName)\$(ConfigurationName)/"
-				ProgramDataBaseFileName="$(PlatformName)\$(ConfigurationName)/"
-				BrowseInformation="1"
-				WarningLevel="3"
-				SuppressStartupBanner="true"
-			/>
-			<Tool
-				Name="VCManagedResourceCompilerTool"
-			/>
-			<Tool
-				Name="VCResourceCompilerTool"
-				Culture="1033"
-			/>
-			<Tool
-				Name="VCPreLinkEventTool"
-			/>
-			<Tool
-				Name="VCLibrarianTool"
-				OutputFile="$(PlatformName)\$(ConfigurationName)\windowsmobile.lib"
-			/>
-			<Tool
-				Name="VCALinkTool"
-			/>
-			<Tool
-				Name="VCXDCMakeTool"
-			/>
-			<Tool
-				Name="VCBscMakeTool"
-				SuppressStartupBanner="true"
-				OutputFile="$(PlatformName)\$(ConfigurationName)/windowsmobile.bsc"
-			/>
-			<Tool
-				Name="VCCodeSignTool"
-			/>
-			<Tool
-				Name="VCPostBuildEventTool"
-			/>
-			<DeploymentTool
-				ForceDirty="-1"
-				RemoteDirectory=""
-				RegisterOutput="0"
-				AdditionalFiles=""
-			/>
-			<DebuggerTool
-			/>
-		</Configuration>
-		<Configuration
 			Name="Release|Windows Mobile 6 Standard SDK (ARMV4I)"
 			OutputDirectory="Windows Mobile 6 Standard SDK (ARMV4I)\$(ConfigurationName)"
 			IntermediateDirectory="Windows Mobile 6 Standard SDK (ARMV4I)\$(ConfigurationName)"
@@ -541,6 +453,94 @@
 			<Tool
 				Name="VCCodeSignTool"
 				AuthenticodeSignature="false"
+			/>
+			<Tool
+				Name="VCPostBuildEventTool"
+			/>
+			<DeploymentTool
+				ForceDirty="-1"
+				RemoteDirectory=""
+				RegisterOutput="0"
+				AdditionalFiles=""
+			/>
+			<DebuggerTool
+			/>
+		</Configuration>
+		<Configuration
+			Name="Release|Windows Mobile 6 Professional SDK (ARMV4I)"
+			OutputDirectory="Windows Mobile 6 Professional SDK (ARMV4I)\$(ConfigurationName)"
+			IntermediateDirectory="Windows Mobile 6 Professional SDK (ARMV4I)\$(ConfigurationName)"
+			ConfigurationType="4"
+			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC60.vsprops"
+			UseOfMFC="0"
+			ATLMinimizesCRunTimeLibraryUsage="false"
+			CharacterSet="1"
+			>
+			<Tool
+				Name="VCPreBuildEventTool"
+			/>
+			<Tool
+				Name="VCCustomBuildTool"
+			/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"
+			/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"
+			/>
+			<Tool
+				Name="VCMIDLTool"
+				TargetEnvironment="1"
+				TypeLibraryName="$(PlatformName)\$(ConfigurationName)/windowsmobile.tlb"
+				HeaderFileName=""
+			/>
+			<Tool
+				Name="VCCLCompilerTool"
+				ExecutionBucket="7"
+				Optimization="2"
+				InlineFunctionExpansion="1"
+				AdditionalIncludeDirectories="..\..\src\include\windows,..\..\src\include\common,..\..\..\..\tools\zlib"
+				PreprocessorDefinitions="USE_ZLIB;_WIN32_WCE=$(CEVER);$(CePlatform);NDEBUG;ARM;_ARM_;ARMV4;UNDER_CE=$(CEVER);UNICODE;_LIB"
+				StringPooling="true"
+				RuntimeLibrary="0"
+				EnableFunctionLevelLinking="true"
+				TreatWChar_tAsBuiltInType="true"
+				UsePrecompiledHeader="0"
+				PrecompiledHeaderFile="$(PlatformName)\$(ConfigurationName)/windowsmobile.pch"
+				AssemblerListingLocation="$(PlatformName)\$(ConfigurationName)/"
+				ObjectFile="$(PlatformName)\$(ConfigurationName)/"
+				ProgramDataBaseFileName="$(PlatformName)\$(ConfigurationName)/"
+				BrowseInformation="1"
+				WarningLevel="3"
+				SuppressStartupBanner="true"
+			/>
+			<Tool
+				Name="VCManagedResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCResourceCompilerTool"
+				Culture="1033"
+			/>
+			<Tool
+				Name="VCPreLinkEventTool"
+			/>
+			<Tool
+				Name="VCLibrarianTool"
+				OutputFile="$(PlatformName)\$(ConfigurationName)\windowsmobile.lib"
+			/>
+			<Tool
+				Name="VCALinkTool"
+			/>
+			<Tool
+				Name="VCXDCMakeTool"
+			/>
+			<Tool
+				Name="VCBscMakeTool"
+				SuppressStartupBanner="true"
+				OutputFile="$(PlatformName)\$(ConfigurationName)/windowsmobile.bsc"
+			/>
+			<Tool
+				Name="VCCodeSignTool"
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
@@ -633,7 +633,7 @@
 			/>
 			<DeploymentTool
 				ForceDirty="-1"
-				RemoteDirectory=""
+				RemoteDirectory="\Windows"
 				RegisterOutput="0"
 				AdditionalFiles=""
 			/>
@@ -717,7 +717,7 @@
 			/>
 			<DeploymentTool
 				ForceDirty="-1"
-				RemoteDirectory="\"
+				RemoteDirectory="\Windows"
 				RegisterOutput="0"
 				AdditionalFiles=""
 			/>
@@ -804,7 +804,7 @@
 			/>
 			<DeploymentTool
 				ForceDirty="-1"
-				RemoteDirectory="\Windows\"
+				RemoteDirectory="\Windows"
 				RegisterOutput="0"
 				AdditionalFiles=""
 			/>
@@ -892,94 +892,7 @@
 			/>
 			<DeploymentTool
 				ForceDirty="-1"
-				RemoteDirectory=""
-				RegisterOutput="0"
-				AdditionalFiles=""
-			/>
-			<DebuggerTool
-			/>
-		</Configuration>
-		<Configuration
-			Name="Debug|Windows Mobile 6 Professional SDK (ARMV4I)"
-			OutputDirectory="Windows Mobile 6 Professional SDK (ARMV4I)\$(ConfigurationName)"
-			IntermediateDirectory="Windows Mobile 6 Professional SDK (ARMV4I)\$(ConfigurationName)"
-			ConfigurationType="4"
-			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC60.vsprops"
-			UseOfMFC="0"
-			ATLMinimizesCRunTimeLibraryUsage="false"
-			CharacterSet="1"
-			>
-			<Tool
-				Name="VCPreBuildEventTool"
-			/>
-			<Tool
-				Name="VCCustomBuildTool"
-			/>
-			<Tool
-				Name="VCXMLDataGeneratorTool"
-			/>
-			<Tool
-				Name="VCWebServiceProxyGeneratorTool"
-			/>
-			<Tool
-				Name="VCMIDLTool"
-				TargetEnvironment="1"
-				TypeLibraryName="$(PlatformName)\$(ConfigurationName)/windowsmobile.tlb"
-				HeaderFileName=""
-			/>
-			<Tool
-				Name="VCCLCompilerTool"
-				ExecutionBucket="7"
-				Optimization="0"
-				AdditionalIncludeDirectories="..\..\src\include\windows,..\..\src\include\common,..\..\..\..\tools\zlib"
-				PreprocessorDefinitions="DEBUG;USE_ZLIB;_WIN32_WCE=$(CEVER);$(CePlatform);ARM;_ARM_;ARMV4;UNDER_CE=$(CEVER);UNICODE;_LIB"
-				RuntimeLibrary="1"
-				BufferSecurityCheck="false"
-				EnableFunctionLevelLinking="true"
-				TreatWChar_tAsBuiltInType="true"
-				UsePrecompiledHeader="0"
-				PrecompiledHeaderFile="$(PlatformName)\$(ConfigurationName)/windowsmobile.pch"
-				AssemblerListingLocation="$(PlatformName)\$(ConfigurationName)/"
-				ObjectFile="$(PlatformName)\$(ConfigurationName)/"
-				ProgramDataBaseFileName="$(PlatformName)\$(ConfigurationName)/"
-				WarningLevel="3"
-				SuppressStartupBanner="true"
-				DebugInformationFormat="3"
-			/>
-			<Tool
-				Name="VCManagedResourceCompilerTool"
-			/>
-			<Tool
-				Name="VCResourceCompilerTool"
-				Culture="1033"
-			/>
-			<Tool
-				Name="VCPreLinkEventTool"
-			/>
-			<Tool
-				Name="VCLibrarianTool"
-				OutputFile="$(PlatformName)\$(ConfigurationName)\windowsmobile.lib"
-			/>
-			<Tool
-				Name="VCALinkTool"
-			/>
-			<Tool
-				Name="VCXDCMakeTool"
-			/>
-			<Tool
-				Name="VCBscMakeTool"
-				SuppressStartupBanner="true"
-				OutputFile="$(PlatformName)\$(ConfigurationName)/windowsmobile.bsc"
-			/>
-			<Tool
-				Name="VCCodeSignTool"
-			/>
-			<Tool
-				Name="VCPostBuildEventTool"
-			/>
-			<DeploymentTool
-				ForceDirty="-1"
-				RemoteDirectory=""
+				RemoteDirectory="\Windows"
 				RegisterOutput="0"
 				AdditionalFiles=""
 			/>
@@ -1066,7 +979,94 @@
 			/>
 			<DeploymentTool
 				ForceDirty="-1"
-				RemoteDirectory=""
+				RemoteDirectory="\Windows"
+				RegisterOutput="0"
+				AdditionalFiles=""
+			/>
+			<DebuggerTool
+			/>
+		</Configuration>
+		<Configuration
+			Name="Debug|Windows Mobile 6 Professional SDK (ARMV4I)"
+			OutputDirectory="Windows Mobile 6 Professional SDK (ARMV4I)\$(ConfigurationName)"
+			IntermediateDirectory="Windows Mobile 6 Professional SDK (ARMV4I)\$(ConfigurationName)"
+			ConfigurationType="4"
+			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC60.vsprops"
+			UseOfMFC="0"
+			ATLMinimizesCRunTimeLibraryUsage="false"
+			CharacterSet="1"
+			>
+			<Tool
+				Name="VCPreBuildEventTool"
+			/>
+			<Tool
+				Name="VCCustomBuildTool"
+			/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"
+			/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"
+			/>
+			<Tool
+				Name="VCMIDLTool"
+				TargetEnvironment="1"
+				TypeLibraryName="$(PlatformName)\$(ConfigurationName)/windowsmobile.tlb"
+				HeaderFileName=""
+			/>
+			<Tool
+				Name="VCCLCompilerTool"
+				ExecutionBucket="7"
+				Optimization="0"
+				AdditionalIncludeDirectories="..\..\src\include\windows,..\..\src\include\common,..\..\..\..\tools\zlib"
+				PreprocessorDefinitions="DEBUG;USE_ZLIB;_WIN32_WCE=$(CEVER);$(CePlatform);ARM;_ARM_;ARMV4;UNDER_CE=$(CEVER);UNICODE;_LIB"
+				RuntimeLibrary="1"
+				BufferSecurityCheck="false"
+				EnableFunctionLevelLinking="true"
+				TreatWChar_tAsBuiltInType="true"
+				UsePrecompiledHeader="0"
+				PrecompiledHeaderFile="$(PlatformName)\$(ConfigurationName)/windowsmobile.pch"
+				AssemblerListingLocation="$(PlatformName)\$(ConfigurationName)/"
+				ObjectFile="$(PlatformName)\$(ConfigurationName)/"
+				ProgramDataBaseFileName="$(PlatformName)\$(ConfigurationName)/"
+				WarningLevel="3"
+				SuppressStartupBanner="true"
+				DebugInformationFormat="3"
+			/>
+			<Tool
+				Name="VCManagedResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCResourceCompilerTool"
+				Culture="1033"
+			/>
+			<Tool
+				Name="VCPreLinkEventTool"
+			/>
+			<Tool
+				Name="VCLibrarianTool"
+				OutputFile="$(PlatformName)\$(ConfigurationName)\windowsmobile.lib"
+			/>
+			<Tool
+				Name="VCALinkTool"
+			/>
+			<Tool
+				Name="VCXDCMakeTool"
+			/>
+			<Tool
+				Name="VCBscMakeTool"
+				SuppressStartupBanner="true"
+				OutputFile="$(PlatformName)\$(ConfigurationName)/windowsmobile.bsc"
+			/>
+			<Tool
+				Name="VCCodeSignTool"
+			/>
+			<Tool
+				Name="VCPostBuildEventTool"
+			/>
+			<DeploymentTool
+				ForceDirty="-1"
+				RemoteDirectory="\Windows"
 				RegisterOutput="0"
 				AdditionalFiles=""
 			/>
@@ -1128,7 +1128,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="Release|Windows Mobile 6 Professional SDK (ARMV4I)"
+						Name="Release|Windows Mobile 6 Standard SDK (ARMV4I)"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -1138,7 +1138,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="Release|Windows Mobile 6 Standard SDK (ARMV4I)"
+						Name="Release|Windows Mobile 6 Professional SDK (ARMV4I)"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -1184,7 +1184,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="Debug|Windows Mobile 6 Professional SDK (ARMV4I)"
+						Name="Debug|Windows Mobile 6 Standard SDK (ARMV4I)"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -1193,7 +1193,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="Debug|Windows Mobile 6 Standard SDK (ARMV4I)"
+						Name="Debug|Windows Mobile 6 Professional SDK (ARMV4I)"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -1246,7 +1246,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="Release|Windows Mobile 6 Professional SDK (ARMV4I)"
+						Name="Release|Windows Mobile 6 Standard SDK (ARMV4I)"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -1256,7 +1256,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="Release|Windows Mobile 6 Standard SDK (ARMV4I)"
+						Name="Release|Windows Mobile 6 Professional SDK (ARMV4I)"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -1302,7 +1302,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="Debug|Windows Mobile 6 Professional SDK (ARMV4I)"
+						Name="Debug|Windows Mobile 6 Standard SDK (ARMV4I)"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -1311,7 +1311,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="Debug|Windows Mobile 6 Standard SDK (ARMV4I)"
+						Name="Debug|Windows Mobile 6 Professional SDK (ARMV4I)"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -1364,7 +1364,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="Release|Windows Mobile 6 Professional SDK (ARMV4I)"
+						Name="Release|Windows Mobile 6 Standard SDK (ARMV4I)"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -1374,7 +1374,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="Release|Windows Mobile 6 Standard SDK (ARMV4I)"
+						Name="Release|Windows Mobile 6 Professional SDK (ARMV4I)"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -1420,7 +1420,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="Debug|Windows Mobile 6 Professional SDK (ARMV4I)"
+						Name="Debug|Windows Mobile 6 Standard SDK (ARMV4I)"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -1429,7 +1429,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="Debug|Windows Mobile 6 Standard SDK (ARMV4I)"
+						Name="Debug|Windows Mobile 6 Professional SDK (ARMV4I)"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -1486,7 +1486,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="Release|Windows Mobile 6 Professional SDK (ARMV4I)"
+						Name="Release|Windows Mobile 6 Standard SDK (ARMV4I)"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -1496,7 +1496,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="Release|Windows Mobile 6 Standard SDK (ARMV4I)"
+						Name="Release|Windows Mobile 6 Professional SDK (ARMV4I)"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -1542,7 +1542,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="Debug|Windows Mobile 6 Professional SDK (ARMV4I)"
+						Name="Debug|Windows Mobile 6 Standard SDK (ARMV4I)"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -1551,7 +1551,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="Debug|Windows Mobile 6 Standard SDK (ARMV4I)"
+						Name="Debug|Windows Mobile 6 Professional SDK (ARMV4I)"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -1604,7 +1604,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="Release|Windows Mobile 6 Professional SDK (ARMV4I)"
+						Name="Release|Windows Mobile 6 Standard SDK (ARMV4I)"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -1614,7 +1614,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="Release|Windows Mobile 6 Standard SDK (ARMV4I)"
+						Name="Release|Windows Mobile 6 Professional SDK (ARMV4I)"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -1660,7 +1660,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="Debug|Windows Mobile 6 Professional SDK (ARMV4I)"
+						Name="Debug|Windows Mobile 6 Standard SDK (ARMV4I)"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -1669,7 +1669,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="Debug|Windows Mobile 6 Standard SDK (ARMV4I)"
+						Name="Debug|Windows Mobile 6 Professional SDK (ARMV4I)"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -1726,7 +1726,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="Release|Windows Mobile 6 Professional SDK (ARMV4I)"
+						Name="Release|Windows Mobile 6 Standard SDK (ARMV4I)"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -1736,7 +1736,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="Release|Windows Mobile 6 Standard SDK (ARMV4I)"
+						Name="Release|Windows Mobile 6 Professional SDK (ARMV4I)"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -1782,7 +1782,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="Debug|Windows Mobile 6 Professional SDK (ARMV4I)"
+						Name="Debug|Windows Mobile 6 Standard SDK (ARMV4I)"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -1791,7 +1791,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="Debug|Windows Mobile 6 Standard SDK (ARMV4I)"
+						Name="Debug|Windows Mobile 6 Professional SDK (ARMV4I)"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -1859,7 +1859,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Release|Windows Mobile 6 Professional SDK (ARMV4I)"
+							Name="Release|Windows Mobile 6 Standard SDK (ARMV4I)"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -1869,7 +1869,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Release|Windows Mobile 6 Standard SDK (ARMV4I)"
+							Name="Release|Windows Mobile 6 Professional SDK (ARMV4I)"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -1915,7 +1915,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Debug|Windows Mobile 6 Professional SDK (ARMV4I)"
+							Name="Debug|Windows Mobile 6 Standard SDK (ARMV4I)"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -1924,7 +1924,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Debug|Windows Mobile 6 Standard SDK (ARMV4I)"
+							Name="Debug|Windows Mobile 6 Professional SDK (ARMV4I)"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -1977,7 +1977,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Release|Windows Mobile 6 Professional SDK (ARMV4I)"
+							Name="Release|Windows Mobile 6 Standard SDK (ARMV4I)"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -1987,7 +1987,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Release|Windows Mobile 6 Standard SDK (ARMV4I)"
+							Name="Release|Windows Mobile 6 Professional SDK (ARMV4I)"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -2033,7 +2033,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Debug|Windows Mobile 6 Professional SDK (ARMV4I)"
+							Name="Debug|Windows Mobile 6 Standard SDK (ARMV4I)"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -2042,7 +2042,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Debug|Windows Mobile 6 Standard SDK (ARMV4I)"
+							Name="Debug|Windows Mobile 6 Professional SDK (ARMV4I)"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -2095,7 +2095,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Release|Windows Mobile 6 Professional SDK (ARMV4I)"
+							Name="Release|Windows Mobile 6 Standard SDK (ARMV4I)"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -2105,7 +2105,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Release|Windows Mobile 6 Standard SDK (ARMV4I)"
+							Name="Release|Windows Mobile 6 Professional SDK (ARMV4I)"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -2151,7 +2151,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Debug|Windows Mobile 6 Professional SDK (ARMV4I)"
+							Name="Debug|Windows Mobile 6 Standard SDK (ARMV4I)"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -2160,7 +2160,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Debug|Windows Mobile 6 Standard SDK (ARMV4I)"
+							Name="Debug|Windows Mobile 6 Professional SDK (ARMV4I)"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -2213,7 +2213,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Release|Windows Mobile 6 Professional SDK (ARMV4I)"
+							Name="Release|Windows Mobile 6 Standard SDK (ARMV4I)"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -2223,7 +2223,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Release|Windows Mobile 6 Standard SDK (ARMV4I)"
+							Name="Release|Windows Mobile 6 Professional SDK (ARMV4I)"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -2269,7 +2269,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Debug|Windows Mobile 6 Professional SDK (ARMV4I)"
+							Name="Debug|Windows Mobile 6 Standard SDK (ARMV4I)"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -2278,7 +2278,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Debug|Windows Mobile 6 Standard SDK (ARMV4I)"
+							Name="Debug|Windows Mobile 6 Professional SDK (ARMV4I)"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -2331,7 +2331,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Release|Windows Mobile 6 Professional SDK (ARMV4I)"
+							Name="Release|Windows Mobile 6 Standard SDK (ARMV4I)"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -2341,7 +2341,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Release|Windows Mobile 6 Standard SDK (ARMV4I)"
+							Name="Release|Windows Mobile 6 Professional SDK (ARMV4I)"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -2387,7 +2387,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Debug|Windows Mobile 6 Professional SDK (ARMV4I)"
+							Name="Debug|Windows Mobile 6 Standard SDK (ARMV4I)"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -2396,7 +2396,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Debug|Windows Mobile 6 Standard SDK (ARMV4I)"
+							Name="Debug|Windows Mobile 6 Professional SDK (ARMV4I)"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -2449,7 +2449,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Release|Windows Mobile 6 Professional SDK (ARMV4I)"
+							Name="Release|Windows Mobile 6 Standard SDK (ARMV4I)"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -2459,7 +2459,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Release|Windows Mobile 6 Standard SDK (ARMV4I)"
+							Name="Release|Windows Mobile 6 Professional SDK (ARMV4I)"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -2505,7 +2505,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Debug|Windows Mobile 6 Professional SDK (ARMV4I)"
+							Name="Debug|Windows Mobile 6 Standard SDK (ARMV4I)"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -2514,7 +2514,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Debug|Windows Mobile 6 Standard SDK (ARMV4I)"
+							Name="Debug|Windows Mobile 6 Professional SDK (ARMV4I)"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -2575,7 +2575,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Release|Windows Mobile 6 Professional SDK (ARMV4I)"
+							Name="Release|Windows Mobile 6 Standard SDK (ARMV4I)"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -2585,7 +2585,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Release|Windows Mobile 6 Standard SDK (ARMV4I)"
+							Name="Release|Windows Mobile 6 Professional SDK (ARMV4I)"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -2631,7 +2631,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Debug|Windows Mobile 6 Professional SDK (ARMV4I)"
+							Name="Debug|Windows Mobile 6 Standard SDK (ARMV4I)"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -2640,7 +2640,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Debug|Windows Mobile 6 Standard SDK (ARMV4I)"
+							Name="Debug|Windows Mobile 6 Professional SDK (ARMV4I)"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -2698,7 +2698,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="Release|Windows Mobile 6 Professional SDK (ARMV4I)"
+						Name="Release|Windows Mobile 6 Standard SDK (ARMV4I)"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -2708,7 +2708,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="Release|Windows Mobile 6 Standard SDK (ARMV4I)"
+						Name="Release|Windows Mobile 6 Professional SDK (ARMV4I)"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -2754,7 +2754,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="Debug|Windows Mobile 6 Professional SDK (ARMV4I)"
+						Name="Debug|Windows Mobile 6 Standard SDK (ARMV4I)"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -2763,7 +2763,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="Debug|Windows Mobile 6 Standard SDK (ARMV4I)"
+						Name="Debug|Windows Mobile 6 Professional SDK (ARMV4I)"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -2816,7 +2816,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="Release|Windows Mobile 6 Professional SDK (ARMV4I)"
+						Name="Release|Windows Mobile 6 Standard SDK (ARMV4I)"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -2826,7 +2826,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="Release|Windows Mobile 6 Standard SDK (ARMV4I)"
+						Name="Release|Windows Mobile 6 Professional SDK (ARMV4I)"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -2872,7 +2872,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="Debug|Windows Mobile 6 Professional SDK (ARMV4I)"
+						Name="Debug|Windows Mobile 6 Standard SDK (ARMV4I)"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -2881,7 +2881,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="Debug|Windows Mobile 6 Standard SDK (ARMV4I)"
+						Name="Debug|Windows Mobile 6 Professional SDK (ARMV4I)"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -2946,7 +2946,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="Release|Windows Mobile 6 Professional SDK (ARMV4I)"
+						Name="Release|Windows Mobile 6 Standard SDK (ARMV4I)"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -2956,7 +2956,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="Release|Windows Mobile 6 Standard SDK (ARMV4I)"
+						Name="Release|Windows Mobile 6 Professional SDK (ARMV4I)"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -3002,7 +3002,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="Debug|Windows Mobile 6 Professional SDK (ARMV4I)"
+						Name="Debug|Windows Mobile 6 Standard SDK (ARMV4I)"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -3011,7 +3011,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="Debug|Windows Mobile 6 Standard SDK (ARMV4I)"
+						Name="Debug|Windows Mobile 6 Professional SDK (ARMV4I)"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -3064,7 +3064,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="Release|Windows Mobile 6 Professional SDK (ARMV4I)"
+						Name="Release|Windows Mobile 6 Standard SDK (ARMV4I)"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -3074,7 +3074,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="Release|Windows Mobile 6 Standard SDK (ARMV4I)"
+						Name="Release|Windows Mobile 6 Professional SDK (ARMV4I)"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -3120,7 +3120,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="Debug|Windows Mobile 6 Professional SDK (ARMV4I)"
+						Name="Debug|Windows Mobile 6 Standard SDK (ARMV4I)"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -3129,7 +3129,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="Debug|Windows Mobile 6 Standard SDK (ARMV4I)"
+						Name="Debug|Windows Mobile 6 Professional SDK (ARMV4I)"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -3182,7 +3182,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="Release|Windows Mobile 6 Professional SDK (ARMV4I)"
+						Name="Release|Windows Mobile 6 Standard SDK (ARMV4I)"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -3192,7 +3192,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="Release|Windows Mobile 6 Standard SDK (ARMV4I)"
+						Name="Release|Windows Mobile 6 Professional SDK (ARMV4I)"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -3238,7 +3238,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="Debug|Windows Mobile 6 Professional SDK (ARMV4I)"
+						Name="Debug|Windows Mobile 6 Standard SDK (ARMV4I)"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -3247,7 +3247,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="Debug|Windows Mobile 6 Standard SDK (ARMV4I)"
+						Name="Debug|Windows Mobile 6 Professional SDK (ARMV4I)"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -3304,7 +3304,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="Release|Windows Mobile 6 Professional SDK (ARMV4I)"
+						Name="Release|Windows Mobile 6 Standard SDK (ARMV4I)"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -3314,7 +3314,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="Release|Windows Mobile 6 Standard SDK (ARMV4I)"
+						Name="Release|Windows Mobile 6 Professional SDK (ARMV4I)"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -3360,7 +3360,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="Debug|Windows Mobile 6 Professional SDK (ARMV4I)"
+						Name="Debug|Windows Mobile 6 Standard SDK (ARMV4I)"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -3369,7 +3369,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="Debug|Windows Mobile 6 Standard SDK (ARMV4I)"
+						Name="Debug|Windows Mobile 6 Professional SDK (ARMV4I)"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -3430,7 +3430,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="Release|Windows Mobile 6 Professional SDK (ARMV4I)"
+						Name="Release|Windows Mobile 6 Standard SDK (ARMV4I)"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -3440,7 +3440,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="Release|Windows Mobile 6 Standard SDK (ARMV4I)"
+						Name="Release|Windows Mobile 6 Professional SDK (ARMV4I)"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -3486,7 +3486,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="Debug|Windows Mobile 6 Professional SDK (ARMV4I)"
+						Name="Debug|Windows Mobile 6 Standard SDK (ARMV4I)"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -3495,7 +3495,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="Debug|Windows Mobile 6 Standard SDK (ARMV4I)"
+						Name="Debug|Windows Mobile 6 Professional SDK (ARMV4I)"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -3548,7 +3548,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="Release|Windows Mobile 6 Professional SDK (ARMV4I)"
+						Name="Release|Windows Mobile 6 Standard SDK (ARMV4I)"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -3558,7 +3558,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="Release|Windows Mobile 6 Standard SDK (ARMV4I)"
+						Name="Release|Windows Mobile 6 Professional SDK (ARMV4I)"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -3604,7 +3604,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="Debug|Windows Mobile 6 Professional SDK (ARMV4I)"
+						Name="Debug|Windows Mobile 6 Standard SDK (ARMV4I)"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -3613,7 +3613,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="Debug|Windows Mobile 6 Standard SDK (ARMV4I)"
+						Name="Debug|Windows Mobile 6 Professional SDK (ARMV4I)"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -3666,7 +3666,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="Release|Windows Mobile 6 Professional SDK (ARMV4I)"
+						Name="Release|Windows Mobile 6 Standard SDK (ARMV4I)"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -3676,7 +3676,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="Release|Windows Mobile 6 Standard SDK (ARMV4I)"
+						Name="Release|Windows Mobile 6 Professional SDK (ARMV4I)"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -3722,7 +3722,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="Debug|Windows Mobile 6 Professional SDK (ARMV4I)"
+						Name="Debug|Windows Mobile 6 Standard SDK (ARMV4I)"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -3731,7 +3731,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="Debug|Windows Mobile 6 Standard SDK (ARMV4I)"
+						Name="Debug|Windows Mobile 6 Professional SDK (ARMV4I)"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -3784,7 +3784,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="Release|Windows Mobile 6 Professional SDK (ARMV4I)"
+						Name="Release|Windows Mobile 6 Standard SDK (ARMV4I)"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -3794,7 +3794,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="Release|Windows Mobile 6 Standard SDK (ARMV4I)"
+						Name="Release|Windows Mobile 6 Professional SDK (ARMV4I)"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -3840,7 +3840,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="Debug|Windows Mobile 6 Professional SDK (ARMV4I)"
+						Name="Debug|Windows Mobile 6 Standard SDK (ARMV4I)"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -3849,7 +3849,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="Debug|Windows Mobile 6 Standard SDK (ARMV4I)"
+						Name="Debug|Windows Mobile 6 Professional SDK (ARMV4I)"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -3902,7 +3902,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="Release|Windows Mobile 6 Professional SDK (ARMV4I)"
+						Name="Release|Windows Mobile 6 Standard SDK (ARMV4I)"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -3912,7 +3912,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="Release|Windows Mobile 6 Standard SDK (ARMV4I)"
+						Name="Release|Windows Mobile 6 Professional SDK (ARMV4I)"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -3958,7 +3958,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="Debug|Windows Mobile 6 Professional SDK (ARMV4I)"
+						Name="Debug|Windows Mobile 6 Standard SDK (ARMV4I)"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -3967,7 +3967,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="Debug|Windows Mobile 6 Standard SDK (ARMV4I)"
+						Name="Debug|Windows Mobile 6 Professional SDK (ARMV4I)"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -4020,7 +4020,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="Release|Windows Mobile 6 Professional SDK (ARMV4I)"
+						Name="Release|Windows Mobile 6 Standard SDK (ARMV4I)"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -4030,7 +4030,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="Release|Windows Mobile 6 Standard SDK (ARMV4I)"
+						Name="Release|Windows Mobile 6 Professional SDK (ARMV4I)"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -4076,7 +4076,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="Debug|Windows Mobile 6 Professional SDK (ARMV4I)"
+						Name="Debug|Windows Mobile 6 Standard SDK (ARMV4I)"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -4085,7 +4085,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="Debug|Windows Mobile 6 Standard SDK (ARMV4I)"
+						Name="Debug|Windows Mobile 6 Professional SDK (ARMV4I)"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -4138,7 +4138,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="Release|Windows Mobile 6 Professional SDK (ARMV4I)"
+						Name="Release|Windows Mobile 6 Standard SDK (ARMV4I)"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -4148,7 +4148,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="Release|Windows Mobile 6 Standard SDK (ARMV4I)"
+						Name="Release|Windows Mobile 6 Professional SDK (ARMV4I)"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -4194,7 +4194,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="Debug|Windows Mobile 6 Professional SDK (ARMV4I)"
+						Name="Debug|Windows Mobile 6 Standard SDK (ARMV4I)"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -4203,7 +4203,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="Debug|Windows Mobile 6 Standard SDK (ARMV4I)"
+						Name="Debug|Windows Mobile 6 Professional SDK (ARMV4I)"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -4272,7 +4272,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="Release|Windows Mobile 6 Professional SDK (ARMV4I)"
+						Name="Release|Windows Mobile 6 Standard SDK (ARMV4I)"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -4282,7 +4282,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="Release|Windows Mobile 6 Standard SDK (ARMV4I)"
+						Name="Release|Windows Mobile 6 Professional SDK (ARMV4I)"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -4328,7 +4328,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="Debug|Windows Mobile 6 Professional SDK (ARMV4I)"
+						Name="Debug|Windows Mobile 6 Standard SDK (ARMV4I)"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -4337,7 +4337,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="Debug|Windows Mobile 6 Standard SDK (ARMV4I)"
+						Name="Debug|Windows Mobile 6 Professional SDK (ARMV4I)"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -4402,7 +4402,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="Release|Windows Mobile 6 Professional SDK (ARMV4I)"
+						Name="Release|Windows Mobile 6 Standard SDK (ARMV4I)"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -4412,7 +4412,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="Release|Windows Mobile 6 Standard SDK (ARMV4I)"
+						Name="Release|Windows Mobile 6 Professional SDK (ARMV4I)"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -4458,7 +4458,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="Debug|Windows Mobile 6 Professional SDK (ARMV4I)"
+						Name="Debug|Windows Mobile 6 Standard SDK (ARMV4I)"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -4467,7 +4467,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="Debug|Windows Mobile 6 Standard SDK (ARMV4I)"
+						Name="Debug|Windows Mobile 6 Professional SDK (ARMV4I)"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -4520,7 +4520,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="Release|Windows Mobile 6 Professional SDK (ARMV4I)"
+						Name="Release|Windows Mobile 6 Standard SDK (ARMV4I)"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -4530,7 +4530,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="Release|Windows Mobile 6 Standard SDK (ARMV4I)"
+						Name="Release|Windows Mobile 6 Professional SDK (ARMV4I)"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -4576,7 +4576,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="Debug|Windows Mobile 6 Professional SDK (ARMV4I)"
+						Name="Debug|Windows Mobile 6 Standard SDK (ARMV4I)"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -4585,7 +4585,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="Debug|Windows Mobile 6 Standard SDK (ARMV4I)"
+						Name="Debug|Windows Mobile 6 Professional SDK (ARMV4I)"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -4638,7 +4638,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="Release|Windows Mobile 6 Professional SDK (ARMV4I)"
+						Name="Release|Windows Mobile 6 Standard SDK (ARMV4I)"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -4648,7 +4648,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="Release|Windows Mobile 6 Standard SDK (ARMV4I)"
+						Name="Release|Windows Mobile 6 Professional SDK (ARMV4I)"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -4694,7 +4694,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="Debug|Windows Mobile 6 Professional SDK (ARMV4I)"
+						Name="Debug|Windows Mobile 6 Standard SDK (ARMV4I)"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -4703,7 +4703,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="Debug|Windows Mobile 6 Standard SDK (ARMV4I)"
+						Name="Debug|Windows Mobile 6 Professional SDK (ARMV4I)"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -4756,7 +4756,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="Release|Windows Mobile 6 Professional SDK (ARMV4I)"
+						Name="Release|Windows Mobile 6 Standard SDK (ARMV4I)"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -4766,7 +4766,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="Release|Windows Mobile 6 Standard SDK (ARMV4I)"
+						Name="Release|Windows Mobile 6 Professional SDK (ARMV4I)"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -4812,7 +4812,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="Debug|Windows Mobile 6 Professional SDK (ARMV4I)"
+						Name="Debug|Windows Mobile 6 Standard SDK (ARMV4I)"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -4821,7 +4821,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="Debug|Windows Mobile 6 Standard SDK (ARMV4I)"
+						Name="Debug|Windows Mobile 6 Professional SDK (ARMV4I)"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -4874,7 +4874,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="Release|Windows Mobile 6 Professional SDK (ARMV4I)"
+						Name="Release|Windows Mobile 6 Standard SDK (ARMV4I)"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -4884,7 +4884,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="Release|Windows Mobile 6 Standard SDK (ARMV4I)"
+						Name="Release|Windows Mobile 6 Professional SDK (ARMV4I)"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -4930,7 +4930,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="Debug|Windows Mobile 6 Professional SDK (ARMV4I)"
+						Name="Debug|Windows Mobile 6 Standard SDK (ARMV4I)"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -4939,7 +4939,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="Debug|Windows Mobile 6 Standard SDK (ARMV4I)"
+						Name="Debug|Windows Mobile 6 Professional SDK (ARMV4I)"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -4992,7 +4992,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="Release|Windows Mobile 6 Professional SDK (ARMV4I)"
+						Name="Release|Windows Mobile 6 Standard SDK (ARMV4I)"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -5002,7 +5002,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="Release|Windows Mobile 6 Standard SDK (ARMV4I)"
+						Name="Release|Windows Mobile 6 Professional SDK (ARMV4I)"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -5048,7 +5048,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="Debug|Windows Mobile 6 Professional SDK (ARMV4I)"
+						Name="Debug|Windows Mobile 6 Standard SDK (ARMV4I)"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -5057,7 +5057,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="Debug|Windows Mobile 6 Standard SDK (ARMV4I)"
+						Name="Debug|Windows Mobile 6 Professional SDK (ARMV4I)"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -5110,7 +5110,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="Release|Windows Mobile 6 Professional SDK (ARMV4I)"
+						Name="Release|Windows Mobile 6 Standard SDK (ARMV4I)"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -5120,7 +5120,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="Release|Windows Mobile 6 Standard SDK (ARMV4I)"
+						Name="Release|Windows Mobile 6 Professional SDK (ARMV4I)"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -5166,7 +5166,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="Debug|Windows Mobile 6 Professional SDK (ARMV4I)"
+						Name="Debug|Windows Mobile 6 Standard SDK (ARMV4I)"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -5175,7 +5175,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="Debug|Windows Mobile 6 Standard SDK (ARMV4I)"
+						Name="Debug|Windows Mobile 6 Professional SDK (ARMV4I)"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -5228,7 +5228,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="Release|Windows Mobile 6 Professional SDK (ARMV4I)"
+						Name="Release|Windows Mobile 6 Standard SDK (ARMV4I)"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -5238,7 +5238,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="Release|Windows Mobile 6 Standard SDK (ARMV4I)"
+						Name="Release|Windows Mobile 6 Professional SDK (ARMV4I)"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -5284,7 +5284,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="Debug|Windows Mobile 6 Professional SDK (ARMV4I)"
+						Name="Debug|Windows Mobile 6 Standard SDK (ARMV4I)"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -5293,7 +5293,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="Debug|Windows Mobile 6 Standard SDK (ARMV4I)"
+						Name="Debug|Windows Mobile 6 Professional SDK (ARMV4I)"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -5346,7 +5346,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="Release|Windows Mobile 6 Professional SDK (ARMV4I)"
+						Name="Release|Windows Mobile 6 Standard SDK (ARMV4I)"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -5356,7 +5356,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="Release|Windows Mobile 6 Standard SDK (ARMV4I)"
+						Name="Release|Windows Mobile 6 Professional SDK (ARMV4I)"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -5402,7 +5402,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="Debug|Windows Mobile 6 Professional SDK (ARMV4I)"
+						Name="Debug|Windows Mobile 6 Standard SDK (ARMV4I)"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -5411,7 +5411,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="Debug|Windows Mobile 6 Standard SDK (ARMV4I)"
+						Name="Debug|Windows Mobile 6 Professional SDK (ARMV4I)"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -5464,7 +5464,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="Release|Windows Mobile 6 Professional SDK (ARMV4I)"
+						Name="Release|Windows Mobile 6 Standard SDK (ARMV4I)"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -5474,7 +5474,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="Release|Windows Mobile 6 Standard SDK (ARMV4I)"
+						Name="Release|Windows Mobile 6 Professional SDK (ARMV4I)"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -5520,7 +5520,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="Debug|Windows Mobile 6 Professional SDK (ARMV4I)"
+						Name="Debug|Windows Mobile 6 Standard SDK (ARMV4I)"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -5529,7 +5529,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="Debug|Windows Mobile 6 Standard SDK (ARMV4I)"
+						Name="Debug|Windows Mobile 6 Professional SDK (ARMV4I)"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -5586,7 +5586,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="Release|Windows Mobile 6 Professional SDK (ARMV4I)"
+						Name="Release|Windows Mobile 6 Standard SDK (ARMV4I)"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -5596,7 +5596,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="Release|Windows Mobile 6 Standard SDK (ARMV4I)"
+						Name="Release|Windows Mobile 6 Professional SDK (ARMV4I)"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -5642,7 +5642,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="Debug|Windows Mobile 6 Professional SDK (ARMV4I)"
+						Name="Debug|Windows Mobile 6 Standard SDK (ARMV4I)"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -5651,7 +5651,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="Debug|Windows Mobile 6 Standard SDK (ARMV4I)"
+						Name="Debug|Windows Mobile 6 Professional SDK (ARMV4I)"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -5704,7 +5704,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="Release|Windows Mobile 6 Professional SDK (ARMV4I)"
+						Name="Release|Windows Mobile 6 Standard SDK (ARMV4I)"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -5714,7 +5714,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="Release|Windows Mobile 6 Standard SDK (ARMV4I)"
+						Name="Release|Windows Mobile 6 Professional SDK (ARMV4I)"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -5760,7 +5760,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="Debug|Windows Mobile 6 Professional SDK (ARMV4I)"
+						Name="Debug|Windows Mobile 6 Standard SDK (ARMV4I)"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -5769,7 +5769,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="Debug|Windows Mobile 6 Standard SDK (ARMV4I)"
+						Name="Debug|Windows Mobile 6 Professional SDK (ARMV4I)"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -5834,7 +5834,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="Release|Windows Mobile 6 Professional SDK (ARMV4I)"
+						Name="Release|Windows Mobile 6 Standard SDK (ARMV4I)"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -5844,7 +5844,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="Release|Windows Mobile 6 Standard SDK (ARMV4I)"
+						Name="Release|Windows Mobile 6 Professional SDK (ARMV4I)"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -5890,7 +5890,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="Debug|Windows Mobile 6 Professional SDK (ARMV4I)"
+						Name="Debug|Windows Mobile 6 Standard SDK (ARMV4I)"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -5899,7 +5899,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="Debug|Windows Mobile 6 Standard SDK (ARMV4I)"
+						Name="Debug|Windows Mobile 6 Professional SDK (ARMV4I)"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -5956,7 +5956,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="Release|Windows Mobile 6 Professional SDK (ARMV4I)"
+						Name="Release|Windows Mobile 6 Standard SDK (ARMV4I)"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -5966,7 +5966,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="Release|Windows Mobile 6 Standard SDK (ARMV4I)"
+						Name="Release|Windows Mobile 6 Professional SDK (ARMV4I)"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -6012,7 +6012,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="Debug|Windows Mobile 6 Professional SDK (ARMV4I)"
+						Name="Debug|Windows Mobile 6 Standard SDK (ARMV4I)"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -6021,7 +6021,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="Debug|Windows Mobile 6 Standard SDK (ARMV4I)"
+						Name="Debug|Windows Mobile 6 Professional SDK (ARMV4I)"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -6081,7 +6081,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Release|Windows Mobile 6 Professional SDK (ARMV4I)"
+							Name="Release|Windows Mobile 6 Standard SDK (ARMV4I)"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -6091,7 +6091,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Release|Windows Mobile 6 Standard SDK (ARMV4I)"
+							Name="Release|Windows Mobile 6 Professional SDK (ARMV4I)"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -6137,7 +6137,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Debug|Windows Mobile 6 Professional SDK (ARMV4I)"
+							Name="Debug|Windows Mobile 6 Standard SDK (ARMV4I)"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -6146,7 +6146,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Debug|Windows Mobile 6 Standard SDK (ARMV4I)"
+							Name="Debug|Windows Mobile 6 Professional SDK (ARMV4I)"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -6199,7 +6199,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Release|Windows Mobile 6 Professional SDK (ARMV4I)"
+							Name="Release|Windows Mobile 6 Standard SDK (ARMV4I)"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -6209,7 +6209,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Release|Windows Mobile 6 Standard SDK (ARMV4I)"
+							Name="Release|Windows Mobile 6 Professional SDK (ARMV4I)"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -6255,7 +6255,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Debug|Windows Mobile 6 Professional SDK (ARMV4I)"
+							Name="Debug|Windows Mobile 6 Standard SDK (ARMV4I)"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -6264,7 +6264,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Debug|Windows Mobile 6 Standard SDK (ARMV4I)"
+							Name="Debug|Windows Mobile 6 Professional SDK (ARMV4I)"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -6317,7 +6317,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Release|Windows Mobile 6 Professional SDK (ARMV4I)"
+							Name="Release|Windows Mobile 6 Standard SDK (ARMV4I)"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -6327,7 +6327,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Release|Windows Mobile 6 Standard SDK (ARMV4I)"
+							Name="Release|Windows Mobile 6 Professional SDK (ARMV4I)"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -6373,7 +6373,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Debug|Windows Mobile 6 Professional SDK (ARMV4I)"
+							Name="Debug|Windows Mobile 6 Standard SDK (ARMV4I)"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -6382,7 +6382,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Debug|Windows Mobile 6 Standard SDK (ARMV4I)"
+							Name="Debug|Windows Mobile 6 Professional SDK (ARMV4I)"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -6435,7 +6435,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Release|Windows Mobile 6 Professional SDK (ARMV4I)"
+							Name="Release|Windows Mobile 6 Standard SDK (ARMV4I)"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -6445,7 +6445,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Release|Windows Mobile 6 Standard SDK (ARMV4I)"
+							Name="Release|Windows Mobile 6 Professional SDK (ARMV4I)"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -6491,7 +6491,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Debug|Windows Mobile 6 Professional SDK (ARMV4I)"
+							Name="Debug|Windows Mobile 6 Standard SDK (ARMV4I)"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -6500,7 +6500,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Debug|Windows Mobile 6 Standard SDK (ARMV4I)"
+							Name="Debug|Windows Mobile 6 Professional SDK (ARMV4I)"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -6553,7 +6553,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Release|Windows Mobile 6 Professional SDK (ARMV4I)"
+							Name="Release|Windows Mobile 6 Standard SDK (ARMV4I)"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -6563,7 +6563,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Release|Windows Mobile 6 Standard SDK (ARMV4I)"
+							Name="Release|Windows Mobile 6 Professional SDK (ARMV4I)"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -6609,7 +6609,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Debug|Windows Mobile 6 Professional SDK (ARMV4I)"
+							Name="Debug|Windows Mobile 6 Standard SDK (ARMV4I)"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -6618,7 +6618,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Debug|Windows Mobile 6 Standard SDK (ARMV4I)"
+							Name="Debug|Windows Mobile 6 Professional SDK (ARMV4I)"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -6671,7 +6671,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Release|Windows Mobile 6 Professional SDK (ARMV4I)"
+							Name="Release|Windows Mobile 6 Standard SDK (ARMV4I)"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -6681,7 +6681,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Release|Windows Mobile 6 Standard SDK (ARMV4I)"
+							Name="Release|Windows Mobile 6 Professional SDK (ARMV4I)"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -6727,7 +6727,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Debug|Windows Mobile 6 Professional SDK (ARMV4I)"
+							Name="Debug|Windows Mobile 6 Standard SDK (ARMV4I)"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -6736,7 +6736,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Debug|Windows Mobile 6 Standard SDK (ARMV4I)"
+							Name="Debug|Windows Mobile 6 Professional SDK (ARMV4I)"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -6789,7 +6789,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Release|Windows Mobile 6 Professional SDK (ARMV4I)"
+							Name="Release|Windows Mobile 6 Standard SDK (ARMV4I)"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -6799,7 +6799,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Release|Windows Mobile 6 Standard SDK (ARMV4I)"
+							Name="Release|Windows Mobile 6 Professional SDK (ARMV4I)"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -6845,7 +6845,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Debug|Windows Mobile 6 Professional SDK (ARMV4I)"
+							Name="Debug|Windows Mobile 6 Standard SDK (ARMV4I)"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -6854,7 +6854,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Debug|Windows Mobile 6 Standard SDK (ARMV4I)"
+							Name="Debug|Windows Mobile 6 Professional SDK (ARMV4I)"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -6907,7 +6907,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Release|Windows Mobile 6 Professional SDK (ARMV4I)"
+							Name="Release|Windows Mobile 6 Standard SDK (ARMV4I)"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -6917,7 +6917,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Release|Windows Mobile 6 Standard SDK (ARMV4I)"
+							Name="Release|Windows Mobile 6 Professional SDK (ARMV4I)"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -6963,7 +6963,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Debug|Windows Mobile 6 Professional SDK (ARMV4I)"
+							Name="Debug|Windows Mobile 6 Standard SDK (ARMV4I)"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -6972,7 +6972,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Debug|Windows Mobile 6 Standard SDK (ARMV4I)"
+							Name="Debug|Windows Mobile 6 Professional SDK (ARMV4I)"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -7025,7 +7025,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Release|Windows Mobile 6 Professional SDK (ARMV4I)"
+							Name="Release|Windows Mobile 6 Standard SDK (ARMV4I)"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -7035,7 +7035,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Release|Windows Mobile 6 Standard SDK (ARMV4I)"
+							Name="Release|Windows Mobile 6 Professional SDK (ARMV4I)"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -7081,7 +7081,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Debug|Windows Mobile 6 Professional SDK (ARMV4I)"
+							Name="Debug|Windows Mobile 6 Standard SDK (ARMV4I)"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -7090,7 +7090,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Debug|Windows Mobile 6 Standard SDK (ARMV4I)"
+							Name="Debug|Windows Mobile 6 Professional SDK (ARMV4I)"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -7143,7 +7143,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Release|Windows Mobile 6 Professional SDK (ARMV4I)"
+							Name="Release|Windows Mobile 6 Standard SDK (ARMV4I)"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -7153,7 +7153,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Release|Windows Mobile 6 Standard SDK (ARMV4I)"
+							Name="Release|Windows Mobile 6 Professional SDK (ARMV4I)"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -7199,7 +7199,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Debug|Windows Mobile 6 Professional SDK (ARMV4I)"
+							Name="Debug|Windows Mobile 6 Standard SDK (ARMV4I)"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -7208,7 +7208,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Debug|Windows Mobile 6 Standard SDK (ARMV4I)"
+							Name="Debug|Windows Mobile 6 Professional SDK (ARMV4I)"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -7261,7 +7261,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Release|Windows Mobile 6 Professional SDK (ARMV4I)"
+							Name="Release|Windows Mobile 6 Standard SDK (ARMV4I)"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -7271,7 +7271,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Release|Windows Mobile 6 Standard SDK (ARMV4I)"
+							Name="Release|Windows Mobile 6 Professional SDK (ARMV4I)"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -7317,7 +7317,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Debug|Windows Mobile 6 Professional SDK (ARMV4I)"
+							Name="Debug|Windows Mobile 6 Standard SDK (ARMV4I)"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -7326,7 +7326,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Debug|Windows Mobile 6 Standard SDK (ARMV4I)"
+							Name="Debug|Windows Mobile 6 Professional SDK (ARMV4I)"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -7379,7 +7379,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Release|Windows Mobile 6 Professional SDK (ARMV4I)"
+							Name="Release|Windows Mobile 6 Standard SDK (ARMV4I)"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -7389,7 +7389,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Release|Windows Mobile 6 Standard SDK (ARMV4I)"
+							Name="Release|Windows Mobile 6 Professional SDK (ARMV4I)"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -7435,7 +7435,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Debug|Windows Mobile 6 Professional SDK (ARMV4I)"
+							Name="Debug|Windows Mobile 6 Standard SDK (ARMV4I)"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -7444,7 +7444,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Debug|Windows Mobile 6 Standard SDK (ARMV4I)"
+							Name="Debug|Windows Mobile 6 Professional SDK (ARMV4I)"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -7497,7 +7497,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Release|Windows Mobile 6 Professional SDK (ARMV4I)"
+							Name="Release|Windows Mobile 6 Standard SDK (ARMV4I)"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -7507,7 +7507,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Release|Windows Mobile 6 Standard SDK (ARMV4I)"
+							Name="Release|Windows Mobile 6 Professional SDK (ARMV4I)"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -7553,7 +7553,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Debug|Windows Mobile 6 Professional SDK (ARMV4I)"
+							Name="Debug|Windows Mobile 6 Standard SDK (ARMV4I)"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -7562,7 +7562,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Debug|Windows Mobile 6 Standard SDK (ARMV4I)"
+							Name="Debug|Windows Mobile 6 Professional SDK (ARMV4I)"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -7615,7 +7615,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Release|Windows Mobile 6 Professional SDK (ARMV4I)"
+							Name="Release|Windows Mobile 6 Standard SDK (ARMV4I)"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -7625,7 +7625,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Release|Windows Mobile 6 Standard SDK (ARMV4I)"
+							Name="Release|Windows Mobile 6 Professional SDK (ARMV4I)"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -7671,7 +7671,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Debug|Windows Mobile 6 Professional SDK (ARMV4I)"
+							Name="Debug|Windows Mobile 6 Standard SDK (ARMV4I)"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -7680,7 +7680,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Debug|Windows Mobile 6 Standard SDK (ARMV4I)"
+							Name="Debug|Windows Mobile 6 Professional SDK (ARMV4I)"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -7733,7 +7733,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Release|Windows Mobile 6 Professional SDK (ARMV4I)"
+							Name="Release|Windows Mobile 6 Standard SDK (ARMV4I)"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -7743,7 +7743,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Release|Windows Mobile 6 Standard SDK (ARMV4I)"
+							Name="Release|Windows Mobile 6 Professional SDK (ARMV4I)"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -7789,7 +7789,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Debug|Windows Mobile 6 Professional SDK (ARMV4I)"
+							Name="Debug|Windows Mobile 6 Standard SDK (ARMV4I)"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -7798,7 +7798,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Debug|Windows Mobile 6 Standard SDK (ARMV4I)"
+							Name="Debug|Windows Mobile 6 Professional SDK (ARMV4I)"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -7851,7 +7851,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Release|Windows Mobile 6 Professional SDK (ARMV4I)"
+							Name="Release|Windows Mobile 6 Standard SDK (ARMV4I)"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -7861,7 +7861,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Release|Windows Mobile 6 Standard SDK (ARMV4I)"
+							Name="Release|Windows Mobile 6 Professional SDK (ARMV4I)"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -7907,7 +7907,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Debug|Windows Mobile 6 Professional SDK (ARMV4I)"
+							Name="Debug|Windows Mobile 6 Standard SDK (ARMV4I)"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -7916,7 +7916,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Debug|Windows Mobile 6 Standard SDK (ARMV4I)"
+							Name="Debug|Windows Mobile 6 Professional SDK (ARMV4I)"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -7969,7 +7969,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Release|Windows Mobile 6 Professional SDK (ARMV4I)"
+							Name="Release|Windows Mobile 6 Standard SDK (ARMV4I)"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -7979,7 +7979,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Release|Windows Mobile 6 Standard SDK (ARMV4I)"
+							Name="Release|Windows Mobile 6 Professional SDK (ARMV4I)"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -8025,7 +8025,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Debug|Windows Mobile 6 Professional SDK (ARMV4I)"
+							Name="Debug|Windows Mobile 6 Standard SDK (ARMV4I)"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -8034,7 +8034,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Debug|Windows Mobile 6 Standard SDK (ARMV4I)"
+							Name="Debug|Windows Mobile 6 Professional SDK (ARMV4I)"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -8087,7 +8087,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Release|Windows Mobile 6 Professional SDK (ARMV4I)"
+							Name="Release|Windows Mobile 6 Standard SDK (ARMV4I)"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -8097,7 +8097,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Release|Windows Mobile 6 Standard SDK (ARMV4I)"
+							Name="Release|Windows Mobile 6 Professional SDK (ARMV4I)"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -8143,7 +8143,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Debug|Windows Mobile 6 Professional SDK (ARMV4I)"
+							Name="Debug|Windows Mobile 6 Standard SDK (ARMV4I)"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -8152,7 +8152,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Debug|Windows Mobile 6 Standard SDK (ARMV4I)"
+							Name="Debug|Windows Mobile 6 Professional SDK (ARMV4I)"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -8205,7 +8205,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Release|Windows Mobile 6 Professional SDK (ARMV4I)"
+							Name="Release|Windows Mobile 6 Standard SDK (ARMV4I)"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -8215,7 +8215,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Release|Windows Mobile 6 Standard SDK (ARMV4I)"
+							Name="Release|Windows Mobile 6 Professional SDK (ARMV4I)"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -8261,7 +8261,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Debug|Windows Mobile 6 Professional SDK (ARMV4I)"
+							Name="Debug|Windows Mobile 6 Standard SDK (ARMV4I)"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -8270,7 +8270,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Debug|Windows Mobile 6 Standard SDK (ARMV4I)"
+							Name="Debug|Windows Mobile 6 Professional SDK (ARMV4I)"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -8323,7 +8323,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Release|Windows Mobile 6 Professional SDK (ARMV4I)"
+							Name="Release|Windows Mobile 6 Standard SDK (ARMV4I)"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -8333,7 +8333,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Release|Windows Mobile 6 Standard SDK (ARMV4I)"
+							Name="Release|Windows Mobile 6 Professional SDK (ARMV4I)"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -8379,7 +8379,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Debug|Windows Mobile 6 Professional SDK (ARMV4I)"
+							Name="Debug|Windows Mobile 6 Standard SDK (ARMV4I)"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -8388,7 +8388,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Debug|Windows Mobile 6 Standard SDK (ARMV4I)"
+							Name="Debug|Windows Mobile 6 Professional SDK (ARMV4I)"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -8441,7 +8441,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Release|Windows Mobile 6 Professional SDK (ARMV4I)"
+							Name="Release|Windows Mobile 6 Standard SDK (ARMV4I)"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -8451,7 +8451,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Release|Windows Mobile 6 Standard SDK (ARMV4I)"
+							Name="Release|Windows Mobile 6 Professional SDK (ARMV4I)"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -8497,7 +8497,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Debug|Windows Mobile 6 Professional SDK (ARMV4I)"
+							Name="Debug|Windows Mobile 6 Standard SDK (ARMV4I)"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -8506,7 +8506,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Debug|Windows Mobile 6 Standard SDK (ARMV4I)"
+							Name="Debug|Windows Mobile 6 Professional SDK (ARMV4I)"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -8559,7 +8559,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Release|Windows Mobile 6 Professional SDK (ARMV4I)"
+							Name="Release|Windows Mobile 6 Standard SDK (ARMV4I)"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -8569,7 +8569,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Release|Windows Mobile 6 Standard SDK (ARMV4I)"
+							Name="Release|Windows Mobile 6 Professional SDK (ARMV4I)"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -8615,7 +8615,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Debug|Windows Mobile 6 Professional SDK (ARMV4I)"
+							Name="Debug|Windows Mobile 6 Standard SDK (ARMV4I)"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -8624,7 +8624,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Debug|Windows Mobile 6 Standard SDK (ARMV4I)"
+							Name="Debug|Windows Mobile 6 Professional SDK (ARMV4I)"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -8677,7 +8677,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Release|Windows Mobile 6 Professional SDK (ARMV4I)"
+							Name="Release|Windows Mobile 6 Standard SDK (ARMV4I)"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -8687,7 +8687,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Release|Windows Mobile 6 Standard SDK (ARMV4I)"
+							Name="Release|Windows Mobile 6 Professional SDK (ARMV4I)"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -8733,7 +8733,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Debug|Windows Mobile 6 Professional SDK (ARMV4I)"
+							Name="Debug|Windows Mobile 6 Standard SDK (ARMV4I)"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -8742,7 +8742,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Debug|Windows Mobile 6 Standard SDK (ARMV4I)"
+							Name="Debug|Windows Mobile 6 Professional SDK (ARMV4I)"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -8795,7 +8795,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Release|Windows Mobile 6 Professional SDK (ARMV4I)"
+							Name="Release|Windows Mobile 6 Standard SDK (ARMV4I)"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -8805,7 +8805,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Release|Windows Mobile 6 Standard SDK (ARMV4I)"
+							Name="Release|Windows Mobile 6 Professional SDK (ARMV4I)"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -8851,7 +8851,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Debug|Windows Mobile 6 Professional SDK (ARMV4I)"
+							Name="Debug|Windows Mobile 6 Standard SDK (ARMV4I)"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -8860,7 +8860,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Debug|Windows Mobile 6 Standard SDK (ARMV4I)"
+							Name="Debug|Windows Mobile 6 Professional SDK (ARMV4I)"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -8913,7 +8913,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Release|Windows Mobile 6 Professional SDK (ARMV4I)"
+							Name="Release|Windows Mobile 6 Standard SDK (ARMV4I)"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -8923,7 +8923,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Release|Windows Mobile 6 Standard SDK (ARMV4I)"
+							Name="Release|Windows Mobile 6 Professional SDK (ARMV4I)"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -8969,7 +8969,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Debug|Windows Mobile 6 Professional SDK (ARMV4I)"
+							Name="Debug|Windows Mobile 6 Standard SDK (ARMV4I)"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -8978,7 +8978,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Debug|Windows Mobile 6 Standard SDK (ARMV4I)"
+							Name="Debug|Windows Mobile 6 Professional SDK (ARMV4I)"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -9031,7 +9031,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Release|Windows Mobile 6 Professional SDK (ARMV4I)"
+							Name="Release|Windows Mobile 6 Standard SDK (ARMV4I)"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -9041,7 +9041,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Release|Windows Mobile 6 Standard SDK (ARMV4I)"
+							Name="Release|Windows Mobile 6 Professional SDK (ARMV4I)"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -9087,7 +9087,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Debug|Windows Mobile 6 Professional SDK (ARMV4I)"
+							Name="Debug|Windows Mobile 6 Standard SDK (ARMV4I)"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -9096,7 +9096,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Debug|Windows Mobile 6 Standard SDK (ARMV4I)"
+							Name="Debug|Windows Mobile 6 Professional SDK (ARMV4I)"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -9149,7 +9149,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Release|Windows Mobile 6 Professional SDK (ARMV4I)"
+							Name="Release|Windows Mobile 6 Standard SDK (ARMV4I)"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -9159,7 +9159,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Release|Windows Mobile 6 Standard SDK (ARMV4I)"
+							Name="Release|Windows Mobile 6 Professional SDK (ARMV4I)"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -9205,7 +9205,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Debug|Windows Mobile 6 Professional SDK (ARMV4I)"
+							Name="Debug|Windows Mobile 6 Standard SDK (ARMV4I)"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -9214,7 +9214,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Debug|Windows Mobile 6 Standard SDK (ARMV4I)"
+							Name="Debug|Windows Mobile 6 Professional SDK (ARMV4I)"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -9267,7 +9267,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Release|Windows Mobile 6 Professional SDK (ARMV4I)"
+							Name="Release|Windows Mobile 6 Standard SDK (ARMV4I)"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -9277,7 +9277,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Release|Windows Mobile 6 Standard SDK (ARMV4I)"
+							Name="Release|Windows Mobile 6 Professional SDK (ARMV4I)"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -9323,7 +9323,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Debug|Windows Mobile 6 Professional SDK (ARMV4I)"
+							Name="Debug|Windows Mobile 6 Standard SDK (ARMV4I)"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -9332,7 +9332,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Debug|Windows Mobile 6 Standard SDK (ARMV4I)"
+							Name="Debug|Windows Mobile 6 Professional SDK (ARMV4I)"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -9385,7 +9385,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Release|Windows Mobile 6 Professional SDK (ARMV4I)"
+							Name="Release|Windows Mobile 6 Standard SDK (ARMV4I)"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -9395,7 +9395,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Release|Windows Mobile 6 Standard SDK (ARMV4I)"
+							Name="Release|Windows Mobile 6 Professional SDK (ARMV4I)"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -9441,7 +9441,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Debug|Windows Mobile 6 Professional SDK (ARMV4I)"
+							Name="Debug|Windows Mobile 6 Standard SDK (ARMV4I)"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -9450,7 +9450,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Debug|Windows Mobile 6 Standard SDK (ARMV4I)"
+							Name="Debug|Windows Mobile 6 Professional SDK (ARMV4I)"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -9503,7 +9503,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Release|Windows Mobile 6 Professional SDK (ARMV4I)"
+							Name="Release|Windows Mobile 6 Standard SDK (ARMV4I)"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -9513,7 +9513,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Release|Windows Mobile 6 Standard SDK (ARMV4I)"
+							Name="Release|Windows Mobile 6 Professional SDK (ARMV4I)"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -9559,7 +9559,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Debug|Windows Mobile 6 Professional SDK (ARMV4I)"
+							Name="Debug|Windows Mobile 6 Standard SDK (ARMV4I)"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -9568,7 +9568,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Debug|Windows Mobile 6 Standard SDK (ARMV4I)"
+							Name="Debug|Windows Mobile 6 Professional SDK (ARMV4I)"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -9621,7 +9621,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Release|Windows Mobile 6 Professional SDK (ARMV4I)"
+							Name="Release|Windows Mobile 6 Standard SDK (ARMV4I)"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -9631,7 +9631,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Release|Windows Mobile 6 Standard SDK (ARMV4I)"
+							Name="Release|Windows Mobile 6 Professional SDK (ARMV4I)"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -9677,7 +9677,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Debug|Windows Mobile 6 Professional SDK (ARMV4I)"
+							Name="Debug|Windows Mobile 6 Standard SDK (ARMV4I)"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -9686,7 +9686,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Debug|Windows Mobile 6 Standard SDK (ARMV4I)"
+							Name="Debug|Windows Mobile 6 Professional SDK (ARMV4I)"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -9739,7 +9739,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Release|Windows Mobile 6 Professional SDK (ARMV4I)"
+							Name="Release|Windows Mobile 6 Standard SDK (ARMV4I)"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -9749,7 +9749,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Release|Windows Mobile 6 Standard SDK (ARMV4I)"
+							Name="Release|Windows Mobile 6 Professional SDK (ARMV4I)"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -9795,7 +9795,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Debug|Windows Mobile 6 Professional SDK (ARMV4I)"
+							Name="Debug|Windows Mobile 6 Standard SDK (ARMV4I)"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -9804,7 +9804,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Debug|Windows Mobile 6 Standard SDK (ARMV4I)"
+							Name="Debug|Windows Mobile 6 Professional SDK (ARMV4I)"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -9857,7 +9857,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Release|Windows Mobile 6 Professional SDK (ARMV4I)"
+							Name="Release|Windows Mobile 6 Standard SDK (ARMV4I)"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -9867,7 +9867,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Release|Windows Mobile 6 Standard SDK (ARMV4I)"
+							Name="Release|Windows Mobile 6 Professional SDK (ARMV4I)"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -9913,7 +9913,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Debug|Windows Mobile 6 Professional SDK (ARMV4I)"
+							Name="Debug|Windows Mobile 6 Standard SDK (ARMV4I)"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -9922,7 +9922,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Debug|Windows Mobile 6 Standard SDK (ARMV4I)"
+							Name="Debug|Windows Mobile 6 Professional SDK (ARMV4I)"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -9975,7 +9975,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Release|Windows Mobile 6 Professional SDK (ARMV4I)"
+							Name="Release|Windows Mobile 6 Standard SDK (ARMV4I)"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -9985,7 +9985,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Release|Windows Mobile 6 Standard SDK (ARMV4I)"
+							Name="Release|Windows Mobile 6 Professional SDK (ARMV4I)"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -10031,7 +10031,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Debug|Windows Mobile 6 Professional SDK (ARMV4I)"
+							Name="Debug|Windows Mobile 6 Standard SDK (ARMV4I)"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -10040,7 +10040,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Debug|Windows Mobile 6 Standard SDK (ARMV4I)"
+							Name="Debug|Windows Mobile 6 Professional SDK (ARMV4I)"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -10093,7 +10093,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Release|Windows Mobile 6 Professional SDK (ARMV4I)"
+							Name="Release|Windows Mobile 6 Standard SDK (ARMV4I)"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -10103,7 +10103,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Release|Windows Mobile 6 Standard SDK (ARMV4I)"
+							Name="Release|Windows Mobile 6 Professional SDK (ARMV4I)"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -10149,7 +10149,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Debug|Windows Mobile 6 Professional SDK (ARMV4I)"
+							Name="Debug|Windows Mobile 6 Standard SDK (ARMV4I)"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -10158,7 +10158,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Debug|Windows Mobile 6 Standard SDK (ARMV4I)"
+							Name="Debug|Windows Mobile 6 Professional SDK (ARMV4I)"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -10211,7 +10211,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Release|Windows Mobile 6 Professional SDK (ARMV4I)"
+							Name="Release|Windows Mobile 6 Standard SDK (ARMV4I)"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -10221,7 +10221,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Release|Windows Mobile 6 Standard SDK (ARMV4I)"
+							Name="Release|Windows Mobile 6 Professional SDK (ARMV4I)"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -10267,7 +10267,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Debug|Windows Mobile 6 Professional SDK (ARMV4I)"
+							Name="Debug|Windows Mobile 6 Standard SDK (ARMV4I)"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -10276,7 +10276,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Debug|Windows Mobile 6 Standard SDK (ARMV4I)"
+							Name="Debug|Windows Mobile 6 Professional SDK (ARMV4I)"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -10329,7 +10329,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Release|Windows Mobile 6 Professional SDK (ARMV4I)"
+							Name="Release|Windows Mobile 6 Standard SDK (ARMV4I)"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -10339,7 +10339,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Release|Windows Mobile 6 Standard SDK (ARMV4I)"
+							Name="Release|Windows Mobile 6 Professional SDK (ARMV4I)"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -10385,7 +10385,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Debug|Windows Mobile 6 Professional SDK (ARMV4I)"
+							Name="Debug|Windows Mobile 6 Standard SDK (ARMV4I)"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -10394,7 +10394,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Debug|Windows Mobile 6 Standard SDK (ARMV4I)"
+							Name="Debug|Windows Mobile 6 Professional SDK (ARMV4I)"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -10447,7 +10447,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Release|Windows Mobile 6 Professional SDK (ARMV4I)"
+							Name="Release|Windows Mobile 6 Standard SDK (ARMV4I)"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -10457,7 +10457,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Release|Windows Mobile 6 Standard SDK (ARMV4I)"
+							Name="Release|Windows Mobile 6 Professional SDK (ARMV4I)"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -10503,7 +10503,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Debug|Windows Mobile 6 Professional SDK (ARMV4I)"
+							Name="Debug|Windows Mobile 6 Standard SDK (ARMV4I)"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -10512,7 +10512,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Debug|Windows Mobile 6 Standard SDK (ARMV4I)"
+							Name="Debug|Windows Mobile 6 Professional SDK (ARMV4I)"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -10565,7 +10565,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Release|Windows Mobile 6 Professional SDK (ARMV4I)"
+							Name="Release|Windows Mobile 6 Standard SDK (ARMV4I)"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -10575,7 +10575,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Release|Windows Mobile 6 Standard SDK (ARMV4I)"
+							Name="Release|Windows Mobile 6 Professional SDK (ARMV4I)"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -10621,7 +10621,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Debug|Windows Mobile 6 Professional SDK (ARMV4I)"
+							Name="Debug|Windows Mobile 6 Standard SDK (ARMV4I)"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -10630,7 +10630,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Debug|Windows Mobile 6 Standard SDK (ARMV4I)"
+							Name="Debug|Windows Mobile 6 Professional SDK (ARMV4I)"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -10683,7 +10683,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Release|Windows Mobile 6 Professional SDK (ARMV4I)"
+							Name="Release|Windows Mobile 6 Standard SDK (ARMV4I)"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -10693,7 +10693,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Release|Windows Mobile 6 Standard SDK (ARMV4I)"
+							Name="Release|Windows Mobile 6 Professional SDK (ARMV4I)"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -10739,7 +10739,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Debug|Windows Mobile 6 Professional SDK (ARMV4I)"
+							Name="Debug|Windows Mobile 6 Standard SDK (ARMV4I)"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -10748,7 +10748,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Debug|Windows Mobile 6 Standard SDK (ARMV4I)"
+							Name="Debug|Windows Mobile 6 Professional SDK (ARMV4I)"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -10801,7 +10801,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Release|Windows Mobile 6 Professional SDK (ARMV4I)"
+							Name="Release|Windows Mobile 6 Standard SDK (ARMV4I)"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -10811,7 +10811,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Release|Windows Mobile 6 Standard SDK (ARMV4I)"
+							Name="Release|Windows Mobile 6 Professional SDK (ARMV4I)"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -10857,7 +10857,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Debug|Windows Mobile 6 Professional SDK (ARMV4I)"
+							Name="Debug|Windows Mobile 6 Standard SDK (ARMV4I)"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -10866,7 +10866,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Debug|Windows Mobile 6 Standard SDK (ARMV4I)"
+							Name="Debug|Windows Mobile 6 Professional SDK (ARMV4I)"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -10919,7 +10919,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Release|Windows Mobile 6 Professional SDK (ARMV4I)"
+							Name="Release|Windows Mobile 6 Standard SDK (ARMV4I)"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -10929,7 +10929,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Release|Windows Mobile 6 Standard SDK (ARMV4I)"
+							Name="Release|Windows Mobile 6 Professional SDK (ARMV4I)"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -10975,7 +10975,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Debug|Windows Mobile 6 Professional SDK (ARMV4I)"
+							Name="Debug|Windows Mobile 6 Standard SDK (ARMV4I)"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -10984,7 +10984,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Debug|Windows Mobile 6 Standard SDK (ARMV4I)"
+							Name="Debug|Windows Mobile 6 Professional SDK (ARMV4I)"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -11037,7 +11037,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Release|Windows Mobile 6 Professional SDK (ARMV4I)"
+							Name="Release|Windows Mobile 6 Standard SDK (ARMV4I)"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -11047,7 +11047,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Release|Windows Mobile 6 Standard SDK (ARMV4I)"
+							Name="Release|Windows Mobile 6 Professional SDK (ARMV4I)"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -11093,7 +11093,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Debug|Windows Mobile 6 Professional SDK (ARMV4I)"
+							Name="Debug|Windows Mobile 6 Standard SDK (ARMV4I)"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -11102,7 +11102,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Debug|Windows Mobile 6 Standard SDK (ARMV4I)"
+							Name="Debug|Windows Mobile 6 Professional SDK (ARMV4I)"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -11155,7 +11155,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Release|Windows Mobile 6 Professional SDK (ARMV4I)"
+							Name="Release|Windows Mobile 6 Standard SDK (ARMV4I)"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -11165,7 +11165,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Release|Windows Mobile 6 Standard SDK (ARMV4I)"
+							Name="Release|Windows Mobile 6 Professional SDK (ARMV4I)"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -11211,7 +11211,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Debug|Windows Mobile 6 Professional SDK (ARMV4I)"
+							Name="Debug|Windows Mobile 6 Standard SDK (ARMV4I)"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -11220,7 +11220,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Debug|Windows Mobile 6 Standard SDK (ARMV4I)"
+							Name="Debug|Windows Mobile 6 Professional SDK (ARMV4I)"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -11273,7 +11273,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Release|Windows Mobile 6 Professional SDK (ARMV4I)"
+							Name="Release|Windows Mobile 6 Standard SDK (ARMV4I)"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -11283,7 +11283,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Release|Windows Mobile 6 Standard SDK (ARMV4I)"
+							Name="Release|Windows Mobile 6 Professional SDK (ARMV4I)"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -11329,7 +11329,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Debug|Windows Mobile 6 Professional SDK (ARMV4I)"
+							Name="Debug|Windows Mobile 6 Standard SDK (ARMV4I)"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -11338,7 +11338,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Debug|Windows Mobile 6 Standard SDK (ARMV4I)"
+							Name="Debug|Windows Mobile 6 Professional SDK (ARMV4I)"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -11391,7 +11391,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Release|Windows Mobile 6 Professional SDK (ARMV4I)"
+							Name="Release|Windows Mobile 6 Standard SDK (ARMV4I)"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -11401,7 +11401,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Release|Windows Mobile 6 Standard SDK (ARMV4I)"
+							Name="Release|Windows Mobile 6 Professional SDK (ARMV4I)"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -11447,7 +11447,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Debug|Windows Mobile 6 Professional SDK (ARMV4I)"
+							Name="Debug|Windows Mobile 6 Standard SDK (ARMV4I)"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -11456,7 +11456,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Debug|Windows Mobile 6 Standard SDK (ARMV4I)"
+							Name="Debug|Windows Mobile 6 Professional SDK (ARMV4I)"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -11509,7 +11509,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Release|Windows Mobile 6 Professional SDK (ARMV4I)"
+							Name="Release|Windows Mobile 6 Standard SDK (ARMV4I)"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -11519,7 +11519,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Release|Windows Mobile 6 Standard SDK (ARMV4I)"
+							Name="Release|Windows Mobile 6 Professional SDK (ARMV4I)"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -11565,7 +11565,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Debug|Windows Mobile 6 Professional SDK (ARMV4I)"
+							Name="Debug|Windows Mobile 6 Standard SDK (ARMV4I)"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -11574,7 +11574,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Debug|Windows Mobile 6 Standard SDK (ARMV4I)"
+							Name="Debug|Windows Mobile 6 Professional SDK (ARMV4I)"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -11627,7 +11627,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Release|Windows Mobile 6 Professional SDK (ARMV4I)"
+							Name="Release|Windows Mobile 6 Standard SDK (ARMV4I)"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -11637,7 +11637,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Release|Windows Mobile 6 Standard SDK (ARMV4I)"
+							Name="Release|Windows Mobile 6 Professional SDK (ARMV4I)"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -11683,7 +11683,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Debug|Windows Mobile 6 Professional SDK (ARMV4I)"
+							Name="Debug|Windows Mobile 6 Standard SDK (ARMV4I)"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -11692,7 +11692,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Debug|Windows Mobile 6 Standard SDK (ARMV4I)"
+							Name="Debug|Windows Mobile 6 Professional SDK (ARMV4I)"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -11745,7 +11745,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Release|Windows Mobile 6 Professional SDK (ARMV4I)"
+							Name="Release|Windows Mobile 6 Standard SDK (ARMV4I)"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -11755,7 +11755,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Release|Windows Mobile 6 Standard SDK (ARMV4I)"
+							Name="Release|Windows Mobile 6 Professional SDK (ARMV4I)"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -11801,7 +11801,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Debug|Windows Mobile 6 Professional SDK (ARMV4I)"
+							Name="Debug|Windows Mobile 6 Standard SDK (ARMV4I)"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -11810,7 +11810,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Debug|Windows Mobile 6 Standard SDK (ARMV4I)"
+							Name="Debug|Windows Mobile 6 Professional SDK (ARMV4I)"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -11863,7 +11863,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Release|Windows Mobile 6 Professional SDK (ARMV4I)"
+							Name="Release|Windows Mobile 6 Standard SDK (ARMV4I)"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -11873,7 +11873,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Release|Windows Mobile 6 Standard SDK (ARMV4I)"
+							Name="Release|Windows Mobile 6 Professional SDK (ARMV4I)"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -11919,7 +11919,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Debug|Windows Mobile 6 Professional SDK (ARMV4I)"
+							Name="Debug|Windows Mobile 6 Standard SDK (ARMV4I)"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -11928,7 +11928,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Debug|Windows Mobile 6 Standard SDK (ARMV4I)"
+							Name="Debug|Windows Mobile 6 Professional SDK (ARMV4I)"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -11981,7 +11981,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Release|Windows Mobile 6 Professional SDK (ARMV4I)"
+							Name="Release|Windows Mobile 6 Standard SDK (ARMV4I)"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -11991,7 +11991,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Release|Windows Mobile 6 Standard SDK (ARMV4I)"
+							Name="Release|Windows Mobile 6 Professional SDK (ARMV4I)"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -12037,7 +12037,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Debug|Windows Mobile 6 Professional SDK (ARMV4I)"
+							Name="Debug|Windows Mobile 6 Standard SDK (ARMV4I)"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -12046,7 +12046,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Debug|Windows Mobile 6 Standard SDK (ARMV4I)"
+							Name="Debug|Windows Mobile 6 Professional SDK (ARMV4I)"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -12099,7 +12099,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Release|Windows Mobile 6 Professional SDK (ARMV4I)"
+							Name="Release|Windows Mobile 6 Standard SDK (ARMV4I)"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -12109,7 +12109,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Release|Windows Mobile 6 Standard SDK (ARMV4I)"
+							Name="Release|Windows Mobile 6 Professional SDK (ARMV4I)"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -12155,7 +12155,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Debug|Windows Mobile 6 Professional SDK (ARMV4I)"
+							Name="Debug|Windows Mobile 6 Standard SDK (ARMV4I)"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -12164,7 +12164,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Debug|Windows Mobile 6 Standard SDK (ARMV4I)"
+							Name="Debug|Windows Mobile 6 Professional SDK (ARMV4I)"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -12217,7 +12217,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Release|Windows Mobile 6 Professional SDK (ARMV4I)"
+							Name="Release|Windows Mobile 6 Standard SDK (ARMV4I)"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -12227,7 +12227,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Release|Windows Mobile 6 Standard SDK (ARMV4I)"
+							Name="Release|Windows Mobile 6 Professional SDK (ARMV4I)"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -12273,7 +12273,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Debug|Windows Mobile 6 Professional SDK (ARMV4I)"
+							Name="Debug|Windows Mobile 6 Standard SDK (ARMV4I)"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -12282,7 +12282,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Debug|Windows Mobile 6 Standard SDK (ARMV4I)"
+							Name="Debug|Windows Mobile 6 Professional SDK (ARMV4I)"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -12335,7 +12335,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Release|Windows Mobile 6 Professional SDK (ARMV4I)"
+							Name="Release|Windows Mobile 6 Standard SDK (ARMV4I)"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -12345,7 +12345,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Release|Windows Mobile 6 Standard SDK (ARMV4I)"
+							Name="Release|Windows Mobile 6 Professional SDK (ARMV4I)"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -12391,7 +12391,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Debug|Windows Mobile 6 Professional SDK (ARMV4I)"
+							Name="Debug|Windows Mobile 6 Standard SDK (ARMV4I)"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -12400,7 +12400,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Debug|Windows Mobile 6 Standard SDK (ARMV4I)"
+							Name="Debug|Windows Mobile 6 Professional SDK (ARMV4I)"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -12453,7 +12453,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Release|Windows Mobile 6 Professional SDK (ARMV4I)"
+							Name="Release|Windows Mobile 6 Standard SDK (ARMV4I)"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -12463,7 +12463,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Release|Windows Mobile 6 Standard SDK (ARMV4I)"
+							Name="Release|Windows Mobile 6 Professional SDK (ARMV4I)"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -12509,7 +12509,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Debug|Windows Mobile 6 Professional SDK (ARMV4I)"
+							Name="Debug|Windows Mobile 6 Standard SDK (ARMV4I)"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -12518,7 +12518,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Debug|Windows Mobile 6 Standard SDK (ARMV4I)"
+							Name="Debug|Windows Mobile 6 Professional SDK (ARMV4I)"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -12571,7 +12571,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Release|Windows Mobile 6 Professional SDK (ARMV4I)"
+							Name="Release|Windows Mobile 6 Standard SDK (ARMV4I)"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -12581,7 +12581,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Release|Windows Mobile 6 Standard SDK (ARMV4I)"
+							Name="Release|Windows Mobile 6 Professional SDK (ARMV4I)"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -12627,7 +12627,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Debug|Windows Mobile 6 Professional SDK (ARMV4I)"
+							Name="Debug|Windows Mobile 6 Standard SDK (ARMV4I)"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -12636,7 +12636,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Debug|Windows Mobile 6 Standard SDK (ARMV4I)"
+							Name="Debug|Windows Mobile 6 Professional SDK (ARMV4I)"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -12689,7 +12689,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Release|Windows Mobile 6 Professional SDK (ARMV4I)"
+							Name="Release|Windows Mobile 6 Standard SDK (ARMV4I)"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -12699,7 +12699,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Release|Windows Mobile 6 Standard SDK (ARMV4I)"
+							Name="Release|Windows Mobile 6 Professional SDK (ARMV4I)"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -12745,7 +12745,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Debug|Windows Mobile 6 Professional SDK (ARMV4I)"
+							Name="Debug|Windows Mobile 6 Standard SDK (ARMV4I)"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -12754,7 +12754,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Debug|Windows Mobile 6 Standard SDK (ARMV4I)"
+							Name="Debug|Windows Mobile 6 Professional SDK (ARMV4I)"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -12807,7 +12807,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Release|Windows Mobile 6 Professional SDK (ARMV4I)"
+							Name="Release|Windows Mobile 6 Standard SDK (ARMV4I)"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -12817,7 +12817,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Release|Windows Mobile 6 Standard SDK (ARMV4I)"
+							Name="Release|Windows Mobile 6 Professional SDK (ARMV4I)"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -12863,7 +12863,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Debug|Windows Mobile 6 Professional SDK (ARMV4I)"
+							Name="Debug|Windows Mobile 6 Standard SDK (ARMV4I)"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -12872,7 +12872,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Debug|Windows Mobile 6 Standard SDK (ARMV4I)"
+							Name="Debug|Windows Mobile 6 Professional SDK (ARMV4I)"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -12925,7 +12925,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Release|Windows Mobile 6 Professional SDK (ARMV4I)"
+							Name="Release|Windows Mobile 6 Standard SDK (ARMV4I)"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -12935,7 +12935,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Release|Windows Mobile 6 Standard SDK (ARMV4I)"
+							Name="Release|Windows Mobile 6 Professional SDK (ARMV4I)"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -12981,7 +12981,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Debug|Windows Mobile 6 Professional SDK (ARMV4I)"
+							Name="Debug|Windows Mobile 6 Standard SDK (ARMV4I)"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -12990,7 +12990,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Debug|Windows Mobile 6 Standard SDK (ARMV4I)"
+							Name="Debug|Windows Mobile 6 Professional SDK (ARMV4I)"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -13043,7 +13043,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Release|Windows Mobile 6 Professional SDK (ARMV4I)"
+							Name="Release|Windows Mobile 6 Standard SDK (ARMV4I)"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -13053,7 +13053,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Release|Windows Mobile 6 Standard SDK (ARMV4I)"
+							Name="Release|Windows Mobile 6 Professional SDK (ARMV4I)"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -13099,7 +13099,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Debug|Windows Mobile 6 Professional SDK (ARMV4I)"
+							Name="Debug|Windows Mobile 6 Standard SDK (ARMV4I)"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -13108,7 +13108,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Debug|Windows Mobile 6 Standard SDK (ARMV4I)"
+							Name="Debug|Windows Mobile 6 Professional SDK (ARMV4I)"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -13161,7 +13161,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Release|Windows Mobile 6 Professional SDK (ARMV4I)"
+							Name="Release|Windows Mobile 6 Standard SDK (ARMV4I)"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -13171,7 +13171,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Release|Windows Mobile 6 Standard SDK (ARMV4I)"
+							Name="Release|Windows Mobile 6 Professional SDK (ARMV4I)"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -13217,7 +13217,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Debug|Windows Mobile 6 Professional SDK (ARMV4I)"
+							Name="Debug|Windows Mobile 6 Standard SDK (ARMV4I)"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -13226,7 +13226,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Debug|Windows Mobile 6 Standard SDK (ARMV4I)"
+							Name="Debug|Windows Mobile 6 Professional SDK (ARMV4I)"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -13279,7 +13279,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Release|Windows Mobile 6 Professional SDK (ARMV4I)"
+							Name="Release|Windows Mobile 6 Standard SDK (ARMV4I)"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -13289,7 +13289,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Release|Windows Mobile 6 Standard SDK (ARMV4I)"
+							Name="Release|Windows Mobile 6 Professional SDK (ARMV4I)"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -13335,7 +13335,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Debug|Windows Mobile 6 Professional SDK (ARMV4I)"
+							Name="Debug|Windows Mobile 6 Standard SDK (ARMV4I)"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -13344,7 +13344,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Debug|Windows Mobile 6 Standard SDK (ARMV4I)"
+							Name="Debug|Windows Mobile 6 Professional SDK (ARMV4I)"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -13397,7 +13397,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Release|Windows Mobile 6 Professional SDK (ARMV4I)"
+							Name="Release|Windows Mobile 6 Standard SDK (ARMV4I)"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -13407,7 +13407,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Release|Windows Mobile 6 Standard SDK (ARMV4I)"
+							Name="Release|Windows Mobile 6 Professional SDK (ARMV4I)"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -13453,7 +13453,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Debug|Windows Mobile 6 Professional SDK (ARMV4I)"
+							Name="Debug|Windows Mobile 6 Standard SDK (ARMV4I)"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -13462,7 +13462,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Debug|Windows Mobile 6 Standard SDK (ARMV4I)"
+							Name="Debug|Windows Mobile 6 Professional SDK (ARMV4I)"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -13515,7 +13515,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Release|Windows Mobile 6 Professional SDK (ARMV4I)"
+							Name="Release|Windows Mobile 6 Standard SDK (ARMV4I)"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -13525,7 +13525,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Release|Windows Mobile 6 Standard SDK (ARMV4I)"
+							Name="Release|Windows Mobile 6 Professional SDK (ARMV4I)"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -13571,7 +13571,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Debug|Windows Mobile 6 Professional SDK (ARMV4I)"
+							Name="Debug|Windows Mobile 6 Standard SDK (ARMV4I)"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -13580,7 +13580,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Debug|Windows Mobile 6 Standard SDK (ARMV4I)"
+							Name="Debug|Windows Mobile 6 Professional SDK (ARMV4I)"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -13633,7 +13633,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Release|Windows Mobile 6 Professional SDK (ARMV4I)"
+							Name="Release|Windows Mobile 6 Standard SDK (ARMV4I)"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -13643,7 +13643,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Release|Windows Mobile 6 Standard SDK (ARMV4I)"
+							Name="Release|Windows Mobile 6 Professional SDK (ARMV4I)"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -13689,7 +13689,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Debug|Windows Mobile 6 Professional SDK (ARMV4I)"
+							Name="Debug|Windows Mobile 6 Standard SDK (ARMV4I)"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -13698,7 +13698,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Debug|Windows Mobile 6 Standard SDK (ARMV4I)"
+							Name="Debug|Windows Mobile 6 Professional SDK (ARMV4I)"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -13755,7 +13755,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Release|Windows Mobile 6 Professional SDK (ARMV4I)"
+							Name="Release|Windows Mobile 6 Standard SDK (ARMV4I)"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -13765,7 +13765,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Release|Windows Mobile 6 Standard SDK (ARMV4I)"
+							Name="Release|Windows Mobile 6 Professional SDK (ARMV4I)"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -13811,7 +13811,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Debug|Windows Mobile 6 Professional SDK (ARMV4I)"
+							Name="Debug|Windows Mobile 6 Standard SDK (ARMV4I)"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -13820,7 +13820,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Debug|Windows Mobile 6 Standard SDK (ARMV4I)"
+							Name="Debug|Windows Mobile 6 Professional SDK (ARMV4I)"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -13877,7 +13877,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Release|Windows Mobile 6 Professional SDK (ARMV4I)"
+							Name="Release|Windows Mobile 6 Standard SDK (ARMV4I)"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -13887,7 +13887,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Release|Windows Mobile 6 Standard SDK (ARMV4I)"
+							Name="Release|Windows Mobile 6 Professional SDK (ARMV4I)"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -13933,7 +13933,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Debug|Windows Mobile 6 Professional SDK (ARMV4I)"
+							Name="Debug|Windows Mobile 6 Standard SDK (ARMV4I)"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -13942,7 +13942,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Debug|Windows Mobile 6 Standard SDK (ARMV4I)"
+							Name="Debug|Windows Mobile 6 Professional SDK (ARMV4I)"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -14000,7 +14000,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="Release|Windows Mobile 6 Professional SDK (ARMV4I)"
+						Name="Release|Windows Mobile 6 Standard SDK (ARMV4I)"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -14010,7 +14010,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="Release|Windows Mobile 6 Standard SDK (ARMV4I)"
+						Name="Release|Windows Mobile 6 Professional SDK (ARMV4I)"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -14056,7 +14056,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="Debug|Windows Mobile 6 Professional SDK (ARMV4I)"
+						Name="Debug|Windows Mobile 6 Standard SDK (ARMV4I)"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -14065,7 +14065,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="Debug|Windows Mobile 6 Standard SDK (ARMV4I)"
+						Name="Debug|Windows Mobile 6 Professional SDK (ARMV4I)"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -14118,7 +14118,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="Release|Windows Mobile 6 Professional SDK (ARMV4I)"
+						Name="Release|Windows Mobile 6 Standard SDK (ARMV4I)"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -14128,7 +14128,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="Release|Windows Mobile 6 Standard SDK (ARMV4I)"
+						Name="Release|Windows Mobile 6 Professional SDK (ARMV4I)"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -14174,7 +14174,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="Debug|Windows Mobile 6 Professional SDK (ARMV4I)"
+						Name="Debug|Windows Mobile 6 Standard SDK (ARMV4I)"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -14183,7 +14183,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="Debug|Windows Mobile 6 Standard SDK (ARMV4I)"
+						Name="Debug|Windows Mobile 6 Professional SDK (ARMV4I)"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -14236,7 +14236,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="Release|Windows Mobile 6 Professional SDK (ARMV4I)"
+						Name="Release|Windows Mobile 6 Standard SDK (ARMV4I)"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -14246,7 +14246,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="Release|Windows Mobile 6 Standard SDK (ARMV4I)"
+						Name="Release|Windows Mobile 6 Professional SDK (ARMV4I)"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -14292,7 +14292,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="Debug|Windows Mobile 6 Professional SDK (ARMV4I)"
+						Name="Debug|Windows Mobile 6 Standard SDK (ARMV4I)"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -14301,7 +14301,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="Debug|Windows Mobile 6 Standard SDK (ARMV4I)"
+						Name="Debug|Windows Mobile 6 Professional SDK (ARMV4I)"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -14354,7 +14354,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="Release|Windows Mobile 6 Professional SDK (ARMV4I)"
+						Name="Release|Windows Mobile 6 Standard SDK (ARMV4I)"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -14364,7 +14364,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="Release|Windows Mobile 6 Standard SDK (ARMV4I)"
+						Name="Release|Windows Mobile 6 Professional SDK (ARMV4I)"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -14410,7 +14410,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="Debug|Windows Mobile 6 Professional SDK (ARMV4I)"
+						Name="Debug|Windows Mobile 6 Standard SDK (ARMV4I)"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -14419,7 +14419,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="Debug|Windows Mobile 6 Standard SDK (ARMV4I)"
+						Name="Debug|Windows Mobile 6 Professional SDK (ARMV4I)"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -14472,7 +14472,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="Release|Windows Mobile 6 Professional SDK (ARMV4I)"
+						Name="Release|Windows Mobile 6 Standard SDK (ARMV4I)"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -14482,7 +14482,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="Release|Windows Mobile 6 Standard SDK (ARMV4I)"
+						Name="Release|Windows Mobile 6 Professional SDK (ARMV4I)"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -14528,7 +14528,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="Debug|Windows Mobile 6 Professional SDK (ARMV4I)"
+						Name="Debug|Windows Mobile 6 Standard SDK (ARMV4I)"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -14537,7 +14537,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="Debug|Windows Mobile 6 Standard SDK (ARMV4I)"
+						Name="Debug|Windows Mobile 6 Professional SDK (ARMV4I)"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -14590,7 +14590,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="Release|Windows Mobile 6 Professional SDK (ARMV4I)"
+						Name="Release|Windows Mobile 6 Standard SDK (ARMV4I)"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -14600,7 +14600,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="Release|Windows Mobile 6 Standard SDK (ARMV4I)"
+						Name="Release|Windows Mobile 6 Professional SDK (ARMV4I)"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -14646,7 +14646,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="Debug|Windows Mobile 6 Professional SDK (ARMV4I)"
+						Name="Debug|Windows Mobile 6 Standard SDK (ARMV4I)"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -14655,7 +14655,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="Debug|Windows Mobile 6 Standard SDK (ARMV4I)"
+						Name="Debug|Windows Mobile 6 Professional SDK (ARMV4I)"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -14708,7 +14708,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="Release|Windows Mobile 6 Professional SDK (ARMV4I)"
+						Name="Release|Windows Mobile 6 Standard SDK (ARMV4I)"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -14718,7 +14718,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="Release|Windows Mobile 6 Standard SDK (ARMV4I)"
+						Name="Release|Windows Mobile 6 Professional SDK (ARMV4I)"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -14764,7 +14764,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="Debug|Windows Mobile 6 Professional SDK (ARMV4I)"
+						Name="Debug|Windows Mobile 6 Standard SDK (ARMV4I)"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -14773,7 +14773,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="Debug|Windows Mobile 6 Standard SDK (ARMV4I)"
+						Name="Debug|Windows Mobile 6 Professional SDK (ARMV4I)"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -14830,7 +14830,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="Release|Windows Mobile 6 Professional SDK (ARMV4I)"
+						Name="Release|Windows Mobile 6 Standard SDK (ARMV4I)"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -14840,7 +14840,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="Release|Windows Mobile 6 Standard SDK (ARMV4I)"
+						Name="Release|Windows Mobile 6 Professional SDK (ARMV4I)"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -14886,7 +14886,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="Debug|Windows Mobile 6 Professional SDK (ARMV4I)"
+						Name="Debug|Windows Mobile 6 Standard SDK (ARMV4I)"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -14895,7 +14895,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="Debug|Windows Mobile 6 Standard SDK (ARMV4I)"
+						Name="Debug|Windows Mobile 6 Professional SDK (ARMV4I)"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -14948,7 +14948,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="Release|Windows Mobile 6 Professional SDK (ARMV4I)"
+						Name="Release|Windows Mobile 6 Standard SDK (ARMV4I)"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -14958,7 +14958,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="Release|Windows Mobile 6 Standard SDK (ARMV4I)"
+						Name="Release|Windows Mobile 6 Professional SDK (ARMV4I)"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -15004,7 +15004,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="Debug|Windows Mobile 6 Professional SDK (ARMV4I)"
+						Name="Debug|Windows Mobile 6 Standard SDK (ARMV4I)"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -15013,7 +15013,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="Debug|Windows Mobile 6 Standard SDK (ARMV4I)"
+						Name="Debug|Windows Mobile 6 Professional SDK (ARMV4I)"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -15066,7 +15066,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="Release|Windows Mobile 6 Professional SDK (ARMV4I)"
+						Name="Release|Windows Mobile 6 Standard SDK (ARMV4I)"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -15076,7 +15076,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="Release|Windows Mobile 6 Standard SDK (ARMV4I)"
+						Name="Release|Windows Mobile 6 Professional SDK (ARMV4I)"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -15122,7 +15122,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="Debug|Windows Mobile 6 Professional SDK (ARMV4I)"
+						Name="Debug|Windows Mobile 6 Standard SDK (ARMV4I)"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -15131,7 +15131,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="Debug|Windows Mobile 6 Standard SDK (ARMV4I)"
+						Name="Debug|Windows Mobile 6 Professional SDK (ARMV4I)"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -15184,7 +15184,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="Release|Windows Mobile 6 Professional SDK (ARMV4I)"
+						Name="Release|Windows Mobile 6 Standard SDK (ARMV4I)"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -15194,7 +15194,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="Release|Windows Mobile 6 Standard SDK (ARMV4I)"
+						Name="Release|Windows Mobile 6 Professional SDK (ARMV4I)"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -15240,7 +15240,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="Debug|Windows Mobile 6 Professional SDK (ARMV4I)"
+						Name="Debug|Windows Mobile 6 Standard SDK (ARMV4I)"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -15249,7 +15249,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="Debug|Windows Mobile 6 Standard SDK (ARMV4I)"
+						Name="Debug|Windows Mobile 6 Professional SDK (ARMV4I)"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -15305,7 +15305,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Release|Windows Mobile 6 Professional SDK (ARMV4I)"
+							Name="Release|Windows Mobile 6 Standard SDK (ARMV4I)"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -15315,7 +15315,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Release|Windows Mobile 6 Standard SDK (ARMV4I)"
+							Name="Release|Windows Mobile 6 Professional SDK (ARMV4I)"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -15361,7 +15361,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Debug|Windows Mobile 6 Professional SDK (ARMV4I)"
+							Name="Debug|Windows Mobile 6 Standard SDK (ARMV4I)"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -15370,7 +15370,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Debug|Windows Mobile 6 Standard SDK (ARMV4I)"
+							Name="Debug|Windows Mobile 6 Professional SDK (ARMV4I)"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -15423,7 +15423,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Release|Windows Mobile 6 Professional SDK (ARMV4I)"
+							Name="Release|Windows Mobile 6 Standard SDK (ARMV4I)"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -15433,7 +15433,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Release|Windows Mobile 6 Standard SDK (ARMV4I)"
+							Name="Release|Windows Mobile 6 Professional SDK (ARMV4I)"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -15479,7 +15479,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Debug|Windows Mobile 6 Professional SDK (ARMV4I)"
+							Name="Debug|Windows Mobile 6 Standard SDK (ARMV4I)"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -15488,7 +15488,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Debug|Windows Mobile 6 Standard SDK (ARMV4I)"
+							Name="Debug|Windows Mobile 6 Professional SDK (ARMV4I)"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -15545,7 +15545,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Release|Windows Mobile 6 Professional SDK (ARMV4I)"
+							Name="Release|Windows Mobile 6 Standard SDK (ARMV4I)"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -15555,7 +15555,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Release|Windows Mobile 6 Standard SDK (ARMV4I)"
+							Name="Release|Windows Mobile 6 Professional SDK (ARMV4I)"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -15601,7 +15601,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Debug|Windows Mobile 6 Professional SDK (ARMV4I)"
+							Name="Debug|Windows Mobile 6 Standard SDK (ARMV4I)"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -15610,7 +15610,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Debug|Windows Mobile 6 Standard SDK (ARMV4I)"
+							Name="Debug|Windows Mobile 6 Professional SDK (ARMV4I)"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -15663,7 +15663,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Release|Windows Mobile 6 Professional SDK (ARMV4I)"
+							Name="Release|Windows Mobile 6 Standard SDK (ARMV4I)"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -15673,7 +15673,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Release|Windows Mobile 6 Standard SDK (ARMV4I)"
+							Name="Release|Windows Mobile 6 Professional SDK (ARMV4I)"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -15719,7 +15719,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Debug|Windows Mobile 6 Professional SDK (ARMV4I)"
+							Name="Debug|Windows Mobile 6 Standard SDK (ARMV4I)"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -15728,7 +15728,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Debug|Windows Mobile 6 Standard SDK (ARMV4I)"
+							Name="Debug|Windows Mobile 6 Professional SDK (ARMV4I)"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -15785,7 +15785,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Release|Windows Mobile 6 Professional SDK (ARMV4I)"
+							Name="Release|Windows Mobile 6 Standard SDK (ARMV4I)"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -15795,7 +15795,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Release|Windows Mobile 6 Standard SDK (ARMV4I)"
+							Name="Release|Windows Mobile 6 Professional SDK (ARMV4I)"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -15841,7 +15841,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Debug|Windows Mobile 6 Professional SDK (ARMV4I)"
+							Name="Debug|Windows Mobile 6 Standard SDK (ARMV4I)"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -15850,7 +15850,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Debug|Windows Mobile 6 Standard SDK (ARMV4I)"
+							Name="Debug|Windows Mobile 6 Professional SDK (ARMV4I)"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -15903,7 +15903,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Release|Windows Mobile 6 Professional SDK (ARMV4I)"
+							Name="Release|Windows Mobile 6 Standard SDK (ARMV4I)"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -15913,7 +15913,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Release|Windows Mobile 6 Standard SDK (ARMV4I)"
+							Name="Release|Windows Mobile 6 Professional SDK (ARMV4I)"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -15959,7 +15959,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Debug|Windows Mobile 6 Professional SDK (ARMV4I)"
+							Name="Debug|Windows Mobile 6 Standard SDK (ARMV4I)"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -15968,7 +15968,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Debug|Windows Mobile 6 Standard SDK (ARMV4I)"
+							Name="Debug|Windows Mobile 6 Professional SDK (ARMV4I)"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -16021,7 +16021,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Release|Windows Mobile 6 Professional SDK (ARMV4I)"
+							Name="Release|Windows Mobile 6 Standard SDK (ARMV4I)"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -16031,7 +16031,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Release|Windows Mobile 6 Standard SDK (ARMV4I)"
+							Name="Release|Windows Mobile 6 Professional SDK (ARMV4I)"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -16077,7 +16077,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Debug|Windows Mobile 6 Professional SDK (ARMV4I)"
+							Name="Debug|Windows Mobile 6 Standard SDK (ARMV4I)"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -16086,7 +16086,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Debug|Windows Mobile 6 Standard SDK (ARMV4I)"
+							Name="Debug|Windows Mobile 6 Professional SDK (ARMV4I)"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -16139,7 +16139,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Release|Windows Mobile 6 Professional SDK (ARMV4I)"
+							Name="Release|Windows Mobile 6 Standard SDK (ARMV4I)"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -16149,7 +16149,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Release|Windows Mobile 6 Standard SDK (ARMV4I)"
+							Name="Release|Windows Mobile 6 Professional SDK (ARMV4I)"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -16195,7 +16195,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Debug|Windows Mobile 6 Professional SDK (ARMV4I)"
+							Name="Debug|Windows Mobile 6 Standard SDK (ARMV4I)"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -16204,7 +16204,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Debug|Windows Mobile 6 Standard SDK (ARMV4I)"
+							Name="Debug|Windows Mobile 6 Professional SDK (ARMV4I)"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -16257,7 +16257,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Release|Windows Mobile 6 Professional SDK (ARMV4I)"
+							Name="Release|Windows Mobile 6 Standard SDK (ARMV4I)"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -16267,7 +16267,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Release|Windows Mobile 6 Standard SDK (ARMV4I)"
+							Name="Release|Windows Mobile 6 Professional SDK (ARMV4I)"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -16313,7 +16313,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Debug|Windows Mobile 6 Professional SDK (ARMV4I)"
+							Name="Debug|Windows Mobile 6 Standard SDK (ARMV4I)"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -16322,7 +16322,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Debug|Windows Mobile 6 Standard SDK (ARMV4I)"
+							Name="Debug|Windows Mobile 6 Professional SDK (ARMV4I)"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -16375,7 +16375,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Release|Windows Mobile 6 Professional SDK (ARMV4I)"
+							Name="Release|Windows Mobile 6 Standard SDK (ARMV4I)"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -16385,7 +16385,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Release|Windows Mobile 6 Standard SDK (ARMV4I)"
+							Name="Release|Windows Mobile 6 Professional SDK (ARMV4I)"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -16431,7 +16431,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Debug|Windows Mobile 6 Professional SDK (ARMV4I)"
+							Name="Debug|Windows Mobile 6 Standard SDK (ARMV4I)"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -16440,7 +16440,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Debug|Windows Mobile 6 Standard SDK (ARMV4I)"
+							Name="Debug|Windows Mobile 6 Professional SDK (ARMV4I)"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -16493,7 +16493,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Release|Windows Mobile 6 Professional SDK (ARMV4I)"
+							Name="Release|Windows Mobile 6 Standard SDK (ARMV4I)"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -16503,7 +16503,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Release|Windows Mobile 6 Standard SDK (ARMV4I)"
+							Name="Release|Windows Mobile 6 Professional SDK (ARMV4I)"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -16549,7 +16549,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Debug|Windows Mobile 6 Professional SDK (ARMV4I)"
+							Name="Debug|Windows Mobile 6 Standard SDK (ARMV4I)"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -16558,7 +16558,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Debug|Windows Mobile 6 Standard SDK (ARMV4I)"
+							Name="Debug|Windows Mobile 6 Professional SDK (ARMV4I)"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -16611,7 +16611,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Release|Windows Mobile 6 Professional SDK (ARMV4I)"
+							Name="Release|Windows Mobile 6 Standard SDK (ARMV4I)"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -16621,7 +16621,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Release|Windows Mobile 6 Standard SDK (ARMV4I)"
+							Name="Release|Windows Mobile 6 Professional SDK (ARMV4I)"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -16667,7 +16667,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Debug|Windows Mobile 6 Professional SDK (ARMV4I)"
+							Name="Debug|Windows Mobile 6 Standard SDK (ARMV4I)"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -16676,7 +16676,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Debug|Windows Mobile 6 Standard SDK (ARMV4I)"
+							Name="Debug|Windows Mobile 6 Professional SDK (ARMV4I)"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -16729,7 +16729,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Release|Windows Mobile 6 Professional SDK (ARMV4I)"
+							Name="Release|Windows Mobile 6 Standard SDK (ARMV4I)"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -16739,7 +16739,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Release|Windows Mobile 6 Standard SDK (ARMV4I)"
+							Name="Release|Windows Mobile 6 Professional SDK (ARMV4I)"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -16785,7 +16785,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Debug|Windows Mobile 6 Professional SDK (ARMV4I)"
+							Name="Debug|Windows Mobile 6 Standard SDK (ARMV4I)"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -16794,7 +16794,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Debug|Windows Mobile 6 Standard SDK (ARMV4I)"
+							Name="Debug|Windows Mobile 6 Professional SDK (ARMV4I)"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -16847,7 +16847,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Release|Windows Mobile 6 Professional SDK (ARMV4I)"
+							Name="Release|Windows Mobile 6 Standard SDK (ARMV4I)"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -16857,7 +16857,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Release|Windows Mobile 6 Standard SDK (ARMV4I)"
+							Name="Release|Windows Mobile 6 Professional SDK (ARMV4I)"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -16903,7 +16903,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Debug|Windows Mobile 6 Professional SDK (ARMV4I)"
+							Name="Debug|Windows Mobile 6 Standard SDK (ARMV4I)"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -16912,7 +16912,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Debug|Windows Mobile 6 Standard SDK (ARMV4I)"
+							Name="Debug|Windows Mobile 6 Professional SDK (ARMV4I)"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -16965,7 +16965,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Release|Windows Mobile 6 Professional SDK (ARMV4I)"
+							Name="Release|Windows Mobile 6 Standard SDK (ARMV4I)"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -16975,7 +16975,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Release|Windows Mobile 6 Standard SDK (ARMV4I)"
+							Name="Release|Windows Mobile 6 Professional SDK (ARMV4I)"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -17021,7 +17021,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Debug|Windows Mobile 6 Professional SDK (ARMV4I)"
+							Name="Debug|Windows Mobile 6 Standard SDK (ARMV4I)"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -17030,7 +17030,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Debug|Windows Mobile 6 Standard SDK (ARMV4I)"
+							Name="Debug|Windows Mobile 6 Professional SDK (ARMV4I)"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -17083,7 +17083,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Release|Windows Mobile 6 Professional SDK (ARMV4I)"
+							Name="Release|Windows Mobile 6 Standard SDK (ARMV4I)"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -17093,7 +17093,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Release|Windows Mobile 6 Standard SDK (ARMV4I)"
+							Name="Release|Windows Mobile 6 Professional SDK (ARMV4I)"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -17139,7 +17139,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Debug|Windows Mobile 6 Professional SDK (ARMV4I)"
+							Name="Debug|Windows Mobile 6 Standard SDK (ARMV4I)"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -17148,7 +17148,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Debug|Windows Mobile 6 Standard SDK (ARMV4I)"
+							Name="Debug|Windows Mobile 6 Professional SDK (ARMV4I)"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -17205,7 +17205,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Release|Windows Mobile 6 Professional SDK (ARMV4I)"
+							Name="Release|Windows Mobile 6 Standard SDK (ARMV4I)"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -17215,7 +17215,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Release|Windows Mobile 6 Standard SDK (ARMV4I)"
+							Name="Release|Windows Mobile 6 Professional SDK (ARMV4I)"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -17261,7 +17261,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Debug|Windows Mobile 6 Professional SDK (ARMV4I)"
+							Name="Debug|Windows Mobile 6 Standard SDK (ARMV4I)"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -17270,7 +17270,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Debug|Windows Mobile 6 Standard SDK (ARMV4I)"
+							Name="Debug|Windows Mobile 6 Professional SDK (ARMV4I)"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -17323,7 +17323,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Release|Windows Mobile 6 Professional SDK (ARMV4I)"
+							Name="Release|Windows Mobile 6 Standard SDK (ARMV4I)"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -17333,7 +17333,7 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Release|Windows Mobile 6 Standard SDK (ARMV4I)"
+							Name="Release|Windows Mobile 6 Professional SDK (ARMV4I)"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -17379,15 +17379,6 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Debug|Windows Mobile 6 Professional SDK (ARMV4I)"
-							>
-							<Tool
-								Name="VCCLCompilerTool"
-								AdditionalIncludeDirectories=""
-								UsePrecompiledHeader="0"
-							/>
-						</FileConfiguration>
-						<FileConfiguration
 							Name="Debug|Windows Mobile 6 Standard SDK (ARMV4I)"
 							>
 							<Tool
@@ -17396,6 +17387,39 @@
 								UsePrecompiledHeader="0"
 							/>
 						</FileConfiguration>
+						<FileConfiguration
+							Name="Debug|Windows Mobile 6 Professional SDK (ARMV4I)"
+							>
+							<Tool
+								Name="VCCLCompilerTool"
+								AdditionalIncludeDirectories=""
+								UsePrecompiledHeader="0"
+							/>
+						</FileConfiguration>
+					</File>
+				</Filter>
+				<Filter
+					Name="winObjects"
+					>
+					<File
+						RelativePath="..\..\src\c++\windows\vocl\WinContact.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\c++\windows\vocl\WinEvent.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\c++\windows\vocl\WinItem.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\c++\windows\vocl\WinRecipient.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\c++\windows\vocl\WinRecurrence.cpp"
+						>
 					</File>
 				</Filter>
 			</Filter>
@@ -18469,19 +18493,19 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\include\common\spdm\constants.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\include\common\spds\constants.h"
-				>
-			</File>
-			<File
 				RelativePath="..\..\src\include\common\http\constants.h"
 				>
 			</File>
 			<File
 				RelativePath="..\..\src\include\common\base\constants.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\include\common\spdm\constants.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\include\common\spds\constants.h"
 				>
 			</File>
 			<File
@@ -18545,19 +18569,19 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\include\common\http\errors.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\include\common\spds\errors.h"
-				>
-			</File>
-			<File
 				RelativePath="..\..\src\include\common\spdm\errors.h"
 				>
 			</File>
 			<File
 				RelativePath="..\..\src\include\common\base\errors.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\include\common\http\errors.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\include\common\spds\errors.h"
 				>
 			</File>
 			<File
