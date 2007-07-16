@@ -48,11 +48,14 @@ BOOL EstablishConnection() {
         LOG.info("Arleady connected");
         //We are already connected!
         return TRUE;
-    } else if (pdwStatus == CONNMGR_STATUS_PHONEOFF) {
+    } 
+#if _WIN32_WCE > 0x500     
+    else if (pdwStatus == CONNMGR_STATUS_PHONEOFF) {
         LOG.info("phone off");
         //We are already connected!
         return FALSE;
     }
+#endif
     else {
         LOG.debug("Not connected: try to connect...");
         //We are not connected, so lets try:
