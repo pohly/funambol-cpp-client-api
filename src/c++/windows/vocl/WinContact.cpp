@@ -18,6 +18,7 @@
 
 #include "vocl/WinContact.h"
 #include "vocl/VConverter.h"
+#include "vocl/constants.h"
 
 using namespace std;
 
@@ -67,15 +68,6 @@ wstring& WinContact::toString() {
     delete vp; vp = NULL;
 
 
-    // Folder path.
-    if (getProperty(L"Folder", element)) {
-        vp = new VProperty(L"X-FUNAMBOL-FOLDER");
-        vp->addValue(element.c_str());
-        vo->addProperty(vp);
-        delete vp; vp = NULL;
-    }
-
-
     // ------- Name -------
     // Add only if at least 1 property is supported, but include 
     // all elements in the right order.
@@ -97,13 +89,20 @@ wstring& WinContact::toString() {
     delete vp; vp = NULL;
 
 
-    if (getProperty(L"FileAs", element)) {
-        vp = new VProperty(L"FN", element.c_str());
+    if (getProperty(L"Birthday", element)) {
+        vp = new VProperty(L"BDAY", element.c_str());
         vo->addProperty(vp);
         delete vp; vp = NULL;
     }
-    if (getProperty(L"Birthday", element)) {
-        vp = new VProperty(L"BDAY", element.c_str());
+    if (getProperty(L"Body", element)) {
+        vp = new VProperty(L"NOTE", element.c_str());
+        vo->addProperty(vp);
+        delete vp; vp = NULL;
+    }
+    if (getProperty(L"Business2TelephoneNumber", element)) {
+        vp = new VProperty(L"TEL", element.c_str());
+        vp->addParameter(L"VOICE", NULL);
+        vp->addParameter(L"WORK",  NULL);
         vo->addProperty(vp);
         delete vp; vp = NULL;
     }
@@ -114,8 +113,40 @@ wstring& WinContact::toString() {
         vo->addProperty(vp);
         delete vp; vp = NULL;
     }
-    if (getProperty(L"CompanyName", element)) {
-        vp = new VProperty(L"ORG", element.c_str());
+    if (getProperty(L"BusinessTelephoneNumber", element)) {
+        vp = new VProperty(L"TEL", element.c_str());
+        vp->addParameter(L"VOICE", NULL);
+        vp->addParameter(L"WORK",  NULL);
+        vo->addProperty(vp);
+        delete vp; vp = NULL;
+    }
+    if (getProperty(L"BusinessWebPage", element)) {
+        vp = new VProperty(L"URL", element.c_str());
+        vp->addParameter(L"WORK",  NULL);
+        vo->addProperty(vp);
+        delete vp; vp = NULL;
+    }
+    if (getProperty(L"CarTelephoneNumber", element)) {
+        vp = new VProperty(L"TEL", element.c_str());
+        vp->addParameter(L"CAR",   NULL);
+        vp->addParameter(L"VOICE", NULL);
+        vo->addProperty(vp);
+        delete vp; vp = NULL;
+    }
+    if (getProperty(L"Categories", element)) {
+        vp = new VProperty(L"CATEGORIES", element.c_str());
+        vo->addProperty(vp);
+        delete vp; vp = NULL;
+    }
+    if (getProperty(L"CompanyMainTelephoneNumber", element)) {
+        vp = new VProperty(L"TEL", element.c_str());
+        vp->addParameter(L"WORK",  NULL);
+        vp->addParameter(L"PREF",  NULL);
+        vo->addProperty(vp);
+        delete vp; vp = NULL;
+    }
+    if (getProperty(L"FileAs", element)) {
+        vp = new VProperty(L"FN", element.c_str());
         vo->addProperty(vp);
         delete vp; vp = NULL;
     }
@@ -145,50 +176,22 @@ wstring& WinContact::toString() {
         delete vp; vp = NULL;
     }
 
-    if (getProperty(L"MobileTelephoneNumber", element)) {
-        vp = new VProperty(L"TEL", element.c_str());
-        vp->addParameter(L"CELL", NULL);
-        vo->addProperty(vp);
-        delete vp; vp = NULL;
-    }
-    if (getProperty(L"PagerNumber", element)) {
-        vp = new VProperty(L"TEL", element.c_str());
-        vp->addParameter(L"PAGER", NULL);
-        vo->addProperty(vp);
-        delete vp; vp = NULL;
-    }
-    if (getProperty(L"BusinessTelephoneNumber", element)) {
-        vp = new VProperty(L"TEL", element.c_str());
-        vp->addParameter(L"WORK", NULL);
-        vo->addProperty(vp);
-        delete vp; vp = NULL;
-    }
-    if (getProperty(L"Business2TelephoneNumber", element)) {
-        vp = new VProperty(L"TEL", element.c_str());
-        vp->addParameter(L"WORK", NULL);
-        vo->addProperty(vp);
-        delete vp; vp = NULL;
-    }
     if (getProperty(L"JobTitle", element)) {
         vp = new VProperty(L"TITLE", element.c_str());
         vo->addProperty(vp);
         delete vp; vp = NULL;
     }
-    if (getProperty(L"HomeTelephoneNumber", element)) {
-        vp = new VProperty(L"TEL", element.c_str());
-        vp->addParameter(L"HOME", NULL);
-        vo->addProperty(vp);
-        delete vp; vp = NULL;
-    }
     if (getProperty(L"Home2TelephoneNumber", element)) {
         vp = new VProperty(L"TEL", element.c_str());
-        vp->addParameter(L"HOME", NULL);
+        vp->addParameter(L"VOICE", NULL);
+        vp->addParameter(L"HOME",  NULL);
         vo->addProperty(vp);
         delete vp; vp = NULL;
     }
-    if (getProperty(L"CarTelephoneNumber", element)) {
+    if (getProperty(L"HomeTelephoneNumber", element)) {
         vp = new VProperty(L"TEL", element.c_str());
-        vp->addParameter(L"CAR", NULL);
+        vp->addParameter(L"VOICE", NULL);
+        vp->addParameter(L"HOME",  NULL);
         vo->addProperty(vp);
         delete vp; vp = NULL;
     }
@@ -199,14 +202,70 @@ wstring& WinContact::toString() {
         vo->addProperty(vp);
         delete vp; vp = NULL;
     }
+    if (getProperty(L"HomeWebPage", element)) {
+        vp = new VProperty(L"URL", element.c_str());
+        vp->addParameter(L"HOME", NULL);
+        vo->addProperty(vp);
+        delete vp; vp = NULL;
+    }
+    if (getProperty(L"Importance", element)) {
+        vp = new VProperty(L"PRIORITY", element.c_str());
+        vo->addProperty(vp);
+        delete vp; vp = NULL;
+    }
+    if (getProperty(L"MobileTelephoneNumber", element)) {
+        vp = new VProperty(L"TEL", element.c_str());
+        vp->addParameter(L"CELL", NULL);
+        vo->addProperty(vp);
+        delete vp; vp = NULL;
+    }
+    if (getProperty(L"NickName", element)) {
+        vp = new VProperty(L"NICKNAME", element.c_str());
+        vo->addProperty(vp);
+        delete vp; vp = NULL;
+    }
+    if (getProperty(L"OtherFaxNumber", element)) {
+        vp = new VProperty(L"TEL", element.c_str());
+        vp->addParameter(L"FAX", NULL);
+        vo->addProperty(vp);
+        delete vp; vp = NULL;
+    }
     if (getProperty(L"OtherTelephoneNumber", element)) {
         vp = new VProperty(L"TEL", element.c_str());
         vp->addParameter(L"VOICE", NULL);
         vo->addProperty(vp);
         delete vp; vp = NULL;
     }
-    if (getProperty(L"Categories", element)) {
-        vp = new VProperty(L"CATEGORIES", element.c_str());
+    if (getProperty(L"PagerNumber", element)) {
+        vp = new VProperty(L"TEL", element.c_str());
+        vp->addParameter(L"PAGER", NULL);
+        vo->addProperty(vp);
+        delete vp; vp = NULL;
+    }
+    if (getProperty(L"PrimaryTelephoneNumber", element)) {
+        vp = new VProperty(L"TEL", element.c_str());
+        vp->addParameter(L"PREF",  NULL);
+        vp->addParameter(L"VOICE", NULL);
+        vo->addProperty(vp);
+        delete vp; vp = NULL;
+    }
+    if (getProperty(L"Profession", element)) {
+        vp = new VProperty(L"ROLE", element.c_str());
+        vo->addProperty(vp);
+        delete vp; vp = NULL;
+    }
+    if (getProperty(L"Sensitivity", element)) {
+        long sensitivity = _wtoi(element.c_str());
+        vp = new VProperty(TEXT("CLASS"));
+        if(sensitivity == winPrivate) {
+            vp->addValue(TEXT("PRIVATE"));
+        }
+        else if (sensitivity == winConfidential) {
+            vp->addValue(TEXT("CONFIDENTIAL"));
+        }
+        else {  // default value
+            vp->addValue(TEXT("PUBLIC"));
+        }
         vo->addProperty(vp);
         delete vp; vp = NULL;
     }
@@ -215,11 +274,23 @@ wstring& WinContact::toString() {
         vo->addProperty(vp);
         delete vp; vp = NULL;
     }
-    if (getProperty(L"Body", element)) {
-        vp = new VProperty(L"NOTE", element.c_str());
+
+
+    // ----- ORG -----
+    // Add only if at least 1 property is supported, but include 
+    // all elements in the right order.
+    found = false;
+    vp = new VProperty(L"ORG");
+    if (getProperty(L"CompanyName",    element))   found = true;
+    vp->addValue(element.c_str());
+    if (getProperty(L"Department",     element))   found = true;
+    vp->addValue(element.c_str());
+    if (getProperty(L"OfficeLocation", element))   found = true;
+    vp->addValue(element.c_str());
+    if (found) {
         vo->addProperty(vp);
-        delete vp; vp = NULL;
     }
+    delete vp; vp = NULL;
 
 
     // ----- Address HOME -----
@@ -305,6 +376,101 @@ wstring& WinContact::toString() {
     delete vp; vp = NULL;
 
 
+    //
+    // ---- Funambol defined properties ----
+    // Support for other fields that don't have a
+    // specific correspondence in vCard.
+    if (getProperty(L"Anniversary", element)) {
+        vp = new VProperty(L"X-FUNAMBOL-ANNIVERSARY");
+        vp->addValue(element.c_str());
+        vo->addProperty(vp);
+        delete vp; vp = NULL;
+    }
+    if (getProperty(L"CallbackTelephoneNumber", element)) {
+        vp = new VProperty(L"TEL", element.c_str());
+        vp->addParameter(L"X-FUNAMBOL-CALLBACK",  NULL);
+        vo->addProperty(vp);
+        delete vp; vp = NULL;
+    }
+    if (getProperty(L"Children", element)) {
+        vp = new VProperty(L"X-FUNAMBOL-CHILDREN", element.c_str());
+        vo->addProperty(vp);
+        delete vp; vp = NULL;
+    }
+    if (getProperty(L"Companies", element)) {
+        vp = new VProperty(L"X-FUNAMBOL-COMPANIES", element.c_str());
+        vo->addProperty(vp);
+        delete vp; vp = NULL;
+    }
+    if (getProperty(L"Folder", element)) {
+        vp = new VProperty(L"X-FUNAMBOL-FOLDER");
+        vp->addValue(element.c_str());
+        vo->addProperty(vp);
+        delete vp; vp = NULL;
+    }
+    if (getProperty(L"Gender", element)) {
+        vp = new VProperty(L"X-FUNAMBOL-GENDER", element.c_str());
+        vo->addProperty(vp);
+        delete vp; vp = NULL;
+    }
+    if (getProperty(L"Hobby", element)) {
+        vp = new VProperty(L"X-FUNAMBOL-HOBBIES", element.c_str());
+        vo->addProperty(vp);
+        delete vp; vp = NULL;
+    }
+    if (getProperty(L"IMAddress", element)) {
+        vp = new VProperty(L"EMAIL", element.c_str());
+        vp->addParameter(L"INTERNET", NULL);
+        vp->addParameter(L"HOME",     NULL);
+        vp->addParameter(L"X-FUNAMBOL-INSTANTMESSENGER", NULL);
+        vo->addProperty(vp);
+        delete vp; vp = NULL;
+    }
+    if (getProperty(L"Initials", element)) {
+        vp = new VProperty(L"X-FUNAMBOL-INITIALS", element.c_str());
+        vo->addProperty(vp);
+        delete vp; vp = NULL;
+    }
+
+    if (getProperty(L"Language", element)) {
+        vp = new VProperty(L"X-FUNAMBOL-LANGUAGES", element.c_str());
+        vo->addProperty(vp);
+        delete vp; vp = NULL;
+    }
+    if (getProperty(L"ManagerName", element)) {
+        vp = new VProperty(L"X-FUNAMBOL-MANAGER", element.c_str());
+        vo->addProperty(vp);
+        delete vp; vp = NULL;
+    }
+    if (getProperty(L"Mileage", element)) {
+        vp = new VProperty(L"X-FUNAMBOL-MILEAGE", element.c_str());
+        vo->addProperty(vp);
+        delete vp; vp = NULL;
+    }
+    if (getProperty(L"RadioTelephoneNumber", element)) {
+        vp = new VProperty(L"TEL", element.c_str());
+        vp->addParameter(L"X-FUNAMBOL-RADIO", NULL);
+        vo->addProperty(vp);
+        delete vp; vp = NULL;
+    }
+    if (getProperty(L"Spouse", element)) {
+        vp = new VProperty(L"X-FUNAMBOL-SPOUSE", element.c_str());
+        vo->addProperty(vp);
+        delete vp; vp = NULL;
+    }
+    if (getProperty(L"Subject", element)) {
+        vp = new VProperty(L"X-FUNAMBOL-SUBJECT", element.c_str());
+        vo->addProperty(vp);
+        delete vp; vp = NULL;
+    }
+    if (getProperty(L"TelexNumber", element)) {
+        vp = new VProperty(L"TEL", element.c_str());
+        vp->addParameter(L"X-FUNAMBOL-TELEX", NULL);
+        vo->addProperty(vp);
+        delete vp; vp = NULL;
+    }
+
+
     vp = new VProperty(L"END", L"VCARD");
     vo->addProperty(vp);
     delete vp; vp = NULL;
@@ -355,8 +521,8 @@ int WinContact::parse(const wstring dataString) {
     //
     // Conversion: vObject -> WinContact.
     // ----------------------------------
-    // Note: properties found are added to the propertyMap, so that the 
-    //       map will contain only parsed properties after this process.
+    // Note: only properties found are added to the propertyMap, so that the 
+    //       map will contain only properties effectively received.
     //
     propertyMap.clear();
     for(int i=0; i < vo->propertiesCount(); i++) {
@@ -366,44 +532,22 @@ int WinContact::parse(const wstring dataString) {
         element = vp->getValue(0);      // the first value of the property.
 
 
-        if(!wcscmp(name, L"X-FUNAMBOL-FOLDER")) {
-            setProperty(L"Folder", element);
-        }
-
-		else if(!wcscmp(name, L"N")) {
+		if(!wcscmp(name, L"N")) {
 			if(element = vp->getPropComponent(1))  setProperty(L"LastName",   element);
 			if(element = vp->getPropComponent(2))  setProperty(L"FirstName",  element);
 			if(element = vp->getPropComponent(3))  setProperty(L"MiddleName", element);
 			if(element = vp->getPropComponent(4))  setProperty(L"Title",      element);
 			if(element = vp->getPropComponent(5))  setProperty(L"Suffix",     element);
 		}
-        else if(!wcscmp(name, L"FN")) {
-			setProperty(L"FileAs", element);
-        }
         else if(!wcscmp(name, L"BDAY")) {
 			setProperty(L"Birthday", element);
         }
-		else if(!wcscmp(name, L"TEL") && vp->containsParameter(L"WORK")) {
-            if (vp->containsParameter(L"FAX")) {
-				setProperty(L"BusinessFaxNumber", element);
-            }
-            else if (vp->containsParameter(L"CELL")) {
-                // ****???***
-            }
-            else {
-				if(businessTel == 0) {
-					setProperty(L"BusinessTelephoneNumber", element);
-					businessTel++;
-				}
-				else{
-					setProperty(L"Business2TelephoneNumber", element);
-				}
-            }
-		}
-		else if(!wcscmp(name, L"ORG")) {
-			setProperty(L"CompanyName", element);
-		}
-
+        else if(!wcscmp(name, L"NOTE")) {
+			setProperty(L"Body", element);
+        }
+        else if(!wcscmp(name, L"CATEGORIES")) {
+			setProperty(L"Categories", element);
+        }
 		else if(!wcscmp(name, L"EMAIL")) {
             // Mapping is:
             // Email1Address <-> EMAIL;INTERNET:
@@ -419,47 +563,84 @@ int WinContact::parse(const wstring dataString) {
 				setProperty(L"Email1Address", element);
             }
 		}
+        else if(!wcscmp(name, L"FN")) {
+			setProperty(L"FileAs", element);
+        }
+		else if(!wcscmp(name, L"ORG")) {
+			setProperty(L"CompanyName", element);
+		}
 
-        else if(!wcscmp(name, L"TEL") && vp->containsParameter(L"CELL")) {
-			setProperty(L"MobileTelephoneNumber", element);
+        //
+        // ---- Telephone fields ----
+        //
+        else if(!wcscmp(name, L"TEL")) {
+		    if(vp->containsParameter(L"WORK")) {
+                if (vp->containsParameter(L"FAX")) {
+				    setProperty(L"BusinessFaxNumber", element);
+                }
+                else {      // default, would be "else if (vp->containsParameter(L"VOICE"))"
+				    if(businessTel == 0) {
+					    setProperty(L"BusinessTelephoneNumber", element);
+					    businessTel++;
+				    }
+				    else{
+					    setProperty(L"Business2TelephoneNumber", element);
+				    }
+                }
+		    }
+            else if (vp->containsParameter(L"CAR")) {
+			    setProperty(L"CarTelephoneNumber", element);
+            }
+		    else if(vp->containsParameter(L"HOME")) {
+                if(vp->containsParameter(L"FAX")) {
+				    setProperty(L"HomeFaxNumber", element);
+                }
+                else {      // default, would be "else if (vp->containsParameter(L"VOICE"))"
+                    if(homeTel == 0) {
+				        setProperty(L"HomeTelephoneNumber", element);
+				        homeTel++;
+			        }
+                    else {
+				        setProperty(L"Home2TelephoneNumber", element);
+                    }
+                }
+            }
+            else if (vp->containsParameter(L"CELL")) {
+			    setProperty(L"MobileTelephoneNumber", element);
+            }
+            else if(vp->containsParameter(L"PAGER")) {
+			    setProperty(L"PagerNumber", element);
+            }
+            else if(vp->containsParameter(L"X-FUNAMBOL-CALLBACK")) {
+			    setProperty(L"CallbackTelephoneNumber", element);
+            }
+            else {      // default, would be "else if (vp->containsParameter(L"VOICE"))"
+			    setProperty(L"OtherTelephoneNumber", element);
+            }
         }
-        else if(!wcscmp(name, L"TEL") && vp->containsParameter(L"PAGER")) {
-			setProperty(L"PagerNumber", element);
-        }
+
         else if(!wcscmp(name, L"TITLE")) {
 			setProperty(L"JobTitle", element);
         }
-		else if(!wcscmp(name, L"TEL") && vp->containsParameter(L"HOME")) {
-            if(vp->containsParameter(L"FAX")) {
-				setProperty(L"HomeFaxNumber", element);
-            }
-            else if(vp->containsParameter(L"CELL")) {
-            }
-			else if(homeTel == 0) {
-				setProperty(L"HomeTelephoneNumber", element);
-				homeTel++;
-			}
-            else {
-				setProperty(L"Home2TelephoneNumber", element);
-            }
-		}
 
-        else if(!wcscmp(name, L"TEL") && vp->containsParameter(L"CAR")) {
-			setProperty(L"CarTelephoneNumber", element);
-        }
-        else if(!wcscmp(name, L"TEL") && vp->containsParameter(L"VOICE")) {
-			setProperty(L"OtherTelephoneNumber", element);
-        }
-        else if(!wcscmp(name, L"CATEGORIES")) {
-			setProperty(L"Categories", element);
-        }
+        //
+        // ---- URL fields ----
+        //
         else if(!wcscmp(name, L"URL")) {
-			setProperty(L"WebPage", element);
-        }
-        else if(!wcscmp(name, L"NOTE")) {
-			setProperty(L"Body", element);
+            if (vp->containsParameter(L"WORK")) {
+			    setProperty(L"BusinessWebPage", element);
+            }
+            else if(vp->containsParameter(L"HOME")) {
+			    setProperty(L"HomeWebPage", element);
+            }
+            else {
+			    setProperty(L"WebPage", element);
+            }
         }
 
+        //
+        // ---- ADR fields ----
+        //
         else if(!wcscmp(name, L"ADR")) {
 			if(vp->containsParameter(L"HOME")) {
 				if(element = vp->getPropComponent(1))  setProperty(L"HomeAddressPostOfficeBox", element);
@@ -488,6 +669,26 @@ int WinContact::parse(const wstring dataString) {
 				if(element = vp->getPropComponent(6))  setProperty(L"OtherAddressPostalCode",    element);
 				if(element = vp->getPropComponent(7))  setProperty(L"OtherAddressCountry",       element);
 			}
+        }
+
+        //
+        // ---- Funambol defined properties ----
+        //
+        else if(!wcscmp(name, L"X-FUNAMBOL-ANNIVERSARY")) {
+			setProperty(L"Anniversary", element);
+        }
+		else if(!wcscmp(name, L"X-FUNAMBOL-CHILDREN")) {
+			setProperty(L"Children", element);
+		}
+		else if(!wcscmp(name, L"X-FUNAMBOL-COMPANIES")) {
+			setProperty(L"Companies", element);
+		}
+        else if(!wcscmp(name, L"X-FUNAMBOL-FOLDER")) {
+            setProperty(L"Folder", element);
+        }
+
+        else {
+            //??
         }
     }
 
