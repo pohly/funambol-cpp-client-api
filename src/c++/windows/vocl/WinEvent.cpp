@@ -121,8 +121,11 @@ wstring& WinEvent::toString() {
         vp = new VProperty(TEXT("CLASS"));
         if(sensitivity == winPrivate) {
             vp->addValue(TEXT("PRIVATE"));
-        } 
-        else {
+        }
+        else if (sensitivity == winConfidential) {
+            vp->addValue(TEXT("CONFIDENTIAL"));
+        }
+        else {  // default value
             vp->addValue(TEXT("PUBLIC"));
         }
         vo->addProperty(vp);
