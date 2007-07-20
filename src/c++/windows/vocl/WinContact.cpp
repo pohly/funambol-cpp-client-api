@@ -545,6 +545,9 @@ int WinContact::parse(const wstring dataString) {
         else if(!wcscmp(name, L"NOTE")) {
 			setProperty(L"Body", element);
         }
+        else if(!wcscmp(name, L"CLASS")) {
+			setProperty(L"Sensitivity", element);
+        }
         else if(!wcscmp(name, L"CATEGORIES")) {
 			setProperty(L"Categories", element);
         }
@@ -554,7 +557,12 @@ int WinContact::parse(const wstring dataString) {
             // Email2Address <-> EMAIL;INTERNET;HOME:
             // Email3Address <-> EMAIL;INTERNET;WORK:
 			if (vp->containsParameter(L"HOME")) {
-				setProperty(L"Email2Address", element);
+                if (vp->containsParameter(L"X-FUNAMBOL-INSTANTMESSENGER")) {
+                    setProperty(L"IMAddress", element);
+                }
+                else {
+				    setProperty(L"Email2Address", element);
+                }
 			}
 			else if (vp->containsParameter(L"WORK")) {
 				setProperty(L"Email3Address", element);
@@ -566,9 +574,20 @@ int WinContact::parse(const wstring dataString) {
         else if(!wcscmp(name, L"FN")) {
 			setProperty(L"FileAs", element);
         }
+        else if(!wcscmp(name, L"NICKNAME")) {
+			setProperty(L"NickName", element);
+        }
+        else if(!wcscmp(name, L"PRIORITY")) {
+			setProperty(L"Importance", element);
+        }
 		else if(!wcscmp(name, L"ORG")) {
-			setProperty(L"CompanyName", element);
+            if(element = vp->getPropComponent(1))  setProperty(L"CompanyName",    element);
+			if(element = vp->getPropComponent(2))  setProperty(L"Department",     element);
+            if(element = vp->getPropComponent(2))  setProperty(L"OfficeLocation", element);
 		}
+        else if(!wcscmp(name, L"ROLE")) {
+			setProperty(L"Profession", element);
+        }
 
         //
         // ---- Telephone fields ----
@@ -577,6 +596,9 @@ int WinContact::parse(const wstring dataString) {
 		    if(vp->containsParameter(L"WORK")) {
                 if (vp->containsParameter(L"FAX")) {
 				    setProperty(L"BusinessFaxNumber", element);
+                }
+                else if (vp->containsParameter(L"PREF")) {
+                    setProperty(L"CompanyMainTelephoneNumber", element);
                 }
                 else {      // default, would be "else if (vp->containsParameter(L"VOICE"))"
 				    if(businessTel == 0) {
@@ -608,11 +630,20 @@ int WinContact::parse(const wstring dataString) {
             else if (vp->containsParameter(L"CELL")) {
 			    setProperty(L"MobileTelephoneNumber", element);
             }
+            else if (vp->containsParameter(L"FAX")) {
+			    setProperty(L"OtherFaxNumber", element);
+            }
             else if(vp->containsParameter(L"PAGER")) {
 			    setProperty(L"PagerNumber", element);
             }
+            else if (vp->containsParameter(L"PREF")) {
+                setProperty(L"PrimaryTelephoneNumber", element);
+            }
             else if(vp->containsParameter(L"X-FUNAMBOL-CALLBACK")) {
 			    setProperty(L"CallbackTelephoneNumber", element);
+            }
+            else if(vp->containsParameter(L"X-FUNAMBOL-RADIO")) {
+			    setProperty(L"RadioTelephoneNumber", element);
             }
             else {      // default, would be "else if (vp->containsParameter(L"VOICE"))"
 			    setProperty(L"OtherTelephoneNumber", element);
@@ -686,9 +717,36 @@ int WinContact::parse(const wstring dataString) {
         else if(!wcscmp(name, L"X-FUNAMBOL-FOLDER")) {
             setProperty(L"Folder", element);
         }
+        else if(!wcscmp(name, L"X-FUNAMBOL-GENDER")) {
+            setProperty(L"Gender", element);
+        }
+        else if(!wcscmp(name, L"X-FUNAMBOL-HOBBIES")) {
+            setProperty(L"Hobby", element);
+        }
+        else if(!wcscmp(name, L"X-FUNAMBOL-INITIALS")) {
+            setProperty(L"Initials", element);
+        }
+        else if(!wcscmp(name, L"X-FUNAMBOL-LANGUAGES")) {
+            setProperty(L"Language", element);
+        }
+        else if(!wcscmp(name, L"X-FUNAMBOL-MANAGER")) {
+            setProperty(L"ManagerName", element);
+        }
+        else if(!wcscmp(name, L"X-FUNAMBOL-MILEAGE")) {
+            setProperty(L"Mileage", element);
+        }
+        else if(!wcscmp(name, L"X-FUNAMBOL-SPOUSE")) {
+            setProperty(L"Spouse", element);
+        }
+        else if(!wcscmp(name, L"X-FUNAMBOL-SUBJECT")) {
+            setProperty(L"Subject", element);
+        }
+        else if(!wcscmp(name, L"X-FUNAMBOL-TELEX")) {
+            setProperty(L"TelexNumber", element);
+        }
 
         else {
-            //??
+            // Property not supported: log a warning?
         }
     }
 
