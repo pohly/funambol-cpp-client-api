@@ -1,3 +1,10 @@
+2007-07-19
+    - toccy: improved parser/formatter of vCard for windows clients (WinContact)
+
+2007-07-11
+    - toccy: first add: WinObject classes used by Windows clients to manage vCard and vCal
+    - toccy: added 'stringUtils.cpp' and 'timeUtils' utils functions for Windows system
+
 2007-06-22
     - toccy: win32 and winmobile source files has been unified under 'windows' dir.
              WinTransportAgent reworked to be used both by Win32 and Winmobile plugins.
