@@ -87,7 +87,8 @@ bool VProperty::removeValue(const int index) {
 
 	bool ret = false;
 	if (values != NULL) {
-		ret = values->remove(index);
+		values->removeElementAt(index);
+                ret = true;
     }
 	return ret;
 }
@@ -160,7 +161,7 @@ void VProperty::removeParameter(WCHAR* paramName) {
             WKeyValuePair *parameter;
             parameter = (WKeyValuePair* )parameters->get(i);
             if(!wcscmp(parameter->getKey(), paramName)) {
-                parameters->remove(i);
+                parameters->removeElementAt(i);
                 break;
             }
         }

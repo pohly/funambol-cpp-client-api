@@ -48,8 +48,11 @@ struct Element {
 class ArrayList {
 	private:
 	    Element* head;
+        Element* lastElement;
 
         Element* iterator;
+
+        int count;
 
         ArrayList& set (const ArrayList & other);
 
@@ -167,7 +170,7 @@ class ArrayList {
          */
         ArrayList& operator= (const ArrayList &v) EXTRA_SECTION_00;
 
-		bool remove(int index) EXTRA_SECTION_00;
+
         /**
         * Clones the arrayList a return a pointer to a new one.
         */

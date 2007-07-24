@@ -150,14 +150,14 @@ void SyncSourceReport::addItem(const char* target, const char* command, const WC
 
 
     // If the element is already present -> no add, only replace status with the new one.
-    ItemReport* ie = NULL;
+  /*  ItemReport* ie = NULL;
     for (int i=0; i<list->size(); i++) {
         ie = getItemReport(target, command, i);
         if ( !wcscmp(element.getId(), ie->getId()) ) {
             ie->setStatus(status);
             return;
         }
-    }
+    }*/
 
     // If here, element is new -> add.
     list->add(element);

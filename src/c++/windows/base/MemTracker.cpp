@@ -48,14 +48,14 @@ void MemTracker::removeTrack(DWORD addr) {
 		return;
 
     if ( addr == ((AllocInfo*)allocList.front())->address ) {
-        allocList.remove(0);
+        allocList.removeElementAt(0);
         return;
     }
     else {
         int i;
 	    for (i=1; i<size; i++) {
             if ( addr == ((AllocInfo*)allocList.next())->address ) {
-                allocList.remove(i);
+                allocList.removeElementAt(i);
 			    break;
             }
 	    }

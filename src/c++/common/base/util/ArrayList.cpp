@@ -31,11 +31,13 @@
  * such as the C++ new operator)
  */
 
-ArrayList::ArrayList() : head(0), iterator(0) {
+ArrayList::ArrayList() : head(0), iterator(0), lastElement(0) {
+    count = 0;
 }
 
 ArrayList::ArrayList(const ArrayList &other) {
-    head = iterator = 0;
+    count = 0;
+    head = iterator = lastElement = 0;
     for (Element *p = other.head; p; p = p->n) {
         add( *(p->e) );
     }
@@ -79,12 +81,18 @@ int ArrayList::add(int index, ArrayElement& element) {
     newElement->e = element.clone();
     newElement->n = NULL;
 
-    //
+    Element* e;
+    if (index == s) {
+        // Inserting the new element at the end
+        e = lastElement;
+
+    }
+    else {
     // Inserting the new element at the index-th position
-    //
-    Element* e = head;
+        e = head;
     for (int i=0; i<index-1; ++i) {
         e = e->n;
+    }
     }
 
     if (e == NULL || index == 0) {
@@ -94,6 +102,10 @@ int ArrayList::add(int index, ArrayElement& element) {
         newElement->n = head;
         head = newElement;
 
+        if (e == NULL) {
+            lastElement = newElement;
+        }
+        count++;
         return index;
     }
 
@@ -108,7 +120,10 @@ int ArrayList::add(int index, ArrayElement& element) {
         // Insertion at the end of the array
         //
         e->n = newElement;
+        lastElement = newElement;
     }
+
+    count++;
 
     return index;
 }
@@ -166,6 +181,10 @@ int ArrayList::removeElementAt(int index) {
     if (e->n) {
         after = e->n;
     }
+    else {
+        // (e->n = NULL) means that 'e' is the last one
+        lastElement = before;
+    }
 
     delete e;
     e = NULL;
@@ -176,6 +195,7 @@ int ArrayList::removeElementAt(int index) {
         head = after;
     }
 
+    count--;
     return index;
 }
 
@@ -191,7 +211,9 @@ void ArrayList::clear()
         delete p;
         p = head;
     }
+    count = 0;
     head = NULL;
+    lastElement = NULL;
 }
 
 /**
@@ -220,14 +242,15 @@ ArrayElement* ArrayList::get(int index) {
  * Returns the array size.
  */
 int ArrayList::size() {
-    Element *e = head;
+/*    Element *e = head;
     int i = 0;
     while (e) {
         ++i;
         e = e->n;
     }
 
-    return i;
+    return i;*/
+    return count;
 }
 
 ArrayElement* ArrayList::front() {
@@ -288,46 +311,3 @@ ArrayList* ArrayList::clone() {
 
 }
 
-bool ArrayList::remove(int index){
-	int s = size();
-	if ((index<0) || (index>=s)) {
-		return false;
-	}
-
-	Element* e = head;
-	Element* beforeIndex;
-	Element* indexElement;
-	Element* afterIndex;
-
-	if (index==0){
-		if(s == 1){
-			delete head;
-			head = NULL;
-		}
-		else{
-			afterIndex = head->n;
-			delete head;
-			head = afterIndex;
-		}
-		return true;
-	}
-
-	for(int i=0; i<index-1; ++i) {
-		e = e->n;
-	}
-
-	beforeIndex = e;
-	indexElement = e->n;
-	if (index != s-1){
-		afterIndex = indexElement->n;
-		beforeIndex->n = afterIndex;
-		delete indexElement;
-	}
-	else
-	{
-		beforeIndex->n = NULL;
-		delete indexElement;
-	}
-
-	return true;
-}
