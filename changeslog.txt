@@ -1,3 +1,14 @@
+2007-07-24
+    - teo:   ArrayList modified to improve the performance.
+             The method size() return a value that is incremented 
+             and decremented everytime there's an add or a remove.
+             The method add is also improved when there is an add in the last 
+             element (a sort of pushback)
+             Removed the remove method now there's only the method removeElementAt(index)
+             in SyncSourceReport in the SyncSourceReport::addItem method was removed a for 
+             cycle that check if there is a element clone of the one to add. 
+             This for cycle is very negative for the performance and useless.
+             
 2007-07-19
     - toccy: improved parser/formatter of vCard for windows clients (WinContact)
 
