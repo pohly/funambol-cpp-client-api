@@ -22,10 +22,6 @@
 
 // Use these defines to activate the desired test code
 
-// Set this to create a test DM tree using the code in settings.cpp
-// Warning: the config will be overridden at each run !
-#define DEBUG_SETTINGS       1
-
 // Test a simple sync with one sync source
 #define TEST_SYNCSOURCE      1
 

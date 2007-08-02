@@ -79,13 +79,6 @@ void createConfig(DMTClientConfig& config);
 #define DEVICE_ID       "Funambol Win32 Example"
 
 
-// Define DEBUG_SETTINGS in your project to create a default configuration
-// tree for the test client. WARNING: it will override any previous setting!
-//
-#ifdef DEBUG_SETTINGS
-int settings(const char *root);
-#endif
-
 #ifdef _WIN32_WCE
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLine, int nShowCmd ) {
 #else
@@ -111,14 +104,6 @@ int main(int argc, char** argv) {
 
     // Set flag to the new value
     _CrtSetDbgFlag( tmpFlag );
-#endif
-
-#ifdef DEBUG_SETTINGS
-    if ( settings(APPLICATION_URI) ){
-        sprintf(logmsg, "Error %d setting config paramaters.", lastErrorCode);
-        LOG.error(logmsg);
-        return lastErrorCode;
-    }
 #endif
 
 #ifdef TEST_ENCODE
@@ -173,23 +158,21 @@ int main(int argc, char** argv) {
     // Create the SyncSource passing its name and its config.
     //
     TestSyncSource source(WSOURCE_NAME, config.getSyncSourceConfig(SOURCE_NAME));
-    SyncSource* ssArray[2];
-    ssArray[0] = &source;
-    ssArray[1] = NULL;
+    SyncSource* ssArray[] = { &source, NULL };
 
     //
-    // Create the SyncClient passing the config.
+    // Create the SyncClient .
     //
     SyncClient sampleClient;
 
-    // SYNC!
+    // Start the sync!
     if( sampleClient.sync(config, ssArray) ) {
         LOG.error("Error in sync.");
     }
 
     // Print sync results.
     StringBuffer res;
-	sampleClient.getSyncReport()->toString(res);
+    sampleClient.getSyncReport()->toString(res);
     printf("\n%s", res.c_str());
 
     // Save config to registry.
