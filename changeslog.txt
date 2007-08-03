@@ -1,3 +1,12 @@
+2007-08-03
+    - magi:  Added WinContactSif class. It is used to handle the SIF properties in a different
+             way. So it is possible to handle also other likes Photo.
+             Commented code in the Converter class for the b64 binary handling
+             Added in Property class the way to set a property without any conversion
+             WinContact: added photo handling in vacard. Modified the returned value in
+             toString method        
+             WinItem: added the crc encode function
+             
 2007-07-24
     - teo:   ArrayList modified to improve the performance.
              The method size() return a value that is incremented 

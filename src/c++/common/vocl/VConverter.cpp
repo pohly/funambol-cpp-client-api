@@ -197,7 +197,8 @@ bool VConverter::readFieldBody(WCHAR* buffer, VProperty* vprop) {
     wcsncpy(allValues, buffer, len);
     allValues[len] = 0;
 
-
+    /* IT IS NOT POSSIBLE TO DECODE BASE64 PARAMETERS IN A WCHAR
+    AND TAKE THE LENGHT OF A BINARY!!
     //
     // If needed, decode QP string and copy to 'allValues'.
     //
@@ -250,7 +251,7 @@ bool VConverter::readFieldBody(WCHAR* buffer, VProperty* vprop) {
             goto finally;
         }
     }
-
+    */
     // This is a buffer for each single value
     value = new WCHAR[len + 1];
     wcscpy(value, TEXT(""));

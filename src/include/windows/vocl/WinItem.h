@@ -65,10 +65,12 @@ protected:
      *                     filled by parsers of derived classes. Client should call getProperty()
      *                     for each property he wants to retrieve.
      */
-    map<wstring,wstring> propertyMap;
+    
 
 
 public:
+    
+    map<wstring,wstring> propertyMap;
 
     /// Default Constructor
     WinItem();
@@ -114,12 +116,19 @@ public:
      */
     wstring& getPropertyRef(const wstring propertyName, bool* found);
 
+    void removeElement(wstring key);
 
     /// Reset the propertyMap (clear all rows).
     void resetPropertyMap();
 
     /// Reset all fields values of the propertyMap (only values).
     void resetAllValues();
+
+    /**
+    * Return the crc value of the internal map with all values.
+    * It uses only the values of the map not the key
+    */
+    long getCRC();
 };
 
 /** @} */

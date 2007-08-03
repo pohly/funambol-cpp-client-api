@@ -70,18 +70,17 @@ public:
      * @param dataString  input vCard string to be parsed
      * @return            0 if no errors
      */
-    int parse(const wstring dataString);
-
+    virtual int parse(const wstring dataString);
+   
     /**
      * Format and return a vCard string from the propertyMap.
      * Not supported properties are ignored and so not formatted 
      * as they don't have a correspondence in propertyMap.
      * @return  the vCard string formatted, reference to internal wstring
      */
-    wstring& toString();
-
+    virtual wstring toString();     
+    
 };
-
 /** @} */
 /** @endcond */
 #endif

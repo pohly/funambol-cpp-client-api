@@ -267,34 +267,47 @@ WCHAR* VProperty::toString(WCHAR* version) {
     if (!name){
         goto finally;
     }
+    
+    bool isToFormatValue = true;
+
+    if (parameterCount()>0 && containsParameter(TEXT("CONTENT-VALUE"))) {
+        WCHAR* parVal = getParameterValue(TEXT("CONTENT-VALUE"));
+        if (parVal != NULL && wcscmp(parVal, TEXT("UNCHANGED")) == 0) 
+            isToFormatValue = false;
+        
+    }
 
     // Set encoding (QP/B64) parameter if necessary
     // QP encoding not allowed for vCard 3.0 (RFC 2426)
     if (is_30) {
-        if(!equalsEncoding(TEXT("BASE64")) &&
-           !equalsEncoding(TEXT("B")) &&
-           !equalsEncoding(TEXT("b")) ) {
-            for (int i=0; i<valueCount(); i++) {
-                char* charValue = toMultibyte(getValue(i));
-                if (encodingIsNeed(charValue)) {
-                    addParameter(TEXT("ENCODING"), TEXT("b"));
-                    delete [] charValue;
-                    break;
+        if (isToFormatValue) {
+            if(!equalsEncoding(TEXT("BASE64")) &&
+               !equalsEncoding(TEXT("B")) &&
+               !equalsEncoding(TEXT("b")) ) {
+                for (int i=0; i<valueCount(); i++) {
+                    char* charValue = toMultibyte(getValue(i));
+                    if (encodingIsNeed(charValue)) {
+                        addParameter(TEXT("ENCODING"), TEXT("b"));
+                        delete [] charValue;
+                        break;
+                    }
                 }
             }
         }
     }
-    else {
-        if (!equalsEncoding(TEXT("QUOTED-PRINTABLE")) ) {
-            for (int i=0; i<valueCount(); i++) {
-                char* charValue = toMultibyte(getValue(i));
-                if (encodingIsNeed(charValue)) {
-                    addParameter(TEXT("ENCODING"), TEXT("QUOTED-PRINTABLE"));
-	                addParameter(TEXT("CHARSET"), TEXT("UTF-8"));
+    else {               
+        if (isToFormatValue) {
+            if (!equalsEncoding(TEXT("QUOTED-PRINTABLE")) ) {
+                for (int i=0; i<valueCount(); i++) {
+                    char* charValue = toMultibyte(getValue(i));
+                    if (encodingIsNeed(charValue)) {
+                        addParameter(TEXT("ENCODING"), TEXT("QUOTED-PRINTABLE"));
+	                    addParameter(TEXT("CHARSET"), TEXT("UTF-8"));
+                        delete [] charValue;
+                        break;
+                    }
                     delete [] charValue;
-                    break;
                 }
-                delete [] charValue;
             }
         }
     }
@@ -324,6 +337,10 @@ WCHAR* VProperty::toString(WCHAR* version) {
                 if (!wcscmp(parameter->getKey(), TEXT("GROUP"))) {
                     continue;
                 }
+                // for the custom value 
+                if (!wcscmp(parameter->getKey(), TEXT("CONTENT-VALUE"))) {
+                    continue;
+                }
                 propertyString.append(TEXT(";"));
                 propertyString.append(parameter->getKey());
 		    }
@@ -340,64 +357,81 @@ WCHAR* VProperty::toString(WCHAR* version) {
     propertyString.append(TEXT(":"));
     if(valueCount()>0) {
         WString valueString = TEXT("");
+        
+        if (isToFormatValue) {
+            // Get all values in one single string
+            WCHAR *value, *valueConv;
+            for (int i=0; i<valueCount(); i++) {
+                if (i>0) {
+                    valueString.append(TEXT(";"));
+                }
+                value = getValue(i);
 
+                // Escape special chars - based on version (";"  "\", ",")
+                valueConv = escapeSpecialChars(value, version);
 
-        // Get all values in one single string
-        WCHAR *value, *valueConv;
-        for (int i=0; i<valueCount(); i++) {
-            if (i>0) {
-                valueString.append(TEXT(";"));
+                valueString.append(valueConv);
+                delete [] valueConv;
             }
-            value = getValue(i);
+        } else { 
+            
+            WCHAR *value;
+            for (int i=0; i<valueCount(); i++) {
+                if (i>0) {
+                    valueString.append(TEXT(";"));
+                }
+                value = getValue(i);         
+                if (i == 0 && (value != NULL) && wcslen(value) > 0 && (wcscmp(name, TEXT("PHOTO")) == 0)) {
+                    valueString.append(TEXT("\r\n"));
+                }   
+                valueString.append(value);
+            }
 
-            // Escape special chars - based on version (";"  "\", ",")
-            valueConv = escapeSpecialChars(value, version);
-
-            valueString.append(valueConv);
-            delete [] valueConv;
         }
 
+        if (isToFormatValue) {
+            // QUOTED-PRINTABLE encoding (of all values)
+            if (equalsEncoding(TEXT("QUOTED-PRINTABLE"))) {
+
+                char* s  = toMultibyte(valueString.c_str());
+                char* qp = convertToQP(s, 0);
+                WCHAR* qpValueString = toWideChar(qp);
+                if(qpValueString)
+			        propertyString.append(qpValueString);
+                else
+                    propertyString.append(valueString);
+
+		        delete [] qpValueString;
+                delete [] s;
+                delete [] qp;
+            }
+
+            // BASE64 encoding (of all values)
+            else if(equalsEncoding(TEXT("BASE64")) ||
+               equalsEncoding(TEXT("B")) ||
+               equalsEncoding(TEXT("b")) ) {
+
+                char* s  = toMultibyte(valueString.c_str());
+                int len = strlen(s);
+                char* base64 = new char[2*len + 1];
+                b64_encode(base64, s, len);
+                WCHAR* b64ValueString = toWideChar(base64);
+
+                propertyString.append(b64ValueString);
+                // Extra line break: required for v.2.1 / optional for v.3.0
+                //propertyString.append(RFC822_LINE_BREAK);
+
+                delete [] b64ValueString;
+                delete [] base64;
+                delete [] s;
+            }
 
 
-        // QUOTED-PRINTABLE encoding (of all values)
-        if (equalsEncoding(TEXT("QUOTED-PRINTABLE"))) {
-
-            char* s  = toMultibyte(valueString.c_str());
-            char* qp = convertToQP(s, 0);
-            WCHAR* qpValueString = toWideChar(qp);
-            if(qpValueString)
-			    propertyString.append(qpValueString);
-            else
+            // Default encoding (7bit)
+            else {
                 propertyString.append(valueString);
-
-		    delete [] qpValueString;
-            delete [] s;
-            delete [] qp;
-        }
-
-        // BASE64 encoding (of all values)
-        else if(equalsEncoding(TEXT("BASE64")) ||
-           equalsEncoding(TEXT("B")) ||
-           equalsEncoding(TEXT("b")) ) {
-
-            char* s  = toMultibyte(valueString.c_str());
-            int len = strlen(s);
-            char* base64 = new char[2*len + 1];
-            b64_encode(base64, s, len);
-            WCHAR* b64ValueString = toWideChar(base64);
-
-            propertyString.append(b64ValueString);
-            // Extra line break: required for v.2.1 / optional for v.3.0
-            //propertyString.append(RFC822_LINE_BREAK);
-
-            delete [] b64ValueString;
-            delete [] base64;
-            delete [] s;
-        }
-
-
-        // Default encoding (7bit)
-        else {
+            }
+        } else { // not is to apply any transformation
             propertyString.append(valueString);
         }
     }

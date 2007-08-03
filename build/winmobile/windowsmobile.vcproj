@@ -675,6 +675,7 @@
 				PreprocessorDefinitions="USE_ZLIB;DEBUG;_WIN32_WCE=$(CEVER);$(CePlatform);ARM;_ARM_;ARMV4;UNDER_CE=$(CEVER);UNICODE;_LIB"
 				RuntimeLibrary="1"
 				EnableFunctionLevelLinking="true"
+				TreatWChar_tAsBuiltInType="false"
 				UsePrecompiledHeader="0"
 				PrecompiledHeaderFile="$(PlatformName)\$(ConfigurationName)/windowsmobile.pch"
 				AssemblerListingLocation="$(PlatformName)\$(ConfigurationName)/"
@@ -935,6 +936,7 @@
 				PreprocessorDefinitions="USE_ZLIB;DEBUG;_WIN32_WCE=$(CEVER);$(CePlatform);ARM;_ARM_;ARMV4;UNDER_CE=$(CEVER);UNICODE;_LIB"
 				RuntimeLibrary="1"
 				EnableFunctionLevelLinking="true"
+				TreatWChar_tAsBuiltInType="true"
 				UsePrecompiledHeader="0"
 				PrecompiledHeaderFile="$(PlatformName)\$(ConfigurationName)/windowsmobile.pch"
 				AssemblerListingLocation="$(PlatformName)\$(ConfigurationName)/"
@@ -2522,6 +2524,14 @@
 								UsePrecompiledHeader="0"
 							/>
 						</FileConfiguration>
+					</File>
+					<File
+						RelativePath="..\..\src\c++\windows\base\stringUtils.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\c++\windows\base\timeUtils.cpp"
+						>
 					</File>
 					<File
 						RelativePath="..\..\src\c++\common\base\util\WKeyValuePair.cpp"
@@ -17403,6 +17413,10 @@
 					>
 					<File
 						RelativePath="..\..\src\c++\windows\vocl\WinContact.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\c++\windows\vocl\WinContactSIF.cpp"
 						>
 					</File>
 					<File

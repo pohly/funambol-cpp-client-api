@@ -19,9 +19,8 @@
 #include "vocl/WinContact.h"
 #include "vocl/VConverter.h"
 #include "vocl/constants.h"
-
+#include "base/stringUtils.h"
 using namespace std;
-
 
 
 // Constructor
@@ -40,12 +39,10 @@ WinContact::~WinContact() {
 }
 
 
-
-
 //
 // Format and return a vCard string from the propertyMap.
 //
-wstring& WinContact::toString() {
+wstring WinContact::toString() {
 
     vCard = L"";
 
@@ -66,8 +63,7 @@ wstring& WinContact::toString() {
     vp = new VProperty(L"VERSION", VCARD_VERSION);
     vo->addProperty(vp);
     delete vp; vp = NULL;
-
-
+        
     // ------- Name -------
     // Add only if at least 1 property is supported, but include 
     // all elements in the right order.
@@ -374,7 +370,18 @@ wstring& WinContact::toString() {
         vo->addProperty(vp);
     }
     delete vp; vp = NULL;
-
+    
+     //PHOTO
+    if (getProperty(L"Picture", element)) {
+        vp = new VProperty(L"PHOTO", element.c_str());
+        if (element != L"") {
+            vp->addParameter(L"CONTENT-VALUE", L"UNCHANGED");        
+            vp->addParameter(L"ENCODING", L"b");
+            vp->addParameter(L"TYPE", L"JPEG");        
+        }
+        vo->addProperty(vp);
+        delete vp; vp = NULL;
+    }    
 
     //
     // ---- Funambol defined properties ----
@@ -652,6 +659,10 @@ int WinContact::parse(const wstring dataString) {
 
         else if(!wcscmp(name, L"TITLE")) {
 			setProperty(L"JobTitle", element);
+        }
+        
+        else if(!wcscmp(name, L"PHOTO")) {
+			setProperty(L"Picture", element);
         }
 
         //
