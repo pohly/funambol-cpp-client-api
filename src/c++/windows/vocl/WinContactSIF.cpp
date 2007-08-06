@@ -57,19 +57,7 @@ wstring WinContactSIF::toString() {
     return sif;
 }
 
-void WinContactSIF::replaceAll(const wstring& source, const wstring& dest, wstring& dataString, const int startPos) {
 
-    if (startPos >= (int)dataString.length()) {
-        return;
-    }
-    wstring::size_type pos = startPos;
-    pos = dataString.find(source, pos);
-
-    while (pos != wstring::npos) {
-        dataString.replace(pos, source.length(), dest);
-        pos = dataString.find(source, pos+1);
-    }
-}
 
 
 void WinContactSIF::addPropertyToSIF(const wstring propertyName, wstring propertyValue, wstring& sif) {
@@ -126,7 +114,7 @@ wstring WinContactSIF::adaptToSIFSpecs(const wstring& propName, const wstring& p
     if ((propName == L"Anniversary" || propName == L"Birthday") && propValue != L"") {
        propertyValue = formatDateWithMinus(propValue);    
     } else if (propName == L"Picture" && propValue != L"") {
-        // the picture is right for vcard: for windows we have to format bettere the sif
+        // the picture is right for vcard: for windows we have to format better the sif
         // even if it should work anyway.
         //<Picture>    /9j/4AAQSkZJRgABAQEAcwBzAAD/2wBDAAgGBgcGBQgHBwcJCQgKDBQNDAsLDBkSEw8UHRof
         //        Hh0aHBwgJC4nICIsIxwcKDcpLDAxNDQ0Hyc5PTgyPC4zNDL/2wBDAQkJCQwLDBgNDRgyIRwh   

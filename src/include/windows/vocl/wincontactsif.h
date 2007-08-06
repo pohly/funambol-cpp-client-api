@@ -82,15 +82,7 @@ public:
     * @return            the converted value if necessary
     */
     wstring adaptToSpecsSIF(const wstring& propName, const wstring& propValue, const wstring& type);
-       
-    /**
-    * Replace all strings 'source' with 'dest' inside string 'dataString'.
-    * @param source       the token to search
-    * @param dest         the token to replace
-    * @param dataString   [IN-OUT] the string to work on
-    * @param startPos     [OPTIONAL] tha start position (default = 0)
-    */
-    void replaceAll(const wstring& source, const wstring& dest, wstring& dataString, const int startPos = 0);
+
 
     /**
     * Adds a tag <PropertyName>PropertyValue</PropertyName> into sifString.
