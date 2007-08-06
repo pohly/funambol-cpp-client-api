@@ -180,7 +180,7 @@ long WinItem::getCRC() {
     unsigned char byte = 0;
 
     crc32 = 0xFFFFFFFF;
-    while(*s != _T('\0')) {
+    while(*s != TEXT('\0')) {
         byte = (unsigned char) *s;
         crc32 = ((crc32) >> 8) ^ crc32Table[(byte) ^ ((crc32) & 0x000000FF)];
         s++;
