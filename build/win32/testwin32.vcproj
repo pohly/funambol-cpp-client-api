@@ -76,6 +76,7 @@
 				LinkIncremental="2"
 				SuppressStartupBanner="true"
 				AdditionalLibraryDirectories="..\..\output\win32"
+				IgnoreDefaultLibraryNames="LIBCD;LIBCMTD"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile=".\output\testwin32-dbg/testwin32.pdb"
 				SubSystem="1"
