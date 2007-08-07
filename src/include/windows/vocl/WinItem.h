@@ -55,8 +55,9 @@ class WinItem {
 private:
     static wstring badString;
 
-protected:
 
+public:
+    
     /**
      * Map <propertyName, propertyValue> of props exchanged.
      * - Client to Server: contains props supported by Client, should be filled
@@ -64,12 +65,7 @@ protected:
      * - Server to Client: contains props parsed from vCard/vCalendar, it's automatically
      *                     filled by parsers of derived classes. Client should call getProperty()
      *                     for each property he wants to retrieve.
-     */
-    
-
-
-public:
-    
+    */
     map<wstring,wstring> propertyMap;
 
     /// Default Constructor
