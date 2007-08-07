@@ -3248,6 +3248,10 @@
 						>
 					</File>
 					<File
+						RelativePath="..\..\src\c++\windows\vocl\WinContactSIF.cpp"
+						>
+					</File>
+					<File
 						RelativePath="..\..\src\c++\windows\vocl\WinEvent.cpp"
 						>
 					</File>
