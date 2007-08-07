@@ -553,7 +553,15 @@ int WinContact::parse(const wstring dataString) {
 			setProperty(L"Body", element);
         }
         else if(!wcscmp(name, L"CLASS")) {
-			setProperty(L"Sensitivity", element);
+            WCHAR tmp[10];
+            if( !wcscmp(element, TEXT("PRIVATE"     )) || 
+                !wcscmp(element, TEXT("CONFIDENTIAL")) ) {
+                wsprintf(tmp, TEXT("%i"), winPrivate);          // Private = 2
+            }
+            else {
+                wsprintf(tmp, TEXT("%i"), winNormal);           // Normal = 0
+            }
+            setProperty(L"Sensitivity", tmp);
         }
         else if(!wcscmp(name, L"CATEGORIES")) {
 			setProperty(L"Categories", element);
