@@ -95,13 +95,6 @@ wstring WinContact::toString() {
         vo->addProperty(vp);
         delete vp; vp = NULL;
     }
-    if (getProperty(L"Business2TelephoneNumber", element)) {
-        vp = new VProperty(L"TEL", element.c_str());
-        vp->addParameter(L"VOICE", NULL);
-        vp->addParameter(L"WORK",  NULL);
-        vo->addProperty(vp);
-        delete vp; vp = NULL;
-    }
     if (getProperty(L"BusinessFaxNumber", element)) {
         vp = new VProperty(L"TEL", element.c_str());
         vp->addParameter(L"WORK", NULL);
@@ -110,6 +103,13 @@ wstring WinContact::toString() {
         delete vp; vp = NULL;
     }
     if (getProperty(L"BusinessTelephoneNumber", element)) {
+        vp = new VProperty(L"TEL", element.c_str());
+        vp->addParameter(L"VOICE", NULL);
+        vp->addParameter(L"WORK",  NULL);
+        vo->addProperty(vp);
+        delete vp; vp = NULL;
+    }
+    if (getProperty(L"Business2TelephoneNumber", element)) {
         vp = new VProperty(L"TEL", element.c_str());
         vp->addParameter(L"VOICE", NULL);
         vp->addParameter(L"WORK",  NULL);
@@ -177,14 +177,14 @@ wstring WinContact::toString() {
         vo->addProperty(vp);
         delete vp; vp = NULL;
     }
-    if (getProperty(L"Home2TelephoneNumber", element)) {
+    if (getProperty(L"HomeTelephoneNumber", element)) {
         vp = new VProperty(L"TEL", element.c_str());
         vp->addParameter(L"VOICE", NULL);
         vp->addParameter(L"HOME",  NULL);
         vo->addProperty(vp);
         delete vp; vp = NULL;
     }
-    if (getProperty(L"HomeTelephoneNumber", element)) {
+    if (getProperty(L"Home2TelephoneNumber", element)) {
         vp = new VProperty(L"TEL", element.c_str());
         vp->addParameter(L"VOICE", NULL);
         vp->addParameter(L"HOME",  NULL);
