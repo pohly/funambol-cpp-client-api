@@ -155,7 +155,7 @@ WCHAR* toWideChar(const char *mb, const char *encoding)
     size_t length = mbstowcs(NULL, mb, 0) + 1;
     if(length == -1) {
         LOG.error("toWideChar: invalid string.");
-        return wcsdup(TEXT(""));
+        return wstrdup(TEXT(""));
     }
     WCHAR* ret = new WCHAR[length];
     mbstowcs(ret, mb, length);
