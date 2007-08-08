@@ -31,27 +31,27 @@
  *
  * @param syncMode      one of the keywords valid as config parameter (see documentation of config)
  */
-SyncMode syncModeCode(const char*  syncMode) EXTRA_SECTION_02;
+SyncMode syncModeCode(const char*  syncMode);
 
 /**
  * returns the config keyword corresponding to the sync mode,
  * empty string if invalid
  */
-const char *syncModeKeyword(SyncMode syncMode) EXTRA_SECTION_02;
+const char *syncModeKeyword(SyncMode syncMode);
 
 /*
  * Translates an ArrayList object into an array of SyncItemStatus*.
  *
  * @param items the item list
  */
-SyncItemStatus** toSyncItemStatusArray(ArrayList& items) EXTRA_SECTION_02;
+SyncItemStatus** toSyncItemStatusArray(ArrayList& items);
 
 /*
  * Translates an ArrayList into an array of SyncItem*.
  *
  * @param items the item list
  */
-SyncItem** toSyncItemArray(ArrayList& items) EXTRA_SECTION_02;
+SyncItem** toSyncItemArray(ArrayList& items);
 
 int uudecode(const char *msg, char **binmsg, size_t *binlen);
 char *uuencode(const char *msg, int len);
@@ -66,7 +66,7 @@ char *uuencode(const char *msg, int len);
 *          0 if all is correct
 */
 int convertAndSave(const char *filename, const char *str,
-                  const char *encoding = "UTF-8") EXTRA_SECTION_02;
+                  const char *encoding = "UTF-8");
 
 /**
 * Load a file and convert its content according to encoding.
@@ -75,7 +75,7 @@ int convertAndSave(const char *filename, const char *str,
 * @return the content of the file
 */
 char *loadAndConvert(const char *filename,
-                        const char *encoding = "UTF-8") EXTRA_SECTION_02;
+                        const char *encoding = "UTF-8");
 
 /** @endcond */
 #endif

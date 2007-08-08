@@ -31,19 +31,19 @@ class SyncMap : public ArrayElement {
         char*  guid;
 
     public:
-        SyncMap(const char*  guid = NULL, const char*  luid = NULL) EXTRA_SECTION_01;
-        ~SyncMap() EXTRA_SECTION_01;
+        SyncMap(const char*  guid = NULL, const char*  luid = NULL);
+        ~SyncMap();
 
         /*
          * Returns the guid of this mapping.
          */
-        const char*  getGUID() EXTRA_SECTION_01;
+        const char*  getGUID();
 
 
         /*
          * Returns the luid of this mapping.
          */
-        const char*  getLUID() EXTRA_SECTION_01;
+        const char*  getLUID();
 
         /**
          * Sets a new value for the LUID property. The value is copied in the
@@ -51,7 +51,7 @@ class SyncMap : public ArrayElement {
          *
          * @param luid the new value
          */
-        void setLUID(const char*  luid) EXTRA_SECTION_01;
+        void setLUID(const char*  luid);
 
         /**
          * Sets a new value for the LUID property (as unsigned int). It internally
@@ -59,7 +59,7 @@ class SyncMap : public ArrayElement {
          *
          * @param luid the new value
          */
-        void setLUID(unsigned long luid) EXTRA_SECTION_01;
+        void setLUID(unsigned long luid);
 
 
         /**
@@ -68,14 +68,14 @@ class SyncMap : public ArrayElement {
          *
          * @param guid the new value
          */
-        void setGUID(const char*  guid) EXTRA_SECTION_01;
+        void setGUID(const char*  guid);
 
         /**
          * Creates a new instance of SyncMap from the content of this
          * object. The new instance is created the the C++ new operator and
          * must be removed with the C++ delete operator.
          */
-        ArrayElement* clone() EXTRA_SECTION_01;
+        ArrayElement* clone();
     };
 
 /** @endcond */

@@ -51,7 +51,7 @@ public:
      * @param pos (OUTPUT) the position where the tag is found (ignored if NULL)
      *
      */
-    static char* copyElementContent(const char*  xml, const char*  tag, unsigned int* pos = NULL) EXTRA_SECTION_00;
+    static char* copyElementContent(const char*  xml, const char*  tag, unsigned int* pos = NULL);
 
     /*
      * It's like copyElementContent but it doesn't allocate new memory.
@@ -63,16 +63,16 @@ public:
      * @param endPos (OUTPUT) the end position of the tag content (ignored if NULL)
      */
     static const char*  getElementContent(const char*  xml, const char*  tag,
-                    unsigned int* pos, unsigned int* startPos, unsigned int* endPos) EXTRA_SECTION_00;
+                    unsigned int* pos, unsigned int* startPos, unsigned int* endPos);
 
     /*
     * It returns the number of the tag in the xml string
     */
-    static int countElementTag(const char*  xml, const char*  tag) EXTRA_SECTION_00;
+    static int countElementTag(const char*  xml, const char*  tag);
 
-    static int countAnd(const char*  token) EXTRA_SECTION_00;
+    static int countAnd(const char*  token);
 
-    static int countChar(const char*  token, const char*  element) EXTRA_SECTION_00;
+    static int countChar(const char*  token, const char*  element);
 
     static const char* getNextTag(const char* xml, int* pos);
    /*
@@ -101,13 +101,13 @@ public:
     static char* copyElementContentExcept(const char* xml       ,
                                           const char* tag       ,
                                           const char* except    ,
-                                          unsigned int* pos) EXTRA_SECTION_00;
+                                          unsigned int* pos);
 
     static char* copyElementContentLevel(const char* xml,
                                          const char* tag,
                                          unsigned int* pos,
                                          int           lev = 0 ,  // the root value level
-                                         int* startLevel   = NULL) EXTRA_SECTION_00;
+                                         int* startLevel   = NULL);
 
     /*
      * It returns the content of the buffer specified by startPos (initial position)
@@ -121,7 +121,7 @@ public:
      *
      */
 
-    static char* copyContent(const char*  xml, unsigned int startPos, unsigned int endPos) EXTRA_SECTION_00;
+    static char* copyContent(const char*  xml, unsigned int startPos, unsigned int endPos);
 
     /**
      * Create an XML element with the specified tag and value.
@@ -129,7 +129,7 @@ public:
      * @param tag - the tag we want the content
      * @param val - the element value
      */
-    //static StringBuffer makeElement(const WCHAR* tag, const WCHAR* val) EXTRA_SECTION_00;
+    //static StringBuffer makeElement(const WCHAR* tag, const WCHAR* val);
 
     /**
      * Create an XML element with the specified tag, value and attribute list.
@@ -140,7 +140,7 @@ public:
      */
     static StringBuffer makeElement(const char*  tag,
                                     const char*  val,
-                                    const char*  attr = NULL) EXTRA_SECTION_00;
+                                    const char*  attr = NULL);
 
     /**
      * Create an XML element with the specified tag, value and attribute list.
@@ -151,20 +151,20 @@ public:
      */
     static StringBuffer makeElement(const char*  tag,
                                     const char*  val,
-                                    ArrayList attrList) EXTRA_SECTION_00;
+                                    ArrayList attrList);
 
 	/**
 	 * Same with bool value
 	 */
     static StringBuffer makeElement(const char*  tag, bool val) {
-        return makeElement( tag, (val?"true":"false") ) EXTRA_SECTION_00 ;
+        return makeElement( tag, (val?"true":"false") ) ;
     }
 
     /**
 	 * Same with integer value
 	 */
 	static StringBuffer makeElement(const char*  tag, int val) {
-        return makeElement( tag, StringBuffer().append(val) ) EXTRA_SECTION_00 ;
+        return makeElement( tag, StringBuffer().append(val) ) ;
     }
 
     /**
@@ -184,7 +184,7 @@ public:
                                          const char*  tag,
                                          unsigned int*  startPos,
                                          unsigned int*  endPos,
-                                         bool escaped = false) EXTRA_SECTION_00;
+                                         bool escaped = false);
 
 };
 

@@ -52,8 +52,8 @@
          * @param name - the node name
          *
          */
-        ParentManagementNode(char*  context, char*  name) EXTRA_SECTION_02;
-        ~ParentManagementNode() EXTRA_SECTION_02;
+        ParentManagementNode(char*  context, char*  name);
+        ~ParentManagementNode();
 
 
         // ----------------------------------------------------- Virtual methods
@@ -65,7 +65,7 @@
          * @param buf - the buffer for the value
          * @param len - the buffer size
          */
-        void getPropertyValue(const char*  property, const char* buf, int size) EXTRA_SECTION_02;
+        void getPropertyValue(const char*  property, const char* buf, int size);
 
 
         /*
@@ -74,7 +74,7 @@
          * @param property - the property name
          * @param value - the property value (zero terminated string)
          */
-        void setPropertyValue(const char*  property, const char* value) EXTRA_SECTION_02;
+        void setPropertyValue(const char*  property, const char* value);
 
         /*
          * Returns this node's children.
@@ -87,35 +87,35 @@
          *               input; the number of children in output
          *
          */
-        void getChildren(ManagementNode** children, int* size) EXTRA_SECTION_02;
+        void getChildren(ManagementNode** children, int* size);
 
-        ManagementNode* get(int i) EXTRA_SECTION_02;
+        ManagementNode* get(int i);
 
         /*
          * Returns how many children belong to this node.
          *
          */
-        int getChildrenCount() EXTRA_SECTION_02;
+        int getChildrenCount();
 
         /*
          * Adds a new child.
          *
          * @parent node the new node
          */
-        void addChild(ManagementNode& node) EXTRA_SECTION_02;
+        void addChild(ManagementNode& node);
 
         /*
          * Creates a new ManagementNode with the exact content of this object.
          * The new instance MUST be created with the C++ new opertator.
          */
-        ArrayElement* clone() EXTRA_SECTION_02;
+        ArrayElement* clone();
 
         /**
          * Returns the i-th child of this parent or NULL if i is out of bound.
          *
          * @param i the child position (0-based)
          */
-        ManagementNode* operator[] (int i) EXTRA_SECTION_02;
+        ManagementNode* operator[] (int i);
 
 
         // -------------------------------------------------------- Private data

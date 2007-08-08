@@ -46,16 +46,16 @@
         /**
          * Initializes private members
          */
-        void initialize() EXTRA_SECTION_01;
-        void  generateNonce(char nonce[16]) EXTRA_SECTION_01;
+        void initialize();
+        void  generateNonce(char nonce[16]);
 
     public:
         /*
          * Default constructor
          */
-        CredentialHandler() EXTRA_SECTION_01;
+        CredentialHandler();
 
-        ~CredentialHandler() EXTRA_SECTION_01;
+        ~CredentialHandler();
 
         /*
          * Constructs a new SyncItem identified by the given key. The key must
@@ -63,7 +63,7 @@
          *
          * @param key - the key
          */
-        CredentialHandler(const char*  key) EXTRA_SECTION_01;
+        CredentialHandler(const char*  key);
 
         /*
          * Returns the SyncItem's key. If key is NULL, the internal buffer is
@@ -73,29 +73,29 @@
          * @param key - buffer where the key will be stored
          */
 
-        void setUsername(const char*  t) EXTRA_SECTION_01;
-        const char*  getUsername() EXTRA_SECTION_01;
-        void setPassword(const char*  t) EXTRA_SECTION_01;
-        const char*  getPassword() EXTRA_SECTION_01;
-        void setClientAuthType(const char*  t) EXTRA_SECTION_01;
-        void setClientNonce(const char*  t) EXTRA_SECTION_01;
-        const char*  getClientAuthType() EXTRA_SECTION_01;
-        const char*  getClientNonce() EXTRA_SECTION_01;
+        void setUsername(const char*  t);
+        const char*  getUsername();
+        void setPassword(const char*  t);
+        const char*  getPassword();
+        void setClientAuthType(const char*  t);
+        void setClientNonce(const char*  t);
+        const char*  getClientAuthType();
+        const char*  getClientNonce();
 
-        void setServerID(const char*  t) EXTRA_SECTION_01;
-        void setServerPWD(const char*  t) EXTRA_SECTION_01;
-        void setServerAuthType(const char*  t) EXTRA_SECTION_01;
-        void setServerNonce(const char*  t) EXTRA_SECTION_01;
-        const char*  getServerAuthType() EXTRA_SECTION_01;
-        const char*  getServerNonce() EXTRA_SECTION_01;
+        void setServerID(const char*  t);
+        void setServerPWD(const char*  t);
+        void setServerAuthType(const char*  t);
+        void setServerNonce(const char*  t);
+        const char*  getServerAuthType();
+        const char*  getServerNonce();
 
-        void setServerAuthRequired(BOOL t) EXTRA_SECTION_01;
-        BOOL getServerAuthRequired() EXTRA_SECTION_01;
+        void setServerAuthRequired(BOOL t);
+        BOOL getServerAuthRequired();
 
-        Cred* getClientCredential() EXTRA_SECTION_01;
-        Cred* getServerCredential() EXTRA_SECTION_01;
-        Chal* getServerChal(BOOL isServerAuthenticated) EXTRA_SECTION_01;
-        BOOL  performServerAuth(Cred* cred) EXTRA_SECTION_01;
+        Cred* getClientCredential();
+        Cred* getServerCredential();
+        Chal* getServerChal(BOOL isServerAuthenticated);
+        BOOL  performServerAuth(Cred* cred);
 
     };
 

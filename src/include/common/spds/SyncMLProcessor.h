@@ -41,32 +41,32 @@
         /*
          * It include the common part of getSyncHdrStatusCode and getAlertStatusCode
          */
-        int getStatusCode(SyncBody* syncBody, SyncSource* source, const char* commandName) EXTRA_SECTION_01;
+        int getStatusCode(SyncBody* syncBody, SyncSource* source, const char* commandName);
         /*
          * Returns the status code for the SyncHeader command included
          * in the message sent by the client.
          *
          * @param syncBody - the SyncBody content
          */
-        int getSyncHeaderStatusCode(Status* s) EXTRA_SECTION_01;
+        int getSyncHeaderStatusCode(Status* s);
         /*
          * Returns the status code for the Alert relative to the given source.
          *
          * @param syncBody - the SyncBody content
          * @param sourceName - the name of the source
          */
-        int getAlertStatusCode(Status* status, const char*  sourceName) EXTRA_SECTION_01;
+        int getAlertStatusCode(Status* status, const char*  sourceName);
 
         /*
         * Return the command of the given commandName
         */
-        AbstractCommand* getCommand(SyncBody* syncBody, const char* commandName, int index) EXTRA_SECTION_01;
+        AbstractCommand* getCommand(SyncBody* syncBody, const char* commandName, int index);
 
          /*
         * To get a generic array element. It returns the <index> arrayElement it founds.
         * 0-based.
          */
-        ArrayElement* getArrayElement(ArrayList* list, int index) EXTRA_SECTION_01;
+        ArrayElement* getArrayElement(ArrayList* list, int index);
 
     public:
 
@@ -78,7 +78,7 @@
         /*
         * Process a generic syncml message and return a SyncML object
         */
-        SyncML* processMsg(char*  msg) EXTRA_SECTION_01;
+        SyncML* processMsg(char*  msg);
 
         /*
          * Processes the initialization response. Returns 0 in case of success, an
@@ -86,28 +86,28 @@
          *
          * @param msg the response from the server
          */
-        int processInitResponse(SyncSource& source, SyncML* syncml, Alert* alert) EXTRA_SECTION_01;
+        int processInitResponse(SyncSource& source, SyncML* syncml, Alert* alert);
 
-        int processSyncHdrStatus(SyncML* syncml) EXTRA_SECTION_01;
-        int processAlertStatus(SyncSource& source, SyncML* syncml, ArrayList* alerts) EXTRA_SECTION_01;
+        int processSyncHdrStatus(SyncML* syncml);
+        int processAlertStatus(SyncSource& source, SyncML* syncml, ArrayList* alerts);
 
-        int processServerAlert(SyncSource& source, SyncML* syncml) EXTRA_SECTION_01;
+        int processServerAlert(SyncSource& source, SyncML* syncml);
         /*
         * Get the chal from a syncBody object. It is used to get the auth type and next nonce if needed
         */
-        Chal* getChal(SyncBody* syncBody) EXTRA_SECTION_01;
+        Chal* getChal(SyncBody* syncBody);
 
         /*
         * Get server credential. It is used by the SyncManager to get the server credentials and check them
         */
-        Cred* getServerCred(SyncHdr* syncHdr) EXTRA_SECTION_01;
+        Cred* getServerCred(SyncHdr* syncHdr);
 
 
         /*
          * Process the SyncBody and looks for the item status of the sent items.
          * It calls the setItemStatus method of the sync source.
          */
-        int processItemStatus(SyncSource& source, SyncBody* syncBody) EXTRA_SECTION_01;
+        int processItemStatus(SyncSource& source, SyncBody* syncBody);
 
         /*
          * Processes the response and get the Sync command of the given source
@@ -115,7 +115,7 @@
          * @param source the source
          * @param syncml the syncML Object the response from the server
          */
-        Sync* processSyncResponse(SyncSource& source, SyncML* syncml) EXTRA_SECTION_01;
+        Sync* processSyncResponse(SyncSource& source, SyncML* syncml);
 
         /*
          * Processes the map message response. Returns 0 in case of success.
@@ -124,7 +124,7 @@
          * @param source the source
          * @param msg the response from the server
          */
-        int processMapResponse(SyncSource& source, SyncBody* syncBody) EXTRA_SECTION_01;
+        int processMapResponse(SyncSource& source, SyncBody* syncBody);
 
         /*
          * Returns the SyncHeader/RespURI element of the given message. If the element is not
@@ -133,12 +133,12 @@
          *
          * @param msg - the SyncHdr message - NOT NULL
          */
-        const char* getRespURI(SyncHdr* msg) EXTRA_SECTION_01;
+        const char* getRespURI(SyncHdr* msg);
 
         /*
          * Returns an ArrayList containing the command given by commandName. It uses the getCommand method
          */
-        ArrayList* getCommands(SyncBody* syncBody, const char* commandName) EXTRA_SECTION_01;
+        ArrayList* getCommands(SyncBody* syncBody, const char* commandName);
 
         /* To retrieve a (NULL terminated) list of source names from list of Alert commands from server.
          * @return: a new array of source names (NULL terminated) - must be freed by the caller.

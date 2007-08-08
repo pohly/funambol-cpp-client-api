@@ -56,37 +56,37 @@ class SyncSourceConfig {
         /**
          * Constructs a new SyncSourceConfig object
          */
-        SyncSourceConfig() EXTRA_SECTION_02;
+        SyncSourceConfig();
 
         /**
          * Destructor
          */
-        ~SyncSourceConfig() EXTRA_SECTION_02;
+        ~SyncSourceConfig();
 
         /**
          * Returns the SyncSource name.
          */
-        const char*  getName() const EXTRA_SECTION_02;
+        const char*  getName() const;
 
         /**
          * Sets the SyncSource name
          *
          * @param n the new name
          */
-        void setName(const char*  n) EXTRA_SECTION_02;
+        void setName(const char*  n);
 
 
         /**
          * Returns the SyncSource URI (used in SyncML addressing).
          */
-        const char*  getURI() const EXTRA_SECTION_02;
+        const char*  getURI() const;
 
         /**
          * Sets the SyncSource URI (used in SyncML addressing).
          *
          * @param u the new uri
          */
-        void setURI(const char*  u) EXTRA_SECTION_02;
+        void setURI(const char*  u);
 
         /**
          * Returns a comma separated list of the possible syncModes for the
@@ -101,7 +101,7 @@ class SyncSourceConfig {
          * - one-way-from-client
          * - addrchange
          */
-        const char*  getSyncModes() const EXTRA_SECTION_02;
+        const char*  getSyncModes() const;
 
         /**
          * Sets the available syncModes for the SyncSource as comma separated
@@ -109,29 +109,29 @@ class SyncSourceConfig {
          *
          * @param s the new list
          */
-        void setSyncModes(const char*  s) EXTRA_SECTION_02;
+        void setSyncModes(const char*  s);
 
         /**
          * Returns the mime type of the items handled by the sync source.
          */
-        const char*  getType() const EXTRA_SECTION_02;
+        const char*  getType() const;
 
         /**
          * Sets the mime type of the items handled by the sync source.
          *
          * @param t the mime type
          */
-        void setType(const char*  t) EXTRA_SECTION_02;
+        void setType(const char*  t);
 
         /**
          * Gets the default syncMode as one of the strings listed in setSyncModes.
          */
-        const char*  getSync() const EXTRA_SECTION_02;
+        const char*  getSync() const;
 
         /**
          * Returns the default syncMode as one of the strings above.
          */
-        void setSync(const char*  s) EXTRA_SECTION_02;
+        void setSync(const char*  s);
 
         /**
          * Specifies how the content of an outgoing item should be
@@ -139,21 +139,21 @@ class SyncSourceConfig {
          * set an encoding on the item that it created. Valid values
          * are listed in SyncItem::encodings.
          */
-        const char*  getEncoding() const EXTRA_SECTION_02;
-        void setEncoding(const char*  s) EXTRA_SECTION_02;
+        const char*  getEncoding() const;
+        void setEncoding(const char*  s);
 
 
         /**
          * Returns the version of the source type used by client.
          */
-        const char*  getVersion() const EXTRA_SECTION_02;
+        const char*  getVersion() const;
 
         /**
          * Sets the SyncSource version
          *
          * @param n the new version
          */
-        void setVersion(const char*  n) EXTRA_SECTION_02;
+        void setVersion(const char*  n);
 
 
         /**
@@ -163,43 +163,43 @@ class SyncSourceConfig {
          * The version can be left empty, for example: "text/x-s4j-sifc:".
          * Supported types will be sent as part of the DevInf.
          */
-        const char*  getSupportedTypes() const EXTRA_SECTION_02;
+        const char*  getSupportedTypes() const;
 
         /**
          * Sets the supported source types for this source.
          *
          * @param s the supported types string
          */
-        void setSupportedTypes(const char*  s) EXTRA_SECTION_02;
+        void setSupportedTypes(const char*  s);
 
-        CTCap getCtCap() const           EXTRA_SECTION_02;
-        void setCtCap(CTCap v)           EXTRA_SECTION_02;
+        CTCap getCtCap() const          ;
+        void setCtCap(CTCap v)          ;
 
         /**
          * Sets the last sync timestamp
          *
          * @param timestamp the last sync timestamp
          */
-        void setLast(unsigned long timestamp) EXTRA_SECTION_02;
+        void setLast(unsigned long timestamp);
 
         /**
          * Returns the last sync timestamp
          */
-        unsigned long getLast() const EXTRA_SECTION_02;
+        unsigned long getLast() const;
 
         /**
          * Specifies if the content of an outgoing item should be encrypted.
          * If this property is not empty and valid, the 'encodings' value is ignored
          * for outgoing items. The only valid value is "des".
          */
-        const char* getEncryption() const EXTRA_SECTION_02;
+        const char* getEncryption() const;
 
         /**
          * Sets the encryption type
          *
          * @param n the encryption type
          */
-        void setEncryption(const char* n) EXTRA_SECTION_02;
+        void setEncryption(const char* n);
 
         /**
          * Initialize this object with the given SyncSourceConfig

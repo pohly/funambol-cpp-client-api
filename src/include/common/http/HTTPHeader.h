@@ -39,26 +39,26 @@
         unsigned int size;
 
     public:
-        HTTPHeader(char* buf) EXTRA_SECTION_03;
+        HTTPHeader(char* buf);
 
         /*
          * Get the size in bytes of this HTTP header
          */
-        unsigned int getSize() EXTRA_SECTION_03;
-        const char* getVersion() EXTRA_SECTION_03;
-        unsigned int getStatus() EXTRA_SECTION_03;
-        const char* getStatusMessage() EXTRA_SECTION_03;
-        const char* getContent() EXTRA_SECTION_03;
-        unsigned int getHeadersCount() EXTRA_SECTION_03;
-        char** getHeader(unsigned int index) EXTRA_SECTION_03;
-        const char* getHeaderValue(const char* header) EXTRA_SECTION_03;
+        unsigned int getSize();
+        const char* getVersion();
+        unsigned int getStatus();
+        const char* getStatusMessage();
+        const char* getContent();
+        unsigned int getHeadersCount();
+        char** getHeader(unsigned int index);
+        const char* getHeaderValue(const char* header);
 
         /*
          * Returns the content lenght specified with the header Content-length.
          * If the header is not found, -1 is returned.
          *
          */
-        int getContentLength() EXTRA_SECTION_03;
+        int getContentLength();
     };
 /** @endcond */
 #endif

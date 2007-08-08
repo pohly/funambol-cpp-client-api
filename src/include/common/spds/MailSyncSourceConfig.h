@@ -76,78 +76,78 @@
         /*
          * Constructs a new MailSyncSourceConfig object
          */
-        MailSyncSourceConfig() EXTRA_SECTION_02;
+        MailSyncSourceConfig();
 
         /*
          * Constructs a new SyncSourceConfig object from an other.
          */
-        MailSyncSourceConfig(MailSyncSourceConfig& c) EXTRA_SECTION_02;
+        MailSyncSourceConfig(MailSyncSourceConfig& c);
 
         /*
          * Destructor
          */
-        ~MailSyncSourceConfig() EXTRA_SECTION_02;
+        ~MailSyncSourceConfig();
 
         /*
          * Sets the downloadAge
          *
          * @param age the new downloadAge
          */
-        void setDownloadAge(int age) EXTRA_SECTION_02;
+        void setDownloadAge(int age);
 
         /*
          * Returns downloadAge
          */
-        int getDownloadAge() const EXTRA_SECTION_02;
+        int getDownloadAge() const;
 
         /*
          * Sets the bodySize
          *
          * @param size the new bodySize
          */
-        void setBodySize(int size) EXTRA_SECTION_02;
+        void setBodySize(int size);
 
         /*
          * Returns bodySize
          */
-        int getBodySize() const EXTRA_SECTION_02;
+        int getBodySize() const;
 
         /*
          * Sets the attachSize
          *
          * @param size the new attachSize
          */
-        void setAttachSize(int size) EXTRA_SECTION_02;
+        void setAttachSize(int size);
 
         /*
          * Returns attachSize
          */
-        int getAttachSize() const EXTRA_SECTION_02;
+        int getAttachSize() const;
 
 
-        void setInbox(int v) EXTRA_SECTION_02;
+        void setInbox(int v);
 
-        int  getInbox() const EXTRA_SECTION_02;
+        int  getInbox() const;
 
-        void setOutbox(int v)EXTRA_SECTION_02;
+        void setOutbox(int v);
 
-        int  getOutbox() const EXTRA_SECTION_02;
+        int  getOutbox() const;
 
-        void setDraft(int v)EXTRA_SECTION_02;
+        void setDraft(int v);
 
-        int  getDraft() const EXTRA_SECTION_02;
+        int  getDraft() const;
 
-        void setTrash(int v) EXTRA_SECTION_02;
+        void setTrash(int v);
 
-        int  getTrash() const EXTRA_SECTION_02;
+        int  getTrash() const;
 
-        void setSent(int v) EXTRA_SECTION_02;
+        void setSent(int v);
 
-        int  getSent() const EXTRA_SECTION_02;
+        int  getSent() const;
 
-        void setSchedule(int v) EXTRA_SECTION_02;
+        void setSchedule(int v);
 
-        int  getSchedule() const EXTRA_SECTION_02;
+        int  getSchedule() const;
 
 
         /**

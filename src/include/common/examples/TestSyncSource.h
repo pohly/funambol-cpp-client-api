@@ -37,83 +37,83 @@ public:
      * @param name - the name of the SyncSource
      * @param sc   - the SyncSourceConfig
      */
-    TestSyncSource(const WCHAR* name, SyncSourceConfig *sc)  EXTRA_SECTION_01;
+    TestSyncSource(const WCHAR* name, SyncSourceConfig *sc) ;
 
     // TestSyncSource
-    ~TestSyncSource() EXTRA_SECTION_01;
+    ~TestSyncSource();
 
     /*
      * Return the first SyncItem of all.
      * It is used in case of slow or refresh sync
      * and retrieve the entire data source content.
      */
-    SyncItem* getFirstItem() EXTRA_SECTION_01;
+    SyncItem* getFirstItem();
 
     /*
      * Return the next SyncItem of all.
      * It is used in case of slow or refresh sync
      * and retrieve the entire data source content.
      */
-    SyncItem* getNextItem() EXTRA_SECTION_01;
+    SyncItem* getNextItem();
 
     /*
      * Return the first SyncItem of new one. It is used in case of fast sync
      * and retrieve the new data source content.
      */
-    SyncItem* getFirstNewItem() EXTRA_SECTION_01;
+    SyncItem* getFirstNewItem();
 
     /*
      * Return the next SyncItem of new one. It is used in case of fast sync
      * and retrieve the new data source content.
      */
-    SyncItem* getNextNewItem() EXTRA_SECTION_01;
+    SyncItem* getNextNewItem();
 
     /*
      * Return the first SyncItem of updated one. It is used in case of fast sync
      * and retrieve the new data source content.
      */
-    SyncItem* getFirstUpdatedItem()  EXTRA_SECTION_01;
+    SyncItem* getFirstUpdatedItem() ;
 
     /*
      * Return the next SyncItem of updated one. It is used in case of fast sync
      * and retrieve the new data source content.
      */
-    SyncItem* getNextUpdatedItem() EXTRA_SECTION_01;
+    SyncItem* getNextUpdatedItem();
 
     /*
      * Return the first SyncItem of updated one. It is used in case of fast sync
      * and retrieve the new data source content.
      */
-    SyncItem* getFirstDeletedItem() EXTRA_SECTION_01;
+    SyncItem* getFirstDeletedItem();
 
     /*
      * Return the next SyncItem of updated one. It is used in case of fast sync
      * and retrieve the new data source content.
      */
 
-    SyncItem* getFirstItemKey() EXTRA_SECTION_01;
+    SyncItem* getFirstItemKey();
 
     /*
      * Return the key of the next SyncItem of all.
      * It is used in case of refresh sync
      * and retrieve all the keys of the data source.
      */
-    SyncItem* getNextItemKey() EXTRA_SECTION_01;
+    SyncItem* getNextItemKey();
 
 
-    SyncItem* getNextDeletedItem() EXTRA_SECTION_01;
+    SyncItem* getNextDeletedItem();
 
-    void setItemStatus(const WCHAR* key, int status) EXTRA_SECTION_01;
+    void setItemStatus(const WCHAR* key, int status);
 
-    int addItem(SyncItem& item) EXTRA_SECTION_01;
+    int addItem(SyncItem& item);
 
-    int updateItem(SyncItem& item) EXTRA_SECTION_01;
+    int updateItem(SyncItem& item);
 
-    int deleteItem(SyncItem& item) EXTRA_SECTION_01;
+    int deleteItem(SyncItem& item);
 
-    int beginSync() EXTRA_SECTION_01;
+    int beginSync();
 
-    int endSync() EXTRA_SECTION_01;
+    int endSync();
 
     ArrayElement* clone() { return 0; }
 };

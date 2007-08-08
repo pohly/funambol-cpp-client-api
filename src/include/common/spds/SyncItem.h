@@ -55,15 +55,15 @@
         /**
          * Initializes private members
          */
-        void initialize() EXTRA_SECTION_01;
+        void initialize();
 
     public:
         /*
          * Default constructor
          */
-        SyncItem() EXTRA_SECTION_01;
+        SyncItem();
 
-        ~SyncItem() EXTRA_SECTION_01;
+        ~SyncItem();
 
         /*
          * Constructs a new SyncItem identified by the given key. The key must
@@ -71,7 +71,7 @@
          *
          * @param key - the key
          */
-        SyncItem(const WCHAR* key) EXTRA_SECTION_01;
+        SyncItem(const WCHAR* key);
 
         /*
          * Returns the SyncItem's key. If key is NULL, the internal buffer is
@@ -80,7 +80,7 @@
          *
          * @param key - buffer where the key will be stored
          */
-        const WCHAR* getKey() EXTRA_SECTION_01;
+        const WCHAR* getKey();
 
         /*
          * Changes the SyncItem key. The key must not be longer than DIM_KEY
@@ -88,7 +88,7 @@
          *
          * @param key - the key
          */
-        void setKey(const WCHAR* key) EXTRA_SECTION_01;
+        void setKey(const WCHAR* key);
 
         /*
          * Sets the SyncItem modification timestamp. timestamp is a milliseconds
@@ -96,14 +96,14 @@
          *
          * @param timestamp - last modification timestamp
          */
-        void setModificationTime(long timestamp) EXTRA_SECTION_01;
+        void setModificationTime(long timestamp);
 
         /*
          * Returns the SyncItem modeification timestamp. The returned value
          * is a milliseconds timestamp since a reference time (which is
          * platform specific).
          */
-        long getModificationTime() EXTRA_SECTION_01;
+        long getModificationTime();
 
         /*
          * Sets the SyncItem content data. The passed data is copied into an
@@ -132,7 +132,7 @@
          * @param data        memory to be copied, may be NULL; in that case an empty buffer is allocated
          * @param size        length of the given data or, if data is NULL, the desired buffer size
          */
-        void* setData(const void* data, long size) EXTRA_SECTION_01;
+        void* setData(const void* data, long size);
 
         /*
          * Returns the SyncItem data buffer, in read-write mode.
@@ -140,20 +140,20 @@
          * There is guaranteed to be a nul-byte after the data which
          * is not included in the data size.
          */
-        void* getData() EXTRA_SECTION_01;
+        void* getData();
 
         /*
          * Returns the amount of bytes stored in the item,
          * excluding the implicit nul-byte after the real data.
          */
-        long getDataSize() EXTRA_SECTION_01;
+        long getDataSize();
 
          /*
          * Sets the SyncItem data size without changing the data buffer.
          *
          * @param s the new size
          */
-        void setDataSize(long s) EXTRA_SECTION_01;
+        void setDataSize(long s);
 
         /**
          * Sets the encoding of the data _without_ changing the data itself.
@@ -166,7 +166,7 @@
          *                      supported by it, see the constants in SyncItem::encoding
          *                      for supported values; NULL means plain data
          */
-        void setDataEncoding(const char* encoding) EXTRA_SECTION_01;
+        void setDataEncoding(const char* encoding);
 
         /**
          * Gets the encoding of the data. May return NULL if none has been set.
@@ -174,7 +174,7 @@
          * Note that for incoming items the client library automatically converts
          * to plain encoding unless the server uses an unknown encoding.
          */
-        const char* getDataEncoding() EXTRA_SECTION_01;
+        const char* getDataEncoding();
 
         /**
          * Changes the encoding and the data currently stored in the item.
@@ -192,38 +192,38 @@
          * @return error code, usually caused by unsupported encoding either of
          *         the current data or the requested new encoding
          */
-        int changeDataEncoding(const char* encoding, const char* encryption, const char* credentialInfo = NULL) EXTRA_SECTION_01;
+        int changeDataEncoding(const char* encoding, const char* encryption, const char* credentialInfo = NULL);
 
         /*
          * Sets the SyncItem data mime type
          *
          * @param - type the content mimetype
          */
-        void setDataType(const WCHAR* type) EXTRA_SECTION_01;
+        void setDataType(const WCHAR* type);
 
         /*
          * Returns the SyncItem data mime type.
          */
-        const WCHAR* getDataType() EXTRA_SECTION_01;
+        const WCHAR* getDataType();
 
         /*
          * Sets the SyncItem state
          *
          * @param state the new SyncItem state
          */
-        void setState(SyncState newState) EXTRA_SECTION_01;
+        void setState(SyncState newState);
 
         /*
          * Gets the SyncItem state
          */
-        SyncState getState() EXTRA_SECTION_01;
+        SyncState getState();
 
        /**
          * Returns the SyncItem targetParent
          *
          * @return the SyncItem target parent
          */
-        const WCHAR* getTargetParent() EXTRA_SECTION_01;
+        const WCHAR* getTargetParent();
 
         /**
          * Sets the SyncItem targetParent
@@ -231,14 +231,14 @@
          * @param parent the target parent
          *
          */
-        void setTargetParent(const WCHAR* parent) EXTRA_SECTION_01;
+        void setTargetParent(const WCHAR* parent);
 
         /**
          * Returns the SyncItem sourceParent
          *
          * @return the SyncItem source parent
          */
-        const WCHAR* getSourceParent() EXTRA_SECTION_01;
+        const WCHAR* getSourceParent();
 
         /**
          * Sets the SyncItem sourceParent
@@ -246,14 +246,14 @@
          * @param parent the source parent
          *
          */
-        void setSourceParent(const WCHAR* parent) EXTRA_SECTION_01;
+        void setSourceParent(const WCHAR* parent);
 
         /**
          * Creates a new instance of SyncItem from the content of this
          * object. The new instance is created the the C++ new operator and
          * must be removed with the C++ delete operator.
          */
-        ArrayElement* clone() EXTRA_SECTION_01;
+        ArrayElement* clone();
 
         /**
          * valid encodings for changeDataEncoding() and some helper functions

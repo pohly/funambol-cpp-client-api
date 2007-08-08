@@ -30,25 +30,25 @@
 class SyncMLBuilder {
 
     public:
-        SyncMLBuilder() EXTRA_SECTION_01;
-        ~SyncMLBuilder() EXTRA_SECTION_01;
-        SyncMLBuilder(char*  t, char*  d) EXTRA_SECTION_01;
+        SyncMLBuilder();
+        ~SyncMLBuilder();
+        SyncMLBuilder(char*  t, char*  d);
 
         /*
          * Convert the SyncML object into an xml message
          */
-        char*  prepareMsg(SyncML* syncml) EXTRA_SECTION_01;
+        char*  prepareMsg(SyncML* syncml);
 
         /*
          * Convert the SyncML object into an xml message
          */
-        SyncML*  prepareSyncML(ArrayList* commands, BOOL final) EXTRA_SECTION_01;
+        SyncML*  prepareSyncML(ArrayList* commands, BOOL final);
 
         /*
         * Set init parameters.
         *
         */
-        void     set(const char* t, const char* d) EXTRA_SECTION_01;
+        void     set(const char* t, const char* d);
 
         /*
         * Prepare the init SyncML* message with credential and db alert to sync
@@ -57,7 +57,7 @@ class SyncMLBuilder {
         * @param maxObjSize       used as MaxObjSize value in Meta part of the message unless 0
         */
         SyncML*  prepareInitObject(Cred* cred, ArrayList* alerts, ArrayList* commands,
-                                   unsigned long maxMsgSize = 0, unsigned long maxObjSize = 0) EXTRA_SECTION_01;
+                                   unsigned long maxMsgSize = 0, unsigned long maxObjSize = 0);
 
         /*
         * Prepare the SyncHdr message with credential if not null
@@ -65,74 +65,74 @@ class SyncMLBuilder {
         * @param maxMsgSize       used as MaxMsgSize value in Meta part of the message unless 0
         * @param maxObjSize       used as MaxObjSize value in Meta part of the message unless 0
         */
-        SyncHdr* prepareSyncHdr(Cred* cred, unsigned long maxMsgSize = 0, unsigned long maxObjSize = 0) EXTRA_SECTION_01;
+        SyncHdr* prepareSyncHdr(Cred* cred, unsigned long maxMsgSize = 0, unsigned long maxObjSize = 0);
 
         /*
         * Prepare the init alert
         */
-        Alert*   prepareInitAlert(SyncSource& source, unsigned long maxObjSize = 0) EXTRA_SECTION_01;
+        Alert*   prepareInitAlert(SyncSource& source, unsigned long maxObjSize = 0);
 
         /*
         * Prepare the special init alert for Address Change Notification
         */
-        Alert*   prepareAddrChangeAlert(SyncSource& source) EXTRA_SECTION_01;
+        Alert*   prepareAddrChangeAlert(SyncSource& source);
 
         /*
         * Prepare alert with a specific code, defaults to 222 which requests
         * the server changes.
         */
-        Alert*   prepareAlert(SyncSource& source, int code=222) EXTRA_SECTION_01;
+        Alert*   prepareAlert(SyncSource& source, int code=222);
 
         /*
         * Prepare the status for Sync Header
         */
-        Status*  prepareSyncHdrStatus(Chal* chal, int data) EXTRA_SECTION_01;
+        Status*  prepareSyncHdrStatus(Chal* chal, int data);
 
         /*
         * Prepare the status for Alert command
         */
-        Status*  prepareAlertStatus(SyncSource& s,  ArrayList* alert, int authStatusCode) EXTRA_SECTION_01;
+        Status*  prepareAlertStatus(SyncSource& s,  ArrayList* alert, int authStatusCode);
 
         /*
         * Prepare the status for Item command. COMMAND could be ADD, REPLACE, DEL
         */
-        Status*  prepareItemStatus(const char*  COMMAND, const char*  key, const char*  cmdRef, int code) EXTRA_SECTION_01;
+        Status*  prepareItemStatus(const char*  COMMAND, const char*  key, const char*  cmdRef, int code);
 
         /*
         * Add the status to the corrent list of commands. It is responsible to collapse the status if needed
         */
-        void     addItemStatus(ArrayList* previousStatus, Status* status) EXTRA_SECTION_01;
+        void     addItemStatus(ArrayList* previousStatus, Status* status);
 
         /*
         * Prepare the status for Sync command
         */
-        Status*  prepareSyncStatus(SyncSource& source, Sync* sync) EXTRA_SECTION_01;
+        Status*  prepareSyncStatus(SyncSource& source, Sync* sync);
 
         /**
          * Prepare the status for an arbitrary command
          */
-        Status* prepareCmdStatus(AbstractCommand &cmd, int status) EXTRA_SECTION_01;
+        Status* prepareCmdStatus(AbstractCommand &cmd, int status);
 
         /**
          * Prepare either a Result with the device infos (if command given) or
          * a Put.
          */
-        AbstractCommand *prepareDevInf(AbstractCommand *cmd, DevInf &devInf) EXTRA_SECTION_01;
+        AbstractCommand *prepareDevInf(AbstractCommand *cmd, DevInf &devInf);
 
         /*
         * Prepare the Sync object. It doesn't contain any items. It is to prepare the insert of items
         */
-        Sync*    prepareSyncCommand(SyncSource& source) EXTRA_SECTION_01;
+        Sync*    prepareSyncCommand(SyncSource& source);
 
         /*
         * Prepare the Map object. It doesn't containt anything. It is to prepare the insert of map items
         */
-        Map*     prepareMapCommand(SyncSource& source)EXTRA_SECTION_01;
+        Map*     prepareMapCommand(SyncSource& source);
 
         /*
         * Prepare the MapItem. It could contain only one MapItem
         */
-        MapItem* prepareMapItem(SyncMap* syncMap) EXTRA_SECTION_01;
+        MapItem* prepareMapItem(SyncMap* syncMap);
 
         /*
          * @param[in, out] syncItemOffset           number of bytes of item data already sent, continue there and update it
@@ -146,7 +146,7 @@ class SyncMLBuilder {
         /*
         * Add the MapItem to the Map command.
         */
-        void     addMapItem(Map* map, MapItem* mapItem) EXTRA_SECTION_01;
+        void     addMapItem(Map* map, MapItem* mapItem);
 
         /*
         * Add a SyncItem into the modificationCommand. It is responsible to collapse if needed.
@@ -164,23 +164,23 @@ class SyncMLBuilder {
         long addItem(ModificationCommand* &modificationCommand,
                      long &syncItemOffset, long maxBytes,
                      char*  COMMAND, SyncItem* syncItem,
-                     const char*  defaultType) EXTRA_SECTION_01;
+                     const char*  defaultType);
 
         /*
         * Reset the cmdID counter
         */
-        void resetCommandID() EXTRA_SECTION_01;
+        void resetCommandID();
 
         /*
         * increase the msgID counter
         */
-        void increaseMsgRef() EXTRA_SECTION_01;
+        void increaseMsgRef();
 
         /*
         * reset MsgId counter
         */
 
-        void resetMessageID() EXTRA_SECTION_01;
+        void resetMessageID();
 
         /*
         * reset MsgRef counter

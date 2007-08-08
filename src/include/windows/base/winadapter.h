@@ -39,14 +39,6 @@
 #endif  // #ifdef _WIN32_WCE
 
 
-#define EXTRA_SECTION_00
-#define EXTRA_SECTION_01
-#define EXTRA_SECTION_02
-#define EXTRA_SECTION_03
-#define EXTRA_SECTION_04
-#define EXTRA_SECTION_05
-#define EXTRA_SECTION_06
-
 typedef wchar_t WCHAR;
 
 // Define this to the implementation of the sprintf variant with

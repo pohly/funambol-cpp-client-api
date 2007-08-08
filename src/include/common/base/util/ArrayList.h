@@ -57,14 +57,14 @@ class ArrayList {
         ArrayList& set (const ArrayList & other);
 
 	public:
-	    ArrayList() EXTRA_SECTION_00;
-        ArrayList(const ArrayList &other) EXTRA_SECTION_00;
-	    ~ArrayList() EXTRA_SECTION_00;
+	    ArrayList();
+        ArrayList(const ArrayList &other);
+	    ~ArrayList();
 
 	    /**
 	     * Is this list empty?
 	     */
-	    bool isEmpty() EXTRA_SECTION_00;
+	    bool isEmpty();
 
 		/**
 		 * Adds a new element at the specified index. If index is greater than
@@ -78,31 +78,31 @@ class ArrayList {
 		 * @param index the insertion position
 		 * @param element the element to insert
 		 */
-	    int add(int index, ArrayElement& element) EXTRA_SECTION_00;
+	    int add(int index, ArrayElement& element);
 
 	    /**
 	     * Same as add(index, element, size), but append at the end of the array.
 	     *
 	     * @param element the element to insert
 	     */
-	    int add(ArrayElement& element) EXTRA_SECTION_00;
+	    int add(ArrayElement& element);
 
         /**
         * Add all the ArrayElement of the given ArrayList to the current
         * array list
         */
-        int add(ArrayList* list) EXTRA_SECTION_00;
+        int add(ArrayList* list);
 
 	    /**
 	     * Frees the list. All elements are freed as well.
 	     */
-	    void clear() EXTRA_SECTION_00;
+	    void clear();
 
 	    /**
 	     * Frees the list and all its elements, regardless the value of
 	     * autoDeleteElements.
 	     */
-	    void clearAll() EXTRA_SECTION_00;
+	    void clearAll();
 
         int removeElementAt(int index);
 
@@ -113,7 +113,7 @@ class ArrayList {
 	     *
 	     * @param index the element position
 	     */
-	    ArrayElement* get(int index) EXTRA_SECTION_00;
+	    ArrayElement* get(int index);
 
         /**
          * Returns the first element of the array and set here the internal iterator.
@@ -123,7 +123,7 @@ class ArrayList {
          *
          * @return - the first element of the array, or NULL if empty.
          */
-        ArrayElement* front() EXTRA_SECTION_00;
+        ArrayElement* front();
 
         /**
          * Returns the next element of the array and increment the internal iterator.
@@ -133,7 +133,7 @@ class ArrayList {
          *
          * @return - the next element of the array, or NULL if beyond the last.
          */
-        ArrayElement* next() EXTRA_SECTION_00;
+        ArrayElement* next();
 
         /**
          * Returns the previous element of the array and decrement the internal iterator.
@@ -143,7 +143,7 @@ class ArrayList {
          *
          * @return - the previous element of the array, or NULL if before the first.
          */
-        ArrayElement* prev() EXTRA_SECTION_00;
+        ArrayElement* prev();
 
         /**
          * Returns the last element of the array and set here the internal iterator.
@@ -153,22 +153,22 @@ class ArrayList {
          *
          * @return - the first element of the array, or NULL if empty.
          */
-        ArrayElement* back() EXTRA_SECTION_00;
+        ArrayElement* back();
 
 	    /**
 	     * Returns the array size.
 	     */
-	    int size() EXTRA_SECTION_00;
+	    int size();
 
 	    /**
 	     * Same as get(index)
 	     */
-	    ArrayElement* operator[] (int index) EXTRA_SECTION_00;
+	    ArrayElement* operator[] (int index);
 
         /**
          * Copy the ArrayList
          */
-        ArrayList& operator= (const ArrayList &v) EXTRA_SECTION_00;
+        ArrayList& operator= (const ArrayList &v);
 
 
         /**

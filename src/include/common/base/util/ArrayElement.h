@@ -31,7 +31,7 @@
 
 class ArrayElement {
     public:
-        virtual ~ArrayElement() EXTRA_SECTION_00;
+        virtual ~ArrayElement();
         virtual ArrayElement* clone() = 0;
 };
 

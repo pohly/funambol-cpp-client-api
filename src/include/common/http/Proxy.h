@@ -32,13 +32,13 @@ class Proxy {
         char password[DIM_PASSWORD];
         int     port;
 
-        Proxy() EXTRA_SECTION_03;
-        Proxy(char*  host, int port) EXTRA_SECTION_03;
+        Proxy();
+        Proxy(char*  host, int port);
 
-        Proxy(char*  host, int port, char*  user, char*  password) EXTRA_SECTION_03;
+        Proxy(char*  host, int port, char*  user, char*  password);
 
-        void setProxy(Proxy& proxy) EXTRA_SECTION_03;
-        void setProxy(const char* proxyHost, int proxyPort, const char* proxyUser, const char* proxyPassword) EXTRA_SECTION_03;
+        void setProxy(Proxy& proxy);
+        void setProxy(const char* proxyHost, int proxyPort, const char* proxyUser, const char* proxyPassword);
 
         Proxy& operator= (Proxy& proxy) { setProxy(proxy); return *this;}
     };

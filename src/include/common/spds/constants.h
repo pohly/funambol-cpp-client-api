@@ -155,7 +155,7 @@ typedef enum SyncMode{
 #endif
 
 
-char*  retSyncMode(SyncMode) EXTRA_SECTION_01;
+char*  retSyncMode(SyncMode);
 
 /** @endcond */
 #endif

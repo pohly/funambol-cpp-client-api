@@ -63,7 +63,7 @@ class ManagementNode : public ArrayElement {
          * @param name - the node name
          *
          */
-        ManagementNode(const char*  parent, const char*  name) EXTRA_SECTION_02;
+        ManagementNode(const char*  parent, const char*  name);
         /*
          * Constructor.
          *
@@ -71,10 +71,10 @@ class ManagementNode : public ArrayElement {
          *                      component is used as name, the rest as context
          *
          */
-        ManagementNode(const char*  fullcontext) EXTRA_SECTION_02;
+        ManagementNode(const char*  fullcontext);
 
         /* Base class destructor */
-        virtual ~ManagementNode() EXTRA_SECTION_02;
+        virtual ~ManagementNode();
 
 
         // ----------------------------------------------------- Virtual methods

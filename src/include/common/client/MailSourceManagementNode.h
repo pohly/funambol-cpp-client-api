@@ -31,13 +31,13 @@ class MailSourceManagementNode : public DeviceManagementNode {
         // ------------------------------------------ Constructors & destructors
 
         MailSourceManagementNode( const char*     context,
-                                  const char*     name   ) EXTRA_SECTION_02;
+                                  const char*     name   );
 
         MailSourceManagementNode( const char*     context,
                                   const char*     name   ,
-                                  MailSyncSourceConfig& config ) EXTRA_SECTION_02;
+                                  MailSyncSourceConfig& config );
 
-        ~MailSourceManagementNode() EXTRA_SECTION_02;
+        ~MailSourceManagementNode();
 
         // ------------------------------------------------------------- Methods
 
@@ -48,7 +48,7 @@ class MailSourceManagementNode : public DeviceManagementNode {
          *
          * @param refresh should the node be read from the DMT ?
          */
-        MailSyncSourceConfig& getMailSourceConfig(BOOL refresh) EXTRA_SECTION_02;
+        MailSyncSourceConfig& getMailSourceConfig(BOOL refresh);
 
         /**
          * Sets the given mail source configuration object to the internal
@@ -56,9 +56,9 @@ class MailSourceManagementNode : public DeviceManagementNode {
          *
          * @param c the configuration object to store
          */
-        void setMailSourceConfig(MailSyncSourceConfig& c) EXTRA_SECTION_02;
+        void setMailSourceConfig(MailSyncSourceConfig& c);
 
-        ArrayElement* clone() EXTRA_SECTION_02;
+        ArrayElement* clone();
 
         // -------------------------------------------------------- Data members
     private:

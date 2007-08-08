@@ -38,7 +38,7 @@
                                         URL& url,
                                         Proxy& proxy,
                                         unsigned int responseTimeout = DEFAULT_MAX_TIMEOUT,
-                                        unsigned int maxmsgsize = DEFAULT_MAX_MSG_SIZE) EXTRA_SECTION_03;
+                                        unsigned int maxmsgsize = DEFAULT_MAX_MSG_SIZE);
     };
 
 /** @endcond */

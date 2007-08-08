@@ -32,20 +32,20 @@
         char*  resource;
         int    port    ;
 
-        URL() EXTRA_SECTION_03;
-        URL(const char* url) EXTRA_SECTION_03;
-        ~URL() EXTRA_SECTION_03;
+        URL();
+        URL(const char* url);
+        ~URL();
 
-        void setURL(URL& url) EXTRA_SECTION_03;
-        void setURL(const char*  url) EXTRA_SECTION_03;
+        void setURL(URL& url);
+        void setURL(const char*  url);
 
-        BOOL isSecure() EXTRA_SECTION_03;
+        BOOL isSecure();
 
-        URL& operator= (URL& url) EXTRA_SECTION_03;
-        URL& operator= (const char*  url) EXTRA_SECTION_03;
+        URL& operator= (URL& url);
+        URL& operator= (const char*  url);
 
     protected:
-        void setURL(const char* u, const char* p, const char* h, const char* r, unsigned int port) EXTRA_SECTION_03;
+        void setURL(const char* u, const char* p, const char* h, const char* r, unsigned int port);
     };
 /** @endcond */
 #endif

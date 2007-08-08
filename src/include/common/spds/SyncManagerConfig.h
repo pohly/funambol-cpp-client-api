@@ -40,26 +40,26 @@ class SyncManagerConfig {
 
         unsigned int sourceConfigsCount;
 
-        virtual BOOL addSyncSourceConfig(SyncSourceConfig& sc) EXTRA_SECTION_01;
+        virtual BOOL addSyncSourceConfig(SyncSourceConfig& sc);
 
     public:
 
-        SyncManagerConfig() EXTRA_SECTION_01;
-        virtual ~SyncManagerConfig() EXTRA_SECTION_01;
+        SyncManagerConfig();
+        virtual ~SyncManagerConfig();
 
-        virtual SyncSourceConfig* getSyncSourceConfigs() EXTRA_SECTION_01;
-        virtual SyncSourceConfig* getSyncSourceConfig(const char*  name, BOOL refresh = FALSE) EXTRA_SECTION_01;
-        virtual SyncSourceConfig* getSyncSourceConfig(unsigned int i,    BOOL refresh = FALSE) EXTRA_SECTION_01;
-		virtual BOOL setSyncSourceConfig(SyncSourceConfig& sc) EXTRA_SECTION_01;
-        virtual unsigned int getSyncSourceConfigsCount() EXTRA_SECTION_01;
+        virtual SyncSourceConfig* getSyncSourceConfigs();
+        virtual SyncSourceConfig* getSyncSourceConfig(const char*  name, BOOL refresh = FALSE);
+        virtual SyncSourceConfig* getSyncSourceConfig(unsigned int i,    BOOL refresh = FALSE);
+		virtual BOOL setSyncSourceConfig(SyncSourceConfig& sc);
+        virtual unsigned int getSyncSourceConfigsCount();
 
-		virtual AccessConfig& getAccessConfig() EXTRA_SECTION_01;
-		virtual void setAccessConfig(AccessConfig& ac) EXTRA_SECTION_01;
+		virtual AccessConfig& getAccessConfig();
+		virtual void setAccessConfig(AccessConfig& ac);
 
-        virtual DeviceConfig& getDeviceConfig() EXTRA_SECTION_01;
-		virtual void setDeviceConfig(DeviceConfig& dc) EXTRA_SECTION_01;
+        virtual DeviceConfig& getDeviceConfig();
+		virtual void setDeviceConfig(DeviceConfig& dc);
 
-        BOOL isDirty() EXTRA_SECTION_01;
+        BOOL isDirty();
 
         /**
          * Initializes the access and device config with default values from DefaultConfigFactory.

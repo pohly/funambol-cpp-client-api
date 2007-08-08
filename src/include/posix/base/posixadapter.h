@@ -48,14 +48,6 @@
 # define __cdecl
 #endif
 
-#define EXTRA_SECTION_00
-#define EXTRA_SECTION_01
-#define EXTRA_SECTION_02
-#define EXTRA_SECTION_03
-#define EXTRA_SECTION_04
-#define EXTRA_SECTION_05
-#define EXTRA_SECTION_06
-
 #define BOOL int
 #define TRUE 1
 #define FALSE 0

@@ -103,14 +103,14 @@ class DeviceConfig {
          * @param buf the destination buffer
          * @param v the new value (CAN BE NULL)
          */
-        void set(char* * buf, const char*  v) EXTRA_SECTION_02;
+        void set(char* * buf, const char*  v);
 
 
     public:
 
-        DeviceConfig() EXTRA_SECTION_02;
-        DeviceConfig(DeviceConfig& s) EXTRA_SECTION_02;
-        ~DeviceConfig() EXTRA_SECTION_02;
+        DeviceConfig();
+        DeviceConfig(DeviceConfig& s);
+        ~DeviceConfig();
 
 
         /**
@@ -124,53 +124,53 @@ class DeviceConfig {
          *      buffer so that the caller is assured that the
          *      given address can be released after the call.
          */
-        const char*  getVerDTD() const          EXTRA_SECTION_02;
-        void setVerDTD(const char*  v)          EXTRA_SECTION_02;
+        const char*  getVerDTD() const         ;
+        void setVerDTD(const char*  v)         ;
 
-        const char*  getMan() const             EXTRA_SECTION_02;
-        void setMan(const char*  v)             EXTRA_SECTION_02;
+        const char*  getMan() const            ;
+        void setMan(const char*  v)            ;
 
-        const char*  getMod() const             EXTRA_SECTION_02;
-        void setMod(const char*  v)             EXTRA_SECTION_02;
+        const char*  getMod() const            ;
+        void setMod(const char*  v)            ;
 
-        const char*  getOem() const             EXTRA_SECTION_02;
-        void setOem(const char*  v)             EXTRA_SECTION_02;
+        const char*  getOem() const            ;
+        void setOem(const char*  v)            ;
 
-        const char*  getFwv() const             EXTRA_SECTION_02;
-        void setFwv(const char*  v)             EXTRA_SECTION_02;
+        const char*  getFwv() const            ;
+        void setFwv(const char*  v)            ;
 
-        const char*  getSwv() const             EXTRA_SECTION_02;
-        void setSwv(const char*  v)             EXTRA_SECTION_02;
+        const char*  getSwv() const            ;
+        void setSwv(const char*  v)            ;
 
-        const char*  getHwv() const             EXTRA_SECTION_02;
-        void setHwv(const char*  v)             EXTRA_SECTION_02;
+        const char*  getHwv() const            ;
+        void setHwv(const char*  v)            ;
 
-        const char*  getDevID() const           EXTRA_SECTION_02;
-        void setDevID(const char*  v)           EXTRA_SECTION_02;
+        const char*  getDevID() const          ;
+        void setDevID(const char*  v)          ;
 
-        const char*  getDevType() const         EXTRA_SECTION_02;
-        void setDevType(const char*  v)         EXTRA_SECTION_02;
+        const char*  getDevType() const        ;
+        void setDevType(const char*  v)        ;
 
-        const char*  getDsV() const             EXTRA_SECTION_02;
-        void setDsV(const char*  v)             EXTRA_SECTION_02;
+        const char*  getDsV() const            ;
+        void setDsV(const char*  v)            ;
 
-        BOOL getUtc() const                     EXTRA_SECTION_02;
-        void setUtc(BOOL v)                     EXTRA_SECTION_02;
+        BOOL getUtc() const                    ;
+        void setUtc(BOOL v)                    ;
 
-        BOOL getLoSupport() const               EXTRA_SECTION_02;
-        void setLoSupport(BOOL v)               EXTRA_SECTION_02;
+        BOOL getLoSupport() const              ;
+        void setLoSupport(BOOL v)              ;
 
-        BOOL getNocSupport() const              EXTRA_SECTION_02;
-        void setNocSupport(BOOL v)              EXTRA_SECTION_02;
+        BOOL getNocSupport() const             ;
+        void setNocSupport(BOOL v)             ;
 
-        LogLevel getLogLevel() const            EXTRA_SECTION_02;
-        void setLogLevel(LogLevel v)            EXTRA_SECTION_02;
+        LogLevel getLogLevel() const           ;
+        void setLogLevel(LogLevel v)           ;
 
-        unsigned int getMaxObjSize() const      EXTRA_SECTION_02;
-        void setMaxObjSize(unsigned int v)      EXTRA_SECTION_02;
+        unsigned int getMaxObjSize() const     ;
+        void setMaxObjSize(unsigned int v)     ;
 
-        const char*  getDevInfHash() const      EXTRA_SECTION_02;
-        void setDevInfHash(const char *v)      EXTRA_SECTION_02;
+        const char*  getDevInfHash() const     ;
+        void setDevInfHash(const char *v)     ;
 
         /**
          * Sets the values of this object with with the values from the given
@@ -178,7 +178,7 @@ class DeviceConfig {
          *
          * @param s: the deviceConfig reference.
          */
-        void assign(const DeviceConfig& s) EXTRA_SECTION_02;
+        void assign(const DeviceConfig& s);
 
         /*
          * Assign operator

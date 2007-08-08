@@ -38,9 +38,9 @@
  * and sets the pointer to NULL
  *
  */
-void safeDelete(char*  p[]) EXTRA_SECTION_00;
+void safeDelete(char*  p[]);
 
-void safeDel(char** p) EXTRA_SECTION_00;
+void safeDel(char** p);
 
 /**
  * Convert an unsigned long to an anchor.
@@ -48,24 +48,24 @@ void safeDel(char** p) EXTRA_SECTION_00;
  * @param timestamp the timestamp to convert into an anchor
  * @param anchor where the anchor will be written (has to be at least 21 characters long)
  */
-void timestampToAnchor(unsigned long timestamp, char anchor[21]) EXTRA_SECTION_00;
+void timestampToAnchor(unsigned long timestamp, char anchor[21]);
 
 /**
  * inverse operation for timestampToAnchor(), returns 0 if not a valid anchor
  */
-unsigned long anchorToTimestamp(const char* anchor) EXTRA_SECTION_00;
+unsigned long anchorToTimestamp(const char* anchor);
 
-char* stringdup(const char* s, size_t len = STRINGDUP_NOLEN) EXTRA_SECTION_00 ;
-WCHAR* wstrdup(const WCHAR* s, size_t len = STRINGDUP_NOLEN) EXTRA_SECTION_00;
+char* stringdup(const char* s, size_t len = STRINGDUP_NOLEN) ;
+WCHAR* wstrdup(const WCHAR* s, size_t len = STRINGDUP_NOLEN);
 
-char*  strtolower(const char *s) EXTRA_SECTION_00;
+char*  strtolower(const char *s);
 
-char*  wcstoupper(const char *s) EXTRA_SECTION_00;
+char*  wcstoupper(const char *s);
 
 /**
  * find a substring from the end, with optional string lenght
  */
-const char *brfind(const char *s1, const char *s2, size_t len=STRINGDUP_NOLEN) EXTRA_SECTION_00 ;
+const char *brfind(const char *s1, const char *s2, size_t len=STRINGDUP_NOLEN) ;
 
 /**
  * Returns TRUE is the given string is NULL or zero-length

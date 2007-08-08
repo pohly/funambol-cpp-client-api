@@ -63,19 +63,19 @@
         /*
          * Default constructor-destructor
          */
-        DataTransformer() EXTRA_SECTION_01;
+        DataTransformer();
 
-        DataTransformer(char*  name) EXTRA_SECTION_01;
+        DataTransformer(char*  name);
 
-        virtual ~DataTransformer() EXTRA_SECTION_01;
+        virtual ~DataTransformer();
 
-        static DataTransformer* getEncoder(const char* name) EXTRA_SECTION_01;
-        static DataTransformer* getDecoder(const char* name) EXTRA_SECTION_01;
-        static BOOL isSupportedEncoder(char*  name) EXTRA_SECTION_01;
-        static BOOL isSupportedDecoder(char*  name) EXTRA_SECTION_01;
+        static DataTransformer* getEncoder(const char* name);
+        static DataTransformer* getDecoder(const char* name);
+        static BOOL isSupportedEncoder(char*  name);
+        static BOOL isSupportedDecoder(char*  name);
 
-        void setName(const char* name) EXTRA_SECTION_01;
-        const char* getName() EXTRA_SECTION_01;
+        void setName(const char* name);
+        const char* getName();
 
         /**
          * Performs the transformation. data is the pointer to the
@@ -90,7 +90,7 @@
          * @param data the data block to transform
          * @param info transformation info
          */
-        virtual char* transform(char* data, TransformationInfo& info) = 0 EXTRA_SECTION_01;
+        virtual char* transform(char* data, TransformationInfo& info) = 0;
 
     };
 

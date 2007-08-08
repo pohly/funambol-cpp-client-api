@@ -61,13 +61,13 @@
         BOOL compression;
 
     public:
-        TransportAgent() EXTRA_SECTION_03;
+        TransportAgent();
         TransportAgent(URL& url,
                        Proxy& proxy,
                        unsigned int responseTimeout = DEFAULT_MAX_TIMEOUT,
-                       unsigned int maxmsgsize = DEFAULT_MAX_MSG_SIZE) EXTRA_SECTION_03;
+                       unsigned int maxmsgsize = DEFAULT_MAX_MSG_SIZE);
 
-        virtual ~TransportAgent() EXTRA_SECTION_03;
+        virtual ~TransportAgent();
 
         /*
          * Change the URL the subsequent calls to setMessage() should
@@ -75,43 +75,43 @@
          *
          * @param url the new target url
          */
-        virtual void setURL(URL& newURL) EXTRA_SECTION_03;
+        virtual void setURL(URL& newURL);
 
         /*
          * Returns the url.
          */
-        virtual URL& getURL() EXTRA_SECTION_03;
+        virtual URL& getURL();
 
         /**
          * Sets the connection timeout
          *
          * @param t the new timeout in seconds
          */
-        virtual void setTimeout(unsigned int t) EXTRA_SECTION_03;
+        virtual void setTimeout(unsigned int t);
 
         /**
          * Returns the connection timeout
          */
-        virtual unsigned int getTimeout() EXTRA_SECTION_03;
+        virtual unsigned int getTimeout();
 
         /**
          * Sets the max msg size
          *
          * @param t the new msx msg size in bytes
          */
-        virtual void setMaxMsgSize(unsigned int t) EXTRA_SECTION_03;
+        virtual void setMaxMsgSize(unsigned int t);
 
         /**
          * Returns the max msg size
          */
-        virtual unsigned int getMaxMsgSize()EXTRA_SECTION_03;
+        virtual unsigned int getMaxMsgSize();
 
         /**
          * Sets the buffer size
          *
          * @param t the buffer size size in bytes
          */
-        virtual void setReadBufferSize(unsigned int t) EXTRA_SECTION_03;
+        virtual void setReadBufferSize(unsigned int t);
 
         virtual void setUserAgent(const char*  ua);
 
@@ -123,7 +123,7 @@
         /**
          * Returns the buffer size
          */
-        virtual unsigned int getReadBufferSize()EXTRA_SECTION_03;
+        virtual unsigned int getReadBufferSize();
 
 
         /*

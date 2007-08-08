@@ -69,14 +69,14 @@ class SyncManager {
          * @param config     required configuration
          * @param report     sync report reference to store sync results
          */
-        SyncManager(SyncManagerConfig& config, SyncReport& report) EXTRA_SECTION_01;
-        ~SyncManager() EXTRA_SECTION_01;
+        SyncManager(SyncManagerConfig& config, SyncReport& report);
+        ~SyncManager();
 
-        int prepareSync(SyncSource** sources) EXTRA_SECTION_01;
+        int prepareSync(SyncSource** sources);
 
-        int sync() EXTRA_SECTION_01;
+        int sync();
 
-        int endSync() EXTRA_SECTION_01;
+        int endSync();
 
         /**
          * Gathers the various bits and pieces known about the client and
@@ -88,7 +88,7 @@ class SyncManager {
          *
          * @return device infos, to be deleted by caller, or NULL if unavailable
          */
-        virtual DevInf *createDeviceInfo() EXTRA_SECTION_01;
+        virtual DevInf *createDeviceInfo();
 
     private:
 
@@ -175,15 +175,15 @@ class SyncManager {
             const int sourceIndex;      // the index of the source to which the incomplete item belongs
         } *incomingItem;       // sync item which is not complete yet, more data expected
 
-        void initialize() EXTRA_SECTION_01;
-        BOOL readSyncSourceDefinition(SyncSource& source) EXTRA_SECTION_01;
-        BOOL commitChanges(SyncSource& source) EXTRA_SECTION_01;
-        int assignSources(SyncSource** sources) EXTRA_SECTION_01;
+        void initialize();
+        BOOL readSyncSourceDefinition(SyncSource& source);
+        BOOL commitChanges(SyncSource& source);
+        int assignSources(SyncSource** sources);
 
-        Status *processSyncItem(Item* item, const CommandInfo &cmdInfo, SyncMLBuilder &syncMLBuilder) EXTRA_SECTION_01;
-        BOOL checkForServerChanges(SyncML* syncml, ArrayList &statusList) EXTRA_SECTION_01;
+        Status *processSyncItem(Item* item, const CommandInfo &cmdInfo, SyncMLBuilder &syncMLBuilder);
+        BOOL checkForServerChanges(SyncML* syncml, ArrayList &statusList);
 
-        const char*  getUserAgent(SyncManagerConfig& config) EXTRA_SECTION_01;
+        const char*  getUserAgent(SyncManagerConfig& config);
         bool isToExit();
         void setSourceStateAndError(unsigned int index, SourceState  state,
                                     unsigned int code,  const char*  msg);

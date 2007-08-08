@@ -76,10 +76,10 @@ public:
      *               instance to avoid crashes, but modifying that config
      *               will not make much sense.
      */
-    SyncSource(const WCHAR* name, SyncSourceConfig* sc) EXTRA_SECTION_01;
+    SyncSource(const WCHAR* name, SyncSourceConfig* sc);
 
     // Destructor
-    virtual ~SyncSource() EXTRA_SECTION_01;
+    virtual ~SyncSource();
 
     /**
      * Get the source name.
@@ -88,7 +88,7 @@ public:
      *           will be released at object destruction)
      *
      */
-    const WCHAR *getName() EXTRA_SECTION_01;
+    const WCHAR *getName();
 
     /**********************************************************
      * Most of the configurable properties are read
@@ -108,11 +108,11 @@ public:
      *********************************************************/
 
     /** read-only access to configuration */
-    const SyncSourceConfig& getConfig() const EXTRA_SECTION_01 {
+    const SyncSourceConfig& getConfig() const {
         return config;
     }
     /** read-write access to configuration */
-    SyncSourceConfig& getConfig() EXTRA_SECTION_01 {
+    SyncSourceConfig& getConfig() {
         return config;
     }
 
@@ -120,7 +120,7 @@ public:
     /**
      * Return pointer to report object.
      */
-    SyncSourceReport* getReport() EXTRA_SECTION_01;
+    SyncSourceReport* getReport();
 
     /**
      * Set the report pointer with the given one
@@ -128,7 +128,7 @@ public:
      *
      * @param sr   the report for this sync source
      */
-    void setReport(SyncSourceReport* sr) EXTRA_SECTION_01;
+    void setReport(SyncSourceReport* sr);
 
     /**
      * Get & Set the preferred synchronization mode for the SyncSource.
@@ -137,8 +137,8 @@ public:
      * be modified by the client. The code synchronization code itself
      * reads this value, but it doesn't modify it.
      */
-    SyncMode getPreferredSyncMode() EXTRA_SECTION_01;
-    void setPreferredSyncMode(SyncMode syncMode) EXTRA_SECTION_01;
+    SyncMode getPreferredSyncMode();
+    void setPreferredSyncMode(SyncMode syncMode);
 
     /**
      * Get & Sets the server imposed synchronization mode for the SyncSource.
@@ -147,34 +147,34 @@ public:
      * The SyncSource can react to it in beginSync(), in particular it must wipe
      * its local data during a refresh from server.
      */
-    SyncMode getSyncMode() EXTRA_SECTION_01;
-    void setSyncMode(SyncMode syncMode) EXTRA_SECTION_01;
+    SyncMode getSyncMode();
+    void setSyncMode(SyncMode syncMode);
 
     /**
      * Get & Set the timestamp in milliseconds of the last synchronization.
      * The reference time of the timestamp is platform specific.
      */
-    unsigned long getLastSync() EXTRA_SECTION_01;
-    void setLastSync(unsigned long timestamp) EXTRA_SECTION_01;
+    unsigned long getLastSync();
+    void setLastSync(unsigned long timestamp);
 
     /**
      * Gets & Sets the timestamp in milliseconds of the next synchronization.
      * The reference time of the timestamp is platform specific.
      */
-    unsigned long getNextSync() EXTRA_SECTION_01;
-    void setNextSync(unsigned long timestamp) EXTRA_SECTION_01;
+    unsigned long getNextSync();
+    void setNextSync(unsigned long timestamp);
 
     /**
      * Gets & Sets the last anchor associated to the source
      */
-    void setLastAnchor(const char*  last) EXTRA_SECTION_01;
-    const char*  getLastAnchor() EXTRA_SECTION_01;
+    void setLastAnchor(const char*  last);
+    const char*  getLastAnchor();
 
     /**
      * Gets & Sets the next anchor associated to the source
      */
-    const char*  getNextAnchor() EXTRA_SECTION_01;
-    void setNextAnchor(const char*  next) EXTRA_SECTION_01;
+    const char*  getNextAnchor();
+    void setNextAnchor(const char*  next);
 
     /**
      * Gets filter
@@ -212,7 +212,7 @@ public:
      *
      * @return - 0 on success, an error otherwise
      */
-    virtual int beginSync() EXTRA_SECTION_01;
+    virtual int beginSync();
 
     /**
      * Called by the engine from inside SyncClient::sync()
@@ -227,7 +227,7 @@ public:
      *
      * @return - 0 on success, an error otherwise
      */
-    virtual int endSync() EXTRA_SECTION_01;
+    virtual int endSync();
 
     /**
      * called by the sync engine with the status returned by the
@@ -236,71 +236,71 @@ public:
      * @param key      the local key of the item
      * @param status   the SyncML status returned by the server
      */
-    virtual void setItemStatus(const WCHAR* key, int status) = 0 EXTRA_SECTION_01;
+    virtual void setItemStatus(const WCHAR* key, int status) = 0;
 
     /**
      * Return the key of the first SyncItem of all.
      * It is used in case of refresh sync
      * and retrieve all the keys of the data source.
      */
-    virtual SyncItem* getFirstItemKey() = 0 EXTRA_SECTION_01;
+    virtual SyncItem* getFirstItemKey() = 0;
 
     /**
      * Return the key of the next SyncItem of all.
      * It is used in case of refresh sync
      * and retrieve all the keys of the data source.
      */
-    virtual SyncItem* getNextItemKey() = 0 EXTRA_SECTION_01;
+    virtual SyncItem* getNextItemKey() = 0;
 
     /**
      * Return the first SyncItem of all.
      * It is used in case of slow sync
      * and retrieve the entire data source content.
      */
-    virtual SyncItem* getFirstItem() = 0 EXTRA_SECTION_01;
+    virtual SyncItem* getFirstItem() = 0;
 
     /**
      * Return the next SyncItem of all.
      * It is used in case of slow sync
      * and retrieve the entire data source content.
      */
-    virtual SyncItem* getNextItem() = 0 EXTRA_SECTION_01;
+    virtual SyncItem* getNextItem() = 0;
 
     /**
      * Return the first SyncItem of new one. It is used in case of fast sync
      * and retrieve the new data source content.
      */
-    virtual SyncItem* getFirstNewItem() = 0 EXTRA_SECTION_01;
+    virtual SyncItem* getFirstNewItem() = 0;
 
     /**
      * Return the next SyncItem of new one. It is used in case of fast sync
      * and retrieve the new data source content.
      */
-    virtual SyncItem* getNextNewItem() = 0 EXTRA_SECTION_01;
+    virtual SyncItem* getNextNewItem() = 0;
 
     /**
      * Return the first SyncItem of updated one. It is used in case of fast sync
      * and retrieve the new data source content.
      */
-    virtual SyncItem* getFirstUpdatedItem() = 0 EXTRA_SECTION_01;
+    virtual SyncItem* getFirstUpdatedItem() = 0;
 
     /**
      * Return the next SyncItem of updated one. It is used in case of fast sync
      * and retrieve the new data source content.
      */
-    virtual SyncItem* getNextUpdatedItem() = 0 EXTRA_SECTION_01;
+    virtual SyncItem* getNextUpdatedItem() = 0;
 
     /**
      * Return the first SyncItem of updated one. It is used in case of fast sync
      * and retrieve the new data source content.
      */
-    virtual SyncItem* getFirstDeletedItem() = 0 EXTRA_SECTION_01;
+    virtual SyncItem* getFirstDeletedItem() = 0;
 
     /**
      * Return the next SyncItem of updated one. It is used in case of fast sync
      * and retrieve the new data source content.
      */
-    virtual SyncItem* getNextDeletedItem() = 0 EXTRA_SECTION_01;
+    virtual SyncItem* getNextDeletedItem() = 0;
 
     /**
      * Called by the sync engine to add an item that the server has sent.
@@ -312,7 +312,7 @@ public:
      * @param item    the item as sent by the server
      * @return SyncML status code
      */
-    virtual int addItem(SyncItem& item) = 0 EXTRA_SECTION_01;
+    virtual int addItem(SyncItem& item) = 0;
 
     /**
      * Called by the sync engine to update an item that the source already
@@ -321,7 +321,7 @@ public:
      * @param item    the item as sent by the server
      * @return SyncML status code
      */
-    virtual int updateItem(SyncItem& item) = 0 EXTRA_SECTION_01;
+    virtual int updateItem(SyncItem& item) = 0;
 
     /**
      * Called by the sync engine to update an item that the source already
@@ -330,12 +330,12 @@ public:
      *
      * @param item    the item as sent by the server
      */
-    virtual int deleteItem(SyncItem& item) = 0 EXTRA_SECTION_01;
+    virtual int deleteItem(SyncItem& item) = 0;
 
     /**
      * ArrayElement implementation
      */
-    virtual ArrayElement* clone() EXTRA_SECTION_01 = 0;
+    virtual ArrayElement* clone() = 0;
 };
 
 /** @} */

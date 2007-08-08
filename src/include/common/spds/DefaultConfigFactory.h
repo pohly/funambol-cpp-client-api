@@ -33,8 +33,8 @@ class DefaultConfigFactory {
 
     public:
 
-        DefaultConfigFactory()          EXTRA_SECTION_01;
-        virtual ~DefaultConfigFactory() EXTRA_SECTION_01;
+        DefaultConfigFactory()         ;
+        virtual ~DefaultConfigFactory();
 
         /*
          * Returns a default generated AccessConfig.
@@ -43,7 +43,7 @@ class DefaultConfigFactory {
          * @return: AccessConfig pointer allocated new, so it must
          *          be freed by the caller.
          */
-        static AccessConfig*     getAccessConfig() EXTRA_SECTION_01;
+        static AccessConfig*     getAccessConfig();
 
         /*
          * Returns a default generated DeviceConfig.
@@ -52,7 +52,7 @@ class DefaultConfigFactory {
          * @return: DeviceConfig pointer allocated new, so it must
          *          be freed by the caller.
          */
-        static DeviceConfig*     getDeviceConfig() EXTRA_SECTION_01;
+        static DeviceConfig*     getDeviceConfig();
 
         /*
          * Returns a default generated SyncSourceConfig.
@@ -61,7 +61,7 @@ class DefaultConfigFactory {
          * @return: SyncSourceConfig pointer allocated new, so it must
          *          be freed by the caller.
          */
-        static SyncSourceConfig* getSyncSourceConfig(const char*  name) EXTRA_SECTION_01;
+        static SyncSourceConfig* getSyncSourceConfig(const char*  name);
 };
 
 /** @endcond */

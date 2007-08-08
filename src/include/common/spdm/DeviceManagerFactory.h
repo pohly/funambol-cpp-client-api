@@ -33,14 +33,14 @@
         /*
          * Constructor.
          */
-        DeviceManagerFactory() EXTRA_SECTION_02;
+        DeviceManagerFactory();
 
         /*
          * Creates and returns a new DeviceManager. The DeviceManager object is create
          * with the new operator and must be deleted by the caller with the operator
          * delete
          */
-        DeviceManager *getDeviceManager()  EXTRA_SECTION_02;
+        DeviceManager *getDeviceManager() ;
 
     };
 

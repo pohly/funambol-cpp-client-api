@@ -33,10 +33,10 @@
 
     public:
 
-        static DataTransformer* getEncoder(const char*  name) EXTRA_SECTION_01;
-        static DataTransformer* getDecoder(const char*  name) EXTRA_SECTION_01;
-        static BOOL isSupportedEncoder(const char*  name) EXTRA_SECTION_01;
-        static BOOL isSupportedDecoder(const char*  name) EXTRA_SECTION_01;
+        static DataTransformer* getEncoder(const char*  name);
+        static DataTransformer* getDecoder(const char*  name);
+        static BOOL isSupportedEncoder(const char*  name);
+        static BOOL isSupportedDecoder(const char*  name);
 
     };
 
