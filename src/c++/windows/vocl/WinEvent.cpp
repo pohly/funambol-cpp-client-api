@@ -80,23 +80,11 @@ wstring& WinEvent::toString() {
         delete vp; vp = NULL;
     }
 
-    if (getProperty(L"Subject", element)) {
-        vp = new VProperty(TEXT("SUMMARY"), element.c_str());
+    if (getProperty(L"AllDayEvent", element)) {
+        vp = new VProperty(TEXT("X-FUNAMBOL-ALLDAY"), element.c_str());
         vo->addProperty(vp);
         delete vp; vp = NULL;
     }
-    if (getProperty(L"Location", element)) {
-        vp = new VProperty(TEXT("LOCATION"), element.c_str());
-        vo->addProperty(vp);
-        delete vp; vp = NULL;
-    }
-    if (getProperty(L"Body", element)) {
-        vp = new VProperty(TEXT("DESCRIPTION"), element.c_str());
-        vo->addProperty(vp);
-        delete vp; vp = NULL;
-    }
-
-    // DTSTART, DTEND: mandatory?
     if (getProperty(L"Start", element)) {
         replaceAll(L"-", L"", element);                         // **** To be removed!!! ****
         stringTimeToDouble(element, &startdate);                // Used later for reminder...
@@ -110,9 +98,45 @@ wstring& WinEvent::toString() {
         vo->addProperty(vp);
         delete vp; vp = NULL;
     }
-    
+
+
+    if (getProperty(L"BusyStatus", element)) {
+        vp = new VProperty(TEXT("X-MICROSOFT-CDO-BUSYSTATUS"), element.c_str());
+        vo->addProperty(vp);
+        delete vp; vp = NULL;
+    }
     if (getProperty(L"Categories", element)) {
         vp = new VProperty(TEXT("CATEGORIES"), element.c_str());
+        vo->addProperty(vp);
+        delete vp; vp = NULL;
+    }
+    if (getProperty(L"Body", element)) {
+        vp = new VProperty(TEXT("DESCRIPTION"), element.c_str());
+        vo->addProperty(vp);
+        delete vp; vp = NULL;
+    }
+    if (getProperty(L"Location", element)) {
+        vp = new VProperty(TEXT("LOCATION"), element.c_str());
+        vo->addProperty(vp);
+        delete vp; vp = NULL;
+    }
+    if (getProperty(L"Importance", element)) {
+        vp = new VProperty(TEXT("PRIORITY"), element.c_str());
+        vo->addProperty(vp);
+        delete vp; vp = NULL;
+    }
+    if (getProperty(L"MeetingStatus", element)) {
+        vp = new VProperty(TEXT("STATUS"), element.c_str());
+        vo->addProperty(vp);
+        delete vp; vp = NULL;
+    }
+    if (getProperty(L"ReplyTime", element)) {
+        vp = new VProperty(TEXT("X-MICROSOFT-CDO-REPLYTIME"), element.c_str());
+        vo->addProperty(vp);
+        delete vp; vp = NULL;
+    }
+    if (getProperty(L"Subject", element)) {
+        vp = new VProperty(TEXT("SUMMARY"), element.c_str());
         vo->addProperty(vp);
         delete vp; vp = NULL;
     }
@@ -131,7 +155,6 @@ wstring& WinEvent::toString() {
         vo->addProperty(vp);
         delete vp; vp = NULL;
     }
-
 
     //
     // ReminderSet
@@ -168,7 +191,6 @@ wstring& WinEvent::toString() {
             delete vp; vp = NULL;
         }
     }
-
 
 
     if (getProperty(L"IsRecurring", element)) {
@@ -209,6 +231,21 @@ wstring& WinEvent::toString() {
             vo->addProperty(vp);
             delete vp; vp = NULL;
         }
+    }
+
+    //
+    // ---- Other Funambol defined properties ----
+    // Support for other fields that don't have a
+    // specific correspondence in vCalendar.
+    if (getProperty(L"Companies", element)) {
+        vp = new VProperty(TEXT("X-FUNAMBOL-COMPANIES"), element.c_str());
+        vo->addProperty(vp);
+        delete vp; vp = NULL;
+    }
+    if (getProperty(L"Mileage", element)) {
+        vp = new VProperty(TEXT("X-FUNAMBOL-MILEAGE"), element.c_str());
+        vo->addProperty(vp);
+        delete vp; vp = NULL;
     }
 
 
@@ -295,16 +332,26 @@ int WinEvent::parse(const wstring dataString) {
         endDateValue = element;
         stringTimeToDouble(element, &endDate);
     }
+
     if (startDate && endDate) {
-        // Check if it's an allDay interval (00:00 - 23:59) or format "yyyyMMdd"
-        bool isAllDay = isAllDayInterval(startDate, endDate);
+        // ALL-DAY EVENT
+        bool isAllDay = false;
+        if(element = getVObjectPropertyValue(vo, L"X-FUNAMBOL-ALLDAY")){
+            isAllDay = wcscmp(element, L"1")?  false : true;
+        }
         if (!isAllDay) {
+            // All-day check #2: interval [00:00 - 23:59]
+            isAllDay = isAllDayInterval(startDate, endDate);
+        }
+        if (!isAllDay) {
+            // All-day check #3: format "yyyyMMdd"
             if (startDateValue.size() == 8 && endDateValue.size() == 8 ) {
                 isAllDay = true;
             }
         }
-        // Safe check on endDate: min value is 'startDate + 1'
+
         if (isAllDay) {
+            // Safe check on endDate: min value is 'startDate + 1'
             if (endDate <= startDate) {
                 endDate = startDate + 1;
                 doubleToStringTime(endDateValue, endDate, true);
@@ -316,10 +363,12 @@ int WinEvent::parse(const wstring dataString) {
     }
 
 
+    if(element = getVObjectPropertyValue(vo, L"X-MICROSOFT-CDO-BUSYSTATUS")) {
+        setProperty(L"BusyStatus", element);
+    }
     if(element = getVObjectPropertyValue(vo, L"CATEGORIES")) {
         setProperty(L"Categories", element);
     }
-
     if(element = getVObjectPropertyValue(vo, L"CLASS")) {
         WCHAR tmp[10];
         if( !wcscmp(element, TEXT("PRIVATE"     )) || 
@@ -330,6 +379,15 @@ int WinEvent::parse(const wstring dataString) {
             wsprintf(tmp, TEXT("%i"), winNormal);           // Normal = 0
         }
         setProperty(L"Sensitivity", tmp);
+    }
+    if(element = getVObjectPropertyValue(vo, L"PRIORITY")) {
+        setProperty(L"Importance", element);
+    }
+    if(element = getVObjectPropertyValue(vo, L"STATUS")) {
+        setProperty(L"MeetingStatus", element);
+    }
+    if(element = getVObjectPropertyValue(vo, L"X-MICROSOFT-CDO-REPLYTIME")) {
+        setProperty(L"ReplyTime", element);
     }
 
 
@@ -397,6 +455,18 @@ int WinEvent::parse(const wstring dataString) {
         // Not recurring.
         setProperty(L"IsRecurring", L"0");
     }
+
+    //
+    // ---- Other Funambol defined properties ----
+    // Support for other fields that don't have a
+    // specific correspondence in vCalendar.
+    if(element = getVObjectPropertyValue(vo, L"X-FUNAMBOL-COMPANIES")) {
+        setProperty(L"Companies", element);
+    }
+    if(element = getVObjectPropertyValue(vo, L"X-FUNAMBOL-MILEAGE")) {
+        setProperty(L"Mileage", element);
+    }
+
 
     return 0;
 }
