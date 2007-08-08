@@ -1,3 +1,6 @@
+2007-08-08
+    - toccy: Improved vCalendar parser/formatter (WinEvent.cpp) to handle all supported properties
+
 2007-08-03
     - magi:  Added WinContactSif class. It is used to handle the SIF properties in a different
              way. So it is possible to handle also other likes Photo.
