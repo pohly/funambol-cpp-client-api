@@ -150,10 +150,13 @@ wstring& WinEvent::toString() {
                 doubleToStringTime(runtime, minStartDate/1440);
 
                 vp = new VProperty(L"AALARM");
-                vp->addValue(runtime.c_str());              // "RunTime"
-                vp->addValue(L"");                          // "Snooze Time" (empty)
-                vp->addValue(L"0");                         // "Repeat Count"
-                vp->addValue(L"reminder");                  // "Audio Content"
+                vp->addValue(runtime.c_str());                      // "RunTime"
+                vp->addValue(L"");                                  // "Snooze Time" (empty)
+                vp->addValue(L"0");                                 // "Repeat Count"
+
+                getProperty(L"ReminderSoundFile", element);         // (empty if not found)
+                vp->addValue(element.c_str());                      // "Audio Content" = sound file path
+
                 vo->addProperty(vp);
                 delete vp; vp = NULL;
             }
@@ -347,6 +350,15 @@ int WinEvent::parse(const wstring dataString) {
             }
             wsprintf(tmp, TEXT("%i"), minBeforeEvent);
             setProperty(L"ReminderMinutesBeforeStart", tmp);
+
+            // Reminder sound file path
+            WCHAR* filePath = vo->getProperty(TEXT("AALARM"))->getPropComponent(4);
+            if (filePath && wcslen(filePath)>0) {
+                setProperty(L"ReminderSoundFile", filePath);
+            }
+            else {
+                setProperty(L"ReminderSoundFile", L"");
+            }
         }
         else {
             // RunTime not found -> no reminder
