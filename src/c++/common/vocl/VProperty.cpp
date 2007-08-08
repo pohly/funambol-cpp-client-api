@@ -263,13 +263,12 @@ WCHAR* VProperty::toString(WCHAR* version) {
     }
 
     WString propertyString = TEXT("");
+    bool isToFormatValue = true;
 
     if (!name){
         goto finally;
     }
     
-    bool isToFormatValue = true;
-
     if (parameterCount()>0 && containsParameter(TEXT("CONTENT-VALUE"))) {
         WCHAR* parVal = getParameterValue(TEXT("CONTENT-VALUE"));
         if (parVal != NULL && wcscmp(parVal, TEXT("UNCHANGED")) == 0) 
@@ -586,11 +585,11 @@ char* convertToQP(const char* input, int start) {
 
 // Returns true if special encoding is needed for the string 'in'.
 bool encodingIsNeed(const char *in) {
-	for(int i = 0; i < int(strlen(in)); i++)
-		if ( (in[i] < 0x20) || (in[i] > 0x7f))
-			return true;
+    for(int i = 0; i < int(strlen(in)); i++)
+        if ( (in[i] < 0x20) || ((unsigned char)in[i] > 0x7f))
+            return true;
 
-	return false;
+    return false;
 }
 
 
