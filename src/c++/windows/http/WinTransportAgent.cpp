@@ -81,31 +81,30 @@ WinTransportAgent::WinTransportAgent(URL& newURL, Proxy& newProxy,
                                      maxResponseTimeout,
                                      maxmsgsize) {
 
+    if (maxResponseTimeout == 0) {
+        setTimeout(DEFAULT_MAX_TIMEOUT);
+    } else {
+        setTimeout(maxResponseTimeout);
+    }
 
+    isToDeflate    = FALSE;
+    isFirstMessage = TRUE;
+    isToInflate    = FALSE;
 
-     if (maxResponseTimeout == 0) {
-         setTimeout(DEFAULT_MAX_TIMEOUT);
-     } else {
-         setTimeout(maxResponseTimeout);
-     }
-
-     isToDeflate    = FALSE;
-     isFirstMessage = TRUE;
-     isToInflate    = FALSE;
-
-    #ifdef _WIN32_WCE
+#ifdef _WIN32_WCE
     // used by default. check connection before...
     if (!EstablishConnection()) {
-        #ifdef WIN32_PLATFORM_PSPC
+
+#  ifdef WIN32_PLATFORM_PSPC
         lastErrorCode = ERR_INTERNET_CONNECTION_MISSING;
         sprintf(lastErrorMsg, "%s: %d",
             "Internet Connection Missing",
             ERR_INTERNET_CONNECTION_MISSING);
-        #else
+#  else
         LOG.error("Warning: internet connection missing.");
-        #endif  // #ifdef WIN32_PLATFORM_PSPC
+#  endif  // #ifdef WIN32_PLATFORM_PSPC
     }
-    #endif  // #ifdef _WIN32_WCE
+#endif  // #ifdef _WIN32_WCE
 
 }
 
@@ -447,7 +446,7 @@ char* WinTransportAgent::sendMessage(const char* msg) {
             goto exit;
         }
         else {
-        	// Other HTTP errors -> OUT
+            // Other HTTP errors -> OUT
             lastErrorCode = ERR_HTTP_STATUS_NOT_OK;         // else -> out code 2053
             DWORD code = GetLastError();
             char* tmp = createHttpErrorMessage(code);
@@ -531,25 +530,22 @@ char* WinTransportAgent::sendMessage(const char* msg) {
 	    	wcscpy(buffer, TEXT("Uncompressed-Content-Length"));
 	
 	    	HttpQueryInfo(request, HTTP_QUERY_CUSTOM, (LPVOID)buffer, &dwSize, NULL);
-            if (GetLastError() == ERROR_HTTP_HEADER_NOT_FOUND) {
-                LOG.error("Error reading 'Uncompressed-Content-Length' header. "
-                    "Can't inflate data.");
-                status = ERR_HTTP_INFLATE;
-                lastErrorCode = ERR_HTTP_INFLATE;
-                goto exit;
-
-            } else {
-                uncompressedContentLenght = wcstol(buffer, NULL, 10);
-                LOG.debug("Uncompressed-Content-Length: %ld", uncompressedContentLenght);
-                if(uncompressedContentLenght < 0) {
-                    LOG.error("Invalid 'Uncompressed-Content-Length' header. "
-                        "Can't inflate data.");
-                    status = ERR_HTTP_INFLATE;
-                    lastErrorCode = ERR_HTTP_INFLATE;
-                    goto exit;
+                if (GetLastError() == ERROR_HTTP_HEADER_NOT_FOUND) {
+                    LOG.error("Error reading 'Uncompressed-Content-Length' header.");
+                    uncompressedContentLenght = -1;
                 }
+                else {
+                    uncompressedContentLenght = wcstol(buffer, NULL, 10);
+                    LOG.debug("Uncompressed-Content-Length: %ld", uncompressedContentLenght);
+                }
+
+                // Check header value, use MAX_MSG_SIZE if not valid.
+                if(uncompressedContentLenght <= 0) {
+                    LOG.error("Invalid value, using max message size.");
+                    uncompressedContentLenght = maxmsgsize * 2;
+                }
+
             }
-        }
 	
 	    delete [] buffer;
 	    buffer = NULL;
@@ -654,8 +650,9 @@ char* WinTransportAgent::sendMessage(const char* msg) {
 	            delete [] response;
 	            response = NULL;
 	            status = ERR_HTTP_INFLATE;
-	            lastErrorCode = ERR_HTTP_INFLATE;
-	            sprintf(lastErrorMsg, "ZLIB: error occurred decompressing data from Server.");
+                    setError(
+                        ERR_HTTP_INFLATE,
+                        "ZLIB: error occurred decompressing data from Server.");
 	            goto exit;
 	        }
 	    }
@@ -684,9 +681,9 @@ exit:
     if (bufferA)      delete [] bufferA;
 
 #ifdef USE_ZLIB
-	if (compr)        delete [] compr;
-	if (buffer)       delete [] buffer;
-	if (wbuffer)      delete [] wbuffer;
+    if (compr)        delete [] compr;
+    if (buffer)       delete [] buffer;
+    if (wbuffer)      delete [] wbuffer;
 #endif
     EXITING(L"TransportAgent::sendMessage");
 
