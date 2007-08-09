@@ -76,11 +76,6 @@
       #define new new(__FILE__, __LINE__)
     #endif
 
-    extern char lastErrorMsg[];
-    extern int  lastErrorCode;
-
-    void resetError();
-
     #ifndef SYNC4J_LINEBREAK
     // default encoding of line break in native strings,
     // may be overridden by adapter header files above

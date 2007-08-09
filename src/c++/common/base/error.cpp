@@ -16,14 +16,39 @@
  * 02111-1307  USA
  */
 
-
 #include "base/fscapi.h"
-#include "base/constants.h"
 
 int  lastErrorCode = ERR_NONE;
 char lastErrorMsg[DIM_ERROR_MESSAGE];
 
+// Reset error message and code
 void resetError() {
-	lastErrorCode = ERR_NONE;
-	strcpy(lastErrorMsg, "");
+    lastErrorCode = ERR_NONE;
+    strcpy(lastErrorMsg, "");
+}
+
+// Set error message and code
+void setError(int errorCode, const char *errorMessage) {
+    lastErrorCode = errorCode;
+    strcpy(lastErrorMsg, errorMessage);
+}
+
+// Set error message and code
+void setErrorF(int errorCode, const char *msgFormat, ...) {
+    lastErrorCode = errorCode;
+
+    va_list argList;
+    va_start(argList, msgFormat);
+    vsprintf(lastErrorMsg, msgFormat, argList);
+    va_end(argList);
+}
+
+// Retrieve last error code
+int getLastErrorCode() {
+    return lastErrorCode;
+}
+
+// Retrieve last error message
+const char *getLastErrorMsg() {
+    return lastErrorMsg;
 }

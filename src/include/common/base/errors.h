@@ -35,17 +35,33 @@
 #define ERRMSG_B64_GARBAGE              "Garbage found, giving up"
 #define ERRMSG_B64_ORPHANED_BITS        "Orphaned bits ignored"
 #define ERRMSG_NOT_ENOUGH_MEMORY        "Not enough memory (%d bytes required)"
+   
+/* ************************ DEPRECATED ***************************
+ * Do not access these variable directly anymore, they will be hidden
+ * in the future. Use the access methods instead.
+ */
+extern int  lastErrorCode;
+extern char lastErrorMsg[];
 
-//
-// moved into fscapi.h
-//
-// extern int  lastErrorCode;
-// extern char lastErrorMsg[];
-// extern char lastErrorMsg[];
+/**
+ * Reset the error message and code.
+ */
+void resetError();
 
-// void resetError();
+/**
+ * Set error message and code.
+ */
+void setError(int errorCode, const char *errorMessage);
 
+/**
+ * Retrieve the last error code.
+ */
+int getLastErrorCode();
 
+/**
+ * Retrieve the last error message.
+ */
+const char *getLastErrorMsg();
 
 /** @endcond */
 #endif
