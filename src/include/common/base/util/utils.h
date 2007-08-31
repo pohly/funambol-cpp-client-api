@@ -106,7 +106,7 @@ int round(double val);
 * Method to create the cred data given the username, password and nonce
 * It uses the calculateMD5 to calculate the MD5 using the alghoritm.
 */
-char*  MD5CredentialData(char*  userName, char*  password, char*  nonce);
+char*  MD5CredentialData(const char* userName, const char* password, const char* nonce);
 
 /*
 * Calculates the digest given the token and its lenght

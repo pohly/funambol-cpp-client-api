@@ -207,7 +207,7 @@ int round(double val) {
 * Data: H (B64(H(username:password)):nonce)
 */
 
-char* MD5CredentialData(char* userName, char* password, char* nonce) {
+char* MD5CredentialData(const char* userName, const char* password, const char* nonce) {
 
     int len = 0, lenNonce = 0, totLen = 0;
 
