@@ -143,7 +143,11 @@ int BasicTime::parseRfc822(const char *date)
         return -1;
 
 	// Year ---------------------------------
-	if (year < 100) year += 1900;
+    if (year <= 60) {
+        year += 2000;
+    } else if (year > 60) {
+        year += 1900;
+    }
 
 	// hh:mm:ss -------------------------
 	// do we have sec?
@@ -205,29 +209,27 @@ int BasicTime::parseRfc822(const char *date)
 * we are searching. To decide it the date must contain the month, a space
 * and the millennium
 *
-* Mar 2007, Jun 2007. We search Mar 2, Jun 2.
+* Mar 2007, Jun 2007, Mar 07, Mar 98. We search Mar 2, Mar 0...
 * If no one of them is found try with the millenium 1XXX
 *
 */
 bool BasicTime::isADate(const char* date) {
-    const char *months2000[] = {
+    const char *months[] = {
         "Jan 2", "Feb 2", "Mar 2", "Apr 2",
         "May 2", "Jun 2", "Jul 2", "Aug 2",
-        "Sep 2", "Oct 2", "Nov 2", "Dec 2"
-    };
-
-    const char *months1000[] = {
+        "Sep 2", "Oct 2", "Nov 2", "Dec 2",
         "Jan 1", "Feb 1", "Mar 1", "Apr 1",
         "May 1", "Jun 1", "Jul 1", "Aug 1",
-        "Sep 1", "Oct 1", "Nov 1", "Dec 1"
-    };
-    for (int i = 0; i < 12; i++) {
-        if (strstr(date, months2000[i]) != NULL) {
-            return true;
-        }
-    }
-    for (int i = 0; i < 12; i++) {
-        if (strstr(date, months1000[i]) != NULL) {
+        "Sep 1", "Oct 1", "Nov 1", "Dec 1",
+        "Jan 0", "Feb 0", "Mar 0", "Apr 0",
+        "May 0", "Jun 0", "Jul 0", "Aug 0",
+        "Sep 0", "Oct 0", "Nov 0", "Dec 0",
+        "Jan 9", "Feb 9", "Mar 9", "Apr 9",
+        "May 9", "Jun 9", "Jul 9", "Aug 9",
+        "Sep 9", "Oct 9", "Nov 9", "Dec 9"
+    };   
+    for (int i = 0; i < 48; i++) {
+        if (strstr(date, months[i]) != NULL) {
             return true;
         }
     }
