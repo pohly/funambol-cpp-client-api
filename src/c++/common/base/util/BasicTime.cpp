@@ -145,7 +145,7 @@ int BasicTime::parseRfc822(const char *date)
 	// Year ---------------------------------
     if (year <= 60) {
         year += 2000;
-    } else if (year > 60) {
+    } else if (year > 60 && year < 100) {
         year += 1900;
     }
 
