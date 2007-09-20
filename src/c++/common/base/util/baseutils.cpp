@@ -282,3 +282,14 @@ char* calculateMD5(const void* token, int len, char* wdigest) {
         return NULL;
     }
 }
+
+
+size_t fgetsize(FILE *f)
+{
+    size_t size;
+
+    fseek(f, 0, SEEK_END);
+    size=ftell(f);
+    fseek(f, 0, SEEK_SET);
+    return size;
+}

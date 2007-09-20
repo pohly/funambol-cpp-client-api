@@ -339,16 +339,6 @@ char *mkTempFileName(const char *name)
 }
 
 
-size_t fgetsize(FILE *f)
-{
-    size_t size;
-
-    fseek(f, 0, SEEK_END);
-    size=ftell(f);
-    fseek(f, 0, SEEK_SET);
-    return size;
-}
-
 bool readFile(const char* path, char **message, size_t *len, bool binary)
 {
     FILE *f;
