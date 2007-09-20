@@ -153,16 +153,16 @@ void Log::error(const char*  msg, ...) {
 void Log::info(const char*  msg, ...) {
     if (logLevel >= LOG_LEVEL_INFO) {
         va_list argList;
-	    va_start (argList, msg);
+        va_start (argList, msg);
         printMessage(LOG_INFO, msg, argList);
-	    va_end(argList);
+        va_end(argList);
 
     }
 }
 
 void Log::debug(const char*  msg, ...) {
     if (logLevel >= LOG_LEVEL_DEBUG) {
-	    va_list argList;
+        va_list argList;
         va_start (argList, msg);
         printMessage(LOG_DEBUG, msg, argList);
         va_end(argList);
@@ -209,5 +209,17 @@ void Log::reset(const char*  title) {
     if (logFile) {
         ftruncate(fileno(logFile), 0);
     }
+}
+
+
+size_t Log::getLogSize() {
+    size_t ret = 0;
+
+    logFile = fopen(logDir, "r");
+    if (logFile) {
+        ret = fgetsize(logFile);
+        fclose(logFile);
+    }
+    return ret;
 }
 

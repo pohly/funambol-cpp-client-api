@@ -68,6 +68,9 @@
 
         BOOL isLoggable(LogLevel level);
 
+		/// Returns the log file size [bytes].
+        size_t getLogSize();
+
         // FIXME!
         //void printMessageW(const char* level, const WCHAR* msg, va_list argList);
 

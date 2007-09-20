@@ -196,3 +196,14 @@ void Log::reset(const char* title) {
 }
 
 
+size_t Log::getLogSize() {
+    size_t ret = 0;
+
+    logFile = fopen(logDir, "r");
+    if (logFile) {
+        ret = fgetsize(logFile);
+        fclose(logFile);
+    }
+    return ret;
+}
+
