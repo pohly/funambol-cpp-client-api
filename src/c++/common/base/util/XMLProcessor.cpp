@@ -773,7 +773,7 @@ const char* XMLProcessor::getElementAttributes(const char* xml,
     p1 = strstr(xml, openTag);
 
     if (!p1) {
-        LOG.info("XMLProcessor: tag %s not found", tag);
+        LOG.debug("XMLProcessor: tag %s not found", tag);
         goto finally;
     }
     // move to the beginning of the attribute list
