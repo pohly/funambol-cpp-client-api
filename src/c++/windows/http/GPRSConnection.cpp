@@ -45,7 +45,7 @@ BOOL EstablishConnection() {
     ConnMgrConnectionStatus(phWebConnection, &pdwStatus);
 
     if (pdwStatus == CONNMGR_STATUS_CONNECTED) {
-        LOG.info("Arleady connected");
+        LOG.info("Already connected");
         //We are already connected!
         return TRUE;
     } 
