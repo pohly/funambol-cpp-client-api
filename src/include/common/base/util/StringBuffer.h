@@ -172,6 +172,7 @@ class StringBuffer: public ArrayElement {
 
         /**
          * Perform case insensitive compare
+         * @return true if equals
          */
         bool icmp(const char *sc) const ;
 

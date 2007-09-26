@@ -373,7 +373,8 @@ StringBuffer& StringBuffer::lowerCase() {
 }
 
 /**
- * Perform case insensitive compare
+ * Perform case insensitive compare.
+ * @return true if equals
  */
 bool StringBuffer::icmp(const char *sc) const {
     return wcscmpIgnoreCase(s, sc);
