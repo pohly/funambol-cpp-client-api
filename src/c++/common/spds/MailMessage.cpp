@@ -645,7 +645,7 @@ StringBuffer decodeHeader(StringBuffer line) {
         StringBuffer encoding = line.substr(firstMark+1, secondMark - (firstMark + 1));
         StringBuffer text = line.substr(secondMark+1, endPos - (secondMark + 1));
 
-        if (encoding == "Q") {
+        if (encoding.icmp("Q")) {
             // quoted-printable
             text.replaceAll("_", " ");
             char* dec = qp_decode(text);
@@ -656,7 +656,7 @@ StringBuffer decodeHeader(StringBuffer line) {
             ret += dec;
             delete [] dec;
         }
-        else if (encoding == "B"){
+        else if (encoding.icmp("B")){
         // base64
             char* dec = new char[text.length()];
             int len = b64_decode((void *)dec, text);
