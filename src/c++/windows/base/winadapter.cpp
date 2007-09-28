@@ -580,6 +580,12 @@ WCHAR* toWideChar(const char *mb, const char *encoding) {
 }
 
 
+int round(double val) {
+    int v = (int)val;
+    return ((val - v) > 0.5) ? v+1 : v;
+}
+
+
 
 #if defined(WIN32) && !defined(_WIN32_WCE)
 // ----------------------------------------------------

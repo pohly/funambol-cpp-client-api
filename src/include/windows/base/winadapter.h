@@ -45,6 +45,13 @@ typedef wchar_t WCHAR;
 // size check for wide char.
 #define snwprintf _snwprintf
 
+
+/**
+ * Returns a rounded integer value from double.
+ */
+int round(double val);
+
+
 #if defined(WIN32) && !defined(_WIN32_WCE)
 void printMemLeaks();
 #endif

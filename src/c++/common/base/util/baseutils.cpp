@@ -192,12 +192,6 @@ char* ltow(long i) {
 }
 
 
-int round(double val) {
-    int v = (int)val;
-    return ((val - v) > 0.5) ? v+1 : v;
-}
-
-
 
 /*
 * It implements algo for authentication with MD5 method.

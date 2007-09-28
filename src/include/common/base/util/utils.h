@@ -97,10 +97,6 @@ char*  itow(int i);
 */
 char*  ltow(long i);
 
-/**
- * Returns a rounded integer value from double.
- */
-int round(double val);
 
 /*
 * Method to create the cred data given the username, password and nonce
