@@ -99,11 +99,13 @@ wstring WinContactSIF::trim(const wstring& str) {
 wstring WinContactSIF::formatDateWithMinus(wstring stringDate) {
     
     wstring ret;
-    ret = stringDate.substr(0, 4);
-    ret += L"-";
-    ret += stringDate.substr(4, 2);
-    ret += L"-";
-    ret += stringDate.substr(6, 2);    
+    if (stringDate.length() == 8) {
+        ret = stringDate.substr(0, 4);
+        ret += L"-";
+        ret += stringDate.substr(4, 2);
+        ret += L"-";
+        ret += stringDate.substr(6, 2);
+    }
     return ret;
 }
 
