@@ -431,6 +431,14 @@ char* WinTransportAgent::sendMessage(const char* msg) {
             LOG.debug(lastErrorMsg);
             goto exit;
         }
+        // to handle the http error code for the tcp/ip notification and client not notifiable
+        // code 421 is returned by newer Funambol Server to say "you're allowed to start CTP"
+        else if (status == ERR_CTP_ALLOWED) {               // 421 -> out code 421
+            lastErrorCode = ERR_CTP_ALLOWED;
+            sprintf(lastErrorMsg, "HTTP server error: %d. Client not notifiable and CTP Server is available.", status);
+            LOG.debug(lastErrorMsg);
+            goto exit;
+        }
         #endif
         
         else if (status == HTTP_STATUS_NOT_FOUND) {         // 404 -> out code 2060
