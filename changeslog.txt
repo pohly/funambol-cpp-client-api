@@ -1,3 +1,7 @@
+2007-10-01
+    - toccy: WinTransportAgent: removed 'compression' check when reading response, to accept compressed
+             data even if 'compression' flag is disabled.
+
 Funambol SDK C++ 6.5.0
 -----------------------
 
