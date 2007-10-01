@@ -487,77 +487,75 @@ char* WinTransportAgent::sendMessage(const char* msg) {
 #ifdef USE_ZLIB
     int uncompressedContentLenght = 0;
 
-    if(compression){
-        // Release the send buffer (also set msgToSend to NULL, to
-        // avoid leaving a dangling pointer around.
-	    if (compr) {
-	            delete [] compr; compr = NULL;
-	            msgToSend = NULL;
-	    }
-	
-	    //
-	    // Read headers: get contentLenght/Uncompressed-Content-Length.
-	    //
-	    wbuffer = new WCHAR[1024];
-	    DWORD ddsize = 1024;
-	    if (!HttpQueryInfo(request,HTTP_QUERY_RAW_HEADERS_CRLF ,(LPVOID)wbuffer,&ddsize,NULL)) {
-	        if (ERROR_HTTP_HEADER_NOT_FOUND == GetLastError()) {
-	            isToDeflate = FALSE;
-	        }
-	    }
-	    LOG.debug("Header: %ls", wbuffer);
-	    delete [] wbuffer; wbuffer = NULL;
-	
-	    // isToDeflate to be set
-	    DWORD dwSize = 512;
-	    buffer = new WCHAR[dwSize];
-	    memset(buffer, 0, dwSize*sizeof(WCHAR));
-	
-	    wcscpy(buffer, TEXT("Accept-Encoding"));
-	    HttpQueryInfo(request, HTTP_QUERY_CUSTOM, (LPVOID)buffer, &dwSize, NULL);
-	    if (GetLastError() == ERROR_HTTP_HEADER_NOT_FOUND) {
-	        isToDeflate = FALSE;
-	    } else {
-	        isToDeflate = TRUE;
-	    }
-	
-	    memset(buffer, 0, dwSize*sizeof(WCHAR));
-	    wcscpy(buffer, TEXT("Content-Encoding"));
-	    HttpQueryInfo(request, HTTP_QUERY_CUSTOM, (LPVOID)buffer, &dwSize, NULL);
-	    if (GetLastError() == ERROR_HTTP_HEADER_NOT_FOUND) {
-	        isToInflate = FALSE;
-	    } else {
-	        if (wcscmp(buffer, TEXT("deflate")) == 0)
-	            isToInflate = TRUE;
-	        else
-	            isToInflate = FALSE;
-	    }
+    // Release the send buffer (also set msgToSend to NULL, to
+    // avoid leaving a dangling pointer around.
+    if (compr) {
+        delete [] compr; compr = NULL;
+        msgToSend = NULL;
+    }
 
-	    if(isToInflate) {
-	    	memset(buffer, 0, dwSize*sizeof(WCHAR));
-	    	wcscpy(buffer, TEXT("Uncompressed-Content-Length"));
-	
-	    	HttpQueryInfo(request, HTTP_QUERY_CUSTOM, (LPVOID)buffer, &dwSize, NULL);
-                if (GetLastError() == ERROR_HTTP_HEADER_NOT_FOUND) {
-                    LOG.error("Error reading 'Uncompressed-Content-Length' header.");
-                    uncompressedContentLenght = -1;
-                }
-                else {
-                    uncompressedContentLenght = wcstol(buffer, NULL, 10);
-                    LOG.debug("Uncompressed-Content-Length: %ld", uncompressedContentLenght);
-                }
+    //
+    // Read headers: get contentLenght/Uncompressed-Content-Length.
+    //
+    wbuffer = new WCHAR[1024];
+    DWORD ddsize = 1024;
+    if (!HttpQueryInfo(request,HTTP_QUERY_RAW_HEADERS_CRLF ,(LPVOID)wbuffer,&ddsize,NULL)) {
+        if (ERROR_HTTP_HEADER_NOT_FOUND == GetLastError()) {
+            isToDeflate = FALSE;
+        }
+    }
+    LOG.debug("Header: %ls", wbuffer);
+    delete [] wbuffer; wbuffer = NULL;
 
-                // Check header value, use MAX_MSG_SIZE if not valid.
-                if(uncompressedContentLenght <= 0) {
-                    LOG.error("Invalid value, using max message size.");
-                    uncompressedContentLenght = maxmsgsize * 2;
-                }
+    // isToDeflate to be set
+    DWORD dwSize = 512;
+    buffer = new WCHAR[dwSize];
+    memset(buffer, 0, dwSize*sizeof(WCHAR));
 
-            }
-	
-	    delete [] buffer;
-	    buffer = NULL;
-    }  //end if compression
+    wcscpy(buffer, TEXT("Accept-Encoding"));
+    HttpQueryInfo(request, HTTP_QUERY_CUSTOM, (LPVOID)buffer, &dwSize, NULL);
+    if (GetLastError() == ERROR_HTTP_HEADER_NOT_FOUND) {
+        isToDeflate = FALSE;
+    } else {
+        isToDeflate = TRUE;
+    }
+
+    memset(buffer, 0, dwSize*sizeof(WCHAR));
+    wcscpy(buffer, TEXT("Content-Encoding"));
+    HttpQueryInfo(request, HTTP_QUERY_CUSTOM, (LPVOID)buffer, &dwSize, NULL);
+    if (GetLastError() == ERROR_HTTP_HEADER_NOT_FOUND) {
+        isToInflate = FALSE;
+    } else {
+        if (wcscmp(buffer, TEXT("deflate")) == 0)
+            isToInflate = TRUE;
+        else
+            isToInflate = FALSE;
+    }
+
+    if(isToInflate) {
+        memset(buffer, 0, dwSize*sizeof(WCHAR));
+        wcscpy(buffer, TEXT("Uncompressed-Content-Length"));
+
+        HttpQueryInfo(request, HTTP_QUERY_CUSTOM, (LPVOID)buffer, &dwSize, NULL);
+        if (GetLastError() == ERROR_HTTP_HEADER_NOT_FOUND) {
+            LOG.error("Error reading 'Uncompressed-Content-Length' header.");
+            uncompressedContentLenght = -1;
+        }
+        else {
+            uncompressedContentLenght = wcstol(buffer, NULL, 10);
+            LOG.debug("Uncompressed-Content-Length: %ld", uncompressedContentLenght);
+        }
+
+        // Check header value, use MAX_MSG_SIZE if not valid.
+        if(uncompressedContentLenght <= 0) {
+            LOG.error("Invalid value, using max message size.");
+            uncompressedContentLenght = maxmsgsize * 2;
+        }
+    }
+
+    delete [] buffer;
+    buffer = NULL;
+
 #endif
 
 
@@ -637,34 +635,34 @@ char* WinTransportAgent::sendMessage(const char* msg) {
     //------------------------------------------------------------- Response read
 
 #ifdef USE_ZLIB
-    if(compression){
-	    if (isToInflate) {
-	        //
-	        // INFLATE (decompress data)
-	        //
-	        uLong uncomprLen = uncompressedContentLenght;
-	        Bytef* uncompr = new Bytef[uncomprLen + 1];
-	
-	        // Decompresses the source buffer into the destination buffer.
-	        int err = uncompress(uncompr, &uncomprLen, (Bytef*)response, contentLength);
-	
-	        if (err == Z_OK) {
-	            delete [] response;
-	            response = (char*)uncompr;
-	            response[uncompressedContentLenght] = 0;
-	        }
-	        else if (err < 0) {
-	            LOG.error("Error from zlib: %s", zError(err));
-	            delete [] response;
-	            response = NULL;
-	            status = ERR_HTTP_INFLATE;
-                    setError(
-                        ERR_HTTP_INFLATE,
-                        "ZLIB: error occurred decompressing data from Server.");
-	            goto exit;
-	        }
-	    }
-    }  //end if compression
+
+    if (isToInflate) {
+        //
+        // INFLATE (decompress data)
+        //
+        uLong uncomprLen = uncompressedContentLenght;
+        Bytef* uncompr = new Bytef[uncomprLen + 1];
+
+        // Decompresses the source buffer into the destination buffer.
+        int err = uncompress(uncompr, &uncomprLen, (Bytef*)response, contentLength);
+
+        if (err == Z_OK) {
+            delete [] response;
+            response = (char*)uncompr;
+            response[uncompressedContentLenght] = 0;
+        }
+        else if (err < 0) {
+            LOG.error("Error from zlib: %s", zError(err));
+            delete [] response;
+            response = NULL;
+            status = ERR_HTTP_INFLATE;
+                setError(
+                    ERR_HTTP_INFLATE,
+                    "ZLIB: error occurred decompressing data from Server.");
+            goto exit;
+        }
+    }
+
 #endif
 
     LOG.debug("Response read:\n%s", response);
