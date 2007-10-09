@@ -1,6 +1,9 @@
+2007-10-09
+    - gazza: fixes applied for 64 bit compatibility. Test client updated.
 2007-10-01
-    - toccy: WinTransportAgent: removed 'compression' check when reading response, to accept compressed
-             data even if 'compression' flag is disabled.
+    - toccy: WinTransportAgent: removed 'compression' check when reading 
+             response, to accept compressed data even if 'compression' 
+             flag is disabled.
 
 Funambol SDK C++ 6.5.0
 -----------------------
