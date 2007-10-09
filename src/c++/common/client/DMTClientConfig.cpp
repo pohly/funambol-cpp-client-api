@@ -720,7 +720,7 @@ void DMTClientConfig::saveExtAccessConfig(ManagementNode& syncMLNode,
                                           ManagementNode& extNode) {
     char buf[512];
 
-    sprintf(buf, "%lu", accessConfig.getFirstTimeSyncMode());
+    sprintf(buf, "%u", (unsigned)accessConfig.getFirstTimeSyncMode());
     extNode.setPropertyValue(PROPERTY_FIRST_TIME_SYNC_MODE, buf);
 
     sprintf(buf, "%lu", accessConfig.getMaxMsgSize());

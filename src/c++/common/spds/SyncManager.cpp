@@ -1932,6 +1932,8 @@ SyncItem* SyncManager::getItem(SyncSource& source, SyncItem* (SyncSource::* getI
     if (!syncItem->getDataEncoding()) {
         if ( (encoding && encoding[0]) || (encryption && encryption[0]) ) {
             if (syncItem->changeDataEncoding(encoding, encryption, credentialInfo)) {
+                LOG.error("Error: invalid encoding for item: %" WCHAR_PRINTF ,
+                    syncItem->getKey());
                 delete syncItem;
                 syncItem = NULL;
             }

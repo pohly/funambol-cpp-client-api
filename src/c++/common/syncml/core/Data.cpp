@@ -54,7 +54,7 @@ void Data::initialize() {
 Data::Data(long data) {
     initialize();
     char tmp[DIM_64];
-    sprintf(tmp, "%i", data);
+    sprintf(tmp, "%ld", data);
     setData(tmp);
 }
 

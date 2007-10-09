@@ -143,6 +143,7 @@ int CurlTransportAgent::debugCallback(CURL *easyhandle, curl_infotype type, char
         LOG.debug(buffer);
         delete [] buffer;
     }
+    return 0;
 }
 
 /*

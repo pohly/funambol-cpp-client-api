@@ -187,7 +187,7 @@ char* itow(int i) {
 char* ltow(long i) {
     char* ret = new char[20];
     memset(ret, 0, 20*sizeof(char));
-    sprintf(ret, "%i", i);
+    sprintf(ret, "%ld", i);
     return ret;
 }
 

@@ -262,7 +262,7 @@ void* SyncItem::setData(const void* itemData, long dataSize) {
     data = new char[size + 1];
     if (data == NULL) {
         lastErrorCode = ERR_NOT_ENOUGH_MEMORY;
-        sprintf(lastErrorMsg, ERRMSG_NOT_ENOUGH_MEMORY, dataSize);
+        sprintf(lastErrorMsg, ERRMSG_NOT_ENOUGH_MEMORY, (int)dataSize);
         return NULL;
     }
 

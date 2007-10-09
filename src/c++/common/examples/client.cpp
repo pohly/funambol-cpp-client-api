@@ -88,7 +88,7 @@ int main(int argc, char** argv) {
     // Init LOG
     Log(0, LOG_PATH, LOG_NAME);
     LOG.reset(LOG_TITLE);
-    LOG.setLevel(LOG_LEVEL_NONE);
+    LOG.setLevel(LOG_LEVEL_INFO);
 
 #if 0
     _CrtSetDbgFlag (ON);
@@ -321,7 +321,7 @@ void createConfig(DMTClientConfig& config) {
     delete dc;
 
     SyncSourceConfig* sc = DefaultConfigFactory::getSyncSourceConfig(SOURCE_NAME);
-    sc->setEncoding("plain/text");
+    sc->setEncoding("bin");
     sc->setType    ("text");
     sc->setURI     ("briefcase");
     config.setSyncSourceConfig(*sc);

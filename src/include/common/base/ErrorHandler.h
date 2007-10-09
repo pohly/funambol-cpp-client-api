@@ -26,7 +26,7 @@ class ErrorHandler {
 
     public:
         ErrorHandler();
-        ~ErrorHandler();
+        virtual ~ErrorHandler();
 
         /**
          * @brief Handle a warning event.

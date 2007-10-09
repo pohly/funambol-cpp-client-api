@@ -93,3 +93,4 @@ void TransportAgent::setCompression(BOOL newCompression){
 BOOL TransportAgent::getCompression(){
     return compression;
 }
+
