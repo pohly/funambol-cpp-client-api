@@ -115,13 +115,13 @@ wstring WinContactSIF::adaptToSIFSpecs(const wstring& propName, const wstring& p
 
     if ((propName == L"Anniversary" || propName == L"Birthday") && propValue != L"") {
        propertyValue = formatDateWithMinus(propValue);    
-    } else if (propName == L"Picture" && propValue != L"") {
+    } else if (propName == L"Photo" && propValue != L"") {
         // the picture is right for vcard: for windows we have to format better the sif
         // even if it should work anyway.
-        //<Picture>    /9j/4AAQSkZJRgABAQEAcwBzAAD/2wBDAAgGBgcGBQgHBwcJCQgKDBQNDAsLDBkSEw8UHRof
+        //<Photo>    /9j/4AAQSkZJRgABAQEAcwBzAAD/2wBDAAgGBgcGBQgHBwcJCQgKDBQNDAsLDBkSEw8UHRof
         //        Hh0aHBwgJC4nICIsIxwcKDcpLDAxNDQ0Hyc5PTgyPC4zNDL/2wBDAQkJCQwLDBgNDRgyIRwh   
         //        MDyN8gIU9aKyV+o9D//Z
-        //        </Picture>
+        //        </Photo>
         propertyValue = trim(propValue);
         
     } 

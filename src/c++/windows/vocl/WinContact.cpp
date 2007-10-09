@@ -372,7 +372,7 @@ wstring WinContact::toString() {
     delete vp; vp = NULL;
     
      //PHOTO
-    if (getProperty(L"Picture", element)) {
+    if (getProperty(L"Photo", element)) {
         vp = new VProperty(L"PHOTO", element.c_str());
         if (element != L"") {
             vp->addParameter(L"CONTENT-VALUE", L"UNCHANGED");        
@@ -670,7 +670,7 @@ int WinContact::parse(const wstring dataString) {
         }
         
         else if(!wcscmp(name, L"PHOTO")) {
-			setProperty(L"Picture", element);
+			setProperty(L"Photo", element);
         }
 
         //
