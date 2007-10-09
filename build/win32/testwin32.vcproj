@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="Windows-1252"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="8,00"
+	Version="8.00"
 	Name="testwin32"
 	ProjectGUID="{C581FD5F-8CF7-4CFA-84CA-F16314068F44}"
 	RootNamespace="testwin32"
@@ -229,10 +229,6 @@
 						PreprocessorDefinitions=""
 					/>
 				</FileConfiguration>
-			</File>
-			<File
-				RelativePath="..\..\src\c++\common\examples\test_settings.cpp"
-				>
 			</File>
 			<File
 				RelativePath="..\..\src\c++\common\examples\TestSyncSource.cpp"
