@@ -423,6 +423,12 @@ int WinEvent::parse(const wstring dataString) {
             setProperty(L"ReminderSet", L"0");
         }
     }
+    else {
+        // AALARM not found -> reset reminder!
+        // Note: this is done for compatibility with most devices: if alarm not set
+        //       AALARM property is not sent.
+        setProperty(L"ReminderSet", L"0");
+    }
 
 
     if(element = getVObjectPropertyValue(vo, L"RRULE")) {
