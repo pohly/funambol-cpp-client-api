@@ -330,7 +330,7 @@ int SyncManager::prepareSync(SyncSource** s) {
     if (devInf) {
         char md5[16];
         devInfStr = Formatter::getDevInf(devInf);
-        LOG.debug("devinfo: %s", devInfStr->c_str());
+        LOG.debug("Checking devinfo...");
         // Add syncUrl to devInfHash, so hash changes if syncUrl has changed
         devInfStr->append("<SyncURL>");
         devInfStr->append(config.getAccessConfig().getSyncURL());
