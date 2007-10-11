@@ -41,7 +41,7 @@ BOOL EstablishConnection() {
 
     // First we check if we might have a connection
     DWORD  pdwStatus = 0;
-    LOG.info("Establish connection: test internet connection status...");
+    LOG.debug("Establish connection: test internet connection status...");
     ConnMgrConnectionStatus(phWebConnection, &pdwStatus);
 
     if (pdwStatus == CONNMGR_STATUS_CONNECTED) {
