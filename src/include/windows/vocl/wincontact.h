@@ -60,7 +60,7 @@ public:
     WinContact(const wstring dataString);
 
     /// Destructor
-    ~WinContact();
+    virtual ~WinContact();
 
 
     /**

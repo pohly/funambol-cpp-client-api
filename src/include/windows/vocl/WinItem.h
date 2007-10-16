@@ -72,7 +72,7 @@ public:
     WinItem();
 
     /// Destructor
-    ~WinItem();
+    virtual ~WinItem();
 
 
     /// Returns the size of propertyMap;
