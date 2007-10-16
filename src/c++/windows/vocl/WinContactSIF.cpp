@@ -49,7 +49,7 @@ wstring WinContactSIF::toString() {
     while (it != propertyMap.end()) {        
         propertyValue = it->second;      
         propertyValue = adaptToSIFSpecs(it->first, propertyValue); 
-        addPropertyToSIF(it->first, propertyValue, sif);                
+        addPropertyToSIF(it->first, propertyValue);                
         it ++;
     }
     sif += L"</contact>";
@@ -60,7 +60,7 @@ wstring WinContactSIF::toString() {
 
 
 
-void WinContactSIF::addPropertyToSIF(const wstring propertyName, wstring propertyValue, wstring& sif) {
+void WinContactSIF::addPropertyToSIF(const wstring propertyName, wstring propertyValue) {
 
     if (propertyValue != L"") {
 
@@ -96,7 +96,7 @@ wstring WinContactSIF::trim(const wstring& str) {
     return ret;
 }
 
-wstring WinContactSIF::formatDateWithMinus(wstring stringDate) {
+wstring WinContactSIF::formatDateWithMinus(const wstring& stringDate) {
     
     wstring ret;
     if (stringDate.length() == 8) {

@@ -85,9 +85,9 @@ public:
 
 
     /**
-    * Adds a tag <PropertyName>PropertyValue</PropertyName> into sifString.
+    * Adds a tag <PropertyName>PropertyValue</PropertyName> into (internally owned) 'sif' string.
     */
-    void addPropertyToSIF(const wstring propertyName, wstring propertyValue, wstring& sif);
+    void addPropertyToSIF(const wstring propertyName, wstring propertyValue);
 
     /*
     * Trim the string
@@ -97,7 +97,7 @@ public:
     /*
     * Format a date like yyyyMMdd in yyyy-MM-dd
     */
-    wstring formatDateWithMinus(wstring stringDate);
+    wstring formatDateWithMinus(const wstring& stringDate);
 
     /**
     * Transform the value of the specified property according to the SIF specifications.
