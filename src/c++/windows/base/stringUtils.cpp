@@ -61,12 +61,13 @@ void replaceAll(const wstring& source, const wstring& dest, wstring& dataString,
     if (startPos >= (int)dataString.length()) {
         return;
     }
-    wstring::size_type pos = startPos;
-    pos = dataString.find(source, pos);
+
+    wstring::size_type pos = dataString.find(source, startPos);
 
     while (pos != wstring::npos) {
         dataString.replace(pos, source.length(), dest);
-        pos = dataString.find(source, pos+1);
+        pos += dest.length();
+        pos = dataString.find(source, pos);
     }
 }
 
