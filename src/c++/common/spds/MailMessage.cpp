@@ -247,6 +247,7 @@ static bool getBodyPart(StringBuffer &rfcBody, StringBuffer &boundary,
                        BodyPart &ret, size_t &next, bool isAttach)
 {
     LOG.debug("getBodyPart START");
+    StringBuffer newline;
 
     // The part starts on the next line
     size_t begin = findNewLine(rfcBody, next);
@@ -259,27 +260,31 @@ static bool getBodyPart(StringBuffer &rfcBody, StringBuffer &boundary,
     // get the part
     StringBuffer part = rfcBody.substr(begin, next-begin);
     // If it is a multipart alternative part, get the text part only.
-    if(part.ifind("Content-Type: multipart/alternative") != StringBuffer::npos) {
-        size_t b_pos = part.ifind("boundary=");
-        if( b_pos != StringBuffer::npos ) {
-			size_t begin = part.find("=\"", b_pos) + 2 ;
-			size_t end = part.find("\"", begin) ;
+    // check only until the first new line not on all the message (it could be
+    // a message inside another message)
+    size_t headers_len = getHeadersLen(part, newline);
+    StringBuffer headers_part = part.substr(0, headers_len);
+    if (headers_part.ifind("Content-Type: multipart/alternative") != StringBuffer::npos) {
+        if(part.ifind("Content-Type: multipart/alternative") != StringBuffer::npos) {
+            size_t b_pos = part.ifind("boundary=");
+            if( b_pos != StringBuffer::npos ) {
+			    size_t begin = part.find("=\"", b_pos) + 2 ;
+			    size_t end = part.find("\"", begin) ;
 
-			StringBuffer inner_boundary("\n--");
-            inner_boundary += part.substr( begin, end-begin );
+			    StringBuffer inner_boundary("\n--");
+                inner_boundary += part.substr( begin, end-begin );
 
-            begin = part.find(inner_boundary, end);
-            begin += inner_boundary.length();
-            end = part.find(inner_boundary, begin);
-            if (begin != StringBuffer::npos && end != StringBuffer::npos) {
-                part = part.substr(begin, end-begin);
-                LOG.debug("Bodypart is multipart/alternative: "
-                    "getting first alternative only: \n%s\n", part.c_str() );
-            }
-		}
+                begin = part.find(inner_boundary, end);
+                begin += inner_boundary.length();
+                end = part.find(inner_boundary, begin);
+                if (begin != StringBuffer::npos && end != StringBuffer::npos) {
+                    part = part.substr(begin, end-begin);
+                    LOG.debug("Bodypart is multipart/alternative: "
+                        "getting first alternative only: \n%s\n", part.c_str() );
+                }
+		    }
+        }
     }
-
-    StringBuffer newline;
 
     // Split headers and body
     size_t hdrlen = getHeadersLen(part, newline);
