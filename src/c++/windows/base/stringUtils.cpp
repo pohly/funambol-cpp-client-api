@@ -104,11 +104,10 @@ int getElementContent(const wstring& xml, const wstring& tag, wstring& content, 
     }
 
     //
-    // Now search for the <tag>Content</tag>
+    // Now search for the <tag [attributes]>Content</tag>
     //
     openTag   = L"<";
     openTag  += tag;
-    openTag  += L">";
 
     closeTag  = L"</";
     closeTag += tag;
@@ -118,12 +117,20 @@ int getElementContent(const wstring& xml, const wstring& tag, wstring& content, 
     if (start != wstring::npos) {
         start += openTag.length();
 
-        end = xml.find(closeTag, start);
-        if (end == wstring::npos) {
+        start = xml.find(L">", start);      // Ignore the possible attributes inside the openTag
+        if (start != wstring::npos) {
+            start += 1;
+
+            end = xml.find(closeTag, start);
+            if (end == wstring::npos) {
+                goto not_found;
+            }
+
+            content = xml.substr(start, end-start);
+        }
+        else {
             goto not_found;
         }
-
-        content = xml.substr(start, end-start);
     }
     
     else {
@@ -174,11 +181,10 @@ int getElementContent(const wstring& xml, const wstring& tag, wstring& content, 
     }
 
     //
-    // Now search for the <tag>Content</tag>
+    // Now search for the <tag [attributes]>Content</tag>
     //
     openTag   = L"<";
     openTag  += tag;
-    openTag  += L">";
 
     closeTag  = L"</";
     closeTag += tag;
@@ -188,12 +194,20 @@ int getElementContent(const wstring& xml, const wstring& tag, wstring& content, 
     if (start != wstring::npos) {
         start += openTag.length();
 
-        end = xml.find(closeTag, start);
-        if (end == wstring::npos) {
+        start = xml.find(L">", start);      // Ignore the possible attributes inside the openTag
+        if (start != wstring::npos) {
+            start += 1;
+
+            end = xml.find(closeTag, start);
+            if (end == wstring::npos) {
+                goto not_found;
+            }
+
+            content = xml.substr(start, end-start);
+        }
+        else {
             goto not_found;
         }
-
-        content = xml.substr(start, end-start);
     }
     
     else {
