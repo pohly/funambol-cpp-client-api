@@ -25,12 +25,14 @@ using namespace std;
 
 // Constructor
 WinContact::WinContact() {
-    vCard = L"";
+    vCard     = L"";
+    photoType = L"";
 }
 
 // Constructor: fills propertyMap parsing the passed vCard string
 WinContact::WinContact(const wstring dataString) {
-    vCard = L"";
+    vCard     = L"";
+    photoType = L"";
     parse(dataString);
 }
 
@@ -377,7 +379,9 @@ wstring WinContact::toString() {
         if (element != L"") {
             vp->addParameter(L"CONTENT-VALUE", L"UNCHANGED");        
             vp->addParameter(L"ENCODING", L"b");
-            vp->addParameter(L"TYPE", L"JPEG");        
+            if (photoType.length() > 0) {
+                vp->addParameter(L"TYPE", photoType.c_str());
+            }
         }
         vo->addProperty(vp);
         delete vp; vp = NULL;
@@ -670,7 +674,7 @@ int WinContact::parse(const wstring dataString) {
         }
         
         else if(!wcscmp(name, L"PHOTO")) {
-			setProperty(L"Photo", element);
+			setProperty(L"Photo", element);     // Photo type is ignored
         }
 
         //

@@ -85,9 +85,14 @@ public:
 
 
     /**
-    * Adds a tag <PropertyName>PropertyValue</PropertyName> into (internally owned) 'sif' string.
+    * Adds a tag <PropertyName>PropertyValue</PropertyName> into 'sif' string.
     */
     void addPropertyToSIF(const wstring propertyName, wstring propertyValue);
+
+    /**
+    * Adds a tag <Photo TYPE="JPEG">PropertyValue</Photo> into 'sif' string.
+    */
+    void addPhotoToSIF(wstring propertyValue);
 
     /*
     * Trim the string

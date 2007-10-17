@@ -52,6 +52,12 @@ private:
     bool checkVCardTypeAndVersion(VObject* vo);
 
 
+protected:
+
+    /// The format of internal picure for this contact.
+    wstring photoType;
+
+
 public:
 
     /// Default Constructor
@@ -78,7 +84,14 @@ public:
      * as they don't have a correspondence in propertyMap.
      * @return  the vCard string formatted, reference to internal wstring
      */
-    virtual wstring toString();     
+    virtual wstring toString();
+
+
+    /// Returns the picture type ("JPEG", "GIF", ...)
+    const wstring getPhotoType()          { return photoType; }
+
+    /// Sets the picture type
+    void setPhotoType(const wstring type) { photoType = type; }
     
 };
 /** @} */

@@ -48,8 +48,13 @@ wstring WinContactSIF::toString() {
     map<wstring,wstring>::iterator it = propertyMap.begin();       
     while (it != propertyMap.end()) {        
         propertyValue = it->second;      
-        propertyValue = adaptToSIFSpecs(it->first, propertyValue); 
-        addPropertyToSIF(it->first, propertyValue);                
+        propertyValue = adaptToSIFSpecs(it->first, propertyValue);
+        if ((it->first) == L"Photo") {
+            addPhotoToSIF(propertyValue);       // To manage the TYPE attribute
+        }
+        else {
+            addPropertyToSIF(it->first, propertyValue);
+        }
         it ++;
     }
     sif += L"</contact>";
@@ -80,6 +85,26 @@ void WinContactSIF::addPropertyToSIF(const wstring propertyName, wstring propert
         sif += L"<";
         sif += propertyName;
         sif += L"/>\n";
+    }
+}
+
+void WinContactSIF::addPhotoToSIF(wstring propertyValue) {
+
+    if (photoType.length() == 0) {
+        // Type not specified
+        addPropertyToSIF(L"Photo", propertyValue);
+        return;
+    }
+
+    if (propertyValue != L"") {
+        sif += L"<Photo TYPE=\"";
+        sif += photoType;
+        sif += L"\">";
+        sif += propertyValue;
+        sif += L"</Photo>\n";
+    }
+    else {
+        sif += L"<Photo/>\n";
     }
 }
 
