@@ -203,7 +203,20 @@ char* DeviceManagementNode::readPropertyValue(const char* property) {
                 while (*value && isspace(*value)) {
                     value++;
                 }
-                return stringdup(value);   // FOUND :)
+                char *res = stringdup(value);   // FOUND :)
+
+                // remove trailing white space: usually it is
+                // added accidentally by users
+                char *tmp = res + strlen(res) - 1;
+                while (tmp > res) {
+                    if (!isspace(*tmp)) {
+                        break;
+                    }
+                    tmp--;
+                }
+                tmp[1] = 0;
+
+                return res;
             }
         }
         i++;
