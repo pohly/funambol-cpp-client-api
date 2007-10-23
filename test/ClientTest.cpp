@@ -958,7 +958,14 @@ void SyncTests::testComplexUpdate() {
 
     source_it it;
     for (it = sources.begin(); it != sources.end(); ++it) {
-        it->second->update(it->second->createSourceA, it->second->config.complexUpdateItem);
+        it->second->update(it->second->createSourceA,
+                           /* this test might get executed with some sources which have
+                              a complex update item while others don't: use the normal update item
+                              for them or even just the same item */
+                           it->second->config.complexUpdateItem ? it->second->config.complexUpdateItem :
+                           it->second->config.updateItem ? it->second->config.updateItem :
+                           it->second->config.insertItem
+                           );
     }
 
     sync(SYNC_TWO_WAY, ".update", CheckSyncReport(0,0,0, 0,1,0));
