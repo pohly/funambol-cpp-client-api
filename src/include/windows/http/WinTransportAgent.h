@@ -65,6 +65,7 @@
 #define ERROR_INTERNET_OFFLINE_MODE     0x0002                  // Not sure why it's not defined under wininet.h ...
 
 
+
 /**
  * This class is the transport agent responsible for messages exchange
  * over an HTTP connection.
@@ -97,6 +98,7 @@ private:
     BOOL isToInflate;           // to be unzipped
 
     char* createHttpErrorMessage(DWORD errorCode);
+    void  dumpMessage(const char* msg, const int msgLen);
 };
 
 /** @endcond */

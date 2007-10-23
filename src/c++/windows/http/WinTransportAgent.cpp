@@ -652,13 +652,15 @@ char* WinTransportAgent::sendMessage(const char* msg) {
             response[uncompressedContentLenght] = 0;
         }
         else if (err < 0) {
+            // Save the msg to file, for debugging...
+            dumpMessage(response, contentLength);
+
             LOG.error("Error from zlib: %s", zError(err));
             delete [] response;
             response = NULL;
             status = ERR_HTTP_INFLATE;
-                setError(
-                    ERR_HTTP_INFLATE,
-                    "ZLIB: error occurred decompressing data from Server.");
+            setError(ERR_HTTP_INFLATE, "ZLIB: error occurred decompressing data from Server.");
+
             goto exit;
         }
     }
@@ -726,4 +728,26 @@ char* WinTransportAgent::createHttpErrorMessage(DWORD errorCode) {
     return ret;
 }
 
+
+
+/** 
+ * Saves the msg passed into a file under "\dump" for debugging purpose.
+ * The message is saved as a binary file.
+ */
+void WinTransportAgent::dumpMessage(const char* msg, const int msgLen) {
+
+    if (msgLen == 0) {
+        return;
+    }
+    char fileName[100], now[30];
+    SYSTEMTIME sys_time;
+    GetLocalTime(&sys_time);
+    sprintf(now, "%04d-%02d-%02d_%02d.%02d.%02d", sys_time.wYear, sys_time.wMonth, sys_time.wDay,
+                                                  sys_time.wHour, sys_time.wMinute, sys_time.wSecond);
+
+    // TODO: store dump files under installDir instead of root folder?
+    CreateDirectory(L"\\dump", NULL);
+    sprintf(fileName, "\\dump\\%s.dmp", now);
+    saveFile(fileName, msg, msgLen, true);
+}
 
