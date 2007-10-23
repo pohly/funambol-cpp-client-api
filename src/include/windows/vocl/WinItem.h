@@ -40,7 +40,9 @@ using namespace std;
 // Error messages:
 #define ERR_ITEM_VOBJ_PARSE                 "VConverter: error occurred parsing the item data."
 #define ERR_ITEM_VOBJ_WRONG_TYPE            "Error: wrong vobject type \"%ls\" (\"%ls\" expected)"
+#define ERR_ITEM_VOBJ_TYPE_NOTFOUND         "Error: vobject type not specified (\"%ls\" expected)"
 #define INFO_ITEM_VOBJ_WRONG_VERSION        "Warning! Wrong vobject version \"%ls\" (\"%ls\" expected)"
+#define INFO_ITEM_VOBJ_VERSION_NOTFOUND     "Warning! VObject version not specified (\"%ls\" expected)"
 
 
 /**

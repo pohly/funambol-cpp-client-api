@@ -483,19 +483,24 @@ bool WinEvent::checkVCalendarTypeAndVersion(VObject* vo) {
 
     WCHAR* prodID  = vo->getProdID();
     WCHAR* version = vo->getVersion();
-    if (!prodID || !version) {
+    
+    if (!prodID) {
+        LOG.error(ERR_ITEM_VOBJ_TYPE_NOTFOUND, L"VCALENDAR");
         return false;
     }
-
     if (wcscmp(prodID, L"VCALENDAR")) {
         LOG.error(ERR_ITEM_VOBJ_WRONG_TYPE, prodID, L"VCALENDAR");
         return false;
     }
-    if (wcscmp(version, VCALENDAR_VERSION)) {
+
+    if (!version) {
+        // Just log a warning...
+        LOG.info(INFO_ITEM_VOBJ_VERSION_NOTFOUND, VCALENDAR_VERSION);
+    }
+    else if (wcscmp(version, VCALENDAR_VERSION)) {
         // Just log a warning...
         LOG.info(INFO_ITEM_VOBJ_WRONG_VERSION, version, VCALENDAR_VERSION);
     }
-
     return true;
 }
 

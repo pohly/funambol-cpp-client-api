@@ -783,18 +783,23 @@ bool WinContact::checkVCardTypeAndVersion(VObject* vo) {
 
     WCHAR* prodID  = vo->getProdID();
     WCHAR* version = vo->getVersion();
-    if (!prodID || !version) {
+    
+    if (!prodID) {
+        LOG.error(ERR_ITEM_VOBJ_TYPE_NOTFOUND, L"VCARD");
         return false;
     }
-
     if (wcscmp(prodID, L"VCARD")) {
         LOG.error(ERR_ITEM_VOBJ_WRONG_TYPE, prodID, L"VCARD");
         return false;
     }
-    if (wcscmp(version, VCARD_VERSION)) {
+
+    if (!version) {
+        // Just log a warning...
+        LOG.info(INFO_ITEM_VOBJ_VERSION_NOTFOUND, VCARD_VERSION);
+    }
+    else if (wcscmp(version, VCARD_VERSION)) {
         // Just log a warning...
         LOG.info(INFO_ITEM_VOBJ_WRONG_VERSION, version, VCARD_VERSION);
     }
-
     return true;
 }
