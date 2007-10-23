@@ -1,4 +1,4 @@
-#! /usr/bin/perl -w
+#! /usr/bin/env perl
 #
 #
 # Copyright (C) 2006-2007 Funambol, Inc
@@ -22,12 +22,15 @@ use strict;
 use encoding 'utf8';
 use Algorithm::Diff;
 
-# ignore differences caused by specific servers?
+# ignore differences caused by specific servers or local backends?
 my $server = $ENV{CLIENT_TEST_SERVER} || "funambol";
+my $client = $ENV{CLIENT_TEST_CLIENT} || "evolution";
 my $scheduleworld = $server =~ /scheduleworld/;
 my $synthesis = $server =~ /synthesis/;
 my $egroupware = $server =~ /egroupware/;
 my $funambol = $server =~ /funambol/;
+my $evolution = $client =~ /evolution/;
+my $addressbook = $client =~ /addressbook/;
 
 sub Usage {
   print "$0 <vcards.vcf\n";
@@ -114,7 +117,7 @@ sub Normalize {
     # remove optional fields
     s/^(METHOD|X-WSS-[A-Z]*):.*\r?\n?//gm;
 
-    if ($scheduleworld || $egroupware || $synthesis) {
+    if ($scheduleworld || $egroupware || $synthesis || $addressbook) {
       # does not preserve X-EVOLUTION-UI-SLOT=
       s/^(\w+)([^:\n]*);X-EVOLUTION-UI-SLOT=\d+/$1$2/mg;
     }
@@ -126,7 +129,7 @@ sub Normalize {
       s;TZID(=|:)/(scheduleworld.com|softwarestudio.org)/Olson_\d+_\d+/;TZID$1/foo.com/Olson_20000101_1/;mg;
     }
 
-    if ($scheduleworld || $synthesis) {
+    if ($synthesis) {
       # only preserves ORG "Company", but loses "Department" and "Office"
       s/^ORG:([^;:\n]+)(;[^\n]*)/ORG:$1/mg;
     }
@@ -134,6 +137,16 @@ sub Normalize {
     if ($funambol) {
       # only preserves ORG "Company";"Department", but loses "Office"
       s/^ORG:([^;:\n]+)(;[^;:\n]*)(;[^\n]*)/ORG:$1$2/mg;
+    }
+
+    if ($addressbook) {
+      # some properties cannot be stored
+      s/^(X-MOZILLA-HTML|X-EVOLUTION-FILE-AS|X-EVOLUTION-ANNIVERSARY|X-EVOLUTION-BLOG-URL|X-EVOLUTION-VIDEO-URL|X-GROUPWISE|ROLE|CATEGORIES|FBURL|CALURI|FN)(;[^:;\n]*)*:.*\r?\n?//gm;
+      # only some parts of ADR are preserved
+      my $type;
+      s/^ADR(.*?)\:(.*)/$type=($1 || ""); @_ = split(\/(?<!\\);\/, $2); "ADR:;;" . ($_[2] || "") . ";" . ($_[3] || "") . ";" . ($_[4] || "") . ";" . ($_[5] || "") . ";" . ($_[6] || "")/gme;
+      # TYPE=CAR not supported
+      s/;TYPE=CAR//g;
     }
 
     if ($synthesis) {
