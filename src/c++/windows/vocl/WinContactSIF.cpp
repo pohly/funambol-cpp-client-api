@@ -49,7 +49,7 @@ wstring WinContactSIF::toString() {
     while (it != propertyMap.end()) {        
         propertyValue = it->second;      
         propertyValue = adaptToSIFSpecs(it->first, propertyValue);
-        if ((it->first) == L"Picture") {
+        if ((it->first) == L"Photo") {
             addPhotoToSIF(propertyValue);       // To manage the TYPE attribute
         }
         else {
@@ -92,19 +92,19 @@ void WinContactSIF::addPhotoToSIF(wstring propertyValue) {
 
     if (photoType.length() == 0) {
         // Type not specified
-        addPropertyToSIF(L"Picture", propertyValue);
+        addPropertyToSIF(L"Photo", propertyValue);
         return;
     }
 
     if (propertyValue != L"") {
-        sif += L"<Picture TYPE=\"";
+        sif += L"<Photo TYPE=\"";
         sif += photoType;
         sif += L"\">";
         sif += propertyValue;
-        sif += L"</Picture>\n";
+        sif += L"</Photo>\n";
     }
     else {
-        sif += L"<Picture/>\n";
+        sif += L"<Photo/>\n";
     }
 }
 
@@ -140,7 +140,7 @@ wstring WinContactSIF::adaptToSIFSpecs(const wstring& propName, const wstring& p
 
     if ((propName == L"Anniversary" || propName == L"Birthday") && propValue != L"") {
        propertyValue = formatDateWithMinus(propValue);    
-    } else if (propName == L"Picture" && propValue != L"") {
+    } else if (propName == L"Photo" && propValue != L"") {
         // the picture is right for vcard: for windows we have to format better the sif
         // even if it should work anyway.
         //<Photo>    /9j/4AAQSkZJRgABAQEAcwBzAAD/2wBDAAgGBgcGBQgHBwcJCQgKDBQNDAsLDBkSEw8UHRof
