@@ -66,7 +66,6 @@ wstring& WinRecurrence::toString() {
     int  monthofyear = 0;
     BOOL noEnd       = FALSE;
     wstring pStart   = L"";
-    wstring pEnd     = L"";
 
     // Read all values from propertyMap.
     wstring tmp;
@@ -79,11 +78,9 @@ wstring& WinRecurrence::toString() {
     getProperty(L"MonthOfYear",    tmp);       monthofyear = _wtoi(tmp.c_str());
     getProperty(L"NoEndDate",      tmp);       noEnd       = _wtoi(tmp.c_str());
     getProperty(L"PatternStartDate", pStart);
-    getProperty(L"PatternEndDate",   pEnd);
-
+    // Note: "PatternEndDate" is no more sent: using only "Occurrences"
 
     replaceAll(L"-", L"", pStart);   // **** To be removed!!! ****
-    replaceAll(L"-", L"", pEnd);     // **** To be removed!!! ****
 
 
     switch(recType) {
@@ -95,7 +92,7 @@ wstring& WinRecurrence::toString() {
             else if (dayofweek > 0) {
                 WCHAR* days = daysOfWeekToString(dayofweek);
                 if (days) {
-                    wsprintf(recurrence, TEXT("W1 %s %s #%ld"), days, pEnd.c_str(), occurrences);
+                    wsprintf(recurrence, TEXT("W1 %s #%ld"), days, occurrences);
                     delete [] days;
                 }
             }
@@ -110,7 +107,7 @@ wstring& WinRecurrence::toString() {
                     if(noEnd)
                         wsprintf(recurrence, TEXT("W%ld %s #0"), interval, days);
                     else
-                        wsprintf(recurrence, TEXT("W%ld %s%s #%ld"), interval, days, pEnd.c_str(), occurrences);
+                        wsprintf(recurrence, TEXT("W%ld %s #%ld"), interval, days, occurrences);
                     delete [] days;
                 }
             }
@@ -123,7 +120,7 @@ wstring& WinRecurrence::toString() {
                 if(noEnd)
                     wsprintf(recurrence, TEXT("MD%ld %ld #0"), interval, dayofmonth);
                 else {
-                    wsprintf(recurrence, TEXT("MD%ld %ld %s #%ld"), interval, dayofmonth, pEnd.c_str(), occurrences);
+                    wsprintf(recurrence, TEXT("MD%ld %ld #%ld"), interval, dayofmonth, occurrences);
                 }
                 break;
             }
@@ -137,7 +134,7 @@ wstring& WinRecurrence::toString() {
                     if(noEnd)
                         wsprintf(recurrence, TEXT("MP%ld %ld+ %s #0"), interval, instance, days);
                     else
-                        wsprintf(recurrence, TEXT("MP%ld %ld+ %s%s #%ld"), interval, instance, days, pEnd.c_str(), occurrences);
+                        wsprintf(recurrence, TEXT("MP%ld %ld+ %s #%ld"), interval, instance, days, occurrences);
                     delete [] days;
                 }
             }
@@ -163,7 +160,7 @@ wstring& WinRecurrence::toString() {
                     if(noEnd)
                         wsprintf(recurrence, TEXT("MP12 %ld+ %s #0"), instance, days);
                     else
-                        wsprintf(recurrence, TEXT("MP12 %ld+ %s%s #%ld"), instance, days, pEnd.c_str(), occurrences);
+                        wsprintf(recurrence, TEXT("MP12 %ld+ %s #%ld"), instance, days, occurrences);
                     delete [] days;
                 }
             }
