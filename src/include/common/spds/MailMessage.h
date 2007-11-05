@@ -62,6 +62,9 @@ class MailMessage : public ArrayElement {
         //
 		//time_t lastModificationTime;
 
+        // it is the priority of the mail message. 
+        StringBuffer importance;
+
         BodyPart body;
         //BodyPart *alternate;
         ArrayList attachments;
@@ -109,6 +112,9 @@ class MailMessage : public ArrayElement {
 
         void setHeaders(const char*  extraHeaders);
         const char* getHeaders();
+
+        void setImportance(const char*  importance);
+        const char* getImportance();
 
         // Body
 		BodyPart & getBody();

@@ -42,6 +42,12 @@
 #define DISPOSITION "Content-Disposition:"
 #define CD_FILENAME "filename="
 #define ENCODING    "Content-Transfer-Encoding: "
+#define IMPORTANCE  "Importance: "
+#define X_PRIORITY  "X-Priority: "
+
+#define IMP_NORMAL  "normal"
+#define IMP_HIGH    "high"
+#define IMP_LOW     "low"
 
 #define MULTIPART   "multipart/"
 
@@ -58,6 +64,8 @@ static const unsigned char MIMEVERS_LEN = strlen(MIMEVERS);
 static const unsigned char MESSAGEID_LEN = strlen(MESSAGEID);
 static const unsigned char DISPOSITION_LEN = strlen(DISPOSITION);
 static const unsigned char ENCODING_LEN = strlen(ENCODING);
+static const unsigned char IMPORTANCE_LEN = strlen(IMPORTANCE);
+static const unsigned char X_PRIORITY_LEN = strlen(X_PRIORITY);
 
 //---------------------------------------------------------------- Accessors
 
@@ -96,6 +104,10 @@ void MailMessage::setMessageId(const char *val) { messageId = val; }
 
 const char* MailMessage::getEntryID() { return entryId.c_str(); }
 void MailMessage::setEntryID(const char* id) { entryId = id; }
+
+const char* MailMessage::getImportance() { return importance; }
+void MailMessage::setImportance(const char* imp) { importance = imp; }
+
 
 BodyPart & MailMessage::getBody() { return body; }
 void MailMessage::setBody(BodyPart &body) { this->body = body; }
@@ -421,6 +433,32 @@ static bool isAscii(const char *str){
 	return true;
 }
 
+/**
+* return the Importance tag given the importance. For MS pocket outlook
+* the xPriority is 1-high, 3-normal, 5-low. At the moment it return
+* the same value because also the client set the same values
+*/
+static StringBuffer convertForXPriority(StringBuffer importance) {
+       
+    return importance;
+}
+
+/**
+* return the X-Priority tag given the importance. For MS pocket outlook
+* the importance is 1-high, 3-normal, 5-low. It convert the long value
+* into the text.
+*/
+static StringBuffer convertForImportance(StringBuffer importance) {
+    
+    StringBuffer ret(IMP_NORMAL);
+    if (importance == "1") {
+        ret = IMP_HIGH;
+    } else if (importance == "5") {
+        ret = IMP_LOW;
+    } 
+    return ret;
+}
+
 /*
 * It encodes if needed and folds
 */
@@ -528,6 +566,12 @@ char * MailMessage::format() {
     ret += encodeHeader(subject);
 
     ret += NL;
+
+    // add priority
+    ret += IMPORTANCE; ret += convertForImportance(importance); ret += NL;
+    ret += X_PRIORITY; ret += convertForXPriority(importance); ret += NL;
+
+
     ret += MIMETYPE; ret += contentType; ret+= "; ";
     if (contentType.ifind(MULTIPART) != StringBuffer::npos ){
         if ( boundary.empty() ) {
@@ -692,6 +736,28 @@ StringBuffer decodeHeader(StringBuffer line) {
 
 //---------------------------------------------------------- Private Methods
 
+StringBuffer convertImportance(StringBuffer data) {
+    
+    StringBuffer ret("3");
+    if (data == IMP_HIGH) {
+        ret = "1";
+    } else if (data == IMP_LOW) {
+        ret = "5";
+    }
+    return ret;
+}
+
+StringBuffer convertXPriority(StringBuffer data) {
+    
+    StringBuffer ret("3");
+    if (data.ifind("1") == 0 || data.ifind("2") == 0) {
+        ret = "1";
+    } else if (data.ifind("4") == 0 || data.ifind("5") == 0) {
+        ret = "5";
+    }
+    return ret;
+}
+
 int MailMessage::parseHeaders(StringBuffer &rfcHeaders) {
 
     ArrayList lines;
@@ -710,6 +776,10 @@ int MailMessage::parseHeaders(StringBuffer &rfcHeaders) {
     rfcHeaders.replaceAll(joinlinespaces, " ");
 
     rfcHeaders.split(lines, newline);
+
+    // importance is set to "0" by default. Then there isn't anything modification
+    // in the header, at the end of the loop the importance will be set to "3", default normal
+    importance = "0";
 
     for ( line=(StringBuffer *)lines.front();
 		  line;
@@ -756,6 +826,18 @@ int MailMessage::parseHeaders(StringBuffer &rfcHeaders) {
         }
         else if(line->ifind(MESSAGEID) == 0 ) {
             messageId = line->substr(MESSAGEID_LEN);
+        }
+        else if(line->ifind(IMPORTANCE) == 0 ) {
+            StringBuffer data = line->substr(IMPORTANCE_LEN);
+            data.lowerCase();
+            importance = convertImportance(data);
+        }
+        else if(line->ifind(X_PRIORITY) == 0 ) {
+            if (importance == "0") {
+                StringBuffer data = line->substr(X_PRIORITY_LEN);
+                data.lowerCase();
+                importance = convertXPriority(data);
+            }            
         }
         else if( line->ifind(MIMETYPE) == 0 ) {
 
@@ -838,6 +920,12 @@ int MailMessage::parseHeaders(StringBuffer &rfcHeaders) {
     if( received == BasicTime() ){
         received = date;
     }
+
+    // if the importance is never set we put the importance to 3, normal
+    if (importance == "0") {
+        importance = "3";
+    }
+
     LOG.debug("parseHeaders END");
 
 	// FIXME: should check for mandatory headers before return 0
