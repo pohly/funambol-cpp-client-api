@@ -71,6 +71,9 @@
  *                     if given, then the content of that file will be
  *                     copied and stored together with the client log
  *                     (only works on Unix)
+ * - CLIENT_TEST_NUM_ITEMS = numbers of contacts/events/... to use during
+ *                           local and sync tests which create artificial
+ *                           items
  *
  * For example, on Linux running
  * @verbatim

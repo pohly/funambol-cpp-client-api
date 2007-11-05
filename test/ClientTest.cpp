@@ -335,12 +335,12 @@ void LocalTests::compareDatabases(const char *refFile, SyncSource &copy, bool ra
 }
 
 /**
- * insert artificial items, number of them determined by TEST_EVOLUTION_NUM_ITEMS
+ * insert artificial items, number of them determined by config.numItems
  * unless passed explicitly
  *
  * @param createSource    a factory for the sync source that is to be used
  * @param startIndex      IDs are generated starting with this value
- * @param numItems        number of items to be inserted if non-null, otherwise TEST_EVOLUTION_NUM_ITEMS is used
+ * @param numItems        number of items to be inserted if non-null, otherwise config.numItems is used
  * @param size            minimum size for new items
  * @return number of items inserted
  */
@@ -659,6 +659,7 @@ void LocalTests::testManyChanges() {
 
     // verify again
     SOURCE_ASSERT_NO_FAILURE(copy.get(), copy.reset(createSourceB()));
+    SOURCE_ASSERT_EQUAL(copy.get(), 0, copy->beginSync());
     SOURCE_ASSERT_EQUAL(copy.get(), 0, countItems(copy.get()));
     SOURCE_ASSERT_EQUAL(copy.get(), 0, countNewItems(copy.get()));
     SOURCE_ASSERT_EQUAL(copy.get(), 0, countUpdatedItems(copy.get()));
@@ -1444,10 +1445,11 @@ void SyncTests::testManyItems() {
     // clean server and client A
     deleteAll();
 
-    // import artificial data
+    // import artificial data: make them large to generate some
+    // real traffic and test buffer handling
     source_it it;
     for (it = sources.begin(); it != sources.end(); ++it) {
-        it->second->insertManyItems(it->second->createSourceA);
+        it->second->insertManyItems(it->second->createSourceA, 0, it->second->config.numItems, 2000);
     }
 
     // send data to server
@@ -1759,6 +1761,8 @@ void ClientTest::postSync(int res, const std::string &logname)
 void ClientTest::getTestData(const char *type, Config &config)
 {
     memset(&config, 0, sizeof(config));
+    char *numitems = getenv("CLIENT_TEST_NUM_ITEMS");
+    config.numItems = numitems ? atoi(numitems) : 100;
 
     if (!strcmp(type, "vcard30")) {
         config.sourceName = "vcard30";
