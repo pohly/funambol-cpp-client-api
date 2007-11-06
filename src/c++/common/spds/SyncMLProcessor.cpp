@@ -536,6 +536,10 @@ int SyncMLProcessor::getStatusCode(SyncBody* syncBody, SyncSource* source, const
         }
     }
 
+    if (ret == -1) {
+        sprintf(lastErrorMsg, "Error reading status code of command '%s'", commandName);
+        lastErrorCode = ERR_REPRESENTATION;
+    }
     return ret;
 
 }
