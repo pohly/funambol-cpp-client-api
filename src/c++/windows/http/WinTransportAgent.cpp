@@ -628,6 +628,7 @@ char* WinTransportAgent::sendMessage(const char* msg) {
         LOG.info("Bytes read: ", realResponseLenght);
     	contentLength = realResponseLenght;
     }
+    response[contentLength] = 0;
 
     // Fire Receive Data End Transport Event
     fireTransportEvent(contentLength, RECEIVE_DATA_END);
