@@ -57,5 +57,12 @@ void printMemLeaks();
 #endif
 
 
+// Enable warning: class has virtual functions, but destructor is not virtual
+// When a class has virtual functions but a nonvirtual destructor, 
+// objects of the type might not be destroyed properly when the class 
+// is destroyed through a base class pointer.
+#pragma warning(default : 4265)
+
+
 /** @endcond */
 #endif
