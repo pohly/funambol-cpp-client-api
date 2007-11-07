@@ -1,3 +1,6 @@
+2007-11-07
+    - toccy: WinTransportAgent - added support for http status codes 402 & 403
+
 2007-10-23
     - pohly: POSIX configuration files now strip trailing spaces
              at the line end; previously this was preserved, but
