@@ -424,6 +424,20 @@ char* WinTransportAgent::sendMessage(const char* msg) {
             LOG.debug(lastErrorMsg);
             goto exit;
         }
+        // To handle the http error code for the tcp/ip notification when payment required
+        else if (status == PAYMENT_REQUIRED) {              // 402 -> out code 402
+            lastErrorCode = PAYMENT_REQUIRED;
+            sprintf(lastErrorMsg, "HTTP server error: %d. Client not authenticated.", status);
+            LOG.debug(lastErrorMsg);
+            goto exit;
+        }
+        // To handle the http error code for the tcp/ip notification when client not activated (forbidden)
+        else if (status == FORBIDDEN) {                     // 403 -> out code 403
+            lastErrorCode = FORBIDDEN;
+            sprintf(lastErrorMsg, "HTTP server error: %d. Connection forbidden, client not activated.", status);
+            LOG.debug(lastErrorMsg);
+            goto exit;
+        }
         // to handle the http error code for the tcp/ip notification and client not notifiable
         else if (status == ERR_CLIENT_NOT_NOTIFIABLE) {     // 420 -> out code 420
             lastErrorCode = ERR_CLIENT_NOT_NOTIFIABLE;
@@ -628,6 +642,7 @@ char* WinTransportAgent::sendMessage(const char* msg) {
         LOG.info("Bytes read: ", realResponseLenght);
     	contentLength = realResponseLenght;
     }
+    response[contentLength] = 0;
 
     // Fire Receive Data End Transport Event
     fireTransportEvent(contentLength, RECEIVE_DATA_END);
