@@ -355,7 +355,7 @@ char* WinTransportAgent::sendMessage(const char* msg) {
                        (LPDWORD)&status,
                        (LPDWORD)&size,
                        NULL);
-
+        
         // OK: status 200
         if (status == HTTP_STATUS_OK) {
         	LOG.debug("Data sent succesfully to server. Server responds OK");
@@ -421,6 +421,20 @@ char* WinTransportAgent::sendMessage(const char* msg) {
         else if (status == ERR_CREDENTIAL) {                // 401 -> out code 401
             lastErrorCode = ERR_CREDENTIAL;
             sprintf(lastErrorMsg, "HTTP server error: %d. Wrong credential.", status);
+            LOG.debug(lastErrorMsg);
+            goto exit;
+        }
+        // To handle the http error code for the tcp/ip notification when payment required
+        else if (status == PAYMENT_REQUIRED) {              // 402 -> out code 402
+            lastErrorCode = PAYMENT_REQUIRED;
+            sprintf(lastErrorMsg, "HTTP server error: %d. Client not authenticated.", status);
+            LOG.debug(lastErrorMsg);
+            goto exit;
+        }
+        // To handle the http error code for the tcp/ip notification when client not activated (forbidden)
+        else if (status == FORBIDDEN) {                     // 403 -> out code 403
+            lastErrorCode = FORBIDDEN;
+            sprintf(lastErrorMsg, "HTTP server error: %d. Connection forbidden, client not activated.", status);
             LOG.debug(lastErrorMsg);
             goto exit;
         }
