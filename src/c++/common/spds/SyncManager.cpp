@@ -817,7 +817,9 @@ BOOL SyncManager::checkForServerChanges(SyncML* syncml, ArrayList &statusList)
         }
 
 
+        // Sync* sync = syncMLProcessor.processSyncResponse(*sources[count], syncml);
         Sync* sync = syncMLProcessor.getSyncResponse(syncml, i);
+
         if (sync) {
             const char *locuri = ((Target*)(sync->getTarget()))->getLocURI();
 
@@ -1776,7 +1778,6 @@ int SyncManager::endSync() {
 
         int sret = sources[count]->endSync();
         if (sret) {
-            LOG.info("EndSync: error returned by SyncSource: ", sret);
             lastErrorCode = sret;
         }
     }
@@ -1964,10 +1965,8 @@ Status *SyncManager::processSyncItem(Item* item, const CommandInfo &cmdInfo, Syn
     WCHAR *iname = toWideChar(itemName);
     BOOL append = TRUE;
     if (incomingItem) {
-        // This is not the first chunk.
         BOOL newItem = FALSE;
-        
-        // Check that this is a chunk of the same item
+
         if (iname) {
             if (incomingItem->getKey()) {
                 if(wcscmp(incomingItem->getKey(), iname)) {
@@ -1980,7 +1979,8 @@ Status *SyncManager::processSyncItem(Item* item, const CommandInfo &cmdInfo, Syn
         }
 
         // if no error yet, also check for the same command and same source
-        if (incomingItem->cmdName != cmdInfo.commandName ||
+        if (incomingItem->cmdName.c_str() &&
+            strcmp(incomingItem->cmdName.c_str(), cmdInfo.commandName) ||
             count != incomingItem->sourceIndex) {
 
             newItem = TRUE;
@@ -2007,7 +2007,7 @@ Status *SyncManager::processSyncItem(Item* item, const CommandInfo &cmdInfo, Syn
             // reserve buffer in advance, append below
             long size = cmdInfo.size;
             if (size < 0 || maxObjSize && size > maxObjSize) {
-                // error 416: invalid size, "Request entity too large"
+                // invalid size, "Request entity too large"
                 status = syncMLBuilder.prepareItemStatus(cmdInfo.commandName, itemName, cmdInfo.cmdRef, 416);
                 delete incomingItem;
                 incomingItem = NULL;
@@ -2083,6 +2083,7 @@ Status *SyncManager::processSyncItem(Item* item, const CommandInfo &cmdInfo, Syn
         incomingItem->setModificationTime(sources[count]->getNextSync());
 
         if (!item->isMoreData()) {
+
 
             if (append) {
                 // Warning if data mismatch (only log).
