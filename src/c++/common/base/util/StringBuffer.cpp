@@ -20,29 +20,12 @@
 #include "base/messages.h"
 #include "base/util/utils.h"
 #include "base/util/StringBuffer.h"
-#include "base/test.h"
 
 #include <stdio.h>
 
 const size_t StringBuffer::npos = 0xFFFFFFFF;
 static size_t growup = 5;
 
-#if 0
-/// FIXME: Debug code
-#include <stdio.h>
-void abort(const char *msg)
-{
-    FILE *f=fopen("\fatal.txt", "w");
-    fputs(msg, f);
-    fclose(f);
-    exit(1);
-}
-size_t charlen = sizeof(char);
-    if(charlen != 2) {
-        abort("Panic: wide char size in not 2");
-    }
-
-#endif
 
 StringBuffer::StringBuffer(const char* str, size_t len) {
     size = 0;
@@ -66,6 +49,7 @@ StringBuffer::StringBuffer(const char* str, size_t len) {
     }
 }
 
+//Copy Costructor
 StringBuffer::StringBuffer(const StringBuffer &sb) {
     size = 0;
     s = NULL;
@@ -187,6 +171,7 @@ unsigned long StringBuffer::length() const {
     return (s) ? strlen(s) : 0;
 }
 
+// Watch out
 StringBuffer& StringBuffer::reset() {
     freemem();
     return *this;
@@ -194,8 +179,9 @@ StringBuffer& StringBuffer::reset() {
 
 size_t StringBuffer::find(const char *str, size_t pos) const
 {
-    if (pos >= length())
+    if (pos >= length()) {
         return npos;
+    }
     char *p = strstr(s+pos, str);
     if(!p)
         return npos;
@@ -206,6 +192,7 @@ size_t StringBuffer::ifind(const char *str, size_t pos) const
 {
     if (pos >= length())
         return npos;
+
     char *ls = strtolower(s+pos);
     char *lstr = strtolower(str);
 
@@ -221,14 +208,6 @@ size_t StringBuffer::ifind(const char *str, size_t pos) const
 
 size_t StringBuffer::rfind(const char *str, size_t pos) const
 {
-    /*
-    if (pos >= length())
-        return npos;
-    const char *p = brfind(s+pos, str);
-    if(!p)
-        return npos;
-    return (p-s);
-    */
     if (pos >= length())
         return npos;
 
@@ -468,67 +447,4 @@ void StringBuffer::freemem()
     size = 0;
 }
 
-/*
-* Create a StringBuffer with a sequence of len chars.
-* useful to have a string buffer directly from a SyncItem.getData(), SyncItem.getDataSize()
-*/
 
-StringBuffer::StringBuffer(const void* str, size_t len) {
-
-    size = 0;
-    s = 0;
-
-    // if the given string is null, leave this null,
-    // otherwise set it, even empty.
-    if (str && len > 0) {
-
-        getmem(len);
-        strncpy(s, (const char*)str, len);
-        s[len]=0;
-    }
-    else {  // empty string
-        getmem(1);
-        s[0] = 0;
-
-    }
-}
-
-
-#ifdef ENABLE_UNIT_TESTS
-
-class StringBufferTest : public CppUnit::TestFixture {
-    CPPUNIT_TEST_SUITE(StringBufferTest);
-    CPPUNIT_TEST(testSprintf);
-    CPPUNIT_TEST_SUITE_END();
-
-private:
-    void testSprintf() {
-        StringBuffer buf;
-
-        buf.sprintf("foo %s %d", "bar", 42);
-        CPPUNIT_ASSERT(buf == "foo bar 42");
-
-        buf = doSprintf("foo %s %d", "bar", 42);
-        CPPUNIT_ASSERT(buf == "foo bar 42");
-
-        for (unsigned long size = 1; size < (1<<10); size *= 2) {
-            buf.sprintf("%*s", (int)size, "");
-            CPPUNIT_ASSERT_EQUAL(size, buf.length());
-        }
-    }
-
-    StringBuffer doSprintf(const char* format, ...) {
-        va_list ap;
-        StringBuffer buf;
-
-        va_start(ap, format);
-        buf.vsprintf(format, ap);
-        va_end(ap);
-
-        return buf;
-    }
-};
-
-FUNAMBOL_TEST_SUITE_REGISTRATION(StringBufferTest);
-
-#endif

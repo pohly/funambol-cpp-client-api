@@ -128,7 +128,7 @@ class ClientTest {
      */
     virtual void registerTests();
 
-    class Config;
+    struct Config;
 
     /**
      * Creates an instance of LocalTests (default implementation) or a
@@ -167,8 +167,6 @@ class ClientTest {
      * synccompare.pl Perl script
      */
     static bool compare(ClientTest &client, const char *fileA, const char *fileB);
-
-    struct Config;
 
     /**
      * A derived class can use this call to get default test

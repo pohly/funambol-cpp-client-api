@@ -24,7 +24,8 @@
 # include <config.h>
 #endif
 
-#include "base/test.h"
+#include <string>
+#include <stdexcept>
 
 #include <cppunit/CompilerOutputter.h>
 #include <cppunit/ui/text/TestRunner.h>
@@ -42,8 +43,6 @@
 # include <signal.h>
 #endif
 
-#include <string>
-#include <stdexcept>
 using namespace std;
 
 void simplifyFilename(string &filename)

@@ -52,6 +52,8 @@
         WCHAR* targetParent;
         WCHAR* sourceParent;
 
+        bool moreData;
+
         /**
          * Initializes private members
          */
@@ -248,6 +250,28 @@
          */
         void setSourceParent(const WCHAR* parent);
 
+        /**
+         * This method tells if there is more data expected from the server
+         * for the item (i.e. the item is incomplete).
+         * It is used by the engine to send chunks of items to the SyncSource when
+         * the Large object reassembling is done by the client.
+         *
+         * @return true if the item is incomplete 
+         */
+        bool hasMoreData() { return moreData; }
+
+        /**
+         * This method is used by the engine to set the moreData flag
+         * for the item, when it is a chunk of item and more data are
+         * expected from the server.
+         * This is used only for a SyncSource for which the client has
+         * set the option to do the Large Object reassembly itself.
+         *
+         * @param true if the item is incomplete.
+         */
+        bool setMoreData(bool moreData) {this->moreData = moreData; }
+
+    
         /**
          * Creates a new instance of SyncItem from the content of this
          * object. The new instance is created the the C++ new operator and

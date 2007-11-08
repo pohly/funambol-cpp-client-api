@@ -48,9 +48,10 @@ private:
     char next[DIM_ANCHOR];
     char last[DIM_ANCHOR];
 
-    //ErrorHandler* errorHandler;
-
     SourceFilter* filter;
+
+    // true if the reassembly of the large objects is done by the engine.
+    bool loReassemble;
 
 protected:
     SyncSourceConfig& config;
@@ -189,6 +190,25 @@ public:
      */
     void setFilter(SourceFilter* f);
 
+    /**
+     * Returns the reassembling mode of Large Objects for this 
+     * SyncSource: true the engine will reassemble the items and send them
+     * as complete objects, false this will be done by the client.
+     * The default is true (reassembly done by the engine)
+     *
+     * @return true if the Large Objects are reassembled by the engine.
+     */
+    bool getLoReassembly() { return loReassemble; }
+
+    /**
+     * Set the reassembling mode of Large Objects for this SyncSource: 
+     * true the engine will reassemble the items and send them as 
+     * complete objects, false this will be done by the client.
+     *
+     * @return true if the Large Objects are reassembled by the engine.
+     */
+    void setLoReassembly(bool reassemble) { loReassemble = reassemble; }
+
     /******************************************************
      * The following methods are virtual because a
      * derived SyncSource is expected to override or
@@ -222,8 +242,6 @@ public:
      * the state of the items. The engine commits to the server
      * the changes applied in the transaction only if this function
      * return 0.
-     *
-     * FIXME: the return code is currently ignored by the sync engine
      *
      * @return - 0 on success, an error otherwise
      */

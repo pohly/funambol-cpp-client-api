@@ -23,14 +23,6 @@
 #include "base/fscapi.h"
 #include "base/Log.h"
 
-#if 0
-inline int TimeFormatter(const SYSTEMTIME t, char*  out) {
-
-    return sprintf(out, "%02d%02d%02d%02d",
-                         t.wDay, t.wHour, t.wMinute, t.wSecond);
-}
-#endif
-
 /**
  * Implementation of the unix time() function for Windows.
  *
@@ -39,24 +31,6 @@ inline int TimeFormatter(const SYSTEMTIME t, char*  out) {
  */
 unsigned int time(void* unused) {
     SYSTEMTIME st;
-#if 0
-    GetSystemTime(&st);
-
-    // year + month
-    int t = st.wYear + st.wMonth;
-
-    char tttt[20];
-
-    TimeFormatter(st, tttt);
-
-    unsigned int l = strtol(tttt, NULL, 10);
-
-    l += l + t;
-    return l;
-
-    sprintf(tttt, "Low %u", l);
-    LOG.debug(tttt);
-#else
     FILETIME ft;
 
     GetSystemTime(&st);
@@ -66,7 +40,6 @@ unsigned int time(void* unused) {
     memcpy (&llTmp, &ft, sizeof (__int64));
     llTmp = (llTmp - 116444736000000000) / 10000000;
     return (time_t) llTmp;
-#endif
 }
 
 /**

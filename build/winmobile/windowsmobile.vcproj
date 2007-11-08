@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="Windows-1252"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="8,00"
+	Version="8.00"
 	Name="windowsmobile"
 	ProjectGUID="{4E03F2CD-31F3-4EA8-81E4-AC267456C910}"
 	RootNamespace="windowsmobile"
@@ -769,6 +769,7 @@
 				ObjectFile="$(PlatformName)\$(ConfigurationName)/"
 				ProgramDataBaseFileName="$(PlatformName)\$(ConfigurationName)/"
 				WarningLevel="3"
+				WarnAsError="true"
 				SuppressStartupBanner="true"
 				DebugInformationFormat="3"
 			/>
@@ -1323,244 +1324,8 @@
 					</FileConfiguration>
 				</File>
 				<File
-					RelativePath="..\..\src\c++\common\base\ErrorHandler.cpp"
-					>
-					<FileConfiguration
-						Name="Release|Smartphone 2003 (ARMV4)"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-							AdditionalIncludeDirectories=""
-							UsePrecompiledHeader="0"
-							BrowseInformation="1"
-						/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Release|Pocket PC 2003 (ARMV4)"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-							AdditionalIncludeDirectories=""
-							UsePrecompiledHeader="0"
-							BrowseInformation="1"
-						/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Release|Windows Mobile 5.0 Pocket PC SDK (ARMV4I)"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-							AdditionalIncludeDirectories=""
-							UsePrecompiledHeader="0"
-							BrowseInformation="1"
-						/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Release|Windows Mobile 5.0 Smartphone SDK (ARMV4I)"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-							AdditionalIncludeDirectories=""
-							UsePrecompiledHeader="0"
-							BrowseInformation="1"
-						/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Release|Windows Mobile 6 Standard SDK (ARMV4I)"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-							AdditionalIncludeDirectories=""
-							UsePrecompiledHeader="0"
-							BrowseInformation="1"
-						/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Release|Windows Mobile 6 Professional SDK (ARMV4I)"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-							AdditionalIncludeDirectories=""
-							UsePrecompiledHeader="0"
-							BrowseInformation="1"
-						/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Debug|Smartphone 2003 (ARMV4)"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-							AdditionalIncludeDirectories=""
-							UsePrecompiledHeader="0"
-						/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Debug|Pocket PC 2003 (ARMV4)"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-							AdditionalIncludeDirectories=""
-							UsePrecompiledHeader="0"
-						/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Debug|Windows Mobile 5.0 Pocket PC SDK (ARMV4I)"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-							AdditionalIncludeDirectories=""
-							UsePrecompiledHeader="0"
-						/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Debug|Windows Mobile 5.0 Smartphone SDK (ARMV4I)"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-							AdditionalIncludeDirectories=""
-							UsePrecompiledHeader="0"
-						/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Debug|Windows Mobile 6 Standard SDK (ARMV4I)"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-							AdditionalIncludeDirectories=""
-							UsePrecompiledHeader="0"
-						/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Debug|Windows Mobile 6 Professional SDK (ARMV4I)"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-							AdditionalIncludeDirectories=""
-							UsePrecompiledHeader="0"
-						/>
-					</FileConfiguration>
-				</File>
-				<File
 					RelativePath="..\..\src\c++\windows\base\Log.cpp"
 					>
-				</File>
-				<File
-					RelativePath="..\..\src\c++\common\base\LogErrorHandler.cpp"
-					>
-					<FileConfiguration
-						Name="Release|Smartphone 2003 (ARMV4)"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-							AdditionalIncludeDirectories=""
-							UsePrecompiledHeader="0"
-							BrowseInformation="1"
-						/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Release|Pocket PC 2003 (ARMV4)"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-							AdditionalIncludeDirectories=""
-							UsePrecompiledHeader="0"
-							BrowseInformation="1"
-						/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Release|Windows Mobile 5.0 Pocket PC SDK (ARMV4I)"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-							AdditionalIncludeDirectories=""
-							UsePrecompiledHeader="0"
-							BrowseInformation="1"
-						/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Release|Windows Mobile 5.0 Smartphone SDK (ARMV4I)"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-							AdditionalIncludeDirectories=""
-							UsePrecompiledHeader="0"
-							BrowseInformation="1"
-						/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Release|Windows Mobile 6 Standard SDK (ARMV4I)"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-							AdditionalIncludeDirectories=""
-							UsePrecompiledHeader="0"
-							BrowseInformation="1"
-						/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Release|Windows Mobile 6 Professional SDK (ARMV4I)"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-							AdditionalIncludeDirectories=""
-							UsePrecompiledHeader="0"
-							BrowseInformation="1"
-						/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Debug|Smartphone 2003 (ARMV4)"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-							AdditionalIncludeDirectories=""
-							UsePrecompiledHeader="0"
-						/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Debug|Pocket PC 2003 (ARMV4)"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-							AdditionalIncludeDirectories=""
-							UsePrecompiledHeader="0"
-						/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Debug|Windows Mobile 5.0 Pocket PC SDK (ARMV4I)"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-							AdditionalIncludeDirectories=""
-							UsePrecompiledHeader="0"
-						/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Debug|Windows Mobile 5.0 Smartphone SDK (ARMV4I)"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-							AdditionalIncludeDirectories=""
-							UsePrecompiledHeader="0"
-						/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Debug|Windows Mobile 6 Standard SDK (ARMV4I)"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-							AdditionalIncludeDirectories=""
-							UsePrecompiledHeader="0"
-						/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Debug|Windows Mobile 6 Professional SDK (ARMV4I)"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-							AdditionalIncludeDirectories=""
-							UsePrecompiledHeader="0"
-						/>
-					</FileConfiguration>
 				</File>
 				<File
 					RelativePath="..\..\src\c++\common\base\md5.c"
@@ -18507,19 +18272,19 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\include\common\http\constants.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\include\common\base\constants.h"
-				>
-			</File>
-			<File
 				RelativePath="..\..\src\include\common\spdm\constants.h"
 				>
 			</File>
 			<File
 				RelativePath="..\..\src\include\common\spds\constants.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\include\common\http\constants.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\include\common\base\constants.h"
 				>
 			</File>
 			<File
@@ -18583,19 +18348,19 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\include\common\spdm\errors.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\include\common\base\errors.h"
-				>
-			</File>
-			<File
 				RelativePath="..\..\src\include\common\http\errors.h"
 				>
 			</File>
 			<File
 				RelativePath="..\..\src\include\common\spds\errors.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\include\common\spdm\errors.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\include\common\base\errors.h"
 				>
 			</File>
 			<File

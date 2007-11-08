@@ -2,28 +2,43 @@ TESTS = @CPPUNIT_TESTS@
 EXTRA_PROGRAMS = client-test
 check_PROGRAMS = @CPPUNIT_TESTS@
 
+CXXDIR  = $(srcdir)/../../../src/c++
+INCDIR  = $(srcdir)/../../../src/include
+TESTDIR = $(srcdir)/../../../test
+
 LDADD = ../src/libsync4j.la
 AM_LDFLAGS = @CPPUNIT_LDFLAGS@
 AM_CXXFLAGS = @CPPUNIT_CXXFLAGS@
-AM_CPPFLAGS = -I$(srcdir)/../../../src/include/posix -I$(srcdir)/../../../src/include/common -DAUTOTOOLS
+AM_CPPFLAGS = -I$(INCDIR)/posix -I$(INCDIR)/common -DAUTOTOOLS
 
-vpath %.cpp  $(srcdir)/../../../test
+vpath %.cpp	$(TESTDIR) \
+		$(TESTDIR)/common/base/util 
+
+# Test runner sources
+SOURCES = client-test-main.cpp client-test.cpp ClientTest.cpp
+
+# Testcase sources
+TESTS_BASE = \
+    ArrayListTest.cpp \
+    BasicTimeTest.cpp \
+    StringBufferTest.cpp
+    
+TESTCASES = $(TESTS_BASE)
 
 # With --disable-shared autotools links against libsync4j.a which does not
 # pull any of the test suites into the test binary, so they would not be
 # executed. The workaround is to explicitly set them as undefined on the
 # link line.
-client_test_SOURCES = client-test-main.cpp client-test.cpp ClientTest.cpp
-client_test_LDFLAGS = `nm ../src/.libs/libsync4j.a | grep funambolAutoRegisterRegistry | sed -e 's/.* /-u /'`
-# client_test_LDADD = libsync4j.la
+client_test_SOURCES = $(SOURCES) $(TESTCASES)
+client_test_LDFLAGS = libsync4j.la
 
 # ensure that files are in the current directory before the check runs
 check-am check: client-test-files
 .PHONY: client-test-files
 client-test-files:
-	@ [ -e synccompare.pl ] || ln -s $(srcdir)/../../../test/synccompare.pl .
-	@ [ -d testcases ] || ln -s $(srcdir)/../../../test/testcases .
-	@ [ -d Algorithm ] || ln -s $(srcdir)/../../../test/Algorithm
+	@ [ -e synccompare.pl ] || ln -s $(TESTDIR)/synccompare.pl .
+	@ [ -d testcases ] || ln -s $(TESTDIR)/testcases .
+	@ [ -d Algorithm ] || ln -s $(TESTDIR)/Algorithm
 
 # also install files in a test sub directory:
 # in source files the API internal definitions need to

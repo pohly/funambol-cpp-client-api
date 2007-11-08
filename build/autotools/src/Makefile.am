@@ -18,7 +18,6 @@ SOURCES_BASE = \
     error.cpp \
     ErrorHandler.cpp \
     ItemContainer.cpp \
-    LogErrorHandler.cpp \
     md5.c
 
 SOURCES_EVENT = \

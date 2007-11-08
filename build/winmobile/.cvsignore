@@ -4,3 +4,4 @@
 *.vcproj.*
 *.suo
 output
+*ARMV4*

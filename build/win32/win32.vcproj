@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="Windows-1252"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="8,00"
+	Version="8.00"
 	Name="win32"
 	ProjectGUID="{D279EE74-36FB-4C4C-8F29-04947825C53E}"
 	RootNamespace="win32"
@@ -42,8 +42,8 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="..\..\src\include\common;..\..\src\include\windows;&quot;..\..\..\..\..\cppunit-1.12.0\include&quot;;..\..\..\..\tools\zlib"
-				PreprocessorDefinitions="WIN32;_DEBUG;_MBCS;UNICODE;_LIB;NO_CRIT_MSGBOX;_CRT_SECURE_NO_DEPRECATE;_CRT_NON_CONFORMING_SWPRINTFS;DISABLE_UNIT_TESTS;USE_ZLIB"
+				AdditionalIncludeDirectories="..\..\src\include\common;..\..\src\include\windows;..\..\..\..\tools\cppunit\include;..\..\..\..\tools\zlib"
+				PreprocessorDefinitions="WIN32;_DEBUG;_MBCS;UNICODE;_LIB;NO_CRIT_MSGBOX;_CRT_SECURE_NO_DEPRECATE;_CRT_NON_CONFORMING_SWPRINTFS;ENABLE_UNIT_TESTS;USE_ZLIB"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"

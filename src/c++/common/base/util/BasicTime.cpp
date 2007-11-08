@@ -16,15 +16,13 @@
  * 02111-1307  USA
  */
 
-#include <base/test.h>
-
 #include "base/util/BasicTime.h"
 
 BasicTime::BasicTime() {
     year = 1970;
     month = 1;
     day = 1;
-    weekday = 0;
+    weekday = -1;
     hour = 0;
     min = 0;
     sec = 0;
@@ -87,44 +85,54 @@ int BasicTime::parseRfc822(const char *date)
         return -1;
     }
 
-	const char *days[] = {
+    const char *days[] = {
         "Sun", "Mon", "Tue", "Wed",
         "Thu", "Fri", "Sat"
     };
-	const char *months[] = {
+    const char *months[] = {
         "Jan", "Feb", "Mar", "Apr",
         "May", "Jun", "Jul", "Aug",
         "Sep", "Oct", "Nov", "Dec"
     };
-	char dayOfWeek[6] = "---,";
-	char mon[4] = "---";
-	char time[10] = "00:00:00";
-	char timeZone[20] = "GMT";
+    char dayOfWeek[6] = "---,";
+    char mon[4] = "---";
+    char time[10] = "00:00:00";
+    char timeZone[20] = "GMT";
 
     // Wed Feb 01 14:40:45 Europe/Amsterdam 2006
-	// do we have day of week?
+    // do we have day of week?
     const char *pdate = strstr( date, "," );
-	if ( pdate == 0 ) {
-		ret=sscanf(date, "%d %s %d %s %s",
+    if ( pdate == 0 ) {
+        ret=sscanf(date, "%d %s %d %s %s",
             &day, mon, &year, time, timeZone);
     }
-	else {
-		ret=sscanf(date, "%s %d %s %d %s %s",
+    else {
+        ret=sscanf(date, "%s, %d %s %d %s %s",
             dayOfWeek, &day, mon, &year, time, timeZone);
         if (ret >= 1 && ret < 6) {
             // it can be an error in the format: Mon,12 Feb 2007 09:00:01 +0100
             // the comma is attached to the day
             if (*(pdate + 1) != ' ') {
-                ret = sscanf(pdate + 1, "%d %s %d %s %s",
+                ret = sscanf(pdate + 1, "%s,%d %s %d %s %s",
                     &day, mon, &year, time, timeZone);
 
             }
         }
+        // Convert day of week
+        for (int i = 0; i < 7; i++) {
+            if ( strcmp(days[i], dayOfWeek) == 0 ) {
+                weekday = i;
+                break;
+            }
+        }
+        // Do not exit on error on weekday, treat it like if it was
+        // not present.
     }
     // Trap parsing error
     if(ret == EOF || ret == 0){
         return -1;
     }
+    // Check validity
     if (year > 3000 || day < 0 || day > 31){
         *this = BasicTime();
         return -1;
@@ -132,76 +140,77 @@ int BasicTime::parseRfc822(const char *date)
 
     // Get month
     int i;
-	for (i = 0; i < 12; i++) {
-		if ( strcmp(months[i], mon) == 0 ) {
+    for (i = 0; i < 12; i++) {
+        if ( strcmp(months[i], mon) == 0 ) {
             month = i+1;
-			break;
+            break;
         }
-	}
+    }
     // Trap parsing error
-    if (i==13)
+    if (i==13) {
         return -1;
+    }
 
-	// Year ---------------------------------
+    // Year ---------------------------------
     if (year <= 60) {
         year += 2000;
     } else if (year > 60 && year < 100) {
         year += 1900;
     }
 
-	// hh:mm:ss -------------------------
-	// do we have sec?
-	if (strlen(time) > 6 && time[5] == ':')
-		sscanf(time, "%d:%d:%d", &hour, &min, &sec);
-	else
-		sscanf(time, "%d:%d", &hour, &min);
+    // hh:mm:ss -------------------------
+    // do we have sec?
+    if (strlen(time) > 6 && time[5] == ':')
+        sscanf(time, "%d:%d:%d", &hour, &min, &sec);
+    else
+        sscanf(time, "%d:%d", &hour, &min);
 
-	// Timezone ---------------------------------
+    // Timezone ---------------------------------
     if ( strcmp(timeZone, "GMT") != 0 && strcmp(timeZone, "UT") != 0) {
-		// is this explicit time?
-		if ( timeZone[0] == '+' || timeZone[0]== '-' ) {
-			char wcH[4] = "+00";
-			char wcM[4] = "00";
+        // is this explicit time?
+        if ( timeZone[0] == '+' || timeZone[0]== '-' ) {
+            char wcH[4] = "+00";
+            char wcM[4] = "00";
 
-			// get hour
-			if ( strlen(timeZone) > 3) {
-				wcH[0] = timeZone[0];
-				wcH[1] = timeZone[1];
-				wcH[2] = timeZone[2];
-				wcH[3] = '\0';
-			}
-			// get min
-			if ( strlen(timeZone) >= 5)	{
-				wcM[0] = timeZone[3];
-				wcM[1] = timeZone[4];
-				wcM[2] = '\0';
-			}
-			tzHour = atoi(wcH);
-			tzMin = atoi(wcM);
-		}
-		// otherwise it could be one string with the time
+            // get hour
+            if ( strlen(timeZone) > 3) {
+                wcH[0] = timeZone[0];
+                wcH[1] = timeZone[1];
+                wcH[2] = timeZone[2];
+                wcH[3] = '\0';
+            }
+            // get min
+            if ( strlen(timeZone) >= 5)	{
+                wcM[0] = timeZone[3];
+                wcM[1] = timeZone[4];
+                wcM[2] = '\0';
+            }
+            tzHour = atoi(wcH);
+            tzMin = atoi(wcM);
+        }
+        // otherwise it could be one string with the time
         else if ( strcmp(timeZone, "EDT") == 0) {
-			tzHour = -4;
+            tzHour = -4;
         }
-		else if ( strcmp(timeZone, "EST") == 0
+        else if ( strcmp(timeZone, "EST") == 0
             ||  strcmp(timeZone, "CDT") == 0) {
-			tzHour = -5;
+                tzHour = -5;
         }
-		else if ( strcmp(timeZone, "CST") == 0
+        else if ( strcmp(timeZone, "CST") == 0
             ||  strcmp(timeZone, "MDT") == 0) {
-			tzHour = -6;
+                tzHour = -6;
         }
-		else if ( strcmp(timeZone, "MST") == 0
+        else if ( strcmp(timeZone, "MST") == 0
             ||  strcmp(timeZone, "PDT") == 0 ){
-			tzHour = -7;
+                tzHour = -7;
         }
         else if ( strcmp(timeZone, "PST") == 0) {
-			tzHour = -8;
+            tzHour = -8;
         }
-	}
+    }
 
-	// clean up
-	return 0;
+    // clean up
+    return 0;
 }
 
 /*
@@ -252,9 +261,19 @@ char *BasicTime::formatRfc822() const {
     };
     char *ret = new char[60]; // FIXME: avoid sprintf and static size
 
-    sprintf(ret, "%s, %d %s %d %02d:%02d:%02d %+03d%02d",
-                  days[weekday], day, months[month-1], year, hour, min, sec,
-                  tzHour, tzMin);
+    // If the weekday is valid, print it, otherwise ignore it
+    if(weekday > 0 && weekday < 7) {
+        sprintf(ret, "%s, %d %s %d %02d:%02d:%02d %+03d%02d",
+                      days[weekday], day, months[month-1], year,
+                      hour, min, sec,
+                      tzHour, tzMin);
+    }
+    else {
+        sprintf(ret, "%d %s %d %02d:%02d:%02d %+03d%02d",
+                      day, months[month-1], year,
+                      hour, min, sec,
+                      tzHour, tzMin);
+    }
 
     return ret;
 }
@@ -291,63 +310,3 @@ bool BasicTime::operator==(const BasicTime& o) const {
     );
 }
 
-#ifdef ENABLE_UNIT_TESTS
-
-
-class BasicTimeTest : public CppUnit::TestFixture {
-    CPPUNIT_TEST_SUITE(BasicTimeTest);
-    CPPUNIT_TEST(testEqual);
-    CPPUNIT_TEST(testConversion);
-    CPPUNIT_TEST_SUITE_END();
-
-public:
-    void setUp() {
-        // millenium.set(2000, 01, 01, 6,
-        //              00, 00, 00,
-        //              00, 00);
-        millenium.setYear(2000);
-        buffer = NULL;
-    }
-    void tearDown() {
-        if (buffer) {
-            delete [] buffer;
-        }
-    }
-
-protected:
-    void testEqual() {
-        BasicTime empty;
-        CPPUNIT_ASSERT(empty != millenium);
-
-        BasicTime copy(millenium);
-        CPPUNIT_ASSERT(millenium == copy);
-        copy = millenium;
-        CPPUNIT_ASSERT(millenium == copy);
-    }
-
-    void testConversion() {
-        buffer = millenium.formatRfc822();
-
-        BasicTime copy;
-        CPPUNIT_ASSERT_EQUAL(0, copy.parseRfc822(buffer));
-        CPPUNIT_ASSERT(millenium == copy);
-        delete [] buffer; buffer = NULL;
-
-        CPPUNIT_ASSERT_EQUAL(-1, copy.parseRfc822("this is garbage"));
-
-        static const char convertStr[] = "Mon, 6 Nov 2006 20:30:15 +0100";
-        BasicTime convert;
-        CPPUNIT_ASSERT_EQUAL(0, convert.parseRfc822(convertStr));
-        buffer = convert.formatRfc822();
-        CPPUNIT_ASSERT(!strcmp(buffer, convertStr));
-        delete [] buffer; buffer = NULL;
-    }
-
-private:
-    BasicTime millenium;
-    char *buffer;
-};
-
-FUNAMBOL_TEST_SUITE_REGISTRATION(BasicTimeTest);
-
-#endif

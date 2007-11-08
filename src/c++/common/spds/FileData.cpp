@@ -46,13 +46,13 @@
 FileData::FileData()
 {
     size = 0;
-	hidden = false;
-	system = false;
-	archived = false;
-	deleted = false;
-	writable = false;
-	readable = false;
-	executable = false;
+    hidden = false;
+    system = false;
+    archived = false;
+    deleted = false;
+    writable = false;
+    readable = false;
+    executable = false;
     isHiddenPresent = false;
     isSystemPresent = false;
     isArchivedPresent = false;
@@ -60,34 +60,20 @@ FileData::FileData()
     isWritablePresent = false;
     isReadablePresent = false;
     isExecutablePresent = false;
-
 }
 
 FileData::~FileData()
 {
-    accessed.reset();
-    attributes.reset();
-    enc.reset();
-    file.reset();
-    modified.reset();
-    name.reset();
-    created.reset();
-    body.reset();
-    cttype.reset();
-
 }
 
 int FileData::parse(const void *syncmlData, size_t len) {
-    StringBuffer* s = new StringBuffer(syncmlData, len);
-    return parse(s);
-
-
+    StringBuffer s((const char*)syncmlData, len);
+    return parse(&s);
 }
 
 int FileData::parse(const char *syncmlData, size_t len) {
-    StringBuffer* s = new StringBuffer(syncmlData, len);
-    return parse(s);
-
+    StringBuffer s(syncmlData, len);
+    return parse(&s);
 }
 
 int FileData::parse(StringBuffer* s)

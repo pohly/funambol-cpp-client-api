@@ -38,8 +38,6 @@ class StringBuffer: public ArrayElement {
 
         StringBuffer(const StringBuffer &sb);
 
-        StringBuffer(const void* str, size_t len);
-
         ~StringBuffer();
 
         StringBuffer& append(const char* );

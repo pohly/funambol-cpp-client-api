@@ -1,3 +1,8 @@
+2007-11-08
+    - gazza: Unit tests updated - the testcases are under test, under the same
+             folder structure of the sources. The windows solution and the
+             unix makefile have been updated accordingly.
+
 2007-11-07
     - toccy: WinTransportAgent - added support for http status codes 402 & 403
 
