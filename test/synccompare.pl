@@ -17,6 +17,34 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
 # 02111-1307  USA
 #
+# Usage: <file>
+#        <left file> <right file>
+# Either normalizes a file or compares two of them in a side-by-side
+# diff.
+#
+# Checks environment variables:
+#
+# CLIENT_TEST_SERVER=funambol|scheduleworld|egroupware|synthesis
+#       Enables code which simplifies the text files just like
+#       certain well-known servers do. This is useful for testing
+#       to ignore the data loss introduced by these servers or (for
+#       users) to simulate the effect of these servers on their data.
+#
+# CLIENT_TEST_CLIENT=evolution|addressbook (Mac OS X/iPhone)
+#       Same as for servers this replicates the effect of storing
+#       data in the clients.
+#
+# CLIENT_TEST_LEFT_NAME="before sync"
+# CLIENT_TEST_RIGHT_NAME="after sync"
+# CLIENT_TEST_REMOVED="removed during sync"
+# CLIENT_TEST_ADDED="added during sync"
+#       Setting these variables changes the default legend
+#       print above the left and right file during a
+#       comparison.
+#
+# CLIENT_TEST_COMPARISON_FAILED=1
+#       Overrides the default error code when changes are found.
+
 
 use strict;
 use encoding 'utf8';
@@ -314,9 +342,13 @@ if($#ARGV > 1) {
   }
 
   if ($res) {
-    printf "%*s | %s\n", $singlewidth, "before sync", "after sync";
-    printf "%*s <\n", $singlewidth, "removed during sync";
-    printf "%*s > %s\n", $singlewidth, "", "added during sync";
+    printf "%*s | %s\n", $singlewidth,
+           ($ENV{CLIENT_TEST_LEFT_NAME} || "before sync"),
+           ($ENV{CLIENT_TEST_RIGHT_NAME} || "after sync");
+    printf "%*s <\n", $singlewidth,
+           ($ENV{CLIENT_TEST_REMOVED} || "removed during sync");
+    printf "%*s > %s\n", $singlewidth, "",
+           ($ENV{CLIENT_TEST_ADDED} || "added during sync");
     print "-" x $columns, "\n";
 
     # fix confusing output like:
@@ -399,7 +431,7 @@ if($#ARGV > 1) {
 
   # unlink($normal1);
   # unlink($normal2);
-  exit($res ? 1 : 0);
+  exit($res ? ((defined $ENV{CLIENT_TEST_COMPARISON_FAILED}) ? int($ENV{CLIENT_TEST_COMPARISON_FAILED}) : 1) : 0);
 } else {
   # normalize
   my $in;
