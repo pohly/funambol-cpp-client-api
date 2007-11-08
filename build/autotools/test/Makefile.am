@@ -30,7 +30,7 @@ TESTCASES = $(TESTS_BASE)
 # executed. The workaround is to explicitly set them as undefined on the
 # link line.
 client_test_SOURCES = $(SOURCES) $(TESTCASES)
-client_test_LDFLAGS = libsync4j.la
+#client_test_LDFLAGS = libsync4j.la
 
 # ensure that files are in the current directory before the check runs
 check-am check: client-test-files
