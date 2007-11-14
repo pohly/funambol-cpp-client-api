@@ -50,8 +50,8 @@ wstring& WinEvent::toString() {
     vCalendar = L"";
 
     //
-    // Conversion: WinContact -> vObject.
-    // ----------------------------------
+    // Conversion: WinEvent -> vObject.
+    // --------------------------------
     //
     VObject* vo = new VObject();
     VProperty* vp  = NULL;
@@ -233,6 +233,12 @@ wstring& WinEvent::toString() {
         }
     }
 
+
+    //
+    // TODO: format ATTENDEES
+    //
+
+
     //
     // ---- Other Funambol defined properties ----
     // Support for other fields that don't have a
@@ -369,10 +375,12 @@ int WinEvent::parse(const wstring dataString) {
     if(element = getVObjectPropertyValue(vo, L"CATEGORIES")) {
         setProperty(L"Categories", element);
     }
-    if(element = getVObjectPropertyValue(vo, L"CLASS")) {
+    if (element = getVObjectPropertyValue(vo, L"CLASS")) {
         WCHAR tmp[10];
-        if( !wcscmp(element, TEXT("PRIVATE"     )) || 
-            !wcscmp(element, TEXT("CONFIDENTIAL")) ) {
+        if (!wcscmp(element, TEXT("CONFIDENTIAL")) ) {
+            wsprintf(tmp, TEXT("%i"), winConfidential);     // Confidential = 3
+        }
+        else if (!wcscmp(element, TEXT("PRIVATE")) ) {
             wsprintf(tmp, TEXT("%i"), winPrivate);          // Private = 2
         }
         else {
@@ -436,7 +444,8 @@ int WinEvent::parse(const wstring dataString) {
 
         // RRULE -> Recurrence pattern
         // Fill recPattern propertyMap.
-        recPattern.parse(element, startDate);
+        recPattern.setStartDate(startDate);
+        recPattern.parse(element);
 
         // EXDATE -> fill excludeDate list
         VProperty* vprop = vo->getProperty(L"EXDATE");
@@ -461,6 +470,10 @@ int WinEvent::parse(const wstring dataString) {
         // Not recurring.
         setProperty(L"IsRecurring", L"0");
     }
+
+    //
+    // TODO: parse ATTENDEES and fill recipients list
+    //
 
     //
     // ---- Other Funambol defined properties ----
@@ -502,18 +515,6 @@ bool WinEvent::checkVCalendarTypeAndVersion(VObject* vo) {
         LOG.info(INFO_ITEM_VOBJ_WRONG_VERSION, version, VCALENDAR_VERSION);
     }
     return true;
-}
-
-
-// Utility to safe-retrieve the property value inside VObject 'vo'.
-WCHAR* WinEvent::getVObjectPropertyValue(VObject* vo, const WCHAR* propertyName) {
-
-    WCHAR* propertyValue = NULL;
-    VProperty* vprop = vo->getProperty(propertyName);
-    if (vprop && vprop->getValue()) {
-        propertyValue = vprop->getValue();
-    }
-    return propertyValue;
 }
 
 
