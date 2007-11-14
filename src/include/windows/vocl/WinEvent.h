@@ -45,17 +45,8 @@ private:
     /// The recurrence pattern object, containing recurring properties.
     WinRecurrence recPattern;
 
-    /// List of occurrences dates to exclude (recurring exceptions to delete).
-    list<wstring> excludeDate;
-    /// List of occurrences dates to include (recurring exceptions to add).
-    list<wstring> includeDate;
-
-    /// List of recipients (attendees) for this event.
-    list<WinRecipient> recipients;
-
     //bool isRecurring;
     //bool isAllday;
-
 
     /**
      * Checks the productID and version of VObject passed for vCalendar.
@@ -67,13 +58,16 @@ private:
      */
     bool checkVCalendarTypeAndVersion(VObject* vo);
 
-    /**
-     * Utility to safe-retrieve the property value inside VObject 'vo'.
-     * @param vo           : VObject to read from
-     * @param propertyName : the property name requested
-     * @return               the property value (NULL if not found)
-     */
-    WCHAR* getVObjectPropertyValue(VObject* vo, const WCHAR* propertyName);
+
+protected:
+
+    /// List of occurrences dates to exclude (recurring exceptions to delete).
+    list<wstring> excludeDate;
+    /// List of occurrences dates to include (recurring exceptions to add).
+    list<wstring> includeDate;
+
+    /// List of recipients (attendees) for this event.
+    list<WinRecipient> recipients;
 
 
 public:
@@ -95,7 +89,7 @@ public:
      * @param dataString  input vCalendar string to be parsed
      * @return            0 if no errors
      */
-    int parse(const wstring dataString);
+    virtual int parse(const wstring dataString);
 
     /**
      * Format and return a vCalendar string from the propertyMap.
@@ -103,12 +97,12 @@ public:
      * as they don't have a correspondence in propertyMap.
      * @return  the vCalendar string formatted, reference to internal wstring
      */
-    wstring& toString();
+    virtual wstring& toString();
 
 
 
     /// Returns a pointer to the (internally owned) WinRecurrence.
-    WinRecurrence* getRecPattern();
+    virtual WinRecurrence* getRecPattern();
 
     /// Returns a pointer to the list (internally owned) of exclude dates.
     list<wstring>* getExcludeDates();
