@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="Windows-1252"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="8.00"
+	Version="8,00"
 	Name="win32"
 	ProjectGUID="{D279EE74-36FB-4C4C-8F29-04947825C53E}"
 	RootNamespace="win32"
@@ -3218,6 +3218,10 @@
 					Name="winObjects"
 					>
 					<File
+						RelativePath="..\..\src\c++\windows\vocl\sifUtils.cpp"
+						>
+					</File>
+					<File
 						RelativePath="..\..\src\c++\windows\vocl\WinContact.cpp"
 						>
 					</File>
@@ -3230,7 +3234,19 @@
 						>
 					</File>
 					<File
+						RelativePath="..\..\src\c++\windows\vocl\WinEventSIF.cpp"
+						>
+					</File>
+					<File
 						RelativePath="..\..\src\c++\windows\vocl\WinItem.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\c++\windows\vocl\WinNote.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\c++\windows\vocl\WinNoteSIF.cpp"
 						>
 					</File>
 					<File
@@ -3239,6 +3255,18 @@
 					</File>
 					<File
 						RelativePath="..\..\src\c++\windows\vocl\WinRecurrence.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\c++\windows\vocl\WinRecurrenceSIF.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\c++\windows\vocl\WinTask.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\c++\windows\vocl\WinTaskSIF.cpp"
 						>
 					</File>
 				</Filter>
@@ -4055,6 +4083,10 @@
 						>
 					</File>
 					<File
+						RelativePath="..\..\src\include\windows\vocl\sifUtils.h"
+						>
+					</File>
+					<File
 						RelativePath="..\..\src\include\windows\vocl\wincontact.h"
 						>
 					</File>
@@ -4067,7 +4099,19 @@
 						>
 					</File>
 					<File
+						RelativePath="..\..\src\include\windows\vocl\WineventSIF.h"
+						>
+					</File>
+					<File
 						RelativePath="..\..\src\include\windows\vocl\winitem.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\include\windows\vocl\WinNote.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\include\windows\vocl\WinNoteSIF.h"
 						>
 					</File>
 					<File
@@ -4076,6 +4120,18 @@
 					</File>
 					<File
 						RelativePath="..\..\src\include\windows\vocl\WinRecurrence.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\include\windows\vocl\WinRecurrenceSIF.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\include\windows\vocl\WinTask.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\include\windows\vocl\WinTaskSIF.h"
 						>
 					</File>
 				</Filter>

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="Windows-1252"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="8.00"
+	Version="8,00"
 	Name="windowsmobile"
 	ProjectGUID="{4E03F2CD-31F3-4EA8-81E4-AC267456C910}"
 	RootNamespace="windowsmobile"
@@ -17177,6 +17177,10 @@
 					Name="winObjects"
 					>
 					<File
+						RelativePath="..\..\src\c++\windows\vocl\sifUtils.cpp"
+						>
+					</File>
+					<File
 						RelativePath="..\..\src\c++\windows\vocl\WinContact.cpp"
 						>
 					</File>
@@ -17189,7 +17193,19 @@
 						>
 					</File>
 					<File
+						RelativePath="..\..\src\c++\windows\vocl\WinEventSIF.cpp"
+						>
+					</File>
+					<File
 						RelativePath="..\..\src\c++\windows\vocl\WinItem.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\c++\windows\vocl\WinNote.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\c++\windows\vocl\WinNoteSIF.cpp"
 						>
 					</File>
 					<File
@@ -17198,6 +17214,18 @@
 					</File>
 					<File
 						RelativePath="..\..\src\c++\windows\vocl\WinRecurrence.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\c++\windows\vocl\WinRecurrenceSIF.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\c++\windows\vocl\WinTask.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\c++\windows\vocl\WinTaskSIF.cpp"
 						>
 					</File>
 				</Filter>
@@ -18272,10 +18300,6 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\include\common\spdm\constants.h"
-				>
-			</File>
-			<File
 				RelativePath="..\..\src\include\common\spds\constants.h"
 				>
 			</File>
@@ -18285,6 +18309,10 @@
 			</File>
 			<File
 				RelativePath="..\..\src\include\common\base\constants.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\include\common\spdm\constants.h"
 				>
 			</File>
 			<File
@@ -18348,10 +18376,6 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\include\common\http\errors.h"
-				>
-			</File>
-			<File
 				RelativePath="..\..\src\include\common\spds\errors.h"
 				>
 			</File>
@@ -18361,6 +18385,10 @@
 			</File>
 			<File
 				RelativePath="..\..\src\include\common\base\errors.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\include\common\http\errors.h"
 				>
 			</File>
 			<File
