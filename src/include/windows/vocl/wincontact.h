@@ -84,7 +84,7 @@ public:
      * as they don't have a correspondence in propertyMap.
      * @return  the vCard string formatted, reference to internal wstring
      */
-    virtual wstring toString();
+    virtual wstring& toString();
 
 
     /// Returns the picture type ("JPEG", "GIF", ...)

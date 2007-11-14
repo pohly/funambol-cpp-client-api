@@ -44,7 +44,7 @@ WinContact::~WinContact() {
 //
 // Format and return a vCard string from the propertyMap.
 //
-wstring WinContact::toString() {
+wstring& WinContact::toString() {
 
     vCard = L"";
 
