@@ -32,7 +32,6 @@ WinItem::~WinItem() {}
 
 
 
-
 // Sets a value into propertyMap.
 void WinItem::setProperty(const wstring propertyName, const wstring propertyValue) {
     propertyMap[propertyName] = propertyValue;
@@ -188,5 +187,16 @@ long WinItem::getCRC() {
     crc32 = ~crc32;
 
     return crc32;
+}
 
+
+// Utility to safe-retrieve the property value inside VObject 'vo'.
+WCHAR* WinItem::getVObjectPropertyValue(VObject* vo, const WCHAR* propertyName) {
+
+    WCHAR* propertyValue = NULL;
+    VProperty* vprop = vo->getProperty(propertyName);
+    if (vprop && vprop->getValue()) {
+        propertyValue = vprop->getValue();
+    }
+    return propertyValue;
 }
