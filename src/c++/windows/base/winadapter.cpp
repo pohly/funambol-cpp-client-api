@@ -341,14 +341,21 @@ char *mkTempFileName(const char *name)
 
 bool readFile(const char* path, char **message, size_t *len, bool binary)
 {
+    bool ret = false;
     FILE *f;
     size_t msglen=0;
     char *msg=0;
-    const char *mode = binary ? "rb" : "r" ;
 
-    f = fopen(path, mode);
-    if ( !f ) {
-        return false;
+    // Convert to wide-char to be compatible with international chars.
+    // If using char and UTF-8, fopen() is not working correctly and
+    // will fail with special chars. (with UTF-8... why?)
+    // So we use _wfopen() and a wide-char path.
+    const WCHAR* mode = binary ? TEXT("rb") : TEXT("r");
+    WCHAR* wpath = toWideChar(path);
+
+    f = _wfopen(wpath, mode);
+    if (!f) {
+        goto finally;
     }
     msglen = fgetsize(f);
     msg = new char[msglen+1];
@@ -357,36 +364,47 @@ bool readFile(const char* path, char **message, size_t *len, bool binary)
     *len=fread(msg, sizeof(char), msglen, f);
     if(ferror(f)){
         delete [] msg;
-        return false;
+        goto finally;
     }
     fclose(f);
 
     // Set return parameters
-    *message= msg ;
+    *message= msg;
     *len=msglen;
+    ret = true;
 
-    return true;
+finally:
+    delete [] wpath;
+    return ret;
 }
 
 
-bool saveFile(const char *filename,
-              const char *buffer,
-              size_t len, bool binary)
+bool saveFile(const char *filename, const char *buffer, size_t len, bool binary) 
 {
-    const char *mode = binary ? "wb" : "w" ;
-    FILE *f = fopen(filename, mode);
+    bool ret = false;
 
+    // Convert to wide-char to be compatible with international chars.
+    // If using char and UTF-8, fopen() is not working correctly and
+    // will fail with special chars. (with UTF-8... why?)
+    // So we use _wfopen() and a wide-char path.
+    const WCHAR* mode = binary ? TEXT("wb") : TEXT("w");
+    WCHAR* wpath = toWideChar(filename);
+
+    FILE *f = _wfopen(wpath, mode);
     if(!f) {
-        return false;
+        goto finally;
     }
 
     if (fwrite(buffer, sizeof(char), len, f) != len) {
         fclose(f);
-        return false;
+        goto finally;
     }
     fclose(f);
+    ret = true;
 
-    return true;
+finally:
+    delete [] wpath;
+    return ret;
 }
 
 
