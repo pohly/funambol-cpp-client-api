@@ -40,6 +40,13 @@ private:
     wstring rrule;
 
 
+protected:
+
+    /// The start date (double format) of the correspondent event/task
+    /// It's necessary to parse correctly the RRULE string
+    DATE startDate;
+
+
 public:
 
     /// Default Constructor
@@ -47,26 +54,31 @@ public:
 
     /**
      * Constructor: fills propertyMap parsing the vCalendar RRULE string
-     * @param dataString   input RRULE string to parse
-     * @param startDate    start date (double format) of the correspondent event/task
+     * @param dataString  input RRULE string to parse
+     * @param date        start date (double format) of the correspondent event/task
      */
-    WinRecurrence(const wstring dataString, const DATE startDate = 0);
+    WinRecurrence(const wstring dataString, const DATE date = 0);
 
     /// Destructor
-    ~WinRecurrence();
+    virtual ~WinRecurrence();
 
 
     /**
      * Parse a vCalendar RRULE string and fills the propertyMap.
      * @param dataString   input RRULE string to parse
-     * @param startDate    start date (double format) of the correspondent event/task
      * @return             0 if no errors
      */
-    int parse(const wstring dataString, const DATE startDate = 0);
+    virtual int parse(const wstring dataString);
 
     /// Format and return a vCalendar RRULE string from the propertyMap.
-    wstring& toString();
+    virtual wstring& toString();
 
+
+    /// Returns the startDate (double format)
+    const DATE getStartDate()          { return startDate; }
+
+    /// Sets the startDate (double format)
+    void setStartDate(const DATE date) { startDate = date; }
 
 
     /// Alternate method to get a property, returns an int value.
@@ -74,7 +86,6 @@ public:
 
     /// Alternate method to set a property, passing an int value.
     void setIntProperty(const wstring propertyName, const int propertyValue);
-
 };
 
 /** @} */

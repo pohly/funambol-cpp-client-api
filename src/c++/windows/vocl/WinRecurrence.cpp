@@ -28,12 +28,14 @@ using namespace std;
 // Constructor
 WinRecurrence::WinRecurrence() {
     rrule = L"";
+    startDate = 0;
 }
 
 // Constructor: fills propertyMap parsing the passed RRULE
-WinRecurrence::WinRecurrence(const wstring dataString, const DATE startDate) {
+WinRecurrence::WinRecurrence(const wstring dataString, const DATE date) {
     rrule = L"";
-    parse(dataString, startDate);
+    startDate = date;
+    parse(dataString);
 }
 
 // Destructor
@@ -181,7 +183,7 @@ wstring& WinRecurrence::toString() {
 
 
 // Parse a RRULE string and fills the propertyMap.
-int WinRecurrence::parse(const wstring dataString, const DATE startDate) {
+int WinRecurrence::parse(const wstring dataString) {
 
     int ret = 0;
     WCHAR* str = wstrdup(dataString.c_str());
@@ -409,8 +411,6 @@ finally:
     if (mOfYear) delete [] mOfYear;
     return ret;
 }
-
-
 
 
 
