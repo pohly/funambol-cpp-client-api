@@ -23,11 +23,13 @@ using namespace std;
 
 // Constructor
 WinRecipient::WinRecipient() {
+    attendee = L"";
 }
 
 // Constructor: fills propertyMap parsing the ATTENDEE
-WinRecipient::WinRecipient(const wstring attendee) {
-    parse(attendee);
+WinRecipient::WinRecipient(const wstring data) {
+    attendee = L"";
+    parse(data);
 }
 
 // Destructor
@@ -37,14 +39,14 @@ WinRecipient::~WinRecipient() {
 
 
 // Parse a ATTENDEE string and fills the propertyMap.
-int WinRecipient::parse(const wstring attendee) {
+int WinRecipient::parse(const wstring data) {
     // TODO
     return 0;
 }
 
 // Format and return a ATTENDEE string from the propertyMap.
-int WinRecipient::toString(wstring& attendee) {
+wstring& WinRecipient::toString() {
     // TODO
-    return 0;
+    return attendee;
 }
 
