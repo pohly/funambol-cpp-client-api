@@ -31,9 +31,9 @@ using namespace std;
 
 
 /**
- * Rapresents a contact object for Windows Clients.
- * The object can be filled passing a vCard, or filling
- * directly the map. Calling 'toString()' a vCard is formatted and returned.
+ * Rapresents a contact object for Windows Clients, in SIF format.
+ * The object can be filled passing a SIF string, or filling
+ * directly the map. Calling 'toString()' a SIF is formatted and returned.
  */
 class WinContactSIF : public WinContact {
 
@@ -41,13 +41,20 @@ private:
 
     /// Internal string formatted (SIF).
     wstring sif;
+
+    /// NULL terminated array of SIF fields names.
     const wchar_t** sifFields;
    
 public:
 
     /// Default Constructor
     WinContactSIF();
-    /// Constructor: fills propertyMap parsing the passed vCard
+
+    /**
+     * Constructor: fills propertyMap parsing the passed SIF
+     * @param dataString  the input SIF string
+     * @param fields      the NULL terminated array of SIF fields
+     */
     WinContactSIF(const wstring dataString, const wchar_t **fields);
 
     /// Destructor
@@ -57,52 +64,25 @@ public:
      * Parse a vCard string and fills the propertyMap.
      * The map is cleared and will contain only found properties
      * at the end of the parsing.
-     * @param dataString  input vCard string to be parsed
+     * @param dataString  input SIF string to be parsed
      * @return            0 if no errors
      */
     int parse(const wstring dataString);
    
     /**
-     * Format and return a vCard string from the propertyMap.
+     * Format and return a SIF string from the propertyMap.
      * Not supported properties are ignored and so not formatted 
      * as they don't have a correspondence in propertyMap.
-     * @return  the vCard string formatted, reference to internal wstring
+     * @return  the SIF string formatted, reference to internal wstring
      */
-    wstring toString();     
+    wstring& toString();
 
-    /**
-    * Transform the value of the specified property according to the SIF specifications.
-    * The values are formatted following the vcard and icalendar specs that in some cases
-    * they are different from the SIF expectations. If there are no differences, propValue 
-    * is returned.
-    *
-    * @param  propName   [IN] the property name
-    * @param  propValue  [IN] the property value
-    * @param  type       [IN] the type of the data (contact, calendar...)
-    * @return            the converted value if necessary
-    */
-    wstring adaptToSpecsSIF(const wstring& propName, const wstring& propValue, const wstring& type);
-
-
-    /**
-    * Adds a tag <PropertyName>PropertyValue</PropertyName> into 'sif' string.
-    */
-    void addPropertyToSIF(const wstring propertyName, wstring propertyValue);
 
     /**
     * Adds a tag <Photo TYPE="JPEG">PropertyValue</Photo> into 'sif' string.
     */
     void addPhotoToSIF(wstring propertyValue);
 
-    /*
-    * Trim the string
-    */
-    wstring trim(const wstring& str);
-
-    /*
-    * Format a date like yyyyMMdd in yyyy-MM-dd
-    */
-    wstring formatDateWithMinus(const wstring& stringDate);
 
     /**
     * Transform the value of the specified property according to the SIF specifications.

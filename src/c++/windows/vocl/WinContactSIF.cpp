@@ -20,15 +20,18 @@
 #include "vocl/VConverter.h"
 #include "vocl/constants.h"
 #include "base/stringUtils.h"
+#include "vocl/sifUtils.h"
+
 using namespace std;
 
 
 // Constructor
 WinContactSIF::WinContactSIF() {
+    sifFields = NULL;
     sif = L"";
 }
 
-// Constructor: fills propertyMap parsing the passed vCard string
+// Constructor: fills propertyMap parsing the passed SIF string
 WinContactSIF::WinContactSIF(const wstring dataString, const wchar_t **fields) {
     sif = L"";
     sifFields = fields;
@@ -39,11 +42,15 @@ WinContactSIF::WinContactSIF(const wstring dataString, const wchar_t **fields) {
 WinContactSIF::~WinContactSIF() {
 }
 
-wstring WinContactSIF::toString() {
+wstring& WinContactSIF::toString() {
     
     wstring propertyValue, propertyKey;
     sif = L"<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";   
     sif += L"<contact>\n";
+
+    sif += L"<SIFVersion>";
+    sif += SIF_VERSION;
+    sif += L"</SIFVersion>\n";
 
     map<wstring,wstring>::iterator it = propertyMap.begin();       
     while (it != propertyMap.end()) {        
@@ -53,7 +60,7 @@ wstring WinContactSIF::toString() {
             addPhotoToSIF(propertyValue);       // To manage the TYPE attribute
         }
         else {
-            addPropertyToSIF(it->first, propertyValue);
+            addPropertyToSIF(sif, it->first, propertyValue);
         }
         it ++;
     }
@@ -64,35 +71,11 @@ wstring WinContactSIF::toString() {
 
 
 
-
-void WinContactSIF::addPropertyToSIF(const wstring propertyName, wstring propertyValue) {
-
-    if (propertyValue != L"") {
-
-        replaceAll(L"&", L"&amp;", propertyValue);
-        replaceAll(L"<", L"&lt;",  propertyValue);
-        replaceAll(L">", L"&gt;",  propertyValue);
-
-        sif += L"<";
-        sif += propertyName;
-        sif += L">";
-        sif += propertyValue;
-        sif += L"</";
-        sif += propertyName;
-        sif += L">\n";
-    }
-    else {
-        sif += L"<";
-        sif += propertyName;
-        sif += L"/>\n";
-    }
-}
-
 void WinContactSIF::addPhotoToSIF(wstring propertyValue) {
 
     if (photoType.length() == 0) {
         // Type not specified
-        addPropertyToSIF(L"Photo", propertyValue);
+        addPropertyToSIF(sif, L"Photo", propertyValue);
         return;
     }
 
@@ -109,30 +92,6 @@ void WinContactSIF::addPhotoToSIF(wstring propertyValue) {
 }
 
 
-wstring WinContactSIF::trim(const wstring& str) {
-    wstring ret = str;
-    int idx = 0;
-    while((idx=ret.find_first_of(' ')) == 0 ) {
-        ret.replace( idx, 1, L"" );            
-    }
-    while((idx=ret.find_last_of(' ')) == ret.size()-1 ) {
-        ret.replace( idx, 1, L"" );            
-    }
-    return ret;
-}
-
-wstring WinContactSIF::formatDateWithMinus(const wstring& stringDate) {
-    
-    wstring ret;
-    if (stringDate.length() == 8) {
-        ret = stringDate.substr(0, 4);
-        ret += L"-";
-        ret += stringDate.substr(4, 2);
-        ret += L"-";
-        ret += stringDate.substr(6, 2);
-    }
-    return ret;
-}
 
 wstring WinContactSIF::adaptToSIFSpecs(const wstring& propName, const wstring& propValue) {
     
@@ -140,15 +99,15 @@ wstring WinContactSIF::adaptToSIFSpecs(const wstring& propName, const wstring& p
 
     if ((propName == L"Anniversary" || propName == L"Birthday") && propValue != L"") {
        propertyValue = formatDateWithMinus(propValue);    
-    } else if (propName == L"Photo" && propValue != L"") {
+    } 
+    else if (propName == L"Photo" && propValue != L"") {
         // the picture is right for vcard: for windows we have to format better the sif
         // even if it should work anyway.
-        //<Photo>    /9j/4AAQSkZJRgABAQEAcwBzAAD/2wBDAAgGBgcGBQgHBwcJCQgKDBQNDAsLDBkSEw8UHRof
+        //<Photo> /9j/4AAQSkZJRgABAQEAcwBzAAD/2wBDAAgGBgcGBQgHBwcJCQgKDBQNDAsLDBkSEw8UHRof
         //        Hh0aHBwgJC4nICIsIxwcKDcpLDAxNDQ0Hyc5PTgyPC4zNDL/2wBDAQkJCQwLDBgNDRgyIRwh   
         //        MDyN8gIU9aKyV+o9D//Z
-        //        </Photo>
+        //</Photo>
         propertyValue = trim(propValue);
-        
     } 
 
     if (propertyValue != L"") {
@@ -159,15 +118,19 @@ wstring WinContactSIF::adaptToSIFSpecs(const wstring& propName, const wstring& p
 }
 
 int WinContactSIF::parse(const wstring data) {
-    
-    propertyMap.clear();
-    // Check if <itemType> tag is present...
 
+    if (!sifFields) {
+        LOG.error(ERR_SIFFIELDS_NULL);
+        return 1;
+    }
+    propertyMap.clear();
+
+    // Check if <contact> tag is present...
     wstring::size_type pos = 0;
     wstring itemTypeTag = L"<contact>";    
     pos = data.find(itemTypeTag, 0);
     if (pos == wstring::npos) {
-        LOG.error("Property not found", itemTypeTag.c_str());
+        LOG.error("Tag '%ls' not found", itemTypeTag.c_str());
         return 1;
     }
     wstring propertyValue;
