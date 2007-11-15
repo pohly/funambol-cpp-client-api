@@ -370,7 +370,7 @@ bool readFile(const char* path, char **message, size_t *len, bool binary)
 
     // Set return parameters
     *message= msg ;
-    *len=msglen;
+    //*len=msglen;
     ret = true;
 
 finally:
