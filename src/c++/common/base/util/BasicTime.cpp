@@ -107,7 +107,7 @@ int BasicTime::parseRfc822(const char *date)
             &day, mon, &year, time, timeZone);
     }
     else {
-        ret=sscanf(date, "%s, %d %s %d %s %s",
+        ret=sscanf(date, "%s %d %s %d %s %s",
             dayOfWeek, &day, mon, &year, time, timeZone);
         if (ret >= 1 && ret < 6) {
             // it can be an error in the format: Mon,12 Feb 2007 09:00:01 +0100
@@ -120,7 +120,7 @@ int BasicTime::parseRfc822(const char *date)
         }
         // Convert day of week
         for (int i = 0; i < 7; i++) {
-            if ( strcmp(days[i], dayOfWeek) == 0 ) {
+            if ( strncmp(days[i], dayOfWeek, 3) == 0 ) {
                 weekday = i;
                 break;
             }
