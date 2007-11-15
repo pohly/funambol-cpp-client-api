@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="Windows-1252"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="8.00"
+	Version="8,00"
 	Name="client-test"
 	ProjectGUID="{68DB1569-6AFC-4288-B7B0-79AF45F2F37C}"
 	RootNamespace="cppunit"
@@ -230,6 +230,18 @@
 					>
 				</File>
 			</Filter>
+			<Filter
+				Name="syncml"
+				>
+				<File
+					RelativePath="..\..\test\common\syncml\FormatterTest.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\test\common\syncml\ParserTest.cpp"
+					>
+				</File>
+			</Filter>
 		</Filter>
 		<Filter
 			Name="Header Files"
@@ -255,7 +267,7 @@
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="Copying $(InputDir)$(InputFileName)"
-						CommandLine="copy $(InputDir)$(InputFileName) $(TargetDir)"
+						CommandLine="copy $(InputDir)$(InputFileName) $(TargetDir)&#x0D;&#x0A;"
 						Outputs="$(TargetDir)$(InputFileName)"
 					/>
 				</FileConfiguration>
@@ -265,7 +277,7 @@
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="Copying $(InputDir)$(InputFileName)"
-						CommandLine="copy $(InputDir)$(InputFileName) $(TargetDir)"
+						CommandLine="copy $(InputDir)$(InputFileName) $(TargetDir)&#x0D;&#x0A;"
 						Outputs="$(TargetDir)$(InputFileName)"
 					/>
 				</FileConfiguration>
@@ -279,7 +291,7 @@
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="Copying $(InputDir)$(InputFileName)"
-						CommandLine="copy $(InputDir)$(InputFileName) $(TargetDir)"
+						CommandLine="copy $(InputDir)$(InputFileName) $(TargetDir)&#x0D;&#x0A;"
 						Outputs="$(TargetDir)$(InputFileName)"
 					/>
 				</FileConfiguration>
@@ -289,7 +301,7 @@
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="Copying $(InputDir)$(InputFileName)"
-						CommandLine="copy $(InputDir)$(InputFileName) $(TargetDir)"
+						CommandLine="copy $(InputDir)$(InputFileName) $(TargetDir)&#x0D;&#x0A;"
 						Outputs="$(TargetDir)$(InputFileName)"
 					/>
 				</FileConfiguration>
@@ -303,7 +315,7 @@
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="Copying $(InputDir)$(InputFileName)"
-						CommandLine="copy $(InputDir)$(InputFileName) $(TargetDir)"
+						CommandLine="copy $(InputDir)$(InputFileName) $(TargetDir)&#x0D;&#x0A;"
 						Outputs="$(TargetDir)$(InputFileName)"
 					/>
 				</FileConfiguration>
@@ -313,7 +325,7 @@
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="Copying $(InputDir)$(InputFileName)"
-						CommandLine="copy $(InputDir)$(InputFileName) $(TargetDir)"
+						CommandLine="copy $(InputDir)$(InputFileName) $(TargetDir)&#x0D;&#x0A;"
 						Outputs="$(TargetDir)$(InputFileName)"
 					/>
 				</FileConfiguration>
@@ -327,7 +339,7 @@
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="Copying $(InputDir)$(InputFileName)"
-						CommandLine="copy $(InputDir)$(InputFileName) $(TargetDir)"
+						CommandLine="copy $(InputDir)$(InputFileName) $(TargetDir)&#x0D;&#x0A;"
 						Outputs="$(TargetDir)$(InputFileName)"
 					/>
 				</FileConfiguration>
@@ -366,6 +378,264 @@
 					/>
 				</FileConfiguration>
 			</File>
+			<Filter
+				Name="SyncML"
+				>
+				<File
+					RelativePath="..\..\test\testcases\ex1.xml"
+					>
+					<FileConfiguration
+						Name="Debug|Win32"
+						>
+						<Tool
+							Name="VCCustomBuildTool"
+							Description="Copying $(InputDir)$(InputFileName)"
+							CommandLine="copy $(InputDir)$(InputFileName) $(TargetDir)&#x0D;&#x0A;"
+							Outputs="$(TargetDir)$(InputFileName)"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release|Win32"
+						>
+						<Tool
+							Name="VCCustomBuildTool"
+							Description="Copying $(InputDir)$(InputFileName)"
+							CommandLine="copy $(InputDir)$(InputFileName) $(TargetDir)&#x0D;&#x0A;"
+							Outputs="$(TargetDir)$(InputFileName)"
+						/>
+					</FileConfiguration>
+				</File>
+				<File
+					RelativePath="..\..\test\testcases\ex2.xml"
+					>
+					<FileConfiguration
+						Name="Debug|Win32"
+						>
+						<Tool
+							Name="VCCustomBuildTool"
+							Description="Copying $(InputDir)$(InputFileName)"
+							CommandLine="copy $(InputDir)$(InputFileName) $(TargetDir)&#x0D;&#x0A;"
+							Outputs="$(TargetDir)$(InputFileName)"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release|Win32"
+						>
+						<Tool
+							Name="VCCustomBuildTool"
+							Description="Copying $(InputDir)$(InputFileName)"
+							CommandLine="copy $(InputDir)$(InputFileName) $(TargetDir)&#x0D;&#x0A;"
+							Outputs="$(TargetDir)$(InputFileName)"
+						/>
+					</FileConfiguration>
+				</File>
+				<File
+					RelativePath="..\..\test\testcases\syncML1.xml"
+					>
+					<FileConfiguration
+						Name="Debug|Win32"
+						>
+						<Tool
+							Name="VCCustomBuildTool"
+							Description="Copying $(InputDir)$(InputFileName)"
+							CommandLine="copy $(InputDir)$(InputFileName) $(TargetDir)&#x0D;&#x0A;"
+							Outputs="$(TargetDir)$(InputFileName)"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release|Win32"
+						>
+						<Tool
+							Name="VCCustomBuildTool"
+							Description="Copying $(InputDir)$(InputFileName)"
+							CommandLine="copy $(InputDir)$(InputFileName) $(TargetDir)&#x0D;&#x0A;"
+							Outputs="$(TargetDir)$(InputFileName)"
+						/>
+					</FileConfiguration>
+				</File>
+				<File
+					RelativePath="..\..\test\testcases\syncML2.xml"
+					>
+					<FileConfiguration
+						Name="Debug|Win32"
+						>
+						<Tool
+							Name="VCCustomBuildTool"
+							Description="Copying $(InputDir)$(InputFileName)"
+							CommandLine="copy $(InputDir)$(InputFileName) $(TargetDir)&#x0D;&#x0A;"
+							Outputs="$(TargetDir)$(InputFileName)"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release|Win32"
+						>
+						<Tool
+							Name="VCCustomBuildTool"
+							Description="Copying $(InputDir)$(InputFileName)"
+							CommandLine="copy $(InputDir)$(InputFileName) $(TargetDir)&#x0D;&#x0A;"
+							Outputs="$(TargetDir)$(InputFileName)"
+						/>
+					</FileConfiguration>
+				</File>
+				<File
+					RelativePath="..\..\test\testcases\syncML3.xml"
+					>
+					<FileConfiguration
+						Name="Debug|Win32"
+						>
+						<Tool
+							Name="VCCustomBuildTool"
+							Description="Copying $(InputDir)$(InputFileName)"
+							CommandLine="copy $(InputDir)$(InputFileName) $(TargetDir)&#x0D;&#x0A;"
+							Outputs="$(TargetDir)$(InputFileName)"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release|Win32"
+						>
+						<Tool
+							Name="VCCustomBuildTool"
+							Description="Copying $(InputDir)$(InputFileName)"
+							CommandLine="copy $(InputDir)$(InputFileName) $(TargetDir)&#x0D;&#x0A;"
+							Outputs="$(TargetDir)$(InputFileName)"
+						/>
+					</FileConfiguration>
+				</File>
+				<File
+					RelativePath="..\..\test\testcases\syncML4.xml"
+					>
+					<FileConfiguration
+						Name="Debug|Win32"
+						>
+						<Tool
+							Name="VCCustomBuildTool"
+							Description="Copying $(InputDir)$(InputFileName)"
+							CommandLine="copy $(InputDir)$(InputFileName) $(TargetDir)&#x0D;&#x0A;"
+							Outputs="$(TargetDir)$(InputFileName)"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release|Win32"
+						>
+						<Tool
+							Name="VCCustomBuildTool"
+							Description="Copying $(InputDir)$(InputFileName)"
+							CommandLine="copy $(InputDir)$(InputFileName) $(TargetDir)&#x0D;&#x0A;"
+							Outputs="$(TargetDir)$(InputFileName)"
+						/>
+					</FileConfiguration>
+				</File>
+				<File
+					RelativePath="..\..\test\testcases\syncML5.xml"
+					>
+					<FileConfiguration
+						Name="Debug|Win32"
+						>
+						<Tool
+							Name="VCCustomBuildTool"
+							Description="Copying $(InputDir)$(InputFileName)"
+							CommandLine="copy $(InputDir)$(InputFileName) $(TargetDir)&#x0D;&#x0A;"
+							Outputs="$(TargetDir)$(InputFileName)"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release|Win32"
+						>
+						<Tool
+							Name="VCCustomBuildTool"
+							Description="Copying $(InputDir)$(InputFileName)"
+							CommandLine="copy $(InputDir)$(InputFileName) $(TargetDir)&#x0D;&#x0A;"
+							Outputs="$(TargetDir)$(InputFileName)"
+						/>
+					</FileConfiguration>
+				</File>
+				<File
+					RelativePath="..\..\test\testcases\syncML6.xml"
+					>
+					<FileConfiguration
+						Name="Debug|Win32"
+						>
+						<Tool
+							Name="VCCustomBuildTool"
+							Description="Copying $(InputDir)$(InputFileName)"
+							CommandLine="copy $(InputDir)$(InputFileName) $(TargetDir)&#x0D;&#x0A;"
+							Outputs="$(TargetDir)$(InputFileName)"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release|Win32"
+						>
+						<Tool
+							Name="VCCustomBuildTool"
+							Description="Copying $(InputDir)$(InputFileName)"
+							CommandLine="copy $(InputDir)$(InputFileName) $(TargetDir)&#x0D;&#x0A;"
+							Outputs="$(TargetDir)$(InputFileName)"
+						/>
+					</FileConfiguration>
+				</File>
+				<File
+					RelativePath="..\..\test\testcases\syncML7.xml"
+					>
+					<FileConfiguration
+						Name="Debug|Win32"
+						>
+						<Tool
+							Name="VCCustomBuildTool"
+							Description="Copying $(InputDir)$(InputFileName)"
+							CommandLine="copy $(InputDir)$(InputFileName) $(TargetDir)&#x0D;&#x0A;"
+							Outputs="$(TargetDir)$(InputFileName)"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release|Win32"
+						>
+						<Tool
+							Name="VCCustomBuildTool"
+							Description="Copying $(InputDir)$(InputFileName)"
+							CommandLine="copy $(InputDir)$(InputFileName) $(TargetDir)&#x0D;&#x0A;"
+							Outputs="$(TargetDir)$(InputFileName)"
+						/>
+					</FileConfiguration>
+				</File>
+				<File
+					RelativePath="..\..\test\testcases\syncML8.xml"
+					>
+					<FileConfiguration
+						Name="Debug|Win32"
+						>
+						<Tool
+							Name="VCCustomBuildTool"
+							Description="Copying $(InputDir)$(InputFileName)"
+							CommandLine="copy $(InputDir)$(InputFileName) $(TargetDir)&#x0D;&#x0A;"
+							Outputs="$(TargetDir)$(InputFileName)"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release|Win32"
+						>
+						<Tool
+							Name="VCCustomBuildTool"
+							Description="Copying $(InputDir)$(InputFileName)"
+							CommandLine="copy $(InputDir)$(InputFileName) $(TargetDir)&#x0D;&#x0A;"
+							Outputs="$(TargetDir)$(InputFileName)"
+						/>
+					</FileConfiguration>
+				</File>
+				<File
+					RelativePath="..\..\test\testcases\wrongex.xml"
+					>
+					<FileConfiguration
+						Name="Debug|Win32"
+						>
+						<Tool
+							Name="VCCustomBuildTool"
+							Description="Copying $(InputDir)$(InputFileName)"
+							CommandLine="copy $(InputDir)$(InputFileName) $(TargetDir)"
+							Outputs="$(TargetDir)$(InputFileName)"
+						/>
+					</FileConfiguration>
+				</File>
+			</Filter>
 		</Filter>
 		<File
 			RelativePath="..\..\test\synccompare.pl"
@@ -385,9 +655,9 @@
 				>
 				<Tool
 					Name="VCCustomBuildTool"
-					Description="Copying $InputFileName"
-					CommandLine="xcopy $InputFileName $(OutDir) /y /e&#x0D;&#x0A;"
-					Outputs="$(OutDir)\synccompare.pl"
+					Description="Copying $(InputDir)$(InputFileName)"
+					CommandLine="copy $(InputDir)$(InputFileName) $(OutDir)&#x0D;&#x0A;"
+					Outputs="$(OutDir)\$(InputFileName)"
 				/>
 			</FileConfiguration>
 		</File>
