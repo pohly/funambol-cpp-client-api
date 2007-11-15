@@ -177,8 +177,7 @@ int uudecode(const char *msg, char **binmsg, size_t *binlen)
             break;
         nl++;
         len += b64_decode(out+len, line);
-        if(nl==200)
-            puts("Near the end");
+
         delete [] line;
     }
     delete [] buf;

@@ -160,7 +160,6 @@ void SyncManager::initialize() {
     currentState   = STATE_START;
     sourcesNumber  = 0;
     count          = 0;
-    commands       = NULL;
     devInf         = NULL;
     incomingItem   = NULL;
 
@@ -180,8 +179,6 @@ void SyncManager::initialize() {
     credentialHandler.setServerNonce        (c.getServerNonce());
     credentialHandler.setServerAuthType     (c.getServerAuthType());
     credentialHandler.setServerAuthRequired (c.getServerAuthRequired());
-
-    commands = new ArrayList();
 
     responseTimeout = c.getResponseTimeout();
     if (responseTimeout <= 0) {
@@ -212,14 +209,7 @@ SyncManager::~SyncManager() {
     if (transportAgent) {
         delete transportAgent;
     }
-    if (commands) {
-        commands->clear(); delete commands; commands = NULL;
-    }
     if (mappings) {
-        for (int i=0; i<sourcesNumber; i++) {
-            deleteArrayList(&mappings[i]);
-            delete mappings[i];
-        }
         delete [] mappings; mappings = NULL;
     }
     if (sources) {
@@ -313,9 +303,8 @@ int SyncManager::prepareSync(SyncSource** s) {
         proxy.setProxy(NULL, 0, proxyUser, proxyPwd);
     }
 
-    mappings = new ArrayList*[sourcesNumber + 1];
+    mappings = new ArrayList[sourcesNumber + 1];
     for (count = 0; count < sourcesNumber; count++) {
-        mappings[count] = new ArrayList();
         LOG.info(MSG_PREPARING_SYNC, _wcc(sources[count]->getName()));
     }
 
@@ -399,7 +388,7 @@ int SyncManager::prepareSync(SyncSource** s) {
         if (putDevInf) {
             AbstractCommand* put = syncMLBuilder.prepareDevInf(NULL, *devInf);
             if (put) {
-                commands->add(*put);
+                commands.add(*put);
                 delete put;
             }
             putDevInf = FALSE;
@@ -407,7 +396,7 @@ int SyncManager::prepareSync(SyncSource** s) {
 
         // "cred" only contains an encoded strings as username, also
         // need the original username for LocName
-        syncml = syncMLBuilder.prepareInitObject(cred, alerts, commands, maxMsgSize, maxObjSize);
+        syncml = syncMLBuilder.prepareInitObject(cred, alerts, &commands, maxMsgSize, maxObjSize);
         if (syncml == NULL) {
             ret = lastErrorCode;
             goto finally;
@@ -444,7 +433,6 @@ int SyncManager::prepareSync(SyncSource** s) {
 
         deleteSyncML(&syncml);
         deleteChal(&serverChal);
-        deleteArrayList(&commands);
         deleteCred(&cred);
 
         //Fire Initialization Event
@@ -582,7 +570,7 @@ int SyncManager::prepareSync(SyncSource** s) {
             authStatusCode = 200;
         }
         status = syncMLBuilder.prepareSyncHdrStatus(serverChal, authStatusCode);
-        commands->add(*status);
+        commands.add(*status);
         deleteStatus(&status);
         list = syncMLProcessor.getCommands(syncml->getSyncBody(), ALERT);
         for (count = 0; count < sourcesNumber; count ++) {
@@ -591,7 +579,7 @@ int SyncManager::prepareSync(SyncSource** s) {
 
             status = syncMLBuilder.prepareAlertStatus(*sources[count], list, authStatusCode);
             if (status) {
-                commands->add(*status);
+                commands.add(*status);
                 deleteStatus(&status);
             }
         }
@@ -638,7 +626,7 @@ int SyncManager::prepareSync(SyncSource** s) {
                         if (sendDevInf && devInf) {
                             AbstractCommand *result = syncMLBuilder.prepareDevInf(cmd, *devInf);
                             if (result) {
-                                commands->add(*result);
+                                commands.add(*result);
                                 delete result;
                             }
                         }
@@ -652,7 +640,7 @@ int SyncManager::prepareSync(SyncSource** s) {
 		                    // Fire Sync Status Event: status from client
                             fireSyncStatusEvent(status->getCmd(), status->getStatusCode(), NULL, NULL, NULL , CLIENT_STATUS);
 
-                            commands->add(*status);
+                            commands.add(*status);
                             deleteStatus(&status);
                         }
                     }
@@ -1016,10 +1004,10 @@ int SyncManager::sync() {
                 modificationCommand = NULL;
             }
 
-            if (commands->isEmpty()) {
+            if (commands.isEmpty()) {
 
                 status = syncMLBuilder.prepareSyncHdrStatus(NULL, 200);
-                commands->add(*status);
+                commands.add(*status);
                 deleteStatus(&status);
 
                 /* The server should not send any alert...
@@ -1372,18 +1360,17 @@ int SyncManager::sync() {
             }
             sync->setCommands(list);
             delete list;
-            commands->add(*sync);
+            commands.add(*sync);
             delete sync;
 
             //
             // Check if all the sources were synced.
             // If not the prepareSync doesn't use the <final/> tag
             //
-            syncml = syncMLBuilder.prepareSyncML(commands, (iterator != toSync ? FALSE : last));
+            syncml = syncMLBuilder.prepareSyncML(&commands, (iterator != toSync ? FALSE : last));
             msg    = syncMLBuilder.prepareMsg(syncml);
 
             deleteSyncML(&syncml);
-            deleteArrayList(&commands);
 
             if (msg == NULL) {
                 ret = lastErrorCode;
@@ -1456,9 +1443,9 @@ int SyncManager::sync() {
             }
             if (statusList.size()) {
                 Status* status = syncMLBuilder.prepareSyncHdrStatus(NULL, 200);
-                commands->add(*status);
+                commands.add(*status);
                 deleteStatus(&status);
-                commands->add(&statusList);
+                commands.add(&statusList);
             }
 
             // deleteSyncML(&syncml);
@@ -1491,7 +1478,7 @@ int SyncManager::sync() {
     //
     if ( !isFinalfromServer && isAtLeastOneSourceCorrect ) {
         status = syncMLBuilder.prepareSyncHdrStatus(NULL, 200);
-	    commands->add(*status);
+	commands.add(*status);
         deleteStatus(&status);
         for (count = 0; count < sourcesNumber; count ++) {
             if(!sources[count]->getReport()->checkState()) {
@@ -1501,12 +1488,12 @@ int SyncManager::sync() {
                 (sources[count]->getSyncMode() != SYNC_REFRESH_FROM_CLIENT))
             {
                 alert = syncMLBuilder.prepareAlert(*sources[count]);
-                commands->add(*alert);
+                commands.add(*alert);
                 deleteAlert(&alert);
             }
         }
 
-        syncml = syncMLBuilder.prepareSyncML(commands, FALSE);
+        syncml = syncMLBuilder.prepareSyncML(&commands, FALSE);
         msg    = syncMLBuilder.prepareMsg(syncml);
 
         LOG.debug("Alert to request server changes");
@@ -1528,7 +1515,6 @@ int SyncManager::sync() {
 
         syncml = syncMLProcessor.processMsg(responseMsg);
         safeDelete(&responseMsg);
-        deleteArrayList(&commands);
 
         if (syncml == NULL) {
             LOG.debug("SyncManager::sync(): null syncml");
@@ -1553,18 +1539,18 @@ int SyncManager::sync() {
             ArrayList statusList;
 
             status = syncMLBuilder.prepareSyncHdrStatus(NULL, 200);
-            commands->add(*status);
+            commands.add(*status);
             deleteStatus(&status);
 
             if (checkForServerChanges(syncml, statusList)) {
                 goto finally;
             }
 
-            commands->add(&statusList);
+            commands.add(&statusList);
 
             if (!last) {
                 deleteSyncML(&syncml);
-                syncml = syncMLBuilder.prepareSyncML(commands, last);
+                syncml = syncMLBuilder.prepareSyncML(&commands, last);
                 msg    = syncMLBuilder.prepareMsg(syncml);
 
                 LOG.debug("Status to the server");
@@ -1584,7 +1570,6 @@ int SyncManager::sync() {
 
                 syncml = syncMLProcessor.processMsg(responseMsg);
                 safeDelete(&responseMsg);
-                deleteArrayList(&commands);
                 if (syncml == NULL) {
                     ret = lastErrorCode;
                     goto finally;
@@ -1657,9 +1642,9 @@ int SyncManager::endSync() {
 
         iterator++;
         if (  (sources[count]->getSyncMode() == SYNC_ONE_WAY_FROM_CLIENT &&
-                commands->isEmpty() && mappings[count]->size() == 0) ||
+                commands.isEmpty() && mappings[count].size() == 0) ||
                 (sources[count]->getSyncMode() == SYNC_REFRESH_FROM_CLIENT &&
-                commands->isEmpty() && mappings[count]->size() == 0)
+                commands.isEmpty() && mappings[count].size() == 0)
                 ) {
 
 
@@ -1671,13 +1656,13 @@ int SyncManager::endSync() {
             i = 0;
             do {
                 tot = -1;
-                if (commands->isEmpty()) {
+                if (commands.isEmpty()) {
                     status = syncMLBuilder.prepareSyncHdrStatus(NULL, 200);
-                    commands->add(*status);
+                    commands.add(*status);
                     deleteStatus(&status);
                 }
 
-                if (mappings[count]->size() > 0) {
+                if (mappings[count].size() > 0) {
                     map = syncMLBuilder.prepareMapCommand(*sources[count]);
                 }
                 else if (iterator != toSync) {
@@ -1687,9 +1672,9 @@ int SyncManager::endSync() {
                     last = TRUE;
                 }
 
-                for (; i < mappings[count]->size(); i++) {
+                for (; i < mappings[count].size(); i++) {
                     tot++;
-                    MapItem* mapItem = syncMLBuilder.prepareMapItem((SyncMap*)mappings[count]->get(i));
+                    MapItem* mapItem = syncMLBuilder.prepareMapItem((SyncMap*)mappings[count].get(i));
                     syncMLBuilder.addMapItem(map, mapItem);
 
                     deleteMapItem(&mapItem);
@@ -1703,14 +1688,15 @@ int SyncManager::endSync() {
                     last = TRUE;
                 }
 
-                if (i == mappings[count]->size()) {
+                if (i == mappings[count].size()) {
                     last = TRUE;
                 }
 
-                if (mappings[count]->size() > 0)
-                    commands->add(*map);
+                if (mappings[count].size() > 0) {
+                    commands.add(*map);
+                }
 
-                syncml = syncMLBuilder.prepareSyncML(commands, iterator != toSync ? FALSE : last);
+                syncml = syncMLBuilder.prepareSyncML(&commands, iterator != toSync ? FALSE : last);
                 //syncml = syncMLBuilder.prepareSyncML(commands, last);
                 mapMsg = syncMLBuilder.prepareMsg(syncml);
 
@@ -1734,7 +1720,6 @@ int SyncManager::endSync() {
 
                 syncml = syncMLProcessor.processMsg(responseMsg);
                 delete [] responseMsg; responseMsg = NULL;
-                deleteArrayList(&commands);
 
                 if (syncml == NULL) {
                     ret = lastErrorCode;
@@ -1993,7 +1978,7 @@ Status *SyncManager::processSyncItem(Item* item, const CommandInfo &cmdInfo, Syn
             //
             // The target information is the one from the item's source.
             Alert *alert = syncMLBuilder.prepareAlert(*sources[incomingItem->sourceIndex], 223);
-            commands->add(*alert);
+            commands.add(*alert);
             delete alert;
 
             delete incomingItem;
@@ -2120,7 +2105,7 @@ Status *SyncManager::processSyncItem(Item* item, const CommandInfo &cmdInfo, Syn
                 if (code >= 200 && code <= 299) {
                     char *key = toMultibyte(incomingItem->getKey());
                     SyncMap syncMap(item->getSource()->getLocURI(), key);
-                    mappings[count]->add(syncMap);
+                    mappings[count].add(syncMap);
                     delete [] key;
                 }
             }
@@ -2174,7 +2159,7 @@ Status *SyncManager::processSyncItem(Item* item, const CommandInfo &cmdInfo, Syn
         // may be omitted, but because that's hard to determine here we always
         // send it, just to be on the safe side.
         Alert *alert = syncMLBuilder.prepareAlert(*sources[count], 222);
-        commands->add(*alert);
+        commands.add(*alert);
         delete alert;
     }
 

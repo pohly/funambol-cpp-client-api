@@ -1,3 +1,8 @@
+2007-11-15
+    - teo:   syncml parser unit tests
+    - gazza: code refactoring - indirection of SyncManager members 'commands' 
+             and 'mappings' reduced of one level.
+
 2007-11-08
     - gazza: Unit tests updated - the testcases are under test, under the same
              folder structure of the sources. The windows solution and the

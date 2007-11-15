@@ -72,10 +72,25 @@ class SyncManager {
         SyncManager(SyncManagerConfig& config, SyncReport& report);
         ~SyncManager();
 
+        /**
+         * Prepares the sync, performing authentication and 
+         * device capability exchange.
+         */
         int prepareSync(SyncSource** sources);
 
+        /**
+        * Starts the synchronization phase
+        *
+        * @return a status code for the sync. Can be:
+        *              0 on success
+        *              an interal code (see: TODO)
+        *              a status code from the server
+        */
         int sync();
 
+        /**
+         * Performs the commit phase of the synchronization.
+         */
         int endSync();
 
         /**
@@ -88,7 +103,7 @@ class SyncManager {
          *
          * @return device infos, to be deleted by caller, or NULL if unavailable
          */
-        virtual DevInf *createDeviceInfo();
+        DevInf *createDeviceInfo();
 
     private:
 
@@ -127,8 +142,8 @@ class SyncManager {
 
         SyncManagerState currentState;
         SyncSource** sources;
-        ArrayList* commands;
-        ArrayList** mappings;
+        ArrayList commands;
+        ArrayList* mappings;
 
         // Now using sources[i].checkState() method
         //int* check;
