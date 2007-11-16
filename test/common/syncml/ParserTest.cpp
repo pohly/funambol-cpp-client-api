@@ -66,9 +66,6 @@ public:
     }
 
     void tearDown() {    
-        if (xml){
-            delete [] xml;
-        }
         if (SH){
             delete SH;
         }    
