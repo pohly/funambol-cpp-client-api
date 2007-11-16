@@ -111,9 +111,10 @@ private:
     }
 
     /*
-     * Compare two messages ignoring newlines
+     * Compare two messages ignoring newlines, quotes and empty
+     * tag differences
      */
-    bool compareMessages(const StringBuffer &msg1, const StringBuffer &msg2){
+    bool compareMessages(const StringBuffer &msg1, const StringBuffer &msg2) {
         StringBuffer cmp1(msg1), cmp2(msg2);
         // Remove newlines
         cmp1.replaceAll("\n", "");
