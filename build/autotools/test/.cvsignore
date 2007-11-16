@@ -1,0 +1,6 @@
+*.dat
+*.log
+Makefile
+Makefile.in
+.deps
+synclog.txt
