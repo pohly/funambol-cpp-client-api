@@ -172,8 +172,8 @@ int EmailData::parse(const char *msg, size_t len)
     // find the Ext stuffs
     if (end != StringBuffer::npos) {
         unsigned int pos = end;
-        start = 0, end = 0;
-        unsigned int previous = 0;
+        unsigned int previous = end;
+        start = 0, end = 0;        
         char* ext = NULL;
 
         // for try
