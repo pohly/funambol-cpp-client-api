@@ -61,22 +61,20 @@ class ParserTest : public CppUnit::TestFixture {
     CPPUNIT_TEST_SUITE_END();
 
 public:
-    StringBuffer  xml;
-    //size_t      xmlLen;
-    SyncHdr* SH;
+    StringBuffer xml;
+    SyncHdr* syncHdr;
 
     void setUp() {
-        xml = 0;
-        SH = 0;
+        syncHdr = 0;
 
         loadTestFile("ex1.xml", xml);
 
-        SH = Parser::getSyncHdr(xml);
+        syncHdr = Parser::getSyncHdr(xml);
     }
 
     void tearDown() {    
-        if (SH){
-            delete SH;
+        if (syncHdr){
+            delete syncHdr;
         }    
     }
 
@@ -91,8 +89,8 @@ private:
         size_t      len;
 
         StringBuffer path;
-
         path.sprintf("%s/%s", TESTDIR, fileName);
+
         bool fileLoaded = readFile(path, &message, &len, false);
         CPPUNIT_ASSERT_MESSAGE("Failed to load XML", fileLoaded);
            
@@ -213,19 +211,19 @@ private:
     }
 
     void testVerDTD(){
-        testTag("VerDTD", SH->getVerDTD()->getValue());
+        testTag("VerDTD", syncHdr->getVerDTD()->getValue());
     }
 
     void testVerProto(){
-        testTag("VerProto", SH->getVerProto()->getVersion());
+        testTag("VerProto", syncHdr->getVerProto()->getVersion());
     }
 
     void testSessionID(){
-        testTag("SessionID", SH->getSessionID()->getSessionID());
+        testTag("SessionID", syncHdr->getSessionID()->getSessionID());
     }
 
     void testMsgID(){
-        testTag("MsgID", SH->getMsgID());
+        testTag("MsgID", syncHdr->getMsgID());
     }
 
     void testTarget(){
@@ -235,7 +233,7 @@ private:
         char *locuri = XMLProcessor::copyElementContent(target, "LocURI");
         CPPUNIT_ASSERT(locuri);
         // Compare result
-        CPPUNIT_ASSERT(strcmp(SH->getTarget()->getLocURI(),locuri)==0);
+        CPPUNIT_ASSERT(strcmp(syncHdr->getTarget()->getLocURI(),locuri)==0);
         // Free memory
         delete [] target;
         delete [] locuri;
@@ -248,7 +246,7 @@ private:
         char *locuri = XMLProcessor::copyElementContent(source, "LocURI");
         CPPUNIT_ASSERT(locuri);
         // Compare result
-        CPPUNIT_ASSERT(strcmp(SH->getSource()->getLocURI(),locuri)==0);
+        CPPUNIT_ASSERT(strcmp(syncHdr->getSource()->getLocURI(),locuri)==0);
         // Free memory
         delete [] source;
         delete [] locuri;
