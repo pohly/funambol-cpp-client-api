@@ -1,4 +1,7 @@
 2007-11-15
+    - gazza: unit test refactoring
+
+2007-11-15
     - teo:   syncml parser unit tests
     - gazza: code refactoring - indirection of SyncManager members 'commands' 
              and 'mappings' reduced of one level.
@@ -35,15 +38,21 @@ Funambol SDK C++ 6.5.0
 -----------------------
 
 2007-08-08
-    - toccy: Improved vCalendar parser/formatter (WinEvent.cpp) to handle all supported properties
+    - toccy: Improved vCalendar parser/formatter (WinEvent.cpp) to handle all
+             supported properties
+    - gazza: Removed old Palm defines from the header files.
+             Minor fixes for Posix build.
+             Uncompress in WinTransportAgent more robust when some headers
+             are cut by proxies.
 
 2007-08-03
-    - magi:  Added WinContactSif class. It is used to handle the SIF properties in a different
-             way. So it is possible to handle also other likes Photo.
+    - magi:  Added WinContactSif class. It is used to handle the SIF properties
+             in a different way. So it is possible to handle also other likes
+             Photo.
              Commented code in the Converter class for the b64 binary handling
              Added in Property class the way to set a property without any conversion
-             WinContact: added photo handling in vacard. Modified the returned value in
-             toString method        
+             WinContact: added photo handling in vacard. Modified the returned
+                         value in toString method        
              WinItem: added the crc encode function
              
 2007-07-24
@@ -52,23 +61,29 @@ Funambol SDK C++ 6.5.0
              and decremented everytime there's an add or a remove.
              The method add is also improved when there is an add in the last 
              element (a sort of pushback)
-             Removed the remove method now there's only the method removeElementAt(index)
-             in SyncSourceReport in the SyncSourceReport::addItem method was removed a for 
-             cycle that check if there is a element clone of the one to add. 
+             Removed the remove method now there's only the method
+             removeElementAt(index) in SyncSourceReport in the
+             SyncSourceReport::addItem method was removed a for cycle that
+             check if there is a element clone of the one to add. 
              This for cycle is very negative for the performance and useless.
              
 2007-07-19
     - toccy: improved parser/formatter of vCard for windows clients (WinContact)
 
 2007-07-11
-    - toccy: first add: WinObject classes used by Windows clients to manage vCard and vCal
-    - toccy: added 'stringUtils.cpp' and 'timeUtils' utils functions for Windows system
+    - toccy: first add: WinObject classes used by Windows clients to manage
+             vCard and vCal
+    - toccy: added 'stringUtils.cpp' and 'timeUtils' utils functions for
+             Windows system
 
 2007-06-22
     - toccy: win32 and winmobile source files has been unified under 'windows' dir.
-             WinTransportAgent reworked to be used both by Win32 and Winmobile plugins.
-    - toccy: devinfo is sent with informations for all sources, not only the ones currently synchronized.
-             So it will not be sent again if we add/remove a source from synchronization.
+             WinTransportAgent reworked to be used both by Win32 and Winmobile
+             plugins.
+    - toccy: devinfo is sent with informations for all sources, not only the
+             ones currently synchronized.
+             So it will not be sent again if we add/remove a source from
+             synchronization.
 
 
 Funambol SDK C++ 6.0.9
