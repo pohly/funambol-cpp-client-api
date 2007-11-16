@@ -68,16 +68,16 @@ public:
 
     void setUp() {
         xml = 0;
+        SH = 0;
 
-        if(!readFile("./ex1.xml", &xml, &xmlLen, false)){
+        if(!readFile("./ex1.xml", &xml, &xmlLen, true)){
             cout << "\nFailed to load XML";
-            return;
         }
-
-
-
-        SH =    Parser::getSyncHdr(xml);
+        else {
+            SH = Parser::getSyncHdr(xml);
+        }
     }
+
     void tearDown() {
     
         if (xml){
@@ -95,7 +95,7 @@ private:
     void setUpXMLFile(const char* fileName, wstring* amsg, wstring* pmsg){
         char*       message;
         size_t      len;
-        int u;
+        size_t u;
 
         wstring a;
         wstring p;
@@ -104,7 +104,6 @@ private:
             cout << "\nFailed to load XML";
             return;
         }
-
 
         wchar_t* messageW = toWideChar(message);
 
@@ -168,10 +167,13 @@ private:
         if (messageW) {
             delete [] messageW;
         }
-
-
     }
+
     wstring testTag(WCHAR* wtag){
+
+        if(!xml) {
+            return wstring(TEXT(""));
+        }
 
         wstring msg = toWideChar(xml);
         wstring tag = wtag;
@@ -189,8 +191,9 @@ private:
 
         setUpXMLFile("./ex1.xml", &amsg, &pmsg);
 
-        CPPUNIT_ASSERT( amsg.compare( pmsg ) == 0 );
+        CPPUNIT_ASSERT( amsg == pmsg );
     }
+
     void roundTripTest2(){
 
         wstring amsg;
@@ -198,7 +201,7 @@ private:
 
         setUpXMLFile("./ex2.xml", &amsg, &pmsg);
 
-        CPPUNIT_ASSERT( amsg.compare( pmsg ) == 0 );
+        CPPUNIT_ASSERT( amsg == pmsg );
     }
     void roundTripTestWrong(){
 
@@ -207,7 +210,7 @@ private:
 
         setUpXMLFile("./wrongex.xml", &amsg, &pmsg);
 
-        CPPUNIT_ASSERT( amsg.compare( pmsg ) != 0 );
+        CPPUNIT_ASSERT( amsg != pmsg );
     }
 
     void roundTripsml1(){
@@ -217,8 +220,9 @@ private:
 
         setUpXMLFile("./syncML1.xml", &amsg, &pmsg);
 
-        CPPUNIT_ASSERT( amsg.compare( pmsg ) == 0 );
+        CPPUNIT_ASSERT( amsg == pmsg );
     }
+
     void roundTripsml2(){
 
         wstring amsg;
@@ -226,8 +230,9 @@ private:
 
         setUpXMLFile("./syncML2.xml", &amsg, &pmsg);
 
-        CPPUNIT_ASSERT( amsg.compare( pmsg ) == 0 );
+        CPPUNIT_ASSERT( amsg == pmsg );
     }
+
     void roundTripsml3(){
 
         wstring amsg;
@@ -235,8 +240,9 @@ private:
 
         setUpXMLFile("./syncML3.xml", &amsg, &pmsg);
 
-        CPPUNIT_ASSERT( amsg.compare( pmsg ) == 0 );
+        CPPUNIT_ASSERT( amsg == pmsg );
     }
+
     void roundTripsml4(){
 
         wstring amsg;
@@ -244,8 +250,9 @@ private:
 
         setUpXMLFile("./syncML4.xml", &amsg, &pmsg);
 
-        CPPUNIT_ASSERT( amsg.compare( pmsg ) == 0 );
+        CPPUNIT_ASSERT( amsg == pmsg );
     }
+
     void roundTripsml5(){
 
         wstring amsg;
@@ -253,8 +260,9 @@ private:
 
         setUpXMLFile("./syncML5.xml", &amsg, &pmsg);
 
-        CPPUNIT_ASSERT( amsg.compare( pmsg ) == 0 );
+        CPPUNIT_ASSERT( amsg == pmsg );
     }
+
     void roundTripsml6(){
 
         wstring amsg;
@@ -262,8 +270,9 @@ private:
 
         setUpXMLFile("./syncML6.xml", &amsg, &pmsg);
 
-        CPPUNIT_ASSERT( amsg.compare( pmsg ) == 0 );
+        CPPUNIT_ASSERT( amsg == pmsg );
     }
+
     void roundTripsml7(){
 
         wstring amsg;
@@ -271,8 +280,9 @@ private:
 
         setUpXMLFile("./syncML7.xml", &amsg, &pmsg);
 
-        CPPUNIT_ASSERT( amsg.compare( pmsg ) == 0 );
+        CPPUNIT_ASSERT( amsg == pmsg );
     }
+
     void roundTripsml8(){
 
         wstring amsg;
@@ -280,9 +290,8 @@ private:
 
         setUpXMLFile("./syncML8.xml", &amsg, &pmsg);
 
-        CPPUNIT_ASSERT( amsg.compare( pmsg ) == 0 );
+        CPPUNIT_ASSERT( amsg == pmsg );
     }
-
 
     void testVerDTD(){
         wstring result = testTag(TEXT("VerDTD"));
@@ -293,14 +302,17 @@ private:
         wstring result = testTag(TEXT("VerProto"));
         CPPUNIT_ASSERT(wcscmp(toWideChar(SH->getVerProto()->getVersion()),result.c_str())==0);
     }
+
     void testSessionID(){
         wstring result = testTag(TEXT("SessionID"));
         CPPUNIT_ASSERT(wcscmp(toWideChar(SH->getSessionID()->getSessionID()),result.c_str())==0);
     }
+
     void testMsgID(){
         wstring result = testTag(TEXT("MsgID"));
         CPPUNIT_ASSERT(wcscmp(toWideChar(SH->getMsgID()),result.c_str())==0);
     }
+
     void testTarget(){
         wstring target = testTag(TEXT("Target"));
         wstring tag = TEXT("LocURI");
@@ -308,6 +320,7 @@ private:
         int i = getElementContent(target, tag, result);
         CPPUNIT_ASSERT(wcscmp(toWideChar(SH->getTarget()->getLocURI()),result.c_str())==0);
     }
+
     void testSource(){
         wstring target = testTag(TEXT("Source"));
         wstring tag = TEXT("LocURI");
@@ -323,15 +336,17 @@ private:
         int i = getElementContent(target, tag, result);
         CPPUNIT_ASSERT(wcscmp(toWideChar(Parser::getStatus(xml)->getCmdID()->getCmdID()),result.c_str())==0);
     }
+
     void testCmd(){
         wstring target = testTag(TEXT("Status"));
 
         wstring tag = TEXT("Cmd");
-        int pos = target.find(TEXT("<Cmd>"));
+        int pos = (int)target.find(TEXT("<Cmd>"));
         wstring result;
         int i = getElementContent(target, tag, result, pos);
         CPPUNIT_ASSERT(wcscmp(toWideChar(Parser::getStatus(xml)->getCmd()),result.c_str())==0);
     }
+
     void testMsgRef(){
         wstring target = testTag(TEXT("Status"));
         wstring tag = TEXT("MsgRef");
@@ -345,7 +360,9 @@ private:
         wstring result;
         int i = getElementContent(target, tag, result);
         CPPUNIT_ASSERT(wcscmp(toWideChar(Parser::getStatus(xml)->getCmdRef()),result.c_str())==0);
-    }/*
+    }
+    
+    /*
     void testTargetRef(){
         wstring target = testTag(TEXT("Status"));
         wstring tag = TEXT("TargetRef");
@@ -361,6 +378,7 @@ private:
         int i = getElementContent(target, tag, result);
         CPPUNIT_ASSERT(wcscmp(toWideChar(Parser::getStatus(xml)->getCmdRef()),result.c_str())==0);
     }*/
+
     void testData(){
         wstring target = testTag(TEXT("Status"));
         wstring tag = TEXT("Data");
@@ -368,7 +386,6 @@ private:
         int i = getElementContent(target, tag, result);
         CPPUNIT_ASSERT(wcscmp(toWideChar(Parser::getStatus(xml)->getData()->getData()),result.c_str())==0);
     }
-
 
 };
 
