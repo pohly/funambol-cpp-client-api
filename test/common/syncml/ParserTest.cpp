@@ -87,7 +87,7 @@ private:
         char*       message;
         size_t      len;
 
-        bool fileLoaded = readFile("ex1.xml", &message, &len, false);
+        bool fileLoaded = readFile(fileName, &message, &len, false);
         CPPUNIT_ASSERT_MESSAGE("Failed to load XML", fileLoaded);
            
         ret = message ;
