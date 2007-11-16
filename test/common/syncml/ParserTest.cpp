@@ -25,6 +25,15 @@
 #include "syncml/parser/Parser.h"
 #include "base/util/utils.h"
 
+#ifdef _WIN32
+# define TESTDIR "."
+#else
+# define TESTDIR "testcases"
+#endif
+
+/**
+ * This is the test class for the SyncML Parser.
+ */
 class ParserTest : public CppUnit::TestFixture {
 
     CPPUNIT_TEST_SUITE(ParserTest);
@@ -81,7 +90,10 @@ private:
         char*       message;
         size_t      len;
 
-        bool fileLoaded = readFile(fileName, &message, &len, false);
+        StringBuffer path;
+
+        path.sprintf("%s/%s", TESTDIR, fileName);
+        bool fileLoaded = readFile(path, &message, &len, false);
         CPPUNIT_ASSERT_MESSAGE("Failed to load XML", fileLoaded);
            
         ret = message ;

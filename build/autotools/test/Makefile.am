@@ -12,7 +12,8 @@ AM_CXXFLAGS = @CPPUNIT_CXXFLAGS@
 AM_CPPFLAGS = -I$(INCDIR)/posix -I$(INCDIR)/common -DAUTOTOOLS
 
 vpath %.cpp	$(TESTDIR) \
-		$(TESTDIR)/common/base/util 
+		$(TESTDIR)/common/base/util \
+	        $(TESTDIR)/common/syncml
 
 # Test runner sources
 SOURCES = client-test-main.cpp client-test.cpp ClientTest.cpp
@@ -21,7 +22,8 @@ SOURCES = client-test-main.cpp client-test.cpp ClientTest.cpp
 TESTS_BASE = \
     ArrayListTest.cpp \
     BasicTimeTest.cpp \
-    StringBufferTest.cpp
+    StringBufferTest.cpp \
+    ParserTest.cpp
     
 TESTCASES = $(TESTS_BASE)
 
@@ -48,16 +50,27 @@ source_files = \
 	test/ClientTest.cpp \
 	test/client-test-main.cpp
 verbatim_files = \
-        test/Algorithm/Artistic \
-        test/Algorithm/copyright \
-        test/Algorithm/Diff.pm \
-        test/Algorithm/README \
+	test/Algorithm/Artistic \
+	test/Algorithm/copyright \
+	test/Algorithm/Diff.pm \
+	test/Algorithm/README \
 	test/testcases/ical20.ics \
 	test/testcases/itodo20.ics \
 	test/testcases/vcal10.ics \
 	test/testcases/vcard21.vcf \
 	test/testcases/vcard30.vcf \
 	test/testcases/imemo20.ics \
+	test/testcases/ex1.xml \
+	test/testcases/ex2.xml \
+	test/testcases/syncML1.xml \
+	test/testcases/syncML2.xml \
+	test/testcases/syncML3.xml \
+	test/testcases/syncML4.xml \
+	test/testcases/syncML5.xml \
+	test/testcases/syncML6.xml \
+	test/testcases/syncML7.xml \
+	test/testcases/syncML8.xml \
+	test/testcases/wrongex.xml \
         test/README.txt \
         test/synccompare.pl
 
