@@ -80,7 +80,7 @@ void Sync::initialize() {
     target = NULL;
     source = NULL;
     commands = new ArrayList();
-    numberOfChanges = 0;
+    numberOfChanges = -1;
 }
 
 /**
