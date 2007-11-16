@@ -276,7 +276,7 @@ private:
                  * Sleep a bit to ensure that enough time passes.
                  */
 #ifdef WIN32
-				Sleep(1000);
+		Sleep(1000);
 #else
                 sleep(1);
 #endif
@@ -302,7 +302,7 @@ private:
 #ifdef WIN32
         _mkdir(dirName.c_str());
 #else
-		mkdir(dirName.c_str(), S_IRWXU);
+	mkdir(dirName.c_str(), S_IRWXU);
 #endif
         ss->setDir(dirName.c_str());
 
