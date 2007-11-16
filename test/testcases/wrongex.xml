@@ -18,7 +18,7 @@
 <MsgRef>1</MsgRef>
 <CmdRef>0</CmdRef>
 <Cmd>SyncHdr</Cmd>
-<TargetRef>http://cagiva02.funambol.com:8080/funambol/ds</TargetRef>
+<TargetRe>http://cagiva02.funambol.com:8080/funambol/ds</TargetRe>
 <SourceRef>fwm-359010997282EB514</SourceRef>
 <Data>212</Data>
 </Status>
@@ -38,14 +38,14 @@
 </Item>
 </Status>
 <Alert>
-<CmdID>3
+<CmdID>3</CmdID>
 <Data>201</Data>
 <Item>
 <Target>
 <LocURI>mail</LocURI>
 </Target>
 <Source>
-<LocURI>mail</LocURI>
+<LocUR>mail</LocUR>
 </Source>
 <Meta>
 <Anchor xmlns='syncml:metinf'>
