@@ -26,14 +26,14 @@
 #include "base/util/utils.h"
 #include "base/stringUtils.h"
 
-using namespace std;
-
-
 class ParserTest : public CppUnit::TestFixture {
 
     CPPUNIT_TEST_SUITE(ParserTest);
+    // Basic tests
     CPPUNIT_TEST(roundTripTest1);
     CPPUNIT_TEST(roundTripTest2);
+    CPPUNIT_TEST(wrongMessageTest);
+    // Session test
     CPPUNIT_TEST(roundTripsml1);
     CPPUNIT_TEST(roundTripsml2);
     CPPUNIT_TEST(roundTripsml3);
@@ -50,14 +50,6 @@ class ParserTest : public CppUnit::TestFixture {
     CPPUNIT_TEST(testTarget);
     CPPUNIT_TEST(testSource);
     //End SyncHdr Test
-    //Sync Body Test
-    CPPUNIT_TEST(testCmdID);
-    CPPUNIT_TEST(testCmd);
-    CPPUNIT_TEST(testMsgRef);
-    CPPUNIT_TEST(testCmdRef);
-    CPPUNIT_TEST(testData);
-    //CPPUNIT_TEST(testTargetRef);
-    //End Sync Body Test
     CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -70,322 +62,191 @@ public:
         xml = 0;
         SH = 0;
 
-        if(!readFile("./ex1.xml", &xml, &xmlLen, true)){
-            cout << "\nFailed to load XML";
-        }
-        else {
-            SH = Parser::getSyncHdr(xml);
-        }
+        bool fileLoaded = readFile("ex1.xml", &xml, &xmlLen, false);
+        CPPUNIT_ASSERT_MESSAGE("Failed to load XML", fileLoaded);
+
+        SH = Parser::getSyncHdr(xml);
     }
 
-    void tearDown() {
-    
+    void tearDown() {    
         if (xml){
             delete [] xml;
         }
         if (SH){
             delete SH;
-        }
-    
+        }    
     }
 
 private:
 
-
-    void setUpXMLFile(const char* fileName, wstring* amsg, wstring* pmsg){
+    /**
+     * Load a SyncML message from file, parse and reformat it
+     * and return the original message and the converted one.
+     */
+    void loadTestFile(const char* fileName, StringBuffer& ret) {
         char*       message;
         size_t      len;
-        size_t u;
 
-        wstring a;
-        wstring p;
+        bool fileLoaded = readFile("ex1.xml", &message, &len, false);
+        CPPUNIT_ASSERT_MESSAGE("Failed to load XML", fileLoaded);
+           
+        ret = message ;
 
-        if(!readFile(fileName, &message, &len, false)){
-            cout << "\nFailed to load XML";
-            return;
-        }
-
-        wchar_t* messageW = toWideChar(message);
-
-        p.assign ( messageW ) ;
-
-        while ((u = p.find(TEXT(">\r\n<"))) != -1 ){
-            p.erase(u+1,2);
-        }
-      
-        while ((u = p.find(TEXT(">\n<"))) != -1 ){
-            p.erase(u+1,1);
-        }
-
-        while ((u = p.find(TEXT("</SyncML>\r\n"))) != -1 ){
-            p.erase(u+9,2);
-        }
-        while ((u = p.find(TEXT("</SyncML>\n"))) != -1 ){
-            p.erase(u+9,1);
-        }
-
-
-        while ((u = p.find(TEXT("'"))) != -1 ){
-            p.erase(u,1);
-            p.insert(u,TEXT("\""));
-        }
-             
-        char* pmsgC = toMultibyte( p.c_str() );
-
-
-
-        SyncML* syncml      = Parser::getSyncML( pmsgC );
-
-        StringBuffer *s     = Formatter::getSyncML(syncml);
-
-        wchar_t* amsgC = toWideChar(s->c_str());
-
-        a.assign( amsgC );
-
-        while ((u = a.find(TEXT(">\r\n<"))) != -1 ){
-            a.erase(u+1,2);
-        }
-        while ((u = a.find(TEXT(">\n<"))) != -1 ){
-            a.erase(u+1,1);
-        }
-
-        amsg = &a;
-        pmsg = &p;
-
-        if (s){
-            delete [] s;
-        }
-        if (pmsgC) {
-            delete [] pmsgC;
-        }
-        if (amsgC) {
-            delete [] amsgC;
-        }
-        if (message) {
-            delete [] message;
-        }
-        if (messageW) {
-            delete [] messageW;
-        }
+        delete [] message;
     }
 
-    wstring testTag(WCHAR* wtag){
+    /**
+     * Convert the message in, parsing it into a SyncML object
+     * and formatting back to string out.
+     */
+    void convertMessage(const StringBuffer& in, StringBuffer& out) {
 
-        if(!xml) {
-            return wstring(TEXT(""));
-        }
+        SyncML* syncml   = Parser::getSyncML( in.c_str() );
+        StringBuffer *s  = Formatter::getSyncML(syncml);
 
-        wstring msg = toWideChar(xml);
-        wstring tag = wtag;
-        wstring result;
-
-        int res = getElementContent(msg, tag, result);
-
-        return result;
+        CPPUNIT_ASSERT( s != 0);
+        // Copy result
+        out = *s ;
+        delete s;
     }
+
+    /*
+     * Compare two messages ignoring newlines
+     */
+    bool compareMessages(const StringBuffer &msg1, const StringBuffer &msg2){
+        StringBuffer cmp1(msg1), cmp2(msg2);
+        // Remove newlines
+        cmp1.replaceAll("\n", "");
+        cmp2.replaceAll("\n", "");
+        // Uniform quotes to the one produced by the formatter
+        cmp1.replaceAll("\'", "\"");
+
+        // Compare the modified strings
+        return cmp1 == cmp2;
+    }
+
+    /**
+     * Test the given tag content against refValue.
+     */
+    void testTag(const char *tag, const char *refValue){
+        // Check input
+        CPPUNIT_ASSERT(xml);
+        CPPUNIT_ASSERT(tag);
+        CPPUNIT_ASSERT(refValue);
+        // Get tag
+        char *value = XMLProcessor::copyElementContent(xml, tag);
+        // Check output
+        CPPUNIT_ASSERT(value);
+        // Compare values
+        CPPUNIT_ASSERT( strcmp(value, refValue)==0 );
+
+        // Free memory
+        delete value;
+    }
+
+    void roundTripTest(const char *filename){
+        StringBuffer orig, conv;
+
+        loadTestFile(filename, orig);
+        convertMessage(orig, conv);
+
+        CPPUNIT_ASSERT( compareMessages(orig, conv) );
+    }
+
+    /* ------------------------------------------------------ TestCases */
+
 
     void roundTripTest1(){
-
-        wstring amsg;
-        wstring pmsg;
-
-        setUpXMLFile("./ex1.xml", &amsg, &pmsg);
-
-        CPPUNIT_ASSERT( amsg == pmsg );
+        roundTripTest("ex1.xml");
     }
 
     void roundTripTest2(){
-
-        wstring amsg;
-        wstring pmsg;
-
-        setUpXMLFile("./ex2.xml", &amsg, &pmsg);
-
-        CPPUNIT_ASSERT( amsg == pmsg );
+        roundTripTest("ex2.xml");
     }
-    void roundTripTestWrong(){
 
-        wstring amsg;
-        wstring pmsg;
+    void wrongMessageTest(){
+        StringBuffer orig, conv;
 
-        setUpXMLFile("./wrongex.xml", &amsg, &pmsg);
-
-        CPPUNIT_ASSERT( amsg != pmsg );
+        loadTestFile("wrongex.xml", orig);
+        convertMessage(orig, conv);
+        // IS THIS THE RIGHT TEST?
+        CPPUNIT_ASSERT( !compareMessages(orig, conv) );
     }
 
     void roundTripsml1(){
-
-        wstring amsg;
-        wstring pmsg;
-
-        setUpXMLFile("./syncML1.xml", &amsg, &pmsg);
-
-        CPPUNIT_ASSERT( amsg == pmsg );
+        roundTripTest("syncML1.xml");
     }
 
     void roundTripsml2(){
-
-        wstring amsg;
-        wstring pmsg;
-
-        setUpXMLFile("./syncML2.xml", &amsg, &pmsg);
-
-        CPPUNIT_ASSERT( amsg == pmsg );
+        roundTripTest("syncML2.xml");
     }
 
     void roundTripsml3(){
-
-        wstring amsg;
-        wstring pmsg;
-
-        setUpXMLFile("./syncML3.xml", &amsg, &pmsg);
-
-        CPPUNIT_ASSERT( amsg == pmsg );
+        roundTripTest("syncML3.xml");
     }
 
     void roundTripsml4(){
-
-        wstring amsg;
-        wstring pmsg;
-
-        setUpXMLFile("./syncML4.xml", &amsg, &pmsg);
-
-        CPPUNIT_ASSERT( amsg == pmsg );
+        roundTripTest("syncML4.xml");
     }
 
     void roundTripsml5(){
-
-        wstring amsg;
-        wstring pmsg;
-
-        setUpXMLFile("./syncML5.xml", &amsg, &pmsg);
-
-        CPPUNIT_ASSERT( amsg == pmsg );
+        roundTripTest("syncML5.xml");
     }
 
     void roundTripsml6(){
-
-        wstring amsg;
-        wstring pmsg;
-
-        setUpXMLFile("./syncML6.xml", &amsg, &pmsg);
-
-        CPPUNIT_ASSERT( amsg == pmsg );
+        roundTripTest("syncML6.xml");
     }
 
     void roundTripsml7(){
-
-        wstring amsg;
-        wstring pmsg;
-
-        setUpXMLFile("./syncML7.xml", &amsg, &pmsg);
-
-        CPPUNIT_ASSERT( amsg == pmsg );
+        roundTripTest("syncML7.xml");
     }
 
     void roundTripsml8(){
-
-        wstring amsg;
-        wstring pmsg;
-
-        setUpXMLFile("./syncML8.xml", &amsg, &pmsg);
-
-        CPPUNIT_ASSERT( amsg == pmsg );
+        roundTripTest("syncML8.xml");
     }
 
     void testVerDTD(){
-        wstring result = testTag(TEXT("VerDTD"));
-        CPPUNIT_ASSERT(wcscmp(toWideChar(SH->getVerDTD()->getValue()),result.c_str())==0);
+        testTag("VerDTD", SH->getVerDTD()->getValue());
     }
 
     void testVerProto(){
-        wstring result = testTag(TEXT("VerProto"));
-        CPPUNIT_ASSERT(wcscmp(toWideChar(SH->getVerProto()->getVersion()),result.c_str())==0);
+        testTag("VerProto", SH->getVerProto()->getVersion());
     }
 
     void testSessionID(){
-        wstring result = testTag(TEXT("SessionID"));
-        CPPUNIT_ASSERT(wcscmp(toWideChar(SH->getSessionID()->getSessionID()),result.c_str())==0);
+        testTag("SessionID", SH->getSessionID()->getSessionID());
     }
 
     void testMsgID(){
-        wstring result = testTag(TEXT("MsgID"));
-        CPPUNIT_ASSERT(wcscmp(toWideChar(SH->getMsgID()),result.c_str())==0);
+        testTag("MsgID", SH->getMsgID());
     }
 
     void testTarget(){
-        wstring target = testTag(TEXT("Target"));
-        wstring tag = TEXT("LocURI");
-        wstring result;
-        int i = getElementContent(target, tag, result);
-        CPPUNIT_ASSERT(wcscmp(toWideChar(SH->getTarget()->getLocURI()),result.c_str())==0);
+        CPPUNIT_ASSERT(xml);
+        char *target = XMLProcessor::copyElementContent(xml, "Target");
+        CPPUNIT_ASSERT(target);
+        char *locuri = XMLProcessor::copyElementContent(target, "LocURI");
+        CPPUNIT_ASSERT(locuri);
+        // Compare result
+        CPPUNIT_ASSERT(strcmp(SH->getTarget()->getLocURI(),locuri)==0);
+        // Free memory
+        delete [] target;
+        delete [] locuri;
     }
 
     void testSource(){
-        wstring target = testTag(TEXT("Source"));
-        wstring tag = TEXT("LocURI");
-        wstring result;
-        int i = getElementContent(target, tag, result);
-        CPPUNIT_ASSERT(wcscmp(toWideChar(SH->getSource()->getLocURI()),result.c_str())==0);
+        CPPUNIT_ASSERT(xml);
+        char *source = XMLProcessor::copyElementContent(xml, "Source");
+        CPPUNIT_ASSERT(source);
+        char *locuri = XMLProcessor::copyElementContent(source, "LocURI");
+        CPPUNIT_ASSERT(locuri);
+        // Compare result
+        CPPUNIT_ASSERT(strcmp(SH->getSource()->getLocURI(),locuri)==0);
+        // Free memory
+        delete [] source;
+        delete [] locuri;
     }
 
-    void testCmdID(){
-        wstring target = testTag(TEXT("Status"));
-        wstring tag = TEXT("CmdID");
-        wstring result;
-        int i = getElementContent(target, tag, result);
-        CPPUNIT_ASSERT(wcscmp(toWideChar(Parser::getStatus(xml)->getCmdID()->getCmdID()),result.c_str())==0);
-    }
-
-    void testCmd(){
-        wstring target = testTag(TEXT("Status"));
-
-        wstring tag = TEXT("Cmd");
-        int pos = (int)target.find(TEXT("<Cmd>"));
-        wstring result;
-        int i = getElementContent(target, tag, result, pos);
-        CPPUNIT_ASSERT(wcscmp(toWideChar(Parser::getStatus(xml)->getCmd()),result.c_str())==0);
-    }
-
-    void testMsgRef(){
-        wstring target = testTag(TEXT("Status"));
-        wstring tag = TEXT("MsgRef");
-        wstring result;
-        int i = getElementContent(target, tag, result);
-        CPPUNIT_ASSERT(wcscmp(toWideChar(Parser::getStatus(xml)->getMsgRef()),result.c_str())==0);
-    }
-    void testCmdRef(){
-        wstring target = testTag(TEXT("Status"));
-        wstring tag = TEXT("CmdRef");
-        wstring result;
-        int i = getElementContent(target, tag, result);
-        CPPUNIT_ASSERT(wcscmp(toWideChar(Parser::getStatus(xml)->getCmdRef()),result.c_str())==0);
-    }
-    
-    /*
-    void testTargetRef(){
-        wstring target = testTag(TEXT("Status"));
-        wstring tag = TEXT("TargetRef");
-        wstring result;
-        int i = getElementContent(target, tag, result);
-
-        CPPUNIT_ASSERT(wcscmp(toWideChar(Parser::getTargetRef(xml)->getValue()),result.c_str())==0);
-    }
-    void testSourceRef(){
-        wstring target = testTag(TEXT("Status"));
-        wstring tag = TEXT("SourceRef");
-        wstring result;
-        int i = getElementContent(target, tag, result);
-        CPPUNIT_ASSERT(wcscmp(toWideChar(Parser::getStatus(xml)->getCmdRef()),result.c_str())==0);
-    }*/
-
-    void testData(){
-        wstring target = testTag(TEXT("Status"));
-        wstring tag = TEXT("Data");
-        wstring result;
-        int i = getElementContent(target, tag, result);
-        CPPUNIT_ASSERT(wcscmp(toWideChar(Parser::getStatus(xml)->getData()->getData()),result.c_str())==0);
-    }
 
 };
 
