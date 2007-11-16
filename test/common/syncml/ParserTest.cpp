@@ -24,7 +24,6 @@
 #include "syncml/formatter/Formatter.h"
 #include "syncml/parser/Parser.h"
 #include "base/util/utils.h"
-#include "base/stringUtils.h"
 
 class ParserTest : public CppUnit::TestFixture {
 
@@ -53,17 +52,15 @@ class ParserTest : public CppUnit::TestFixture {
     CPPUNIT_TEST_SUITE_END();
 
 public:
-    char*       xml;
-    size_t      xmlLen;
-    
-    SyncHdr*    SH;
+    StringBuffer  xml;
+    //size_t      xmlLen;
+    SyncHdr* SH;
 
     void setUp() {
         xml = 0;
         SH = 0;
 
-        bool fileLoaded = readFile("ex1.xml", &xml, &xmlLen, false);
-        CPPUNIT_ASSERT_MESSAGE("Failed to load XML", fileLoaded);
+        loadTestFile("ex1.xml", xml);
 
         SH = Parser::getSyncHdr(xml);
     }
