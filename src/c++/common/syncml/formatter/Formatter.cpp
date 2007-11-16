@@ -25,20 +25,18 @@
 * Returns a StringBuffer giving the tag and the value as long. To use for generic simple value
 */
 StringBuffer* Formatter::getValue(const char* tagName, long value, const char *params) {
-    if (!value)
+    if (!value) 
         return NULL;
 
-    char* t1 = new char[strlen(tagName) + 3 + (params ? strlen(params) + 1 : 0)]; // <  >  0 plus optional parameters
-    char* t2 = new char[strlen(tagName) + 5]; // </ > \n 0
-    sprintf(t1, "<%s%s%s>", tagName, params ? " " : "", params ? params : "");
-    sprintf(t2, "</%s>\n", tagName);
+    StringBuffer t1; // <  >  0 plus optional parameters
+    StringBuffer t2; // </ > \n 0
+    t1.sprintf("<%s%s%s>", tagName, params ? " " : "", params ? params : "");
+    t2.sprintf("</%s>\n", tagName);
 
     StringBuffer* s = new StringBuffer();
     s->append(t1);
     s->append(value);
     s->append(t2);
-    safeDel(&t1);
-    safeDel(&t2);
 
     return s;
 }
@@ -1045,12 +1043,11 @@ StringBuffer* Formatter::getSync(Sync* sync) {
     StringBuffer* noResp    = NULL;
     StringBuffer* target    = NULL;
     StringBuffer* source    = NULL;
-    StringBuffer* numberOfChanges    = NULL;
+    StringBuffer* numberOfChanges = NULL;
     StringBuffer* commonCommandList = NULL;
 
     StringBuffer* sequence = NULL;
     StringBuffer* atomic   = NULL;
-
 
     cmdID     = getCmdID   (sync->getCmdID());
     cred      = getCred    (sync->getCred());
@@ -1058,7 +1055,16 @@ StringBuffer* Formatter::getSync(Sync* sync) {
     noResp    = getValue   (NO_RESP, sync->getNoResp());
     source    = getSource  (sync->getSource());
     target    = getTarget  (sync->getTarget());
-    numberOfChanges = getValue(NUMBER_OF_CHANGES, sync->getNumberOfChanges());
+
+    if (sync->getNumberOfChanges() >= 0) {
+        numberOfChanges = new StringBuffer();
+        numberOfChanges->sprintf(
+            "<%s>%d</%s>",
+            NUMBER_OF_CHANGES,
+            sync->getNumberOfChanges(),
+            NUMBER_OF_CHANGES);
+    }
+
     commonCommandList = getCommonCommandList(sync->getCommands());
 
     sequence = getSpecificCommand(sync->getCommands(), SEQUENCE);
