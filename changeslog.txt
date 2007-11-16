@@ -1,3 +1,6 @@
+Funambol SDK C++ 6.5.2
+-----------------------
+
 2007-11-07
     - toccy: WinTransportAgent - added support for http status codes 402 & 403
 
