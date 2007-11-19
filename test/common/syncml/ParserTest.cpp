@@ -50,6 +50,10 @@ class ParserTest : public CppUnit::TestFixture {
     CPPUNIT_TEST(roundTripsml6);
     CPPUNIT_TEST(roundTripsml7);
     CPPUNIT_TEST(roundTripsml8);
+    // DM test
+#ifdef DM_TEST
+    CPPUNIT_TEST(roundTripDM1);
+#endif
     //SyncHdr Test
     CPPUNIT_TEST(testVerDTD);
     CPPUNIT_TEST(testVerProto);
@@ -208,6 +212,10 @@ private:
 
     void roundTripsml8(){
         roundTripTest("syncML8.xml");
+    }
+
+    void roundTripDM1(){
+        roundTripTest("DMmsg1.xml");
     }
 
     void testVerDTD(){
