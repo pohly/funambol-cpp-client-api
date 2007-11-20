@@ -46,8 +46,8 @@ struct Element {
 };
 
 class ArrayList {
-	private:
-	    Element* head;
+    private:
+        Element* head;
         Element* lastElement;
 
         Element* iterator;
@@ -56,64 +56,64 @@ class ArrayList {
 
         ArrayList& set (const ArrayList & other);
 
-	public:
-	    ArrayList();
+    public:
+        ArrayList();
         ArrayList(const ArrayList &other);
-	    ~ArrayList();
-
-	    /**
-	     * Is this list empty?
-	     */
-	    bool isEmpty();
-
-		/**
-		 * Adds a new element at the specified index. If index is greater than
-		 * the list size the element is appended.
-		 * The element is dinamically duplicated so that the caller can release
-		 * the element at any time. This method returns the position (0 based) at which
-		 * the element has been inserted. It can be different by index if index is out
-		 * of the array bounds, in that case element is appended as last element.
-		 * It returns -1 in case of errors.
-		 *
-		 * @param index the insertion position
-		 * @param element the element to insert
-		 */
-	    int add(int index, ArrayElement& element);
-
-	    /**
-	     * Same as add(index, element, size), but append at the end of the array.
-	     *
-	     * @param element the element to insert
-	     */
-	    int add(ArrayElement& element);
+        ~ArrayList();
 
         /**
-        * Add all the ArrayElement of the given ArrayList to the current
-        * array list
-        */
+         * Is this list empty?
+         */
+        bool isEmpty();
+
+        /**
+         * Adds a new element at the specified index. If index is greater than
+         * the list size the element is appended.
+         * The element is dinamically duplicated so that the caller can release
+         * the element at any time. This method returns the position (0 based) at which
+         * the element has been inserted. It can be different by index if index is out
+         * of the array bounds, in that case element is appended as last element.
+         * It returns -1 in case of errors.
+         *
+         * @param index the insertion position
+         * @param element the element to insert
+         */
+        int add(int index, ArrayElement& element);
+
+        /**
+         * Same as add(index, element, size), but append at the end of the array.
+         *
+         * @param element the element to insert
+         */
+        int add(ArrayElement& element);
+
+        /**
+         * Add all the ArrayElement of the given ArrayList to the current
+         * array list
+         */
         int add(ArrayList* list);
 
-	    /**
-	     * Frees the list. All elements are freed as well.
-	     */
-	    void clear();
+        /**
+         * Frees the list. All elements are freed as well.
+         */
+        void clear();
 
-	    /**
-	     * Frees the list and all its elements, regardless the value of
-	     * autoDeleteElements.
-	     */
-	    void clearAll();
+        /**
+         * Frees the list and all its elements, regardless the value of
+         * autoDeleteElements.
+         */
+        void clearAll();
 
         int removeElementAt(int index);
 
-	    /**
-	     * Returns the index-th element of the array or NULL if index is out of
-	     * the array bounds. Note that the retuned element will be released at
-	     * list destruction. Clone it if it must have a different life cycle.
-	     *
-	     * @param index the element position
-	     */
-	    ArrayElement* get(int index);
+        /**
+         * Returns the index-th element of the array or NULL if index is out of
+         * the array bounds. Note that the retuned element will be released at
+         * list destruction. Clone it if it must have a different life cycle.
+         *
+         * @param index the element position
+         */
+        ArrayElement* get(int index);
 
         /**
          * Returns the first element of the array and set here the internal iterator.
@@ -155,15 +155,15 @@ class ArrayList {
          */
         ArrayElement* back();
 
-	    /**
-	     * Returns the array size.
-	     */
-	    int size();
+        /**
+         * Returns the array size.
+         */
+        int size();
 
-	    /**
-	     * Same as get(index)
-	     */
-	    ArrayElement* operator[] (int index);
+        /**
+         * Same as get(index)
+         */
+        ArrayElement* operator[] (int index);
 
         /**
          * Copy the ArrayList
@@ -172,8 +172,8 @@ class ArrayList {
 
 
         /**
-        * Clones the arrayList a return a pointer to a new one.
-        */
+         * Clones the arrayList a return a pointer to a new one.
+         */
         ArrayList* clone();
 
 };
