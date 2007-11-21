@@ -434,6 +434,7 @@ int SyncManager::prepareSync(SyncSource** s) {
         deleteSyncML(&syncml);
         deleteChal(&serverChal);
         deleteCred(&cred);
+        commands.clear();
 
         //Fire Initialization Event
         fireSyncEvent(NULL, SEND_INITIALIZATION);
@@ -1371,6 +1372,7 @@ int SyncManager::sync() {
             msg    = syncMLBuilder.prepareMsg(syncml);
 
             deleteSyncML(&syncml);
+			commands.clear();
 
             if (msg == NULL) {
                 ret = lastErrorCode;
@@ -1515,6 +1517,7 @@ int SyncManager::sync() {
 
         syncml = syncMLProcessor.processMsg(responseMsg);
         safeDelete(&responseMsg);
+        commands.clear();
 
         if (syncml == NULL) {
             LOG.debug("SyncManager::sync(): null syncml");
@@ -1570,6 +1573,7 @@ int SyncManager::sync() {
 
                 syncml = syncMLProcessor.processMsg(responseMsg);
                 safeDelete(&responseMsg);
+                commands.clear();
                 if (syncml == NULL) {
                     ret = lastErrorCode;
                     goto finally;
@@ -1720,6 +1724,7 @@ int SyncManager::endSync() {
 
                 syncml = syncMLProcessor.processMsg(responseMsg);
                 delete [] responseMsg; responseMsg = NULL;
+                commands.clear();
 
                 if (syncml == NULL) {
                     ret = lastErrorCode;
