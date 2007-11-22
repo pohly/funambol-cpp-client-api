@@ -26,8 +26,9 @@ DataTransformer* DataTransformerFactory::getEncoder(const char* name) {
     DataTransformer* ret = NULL;
 
     if (isSupportedEncoder(name) == FALSE) {
-        lastErrorCode = ERR_DT_UNKNOWN;
-        sprintf (lastErrorMsg, ERRMSG_DT_UNKNOWN, name);
+        //lastErrorCode = ERR_DT_UNKNOWN;
+        //sprintf (lastErrorMsg, ERRMSG_DT_UNKNOWN, name);
+        setErrorF(ERR_DT_UNKNOWN, ERRMSG_DT_UNKNOWN, name);
         goto exit;
     } else if (strcmp(name, DT_B64) == 0) {
         //
@@ -50,8 +51,9 @@ DataTransformer* DataTransformerFactory::getDecoder(const char* name) {
     DataTransformer* ret = NULL;
 
     if (isSupportedDecoder(name) == FALSE) {
-        lastErrorCode = ERR_DT_UNKNOWN;
-        sprintf (lastErrorMsg, ERRMSG_DT_UNKNOWN, name);
+        //lastErrorCode = ERR_DT_UNKNOWN;
+        //sprintf (lastErrorMsg, ERRMSG_DT_UNKNOWN, name);
+        setErrorF(ERR_DT_UNKNOWN, ERRMSG_DT_UNKNOWN, name);
         goto exit;
     } else if (strcmp(name, DT_B64) == 0) {
         //

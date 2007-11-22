@@ -64,8 +64,9 @@ char* DESEncoder::transform(char* data, TransformationInfo& info) {
     );
 
     if (res == FALSE) {
-        lastErrorCode = ERR_DT_FAILURE;
-        sprintf(lastErrorMsg, ERRMSG_DT_FAILURE, GetLastError());
+        //lastErrorCode = ERR_DT_FAILURE;
+        //sprintf(lastErrorMsg, ERRMSG_DT_FAILURE, GetLastError());
+        setErrorF(ERR_DT_FAILURE, ERRMSG_DT_FAILURE, GetLastError());
         goto exit;
     }
 
@@ -79,8 +80,9 @@ char* DESEncoder::transform(char* data, TransformationInfo& info) {
     );
 
     if (res == FALSE) {
-        lastErrorCode = ERR_DT_FAILURE;
-        sprintf(lastErrorMsg, ERRMSG_DT_FAILURE, GetLastError());
+        //lastErrorCode = ERR_DT_FAILURE;
+        //sprintf(lastErrorMsg, ERRMSG_DT_FAILURE, GetLastError());
+        setErrorF(ERR_DT_FAILURE, ERRMSG_DT_FAILURE, GetLastError());
         goto exit;
     }
 
@@ -93,8 +95,9 @@ char* DESEncoder::transform(char* data, TransformationInfo& info) {
     );
 
     if (res == FALSE) {
-        lastErrorCode = ERR_DT_FAILURE;
-        sprintf(lastErrorMsg, ERRMSG_DT_FAILURE, GetLastError());
+        //lastErrorCode = ERR_DT_FAILURE;
+        //sprintf(lastErrorMsg, ERRMSG_DT_FAILURE, GetLastError());
+        setErrorF(ERR_DT_FAILURE, ERRMSG_DT_FAILURE, GetLastError());
         goto exit;
     }
 
@@ -108,8 +111,9 @@ char* DESEncoder::transform(char* data, TransformationInfo& info) {
     );
 
     if (res == FALSE) {
-        lastErrorCode = ERR_DT_FAILURE;
-        sprintf(lastErrorMsg, ERRMSG_DT_FAILURE, GetLastError());
+        //lastErrorCode = ERR_DT_FAILURE;
+        //sprintf(lastErrorMsg, ERRMSG_DT_FAILURE, GetLastError());
+        setErrorF(ERR_DT_FAILURE, ERRMSG_DT_FAILURE, GetLastError());
         goto exit;
     }
 
@@ -123,8 +127,9 @@ char* DESEncoder::transform(char* data, TransformationInfo& info) {
     );
 
     if (res == FALSE) {
-        lastErrorCode = ERR_DT_FAILURE;
-        sprintf(lastErrorMsg, ERRMSG_DT_FAILURE, GetLastError());
+        //lastErrorCode = ERR_DT_FAILURE;
+        //sprintf(lastErrorMsg, ERRMSG_DT_FAILURE, GetLastError());
+        setErrorF(ERR_DT_FAILURE, ERRMSG_DT_FAILURE, GetLastError());
         goto exit;
     }
 
@@ -138,8 +143,9 @@ char* DESEncoder::transform(char* data, TransformationInfo& info) {
     );
 
     if (res == FALSE) {
-        lastErrorCode = ERR_DT_FAILURE;
-        sprintf(lastErrorMsg, ERRMSG_DT_FAILURE, GetLastError());
+        //lastErrorCode = ERR_DT_FAILURE;
+        //sprintf(lastErrorMsg, ERRMSG_DT_FAILURE, GetLastError());
+        setErrorF(ERR_DT_FAILURE, ERRMSG_DT_FAILURE, GetLastError());
         goto exit;
     }
 
@@ -158,8 +164,9 @@ char* DESEncoder::transform(char* data, TransformationInfo& info) {
     );
 
     if ((res == FALSE) && (GetLastError() != ERROR_MORE_DATA)) {
-        lastErrorCode = ERR_DT_FAILURE;
-        sprintf(lastErrorMsg, ERRMSG_DT_FAILURE, GetLastError());
+        //lastErrorCode = ERR_DT_FAILURE;
+        //sprintf(lastErrorMsg, ERRMSG_DT_FAILURE, GetLastError());
+        setErrorF(ERR_DT_FAILURE, ERRMSG_DT_FAILURE, GetLastError());
         goto exit;
     }
 
@@ -179,8 +186,9 @@ char* DESEncoder::transform(char* data, TransformationInfo& info) {
     );
 
     if (res == FALSE) {
-        lastErrorCode = ERR_DT_FAILURE;
-        sprintf(lastErrorMsg, ERRMSG_DT_FAILURE, GetLastError());
+        //lastErrorCode = ERR_DT_FAILURE;
+        //sprintf(lastErrorMsg, ERRMSG_DT_FAILURE, GetLastError());
+        setErrorF(ERR_DT_FAILURE, ERRMSG_DT_FAILURE, GetLastError());
         goto exit;
     }
 

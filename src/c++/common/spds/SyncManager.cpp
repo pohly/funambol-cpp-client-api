@@ -280,15 +280,17 @@ int SyncManager::prepareSync(SyncSource** s) {
 
     // Copy and validate given
     sourcesNumber = assignSources(s);
-    if (lastErrorCode) {
-        ret = lastErrorCode;    // set when a source has an invalid config
+    if (getLastErrorCode()) {
+        ret = getLastErrorCode();    // set when a source has an invalid config
     }
 
     if (isToExit()) {
         if (!ret) {
             // error: no source to sync
-            ret = lastErrorCode = ERR_NO_SOURCE_TO_SYNC;
-            sprintf(lastErrorMsg, ERRMSG_NO_SOURCE_TO_SYNC);
+            //ret = lastErrorCode = ERR_NO_SOURCE_TO_SYNC;
+            //sprintf(lastErrorMsg, ERRMSG_NO_SOURCE_TO_SYNC);
+            setError(ERR_NO_SOURCE_TO_SYNC, ERRMSG_NO_SOURCE_TO_SYNC);
+            ret = getLastErrorCode();
         }
 
         goto finally;
@@ -367,7 +369,7 @@ int SyncManager::prepareSync(SyncSource** s) {
                 if( prefmode == SYNC_ADDR_CHANGE_NOTIFICATION ) {
                     alert = syncMLBuilder.prepareAddrChangeAlert(*sources[count]);
                     if(!alert) {
-                        ret = lastErrorCode = 745; // FIXME
+                        LOG.error("Error preparing Address Change Sync");
                         goto finally;
                     }
                     addressChange = true;   // remember that this sync is for
@@ -398,13 +400,13 @@ int SyncManager::prepareSync(SyncSource** s) {
         // need the original username for LocName
         syncml = syncMLBuilder.prepareInitObject(cred, alerts, &commands, maxMsgSize, maxObjSize);
         if (syncml == NULL) {
-            ret = lastErrorCode;
+            ret = getLastErrorCode();
             goto finally;
         }
 
         initMsg = syncMLBuilder.prepareMsg(syncml);
         if (initMsg == NULL) {
-            ret = lastErrorCode;
+            ret = getLastErrorCode();
             goto finally;
         }
 
@@ -426,8 +428,8 @@ int SyncManager::prepareSync(SyncSource** s) {
         else {
             transportAgent->setURL(url);
         }
-        if (lastErrorCode != 0) { // connection: lastErrorCode = 2005: Impossible to establish internet connection
-            ret = lastErrorCode;
+        if (getLastErrorCode() != 0) { // connection: lastErrorCode = 2005: Impossible to establish internet connection
+            ret = getLastErrorCode();
             goto finally;
         }
 
@@ -449,13 +451,13 @@ int SyncManager::prepareSync(SyncSource** s) {
                 responseMsg = NULL;
             }
 
-            if ( addressChange && lastErrorCode == ERR_READING_CONTENT ) {
+            if ( addressChange && getLastErrorCode() == ERR_READING_CONTENT ) {
                 // This is not an error if it's an AddressChange
                 ret = 0;
             }
             else {
                 // use last error code if one has been set (might not be the case)
-                ret = lastErrorCode;
+                ret = getLastErrorCode();
                 /*
                 if (!ret) {
                     ret = ERR_READING_CONTENT;
@@ -474,7 +476,7 @@ int SyncManager::prepareSync(SyncSource** s) {
         safeDelete(&initMsg);
 
         if (syncml == NULL) {
-            ret = lastErrorCode;
+            ret = getLastErrorCode();
             LOG.error("Error processing alert response.");
             goto finally;
         }
@@ -484,13 +486,14 @@ int SyncManager::prepareSync(SyncSource** s) {
         ret = syncMLProcessor.processSyncHdrStatus(syncml);
 
         if (ret == -1) {
-            ret = lastErrorCode;
+            ret = getLastErrorCode();
             LOG.error("Error processing SyncHdr Status");
             goto finally;
 
         } else if (isErrorStatus(ret) && ! isAuthFailed(ret)) {
-            lastErrorCode = ret;
-            sprintf(lastErrorMsg, "Error from server: status = %d", ret);
+            //lastErrorCode = ret;
+            //sprintf(lastErrorMsg, "Error from server: status = %d", ret);
+            setErrorF(ret, "Error from server: status = %d", ret);
             goto finally;
         }
 
@@ -508,15 +511,16 @@ int SyncManager::prepareSync(SyncSource** s) {
             }
 
             if (ret == -1 || ret == 404 || ret == 415) {
-                lastErrorCode = ret;
-                sprintf(logmsg, "Alert Status from server = %d", ret);
+                //lastErrorCode = ret;
+                //sprintf(logmsg, "Alert Status from server = %d", ret);
+                setErrorF(ret, "Alert Status from server = %d", ret);
                 LOG.error(logmsg);
                 setSourceStateAndError(count, SOURCE_ERROR, ret, logmsg);
             }
         }
         if (isToExit()) {
             // error. no source to sync
-            ret = lastErrorCode;
+            ret = getLastErrorCode();
             goto finally;
         }
 
@@ -673,9 +677,10 @@ int SyncManager::prepareSync(SyncSource** s) {
                     }
 
                 } else {
-                    lastErrorCode = 401;
-                    sprintf(lastErrorMsg, "Client not authenticated");
-                    ret = lastErrorCode;
+                    //lastErrorCode = 401;
+                    //sprintf(lastErrorMsg, "Client not authenticated");
+                    setError(401, "Client not authenticated");
+                    ret = getLastErrorCode();
                     goto finally;
                 }
             }
@@ -723,8 +728,10 @@ int SyncManager::prepareSync(SyncSource** s) {
         // error. no source to sync
         if (!ret) {
             // error: no source to sync
-            ret = lastErrorCode = ERR_NO_SOURCE_TO_SYNC;
-            sprintf(lastErrorMsg, ERRMSG_NO_SOURCE_TO_SYNC);
+            //ret = lastErrorCode = ERR_NO_SOURCE_TO_SYNC;
+            //sprintf(lastErrorMsg, ERRMSG_NO_SOURCE_TO_SYNC);
+            setError(ERR_NO_SOURCE_TO_SYNC, ERRMSG_NO_SOURCE_TO_SYNC);
+            ret = getLastErrorCode();
         }
 
         goto finally;
@@ -738,7 +745,7 @@ finally:
 
     if(ret) {
         //Fire Sync Error Event
-        fireSyncEvent(lastErrorMsg, SYNC_ERROR);
+        fireSyncEvent(getLastErrorMsg(), SYNC_ERROR);
     }
 
     if (respURI) {
@@ -986,8 +993,9 @@ int SyncManager::sync() {
 
         if ( sources[count]->beginSync() ) {
             // Error from SyncSource
-            lastErrorCode = ERR_UNSPECIFIED;
-            ret = lastErrorCode;
+            //lastErrorCode = ERR_UNSPECIFIED;
+            setError(ERR_UNSPECIFIED, "");
+            ret = getLastErrorCode();
             // syncsource should have set its own errors. If not, set default error.
             if (sources[count]->getReport()->checkState()) {
                 setSourceStateAndError(count, SOURCE_ERROR, ERR_UNSPECIFIED, "Error in begin sync");
@@ -1375,7 +1383,7 @@ int SyncManager::sync() {
 			commands.clear();
 
             if (msg == NULL) {
-                ret = lastErrorCode;
+                ret = getLastErrorCode();
                 goto finally;
             }
 
@@ -1392,7 +1400,7 @@ int SyncManager::sync() {
 
             responseMsg = transportAgent->sendMessage(msg);
             if (responseMsg == NULL) {
-                ret=lastErrorCode;
+                ret=getLastErrorCode();
                 goto finally;
             }
             // increment the msgRef after every send message
@@ -1404,16 +1412,17 @@ int SyncManager::sync() {
             safeDelete(&msg);
 
             if (syncml == NULL) {
-                ret = lastErrorCode;
+                ret = getLastErrorCode();
                 goto finally;
             }
 
             isFinalfromServer = syncml->isLastMessage();
             ret = syncMLProcessor.processSyncHdrStatus(syncml);
             if (isErrorStatus(ret)) {
-                lastErrorCode = ret;
-                sprintf(lastErrorMsg, "Server Failure: server returned error code %i", ret);
-                LOG.error(lastErrorMsg);
+                //lastErrorCode = ret;
+                //sprintf(lastErrorMsg, "Server Failure: server returned error code %i", ret);
+                setErrorF(ret, "Server Failure: server returned error code %i", ret);
+                LOG.error(getLastErrorMsg());
                 goto finally;
 
             }
@@ -1428,8 +1437,9 @@ int SyncManager::sync() {
                 LOG.error("Error #%d in source %s", itemret, name);
                 delete [] name;
                 // skip the source, and set an error
-                setSourceStateAndError(count, SOURCE_ERROR, itemret, lastErrorMsg);
-                lastErrorCode = itemret;
+                setSourceStateAndError(count, SOURCE_ERROR, itemret, getLastErrorMsg());
+                //lastErrorCode = itemret;
+                setError(itemret, "");
                 break;
             }
 
@@ -1461,7 +1471,7 @@ int SyncManager::sync() {
 
     if (isToExit()) {
         // error. no source to sync
-        ret = lastErrorCode;
+        ret = getLastErrorCode();
         goto finally;
     }
 
@@ -1504,7 +1514,7 @@ int SyncManager::sync() {
         responseMsg = transportAgent->sendMessage(msg);
         if (responseMsg == NULL) {
             LOG.debug("SyncManager::sync(): null responseMsg");
-            ret=lastErrorCode;
+            ret=getLastErrorCode();
             goto finally;
         }
 
@@ -1521,14 +1531,15 @@ int SyncManager::sync() {
 
         if (syncml == NULL) {
             LOG.debug("SyncManager::sync(): null syncml");
-            ret = lastErrorCode;
+            ret = getLastErrorCode();
             goto finally;
         }
         ret = syncMLProcessor.processSyncHdrStatus(syncml);
         if (isErrorStatus(ret)) {
-            lastErrorCode = ret;
-            sprintf(lastErrorMsg, "Server Failure: server returned error code %i", ret);
-            LOG.error(lastErrorMsg);
+            //lastErrorCode = ret;
+            //sprintf(lastErrorMsg, "Server Failure: server returned error code %i", ret);
+            setErrorF(ret, "Server Failure: server returned error code %i", ret);
+            LOG.error(getLastErrorMsg());
             goto finally;
         }
         ret = 0;
@@ -1561,7 +1572,7 @@ int SyncManager::sync() {
 
                 responseMsg = transportAgent->sendMessage(msg);
                 if (responseMsg == NULL) {
-                    ret=lastErrorCode;
+                    ret=getLastErrorCode();
                     goto finally;
                 }
                 // increment the msgRef after every send message
@@ -1575,15 +1586,16 @@ int SyncManager::sync() {
                 safeDelete(&responseMsg);
                 commands.clear();
                 if (syncml == NULL) {
-                    ret = lastErrorCode;
+                    ret = getLastErrorCode();
                     goto finally;
                 }
                 ret = syncMLProcessor.processSyncHdrStatus(syncml);
 
                 if (isErrorStatus(ret)) {
-                    lastErrorCode = ret;
-                    sprintf(lastErrorMsg, "Server Failure: server returned error code %i", ret);
-                    LOG.error(lastErrorMsg);
+                    //lastErrorCode = ret;
+                    //sprintf(lastErrorMsg, "Server Failure: server returned error code %i", ret);
+                    setErrorF(ret, "Server Failure: server returned error code %i", ret);
+                    LOG.error(getLastErrorMsg());
                     goto finally;
                 }
                 ret = 0;
@@ -1609,7 +1621,7 @@ finally:
 
     if (ret) {
         //Fire Sync Error Event
-        fireSyncEvent(lastErrorMsg, SYNC_ERROR);
+        fireSyncEvent(getLastErrorMsg(), SYNC_ERROR);
     }
     return ret;
 }
@@ -1712,7 +1724,7 @@ int SyncManager::endSync() {
 
                 responseMsg = transportAgent->sendMessage(mapMsg);
                 if (responseMsg == NULL) {
-                    ret=lastErrorCode;
+                    ret=getLastErrorCode();
                     goto finally;
                 }
                 // increment the msgRef after every send message
@@ -1727,15 +1739,16 @@ int SyncManager::endSync() {
                 commands.clear();
 
                 if (syncml == NULL) {
-                    ret = lastErrorCode;
+                    ret = getLastErrorCode();
                     goto finally;
                 }
                 ret = syncMLProcessor.processSyncHdrStatus(syncml);
 
                 if (isErrorStatus(ret)) {
-                    lastErrorCode = ret;
-                    sprintf(lastErrorMsg, "Server Failure: server returned error code %i", ret);
-                    LOG.error(lastErrorMsg);
+                    //lastErrorCode = ret;
+                    //sprintf(lastErrorMsg, "Server Failure: server returned error code %i", ret);
+                    setErrorF(ret,  "Server Failure: server returned error code %i", ret);
+                    LOG.error(getLastErrorMsg());
                     goto finally;
                 }
                 ret = 0;
@@ -1746,7 +1759,7 @@ int SyncManager::endSync() {
                 ret = syncMLProcessor.processMapResponse(*sources[count], syncml->getSyncBody());
                 deleteSyncML(&syncml);
                 if (ret == -1) {
-                    ret = lastErrorCode;
+                    ret = getLastErrorCode();
                     goto finally;
                 }
 
@@ -1768,7 +1781,8 @@ int SyncManager::endSync() {
 
         int sret = sources[count]->endSync();
         if (sret) {
-            lastErrorCode = sret;
+            //lastErrorCode = sret;
+            setError(sret, "");
         }
     }
 
@@ -1793,19 +1807,19 @@ int SyncManager::endSync() {
     config.getAccessConfig().setEndSync((unsigned long)time(NULL));
     safeDelete(&responseMsg);
     safeDelete(&mapMsg);
-    LOG.debug("ret: %i, lastErrorCode: %i, lastErrorMessage: %s", ret, lastErrorCode, lastErrorMsg);
+    LOG.debug("ret: %i, lastErrorCode: %i, lastErrorMessage: %s", ret, getLastErrorCode(), getLastErrorMsg());
 
     // Fire Sync End Event
     fireSyncEvent(NULL, SYNC_END);
 
     if (ret){
         //Fire Sync Error Event
-        fireSyncEvent(lastErrorMsg, SYNC_ERROR);
+        fireSyncEvent(getLastErrorMsg(), SYNC_ERROR);
 
         return ret;
     }
-    else if (lastErrorCode){
-        return lastErrorCode;
+    else if (getLastErrorCode()){
+        return getLastErrorCode();
     }
     else
         return 0;
@@ -1889,12 +1903,13 @@ int SyncManager::assignSources(SyncSource** srclist) {
         // Check valid config
         if ( !readSyncSourceDefinition(*srclist[i]) ) {
 
-            lastErrorCode = ERR_SOURCE_DEFINITION_NOT_FOUND;
-            sprintf(lastErrorMsg, ERRMSG_SOURCE_DEFINITION_NOT_FOUND, name);
-            LOG.debug(lastErrorMsg);
+            //lastErrorCode = ERR_SOURCE_DEFINITION_NOT_FOUND;
+            //sprintf(lastErrorMsg, ERRMSG_SOURCE_DEFINITION_NOT_FOUND, name);
+            setErrorF(ERR_SOURCE_DEFINITION_NOT_FOUND, ERRMSG_SOURCE_DEFINITION_NOT_FOUND, name);
+            LOG.debug(getLastErrorMsg());
 
             setSourceStateAndError(i, SOURCE_ERROR,
-                                   ERR_SOURCE_DEFINITION_NOT_FOUND, lastErrorMsg);
+                                   ERR_SOURCE_DEFINITION_NOT_FOUND, getLastErrorMsg());
             continue;
         }
         // Check source active
@@ -2041,8 +2056,9 @@ Status *SyncManager::processSyncItem(Item* item, const CommandInfo &cmdInfo, Syn
                 if (size + incomingItem->offset > incomingItem->getDataSize()) {
                     // overflow, signal error: "Size mismatch"
                     status = syncMLBuilder.prepareItemStatus(cmdInfo.commandName, itemName, cmdInfo.cmdRef, 424);
-                    sprintf(lastErrorMsg, "Item size mismatch: real size = %d, declared size = %d", size + incomingItem->offset, incomingItem->getDataSize());
-                    lastErrorCode = OBJECT_SIZE_MISMATCH;
+                    //sprintf(lastErrorMsg, "Item size mismatch: real size = %d, declared size = %d", size + incomingItem->offset, incomingItem->getDataSize());
+                    //lastErrorCode = OBJECT_SIZE_MISMATCH;
+                    setErrorF(OBJECT_SIZE_MISMATCH , "Item size mismatch: real size = %d, declared size = %d", (size + incomingItem->offset), (incomingItem->getDataSize()));
                     delete incomingItem;
                     incomingItem = NULL;
                 } else {

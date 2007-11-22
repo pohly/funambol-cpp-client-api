@@ -169,7 +169,7 @@ int SyncItem::transformData(const char* name, BOOL encode, const char* password)
     int res = ERR_NONE;
 
     if (dt == NULL) {
-        res = lastErrorCode;
+        res = getLastErrorCode();
         goto exit;
     }
 
@@ -177,7 +177,7 @@ int SyncItem::transformData(const char* name, BOOL encode, const char* password)
     info.password = password;
     buffer = dt->transform((char*)getData(), info);
     if (!buffer) {
-        res = lastErrorCode;
+        res = getLastErrorCode();
         goto exit;
     }
     // danger, transformer may or may not have manipulated the data in place
@@ -261,8 +261,9 @@ void* SyncItem::setData(const void* itemData, long dataSize) {
 
     data = new char[size + 1];
     if (data == NULL) {
-        lastErrorCode = ERR_NOT_ENOUGH_MEMORY;
-        sprintf(lastErrorMsg, ERRMSG_NOT_ENOUGH_MEMORY, (int)dataSize);
+        //lastErrorCode = ERR_NOT_ENOUGH_MEMORY;
+        //sprintf(lastErrorMsg, ERRMSG_NOT_ENOUGH_MEMORY, (int)dataSize);
+        setErrorF(ERR_NOT_ENOUGH_MEMORY, ERRMSG_NOT_ENOUGH_MEMORY, (int)dataSize);
         return NULL;
     }
 

@@ -101,8 +101,9 @@ input[], int *n)
                 return;
 
         if (input[1] == b64_pad) {
-            lastErrorCode = ERR_UNSPECIFIED;
-            sprintf(lastErrorMsg, ERRMSG_B64_ORPHANED_BITS);
+            //lastErrorCode = ERR_UNSPECIFIED;
+            //sprintf(lastErrorMsg, ERRMSG_B64_ORPHANED_BITS);
+            setError(ERR_UNSPECIFIED, ERRMSG_B64_ORPHANED_BITS);
             return;
         }
 
@@ -110,8 +111,9 @@ input[], int *n)
         t2 = strchr(b64_tbl, input[1]);
 
         if ((t1 == NULL) || (t2 == NULL)) {
-            lastErrorCode = ERR_UNSPECIFIED;
-            sprintf(lastErrorMsg, ERRMSG_B64_GARBAGE);
+            //lastErrorCode = ERR_UNSPECIFIED;
+            //sprintf(lastErrorMsg, ERRMSG_B64_GARBAGE);
+            setError(ERR_UNSPECIFIED, ERRMSG_B64_GARBAGE);
         }
 
         output[(*n)++] = ((t1 - b64_tbl) << 2) | ((t2 - b64_tbl) >> 4);
@@ -122,8 +124,9 @@ input[], int *n)
         t1 = strchr(b64_tbl, input[2]);
 
         if (t1 == NULL) {
-            lastErrorCode = ERR_UNSPECIFIED;
-            sprintf(lastErrorMsg, ERRMSG_B64_GARBAGE);
+            //lastErrorCode = ERR_UNSPECIFIED;
+            //sprintf(lastErrorMsg, ERRMSG_B64_GARBAGE);
+            setError(ERR_UNSPECIFIED, ERRMSG_B64_GARBAGE);
             return;
         }
 
@@ -135,8 +138,9 @@ input[], int *n)
         t2 = strchr((const char *)b64_tbl, input[3]);
 
         if (t2 == NULL) {
-            lastErrorCode = ERR_UNSPECIFIED;
-            sprintf(lastErrorMsg, ERRMSG_B64_GARBAGE);
+            //lastErrorCode = ERR_UNSPECIFIED;
+            //sprintf(lastErrorMsg, ERRMSG_B64_GARBAGE);
+            setError(ERR_UNSPECIFIED, ERRMSG_B64_GARBAGE);
             return;
         }
 

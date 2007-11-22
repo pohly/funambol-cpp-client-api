@@ -266,8 +266,9 @@ const char* getSourceName(const char *uri)
 
     node = dmt->readManagementNode(nodeName);
     if ( ! node ) {
-        lastErrorCode = ERR_INVALID_CONTEXT;
-        sprintf(lastErrorMsg, ERRMSG_INVALID_CONTEXT, nodeName);
+        //lastErrorCode = ERR_INVALID_CONTEXT;
+        //sprintf(lastErrorMsg, ERRMSG_INVALID_CONTEXT, nodeName);
+        setErrorf(ERR_INVALID_CONTEXT, ERRMSG_INVALID_CONTEXT, nodeName);
         goto finally;
     }
     n = node->getChildrenMaxCount();

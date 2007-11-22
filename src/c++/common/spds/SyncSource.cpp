@@ -32,8 +32,9 @@ SyncSource::SyncSource(const WCHAR* sourceName, SyncSourceConfig *sc) :
 
     setPreferredSyncMode(sc ? syncModeCode(sc->getSync()) : SYNC_NONE);
     if ((sourceName == NULL) || (*sourceName == 0)) {
-        lastErrorCode = ERR_PARAMETER_IS_EMPTY;
-        sprintf(lastErrorMsg, "name cannot be empty (NULL or 0-length)");
+        //lastErrorCode = ERR_PARAMETER_IS_EMPTY;
+        //sprintf(lastErrorMsg, "name cannot be empty (NULL or 0-length)");
+        setError(ERR_PARAMETER_IS_EMPTY, "name cannot be empty (NULL or 0-length)");
         goto finally;
     }
     name = wstrdup(sourceName);

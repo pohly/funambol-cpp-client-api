@@ -175,12 +175,14 @@ BOOL DMTClientConfig::save() {
     //
     // Sources management node
     //
-    lastErrorCode = ERR_NONE;
+    //lastErrorCode = ERR_NONE;
+    resetError();
     for(i=0; i<sourceConfigsCount; ++i) {
         saveSourceConfig(i, *(sourcesNode) );
     }
 
-    ret = (lastErrorCode == ERR_NONE);
+    resetError();
+    ret = getLastErrorCode();
 
     close();
     return ret;
@@ -207,8 +209,9 @@ BOOL DMTClientConfig::open() {
     return TRUE;
 
 failed:
-    lastErrorCode = ERR_INVALID_CONTEXT;
-    sprintf(lastErrorMsg, ERRMSG_INVALID_CONTEXT, nodeName);
+    //lastErrorCode = ERR_INVALID_CONTEXT;
+    //sprintf(lastErrorMsg, ERRMSG_INVALID_CONTEXT, nodeName);
+    setErrorF(ERR_INVALID_CONTEXT, ERRMSG_INVALID_CONTEXT, nodeName);
     close();
     return FALSE;
 }

@@ -54,6 +54,11 @@ void resetError();
 void setError(int errorCode, const char *errorMessage);
 
 /**
+ * Set error message and code.
+ */
+void setErrorF(int errorCode, const char *msgFormat, ...);
+
+/**
  * Retrieve the last error code.
  */
 int getLastErrorCode();

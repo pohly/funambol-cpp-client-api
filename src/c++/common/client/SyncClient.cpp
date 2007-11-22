@@ -44,9 +44,12 @@ int SyncClient::sync(SyncManagerConfig& config, SyncSource** sources) {
     int ret = 0;
 
     if (!config.getSyncSourceConfigsCount()) {
-        sprintf(lastErrorMsg, "Error in sync() - configuration not set correctly.");
-        LOG.error(lastErrorMsg);
-        return 1;
+        //sprintf(lastErrorMsg, "Error in sync() - configuration not set correctly.");
+        ret = 1;
+        setError(ret, "Error in sync() - configuration not set correctly.");
+        
+        LOG.error(getLastErrorMsg());
+        return ret;
     }
 
     //
@@ -68,7 +71,7 @@ int SyncClient::sync(SyncManagerConfig& config, SyncSource** sources) {
     SyncManager syncManager(config, syncReport);
 
     if ((ret = syncManager.prepareSync(sources))) {
-        LOG.error("Error in preparing sync: %s", lastErrorMsg);
+        LOG.error("Error in preparing sync: %s", getLastErrorMsg());
         goto finally;
     }
 
@@ -79,7 +82,7 @@ int SyncClient::sync(SyncManagerConfig& config, SyncSource** sources) {
     }
 
     if ((ret = syncManager.sync())) {
-        LOG.error("Error in syncing: %s", lastErrorMsg);
+        LOG.error("Error in syncing: %s", getLastErrorMsg());
         goto finally;
     }
 
@@ -90,15 +93,15 @@ int SyncClient::sync(SyncManagerConfig& config, SyncSource** sources) {
     }
 
     if ((ret = syncManager.endSync())) {
-        LOG.error("Error in ending sync: %s", lastErrorMsg);
+        LOG.error("Error in ending sync: %s", getLastErrorMsg());
         goto finally;
     }
 
 finally:
 
     // Update SyncReport with last error from sync
-    syncReport.setLastErrorCode(lastErrorCode);
-    syncReport.setLastErrorMsg(lastErrorMsg);
+    syncReport.setLastErrorCode(getLastErrorCode());
+    syncReport.setLastErrorMsg(getLastErrorMsg());
 
     return ret;
 }
@@ -152,7 +155,7 @@ int SyncClient::sync(SyncManagerConfig& config, char** sourceNames) {
             if (! (sc = config.getSyncSourceConfig(currName)) ) {
                 if (sources)
                     delete [] sources;
-                return lastErrorCode;
+                return getLastErrorCode();
             }
         }
         // use all available sources from config
@@ -160,7 +163,7 @@ int SyncClient::sync(SyncManagerConfig& config, char** sourceNames) {
             if (! (sc = config.getSyncSourceConfig(currSource)) ) {
                 if (sources)
                     delete [] sources;
-                return lastErrorCode;
+                return getLastErrorCode();
             }
             currName = sc->getName();
         }
