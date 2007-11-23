@@ -37,12 +37,52 @@
 #include <limits.h>
 
 const char SyncManager::encodedKeyPrefix[] = "funambol-b64-";
-char prevSourceName[64];
-char prevSourceUri[64];
-SyncMode prevSyncMode;
 
-BOOL isFiredSyncEventBEGIN;
-BOOL isFiredSyncEventEND;
+// Module variables ----------------------------------------------------------
+
+static char prevSourceName[64];
+static char prevSourceUri[64];
+static SyncMode prevSyncMode;
+
+static BOOL isFiredSyncEventBEGIN;
+static BOOL isFiredSyncEventEND;
+
+// Static functions ------------------------------------------------------------
+
+/**
+ * Is the given status code an error status code? Error codes are the ones
+ * outside the range 200-299.
+ *
+ * @param status the status code to check
+ */
+inline static bool isErrorStatus(int status) {
+    return (status) && ((status < 200) || (status > 299));
+}
+
+/**
+ * Return true if the status code is authentication failed
+ *
+ * @param status the status code to check
+ */
+inline static bool isAuthFailed(int status) {
+    return (status) && ((status == 401) || (status == 407));
+}
+
+/**
+ * Return true if there's no more work to do
+ * (if no source has a correct status)
+ */
+bool SyncManager::isToExit() {
+    for (int i = 0; i < sourcesNumber; i++) {
+        if (sources[i]->getReport()->checkState() == true) {
+            return false; 
+        }
+    }
+    return true;
+}
+
+//--------------------------------------------------------------------------
+
 void SyncManager::decodeItemKey(SyncItem *syncItem)
 {
     char *key;
@@ -78,38 +118,6 @@ void SyncManager::encodeItemKey(SyncItem *syncItem)
         delete [] key;
         delete [] t;
     }
-}
-
-/**
- * Is the given status code an error status code? Error codes are the ones
- * outside the range 200-299.
- *
- * @param status the status code to check
- */
-inline static bool isErrorStatus(int status) {
-    return (status) && ((status < 200) || (status > 299));
-}
-
-/**
- * Return true if the status code is authentication failed
- *
- * @param status the status code to check
- */
-inline static bool isAuthFailed(int status) {
-    return (status) && ((status == 401) || (status == 407));
-}
-
-/**
- * Return true if there's no more work to do
- * (if no source has a correct status)
- */
-bool SyncManager::isToExit() {
-    for (int i = 0; i < sourcesNumber; i++) {
-        if (sources[i]->getReport()->checkState() == true) {
-            return false;
-        }
-    }
-    return true;
 }
 
 /*
@@ -936,6 +944,9 @@ BOOL SyncManager::checkForServerChanges(SyncML* syncml, ArrayList &statusList)
 }
 
 
+/*
+ * Starts the synchronization phase
+ */
 int SyncManager::sync() {
 
     char* msg            = NULL;
@@ -1019,24 +1030,17 @@ int SyncManager::sync() {
                 commands.add(*status);
                 deleteStatus(&status);
 
-                /* The server should not send any alert...
-                   list = syncMLProcessor.getCommands(syncml->getSyncBody(), ALERT);
-                   status = syncMLBuilder.prepareAlertStatus(*sources[0], list, 200);
-
-                   if (status) {
-                   commands->add(*status);
-                   deleteStatus(&status);
-                   }
-                   deleteArrayList(&list);
-                 */
             }
 
             // Accumulate changes for the current sync source until
-            // an item cannot be sent completely because the message size would be exceeded
+            // an item cannot be sent completely because the message size
+            // would be exceeded.
             //
-            // In each loop iteration at least one change must be sent to ensure progress.
-            // Keeping track of the current message size is a heuristic which assumes a constant
-            // overhead for each message and change item and then adds the actual item data sent.
+            // In each loop iteration at least one change must be sent to ensure 
+            // progress.
+            // Keeping track of the current message size is a heuristic which 
+            // assumes a constant overhead for each message and change item 
+            // and then adds the actual item data sent.
             deleteSyncML(&syncml);
             static long msgOverhead = 2000;
             static long changeOverhead = 150;
@@ -1105,7 +1109,7 @@ int SyncManager::sync() {
 
                 case SYNC_REFRESH_FROM_SERVER:
                     last = TRUE;
-
+                    // TODO: remove me...
                     allItemsList[count] = new ArrayList();
                     syncItem = getItem(*sources[count], &SyncSource::getFirstItemKey);
                     if(syncItem) {
@@ -1794,20 +1798,12 @@ int SyncManager::endSync() {
 
         commitChanges(*sources[count]);
     }
-    /*
-	if (mappings) {
-        for (int i=0; i<sourcesNumber; i++) {
-            deleteArrayList(&mappings[i]);
-            if (mappings[i]) { delete mappings[i]; mappings[i] = NULL; }
-        }
-        delete [] mappings; mappings = NULL;
-    }
-    */
 
     config.getAccessConfig().setEndSync((unsigned long)time(NULL));
     safeDelete(&responseMsg);
     safeDelete(&mapMsg);
-    LOG.debug("ret: %i, lastErrorCode: %i, lastErrorMessage: %s", ret, getLastErrorCode(), getLastErrorMsg());
+    LOG.debug("ret: %i, lastErrorCode: %i, lastErrorMessage: %s",
+        ret, lastErrorCode, lastErrorMsg);
 
     // Fire Sync End Event
     fireSyncEvent(NULL, SYNC_END);
