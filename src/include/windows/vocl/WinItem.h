@@ -50,6 +50,8 @@ using namespace std;
 #define INFO_ITEM_VOBJ_VERSION_NOTFOUND     "Warning! VObject version not specified (\"%ls\" expected)"
 
 
+typedef map<wstring,wstring>::iterator      mapIterator;
+
 
 /**
  ****************************************************************************
@@ -62,7 +64,15 @@ class WinItem {
 
 private:
 
+    /// A dummy bad string "<NULL>", used by methods that return a reference
+    /// to an internal property value, when the property is missing.
     static wstring badString;
+
+
+protected:
+
+    /// The table used to calculate the crc.
+    static unsigned long crc32Table[256];
 
 
 public:
@@ -98,6 +108,16 @@ public:
     void setProperty(const wstring propertyName, const wstring propertyValue);
 
     /**
+     * Sets a integer property value of name 'propertyName'.
+     * Like 'setProperty', but the input value is integer and it's formatted
+     * into a string.
+     * @param  propertyName   the name of property to set
+     * @param  propertyValue  the integer value of property to set
+     */
+    void setIntProperty(const wstring propertyName, const int intValue);
+
+
+    /**
      * Gets a property value from its name.
      * Retrieves the value from the propertyMap. If property is not
      * found, returns false.
@@ -120,6 +140,17 @@ public:
      * @return                the value of property found, by reference
      */
     wstring& getPropertyRef(const wstring propertyName, bool* found);
+
+    /**
+     * Gets a property value from its name, and convert into a integer value.
+     * Retrieves the value from the propertyMap. If property is not
+     * found or not correctly converted into int, returns false.
+     * @param  propertyName   the name of property to retrieve
+     * @param  propertyValue  [IN-OUT] the value of property, integer value
+     * @return                true if property found, false if not found or wrong format
+     */
+    bool getIntProperty(const wstring propertyName, int* intValue);
+
 
     void removeElement(wstring key);
 
@@ -150,9 +181,11 @@ public:
 
     /**
     * Return the crc value of the internal map with all values.
-    * It uses only the values of the map not the key
+    * It uses only the values of the map not the key.
+    * Can be overrided by derived classes if other properties are involved
+    * (e.g. Events have recucurrence props and exceptions)
     */
-    long getCRC();
+    virtual long getCRC();
 
     /**
      * Utility to safe-retrieve the property value inside VObject 'vo'.
