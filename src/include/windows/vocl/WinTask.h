@@ -84,10 +84,16 @@ public:
      */
     virtual wstring& toString();
 
-
     /// Returns a pointer to the (internally owned) WinRecurrence.
     virtual WinRecurrence* getRecPattern();
 
+
+    /**
+     * Return the crc value of the internal map with all values.
+     * It uses only the values of the map not the key.
+     * Overrides method of WinItem, to include recurring properties in the crc.
+     */
+    long getCRC();
 };
 
 /** @} */

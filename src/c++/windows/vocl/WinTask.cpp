@@ -468,3 +468,43 @@ bool WinTask::checkVCalendarTypeAndVersion(VObject* vo) {
 WinRecurrence* WinTask::getRecPattern() {
     return &recPattern;
 }
+
+
+long WinTask::getCRC() {
+
+    wstring values;
+
+    // Event props
+    mapIterator it = propertyMap.begin();
+    while (it != propertyMap.end()) {
+        values.append(it->second);
+        it ++;
+    }
+
+    // Append rec props only if recurring
+    wstring isRec;
+    if (getProperty(TEXT("IsRecurring"), isRec)) {
+        if (isRec == TEXT("1")) {
+            it = getRecPattern()->propertyMap.begin();
+            while (it != getRecPattern()->propertyMap.end()) {
+                values.append(it->second);
+                it ++;
+            }
+        }
+    }
+
+    const WCHAR* s = values.c_str();
+    unsigned long crc32 = 0;    
+    unsigned long dwErrorCode = NO_ERROR;
+    unsigned char byte = 0;
+
+    crc32 = 0xFFFFFFFF;
+    while(*s != TEXT('\0')) {
+        byte = (unsigned char) *s;
+        crc32 = ((crc32) >> 8) ^ crc32Table[(byte) ^ ((crc32) & 0x000000FF)];
+        s++;
+    }
+    crc32 = ~crc32;
+
+    return crc32;
+}
