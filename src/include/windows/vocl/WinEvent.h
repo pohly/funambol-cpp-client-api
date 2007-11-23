@@ -30,6 +30,11 @@
 #include "vocl/VObject.h"
 
 
+typedef list<wstring>               exceptionList;
+typedef exceptionList::iterator     exceptionsIterator;
+typedef list<WinRecipient>          recipientList;
+
+
 /**
  * Rapresents an event object for Windows Clients.
  * The object can be filled passing a vCalendar, or filling
@@ -62,12 +67,12 @@ private:
 protected:
 
     /// List of occurrences dates to exclude (recurring exceptions to delete).
-    list<wstring> excludeDate;
+    exceptionList excludeDate;
     /// List of occurrences dates to include (recurring exceptions to add).
-    list<wstring> includeDate;
+    exceptionList includeDate;
 
     /// List of recipients (attendees) for this event.
-    list<WinRecipient> recipients;
+    recipientList recipients;
 
 
 public:
@@ -100,18 +105,26 @@ public:
     virtual wstring& toString();
 
 
-
     /// Returns a pointer to the (internally owned) WinRecurrence.
     virtual WinRecurrence* getRecPattern();
 
     /// Returns a pointer to the list (internally owned) of exclude dates.
-    list<wstring>* getExcludeDates();
+    exceptionList* getExcludeDates();
 
     /// Returns a pointer to the list (internally owned) of include dates.
-    list<wstring>* getIncludeDates();
+    exceptionList* getIncludeDates();
 
     /// Returns a pointer to the list (internally owned) of recipients.
-    list<WinRecipient>* getRecipients();
+    recipientList* getRecipients();
+
+
+    /**
+     * Return the crc value of the internal map with all values.
+     * It uses only the values of the map not the key.
+     * Overrides method of WinItem, to include recurring properties 
+     * and event exceptions in the crc.
+     */
+    long getCRC();
 };
 
 /** @} */

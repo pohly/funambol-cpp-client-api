@@ -29,11 +29,18 @@ using namespace std;
 // Constructor
 WinEvent::WinEvent() {
     vCalendar = L"";
+    excludeDate.clear();
+    includeDate.clear();
+    recipients.clear();
 }
 
 // Constructor: fills propertyMap parsing the passed data
 WinEvent::WinEvent(const wstring dataString) {
     vCalendar = L"";
+    excludeDate.clear();
+    includeDate.clear();
+    recipients.clear();
+
     parse(dataString);
 }
 
@@ -211,7 +218,9 @@ wstring& WinEvent::toString() {
             // Exceptions: EXDATE
             vp = new VProperty(TEXT("EXDATE"));
             for (it  = excludeDate.begin(); it != excludeDate.end(); it++) {
-                vp->addValue((*it).c_str());
+                wstring date = (*it);
+                replaceAll(TEXT("-"), TEXT(""), date);                          // *** to remove ****
+                vp->addValue(date.c_str());
             }
             vo->addProperty(vp);
             delete vp; vp = NULL;
@@ -219,7 +228,9 @@ wstring& WinEvent::toString() {
             // Exceptions: RDATE (should be empty for Outlook and WM)
             vp = new VProperty(TEXT("RDATE"));
             for (it  = includeDate.begin(); it != includeDate.end(); it++) {
-                vp->addValue((*it).c_str());
+                wstring date = (*it);
+                replaceAll(TEXT("-"), TEXT(""), date);                          // *** to remove ****
+                vp->addValue(date.c_str());
             }
             vo->addProperty(vp);
             delete vp; vp = NULL;
@@ -361,8 +372,18 @@ int WinEvent::parse(const wstring dataString) {
             // Safe check on endDate: min value is 'startDate + 1'
             if (endDate <= startDate) {
                 endDate = startDate + 1;
-                doubleToStringTime(endDateValue, endDate, true);
             }
+            
+            // for EndDates like "20071121T235900": we convert into "20071122"
+            double endDateTime = endDate - (int)endDate;
+            if (endDateTime > 0.9) {
+                endDate = (int)endDate + 1;
+            }
+
+            // Format dates like: "yyyyMMdd"
+            doubleToStringTime(endDateValue,   endDate,   true);
+            doubleToStringTime(startDateValue, startDate, true);
+
         }
         setProperty(L"Start",       startDateValue       );
         setProperty(L"End",         endDateValue         );
@@ -524,14 +545,70 @@ WinRecurrence* WinEvent::getRecPattern() {
     return &recPattern;
 }
 
-list<wstring>* WinEvent::getExcludeDates() {
+exceptionList* WinEvent::getExcludeDates() {
     return &excludeDate;
 }
 
-list<wstring>* WinEvent::getIncludeDates() {
+exceptionList* WinEvent::getIncludeDates() {
     return &includeDate;
 }
 
-list<WinRecipient>* WinEvent::getRecipients() {
+recipientList* WinEvent::getRecipients() {
     return &recipients;
+}
+
+
+
+long WinEvent::getCRC() {
+
+    wstring values;
+
+    // Event props
+    mapIterator it = propertyMap.begin();
+    while (it != propertyMap.end()) {
+        values.append(it->second);
+        it ++;
+    }
+
+    // Append rec props only if recurring
+    wstring isRec;
+    if (getProperty(TEXT("IsRecurring"), isRec)) {
+        if (isRec == TEXT("1")) {
+
+            // note: use 'getRecPattern()' to retrieve the correct recPattern object
+            it = getRecPattern()->propertyMap.begin();
+            while (it != getRecPattern()->propertyMap.end()) {
+                values.append(it->second);
+                it ++;
+            }
+
+            // Exceptions
+            exceptionsIterator ex = excludeDate.begin();
+            while (ex != excludeDate.end()) {
+                values.append(*ex);
+                ex ++;
+            }
+            ex = includeDate.begin();
+            while (ex != includeDate.end()) {
+                values.append(*ex);
+                ex ++;
+            }
+        }
+    }
+
+
+    const WCHAR* s = values.c_str();
+    unsigned long crc32 = 0;
+    unsigned long dwErrorCode = NO_ERROR;
+    unsigned char byte = 0;
+
+    crc32 = 0xFFFFFFFF;
+    while(*s != TEXT('\0')) {
+        byte = (unsigned char) *s;
+        crc32 = ((crc32) >> 8) ^ crc32Table[(byte) ^ ((crc32) & 0x000000FF)];
+        s++;
+    }
+    crc32 = ~crc32;
+
+    return crc32;
 }
