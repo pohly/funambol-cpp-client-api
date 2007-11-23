@@ -376,10 +376,6 @@
 						>
 					</File>
 					<File
-						RelativePath="..\..\src\c++\common\base\util\ItemContainer.cpp"
-						>
-					</File>
-					<File
 						RelativePath="..\..\src\c++\common\base\util\KeyValuePair.cpp"
 						>
 						<FileConfiguration

@@ -768,7 +768,7 @@
 				AssemblerListingLocation="$(PlatformName)\$(ConfigurationName)/"
 				ObjectFile="$(PlatformName)\$(ConfigurationName)/"
 				ProgramDataBaseFileName="$(PlatformName)\$(ConfigurationName)/"
-				WarningLevel="3"
+				WarningLevel="0"
 				WarnAsError="true"
 				SuppressStartupBanner="true"
 				DebugInformationFormat="3"
@@ -18300,10 +18300,6 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\include\common\spds\constants.h"
-				>
-			</File>
-			<File
 				RelativePath="..\..\src\include\common\http\constants.h"
 				>
 			</File>
@@ -18313,6 +18309,10 @@
 			</File>
 			<File
 				RelativePath="..\..\src\include\common\spdm\constants.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\include\common\spds\constants.h"
 				>
 			</File>
 			<File
@@ -18376,10 +18376,6 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\include\common\spds\errors.h"
-				>
-			</File>
-			<File
 				RelativePath="..\..\src\include\common\spdm\errors.h"
 				>
 			</File>
@@ -18389,6 +18385,10 @@
 			</File>
 			<File
 				RelativePath="..\..\src\include\common\http\errors.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\include\common\spds\errors.h"
 				>
 			</File>
 			<File
