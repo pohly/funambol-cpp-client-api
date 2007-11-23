@@ -278,6 +278,7 @@ Status* SyncMLBuilder::prepareAlertStatus(SyncSource& source, ArrayList* alerts,
             Item* it = (Item*)list->get(0);
             if (strcmp(it->getTarget()->getLocURI(), _wcc(source.getName())) == 0) {
                 found = TRUE;
+                break;
             }
         }
     }
