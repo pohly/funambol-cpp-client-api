@@ -80,12 +80,6 @@ public:
     /// Sets the startDate (double format)
     void setStartDate(const DATE date) { startDate = date; }
 
-
-    /// Alternate method to get a property, returns an int value.
-    const int getIntProperty(const wstring propertyName);
-
-    /// Alternate method to set a property, passing an int value.
-    void setIntProperty(const wstring propertyName, const int propertyValue);
 };
 
 /** @} */

@@ -412,22 +412,3 @@ finally:
     return ret;
 }
 
-
-
-
-const int WinRecurrence::getIntProperty(const wstring propertyName) {
-    int ret = 0;
-    wstring tmp;
-    if (getProperty(propertyName, tmp)) {
-        ret = _wtoi(tmp.c_str());
-    }
-    return ret;
-}
-
-
-void WinRecurrence::setIntProperty(const wstring propertyName, const int propertyValue) {
-    WCHAR tmp[10];
-    wsprintf(tmp, TEXT("%d"), propertyValue);
-    setProperty(propertyName, tmp);
-}
-
