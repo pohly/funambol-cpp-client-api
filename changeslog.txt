@@ -1,3 +1,6 @@
+2007-11-28
+  - Changed headers of source files (AGPL)
+
 2007-11-15
     - gazza: unit test refactoring
 
