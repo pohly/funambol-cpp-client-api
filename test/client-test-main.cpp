@@ -168,7 +168,7 @@ private:
     int m_alarmSeconds;
 
     static void alarmTriggered(int signal) {
-        CPPUNIT_ASSERT_MESSAGE(false, "test timed out");
+        CPPUNIT_ASSERT_MESSAGE("test timed out", false);
     }
 } syncListener;
 
