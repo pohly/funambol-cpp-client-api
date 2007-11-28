@@ -1,20 +1,37 @@
- /*
- * Copyright (C) 2007 Funambol, Inc.
+/*
+ * Funambol is a mobile platform developed by Funambol, Inc.
+ * Copyright (C) 2003 - 2007 Funambol, Inc.
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License version 2 as
- * published by the Free Software Foundation.
+ * This program is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU Affero General Public License version 3 as published by
+ * the Free Software Foundation with the addition of the following permission
+ * added to Section 15 as permitted in Section 7(a): FOR ANY PART OF THE COVERED
+ * WORK IN WHICH THE COPYRIGHT IS OWNED BY FUNAMBOL, FUNAMBOL DISCLAIMS THE
+ * WARRANTY OF NON INFRINGEMENT  OF THIRD PARTY RIGHTS.
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY, TITLE, NONINFRINGEMENT or FITNESS FOR A PARTICULAR
- * PURPOSE.  See the GNU General Public License for more details.
+ * This program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
+ * details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
- * 02111-1307  USA
-*/
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program; if not, see http://www.gnu.org/licenses or write to
+ * the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
+ * MA 02110-1301 USA.
+ *
+ * You can contact Funambol, Inc. headquarters at 643 Bair Island Road, Suite
+ * 305, Redwood City, CA 94063, USA, or at email address info@funambol.com.
+ *
+ * The interactive user interfaces in modified source and object code versions
+ * of this program must display Appropriate Legal Notices, as required under
+ * Section 5 of the GNU Affero General Public License version 3.
+ *
+ * In accordance with Section 7(b) of the GNU Affero General Public License
+ * version 3, these Appropriate Legal Notices must retain the display of the
+ * "Powered by Funambol" logo. If the display of the logo is not reasonably
+ * feasible for technical reasons, the Appropriate Legal Notices must display
+ * the words "Powered by Funambol".
+ */
 
 #include "vocl/WinContact.h"
 #include "vocl/VConverter.h"
@@ -65,9 +82,9 @@ wstring WinContact::toString() {
     vp = new VProperty(L"VERSION", VCARD_VERSION);
     vo->addProperty(vp);
     delete vp; vp = NULL;
-        
+
     // ------- Name -------
-    // Add only if at least 1 property is supported, but include 
+    // Add only if at least 1 property is supported, but include
     // all elements in the right order.
     found = false;
     vp = new VProperty(L"N");
@@ -75,11 +92,11 @@ wstring WinContact::toString() {
     vp->addValue(element.c_str());
     if (getProperty(L"FirstName",  element))  found = true;
     vp->addValue(element.c_str());
-    if (getProperty(L"MiddleName", element))  found = true;  
+    if (getProperty(L"MiddleName", element))  found = true;
     vp->addValue(element.c_str());
-    if (getProperty(L"Title",      element))  found = true;  
+    if (getProperty(L"Title",      element))  found = true;
     vp->addValue(element.c_str());
-    if (getProperty(L"Suffix",     element))  found = true;  
+    if (getProperty(L"Suffix",     element))  found = true;
     vp->addValue(element.c_str());
     if (found) {
         vo->addProperty(vp);
@@ -275,7 +292,7 @@ wstring WinContact::toString() {
 
 
     // ----- ORG -----
-    // Add only if at least 1 property is supported, but include 
+    // Add only if at least 1 property is supported, but include
     // all elements in the right order.
     found = false;
     vp = new VProperty(L"ORG");
@@ -292,7 +309,7 @@ wstring WinContact::toString() {
 
 
     // ----- Address HOME -----
-    // Add only if at least 1 property is supported, but include 
+    // Add only if at least 1 property is supported, but include
     // all elements in the right order.
     // "AddressPostOfficeBox" is not supported by WM.
     // "AddressExtended" is not supported by Outlook/WM.
@@ -320,7 +337,7 @@ wstring WinContact::toString() {
 
 
     // ----- Address -----
-    // Add only if at least 1 property is supported, but include 
+    // Add only if at least 1 property is supported, but include
     // all elements in the right order.
     // "AddressPostOfficeBox" is not supported by WM.
     // "AddressExtended" is not supported by Outlook/WM.
@@ -347,7 +364,7 @@ wstring WinContact::toString() {
 
 
     // ----- Address WORK -----
-    // Add only if at least 1 property is supported, but include 
+    // Add only if at least 1 property is supported, but include
     // all elements in the right order.
     // "AddressPostOfficeBox" is not supported by WM.
     // "AddressExtended" is not supported by Outlook/WM.
@@ -372,12 +389,12 @@ wstring WinContact::toString() {
         vo->addProperty(vp);
     }
     delete vp; vp = NULL;
-    
+
      //PHOTO
     if (getProperty(L"Photo", element)) {
         vp = new VProperty(L"PHOTO", element.c_str());
         if (element != L"") {
-            vp->addParameter(L"CONTENT-VALUE", L"UNCHANGED");        
+            vp->addParameter(L"CONTENT-VALUE", L"UNCHANGED");
             vp->addParameter(L"ENCODING", L"b");
             if (photoType.length() > 0) {
                 vp->addParameter(L"TYPE", photoType.c_str());
@@ -385,7 +402,7 @@ wstring WinContact::toString() {
         }
         vo->addProperty(vp);
         delete vp; vp = NULL;
-    }    
+    }
 
     //
     // ---- Funambol defined properties ----
@@ -506,9 +523,9 @@ wstring WinContact::toString() {
 //
 int WinContact::parse(const wstring dataString) {
 
-	int businessTel  = 0;
-	int homeTel		 = 0;
-	WCHAR* name      = NULL;
+    int businessTel  = 0;
+    int homeTel      = 0;
+    WCHAR* name      = NULL;
     WCHAR* element   = NULL;
 
 
@@ -532,33 +549,33 @@ int WinContact::parse(const wstring dataString) {
     //
     // Conversion: vObject -> WinContact.
     // ----------------------------------
-    // Note: only properties found are added to the propertyMap, so that the 
+    // Note: only properties found are added to the propertyMap, so that the
     //       map will contain only properties effectively received.
     //
     propertyMap.clear();
     for(int i=0; i < vo->propertiesCount(); i++) {
 
         VProperty* vp = vo->getProperty(i);
-		name    = vp->getName();
+        name    = vp->getName();
         element = vp->getValue(0);      // the first value of the property.
 
 
-		if(!wcscmp(name, L"N")) {
-			if(element = vp->getPropComponent(1))  setProperty(L"LastName",   element);
-			if(element = vp->getPropComponent(2))  setProperty(L"FirstName",  element);
-			if(element = vp->getPropComponent(3))  setProperty(L"MiddleName", element);
-			if(element = vp->getPropComponent(4))  setProperty(L"Title",      element);
-			if(element = vp->getPropComponent(5))  setProperty(L"Suffix",     element);
-		}
+        if(!wcscmp(name, L"N")) {
+            if(element = vp->getPropComponent(1))  setProperty(L"LastName",   element);
+            if(element = vp->getPropComponent(2))  setProperty(L"FirstName",  element);
+            if(element = vp->getPropComponent(3))  setProperty(L"MiddleName", element);
+            if(element = vp->getPropComponent(4))  setProperty(L"Title",      element);
+            if(element = vp->getPropComponent(5))  setProperty(L"Suffix",     element);
+        }
         else if(!wcscmp(name, L"BDAY")) {
-			setProperty(L"Birthday", element);
+            setProperty(L"Birthday", element);
         }
         else if(!wcscmp(name, L"NOTE")) {
-			setProperty(L"Body", element);
+            setProperty(L"Body", element);
         }
         else if(!wcscmp(name, L"CLASS")) {
             WCHAR tmp[10];
-            if( !wcscmp(element, TEXT("PRIVATE"     )) || 
+            if( !wcscmp(element, TEXT("PRIVATE"     )) ||
                 !wcscmp(element, TEXT("CONFIDENTIAL")) ) {
                 wsprintf(tmp, TEXT("%i"), winPrivate);          // Private = 2
             }
@@ -568,113 +585,113 @@ int WinContact::parse(const wstring dataString) {
             setProperty(L"Sensitivity", tmp);
         }
         else if(!wcscmp(name, L"CATEGORIES")) {
-			setProperty(L"Categories", element);
+            setProperty(L"Categories", element);
         }
-		else if(!wcscmp(name, L"EMAIL")) {
+        else if(!wcscmp(name, L"EMAIL")) {
             // Mapping is:
             // Email1Address <-> EMAIL;INTERNET:
             // Email2Address <-> EMAIL;INTERNET;HOME:
             // Email3Address <-> EMAIL;INTERNET;WORK:
-			if (vp->containsParameter(L"HOME")) {
+            if (vp->containsParameter(L"HOME")) {
                 if (vp->containsParameter(L"X-FUNAMBOL-INSTANTMESSENGER")) {
                     setProperty(L"IMAddress", element);
                 }
                 else {
-				    setProperty(L"Email2Address", element);
+                    setProperty(L"Email2Address", element);
                 }
-			}
-			else if (vp->containsParameter(L"WORK")) {
-				setProperty(L"Email3Address", element);
-			}
-            else {
-				setProperty(L"Email1Address", element);
             }
-		}
+            else if (vp->containsParameter(L"WORK")) {
+                setProperty(L"Email3Address", element);
+            }
+            else {
+                setProperty(L"Email1Address", element);
+            }
+        }
         else if(!wcscmp(name, L"FN")) {
-			setProperty(L"FileAs", element);
+            setProperty(L"FileAs", element);
         }
         else if(!wcscmp(name, L"NICKNAME")) {
-			setProperty(L"NickName", element);
+            setProperty(L"NickName", element);
         }
         else if(!wcscmp(name, L"PRIORITY")) {
-			setProperty(L"Importance", element);
+            setProperty(L"Importance", element);
         }
-		else if(!wcscmp(name, L"ORG")) {
+        else if(!wcscmp(name, L"ORG")) {
             if(element = vp->getPropComponent(1))  setProperty(L"CompanyName",    element);
-			if(element = vp->getPropComponent(2))  setProperty(L"Department",     element);
+            if(element = vp->getPropComponent(2))  setProperty(L"Department",     element);
             if(element = vp->getPropComponent(2))  setProperty(L"OfficeLocation", element);
-		}
+        }
         else if(!wcscmp(name, L"ROLE")) {
-			setProperty(L"Profession", element);
+            setProperty(L"Profession", element);
         }
 
         //
         // ---- Telephone fields ----
         //
         else if(!wcscmp(name, L"TEL")) {
-		    if(vp->containsParameter(L"WORK")) {
+            if(vp->containsParameter(L"WORK")) {
                 if (vp->containsParameter(L"FAX")) {
-				    setProperty(L"BusinessFaxNumber", element);
+                    setProperty(L"BusinessFaxNumber", element);
                 }
                 else if (vp->containsParameter(L"PREF")) {
                     setProperty(L"CompanyMainTelephoneNumber", element);
                 }
                 else {      // default, would be "else if (vp->containsParameter(L"VOICE"))"
-				    if(businessTel == 0) {
-					    setProperty(L"BusinessTelephoneNumber", element);
-					    businessTel++;
-				    }
-				    else{
-					    setProperty(L"Business2TelephoneNumber", element);
-				    }
+                    if(businessTel == 0) {
+                        setProperty(L"BusinessTelephoneNumber", element);
+                        businessTel++;
+                    }
+                    else{
+                        setProperty(L"Business2TelephoneNumber", element);
+                    }
                 }
-		    }
-            else if (vp->containsParameter(L"CAR")) {
-			    setProperty(L"CarTelephoneNumber", element);
             }
-		    else if(vp->containsParameter(L"HOME")) {
+            else if (vp->containsParameter(L"CAR")) {
+                setProperty(L"CarTelephoneNumber", element);
+            }
+            else if(vp->containsParameter(L"HOME")) {
                 if(vp->containsParameter(L"FAX")) {
-				    setProperty(L"HomeFaxNumber", element);
+                    setProperty(L"HomeFaxNumber", element);
                 }
                 else {      // default, would be "else if (vp->containsParameter(L"VOICE"))"
                     if(homeTel == 0) {
-				        setProperty(L"HomeTelephoneNumber", element);
-				        homeTel++;
-			        }
+                        setProperty(L"HomeTelephoneNumber", element);
+                        homeTel++;
+                    }
                     else {
-				        setProperty(L"Home2TelephoneNumber", element);
+                        setProperty(L"Home2TelephoneNumber", element);
                     }
                 }
             }
             else if (vp->containsParameter(L"CELL")) {
-			    setProperty(L"MobileTelephoneNumber", element);
+                setProperty(L"MobileTelephoneNumber", element);
             }
             else if (vp->containsParameter(L"FAX")) {
-			    setProperty(L"OtherFaxNumber", element);
+                setProperty(L"OtherFaxNumber", element);
             }
             else if(vp->containsParameter(L"PAGER")) {
-			    setProperty(L"PagerNumber", element);
+                setProperty(L"PagerNumber", element);
             }
             else if (vp->containsParameter(L"PREF")) {
                 setProperty(L"PrimaryTelephoneNumber", element);
             }
             else if(vp->containsParameter(L"X-FUNAMBOL-CALLBACK")) {
-			    setProperty(L"CallbackTelephoneNumber", element);
+                setProperty(L"CallbackTelephoneNumber", element);
             }
             else if(vp->containsParameter(L"X-FUNAMBOL-RADIO")) {
-			    setProperty(L"RadioTelephoneNumber", element);
+                setProperty(L"RadioTelephoneNumber", element);
             }
             else {      // default, would be "else if (vp->containsParameter(L"VOICE"))"
-			    setProperty(L"OtherTelephoneNumber", element);
+                setProperty(L"OtherTelephoneNumber", element);
             }
         }
 
         else if(!wcscmp(name, L"TITLE")) {
-			setProperty(L"JobTitle", element);
+            setProperty(L"JobTitle", element);
         }
-        
+
         else if(!wcscmp(name, L"PHOTO")) {
-			setProperty(L"Photo", element);     // Photo type is ignored
+            setProperty(L"Photo", element);     // Photo type is ignored
         }
 
         //
@@ -682,13 +699,13 @@ int WinContact::parse(const wstring dataString) {
         //
         else if(!wcscmp(name, L"URL")) {
             if (vp->containsParameter(L"WORK")) {
-			    setProperty(L"BusinessWebPage", element);
+                setProperty(L"BusinessWebPage", element);
             }
             else if(vp->containsParameter(L"HOME")) {
-			    setProperty(L"HomeWebPage", element);
+                setProperty(L"HomeWebPage", element);
             }
             else {
-			    setProperty(L"WebPage", element);
+                setProperty(L"WebPage", element);
             }
         }
 
@@ -696,47 +713,47 @@ int WinContact::parse(const wstring dataString) {
         // ---- ADR fields ----
         //
         else if(!wcscmp(name, L"ADR")) {
-			if(vp->containsParameter(L"HOME")) {
-				if(element = vp->getPropComponent(1))  setProperty(L"HomeAddressPostOfficeBox", element);
+            if(vp->containsParameter(L"HOME")) {
+                if(element = vp->getPropComponent(1))  setProperty(L"HomeAddressPostOfficeBox", element);
                 if(element = vp->getPropComponent(2))  setProperty(L"HomeAddressExtended",      element);
-				if(element = vp->getPropComponent(3))  setProperty(L"HomeAddressStreet",        element);
-				if(element = vp->getPropComponent(4))  setProperty(L"HomeAddressCity",          element);
-				if(element = vp->getPropComponent(5))  setProperty(L"HomeAddressState",         element);
-				if(element = vp->getPropComponent(6))  setProperty(L"HomeAddressPostalCode",    element);
-				if(element = vp->getPropComponent(7))  setProperty(L"HomeAddressCountry",       element);
-			}
-			else if(vp->containsParameter(L"WORK")) {
-				if(element = vp->getPropComponent(1))  setProperty(L"BusinessAddressPostOfficeBox", element);
+                if(element = vp->getPropComponent(3))  setProperty(L"HomeAddressStreet",        element);
+                if(element = vp->getPropComponent(4))  setProperty(L"HomeAddressCity",          element);
+                if(element = vp->getPropComponent(5))  setProperty(L"HomeAddressState",         element);
+                if(element = vp->getPropComponent(6))  setProperty(L"HomeAddressPostalCode",    element);
+                if(element = vp->getPropComponent(7))  setProperty(L"HomeAddressCountry",       element);
+            }
+            else if(vp->containsParameter(L"WORK")) {
+                if(element = vp->getPropComponent(1))  setProperty(L"BusinessAddressPostOfficeBox", element);
                 if(element = vp->getPropComponent(2))  setProperty(L"BusinessAddressExtended",      element);
-				if(element = vp->getPropComponent(3))  setProperty(L"BusinessAddressStreet",        element);
-				if(element = vp->getPropComponent(4))  setProperty(L"BusinessAddressCity",          element);
-				if(element = vp->getPropComponent(5))  setProperty(L"BusinessAddressState",         element);
-				if(element = vp->getPropComponent(6))  setProperty(L"BusinessAddressPostalCode",    element);
-				if(element = vp->getPropComponent(7))  setProperty(L"BusinessAddressCountry",       element);
-			}
-			else {
+                if(element = vp->getPropComponent(3))  setProperty(L"BusinessAddressStreet",        element);
+                if(element = vp->getPropComponent(4))  setProperty(L"BusinessAddressCity",          element);
+                if(element = vp->getPropComponent(5))  setProperty(L"BusinessAddressState",         element);
+                if(element = vp->getPropComponent(6))  setProperty(L"BusinessAddressPostalCode",    element);
+                if(element = vp->getPropComponent(7))  setProperty(L"BusinessAddressCountry",       element);
+            }
+            else {
                 if(element = vp->getPropComponent(1))  setProperty(L"OtherAddressPostOfficeBox", element);
                 if(element = vp->getPropComponent(2))  setProperty(L"OtherAddressExtended",      element);
-				if(element = vp->getPropComponent(3))  setProperty(L"OtherAddressStreet",        element);
-				if(element = vp->getPropComponent(4))  setProperty(L"OtherAddressCity",          element);
-				if(element = vp->getPropComponent(5))  setProperty(L"OtherAddressState",         element);
-				if(element = vp->getPropComponent(6))  setProperty(L"OtherAddressPostalCode",    element);
-				if(element = vp->getPropComponent(7))  setProperty(L"OtherAddressCountry",       element);
-			}
+                if(element = vp->getPropComponent(3))  setProperty(L"OtherAddressStreet",        element);
+                if(element = vp->getPropComponent(4))  setProperty(L"OtherAddressCity",          element);
+                if(element = vp->getPropComponent(5))  setProperty(L"OtherAddressState",         element);
+                if(element = vp->getPropComponent(6))  setProperty(L"OtherAddressPostalCode",    element);
+                if(element = vp->getPropComponent(7))  setProperty(L"OtherAddressCountry",       element);
+            }
         }
 
         //
         // ---- Funambol defined properties ----
         //
         else if(!wcscmp(name, L"X-FUNAMBOL-ANNIVERSARY")) {
-			setProperty(L"Anniversary", element);
+            setProperty(L"Anniversary", element);
         }
-		else if(!wcscmp(name, L"X-FUNAMBOL-CHILDREN")) {
-			setProperty(L"Children", element);
-		}
-		else if(!wcscmp(name, L"X-FUNAMBOL-COMPANIES")) {
-			setProperty(L"Companies", element);
-		}
+        else if(!wcscmp(name, L"X-FUNAMBOL-CHILDREN")) {
+            setProperty(L"Children", element);
+        }
+        else if(!wcscmp(name, L"X-FUNAMBOL-COMPANIES")) {
+            setProperty(L"Companies", element);
+        }
         else if(!wcscmp(name, L"X-FUNAMBOL-FOLDER")) {
             setProperty(L"Folder", element);
         }
@@ -783,7 +800,7 @@ bool WinContact::checkVCardTypeAndVersion(VObject* vo) {
 
     WCHAR* prodID  = vo->getProdID();
     WCHAR* version = vo->getVersion();
-    
+
     if (!prodID) {
         LOG.error(ERR_ITEM_VOBJ_TYPE_NOTFOUND, L"VCARD");
         return false;

@@ -1,20 +1,37 @@
- /*
- * Copyright (C) 2007 Funambol, Inc.
+/*
+ * Funambol is a mobile platform developed by Funambol, Inc.
+ * Copyright (C) 2003 - 2007 Funambol, Inc.
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License version 2 as
- * published by the Free Software Foundation.
+ * This program is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU Affero General Public License version 3 as published by
+ * the Free Software Foundation with the addition of the following permission
+ * added to Section 15 as permitted in Section 7(a): FOR ANY PART OF THE COVERED
+ * WORK IN WHICH THE COPYRIGHT IS OWNED BY FUNAMBOL, FUNAMBOL DISCLAIMS THE
+ * WARRANTY OF NON INFRINGEMENT  OF THIRD PARTY RIGHTS.
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY, TITLE, NONINFRINGEMENT or FITNESS FOR A PARTICULAR
- * PURPOSE.  See the GNU General Public License for more details.
+ * This program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
+ * details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
- * 02111-1307  USA
-*/
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program; if not, see http://www.gnu.org/licenses or write to
+ * the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
+ * MA 02110-1301 USA.
+ *
+ * You can contact Funambol, Inc. headquarters at 643 Bair Island Road, Suite
+ * 305, Redwood City, CA 94063, USA, or at email address info@funambol.com.
+ *
+ * The interactive user interfaces in modified source and object code versions
+ * of this program must display Appropriate Legal Notices, as required under
+ * Section 5 of the GNU Affero General Public License version 3.
+ *
+ * In accordance with Section 7(b) of the GNU Affero General Public License
+ * version 3, these Appropriate Legal Notices must retain the display of the
+ * "Powered by Funambol" logo. If the display of the logo is not reasonably
+ * feasible for technical reasons, the Appropriate Legal Notices must display
+ * the words "Powered by Funambol".
+ */
 
 #include "base/util/utils.h"
 #include "base/stringUtils.h"
@@ -113,7 +130,7 @@ wstring& WinRecurrence::toString() {
             }
             break;
         }
-        
+
         // Monthly = 2
         case winRecursMonthly: {
             if(dayofmonth > 0) {
@@ -125,7 +142,7 @@ wstring& WinRecurrence::toString() {
                 break;
             }
         }
-        
+
         // MonthNth = 3
         case winRecursMonthNth: {
             if(instance>0 && dayofweek>0) {
@@ -151,7 +168,7 @@ wstring& WinRecurrence::toString() {
             }
             break;
         }
-        
+
         // YearNth = 6
         case winRecursYearNth: {
             if(dayofweek>0 && instance>0) {
@@ -268,7 +285,7 @@ int WinRecurrence::parse(const wstring dataString, const DATE startDate) {
                 if(occurences == 0)             setIntProperty(L"NoEndDate",   TRUE);
                 else                            setIntProperty(L"Occurrences", occurences);
                 if(wcscmp(days, L""))           setIntProperty(L"DayOfWeekMask", stringToDaysOfWeek(days));
-                else                            setIntProperty(L"DayOfWeekMask", getWeekDayFromDate(startDate)); 
+                else                            setIntProperty(L"DayOfWeekMask", getWeekDayFromDate(startDate));
                 token++;
             }
             else if(token[8] == TEXT('T')) {
@@ -276,7 +293,7 @@ int WinRecurrence::parse(const wstring dataString, const DATE startDate) {
                 setProperty(L"PatternEndDate",      token);
                 setIntProperty(L"Interval",      interval);
                 if(wcscmp(days, L""))          setIntProperty(L"DayOfWeekMask", stringToDaysOfWeek(days));
-                else                           setIntProperty(L"DayOfWeekMask", getWeekDayFromDate(startDate)); 
+                else                           setIntProperty(L"DayOfWeekMask", getWeekDayFromDate(startDate));
             }
             else if(isWeekDay(token)) {
                 wcscat(days, token);
