@@ -1,3 +1,6 @@
+Funambol SDK C++ 6.5.3
+-----------------------
+
 2007-11-28
     - toccy: Updated headers of source files with AGPL license
 
