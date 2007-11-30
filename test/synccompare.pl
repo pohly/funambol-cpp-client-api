@@ -88,6 +88,12 @@ sub Usage {
   print "Also works for iCalendar files.\n";
 }
 
+sub uppercase {
+  my $text = shift;
+  $text =~ tr/a-z/A-Z/;
+  return $text;
+}
+
 # parameters: file handle with input, width to use for reformatted lines
 # returns list of lines without line breaks
 sub Normalize {
@@ -120,8 +126,9 @@ sub Normalize {
     # use separate TYPE= fields
     while( s/^(\w*)([^:\n]*);TYPE=(\w*),(\w*)/$1$2;TYPE=$3;TYPE=$4/mg ) {}
 
-    # replace parameters with a sorted parameter list
-    s!^([^;:\n]*);(.*?):!$1 . ";" . join(';',sort(split(/;/, $2))) . ":"!meg;
+    # replace parameters with a sorted parameter list with everything in upper
+    # case (in vCard 3.0 parameters are case-insensitive)
+    s!^([^;:\n]*);(.*?):!$1 . ";" . uppercase(join(';',sort(split(/;/, $2)))) . ":"!meg;
 
     # Map non-standard ADR;TYPE=OTHER to PARCEL, just like SyncEvolution does
     s/^ADR;TYPE=OTHER/ADR;TYPE=PARCEL/mg;
