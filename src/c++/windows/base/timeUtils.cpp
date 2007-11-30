@@ -85,7 +85,7 @@ void stringTimeToDouble(const wstring& dataString, DATE* date) {
     SYSTEMTIME t;
 
     if (dataString.size() < 8) {
-        *date = NULL;  // Error!
+        *date = REFERRED_MAX_DATE;
         return;
     }
 
