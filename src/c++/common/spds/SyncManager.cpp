@@ -294,7 +294,8 @@ int SyncManager::prepareSync(SyncSource** s) {
     char devInfHash[16 * 4 +1]; // worst case factor base64 is four
     unsigned long timestamp = (unsigned long)time(NULL);
 
-    lastErrorCode = 0;
+    //lastErrorCode = 0;
+    resetError();
 
     // Fire Sync Begin Event
     fireSyncEvent(NULL, SYNC_BEGIN);
