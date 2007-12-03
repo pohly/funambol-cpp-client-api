@@ -1673,28 +1673,31 @@ int SyncManager::endSync() {
     char* mapMsg            = NULL;
     char* responseMsg       = NULL;
     SyncML*  syncml         = NULL;
-    //BOOL     last           = TRUE;
     int ret                 = 0;
     Status* status          = NULL;
     ArrayList* list         = new ArrayList();
-    //unsigned int iterator   = 0;
-    unsigned int toSync     = 0;
-    //int i = 0, tot = -1;
+    bool msgToSend          = false;
 
+
+    //
+    // Add map commands for all active sources to syncml object.
+    //
     for (count = 0; count < sourcesNumber; count ++) {
         if (!sources[count]->getReport()->checkState()) {
             continue;
         }
 
-        //iterator++;
-    if (  (sources[count]->getSyncMode() == SYNC_ONE_WAY_FROM_CLIENT &&
+        if (  (sources[count]->getSyncMode() == SYNC_ONE_WAY_FROM_CLIENT &&
                 commands.isEmpty() && mappings[count].size() == 0) ||
                 (sources[count]->getSyncMode() == SYNC_REFRESH_FROM_CLIENT &&
                 commands.isEmpty() && mappings[count].size() == 0)
                 ) {
+            // No need to send the final msg (no mapping).
+        }
+        else {
+            // At least one source, so we'll send the final msg.
+            msgToSend = true;
 
-
-     } else {
             if (commands.isEmpty()) {
                 status = syncMLBuilder.prepareSyncHdrStatus(NULL, 200);
                 commands.add(*status);
@@ -1702,57 +1705,80 @@ int SyncManager::endSync() {
             }
             // Add any map command pending for this source
             addMapCommand(count);
+        }
+    }
 
-            syncml = syncMLBuilder.prepareSyncML(&commands, TRUE);
-                mapMsg = syncMLBuilder.prepareMsg(syncml);
 
-                LOG.debug("Mapping");
-                LOG.debug("%s", mapMsg);
+    //
+    // Send the final message with mappings.
+    //
+    if (msgToSend) {
+        syncml = syncMLBuilder.prepareSyncML(&commands, TRUE);
+        mapMsg = syncMLBuilder.prepareMsg(syncml);
 
-                //Fire Finalization Event
-                fireSyncEvent(NULL, SEND_FINALIZATION);
+        LOG.debug("Mapping");
+        LOG.debug("%s", mapMsg);
 
-                responseMsg = transportAgent->sendMessage(mapMsg);
-                if (responseMsg == NULL) {
-                    ret=getLastErrorCode();
-                    goto finally;
-                }
-                // increment the msgRef after every send message
-                syncMLBuilder.increaseMsgRef();
-                syncMLBuilder.resetCommandID();
+        //Fire Finalization Event
+        fireSyncEvent(NULL, SEND_FINALIZATION);
 
-                deleteSyncML(&syncml);
-                safeDelete(&mapMsg);
+        responseMsg = transportAgent->sendMessage(mapMsg);
+        if (responseMsg == NULL) {
+            ret=getLastErrorCode();
+            goto finally;
+        }
+        // increment the msgRef after every send message
+        syncMLBuilder.increaseMsgRef();
+        syncMLBuilder.resetCommandID();
 
-                syncml = syncMLProcessor.processMsg(responseMsg);
-                delete [] responseMsg; responseMsg = NULL;
-                commands.clear();
+        deleteSyncML(&syncml);
+        safeDelete(&mapMsg);
 
-                if (syncml == NULL) {
-                    ret = getLastErrorCode();
-                    goto finally;
-                }
-                ret = syncMLProcessor.processSyncHdrStatus(syncml);
+        syncml = syncMLProcessor.processMsg(responseMsg);
+        delete [] responseMsg; responseMsg = NULL;
+        commands.clear();
 
-                if (isErrorStatus(ret)) {
-                    //lastErrorCode = ret;
-                    //sprintf(lastErrorMsg, "Server Failure: server returned error code %i", ret);
-                    setErrorF(ret,  "Server Failure: server returned error code %i", ret);
-                    LOG.error(getLastErrorMsg());
-                    goto finally;
-                }
-                ret = 0;
+        if (syncml == NULL) {
+            ret = getLastErrorCode();
+            goto finally;
+        }
+        ret = syncMLProcessor.processSyncHdrStatus(syncml);
 
-                //
-                // Process the status of mapping
-                //
-                ret = syncMLProcessor.processMapResponse(*sources[count], syncml->getSyncBody());
-                deleteSyncML(&syncml);
-                if (ret == -1) {
-                    ret = getLastErrorCode();
-                    goto finally;
-                }
-            // TODO: remove this...
+        if (isErrorStatus(ret)) {
+            //lastErrorCode = ret;
+            //sprintf(lastErrorMsg, "Server Failure: server returned error code %i", ret);
+            setErrorF(ret,  "Server Failure: server returned error code %i", ret);
+            LOG.error(getLastErrorMsg());
+            goto finally;
+        }
+        ret = 0;
+
+        //
+        // Process the status of mapping
+        //
+        ret = syncMLProcessor.processMapResponse(*sources[count], syncml->getSyncBody());
+        deleteSyncML(&syncml);
+        if (ret == -1) {
+            ret = getLastErrorCode();
+            goto finally;
+        }
+    }
+
+
+    for (count = 0; count < sourcesNumber; count ++) {
+        if (!sources[count]->getReport()->checkState()) {
+            continue;
+        }
+
+        // -----------------------
+        // TODO: remove this section when the removeAllItems() is used for refrseh-from-server sync
+        if (  (sources[count]->getSyncMode() == SYNC_ONE_WAY_FROM_CLIENT &&
+                commands.isEmpty() && mappings[count].size() == 0) ||
+                (sources[count]->getSyncMode() == SYNC_REFRESH_FROM_CLIENT &&
+                commands.isEmpty() && mappings[count].size() == 0)
+                ) {
+        }
+        else {
             if(allItemsList[count]) {
                 int size = allItemsList[count]->size();
                 for(int i = 0; i < size; i++) {
@@ -1764,13 +1790,12 @@ int SyncManager::endSync() {
                     }
                 }
             }
-
         }
+        // -----------------------
 
         int sret = sources[count]->endSync();
         if (sret) {
-            //lastErrorCode = sret;
-            setError(sret, "");
+            setErrorF(sret, "Error in endSync of source '%ls'", sources[count]->getName());
         }
     }
 
