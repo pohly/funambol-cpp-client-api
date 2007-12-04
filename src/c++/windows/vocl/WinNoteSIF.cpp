@@ -106,7 +106,7 @@ int WinNoteSIF::parse(const wstring data) {
     wstring propertyValue;
 
     //
-    // Set task properties
+    // Set note properties
     //
     for (int i=0; sifFields[i]; i++) {
         // Set only properties found!
