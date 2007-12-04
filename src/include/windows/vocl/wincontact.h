@@ -109,6 +109,10 @@ public:
 
     /// Sets the picture type
     void setPhotoType(const wstring type) { photoType = type; }
+
+
+    /// Utility: returns "FileAs" property value.
+    wstring& getName();
     
 };
 /** @} */

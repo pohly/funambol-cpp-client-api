@@ -212,6 +212,13 @@ public:
      */
     WCHAR* getVObjectPropertyValue(VObject* vo, const WCHAR* propertyName);
 
+
+    /**
+     * Util function that returns the name of the item, usually the "Subject" property.
+     * It should be implemented by derived classes to return a desired value.
+     * If property doesn't exist, returns "<NULL>"
+     */
+    virtual wstring& getName();
 };
 
 /** @} */

@@ -253,3 +253,10 @@ WCHAR* WinItem::getVObjectPropertyValue(VObject* vo, const WCHAR* propertyName) 
     }
     return propertyValue;
 }
+
+
+// Standard implementation: return "Subject" property value.
+wstring& WinItem::getName() {
+    bool exists = false;
+    return getPropertyRef(TEXT("Subject"), &exists);
+}

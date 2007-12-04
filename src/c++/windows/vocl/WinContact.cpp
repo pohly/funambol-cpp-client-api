@@ -821,3 +821,10 @@ bool WinContact::checkVCardTypeAndVersion(VObject* vo) {
     }
     return true;
 }
+
+
+
+wstring& WinContact::getName() {
+    bool exists = false;
+    return getPropertyRef(TEXT("FileAs"), &exists);
+}
