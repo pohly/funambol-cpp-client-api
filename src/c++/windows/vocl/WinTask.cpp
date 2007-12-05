@@ -416,7 +416,8 @@ int WinTask::parse(const wstring dataString) {
     // RRULE -> Recurrence pattern
     // Fill recPattern propertyMap.
     //
-    if(element = getVObjectPropertyValue(vo, L"RRULE")) {
+    if ( (element = getVObjectPropertyValue(vo, L"RRULE")) && 
+         (wcslen(element) > 0) ) {
         setProperty(L"IsRecurring", L"1");
         recPattern.setStartDate(startDate);
         recPattern.parse(element);

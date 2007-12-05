@@ -478,7 +478,8 @@ int WinEvent::parse(const wstring dataString) {
     }
 
 
-    if(element = getVObjectPropertyValue(vo, L"RRULE")) {
+    if ( (element = getVObjectPropertyValue(vo, L"RRULE")) && 
+         (wcslen(element) > 0) ) {
         setProperty(L"IsRecurring", L"1");
 
         // RRULE -> Recurrence pattern

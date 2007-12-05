@@ -214,6 +214,10 @@ int WinRecurrence::parse(const wstring dataString) {
     int weekOfMonth = -1;
     int monthOfYear = -1;
 
+    if (!token) {
+        goto error;
+    }
+
 
     //
     // First token will be: "D|W|MP|MD|YM|YD<interval>"
