@@ -54,7 +54,7 @@ using namespace std;
 // Versions supported:
 #define VCARD_VERSION                       TEXT("2.1")
 #define VCALENDAR_VERSION                   TEXT("1.0")
-#define VNOTE_VERSION                       TEXT("1.0")
+#define VNOTE_VERSION                       TEXT("1.1")
 #define SIF_VERSION                         TEXT("1.0")
 
 
