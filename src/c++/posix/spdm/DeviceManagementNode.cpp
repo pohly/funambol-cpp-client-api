@@ -81,7 +81,7 @@ DeviceManagementNode::~DeviceManagementNode() {
         update(FALSE);
     }
     delete lines;
-    if (cwdfd) {
+    if (cwdfd > 0) {
         close(cwdfd);
     }
 }
