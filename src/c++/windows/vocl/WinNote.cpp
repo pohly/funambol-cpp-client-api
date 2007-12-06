@@ -41,6 +41,20 @@
 using namespace std;
 
 
+/**
+ * Following are the possible values for WinNote property "X-FUNAMBOL-COLOR".
+ * @see enum WinNoteColor
+ */
+static WCHAR* colorName[] = 
+{
+	{L"BLUE"   },
+	{L"GREEN"  },
+	{L"PINK"   },
+	{L"YELLOW" },
+	{L"WHITE"  },
+    {NULL}
+};
+
 
 // Constructor
 WinNote::WinNote() {
@@ -65,18 +79,100 @@ wstring& WinNote::toString() {
 
     vNote = L"";
 
-    //..... todo
+    //
+    // Conversion: WinNote -> vObject.
+    // -------------------------------
+    //
+    VObject* vo = new VObject();
+    VProperty* vp  = NULL;
+    wstring element;
+
+    vp = new VProperty(TEXT("BEGIN"), TEXT("VNOTE"));
+    vo->addProperty(vp);
+    delete vp; vp = NULL;
+
+    vp = new VProperty(TEXT("VERSION"), VNOTE_VERSION);
+    vo->addProperty(vp);
+    delete vp; vp = NULL;
+
+
+    // Folder path.
+    if (getProperty(L"Folder", element)) {
+        vp = new VProperty(L"X-FUNAMBOL-FOLDER");
+        vp->addValue(element.c_str());
+        vo->addProperty(vp);
+        delete vp; vp = NULL;
+    }
+
+    if (getProperty(L"Subject", element)) {
+        vp = new VProperty(TEXT("SUMMARY"), element.c_str());
+        vo->addProperty(vp);
+        delete vp; vp = NULL;
+    }
+    if (getProperty(L"Body", element)) {
+        vp = new VProperty(TEXT("BODY"), element.c_str());
+        vo->addProperty(vp);
+        delete vp; vp = NULL;
+    }
+    if (getProperty(L"Categories", element)) {
+        vp = new VProperty(TEXT("CATEGORIES"), element.c_str());
+        vo->addProperty(vp);
+        delete vp; vp = NULL;
+    }
+
+
+    //
+    // ---- Other Funambol defined properties ----
+    // Support for other fields that don't have a
+    // specific correspondence in vCalendar.
+    if (getProperty(L"Color", element)) {
+        long color = _wtoi(element.c_str());
+        vp = new VProperty(TEXT("X-FUNAMBOL-COLOR"));
+
+        if (color < 0 || color >= NUM_NOTE_COLOR) {
+            color = 1;  // Default = yellow.
+        }
+        vp->addValue(colorName[color]);
+
+        vo->addProperty(vp);
+        delete vp; vp = NULL;
+    }
+    if (getProperty(L"Height", element)) {
+        vp = new VProperty(TEXT("X-FUNAMBOL-HEIGHT"), element.c_str());
+        vo->addProperty(vp);
+        delete vp; vp = NULL;
+    }
+    if (getProperty(L"Width", element)) {
+        vp = new VProperty(TEXT("X-FUNAMBOL-WIDTH"), element.c_str());
+        vo->addProperty(vp);
+        delete vp; vp = NULL;
+    }
+    if (getProperty(L"Left", element)) {
+        vp = new VProperty(TEXT("X-FUNAMBOL-LEFT"), element.c_str());
+        vo->addProperty(vp);
+        delete vp; vp = NULL;
+    }
+    if (getProperty(L"Top", element)) {
+        vp = new VProperty(TEXT("X-FUNAMBOL-TOP"), element.c_str());
+        vo->addProperty(vp);
+        delete vp; vp = NULL;
+    }
+
+
+    vp = new VProperty(TEXT("END"), TEXT("VNOTE"));
+    vo->addProperty(vp);
+    delete vp; vp = NULL;
 
 
     //
     // Format the vNote.
     // -----------------
     //
-    //WCHAR* tmp = vo->toString();
-    //if (tmp) {
-    //    vNote = tmp;
-    //    delete [] tmp;
-    //}
+    WCHAR* tmp = vo->toString();
+    if (tmp) {
+        vNote = tmp;
+        delete [] tmp;
+    }
     return vNote;
 }
 
@@ -114,9 +210,48 @@ int WinNote::parse(const wstring dataString) {
     // Note: properties found are added to the propertyMap, so that the 
     //       map will contain only parsed properties after this process.
     //
+    if (element = getVObjectPropertyValue(vo, L"SUMMARY")) {
+        setProperty(L"Subject", element);
+    }
+    if (element = getVObjectPropertyValue(vo, L"BODY")) {
+        setProperty(L"Body", element);
+    }
+    if (element = getVObjectPropertyValue(vo, L"CATEGORIES")) {
+        setProperty(L"Categories", element);
+    }
+    if (element = getVObjectPropertyValue(vo, L"X-FUNAMBOL-FOLDER")) {
+        setProperty(L"Folder", element);
+    }
 
-    //.... todo
 
+    //
+    // ---- Other Funambol defined properties ----
+    // Support for other fields that don't have a
+    // specific correspondence in vNote.
+    if (element = getVObjectPropertyValue(vo, L"X-FUNAMBOL-COLOR")) {
+        WCHAR tmp[10];
+        int i=0;
+        for (i=0; i<NUM_NOTE_COLOR; i++) {
+            if (!wcscmp(colorName[i], element)) { break; }
+        }
+        if (i == NUM_NOTE_COLOR) { 
+            i = 1;      // Default = yellow
+        }
+        wsprintf(tmp, TEXT("%i"), i);
+        setProperty(L"Color", tmp);
+    }
+    if (element = getVObjectPropertyValue(vo, L"X-FUNAMBOL-HEIGHT")) {
+        setProperty(L"Height", element);
+    }
+    if (element = getVObjectPropertyValue(vo, L"X-FUNAMBOL-WIDTH")) {
+        setProperty(L"Width", element);
+    }
+    if (element = getVObjectPropertyValue(vo, L"X-FUNAMBOL-LEFT")) {
+        setProperty(L"Left", element);
+    }
+    if (element = getVObjectPropertyValue(vo, L"X-FUNAMBOL-TOP")) {
+        setProperty(L"Top", element);
+    }
 
     return 0;
 }
