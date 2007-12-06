@@ -1,3 +1,6 @@
+2007-12-06
+    - toccy: windows/vocl/WinNote: added parser and formatter for vNote 1.1
+
 2007-11-28
   - Changed headers of source files (AGPL)
 
