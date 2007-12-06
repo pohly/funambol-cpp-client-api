@@ -87,6 +87,19 @@ enum WinRecurrenceType
 };
 
 
+/**
+ * This is defined in MS Outlook libraries for note property "Color".
+ */
+enum WinNoteColor
+{
+    winBlue   = 0,
+    winGreen  = 1,
+    winPink   = 2,
+    winYellow = 3,
+    winWhite  = 4,
+    NUM_NOTE_COLOR
+};
+
 
 
 /** @} */
