@@ -260,6 +260,16 @@ wstring& WinTask::toString() {
         vo->addProperty(vp);
         delete vp; vp = NULL;
     }
+    if (getProperty(L"ReminderOptions", element)) {
+        vp = new VProperty(TEXT("X-FUNAMBOL-AALARMOPTIONS"), element.c_str());
+        vo->addProperty(vp);
+        delete vp; vp = NULL;
+    }
+    if (getProperty(TEXT("TeamTask"), element)) {
+        vp = new VProperty(TEXT("X-FUNAMBOL-TEAMTASK"), element.c_str());
+        vo->addProperty(vp);
+        delete vp; vp = NULL;
+    }
     if (getProperty(TEXT("TotalWork"), element)) {
         vp = new VProperty(TEXT("X-FUNAMBOL-TOTALWORK"), element.c_str());
         vo->addProperty(vp);
@@ -445,10 +455,15 @@ int WinTask::parse(const wstring dataString) {
     if (element = getVObjectPropertyValue(vo, TEXT("X-FUNAMBOL-MILEAGE"))) {
         setProperty(TEXT("Mileage"), element);
     }
+    if(element = getVObjectPropertyValue(vo, L"X-FUNAMBOL-AALARMOPTIONS")) {
+        setProperty(L"ReminderOptions", element);
+    }
+    if (element = getVObjectPropertyValue(vo, TEXT("X-FUNAMBOL-TEAMTASK"))) {
+        setProperty(TEXT("TeamTask"), element);
+    }
     if (element = getVObjectPropertyValue(vo, TEXT("X-FUNAMBOL-TOTALWORK"))) {
         setProperty(TEXT("TotalWork"), element);
     }
-
 
     return 0;
 }
