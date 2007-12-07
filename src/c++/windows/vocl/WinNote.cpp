@@ -137,26 +137,30 @@ wstring& WinNote::toString() {
         vo->addProperty(vp);
         delete vp; vp = NULL;
     }
-    if (getProperty(L"Height", element)) {
-        vp = new VProperty(TEXT("X-FUNAMBOL-HEIGHT"), element.c_str());
-        vo->addProperty(vp);
-        delete vp; vp = NULL;
-    }
-    if (getProperty(L"Width", element)) {
-        vp = new VProperty(TEXT("X-FUNAMBOL-WIDTH"), element.c_str());
-        vo->addProperty(vp);
-        delete vp; vp = NULL;
+
+
+    bool found = false;
+    vp = new VProperty(TEXT("X-FUNAMBOL-POSITION"));
+    if (getProperty(L"Top", element)) {
+        found = true;
+        vp->addValue(element.c_str());
     }
     if (getProperty(L"Left", element)) {
-        vp = new VProperty(TEXT("X-FUNAMBOL-LEFT"), element.c_str());
-        vo->addProperty(vp);
-        delete vp; vp = NULL;
+        found = true;
+        vp->addValue(element.c_str());
     }
-    if (getProperty(L"Top", element)) {
-        vp = new VProperty(TEXT("X-FUNAMBOL-TOP"), element.c_str());
-        vo->addProperty(vp);
-        delete vp; vp = NULL;
+    if (getProperty(L"Height", element)) {
+        found = true;
+        vp->addValue(element.c_str());
     }
+    if (getProperty(L"Width", element)) {
+        found = true;
+        vp->addValue(element.c_str());
+    }
+    if (found) {
+        vo->addProperty(vp);
+    }
+    delete vp; vp = NULL;
 
 
     vp = new VProperty(TEXT("END"), TEXT("VNOTE"));
@@ -240,17 +244,17 @@ int WinNote::parse(const wstring dataString) {
         wsprintf(tmp, TEXT("%i"), i);
         setProperty(L"Color", tmp);
     }
-    if (element = getVObjectPropertyValue(vo, L"X-FUNAMBOL-HEIGHT")) {
-        setProperty(L"Height", element);
-    }
-    if (element = getVObjectPropertyValue(vo, L"X-FUNAMBOL-WIDTH")) {
-        setProperty(L"Width", element);
-    }
-    if (element = getVObjectPropertyValue(vo, L"X-FUNAMBOL-LEFT")) {
-        setProperty(L"Left", element);
-    }
-    if (element = getVObjectPropertyValue(vo, L"X-FUNAMBOL-TOP")) {
-        setProperty(L"Top", element);
+
+    if (element = getVObjectPropertyValue(vo, L"X-FUNAMBOL-POSITION")) {
+        VProperty* vp = vo->getProperty(TEXT("X-FUNAMBOL-POSITION"));
+        element = vp->getPropComponent(1);  
+        if (element && wcslen(element)>0)  { setProperty(L"Top", element);    }
+        element = vp->getPropComponent(2);  
+        if (element && wcslen(element)>0)  { setProperty(L"Left", element);   }
+        element = vp->getPropComponent(3);  
+        if (element && wcslen(element)>0)  { setProperty(L"Height", element); }
+        element = vp->getPropComponent(4);  
+        if (element && wcslen(element)>0)  { setProperty(L"Width", element);  }
     }
 
     return 0;
