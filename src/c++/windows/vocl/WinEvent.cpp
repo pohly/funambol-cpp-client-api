@@ -271,6 +271,11 @@ wstring& WinEvent::toString() {
     // ---- Other Funambol defined properties ----
     // Support for other fields that don't have a
     // specific correspondence in vCalendar.
+    if (getProperty(TEXT("BillingInformation"), element)) {
+        vp = new VProperty(TEXT("X-FUNAMBOL-BILLINGINFO"), element.c_str());
+        vo->addProperty(vp);
+        delete vp; vp = NULL;
+    }
     if (getProperty(L"Companies", element)) {
         vp = new VProperty(TEXT("X-FUNAMBOL-COMPANIES"), element.c_str());
         vo->addProperty(vp);
@@ -278,6 +283,16 @@ wstring& WinEvent::toString() {
     }
     if (getProperty(L"Mileage", element)) {
         vp = new VProperty(TEXT("X-FUNAMBOL-MILEAGE"), element.c_str());
+        vo->addProperty(vp);
+        delete vp; vp = NULL;
+    }
+    if (getProperty(L"NoAging", element)) {
+        vp = new VProperty(TEXT("X-FUNAMBOL-NOAGING"), element.c_str());
+        vo->addProperty(vp);
+        delete vp; vp = NULL;
+    }
+    if (getProperty(L"ReminderOptions", element)) {
+        vp = new VProperty(TEXT("X-FUNAMBOL-AALARMOPTIONS"), element.c_str());
         vo->addProperty(vp);
         delete vp; vp = NULL;
     }
@@ -519,13 +534,21 @@ int WinEvent::parse(const wstring dataString) {
     // ---- Other Funambol defined properties ----
     // Support for other fields that don't have a
     // specific correspondence in vCalendar.
+    if (element = getVObjectPropertyValue(vo, L"X-FUNAMBOL-BILLINGINFO")) {
+        setProperty(TEXT("BillingInformation"), element);
+    }
     if(element = getVObjectPropertyValue(vo, L"X-FUNAMBOL-COMPANIES")) {
         setProperty(L"Companies", element);
     }
     if(element = getVObjectPropertyValue(vo, L"X-FUNAMBOL-MILEAGE")) {
         setProperty(L"Mileage", element);
     }
-
+    if(element = getVObjectPropertyValue(vo, L"X-FUNAMBOL-NOAGING")) {
+        setProperty(L"NoAging", element);
+    }
+    if(element = getVObjectPropertyValue(vo, L"X-FUNAMBOL-AALARMOPTIONS")) {
+        setProperty(L"ReminderOptions", element);
+    }
 
     return 0;
 }
