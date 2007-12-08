@@ -124,11 +124,13 @@ sub Normalize {
     s/^[^:\n]*:;*\n//mg;
 
     # use separate TYPE= fields
-    while( s/^(\w*)([^:\n]*);TYPE=(\w*),(\w*)/$1$2;TYPE=$3;TYPE=$4/mg ) {}
+    while( s/^(\w*[^:\n]*);TYPE=(\w*),(\w*)/$1;TYPE=$2;TYPE=$3/mg ) {}
 
-    # replace parameters with a sorted parameter list with everything in upper
-    # case (in vCard 3.0 parameters are case-insensitive)
-    s!^([^;:\n]*);(.*?):!$1 . ";" . uppercase(join(';',sort(split(/;/, $2)))) . ":"!meg;
+    # make TYPE uppercase (in vCard 3.0 at least those parameters are case-insensitive)
+    while( s/^(\w*[^:\n]*);TYPE=(\w*?[a-z]\w*?)([;:])/ $1 . ";TYPE=" . uppercase($2) . $3 /mge ) {}
+
+    # replace parameters with a sorted parameter list
+    s!^([^;:\n]*);(.*?):!$1 . ";" . join(';',sort(split(/;/, $2))) . ":"!meg;
 
     # Map non-standard ADR;TYPE=OTHER to PARCEL, just like SyncEvolution does
     s/^ADR;TYPE=OTHER/ADR;TYPE=PARCEL/mg;
