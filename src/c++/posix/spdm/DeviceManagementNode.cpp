@@ -151,7 +151,9 @@ void DeviceManagementNode::update(BOOL read) {
             if (file) {
                 while (fgets(buffer, sizeof(buffer), file)) {
                     char *eol = strchr(buffer, '\n');
-                    *eol = 0;
+                    if (eol) {
+                        *eol = 0;
+                    }
                     line newline(buffer);
                     lines->add(newline);
                 }
