@@ -174,6 +174,10 @@ sub Normalize {
     # remove optional fields
     s/^(METHOD|X-WSS-[A-Z]*):.*\r?\n?//gm;
 
+    # trailing line break(s) in a DESCRIPTION may or may not be
+    # removed or added by servers
+    s/^DESCRIPTION:(.*?)(\\n)+$/DESCRIPTION:$1/gm;
+
     if ($scheduleworld || $egroupware || $synthesis || $addressbook || $funambol) {
       # does not preserve X-EVOLUTION-UI-SLOT=
       s/^(\w+)([^:\n]*);X-EVOLUTION-UI-SLOT=\d+/$1$2/mg;
