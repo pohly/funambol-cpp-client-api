@@ -74,7 +74,7 @@ BOOL EstablishConnection() {
     }
 #endif
     else {
-        LOG.debug("Not connected: try to connect...");
+        LOG.debug("Not connected (status = 0x%02x): try to connect...", pdwStatus);
         //We are not connected, so lets try:
         //The CONNECTIONINFO is the structure that
         //tells Connection Manager how we want
