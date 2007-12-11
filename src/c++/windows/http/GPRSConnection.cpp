@@ -74,7 +74,7 @@ BOOL EstablishConnection() {
     }
 #endif
     else {
-        LOG.debug("Not connected: try to connect...");
+        LOG.debug("Not connected (status = 0x%02x): try to connect...", pdwStatus);
         //We are not connected, so lets try:
         //The CONNECTIONINFO is the structure that
         //tells Connection Manager how we want
@@ -98,7 +98,8 @@ BOOL EstablishConnection() {
         if (ConnMgrEstablishConnection(&sConInfo,&phWebConnection) == S_OK) {
             LOG.debug("Start internet connection process...");
             //We start successfully process!
-            for (unsigned int k = 0; k < 6; k++) {
+            int maxRetry = 5;
+            for (int k = 0; k <= maxRetry; k++) {
                 ConnMgrConnectionStatus(phWebConnection,&pdwStatus);
 
                 if (pdwStatus == CONNMGR_STATUS_CONNECTED) {
@@ -117,6 +118,7 @@ BOOL EstablishConnection() {
                     ConnMgrConnectionStatus(phWebConnection,&pdwStatus);
                     if (pdwStatus == CONNMGR_STATUS_WAITINGCONNECTION) {
                         // it is possible to do something...
+                        maxRetry = 10;
                     }
 
                     if (pdwStatus == CONNMGR_STATUS_CONNECTIONCANCELED || pdwStatus == CONNMGR_STATUS_WAITINGCONNECTIONABORT) {
@@ -125,12 +127,12 @@ BOOL EstablishConnection() {
                     }
                 }
             }
-            LOG.debug("Internet connection not succeded after connection process");
+            LOG.error("Internet connection not succeded after connection process (status = 0x%02x)", pdwStatus);
             return FALSE;
         }
         else {
             //Connection failed!
-            LOG.info("Internet connection failed.");
+            LOG.error("Internet connection failed.");
             return FALSE;
 
         }
