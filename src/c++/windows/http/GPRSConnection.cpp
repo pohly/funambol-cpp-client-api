@@ -102,7 +102,7 @@ BOOL EstablishConnection() {
                 ConnMgrConnectionStatus(phWebConnection,&pdwStatus);
 
                 if (pdwStatus == CONNMGR_STATUS_CONNECTED) {
-                    LOG.info("Internet connection succesfully completed.");
+                    LOG.debug("Internet connection succesfully completed.");
                     return TRUE;
 
                 }
