@@ -237,6 +237,9 @@ int EmailData::parse(const char *msg, size_t len)
                 if (extMailData->attachName && extMailData->attachSize != 0) {
                     remainingAttachments->add(*extMailData);
                     isMailPartial = true;
+                } else {
+                    setRemainingAttachNumber(getRemainingAttachNumber() == 0 ? 0 
+                        : (getRemainingAttachNumber() - 1));
                 }
                 delete extMailData;
                 extMailData = NULL;
