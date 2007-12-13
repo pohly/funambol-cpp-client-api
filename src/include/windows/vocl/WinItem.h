@@ -114,6 +114,9 @@ public:
     /// Returns the size of propertyMap;
     int getPropertyMapSize();
 
+    /// Returns a reference to the internal propertyMap.
+    map<wstring,wstring>& getPropertyMap();
+
 
     /**
      * Sets a property value of name 'propertyName'.

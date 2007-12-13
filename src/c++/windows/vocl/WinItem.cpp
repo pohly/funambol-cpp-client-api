@@ -192,7 +192,9 @@ bool WinItem::getIntProperty(const wstring propertyName, int* intValue) {
 
 
 
-
+map<wstring,wstring>& WinItem::getPropertyMap() {
+    return propertyMap;
+}
 
 int WinItem::getPropertyMapSize() {
     return propertyMap.size();
