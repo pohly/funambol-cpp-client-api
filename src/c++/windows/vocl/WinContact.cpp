@@ -661,13 +661,22 @@ int WinContact::parse(const wstring dataString) {
                 }
                 else {
 				    setProperty(L"Email2Address", element);
+                    // TODO: check the parameter value (not used now, always SMTP)
+                    if (wcslen(element) > 0) { setProperty(L"Email2AddressType", L"SMTP"); }
+                    else                     { setProperty(L"Email2AddressType", L""); }
                 }
 			}
 			else if (vp->containsParameter(L"WORK")) {
 				setProperty(L"Email3Address", element);
+                // TODO: check the parameter value (not used now, always SMTP)
+                if (wcslen(element) > 0) { setProperty(L"Email3AddressType", L"SMTP"); }
+                else                     { setProperty(L"Email3AddressType", L""); }
 			}
             else {
 				setProperty(L"Email1Address", element);
+                // TODO: check the parameter value (not used now, always SMTP)
+                if (wcslen(element) > 0) { setProperty(L"Email1AddressType", L"SMTP"); }
+                else                     { setProperty(L"Email1AddressType", L""); }
             }
 		}
         else if(!wcscmp(name, L"FN")) {
@@ -682,7 +691,7 @@ int WinContact::parse(const wstring dataString) {
 		else if(!wcscmp(name, L"ORG")) {
             if(element = vp->getPropComponent(1))  setProperty(L"CompanyName",    element);
 			if(element = vp->getPropComponent(2))  setProperty(L"Department",     element);
-            if(element = vp->getPropComponent(2))  setProperty(L"OfficeLocation", element);
+            if(element = vp->getPropComponent(3))  setProperty(L"OfficeLocation", element);
 		}
         else if(!wcscmp(name, L"ROLE")) {
 			setProperty(L"Profession", element);
@@ -743,6 +752,9 @@ int WinContact::parse(const wstring dataString) {
             }
             else if(vp->containsParameter(L"X-FUNAMBOL-RADIO")) {
 			    setProperty(L"RadioTelephoneNumber", element);
+            }
+            else if(vp->containsParameter(L"X-FUNAMBOL-TELEX")) {
+			    setProperty(L"TelexNumber", element);
             }
             else {      // default, would be "else if (vp->containsParameter(L"VOICE"))"
 			    setProperty(L"OtherTelephoneNumber", element);
