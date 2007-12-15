@@ -606,6 +606,46 @@ void LocalTests::testChanges() {
     CPPUNIT_ASSERT( !wcscmp( item->getKey(), updatedItem->getKey() ) );
     SOURCE_ASSERT_EQUAL(source.get(), 0, source->endSync());
     CPPUNIT_ASSERT_NO_THROW(source.reset());
+
+    // start anew, then create and update an item -> should only be listed as new
+    // or updated, but not both
+    deleteAll(createSourceA);
+    SOURCE_ASSERT_NO_FAILURE(source.get(), source.reset(createSourceB()));
+    SOURCE_ASSERT_EQUAL(source.get(), 0, source->beginSync());
+    testSimpleInsert();
+    update(createSourceA, config.updateItem);
+    SOURCE_ASSERT_NO_FAILURE(source.get(), source.reset(createSourceB()));
+    SOURCE_ASSERT_EQUAL(source.get(), 0, source->beginSync());
+    SOURCE_ASSERT_EQUAL(source.get(), 1, countItems(source.get()));
+    SOURCE_ASSERT_EQUAL(source.get(), 1, countNewItems(source.get()) + countUpdatedItems(source.get()));
+    SOURCE_ASSERT_EQUAL(source.get(), 0, countDeletedItems(source.get()));
+
+    // start anew, then create, delete and recreate an item -> should only be listed as new or updated,
+    // even if (as for calendar with UID) the same LUID gets reused
+    deleteAll(createSourceA);
+    SOURCE_ASSERT_NO_FAILURE(source.get(), source.reset(createSourceB()));
+    testSimpleInsert();
+    deleteAll(createSourceA);
+    testSimpleInsert();
+    SOURCE_ASSERT_NO_FAILURE(source.get(), source.reset(createSourceB()));
+    SOURCE_ASSERT_EQUAL(source.get(), 0, source->beginSync());
+    SOURCE_ASSERT_EQUAL(source.get(), 1, countItems(source.get()));
+    SOURCE_ASSERT_EQUAL(source.get(), 1, countNewItems(source.get()) + countUpdatedItems(source.get()));
+    if (countDeletedItems(source.get()) == 1) {
+        // It's not nice, but acceptable to send the LUID of a deleted item to a
+        // server which has never seen that LUID. The LUID must not be the same as
+        // the one we list as new or updated, though.
+        SyncItem *deleted = source->getFirstDeletedItem();
+        CPPUNIT_ASSERT(deleted);
+        SyncItem *new_or_updated = source->getFirstNewItem();
+        if (!new_or_updated) {
+            new_or_updated = source->getFirstUpdatedItem();
+        }
+        CPPUNIT_ASSERT(new_or_updated);
+        CPPUNIT_ASSERT(strcmp(deleted->getKey(), new_or_updated->getKey()));
+    } else {
+        SOURCE_ASSERT_EQUAL(source.get(), 0, countDeletedItems(source.get()));
+    }
 }
 
 // clean database, import file, then export again and compare
@@ -1470,7 +1510,7 @@ void SyncTests::testManyItems() {
     }
 
     // send data to server
-    sync(SYNC_TWO_WAY, ".send", CheckSyncReport(0,0,0, -1,0,0));
+    sync(SYNC_TWO_WAY, ".send", CheckSyncReport(0,0,0, -1,0,0), 64 * 1024, 64 * 1024, true);
 
     // ensure that client has the same data, ignoring data conversion
     // issues (those are covered by testItems())
@@ -1480,7 +1520,7 @@ void SyncTests::testManyItems() {
     accessClientB->refreshClient();
 
     // slow sync now should not change anything
-    sync(SYNC_SLOW, ".twinning");
+    sync(SYNC_SLOW, ".twinning", CheckSyncReport(-1,-1,-1, -1,-1,-1), 64 * 1024, 64 * 1024, true);
 
     // compare
     compareDatabases();
