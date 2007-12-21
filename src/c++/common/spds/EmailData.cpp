@@ -189,8 +189,8 @@ int EmailData::parse(const char *msg, size_t len)
     // find the Ext stuffs
     if (end != StringBuffer::npos) {
         unsigned int pos = end;
+        unsigned int previous = end;
         start = 0, end = 0;
-        unsigned int previous = 0;
         char* ext = NULL;
 
         // for try
@@ -237,6 +237,9 @@ int EmailData::parse(const char *msg, size_t len)
                 if (extMailData->attachName && extMailData->attachSize != 0) {
                     remainingAttachments->add(*extMailData);
                     isMailPartial = true;
+                } else {
+                    setRemainingAttachNumber(getRemainingAttachNumber() == 0 ? 0 
+                        : (getRemainingAttachNumber() - 1));
                 }
                 delete extMailData;
                 extMailData = NULL;

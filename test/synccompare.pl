@@ -35,6 +35,36 @@
 # feasible for technical reasons, the Appropriate Legal Notices must display
 # the words "Powered by Funambol".
 #
+#
+#
+# Usage: <file>
+#        <left file> <right file>
+# Either normalizes a file or compares two of them in a side-by-side
+# diff.
+#
+# Checks environment variables:
+#
+# CLIENT_TEST_SERVER=funambol|scheduleworld|egroupware|synthesis
+#       Enables code which simplifies the text files just like
+#       certain well-known servers do. This is useful for testing
+#       to ignore the data loss introduced by these servers or (for
+#       users) to simulate the effect of these servers on their data.
+#
+# CLIENT_TEST_CLIENT=evolution|addressbook (Mac OS X/iPhone)
+#       Same as for servers this replicates the effect of storing
+#       data in the clients.
+#
+# CLIENT_TEST_LEFT_NAME="before sync"
+# CLIENT_TEST_RIGHT_NAME="after sync"
+# CLIENT_TEST_REMOVED="removed during sync"
+# CLIENT_TEST_ADDED="added during sync"
+#       Setting these variables changes the default legend
+#       print above the left and right file during a
+#       comparison.
+#
+# CLIENT_TEST_COMPARISON_FAILED=1
+#       Overrides the default error code when changes are found.
+
 
 use strict;
 use encoding 'utf8';
@@ -56,6 +86,12 @@ sub Usage {
   print "$0 vcards1.vcf vcards2.vcf\n";
   print "   compares the two files\n";
   print "Also works for iCalendar files.\n";
+}
+
+sub uppercase {
+  my $text = shift;
+  $text =~ tr/a-z/A-Z/;
+  return $text;
 }
 
 # parameters: file handle with input, width to use for reformatted lines
@@ -88,7 +124,10 @@ sub Normalize {
     s/^[^:\n]*:;*\n//mg;
 
     # use separate TYPE= fields
-    while( s/^(\w*)([^:\n]*);TYPE=(\w*),(\w*)/$1$2;TYPE=$3;TYPE=$4/mg ) {}
+    while( s/^(\w*[^:\n]*);TYPE=(\w*),(\w*)/$1;TYPE=$2;TYPE=$3/mg ) {}
+
+    # make TYPE uppercase (in vCard 3.0 at least those parameters are case-insensitive)
+    while( s/^(\w*[^:\n]*);TYPE=(\w*?[a-z]\w*?)([;:])/ $1 . ";TYPE=" . uppercase($2) . $3 /mge ) {}
 
     # replace parameters with a sorted parameter list
     s!^([^;:\n]*);(.*?):!$1 . ";" . join(';',sort(split(/;/, $2))) . ":"!meg;
@@ -135,7 +174,11 @@ sub Normalize {
     # remove optional fields
     s/^(METHOD|X-WSS-[A-Z]*):.*\r?\n?//gm;
 
-    if ($scheduleworld || $egroupware || $synthesis || $addressbook) {
+    # trailing line break(s) in a DESCRIPTION may or may not be
+    # removed or added by servers
+    s/^DESCRIPTION:(.*?)(\\n)+$/DESCRIPTION:$1/gm;
+
+    if ($scheduleworld || $egroupware || $synthesis || $addressbook || $funambol) {
       # does not preserve X-EVOLUTION-UI-SLOT=
       s/^(\w+)([^:\n]*);X-EVOLUTION-UI-SLOT=\d+/$1$2/mg;
     }
@@ -155,6 +198,11 @@ sub Normalize {
     if ($funambol) {
       # only preserves ORG "Company";"Department", but loses "Office"
       s/^ORG:([^;:\n]+)(;[^;:\n]*)(;[^\n]*)/ORG:$1$2/mg;
+    }
+
+    if ($funambol) {
+      # drops the second address line
+      s/^ADR(.*?):([^;]*?);[^;]*?;/ADR$1:$2;;/mg;
     }
 
     if ($addressbook) {
@@ -192,10 +240,14 @@ sub Normalize {
 
     if ($funambol) {
       # several properties are not preserved
-      s/^(FN|X-MOZILLA-HTML|PHOTO)(;[^:;\n]*)*:.*\r?\n?//gm;
+      s/^(CALURI|FBURL|FN|PHOTO|X-EVOLUTION-ANNIVERSARY|X-MOZILLA-HTML|X-EVOLUTION-FILE-AS|X-AIM|X-EVOLUTION-ASSISTANT|X-EVOLUTION-BLOG-URL|X-EVOLUTION-MANAGER|X-EVOLUTION-SPOUSE|X-EVOLUTION-VIDEO-URL|X-GROUPWISE|X-ICQ|X-YAHOO)(;[^:;\n]*)*:.*\r?\n?//gm;
 
       # quoted-printable line breaks are =0D=0A, not just single =0A
       s/(?<!=0D)=0A/=0D=0A/g;
+      # only three email addresses, fourth one from test case gets lost
+      s/^EMAIL:john.doe\@yet.another.world\n\r?//mg;
+      # this particular type is not preserved
+      s/ADR;TYPE=PARCEL:Test Box #3/ADR;TYPE=HOME:Test Box #3/;
     }
 
     if ($funambol || $egroupware) {
@@ -323,9 +375,13 @@ if($#ARGV > 1) {
   }
 
   if ($res) {
-    printf "%*s | %s\n", $singlewidth, "before sync", "after sync";
-    printf "%*s <\n", $singlewidth, "removed during sync";
-    printf "%*s > %s\n", $singlewidth, "", "added during sync";
+    printf "%*s | %s\n", $singlewidth,
+           ($ENV{CLIENT_TEST_LEFT_NAME} || "before sync"),
+           ($ENV{CLIENT_TEST_RIGHT_NAME} || "after sync");
+    printf "%*s <\n", $singlewidth,
+           ($ENV{CLIENT_TEST_REMOVED} || "removed during sync");
+    printf "%*s > %s\n", $singlewidth, "",
+           ($ENV{CLIENT_TEST_ADDED} || "added during sync");
     print "-" x $columns, "\n";
 
     # fix confusing output like:
@@ -408,7 +464,7 @@ if($#ARGV > 1) {
 
   # unlink($normal1);
   # unlink($normal2);
-  exit($res ? 1 : 0);
+  exit($res ? ((defined $ENV{CLIENT_TEST_COMPARISON_FAILED}) ? int($ENV{CLIENT_TEST_COMPARISON_FAILED}) : 1) : 0);
 } else {
   # normalize
   my $in;

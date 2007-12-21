@@ -48,7 +48,7 @@ Log LOG = Log(false);
 char logmsg[512];
 
 static FILE* logFile = NULL;
-static char logDir[512] = "\\";
+static WCHAR wlogDir[512] = TEXT("\\");
 static char logName[128] = LOG_NAME;
 static char logPath[256] = "\\" ;
 
@@ -57,19 +57,26 @@ Log::Log(BOOL resetLog, const char* path, const char* name) {
 
     setLogPath(path);
     setLogName(name);
+
+    // MUST use a wchar_t* logDir to manage correctly international chars.
+    // If using char* logDir and UTF-8, fopen() is not working correctly and
+    // will fail to open the log file. (with UTF-8... why?)
+    // So we use _wfopen() and a wchar_t* logDir.
+    char logDir[512];
     sprintf(logDir, "%s\\%s", logPath, logName);
+    WCHAR* tmp = toWideChar(logDir);
+    wcscpy(wlogDir, tmp);
+    delete [] tmp;
 
     //
     // Test to ensure the log file is writable (only if path is set)
     //
     if (path) {
-        logFile = fopen(logDir, "a+");
+        logFile = _wfopen(wlogDir, TEXT("a+"));
         if (logFile == NULL) {
-            char tmp[512];
-            sprintf(tmp, "Unable to write log file: \"%s\".\nPlease check your user's permissions.", logDir);
-            WCHAR* wtmp = toWideChar(tmp);
-            MessageBox(NULL, wtmp, TEXT("Funambol"), MB_SETFOREGROUND | MB_OK);
-            delete [] wtmp;
+            WCHAR tmp[512];
+            wsprintf(tmp, TEXT("Unable to write log file: \"%s\".\nPlease check your user's permissions."), wlogDir);
+            MessageBox(NULL, tmp, TEXT("Funambol"), MB_SETFOREGROUND | MB_OK);
         }
         else {
             fclose(logFile);
@@ -190,7 +197,7 @@ BOOL Log::isLoggable(LogLevel level) {
 void Log::printMessage(const char* level, const char* msg, va_list argList) {
 
 	char* currentTime = createCurrentTime(false);
-    logFile = fopen(logDir, "a+");
+    logFile = _wfopen(wlogDir, TEXT("a+"));
     if (logFile) {
 	    fprintf(logFile, "%s [%s] - ", currentTime, level);
         vfprintf(logFile, msg, argList);
@@ -204,7 +211,7 @@ void Log::reset(const char* title) {
     const char *t = (title) ? title : FUNAMBOL_HEADER;
 
     char* currentTime = createCurrentTime(true);
-    logFile = fopen(logDir, "w+");
+    logFile = _wfopen(wlogDir, TEXT("w+"));
     if (logFile) {
         fprintf(logFile, "%s - # %s\n\n", currentTime, t);
         fclose(logFile);
@@ -216,7 +223,7 @@ void Log::reset(const char* title) {
 size_t Log::getLogSize() {
     size_t ret = 0;
 
-    logFile = fopen(logDir, "r");
+    logFile = _wfopen(wlogDir, TEXT("r"));
     if (logFile) {
         ret = fgetsize(logFile);
         fclose(logFile);

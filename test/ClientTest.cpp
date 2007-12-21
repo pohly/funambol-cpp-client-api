@@ -352,12 +352,12 @@ void LocalTests::compareDatabases(const char *refFile, SyncSource &copy, bool ra
 }
 
 /**
- * insert artificial items, number of them determined by TEST_EVOLUTION_NUM_ITEMS
+ * insert artificial items, number of them determined by config.numItems
  * unless passed explicitly
  *
  * @param createSource    a factory for the sync source that is to be used
  * @param startIndex      IDs are generated starting with this value
- * @param numItems        number of items to be inserted if non-null, otherwise TEST_EVOLUTION_NUM_ITEMS is used
+ * @param numItems        number of items to be inserted if non-null, otherwise config.numItems is used
  * @param size            minimum size for new items
  * @return number of items inserted
  */
@@ -606,6 +606,46 @@ void LocalTests::testChanges() {
     CPPUNIT_ASSERT( !wcscmp( item->getKey(), updatedItem->getKey() ) );
     SOURCE_ASSERT_EQUAL(source.get(), 0, source->endSync());
     CPPUNIT_ASSERT_NO_THROW(source.reset());
+
+    // start anew, then create and update an item -> should only be listed as new
+    // or updated, but not both
+    deleteAll(createSourceA);
+    SOURCE_ASSERT_NO_FAILURE(source.get(), source.reset(createSourceB()));
+    SOURCE_ASSERT_EQUAL(source.get(), 0, source->beginSync());
+    testSimpleInsert();
+    update(createSourceA, config.updateItem);
+    SOURCE_ASSERT_NO_FAILURE(source.get(), source.reset(createSourceB()));
+    SOURCE_ASSERT_EQUAL(source.get(), 0, source->beginSync());
+    SOURCE_ASSERT_EQUAL(source.get(), 1, countItems(source.get()));
+    SOURCE_ASSERT_EQUAL(source.get(), 1, countNewItems(source.get()) + countUpdatedItems(source.get()));
+    SOURCE_ASSERT_EQUAL(source.get(), 0, countDeletedItems(source.get()));
+
+    // start anew, then create, delete and recreate an item -> should only be listed as new or updated,
+    // even if (as for calendar with UID) the same LUID gets reused
+    deleteAll(createSourceA);
+    SOURCE_ASSERT_NO_FAILURE(source.get(), source.reset(createSourceB()));
+    testSimpleInsert();
+    deleteAll(createSourceA);
+    testSimpleInsert();
+    SOURCE_ASSERT_NO_FAILURE(source.get(), source.reset(createSourceB()));
+    SOURCE_ASSERT_EQUAL(source.get(), 0, source->beginSync());
+    SOURCE_ASSERT_EQUAL(source.get(), 1, countItems(source.get()));
+    SOURCE_ASSERT_EQUAL(source.get(), 1, countNewItems(source.get()) + countUpdatedItems(source.get()));
+    if (countDeletedItems(source.get()) == 1) {
+        // It's not nice, but acceptable to send the LUID of a deleted item to a
+        // server which has never seen that LUID. The LUID must not be the same as
+        // the one we list as new or updated, though.
+        SyncItem *deleted = source->getFirstDeletedItem();
+        CPPUNIT_ASSERT(deleted);
+        SyncItem *new_or_updated = source->getFirstNewItem();
+        if (!new_or_updated) {
+            new_or_updated = source->getFirstUpdatedItem();
+        }
+        CPPUNIT_ASSERT(new_or_updated);
+        CPPUNIT_ASSERT(strcmp(deleted->getKey(), new_or_updated->getKey()));
+    } else {
+        SOURCE_ASSERT_EQUAL(source.get(), 0, countDeletedItems(source.get()));
+    }
 }
 
 // clean database, import file, then export again and compare
@@ -676,6 +716,7 @@ void LocalTests::testManyChanges() {
 
     // verify again
     SOURCE_ASSERT_NO_FAILURE(copy.get(), copy.reset(createSourceB()));
+    SOURCE_ASSERT_EQUAL(copy.get(), 0, copy->beginSync());
     SOURCE_ASSERT_EQUAL(copy.get(), 0, countItems(copy.get()));
     SOURCE_ASSERT_EQUAL(copy.get(), 0, countNewItems(copy.get()));
     SOURCE_ASSERT_EQUAL(copy.get(), 0, countUpdatedItems(copy.get()));
@@ -1461,14 +1502,15 @@ void SyncTests::testManyItems() {
     // clean server and client A
     deleteAll();
 
-    // import artificial data
+    // import artificial data: make them large to generate some
+    // real traffic and test buffer handling
     source_it it;
     for (it = sources.begin(); it != sources.end(); ++it) {
-        it->second->insertManyItems(it->second->createSourceA);
+        it->second->insertManyItems(it->second->createSourceA, 0, it->second->config.numItems, 2000);
     }
 
     // send data to server
-    sync(SYNC_TWO_WAY, ".send", CheckSyncReport(0,0,0, -1,0,0));
+    sync(SYNC_TWO_WAY, ".send", CheckSyncReport(0,0,0, -1,0,0), 64 * 1024, 64 * 1024, true);
 
     // ensure that client has the same data, ignoring data conversion
     // issues (those are covered by testItems())
@@ -1478,7 +1520,7 @@ void SyncTests::testManyItems() {
     accessClientB->refreshClient();
 
     // slow sync now should not change anything
-    sync(SYNC_SLOW, ".twinning");
+    sync(SYNC_SLOW, ".twinning", CheckSyncReport(-1,-1,-1, -1,-1,-1), 64 * 1024, 64 * 1024, true);
 
     // compare
     compareDatabases();
@@ -1776,6 +1818,8 @@ void ClientTest::postSync(int res, const std::string &logname)
 void ClientTest::getTestData(const char *type, Config &config)
 {
     memset(&config, 0, sizeof(config));
+    char *numitems = getenv("CLIENT_TEST_NUM_ITEMS");
+    config.numItems = numitems ? atoi(numitems) : 100;
 
     if (!strcmp(type, "vcard30")) {
         config.sourceName = "vcard30";
