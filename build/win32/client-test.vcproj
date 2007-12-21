@@ -382,20 +382,6 @@
 				Name="SyncML"
 				>
 				<File
-					RelativePath="..\..\test\testcases\DMmsg1.xml"
-					>
-					<FileConfiguration
-						Name="Debug|Win32"
-						>
-						<Tool
-							Name="VCCustomBuildTool"
-							Description="Copying $(InputDir)$(InputFileName)"
-							CommandLine="copy $(InputDir)$(InputFileName) $(TargetDir)"
-							Outputs="$(TargetDir)$(InputFileName)"
-						/>
-					</FileConfiguration>
-				</File>
-				<File
 					RelativePath="..\..\test\testcases\ex1.xml"
 					>
 					<FileConfiguration
