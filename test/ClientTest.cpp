@@ -642,7 +642,7 @@ void LocalTests::testChanges() {
             new_or_updated = source->getFirstUpdatedItem();
         }
         CPPUNIT_ASSERT(new_or_updated);
-        CPPUNIT_ASSERT(strcmp(deleted->getKey(), new_or_updated->getKey()));
+        CPPUNIT_ASSERT(wcscmp(deleted->getKey(), new_or_updated->getKey()));
     } else {
         SOURCE_ASSERT_EQUAL(source.get(), 0, countDeletedItems(source.get()));
     }
