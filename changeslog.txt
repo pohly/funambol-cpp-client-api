@@ -1,4 +1,7 @@
 2007-12-06
+    - toccy: merged differences from "b_v65"
+
+2007-12-06
     - toccy: windows/vocl/WinNote: added parser and formatter for vNote 1.1
 
 2007-11-28
