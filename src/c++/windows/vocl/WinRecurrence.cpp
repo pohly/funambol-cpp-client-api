@@ -46,12 +46,14 @@ using namespace std;
 WinRecurrence::WinRecurrence() {
     rrule = L"";
     startDate = 0;
+    useTimezone = false;
 }
 
 // Constructor: fills propertyMap parsing the passed RRULE
 WinRecurrence::WinRecurrence(const wstring dataString, const DATE date) {
     rrule = L"";
     startDate = date;
+    useTimezone = false;
     parse(dataString);
 }
 
@@ -432,4 +434,3 @@ finally:
     if (mOfYear) delete [] mOfYear;
     return ret;
 }
-

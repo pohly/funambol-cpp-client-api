@@ -63,6 +63,10 @@ protected:
     /// It's necessary to parse correctly the RRULE string
     DATE startDate;
 
+    /// true if the parent calendar has a timezone information, and uses it.
+    /// Recurring props are in local time if this flag is true.
+    bool useTimezone;
+
 
 public:
 
@@ -92,10 +96,16 @@ public:
 
 
     /// Returns the startDate (double format)
-    const DATE getStartDate()          { return startDate; }
+    const DATE getStartDate()          { return startDate;   }
 
     /// Sets the startDate (double format)
-    void setStartDate(const DATE date) { startDate = date; }
+    void setStartDate(const DATE date) { startDate = date;   }
+
+    /// Returns the 'useTimezone' flag value.
+    const bool hasTimezone()           { return useTimezone; }
+
+    /// Sets the 'useTimezone' flag to the given value.
+    void setUseTimezone(bool val)      { useTimezone = val;  } 
 
 };
 
