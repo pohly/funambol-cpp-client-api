@@ -51,6 +51,7 @@ typedef double DATE;
 
 #include "base/fscapi.h"
 #include <string>
+#include <list>
 
 
 void   doubleToStringTime(std::wstring& stringDate, const DATE doubleDate, bool onlyDate = false);
@@ -63,6 +64,65 @@ WCHAR* daysOfWeekToString(int l);
 int    stringToDaysOfWeek(WCHAR* in);
 int    getWeekDayFromDate(DATE date);
 bool   isWeekDay         (WCHAR* data);
+
+/**
+ * Client to Server.
+ * Returns the formatted date of the given year, from the passed timezone rule.
+ * SYSTEMTIME structure is used to store dates, but also to store a timezone rule.
+ * In the latter, the member 'wDay' is the # of week inside the month (values: 1-4),  
+ * '5' means "the last week". 'wYear' is = 0 to mean "every year".
+ * For example: wMonth=3, wDayOfWeek=0, wDay=2 -> means "the second Sunday of March".
+ * Given the tz rule and the desired year, we can extract the date rapresented
+ * by this rule, as a SYSTEMTIME, and then format it like a string "yyyyMMddThhmmss".
+ *
+ * @param year    the desired year to extract the date
+ * @param tzRule  the timezone rule, as a SYSTEMTIME structure
+ * @return        the date formatted like "yyyyMMddThhmmss"  (yyyy = year)
+ */
+std::wstring getDateFromTzRule(const int year, SYSTEMTIME tzRule);
+
+/** 
+ * Server to Client.
+ * Returns the timezone rule as a SYSTEMTIME, from a list of dates.
+ * The list of dates passed are referred to different years, so that
+ * analyzing them we can calculate the tz rule and store it in a SYSTEMTIME.
+ * SYSTEMTIME structure is used to store dates, but also to store a timezone rule.
+ * Usually only 1 date is enough to get the timezone rule 
+ * (e.g. date = 2008/10/5 -> tz rule = first Sunday of october).
+ * We need more dates to distinguish between the 4th and the last occurrence
+ * (e.g. date = 2008/10/26 -> is the 4th and also the last Sunday of october).
+ * 
+ * @param dates   list of dates for different years, in format "yyyyMMddThhmmss" (local time)
+ * @return        the timezone rule, as a SYSTEMTIME structure
+ */
+SYSTEMTIME getTzRuleFromDates(std::list<std::wstring>& dates);
+
+
+/**
+ * Returns a wstring with the given bias formatted like "+/-hhmm".
+ * Example: bias = 330 -> "-0530"
+ */
+std::wstring formatBias(const int bias);
+
+/**
+ * Parse a wide-char string containing bias, like "+0130" or "-08".
+ * Returns the bias as a signed integer (e.g. "+0230" -> -150)
+ */
+int parseBias(const WCHAR* data);
+
+/** 
+ *Returns true if the passed tz information are the same.
+ * Checks bias values and dates (names are ignored).
+ */
+bool isSameTimezone(const TIME_ZONE_INFORMATION* tz1, const TIME_ZONE_INFORMATION* tz2);
+
+/**
+ * Returns true if the passed systemtime are the same.
+ * Checks all properties, ignoring only seconds and milliseconds.
+ */
+bool isSameSystemtime(const SYSTEMTIME* st1, const SYSTEMTIME* st2);
+
+
 
 /** @} */
 /** @endcond */

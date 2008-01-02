@@ -264,3 +264,211 @@ bool isWeekDay(WCHAR* data) {
     }
     return ret;
 }
+
+
+wstring getDateFromTzRule(const int year, SYSTEMTIME tzRule) {
+
+    wstring out;
+    SYSTEMTIME stDate;
+
+    stDate.wYear         = year;
+    stDate.wMonth        = tzRule.wMonth;
+    stDate.wHour         = tzRule.wHour;
+    stDate.wMinute       = tzRule.wMinute;
+    stDate.wSecond       = tzRule.wSecond;
+    stDate.wMilliseconds = tzRule.wMilliseconds;
+
+
+    // Get the correct wDayOfWeek of the first day of month.
+    stDate.wDay = 1;
+    DATE firstDay = 0;
+    SYSTEMTIME stFirstDay;
+    SystemTimeToVariantTime(&stDate, &firstDay);
+    VariantTimeToSystemTime(firstDay, &stFirstDay);
+
+    // Offset > 0 between the first desired day, and the first day.
+    // (e.g. if looking for wednesday and first day is monday, offset = +2)
+    int offset = tzRule.wDayOfWeek - stFirstDay.wDayOfWeek;
+    if (offset < 0) {
+        offset += 7;
+    }
+
+    stDate.wDay = ((tzRule.wDay - 1) * 7) + 1;      // day is: [1, 8, 15, 22, 29]
+    stDate.wDay += offset;
+
+    // tzRule.wDay = 5 means 'the last'. Need safe checks.
+    if (tzRule.wDay == 5) {
+        if (stDate.wDay > 31) {
+            // overflow
+            stDate.wDay -= 7;
+        }
+        // If still after the last month, SystemTimeToVariantTime() will adjust to next month, the 1st
+        DATE tmpDay = 0;
+        SYSTEMTIME stTmpDay;
+        SystemTimeToVariantTime(&stDate, &tmpDay);
+        VariantTimeToSystemTime(tmpDay, &stTmpDay);
+        if (stTmpDay.wMonth != stDate.wMonth) {
+            // overflow
+            stDate.wDay -= 7;
+        }
+    }
+
+    // not necessary
+    //stDate.wDayOfWeek = tzRule.wDayOfWeek;
+
+    WCHAR date[20];
+    wsprintf(date, TEXT("%i%02i%02iT%02i%02i%02i"), stDate.wYear, stDate.wMonth, stDate.wDay, 
+                                                    stDate.wHour, stDate.wMinute, stDate.wSecond);
+    out = date;
+    return out;
+}
+
+
+SYSTEMTIME getTzRuleFromDates(list<wstring>& dates) {
+
+    SYSTEMTIME tzRule;
+    SYSTEMTIME stDate;
+    DATE date = NULL;
+    list<wstring>::iterator it;
+
+    if (dates.size() == 0) {
+        goto error;
+    }
+
+    //
+    // Get the SYSTEMTIME for the first date. 
+    // All properties are retrieved from the first date.
+    //
+    it = dates.begin();
+    stringTimeToDouble(*it, &date);
+    VariantTimeToSystemTime(date, &stDate);
+
+    // Fill tzRule structure.
+    tzRule.wYear         = 0;                       // every year
+    tzRule.wMonth        = stDate.wMonth;
+    tzRule.wDayOfWeek    = stDate.wDayOfWeek;
+    tzRule.wHour         = stDate.wHour;
+    tzRule.wMinute       = stDate.wMinute;
+    tzRule.wSecond       = stDate.wSecond;
+    tzRule.wMilliseconds = stDate.wMilliseconds;
+
+    tzRule.wDay = ((stDate.wDay - 1) / 7) + 1;      // # of week from day: [1-31] -> [1-5]
+
+    if (tzRule.wDay != 4) {
+        // we're sure it is correct, the first date is enough.
+        goto exit;
+    }
+
+
+    //
+    // If it's "the 4th week" (wDay=4), we have to check the other dates
+    // because it could be "the last week" (wDay=5).
+    //
+    it++;
+    while (it != dates.end()) {
+
+        // Get the SYSTEMTIME for the current date.
+        date = NULL;
+        stringTimeToDouble(*it, &date);
+        VariantTimeToSystemTime(date, &stDate);
+
+        int week = ((stDate.wDay - 1) / 7) + 1;     // # of week from day: [1-31] -> [1-5]
+
+        if (week == 5) {
+            // This year it's the 5th week, so the rule is "the last week"!
+            tzRule.wDay = 5;
+            goto exit;
+        }
+        it++;
+    }
+    goto exit;
+
+
+error:
+    LOG.error("Error creating Timezone rule from list of DAYLIGHT dates.");
+
+exit:
+    return tzRule;
+}
+
+
+
+wstring formatBias(const int bias) {
+
+    wstring out;
+    WCHAR tmp[6];
+
+    int hours   = bias / 60;
+    int minutes = bias % 60;
+    if (bias >= 0) { wsprintf(tmp, TEXT("-%02d%02d"), hours,   minutes); }
+    else           { wsprintf(tmp, TEXT("+%02d%02d"), -hours, -minutes); }
+
+    out = tmp;
+    return out;
+}
+
+
+int parseBias(const WCHAR* data) {
+
+    int bias    = 0;
+    int hours   = 0;
+    int minutes = 0;
+    int len = wcslen(data);
+
+    if (data && len>1) {
+        int sign  = 1;              // The sign of the bias (default "+1" if not found).
+        int start = 1;              // Starting position of the first digit.
+
+        if (iswdigit(data[0])) { 
+            start = 0;
+            sign = 1;
+        }
+        else if (data[0] == '-') {
+            start = 1;
+            sign = -1;
+        }
+
+        if (len-start < 3) {
+            // "+08"
+            swscanf(&data[start], L"%2d", &hours);
+        }
+        else {
+            // "+0800"
+            swscanf(&data[start], L"%2d%2d", &hours, &minutes);
+        }
+
+        bias = ((hours*60) + minutes) * (-sign);    // e.g. "+0130" -> -90
+    }
+
+    return bias;
+}
+
+
+bool isSameTimezone(const TIME_ZONE_INFORMATION* tz1, const TIME_ZONE_INFORMATION* tz2) {
+
+    if ( tz1->Bias         == tz2->Bias         &&
+         tz1->DaylightBias == tz2->DaylightBias &&
+         tz1->StandardBias == tz2->StandardBias &&
+         isSameSystemtime(&tz1->DaylightDate, &tz2->DaylightDate) && 
+         isSameSystemtime(&tz1->StandardDate, &tz2->StandardDate) ) {
+        return true;
+    }
+    else {
+        return false;
+    }
+}
+
+bool isSameSystemtime(const SYSTEMTIME* st1, const SYSTEMTIME* st2) {
+
+    if ( st1->wDay       == st2->wDay       &&
+         st1->wDayOfWeek == st2->wDayOfWeek &&
+         st1->wHour      == st2->wHour      &&
+         st1->wMinute    == st2->wMinute    &&
+         st1->wMonth     == st2->wMonth     &&
+         st1->wYear      == st2->wYear ) {
+        return true;
+    }
+    else {
+        return false;
+    }
+}
