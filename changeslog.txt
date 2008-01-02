@@ -1,3 +1,9 @@
+2008-01-02
+    - toccy: Added support for timezones, for vCalendar 1.0, under Windows branch (windows/vocl).
+             From Client to Server, recurring events are sent out with timezone informations 
+             if the Client fills the tzInfo structure.
+             From Server to Client, events without timezones are still accepted (like before).
+
 2007-12-21
     - toccy: merged differences from "b_v65"
 
