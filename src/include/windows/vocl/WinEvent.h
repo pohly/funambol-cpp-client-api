@@ -51,6 +51,8 @@ typedef list<wstring>               exceptionList;
 typedef exceptionList::iterator     exceptionsIterator;
 typedef list<WinRecipient>          recipientList;
 
+#define MAX_DAYLIGHT_PROPS          6      // Max 6 "DAYLIGHT" properties for infinite recurrences.
+
 
 /**
  * Rapresents an event object for Windows Clients.
@@ -67,9 +69,6 @@ private:
     /// The recurrence pattern object, containing recurring properties.
     WinRecurrence recPattern;
 
-    //bool isRecurring;
-    //bool isAllday;
-
     /**
      * Checks the productID and version of VObject passed for vCalendar.
      * - 'productID' MUST be "VCALENDAR"
@@ -79,6 +78,24 @@ private:
      * @return            true if productID is correct
      */
     bool checkVCalendarTypeAndVersion(VObject* vo);
+
+    /**
+     * Adds the timezone properties (TZ and DAYLIGHT) into the passed VObject. 
+     * Used from Client to Server. Example of formatted vProperties added:
+     *     TZ:-0800
+     *     DAYLIGHT:TRUE;-0900;20080406T020000;20081026T020000;Pacific Standard Time;Pacific Daylight Time
+     *     DAYLIGHT:TRUE;-0900;20090405T020000;20091025T020000;Pacific Standard Time;Pacific Daylight Time
+     * When using timezone properties, recurrence data is in local time.
+     */
+    void addTimezone(VObject* vo);
+
+    /**
+     * Parse the timezone properties (TZ and DAYLIGHT) from the passed VObject
+     * and fills the 'tzInfo' timezone structure. Used from Server to Client.
+     * When using timezone properties, recurrence data is expected in local time.
+     * @return  true if timezone properties found
+     */
+    bool parseTimezone(VObject* vo);
 
 
 protected:
@@ -90,6 +107,22 @@ protected:
 
     /// List of recipients (attendees) for this event.
     recipientList recipients;
+
+
+    /**
+     * The timezone structure for this event.
+     * It can be set/get using getTimezone() and setTimezone() methods.
+     * If the timezone is set, it will be formatted following vCalendar 1.0 specs
+     * when calling toString() method ("TZ" and "DAYLIGHT" properties). 
+     * @note Recurring properties will be in local time if timezone is used.
+     */
+    TIME_ZONE_INFORMATION tzInfo;
+
+    /// true if this event has a timezone information, and uses it.
+    bool useTimezone;
+
+    //bool isRecurring;
+    //bool isAllday;
 
 
 public:
@@ -133,6 +166,19 @@ public:
 
     /// Returns a pointer to the list (internally owned) of recipients.
     recipientList* getRecipients();
+
+
+    /**
+     * Returns a pointer to the timezone information for this event, NULL if
+     * timezone is not used (not set).
+     */
+    const TIME_ZONE_INFORMATION* getTimezone();
+
+    /// Copies the given timezone for this event. 'useTimezone' is set to true.
+    void setTimezone(const TIME_ZONE_INFORMATION* tz);
+
+    /// Returns true if this event has a timezone information, and uses it.
+    bool hasTimezone();
 
 
     /**

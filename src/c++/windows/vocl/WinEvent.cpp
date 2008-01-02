@@ -49,6 +49,7 @@ WinEvent::WinEvent() {
     excludeDate.clear();
     includeDate.clear();
     recipients.clear();
+    useTimezone = false;
 }
 
 // Constructor: fills propertyMap parsing the passed data
@@ -57,6 +58,7 @@ WinEvent::WinEvent(const wstring dataString) {
     excludeDate.clear();
     includeDate.clear();
     recipients.clear();
+    useTimezone = false;
 
     parse(dataString);
 }
@@ -83,6 +85,12 @@ wstring& WinEvent::toString() {
     wstring element;
 
 
+    BOOL isRecurring = FALSE;
+    if (getProperty(L"IsRecurring", element)) {
+        isRecurring = _wtoi(element.c_str());
+    }
+
+
     vp = new VProperty(TEXT("BEGIN"), TEXT("VCALENDAR"));
     vo->addProperty(vp);
     delete vp; vp = NULL;
@@ -90,6 +98,13 @@ wstring& WinEvent::toString() {
     vp = new VProperty(TEXT("VERSION"), VCALENDAR_VERSION);
     vo->addProperty(vp);
     delete vp; vp = NULL;
+
+
+    // TIMEZONE: placed out of VEVENT. 
+    // Adding it only if the event is recurring.
+    if (useTimezone && isRecurring) {
+        addTimezone(vo);
+    }
 
     vp = new VProperty(TEXT("BEGIN"), TEXT("VEVENT"));
     vo->addProperty(vp);
@@ -110,14 +125,12 @@ wstring& WinEvent::toString() {
         delete vp; vp = NULL;
     }
     if (getProperty(L"Start", element)) {
-        replaceAll(L"-", L"", element);                         // **** To be removed!!! ****
         stringTimeToDouble(element, &startdate);                // Used later for reminder...
         vp = new VProperty(TEXT("DTSTART"), element.c_str());
         vo->addProperty(vp);
         delete vp; vp = NULL;
     }
     if (getProperty(L"End", element)) {
-        replaceAll(L"-", L"", element);                         // **** To be removed!!! ****
         vp = new VProperty(TEXT("DTEND"), element.c_str());
         vo->addProperty(vp);
         delete vp; vp = NULL;
@@ -217,49 +230,45 @@ wstring& WinEvent::toString() {
     }
 
 
-    if (getProperty(L"IsRecurring", element)) {
-        BOOL isRec = _wtoi(element.c_str());
-        if(isRec) {
-            //
-            // Recurrence pattern -> RRULE
-            //
-            wstring rRule = recPattern.toString();
-            if(rRule != L"") {
-                vp = new VProperty(TEXT("RRULE"), rRule.c_str());
-                vo->addProperty(vp);
-                delete vp; vp = NULL;
-            }
-
-            list<wstring>::iterator it;
-
-            // Exceptions: EXDATE
-            vp = new VProperty(TEXT("EXDATE"));
-            for (it  = excludeDate.begin(); it != excludeDate.end(); it++) {
-                wstring date = (*it);
-                replaceAll(TEXT("-"), TEXT(""), date);                          // *** to remove ****
-                vp->addValue(date.c_str());
-            }
-            vo->addProperty(vp);
-            delete vp; vp = NULL;
-
-            // Exceptions: RDATE (should be empty for Outlook and WM)
-            vp = new VProperty(TEXT("RDATE"));
-            for (it  = includeDate.begin(); it != includeDate.end(); it++) {
-                wstring date = (*it);
-                replaceAll(TEXT("-"), TEXT(""), date);                          // *** to remove ****
-                vp->addValue(date.c_str());
-            }
-            vo->addProperty(vp);
-            delete vp; vp = NULL;
-
-        }
-        else {
-            // Not recurring: send empty "RRULE:"
-            vp = new VProperty(TEXT("RRULE"));
+    if (isRecurring) {
+        //
+        // Recurrence pattern -> RRULE
+        //
+        wstring rRule = recPattern.toString();
+        if(rRule != L"") {
+            vp = new VProperty(TEXT("RRULE"), rRule.c_str());
             vo->addProperty(vp);
             delete vp; vp = NULL;
         }
+
+        list<wstring>::iterator it;
+
+        // Exceptions: EXDATE
+        vp = new VProperty(TEXT("EXDATE"));
+        for (it  = excludeDate.begin(); it != excludeDate.end(); it++) {
+            wstring date = (*it);
+            vp->addValue(date.c_str());
+        }
+        vo->addProperty(vp);
+        delete vp; vp = NULL;
+
+        // Exceptions: RDATE (should be empty for Outlook and WM)
+        vp = new VProperty(TEXT("RDATE"));
+        for (it  = includeDate.begin(); it != includeDate.end(); it++) {
+            wstring date = (*it);
+            vp->addValue(date.c_str());
+        }
+        vo->addProperty(vp);
+        delete vp; vp = NULL;
+
     }
+    else {
+        // Not recurring: send empty "RRULE:"
+        vp = new VProperty(TEXT("RRULE"));
+        vo->addProperty(vp);
+        delete vp; vp = NULL;
+    }
+
 
 
     //
@@ -317,6 +326,86 @@ wstring& WinEvent::toString() {
         delete [] tmp;
     }
     return vCalendar;
+}
+
+
+
+void WinEvent::addTimezone(VObject* vo) {
+
+    VProperty* vp  = NULL;
+    wstring element;
+
+    //
+    // TZ: "signed numeric indicating the number of hours and possibly minutes from UTC."
+    // TZ = - (Bias + StandardBias)     [StandardBias is usually = 0]
+    //
+    wstring bias = formatBias(tzInfo.Bias + tzInfo.StandardBias);
+    vp = new VProperty(TEXT("TZ"), bias.c_str());
+    vo->addProperty(vp);
+    delete vp; vp = NULL;
+
+    //
+    // DAYLIGHT: "sequence of components that define the daylight savings time rule."
+    //
+    if (getProperty(L"Start", element)) {
+
+        int yearBegin = 0;
+        if (element.size() >= 4) {
+            swscanf(element.c_str(), L"%4d", &yearBegin);
+        }
+
+        int yearEnd = 5000;
+        if (recPattern.getProperty(L"NoEndDate", element) && (element == L"0")) {
+            if (recPattern.getProperty(L"PatternEndDate", element)) {
+                if (element.size() >= 4) {
+                    swscanf(element.c_str(), L"%4d", &yearEnd);
+                }
+            }
+        }
+
+        // DST offset = - (Bias + StandardBias + DaylightBias)
+        // [StandardBias is usually = 0]
+        wstring hasDST;
+        int diffBias = tzInfo.Bias +  + tzInfo.StandardBias + tzInfo.DaylightBias;
+        wstring daylightBias;
+        if (diffBias != 0) { 
+            hasDST = TEXT("TRUE");
+            daylightBias = formatBias(diffBias);
+        }
+        else {
+            hasDST = TEXT("FALSE");
+        }
+
+
+        // Max 10 iterations (for infinite recurrences).
+        if (yearEnd - yearBegin > MAX_DAYLIGHT_PROPS) {
+            yearEnd = yearBegin + MAX_DAYLIGHT_PROPS;
+        }
+
+        // Add a DAYLIGHT property for every year that this appointment occurr. (max = 10)
+        for (int year = yearBegin; year < yearEnd; year++) {
+
+            wstring daylightDate = getDateFromTzRule(year, tzInfo.DaylightDate);
+            wstring standardDate = getDateFromTzRule(year, tzInfo.StandardDate);
+
+            // "DAYLIGHT:TRUE;+0900;20080406T020000;20081026T020000;Pacific Standard Time;Pacific Daylight Time"
+            vp = new VProperty(TEXT("DAYLIGHT"));
+            vp->addValue(hasDST.c_str());               // DST flag
+            if (hasDST == TEXT("TRUE")) {
+                vp->addValue(daylightBias.c_str());     // DST offset = (Bias + DaylightBias)
+                vp->addValue(daylightDate.c_str());     // Date and time when the DST begins
+                vp->addValue(standardDate.c_str());     // Date and time when the DST ends
+                vp->addValue(tzInfo.StandardName);      // Standard time designation (optional, could be empty)
+                vp->addValue(tzInfo.DaylightName);      // DST designation (optional, could be empty)
+            }
+            vo->addProperty(vp);
+            delete vp; vp = NULL;
+
+            if (hasDST == TEXT("FALSE")) {
+                break;    // Send only 1 property, are all the same.
+            }
+        }
+    }
 }
 
 
@@ -520,6 +609,12 @@ int WinEvent::parse(const wstring dataString) {
                 }
             }
         }
+
+        // TIMEZONE
+        bool tzFound = parseTimezone(vo);
+        useTimezone = tzFound;
+        recPattern.setUseTimezone(tzFound);
+
     }
     else {
         // Not recurring.
@@ -596,6 +691,115 @@ exceptionList* WinEvent::getIncludeDates() {
 
 recipientList* WinEvent::getRecipients() {
     return &recipients;
+}
+
+
+
+const TIME_ZONE_INFORMATION* WinEvent::getTimezone() {
+    
+    if (useTimezone) {
+        return &tzInfo;
+    }
+    return NULL;
+}
+
+void WinEvent::setTimezone(const TIME_ZONE_INFORMATION* tz) {
+    
+    if (tz) {
+        // Copy all values.
+        tzInfo.Bias         = tz->Bias;
+        tzInfo.DaylightBias = tz->DaylightBias;
+        tzInfo.DaylightDate = tz->DaylightDate;
+        tzInfo.StandardBias = tz->StandardBias;
+        tzInfo.StandardDate = tz->StandardDate;
+        
+        //wsprintf(tzInfo.DaylightName, TEXT("%s"), tz->DaylightName);
+        //wsprintf(tzInfo.StandardName, TEXT("%s"), tz->StandardName);
+        wcsncpy(tzInfo.DaylightName, tz->DaylightName, 32);
+        wcsncpy(tzInfo.StandardName, tz->StandardName, 32);
+
+        // use the method, to access right specialized object.
+        WinRecurrence* rec = getRecPattern();
+        if (rec) { rec->setUseTimezone(true); }
+        useTimezone = true;
+    }
+}
+
+bool WinEvent::hasTimezone() {
+    return useTimezone;
+}
+
+
+
+bool WinEvent::parseTimezone(VObject* vo) {
+
+    bool found = false;
+    WCHAR* element = NULL;
+
+    if ((element = getVObjectPropertyValue(vo, L"TZ")) && wcslen(element) > 0) {
+        
+        int bias = parseBias(element);
+
+        wstring dstFlag, dstOffset, standardName, daylightName;
+        list<wstring> daylightDates;
+        list<wstring> standardDates;
+
+        //
+        // Search all DAYLIGHT properties (one for every year)
+        //
+        for(int i=0; i < vo->propertiesCount(); i++) {
+
+            VProperty* vp = vo->getProperty(i);
+            if (!wcscmp(vp->getName(), TEXT("DAYLIGHT"))) {
+                // Found a DAYLIGHT property. Many props are redundant, now are overwritten.
+                if (element = vp->getPropComponent(1)) { dstFlag   = element;              }
+                if (element = vp->getPropComponent(2)) { dstOffset = element;              }
+                if (element = vp->getPropComponent(3)) { daylightDates.push_back(element); }
+                if (element = vp->getPropComponent(4)) { standardDates.push_back(element); }
+                if (element = vp->getPropComponent(5)) { standardName = element;           }
+                if (element = vp->getPropComponent(6)) { daylightName = element;           }
+            }
+            // - to be faster? -
+            //else if (!wcscmp(vp->getName(), TEXT("VEVENT"))) {
+            //    break;
+            //}
+        }
+
+        //
+        // If we have all required data, fill the tzInfo structure.
+        //
+        if (dstFlag == TEXT("FALSE")) {
+            // Easy timezone, no DST
+            found = true;
+            tzInfo.Bias         = bias;
+            tzInfo.StandardBias = 0;        // Cannot retrieve it, assume = 0 (usually is 0)
+            tzInfo.DaylightBias = 0;
+            //tzInfo.DaylightDate = 0;
+            //tzInfo.StandardDate = 0;
+            wcsncpy(tzInfo.StandardName, standardName.c_str(), 32);
+            wcsncpy(tzInfo.DaylightName, daylightName.c_str(), 32);
+        }
+        else if (dstFlag.size() && dstOffset.size() && daylightDates.size() && standardDates.size() ) {
+            // Standard timezone, the DST rules are extracted from list of dates
+            // >> Bias = -TZ
+            // >> StandardBias = 0  (Cannot retrieve it, assume = 0 as usually is 0)
+            // >> DaylightBias = - (DSTOffset + Bias)
+            found = true;
+            tzInfo.Bias         = bias;
+            tzInfo.StandardBias = 0;
+            tzInfo.DaylightBias = parseBias(dstOffset.c_str()) - bias;
+            tzInfo.DaylightDate = getTzRuleFromDates(daylightDates);
+            tzInfo.StandardDate = getTzRuleFromDates(standardDates);
+            wcsncpy(tzInfo.StandardName, standardName.c_str(), 32);
+            wcsncpy(tzInfo.DaylightName, daylightName.c_str(), 32);
+        }
+    }
+    else {
+        // No timezone received.
+        found = false;
+    }
+
+    return found;
 }
 
 
