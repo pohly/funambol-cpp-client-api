@@ -6,6 +6,9 @@
            all the tests in the old client.cpp are moved in the corrisponding class and corrected to 
            work properly with the cppunit framework
 
+    - toccy: Added support for timezones, for SIF events, under Windows branch (windows/vocl).
+             SIF version upgraded to "1.1"
+
 2008-01-02
     - toccy: Added support for timezones, for vCalendar 1.0, under Windows branch (windows/vocl).
              From Client to Server, recurring events are sent out with timezone informations 
