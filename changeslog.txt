@@ -1,3 +1,11 @@
+2008-01-03
+    - teo: removed a bug related to the creation and the destruction of the operands arraylist
+           in ClauseUtils.cpp.
+           
+           removed all the embedded tests in client.cpp.
+           all the tests in the old client.cpp are moved in the corrisponding class and corrected to 
+           work properly with the cppunit framework
+
 2008-01-02
     - toccy: Added support for timezones, for vCalendar 1.0, under Windows branch (windows/vocl).
              From Client to Server, recurring events are sent out with timezone informations 
