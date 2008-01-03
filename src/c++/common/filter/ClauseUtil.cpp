@@ -57,23 +57,22 @@
  *
  * @return the corresponding CGI query string
  */
-const char* ClauseUtil::toCGIQuery(Clause& clause) {
+char* ClauseUtil::toCGIQuery(Clause& clause) {
     StringBuffer query;
 
-    ArrayList* operands = NULL;
-    WhereClause* where = NULL;
+    ArrayList operands;
+    WhereClause* whereClause = NULL;
 
     if (clause.type == WHERE_CLAUSE) {
-        operands = new ArrayList();
-        operands->add(clause);
+        operands.add(clause);
     } else {
-        operands = ((LogicalClause*)&clause)->getOperands();
+		operands = *((LogicalClause&)clause).getOperands();
     }
 
-    for (int i=0; i<operands->size(); ++i) {
-        where = (WhereClause*)operands->get(i);
+    for (int i=0; i<operands.size(); ++i) {
+        whereClause = (WhereClause*)operands.get(i);
         if (i) {
-            switch (((LogicalClause*)&clause)->getOperator()) {
+            switch (((LogicalClause&)clause).getOperator()) {
                 case AND:
                     query.append("&AND;");
                     break;
@@ -82,69 +81,67 @@ const char* ClauseUtil::toCGIQuery(Clause& clause) {
                     break;
             }
         }
-        query.append(where->getProperty());
-        switch (where->getOperator()) {
+        query.append(whereClause->getProperty());
+        switch (whereClause->getOperator()) {
             case EQ:
-                if (where->isCaseSensitive()) {
+                if (whereClause->isCaseSensitive()) {
                     query.append("&EQ;");
                 } else {
                     query.append("&iEQ;");
                 }
                 break;
             case NE:
-                if (where->isCaseSensitive()) {
+                if (whereClause->isCaseSensitive()) {
                     query.append("&NE;");
                 } else {
                     query.append("&iNE;");
                 }
                 break;
             case LT:
-                if (where->isCaseSensitive()) {
+                if (whereClause->isCaseSensitive()) {
                     query.append("&LT;");
                 } else {
                     query.append("&iLT;");
                 }
                 break;
             case GT:
-                if (where->isCaseSensitive()) {
+                if (whereClause->isCaseSensitive()) {
                     query.append("&GT;");
                 } else {
                     query.append("&iGT;");
                 }
                 break;
             case LE:
-                if (where->isCaseSensitive()) {
+                if (whereClause->isCaseSensitive()) {
                     query.append("&LE;");
                 } else {
                     query.append("&iLE;");
                 }
                 break;
             case GE:
-                if (where->isCaseSensitive()) {
+                if (whereClause->isCaseSensitive()) {
                     query.append("&GE;");
                 } else {
                     query.append("&iGE;");
                 }
                 break;
             case CONTAIN:
-                if (where->isCaseSensitive()) {
+                if (whereClause->isCaseSensitive()) {
                     query.append("&CON;");
                 } else {
                     query.append("&iCON;");
                 }
                 break;
             case NCONTAIN:
-                if (where->isCaseSensitive()) {
+                if (whereClause->isCaseSensitive()) {
                     query.append("&NCON;");
                 } else {
                     query.append("&iNCON;");
                 }
                 break;
         }
-        query.append(where->getValue());
+        query.append(whereClause->getValue());
     }
-
-    delete operands; operands = NULL;
 
     return stringdup(query.c_str());
 }
@@ -181,6 +178,8 @@ Filter* ClauseUtil::toFilter(SourceFilter& sourceFilter) {
     if (operands->size() < 2) {
         return NULL;
     }
+
+
 
     //
     // The first operand must be a FieldClause or AllClause
@@ -240,7 +239,8 @@ Filter* ClauseUtil::toFilter(SourceFilter& sourceFilter) {
         ComplexData recordData;
 
         recordMeta.setType("syncml:filtertype-cgi");
-        char* query = (char*)toCGIQuery(*recordClause);
+		
+		char* query = toCGIQuery(*recordClause);
         recordData.setData(query);
         safeDelete(&query);
 

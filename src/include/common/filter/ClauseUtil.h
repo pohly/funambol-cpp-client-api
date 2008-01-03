@@ -65,7 +65,7 @@ public:
      *
      * @return the corresponding CGI query string
      */
-    static const char*  toCGIQuery(Clause& clause);
+    static char*  toCGIQuery(Clause& clause);
 
     /**
      * Creates the filter clause given download age, body size and attach size

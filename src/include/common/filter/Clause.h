@@ -52,6 +52,9 @@ class Clause : public ArrayElement {
 
     // ------------------------------------------------------- Private interface
 private:
+	Clause(Clause &c){};
+
+	Clause& operator=(Clause &c){}; 
 
     // ----------------------------------------------------- Protected interface
 protected:
