@@ -125,6 +125,15 @@ protected:
     //bool isAllday;
 
 
+    /**
+     * Retrieves the interval when the recurrence occurrs, in years.
+     * It checks the "Start" property and the "PatternEndDate" property.
+     * @param yearBegin  [IN-OUT] the year when recurrence begins
+     * @param yearEnd    [IN-OUT] the year when recurrence ends
+     */
+    void getIntervalOfRecurrence(int* yearBegin, int*yearEnd);
+
+
 public:
 
     /// Default Constructor

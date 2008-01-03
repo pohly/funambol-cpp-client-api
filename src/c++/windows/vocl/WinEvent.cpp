@@ -347,65 +347,54 @@ void WinEvent::addTimezone(VObject* vo) {
     //
     // DAYLIGHT: "sequence of components that define the daylight savings time rule."
     //
-    if (getProperty(L"Start", element)) {
+    int yearBegin = 0;
+    int yearEnd = 5000;
+    getIntervalOfRecurrence(&yearBegin, &yearEnd);
 
-        int yearBegin = 0;
-        if (element.size() >= 4) {
-            swscanf(element.c_str(), L"%4d", &yearBegin);
+
+    // DST offset = - (Bias + StandardBias + DaylightBias)
+    // [StandardBias is usually = 0]
+    wstring hasDST;
+    int diffBias = tzInfo.Bias +  + tzInfo.StandardBias + tzInfo.DaylightBias;
+    wstring daylightBias;
+    if (diffBias != 0) { 
+        hasDST = TEXT("TRUE");
+        daylightBias = formatBias(diffBias);
+    }
+    else {
+        hasDST = TEXT("FALSE");
+    }
+
+
+    // Max 6 iterations (for infinite recurrences).
+    if (yearEnd - yearBegin > MAX_DAYLIGHT_PROPS) {
+        yearEnd = yearBegin + MAX_DAYLIGHT_PROPS;
+    }
+
+    // Add a DAYLIGHT property for every year that this appointment occurr. (max = 6)
+    for (int year = yearBegin; year < yearEnd; year++) {
+
+        wstring daylightDate = getDateFromTzRule(year, tzInfo.DaylightDate);
+        wstring standardDate = getDateFromTzRule(year, tzInfo.StandardDate);
+
+        // "DAYLIGHT:TRUE;-0900;20080406T020000;20081026T020000;Pacific Standard Time;Pacific Daylight Time"
+        vp = new VProperty(TEXT("DAYLIGHT"));
+        vp->addValue(hasDST.c_str());               // DST flag
+        if (hasDST == TEXT("TRUE")) {
+            vp->addValue(daylightBias.c_str());     // DST offset = (Bias + DaylightBias)
+            vp->addValue(daylightDate.c_str());     // Date and time when the DST begins
+            vp->addValue(standardDate.c_str());     // Date and time when the DST ends
+            vp->addValue(tzInfo.StandardName);      // Standard time designation (optional, could be empty)
+            vp->addValue(tzInfo.DaylightName);      // DST designation (optional, could be empty)
         }
+        vo->addProperty(vp);
+        delete vp; vp = NULL;
 
-        int yearEnd = 5000;
-        if (recPattern.getProperty(L"NoEndDate", element) && (element == L"0")) {
-            if (recPattern.getProperty(L"PatternEndDate", element)) {
-                if (element.size() >= 4) {
-                    swscanf(element.c_str(), L"%4d", &yearEnd);
-                }
-            }
-        }
-
-        // DST offset = - (Bias + StandardBias + DaylightBias)
-        // [StandardBias is usually = 0]
-        wstring hasDST;
-        int diffBias = tzInfo.Bias +  + tzInfo.StandardBias + tzInfo.DaylightBias;
-        wstring daylightBias;
-        if (diffBias != 0) { 
-            hasDST = TEXT("TRUE");
-            daylightBias = formatBias(diffBias);
-        }
-        else {
-            hasDST = TEXT("FALSE");
-        }
-
-
-        // Max 10 iterations (for infinite recurrences).
-        if (yearEnd - yearBegin > MAX_DAYLIGHT_PROPS) {
-            yearEnd = yearBegin + MAX_DAYLIGHT_PROPS;
-        }
-
-        // Add a DAYLIGHT property for every year that this appointment occurr. (max = 10)
-        for (int year = yearBegin; year < yearEnd; year++) {
-
-            wstring daylightDate = getDateFromTzRule(year, tzInfo.DaylightDate);
-            wstring standardDate = getDateFromTzRule(year, tzInfo.StandardDate);
-
-            // "DAYLIGHT:TRUE;+0900;20080406T020000;20081026T020000;Pacific Standard Time;Pacific Daylight Time"
-            vp = new VProperty(TEXT("DAYLIGHT"));
-            vp->addValue(hasDST.c_str());               // DST flag
-            if (hasDST == TEXT("TRUE")) {
-                vp->addValue(daylightBias.c_str());     // DST offset = (Bias + DaylightBias)
-                vp->addValue(daylightDate.c_str());     // Date and time when the DST begins
-                vp->addValue(standardDate.c_str());     // Date and time when the DST ends
-                vp->addValue(tzInfo.StandardName);      // Standard time designation (optional, could be empty)
-                vp->addValue(tzInfo.DaylightName);      // DST designation (optional, could be empty)
-            }
-            vo->addProperty(vp);
-            delete vp; vp = NULL;
-
-            if (hasDST == TEXT("FALSE")) {
-                break;    // Send only 1 property, are all the same.
-            }
+        if (hasDST == TEXT("FALSE")) {
+            break;    // Send only 1 property, are all the same.
         }
     }
+
 }
 
 
@@ -613,7 +602,7 @@ int WinEvent::parse(const wstring dataString) {
         // TIMEZONE
         bool tzFound = parseTimezone(vo);
         useTimezone = tzFound;
-        recPattern.setUseTimezone(tzFound);
+        getRecPattern()->setUseTimezone(tzFound);
 
     }
     else {
@@ -800,6 +789,25 @@ bool WinEvent::parseTimezone(VObject* vo) {
     }
 
     return found;
+}
+
+
+void WinEvent::getIntervalOfRecurrence(int* yearBegin, int* yearEnd) {
+
+    wstring element;
+    if (getProperty(L"Start", element)) {
+        if (element.size() >= 4) {
+            swscanf(element.c_str(), L"%4d", yearBegin);
+        }
+
+        if (getRecPattern()->getProperty(L"NoEndDate", element) && (element == L"0")) {
+            if (getRecPattern()->getProperty(L"PatternEndDate", element)) {
+                if (element.size() >= 4) {
+                    swscanf(element.c_str(), L"%4d", yearEnd);
+                }
+            }
+        }
+    }
 }
 
 
