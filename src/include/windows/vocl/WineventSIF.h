@@ -69,6 +69,32 @@ private:
     /// Parse appointment exceptions from SIF string, and fill exception lists.
     void parseExceptions(const wstring& sifString);
 
+    /**
+     * Adds the Timezone tag into the passed SIF string. 
+     * Used from Client to Server. Example of formatted tags added:
+     *   <Timezone>
+     *      <BasicOffset>-0800</DSTOffset>
+     *      <DayLight>
+     *         <DSTOffset>-0900</DSTOffset>
+     *         <DSTStart>20080406T020000</DSTStart>
+     *         <DSTEnd>20081026T020000</DSTEnd>
+     *         <StandardName>Pacific Standard Time</StandardName>
+     *         <DSTName>Pacific Daylight Time</DSTName>
+     *      </DayLight>
+     *      [... more <DayLight> tags may follow ]
+     *  </Timezone>
+     *
+     * When using timezone properties, recurrence data is in local time.
+     */
+    void addTimezone(wstring& sif);
+
+    /**
+     * Parse the timezone properties from the passed SIF data string
+     * and fills the 'tzInfo' timezone structure. Used from Server to Client.
+     * When using timezone properties, recurrence data is expected in local time.
+     * @return  true if timezone properties found
+     */
+    bool parseTimezone(const wstring& data);
 
 public:
 

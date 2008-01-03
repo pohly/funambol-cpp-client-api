@@ -62,6 +62,8 @@ WinEventSIF::WinEventSIF(const wstring dataString, const wchar_t** fields, const
 WinEventSIF::~WinEventSIF() {
 }
 
+
+
 wstring& WinEventSIF::toString() {
     
     wstring propertyValue;
@@ -122,6 +124,13 @@ wstring& WinEventSIF::toString() {
                 }
 
                 sif += L"</Exceptions>\n";
+            }
+
+            //
+            // TIMEZONE (only if recurring and tzInfo is used).
+            //
+            if (useTimezone) {
+                addTimezone(sif);
             }
         }
     }
@@ -184,6 +193,11 @@ int WinEventSIF::parse(const wstring data) {
 
             // Fill exceptions lists.
             parseExceptions(data);
+
+            // TIMEZONE
+            bool tzFound = parseTimezone(data);
+            useTimezone = tzFound;
+            getRecPattern()->setUseTimezone(tzFound);
         }
     }
 
@@ -283,4 +297,157 @@ void WinEventSIF::parseExceptions(const wstring& sifString) {
             }
         }
     }
+}
+
+
+void WinEventSIF::addTimezone(wstring& sif) {
+
+    sif += L"<Timezone>\n";
+
+    //
+    // <BasicOffset> = - (Bias + StandardBias)     [StandardBias is usually = 0]
+    //
+    sif += L"<BasicOffset>";
+    sif += formatBias(tzInfo.Bias + tzInfo.StandardBias);
+    sif += L"</BasicOffset>\n";
+
+    //
+    // <DayLight> = list of tag for every year that this appointment occurr.
+    //
+    int yearBegin = 0;
+    int yearEnd   = 5000;
+    getIntervalOfRecurrence(&yearBegin, &yearEnd);
+
+
+    // DSTOffset = - (Bias + StandardBias + DaylightBias)
+    // [StandardBias is usually = 0]
+    bool hasDST = false;
+    int diffBias = tzInfo.Bias +  + tzInfo.StandardBias + tzInfo.DaylightBias;
+    wstring daylightBias;
+    if (diffBias != 0) { 
+        hasDST = true;
+        daylightBias = formatBias(diffBias);
+    }
+
+    // Max 6 iterations (for infinite recurrences).
+    if (yearEnd - yearBegin > MAX_DAYLIGHT_PROPS) {
+        yearEnd = yearBegin + MAX_DAYLIGHT_PROPS;
+    }
+
+    if (hasDST) {
+        // Add a DayLight tag for every year that this appointment occurr. (max = 6)
+        for (int year = yearBegin; year < yearEnd; year++) {
+
+            wstring daylightDate = getDateFromTzRule(year, tzInfo.DaylightDate);
+            wstring standardDate = getDateFromTzRule(year, tzInfo.StandardDate);
+
+            sif += L"<DayLight>\n";
+            sif += L"<DSTOffset>" ;    sif += daylightBias;     sif += L"</DSTOffset>";
+            sif += L"<DSTStart>"  ;    sif += daylightDate;     sif += L"</DSTStart>" ;
+            sif += L"<DSTEnd>"    ;    sif += standardDate;     sif += L"</DSTEnd>"   ;
+            if (wcslen(tzInfo.StandardName) > 0) {
+                sif += L"<StandardName>";  sif += tzInfo.StandardName;   sif += L"</StandardName>";
+            }
+            else { 
+                sif += L"<StandardName/>";
+            }
+            if (wcslen(tzInfo.StandardName) > 0) {
+                sif += L"<DSTName>";       sif += tzInfo.DaylightName;   sif += L"</DSTName>\n";
+            }
+            else {
+                sif += L"<DSTName/>";
+            }
+            sif += L"</DayLight>\n";
+        }
+    }
+    else {
+        // No daylight for this timezone
+        sif += L"<DayLight/>\n";
+    }
+
+    sif += L"</Timezone>\n";
+}
+
+
+bool WinEventSIF::parseTimezone(const wstring& data) {
+
+    wstring timezone;
+    if (getElementContent(data, L"Timezone", timezone, 0)) {
+        return false;
+    }
+    if (timezone.size() == 0) {
+        return false;
+    }
+
+    bool found = false;
+    wstring element;
+    if ( !getElementContent(timezone, L"BasicOffset", element, 0) && element.size() ) {
+
+        int bias = parseBias(element.c_str());
+
+        wstring dstOffset, standardName, daylightName;
+        list<wstring> daylightDates;
+        list<wstring> standardDates;
+
+        //
+        // Search all <DayLight> inside <Timezone> (one for every year)
+        //
+        wstring::size_type start = 0, end = 0;
+        bool dstFlag = false;
+        wstring daylight;
+        while (!getElementContent(timezone, L"DayLight", daylight, end, start, end)) {
+            if (daylight.size()) {
+                // Found a DayLight tag. Many props are redundant, now are overwritten.
+                dstFlag = true;
+                getElementContent(daylight, L"DSTOffset",    dstOffset);
+                getElementContent(daylight, L"DSTStart",     element);
+                daylightDates.push_back(element);
+                getElementContent(daylight, L"DSTEnd",       element);
+                standardDates.push_back(element);
+                getElementContent(daylight, L"StandardName", standardName);
+                getElementContent(daylight, L"DSTName",      daylightName);
+            }
+            else {
+                // Empty <DayLight/> = no daylight for this timezone
+                dstFlag = false;
+                break;
+            }
+        }
+
+
+        //
+        // If we have all required data, fill the tzInfo structure.
+        //
+        if (dstFlag == false) {
+            // Easy timezone, no DST
+            found = true;
+            tzInfo.Bias         = bias;
+            tzInfo.StandardBias = 0;        // Cannot retrieve it, assume = 0 (usually is 0)
+            tzInfo.DaylightBias = 0;
+            //tzInfo.DaylightDate = 0;
+            //tzInfo.StandardDate = 0;
+            wcsncpy(tzInfo.StandardName, standardName.c_str(), 32);
+            wcsncpy(tzInfo.DaylightName, daylightName.c_str(), 32);
+        }
+        else if (dstOffset.size() && daylightDates.size() && standardDates.size() ) {
+            // Standard timezone, the DST rules are extracted from list of dates
+            // >> Bias = -TZ
+            // >> StandardBias = 0  (Cannot retrieve it, assume = 0 as usually is 0)
+            // >> DaylightBias = - (DSTOffset + Bias)
+            found = true;
+            tzInfo.Bias         = bias;
+            tzInfo.StandardBias = 0;
+            tzInfo.DaylightBias = parseBias(dstOffset.c_str()) - bias;
+            tzInfo.DaylightDate = getTzRuleFromDates(daylightDates);
+            tzInfo.StandardDate = getTzRuleFromDates(standardDates);
+            wcsncpy(tzInfo.StandardName, standardName.c_str(), 32);
+            wcsncpy(tzInfo.DaylightName, daylightName.c_str(), 32);
+        }
+    }
+    else {
+        // <BasicOffset> missing (it's mandatory)
+        found = false;
+    }
+    
+    return found;
 }
