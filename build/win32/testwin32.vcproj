@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="Windows-1252"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="8.00"
+	Version="8,00"
 	Name="testwin32"
 	ProjectGUID="{C581FD5F-8CF7-4CFA-84CA-F16314068F44}"
 	RootNamespace="testwin32"
@@ -237,16 +237,32 @@
 			<Filter
 				Name="listeners"
 				>
+				<File
+					RelativePath="..\..\src\c++\common\examples\listeners\TestSyncItemListener.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\c++\common\examples\listeners\TestSyncListener.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\c++\common\examples\listeners\TestSyncSourceListener.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\c++\common\examples\listeners\TestSyncStatusListener.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\c++\common\examples\listeners\TestTransportListener.cpp"
+					>
+				</File>
 			</Filter>
 		</Filter>
 		<Filter
 			Name="Header Files"
 			Filter="h;hpp;hxx;hm;inl"
 			>
-			<File
-				RelativePath="..\..\src\include\common\examples\config.h"
-				>
-			</File>
 		</Filter>
 		<Filter
 			Name="Resource Files"

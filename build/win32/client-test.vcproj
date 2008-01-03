@@ -193,6 +193,10 @@
 			<Filter
 				Name="spds"
 				>
+				<File
+					RelativePath="..\..\test\common\spds\EncryptionTest.cpp"
+					>
+				</File>
 			</Filter>
 			<Filter
 				Name="base"
@@ -210,6 +214,10 @@
 					</File>
 					<File
 						RelativePath="..\..\test\common\base\util\StringBufferTest.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\test\common\base\util\XMLProcessorTest.cpp"
 						>
 					</File>
 				</Filter>
@@ -239,6 +247,32 @@
 				</File>
 				<File
 					RelativePath="..\..\test\common\syncml\ParserTest.cpp"
+					>
+				</File>
+			</Filter>
+			<Filter
+				Name="event"
+				>
+				<File
+					RelativePath="..\..\test\common\event\testEvent.cpp"
+					>
+				</File>
+				
+
+			</Filter>
+			<Filter
+				Name="filter"
+				>
+				<File
+					RelativePath="..\..\test\common\filter\ClauseTest.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\test\common\filter\ConfigFilterTest.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\test\common\filter\FilterTest.cpp"
 					>
 				</File>
 			</Filter>

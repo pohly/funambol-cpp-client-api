@@ -603,6 +603,10 @@
 					</FileConfiguration>
 				</File>
 				<File
+					RelativePath="..\..\src\c++\common\client\MailSourceManagementNode.cpp"
+					>
+				</File>
+				<File
 					RelativePath="..\..\src\c++\common\client\SyncClient.cpp"
 					>
 				</File>
@@ -792,6 +796,10 @@
 				</File>
 				<File
 					RelativePath="..\..\src\c++\common\spds\ItemReport.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\c++\common\spds\MailSyncSourceConfig.cpp"
 					>
 				</File>
 				<File
