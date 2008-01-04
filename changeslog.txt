@@ -1,3 +1,17 @@
+2008-01-04
+    - teo: added CtCap.
+           Now we pass to the formatter an ArrayList of CtCap to handle different capabilities.
+           In SyncSourceConfig there's a new method called addCtCap to add an element to the 
+           ArrayList of CtCap.
+           This method has 4 parameters CtType VerCt an arraylist of properties and an int with 
+           3 status to handle the FieldLevel param (FLEVEL_DISABLED, FLEVEL_ENABLED, 
+           FLEVEL_UNDEFINED)
+           CtCype VerCt and FieldLevel are optional. 
+           If one of this parameters is not set the method use the default one setted 
+           in the configuration. 
+
+getCtCaps returns a reference to the ArrayList of CtCaps 
+
 2008-01-03
     - teo: removed a bug related to the creation and the destruction of the operands arraylist
            in ClauseUtils.cpp.
