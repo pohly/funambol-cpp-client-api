@@ -74,16 +74,18 @@ public:
     /*
      * Property constructor
      *
-     * @param p0
-     * @param p1
-     * @param p2
-     * @param p3
-     * @param p4
-     * @param p5
-     * @param p6
-     * @param p7
+     * @param propName
+     * @param dataType
+     * @param maxOccur
+     * @param maxSize
+     * @param noTruncate
+     * @param valEnums
+     * @param displayName
+     * @param propParams
      */
-    Property(char*  p0, char*  p1, long p2, long p3, BOOL p4, ArrayList* p5, char*  p6, ArrayList* p7);
+    Property(char*  propName, char*  dataType, long maxOccur, 
+        long maxSize, BOOL noTruncate, ArrayList* valEnums, 
+        char*  displayName, ArrayList* propParams);
 
 
     /*

@@ -45,7 +45,6 @@
     #include "spds/constants.h"
     #include "syncml/core/CTCap.h"
 
-
 /**
  * This class groups all configuration properties for a SyncSource.
  * SyncSourceConfig is a part of SyncManagerConfig (along with AccessConfig
@@ -53,20 +52,35 @@
  */
 class SyncSourceConfig {
 
+    public:
+
+        static const int FLEVEL_UNDEFINED  =  -1;
+        static const int FLEVEL_ENABLED    =   1;
+        static const int FLEVEL_DISABLED   =   0;
+
     protected:
 
-        char*  name          ;
-        char*  uri           ;
-        char*  syncModes     ;
-        char*  type          ;
-        char*  sync          ;
-        char*  encodings     ;
-        char*  version       ;
-        char*  supportedTypes;
-        CTCap  ctCap         ;
-        char*  encryption    ;
+        char*  name             ;
+        char*  uri              ;
+        char*  syncModes        ;
+        char*  type             ;
+        char*  sync             ;
+        char*  encodings        ;
+        char*  version          ;
+        char*  supportedTypes   ;
+        char*  encryption       ;
+        // last anchor, set by the engine.
+        unsigned long last      ;
+        // CTCap data
+        bool fieldLevel         ;
+        ArrayList ctCaps        ;
 
-        unsigned long last;
+        /**
+        * Create a new CTCap object, based on the current source configuration.
+        * To obtain a complete CTCap, the client must have set previously the 
+        * list of CTCap properties with the method setCtCapProperties().
+        */
+        CTCap* createCtCap(ArrayList *props, const char *ct_Type, const char *ver_CT, bool fLevel);
 
     public:
 
@@ -91,7 +105,6 @@ class SyncSourceConfig {
          * @param n the new name
          */
         void setName(const char*  n);
-
 
         /**
          * Returns the SyncSource URI (used in SyncML addressing).
@@ -131,7 +144,7 @@ class SyncSourceConfig {
         /**
          * Returns the mime type of the items handled by the sync source.
          */
-        const char*  getType() const;
+        const char* getType() const;
 
         /**
          * Sets the mime type of the items handled by the sync source.
@@ -163,7 +176,7 @@ class SyncSourceConfig {
         /**
          * Returns the version of the source type used by client.
          */
-        const char*  getVersion() const;
+        const char* getVersion() const;
 
         /**
          * Sets the SyncSource version
@@ -180,7 +193,7 @@ class SyncSourceConfig {
          * The version can be left empty, for example: "text/x-s4j-sifc:".
          * Supported types will be sent as part of the DevInf.
          */
-        const char*  getSupportedTypes() const;
+        const char* getSupportedTypes() const;
 
         /**
          * Sets the supported source types for this source.
@@ -188,9 +201,6 @@ class SyncSourceConfig {
          * @param s the supported types string
          */
         void setSupportedTypes(const char*  s);
-
-        CTCap getCtCap() const          ;
-        void setCtCap(CTCap v)          ;
 
         /**
          * Sets the last sync timestamp
@@ -219,11 +229,59 @@ class SyncSourceConfig {
         void setEncryption(const char* n);
 
         /**
+         * Sets the list of properties to use in the CTCap sent to the server in
+         * the DevInfo.
+         *
+         * @param props an ArrayList of Property 
+         */
+        //void setCtCapProperties(ArrayList* props);
+
+        /**
+         * Returns the list of properties to use in the CTCap sent to the server
+         * in the DevInfo.
+         *
+         * @returns an ArrayList of Property
+         */
+        //ArrayList& getCtCapProperties();
+
+        /**
+         * Returns an array of CtCap with all the capabilities for this Source
+         *
+         * @return an ArrayList of CTCap
+         */
+        ArrayList& getCtCaps() {return ctCaps;};
+
+        /**
+         * add a CTCap to the ArrayList. If ctType, verCT and FieldLevel are null
+         * we set a CTCap with the default verCT, fieldLevel and ctType taken
+         * from the config
+         *
+         * the fieldLevel param has three status 
+         *      FLEVEL_DISABLED   - to disable the FieldLevel param in the CtCap
+         *      FLEVEL_ENABLED    - to enable the FieldLevel param in the CtCap
+         *      FLEVEL_UNDEFINED  - not set. In this case the code sets the default
+         *                          value. Now setted to disable the FieldLevel param 
+         *
+         * @param ArrayList* props - the arrayList with the properties
+         * @param const char* ct_Type - optional
+         * @param const char* ver_CT - optional
+         * @param int fieldLevel - three different status 
+         */
+        void  addCtCap(ArrayList* props, const char* ct_Type = 0 , const char* ver_CT = 0, int fLevel = FLEVEL_UNDEFINED);
+
+        /**
          * Initialize this object with the given SyncSourceConfig
          *
          * @param sc the source config object
          */
         void assign(const SyncSourceConfig& sc);
+
+        /**
+         * Return fieldLevel param. Not implemented yet. Now just returns false
+         *
+         * @return bool fieldLevel
+         */
+        bool getFieldLevel(){ return false;}
 
         /**
          * Assign operator

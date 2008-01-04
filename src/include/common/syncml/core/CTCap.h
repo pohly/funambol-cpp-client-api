@@ -41,45 +41,99 @@
 #include "base/fscapi.h"
 #include "base/util/ArrayList.h"
 #include "syncml/core/CTTypeSupported.h"
+#include "base/util/StringBuffer.h"
 
 
 class CTCap : public ArrayElement {
 
      // ------------------------------------------------------------ Private data
     private:
-        ArrayList* ctTypeSupported;  // CTTypeSupported[]
+        StringBuffer ctType;
+        StringBuffer verCT ;
 
+        bool   fieldLevel;
+        ArrayList properties;
+
+        CTCap(const CTCap&) {};
+        CTCap() {};
+        
     // ---------------------------------------------------------- Public data
     public:
 
-        CTCap();
+
+
+        /**
+         * Creates a CTCap object with the specified values
+         */
+        CTCap(
+            const char *ct_Type,
+            const char *ver_CT,
+            bool fLevel,
+            ArrayList& props );
+
         ~CTCap();
 
         /**
-         * Creates a new CTCap object with the given array of information
-         *
-         * @param ctTypeSupported the array of information on content type
-         *                        capabilities - NOT NULL
-         *
-         */
-        CTCap(ArrayList* ctTypeSupported);
+        * Get the CT Type
+        *
+        * @return the CT Type as a const string
+        */
+        const char* getCtType() const { return ctType.c_str(); } ;
+
+        /**
+        * Sets a CTType object
+        *
+        * @param ctInfo The CTType object
+        */
+        void setCTType(const char *ctType) { this->ctType = ctType; };
+
+        /**
+        * Get the CT Type
+        *
+        * @return the CT Type as a const string
+        */
+        const char* getVerCT() const { return verCT.c_str(); } ;
+
+        /**
+        * Sets a CTInfo object
+        *
+        * @param ctInfo The CTInfo object
+        */
+        void setVerCT(const char *verCT) { this->verCT = verCT; };
 
 
         /**
-         * Get an array of content type information objects
-         *
-         * @return an array of content type information objects
-         */
-        ArrayList* getCTTypeSupported();
+        * Sets the field-level
+        *
+        * @param fieldLevel the Boolean value of FieldLevel property
+        */
+        void setFieldLevel(bool fieldLevel) { this->fieldLevel = fieldLevel; };
 
         /**
-         * Sets an array of content type information objects
-         *
-         * @param ctTypeSupported an array of content type information objects
-         */
-        void setCTTypeSupported(ArrayList* ctTypeSupported);
+        * Gets the value of FieldLevel property
+        *
+        * @return true if the sender is able to apply field-level replaces for the
+        *         corresponding CTType property, otherwise false
+        */
+        bool getFieldLevel() const { return fieldLevel;};
+
+        /**
+        * Get an array of supported properties of a given content type
+        *
+        * @return an array of supported properties
+        */
+        const ArrayList& CTCap::getProperties() const {return properties;};
+
+        /**
+        * Sets an array of supported properties of a given content type
+        *
+        * @param properties an array of supported properties
+        */
+
+        void CTCap::setProperties(ArrayList& prop) {this->properties = prop;}
 
         ArrayElement* clone();
+
 
 };
 

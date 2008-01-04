@@ -151,8 +151,8 @@ void PropParam::setValEnums(ArrayList* p0) {
         delete this->valEnums; this->valEnums = NULL;
     }
 
-    if (valEnums) {
-        this->valEnums = valEnums->clone();
+    if (p0) {
+        this->valEnums = p0->clone();
     }
 
 }

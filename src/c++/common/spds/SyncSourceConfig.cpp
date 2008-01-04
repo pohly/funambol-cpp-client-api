@@ -39,6 +39,7 @@
 #include "base/util/utils.h"
 
 
+
 SyncSourceConfig::SyncSourceConfig() {
     name            = NULL;
     uri             = NULL;
@@ -184,11 +185,33 @@ void SyncSourceConfig::setSupportedTypes(const char* s) {
     supportedTypes = stringdup(s);
 }
 
-CTCap SyncSourceConfig::getCtCap() const {
-    return ctCap;
+CTCap* SyncSourceConfig::createCtCap(ArrayList *props, const char *ct_Type, const char *ver_CT, bool fLevel) {
+
+    return new CTCap(ct_Type , ver_CT, fLevel, *props);
 }
-void SyncSourceConfig::setCtCap(CTCap v){
-    ctCap.setCTTypeSupported(v.getCTTypeSupported());
+
+void SyncSourceConfig::addCtCap(ArrayList *props, const char *ct_Type, const char *ver_CT, int fLevel){
+    const char* cttype;
+    const char* verct;
+    bool fieldlevel;
+    if ( !ct_Type ){
+        cttype = getType();
+    }else{
+        cttype = ct_Type;
+    }
+    if ( !ver_CT ){
+        verct = getVersion();
+    }else{
+        cttype = ver_CT;
+    }
+    if ( fLevel == FLEVEL_UNDEFINED || fLevel == FLEVEL_DISABLED ){
+        fieldlevel = false;
+    }else {
+        fieldlevel = true;
+    }
+
+    ctCaps.add(*(createCtCap(props, cttype, verct, fieldlevel)));
+
 }
 
 const char* SyncSourceConfig::getEncryption() const {
@@ -198,6 +221,7 @@ const char* SyncSourceConfig::getEncryption() const {
 void SyncSourceConfig::setEncryption(const char* n) {
     safeDelete(&encryption);
     encryption = stringdup(n);
+
 }
 
 // ------------------------------------------------------------- Private methods
@@ -216,6 +240,7 @@ void SyncSourceConfig::assign(const SyncSourceConfig& sc) {
     setEncoding      (sc.getEncoding      ());
     setVersion       (sc.getVersion       ());
     setSupportedTypes(sc.getSupportedTypes());
-    setCtCap         (sc.getCtCap         ());
+//    setCtCap         (sc.getCtCap         ());
     setEncryption    (sc.getEncryption    ());
+
 }

@@ -2390,7 +2390,7 @@ DataStore* Parser::getDataStore(const char*xml) {
                                      (dsMem)       ||
                                      (syncCap)     ||
                                      NotZeroArrayLenght(2, rx, tx) ) {
-        ret = new DataStore(sourceRef, displayName, maxGUIDSize, rxPref, rx, txPref, tx, dsMem, syncCap);
+        ret = new DataStore(sourceRef, displayName, maxGUIDSize, rxPref, rx, txPref, tx, NULL , dsMem, syncCap);
     }
 
     safeDel(&displayName);

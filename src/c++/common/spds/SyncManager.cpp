@@ -2315,25 +2315,12 @@ DevInf *SyncManager::createDeviceInfo()
                             &rx,
                             &txPref,
                             &tx,
+                            &(ssconfig->getCtCaps()),
                             NULL,
                             &syncCap);
         dataStores.add(dataStore);
     }
     devinfo->setDataStore(&dataStores);
-
-#if 0
-    // dummy CTCap - has no effect because Formatter::getCTCaps() has
-    // not be implemented yet
-    ArrayList empty;
-    ArrayList ctPropParams;
-    CTPropParam param("X-FOO",
-                      NULL, 0, NULL, &empty);
-    ctPropParams.add(param);
-    CTTypeSupported cttType("text/x-foo", &ctPropParams);
-    ArrayList ctCap;
-    ctCap.add(cttType);
-    devinfo->setCTCap(&ctCap);
-#endif
 
     return devinfo;
 }

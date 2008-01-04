@@ -158,6 +158,9 @@ int ArrayList::add(ArrayElement& element) {
 * array list
 */
 int ArrayList::add(ArrayList* list) {
+    if (!list) {
+        return -1;
+    }
     int ret = 0;
     for (int i = 0; i < list->size(); i++) {
         ret = ret + add(*(ArrayElement*)list->get(i));

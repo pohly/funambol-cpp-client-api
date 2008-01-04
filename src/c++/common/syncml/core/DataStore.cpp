@@ -69,6 +69,7 @@ DataStore::~DataStore() {
  *                  to the content type preferred - NOT NULL
  * @param tx an array of the relative info trasmitted to the content type
  *           supported - NOT NULL
+ * @param ctCaps an array of the relative CtCaps
  * @param dsMem the datastore memory info
  * @param syncCap the synchronization capabilities - NOT NULL
  *
@@ -80,6 +81,7 @@ DataStore::DataStore(SourceRef* sourceRef,
                       ArrayList* rx,
                       ContentTypeInfo* txPref,
                       ArrayList* tx,
+                      ArrayList* ct_Caps,
                       DSMem* dsMem,
                       SyncCap* syncCap) {
 
@@ -91,6 +93,7 @@ DataStore::DataStore(SourceRef* sourceRef,
         setTxPref(txPref);
         setTx(tx);
         setSyncCap(syncCap);
+        setCtCaps(ct_Caps);
         setDisplayName(displayName);
         setDSMem(dsMem);
 }
@@ -103,6 +106,7 @@ void DataStore::initialize() {
     rx              = new ArrayList();
     txPref          = NULL;
     tx              = new ArrayList();
+    ctCaps          = new ArrayList();
     dsMem           = NULL;
     syncCap         = NULL;
 }
@@ -271,6 +275,24 @@ void DataStore::setTx(ArrayList* txCTI) {
 }
 
 /**
+* Gets an array of CtCaps corresponds to &lt;CTCap&gt; element
+*
+* @return an array of CTCaps corresponds to &lt;CTCap&gt; element
+*/
+ArrayList* DataStore::getCtCaps(){
+    return ctCaps;
+}
+
+/**
+* Sets an array of CtCaps
+*
+* @param Ct_Caps an array of Ctcaps
+*/
+void DataStore::setCtCaps(ArrayList* ct_Caps){
+    ctCaps = ct_Caps;
+}
+
+/**
  * Gets the datastore memory information.
  *
  * @return the datastore memory information.
@@ -327,6 +349,7 @@ ArrayElement* DataStore::clone() {
                                     rx          ,
                                     txPref      ,
                                     tx          ,
+                                    ctCaps      ,
                                     dsMem       ,
                                     syncCap     );
     return ret;

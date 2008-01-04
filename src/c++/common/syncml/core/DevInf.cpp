@@ -394,12 +394,12 @@ ArrayList* DevInf::getCTCap() {
 * @param ctCap an array of content type capability
 *
 */
-void DevInf::setCTCap(ArrayList* ctCap) {
-    if (this->ctCap) {
-		this->ctCap->clear();
-    }
-    if (ctCap) {
-	    this->ctCap = ctCap->clone();
+void DevInf::setCTCap(ArrayList* ct_Cap) {
+    if (ct_Cap && !(ct_Cap->isEmpty())) {
+        if (this->ctCap) {
+            this->ctCap->clear();
+        }
+        this->ctCap = ct_Cap;//->clone();
     }
 }
 
