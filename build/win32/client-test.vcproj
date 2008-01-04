@@ -242,6 +242,10 @@
 				Name="syncml"
 				>
 				<File
+					RelativePath="..\..\test\common\syncml\CtCapTest.cpp"
+					>
+				</File>
+				<File
 					RelativePath="..\..\test\common\syncml\FormatterTest.cpp"
 					>
 				</File>
