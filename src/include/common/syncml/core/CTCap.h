@@ -122,7 +122,7 @@ class CTCap : public ArrayElement {
         *
         * @return an array of supported properties
         */
-        const ArrayList& CTCap::getProperties() const {return properties;};
+        const ArrayList& getProperties() const {return properties;};
 
         /**
         * Sets an array of supported properties of a given content type
@@ -130,7 +130,7 @@ class CTCap : public ArrayElement {
         * @param properties an array of supported properties
         */
 
-        void CTCap::setProperties(ArrayList& prop) {this->properties = prop;}
+        void setProperties(ArrayList& prop) {this->properties = prop;}
 
         ArrayElement* clone();
 
