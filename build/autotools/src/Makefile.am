@@ -2,198 +2,207 @@ EXTRA_PROGRAMS = vcardconverter
 lib_LTLIBRARIES = libsync4j.la
 
 SOURCES_BASE = \
-    Log.cpp \
-    autotoolsadapter.cpp \
-    ArrayElement.cpp \
-    ArrayList.cpp \
-    BasicTime.cpp \
-    KeyValuePair.cpp \
-    WKeyValuePair.cpp \
-    StringBuffer.cpp \
-    WString.cpp \
-    XMLProcessor.cpp \
-    baseutils.cpp \
-    base64.cpp \
-    quoted-printable.cpp \
-    error.cpp \
-    ErrorHandler.cpp \
-    ItemContainer.cpp \
-    md5.c
+    lLog.cpp \
+    lautotoolsadapter.cpp \
+    lArrayElement.cpp \
+    lArrayList.cpp \
+    lBasicTime.cpp \
+    lKeyValuePair.cpp \
+    lWKeyValuePair.cpp \
+    lStringBuffer.cpp \
+    lWString.cpp \
+    lXMLProcessor.cpp \
+    lbaseutils.cpp \
+    lbase64.cpp \
+    lquoted-printable.cpp \
+    lerror.cpp \
+    lErrorHandler.cpp \
+    lItemContainer.cpp \
+    lmd5.c
 
 SOURCES_EVENT = \
-    BaseEvent.cpp \
-    FireEvent.cpp \
-    Listener.cpp \
-    ManageListener.cpp \
-    SetListener.cpp \
-    SyncEvent.cpp \
-    SyncItemEvent.cpp \
-    SyncItemListener.cpp \
-    SyncListener.cpp \
-    SyncSourceEvent.cpp \
-    SyncSourceListener.cpp \
-    SyncStatusEvent.cpp \
-    SyncStatusListener.cpp \
-    TransportEvent.cpp \
-    TransportListener.cpp
+    lBaseEvent.cpp \
+    lFireEvent.cpp \
+    lListener.cpp \
+    lManageListener.cpp \
+    lSetListener.cpp \
+    lSyncEvent.cpp \
+    lSyncItemEvent.cpp \
+    lSyncItemListener.cpp \
+    lSyncListener.cpp \
+    lSyncSourceEvent.cpp \
+    lSyncSourceListener.cpp \
+    lSyncStatusEvent.cpp \
+    lSyncStatusListener.cpp \
+    lTransportEvent.cpp \
+    lTransportListener.cpp
 
 SOURCES_FRAMEWORK = \
-    Formatter.cpp \
-    AbstractCommand.cpp \
-    Add.cpp \
-    AllClause.cpp \
-    Alert.cpp \
-    Anchor.cpp \
-    Atomic.cpp \
-    Authentication.cpp \
-    Chal.cpp \
-    Clause.cpp \
-    ClauseUtil.cpp \
-    CmdID.cpp \
-    ComplexData.cpp \
-    ContentTypeInfo.cpp \
-    ContentTypeParameter.cpp \
-    Copy.cpp \
-    Cred.cpp \
-    CTCap.cpp \
-    CTPropParam.cpp \
-    CTTypeSupported.cpp \
-    Data.cpp \
-    DataStore.cpp \
-    Delete.cpp \
-    DevInf.cpp \
-    DevInfData.cpp \
-    DevInfItem.cpp \
-    DSMem.cpp \
-    EMI.cpp \
-    Exec.cpp \
-    Ext.cpp \
-    FieldClause.cpp \
-    Filter.cpp \
-    Get.cpp \
-    Item.cpp \
-    ItemizedCommand.cpp \
-    LogicalClause.cpp \
-    Map.cpp \
-    MapItem.cpp \
-    Mem.cpp \
-    Meta.cpp \
-    MetInf.cpp \
-    ModificationCommand.cpp \
-    NextNonce.cpp \
-    ObjectDel.cpp \
-    Parser.cpp \
-    Property.cpp \
-    PropParam.cpp \
-    Put.cpp \
-    Replace.cpp \
-    ResponseCommand.cpp \
-    Results.cpp \
-    Search.cpp \
-    Sequence.cpp \
-    SessionID.cpp \
-    Source.cpp \
-    SourceArray.cpp \
-    SourceFilter.cpp \
-    SourceRef.cpp \
-    Status.cpp \
-    StringElement.cpp \
-    Sync.cpp \
-    SyncBody.cpp \
-    SyncCap.cpp \
-    SyncHdr.cpp \
-    SyncML.cpp \
-    SyncType.cpp \
-    SyncTypeArray.cpp \
-    SyncNotification.cpp \
-    SyncAlert.cpp \
-    Target.cpp \
-    TargetRef.cpp \
-    VerDTD.cpp \
-    VerProto.cpp \
-    WhereClause.cpp
+    lFormatter.cpp \
+    lAbstractCommand.cpp \
+    lAdd.cpp \
+    lAllClause.cpp \
+    lAlert.cpp \
+    lAnchor.cpp \
+    lAtomic.cpp \
+    lAuthentication.cpp \
+    lChal.cpp \
+    lClause.cpp \
+    lClauseUtil.cpp \
+    lCmdID.cpp \
+    lComplexData.cpp \
+    lContentTypeInfo.cpp \
+    lContentTypeParameter.cpp \
+    lCopy.cpp \
+    lCred.cpp \
+    lCTCap.cpp \
+    lCTPropParam.cpp \
+    lCTTypeSupported.cpp \
+    lData.cpp \
+    lDataStore.cpp \
+    lDelete.cpp \
+    lDevInf.cpp \
+    lDevInfData.cpp \
+    lDevInfItem.cpp \
+    lDSMem.cpp \
+    lEMI.cpp \
+    lExec.cpp \
+    lExt.cpp \
+    lFieldClause.cpp \
+    lFilter.cpp \
+    lGet.cpp \
+    lItem.cpp \
+    lItemizedCommand.cpp \
+    lLogicalClause.cpp \
+    lMap.cpp \
+    lMapItem.cpp \
+    lMem.cpp \
+    lMeta.cpp \
+    lMetInf.cpp \
+    lModificationCommand.cpp \
+    lNextNonce.cpp \
+    lObjectDel.cpp \
+    lParser.cpp \
+    lProperty.cpp \
+    lPropParam.cpp \
+    lPut.cpp \
+    lReplace.cpp \
+    lResponseCommand.cpp \
+    lResults.cpp \
+    lSearch.cpp \
+    lSequence.cpp \
+    lSessionID.cpp \
+    lSource.cpp \
+    lSourceArray.cpp \
+    lSourceFilter.cpp \
+    lSourceRef.cpp \
+    lStatus.cpp \
+    lStringElement.cpp \
+    lSync.cpp \
+    lSyncBody.cpp \
+    lSyncCap.cpp \
+    lSyncHdr.cpp \
+    lSyncML.cpp \
+    lSyncType.cpp \
+    lSyncTypeArray.cpp \
+    lSyncNotification.cpp \
+    lSyncAlert.cpp \
+    lTarget.cpp \
+    lTargetRef.cpp \
+    lVerDTD.cpp \
+    lVerProto.cpp \
+    lWhereClause.cpp
 
 SOURCES_HTTP = \
-    CurlTransportAgent.cpp \
-    TransportAgentFactory.cpp \
-    HTTPHeader.cpp \
-    Proxy.cpp \
-    TransportAgent.cpp \
-    URL.cpp
+    lCurlTransportAgent.cpp \
+    lTransportAgentFactory.cpp \
+    lHTTPHeader.cpp \
+    lProxy.cpp \
+    lTransportAgent.cpp \
+    lURL.cpp
 
 SOURCES_SPDM = \
-    DMTree.cpp \
-    DMTreeFactory.cpp \
-    DeviceManagementNode.cpp \
-    ManagementNode.cpp 
+    lDMTree.cpp \
+    lDMTreeFactory.cpp \
+    lDeviceManagementNode.cpp \
+    lManagementNode.cpp 
 
 SOURCES_SPDS = \
-    AccessConfig.cpp \
-    BodyPart.cpp \
-    CredentialHandler.cpp \
-    DataTransformerFactory.cpp \
-    DataTransformer.cpp \
-    DeviceConfig.cpp \
-    B64Decoder.cpp \
-    B64Encoder.cpp \
-    DESDecoder.cpp \
-    DESEncoder.cpp \
-    DefaultConfigFactory.cpp \
-    EmailData.cpp \
-    FileSyncSource.cpp \
-    FileData.cpp \
-    ItemReport.cpp \
-    MailMessage.cpp \
-    RawFileSyncSource.cpp \
-    SyncManagerConfig.cpp \
-    SyncItem.cpp \
-    SyncItemStatus.cpp \
-    SyncMLBuilder.cpp \
-    SyncMLProcessor.cpp \
-    SyncManager.cpp \
-    SyncMap.cpp \
-    SyncReport.cpp \
-    SyncSource.cpp \
-    SyncSourceConfig.cpp \
-    SyncSourceReport.cpp \
-    spdsutils.cpp 
+    lAccessConfig.cpp \
+    lBodyPart.cpp \
+    lCredentialHandler.cpp \
+    lDataTransformerFactory.cpp \
+    lDataTransformer.cpp \
+    lDeviceConfig.cpp \
+    lB64Decoder.cpp \
+    lB64Encoder.cpp \
+    lDESDecoder.cpp \
+    lDESEncoder.cpp \
+    lDefaultConfigFactory.cpp \
+    lEmailData.cpp \
+    lFileSyncSource.cpp \
+    lFileData.cpp \
+    lItemReport.cpp \
+    lMailMessage.cpp \
+    lRawFileSyncSource.cpp \
+    lSyncManagerConfig.cpp \
+    lSyncItem.cpp \
+    lSyncItemStatus.cpp \
+    lSyncMLBuilder.cpp \
+    lSyncMLProcessor.cpp \
+    lSyncManager.cpp \
+    lSyncMap.cpp \
+    lSyncReport.cpp \
+    lSyncSource.cpp \
+    lSyncSourceConfig.cpp \
+    lSyncSourceReport.cpp \
+    lspdsutils.cpp 
 
 SOURCES_CLIENT = \
-    DMTClientConfig.cpp \
-    SyncClient.cpp
+    lDMTClientConfig.cpp \
+    lSyncClient.cpp
 
 SOURCES_VOCL = \
-    VConverter.cpp \
-    VObject.cpp \
-    VObjectFactory.cpp \
-    VProperty.cpp \
+    lVConverter.cpp \
+    lVObject.cpp \
+    lVObjectFactory.cpp \
+    lVProperty.cpp \
 \
-    Calendar.cpp \
-    Event.cpp \
-    ToDo.cpp \
-    iCalConverter.cpp \
-    iCalProperty.cpp \
+    lCalendar.cpp \
+    lEvent.cpp \
+    lToDo.cpp \
+    liCalConverter.cpp \
+    liCalProperty.cpp \
 \
-    Address.cpp \
-    BusinessDetail.cpp \
-    Contact.cpp \
-    Contact30.cpp \
-    ContactDetail.cpp \
-    Email.cpp \
-    Name.cpp \
-    Note.cpp \
-    PersonalDetail.cpp \
-    Phone.cpp \
-    Title.cpp \
-    TypedProperty.cpp \
-    WebPage.cpp \
-    vCardConverter.cpp \
-    vCardProperty.cpp
+    lAddress.cpp \
+    lBusinessDetail.cpp \
+    lContact.cpp \
+    lContact30.cpp \
+    lContactDetail.cpp \
+    lEmail.cpp \
+    lName.cpp \
+    lNote.cpp \
+    lPersonalDetail.cpp \
+    lPhone.cpp \
+    lTitle.cpp \
+    lTypedProperty.cpp \
+    lWebPage.cpp \
+    lvCardConverter.cpp \
+    lvCardProperty.cpp
 
 SOURCES_LIBSYNC4J = $(SOURCES_BASE) $(SOURCES_EVENT) $(SOURCES_FRAMEWORK) $(SOURCES_HTTP) $(SOURCES_SPDM) $(SOURCES_SPDS) $(SOURCES_CLIENT) $(SOURCES_VOCL)
 
-libsync4j_la_SOURCES = $(SOURCES_LIBSYNC4J)
-libsync4j_la_LDFLAGS = -version-info 3:0
+# Explicitly copy each source file here.
+# automake 1.10 creates rules which expect the *file* in this directory;
+# a symbolic link is not enough. The "l" prefix is necessary to avoid
+# a circular dependency (local copy of the same name as file in vpath).
+$(SOURCES_LIBSYNC4J): l% : %
+	ln -s $< $@
+CLEANFILES = $(SOURCES_LIBSYNC4J)
+
+libsync4j_la_SOURCES = $(SOURCES_LIBSYNC4J:%=l%)
+libsync4j_la_LDFLAGS = -version-info 3:0 @CURL_LDFLAGS@ @CPPUNIT_LDFLAGS@
+libsync4j_la_CXXFLAGS = @CURL_CFLAGS@ @CPPUNIT_CXXFLAGS@
 
 # client_SOURCES = client.cpp TestSyncSource.cpp TestSyncSource2.cpp
 # client_LDADD = libsync4j.la
@@ -204,8 +213,6 @@ vcardconverter_LDADD = libsync4j.la
 
 #NotifProcessorTest_SOURCES = NotifProcessorTest.cpp
 #NotifProcessorTest_LDADD = libsync4j.la
-
-
 
 vpath %.cpp $(srcdir)/../../../src/c++/common/base             \
             $(srcdir)/../../../src/c++/common/base/util        \
@@ -230,6 +237,4 @@ vpath %.cpp $(srcdir)/../../../src/c++/common/base             \
 
 vpath %.c   $(srcdir)/../../../src/c++/common/base
 
-AM_LDFLAGS = @CURL_LDFLAGS@ @CPPUNIT_LDFLAGS@
-AM_CXXFLAGS = @CURL_CFLAGS@ @CPPUNIT_CXXFLAGS@
 AM_CPPFLAGS = -I$(srcdir)/../../../src/include/posix -I$(srcdir)/../../../src/include/common -DAUTOTOOLS
