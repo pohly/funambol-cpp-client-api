@@ -194,19 +194,13 @@ void SyncSourceConfig::addCtCap(ArrayList *props, const char *ct_Type, const cha
     const char* cttype;
     const char* verct;
     bool fieldlevel;
-    if ( !ct_Type ){
-        cttype = getType();
-    }else{
-        cttype = ct_Type;
-    }
-    if ( !ver_CT ){
-        verct = getVersion();
-    }else{
-        cttype = ver_CT;
-    }
-    if ( fLevel == FLEVEL_UNDEFINED || fLevel == FLEVEL_DISABLED ){
+    cttype = ( ct_Type ) ? ct_Type : getType()    ; 
+    verct  = ( ver_CT  ) ? ver_CT  : getVersion() ;
+    if ( fLevel == FLEVEL_UNDEFINED ){
+        fieldlevel = getFieldLevel();
+    }else if ( fLevel == FLEVEL_DISABLED ){
         fieldlevel = false;
-    }else {
+    }else if ( fLevel == FLEVEL_ENABLED ){
         fieldlevel = true;
     }
 

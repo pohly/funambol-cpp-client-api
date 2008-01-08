@@ -259,8 +259,8 @@ class SyncSourceConfig {
          * the fieldLevel param has three status 
          *      FLEVEL_DISABLED   - to disable the FieldLevel param in the CtCap
          *      FLEVEL_ENABLED    - to enable the FieldLevel param in the CtCap
-         *      FLEVEL_UNDEFINED  - not set. In this case the code sets the default
-         *                          value. Now setted to disable the FieldLevel param 
+         *      FLEVEL_UNDEFINED  - not set. In this case the code sets the param to
+         *                          the value in the config. Now setted to disable the FieldLevel param 
          *
          * @param ArrayList* props - the arrayList with the properties
          * @param const char* ct_Type - optional
