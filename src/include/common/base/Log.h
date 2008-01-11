@@ -38,61 +38,158 @@
 /** @cond DEV */
 
     #include "fscapi.h"
+    #include "base/util/StringBuffer.h"
 
+    /** this statically sized buffer should not be used anywhere! */
+    extern char logmsg[];
+
+    /** prefix for error messages */
     #define LOG_ERROR "ERROR"
+    /** prefix for informational messages */
     #define LOG_INFO  "INFO"
+    /** prefix for debug or developer messages */
     #define LOG_DEBUG "DEBUG"
 
+    /** default is to create this file in the current directory */
     #define LOG_NAME "synclog.txt"
 
+    /**
+     * valid parameters for setLevel()
+     */
     typedef enum {
+        /**
+         * log level not configured: if used in setLevel(), then only
+         * error messages will be printed
+         */
         LOG_LEVEL_NONE  = 0,
+        /**
+         * errors and info messages for users and developers
+         * will be printed: use this to keep the log consise and
+         * small
+         */
         LOG_LEVEL_INFO  = 1,
-        LOG_LEVEL_DEBUG = 2
+        /**
+         * all messages will be printed: the log can become very large!
+         */
+        LOG_LEVEL_DEBUG = 2,
     } LogLevel;
-
-    extern char logmsg[];
 
     class Log {
 
     private:
 
-        void printMessage(const char*  level, const char*  msg, va_list argList);
-
-        /*
+        /**
          * Which log level is set?
          */
         LogLevel logLevel;
 
+        /**
+         * the singleton implementing logging
+         */
+        static Log *logger;
+
     public:
 
-        Log(BOOL reset = FALSE, const char*  path = NULL, const char*  name = NULL);
-        ~Log();
+        Log() : logLevel(LOG_LEVEL_INFO) {}
+        virtual ~Log() {}
 
-        void setLogPath(const char*  configLogPath);
-        void setLogName(const char*  configLogName);
+        /**
+         * Grants access to the singleton which implements logging.
+         * The implementation of this function and thus the Log
+         * class itself is platform specific: if no Log instance
+         * has been set yet, then this call has to create one.
+         */
+        static Log &instance();
 
-        void error(const char*  msg, ...);
-        void info(const char*  msg, ...);
-        void debug(const char*  msg, ...);
-        void trace(const char*  msg);
+        /**
+         * Overrides the default Log implementation. The Log class
+         * itself will never delete the active logger.
+         *
+         * @param logger    will be used for all future logging activities;
+         *                  NULL is allowed and implies that the default
+         *                  Log implementation will be created if needed
+         */
+        static void setLogger(Log *logger) { Log::logger = logger; }
 
-        void reset(const char*  title = NULL);
+        /** clients can use #ifdef to detect this new feature */
+# define LOG_HAVE_SET_LOGGER 1
 
-        void setLevel(LogLevel level);
+        /**
+         * Sets the directory where the log file will be created,
+         * which is done in reset() or any of the logging functions.
+         */
+        virtual void setLogPath(const char*  configLogPath) = 0;
 
-        LogLevel getLevel();
+        /**
+         * Sets the file name of the log file without creating it;
+         * that is done in reset() or any of the logging functions.
+         */
+        virtual void setLogName(const char*  configLogName) = 0;
 
-        BOOL isLoggable(LogLevel level);
+        /**
+         * creates the log file under the selected name and path,
+         * optionally logging the given title
+         */
+        virtual void reset(const char*  title = NULL) = 0;
 
-		/// Returns the log file size [bytes].
-        size_t getLogSize();
+        virtual void setLevel(LogLevel level) { logLevel = level; }
+        virtual LogLevel getLevel() { return logLevel; }
+        virtual BOOL isLoggable(LogLevel level) { return level <= logLevel; }
 
-        // FIXME!
-        //void printMessageW(const char* level, const WCHAR* msg, va_list argList);
+        /**
+         * error(), info(), developer(), debug() all print one message,
+         * using printf() style formatting. Whether the message is really
+         * written into the log file depends on the current log level
+         * (see LogLevel above).
+         *
+         * Which of these calls is the right one for a certain message
+         * is a somewhat subjective choice. Here is a definition how they
+         * are supposed to be used:
+         * - error: severe problem which the user and developer have to
+         *          know about
+         * - info: information about a sync session which the user
+         *         will want to read during/after each sync session
+         * - developer: information about a sync session that is not
+         *              interesting for a user (for example, because it
+         *              is constant and already known) but which should
+         *              be in each log because developers need to know
+         *              it. Messages logged with this calls will be included
+         *              at LOG_LEVEL_INFO, therefore messages should be small and
+         *              not recur so that the log file size remains small.
+         * - debug: most detailed logging, messages may be arbitrarily large
+         *
+         * Here is a decision tree which helps to pick the right level:
+         * - an error: => error()
+         * - it changes during each sync or marks important steps
+         *   in the sync: info()
+         * - small, non-recurring message which is important for developers
+         *   who read a log produced at LOG_LEVEL_INFO: developer()
+         * - everything else: debug()
+         */
+        virtual void error(const char*  msg, ...) = 0;
+        virtual void info(const char*  msg, ...) = 0;
+        virtual void developer(const char* msg, ...) = 0;
+        virtual void debug(const char*  msg, ...) = 0;
 
+        /** clients can use #ifdef to detect this new feature */
+# define LOG_HAVE_DEVELOPER 1
+
+        /**
+         * Adds a fixed string to each following line of output. NULL
+         * removes the prefix again. Some logging implementations
+         * might ignore the prefix. The prefix is copied by the
+         * implementation, i.e. the caller can free it after this
+         * call.
+         */
+        virtual void setPrefix(const char *prefix) {}
+
+        /**
+         * Returns the log file size [bytes].
+         */
+        virtual size_t getLogSize() = 0;
     };
 
-    extern Log LOG;
+# define LOG Log::instance()
+
 /** @endcond */
 #endif

@@ -38,31 +38,84 @@
 /** @cond DEV */
 
 #include <base/fscapi.h>
+#include <base/Log.h>
+#include "base/util/StringBuffer.h"
 
-/*
- * Opens the specified file for logging of messages.
- *
- * By default the LOG instance of the Log class will
- * create the file specified via its set methods
- * as soon as the first message needs to be printed or
- * when explicitly asking for a reset.
- *
- * By calling this function instead one gets more detailed
- * control over logging and avoids the (currently) insecurely
- * implemented handling of file name strings in the Log class.
- *
- * @param path            directory where file is to be created, can be NULL
- * @param name            file name relative to path or "-" when asking for
- *                        logging to stdout
- * @param redirectStderr  if TRUE, then file descriptor 2 (stderr)
- *                        will also be redirected into the log file;
- *                        the original stderr is preserved and will be
- *                        restored when turning this redirection off
+#include <stdio.h>
+
+/**
+ * extended API, can only be used if it is certain that
+ * Log::instance() returns a POSIXLog
  */
-void setLogFile(const char *path, const char* name, BOOL redirectStderr = FALSE);
+class POSIXLog : public Log {
+ public:
 
-/** traditional version of setLogFile() which writes in the current directory */
-void setLogFile(const char* name, BOOL redirectStderr = FALSE);
+    POSIXLog();
+    ~POSIXLog();
+
+    /**
+     * Opens the specified file for logging of messages.
+     *
+     * By default the LOG instance of the Log class will
+     * create the file specified via its set methods
+     * as soon as the first message needs to be printed or
+     * when explicitly asking for a reset.
+     *
+     * By calling this function instead one gets more detailed
+     * control over logging and avoids the (currently) insecurely
+     * implemented handling of file name strings in the Log class.
+     *
+     * @param path            directory where file is to be created, can be NULL
+     * @param name            file name relative to path or "-" when asking for
+     *                        logging to stdout
+     * @param redirectStderr  if TRUE, then file descriptor 2 (stderr)
+     *                        will also be redirected into the log file;
+     *                        the original stderr is preserved and will be
+     *                        restored when turning this redirection off
+     */
+    virtual void setLogFile(const char *path, const char* name, BOOL redirectStderr = FALSE);
+
+    /**
+     * if a client developer wants to ignore the prefix, he can
+     * derive his own Log implementation from POSIXLog, override this
+     * call and then install his implementation via Log::setLogger()
+     */
+    virtual void setPrefix(const char *prefix) { this->prefix = prefix ? prefix : ""; }
+
+    virtual void setLogPath(const char*  configLogPath);
+    virtual void setLogName(const char*  configLogName);
+    virtual void error(const char*  msg, ...);
+    virtual void info(const char*  msg, ...);
+    virtual void developer(const char*  msg, ...);
+    virtual void debug(const char*  msg, ...);
+    virtual void reset(const char* title = NULL);
+    virtual size_t getLogSize();
+
+ private:
+    FILE* logFile;
+    BOOL logFileStdout;
+    StringBuffer logName;
+    StringBuffer logPath;
+    BOOL logRedirectStderr;
+
+    /** a copy of stderr before it was redirected */
+    int fderr;
+
+    /**
+     * additional prefix for each line
+     */
+    StringBuffer prefix;
+
+    void printMessage(const char*  level, const char*  msg, va_list argList);
+
+    /**
+     * return a the time to write into log file. If complete is true, it returns
+     * the date too, else only hours, minutes, seconds and milliseconds
+     */
+    char* createCurrentTime(BOOL complete);
+};
+
+#define POSIX_LOG ((POSIXLog &)Log::instance())
 
 /** @endcond */
 #endif
