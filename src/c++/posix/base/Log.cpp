@@ -45,7 +45,8 @@ POSIXLog::POSIXLog() :
     logFile(NULL),
     logFileStdout(FALSE),
     logName(LOG_NAME),
-    logRedirectStderr(FALSE)
+    logRedirectStderr(FALSE),
+    prefix("")
 {
 }
 
@@ -101,20 +102,6 @@ void POSIXLog::setLogFile(const char *path, const char* name, BOOL redirectStder
     }
 }
 
-char* POSIXLog::createCurrentTime(BOOL complete) {
-    time_t t = time(NULL);
-    struct tm *sys_time = localtime(&t);
-    const size_t len = 64;
-    char *ret = new char [len];
-
-    if (complete) {
-        strftime(ret, len, "%F %T GMT %z", sys_time);
-    } else {
-        strftime(ret, len, "%T GMT %z", sys_time);
-    }
-    return ret;
-}
-
 POSIXLog::~POSIXLog() {
     if (logFile != NULL) {
         fclose(logFile);
@@ -124,7 +111,7 @@ POSIXLog::~POSIXLog() {
 void POSIXLog::error(const char*  msg, ...) {
     va_list argList;
     va_start (argList, msg);
-    printMessage(LOG_ERROR, msg, argList);
+    printMessage(LOG_LEVEL_NONE, LOG_ERROR, msg, argList);
     va_end(argList);
 }
 
@@ -132,7 +119,7 @@ void POSIXLog::info(const char*  msg, ...) {
     if (isLoggable(LOG_LEVEL_INFO)) {
         va_list argList;
         va_start (argList, msg);
-        printMessage(LOG_INFO, msg, argList);
+        printMessage(LOG_LEVEL_INFO, LOG_INFO, msg, argList);
         va_end(argList);
     }
 }
@@ -141,7 +128,7 @@ void POSIXLog::developer(const char*  msg, ...) {
     if (isLoggable(LOG_LEVEL_INFO)) {
         va_list argList;
         va_start (argList, msg);
-        printMessage(LOG_DEBUG, msg, argList);
+        printMessage(LOG_LEVEL_DEBUG, LOG_DEBUG, msg, argList);
         va_end(argList);
     }
 }
@@ -150,25 +137,69 @@ void POSIXLog::debug(const char*  msg, ...) {
     if (isLoggable(LOG_LEVEL_DEBUG)) {
         va_list argList;
         va_start (argList, msg);
-        printMessage(LOG_DEBUG, msg, argList);
+        printMessage(LOG_LEVEL_DEBUG, LOG_DEBUG, msg, argList);
         va_end(argList);
     }
 }
 
-void POSIXLog::printMessage(const char*  level, const char*  msg, va_list argList) {
-    char* currentTime = NULL;
+void POSIXLog::printLine(BOOL firstLine,
+                         const char *fullTime,
+                         const char *shortTime,
+                         LogLevel level,
+                         const char *levelPrefix,
+                         const char *line)
+{
+    FILE *out = getLogFile();
+    if (!out) {
+        out = stdout;
+    }
+    fprintf(out, "%s [%s] %s%s\n",
+            logFile ? fullTime : shortTime,
+            levelPrefix,
+            getPrefix().c_str(),
+            line);
+    fflush(out);
+}
+
+void POSIXLog::printMessage(LogLevel level, const char* levelPrefix, const char* msg, va_list argList) {
+    time_t t = time(NULL);
+    struct tm sys_time;
+    char fullTime[64], shortTime[32];
+
+    localtime_r(&t, &sys_time);
     
-    currentTime = createCurrentTime(false);
+    strftime(fullTime, sizeof(fullTime), "%F %T GMT %z", &sys_time);
+    strftime(shortTime, sizeof(shortTime), "%T", &sys_time);
+
     if (!logFileStdout && !logFile) {
         reset();
     }
-    FILE *out = logFile ? logFile : stdout ;
-    fprintf(out, "%s [%s] - ", currentTime, level );
-    vfprintf(out, msg, argList);
-    fputs("\n", out);
-    fflush(out);
-    
-    delete[] currentTime;
+
+    StringBuffer buffer;
+    buffer.vsprintf(msg, argList);
+    const char *start = buffer.c_str();
+    const char *eol = strchr(start, '\n');
+    BOOL firstLine = TRUE;
+    while (eol) {
+        /* hack: StringBuffer does not really allow write access, but do it anyway */
+        *(char *)eol = 0;
+        printLine(firstLine,
+                  fullTime,
+                  shortTime,
+                  level,
+                  levelPrefix,
+                  start);
+        firstLine = FALSE;
+        *(char *)eol = '\n';
+        start = eol + 1;
+        eol = strchr(start, '\n');
+    }
+    printLine(firstLine,
+              fullTime,
+              shortTime,
+              level,
+              levelPrefix,
+              start);
 }
 
 

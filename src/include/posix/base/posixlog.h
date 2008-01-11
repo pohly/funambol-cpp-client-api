@@ -76,11 +76,17 @@ class POSIXLog : public Log {
     virtual void setLogFile(const char *path, const char* name, BOOL redirectStderr = FALSE);
 
     /**
+     * returns active log file or NULL if none set (e.g. if logging to stdout directly)
+     */
+    virtual FILE *getLogFile() { return logFile; }
+
+    /**
      * if a client developer wants to ignore the prefix, he can
      * derive his own Log implementation from POSIXLog, override this
      * call and then install his implementation via Log::setLogger()
      */
     virtual void setPrefix(const char *prefix) { this->prefix = prefix ? prefix : ""; }
+    virtual const StringBuffer &getPrefix() const { return prefix; }
 
     virtual void setLogPath(const char*  configLogPath);
     virtual void setLogName(const char*  configLogName);
@@ -90,6 +96,26 @@ class POSIXLog : public Log {
     virtual void debug(const char*  msg, ...);
     virtual void reset(const char* title = NULL);
     virtual size_t getLogSize();
+
+ protected:
+    /**
+     * Prints a single line to the current log file.
+     * Can be overridden by derived class to also print
+     * in a different way.
+     *
+     * @param firstLine     TRUE if this is the first line of a new message
+     * @param fullTime      a time string including date and GMT offset
+     * @param shortTime     a time string including just the local time of day
+     * @param level         the severity of the report
+     * @param levelPrefix   a string representing the severity (may differ from level, e.g. for Log::developer())
+     * @param line          the actual message string
+     */
+    virtual void printLine(BOOL firstLine,
+                           const char *fullTime,
+                           const char *shortTime,
+                           LogLevel level,
+                           const char *levelPrefix,
+                           const char *line);
 
  private:
     FILE* logFile;
@@ -106,13 +132,7 @@ class POSIXLog : public Log {
      */
     StringBuffer prefix;
 
-    void printMessage(const char*  level, const char*  msg, va_list argList);
-
-    /**
-     * return a the time to write into log file. If complete is true, it returns
-     * the date too, else only hours, minutes, seconds and milliseconds
-     */
-    char* createCurrentTime(BOOL complete);
+    void printMessage(LogLevel level, const char* levelPrefix, const char* msg, va_list argList);
 };
 
 #define POSIX_LOG ((POSIXLog &)Log::instance())
