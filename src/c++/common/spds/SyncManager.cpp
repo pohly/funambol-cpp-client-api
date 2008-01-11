@@ -435,7 +435,6 @@ int SyncManager::prepareSync(SyncSource** s) {
         }
 
         LOG.debug(MSG_INITIALIZATATION_MESSAGE);
-        LOG.debug("%s", initMsg);
 
         currentState = STATE_PKG1_SENDING;
 
@@ -1406,7 +1405,6 @@ int SyncManager::sync() {
                       MSG_MODIFICATION_MESSAGE,
                       msgSize, maxMsgSize, realMsgSize, msgSize,
                       msgSize ? (100 * realMsgSize / msgSize) : 100);
-            LOG.debug("%s", msg);
 
             //Fire Modifications Event
             fireSyncEvent(NULL, SEND_MODIFICATION);
@@ -1522,7 +1520,6 @@ int SyncManager::sync() {
         msg    = syncMLBuilder.prepareMsg(syncml);
 
         LOG.debug("Alert to request server changes");
-        LOG.debug("%s", msg);
 
         responseMsg = transportAgent->sendMessage(msg);
         if (responseMsg == NULL) {
@@ -1586,7 +1583,6 @@ int SyncManager::sync() {
                 msg    = syncMLBuilder.prepareMsg(syncml);
 
                 LOG.debug("Status to the server");
-                LOG.debug("%s", msg);
 
                 responseMsg = transportAgent->sendMessage(msg);
                 if (responseMsg == NULL) {
@@ -1717,7 +1713,6 @@ int SyncManager::endSync() {
         mapMsg = syncMLBuilder.prepareMsg(syncml);
 
         LOG.debug("Mapping");
-        LOG.debug("%s", mapMsg);
 
         //Fire Finalization Event
         fireSyncEvent(NULL, SEND_FINALIZATION);

@@ -33,7 +33,7 @@
  * the words "Powered by Funambol".
  */
 
-#include "base/Log.h"
+#include "base/posixlog.h"
 #include "base/messages.h"
 #include "http/constants.h"
 #include "http/errors.h"
@@ -140,25 +140,31 @@ size_t CurlTransportAgent::sendData(void *buffer, size_t size, size_t nmemb, voi
     agent->sent += curr;
     return curr;
 }
-
 int CurlTransportAgent::debugCallback(CURL *easyhandle, curl_infotype type, char *data, size_t size, void *unused)
 {
     BOOL isData = type == CURLINFO_DATA_IN || type == CURLINFO_DATA_OUT;
 
-    if (LOG.getLevel() >= LOG_LEVEL_DEBUG && !isData ||
-        LOG.getLevel() > LOG_LEVEL_DEBUG) {
-        char *buffer = new char[30 + size];
-        sprintf(buffer, "libcurl %s%.*s",
-                type == CURLINFO_TEXT ? "info: " :
-                type == CURLINFO_HEADER_IN ? "header in: " :
-                type == CURLINFO_HEADER_OUT ? "header out:\n" :
-                type == CURLINFO_DATA_IN ? "data in:\n" :
-                type == CURLINFO_DATA_OUT ? "data out:\n" :
-                "???",
-                (size > 0 && data[size-1] == '\n') ? (int)size - 1 : (int)size,
-                data);
-        LOG.debug(buffer);
-        delete [] buffer;
+    if (LOG.getLevel() >= LOG_LEVEL_DEBUG) {
+        POSIX_LOG.setPrefix(type == CURLINFO_TEXT ? "libcurl info: " :
+                            type == CURLINFO_HEADER_IN ? "header in: " :
+                            type == CURLINFO_HEADER_OUT ? "header out: " :
+                            type == CURLINFO_DATA_IN ? "data in: " :
+                            type == CURLINFO_DATA_OUT ? "data out: " :
+                            NULL);
+        if (isData) {
+            LOG.debug("=== %d bytes ===", (int)size);
+        }
+        // ignore trailing line break, LOG.debug() will add it automatically
+        int logsize = (int)size;
+        if (logsize >= 2 && data[logsize - 2] == '\r' && data[logsize - 1] == '\n') {
+            logsize -= 2;
+        } else if (logsize >= 1 && data[logsize -1] == '\n') {
+            logsize -= 1;
+        }
+        LOG.debug("%.*s",
+                  logsize,
+                  data);
+        POSIX_LOG.setPrefix(NULL);
     }
     return 0;
 }
@@ -201,9 +207,8 @@ char* CurlTransportAgent::sendMessage(const char* msg) {
         sprintf(lastErrorMsg, "libcurl error %d, %.250s", code, curlerrortxt);
     } else {
         response = responsebuffer;
-        LOG.debug(response);
-        LOG.debug("Response read");
     }
+    POSIX_LOG.setPrefix(NULL);
     responsebuffer = NULL;
     responsebuffersize = 0;
 
