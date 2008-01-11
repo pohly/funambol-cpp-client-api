@@ -141,6 +141,7 @@ WinTransportAgent::~WinTransportAgent(){}
  */
 char* WinTransportAgent::sendMessage(const char* msg) {
 
+    LOG.debug(msg);
     ENTERING(L"TransportAgent::sendMessage");
 
 #ifdef USE_ZLIB
