@@ -302,7 +302,7 @@ int SyncManager::prepareSync(SyncSource** s) {
 
     URL url(config.getAccessConfig().getSyncURL());
     Proxy proxy;
-    LOG.info(MSG_SYNC_URL, syncURL.c_str());
+    LOG.developer(MSG_SYNC_URL, syncURL.c_str());
 
     // Copy and validate given
     sourcesNumber = assignSources(s);
