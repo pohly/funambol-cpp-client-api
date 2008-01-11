@@ -3463,6 +3463,10 @@
 					RelativePath="..\..\src\include\windows\base\winadapter.h"
 					>
 				</File>
+				<File
+					RelativePath="..\..\src\include\windows\base\winlog.h"
+					>
+				</File>
 				<Filter
 					Name="util"
 					>

@@ -78,7 +78,9 @@ int main(int argc, char** argv) {
 #endif
 
     // Init LOG
-    Log(0, LOG_PATH, LOG_NAME);
+    //Log(0, LOG_PATH, LOG_NAME);
+    LOG.setLogPath(LOG_PATH);
+    LOG.setLogName(LOG_NAME);
     LOG.reset(LOG_TITLE);
     LOG.setLevel(LOG_LEVEL_INFO);
 
