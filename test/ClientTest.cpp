@@ -612,6 +612,7 @@ void LocalTests::testChanges() {
     deleteAll(createSourceA);
     SOURCE_ASSERT_NO_FAILURE(source.get(), source.reset(createSourceB()));
     SOURCE_ASSERT_EQUAL(source.get(), 0, source->beginSync());
+    SOURCE_ASSERT_EQUAL(source.get(), 0, source->endSync());
     testSimpleInsert();
     update(createSourceA, config.updateItem);
     SOURCE_ASSERT_NO_FAILURE(source.get(), source.reset(createSourceB()));
@@ -624,6 +625,8 @@ void LocalTests::testChanges() {
     // even if (as for calendar with UID) the same LUID gets reused
     deleteAll(createSourceA);
     SOURCE_ASSERT_NO_FAILURE(source.get(), source.reset(createSourceB()));
+    SOURCE_ASSERT_EQUAL(source.get(), 0, source->beginSync());
+    SOURCE_ASSERT_EQUAL(source.get(), 0, source->endSync());
     testSimpleInsert();
     deleteAll(createSourceA);
     testSimpleInsert();
