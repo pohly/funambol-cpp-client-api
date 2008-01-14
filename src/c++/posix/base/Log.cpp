@@ -46,6 +46,7 @@ POSIXLog::POSIXLog() :
     logFileStdout(FALSE),
     logName(LOG_NAME),
     logRedirectStderr(FALSE),
+    fderr(-1),
     prefix("")
 {
 }
