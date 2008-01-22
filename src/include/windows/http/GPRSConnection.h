@@ -39,11 +39,10 @@
 
         #define ERR_INTERNET_CONNECTION_MISSING       2005
 
-        /*
+        /**
         * Method to test if connection is alive. If no one is found, it tries to establish
         * default connection.
         */
-
         BOOL EstablishConnection();
 
 /** @endcond */
