@@ -47,96 +47,90 @@
 #include "base/Log.h"
 
 
-/*
-* Method to test if connection is alive. If no one is found, it tries to establish
-* default connection.
-*/
 
 BOOL EstablishConnection() {
 
+    BOOL ret = FALSE;
+    CONNMGR_CONNECTIONINFO sConInfo = {0};
+
+    //
+    // Create mutex for GPRS Connection.
+    //
+    HANDLE hMutex = CreateMutex(NULL, TRUE, TEXT("FunGPRSConnection"));
+    switch (GetLastError()) {
+        case ERROR_SUCCESS:
+            LOG.debug("GPRS mutex created.");
+            break;
+        case ERROR_ALREADY_EXISTS:
+            LOG.debug("Already testing GPRS connection, exiting.");
+            ret = TRUE;
+            goto finally;
+        default:
+            LOG.error("Failed to create GPRS mutex");
+            ret = FALSE;
+            goto finally;
+    }
+
+
+    sConInfo.cbSize         = sizeof(sConInfo);
+    sConInfo.dwParams       = CONNMGR_PARAM_GUIDDESTNET;
+    sConInfo.dwPriority     = CONNMGR_PRIORITY_USERINTERACTIVE;
+    sConInfo.dwFlags        = CONNMGR_FLAG_PROXY_HTTP;
+    sConInfo.bExclusive     = FALSE;
+    sConInfo.bDisabled      = FALSE;
+    sConInfo.guidDestNet    = IID_DestNetInternet;
     HANDLE  phWebConnection = NULL;
 
-    // First we check if we might have a connection
-    DWORD  pdwStatus = 0;
-    LOG.debug("Establish connection: test internet connection status...");
-    ConnMgrConnectionStatus(phWebConnection, &pdwStatus);
+    // Creates a connection request.
+    HRESULT hr = ConnMgrEstablishConnection(&sConInfo, &phWebConnection);
 
-    if (pdwStatus == CONNMGR_STATUS_CONNECTED) {
-        LOG.info("Already connected");
-        //We are already connected!
-        return TRUE;
+    if (FAILED(hr)) {
+        LOG.error("It is impossibile to create an internet connection");
+        ret = FALSE;
+        goto finally;
     } 
-#if _WIN32_WCE > 0x500     
-    else if (pdwStatus == CONNMGR_STATUS_PHONEOFF) {
-        LOG.info("phone off");
-        //We are already connected!
-        return FALSE;
-    }
-#endif
-    else {
-        LOG.debug("Not connected (status = 0x%02x): try to connect...", pdwStatus);
-        //We are not connected, so lets try:
-        //The CONNECTIONINFO is the structure that
-        //tells Connection Manager how we want
-        //to connect
+    else {       
+        LOG.debug("Checking internet connection...");                
+        DWORD pdwStatus = 0;
+        int maxRetry = 10;
+        for (int k = 0; k <= maxRetry; k++) {
+            
+            // Returns status about the current connection.
+            ConnMgrConnectionStatus(phWebConnection, &pdwStatus);
 
-        CONNMGR_CONNECTIONINFO sConInfo;
-        memset(&sConInfo,0, sizeof(CONNMGR_CONNECTIONINFO));
-        sConInfo.cbSize = sizeof(CONNMGR_CONNECTIONINFO);
-        // We want to use the "guidDestNet" parameter
-        sConInfo.dwParams = CONNMGR_PARAM_GUIDDESTNET;
-        // This is the highest data priority.
-        sConInfo.dwPriority = CONNMGR_PRIORITY_USERINTERACTIVE;
-        // sConInfo.dwFlags = 0;
-        sConInfo.dwFlags=CONNMGR_FLAG_PROXY_HTTP;
-        // Lets be nice and share the connection with
-        // other applications
-        sConInfo.bExclusive = FALSE;
-        sConInfo.bDisabled = FALSE;
-        sConInfo.guidDestNet = IID_DestNetInternet;
-        LOG.debug("Try to establish connection...");
-        if (ConnMgrEstablishConnection(&sConInfo,&phWebConnection) == S_OK) {
-            LOG.debug("Start internet connection process...");
-            //We start successfully process!
-            int maxRetry = 5;
-            for (int k = 0; k <= maxRetry; k++) {
-                ConnMgrConnectionStatus(phWebConnection,&pdwStatus);
-
-                if (pdwStatus == CONNMGR_STATUS_CONNECTED) {
-                    LOG.debug("Internet connection succesfully completed.");
-                    return TRUE;
-
-                }
-                else {
-                    if (pdwStatus == CONNMGR_STATUS_CONNECTIONCANCELED || pdwStatus == CONNMGR_STATUS_WAITINGCONNECTIONABORT) {
-                        LOG.debug("Internet connection not succeded.");
-                        return FALSE;
-
-                    }
-                    Sleep(2000);
-
-                    ConnMgrConnectionStatus(phWebConnection,&pdwStatus);
-                    if (pdwStatus == CONNMGR_STATUS_WAITINGCONNECTION) {
-                        // it is possible to do something...
-                        maxRetry = 10;
-                    }
-
-                    if (pdwStatus == CONNMGR_STATUS_CONNECTIONCANCELED || pdwStatus == CONNMGR_STATUS_WAITINGCONNECTIONABORT) {
-                        LOG.debug("Internet connection not succeded");
-                        return FALSE;
-                    }
-                }
+            switch (pdwStatus) {
+                case CONNMGR_STATUS_UNKNOWN:
+                case CONNMGR_STATUS_WAITINGCONNECTION:
+                    LOG.debug("Attempting to connect...");
+                    break;
+                case CONNMGR_STATUS_CONNECTED:
+                    LOG.debug("Internet connection succesfully completed!");
+                    ret = TRUE;
+                    goto finally;
+                case CONNMGR_STATUS_CONNECTIONCANCELED:
+                    LOG.debug("Internet connection canceled.");
+                    ret = FALSE;
+                    goto finally;
+                case CONNMGR_STATUS_WAITINGCONNECTIONABORT:
+                    LOG.debug("Internet connection aborted.");
+                    ret = FALSE;
+                    goto finally;
+                case CONNMGR_STATUS_PHONEOFF:
+                    LOG.debug("Phone is off, connection aborted.");
+                    ret = FALSE;
+                    goto finally;
+                default:
+                    LOG.debug("Unknown connection status (0x%02x)", pdwStatus);
+                    break;
             }
-            LOG.error("Internet connection not succeded after connection process (status = 0x%02x)", pdwStatus);
-            return FALSE;
-        }
-        else {
-            //Connection failed!
-            LOG.error("Internet connection failed.");
-            return FALSE;
 
+            // If connecting, give some time to create the connection.
+            Sleep(2000);
         }
-
     }
 
+finally:
+    CloseHandle( hMutex );
+    LOG.debug("GPRS mutex released.");
+    return ret;
 }
