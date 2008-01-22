@@ -333,7 +333,7 @@ int SyncManager::prepareSync(SyncSource** s) {
     mappings = new ArrayList*[sourcesNumber + 1];
     for (count = 0; count < sourcesNumber; count++) {
         mappings[count] = new ArrayList();
-        LOG.info(MSG_PREPARING_SYNC, _wcc(sources[count]->getName()));
+        LOG.info(MSG_PREPARING_SYNC, sources[count]->getConfig().getName());
     }
 
     syncMLBuilder.resetCommandID();
@@ -1051,8 +1051,8 @@ int SyncManager::sync() {
                  */
             }
 
-            // Accumulate changes for the current sync source until
-            // an item cannot be sent completely because the message size would be exceeded
+            // Accumulate changes for the current sync source until the maxMsgSize
+            // is reached.
             //
             // In each loop iteration at least one change must be sent to ensure progress.
             // Keeping track of the current message size is a heuristic which assumes a constant
@@ -1578,6 +1578,10 @@ int SyncManager::sync() {
             }
 
             commands->add(&statusList);
+            // Add any map command pending for the active sources
+            for(int i=0; i<sourcesNumber; i++) {
+                addMapCommand(i);
+            }
 
             if (!last) {
                 deleteSyncML(&syncml);
@@ -1642,143 +1646,140 @@ finally:
     return ret;
 }
 
+/* 
+ * Adds the Map command to the commands list if needed.
+ * Updates the class member 'commands'.
+ */
+void SyncManager::addMapCommand(int sourceIndex) {
+    Map* map = NULL;
+    // Build the mapping command
+    if (mappings[sourceIndex]->size() > 0) {
+        map = syncMLBuilder.prepareMapCommand(*sources[sourceIndex]);
+        for (int i=0; i < mappings[sourceIndex]->size(); i++) {                                                      
+            MapItem* mapItem = syncMLBuilder.prepareMapItem(
+                                        (SyncMap*)mappings[sourceIndex]->get(i));
+            syncMLBuilder.addMapItem(map, mapItem);
+
+            delete mapItem;
+        }
+        // Add it to the list
+        commands->add(*map);
+        // And clear the pending mappings for this source
+        mappings[sourceIndex]->clear();
+        delete map;
+    }  
+}
 
 int SyncManager::endSync() {
 
     char* mapMsg            = NULL;
     char* responseMsg       = NULL;
     SyncML*  syncml         = NULL;
-    BOOL     last           = TRUE;
     int ret                 = 0;
-    Map* map                = NULL;
     Status* status          = NULL;
-    unsigned int iterator   = 0;
-    unsigned int toSync     = 0;
-    int i = 0, tot = -1;
+    ArrayList* list         = new ArrayList();
+    bool msgToSend          = false;
 
-    // rough (pessimistic) estimation of 400 bytes per map item
-    int maxMapItems = maxMsgSize / 400;
-
-    // The real number of source to sync
-    for (count = 0; count < sourcesNumber; count ++) {
-        if (!sources[count]->getReport()->checkState()) {
-            continue;
-        }
-        toSync++;
-    }
-
+    //
+    // Add map commands for all active sources to syncml object.
+    //
     for (count = 0; count < sourcesNumber; count ++) {
         if (!sources[count]->getReport()->checkState()) {
             continue;
         }
 
-        iterator++;
         if (  (sources[count]->getSyncMode() == SYNC_ONE_WAY_FROM_CLIENT &&
                 commands->isEmpty() && mappings[count]->size() == 0) ||
                 (sources[count]->getSyncMode() == SYNC_REFRESH_FROM_CLIENT &&
                 commands->isEmpty() && mappings[count]->size() == 0)
                 ) {
+            // No need to send the final msg (no mapping).
+        }
+        else {
+            // At least one source, so we'll send the final msg.
+            msgToSend = true;
+
+            if (commands->isEmpty()) {
+                status = syncMLBuilder.prepareSyncHdrStatus(NULL, 200);
+                commands->add(*status);
+                deleteStatus(&status);
+            }
+            // Add any map command pending for this source
+            addMapCommand(count);
+        }
+    }
 
 
-        } else {
+    //
+    // Send the final message with mappings.
+    //
+    if (msgToSend) {
+            
+        syncml = syncMLBuilder.prepareSyncML(commands, TRUE);
+        mapMsg = syncMLBuilder.prepareMsg(syncml);
 
-            // put at the end of the if
+        LOG.debug("Mapping");
+        LOG.debug("%s", mapMsg);
 
-            last = FALSE;
-            i = 0;
-            do {
-                tot = -1;
-                if (commands->isEmpty()) {
-                    status = syncMLBuilder.prepareSyncHdrStatus(NULL, 200);
-                    commands->add(*status);
-                    deleteStatus(&status);
-                }
+        //Fire Finalization Event
+        fireSyncEvent(NULL, SEND_FINALIZATION);
 
-                if (mappings[count]->size() > 0) {
-                    map = syncMLBuilder.prepareMapCommand(*sources[count]);
-                }
-                else if (iterator != toSync) {
-                    break;
-                }
-                else {
-                    last = TRUE;
-                }
+        responseMsg = transportAgent->sendMessage(mapMsg);
+        if (responseMsg == NULL) {
+            ret=lastErrorCode;
+            goto finally;
+        }
+        // increment the msgRef after every send message
+        syncMLBuilder.increaseMsgRef();
+        syncMLBuilder.resetCommandID();
 
-                for (; i < mappings[count]->size(); i++) {
-                    tot++;
-                    MapItem* mapItem = syncMLBuilder.prepareMapItem((SyncMap*)mappings[count]->get(i));
-                    syncMLBuilder.addMapItem(map, mapItem);
+        deleteSyncML(&syncml);
+        safeDelete(&mapMsg);
 
-                    deleteMapItem(&mapItem);
+        syncml = syncMLProcessor.processMsg(responseMsg);
+        delete [] responseMsg; responseMsg = NULL;
+        deleteArrayList(&commands);
 
-                    if (tot == ((int)maxMapItems - 1)) {
-                        i++;
-                        last = FALSE;
-                        break;
+        if (syncml == NULL) {
+            ret = lastErrorCode;
+            goto finally;
+        }
+        ret = syncMLProcessor.processSyncHdrStatus(syncml);
 
-                    }
-                    last = TRUE;
-                }
+        if (isErrorStatus(ret)) {
+            lastErrorCode = ret;
+            sprintf(lastErrorMsg, "Server Failure: server returned error code %i", ret);
+            LOG.error(lastErrorMsg);
+            goto finally;
+        }
+        ret = 0;
 
-                if (i == mappings[count]->size()) {
-                    last = TRUE;
-                }
+        //
+        // Process the status of mapping
+        //
+        ret = syncMLProcessor.processMapResponse(*sources[count], syncml->getSyncBody());
+        deleteSyncML(&syncml);
+        if (ret == -1) {
+            ret = lastErrorCode;
+            goto finally;
+        }
+    }
 
-                if (mappings[count]->size() > 0)
-                    commands->add(*map);
 
-                syncml = syncMLBuilder.prepareSyncML(commands, iterator != toSync ? FALSE : last);
-                //syncml = syncMLBuilder.prepareSyncML(commands, last);
-                mapMsg = syncMLBuilder.prepareMsg(syncml);
+    for (count = 0; count < sourcesNumber; count ++) {
+        if (!sources[count]->getReport()->checkState()) {
+            continue;
+        }
 
-                LOG.debug("Mapping");
-                LOG.debug("%s", mapMsg);
-
-                //Fire Finalization Event
-                fireSyncEvent(NULL, SEND_FINALIZATION);
-
-                responseMsg = transportAgent->sendMessage(mapMsg);
-                if (responseMsg == NULL) {
-                    ret=lastErrorCode;
-                    goto finally;
-                }
-                // increment the msgRef after every send message
-                syncMLBuilder.increaseMsgRef();
-                syncMLBuilder.resetCommandID();
-
-                deleteSyncML(&syncml);
-                safeDelete(&mapMsg);
-
-                syncml = syncMLProcessor.processMsg(responseMsg);
-                delete [] responseMsg; responseMsg = NULL;
-                deleteArrayList(&commands);
-
-                if (syncml == NULL) {
-                    ret = lastErrorCode;
-                    goto finally;
-                }
-                ret = syncMLProcessor.processSyncHdrStatus(syncml);
-
-                if (isErrorStatus(ret)) {
-                    lastErrorCode = ret;
-                    sprintf(lastErrorMsg, "Server Failure: server returned error code %i", ret);
-                    LOG.error(lastErrorMsg);
-                    goto finally;
-                }
-                ret = 0;
-
-                //
-                // Process the status of mapping
-                //
-                ret = syncMLProcessor.processMapResponse(*sources[count], syncml->getSyncBody());
-                deleteSyncML(&syncml);
-                if (ret == -1) {
-                    ret = lastErrorCode;
-                    goto finally;
-                }
-
-            } while(!last);
-
+        // -----------------------
+        // TODO: remove this section when the removeAllItems() is used for refrseh-from-server sync
+        if (  (sources[count]->getSyncMode() == SYNC_ONE_WAY_FROM_CLIENT &&
+            commands->isEmpty() && mappings[count]->size() == 0) ||
+            (sources[count]->getSyncMode() == SYNC_REFRESH_FROM_CLIENT &&
+            commands->isEmpty() && mappings[count]->size() == 0)
+            ) {
+        }
+        else {
             if(allItemsList[count]) {
                 int size = allItemsList[count]->size();
                 for(int i = 0; i < size; i++) {
@@ -1790,8 +1791,8 @@ int SyncManager::endSync() {
                     }
                 }
             }
-
         }
+        // -----------------------
 
         int sret = sources[count]->endSync();
         if (sret) {
@@ -1807,15 +1808,6 @@ int SyncManager::endSync() {
 
         commitChanges(*sources[count]);
     }
-    /*
-	if (mappings) {
-        for (int i=0; i<sourcesNumber; i++) {
-            deleteArrayList(&mappings[i]);
-            if (mappings[i]) { delete mappings[i]; mappings[i] = NULL; }
-        }
-        delete [] mappings; mappings = NULL;
-    }
-    */
 
     config.getAccessConfig().setEndSync((unsigned long)time(NULL));
     safeDelete(&responseMsg);
@@ -1834,8 +1826,10 @@ int SyncManager::endSync() {
     else if (lastErrorCode){
         return lastErrorCode;
     }
-    else
+	else {
+  	    LOG.info("Sync successfully completed.");
         return 0;
+	}
 }
 
 BOOL SyncManager::readSyncSourceDefinition(SyncSource& source) {

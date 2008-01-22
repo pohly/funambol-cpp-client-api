@@ -219,6 +219,12 @@ class SyncManager {
          * if the source itself had returned NULL.
          */
         SyncItem* getItem(SyncSource& source, SyncItem* (SyncSource::* getItem)());
+
+        /**
+         * Add the map command according to the current value of the 
+         * member 'mappings', and clean up the member afterwards.
+         */
+        void addMapCommand(int sourceIndex);
 };
 
 /** @} */
