@@ -156,7 +156,7 @@ static StringBuffer formatBodyPart(const BodyPart &part)
     StringBuffer ret;
 
     LOG.debug("FormatBodyPart START");
-
+    
     ret = MIMETYPE;
     ret += part.getMimeType(); ret += ";\n";
     if( part.getFilename() ) {
@@ -262,7 +262,79 @@ static StringBuffer getTokenValue(const StringBuffer* line, const char* token, b
 }
 
 
+StringBuffer MailMessage::decodeHeader(StringBuffer line) {
 
+    if (!line || line.empty()) {
+        return line;
+    }
+
+    size_t startPos = 0;
+    StringBuffer ret;
+    StringBuffer charset;
+    while( (startPos = line.find("=?", startPos)) != StringBuffer::npos) {
+        // Skip the '=?'
+        startPos += 2;
+        // Find the first '?'
+        size_t firstMark = line.find("?", startPos);
+        if (firstMark == StringBuffer::npos) {
+            LOG.error("Invalid encoded header");
+            return line;
+        }
+        // Find the second '?'
+        size_t secondMark = line.find("?", firstMark+1);
+        if (secondMark == StringBuffer::npos) {
+            LOG.error("Invalid encoded header");
+            return line;
+        }
+        // Find the final '?='
+        size_t endPos = line.find("?=", secondMark+1);
+        if (endPos == StringBuffer::npos) {
+            LOG.error("Invalid encoded header");
+            return line;
+        }
+
+        charset = line.substr(startPos, firstMark - startPos);
+        StringBuffer encoding = line.substr(firstMark+1, secondMark - (firstMark + 1));
+        StringBuffer text = line.substr(secondMark+1, endPos - (secondMark + 1));
+
+        if (encoding.icmp("Q")) {
+            // quoted-printable
+            text.replaceAll("_", " ");
+            char* dec = qp_decode(text);
+            if (startPos >= 2 &&  ret.length() == 0) {
+                ret += line.substr(0, startPos - 2);
+            }
+
+            ret += dec;
+            delete [] dec;
+        }
+        else if (encoding.icmp("B")){
+        // base64
+            char* dec = new char[text.length()];
+            int len = b64_decode((void *)dec, text);
+            dec[len]=0;
+            if (startPos >= 2 &&  ret.length() == 0) {
+                ret += line.substr(0, startPos - 2);
+            }
+            ret += dec;
+            delete [] dec;
+        }
+
+        startPos = endPos;
+    }
+
+    if (ret.length() == 0) {
+        ret += line;
+    }
+
+    WCHAR* wret = toWideChar(ret, charset);
+    ret.set(NULL);
+    char* t = toMultibyte(wret);
+    ret.set(t);
+    if (wret) {delete [] wret;}
+    if (t) {delete [] t;}
+    return ret;
+}
 /**
  * Get the next bodypart from the message body string.
  *
@@ -347,17 +419,18 @@ static bool getBodyPart(StringBuffer &rfcBody, StringBuffer &boundary,
         if( line->ifind(MIMETYPE) == 0 ) {  // it must at the beginning
             ret.setMimeType(getTokenValue(line, MIMETYPE));
             if (line->ifind(CT_NAME) != StringBuffer::npos) {
-                ret.setName( getTokenValue(line, CT_NAME));
+                ret.setName(MailMessage::decodeHeader(getTokenValue(line, CT_NAME,false)));
+                //ret.setName(getTokenValue(line, CT_NAME));
             }
             if (line->ifind(CT_CHARSET) != StringBuffer::npos ) {
                 ret.setCharset(getTokenValue(line, CT_CHARSET));
             }
-        }
-
+        }   
         else if( line->ifind(DISPOSITION) == 0 ) {
             ret.setDisposition( getTokenValue(line, DISPOSITION));
             if (line->ifind(CD_FILENAME) != StringBuffer::npos ) {
-                ret.setFilename(getTokenValue(line, CD_FILENAME));
+                //ret.setFilename( MailMessage::decodeHeader(  getTokenValue(line, CD_FILENAME) ) );
+                ret.setFilename(MailMessage::decodeHeader(line->substr(DISPOSITION_LEN)+ strlen(" attachment; filename=")).c_str());
             }
         }
 
@@ -518,6 +591,8 @@ StringBuffer encodeHeader(StringBuffer line){
 }
 
 
+
+
 //----------------------------------------------------------- Public Methods
 
 /**
@@ -676,79 +751,7 @@ int MailMessage::parse(const char *rfc2822, size_t len) {
     return rc;
 }
 
-StringBuffer decodeHeader(StringBuffer line) {
 
-    if (!line || line.empty()) {
-        return line;
-    }
-
-    size_t startPos = 0;
-    StringBuffer ret;
-    StringBuffer charset;
-    while( (startPos = line.find("=?", startPos)) != StringBuffer::npos) {
-        // Skip the '=?'
-        startPos += 2;
-        // Find the first '?'
-        size_t firstMark = line.find("?", startPos);
-        if (firstMark == StringBuffer::npos) {
-            LOG.error("Invalid encoded header");
-            return line;
-        }
-        // Find the second '?'
-        size_t secondMark = line.find("?", firstMark+1);
-        if (secondMark == StringBuffer::npos) {
-            LOG.error("Invalid encoded header");
-            return line;
-        }
-        // Find the final '?='
-        size_t endPos = line.find("?=", secondMark+1);
-        if (endPos == StringBuffer::npos) {
-            LOG.error("Invalid encoded header");
-            return line;
-        }
-
-        charset = line.substr(startPos, firstMark - startPos);
-        StringBuffer encoding = line.substr(firstMark+1, secondMark - (firstMark + 1));
-        StringBuffer text = line.substr(secondMark+1, endPos - (secondMark + 1));
-
-        if (encoding.icmp("Q")) {
-            // quoted-printable
-            text.replaceAll("_", " ");
-            char* dec = qp_decode(text);
-            if (startPos >= 2 &&  ret.length() == 0) {
-                ret += line.substr(0, startPos - 2);
-            }
-
-            ret += dec;
-            delete [] dec;
-        }
-        else if (encoding.icmp("B")){
-        // base64
-            char* dec = new char[text.length()];
-            int len = b64_decode((void *)dec, text);
-            dec[len]=0;
-            if (startPos >= 2 &&  ret.length() == 0) {
-                ret += line.substr(0, startPos - 2);
-            }
-            ret += dec;
-            delete [] dec;
-        }
-
-        startPos = endPos;
-    }
-
-    if (ret.length() == 0) {
-        ret += line;
-    }
-
-    WCHAR* wret = toWideChar(ret, charset);
-    ret.set(NULL);
-    char* t = toMultibyte(wret);
-    ret.set(t);
-    if (wret) {delete [] wret;}
-    if (t) {delete [] t;}
-    return ret;
-}
 
 
 //---------------------------------------------------------- Private Methods
@@ -812,16 +815,16 @@ int MailMessage::parseHeaders(StringBuffer &rfcHeaders) {
         bool unknown=false;
 
         if( line->ifind(TO) == 0 ){
-            to = decodeHeader(line->substr(TO_LEN));
+            to = MailMessage::decodeHeader(line->substr(TO_LEN));
         }
         else if( line->ifind(FROM) == 0 ) {
-            from = decodeHeader(line->substr(FROM_LEN));
+            from = MailMessage::decodeHeader(line->substr(FROM_LEN));
         }
         else if( line->ifind(CC) == 0 ) {
-            cc = decodeHeader(line->substr(CC_LEN));
+            cc = MailMessage::decodeHeader(line->substr(CC_LEN));
         }
         else if( line->ifind(BCC) == 0 ) {
-            bcc = decodeHeader(line->substr(BCC_LEN));
+            bcc = MailMessage::decodeHeader(line->substr(BCC_LEN));
         }
         else if ( line->ifind(DATE) == 0 ) {
             //subjectParsing = FALSE;
@@ -832,7 +835,7 @@ int MailMessage::parseHeaders(StringBuffer &rfcHeaders) {
         }
         else if( line->ifind(SUBJECT) == 0 ) {
 
-            subject = decodeHeader(line->substr(SUBJECT_LEN));
+            subject = MailMessage::decodeHeader(line->substr(SUBJECT_LEN));
             LOG.debug("SUBJECT: %s", subject.c_str());
         }
         else if( line->ifind(ENCODING) == 0 ) {  // it is here for single part only

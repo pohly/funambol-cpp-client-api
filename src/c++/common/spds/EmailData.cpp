@@ -225,7 +225,7 @@ int EmailData::parse(const char *msg, size_t len)
                 unsigned int from = 0, previous = 0;
                 char* val = XMLProcessor::copyElementContent(ext, "XVal", &from);
                 if (val) {
-                    extMailData->attachName = stringdup(val);
+                    extMailData->attachName = stringdup(MailMessage::decodeHeader(val).c_str());
                     delete [] val; val = NULL;
                 }
                 val = XMLProcessor::copyElementContent(&ext[from], "XVal", &from);
