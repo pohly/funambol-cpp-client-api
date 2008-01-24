@@ -429,7 +429,6 @@ static bool getBodyPart(StringBuffer &rfcBody, StringBuffer &boundary,
             ret.setDisposition( getTokenValue(line, DISPOSITION));
             if (line->ifind(CD_FILENAME) != StringBuffer::npos ) {
                 ret.setFilename( MailMessage::decodeHeader(  getTokenValue(line, CD_FILENAME, false) ) );
-                //ret.setFilename(MailMessage::decodeHeader(line->substr(DISPOSITION_LEN)+ strlen(" attachment; filename=")).c_str());
             }
         }
 
