@@ -420,7 +420,6 @@ static bool getBodyPart(StringBuffer &rfcBody, StringBuffer &boundary,
             ret.setMimeType(getTokenValue(line, MIMETYPE));
             if (line->ifind(CT_NAME) != StringBuffer::npos) {
                 ret.setName(MailMessage::decodeHeader(getTokenValue(line, CT_NAME,false)));
-                //ret.setName(getTokenValue(line, CT_NAME));
             }
             if (line->ifind(CT_CHARSET) != StringBuffer::npos ) {
                 ret.setCharset(getTokenValue(line, CT_CHARSET));
@@ -429,8 +428,8 @@ static bool getBodyPart(StringBuffer &rfcBody, StringBuffer &boundary,
         else if( line->ifind(DISPOSITION) == 0 ) {
             ret.setDisposition( getTokenValue(line, DISPOSITION));
             if (line->ifind(CD_FILENAME) != StringBuffer::npos ) {
-                //ret.setFilename( MailMessage::decodeHeader(  getTokenValue(line, CD_FILENAME) ) );
-                ret.setFilename(MailMessage::decodeHeader(line->substr(DISPOSITION_LEN)+ strlen(" attachment; filename=")).c_str());
+                ret.setFilename( MailMessage::decodeHeader(  getTokenValue(line, CD_FILENAME, false) ) );
+                //ret.setFilename(MailMessage::decodeHeader(line->substr(DISPOSITION_LEN)+ strlen(" attachment; filename=")).c_str());
             }
         }
 
