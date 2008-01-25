@@ -158,6 +158,8 @@ class MailMessage : public ArrayElement {
 
         bool operator==(MailMessage& that);
 
+        static StringBuffer decodeHeader(StringBuffer line);
+
 };
 
 /** @endcond */
