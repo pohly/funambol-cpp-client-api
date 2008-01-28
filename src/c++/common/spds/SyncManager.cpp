@@ -42,7 +42,7 @@
 #include "spds/constants.h"
 #include "spds/DataTransformer.h"
 #include "spds/DataTransformerFactory.h"
-#include "spds/SyncManagerConfig.h"
+#include "spds/AbstractSyncConfig.h"
 #include "spds/SyncManager.h"
 #include "spds/SyncMLProcessor.h"
 #include "spds/spdsutils.h"
@@ -170,7 +170,7 @@ bool SyncManager::testIfDataSizeMismatch(long allocatedSize, long receivedSize) 
 }
 
 
-SyncManager::SyncManager(SyncManagerConfig& c, SyncReport& report) : config(c), syncReport(report) {
+SyncManager::SyncManager(AbstractSyncConfig& c, SyncReport& report) : config(c), syncReport(report) {
     initialize();
 }
 
@@ -188,37 +188,34 @@ void SyncManager::initialize() {
     devInf         = NULL;
     incomingItem   = NULL;
 
-    AccessConfig& c = config.getAccessConfig();
-    DeviceConfig& dc = config.getDeviceConfig();
+    syncURL = config.getSyncURL();
+    deviceId = config.getDevID();
 
-    syncURL = c.getSyncURL();
-    deviceId = dc.getDevID();
+    credentialHandler.setUsername           (config.getUsername());
+    credentialHandler.setPassword           (config.getPassword());
+    credentialHandler.setClientNonce        (config.getClientNonce());
+    credentialHandler.setClientAuthType     (config.getClientAuthType());
 
-    credentialHandler.setUsername           (c.getUsername());
-    credentialHandler.setPassword           (c.getPassword());
-    credentialHandler.setClientNonce        (c.getClientNonce());
-    credentialHandler.setClientAuthType     (c.getClientAuthType());
+    credentialHandler.setServerID           (config.getServerID());
+    credentialHandler.setServerPWD          (config.getServerPWD());
+    credentialHandler.setServerNonce        (config.getServerNonce());
+    credentialHandler.setServerAuthType     (config.getServerAuthType());
+    credentialHandler.setServerAuthRequired (config.getServerAuthRequired());
 
-    credentialHandler.setServerID           (c.getServerID());
-    credentialHandler.setServerPWD          (c.getServerPWD());
-    credentialHandler.setServerNonce        (c.getServerNonce());
-    credentialHandler.setServerAuthType     (c.getServerAuthType());
-    credentialHandler.setServerAuthRequired (c.getServerAuthRequired());
-
-    responseTimeout = c.getResponseTimeout();
+    responseTimeout = config.getResponseTimeout();
     if (responseTimeout <= 0) {
         responseTimeout = DEFAULT_MAX_TIMEOUT;
     }
-    maxMsgSize   = c.getMaxMsgSize();
+    maxMsgSize   = config.getMaxMsgSize();
     if (maxMsgSize <= 0) {
         maxMsgSize = DEFAULT_MAX_MSG_SIZE;
     }
-    maxObjSize   = dc.getMaxObjSize();
-    loSupport    = dc.getLoSupport();
+    maxObjSize   = config.getMaxObjSize();
+    loSupport    = config.getLoSupport();
     readBufferSize = 5000; // default value
 
-    if (c.getReadBufferSize() > 0)
-        readBufferSize = c.getReadBufferSize();
+    if (config.getReadBufferSize() > 0)
+        readBufferSize = config.getReadBufferSize();
 
     syncMLBuilder.set(syncURL.c_str(), deviceId.c_str());
     memset(credentialInfo, 0, 1024*sizeof(char));
@@ -300,7 +297,7 @@ int SyncManager::prepareSync(SyncSource** s) {
     // Fire Sync Begin Event
     fireSyncEvent(NULL, SYNC_BEGIN);
 
-    URL url(config.getAccessConfig().getSyncURL());
+    URL url(config.getSyncURL());
     Proxy proxy;
     LOG.developer(MSG_SYNC_URL, syncURL.c_str());
 
@@ -321,11 +318,11 @@ int SyncManager::prepareSync(SyncSource** s) {
     }
 
     // Set proxy username/password if proxy is used.
-    if (config.getAccessConfig().getUseProxy()) {
-        //char* proxyHost = config.getAccessConfig().getProxyHost();
-        //int    proxyPort = config.getAccessConfig().getProxyPort();
-        const char* proxyUser = config.getAccessConfig().getProxyUsername();
-        const char* proxyPwd  = config.getAccessConfig().getProxyPassword();
+    if (config.getUseProxy()) {
+        //char* proxyHost = config.getProxyHost();
+        //int    proxyPort = config.getProxyPort();
+        const char* proxyUser = config.getProxyUsername();
+        const char* proxyPwd  = config.getProxyPassword();
         proxy.setProxy(NULL, 0, proxyUser, proxyPwd);
     }
 
@@ -336,7 +333,7 @@ int SyncManager::prepareSync(SyncSource** s) {
 
     syncMLBuilder.resetCommandID();
     syncMLBuilder.resetMessageID();
-    config.getAccessConfig().setBeginSync(timestamp);
+    config.setBeginSync(timestamp);
 
     // Create the device informations.
     devInf = createDeviceInfo();
@@ -348,7 +345,7 @@ int SyncManager::prepareSync(SyncSource** s) {
         LOG.debug("Checking devinfo...");
         // Add syncUrl to devInfHash, so hash changes if syncUrl has changed
         devInfStr->append("<SyncURL>");
-        devInfStr->append(config.getAccessConfig().getSyncURL());
+        devInfStr->append(config.getSyncURL());
         devInfStr->append("</SyncURL>");
         calculateMD5(devInfStr->c_str(), devInfStr->length(), md5);
         devInfHash[b64_encode(devInfHash, md5, sizeof(md5))] = 0;
@@ -357,7 +354,7 @@ int SyncManager::prepareSync(SyncSource** s) {
         // compare against previous device info hash:
         // if different, then the local config has changed and
         // infos should be sent again
-        if (strcmp(devInfHash, config.getDeviceConfig().getDevInfHash())) {
+        if (strcmp(devInfHash, config.getDevInfHash())) {
             putDevInf = TRUE;
         }
         LOG.debug("devinfo %s", putDevInf ? "changed, retransmit" : "unchanged, no need to send");
@@ -445,7 +442,7 @@ int SyncManager::prepareSync(SyncSource** s) {
             const char* ua = getUserAgent(config);
             LOG.debug("User Agent = %s", ua);
             transportAgent->setUserAgent(ua);
-            transportAgent->setCompression(config.getAccessConfig().getCompression());
+            transportAgent->setCompression(config.getCompression());
             delete [] ua; ua = NULL;
         }
         else {
@@ -739,9 +736,9 @@ int SyncManager::prepareSync(SyncSource** s) {
 
     } while(isClientAuthenticated == FALSE || isServerAuthenticated == FALSE);
 
-    config.getAccessConfig().setClientNonce(credentialHandler.getClientNonce());
-    config.getAccessConfig().setServerNonce(credentialHandler.getServerNonce());
-    config.getDeviceConfig().setDevInfHash(devInfHash);
+    config.setClientNonce(credentialHandler.getClientNonce());
+    config.setServerNonce(credentialHandler.getServerNonce());
+    config.setDevInfHash(devInfHash);
 
     if (isToExit()) {
         // error. no source to sync
@@ -1803,7 +1800,7 @@ int SyncManager::endSync() {
         commitChanges(*sources[count]);
     }
 
-    config.getAccessConfig().setEndSync((unsigned long)time(NULL));
+    config.setEndSync((unsigned long)time(NULL));
     safeDelete(&responseMsg);
     safeDelete(&mapMsg);
     LOG.debug("ret: %i, lastErrorCode: %i, lastErrorMessage: %s",
@@ -1830,11 +1827,11 @@ int SyncManager::endSync() {
 BOOL SyncManager::readSyncSourceDefinition(SyncSource& source) {
     char anchor[DIM_ANCHOR];
 
-    if (config.getSyncSourceConfig(_wcc(source.getName())) == NULL) {
+    if (config.getAbstractSyncSourceConfig(_wcc(source.getName())) == NULL) {
         return FALSE;
     }
 
-    SyncSourceConfig& ssc(source.getConfig());
+    AbstractSyncSourceConfig& ssc(source.getConfig());
 
     // only copy properties which either have a different format
     // or are expected to change during the synchronization
@@ -1848,32 +1845,26 @@ BOOL SyncManager::readSyncSourceDefinition(SyncSource& source) {
 
 
 BOOL SyncManager::commitChanges(SyncSource& source) {
-    unsigned int n = config.getSyncSourceConfigsCount();
-    SyncSourceConfig* configs = config.getSyncSourceConfigs();
-
     const char* name = _wcc(source.getName());
-    unsigned long next = source.getNextSync();
+    AbstractSyncSourceConfig* ssconfig = config.getAbstractSyncSourceConfig(name);
 
-    char anchor[DIM_ANCHOR];
-    timestampToAnchor(next, anchor);
-
-    LOG.debug(DBG_COMMITTING_SOURCE, name, anchor);
-
-    for (unsigned int i = 0; i<n; ++i) {
-        if (strcmp(name, configs[i].getName()) == NULL) {
-            configs[i].setLast(next);
-            return TRUE;
-        }
+    if (ssconfig) {
+        char anchor[DIM_ANCHOR];
+        unsigned long next = source.getNextSync();
+        timestampToAnchor(next, anchor);
+        LOG.debug(DBG_COMMITTING_SOURCE, name, anchor);
+        ssconfig->setLast(next);
+        return TRUE;
+    } else {
+        return FALSE;
     }
-
-    return FALSE;
 }
 
 /**
  * This method copies the valid sources into the member <code>sources</code>.
  * The check done before the source is put in the list are:
  * - must have a SyncSourceReport
- * - must have a SyncSourceConfig
+ * - must have a AbstractSyncSourceConfig
  * - the preferred syncmode must be different from SYNC_NONE
  *
  * Sets lastErrorCode.
@@ -2214,19 +2205,19 @@ DevInf *SyncManager::createDeviceInfo()
     //
     // Copy devInf params from current Config.
     //
-    VerDTD v(config.getDeviceConfig().getVerDTD());
+    VerDTD v(config.getVerDTD());
     devinfo->setVerDTD(&v);
-    devinfo->setMan(config.getDeviceConfig().getMan());
-    devinfo->setMod(config.getDeviceConfig().getMod());
-    devinfo->setOEM(config.getDeviceConfig().getOem());
-    devinfo->setFwV(config.getDeviceConfig().getFwv());
-    devinfo->setSwV(config.getDeviceConfig().getSwv());
-    devinfo->setHwV(config.getDeviceConfig().getHwv());
-    devinfo->setDevID(config.getDeviceConfig().getDevID());
-    devinfo->setDevTyp(config.getDeviceConfig().getDevType());
-    devinfo->setUTC(config.getDeviceConfig().getUtc());
+    devinfo->setMan(config.getMan());
+    devinfo->setMod(config.getMod());
+    devinfo->setOEM(config.getOem());
+    devinfo->setFwV(config.getFwv());
+    devinfo->setSwV(config.getSwv());
+    devinfo->setHwV(config.getHwv());
+    devinfo->setDevID(config.getDevID());
+    devinfo->setDevTyp(config.getDevType());
+    devinfo->setUTC(config.getUtc());
     devinfo->setSupportLargeObjs(loSupport);
-    devinfo->setSupportNumberOfChanges(config.getDeviceConfig().getNocSupport());
+    devinfo->setSupportNumberOfChanges(config.getNocSupport());
 
     static const struct {
         SyncMode mode;
@@ -2244,8 +2235,8 @@ DevInf *SyncManager::createDeviceInfo()
 
     ArrayList dataStores;
 
-    for (unsigned int k=0; k < config.getSyncSourceConfigsCount(); k++) {
-        SyncSourceConfig* ssconfig = config.getSyncSourceConfig(k);
+    for (unsigned int k=0; k < config.getAbstractSyncSourceConfigsCount(); k++) {
+        AbstractSyncSourceConfig* ssconfig = config.getAbstractSyncSourceConfig(k);
         
         ArrayList syncModeList;
         const char *syncModes = ssconfig->getSyncModes();
@@ -2310,7 +2301,8 @@ DevInf *SyncManager::createDeviceInfo()
                             &rx,
                             &txPref,
                             &tx,
-                            &(ssconfig->getCtCaps()),
+                            /* hack: DataStore is not const-clean, have to cast away the const here */
+                            (ArrayList *)&(ssconfig->getCtCaps()),
                             NULL,
                             &syncCap);
         dataStores.add(dataStore);
@@ -2321,7 +2313,7 @@ DevInf *SyncManager::createDeviceInfo()
 }
 
 
-/* Copy from SyncSourceConfig::getSupportedTypes() format into array list
+/* Copy from AbstractSyncSourceConfig::getSupportedTypes() format into array list
  * of ContentTypeInfos.
  * @param types: formatted string of 'type:version' for each supported type
  *               i.e. "text/x-s4j-sifc:1.0,text/x-vcard:2.1"
@@ -2386,17 +2378,17 @@ static void fillContentTypeInfoList(ArrayList &l, const char* types) {
 /*
  * Ensure that the user agent string is valid.
  * If property 'user agent' is empty, it is replaced by 'mod' and 'SwV'
- * properties from DeviceConfig.
+ * properties from AbstractDeviceConfig.
  * If also 'mod' property is empty, return a default user agent.
  *
- * @param config: reference to the current SyncManagerConfig
+ * @param config: reference to the current AbstractSyncConfig
  * @return      : user agent property as a new char*
  *                (need to be freed by the caller)
  */
-const char* SyncManager::getUserAgent(SyncManagerConfig& config) {
+const char* SyncManager::getUserAgent(AbstractSyncConfig& config) {
 
     char* ret;
-    StringBuffer userAgent(config.getAccessConfig().getUserAgent());
+    StringBuffer userAgent(config.getUserAgent());
     StringBuffer buffer;
 
     if (userAgent.length()) {
@@ -2404,8 +2396,8 @@ const char* SyncManager::getUserAgent(SyncManagerConfig& config) {
     }
     // Use 'mod + SwV' parameters for user agent
     else {
-        const char* mod = config.getDeviceConfig().getMod();
-        const char* swV = config.getDeviceConfig().getSwv();
+        const char* mod = config.getMod();
+        const char* swV = config.getSwv();
         if (mod && strcmp(mod, "")) {
             buffer.append(mod);
             if (swV && strcmp(swV, "")) {

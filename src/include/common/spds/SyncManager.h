@@ -42,7 +42,7 @@
 #include "base/util/ArrayList.h"
 #include "http/TransportAgent.h"
 #include "spds/constants.h"
-#include "spds/SyncManagerConfig.h"
+#include "spds/AbstractSyncConfig.h"
 #include "spds/SyncSource.h"
 #include "spds/SyncMLBuilder.h"
 #include "spds/SyncMLProcessor.h"
@@ -86,7 +86,7 @@ class SyncManager {
          * @param config     required configuration
          * @param report     sync report reference to store sync results
          */
-        SyncManager(SyncManagerConfig& config, SyncReport& report);
+        SyncManager(AbstractSyncConfig& config, SyncReport& report);
         ~SyncManager();
 
         /**
@@ -149,7 +149,7 @@ class SyncManager {
         };
 
         DevInf* devInf;
-        SyncManagerConfig& config;
+        AbstractSyncConfig& config;
         SyncReport& syncReport;
 
         CredentialHandler credentialHandler;
@@ -215,7 +215,7 @@ class SyncManager {
         Status *processSyncItem(Item* item, const CommandInfo &cmdInfo, SyncMLBuilder &syncMLBuilder);
         BOOL checkForServerChanges(SyncML* syncml, ArrayList &statusList);
 
-        const char*  getUserAgent(SyncManagerConfig& config);
+        const char*  getUserAgent(AbstractSyncConfig& config);
         bool isToExit();
         void setSourceStateAndError(unsigned int index, SourceState  state,
                                     unsigned int code,  const char*  msg);
@@ -228,7 +228,7 @@ class SyncManager {
         /**
          * A wrapper around the sync source's first/next iterator functions.
          * By default the data is encoded according to the "encoding"
-         * SyncSourceConfig property, unless the SyncSource already set an encoding.
+         * AbstractSyncSourceConfig property, unless the SyncSource already set an encoding.
          *
          * In case of an error the error is logged and the item is set to NULL, just as
          * if the source itself had returned NULL.

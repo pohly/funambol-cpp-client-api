@@ -46,38 +46,6 @@
  * connection with a sync server.
  * AccessConfig is a part of SyncManagerConfig (along with DeviceConfig
  * and an array of SyncSourceConfig).
- *
- * Class members:
- * --------------
- * username             : string for username
- * password             : string for password
- * useProxy             : Should the sync engine use a HTTP proxy?
- * proxyHost            : the host for proxy connection
- * proxyPort            : the port for proxy connection
- * proxyUsername        : the proxy username (if proxy needs authentication)
- * proxyPassword        : the proxy password (if proxy needs authentication)
- * beginTimestamp       : The beginSync timestamp
- * endTimestamp         : The endSync timestamp
- * firstTimeSyncMode    : The SyncMode that the sync engine should use
- *                        the first time a source is synced
- * serverNonce          : The server nonce value: from client to server
- * clientNonce          : The client nonce value: from server to client
- * serverID             : the server ID value
- * serverPWD            : the server password
- * clientAuthType       : the type of client authentication used by client
- * isServerAuthRequired : Does the server require authentication?
- * maxMsgSize           : The maximum message size (Byte) accepted for XML
- *                        messages received from server (server to client)
- * readBufferSize       : Specifies the value for the size of the buffer used
- *                        to store the incoming stream from server (byte)
- * userAgent            : The user agent string, will be attached to http
- *                        messages to identify the client on server side.
- *                        It shoud be a short description with the client
- *                        name plus its version
- * checkConn            : Do we need to check if the GPRS connection is available?          <-- **** still used? ****
- * responseTimeout      : The number of seconds of waiting response timeout
- * dirty                : The dirty flag, used to select which properties
- *                        have been modified. Not used by now (T.B.D)
  */
 class AccessConfig {
     private:
@@ -306,8 +274,8 @@ class AccessConfig {
 
         //void setCompression(BOOL v);
 
-
         void setCheckConn(BOOL v);
+        /** @todo remove this, it is obsolete */
         BOOL getCheckConn() const;
 
         void setResponseTimeout(unsigned int bufferSize)   ;

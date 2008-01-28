@@ -55,12 +55,12 @@ SyncClient::~SyncClient() {
 * Used to start the sync process. The argument is an array of SyncSources
 * that have to be synched with the sync process
 */
-int SyncClient::sync(SyncManagerConfig& config, SyncSource** sources) {
+int SyncClient::sync(AbstractSyncConfig& config, SyncSource** sources) {
 
     resetError();
     int ret = 0;
 
-    if (!config.getSyncSourceConfigsCount()) {
+    if (!config.getAbstractSyncSourceConfigsCount()) {
         //sprintf(lastErrorMsg, "Error in sync() - configuration not set correctly.");
         ret = 1;
         setError(ret, "Error in sync() - configuration not set correctly.");
@@ -135,8 +135,8 @@ finally:
  *                     from the configuration object (config).
  * @return:            0 on success, an error otherwise
  */
-int SyncClient::sync(SyncManagerConfig& config, char** sourceNames) {
-    SyncSourceConfig* sc = NULL;
+int SyncClient::sync(AbstractSyncConfig& config, char** sourceNames) {
+    AbstractSyncSourceConfig* sc = NULL;
     SyncSource **sources = NULL;
     const char* currName;
     int currSource = 0, numActive = 0, numSources = 0;
@@ -156,7 +156,7 @@ int SyncClient::sync(SyncManagerConfig& config, char** sourceNames) {
         }
     }
     else {
-        numSources = config.getSyncSourceConfigsCount();
+        numSources = config.getAbstractSyncSourceConfigsCount();
     }
 
     // make room for all potential sync sources
@@ -169,7 +169,7 @@ int SyncClient::sync(SyncManagerConfig& config, char** sourceNames) {
         // use only sources indicated in 'sourceNames' param
         if (sourceNames) {
             currName = sourceNames[currSource];
-            if (! (sc = config.getSyncSourceConfig(currName)) ) {
+            if (! (sc = config.getAbstractSyncSourceConfig(currName)) ) {
                 if (sources)
                     delete [] sources;
                 return getLastErrorCode();
@@ -177,7 +177,7 @@ int SyncClient::sync(SyncManagerConfig& config, char** sourceNames) {
         }
         // use all available sources from config
         else {
-            if (! (sc = config.getSyncSourceConfig(currSource)) ) {
+            if (! (sc = config.getAbstractSyncSourceConfig(currSource)) ) {
                 if (sources)
                     delete [] sources;
                 return getLastErrorCode();

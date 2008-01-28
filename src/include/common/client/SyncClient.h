@@ -41,7 +41,7 @@
 
     #include "base/fscapi.h"
     #include "base/Log.h"
-    #include "spds/SyncManagerConfig.h"
+    #include "spds/AbstractSyncConfig.h"
     #include "spds/SyncSource.h"
     #include "spds/constants.h"
     #include "spds/SyncReport.h"
@@ -74,7 +74,7 @@
          *
          * @return - 0 on success, an error otherwise
          */
-        virtual int sync(SyncManagerConfig& config, SyncSource** sources);
+        virtual int sync(AbstractSyncConfig& config, SyncSource** sources);
 
         /**
          * Execute a synchronization with sources that are chosen based
@@ -99,7 +99,7 @@
          *                      from the configuration.
          * @return 0 on success, an error otherwise
          */
-        virtual int sync(SyncManagerConfig& config, char** sourceNames = NULL);
+        virtual int sync(AbstractSyncConfig& config, char** sourceNames = NULL);
 
         /*
          * Returns a pointer to the internal syncReport.
@@ -120,7 +120,7 @@
          * @return 0       for success, an error code otherwise - an error code
          *                 aborts the whole synchronization
          */
-        virtual int prepareSync(SyncManagerConfig& config) {
+        virtual int prepareSync(AbstractSyncConfig& config) {
             return ERR_NONE;
         }
 
@@ -135,7 +135,7 @@
          * @param config   a pointer to the source's configuration: this
          *                 includes all properties that the client library
          *                 knows and uses itself (only valid during this call)
-         *                 This pointer is owned by SyncManagerConfig, sources uses it
+         *                 This pointer is owned by AbstractSyncConfig, sources uses it
          *                 to initialize the internal config by reference.
          * @retval source  the sync source created by the client or NULL if
          *                 there is no sync source currently associated with
@@ -146,7 +146,7 @@
          *         ignored
          */
         virtual int createSyncSource(const char *name, const int pos,
-                                     SyncSourceConfig* config,
+                                     AbstractSyncSourceConfig* config,
                                      SyncSource **source) {
             *source = NULL;
             return ERR_UNSPECIFIED;

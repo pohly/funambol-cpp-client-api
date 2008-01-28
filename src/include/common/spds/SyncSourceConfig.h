@@ -41,22 +41,14 @@
 /** @addtogroup Client */
 /** @{ */
 
-    #include "base/fscapi.h"
-    #include "spds/constants.h"
-    #include "syncml/core/CTCap.h"
+    #include "spds/AbstractSyncSourceConfig.h"
 
 /**
- * This class groups all configuration properties for a SyncSource.
- * SyncSourceConfig is a part of SyncManagerConfig (along with AccessConfig
- * and an array of DeviceConfig).
+ * This class is one possible implementation of the
+ * AbstractSyncSourceConfig API: it implements all attributes as
+ * read/write members.
  */
-class SyncSourceConfig {
-
-    public:
-
-        static const int FLEVEL_UNDEFINED  =  -1;
-        static const int FLEVEL_ENABLED    =   1;
-        static const int FLEVEL_DISABLED   =   0;
+class SyncSourceConfig : public AbstractSyncSourceConfig {
 
     protected:
 
@@ -249,6 +241,7 @@ class SyncSourceConfig {
          *
          * @return an ArrayList of CTCap
          */
+        const ArrayList& getCtCaps() const {return ctCaps;};
         ArrayList& getCtCaps() {return ctCaps;};
 
         /**

@@ -52,31 +52,7 @@ SyncManagerConfig::~SyncManagerConfig() {
     }
 }
 
-SyncSourceConfig* SyncManagerConfig::getSyncSourceConfigs() {
-    return sourceConfigs;
-}
-
-unsigned int SyncManagerConfig::getSyncSourceConfigsCount() {
-    return sourceConfigsCount;
-}
-
-AccessConfig& SyncManagerConfig::getAccessConfig() {
-    return accessConfig;
-}
-
-void SyncManagerConfig::setAccessConfig(AccessConfig& ac) {
-    accessConfig.assign(ac);
-}
-
-DeviceConfig& SyncManagerConfig::getDeviceConfig() {
-    return deviceConfig;
-}
-
-void SyncManagerConfig::setDeviceConfig(DeviceConfig& dc) {
-    deviceConfig.assign(dc);
-}
-
-SyncSourceConfig* SyncManagerConfig::getSyncSourceConfig(const char* name, BOOL refresh) {
+SyncSourceConfig* SyncManagerConfig::getSyncSourceConfig(const char* name, BOOL refresh) const {
     if ((name == NULL) || (strlen(name) == 0)) {
         return NULL;
     }
@@ -90,7 +66,7 @@ SyncSourceConfig* SyncManagerConfig::getSyncSourceConfig(const char* name, BOOL 
     return NULL;
 }
 
-SyncSourceConfig* SyncManagerConfig::getSyncSourceConfig(unsigned int i, BOOL refresh) {
+SyncSourceConfig* SyncManagerConfig::getSyncSourceConfig(unsigned int i, BOOL refresh) const {
     if (i >= sourceConfigsCount) {
         return NULL;
     }
@@ -159,11 +135,6 @@ BOOL SyncManagerConfig::addSyncSourceConfig(SyncSourceConfig& sc) {
 
     //dirty |= DIRTY_SYNC_SOURCE;
     return TRUE;
-}
-
-
-BOOL SyncManagerConfig::isDirty() {
-    return accessConfig.getDirty();
 }
 
 void SyncManagerConfig::setClientDefaults() {
