@@ -1,3 +1,7 @@
+2008-01-29
+    - toccy: windows/http/GPRSConnection.cpp:
+             revised the function to estabilish GPRS connection, used by WM clients.
+
 2008-01-04
     - teo: added CtCap.
            Now we pass to the formatter an ArrayList of CtCap to handle different capabilities.
