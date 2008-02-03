@@ -945,6 +945,7 @@ void SyncTests::testDeleteAllRefresh() {
 }
 
 // test that a refresh sync of an empty server leads to an empty datatbase
+// and no changes are sent to server during next two-way sync
 void SyncTests::testRefreshSemantic() {
     source_it it;
 
@@ -966,6 +967,7 @@ void SyncTests::testRefreshSemantic() {
         SOURCE_ASSERT_EQUAL(source.get(), 0, source->endSync());
         CPPUNIT_ASSERT_NO_THROW(source.reset());
     }
+    sync(SYNC_TWO_WAY, ".two-way", CheckSyncReport(0,0,0, 0,0,0));
 }
 
 // tests the following sequence of events:
