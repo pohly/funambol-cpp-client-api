@@ -221,7 +221,7 @@ sub Normalize {
       # default ADR is HOME
       s/^ADR;TYPE=HOME/ADR/gm;
       # only some parts of N are preserved
-      s/^N\:(.*)/@_ = split(\/(?<!\\);\/, $1); "N:$_[0];" . ($_[1] || "") . ";;" . ($_[3] || "")/gme;
+      s/^N((?:;[^;:]*)*)\:(.*)/@_ = split(\/(?<!\\);\/, $2); "N$1:$_[0];" . ($_[1] || "") . ";;" . ($_[3] || "")/gme;
       # this vcard contains too many ADR and PHONE entries - ignore it
       if (/This is a test case which uses almost all Evolution fields/) {
         next;
