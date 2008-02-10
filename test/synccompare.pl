@@ -217,7 +217,7 @@ sub Normalize {
 
     if ($synthesis) {
       # does not preserve certain properties
-      s/^(FN|BDAY|X-MOZILLA-HTML|X-EVOLUTION-FILE-AS|X-AIM|NICKNAME|PHOTO|CALURI)(;[^:;\n]*)*:.*\r?\n?//gm;
+      s/^(FN|BDAY|X-MOZILLA-HTML|X-EVOLUTION-FILE-AS|X-AIM|NICKNAME|PHOTO|CALURI|SEQUENCE|TRANSP|ORGANIZER)(;[^:;\n]*)*:.*\r?\n?//gm;
       # default ADR is HOME
       s/^ADR;TYPE=HOME/ADR/gm;
       # only some parts of N are preserved
@@ -228,6 +228,13 @@ sub Normalize {
       }
       # breaks lines at semicolons, which adds white space
       while( s/^ADR:(.*); +/ADR:$1;/gm ) {}
+      # no attributes stored for ATTENDEEs
+      s/^ATTENDEE;.*?:/ATTENDEE:/msg;
+    }
+
+    if ($synthesis) {
+      # VALARM not supported
+      s/^BEGIN:VALARM.*?END:VALARM\r?\n?//msg;
     }
 
     if ($egroupware) {
