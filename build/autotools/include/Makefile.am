@@ -34,6 +34,8 @@ nobase_pkginclude_HEADERS = \
     common/spdm/errors.h \
     common/spdm/DMTree.h \
     common/spdm/ManagementNode.h \
+    common/spds/AbstractSyncConfig.h \
+    common/spds/AbstractSyncSourceConfig.h \
     common/spds/CredentialHandler.h \
     common/spds/ItemReport.h \
     common/spds/SyncSourceConfig.h \
