@@ -51,7 +51,7 @@ const WCHAR *getProgramPath()
     static WCHAR path[MAX_PATH] = TEXT("");
 
     if (!path[0]) {
-        SHGetSpecialFolderPath(NULL, path, CSIDL_PROGRAM_FILES , FALSE);
+        SHGetSpecialFolderPath(NULL, path, CSIDL_PROGRAM_FILES , false);
         wcscat(path, TEXT("\\"));
         wcscat(path, PROGRAM_DIR);
     }
@@ -74,7 +74,7 @@ unsigned long startcmd(const WCHAR *app, const WCHAR *cmdline)
     sprintf(dbg, "Running: %ls %ls\n", cmd, cmdline);
     LOG.info(dbg);
     if( CreateProcess( cmd, cmdline,
-                       NULL, NULL, FALSE, 0,
+                       NULL, NULL, false, 0,
                        NULL, NULL, NULL, &procinfo ) ) {
         return procinfo.dwProcessId;
     }
@@ -91,7 +91,7 @@ unsigned long startcmd(const WCHAR *app, const WCHAR *cmdline)
  */
 int waitProcess(unsigned long pid, time_t timeout)
 {
-    HANDLE phandle = OpenProcess( 0, FALSE, pid );
+    HANDLE phandle = OpenProcess( 0, false, pid );
 
     if (phandle) {
         switch ( WaitForSingleObject( phandle, timeout ) ) {

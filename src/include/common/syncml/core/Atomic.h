@@ -66,7 +66,7 @@ class Atomic : public AbstractCommand {
      * @param commands an array of abstract command - NOT NULL
      */
     Atomic(CmdID* cmdID,
-           BOOL noResp,
+           bool noResp,
            Meta* meta,
            ArrayList* commands); // AbstractCommand[]
 

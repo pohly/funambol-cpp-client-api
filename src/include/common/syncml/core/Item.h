@@ -57,7 +57,7 @@ class Item : public ArrayElement {
         char*      sourceParent;
         Meta*        meta;
         ComplexData* data;
-        BOOL         moreData;
+        bool         moreData;
 
         void initialize();
 
@@ -83,7 +83,7 @@ class Item : public ArrayElement {
              char*  sourceParent,
              Meta*   meta  ,
              ComplexData* data,
-             BOOL moreData);
+             bool moreData);
 
         /**
          * Creates a new Item object.
@@ -98,7 +98,7 @@ class Item : public ArrayElement {
              Source* source,
              Meta*   meta  ,
              ComplexData* data,
-             BOOL moreData);
+             bool moreData);
 
         /**
          * Returns the item target
@@ -197,7 +197,7 @@ class Item : public ArrayElement {
          * @return true if the data item is incomplete and has further chunks
          *         to come, false otherwise
          */
-        BOOL isMoreData();
+        bool isMoreData();
 
         /**
          * Gets the Boolean value of moreData
@@ -205,14 +205,14 @@ class Item : public ArrayElement {
          * @return true if the data item is incomplete and has further chunks
          *         to come, false otherwise
          */
-        BOOL getMoreData();
+        bool getMoreData();
 
         /**
          * Sets the moreData property
          *
          * @param moreData the moreData property
          */
-        void setMoreData(BOOL moreData);
+        void setMoreData(bool moreData);
 
         ArrayElement* clone();
 

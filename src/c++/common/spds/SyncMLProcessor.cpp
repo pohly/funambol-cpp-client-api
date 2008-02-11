@@ -126,7 +126,7 @@ int SyncMLProcessor::processServerAlert(SyncSource& source, SyncML* syncml) {
     int iterator        = 0;
     AbstractCommand* a  = NULL;
     Item* item          = NULL;
-    BOOL found          = FALSE;
+    bool found          = false;
 
     ret = 0;
     do {
@@ -162,7 +162,7 @@ int SyncMLProcessor::processServerAlert(SyncSource& source, SyncML* syncml) {
 
                 source.setSyncMode((SyncMode)alert->getData());
                 ret = 0;
-                found = TRUE;
+                found = true;
                 break;
             }
         }

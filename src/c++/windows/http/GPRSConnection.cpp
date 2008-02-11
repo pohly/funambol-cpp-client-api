@@ -48,26 +48,26 @@
 
 
 
-BOOL EstablishConnection() {
+bool EstablishConnection() {
 
-    BOOL ret = FALSE;
+    bool ret = false;
     CONNMGR_CONNECTIONINFO sConInfo = {0};
 
     //
     // Create mutex for GPRS Connection.
     //
-    HANDLE hMutex = CreateMutex(NULL, TRUE, TEXT("FunGPRSConnection"));
+    HANDLE hMutex = CreateMutex(NULL, true, TEXT("FunGPRSConnection"));
     switch (GetLastError()) {
         case ERROR_SUCCESS:
             LOG.debug("GPRS mutex created.");
             break;
         case ERROR_ALREADY_EXISTS:
             LOG.debug("Already testing GPRS connection, exiting.");
-            ret = TRUE;
+            ret = true;
             goto finally;
         default:
             LOG.error("Failed to create GPRS mutex");
-            ret = FALSE;
+            ret = false;
             goto finally;
     }
 
@@ -76,8 +76,8 @@ BOOL EstablishConnection() {
         sConInfo.dwParams = CONNMGR_PARAM_GUIDDESTNET;
         sConInfo.dwPriority = CONNMGR_PRIORITY_USERINTERACTIVE;
         sConInfo.dwFlags=CONNMGR_FLAG_PROXY_HTTP;
-        sConInfo.bExclusive = FALSE;
-        sConInfo.bDisabled = FALSE;
+        sConInfo.bExclusive = false;
+        sConInfo.bDisabled = false;
         sConInfo.guidDestNet = IID_DestNetInternet;
     HANDLE  phWebConnection = NULL;
 
@@ -86,7 +86,7 @@ BOOL EstablishConnection() {
 
     if (FAILED(hr)) {
         LOG.error("It is impossibile to create an internet connection");
-        ret = FALSE;
+        ret = false;
         goto finally;
                 }
                 else {
@@ -105,19 +105,19 @@ BOOL EstablishConnection() {
                     break;
                 case CONNMGR_STATUS_CONNECTED:
                     LOG.debug("Internet connection succesfully completed!");
-                    ret = TRUE;
+                    ret = true;
                     goto finally;
                 case CONNMGR_STATUS_CONNECTIONCANCELED:
                     LOG.debug("Internet connection canceled.");
-                    ret = FALSE;
+                    ret = false;
                     goto finally;
                 case CONNMGR_STATUS_WAITINGCONNECTIONABORT:
                     LOG.debug("Internet connection aborted.");
-                    ret = FALSE;
+                    ret = false;
                     goto finally;
                 case CONNMGR_STATUS_PHONEOFF:
                     LOG.debug("Phone is off, connection aborted.");
-                    ret = FALSE;
+                    ret = false;
                     goto finally;
                 default:
                     LOG.debug("Unknown connection status (0x%02x)", pdwStatus);

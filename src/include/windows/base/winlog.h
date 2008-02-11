@@ -67,7 +67,7 @@ private:
 
 public:
 
-    winLog(BOOL reset = FALSE, const char*  path = NULL, const char*  name = NULL);
+    winLog(bool reset = false, const char*  path = NULL, const char*  name = NULL);
     ~winLog();
 
     void setLogPath(const char*  configLogPath);

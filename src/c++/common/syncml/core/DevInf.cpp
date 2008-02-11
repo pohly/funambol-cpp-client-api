@@ -58,9 +58,9 @@ DevInf::~DevInf() {
     if(ctCap     ) { ctCap->clear()      ; } //delete ctCap;      ctCap = NULL;     }     // CTCap[]
     if(ext       ) { ext->clear()        ; } //delete ext;        ext = NULL;       }     // Ext[]
 
-    utc                    = FALSE;
-    supportLargeObjs       = FALSE;
-    supportNumberOfChanges = FALSE;
+    utc                    = false;
+    supportLargeObjs       = false;
+    supportNumberOfChanges = false;
 
 }
 
@@ -96,9 +96,9 @@ DevInf::DevInf(VerDTD* verDTD,
         ArrayList* dataStores,
         ArrayList* ctCap,
         ArrayList* ext,
-        BOOL utc,
-        BOOL supportLargeObjs,
-        BOOL supportNumberOfChanges,
+        bool utc,
+        bool supportLargeObjs,
+        bool supportNumberOfChanges,
         SyncCap* syncCap) {
 
     initialize();
@@ -139,9 +139,9 @@ void DevInf::initialize() {
     ctCap      = new ArrayList();  // CTCap[]
     ext        = new ArrayList();  // Ext[]
 
-    utc                    = FALSE;
-    supportLargeObjs       = FALSE;
-    supportNumberOfChanges = FALSE;
+    utc                    = false;
+    supportLargeObjs       = false;
+    supportNumberOfChanges = false;
 }
 
 
@@ -432,7 +432,7 @@ void DevInf::setExt(ArrayList* ext) {
 *
 * @return true if the device supports UTC based time
 */
-BOOL DevInf::isUTC() {
+bool DevInf::isUTC() {
     return (utc != NULL);
 }
 
@@ -441,8 +441,8 @@ BOOL DevInf::isUTC() {
 *
 * @param utc is true if the device supports UTC based time
 */
-void DevInf::setUTC(BOOL utc) {
-    if ((utc == NULL) || (utc != TRUE && utc != FALSE)) {
+void DevInf::setUTC(bool utc) {
+    if ((utc == NULL) || (utc != true && utc != false)) {
         this->utc = NULL;
     } else {
         this->utc = utc;
@@ -455,7 +455,7 @@ void DevInf::setUTC(BOOL utc) {
 *
 * @return true if the device supports UTC based time
 */
-BOOL DevInf::getUTC() {
+bool DevInf::getUTC() {
     return utc;
 }
 
@@ -464,7 +464,7 @@ BOOL DevInf::getUTC() {
 *
 * @return true if the device supports handling of large objects
 */
-BOOL DevInf::isSupportLargeObjs() {
+bool DevInf::isSupportLargeObjs() {
     return (supportLargeObjs != NULL);
 }
 
@@ -474,8 +474,8 @@ BOOL DevInf::isSupportLargeObjs() {
 * @param supportLargeObjs is true if the device supports handling of large objects
 *
 */
-void DevInf::setSupportLargeObjs(BOOL supportLargeObjs) {
-    if ((supportLargeObjs == NULL) || (supportLargeObjs != TRUE && supportLargeObjs != FALSE)) {
+void DevInf::setSupportLargeObjs(bool supportLargeObjs) {
+    if ((supportLargeObjs == NULL) || (supportLargeObjs != true && supportLargeObjs != false)) {
         this->supportLargeObjs = NULL;
     } else {
         this->supportLargeObjs = supportLargeObjs;
@@ -487,7 +487,7 @@ void DevInf::setSupportLargeObjs(BOOL supportLargeObjs) {
 *
 * @return true if the device supports handling of large objects
 */
-BOOL DevInf::getSupportLargeObjs() {
+bool DevInf::getSupportLargeObjs() {
     return supportLargeObjs;
 }
 
@@ -496,7 +496,7 @@ BOOL DevInf::getSupportLargeObjs() {
 *
 * @return true if the device supports number of changes
 */
-BOOL DevInf::isSupportNumberOfChanges() {
+bool DevInf::isSupportNumberOfChanges() {
     return (supportNumberOfChanges != NULL);
 }
 
@@ -506,8 +506,8 @@ BOOL DevInf::isSupportNumberOfChanges() {
 * @param supportNumberOfChanges is true if the device supports number of changes
 *
 */
-void DevInf::setSupportNumberOfChanges(BOOL supportNumberOfChanges) {
-    if ((supportNumberOfChanges == NULL) || (supportNumberOfChanges != TRUE && supportNumberOfChanges != FALSE)) {
+void DevInf::setSupportNumberOfChanges(bool supportNumberOfChanges) {
+    if ((supportNumberOfChanges == NULL) || (supportNumberOfChanges != true && supportNumberOfChanges != false)) {
         this->supportNumberOfChanges = NULL;
     } else {
         this->supportNumberOfChanges = supportNumberOfChanges;
@@ -519,7 +519,7 @@ void DevInf::setSupportNumberOfChanges(BOOL supportNumberOfChanges) {
 *
 * @return true if the device supports number of changes
 */
-BOOL DevInf::getSupportNumberOfChanges() {
+bool DevInf::getSupportNumberOfChanges() {
     return supportNumberOfChanges;
 }
 

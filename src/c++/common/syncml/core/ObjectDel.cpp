@@ -200,48 +200,48 @@ void deleteAllStringBuffer(int count, StringBuffer** s, ...) {
 }
 */
 
-BOOL SingleNotNullCheck(char* s) {
-    return (s) ? TRUE : FALSE;
+bool SingleNotNullCheck(char* s) {
+    return (s) ? true : false;
 }
 
-BOOL NotNullCheck(int count, char* s) {
+bool NotNullCheck(int count, char* s) {
     return SingleNotNullCheck(s);
 }
-BOOL NotNullCheck(int count, char* s, char* s1) {
+bool NotNullCheck(int count, char* s, char* s1) {
     return (SingleNotNullCheck(s) || SingleNotNullCheck(s1));
 }
-BOOL NotNullCheck(int count, char* s, char* s1, char* s2) {
+bool NotNullCheck(int count, char* s, char* s1, char* s2) {
     return (SingleNotNullCheck(s) || SingleNotNullCheck(s1) || SingleNotNullCheck(s2));
 }
-BOOL NotNullCheck(int count, char* s, char* s1, char* s2, char* s3) {
+bool NotNullCheck(int count, char* s, char* s1, char* s2, char* s3) {
     return (SingleNotNullCheck(s) || SingleNotNullCheck(s1) || SingleNotNullCheck(s2) || SingleNotNullCheck(s3));
 }
-BOOL NotNullCheck(int count, char* s, char* s1, char* s2, char* s3, char* s4) {
+bool NotNullCheck(int count, char* s, char* s1, char* s2, char* s3, char* s4) {
     return (SingleNotNullCheck(s) || SingleNotNullCheck(s1) || SingleNotNullCheck(s2) || SingleNotNullCheck(s3) || SingleNotNullCheck(s4));
 }
-BOOL NotNullCheck(int count, char* s, char* s1, char* s2, char* s3, char* s4, char* s5) {
+bool NotNullCheck(int count, char* s, char* s1, char* s2, char* s3, char* s4, char* s5) {
     return (SingleNotNullCheck(s) || SingleNotNullCheck(s1) || SingleNotNullCheck(s2) || SingleNotNullCheck(s3) || SingleNotNullCheck(s4)
            || SingleNotNullCheck(s5));
 }
-BOOL NotNullCheck(int count, char* s, char* s1, char* s2, char* s3, char* s4, char* s5, char* s6) {
+bool NotNullCheck(int count, char* s, char* s1, char* s2, char* s3, char* s4, char* s5, char* s6) {
     return (SingleNotNullCheck(s) || SingleNotNullCheck(s1) || SingleNotNullCheck(s2) || SingleNotNullCheck(s3) || SingleNotNullCheck(s4)
             || SingleNotNullCheck(s5)
             || SingleNotNullCheck(s6));
 }
-BOOL NotNullCheck(int count, char* s, char* s1, char* s2, char* s3, char* s4, char* s5, char* s6, char* s7) {
+bool NotNullCheck(int count, char* s, char* s1, char* s2, char* s3, char* s4, char* s5, char* s6, char* s7) {
     return (SingleNotNullCheck(s) || SingleNotNullCheck(s1) || SingleNotNullCheck(s2) || SingleNotNullCheck(s3) || SingleNotNullCheck(s4)
             || SingleNotNullCheck(s5)
             || SingleNotNullCheck(s6)
             || SingleNotNullCheck(s7));
 }
-BOOL NotNullCheck(int count, char* s, char* s1, char* s2, char* s3, char* s4, char* s5, char* s6, char* s7, char* s8) {
+bool NotNullCheck(int count, char* s, char* s1, char* s2, char* s3, char* s4, char* s5, char* s6, char* s7, char* s8) {
     return (SingleNotNullCheck(s) || SingleNotNullCheck(s1) || SingleNotNullCheck(s2) || SingleNotNullCheck(s3) || SingleNotNullCheck(s4)
             || SingleNotNullCheck(s5)
             || SingleNotNullCheck(s6)
             || SingleNotNullCheck(s7)
             || SingleNotNullCheck(s8));
 }
-BOOL NotNullCheck(int count, char* s, char* s1, char* s2, char* s3, char* s4, char* s5, char* s6, char* s7, char* s8, char* s9) {
+bool NotNullCheck(int count, char* s, char* s1, char* s2, char* s3, char* s4, char* s5, char* s6, char* s7, char* s8, char* s9) {
     return (SingleNotNullCheck(s) || SingleNotNullCheck(s1) || SingleNotNullCheck(s2) || SingleNotNullCheck(s3) || SingleNotNullCheck(s4)
             || SingleNotNullCheck(s5)
             || SingleNotNullCheck(s6)
@@ -249,7 +249,7 @@ BOOL NotNullCheck(int count, char* s, char* s1, char* s2, char* s3, char* s4, ch
             || SingleNotNullCheck(s8)
             || SingleNotNullCheck(s9));
 }
-BOOL NotNullCheck(int count, char* s, char* s1, char* s2, char* s3, char* s4, char* s5, char* s6, char* s7, char* s8, char* s9, char* s10) {
+bool NotNullCheck(int count, char* s, char* s1, char* s2, char* s3, char* s4, char* s5, char* s6, char* s7, char* s8, char* s9, char* s10) {
     return (SingleNotNullCheck(s) || SingleNotNullCheck(s1) || SingleNotNullCheck(s2) || SingleNotNullCheck(s3) || SingleNotNullCheck(s4)
             || SingleNotNullCheck(s5)
             || SingleNotNullCheck(s6)
@@ -260,15 +260,15 @@ BOOL NotNullCheck(int count, char* s, char* s1, char* s2, char* s3, char* s4, ch
 }
 
 /*
-* return TRUE if an element of the char* list is not NULL
+* return true if an element of the char* list is not NULL
 */
 /*
 // To be developed
-BOOL NotNullCheck(int count, char* s, ...) {
+bool NotNullCheck(int count, char* s, ...) {
 
     va_list ap;
     int i = 0;
-    BOOL ret = FALSE;
+    bool ret = false;
 
     va_start (ap, s);
     char* t = NULL;
@@ -277,24 +277,24 @@ BOOL NotNullCheck(int count, char* s, ...) {
         t = NULL;
         t = va_arg (ap, char*);
         if (t != NULL) {
-            ret = TRUE;
+            ret = true;
         }
     }
     va_end (ap);
     return ret;
 }
 */
-BOOL NotZeroCheck(int count, int s, ...) {
+bool NotZeroCheck(int count, int s, ...) {
 
     va_list ap;
     int i = 0;
-    BOOL ret = FALSE;
+    bool ret = false;
 
     va_start (ap, s);
 
     for(i = 0; i < count; i++) {
         if (va_arg (ap, int) != 0) {
-            ret = TRUE;
+            ret = true;
         }
     }
     va_end (ap);
@@ -302,15 +302,15 @@ BOOL NotZeroCheck(int count, int s, ...) {
 }
 
 /*
-* return TRUE if at least an arrayList as lenght > 0
+* return true if at least an arrayList as lenght > 0
 * To be developed
 */
 /*
-BOOL NotZeroArrayLenght(int count, ArrayList* s, ...) {
+bool NotZeroArrayLenght(int count, ArrayList* s, ...) {
 
     va_list ap;
     int i    = 0;
-    BOOL ret = FALSE;
+    bool ret = false;
 
     va_start (ap, s);
 
@@ -318,7 +318,7 @@ BOOL NotZeroArrayLenght(int count, ArrayList* s, ...) {
         ArrayList* p = va_arg (ap, ArrayList*);
 
         if (p->size() > 0) {
-            ret = TRUE;
+            ret = true;
         }
 
     }
@@ -326,60 +326,60 @@ BOOL NotZeroArrayLenght(int count, ArrayList* s, ...) {
     return ret;
 }
 */
-BOOL NotZeroSingleArrayLenght(ArrayList* s) {
-    BOOL ret = FALSE;
+bool NotZeroSingleArrayLenght(ArrayList* s) {
+    bool ret = false;
     if (s) {
         if (s->size() > 0)
-            ret = TRUE;
+            ret = true;
     }
     return ret;
 }
 
-BOOL NotZeroArrayLenght(int count, ArrayList* s) {
+bool NotZeroArrayLenght(int count, ArrayList* s) {
     return NotZeroSingleArrayLenght(s);
 }
-BOOL NotZeroArrayLenght(int count, ArrayList* s, ArrayList* s1) {
+bool NotZeroArrayLenght(int count, ArrayList* s, ArrayList* s1) {
     return (NotZeroSingleArrayLenght(s) || NotZeroSingleArrayLenght(s1));
 }
-BOOL NotZeroArrayLenght(int count, ArrayList* s, ArrayList* s1, ArrayList* s2) {
+bool NotZeroArrayLenght(int count, ArrayList* s, ArrayList* s1, ArrayList* s2) {
     return (NotZeroSingleArrayLenght(s) || NotZeroSingleArrayLenght(s1) || NotZeroSingleArrayLenght(s2));
 }
 
 
 
 
-BOOL NotZeroSingleStringBufferLenght(StringBuffer* s) {
-    BOOL ret = FALSE;
+bool NotZeroSingleStringBufferLenght(StringBuffer* s) {
+    bool ret = false;
     if (s) {
         if (s->length() > 0)
-            ret = TRUE;
+            ret = true;
     }
     return ret;
 }
 
-BOOL NotZeroStringBufferLenght(int count, StringBuffer* s) {
+bool NotZeroStringBufferLenght(int count, StringBuffer* s) {
     return NotZeroSingleStringBufferLenght(s);
 }
 
-BOOL NotZeroStringBufferLenght(int count, StringBuffer* s, StringBuffer* s1) {
+bool NotZeroStringBufferLenght(int count, StringBuffer* s, StringBuffer* s1) {
     return (NotZeroSingleStringBufferLenght(s) ||
             NotZeroSingleStringBufferLenght(s1)
             );
 }
-BOOL NotZeroStringBufferLenght(int count, StringBuffer* s, StringBuffer* s1, StringBuffer* s2) {
+bool NotZeroStringBufferLenght(int count, StringBuffer* s, StringBuffer* s1, StringBuffer* s2) {
     return (NotZeroSingleStringBufferLenght(s)  ||
             NotZeroSingleStringBufferLenght(s1) ||
             NotZeroSingleStringBufferLenght(s2)
             );
 }
-BOOL NotZeroStringBufferLenght(int count, StringBuffer* s, StringBuffer* s1, StringBuffer* s2, StringBuffer* s3) {
+bool NotZeroStringBufferLenght(int count, StringBuffer* s, StringBuffer* s1, StringBuffer* s2, StringBuffer* s3) {
     return (NotZeroSingleStringBufferLenght(s)  ||
             NotZeroSingleStringBufferLenght(s1) ||
             NotZeroSingleStringBufferLenght(s2) ||
             NotZeroSingleStringBufferLenght(s3)
             );
 }
-BOOL NotZeroStringBufferLenght(int count, StringBuffer* s, StringBuffer* s1, StringBuffer* s2, StringBuffer* s3, StringBuffer* s4) {
+bool NotZeroStringBufferLenght(int count, StringBuffer* s, StringBuffer* s1, StringBuffer* s2, StringBuffer* s3, StringBuffer* s4) {
     return (NotZeroSingleStringBufferLenght(s)  ||
             NotZeroSingleStringBufferLenght(s1) ||
             NotZeroSingleStringBufferLenght(s2) ||
@@ -388,7 +388,7 @@ BOOL NotZeroStringBufferLenght(int count, StringBuffer* s, StringBuffer* s1, Str
             );
 }
 
-BOOL NotZeroStringBufferLenght(int count, StringBuffer* s, StringBuffer* s1, StringBuffer* s2, StringBuffer* s3,
+bool NotZeroStringBufferLenght(int count, StringBuffer* s, StringBuffer* s1, StringBuffer* s2, StringBuffer* s3,
                                          StringBuffer* s4, StringBuffer* s5) {
     return (NotZeroSingleStringBufferLenght(s)  ||
             NotZeroSingleStringBufferLenght(s1) ||
@@ -398,7 +398,7 @@ BOOL NotZeroStringBufferLenght(int count, StringBuffer* s, StringBuffer* s1, Str
             NotZeroSingleStringBufferLenght(s5)
             );
 }
-BOOL NotZeroStringBufferLenght(int count, StringBuffer* s, StringBuffer* s1, StringBuffer* s2, StringBuffer* s3,
+bool NotZeroStringBufferLenght(int count, StringBuffer* s, StringBuffer* s1, StringBuffer* s2, StringBuffer* s3,
                                          StringBuffer* s4, StringBuffer* s5, StringBuffer* s6) {
     return (NotZeroSingleStringBufferLenght(s)  ||
             NotZeroSingleStringBufferLenght(s1) ||
@@ -410,7 +410,7 @@ BOOL NotZeroStringBufferLenght(int count, StringBuffer* s, StringBuffer* s1, Str
             );
 }
 
-BOOL NotZeroStringBufferLenght(int count, StringBuffer* s, StringBuffer* s1, StringBuffer* s2, StringBuffer* s3,
+bool NotZeroStringBufferLenght(int count, StringBuffer* s, StringBuffer* s1, StringBuffer* s2, StringBuffer* s3,
                                          StringBuffer* s4, StringBuffer* s5, StringBuffer* s6, StringBuffer* s7) {
     return (NotZeroSingleStringBufferLenght(s)  ||
             NotZeroSingleStringBufferLenght(s1) ||
@@ -423,7 +423,7 @@ BOOL NotZeroStringBufferLenght(int count, StringBuffer* s, StringBuffer* s1, Str
             );
 }
 
-BOOL NotZeroStringBufferLenght(int count, StringBuffer* s, StringBuffer* s1, StringBuffer* s2, StringBuffer* s3,
+bool NotZeroStringBufferLenght(int count, StringBuffer* s, StringBuffer* s1, StringBuffer* s2, StringBuffer* s3,
                                          StringBuffer* s4, StringBuffer* s5, StringBuffer* s6, StringBuffer* s7,
                                          StringBuffer* s8) {
     return (NotZeroSingleStringBufferLenght(s)  ||
@@ -437,7 +437,7 @@ BOOL NotZeroStringBufferLenght(int count, StringBuffer* s, StringBuffer* s1, Str
             NotZeroSingleStringBufferLenght(s8)
             );
 }
-BOOL NotZeroStringBufferLenght(int count, StringBuffer* s, StringBuffer* s1, StringBuffer* s2, StringBuffer* s3,
+bool NotZeroStringBufferLenght(int count, StringBuffer* s, StringBuffer* s1, StringBuffer* s2, StringBuffer* s3,
                                          StringBuffer* s4, StringBuffer* s5, StringBuffer* s6, StringBuffer* s7,
                                          StringBuffer* s8, StringBuffer* s9) {
     return (NotZeroSingleStringBufferLenght(s)  ||
@@ -453,7 +453,7 @@ BOOL NotZeroStringBufferLenght(int count, StringBuffer* s, StringBuffer* s1, Str
             );
 }
 
-BOOL NotZeroStringBufferLenght(int count, StringBuffer* s, StringBuffer* s1, StringBuffer* s2, StringBuffer* s3,
+bool NotZeroStringBufferLenght(int count, StringBuffer* s, StringBuffer* s1, StringBuffer* s2, StringBuffer* s3,
                                          StringBuffer* s4, StringBuffer* s5, StringBuffer* s6, StringBuffer* s7,
                                          StringBuffer* s8, StringBuffer* s9, StringBuffer* s10) {
     return (NotZeroSingleStringBufferLenght(s)  ||
@@ -470,7 +470,7 @@ BOOL NotZeroStringBufferLenght(int count, StringBuffer* s, StringBuffer* s1, Str
             );
 }
 
-BOOL NotZeroStringBufferLenght(int count, StringBuffer* s, StringBuffer* s1, StringBuffer* s2, StringBuffer* s3,
+bool NotZeroStringBufferLenght(int count, StringBuffer* s, StringBuffer* s1, StringBuffer* s2, StringBuffer* s3,
                                          StringBuffer* s4, StringBuffer* s5, StringBuffer* s6, StringBuffer* s7,
                                          StringBuffer* s8, StringBuffer* s9, StringBuffer* s10, StringBuffer* s11) {
     return (NotZeroSingleStringBufferLenght(s)  ||
@@ -488,7 +488,7 @@ BOOL NotZeroStringBufferLenght(int count, StringBuffer* s, StringBuffer* s1, Str
             );
 }
 
-BOOL NotZeroStringBufferLenght(int count, StringBuffer* s, StringBuffer* s1, StringBuffer* s2, StringBuffer* s3,
+bool NotZeroStringBufferLenght(int count, StringBuffer* s, StringBuffer* s1, StringBuffer* s2, StringBuffer* s3,
                                          StringBuffer* s4, StringBuffer* s5, StringBuffer* s6, StringBuffer* s7,
                                          StringBuffer* s8, StringBuffer* s9, StringBuffer* s10, StringBuffer* s11,
                                          StringBuffer* s12) {
@@ -508,7 +508,7 @@ BOOL NotZeroStringBufferLenght(int count, StringBuffer* s, StringBuffer* s1, Str
             );
 }
 
-BOOL NotZeroStringBufferLenght(int count, StringBuffer* s, StringBuffer* s1, StringBuffer* s2, StringBuffer* s3,
+bool NotZeroStringBufferLenght(int count, StringBuffer* s, StringBuffer* s1, StringBuffer* s2, StringBuffer* s3,
                                          StringBuffer* s4, StringBuffer* s5, StringBuffer* s6, StringBuffer* s7,
                                          StringBuffer* s8, StringBuffer* s9, StringBuffer* s10, StringBuffer* s11,
                                          StringBuffer* s12, StringBuffer* s13) {
@@ -529,7 +529,7 @@ BOOL NotZeroStringBufferLenght(int count, StringBuffer* s, StringBuffer* s1, Str
             );
 }
 
-BOOL NotZeroStringBufferLenght(int count, StringBuffer* s, StringBuffer* s1, StringBuffer* s2, StringBuffer* s3,
+bool NotZeroStringBufferLenght(int count, StringBuffer* s, StringBuffer* s1, StringBuffer* s2, StringBuffer* s3,
                                          StringBuffer* s4, StringBuffer* s5, StringBuffer* s6, StringBuffer* s7,
                                          StringBuffer* s8, StringBuffer* s9, StringBuffer* s10, StringBuffer* s11,
                                          StringBuffer* s12, StringBuffer* s13, StringBuffer* s14) {
@@ -551,7 +551,7 @@ BOOL NotZeroStringBufferLenght(int count, StringBuffer* s, StringBuffer* s1, Str
             );
 }
 
-BOOL NotZeroStringBufferLenght(int count, StringBuffer* s, StringBuffer* s1, StringBuffer* s2, StringBuffer* s3,
+bool NotZeroStringBufferLenght(int count, StringBuffer* s, StringBuffer* s1, StringBuffer* s2, StringBuffer* s3,
                                          StringBuffer* s4, StringBuffer* s5, StringBuffer* s6, StringBuffer* s7,
                                          StringBuffer* s8, StringBuffer* s9, StringBuffer* s10, StringBuffer* s11,
                                          StringBuffer* s12, StringBuffer* s13, StringBuffer* s14, StringBuffer* s15) {
@@ -573,7 +573,7 @@ BOOL NotZeroStringBufferLenght(int count, StringBuffer* s, StringBuffer* s1, Str
             );
 }
 
-BOOL NotZeroStringBufferLenght(int count, StringBuffer* s, StringBuffer* s1, StringBuffer* s2, StringBuffer* s3,
+bool NotZeroStringBufferLenght(int count, StringBuffer* s, StringBuffer* s1, StringBuffer* s2, StringBuffer* s3,
                                          StringBuffer* s4, StringBuffer* s5, StringBuffer* s6, StringBuffer* s7,
                                          StringBuffer* s8, StringBuffer* s9, StringBuffer* s10, StringBuffer* s11,
                                          StringBuffer* s12, StringBuffer* s13, StringBuffer* s14, StringBuffer* s15,
@@ -597,14 +597,14 @@ BOOL NotZeroStringBufferLenght(int count, StringBuffer* s, StringBuffer* s1, Str
             );
 }
 /*
-* return TRUE if at least an StringBuffer as lenght > 0
+* return true if at least an StringBuffer as lenght > 0
 */
 /*
-BOOL NotZeroStringBufferLenght(int count, StringBuffer* s, ...) {
+bool NotZeroStringBufferLenght(int count, StringBuffer* s, ...) {
 
     va_list ap;
     int i    = 0;
-    BOOL ret = FALSE;
+    bool ret = false;
 
     va_start (ap, s);
 
@@ -612,7 +612,7 @@ BOOL NotZeroStringBufferLenght(int count, StringBuffer* s, ...) {
         StringBuffer* p = va_arg (ap, StringBuffer*);
 
         if (p != NULL && p->length() > 0) {
-            ret = TRUE;
+            ret = true;
         }
 
     }

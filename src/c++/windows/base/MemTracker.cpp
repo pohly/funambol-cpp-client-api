@@ -116,10 +116,10 @@ void MemTracker::dumpUnfreed() {
 //       to avoid loops into new/delete operators!
 //
 void MemTracker::enableMemTracker() {
-    tracking = TRUE;
+    tracking = true;
 }
 void MemTracker::disableMemTracker() {
-    tracking = FALSE;
+    tracking = false;
 }
 
 // Are we tracking memory leaks?

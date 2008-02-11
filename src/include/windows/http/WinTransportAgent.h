@@ -110,9 +110,9 @@ public:
     char*  sendMessage(const char*  msg);
 
 private:
-    BOOL isToDeflate;           // to be zipped
-    BOOL isFirstMessage;        // first message is clear
-    BOOL isToInflate;           // to be unzipped
+    bool isToDeflate;           // to be zipped
+    bool isFirstMessage;        // first message is clear
+    bool isToInflate;           // to be unzipped
 
     char* createHttpErrorMessage(DWORD errorCode);
     void  dumpMessage(const char* msg, const int msgLen);

@@ -113,7 +113,7 @@ WString& WString::append(const WCHAR* sNew) {
     return *this;
 }
 
-WString& WString::append(unsigned long i, BOOL sign) {
+WString& WString::append(unsigned long i, bool sign) {
     WCHAR v[12];
 
     if (sign) {

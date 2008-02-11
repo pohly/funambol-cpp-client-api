@@ -73,15 +73,15 @@ CurlTransportAgent::CurlTransportAgent(URL& newURL, Proxy& newProxy, unsigned in
     easyhandle = CurlInit::easy_init();
     if (easyhandle) {
         curl_easy_setopt(easyhandle, CURLOPT_DEBUGFUNCTION, debugCallback);
-        curl_easy_setopt(easyhandle, CURLOPT_VERBOSE, LOG.getLevel() ? TRUE : FALSE);
-        curl_easy_setopt(easyhandle, CURLOPT_NOPROGRESS, TRUE);
+        curl_easy_setopt(easyhandle, CURLOPT_VERBOSE, LOG.getLevel() ? true : false);
+        curl_easy_setopt(easyhandle, CURLOPT_NOPROGRESS, true);
         curl_easy_setopt(easyhandle, CURLOPT_WRITEFUNCTION, receiveData);
         curl_easy_setopt(easyhandle, CURLOPT_WRITEDATA, this);
         curl_easy_setopt(easyhandle, CURLOPT_READFUNCTION, sendData);
         curl_easy_setopt(easyhandle, CURLOPT_READDATA, this);
         curl_easy_setopt(easyhandle, CURLOPT_ERRORBUFFER, this->curlerrortxt );
-        curl_easy_setopt(easyhandle, CURLOPT_AUTOREFERER, TRUE);
-        curl_easy_setopt(easyhandle, CURLOPT_FOLLOWLOCATION, TRUE);
+        curl_easy_setopt(easyhandle, CURLOPT_AUTOREFERER, true);
+        curl_easy_setopt(easyhandle, CURLOPT_FOLLOWLOCATION, true);
         if (proxy.host[0]) {
             curl_easy_setopt(easyhandle, CURLOPT_PROXY, proxy.host);
             if (proxy.port) {
@@ -142,7 +142,7 @@ size_t CurlTransportAgent::sendData(void *buffer, size_t size, size_t nmemb, voi
 }
 int CurlTransportAgent::debugCallback(CURL *easyhandle, curl_infotype type, char *data, size_t size, void *unused)
 {
-    BOOL isData = type == CURLINFO_DATA_IN || type == CURLINFO_DATA_OUT;
+    bool isData = type == CURLINFO_DATA_IN || type == CURLINFO_DATA_OUT;
 
     if (LOG.getLevel() >= LOG_LEVEL_DEBUG) {
         POSIX_LOG.setPrefix(type == CURLINFO_TEXT ? "libcurl info: " :
@@ -196,7 +196,7 @@ char* CurlTransportAgent::sendMessage(const char* msg) {
     received = 0;
     responsebuffer[0] = 0;
     // todo? url.resource
-    if ((code = curl_easy_setopt(easyhandle, CURLOPT_POST, TRUE)) ||
+    if ((code = curl_easy_setopt(easyhandle, CURLOPT_POST, true)) ||
         (code = curl_easy_setopt(easyhandle, CURLOPT_URL, url.fullURL)) ||
         (code = curl_easy_setopt(easyhandle, CURLOPT_POSTFIELDS, msg)) ||
         (code = curl_easy_setopt(easyhandle, CURLOPT_POSTFIELDSIZE, strlen(msg))) ||

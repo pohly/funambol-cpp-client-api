@@ -77,7 +77,7 @@ class AbstractSyncConfig {
     /**
      * Should the sync engine use a HTTP proxy?
      */
-    virtual BOOL getUseProxy() const = 0;
+    virtual bool getUseProxy() const = 0;
 
     /**
      * Returns the proxyHost value.
@@ -124,7 +124,7 @@ class AbstractSyncConfig {
     virtual void setEndSync(unsigned long timestamp) {}
 
     /** Does the server require authentication? */
-    virtual BOOL getServerAuthRequired() const = 0;
+    virtual bool getServerAuthRequired() const = 0;
     
     /**
      * the type of client authentication used by client:
@@ -169,7 +169,7 @@ class AbstractSyncConfig {
      */
     virtual const char*  getUserAgent() const = 0;
 
-    virtual BOOL  getCompression() const = 0;
+    virtual bool  getCompression() const = 0;
 
     /** The number of seconds of waiting response timeout */
     virtual unsigned int getResponseTimeout() const = 0;
@@ -238,21 +238,21 @@ class AbstractSyncConfig {
 
     /**
      * Specifies that the device supports UTC based time.
-     * If utc = TRUE, the server SHOULD send time in UTC format,
+     * If utc = true, the server SHOULD send time in UTC format,
      * else MUST send in local time.
      */
-    virtual BOOL getUtc() const = 0;
+    virtual bool getUtc() const = 0;
 
     /**
      * Specifies that the device supports handling of large objects.
      */
-    virtual BOOL getLoSupport() const = 0;
+    virtual bool getLoSupport() const = 0;
 
     /**
      * Specifies that the device supports number of changes.
-     * Must be FALSE.
+     * Must be false.
      */
-    virtual BOOL getNocSupport() const = 0;
+    virtual bool getNocSupport() const = 0;
 
     /**
      * Specifies the maximum object size allowed by the device.

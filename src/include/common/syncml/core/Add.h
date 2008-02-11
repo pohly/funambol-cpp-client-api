@@ -68,7 +68,7 @@ class Add : public ModificationCommand {
          *
          */
         Add(CmdID* cmdID,
-                   BOOL noResp,
+                   bool noResp,
                    Cred* cred,
                    Meta* meta,
                    ArrayList* items);

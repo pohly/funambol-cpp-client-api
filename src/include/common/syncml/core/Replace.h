@@ -65,7 +65,7 @@ class Replace : public ModificationCommand {
          *
          */
         Replace(CmdID *cmdID   ,
-                BOOL noResp    ,
+                bool noResp    ,
                 Cred* cred     ,
                 Meta*  meta    ,
                 ArrayList* items  );

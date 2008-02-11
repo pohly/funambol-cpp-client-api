@@ -36,14 +36,14 @@
 
 #include "syncml/core/Mem.h"
 
-Mem::Mem(BOOL sharedMem, long freeMem, long freeID) {
+Mem::Mem(bool sharedMem, long freeMem, long freeID) {
     this->freeMem = 0;
     this->freeID  = 0;
     this->sharedMem = NULL;
 
     setFreeMem(freeMem);
     setFreeID(freeID);
-    if ((sharedMem == NULL) || (sharedMem != TRUE && sharedMem != FALSE)) {
+    if ((sharedMem == NULL) || (sharedMem != true && sharedMem != false)) {
         this->sharedMem = NULL;
     } else {
         this->sharedMem = sharedMem;
@@ -53,7 +53,7 @@ Mem::Mem(BOOL sharedMem, long freeMem, long freeID) {
 
 Mem::~Mem() {}
 
-BOOL Mem::isSharedMem() {
+bool Mem::isSharedMem() {
     return (sharedMem != NULL);
 }
 
@@ -62,8 +62,8 @@ BOOL Mem::isSharedMem() {
  *
  * @param sharedMem the new memoryShared status
  */
-void Mem::setSharedMem(BOOL sharedMem) {
-    if ((sharedMem == NULL) || (sharedMem != TRUE && sharedMem != FALSE)) {
+void Mem::setSharedMem(bool sharedMem) {
+    if ((sharedMem == NULL) || (sharedMem != true && sharedMem != false)) {
         this->sharedMem = NULL;
     } else {
         this->sharedMem = sharedMem;
@@ -75,7 +75,7 @@ void Mem::setSharedMem(BOOL sharedMem) {
  *
  * @return sharedMem the Boolean shared memory property
  */
-BOOL Mem::getSharedMem() {
+bool Mem::getSharedMem() {
 
     return sharedMem;
 }

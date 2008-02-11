@@ -85,16 +85,16 @@ char*  wcstoupper(const char *s);
 const char *brfind(const char *s1, const char *s2, size_t len=STRINGDUP_NOLEN) ;
 
 /**
- * Returns TRUE is the given string is NULL or zero-length
+ * Returns true is the given string is NULL or zero-length
  */
-inline BOOL isEmpty(const char*  s) {
+inline bool isEmpty(const char*  s) {
     return ((s == NULL) || (strlen(s) == 0));
 }
 
 /**
- * Returns TRUE is the given string is NULL or zero-length
+ * Returns true is the given string is NULL or zero-length
  */
-inline BOOL isNotEmpty(const char*  s) {
+inline bool isNotEmpty(const char*  s) {
     return (s && (strlen(s) > 0));
 }
 

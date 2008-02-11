@@ -139,11 +139,11 @@ const char* CredentialHandler::getServerNonce() {
     return serverNonce;
 }
 
-void CredentialHandler::setServerAuthRequired(BOOL t) {
+void CredentialHandler::setServerAuthRequired(bool t) {
     isServerAuthRequired = t;
 }
 
-BOOL CredentialHandler::getServerAuthRequired() {
+bool CredentialHandler::getServerAuthRequired() {
     return isServerAuthRequired;
 }
 
@@ -196,9 +196,9 @@ Cred* CredentialHandler::getServerCredential() {
 
 }
 
-BOOL CredentialHandler::performServerAuth(Cred* cred) {
+bool CredentialHandler::performServerAuth(Cred* cred) {
 
-    BOOL ret = FALSE;
+    bool ret = false;
     Cred* currentCred = getServerCredential();
 
     if (cred == NULL || currentCred == NULL) {
@@ -206,18 +206,18 @@ BOOL CredentialHandler::performServerAuth(Cred* cred) {
     }
 
     if (strcmp(cred->getData(), currentCred->getData()) == 0) {
-        ret = TRUE;
+        ret = true;
     }
 finally:
 
     return ret;
 }
 
-Chal* CredentialHandler::getServerChal(BOOL isServerAuthenticated) {
+Chal* CredentialHandler::getServerChal(bool isServerAuthenticated) {
 
     Chal* chal = NULL;
 
-    if (strcmp(serverAuthType, AUTH_TYPE_BASIC) == 0 && isServerAuthenticated == FALSE) {
+    if (strcmp(serverAuthType, AUTH_TYPE_BASIC) == 0 && isServerAuthenticated == false) {
         chal = Chal::getBasicChal();
 
     } else if (strcmp(serverAuthType, AUTH_TYPE_MD5) == 0) { // MD5

@@ -60,7 +60,7 @@ class WString: public ArrayElement {
 
         WString& append(const WCHAR*);
 
-        WString& append(unsigned long u, BOOL sign = TRUE);
+        WString& append(unsigned long u, bool sign = true);
 
         WString& append(WString& s);
 

@@ -67,7 +67,7 @@ class Sequence : public AbstractCommand {
          *
          */
         Sequence(CmdID*       cmdID ,
-                        BOOL         noResp,
+                        bool         noResp,
                         Meta*        meta  ,
                         ArrayList*   commands);  // AbstractCommand[]
 

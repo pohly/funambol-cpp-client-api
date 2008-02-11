@@ -41,7 +41,7 @@ Search::Search() {
     COMMAND_NAME = new char[strlen(SEARCH_COMMAND_NAME) + 1];
     sprintf(COMMAND_NAME, SEARCH_COMMAND_NAME);
 
-    noResults = FALSE;
+    noResults = false;
     target    = NULL;
     sources   = new ArrayList();
     lang      = NULL;
@@ -71,8 +71,8 @@ Search::~Search() {
 *
 */
 Search::Search(CmdID*      cmdID    ,
-               BOOL        noResp   ,
-               BOOL        noResults,
+               bool        noResp   ,
+               bool        noResults,
                Cred*       cred     ,
                Target*     target   ,
                ArrayList*  sources  ,
@@ -84,7 +84,7 @@ Search::Search(CmdID*      cmdID    ,
     COMMAND_NAME = new char[strlen(SEARCH_COMMAND_NAME) + 1];
     sprintf(COMMAND_NAME, SEARCH_COMMAND_NAME);
 
-    this->noResults = FALSE;
+    this->noResults = false;
     this->target    = NULL;
     this->sources   = new ArrayList();
     this->lang      = NULL;
@@ -107,7 +107,7 @@ Search::Search(CmdID*      cmdID    ,
 * @return noResults
 *
 */
-BOOL Search::isNoResults() {
+bool Search::isNoResults() {
     return (noResults != NULL);
 }
 
@@ -116,8 +116,8 @@ BOOL Search::isNoResults() {
 *
 * @param noResults the noResults value
 */
-void Search::setNoResults(BOOL noResults) {
-     if ((noResults == NULL) || (noResults != TRUE && noResults != FALSE)) {
+void Search::setNoResults(bool noResults) {
+     if ((noResults == NULL) || (noResults != true && noResults != false)) {
         this->noResults = NULL;
     } else {
         this->noResults = noResults;
@@ -129,7 +129,7 @@ void Search::setNoResults(BOOL noResults) {
 *
 * @return noResults if boolean value is true, otherwise null
 */
-BOOL Search::getNoResults() {
+bool Search::getNoResults() {
     return noResults;
 }
 

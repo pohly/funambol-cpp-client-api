@@ -203,11 +203,11 @@ char* XMLProcessor::copyContent(const char* xml,
     // figure out whether the text that we are about to copy
     // contains further elements; if not, treat it as a leaf
     // element and decode entities
-    BOOL isLeaf = TRUE;
+    bool isLeaf = true;
     unsigned int pos = startPos;
     while (pos < endPos) {
         if (xml[pos] == '<') {
-            isLeaf = FALSE;
+            isLeaf = false;
             break;
         }
         pos++;
@@ -304,7 +304,7 @@ const char* XMLProcessor::getNextTag(const char*xml, int* pos) {
     char* ret = NULL;
     p1 = p2 = p4 = xml;
     int i = 0, k = 0, len = 0;
-    BOOL found = FALSE;
+    bool found = false;
     len = strlen(xml);
 
     for (i = 0; i < len; i++) {
@@ -312,12 +312,12 @@ const char* XMLProcessor::getNextTag(const char*xml, int* pos) {
             if (p4[i] != '/' && p4[i] != '!' && p4[i] != '-' ) {
                 break; // the element found is right!
             } else {
-                found = FALSE;
+                found = false;
             }
         }
         if (p4[i] == '<') {
             p1 = &p4[i];
-            found = TRUE;
+            found = true;
         }
     }
 
@@ -415,7 +415,7 @@ char* XMLProcessor::copyElementContentExcept(const char*xmlPtr    ,
     char** array = NULL;
     int*  validElement = NULL;
     int count        = 0, countTag = 0;
-    BOOL notValid  = FALSE;
+    bool notValid  = false;
 
     unsigned int pos      = 0, previous         = 0,
                  position = 0, previousPosition = 0,
@@ -503,7 +503,7 @@ char* XMLProcessor::copyElementContentExcept(const char*xmlPtr    ,
                         endPos   += previousPosition;
                         position += previousPosition;
                         if (startPos < pos && pos < endPos) {
-                            notValid = TRUE;
+                            notValid = true;
                             break;
                         }
                         previousPosition = position;
@@ -511,7 +511,7 @@ char* XMLProcessor::copyElementContentExcept(const char*xmlPtr    ,
                     }
 
                     if (notValid) {
-                        notValid = FALSE;
+                        notValid = false;
                         safeDel(&ret);
                         validElement[k] = 0;
                     } else {
@@ -618,12 +618,12 @@ char* XMLProcessor::copyElementContentLevel(const char*xml   ,
     const char* p1 = NULL;
     const char* p2 = NULL;
     char* ret = NULL;
-    BOOL openBracket  = FALSE;  // <
-    BOOL closeBracket = FALSE;  // >
-    BOOL aloneBracket = FALSE;  // </
-    BOOL preCloseBracket = FALSE;  //<.../
-    BOOL openTag      = FALSE;
-    BOOL closeTag     = FALSE;
+    bool openBracket  = false;  // <
+    bool closeBracket = false;  // >
+    bool aloneBracket = false;  // </
+    bool preCloseBracket = false;  //<.../
+    bool openTag      = false;
+    bool closeTag     = false;
 
     char tagNameFound[40];
 
@@ -665,14 +665,14 @@ char* XMLProcessor::copyElementContentLevel(const char*xml   ,
             }
         }
         if (p1[i] == '<') {
-            openBracket = TRUE;
+            openBracket = true;
             previousIndex = i;
             p2 = &p1[i];
 
         } else if (p1[i] == '/') {
             if (previousIndex == (i - 1)) {
                 // </...>
-                preCloseBracket = TRUE;
+                preCloseBracket = true;
             } else {
                 // might be <.../>, which will be checked below
                 // with p1[i - 1] == '/'
@@ -680,37 +680,37 @@ char* XMLProcessor::copyElementContentLevel(const char*xml   ,
 
         } else if (p1[i] == '>') {
 
-            if (openBracket == FALSE) {
-                closeBracket = FALSE;
-                preCloseBracket = FALSE;
+            if (openBracket == false) {
+                closeBracket = false;
+                preCloseBracket = false;
             } else {
                 if (preCloseBracket) {
-                    closeTag = TRUE;
+                    closeTag = true;
                 }
                 else if (openBracket && p1[i - 1] == '/') {
                     // <.../>: do not change levels or open tag,
                     // it has been closed already
                 } else {
-                    openTag = TRUE;
+                    openTag = true;
                 }
-                closeBracket = TRUE;
+                closeBracket = true;
 
                 if (closeTag) {
                     level--;
-                    openBracket  = FALSE;
-                    closeBracket = FALSE;
-                    preCloseBracket = FALSE;
-                    openTag      = FALSE;
-                    closeTag     = FALSE;
+                    openBracket  = false;
+                    closeBracket = false;
+                    preCloseBracket = false;
+                    openTag      = false;
+                    closeTag     = false;
 
                 } else if (openTag) {
                     level++;
                 } else {
-                    openBracket  = FALSE;
-                    closeBracket = FALSE;
-                    preCloseBracket = FALSE;
-                    openTag      = FALSE;
-                    closeTag     = FALSE;
+                    openBracket  = false;
+                    closeBracket = false;
+                    preCloseBracket = false;
+                    openTag      = false;
+                    closeTag     = false;
 
                 }
             }
@@ -730,17 +730,17 @@ char* XMLProcessor::copyElementContentLevel(const char*xml   ,
                 }
                 break;
             }
-            openBracket  = FALSE;
-            closeBracket = FALSE;
+            openBracket  = false;
+            closeBracket = false;
         }
     }
 
 finally:
-    openBracket  = FALSE;
-    closeBracket = FALSE;
-    preCloseBracket = FALSE;
-    openTag      = FALSE;
-    closeTag     = FALSE;
+    openBracket  = false;
+    closeBracket = false;
+    preCloseBracket = false;
+    openTag      = false;
+    closeTag     = false;
     return ret;
 
 }
@@ -763,7 +763,7 @@ const char* XMLProcessor::getElementAttributes(const char* xml,
 
     const char* p1 = NULL;
     const char* p2 = NULL;
-    BOOL charFound  = FALSE;
+    bool charFound  = false;
     unsigned int l = strlen(tag);
 
     // example ot tag with attribute list

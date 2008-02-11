@@ -43,9 +43,9 @@ char logmsg[512];
 
 POSIXLog::POSIXLog() :
     logFile(NULL),
-    logFileStdout(FALSE),
+    logFileStdout(false),
     logName(LOG_NAME),
-    logRedirectStderr(FALSE),
+    logRedirectStderr(false),
     fderr(-1),
     prefix("")
 {
@@ -59,7 +59,7 @@ void POSIXLog::setLogName(const char*  configLogName) {
     logName.sprintf("%s", configLogName ? configLogName : LOG_NAME);
 }
 
-void POSIXLog::setLogFile(const char *path, const char* name, BOOL redirectStderr) {
+void POSIXLog::setLogFile(const char *path, const char* name, bool redirectStderr) {
     if (path != logPath.c_str()) {
         setLogPath(path);
     }
@@ -72,11 +72,11 @@ void POSIXLog::setLogFile(const char *path, const char* name, BOOL redirectStder
         fclose(logFile);
         logFile = NULL;
     }
-    logFileStdout = FALSE;
+    logFileStdout = false;
     
     if (!strcmp(name, "-")) {
         // write to stdout
-        logFileStdout = TRUE;
+        logFileStdout = true;
     } else if (path) {
         char *filename = new char[strlen(path) + strlen(name) + 3];
             
@@ -143,7 +143,7 @@ void POSIXLog::debug(const char*  msg, ...) {
     }
 }
 
-void POSIXLog::printLine(BOOL firstLine,
+void POSIXLog::printLine(bool firstLine,
                          const char *fullTime,
                          const char *shortTime,
                          LogLevel level,
@@ -180,7 +180,7 @@ void POSIXLog::printMessage(LogLevel level, const char* levelPrefix, const char*
     buffer.vsprintf(msg, argList);
     const char *start = buffer.c_str();
     const char *eol = strchr(start, '\n');
-    BOOL firstLine = TRUE;
+    bool firstLine = true;
     while (eol) {
         /* hack: StringBuffer does not really allow write access, but do it anyway */
         *(char *)eol = 0;
@@ -190,7 +190,7 @@ void POSIXLog::printMessage(LogLevel level, const char* levelPrefix, const char*
                   level,
                   levelPrefix,
                   start);
-        firstLine = FALSE;
+        firstLine = false;
         *(char *)eol = '\n';
         start = eol + 1;
         eol = strchr(start, '\n');

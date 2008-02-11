@@ -68,7 +68,7 @@ class Copy : public ModificationCommand {
          *
          */
         Copy(CmdID* cmdID,
-             BOOL noResp,
+             bool noResp,
              Cred* cred,
              Meta* meta,
              ArrayList* items);

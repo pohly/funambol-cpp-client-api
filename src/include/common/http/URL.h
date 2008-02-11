@@ -56,7 +56,7 @@
         void setURL(URL& url);
         void setURL(const char*  url);
 
-        BOOL isSecure();
+        bool isSecure();
 
         URL& operator= (URL& url);
         URL& operator= (const char*  url);

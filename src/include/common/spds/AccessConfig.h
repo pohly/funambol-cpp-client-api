@@ -51,7 +51,7 @@ class AccessConfig {
     private:
         char*           username            ;
         char*           password            ;
-        BOOL            useProxy            ;
+        bool            useProxy            ;
         char*           proxyHost           ;
         int             proxyPort           ;
         char*           proxyUsername       ;
@@ -66,13 +66,13 @@ class AccessConfig {
         char*           serverPWD           ;
         char*           clientAuthType      ;
         char*           serverAuthType      ;
-        BOOL            isServerAuthRequired;
+        bool            isServerAuthRequired;
         unsigned long   maxMsgSize          ;
         unsigned long   readBufferSize      ;
         char*           userAgent           ;
-        BOOL            checkConn           ;
+        bool            checkConn           ;
         unsigned int    responseTimeout     ;
-        BOOL            compression         ;
+        bool            compression         ;
 
         unsigned int dirty;
 
@@ -140,14 +140,14 @@ class AccessConfig {
         /**
          * Should the sync engine use a HTTP proxy?
          */
-        BOOL getUseProxy() const;
+        bool getUseProxy() const;
 
         /**
          * Sets if the sync engine should use a HTTP proxy to access the server.
          *
-         * @param useProxy FALSE for not use a proxy, TRUE otherwise
+         * @param useProxy false for not use a proxy, true otherwise
          */
-        void setUseProxy(BOOL useProxy);
+        void setUseProxy(bool useProxy);
 
         /**
          * Returns the proxyHost value.
@@ -228,9 +228,9 @@ class AccessConfig {
          */
         unsigned long getEndSync() const;
 
-        BOOL getServerAuthRequired() const;
+        bool getServerAuthRequired() const;
 
-        void setServerAuthRequired(BOOL v);
+        void setServerAuthRequired(bool v);
 
         const char*  getClientAuthType() const;
 
@@ -268,15 +268,15 @@ class AccessConfig {
 
         void setUserAgent(const char*  v);
 
-        void setCompression(BOOL  v);
+        void setCompression(bool  v);
 
-        BOOL  getCompression() const;
+        bool  getCompression() const;
 
-        //void setCompression(BOOL v);
+        //void setCompression(bool v);
 
-        void setCheckConn(BOOL v);
+        void setCheckConn(bool v);
         /** @todo remove this, it is obsolete */
-        BOOL getCheckConn() const;
+        bool getCheckConn() const;
 
         void setResponseTimeout(unsigned int bufferSize)   ;
         unsigned int getResponseTimeout() const            ;

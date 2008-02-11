@@ -59,7 +59,7 @@ class StringBuffer: public ArrayElement {
 
         StringBuffer& append(const char* );
 
-        StringBuffer& append(unsigned long u, BOOL sign = TRUE);
+        StringBuffer& append(unsigned long u, bool sign = true);
 
         StringBuffer& append(StringBuffer& s);
 

@@ -134,7 +134,7 @@
 
         virtual void setLevel(LogLevel level) { logLevel = level; }
         virtual LogLevel getLevel() { return logLevel; }
-        virtual BOOL isLoggable(LogLevel level) { return level <= logLevel; }
+        virtual bool isLoggable(LogLevel level) { return level <= logLevel; }
 
         /**
          * error(), info(), developer(), debug() all print one message,

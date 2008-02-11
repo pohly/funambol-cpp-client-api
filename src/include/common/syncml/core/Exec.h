@@ -67,7 +67,7 @@ class Exec : public ModificationCommand {
          *
          */
         Exec(CmdID* cmdID,
-             BOOL   noResp,
+             bool   noResp,
              Cred*  cred,
              ArrayList*  items);
 

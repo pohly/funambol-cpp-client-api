@@ -48,7 +48,7 @@ private:
     char*  dataType;
     long maxOccur;
     long maxSize;
-    BOOL noTruncate;  // -1 undefined, 0 FALSE, 1 TRUE
+    bool noTruncate;  // -1 undefined, 0 false, 1 true
     ArrayList* valEnums;
     char*  displayName;
     ArrayList* propParams;
@@ -84,7 +84,7 @@ public:
      * @param propParams
      */
     Property(char*  propName, char*  dataType, long maxOccur, 
-        long maxSize, BOOL noTruncate, ArrayList* valEnums, 
+        long maxSize, bool noTruncate, ArrayList* valEnums, 
         char*  displayName, ArrayList* propParams);
 
 
@@ -159,21 +159,21 @@ public:
      *
      * @param p0
      */
-    void setNoTruncate(BOOL p0);
+    void setNoTruncate(bool p0);
 
 
     /*
      * isNoTruncate
      *
      */
-    BOOL isNoTruncate();
+    bool isNoTruncate();
 
 
     /*
      * getNoTruncate
      *
      */
-    BOOL getNoTruncate();
+    bool getNoTruncate();
 
 
     /*

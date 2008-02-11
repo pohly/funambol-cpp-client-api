@@ -120,20 +120,20 @@ const char* TargetRef::getValue() {
         unsigned int qMark = strlen(valuer);
         char* value = stringdup(valuer);
         char* p1 = value;
-        BOOL charFound = FALSE;
+        bool charFound = false;
         for (unsigned int k = 0; k < qMark; k++) {
             if (*p1 == 0) {
                 break;
             }
             else if (*p1 == '?') {
-                charFound = TRUE;
+                charFound = true;
                 p1 = p1 + 1;
                 break;
             }
             p1 = p1 + 1;
         }
 
-        if (charFound == FALSE) {
+        if (charFound == false) {
             if (this->value) {
                 delete [] this->value; this->value = NULL;
             }

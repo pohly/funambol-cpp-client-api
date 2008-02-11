@@ -118,10 +118,10 @@ public:
     SyncItem* getNextNewItem() { return getNext(newItems); }
     SyncItem* getFirstUpdatedItem() { return getFirst(updatedItems); }
     SyncItem* getNextUpdatedItem() { return getNext(updatedItems); }
-    SyncItem* getFirstDeletedItem() { return getFirst(deletedItems, FALSE); }
-    SyncItem* getNextDeletedItem() { return getNext(deletedItems, FALSE); }
-    SyncItem* getFirstItemKey() { return getFirst(allItems, FALSE); }
-    SyncItem* getNextItemKey() { return getNext(allItems, FALSE); }
+    SyncItem* getFirstDeletedItem() { return getFirst(deletedItems, false); }
+    SyncItem* getNextDeletedItem() { return getNext(deletedItems, false); }
+    SyncItem* getFirstItemKey() { return getFirst(allItems, false); }
+    SyncItem* getNextItemKey() { return getNext(allItems, false); }
     int addItem(SyncItem& item);
     int updateItem(SyncItem& item);
     int deleteItem(SyncItem& item);
@@ -145,8 +145,8 @@ public:
     /** returns time stored in fileNode for the given key, 0 if not found */
     unsigned long getServerModTime(const char* keystr);
 
-    SyncItem* getFirst(ItemIteratorContainer& container, BOOL getData = TRUE);
-    SyncItem* getNext(ItemIteratorContainer& container, BOOL getData = TRUE);
+    SyncItem* getFirst(ItemIteratorContainer& container, bool getData = true);
+    SyncItem* getNext(ItemIteratorContainer& container, bool getData = true);
 };
 
 /** @} */

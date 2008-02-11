@@ -53,7 +53,7 @@ static char logName[128] = LOG_NAME;
 static char logPath[256] = "\\" ;
 
 
-winLog::winLog(BOOL resetLog, const char* path, const char* name) {
+winLog::winLog(bool resetLog, const char* path, const char* name) {
 
     setLogPath(path);
     setLogName(name);
@@ -131,7 +131,7 @@ void winLog::setLogName(const char* configLogName) {
 * return a the time to write into log file. If complete is true, it return
 * the date too, else only hours, minutes, seconds and milliseconds
 */
-static char* createCurrentTime(BOOL complete) {
+static char* createCurrentTime(bool complete) {
 
     SYSTEMTIME sys_time;
     TIME_ZONE_INFORMATION timezone;

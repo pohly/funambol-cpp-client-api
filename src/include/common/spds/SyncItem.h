@@ -287,7 +287,7 @@
             }
 
             /** returns true if and only if the encoding is one of the supported ones */
-            static const BOOL isSupported(const char* encoding) {
+            static const bool isSupported(const char* encoding) {
                 const char* enc = encodingString(encoding);
                 return !strcmp(enc, plain) ||
                     !strcmp(enc, escaped) ||
@@ -297,7 +297,7 @@
 
       private:
         /** encode or decode the item's data with the named transformation */
-        int transformData(const char* name, BOOL encode, const char* password);
+        int transformData(const char* name, bool encode, const char* password);
     };
 
 /** @endcond */

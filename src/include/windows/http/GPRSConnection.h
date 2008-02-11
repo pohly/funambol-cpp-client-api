@@ -44,7 +44,7 @@
         * default connection.
         */
 
-        BOOL EstablishConnection();
+        bool EstablishConnection();
 
 /** @endcond */
 #endif

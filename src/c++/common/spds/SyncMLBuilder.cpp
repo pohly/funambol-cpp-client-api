@@ -96,7 +96,7 @@ void SyncMLBuilder::addItemStatus(ArrayList* previousStatus, Status* status) {
         return;
     }
 
-    BOOL found    = FALSE;
+    bool found    = false;
     Status* s     = NULL;
 
     if (status == NULL)
@@ -111,7 +111,7 @@ void SyncMLBuilder::addItemStatus(ArrayList* previousStatus, Status* status) {
                     list = s->getItems();
                     for (int j = 0; j < status->getItems()->size(); j++) {
                         list->add(*((Item*)(status->getItems())->get(j)));
-                        found = TRUE;
+                        found = true;
                     }
                 }
 
@@ -158,7 +158,7 @@ Status* SyncMLBuilder::prepareItemStatus(const char* COMMAND,
     Data*      data   = new Data(code);
     ArrayList* list   = new ArrayList();
     Source* sou       = new Source(key);
-    Item* item        = new Item(NULL, sou, NULL, NULL, FALSE);
+    Item* item        = new Item(NULL, sou, NULL, NULL, false);
     list->add(*item);
 
     char *mRef = itow(msgRef);
@@ -286,7 +286,7 @@ Status* SyncMLBuilder::prepareAlertStatus(SyncSource& source, ArrayList* alerts,
     Alert* a = NULL;
     Item* item = NULL;
     ArrayList* list = new ArrayList();
-    BOOL found = FALSE;
+    bool found = false;
 
     for (int i = 0; i < alerts->size(); i++) {
         a = (Alert*)alerts->get(i);
@@ -294,7 +294,7 @@ Status* SyncMLBuilder::prepareAlertStatus(SyncSource& source, ArrayList* alerts,
         if (list->size() == 1) {
             Item* it = (Item*)list->get(0);
             if (strcmp(it->getTarget()->getLocURI(), _wcc(source.getName())) == 0) {
-                found = TRUE;
+                found = true;
                 break;
             }
         }
@@ -350,7 +350,7 @@ Status* SyncMLBuilder::prepareAlertStatus(SyncSource& source, ArrayList* alerts,
             anchor = new Anchor(NULL, next);
             data = new ComplexData();
             data->setAnchor(anchor);
-            item           = new Item(NULL, NULL, NULL, data, FALSE);
+            item           = new Item(NULL, NULL, NULL, data, false);
             items->add(*item);
         }
     }
@@ -421,7 +421,7 @@ AbstractCommand *SyncMLBuilder::prepareDevInf(AbstractCommand *cmd, DevInf &devI
               &source,
               NULL,
               &complexData,
-              FALSE);
+              false);
 
 
     ++cmdID;
@@ -471,7 +471,7 @@ AbstractCommand *SyncMLBuilder::prepareDevInf(AbstractCommand *cmd, DevInf &devI
         */
 
         res = new Put(&commandID,
-                      FALSE,
+                      false,
                       NULL,
                       NULL,
                       &meta,
@@ -491,7 +491,7 @@ Alert* SyncMLBuilder::prepareAlert(SyncSource& s, int code) {
     delete [] cmdid; cmdid = NULL;
     Target* tar          = new Target(s.getConfig().getURI());
     Source* sou          = new Source(_wcc(s.getName()));
-    Item* item           = new Item(tar, sou, NULL, NULL, FALSE);
+    Item* item           = new Item(tar, sou, NULL, NULL, false);
 
     ArrayList* list      = new ArrayList();
     list->add(*item);
@@ -534,7 +534,7 @@ Alert* SyncMLBuilder::prepareInitAlert(SyncSource& s, unsigned long maxObjSize) 
                             anchor, NULL, NULL, NULL, maxObjSize > 0 ? maxObjSize : NULL,  NULL, NULL);
     Meta* meta           = new Meta();
     meta->setMetInf(metInf);
-    Item* item           = new Item(tar, sou, meta, NULL, FALSE);
+    Item* item           = new Item(tar, sou, meta, NULL, false);
 
     ArrayList* list      = new ArrayList();
     list->add(*item);
@@ -570,7 +570,7 @@ Alert* SyncMLBuilder::prepareAddrChangeAlert(SyncSource& s) {
             Target target( "" );
             Source source(_wcc(syncItem->getKey()));
             // Build Item
-            Item item(&target, &source, NULL, &addr, FALSE);
+            Item item(&target, &source, NULL, &addr, false);
             // Add it to the list
             list.add(item);
 
@@ -590,7 +590,7 @@ Alert* SyncMLBuilder::prepareAddrChangeAlert(SyncSource& s) {
             Target target( "" );
             Source source(syncItem->getKey());
             // Build Item
-            Item item(&target, &source, NULL, &addr, FALSE);
+            Item item(&target, &source, NULL, &addr, false);
             // Add it to the list
             list.add(item);
         }
@@ -670,7 +670,7 @@ SyncML* SyncMLBuilder::prepareInitObject(Cred* cred, ArrayList* alerts, ArrayLis
             list->add(*(Alert*)alerts->get(k));
     }
 
-    syncBody   = new SyncBody(list, TRUE);
+    syncBody   = new SyncBody(list, true);
     deleteArrayList(&list);
     syncml       = new SyncML(syncHdr, syncBody);
 
@@ -688,7 +688,7 @@ char* SyncMLBuilder::prepareMsg(SyncML* syncml) {
 }
 
 
-SyncML* SyncMLBuilder::prepareSyncML(ArrayList* commands, BOOL final) {
+SyncML* SyncMLBuilder::prepareSyncML(ArrayList* commands, bool final) {
 
     SyncHdr* syncHdr = prepareSyncHdr(NULL);
     SyncBody* syncBody   = new SyncBody(commands, final);
@@ -737,8 +737,8 @@ ArrayList* SyncMLBuilder::prepareItem(SyncItem* syncItem,
     Source* sou = new Source(_wcc(syncItem->getKey()));
     ComplexData* data = NULL;
     Meta m;
-    BOOL hasMoreData = FALSE;
-    BOOL isFirstChunk = !syncItemOffset;
+    bool hasMoreData = false;
+    bool isFirstChunk = !syncItemOffset;
     if (strcmp(DELETE_COMMAND_NAME, COMMAND) != 0) {
         if (syncItem->getDataEncoding()) {
             m.setFormat(syncItem->getDataEncoding());
@@ -800,11 +800,11 @@ long SyncMLBuilder::addItem(ModificationCommand* &modificationCommand,
         meta.setMetInf(&metInf);
 
         if (strcmp(ADD_COMMAND_NAME, COMMAND) == 0)
-            modificationCommand = new Add(&commandID, FALSE, NULL, &meta, NULL);
+            modificationCommand = new Add(&commandID, false, NULL, &meta, NULL);
         else if (strcmp(REPLACE_COMMAND_NAME, COMMAND) == 0){
-            modificationCommand = new Replace(&commandID, FALSE, NULL, &meta, NULL);
+            modificationCommand = new Replace(&commandID, false, NULL, &meta, NULL);
         } else if (strcmp(DELETE_COMMAND_NAME, COMMAND) == 0) {
-            modificationCommand = new Delete(&commandID, FALSE, FALSE, FALSE, NULL, &meta, NULL);
+            modificationCommand = new Delete(&commandID, false, false, false, NULL, &meta, NULL);
         }
     }
 
@@ -834,7 +834,7 @@ Sync* SyncMLBuilder::prepareSyncCommand(SyncSource& source) {
     ArrayList* list      = new ArrayList();
     Sync* sync           = NULL;
 
-    sync = new Sync(commandID, FALSE, NULL, tar, sou, NULL, 0,  list);
+    sync = new Sync(commandID, false, NULL, tar, sou, NULL, 0,  list);
 
     deleteCmdID(&commandID);
     deleteTarget(&tar);

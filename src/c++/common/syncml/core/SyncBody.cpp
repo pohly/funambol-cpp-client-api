@@ -44,7 +44,7 @@ SyncBody::~SyncBody() {
     if(commands) {
         commands->clear();  //delete commands; commands = NULL;
     }
-    finalMsg = FALSE;
+    finalMsg = false;
 }
 
 /**
@@ -60,7 +60,7 @@ SyncBody::~SyncBody() {
 *
 */
 SyncBody::SyncBody(ArrayList* commands   , // AbstractCommand[]
-                   BOOL       finalMsg) {
+                   bool       finalMsg) {
 
         initialize();
         setCommands(commands);
@@ -68,7 +68,7 @@ SyncBody::SyncBody(ArrayList* commands   , // AbstractCommand[]
 }
 
 void SyncBody::initialize() {
-    finalMsg = FALSE;
+    finalMsg = false;
     commands = new ArrayList();
 }
 
@@ -91,18 +91,18 @@ ArrayList* SyncBody::getCommands() {
 *
 */
 void SyncBody::setCommands(ArrayList* commands) {
-    BOOL err = FALSE;
+    bool err = false;
     if (commands == NULL) {
         LOG.error("SyncBody::setCommands: null command list");
-        err = TRUE;
+        err = true;
     }
     for (int i = 0; i < commands->size(); i++) {
         if (commands->get(i) == NULL) {
             LOG.error("SyncBody::setCommands: command %d is null.", i);
-            err = TRUE;
+            err = true;
         }
     }
-    if (err == FALSE) {
+    if (err == false) {
         this->commands->clear();
         this->commands = commands->clone();
     }
@@ -113,8 +113,8 @@ void SyncBody::setCommands(ArrayList* commands) {
 *
 * @param finalMsg the Boolean value of finalMsg property
 */
-void SyncBody::setFinalMsg(BOOL finalMsg) {
-      if ((finalMsg == NULL) || (finalMsg != TRUE && finalMsg != FALSE)) {
+void SyncBody::setFinalMsg(bool finalMsg) {
+      if ((finalMsg == NULL) || (finalMsg != true && finalMsg != false)) {
         this->finalMsg = NULL;
     } else {
         this->finalMsg = finalMsg;
@@ -127,7 +127,7 @@ void SyncBody::setFinalMsg(BOOL finalMsg) {
 * @return true if this is the final message being sent, otherwise false
 *
 */
-BOOL SyncBody::isFinalMsg() {
+bool SyncBody::isFinalMsg() {
     return (finalMsg != NULL);
 }
 
@@ -137,7 +137,7 @@ BOOL SyncBody::isFinalMsg() {
 * @return true if this is the final message being sent, otherwise null
 *
 */
-BOOL SyncBody::getFinalMsg() {
+bool SyncBody::getFinalMsg() {
     return finalMsg;
 }
 

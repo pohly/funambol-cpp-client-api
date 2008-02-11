@@ -104,7 +104,7 @@ class SyncML {
          *
          * @return lastMessage
          */
-        BOOL isLastMessage();
+        bool isLastMessage();
 
         /**
          * Sets lastMessage

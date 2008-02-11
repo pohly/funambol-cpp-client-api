@@ -69,7 +69,7 @@ Sync::~Sync() {
 *
 */
 Sync::Sync(CmdID* cmdID,
-        BOOL noResp,
+        bool noResp,
         Cred* cred,
         Target* target,
         Source* source,
@@ -166,18 +166,18 @@ ArrayList* Sync::getCommands() {
 *
 */
 void Sync::setCommands(ArrayList* commands) {
-    BOOL err = FALSE;
+    bool err = false;
     if (commands == NULL) {
         // TBD
-        err = TRUE;
+        err = true;
     }
     for (int i = 0; i < commands->size(); i++) {
         if (commands->get(i) == NULL) {
             // TBD
-            err = TRUE;
+            err = true;
         }
     }
-    if (err == FALSE) {
+    if (err == false) {
         this->commands->clear();
         this->commands = commands->clone();
     }

@@ -57,8 +57,8 @@
 void testClause() {
     SourceFilter filter;
 
-    WhereClause where1("CompanyName", "funambol", EQ, FALSE);
-    WhereClause where2("FirstName", "ste", CONTAIN, TRUE);
+    WhereClause where1("CompanyName", "funambol", EQ, false);
+    WhereClause where2("FirstName", "ste", CONTAIN, true);
 
     ArrayList operands;
 
@@ -78,7 +78,7 @@ void testClause() {
     LogicalClause recordOnly(AND, operands);
 
     filter.setClause(recordOnly);
-    filter.setInclusive(FALSE);
+    filter.setInclusive(false);
     filter.setType("text/x-s4j-sifc");
 
     Filter* f = ClauseUtil::toFilter(filter);
@@ -115,7 +115,7 @@ void testClause() {
     LogicalClause fieldOnly(AND, operands);
 
     filter.setClause(fieldOnly);
-    filter.setInclusive(TRUE);
+    filter.setInclusive(true);
 
     f = ClauseUtil::toFilter(filter);
     sb = Formatter::getFilter(f);

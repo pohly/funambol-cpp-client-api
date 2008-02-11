@@ -56,7 +56,7 @@ MailSourceManagementNode::MailSourceManagementNode(const char*         context,
 MailSourceManagementNode::~MailSourceManagementNode() {
 }
 
-MailSyncSourceConfig& MailSourceManagementNode::getMailSourceConfig(BOOL refresh) {
+MailSyncSourceConfig& MailSourceManagementNode::getMailSourceConfig(bool refresh) {
     if (refresh) {
         char*  c = NULL;
         char* tmp;

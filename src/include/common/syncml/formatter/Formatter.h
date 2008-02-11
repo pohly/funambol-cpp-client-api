@@ -57,7 +57,8 @@ class Formatter {
         static StringBuffer*    getValue            (const char*  tagName, const char*  value, const char *params = NULL);
         static StringBuffer*    getValue            (const char*  tagName, StringBuffer* value, const char *params = NULL);
         static StringBuffer*    getValue            (const char*  tagName, long value, const char *params = NULL);
-        static StringBuffer*    getValue            (const char*  tagName, BOOL value, const char *params = NULL);
+        static StringBuffer*    getValue            (const char*  tagName, int value, const char *params = NULL) { return getValue(tagName, (long)value, params); }
+        static StringBuffer*    getValue            (const char*  tagName, bool value, const char *params = NULL);
         static StringBuffer*    getValueNotEmpty    (const char*  tagName, const char*  value, const char *params = NULL);
 
         static StringBuffer*    getSyncML           (SyncML*        syncML);

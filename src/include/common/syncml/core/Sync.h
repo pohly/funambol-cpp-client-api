@@ -80,7 +80,7 @@ class Sync : public AbstractCommand {
          *
          */
         Sync(CmdID* cmdID,
-                    BOOL noResp,
+                    bool noResp,
                     Cred* cred,
                     Target* target,
                     Source* source,

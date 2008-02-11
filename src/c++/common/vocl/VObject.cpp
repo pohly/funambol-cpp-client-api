@@ -158,7 +158,7 @@ WCHAR* VObject::toString() {
 
     WString strVObject;
 
-    BOOL is_30 = FALSE;
+    bool is_30 = false;
     if (version) {
         is_30 = !wcscmp(getVersion(), TEXT("3.0"));
     }
@@ -240,7 +240,7 @@ static int hex2int( WCHAR x )
 
 void VObject::toNativeEncoding()
 {
-    BOOL is_30 = !wcscmp(getVersion(), TEXT("3.0"));
+    bool is_30 = !wcscmp(getVersion(), TEXT("3.0"));
     // line break is encoded with either one or two
     // characters on different platforms
     const int linebreaklen = wcslen(SYNC4J_LINEBREAK);
@@ -370,7 +370,7 @@ void VObject::toNativeEncoding()
 
 void VObject::fromNativeEncoding()
 {
-    BOOL is_30 = !wcscmp(getVersion(), TEXT("3.0"));
+    bool is_30 = !wcscmp(getVersion(), TEXT("3.0"));
 
     for (int index = propertiesCount() - 1; index >= 0; index--) {
         VProperty *vprop = getProperty(index);

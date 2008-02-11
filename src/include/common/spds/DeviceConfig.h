@@ -63,9 +63,9 @@ class DeviceConfig {
         char*         devID        ;
         char*         devType      ;
         char*         dsV          ;
-        BOOL          utc          ;
-        BOOL          loSupport    ;
-        BOOL          nocSupport   ;
+        bool          utc          ;
+        bool          loSupport    ;
+        bool          nocSupport   ;
         LogLevel      logLevel     ;
         unsigned int  maxObjSize   ;
         char*         devInfHash   ;
@@ -129,14 +129,14 @@ class DeviceConfig {
         const char*  getDsV() const            ;
         void setDsV(const char*  v)            ;
 
-        BOOL getUtc() const                    ;
-        void setUtc(BOOL v)                    ;
+        bool getUtc() const                    ;
+        void setUtc(bool v)                    ;
 
-        BOOL getLoSupport() const              ;
-        void setLoSupport(BOOL v)              ;
+        bool getLoSupport() const              ;
+        void setLoSupport(bool v)              ;
 
-        BOOL getNocSupport() const             ;
-        void setNocSupport(BOOL v)             ;
+        bool getNocSupport() const             ;
+        void setNocSupport(bool v)             ;
 
         LogLevel getLogLevel() const           ;
         void setLogLevel(LogLevel v)           ;

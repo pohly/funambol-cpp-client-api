@@ -74,7 +74,7 @@ void LogicalClause::setOperands(ArrayList& ops) {
     operands = ops.clone();
 }
 
-BOOL LogicalClause::isUnaryOperator() {
+bool LogicalClause::isUnaryOperator() {
     return (op == NOT);
 }
 

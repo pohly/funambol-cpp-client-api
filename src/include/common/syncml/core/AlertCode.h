@@ -78,7 +78,7 @@
 *
 * @return true if the code is an initialization code, false otherwise
 */
-BOOL isInitializationCode(int code) {
+bool isInitializationCode(int code) {
   return (  (code == TWO_WAY                      )
          || (code == SLOW                         )
          || (code == ONE_WAY_FROM_CLIENT          )
@@ -106,7 +106,7 @@ BOOL isInitializationCode(int code) {
 *
 * @return true if the code represents a client only action, false otherwise
 */
-BOOL isClientOnlyCode(int code) {
+bool isClientOnlyCode(int code) {
   return (  (code == ONE_WAY_FROM_CLIENT)
          || (code == REFRESH_FROM_CLIENT)
          );

@@ -65,10 +65,6 @@
 # define __cdecl
 #endif
 
-#define BOOL int
-#define TRUE 1
-#define FALSE 0
-
 // Enable the fix for encoding when building for posix
 #define VOCL_ENCODING_FIX
 

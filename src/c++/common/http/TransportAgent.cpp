@@ -42,7 +42,7 @@ TransportAgent::TransportAgent() {
     maxmsgsize = DEFAULT_MAX_MSG_SIZE;
     readBufferSize = DEFAULT_INTERNET_READ_BUFFER_SIZE;
     userAgent[0] = 0;
-    compression=FALSE;
+    compression = false;
 }
 
 TransportAgent::TransportAgent(URL& newURL,
@@ -56,7 +56,7 @@ TransportAgent::TransportAgent(URL& newURL,
     this->maxmsgsize  = maxmsgsize;
     readBufferSize = DEFAULT_INTERNET_READ_BUFFER_SIZE;
     userAgent[0] = 0;
-    compression=FALSE;
+    compression = false;
 }
 
 TransportAgent::~TransportAgent() {
@@ -103,11 +103,11 @@ const char* TransportAgent::getUserAgent() {
     return stringdup(userAgent);
 }
 
-void TransportAgent::setCompression(BOOL newCompression){
+void TransportAgent::setCompression(bool newCompression){
     compression = newCompression;
 }
 
-BOOL TransportAgent::getCompression(){
+bool TransportAgent::getCompression(){
     return compression;
 }
 

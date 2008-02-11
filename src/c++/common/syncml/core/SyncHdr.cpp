@@ -51,7 +51,7 @@ SyncHdr::SyncHdr() {
     respURI     = NULL;
     cred        = NULL;
     meta        = NULL;
-    noResp      = FALSE;
+    noResp      = false;
 }
 
 SyncHdr::~SyncHdr() {
@@ -66,7 +66,7 @@ SyncHdr::~SyncHdr() {
     if (cred)       { delete    cred;       cred        = NULL; }
     if (meta)       { delete    meta;       meta        = NULL; }
 
-    noResp = FALSE   ;
+    noResp = false   ;
 }
 
 /**
@@ -91,7 +91,7 @@ SyncHdr::SyncHdr(VerDTD*      verDTD,
                 Target*      target,
                 Source*      source,
                 char*     respURI,
-                BOOL         noResp,
+                bool         noResp,
                 Cred*        cred,
                 Meta*        meta) {
 
@@ -104,7 +104,7 @@ SyncHdr::SyncHdr(VerDTD*      verDTD,
     this->respURI     = NULL;
     this->cred        = NULL;
     this->meta        = NULL;
-    this->noResp      = FALSE;
+    this->noResp      = false;
 
     COMMAND_NAME = new char[strlen(SYNCHDR_COMMAND_NAME) + 1];
     sprintf(COMMAND_NAME, SYNCHDR_COMMAND_NAME);
@@ -298,7 +298,7 @@ void SyncHdr::setRespURI(const char*uri) {
 *
 * @return true if the command doesn't require a response, false otherwise
 */
-BOOL SyncHdr::isNoResp() {
+bool SyncHdr::isNoResp() {
     return (noResp != NULL);
 }
 
@@ -307,7 +307,7 @@ BOOL SyncHdr::isNoResp() {
 *
 * @return true if the command doesn't require a response, null otherwise
 */
-BOOL SyncHdr::getNoResp() {
+bool SyncHdr::getNoResp() {
     return noResp;
 }
 
@@ -316,8 +316,8 @@ BOOL SyncHdr::getNoResp() {
 *
 * @param noResp the noResponse property
 */
-void SyncHdr::setNoResp(BOOL noResp) {
-      if ((noResp == NULL) || (noResp != TRUE && noResp != FALSE)) {
+void SyncHdr::setNoResp(bool noResp) {
+      if ((noResp == NULL) || (noResp != true && noResp != false)) {
         this->noResp = NULL;
     } else {
         this->noResp = noResp;

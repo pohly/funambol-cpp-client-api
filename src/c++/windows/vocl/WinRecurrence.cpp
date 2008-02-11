@@ -85,7 +85,7 @@ wstring& WinRecurrence::toString() {
     int  dayofmonth  = 0;
     int  instance    = 1;
     int  monthofyear = 0;
-    BOOL noEnd       = FALSE;
+    bool noEnd       = false;
     wstring pStart   = L"";
 
     // Read all values from propertyMap.
@@ -272,7 +272,7 @@ int WinRecurrence::parse(const wstring dataString) {
                 setIntProperty(L"RecurrenceType", recType);
                 setIntProperty(L"Interval",      interval);
                 occurences = _wtoi(token+1);
-                if(occurences == 0)             setIntProperty(L"NoEndDate",   TRUE);
+                if(occurences == 0)             setIntProperty(L"NoEndDate",   true);
                 else                            setIntProperty(L"Occurrences", occurences);
                 token ++;
             }
@@ -290,7 +290,7 @@ int WinRecurrence::parse(const wstring dataString) {
                 setIntProperty(L"RecurrenceType", recType);
                 setIntProperty(L"Interval",      interval);
                 occurences = _wtoi(token+1);
-                if(occurences == 0)             setIntProperty(L"NoEndDate",   TRUE);
+                if(occurences == 0)             setIntProperty(L"NoEndDate",   true);
                 else                            setIntProperty(L"Occurrences", occurences);
                 if(wcscmp(days, L""))           setIntProperty(L"DayOfWeekMask", stringToDaysOfWeek(days));
                 else                            setIntProperty(L"DayOfWeekMask", getWeekDayFromDate(startDate)); 
@@ -319,7 +319,7 @@ int WinRecurrence::parse(const wstring dataString) {
                 setIntProperty(L"DayOfMonth",  dayOfMonth);
                 setIntProperty(L"Interval",      interval);
                 occurences = _wtoi(token+1);
-                if(occurences == 0)             setIntProperty(L"NoEndDate",   TRUE);
+                if(occurences == 0)             setIntProperty(L"NoEndDate",   true);
                 else                            setIntProperty(L"Occurrences", occurences);
                 token++;
             }
@@ -349,7 +349,7 @@ int WinRecurrence::parse(const wstring dataString) {
                 setIntProperty(L"Instance",   weekOfMonth);
                 setIntProperty(L"DayOfWeekMask", stringToDaysOfWeek(days));
                 occurences = _wtoi(token+1);
-                if(occurences == 0)             setIntProperty(L"NoEndDate",   TRUE);
+                if(occurences == 0)             setIntProperty(L"NoEndDate",   true);
                 else                            setIntProperty(L"Occurrences", occurences);
                 token++;
             }
@@ -391,7 +391,7 @@ int WinRecurrence::parse(const wstring dataString) {
                 setIntProperty(L"MonthOfYear",monthOfYear);
                 setIntProperty(L"DayOfMonth",  dayOfMonth);
                 occurences = _wtoi(token+1);
-                if(occurences == 0)             setIntProperty(L"NoEndDate",   TRUE);
+                if(occurences == 0)             setIntProperty(L"NoEndDate",   true);
                 else                            setIntProperty(L"Occurrences", occurences);
                 token++;
             }

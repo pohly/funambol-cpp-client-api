@@ -99,7 +99,7 @@ StringBuffer& StringBuffer::append(const char* sNew) {
     return *this;
 }
 
-StringBuffer& StringBuffer::append(unsigned long i, BOOL sign) {
+StringBuffer& StringBuffer::append(unsigned long i, bool sign) {
     append(StringBuffer().sprintf(sign ? "%ld" : "%lu", i));
 
     return *this;

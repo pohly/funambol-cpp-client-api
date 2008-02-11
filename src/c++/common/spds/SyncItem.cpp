@@ -140,13 +140,13 @@ int SyncItem::changeDataEncoding(const char* enc, const char* encryption, const 
     if (strcmp(encodings::encodingString(encoding), encodings::plain)) {
         if (!strcmp(encoding, encodings::escaped) ||
             !strcmp(encoding, encodings::des)) {
-            res = transformData("b64", FALSE, credentialInfo);
+            res = transformData("b64", false, credentialInfo);
             if (res) {
                 return res;
             }
         }
         if (!strcmp(encoding, encodings::des)) {
-            res = transformData("des", FALSE, credentialInfo);
+            res = transformData("des", false, credentialInfo);
             if (res) {
                 return res;
             }
@@ -157,14 +157,14 @@ int SyncItem::changeDataEncoding(const char* enc, const char* encryption, const 
     // now convert to new encoding
     if (strcmp(encodings::encodingString(encoding), encodings::encodingString(encToUse))) {
         if (!strcmp(encToUse, encodings::des)) {
-            res = transformData("des", TRUE, credentialInfo);
+            res = transformData("des", true, credentialInfo);
             if (res) {
                 return res;
             }
         }
         if (!strcmp(encToUse, encodings::escaped) ||
             !strcmp(encToUse, encodings::des)) {
-            res = transformData("b64", TRUE, credentialInfo);
+            res = transformData("b64", true, credentialInfo);
             if (res) {
                 return res;
             }
@@ -176,7 +176,7 @@ int SyncItem::changeDataEncoding(const char* enc, const char* encryption, const 
     return ERR_NONE;
 }
 
-int SyncItem::transformData(const char* name, BOOL encode, const char* password)
+int SyncItem::transformData(const char* name, bool encode, const char* password)
 {
     char* buffer = NULL;
     DataTransformer *dt = encode ?

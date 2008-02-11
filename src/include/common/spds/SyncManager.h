@@ -181,7 +181,7 @@ class SyncManager {
         int responseTimeout;  // the response timeout for a rensponse from server (default = 5min) [in seconds]
         int maxMsgSize;       // the max message size. Default = 512k. Setting it implies LargeObject support.
         int maxObjSize;       // The maximum object size. The server gets this in the Meta init message and should obey it.
-        BOOL loSupport;             // enable support for large objects - without it large outgoing items are not split
+        bool loSupport;             // enable support for large objects - without it large outgoing items are not split
         unsigned int readBufferSize; // the size of the buffer to store chunk of incoming stream.
         char  credentialInfo[1024]; // used to store info for the des;b64 encription
 
@@ -208,12 +208,12 @@ class SyncManager {
         } *incomingItem;       // sync item which is not complete yet, more data expected
 
         void initialize();
-        BOOL readSyncSourceDefinition(SyncSource& source);
-        BOOL commitChanges(SyncSource& source);
+        bool readSyncSourceDefinition(SyncSource& source);
+        bool commitChanges(SyncSource& source);
         int assignSources(SyncSource** sources);
 
         Status *processSyncItem(Item* item, const CommandInfo &cmdInfo, SyncMLBuilder &syncMLBuilder);
-        BOOL checkForServerChanges(SyncML* syncml, ArrayList &statusList);
+        bool checkForServerChanges(SyncML* syncml, ArrayList &statusList);
 
         const char*  getUserAgent(AbstractSyncConfig& config);
         bool isToExit();

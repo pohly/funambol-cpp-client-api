@@ -40,7 +40,7 @@ AbstractCommand::AbstractCommand() {
     initialize();
 }
 
-AbstractCommand::AbstractCommand(CmdID* cmdID, BOOL noResp) {
+AbstractCommand::AbstractCommand(CmdID* cmdID, bool noResp) {
     initialize();
     set(cmdID, noResp);
 }
@@ -53,26 +53,26 @@ AbstractCommand::AbstractCommand(CmdID* cmdID, BOOL noResp) {
  */
  AbstractCommand::AbstractCommand(CmdID* cmdID) {
     initialize();
-    set(cmdID, FALSE);
+    set(cmdID, false);
 }
 
-void AbstractCommand::set(CmdID* cmdID, BOOL noResp) {
+void AbstractCommand::set(CmdID* cmdID, bool noResp) {
     setCmdID(cmdID);
     if (noResp != NULL) {
-        this->noResp  = (noResp == TRUE) ? TRUE : FALSE;
+        this->noResp  = (noResp == true) ? true : false;
     } else {
         this->noResp  = NULL;
     }
 }
 
 AbstractCommand::AbstractCommand(CmdID* cmdID,
-                                 BOOL noResp,
+                                 bool noResp,
                                  Meta* meta) {
         initialize();
 
         setCmdID(cmdID);
         if (noResp != NULL) {
-            this->noResp  = (noResp == TRUE) ? TRUE : FALSE;
+            this->noResp  = (noResp == true) ? true : false;
         } else {
             this->noResp  = NULL;
         }
@@ -81,7 +81,7 @@ AbstractCommand::AbstractCommand(CmdID* cmdID,
 
 void AbstractCommand::initialize() {
      cmdID  = NULL;
-     noResp = FALSE;
+     noResp = false;
      meta   = NULL;
      credential   = NULL;
  }
@@ -92,7 +92,7 @@ AbstractCommand::~AbstractCommand() {
     if (meta)       {delete meta; meta = NULL; }
     if (credential) {delete credential; credential = NULL; }
 
-    noResp = FALSE;
+    noResp = false;
 }
 
 /**
@@ -124,12 +124,12 @@ AbstractCommand::~AbstractCommand() {
  *
  * @return true if the command doesn't require a response, false otherwise
  */
- BOOL AbstractCommand::isNoResp() {
+ bool AbstractCommand::isNoResp() {
     return (noResp != NULL);
 }
 
 
- BOOL AbstractCommand::getNoResp() {
+ bool AbstractCommand::getNoResp() {
     return noResp;
 }
 
@@ -139,8 +139,8 @@ AbstractCommand::~AbstractCommand() {
  * @param noResp is true if no response is required
  *
  */
- void AbstractCommand::setNoResp(BOOL noResp) {
-     if ((noResp == NULL) || (noResp != TRUE && noResp != FALSE)) {
+ void AbstractCommand::setNoResp(bool noResp) {
+     if ((noResp == NULL) || (noResp != true && noResp != false)) {
         this->noResp = NULL;
      } else {
         this->noResp = noResp;

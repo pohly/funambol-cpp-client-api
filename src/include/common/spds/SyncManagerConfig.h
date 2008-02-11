@@ -56,7 +56,7 @@ class SyncManagerConfig : public AbstractSyncConfig {
 
         unsigned int sourceConfigsCount;
 
-        virtual BOOL addSyncSourceConfig(SyncSourceConfig& sc);
+        virtual bool addSyncSourceConfig(SyncSourceConfig& sc);
 
     public:
 
@@ -71,9 +71,9 @@ class SyncManagerConfig : public AbstractSyncConfig {
         // additional calls which return the more specific classes used by SyncManagerConfig
         virtual unsigned int getSyncSourceConfigsCount() const { return sourceConfigsCount; }
         virtual SyncSourceConfig* getSyncSourceConfigs() const { return sourceConfigs; }
-        virtual SyncSourceConfig* getSyncSourceConfig(const char*  name, BOOL refresh = FALSE) const;
-        virtual SyncSourceConfig* getSyncSourceConfig(unsigned int i,    BOOL refresh = FALSE) const;
-        virtual BOOL setSyncSourceConfig(SyncSourceConfig& sc);
+        virtual SyncSourceConfig* getSyncSourceConfig(const char*  name, bool refresh = false) const;
+        virtual SyncSourceConfig* getSyncSourceConfig(unsigned int i,    bool refresh = false) const;
+        virtual bool setSyncSourceConfig(SyncSourceConfig& sc);
 
         virtual const AccessConfig& getAccessConfig() const { return accessConfig; }
         virtual AccessConfig& getAccessConfig() { return accessConfig; }
@@ -84,7 +84,7 @@ class SyncManagerConfig : public AbstractSyncConfig {
         virtual void setDeviceConfig(DeviceConfig& dc) { deviceConfig.assign(dc); }
 
         /* Is this call obsolete? The DeviceConfig does not have a getDirty() calls. */
-        BOOL isDirty() const { return accessConfig.getDirty() /* || deviceConfig.getDirty() */; }
+        bool isDirty() const { return accessConfig.getDirty() /* || deviceConfig.getDirty() */; }
 
         /**
          * Initializes the access and device config with default values from DefaultConfigFactory.
@@ -100,7 +100,7 @@ class SyncManagerConfig : public AbstractSyncConfig {
         // AccessConfig and DeviceConfig instances
         virtual const char*  getUsername() const { return getAccessConfig().getUsername(); }
         virtual const char*  getPassword() const { return getAccessConfig().getPassword(); }
-        virtual BOOL getUseProxy() const { return getAccessConfig().getUseProxy(); }
+        virtual bool getUseProxy() const { return getAccessConfig().getUseProxy(); }
         virtual const char*  getProxyHost() const { return getAccessConfig().getProxyHost(); }
         virtual int getProxyPort() const { return getAccessConfig().getProxyPort(); }
         virtual const char* getProxyUsername() const { return getAccessConfig().getProxyUsername(); }
@@ -108,7 +108,7 @@ class SyncManagerConfig : public AbstractSyncConfig {
         virtual const char*  getSyncURL() const { return getAccessConfig().getSyncURL(); }
         virtual void setBeginSync(unsigned long timestamp) { getAccessConfig().setBeginSync(timestamp); }
         virtual void setEndSync(unsigned long timestamp) { getAccessConfig().setEndSync(timestamp); }
-        virtual BOOL getServerAuthRequired() const { return getAccessConfig().getServerAuthRequired(); }
+        virtual bool getServerAuthRequired() const { return getAccessConfig().getServerAuthRequired(); }
         virtual const char*  getClientAuthType() const { return getAccessConfig().getClientAuthType(); }
         virtual const char*  getServerAuthType() const { return getAccessConfig().getServerAuthType(); }
         virtual const char*  getServerPWD() const { return getAccessConfig().getServerPWD(); }
@@ -120,7 +120,7 @@ class SyncManagerConfig : public AbstractSyncConfig {
         virtual unsigned long getMaxMsgSize() const { return getAccessConfig().getMaxMsgSize(); }
         virtual unsigned long getReadBufferSize() const { return getAccessConfig().getReadBufferSize(); }
         virtual const char*  getUserAgent() const { return getAccessConfig().getUserAgent(); }
-        virtual BOOL  getCompression() const { return getAccessConfig().getCompression(); }
+        virtual bool  getCompression() const { return getAccessConfig().getCompression(); }
         virtual unsigned int getResponseTimeout() const { return getAccessConfig().getResponseTimeout(); }
 
         virtual const char*  getVerDTD() const { return getDeviceConfig().getVerDTD(); }
@@ -133,9 +133,9 @@ class SyncManagerConfig : public AbstractSyncConfig {
         virtual const char*  getDevID() const { return getDeviceConfig().getDevID(); }
         virtual const char*  getDevType() const { return getDeviceConfig().getDevType(); }
         virtual const char*  getDsV() const { return getDeviceConfig().getDsV(); }
-        virtual BOOL getUtc() const { return getDeviceConfig().getUtc(); }
-        virtual BOOL getLoSupport() const { return getDeviceConfig().getLoSupport(); }
-        virtual BOOL getNocSupport() const { return getDeviceConfig().getNocSupport(); }
+        virtual bool getUtc() const { return getDeviceConfig().getUtc(); }
+        virtual bool getLoSupport() const { return getDeviceConfig().getLoSupport(); }
+        virtual bool getNocSupport() const { return getDeviceConfig().getNocSupport(); }
         virtual unsigned int getMaxObjSize() const { return getDeviceConfig().getMaxObjSize(); }
         virtual const char*  getDevInfHash() const { return getDeviceConfig().getDevInfHash(); }
         virtual void setDevInfHash(const char *hash) { getDeviceConfig().setDevInfHash(hash); }

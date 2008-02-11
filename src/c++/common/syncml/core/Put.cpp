@@ -61,7 +61,7 @@ Put::~Put() {
 *
 */
 Put::Put(CmdID* cmdID,
-         BOOL noResp,
+         bool noResp,
          char* lang,
          Cred* cred,
          Meta* meta,

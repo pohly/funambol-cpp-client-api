@@ -61,8 +61,8 @@ static char prevSourceName[64];
 static char prevSourceUri[64];
 static SyncMode prevSyncMode;
 
-static BOOL isFiredSyncEventBEGIN;
-static BOOL isFiredSyncEventEND;
+static bool isFiredSyncEventBEGIN;
+static bool isFiredSyncEventEND;
 
 // Static functions ------------------------------------------------------------
 
@@ -223,7 +223,7 @@ void SyncManager::initialize() {
     prevSourceName[0] = 0;
     prevSourceUri[0] = 0;
     prevSyncMode = SYNC_NONE;
-    isFiredSyncEventBEGIN = FALSE;
+    isFiredSyncEventBEGIN = false;
 
 }
 
@@ -273,13 +273,13 @@ int SyncManager::prepareSync(SyncSource** s) {
     ArrayList* alerts           = new ArrayList();
 
     // for authentication improvments
-    BOOL isServerAuthRequired   = credentialHandler.getServerAuthRequired();
+    bool isServerAuthRequired   = credentialHandler.getServerAuthRequired();
     int clientAuthRetries       = 1;
     int serverAuthRetries       = 1;
     int authStatusCode          = 200;
 
-    BOOL isClientAuthenticated  = FALSE;
-    BOOL isServerAuthenticated  = FALSE;
+    bool isClientAuthenticated  = false;
+    bool isServerAuthenticated  = false;
     Chal*   clientChal          = NULL; // The chal of the server to the client
     Chal*   serverChal          = NULL; // The chal of the client to the server
     Status* status              = NULL; // The status from the client to the server
@@ -287,7 +287,7 @@ int SyncManager::prepareSync(SyncSource** s) {
     Alert*  alert               = NULL;
     SyncSource** buf            = NULL;
     StringBuffer* devInfStr     = NULL;
-    BOOL putDevInf              = FALSE;
+    bool putDevInf              = false;
     char devInfHash[16 * 4 +1]; // worst case factor base64 is four
     unsigned long timestamp = (unsigned long)time(NULL);
 
@@ -355,15 +355,15 @@ int SyncManager::prepareSync(SyncSource** s) {
         // if different, then the local config has changed and
         // infos should be sent again
         if (strcmp(devInfHash, config.getDevInfHash())) {
-            putDevInf = TRUE;
+            putDevInf = true;
         }
         LOG.debug("devinfo %s", putDevInf ? "changed, retransmit" : "unchanged, no need to send");
     } else {
         LOG.debug("no devinfo available");
     }
 
-    if (isServerAuthRequired == FALSE) {
-        isServerAuthenticated = TRUE;
+    if (isServerAuthRequired == false) {
+        isServerAuthenticated = true;
     }
 
     // Authentication
@@ -376,7 +376,7 @@ int SyncManager::prepareSync(SyncSource** s) {
         bool addressChange = false;
 
         // credential of the client
-        if (isClientAuthenticated == FALSE) {
+        if (isClientAuthenticated == false) {
             char anc[DIM_ANCHOR];
             timestamp = (unsigned long)time(NULL);
             for (count = 0; count < sourcesNumber; count ++) {
@@ -414,7 +414,7 @@ int SyncManager::prepareSync(SyncSource** s) {
                 commands.add(*put);
                 delete put;
             }
-            putDevInf = FALSE;
+            putDevInf = false;
         }
 
         // "cred" only contains an encoded strings as username, also
@@ -551,7 +551,7 @@ int SyncManager::prepareSync(SyncSource** s) {
         //
         // Server Authentication
         //
-        if (isServerAuthenticated == FALSE) {
+        if (isServerAuthenticated == false) {
 
             cred = syncml->getSyncHdr()->getCred();
             if (cred == NULL) {
@@ -614,8 +614,8 @@ int SyncManager::prepareSync(SyncSource** s) {
             AbstractCommand* cmd = (AbstractCommand*)list->get(cmdindex);
             const char* name = cmd->getName();
             if (name) {
-                BOOL isPut = !strcmp(name, PUT);
-                BOOL isGet = !strcmp(name, GET);
+                bool isPut = !strcmp(name, PUT);
+                bool isGet = !strcmp(name, GET);
 
                 if (isGet || isPut) {
                     int statusCode = 200; // if set, then send it (on by default)
@@ -623,7 +623,7 @@ int SyncManager::prepareSync(SyncSource** s) {
                     if (isGet) {
                         Get *get = (Get *)cmd;
                         ArrayList *items = get->getItems();
-                        BOOL sendDevInf = FALSE;
+                        bool sendDevInf = false;
 
                         Results results;
                         for (int i = 0; i < items->size(); i++) {
@@ -636,7 +636,7 @@ int SyncManager::prepareSync(SyncSource** s) {
                             if (target && target->getLocURI() &&
                                 !strcmp(target->getLocURI(),
                                          DEVINF_URI)) {
-                                sendDevInf = TRUE;
+                                sendDevInf = true;
                             } else {
                                 LOG.debug("ignoring request to Get item #%d", i);
                             }
@@ -709,7 +709,7 @@ int SyncManager::prepareSync(SyncSource** s) {
                     credentialHandler.setClientNonce(clientChal->getNextNonce()->getValueAsBase64());
                 }
             }
-            isClientAuthenticated = TRUE;
+            isClientAuthenticated = true;
 
             // Get sorted source list from Alert commands sent by server.
             if (sortedSourcesFromServer) {
@@ -734,7 +734,7 @@ int SyncManager::prepareSync(SyncSource** s) {
             }
        }
 
-    } while(isClientAuthenticated == FALSE || isServerAuthenticated == FALSE);
+    } while(isClientAuthenticated == false || isServerAuthenticated == false);
 
     config.setClientNonce(credentialHandler.getClientNonce());
     config.setServerNonce(credentialHandler.getServerNonce());
@@ -792,11 +792,11 @@ finally:
 //
 // @param syncml       the server response
 // @param statusList   list to which statuses for changes are to be added
-// @return TRUE if a fatal error occurred
+// @return true if a fatal error occurred
 //
-BOOL SyncManager::checkForServerChanges(SyncML* syncml, ArrayList &statusList)
+bool SyncManager::checkForServerChanges(SyncML* syncml, ArrayList &statusList)
 {
-    BOOL result = FALSE;
+    bool result = false;
 
     // Danger, danger: count is a member variable!
     // It has to be because that's the context for some of
@@ -853,7 +853,7 @@ BOOL SyncManager::checkForServerChanges(SyncML* syncml, ArrayList &statusList)
                 strcpy(prevSourceName, locuri);
             }
             if (strcmp(prevSourceName, locuri) != 0) {
-                isFiredSyncEventBEGIN = FALSE;
+                isFiredSyncEventBEGIN = false;
                 fireSyncSourceEvent(prevSourceUri, prevSourceName, prevSyncMode, 0, SYNC_SOURCE_END);
                 strcpy(prevSourceName, locuri);
             }
@@ -862,7 +862,7 @@ BOOL SyncManager::checkForServerChanges(SyncML* syncml, ArrayList &statusList)
         if (sync) {
             // Fire SyncSource event: BEGIN sync of a syncsource (server modifications)
             // (fire only if <sync> tag exist)
-            if (isFiredSyncEventBEGIN == FALSE) {
+            if (isFiredSyncEventBEGIN == false) {
                 fireSyncSourceEvent(sources[count]->getConfig().getURI(),
                         sources[count]->getConfig().getName(),
                         sources[count]->getSyncMode(), 0, SYNC_SOURCE_BEGIN);
@@ -875,7 +875,7 @@ BOOL SyncManager::checkForServerChanges(SyncML* syncml, ArrayList &statusList)
                         sources[count]->getConfig().getName(),
                         sources[count]->getSyncMode(), noc, SYNC_SOURCE_TOTAL_SERVER_ITEMS);
 
-                isFiredSyncEventBEGIN = TRUE;
+                isFiredSyncEventBEGIN = true;
             }
 
             ArrayList* items = sync->getCommands();
@@ -908,7 +908,7 @@ BOOL SyncManager::checkForServerChanges(SyncML* syncml, ArrayList &statusList)
                     Item *item = (Item*)list->get(j);
                     if (item == NULL) {
                         LOG.error("SyncManager::checkForServerChanges() - unexpected NULL item.");
-                        result = TRUE;
+                        result = true;
                         goto finally;
                     }
                     // Size might have been included in either the command or the item meta information.
@@ -970,10 +970,10 @@ int SyncManager::sync() {
     unsigned int toSync  = 0;
     unsigned int iterator= 0;
     int ret              = 0;
-    BOOL last            = FALSE;
+    bool last            = false;
     ArrayList* list      = new ArrayList();
-    BOOL isFinalfromServer = FALSE;
-    BOOL isAtLeastOneSourceCorrect = FALSE;
+    bool isFinalfromServer = false;
+    bool isAtLeastOneSourceCorrect = false;
 
     //for refresh from server sync (TO BE REMOVED?)
     allItemsList = new ArrayList*[sourcesNumber];
@@ -1002,7 +1002,7 @@ int SyncManager::sync() {
         // items from the beginning
         tot  = 0;
         step = 0;
-        last = FALSE;
+        last = false;
         iterator++;
 
         // Fire SyncSource event: BEGIN sync of a syncsource (client modifications)
@@ -1020,7 +1020,7 @@ int SyncManager::sync() {
             continue;
         }
         else {
-            isAtLeastOneSourceCorrect = TRUE;
+            isAtLeastOneSourceCorrect = true;
         }
 
         // keep sending changes for current source until done with it
@@ -1104,7 +1104,7 @@ int SyncManager::sync() {
                                 }
                             }
                             else {
-                                last = TRUE;
+                                last = true;
                                 break;
                             }
                             tot++;
@@ -1113,7 +1113,7 @@ int SyncManager::sync() {
                     break;
 
                 case SYNC_REFRESH_FROM_SERVER:
-                    last = TRUE;
+                    last = true;
                     // TODO: remove me...
                     allItemsList[count] = new ArrayList();
                     syncItem = getItem(*sources[count], &SyncSource::getFirstItemKey);
@@ -1130,7 +1130,7 @@ int SyncManager::sync() {
                     break;
 
                 case SYNC_ONE_WAY_FROM_SERVER:
-                    last = TRUE;
+                    last = true;
                     break;
 
                 case SYNC_REFRESH_FROM_CLIENT:
@@ -1181,7 +1181,7 @@ int SyncManager::sync() {
                                 }
                             }
                             else {
-                                last = TRUE;
+                                last = true;
                                 break;
                             }
                             tot++;
@@ -1365,7 +1365,7 @@ int SyncManager::sync() {
                             } while(msgSize < maxMsgSize);
                         }
                         if (step == 6 && syncItem == NULL)
-                            last = TRUE;
+                            last = true;
 
                         break;
                     }
@@ -1385,7 +1385,7 @@ int SyncManager::sync() {
             // Check if all the sources were synced.
             // If not the prepareSync doesn't use the <final/> tag
             //
-            syncml = syncMLBuilder.prepareSyncML(&commands, (iterator != toSync ? FALSE : last));
+            syncml = syncMLBuilder.prepareSyncML(&commands, (iterator != toSync ? false : last));
             msg    = syncMLBuilder.prepareMsg(syncml);
 
             deleteSyncML(&syncml);
@@ -1470,7 +1470,7 @@ int SyncManager::sync() {
 
             // deleteSyncML(&syncml);
 
-        } while (last == FALSE);
+        } while (last == false);
 
         // Fire SyncSourceEvent: END sync of a syncsource (client modifications)
         // fireSyncSourceEvent(sources[count]->getConfig().getURI(), sources[count]->getConfig().getName(), sources[count]->getSyncMode(), 0, SYNC_SOURCE_END);
@@ -1490,7 +1490,7 @@ int SyncManager::sync() {
     // At this time "last" is always true. The client is going to send
     // the 222 package for to get the server modification if at least a source is correct
     //
-    last = TRUE;
+    last = true;
     currentState = STATE_PKG3_SENT;
 
     //
@@ -1513,7 +1513,7 @@ int SyncManager::sync() {
             }
         }
 
-        syncml = syncMLBuilder.prepareSyncML(&commands, FALSE);
+        syncml = syncMLBuilder.prepareSyncML(&commands, false);
         msg    = syncMLBuilder.prepareMsg(syncml);
 
         LOG.debug("Alert to request server changes");
@@ -1611,13 +1611,13 @@ int SyncManager::sync() {
                 }
                 ret = 0;
             }
-        } while (last == FALSE);
+        } while (last == false);
     }
 
 
 finally:
 
-    if (isAtLeastOneSourceCorrect == TRUE)
+    if (isAtLeastOneSourceCorrect == true)
     {
         fireSyncSourceEvent(prevSourceUri, prevSourceName, prevSyncMode, 0, SYNC_SOURCE_END);
         safeDelete(&responseMsg);
@@ -1706,7 +1706,7 @@ int SyncManager::endSync() {
     // Send the final message with mappings.
     //
     if (msgToSend) {
-        syncml = syncMLBuilder.prepareSyncML(&commands, TRUE);
+        syncml = syncMLBuilder.prepareSyncML(&commands, true);
         mapMsg = syncMLBuilder.prepareMsg(syncml);
 
         LOG.debug("Mapping");
@@ -1824,11 +1824,11 @@ int SyncManager::endSync() {
     }
 }
 
-BOOL SyncManager::readSyncSourceDefinition(SyncSource& source) {
+bool SyncManager::readSyncSourceDefinition(SyncSource& source) {
     char anchor[DIM_ANCHOR];
 
     if (config.getAbstractSyncSourceConfig(_wcc(source.getName())) == NULL) {
-        return FALSE;
+        return false;
     }
 
     AbstractSyncSourceConfig& ssc(source.getConfig());
@@ -1840,11 +1840,11 @@ BOOL SyncManager::readSyncSourceDefinition(SyncSource& source) {
     timestampToAnchor(source.getNextSync(), anchor);
     source.setNextAnchor(anchor);
 
-    return TRUE;
+    return true;
 }
 
 
-BOOL SyncManager::commitChanges(SyncSource& source) {
+bool SyncManager::commitChanges(SyncSource& source) {
     const char* name = _wcc(source.getName());
     AbstractSyncSourceConfig* ssconfig = config.getAbstractSyncSourceConfig(name);
 
@@ -1854,9 +1854,9 @@ BOOL SyncManager::commitChanges(SyncSource& source) {
         timestampToAnchor(next, anchor);
         LOG.debug(DBG_COMMITTING_SOURCE, name, anchor);
         ssconfig->setLast(next);
-        return TRUE;
+        return true;
     } else {
-        return FALSE;
+        return false;
     }
 }
 
@@ -1961,15 +1961,15 @@ Status *SyncManager::processSyncItem(Item* item, const CommandInfo &cmdInfo, Syn
 
     // Fill item -------------------------------------------------
     WCHAR *iname = toWideChar(itemName);
-    BOOL append = TRUE;
+    bool append = true;
     if (incomingItem) {
-        BOOL newItem = FALSE;
+        bool newItem = false;
 
         if (iname) {
             if (incomingItem->getKey()) {
                 if(wcscmp(incomingItem->getKey(), iname)) {
                     // another item before old one is complete
-                    newItem = TRUE;
+                    newItem = true;
                 }
             } else {
                 incomingItem->setKey(iname);
@@ -1981,7 +1981,7 @@ Status *SyncManager::processSyncItem(Item* item, const CommandInfo &cmdInfo, Syn
             strcmp(incomingItem->cmdName.c_str(), cmdInfo.commandName) ||
             count != incomingItem->sourceIndex) {
 
-            newItem = TRUE;
+            newItem = true;
         }
         if (newItem) {
             // send 223 alert:
@@ -2014,7 +2014,7 @@ Status *SyncManager::processSyncItem(Item* item, const CommandInfo &cmdInfo, Syn
             }
         } else {
             // simply copy all data below
-            append = FALSE;
+            append = false;
         }
     }
     delete [] iname;

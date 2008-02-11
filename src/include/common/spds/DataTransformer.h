@@ -56,13 +56,13 @@
      */
     struct TransformationInfo {
 
-        BOOL newReturnedData;
+        bool newReturnedData;
         long size;
         const char*  username;
         const char*  password;
         const char*  sourceName;
 
-        TransformationInfo() : newReturnedData(FALSE)
+        TransformationInfo() : newReturnedData(false)
                              , size(-1)
                              , username(NULL)
                              , password(NULL)
@@ -88,8 +88,8 @@
 
         static DataTransformer* getEncoder(const char* name);
         static DataTransformer* getDecoder(const char* name);
-        static BOOL isSupportedEncoder(char*  name);
-        static BOOL isSupportedDecoder(char*  name);
+        static bool isSupportedEncoder(char*  name);
+        static bool isSupportedDecoder(char*  name);
 
         void setName(const char* name);
         const char* getName();

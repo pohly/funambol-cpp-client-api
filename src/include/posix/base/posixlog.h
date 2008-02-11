@@ -68,12 +68,12 @@ class POSIXLog : public Log {
      * @param path            directory where file is to be created, can be NULL
      * @param name            file name relative to path or "-" when asking for
      *                        logging to stdout
-     * @param redirectStderr  if TRUE, then file descriptor 2 (stderr)
+     * @param redirectStderr  if true, then file descriptor 2 (stderr)
      *                        will also be redirected into the log file;
      *                        the original stderr is preserved and will be
      *                        restored when turning this redirection off
      */
-    virtual void setLogFile(const char *path, const char* name, BOOL redirectStderr = FALSE);
+    virtual void setLogFile(const char *path, const char* name, bool redirectStderr = false);
 
     /**
      * returns active log file or NULL if none set (e.g. if logging to stdout directly)
@@ -103,14 +103,14 @@ class POSIXLog : public Log {
      * Can be overridden by derived class to also print
      * in a different way.
      *
-     * @param firstLine     TRUE if this is the first line of a new message
+     * @param firstLine     true if this is the first line of a new message
      * @param fullTime      a time string including date and GMT offset
      * @param shortTime     a time string including just the local time of day
      * @param level         the severity of the report
      * @param levelPrefix   a string representing the severity (may differ from level, e.g. for Log::developer())
      * @param line          the actual message string
      */
-    virtual void printLine(BOOL firstLine,
+    virtual void printLine(bool firstLine,
                            const char *fullTime,
                            const char *shortTime,
                            LogLevel level,
@@ -119,10 +119,10 @@ class POSIXLog : public Log {
 
  private:
     FILE* logFile;
-    BOOL logFileStdout;
+    bool logFileStdout;
     StringBuffer logName;
     StringBuffer logPath;
-    BOOL logRedirectStderr;
+    bool logRedirectStderr;
 
     /** a copy of stderr before it was redirected */
     int fderr;

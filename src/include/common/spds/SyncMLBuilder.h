@@ -59,7 +59,7 @@ class SyncMLBuilder {
         /*
          * Convert the SyncML object into an xml message
          */
-        SyncML*  prepareSyncML(ArrayList* commands, BOOL final);
+        SyncML*  prepareSyncML(ArrayList* commands, bool final);
 
         /*
         * Set init parameters.

@@ -60,12 +60,12 @@ class MailSourceManagementNode : public DeviceManagementNode {
 
         /**
          * Returns the mail configuration object from the cached value (if
-         * refresh is FALSE) or reading it from the DMT store (if refresh is
-         * TRUE);
+         * refresh is false) or reading it from the DMT store (if refresh is
+         * true);
          *
          * @param refresh should the node be read from the DMT ?
          */
-        MailSyncSourceConfig& getMailSourceConfig(BOOL refresh);
+        MailSyncSourceConfig& getMailSourceConfig(bool refresh);
 
         /**
          * Sets the given mail source configuration object to the internal

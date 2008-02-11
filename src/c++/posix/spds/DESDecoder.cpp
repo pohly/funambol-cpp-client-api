@@ -52,7 +52,7 @@ char* DESDecoder::transform(char* data, TransformationInfo& info)
 /*
     TODO: implement this using openssl
 
-    BOOL res;
+    bool res;
 
     HCRYPTPROV prov = 0;
     HCRYPTKEY key = 0;
@@ -76,7 +76,7 @@ char* DESDecoder::transform(char* data, TransformationInfo& info)
         CRYPT_VERIFYCONTEXT
     );
 
-    if (res == FALSE) {
+    if (res == false) {
         lastErrorCode = ERR_DT_FAILURE;
         sprintf(lastErrorMsg, ERRMSG_DT_FAILURE, GetLastError());
         goto exit;
@@ -91,7 +91,7 @@ char* DESDecoder::transform(char* data, TransformationInfo& info)
         &hash      // handle to the hash object
     );
 
-    if (res == FALSE) {
+    if (res == false) {
         lastErrorCode = ERR_DT_FAILURE;
         sprintf(lastErrorMsg, ERRMSG_DT_FAILURE, GetLastError());
         goto exit;
@@ -105,7 +105,7 @@ char* DESDecoder::transform(char* data, TransformationInfo& info)
         0                              // flags not used
     );
 
-    if (res == FALSE) {
+    if (res == false) {
         lastErrorCode = ERR_DT_FAILURE;
         sprintf(lastErrorMsg, ERRMSG_DT_FAILURE, GetLastError());
         goto exit;
@@ -120,7 +120,7 @@ char* DESDecoder::transform(char* data, TransformationInfo& info)
         &key
     );
 
-    if (res == FALSE) {
+    if (res == false) {
         lastErrorCode = ERR_DT_FAILURE;
         sprintf(lastErrorMsg, ERRMSG_DT_FAILURE, GetLastError());
         goto exit;
@@ -135,7 +135,7 @@ char* DESDecoder::transform(char* data, TransformationInfo& info)
         0                          // flags not used
     );
 
-    if (res == FALSE) {
+    if (res == false) {
         lastErrorCode = ERR_DT_FAILURE;
         sprintf(lastErrorMsg, ERRMSG_DT_FAILURE, GetLastError());
         goto exit;
@@ -150,7 +150,7 @@ char* DESDecoder::transform(char* data, TransformationInfo& info)
         0                          // flags not used
     );
 
-    if (res == FALSE) {
+    if (res == false) {
         lastErrorCode = ERR_DT_FAILURE;
         sprintf(lastErrorMsg, ERRMSG_DT_FAILURE, GetLastError());
         goto exit;
@@ -159,20 +159,20 @@ char* DESDecoder::transform(char* data, TransformationInfo& info)
     res = CryptDecrypt (
         key,
         0,
-        TRUE,
+        true,
         0,
         (unsigned char*)data,
         &size
     );
 
-    if (res == FALSE) {
+    if (res == false) {
         lastErrorCode = ERR_DT_FAILURE;
         sprintf(lastErrorMsg, ERRMSG_DT_FAILURE, GetLastError());
         goto exit;
     }
 
     info.size = size;
-    info.newReturnedData = FALSE;
+    info.newReturnedData = false;
 
  exit:
 

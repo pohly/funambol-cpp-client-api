@@ -60,7 +60,7 @@ Add::~Add() {
  *
  */
 Add::Add(CmdID* cmdID,
-           BOOL noResp,
+           bool noResp,
            Cred* cred,
            Meta* meta,
            ArrayList* items) : ModificationCommand(cmdID, meta, items) {

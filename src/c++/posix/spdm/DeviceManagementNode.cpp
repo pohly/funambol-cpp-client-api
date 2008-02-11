@@ -48,7 +48,7 @@
 #include <fcntl.h>
 #include <dirent.h>
 
-static inline BOOL isNode(struct dirent *entry) {
+static inline bool isNode(struct dirent *entry) {
     struct stat buf;
     return (!stat(entry->d_name, &buf) && S_ISDIR(buf.st_mode) &&
         strcmp(entry->d_name, ".") && strcmp(entry->d_name, ".."));
@@ -56,18 +56,18 @@ static inline BOOL isNode(struct dirent *entry) {
 
 DeviceManagementNode::DeviceManagementNode(const char* parent, const char *leafName) : ManagementNode(parent, leafName)  {
     lines = new ArrayList;
-    modified = FALSE;
+    modified = false;
     cwdfd = -1;
-    update(TRUE);
+    update(true);
 }
 
 DeviceManagementNode::DeviceManagementNode(const char *node)
     : ManagementNode(node)
 {
     lines = new ArrayList;
-    modified = FALSE;
+    modified = false;
     cwdfd = -1;
-    update(TRUE);
+    update(true);
 }
 
 DeviceManagementNode::DeviceManagementNode(const DeviceManagementNode &other) : ManagementNode(other) {
@@ -78,7 +78,7 @@ DeviceManagementNode::DeviceManagementNode(const DeviceManagementNode &other) : 
 
 DeviceManagementNode::~DeviceManagementNode() {
     if (modified) {
-        update(FALSE);
+        update(false);
     }
     delete lines;
     if (cwdfd > 0) {
@@ -86,8 +86,8 @@ DeviceManagementNode::~DeviceManagementNode() {
     }
 }
 
-BOOL DeviceManagementNode::gotoDir(BOOL read) {
-    BOOL success = TRUE;
+bool DeviceManagementNode::gotoDir(bool read) {
+    bool success = true;
 
     returnFromDir();
     cwdfd = open(".", O_RDONLY);
@@ -112,7 +112,7 @@ BOOL DeviceManagementNode::gotoDir(BOOL read) {
                         mkdir(curr, 0777);
                     } else {
                         // failed
-                        success = FALSE;
+                        success = false;
                         break;
                     }
                 }
@@ -134,7 +134,7 @@ void DeviceManagementNode::returnFromDir() {
     }
 }
 
-void DeviceManagementNode::update(BOOL read) {
+void DeviceManagementNode::update(bool read) {
     if (!read && !modified) {
         // no work to be done
         return;
@@ -162,7 +162,7 @@ void DeviceManagementNode::update(BOOL read) {
             if (file) {
                 int i = 0;
 
-                while (TRUE) {
+                while (true) {
                     line *curr = (line *)lines->get(i);
                     if (!curr) {
                         break;
@@ -205,7 +205,7 @@ static int strnicmp( const char *a, const char *b, int len ) {
 char* DeviceManagementNode::readPropertyValue(const char* property) {
     int i = 0;
 
-    while (TRUE) {
+    while (true) {
         line *curr = (line *)lines->get(i);
         if (!curr) {
             break;
@@ -247,7 +247,7 @@ char* DeviceManagementNode::readPropertyValue(const char* property) {
 int DeviceManagementNode::getChildrenMaxCount() {
     int count = 0;
 
-    if (gotoDir(TRUE)) {
+    if (gotoDir(true)) {
         DIR *dir = opendir(".");
         if (dir) {
             struct dirent *entry;
@@ -270,7 +270,7 @@ char **DeviceManagementNode::getChildrenNames() {
 
     int size = getChildrenMaxCount();
     if (size) {
-        if (gotoDir(TRUE)) {
+        if (gotoDir(true)) {
             DIR *dir = opendir(".");
             if (dir) {
                 struct dirent *entry;
@@ -302,7 +302,7 @@ char **DeviceManagementNode::getChildrenNames() {
 void DeviceManagementNode::setPropertyValue(const char* property, const char* newvalue) {
     int i = 0;
 
-    while (TRUE) {
+    while (true) {
         line *curr = (line *)lines->get(i);
         if (!curr) {
             break;
@@ -328,7 +328,7 @@ void DeviceManagementNode::setPropertyValue(const char* property, const char* ne
                     strcpy(newstr + (value - start), newvalue);
                     curr->setLine(newstr);
                     delete [] newstr;
-                    modified = TRUE;
+                    modified = true;
                 }
                 return;
             }
@@ -341,7 +341,7 @@ void DeviceManagementNode::setPropertyValue(const char* property, const char* ne
     sprintf(newstr, "%s = %s", property, newvalue);
     line newline(newstr);
     lines->add(newline);
-    modified = TRUE;
+    modified = true;
     delete [] newstr;
 }
 

@@ -98,7 +98,7 @@ wstring& WinEventSIF::toString() {
         //
         // If recurring, append events exceptions
         //
-        BOOL isRec = _wtoi(element.c_str());
+        bool isRec = _wtoi(element.c_str());
         if(isRec) {
             list<wstring>::iterator it;
 
@@ -185,7 +185,7 @@ int WinEventSIF::parse(const wstring data) {
     //
     wstring element;
     if (getProperty(L"IsRecurring", element)) {
-        BOOL isRec = _wtoi(element.c_str());
+        bool isRec = _wtoi(element.c_str());
         if(isRec) {
 
             // Fill recPatternSIF propertyMap.

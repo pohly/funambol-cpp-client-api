@@ -59,7 +59,7 @@ Copy::~Copy() {
  *
  */
 Copy::Copy(CmdID* cmdID,
-     BOOL noResp,
+     bool noResp,
      Cred* cred,
      Meta* meta,
      ArrayList* items) : ModificationCommand(cmdID, meta, items) {

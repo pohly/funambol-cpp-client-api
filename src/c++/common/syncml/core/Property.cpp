@@ -42,7 +42,7 @@ Property::Property() {
     dataType    = NULL;
     maxOccur    = -1;
     maxSize     = -1;
-    noTruncate  = -1;  // -1 undefined, 0 FALSE, 1 TRUE
+    noTruncate  = -1;  // -1 undefined, 0 false, 1 true
     valEnums    = NULL;
     displayName = NULL;
     propParams  = NULL;
@@ -57,7 +57,7 @@ Property::~Property() {
     if (valEnums)   delete valEnums  ;
 }
 
-Property::Property(char* p0, char* p1, long p2, long p3, BOOL p4, ArrayList* p5, char* p6, ArrayList* p7) {
+Property::Property(char* p0, char* p1, long p2, long p3, bool p4, ArrayList* p5, char* p6, ArrayList* p7) {
     propName    = (p0) ? stringdup(p0) : NULL;
     dataType    = (p1) ? stringdup(p1) : NULL;
     maxOccur    = p2;
@@ -150,14 +150,14 @@ void Property::setMaxSize(long p0) {
     maxSize = p0;
 }
 
-void Property::setNoTruncate(BOOL p0) {
+void Property::setNoTruncate(bool p0) {
 }
 
-BOOL Property::isNoTruncate() {
-    return (noTruncate == TRUE);
+bool Property::isNoTruncate() {
+    return (noTruncate == true);
 }
 
-BOOL Property::getNoTruncate() {
+bool Property::getNoTruncate() {
     return noTruncate;
 }
 

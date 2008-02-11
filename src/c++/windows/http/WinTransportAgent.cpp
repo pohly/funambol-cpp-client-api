@@ -104,9 +104,9 @@ WinTransportAgent::WinTransportAgent(URL& newURL, Proxy& newProxy,
         setTimeout(maxResponseTimeout);
     }
 
-    isToDeflate    = FALSE;
-    isFirstMessage = TRUE;
-    isToInflate    = FALSE;
+    isToDeflate    = false;
+    isFirstMessage = true;
+    isToInflate    = false;
 
 #ifdef _WIN32_WCE
     // used by default. check connection before...
@@ -555,7 +555,7 @@ char* WinTransportAgent::sendMessage(const char* msg) {
     DWORD ddsize = 1024;
     if (!HttpQueryInfo(request,HTTP_QUERY_RAW_HEADERS_CRLF ,(LPVOID)wbuffer,&ddsize,NULL)) {
         if (ERROR_HTTP_HEADER_NOT_FOUND == GetLastError()) {
-            isToDeflate = FALSE;
+            isToDeflate = false;
         }
     }
     LOG.debug("Header: %ls", wbuffer);
@@ -569,21 +569,21 @@ char* WinTransportAgent::sendMessage(const char* msg) {
     wcscpy(buffer, TEXT("Accept-Encoding"));
     HttpQueryInfo(request, HTTP_QUERY_CUSTOM, (LPVOID)buffer, &dwSize, NULL);
     if (GetLastError() == ERROR_HTTP_HEADER_NOT_FOUND) {
-        isToDeflate = FALSE;
+        isToDeflate = false;
     } else {
-        isToDeflate = TRUE;
+        isToDeflate = true;
     }
 
     memset(buffer, 0, dwSize*sizeof(WCHAR));
     wcscpy(buffer, TEXT("Content-Encoding"));
     HttpQueryInfo(request, HTTP_QUERY_CUSTOM, (LPVOID)buffer, &dwSize, NULL);
     if (GetLastError() == ERROR_HTTP_HEADER_NOT_FOUND) {
-        isToInflate = FALSE;
+        isToInflate = false;
     } else {
         if (wcscmp(buffer, TEXT("deflate")) == 0)
-            isToInflate = TRUE;
+            isToInflate = true;
         else
-            isToInflate = FALSE;
+            isToInflate = false;
     }
 
     if(isToInflate) {

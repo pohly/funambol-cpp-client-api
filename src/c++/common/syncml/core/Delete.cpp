@@ -46,8 +46,8 @@ Delete::~Delete() {
     if (COMMAND_NAME) {
         delete [] COMMAND_NAME; COMMAND_NAME = NULL;
     }
-    archive = FALSE;
-    sftDel  = FALSE;
+    archive = false;
+    sftDel  = false;
 }
 
 /**
@@ -65,9 +65,9 @@ Delete::~Delete() {
 *
 */
 Delete::Delete(CmdID* cmdID,
-               BOOL noResp,
-               BOOL archive,
-               BOOL sftDel,
+               bool noResp,
+               bool archive,
+               bool sftDel,
                Cred* cred,
                Meta* meta,
                ArrayList* items) : ModificationCommand(cmdID, meta, items) {
@@ -95,7 +95,7 @@ const char* Delete::getName() {
 *
 * @return true if the deleted data should be archived
 */
-BOOL Delete::isArchive() {
+bool Delete::isArchive() {
      return (archive != NULL);
 }
 
@@ -104,7 +104,7 @@ BOOL Delete::isArchive() {
 *
 * @return archive the Boolean archive property
 */
-BOOL Delete::getArchive() {
+bool Delete::getArchive() {
     return archive;
 }
 
@@ -113,8 +113,8 @@ BOOL Delete::getArchive() {
 *
 * @param archive the Boolean archive object
 */
-void Delete::setArchive(BOOL archive) {
-    if ((archive == NULL) || (archive != TRUE && archive != FALSE)) {
+void Delete::setArchive(bool archive) {
+    if ((archive == NULL) || (archive != true && archive != false)) {
         this->archive = NULL;
     } else {
         this->archive = archive;
@@ -128,17 +128,17 @@ void Delete::setArchive(BOOL archive) {
 * @return <b>true</b>  if this is a "Soft delete"
 *         <b>false</b> if this is a "hard delete"
 */
-BOOL Delete::isSftDel() {
+bool Delete::isSftDel() {
     return (sftDel != NULL);
 }
 
-BOOL Delete::getSftDel() {
+bool Delete::getSftDel() {
     return sftDel;
 }
 
 
-void Delete::setSftDel(BOOL sftDel) {
-    if ((sftDel == NULL) || (sftDel != TRUE && sftDel != FALSE)) {
+void Delete::setSftDel(bool sftDel) {
+    if ((sftDel == NULL) || (sftDel != true && sftDel != false)) {
         this->sftDel = NULL;
     } else {
         this->sftDel = sftDel;

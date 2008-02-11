@@ -52,9 +52,9 @@ DeviceConfig::DeviceConfig() {
     devID           = NULL;
     devType         = NULL;
     dsV             = NULL;
-    utc             = TRUE;
-    loSupport       = FALSE;
-    nocSupport      = FALSE;
+    utc             = true;
+    loSupport       = false;
+    nocSupport      = false;
     logLevel        = LOG_LEVEL_INFO;
     maxObjSize      = 0;
     devInfHash      = NULL;
@@ -176,24 +176,24 @@ void DeviceConfig::setDsV(const char* v){
 	set(&dsV, v);
 }
 
-BOOL DeviceConfig::getUtc() const {
+bool DeviceConfig::getUtc() const {
     return utc;
 }
-void DeviceConfig::setUtc(BOOL v) {
+void DeviceConfig::setUtc(bool v) {
     utc = v;
 }
 
-BOOL DeviceConfig::getLoSupport() const {
+bool DeviceConfig::getLoSupport() const {
     return loSupport;
 }
-void DeviceConfig::setLoSupport(BOOL v) {
+void DeviceConfig::setLoSupport(bool v) {
     loSupport = v;
 }
 
-BOOL DeviceConfig::getNocSupport() const {
+bool DeviceConfig::getNocSupport() const {
     return nocSupport;
 }
-void DeviceConfig::setNocSupport(BOOL v) {
+void DeviceConfig::setNocSupport(bool v) {
     nocSupport = v;
 }
 

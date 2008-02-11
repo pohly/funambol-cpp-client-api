@@ -51,7 +51,7 @@ class Search : public AbstractCommand{
      // ------------------------------------------------------------ Private data
     private:
         char*     COMMAND_NAME;
-        BOOL        noResults;
+        bool        noResults;
         Target*     target   ;
         ArrayList*  sources; // Source[]. It is an ArrayList of SourceArray object. Every one contains a Source object
         char*     lang;
@@ -79,8 +79,8 @@ class Search : public AbstractCommand{
          *
          */
         Search(CmdID*      cmdID    ,
-               BOOL        noResp   ,
-               BOOL        noResults,
+               bool        noResp   ,
+               bool        noResults,
                Cred*       cred     ,
                Target*     target   ,
                ArrayList*  sources  ,
@@ -94,21 +94,21 @@ class Search : public AbstractCommand{
          * @return noResults
          *
          */
-        BOOL isNoResults();
+        bool isNoResults();
 
         /**
          * Sets noResults
          *
          * @param noResults the noResults value
          */
-        void setNoResults(BOOL noResults);
+        void setNoResults(bool noResults);
 
         /**
          * Gets the Boolean value of noResults property
          *
          * @return noResults if boolean value is true, otherwise null
          */
-        BOOL getNoResults();
+        bool getNoResults();
 
         /**
          * Returns target property

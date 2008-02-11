@@ -45,7 +45,7 @@ class SourceFilter {
 private:
 
     LogicalClause* clause;
-    BOOL inclusive;
+    bool inclusive;
     char*  type;
 
     // ----------------------------------------------------- Protected interface
@@ -73,21 +73,21 @@ public:
      *
      * @param i
      */
-    void setInclusive(BOOL i);
+    void setInclusive(bool i);
 
 
     /*
      * isInclusive
      *
      */
-    BOOL isInclusive();
+    bool isInclusive();
 
 
     /*
      * isExclusive
      *
      */
-    BOOL isExclusive();
+    bool isExclusive();
 
 
     /*

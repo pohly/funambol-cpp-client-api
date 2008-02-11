@@ -68,7 +68,7 @@ class Put : public ItemizedCommand {
          *
          */
         Put( CmdID* cmdID,
-                    BOOL noResp,
+                    bool noResp,
                     char*  lang,
                     Cred* cred,
                     Meta* meta,

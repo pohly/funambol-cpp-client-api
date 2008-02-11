@@ -264,7 +264,7 @@ char* encryptData(const char* data) {
     info.size = strlen(data1);
     info.password = "SettimioSevero";
     desData = dt->transform(data1, info);
-    if (!desData || info.newReturnedData == FALSE) {
+    if (!desData || info.newReturnedData == false) {
         goto error;
     }
     if (dt) delete dt;

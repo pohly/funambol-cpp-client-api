@@ -62,9 +62,9 @@ class DevInf {
         ArrayList* dataStores;  //DataStore[]
         ArrayList* ctCap;       // CTCap[]
         ArrayList* ext;         // Ext[]
-        BOOL utc;
-        BOOL supportLargeObjs;
-        BOOL supportNumberOfChanges;
+        bool utc;
+        bool supportLargeObjs;
+        bool supportNumberOfChanges;
         SyncCap* syncCap;
 
         void initialize();
@@ -107,9 +107,9 @@ class DevInf {
                ArrayList* dataStores,
                ArrayList* ctCap,
                ArrayList* ext,
-               BOOL utc,
-               BOOL supportLargeObjs,
-               BOOL supportNumberOfChanges,
+               bool utc,
+               bool supportLargeObjs,
+               bool supportNumberOfChanges,
                SyncCap* syncCap);
 
         // ---------------------------------------------------------- Public methods
@@ -296,28 +296,28 @@ class DevInf {
          *
          * @return true if the device supports UTC based time
          */
-        BOOL isUTC();
+        bool isUTC();
 
         /**
          * Sets the UTC property
          *
          * @param utc is true if the device supports UTC based time
          */
-        void setUTC(BOOL utc);
+        void setUTC(bool utc);
 
         /**
          * Gets the Boolean value of utc
          *
          * @return true if the device supports UTC based time
          */
-        BOOL getUTC();
+        bool getUTC();
 
         /**
          * Gets true if the device supports handling of large objects
          *
          * @return true if the device supports handling of large objects
          */
-        BOOL isSupportLargeObjs();
+        bool isSupportLargeObjs();
 
         /**
          * Sets the supportLargeObjs property
@@ -325,7 +325,7 @@ class DevInf {
          * @param supportLargeObjs is true if the device supports handling of large objects
          *
          */
-        void setSupportLargeObjs(BOOL supportLargeObjs);
+        void setSupportLargeObjs(bool supportLargeObjs);
 
 
         /**
@@ -333,14 +333,14 @@ class DevInf {
          *
          * @return true if the device supports handling of large objects
          */
-        BOOL getSupportLargeObjs();
+        bool getSupportLargeObjs();
 
         /**
          * Gets true if the device supports number of changes
          *
          * @return true if the device supports number of changes
          */
-        BOOL isSupportNumberOfChanges();
+        bool isSupportNumberOfChanges();
 
         /**
          * Sets the supportNumberOfChanges property
@@ -348,14 +348,14 @@ class DevInf {
          * @param supportNumberOfChanges is true if the device supports number of changes
          *
          */
-        void setSupportNumberOfChanges(BOOL supportNumberOfChanges);
+        void setSupportNumberOfChanges(bool supportNumberOfChanges);
 
         /**
          * Gets the Boolean value of supportNumberOfChanges
          *
          * @return true if the device supports number of changes
          */
-        BOOL getSupportNumberOfChanges();
+        bool getSupportNumberOfChanges();
 
         void setSyncCap(SyncCap* syncCap);
 

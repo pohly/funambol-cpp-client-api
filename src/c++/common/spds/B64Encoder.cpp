@@ -51,7 +51,7 @@ char* B64Encoder::transform(char* data, TransformationInfo& info) {
 
     info.size = b64_encode(b64, data, len);
     b64[info.size] = 0;
-    info.newReturnedData = TRUE;
+    info.newReturnedData = true;
 
     return b64;
 }

@@ -114,7 +114,7 @@ void createConfig(DMTClientConfig& config) {
     DeviceConfig* dc = DefaultConfigFactory::getDeviceConfig();
     dc->setDevID    (DEVICE_ID);
     dc->setMan      ("Funambol");
-    dc->setLoSupport(TRUE);
+    dc->setLoSupport(true);
     dc->setSwv      (SW_VERSION);  // So next time won't be generated, we always save config at the end.
     config.setDeviceConfig(*dc);
     delete dc;

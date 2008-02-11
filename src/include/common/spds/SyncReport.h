@@ -144,7 +144,7 @@ public:
      * @param verbose  if true, then detailed information about each item is
      *                 printed, otherwise only a summary
      */
-    void toString(StringBuffer &str, BOOL verbose = FALSE);
+    void toString(StringBuffer &str, bool verbose = false);
 
     /**
      * Assign operator

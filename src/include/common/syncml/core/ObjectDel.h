@@ -48,10 +48,10 @@
 // void deleteAll              (int count, char** s, ...);
 void deleteStringBuffer     (StringBuffer** s);
 //void deleteAllStringBuffer  (int count, StringBuffer** s, ...);
-// BOOL NotNullCheck           (int count, char*  s, ...);
-BOOL NotZeroCheck           (int count, int s, ...);
-//BOOL NotZeroArrayLenght     (int count, ArrayList* s, ...);
-// BOOL NotZeroStringBufferLenght(int count, StringBuffer* s, ...); //XXX
+// bool NotNullCheck           (int count, char*  s, ...);
+bool NotZeroCheck           (int count, int s, ...);
+//bool NotZeroArrayLenght     (int count, ArrayList* s, ...);
+// bool NotZeroStringBufferLenght(int count, StringBuffer* s, ...); //XXX
 
 void deleteTarget           (Target ** s);
 void deleteSource           (Source ** s);
@@ -130,23 +130,23 @@ void deleteAllStringBuffer(int count, StringBuffer** s, StringBuffer** s1, Strin
                                       StringBuffer** s10, StringBuffer** s11, StringBuffer** s12, StringBuffer** s13, StringBuffer** s14, StringBuffer** s15, StringBuffer** s16);
 
 
-BOOL NotZeroSingleArrayLenght(ArrayList* s);
-BOOL NotZeroArrayLenght(int count, ArrayList* s);
-BOOL NotZeroArrayLenght(int count, ArrayList* s, ArrayList* s1);
-BOOL NotZeroArrayLenght(int count, ArrayList* s, ArrayList* s1, ArrayList* s2);
+bool NotZeroSingleArrayLenght(ArrayList* s);
+bool NotZeroArrayLenght(int count, ArrayList* s);
+bool NotZeroArrayLenght(int count, ArrayList* s, ArrayList* s1);
+bool NotZeroArrayLenght(int count, ArrayList* s, ArrayList* s1, ArrayList* s2);
 
-BOOL SingleNotNullCheck(char*  s);
-BOOL NotNullCheck(int count, char*  s);
-BOOL NotNullCheck(int count, char*  s, char*  s1);
-BOOL NotNullCheck(int count, char*  s, char*  s1, char*  s2);
-BOOL NotNullCheck(int count, char*  s, char*  s1, char*  s2, char*  s3);
-BOOL NotNullCheck(int count, char*  s, char*  s1, char*  s2, char*  s3, char*  s4);
-BOOL NotNullCheck(int count, char*  s, char*  s1, char*  s2, char*  s3, char*  s4, char*  s5);
-BOOL NotNullCheck(int count, char*  s, char*  s1, char*  s2, char*  s3, char*  s4, char*  s5, char*  s6);
-BOOL NotNullCheck(int count, char*  s, char*  s1, char*  s2, char*  s3, char*  s4, char*  s5, char*  s6, char*  s7);
-BOOL NotNullCheck(int count, char*  s, char*  s1, char*  s2, char*  s3, char*  s4, char*  s5, char*  s6, char*  s7, char*  s8);
-BOOL NotNullCheck(int count, char*  s, char*  s1, char*  s2, char*  s3, char*  s4, char*  s5, char*  s6, char*  s7, char*  s8, char*  s9);
-BOOL NotNullCheck(int count, char*  s, char*  s1, char*  s2, char*  s3, char*  s4, char*  s5, char*  s6, char*  s7, char*  s8, char*  s9, char*  s10);
+bool SingleNotNullCheck(char*  s);
+bool NotNullCheck(int count, char*  s);
+bool NotNullCheck(int count, char*  s, char*  s1);
+bool NotNullCheck(int count, char*  s, char*  s1, char*  s2);
+bool NotNullCheck(int count, char*  s, char*  s1, char*  s2, char*  s3);
+bool NotNullCheck(int count, char*  s, char*  s1, char*  s2, char*  s3, char*  s4);
+bool NotNullCheck(int count, char*  s, char*  s1, char*  s2, char*  s3, char*  s4, char*  s5);
+bool NotNullCheck(int count, char*  s, char*  s1, char*  s2, char*  s3, char*  s4, char*  s5, char*  s6);
+bool NotNullCheck(int count, char*  s, char*  s1, char*  s2, char*  s3, char*  s4, char*  s5, char*  s6, char*  s7);
+bool NotNullCheck(int count, char*  s, char*  s1, char*  s2, char*  s3, char*  s4, char*  s5, char*  s6, char*  s7, char*  s8);
+bool NotNullCheck(int count, char*  s, char*  s1, char*  s2, char*  s3, char*  s4, char*  s5, char*  s6, char*  s7, char*  s8, char*  s9);
+bool NotNullCheck(int count, char*  s, char*  s1, char*  s2, char*  s3, char*  s4, char*  s5, char*  s6, char*  s7, char*  s8, char*  s9, char*  s10);
 
 void deleteAll(int count, char** s);
 void deleteAll(int count, char** s, char** s1);
@@ -158,47 +158,47 @@ void deleteAll(int count, char** s, char** s1, char** s2, char** s3, char** s4, 
 void deleteAll(int count, char** s, char** s1, char** s2, char** s3, char** s4, char** s5, char** s6, char** s7);
 void deleteAll(int count, char** s, char** s1, char** s2, char** s3, char** s4, char** s5, char** s6, char** s7, char** s8);
 
-BOOL NotZeroSingleStringBufferLenght(StringBuffer* s);
-BOOL NotZeroStringBufferLenght(int count, StringBuffer* s);
-BOOL NotZeroStringBufferLenght(int count, StringBuffer* s, StringBuffer* s1);
-BOOL NotZeroStringBufferLenght(int count, StringBuffer* s, StringBuffer* s1, StringBuffer* s2);
-BOOL NotZeroStringBufferLenght(int count, StringBuffer* s, StringBuffer* s1, StringBuffer* s2, StringBuffer* s3);
-BOOL NotZeroStringBufferLenght(int count, StringBuffer* s, StringBuffer* s1, StringBuffer* s2, StringBuffer* s3, StringBuffer* s4);
-BOOL NotZeroStringBufferLenght(int count, StringBuffer* s, StringBuffer* s1, StringBuffer* s2, StringBuffer* s3,
+bool NotZeroSingleStringBufferLenght(StringBuffer* s);
+bool NotZeroStringBufferLenght(int count, StringBuffer* s);
+bool NotZeroStringBufferLenght(int count, StringBuffer* s, StringBuffer* s1);
+bool NotZeroStringBufferLenght(int count, StringBuffer* s, StringBuffer* s1, StringBuffer* s2);
+bool NotZeroStringBufferLenght(int count, StringBuffer* s, StringBuffer* s1, StringBuffer* s2, StringBuffer* s3);
+bool NotZeroStringBufferLenght(int count, StringBuffer* s, StringBuffer* s1, StringBuffer* s2, StringBuffer* s3, StringBuffer* s4);
+bool NotZeroStringBufferLenght(int count, StringBuffer* s, StringBuffer* s1, StringBuffer* s2, StringBuffer* s3,
                                          StringBuffer* s4, StringBuffer* s5);
-BOOL NotZeroStringBufferLenght(int count, StringBuffer* s, StringBuffer* s1, StringBuffer* s2, StringBuffer* s3,
+bool NotZeroStringBufferLenght(int count, StringBuffer* s, StringBuffer* s1, StringBuffer* s2, StringBuffer* s3,
                                          StringBuffer* s4, StringBuffer* s5, StringBuffer* s6);
-BOOL NotZeroStringBufferLenght(int count, StringBuffer* s, StringBuffer* s1, StringBuffer* s2, StringBuffer* s3,
+bool NotZeroStringBufferLenght(int count, StringBuffer* s, StringBuffer* s1, StringBuffer* s2, StringBuffer* s3,
                                          StringBuffer* s4, StringBuffer* s5, StringBuffer* s6, StringBuffer* s7) ;
-BOOL NotZeroStringBufferLenght(int count, StringBuffer* s, StringBuffer* s1, StringBuffer* s2, StringBuffer* s3,
+bool NotZeroStringBufferLenght(int count, StringBuffer* s, StringBuffer* s1, StringBuffer* s2, StringBuffer* s3,
                                          StringBuffer* s4, StringBuffer* s5, StringBuffer* s6, StringBuffer* s7,
                                          StringBuffer* s8);
-BOOL NotZeroStringBufferLenght(int count, StringBuffer* s, StringBuffer* s1, StringBuffer* s2, StringBuffer* s3,
+bool NotZeroStringBufferLenght(int count, StringBuffer* s, StringBuffer* s1, StringBuffer* s2, StringBuffer* s3,
                                          StringBuffer* s4, StringBuffer* s5, StringBuffer* s6, StringBuffer* s7,
                                          StringBuffer* s8, StringBuffer* s9);
-BOOL NotZeroStringBufferLenght(int count, StringBuffer* s, StringBuffer* s1, StringBuffer* s2, StringBuffer* s3,
+bool NotZeroStringBufferLenght(int count, StringBuffer* s, StringBuffer* s1, StringBuffer* s2, StringBuffer* s3,
                                          StringBuffer* s4, StringBuffer* s5, StringBuffer* s6, StringBuffer* s7,
                                          StringBuffer* s8, StringBuffer* s9, StringBuffer* s10);
-BOOL NotZeroStringBufferLenght(int count, StringBuffer* s, StringBuffer* s1, StringBuffer* s2, StringBuffer* s3,
+bool NotZeroStringBufferLenght(int count, StringBuffer* s, StringBuffer* s1, StringBuffer* s2, StringBuffer* s3,
                                          StringBuffer* s4, StringBuffer* s5, StringBuffer* s6, StringBuffer* s7,
                                          StringBuffer* s8, StringBuffer* s9, StringBuffer* s10, StringBuffer* s11) ;
-BOOL NotZeroStringBufferLenght(int count, StringBuffer* s, StringBuffer* s1, StringBuffer* s2, StringBuffer* s3,
+bool NotZeroStringBufferLenght(int count, StringBuffer* s, StringBuffer* s1, StringBuffer* s2, StringBuffer* s3,
                                          StringBuffer* s4, StringBuffer* s5, StringBuffer* s6, StringBuffer* s7,
                                          StringBuffer* s8, StringBuffer* s9, StringBuffer* s10, StringBuffer* s11,
                                          StringBuffer* s12);
-BOOL NotZeroStringBufferLenght(int count, StringBuffer* s, StringBuffer* s1, StringBuffer* s2, StringBuffer* s3,
+bool NotZeroStringBufferLenght(int count, StringBuffer* s, StringBuffer* s1, StringBuffer* s2, StringBuffer* s3,
                                          StringBuffer* s4, StringBuffer* s5, StringBuffer* s6, StringBuffer* s7,
                                          StringBuffer* s8, StringBuffer* s9, StringBuffer* s10, StringBuffer* s11,
                                          StringBuffer* s12, StringBuffer* s13);
-BOOL NotZeroStringBufferLenght(int count, StringBuffer* s, StringBuffer* s1, StringBuffer* s2, StringBuffer* s3,
+bool NotZeroStringBufferLenght(int count, StringBuffer* s, StringBuffer* s1, StringBuffer* s2, StringBuffer* s3,
                                          StringBuffer* s4, StringBuffer* s5, StringBuffer* s6, StringBuffer* s7,
                                          StringBuffer* s8, StringBuffer* s9, StringBuffer* s10, StringBuffer* s11,
                                          StringBuffer* s12, StringBuffer* s13, StringBuffer* s14);
-BOOL NotZeroStringBufferLenght(int count, StringBuffer* s, StringBuffer* s1, StringBuffer* s2, StringBuffer* s3,
+bool NotZeroStringBufferLenght(int count, StringBuffer* s, StringBuffer* s1, StringBuffer* s2, StringBuffer* s3,
                                          StringBuffer* s4, StringBuffer* s5, StringBuffer* s6, StringBuffer* s7,
                                          StringBuffer* s8, StringBuffer* s9, StringBuffer* s10, StringBuffer* s11,
                                          StringBuffer* s12, StringBuffer* s13, StringBuffer* s14, StringBuffer* s15);
-BOOL NotZeroStringBufferLenght(int count, StringBuffer* s, StringBuffer* s1, StringBuffer* s2, StringBuffer* s3,
+bool NotZeroStringBufferLenght(int count, StringBuffer* s, StringBuffer* s1, StringBuffer* s2, StringBuffer* s3,
                                          StringBuffer* s4, StringBuffer* s5, StringBuffer* s6, StringBuffer* s7,
                                          StringBuffer* s8, StringBuffer* s9, StringBuffer* s10, StringBuffer* s11,
                                          StringBuffer* s12, StringBuffer* s13, StringBuffer* s14, StringBuffer* s15,

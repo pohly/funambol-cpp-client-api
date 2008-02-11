@@ -38,12 +38,12 @@
 
 
 DSMem::DSMem() {
-    sharedMem      = FALSE;
+    sharedMem      = false;
     long    maxMem = 0;
     long    maxID  = 0;
 }
 DSMem::~DSMem() {
-    sharedMem      = FALSE;
+    sharedMem      = false;
     long    maxMem = 0;
     long    maxID  = 0;
 }
@@ -57,10 +57,10 @@ DSMem::~DSMem() {
  *              datastore
  *
  */
-DSMem::DSMem(BOOL sharedMem, long maxMem, long maxID) {
+DSMem::DSMem(bool sharedMem, long maxMem, long maxID) {
     setMaxMem(maxMem);
     setMaxID(maxID);
-    if ((sharedMem == NULL) || (sharedMem != TRUE && sharedMem != FALSE)) {
+    if ((sharedMem == NULL) || (sharedMem != true && sharedMem != false)) {
         this->sharedMem = NULL;
     } else {
         this->sharedMem = sharedMem;
@@ -72,7 +72,7 @@ DSMem::DSMem(BOOL sharedMem, long maxMem, long maxID) {
  *
  * @return <i>true</i> if the datastore memory is shared, <i>false</i> otherwise
  */
-BOOL DSMem::isSharedMem() {
+bool DSMem::isSharedMem() {
     return (sharedMem != NULL);
 }
 /**
@@ -80,8 +80,8 @@ BOOL DSMem::isSharedMem() {
  *
  * @param sharedMem the new memoryShared status
  */
-void DSMem::setSharedMem(BOOL sharedMem) {
-    if ((sharedMem == NULL) || (sharedMem != TRUE && sharedMem != FALSE)) {
+void DSMem::setSharedMem(bool sharedMem) {
+    if ((sharedMem == NULL) || (sharedMem != true && sharedMem != false)) {
         this->sharedMem = NULL;
     } else {
         this->sharedMem = sharedMem;
@@ -93,7 +93,7 @@ void DSMem::setSharedMem(BOOL sharedMem) {
  *
  * @return sharedMem the Boolean sharedMem
  */
-BOOL DSMem::getSharedMem() {
+bool DSMem::getSharedMem() {
 
     return sharedMem;
 }

@@ -66,7 +66,7 @@ $(nobase_pkginclude_HEADERS): % : ../../../src/include/%
 	mkdir -p `dirname $@`
 	rm -f $@
 	if [ "$(@F)" == "Log.h" ]; then echo '#include <stdarg.h>' >>$@; fi
-	sed -e 's/WCHAR/char/g' -e 's/= *NULL/= 0/g' -e 's/__declspec([^)]*)//g' -e 's/__cdecl//g' -e 's/EXTRA_SECTION_[0123456789]*//g' -e 's/BOOL/int/g' -e 's/FALSE/0/g' -e 's/TRUE/1/g' $< >>$@
+	sed -e 's/WCHAR/char/g' -e 's/= *NULL/= 0/g' -e 's/__declspec([^)]*)//g' -e 's/__cdecl//g' -e 's/EXTRA_SECTION_[0123456789]*//g' $< >>$@
 
 clean : cleancopies
 cleancopies :

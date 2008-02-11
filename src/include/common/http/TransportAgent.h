@@ -75,7 +75,7 @@
         unsigned int maxmsgsize;
         unsigned int readBufferSize;
         char userAgent[128];
-        BOOL compression;
+        bool compression;
 
     public:
         TransportAgent();
@@ -132,8 +132,8 @@
 
         virtual void setUserAgent(const char*  ua);
 
-        virtual void setCompression(BOOL newCompression);
-        virtual BOOL getCompression();
+        virtual void setCompression(bool newCompression);
+        virtual bool getCompression();
 
         virtual const char* getUserAgent();
 

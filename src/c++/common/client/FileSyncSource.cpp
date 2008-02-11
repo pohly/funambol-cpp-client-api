@@ -150,7 +150,7 @@ int FileSyncSource::beginSync() {
     return 0;
 }
 
-SyncItem* FileSyncSource::getFirst(ItemIteratorContainer& container, BOOL getData) {
+SyncItem* FileSyncSource::getFirst(ItemIteratorContainer& container, bool getData) {
     container.index = 0;
     if (container.index >= container.items.size()) {
         return NULL;
@@ -169,7 +169,7 @@ SyncItem* FileSyncSource::getFirst(ItemIteratorContainer& container, BOOL getDat
     }
 }
 
-SyncItem* FileSyncSource::getNext(ItemIteratorContainer& container, BOOL getData) {
+SyncItem* FileSyncSource::getNext(ItemIteratorContainer& container, bool getData) {
     container.index++;
     if (container.index >= container.items.size()) {
         return NULL;
@@ -311,7 +311,7 @@ int FileSyncSource::endSync() {
         SyncItem* item;
 
         // reset information about deleted items
-        for (item = getFirst(deletedItems, FALSE); item; item = getNext(deletedItems, FALSE)) {
+        for (item = getFirst(deletedItems, false); item; item = getNext(deletedItems, false)) {
 			char *tmp = toMultibyte(item->getKey());
             fileNode->setPropertyValue(tmp, "");
 			delete [] tmp;
@@ -319,7 +319,7 @@ int FileSyncSource::endSync() {
         }
 
         // update information about each file that currently exists on the server
-        for (item = getFirst(allItems, FALSE); item; item = getNext(allItems, FALSE)) {
+        for (item = getFirst(allItems, false); item; item = getNext(allItems, false)) {
             char completeName[512];
             sprintf(completeName, "%s/%" WCHAR_PRINTF, dir, item->getKey());
             unsigned long modTime = getFileModTime(completeName);

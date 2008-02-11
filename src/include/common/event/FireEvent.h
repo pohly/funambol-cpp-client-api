@@ -55,8 +55,8 @@
  *
  * @param msg  : the message of sync event
  * @param type : the type of event to fire (see event/constants.h)
- * @return     : TRUE if no errors,
- *               FALSE if syncListener not instantiated, or 'type' wrong
+ * @return     : true if no errors,
+ *               false if syncListener not instantiated, or 'type' wrong
  */
 bool fireSyncEvent(const char* msg, int type);
 
@@ -65,8 +65,8 @@ bool fireSyncEvent(const char* msg, int type);
  *
  * @param size : the data size
  * @param type : the type of event to fire (see event/constants.h)
- * @return     : TRUE if no errors,
- *               FALSE if transportListener not instantiated, or 'type' wrong
+ * @return     : true if no errors,
+ *               false if transportListener not instantiated, or 'type' wrong
  */
 bool fireTransportEvent(unsigned long size, int type);
 
@@ -78,8 +78,8 @@ bool fireTransportEvent(unsigned long size, int type);
  * @param mode      : type of the performed sync
  * @param data      : data information returned
  * @param type      : the type of event to fire (see event/constants.h)
- * @return          : TRUE if no errors,
- *                    FALSE if syncsourceListener not instantiated, or 'type' wrong
+ * @return          : true if no errors,
+ *                    false if syncsourceListener not instantiated, or 'type' wrong
  */
 bool fireSyncSourceEvent(const char* sourceURI, const char* sourceName, SyncMode mode, int data, int type);
 
@@ -90,8 +90,8 @@ bool fireSyncSourceEvent(const char* sourceURI, const char* sourceName, SyncMode
  * @param name      : the source name
  * @param itemKey   : the item key (GUID from the server)
  * @param type      : the type of event to fire (see event/constants.h)
- * @return          : TRUE if no errors,
- *                    FALSE if syncitemListener not instantiated, or 'type' wrong
+ * @return          : true if no errors,
+ *                    false if syncitemListener not instantiated, or 'type' wrong
  */
 bool fireSyncItemEvent(const char* sourceURI, const char* name, const WCHAR* itemKey, int type);
 
@@ -104,8 +104,8 @@ bool fireSyncItemEvent(const char* sourceURI, const char* name, const WCHAR* ite
  * @param uri       : the source uri
  * @param itemKey   : the key of the item this status relates to if it is in response of a modification command
  * @param type      : the type of event to fire (see event/constants.h)
- * @return          : TRUE if no errors,
- *                    FALSE if syncstatusListener not instantiated, or 'type' wrong
+ * @return          : true if no errors,
+ *                    false if syncstatusListener not instantiated, or 'type' wrong
  */
 bool fireSyncStatusEvent(const char* command, int statusCode, const char* name, const char* uri, const WCHAR* itemKey, int type);
 

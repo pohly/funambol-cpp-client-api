@@ -83,7 +83,7 @@ CLEANFILES = $(nobase_pkginclude_HEADERS)
 # fix files for public distribution
 $(source_files): %: ../../../%
 	mkdir -p ${@D}
-	sed -e 's/WCHAR/char/g' -e 's/= *NULL/= 0/g' -e 's/__declspec([^)]*)//g' -e 's/__cdecl//g' -e 's/EXTRA_SECTION_[0123456789]*//g' -e 's/BOOL/int/g' $< >$@
+	sed -e 's/WCHAR/char/g' -e 's/= *NULL/= 0/g' -e 's/__declspec([^)]*)//g' -e 's/__cdecl//g' -e 's/EXTRA_SECTION_[0123456789]*//g' $< >$@
 
 # just copy for distribution
 $(verbatim_files): %: ../../../%

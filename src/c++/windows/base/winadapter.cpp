@@ -637,7 +637,7 @@ int round(double val) {
     #undef new
     #include "base/memTracker.h"
 
-    MemTracker m = MemTracker(TRUE);
+    MemTracker m = MemTracker(true);
 
 
     void *operator new(size_t s, char* file, int line) {

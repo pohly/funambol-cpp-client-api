@@ -53,7 +53,7 @@ int RawFileSyncSource::addItem(SyncItem& item) {
 
         FILE *fh = fopen(completeName, "r");
         if (!fh) {
-            if (!saveFile(completeName, (const char *)item.getData(), item.getDataSize(), TRUE)) {
+            if (!saveFile(completeName, (const char *)item.getData(), item.getDataSize(), true)) {
                 sprintf(lastErrorMsg, "Error saving file %s", completeName);
                 report->setLastErrorCode(ERR_FILE_SYSTEM);
                 report->setLastErrorMsg(lastErrorMsg);
@@ -75,7 +75,7 @@ int RawFileSyncSource::addItem(SyncItem& item) {
 int RawFileSyncSource::updateItem(SyncItem& item) {
     char completeName[512];
     sprintf(completeName, "%s/%" WCHAR_PRINTF, dir, item.getKey());
-    if (!saveFile(completeName, (const char *)item.getData(), item.getDataSize(), TRUE)) {
+    if (!saveFile(completeName, (const char *)item.getData(), item.getDataSize(), true)) {
         sprintf(lastErrorMsg, "Error saving file %s", completeName);
         report->setLastErrorCode(ERR_FILE_SYSTEM);
         report->setLastErrorMsg(lastErrorMsg);

@@ -147,7 +147,7 @@ wstring& WinTask::toString() {
         delete vp; vp = NULL;
     }
     if (getProperty(L"Complete", element)) {
-        BOOL isCompleted = _wtoi(element.c_str());
+        bool isCompleted = _wtoi(element.c_str());
         if (isCompleted) { 
             vp = new VProperty(TEXT("STATUS"), TEXT("COMPLETED"));
             vo->addProperty(vp);
@@ -189,7 +189,7 @@ wstring& WinTask::toString() {
     // Recurrence pattern -> RRULE
     //
     if (getProperty(L"IsRecurring", element)) {
-        BOOL isRec = _wtoi(element.c_str());
+        bool isRec = _wtoi(element.c_str());
         if(isRec) {
             wstring rRule = recPattern.toString();
             if(rRule != L"") {
@@ -211,8 +211,8 @@ wstring& WinTask::toString() {
     // ReminderSet
     //
     if (getProperty(L"ReminderSet", element)) {
-        BOOL bReminder = _wtoi(element.c_str());
-        if(bReminder == TRUE) {
+        bool bReminder = _wtoi(element.c_str());
+        if(bReminder == true) {
             if (getProperty(L"ReminderTime", element)) {
 
                 vp = new VProperty(L"AALARM");

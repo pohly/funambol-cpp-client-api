@@ -61,7 +61,7 @@ StringBuffer* Formatter::getValue(const char* tagName, long value, const char *p
 /*
 * Returns a StringBuffer giving the tag and the value as BOOL. If true return only the tag, nothing otherwise
 */
-StringBuffer* Formatter::getValue(const char* tagName, BOOL value, const char *params) {
+StringBuffer* Formatter::getValue(const char* tagName, bool value, const char *params) {
     if (!value)
         return NULL;
 

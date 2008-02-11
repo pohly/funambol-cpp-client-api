@@ -42,7 +42,7 @@
  *
  * Since this class works with pointers, it can be instructed to delete the
  * list elements at object destruction. If the property autoDeleteElements is
- * TRUE all elements are delete using the C++ delete operator (therefore, make
+ * true all elements are delete using the C++ delete operator (therefore, make
  * sure elements are allocated with a compatible memory allocation function -
  * such as the C++ new operator)
  */

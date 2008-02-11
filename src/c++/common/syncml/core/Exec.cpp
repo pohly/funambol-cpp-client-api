@@ -58,7 +58,7 @@ Exec::~Exec() {
  *
  */
 Exec::Exec(CmdID*   cmdID,
-           BOOL   noResp,
+           bool   noResp,
            Cred*  cred,
            ArrayList*  items) : ModificationCommand(cmdID, items) {
 

@@ -207,10 +207,10 @@ URL& URL::operator= (const char* url) {
     setURL(url); return *this;
 }
 
-BOOL URL::isSecure() {
+bool URL::isSecure() {
    char* t = strtolower(protocol);
 
-   BOOL ret = (strcmp(t, "https") == 0);
+   bool ret = (strcmp(t, "https") == 0);
 
    delete [] t; t = NULL;
 

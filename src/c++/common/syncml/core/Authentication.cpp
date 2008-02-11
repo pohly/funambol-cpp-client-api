@@ -54,7 +54,7 @@ Authentication::~Authentication() {
      if (principalId)    {delete [] principalId; principalId = NULL; }
      if (meta)           {delete  meta; meta = NULL; }
 
-     encode = FALSE;
+     encode = false;
 
 }
 
@@ -77,7 +77,7 @@ void Authentication::initialize() {
     this->data            = NULL;
     this->username        = NULL;
     this->password        = NULL;
-    this->encode          = FALSE;
+    this->encode          = false;
     this->deviceId        = NULL ;
     this->syncMLVerProto  = NULL ;
     this->principalId     = NULL;
@@ -123,7 +123,7 @@ Authentication::Authentication(const char* type, const char* data) {
  */
 Authentication::Authentication(const char* type,
                                const char* data,
-                               BOOL encode) {
+                               bool encode) {
 
 
     initialize();
@@ -152,7 +152,7 @@ Authentication::Authentication(const char* type,
            // tbd
     }
 
-    encode = TRUE;
+    encode = true;
     char auth[DIM_512];
     sprintf(auth, "%s:%s", username, password);
     createAuthentication(type, auth);
@@ -311,20 +311,20 @@ void Authentication::setData(const char*data) {
 
         unsigned int len = strlen(clearData);
         char* p1 = clearData;
-        BOOL charFound = FALSE;
+        bool charFound = false;
         for (unsigned int k = 0; k < len; k++) {
             if (*p1 == 0) {
                 break;
             }
             else if (*p1 == ':') {
-                charFound = TRUE;
+                charFound = true;
                 p1 = p1 + 1;
                 break;
             }
             p1 = p1 + 1;
         }
 
-        if (charFound == FALSE) {
+        if (charFound == false) {
             this->setUsername(clearData);
             this->setPassword(NULL);
         } else {

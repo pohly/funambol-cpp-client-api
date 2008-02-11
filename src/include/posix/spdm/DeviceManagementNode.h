@@ -54,7 +54,7 @@
  */
 class DeviceManagementNode : public ManagementNode {
     ArrayList *lines;
-    BOOL modified;
+    bool modified;
     char *prefix;
 
     class line : public ArrayElement {
@@ -75,14 +75,14 @@ class DeviceManagementNode : public ManagementNode {
     // change into directory which holds config file,
     // creating directories if necessary for writing
     //
-    // @return TRUE for success, FALSE for error - call returnFromDir() in both cases
-    BOOL gotoDir(BOOL read);
+    // @return true for success, false for error - call returnFromDir() in both cases
+    bool gotoDir(bool read);
 
     // return to original directory after a gotoDir()
     void returnFromDir();
 
     // copy content of "lines" to or from file
-    void update(BOOL read);
+    void update(bool read);
 
     public:
 

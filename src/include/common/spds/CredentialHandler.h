@@ -58,7 +58,7 @@
         char*  serverAuthType;
         char*  serverNonce;
 
-        BOOL isServerAuthRequired;
+        bool isServerAuthRequired;
 
         /**
          * Initializes private members
@@ -106,13 +106,13 @@
         const char*  getServerAuthType();
         const char*  getServerNonce();
 
-        void setServerAuthRequired(BOOL t);
-        BOOL getServerAuthRequired();
+        void setServerAuthRequired(bool t);
+        bool getServerAuthRequired();
 
         Cred* getClientCredential();
         Cred* getServerCredential();
-        Chal* getServerChal(BOOL isServerAuthenticated);
-        BOOL  performServerAuth(Cred* cred);
+        Chal* getServerChal(bool isServerAuthenticated);
+        bool  performServerAuth(Cred* cred);
 
     };
 

@@ -139,7 +139,7 @@ int WinTaskSIF::parse(const wstring data) {
     //
     wstring element;
     if (getProperty(L"IsRecurring", element)) {
-        BOOL isRec = _wtoi(element.c_str());
+        bool isRec = _wtoi(element.c_str());
         if(isRec) {
             // Fill recPatternSIF propertyMap.
             recPatternSIF.parse(data);

@@ -52,7 +52,7 @@ SyncManagerConfig::~SyncManagerConfig() {
     }
 }
 
-SyncSourceConfig* SyncManagerConfig::getSyncSourceConfig(const char* name, BOOL refresh) const {
+SyncSourceConfig* SyncManagerConfig::getSyncSourceConfig(const char* name, bool refresh) const {
     if ((name == NULL) || (strlen(name) == 0)) {
         return NULL;
     }
@@ -66,7 +66,7 @@ SyncSourceConfig* SyncManagerConfig::getSyncSourceConfig(const char* name, BOOL 
     return NULL;
 }
 
-SyncSourceConfig* SyncManagerConfig::getSyncSourceConfig(unsigned int i, BOOL refresh) const {
+SyncSourceConfig* SyncManagerConfig::getSyncSourceConfig(unsigned int i, bool refresh) const {
     if (i >= sourceConfigsCount) {
         return NULL;
     }
@@ -75,7 +75,7 @@ SyncSourceConfig* SyncManagerConfig::getSyncSourceConfig(unsigned int i, BOOL re
 }
 
 
-BOOL SyncManagerConfig::setSyncSourceConfig(SyncSourceConfig& sc) {
+bool SyncManagerConfig::setSyncSourceConfig(SyncSourceConfig& sc) {
     unsigned int i=0;
     for (i=0; i<sourceConfigsCount; ++i) {
         if (strcmp(sc.getName(), sourceConfigs[i].getName()) == 0) {
@@ -94,7 +94,7 @@ BOOL SyncManagerConfig::setSyncSourceConfig(SyncSourceConfig& sc) {
 
     //dirty |= DIRTY_SYNC_SOURCE;
 
-    return TRUE;
+    return true;
 }
 
 
@@ -104,7 +104,7 @@ BOOL SyncManagerConfig::setSyncSourceConfig(SyncSourceConfig& sc) {
  * config is replaced with the given one.
  * Otherwise it is added in the sourceConfig array.
  */
-BOOL SyncManagerConfig::addSyncSourceConfig(SyncSourceConfig& sc) {
+bool SyncManagerConfig::addSyncSourceConfig(SyncSourceConfig& sc) {
 
     unsigned int i = 0;
     SyncSourceConfig* s = NULL;
@@ -134,7 +134,7 @@ BOOL SyncManagerConfig::addSyncSourceConfig(SyncSourceConfig& sc) {
     }
 
     //dirty |= DIRTY_SYNC_SOURCE;
-    return TRUE;
+    return true;
 }
 
 void SyncManagerConfig::setClientDefaults() {

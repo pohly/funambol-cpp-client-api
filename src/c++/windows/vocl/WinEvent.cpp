@@ -85,7 +85,7 @@ wstring& WinEvent::toString() {
     wstring element;
 
 
-    BOOL isRecurring = FALSE;
+    bool isRecurring = false;
     if (getProperty(L"IsRecurring", element)) {
         isRecurring = _wtoi(element.c_str());
     }
@@ -197,9 +197,9 @@ wstring& WinEvent::toString() {
     // ReminderSet
     //
     if (getProperty(L"ReminderSet", element)) {
-        BOOL bReminder = _wtoi(element.c_str());
+        bool bReminder = _wtoi(element.c_str());
 
-        if(bReminder == TRUE) {
+        if(bReminder == true) {
             long minBefore;
             if (getProperty(L"ReminderMinutesBeforeStart", element)) {
                 minBefore = _wtoi(element.c_str());

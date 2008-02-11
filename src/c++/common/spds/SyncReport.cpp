@@ -147,7 +147,7 @@ void SyncReport::initialize() {
     ssReport       = NULL;
 }
 
-void SyncReport::toString(StringBuffer &str, BOOL verbose) {
+void SyncReport::toString(StringBuffer &str, bool verbose) {
     StringBuffer tmp;
 
     str += "===========================================================\n";

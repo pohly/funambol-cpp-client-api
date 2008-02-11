@@ -422,7 +422,7 @@ class ClientTest {
      *                     beware, the later may throw exceptions inside CPPUNIT macros
      * @param maxMsgSize   >0: enable the maximum message size, else disable it
      * @param maxObjSize   same as maxMsgSize for maximum object size
-     * @param loSupport    if TRUE, then the sync is expected to enable Large Object support
+     * @param loSupport    if true, then the sync is expected to enable Large Object support
      * @param encoding     if non-empty, then let client library transform all items
      *                     into this format (guaranteed to be not NULL)
      *

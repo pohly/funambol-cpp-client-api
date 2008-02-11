@@ -415,7 +415,7 @@ SourceFilter* ClauseUtil::createSourceFilter(const WCHAR* since, int bodySize, i
     //
     if (since) {
         char *s = toMultibyte(since);
-        WhereClause recordClause("modified", s, GE, FALSE);
+        WhereClause recordClause("modified", s, GE, false);
         operands.add(recordClause);
         delete [] s;
     } else {
@@ -479,7 +479,7 @@ SourceFilter* ClauseUtil::createSourceFilterInclusive(const char* luid, int size
     //
 
     if (luid) {
-        WhereClause recordClause("&LUID", luid, EQ, FALSE);
+        WhereClause recordClause("&LUID", luid, EQ, false);
         operands.add(recordClause);
     } else {
         AllClause all;
@@ -490,7 +490,7 @@ SourceFilter* ClauseUtil::createSourceFilterInclusive(const char* luid, int size
 
     SourceFilter* filter = new SourceFilter();
     filter->setClause(clause);
-    filter->setInclusive(TRUE);
+    filter->setInclusive(true);
 
     return filter;
 }

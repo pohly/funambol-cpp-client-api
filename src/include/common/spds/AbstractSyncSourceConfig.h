@@ -160,7 +160,7 @@ class AbstractSyncSourceConfig {
      *
      * @return fieldLevel ... which is what?
      */
-    virtual BOOL getFieldLevel() const { return FALSE; }
+    virtual bool getFieldLevel() const { return false; }
 };
 
 /** @} */

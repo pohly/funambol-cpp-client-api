@@ -114,7 +114,7 @@ public:
      * isUnaryOperator
      *
      */
-    BOOL isUnaryOperator();
+    bool isUnaryOperator();
 
     /*
      * Creates a new instance of this Clause

@@ -64,7 +64,7 @@ Get::~Get() {
 *
 */
 Get::Get(CmdID* cmdID,
-         BOOL noResp,
+         bool noResp,
          char* lang,
          Cred* cred,
          Meta* meta,

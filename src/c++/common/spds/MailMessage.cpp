@@ -781,7 +781,7 @@ int MailMessage::parseHeaders(StringBuffer &rfcHeaders) {
     ArrayList lines;
     const StringBuffer *line;
     StringBuffer strReceived;
-    BOOL receivedExtracted = FALSE;
+    bool receivedExtracted = false;
     LOG.debug("parseHeaders START");
 
     // Join header parts using \t or 8 blank
@@ -825,7 +825,7 @@ int MailMessage::parseHeaders(StringBuffer &rfcHeaders) {
             bcc = MailMessage::decodeHeader(line->substr(BCC_LEN));
         }
         else if ( line->ifind(DATE) == 0 ) {
-            //subjectParsing = FALSE;
+            //subjectParsing = false;
             if( date.parseRfc822(line->substr(DATE_LEN)) ) {
                 LOG.error("Error parsing date");
                 return 500;
@@ -913,12 +913,12 @@ int MailMessage::parseHeaders(StringBuffer &rfcHeaders) {
 
                 if (!strReceived.empty()) {
                     received.parseRfc822(strReceived.substr(2));
-                    receivedExtracted = TRUE;
+                    receivedExtracted = true;
                 }
                 /*
                 while (!strReceived.empty()) {
                     if (received.parseRfc822(strReceived.substr(2)) == 0) {
-                        receivedExtracted = TRUE;
+                        receivedExtracted = true;
                         break;
                     } else {
                         StringBuffer s(line->substr(line->rfind(strReceived.c_str())));

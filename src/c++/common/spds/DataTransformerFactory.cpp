@@ -42,7 +42,7 @@
 DataTransformer* DataTransformerFactory::getEncoder(const char* name) {
     DataTransformer* ret = NULL;
 
-    if (isSupportedEncoder(name) == FALSE) {
+    if (isSupportedEncoder(name) == false) {
         //lastErrorCode = ERR_DT_UNKNOWN;
         //sprintf (lastErrorMsg, ERRMSG_DT_UNKNOWN, name);
         setErrorF(ERR_DT_UNKNOWN, ERRMSG_DT_UNKNOWN, name);
@@ -67,7 +67,7 @@ exit:
 DataTransformer* DataTransformerFactory::getDecoder(const char* name) {
     DataTransformer* ret = NULL;
 
-    if (isSupportedDecoder(name) == FALSE) {
+    if (isSupportedDecoder(name) == false) {
         //lastErrorCode = ERR_DT_UNKNOWN;
         //sprintf (lastErrorMsg, ERRMSG_DT_UNKNOWN, name);
         setErrorF(ERR_DT_UNKNOWN, ERRMSG_DT_UNKNOWN, name);
@@ -89,13 +89,13 @@ exit:
     return ret;
 }
 
-BOOL DataTransformerFactory::isSupportedEncoder(const char* name) {
+bool DataTransformerFactory::isSupportedEncoder(const char* name) {
     char* t = new char[strlen(name)+2];
 
     sprintf(t, "%s;", name);
     //strcpy(t, name); strcat(t, ";");
 
-    BOOL ret = (strstr(DF_FORMATTERS, t) != NULL);
+    bool ret = (strstr(DF_FORMATTERS, t) != NULL);
 
     delete [] t;
 
@@ -103,7 +103,7 @@ BOOL DataTransformerFactory::isSupportedEncoder(const char* name) {
 
 }
 
-BOOL DataTransformerFactory::isSupportedDecoder(const char* name) {
+bool DataTransformerFactory::isSupportedDecoder(const char* name) {
     //
     // Currently, same encoders/decoders are supported
     //
