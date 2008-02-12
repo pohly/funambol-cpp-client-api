@@ -52,7 +52,7 @@ DESEncoder::~DESEncoder() {
 }
 
 char* DESEncoder::transform(char* data, TransformationInfo& info) {
-    bool res = false;
+    BOOL res = FALSE;
 
     HCRYPTPROV prov = 0;
     HCRYPTKEY key = 0;
@@ -80,7 +80,7 @@ char* DESEncoder::transform(char* data, TransformationInfo& info) {
         CRYPT_VERIFYCONTEXT
     );
 
-    if (res == false) {
+    if (res == FALSE) {
         //lastErrorCode = ERR_DT_FAILURE;
         //sprintf(lastErrorMsg, ERRMSG_DT_FAILURE, GetLastError());
         setErrorF(ERR_DT_FAILURE, ERRMSG_DT_FAILURE, GetLastError());
@@ -96,7 +96,7 @@ char* DESEncoder::transform(char* data, TransformationInfo& info) {
         &hash       // handle to the hash object
     );
 
-    if (res == false) {
+    if (res == FALSE) {
         //lastErrorCode = ERR_DT_FAILURE;
         //sprintf(lastErrorMsg, ERRMSG_DT_FAILURE, GetLastError());
         setErrorF(ERR_DT_FAILURE, ERRMSG_DT_FAILURE, GetLastError());
@@ -111,7 +111,7 @@ char* DESEncoder::transform(char* data, TransformationInfo& info) {
         0                         // flags not used
     );
 
-    if (res == false) {
+    if (res == FALSE) {
         //lastErrorCode = ERR_DT_FAILURE;
         //sprintf(lastErrorMsg, ERRMSG_DT_FAILURE, GetLastError());
         setErrorF(ERR_DT_FAILURE, ERRMSG_DT_FAILURE, GetLastError());
@@ -127,7 +127,7 @@ char* DESEncoder::transform(char* data, TransformationInfo& info) {
         &key        // key handle
     );
 
-    if (res == false) {
+    if (res == FALSE) {
         //lastErrorCode = ERR_DT_FAILURE;
         //sprintf(lastErrorMsg, ERRMSG_DT_FAILURE, GetLastError());
         setErrorF(ERR_DT_FAILURE, ERRMSG_DT_FAILURE, GetLastError());
@@ -143,7 +143,7 @@ char* DESEncoder::transform(char* data, TransformationInfo& info) {
         0                          // flags not used
     );
 
-    if (res == false) {
+    if (res == FALSE) {
         //lastErrorCode = ERR_DT_FAILURE;
         //sprintf(lastErrorMsg, ERRMSG_DT_FAILURE, GetLastError());
         setErrorF(ERR_DT_FAILURE, ERRMSG_DT_FAILURE, GetLastError());
@@ -159,7 +159,7 @@ char* DESEncoder::transform(char* data, TransformationInfo& info) {
         0                          // flags not used
     );
 
-    if (res == false) {
+    if (res == FALSE) {
         //lastErrorCode = ERR_DT_FAILURE;
         //sprintf(lastErrorMsg, ERRMSG_DT_FAILURE, GetLastError());
         setErrorF(ERR_DT_FAILURE, ERRMSG_DT_FAILURE, GetLastError());
@@ -173,14 +173,14 @@ char* DESEncoder::transform(char* data, TransformationInfo& info) {
     res = CryptEncrypt(
         key,            // Key obtained earlier
         0,              // No hashing of data
-        true,           // Final or only buffer of data
+        TRUE,           // Final or only buffer of data
         0,              // Must be zero
         NULL,           // No data this time
         &sizeOut,       // Length of the source data
         0               // Size of block
     );
 
-    if ((res == false) && (GetLastError() != ERROR_MORE_DATA)) {
+    if ((res == FALSE) && (GetLastError() != ERROR_MORE_DATA)) {
         //lastErrorCode = ERR_DT_FAILURE;
         //sprintf(lastErrorMsg, ERRMSG_DT_FAILURE, GetLastError());
         setErrorF(ERR_DT_FAILURE, ERRMSG_DT_FAILURE, GetLastError());
@@ -195,14 +195,14 @@ char* DESEncoder::transform(char* data, TransformationInfo& info) {
     res = CryptEncrypt(
         key,                 // Key obtained earlier
         0,                   // No hashing of data
-        true,                // Final or only buffer of data
+        TRUE,                // Final or only buffer of data
         0,                   // Must be zero
         (unsigned char*)ret, // Data buffer
         &sizeIn,             // Size of data
         sizeOut              // Size of block
     );
 
-    if (res == false) {
+    if (res == FALSE) {
         //lastErrorCode = ERR_DT_FAILURE;
         //sprintf(lastErrorMsg, ERRMSG_DT_FAILURE, GetLastError());
         setErrorF(ERR_DT_FAILURE, ERRMSG_DT_FAILURE, GetLastError());
