@@ -84,7 +84,7 @@ class SyncManagerConfig : public AbstractSyncConfig {
         virtual void setDeviceConfig(DeviceConfig& dc) { deviceConfig.assign(dc); }
 
         /* Is this call obsolete? The DeviceConfig does not have a getDirty() calls. */
-        bool isDirty() const { return accessConfig.getDirty() /* || deviceConfig.getDirty() */; }
+        unsigned int isDirty() const { return accessConfig.getDirty() /* || deviceConfig.getDirty() */; }
 
         /**
          * Initializes the access and device config with default values from DefaultConfigFactory.

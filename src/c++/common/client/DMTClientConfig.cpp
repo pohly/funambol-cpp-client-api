@@ -199,7 +199,7 @@ bool DMTClientConfig::save() {
     }
 
     resetError();
-    ret = getLastErrorCode();
+    ret = (getLastErrorCode() != 0);
 
     close();
     return ret;
