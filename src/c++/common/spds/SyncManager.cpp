@@ -529,9 +529,9 @@ int SyncManager::prepareSync(SyncSource** s) {
             }
 
             if (ret == -1 || ret == 404 || ret == 415) {
-                setErrorF(ret, "Alert Status from server = %d", ret);
-                LOG.error(logmsg);
-                setSourceStateAndError(count, SOURCE_ERROR, ret, logmsg);
+                setErrorF(ret, "AlertStatus from server %d", ret);
+                LOG.error(getLastErrorMsg());
+                setSourceStateAndError(count, SOURCE_ERROR, ret, getLastErrorMsg());
             }
         }
         if (isToExit()) {
@@ -723,9 +723,9 @@ int SyncManager::prepareSync(SyncSource** s) {
                     continue;
                 ret = syncMLProcessor.processServerAlert(*sources[count], syncml);
                 if (isErrorStatus(ret)) {
-                    sprintf(logmsg, "AlertStatus from server %d", ret);
-                    LOG.error(logmsg);
-                    setSourceStateAndError(count, SOURCE_ERROR, ret, logmsg);
+                    setErrorF(ret, "AlertStatus from server %d", ret);
+                    LOG.error(getLastErrorMsg());
+                    setSourceStateAndError(count, SOURCE_ERROR, ret, getLastErrorMsg());
                 }
                 fireSyncSourceEvent(sources[count]->getConfig().getURI(),
                                     sources[count]->getConfig().getName(),
@@ -1804,7 +1804,7 @@ int SyncManager::endSync() {
     safeDelete(&responseMsg);
     safeDelete(&mapMsg);
     LOG.debug("ret: %i, lastErrorCode: %i, lastErrorMessage: %s",
-        ret, lastErrorCode, lastErrorMsg);
+              ret, getLastErrorCode(), getLastErrorMsg());
 
     // Fire Sync End Event
     fireSyncEvent(NULL, SYNC_END);
