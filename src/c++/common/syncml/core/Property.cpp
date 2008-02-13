@@ -42,7 +42,7 @@ Property::Property() {
     dataType    = NULL;
     maxOccur    = -1;
     maxSize     = -1;
-    noTruncate  = -1;  // -1 undefined, 0 false, 1 true
+    noTruncate  = false;
     valEnums    = NULL;
     displayName = NULL;
     propParams  = NULL;
@@ -154,7 +154,7 @@ void Property::setNoTruncate(bool p0) {
 }
 
 bool Property::isNoTruncate() {
-    return (noTruncate == true);
+    return noTruncate;
 }
 
 bool Property::getNoTruncate() {

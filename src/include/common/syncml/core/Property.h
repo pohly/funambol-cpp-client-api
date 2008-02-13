@@ -48,7 +48,7 @@ private:
     char*  dataType;
     long maxOccur;
     long maxSize;
-    bool noTruncate;  // -1 undefined, 0 false, 1 true
+    bool noTruncate;
     ArrayList* valEnums;
     char*  displayName;
     ArrayList* propParams;
