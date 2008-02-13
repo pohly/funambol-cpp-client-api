@@ -52,7 +52,6 @@
 //    LOG_LEVEL_DEBUG = 2
 //} LogLevel;
 
-extern char logmsg[];
 
 class winLog : public Log {
 

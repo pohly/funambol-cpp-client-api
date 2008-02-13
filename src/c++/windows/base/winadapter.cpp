@@ -525,8 +525,7 @@ static int findCodePage(const char *encoding)
             }
         }
         // Not found
-        sprintf(logmsg, "Invalid encoding: %s", encoding);
-        LOG.error(logmsg);
+        LOG.error("Invalid encoding: %s", encoding);
     }
     // Default encoding
     return CP_UTF8;

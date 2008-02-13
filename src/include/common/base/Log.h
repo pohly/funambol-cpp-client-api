@@ -40,9 +40,6 @@
     #include "fscapi.h"
     #include "base/util/StringBuffer.h"
 
-    /** this statically sized buffer should not be used anywhere! */
-    extern char logmsg[];
-
     /** prefix for error messages */
     #define LOG_ERROR "ERROR"
     /** prefix for informational messages */
