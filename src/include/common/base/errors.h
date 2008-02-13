@@ -57,8 +57,8 @@
  * Do not access these variable directly anymore, they will be hidden
  * in the future. Use the access methods instead.
  */
-extern int  lastErrorCode;
-extern char lastErrorMsg[];
+//extern int  lastErrorCode;
+//extern char lastErrorMsg[];
 
 /**
  * Reset the error message and code.
