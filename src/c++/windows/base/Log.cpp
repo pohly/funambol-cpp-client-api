@@ -36,6 +36,8 @@
 
 #include "base/winlog.h"
 #include "base/util/utils.h"
+#include "base/util/StringBuffer.h"
+#include "base/util/WString.h"
 
 #ifdef _WIN32_WCE
 #define FUNAMBOL_HEADER "Funambol Windows Mobile Plug-in Log"
@@ -43,14 +45,12 @@
 #define FUNAMBOL_HEADER "Funambol Win32 Plug-in Log"
 #endif
 
-//winLog LOG = winLog(false);
-
-char logmsg[512];
 
 static FILE* logFile = NULL;
-static WCHAR wlogDir[512] = TEXT("\\");
-static char logName[128] = LOG_NAME;
-static char logPath[256] = "\\" ;
+
+static WString      wlogDir(TEXT("\\"));
+static StringBuffer logName(LOG_NAME);
+static StringBuffer logPath("\\");
 
 
 winLog::winLog(bool resetLog, const char* path, const char* name) {
@@ -62,20 +62,20 @@ winLog::winLog(bool resetLog, const char* path, const char* name) {
     // If using char* logDir and UTF-8, fopen() is not working correctly and
     // will fail to open the log file. (with UTF-8... why?)
     // So we use _wfopen() and a wchar_t* logDir.
-    char logDir[512];
-    sprintf(logDir, "%s\\%s", logPath, logName);
-    WCHAR* tmp = toWideChar(logDir);
-    wcscpy(wlogDir, tmp);
+    StringBuffer logDir;
+    logDir.sprintf("%s\\%s", logPath.c_str(), logName.c_str());
+    WCHAR* tmp = toWideChar(logDir.c_str());
+    wlogDir = tmp;
     delete [] tmp;
 
     //
     // Test to ensure the log file is writable (only if path is set)
     //
     if (path) {
-        logFile = _wfopen(wlogDir, TEXT("a+"));
+        logFile = _wfopen(wlogDir.c_str(), TEXT("a+"));
         if (logFile == NULL) {
             WCHAR tmp[512];
-            wsprintf(tmp, TEXT("Unable to write log file: \"%s\".\nPlease check your user's permissions."), wlogDir);
+            wsprintf(tmp, TEXT("Unable to write log file: \"%s\".\nPlease check your user's permissions."), wlogDir.c_str());
             MessageBox(NULL, tmp, TEXT("Funambol"), MB_SETFOREGROUND | MB_OK);
         }
         else {
@@ -99,31 +99,33 @@ winLog::~winLog() {
 void winLog::setLogPath(const char* configLogPath) {
 
     if (configLogPath != NULL) {
-        sprintf(logPath, "%s", configLogPath);
+        logPath = configLogPath;
     } else {
-        sprintf(logPath, ".");
+        logPath = ".";
     }
-    if (logName ){
-        char logDir[512];
-        sprintf(logDir, "%s\\%s", logPath, logName);
-        WCHAR* tmp = toWideChar(logDir);
-        wcscpy(wlogDir, tmp);
+    if (logName.length() > 0){
+        StringBuffer logDir;
+        logDir.sprintf("%s\\%s", logPath.c_str(), logName.c_str());
+        WCHAR* tmp = toWideChar(logDir.c_str());
+        wlogDir = tmp;
+        delete [] tmp;
     }
 }
 
 void winLog::setLogName(const char* configLogName) {
 
     if (configLogName != NULL) {
-        sprintf(logName, "%s", configLogName);
+        logName = configLogName;
     }
     else {
-        sprintf(logName, "%s", LOG_NAME);
+        logName = LOG_NAME;
     }
-    if (logPath ){
-        char logDir[512];
-        sprintf(logDir, "%s\\%s", logPath, logName);
-        WCHAR* tmp = toWideChar(logDir);
-        wcscpy(wlogDir, tmp);
+    if (logPath){
+        StringBuffer logDir;
+        logDir.sprintf("%s\\%s", logPath.c_str(), logName.c_str());
+        WCHAR* tmp = toWideChar(logDir.c_str());
+        wlogDir = tmp;
+        delete [] tmp;
     }
 }
 
@@ -131,32 +133,31 @@ void winLog::setLogName(const char* configLogName) {
 * return a the time to write into log file. If complete is true, it return
 * the date too, else only hours, minutes, seconds and milliseconds
 */
-static char* createCurrentTime(bool complete) {
+static StringBuffer createCurrentTime(bool complete) {
 
     SYSTEMTIME sys_time;
     TIME_ZONE_INFORMATION timezone;
     GetLocalTime(&sys_time);
     GetTimeZoneInformation(&timezone);
 
-    char fmtComplete[] = "%04d-%02d-%02d %02d:%02d:%02d GMT %c%d:%02d";
-    char fmt[]         = "%02d:%02d:%02d GMT %c%d:%02d";
-
-    char* ret = new char [64];
+    StringBuffer ret;
 
     // calculate offset from UTC/GMT in hours:min, positive value
     // means east of Greenwich (e.g. CET = GMT +1)
-
     char direction = timezone.Bias <= 0 ? '+' : '-';
-    int hours = abs(timezone.Bias / 60) ;
-    int minutes = abs(timezone.Bias % 60);
+    int hours      = abs(timezone.Bias / 60) ;
+    int minutes    = abs(timezone.Bias % 60);
 
     if (complete) {
-        sprintf(ret, fmtComplete, sys_time.wYear, sys_time.wMonth, sys_time.wDay,
-                 sys_time.wHour, sys_time.wMinute, sys_time.wSecond,
-                direction, hours, minutes);
-    } else {
-        sprintf(ret, fmt, sys_time.wHour, sys_time.wMinute, sys_time.wSecond,
-                direction, hours, minutes);
+        char fmtComplete[] = "%04d-%02d-%02d %02d:%02d:%02d GMT %c%d:%02d";
+        ret.sprintf(fmtComplete, sys_time.wYear, sys_time.wMonth, sys_time.wDay,
+                    sys_time.wHour, sys_time.wMinute, sys_time.wSecond,
+                    direction, hours, minutes);
+    } 
+    else {
+        char fmt[] = "%02d:%02d:%02d GMT %c%d:%02d";
+        ret.sprintf(fmt, sys_time.wHour, sys_time.wMinute, sys_time.wSecond,
+                    direction, hours, minutes);
     }
     return ret;
 }
@@ -177,7 +178,6 @@ void winLog::info(const char*  msg, ...) {
 	    va_start (argList, msg);
         printMessage(LOG_INFO, msg, argList);
 	    va_end(argList);
-
     }
 }
 
@@ -187,7 +187,6 @@ void winLog::debug(const char*  msg, ...) {
         va_start (argList, msg);
         printMessage(LOG_DEBUG, msg, argList);
         va_end(argList);
-
     }
 }
 
@@ -203,34 +202,32 @@ void winLog::developer(const char*  msg, ...) {
 
 void winLog::printMessage(const char* level, const char* msg, va_list argList) {
 
-	char* currentTime = createCurrentTime(false);
-    logFile = _wfopen(wlogDir, TEXT("a+"));
+	StringBuffer currentTime = createCurrentTime(false);
+    logFile = _wfopen(wlogDir.c_str(), TEXT("a+"));
     if (logFile) {
-	    fprintf(logFile, "%s [%s] - ", currentTime, level);
+        fprintf(logFile, "%s [%s] - ", currentTime.c_str(), level);
         vfprintf(logFile, msg, argList);
 	    fprintf(logFile, "\n");
 	    fclose(logFile);
     }
-    delete[] currentTime;
 }
 
 void winLog::reset(const char* title) {
     const char *t = (title) ? title : FUNAMBOL_HEADER;
 
-    char* currentTime = createCurrentTime(true);
-    logFile = _wfopen(wlogDir, TEXT("w+"));
+    StringBuffer currentTime = createCurrentTime(true);
+    logFile = _wfopen(wlogDir.c_str(), TEXT("w+"));
     if (logFile) {
-        fprintf(logFile, "%s - # %s\n\n", currentTime, t);
+        fprintf(logFile, "%s - # %s\n\n", currentTime.c_str(), t);
         fclose(logFile);
     }
-    delete[] currentTime;
 }
 
 
 size_t winLog::getLogSize() {
     size_t ret = 0;
 
-    logFile = _wfopen(wlogDir, TEXT("r"));
+    logFile = _wfopen(wlogDir.c_str(), TEXT("r"));
     if (logFile) {
         ret = fgetsize(logFile);
         fclose(logFile);
