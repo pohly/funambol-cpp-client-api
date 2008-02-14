@@ -54,9 +54,10 @@ int RawFileSyncSource::addItem(SyncItem& item) {
         FILE *fh = fopen(completeName, "r");
         if (!fh) {
             if (!saveFile(completeName, (const char *)item.getData(), item.getDataSize(), true)) {
-                sprintf(lastErrorMsg, "Error saving file %s", completeName);
+                setErrorF(ERR_FILE_SYSTEM, "Error saving file %s", completeName);
+                LOG.error("%s", getLastErrorMsg());
                 report->setLastErrorCode(ERR_FILE_SYSTEM);
-                report->setLastErrorMsg(lastErrorMsg);
+                report->setLastErrorMsg(getLastErrorMsg());
                 report->setState(SOURCE_ERROR);
                 return STC_COMMAND_FAILED;
             } else {
@@ -76,9 +77,10 @@ int RawFileSyncSource::updateItem(SyncItem& item) {
     char completeName[512];
     sprintf(completeName, "%s/%" WCHAR_PRINTF, dir, item.getKey());
     if (!saveFile(completeName, (const char *)item.getData(), item.getDataSize(), true)) {
-        sprintf(lastErrorMsg, "Error saving file %s", completeName);
+        setErrorF(ERR_FILE_SYSTEM, "Error saving file %s", completeName);
+        LOG.error("%s", getLastErrorMsg());
         report->setLastErrorCode(ERR_FILE_SYSTEM);
-        report->setLastErrorMsg(lastErrorMsg);
+        report->setLastErrorMsg(getLastErrorMsg());
         report->setState(SOURCE_ERROR);
         return STC_COMMAND_FAILED;
     } else {
@@ -98,9 +100,10 @@ bool RawFileSyncSource::setItemData(SyncItem* syncItem) {
     //
     sprintf(fileName, "%s/%" WCHAR_PRINTF, dir, syncItem->getKey());
     if (!readFile(fileName, &content, &len, true)) {
-        sprintf(lastErrorMsg, "Error opening the file '%s'", fileName);
+        setErrorF(ERR_FILE_SYSTEM, "Error opening the file '%s'", fileName);
+        LOG.error("%s", getLastErrorMsg());
         report->setLastErrorCode(ERR_FILE_SYSTEM);
-        report->setLastErrorMsg(lastErrorMsg);
+        report->setLastErrorMsg(getLastErrorMsg());
         report->setState(SOURCE_ERROR);
         return false;
     }

@@ -178,8 +178,8 @@ int CurlTransportAgent::debugCallback(CURL *easyhandle, curl_infotype type, char
  */
 char* CurlTransportAgent::sendMessage(const char* msg) {
     if (!easyhandle) {
-        lastErrorCode = ERR_NETWORK_INIT;
-        strcpy(lastErrorMsg, "libcurl error init error");
+        setError(ERR_NETWORK_INIT, "libcurl error init error");
+        LOG.error("%s", getLastErrorMsg());
         return NULL;
     }
 
@@ -203,8 +203,8 @@ char* CurlTransportAgent::sendMessage(const char* msg) {
         (code = curl_easy_setopt(easyhandle, CURLOPT_HTTPHEADER, slist)) ||
         (code = curl_easy_perform(easyhandle))) {
         delete [] responsebuffer;
-        lastErrorCode = ERR_HTTP;
-        sprintf(lastErrorMsg, "libcurl error %d, %.250s", code, curlerrortxt);
+        setErrorF(ERR_HTTP, "libcurl error %d, %.250s", code, curlerrortxt);
+        LOG.error("%s", getLastErrorMsg());
     } else {
         response = responsebuffer;
     }

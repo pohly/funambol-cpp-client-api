@@ -214,9 +214,10 @@ int FileSyncSource::addItem(SyncItem& item) {
     size_t len = item.getDataSize();
 
     if (file.parse(data, len)) {
-        sprintf(lastErrorMsg, "Error parsing item from server");
+        setError(ERR_BAD_FILE_CONTENT, "Error parsing item from server");
+        LOG.error("%s", getLastErrorMsg());
         report->setLastErrorCode(ERR_BAD_FILE_CONTENT);
-        report->setLastErrorMsg(lastErrorMsg);
+        report->setLastErrorMsg(getLastErrorMsg());
         report->setState(SOURCE_ERROR);
         return STC_COMMAND_FAILED;
     }
@@ -229,9 +230,10 @@ int FileSyncSource::addItem(SyncItem& item) {
         char completeName[512];
         sprintf(completeName, "%s/%" WCHAR_PRINTF, dir, file.getName());
         if (!saveFile(completeName, file.getBody(), file.getSize(), true)) {
-            sprintf(lastErrorMsg, "Error saving file %" WCHAR_PRINTF, file.getName());
+            setErrorF(ERR_FILE_SYSTEM, "Error saving file %" WCHAR_PRINTF, file.getName());
+            LOG.error("%s", getLastErrorMsg());
             report->setLastErrorCode(ERR_FILE_SYSTEM);
-            report->setLastErrorMsg(lastErrorMsg);
+            report->setLastErrorMsg(getLastErrorMsg());
             report->setState(SOURCE_ERROR);
             return STC_COMMAND_FAILED;
         }
@@ -361,9 +363,10 @@ bool FileSyncSource::setItemData(SyncItem* syncItem) {
     //
     sprintf(fileName, "%s/%" WCHAR_PRINTF, dir, syncItem->getKey());
     if (!readFile(fileName, &content, &len, true)) {
-        sprintf(lastErrorMsg, "Error opening the file '%s'", fileName);
+        setErrorF(ERR_FILE_SYSTEM, "Error opening the file '%s'", fileName);
+        LOG.error("%s", getLastErrorMsg());
         report->setLastErrorCode(ERR_FILE_SYSTEM);
-        report->setLastErrorMsg(lastErrorMsg);
+        report->setLastErrorMsg(getLastErrorMsg());
         report->setState(SOURCE_ERROR);
         return false;
     }
@@ -387,9 +390,10 @@ bool FileSyncSource::setItemData(SyncItem* syncItem) {
         return true;
     }
     else {
-        sprintf(lastErrorMsg, "Error bad file content: '%s'", fileName);
+        setErrorF(ERR_BAD_FILE_CONTENT, "Error bad file content: '%s'", fileName);
+        LOG.error("%s", getLastErrorMsg());
         report->setLastErrorCode(ERR_BAD_FILE_CONTENT);
-        report->setLastErrorMsg(lastErrorMsg);
+        report->setLastErrorMsg(getLastErrorMsg());
         report->setState(SOURCE_ERROR);
         return false;
     }
