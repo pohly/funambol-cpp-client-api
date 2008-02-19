@@ -43,12 +43,7 @@ Mem::Mem(bool sharedMem, long freeMem, long freeID) {
 
     setFreeMem(freeMem);
     setFreeID(freeID);
-    if ((sharedMem == NULL) || (sharedMem != true && sharedMem != false)) {
-        this->sharedMem = NULL;
-    } else {
-        this->sharedMem = sharedMem;
-    }
-
+    this->sharedMem = sharedMem;
 }
 
 Mem::~Mem() {}
@@ -63,11 +58,7 @@ bool Mem::isSharedMem() {
  * @param sharedMem the new memoryShared status
  */
 void Mem::setSharedMem(bool sharedMem) {
-    if ((sharedMem == NULL) || (sharedMem != true && sharedMem != false)) {
-        this->sharedMem = NULL;
-    } else {
-        this->sharedMem = sharedMem;
-    }
+    this->sharedMem = sharedMem;
 }
 
 /**

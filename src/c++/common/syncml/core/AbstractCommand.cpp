@@ -140,11 +140,7 @@ AbstractCommand::~AbstractCommand() {
  *
  */
  void AbstractCommand::setNoResp(bool noResp) {
-     if ((noResp == NULL) || (noResp != true && noResp != false)) {
-        this->noResp = NULL;
-     } else {
-        this->noResp = noResp;
-     }
+     this->noResp = noResp;
 }
 
 

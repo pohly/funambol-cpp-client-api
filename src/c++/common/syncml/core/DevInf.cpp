@@ -442,11 +442,7 @@ bool DevInf::isUTC() {
 * @param utc is true if the device supports UTC based time
 */
 void DevInf::setUTC(bool utc) {
-    if ((utc == NULL) || (utc != true && utc != false)) {
-        this->utc = NULL;
-    } else {
-        this->utc = utc;
-    }
+    this->utc = utc;
 }
 
 
@@ -475,11 +471,7 @@ bool DevInf::isSupportLargeObjs() {
 *
 */
 void DevInf::setSupportLargeObjs(bool supportLargeObjs) {
-    if ((supportLargeObjs == NULL) || (supportLargeObjs != true && supportLargeObjs != false)) {
-        this->supportLargeObjs = NULL;
-    } else {
-        this->supportLargeObjs = supportLargeObjs;
-    }
+    this->supportLargeObjs = supportLargeObjs;
 }
 
 /**
@@ -507,11 +499,7 @@ bool DevInf::isSupportNumberOfChanges() {
 *
 */
 void DevInf::setSupportNumberOfChanges(bool supportNumberOfChanges) {
-    if ((supportNumberOfChanges == NULL) || (supportNumberOfChanges != true && supportNumberOfChanges != false)) {
-        this->supportNumberOfChanges = NULL;
-    } else {
-        this->supportNumberOfChanges = supportNumberOfChanges;
-    }
+    this->supportNumberOfChanges = supportNumberOfChanges;
 }
 
 /**

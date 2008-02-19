@@ -114,11 +114,7 @@ void SyncBody::setCommands(ArrayList* commands) {
 * @param finalMsg the Boolean value of finalMsg property
 */
 void SyncBody::setFinalMsg(bool finalMsg) {
-      if ((finalMsg == NULL) || (finalMsg != true && finalMsg != false)) {
-        this->finalMsg = NULL;
-    } else {
-        this->finalMsg = finalMsg;
-    }
+    this->finalMsg = finalMsg;
 }
 
 /**

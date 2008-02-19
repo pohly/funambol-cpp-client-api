@@ -114,12 +114,7 @@ bool Delete::getArchive() {
 * @param archive the Boolean archive object
 */
 void Delete::setArchive(bool archive) {
-    if ((archive == NULL) || (archive != true && archive != false)) {
-        this->archive = NULL;
-    } else {
-        this->archive = archive;
-    }
-
+    this->archive = archive;
 }
 
 /**
@@ -138,11 +133,7 @@ bool Delete::getSftDel() {
 
 
 void Delete::setSftDel(bool sftDel) {
-    if ((sftDel == NULL) || (sftDel != true && sftDel != false)) {
-        this->sftDel = NULL;
-    } else {
-        this->sftDel = sftDel;
-    }
+    this->sftDel = sftDel;
 }
 
 ArrayElement* Delete::clone() {

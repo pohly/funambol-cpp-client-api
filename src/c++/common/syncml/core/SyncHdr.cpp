@@ -317,11 +317,7 @@ bool SyncHdr::getNoResp() {
 * @param noResp the noResponse property
 */
 void SyncHdr::setNoResp(bool noResp) {
-      if ((noResp == NULL) || (noResp != true && noResp != false)) {
-        this->noResp = NULL;
-    } else {
-        this->noResp = noResp;
-    }
+    this->noResp = noResp;
 }
 
 /**

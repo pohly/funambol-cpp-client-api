@@ -244,11 +244,7 @@ bool Item::getMoreData() {
 * @param moreData the moreData property
 */
 void Item::setMoreData(bool moreData) {
-    if ((moreData == NULL) || (moreData != true && moreData != false)) {
-        this->moreData = NULL;
-    } else {
-        this->moreData = moreData;
-    }
+    this->moreData = moreData;
 }
 
 /**

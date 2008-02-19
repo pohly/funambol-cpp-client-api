@@ -117,11 +117,7 @@ bool Search::isNoResults() {
 * @param noResults the noResults value
 */
 void Search::setNoResults(bool noResults) {
-     if ((noResults == NULL) || (noResults != true && noResults != false)) {
-        this->noResults = NULL;
-    } else {
-        this->noResults = noResults;
-    }
+    this->noResults = noResults;
 }
 
 /**
