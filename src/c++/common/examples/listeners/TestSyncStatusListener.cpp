@@ -36,11 +36,9 @@
 #include "examples/listeners/TestSyncStatusListener.h"
 
 void TestSyncStatusListener::statusReceived(SyncStatusEvent &event) {
-    printf("SyncStatusEvent occurred.\n");
-    printf("Server %s with code %d for uri=%s (item key = %ls).\n\n", event.getCommand(), event.getStatusCode(), event.getSourceURI(), event.getItemKey());
+    printf("[SyncStatusEvent] Server %s with code %d for uri=%s (item key = %ls).\n\n", event.getCommand(), event.getStatusCode(), event.getSourceURI(), event.getItemKey());
 }
 
 void TestSyncStatusListener::statusSending(SyncStatusEvent &event) {
-    printf("SyncStatusEvent occurred.\n");
-    printf("Client Status %s with code %d for uri=%s (item key = %ls).\n\n", event.getCommand(), event.getStatusCode(), event.getSourceURI(), event.getItemKey());
+    printf("[SyncStatusEvent] Client Status %s with code %d for uri=%s (item key = %ls).\n\n", event.getCommand(), event.getStatusCode(), event.getSourceURI(), event.getItemKey());
 }

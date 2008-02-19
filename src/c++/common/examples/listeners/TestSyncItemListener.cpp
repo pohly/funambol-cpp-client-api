@@ -37,33 +37,28 @@
 #include "examples/listeners/TestSyncItemListener.h"
 
 void TestSyncItemListener::itemAddedByServer(SyncItemEvent &event) {
-    printf("SyncItemEvent occurred.\n");
-    printf("SyncItem %ls from sourceURI %s added by server, detected at %ld.\n\n",event.getItemKey(), event.getSourceURI(), event.getDate());
+    printf("[SyncItemEvent] Item %ls from sourceURI %s added by server, detected at %ld.\n\n",
+        event.getItemKey(), event.getSourceURI(), event.getDate());
 }
 
 void TestSyncItemListener::itemDeletedByServer(SyncItemEvent &event) {
-    printf("SyncItemEvent occurred.\n");
-    printf("SyncItem %ls from sourceURI %s deleted by server, detected at %ld.\n\n",event.getItemKey(), event.getSourceURI(), event.getDate());
+    printf("[SyncItemEvent] Item %ls from sourceURI %s deleted by server, detected at %ld.\n\n",event.getItemKey(), event.getSourceURI(), event.getDate());
 }
 
 void TestSyncItemListener::itemUpdatedByServer(SyncItemEvent &event) {
-    printf("SyncItemEvent occurred.\n");
-    printf("SyncItem %ls from sourceURI %s updated by server, detected at %ld.\n\n",event.getItemKey(), event.getSourceURI(), event.getDate());
+    printf("[SyncItemEvent] Item %ls from sourceURI %s updated by server, detected at %ld.\n\n",event.getItemKey(), event.getSourceURI(), event.getDate());
 }
 
 void TestSyncItemListener::itemAddedByClient(SyncItemEvent &event) {
-    printf("SyncItemEvent occurred.\n");
-    printf("SyncItem %ls from sourceURI %s added by client at %ld.\n\n",event.getItemKey(), event.getSourceURI(), event.getDate());
+    printf("[SyncItemEvent] Item %ls from sourceURI %s added by client at %ld.\n\n",event.getItemKey(), event.getSourceURI(), event.getDate());
 }
 
 void TestSyncItemListener::itemUpdatedByClient(SyncItemEvent &event) {
-    printf("SyncItemEvent occurred.\n");
-    printf("SyncItem %ls from sourceURI %s updated by client at %ld.\n\n",event.getItemKey(), event.getSourceURI(), event.getDate());
+    printf("[SyncItemEvent] Item %ls from sourceURI %s updated by client at %ld.\n\n",event.getItemKey(), event.getSourceURI(), event.getDate());
 }
 
 void TestSyncItemListener::itemDeletedByClient(SyncItemEvent &event) {
-    printf("SyncItemEvent occurred.\n");
-    printf("SyncItem %ls from sourceURI %s deleted by client at %ld.\n\n",event.getItemKey(), event.getSourceURI(), event.getDate());
+    printf("[SyncItemEvent] Item %ls from sourceURI %s deleted by client at %ld.\n\n",event.getItemKey(), event.getSourceURI(), event.getDate());
 }
 
 

@@ -37,30 +37,25 @@
 #include "examples/listeners/TestSyncSourceListener.h"
 
 void TestSyncSourceListener::syncSourceBegin(SyncSourceEvent &event) {
-    printf("SyncSourceEvent occurred.\n");
-    printf("Syncing Source %s (uri = %s) in syncmode %d successfully began at %ld.\n\n", event.getSourceName(), event.getSourceURI(), event.getSyncMode(), event.getDate());
+    printf("[SyncSourceEvent] Syncing Source %s (uri = %s) in syncmode %d successfully began at %ld.\n\n", event.getSourceName(), event.getSourceURI(), event.getSyncMode(), event.getDate());
 }
 
 void TestSyncSourceListener::syncSourceEnd(SyncSourceEvent &event) {
-    printf("SyncSourceEvent occurred.\n");
-    printf("Syncing Source %s (uri = %s) in syncmode %d successfully ended at %ld.\n\n", event.getSourceName(), event.getSourceURI(), event.getSyncMode(), event.getDate());
+    printf("[SyncSourceEvent] Syncing Source %s (uri = %s) in syncmode %d successfully ended at %ld.\n\n", event.getSourceName(), event.getSourceURI(), event.getSyncMode(), event.getDate());
 }
 
 void TestSyncSourceListener::syncSourceSyncModeRequested(SyncSourceEvent &event) {
-    printf("SyncSourceEvent occurred.\n");
-    printf("Syncing Source %s (uri = %s) requested for syncmode %d at %ld.\n\n", event.getSourceName(), event.getSourceURI(), event.getSyncMode(), event.getDate());
+    printf("[SyncSourceEvent] Syncing Source %s (uri = %s) requested for syncmode %d at %ld.\n\n", event.getSourceName(), event.getSourceURI(), event.getSyncMode(), event.getDate());
 }
 
 void TestSyncSourceListener::syncSourceTotalClientItems(SyncSourceEvent &event) {
-    printf("SyncSourceEvent occurred.\n");
-    printf("Syncing Source %s (uri = %s): total client items = %d at %ld.\n\n", event.getSourceName(), event.getSourceURI(), event.getData(), event.getDate());
+    printf("[SyncSourceEvent] Syncing Source %s (uri = %s): total client items = %d at %ld.\n\n", event.getSourceName(), event.getSourceURI(), event.getData(), event.getDate());
 }
 
 void TestSyncSourceListener::syncSourceTotalServerItems(SyncSourceEvent &event) {
-    printf("SyncSourceEvent occurred.\n");
     if (event.getData() != -1)
-        printf("Syncing Source %s (uri = %s): total server items = %d at %ld.\n\n", event.getSourceName(), event.getSourceURI(), event.getData(), event.getDate());
+        printf("[SyncSourceEvent] Syncing Source %s (uri = %s): total server items = %d at %ld.\n\n", event.getSourceName(), event.getSourceURI(), event.getData(), event.getDate());
     else
-        printf("Syncing Source %s (uri = %s): total server items not specified by server.\n\n", event.getSourceName(), event.getSourceURI());
+        printf("[SyncSourceEvent] Syncing Source %s (uri = %s): total server items not specified by server.\n\n", event.getSourceName(), event.getSourceURI());
 
 }
