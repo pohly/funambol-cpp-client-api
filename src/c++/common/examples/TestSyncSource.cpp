@@ -201,7 +201,7 @@ void TestSyncSource::setItemStatus(const WCHAR* key, int status) {
     char* val = toMultibyte(key);
     LOG.debug("key: %s, status: %i", val, status);
     if(val){
-        delete val;
+        delete [] val;
         val = 0;
     }
 }
@@ -210,7 +210,7 @@ int TestSyncSource::addItem(SyncItem& item) {
     char* val = toMultibyte( item.getKey() );
     LOG.info("added item: %s", val);
     if(val){
-        delete val;
+        delete [] val;
         val = 0;
     }
     char *data = new char [item.getDataSize()];
@@ -230,7 +230,7 @@ int TestSyncSource::updateItem(SyncItem& item) {
     char* val = toMultibyte( item.getKey() );
     LOG.info("updated item: %s", val);
     if(val){
-        delete val;
+        delete [] val;
         val = 0;
     }
 
@@ -247,7 +247,7 @@ int TestSyncSource::deleteItem(SyncItem& item) {
     char* val = toMultibyte( item.getKey() );
     LOG.info("deleted item: %s", val);
     if(val){
-        delete val;
+        delete [] val;
         val = 0;
     }
     return 200;

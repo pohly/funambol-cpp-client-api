@@ -205,7 +205,7 @@ int TestSyncSource2::addItem(SyncItem& item) {
     char* val = toMultibyte(item.getKey());
     LOG.info("added item: %s", val);
     if (val){
-        delete val;
+        delete [] val;
         val = 0;
     }
 
@@ -226,7 +226,7 @@ int TestSyncSource2::updateItem(SyncItem& item) {
     char* val = toMultibyte( item.getKey() );
     LOG.info("updated item: %s", val);
     if (val){
-        delete val;
+        delete [] val;
         val = 0;
     }
 
