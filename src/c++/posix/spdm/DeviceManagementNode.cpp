@@ -86,18 +86,48 @@ DeviceManagementNode::~DeviceManagementNode() {
     }
 }
 
+bool checkConfigurationPath(char* path){
+
+    int val = chdir(path);
+    if (val == 0){
+        return true;
+    }else{
+        return false;
+    }
+}
+
+
 bool DeviceManagementNode::gotoDir(bool read) {
     bool success = true;
-
+    returnFromDir();
+    cwdfd = open(".", O_RDONLY);
+    const char* funamboldir = ".config/funambol";
+    const char* sync4jdir   = ".sync4j";
+    const char* path = 0;
+    char *curr = getenv("HOME");
+    char* testdir = new char[ strlen(curr) + 1 + strlen(funamboldir) + 1];
+    sprintf(testdir, "%s/%s", curr, funamboldir);
+    char* testdirs4j = new char[ strlen(curr) + 1 + strlen(sync4jdir) + 1];
+    sprintf(testdirs4j, "%s/%s", curr, sync4jdir);
+    if (checkConfigurationPath(testdir)){
+        path = funamboldir;
+        funambolPath = true;
+    }else if ( checkConfigurationPath( testdirs4j ) ){
+        path = sync4jdir;
+        funambolPath = false;
+    }else{
+        path = funamboldir;
+        funambolPath = true;
+    } 
     returnFromDir();
     cwdfd = open(".", O_RDONLY);
 
-    char *curr = getenv("HOME");
     if (curr) {
         chdir(curr);
     }
-    char *dirs = new char[strlen(context) + strlen(name) + 30];
-    sprintf(dirs, ".sync4j/%s/%s", context, name);
+    
+    char *dirs = new char[strlen(path) + strlen(context) + strlen(name) + 30];
+    sprintf(dirs, "%s/%s/%s", path, context, name);
     curr = dirs;
     do {
         char *nextdir = strchr(curr, '/');
@@ -141,9 +171,16 @@ void DeviceManagementNode::update(bool read) {
     }
 
     if (gotoDir(read)) {
-        FILE *file = read ?
-            fopen("config.txt", "r") :
-            fopen("config.txt.tmp", "w");
+        FILE *file = 0;
+            if(funambolPath){
+                file = read ?
+                fopen("config.ini", "r") :
+                fopen("config.ini.tmp", "w");
+            }else{
+                file = read ?
+                fopen("config.txt", "r") :
+                fopen("config.txt.tmp", "w");
+            }
         if (read) {
             char buffer[512];
 
@@ -172,8 +209,10 @@ void DeviceManagementNode::update(bool read) {
                     i++;
                 }
                 fflush(file);
-                if (!ferror(file)) {
+                if (!ferror(file) && !funambolPath) {
                     rename("config.txt.tmp", "config.txt");
+                }else if (!ferror(file) && funambolPath){
+                    rename("config.ini.tmp", "config.ini");
                 }
             }
         }

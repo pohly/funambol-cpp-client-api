@@ -84,6 +84,8 @@ class DeviceManagementNode : public ManagementNode {
     // copy content of "lines" to or from file
     void update(bool read);
 
+    bool funambolPath;
+
     public:
 
         // ------------------------------------------ Constructors & destructors
