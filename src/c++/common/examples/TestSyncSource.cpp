@@ -198,19 +198,25 @@ SyncItem* TestSyncSource::getNextDeletedItem() {
 }
 
 void TestSyncSource::setItemStatus(const WCHAR* key, int status) {
-    sprintf(logmsg, "key: %ls, status: %i", key, status);
-    LOG.debug(logmsg);
+    char* val = toMultibyte(key);
+    LOG.debug("key: %s, status: %i", val, status);
+    if(val){
+        delete val;
+        val = 0;
+    }
 }
 
 int TestSyncSource::addItem(SyncItem& item) {
-    sprintf(logmsg, "added item: %ls", item.getKey());
-    LOG.info(logmsg);
-
-    LOG.info("Data:");
+    char* val = toMultibyte( item.getKey() );
+    LOG.info("added item: %s", val);
+    if(val){
+        delete val;
+        val = 0;
+    }
     char *data = new char [item.getDataSize()];
     memcpy(data, item.getData(), item.getDataSize());
     data[item.getDataSize()] = 0;
-    LOG.info(data);
+    LOG.info("Data: %s", data);
     delete [] data;
 
     WCHAR *luid = new WCHAR[wcslen(item.getKey())+10];
@@ -221,33 +227,38 @@ int TestSyncSource::addItem(SyncItem& item) {
 }
 
 int TestSyncSource::updateItem(SyncItem& item) {
-    sprintf(logmsg, "updated item: %ls", item.getKey());
-    LOG.info(logmsg);
+    char* val = toMultibyte( item.getKey() );
+    LOG.info("updated item: %s", val);
+    if(val){
+        delete val;
+        val = 0;
+    }
 
-    LOG.info("Data:");
     char *data = new char [item.getDataSize()];
     memcpy(data, item.getData(), item.getDataSize());
     data[item.getDataSize()] = 0;
-    LOG.info(data);
+    LOG.info("Data: %s", data);
     delete [] data;
 
     return 200;
 }
 
 int TestSyncSource::deleteItem(SyncItem& item) {
-    sprintf(logmsg, "deleted item: %ls", item.getKey());
-    LOG.debug(logmsg);
+    char* val = toMultibyte( item.getKey() );
+    LOG.info("deleted item: %s", val);
+    if(val){
+        delete val;
+        val = 0;
+    }
     return 200;
 }
 
 int TestSyncSource::beginSync() {
-    sprintf(logmsg, "Begin sync TestSyncSource");
-    LOG.debug(logmsg);
+    LOG.debug("Begin sync TestSyncSource");
     return 0;
 }
 int TestSyncSource::endSync() {
-    sprintf(logmsg, "End sync TestSyncSource");
-    LOG.debug(logmsg);
+    LOG.debug("End sync TestSyncSource");
     return 0;
 }
 

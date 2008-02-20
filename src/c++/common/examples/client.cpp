@@ -82,7 +82,7 @@ int main(int argc, char** argv) {
     LOG.setLogPath(LOG_PATH);
     LOG.setLogName(LOG_NAME);
     LOG.reset(LOG_TITLE);
-    LOG.setLevel(LOG_LEVEL_INFO);
+    LOG.setLevel(LOG_LEVEL_DEBUG);
 
 #if 0
     _CrtSetDbgFlag (ON);
@@ -102,6 +102,7 @@ int main(int argc, char** argv) {
 
 
 // ------------- Main sample client ------------------------
+    #if 0
     //
     // Set listeners:
     //
@@ -116,7 +117,7 @@ int main(int argc, char** argv) {
     setSyncStatusListener(listener3);
     setSyncItemListener  (listener4);
     setTransportListener (listener5);
-
+    #endif
     //
     // Create the configuration.
     //
@@ -158,12 +159,13 @@ int main(int argc, char** argv) {
     //
     // Unset Listeners
     //
+    #if 0
     unsetSyncListener      ();
     unsetSyncSourceListener();
     unsetSyncStatusListener();
     unsetSyncItemListener  ();
     unsetTransportListener ();
-
+    #endif
     return 0;
 }
 
