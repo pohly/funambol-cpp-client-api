@@ -198,11 +198,10 @@ sub Normalize {
     if ($funambol) {
       # only preserves ORG "Company";"Department", but loses "Office"
       s/^ORG:([^;:\n]+)(;[^;:\n]*)(;[^\n]*)/ORG:$1$2/mg;
-    }
-
-    if ($funambol) {
       # drops the second address line
       s/^ADR(.*?):([^;]*?);[^;]*?;/ADR$1:$2;;/mg;
+      # has no concept of "preferred" phone number
+      s/^(TEL.*);TYPE=PREF/$1/mg;
     }
 
     if ($addressbook) {
