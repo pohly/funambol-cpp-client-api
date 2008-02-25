@@ -94,6 +94,11 @@ sub uppercase {
   return $text;
 }
 
+sub sortlist {
+  my $list = shift;
+  return join(",", sort(split(/,/, $list)));
+}
+
 # parameters: file handle with input, width to use for reformatted lines
 # returns list of lines without line breaks
 sub Normalize {
@@ -115,6 +120,9 @@ sub Normalize {
     # in calendar events the UID needs to be preserved to handle
     # meeting invitations/replies correctly
     s/((VCARD|VJOURNAL).*)^UID:[^\n]*\n/$1/msg;
+
+    # exact order of categories is irrelevant
+    s/^CATEGORIES:(\S+)/"CATEGORIES:" . sortlist($1)/mge;
 
     # expand <foo> shortcuts to TYPE=<foo>
     while (s/^(ADR|EMAIL|TEL)([^:\n]*);(HOME|OTHER|WORK|PARCEL|INTERNET|CAR|VOICE|CELL|PAGER)/$1;TYPE=$3/mg) {}
