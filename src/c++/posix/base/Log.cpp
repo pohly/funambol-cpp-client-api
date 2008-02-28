@@ -41,6 +41,13 @@
 
 //char logmsg[512];
 
+class LogDestroyer {
+public:
+    LogDestroyer()      {                };
+    ~LogDestroyer()     { delete &(LOG); };
+};
+LogDestroyer logDestroyer;
+
 POSIXLog::POSIXLog() :
     logFile(NULL),
     logFileStdout(false),
@@ -68,7 +75,7 @@ void POSIXLog::setLogFile(const char *path, const char* name, bool redirectStder
     }
     logRedirectStderr = redirectStderr;
 
-    if (logFile) {
+    if (logFile != NULL) {
         fclose(logFile);
         logFile = NULL;
     }
@@ -232,3 +239,4 @@ Log &Log::instance() {
     }
     return *logger;
 }
+

@@ -45,9 +45,9 @@ DataStore::~DataStore() {
    if(displayName )   { delete [] displayName    ;  displayName     = NULL; }
    maxGUIDSize = 0;
    if(rxPref      )   { delete    rxPref         ;  rxPref          = NULL; }
-   if(rx          )   { rx->clear(); } //delete rx; rx = NULL;                  }
+   if(rx          )   { /*rx->clear();*/  delete rx; rx = NULL;                  }
    if(txPref      )   { delete    txPref         ;  txPref          = NULL; }
-   if(tx          )   { tx->clear(); }//delete tx; tx = NULL;                  }
+   if(tx          )   { /*tx->clear();*/  delete tx; tx = NULL;                  }
    if(dsMem       )   { delete    dsMem          ;  dsMem           = NULL; }
    if(syncCap     )   { delete    syncCap        ;  syncCap         = NULL; }
 }
@@ -103,10 +103,10 @@ void DataStore::initialize() {
     displayName     = NULL;
     maxGUIDSize     = 0;
     rxPref          = NULL;
-    rx              = new ArrayList();
+    rx              = NULL; //new ArrayList();
     txPref          = NULL;
-    tx              = new ArrayList();
-    ctCaps          = new ArrayList();
+    tx              = NULL; //new ArrayList();
+    ctCaps          = NULL; //new ArrayList();
     dsMem           = NULL;
     syncCap         = NULL;
 }

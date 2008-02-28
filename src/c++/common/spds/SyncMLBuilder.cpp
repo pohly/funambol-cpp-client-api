@@ -195,18 +195,30 @@ Status* SyncMLBuilder::prepareSyncHdrStatus(Chal*chal, int d) {
     targetRefs->add(*tar);
     sourceRefs->add(*sou);
 
-    Status* s = new Status(commandID, itow(msgRef), "0", SYNC_HDR, targetRefs, sourceRefs, NULL, chal, data, NULL);
-
+    char* wmsgRef = itow(msgRef);
+    Status* s = new Status(commandID, wmsgRef, "0", SYNC_HDR, targetRefs, sourceRefs, NULL, chal, data, NULL);
+    if (wmsgRef){
+        delete [] wmsgRef;
+        wmsgRef = NULL;
+    }
     // Fire Sync Status Event: syncHdr status from client
     fireSyncStatusEvent(SYNC_HDR, s->getStatusCode(), NULL, NULL, NULL , CLIENT_STATUS);
 
     safeDelete(&cmdid);
     deleteCmdID(&commandID);
-    deleteArrayList(&targetRefs);
-    deleteArrayList(&sourceRefs);
+    //deleteArrayList(&targetRefs);
+    //deleteArrayList(&sourceRefs);
     deleteTargetRef(&tar);
     deleteSourceRef(&sou);
     deleteData(&data);
+    if (targetRefs){
+        delete targetRefs;
+        targetRefs = NULL;
+    }
+    if (sourceRefs){
+        delete sourceRefs;
+        sourceRefs = NULL;
+    }
 
     return s;
 
@@ -231,18 +243,30 @@ Status* SyncMLBuilder::prepareSyncStatus(SyncSource& source, Sync* sync) {
     targetRefs->add(*tar);
     sourceRefs->add(*sou);
     Data* d                  = new Data(200);
-
-    Status* s = new Status(commandID, itow(msgRef), cmdRef->getCmdID(), SYNC, targetRefs, sourceRefs, NULL, NULL, d, NULL);
+    char* wmsgRef = itow(msgRef); 
+    Status* s = new Status(commandID, wmsgRef, cmdRef->getCmdID(), SYNC, targetRefs, sourceRefs, NULL, NULL, d, NULL);
+    if (wmsgRef){
+        delete [] wmsgRef;
+        wmsgRef = NULL;
+    }
 
     // Fire Sync Status Event: sync status from client
     fireSyncStatusEvent(SYNC, s->getStatusCode(), source.getConfig().getName(), source.getConfig().getURI(), NULL, CLIENT_STATUS);
 
     deleteCmdID(&commandID);
-    deleteArrayList(&targetRefs);
-    deleteArrayList(&sourceRefs);
+    //deleteArrayList(&targetRefs);
+    //deleteArrayList(&sourceRefs);
     deleteTargetRef(&tar);
     deleteSourceRef(&sou);
     deleteData(&d);
+    if (targetRefs) {
+        delete targetRefs;
+        targetRefs = NULL;
+    }
+    if (sourceRefs) {
+        delete sourceRefs;
+        sourceRefs = NULL;
+    }
 
     return s;
 
@@ -285,7 +309,7 @@ Status* SyncMLBuilder::prepareAlertStatus(SyncSource& source, ArrayList* alerts,
 
     Alert* a = NULL;
     Item* item = NULL;
-    ArrayList* list = new ArrayList();
+    ArrayList* list = NULL; // new ArrayList();
     bool found = false;
 
     for (int i = 0; i < alerts->size(); i++) {
@@ -354,15 +378,19 @@ Status* SyncMLBuilder::prepareAlertStatus(SyncSource& source, ArrayList* alerts,
             items->add(*item);
         }
     }
-
-    Status* s = new Status(commandID, itow(msgRef), cmdRef->getCmdID(), ALERT, targetRefs, sourceRefs, NULL, NULL, d, items);
+    char* wmsgRef = itow(msgRef);
+    Status* s = new Status(commandID, wmsgRef, cmdRef->getCmdID(), ALERT, targetRefs, sourceRefs, NULL, NULL, d, items);
+    if (wmsgRef){
+        delete [] wmsgRef;
+        wmsgRef = NULL;
+    }
 
     // Fire Sync Status Event: alert status from client
     fireSyncStatusEvent(ALERT, s->getStatusCode(), source.getConfig().getName(), source.getConfig().getURI(), NULL , CLIENT_STATUS);
 
     deleteCmdID(&commandID);
-    deleteArrayList(&targetRefs);
-    deleteArrayList(&sourceRefs);
+    //deleteArrayList(&targetRefs);
+    //deleteArrayList(&sourceRefs);
     deleteTargetRef(&tar);
     deleteSourceRef(&sou);
     deleteItem(&item);
@@ -370,7 +398,18 @@ Status* SyncMLBuilder::prepareAlertStatus(SyncSource& source, ArrayList* alerts,
     deleteComplexData(&data);
     deleteData(&d);
     safeDel(&next);
-
+    if (items) {
+        delete items;
+        items = NULL;
+    }
+    if (targetRefs) {
+        delete targetRefs;
+        targetRefs = NULL;
+    }
+    if (sourceRefs) {
+        delete sourceRefs;
+        sourceRefs = NULL;
+    }
     return s;
 }
 
@@ -501,7 +540,11 @@ Alert* SyncMLBuilder::prepareAlert(SyncSource& s, int code) {
     deleteSource(&sou);
     deleteItem(&item);
     deleteCmdID(&commandID);
-    deleteArrayList(&list);
+    //deleteArrayList(&list);
+    if (list){
+        delete list;
+        list = NULL;
+    }
 
     return alert;
 }
@@ -515,7 +558,12 @@ Alert* SyncMLBuilder::prepareInitAlert(SyncSource& s, unsigned long maxObjSize) 
     delete [] cmdid; cmdid = NULL;
     int data             = s.getPreferredSyncMode();
     Target* tar          = new Target(s.getConfig().getURI());
-    Source* sou          = new Source(_wcc(s.getName()));
+    const char*  val     =  toMultibyte(s.getName());
+    Source* sou          = new Source(val);
+    if ( val ){
+        delete [] val;
+        val = NULL;
+    }
 
     //
     // Read the clause filter from the source and translate
@@ -548,7 +596,11 @@ Alert* SyncMLBuilder::prepareInitAlert(SyncSource& s, unsigned long maxObjSize) 
     deleteMetInf(&metInf);
     deleteMeta(&meta);
     deleteItem(&item);
-    deleteArrayList(&list);
+    //deleteArrayList(&list);
+    if (list) {
+        delete list;
+        list = NULL;
+    }
 
     return alert;
 }
@@ -651,7 +703,11 @@ SyncHdr* SyncMLBuilder::prepareSyncHdr(Cred* cred, unsigned long maxMsgSize, uns
     deleteSource(&sou);
     deleteTarget(&tar);
     safeDel(&messageID);
-
+    if (meta) {
+        delete meta;
+        meta = NULL;
+    }
+    
     return syncHdr;
 }
 
@@ -676,6 +732,10 @@ SyncML* SyncMLBuilder::prepareInitObject(Cred* cred, ArrayList* alerts, ArrayLis
 
     deleteSyncHdr(&syncHdr);
     deleteSyncBody(&syncBody);
+    if(list){
+        delete list;
+        list = NULL;
+    }
 
     return syncml;
 }
@@ -817,7 +877,11 @@ long SyncMLBuilder::addItem(ModificationCommand* &modificationCommand,
     assert(!strcmp(DELETE_COMMAND_NAME, COMMAND) || syncItemOffset >= 0);
     assert(!strcmp(DELETE_COMMAND_NAME, COMMAND) || syncItemOffset <= syncItem->getDataSize());
     list->add(tmpList);
-    deleteArrayList(&tmpList);
+    //deleteArrayList(&tmpList);
+    if ( tmpList ){
+        delete tmpList;
+        tmpList = NULL;
+    }
 
     return sentBytes;
 }
@@ -839,7 +903,11 @@ Sync* SyncMLBuilder::prepareSyncCommand(SyncSource& source) {
     deleteCmdID(&commandID);
     deleteTarget(&tar);
     deleteSource(&sou);
-    deleteArrayList(&list);
+//    deleteArrayList(&list);
+    if (list){
+        delete list;
+        list = NULL;
+    }
 
     return sync;
 

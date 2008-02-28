@@ -36,6 +36,7 @@
 #include "examples/TestSyncSource.h"
 #include "base/util/utils.h"
 #include "base/Log.h"
+#include "base/util/StringBuffer.h"
 
 static int all      = -1;
 static int cnew     = -1;
@@ -72,6 +73,10 @@ int setAllItemsEmpty() {
 int setModifiedItems() {
 
     SyncItem item;
+                StringBuffer val; 
+                for (int ii = 0; ii<1; ii++){
+                    val.append("This is the updated item one");
+                }
 
     for (int i = 0; i < 4; ++i) {
 
@@ -79,19 +84,19 @@ int setModifiedItems() {
 
             case 0:
                 item.setKey(TEXT("item5"));
-                item.setData("This is a new item Four"  , 23*sizeof(char));
+                item.setData(val.c_str()  , (val.length())*sizeof(char));
                 newItems.add(item);
                 break;
 
             case 1:
                 item.setKey(TEXT("item1"));
-                item.setData("This is the updated item one"  , 28*sizeof(char));
+                item.setData(val.c_str()  , (val.length())*sizeof(char));
                 updatedItems.add(item);
                 break;
 
             case 2:
                 item.setKey(TEXT("item3"));
-                item.setData("This is the updated item Three", 30*sizeof(char));
+                item.setData(val.c_str()  , (val.length())*sizeof(char));
                 updatedItems.add(item);
                 break;
 

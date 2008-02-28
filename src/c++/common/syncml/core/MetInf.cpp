@@ -68,13 +68,13 @@ MetInf::~MetInf() {
     if (this->anchor)     { delete    this->anchor;    this->anchor = NULL; }
     if (this->version)    { delete [] this->version;   this->version = NULL; }
     if (this->nextNonce)  { delete    this->nextNonce; this->nextNonce = NULL; }
-	if (this->mem)        { delete    this->mem;       this->mem = NULL; }
+    if (this->mem)        { delete    this->mem;       this->mem = NULL; }
 
-    if (this->emi)        { this->emi->clear(); } //delete this->emi; this->emi = NULL;}
+    if (this->emi)        { /*this->emi->clear(); }*/ delete this->emi; this->emi = NULL;}
 
-	this->maxMsgSize = 0;
+    this->maxMsgSize = 0;
     this->maxObjSize = 0;
-	this->size       = 0;
+    this->size       = 0;
 
 }
 

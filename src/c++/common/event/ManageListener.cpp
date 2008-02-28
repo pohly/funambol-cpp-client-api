@@ -35,6 +35,14 @@
 
 #include "event/ManageListener.h"
 
+class DestroyManageListener{
+public:
+    DestroyManageListener() {           };
+    ~DestroyManageListener(){ delete &(ManageListener::getInstance());}
+};
+
+DestroyManageListener destroyManageListener;
+
 /* Static Variables */
 
 ManageListener * ManageListener::instance = 0;

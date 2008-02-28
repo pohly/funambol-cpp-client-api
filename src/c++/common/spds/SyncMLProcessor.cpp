@@ -324,7 +324,11 @@ int SyncMLProcessor::processItemStatus(SyncSource& source, SyncBody* syncBody) {
         }
     }
 
-    deleteArrayList(&list);
+    //deleteArrayList(&list);
+    if (list){
+        delete list;
+        list = NULL;
+    }
     return ret;
 }
 

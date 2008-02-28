@@ -79,7 +79,7 @@ int main(int argc, char** argv) {
 
     // Init LOG
     //Log(0, LOG_PATH, LOG_NAME);
-    LOG.setLogPath(LOG_PATH);
+    //LOG.setLogPath(LOG_PATH);
     LOG.setLogName(LOG_NAME);
     LOG.reset(LOG_TITLE);
     LOG.setLevel(LOG_LEVEL_DEBUG);
@@ -128,8 +128,8 @@ int main(int argc, char** argv) {
         strcmp(config.getDeviceConfig().getDevID(), DEVICE_ID)) {
         // Config not found -> generate a default config
         createConfig(config);
+        config.save();
     }
-
     //
     // Create the SyncSource passing its name and its config.
     //

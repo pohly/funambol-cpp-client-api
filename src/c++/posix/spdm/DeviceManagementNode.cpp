@@ -70,10 +70,13 @@ DeviceManagementNode::DeviceManagementNode(const char *node)
     update(true);
 }
 
-DeviceManagementNode::DeviceManagementNode(const DeviceManagementNode &other) : ManagementNode(other) {
+DeviceManagementNode::DeviceManagementNode(const DeviceManagementNode &other)
+    : ManagementNode(other) {
+
     lines = other.lines->clone();
     cwdfd = -1;
     modified = other.modified;
+    root = other.root;
 }
 
 DeviceManagementNode::~DeviceManagementNode() {
@@ -86,7 +89,7 @@ DeviceManagementNode::~DeviceManagementNode() {
     }
 }
 
-bool checkConfigurationPath(char* path){
+bool checkConfigurationPath(StringBuffer path){
 
     int val = chdir(path);
     if (val == 0){
@@ -101,15 +104,31 @@ bool DeviceManagementNode::gotoDir(bool read) {
     bool success = true;
     returnFromDir();
     cwdfd = open(".", O_RDONLY);
-    const char* funamboldir = ".config/funambol";
-    const char* sync4jdir   = ".sync4j";
-    const char* path = 0;
-    char *curr = getenv("HOME");
-    char* testdir = new char[ strlen(curr) + 1 + strlen(funamboldir) + 1];
-    sprintf(testdir, "%s/%s", curr, funamboldir);
-    char* testdirs4j = new char[ strlen(curr) + 1 + strlen(sync4jdir) + 1];
-    sprintf(testdirs4j, "%s/%s", curr, sync4jdir);
-    if (checkConfigurationPath(testdir)){
+    //const char* funamboldir = ".config";
+    //const char* sync4jdir   = ".sync4j";
+    //const char* path = 0;
+    StringBuffer funamboldir = ".config";
+    StringBuffer sync4jdir   = ".sync4j";
+    StringBuffer path;
+    // setting up the home path. we look for first to an eventually home setted by the user, than for
+    // the XDG home as in freedesktop standard (http://standards.freedesktop.org/basedir-spec/latest/)
+    // and the for the usual HOME
+    StringBuffer curr = getRoot();
+        if(curr.empty()){
+            curr = getenv("XDG_CONFIG_HOME");
+        }
+        if(curr.empty()){
+            curr = getenv("HOME");
+        }
+    // setting up the config path. we look if there is the old config path under .sync4j. If not we
+    // use the new system under .config
+    //char* testdir = new char[ strlen(curr) + 1 + strlen(funamboldir) + 1];
+    StringBuffer testdir;
+    testdir.sprintf("%s/%s", curr.c_str(), funamboldir.c_str());
+    //char* testdirs4j = new char[ strlen(curr) + 1 + strlen(sync4jdir) + 1];
+    StringBuffer testdirs4j;
+    testdirs4j.sprintf("%s/%s", curr.c_str(), sync4jdir.c_str());
+    if (checkConfigurationPath(testdir.c_str())){
         path = funamboldir;
         funambolPath = true;
     }else if ( checkConfigurationPath( testdirs4j ) ){
@@ -122,37 +141,41 @@ bool DeviceManagementNode::gotoDir(bool read) {
     returnFromDir();
     cwdfd = open(".", O_RDONLY);
 
-    if (curr) {
+    if (!curr.empty()) {
         chdir(curr);
     }
     
-    char *dirs = new char[strlen(path) + strlen(context) + strlen(name) + 30];
-    sprintf(dirs, "%s/%s/%s", path, context, name);
-    curr = dirs;
+    //char *dirs = new char[strlen(path) + strlen(context) + strlen(name) + 30];
+
+    StringBuffer dirs;
+    dirs.sprintf("%s/%s/%s", path.c_str(), context, name);
+    char* ccurr = strdup( dirs.c_str() );
     do {
-        char *nextdir = strchr(curr, '/');
+        char *nextdir = strchr(ccurr, '/');
         if (nextdir) {
             *nextdir = 0;
             nextdir++;
         }
-        if (*curr) {
-            if (chdir(curr)) {
+        if (*ccurr) {
+            if (chdir(ccurr)) {
                 if (errno == ENOENT) {
                     if (!read) {
-                        mkdir(curr, 0777);
+                        mkdir(ccurr, 0777);
                     } else {
-                        // failed
+                       // failed
                         success = false;
                         break;
                     }
                 }
-                chdir(curr);
+                chdir(ccurr);
             }
         }
-        curr = nextdir;
-    } while (curr);
-    delete [] dirs;
-
+        ccurr = nextdir;
+    } while (ccurr);
+    //if (ccurr){
+    //    delete ccurr;
+    //    ccurr = 0;
+    //}
     return success;
 }
 
@@ -172,6 +195,8 @@ void DeviceManagementNode::update(bool read) {
 
     if (gotoDir(read)) {
         FILE *file = 0;
+            // funambolPath is setted in gotoDir. in the old configuration system we used .txt files in the 
+            // new one the .ini.
             if(funambolPath){
                 file = read ?
                 fopen("config.ini", "r") :

@@ -120,10 +120,10 @@ void SyncManager::decodeItemKey(SyncItem *syncItem)
 
 void SyncManager::encodeItemKey(SyncItem *syncItem)
 {
-    char *key;
+    char *key= toMultibyte(syncItem->getKey());
 
     if (syncItem &&
-        (key = toMultibyte(syncItem->getKey())) != NULL &&
+        (key ) != NULL &&
         (strchr(key, '<') || strchr(key, '&'))) {
         StringBuffer encoded;
         b64_encode(encoded, key, strlen(key));
@@ -132,9 +132,9 @@ void SyncManager::encodeItemKey(SyncItem *syncItem)
         LOG.debug("replacing unsafe key '%s' with encoded key '%s'", key, newkey.c_str());
         WCHAR* t = toWideChar(newkey.c_str());
         syncItem->setKey(t);
-        delete [] key;
         delete [] t;
     }
+    delete [] key;
 }
 
 /*
@@ -187,6 +187,7 @@ void SyncManager::initialize() {
     count          = 0;
     devInf         = NULL;
     incomingItem   = NULL;
+    allItemsList   = NULL;
 
     syncURL = config.getSyncURL();
     deviceId = config.getDevID();
@@ -253,6 +254,15 @@ SyncManager::~SyncManager() {
         }
         delete [] sortedSourcesFromServer;
     }
+    if (allItemsList){
+        int i = 0;
+        while (allItemsList[i]) {
+            delete [] allItemsList[i];
+            i++;
+        }
+        delete [] allItemsList;
+        allItemsList = 0;
+    }
 }
 
 /*
@@ -269,7 +279,7 @@ int SyncManager::prepareSync(SyncSource** s) {
     int serverRet               = 0;
     int count                   = 0;
     const char* requestedAuthType  = NULL;
-    ArrayList* list             = new ArrayList();
+    ArrayList* list             = NULL; //new ArrayList();
     ArrayList* alerts           = new ArrayList();
 
     // for authentication improvments
@@ -372,6 +382,7 @@ int SyncManager::prepareSync(SyncSource** s) {
         deleteAlert(&alert);
         deleteSyncML(&syncml);
         deleteArrayList(&alerts);
+        
 
         bool addressChange = false;
 
@@ -604,6 +615,10 @@ int SyncManager::prepareSync(SyncSource** s) {
                 deleteStatus(&status);
             }
         }
+        if (list) {
+            delete list;
+            list = NULL;
+        }
 
         //
         // Process Put/Get commands
@@ -781,6 +796,10 @@ finally:
     deleteCred(&cred);
     deleteAlert(&alert);
     deleteArrayList(&alerts);
+    if (alerts){
+        delete alerts;
+        alerts = NULL;
+    }
     deleteStatus(&status);
     deleteChal(&serverChal);
     return ret;
@@ -938,7 +957,10 @@ bool SyncManager::checkForServerChanges(SyncML* syncml, ArrayList &statusList)
             }
         // Fire SyncSourceEvent: END sync of a syncsource (server modifications)
         //fireSyncSourceEvent(sources[count]->getConfig().getURI(), sources[count]->getConfig().getName(), sources[count]->getSyncMode(), 0, SYNC_SOURCE_END);
-
+            if (previousStatus){
+                delete previousStatus;
+                previousStatus = NULL;
+            }
         }
         i++;
     } // End: while (sortedSourcesFromServer[i])
@@ -971,7 +993,7 @@ int SyncManager::sync() {
     unsigned int iterator= 0;
     int ret              = 0;
     bool last            = false;
-    ArrayList* list      = new ArrayList();
+    //ArrayList* list      = new ArrayList();
     bool isFinalfromServer = false;
     bool isAtLeastOneSourceCorrect = false;
 
@@ -1803,12 +1825,16 @@ int SyncManager::endSync() {
     config.setEndSync((unsigned long)time(NULL));
     safeDelete(&responseMsg);
     safeDelete(&mapMsg);
+    if (list){
+        delete list;
+        list = NULL;
+    }
     LOG.debug("ret: %i, lastErrorCode: %i, lastErrorMessage: %s",
               ret, getLastErrorCode(), getLastErrorMsg());
 
     // Fire Sync End Event
     fireSyncEvent(NULL, SYNC_END);
-
+    
     if (ret){
         //Fire Sync Error Event
         fireSyncEvent(getLastErrorMsg(), SYNC_ERROR);
@@ -1827,6 +1853,7 @@ int SyncManager::endSync() {
 bool SyncManager::readSyncSourceDefinition(SyncSource& source) {
     char anchor[DIM_ANCHOR];
 
+    
     if (config.getAbstractSyncSourceConfig(_wcc(source.getName())) == NULL) {
         return false;
     }
@@ -1854,8 +1881,16 @@ bool SyncManager::commitChanges(SyncSource& source) {
         timestampToAnchor(next, anchor);
         LOG.debug(DBG_COMMITTING_SOURCE, name, anchor);
         ssconfig->setLast(next);
+        if (name){
+            delete [] name;
+            name = NULL;
+        }
         return true;
     } else {
+        if (name){
+            delete [] name;
+            name = NULL;
+        }
         return false;
     }
 }

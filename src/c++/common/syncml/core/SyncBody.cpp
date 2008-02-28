@@ -39,10 +39,11 @@
 
 SyncBody::SyncBody() {
     initialize();
+    commands = new ArrayList();
 }
 SyncBody::~SyncBody() {
     if(commands) {
-        commands->clear();  //delete commands; commands = NULL;
+        /*commands->clear();*/  delete commands; commands = NULL;
     }
     finalMsg = false;
 }
@@ -69,7 +70,7 @@ SyncBody::SyncBody(ArrayList* commands   , // AbstractCommand[]
 
 void SyncBody::initialize() {
     finalMsg = false;
-    commands = new ArrayList();
+    commands = NULL;//new ArrayList();
 }
 
 /**
@@ -103,7 +104,11 @@ void SyncBody::setCommands(ArrayList* commands) {
         }
     }
     if (err == false) {
-        this->commands->clear();
+        //this->commands->clear();
+        if (this->commands == NULL){
+            delete this->commands;
+            this->commands = NULL;
+        }
         this->commands = commands->clone();
     }
 }

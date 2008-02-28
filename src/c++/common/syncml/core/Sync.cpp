@@ -47,7 +47,7 @@ Sync::~Sync() {
     if (COMMAND_NAME)   { delete [] COMMAND_NAME; COMMAND_NAME = NULL; }
     if (target)         { delete target; target = NULL; }
     if (source)         { delete source; source = NULL; }
-    if (commands)       { commands->clear(); } //delete commands; commands = NULL;         }
+    if (commands)       { /*commands->clear(); }*/ delete commands; commands = NULL;         }
     numberOfChanges = 0;
 }
 
@@ -178,7 +178,11 @@ void Sync::setCommands(ArrayList* commands) {
         }
     }
     if (err == false) {
-        this->commands->clear();
+        //this->commands->clear();
+        if ( this->commands ){
+            delete this->commands;
+            this->commands = NULL;
+        }
         this->commands = commands->clone();
     }
 }

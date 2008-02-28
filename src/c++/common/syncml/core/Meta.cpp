@@ -100,10 +100,10 @@ MetInf* Meta::getMetInf() {
 
 void Meta::setMetInf(MetInf* metInf) {
 	if (this->metInf) {
-		delete this->metInf; this->metInf = NULL;
+            delete this->metInf; this->metInf = NULL;
 	}
 	if (metInf) {
-		this->metInf = metInf->clone();
+	    this->metInf = metInf->clone();
 	}
 }
 

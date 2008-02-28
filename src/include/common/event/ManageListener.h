@@ -62,10 +62,10 @@ private:
 
     //private constructor & destructor
     ManageListener();
-    ~ManageListener();
 
 
 public:
+    ~ManageListener();
     //get and release singleton instance
     static ManageListener & getInstance();
     static void dispose();

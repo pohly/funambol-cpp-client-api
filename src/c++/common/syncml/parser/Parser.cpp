@@ -410,7 +410,11 @@ SyncBody* Parser::getSyncBody(const char*xml) {
     if (t) {delete [] t; t = NULL;}
     syncBody = new SyncBody(commands, finalMsg);
 
-    deleteArrayList(&commands);
+    //deleteArrayList(&commands);
+    if (commands){
+        delete commands;
+        commands = NULL;
+    }
 
     return syncBody;
 }
@@ -432,7 +436,7 @@ Sequence* Parser::getSequence(const char*xml) {
     Meta*   meta            = NULL;
     bool    noResp          = NULL;
     CmdID*  cmdID           = NULL;
-    ArrayList* commands     = new ArrayList();
+    ArrayList* commands     = NULL; //new ArrayList();
     Sync* sync              = NULL;
     Atomic* atomic          = NULL;
 
@@ -476,7 +480,11 @@ Sequence* Parser::getSequence(const char*xml) {
             commands->add(*list->get(i));
         }
     }
-    deleteArrayList(&list);
+    //deleteArrayList(&list);
+    if (list){
+        delete list;
+        list = NULL;
+    }
 
     // Map
     pos = 0, previous = 0;
@@ -498,7 +506,11 @@ Sequence* Parser::getSequence(const char*xml) {
         }
     }
 
-    deleteArrayList(&list);
+    //deleteArrayList(&list);
+    if (list){
+        delete list;
+        list = NULL;
+    }
 
     // Get
     pos = 0, previous = 0;
@@ -519,7 +531,11 @@ Sequence* Parser::getSequence(const char*xml) {
             commands->add(*list->get(i));
         }
     }
-    deleteArrayList(&list);
+    //deleteArrayList(&list);
+    if (list){
+        delete list;
+        list = NULL;
+    }
 
     // Exec
     pos = 0, previous = 0;
@@ -541,7 +557,11 @@ Sequence* Parser::getSequence(const char*xml) {
             commands->add(*list->get(i));
         }
     }
-    deleteArrayList(&list);
+    //deleteArrayList(&list);
+    if (list){
+        delete list;
+        list = NULL;
+    }
 
     char* element = XMLProcessor::copyElementContentLevel (xml,  SYNC, NULL);
 
@@ -576,6 +596,10 @@ Sequence* Parser::getSequence(const char*xml) {
     deleteMeta(&meta);
     deleteCmdID(&cmdID);
     deleteArrayList(&commands);
+    if (commands) {
+        delete commands;
+        commands = NULL;
+    }
 
     return ret;
 }
@@ -598,7 +622,7 @@ Atomic* Parser::getAtomic(const char*xml) {
     Meta*   meta            = NULL;
     bool    noResp          = NULL;
     CmdID*  cmdID           = NULL;
-    ArrayList* commands     = new ArrayList();
+    ArrayList* commands     = NULL; //new ArrayList();
     Sync* sync              = NULL;
     Sequence* sequence      = NULL;
     char* element = NULL;
@@ -643,7 +667,11 @@ Atomic* Parser::getAtomic(const char*xml) {
             commands->add(*list->get(i));
         }
     }
-    deleteArrayList(&list);
+    //deleteArrayList(&list);
+    if (list){
+        delete list;
+        list = NULL;
+    }
 
     // Map
     pos = 0, previous = 0;
@@ -666,7 +694,11 @@ Atomic* Parser::getAtomic(const char*xml) {
         }
     }
 
-    deleteArrayList(&list);
+    //deleteArrayList(&list);
+    if (list){
+        delete list;
+        list = NULL;
+    }
 
     // Get
     pos = 0, previous = 0;
@@ -688,7 +720,11 @@ Atomic* Parser::getAtomic(const char*xml) {
             commands->add(*list->get(i));
         }
     }
-    deleteArrayList(&list);
+    //deleteArrayList(&list);
+    if (list){
+        delete list;
+        list = NULL;
+    }
 
     // Exec
     pos = 0, previous = 0;
@@ -710,7 +746,11 @@ Atomic* Parser::getAtomic(const char*xml) {
             commands->add(*list->get(i));
         }
     }
-    deleteArrayList(&list);
+    //deleteArrayList(&list);
+    if (list){
+        delete list;
+        list = NULL;
+    }
 
     element = XMLProcessor::copyElementContentLevel (xml,  SYNC , NULL);
 
@@ -748,7 +788,11 @@ Atomic* Parser::getAtomic(const char*xml) {
 
     deleteMeta(&meta);
     deleteCmdID(&cmdID);
-    deleteArrayList(&commands);
+    //deleteArrayList(&commands);
+    if (commands){
+        delete commands;
+        commands = NULL;
+    }
 
     return ret;
 }
@@ -775,7 +819,7 @@ Sync* Parser::getSync(const char*xml) {
     CmdID*  cmdID           = NULL;
     Target* target          = NULL;
     Source* source          = NULL;
-    ArrayList* commands     = new ArrayList();
+    ArrayList* commands     = NULL; //new ArrayList();
     long numberOfChanges    = -1;
     char* numberOfChangesW = NULL;
 
@@ -843,7 +887,11 @@ Sync* Parser::getSync(const char*xml) {
     deleteCmdID(&cmdID);
     deleteTarget(&target);
     deleteSource(&source);
-    deleteArrayList(&commands);
+    //deleteArrayList(&commands);
+    if (commands) {
+        delete commands;
+        commands = NULL;
+    }
 
     return ret;
 }
@@ -851,7 +899,7 @@ Sync* Parser::getSync(const char*xml) {
 ArrayList* Parser::getCommonCommandList(const char*xml, const char*except) {
 
     ArrayList* commands = new ArrayList();
-    ArrayList* list = new ArrayList();
+    ArrayList* list = NULL;// new ArrayList();
 
     //
     //Delete
@@ -862,7 +910,11 @@ ArrayList* Parser::getCommonCommandList(const char*xml, const char*except) {
             commands->add(*list->get(i));
         }
     }
-    deleteArrayList(&list);
+    //deleteArrayList(&list);
+    if (list){
+        delete list;
+        list = NULL;
+    }
 
     //
     //Add
@@ -873,18 +925,26 @@ ArrayList* Parser::getCommonCommandList(const char*xml, const char*except) {
             commands->add(*list->get(i));
         }
     }
-    deleteArrayList(&list);
+    //deleteArrayList(&list);
+    if (list){
+        delete list;
+        list = NULL;
+    }
 
     //
     //Replace
     //
-    list = getReplaces(xml, except);
+    //list = getReplaces(xml, except);
     if (list && list->size() > 0) {
         for (int i = 0; i < list->size(); i++) {
             commands->add(*list->get(i));
         }
     }
-    deleteArrayList(&list);
+    //deleteArrayList(&list);
+    if (list){
+        delete list;
+        list = NULL;
+    }
 
 
     //
@@ -896,8 +956,11 @@ ArrayList* Parser::getCommonCommandList(const char*xml, const char*except) {
             commands->add(*list->get(i));
         }
     }
-    deleteArrayList(&list);
-
+    //deleteArrayList(&list);
+    if (list){
+        delete list;
+        list = NULL;
+    }
     return commands;
 }
 
@@ -1165,7 +1228,11 @@ Map* Parser::getMap(const char*xml) {
     deleteCred(&cred);
     deleteTarget(&target);
     deleteSource(&source);
-    deleteArrayList(&mapItems);
+    //deleteArrayList(&mapItems);
+    if (mapItems){
+        delete mapItems;
+        mapItems = NULL;
+    }
 
     return ret;
 }
@@ -1343,7 +1410,11 @@ ArrayList* Parser::getCommands(const char*xml) {
             ret->add(*list->get(i));
         }
     }
-    deleteArrayList(&list);
+    //deleteArrayList(&list);
+    if (list){
+        delete list;
+        list = NULL;
+    }
 
     // Alert: use the copyElementContentLevel because Alert could be also in Atomic and Sequence commands
     pos = 0, previous = 0;
@@ -1367,7 +1438,11 @@ ArrayList* Parser::getCommands(const char*xml) {
             ret->add(*list->get(i));
         }
     }
-    deleteArrayList(&list);
+    //deleteArrayList(&list);
+    if (list){
+        delete list;
+        list = NULL;
+    }
 
     // Map: use the copyElementContentLevel because Map could be also in Atomic and Sequence commands
     pos = 0, previous = 0;
@@ -1392,7 +1467,11 @@ ArrayList* Parser::getCommands(const char*xml) {
         }
     }
 
-    deleteArrayList(&list);
+    //deleteArrayList(&list);
+    if (list){
+        delete list;
+        list = NULL;
+    }
 
     // Get: use the copyElementContentLevel because Get could be also in Atomic and Sequence commands
     pos = 0, previous = 0;
@@ -1416,7 +1495,11 @@ ArrayList* Parser::getCommands(const char*xml) {
             ret->add(*list->get(i));
         }
     }
-    deleteArrayList(&list);
+    //deleteArrayList(&list);
+    if (list){
+        delete list;
+        list = NULL;
+    }
 
     // Put
     pos = 0, previous = 0;
@@ -1440,7 +1523,11 @@ ArrayList* Parser::getCommands(const char*xml) {
             ret->add(*list->get(i));
         }
     }
-    deleteArrayList(&list);
+    //deleteArrayList(&list);
+    if (list){
+        delete list;
+        list = NULL;
+    }
 
     // Results
     pos = 0, previous = 0;
@@ -1464,7 +1551,11 @@ ArrayList* Parser::getCommands(const char*xml) {
             ret->add(*list->get(i));
         }
     }
-    deleteArrayList(&list);
+    //deleteArrayList(&list);
+    if (list){
+        delete list;
+        list = NULL;
+    }
 
     // Exec: use the copyElementContentLevel because Exec could be also in Atomic and Sequence commands
     pos = 0, previous = 0;
@@ -1488,7 +1579,11 @@ ArrayList* Parser::getCommands(const char*xml) {
             ret->add(*list->get(i));
         }
     }
-    deleteArrayList(&list);
+    //deleteArrayList(&list);
+    if (list){
+        delete list;
+        list = NULL;
+    }
 
     // Search
     pos = 0, previous = 0;
@@ -1512,7 +1607,11 @@ ArrayList* Parser::getCommands(const char*xml) {
             ret->add(*list->get(i));
         }
     }
-    deleteArrayList(&list);
+    //deleteArrayList(&list);
+    if (list){
+        delete list;
+        list = NULL;
+    }
 
     // get the Sync commands. not belonging to Atomic and Sequence
     //sync = getSync(XMLProcessor::copyElementContentExcept (xml, SYNC, "Atomic&Sequence", NULL));
@@ -1544,7 +1643,11 @@ ArrayList* Parser::getCommands(const char*xml) {
             ret->add(*list->get(i));
         }
     }
-    deleteArrayList(&list);
+    //deleteArrayList(&list);
+    if (list){
+        delete list;
+        list = NULL;
+    }
 
 
 
@@ -1576,7 +1679,11 @@ ArrayList* Parser::getCommands(const char*xml) {
             ret->add(*list->get(i));
         }
     }
-    deleteArrayList(&list);
+    //deleteArrayList(&list);
+    if (list){
+        delete list;
+        list = NULL;
+    }
 
     return ret;
 }
@@ -1592,12 +1699,12 @@ Status* Parser::getStatus(const char*xml) {
     char*    msgRef      = NULL;
     char*    cmdRef      = NULL;
     char*    cmd         = NULL;
-    ArrayList*  targetRefs  = new ArrayList();
-    ArrayList*  sourceRefs  = new ArrayList();
+    ArrayList*  targetRefs  = NULL; //new ArrayList();
+    ArrayList*  sourceRefs  = NULL; //new ArrayList();
     Cred*       cred        = NULL;
     Chal*       chal        = NULL;
     Data*       data        = NULL;
-    ArrayList*  items       = new ArrayList();
+    ArrayList*  items       = NULL; //new ArrayList();
 
     unsigned int pos = 0;
     char* t = NULL;
@@ -1631,9 +1738,21 @@ Status* Parser::getStatus(const char*xml) {
 
         ret = new Status(cmdID, msgRef, cmdRef, cmd, targetRefs, sourceRefs, cred, chal, data, items);
     }
-    deleteArrayList(&sourceRefs);
-    deleteArrayList(&targetRefs);
-    deleteArrayList(&items);
+    //deleteArrayList(&sourceRefs);
+    //deleteArrayList(&targetRefs);
+    //deleteArrayList(&items);
+    if (sourceRefs){
+        delete sourceRefs;
+        sourceRefs = NULL;
+    }
+    if (targetRefs){
+        delete targetRefs;
+        sourceRefs = NULL;
+    }
+    if (items){
+        delete items;
+        items = NULL;
+    }
     deleteAll(3, &msgRef, &cmdRef, &cmd);
     deleteCmdID(&cmdID);
     deleteCred(&cred);
@@ -1732,7 +1851,7 @@ TargetRef* Parser::getTargetRef(const char*xml) {
 Alert* Parser::getAlert(const char*xml) {
 
     Alert* ret = NULL;
-    ArrayList* items = new ArrayList();
+    ArrayList* items = NULL;
 
     unsigned int pos = 0;
     char* t = NULL;
@@ -1756,7 +1875,11 @@ Alert* Parser::getAlert(const char*xml) {
 
     deleteCmdID(&cmdID);
     deleteCred(&cred);
-    deleteArrayList(&items);
+    //deleteArrayList(&items);
+    if (items) {
+        delete items;
+        items = NULL;
+    }
 
     return ret;
 }
@@ -1768,7 +1891,7 @@ Exec* Parser::getExec(const char*xml) {
     CmdID* cmdID        = NULL;
     bool   noResp       = false;
     Cred*  cred         = NULL;
-    ArrayList*  items   = new ArrayList();
+    ArrayList*  items   = NULL;//new ArrayList();
 
     unsigned int pos = 0;
     char* t = NULL;
@@ -1790,6 +1913,10 @@ Exec* Parser::getExec(const char*xml) {
     deleteCmdID(&cmdID);
     deleteCred(&cred);
     deleteArrayList(&items);
+    if (items) {
+        delete items;
+        items = NULL;
+    }
 
     return ret;
 }
@@ -1880,7 +2007,7 @@ Search* Parser::getSearch(const char*xml) {
     bool        noResults= NULL;
     Cred*       cred     = NULL;
     Target*     target   = NULL;
-    ArrayList*  sources  = new ArrayList();  // an Array of SourceArray object
+    ArrayList*  sources  = NULL; //new ArrayList();  // an Array of SourceArray object
     char*    lang     = NULL;
     Meta*       meta     = NULL;
     Data*       data     = NULL;
@@ -1924,7 +2051,11 @@ Search* Parser::getSearch(const char*xml) {
     safeDel(&lang);
     deleteData(&data);
     deleteMeta(&meta);
-    deleteArrayList(&sources);
+    //deleteArrayList(&sources);
+    if (sources){
+        delete sources;
+        sources = NULL;
+    }
 
   return ret;
 }
@@ -2114,6 +2245,10 @@ ComplexData* Parser::getComplexData(const char*xml, const char* command) {
        else if (xml) {
            ret = new ComplexData(xml);
        }
+    }
+    if (anchor){
+        delete anchor;
+        anchor = NULL;
     }
     return ret;
 }

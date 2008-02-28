@@ -43,7 +43,8 @@ ItemizedCommand::ItemizedCommand() {
 }
 ItemizedCommand::~ItemizedCommand() {
     if (items) {
-        items->clear(); // delete items;        items = NULL;
+        /*items->clear();*/  
+        delete items;        items = NULL;
     }
     if (meta) {
         delete meta; meta = NULL;
@@ -66,9 +67,9 @@ ItemizedCommand::ItemizedCommand(CmdID* cmdID, Meta* meta, ArrayList* items) : A
         // TBD
     }
 
-    if (items == NULL) {
-        items = new ArrayList();
-    }
+    //if (items == NULL) {
+    //    items = new ArrayList();
+    //}
 
     setMeta(meta);
     setItems(items);
@@ -89,9 +90,9 @@ ItemizedCommand::ItemizedCommand(CmdID*  cmdID, ArrayList* items) : AbstractComm
         // TBD
     }
 
-    if (items == NULL) {
-        items = new ArrayList();
-    }
+    //if (items == NULL) {
+    //    items = new ArrayList();
+    //}
 
     setMeta(NULL);
     setItems(items);
@@ -119,9 +120,15 @@ ArrayList* ItemizedCommand::getItems() {
 */
 void ItemizedCommand::setItems(ArrayList* items) {
     if (this->items) {
-		this->items->clear(); this->items = NULL;
+		//this->items->clear(); 
+                delete this->items;
+                this->items = NULL;
+        }
+    if(items){
+        this->items = items->clone();
+    }else{
+        this->items = new ArrayList();
     }
-	this->items = items->clone();
 
 }
 

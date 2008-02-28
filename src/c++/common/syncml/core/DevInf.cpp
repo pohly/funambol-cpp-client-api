@@ -54,9 +54,9 @@ DevInf::~DevInf() {
     if(devID )  { delete [] devID ;  devID  = NULL; }
     if(devTyp)  { delete [] devTyp;  devTyp = NULL; }
 
-    if(dataStores) { dataStores->clear() ; } //delete dataStores; dataStores = NULL;}     //DataStore[]
-    if(ctCap     ) { ctCap->clear()      ; } //delete ctCap;      ctCap = NULL;     }     // CTCap[]
-    if(ext       ) { ext->clear()        ; } //delete ext;        ext = NULL;       }     // Ext[]
+    if(dataStores) { /*dataStores->clear() ; }*/ delete dataStores; dataStores = NULL;}     //DataStore[]
+    if(ctCap     ) { /*ctCap->clear()      ; }*/ delete ctCap;      ctCap = NULL;     }     // CTCap[]
+    if(ext       ) { /*ext->clear()        ; }*/ delete ext;        ext = NULL;       }     // Ext[]
 
     utc                    = false;
     supportLargeObjs       = false;
@@ -135,7 +135,7 @@ void DevInf::initialize() {
     devTyp = NULL;
 
     syncCap = NULL;
-    dataStores = new ArrayList();  //DataStore[]
+    dataStores = NULL; //new ArrayList();  //DataStore[]
     ctCap      = new ArrayList();  // CTCap[]
     ext        = new ArrayList();  // Ext[]
 
@@ -420,7 +420,9 @@ ArrayList* DevInf::getExt() {
 */
 void DevInf::setExt(ArrayList* ext) {
     if (this->ext) {
-		this->ext->clear();
+		//this->ext->clear();
+                delete this->ext;
+                this->ext = NULL;
     }
     if (ext) {
 	    this->ext = ext->clone();
