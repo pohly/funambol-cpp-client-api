@@ -175,14 +175,6 @@ class AbstractSyncConfig {
     virtual unsigned int getResponseTimeout() const = 0;
 
     /**
-     * Specifies the major and minor version identifier of the Device
-     * Information DTD used in the representation of the Device
-     * Information. The value MUST be "1.1".  This property is
-     * mandatory.
-     */
-    virtual const char*  getVerDTD() const = 0;
-
-    /**
      * Specifies the name of the manufacturer of the device. This
      * property is optional.
      */

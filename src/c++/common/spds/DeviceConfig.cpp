@@ -42,7 +42,6 @@
 
 DeviceConfig::DeviceConfig() {
 
-    verDTD          = NULL;
     man             = NULL;
     mod             = NULL;
     oem             = NULL;
@@ -67,7 +66,6 @@ DeviceConfig::DeviceConfig(DeviceConfig& s) {
 
 DeviceConfig::~DeviceConfig() {
 
-    safeDelete(&verDTD    );
     safeDelete(&man       );
     safeDelete(&mod       );
     safeDelete(&oem       );
@@ -106,13 +104,6 @@ void DeviceConfig::set(char** buf, const char* v) {
  *      buffer so that the caller is assured that the
  *      given address can be released after the call.
  */
-const char* DeviceConfig::getVerDTD() const {
-    return verDTD;
-}
-void DeviceConfig::setVerDTD(const char* v){
-	set(&verDTD, v);
-}
-
 const char* DeviceConfig::getMan() const {
     return man;
 }
@@ -227,7 +218,6 @@ void DeviceConfig::setDevInfHash(const char *v) {
  */
 void DeviceConfig::assign(const DeviceConfig& s) {
 
-    setVerDTD       (s.getVerDTD()        );
     setMan          (s.getMan()           );
     setMod          (s.getMod()           );
     setOem          (s.getOem()           );

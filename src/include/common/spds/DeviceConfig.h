@@ -53,7 +53,6 @@ class DeviceConfig {
 
     private:
 
-        char*         verDTD       ;
         char*         man          ;
         char*         mod          ;
         char*         oem          ;
@@ -99,9 +98,6 @@ class DeviceConfig {
          *      buffer so that the caller is assured that the
          *      given address can be released after the call.
          */
-        const char*  getVerDTD() const         ;
-        void setVerDTD(const char*  v)         ;
-
         const char*  getMan() const            ;
         void setMan(const char*  v)            ;
 

@@ -123,7 +123,6 @@ class SyncManagerConfig : public AbstractSyncConfig {
         virtual bool  getCompression() const { return getAccessConfig().getCompression(); }
         virtual unsigned int getResponseTimeout() const { return getAccessConfig().getResponseTimeout(); }
 
-        virtual const char*  getVerDTD() const { return getDeviceConfig().getVerDTD(); }
         virtual const char*  getMan() const { return getDeviceConfig().getMan(); }
         virtual const char*  getMod() const { return getDeviceConfig().getMod(); }
         virtual const char*  getOem() const { return getDeviceConfig().getOem(); }

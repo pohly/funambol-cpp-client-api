@@ -85,7 +85,6 @@ DeviceConfig* DefaultConfigFactory::getDeviceConfig() {
 
     DeviceConfig* dc = new DeviceConfig();
 
-    dc->setVerDTD               ("1.1");
     dc->setMan                  ("");
     dc->setMod                  ("");
     dc->setOem                  ("");

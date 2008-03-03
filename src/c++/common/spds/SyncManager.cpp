@@ -2240,7 +2240,7 @@ DevInf *SyncManager::createDeviceInfo()
     //
     // Copy devInf params from current Config.
     //
-    VerDTD v(config.getVerDTD());
+    VerDTD v("1.1");
     devinfo->setVerDTD(&v);
     devinfo->setMan(config.getMan());
     devinfo->setMod(config.getMod());

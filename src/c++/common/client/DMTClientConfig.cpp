@@ -831,10 +831,6 @@ bool DMTClientConfig::readExtDevConfig(ManagementNode& syncMLNode,
                                        ManagementNode& extNode) {
     char* tmp;
 
-    tmp = extNode.readPropertyValue(PROPERTY_VER_DTD);
-    deviceConfig.setVerDTD(tmp);
-    delete [] tmp;
-
     tmp = extNode.readPropertyValue(PROPERTY_UTC);
     deviceConfig.setUtc((*tmp == '1') ? true : false);
     delete [] tmp;
@@ -863,7 +859,6 @@ void DMTClientConfig::saveExtDevConfig(ManagementNode& syncMLNode,
                                        ManagementNode& extNode) {
     char buf[512];
 
-    extNode.setPropertyValue(PROPERTY_VER_DTD, deviceConfig.getVerDTD());
     extNode.setPropertyValue(PROPERTY_DEVINF_HASH, deviceConfig.getDevInfHash());
     extNode.setPropertyValue(PROPERTY_UTC,
                              (deviceConfig.getUtc() ? "1": "0") );
