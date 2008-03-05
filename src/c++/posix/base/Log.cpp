@@ -41,13 +41,6 @@
 
 //char logmsg[512];
 
-class LogDestroyer {
-public:
-    LogDestroyer()      {                };
-    ~LogDestroyer()     { delete &(LOG); };
-};
-LogDestroyer logDestroyer;
-
 POSIXLog::POSIXLog() :
     logFile(NULL),
     logFileStdout(false),
