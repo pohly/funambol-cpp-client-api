@@ -6,13 +6,14 @@ CXXDIR  = $(srcdir)/../../../src/c++
 INCDIR  = $(srcdir)/../../../src/include
 TESTDIR = $(srcdir)/../../../test
 
-LDADD = ../src/libsync4j.la
-AM_LDFLAGS = @CPPUNIT_LDFLAGS@
-AM_CXXFLAGS = @CPPUNIT_CXXFLAGS@
+LDADD = ../src/libsync4j.la 
+AM_LDFLAGS = @CURL_LDFLAGS@ @CPPUNIT_LDFLAGS@
+AM_CXXFLAGS = @CURL_CFLAGS@ @CPPUNIT_CXXFLAGS@
 AM_CPPFLAGS = -I$(INCDIR)/posix -I$(INCDIR)/common -DAUTOTOOLS
 
 vpath %.cpp	$(TESTDIR) \
 		$(TESTDIR)/common/base/util \
+		$(TESTDIR)/posix/spdm/ \
 	        $(TESTDIR)/common/syncml
 
 # Test runner sources
@@ -23,6 +24,7 @@ TESTS_BASE = \
     ArrayListTest.cpp \
     BasicTimeTest.cpp \
     StringBufferTest.cpp \
+    ConfigTest.cpp \
     ParserTest.cpp
     
 TESTCASES = $(TESTS_BASE)
@@ -77,6 +79,7 @@ verbatim_files = \
 nobase_pkginclude_HEADERS = \
 	$(source_files) \
 	$(verbatim_files)
+
 
 CLEANFILES = $(nobase_pkginclude_HEADERS)
 
