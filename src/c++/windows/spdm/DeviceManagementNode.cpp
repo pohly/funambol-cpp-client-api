@@ -36,7 +36,6 @@
 #include "base/fscapi.h"
 #include "base/Log.h"
 #include "base/util/utils.h"
-#include "spdm/spdmutils.h"
 #include "spdm/constants.h"
 #include "spdm/ManagementNode.h"
 #include "spdm/DeviceManagementNode.h"

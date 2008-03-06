@@ -65,7 +65,6 @@
 #include "http/constants.h"
 #include "http/errors.h"
 #include "http/WinTransportAgent.h"
-#include "spdm/spdmutils.h"
 #include "event/FireEvent.h"
 #include "base/util/StringBuffer.h"
 

@@ -37,7 +37,6 @@
 
 #include "base/util/utils.h"
 #include "base/fscapi.h"
-#include "spdm/spdmutils.h"
 #include "spdm/constants.h"
 #include "spdm/ManagementNode.h"
 #include "spdm/DeviceManagementNode.h"
@@ -48,16 +47,25 @@
 #include <fcntl.h>
 #include <dirent.h>
 
+#define CONFIG_DIR      ".config"
+#define SYNC4J_DIR      ".sync4j"
+
+//static StringBuffer DeviceManagementNode::defaultPath;
+
 static inline bool isNode(struct dirent *entry) {
     struct stat buf;
     return (!stat(entry->d_name, &buf) && S_ISDIR(buf.st_mode) &&
         strcmp(entry->d_name, ".") && strcmp(entry->d_name, ".."));
 }
 
+StringBuffer DeviceManagementNode::configPath; 
+StringBuffer DeviceManagementNode::configFile("config.ini"); 
+
 DeviceManagementNode::DeviceManagementNode(const char* parent, const char *leafName) : ManagementNode(parent, leafName)  {
     lines = new ArrayList;
     modified = false;
     cwdfd = -1;
+    lookupDir();
     update(true);
 }
 
@@ -67,7 +75,22 @@ DeviceManagementNode::DeviceManagementNode(const char *node)
     lines = new ArrayList;
     modified = false;
     cwdfd = -1;
+    lookupDir();
     update(true);
+}
+
+void DeviceManagementNode::setCompatibilityMode(bool mode){
+    
+    if(mode){
+        StringBuffer val(getenv("HOME"));
+        val += "/.sync4j/";
+        setConfigPath( val );
+        configFile = "config.txt";
+    }else{
+        StringBuffer val;
+        setConfigPath( val );
+    }
+
 }
 
 DeviceManagementNode::DeviceManagementNode(const DeviceManagementNode &other)
@@ -76,7 +99,6 @@ DeviceManagementNode::DeviceManagementNode(const DeviceManagementNode &other)
     lines = other.lines->clone();
     cwdfd = -1;
     modified = other.modified;
-    root = other.root;
 }
 
 DeviceManagementNode::~DeviceManagementNode() {
@@ -99,56 +121,31 @@ bool checkConfigurationPath(StringBuffer path){
     }
 }
 
+void DeviceManagementNode::lookupDir() {
+    
+    if (configPath.empty()){    
+        // This is the config home set by the user, nothing to append to it
+        StringBuffer configHome(getenv("XDG_CONFIG_HOME"));
+        // This is the home og the user
+        StringBuffer userHome(getenv("HOME"));
+        if (configHome.empty()){
+            configHome = userHome + "/.config";
+        }
+        setConfigPath(configHome);
+        configFile = "config.ini";
+    }
+}
+
 
 bool DeviceManagementNode::gotoDir(bool read) {
     bool success = true;
     returnFromDir();
     cwdfd = open(".", O_RDONLY);
-    //const char* funamboldir = ".config";
-    //const char* sync4jdir   = ".sync4j";
-    //const char* path = 0;
-    StringBuffer funamboldir = ".config";
-    StringBuffer sync4jdir   = ".sync4j";
-    StringBuffer path;
-    // setting up the home path. we look for first to an eventually home setted by the user, than for
-    // the XDG home as in freedesktop standard (http://standards.freedesktop.org/basedir-spec/latest/)
-    // and the for the usual HOME
-    StringBuffer curr = getRoot();
-        if(curr.empty()){
-            curr = getenv("XDG_CONFIG_HOME");
-        }
-        if(curr.empty()){
-            curr = getenv("HOME");
-        }
-    // setting up the config path. we look if there is the old config path under .sync4j. If not we
-    // use the new system under .config
-    //char* testdir = new char[ strlen(curr) + 1 + strlen(funamboldir) + 1];
-    StringBuffer testdir;
-    testdir.sprintf("%s/%s", curr.c_str(), funamboldir.c_str());
-    //char* testdirs4j = new char[ strlen(curr) + 1 + strlen(sync4jdir) + 1];
-    StringBuffer testdirs4j;
-    testdirs4j.sprintf("%s/%s", curr.c_str(), sync4jdir.c_str());
-    if (checkConfigurationPath(testdir.c_str())){
-        path = funamboldir;
-        funambolPath = true;
-    }else if ( checkConfigurationPath( testdirs4j ) ){
-        path = sync4jdir;
-        funambolPath = false;
-    }else{
-        path = funamboldir;
-        funambolPath = true;
-    } 
-    returnFromDir();
-    cwdfd = open(".", O_RDONLY);
-
-    if (!curr.empty()) {
-        chdir(curr);
-    }
     
-    //char *dirs = new char[strlen(path) + strlen(context) + strlen(name) + 30];
-
+    chdir( getConfigPath() );
     StringBuffer dirs;
-    dirs.sprintf("%s/%s/%s", path.c_str(), context, name);
+    //dirs = getConfigPath();
+    dirs = dirs + context + "/" + name;
     char* ccurr = strdup( dirs.c_str() );
     do {
         char *nextdir = strchr(ccurr, '/');
@@ -172,10 +169,6 @@ bool DeviceManagementNode::gotoDir(bool read) {
         }
         ccurr = nextdir;
     } while (ccurr);
-    //if (ccurr){
-    //    delete ccurr;
-    //    ccurr = 0;
-    //}
     return success;
 }
 
@@ -195,17 +188,10 @@ void DeviceManagementNode::update(bool read) {
 
     if (gotoDir(read)) {
         FILE *file = 0;
-            // funambolPath is setted in gotoDir. in the old configuration system we used .txt files in the 
-            // new one the .ini.
-            if(funambolPath){
-                file = read ?
-                fopen("config.ini", "r") :
-                fopen("config.ini.tmp", "w");
-            }else{
-                file = read ?
-                fopen("config.txt", "r") :
-                fopen("config.txt.tmp", "w");
-            }
+        StringBuffer tmpConfig = configFile.c_str();
+        tmpConfig += ".tmp"; 
+        file = read ? fopen( configFile.c_str(), "r") : 
+                      fopen( tmpConfig.c_str(), "w");
         if (read) {
             char buffer[512];
 
@@ -234,10 +220,10 @@ void DeviceManagementNode::update(bool read) {
                     i++;
                 }
                 fflush(file);
-                if (!ferror(file) && !funambolPath) {
-                    rename("config.txt.tmp", "config.txt");
-                }else if (!ferror(file) && funambolPath){
-                    rename("config.ini.tmp", "config.ini");
+                if (!ferror(file)) {
+                    StringBuffer tmpConfig = configFile;
+                    tmpConfig += ".tmp"; 
+                    rename( tmpConfig.c_str(), configFile.c_str());
                 }
             }
         }

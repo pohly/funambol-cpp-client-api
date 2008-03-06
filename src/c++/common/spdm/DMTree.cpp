@@ -39,7 +39,6 @@
 #include "base/util/utils.h"
 #include "base/Log.h"
 
-#include "spdm/spdmutils.h"
 #include "spdm/ManagementNode.h"
 #include "spdm/DeviceManagementNode.h"
 #include "spdm/DMTree.h"

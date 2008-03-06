@@ -56,7 +56,6 @@ class ManagementNode : public ArrayElement {
     protected:
         char *name;
         char *context;
-        StringBuffer root;
 
         //
         // Children are dinamically allocated inside this class and given to
@@ -95,22 +94,6 @@ class ManagementNode : public ArrayElement {
 
         /* Base class destructor */
         virtual ~ManagementNode();
-
-        /**
-         * setter for the root value. root represent the home directory setted 
-         * by the user
-         *
-         * @param const char* the root setted by the user
-         */              
-        void setRoot(const char* fullroot) { root = fullroot;       }
-        
-        /**
-         * getter for the root value. root represete the home directory setted
-         * by the user 
-         *
-         * return const char* the root value
-         */        
-        const char* getRoot() const                  { return root.c_str();            }
 
         // ----------------------------------------------------- Virtual methods
 

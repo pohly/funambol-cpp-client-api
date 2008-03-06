@@ -40,6 +40,7 @@
 #include "base/fscapi.h"
 #include "base/util/ArrayElement.h"
 #include "spdm/ManagementNode.h"
+#include "base/util/StringBuffer.h"
 
 
 /*
@@ -84,7 +85,11 @@ class DeviceManagementNode : public ManagementNode {
     // copy content of "lines" to or from file
     void update(bool read);
 
-    bool funambolPath;
+    private:
+
+    static StringBuffer configPath;
+    static StringBuffer configFile;
+    void lookupDir();
 
     public:
 
@@ -104,7 +109,22 @@ class DeviceManagementNode : public ManagementNode {
         DeviceManagementNode(const DeviceManagementNode &other);
         virtual ~DeviceManagementNode();
 
-
+        /**
+         * set the path to the configuration. Being a static this set the config path for all
+         * the DeviceManagementNode
+         *
+         * @param const StringBuffer& the new configPath
+         *
+         */
+        static void setConfigPath(const StringBuffer &p)        { configPath = p;       }
+        /**
+         * get the path to the configuration for all the management node
+         *
+         * @return stati const StringBuffer the path to the configuration
+         */
+        static const StringBuffer& getConfigPath()              { return configPath;    }
+        
+        static void setCompatibilityMode(bool mode);
         // ----------------------------------------------------- Virtual methods
 
         /*
