@@ -234,7 +234,7 @@ void DeviceManagementNode::update(bool read) {
     returnFromDir();
 }
 
-static int strnicmp( const char *a, const char *b, int len ) {
+int DeviceManagementNode::strnicmp( const char *a, const char *b, int len ) {
     while (--len >= 0) {
         if (toupper(*a) != toupper(*b)) {
             return 1;

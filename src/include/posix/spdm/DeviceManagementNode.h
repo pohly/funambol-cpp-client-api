@@ -37,6 +37,7 @@
 #define INCL_POSIX_DEVICE_MANAGEMENT_NODE
 /** @cond DEV */
 
+#include <string.h>
 #include "base/fscapi.h"
 #include "base/util/ArrayElement.h"
 #include "spdm/ManagementNode.h"
@@ -54,9 +55,11 @@
  * \s*# <comment>
  */
 class DeviceManagementNode : public ManagementNode {
+protected:
     ArrayList *lines;
     bool modified;
     char *prefix;
+    int strnicmp( const char *a, const char *b, int len );
 
     class line : public ArrayElement {
         char *str;
@@ -86,7 +89,6 @@ class DeviceManagementNode : public ManagementNode {
     void update(bool read);
 
     private:
-
     static StringBuffer configPath;
     static StringBuffer configFile;
     void lookupDir();
