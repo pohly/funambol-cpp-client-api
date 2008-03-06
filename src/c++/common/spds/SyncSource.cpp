@@ -42,13 +42,28 @@
 
 static SyncSourceConfig defaultConfig;
 
+const AbstractSyncSourceConfig& SyncSource::getConfig() const
+{
+    return config ? *config : defaultConfig;
+}
+AbstractSyncSourceConfig& SyncSource::getConfig()
+{
+    return config ? *config : defaultConfig;
+}
+
+void SyncSource::setConfig(AbstractSyncSourceConfig* sc)
+{
+    config = sc;
+    setPreferredSyncMode(sc ? syncModeCode(sc->getSync()) : SYNC_NONE);
+}
+
 SyncSource::SyncSource(const WCHAR* sourceName, AbstractSyncSourceConfig *sc) :
-    config(sc ? *sc : defaultConfig)
+    config(NULL)
 {
     name   = NULL;
     report = NULL;
 
-    setPreferredSyncMode(sc ? syncModeCode(sc->getSync()) : SYNC_NONE);
+    setConfig(sc);
     if ((sourceName == NULL) || (*sourceName == 0)) {
         //lastErrorCode = ERR_PARAMETER_IS_EMPTY;
         //sprintf(lastErrorMsg, "name cannot be empty (NULL or 0-length)");

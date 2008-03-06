@@ -70,7 +70,7 @@ private:
     SourceFilter* filter;
 
 protected:
-    AbstractSyncSourceConfig& config;
+    AbstractSyncSourceConfig* config;
     SyncSourceReport* report;
 
     /**
@@ -91,7 +91,10 @@ public:
      *               for unit testing outside of the sync framework;
      *               the sync source then references a global config
      *               instance to avoid crashes, but modifying that config
-     *               will not make much sense.
+     *               will not make much sense. The pointer may also be
+     *               set directly after creating the SyncSource, which
+     *               is useful when a derived class creates the config
+     *               in its own constructor.
      */
     SyncSource(const WCHAR* name, AbstractSyncSourceConfig* sc);
 
@@ -124,15 +127,18 @@ public:
      * synchronization starts.
      *********************************************************/
 
-    /** read-only access to configuration */
-    const AbstractSyncSourceConfig& getConfig() const {
-        return config;
-    }
-    /** read-write access to configuration */
-    AbstractSyncSourceConfig& getConfig() {
-        return config;
-    }
+    /**
+     * use this directly after constructing the source when passing
+     * the configuration to the constructor directly is not possible
+     */
+    void setConfig(AbstractSyncSourceConfig* sc);
 
+    /** read-only access to configuration */
+    const AbstractSyncSourceConfig& getConfig() const;
+    /** read-write access to configuration */
+    AbstractSyncSourceConfig& getConfig();
+
+    
 
     /**
      * Return pointer to report object.

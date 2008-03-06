@@ -113,7 +113,7 @@ bool RawFileSyncSource::setItemData(SyncItem* syncItem) {
     //
     if (content) {
         syncItem->setData(content, (long)len);
-		WCHAR *tmp = toWideChar(config.getType());
+        WCHAR *tmp = toWideChar(getConfig().getType());
         syncItem->setDataType(tmp);
 		delete [] tmp;
         delete [] content;
