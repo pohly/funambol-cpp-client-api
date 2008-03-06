@@ -86,7 +86,7 @@ protected:
     int addedItem(SyncItem& item, const WCHAR* key);
 
 public:
-    FileSyncSource(const WCHAR* name, SyncSourceConfig* sc);
+    FileSyncSource(const WCHAR* name, AbstractSyncSourceConfig* sc);
     virtual ~FileSyncSource();
 
     /**

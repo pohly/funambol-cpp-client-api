@@ -38,10 +38,11 @@
 #include "base/Log.h"
 #include "client/SyncClient.h"
 #include "spds/spdsutils.h"
+#include "spds/SyncSourceConfig.h"
 
 static SyncSourceConfig defaultConfig;
 
-SyncSource::SyncSource(const WCHAR* sourceName, SyncSourceConfig *sc) :
+SyncSource::SyncSource(const WCHAR* sourceName, AbstractSyncSourceConfig *sc) :
     config(sc ? *sc : defaultConfig)
 {
     name   = NULL;

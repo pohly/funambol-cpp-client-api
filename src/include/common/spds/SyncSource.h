@@ -46,7 +46,7 @@
 #include "spds/constants.h"
 #include "spds/SyncItem.h"
 #include "spds/SyncStatus.h"
-#include "spds/SyncSourceConfig.h"
+#include "spds/AbstractSyncSourceConfig.h"
 #include "spds/SyncSourceReport.h"
 
 /**
@@ -70,7 +70,7 @@ private:
     SourceFilter* filter;
 
 protected:
-    SyncSourceConfig& config;
+    AbstractSyncSourceConfig& config;
     SyncSourceReport* report;
 
     /**
@@ -93,7 +93,7 @@ public:
      *               instance to avoid crashes, but modifying that config
      *               will not make much sense.
      */
-    SyncSource(const WCHAR* name, SyncSourceConfig* sc);
+    SyncSource(const WCHAR* name, AbstractSyncSourceConfig* sc);
 
     // Destructor
     virtual ~SyncSource();
@@ -125,11 +125,11 @@ public:
      *********************************************************/
 
     /** read-only access to configuration */
-    const SyncSourceConfig& getConfig() const {
+    const AbstractSyncSourceConfig& getConfig() const {
         return config;
     }
     /** read-write access to configuration */
-    SyncSourceConfig& getConfig() {
+    AbstractSyncSourceConfig& getConfig() {
         return config;
     }
 

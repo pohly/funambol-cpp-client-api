@@ -53,7 +53,7 @@
  */
 class RawFileSyncSource : public FileSyncSource {
   public:
-    RawFileSyncSource(const WCHAR* name, SyncSourceConfig* sc);
+    RawFileSyncSource(const WCHAR* name, AbstractSyncSourceConfig* sc);
 
     int addItem(SyncItem& item);
     int updateItem(SyncItem& item);

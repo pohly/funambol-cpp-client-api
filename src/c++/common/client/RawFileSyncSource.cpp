@@ -41,7 +41,7 @@
 #include "client/RawFileSyncSource.h"
 
 
-RawFileSyncSource::RawFileSyncSource(const WCHAR* name, SyncSourceConfig* sc) : FileSyncSource(name, sc) {
+RawFileSyncSource::RawFileSyncSource(const WCHAR* name, AbstractSyncSourceConfig* sc) : FileSyncSource(name, sc) {
 }
 
 int RawFileSyncSource::addItem(SyncItem& item) {

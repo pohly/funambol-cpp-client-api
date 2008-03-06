@@ -41,7 +41,7 @@
 #include "client/FileSyncSource.h"
 
 
-FileSyncSource::FileSyncSource(const WCHAR* name, SyncSourceConfig* sc) : SyncSource(name, sc) {
+FileSyncSource::FileSyncSource(const WCHAR* name, AbstractSyncSourceConfig* sc) : SyncSource(name, sc) {
     dir  = NULL;
     fileNode = NULL;
 
