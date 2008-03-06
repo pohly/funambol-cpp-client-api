@@ -59,6 +59,35 @@ nobase_pkginclude_HEADERS = \
     common/vocl/VConverter.h \
     common/vocl/VObject.h \
     common/vocl/VProperty.h \
+    common/vocl/vCard/Address.h \
+    common/vocl/vCard/BusinessDetail.h \
+    common/vocl/vCard/Contact30.h \
+    common/vocl/vCard/ContactDetail.h \
+    common/vocl/vCard/Contact.h \
+    common/vocl/vCard/Email.h \
+    common/vocl/vCard/Name.h \
+    common/vocl/vCard/Note.h \
+    common/vocl/vCard/PersonalDetail.h \
+    common/vocl/vCard/Phone.h  \
+    common/vocl/vCard/Title.h  \
+    common/vocl/vCard/TypedProperty.h \
+    common/vocl/vCard/vCardConverter.h \
+    common/vocl/vCard/vCardProperty.h \
+    common/vocl/vCard/WebPage.h \
+    common/event/ManageListener.h \
+    common/event/SyncListener.h \
+    common/event/SyncItemListener.h \
+    common/event/SyncStatusListener.h \
+    common/event/SyncSourceListener.h \
+    common/event/TransportListener.h \
+    common/event/BaseEvent.h \
+    common/event/SyncEvent.h \
+    common/event/SyncItemEvent.h \
+    common/event/SyncStatusEvent.h \
+    common/event/SyncSourceEvent.h \
+    common/event/TransportEvent.h \
+    common/event/Listener.h \
+    posix/spdm/DeviceManagementNode.h \
     posix/base/posixlog.h
 
 # fix header files for public distribution
