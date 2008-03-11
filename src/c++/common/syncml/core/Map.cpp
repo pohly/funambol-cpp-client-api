@@ -48,7 +48,7 @@ Map::~Map() {
     if (COMMAND_NAME) { delete [] COMMAND_NAME; COMMAND_NAME = NULL; }
     if (target)       { delete target;       target       = NULL; }
     if (source)       { delete source;       source       = NULL; }
-    if (mapItems)     { mapItems->clear(); } // delete mapItems; mapItems = NULL; }
+    if (mapItems)     { /*mapItems->clear(); } // */delete mapItems; mapItems = NULL; }
 
 }
 

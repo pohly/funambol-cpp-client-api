@@ -1883,18 +1883,8 @@ bool SyncManager::commitChanges(SyncSource& source) {
         timestampToAnchor(next, anchor);
         LOG.debug(DBG_COMMITTING_SOURCE, name, anchor);
         ssconfig->setLast(next);
-#if 0
-        if (name){
-            delete [] name;
-            name = NULL;
-        }
-#endif
         return true;
     } else {
-        if (name){
-            delete [] name;
-            name = NULL;
-        }
         return false;
     }
 }

@@ -881,7 +881,7 @@ Sync* Parser::getSync(const char*xml) {
 
         ret = new Sync(cmdID, noResp, cred, target, source, meta, numberOfChanges, commands);
     }
-
+    delete [] numberOfChangesW; numberOfChangesW = NULL;
     deleteCred(&cred);
     deleteMeta(&meta);
     deleteCmdID(&cmdID);
@@ -1043,6 +1043,7 @@ Add* Parser::getAdd(const char*xml) {
     deleteMeta(&meta);
     deleteCred(&cred);
     deleteArrayList(&items);
+    delete items; items = NULL;
 
     return ret;
 }
@@ -1151,6 +1152,7 @@ MapItem* Parser::getMapItem(const char*xml) {
         ret = new MapItem(target, source);
     }
 
+    if (t) {delete [] t; t = NULL;}
     deleteTarget(&target);
     deleteSource(&source);
 

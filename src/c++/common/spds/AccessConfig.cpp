@@ -68,6 +68,7 @@ AccessConfig::AccessConfig() {
     proxyPassword         = NULL;
     checkConn             = false;
     responseTimeout       = 0;
+    compression           = false;
 }
 
 AccessConfig::AccessConfig(AccessConfig& s) {
