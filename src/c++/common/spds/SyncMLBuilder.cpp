@@ -898,7 +898,7 @@ Sync* SyncMLBuilder::prepareSyncCommand(SyncSource& source) {
     ArrayList* list      = new ArrayList();
     Sync* sync           = NULL;
 
-    sync = new Sync(commandID, false, NULL, tar, sou, NULL, 0,  list);
+    sync = new Sync(commandID, false, NULL, tar, sou, NULL, -1,  list);
 
     deleteCmdID(&commandID);
     deleteTarget(&tar);
