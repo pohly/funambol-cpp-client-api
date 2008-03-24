@@ -71,6 +71,8 @@ class CheckSyncReport {
         serverDeleted(srDeleted)
         {}
 
+    virtual ~CheckSyncReport() {}
+
     const int clientAdded, clientUpdated, clientDeleted,
         serverAdded, serverUpdated, serverDeleted;
 

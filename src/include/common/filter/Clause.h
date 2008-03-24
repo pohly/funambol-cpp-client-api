@@ -54,7 +54,7 @@ class Clause : public ArrayElement {
 private:
 	Clause(Clause &c){};
 
-	Clause& operator=(Clause &c){}; 
+	void operator=(Clause &c){}; 
 
     // ----------------------------------------------------- Protected interface
 protected:
