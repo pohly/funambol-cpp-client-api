@@ -51,6 +51,9 @@
     #ifdef HAVE_STDARG_H
         #include <stdarg.h>
     #endif
+    #ifdef SYMBIAN
+        #include "base/symbianadapter.h"
+    #endif
 
     #include "base/errors.h"
 
@@ -103,6 +106,23 @@
     /** use in format string like this: printf( "str '%" WCHAR_PRINTF "'", (WCHAR *)foo) */
     # define WCHAR_PRINTF "ls"
     #endif
+
+    #if !defined(PLATFORM_VA_LIST)
+    #define PLATFORM_VA_LIST va_list
+    #endif
+
+    #if !defined(PLATFORM_VA_START)
+    #define PLATFORM_VA_START va_start
+    #endif
+
+    #if !defined(PLATFORM_VA_END)
+    #define PLATFORM_VA_END  va_end
+    #endif
+
+    #if !defined(PLATFORM_VA_COPY)
+    #define PLATFORM_VA_COPY va_copy
+    #endif
+
 
     /**
      * All platforms are expected to have assert.h and provide

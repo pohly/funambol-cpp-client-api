@@ -84,7 +84,7 @@ class StringBuffer: public ArrayElement {
          * buffer and enlarging it as necessary. The parameters are
          * that of a normal vsprintf().
          */
-        StringBuffer& vsprintf(const char* format, va_list ap)
+        StringBuffer& vsprintf(const char* format, PLATFORM_VA_LIST ap)
 #ifdef __GNUC__
             /* enables GCC checking of format <-> parameter mismatches */
             __attribute__ ((format (printf, 2, 0)))

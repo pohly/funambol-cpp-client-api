@@ -36,9 +36,11 @@
 #define INCL_COMMON_ERRORS
 /** @cond DEV */
 
+#if !defined(SYMBIAN)
 #include "spdm/errors.h"
 #include "spds/errors.h"
 #include "http/errors.h"
+#endif
 
 #define DIM_ERROR_MESSAGE 512
 
