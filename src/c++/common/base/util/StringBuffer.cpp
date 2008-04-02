@@ -138,17 +138,17 @@ StringBuffer& StringBuffer::set(const char* sNew) {
 }
 
 StringBuffer& StringBuffer::sprintf(const char* format, ...) {
-    va_list ap;
+    PLATFORM_VA_LIST ap;
 
-    va_start(ap, format);
+    PLATFORM_VA_START(ap, format);
     this->vsprintf(format, ap);
-    va_end(ap);
+    PLATFORM_VA_END(ap);
 
     return *this;
 }
 
-StringBuffer& StringBuffer::vsprintf(const char* format, va_list ap) {
-    va_list aq;
+StringBuffer& StringBuffer::vsprintf(const char* format, PLATFORM_VA_LIST ap) {
+    PLATFORM_VA_LIST aq;
 
     // ensure minimal size for first iteration
     int realsize = 255;
@@ -156,13 +156,18 @@ StringBuffer& StringBuffer::vsprintf(const char* format, va_list ap) {
     do {
         // make a copy to keep ap valid for further iterations
 #ifdef va_copy
-        va_copy(aq, ap);
+        PLATFORM_VA_COPY(aq, ap);
 #else
         aq = ap;
 #endif
 
         if (size < (unsigned long)realsize) {
             s = (char*)realloc(s, (realsize + 1) * sizeof(char));
+            if (s == NULL) {
+                // Out of memory. Flush the string content and return
+                size = 0;
+                return *this;
+            }
             size = realsize;
         }
 
@@ -171,7 +176,7 @@ StringBuffer& StringBuffer::vsprintf(const char* format, va_list ap) {
             // old-style vnsprintf: exact len unknown, try again with doubled size
             realsize = size * 2;
         }
-        va_end(aq);
+        PLATFORM_VA_END(aq);
     } while((unsigned long)realsize > size);
 
     // free extra memory
