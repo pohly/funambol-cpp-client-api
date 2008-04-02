@@ -1,3 +1,6 @@
+2008-04-02
+   - toccy: first add of base classes and adapters for new Symbian client.
+
 2008-02-13
     - toccy: * 'lastErrorMsg' is now a StringBuffer
              * 'lastErrorMsg' and 'lastErrorCode' are no more global, 
