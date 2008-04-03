@@ -56,10 +56,10 @@ void setError(int errorCode, const char *errorMessage) {
 void setErrorF(int errorCode, const char *msgFormat, ...) {
     lastErrorCode = errorCode;
 
-    va_list argList;
-    va_start(argList, msgFormat);
+    PLATFORM_VA_LIST argList;
+    PLATFORM_VA_START(argList, msgFormat);
     lastErrorMsg.vsprintf(msgFormat, argList);
-    va_end(argList);
+    PLATFORM_VA_END(argList);
 }
 
 // Retrieve last error code
