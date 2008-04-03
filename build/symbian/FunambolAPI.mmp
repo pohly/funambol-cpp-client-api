@@ -51,8 +51,20 @@ SOURCE       base64.cpp error.cpp md5.c
 SOURCEPATH   ..\..\src\cpp\common\base\util
 SOURCE       ArrayElement.cpp ArrayList.cpp BasicTime.cpp KeyValuePair.cpp StringBuffer.cpp baseutils.cpp
 
+SOURCEPATH   ..\..\src\cpp\common\spdm
+SOURCE       DMTree.cpp ManagementNode.cpp
+
+SOURCEPATH   ..\..\src\cpp\common\client
+SOURCE       DMTClientConfig.cpp
+
+SOURCEPATH   ..\..\src\cpp\common\spds
+SOURCE       SyncManagerConfig.cpp SyncSourceConfig.cpp AccessConfig.cpp DeviceConfig.cpp MailSyncSourceConfig.cpp
+
 SOURCEPATH   ..\..\src\cpp\symbian\base
 SOURCE       symbianadapter.cpp Log.cpp
+
+SOURCEPATH   ..\..\src\cpp\symbian\spdm
+SOURCE       DeviceManagementNode.cpp DMTreeFactory.cpp
 
 SOURCEPATH   ..\..\src\cpp\symbian\base\util
 SOURCE       stringUtils.cpp symbianUtils.cpp timeUtils.cpp
