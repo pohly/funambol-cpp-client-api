@@ -36,8 +36,8 @@
 #define INCL_COMMON_ERRORS
 /** @cond DEV */
 
-#if !defined(SYMBIAN)
 #include "spdm/errors.h"
+#if !defined(SYMBIAN)
 #include "spds/errors.h"
 #include "http/errors.h"
 #endif
