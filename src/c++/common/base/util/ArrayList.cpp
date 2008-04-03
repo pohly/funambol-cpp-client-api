@@ -47,7 +47,7 @@
  * such as the C++ new operator)
  */
 
-ArrayList::ArrayList() : head(0), iterator(0), lastElement(0) {
+ArrayList::ArrayList() : head(0), lastElement(0), iterator(0) {
     count = 0;
 }
 
@@ -291,7 +291,7 @@ ArrayElement* ArrayList::prev() {
 }
 
 ArrayElement* ArrayList::back() {
-    for(iterator = head; iterator->n; iterator = iterator->n);
+    for(iterator = head; iterator->n; iterator = iterator->n) {}
     return iterator->e;
 }
 
