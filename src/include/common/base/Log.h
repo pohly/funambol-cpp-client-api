@@ -37,7 +37,7 @@
     #define INCL_LOG
 /** @cond DEV */
 
-    #include "fscapi.h"
+    #include "base/fscapi.h"
     #include "base/util/StringBuffer.h"
 
     /** prefix for error messages */
@@ -178,7 +178,10 @@
          * implementation, i.e. the caller can free it after this
          * call.
          */
-        virtual void setPrefix(const char *prefix) {}
+        virtual void setPrefix(const char *prefix) {
+            // Avoid compiler warning
+            prefix = NULL;
+        }
 
         /**
          * Returns the log file size [bytes].
