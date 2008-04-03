@@ -58,8 +58,8 @@
  */
 
 struct Element {
-	ArrayElement* e; // the element value
-	Element* n;      // the next element (NULL for the latest)
+    ArrayElement* e; // the element value
+    Element* n;      // the next element (NULL for the latest)
 };
 
 class ArrayList {
