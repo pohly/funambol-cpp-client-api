@@ -150,40 +150,40 @@ void SymbianLog::createFormattedBias()
 
 void SymbianLog::error(const char*  msg, ...) 
 {
-    va_list argList;
-    va_start (argList, msg);
+    PLATFORM_VA_LIST argList;
+    PLATFORM_VA_START (argList, msg);
     printMessage(LOG_ERROR, msg, argList);
-    va_end(argList);
+    PLATFORM_VA_END(argList);
 }
 void SymbianLog::info (const char*  msg, ...) 
 {
     if (isLoggable(LOG_LEVEL_INFO)) {
-        va_list argList;
-        va_start (argList, msg);
+        PLATFORM_VA_LIST argList;
+        PLATFORM_VA_START (argList, msg);
         printMessage(LOG_INFO, msg, argList);
-        va_end(argList);
+        PLATFORM_VA_END(argList);
     }
 }
 void SymbianLog::debug(const char*  msg, ...) 
 {
     if (isLoggable(LOG_LEVEL_DEBUG)) {
-        va_list argList;
-        va_start (argList, msg);
+        PLATFORM_VA_LIST argList;
+        PLATFORM_VA_START (argList, msg);
         printMessage(LOG_DEBUG, msg, argList);
-        va_end(argList);
+        PLATFORM_VA_END(argList);
     }
 }
 void SymbianLog::developer(const char*  msg, ...) 
 {
     if (isLoggable(LOG_LEVEL_INFO)) {
-        va_list argList;
-        va_start (argList, msg);
+        PLATFORM_VA_LIST argList;
+        PLATFORM_VA_START (argList, msg);
         printMessage(LOG_DEBUG, msg, argList);
-        va_end(argList);
+        PLATFORM_VA_END(argList);
     }
 }
 
-void SymbianLog::printMessage(const char* level, const char* msg, va_list argList) 
+void SymbianLog::printMessage(const char* level, const char* msg, PLATFORM_VA_LIST argList) 
 {
     StringBuffer currentTime = createCurrentTime(false);
     

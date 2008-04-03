@@ -50,7 +50,7 @@ class SymbianLog : public Log {
 
 private:
 
-    void printMessage(const char*  level, const char*  msg, va_list argList);
+    void printMessage(const char*  level, const char*  msg, PLATFORM_VA_LIST argList);
     
     /// The file server session.
     RFs fsSession;
