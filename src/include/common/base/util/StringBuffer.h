@@ -37,9 +37,8 @@
 #define INCL_BASE_STRING_BUFFER
 /** @cond DEV */
 
+#include "base/fscapi.h"
 #include "base/util/ArrayElement.h"
-
-#include <stdarg.h>
 
 class ArrayList;
 
