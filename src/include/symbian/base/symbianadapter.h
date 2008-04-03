@@ -17,7 +17,6 @@
 
 #ifdef __WINSCW__
     #define PLATFORM_VA_COPY(a,b) (a[0] = b[0])
-    #define inline
     #if !defined(va_copy)
     #define va_copy
     #endif
