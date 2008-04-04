@@ -4,3 +4,7 @@ Makefile
 Makefile.in
 .deps
 synclog.txt
+.libs
+client-test
+funambol_A
+funambol_B
