@@ -40,6 +40,7 @@
 #include <utf.h>
 
 #include "base/util/utils.h"
+#include "base/util/stringUtils.h"
 #include "base/fscapi.h"
 #include "spdm/spdmutils.h"
 #include "spdm/constants.h"
@@ -60,6 +61,7 @@ DeviceManagementNode::DeviceManagementNode(const char* parent,
                               lines(new ArrayList),
                               modified(false)
 {
+    initCurrentDir();
     update(true);
 }
 
@@ -68,12 +70,8 @@ DeviceManagementNode::DeviceManagementNode(const char *node)
       lines(new ArrayList),
       modified(false)
 {
+    initCurrentDir();
     update(true);
-    if (configPath.empty()) {
-        currentDir = ".\\\\";
-    } else {
-        currentDir = configPath;
-    }
 }
 
 DeviceManagementNode::DeviceManagementNode(const DeviceManagementNode &other)
@@ -110,8 +108,9 @@ void DeviceManagementNode::update(bool read) {
     }
 
     StringBuffer fileName(currentDir);
-    fileName.append("config.ini");
-    FILE* file = fopen(fileName.c_str(), "r");
+    concatDirs(fileName, configFile.c_str());
+    const char* fname = fileName.c_str();
+    FILE* file = fopen(fname, "r");
 
     if (file) {
         // Open a temp file in writing mode if we must update the config
@@ -126,7 +125,10 @@ void DeviceManagementNode::update(bool read) {
 
             lines->clear();
             while (fgets(buffer, sizeof(buffer), file)) {
-                char *eol = strchr(buffer, '\n');
+                char *eol = strchr(buffer, '\r');
+                if (!eol) {
+                    eol = strchr(buffer, '\n');
+                }
                 if (eol) {
                     *eol = 0;
                 }
@@ -148,11 +150,9 @@ void DeviceManagementNode::update(bool read) {
             fflush(file);
             if (!ferror(file)) {
                 StringBuffer tmpConfig = configFile;
-                tmpConfig += ".tmp"; 
-#if 0
-                // TODO FIXME
-                rename( tmpConfig.c_str(), configFile.c_str());
-#endif
+                tmpConfig += ".tmp";
+
+                renameFileInCwd( tmpConfig.c_str(), configFile.c_str());
             }
         }
         fclose(file);
@@ -219,8 +219,6 @@ char* DeviceManagementNode::readPropertyValue(const char* property) {
     return stringdup("");
 }
 
-// TEMP TODO FIXME
-#include "base/util/symbianUtils.h"
 
 int DeviceManagementNode::getChildrenMaxCount() {
     int count = 0;
@@ -230,21 +228,10 @@ int DeviceManagementNode::getChildrenMaxCount() {
     int cleanupStackSize = 0;
 
     StringBuffer fileSpecSb(currentDir);
+    concatDirs(fileSpecSb, "*.*");
 
-    msgBox(currentDir.c_str());
-
-    // If the config path terminates with \\ then there is no
-    // need to add it again (this causes the GetDir to fail)
-    size_t backslashPos = fileSpecSb.rfind("\\\\");
-    if (backslashPos != StringBuffer::npos &&
-        backslashPos == fileSpecSb.length()-2)
-    {
-        fileSpecSb.append("*.*");
-    } else {
-        //TODO FIXME fileSpecSb.append("\\*.*");
-        fileSpecSb.append("*.*");
-    }
-    TBuf8<255> buf8((const unsigned char*)fileSpecSb.c_str());
+    // TODO use utility function for string conversion
+    TBuf8<DIM_MANAGEMENT_PATH> buf8((const unsigned char*)fileSpecSb.c_str());
     HBufC* fileSpec = CnvUtfConverter::ConvertToUnicodeFromUtf8L(buf8);
     ++cleanupStackSize;
     CleanupStack::PushL(fileSpec);
@@ -261,7 +248,7 @@ int DeviceManagementNode::getChildrenMaxCount() {
     // (Leave if an error occurs)
     //
     CDir* dirList;
-    TRAPD(err, fileSession.GetDir(*fileSpec, KEntryAttDir,
+    TRAPD(err, fileSession.GetDir(*fileSpec, KEntryAttDir|KEntryAttMatchExclusive,
                                   ESortByName, dirList));
     if (err != KErrNone || dirList == NULL) {
         goto finally;
@@ -289,16 +276,10 @@ char **DeviceManagementNode::getChildrenNames() {
     RFile file;
 
     StringBuffer fileSpecSb(currentDir);
-    size_t backslashPos = fileSpecSb.rfind("\\");
-    if (backslashPos != StringBuffer::npos &&
-        backslashPos == fileSpecSb.length()-2)
-    {
-        fileSpecSb.append("*.*");
-    } else {
-        //TODO FIXME fileSpecSb.append("\\*.*");
-        fileSpecSb.append("*.*");
-    }
-    TBuf8<255> buf8((const unsigned char*)fileSpecSb.c_str());
+    concatDirs(fileSpecSb, "*.*");
+
+    // TODO use utility function for string conversion
+    TBuf8<DIM_MANAGEMENT_PATH> buf8((const unsigned char*)fileSpecSb.c_str());
     HBufC* fileSpec = CnvUtfConverter::ConvertToUnicodeFromUtf8L(buf8);
     ++cleanupStackSize;
     CleanupStack::PushL(fileSpec);
@@ -315,7 +296,7 @@ char **DeviceManagementNode::getChildrenNames() {
     // (Leave if an error occurs)
     //
     CDir* dirList;
-    TRAPD(err, fileSession.GetDir(*fileSpec, KEntryAttDir,
+    TRAPD(err, fileSession.GetDir(*fileSpec, KEntryAttDir|KEntryAttMatchExclusive,
                                   ESortByName, dirList));
     if (err != KErrNone || dirList == NULL) {
         goto finally;
@@ -330,10 +311,18 @@ char **DeviceManagementNode::getChildrenNames() {
     TInt i;
     for (i=0;i<dirList->Count();i++)
     {
-        TBuf<255> fileName = (*dirList)[i].iName;
+        TBuf<DIM_MANAGEMENT_PATH> fileName = (*dirList)[i].iName;
+
+#if 0
+        childrenName[i] = bufToNewChar(buf8);
+#else
+        // TODO use string utils
         HBufC8* buf8 = CnvUtfConverter::ConvertFromUnicodeToUtf8L(fileName);
-        childrenName[i] = strdup((const char*)buf8->Ptr());
+        childrenName[i] = stringdup((const char*)buf8->Ptr(), buf8->Length());
+        *(childrenName[i] + buf8->Length()) = (char)0;
         delete buf8;
+#endif
+
     }
     fileSession.Close();
 
@@ -409,5 +398,84 @@ ArrayElement* DeviceManagementNode::clone()
     }
 
     return ret;
+}
+
+void DeviceManagementNode::concatDirs(StringBuffer& src1, const char* src2) {
+ 
+    // If the src path terminates with \\ then there is no
+    // need to add it again (this would be an illegal symbian path)
+    // Unfortunately we cannot use StringBuffer directly for this check
+    // there is something weird with \\ in StringBuffer (at least on symbian)
+    const char* chars = src1.c_str();
+    if (chars[strlen(chars)-1] != '\\') {
+        src1.append("\\");
+    }
+    src1.append(src2);
+}
+
+void DeviceManagementNode::initCurrentDir() {
+
+    if (configPath.empty()) {
+        currentDir = ".\\";
+    } else {
+        currentDir = configPath;
+    }
+    if (context) {
+        StringBuffer translatedContext = contextToPath(context);
+        const char* tc = translatedContext.c_str();
+        concatDirs(currentDir, tc);
+    }
+    if (name) {
+        concatDirs(currentDir, name);
+    }
+}
+
+StringBuffer DeviceManagementNode::contextToPath(const char* cont) {
+    // Contextes are defined as: (string/)* and on Symbian
+    // we map them to file. But Symbian uses backslashes as
+    // directory separator.
+    StringBuffer sb(cont);
+    sb.replaceAll("/", "\\", 0);
+    return sb;
+}
+
+int DeviceManagementNode::renameFileInCwd(const char* src, const char* dst) {
+
+    RFs fileSession;
+    RFile file;
+    int cleanupStackSize = 0;
+
+    StringBuffer srcSb(currentDir);
+    concatDirs(srcSb, src);
+    StringBuffer dstSb(currentDir);
+    concatDirs(dstSb, dst);
+
+    // TODO use utility function for string conversion
+    TBuf8<DIM_MANAGEMENT_PATH> srcBuf8((const unsigned char*)srcSb.c_str());
+    HBufC* srcDes = CnvUtfConverter::ConvertToUnicodeFromUtf8L(srcBuf8);
+    ++cleanupStackSize;
+    CleanupStack::PushL(srcDes);
+
+    TBuf8<DIM_MANAGEMENT_PATH> dstBuf8((const unsigned char*)dstSb.c_str());
+    HBufC* dstDes = CnvUtfConverter::ConvertToUnicodeFromUtf8L(dstBuf8);
+    ++cleanupStackSize;
+    CleanupStack::PushL(dstDes);
+
+    //
+    // Connect to the file server
+    //
+    fileSession.Connect();
+    ++cleanupStackSize;
+    CleanupClosePushL(fileSession);
+
+    TRAPD(err, fileSession.Rename(*srcDes, *dstDes));
+
+    CleanupStack::PopAndDestroy(cleanupStackSize);
+
+    if (err != KErrNone) {
+        return -1;
+    } else {
+        return 0;
+    }
 }
 
