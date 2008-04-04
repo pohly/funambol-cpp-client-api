@@ -69,3 +69,9 @@ SOURCE       DeviceManagementNode.cpp DMTreeFactory.cpp
 SOURCEPATH   ..\..\src\cpp\symbian\base\util
 SOURCE       stringUtils.cpp symbianUtils.cpp timeUtils.cpp
 
+SOURCEPATH   ..\..\src\cpp\common\push
+SOURCE       CTPMessage.cpp CTPConfig.cpp CTPParam.cpp CTPService.cpp
+
+SOURCEPATH   ..\..\src\cpp\symbian\push
+SOURCE       FThread.cpp FSocket.cpp
+
