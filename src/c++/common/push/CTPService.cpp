@@ -38,10 +38,10 @@
 #include "base/util/utils.h"
 #include "base/util/StringBuffer.h"
 
-#include "CTPService.h"
-#include "CTPParam.h"
-#include "FThread.h"
-#include "FSocket.h"
+#include "push/CTPService.h"
+#include "push/CTPParam.h"
+#include "push/FThread.h"
+#include "push/FSocket.h"
 
 // Init static pointer.
 CTPService* CTPService::pinstance = NULL;
@@ -148,7 +148,7 @@ FThread* CTPService::startCTP() {
  *         -2 if errors occurred waiting on receiverThread
  *          
  */
-int CTPService::stopCTP() {
+int32_t CTPService::stopCTP() {
 
     if (!ctpThread) {
         LOG.debug("No CTP thread available -> exiting.");
@@ -251,7 +251,7 @@ finally:
  *
  * @return  0 if no errors
  */
-int CTPService::openConnection() {
+int32_t CTPService::openConnection() {
 
     int32_t ret = 0;
 
@@ -300,7 +300,7 @@ int CTPService::openConnection() {
  * Closes the socket connection.
  * @return 0  if no errors
  */
-int CTPService::closeConnection() {
+int32_t CTPService::closeConnection() {
 
     int ret = 0;
     if (ctpSocket) {
@@ -331,7 +331,7 @@ int CTPService::closeConnection() {
  * 'sendMsg()' method is used to send the message with the ctpSocket.
  * @return 0 if no errors
  */
-int CTPService::sendAuthMsg(){
+int32_t CTPService::sendAuthMsg(){
 
     LOG.debug("Creating AUTH msg...");
     ctpState = CTP_STATE_AUTHENTICATING;
@@ -383,7 +383,7 @@ int CTPService::sendAuthMsg(){
  * 'sendMsg()' method is used to send the message with the ctpSocket.
  * @return 0 if no errors
  */
-int CTPService::sendReadyMsg() { 
+int32_t CTPService::sendReadyMsg() { 
 
     // Fill CTPMessage members
     CTPMessage readyMsg;
@@ -401,7 +401,7 @@ int CTPService::sendReadyMsg() {
  * 'sendMsg()' method is used to send the message with the ctpSocket.
  * @return 0 if no errors
  */
-int CTPService::sendByeMsg(){
+int32_t CTPService::sendByeMsg(){
 
     // Fill CTPMessage members
     CTPMessage byeMsg;
@@ -426,7 +426,7 @@ int CTPService::sendByeMsg(){
  * @return         0 if no errors
  * @note           no timeout is set for the socket 'send' operation
  */
-int CTPService::sendMsg(CTPMessage* message) {
+int32_t CTPService::sendMsg(CTPMessage* message) {
 
     if (!message) {
         return 1;
@@ -569,7 +569,7 @@ finally:
  *       - Server sends an error state
  *       - CTP in 'leaving state' (Client is closing CTP)
  */
-int CTPService::receive() {
+int32_t CTPService::receive() {
 
     // Safe checks...
     if (!ctpSocket) {

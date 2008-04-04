@@ -33,7 +33,7 @@
  * the words "Powered by Funambol".
  */
 
-#include "FSocket.h"
+#include "push/FSocket.h"
 
 StringBuffer FSocket::lIP;
 

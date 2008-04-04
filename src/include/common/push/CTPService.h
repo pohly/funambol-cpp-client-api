@@ -40,11 +40,11 @@
 
 #include "base/fscapi.h"
 
-#include "FThread.h"
-#include "FSocket.h"
+#include "push/FThread.h"
+#include "push/FSocket.h"
 
-#include "CTPMessage.h"
-#include "CTPConfig.h"
+#include "push/CTPMessage.h"
+#include "push/CTPConfig.h"
 
 /**< CTP Protocol version = 1.0 */
 #define CTP_PROTOCOL_VERSION            0x10

@@ -33,7 +33,7 @@
  * the words "Powered by Funambol".
  */
 
-#include "CTPMessage.h"
+#include "push/CTPMessage.h"
 #include "base/util/utils.h"
 
 CTPMessage::CTPMessage() {
@@ -63,13 +63,13 @@ void CTPMessage::initialize() {
 }
 
 
-int CTPMessage::parse(const char* package, int maxPackageLen) {
+int32_t CTPMessage::parse(const char* package, int32_t maxPackageLen) {
     
 // This macro increments local pointer p or return error if out of bounds.
 #define IncP(Num) p+(Num)<end ? p+=(Num) : p = NULL
     
     LOG.debug("Parsing msg...");
-    int ret = 0;
+    int32_t ret = 0;
     setBufferLength(0);
     if (buffer) { delete [] buffer; buffer = NULL; }
     if (from) { delete [] from; from = NULL; } 
@@ -184,7 +184,6 @@ char* CTPMessage::toByte() {
     
     int totalMessageSize = 2; // version and genericCommand
     int totalPackageSize = 0, i = 0;
-    int numParam = params.size();
    
     CTPParam* param = (CTPParam*)params.front();
     while(param) {

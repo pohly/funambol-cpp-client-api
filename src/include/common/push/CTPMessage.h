@@ -41,7 +41,7 @@
 #include "syncml/core/SyncNotification.h" 
 #include "base/util/ArrayList.h"
 
-#include "CTPParam.h"
+#include "push/CTPParam.h"
 
     
 using namespace std;

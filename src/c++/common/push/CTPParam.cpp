@@ -36,7 +36,7 @@
 #include "base/fscapi.h"
 #include "base/util/ArrayElement.h"
 
-#include "CTPParam.h"
+#include "push/CTPParam.h"
 
 CTPParam::CTPParam() {
     value = NULL;

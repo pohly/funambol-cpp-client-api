@@ -36,7 +36,7 @@
 #ifndef INCL_FSOCKET
 #define INCL_FSOCKET
 
-#include "stdint.h"
+#include "base/fscapi.h"
 #include "base/util/StringBuffer.h"
 
 class FSocket {

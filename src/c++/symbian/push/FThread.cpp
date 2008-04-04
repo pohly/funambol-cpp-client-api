@@ -33,7 +33,7 @@
  * the words "Powered by Funambol".
  */
 
-#include "FThread.h"
+#include "push/FThread.h"
 
 FThread::FThread() :isRunning(false),
                     terminate(false)
@@ -66,9 +66,5 @@ void FThread::softTerminate() {
 }
 
 void FThread::sleep(long msec) {
-}
-
-void FThread::setRunning(bool value) {
-    isRunning = value;
 }
 

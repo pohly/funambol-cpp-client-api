@@ -32,9 +32,13 @@
  * feasible for technical reasons, the Appropriate Legal Notices must display
  * the words "Powered by Funambol".
  */    
-#include "CTPConfig.h"    
+
+#if 0
 #include "base/EncodingUtils.h"
+#endif
+
 #include "base/util/StringBuffer.h"
+#include "push/CTPConfig.h"    
 
 #define CTP_QUEUE_PUSH                  "queuePush"
 #define CTP_RETRY                       "ctpRetry"
@@ -60,6 +64,8 @@ CTPConfig::~CTPConfig() {}
 char* CTPConfig::decodePassword(const char* password) {
     
     char* decripted = NULL;
+#if 0
+    // Encryption not supported yet!!! TODO FIXME
     if (password && strlen(password) > 0) {
          decripted = decryptData(password); 
     }    
@@ -69,16 +75,20 @@ char* CTPConfig::decodePassword(const char* password) {
         decripted[0] = 0;
         setError(ERR_NONE, "");
     }
+#endif
     return decripted;       
 }
 
 StringBuffer CTPConfig::encodePassword(const char* password) {
     
     StringBuffer buffer("");
+#if 0
+    // Encryption not supported yet!!! TODO FIXME
     if (password && strlen(password) > 0) {
         char* encoded = encryptData(password);        
         buffer = encoded;        
     }        
+#endif
     return buffer;   
 }
         
@@ -99,9 +109,12 @@ void CTPConfig::readCTPConfig() {
     // TODO we should stringbuffer instead of malloc/new strings
     char* passDecoded;
     if (passEncoded) {
+#if 0
+        // FIXME TODO
         passDecoded = decodePassword(accessConfig.getPassword());
         accessConfig.setPassword(passDecoded);
         delete [] passDecoded;
+#endif
     } else {
         passDecoded = strdup(accessConfig.getPassword());
         accessConfig.setPassword(passDecoded);
@@ -251,9 +264,12 @@ void CTPConfig::saveCTPConfig() {
 
     char* passDecoded;
     if (passwordEncoded) {
+#if 0
+        // TODO FIXME
         passDecoded = decodePassword(accessConfig.getPassword());
         accessConfig.setPassword(passDecoded);
         delete [] passDecoded;
+#endif
     } else {
         accessConfig.setPassword(accessConfig.getPassword());
     }
