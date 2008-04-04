@@ -151,17 +151,19 @@ StringBuffer& StringBuffer::assign(const char* sNew) {
 }
 
 /////////////////////////////////////////////////////////////////////////////
-// convert 
+// convert.
 /////////////////////////////////////////////////////////////////////////////
 StringBuffer& StringBuffer::convert(const WCHAR* wc, const char *encoding) {
+    
     if(sizeof(WCHAR) != sizeof(char)) {
         char *tmp = toMultibyte(wc, encoding);
         assign(tmp);
         delete [] tmp;
     }
     else {
-        assign(wc);
+        assign((const char *)wc);
     }
+    return *this;
 }
 
 // sprintf ----------------------------
