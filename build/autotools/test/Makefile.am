@@ -24,7 +24,6 @@ TESTS_BASE = \
     ArrayListTest.cpp \
     BasicTimeTest.cpp \
     StringBufferTest.cpp \
-    ConfigTest.cpp \
     ParserTest.cpp
     
 TESTCASES = $(TESTS_BASE)
