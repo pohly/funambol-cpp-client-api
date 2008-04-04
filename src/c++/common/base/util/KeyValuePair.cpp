@@ -66,7 +66,7 @@ void KeyValuePair::setValue(const char* value) {
     if (v)
         delete[] v;
 
-    k = stringdup(value);
+    v = stringdup(value);
 }
 
 ArrayElement* KeyValuePair::clone() {
