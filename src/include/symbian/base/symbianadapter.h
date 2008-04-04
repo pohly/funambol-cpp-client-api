@@ -37,4 +37,16 @@ int towlower(int c);
 int towupper(int c);
 size_t vsnprintf(char* s, size_t size, const char* format, PLATFORM_VA_LIST aq);
 
+/* Symbian does not ship a stdint.h interface (unless you use PIPS or OpenC)
+ * We define the types used in the library, but at the moment we are not
+ * standard complaint as we do not define all the necessary macros. This needs
+ * to be done
+ **/
+typedef TInt8   int8_t;
+typedef TUint8  uint8_t;
+typedef TInt16  int16_t;
+typedef TUint16 uint16_t;
+typedef TInt32  int32_t;
+typedef TUint32 uint32_t;
+
 #endif /*SYMBIANADAPTER_H_*/
