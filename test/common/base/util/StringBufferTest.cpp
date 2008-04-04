@@ -38,15 +38,83 @@
 #include <cppunit/extensions/TestFactoryRegistry.h>
 #include <cppunit/extensions/HelperMacros.h>
 
+
 /**
  * Test case for the class StringBuffer.
  */
 class StringBufferTest : public CppUnit::TestFixture {
     CPPUNIT_TEST_SUITE(StringBufferTest);
+    CPPUNIT_TEST(testConstruct);
+    CPPUNIT_TEST(testCompare);
+    CPPUNIT_TEST(testAssign);
+    CPPUNIT_TEST(testConvert);
     CPPUNIT_TEST(testSprintf);
+    CPPUNIT_TEST(testReset);
+    CPPUNIT_TEST(testLength);
     CPPUNIT_TEST_SUITE_END();
 
 private:
+
+    ///////////////////////////////////////////////////////// Test /////
+    // test the different constructor and the c_str() method.
+    void testConstruct() {
+        StringBuffer s1;
+        CPPUNIT_ASSERT(s1.c_str() == NULL);
+
+        StringBuffer s2("");
+        CPPUNIT_ASSERT(strcmp(s2.c_str(), "") == 0);
+
+        StringBuffer s3("test");
+        CPPUNIT_ASSERT(strcmp(s3.c_str(), "test") == 0);
+
+        StringBuffer s4("0123456789", 4);
+        CPPUNIT_ASSERT(strcmp(s4.c_str(), "0123") == 0);
+
+        StringBuffer copy(s3);
+        CPPUNIT_ASSERT(strcmp(copy, s3) == 0);
+    }
+
+
+    //////////////////////////////////////////////////////// Test /////
+    // test the comparison operators and methods
+    void testCompare() {
+        StringBuffer s("Test");
+
+        CPPUNIT_ASSERT(s == "Test");
+        CPPUNIT_ASSERT(s != "tEST");
+        CPPUNIT_ASSERT(s.icmp("tEST"));
+    }
+
+    //////////////////////////////////////////////////////// Test /////
+    // test assignment operators and methods
+    void testAssign() {
+        StringBuffer s;
+
+        s.assign("First test string");
+        CPPUNIT_ASSERT(s == "First test string");
+
+        s = "Second test string";
+        CPPUNIT_ASSERT(s == "Second test string");
+    }
+
+    //////////////////////////////////////////////////////// Test /////
+    // test WCHAR converison
+
+#define TEST_STRING  "Quant'è bella giovinezza.."
+
+    void testConvert() {
+
+        StringBuffer str(TEST_STRING);
+
+        StringBuffer cnv;
+        cnv.convert(TEXT(TEST_STRING));
+
+        fprintf(stderr, "Converted string: %s\n", cnv.c_str());
+
+        CPPUNIT_ASSERT(str == cnv);
+    }
+
+    //////////////////////////////////////////////////////// Test /////
     void testSprintf() {
         StringBuffer buf;
 
@@ -62,6 +130,65 @@ private:
         }
     }
 
+    //////////////////////////////////////////////////////// Test /////
+    void testReset() {
+        StringBuffer s("Test reset");
+        s.reset();
+        CPPUNIT_ASSERT(s.c_str() == NULL);
+    }
+
+    //////////////////////////////////////////////////////// Test /////
+    void testLength() {
+        StringBuffer s("Test length");
+        CPPUNIT_ASSERT_EQUAL((unsigned long)strlen(s.c_str()), s.length());
+    }
+    
+    //////////////////////////////////////////////////////// Test /////
+    void testUpperCase() {
+        StringBuffer s("Test Uppercase");
+        StringBuffer &ref = s.upperCase();
+
+        CPPUNIT_ASSERT(s == "TEST UPPERCASE");
+        CPPUNIT_ASSERT(ref == s);
+    }
+
+    //////////////////////////////////////////////////////// Test /////
+    void testLowerCase() {
+        StringBuffer s("Test LowerCase");
+        StringBuffer &ref = s.lowerCase();
+
+        CPPUNIT_ASSERT(s == "test lowercase");
+        CPPUNIT_ASSERT(ref == s);
+    }
+
+    //////////////////////////////////////////////////////// Test /////
+    // Test null() and empty() behavior
+    void testEmpty() {
+        StringBuffer s;
+        CPPUNIT_ASSERT(s.empty());
+        CPPUNIT_ASSERT(s.null());
+
+        s = "";
+
+        CPPUNIT_ASSERT( s.empty() );
+        CPPUNIT_ASSERT( !s.null() );
+
+    }
+
+    //////////////////////////////////////////////////////// Test /////
+    //
+    void testClone() {
+        StringBuffer s("Test Clone");
+
+        StringBuffer* cloned = (StringBuffer*)s.clone();
+
+        CPPUNIT_ASSERT_EQUAL( s, *cloned);
+
+        delete cloned;
+    }
+
+
+    //----------------------------------------- Utility functions
     StringBuffer doSprintf(const char* format, ...) {
         va_list ap;
         StringBuffer buf;

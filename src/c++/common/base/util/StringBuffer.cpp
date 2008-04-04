@@ -105,18 +105,31 @@ StringBuffer& StringBuffer::append(unsigned long i, bool sign) {
     return *this;
 }
 
+/* TODO:
+
+StringBuffer& StringBuffer::append(unsigned long i) {
+    append(StringBuffer().sprintf("%lu", i));
+
+    return *this;
+}
+
+StringBuffer& StringBuffer::append(long i) {
+    append(StringBuffer().sprintf("%ld", i));
+
+    return *this;
+}
+
+*/
+
 StringBuffer& StringBuffer::append(StringBuffer& str) {
-    return append(str.getChars());
+    return append(str.c_str());
 }
 
 StringBuffer& StringBuffer::append(StringBuffer* str) {
-    if (str)
-        return append(str->getChars());
-    else
-        return *this;
+    return (str) ? append(str->c_str()) : *this;
 }
 
-StringBuffer& StringBuffer::set(const char* sNew) {
+StringBuffer& StringBuffer::assign(const char* sNew) {
     if (sNew) {
         size_t len = strlen(sNew);
         if ( len ) {
@@ -137,6 +150,21 @@ StringBuffer& StringBuffer::set(const char* sNew) {
     return *this;
 }
 
+/////////////////////////////////////////////////////////////////////////////
+// convert 
+/////////////////////////////////////////////////////////////////////////////
+StringBuffer& StringBuffer::convert(const WCHAR* wc, const char *encoding) {
+    if(sizeof(WCHAR) != sizeof(char)) {
+        char *tmp = toMultibyte(wc, encoding);
+        assign(tmp);
+        delete [] tmp;
+    }
+    else {
+        assign(wc);
+    }
+}
+
+// sprintf ----------------------------
 StringBuffer& StringBuffer::sprintf(const char* format, ...) {
     PLATFORM_VA_LIST ap;
 
@@ -187,7 +215,6 @@ StringBuffer& StringBuffer::vsprintf(const char* format, PLATFORM_VA_LIST ap) {
 }
 
 
-const char* StringBuffer::getChars() const { return s; }
 
 unsigned long StringBuffer::length() const {
     return (s) ? strlen(s) : 0;
@@ -398,9 +425,9 @@ bool StringBuffer::null() const { return (s==0); }
 
 // Member Operators
 StringBuffer& StringBuffer::operator= (const char* sc)
-    { return set(sc); }
+    { return assign(sc); }
 StringBuffer& StringBuffer::operator= (const StringBuffer& sb)
-    { return set(sb); }
+    { return assign(sb); }
 StringBuffer& StringBuffer::operator+= (const char* sc)
     { append(sc); return *this; }
 StringBuffer& StringBuffer::operator+= (const StringBuffer& s)
