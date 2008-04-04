@@ -44,7 +44,7 @@ size_t vsnprintf(char* s, size_t size, const char* format, PLATFORM_VA_LIST aq) 
             size_t finalSize = formattedBuf.Length();
             if (finalSize < size) {
                 memcpy(s, ptr, finalSize);
-                s[finalSize] = 0;
+                s[finalSize] = 0;           // Symbian descriptors don't have the trailing null char
                 return finalSize;
             } else {
                 // In this case we truncate. We signal this by returning -1
