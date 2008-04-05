@@ -43,6 +43,9 @@ TransportAgent::TransportAgent() {
     readBufferSize = DEFAULT_INTERNET_READ_BUFFER_SIZE;
     userAgent[0] = 0;
     compression = false;
+    SSLServerCertificates = "";
+    SSLVerifyServer = true;
+    SSLVerifyHost = true;
 }
 
 TransportAgent::TransportAgent(URL& newURL,
@@ -57,6 +60,9 @@ TransportAgent::TransportAgent(URL& newURL,
     readBufferSize = DEFAULT_INTERNET_READ_BUFFER_SIZE;
     userAgent[0] = 0;
     compression = false;
+    SSLServerCertificates = "";
+    SSLVerifyServer = true;
+    SSLVerifyHost = true;
 }
 
 TransportAgent::~TransportAgent() {

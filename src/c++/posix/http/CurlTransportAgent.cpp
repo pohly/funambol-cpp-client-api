@@ -196,11 +196,19 @@ char* CurlTransportAgent::sendMessage(const char* msg) {
     received = 0;
     responsebuffer[0] = 0;
     // todo? url.resource
+    const char *certificates = getSSLServerCertificates();
     if ((code = curl_easy_setopt(easyhandle, CURLOPT_POST, true)) ||
         (code = curl_easy_setopt(easyhandle, CURLOPT_URL, url.fullURL)) ||
         (code = curl_easy_setopt(easyhandle, CURLOPT_POSTFIELDS, msg)) ||
         (code = curl_easy_setopt(easyhandle, CURLOPT_POSTFIELDSIZE, strlen(msg))) ||
         (code = curl_easy_setopt(easyhandle, CURLOPT_HTTPHEADER, slist)) ||
+        /*
+         * slightly cheating here: when CURLOPT_CAINFO was set before, we don't unset it because
+         * we don't know what the default is
+         */
+        (certificates[0] && (code = curl_easy_setopt(easyhandle, CURLOPT_CAINFO, certificates))) ||
+        (code = curl_easy_setopt(easyhandle, CURLOPT_SSL_VERIFYPEER, (long)SSLVerifyServer)) ||
+        (code = curl_easy_setopt(easyhandle, CURLOPT_SSL_VERIFYHOST, (long)(SSLVerifyHost ? 2 : 0))) ||
         (code = curl_easy_perform(easyhandle))) {
         delete [] responsebuffer;
         setErrorF(ERR_HTTP, "libcurl error %d, %.250s", code, curlerrortxt);

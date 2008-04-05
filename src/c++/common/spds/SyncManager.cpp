@@ -451,6 +451,9 @@ int SyncManager::prepareSync(SyncSource** s) {
         if (transportAgent == NULL) {
             transportAgent = TransportAgentFactory::getTransportAgent(url, proxy, responseTimeout, maxMsgSize);
             transportAgent->setReadBufferSize(readBufferSize);
+            transportAgent->setSSLServerCertificates(config.getSSLServerCertificates());
+            transportAgent->setSSLVerifyServer(config.getSSLVerifyServer());
+            transportAgent->setSSLVerifyHost(config.getSSLVerifyHost());
             // Here we also ensure that the user agent string is valid
             const char* ua = getUserAgent(config);
             LOG.debug("User Agent = %s", ua);

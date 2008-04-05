@@ -38,6 +38,7 @@
 /** @cond DEV */
 
     #include "base/fscapi.h"
+    #include "base/util/StringBuffer.h"
 
     #include "http/URL.h"
     #include "http/Proxy.h"
@@ -76,6 +77,9 @@
         unsigned int readBufferSize;
         char userAgent[128];
         bool compression;
+        StringBuffer SSLServerCertificates;
+        bool SSLVerifyServer;
+        bool SSLVerifyHost;
 
     public:
         TransportAgent();
@@ -142,6 +146,33 @@
          */
         virtual unsigned int getReadBufferSize();
 
+        /**
+         * A platform specific string specifying the location of the
+         * certificates used to authenticate the server. When empty, the
+         * system's default location will be searched.
+         */
+        virtual const char* getSSLServerCertificates() const { return SSLServerCertificates.c_str(); }
+        virtual void setSSLServerCertificates(const char *value) { SSLServerCertificates = value ? value : ""; }
+
+        /**
+         * Enabled by default: the client refuses to establish the
+         * connection unless the server presents a valid
+         * certificate. Disabling this option considerably reduces the
+         * security of SSL (man-in-the-middle attacks become possible) and
+         * is not recommended.
+         */
+        virtual bool getSSLVerifyServer() const { return SSLVerifyServer; }
+        virtual void setSSLVerifyServer(bool value) { SSLVerifyServer = value; }
+
+        /**
+         * Enabled by default: the client refuses to establish the
+         * connection unless the server's certificate matches its host
+         * name. In cases where the certificate still seems to be valid it
+         * might make sense to disable this option and allow such
+         * connections.
+         */
+        virtual bool getSSLVerifyHost() const { return SSLVerifyHost; }
+        virtual void setSSLVerifyHost(bool value) { SSLVerifyHost = value; }
 
         /*
          * Sends the given SyncML message to the server specified

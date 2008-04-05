@@ -169,6 +169,31 @@ class AbstractSyncConfig {
      */
     virtual const char*  getUserAgent() const = 0;
 
+    /**
+     * A platform specific string specifying the location of the
+     * certificates used to authenticate the server. When empty, the
+     * system's default location will be searched.
+     */
+    virtual const char* getSSLServerCertificates() const { return ""; }
+
+    /**
+     * Enabled by default: the client refuses to establish the
+     * connection unless the server presents a valid
+     * certificate. Disabling this option considerably reduces the
+     * security of SSL (man-in-the-middle attacks become possible) and
+     * is not recommended.
+     */
+    virtual bool  getSSLVerifyServer() const { return true; }
+
+    /**
+     * Enabled by default: the client refuses to establish the
+     * connection unless the server's certificate matches its host
+     * name. In cases where the certificate still seems to be valid it
+     * might make sense to disable this option and allow such
+     * connections.
+     */
+    virtual bool  getSSLVerifyHost() const { return true; }
+
     virtual bool  getCompression() const = 0;
 
     /** The number of seconds of waiting response timeout */
