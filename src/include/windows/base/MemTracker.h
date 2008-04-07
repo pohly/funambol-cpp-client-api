@@ -40,7 +40,7 @@
 
 #define MAX_LENGHT_FILE     256
 
-#include <stdio.h>
+
 #include "base/Log.h"
 #include "base/util/utils.h"
 
