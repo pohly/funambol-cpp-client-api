@@ -37,7 +37,7 @@
  
  <?html version="1.0" enconding="UTF-8"?>
 
-<!-- $Id: build.xml,v 1.9 2007-11-28 15:01:37 toccy Exp $
+<!-- $Id: build.xml,v 1.10 2008-04-07 15:15:05 magi Exp $
 =============================================================================
 Forge file for Funambol C++ API
 
@@ -210,6 +210,16 @@ Forge file for Funambol C++ API
 	        <exec dir="output/${cppapi.modulename}/docs" executable="doxygen" >
         	  <arg line="../docs/Doxyfile" />
 	          <env key="FUNAMBOL_NATIVE_ROOT" path="output/${cppapi.modulename}/" />
+	          <env key="ENABLED_SECTIONS" value="API" />
+	          <env key="HAVE_DOT" value="YES" />
+        	</exec>
+    </target>
+    
+    <target name="create-docs-only">
+      <echo message="Creating documentation with doxygen" />
+	          <exec executable="doxygen" >
+        	  <arg line="../docs/Doxyfile" />
+	          <env key="FUNAMBOL_NATIVE_ROOT" path="../" />
 	          <env key="ENABLED_SECTIONS" value="API" />
 	          <env key="HAVE_DOT" value="YES" />
         	</exec>
