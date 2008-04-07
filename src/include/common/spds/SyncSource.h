@@ -258,8 +258,47 @@ public:
      *
      * @param key      the local key of the item
      * @param status   the SyncML status returned by the server
+     * @deprecated
+     * @since          SyncML API v7
      */
-    virtual void setItemStatus(const WCHAR* key, int status) = 0;
+    virtual void setItemStatus(const WCHAR* key, int status) {
+    };
+
+    /**
+     * called by the sync engine with the status returned by the
+     * server for a certain item that the client sent to the server.
+     * It contains also the proper command associated to the item.
+     *
+     * @param key      the local key of the item
+     * @param status   the SyncML status returned by the server
+     * @param command  the SyncML command associated to the item
+     
+     */
+    virtual void setItemStatus(const WCHAR* key, int status, const char* command) {
+        setItemStatus(key, status);
+    }
+    
+    /**
+    * Indicates that all the server status of the current package 
+    * of the client items has been processed by the engine.
+    * This signal can be useful to update the modification arrays
+    */
+    virtual void serverStatusPackageEnded();    
+    
+    /**
+    * Indicates that all the client status of the current package 
+    * of the server items that has been processed by the client and 
+    * are going to be sent to the server.
+    * This signal can be useful to update the modification arrays
+    */
+    virtual void clientStatusPackageEnded(); 
+    
+    /**
+     * Removes all the item of the sync source. It is called 
+     * by the engine in the case of a refresh from server to clean      
+     * all the client items before receiving the server ones.
+     */
+    virtual void removeAllItems() = 0;
 
     /**
      * Return the key of the first SyncItem of all.
@@ -359,6 +398,9 @@ public:
      * ArrayElement implementation
      */
     virtual ArrayElement* clone() = 0;
+    
+               
+    
 };
 
 /** @} */

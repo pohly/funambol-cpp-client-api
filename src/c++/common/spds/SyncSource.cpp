@@ -264,3 +264,21 @@ void SyncSource::assign(SyncSource& s) {
     setFilter(s.getFilter());
 }
 
+/**
+* Indicates that all the server status of the current package 
+* of the client items has been processed by the engine.
+* This signal can be useful to update the modification arrays
+*/
+void SyncSource::serverStatusPackageEnded() {
+
+}
+    
+/**
+* Indicates that all the client status of the current package 
+* of the server items that has been processed by the client and 
+* are going to be sent to the server.
+* This signal can be useful to update the modification arrays
+*/
+void SyncSource::clientStatusPackageEnded() {
+}
+
