@@ -1,3 +1,22 @@
+2008-04-07
+   - magi: * added 
+                CacheSyncSource.h, CacheSyncSource.cpp
+                KeyValueStore.h
+                ArrayListKeyValueStore.h, ArrayListKeyValueStore.cpp
+                Enumeration.h
+                ArrayListEnumeration.h
+                PropertyFile.h, PropertyFile.cpp
+                BriefcaseCacheSyncSource.h, BriefcaseCacheSyncSource.cpp
+                BriefcaseClient.cpp
+                These are to try the cache sync source that keeps track about the changes on the
+                items based on the crc of the content of the items
+            
+            * updated the Makefile.am to compile all new stuff
+            * updated windadapter and posixadapter 
+            * applied Patrick's patch on SyncItem (the const get methods)
+            * updated SyncSource interface
+                                    
+
 2008-04-02
    - toccy: first add of base classes and adapters for new Symbian client.
 
