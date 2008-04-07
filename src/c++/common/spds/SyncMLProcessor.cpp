@@ -295,7 +295,7 @@ int SyncMLProcessor::processItemStatus(SyncSource& source, SyncBody* syncBody) {
                         // Update SyncReport
                         source.getReport()->addItem(SERVER, s->getCmd(), uri, s->getStatusCode(), statusMessage);
 
-                        source.setItemStatus(uri, val);
+                        source.setItemStatus(uri, val, name);
                         delete [] uri;
                         if (statusMessage)
                             delete [] statusMessage;
@@ -317,7 +317,7 @@ int SyncMLProcessor::processItemStatus(SyncSource& source, SyncBody* syncBody) {
                     // Update SyncReport
                     source.getReport()->addItem(SERVER, s->getCmd(), srcref, s->getStatusCode(), NULL);
 
-                    source.setItemStatus(srcref, val);
+                    source.setItemStatus(srcref, val, name);
                     delete [] srcref;
                 }
             }
