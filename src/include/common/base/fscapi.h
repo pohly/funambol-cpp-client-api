@@ -61,6 +61,8 @@
         // Windows common stuff
         #define WIN32_LEAN_AND_MEAN     // Exclude rarely-used stuff from Windows headers
 
+        #include <sys/stat.h>
+        #include "shlobj.h"
         #include <windows.h>
         #include "base/winadapter.h"
     #endif
