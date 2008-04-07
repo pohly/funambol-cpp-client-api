@@ -98,7 +98,7 @@ SyncItem::~SyncItem() {
     }
 }
 
-const char* SyncItem::getDataEncoding() {
+const char* SyncItem::getDataEncoding() const {
     return encoding;
 }
 
@@ -222,7 +222,7 @@ int SyncItem::transformData(const char* name, bool encode, const char* password)
  *
  * @param key - buffer where the key will be stored
  */
-const WCHAR* SyncItem::getKey() {
+const WCHAR* SyncItem::getKey() const {
         return key;
     }
 
@@ -252,7 +252,7 @@ void SyncItem::setKey(const WCHAR* itemKey) {
  * is a milliseconds timestamp since a reference time (which is
  * platform specific).
  */
-long SyncItem::getModificationTime() {
+long SyncItem::getModificationTime() const {
     return lastModificationTime;
 }
 
@@ -297,14 +297,14 @@ void* SyncItem::setData(const void* itemData, long dataSize) {
 /*
  * Returns the SyncItem data buffer. It is deleted in the destructor.
  */
-void* SyncItem::getData() {
+void* SyncItem::getData() const {
     return data;
 }
 
 /*
  * Returns the SyncItem data size.
  */
-long SyncItem::getDataSize() {
+long SyncItem::getDataSize() const {
     return size;
 }
 
@@ -329,7 +329,7 @@ void SyncItem::setDataType(const WCHAR* mimeType) {
  * Returns the SyncItem data mime type.
  *
  */
-const WCHAR* SyncItem::getDataType() {
+const WCHAR* SyncItem::getDataType() const {
     return type;
 }
 
@@ -345,7 +345,7 @@ void SyncItem::setState(SyncState newState) {
 /*
  * Gets the SyncItem state
  */
-SyncState SyncItem::getState() {
+SyncState SyncItem::getState() const {
     return state;
 }
 
@@ -354,7 +354,7 @@ SyncState SyncItem::getState() {
  *
  * @return the taregtParent property value
  */
-const WCHAR* SyncItem::getTargetParent() {
+const WCHAR* SyncItem::getTargetParent() const {
     return targetParent;
 }
 
@@ -375,7 +375,7 @@ void SyncItem::setTargetParent(const WCHAR* parent) {
  *
  * @return the sourceParent property value
  */
-const WCHAR* SyncItem::getSourceParent() {
+const WCHAR* SyncItem::getSourceParent() const {
     return sourceParent;
 }
 
