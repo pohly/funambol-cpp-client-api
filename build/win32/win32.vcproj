@@ -350,6 +350,10 @@
 						</FileConfiguration>
 					</File>
 					<File
+						RelativePath="..\..\src\c++\common\base\util\ArrayListKeyValueStore.cpp"
+						>
+					</File>
+					<File
 						RelativePath="..\..\src\c++\common\base\util\baseutils.cpp"
 						>
 						<FileConfiguration
@@ -396,6 +400,10 @@
 								PreprocessorDefinitions=""
 							/>
 						</FileConfiguration>
+					</File>
+					<File
+						RelativePath="..\..\src\c++\common\base\util\PropertyFile.cpp"
+						>
 					</File>
 					<File
 						RelativePath="..\..\src\c++\common\base\util\StringBuffer.cpp"
@@ -723,6 +731,10 @@
 					</FileConfiguration>
 				</File>
 				<File
+					RelativePath="..\..\src\c++\common\spds\CacheSyncSource.cpp"
+					>
+				</File>
+				<File
 					RelativePath="..\..\src\c++\common\spds\CredentialHandler.cpp"
 					>
 					<FileConfiguration
@@ -796,6 +808,10 @@
 				</File>
 				<File
 					RelativePath="..\..\src\c++\common\spds\ItemReport.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\c++\common\spds\MailMessage.cpp"
 					>
 				</File>
 				<File
@@ -3479,7 +3495,19 @@
 						>
 					</File>
 					<File
+						RelativePath="..\..\src\include\common\base\util\ArrayListEnumeration.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\include\common\base\util\ArrayListKeyValueStore.h"
+						>
+					</File>
+					<File
 						RelativePath="..\..\src\include\common\base\util\BasicTime.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\include\common\base\util\Enumeration.h"
 						>
 					</File>
 					<File
@@ -3488,6 +3516,14 @@
 					</File>
 					<File
 						RelativePath="..\..\src\include\common\base\util\KeyValuePair.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\include\common\base\util\KeyValueStore.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\include\common\base\util\PropertyFile.h"
 						>
 					</File>
 					<File
@@ -4164,6 +4200,10 @@
 					>
 				</File>
 				<File
+					RelativePath="..\..\src\include\common\spds\CacheSyncSource.h"
+					>
+				</File>
+				<File
 					RelativePath="..\..\src\include\common\spds\constants.h"
 					>
 				</File>
@@ -4201,6 +4241,10 @@
 				</File>
 				<File
 					RelativePath="..\..\src\include\common\spds\ItemReport.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\include\common\spds\PropertyFile.h"
 					>
 				</File>
 				<File
