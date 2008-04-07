@@ -39,17 +39,17 @@
 
 int main(int argc, char** argv) {
 
-
     //
     // get argv if exists -> path of folder to sync
     //
     char* dir = stringdup("test");
 
     // Init LOG
-    Log(0, LOG_PATH, LOG_NAME);
-	LOG.reset(LOG_TITLE);
-    LOG.setLevel(LOG_LEVEL);
-
+    LOG.setLogName(LOG_NAME);
+    LOG.setLogPath(LOG_PATH);
+    LOG.reset(LOG_TITLE);
+    LOG.setLevel(LOG_LEVEL_DEBUG);
+    
     //
     // Create the configuration.
     //

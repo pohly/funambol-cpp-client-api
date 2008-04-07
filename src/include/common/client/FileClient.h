@@ -50,25 +50,6 @@
 #include "client/DMTClientConfig.h"
 #include "spds/DefaultConfigFactory.h"
 
-#include "client/FileSyncSource.h"
-
-//#include "filter/AllClause.h"
-//#include "filter/ClauseUtil.h"
-//#include "filter/LogicalClause.h"
-//#include "filter/FieldClause.h"
-//#include "filter/SourceFilter.h"
-//#include "filter/WhereClause.h"
-//#include "syncml/core/core.h"
-//#include "syncml/formatter/Formatter.h"
-//#include "spds/DefaultConfigFactory.h"
-//
-//#include "examples/MySyncListener.h"
-//#include "examples/MySyncSourceListener.h"
-//#include "examples/MySyncStatusListener.h"
-//#include "examples/MySyncItemListener.h"
-//#include "examples/MyTransportListener.h"
-//#include "event/SetListener.h"
-
 
 #define APPLICATION_URI         "Funambol/SyncclientFILE"
 #define LOG_TITLE		        "Funambol FILEClient Log"

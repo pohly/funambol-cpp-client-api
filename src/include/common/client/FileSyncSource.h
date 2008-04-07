@@ -64,13 +64,13 @@
 class FileSyncSource : public SyncSource {
 
 protected:
-
+    
     // The dir in which the files are and that are to be synced.
     char* dir;
 
     // The copy is protected
     FileSyncSource(SyncSource& s);
-
+    
     // Return true if data correctly set: syncItem->getKey() contains
     // the file name relative to dir, copying its content into
     // the items data can be overriden by derived classes.
@@ -84,29 +84,29 @@ protected:
      * @return SyncML status code, STC_ITEM_ADDED on success
      */
     int addedItem(SyncItem& item, const WCHAR* key);
-
+      
 public:
     FileSyncSource(const WCHAR* name, AbstractSyncSourceConfig* sc);
     virtual ~FileSyncSource();
-
+    
     /**
      * The directory synchronized by this source.
      *
      * @param p      an absolute or relative path to the directory
-     */
+    */
     void setDir(const char* p);
     const char* getDir();
-
+    
     /**
      * Tracking changes requires persistent storage: for each item sent
      * to the server a property is set to the item's modification time.
-     *
+    *                        
      * The caller is responsible for storing these properties after
      * a successful sync and continues to own the node instance itself.
      *
      * During the next beginSync() the information will be used to
      * identify added, updated and deleted items.
-     */
+    */
     void setFileNode(ManagementNode *mn) { fileNode = mn; }
     ManagementNode *getFileNode() { return fileNode; }
 
@@ -126,6 +126,7 @@ public:
     int updateItem(SyncItem& item);
     int deleteItem(SyncItem& item);
     void setItemStatus(const WCHAR* key, int status);
+    void removeAllItems();
     int beginSync();
     int endSync();
     void assign(FileSyncSource& s);
@@ -138,10 +139,10 @@ public:
         ArrayList items;
         int index;
     } allItems, newItems, updatedItems, deletedItems;
-
+    
     // an optional node in which file dates are stored to track changes
     ManagementNode* fileNode;
-
+    
     /** returns time stored in fileNode for the given key, 0 if not found */
     unsigned long getServerModTime(const char* keystr);
 
