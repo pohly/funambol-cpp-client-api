@@ -1,4 +1,5 @@
-EXTRA_PROGRAMS = vcardconverter
+#EXTRA_PROGRAMS = vcardconverter
+EXTRA_PROGRAMS = briefcase
 lib_LTLIBRARIES = libsync4j.la
 
 SOURCES_BASE = \
@@ -6,10 +7,12 @@ SOURCES_BASE = \
     lautotoolsadapter.cpp \
     lArrayElement.cpp \
     lArrayList.cpp \
+    lArrayListKeyValueStore.cpp \
     lBasicTime.cpp \
     lKeyValuePair.cpp \
     lWKeyValuePair.cpp \
     lStringBuffer.cpp \
+    lPropertyFile.cpp \
     lWString.cpp \
     lXMLProcessor.cpp \
     lbaseutils.cpp \
@@ -131,6 +134,7 @@ SOURCES_SPDS = \
     lAccessConfig.cpp \
     lBodyPart.cpp \
     lCredentialHandler.cpp \
+    lCacheSyncSource.cpp \
     lDataTransformerFactory.cpp \
     lDataTransformer.cpp \
     lDeviceConfig.cpp \
@@ -207,8 +211,12 @@ libsync4j_la_CXXFLAGS = @CURL_CFLAGS@ @CPPUNIT_CXXFLAGS@
 # client_SOURCES = client.cpp TestSyncSource.cpp TestSyncSource2.cpp
 # client_LDADD = libsync4j.la
 
-vcardconverter_SOURCES = vcardconverter.cpp
-vcardconverter_LDADD = libsync4j.la
+
+briefcase_SOURCES = BriefcaseClient.cpp BriefcaseCacheSyncSource.cpp
+briefcase_LDADD = libsync4j.la
+
+#vcardconverter_SOURCES = vcardconverter.cpp
+#vcardconverter_LDADD = libsync4j.la
 
 
 #NotifProcessorTest_SOURCES = NotifProcessorTest.cpp
