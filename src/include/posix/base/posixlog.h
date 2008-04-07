@@ -42,6 +42,7 @@
 #include "base/util/StringBuffer.h"
 
 #include <stdio.h>
+#include <time.h>
 
 /**
  * extended API, can only be used if it is certain that
@@ -104,15 +105,20 @@ class POSIXLog : public Log {
      * in a different way.
      *
      * @param firstLine     true if this is the first line of a new message
+     * @param time          unformatted time stamp for line
      * @param fullTime      a time string including date and GMT offset
-     * @param shortTime     a time string including just the local time of day
+     * @param shortTime     a time string including just the local time of day in
+     *                      the preferred time format according to the current locale
+     * @param utcTime       a time string including just the UTC time of day in "hh:mm:ss UTC" format
      * @param level         the severity of the report
      * @param levelPrefix   a string representing the severity (may differ from level, e.g. for Log::developer())
      * @param line          the actual message string
      */
     virtual void printLine(bool firstLine,
+                           time_t time,
                            const char *fullTime,
                            const char *shortTime,
+                           const char *utcTime,
                            LogLevel level,
                            const char *levelPrefix,
                            const char *line);

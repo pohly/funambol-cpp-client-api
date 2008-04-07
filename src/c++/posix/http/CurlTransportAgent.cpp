@@ -144,16 +144,12 @@ int CurlTransportAgent::debugCallback(CURL *easyhandle, curl_infotype type, char
 {
     bool isData = type == CURLINFO_DATA_IN || type == CURLINFO_DATA_OUT;
 
-    if (LOG.getLevel() >= LOG_LEVEL_DEBUG) {
+    if (LOG.getLevel() >= LOG_LEVEL_DEBUG &&
+        !isData) {
         POSIX_LOG.setPrefix(type == CURLINFO_TEXT ? "libcurl info: " :
                             type == CURLINFO_HEADER_IN ? "header in: " :
                             type == CURLINFO_HEADER_OUT ? "header out: " :
-                            type == CURLINFO_DATA_IN ? "data in: " :
-                            type == CURLINFO_DATA_OUT ? "data out: " :
                             NULL);
-        if (isData) {
-            LOG.debug("=== %d bytes ===", (int)size);
-        }
         // ignore trailing line break, LOG.debug() will add it automatically
         int logsize = (int)size;
         if (logsize >= 2 && data[logsize - 2] == '\r' && data[logsize - 1] == '\n') {
@@ -183,7 +179,13 @@ char* CurlTransportAgent::sendMessage(const char* msg) {
         return NULL;
     }
 
+    size_t size = strlen(msg);
+
+
     LOG.debug("Requesting resource %s at %s:%d", url.resource, url.host, url.port);
+    POSIX_LOG.setPrefix("data out: ");
+    LOG.debug("=== %d bytes ===\n%s", (int)size, msg);
+    POSIX_LOG.setPrefix(NULL);
 
     curl_slist *slist=NULL;
     char *response = NULL;
@@ -200,7 +202,7 @@ char* CurlTransportAgent::sendMessage(const char* msg) {
     if ((code = curl_easy_setopt(easyhandle, CURLOPT_POST, true)) ||
         (code = curl_easy_setopt(easyhandle, CURLOPT_URL, url.fullURL)) ||
         (code = curl_easy_setopt(easyhandle, CURLOPT_POSTFIELDS, msg)) ||
-        (code = curl_easy_setopt(easyhandle, CURLOPT_POSTFIELDSIZE, strlen(msg))) ||
+        (code = curl_easy_setopt(easyhandle, CURLOPT_POSTFIELDSIZE, size)) ||
         (code = curl_easy_setopt(easyhandle, CURLOPT_HTTPHEADER, slist)) ||
         /*
          * slightly cheating here: when CURLOPT_CAINFO was set before, we don't unset it because
@@ -215,8 +217,15 @@ char* CurlTransportAgent::sendMessage(const char* msg) {
         LOG.error("%s", getLastErrorMsg());
     } else {
         response = responsebuffer;
+
+        POSIX_LOG.setPrefix("data in: ");
+        LOG.debug("=== %d bytes ===\n%s",
+                  (int)strlen(response),
+                  response);
     }
     POSIX_LOG.setPrefix(NULL);
+
+
     responsebuffer = NULL;
     responsebuffersize = 0;
 

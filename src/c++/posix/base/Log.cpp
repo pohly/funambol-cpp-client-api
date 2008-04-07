@@ -87,6 +87,25 @@ void POSIXLog::setLogFile(const char *path, const char* name, bool redirectStder
         logFile = fopen(name, "a+" );
     }
 
+    if (logFile) {
+        char buffer[256];
+        struct tm tm;
+        time_t t = time(NULL);
+
+        // We log UTC at the start of each line.
+        // Log the current user's time offset.
+        localtime_r(&t, &tm);
+        strftime(buffer, sizeof(buffer),
+                 "local timezone: %Z = GMT %z",
+                 &tm);
+        developer("%s", buffer);
+        asctime_r(&tm, buffer);
+        developer("local time: %s", buffer);
+        gmtime_r(&t, &tm);
+        asctime_r(&tm, buffer);
+        developer("world time: %s", buffer);
+    }
+
     if (redirectStderr && logFile) {
         if (fderr == -1) {
             // remember original stderr
@@ -144,8 +163,10 @@ void POSIXLog::debug(const char*  msg, ...) {
 }
 
 void POSIXLog::printLine(bool firstLine,
+                         time_t time,
                          const char *fullTime,
                          const char *shortTime,
+                         const char *utcTime,
                          LogLevel level,
                          const char *levelPrefix,
                          const char *line)
@@ -154,23 +175,37 @@ void POSIXLog::printLine(bool firstLine,
     if (!out) {
         out = stdout;
     }
-    fprintf(out, "%s [%s] %s%s\n",
-            logFile ? fullTime : shortTime,
-            levelPrefix,
-            getPrefix().c_str(),
-            line);
+    if (firstLine) {
+        fprintf(out, "%s [%s] %s%s\n",
+                logFile ? utcTime : shortTime,
+                levelPrefix,
+                getPrefix().c_str(),
+                line);
+    } else {
+        fprintf(out, "[%s] %s%s\n",
+                levelPrefix,
+                getPrefix().c_str(),
+                line);
+    }
     fflush(out);
 }
 
 void POSIXLog::printMessage(LogLevel level, const char* levelPrefix, const char* msg, va_list argList) {
     time_t t = time(NULL);
     struct tm sys_time;
+    struct tm utc_time;
     char fullTime[64], shortTime[32];
+    char utcTime[32];
 
     localtime_r(&t, &sys_time);
+    gmtime_r(&t, &utc_time);
 
     strftime(fullTime, sizeof(fullTime), "%F %T GMT %z", &sys_time);
     strftime(shortTime, sizeof(shortTime), "%T", &sys_time);
+    sprintf(utcTime, "%02d:%02d:%02d GMT",
+            utc_time.tm_hour,
+            utc_time.tm_min,
+            utc_time.tm_sec);
 
     if (!logFileStdout && !logFile) {
         reset();
@@ -185,8 +220,10 @@ void POSIXLog::printMessage(LogLevel level, const char* levelPrefix, const char*
         /* hack: StringBuffer does not really allow write access, but do it anyway */
         *(char *)eol = 0;
         printLine(firstLine,
+                  t,
                   fullTime,
                   shortTime,
+                  utcTime,
                   level,
                   levelPrefix,
                   start);
@@ -196,8 +233,10 @@ void POSIXLog::printMessage(LogLevel level, const char* levelPrefix, const char*
         eol = strchr(start, '\n');
     }
     printLine(firstLine,
+              t,
               fullTime,
               shortTime,
+              utcTime,
               level,
               levelPrefix,
               start);
