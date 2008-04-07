@@ -133,6 +133,7 @@ char** readDir(char* name, int *count, bool onlyCount) {
                 entry = readdir(dir);
             }
         }
+        delete dir;
     }
 
     return entries;
@@ -147,6 +148,55 @@ unsigned long getFileModTime(const char* name)
         buf.st_mtime;
 }
 
+bool removeFileInDir(const char* d, const char* fname) {
+       
+    char toFind    [512];       
+    bool ret = false;
+    char** totalFiles = NULL;
+    int numFiles = 0;
+
+    if (fname) {
+        sprintf(toFind, TEXT("%s/%s"), d, fname);    
+        if (remove(toFind) != 0) { LOG.error("Error deleting the %s file", toFind); ret = true;}
+        else { LOG.debug("File %s deleted succesfully", toFind); }	
+    }
+    else {        
+        totalFiles = readDir((char*)d, &numFiles, false);
+	if (totalFiles && numFiles > 0) {
+            for (int i = 0; i < numFiles; i++) {
+                sprintf(toFind, "%s/%s", d, totalFiles[i]);
+                remove(toFind);            
+            }
+        }
+        ret = true;
+    }
+    if (totalFiles) {
+        for (int i = 0; i < numFiles; i++) {
+            delete [] totalFiles[i]; 
+        }
+        delete [] totalFiles; totalFiles = NULL;
+    }
+
+finally:
+    return ret;
+}
+
+StringBuffer getCacheDirectory() {
+    
+    StringBuffer ret(getenv("HOME"));
+    ret.append("/");
+    ret.append(CACHE_REP);
+    
+    DIR* d = opendir(ret);
+    if (!d) {
+        mkdir(ret, 0777);
+    } else {
+        closedir(d);
+    }  
+    return ret;
+}
+    
+    
 // TODO: convert to the specified encoding, assuming wc is UTF-8
 char* toMultibyte(const WCHAR *wc, const char *encoding)
 {

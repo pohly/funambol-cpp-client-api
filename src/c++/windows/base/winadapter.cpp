@@ -39,6 +39,7 @@
 
 #if defined(WIN32) && !defined(_WIN32_WCE)
 #include <sys/stat.h>
+#include "shlobj.h"
 #endif
 
 struct Codepage {
@@ -424,8 +425,14 @@ finally:
     return ret;
 }
 
-
 #if defined(WIN32) && !defined(_WIN32_WCE)
+unsigned long getFileModTime(const char* name) {
+	struct _stat buffer;
+	return _stat(name, &buffer) ? 0 : (unsigned long)buffer.st_mtime;
+}
+#endif
+
+#if defined(WIN32) || defined(_WIN32_WCE)
 /// Returns a file list from a directory, as char**.
 char** readDir(char* name, int *count, bool onlyCount) {
 
@@ -499,17 +506,92 @@ finally:
     return fileNames;
 }
 
-unsigned long getFileModTime(const char* name) {
-	struct _stat buffer;
-	return _stat(name, &buffer) ? 0 : (unsigned long)buffer.st_mtime;
+
+bool removeFileInDir(const char* d, const char* fname) {
+    
+    WIN32_FIND_DATA FileData;
+    HANDLE hFind;
+
+    wchar_t toFind    [512];
+    wchar_t szNewPath [512];    
+    bool ret = false;
+
+    DWORD dwAttrs;
+    BOOL fFinished = FALSE;
+    
+    WCHAR* dir      = toWideChar(d);
+    
+    if (fname) {
+        WCHAR* filename = toWideChar(fname);
+        wsprintf(toFind, TEXT("%s/%s"), dir, filename);    
+        delete [] filename; filename = NULL;
+    }
+    else {
+        wsprintf(toFind, TEXT("%s/*.*"), dir);
+    }
+
+    hFind = FindFirstFile(toFind, &FileData);
+
+    if (hFind != INVALID_HANDLE_VALUE) {
+        while (!fFinished) {
+
+            wsprintf(szNewPath, TEXT("%s/%s"), dir, FileData.cFileName);
+            dwAttrs = GetFileAttributes(szNewPath);
+            if (dwAttrs == FILE_ATTRIBUTE_DIRECTORY) { }
+                // do anything for subdirectory
+            else {
+                  DeleteFile(szNewPath);
+            }
+
+            if (!FindNextFile(hFind, &FileData)) {
+                if (GetLastError() == ERROR_NO_MORE_FILES) {
+                    fFinished = TRUE;
+                }
+                else  {
+                    goto finally;
+                }
+            }
+        }
+
+        FindClose(hFind);
+    }
+    
+    ret = true;
+
+finally:
+    if (dir) { delete [] dir; }
+    return ret;
 }
 
+StringBuffer getCacheDirectory() {
+    
+    StringBuffer ret = ".";
+    wchar_t p[260];
+    SHGetSpecialFolderPath(NULL, p, CSIDL_PERSONAL, 0);        
+    wcscat(p, TEXT("/"));
+    wcscat(p, TEXT(CACHE_REP));    
+    DWORD attr = CreateDirectory(p, NULL);
+    if (attr == ERROR_ALREADY_EXISTS) {
+        LOG.info("The %S directory exists", p);        
+    } else if (attr == ERROR_PATH_NOT_FOUND) {
+        LOG.info("The %S has an error in the path", p);
+        return ret;
+    } else if (attr == 0) {
+        //               
+    }    
+    char* t = toMultibyte(p);
+    ret = t;
+    delete [] t;
+    return ret;
+}
 
 #else
 // TBD: dummy implementation!
 char** readDir(char* name, int *count, bool onlyCount) {
     return NULL;
 }
+
+bool removeFileInDir(const char* dir, const char* filename);
 #endif   // #if defined(WIN32) && !defined(_WIN32_WCE)
 
 
