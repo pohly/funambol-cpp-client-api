@@ -90,7 +90,23 @@ protected:
     // copy content of "lines" to or from file
     void update(bool read);
 
+    // String compare case insensitive
     int strnicmp( const char *a, const char *b, int len );
+
+    // Concatenate two directory names (of file names)
+    // If src1 is terminated by dir separator then src2 is simply appended
+    // otherwise a dir separator is inserted first
+    void concatDirs(StringBuffer& src1, const char* src2);
+
+    // Initialize current dir. Current dir is initialized as configPath +
+    // context + name
+    void initCurrentDir();
+
+    // Convert a generic context to path file name
+    StringBuffer contextToPath(const char* cont);
+
+    // Rename a file in the current working directory (currentDir)
+    int renameFileInCwd(const char* src, const char* dst);
 
     private:
 
