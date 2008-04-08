@@ -43,7 +43,7 @@
 #include "base/util/PropertyFile.h"
 #include "base/util/ArrayListEnumeration.h"
 
-CacheSyncSource::CacheSyncSource(const WCHAR* sourceName, AbstractSyncSourceConfig *sc, ArrayListKeyValueStore* cache) :
+CacheSyncSource::CacheSyncSource(const WCHAR* sourceName, AbstractSyncSourceConfig *sc, KeyValueStore* cache) :
                     SyncSource(sourceName, sc) {
    
     allKeys = NULL;
@@ -282,23 +282,30 @@ int CacheSyncSource::endSync() {
 bool CacheSyncSource::fillItemModifications() {
     
     // all the current items keys list
-    Enumeration* arrenum = (Enumeration*)getAllItemList();
+    Enumeration* items = (Enumeration*)getAllItemList();
 
     // the propertyFile containing the current cache
     readCache();
 
     // all the action are done on the copy so we can delete
     // the element found. The remained are the deleted by the user.        
-    ArrayList cacheCopy(cache->getData());
+    Enumeration* e = cache->getProperties();
+    ArrayList cacheCopy;
+    while(e->hasMoreElement()) {
+        cacheCopy.add(*e->getNextElement());
+    }
+    if (e) {
+        delete e;
+    }
 
     StringBuffer* key;
     KeyValuePair* kvp;
     
     ArrayList newitem, moditem;
 
-    if (arrenum) {
-        while(arrenum->hasMoreElement()) {
-            key = (StringBuffer*)arrenum->getNextElement();
+    if (items) {
+        while(items->hasMoreElement()) {
+            key = (StringBuffer*)items->getNextElement();
             int size = cacheCopy.size();
             bool foundnew = true;
 
@@ -331,8 +338,8 @@ bool CacheSyncSource::fillItemModifications() {
         deletedKeys = new ArrayListEnumeration(cacheCopy);
     }
     
-    if (arrenum) { 
-        delete arrenum; 
+    if (items) { 
+        delete items; 
     }
     return true;
 }

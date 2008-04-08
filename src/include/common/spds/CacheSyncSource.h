@@ -51,7 +51,8 @@
 #include "spds/SyncSource.h"
 #include "syncml/core/TagNames.h"
 #include "base/util/Enumeration.h"
-#include "base/util/ArrayListKeyValueStore.h"
+#include "base/util/KeyValueStore.h"
+#include "base/util/KeyValuePair.h"
 
 #define CACHE_FILE_NAME     "cache_items.dat"
 
@@ -73,10 +74,9 @@ private:
     * - during the two-way sync it is populated at the beginning to understand
     * the modification. This action populates the newKeys, updatedKeys and deletedKeys.
     * For every item status sent back by the server the cache is updated
-    *
-    * It contains an ArrayList that can save the cache. It is an interface
+    *    
     */    
-    ArrayListKeyValueStore* cache; 
+    KeyValueStore* cache; 
        
     /**
     * Enumeration of the new keys
@@ -116,12 +116,12 @@ private:
 
     /**
     * Read the current cache file (or wathever) to be compared to the current items
-    * It populates the cache ArrayList with KeyValuePair of uid/signature
+    * It populates the cache with KeyValuePair of uid/signature
     */
     int readCache();
 
     /**
-    * Save the current cache ArrayList in the file (or wathever).    
+    * Save the current cache in what is implemented by KeyValueStore (a file or wathever).    
     */
     int saveCache();
     
@@ -171,7 +171,7 @@ protected:
     /**
     * Used to update the cache adding, replacing or deleting. 
     * The KeyValuePair contains the pair UID/signature. It is provided
-    * by the proper method who calls this. It udpates the cache arraylist
+    * by the proper method who calls this. It udpates the cache 
     * that is in memory.
     * The action by default is Replace. 
     */
@@ -212,7 +212,7 @@ public:
      *                
      */
     CacheSyncSource(const WCHAR* name, AbstractSyncSourceConfig* sc, 
-                        ArrayListKeyValueStore* cache = NULL);
+                        KeyValueStore* cache = NULL);
         
     // Destructor
     virtual ~CacheSyncSource();         
@@ -323,8 +323,7 @@ public:
     /**
     * Get the signature of an item given the key. The signature could be
     * a crc computation or a timestamp or whatever can identify uniquely the
-    * content of an item. It is used by the implementation of the ItemHandler
-    * and it need the getItemContent too. The default implementation uses a 
+    * content of an item. The default implementation uses a 
     * crc computation of the value. Overriding implementation could provide
     * something different like the timestamp or other...
     *
@@ -335,9 +334,7 @@ public:
 
     /**
     * Get the content of an item given the key. It is used to populate
-    * the SyncItem before the engine uses it in the usual flow of the sync.
-    * It is used also by the itemHandler if needed 
-    * (i.e. in the cache implementation)
+    * the SyncItem before the engine uses it in the usual flow of the sync.      
     *
     * @param key      the local key of the item
     * @param size     OUT: the size of the content
