@@ -33,7 +33,7 @@
  * the words "Powered by Funambol".
  */
 
-
+#include "base/fscapi.h"
 #include "vocl/vCard/vCardConverter.h"
 #include "base/util/WString.h"
 
@@ -495,12 +495,12 @@ bool vCardConverter::validateGeo(WCHAR* geo) {
     else
         return false;
 
-	WCHAR* stopstring;
+    WCHAR* stopstring;
    // double lon = _wtof(longitude);
    // double lat = _wtof(latitude);
 
-	double lon = wcstod(longitude, &stopstring);
-	double lat = wcstod(latitude, &stopstring);
+    double lon = wcstod(longitude, &stopstring);
+    double lat = wcstod(latitude, &stopstring);
 
     if(lon == 0.0 || lat == 0.0)
         return false;
