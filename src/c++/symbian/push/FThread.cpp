@@ -33,24 +33,77 @@
  * the words "Powered by Funambol".
  */
 
+#include <e32std.h>
+
+static TInt symbianRunWrapper(TAny* thread);
+static TInt symbianTimeoutWrapper(TAny* thread);
+
+#include "base/fscapi.h"
 #include "push/FThread.h"
 
-FThread::FThread() :isRunning(false),
-                    terminate(false)
+FThread::FThread() : terminate(false),
+                     isRunning(false),
+                     id(0)
 {
 }
 
 FThread::~FThread() {
 }
 
+typedef void (FThread::*ThreadFunction)(void);
+
 void FThread::start( FThread::Priority priority ) {
+
+    RBuf threadId;
+    threadId.CreateL(128);
+    threadId.Format(_L("FThread-%d"), id++);
+
+    ThreadFunction startFunction = &FThread::run;
+
+    TRAPD(err, sthread.Create(_L("ThreadId"), (TThreadFunction)symbianRunWrapper,
+                              KDefaultStackSize, (RAllocator*)NULL, this));
+    if (err == KErrNone) {
+        if (priority == InheritPriority) {
+            // TODO: how do we get the current thread priority?
+            priority = NormalPriority;
+        }
+        sthread.SetPriority((TThreadPriority)priority);
+        sthread.Resume();
+    }
 }
 
 void FThread::wait() {
+    TRequestStatus stat;
+    sthread.Logon(stat);
+    User::WaitForRequest(stat);
 }
 
 bool FThread::wait(unsigned long timeout) {
-    return false;
+    TRequestStatus stat;
+    sthread.Logon(stat);
+
+    RThread tthread;
+    TBuf<128> tthreadId;
+    tthreadId.Format(_L("FThread-timer-%d"), id);
+    // Start the timer thread
+    if (timeout) {
+        this->timeout = timeout;
+        TRAPD(err, tthread.Create(tthreadId, (TThreadFunction)symbianTimeoutWrapper,
+                                  KDefaultStackSize, (RAllocator*)NULL, this));
+        if (err == KErrNone) {
+            tthread.Resume();
+        }
+        User::WaitForRequest(stat);
+    }
+     
+    if (this->timeout || timeout == 0) {
+        if (timeout) {
+            timer.Cancel();
+        }
+        return true;
+    } else {
+        return false;
+    }
 }
 
 bool FThread::finished() const {
@@ -63,8 +116,38 @@ bool FThread::running() const {
 
 void FThread::softTerminate() {
     terminate = true;
+    // Kill the thread
+    sthread.Kill(0);
 }
 
 void FThread::sleep(long msec) {
+    User::After((TTimeIntervalMicroSeconds32) (msec * 1000));
+}
+
+TInt FThread::startTimeout() {
+    TRequestStatus status;
+    timer.CreateLocal();
+    timer.After(status, (TTimeIntervalMicroSeconds32)timeout);
+    User::WaitForRequest(status);
+    // If the thread is still running we must kill it
+    if (isRunning) {
+        sthread.Kill(0);
+    }
+    timeout = 0;
+    return 0;
+}
+
+static TInt symbianRunWrapper(TAny* thread) {
+
+    FThread* t = (FThread*)thread;
+    t->run();
+    return 0;
+}
+
+static TInt symbianTimeoutWrapper(TAny* thread) {
+
+    FThread* t = (FThread*)thread;
+    t->startTimeout();
+    return 0;
 }
 
