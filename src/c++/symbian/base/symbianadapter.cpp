@@ -93,3 +93,58 @@ WCHAR* toWideChar(const char *mb, const char *encoding)
     return stringdup(mb);
 #endif
 }
+
+
+size_t snwprintf(WCHAR *v, size_t size, const WCHAR* format, unsigned long value) {
+
+    TPtrC16 formatBuf((const TUint16*)format);
+    TInt error;
+    RBuf16 formattedBuf;
+
+    TRAP(error, formattedBuf.CreateL(size));
+    if (error == KErrNone) {
+        TRAP(error, formattedBuf.Format(formatBuf, value));
+        if (error == KErrNone) {
+            WCHAR* ptr = (WCHAR *) formattedBuf.Ptr();
+            size_t finalSize = formattedBuf.Length() * sizeof(WCHAR);
+            if (finalSize < size) {
+                memcpy(v, ptr, finalSize);
+                v[finalSize] = 0;   // Symbian descriptors don't have the trailing null char
+                return finalSize;
+            } else {
+                // In this case we truncate. We signal this by returning -1
+                memcpy(v, ptr, size);
+                v[size] = 0;   // Symbian descriptors don't have the trailing null char
+                return (size_t)-1;
+            }
+        }
+    }
+    // We cannot format the string. Return -1.
+    return (size_t)-1;
+}
+
+
+WCHAR *wcschr(const WCHAR *ws, WCHAR wc) {
+    return NULL;
+}
+
+WCHAR *wcsstr(WCHAR *ws1, WCHAR *ws2) {
+    return NULL;
+}
+
+WCHAR *wcstok(WCHAR *ws1, const WCHAR *ws2) {
+    return NULL;
+}
+
+WCHAR *wcsncat(WCHAR *ws1, const WCHAR *ws2, size_t n) {
+    return NULL;
+}
+
+double wcstod(const WCHAR *nptr, WCHAR **endptr) {
+    return 0.0;
+}
+
+int _wtoi(const WCHAR *str) {
+    return 0;
+}
+
