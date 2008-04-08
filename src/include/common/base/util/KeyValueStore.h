@@ -42,10 +42,12 @@
 #include "base/fscapi.h"
 #include "base/ErrorHandler.h"
 #include "base/util/ArrayElement.h"
+#include "base/util/Enumeration.h"
 #include "spds/constants.h"
 #include "spds/SyncItem.h"
 #include "spds/SyncStatus.h"
 #include "spds/SyncSourceReport.h"
+
 
 /**
  * This is the interface for the handling of the key/value that
@@ -62,7 +64,7 @@ protected:
     * The completed node where to write the property key/vlue
     */
     StringBuffer node;
-
+    
 public:
     
     /**      
@@ -74,20 +76,18 @@ public:
 
     // Destructor
     virtual ~KeyValueStore() {}
-    
-   
+      
     /*
-     * Returns the value of the given property from the data ArrayList
+     * Returns the value of the given property
      *
      *@param prop - the property name
      *
-     *@return   empty value means the property is not found. This is the copy of the
-     *          value in the arraylist
+     *@return   empty value means the property is not found. 
      */
     virtual StringBuffer readPropertyValue(const char *prop) = 0;
 
     /*
-     * Sets a property value from the data ArrayList
+     * Sets a property value 
      *
      * @param prop      - the property name
      * @param value    - the property value (zero terminated string)
@@ -96,12 +96,17 @@ public:
     virtual void setPropertyValue(const char *prop, const char *value, bool add = true) = 0;
     
      /**
-     * Remove a certain property from the data ArrayList
+     * Remove a certain property 
      *
      * @param prop    the name of the property which is to be removed
      */
     virtual void removeProperty(const char *prop) = 0;
      
+    /**
+     * Get all the properties that are already read from the store.
+     */
+    virtual Enumeration* getProperties() = 0;
+
      /**
      * Extract all currently properties in the node
      * It populates the data ArrayList to hold the 
