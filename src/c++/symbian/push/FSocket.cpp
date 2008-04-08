@@ -70,9 +70,13 @@ FSocket* FSocket::NewLC(const StringBuffer& peer, int32_t port)
 void FSocket::ConstructL(const StringBuffer& peer, int32_t port) 
 {
     LOG.debug("FSocket::ConstructL");
-    StringBuffer errorMsg;
     
-    RBuf serverName;
+    StringBuffer  errorMsg;
+    RHostResolver resolver; 
+    RBuf          serverName;
+    TNameEntry    hostAddress;
+    TInetAddr     address;
+    
     serverName.Assign(stringBufferToNewBuf(peer));
     
     // Create the socket session
@@ -88,7 +92,6 @@ void FSocket::ConstructL(const StringBuffer& peer, int32_t port)
 
     // --- Resolve the host address ---
     LOG.debug("resolve IP address...");
-    RHostResolver resolver;
     res = resolver.Open(iSocketSession, KAfInet, KProtocolInetTcp);
     if (res != KErrNone) {
         iStatus = -2;
@@ -96,7 +99,6 @@ void FSocket::ConstructL(const StringBuffer& peer, int32_t port)
         goto error;
     }
     
-    TNameEntry hostAddress;
     resolver.GetByName(serverName, hostAddress, iStatus);
     User::WaitForRequest(iStatus);
     resolver.Close();
@@ -106,7 +108,7 @@ void FSocket::ConstructL(const StringBuffer& peer, int32_t port)
     }
 
     // Set the socket server address/port
-    TInetAddr address = hostAddress().iAddr;
+    address = hostAddress().iAddr;
     address.SetPort(port);
     
     // --- Connect to host ---
