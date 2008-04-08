@@ -242,7 +242,7 @@ inline long calculateCRC(const void *s, size_t len) {
     if (len <= 0) {
         return 0;
     }
-    unsigned long s_arrdwCrc32Table1[256] =
+    static const unsigned long s_arrdwCrc32Table1[256] =
     {
         0x00000000, 0x77073096, 0xEE0E612C, 0x990951BA,
         0x076DC419, 0x706AF48F, 0xE963A535, 0x9E6495A3,
@@ -315,7 +315,6 @@ inline long calculateCRC(const void *s, size_t len) {
         
     unsigned long dwCrc32 = 0;
 
-    unsigned long dwErrorCode = 0;
     unsigned char byte = 0;
 
     dwCrc32 = 0xFFFFFFFF;
