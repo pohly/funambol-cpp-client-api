@@ -36,6 +36,8 @@
 #ifndef INCL_FTHREAD
 #define INCL_FTHREAD
 
+#include <e32std.h>
+
 class FThread {
 
 protected:
@@ -46,9 +48,14 @@ protected:
     virtual ~FThread();
 
 public:
-    enum Priority { IdlePriority, LowestPriority, LowPriority,
-                    NormalPriority, HighPriority, HighestPriority,
-                    TimeCriticalPriority, InheritPriority };
+    enum Priority { IdlePriority         = EPriorityNull,
+                    LowestPriority       = EPriorityMuchLess,
+                    LowPriority          = EPriorityLess,
+                    NormalPriority       = EPriorityNormal,
+                    HighPriority         = EPriorityMore,
+                    HighestPriority      = EPriorityMuchMore,
+                    TimeCriticalPriority = EPriorityRealTime,
+                    InheritPriority };
 
 public:
 
@@ -98,6 +105,17 @@ public:
 
 private:
     bool isRunning;
+    unsigned long timeout;
+    uint32_t id;
+    RThread  sthread;
+    RTimer   timer;
+
+private:
+    TInt startTimeout();
+
+    friend TInt symbianRunWrapper(TAny* thread);
+    friend TInt symbianTimeoutWrapper(TAny* thread);
+ 
 };
 
 #endif
