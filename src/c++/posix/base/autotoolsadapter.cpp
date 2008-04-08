@@ -133,7 +133,7 @@ char** readDir(char* name, int *count, bool onlyCount) {
                 entry = readdir(dir);
             }
         }
-        delete dir;
+        closedir(dir);
     }
 
     return entries;
