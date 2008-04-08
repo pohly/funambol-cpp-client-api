@@ -38,7 +38,7 @@
 #define INCL_VIRTUAL_CONVERTER
 /** @cond DEV */
 
-#include "VObject.h"
+#include "vocl/VObject.h"
 
 class VConverter{
 

@@ -36,7 +36,7 @@
 
 //
 // @author Stefano Fornari @ Funambol
-// @version $Id: PersonalDetail.h,v 1.6 2007-11-28 15:01:36 toccy Exp $
+// @version $Id: PersonalDetail.h,v 1.7 2008-04-08 07:14:53 marco_garatti Exp $
 //
 
 
@@ -44,9 +44,9 @@
 #define INCL_PIM_PERSONAL_DETAIL
 /** @cond DEV */
 
-#include "Address.h"
-#include "ContactDetail.h"
-#include "vCardProperty.h"
+#include "vocl/vCard/Address.h"
+#include "vocl/vCard/ContactDetail.h"
+#include "vocl/vCard/vCardProperty.h"
 
 /**
  * An object containing the personal details of a contact

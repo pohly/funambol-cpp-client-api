@@ -36,7 +36,7 @@
 
 //
 // @author Stefano Fornari @ Funambol
-// @version $Id: WebPage.h,v 1.5 2007-11-28 15:01:36 toccy Exp $
+// @version $Id: WebPage.h,v 1.6 2008-04-08 07:14:53 marco_garatti Exp $
 //
 
 
@@ -44,7 +44,7 @@
 #define INCL_PIM_WEB_PAGE
 /** @cond DEV */
 
-#include "TypedProperty.h"
+#include "vocl/vCard/TypedProperty.h"
 
 /**
  * An object representing a web page.

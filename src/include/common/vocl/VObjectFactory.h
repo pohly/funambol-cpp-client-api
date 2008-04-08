@@ -38,7 +38,7 @@
 #define INCL_VIRTUAL_OBJECT_FACTORY
 /** @cond DEV */
 
-#include "VObject.h"
+#include "vocl/VObject.h"
 
 class VObjectFactory {
 

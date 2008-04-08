@@ -36,14 +36,14 @@
 
 //
 // @author Stefano Fornari @ Funambol
-// @version $Id: Name.h,v 1.5 2007-11-28 15:01:36 toccy Exp $
+// @version $Id: Name.h,v 1.6 2008-04-08 07:14:53 marco_garatti Exp $
 //
 
 #ifndef INCL_PIM_NAME
 #define INCL_PIM_NAME
 /** @cond DEV */
 
-#include "vCardProperty.h"
+#include "vocl/vCard/vCardProperty.h"
 
 class Name {
 

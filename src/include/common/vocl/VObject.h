@@ -38,7 +38,7 @@
 #define INCL_VIRTUAL_OBJECT
 /** @cond DEV */
 
-#include "VProperty.h"
+#include "vocl/VProperty.h"
 
 
 
