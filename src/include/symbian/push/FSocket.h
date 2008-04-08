@@ -36,26 +36,59 @@
 #ifndef INCL_FSOCKET
 #define INCL_FSOCKET
 
+#include <es_sock.h>
+#include <in_sock.h>
 #include "base/fscapi.h"
 #include "base/util/StringBuffer.h"
 
 class FSocket {
-
+    
 private:
+    
+    RSocketServ             iSocketSession;
+    RSocket                 iSocket;
+    TRequestStatus          iStatus;
+    
+    // used? TODO
+    StringBuffer lAddress;
+    StringBuffer pAddress;
+    static StringBuffer lIP;
+    
+    
+    /**
+     * Opens a socket connecting to the peer host on the given port.
+     */
+    void ConstructL(const StringBuffer& peer, int32_t port);
+    
     FSocket();
 
+    
 public:
+    
+    /**
+     * This method is the factory to create sockets
+     * Opens a socket connecting to the peer host on the given port.
+     * Returns a valid object if the connection can be establishd. Returns
+     * NULL if the socket cannot be created for any reason.
+     */
+    static FSocket* createSocket(const StringBuffer& peer, int32_t port);
+    
+    // 1st and 2nd phase constructors
+    static FSocket* NewL (const StringBuffer& peer, int32_t port);
+    static FSocket* NewLC(const StringBuffer& peer, int32_t port);
+    
     virtual ~FSocket();
+    
 
     /**
      Returns the local address associates to this socket in the form
-     “address:port” where address can be either the numerical IP or the
+     'address:port' where address can be either the numerical IP or the
      symbolic name
     */
     const StringBuffer& address() const;
     /**
      Returns the local address associates to this socket in the form
-     “address:port” where address can be either the numerical IP or the
+     'address:port' where address can be either the numerical IP or the
      symbolic name
     */
     const StringBuffer& peerAddress() const;
@@ -83,25 +116,17 @@ public:
      any IO operation is invalid.
     */
     void close();
-
-public:
-
-    // This method is the factory to create sockets
-
-    /**
-     Opens a socket connecting to the peer host on the given port.
-     Returns a valid object if the connection can be establishd. Returns
-     NULL if the socket cannot be created for any reason.
-    */
-    static FSocket* createSocket(const StringBuffer& peer, int32_t port);
-
     
+    /// Returns the status of last operation.
+    TInt getLastStatus() { return iStatus.Int(); }
+
+
 
     // These methods are misc utilities
 
     /**
      Returns a string representing the local address in the form:
-     “address” where address can be the numerical IP or the symbolic
+     'address' where address can be the numerical IP or the symbolic
      name. If the address cannot be retrieved, then the returned string is
      empty.
      If the device is not connected to the network then this method returns
@@ -109,10 +134,8 @@ public:
      connection.
     */
     static const StringBuffer& localIP();
+    
+    static void startConnection();
 
-private:
-    StringBuffer lAddress;
-    StringBuffer pAddress;
-    static StringBuffer lIP;
 };
 #endif
