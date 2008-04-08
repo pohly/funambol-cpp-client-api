@@ -95,7 +95,7 @@ class MetInf {
 
         MetInf();
 
-		~MetInf();
+        ~MetInf();
 
      /**
      * Creates a new MetInf object with the given info.
@@ -189,105 +189,105 @@ class MetInf {
      */
     void setEmi(ArrayList* emi);
 
-	/**
-	 * Returns anchor
-	 *
-	 * @return anchor
-	 */
-	Anchor* getAnchor();
-	/**
-	 * Sets anchor
-	 *
-	 * @param anchor the new anchor value
-	 */
-	void setAnchor(Anchor* anchor);
+    /**
+     * Returns anchor
+     *
+     * @return anchor
+     */
+    Anchor* getAnchor();
+    /**
+     * Sets anchor
+     *
+     * @param anchor the new anchor value
+     */
+    void setAnchor(Anchor* anchor);
 
-	/**
-	 * Returns nextNonce
-	 *
-	 * @return nextNonce
-	 */
-	NextNonce* getNextNonce();
+    /**
+     * Returns nextNonce
+     *
+     * @return nextNonce
+     */
+    NextNonce* getNextNonce();
 
-	/**
-	 * Sets nextNonce
-	 *
-	 * @param nextNonce the new nextNonce value
-	 */
-	void setNextNonce(NextNonce* nextNonce);
+    /**
+     * Sets nextNonce
+     *
+     * @param nextNonce the new nextNonce value
+     */
+    void setNextNonce(NextNonce* nextNonce);
 
-	/**
-	 * Returns mem
-	 *
-	 * @return mem
-	 */
-	Mem* getMem();
+    /**
+     * Returns mem
+     *
+     * @return mem
+     */
+    Mem* getMem();
 
-	/**
-	 * Sets mem
-	 *
-	 * @param mem the new mem value
-	 */
-	void setMem(Mem* mem);
+    /**
+     * Sets mem
+     *
+     * @param mem the new mem value
+     */
+    void setMem(Mem* mem);
 
 
-	/**
-	 * Returns maxMsgSize
-	 *
-	 * @return maxMsgSize
-	 */
-	long getMaxMsgSize();
+    /**
+     * Returns maxMsgSize
+     *
+     * @return maxMsgSize
+     */
+    long getMaxMsgSize();
 
-	/**
-	 * Sets maxMsgSize
-	 *
-	 * @param maxMsgSize the new maxMsgSize value
-	 */
-	 void setMaxMsgSize(long maxMsgSize);
+    /**
+     * Sets maxMsgSize
+     *
+     * @param maxMsgSize the new maxMsgSize value
+     */
+     void setMaxMsgSize(long maxMsgSize);
 
-	/**
-	 * Returns maxObjSize
-	 *
-	 * @return maxObjSize
-	 */
-	long getMaxObjSize();
+    /**
+     * Returns maxObjSize
+     *
+     * @return maxObjSize
+     */
+    long getMaxObjSize();
 
-	/**
-	 * Sets maObjSize
-	 *
-	 * @param maxObjSize the new maxObjSize value
-	 */
-	void setMaxObjSize(long maxObjSize);
+    /**
+     * Sets maObjSize
+     *
+     * @param maxObjSize the new maxObjSize value
+     */
+    void setMaxObjSize(long maxObjSize);
 
-	/**
-	 * Returns emi
-	 *
-	 * @return emi
-	 */
-	ArrayList* getEMI();
+    /**
+     * Returns emi
+     *
+     * @return emi
+     */
+    ArrayList* getEMI();
 
-	/**
-	 * Sets emi
-	 *
-	 * @param emi the new emi value
-	 */
-	void setEMI(ArrayList* emi);
+    /**
+     * Sets emi
+     *
+     * @param emi the new emi value
+     */
+    void setEMI(ArrayList* emi);
 
-	/**
-	 * Returns version
-	 *
-	 * @return version
-	 */
-	const char* getVersion();
+    /**
+     * Returns version
+     *
+     * @return version
+     */
+    const char* getVersion();
 
-	/**
-	 * Sets version
-	 *
-	 * @param version the new version value
-	 */
-	void setVersion(const char*  version);
+    /**
+     * Sets version
+     *
+     * @param version the new version value
+     */
+    void setVersion(const char*  version);
 
-	MetInf* clone();
+    MetInf* clone();
 
 };
 
