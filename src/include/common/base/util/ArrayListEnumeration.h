@@ -43,57 +43,41 @@
  * An implementation of the ArrayEnumaration based on 
  * the ArrayList class
  */
-class ArrayListEnumeration : public Enumeration {
+class ArrayListEnumeration : public Enumeration, public ArrayList {
 
-    private:
-        
-        /**
-        * This is the list on which to iterate. It is an own copy
-        * of the passed one.
-        */
-        ArrayList list;
-        
-        /**
-        * to store the size of the array list make faster
-        * the check on the size of the list               
-        */ 
-        int arraySize;
-        
+    private:              
         /**
         * To trace the index of the enumeration
         */
-        int counter; 
+        int counter;
 
     public: 
         
-        ArrayListEnumeration() {             
-            counter   = 0; 
-            arraySize = list.size();
+        ArrayListEnumeration() : ArrayList() {             
+            counter = 0;
         }
     
-        ArrayListEnumeration(ArrayList l) { 
-            list      = l; 
-            counter   = 0; 
-            arraySize = list.size();
+        ArrayListEnumeration(ArrayList& l) : ArrayList(l) { 
+            counter = 0;            
         }
     
         virtual ~ArrayListEnumeration() {}
+
         /**
          * Return true if there are more elements in the enumeration.
          */
-	
-	    bool hasMoreElement() {
-	        return (counter == arraySize) ? false : true;	       
+	    bool hasMoreElement() {              
+            return (counter == size()) ? false : true;	       
 	    }
 
         /**
          * Return the next element
          */
 	    ArrayElement* getNextElement() { 
-	        if (counter == 0) { counter++;  return list.front(); }
-	        else              { counter++;  return list.next();  }
+            if (counter == 0) { counter++; return front(); }
+            else              { counter++; return next();  }
 	    }
-
+      
         
 };
 
