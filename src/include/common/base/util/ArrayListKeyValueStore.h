@@ -48,6 +48,7 @@
 #include "spds/SyncSourceReport.h"
 #include "base/util/KeyValuePair.h"
 #include "base/util/KeyValueStore.h"
+#include "base/util/ArrayListEnumeration.h"
 
 /**
  * This is the interface for the handling of the key/value that
@@ -69,7 +70,7 @@ protected:
     * The list contains the pair key/value that are what is in the file that is 
     * in the form key:value
     */
-    ArrayList data;       
+    ArrayList data; 
 
 public:
     
@@ -88,7 +89,7 @@ public:
     * It is used because it is useful to have a copy 
     * of the cache to calculate the diff    
     */
-    virtual ArrayList& getData() { return data; }
+    //virtual ArrayList& getData() { return data; }
 
     /*
      * Returns the value of the given property from the data ArrayList
@@ -116,6 +117,15 @@ public:
      */
     virtual void removeProperty(const char *prop);
     
+    /**
+     * Read all the properties that are in the store. This is
+     * an enumeration of KeyValuePairs
+     * 
+     */
+    virtual Enumeration* getProperties() {        
+        return new ArrayListEnumeration(data); 
+    }
+
     /**
     * used to iterate on the element of the data. 
     * if NULL there are no more element
