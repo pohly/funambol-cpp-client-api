@@ -37,10 +37,8 @@
 /** @cond DEV */
 
 #include "spdm/errors.h"
-#if !defined(SYMBIAN)
 #include "spds/errors.h"
 #include "http/errors.h"
-#endif
 
 #define DIM_ERROR_MESSAGE 512
 
