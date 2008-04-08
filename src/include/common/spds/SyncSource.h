@@ -297,8 +297,11 @@ public:
      * Removes all the item of the sync source. It is called 
      * by the engine in the case of a refresh from server to clean      
      * all the client items before receiving the server ones.
+     * It is called after the beginSync() method.
+     *
+     *@return 0 if the remote succeded.
      */
-    virtual void removeAllItems() = 0;
+    virtual int removeAllItems() = 0;
 
     /**
      * Return the key of the first SyncItem of all.

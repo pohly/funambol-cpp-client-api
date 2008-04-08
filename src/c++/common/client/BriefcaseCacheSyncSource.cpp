@@ -96,8 +96,9 @@ BriefcaseSyncSource::BriefcaseSyncSource(const BriefcaseSyncSource& s) : Trackin
 BriefcaseCacheSyncSource::~BriefcaseCacheSyncSource() {}
 
 
-void BriefcaseCacheSyncSource::removeAllItems() {
+int BriefcaseCacheSyncSource::removeAllItems() {
     removeFileInDir(dir);
+    return 0;
 }
 
 
@@ -157,7 +158,7 @@ Enumeration* BriefcaseCacheSyncSource::getAllItemList() {
     // Get the list of the files that are in the directory
     //
     ArrayList currentKeys;
-    Enumeration* allKeys = NULL;
+    Enumeration* allKeys = NULL;        
     int count;
     char** fileNames = readDir((char*)dir.c_str(), &count);
     LOG.info("The client number of files to sync are %i", count);

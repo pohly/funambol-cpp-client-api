@@ -116,7 +116,7 @@ public:
      * by the engine in the case of a refresh from server to clean      
      * all the client items before receiving the server ones.
      */
-    void removeAllItems();
+    int removeAllItems();
 
     /**
      * Called by the sync engine to add an item that the server has sent.

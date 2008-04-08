@@ -126,7 +126,7 @@ public:
     int updateItem(SyncItem& item);
     int deleteItem(SyncItem& item);
     void setItemStatus(const WCHAR* key, int status);
-    void removeAllItems();
+    int removeAllItems();
     int beginSync();
     int endSync();
     void assign(FileSyncSource& s);
