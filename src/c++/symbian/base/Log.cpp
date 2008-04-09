@@ -193,7 +193,7 @@ void SymbianLog::printMessage(const char* level, const char* msg, PLATFORM_VA_LI
     TInt err = file.Open(fsSession, iLogName, EFileWrite|EFileShareAny);
     User::LeaveIfError(err);
     
-    TInt pos;
+    TInt pos = 0;
     err = file.Seek(ESeekEnd, pos);
     User::LeaveIfError(err);
 
