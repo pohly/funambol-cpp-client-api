@@ -51,8 +51,7 @@ SymbianLog::SymbianLog(bool resetLog, const char* path, const char* name)
     iLogName.Assign(charToNewBuf(SYMBIAN_LOG_NAME));
 
     // Connect to the file server session.
-    fsSession.Connect(); 
-    CleanupClosePushL(fsSession);        
+    fsSession.Connect();       
     
     TInt err = KErrNone;
     if (resetLog) {
@@ -78,7 +77,7 @@ SymbianLog::SymbianLog(bool resetLog, const char* path, const char* name)
     file.Write(data);
 
     file.Close();
-    CleanupStack::PopAndDestroy(&fsSession);
+    fsSession.Close();
     return;
 }
 
@@ -188,7 +187,6 @@ void SymbianLog::printMessage(const char* level, const char* msg, PLATFORM_VA_LI
     StringBuffer currentTime = createCurrentTime(false);
     
     fsSession.Connect();
-    CleanupClosePushL(fsSession);
     
     TInt err = file.Open(fsSession, iLogName, EFileWrite|EFileShareAny);
     User::LeaveIfError(err);
@@ -208,13 +206,12 @@ void SymbianLog::printMessage(const char* level, const char* msg, PLATFORM_VA_LI
     file.Write(buf);
     
     file.Close();
-    CleanupStack::PopAndDestroy(&fsSession);
+    fsSession.Close();
 }
 
 void SymbianLog::reset(const char* title) 
 {
     fsSession.Connect();
-    CleanupClosePushL(fsSession);
     
     TInt err = file.Replace(fsSession, iLogName, EFileWrite|EFileShareAny);
     User::LeaveIfError(err);
@@ -226,24 +223,22 @@ void SymbianLog::reset(const char* title)
     file.Write(buf);
     
     file.Close();
-    CleanupStack::PopAndDestroy(&fsSession);
+    fsSession.Close();
 }
 
 
 size_t SymbianLog::getLogSize() {
 
     fsSession.Connect();
-    CleanupClosePushL(fsSession);
     
     TInt size = 0;
     TInt err = file.Size(size);
     User::LeaveIfError(err);
 
     file.Close();
-    CleanupStack::PopAndDestroy(&fsSession);
+    fsSession.Close();
     return (size_t)size;
 }
-
 
 
 
