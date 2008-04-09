@@ -40,6 +40,7 @@ static TInt symbianTimeoutWrapper(TAny* thread);
 
 #include "base/fscapi.h"
 #include "push/FThread.h"
+#include "base/SymbianLog.h"
 
 FThread::FThread() : terminate(false),
                      isRunning(false),
@@ -58,10 +59,8 @@ void FThread::start( FThread::Priority priority ) {
     threadId.CreateL(128);
     threadId.Format(_L("FThread-%d"), id++);
 
-    ThreadFunction startFunction = &FThread::run;
-
-    TRAPD(err, sthread.Create(_L("ThreadId"), (TThreadFunction)symbianRunWrapper,
-                              KDefaultStackSize, (RAllocator*)NULL, this));
+    TRAPD(err, sthread.Create(threadId, (TThreadFunction)symbianRunWrapper,
+                              KDefaultStackSize, (RAllocator*)&User::Heap(), this));
     if (err == KErrNone) {
         if (priority == InheritPriority) {
             // TODO: how do we get the current thread priority?
@@ -138,10 +137,21 @@ TInt FThread::startTimeout() {
 }
 
 static TInt symbianRunWrapper(TAny* thread) {
+    
+    // Install a new trap handler for the thread.
+    CTrapCleanup* cleanupstack = CTrapCleanup::New();
+    TInt err = KErrNone;
 
-    FThread* t = (FThread*)thread;
-    t->run();
-    return 0;
+    // Mandatory!
+    // To trap any internal call to "CleanupStack::PushL()"
+    TRAP(err, 
+         { FThread* t = (FThread*)thread;
+           t->run();
+         }
+    )
+    
+    delete cleanupstack;
+    return err;
 }
 
 static TInt symbianTimeoutWrapper(TAny* thread) {
