@@ -90,6 +90,10 @@
 #define PROPERTY_SOURCE_ENCRYPTION     "encryption"
 #define PROPERTY_ENABLE_COMPRESSION    "enableCompression"
 
+// Push related
+#define PROPERTY_PUSH_NOTIFICATION     "push"
+#define PROPERTY_POLLING_NOTIFICATION  "polling"
+
 // DeviceConfig properties
 #define PROPERTY_VER_DTD                    "verDTD"
 #define PROPERTY_MANUFACTURER               "man"
