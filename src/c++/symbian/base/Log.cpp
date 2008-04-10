@@ -197,7 +197,7 @@ void SymbianLog::printMessage(const char* level, const char* msg, PLATFORM_VA_LI
 
     // Write the data
     StringBuffer line, data;
-    line.sprintf("%s [%s] - %s", currentTime.c_str(), level, msg);
+    line.sprintf("%s -%s- %s", currentTime.c_str(), level, msg);
     data.vsprintf(line.c_str(), argList);
     data.append("\n");
     
