@@ -68,8 +68,8 @@ public:
     /**
      * This method is the factory to create sockets
      * Opens a socket connecting to the peer host on the given port.
-     * Returns a valid object if the connection can be establishd. Returns
-     * NULL if the socket cannot be created for any reason.
+     * @return  a valid object if the connection can be establishd. Returns
+     *          NULL if the socket cannot be created for any reason.
      */
     static FSocket* createSocket(const StringBuffer& peer, int32_t port);
     
