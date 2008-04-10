@@ -54,7 +54,7 @@
  * to let the sync engine access the client's data. Each client may provide
  * access to one or more sources.
  */
-class SyncSource : public ArrayElement {
+class SyncSource {
 
 private:
     SyncMode      syncMode;
@@ -396,12 +396,7 @@ public:
      * @param item    the item as sent by the server
      */
     virtual int deleteItem(SyncItem& item) = 0;
-
-    /**
-     * ArrayElement implementation
-     */
-    virtual ArrayElement* clone() = 0;
-    
+ 
                
     
 };
