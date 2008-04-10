@@ -342,15 +342,6 @@ void FileSyncSource::assign(FileSyncSource& s) {
     setDir(getDir());
 }
 
-ArrayElement* FileSyncSource::clone() {
-    FileSyncSource* s = new FileSyncSource(getName(), &(getConfig()));
-
-    s->assign(*this);
-
-    return s;
-}
-
-
 bool FileSyncSource::setItemData(SyncItem* syncItem) {
 
     bool ret = true;

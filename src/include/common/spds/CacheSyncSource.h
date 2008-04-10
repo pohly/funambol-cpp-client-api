@@ -130,13 +130,7 @@ private:
     void getKeyAndSignature(SyncItem& item, KeyValuePair& kvp);
 
 protected:
-       
-    /**
-     * copies all elements, to be used by derived class' clone() implementation
-     */
-    void assign(CacheSyncSource& s);
-
-
+  
     /**
      * Called by the sync engine to add an item that the server has sent.
      * The implementation calls the insertItem method that must be implemented

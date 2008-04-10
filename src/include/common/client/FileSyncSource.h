@@ -130,7 +130,6 @@ public:
     int beginSync();
     int endSync();
     void assign(FileSyncSource& s);
-    ArrayElement* clone();
 
   private:
     // Lists of all, new, update and deleted items

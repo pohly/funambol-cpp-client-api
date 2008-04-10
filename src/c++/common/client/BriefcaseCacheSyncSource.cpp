@@ -77,19 +77,6 @@ BriefcaseSyncSource::BriefcaseSyncSource(const BriefcaseSyncSource& s):
 
 }
 
-
-BriefcaseSyncSource::BriefcaseSyncSource(const BriefcaseSyncSource& s) : TrackingSyncSource(s) {
-    
-    setSyncMode(s.getSyncMode());
-    setLastSync(s.getLastSync());
-    setNextSync(s.getNextSync());
-    setLastAnchor(s.getLastAnchor());
-    setNextAnchor(s.getNextAnchor());
-    setFilter(s.getFilter());    
-    setDir(getDir());
-    setReport(s.getReport());
-
-}
 */
 
 
@@ -265,29 +252,5 @@ void* BriefcaseCacheSyncSource::getItemContent(StringBuffer& key, size_t* size) 
     }
     delete [] t;
     return content;
-
-}
-
-
-ArrayElement* BriefcaseCacheSyncSource::clone() {
-    /*
-    BriefcaseSyncSource* s = new BriefcaseSyncSource(*this);
-    return s;
-    */
-    BriefcaseCacheSyncSource* s = new BriefcaseCacheSyncSource(getName(), &(getConfig()));
-    s->assign(*this);
-    return s;
-}
-
-void BriefcaseCacheSyncSource::assign(BriefcaseCacheSyncSource& s) {
-    
-    setSyncMode(s.getSyncMode());
-    setLastSync(s.getLastSync());
-    setNextSync(s.getNextSync());
-    setLastAnchor(s.getLastAnchor());
-    setNextAnchor(s.getNextAnchor());
-    setFilter(s.getFilter());    
-    setDir(getDir());
-    setReport(s.getReport());
 
 }

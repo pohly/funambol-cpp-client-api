@@ -158,8 +158,7 @@ public:
     * @param size     OUT: the size of the content
     */
     void* getItemContent(StringBuffer& key, size_t* size);
-    
-    ArrayElement* clone();
+      
         
 };
 
