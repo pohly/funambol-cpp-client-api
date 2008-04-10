@@ -40,88 +40,68 @@
 /** @{ */
 
 #include "base/fscapi.h"
-#include "base/ErrorHandler.h"
-#include "base/util/ArrayElement.h"
 #include "base/util/Enumeration.h"
-#include "spds/constants.h"
-#include "spds/SyncItem.h"
-#include "spds/SyncStatus.h"
-#include "spds/SyncSourceReport.h"
-
+#include "base/util/StringBuffer.h"
 
 /**
- * This is the interface for the handling of the key/value that
- * has to be written in the storage. It provides methods that has to be 
+ * This is the interface for the handling of key/value pairs.
+ * Some implementations might store them in some kind of background
+ * storage, others might only save them transiently in memory.
+ *
+ * This class defines the common methods that have to be 
  * specialized by implementation on filesystem, registry, db...
  */
 class KeyValueStore {
 
-private:
-                     
-protected:  
-
-    /**
-    * The completed node where to write the property key/vlue
-    */
-    StringBuffer node;
-    
 public:
     
-    /**      
-     * The name of the general node 
-     */
-    KeyValueStore(const char* node) { 
-        this->node = node;         
-    }
-
-    // Destructor
-    virtual ~KeyValueStore() {}
-      
     /*
      * Returns the value of the given property
      *
      *@param prop - the property name
      *
-     *@return   empty value means the property is not found. 
+     *@return   A NULL StringBuffer in the returned implies that
+     *          the property was not set. Otherwise the value it was
+     *          set to is returned (which can be "", the empty string).
      */
-    virtual StringBuffer readPropertyValue(const char *prop) = 0;
+    virtual StringBuffer readPropertyValue(const char *prop) const = 0;
 
     /*
-     * Sets a property value 
+     * Sets a property value.
+     *
+     * The value might be cached inside the implementation of this
+     * interface. To ensure that it is stored persistently and to do
+     * error checking, call save().
      *
      * @param prop      - the property name
-     * @param value    - the property value (zero terminated string)
-     * @param add      - if the property doesn't exist it add. If false doesn't add
+     * @param value     - the property value (zero terminated string)
+     *
+     * @return int 0 on success, an error code otherwise
      */
-    virtual void setPropertyValue(const char *prop, const char *value, bool add = true) = 0;
+    virtual int setPropertyValue(const char *prop, const char *value) = 0;
     
      /**
      * Remove a certain property 
      *
-     * @param prop    the name of the property which is to be removed
+     * @param prop    the name of the property which is to be removed   
+     *
+     * @return int 0 on success, an error code otherwise
      */
-    virtual void removeProperty(const char *prop) = 0;
+    virtual int removeProperty(const char *prop) = 0;
      
     /**
-     * Get all the properties that are already read from the store.
+     * Get all the properties that are currently defined.     
      */
-    virtual Enumeration* getProperties() = 0;
-
-     /**
-     * Extract all currently properties in the node
-     * It populates the data ArrayList to hold the 
-     * key/values.
-     * @return 0 - success, failure otherwise
-     */
-    virtual int read() = 0;
+    virtual Enumeration& getProperties() const = 0;
 
     /**
-     * Save the current properties that are
-     * in the data arraylist 
+     * Ensure that all properties are stored persistently.
+     * If setting a property led to an error earlier, this
+     * call will indicate the failure.
+     *
      * @return 0 - success, failure otherwise
      */
     virtual int save() = 0;
-    
 };
 
 /** @} */

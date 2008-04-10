@@ -40,12 +40,6 @@
 /** @{ */
 
 #include "base/fscapi.h"
-#include "base/ErrorHandler.h"
-#include "base/util/ArrayElement.h"
-#include "spds/constants.h"
-#include "spds/SyncItem.h"
-#include "spds/SyncStatus.h"
-#include "spds/SyncSourceReport.h"
 #include "base/util/KeyValuePair.h"
 #include "base/util/KeyValueStore.h"
 #include "base/util/ArrayListEnumeration.h"
@@ -57,102 +51,47 @@
  */
 class ArrayListKeyValueStore : public KeyValueStore {
 
-private:
-                  
-    /**
-    * the internal counter on which do the iteration
-    */
-    int counter;
-                  
 protected:
 
     /**
     * The list contains the pair key/value that are what is in the file that is 
     * in the form key:value
     */
-    ArrayList data; 
+    ArrayListEnumeration data; 
 
 public:
-    
-    /**      
-     * The name of the general node 
-     */
-    ArrayListKeyValueStore(const char* node) : KeyValueStore(node) {         
-        counter = 0; 
-    }
-
     // Destructor
     virtual ~ArrayListKeyValueStore() {}      
-    
+          
     /**
-    * return the reference to the inside arraylist.
-    * It is used because it is useful to have a copy 
-    * of the cache to calculate the diff    
+    *  Read a property value from the data ArrayList
     */
-    //virtual ArrayList& getData() { return data; }
+    virtual StringBuffer readPropertyValue(const char *prop) const;
 
     /*
-     * Returns the value of the given property from the data ArrayList
-     *
-     *@param prop - the property name
-     *
-     *@return   empty value means the property is not found. This is the copy of the
-     *          value in the arraylist
-     */
-    virtual StringBuffer readPropertyValue(const char *prop);
-
-    /*
-     * Sets a property value from the data ArrayList
+     * Sets a property value in the data ArrayList
      *
      * @param prop      - the property name
-     * @param value    - the property value (zero terminated string)
-     * @param add      - if the property doesn't exist it add. If false doesn't add
+     * @param value     - the property value (zero terminated string)
      */
-    virtual void setPropertyValue(const char *prop, const char *value, bool add = true);
+    virtual int setPropertyValue(const char *prop, const char *value);
     
      /**
      * Remove a certain property from the data ArrayList
      *
      * @param prop    the name of the property which is to be removed
+     * @return int 0 on success, an error code otherwise
      */
-    virtual void removeProperty(const char *prop);
+    virtual int removeProperty(const char *prop);
     
     /**
      * Read all the properties that are in the store. This is
-     * an enumeration of KeyValuePairs
+     * an enumeration of KeyValuePairs. 
      * 
      */
-    virtual Enumeration* getProperties() {        
-        return new ArrayListEnumeration(data); 
+    virtual Enumeration& getProperties() const {        
+        return (Enumeration&)data; 
     }
-
-    /**
-    * used to iterate on the element of the data. 
-    * if NULL there are no more element
-    */
-    virtual KeyValuePair* getNextElement() {
-        if (counter == 0) { counter++; return (KeyValuePair*)data.front(); }
-        else              { counter++; return (KeyValuePair*)data.next();  }
-    }
-    
-    /**
-    * reset the counter that is used to get the element
-    * in the arraylist. To be used before starting to use the getNextElement
-    * method.
-    * NOTE. the setProperty and removeProperty uses the getNextElement on the
-    * internal data arrayList. So be careful about the usage getNextElement.
-    * don't use it when when using the setProperty or readProperty
-    */
-    virtual void reset() { counter = 0; }
-
-
-     /**
-     * Extract all currently properties in the node
-     * It populates the data ArrayList to hold the 
-     * key/values.
-     * @return 0 - success, failure otherwise
-     */
-    virtual int read() = 0;
 
     /**
      * Save the current properties that are
@@ -160,7 +99,6 @@ public:
      * @return 0 - success, failure otherwise
      */
     virtual int save() = 0;
-    
 };
 
 /** @} */

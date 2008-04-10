@@ -54,23 +54,29 @@
  * of KeyValuePair
  */
 class PropertyFile : public ArrayListKeyValueStore {
-       
-public:
-    
-    /**      
-     * The name of the general node 
-     */
-    PropertyFile(const char* node) : ArrayListKeyValueStore(node) {}
 
-    // Destructor
-    ~PropertyFile() {}        
-   
+private:
+
+    StringBuffer node;
+    
      /**
      * Extract all currently properties in the node
      * It populates the data ArrayList to hold the 
      * key/values in the filesystem
      */
     int read();
+
+public:
+    
+    /**      
+     * The name of the general node 
+     */
+    PropertyFile(const char* n) : node(n) {
+        read();
+    }
+
+    // Destructor
+    ~PropertyFile() {}               
 
     /**
      * Save the current properties that are

@@ -41,17 +41,18 @@
  */
 class Enumeration {
 
-    public: 
+public: 
+    virtual ~Enumeration() {}
 
-        /**
-         * Return true if there are more elements in the enumeration.
-         */
-	virtual bool hasMoreElement() = 0;
+    /**
+    * Return true if there are more elements in the enumeration.
+    */
+    virtual bool hasMoreElement() const = 0;
 
-        /**
-         * Return the next element
-         */
-	virtual ArrayElement* getNextElement() = 0;
+    /**
+    * Return the next element or NULL if there is none.
+    */
+    virtual ArrayElement* getNextElement() = 0;
 };
 
 #endif

@@ -56,8 +56,7 @@ CacheSyncSource::CacheSyncSource(const WCHAR* sourceName, AbstractSyncSourceConf
     completeName += "/";
     completeName += CACHE_FILE_NAME;   
 
-    this->cache = (cache)? cache : new PropertyFile(completeName);
-    
+    this->cache = (cache) ? cache : new PropertyFile(completeName);
 }
 
 /**
@@ -284,24 +283,28 @@ bool CacheSyncSource::fillItemModifications() {
     // all the current items keys list
     Enumeration* items = (Enumeration*)getAllItemList();
 
-    // the propertyFile containing the current cache
-    readCache();
+    if (!items) {
+        LOG.error("Error in fillItemModification");
+        return false;
+    }
 
     // all the action are done on the copy so we can delete
     // the element found. The remained are the deleted by the user.        
-    Enumeration* e = cache->getProperties();
+    Enumeration& e = cache->getProperties();
     ArrayList cacheCopy;
-    while(e->hasMoreElement()) {
-        cacheCopy.add(*e->getNextElement());
-    }
-    if (e) {
-        delete e;
-    }
+    while(e.hasMoreElement()) {
+        cacheCopy.add(*e.getNextElement());
+    }        
+    //if (e) {
+    //    delete e;
+    //}
 
     StringBuffer* key;
     KeyValuePair* kvp;
-    
-    ArrayList newitem, moditem;
+
+    ArrayListEnumeration *newitems = new ArrayListEnumeration(),
+                         *moditems = new ArrayListEnumeration(),
+                         *delitems = new ArrayListEnumeration();
 
     if (items) {
         while(items->hasMoreElement()) {
@@ -317,26 +320,21 @@ bool CacheSyncSource::fillItemModifications() {
                     StringBuffer sign = getItemSignature(*key);
                     if (sign != kvp->getValue()) {
                         // there is an update. if equal nothing to do...
-                        moditem.add(*key);                      
+                        moditems->add(*key);                      
                     }
                     cacheCopy.removeElementAt(i);
                     break;
                 }
             }
             if (foundnew) {
-                newitem.add(*key);
+                newitems->add(*key);
             }
         }
     }
-    if (newitem.size() > 0) {    
-        newKeys = new ArrayListEnumeration(newitem);
-    }
-    if (moditem.size() > 0) {
-        updatedKeys = new ArrayListEnumeration(moditem);
-    }
-    if (cacheCopy.size() > 0) {
-        deletedKeys = new ArrayListEnumeration(cacheCopy);
-    }
+        
+    newKeys = newitems;
+    updatedKeys = moditems;           
+    deletedKeys = new ArrayListEnumeration(cacheCopy);    
     
     if (items) { 
         delete items; 
@@ -344,16 +342,6 @@ bool CacheSyncSource::fillItemModifications() {
     return true;
 }
 
-/**
-* Populate the cache ArrayList
-*/
-int CacheSyncSource::readCache() {
-    
-   int ret = cache->read();
-   return ret;
-    
-}
- 
 /**
 * Save the current status of the cache arrayList
 * 

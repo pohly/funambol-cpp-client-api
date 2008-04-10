@@ -115,12 +115,6 @@ private:
     bool fillItemModifications();
 
     /**
-    * Read the current cache file (or wathever) to be compared to the current items
-    * It populates the cache with KeyValuePair of uid/signature
-    */
-    int readCache();
-
-    /**
     * Save the current cache in what is implemented by KeyValueStore (a file or wathever).    
     */
     int saveCache();

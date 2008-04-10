@@ -37,12 +37,11 @@
 #include "base/fscapi.h"
 #include "base/util/ArrayListKeyValueStore.h"
   
-StringBuffer ArrayListKeyValueStore::readPropertyValue(const char *prop) {
+StringBuffer ArrayListKeyValueStore::readPropertyValue(const char *prop) const {
     
-    KeyValuePair* kvp = NULL;
-    StringBuffer ret;
-    reset();
-    while((kvp = getNextElement()) != NULL) {
+    StringBuffer ret(NULL);
+    for(int index = 0; index < data.size(); index++) {
+        KeyValuePair *kvp = (KeyValuePair *)data.get(index);
         if (strcmp(prop, kvp->getKey()) == 0) {
             ret = kvp->getValue();
             break;
@@ -51,33 +50,34 @@ StringBuffer ArrayListKeyValueStore::readPropertyValue(const char *prop) {
     return ret;
 }
 
-void ArrayListKeyValueStore::setPropertyValue(const char *prop, const char *value, bool add) {
+int ArrayListKeyValueStore::setPropertyValue(const char *prop, const char *value) {
     
-    KeyValuePair* kvp = NULL;        
-    bool found = false;
-    reset();
-    while((kvp = getNextElement()) != NULL) {
+    int ret = 0;
+    for(KeyValuePair* kvp = (KeyValuePair *)data.front();
+        kvp;
+        kvp = (KeyValuePair *)data.next()) {
         if (strcmp(prop, kvp->getKey()) == 0) {
             kvp->setValue(value);
-            found = true;
-            break;
+            return ret;
         }
     }
-    if (!found && add) {
-        KeyValuePair k(prop, value);
-        data.add(k);
-    }
+    KeyValuePair k(prop, value);
+    data.add(k);
+    return ret;
 }
     
-void ArrayListKeyValueStore::removeProperty(const char *prop) {
-    
-    KeyValuePair* kvp = NULL;  
-    reset();
-    while((kvp = getNextElement()) != NULL) {
+int ArrayListKeyValueStore::removeProperty(const char *prop) {
+
+    int counter = 0;
+    for(KeyValuePair* kvp = (KeyValuePair *)data.front();
+        kvp;
+        kvp = (KeyValuePair *)data.next()) {
         if (strcmp(prop, kvp->getKey()) == 0) {
-            data.removeElementAt(counter - 1);
+            data.removeElementAt(counter);
             break;
         }
+        counter++;
     }
+    return 0;
 }
         
