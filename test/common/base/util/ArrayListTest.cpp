@@ -45,6 +45,7 @@ class ArrayListTest : public CppUnit::TestFixture {
     CPPUNIT_TEST(removeLast);
     CPPUNIT_TEST(removeMiddle);
     CPPUNIT_TEST(removeAll);
+    CPPUNIT_TEST(getLast);
     CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -104,6 +105,17 @@ private:
         CPPUNIT_ASSERT(equal(l, empty));
     }
 
+    void getLast() {
+        ArrayList l = abc;       
+        CPPUNIT_ASSERT_EQUAL(false, l.last());
+        l.next();
+        CPPUNIT_ASSERT_EQUAL(false, l.last());
+        l.next();
+        CPPUNIT_ASSERT_EQUAL(false, l.last());
+        l.next();
+        CPPUNIT_ASSERT_EQUAL(true, l.last());       
+    }
+    
     bool equal(ArrayList &first, ArrayList &second) {
         ArrayElement *first_e = first.front();
         int index = 0;
