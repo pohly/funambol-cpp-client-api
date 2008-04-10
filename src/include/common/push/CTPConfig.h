@@ -45,7 +45,11 @@
 #include "base/util/utils.h"
 #include "base/util/StringBuffer.h"
 
-using namespace std;      
+/// This is the root for the configuration
+#define APPLICATION_URI                 "Funambol/SyncClient"
+
+/// This is the context for the CTP push parameters
+#define CONTEXT_PUSH_CTP                "/push/ctp"    
 
 
 class CTPConfig : public DMTClientConfig {
