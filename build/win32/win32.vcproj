@@ -589,6 +589,10 @@
 				Name="client"
 				>
 				<File
+					RelativePath="..\..\src\c++\common\client\CacheSyncSource.cpp"
+					>
+				</File>
+				<File
 					RelativePath="..\..\src\c++\common\client\DMTClientConfig.cpp"
 					>
 					<FileConfiguration
@@ -729,10 +733,6 @@
 							PreprocessorDefinitions=""
 						/>
 					</FileConfiguration>
-				</File>
-				<File
-					RelativePath="..\..\src\c++\common\spds\CacheSyncSource.cpp"
-					>
 				</File>
 				<File
 					RelativePath="..\..\src\c++\common\spds\CredentialHandler.cpp"

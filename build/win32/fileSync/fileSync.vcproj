@@ -180,7 +180,7 @@
 			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}"
 			>
 			<File
-				RelativePath="..\..\..\src\c++\common\client\BriefcaseCacheSyncSource.cpp"
+				RelativePath="..\..\..\src\c++\common\examples\BriefcaseCacheSyncSource.cpp"
 				>
 			</File>
 			<File
@@ -194,7 +194,7 @@
 			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}"
 			>
 			<File
-				RelativePath="..\..\..\src\include\common\client\BriefcaseCacheSyncSource.h"
+				RelativePath="..\..\..\src\include\common\examples\BriefcaseCacheSyncSource.h"
 				>
 			</File>
 		</Filter>
