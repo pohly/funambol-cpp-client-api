@@ -73,6 +73,14 @@ class ArrayList {
 
         ArrayList& set (const ArrayList & other);
 
+    protected:
+
+        /**
+         * Can be used to reset the iterator, so that next call to next restart from
+         * the beginning.
+         */
+        void resetIterator() { iterator = 0; }
+
     public:
         ArrayList();
         ArrayList(const ArrayList &other);
@@ -130,7 +138,7 @@ class ArrayList {
          *
          * @param index the element position
          */
-        ArrayElement* get(int index);
+        ArrayElement* get(int index) const;
 
         /**
          * Returns the first element of the array and set here the internal iterator.
@@ -171,16 +179,23 @@ class ArrayList {
          * @return - the first element of the array, or NULL if empty.
          */
         ArrayElement* back();
+        
+        /**
+         * Returns true if it is the last one, false otherwise
+         *
+         * @return - true if the iterator is at the last element, false otherwise.
+         */
+        bool last() const;
 
         /**
          * Returns the array size.
          */
-        int size();
+        int size() const;
 
         /**
          * Same as get(index)
          */
-        ArrayElement* operator[] (int index);
+        ArrayElement* operator[] (int index) const;
 
         /**
          * Copy the ArrayList

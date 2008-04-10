@@ -233,7 +233,7 @@ void ArrayList::clear()
  *
  * @param index the element position
  */
-ArrayElement* ArrayList::get(int index) {
+ArrayElement* ArrayList::get(int index) const {
 
     if ( index<0 ) {
         return NULL;
@@ -252,7 +252,7 @@ ArrayElement* ArrayList::get(int index) {
 /**
  * Returns the array size.
  */
-int ArrayList::size() {
+int ArrayList::size() const {
 /*    Element *e = head;
     int i = 0;
     while (e) {
@@ -268,9 +268,10 @@ ArrayElement* ArrayList::front() {
     iterator = head;
     return (iterator) ? iterator->e : 0 ;
 }
+
 ArrayElement* ArrayList::next() {
     if(!iterator) {
-        return 0;
+        return front();
     }
     iterator = iterator->n;
     return (iterator) ? iterator->e : 0 ;
@@ -295,10 +296,30 @@ ArrayElement* ArrayList::back() {
     return iterator->e;
 }
 
+bool ArrayList::last() const {
+    if (!iterator) {
+        if (size() == 0) {
+            return true;
+        } else {
+            return false;
+        }
+    } else {
+        return (iterator->n) ? false : true;
+    }
+    /**
+    if (!iterator && size() == 0) {
+        return true;
+    } else if (!iterator && size() > 0) {
+        return false;
+    } else {
+        return (iterator->n) ? false : true;
+    }
+    */
+}
 /**
  * Same as get(index)
  */
-ArrayElement* ArrayList::operator[] (int index) {
+ArrayElement* ArrayList::operator[] (int index) const {
     return get(index);
 }
 
