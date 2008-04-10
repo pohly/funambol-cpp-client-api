@@ -45,20 +45,14 @@
  */
 class ArrayListEnumeration : public Enumeration, public ArrayList {
 
-    private:              
-        /**
-        * To trace the index of the enumeration
-        */
-        int counter;
-
     public: 
         
         ArrayListEnumeration() : ArrayList() {             
-            counter = 0;
+            resetIterator();
         }
     
-        ArrayListEnumeration(ArrayList& l) : ArrayList(l) { 
-            counter = 0;            
+        ArrayListEnumeration(const ArrayList& l) : ArrayList(l) { 
+            resetIterator();
         }
     
         virtual ~ArrayListEnumeration() {}
@@ -66,18 +60,16 @@ class ArrayListEnumeration : public Enumeration, public ArrayList {
         /**
          * Return true if there are more elements in the enumeration.
          */
-	    bool hasMoreElement() {              
-            return (counter == size()) ? false : true;	       
+	    bool hasMoreElement() const  {     
+            return !last();
 	    }
 
         /**
          * Return the next element
          */
-	    ArrayElement* getNextElement() { 
-            if (counter == 0) { counter++; return front(); }
-            else              { counter++; return next();  }
-	    }
-      
+	    ArrayElement* getNextElement() {
+            return next();           
+	    } 
         
 };
 
