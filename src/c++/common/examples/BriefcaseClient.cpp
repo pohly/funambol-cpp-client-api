@@ -43,7 +43,7 @@
 #include "client/SyncClient.h"
 #include "client/DMTClientConfig.h"
 #include "spds/DefaultConfigFactory.h"
-#include "client/BriefcaseCacheSyncSource.h"
+#include "examples/BriefcaseCacheSyncSource.h"
 
 
 #ifdef WIN32

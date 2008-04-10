@@ -47,7 +47,7 @@
 #include "spdm/ManagementNode.h"
 #include "base/util/ItemContainer.h"
 #include "spds/FileData.h"
-#include "spds/CacheSyncSource.h"
+#include "client/CacheSyncSource.h"
 
 
 #define DEFAULT_BRIEFCASE_DIR   "."

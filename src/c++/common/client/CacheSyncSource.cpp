@@ -38,7 +38,7 @@
 #include "client/SyncClient.h"
 #include "spds/spdsutils.h"
 #include "spds/SyncSourceConfig.h"
-#include "spds/CacheSyncSource.h"
+#include "client/CacheSyncSource.h"
 #include "base/util/KeyValuePair.h"
 #include "base/util/PropertyFile.h"
 #include "base/util/ArrayListEnumeration.h"

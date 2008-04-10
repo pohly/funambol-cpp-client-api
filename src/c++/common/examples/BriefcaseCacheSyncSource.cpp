@@ -38,7 +38,7 @@
 #include "base/Log.h"
 #include "syncml/core/TagNames.h"
 #include "base/util/ArrayListEnumeration.h"
-#include "client/BriefcaseCacheSyncSource.h"
+#include "examples/BriefcaseCacheSyncSource.h"
 
 
 #define ERR_FILE_SYSTEM             1
