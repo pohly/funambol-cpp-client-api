@@ -38,6 +38,7 @@
 #endif
 
 #include "base/util/StringBuffer.h"
+#include "spdm/constants.h"
 #include "push/CTPConfig.h"    
 
 #define CTP_QUEUE_PUSH                  "queuePush"
@@ -50,10 +51,6 @@
 #define PROPERTY_CTP_SERVER             "ctpServer"
 #define PROPERTY_NOTIFY_TIMEOUT         "notifyTimeout"
 
-// TODO
-#define PROPERTY_PUSH_NOTIFICATION    "push-notification"
-#define PROPERTY_POLLING_NOTIFICATION "polling-notification"
-#define APPLICATION_URI               "PushAgent"
 
 CTPConfig::CTPConfig(const char* application_uri)
                     : DMTClientConfig(application_uri) {
@@ -128,10 +125,14 @@ void CTPConfig::readCTPConfig() {
     
     // now read the single CTP properties
     ManagementNode* node;
-
+    char nodeName[DIM_MANAGEMENT_PATH];
+    nodeName[0] = 0;
+    sprintf(nodeName, "%s%s", rootContext, CONTEXT_PUSH_CTP);
+    
     // read parameter of the client only
-    node = dmt->readManagementNode(rootContext);
-    if (node) {
+    node = dmt->readManagementNode(nodeName);
+    if (node) 
+    {
         char* tmp;        
         tmp = node->readPropertyValue(PROPERTY_PUSH_NOTIFICATION);
         if (tmp) {
@@ -290,9 +291,12 @@ StringBuffer CTPConfig::getHostName(StringBuffer syncUrl) {
         start = 0;
     }
     
-    end = syncUrl.find(":/", start);       // stop if ":" or "/" found
-    if (end == StringBuffer::npos) { // so the url is only <hostName>
-        end = syncUrl.length();
+    end = syncUrl.find(":", start);       // stop if ":" or "/" found
+    if (end == StringBuffer::npos) {
+        end = syncUrl.find("/", start);
+        if (end == StringBuffer::npos) {  // so the url is only <hostName>
+            end = syncUrl.length();
+        }
     }
 
     if (end > start) {
