@@ -63,6 +63,13 @@ FSocket* FSocket::NewLC(const StringBuffer& peer, int32_t port)
     FSocket* self = new ( ELeave ) FSocket();
     CleanupStack::PushL( self );
     self->ConstructL(peer, port);
+    
+    if (self->getLastStatus() != KErrNone) {
+        // Something wrong.
+        delete self;
+        return NULL;
+    }
+    
     return self;
 }
 
@@ -76,7 +83,7 @@ void FSocket::ConstructL(const StringBuffer& peer, int32_t port)
     RBuf          serverName;
     TNameEntry    hostAddress;
     TInetAddr     address;
-    
+
     serverName.Assign(stringBufferToNewBuf(peer));
     
     // Create the socket session
@@ -89,27 +96,34 @@ void FSocket::ConstructL(const StringBuffer& peer, int32_t port)
         errorMsg = "Error opening socket";
         goto error;
     }
-
-    // --- Resolve the host address ---
-    LOG.debug("resolve IP address...");
-    res = resolver.Open(iSocketSession, KAfInet, KProtocolInetTcp);
-    if (res != KErrNone) {
-        iStatus = -2;
-        errorMsg = "Host resolver open failed";
-        goto error;
-    }
     
-    resolver.GetByName(serverName, hostAddress, iStatus);
-    User::WaitForRequest(iStatus);
-    resolver.Close();
-    if (iStatus != KErrNone) {
-        errorMsg = "DNS lookup failed";
-        goto error;
+    // This works if serverName is the ip address, like "x.y.z.w"
+    res = address.Input(serverName);
+    
+    if (res != KErrNone) {
+        // Try to resolve the host address
+        LOG.debug("resolve IP address...");
+        res = resolver.Open(iSocketSession, KAfInet, KProtocolInetTcp);
+        if (res != KErrNone) {
+            iStatus = -2;
+            errorMsg = "Host resolver open failed";
+            goto error;
+        }
+        
+        resolver.GetByName(serverName, hostAddress, iStatus);
+        User::WaitForRequest(iStatus);
+        resolver.Close();
+        if (iStatus != KErrNone) {
+            errorMsg = "DNS lookup failed";
+            goto error;
+        }
+
+        // Set the socket server address/port
+        address = hostAddress().iAddr;
     }
 
-    // Set the socket server address/port
-    address = hostAddress().iAddr;
     address.SetPort(port);
+    
     
     // --- Connect to host ---
     LOG.debug("connect...");
