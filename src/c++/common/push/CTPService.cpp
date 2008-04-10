@@ -59,8 +59,7 @@ CTPService* CTPService::getInstance() {
 }
 
 
-// TODO TEMP
-#define APPLICATION_URI "PushAgent/"
+
 
 /**
  * Constructor: reads the CTPConfig from registry and init members.
@@ -70,6 +69,7 @@ CTPService::CTPService() : config(APPLICATION_URI) {
     // Read config from registry
     config.readCTPConfig();
     LOG.debug("CTP config read");
+    
 
     ctpSocket        = NULL;
     ctpThread        = NULL;
