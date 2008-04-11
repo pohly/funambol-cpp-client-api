@@ -44,10 +44,11 @@
 
 USE_NAMESPACE
 
+// Initialize statically the thread ID.
+uint32_t FThread::id = 0;
 
 FThread::FThread() : terminate(false),
-                     isRunning(false),
-                     id(0)
+                     isRunning(false)
 {
 }
 
@@ -65,6 +66,7 @@ void FThread::start( FThread::Priority priority ) {
     TRAPD(err, sthread.Create(threadId, (TThreadFunction)symbianRunWrapper,
                               KDefaultStackSize, (RAllocator*)&User::Heap(), this));
     if (err == KErrNone) {
+        LOG.debug("Created thread (id = %d)", id-1);
         if (priority == InheritPriority) {
             // TODO: how do we get the current thread priority?
             priority = NormalPriority;

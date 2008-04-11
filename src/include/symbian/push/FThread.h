@@ -113,11 +113,11 @@ public:
 private:
     bool isRunning;
     unsigned long timeout;
-    uint32_t id;
     RThread  sthread;
     RTimer   timer;
 
-private:
+    static uint32_t id;
+
     TInt startTimeout();
 
     friend TInt symbianRunWrapper(TAny* thread);
