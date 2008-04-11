@@ -39,8 +39,10 @@
 #include <f32file.h>
 #include <utf.h>
 
+
 #include "base/util/utils.h"
 #include "base/util/stringUtils.h"
+#include "base/util/StringBuffer.h"
 #include "base/fscapi.h"
 #include "base/SymbianLog.h"
 #include "spdm/spdmutils.h"
@@ -53,8 +55,6 @@ USE_NAMESPACE
 
 #define CONFIG_DIR      ".config"
 #define SYNC4J_DIR      ".sync4j"
-
-//static StringBuffer DeviceManagementNode::defaultPath;
 
 StringBuffer DeviceManagementNode::configPath; 
 StringBuffer DeviceManagementNode::configFile = "config.ini";
@@ -92,18 +92,6 @@ DeviceManagementNode::~DeviceManagementNode() {
     }
     delete lines;
 }
-
-#if 0
-bool checkConfigurationPath(StringBuffer path) {
-
-    int val = chdir(path);
-    if (val == 0){
-        return true;
-    }else{
-        return false;
-    }
-}
-#endif
 
 void DeviceManagementNode::update(bool read) {
     if (!read && !modified) {
@@ -388,9 +376,38 @@ void DeviceManagementNode::setPropertyValue(const char* property, const char* ne
     sprintf(newstr, "%s = %s", property, newvalue);
     line newline(newstr);
     lines->add(newline);
+
+    // In Symbian some of the synchronizations are performed using the Symbian
+    // SyncML APIs. These APIs use their own configuration, but we want this to
+    // be invisible to our clients. Therefore we handle it here and update the
+    // Symbian SyncML configuration here. There is a potential problem as we
+    // save the SyncML config here while the DMTree is not flushed until the
+    // node is closed. This may result in configuration being out of sync, but
+    // this should only happen only on error cases. To fix this problem (and
+    // other source of unaligned configurations) we shall push the DM
+    // configuration into the SyncML config on startup.
+#if defined(UPDATE_NATIVE_CONFIG)
+    pushSymbianSyncMLConfigParameter(property, newvalue);
+#endif
+
     modified = true;
     delete [] newstr;
 }
+
+#if defined(UPDATE_NATIVE_CONFIG)
+
+void DeviceManagementNode::pushSymbianSyncMLConfigParameter(const char* property,
+                                                            const char* value)
+{
+     StringBuffer p(property);
+     StringBuffer v(value);
+
+     if (p == "") {
+     } else if (p == "") {
+     }
+
+}
+#endif
 
 ArrayElement* DeviceManagementNode::clone()
 {
@@ -484,3 +501,754 @@ int DeviceManagementNode::renameFileInCwd(const char* src, const char* dst) {
     }
 }
 
+//#define UPDATE_NATIVE_CONFIG 1
+
+#if defined(UPDATE_NATIVE_CONFIG)
+
+#include <e32base.h>
+#include <e32cmn.h>
+#include <syncmlclient.h>
+#include <syncmlclientds.h>
+#include <syncmldef.h>
+#include <syncmltransportproperties.h>
+////////////////////////////////////////////////////////////////////
+
+#include <CommDbConnPref.h>  // for IAP retrieval
+#include <apselect.h>
+#include <CDBPREFTABLE.H>
+
+
+
+/**
+ * Sync application enum.
+ * The applications for which we enable/disable sync.They can 
+ * be ESyncCalendar for the calendar application and ESyncContacts
+ * for the contacts application.During the creation of the 
+ * default Funambol profile they are both enabled.
+ */
+enum TSyncApp 
+{
+    ESyncCalendar,
+    ESyncContacts
+};
+
+/**
+ * Errors.
+ * Errors specific to this wrapper
+ * in addition to those listed into syncmlerr.h
+ */
+const TInt KErrProfileMgrErrorBase = -9250;
+const TInt KErrNoContactsProvider = KErrProfileMgrErrorBase -1;
+const TInt KErrNoCalendarProvider = KErrProfileMgrErrorBase -2;
+const TInt KErrNoProfile = KErrProfileMgrErrorBase -3;
+const TInt KErrWrongSyncApp = KErrProfileMgrErrorBase -4;
+
+
+/*
+ * SyncML profile manager.
+ * Provide a small number of functions to create/delete a 
+ * SyncML profile, change the username/password used to connect
+ * to the sync servr, enable/disable the sync of calendar and 
+ * contacts.Link against syncmlclientapi.lib, syncmldatafilter.lib, nsmltransporthandler.lib
+ * commdb.lib apengine.lib
+ */
+class CSyncProfileManager: public CBase
+{
+
+public:
+
+    static CSyncProfileManager* createNewInstance();
+   
+    /**
+     *  Destructor.
+     */
+    ~CSyncProfileManager();
+
+    bool createProfile(const StringBuffer& username, const StringBuffer& password,
+                       const StringBuffer& serverURI, const StringBuffer& iapName);
+    bool deleteProfile();
+    bool setUsername(const StringBuffer& username);
+    bool setPassword(const StringBuffer& password);
+    bool setCredentials(const StringBuffer& username,
+                        const StringBuffer& password);
+    bool setIapIdForConnProperties(const StringBuffer& iapName);
+    bool enableTask(TSyncApp aSyncApp);
+    bool disableTask(TSyncApp aSyncApp);
+    
+private:
+
+    /**
+     * C++ default constructor can NOT contain any code, that might leave.
+     */
+    CSyncProfileManager();
+
+    /**
+     * Create default SyncML profile.
+     * Create a default Funambol profile; both calendar and contacts 
+     * are enabled for sync; server source for calendar is implicitly set
+     * to "cal" and for contacts to "card".If a profile with the same
+     * name already exists, it is overwritten.Can leave.
+     * @param aUserName The username used to connect to the sync server.
+     * @param aPassword The password used to connect to the sync server.
+     * @param aServerURI The sync server URI.
+     * @param aIapName The IAP to be used; "Ask" sets "Always ask";
+     *                 "<IAPName>" sets the specified IAP, if it doesn't
+     *                 exists sets to "Always ask"; "Default" set the
+     *                 default IAP as in packet data conn prefs. NOTE:
+     *                    if the user change the default IAP, SyncML profile
+     *                 is not updated!!!
+     */
+    void createProfileL(const TDesC8& aUsername, const TDesC8& aPassword,
+                        const TDesC8& aServerURI, const TDesC& aIapName);
+    
+    /**
+     * Delete specified SyncML profile.
+     * Delete specified SyncML profile.Can leave.
+     */
+    void deleteProfileL();
+    
+    /**
+     * Set username.
+     * Set the username to connect to sync server for the specified 
+     * profile.Can leave.
+     * @param aProfileName The SyncML profile name.
+     * @param aUsername The username used to connect.
+     */
+    void setUsernameL(const TDesC8& aUsername);
+
+    /**
+     * Set password.
+     * Set the password to connect to sync server for the specified 
+     * profile.Can leave.
+     * @param aProfileName The SyncML profile name.
+     * @param aPassword The password used to connect.
+     */
+    void setPasswordL(const TDesC8& aPassword);
+    
+    /*
+     * Enable sync application.
+     * Enable the specified sync application for the specified 
+     * profile.Can leave.
+     * @param aProfileName The SyncML profile name.
+     * @param aSyncApp The application to be enabled for sync.
+     */
+    void enableTaskL(TSyncApp aSyncApp, bool enable);
+
+    /**
+     * Set internal IAP id.
+     * Find the IAP id of the specified IAP and set the internal iIapId.
+     * @param aIapName The name of the IAP.
+     */
+    void setIapIdForConnPropertiesL(const TDesC& aIapName); 
+
+    void setCredentialsL(const TDesC8* aUsername, const TDesC8* aPassword);
+
+    /*
+     * descriptor storing the IAP id, used by CreateProfileL.
+     */
+    TBuf8<32>   iIapId;
+
+    static TBuf16<128> aProfileName;
+};
+
+TBuf16<128> CSyncProfileManager::aProfileName = _L("Funambol");
+
+/**
+ * CSyncProfileManager::NewL()
+ * Two-phased constructor.
+ */
+CSyncProfileManager* CSyncProfileManager::createNewInstance()
+{
+    CSyncProfileManager* self = new(ELeave) CSyncProfileManager();
+    return self;
+}
+
+/**
+ * CSyncProfileManager::CSyncProfileManager()
+ * C++ default constructor can NOT contain any code, that might leave.
+ */
+CSyncProfileManager::CSyncProfileManager() 
+{
+}
+
+/**
+ * CSyncProfileManager::~CSyncProfileManager()
+ * Class destructor
+ */
+CSyncProfileManager::~CSyncProfileManager()
+{
+}
+
+/**
+ * CSyncProfileManager::CreateProfileL()
+ * Create a default SyncML Funambol profile, calendar and contacts sync 
+ * enabled.If a profile with the same name already exists, it is
+ * overwritten.
+ */
+bool CSyncProfileManager::createProfile(const StringBuffer& username,
+                                        const StringBuffer& password,
+                                        const StringBuffer& serverURI,
+                                        const StringBuffer& iapName)
+{
+    HBufC8* aUsername  = stringBufferToNewBuf8(username);
+    HBufC8* aPassword  = stringBufferToNewBuf8(password);
+    HBufC8* aServerURI = stringBufferToNewBuf8(serverURI);
+    HBufC*  aIapName   = stringBufferToNewBuf(iapName);
+
+    TRAPD(err, createProfileL(*aUsername, *aPassword, *aServerURI, *aIapName));
+
+    delete aUsername;
+    delete aPassword;
+    delete aServerURI;
+    delete aIapName;
+
+    return err == KErrNone ? true : false;
+}
+
+bool CSyncProfileManager::deleteProfile() {
+    TRAPD(err, deleteProfileL());
+    return err == KErrNone ? true : false;
+}
+
+bool CSyncProfileManager::enableTask(TSyncApp aSyncApp) {
+    TRAPD(err, enableTaskL(aSyncApp, true));
+    return err == KErrNone ? true : false;
+}
+
+bool CSyncProfileManager::disableTask(TSyncApp aSyncApp) {
+    TRAPD(err, enableTaskL(aSyncApp, false));
+    return err == KErrNone ? true : false;
+}
+
+/**
+ * CSyncProfileManager::SetUsernameL()
+ * Set the username to connect to sync server for the specified SyncML profile.
+ */
+bool CSyncProfileManager::setUsername(const StringBuffer& username) {
+    if (username.null()) {
+        return false;
+    }
+    HBufC8* aUsername = stringBufferToNewBuf8(username);
+    TRAPD(err, setCredentialsL(aUsername, (TDesC8*)NULL));
+    delete aUsername;
+    return err == KErrNone ? true : false;
+}
+
+bool CSyncProfileManager::setPassword(const StringBuffer& password) {
+    if (password.null()) {
+        return false;
+    }
+    HBufC8* aPassword = stringBufferToNewBuf8(password);
+    TRAPD(err, setCredentialsL((TDesC8*)NULL, aPassword));
+    delete aPassword;
+    return err == KErrNone ? true : false;
+}
+
+bool CSyncProfileManager::setCredentials(const StringBuffer& username,
+                                         const StringBuffer& password) {
+    if (password.null() || username.null()) {
+        return false;
+    }
+    HBufC8* aPassword = stringBufferToNewBuf8(password);
+    HBufC8* aUsername = stringBufferToNewBuf8(username);
+    TRAPD(err, setCredentialsL(aUsername, aPassword));
+    delete aPassword;
+    delete aUsername;
+    return err == KErrNone ? true : false;
+}
+
+bool CSyncProfileManager::setIapIdForConnProperties(const StringBuffer& iapName) {
+    if (iapName.empty()) {
+        return false;
+    }
+    HBufC* aIapName = stringBufferToNewBuf(iapName);
+    TRAPD(err, setIapIdForConnPropertiesL(*aIapName));
+    delete aIapName;
+    return err == KErrNone ? true : false;
+}
+
+/**
+ * CSyncProfileManager::DeleteProfileL()
+ * Delet the specified SyncML profile.
+ */
+void CSyncProfileManager::deleteProfileL()
+{
+    RSyncMLSession syncMLSession;
+    TSmlProfileId  profileId = -1;
+    TInt err=KErrNone;
+    
+    // open SyncML session
+    TRAP(err,syncMLSession.OpenL());
+    User::LeaveIfError(err);
+    
+    // find the specified profile
+    RArray<TSmlProfileId> profileArr;
+    TRAP(err,syncMLSession.ListProfilesL(profileArr,ESmlDataSync));
+    User::LeaveIfError(err);
+    TInt count = profileArr.Count();
+    for(int i=0;i<count;i++)
+    {
+        RSyncMLDataSyncProfile syncProfile;
+        
+        TRAP(err,syncProfile.OpenL(syncMLSession,profileArr[i],ESmlOpenRead));
+        User::LeaveIfError(err);
+        if(syncProfile.DisplayName().Compare(aProfileName)== 0)
+        {
+            profileId = syncProfile.Identifier();
+            syncProfile.Close();
+            break;
+        }
+        syncProfile.Close();
+    }
+    
+    if(profileId == -1)
+        User::Leave(KErrNoProfile);
+    // delete the profile
+    TRAP(err,syncMLSession.DeleteProfileL(profileId));
+    User::LeaveIfError(err);
+    // close SyncML session
+    syncMLSession.Close();
+}
+
+void CSyncProfileManager::createProfileL(const TDesC8& aUsername,
+                                         const TDesC8& aPassword,
+                                         const TDesC8& aServerURI,
+                                         const TDesC& aIapName)
+{
+    RSyncMLSession syncMLSession;
+    RSyncMLDataSyncProfile syncProfile;
+
+    TInt err=KErrNone;
+    
+    // open SyncML session
+    TRAP(err,syncMLSession.OpenL());
+    User::LeaveIfError(err);
+    
+    // create a profile
+    TRAP(err,syncProfile.CreateL(syncMLSession));
+    User::LeaveIfError(err);
+    
+    TRAP(err, {
+        syncProfile.SetDisplayNameL(aProfileName);
+        syncProfile.SetUserNameL(aUsername);
+        syncProfile.SetPasswordL(aPassword);
+        // protocol version, values are:
+        // ESmlVersion1_1_2 = 1.1.2
+        // ESmlVersion1_2 = 1.2
+        syncProfile.SetProtocolVersionL(ESmlVersion1_1_2);
+        // This is for accepting all sync requests
+        syncProfile.SetSanUserInteractionL(ESmlEnableSync);
+        syncProfile.DeleteAllowed();
+        // save profile
+        syncProfile.UpdateL();
+    });
+    User::LeaveIfError(err);
+
+    // create and enable tasks (applications)
+    // retrieve needed data provider ids
+    TSmlDataProviderId contactsProvider = -1;
+    TSmlDataProviderId calendarProvider = -1;
+    
+    RArray<TSmlDataProviderId> dataProvidersArr;
+    TRAP(err,syncMLSession.ListDataProvidersL(dataProvidersArr));
+    User::LeaveIfError(err);
+    TInt count = dataProvidersArr.Count();
+    
+    for(int i=0;i<count;i++)
+    {
+        RSyncMLDataProvider dataProvider;
+        TRAP(err,dataProvider.OpenL(syncMLSession,dataProvidersArr[i]));
+        User::LeaveIfError(err);
+        
+        if(dataProvider.DisplayName().Compare(_L("Calendar"))==0)
+        {
+            calendarProvider = dataProvider.Identifier();
+        }
+        else if(dataProvider.DisplayName().Compare(_L("Contacts"))==0)
+        {
+            contactsProvider = dataProvider.Identifier();
+        }
+        dataProvider.Close();
+    }
+    
+    if(contactsProvider == -1)
+        User::Leave(KErrNoContactsProvider);
+    // contacts
+    // default Funambol server source is "card"
+    RSyncMLTask contactsTask;
+    TRAP(err,contactsTask.CreateL(syncProfile,contactsProvider,_L("card"),_L("C:Contacts.cdb")));
+    User::LeaveIfError(err);
+    TRAP(err, {
+        contactsTask.SetEnabledL(ETrue);
+        contactsTask.UpdateL();
+    });
+    User::LeaveIfError(err);
+    contactsTask.Close();
+    
+    if(calendarProvider == -1)
+        User::Leave(KErrNoCalendarProvider);
+    // calendar 
+    // default Funambol server source is "cal"
+    RSyncMLTask calendarTask;
+    TRAP(err,calendarTask.CreateL(syncProfile,calendarProvider,_L("cal"),_L("C:Calendar")));
+    User::LeaveIfError(err);
+    TRAP(err, {
+        calendarTask.SetEnabledL(ETrue);
+        calendarTask.UpdateL();
+    });
+    User::LeaveIfError(err);
+    
+    calendarTask.Close();
+    
+    // SAVE PROFILE AGAIN to save tasks!!!!
+    TRAP(err,syncProfile.UpdateL());
+    User::LeaveIfError(err);
+
+    // set server URI and IapId
+    // if NSmlIapId = -1, user is asked for IAP
+    // otherwise it is set to the specified IapId
+    // useful property names: NSmlIapId,NSmlIapId2,NSmlIapId3,NSmlIapId4,
+    // NSmlUseRoaming,NSmlHTTPAuth,NSmlHTTPUsername,NSmlHTTPPassword
+    RArray<TSmlConnectionId> connArr;
+    TRAP(err,syncProfile.ListConnectionsByConnectionIdL(connArr));
+    User::LeaveIfError(err);
+    TInt count2 = connArr.Count();
+    for(int i=0;i<count2;i++)
+    {
+        RSyncMLConnection syncConnection;
+        TRAP(err,syncConnection.OpenByConnectionIdL(syncProfile,connArr[i]));
+        User::LeaveIfError(err);
+        setIapIdForConnPropertiesL(aIapName);
+        TRAP(err, {
+            syncConnection.SetServerURIL(aServerURI);
+            syncConnection.SetPropertyL(_L8("NSmlIapId"),iIapId);
+            syncConnection.UpdateL();
+        });
+        User::LeaveIfError(err);
+        syncConnection.Close();
+    }
+    
+    TRAP(err,syncProfile.UpdateL());
+    User::LeaveIfError(err);
+    
+    // close profile
+    syncProfile.Close();
+    
+    // close SyncML session     
+    syncMLSession.Close();
+
+}
+
+
+/**
+ * CSyncProfileManager::SetUsernameL()
+ * Set the username to connect to sync server for the specified SyncML profile.
+ */
+void CSyncProfileManager::setCredentialsL(const TDesC8* aUsername,
+                                          const TDesC8* aPassword)
+{
+    RSyncMLSession syncMLSession;
+    TInt err=KErrNone;
+
+    // open SyncML session
+    TRAP(err,syncMLSession.OpenL());
+    User::LeaveIfError(err);
+
+    // find the specified profile
+    RArray<TSmlProfileId> profileArr;
+    TRAP(err,syncMLSession.ListProfilesL(profileArr,ESmlDataSync));
+    User::LeaveIfError(err);
+    TInt count = profileArr.Count();
+    for(int i=0;i<count;i++)
+    {
+        RSyncMLDataSyncProfile syncProfile;
+    
+        TRAP(err,syncProfile.OpenL(syncMLSession,profileArr[i],ESmlOpenReadWrite));
+        User::LeaveIfError(err);
+        if(syncProfile.DisplayName().Compare(aProfileName)== 0)
+        {
+            TRAP(err, {
+                if (aUsername) {
+                    syncProfile.SetUserNameL(*aUsername);
+                }
+                if (aPassword) {
+                    syncProfile.SetPasswordL(*aPassword);
+                }
+                syncProfile.UpdateL();
+            });
+            User::LeaveIfError(err);
+            syncProfile.Close();
+            break;
+        }
+        syncProfile.Close();
+    }
+    
+    // close SyncML session
+    syncMLSession.Close();
+}
+
+
+/**
+ * CSyncProfileManager::EnableTaskL()
+ * Enable sync for the specified application, ESyncContacts or ESyncCalendar.
+ */
+void CSyncProfileManager::enableTaskL(TSyncApp aSyncApp, bool enable)
+{
+
+    RSyncMLSession syncMLSession;
+    TSmlProfileId  profileId = -1;
+    RSyncMLDataSyncProfile syncProfile;
+    TInt err=KErrNone;
+    
+    TBuf<32> KSyncApp;
+    switch(aSyncApp)
+    {
+        case ESyncCalendar:
+        {
+            KSyncApp.Copy(_L("C:Calendar")); //C:Calendar is the client source
+            break;
+        }
+        case ESyncContacts:
+        {
+            KSyncApp.Copy(_L("C:Contacts.cdb")); //C:Contacts.cdb is the client source 
+            break;
+        }
+        default:
+        {
+            User::Leave(KErrWrongSyncApp);
+            break;
+        }
+    }
+    
+    // open SyncML session
+    TRAP(err,syncMLSession.OpenL());
+    User::LeaveIfError(err);
+        
+    // find the specified profile
+    RArray<TSmlProfileId> profileArr;
+    TRAP(err,syncMLSession.ListProfilesL(profileArr,ESmlDataSync));
+    User::LeaveIfError(err);
+    TInt count = profileArr.Count();
+    for(int i=0;i<count;i++)
+    {
+        TRAP(err,syncProfile.OpenL(syncMLSession,profileArr[i],ESmlOpenRead));
+        User::LeaveIfError(err);
+        if(syncProfile.DisplayName().Compare(aProfileName)== 0)
+        {
+            profileId = syncProfile.Identifier();
+            syncProfile.Close();
+            break;
+        }
+        syncProfile.Close();
+    }
+    
+    if(profileId == -1)
+        User::Leave(KErrNoProfile);
+    
+    // find the specified task
+    RArray<TSmlTaskId> taskArr;
+    
+    TRAP(err,syncProfile.OpenL(syncMLSession,profileId,ESmlOpenReadWrite));
+    User::LeaveIfError(err);
+    TRAP(err,syncProfile.ListTasksL(taskArr));
+    User::LeaveIfError(err);
+    
+    TInt count2 = taskArr.Count();
+    for(int i=0;i<count2;i++)
+    {
+        RSyncMLTask syncTask;
+        TRAP(err,syncTask.OpenL(syncProfile,taskArr[i]));
+        User::LeaveIfError(err);
+        if(syncTask.ClientDataSource().Compare(KSyncApp)==0)
+        {
+            // enable task
+            TRAP(err, {
+                syncTask.SetEnabledL(enable ? ETrue : EFalse);
+                syncTask.UpdateL();
+            });
+            User::LeaveIfError(err);
+            syncTask.Close();
+            break;
+        }
+        syncTask.Close();
+    }
+    // REMEMBER to update profile or changes won't take effect!!
+    TRAP(err,syncProfile.UpdateL());
+    User::LeaveIfError(err);
+    // close sync profile
+    syncProfile.Close();
+    // close SyncML session
+    syncMLSession.Close();
+}
+
+/*
+void CSyncProfileManager::TestL(void)
+{
+    //CSyncMLTransportPropertiesArray* propArr;
+    
+    RSyncMLSession syncMLSession;
+    RSyncMLDataSyncProfile syncProfile;
+    TSmlProfileId  profileId = -1;
+    TInt err;
+    
+    // open SyncML session
+    TRAP(err,syncMLSession.OpenL());
+    User::LeaveIfError(err);
+        
+    // find the specified profile
+    RArray<TSmlProfileId> profileArr;
+    TRAP(err,syncMLSession.ListProfilesL(profileArr,ESmlDataSync));
+    User::LeaveIfError(err);
+    TInt count = profileArr.Count();
+    for(int i=0;i<count;i++)
+    {
+        TRAP(err,syncProfile.OpenL(syncMLSession,profileArr[i],ESmlOpenRead));
+        User::LeaveIfError(err);
+        if(syncProfile.DisplayName().Compare(_L("Pava"))== 0)
+        {
+            CEikonEnv::InfoWinL(_L("Found profile!"),_L(""));
+            profileId = syncProfile.Identifier();
+            syncProfile.Close();
+            break;
+        }
+        syncProfile.Close();
+    }
+    
+    if(profileId == -1)
+        User::Leave(KErrNoProfile);
+    
+    syncProfile.OpenL(syncMLSession,profileId,ESmlOpenRead);
+    
+    // find all connections
+    RArray<TSmlTransportId> transportArr;
+    TRAP(err,syncProfile.ListConnectionsL(transportArr));
+    User::LeaveIfError(err);
+    TInt count2 = transportArr.Count();
+    for(int i=0;i<count2;i++)
+    {
+        RSyncMLTransport syncTransport;
+        
+        TRAP(err,syncTransport.OpenL(syncMLSession,transportArr[i]));
+        User::LeaveIfError(err);
+        
+        CEikonEnv::InfoWinL(_L("transport name"),syncTransport.DisplayName());
+        
+        TInt count3 = syncTransport.Properties().Count();
+        TBuf<32> propCount;
+        propCount.AppendNum(count3);
+        CEikonEnv::InfoWinL(_L("properties count"),propCount);
+        for(i=0;i<count3;i++)
+        {
+            TBuf<KSmlMaxTransportPropertyNameLen> propName;
+            propName.Copy(syncTransport.Properties().At(i).iName);
+            CEikonEnv::InfoWinL(_L("name:"),propName);
+            //
+            // found properties:
+            // NSmlIapId (-1: always ask; otherwise IapId)
+            // NSmlIapId2
+            // NSmlIapId3
+            // NSmlIapId4
+            // NSmlUseRoaming
+            // NSmlHTTPAuth
+            // NSmlHTTPUsername
+            // NSmlHTTPPassword
+            //
+            
+            if(propName.Compare(_L("NSmlIapId"))==0)
+            {
+                CEikonEnv::InfoWinL(_L("gotcha"),_L(""));
+                
+                RSyncMLConnection syncConnection;
+                syncConnection.OpenL(syncProfile,syncTransport.Identifier());
+                TBuf<KSmlMaxTransportPropertyNameLen> propValue;
+                propValue.Copy(syncConnection.GetPropertyL(syncTransport.Properties().At(i).iName));
+                CEikonEnv::InfoWinL(_L("NSmlIapId:"),propValue);
+                syncConnection.Close(); 
+            }
+        }
+        syncTransport.Close();
+        
+    }
+    
+    syncProfile.Close();
+    syncMLSession.Close();
+}
+*/
+
+/**
+ * CSyncProfileManager::SetIapIdForConnProperties()
+ * Set the private member iIapId to the IAP id of the specified IAP.
+ * It is used by CreateProfileL().
+ * If aIapName is set to Ask, then the user will be asked every time;
+ * if aIapName is set to <iapname>, then that particular IAP will be used,
+ * if the IAP is not found, the default IAP is set;
+ * if aIapName is set to Default, the default IAP set into packet data pref
+ * is used. NOTE: the default set is a static set, if user change the
+ * default IAP, the change is not propagated to the SyncML profile. 
+ */
+void CSyncProfileManager::setIapIdForConnPropertiesL(const TDesC& aIapName)
+{
+    
+    if(aIapName.Compare(_L("Ask"))==0)
+    {
+        iIapId.Zero();
+        iIapId.Copy(_L8("-1"));
+    } 
+    else if(aIapName.Compare(_L("Default"))==0)
+    {
+        // remember that this is a static set:
+        // if the default IAP is changed, the change
+        // is not reflected in the SyncML profile
+        TUint32 iapId;
+        // open the IAP communications database
+        CCommsDatabase* commDB = CCommsDatabase::NewL();
+        CleanupStack::PushL(commDB);
+        // create a view in rank order
+        CCommsDbConnectionPrefTableView* view;
+        view = commDB->OpenConnectionPrefTableInRankOrderLC(ECommDbConnectionDirectionOutgoing);
+        // Point to the first entry, the one set as default
+        if (view->GotoFirstRecord() == KErrNone)
+        {
+            CCommsDbConnectionPrefTableView::TCommDbIapConnectionPref pref;
+            view->ReadConnectionPreferenceL(pref);
+            iapId=pref.iBearer.iIapId;
+        
+            iIapId.Zero();
+            iIapId.AppendNum(iapId);
+        
+        }
+        CleanupStack::PopAndDestroy(); // view
+        CleanupStack::PopAndDestroy(); // commDB
+    }
+    else
+    {
+        TBool found = EFalse;
+        
+        //find specified IAP id
+        CCommsDatabase* commDb = CCommsDatabase::NewL(EDatabaseTypeIAP);
+        CleanupStack::PushL(commDb);
+        CApSelect* select = CApSelect::NewLC(*commDb, KEApIspTypeAll,
+                                             EApBearerTypeAll,
+                                             KEApSortUidAscending);
+        TInt32 iapId= 0;
+        TBool ok = select->MoveToFirst();
+        for (TUint32 i = 0; ok&&(i<select->Count()); i++)
+        {
+            if ( select->Name() == aIapName)
+            {
+                found = ETrue;
+                iapId = select->Uid();
+                iIapId.Zero();
+                iIapId.AppendNum(iapId);
+            }
+            else
+            {
+                ok = select->MoveNext ();
+            }
+        }
+        CleanupStack::PopAndDestroy(2); //commdb and select
+        if(!found)
+            setIapIdForConnPropertiesL(_L("Default"));
+    }
+}
+#endif
