@@ -45,11 +45,7 @@
 #include "base/util/timeUtils.h"
 #include "base/globalsdef.h"
 
-USE_NAMESPACE
-
-
-
-
+BEGIN_NAMESPACE
 
 void utcToLocalTime(TTime& aTime /*, const CTzId& aZone*/) {
 
@@ -82,3 +78,6 @@ void localTimeToUtc(TTime& aTime /*, const CTzId& aZone*/) {
     tzConverter->ConvertToUniversalTime(aTime);
     CleanupStack::PopAndDestroy(2);         // tzConverter, tzServer
 }
+
+END_NAMESPACE
+

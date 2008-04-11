@@ -40,6 +40,7 @@
 
 #include "base/util/StringBuffer.h"
 
+BEGIN_NAMESPACE
 
 //
 // ------------------ With buf16 descriptors  ------------------
@@ -88,5 +89,6 @@ HBufC8*       charToNewBuf8(const char*   aInput);
 StringBuffer buf8ToStringBuffer(const TDesC8&       aInput);
 HBufC8* stringBufferToNewBuf8  (const StringBuffer& aInput);
 
+END_NAMESPACE
 
 #endif /*INCL_STRING_UTILS*/

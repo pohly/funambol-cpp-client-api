@@ -39,11 +39,14 @@
 
 #include <string.h>
 
+#include "base/globalsdef.h"
 #include "base/fscapi.h"
 #include "base/util/ArrayElement.h"
 #include "spdm/ManagementNode.h"
 #include "base/util/StringBuffer.h"
 
+
+BEGIN_NAMESPACE
 
 /*
  * File-based implementation of ManagementNode.
@@ -54,9 +57,6 @@
  *
  * Comments look like:
  * \s*# <comment>
-#include "base/globalsdef.h"
-
-BEGIN_NAMESPACE
  */
 class DeviceManagementNode : public ManagementNode {
 

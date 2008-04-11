@@ -45,7 +45,7 @@
 #include "base/util/stringUtils.h"
 #include "base/globalsdef.h"
 
-USE_NAMESPACE
+BEGIN_NAMESPACE
 
 
 
@@ -144,5 +144,5 @@ HBufC8* stringBufferToNewBuf8(const StringBuffer& aInput)
     return charToNewBuf8(aInput.c_str());
 }
 
-
+END_NAMESPACE
 

@@ -37,9 +37,14 @@
 #ifndef INCL_TIME_UTILS
 #define INCL_TIME_UTILS
 
+#include "base/globalsdef.h"
+
+BEGIN_NAMESPACE
 
 void utcToLocalTime(TTime& aTime /*, const CTzId& aZone*/);
 void localTimeToUtc(TTime& aTime /*, const CTzId& aZone*/);
+
+END_NAMESPACE
 
 
 #endif /*INCL_TIME_UTILS*/
