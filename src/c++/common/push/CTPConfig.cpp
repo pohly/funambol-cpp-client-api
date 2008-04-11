@@ -113,13 +113,12 @@ void CTPConfig::readCTPConfig() {
         // FIXME TODO
         passDecoded = decodePassword(accessConfig.getPassword());
         accessConfig.setPassword(passDecoded);
-        delete [] passDecoded;
 #endif
     } else {
-        passDecoded = strdup(accessConfig.getPassword());
+        passDecoded = stringdup(accessConfig.getPassword());
         accessConfig.setPassword(passDecoded);
-        free(passDecoded);
     }
+    delete [] passDecoded;
 
     if (readDeviceConfig(*syncMLNode)) {
         setDeviceId(deviceConfig.getDevID());
@@ -132,7 +131,7 @@ void CTPConfig::readCTPConfig() {
     nodeName[0] = 0;
     sprintf(nodeName, "%s%s", rootContext, CONTEXT_PUSH_CTP);
     
-    // read parameter of the client only
+
     node = dmt->readManagementNode(nodeName);
     if (node) 
     {
