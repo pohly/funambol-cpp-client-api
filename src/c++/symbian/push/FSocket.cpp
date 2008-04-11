@@ -211,8 +211,14 @@ int32_t FSocket::readBuffer(int8_t* buffer, int32_t maxLen)
 void FSocket::close() 
 {
     LOG.debug("FSocket::close");
+    
+    iSocket.CancelAll();
+    iSocket.Shutdown(RSocket::EImmediate, iStatus);
+    User::WaitForRequest(iStatus);
     //iSocket.CancelAll();
-    iSocket.Close();
+    //iSocket.Close();
+    
+    
     iSocketSession.Close();
 }
 
