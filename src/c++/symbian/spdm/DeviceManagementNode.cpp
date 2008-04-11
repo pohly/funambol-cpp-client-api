@@ -42,6 +42,7 @@
 #include "base/util/utils.h"
 #include "base/util/stringUtils.h"
 #include "base/fscapi.h"
+#include "base/SymbianLog.h"
 #include "spdm/spdmutils.h"
 #include "spdm/constants.h"
 #include "spdm/ManagementNode.h"
@@ -124,7 +125,8 @@ void DeviceManagementNode::update(bool read) {
         }
 
         if (read) {
-            char buffer[512];
+            // Note: don't create local buffers too big, the Symbian stack size is limited!
+            char buffer[128];
 
             lines->clear();
             while (fgets(buffer, sizeof(buffer), file)) {
