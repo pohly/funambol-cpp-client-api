@@ -44,6 +44,7 @@ USERINCLUDE     ..\..\src\include\symbian
 
 
 MACRO SYMBIAN
+MACRO ENABLE_NAMESPACE
 
 SOURCEPATH   ..\..\src\cpp\common\base
 SOURCE       base64.cpp error.cpp md5.c quoted-printable.cpp ErrorHandler.cpp LogErrorHandler.cpp
