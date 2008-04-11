@@ -44,7 +44,7 @@
 #include "base/util/stringUtils.h"
 #include "base/globalsdef.h"
 
-USE_NAMESPACE
+BEGIN_NAMESPACE
 
 
 
@@ -127,3 +127,6 @@ void showAlert(const wchar_t* aMsg)
     buf16.Assign(wcharToNewBuf(aMsg));
     showAlert(buf16);
 }
+
+END_NAMESPACE
+

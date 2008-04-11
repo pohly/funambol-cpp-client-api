@@ -37,6 +37,9 @@
 #ifndef INCL_SYMBIAN_UTILS
 #define INCL_SYMBIAN_UTILS
 
+#include "base/globalsdef.h"
+
+BEGIN_NAMESPACE
 
 /**
  * Levels of warning message. For msgBox() utility function.
@@ -72,6 +75,8 @@ void showAlert(const TDesC&   aMsg);
 void showAlert(const TDesC8&  aMsg);
 void showAlert(const char*    aMsg);
 void showAlert(const wchar_t* aMsg);
+
+END_NAMESPACE
 
 
 #endif /*INCL_SYMBIAN_UTILS*/
