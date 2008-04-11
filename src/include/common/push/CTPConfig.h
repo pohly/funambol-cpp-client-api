@@ -49,7 +49,7 @@
 BEGIN_NAMESPACE
 
 /// This is the root for the configuration
-#define APPLICATION_URI                 "Funambol/SyncClient"
+#define APPLICATION_URI                 "Funambol"
 
 /// This is the context for the CTP push parameters
 #define CONTEXT_PUSH_CTP                "/push/ctp"    
