@@ -42,7 +42,7 @@
 #define INCL_TEST_H
 /** @cond DEV */
 
-#ifdef AUTOTOOLS
+#ifdef POSIX
 # include <config.h>
 #endif
 

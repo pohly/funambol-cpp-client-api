@@ -245,4 +245,4 @@ vpath %.cpp $(srcdir)/../../../src/c++/common/base             \
 
 vpath %.c   $(srcdir)/../../../src/c++/common/base
 
-AM_CPPFLAGS = -I$(srcdir)/../../../src/include/posix -I$(srcdir)/../../../src/include/common -DAUTOTOOLS
+AM_CPPFLAGS = -I$(srcdir)/../../../src/include/posix -I$(srcdir)/../../../src/include/common -DPOSIX

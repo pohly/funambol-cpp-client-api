@@ -34,8 +34,8 @@
  */
 
 
-#ifndef INCL_AUTOTOOLS_ADAPTER
-#define INCL_AUTOTOOLS_ADAPTER
+#ifndef INCL_POSIX_ADAPTER
+#define INCL_POSIX_ADAPTER
 /** @cond DEV */
 
 

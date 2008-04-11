@@ -45,7 +45,13 @@
     #define INCL_FSCAPI
 /** @cond DEV */
 
-    #ifdef AUTOTOOLS
+    #ifdef MAC
+        #ifndef MSG_NOSIGNAL
+            #define MSG_NOSIGNAL SO_NOSIGPIPE
+        #endif
+    #endif
+    
+    #ifdef POSIX
         #include "base/posixadapter.h"
     #endif
     #ifdef HAVE_STDARG_H

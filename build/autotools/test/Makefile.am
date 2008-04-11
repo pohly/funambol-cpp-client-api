@@ -9,7 +9,7 @@ TESTDIR = $(srcdir)/../../../test
 LDADD = ../src/libsync4j.la 
 AM_LDFLAGS = @CURL_LDFLAGS@ @CPPUNIT_LDFLAGS@
 AM_CXXFLAGS = @CURL_CFLAGS@ @CPPUNIT_CXXFLAGS@
-AM_CPPFLAGS = -I$(INCDIR)/posix -I$(INCDIR)/common -DAUTOTOOLS
+AM_CPPFLAGS = -I$(INCDIR)/posix -I$(INCDIR)/common -DPOSIX
 
 vpath %.cpp	$(TESTDIR) \
 		$(TESTDIR)/common/base/util \

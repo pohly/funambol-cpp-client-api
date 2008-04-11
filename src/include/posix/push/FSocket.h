@@ -36,12 +36,13 @@
 #ifndef INCL_FSOCKET
 #define INCL_FSOCKET
 
+#include "base/fscapi.h"
+
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <netdb.h>
 #include <unistd.h>
-#include <string>
 #include <arpa/inet.h>
 
 const int MAXHOSTNAME = 200;

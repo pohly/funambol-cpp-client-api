@@ -76,7 +76,7 @@ input[], int n)
  * @param len src length
  *
  */
-int __cdecl b64_encode(char *dest, void *src, int len)
+int b64_encode(char *dest, void *src, int len)
 {
         int outsz = 0;
 

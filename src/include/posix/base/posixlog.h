@@ -33,8 +33,8 @@
  * the words "Powered by Funambol".
  */
 
-#ifndef INCL_AUTOTOOLS_LOG
-# define INCL_AUTOTOOLS_LOG
+#ifndef INCL_POSIX_LOG
+# define INCL_POSIX_LOG
 /** @cond DEV */
 
 #include <base/fscapi.h>

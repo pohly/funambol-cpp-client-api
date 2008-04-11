@@ -38,8 +38,6 @@
 #include "base/util/utils.h"
 #include "base/util/StringBuffer.h"
 
-#include <stdio.h>
-
 const size_t StringBuffer::npos = 0xFFFFFFFF;
 static size_t growup = 5;
 
