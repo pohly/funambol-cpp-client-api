@@ -35,6 +35,9 @@
 
 
 #include "syncml/core/Delete.h"
+#include "base/globalsdef.h"
+
+USE_NAMESPACE
 
 Delete::Delete() {
     COMMAND_NAME = new char[strlen(DELETE_COMMAND_NAME) + 1];

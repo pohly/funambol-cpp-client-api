@@ -36,7 +36,7 @@
 
 //
 // @author Stefano Fornari @ Funambol
-// @version $Id: vCardProperty.h,v 1.7 2007-11-28 15:01:36 toccy Exp $
+// @version $Id: vCardProperty.h,v 1.8 2008-04-11 08:17:13 marco_garatti Exp $
 //
 #include <string.h>
 
@@ -45,6 +45,9 @@
 /** @cond DEV */
 
 #include "base/fscapi.h"
+#include "base/globalsdef.h"
+
+BEGIN_NAMESPACE
 
 /**
  * This object represents a property for VCard and ICalendar object
@@ -158,6 +161,9 @@ class vCardProperty {
          */
         vCardProperty* clone();
 };
+
+
+END_NAMESPACE
 
 /** @endcond */
 #endif

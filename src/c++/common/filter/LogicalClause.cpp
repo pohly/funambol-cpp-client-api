@@ -35,6 +35,9 @@
 
 
 #include "filter/LogicalClause.h"
+#include "base/globalsdef.h"
+
+USE_NAMESPACE
 
 
 LogicalClause::LogicalClause() {

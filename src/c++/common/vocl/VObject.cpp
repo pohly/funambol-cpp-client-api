@@ -39,6 +39,9 @@
 #include "base/Log.h"
 #include "vocl/VObject.h"
 #include "string.h"
+#include "base/globalsdef.h"
+
+USE_NAMESPACE
 
 VObject::VObject() {
     productID = NULL;

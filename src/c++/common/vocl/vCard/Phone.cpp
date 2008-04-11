@@ -36,6 +36,9 @@
 
 #include "base/fscapi.h"
 #include "vocl/vCard/Phone.h"
+#include "base/globalsdef.h"
+
+USE_NAMESPACE
 
 
 Phone::Phone() : TypedProperty() {

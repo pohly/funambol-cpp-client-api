@@ -35,6 +35,9 @@
 
 #include "base/util/utils.h"
 #include "syncml/core/DevInf.h"
+#include "base/globalsdef.h"
+
+USE_NAMESPACE
 
 DevInf::DevInf() {
 

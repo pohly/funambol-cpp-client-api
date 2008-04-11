@@ -1,4 +1,7 @@
 /*
+#include "base/globalsdef.h"
+
+USE_NAMESPACE
  * Funambol is a mobile platform developed by Funambol, Inc. 
  * Copyright (C) 2003 - 2007 Funambol, Inc.
  * 

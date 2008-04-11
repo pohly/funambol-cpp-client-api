@@ -42,6 +42,9 @@
     #include "http/URL.h"
     #include "http/Proxy.h"
     #include "http/TransportAgent.h"
+#include "base/globalsdef.h"
+
+BEGIN_NAMESPACE
 
 
     /*
@@ -57,6 +60,9 @@
                                         unsigned int responseTimeout = DEFAULT_MAX_TIMEOUT,
                                         unsigned int maxmsgsize = DEFAULT_MAX_MSG_SIZE);
     };
+
+
+END_NAMESPACE
 
 /** @endcond */
 #endif

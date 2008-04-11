@@ -39,6 +39,9 @@
 
 #include "base/fscapi.h"
 #include "filter/Clause.h"
+#include "base/globalsdef.h"
+
+BEGIN_NAMESPACE
 
 typedef enum {
     EQ       =  0,
@@ -162,6 +165,9 @@ public:
 
 };
 
+
+
+END_NAMESPACE
 
 /** @endcond */
 #endif

@@ -38,6 +38,9 @@
 #include "base/Log.h"
 #include "base/util/utils.h"
 #include "syncml/core/SyncNotification.h"
+#include "base/globalsdef.h"
+
+USE_NAMESPACE
 
 /*
  * This class represent a Server Alerted Notification for DS message (Pkg0).

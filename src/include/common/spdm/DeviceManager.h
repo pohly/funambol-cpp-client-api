@@ -38,6 +38,9 @@
 
 #include "base/constants.h"
 #include "spdm/DMTreeManager.h"
+#include "base/globalsdef.h"
+
+BEGIN_NAMESPACE
 
 /**
  * DeviceManager is an abstract class that must be implemented on a platform
@@ -66,6 +69,9 @@ class DeviceManager {
          */
         DMTreeManager* const getDMTreeManager(const char*  node);
 };
+
+
+END_NAMESPACE
 
 /** @endcond */
 #endif

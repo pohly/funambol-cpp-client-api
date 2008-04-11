@@ -41,6 +41,9 @@
 #include "base/fscapi.h"
 #include "base/util/ArrayList.h"
 #include "syncml/core/SyncTypeArray.h"
+#include "base/globalsdef.h"
+
+BEGIN_NAMESPACE
 
 class SyncCap {
 
@@ -78,6 +81,9 @@ class SyncCap {
         SyncCap* clone();
 
 };
+
+
+END_NAMESPACE
 
 /** @endcond */
 #endif

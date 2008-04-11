@@ -38,6 +38,9 @@
 #include "vocl/VConverter.h"
 #include "base/stringUtils.h"
 #include "base/timeUtils.h"
+#include "base/globalsdef.h"
+
+USE_NAMESPACE
 
 using namespace std;
 

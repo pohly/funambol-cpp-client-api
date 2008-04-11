@@ -52,6 +52,9 @@
 #define ERR_FILE_SYSTEM             1
 #define ERR_NO_FILES_TO_SYNC        2
 #define ERR_BAD_FILE_CONTENT        3
+#include "base/globalsdef.h"
+
+BEGIN_NAMESPACE
 
 /**
  * Synchronizes the content of files in a certain directory and the
@@ -148,6 +151,9 @@ public:
     SyncItem* getFirst(ItemIteratorContainer& container, bool getData = true);
     SyncItem* getNext(ItemIteratorContainer& container, bool getData = true);
 };
+
+
+END_NAMESPACE
 
 /** @} */
 /** @endcond */

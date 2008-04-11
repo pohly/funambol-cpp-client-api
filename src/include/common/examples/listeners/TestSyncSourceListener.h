@@ -39,6 +39,9 @@
 /** @cond DEV */
 
 #include "event/SyncSourceListener.h"
+#include "base/globalsdef.h"
+
+BEGIN_NAMESPACE
 
 class TestSyncSourceListener : public SyncSourceListener {
 
@@ -48,6 +51,9 @@ class TestSyncSourceListener : public SyncSourceListener {
     void syncSourceTotalClientItems  (SyncSourceEvent& event);
     void syncSourceTotalServerItems  (SyncSourceEvent& event);
 };
+
+
+END_NAMESPACE
 
 /** @endcond */
 #endif

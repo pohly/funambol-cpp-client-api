@@ -35,6 +35,9 @@
 
 #include "base/util/utils.h"
 #include "filter/SourceFilter.h"
+#include "base/globalsdef.h"
+
+USE_NAMESPACE
 
 
 SourceFilter::SourceFilter() : clause(NULL), type(NULL), inclusive(false) {

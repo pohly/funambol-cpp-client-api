@@ -43,6 +43,9 @@
 #include "spdm/DMTreeFactory.h"
 #include "spdm/DMTree.h"
 #include "spdm/ManagementNode.h"
+#include "base/globalsdef.h"
+
+USE_NAMESPACE
 
 
 void DMTClientConfig::initialize() {

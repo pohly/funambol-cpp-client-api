@@ -43,6 +43,9 @@
 #include "spds/B64Encoder.h"
 #include "spds/DESDecoder.h"
 #include "spds/DESEncoder.h"
+#include "base/globalsdef.h"
+
+USE_NAMESPACE
 
 //
 // IMPORTANT: this test case encodes/decodes a UNICODE string; make sure

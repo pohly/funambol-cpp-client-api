@@ -36,6 +36,9 @@
 #include "base/fscapi.h"
 #include "syncml/core/Target.h"
 #include "syncml/core/Filter.h" // note: do not remove
+#include "base/globalsdef.h"
+
+USE_NAMESPACE
 
 Target::Target() : locURI(NULL), locName(NULL), filter(NULL) {
 }

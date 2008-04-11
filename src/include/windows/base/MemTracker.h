@@ -43,6 +43,9 @@
 
 #include "base/Log.h"
 #include "base/util/utils.h"
+#include "base/globalsdef.h"
+
+BEGIN_NAMESPACE
 
 
 
@@ -94,6 +97,9 @@ public:
     ArrayElement* clone();
 };
 
+
+
+END_NAMESPACE
 
 /** @endcond */
 #endif

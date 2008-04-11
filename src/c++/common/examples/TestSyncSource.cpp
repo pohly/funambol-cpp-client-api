@@ -37,6 +37,9 @@
 #include "base/util/utils.h"
 #include "base/Log.h"
 #include "base/util/StringBuffer.h"
+#include "base/globalsdef.h"
+
+USE_NAMESPACE
 
 static int all      = -1;
 static int cnew     = -1;

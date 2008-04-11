@@ -43,6 +43,9 @@
 #include "syncml/core/ResponseCommand.h"
 
 #define RESULTS_COMMAND_NAME "Results"
+#include "base/globalsdef.h"
+
+BEGIN_NAMESPACE
 
 class Results : public ResponseCommand {
 
@@ -85,6 +88,9 @@ class Results : public ResponseCommand {
         ArrayElement* clone();
 
 };
+
+
+END_NAMESPACE
 
 /** @endcond */
 #endif

@@ -35,6 +35,9 @@
 
 
 #include "syncml/core/Chal.h"
+#include "base/globalsdef.h"
+
+USE_NAMESPACE
 
 Chal::Chal() {
     initialize();

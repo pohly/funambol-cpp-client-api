@@ -57,6 +57,9 @@
 #include "spds/MailSyncSourceConfig.h"
 #include "syncml/core/core.h"
 #include "syncml/formatter/Formatter.h"
+#include "base/globalsdef.h"
+
+USE_NAMESPACE
 
 
 void testConfigFilter() {

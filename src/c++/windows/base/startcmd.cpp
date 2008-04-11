@@ -43,6 +43,9 @@
 #include "base/startcmd.h"
 #include "base/Log.h"
 #include "base/util/utils.h"
+#include "base/globalsdef.h"
+
+USE_NAMESPACE
 
 // retrieve the Funambol program path and set it in a static
 // buffer. Return the buffer

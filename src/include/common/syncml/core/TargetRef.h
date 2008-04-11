@@ -41,6 +41,9 @@
 #include "base/fscapi.h"
 #include "base/util/ArrayElement.h"
 #include "syncml/core/Target.h"
+#include "base/globalsdef.h"
+
+BEGIN_NAMESPACE
 
 
 
@@ -115,6 +118,9 @@ class TargetRef : public ArrayElement{
 
         ArrayElement* clone();
 };
+
+
+END_NAMESPACE
 
 /** @endcond */
 #endif

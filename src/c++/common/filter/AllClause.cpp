@@ -34,6 +34,9 @@
  */
 
 #include "filter/AllClause.h"
+#include "base/globalsdef.h"
+
+USE_NAMESPACE
 
 AllClause::AllClause() {
     type = ALL_CLAUSE;

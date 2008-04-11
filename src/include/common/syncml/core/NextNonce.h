@@ -41,6 +41,9 @@
 #include "base/fscapi.h"
 #include "base/util/utils.h"
 #include "base/base64.h"
+#include "base/globalsdef.h"
+
+BEGIN_NAMESPACE
 
 
 class NextNonce {
@@ -75,6 +78,9 @@ class NextNonce {
 
     NextNonce* clone();
 };
+
+
+END_NAMESPACE
 
 /** @endcond */
 #endif

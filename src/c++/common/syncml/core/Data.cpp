@@ -35,6 +35,9 @@
 
 #include "base/util/utils.h"
 #include "syncml/core/Data.h"
+#include "base/globalsdef.h"
+
+USE_NAMESPACE
 
 
 Data::Data() {

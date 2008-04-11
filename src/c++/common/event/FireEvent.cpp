@@ -36,6 +36,9 @@
 #include "base/fscapi.h"
 #include "event/FireEvent.h"
 #include "event/ManageListener.h"
+#include "base/globalsdef.h"
+
+USE_NAMESPACE
 
 
 //

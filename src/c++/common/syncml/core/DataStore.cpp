@@ -35,6 +35,9 @@
 
 #include "base/util/utils.h"
 #include "syncml/core/DataStore.h"
+#include "base/globalsdef.h"
+
+USE_NAMESPACE
 
 DataStore::DataStore() {
     initialize();

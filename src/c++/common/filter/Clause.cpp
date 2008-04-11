@@ -34,6 +34,9 @@
  */
 
 #include "filter/Clause.h"
+#include "base/globalsdef.h"
+
+USE_NAMESPACE
 
 Clause::Clause() {
     type = CLAUSE;

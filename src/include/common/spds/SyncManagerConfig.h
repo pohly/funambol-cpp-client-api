@@ -42,6 +42,9 @@
 #include "spds/AccessConfig.h"
 #include "spds/DeviceConfig.h"
 #include "spds/SyncSourceConfig.h"
+#include "base/globalsdef.h"
+
+BEGIN_NAMESPACE
 
 /**
  * This implementation is just a transient configuration information
@@ -139,6 +142,9 @@ class SyncManagerConfig : public AbstractSyncConfig {
         virtual const char*  getDevInfHash() const { return getDeviceConfig().getDevInfHash(); }
         virtual void setDevInfHash(const char *hash) { getDeviceConfig().setDevInfHash(hash); }
 };
+
+
+END_NAMESPACE
 
 /** @} */
 /** @endcond */

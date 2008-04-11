@@ -46,6 +46,9 @@
 #include "filter/WhereClause.h"
 #include "syncml/core/Property.h"
 #include "syncml/core/PropParam.h"
+#include "base/globalsdef.h"
+
+USE_NAMESPACE
 
 
 /**

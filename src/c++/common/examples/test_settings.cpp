@@ -53,6 +53,9 @@
 #include "spdm/DMTree.h"
 #include "spdm/DMTreeFactory.h"
 #include "spdm/ManagementNode.h"
+#include "base/globalsdef.h"
+
+USE_NAMESPACE
 
 #if 0 //def _WIN32_WCE
 static WCHAR *convertSlashes(const WCHAR* str) {

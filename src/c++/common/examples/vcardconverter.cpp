@@ -49,6 +49,9 @@
 #include "vocl/vCard/vCardConverter.h"
 #include "base/util/utils.h"
 #include "base/util/WString.h"
+#include "base/globalsdef.h"
+
+USE_NAMESPACE
 
 // very simply auto_ptr for arrays
 template <class T> class auto_array {

@@ -36,6 +36,9 @@
 
 #include "base/fscapi.h"
 #include "base/util/StringBuffer.h"
+#include "base/globalsdef.h"
+
+BEGIN_NAMESPACE
 
 static const char b64_tbl[] =
         "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
@@ -189,3 +192,6 @@ void * b64_decode(int & len, const char *src)
     dest[len] = 0;
     return (void *)dest;
 }
+
+END_NAMESPACE
+

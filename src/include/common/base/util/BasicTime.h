@@ -38,6 +38,9 @@
 
 #include "base/fscapi.h"
 #include "base/util/ArrayElement.h"
+#include "base/globalsdef.h"
+
+BEGIN_NAMESPACE
 
 class BasicTime : public ArrayElement {
 
@@ -104,5 +107,8 @@ class BasicTime : public ArrayElement {
 
 
 };
+
+END_NAMESPACE
+
 /** @endcond */
 #endif

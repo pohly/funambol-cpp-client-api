@@ -54,6 +54,9 @@
 #include <direct.h>
 #endif
 #include <sys/stat.h>
+#include "base/globalsdef.h"
+
+USE_NAMESPACE
 
 #ifdef ENABLE_INTEGRATION_TESTS
 

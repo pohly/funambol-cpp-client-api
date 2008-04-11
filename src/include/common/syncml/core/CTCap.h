@@ -42,6 +42,9 @@
 #include "base/util/ArrayList.h"
 #include "syncml/core/CTTypeSupported.h"
 #include "base/util/StringBuffer.h"
+#include "base/globalsdef.h"
+
+BEGIN_NAMESPACE
 
 
 class CTCap : public ArrayElement {
@@ -136,6 +139,9 @@ class CTCap : public ArrayElement {
 
 
 };
+
+
+END_NAMESPACE
 
 /** @endcond */
 #endif

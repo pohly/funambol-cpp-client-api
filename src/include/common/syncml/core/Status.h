@@ -44,6 +44,9 @@
 #include "syncml/core/Data.h"
 
 #define STATUS_COMMAND_NAME "Status"
+#include "base/globalsdef.h"
+
+BEGIN_NAMESPACE
 
 class Status : public ResponseCommand {
 
@@ -154,6 +157,9 @@ class Status : public ResponseCommand {
 
         ArrayElement* clone();
 };
+
+
+END_NAMESPACE
 
 /** @endcond */
 #endif

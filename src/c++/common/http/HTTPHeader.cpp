@@ -41,6 +41,9 @@
 
 #include "http/constants.h"
 #include "http/HTTPHeader.h"
+#include "base/globalsdef.h"
+
+USE_NAMESPACE
 
 /*
  * Creates a HTTPHeader from a chars buffer. See HTTP protocol specification

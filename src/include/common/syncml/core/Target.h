@@ -38,6 +38,9 @@
 /** @cond DEV */
 
 #include "base/fscapi.h"
+#include "base/globalsdef.h"
+
+BEGIN_NAMESPACE
 
 
 class Filter;  // forward declaration
@@ -125,6 +128,9 @@ class Target {
 
 
 };
+
+
+END_NAMESPACE
 
 /** @endcond */
 #endif

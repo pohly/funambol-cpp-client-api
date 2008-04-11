@@ -34,6 +34,9 @@
  */
 
 #include "event/BaseEvent.h"
+#include "base/globalsdef.h"
+
+USE_NAMESPACE
 
 
 BaseEvent::BaseEvent(int type, unsigned long date) {

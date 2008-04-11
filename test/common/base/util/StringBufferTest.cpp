@@ -37,6 +37,9 @@
 
 #include <cppunit/extensions/TestFactoryRegistry.h>
 #include <cppunit/extensions/HelperMacros.h>
+#include "base/globalsdef.h"
+
+USE_NAMESPACE
 
 
 /**

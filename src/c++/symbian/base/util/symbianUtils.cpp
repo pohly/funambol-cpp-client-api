@@ -42,6 +42,9 @@
 #include "base/fscapi.h"
 #include "base/util/symbianUtils.h"
 #include "base/util/stringUtils.h"
+#include "base/globalsdef.h"
+
+USE_NAMESPACE
 
 
 

@@ -44,6 +44,9 @@
 #include "vocl/WinItem.h"
 #include "vocl/WinEvent.h"
 #include "vocl/WinRecurrenceSIF.h"
+#include "base/globalsdef.h"
+
+BEGIN_NAMESPACE
 
 using namespace std;
 
@@ -163,6 +166,9 @@ public:
     wstring adaptFromSIFSpecs(const wstring& propName, const wstring& propValue);
     
 };
+
+END_NAMESPACE
+
 /** @} */
 /** @endcond */
 #endif

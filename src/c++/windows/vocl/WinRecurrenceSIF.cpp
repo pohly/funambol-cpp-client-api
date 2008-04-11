@@ -39,6 +39,9 @@
 #include "vocl/constants.h"
 #include "vocl/sifUtils.h"
 #include <oleauto.h>
+#include "base/globalsdef.h"
+
+USE_NAMESPACE
 
 using namespace std;
 

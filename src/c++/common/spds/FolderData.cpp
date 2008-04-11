@@ -39,6 +39,9 @@
 #include "syncml/formatter/Formatter.h"
 #include "spds/FolderData.h"
 #include "base/quoted-printable.h"
+#include "base/globalsdef.h"
+
+USE_NAMESPACE
 
 
 #define FOLDER_ITEM       TEXT("Folder")

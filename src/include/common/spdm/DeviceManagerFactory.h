@@ -38,6 +38,9 @@
 /** @cond DEV */
 
     #include "spdm/DeviceManager.h"
+#include "base/globalsdef.h"
+
+BEGIN_NAMESPACE
 
     /*
      * This class is a factory of DeviceManager objects. A concrete implementation
@@ -60,6 +63,9 @@
         DeviceManager *getDeviceManager() ;
 
     };
+
+
+END_NAMESPACE
 
 /** @endcond */
 #endif

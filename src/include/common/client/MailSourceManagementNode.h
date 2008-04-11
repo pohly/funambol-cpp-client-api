@@ -40,6 +40,9 @@
 #include "spdm/constants.h"
 #include "spdm/DeviceManagementNode.h"
 #include "spds/MailSyncSourceConfig.h"
+#include "base/globalsdef.h"
+
+BEGIN_NAMESPACE
 
 
 class MailSourceManagementNode : public DeviceManagementNode {
@@ -81,6 +84,9 @@ class MailSourceManagementNode : public DeviceManagementNode {
     private:
         MailSyncSourceConfig config;
 };
+
+
+END_NAMESPACE
 
 /** @endcond */
 #endif

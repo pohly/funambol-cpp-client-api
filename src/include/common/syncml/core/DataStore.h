@@ -44,6 +44,9 @@
 #include "syncml/core/ContentTypeInfo.h"
 #include "syncml/core/DSMem.h"
 #include "syncml/core/SyncCap.h"
+#include "base/globalsdef.h"
+
+BEGIN_NAMESPACE
 
 
 class DataStore : public ArrayElement {
@@ -244,6 +247,9 @@ class DataStore : public ArrayElement {
         ArrayElement* clone();
 
 };
+
+
+END_NAMESPACE
 
 /** @endcond */
 #endif

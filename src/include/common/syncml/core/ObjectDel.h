@@ -44,6 +44,7 @@
 #include "base/util/StringBuffer.h"
 #include "syncml/core/TagNames.h"
 
+BEGIN_NAMESPACE
 
 // void deleteAll              (int count, char** s, ...);
 void deleteStringBuffer     (StringBuffer** s);
@@ -203,6 +204,9 @@ bool NotZeroStringBufferLenght(int count, StringBuffer* s, StringBuffer* s1, Str
                                          StringBuffer* s8, StringBuffer* s9, StringBuffer* s10, StringBuffer* s11,
                                          StringBuffer* s12, StringBuffer* s13, StringBuffer* s14, StringBuffer* s15,
                                          StringBuffer* s16) ;
+
+END_NAMESPACE
+
 /** @endcond */
 #endif
 

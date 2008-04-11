@@ -36,6 +36,9 @@
 
 #include "base/fscapi.h"
 #include "base/util/ArrayListKeyValueStore.h"
+#include "base/globalsdef.h"
+
+USE_NAMESPACE
   
 StringBuffer ArrayListKeyValueStore::readPropertyValue(const char *prop) const {
     

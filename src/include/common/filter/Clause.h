@@ -38,6 +38,9 @@
 /** @cond DEV */
 
 #include "base/util/ArrayElement.h"
+#include "base/globalsdef.h"
+
+BEGIN_NAMESPACE
 
 typedef enum {
     CLAUSE         = 0,
@@ -69,6 +72,9 @@ public:
 
 };
 
+
+
+END_NAMESPACE
 
 /** @endcond */
 #endif

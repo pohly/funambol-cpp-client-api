@@ -39,6 +39,9 @@
 /** @cond DEV */
 
 #include "event/TransportListener.h"
+#include "base/globalsdef.h"
+
+BEGIN_NAMESPACE
 
 class TestTransportListener : public TransportListener {
 
@@ -49,6 +52,9 @@ class TestTransportListener : public TransportListener {
     void receiveDataEnd  (TransportEvent& event);
 
 };
+
+
+END_NAMESPACE
 
 /** @endcond */
 #endif

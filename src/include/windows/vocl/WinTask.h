@@ -44,6 +44,9 @@
 #include "vocl/WinRecurrence.h"
 #include "vocl/constants.h"
 #include "vocl/VObject.h"
+#include "base/globalsdef.h"
+
+BEGIN_NAMESPACE
 
 
 /**
@@ -112,6 +115,9 @@ public:
      */
     long getCRC();
 };
+
+
+END_NAMESPACE
 
 /** @} */
 /** @endcond */

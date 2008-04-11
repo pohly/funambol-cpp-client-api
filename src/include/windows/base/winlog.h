@@ -45,6 +45,9 @@
 #define LOG_DEBUG "DEBUG"
 
 #define LOG_NAME "synclog.txt"
+#include "base/globalsdef.h"
+
+BEGIN_NAMESPACE
 
 //typedef enum {
 //    LOG_LEVEL_NONE  = 0,
@@ -89,5 +92,8 @@ public:
 
 //extern Log LOG;
 //#define LOG (winLog &)Log::instance()
+
+END_NAMESPACE
+
 /** @endcond */
 #endif

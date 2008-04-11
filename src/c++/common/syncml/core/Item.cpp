@@ -35,6 +35,9 @@
 
 
 #include "syncml/core/Item.h"
+#include "base/globalsdef.h"
+
+USE_NAMESPACE
 
 
 Item::Item() {

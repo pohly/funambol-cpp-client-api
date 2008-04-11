@@ -39,11 +39,14 @@
 
 #include "base/Log.h"
 #include "base/util/utils.h"
+#include "base/globalsdef.h"
+
+BEGIN_NAMESPACE
 
 
 bool saveFile(const char *filename, const char *buffer, size_t len, bool binary)
 {
-	const char *mode = binary ? "wb" : "w" ;
+    const char *mode = binary ? "wb" : "w" ;
 
     FILE *f = fopen(filename, "w");
 
@@ -266,4 +269,6 @@ char *mkTempFileName(const char *name)
         return filename;
     }
 }
+
+END_NAMESPACE
 

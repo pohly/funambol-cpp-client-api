@@ -40,6 +40,9 @@
 #include "base/util/XMLProcessor.h"
 #include "base/util/StringBuffer.h"
 #include "base/Log.h"
+#include "base/globalsdef.h"
+
+USE_NAMESPACE
 
 //--------------------------------------------------------------- Static functions
 

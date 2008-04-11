@@ -52,6 +52,9 @@
 #define P_NONCE       0x06
 #define P_SAN         0x07   
 #define P_SLEEP       0x09   
+#include "base/globalsdef.h"
+
+BEGIN_NAMESPACE
 
 /**
 * The single CTP Param class that represents the parameter that are exchanged
@@ -136,6 +139,9 @@ class CTPParam : public ArrayElement {
         ArrayElement* clone();
 };
 
+
+
+END_NAMESPACE
 
 /** @endcond */
 #endif

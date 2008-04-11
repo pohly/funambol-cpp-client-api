@@ -35,6 +35,9 @@
 
 
 #include "syncml/core/DevInfData.h"
+#include "base/globalsdef.h"
+
+USE_NAMESPACE
 
 
 DevInfData::DevInfData() {

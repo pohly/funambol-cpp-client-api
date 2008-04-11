@@ -41,6 +41,9 @@
 #include "base/fscapi.h"
 #include "vocl/iCalendar/Calendar.h"
 #include "vocl/VConverter.h"
+#include "base/globalsdef.h"
+
+BEGIN_NAMESPACE
 
 class WString;
 
@@ -102,5 +105,8 @@ public:
     void getCalendar(Calendar** outputContact);
     bool convert(WString& error, long* errorCode);
 };
+
+END_NAMESPACE
+
 /** @endcond */
 #endif

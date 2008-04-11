@@ -43,6 +43,9 @@
 #include "vocl/VObject.h"
 #include "vocl/WinItem.h"
 #include "vocl/WinNote.h"
+#include "base/globalsdef.h"
+
+BEGIN_NAMESPACE
 
 using namespace std;
 
@@ -97,6 +100,9 @@ public:
      */
     wstring& toString();
 };
+
+
+END_NAMESPACE
 
 /** @} */
 /** @endcond */

@@ -36,6 +36,9 @@
 
 #include "event/SetListener.h"
 #include "event/ManageListener.h"
+#include "base/globalsdef.h"
+
+BEGIN_NAMESPACE
 
 //
 // Set listeners:
@@ -92,4 +95,6 @@ void unsetSyncStatusListener() {
     ManageListener& manage = ManageListener::getInstance();
     manage.unsetSyncStatusListener();
 }
+
+END_NAMESPACE
 

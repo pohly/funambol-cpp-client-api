@@ -40,6 +40,9 @@
 
 #include "event/SyncEvent.h"
 #include "event/Listener.h"
+#include "base/globalsdef.h"
+
+BEGIN_NAMESPACE
 
 
 /*
@@ -71,6 +74,9 @@ public:
     // listen for the Sync Error Event
     virtual void syncError(SyncEvent& event);
 };
+
+
+END_NAMESPACE
 
 /** @endcond */
 #endif

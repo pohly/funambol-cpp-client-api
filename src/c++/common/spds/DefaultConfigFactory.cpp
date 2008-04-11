@@ -38,6 +38,9 @@
 #include "base/errors.h"
 #include "base/Log.h"
 #include "spds/DefaultConfigFactory.h"
+#include "base/globalsdef.h"
+
+USE_NAMESPACE
 
 
 DefaultConfigFactory::DefaultConfigFactory() {

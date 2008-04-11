@@ -35,6 +35,9 @@
 
 
 #include "syncml/core/Results.h"
+#include "base/globalsdef.h"
+
+USE_NAMESPACE
 
 
 Results::Results() {

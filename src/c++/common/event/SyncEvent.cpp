@@ -36,6 +36,9 @@
 
 #include "event/SyncEvent.h"
 #include "base/util/utils.h"
+#include "base/globalsdef.h"
+
+USE_NAMESPACE
 
 SyncEvent::SyncEvent(int type, unsigned long date) : BaseEvent(type, date) {
 

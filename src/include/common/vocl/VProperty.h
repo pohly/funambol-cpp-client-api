@@ -52,6 +52,9 @@
 #define VCARD21_SPECIAL_CHARS       TEXT(";\\")
 #define VCARD30_SPECIAL_CHARS       TEXT(";\\,")
 #define RFC822_LINE_BREAK           TEXT("\r\n")
+#include "base/globalsdef.h"
+
+BEGIN_NAMESPACE
 
 
 // ------------ Public functions --------------
@@ -113,6 +116,9 @@ private:
     WCHAR* toString(WCHAR* version = NULL);
 
  };
+
+
+END_NAMESPACE
 
 /** @endcond */
 #endif

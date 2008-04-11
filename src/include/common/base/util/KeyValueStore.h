@@ -42,6 +42,9 @@
 #include "base/fscapi.h"
 #include "base/util/Enumeration.h"
 #include "base/util/StringBuffer.h"
+#include "base/globalsdef.h"
+
+BEGIN_NAMESPACE
 
 /**
  * This is the interface for the handling of key/value pairs.
@@ -103,6 +106,9 @@ public:
      */
     virtual int save() = 0;
 };
+
+
+END_NAMESPACE
 
 /** @} */
 /** @endcond */

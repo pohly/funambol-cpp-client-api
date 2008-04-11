@@ -39,6 +39,9 @@
 #include "vocl/VObjectFactory.h"
 #include "base/util/WString.h"
 #include "base/quoted-printable.h"
+#include "base/globalsdef.h"
+
+USE_NAMESPACE
 
 
 VObject* VConverter::parse(const WCHAR* buffer) {

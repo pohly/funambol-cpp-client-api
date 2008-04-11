@@ -35,6 +35,9 @@
 
 #include "http/TransportAgentFactory.h"
 #include "http/CurlTransportAgent.h"
+#include "base/globalsdef.h"
+
+USE_NAMESPACE
 
 
 TransportAgent* TransportAgentFactory::getTransportAgent(

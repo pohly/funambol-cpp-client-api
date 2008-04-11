@@ -43,6 +43,9 @@
 #include "syncml/core/Data.h"
 #include "syncml/core/Anchor.h"
 #include "syncml/core/DevInf.h"
+#include "base/globalsdef.h"
+
+BEGIN_NAMESPACE
 
 class ComplexData : public Data {
 
@@ -119,6 +122,9 @@ class ComplexData : public Data {
         ComplexData* clone();
 
 };
+
+
+END_NAMESPACE
 
 /** @endcond */
 #endif

@@ -37,6 +37,9 @@
 #include "vocl/WinNote.h"
 #include "vocl/VConverter.h"
 #include "base/stringUtils.h"
+#include "base/globalsdef.h"
+
+USE_NAMESPACE
 
 using namespace std;
 

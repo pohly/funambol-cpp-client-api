@@ -41,6 +41,9 @@
 #include "base/fscapi.h"
 #include "base/util/ArrayList.h"
 #include "syncml/core/SyncType.h"
+#include "base/globalsdef.h"
+
+BEGIN_NAMESPACE
 
 
 /**
@@ -68,6 +71,9 @@ class SyncTypeArray {
         ArrayList* getSyncTypeArray();
 
 };
+
+
+END_NAMESPACE
 
 /** @endcond */
 #endif

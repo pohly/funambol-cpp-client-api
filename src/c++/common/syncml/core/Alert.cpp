@@ -34,6 +34,9 @@
  */
 
 #include "syncml/core/Alert.h"
+#include "base/globalsdef.h"
+
+USE_NAMESPACE
 
 Alert::Alert() {
     initialize();

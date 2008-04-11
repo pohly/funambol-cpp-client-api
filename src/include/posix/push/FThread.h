@@ -35,6 +35,9 @@
 
 #ifndef INCL_FTHREAD
 #define INCL_FTHREAD
+#include "base/globalsdef.h"
+
+BEGIN_NAMESPACE
 
 class FThread {
 
@@ -106,5 +109,8 @@ private:
 private:
     void setRunning(bool value);
 };
+
+
+END_NAMESPACE
 
 #endif

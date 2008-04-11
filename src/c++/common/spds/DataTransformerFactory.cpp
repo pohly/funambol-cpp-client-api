@@ -38,6 +38,9 @@
 #include "spds/B64Decoder.h"
 #include "spds/DESEncoder.h"
 #include "spds/DESDecoder.h"
+#include "base/globalsdef.h"
+
+USE_NAMESPACE
 
 DataTransformer* DataTransformerFactory::getEncoder(const char* name) {
     DataTransformer* ret = NULL;

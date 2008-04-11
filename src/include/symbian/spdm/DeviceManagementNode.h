@@ -54,6 +54,9 @@
  *
  * Comments look like:
  * \s*# <comment>
+#include "base/globalsdef.h"
+
+BEGIN_NAMESPACE
  */
 class DeviceManagementNode : public ManagementNode {
 
@@ -171,6 +174,9 @@ protected:
 
 
 };
+
+
+END_NAMESPACE
 
 /** @endcond */
 #endif

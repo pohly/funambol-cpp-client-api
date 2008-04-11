@@ -43,6 +43,9 @@
 #include "syncml/core/ModificationCommand.h"
 
 #define REPLACE_COMMAND_NAME "Replace"
+#include "base/globalsdef.h"
+
+BEGIN_NAMESPACE
 
 class Replace : public ModificationCommand {
 
@@ -81,6 +84,9 @@ class Replace : public ModificationCommand {
         ArrayElement* clone();
 
 };
+
+
+END_NAMESPACE
 
 /** @endcond */
 #endif

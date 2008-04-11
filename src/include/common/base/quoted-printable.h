@@ -36,10 +36,16 @@
 #define INCL_QUOTED_PRINTABLE_H
 /** @cond DEV */
 
+#include "base/globalsdef.h"
+
+BEGIN_NAMESPACE
+
 char *qp_decode(const char *qp);
 char *qp_encode(const char *qp);
 
 bool qp_isNeed(const char *in);
+
+END_NAMESPACE
 
 /** @endcond */
 #endif

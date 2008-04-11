@@ -34,6 +34,9 @@
  */
 
 #include "event/ManageListener.h"
+#include "base/globalsdef.h"
+
+USE_NAMESPACE
 
 class DestroyManageListener{
 public:

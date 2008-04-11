@@ -36,6 +36,9 @@
 
 #include "base/fscapi.h"
 #include "vocl/vCard/ContactDetail.h"
+#include "base/globalsdef.h"
+
+USE_NAMESPACE
 
 ContactDetail::ContactDetail() {
     phones   = NULL;

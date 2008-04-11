@@ -40,6 +40,9 @@
 #include "base/fscapi.h"
 #include "base/Log.h"
 #include "base/util/utils.h"
+#include "base/globalsdef.h"
+
+BEGIN_NAMESPACE
 
 
 /*
@@ -99,6 +102,9 @@ public:
         return *this;
     }
 };
+
+
+END_NAMESPACE
 
 /** @endcond */
 #endif

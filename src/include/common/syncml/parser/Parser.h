@@ -43,6 +43,9 @@
 #include "base/util/XMLProcessor.h"
 #include "base/util/ArrayList.h"
 #include "syncml/core/ObjectDel.h"
+#include "base/globalsdef.h"
+
+BEGIN_NAMESPACE
 
 class Parser {
 
@@ -112,6 +115,9 @@ class Parser {
         static Search*          getSearch           (const char* xml);
         static ArrayList*       getSources          (const char* xml);
 };
+
+
+END_NAMESPACE
 
 /** @endcond */
 #endif

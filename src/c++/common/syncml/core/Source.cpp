@@ -35,6 +35,9 @@
 
 #include "base/util/utils.h"
 #include "syncml/core/Source.h"
+#include "base/globalsdef.h"
+
+USE_NAMESPACE
 
 
 Source::Source() {

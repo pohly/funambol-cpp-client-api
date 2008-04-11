@@ -41,6 +41,9 @@
 
 #include "base/fscapi.h"
 #include "base/util/ArrayElement.h"
+#include "base/globalsdef.h"
+
+BEGIN_NAMESPACE
 
 class EMI : public ArrayElement {
 
@@ -75,6 +78,9 @@ class EMI : public ArrayElement {
         ArrayElement* clone();
 
 };
+
+
+END_NAMESPACE
 
 /** @endcond */
 #endif

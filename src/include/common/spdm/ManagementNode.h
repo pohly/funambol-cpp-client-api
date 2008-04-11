@@ -42,6 +42,9 @@
 #include "base/util/ArrayList.h"
 #include "spdm/constants.h"
 #include "base/util/StringBuffer.h"
+#include "base/globalsdef.h"
+
+BEGIN_NAMESPACE
 
 /*
  * This class represents a management node, so that a configuration
@@ -176,6 +179,9 @@ class ManagementNode : public ArrayElement {
         virtual ArrayElement* clone() = 0;
 
 };
+
+
+END_NAMESPACE
 
 /** @endcond */
 #endif

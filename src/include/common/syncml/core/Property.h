@@ -38,6 +38,9 @@
 
 #include "base/fscapi.h"
 #include "base/util/ArrayList.h"
+#include "base/globalsdef.h"
+
+BEGIN_NAMESPACE
 
 class Property : public ArrayElement {
 
@@ -231,6 +234,9 @@ public:
 
 };
 
+
+
+END_NAMESPACE
 
 /** @endcond */
 #endif

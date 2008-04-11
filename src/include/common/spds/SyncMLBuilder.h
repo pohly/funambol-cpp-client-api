@@ -43,6 +43,9 @@
 #include "syncml/core/TagNames.h"
 #include "syncml/core/ObjectDel.h"
 #include "syncml/formatter/Formatter.h"
+#include "base/globalsdef.h"
+
+BEGIN_NAMESPACE
 
 class SyncMLBuilder {
 
@@ -219,6 +222,9 @@ class SyncMLBuilder {
         ComplexData* getComplexData(SyncItem* syncItem, long &syncItemOffset, long maxBytes, long &sentBytes);
 
 };
+
+
+END_NAMESPACE
 
 /** @endcond */
 #endif

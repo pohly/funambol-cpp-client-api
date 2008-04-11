@@ -41,6 +41,9 @@
 
 #include "syncml/core/Item.h"
 #include "syncml/core/Meta.h"
+#include "base/globalsdef.h"
+
+BEGIN_NAMESPACE
 
 /**
  * This class represents a SyncML 1.2 Filter element.
@@ -147,6 +150,9 @@ class Filter {
          */
         Filter* clone();
 };
+
+
+END_NAMESPACE
 
 /** @endcond */
 #endif

@@ -35,6 +35,9 @@
 
 
 #include "syncml/core/ResponseCommand.h"
+#include "base/globalsdef.h"
+
+USE_NAMESPACE
 
 ResponseCommand::ResponseCommand() {
     msgRef     = NULL;

@@ -38,6 +38,9 @@
 #include "base/util/StringBuffer.h"
 #include "vocl/vCard/BusinessDetail.h"
 #include "vocl/vCard/Title.h"
+#include "base/globalsdef.h"
+
+USE_NAMESPACE
 
 
 BusinessDetail::BusinessDetail() {

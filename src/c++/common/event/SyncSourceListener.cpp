@@ -37,6 +37,9 @@
 #include "event/SyncSourceListener.h"
 #include "event/SyncSourceEvent.h"
 #include "event/constants.h"
+#include "base/globalsdef.h"
+
+USE_NAMESPACE
 
 /*
  * Empty SyncSourceListener methods.

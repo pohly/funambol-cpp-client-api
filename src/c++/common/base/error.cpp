@@ -35,6 +35,9 @@
 
 #include "base/fscapi.h"
 #include "base/util/StringBuffer.h"
+#include "base/globalsdef.h"
+
+USE_NAMESPACE
 
 int  lastErrorCode = ERR_NONE;
 StringBuffer lastErrorMsg;

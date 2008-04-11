@@ -39,6 +39,9 @@
 #include "base/quoted-printable.h"
 #include "syncml/formatter/Formatter.h"
 #include "spds/EmailData.h"
+#include "base/globalsdef.h"
+
+USE_NAMESPACE
 
 
 #define EMAIL_READ  "read"

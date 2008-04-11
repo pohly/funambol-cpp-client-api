@@ -42,6 +42,9 @@
 
 #include "base/util/utils.h"
 #include "spds/DESDecoder.h"
+#include "base/globalsdef.h"
+
+USE_NAMESPACE
 
 
 DESDecoder::DESDecoder() : DataTransformer(DT_DES) {

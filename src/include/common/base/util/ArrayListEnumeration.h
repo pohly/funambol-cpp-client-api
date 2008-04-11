@@ -38,6 +38,9 @@
 
 #include "base/util/ArrayList.h"
 #include "base/util/Enumeration.h"
+#include "base/globalsdef.h"
+
+BEGIN_NAMESPACE
 
 /**
  * An implementation of the ArrayEnumaration based on 
@@ -72,6 +75,9 @@ class ArrayListEnumeration : public Enumeration, public ArrayList {
 	    } 
         
 };
+
+
+END_NAMESPACE
 
 #endif
 

@@ -43,6 +43,9 @@
 
 #include "base/util/utils.h"
 #include "spds/DESEncoder.h"
+#include "base/globalsdef.h"
+
+USE_NAMESPACE
 
 
 DESEncoder::DESEncoder() : DataTransformer(DT_DES) {

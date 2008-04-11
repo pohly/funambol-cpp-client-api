@@ -43,6 +43,9 @@
 #include "base/util/ArrayElement.h"
 #include "spds/constants.h"
 #include "spds/SyncItem.h"
+#include "base/globalsdef.h"
+
+BEGIN_NAMESPACE
 
 class ItemContainer{
 
@@ -107,6 +110,9 @@ public:
     ArrayList* getDeletedItems();
 
 };
+
+
+END_NAMESPACE
 
 /** @endcond */
 #endif

@@ -35,6 +35,9 @@
 
 
 #include "vocl/vCard/Contact30.h"
+#include "base/globalsdef.h"
+
+USE_NAMESPACE
 
 Contact30::Contact30() {
 

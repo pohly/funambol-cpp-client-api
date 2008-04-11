@@ -38,6 +38,9 @@
 #include "http/constants.h"
 #include "http/errors.h"
 #include "http/CurlTransportAgent.h"
+#include "base/globalsdef.h"
+
+USE_NAMESPACE
 
 /*
  * This is the libcurl implementation of the TransportAgent object

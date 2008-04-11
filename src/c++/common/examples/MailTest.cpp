@@ -41,6 +41,9 @@
 
 #include "spds/MailMessage.h"
 #include "spds/EmailData.h"
+#include "base/globalsdef.h"
+
+USE_NAMESPACE
 
 // Read a text file and convert it from UTF-8 to WCHAR
 static int readFromFile(const char* path, WCHAR **message, size_t *len)

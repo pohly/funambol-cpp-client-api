@@ -37,6 +37,9 @@
 #include "spds/SyncSourceReport.h"
 #include "spds/SyncReport.h"
 #include "spds/ItemReport.h"
+#include "base/globalsdef.h"
+
+USE_NAMESPACE
 
 const char* const SyncSourceReport::targets[] = {
     CLIENT,

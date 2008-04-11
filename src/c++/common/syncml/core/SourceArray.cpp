@@ -35,6 +35,9 @@
 
 
 #include "syncml/core/SourceArray.h"
+#include "base/globalsdef.h"
+
+USE_NAMESPACE
 
 
 SourceArray::SourceArray() {

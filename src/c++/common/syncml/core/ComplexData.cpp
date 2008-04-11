@@ -35,6 +35,9 @@
 
 
 #include "syncml/core/ComplexData.h"
+#include "base/globalsdef.h"
+
+USE_NAMESPACE
 
 
 ComplexData::ComplexData() {

@@ -42,6 +42,9 @@
 #include "base/util/utils.h"
 #include "syncml/core/Constants.h"
 #include "syncml/core/Meta.h"
+#include "base/globalsdef.h"
+
+BEGIN_NAMESPACE
 
 
 
@@ -123,6 +126,9 @@ class Chal {
     Chal* clone();
 
 };
+
+
+END_NAMESPACE
 
 /** @endcond */
 #endif

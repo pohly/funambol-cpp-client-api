@@ -40,6 +40,9 @@
 
 #include "base/fscapi.h"
 #include "base/util/ArrayElement.h"
+#include "base/globalsdef.h"
+
+BEGIN_NAMESPACE
 
 
 class ContentTypeInfo : public ArrayElement {
@@ -99,6 +102,9 @@ class ContentTypeInfo : public ArrayElement {
 
         ArrayElement* clone();
 };
+
+
+END_NAMESPACE
 
 /** @endcond */
 #endif

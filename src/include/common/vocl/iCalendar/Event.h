@@ -41,6 +41,9 @@
 #include "base/util/ArrayElement.h"
 #include "vocl/VObject.h"
 #include "vocl/iCalendar/iCalProperty.h"
+#include "base/globalsdef.h"
+
+BEGIN_NAMESPACE
 
 class Event: public VObject, public ArrayElement {
 
@@ -155,6 +158,9 @@ public:
 	ArrayElement* clone();
 
 };
+
+
+END_NAMESPACE
 
 /** @endcond */
 #endif

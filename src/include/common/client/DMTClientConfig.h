@@ -46,6 +46,9 @@
 #include "spds/DeviceConfig.h"
 #include "spds/SyncSourceConfig.h"
 #include "spdm/ManagementNode.h"
+#include "base/globalsdef.h"
+
+BEGIN_NAMESPACE
 
 class DMTree;
 
@@ -297,6 +300,9 @@ class DMTClientConfig : public SyncManagerConfig {
          */
         virtual void close();
 };
+
+
+END_NAMESPACE
 
 /** @} */
 /** @endcond */

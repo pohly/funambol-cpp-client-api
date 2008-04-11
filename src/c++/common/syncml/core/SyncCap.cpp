@@ -35,6 +35,9 @@
 
 
 #include "syncml/core/SyncCap.h"
+#include "base/globalsdef.h"
+
+USE_NAMESPACE
 
 
 SyncCap::SyncCap() {

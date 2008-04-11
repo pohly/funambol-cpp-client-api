@@ -35,6 +35,9 @@
 
 
 #include "spds/SyncReport.h"
+#include "base/globalsdef.h"
+
+USE_NAMESPACE
 
 //--------------------------------------------------- Constructor & Destructor
 

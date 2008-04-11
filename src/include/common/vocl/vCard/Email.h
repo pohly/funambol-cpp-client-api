@@ -36,7 +36,7 @@
 
 //
 // @author Stefano Fornari @ Funambol
-// @version $Id: Email.h,v 1.5 2007-11-28 15:01:36 toccy Exp $
+// @version $Id: Email.h,v 1.6 2008-04-11 08:17:13 marco_garatti Exp $
 //
 
 
@@ -46,6 +46,9 @@
 
 #include "base/util/ArrayElement.h"
 #include "vocl/vCard/TypedProperty.h"
+#include "base/globalsdef.h"
+
+BEGIN_NAMESPACE
 
 /**
  * An object representing a contact email
@@ -86,6 +89,9 @@ class Email : public TypedProperty {
          */
         ArrayElement* clone() ;
 };
+
+
+END_NAMESPACE
 
 /** @endcond */
 #endif

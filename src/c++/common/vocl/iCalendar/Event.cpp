@@ -35,6 +35,9 @@
 
 
 #include "vocl/iCalendar/Event.h"
+#include "base/globalsdef.h"
+
+USE_NAMESPACE
 
 Event::Event() {
     classEvent = NULL;

@@ -46,6 +46,9 @@
 
 
 #define SYNC_COMMAND_NAME "Sync"
+#include "base/globalsdef.h"
+
+BEGIN_NAMESPACE
 
 class Sync : public AbstractCommand {
 
@@ -156,6 +159,9 @@ class Sync : public AbstractCommand {
 
 
 };
+
+
+END_NAMESPACE
 
 /** @endcond */
 #endif

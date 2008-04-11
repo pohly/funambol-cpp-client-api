@@ -38,6 +38,9 @@
 
 #include "base/util/ArrayElement.h"
 #include "base/util/StringBuffer.h"
+#include "base/globalsdef.h"
+
+BEGIN_NAMESPACE
 
 class BodyPart : public ArrayElement {
     private:
@@ -90,6 +93,9 @@ class BodyPart : public ArrayElement {
 
 		ArrayElement* clone() ;
 };
+
+
+END_NAMESPACE
 
 /** @endcond */
 #endif

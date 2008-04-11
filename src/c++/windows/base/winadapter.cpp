@@ -717,6 +717,9 @@ int round(double val) {
     //
     #undef new
     #include "base/memTracker.h"
+#include "base/globalsdef.h"
+
+USE_NAMESPACE
 
     MemTracker m = MemTracker(true);
 

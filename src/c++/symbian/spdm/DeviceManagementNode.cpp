@@ -46,6 +46,9 @@
 #include "spdm/constants.h"
 #include "spdm/ManagementNode.h"
 #include "spdm/DeviceManagementNode.h"
+#include "base/globalsdef.h"
+
+USE_NAMESPACE
 
 #define CONFIG_DIR      ".config"
 #define SYNC4J_DIR      ".sync4j"

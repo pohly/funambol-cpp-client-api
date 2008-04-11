@@ -35,6 +35,9 @@
 
 
 #include "syncml/core/Atomic.h"
+#include "base/globalsdef.h"
+
+USE_NAMESPACE
 
 Atomic::Atomic() {
     COMMAND_NAME = new char[strlen(ATOMIC_COMMAND_NAME) + 1];

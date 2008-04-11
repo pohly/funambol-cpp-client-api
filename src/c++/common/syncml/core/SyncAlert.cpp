@@ -36,6 +36,9 @@
 #include "base/util/utils.h"
 #include "syncml/core/AlertCode.h"
 #include "syncml/core/SyncAlert.h"
+#include "base/globalsdef.h"
+
+USE_NAMESPACE
 
 /*
  * This class represent a sync alert notified by the server.

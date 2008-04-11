@@ -40,6 +40,9 @@
 
 #include "base/fscapi.h"
 #include "base/util/ArrayElement.h"
+#include "base/globalsdef.h"
+
+BEGIN_NAMESPACE
 
 
 class SyncType : public ArrayElement {
@@ -81,6 +84,9 @@ class SyncType : public ArrayElement {
         ArrayElement* clone();
 
 };
+
+
+END_NAMESPACE
 
 /** @endcond */
 #endif

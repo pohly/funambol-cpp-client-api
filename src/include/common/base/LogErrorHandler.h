@@ -39,6 +39,9 @@
 
 #include "base/fscapi.h"
 #include "base/ErrorHandler.h"
+#include "base/globalsdef.h"
+
+BEGIN_NAMESPACE
 
 class LogErrorHandler: public ErrorHandler {
 
@@ -88,6 +91,9 @@ class LogErrorHandler: public ErrorHandler {
          */
         ErrorHandler* clone();
 };
+
+
+END_NAMESPACE
 
 /** @endcond */
 #endif

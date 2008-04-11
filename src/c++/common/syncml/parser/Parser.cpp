@@ -35,6 +35,9 @@
 
 
 #include "syncml/parser/Parser.h"
+#include "base/globalsdef.h"
+
+USE_NAMESPACE
 
 SyncML* Parser::getSyncML(const char*xml) {
     SyncBody* syncBody = NULL;

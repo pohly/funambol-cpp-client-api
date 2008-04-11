@@ -35,6 +35,9 @@
 
 
 #include "syncml/core/ItemizedCommand.h"
+#include "base/globalsdef.h"
+
+USE_NAMESPACE
 
 
 ItemizedCommand::ItemizedCommand() {

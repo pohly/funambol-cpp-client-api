@@ -65,6 +65,9 @@
 #define ERROR_ILLEGAL_TYPE_PARAMETER 104L
 #define ERROR_ILLEGAL_PARAMETER      105L
 #define ERROR_INVALID_PROPERTY_VALUE 106L
+#include "base/globalsdef.h"
+
+BEGIN_NAMESPACE
 
 class WString;
 
@@ -91,5 +94,8 @@ public:
     bool validate(VObject*, WString& error, long* errorCode);
 
 };
+
+END_NAMESPACE
+
 /** @endcond */
 #endif

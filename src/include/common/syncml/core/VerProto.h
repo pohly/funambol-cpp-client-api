@@ -39,6 +39,9 @@
 /** @cond DEV */
 
 #include "base/fscapi.h"
+#include "base/globalsdef.h"
+
+BEGIN_NAMESPACE
 
 
 class VerProto {
@@ -80,6 +83,9 @@ class VerProto {
         VerProto* clone();
 
 };
+
+
+END_NAMESPACE
 
 /** @endcond */
 #endif

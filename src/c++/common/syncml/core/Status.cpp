@@ -35,6 +35,9 @@
 
 
 #include "syncml/core/Status.h"
+#include "base/globalsdef.h"
+
+USE_NAMESPACE
 
 Status::Status() {
 

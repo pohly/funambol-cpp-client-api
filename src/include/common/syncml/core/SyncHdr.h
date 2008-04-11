@@ -48,6 +48,9 @@
 #include "syncml/core/Meta.h"
 
 #define SYNCHDR_COMMAND_NAME "SyncHdr"
+#include "base/globalsdef.h"
+
+BEGIN_NAMESPACE
 
 class SyncHdr {
 
@@ -250,6 +253,9 @@ class SyncHdr {
 
         SyncHdr* clone();
 };
+
+
+END_NAMESPACE
 
 /** @endcond */
 #endif

@@ -44,6 +44,9 @@
 #include "spdm/DMTree.h"
 #include "base/util/utils.h"
 #include "base/util/StringBuffer.h"
+#include "base/globalsdef.h"
+
+BEGIN_NAMESPACE
 
 /// This is the root for the configuration
 #define APPLICATION_URI                 "Funambol/SyncClient"
@@ -284,6 +287,9 @@ private:
     StringBuffer encodePassword(const char* password);
 };
 
+
+
+END_NAMESPACE
 
 /** @endcond */
 #endif

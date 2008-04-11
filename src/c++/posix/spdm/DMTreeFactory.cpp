@@ -39,6 +39,9 @@
 
 #include "spdm/DMTreeFactory.h"
 #include "spdm/DMTree.h"
+#include "base/globalsdef.h"
+
+USE_NAMESPACE
 
 /*
  * Constructor

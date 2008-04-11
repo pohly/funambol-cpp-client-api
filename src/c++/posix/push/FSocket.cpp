@@ -37,6 +37,9 @@
 #include <string.h>
 
 #include "FSocket.h"
+#include "base/globalsdef.h"
+
+USE_NAMESPACE
 
 StringBuffer FSocket::lIP;
 

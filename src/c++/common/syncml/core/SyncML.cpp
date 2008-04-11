@@ -35,6 +35,9 @@
 
 
 #include "syncml/core/SyncML.h"
+#include "base/globalsdef.h"
+
+USE_NAMESPACE
 
 
 SyncML::SyncML() {

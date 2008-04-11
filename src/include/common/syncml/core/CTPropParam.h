@@ -42,6 +42,9 @@
 #include "base/util/ArrayList.h"
 #include "syncml/core/ContentTypeParameter.h"
 #include "syncml/core/StringElement.h"
+#include "base/globalsdef.h"
+
+BEGIN_NAMESPACE
 
 class CTPropParam : public ArrayElement{
 
@@ -177,6 +180,9 @@ class CTPropParam : public ArrayElement{
 
         ArrayElement* clone();
 };
+
+
+END_NAMESPACE
 
 /** @endcond */
 #endif

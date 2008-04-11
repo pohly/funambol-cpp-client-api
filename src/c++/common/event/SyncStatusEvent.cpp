@@ -36,6 +36,9 @@
 
 #include "event/SyncStatusEvent.h"
 #include "base/util/utils.h"
+#include "base/globalsdef.h"
+
+USE_NAMESPACE
 
 SyncStatusEvent::SyncStatusEvent(int code, const char* cmd, const WCHAR* key, const char* name, const char* uri, int type, unsigned long date) : SyncItemEvent( key, name, uri, type, date) {
     statusCode = code;

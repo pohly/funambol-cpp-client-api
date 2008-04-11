@@ -39,6 +39,9 @@
 /** @cond DEV */
 
 #include "event/SyncStatusListener.h"
+#include "base/globalsdef.h"
+
+BEGIN_NAMESPACE
 
 class TestSyncStatusListener : public SyncStatusListener {
 
@@ -46,6 +49,9 @@ class TestSyncStatusListener : public SyncStatusListener {
     void statusSending (SyncStatusEvent& event);
 
 };
+
+
+END_NAMESPACE
 
 /** @endcond */
 #endif

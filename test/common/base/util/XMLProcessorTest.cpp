@@ -36,6 +36,9 @@
 # include <cppunit/extensions/TestFactoryRegistry.h>
 # include <cppunit/extensions/HelperMacros.h>
 #include "base/util/XMLProcessor.h"
+#include "base/globalsdef.h"
+
+USE_NAMESPACE
 
 
 class XMLProcessorTest : public CppUnit::TestFixture {

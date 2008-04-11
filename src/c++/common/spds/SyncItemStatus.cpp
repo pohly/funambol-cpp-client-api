@@ -35,6 +35,9 @@
 
 
 #include "spds/SyncItemStatus.h"
+#include "base/globalsdef.h"
+
+USE_NAMESPACE
 
 /*
  * Default constructor

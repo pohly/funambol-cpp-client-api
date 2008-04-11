@@ -37,9 +37,13 @@
 #include "base/util/utils.h"
 #include "spds/spdsutils.h"
 #include "base/quoted-printable.h"
+#include "base/globalsdef.h"
+
 
 #define BASE64 "base64"
 #define QUOTED_PRINTABLE "quoted-printable"
+
+BEGIN_NAMESPACE
 
 // Base64 encoding for files (with newline)
 char *uuencode(const char *msg, int len);
@@ -296,4 +300,5 @@ const char* getSourceName(const char *uri)
 #endif
 }
 
+END_NAMESPACE
 

@@ -39,6 +39,9 @@
 
     #include "base/fscapi.h"
     #include "base/util/ArrayElement.h"
+#include "base/globalsdef.h"
+
+BEGIN_NAMESPACE
 
 
 class SyncMap : public ArrayElement {
@@ -94,6 +97,9 @@ class SyncMap : public ArrayElement {
          */
         ArrayElement* clone();
     };
+
+
+END_NAMESPACE
 
 /** @endcond */
 #endif

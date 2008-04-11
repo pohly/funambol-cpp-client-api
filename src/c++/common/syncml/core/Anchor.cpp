@@ -36,6 +36,9 @@
 #include "base/fscapi.h"
 #include "base/util/utils.h"
 #include "syncml/core/Anchor.h"
+#include "base/globalsdef.h"
+
+USE_NAMESPACE
 
 Anchor::Anchor(const char* last, const char* next) {
     this->last = stringdup(last);

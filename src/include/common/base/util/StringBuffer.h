@@ -37,8 +37,11 @@
 #define INCL_BASE_STRING_BUFFER
 /** @cond DEV */
 
+#include "base/globalsdef.h"
 #include "base/fscapi.h"
 #include "base/util/ArrayElement.h"
+
+BEGIN_NAMESPACE
 
 class ArrayList;
 
@@ -282,6 +285,9 @@ class StringBuffer: public ArrayElement {
 };
 
 StringBuffer operator+(const StringBuffer& x, const char *y);
+
+
+END_NAMESPACE
 
 /** @endcond */
 #endif

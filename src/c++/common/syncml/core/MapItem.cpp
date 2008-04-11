@@ -34,6 +34,9 @@
  */
 
 #include "syncml/core/MapItem.h"
+#include "base/globalsdef.h"
+
+USE_NAMESPACE
 
 /**
 * This is for serialization purposes

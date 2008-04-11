@@ -42,6 +42,9 @@
 
 #include "vocl/VObject.h"
 #include "vocl/WinItem.h"
+#include "base/globalsdef.h"
+
+BEGIN_NAMESPACE
 
 using namespace std;
 
@@ -115,6 +118,9 @@ public:
     wstring& getName();
     
 };
+
+END_NAMESPACE
+
 /** @} */
 /** @endcond */
 #endif

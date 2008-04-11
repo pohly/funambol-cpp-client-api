@@ -40,6 +40,9 @@
 
 #include "base/fscapi.h"
 #include "syncml/core/ItemizedCommand.h"
+#include "base/globalsdef.h"
+
+BEGIN_NAMESPACE
 
 
 class ModificationCommand : public ItemizedCommand {
@@ -65,6 +68,9 @@ class ModificationCommand : public ItemizedCommand {
 
 
 };
+
+
+END_NAMESPACE
 
 /** @endcond */
 #endif

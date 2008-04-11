@@ -41,6 +41,9 @@
 #include "base/util/utils.h"
 #include "spds/SyncItem.h"
 #include "spds/DataTransformerFactory.h"
+#include "base/globalsdef.h"
+
+USE_NAMESPACE
 
 const char* const SyncItem::encodings::plain = "bin";
 const char* const SyncItem::encodings::escaped = "b64";

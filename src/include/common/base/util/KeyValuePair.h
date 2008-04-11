@@ -40,6 +40,9 @@
 
 #include "base/fscapi.h"
 #include "base/util/ArrayElement.h"
+#include "base/globalsdef.h"
+
+BEGIN_NAMESPACE
 
 /**
  * This class is an ArrayElement that keeps a key-value pair.
@@ -85,6 +88,9 @@ class KeyValuePair : public ArrayElement {
         char*  k;
         char*  v;
 };
+
+
+END_NAMESPACE
 
 /** @endcond */
 #endif

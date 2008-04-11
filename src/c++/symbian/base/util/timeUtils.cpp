@@ -43,6 +43,9 @@
 
 #include "base/fscapi.h"
 #include "base/util/timeUtils.h"
+#include "base/globalsdef.h"
+
+USE_NAMESPACE
 
 
 

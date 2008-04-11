@@ -40,6 +40,9 @@
 #include "spds/constants.h"
 #include "syncml/core/VerDTD.h"
 #include "base/Log.h"
+#include "base/globalsdef.h"
+
+BEGIN_NAMESPACE
 
 /*
  * ---------------------------- DeviceConfig class -------------------------------
@@ -159,6 +162,9 @@ class DeviceConfig {
             return *this;
         }
 };
+
+
+END_NAMESPACE
 
 /** @endcond */
 #endif

@@ -33,6 +33,9 @@
  * the words "Powered by Funambol".
  */
 #include "base/LogErrorHandler.h"
+#include "base/globalsdef.h"
+
+USE_NAMESPACE
 
 LogErrorHandler::LogErrorHandler() {
 }

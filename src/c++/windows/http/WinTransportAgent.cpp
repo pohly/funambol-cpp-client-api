@@ -78,6 +78,9 @@
 
 #ifdef USE_ZLIB
 #include "zlib.h"
+#include "base/globalsdef.h"
+
+USE_NAMESPACE
 #endif
 
 /**

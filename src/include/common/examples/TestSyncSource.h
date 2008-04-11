@@ -43,6 +43,9 @@
 #include "spds/SyncMap.h"
 #include "spds/SyncStatus.h"
 #include "spds/SyncSource.h"
+#include "base/globalsdef.h"
+
+BEGIN_NAMESPACE
 
 class  TestSyncSource : public SyncSource {
 
@@ -134,6 +137,9 @@ public:
 
     ArrayElement* clone() { return 0; }
 };
+
+
+END_NAMESPACE
 
 /** @endcond */
 #endif

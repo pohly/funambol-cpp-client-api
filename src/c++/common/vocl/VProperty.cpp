@@ -38,19 +38,22 @@
 #include "base/util/WString.h"
 #include "vocl/VProperty.h"
 #include "base/quoted-printable.h"
+#include "base/globalsdef.h"
+
+USE_NAMESPACE
 
 VProperty::VProperty(const WCHAR* propname, const WCHAR* propvalue) {
 
     name = (propname) ? wstrdup(propname) : NULL;
 
     parameters = new ArrayList();
-	values     = new ArrayList();
+    values     = new ArrayList();
     valueBuf   = NULL;
 
-	if (propvalue) {
+    if (propvalue) {
         WString wsVal = propvalue;
-		values->add((ArrayElement&)wsVal);
-	}
+        values->add((ArrayElement&)wsVal);
+    }
 }
 
 VProperty::~VProperty() {
@@ -96,18 +99,18 @@ void VProperty::addValue(const WCHAR* value) {
     // Empty strings are accepted
     if(value) {
         WString wsVal = value;
-		values->add((ArrayElement &)wsVal);
+        values->add((ArrayElement &)wsVal);
     }
 }
 
 bool VProperty::removeValue(const int index) {
 
-	bool ret = false;
-	if (values != NULL) {
-		values->removeElementAt(index);
+    bool ret = false;
+    if (values != NULL) {
+        values->removeElementAt(index);
                 ret = true;
     }
-	return ret;
+    return ret;
 }
 
 // Returned value is a pointer to internal buffer,
@@ -201,7 +204,7 @@ bool VProperty::containsParameter(WCHAR* paramName) {
 WCHAR* VProperty::getParameterValue(WCHAR* paramName) {
 
     if (parameters != NULL) {
-	    for (int i=0; i<parameters->size(); i++) {
+        for (int i=0; i<parameters->size(); i++) {
             WKeyValuePair *parameter;
             parameter = (WKeyValuePair* )parameters->get(i);
             if(!wcscmp(parameter->getKey(), paramName))
@@ -236,12 +239,12 @@ ArrayElement* VProperty::clone() {
 
         VProperty *cloneProperty = new VProperty(name);
 
-		if(values != NULL) {
-			for (int i=0; i<valueCount(); i++) {
-				WString* valueCopy = (WString*)values->get(i)->clone();
-				cloneProperty->addValue(valueCopy->c_str());
-			}
-		}
+        if(values != NULL) {
+            for (int i=0; i<valueCount(); i++) {
+                WString* valueCopy = (WString*)values->get(i)->clone();
+                cloneProperty->addValue(valueCopy->c_str());
+            }
+        }
 
         if (parameters != NULL) {
             for (int i=0; i<parameters->size(); i++) {
@@ -318,7 +321,7 @@ WCHAR* VProperty::toString(WCHAR* version) {
                     char* charValue = toMultibyte(getValue(i));
                     if (encodingIsNeed(charValue)) {
                         addParameter(TEXT("ENCODING"), TEXT("QUOTED-PRINTABLE"));
-	                    addParameter(TEXT("CHARSET"), TEXT("UTF-8"));
+                        addParameter(TEXT("CHARSET"), TEXT("UTF-8"));
                         delete [] charValue;
                         break;
                     }
@@ -343,7 +346,7 @@ WCHAR* VProperty::toString(WCHAR* version) {
     propertyString.append(name);
 
     //
-	// Write parameters:
+    // Write parameters:
     //
     if(parameterCount()>0) {
         for (int i=0; i<parameterCount(); i++) {
@@ -359,7 +362,7 @@ WCHAR* VProperty::toString(WCHAR* version) {
                 }
                 propertyString.append(TEXT(";"));
                 propertyString.append(parameter->getKey());
-		    }
+            }
             if (parameter->getValue()) {
                 propertyString.append(TEXT("="));
                 propertyString.append(parameter->getValue());
@@ -413,11 +416,11 @@ WCHAR* VProperty::toString(WCHAR* version) {
                 char* qp = convertToQP(s, 0);
                 WCHAR* qpValueString = toWideChar(qp);
                 if(qpValueString)
-			        propertyString.append(qpValueString);
+                    propertyString.append(qpValueString);
                 else
                     propertyString.append(valueString);
 
-		        delete [] qpValueString;
+                delete [] qpValueString;
                 delete [] s;
                 delete [] qp;
             }
@@ -472,7 +475,7 @@ WCHAR* VProperty::getParameter(int index){
 bool VProperty::equalsEncoding(WCHAR* encoding) {
 
     if ((encoding != NULL) && ((containsParameter(TEXT("ENCODING")) &&
-		!wcscmp(getParameterValue(TEXT("ENCODING")),encoding)) ||
+        !wcscmp(getParameterValue(TEXT("ENCODING")),encoding)) ||
         containsParameter(encoding)))
         return true;
     return false;
@@ -516,7 +519,7 @@ bool VProperty::isType(WCHAR* type) {
 }
 
 
-
+BEGIN_NAMESPACE
 
 // ------------------ Public functions --------------------
 
@@ -530,72 +533,72 @@ bool VProperty::isType(WCHAR* type) {
 char* convertToQP(const char* input, int start) {
 
     int   count   = start;
-	int   maxLen  = 3*strlen(input);         // This is the max length for output string
-	char *sAppend = NULL;
+    int   maxLen  = 3*strlen(input);         // This is the max length for output string
+    char *sAppend = NULL;
     char  szTemp[10];
     const char *p;
 
     // new - must be freed by the caller
     char* qpString = new char[maxLen + 1];
-	strcpy(qpString, "");
+    strcpy(qpString, "");
 
-	if (maxLen>0) {
-		sAppend = new char[maxLen + 1];
-		strncpy(sAppend, input, maxLen);
-		sAppend[maxLen]=0;
+    if (maxLen>0) {
+        sAppend = new char[maxLen + 1];
+        strncpy(sAppend, input, maxLen);
+        sAppend[maxLen]=0;
 
-		if(!sAppend)
-			return NULL;
+        if(!sAppend)
+            return NULL;
 
-		for (p = sAppend; *p; p++) {
-			//if (count > QP_MAX_LINE_LEN) {
-			//	strcat(qpString, "=\r\n");
-			//	count = 0;
-			//}
-			//else
+        for (p = sAppend; *p; p++) {
+            //if (count > QP_MAX_LINE_LEN) {
+            //    strcat(qpString, "=\r\n");
+            //    count = 0;
+            //}
+            //else
             if (*p == '\t' || *p == ' ') {
-				const char *pScan = p;
-				while (*pScan && (*pScan == '\t' || *pScan == ' ')) {
-					pScan++;
-				}
-				if (*pScan == '\0') {
-					while (*p) {
-						unsigned char ind = *p;
-						sprintf(szTemp, "=%02X", ind);
-						strcat(qpString, szTemp);
-						count += 3;
-						p++;
+                const char *pScan = p;
+                while (*pScan && (*pScan == '\t' || *pScan == ' ')) {
+                    pScan++;
+                }
+                if (*pScan == '\0') {
+                    while (*p) {
+                        unsigned char ind = *p;
+                        sprintf(szTemp, "=%02X", ind);
+                        strcat(qpString, szTemp);
+                        count += 3;
+                        p++;
 
-						//if (count > QP_MAX_LINE_LEN) {
-						//	strcat(qpString, "=\r\n");
-						//	count = 0;
-						//}
-					}
-					break;
-				}
-				else {
-					sprintf(szTemp, "%c", *p);
-					strcat(qpString, szTemp);
-					count++;
-				}
-				continue;
-			}
-			else if (('!' <= *p) && ('~' >= *p) && ('=' != *p)) {
-				sprintf(szTemp, "%c", *p);
-				strcat(qpString, szTemp);
-				count++;
-			}
-			else {
-				unsigned char ind = *p;
-				sprintf(szTemp, "=%02X", ind);
-				strcat(qpString, szTemp);
-				count += 3;
-			}
-		}
+                        //if (count > QP_MAX_LINE_LEN) {
+                        //    strcat(qpString, "=\r\n");
+                        //    count = 0;
+                        //}
+                    }
+                    break;
+                }
+                else {
+                    sprintf(szTemp, "%c", *p);
+                    strcat(qpString, szTemp);
+                    count++;
+                }
+                continue;
+            }
+            else if (('!' <= *p) && ('~' >= *p) && ('=' != *p)) {
+                sprintf(szTemp, "%c", *p);
+                strcat(qpString, szTemp);
+                count++;
+            }
+            else {
+                unsigned char ind = *p;
+                sprintf(szTemp, "=%02X", ind);
+                strcat(qpString, szTemp);
+                count += 3;
+            }
+        }
 
-		delete [] sAppend;
-	}
-	return qpString;
+        delete [] sAppend;
+    }
+    return qpString;
 }
 
 
@@ -751,5 +754,7 @@ WCHAR* unfolding(const WCHAR* inputString) {
 
     return outputString;
 }
+
+END_NAMESPACE
 
 

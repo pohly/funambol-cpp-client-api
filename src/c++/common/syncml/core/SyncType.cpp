@@ -35,6 +35,9 @@
 
 
 #include "syncml/core/SyncType.h"
+#include "base/globalsdef.h"
+
+USE_NAMESPACE
 
 
 SyncType::SyncType() {

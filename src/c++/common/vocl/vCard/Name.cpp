@@ -36,6 +36,9 @@
 
 #include "base/fscapi.h"
 #include "vocl/vCard/Name.h"
+#include "base/globalsdef.h"
+
+USE_NAMESPACE
 
 Name::Name() {
     salutation  = NULL;

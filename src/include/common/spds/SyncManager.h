@@ -39,6 +39,7 @@
 /** @addtogroup Client */
 /** @{ */
 
+#include "base/globalsdef.h"
 #include "base/util/ArrayList.h"
 #include "http/TransportAgent.h"
 #include "spds/constants.h"
@@ -50,6 +51,10 @@
 #include "spds/CredentialHandler.h"
 #include "spds/SyncReport.h"
 
+// Tolerance to data size for incoming items (106%) -> will be allocated some more space.
+#define DATA_SIZE_TOLERANCE      1.06
+
+BEGIN_NAMESPACE
 
 typedef enum {
                 STATE_START        = 0,
@@ -60,13 +65,6 @@ typedef enum {
                 STATE_PKG5_SENDING = 5,
                 STATE_PKG5_SENT    = 6
              } SyncManagerState ;
-
-
-// Tolerance to data size for incoming items (106%) -> will be allocated some more space.
-#define DATA_SIZE_TOLERANCE      1.06
-
-
-static void fillContentTypeInfoList(ArrayList &l, const char*  types);
 
 
 /**
@@ -242,6 +240,9 @@ class SyncManager {
         void addMapCommand(int sourceIndex);
 
 };
+
+
+END_NAMESPACE
 
 /** @} */
 /** @endcond */

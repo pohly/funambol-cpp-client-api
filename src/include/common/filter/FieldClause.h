@@ -39,6 +39,9 @@
 
 #include "base/util/ArrayList.h"
 #include "filter/Clause.h"
+#include "base/globalsdef.h"
+
+BEGIN_NAMESPACE
 
 
 class FieldClause : public Clause {
@@ -119,6 +122,9 @@ public:
 
 };
 
+
+
+END_NAMESPACE
 
 /** @endcond */
 #endif

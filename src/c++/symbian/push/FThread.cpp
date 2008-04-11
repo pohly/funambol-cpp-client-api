@@ -41,6 +41,9 @@ static TInt symbianTimeoutWrapper(TAny* thread);
 #include "base/fscapi.h"
 #include "push/FThread.h"
 #include "base/SymbianLog.h"
+#include "base/globalsdef.h"
+
+USE_NAMESPACE
 
 FThread::FThread() : terminate(false),
                      isRunning(false),

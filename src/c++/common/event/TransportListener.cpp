@@ -37,6 +37,9 @@
 #include "event/TransportListener.h"
 #include "event/TransportEvent.h"
 #include "event/constants.h"
+#include "base/globalsdef.h"
+
+USE_NAMESPACE
 
 /*
  * Empty TransportListener methods.

@@ -35,6 +35,9 @@
 
 
 #include "syncml/core/Search.h"
+#include "base/globalsdef.h"
+
+USE_NAMESPACE
 
 Search::Search() {
 

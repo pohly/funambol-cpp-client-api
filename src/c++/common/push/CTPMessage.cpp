@@ -35,6 +35,9 @@
 
 #include "push/CTPMessage.h"
 #include "base/util/utils.h"
+#include "base/globalsdef.h"
+
+USE_NAMESPACE
 
 CTPMessage::CTPMessage() {
     initialize();

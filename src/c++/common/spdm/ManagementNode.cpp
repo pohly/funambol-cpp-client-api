@@ -38,6 +38,9 @@
 #include "base/Log.h"
 #include "base/util/utils.h"
 #include "spdm/ManagementNode.h"
+#include "base/globalsdef.h"
+
+USE_NAMESPACE
 
 
 /*

@@ -34,6 +34,9 @@
  */
 
 #include "base/util/PropertyFile.h"
+#include "base/globalsdef.h"
+
+USE_NAMESPACE
 
 int PropertyFile::read() {
     

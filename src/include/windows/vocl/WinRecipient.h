@@ -41,6 +41,9 @@
 /** @{ */
 
 #include "vocl/WinItem.h"
+#include "base/globalsdef.h"
+
+BEGIN_NAMESPACE
 
 
 /**
@@ -72,6 +75,9 @@ public:
     /// Format and return a vCalendar ATTENDEE string from the propertyMap.
     wstring& toString();
 };
+
+
+END_NAMESPACE
 
 /** @} */
 /** @endcond */

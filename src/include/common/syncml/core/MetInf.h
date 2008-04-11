@@ -45,6 +45,9 @@
 #include "syncml/core/NextNonce.h"
 #include "syncml/core/Mem.h"
 #include "syncml/core/EMI.h"
+#include "base/globalsdef.h"
+
+BEGIN_NAMESPACE
 
 
 class MetInf {
@@ -290,6 +293,9 @@ class MetInf {
     MetInf* clone();
 
 };
+
+
+END_NAMESPACE
 
 /** @endcond */
 #endif

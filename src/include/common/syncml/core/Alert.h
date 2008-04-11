@@ -47,6 +47,9 @@
 #include "syncml/core/ItemizedCommand.h"
 
 #define ALERT_COMMAND_NAME "Alert"
+#include "base/globalsdef.h"
+
+BEGIN_NAMESPACE
 
 class Alert : public ItemizedCommand {
 
@@ -103,6 +106,9 @@ class Alert : public ItemizedCommand {
         ArrayElement* clone();
 
 };
+
+
+END_NAMESPACE
 
 /** @endcond */
 #endif

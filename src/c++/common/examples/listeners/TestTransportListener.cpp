@@ -35,6 +35,9 @@
 
 #include "stdio.h"
 #include "examples/listeners/TestTransportListener.h"
+#include "base/globalsdef.h"
+
+USE_NAMESPACE
 
 void TestTransportListener::sendDataBegin(TransportEvent &event) {
     printf("[TransportEvent] Sending Data of size %d began at %ld.\n\n",event.getDataSize(), event.getDate());

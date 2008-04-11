@@ -42,6 +42,9 @@
 #include "base/util/utils.h"
 #include "base/base64.h"
 #include "syncml/core/Meta.h"
+#include "base/globalsdef.h"
+
+BEGIN_NAMESPACE
 
 class Authentication {
 
@@ -266,6 +269,9 @@ class Authentication {
         Authentication* clone();
 
 };
+
+
+END_NAMESPACE
 
 /** @endcond */
 #endif

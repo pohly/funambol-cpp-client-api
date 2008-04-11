@@ -34,6 +34,9 @@
  */
 
 #include "filter/FieldClause.h"
+#include "base/globalsdef.h"
+
+USE_NAMESPACE
 
 /*
  * FieldClause constructor

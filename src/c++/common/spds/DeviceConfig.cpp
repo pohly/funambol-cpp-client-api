@@ -38,6 +38,9 @@
 #include "base/util/utils.h"
 #include "spds/DeviceConfig.h"
 #include "spdm/constants.h"
+#include "base/globalsdef.h"
+
+USE_NAMESPACE
 
 
 DeviceConfig::DeviceConfig() {

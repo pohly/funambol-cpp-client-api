@@ -38,6 +38,9 @@
 /** @cond DEV */
 
 #include "base/fscapi.h"
+#include "base/globalsdef.h"
+
+BEGIN_NAMESPACE
 
 class ErrorHandler {
 
@@ -104,6 +107,9 @@ class ErrorHandler {
     private:
         int lastError;
 };
+
+
+END_NAMESPACE
 
 /** @endcond */
 #endif

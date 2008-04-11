@@ -34,6 +34,9 @@
  */
 
 #include "http/Proxy.h"
+#include "base/globalsdef.h"
+
+USE_NAMESPACE
 
 Proxy::Proxy() {
     setProxy(NULL, 0, NULL, NULL);

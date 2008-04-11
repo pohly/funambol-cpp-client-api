@@ -42,6 +42,9 @@
 /** @{ */
 
     #include "spds/AbstractSyncSourceConfig.h"
+#include "base/globalsdef.h"
+
+BEGIN_NAMESPACE
 
 /**
  * This class is one possible implementation of the
@@ -284,6 +287,9 @@ class SyncSourceConfig : public AbstractSyncSourceConfig {
             return *this;
         }
     };
+
+
+END_NAMESPACE
 
 /** @} */
 /** @endcond */

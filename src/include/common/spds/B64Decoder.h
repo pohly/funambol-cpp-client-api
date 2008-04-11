@@ -39,6 +39,9 @@
     #include "spds/DataTransformer.h"
 
     #define DT_B64 "b64"
+#include "base/globalsdef.h"
+
+BEGIN_NAMESPACE
 
     class B64Decoder : public DataTransformer {
         public:
@@ -56,6 +59,9 @@
          */
         char* transform(char* data, TransformationInfo& info);
     };
+
+
+END_NAMESPACE
 
 /** @endcond */
  #endif

@@ -40,6 +40,9 @@
 /** @cond DEV */
 
 #include "base/fscapi.h"
+#include "base/globalsdef.h"
+
+BEGIN_NAMESPACE
 
 /**
  * This class implements an abstract command. It must be derived to be used by other classes.
@@ -87,6 +90,9 @@ class CmdID {
     CmdID* clone();
 
 };
+
+
+END_NAMESPACE
 
 /** @endcond */
 #endif

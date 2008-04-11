@@ -36,7 +36,7 @@
 
 //
 // @author Stefano Fornari @ Funambol
-// @version $Id: WebPage.h,v 1.6 2008-04-08 07:14:53 marco_garatti Exp $
+// @version $Id: WebPage.h,v 1.7 2008-04-11 08:17:13 marco_garatti Exp $
 //
 
 
@@ -45,6 +45,9 @@
 /** @cond DEV */
 
 #include "vocl/vCard/TypedProperty.h"
+#include "base/globalsdef.h"
+
+BEGIN_NAMESPACE
 
 /**
  * An object representing a web page.
@@ -84,6 +87,9 @@ class WebPage : public TypedProperty {
         ArrayElement* clone();
 
 };
+
+
+END_NAMESPACE
 
 /** @endcond */
 #endif

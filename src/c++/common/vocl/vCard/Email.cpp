@@ -36,6 +36,9 @@
 
 #include "base/fscapi.h"
 #include "vocl/vCard/Email.h"
+#include "base/globalsdef.h"
+
+USE_NAMESPACE
 
 
 Email::Email() : TypedProperty() {

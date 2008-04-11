@@ -34,10 +34,14 @@
  */
 
 
+#include "base/globalsdef.h"
 #include "base/posixlog.h"
+#include "base/fscapi.h"
 #include "base/util/utils.h"
 
 #include <unistd.h>
+
+USE_NAMESPACE
 
 //char logmsg[512];
 

@@ -45,6 +45,9 @@
     #include "spds/SyncSource.h"
     #include "spds/constants.h"
     #include "spds/SyncReport.h"
+#include "base/globalsdef.h"
+
+BEGIN_NAMESPACE
 
     /**
      * This class wraps the common operations executed by a typical
@@ -190,6 +193,9 @@
         // Sources reports are initializated during sync(sources**) call.
         SyncReport syncReport;
     };
+
+
+END_NAMESPACE
 
 /** @} */
 /** @endcond */

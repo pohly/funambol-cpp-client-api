@@ -38,6 +38,9 @@
 /** @cond DEV */
 
 #include "base/fscapi.h"
+#include "base/globalsdef.h"
+
+BEGIN_NAMESPACE
 
 class Anchor {
 
@@ -85,6 +88,9 @@ class Anchor {
     Anchor* clone();
 
 };
+
+
+END_NAMESPACE
 
 /** @endcond */
 #endif

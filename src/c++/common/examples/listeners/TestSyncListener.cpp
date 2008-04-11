@@ -35,6 +35,9 @@
 
 
 #include "examples/listeners/TestSyncListener.h"
+#include "base/globalsdef.h"
+
+USE_NAMESPACE
 
 void TestSyncListener::syncBegin(SyncEvent &event) {
     printf("[SyncEvent] Syncing successfully began at %ld.\n\n", event.getDate());

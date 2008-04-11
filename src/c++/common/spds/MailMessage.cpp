@@ -39,6 +39,9 @@
 #include "base/Log.h"
 #include "spds/spdsutils.h"
 #include "spds/MailMessage.h"
+#include "base/globalsdef.h"
+
+USE_NAMESPACE
 
 //------------------------------------------------------------------ Defines
 

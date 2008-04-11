@@ -36,7 +36,7 @@
 
 //
 // @author Stefano Fornari @ Funambol
-// @version $Id: ContactDetail.h,v 1.5 2007-11-28 15:01:36 toccy Exp $
+// @version $Id: ContactDetail.h,v 1.6 2008-04-11 08:17:13 marco_garatti Exp $
 //
 
 #ifndef INCL_PIM_CONTACT_DETAIL
@@ -44,6 +44,9 @@
 /** @cond DEV */
 
 #include "base/util/ArrayList.h"
+#include "base/globalsdef.h"
+
+BEGIN_NAMESPACE
 
 /**
  * An object containing details on how to reach a contact (phone numbers, emails, webpage)
@@ -115,6 +118,9 @@ class ContactDetail {
         ContactDetail* clone();
 
 };
+
+
+END_NAMESPACE
 
 /** @endcond */
 #endif

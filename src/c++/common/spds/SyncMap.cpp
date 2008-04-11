@@ -37,6 +37,9 @@
 
 #include "base/util/utils.h"
 #include "spds/SyncMap.h"
+#include "base/globalsdef.h"
+
+USE_NAMESPACE
 
 
 SyncMap::SyncMap(const char *g, const char* l) {

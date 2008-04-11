@@ -65,6 +65,9 @@ using namespace std;
 #define ERR_SIFFIELDS_NULL                  "Parsing error: sifFields must be initialized before parsing data."
 #define INFO_ITEM_VOBJ_WRONG_VERSION        "Warning! Wrong vobject version \"%ls\" (\"%ls\" expected)"
 #define INFO_ITEM_VOBJ_VERSION_NOTFOUND     "Warning! VObject version not specified (\"%ls\" expected)"
+#include "base/globalsdef.h"
+
+BEGIN_NAMESPACE
 
 
 typedef map<wstring,wstring>::iterator      mapIterator;
@@ -223,6 +226,9 @@ public:
      */
     virtual wstring& getName();
 };
+
+
+END_NAMESPACE
 
 /** @} */
 /** @endcond */

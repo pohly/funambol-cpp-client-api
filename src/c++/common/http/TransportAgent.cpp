@@ -36,6 +36,9 @@
 #include "http/HTTPHeader.h"
 #include "http/TransportAgent.h"
 #include "base/util/utils.h"
+#include "base/globalsdef.h"
+
+USE_NAMESPACE
 
 TransportAgent::TransportAgent() {
     timeout = DEFAULT_MAX_TIMEOUT;

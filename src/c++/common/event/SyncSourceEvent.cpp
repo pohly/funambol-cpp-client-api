@@ -36,6 +36,9 @@
 
 #include "event/SyncSourceEvent.h"
 #include "base/util/utils.h"
+#include "base/globalsdef.h"
+
+USE_NAMESPACE
 
 SyncSourceEvent::SyncSourceEvent(const char* uri, const char* sourcename, int mode, int data, int type, unsigned long date) : BaseEvent(type, date) {
 

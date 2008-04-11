@@ -44,6 +44,9 @@
 #include "vocl/iCalendar/iCalProperty.h"
 #include "vocl/iCalendar/Event.h"
 #include "vocl/iCalendar/ToDo.h"
+#include "base/globalsdef.h"
+
+BEGIN_NAMESPACE
 
 class Calendar
 {
@@ -82,6 +85,9 @@ public:
 
     ArrayElement* clone();
 };
+
+
+END_NAMESPACE
 
 /** @endcond */
 #endif

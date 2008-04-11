@@ -42,6 +42,9 @@
 #include "push/CTPParam.h"
 #include "push/FThread.h"
 #include "push/FSocket.h"
+#include "base/globalsdef.h"
+
+USE_NAMESPACE
 
 // Init static pointer.
 CTPService* CTPService::pinstance = NULL;

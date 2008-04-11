@@ -40,6 +40,9 @@
 /** @cond DEV */
 
 #include "base/fscapi.h"
+#include "base/globalsdef.h"
+
+BEGIN_NAMESPACE
 
 /**
  * This class implements an element insertable in an ArrayList object. See
@@ -51,6 +54,9 @@ class ArrayElement {
         virtual ~ArrayElement();
         virtual ArrayElement* clone() = 0;
 };
+
+
+END_NAMESPACE
 
 /** @endcond */
 #endif

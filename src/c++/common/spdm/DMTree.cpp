@@ -42,6 +42,9 @@
 #include "spdm/ManagementNode.h"
 #include "spdm/DeviceManagementNode.h"
 #include "spdm/DMTree.h"
+#include "base/globalsdef.h"
+
+USE_NAMESPACE
 
 
 /*

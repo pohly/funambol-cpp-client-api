@@ -35,6 +35,9 @@
 
 
 #include "syncml/core/Cred.h"
+#include "base/globalsdef.h"
+
+USE_NAMESPACE
 
 
 Cred::Cred() {

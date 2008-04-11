@@ -43,6 +43,8 @@
 #include "event/SyncStatusListener.h"
 #include "event/TransportListener.h"
 
+BEGIN_NAMESPACE
+
 /*
  * A set of global functions to either set or unset Listeners
  * for various events.
@@ -79,6 +81,7 @@ void unsetSyncItemListener();
 // Removes the SyncStatusEvent Listener
 void unsetSyncStatusListener();
 
+END_NAMESPACE
 
 /** @endcond */
 #endif

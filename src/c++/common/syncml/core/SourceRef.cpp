@@ -35,6 +35,9 @@
 
 #include "base/util/utils.h"
 #include "syncml/core/SourceRef.h"
+#include "base/globalsdef.h"
+
+USE_NAMESPACE
 
 
 SourceRef::SourceRef() {

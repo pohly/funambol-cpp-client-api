@@ -35,6 +35,9 @@
 
 
 #include "syncml/core/DSMem.h"
+#include "base/globalsdef.h"
+
+USE_NAMESPACE
 
 
 DSMem::DSMem() {

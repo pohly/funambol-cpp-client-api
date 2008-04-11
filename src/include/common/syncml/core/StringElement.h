@@ -46,6 +46,9 @@
 
 #include "base/fscapi.h"
 #include "base/util/ArrayElement.h"
+#include "base/globalsdef.h"
+
+BEGIN_NAMESPACE
 
 class StringElement : public ArrayElement {
 
@@ -81,6 +84,9 @@ class StringElement : public ArrayElement {
         ArrayElement* clone();
 
 };
+
+
+END_NAMESPACE
 
 /** @endcond */
 #endif

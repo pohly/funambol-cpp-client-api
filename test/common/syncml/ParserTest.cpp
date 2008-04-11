@@ -41,6 +41,9 @@
 #include "syncml/formatter/Formatter.h"
 #include "syncml/parser/Parser.h"
 #include "base/util/utils.h"
+#include "base/globalsdef.h"
+
+USE_NAMESPACE
 
 #ifdef _WIN32
 # define TESTDIR "."

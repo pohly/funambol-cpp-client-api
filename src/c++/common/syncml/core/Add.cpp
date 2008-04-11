@@ -35,6 +35,9 @@
 
 
 #include "syncml/core/Add.h"
+#include "base/globalsdef.h"
+
+USE_NAMESPACE
 
 Add::Add() {
     COMMAND_NAME = new char[strlen(ADD_COMMAND_NAME) + 1];

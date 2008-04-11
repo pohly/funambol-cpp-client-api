@@ -38,6 +38,9 @@
 #include "base/util/symbianUtils.h"
 #include "base/util/stringUtils.h"
 #include "base/util/timeUtils.h"
+#include "base/globalsdef.h"
+
+USE_NAMESPACE
 
 
 // Formats for date&time printed into log.

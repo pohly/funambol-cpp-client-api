@@ -41,6 +41,9 @@
     #include "base/constants.h"
     #include "base/util/ArrayElement.h"
     #include "spds/constants.h"
+#include "base/globalsdef.h"
+
+BEGIN_NAMESPACE
 
 
     class SyncItemStatus : public ArrayElement {
@@ -154,6 +157,9 @@
         ArrayElement* clone();
 
     };
+
+
+END_NAMESPACE
 
 /** @endcond */
 #endif

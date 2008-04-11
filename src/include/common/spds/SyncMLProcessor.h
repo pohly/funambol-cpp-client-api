@@ -46,6 +46,9 @@
     #include "syncml/core/ObjectDel.h"
     #include "syncml/parser/Parser.h"
     #include "spds/SyncReport.h"
+#include "base/globalsdef.h"
+
+BEGIN_NAMESPACE
 
     /*
      * This class is responsible for the processing of the incoming messages.
@@ -167,6 +170,9 @@
          */
         Sync* getSyncResponse(SyncML* syncml, int index);
     };
+
+
+END_NAMESPACE
 
 /** @endcond */
 #endif

@@ -44,6 +44,9 @@
 
     #define DIM_HEADERS 50
     #define MSG_BAD_PROTOCOL "BAD PROTOCOL"
+#include "base/globalsdef.h"
+
+BEGIN_NAMESPACE
 
     class HTTPHeader {
     private:
@@ -77,5 +80,8 @@
          */
         int getContentLength();
     };
+
+END_NAMESPACE
+
 /** @endcond */
 #endif

@@ -35,6 +35,9 @@
 
 #include "base/util/utils.h"
 #include "syncml/core/EMI.h"
+#include "base/globalsdef.h"
+
+USE_NAMESPACE
 
 
 EMI::EMI(char* value) {

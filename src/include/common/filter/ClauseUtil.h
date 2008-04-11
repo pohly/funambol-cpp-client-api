@@ -40,6 +40,9 @@
 #include "filter/LogicalClause.h"
 #include "filter/SourceFilter.h"
 #include "syncml/core/Filter.h"
+#include "base/globalsdef.h"
+
+BEGIN_NAMESPACE
 
 class ClauseUtil {
 
@@ -86,6 +89,9 @@ public:
 
     static SourceFilter* createSourceFilterInclusive(const char* luid, int size);
 };
+
+
+END_NAMESPACE
 
 /** @endcond */
 #endif

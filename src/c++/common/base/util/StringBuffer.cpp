@@ -33,10 +33,14 @@
  * the words "Powered by Funambol".
  */
 
+#include "base/globalsdef.h"
 #include "base/fscapi.h"
 #include "base/messages.h"
 #include "base/util/utils.h"
 #include "base/util/StringBuffer.h"
+
+
+USE_NAMESPACE
 
 const size_t StringBuffer::npos = 0xFFFFFFFF;
 static size_t growup = 5;
@@ -456,6 +460,8 @@ bool  StringBuffer::operator!= (const StringBuffer& s) const
 }
 
 
+BEGIN_NAMESPACE
+
 // Function operators
 StringBuffer operator+(const StringBuffer& x, const char *y)
 {
@@ -463,6 +469,8 @@ StringBuffer operator+(const StringBuffer& x, const char *y)
   result.append(y);
   return result;
 }
+
+END_NAMESPACE
 
 
 //size_t StringBuffer_memcount = 0;

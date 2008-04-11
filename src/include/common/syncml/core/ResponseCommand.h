@@ -40,6 +40,9 @@
 
 #include "base/fscapi.h"
 #include "syncml/core/ItemizedCommand.h"
+#include "base/globalsdef.h"
+
+BEGIN_NAMESPACE
 
 
 class ResponseCommand : public ItemizedCommand {
@@ -164,6 +167,9 @@ class ResponseCommand : public ItemizedCommand {
         virtual ArrayElement* clone() = 0;
 
 };
+
+
+END_NAMESPACE
 
 /** @endcond */
 #endif

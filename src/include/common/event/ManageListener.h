@@ -43,6 +43,9 @@
 #include "event/SyncStatusListener.h"
 #include "event/SyncSourceListener.h"
 #include "event/TransportListener.h"
+#include "base/globalsdef.h"
+
+BEGIN_NAMESPACE
 
 /* This is the ManageListener class - which keeps track of the various registered
  * listeners. This is implemented as an singleton pattern to make sure only instance is
@@ -89,6 +92,9 @@ public:
     void unsetSyncStatusListener();
 
 };
+
+
+END_NAMESPACE
 
 /** @endcond */
 #endif

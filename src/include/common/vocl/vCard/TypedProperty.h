@@ -40,6 +40,9 @@
 
 #include "base/util/ArrayElement.h"
 #include "vocl/vCard/vCardProperty.h"
+#include "base/globalsdef.h"
+
+BEGIN_NAMESPACE
 
 /**
  * An association between a property and a string representing the property type.
@@ -101,6 +104,9 @@ class TypedProperty : public ArrayElement {
          */
         ArrayElement* clone() { return NULL;}; //FIXME
 };
+
+
+END_NAMESPACE
 
 /** @endcond */
 #endif

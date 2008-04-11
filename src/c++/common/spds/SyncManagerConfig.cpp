@@ -39,6 +39,9 @@
 #include "base/Log.h"
 #include "spds/SyncManagerConfig.h"
 #include "spds/DefaultConfigFactory.h"
+#include "base/globalsdef.h"
+
+USE_NAMESPACE
 
 
 SyncManagerConfig::SyncManagerConfig() {

@@ -35,6 +35,9 @@
 
 #include "base/util/utils.h"
 #include "syncml/core/SessionID.h"
+#include "base/globalsdef.h"
+
+USE_NAMESPACE
 
 SessionID::SessionID() {
     sessionID = NULL;

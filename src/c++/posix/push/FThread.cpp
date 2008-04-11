@@ -40,6 +40,9 @@
 static void *pthreadEntryFunction(void* fthreadObj);
 
 #include "FThread.h"
+#include "base/globalsdef.h"
+
+USE_NAMESPACE
 
 FThread::FThread() :isRunning(false),
                     terminate(false)

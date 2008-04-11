@@ -34,6 +34,9 @@
  */
 #include "base/util/utils.h"
 #include "filter/WhereClause.h"
+#include "base/globalsdef.h"
+
+USE_NAMESPACE
 
 
 WhereClause::WhereClause() : property(NULL), value(NULL), op(UNKNOWN), caseSensitive(true) {

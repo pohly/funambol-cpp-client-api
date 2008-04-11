@@ -40,6 +40,9 @@
     #include "spdm/constants.h"
     #include "spdm/DMTreeManager.h"
     #include "spdm/ManagementNode.h"
+#include "base/globalsdef.h"
+
+BEGIN_NAMESPACE
 
     class WinDMTreeManager : public DMTreeManager  {
 
@@ -69,6 +72,9 @@
         void setManagementNode(ManagementNode& n);
 
     };
+
+
+END_NAMESPACE
 
 /** @endcond */
 #endif

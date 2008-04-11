@@ -44,6 +44,9 @@
     #include "spds/SyncStatus.h"
 
     #include <string.h>
+#include "base/globalsdef.h"
+
+BEGIN_NAMESPACE
 
     typedef enum {
         SYNC_STATE_NEW     = 'N',
@@ -299,6 +302,9 @@
         /** encode or decode the item's data with the named transformation */
         int transformData(const char* name, bool encode, const char* password);
     };
+
+
+END_NAMESPACE
 
 /** @endcond */
 #endif

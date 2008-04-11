@@ -43,6 +43,9 @@
 #include <cppunit/extensions/TestFactoryRegistry.h>
 #include <cppunit/extensions/HelperMacros.h>
 #include <cppunit/extensions/AutoRegisterSuite.h>
+#include "base/globalsdef.h"
+
+USE_NAMESPACE
 
 
 #define APPLICATION_URI "FunambolTest/SyncclientPIM"

@@ -51,6 +51,9 @@
 // To notify if status comes from Client or server
 #define CLIENT      "Client"
 #define SERVER      "Server"
+#include "base/globalsdef.h"
+
+BEGIN_NAMESPACE
 
 
 /**
@@ -154,6 +157,9 @@ public:
         return *this;
     }
 };
+
+
+END_NAMESPACE
 
 /** @} */
 /** @endcond */

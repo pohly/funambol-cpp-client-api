@@ -44,6 +44,9 @@
 
 #define SYMBIAN_LOG_HEADER      "Funambol Symbian Plug-in Log"
 #define SYMBIAN_LOG_NAME        "c:\\data\\synclog.txt"
+#include "base/globalsdef.h"
+
+BEGIN_NAMESPACE
 
 
 class SymbianLog : public Log {
@@ -93,6 +96,9 @@ public:
     /// Returns the log file size [bytes].
     size_t getLogSize();
 };
+
+
+END_NAMESPACE
 
 /** @endcond */
 #endif  // INCL_SYMBIAN_LOG

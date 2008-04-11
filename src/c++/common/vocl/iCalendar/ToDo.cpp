@@ -34,6 +34,9 @@
  */
 
 #include "vocl/iCalendar/ToDo.h"
+#include "base/globalsdef.h"
+
+USE_NAMESPACE
 
 ToDo::ToDo() {
      classEvent = NULL;

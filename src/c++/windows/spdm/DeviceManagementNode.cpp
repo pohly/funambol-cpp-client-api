@@ -39,6 +39,9 @@
 #include "spdm/constants.h"
 #include "spdm/ManagementNode.h"
 #include "spdm/DeviceManagementNode.h"
+#include "base/globalsdef.h"
+
+USE_NAMESPACE
 
 #ifdef _WIN32_WCE
 #define HKEY_DM_ROOT   HKEY_LOCAL_MACHINE

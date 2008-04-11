@@ -34,6 +34,9 @@
  */
 
 #include "syncml/core/Put.h"
+#include "base/globalsdef.h"
+
+USE_NAMESPACE
 
 Put::Put() {
     lang = NULL;

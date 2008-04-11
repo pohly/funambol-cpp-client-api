@@ -36,6 +36,9 @@
 #include "base/Log.h"
 #include "base/stringUtils.h"
 #include "vocl/sifUtils.h"
+#include "base/globalsdef.h"
+
+USE_NAMESPACE
 
 using namespace std;
 

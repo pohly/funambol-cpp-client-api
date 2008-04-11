@@ -38,6 +38,9 @@
 /** @cond DEV */
 
 #include "filter/LogicalClause.h"
+#include "base/globalsdef.h"
+
+BEGIN_NAMESPACE
 
 class SourceFilter {
 
@@ -127,6 +130,9 @@ public:
 
 };
 
+
+
+END_NAMESPACE
 
 /** @endcond */
 #endif

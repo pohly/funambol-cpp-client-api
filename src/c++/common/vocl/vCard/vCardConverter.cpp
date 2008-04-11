@@ -36,6 +36,9 @@
 #include "base/fscapi.h"
 #include "vocl/vCard/vCardConverter.h"
 #include "base/util/WString.h"
+#include "base/globalsdef.h"
+
+USE_NAMESPACE
 
 vCardConverter::vCardConverter() {
     vCard = NULL;

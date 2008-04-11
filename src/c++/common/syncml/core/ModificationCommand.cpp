@@ -35,6 +35,9 @@
 
 
 #include "syncml/core/ModificationCommand.h"
+#include "base/globalsdef.h"
+
+USE_NAMESPACE
 
 ModificationCommand::ModificationCommand() {
 }

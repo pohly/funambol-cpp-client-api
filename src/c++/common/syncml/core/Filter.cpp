@@ -34,6 +34,9 @@
  */
 
 #include "syncml/core/Filter.h"
+#include "base/globalsdef.h"
+
+USE_NAMESPACE
 
 Filter::Filter() : meta(NULL), field(NULL), record(NULL), filterType(NULL) {
 }

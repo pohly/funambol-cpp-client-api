@@ -34,6 +34,9 @@
  */
 
 #include "base/util/ArrayList.h"
+#include "base/globalsdef.h"
+
+USE_NAMESPACE
 
 /**
  * This class implements a simple linked list that can be accessed by index too.

@@ -43,6 +43,9 @@
 #include "vocl/WinItem.h"
 #include "vocl/constants.h"
 #include "vocl/VObject.h"
+#include "base/globalsdef.h"
+
+BEGIN_NAMESPACE
 
 
 /**
@@ -98,6 +101,9 @@ public:
     virtual wstring& toString();
 };
 
+
+
+END_NAMESPACE
 
 /** @} */
 /** @endcond */

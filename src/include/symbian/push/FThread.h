@@ -37,6 +37,9 @@
 #define INCL_FTHREAD
 
 #include <e32std.h>
+#include "base/globalsdef.h"
+
+BEGIN_NAMESPACE
 
 class FThread {
 
@@ -117,5 +120,8 @@ private:
     friend TInt symbianTimeoutWrapper(TAny* thread);
  
 };
+
+
+END_NAMESPACE
 
 #endif

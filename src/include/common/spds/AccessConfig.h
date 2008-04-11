@@ -38,6 +38,9 @@
 
 #include "base/fscapi.h"
 #include "spds/constants.h"
+#include "base/globalsdef.h"
+
+BEGIN_NAMESPACE
 
 
 /*
@@ -303,6 +306,9 @@ class AccessConfig {
         }
 
 };
+
+
+END_NAMESPACE
 
 /** @endcond */
 #endif

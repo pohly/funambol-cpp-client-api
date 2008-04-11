@@ -35,6 +35,9 @@
 
 #include "base/base64.h"
 #include "spds/B64Encoder.h"
+#include "base/globalsdef.h"
+
+USE_NAMESPACE
 
 B64Encoder::B64Encoder() : DataTransformer(DT_B64) {
 }

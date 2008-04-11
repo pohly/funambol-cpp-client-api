@@ -40,6 +40,9 @@
 #include "base/util/StringBuffer.h"
 #include "spdm/constants.h"
 #include "push/CTPConfig.h"    
+#include "base/globalsdef.h"
+
+USE_NAMESPACE
 
 #define CTP_QUEUE_PUSH                  "queuePush"
 #define CTP_RETRY                       "ctpRetry"

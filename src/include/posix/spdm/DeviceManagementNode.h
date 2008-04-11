@@ -38,11 +38,14 @@
 /** @cond DEV */
 
 #include <string.h>
+
+#include "base/globalsdef.h"
 #include "base/fscapi.h"
 #include "base/util/ArrayElement.h"
 #include "spdm/ManagementNode.h"
 #include "base/util/StringBuffer.h"
 
+BEGIN_NAMESPACE
 
 /*
  * File-based implementation of ManagementNode.
@@ -53,13 +56,13 @@
  *
  * Comments look like:
  * \s*# <comment>
+
  */
 class DeviceManagementNode : public ManagementNode {
 protected:
     ArrayList *lines;
     bool modified;
     char *prefix;
-    int strnicmp( const char *a, const char *b, int len );
 
     class line : public ArrayElement {
         char *str;
@@ -92,6 +95,7 @@ protected:
     static StringBuffer configPath;
     static StringBuffer configFile;
     void lookupDir();
+    int strnicmp( const char *a, const char *b, int len );
 
     public:
 
@@ -127,6 +131,7 @@ protected:
         static const StringBuffer& getConfigPath()              { return configPath;    }
         
         static void setCompatibilityMode(bool mode);
+
         // ----------------------------------------------------- Virtual methods
 
         /*
@@ -164,6 +169,9 @@ protected:
 
 
 };
+
+
+END_NAMESPACE
 
 /** @endcond */
 #endif

@@ -44,6 +44,9 @@
     #include "http/TransportAgent.h"
 
     #include "curl/curl.h"
+#include "base/globalsdef.h"
+
+BEGIN_NAMESPACE
 
     /*
      * This class is the transport agent responsible for messages exchange
@@ -75,6 +78,9 @@
         void setUserAgent(const char* ua);
 
     };
+
+
+END_NAMESPACE
 
 /** @endcond */
 #endif

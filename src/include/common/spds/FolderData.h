@@ -41,6 +41,9 @@
 #include "base/util/ArrayElement.h"
 #include "base/util/WString.h"
 #include "base/util/StringBuffer.h"
+#include "base/globalsdef.h"
+
+BEGIN_NAMESPACE
 
 class FolderData : public ArrayElement {
 
@@ -131,6 +134,9 @@ class FolderData : public ArrayElement {
         ArrayElement* clone() { return new FolderData(*this); }
 
 };
+
+
+END_NAMESPACE
 
 /** @endcond */
 #endif

@@ -41,6 +41,9 @@
 #include "base/fscapi.h"
 #include "base/util/ArrayList.h"
 #include "syncml/core/AbstractCommand.h"
+#include "base/globalsdef.h"
+
+BEGIN_NAMESPACE
 
 
 class SyncBody {
@@ -113,6 +116,9 @@ class SyncBody {
 
         SyncBody* clone();
 };
+
+
+END_NAMESPACE
 
 /** @endcond */
 #endif

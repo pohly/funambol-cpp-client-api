@@ -37,6 +37,9 @@
 
 #include "spds/SyncSourceConfig.h"
 #include "base/util/utils.h"
+#include "base/globalsdef.h"
+
+USE_NAMESPACE
 
 
 

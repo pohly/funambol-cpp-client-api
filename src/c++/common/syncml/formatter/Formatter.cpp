@@ -35,6 +35,9 @@
 
 #include "syncml/formatter/Formatter.h"
 #include "base/Log.h"
+#include "base/globalsdef.h"
+
+USE_NAMESPACE
 
 #define EMPTY_VALUE  "__EMPTY__"
 

@@ -46,6 +46,9 @@
 
 #include "syncml/core/TagNames.h"
 #include "syncml/core/ObjectDel.h"
+#include "base/globalsdef.h"
+
+BEGIN_NAMESPACE
 
 
 
@@ -139,6 +142,9 @@ class Formatter {
         static StringBuffer*    getPropParam        (PropParam* param);
 
 };
+
+
+END_NAMESPACE
 
 /** @endcond */
 #endif

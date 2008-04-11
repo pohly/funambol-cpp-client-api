@@ -41,6 +41,9 @@
 #include "base/fscapi.h"
 #include "base/util/ArrayList.h"
 #include "base/util/ArrayElement.h"
+#include "base/globalsdef.h"
+
+BEGIN_NAMESPACE
 
 
 class CTTypeSupported : public ArrayElement{
@@ -101,6 +104,9 @@ class CTTypeSupported : public ArrayElement{
     ArrayElement* clone();
 
 };
+
+
+END_NAMESPACE
 
 /** @endcond */
 #endif

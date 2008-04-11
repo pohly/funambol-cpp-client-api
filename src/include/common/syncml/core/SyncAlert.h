@@ -39,6 +39,9 @@
 /** @cond DEV */
 
 #include "base/fscapi.h"
+#include "base/globalsdef.h"
+
+BEGIN_NAMESPACE
 
 /*
  * This class represent a sync alert notified by the server.
@@ -84,6 +87,9 @@ class SyncAlert {
 
         friend class SyncNotification;
 };
+
+
+END_NAMESPACE
 
 /** @endcond */
 #endif

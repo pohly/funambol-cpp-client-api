@@ -41,6 +41,9 @@
 #include "base/fscapi.h"
 #include "syncml/core/Authentication.h"
 #include "syncml/core/Constants.h"
+#include "base/globalsdef.h"
+
+BEGIN_NAMESPACE
 
 class Cred {
 
@@ -115,6 +118,9 @@ class Cred {
 
         Cred* clone();
 };
+
+
+END_NAMESPACE
 
 /** @endcond */
 #endif

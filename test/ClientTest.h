@@ -49,6 +49,9 @@
 #include <cppunit/TestSuite.h>
 #include <cppunit/TestAssert.h>
 #include <cppunit/TestFixture.h>
+#include "base/globalsdef.h"
+
+BEGIN_NAMESPACE
 
 /**
  * This class encapsulates logging and checking of a SyncReport.
@@ -790,6 +793,9 @@ protected:
 
 
 #endif // ENABLE_INTEGRATION_TESTS
+
+
+END_NAMESPACE
 
 /** @} */
 /** @endcond */

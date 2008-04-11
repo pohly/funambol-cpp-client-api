@@ -35,6 +35,9 @@
 
 
 #include "syncml/core/Meta.h"
+#include "base/globalsdef.h"
+
+USE_NAMESPACE
 
 Meta::Meta() {
         this->metInf = NULL;

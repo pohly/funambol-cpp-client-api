@@ -42,6 +42,9 @@
 #include "base/util/ArrayElement.h"
 #include "base/util/StringBuffer.h"
 #include "spds/MailMessage.h"
+#include "base/globalsdef.h"
+
+BEGIN_NAMESPACE
 
 class Email : public ArrayElement {
 
@@ -95,6 +98,9 @@ class Email : public ArrayElement {
         ArrayElement* clone() { return new Email(*this); }
 
 };
+
+
+END_NAMESPACE
 
 /** @endcond */
 #endif

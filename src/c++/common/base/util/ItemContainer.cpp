@@ -37,6 +37,9 @@
 #include "base/util/ItemContainer.h"
 #include "base/util/utils.h"
 #include "base/Log.h"
+#include "base/globalsdef.h"
+
+USE_NAMESPACE
 
 
 ItemContainer::ItemContainer() {

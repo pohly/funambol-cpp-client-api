@@ -36,7 +36,7 @@
 
 //
 // @author Stefano Fornari @ Funambol
-// @version $Id: Address.h,v 1.6 2008-04-08 07:14:30 marco_garatti Exp $
+// @version $Id: Address.h,v 1.7 2008-04-11 08:17:13 marco_garatti Exp $
 //
 
 #ifndef INCL_PIM_ADDRESS
@@ -44,6 +44,9 @@
 /** @cond DEV */
 
 #include "vocl/vCard/vCardProperty.h"
+#include "base/globalsdef.h"
+
+BEGIN_NAMESPACE
 
 /**
  * An object representing an address
@@ -193,6 +196,9 @@ class Address {
         Address* clone();
 
 };
+
+
+END_NAMESPACE
 
 /** @endcond */
 #endif

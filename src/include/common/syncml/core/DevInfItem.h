@@ -44,6 +44,9 @@
 #include "syncml/core/Source.h"
 #include "syncml/core/Meta.h"
 #include "syncml/core/DevInfData.h"
+#include "base/globalsdef.h"
+
+BEGIN_NAMESPACE
 
 
 class DevInfItem : public Item {
@@ -138,6 +141,9 @@ class DevInfItem : public Item {
         ArrayElement* clone();
 
 };
+
+
+END_NAMESPACE
 
 /** @endcond */
 #endif

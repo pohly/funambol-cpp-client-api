@@ -35,6 +35,9 @@
 
 
 #include "syncml/core/Map.h"
+#include "base/globalsdef.h"
+
+USE_NAMESPACE
 
 
 Map::Map() {

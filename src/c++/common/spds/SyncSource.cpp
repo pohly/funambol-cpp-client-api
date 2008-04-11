@@ -39,6 +39,9 @@
 #include "client/SyncClient.h"
 #include "spds/spdsutils.h"
 #include "spds/SyncSourceConfig.h"
+#include "base/globalsdef.h"
+
+USE_NAMESPACE
 
 static SyncSourceConfig defaultConfig;
 

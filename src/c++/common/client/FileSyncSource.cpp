@@ -39,6 +39,9 @@
 #include "spds/FileData.h"
 
 #include "client/FileSyncSource.h"
+#include "base/globalsdef.h"
+
+USE_NAMESPACE
 
 
 FileSyncSource::FileSyncSource(const WCHAR* name, AbstractSyncSourceConfig* sc) : SyncSource(name, sc) {

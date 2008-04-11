@@ -44,6 +44,9 @@
 /** @cond DEV */
 
 #include "syncml/core/SyncAlert.h"
+#include "base/globalsdef.h"
+
+BEGIN_NAMESPACE
 
 // Define User Interaction Modes
 enum SN_UIMode {
@@ -108,6 +111,9 @@ class SyncNotification {
 
         void reset(bool free);
 };
+
+
+END_NAMESPACE
 
 /** @endcond */
 #endif

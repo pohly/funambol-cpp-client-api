@@ -42,6 +42,9 @@
     #include "base/fscapi.h"
     #include "spds/constants.h"
     #include "spds/SyncSourceConfig.h"
+#include "base/globalsdef.h"
+
+BEGIN_NAMESPACE
 
     class MailSyncSourceConfig : public SyncSourceConfig {
 
@@ -175,6 +178,9 @@
         void assign(const MailSyncSourceConfig& sc);
 
     };
+
+
+END_NAMESPACE
 
 /** @endcond */
 #endif

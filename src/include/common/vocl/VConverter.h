@@ -39,6 +39,9 @@
 /** @cond DEV */
 
 #include "vocl/VObject.h"
+#include "base/globalsdef.h"
+
+BEGIN_NAMESPACE
 
 class VConverter{
 
@@ -62,5 +65,8 @@ private:
     static bool extractGroup(WCHAR* propertyName, WCHAR* propertyGroup);
 
 };
+
+END_NAMESPACE
+
 /** @endcond */
 #endif

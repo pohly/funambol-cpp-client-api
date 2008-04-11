@@ -40,6 +40,9 @@
 /** @{ */
 
 #include "client/FileSyncSource.h"
+#include "base/globalsdef.h"
+
+BEGIN_NAMESPACE
 
 /**
  * In contrast to the FileSyncSource this class does not
@@ -62,6 +65,9 @@ class RawFileSyncSource : public FileSyncSource {
     bool setItemData(SyncItem* syncItem);
 };
 
+
+
+END_NAMESPACE
 
 /** @} */
 /** @endcond */

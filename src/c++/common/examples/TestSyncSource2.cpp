@@ -36,6 +36,9 @@
 #include "examples/TestSyncSource2.h"
 #include "base/util/utils.h"
 #include "base/Log.h"
+#include "base/globalsdef.h"
+
+USE_NAMESPACE
 
 static int all      = -1;
 static int cnew     = -1;

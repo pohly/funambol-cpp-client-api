@@ -41,6 +41,9 @@
 #include "base/util/utils.h"
 //#include "base/util/UTF8StringBuffer.h"
 #include "syncml/core/SyncNotification.h"
+#include "base/globalsdef.h"
+
+USE_NAMESPACE
 
 /////////////////////////////////////////////////////////////////////////////////
 #ifdef _WIN32_WCE

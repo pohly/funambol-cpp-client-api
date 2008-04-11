@@ -35,6 +35,9 @@
 
 
 #include "base/memTracker.h"
+#include "base/globalsdef.h"
+
+USE_NAMESPACE
 
 
 MemTracker::MemTracker(bool useMemTracking) {

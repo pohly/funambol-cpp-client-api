@@ -38,6 +38,9 @@
 
 #include "base/util/ArrayList.h"
 #include "filter/Clause.h"
+#include "base/globalsdef.h"
+
+BEGIN_NAMESPACE
 
 typedef enum {
     NOT = 0,
@@ -126,6 +129,9 @@ public:
 
 };
 
+
+
+END_NAMESPACE
 
 /** @endcond */
 #endif

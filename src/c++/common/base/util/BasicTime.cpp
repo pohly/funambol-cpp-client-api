@@ -34,6 +34,9 @@
  */
 
 #include "base/util/BasicTime.h"
+#include "base/globalsdef.h"
+
+USE_NAMESPACE
 
 BasicTime::BasicTime() {
     year = 1970;

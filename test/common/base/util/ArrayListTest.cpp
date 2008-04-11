@@ -38,6 +38,9 @@
 
 #include "base/util/StringBuffer.h"
 #include "base/util/ArrayList.h"
+#include "base/globalsdef.h"
+
+USE_NAMESPACE
 
 class ArrayListTest : public CppUnit::TestFixture {
     CPPUNIT_TEST_SUITE(ArrayListTest);

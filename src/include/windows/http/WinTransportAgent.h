@@ -80,6 +80,9 @@
 #define ERR_HTTP_DEFLATE                ERR_TRANSPORT_BASE+71
 
 #define ERROR_INTERNET_OFFLINE_MODE     0x0002                  // Not sure why it's not defined under wininet.h ...
+#include "base/globalsdef.h"
+
+BEGIN_NAMESPACE
 
 
 
@@ -117,6 +120,9 @@ private:
     char* createHttpErrorMessage(DWORD errorCode);
     void  dumpMessage(const char* msg, const int msgLen);
 };
+
+
+END_NAMESPACE
 
 /** @endcond */
 #endif

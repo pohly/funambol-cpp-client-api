@@ -52,6 +52,9 @@
 #include <sys/stat.h>
 #include <unistd.h>
 #include <dirent.h>
+#include "base/globalsdef.h"
+
+USE_NAMESPACE
 #endif
 
 #define APPLICATION_URI         "Funambol/SyncclientFILE"

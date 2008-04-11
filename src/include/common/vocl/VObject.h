@@ -39,6 +39,9 @@
 /** @cond DEV */
 
 #include "vocl/VProperty.h"
+#include "base/globalsdef.h"
+
+BEGIN_NAMESPACE
 
 
 
@@ -180,6 +183,9 @@ public:
 
 };
 
+
+
+END_NAMESPACE
 
 /** @endcond */
 #endif

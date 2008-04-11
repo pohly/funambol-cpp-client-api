@@ -41,6 +41,9 @@
 #include "base/util/ArrayElement.h"
 #include "base/util/WString.h"
 #include "base/util/StringBuffer.h"
+#include "base/globalsdef.h"
+
+BEGIN_NAMESPACE
 
 class FileData : public ArrayElement {
 
@@ -146,6 +149,9 @@ class FileData : public ArrayElement {
         ArrayElement* clone() { return new FileData(*this); }
 
 };
+
+
+END_NAMESPACE
 
 /** @endcond */
 #endif

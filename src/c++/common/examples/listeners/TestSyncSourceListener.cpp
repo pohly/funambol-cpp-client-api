@@ -35,6 +35,9 @@
 
 #include <stdio.h>
 #include "examples/listeners/TestSyncSourceListener.h"
+#include "base/globalsdef.h"
+
+USE_NAMESPACE
 
 void TestSyncSourceListener::syncSourceBegin(SyncSourceEvent &event) {
     printf("[SyncSourceEvent] Syncing Source %s (uri = %s) in syncmode %d successfully began at %ld.\n\n", event.getSourceName(), event.getSourceURI(), event.getSyncMode(), event.getDate());

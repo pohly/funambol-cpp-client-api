@@ -50,6 +50,9 @@
 #define CTP_PROTOCOL_VERSION            0x10
 /**< Each time the CTP connection is broken, we double the ctpRetry time */
 #define CTP_RETRY_INCREASE_FACTOR       2
+#include "base/globalsdef.h"
+
+BEGIN_NAMESPACE
 
 
 // Private Threads
@@ -206,6 +209,9 @@ private:
 
 };
 
+
+
+END_NAMESPACE
 
 /** @endcond */
 #endif

@@ -67,6 +67,9 @@ using namespace std;
 
 
 #define MAX_MESSAGE_SIZE        4096
+#include "base/globalsdef.h"
+
+BEGIN_NAMESPACE
     
 
 class CTPMessage {
@@ -267,5 +270,8 @@ public:
 };
 
     
+
+END_NAMESPACE
+
 /** @endcond */
 #endif

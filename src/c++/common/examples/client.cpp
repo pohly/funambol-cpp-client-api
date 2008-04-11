@@ -58,6 +58,9 @@
 #include "examples/listeners/TestSyncItemListener.h"
 #include "examples/listeners/TestTransportListener.h"
 #include "event/SetListener.h"
+#include "base/globalsdef.h"
+
+USE_NAMESPACE
 
 
 void createConfig(DMTClientConfig& config);

@@ -44,6 +44,9 @@
 #include "syncml/core/Source.h"
 #include "syncml/core/Meta.h"
 #include "syncml/core/ComplexData.h"
+#include "base/globalsdef.h"
+
+BEGIN_NAMESPACE
 
 
 
@@ -217,6 +220,9 @@ class Item : public ArrayElement {
         ArrayElement* clone();
 
 };
+
+
+END_NAMESPACE
 
 /** @endcond */
 #endif

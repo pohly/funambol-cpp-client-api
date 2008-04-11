@@ -36,6 +36,9 @@
 
 #include "base/util/utils.h"
 #include "http/URL.h"
+#include "base/globalsdef.h"
+
+USE_NAMESPACE
 
 
 /*

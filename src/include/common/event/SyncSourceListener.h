@@ -40,6 +40,9 @@
 
 #include "event/SyncSourceEvent.h"
 #include "event/Listener.h"
+#include "base/globalsdef.h"
+
+BEGIN_NAMESPACE
 
 /*
  * Set Listeners for each event in SyncSourceEvent
@@ -66,6 +69,9 @@ public:
     // listen for total server items (number of changes) sent by Server.
     virtual void syncSourceTotalServerItems  (SyncSourceEvent& event);
 };
+
+
+END_NAMESPACE
 
 /** @endcond */
 #endif

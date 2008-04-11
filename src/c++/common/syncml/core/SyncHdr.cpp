@@ -35,6 +35,9 @@
 
 
 #include "syncml/core/SyncHdr.h"
+#include "base/globalsdef.h"
+
+USE_NAMESPACE
 
 
 SyncHdr::SyncHdr() {

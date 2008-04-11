@@ -35,6 +35,9 @@
 
 #include "base/util/utils.h"
 #include "syncml/core/CTPropParam.h"
+#include "base/globalsdef.h"
+
+USE_NAMESPACE
 
 
 CTPropParam::CTPropParam() {

@@ -44,6 +44,7 @@
 #ifdef ENABLE_INTEGRATION_TESTS
 
 #include "ClientTest.h"
+#include "base/globalsdef.h"
 #include "base/test.h"
 #include "base/util/StringBuffer.h"
 
@@ -55,6 +56,8 @@
 #include <fstream>
 #include <iostream>
 #include <algorithm>
+
+USE_NAMESPACE
 
 /** utility function to iterate over different kinds of items in a sync source */
 static int countAnyItems(
@@ -1796,6 +1799,9 @@ bool ClientTest::compare(ClientTest &client, const char *fileA, const char *file
 
 #ifndef WIN32
 #include <fcntl.h>
+#include "base/globalsdef.h"
+
+USE_NAMESPACE
 #endif
 
 void ClientTest::postSync(int res, const std::string &logname)

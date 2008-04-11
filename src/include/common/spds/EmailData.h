@@ -42,6 +42,9 @@
 #include "base/util/StringBuffer.h"
 #include "spds/MailMessage.h"
 #include "spds/EmailData.h"
+#include "base/globalsdef.h"
+
+BEGIN_NAMESPACE
 
 class EmailData : public ArrayElement {
 
@@ -153,6 +156,9 @@ class EmailData : public ArrayElement {
 
 
 };
+
+
+END_NAMESPACE
 
 /** @endcond */
 #endif

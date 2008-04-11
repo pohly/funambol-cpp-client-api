@@ -43,6 +43,9 @@
 
 #include <stdio.h>
 #include <time.h>
+#include "base/globalsdef.h"
+
+BEGIN_NAMESPACE
 
 /**
  * extended API, can only be used if it is certain that
@@ -142,6 +145,9 @@ class POSIXLog : public Log {
 };
 
 #define POSIX_LOG ((POSIXLog &)Log::instance())
+
+
+END_NAMESPACE
 
 /** @endcond */
 #endif

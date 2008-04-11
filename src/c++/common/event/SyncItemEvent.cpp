@@ -35,6 +35,9 @@
 
 #include "event/SyncItemEvent.h"
 #include "base/util/utils.h"
+#include "base/globalsdef.h"
+
+USE_NAMESPACE
 
 SyncItemEvent::SyncItemEvent(const WCHAR* key, const char* name, const char* uri, int type, unsigned long date) : BaseEvent(type, date) {
 

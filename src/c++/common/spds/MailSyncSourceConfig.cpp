@@ -37,6 +37,9 @@
 
 #include "base/util/utils.h"
 #include "spds/MailSyncSourceConfig.h"
+#include "base/globalsdef.h"
+
+USE_NAMESPACE
 
 
 MailSyncSourceConfig::MailSyncSourceConfig() {

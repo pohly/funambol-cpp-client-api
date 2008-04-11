@@ -41,6 +41,9 @@
 #include "base/fscapi.h"
 
 #include "base/util/ArrayElement.h"
+#include "base/globalsdef.h"
+
+BEGIN_NAMESPACE
 
 /**
  * This class implements a simple linked list that can be accessed by index too.
@@ -209,5 +212,8 @@ class ArrayList {
         ArrayList* clone();
 
 };
+
+END_NAMESPACE
+
 /** @endcond */
 #endif

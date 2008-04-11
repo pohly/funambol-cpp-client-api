@@ -44,6 +44,9 @@
     #include "base/fscapi.h"
     #include "spds/constants.h"
     #include "syncml/core/CTCap.h"
+#include "base/globalsdef.h"
+
+BEGIN_NAMESPACE
 
 /**
  * This class is the API expected by SyncClient/SyncManager for each sync source.
@@ -162,6 +165,9 @@ class AbstractSyncSourceConfig {
      */
     virtual bool getFieldLevel() const { return false; }
 };
+
+
+END_NAMESPACE
 
 /** @} */
 /** @endcond */

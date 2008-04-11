@@ -43,6 +43,9 @@
     #include "spds/constants.h"
     #include "syncml/core/TagNames.h"
     #include "syncml/core/ObjectDel.h"
+#include "base/globalsdef.h"
+
+BEGIN_NAMESPACE
 
     class CredentialHandler{
 
@@ -115,6 +118,9 @@
         bool  performServerAuth(Cred* cred);
 
     };
+
+
+END_NAMESPACE
 
 /** @endcond */
 #endif

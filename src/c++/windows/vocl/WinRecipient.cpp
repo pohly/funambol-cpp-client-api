@@ -34,6 +34,9 @@
  */
 
 #include "vocl/WinRecipient.h"
+#include "base/globalsdef.h"
+
+USE_NAMESPACE
 
 using namespace std;
 

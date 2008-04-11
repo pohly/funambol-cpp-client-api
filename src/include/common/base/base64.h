@@ -38,6 +38,9 @@
 /** @cond DEV */
 
 #include "base/fscapi.h"
+#include "base/globalsdef.h"
+
+BEGIN_NAMESPACE
 
 int b64_encode(char *dest, void *src, int len);
 int b64_decode(void *dest, const char *src);
@@ -64,6 +67,9 @@ void b64_encode(StringBuffer &dest, void *src, int len);
  *         always contains nul-byte after original data
  */
 void * b64_decode(int & len, const char *src);
+
+
+END_NAMESPACE
 
 /** @endcond */
 #endif /* BASE64_H */

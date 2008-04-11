@@ -39,6 +39,9 @@
 #include "base/fscapi.h"
 #include "base/constants.h"
 #include "http/constants.h"
+#include "base/globalsdef.h"
+
+BEGIN_NAMESPACE
 
 
 class Proxy {
@@ -59,5 +62,8 @@ class Proxy {
 
         Proxy& operator= (Proxy& proxy) { setProxy(proxy); return *this;}
     };
+
+END_NAMESPACE
+
 /** @endcond */
 #endif

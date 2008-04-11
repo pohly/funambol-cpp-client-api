@@ -43,6 +43,9 @@
 #include "base/util/KeyValuePair.h"
 #include "base/util/KeyValueStore.h"
 #include "base/util/ArrayListEnumeration.h"
+#include "base/globalsdef.h"
+
+BEGIN_NAMESPACE
 
 /**
  * This is the interface for the handling of the key/value that
@@ -100,6 +103,9 @@ public:
      */
     virtual int save() = 0;
 };
+
+
+END_NAMESPACE
 
 /** @} */
 /** @endcond */

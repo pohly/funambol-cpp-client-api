@@ -39,6 +39,9 @@
 /** @cond DEV */
 
 #include "event/SyncItemListener.h"
+#include "base/globalsdef.h"
+
+BEGIN_NAMESPACE
 
 class TestSyncItemListener : public SyncItemListener {
 
@@ -50,6 +53,9 @@ class TestSyncItemListener : public SyncItemListener {
     void itemUpdatedByClient(SyncItemEvent& event);
 
 };
+
+
+END_NAMESPACE
 
 /** @endcond */
 #endif

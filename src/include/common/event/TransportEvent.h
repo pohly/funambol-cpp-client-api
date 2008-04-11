@@ -38,6 +38,9 @@
 /** @cond DEV */
 
 #include "event/BaseEvent.h"
+#include "base/globalsdef.h"
+
+BEGIN_NAMESPACE
 
 
 class TransportEvent : public BaseEvent {
@@ -54,6 +57,9 @@ public:
     unsigned long getDataSize();
 };
 
+
+
+END_NAMESPACE
 
 /** @endcond */
 #endif

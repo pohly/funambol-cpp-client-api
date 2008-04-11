@@ -36,6 +36,9 @@
 
 #include "syncml/core/SyncBody.h"
 #include "base/Log.h"
+#include "base/globalsdef.h"
+
+USE_NAMESPACE
 
 SyncBody::SyncBody() {
     initialize();

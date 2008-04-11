@@ -45,6 +45,9 @@
 #include "spds/constants.h"
 #include "event/constants.h"
 #include "spds/ItemReport.h"
+#include "base/globalsdef.h"
+
+BEGIN_NAMESPACE
 
 
 /** Possible states of syncsource (state member) */
@@ -205,6 +208,9 @@ public:
         return *this;
     }
 };
+
+
+END_NAMESPACE
 
 /** @} */
 /** @endcond */

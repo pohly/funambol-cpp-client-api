@@ -39,6 +39,9 @@
 #include "vocl/vCard/Contact30.h"
 #include "vocl/iCalendar/Event.h"
 #include "vocl/iCalendar/ToDo.h"
+#include "base/globalsdef.h"
+
+USE_NAMESPACE
 
 VObject* VObjectFactory::createInstance(WCHAR* objType, WCHAR* objVersion) {
 

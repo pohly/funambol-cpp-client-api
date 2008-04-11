@@ -45,6 +45,9 @@
 #include "syncml/core/Target.h"
 
 #define SEARCH_COMMAND_NAME "Search"
+#include "base/globalsdef.h"
+
+BEGIN_NAMESPACE
 
 class Search : public AbstractCommand{
 
@@ -178,6 +181,9 @@ class Search : public AbstractCommand{
         ArrayElement* clone();
 
 };
+
+
+END_NAMESPACE
 
 /** @endcond */
 #endif

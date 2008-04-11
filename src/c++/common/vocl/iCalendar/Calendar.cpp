@@ -35,6 +35,9 @@
 
 
 #include "vocl/iCalendar/Calendar.h"
+#include "base/globalsdef.h"
+
+USE_NAMESPACE
 
 Calendar::Calendar() {
     prodID = NULL;

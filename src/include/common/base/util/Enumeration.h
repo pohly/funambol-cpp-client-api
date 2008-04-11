@@ -35,6 +35,9 @@
 
 #ifndef INCL_ENUMERATION
 #define INCL_ENUMERATION
+#include "base/globalsdef.h"
+
+BEGIN_NAMESPACE
 
 /**
  * An abstract enumeration of ArrayElements.
@@ -54,6 +57,9 @@ public:
     */
     virtual ArrayElement* getNextElement() = 0;
 };
+
+
+END_NAMESPACE
 
 #endif
 

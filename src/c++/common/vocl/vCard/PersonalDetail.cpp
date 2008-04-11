@@ -36,6 +36,9 @@
 
 #include "base/util/utils.h"
 #include "vocl/vCard/PersonalDetail.h"
+#include "base/globalsdef.h"
+
+USE_NAMESPACE
 
 
 PersonalDetail::PersonalDetail() {

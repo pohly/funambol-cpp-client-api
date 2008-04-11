@@ -6,6 +6,9 @@
 #include "base/fscapi.h"
 #include "base/util/utils.h"
 #include "base/util/symbianUtils.h"
+#include "base/globalsdef.h"
+
+USE_NAMESPACE
 
 wchar_t * wcsncpy (wchar_t *dst, const wchar_t *src, size_t count) {
     memcpy(dst, src, count * sizeof(wchar_t));

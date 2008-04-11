@@ -55,6 +55,9 @@
 #define BUSINESS            0
 #define HOME                1
 #define OTHER               2
+#include "base/globalsdef.h"
+
+BEGIN_NAMESPACE
 
 class Contact : public VObject {
 
@@ -193,6 +196,9 @@ class Contact : public VObject {
         Contact* clone();
         WCHAR* toString();
 };
+
+
+END_NAMESPACE
 
 /** @endcond */
 #endif

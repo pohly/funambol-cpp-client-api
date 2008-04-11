@@ -40,6 +40,9 @@
 
 #include "vocl/VObject.h"
 #include "vocl/iCalendar/iCalProperty.h"
+#include "base/globalsdef.h"
+
+BEGIN_NAMESPACE
 
 class ToDo : public VObject, public ArrayElement {
 
@@ -156,5 +159,8 @@ public:
 	ArrayElement* clone();
 
 };
+
+END_NAMESPACE
+
 /** @endcond */
 #endif

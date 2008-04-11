@@ -38,6 +38,9 @@
 #include "base/util/utils.h"
 #include "base/util/StringBuffer.h"
 #include "base/util/WString.h"
+#include "base/globalsdef.h"
+
+USE_NAMESPACE
 
 #ifdef _WIN32_WCE
 #define FUNAMBOL_HEADER "Funambol Windows Mobile Plug-in Log"

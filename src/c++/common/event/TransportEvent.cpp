@@ -35,6 +35,9 @@
 
 
 #include "event/TransportEvent.h"
+#include "base/globalsdef.h"
+
+USE_NAMESPACE
 
 
 TransportEvent::TransportEvent(unsigned long size, int type, unsigned long date) : BaseEvent(type, date) {

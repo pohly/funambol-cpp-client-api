@@ -36,6 +36,9 @@
 #include "base/fscapi.h"
 #include "base/util/utils.h"
 #include "spds/DataTransformer.h"
+#include "base/globalsdef.h"
+
+USE_NAMESPACE
 
 
 DataTransformer::DataTransformer() : name(NULL) {

@@ -39,6 +39,9 @@
 #include "base/SymbianLog.h"
 #include "base/util/stringUtils.h"
 #include "base/util/symbianUtils.h"
+#include "base/globalsdef.h"
+
+USE_NAMESPACE
 
 StringBuffer FSocket::lIP;
 

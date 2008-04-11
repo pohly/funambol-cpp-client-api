@@ -51,6 +51,9 @@ const int MAXRECV = 500;
 
 #include "stdint.h"
 #include "base/util/StringBuffer.h"
+#include "base/globalsdef.h"
+
+BEGIN_NAMESPACE
 
 class FSocket {
 
@@ -136,4 +139,7 @@ private:
     sockaddr_in unixAddr;
 
 };
+
+END_NAMESPACE
+
 #endif

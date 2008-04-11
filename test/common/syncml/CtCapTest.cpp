@@ -41,6 +41,9 @@
 #include "syncml/core/CTCap.h"
 #include "syncml/core/Property.h"
 #include "syncml/core/PropParam.h"
+#include "base/globalsdef.h"
+
+USE_NAMESPACE
 
 class CtCapTest : public CppUnit::TestFixture {
 

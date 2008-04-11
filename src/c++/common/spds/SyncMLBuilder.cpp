@@ -46,6 +46,9 @@
 #include "spds/SyncMLBuilder.h"
 
 #include "event/FireEvent.h"
+#include "base/globalsdef.h"
+
+USE_NAMESPACE
 
 
 SyncMLBuilder::SyncMLBuilder() {

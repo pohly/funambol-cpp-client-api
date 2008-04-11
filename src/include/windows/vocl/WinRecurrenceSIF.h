@@ -42,6 +42,9 @@
 
 #include "base/timeUtils.h"
 #include "vocl/WinRecurrence.h"
+#include "base/globalsdef.h"
+
+BEGIN_NAMESPACE
 
 
 /**
@@ -105,6 +108,9 @@ public:
 
 };
 
+
+
+END_NAMESPACE
 
 /** @} */
 /** @endcond */

@@ -43,6 +43,9 @@
 #include "spds/spdsutils.h"
 
 #include "event/FireEvent.h"
+#include "base/globalsdef.h"
+
+USE_NAMESPACE
 
 /*
  * This class is responsible for the processing of the incoming messages.

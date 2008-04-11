@@ -41,6 +41,9 @@
 #include "base/fscapi.h"
 #include "base/util/ArrayElement.h"
 #include "spdm/ManagementNode.h"
+#include "base/globalsdef.h"
+
+BEGIN_NAMESPACE
 
 /*
  * Windows implementation of ManagementNode.
@@ -103,6 +106,9 @@ class DeviceManagementNode: public ManagementNode {
         ArrayElement* clone();
 
 };
+
+
+END_NAMESPACE
 
 /** @endcond */
 #endif

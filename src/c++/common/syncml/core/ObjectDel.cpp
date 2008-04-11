@@ -35,8 +35,9 @@
 
 
 #include "syncml/core/ObjectDel.h"
+#include "base/globalsdef.h"
 
-
+BEGIN_NAMESPACE
 
 /*
 * delete all the char* type in the list.
@@ -909,3 +910,6 @@ void deleteArrayList(ArrayList ** s) {
         (*s)->clear();
     }
 }
+
+END_NAMESPACE
+

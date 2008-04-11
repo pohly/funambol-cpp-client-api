@@ -49,6 +49,9 @@
 /** @cond DEV */
 
     #include "base/fscapi.h"
+#include "base/globalsdef.h"
+
+BEGIN_NAMESPACE
 
     /**
      * Properties used by a DataTransformer. See the design document
@@ -110,6 +113,9 @@
         virtual char* transform(char* data, TransformationInfo& info) = 0;
 
     };
+
+
+END_NAMESPACE
 
 /** @endcond */
 #endif

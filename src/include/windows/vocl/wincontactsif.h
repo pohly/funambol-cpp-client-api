@@ -43,6 +43,9 @@
 #include "vocl/VObject.h"
 #include "vocl/WinItem.h"
 #include "vocl/WinContact.h"
+#include "base/globalsdef.h"
+
+BEGIN_NAMESPACE
 
 using namespace std;
 
@@ -114,6 +117,9 @@ public:
     wstring adaptToSIFSpecs(const wstring& propName, const wstring& propValue);
     
 };
+
+END_NAMESPACE
+
 /** @} */
 /** @endcond */
 #endif

@@ -39,6 +39,9 @@
 #include "syncml/formatter/Formatter.h"
 #include "base/util/StringBuffer.h"
 #include "syncml/core/SyncML.h"
+#include "base/globalsdef.h"
+
+USE_NAMESPACE
 
 /*
 * Win32 example client for testing framework

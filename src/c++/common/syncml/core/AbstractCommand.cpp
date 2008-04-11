@@ -35,6 +35,9 @@
 
 
 #include "syncml/core/AbstractCommand.h"
+#include "base/globalsdef.h"
+
+USE_NAMESPACE
 
 AbstractCommand::AbstractCommand() {
     initialize();

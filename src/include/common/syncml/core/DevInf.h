@@ -44,6 +44,9 @@
 #include "syncml/core/DataStore.h"
 #include "syncml/core/CTCap.h"
 #include "syncml/core/Ext.h"
+#include "base/globalsdef.h"
+
+BEGIN_NAMESPACE
 
 
 class DevInf {
@@ -364,6 +367,9 @@ class DevInf {
         DevInf* clone();
 
 };
+
+
+END_NAMESPACE
 
 /** @endcond */
 #endif

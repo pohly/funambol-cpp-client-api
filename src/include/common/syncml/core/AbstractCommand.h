@@ -44,6 +44,9 @@
 #include "syncml/core/CmdID.h"
 #include "syncml/core/Meta.h"
 #include "syncml/core/Cred.h"
+#include "base/globalsdef.h"
+
+BEGIN_NAMESPACE
 
 
 
@@ -164,6 +167,9 @@ class AbstractCommand : public ArrayElement {
     virtual ArrayElement* clone() = 0;
 
 };
+
+
+END_NAMESPACE
 
 /** @endcond */
 #endif

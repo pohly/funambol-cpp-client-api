@@ -41,6 +41,9 @@
 #include "base/fscapi.h"
 #include "syncml/core/SyncHdr.h"
 #include "syncml/core/SyncBody.h"
+#include "base/globalsdef.h"
+
+BEGIN_NAMESPACE
 
 
 class SyncML {
@@ -115,6 +118,9 @@ class SyncML {
         void setLastMessage();
 
 };
+
+
+END_NAMESPACE
 
 /** @endcond */
 #endif

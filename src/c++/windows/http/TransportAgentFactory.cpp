@@ -35,6 +35,9 @@
 
 #include "http/TransportAgentFactory.h"
 #include "http/WinTransportAgent.h"
+#include "base/globalsdef.h"
+
+USE_NAMESPACE
 
 
 TransportAgent* TransportAgentFactory::getTransportAgent(URL& url, Proxy& proxy, unsigned int timeout, unsigned int maxmsgsize) {

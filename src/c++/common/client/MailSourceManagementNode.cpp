@@ -39,6 +39,9 @@
 #include "base/util/utils.h"
 #include "spdm/constants.h"
 #include "client/MailSourceManagementNode.h"
+#include "base/globalsdef.h"
+
+USE_NAMESPACE
 
 MailSourceManagementNode::MailSourceManagementNode(const char*  context,
                                                    const char*  name   )

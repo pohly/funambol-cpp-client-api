@@ -39,6 +39,9 @@
 /** @cond DEV */
 
 #include "base/fscapi.h"
+#include "base/globalsdef.h"
+
+BEGIN_NAMESPACE
 
 class Source {
 
@@ -108,6 +111,9 @@ class Source {
         Source* clone();
 
 };
+
+
+END_NAMESPACE
 
 /** @endcond */
 #endif

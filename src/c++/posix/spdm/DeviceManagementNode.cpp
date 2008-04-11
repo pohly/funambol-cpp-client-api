@@ -46,6 +46,9 @@
 #include <errno.h>
 #include <fcntl.h>
 #include <dirent.h>
+#include "base/globalsdef.h"
+
+USE_NAMESPACE
 
 #define CONFIG_DIR      ".config"
 #define SYNC4J_DIR      ".sync4j"
@@ -141,10 +144,9 @@ bool DeviceManagementNode::gotoDir(bool read) {
     bool success = true;
     returnFromDir();
     cwdfd = open(".", O_RDONLY);
-    
+   
     chdir( getConfigPath() );
     StringBuffer dirs;
-    //dirs = getConfigPath();
     dirs = dirs + context + "/" + name;
     char* ccurr = strdup( dirs.c_str() );
     do {

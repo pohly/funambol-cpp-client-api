@@ -34,6 +34,9 @@
  */
 
 #include "syncml/core/Sync.h"
+#include "base/globalsdef.h"
+
+USE_NAMESPACE
 
 Sync::Sync() {
 

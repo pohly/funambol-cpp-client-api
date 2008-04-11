@@ -40,6 +40,9 @@
 
 #include "base/fscapi.h"
 #include "base/util/ArrayList.h"
+#include "base/globalsdef.h"
+
+BEGIN_NAMESPACE
 
 class iCalProperty : public ArrayElement {
 
@@ -123,6 +126,9 @@ public:
 
     ArrayElement* clone();
 };
+
+
+END_NAMESPACE
 
 /** @endcond */
 #endif

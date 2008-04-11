@@ -41,6 +41,9 @@
 #include "base/fscapi.h"
 #include "base/util/ArrayElement.h"
 #include "syncml/core/Source.h"
+#include "base/globalsdef.h"
+
+BEGIN_NAMESPACE
 
 
 class SourceRef : public ArrayElement{
@@ -106,6 +109,9 @@ class SourceRef : public ArrayElement{
         ArrayElement* clone();
 
 };
+
+
+END_NAMESPACE
 
 /** @endcond */
 #endif

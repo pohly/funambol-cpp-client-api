@@ -36,6 +36,9 @@
 
 #include "syncml/core/CmdID.h"
 #include "base/util/utils.h"
+#include "base/globalsdef.h"
+
+USE_NAMESPACE
 
 
 CmdID::CmdID() {

@@ -35,6 +35,9 @@
 
 
 #include "syncml/core/Sequence.h"
+#include "base/globalsdef.h"
+
+USE_NAMESPACE
 
 
 Sequence::Sequence() {

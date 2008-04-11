@@ -40,6 +40,9 @@
 
 #include "event/SyncItemEvent.h"
 #include "event/constants.h"
+#include "base/globalsdef.h"
+
+BEGIN_NAMESPACE
 
 
 class SyncStatusEvent : public SyncItemEvent {
@@ -64,5 +67,8 @@ public:
     // get the command the status related to
     const char* getCommand() const;
 };
+
+END_NAMESPACE
+
 /** @endcond */
 #endif

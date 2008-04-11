@@ -45,6 +45,9 @@
 #include "spds/DESDecoder.h"
 #include "spds/DESEncoder.h"
 #include "base/util/StringBuffer.h"
+#include "base/globalsdef.h"
+
+USE_NAMESPACE
 
 
 class EncryptionTest : public CppUnit::TestFixture {

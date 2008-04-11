@@ -52,6 +52,11 @@
 #include "event/FireEvent.h"
 
 #include <limits.h>
+#include "base/globalsdef.h"
+
+USE_NAMESPACE
+
+static void fillContentTypeInfoList(ArrayList &l, const char*  types);
 
 const char SyncManager::encodedKeyPrefix[] = "funambol-b64-";
 

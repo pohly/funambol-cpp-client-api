@@ -38,6 +38,9 @@
 #include "vocl/WinRecurrence.h"
 #include "vocl/constants.h"
 #include <oleauto.h>
+#include "base/globalsdef.h"
+
+USE_NAMESPACE
 
 using namespace std;
 

@@ -35,6 +35,9 @@
 
 #include "base/fscapi.h"
 #include "base/quoted-printable.h"
+#include "base/globalsdef.h"
+
+BEGIN_NAMESPACE
 
 static int hex2int( char x )
 {
@@ -88,36 +91,38 @@ char *qp_decode(const char *qp)
 
 // A simple version of qp_encoding
 char *qp_encode(const char *qp) {
-	char QP_DIGITS[] = "0123456789ABCDEF";
-	char* ret = new char[strlen(qp)*3+1];
-	int i = 0;
+    char QP_DIGITS[] = "0123456789ABCDEF";
+    char* ret = new char[strlen(qp)*3+1];
+    int i = 0;
 
-	const char *in;
-	for (in = qp; *in; in++ ) {
-		if ( (0x21 <= in[0]) & (in[0] <= 0x7e) && in[0] != '=' ) {
+    const char *in;
+    for (in = qp; *in; in++ ) {
+        if ( (0x21 <= in[0]) & (in[0] <= 0x7e) && in[0] != '=' ) {
             ret[i] = *in;
-			i++;
+            i++;
         }
         else {
             ret[i] = '=';
-			i++;
+            i++;
             ret[i] = QP_DIGITS[in[0] >> 4 & 0xf];
-			i++;
+            i++;
             ret[i] = QP_DIGITS[in[0] & 0xf];
-			i++;
+            i++;
         }
-	}
+    }
 
-	ret[i] = '\0';
+    ret[i] = '\0';
 
-	return ret;
+    return ret;
 }
 
 bool qp_isNeed(const char *in) {
-	for(int i = 0; i < int(strlen(in)); i++)
-		if ( (0x21 > in[i]) || (in[i] > 0x7e) || in[i] == '=' )
-			return true;
+    for(int i = 0; i < int(strlen(in)); i++)
+        if ( (0x21 > in[i]) || (in[i] > 0x7e) || in[i] == '=' )
+            return true;
 
-	return false;
+    return false;
 }
+
+END_NAMESPACE
 

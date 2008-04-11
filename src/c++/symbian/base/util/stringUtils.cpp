@@ -43,6 +43,9 @@
 #include "base/fscapi.h"
 #include "base/util/utils.h"
 #include "base/util/stringUtils.h"
+#include "base/globalsdef.h"
+
+USE_NAMESPACE
 
 
 

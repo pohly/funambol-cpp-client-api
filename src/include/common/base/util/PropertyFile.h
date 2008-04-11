@@ -47,6 +47,9 @@
 #include "spds/SyncStatus.h"
 #include "spds/SyncSourceReport.h"
 #include "base/util/ArrayListKeyValueStore.h"
+#include "base/globalsdef.h"
+
+BEGIN_NAMESPACE
 
 /**
  * This is the implementation of the keyValueStore on filesystem.
@@ -85,6 +88,9 @@ public:
     int save();
     
 };
+
+
+END_NAMESPACE
 
 /** @} */
 /** @endcond */

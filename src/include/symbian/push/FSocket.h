@@ -40,6 +40,9 @@
 #include <in_sock.h>
 #include "base/fscapi.h"
 #include "base/util/StringBuffer.h"
+#include "base/globalsdef.h"
+
+BEGIN_NAMESPACE
 
 class FSocket {
     
@@ -138,4 +141,7 @@ public:
     static void startConnection();
 
 };
+
+END_NAMESPACE
+
 #endif

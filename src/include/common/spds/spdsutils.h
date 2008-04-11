@@ -42,6 +42,8 @@
 #include "spds/SyncItem.h"
 #include "spds/SyncItemStatus.h"
 
+BEGIN_NAMESPACE
+
 /**
  * returns the SyncMode corresponding to the string,
  * SYNC_NONE if string is invalid
@@ -93,6 +95,8 @@ int convertAndSave(const char *filename, const char *str,
 */
 char *loadAndConvert(const char *filename,
                         const char *encoding = "UTF-8");
+
+END_NAMESPACE
 
 /** @endcond */
 #endif

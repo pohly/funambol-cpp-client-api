@@ -36,6 +36,9 @@
 
 #ifndef INCL_BASE_EVENT
 #define INCL_BASE_EVENT
+#include "base/globalsdef.h"
+
+BEGIN_NAMESPACE
 /** @cond DEV */
 
 
@@ -67,6 +70,9 @@ public:
     unsigned long getDate();
 
 };
+
+
+END_NAMESPACE
 
 /** @endcond */
 #endif

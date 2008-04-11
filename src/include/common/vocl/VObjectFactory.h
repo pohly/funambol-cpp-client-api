@@ -39,12 +39,18 @@
 /** @cond DEV */
 
 #include "vocl/VObject.h"
+#include "base/globalsdef.h"
+
+BEGIN_NAMESPACE
 
 class VObjectFactory {
 
 public:
     static VObject* createInstance(WCHAR* objType, WCHAR* objversion);
 };
+
+
+END_NAMESPACE
 
 /** @endcond */
 #endif

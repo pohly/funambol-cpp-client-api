@@ -42,6 +42,9 @@
 #include "syncml/core/ModificationCommand.h"
 
 #define DELETE_COMMAND_NAME "Delete"
+#include "base/globalsdef.h"
+
+BEGIN_NAMESPACE
 
 class Delete : public ModificationCommand {
 
@@ -123,6 +126,9 @@ class Delete : public ModificationCommand {
         ArrayElement* clone();
 
 };
+
+
+END_NAMESPACE
 
 /** @endcond */
 #endif

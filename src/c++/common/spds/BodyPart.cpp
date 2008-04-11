@@ -35,6 +35,9 @@
 
 #include "base/fscapi.h"
 #include "spds/BodyPart.h"
+#include "base/globalsdef.h"
+
+USE_NAMESPACE
 
 BodyPart::BodyPart() {
     mimeType = "text/plain";

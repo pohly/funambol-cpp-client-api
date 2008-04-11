@@ -39,6 +39,9 @@
     #include "spds/DataTransformer.h"
 
     #define DT_DES "des"
+#include "base/globalsdef.h"
+
+BEGIN_NAMESPACE
 
     struct DESEncInfo {
         long size;
@@ -61,6 +64,9 @@
          */
         char* transform(char* data, TransformationInfo& info);
     };
+
+END_NAMESPACE
+
 /** @endcond */
  #endif
 

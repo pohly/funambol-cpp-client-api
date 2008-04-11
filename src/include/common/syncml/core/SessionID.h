@@ -39,6 +39,9 @@
 /** @cond DEV */
 
 #include "base/fscapi.h"
+#include "base/globalsdef.h"
+
+BEGIN_NAMESPACE
 
 
 class SessionID {
@@ -81,6 +84,9 @@ class SessionID {
     SessionID* clone();
 
 };
+
+
+END_NAMESPACE
 
 /** @endcond */
 #endif

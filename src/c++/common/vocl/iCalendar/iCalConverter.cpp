@@ -36,6 +36,9 @@
 
 #include "vocl/iCalendar/iCalConverter.h"
 #include "base/util/WString.h"
+#include "base/globalsdef.h"
+
+USE_NAMESPACE
 
 
 iCalConverter::iCalConverter() {

@@ -40,6 +40,9 @@
 
 #include "event/SyncItemEvent.h"
 #include "event/Listener.h"
+#include "base/globalsdef.h"
+
+BEGIN_NAMESPACE
 
 
 /*
@@ -70,6 +73,9 @@ public:
     // listen for the Item updated by Server Event
     virtual void itemUpdatedByClient(SyncItemEvent& event);
 };
+
+
+END_NAMESPACE
 
 /** @endcond */
 #endif

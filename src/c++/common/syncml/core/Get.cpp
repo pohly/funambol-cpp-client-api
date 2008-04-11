@@ -35,6 +35,9 @@
 
 
 #include "syncml/core/Get.h"
+#include "base/globalsdef.h"
+
+USE_NAMESPACE
 
 
 Get::Get() {

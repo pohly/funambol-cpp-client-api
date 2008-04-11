@@ -52,6 +52,9 @@ typedef exceptionList::iterator     exceptionsIterator;
 typedef list<WinRecipient>          recipientList;
 
 #define MAX_DAYLIGHT_PROPS          6      // Max 6 "DAYLIGHT" properties for infinite recurrences.
+#include "base/globalsdef.h"
+
+BEGIN_NAMESPACE
 
 
 /**
@@ -198,6 +201,9 @@ public:
      */
     long getCRC();
 };
+
+
+END_NAMESPACE
 
 /** @} */
 /** @endcond */

@@ -40,6 +40,9 @@
 
 #include "base/fscapi.h"
 #include "spds/AbstractSyncSourceConfig.h"
+#include "base/globalsdef.h"
+
+BEGIN_NAMESPACE
 
 /**
  * This class provides access to all attributes of the client and its
@@ -286,6 +289,9 @@ class AbstractSyncConfig {
     virtual const char*  getDevInfHash() const = 0;
     virtual void setDevInfHash(const char *hash) = 0;
 };
+
+
+END_NAMESPACE
 
 /** @} */
 /** @endcond */

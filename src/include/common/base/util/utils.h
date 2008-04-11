@@ -37,6 +37,7 @@
 #define INCL_BASE_UTILS
 /** @cond DEV */
 
+#include "base/globalsdef.h"
 #include "base/fscapi.h"
 #include "base/util/ArrayList.h"
 #include "base/md5.h"
@@ -50,6 +51,8 @@
 
 // the name of the repository
 #define CACHE_REP       "funambol_cache"
+
+BEGIN_NAMESPACE
 
 /*
  * Deletes the given char* [] buffer if it is not NULL
@@ -339,6 +342,8 @@ inline long calculateCRC(const char* s) {
     
     return calculateCRC(s, strlen(s));
 }
+
+END_NAMESPACE
 
 /** @endcond */
 #endif

@@ -41,6 +41,9 @@
 
 #include "base/util/utils.h"
 #include "syncml/core/StringElement.h"
+#include "base/globalsdef.h"
+
+USE_NAMESPACE
 
 StringElement::StringElement(const char* value) {
     this->value = NULL;

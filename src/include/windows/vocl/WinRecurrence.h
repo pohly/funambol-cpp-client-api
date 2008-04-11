@@ -42,6 +42,9 @@
 
 #include "base/timeUtils.h"
 #include "vocl/WinItem.h"
+#include "base/globalsdef.h"
+
+BEGIN_NAMESPACE
 
 
 /**
@@ -108,6 +111,9 @@ public:
     void setUseTimezone(bool val)      { useTimezone = val;  } 
 
 };
+
+
+END_NAMESPACE
 
 /** @} */
 /** @endcond */

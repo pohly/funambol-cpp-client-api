@@ -34,6 +34,9 @@
  */
 
 #include "examples/listeners/TestSyncStatusListener.h"
+#include "base/globalsdef.h"
+
+USE_NAMESPACE
 
 void TestSyncStatusListener::statusReceived(SyncStatusEvent &event) {
     printf("[SyncStatusEvent] Server %s with code %d for uri=%s (item key = %ls).\n\n", event.getCommand(), event.getStatusCode(), event.getSourceURI(), event.getItemKey());

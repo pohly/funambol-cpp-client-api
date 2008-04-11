@@ -48,6 +48,9 @@
 #include "spds/SyncStatus.h"
 #include "spds/AbstractSyncSourceConfig.h"
 #include "spds/SyncSourceReport.h"
+#include "base/globalsdef.h"
+
+BEGIN_NAMESPACE
 
 /**
  * This is the main API that a SyncML client developer needs to implement
@@ -400,6 +403,9 @@ public:
                
     
 };
+
+
+END_NAMESPACE
 
 /** @} */
 /** @endcond */

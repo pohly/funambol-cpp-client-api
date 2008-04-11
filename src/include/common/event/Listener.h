@@ -36,6 +36,9 @@
 
 #ifndef INCL_LISTENER
 #define INCL_LISTENER
+#include "base/globalsdef.h"
+
+BEGIN_NAMESPACE
 /** @cond DEV */
 
 
@@ -49,6 +52,9 @@ class Listener {
         // Constructor
         Listener();
 };
+
+
+END_NAMESPACE
 
 /** @endcond */
 #endif

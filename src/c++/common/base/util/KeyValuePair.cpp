@@ -36,6 +36,9 @@
 
 #include "base/util/utils.h"
 #include "base/util/KeyValuePair.h"
+#include "base/globalsdef.h"
+
+USE_NAMESPACE
 
 KeyValuePair::KeyValuePair(const char* key, const char* value) {
     k = (key  ) ? stringdup(key  ) : NULL;

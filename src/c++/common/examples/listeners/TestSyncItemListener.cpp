@@ -35,6 +35,9 @@
 
 
 #include "examples/listeners/TestSyncItemListener.h"
+#include "base/globalsdef.h"
+
+USE_NAMESPACE
 
 void TestSyncItemListener::itemAddedByServer(SyncItemEvent &event) {
     printf("[SyncItemEvent] Item %ls from sourceURI %s added by server, detected at %ld.\n\n",

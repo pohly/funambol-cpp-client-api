@@ -40,6 +40,9 @@
 
 #include "event/TransportEvent.h"
 #include "event/Listener.h"
+#include "base/globalsdef.h"
+
+BEGIN_NAMESPACE
 
 
 /*
@@ -68,6 +71,9 @@ public:
     // listen for the Receive Data End Event
     virtual void receiveDataEnd(TransportEvent& event);
 };
+
+
+END_NAMESPACE
 
 /** @endcond */
 #endif

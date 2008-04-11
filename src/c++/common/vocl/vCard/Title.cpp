@@ -36,6 +36,9 @@
 
 #include "base/fscapi.h"
 #include "vocl/vCard/Title.h"
+#include "base/globalsdef.h"
+
+USE_NAMESPACE
 
 
 Title::Title() : TypedProperty() {

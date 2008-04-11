@@ -40,6 +40,9 @@
 #include "event/BaseEvent.h"
 #include "event/constants.h"
 #include "base/util/utils.h"
+#include "base/globalsdef.h"
+
+BEGIN_NAMESPACE
 
 
 class SyncEvent : public BaseEvent {
@@ -62,6 +65,9 @@ public:
     const char* getMessage() const;
 
 };
+
+
+END_NAMESPACE
 
 /** @endcond */
 #endif

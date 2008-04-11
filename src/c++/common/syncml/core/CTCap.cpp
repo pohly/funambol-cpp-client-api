@@ -35,6 +35,9 @@
 
 
 #include "syncml/core/CTCap.h"
+#include "base/globalsdef.h"
+
+USE_NAMESPACE
 
 CTCap::~CTCap() {
 

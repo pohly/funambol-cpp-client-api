@@ -41,6 +41,9 @@
 #include "event/BaseEvent.h"
 #include "spds/SyncItem.h"
 #include "spds/constants.h"
+#include "base/globalsdef.h"
+
+BEGIN_NAMESPACE
 
 
 class SyncItemEvent : public BaseEvent {
@@ -72,6 +75,9 @@ public:
     const WCHAR* getItemKey() const;
 
 };
+
+
+END_NAMESPACE
 
 /** @endcond */
 #endif

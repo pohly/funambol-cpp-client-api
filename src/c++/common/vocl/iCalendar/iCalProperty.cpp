@@ -35,6 +35,9 @@
 
 #include "base/util/utils.h"
 #include "vocl/iCalendar/iCalProperty.h"
+#include "base/globalsdef.h"
+
+USE_NAMESPACE
 
 iCalProperty::iCalProperty (WCHAR* v) {
      altre         = NULL;

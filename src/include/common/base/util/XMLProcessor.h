@@ -43,6 +43,9 @@
 #include "base/util/ArrayList.h"
 
 #define DIM_TAG 32
+#include "base/globalsdef.h"
+
+BEGIN_NAMESPACE
 
 
 /*
@@ -204,6 +207,9 @@ public:
                                          bool escaped = false);
 
 };
+
+
+END_NAMESPACE
 
 /** @endcond */
 #endif

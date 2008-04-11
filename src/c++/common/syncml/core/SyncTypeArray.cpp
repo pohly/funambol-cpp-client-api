@@ -35,6 +35,9 @@
 
 
 #include "syncml/core/SyncTypeArray.h"
+#include "base/globalsdef.h"
+
+USE_NAMESPACE
 
 SyncTypeArray::SyncTypeArray(){
 

@@ -59,6 +59,9 @@
     // incoming stram from server. It is expressed in byte
     //
     #define DEFAULT_INTERNET_READ_BUFFER_SIZE  4096
+#include "base/globalsdef.h"
+
+BEGIN_NAMESPACE
 
     /*
      * This class is the transport agent responsible for messages exchange
@@ -184,6 +187,9 @@
         virtual char*  sendMessage(const char*  msg) = 0;
 
     };
+
+
+END_NAMESPACE
 
 /** @endcond */
 #endif

@@ -35,6 +35,9 @@
 
 
 #include "syncml/core/Copy.h"
+#include "base/globalsdef.h"
+
+USE_NAMESPACE
 
 
 Copy::Copy() {

@@ -41,6 +41,9 @@
 #include "base/fscapi.h"
 #include "syncml/core/DevInf.h"
 #include "syncml/core/Data.h"
+#include "base/globalsdef.h"
+
+BEGIN_NAMESPACE
 
 class DevInfData : public Data {
 
@@ -79,6 +82,9 @@ class DevInfData : public Data {
 
         DevInfData* clone();
 };
+
+
+END_NAMESPACE
 
 /** @endcond */
 #endif

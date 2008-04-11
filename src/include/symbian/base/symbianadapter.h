@@ -1,12 +1,6 @@
 #ifndef SYMBIANADAPTER_H_
 #define SYMBIANADAPTER_H_
 
-// We have a name clash as we define Mem and Symbian defines a Mem class too.
-// We do not use Symbian Mem class directly, therefore we play dirty and
-// rename symbian class into Symbian Mem. Clean solution would be to use
-// namespaces.
-#define Mem SymbianMem
-
 #include <e32def.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -14,9 +8,6 @@
 #include <string.h>
 #include <utf.h>
 #include <ctype.h>
-
-#undef Mem
-
 
 #define PLATFORM_VA_LIST    VA_LIST
 #define PLATFORM_VA_START   VA_START
@@ -65,3 +56,4 @@ typedef TInt32  int32_t;
 typedef TUint32 uint32_t;
 
 #endif /*SYMBIANADAPTER_H_*/
+

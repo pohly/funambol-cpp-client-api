@@ -34,6 +34,9 @@
  */
 
 #include "syncml/core/NextNonce.h"
+#include "base/globalsdef.h"
+
+USE_NAMESPACE
 
 NextNonce::NextNonce() {
     initialize();

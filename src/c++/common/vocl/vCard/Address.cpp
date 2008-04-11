@@ -36,6 +36,9 @@
 
 #include "base/fscapi.h"
 #include "vocl/vCard/Address.h"
+#include "base/globalsdef.h"
+
+USE_NAMESPACE
 
 
 Address::Address() {

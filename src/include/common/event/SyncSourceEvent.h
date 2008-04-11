@@ -40,6 +40,9 @@
 
 #include "event/BaseEvent.h"
 #include "event/constants.h"
+#include "base/globalsdef.h"
+
+BEGIN_NAMESPACE
 
 
 class SyncSourceEvent : public BaseEvent {
@@ -77,5 +80,8 @@ public:
     // get the data
     int getData();
 };
+
+END_NAMESPACE
+
 /** @endcond */
 #endif

@@ -45,6 +45,9 @@
 
 #include "http/GPRSConnection.h"
 #include "base/Log.h"
+#include "base/globalsdef.h"
+
+USE_NAMESPACE
 
 
 

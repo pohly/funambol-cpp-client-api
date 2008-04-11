@@ -35,5 +35,8 @@
 
 
 #include "base/util/ArrayElement.h"
+#include "base/globalsdef.h"
+
+USE_NAMESPACE
 
 ArrayElement::~ArrayElement() {}

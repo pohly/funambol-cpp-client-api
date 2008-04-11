@@ -40,6 +40,9 @@
 
 #include "event/SyncStatusEvent.h"
 #include "event/Listener.h"
+#include "base/globalsdef.h"
+
+BEGIN_NAMESPACE
 
 /*
 Set Listeners for each event in SyncStatusEvent
@@ -57,6 +60,9 @@ public:
     // listen for the Status Sending Event
     virtual void statusSending(SyncStatusEvent& event);
 };
+
+
+END_NAMESPACE
 
 /** @endcond */
 #endif

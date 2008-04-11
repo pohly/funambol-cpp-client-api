@@ -49,6 +49,9 @@
 
     /** default is to create this file in the current directory */
     #define LOG_NAME "synclog.txt"
+#include "base/globalsdef.h"
+
+BEGIN_NAMESPACE
 
     /**
      * valid parameters for setLevel()
@@ -190,6 +193,9 @@
     };
 
 # define LOG Log::instance()
+
+
+END_NAMESPACE
 
 /** @endcond */
 #endif

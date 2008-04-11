@@ -35,6 +35,9 @@
 
 
 #include "syncml/core/Mem.h"
+#include "base/globalsdef.h"
+
+USE_NAMESPACE
 
 Mem::Mem(bool sharedMem, long freeMem, long freeID) {
     this->freeMem = 0;

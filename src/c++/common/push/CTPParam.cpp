@@ -37,6 +37,9 @@
 #include "base/util/ArrayElement.h"
 
 #include "push/CTPParam.h"
+#include "base/globalsdef.h"
+
+USE_NAMESPACE
 
 CTPParam::CTPParam() {
     value = NULL;

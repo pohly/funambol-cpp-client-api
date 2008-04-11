@@ -41,6 +41,9 @@
 #include "spds/DeviceConfig.h"
 #include "spds/SyncSourceConfig.h"
 #include "spds/SyncManagerConfig.h"
+#include "base/globalsdef.h"
+
+BEGIN_NAMESPACE
 
 /**
  * This class is factory for other Config objects.
@@ -80,6 +83,9 @@ class DefaultConfigFactory {
          */
         static SyncSourceConfig* getSyncSourceConfig(const char*  name);
 };
+
+
+END_NAMESPACE
 
 /** @endcond */
 #endif

@@ -35,6 +35,9 @@
 
 
 #include "syncml/core/DevInfItem.h"
+#include "base/globalsdef.h"
+
+USE_NAMESPACE
 
 
 DevInfItem::DevInfItem() {

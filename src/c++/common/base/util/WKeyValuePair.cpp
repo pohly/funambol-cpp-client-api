@@ -36,6 +36,9 @@
 
 #include "base/util/utils.h"
 #include "base/util/WKeyValuePair.h"
+#include "base/globalsdef.h"
+
+USE_NAMESPACE
 
 WKeyValuePair::WKeyValuePair(const WCHAR* key, const WCHAR* value) {
     k = (key  ) ? wstrdup(key  ) : NULL;

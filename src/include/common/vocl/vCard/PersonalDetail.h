@@ -36,7 +36,7 @@
 
 //
 // @author Stefano Fornari @ Funambol
-// @version $Id: PersonalDetail.h,v 1.7 2008-04-08 07:14:53 marco_garatti Exp $
+// @version $Id: PersonalDetail.h,v 1.8 2008-04-11 08:17:13 marco_garatti Exp $
 //
 
 
@@ -47,6 +47,9 @@
 #include "vocl/vCard/Address.h"
 #include "vocl/vCard/ContactDetail.h"
 #include "vocl/vCard/vCardProperty.h"
+#include "base/globalsdef.h"
+
+BEGIN_NAMESPACE
 
 /**
  * An object containing the personal details of a contact
@@ -232,6 +235,9 @@ class PersonalDetail {
          */
         PersonalDetail* clone();
 };
+
+
+END_NAMESPACE
 
 /** @endcond */
 #endif

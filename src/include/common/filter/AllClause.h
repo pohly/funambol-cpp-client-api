@@ -38,6 +38,9 @@
 /** @cond DEV */
 
 #include "filter/Clause.h"
+#include "base/globalsdef.h"
+
+BEGIN_NAMESPACE
 
 class AllClause : public Clause {
 
@@ -61,6 +64,9 @@ public:
 
 };
 
+
+
+END_NAMESPACE
 
 /** @endcond */
 #endif

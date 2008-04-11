@@ -43,6 +43,9 @@
 #include "vocl/vCard/Address.h"
 #include "vocl/vCard/ContactDetail.h"
 #include "vocl/vCard/vCardProperty.h"
+#include "base/globalsdef.h"
+
+BEGIN_NAMESPACE
 
 typedef WCHAR* WSTRING;
 /**
@@ -229,6 +232,9 @@ class BusinessDetail {
         BusinessDetail* clone();
 
 };
+
+
+END_NAMESPACE
 
 /** @endcond */
 #endif

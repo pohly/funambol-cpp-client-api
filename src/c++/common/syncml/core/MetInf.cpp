@@ -35,6 +35,9 @@
 
 
 #include "syncml/core/MetInf.h"
+#include "base/globalsdef.h"
+
+USE_NAMESPACE
 
 MetInf::MetInf() {
      set(NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL,

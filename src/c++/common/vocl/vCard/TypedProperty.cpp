@@ -36,6 +36,9 @@
 
 #include "base/util/utils.h"
 #include "vocl/vCard/TypedProperty.h"
+#include "base/globalsdef.h"
+
+USE_NAMESPACE
 
 
 TypedProperty::TypedProperty() {

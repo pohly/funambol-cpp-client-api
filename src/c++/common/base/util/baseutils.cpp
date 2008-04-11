@@ -35,6 +35,9 @@
 
 #include "base/fscapi.h"
 #include "base/util/utils.h"
+#include "base/globalsdef.h"
+
+BEGIN_NAMESPACE
 
 /*
  * Deletes the given char[] buffer if it is not NULL
@@ -135,29 +138,29 @@ WCHAR* wcstoupper(const WCHAR *s)
  */
 const char *brfind(const char *s1, const char *s2, size_t len)
 {
-	const char *sc1, *sc2, *ps1;
+    const char *sc1, *sc2, *ps1;
 
     if (!s1)
         return NULL;
 
-	if (*s2 == '\0')
-		return s1;
+    if (*s2 == '\0')
+        return s1;
 
     if(len < strlen(s1)){
         ps1 = s1 + len;
     }
     else {
-	    ps1 = s1 + strlen(s1);
+        ps1 = s1 + strlen(s1);
     }
 
-	while(ps1 > s1) {
-		--ps1;
+    while(ps1 > s1) {
+        --ps1;
         for (sc1 = ps1, sc2 = s2; *sc1 != *sc2; sc1++, sc2++) {
-			if (*sc2 == '\0')
-				return (ps1);
+            if (*sc2 == '\0')
+                return (ps1);
         }
-	}
-	return NULL;
+    }
+    return NULL;
 }
 
 
@@ -304,3 +307,6 @@ size_t fgetsize(FILE *f)
     fseek(f, 0, SEEK_SET);
     return size;
 }
+
+END_NAMESPACE
+

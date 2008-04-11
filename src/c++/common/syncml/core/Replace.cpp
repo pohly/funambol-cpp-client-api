@@ -35,6 +35,9 @@
 
 
 #include "syncml/core/Replace.h"
+#include "base/globalsdef.h"
+
+USE_NAMESPACE
 
 Replace::Replace() {
     COMMAND_NAME = new char[strlen(REPLACE_COMMAND_NAME) + 1];

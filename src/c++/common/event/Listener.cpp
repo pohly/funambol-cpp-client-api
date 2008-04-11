@@ -35,6 +35,9 @@
 
 
 #include "event/Listener.h"
+#include "base/globalsdef.h"
+
+USE_NAMESPACE
 
 Listener::Listener() {
 

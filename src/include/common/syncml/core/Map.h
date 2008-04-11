@@ -43,6 +43,9 @@
 #include "syncml/core/ModificationCommand.h"
 
 #define MAP_COMMAND_NAME "Map"
+#include "base/globalsdef.h"
+
+BEGIN_NAMESPACE
 
 class Map : public AbstractCommand {
 
@@ -135,6 +138,9 @@ class Map : public AbstractCommand {
 
         ArrayElement* clone();
 };
+
+
+END_NAMESPACE
 
 /** @endcond */
 #endif

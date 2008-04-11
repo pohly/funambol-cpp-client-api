@@ -35,6 +35,9 @@
 
 
 #include "spds/ItemReport.h"
+#include "base/globalsdef.h"
+
+USE_NAMESPACE
 
 
 

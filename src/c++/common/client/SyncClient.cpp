@@ -41,6 +41,9 @@
 #include "syncml/core/CTTypeSupported.h"
 #include "syncml/core/CTCap.h"
 #include "syncml/core/CTPropParam.h"
+#include "base/globalsdef.h"
+
+USE_NAMESPACE
 
 //--------------------------------------------------- Constructor & Destructor
 SyncClient::SyncClient() {
