@@ -41,6 +41,10 @@
 
 BEGIN_NAMESPACE
 
+TInt symbianRunWrapper(TAny* thread);
+TInt symbianTimeoutWrapper(TAny* thread);
+
+
 class FThread {
 
 protected:

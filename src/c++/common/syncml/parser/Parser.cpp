@@ -33,11 +33,11 @@
  * the words "Powered by Funambol".
  */
 
-
+#include "syncml/core/Mem.h"
 #include "syncml/parser/Parser.h"
 #include "base/globalsdef.h"
 
-USE_NAMESPACE
+BEGIN_NAMESPACE
 
 SyncML* Parser::getSyncML(const char*xml) {
     SyncBody* syncBody = NULL;
@@ -2561,3 +2561,6 @@ ArrayList* Parser::getEMI(const char*content) {
     ArrayList* ret = NULL;
     return ret;
 }
+
+END_NAMESPACE
+

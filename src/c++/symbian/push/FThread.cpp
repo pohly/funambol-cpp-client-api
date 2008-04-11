@@ -35,15 +35,15 @@
 
 #include <e32std.h>
 
-static TInt symbianRunWrapper(TAny* thread);
-static TInt symbianTimeoutWrapper(TAny* thread);
 
 #include "base/fscapi.h"
 #include "push/FThread.h"
 #include "base/SymbianLog.h"
 #include "base/globalsdef.h"
 
+
 USE_NAMESPACE
+
 
 FThread::FThread() : terminate(false),
                      isRunning(false),
@@ -80,6 +80,8 @@ void FThread::wait() {
     User::WaitForRequest(stat);
 }
 
+TRequestStatus timerStat;
+
 bool FThread::wait(unsigned long timeout) {
     TRequestStatus stat;
     sthread.Logon(stat);
@@ -95,7 +97,7 @@ bool FThread::wait(unsigned long timeout) {
         if (err == KErrNone) {
             tthread.Resume();
         }
-        User::WaitForRequest(stat);
+        User::WaitForRequest(stat, timerStat);
     }
      
     if (this->timeout || timeout == 0) {
@@ -133,13 +135,18 @@ TInt FThread::startTimeout() {
     User::WaitForRequest(status);
     // If the thread is still running we must kill it
     if (isRunning) {
-        sthread.Kill(0);
+        // This will unlock the calling thread
+#if 0
+        User::RequestComplete(timerStat);
+#endif
     }
     timeout = 0;
     return 0;
 }
 
-static TInt symbianRunWrapper(TAny* thread) {
+BEGIN_NAMESPACE
+
+TInt symbianRunWrapper(TAny* thread) {
     
     // Install a new trap handler for the thread.
     CTrapCleanup* cleanupstack = CTrapCleanup::New();
@@ -157,10 +164,12 @@ static TInt symbianRunWrapper(TAny* thread) {
     return err;
 }
 
-static TInt symbianTimeoutWrapper(TAny* thread) {
+TInt symbianTimeoutWrapper(TAny* thread) {
 
     FThread* t = (FThread*)thread;
     t->startTimeout();
     return 0;
 }
+
+END_NAMESPACE
 
