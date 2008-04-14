@@ -245,7 +245,7 @@ WCHAR* toWideChar(const char *mb, const char *encoding)
 WCHAR *wcstok(WCHAR *s, const WCHAR *delim)
 {
     static WCHAR *state = 0;
-    return wcstok(s, delim, &state);
+    return ::wcstok(s, delim, &state);
 }
 #endif
 

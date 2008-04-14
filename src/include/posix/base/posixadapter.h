@@ -81,11 +81,16 @@
 #define WCHAR_PRINTF "s"
 #define TEXT(_x) L##_x
 
+#include "base/globalsdef.h"
+
+BEGIN_NAMESPACE
+
 // FIXME: remove this and adapt VOCL.
 WCHAR *wcstok(WCHAR *s, const WCHAR *delim);
 
 inline int _wtoi(const WCHAR *s) { return (int)wcstol(s, NULL, 10); }
 
+END_NAMESPACE
 
 #define _wcsicmp wcscasecmp
 #define wcsicmp wcscasecmp
@@ -120,7 +125,6 @@ inline int wcsicmp(const WCHAR * s1, const WCHAR * s2)
     // Should never happen
     return 0;
 }
-
 
 #   define _wcsicmp wcsicmp
 #endif
