@@ -25,7 +25,6 @@
 		7C9F52FC0DAF4CB1007E0091 /* WKeyValuePair.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C9F521E0DAF4CB1007E0091 /* WKeyValuePair.cpp */; };
 		7C9F52FD0DAF4CB1007E0091 /* WString.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C9F521F0DAF4CB1007E0091 /* WString.cpp */; };
 		7C9F52FE0DAF4CB1007E0091 /* XMLProcessor.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C9F52200DAF4CB1007E0091 /* XMLProcessor.cpp */; };
-		7C9F52FF0DAF4CB1007E0091 /* BriefcaseCacheSyncSource.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C9F52220DAF4CB1007E0091 /* BriefcaseCacheSyncSource.cpp */; };
 		7C9F53000DAF4CB1007E0091 /* DMTClientConfig.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C9F52230DAF4CB1007E0091 /* DMTClientConfig.cpp */; };
 		7C9F53020DAF4CB1007E0091 /* FileSyncSource.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C9F52250DAF4CB1007E0091 /* FileSyncSource.cpp */; };
 		7C9F53030DAF4CB1007E0091 /* MailSourceManagementNode.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C9F52260DAF4CB1007E0091 /* MailSourceManagementNode.cpp */; };
@@ -63,7 +62,6 @@
 		7C9F53350DAF4CB1007E0091 /* B64Decoder.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C9F52600DAF4CB1007E0091 /* B64Decoder.cpp */; };
 		7C9F53360DAF4CB1007E0091 /* B64Encoder.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C9F52610DAF4CB1007E0091 /* B64Encoder.cpp */; };
 		7C9F53370DAF4CB1007E0091 /* BodyPart.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C9F52620DAF4CB1007E0091 /* BodyPart.cpp */; };
-		7C9F53380DAF4CB1007E0091 /* CacheSyncSource.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C9F52630DAF4CB1007E0091 /* CacheSyncSource.cpp */; };
 		7C9F53390DAF4CB1007E0091 /* CredentialHandler.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C9F52640DAF4CB1007E0091 /* CredentialHandler.cpp */; };
 		7C9F533A0DAF4CB1007E0091 /* DataTransformer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C9F52650DAF4CB1007E0091 /* DataTransformer.cpp */; };
 		7C9F533B0DAF4CB1007E0091 /* DataTransformerFactory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C9F52660DAF4CB1007E0091 /* DataTransformerFactory.cpp */; };
@@ -212,7 +210,6 @@
 		7C9F54C70DAF4CC5007E0091 /* WKeyValuePair.h in Headers */ = {isa = PBXBuildFile; fileRef = 7C9F53D00DAF4CC5007E0091 /* WKeyValuePair.h */; };
 		7C9F54C80DAF4CC5007E0091 /* WString.h in Headers */ = {isa = PBXBuildFile; fileRef = 7C9F53D10DAF4CC5007E0091 /* WString.h */; };
 		7C9F54C90DAF4CC5007E0091 /* XMLProcessor.h in Headers */ = {isa = PBXBuildFile; fileRef = 7C9F53D20DAF4CC5007E0091 /* XMLProcessor.h */; };
-		7C9F54CA0DAF4CC5007E0091 /* BriefcaseCacheSyncSource.h in Headers */ = {isa = PBXBuildFile; fileRef = 7C9F53D40DAF4CC5007E0091 /* BriefcaseCacheSyncSource.h */; };
 		7C9F54CB0DAF4CC5007E0091 /* DMTClientConfig.h in Headers */ = {isa = PBXBuildFile; fileRef = 7C9F53D50DAF4CC5007E0091 /* DMTClientConfig.h */; };
 		7C9F54CC0DAF4CC5007E0091 /* FileClient.h in Headers */ = {isa = PBXBuildFile; fileRef = 7C9F53D60DAF4CC5007E0091 /* FileClient.h */; };
 		7C9F54CD0DAF4CC5007E0091 /* FileSyncSource.h in Headers */ = {isa = PBXBuildFile; fileRef = 7C9F53D70DAF4CC5007E0091 /* FileSyncSource.h */; };
@@ -275,7 +272,6 @@
 		7C9F55060DAF4CC5007E0091 /* B64Decoder.h in Headers */ = {isa = PBXBuildFile; fileRef = 7C9F54190DAF4CC5007E0091 /* B64Decoder.h */; };
 		7C9F55070DAF4CC5007E0091 /* B64Encoder.h in Headers */ = {isa = PBXBuildFile; fileRef = 7C9F541A0DAF4CC5007E0091 /* B64Encoder.h */; };
 		7C9F55080DAF4CC5007E0091 /* BodyPart.h in Headers */ = {isa = PBXBuildFile; fileRef = 7C9F541B0DAF4CC5007E0091 /* BodyPart.h */; };
-		7C9F55090DAF4CC5007E0091 /* CacheSyncSource.h in Headers */ = {isa = PBXBuildFile; fileRef = 7C9F541C0DAF4CC5007E0091 /* CacheSyncSource.h */; };
 		7C9F550A0DAF4CC5007E0091 /* constants.h in Headers */ = {isa = PBXBuildFile; fileRef = 7C9F541D0DAF4CC5007E0091 /* constants.h */; };
 		7C9F550B0DAF4CC5007E0091 /* CredentialHandler.h in Headers */ = {isa = PBXBuildFile; fileRef = 7C9F541E0DAF4CC5007E0091 /* CredentialHandler.h */; };
 		7C9F550C0DAF4CC5007E0091 /* DataTransformer.h in Headers */ = {isa = PBXBuildFile; fileRef = 7C9F541F0DAF4CC5007E0091 /* DataTransformer.h */; };
@@ -409,6 +405,8 @@
 		7C9F558C0DAF4CC5007E0091 /* FThread.h in Headers */ = {isa = PBXBuildFile; fileRef = 7C9F54AB0DAF4CC5007E0091 /* FThread.h */; };
 		7C9F558D0DAF4CC5007E0091 /* DeviceManagementNode.h in Headers */ = {isa = PBXBuildFile; fileRef = 7C9F54AD0DAF4CC5007E0091 /* DeviceManagementNode.h */; };
 		7C9F558E0DAF4CC5007E0091 /* migrateConfig.h in Headers */ = {isa = PBXBuildFile; fileRef = 7C9F54AE0DAF4CC5007E0091 /* migrateConfig.h */; };
+		7C9F58B70DAF62A4007E0091 /* CacheSyncSource.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C9F58B60DAF62A4007E0091 /* CacheSyncSource.cpp */; };
+		7C9F58B90DAF62AE007E0091 /* CacheSyncSource.h in Headers */ = {isa = PBXBuildFile; fileRef = 7C9F58B80DAF62AE007E0091 /* CacheSyncSource.h */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -430,7 +428,6 @@
 		7C9F521E0DAF4CB1007E0091 /* WKeyValuePair.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = WKeyValuePair.cpp; sourceTree = "<group>"; };
 		7C9F521F0DAF4CB1007E0091 /* WString.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = WString.cpp; sourceTree = "<group>"; };
 		7C9F52200DAF4CB1007E0091 /* XMLProcessor.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = XMLProcessor.cpp; sourceTree = "<group>"; };
-		7C9F52220DAF4CB1007E0091 /* BriefcaseCacheSyncSource.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = BriefcaseCacheSyncSource.cpp; sourceTree = "<group>"; };
 		7C9F52230DAF4CB1007E0091 /* DMTClientConfig.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DMTClientConfig.cpp; sourceTree = "<group>"; };
 		7C9F52250DAF4CB1007E0091 /* FileSyncSource.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = FileSyncSource.cpp; sourceTree = "<group>"; };
 		7C9F52260DAF4CB1007E0091 /* MailSourceManagementNode.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = MailSourceManagementNode.cpp; sourceTree = "<group>"; };
@@ -468,7 +465,6 @@
 		7C9F52600DAF4CB1007E0091 /* B64Decoder.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = B64Decoder.cpp; sourceTree = "<group>"; };
 		7C9F52610DAF4CB1007E0091 /* B64Encoder.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = B64Encoder.cpp; sourceTree = "<group>"; };
 		7C9F52620DAF4CB1007E0091 /* BodyPart.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = BodyPart.cpp; sourceTree = "<group>"; };
-		7C9F52630DAF4CB1007E0091 /* CacheSyncSource.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CacheSyncSource.cpp; sourceTree = "<group>"; };
 		7C9F52640DAF4CB1007E0091 /* CredentialHandler.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CredentialHandler.cpp; sourceTree = "<group>"; };
 		7C9F52650DAF4CB1007E0091 /* DataTransformer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DataTransformer.cpp; sourceTree = "<group>"; };
 		7C9F52660DAF4CB1007E0091 /* DataTransformerFactory.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DataTransformerFactory.cpp; sourceTree = "<group>"; };
@@ -617,7 +613,6 @@
 		7C9F53D00DAF4CC5007E0091 /* WKeyValuePair.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WKeyValuePair.h; sourceTree = "<group>"; };
 		7C9F53D10DAF4CC5007E0091 /* WString.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WString.h; sourceTree = "<group>"; };
 		7C9F53D20DAF4CC5007E0091 /* XMLProcessor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XMLProcessor.h; sourceTree = "<group>"; };
-		7C9F53D40DAF4CC5007E0091 /* BriefcaseCacheSyncSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BriefcaseCacheSyncSource.h; sourceTree = "<group>"; };
 		7C9F53D50DAF4CC5007E0091 /* DMTClientConfig.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DMTClientConfig.h; sourceTree = "<group>"; };
 		7C9F53D60DAF4CC5007E0091 /* FileClient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FileClient.h; sourceTree = "<group>"; };
 		7C9F53D70DAF4CC5007E0091 /* FileSyncSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FileSyncSource.h; sourceTree = "<group>"; };
@@ -681,7 +676,6 @@
 		7C9F54190DAF4CC5007E0091 /* B64Decoder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = B64Decoder.h; sourceTree = "<group>"; };
 		7C9F541A0DAF4CC5007E0091 /* B64Encoder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = B64Encoder.h; sourceTree = "<group>"; };
 		7C9F541B0DAF4CC5007E0091 /* BodyPart.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BodyPart.h; sourceTree = "<group>"; };
-		7C9F541C0DAF4CC5007E0091 /* CacheSyncSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CacheSyncSource.h; sourceTree = "<group>"; };
 		7C9F541D0DAF4CC5007E0091 /* constants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = constants.h; sourceTree = "<group>"; };
 		7C9F541E0DAF4CC5007E0091 /* CredentialHandler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CredentialHandler.h; sourceTree = "<group>"; };
 		7C9F541F0DAF4CC5007E0091 /* DataTransformer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DataTransformer.h; sourceTree = "<group>"; };
@@ -816,6 +810,9 @@
 		7C9F54AB0DAF4CC5007E0091 /* FThread.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FThread.h; sourceTree = "<group>"; };
 		7C9F54AD0DAF4CC5007E0091 /* DeviceManagementNode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DeviceManagementNode.h; sourceTree = "<group>"; };
 		7C9F54AE0DAF4CC5007E0091 /* migrateConfig.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = migrateConfig.h; sourceTree = "<group>"; };
+		7C9F58B60DAF62A4007E0091 /* CacheSyncSource.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CacheSyncSource.cpp; sourceTree = "<group>"; };
+		7C9F58B80DAF62AE007E0091 /* CacheSyncSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CacheSyncSource.h; sourceTree = "<group>"; };
+		7C9F58CE0DAF639E007E0091 /* globalsdef.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = globalsdef.h; sourceTree = "<group>"; };
 		D2AAC046055464E500DB518D /* libfunambol.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libfunambol.a; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -894,7 +891,7 @@
 		7C9F52210DAF4CB1007E0091 /* client */ = {
 			isa = PBXGroup;
 			children = (
-				7C9F52220DAF4CB1007E0091 /* BriefcaseCacheSyncSource.cpp */,
+				7C9F58B60DAF62A4007E0091 /* CacheSyncSource.cpp */,
 				7C9F52230DAF4CB1007E0091 /* DMTClientConfig.cpp */,
 				7C9F52250DAF4CB1007E0091 /* FileSyncSource.cpp */,
 				7C9F52260DAF4CB1007E0091 /* MailSourceManagementNode.cpp */,
@@ -972,7 +969,6 @@
 				7C9F52600DAF4CB1007E0091 /* B64Decoder.cpp */,
 				7C9F52610DAF4CB1007E0091 /* B64Encoder.cpp */,
 				7C9F52620DAF4CB1007E0091 /* BodyPart.cpp */,
-				7C9F52630DAF4CB1007E0091 /* CacheSyncSource.cpp */,
 				7C9F52640DAF4CB1007E0091 /* CredentialHandler.cpp */,
 				7C9F52650DAF4CB1007E0091 /* DataTransformer.cpp */,
 				7C9F52660DAF4CB1007E0091 /* DataTransformerFactory.cpp */,
@@ -1190,6 +1186,7 @@
 		7C9F53B60DAF4CC5007E0091 /* base */ = {
 			isa = PBXGroup;
 			children = (
+				7C9F58CE0DAF639E007E0091 /* globalsdef.h */,
 				7C9F53B70DAF4CC5007E0091 /* base64.h */,
 				7C9F53B80DAF4CC5007E0091 /* constants.h */,
 				7C9F53B90DAF4CC5007E0091 /* debug.h */,
@@ -1233,7 +1230,7 @@
 		7C9F53D30DAF4CC5007E0091 /* client */ = {
 			isa = PBXGroup;
 			children = (
-				7C9F53D40DAF4CC5007E0091 /* BriefcaseCacheSyncSource.h */,
+				7C9F58B80DAF62AE007E0091 /* CacheSyncSource.h */,
 				7C9F53D50DAF4CC5007E0091 /* DMTClientConfig.h */,
 				7C9F53D60DAF4CC5007E0091 /* FileClient.h */,
 				7C9F53D70DAF4CC5007E0091 /* FileSyncSource.h */,
@@ -1361,7 +1358,6 @@
 				7C9F54190DAF4CC5007E0091 /* B64Decoder.h */,
 				7C9F541A0DAF4CC5007E0091 /* B64Encoder.h */,
 				7C9F541B0DAF4CC5007E0091 /* BodyPart.h */,
-				7C9F541C0DAF4CC5007E0091 /* CacheSyncSource.h */,
 				7C9F541D0DAF4CC5007E0091 /* constants.h */,
 				7C9F541E0DAF4CC5007E0091 /* CredentialHandler.h */,
 				7C9F541F0DAF4CC5007E0091 /* DataTransformer.h */,
@@ -1704,7 +1700,6 @@
 				7C9F54C70DAF4CC5007E0091 /* WKeyValuePair.h in Headers */,
 				7C9F54C80DAF4CC5007E0091 /* WString.h in Headers */,
 				7C9F54C90DAF4CC5007E0091 /* XMLProcessor.h in Headers */,
-				7C9F54CA0DAF4CC5007E0091 /* BriefcaseCacheSyncSource.h in Headers */,
 				7C9F54CB0DAF4CC5007E0091 /* DMTClientConfig.h in Headers */,
 				7C9F54CC0DAF4CC5007E0091 /* FileClient.h in Headers */,
 				7C9F54CD0DAF4CC5007E0091 /* FileSyncSource.h in Headers */,
@@ -1767,7 +1762,6 @@
 				7C9F55060DAF4CC5007E0091 /* B64Decoder.h in Headers */,
 				7C9F55070DAF4CC5007E0091 /* B64Encoder.h in Headers */,
 				7C9F55080DAF4CC5007E0091 /* BodyPart.h in Headers */,
-				7C9F55090DAF4CC5007E0091 /* CacheSyncSource.h in Headers */,
 				7C9F550A0DAF4CC5007E0091 /* constants.h in Headers */,
 				7C9F550B0DAF4CC5007E0091 /* CredentialHandler.h in Headers */,
 				7C9F550C0DAF4CC5007E0091 /* DataTransformer.h in Headers */,
@@ -1901,6 +1895,7 @@
 				7C9F558C0DAF4CC5007E0091 /* FThread.h in Headers */,
 				7C9F558D0DAF4CC5007E0091 /* DeviceManagementNode.h in Headers */,
 				7C9F558E0DAF4CC5007E0091 /* migrateConfig.h in Headers */,
+				7C9F58B90DAF62AE007E0091 /* CacheSyncSource.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1964,7 +1959,6 @@
 				7C9F52FC0DAF4CB1007E0091 /* WKeyValuePair.cpp in Sources */,
 				7C9F52FD0DAF4CB1007E0091 /* WString.cpp in Sources */,
 				7C9F52FE0DAF4CB1007E0091 /* XMLProcessor.cpp in Sources */,
-				7C9F52FF0DAF4CB1007E0091 /* BriefcaseCacheSyncSource.cpp in Sources */,
 				7C9F53000DAF4CB1007E0091 /* DMTClientConfig.cpp in Sources */,
 				7C9F53020DAF4CB1007E0091 /* FileSyncSource.cpp in Sources */,
 				7C9F53030DAF4CB1007E0091 /* MailSourceManagementNode.cpp in Sources */,
@@ -2002,7 +1996,6 @@
 				7C9F53350DAF4CB1007E0091 /* B64Decoder.cpp in Sources */,
 				7C9F53360DAF4CB1007E0091 /* B64Encoder.cpp in Sources */,
 				7C9F53370DAF4CB1007E0091 /* BodyPart.cpp in Sources */,
-				7C9F53380DAF4CB1007E0091 /* CacheSyncSource.cpp in Sources */,
 				7C9F53390DAF4CB1007E0091 /* CredentialHandler.cpp in Sources */,
 				7C9F533A0DAF4CB1007E0091 /* DataTransformer.cpp in Sources */,
 				7C9F533B0DAF4CB1007E0091 /* DataTransformerFactory.cpp in Sources */,
@@ -2124,6 +2117,7 @@
 				7C9F53B20DAF4CB1007E0091 /* DMTreeFactory.cpp in Sources */,
 				7C9F53B30DAF4CB1007E0091 /* DESDecoder.cpp in Sources */,
 				7C9F53B40DAF4CB1007E0091 /* DESEncoder.cpp in Sources */,
+				7C9F58B70DAF62A4007E0091 /* CacheSyncSource.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2165,6 +2159,8 @@
 				GCC_C_LANGUAGE_STANDARD = c99;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PREPROCESSOR_DEFINITIONS = (
+					USE_WCHAR,
+					ENABLE_NAMESPACE,
 					MAC,
 					POSIX,
 				);
@@ -2189,6 +2185,8 @@
 				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
 				GCC_C_LANGUAGE_STANDARD = c99;
 				GCC_PREPROCESSOR_DEFINITIONS = (
+					USE_WCHAR,
+					ENABLE_NAMESPACE,
 					MAC,
 					POSIX,
 				);
@@ -2213,6 +2211,8 @@
 				GCC_C_LANGUAGE_STANDARD = c99;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PREPROCESSOR_DEFINITIONS = (
+					USE_WCHAR,
+					ENABLE_NAMESPACE,
 					MAC,
 					POSIX,
 				);
@@ -2237,6 +2237,8 @@
 				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
 				GCC_C_LANGUAGE_STANDARD = c99;
 				GCC_PREPROCESSOR_DEFINITIONS = (
+					USE_WCHAR,
+					ENABLE_NAMESPACE,
 					MAC,
 					POSIX,
 				);

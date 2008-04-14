@@ -54,6 +54,8 @@
 #include "base/util/KeyValueStore.h"
 #include "base/util/KeyValuePair.h"
 
+BEGIN_NAMESPACE
+
 #define CACHE_FILE_NAME     "cache_items.dat"
 
 /**
@@ -371,6 +373,8 @@ public:
    
    
 };
+
+END_NAMESPACE
 
 /** @} */
 /** @endcond */

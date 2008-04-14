@@ -159,7 +159,7 @@ bool removeFileInDir(const char* d, const char* fname) {
     int numFiles = 0;
 
     if (fname) {
-        sprintf(toFind, TEXT("%s/%s"), d, fname);    
+        sprintf(toFind, "%s/%s", d, fname);    
         if (remove(toFind) != 0) { LOG.error("Error deleting the %s file", toFind); ret = true;}
         else { LOG.debug("File %s deleted succesfully", toFind); }	
     }

@@ -42,7 +42,7 @@
 #define INCL_TEST_H
 /** @cond DEV */
 
-#ifdef POSIX
+#ifdef HAVE_CONFIG_H
 # include <config.h>
 #endif
 
