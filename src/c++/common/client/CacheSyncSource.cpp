@@ -43,6 +43,8 @@
 #include "base/util/PropertyFile.h"
 #include "base/util/ArrayListEnumeration.h"
 
+BEGIN_NAMESPACE
+
 CacheSyncSource::CacheSyncSource(const WCHAR* sourceName, AbstractSyncSourceConfig *sc, KeyValueStore* cache) :
                     SyncSource(sourceName, sc) {
    
@@ -422,3 +424,5 @@ int CacheSyncSource::deleteItem(SyncItem& item) {
     
     return ret;
 } 
+
+END_NAMESPACE
