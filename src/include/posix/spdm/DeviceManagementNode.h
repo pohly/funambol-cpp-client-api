@@ -90,12 +90,13 @@ protected:
 
     // copy content of "lines" to or from file
     void update(bool read);
+    
+    int strnicmp( const char *a, const char *b, int len );
 
-    private:
+private:
     static StringBuffer configPath;
     static StringBuffer configFile;
     void lookupDir();
-    int strnicmp( const char *a, const char *b, int len );
 
     public:
 
