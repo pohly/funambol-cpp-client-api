@@ -86,6 +86,7 @@ class ManagementNode : public ArrayElement {
          *
          */
         ManagementNode(const char*  parent, const char*  name);
+
         /*
          * Constructor.
          *
@@ -120,12 +121,12 @@ class ManagementNode : public ArrayElement {
          *
          * @param child - the ManagementNode to add
          */
-		virtual void addChild(ManagementNode &child);
+        virtual void addChild(ManagementNode &child);
 
         /*
          * Returns how many children belong to this node (how many have been added)
          */
-		virtual int getChildrenCount();
+        virtual int getChildrenCount();
 
         /*
          * Returns the full node name in a newly allocated buffer,
@@ -143,7 +144,7 @@ class ManagementNode : public ArrayElement {
 
         /*
          * Find how many children are defined for this node in the underlying
-		 * config system.
+         * config system.
          */
         virtual int getChildrenMaxCount() = 0;
 
