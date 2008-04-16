@@ -60,78 +60,82 @@
 USE_NAMESPACE
 
 /** utility function to iterate over different kinds of items in a sync source */
-static int countAnyItems(
+static std::list<std::string> listAnyItems(
     SyncSource *source,
     SyncItem * (SyncSource::*first)(),
     SyncItem * (SyncSource::*next)() )
 {
     SyncItem *item;
-    int count = 0;
+    std::list<std::string> res;
 
     CPPUNIT_ASSERT(source);
     CPPUNIT_ASSERT(!source->getReport() || source->getReport()->getState() != SOURCE_ERROR);
     SOURCE_ASSERT_NO_FAILURE(source, item = (source->*first)());
     while ( item ) {
-        count++;
+        const char *key = item->getKey();
+        SOURCE_ASSERT(source, key);
+        SOURCE_ASSERT(source, key[0]);
+        res.push_back(key);
         delete item;
         SOURCE_ASSERT_NO_FAILURE(source, item = (source->*next)());
     }
 
-    return count;
+    return res;
 }
 
-static int countNewItems( SyncSource *source )
+static std::list<std::string> listNewItems( SyncSource *source )
 {
-    int res = countAnyItems(
+    std::list<std::string> res = listAnyItems(
         source,
         &SyncSource::getFirstNewItem,
         &SyncSource::getNextNewItem );
     return res;
 }
 
-static int countUpdatedItems( SyncSource *source )
+static std::list<std::string> listUpdatedItems( SyncSource *source )
 {
-    int res = countAnyItems(
+    std::list<std::string> res = listAnyItems(
         source,
         &SyncSource::getFirstUpdatedItem,
         &SyncSource::getNextUpdatedItem );
     return res;
 }
 
-static int countDeletedItems( SyncSource *source )
+static std::list<std::string> listDeletedItems( SyncSource *source )
 {
-    int res = countAnyItems(
+    std::list<std::string> res = listAnyItems(
         source,
         &SyncSource::getFirstDeletedItem,
         &SyncSource::getNextDeletedItem );
     return res;
 }
 
-static int countItems( SyncSource *source )
+static std::list<std::string> listItems( SyncSource *source )
 {
-    int res = countAnyItems(
+    std::list<std::string> res = listAnyItems(
         source,
         &SyncSource::getFirstItem,
         &SyncSource::getNextItem );
     return res;
 }
 
-int countItemsOfType(SyncSource *source, itemType type)
+
+std::list<std::string> listItemsOfType(SyncSource *source, itemType type)
 {
-    int res = 0;
+    std::list<std::string> res;
     
     switch(type) {
      case NEW_ITEMS:
-        res = countNewItems(source);
+        res = listNewItems(source);
         break;
      case UPDATED_ITEMS:
-        res = countUpdatedItems(source);
+        res = listUpdatedItems(source);
         break;
      case DELETED_ITEMS:
-        res = countDeletedItems(source);
+        res = listDeletedItems(source);
         break;
      case TOTAL_ITEMS:
-        res = countItems(source);
+        res = listItems(source);
         break;
      default:
         CPPUNIT_ASSERT(false);
@@ -139,6 +143,13 @@ int countItemsOfType(SyncSource *source, itemType type)
     }
     return res;
 }
+
+static int countNewItems( SyncSource *source ) { return listNewItems(source).size(); }
+static int countUpdatedItems( SyncSource *source ) { return listUpdatedItems(source).size(); }
+static int countDeletedItems( SyncSource *source ) { return listDeletedItems(source).size(); }
+static int countItems( SyncSource *source ) { return listItems(source).size(); }
+int countItemsOfType(SyncSource *source, itemType type) { return listItemsOfType(source, type).size(); }
+
 
 static void importItem(SyncSource *source, std::string &data)
 {
@@ -185,18 +196,18 @@ void LocalTests::addTests() {
                 config.uniqueProperties) {
                 ADD_TEST(LocalTests, testManyChanges);
             }
+
+            if (config.parentItem &&
+                config.childItem) {
+                ADD_TEST(LocalTests, testLinkedItems);
+            }
         }
     }
 }
 
-/**
- * opens source and inserts the given item; can be called
- * regardless whether the data source already contains items or not
- *
- * The type of the item is unset; it is assumed that the source
- * can handle that.
- */
-void LocalTests::insert(CreateSource createSource, const char *data) {
+std::string LocalTests::insert(CreateSource createSource, const char *data) {
+    std::string uid;
+
     // create source
     std::auto_ptr<SyncSource> source(createSource());
     CPPUNIT_ASSERT(source.get() != 0);
@@ -211,6 +222,7 @@ void LocalTests::insert(CreateSource createSource, const char *data) {
     SOURCE_ASSERT_NO_FAILURE(source.get(), status = source->addItem(item));
     CPPUNIT_ASSERT(item.getKey() != 0);
     CPPUNIT_ASSERT(wcslen(item.getKey()) > 0);
+    uid = item.getKey();
     SOURCE_ASSERT(source.get(), source->endSync() == 0);
 
     // delete source again
@@ -241,7 +253,36 @@ void LocalTests::insert(CreateSource createSource, const char *data) {
     CPPUNIT_ASSERT(!strcmp( sameItem->getKey(), item.getKey()));
     delete sameItem;
 #endif
+
+    return uid;
 }
+
+/** deletes specific item locally via sync source */
+static std::string updateItem(CreateSource createSource, const std::string &uid, const char *data) {
+    std::string newuid;
+
+    CPPUNIT_ASSERT(createSource.createSource);
+
+    // create source
+    std::auto_ptr<SyncSource> source(createSource());
+    CPPUNIT_ASSERT(source.get() != 0);
+    SOURCE_ASSERT(source.get(), source->beginSync() == 0);
+
+    // insert item
+    SyncItem item;
+    item.setKey(uid.c_str());
+    item.setData(data, (long)strlen(data) + 1);
+    item.setDataType(TEXT(""));
+    SOURCE_ASSERT_EQUAL(source.get(), (int)STC_OK, source->updateItem(item));
+    SOURCE_ASSERT(source.get(), item.getKey());
+    newuid = item.getKey();
+
+    SOURCE_ASSERT(source.get(), source->endSync() == 0);
+    CPPUNIT_ASSERT_NO_THROW(source.reset());
+
+    return newuid;
+}
+
 
 /**
  * assumes that exactly one element is currently inserted and updates it with the given item
@@ -316,6 +357,24 @@ void LocalTests::deleteAll(CreateSource createSource) {
     CPPUNIT_ASSERT_EQUAL( 0, countUpdatedItems(source.get()) );
     CPPUNIT_ASSERT_EQUAL( 0, countDeletedItems(source.get()) );
     SOURCE_ASSERT_EQUAL(source.get(), 0, source->endSync());
+    CPPUNIT_ASSERT_NO_THROW(source.reset());
+}
+
+/** deletes specific item locally via sync source */
+static void deleteItem(CreateSource createSource, const std::string &uid) {
+    CPPUNIT_ASSERT(createSource.createSource);
+
+    // create source
+    std::auto_ptr<SyncSource> source(createSource());
+    CPPUNIT_ASSERT(source.get() != 0);
+    SOURCE_ASSERT(source.get(), source->beginSync() == 0);
+
+    // delete item
+    SyncItem item;
+    item.setKey(uid.c_str());
+    SOURCE_ASSERT_EQUAL(source.get(), (int)STC_OK, source->deleteItem(item));
+
+    SOURCE_ASSERT(source.get(), source->endSync() == 0);
     CPPUNIT_ASSERT_NO_THROW(source.reset());
 }
 
@@ -730,6 +789,491 @@ void LocalTests::testManyChanges() {
     SOURCE_ASSERT_EQUAL(copy.get(), 0, copy->endSync());
     CPPUNIT_ASSERT_NO_THROW(copy.reset());
 }
+
+template<class T, class V> int countEqual(const T &container,
+                                          const V &value) {
+    return count(container.begin(),
+                 container.end(),
+                 value);
+}
+
+// test inserting, removing and updating of parent + child item in
+// various order plus change tracking
+void LocalTests::testLinkedItems() {
+    // check additional requirements
+    CPPUNIT_ASSERT(config.parentItem);
+    CPPUNIT_ASSERT(config.childItem);
+
+    deleteAll(createSourceA);
+    std::string parent, child;
+    std::auto_ptr<SyncSource> copy;
+
+    // check that everything is empty, also resets change counter of sync source B
+    SOURCE_ASSERT_NO_FAILURE(copy.get(), copy.reset(createSourceB()));
+    SOURCE_ASSERT_EQUAL(copy.get(), 0, copy->beginSync());
+    SOURCE_ASSERT_EQUAL(copy.get(), 0, countItems(copy.get()));
+    SOURCE_ASSERT_EQUAL(copy.get(), 0, copy->endSync());
+    CPPUNIT_ASSERT_NO_THROW(copy.reset());
+
+    // now insert main item
+    parent = insert(createSourceA, config.parentItem);
+
+    // check that exactly the parent is listed as new
+    SOURCE_ASSERT_NO_FAILURE(copy.get(), copy.reset(createSourceB()));
+    SOURCE_ASSERT_EQUAL(copy.get(), 0, copy->beginSync());
+    SOURCE_ASSERT_EQUAL(copy.get(), 1, countItems(copy.get()));
+    SOURCE_ASSERT_EQUAL(copy.get(), 1, countNewItems(copy.get()));
+    SOURCE_ASSERT_EQUAL(copy.get(), 0, countUpdatedItems(copy.get()));
+    SOURCE_ASSERT_EQUAL(copy.get(), 0, countDeletedItems(copy.get()));
+    SOURCE_ASSERT_EQUAL(copy.get(), 1, countEqual(listItems(copy.get()), parent));
+    SOURCE_ASSERT_EQUAL(copy.get(), 0, copy->endSync());
+    CPPUNIT_ASSERT_NO_THROW(copy.reset());
+
+    // delete all items
+    deleteAll(createSourceA);
+
+    // verify again
+    SOURCE_ASSERT_NO_FAILURE(copy.get(), copy.reset(createSourceB()));
+    SOURCE_ASSERT_EQUAL(copy.get(), 0, copy->beginSync());
+    SOURCE_ASSERT_EQUAL(copy.get(), 0, countItems(copy.get()));
+    SOURCE_ASSERT_EQUAL(copy.get(), 0, countNewItems(copy.get()));
+    SOURCE_ASSERT_EQUAL(copy.get(), 0, countUpdatedItems(copy.get()));
+    SOURCE_ASSERT_EQUAL(copy.get(), 1, countDeletedItems(copy.get()));
+    SOURCE_ASSERT_EQUAL(copy.get(), 1, countEqual(listDeletedItems(copy.get()), parent));
+    SOURCE_ASSERT_EQUAL(copy.get(), 0, copy->endSync());
+    CPPUNIT_ASSERT_NO_THROW(copy.reset());
+
+    // same as above for child item
+    child = insert(createSourceA, config.childItem);
+
+    SOURCE_ASSERT_NO_FAILURE(copy.get(), copy.reset(createSourceB()));
+    SOURCE_ASSERT_EQUAL(copy.get(), 0, copy->beginSync());
+    SOURCE_ASSERT_EQUAL(copy.get(), 1, countItems(copy.get()));
+    SOURCE_ASSERT_EQUAL(copy.get(), 1, countNewItems(copy.get()));
+    SOURCE_ASSERT_EQUAL(copy.get(), 0, countUpdatedItems(copy.get()));
+    SOURCE_ASSERT_EQUAL(copy.get(), 0, countDeletedItems(copy.get()));
+    SOURCE_ASSERT_EQUAL(copy.get(), 1, countEqual(listItems(copy.get()), child));
+    SOURCE_ASSERT_EQUAL(copy.get(), 0, copy->endSync());
+    CPPUNIT_ASSERT_NO_THROW(copy.reset());
+
+    deleteAll(createSourceA);
+
+    SOURCE_ASSERT_NO_FAILURE(copy.get(), copy.reset(createSourceB()));
+    SOURCE_ASSERT_EQUAL(copy.get(), 0, copy->beginSync());
+    SOURCE_ASSERT_EQUAL(copy.get(), 0, countItems(copy.get()));
+    SOURCE_ASSERT_EQUAL(copy.get(), 0, countNewItems(copy.get()));
+    SOURCE_ASSERT_EQUAL(copy.get(), 0, countUpdatedItems(copy.get()));
+    SOURCE_ASSERT_EQUAL(copy.get(), 1, countDeletedItems(copy.get()));
+    SOURCE_ASSERT_EQUAL(copy.get(), 1, countEqual(listDeletedItems(copy.get()), child));
+    SOURCE_ASSERT_EQUAL(copy.get(), 0, copy->endSync());
+    CPPUNIT_ASSERT_NO_THROW(copy.reset());
+
+    // insert parent first, then child
+    parent = insert(createSourceA, config.parentItem);
+    child = insert(createSourceA, config.childItem);
+
+    SOURCE_ASSERT_NO_FAILURE(copy.get(), copy.reset(createSourceB()));
+    SOURCE_ASSERT_EQUAL(copy.get(), 0, copy->beginSync());
+    SOURCE_ASSERT_EQUAL(copy.get(), 2, countItems(copy.get()));
+    SOURCE_ASSERT_EQUAL(copy.get(), 2, countNewItems(copy.get()));
+    SOURCE_ASSERT_EQUAL(copy.get(), 0, countUpdatedItems(copy.get()));
+    SOURCE_ASSERT_EQUAL(copy.get(), 0, countDeletedItems(copy.get()));
+    SOURCE_ASSERT_EQUAL(copy.get(), 1, countEqual(listItems(copy.get()), child));
+    SOURCE_ASSERT_EQUAL(copy.get(), 1, countEqual(listItems(copy.get()), parent));
+    SOURCE_ASSERT_EQUAL(copy.get(), 0, copy->endSync());
+    CPPUNIT_ASSERT_NO_THROW(copy.reset());
+
+    deleteAll(createSourceA);
+
+    SOURCE_ASSERT_NO_FAILURE(copy.get(), copy.reset(createSourceB()));
+    SOURCE_ASSERT_EQUAL(copy.get(), 0, copy->beginSync());
+    SOURCE_ASSERT_EQUAL(copy.get(), 0, countItems(copy.get()));
+    SOURCE_ASSERT_EQUAL(copy.get(), 0, countNewItems(copy.get()));
+    SOURCE_ASSERT_EQUAL(copy.get(), 0, countUpdatedItems(copy.get()));
+    SOURCE_ASSERT_EQUAL(copy.get(), 2, countDeletedItems(copy.get()));
+    SOURCE_ASSERT_EQUAL(copy.get(), 1, countEqual(listDeletedItems(copy.get()), child));
+    SOURCE_ASSERT_EQUAL(copy.get(), 1, countEqual(listDeletedItems(copy.get()), parent));
+    SOURCE_ASSERT_EQUAL(copy.get(), 0, copy->endSync());
+    CPPUNIT_ASSERT_NO_THROW(copy.reset());
+
+    // insert child first, then parent
+    child = insert(createSourceA, config.childItem);
+    parent = insert(createSourceA, config.parentItem);
+
+    SOURCE_ASSERT_NO_FAILURE(copy.get(), copy.reset(createSourceB()));
+    SOURCE_ASSERT_EQUAL(copy.get(), 0, copy->beginSync());
+    SOURCE_ASSERT_EQUAL(copy.get(), 2, countItems(copy.get()));
+    SOURCE_ASSERT_EQUAL(copy.get(), 2, countNewItems(copy.get()));
+    SOURCE_ASSERT_EQUAL(copy.get(), 0, countUpdatedItems(copy.get()));
+    SOURCE_ASSERT_EQUAL(copy.get(), 0, countDeletedItems(copy.get()));
+    SOURCE_ASSERT_EQUAL(copy.get(), 1, countEqual(listItems(copy.get()), child));
+    SOURCE_ASSERT_EQUAL(copy.get(), 1, countEqual(listItems(copy.get()), parent));
+    SOURCE_ASSERT_EQUAL(copy.get(), 0, copy->endSync());
+    CPPUNIT_ASSERT_NO_THROW(copy.reset());
+
+    deleteAll(createSourceA);
+
+    SOURCE_ASSERT_NO_FAILURE(copy.get(), copy.reset(createSourceB()));
+    SOURCE_ASSERT_EQUAL(copy.get(), 0, copy->beginSync());
+    SOURCE_ASSERT_EQUAL(copy.get(), 0, countItems(copy.get()));
+    SOURCE_ASSERT_EQUAL(copy.get(), 0, countNewItems(copy.get()));
+    SOURCE_ASSERT_EQUAL(copy.get(), 0, countUpdatedItems(copy.get()));
+    SOURCE_ASSERT_EQUAL(copy.get(), 2, countDeletedItems(copy.get()));
+    SOURCE_ASSERT_EQUAL(copy.get(), 1, countEqual(listDeletedItems(copy.get()), child));
+    SOURCE_ASSERT_EQUAL(copy.get(), 1, countEqual(listDeletedItems(copy.get()), parent));
+    SOURCE_ASSERT_EQUAL(copy.get(), 0, copy->endSync());
+    CPPUNIT_ASSERT_NO_THROW(copy.reset());
+
+    // insert child first, check changes, then insert then parent
+    child = insert(createSourceA, config.childItem);
+
+    SOURCE_ASSERT_NO_FAILURE(copy.get(), copy.reset(createSourceB()));
+    SOURCE_ASSERT_EQUAL(copy.get(), 0, copy->beginSync());
+    SOURCE_ASSERT_EQUAL(copy.get(), 1, countItems(copy.get()));
+    SOURCE_ASSERT_EQUAL(copy.get(), 1, countNewItems(copy.get()));
+    SOURCE_ASSERT_EQUAL(copy.get(), 0, countUpdatedItems(copy.get()));
+    SOURCE_ASSERT_EQUAL(copy.get(), 0, countDeletedItems(copy.get()));
+    SOURCE_ASSERT_EQUAL(copy.get(), 1, countEqual(listItems(copy.get()), child));
+    SOURCE_ASSERT_EQUAL(copy.get(), 0, copy->endSync());
+    CPPUNIT_ASSERT_NO_THROW(copy.reset());
+
+    parent = insert(createSourceA, config.parentItem);
+
+    SOURCE_ASSERT_NO_FAILURE(copy.get(), copy.reset(createSourceB()));
+    SOURCE_ASSERT_EQUAL(copy.get(), 0, copy->beginSync());
+    SOURCE_ASSERT_EQUAL(copy.get(), 2, countItems(copy.get()));
+    SOURCE_ASSERT_EQUAL(copy.get(), 1, countNewItems(copy.get()));
+    SOURCE_ASSERT_EQUAL(copy.get(), 1, countEqual(listNewItems(copy.get()), parent));
+    SOURCE_ASSERT_EQUAL(copy.get(), 0, countUpdatedItems(copy.get()));
+    SOURCE_ASSERT_EQUAL(copy.get(), 0, countDeletedItems(copy.get()));
+    SOURCE_ASSERT_EQUAL(copy.get(), 1, countEqual(listItems(copy.get()), child));
+    SOURCE_ASSERT_EQUAL(copy.get(), 1, countEqual(listItems(copy.get()), parent));
+    SOURCE_ASSERT_EQUAL(copy.get(), 0, copy->endSync());
+    CPPUNIT_ASSERT_NO_THROW(copy.reset());
+
+    deleteAll(createSourceA);
+
+    SOURCE_ASSERT_NO_FAILURE(copy.get(), copy.reset(createSourceB()));
+    SOURCE_ASSERT_EQUAL(copy.get(), 0, copy->beginSync());
+    SOURCE_ASSERT_EQUAL(copy.get(), 0, countItems(copy.get()));
+    SOURCE_ASSERT_EQUAL(copy.get(), 0, countNewItems(copy.get()));
+    SOURCE_ASSERT_EQUAL(copy.get(), 0, countUpdatedItems(copy.get()));
+    SOURCE_ASSERT_EQUAL(copy.get(), 2, countDeletedItems(copy.get()));
+    SOURCE_ASSERT_EQUAL(copy.get(), 1, countEqual(listDeletedItems(copy.get()), child));
+    SOURCE_ASSERT_EQUAL(copy.get(), 1, countEqual(listDeletedItems(copy.get()), parent));
+    SOURCE_ASSERT_EQUAL(copy.get(), 0, copy->endSync());
+    CPPUNIT_ASSERT_NO_THROW(copy.reset());
+
+    // insert both items, remove parent, then child
+    child = insert(createSourceA, config.childItem);
+    parent = insert(createSourceA, config.parentItem);
+
+    SOURCE_ASSERT_NO_FAILURE(copy.get(), copy.reset(createSourceB()));
+    SOURCE_ASSERT_EQUAL(copy.get(), 0, copy->beginSync());
+    SOURCE_ASSERT_EQUAL(copy.get(), 2, countItems(copy.get()));
+    SOURCE_ASSERT_EQUAL(copy.get(), 2, countNewItems(copy.get()));
+    SOURCE_ASSERT_EQUAL(copy.get(), 0, countUpdatedItems(copy.get()));
+    SOURCE_ASSERT_EQUAL(copy.get(), 0, countDeletedItems(copy.get()));
+    SOURCE_ASSERT_EQUAL(copy.get(), 1, countEqual(listItems(copy.get()), child));
+    SOURCE_ASSERT_EQUAL(copy.get(), 1, countEqual(listItems(copy.get()), parent));
+    SOURCE_ASSERT_EQUAL(copy.get(), 0, copy->endSync());
+    CPPUNIT_ASSERT_NO_THROW(copy.reset());
+
+    deleteItem(createSourceA, parent);
+
+    SOURCE_ASSERT_NO_FAILURE(copy.get(), copy.reset(createSourceB()));
+    SOURCE_ASSERT_EQUAL(copy.get(), 0, copy->beginSync());
+    SOURCE_ASSERT_EQUAL(copy.get(), 1, countItems(copy.get()));
+    SOURCE_ASSERT_EQUAL(copy.get(), 0, countNewItems(copy.get()));
+    SOURCE_ASSERT_EQUAL(copy.get(), 0, countUpdatedItems(copy.get()));
+    SOURCE_ASSERT_EQUAL(copy.get(), 1, countDeletedItems(copy.get()));
+    SOURCE_ASSERT_EQUAL(copy.get(), 1, countEqual(listDeletedItems(copy.get()), parent));
+    SOURCE_ASSERT_EQUAL(copy.get(), 0, copy->endSync());
+    CPPUNIT_ASSERT_NO_THROW(copy.reset());
+
+    deleteItem(createSourceA, child);
+
+    SOURCE_ASSERT_NO_FAILURE(copy.get(), copy.reset(createSourceB()));
+    SOURCE_ASSERT_EQUAL(copy.get(), 0, copy->beginSync());
+    SOURCE_ASSERT_EQUAL(copy.get(), 0, countItems(copy.get()));
+    SOURCE_ASSERT_EQUAL(copy.get(), 0, countNewItems(copy.get()));
+    SOURCE_ASSERT_EQUAL(copy.get(), 0, countUpdatedItems(copy.get()));
+    SOURCE_ASSERT_EQUAL(copy.get(), 1, countDeletedItems(copy.get()));
+    SOURCE_ASSERT_EQUAL(copy.get(), 1, countEqual(listDeletedItems(copy.get()), child));
+    SOURCE_ASSERT_EQUAL(copy.get(), 0, copy->endSync());
+    CPPUNIT_ASSERT_NO_THROW(copy.reset());
+
+    // insert both items, remove child, then parent
+    child = insert(createSourceA, config.childItem);
+    parent = insert(createSourceA, config.parentItem);
+
+    SOURCE_ASSERT_NO_FAILURE(copy.get(), copy.reset(createSourceB()));
+    SOURCE_ASSERT_EQUAL(copy.get(), 0, copy->beginSync());
+    SOURCE_ASSERT_EQUAL(copy.get(), 2, countItems(copy.get()));
+    SOURCE_ASSERT_EQUAL(copy.get(), 2, countNewItems(copy.get()));
+    SOURCE_ASSERT_EQUAL(copy.get(), 0, countUpdatedItems(copy.get()));
+    SOURCE_ASSERT_EQUAL(copy.get(), 0, countDeletedItems(copy.get()));
+    SOURCE_ASSERT_EQUAL(copy.get(), 1, countEqual(listItems(copy.get()), child));
+    SOURCE_ASSERT_EQUAL(copy.get(), 1, countEqual(listItems(copy.get()), parent));
+    SOURCE_ASSERT_EQUAL(copy.get(), 0, copy->endSync());
+    CPPUNIT_ASSERT_NO_THROW(copy.reset());
+
+    deleteItem(createSourceA, child);
+
+    SOURCE_ASSERT_NO_FAILURE(copy.get(), copy.reset(createSourceB()));
+    SOURCE_ASSERT_EQUAL(copy.get(), 0, copy->beginSync());
+    SOURCE_ASSERT_EQUAL(copy.get(), 1, countItems(copy.get()));
+    SOURCE_ASSERT_EQUAL(copy.get(), 0, countNewItems(copy.get()));
+    SOURCE_ASSERT_EQUAL(copy.get(), 0, countUpdatedItems(copy.get()));
+    SOURCE_ASSERT_EQUAL(copy.get(), 1, countDeletedItems(copy.get()));
+    SOURCE_ASSERT_EQUAL(copy.get(), 1, countEqual(listDeletedItems(copy.get()), child));
+    SOURCE_ASSERT_EQUAL(copy.get(), 0, copy->endSync());
+    CPPUNIT_ASSERT_NO_THROW(copy.reset());
+
+    deleteItem(createSourceA, parent);
+
+    SOURCE_ASSERT_NO_FAILURE(copy.get(), copy.reset(createSourceB()));
+    SOURCE_ASSERT_EQUAL(copy.get(), 0, copy->beginSync());
+    SOURCE_ASSERT_EQUAL(copy.get(), 0, countItems(copy.get()));
+    SOURCE_ASSERT_EQUAL(copy.get(), 0, countNewItems(copy.get()));
+    SOURCE_ASSERT_EQUAL(copy.get(), 0, countUpdatedItems(copy.get()));
+    SOURCE_ASSERT_EQUAL(copy.get(), 1, countDeletedItems(copy.get()));
+    SOURCE_ASSERT_EQUAL(copy.get(), 1, countEqual(listDeletedItems(copy.get()), parent));
+    SOURCE_ASSERT_EQUAL(copy.get(), 0, copy->endSync());
+    CPPUNIT_ASSERT_NO_THROW(copy.reset());
+
+    // add parent twice (should be turned into update)
+    parent = insert(createSourceA, config.parentItem);
+
+    SOURCE_ASSERT_NO_FAILURE(copy.get(), copy.reset(createSourceB()));
+    SOURCE_ASSERT_EQUAL(copy.get(), 0, copy->beginSync());
+    SOURCE_ASSERT_EQUAL(copy.get(), 1, countItems(copy.get()));
+    SOURCE_ASSERT_EQUAL(copy.get(), 1, countNewItems(copy.get()));
+    SOURCE_ASSERT_EQUAL(copy.get(), 0, countUpdatedItems(copy.get()));
+    SOURCE_ASSERT_EQUAL(copy.get(), 0, countDeletedItems(copy.get()));
+    SOURCE_ASSERT_EQUAL(copy.get(), 1, countEqual(listItems(copy.get()), parent));
+    SOURCE_ASSERT_EQUAL(copy.get(), 0, copy->endSync());
+    CPPUNIT_ASSERT_NO_THROW(copy.reset());
+
+    parent = insert(createSourceA, config.parentItem);
+
+    SOURCE_ASSERT_NO_FAILURE(copy.get(), copy.reset(createSourceB()));
+    SOURCE_ASSERT_EQUAL(copy.get(), 0, copy->beginSync());
+    SOURCE_ASSERT_EQUAL(copy.get(), 1, countItems(copy.get()));
+    SOURCE_ASSERT_EQUAL(copy.get(), 0, countNewItems(copy.get()));
+    SOURCE_ASSERT_EQUAL(copy.get(), 1, countUpdatedItems(copy.get()));
+    SOURCE_ASSERT_EQUAL(copy.get(), 0, countDeletedItems(copy.get()));
+    SOURCE_ASSERT_EQUAL(copy.get(), 1, countEqual(listUpdatedItems(copy.get()), parent));
+    SOURCE_ASSERT_EQUAL(copy.get(), 0, copy->endSync());
+    CPPUNIT_ASSERT_NO_THROW(copy.reset());
+
+    deleteItem(createSourceA, parent);
+
+    SOURCE_ASSERT_NO_FAILURE(copy.get(), copy.reset(createSourceB()));
+    SOURCE_ASSERT_EQUAL(copy.get(), 0, copy->beginSync());
+    SOURCE_ASSERT_EQUAL(copy.get(), 0, countItems(copy.get()));
+    SOURCE_ASSERT_EQUAL(copy.get(), 0, countNewItems(copy.get()));
+    SOURCE_ASSERT_EQUAL(copy.get(), 0, countUpdatedItems(copy.get()));
+    SOURCE_ASSERT_EQUAL(copy.get(), 1, countDeletedItems(copy.get()));
+    SOURCE_ASSERT_EQUAL(copy.get(), 1, countEqual(listDeletedItems(copy.get()), parent));
+    SOURCE_ASSERT_EQUAL(copy.get(), 0, copy->endSync());
+    CPPUNIT_ASSERT_NO_THROW(copy.reset());
+
+    // add child twice (should be turned into update)
+    child = insert(createSourceA, config.childItem);
+
+    SOURCE_ASSERT_NO_FAILURE(copy.get(), copy.reset(createSourceB()));
+    SOURCE_ASSERT_EQUAL(copy.get(), 0, copy->beginSync());
+    SOURCE_ASSERT_EQUAL(copy.get(), 1, countItems(copy.get()));
+    SOURCE_ASSERT_EQUAL(copy.get(), 1, countNewItems(copy.get()));
+    SOURCE_ASSERT_EQUAL(copy.get(), 0, countUpdatedItems(copy.get()));
+    SOURCE_ASSERT_EQUAL(copy.get(), 0, countDeletedItems(copy.get()));
+    SOURCE_ASSERT_EQUAL(copy.get(), 1, countEqual(listItems(copy.get()), child));
+    SOURCE_ASSERT_EQUAL(copy.get(), 0, copy->endSync());
+    CPPUNIT_ASSERT_NO_THROW(copy.reset());
+
+    child = insert(createSourceA, config.childItem);
+
+    SOURCE_ASSERT_NO_FAILURE(copy.get(), copy.reset(createSourceB()));
+    SOURCE_ASSERT_EQUAL(copy.get(), 0, copy->beginSync());
+    SOURCE_ASSERT_EQUAL(copy.get(), 1, countItems(copy.get()));
+    SOURCE_ASSERT_EQUAL(copy.get(), 0, countNewItems(copy.get()));
+    SOURCE_ASSERT_EQUAL(copy.get(), 1, countUpdatedItems(copy.get()));
+    SOURCE_ASSERT_EQUAL(copy.get(), 0, countDeletedItems(copy.get()));
+    SOURCE_ASSERT_EQUAL(copy.get(), 1, countEqual(listUpdatedItems(copy.get()), child));
+    SOURCE_ASSERT_EQUAL(copy.get(), 0, copy->endSync());
+    CPPUNIT_ASSERT_NO_THROW(copy.reset());
+
+    deleteItem(createSourceA, child);
+
+    SOURCE_ASSERT_NO_FAILURE(copy.get(), copy.reset(createSourceB()));
+    SOURCE_ASSERT_EQUAL(copy.get(), 0, copy->beginSync());
+    SOURCE_ASSERT_EQUAL(copy.get(), 0, countItems(copy.get()));
+    SOURCE_ASSERT_EQUAL(copy.get(), 0, countNewItems(copy.get()));
+    SOURCE_ASSERT_EQUAL(copy.get(), 0, countUpdatedItems(copy.get()));
+    SOURCE_ASSERT_EQUAL(copy.get(), 1, countDeletedItems(copy.get()));
+    SOURCE_ASSERT_EQUAL(copy.get(), 1, countEqual(listDeletedItems(copy.get()), child));
+    SOURCE_ASSERT_EQUAL(copy.get(), 0, copy->endSync());
+    CPPUNIT_ASSERT_NO_THROW(copy.reset());
+
+    // add parent, then update it
+    parent = insert(createSourceA, config.parentItem);
+
+    SOURCE_ASSERT_NO_FAILURE(copy.get(), copy.reset(createSourceB()));
+    SOURCE_ASSERT_EQUAL(copy.get(), 0, copy->beginSync());
+    SOURCE_ASSERT_EQUAL(copy.get(), 1, countItems(copy.get()));
+    SOURCE_ASSERT_EQUAL(copy.get(), 1, countNewItems(copy.get()));
+    SOURCE_ASSERT_EQUAL(copy.get(), 0, countUpdatedItems(copy.get()));
+    SOURCE_ASSERT_EQUAL(copy.get(), 0, countDeletedItems(copy.get()));
+    SOURCE_ASSERT_EQUAL(copy.get(), 1, countEqual(listItems(copy.get()), parent));
+    SOURCE_ASSERT_EQUAL(copy.get(), 0, copy->endSync());
+    CPPUNIT_ASSERT_NO_THROW(copy.reset());
+
+    parent = updateItem(createSourceA, parent, config.parentItem);
+
+    SOURCE_ASSERT_NO_FAILURE(copy.get(), copy.reset(createSourceB()));
+    SOURCE_ASSERT_EQUAL(copy.get(), 0, copy->beginSync());
+    SOURCE_ASSERT_EQUAL(copy.get(), 1, countItems(copy.get()));
+    SOURCE_ASSERT_EQUAL(copy.get(), 0, countNewItems(copy.get()));
+    SOURCE_ASSERT_EQUAL(copy.get(), 1, countUpdatedItems(copy.get()));
+    SOURCE_ASSERT_EQUAL(copy.get(), 0, countDeletedItems(copy.get()));
+    SOURCE_ASSERT_EQUAL(copy.get(), 1, countEqual(listUpdatedItems(copy.get()), parent));
+    SOURCE_ASSERT_EQUAL(copy.get(), 0, copy->endSync());
+    CPPUNIT_ASSERT_NO_THROW(copy.reset());
+
+    deleteItem(createSourceA, parent);
+
+    SOURCE_ASSERT_NO_FAILURE(copy.get(), copy.reset(createSourceB()));
+    SOURCE_ASSERT_EQUAL(copy.get(), 0, copy->beginSync());
+    SOURCE_ASSERT_EQUAL(copy.get(), 0, countItems(copy.get()));
+    SOURCE_ASSERT_EQUAL(copy.get(), 0, countNewItems(copy.get()));
+    SOURCE_ASSERT_EQUAL(copy.get(), 0, countUpdatedItems(copy.get()));
+    SOURCE_ASSERT_EQUAL(copy.get(), 1, countDeletedItems(copy.get()));
+    SOURCE_ASSERT_EQUAL(copy.get(), 1, countEqual(listDeletedItems(copy.get()), parent));
+    SOURCE_ASSERT_EQUAL(copy.get(), 0, copy->endSync());
+    CPPUNIT_ASSERT_NO_THROW(copy.reset());
+
+    // add child, then update it
+    child = insert(createSourceA, config.childItem);
+
+    SOURCE_ASSERT_NO_FAILURE(copy.get(), copy.reset(createSourceB()));
+    SOURCE_ASSERT_EQUAL(copy.get(), 0, copy->beginSync());
+    SOURCE_ASSERT_EQUAL(copy.get(), 1, countItems(copy.get()));
+    SOURCE_ASSERT_EQUAL(copy.get(), 1, countNewItems(copy.get()));
+    SOURCE_ASSERT_EQUAL(copy.get(), 0, countUpdatedItems(copy.get()));
+    SOURCE_ASSERT_EQUAL(copy.get(), 0, countDeletedItems(copy.get()));
+    SOURCE_ASSERT_EQUAL(copy.get(), 1, countEqual(listItems(copy.get()), child));
+    SOURCE_ASSERT_EQUAL(copy.get(), 0, copy->endSync());
+    CPPUNIT_ASSERT_NO_THROW(copy.reset());
+
+    child = updateItem(createSourceA, child, config.childItem);
+
+    SOURCE_ASSERT_NO_FAILURE(copy.get(), copy.reset(createSourceB()));
+    SOURCE_ASSERT_EQUAL(copy.get(), 0, copy->beginSync());
+    SOURCE_ASSERT_EQUAL(copy.get(), 1, countItems(copy.get()));
+    SOURCE_ASSERT_EQUAL(copy.get(), 0, countNewItems(copy.get()));
+    SOURCE_ASSERT_EQUAL(copy.get(), 1, countUpdatedItems(copy.get()));
+    SOURCE_ASSERT_EQUAL(copy.get(), 0, countDeletedItems(copy.get()));
+    SOURCE_ASSERT_EQUAL(copy.get(), 1, countEqual(listUpdatedItems(copy.get()), child));
+    SOURCE_ASSERT_EQUAL(copy.get(), 0, copy->endSync());
+    CPPUNIT_ASSERT_NO_THROW(copy.reset());
+
+    deleteItem(createSourceA, child);
+
+    SOURCE_ASSERT_NO_FAILURE(copy.get(), copy.reset(createSourceB()));
+    SOURCE_ASSERT_EQUAL(copy.get(), 0, copy->beginSync());
+    SOURCE_ASSERT_EQUAL(copy.get(), 0, countItems(copy.get()));
+    SOURCE_ASSERT_EQUAL(copy.get(), 0, countNewItems(copy.get()));
+    SOURCE_ASSERT_EQUAL(copy.get(), 0, countUpdatedItems(copy.get()));
+    SOURCE_ASSERT_EQUAL(copy.get(), 1, countDeletedItems(copy.get()));
+    SOURCE_ASSERT_EQUAL(copy.get(), 1, countEqual(listDeletedItems(copy.get()), child));
+    SOURCE_ASSERT_EQUAL(copy.get(), 0, copy->endSync());
+    CPPUNIT_ASSERT_NO_THROW(copy.reset());
+
+    // add parent and child, then update child
+    parent = insert(createSourceA, config.parentItem);
+    child = insert(createSourceA, config.childItem);
+
+    SOURCE_ASSERT_NO_FAILURE(copy.get(), copy.reset(createSourceB()));
+    SOURCE_ASSERT_EQUAL(copy.get(), 0, copy->beginSync());
+    SOURCE_ASSERT_EQUAL(copy.get(), 2, countItems(copy.get()));
+    SOURCE_ASSERT_EQUAL(copy.get(), 2, countNewItems(copy.get()));
+    SOURCE_ASSERT_EQUAL(copy.get(), 0, countUpdatedItems(copy.get()));
+    SOURCE_ASSERT_EQUAL(copy.get(), 0, countDeletedItems(copy.get()));
+    SOURCE_ASSERT_EQUAL(copy.get(), 1, countEqual(listItems(copy.get()), child));
+    SOURCE_ASSERT_EQUAL(copy.get(), 1, countEqual(listItems(copy.get()), parent));
+    SOURCE_ASSERT_EQUAL(copy.get(), 0, copy->endSync());
+    CPPUNIT_ASSERT_NO_THROW(copy.reset());
+
+    child = updateItem(createSourceA, child, config.childItem);
+
+    SOURCE_ASSERT_NO_FAILURE(copy.get(), copy.reset(createSourceB()));
+    SOURCE_ASSERT_EQUAL(copy.get(), 0, copy->beginSync());
+    SOURCE_ASSERT_EQUAL(copy.get(), 2, countItems(copy.get()));
+    SOURCE_ASSERT_EQUAL(copy.get(), 0, countNewItems(copy.get()));
+    SOURCE_ASSERT_EQUAL(copy.get(), 1, countUpdatedItems(copy.get()));
+    SOURCE_ASSERT_EQUAL(copy.get(), 0, countDeletedItems(copy.get()));
+    SOURCE_ASSERT_EQUAL(copy.get(), 1, countEqual(listUpdatedItems(copy.get()), child));
+    SOURCE_ASSERT_EQUAL(copy.get(), 0, copy->endSync());
+    CPPUNIT_ASSERT_NO_THROW(copy.reset());
+
+    deleteItem(createSourceA, parent);
+    deleteItem(createSourceA, child);
+
+    SOURCE_ASSERT_NO_FAILURE(copy.get(), copy.reset(createSourceB()));
+    SOURCE_ASSERT_EQUAL(copy.get(), 0, copy->beginSync());
+    SOURCE_ASSERT_EQUAL(copy.get(), 0, countItems(copy.get()));
+    SOURCE_ASSERT_EQUAL(copy.get(), 0, countNewItems(copy.get()));
+    SOURCE_ASSERT_EQUAL(copy.get(), 0, countUpdatedItems(copy.get()));
+    SOURCE_ASSERT_EQUAL(copy.get(), 2, countDeletedItems(copy.get()));
+    SOURCE_ASSERT_EQUAL(copy.get(), 1, countEqual(listDeletedItems(copy.get()), parent));
+    SOURCE_ASSERT_EQUAL(copy.get(), 1, countEqual(listDeletedItems(copy.get()), child));
+    SOURCE_ASSERT_EQUAL(copy.get(), 0, copy->endSync());
+    CPPUNIT_ASSERT_NO_THROW(copy.reset());
+
+    // add parent and child, then update parent
+    parent = insert(createSourceA, config.parentItem);
+    child = insert(createSourceA, config.childItem);
+
+    SOURCE_ASSERT_NO_FAILURE(copy.get(), copy.reset(createSourceB()));
+    SOURCE_ASSERT_EQUAL(copy.get(), 0, copy->beginSync());
+    SOURCE_ASSERT_EQUAL(copy.get(), 2, countItems(copy.get()));
+    SOURCE_ASSERT_EQUAL(copy.get(), 2, countNewItems(copy.get()));
+    SOURCE_ASSERT_EQUAL(copy.get(), 0, countUpdatedItems(copy.get()));
+    SOURCE_ASSERT_EQUAL(copy.get(), 0, countDeletedItems(copy.get()));
+    SOURCE_ASSERT_EQUAL(copy.get(), 1, countEqual(listItems(copy.get()), child));
+    SOURCE_ASSERT_EQUAL(copy.get(), 1, countEqual(listItems(copy.get()), parent));
+    SOURCE_ASSERT_EQUAL(copy.get(), 0, copy->endSync());
+    CPPUNIT_ASSERT_NO_THROW(copy.reset());
+
+    parent = updateItem(createSourceA, parent, config.parentItem);
+
+    SOURCE_ASSERT_NO_FAILURE(copy.get(), copy.reset(createSourceB()));
+    SOURCE_ASSERT_EQUAL(copy.get(), 0, copy->beginSync());
+    SOURCE_ASSERT_EQUAL(copy.get(), 2, countItems(copy.get()));
+    SOURCE_ASSERT_EQUAL(copy.get(), 0, countNewItems(copy.get()));
+    SOURCE_ASSERT_EQUAL(copy.get(), 1, countUpdatedItems(copy.get()));
+    SOURCE_ASSERT_EQUAL(copy.get(), 0, countDeletedItems(copy.get()));
+    SOURCE_ASSERT_EQUAL(copy.get(), 1, countEqual(listUpdatedItems(copy.get()), parent));
+    SOURCE_ASSERT_EQUAL(copy.get(), 0, copy->endSync());
+    CPPUNIT_ASSERT_NO_THROW(copy.reset());
+
+    deleteItem(createSourceA, parent);
+    deleteItem(createSourceA, child);
+
+    SOURCE_ASSERT_NO_FAILURE(copy.get(), copy.reset(createSourceB()));
+    SOURCE_ASSERT_EQUAL(copy.get(), 0, copy->beginSync());
+    SOURCE_ASSERT_EQUAL(copy.get(), 0, countItems(copy.get()));
+    SOURCE_ASSERT_EQUAL(copy.get(), 0, countNewItems(copy.get()));
+    SOURCE_ASSERT_EQUAL(copy.get(), 0, countUpdatedItems(copy.get()));
+    SOURCE_ASSERT_EQUAL(copy.get(), 2, countDeletedItems(copy.get()));
+    SOURCE_ASSERT_EQUAL(copy.get(), 1, countEqual(listDeletedItems(copy.get()), parent));
+    SOURCE_ASSERT_EQUAL(copy.get(), 1, countEqual(listDeletedItems(copy.get()), child));
+    SOURCE_ASSERT_EQUAL(copy.get(), 0, copy->endSync());
+    CPPUNIT_ASSERT_NO_THROW(copy.reset());
+}
+
+
 
 
 SyncTests::SyncTests(const std::string &name, ClientTest &cl, std::vector<int> sourceIndices, bool isClientA) :
@@ -2048,6 +2592,47 @@ void ClientTest::getTestData(const char *type, Config &config)
             "CLASS:PUBLIC\n"
             "TRANSP:OPAQUE\n"
             "SEQUENCE:1\n"
+            "END:VEVENT\n"
+            "END:VCALENDAR\n";
+        config.parentItem =
+            "BEGIN:VCALENDAR\n"
+            "PRODID:-//Ximian//NONSGML Evolution Calendar//EN\n"
+            "VERSION:2.0\n"
+            "METHOD:PUBLISH\n"
+            "BEGIN:VEVENT\n"
+            "UID:20080407T193125Z-19554-727-1-50@gollum\n"
+            "DTSTAMP:20080407T193125Z\n"
+            "DTSTART:20080406T090000Z\n"
+            "DTEND:20080406T093000Z\n"
+            "TRANSP:OPAQUE\n"
+            "SEQUENCE:2\n"
+            "SUMMARY:Recurring\n"
+            "DESCRIPTION:recurs each Monday\\, 10 times\n"
+            "CLASS:PUBLIC\n"
+            "RRULE:FREQ=WEEKLY;COUNT=10;INTERVAL=1;BYDAY=SU\n"
+            "CREATED:20080407T193241\n"
+            "LAST-MODIFIED:20080407T193241\n"
+            "RECURRENCE-ID:20080406T090000Z\n"
+            "END:VEVENT\n"
+            "END:VCALENDAR\n";
+        config.childItem =
+            "BEGIN:VCALENDAR\n"
+            "PRODID:-//Ximian//NONSGML Evolution Calendar//EN\n"
+            "VERSION:2.0\n"
+            "METHOD:PUBLISH\n"
+            "BEGIN:VEVENT\n"
+            "UID:20080407T193125Z-19554-727-1-50@gollum\n"
+            "DTSTAMP:20080407T193125Z\n"
+            "DTSTART:20080413T090000Z\n"
+            "DTEND:20080413T093000Z\n"
+            "TRANSP:OPAQUE\n"
+            "SEQUENCE:7\n"
+            "SUMMARY:Recurring: Modified\n"
+            "CLASS:PUBLIC\n"
+            "CREATED:20080407T193241\n"
+            "LAST-MODIFIED:20080407T193647\n"
+            "RECURRENCE-ID:20080413T090000Z\n"
+            "DESCRIPTION:second instance modified\n"
             "END:VEVENT\n"
             "END:VCALENDAR\n";
         config.templateItem = config.insertItem;

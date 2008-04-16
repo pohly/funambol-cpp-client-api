@@ -41,6 +41,7 @@
 
 #include <string>
 #include <vector>
+#include <list>
 #include "spds/SyncSource.h"
 #include "spds/SyncReport.h"
 
@@ -335,6 +336,21 @@ class ClientTest {
         const char *mergeItem2;
 
         /**
+         * These two items are related: one is main one, the other is
+         * a subordinate one. The semantic is that the main item is
+         * complete on it its own, while the other normally should only
+         * be used in combination with the main one.
+         *
+         * Because SyncML cannot express such dependencies between items,
+         * a SyncSource has to be able to insert, updated and remove
+         * both items independently.
+         *
+         * One example for main and subordinate items are a recurring
+         * iCalendar 2.0 event and a detached recurrence.
+         */
+        const char *parentItem, *childItem;
+
+        /**
          * called to dump all items into a file, required by tests which need
          * to compare items
          *
@@ -539,8 +555,10 @@ public:
      *
      * The type of the item is unset; it is assumed that the source
      * can handle that.
+     *
+     * @return the UID of the inserted item
      */
-    virtual void insert(CreateSource createSource, const char *data);
+    virtual std::string insert(CreateSource createSource, const char *data);
 
     /**
      * assumes that exactly one element is currently inserted and updates it with the given item
@@ -589,6 +607,7 @@ public:
     virtual void testImport();
     virtual void testImportDelete();
     virtual void testManyChanges();
+    virtual void testLinkedItems();
 };
 
 enum itemType {
@@ -605,6 +624,12 @@ enum itemType {
  * @return number of valid items iterated over
  */
 int countItemsOfType(SyncSource *source, itemType type);
+
+typedef std::list<std::string> UIDList;
+/**
+ * generates list of UIDs in the specified kind of items
+ */
+UIDList listItemsOfType(SyncSource *source, itemType type);
 
 /**
  * Tests synchronization with one or more sync sources enabled.
