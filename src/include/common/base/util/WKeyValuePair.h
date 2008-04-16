@@ -34,8 +34,8 @@
  */
 
 
-#ifndef INCL_KEY_VALUE_PAIR
-#define INCL_KEY_VALUE_PAIR
+#ifndef INCL_WKEY_VALUE_PAIR
+#define INCL_WKEY_VALUE_PAIR
 /** @cond DEV */
 
 #include "base/fscapi.h"

@@ -96,39 +96,6 @@ END_NAMESPACE
 #define wcsicmp wcscasecmp
 #define snwprintf swprintf
 
-#ifdef MAC
-
-#   undef  _wcsicmp
-#   undef  wcsicmp
-
-inline int wcsicmp(const WCHAR * s1, const WCHAR * s2)
-{
-    const WCHAR * i1 = s1;
-    const WCHAR * i2 = s2;
-    
-    while (i1 != NULL && i2 != NULL)
-    {
-        if (*i1 > *i2)
-            return 1;
-        if (*i1 < *i2)
-            return -1;
-            
-        i1++;
-        i2++;
-    }
-    if (i1 == NULL && i2 == NULL)
-        return 0;
-    if (i1 == NULL)
-        return -1;
-    if (i2 == NULL)
-        return 1;
-    // Should never happen
-    return 0;
-}
-
-#   define _wcsicmp wcsicmp
-#endif
-
 #else
 
 /* map WCHAR and its functions back to standard functions */

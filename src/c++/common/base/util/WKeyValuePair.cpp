@@ -67,7 +67,7 @@ const WCHAR* WKeyValuePair::getValue() {
 void WKeyValuePair::setValue(const WCHAR* value) {
     if (v) delete[] v; v = NULL;
 
-    k = (value) ? wstrdup(value) : NULL;
+    v = (value) ? wstrdup(value) : NULL;
 }
 
 ArrayElement* WKeyValuePair::clone() {

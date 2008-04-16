@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		7C7649360DB385DC00786883 /* KeyValueStore.h in Headers */ = {isa = PBXBuildFile; fileRef = 7C7649350DB385DC00786883 /* KeyValueStore.h */; };
 		7C9F52ED0DAF4CB1007E0091 /* base64.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C9F520E0DAF4CB1007E0091 /* base64.cpp */; };
 		7C9F52EE0DAF4CB1007E0091 /* error.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C9F520F0DAF4CB1007E0091 /* error.cpp */; };
 		7C9F52EF0DAF4CB1007E0091 /* ErrorHandler.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C9F52100DAF4CB1007E0091 /* ErrorHandler.cpp */; };
@@ -203,7 +204,6 @@
 		7C9F54C00DAF4CC5007E0091 /* Enumeration.h in Headers */ = {isa = PBXBuildFile; fileRef = 7C9F53C90DAF4CC5007E0091 /* Enumeration.h */; };
 		7C9F54C10DAF4CC5007E0091 /* ItemContainer.h in Headers */ = {isa = PBXBuildFile; fileRef = 7C9F53CA0DAF4CC5007E0091 /* ItemContainer.h */; };
 		7C9F54C20DAF4CC5007E0091 /* KeyValuePair.h in Headers */ = {isa = PBXBuildFile; fileRef = 7C9F53CB0DAF4CC5007E0091 /* KeyValuePair.h */; };
-		7C9F54C30DAF4CC5007E0091 /* KeyValueStore.h in Headers */ = {isa = PBXBuildFile; fileRef = 7C9F53CC0DAF4CC5007E0091 /* KeyValueStore.h */; };
 		7C9F54C40DAF4CC5007E0091 /* PropertyFile.h in Headers */ = {isa = PBXBuildFile; fileRef = 7C9F53CD0DAF4CC5007E0091 /* PropertyFile.h */; };
 		7C9F54C50DAF4CC5007E0091 /* StringBuffer.h in Headers */ = {isa = PBXBuildFile; fileRef = 7C9F53CE0DAF4CC5007E0091 /* StringBuffer.h */; };
 		7C9F54C60DAF4CC5007E0091 /* utils.h in Headers */ = {isa = PBXBuildFile; fileRef = 7C9F53CF0DAF4CC5007E0091 /* utils.h */; };
@@ -407,9 +407,14 @@
 		7C9F558E0DAF4CC5007E0091 /* migrateConfig.h in Headers */ = {isa = PBXBuildFile; fileRef = 7C9F54AE0DAF4CC5007E0091 /* migrateConfig.h */; };
 		7C9F58B70DAF62A4007E0091 /* CacheSyncSource.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C9F58B60DAF62A4007E0091 /* CacheSyncSource.cpp */; };
 		7C9F58B90DAF62AE007E0091 /* CacheSyncSource.h in Headers */ = {isa = PBXBuildFile; fileRef = 7C9F58B80DAF62AE007E0091 /* CacheSyncSource.h */; };
+		7CB036790DB4EC8A003F4E5F /* ODBCKeyValueStore.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7CB036770DB4EC8A003F4E5F /* ODBCKeyValueStore.cpp */; };
+		7CB0367A0DB4EC8A003F4E5F /* SQLKeyValueStore.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7CB036780DB4EC8A003F4E5F /* SQLKeyValueStore.cpp */; };
+		7CB0367D0DB4EC9A003F4E5F /* ODBCKeyValueStore.h in Headers */ = {isa = PBXBuildFile; fileRef = 7CB0367B0DB4EC9A003F4E5F /* ODBCKeyValueStore.h */; };
+		7CB0367E0DB4EC9A003F4E5F /* SQLKeyValueStore.h in Headers */ = {isa = PBXBuildFile; fileRef = 7CB0367C0DB4EC9A003F4E5F /* SQLKeyValueStore.h */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		7C7649350DB385DC00786883 /* KeyValueStore.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = KeyValueStore.h; sourceTree = "<group>"; };
 		7C9F520E0DAF4CB1007E0091 /* base64.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = base64.cpp; sourceTree = "<group>"; };
 		7C9F520F0DAF4CB1007E0091 /* error.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = error.cpp; sourceTree = "<group>"; };
 		7C9F52100DAF4CB1007E0091 /* ErrorHandler.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ErrorHandler.cpp; sourceTree = "<group>"; };
@@ -606,7 +611,6 @@
 		7C9F53C90DAF4CC5007E0091 /* Enumeration.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Enumeration.h; sourceTree = "<group>"; };
 		7C9F53CA0DAF4CC5007E0091 /* ItemContainer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ItemContainer.h; sourceTree = "<group>"; };
 		7C9F53CB0DAF4CC5007E0091 /* KeyValuePair.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = KeyValuePair.h; sourceTree = "<group>"; };
-		7C9F53CC0DAF4CC5007E0091 /* KeyValueStore.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = KeyValueStore.h; sourceTree = "<group>"; };
 		7C9F53CD0DAF4CC5007E0091 /* PropertyFile.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PropertyFile.h; sourceTree = "<group>"; };
 		7C9F53CE0DAF4CC5007E0091 /* StringBuffer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = StringBuffer.h; sourceTree = "<group>"; };
 		7C9F53CF0DAF4CC5007E0091 /* utils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = utils.h; sourceTree = "<group>"; };
@@ -813,6 +817,10 @@
 		7C9F58B60DAF62A4007E0091 /* CacheSyncSource.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CacheSyncSource.cpp; sourceTree = "<group>"; };
 		7C9F58B80DAF62AE007E0091 /* CacheSyncSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CacheSyncSource.h; sourceTree = "<group>"; };
 		7C9F58CE0DAF639E007E0091 /* globalsdef.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = globalsdef.h; sourceTree = "<group>"; };
+		7CB036770DB4EC8A003F4E5F /* ODBCKeyValueStore.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ODBCKeyValueStore.cpp; sourceTree = "<group>"; };
+		7CB036780DB4EC8A003F4E5F /* SQLKeyValueStore.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = SQLKeyValueStore.cpp; sourceTree = "<group>"; };
+		7CB0367B0DB4EC9A003F4E5F /* ODBCKeyValueStore.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ODBCKeyValueStore.h; sourceTree = "<group>"; };
+		7CB0367C0DB4EC9A003F4E5F /* SQLKeyValueStore.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SQLKeyValueStore.h; sourceTree = "<group>"; };
 		D2AAC046055464E500DB518D /* libfunambol.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libfunambol.a; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -891,6 +899,8 @@
 		7C9F52210DAF4CB1007E0091 /* client */ = {
 			isa = PBXGroup;
 			children = (
+				7CB036770DB4EC8A003F4E5F /* ODBCKeyValueStore.cpp */,
+				7CB036780DB4EC8A003F4E5F /* SQLKeyValueStore.cpp */,
 				7C9F58B60DAF62A4007E0091 /* CacheSyncSource.cpp */,
 				7C9F52230DAF4CB1007E0091 /* DMTClientConfig.cpp */,
 				7C9F52250DAF4CB1007E0091 /* FileSyncSource.cpp */,
@@ -1208,6 +1218,7 @@
 		7C9F53C30DAF4CC5007E0091 /* util */ = {
 			isa = PBXGroup;
 			children = (
+				7C7649350DB385DC00786883 /* KeyValueStore.h */,
 				7C9F53C40DAF4CC5007E0091 /* ArrayElement.h */,
 				7C9F53C50DAF4CC5007E0091 /* ArrayList.h */,
 				7C9F53C60DAF4CC5007E0091 /* ArrayListEnumeration.h */,
@@ -1216,7 +1227,6 @@
 				7C9F53C90DAF4CC5007E0091 /* Enumeration.h */,
 				7C9F53CA0DAF4CC5007E0091 /* ItemContainer.h */,
 				7C9F53CB0DAF4CC5007E0091 /* KeyValuePair.h */,
-				7C9F53CC0DAF4CC5007E0091 /* KeyValueStore.h */,
 				7C9F53CD0DAF4CC5007E0091 /* PropertyFile.h */,
 				7C9F53CE0DAF4CC5007E0091 /* StringBuffer.h */,
 				7C9F53CF0DAF4CC5007E0091 /* utils.h */,
@@ -1230,8 +1240,10 @@
 		7C9F53D30DAF4CC5007E0091 /* client */ = {
 			isa = PBXGroup;
 			children = (
-				7C9F58B80DAF62AE007E0091 /* CacheSyncSource.h */,
+				7CB0367B0DB4EC9A003F4E5F /* ODBCKeyValueStore.h */,
+				7CB0367C0DB4EC9A003F4E5F /* SQLKeyValueStore.h */,
 				7C9F53D50DAF4CC5007E0091 /* DMTClientConfig.h */,
+				7C9F58B80DAF62AE007E0091 /* CacheSyncSource.h */,
 				7C9F53D60DAF4CC5007E0091 /* FileClient.h */,
 				7C9F53D70DAF4CC5007E0091 /* FileSyncSource.h */,
 				7C9F53D80DAF4CC5007E0091 /* MailSourceManagementNode.h */,
@@ -1693,7 +1705,6 @@
 				7C9F54C00DAF4CC5007E0091 /* Enumeration.h in Headers */,
 				7C9F54C10DAF4CC5007E0091 /* ItemContainer.h in Headers */,
 				7C9F54C20DAF4CC5007E0091 /* KeyValuePair.h in Headers */,
-				7C9F54C30DAF4CC5007E0091 /* KeyValueStore.h in Headers */,
 				7C9F54C40DAF4CC5007E0091 /* PropertyFile.h in Headers */,
 				7C9F54C50DAF4CC5007E0091 /* StringBuffer.h in Headers */,
 				7C9F54C60DAF4CC5007E0091 /* utils.h in Headers */,
@@ -1896,6 +1907,9 @@
 				7C9F558D0DAF4CC5007E0091 /* DeviceManagementNode.h in Headers */,
 				7C9F558E0DAF4CC5007E0091 /* migrateConfig.h in Headers */,
 				7C9F58B90DAF62AE007E0091 /* CacheSyncSource.h in Headers */,
+				7C7649360DB385DC00786883 /* KeyValueStore.h in Headers */,
+				7CB0367D0DB4EC9A003F4E5F /* ODBCKeyValueStore.h in Headers */,
+				7CB0367E0DB4EC9A003F4E5F /* SQLKeyValueStore.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2118,6 +2132,8 @@
 				7C9F53B30DAF4CB1007E0091 /* DESDecoder.cpp in Sources */,
 				7C9F53B40DAF4CB1007E0091 /* DESEncoder.cpp in Sources */,
 				7C9F58B70DAF62A4007E0091 /* CacheSyncSource.cpp in Sources */,
+				7CB036790DB4EC8A003F4E5F /* ODBCKeyValueStore.cpp in Sources */,
+				7CB0367A0DB4EC8A003F4E5F /* SQLKeyValueStore.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2159,7 +2175,6 @@
 				GCC_C_LANGUAGE_STANDARD = c99;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PREPROCESSOR_DEFINITIONS = (
-					USE_WCHAR,
 					ENABLE_NAMESPACE,
 					MAC,
 					POSIX,
@@ -2185,7 +2200,6 @@
 				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
 				GCC_C_LANGUAGE_STANDARD = c99;
 				GCC_PREPROCESSOR_DEFINITIONS = (
-					USE_WCHAR,
 					ENABLE_NAMESPACE,
 					MAC,
 					POSIX,
@@ -2211,7 +2225,6 @@
 				GCC_C_LANGUAGE_STANDARD = c99;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PREPROCESSOR_DEFINITIONS = (
-					USE_WCHAR,
 					ENABLE_NAMESPACE,
 					MAC,
 					POSIX,
@@ -2237,7 +2250,6 @@
 				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
 				GCC_C_LANGUAGE_STANDARD = c99;
 				GCC_PREPROCESSOR_DEFINITIONS = (
-					USE_WCHAR,
 					ENABLE_NAMESPACE,
 					MAC,
 					POSIX,

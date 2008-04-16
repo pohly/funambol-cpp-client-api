@@ -117,11 +117,6 @@ private:
     bool fillItemModifications();
 
     /**
-    * Save the current cache in what is implemented by KeyValueStore (a file or wathever).    
-    */
-    int saveCache();
-    
-    /**
     * Utility private method that populates the keyValuePair with 
     * the couple key/signature starting from the SyncItem.
     * Used in the addItem and updateItem
@@ -132,6 +127,11 @@ private:
     void getKeyAndSignature(SyncItem& item, KeyValuePair& kvp);
 
 protected:
+  
+    /**
+     * Save the current cache in what is implemented by KeyValueStore (a file or wathever).    
+     */
+    int saveCache();
   
     /**
      * Called by the sync engine to add an item that the server has sent.
