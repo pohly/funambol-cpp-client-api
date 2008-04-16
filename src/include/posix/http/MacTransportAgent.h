@@ -33,26 +33,34 @@
  * the words "Powered by Funambol".
  */
 
-#include "http/TransportAgentFactory.h"
+#ifndef INCL_MAC_TRANSPORT_AGENT
+#define INCL_MAC_TRANSPORT_AGENT
+/** @cond DEV */
 
-#ifndef MAC
-#include "http/CurlTransportAgent.h"
-#else
-#include "http/MacTransportAgent.h"
-#endif
+#include "base/fscapi.h"
 
-#include "base/globalsdef.h"
+#include "http/URL.h"
+#include "http/Proxy.h"
+#include "http/TransportAgent.h"
+#include "Log.h"
+#import <CoreFoundation/CoreFoundation.h>
+#import <CoreServices/CoreServices.h>
+
 
 BEGIN_NAMESPACE
 
-TransportAgent* TransportAgentFactory::getTransportAgent(
-        URL& url, Proxy& proxy, unsigned int timeout, unsigned int maxmsgsize)
-{
-    #ifdef MAC
-    return new MacTransportAgent(url, proxy, timeout);
-    #else
-    return new CurlTransportAgent(url, proxy, timeout);
-    #endif
-}
+class MacTransportAgent : public TransportAgent {
+    
+public:
+    MacTransportAgent();
+    MacTransportAgent(URL& url, Proxy& proxy, unsigned int responseTimeout = DEFAULT_MAX_TIMEOUT);
+    ~MacTransportAgent();
+    
+    char* sendMessage(const char* msg);
+    //void setUserAgent(const char* ua);
+};
 
 END_NAMESPACE
+
+/** @endcond */
+#endif
