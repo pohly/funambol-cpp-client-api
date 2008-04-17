@@ -47,11 +47,9 @@ BEGIN_NAMESPACE
 class SQLKeyValueStore : public KeyValueStore {
 private:
     
-    char * uri,
-         * database,
-         * table,
-         * username,
-         * password;
+    StringBuffer    table,
+                    colKey,
+                    colValue;
          
     ArrayListEnumeration toSet;
     ArrayListEnumeration toDel;
@@ -66,7 +64,7 @@ protected:
      *
      * @return      - The result of the query - an Enumeration of KeyValuePair s
      */
-    virtual ArrayListEnumeration * query(const StringBuffer & sql) const = 0;
+    virtual Enumeration * query(const StringBuffer & sql) const = 0;
     
     /*
      * Execute a non-select query.  If a connection to the database is not open,
@@ -132,14 +130,12 @@ public:
     /*
      * Constructor
      *
-     * @param uri       - The location of the server
-     * @param database  - The database name
      * @param table     - The table to be used
-     * @param username  - The username for authentication
-     * @param password  - The password for authentication
+     * @param colKey    - The column of the key
+     * @param colValue  - The column of the value
      *
      */
-    SQLKeyValueStore(const char * uri, const char * database, const char * table, const char * username, const char * password);
+    SQLKeyValueStore(const StringBuffer & table, const StringBuffer & colKey, const StringBuffer & colValue);
     
     /*
      * Destructor

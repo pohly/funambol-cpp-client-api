@@ -12,10 +12,11 @@
 		7C3BEB250DB7329900119850 /* MacTransportAgent.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C3BEB240DB7329900119850 /* MacTransportAgent.cpp */; };
 		7C3BEB760DB733D500119850 /* TestSyncSource.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C3BEB350DB732B400119850 /* TestSyncSource.cpp */; };
 		7C3BEC810DB734EF00119850 /* libfunambol.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D2AAC046055464E500DB518D /* libfunambol.a */; };
-		7C3BEC820DB734F500119850 /* CoreFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7C3BEB540DB7331100119850 /* CoreFoundation.framework */; };
-		7C3BEC830DB734FB00119850 /* CoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7C3BEB6E0DB733B200119850 /* CoreServices.framework */; };
 		7C3BEC840DB7350300119850 /* client.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C3BEB2A0DB732B400119850 /* client.cpp */; };
 		7C7649360DB385DC00786883 /* KeyValueStore.h in Headers */ = {isa = PBXBuildFile; fileRef = 7C7649350DB385DC00786883 /* KeyValueStore.h */; };
+		7C8B0A630DB7394F005113A8 /* CoreFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7C8B0A620DB7394F005113A8 /* CoreFoundation.framework */; };
+		7C8B0B500DB73A78005113A8 /* CoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7C8B0B4F0DB73A78005113A8 /* CoreServices.framework */; };
+		7C8B0C500DB73C2E005113A8 /* SQLiteKeyValueStore.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C8B0C4F0DB73C2E005113A8 /* SQLiteKeyValueStore.cpp */; };
 		7C9F52ED0DAF4CB1007E0091 /* base64.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C9F520E0DAF4CB1007E0091 /* base64.cpp */; };
 		7C9F52EE0DAF4CB1007E0091 /* error.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C9F520F0DAF4CB1007E0091 /* error.cpp */; };
 		7C9F52EF0DAF4CB1007E0091 /* ErrorHandler.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C9F52100DAF4CB1007E0091 /* ErrorHandler.cpp */; };
@@ -423,7 +424,7 @@
 			isa = PBXContainerItemProxy;
 			containerPortal = 08FB7793FE84155DC02AAC07 /* Project object */;
 			proxyType = 1;
-			remoteGlobalIDString = D2AAC045055464E500DB518D /* libfunambol */;
+			remoteGlobalIDString = D2AAC045055464E500DB518D;
 			remoteInfo = libfunambol;
 		};
 /* End PBXContainerItemProxy section */
@@ -447,10 +448,11 @@
 		7C3BEB350DB732B400119850 /* TestSyncSource.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = TestSyncSource.cpp; sourceTree = "<group>"; };
 		7C3BEB360DB732B400119850 /* TestSyncSource2.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = TestSyncSource2.cpp; sourceTree = "<group>"; };
 		7C3BEB370DB732B400119850 /* vcardconverter.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = vcardconverter.cpp; sourceTree = "<group>"; };
-		7C3BEB540DB7331100119850 /* CoreFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreFoundation.framework; path = System/Library/Frameworks/CoreFoundation.framework; sourceTree = SDKROOT; };
-		7C3BEB6E0DB733B200119850 /* CoreServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreServices.framework; path = System/Library/Frameworks/CoreServices.framework; sourceTree = SDKROOT; };
-		7C3BEC790DB734E600119850 /* examples-client */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; name = "examples-client"; path = "build/OSX-Debug/examples-client"; sourceTree = "<group>"; };
+		7C3BEC790DB734E600119850 /* examples-client */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = "compiled.mach-o.executable"; path = "examples-client"; sourceTree = BUILT_PRODUCTS_DIR; };
 		7C7649350DB385DC00786883 /* KeyValueStore.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = KeyValueStore.h; sourceTree = "<group>"; };
+		7C8B0A620DB7394F005113A8 /* CoreFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreFoundation.framework; path = SDKs/MacOSX10.5.sdk/System/Library/Frameworks/CoreFoundation.framework; sourceTree = DEVELOPER_DIR; };
+		7C8B0B4F0DB73A78005113A8 /* CoreServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreServices.framework; path = System/Library/Frameworks/CoreServices.framework; sourceTree = SDKROOT; };
+		7C8B0C4F0DB73C2E005113A8 /* SQLiteKeyValueStore.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = SQLiteKeyValueStore.cpp; sourceTree = "<group>"; };
 		7C9F520E0DAF4CB1007E0091 /* base64.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = base64.cpp; sourceTree = "<group>"; };
 		7C9F520F0DAF4CB1007E0091 /* error.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = error.cpp; sourceTree = "<group>"; };
 		7C9F52100DAF4CB1007E0091 /* ErrorHandler.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ErrorHandler.cpp; sourceTree = "<group>"; };
@@ -863,8 +865,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				7C3BEC810DB734EF00119850 /* libfunambol.a in Frameworks */,
-				7C3BEC820DB734F500119850 /* CoreFoundation.framework in Frameworks */,
-				7C3BEC830DB734FB00119850 /* CoreServices.framework in Frameworks */,
+				7C8B0A630DB7394F005113A8 /* CoreFoundation.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -872,6 +873,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				7C8B0B500DB73A78005113A8 /* CoreServices.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -881,11 +883,10 @@
 		08FB7794FE84155DC02AAC07 /* mac */ = {
 			isa = PBXGroup;
 			children = (
+				7C8B0C130DB73AAD005113A8 /* Frameworks */,
 				7C9F520B0DAF4C9B007E0091 /* Source */,
 				C6A0FF2B0290797F04C91782 /* Documentation */,
 				1AB674ADFE9D54B511CA2CBB /* Products */,
-				7C3BEB540DB7331100119850 /* CoreFoundation.framework */,
-				7C3BEB6E0DB733B200119850 /* CoreServices.framework */,
 			);
 			name = mac;
 			sourceTree = "<group>";
@@ -940,6 +941,31 @@
 			path = listeners;
 			sourceTree = "<group>";
 		};
+		7C8B0C130DB73AAD005113A8 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				7C8B0C3A0DB73B79005113A8 /* OSX */,
+				7C8B0C390DB73B69005113A8 /* iPhone */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		7C8B0C390DB73B69005113A8 /* iPhone */ = {
+			isa = PBXGroup;
+			children = (
+				7C8B0A620DB7394F005113A8 /* CoreFoundation.framework */,
+				7C8B0B4F0DB73A78005113A8 /* CoreServices.framework */,
+			);
+			name = iPhone;
+			sourceTree = "<group>";
+		};
+		7C8B0C3A0DB73B79005113A8 /* OSX */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = OSX;
+			sourceTree = "<group>";
+		};
 		7C9F520B0DAF4C9B007E0091 /* Source */ = {
 			isa = PBXGroup;
 			children = (
@@ -986,6 +1012,7 @@
 		7C9F52210DAF4CB1007E0091 /* client */ = {
 			isa = PBXGroup;
 			children = (
+				7C8B0C4F0DB73C2E005113A8 /* SQLiteKeyValueStore.cpp */,
 				7CB036780DB4EC8A003F4E5F /* SQLKeyValueStore.cpp */,
 				7C9F58B60DAF62A4007E0091 /* CacheSyncSource.cpp */,
 				7C9F52230DAF4CB1007E0091 /* DMTClientConfig.cpp */,
@@ -2239,6 +2266,7 @@
 				7CB0367A0DB4EC8A003F4E5F /* SQLKeyValueStore.cpp in Sources */,
 				7C3BEB250DB7329900119850 /* MacTransportAgent.cpp in Sources */,
 				7C3BEB760DB733D500119850 /* TestSyncSource.cpp in Sources */,
+				7C8B0C500DB73C2E005113A8 /* SQLiteKeyValueStore.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2259,6 +2287,10 @@
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				COPY_PHASE_STRIP = NO;
 				EXECUTABLE_PREFIX = "";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(DEVELOPER_DIR)/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator2.0.sdk/System/Library/Frameworks\"",
+				);
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_ENABLE_FIX_AND_CONTINUE = YES;
 				GCC_MODEL_TUNING = G5;
@@ -2274,6 +2306,10 @@
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				EXECUTABLE_PREFIX = "";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(DEVELOPER_DIR)/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator2.0.sdk/System/Library/Frameworks\"",
+				);
 				GCC_MODEL_TUNING = G5;
 				INSTALL_PATH = /usr/local/lib;
 				PRODUCT_NAME = libfunambol;
@@ -2438,6 +2474,10 @@
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				COPY_PHASE_STRIP = NO;
 				EXECUTABLE_PREFIX = "";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(DEVELOPER_DIR)/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator2.0.sdk/System/Library/Frameworks\"",
+				);
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_ENABLE_FIX_AND_CONTINUE = YES;
 				GCC_MODEL_TUNING = G5;
@@ -2453,6 +2493,10 @@
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				EXECUTABLE_PREFIX = "";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(DEVELOPER_DIR)/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator2.0.sdk/System/Library/Frameworks\"",
+				);
 				GCC_MODEL_TUNING = G5;
 				INSTALL_PATH = /usr/local/lib;
 				PRODUCT_NAME = libfunambol;

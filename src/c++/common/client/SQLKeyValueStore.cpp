@@ -40,12 +40,12 @@ BEGIN_NAMESPACE
 
 StringBuffer SQLKeyValueStore::sqlColKey() const
 {
-    return "key";
+    return colKey;
 }
 
 StringBuffer SQLKeyValueStore::sqlColValue() const
 {
-    return "value";
+    return colValue;
 }
 
 StringBuffer SQLKeyValueStore::sqlRemovePropertyString(const StringBuffer & key) const
@@ -76,31 +76,15 @@ StringBuffer SQLKeyValueStore::sqlGetAllString() const
     return sb;
 }
 
-SQLKeyValueStore::SQLKeyValueStore(const char * uri, const char * database, const char * table, const char * username, const char * password)
+SQLKeyValueStore::SQLKeyValueStore(const StringBuffer & table, const StringBuffer & colKey, const StringBuffer & colValue)
 {
-    this->uri = new char[strlen(uri)];
-    strcpy(this->uri, uri);
-    
-    this->database = new char[strlen(database)];
-    strcpy(this->database, database);
-    
-    this->table = new char[strlen(table)];
-    strcpy(this->table, table);
-    
-    this->username = new char[strlen(username)];
-    strcpy(this->username, username);
-    
-    this->password = new char[strlen(password)];
-    strcpy(this->password, password);
+    this->table    = table;
+    this->colKey   = colKey;
+    this->colValue = colValue;
 }
 
 SQLKeyValueStore::~SQLKeyValueStore()
 {
-    if (uri)        delete uri;
-    if (database)   delete database;
-    if (table)      delete table;
-    if (username)   delete username;
-    if (password)   delete password;
 }
 
 /*
@@ -115,7 +99,7 @@ SQLKeyValueStore::~SQLKeyValueStore()
 StringBuffer SQLKeyValueStore::readPropertyValue(const char *prop) const
 {
     StringBuffer sqlQuery = sqlGetPropertyString(StringBuffer(prop));
-    ArrayListEnumeration * en = query(sqlQuery);
+    Enumeration * en = query(sqlQuery);
     
     if (!en)
         return StringBuffer(NULL);
