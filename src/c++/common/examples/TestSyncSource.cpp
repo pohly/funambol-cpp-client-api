@@ -261,6 +261,10 @@ int TestSyncSource::deleteItem(SyncItem& item) {
     return 200;
 }
 
+int TestSyncSource::removeAllItems() {
+    return 0;
+}
+
 int TestSyncSource::beginSync() {
     LOG.debug("Begin sync TestSyncSource");
     return 0;

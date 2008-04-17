@@ -7,6 +7,14 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		7C3BEB220DB7328E00119850 /* CurlTransportAgent.h in Headers */ = {isa = PBXBuildFile; fileRef = 7C3BEB200DB7328E00119850 /* CurlTransportAgent.h */; };
+		7C3BEB230DB7328E00119850 /* MacTransportAgent.h in Headers */ = {isa = PBXBuildFile; fileRef = 7C3BEB210DB7328E00119850 /* MacTransportAgent.h */; };
+		7C3BEB250DB7329900119850 /* MacTransportAgent.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C3BEB240DB7329900119850 /* MacTransportAgent.cpp */; };
+		7C3BEB760DB733D500119850 /* TestSyncSource.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C3BEB350DB732B400119850 /* TestSyncSource.cpp */; };
+		7C3BEC810DB734EF00119850 /* libfunambol.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D2AAC046055464E500DB518D /* libfunambol.a */; };
+		7C3BEC820DB734F500119850 /* CoreFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7C3BEB540DB7331100119850 /* CoreFoundation.framework */; };
+		7C3BEC830DB734FB00119850 /* CoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7C3BEB6E0DB733B200119850 /* CoreServices.framework */; };
+		7C3BEC840DB7350300119850 /* client.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C3BEB2A0DB732B400119850 /* client.cpp */; };
 		7C7649360DB385DC00786883 /* KeyValueStore.h in Headers */ = {isa = PBXBuildFile; fileRef = 7C7649350DB385DC00786883 /* KeyValueStore.h */; };
 		7C9F52ED0DAF4CB1007E0091 /* base64.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C9F520E0DAF4CB1007E0091 /* base64.cpp */; };
 		7C9F52EE0DAF4CB1007E0091 /* error.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C9F520F0DAF4CB1007E0091 /* error.cpp */; };
@@ -400,20 +408,48 @@
 		7C9F55870DAF4CC5007E0091 /* VProperty.h in Headers */ = {isa = PBXBuildFile; fileRef = 7C9F54A20DAF4CC5007E0091 /* VProperty.h */; };
 		7C9F55880DAF4CC5007E0091 /* posixadapter.h in Headers */ = {isa = PBXBuildFile; fileRef = 7C9F54A50DAF4CC5007E0091 /* posixadapter.h */; };
 		7C9F55890DAF4CC5007E0091 /* posixlog.h in Headers */ = {isa = PBXBuildFile; fileRef = 7C9F54A60DAF4CC5007E0091 /* posixlog.h */; };
-		7C9F558A0DAF4CC5007E0091 /* CurlTransportAgent.h in Headers */ = {isa = PBXBuildFile; fileRef = 7C9F54A80DAF4CC5007E0091 /* CurlTransportAgent.h */; };
 		7C9F558B0DAF4CC5007E0091 /* FSocket.h in Headers */ = {isa = PBXBuildFile; fileRef = 7C9F54AA0DAF4CC5007E0091 /* FSocket.h */; };
 		7C9F558C0DAF4CC5007E0091 /* FThread.h in Headers */ = {isa = PBXBuildFile; fileRef = 7C9F54AB0DAF4CC5007E0091 /* FThread.h */; };
 		7C9F558D0DAF4CC5007E0091 /* DeviceManagementNode.h in Headers */ = {isa = PBXBuildFile; fileRef = 7C9F54AD0DAF4CC5007E0091 /* DeviceManagementNode.h */; };
 		7C9F558E0DAF4CC5007E0091 /* migrateConfig.h in Headers */ = {isa = PBXBuildFile; fileRef = 7C9F54AE0DAF4CC5007E0091 /* migrateConfig.h */; };
 		7C9F58B70DAF62A4007E0091 /* CacheSyncSource.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C9F58B60DAF62A4007E0091 /* CacheSyncSource.cpp */; };
 		7C9F58B90DAF62AE007E0091 /* CacheSyncSource.h in Headers */ = {isa = PBXBuildFile; fileRef = 7C9F58B80DAF62AE007E0091 /* CacheSyncSource.h */; };
-		7CB036790DB4EC8A003F4E5F /* ODBCKeyValueStore.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7CB036770DB4EC8A003F4E5F /* ODBCKeyValueStore.cpp */; };
 		7CB0367A0DB4EC8A003F4E5F /* SQLKeyValueStore.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7CB036780DB4EC8A003F4E5F /* SQLKeyValueStore.cpp */; };
-		7CB0367D0DB4EC9A003F4E5F /* ODBCKeyValueStore.h in Headers */ = {isa = PBXBuildFile; fileRef = 7CB0367B0DB4EC9A003F4E5F /* ODBCKeyValueStore.h */; };
 		7CB0367E0DB4EC9A003F4E5F /* SQLKeyValueStore.h in Headers */ = {isa = PBXBuildFile; fileRef = 7CB0367C0DB4EC9A003F4E5F /* SQLKeyValueStore.h */; };
 /* End PBXBuildFile section */
 
+/* Begin PBXContainerItemProxy section */
+		7C3BEC7F0DB734EC00119850 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 08FB7793FE84155DC02AAC07 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = D2AAC045055464E500DB518D /* libfunambol */;
+			remoteInfo = libfunambol;
+		};
+/* End PBXContainerItemProxy section */
+
 /* Begin PBXFileReference section */
+		7C3BEB200DB7328E00119850 /* CurlTransportAgent.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CurlTransportAgent.h; sourceTree = "<group>"; };
+		7C3BEB210DB7328E00119850 /* MacTransportAgent.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MacTransportAgent.h; sourceTree = "<group>"; };
+		7C3BEB240DB7329900119850 /* MacTransportAgent.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = MacTransportAgent.cpp; sourceTree = "<group>"; };
+		7C3BEB280DB732B400119850 /* BriefcaseCacheSyncSource.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = BriefcaseCacheSyncSource.cpp; sourceTree = "<group>"; };
+		7C3BEB290DB732B400119850 /* BriefcaseClient.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = BriefcaseClient.cpp; sourceTree = "<group>"; };
+		7C3BEB2A0DB732B400119850 /* client.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = client.cpp; sourceTree = "<group>"; };
+		7C3BEB2B0DB732B400119850 /* clientTestFramework.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = clientTestFramework.cpp; sourceTree = "<group>"; };
+		7C3BEB2D0DB732B400119850 /* TestSyncItemListener.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = TestSyncItemListener.cpp; sourceTree = "<group>"; };
+		7C3BEB2E0DB732B400119850 /* TestSyncListener.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = TestSyncListener.cpp; sourceTree = "<group>"; };
+		7C3BEB2F0DB732B400119850 /* TestSyncSourceListener.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = TestSyncSourceListener.cpp; sourceTree = "<group>"; };
+		7C3BEB300DB732B400119850 /* TestSyncStatusListener.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = TestSyncStatusListener.cpp; sourceTree = "<group>"; };
+		7C3BEB310DB732B400119850 /* TestTransportListener.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = TestTransportListener.cpp; sourceTree = "<group>"; };
+		7C3BEB320DB732B400119850 /* MailTest.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = MailTest.cpp; sourceTree = "<group>"; };
+		7C3BEB330DB732B400119850 /* NotifProcessorTest.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = NotifProcessorTest.cpp; sourceTree = "<group>"; };
+		7C3BEB340DB732B400119850 /* test_settings.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = test_settings.cpp; sourceTree = "<group>"; };
+		7C3BEB350DB732B400119850 /* TestSyncSource.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = TestSyncSource.cpp; sourceTree = "<group>"; };
+		7C3BEB360DB732B400119850 /* TestSyncSource2.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = TestSyncSource2.cpp; sourceTree = "<group>"; };
+		7C3BEB370DB732B400119850 /* vcardconverter.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = vcardconverter.cpp; sourceTree = "<group>"; };
+		7C3BEB540DB7331100119850 /* CoreFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreFoundation.framework; path = System/Library/Frameworks/CoreFoundation.framework; sourceTree = SDKROOT; };
+		7C3BEB6E0DB733B200119850 /* CoreServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreServices.framework; path = System/Library/Frameworks/CoreServices.framework; sourceTree = SDKROOT; };
+		7C3BEC790DB734E600119850 /* examples-client */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; name = "examples-client"; path = "build/OSX-Debug/examples-client"; sourceTree = "<group>"; };
 		7C7649350DB385DC00786883 /* KeyValueStore.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = KeyValueStore.h; sourceTree = "<group>"; };
 		7C9F520E0DAF4CB1007E0091 /* base64.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = base64.cpp; sourceTree = "<group>"; };
 		7C9F520F0DAF4CB1007E0091 /* error.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = error.cpp; sourceTree = "<group>"; };
@@ -809,7 +845,6 @@
 		7C9F54A20DAF4CC5007E0091 /* VProperty.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VProperty.h; sourceTree = "<group>"; };
 		7C9F54A50DAF4CC5007E0091 /* posixadapter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = posixadapter.h; sourceTree = "<group>"; };
 		7C9F54A60DAF4CC5007E0091 /* posixlog.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = posixlog.h; sourceTree = "<group>"; };
-		7C9F54A80DAF4CC5007E0091 /* CurlTransportAgent.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CurlTransportAgent.h; sourceTree = "<group>"; };
 		7C9F54AA0DAF4CC5007E0091 /* FSocket.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FSocket.h; sourceTree = "<group>"; };
 		7C9F54AB0DAF4CC5007E0091 /* FThread.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FThread.h; sourceTree = "<group>"; };
 		7C9F54AD0DAF4CC5007E0091 /* DeviceManagementNode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DeviceManagementNode.h; sourceTree = "<group>"; };
@@ -817,14 +852,22 @@
 		7C9F58B60DAF62A4007E0091 /* CacheSyncSource.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CacheSyncSource.cpp; sourceTree = "<group>"; };
 		7C9F58B80DAF62AE007E0091 /* CacheSyncSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CacheSyncSource.h; sourceTree = "<group>"; };
 		7C9F58CE0DAF639E007E0091 /* globalsdef.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = globalsdef.h; sourceTree = "<group>"; };
-		7CB036770DB4EC8A003F4E5F /* ODBCKeyValueStore.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ODBCKeyValueStore.cpp; sourceTree = "<group>"; };
 		7CB036780DB4EC8A003F4E5F /* SQLKeyValueStore.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = SQLKeyValueStore.cpp; sourceTree = "<group>"; };
-		7CB0367B0DB4EC9A003F4E5F /* ODBCKeyValueStore.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ODBCKeyValueStore.h; sourceTree = "<group>"; };
 		7CB0367C0DB4EC9A003F4E5F /* SQLKeyValueStore.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SQLKeyValueStore.h; sourceTree = "<group>"; };
 		D2AAC046055464E500DB518D /* libfunambol.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libfunambol.a; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		7C3BEC770DB734E600119850 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				7C3BEC810DB734EF00119850 /* libfunambol.a in Frameworks */,
+				7C3BEC820DB734F500119850 /* CoreFoundation.framework in Frameworks */,
+				7C3BEC830DB734FB00119850 /* CoreServices.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		D289987405E68DCB004EDB86 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -841,6 +884,8 @@
 				7C9F520B0DAF4C9B007E0091 /* Source */,
 				C6A0FF2B0290797F04C91782 /* Documentation */,
 				1AB674ADFE9D54B511CA2CBB /* Products */,
+				7C3BEB540DB7331100119850 /* CoreFoundation.framework */,
+				7C3BEB6E0DB733B200119850 /* CoreServices.framework */,
 			);
 			name = mac;
 			sourceTree = "<group>";
@@ -849,8 +894,50 @@
 			isa = PBXGroup;
 			children = (
 				D2AAC046055464E500DB518D /* libfunambol.a */,
+				7C3BEC790DB734E600119850 /* examples-client */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		7C3BEB1F0DB7328E00119850 /* http */ = {
+			isa = PBXGroup;
+			children = (
+				7C3BEB200DB7328E00119850 /* CurlTransportAgent.h */,
+				7C3BEB210DB7328E00119850 /* MacTransportAgent.h */,
+			);
+			name = http;
+			path = ../../src/include/posix/http;
+			sourceTree = SOURCE_ROOT;
+		};
+		7C3BEB270DB732B400119850 /* examples */ = {
+			isa = PBXGroup;
+			children = (
+				7C3BEB280DB732B400119850 /* BriefcaseCacheSyncSource.cpp */,
+				7C3BEB290DB732B400119850 /* BriefcaseClient.cpp */,
+				7C3BEB2A0DB732B400119850 /* client.cpp */,
+				7C3BEB2B0DB732B400119850 /* clientTestFramework.cpp */,
+				7C3BEB2C0DB732B400119850 /* listeners */,
+				7C3BEB320DB732B400119850 /* MailTest.cpp */,
+				7C3BEB330DB732B400119850 /* NotifProcessorTest.cpp */,
+				7C3BEB340DB732B400119850 /* test_settings.cpp */,
+				7C3BEB350DB732B400119850 /* TestSyncSource.cpp */,
+				7C3BEB360DB732B400119850 /* TestSyncSource2.cpp */,
+				7C3BEB370DB732B400119850 /* vcardconverter.cpp */,
+			);
+			name = examples;
+			path = "../../src/c++/common/examples";
+			sourceTree = SOURCE_ROOT;
+		};
+		7C3BEB2C0DB732B400119850 /* listeners */ = {
+			isa = PBXGroup;
+			children = (
+				7C3BEB2D0DB732B400119850 /* TestSyncItemListener.cpp */,
+				7C3BEB2E0DB732B400119850 /* TestSyncListener.cpp */,
+				7C3BEB2F0DB732B400119850 /* TestSyncSourceListener.cpp */,
+				7C3BEB300DB732B400119850 /* TestSyncStatusListener.cpp */,
+				7C3BEB310DB732B400119850 /* TestTransportListener.cpp */,
+			);
+			path = listeners;
 			sourceTree = "<group>";
 		};
 		7C9F520B0DAF4C9B007E0091 /* Source */ = {
@@ -899,7 +986,6 @@
 		7C9F52210DAF4CB1007E0091 /* client */ = {
 			isa = PBXGroup;
 			children = (
-				7CB036770DB4EC8A003F4E5F /* ODBCKeyValueStore.cpp */,
 				7CB036780DB4EC8A003F4E5F /* SQLKeyValueStore.cpp */,
 				7C9F58B60DAF62A4007E0091 /* CacheSyncSource.cpp */,
 				7C9F52230DAF4CB1007E0091 /* DMTClientConfig.cpp */,
@@ -1167,6 +1253,7 @@
 		7C9F52E10DAF4CB1007E0091 /* http */ = {
 			isa = PBXGroup;
 			children = (
+				7C3BEB240DB7329900119850 /* MacTransportAgent.cpp */,
 				7C9F52E30DAF4CB1007E0091 /* TransportAgentFactory.cpp */,
 			);
 			name = http;
@@ -1240,7 +1327,6 @@
 		7C9F53D30DAF4CC5007E0091 /* client */ = {
 			isa = PBXGroup;
 			children = (
-				7CB0367B0DB4EC9A003F4E5F /* ODBCKeyValueStore.h */,
 				7CB0367C0DB4EC9A003F4E5F /* SQLKeyValueStore.h */,
 				7C9F53D50DAF4CC5007E0091 /* DMTClientConfig.h */,
 				7C9F58B80DAF62AE007E0091 /* CacheSyncSource.h */,
@@ -1568,15 +1654,6 @@
 			path = ../../src/include/posix/base;
 			sourceTree = "<group>";
 		};
-		7C9F54A70DAF4CC5007E0091 /* http */ = {
-			isa = PBXGroup;
-			children = (
-				7C9F54A80DAF4CC5007E0091 /* CurlTransportAgent.h */,
-			);
-			name = http;
-			path = ../../src/include/posix/http;
-			sourceTree = "<group>";
-		};
 		7C9F54A90DAF4CC5007E0091 /* push */ = {
 			isa = PBXGroup;
 			children = (
@@ -1600,8 +1677,8 @@
 		7C9F558F0DAF4CD3007E0091 /* include */ = {
 			isa = PBXGroup;
 			children = (
+				7C3BEB1F0DB7328E00119850 /* http */,
 				7C9F54A40DAF4CC5007E0091 /* base */,
-				7C9F54A70DAF4CC5007E0091 /* http */,
 				7C9F54A90DAF4CC5007E0091 /* push */,
 				7C9F54AC0DAF4CC5007E0091 /* spdm */,
 			);
@@ -1640,6 +1717,7 @@
 		7C9F56110DAF5186007E0091 /* c++ */ = {
 			isa = PBXGroup;
 			children = (
+				7C3BEB270DB732B400119850 /* examples */,
 				7C9F520D0DAF4CB1007E0091 /* base */,
 				7C9F52210DAF4CB1007E0091 /* client */,
 				7C9F52290DAF4CB1007E0091 /* event */,
@@ -1901,24 +1979,41 @@
 				7C9F55870DAF4CC5007E0091 /* VProperty.h in Headers */,
 				7C9F55880DAF4CC5007E0091 /* posixadapter.h in Headers */,
 				7C9F55890DAF4CC5007E0091 /* posixlog.h in Headers */,
-				7C9F558A0DAF4CC5007E0091 /* CurlTransportAgent.h in Headers */,
 				7C9F558B0DAF4CC5007E0091 /* FSocket.h in Headers */,
 				7C9F558C0DAF4CC5007E0091 /* FThread.h in Headers */,
 				7C9F558D0DAF4CC5007E0091 /* DeviceManagementNode.h in Headers */,
 				7C9F558E0DAF4CC5007E0091 /* migrateConfig.h in Headers */,
 				7C9F58B90DAF62AE007E0091 /* CacheSyncSource.h in Headers */,
 				7C7649360DB385DC00786883 /* KeyValueStore.h in Headers */,
-				7CB0367D0DB4EC9A003F4E5F /* ODBCKeyValueStore.h in Headers */,
 				7CB0367E0DB4EC9A003F4E5F /* SQLKeyValueStore.h in Headers */,
+				7C3BEB220DB7328E00119850 /* CurlTransportAgent.h in Headers */,
+				7C3BEB230DB7328E00119850 /* MacTransportAgent.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXHeadersBuildPhase section */
 
 /* Begin PBXNativeTarget section */
-		D2AAC045055464E500DB518D /* funambol */ = {
+		7C3BEC780DB734E600119850 /* examples-client */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 1DEB91EB08733DB70010E9CD /* Build configuration list for PBXNativeTarget "funambol" */;
+			buildConfigurationList = 7C3BEC8A0DB7353F00119850 /* Build configuration list for PBXNativeTarget "examples-client" */;
+			buildPhases = (
+				7C3BEC760DB734E600119850 /* Sources */,
+				7C3BEC770DB734E600119850 /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				7C3BEC800DB734EC00119850 /* PBXTargetDependency */,
+			);
+			name = "examples-client";
+			productName = "examples-client";
+			productReference = 7C3BEC790DB734E600119850 /* examples-client */;
+			productType = "com.apple.product-type.tool";
+		};
+		D2AAC045055464E500DB518D /* libfunambol */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 1DEB91EB08733DB70010E9CD /* Build configuration list for PBXNativeTarget "libfunambol" */;
 			buildPhases = (
 				D2AAC043055464E500DB518D /* Headers */,
 				D2AAC044055464E500DB518D /* Sources */,
@@ -1928,7 +2023,7 @@
 			);
 			dependencies = (
 			);
-			name = funambol;
+			name = libfunambol;
 			productName = mac;
 			productReference = D2AAC046055464E500DB518D /* libfunambol.a */;
 			productType = "com.apple.product-type.library.static";
@@ -1945,12 +2040,21 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				D2AAC045055464E500DB518D /* funambol */,
+				D2AAC045055464E500DB518D /* libfunambol */,
+				7C3BEC780DB734E600119850 /* examples-client */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXSourcesBuildPhase section */
+		7C3BEC760DB734E600119850 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				7C3BEC840DB7350300119850 /* client.cpp in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		D2AAC044055464E500DB518D /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -2132,12 +2236,21 @@
 				7C9F53B30DAF4CB1007E0091 /* DESDecoder.cpp in Sources */,
 				7C9F53B40DAF4CB1007E0091 /* DESEncoder.cpp in Sources */,
 				7C9F58B70DAF62A4007E0091 /* CacheSyncSource.cpp in Sources */,
-				7CB036790DB4EC8A003F4E5F /* ODBCKeyValueStore.cpp in Sources */,
 				7CB0367A0DB4EC8A003F4E5F /* SQLKeyValueStore.cpp in Sources */,
+				7C3BEB250DB7329900119850 /* MacTransportAgent.cpp in Sources */,
+				7C3BEB760DB733D500119850 /* TestSyncSource.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		7C3BEC800DB734EC00119850 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = D2AAC045055464E500DB518D /* libfunambol */;
+			targetProxy = 7C3BEC7F0DB734EC00119850 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
 		1DEB91EC08733DB70010E9CD /* OSX-Debug */ = {
@@ -2216,6 +2329,58 @@
 				STANDARD_C_PLUS_PLUS_LIBRARY_TYPE = dynamic;
 			};
 			name = "OSX-Release";
+		};
+		7C3BEC7B0DB734E700119850 /* OSX-Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_MODEL_TUNING = G5;
+				INSTALL_PATH = /usr/local/bin;
+				PREBINDING = NO;
+				PRODUCT_NAME = "examples-client";
+			};
+			name = "OSX-Debug";
+		};
+		7C3BEC7C0DB734E700119850 /* OSX-Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_MODEL_TUNING = G5;
+				INSTALL_PATH = /usr/local/bin;
+				PREBINDING = NO;
+				PRODUCT_NAME = "examples-client";
+			};
+			name = "OSX-Release";
+		};
+		7C3BEC7D0DB734E700119850 /* iPhone-Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_MODEL_TUNING = G5;
+				INSTALL_PATH = /usr/local/bin;
+				PREBINDING = NO;
+				PRODUCT_NAME = "examples-client";
+			};
+			name = "iPhone-Debug";
+		};
+		7C3BEC7E0DB734E700119850 /* iPhone-Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_MODEL_TUNING = G5;
+				INSTALL_PATH = /usr/local/bin;
+				PREBINDING = NO;
+				PRODUCT_NAME = "examples-client";
+			};
+			name = "iPhone-Release";
 		};
 		7C9F561E0DAF5289007E0091 /* iPhone-Debug */ = {
 			isa = XCBuildConfiguration;
@@ -2297,7 +2462,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		1DEB91EB08733DB70010E9CD /* Build configuration list for PBXNativeTarget "funambol" */ = {
+		1DEB91EB08733DB70010E9CD /* Build configuration list for PBXNativeTarget "libfunambol" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				1DEB91EC08733DB70010E9CD /* OSX-Debug */,
@@ -2315,6 +2480,17 @@
 				1DEB91F108733DB70010E9CD /* OSX-Release */,
 				7C9F561E0DAF5289007E0091 /* iPhone-Debug */,
 				7C9F561F0DAF5289007E0091 /* iPhone-Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = "OSX-Release";
+		};
+		7C3BEC8A0DB7353F00119850 /* Build configuration list for PBXNativeTarget "examples-client" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				7C3BEC7B0DB734E700119850 /* OSX-Debug */,
+				7C3BEC7C0DB734E700119850 /* OSX-Release */,
+				7C3BEC7D0DB734E700119850 /* iPhone-Debug */,
+				7C3BEC7E0DB734E700119850 /* iPhone-Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = "OSX-Release";

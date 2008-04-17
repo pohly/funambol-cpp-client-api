@@ -117,8 +117,10 @@ char* MacTransportAgent::sendMessage(const char* msg){
     CFDataRef mySerializedRequest = CFHTTPMessageCopySerializedMessage(myRequest);
     
         
-    char* ret = (char*)CFDataGetBytePtr(mySerializedRequest);
+    char* tempret = (char*)CFDataGetBytePtr(mySerializedRequest);
     
+    char * ret = new char[strlen(tempret)];
+    strcpy(ret, tempret);
     
     CFRelease(bodyStr);
     CFRelease(headerFieldName);
@@ -128,7 +130,6 @@ char* MacTransportAgent::sendMessage(const char* msg){
     CFRelease(myRequest);
     CFRelease(bodyData);
     CFRelease(mySerializedRequest);
-
     
     
     return ret;

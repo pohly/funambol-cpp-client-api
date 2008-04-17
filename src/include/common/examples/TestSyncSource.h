@@ -43,6 +43,7 @@
 #include "spds/SyncMap.h"
 #include "spds/SyncStatus.h"
 #include "spds/SyncSource.h"
+#include "spds/SyncSourceConfig.h"
 #include "base/globalsdef.h"
 
 BEGIN_NAMESPACE
@@ -130,6 +131,8 @@ public:
     int updateItem(SyncItem& item);
 
     int deleteItem(SyncItem& item);
+    
+    int removeAllItems(); //Not implemented
 
     int beginSync();
 
