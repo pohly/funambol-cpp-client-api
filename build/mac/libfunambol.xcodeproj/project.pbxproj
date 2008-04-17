@@ -15,8 +15,15 @@
 		7C3BEC840DB7350300119850 /* client.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C3BEB2A0DB732B400119850 /* client.cpp */; };
 		7C7649360DB385DC00786883 /* KeyValueStore.h in Headers */ = {isa = PBXBuildFile; fileRef = 7C7649350DB385DC00786883 /* KeyValueStore.h */; };
 		7C8B0A630DB7394F005113A8 /* CoreFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7C8B0A620DB7394F005113A8 /* CoreFoundation.framework */; };
-		7C8B0B500DB73A78005113A8 /* CoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7C8B0B4F0DB73A78005113A8 /* CoreServices.framework */; };
 		7C8B0C500DB73C2E005113A8 /* SQLiteKeyValueStore.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C8B0C4F0DB73C2E005113A8 /* SQLiteKeyValueStore.cpp */; };
+		7C8B0D630DB74DFD005113A8 /* libsqlite3.0.8.6.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 7C8B0D620DB74DFD005113A8 /* libsqlite3.0.8.6.dylib */; };
+		7C8B0D9A0DB7517C005113A8 /* CoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7C8B0D990DB7517C005113A8 /* CoreServices.framework */; };
+		7C8B0E630DB75288005113A8 /* CoreFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7C8B0A620DB7394F005113A8 /* CoreFoundation.framework */; };
+		7C8B0E680DB752C7005113A8 /* CoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7C8B0E670DB752C7005113A8 /* CoreServices.framework */; };
+		7C8B0E690DB752D4005113A8 /* CoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7C8B0D990DB7517C005113A8 /* CoreServices.framework */; };
+		7C8B0ED20DB758AB005113A8 /* libfunambol.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D2AAC046055464E500DB518D /* libfunambol.a */; };
+		7C8B0ED40DB758B3005113A8 /* libsqlite3.0.8.6.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 7C8B0ED30DB758B3005113A8 /* libsqlite3.0.8.6.dylib */; };
+		7C8B0ED60DB758C1005113A8 /* SQLiteKVSTest.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C8B0EBD0DB756A4005113A8 /* SQLiteKVSTest.cpp */; };
 		7C9F52ED0DAF4CB1007E0091 /* base64.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C9F520E0DAF4CB1007E0091 /* base64.cpp */; };
 		7C9F52EE0DAF4CB1007E0091 /* error.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C9F520F0DAF4CB1007E0091 /* error.cpp */; };
 		7C9F52EF0DAF4CB1007E0091 /* ErrorHandler.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C9F52100DAF4CB1007E0091 /* ErrorHandler.cpp */; };
@@ -427,6 +434,13 @@
 			remoteGlobalIDString = D2AAC045055464E500DB518D;
 			remoteInfo = libfunambol;
 		};
+		7C8B0ED00DB758A7005113A8 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 08FB7793FE84155DC02AAC07 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = D2AAC045055464E500DB518D /* libfunambol */;
+			remoteInfo = libfunambol;
+		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
@@ -448,11 +462,16 @@
 		7C3BEB350DB732B400119850 /* TestSyncSource.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = TestSyncSource.cpp; sourceTree = "<group>"; };
 		7C3BEB360DB732B400119850 /* TestSyncSource2.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = TestSyncSource2.cpp; sourceTree = "<group>"; };
 		7C3BEB370DB732B400119850 /* vcardconverter.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = vcardconverter.cpp; sourceTree = "<group>"; };
-		7C3BEC790DB734E600119850 /* examples-client */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = "compiled.mach-o.executable"; path = "examples-client"; sourceTree = BUILT_PRODUCTS_DIR; };
+		7C3BEC790DB734E600119850 /* examples-client */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = "examples-client"; sourceTree = BUILT_PRODUCTS_DIR; };
 		7C7649350DB385DC00786883 /* KeyValueStore.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = KeyValueStore.h; sourceTree = "<group>"; };
-		7C8B0A620DB7394F005113A8 /* CoreFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreFoundation.framework; path = SDKs/MacOSX10.5.sdk/System/Library/Frameworks/CoreFoundation.framework; sourceTree = DEVELOPER_DIR; };
-		7C8B0B4F0DB73A78005113A8 /* CoreServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreServices.framework; path = System/Library/Frameworks/CoreServices.framework; sourceTree = SDKROOT; };
+		7C8B0A620DB7394F005113A8 /* CoreFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreFoundation.framework; path = System/Library/Frameworks/CoreFoundation.framework; sourceTree = SDKROOT; };
 		7C8B0C4F0DB73C2E005113A8 /* SQLiteKeyValueStore.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = SQLiteKeyValueStore.cpp; sourceTree = "<group>"; };
+		7C8B0D620DB74DFD005113A8 /* libsqlite3.0.8.6.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libsqlite3.0.8.6.dylib; path = usr/lib/libsqlite3.0.8.6.dylib; sourceTree = SDKROOT; };
+		7C8B0D990DB7517C005113A8 /* CoreServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreServices.framework; path = System/Library/Frameworks/CoreServices.framework; sourceTree = SDKROOT; };
+		7C8B0E670DB752C7005113A8 /* CoreServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreServices.framework; path = Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator2.0.sdk/System/Library/Frameworks/CoreServices.framework; sourceTree = DEVELOPER_DIR; };
+		7C8B0EBD0DB756A4005113A8 /* SQLiteKVSTest.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = SQLiteKVSTest.cpp; sourceTree = "<group>"; };
+		7C8B0EC70DB758A3005113A8 /* examples-sqlitekvstest */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; name = "examples-sqlitekvstest"; path = "build/OSX-Debug/examples-sqlitekvstest"; sourceTree = "<group>"; };
+		7C8B0ED30DB758B3005113A8 /* libsqlite3.0.8.6.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libsqlite3.0.8.6.dylib; path = usr/lib/libsqlite3.0.8.6.dylib; sourceTree = SDKROOT; };
 		7C9F520E0DAF4CB1007E0091 /* base64.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = base64.cpp; sourceTree = "<group>"; };
 		7C9F520F0DAF4CB1007E0091 /* error.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = error.cpp; sourceTree = "<group>"; };
 		7C9F52100DAF4CB1007E0091 /* ErrorHandler.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ErrorHandler.cpp; sourceTree = "<group>"; };
@@ -866,6 +885,16 @@
 			files = (
 				7C3BEC810DB734EF00119850 /* libfunambol.a in Frameworks */,
 				7C8B0A630DB7394F005113A8 /* CoreFoundation.framework in Frameworks */,
+				7C8B0E690DB752D4005113A8 /* CoreServices.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		7C8B0EC50DB758A3005113A8 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				7C8B0ED20DB758AB005113A8 /* libfunambol.a in Frameworks */,
+				7C8B0ED40DB758B3005113A8 /* libsqlite3.0.8.6.dylib in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -873,7 +902,10 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				7C8B0B500DB73A78005113A8 /* CoreServices.framework in Frameworks */,
+				7C8B0D630DB74DFD005113A8 /* libsqlite3.0.8.6.dylib in Frameworks */,
+				7C8B0D9A0DB7517C005113A8 /* CoreServices.framework in Frameworks */,
+				7C8B0E630DB75288005113A8 /* CoreFoundation.framework in Frameworks */,
+				7C8B0E680DB752C7005113A8 /* CoreServices.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -887,6 +919,8 @@
 				7C9F520B0DAF4C9B007E0091 /* Source */,
 				C6A0FF2B0290797F04C91782 /* Documentation */,
 				1AB674ADFE9D54B511CA2CBB /* Products */,
+				7C8B0D620DB74DFD005113A8 /* libsqlite3.0.8.6.dylib */,
+				7C8B0ED30DB758B3005113A8 /* libsqlite3.0.8.6.dylib */,
 			);
 			name = mac;
 			sourceTree = "<group>";
@@ -896,6 +930,7 @@
 			children = (
 				D2AAC046055464E500DB518D /* libfunambol.a */,
 				7C3BEC790DB734E600119850 /* examples-client */,
+				7C8B0EC70DB758A3005113A8 /* examples-sqlitekvstest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -924,6 +959,7 @@
 				7C3BEB350DB732B400119850 /* TestSyncSource.cpp */,
 				7C3BEB360DB732B400119850 /* TestSyncSource2.cpp */,
 				7C3BEB370DB732B400119850 /* vcardconverter.cpp */,
+				7C8B0EBD0DB756A4005113A8 /* SQLiteKVSTest.cpp */,
 			);
 			name = examples;
 			path = "../../src/c++/common/examples";
@@ -944,6 +980,7 @@
 		7C8B0C130DB73AAD005113A8 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				7C8B0A620DB7394F005113A8 /* CoreFoundation.framework */,
 				7C8B0C3A0DB73B79005113A8 /* OSX */,
 				7C8B0C390DB73B69005113A8 /* iPhone */,
 			);
@@ -953,8 +990,7 @@
 		7C8B0C390DB73B69005113A8 /* iPhone */ = {
 			isa = PBXGroup;
 			children = (
-				7C8B0A620DB7394F005113A8 /* CoreFoundation.framework */,
-				7C8B0B4F0DB73A78005113A8 /* CoreServices.framework */,
+				7C8B0E670DB752C7005113A8 /* CoreServices.framework */,
 			);
 			name = iPhone;
 			sourceTree = "<group>";
@@ -962,6 +998,7 @@
 		7C8B0C3A0DB73B79005113A8 /* OSX */ = {
 			isa = PBXGroup;
 			children = (
+				7C8B0D990DB7517C005113A8 /* CoreServices.framework */,
 			);
 			name = OSX;
 			sourceTree = "<group>";
@@ -2038,6 +2075,23 @@
 			productReference = 7C3BEC790DB734E600119850 /* examples-client */;
 			productType = "com.apple.product-type.tool";
 		};
+		7C8B0EC60DB758A3005113A8 /* examples-sqlitekvstest */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 7C8B0ED50DB758B4005113A8 /* Build configuration list for PBXNativeTarget "examples-sqlitekvstest" */;
+			buildPhases = (
+				7C8B0EC40DB758A3005113A8 /* Sources */,
+				7C8B0EC50DB758A3005113A8 /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				7C8B0ED10DB758A7005113A8 /* PBXTargetDependency */,
+			);
+			name = "examples-sqlitekvstest";
+			productName = "examples-sqlitekvstest";
+			productReference = 7C8B0EC70DB758A3005113A8 /* examples-sqlitekvstest */;
+			productType = "com.apple.product-type.tool";
+		};
 		D2AAC045055464E500DB518D /* libfunambol */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 1DEB91EB08733DB70010E9CD /* Build configuration list for PBXNativeTarget "libfunambol" */;
@@ -2069,6 +2123,7 @@
 			targets = (
 				D2AAC045055464E500DB518D /* libfunambol */,
 				7C3BEC780DB734E600119850 /* examples-client */,
+				7C8B0EC60DB758A3005113A8 /* examples-sqlitekvstest */,
 			);
 		};
 /* End PBXProject section */
@@ -2079,6 +2134,14 @@
 			buildActionMask = 2147483647;
 			files = (
 				7C3BEC840DB7350300119850 /* client.cpp in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		7C8B0EC40DB758A3005113A8 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				7C8B0ED60DB758C1005113A8 /* SQLiteKVSTest.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2278,6 +2341,11 @@
 			target = D2AAC045055464E500DB518D /* libfunambol */;
 			targetProxy = 7C3BEC7F0DB734EC00119850 /* PBXContainerItemProxy */;
 		};
+		7C8B0ED10DB758A7005113A8 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = D2AAC045055464E500DB518D /* libfunambol */;
+			targetProxy = 7C8B0ED00DB758A7005113A8 /* PBXContainerItemProxy */;
+		};
 /* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
@@ -2418,6 +2486,58 @@
 			};
 			name = "iPhone-Release";
 		};
+		7C8B0ECC0DB758A4005113A8 /* OSX-Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_MODEL_TUNING = G5;
+				INSTALL_PATH = /usr/local/bin;
+				PREBINDING = NO;
+				PRODUCT_NAME = "examples-sqlitekvstest";
+			};
+			name = "OSX-Debug";
+		};
+		7C8B0ECD0DB758A4005113A8 /* OSX-Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_MODEL_TUNING = G5;
+				INSTALL_PATH = /usr/local/bin;
+				PREBINDING = NO;
+				PRODUCT_NAME = "examples-sqlitekvstest";
+			};
+			name = "OSX-Release";
+		};
+		7C8B0ECE0DB758A4005113A8 /* iPhone-Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_MODEL_TUNING = G5;
+				INSTALL_PATH = /usr/local/bin;
+				PREBINDING = NO;
+				PRODUCT_NAME = "examples-sqlitekvstest";
+			};
+			name = "iPhone-Debug";
+		};
+		7C8B0ECF0DB758A4005113A8 /* iPhone-Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_MODEL_TUNING = G5;
+				INSTALL_PATH = /usr/local/bin;
+				PREBINDING = NO;
+				PRODUCT_NAME = "examples-sqlitekvstest";
+			};
+			name = "iPhone-Release";
+		};
 		7C9F561E0DAF5289007E0091 /* iPhone-Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -2535,6 +2655,17 @@
 				7C3BEC7C0DB734E700119850 /* OSX-Release */,
 				7C3BEC7D0DB734E700119850 /* iPhone-Debug */,
 				7C3BEC7E0DB734E700119850 /* iPhone-Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = "OSX-Release";
+		};
+		7C8B0ED50DB758B4005113A8 /* Build configuration list for PBXNativeTarget "examples-sqlitekvstest" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				7C8B0ECC0DB758A4005113A8 /* OSX-Debug */,
+				7C8B0ECD0DB758A4005113A8 /* OSX-Release */,
+				7C8B0ECE0DB758A4005113A8 /* iPhone-Debug */,
+				7C8B0ECF0DB758A4005113A8 /* iPhone-Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = "OSX-Release";
