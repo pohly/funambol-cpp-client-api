@@ -34,6 +34,7 @@
  */
 
 #include <eikenv.h>
+#include <e32cmn.h>
 #include "base/SymbianLog.h"
 #include "base/util/symbianUtils.h"
 #include "base/util/stringUtils.h"
@@ -47,16 +48,29 @@ USE_NAMESPACE
 _LIT(KFormatDateAndTime, "%*D%*N%Y%1-%2-%3 %:0%J%:1%T%:2%S");
 _LIT(KFormatOnlyTime,    "%:0%J%:1%T%:2%S");
 
+// The name of the semaphore
+_LIT(KLogSemaphoreName,  "FLogSemaphore");
+
 
 SymbianLog::SymbianLog(bool resetLog, const char* path, const char* name) 
 {
-    //msgBox(_L("init log"));
+    TInt err = KErrNone;
     iLogName.Assign(charToNewBuf(SYMBIAN_LOG_NAME));
+    
+    // Create a semaphore, to avoid accessing the FileSystem at
+    // the same time by different threads.
+    // The semaphore is global, so that it could be used also by
+    // other processes that (in future) will use this Log.
+    err = iSemaphore.CreateGlobal(KLogSemaphoreName, 1);
+    if (err != KErrNone) {
+        setError(ERR_SEMAPHORE_CREATION, ERR_SEMAPHORE_CREATION_MSG);
+    }
+    iSemaphore.Wait();
 
+    
     // Connect to the file server session.
     fsSession.Connect();       
     
-    TInt err = KErrNone;
     if (resetLog) {
         err = file.Replace(fsSession, iLogName, EFileWrite|EFileShareAny);
     }
@@ -81,6 +95,8 @@ SymbianLog::SymbianLog(bool resetLog, const char* path, const char* name)
 
     file.Close();
     fsSession.Close();
+    
+    iSemaphore.Signal();
     return;
 }
 
@@ -187,10 +203,11 @@ void SymbianLog::developer(const char*  msg, ...)
 
 void SymbianLog::printMessage(const char* level, const char* msg, PLATFORM_VA_LIST argList) 
 {
+    iSemaphore.Wait();
+    
     StringBuffer currentTime = createCurrentTime(false);
     
     fsSession.Connect();
-    
     TInt err = file.Open(fsSession, iLogName, EFileWrite|EFileShareAny);
     User::LeaveIfError(err);
     
@@ -210,12 +227,14 @@ void SymbianLog::printMessage(const char* level, const char* msg, PLATFORM_VA_LI
     
     file.Close();
     fsSession.Close();
+    iSemaphore.Signal();
 }
 
 void SymbianLog::reset(const char* title) 
 {
-    fsSession.Connect();
+    iSemaphore.Wait();
     
+    fsSession.Connect();
     TInt err = file.Replace(fsSession, iLogName, EFileWrite|EFileShareAny);
     User::LeaveIfError(err);
     
@@ -227,11 +246,13 @@ void SymbianLog::reset(const char* title)
     
     file.Close();
     fsSession.Close();
+    iSemaphore.Signal();
 }
 
 
-size_t SymbianLog::getLogSize() {
-
+size_t SymbianLog::getLogSize() 
+{
+    iSemaphore.Wait();
     fsSession.Connect();
     
     TInt size = 0;
@@ -240,6 +261,8 @@ size_t SymbianLog::getLogSize() {
 
     file.Close();
     fsSession.Close();
+    iSemaphore.Signal();
+    
     return (size_t)size;
 }
 

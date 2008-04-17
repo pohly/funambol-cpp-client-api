@@ -40,11 +40,13 @@
 #include "base/Log.h"
 #include "base/util/StringBuffer.h"
 #include <f32file.h>
-
-
-#define SYMBIAN_LOG_HEADER      "Funambol Symbian Plug-in Log"
-#define SYMBIAN_LOG_NAME        "c:\\data\\synclog.txt"
 #include "base/globalsdef.h"
+
+#define SYMBIAN_LOG_HEADER          "Funambol Symbian Plug-in Log"
+#define SYMBIAN_LOG_NAME            "c:\\data\\synclog.txt"
+
+#define ERR_SEMAPHORE_CREATION      30
+#define ERR_SEMAPHORE_CREATION_MSG  "Error creating Log Semaphore"
 
 BEGIN_NAMESPACE
 
@@ -63,6 +65,12 @@ private:
     
     /// The complete log name (default = SYMBIAN_LOG_NAME)
     RBuf iLogName;
+    
+    /**
+     * Semaphore for the resource RFs, to avoid accessing the FileSystem at
+     * the same time by different threads.
+     */ 
+    RSemaphore iSemaphore;
 
     
     StringBuffer iFormattedBias;
