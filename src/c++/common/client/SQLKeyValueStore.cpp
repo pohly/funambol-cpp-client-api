@@ -51,14 +51,14 @@ StringBuffer SQLKeyValueStore::sqlColValue() const
 StringBuffer SQLKeyValueStore::sqlRemovePropertyString(const StringBuffer & key) const
 {
     StringBuffer sb("");
-    sb.append("DELETE FROM ").append(table).append(" WHERE ").append(sqlColKey()).append("='").append(key).append("' LIMIT 1");
+    sb.append("DELETE FROM ").append(table).append(" WHERE ").append(sqlColKey()).append("='").append(key).append("'");// LIMIT 1");
     return sb;
 }
 
 StringBuffer SQLKeyValueStore::sqlSetPropertyString(const StringBuffer & key, const StringBuffer & value) const
 {
     StringBuffer sb("");
-    sb.append("UPDATE ").append(table).append(" SET ").append(sqlColValue()).append("='").append(value).append("' WHERE ").append(sqlColKey()).append("='").append(key).append("' LIMIT 1");
+    sb.append("UPDATE ").append(table).append(" SET ").append(sqlColValue()).append("='").append(value).append("' WHERE ").append(sqlColKey()).append("='").append(key).append("'");// LIMIT 1");
     return sb;
 }
 
@@ -98,16 +98,13 @@ SQLKeyValueStore::~SQLKeyValueStore()
  */
 StringBuffer SQLKeyValueStore::readPropertyValue(const char *prop) const
 {
-    StringBuffer sqlQuery = sqlGetPropertyString(StringBuffer(prop));
-    Enumeration * en = query(sqlQuery);
     
-    if (!en)
-        return StringBuffer(NULL);
+    StringBuffer sqlQuery = sqlGetPropertyString(StringBuffer(prop));
+    Enumeration& en = query(sqlQuery);
         
-    if (!en->hasMoreElement())
+    if (!en.hasMoreElement())
     {
-        KeyValuePair * kvp = dynamic_cast<KeyValuePair*>(en->getNextElement());
-        delete en;
+        KeyValuePair * kvp = dynamic_cast<KeyValuePair*>(en.getNextElement());
         return kvp->getValue();
     }
     return StringBuffer(NULL);
@@ -127,9 +124,7 @@ StringBuffer SQLKeyValueStore::readPropertyValue(const char *prop) const
  */
 int SQLKeyValueStore::setPropertyValue(const char *prop, const char *value)
 {
-    KeyValuePair kvp(prop, "");
-    toSet.add(kvp);
-    return 0;
+    return execute(sqlSetPropertyString(prop, value));
 }
 
  /**
@@ -141,9 +136,7 @@ int SQLKeyValueStore::setPropertyValue(const char *prop, const char *value)
  */
 int SQLKeyValueStore::removeProperty(const char *prop)
 {
-    KeyValuePair kvp(prop, "");
-    toDel.add(kvp);
-    return 0;
+    return execute(sqlRemovePropertyString(prop));
 }
  
 /**
@@ -152,42 +145,10 @@ int SQLKeyValueStore::removeProperty(const char *prop)
 Enumeration& SQLKeyValueStore::getProperties() const
 {
     StringBuffer sqlQuery = sqlGetAllString();
-    Enumeration * en = query(sqlQuery);
-    return *en;
+    Enumeration& en = query(sqlQuery);
+    return en;
 }
 
-/**
- * Ensure that all properties are stored persistently.
- * If setting a property led to an error earlier, this
- * call will indicate the failure.
- *
- * @return 0 - success, failure otherwise
- */
-int SQLKeyValueStore::save()
-{
-    int numFail = 0;
-    
-    while (toDel.hasMoreElement())
-    {
-        KeyValuePair * kvp = (KeyValuePair*)toDel.getNextElement();
-        const char * prop = kvp->getKey();
-        StringBuffer sqlQuery = sqlRemovePropertyString(prop);
-        numFail += (execute(sqlQuery) ? 0 : 1);
-    }
-    toDel = ArrayListEnumeration();
-    
-    while (toSet.hasMoreElement())
-    {
-        KeyValuePair * kvp = (KeyValuePair*)toDel.getNextElement();
-        const char * prop  = kvp->getKey();
-        const char * value = kvp->getValue();
-        StringBuffer sqlQuery = sqlSetPropertyString(prop,value);
-        numFail += (execute(sqlQuery) ? 0 : 1);
-    }
-    toSet = ArrayListEnumeration();
-    
-    return numFail;
-}
 
 
 END_NAMESPACE

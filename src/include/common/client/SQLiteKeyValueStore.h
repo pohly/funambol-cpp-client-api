@@ -39,8 +39,10 @@
 /** @addtogroup Client */
 /** @{ */
 
+#include <sqlite3.h>
 
 #include "base/util/KeyValueStore.h"
+#include "base/util/KeyValuePair.h"
 #include "client/SQLKeyValueStore.h"
 
 BEGIN_NAMESPACE
@@ -48,13 +50,13 @@ BEGIN_NAMESPACE
 class SQLiteKeyValueStore : public SQLKeyValueStore {
 private:
     
-    StringBuffer    path,
-                    username,
-                    password;
+    StringBuffer    path;
     
-    // Connection * conn
+    sqlite3         * db;
+    mutable sqlite3_stmt    * statement;
     
 protected:
+
     
     /*
      * Execute a query to get a value, given the key.   If a connection to
@@ -64,7 +66,7 @@ protected:
      *
      * @return      - The result of the query - an Enumeration of KeyValuePair s
      */
-    virtual Enumeration * query(const StringBuffer & sql) const;
+    virtual Enumeration & query(const StringBuffer & sql) const;
     
     /*
      * Execute a non-select query.  If a connection to the database is not open,
@@ -74,22 +76,63 @@ protected:
      *
      * @return      - Success or Failure
      */
-    virtual bool execute(const StringBuffer & sql);
+    virtual int execute(const StringBuffer & sql);
     
 public:
+    
+    mutable
+    class SQLiteKeyValueStoreEnumeration : public Enumeration
+    {
+    protected:
+        friend class SQLiteKeyValueStore;
+    
+        int lastReturn;
+        KeyValuePair kvp;
+        SQLiteKeyValueStore & skvs;
+        
+    public:
+        
+        SQLiteKeyValueStoreEnumeration(SQLiteKeyValueStore & instance)
+        : skvs(instance) {}
+        
+       /**
+        * Return true if there are more elements in the enumeration.
+        */
+        virtual bool hasMoreElement() const
+        {
+            return (skvs.statement && lastReturn == SQLITE_ROW);
+        }
+
+        /**
+         * Return the next element or NULL if there is none.
+         */
+        virtual ArrayElement* getNextElement()
+        {
+            StringBuffer sb;
+            sb = (const char *) sqlite3_column_text(skvs.statement, 0);
+            kvp.setKey   (sb);
+            sb = (const char *) sqlite3_column_text(skvs.statement, 1);
+            kvp.setValue (sb);
+
+            lastReturn = sqlite3_step(skvs.statement);
+
+            return &kvp;
+        }
+
+    } enumeration;
+    
     
     /*
      * Constructor
      *
      * @param uri       - The location of the server
-     * @param database  - The database name
-     * @param table     - The table to be used
-     * @param username  - The username for authentication
-     * @param password  - The password for authentication
+     * @param colKey    - The name of the column for the key
+     * @param colValue  - The name of the column of the value
+     * @param path      - The name of the full path to the database to use
      *
      */
     SQLiteKeyValueStore(const StringBuffer & table, const StringBuffer & colKey,   const StringBuffer & colValue,
-                        const StringBuffer & path,  const StringBuffer & username, const StringBuffer & password);
+                        const StringBuffer & path);
     
     /*
      * Destructor
@@ -105,7 +148,7 @@ public:
      *
      * @return      - Success or Failure
      */
-    bool connect();
+    int connect();
     
     /*
      * Disconnect from the database server.  If the connection is not open,
@@ -113,7 +156,16 @@ public:
      *
      * @return      - Success or Failure
      */
-    bool disconnect();
+    int disconnect();
+    
+    /**
+     * Ensure that all properties are stored persistently.
+     * If setting a property led to an error earlier, this
+     * call will indicate the failure.
+     *
+     * @return 0 - success, failure otherwise
+     */
+    virtual int save();
 };
 
 

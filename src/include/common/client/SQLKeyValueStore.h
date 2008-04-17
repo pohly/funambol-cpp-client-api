@@ -41,6 +41,7 @@
 
 #include "base/util/KeyValueStore.h"
 #include "base/util/ArrayListEnumeration.h"
+#include "base/util/Enumeration.h"
 
 BEGIN_NAMESPACE
 
@@ -55,26 +56,31 @@ private:
     ArrayListEnumeration toDel;
     
 protected:
+
     
     /*
-     * Execute a query to get a value, given the key.   If a connection to
-     * the database is not open, open it. 
+     * Execute a query to get a value, given the key.
      *
-     * @param sql   - The sql command to execute.
+     * The sql query passed to this function 
+     *
+     * @param sql   - The sql command to execute.  This MUST select the key, and
+     * the value in that order, as the first 2 columns selected.  Additional
+     * columns will be ignored.
      *
      * @return      - The result of the query - an Enumeration of KeyValuePair s
      */
-    virtual Enumeration * query(const StringBuffer & sql) const = 0;
+    virtual Enumeration& query(const StringBuffer & sql) const = 0;
     
     /*
-     * Execute a non-select query.  If a connection to the database is not open,
-     * open it.
+     * Execute a non-select query.
+     *
+     * The sql query passed to this function MUST NOT return any data (e.g. not a select)
      *
      * @param sql   - The sql command to execute.
      *
      * @return      - Success or Failure
      */
-    virtual bool execute(const StringBuffer & sql) = 0;
+    virtual int execute(const StringBuffer & sql) = 0;
     
     /*
      * Get the name of the key column
@@ -152,7 +158,7 @@ public:
      *
      * @return      - Success or Failure
      */
-    virtual bool connect() = 0;
+    virtual int connect() = 0;
     
     /*
      * Disconnect from the database server.  If the connection is not open,
@@ -160,7 +166,7 @@ public:
      *
      * @return      - Success or Failure
      */
-    virtual bool disconnect() = 0;
+    virtual int disconnect() = 0;
     
     /*
      * Returns the value of the given property
@@ -208,7 +214,7 @@ public:
      *
      * @return 0 - success, failure otherwise
      */
-    virtual int save();
+    virtual int save() = 0;
 };
 
 

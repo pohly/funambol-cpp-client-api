@@ -33,93 +33,112 @@
  * the words "Powered by Funambol".
  */
 
+#include <sqlite3.h>
 
 #include "client/SQLiteKeyValueStore.h"
 #include "base/util/StringBuffer.h"
+#include "base/util/KeyValuePair.h"
 
-#include <sqlite3.h>
     
 BEGIN_NAMESPACE
     
-/*
- * Constructor
- *
- * @param uri       - The location of the server
- * @param database  - The database name
- * @param table     - The table to be used
- * @param username  - The username for authentication
- * @param password  - The password for authentication
- *
- */
 SQLiteKeyValueStore::SQLiteKeyValueStore(const StringBuffer & table, const StringBuffer & colKey,   const StringBuffer & colValue,
-                        const StringBuffer & path,  const StringBuffer & username, const StringBuffer & password)
-: SQLKeyValueStore(table,colKey,colValue)
+                                         const StringBuffer & path)
+: SQLKeyValueStore(table,colKey,colValue), enumeration(*this)
 {
     this->path = path;
-    this->username = username;
-    this->password = password;
+    db = NULL;
+    statement = NULL;
 }
 
-/*
- * Destructor
- *
- * Subclasses MUST call disconnect() at the same at which
- * disconnect() is defined
- */
+
 SQLiteKeyValueStore::~SQLiteKeyValueStore()
 {
+    if (statement)
+    {
+        sqlite3_finalize(statement);
+        statement = NULL;
+    }
     disconnect();
 }
 
-/*
- * Execute a query to get a value, given the key.   If a connection to
- * the database is not open, open it. 
- *
- * @param sql   - The sql command to execute.
- *
- * @return      - The result of the query - an Enumeration of KeyValuePair s
- */
-Enumeration * SQLiteKeyValueStore::query(const StringBuffer & sql) const
+Enumeration& SQLiteKeyValueStore::query(const StringBuffer & sql) const
 {
-    return NULL;
+    if (!db)
+    {
+        throw new StringBuffer /*Exception*/ ("Not connected to database");
+    }
+    
+    if (statement)
+    {
+        sqlite3_finalize(statement);
+        statement = NULL;
+    }
+    
+    int ret = sqlite3_prepare(db, sql.c_str(), sql.length(), &statement, NULL);
+    if (ret == SQLITE_OK) {
+        enumeration.lastReturn = sqlite3_step(statement);
+    }
+    return enumeration;
 }
 
-/*
- * Execute a non-select query.  If a connection to the database is not open,
- * open it.
- *
- * @param sql   - The sql command to execute.
- *
- * @return      - Success or Failure
- */
-bool SQLiteKeyValueStore::execute(const StringBuffer & sql)
+int SQLiteKeyValueStore::execute(const StringBuffer & sql)
 {
-    return false;
+    connect();
+
+    sqlite3_stmt * stmt;
+    
+    int ret = sqlite3_prepare(db, sql.c_str(), sql.length(), &stmt, NULL);
+    if (ret == SQLITE_OK) {
+        ret = sqlite3_step(stmt);
+    }
+    sqlite3_finalize(stmt);
+    
+    
+    if (ret == SQLITE_DONE)
+        ret = SQLITE_OK;
+    return ret;
+}
+
+int SQLiteKeyValueStore::connect()
+{
+    if (db)
+        return true;
+        
+    int ret = sqlite3_open(path, &db);
+    if (ret == SQLITE_OK)
+    {
+        execute("BEGIN TRANSACTION;");
+    }
+    return ret;
 }
 
 
-
-/*
- * Connect to the database server.  The connection should be stored
- * within the subclass and destroyed in disconnect();  If connect is called
- * while a connection exists, nothing should happen.
- *
- * @return      - Success or Failure
- */
-bool SQLiteKeyValueStore::connect()
+int SQLiteKeyValueStore::disconnect()
 {
-    return false;
+    if (db == NULL)
+        return true;
+    
+    execute("ROLLBACK TRANSACTION;");
+    
+    int ret = sqlite3_close(db);
+    db = NULL;
+    
+    return ret;
 }
 
-/*
- * Disconnect from the database server.  If the connection is not open,
- * do nothing.
+/**
+ * Ensure that all properties are stored persistently.
+ * If setting a property led to an error earlier, this
+ * call will indicate the failure.
  *
- * @return      - Success or Failure
+ * @return 0 - success, failure otherwise
  */
-bool SQLiteKeyValueStore::disconnect()
+int SQLiteKeyValueStore::save()
 {
-    return false;
+    return (
+        ((execute("COMMIT TRANSACTION;") == SQLITE_OK) && (execute("BEGIN TRANSACTION;") == SQLITE_OK))
+        ? 1 : 0);
 }
 
 END_NAMESPACE
