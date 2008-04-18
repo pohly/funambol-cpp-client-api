@@ -38,7 +38,7 @@
 
 USE_NAMESPACE
 
-MacTransportAgent::MacTransportAgent(){}
+MacTransportAgent::MacTransportAgent() : TransportAgent() {}
 
 MacTransportAgent::~MacTransportAgent() {}
 
