@@ -438,7 +438,7 @@
 			isa = PBXContainerItemProxy;
 			containerPortal = 08FB7793FE84155DC02AAC07 /* Project object */;
 			proxyType = 1;
-			remoteGlobalIDString = D2AAC045055464E500DB518D /* libfunambol */;
+			remoteGlobalIDString = D2AAC045055464E500DB518D;
 			remoteInfo = libfunambol;
 		};
 /* End PBXContainerItemProxy section */
@@ -470,7 +470,7 @@
 		7C8B0D990DB7517C005113A8 /* CoreServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreServices.framework; path = System/Library/Frameworks/CoreServices.framework; sourceTree = SDKROOT; };
 		7C8B0E670DB752C7005113A8 /* CoreServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreServices.framework; path = Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator2.0.sdk/System/Library/Frameworks/CoreServices.framework; sourceTree = DEVELOPER_DIR; };
 		7C8B0EBD0DB756A4005113A8 /* SQLiteKVSTest.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = SQLiteKVSTest.cpp; sourceTree = "<group>"; };
-		7C8B0EC70DB758A3005113A8 /* examples-sqlitekvstest */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; name = "examples-sqlitekvstest"; path = "build/OSX-Debug/examples-sqlitekvstest"; sourceTree = "<group>"; };
+		7C8B0EC70DB758A3005113A8 /* examples-sqlitekvstest */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = "examples-sqlitekvstest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		7C8B0ED30DB758B3005113A8 /* libsqlite3.0.8.6.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libsqlite3.0.8.6.dylib; path = usr/lib/libsqlite3.0.8.6.dylib; sourceTree = SDKROOT; };
 		7C9F520E0DAF4CB1007E0091 /* base64.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = base64.cpp; sourceTree = "<group>"; };
 		7C9F520F0DAF4CB1007E0091 /* error.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = error.cpp; sourceTree = "<group>"; };

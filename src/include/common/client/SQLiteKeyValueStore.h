@@ -87,8 +87,17 @@ public:
         friend class SQLiteKeyValueStore;
     
         int lastReturn;
+        int totalRows;
+        int nextRow;
         KeyValuePair kvp;
         SQLiteKeyValueStore & skvs;
+        
+        void reinit(int numRows, int lastRet)
+        {
+            lastReturn = lastRet;
+            totalRows  = numRows;
+            nextRow    = 0;
+        }
         
     public:
         
@@ -100,7 +109,7 @@ public:
         */
         virtual bool hasMoreElement() const
         {
-            return (skvs.statement && lastReturn == SQLITE_ROW);
+            return (skvs.statement && lastReturn == SQLITE_ROW && nextRow < totalRows);
         }
 
         /**
@@ -115,6 +124,7 @@ public:
             kvp.setValue (sb);
 
             lastReturn = sqlite3_step(skvs.statement);
+            nextRow++;
 
             return &kvp;
         }
@@ -140,6 +150,11 @@ public:
      * Subclasses MUST disconnect in their own destructors
      */
     virtual ~SQLiteKeyValueStore();
+    
+    /**
+     * Get all the properties that are currently defined.     
+     */
+    virtual Enumeration& getProperties() const;
     
     /*
      * Connect to the database server.  The connection should be stored

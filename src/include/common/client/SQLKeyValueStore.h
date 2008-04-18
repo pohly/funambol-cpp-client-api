@@ -130,6 +130,13 @@ protected:
      * @return      - A StringBuffer containing the query
      */
     virtual StringBuffer sqlGetAllString() const;
+        
+    /*
+     * Get the query to count properties
+     *
+     * @return      - A StringBuffer containing the query
+     */
+    virtual StringBuffer sqlCountAllString() const;
     
 public:
     

@@ -75,9 +75,18 @@ Enumeration& SQLiteKeyValueStore::query(const StringBuffer & sql) const
         statement = NULL;
     }
     
-    int ret = sqlite3_prepare(db, sql.c_str(), sql.length(), &statement, NULL);
+    char ** temp;
+    int rows;
+    int cols;
+    int ret = sqlite3_get_table(db, sql.c_str(), &temp, &rows, &cols, NULL);
+    if (rows == 0)
+    {
+        // TODO Error
+    }
+    
+    ret = sqlite3_prepare_v2(db, sql.c_str(), sql.length(), &statement, NULL);
     if (ret == SQLITE_OK) {
-        enumeration.lastReturn = sqlite3_step(statement);
+        enumeration.reinit(rows, sqlite3_step(statement));
     }
     return enumeration;
 }
@@ -88,7 +97,7 @@ int SQLiteKeyValueStore::execute(const StringBuffer & sql)
 
     sqlite3_stmt * stmt;
     
-    int ret = sqlite3_prepare(db, sql.c_str(), sql.length(), &stmt, NULL);
+    int ret = sqlite3_prepare_v2(db, sql.c_str(), sql.length(), &stmt, NULL);
     if (ret == SQLITE_OK) {
         ret = sqlite3_step(stmt);
     }
@@ -100,6 +109,30 @@ int SQLiteKeyValueStore::execute(const StringBuffer & sql)
     return ret;
 }
 
+/**
+ * Get all the properties that are currently defined.     
+ */
+Enumeration& SQLiteKeyValueStore::getProperties() const
+{
+    StringBuffer sqlQuery = sqlCountAllString();
+    Enumeration& en = query(sqlQuery);
+    int rows = 0;
+    if (en.hasMoreElement())
+    {
+        KeyValuePair* kvp = (KeyValuePair*)en.getNextElement();
+        sscanf(kvp->getValue(), "%d", &rows);
+    }
+    if (rows == 0)
+        return en;
+    
+    sqlQuery = sqlGetAllString();
+    SQLiteKeyValueStoreEnumeration& en2 = (SQLiteKeyValueStoreEnumeration&)query(sqlQuery);
+    en2.totalRows = rows;
+    
+    return en;
+}
+
+
 int SQLiteKeyValueStore::connect()
 {
     if (db)
@@ -108,7 +141,7 @@ int SQLiteKeyValueStore::connect()
     int ret = sqlite3_open(path, &db);
     if (ret == SQLITE_OK)
     {
-        execute("BEGIN TRANSACTION;");
+        return execute("BEGIN TRANSACTION;");
     }
     return ret;
 }
@@ -127,18 +160,16 @@ int SQLiteKeyValueStore::disconnect()
     return ret;
 }
 
-/**
- * Ensure that all properties are stored persistently.
- * If setting a property led to an error earlier, this
- * call will indicate the failure.
- *
- * @return 0 - success, failure otherwise
- */
 int SQLiteKeyValueStore::save()
 {
+    if (statement)
+    {
+        sqlite3_finalize(statement);
+        statement = NULL;
+    }
     return (
         ((execute("COMMIT TRANSACTION;") == SQLITE_OK) && (execute("BEGIN TRANSACTION;") == SQLITE_OK))
-        ? 1 : 0);
+        ? 0 : 1);
 }
 
 END_NAMESPACE

@@ -36,6 +36,8 @@
 #include "http/MacTransportAgent.h"
 #include "http/constants.h"
 
+#include "base/util/StringBuffer.h"
+
 USE_NAMESPACE
 
 MacTransportAgent::MacTransportAgent() : TransportAgent() {}
@@ -50,10 +52,11 @@ MacTransportAgent::~MacTransportAgent() {}
  * @param url the url where messages will be sent with sendMessage()
  * @param proxy proxy information or NULL if no proxy should be used
  */
-MacTransportAgent::MacTransportAgent(URL& newURL, Proxy& newProxy, unsigned int maxResponseTimeout) : 
-            TransportAgent(newURL, newProxy, maxResponseTimeout){
-                
-            }
+MacTransportAgent::MacTransportAgent(URL& newURL, Proxy& newProxy, unsigned int maxResponseTimeout)
+: TransportAgent(newURL, newProxy, maxResponseTimeout)
+{
+    
+}
     
 
 /*
@@ -71,34 +74,28 @@ char* MacTransportAgent::sendMessage(const char* msg){
         return NULL;
     }
     
-   // size_t size = strlen(msg);
+    // size_t size = strlen(msg);
     LOG.debug("Requesting resource %s at %s:%d", url.resource, url.host, url.port);
     
+    LOG.debug("Sending HTTP Request: %s", msg);
     
-    //CFStringRef bodyStr = CFSTR(msg); // Usually used for POST data
+    // The data to post
     CFStringRef bodyStr = CFStringCreateWithCString(NULL, msg, kCFStringEncodingUTF8);
     
-    
+    // Construct some headers
     CFStringRef headerFieldName = CFSTR("Content-Type");
-    
     CFStringRef headerFieldValue = CFSTR("application/vnd.syncml+xml");
-    
-    
-    
-   // CFStringRef CFurl = CFSTR(url.host);
+
+    // Construct URL
     CFStringRef CFurl =  CFStringCreateWithCString(NULL, url.fullURL, kCFStringEncodingUTF8);
-    
     CFURLRef myURL = CFURLCreateWithString(kCFAllocatorDefault, CFurl, NULL);
-    
-    
     
     CFStringRef requestMethod = CFSTR("POST");
     
-    CFHTTPMessageRef myRequest =
-                    CFHTTPMessageCreateRequest(kCFAllocatorDefault, 
-                                               requestMethod, myURL, kCFHTTPVersion1_1);
+    CFHTTPMessageRef httpRequest =
+        CFHTTPMessageCreateRequest(kCFAllocatorDefault, requestMethod, myURL, kCFHTTPVersion1_1);
     
-    if(!myRequest){
+    if(!httpRequest){
         LOG.error("MacTransportAgent::sendMessage error: CFHTTPMessageCreateRequest Error.");
         setError(ERR_NETWORK_INIT, "MacTransportAgent::sendMessage error: CFHTTPMessageCreateRequest Error.");
         return NULL;
@@ -110,14 +107,43 @@ char* MacTransportAgent::sendMessage(const char* msg){
         setError(ERR_NETWORK_INIT, "MacTransportAgent::sendMessage error: CFHTTPMessageCreateRequest Error.");
         return NULL;
     }        
-    CFHTTPMessageSetBody(myRequest,bodyData);
+    CFHTTPMessageSetBody(httpRequest,bodyData);
+    CFHTTPMessageSetHeaderFieldValue(httpRequest, headerFieldName, headerFieldValue);
     
-    CFHTTPMessageSetHeaderFieldValue(myRequest, headerFieldName, headerFieldValue);
+    CFReadStreamRef responseStream = CFReadStreamCreateForHTTPRequest(kCFAllocatorDefault, httpRequest);
+    if (!CFReadStreamOpen(responseStream)) {//Sends request
+        LOG.error("Failed to send HTTP request...");
+    }
     
-    CFDataRef mySerializedRequest = CFHTTPMessageCopySerializedMessage(myRequest);
+    StringBuffer result;
     
-        
-    char* tempret = (char*)CFDataGetBytePtr(mySerializedRequest);
+    #define READ_SIZE 1000
+    CFIndex bytesRead = 1;
+    UInt8   buffer[READ_SIZE];
+    while (bytesRead > 0)
+    {
+        bytesRead = CFReadStreamRead(responseStream, buffer, READ_SIZE-1);
+        if (bytesRead > 0) {
+            //   Convert what was read to a C-string
+            buffer[bytesRead] = 0;
+            //   Append it to the reply string
+            result.append((char*)buffer);
+        }
+    }
+    
+    int statusCode = -1;
+    CFHTTPMessageRef reply = (CFHTTPMessageRef) CFReadStreamCopyProperty( responseStream, kCFStreamPropertyHTTPResponseHeader);
+
+    // Pull the status code from the headers
+    if (reply) {
+        statusCode = CFHTTPMessageGetResponseStatusCode(reply);
+        CFRelease(reply);
+    }
+    
+    LOG.debug("Status Code: %d", statusCode);
+    LOG.debug("Result: %s", result.c_str());
+    
+    const char* tempret = result.c_str();
     
     char * ret = new char[strlen(tempret)];
     strcpy(ret, tempret);
@@ -127,10 +153,10 @@ char* MacTransportAgent::sendMessage(const char* msg){
     CFRelease(headerFieldValue);
     CFRelease(CFurl);
     CFRelease(myURL);
-    CFRelease(myRequest);
+    CFRelease(httpRequest);
     CFRelease(bodyData);
-    CFRelease(mySerializedRequest);
-    
+    CFRelease(responseStream);
+    CFRelease(requestMethod);
     
     return ret;
 }

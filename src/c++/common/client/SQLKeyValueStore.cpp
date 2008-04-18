@@ -58,14 +58,14 @@ StringBuffer SQLKeyValueStore::sqlRemovePropertyString(const StringBuffer & key)
 StringBuffer SQLKeyValueStore::sqlSetPropertyString(const StringBuffer & key, const StringBuffer & value) const
 {
     StringBuffer sb("");
-    sb.append("UPDATE ").append(table).append(" SET ").append(sqlColValue()).append("='").append(value).append("' WHERE ").append(sqlColKey()).append("='").append(key).append("'");// LIMIT 1");
+    sb.append("INSERT OR REPLACE INTO ").append(table).append(" (").append(sqlColKey()).append(",").append(sqlColValue()).append(") VALUES (").append(key).append(",").append(value).append(")");
     return sb;
 }
 
 StringBuffer SQLKeyValueStore::sqlGetPropertyString(const StringBuffer & key) const
 {
     StringBuffer sb("");
-    sb.append("SELECT ").append(sqlColValue()).append(" FROM ").append(table).append(" WHERE ").append(sqlColKey()).append("='").append(key).append("' LIMIT 1");
+    sb.append("SELECT ").append(sqlColKey()).append(",").append(sqlColValue()).append(" FROM ").append(table).append(" WHERE ").append(sqlColKey()).append("='").append(key).append("' LIMIT 1");
     return sb;
 }
 
@@ -73,6 +73,13 @@ StringBuffer SQLKeyValueStore::sqlGetAllString() const
 {
     StringBuffer sb("");
     sb.append("SELECT ").append(sqlColKey()).append(", ").append(sqlColValue()).append(" FROM ").append(table);
+    return sb;
+}
+
+StringBuffer SQLKeyValueStore::sqlCountAllString() const
+{
+    StringBuffer sb("");
+    sb.append("SELECT count(").append(sqlColKey()).append("), count(").append(sqlColValue()).append(") FROM ").append(table);
     return sb;
 }
 
@@ -102,9 +109,9 @@ StringBuffer SQLKeyValueStore::readPropertyValue(const char *prop) const
     StringBuffer sqlQuery = sqlGetPropertyString(StringBuffer(prop));
     Enumeration& en = query(sqlQuery);
         
-    if (!en.hasMoreElement())
+    if (en.hasMoreElement())
     {
-        KeyValuePair * kvp = dynamic_cast<KeyValuePair*>(en.getNextElement());
+        KeyValuePair * kvp = (KeyValuePair*)(en.getNextElement());
         return kvp->getValue();
     }
     return StringBuffer(NULL);
