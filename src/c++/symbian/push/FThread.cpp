@@ -60,9 +60,9 @@ typedef void (FThread::*ThreadFunction)(void);
 void FThread::start( FThread::Priority priority ) {
 
     RBuf threadId;
-    threadId.CreateL(128);
+    threadId.CreateL(30);
     threadId.Format(_L("FThread-%d"), id++);
-
+    
     TRAPD(err, sthread.Create(threadId, (TThreadFunction)symbianRunWrapper,
                               KDefaultStackSize, (RAllocator*)&User::Heap(), this));
     if (err == KErrNone) {
@@ -89,7 +89,7 @@ bool FThread::wait(unsigned long timeout) {
     sthread.Logon(stat);
 
     RThread tthread;
-    TBuf<128> tthreadId;
+    TBuf<30> tthreadId;
     tthreadId.Format(_L("FThread-timer-%d"), id);
     // Start the timer thread
     if (timeout) {
@@ -152,11 +152,10 @@ TInt symbianRunWrapper(TAny* thread) {
     
     // Install a new trap handler for the thread.
     CTrapCleanup* cleanupstack = CTrapCleanup::New();
-    TInt err = KErrNone;
 
     // Mandatory!
     // To trap any internal call to "CleanupStack::PushL()"
-    TRAP(err, 
+    TRAPD(err, 
          { FThread* t = (FThread*)thread;
            t->run();
          }
@@ -166,10 +165,18 @@ TInt symbianRunWrapper(TAny* thread) {
     return err;
 }
 
-TInt symbianTimeoutWrapper(TAny* thread) {
+TInt symbianTimeoutWrapper(TAny* thread) 
+{
+    // Install a new trap handler for the thread.
+    CTrapCleanup* cleanupstack = CTrapCleanup::New();
 
-    FThread* t = (FThread*)thread;
-    t->startTimeout();
+    TRAPD(err, 
+         { FThread* t = (FThread*)thread;
+           t->startTimeout();
+         }
+    )
+    
+    delete cleanupstack;
     return 0;
 }
 
