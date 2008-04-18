@@ -128,7 +128,9 @@ void DeviceManagementNode::update(bool read) {
                 line newline(buffer);
                 lines->add(newline);
             }
-        } else {
+            fclose(file);
+        } 
+        else {
             int i = 0;
 
             while (true) {
@@ -145,10 +147,14 @@ void DeviceManagementNode::update(bool read) {
                 StringBuffer tmpConfig = configFile;
                 tmpConfig += ".tmp";
 
+                fclose(file);   // Both files must be closed for the rename.
                 renameFileInCwd( tmpConfig.c_str(), configFile.c_str());
             }
-        }
-        fclose(file);
+	        else {
+	            fclose(file);
+	        }
+	    }
+
     }
 }
 
@@ -465,41 +471,38 @@ int DeviceManagementNode::renameFileInCwd(const char* src, const char* dst) {
 
     RFs fileSession;
     RFile file;
-    int cleanupStackSize = 0;
 
     StringBuffer srcSb(currentDir);
     concatDirs(srcSb, src);
     StringBuffer dstSb(currentDir);
     concatDirs(dstSb, dst);
 
-    // TODO use utility function for string conversion
-    TBuf8<DIM_MANAGEMENT_PATH> srcBuf8((const unsigned char*)srcSb.c_str());
-    HBufC* srcDes = CnvUtfConverter::ConvertToUnicodeFromUtf8L(srcBuf8);
-    ++cleanupStackSize;
-    CleanupStack::PushL(srcDes);
+    RBuf srcDes, dstDes;
+    srcDes.Assign(stringBufferToNewBuf(srcSb));
+    dstDes.Assign(stringBufferToNewBuf(dstSb));
 
-    TBuf8<DIM_MANAGEMENT_PATH> dstBuf8((const unsigned char*)dstSb.c_str());
-    HBufC* dstDes = CnvUtfConverter::ConvertToUnicodeFromUtf8L(dstBuf8);
-    ++cleanupStackSize;
-    CleanupStack::PushL(dstDes);
-
-    //
     // Connect to the file server
-    //
     fileSession.Connect();
-    ++cleanupStackSize;
     CleanupClosePushL(fileSession);
 
-    TRAPD(err, fileSession.Rename(*srcDes, *dstDes));
+    // Replace 'config.ini' file with 'config.ini.tmp'
+    TInt err = fileSession.Replace(srcDes, dstDes);
 
-    CleanupStack::PopAndDestroy(cleanupStackSize);
+    CleanupStack::PopAndDestroy(&fileSession);
 
-    if (err != KErrNone) {
-        return -1;
-    } else {
+    if (err == KErrNone) {
         return 0;
     }
+    else {
+        LOG.error("Error (code %d) replacing file '%s'", err, dstSb.c_str());
+        if (err == KErrAccessDenied) {
+            LOG.error("Access denied");
+        }
+        return -1;
+    }
 }
+
+
 
 //#define UPDATE_NATIVE_CONFIG 1
 
