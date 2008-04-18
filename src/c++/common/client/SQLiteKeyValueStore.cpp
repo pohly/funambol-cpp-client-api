@@ -75,18 +75,9 @@ Enumeration& SQLiteKeyValueStore::query(const StringBuffer & sql) const
         statement = NULL;
     }
     
-    char ** temp;
-    int rows;
-    int cols;
-    int ret = sqlite3_get_table(db, sql.c_str(), &temp, &rows, &cols, NULL);
-    if (rows == 0)
-    {
-        // TODO Error
-    }
-    
-    ret = sqlite3_prepare_v2(db, sql.c_str(), sql.length(), &statement, NULL);
+    int ret = sqlite3_prepare_v2(db, sql.c_str(), sql.length(), &statement, NULL);
     if (ret == SQLITE_OK) {
-        enumeration.reinit(rows, sqlite3_step(statement));
+        enumeration.reinit(sqlite3_step(statement));
     }
     return enumeration;
 }

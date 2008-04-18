@@ -177,7 +177,118 @@ int main()
         if (count != 3) {  std::cout << "ERROR: Not all values correct"     << std::endl; exit(0); }
     }
 
+
+    std::cout << "Attempting modifications to FUTURE data while iterating..." << std::endl;
+
+    {
+        Enumeration& en = kvs.getProperties();
+        int count = 0;
+        StringBuffer lastKey(NULL);
+        while (en.hasMoreElement())
+        {
+            kvs.setPropertyValue("2", "5000");
+            KeyValuePair * kvp = (KeyValuePair*)en.getNextElement();
+            std::cout << "Element " << count << ": ( " << kvp->getKey() << " , " << kvp->getValue() << " )" << std::endl;
+            if (strcmp(kvp->getValue(), "5000") == 0)
+                count++;
+        }
+
+        if (count != 1) {  std::cout << "WARNING: Future value not returned correctly"     << std::endl; exit(0); }
+    }
+    kvs.setPropertyValue("2", "1000");
     
+    std::cout << "Saving" << std::endl;
+    ret = kvs.save();
+    if (ret) { std::cout << "ERROR: Save failed" << std::endl; exit(0);}
+    
+    {
+        kvs.setPropertyValue("2", "5000");
+        Enumeration& en = kvs.getProperties();
+        int count = 0;
+        StringBuffer lastKey(NULL);
+        while (en.hasMoreElement())
+        {
+            KeyValuePair * kvp = (KeyValuePair*)en.getNextElement();
+            std::cout << "Element " << count << ": ( " << kvp->getKey() << " , " << kvp->getValue() << " )" << std::endl;
+            if (strcmp(kvp->getValue(), "5000") == 0)
+                count++;
+        }
+
+        if (count != 1) {  std::cout << "WARNING: Future value not returned correctly"     << std::endl; exit(0); }
+    }
+    std::cout << "Saving" << std::endl;
+    ret = kvs.save();
+    if (ret) { std::cout << "ERROR: Save failed" << std::endl; exit(0);}
+
+    /////////////
+
+    std::cout << "Attempting removal to PAST data while iterating..." << std::endl;
+
+    {
+        Enumeration& en = kvs.getProperties();
+        int count = 0;
+        StringBuffer lastKey(NULL);
+        while (en.hasMoreElement())
+        {
+            KeyValuePair * kvp = (KeyValuePair*)en.getNextElement();
+            std::cout << "Element " << count << ": ( " << kvp->getKey() << " , " << kvp->getValue() << " )" << std::endl;
+            if (!lastKey.null())
+            {
+                kvs.removeProperty(lastKey);
+            }
+            lastKey = kvp->getKey();
+        }
+    }
+    
+    std::cout << "Saving" << std::endl;
+    ret = kvs.save();
+    if (ret) { std::cout << "ERROR: Save failed" << std::endl; exit(0);}
+
+    
+    {
+        Enumeration& en = kvs.getProperties();
+        int count = 0;
+        while (en.hasMoreElement())
+        {
+            KeyValuePair * kvp = (KeyValuePair*)en.getNextElement();
+            std::cout << "Element " << count << ": ( " << kvp->getKey() << " , " << kvp->getValue() << " )" << std::endl;
+            count++;
+        }
+        if (count != 1) {  std::cout << "ERROR: Not all values removed"     << std::endl; exit(0); }
+    }
+    
+    kvs.setPropertyValue("1", "1");
+    kvs.setPropertyValue("2", "2");
+    kvs.setPropertyValue("3", "3");
+    kvs.setPropertyValue("4", "4");            
+    
+    std::cout << "Saving" << std::endl;
+    ret = kvs.save();
+    if (ret) { std::cout << "ERROR: Save failed" << std::endl; exit(0);}
+
+    std::cout << "Attempting removal to FUTURE data while iterating..." << std::endl;
+
+    {
+        Enumeration& en = kvs.getProperties();
+        int count = 0;
+        StringBuffer lastKey(NULL);
+        kvs.removeProperty("2");
+        while (en.hasMoreElement())
+        {
+            KeyValuePair * kvp = (KeyValuePair*)en.getNextElement();
+            std::cout << "Element " << count << ": ( " << kvp->getKey() << " , " << kvp->getValue() << " )" << std::endl;
+            if (strcmp(kvp->getKey(), "2") == 0)
+                count++;
+        }
+
+        if (count != 0) {  std::cout << "WARNING: Future value 2 not removed correctly"     << std::endl; exit(0); }
+    }
+    kvs.setPropertyValue("2", "2");
+    
+    std::cout << "Saving" << std::endl;
+    ret = kvs.save();
+    if (ret) { std::cout << "ERROR: Save failed" << std::endl; exit(0);}
+        
     ret = kvs.disconnect();
     
     ret = sqlite3_prepare (db, drop, strlen(drop), &stmt, NULL);

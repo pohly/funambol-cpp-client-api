@@ -92,10 +92,10 @@ public:
         KeyValuePair kvp;
         SQLiteKeyValueStore & skvs;
         
-        void reinit(int numRows, int lastRet)
+        void reinit(int lastRet)
         {
             lastReturn = lastRet;
-            totalRows  = numRows;
+            totalRows  = 1;
             nextRow    = 0;
         }
         
