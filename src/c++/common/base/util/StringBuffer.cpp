@@ -179,6 +179,7 @@ StringBuffer& StringBuffer::sprintf(const char* format, ...) {
     return *this;
 }
 
+
 StringBuffer& StringBuffer::vsprintf(const char* format, PLATFORM_VA_LIST ap) {
     PLATFORM_VA_LIST aq;
 
@@ -286,7 +287,7 @@ size_t StringBuffer::rfind(const char *str, size_t pos) const
 
 size_t StringBuffer::replace(const char *from, const char *to, size_t pos)
 {
-	size_t ret = npos;
+    size_t ret = npos;
 
     if (!s)
         return npos;
@@ -316,7 +317,7 @@ size_t StringBuffer::replace(const char *from, const char *to, size_t pos)
             strcpy(p+tlen, tail);
             delete [] tail;
         }
-		ret = p - s;
+        ret = p - s;
     }
     return ret;
 }
@@ -357,7 +358,7 @@ StringBuffer& StringBuffer::join(ArrayList &tokens, const char *separator) {
     size_t totlen = 0, seplen = strlen(separator);
     // Calc total size
     for (line=(StringBuffer *)tokens.front();
-		 line;
+         line;
          line=(StringBuffer *)tokens.next() ) {
         totlen += line->length() + seplen;
     }
@@ -365,7 +366,7 @@ StringBuffer& StringBuffer::join(ArrayList &tokens, const char *separator) {
     reserve(totlen);
     // Join strings
     for (line=(StringBuffer *)tokens.front();
-		 line;
+         line;
          line=(StringBuffer *)tokens.next() ) {
         this->append(line->c_str());
         this->append(separator);
@@ -377,7 +378,7 @@ StringBuffer StringBuffer::substr(size_t pos, size_t len) const {
     if(pos > strlen(s))
         return StringBuffer("");
 
-	return (StringBuffer(s+pos, len));
+    return (StringBuffer(s+pos, len));
 }
 
 void StringBuffer::reserve(size_t len) {
