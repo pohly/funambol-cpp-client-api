@@ -274,7 +274,7 @@ void CTPConfig::saveCTPConfig() {
         delete [] passDecoded;
 #endif
     } else {
-        accessConfig.setPassword(accessConfig.getPassword());
+        // Nothing to do: the password is already in clear text.
     }
     close();
 }
