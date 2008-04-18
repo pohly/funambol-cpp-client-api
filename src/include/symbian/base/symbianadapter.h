@@ -49,6 +49,7 @@
 #define PLATFORM_VA_LIST    VA_LIST
 #define PLATFORM_VA_START   VA_START
 #define PLATFORM_VA_END     VA_END
+#define PLATFORM_VA_ARG     VA_ARG
 
 
 #ifdef __WINSCW__
@@ -80,6 +81,7 @@ WCHAR *wcstok(WCHAR *ws1, const WCHAR *ws2);
 WCHAR *wcsncat(WCHAR *ws1, const WCHAR *ws2, size_t n);
 double wcstod(const WCHAR *nptr, WCHAR ** endptr);
 int _wtoi(const WCHAR *str);
+bool readFile(const char* path, char **message, size_t *len, bool binary);
 
 END_NAMESPACE
 
@@ -94,6 +96,8 @@ typedef TInt16  int16_t;
 typedef TUint16 uint16_t;
 typedef TInt32  int32_t;
 typedef TUint32 uint32_t;
+typedef TInt64  int64_t;
+typedef TUint64 uint64_t;
 
 #endif /*SYMBIANADAPTER_H_*/
 
