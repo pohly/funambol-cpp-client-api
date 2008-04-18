@@ -51,8 +51,9 @@ wchar_t * wcsncpy (wchar_t *dst, const wchar_t *src, size_t count) {
 }
 
 int towlower(int c) {
-    wchar_t tmpStr[1];
+    wchar_t tmpStr[2];
     tmpStr[0] = (wchar_t)c;
+    tmpStr[1] = 0;
     TBuf16<1> buf = (const TUint16*)tmpStr;
     buf.LowerCase();
     const TUint16* resStr = buf.Ptr();
@@ -60,7 +61,8 @@ int towlower(int c) {
 }
 
 int towupper(int c)  {
-    wchar_t tmpStr[1];
+    wchar_t tmpStr[2];
+    tmpStr[1] = 0;
     tmpStr[0] = (wchar_t)c;
     TBuf16<1> buf = (const TUint16*)tmpStr;
     buf.UpperCase();
@@ -68,31 +70,154 @@ int towupper(int c)  {
     return (int)*resStr;
 }
 
+static size_t estimateMaxSize(const char* format, PLATFORM_VA_LIST ap) {
+
+    const char* p = format;
+    size_t maxSize = strlen(format);
+    while (*p) {
+        if (*p == '%') {
+            // We may have a precision or width here and we must skip it
+            while ((*p) >= '0' && (*p) <= '9') {
+                ++p;
+            }
+            char type = *(++p);
+            switch (type) {
+                case 'd':
+                case 'i':
+                case 'u':
+                {
+                    maxSize += 10;
+                    PLATFORM_VA_ARG(ap, int32_t);
+                    break;
+                }
+                case 's':
+                {
+                    char* s = PLATFORM_VA_ARG(ap, char*);
+                    maxSize += strlen(s);
+                    break;
+                }
+                case 'b':
+                {
+                    maxSize += 32 * 8 + 2;
+                    PLATFORM_VA_ARG(ap, int32_t);
+                    break;
+                }
+                case 'x':
+                {
+                    maxSize += 32 + 2;
+                    PLATFORM_VA_ARG(ap, int32_t);
+                    break;
+                }
+                case 'o':
+                {
+                    maxSize += 32 * 2 + 2;
+                    PLATFORM_VA_ARG(ap, int32_t);
+                    break;
+                }
+                case 'c':
+                {
+                    maxSize += 1;
+                    PLATFORM_VA_ARG(ap, int32_t);
+                    break;
+                }
+                case 'L':
+                case 'l':
+                {
+                    maxSize += 20;
+                    PLATFORM_VA_ARG(ap, int64_t);
+                    break;
+                }
+                default:
+                {
+                    // Floating point cases...
+                    maxSize += 50;
+                }
+            }
+        }
+        ++p;
+    }
+    return maxSize;
+}
+
+static char* translateFormat(const char* format) {
+    char* ret     = new char[strlen(format) + 1];
+    char* p       = ret;
+    const char* q = format;
+
+    while (*q) {
+        if (*q == '%') {
+            // We may have a precision or width here and we must just copy it
+            while ((*q) >= '0' && (*q) <= '9') {
+                *(p++) = *(q++);
+            }
+            char fmt = *(++q);
+            *(p++) = '%';
+            switch (fmt) {
+                case 'l':
+                {
+                    q++;
+                    if (*q == 'l') {
+                        *p = 'L';
+                        q++;
+                        p++;
+                    }
+                    *p = *q;
+                    break;
+                }
+                default:
+                {
+                    *p = fmt;
+                }
+            }
+        } else {
+            *p = *q;
+        }
+        ++q;
+        ++p;
+    }
+    *p = NULL;
+    return ret;
+}
+
 size_t vsnprintf(char* s, size_t size, const char* format, PLATFORM_VA_LIST aq) {
 
-    TPtrC8 formatBuf((const unsigned char*)format);
+    char* newFormat = translateFormat(format);
+    TPtrC8 formatBuf((unsigned char*)newFormat);
     TInt error;
     RBuf8 formattedBuf;
+    PLATFORM_VA_LIST aqCopy;
+    size_t finalSize = (size_t)-1;
 
-    TRAP(error, formattedBuf.CreateL(size));
-    if (error == KErrNone) {
-        TRAP(error, formattedBuf.FormatList(formatBuf, aq));
+#ifdef va_copy
+        PLATFORM_VA_COPY(aqCopy, aq);
+#else
+        aqCopy = aq;
+#endif
+
+    size_t estimatedSize = estimateMaxSize(format, aqCopy);
+    if (estimatedSize > size) {
+        finalSize = estimatedSize;
+    } else {
+        TRAP(error, formattedBuf.CreateL(size));
         if (error == KErrNone) {
-            char* ptr = (char *) formattedBuf.Ptr();
-            size_t finalSize = formattedBuf.Length();
-            if (finalSize < size) {
-                memcpy(s, ptr, finalSize);
-                s[finalSize] = 0;           // Symbian descriptors don't have the trailing null char
-                return finalSize;
-            } else {
-                // In this case we truncate. We signal this by returning -1
-                memcpy(s, ptr, size);
-                return (size_t)-1;
+            TRAP(error, formattedBuf.FormatList(formatBuf, aq));
+            if (error == KErrNone) {
+                char* ptr = (char *) formattedBuf.Ptr();
+                finalSize = formattedBuf.Length();
+                if (finalSize < size) {
+                    memcpy(s, ptr, finalSize);
+                    s[finalSize] = 0;           // Symbian descriptors don't have the trailing null char
+                } else {
+                    // In this case we truncate. We signal this by returning -1
+                    memcpy(s, ptr, size);
+                    finalSize = (size_t)-1;
+                }
             }
         }
     }
-    // We cannot format the string. Return -1.
-    return (size_t)-1;
+
+    delete newFormat;
+    return finalSize;
 }
 
 
@@ -159,6 +284,61 @@ size_t snwprintf(WCHAR *v, size_t size, const WCHAR* format, unsigned long value
     }
     // We cannot format the string. Return -1.
     return (size_t)-1;
+}
+
+
+bool readFile(const char* path, char **message, size_t *len, bool binary)
+{
+    FILE *f = NULL;
+    size_t msglen=0;
+    char *msg=0;
+    const char *mode = binary ? "rb" : "r" ;
+    bool res = false;
+    size_t read = 0;
+
+    *len = 0;
+    f = fopen(path, mode);
+    if ( !f ) {
+        goto done;
+    }
+
+    // Get file length
+    fseek(f, 0, SEEK_END);
+    msglen = (size_t)ftell(f);
+    fseek(f, 0, SEEK_SET);
+
+    msg = new char[msglen+1];
+    if (!msg) {
+        goto done;
+    }
+
+    while (read < msglen) {
+        read += fread(msg + read, sizeof(char), 256, f);
+        if (ferror(f)) {
+            goto done;
+        }
+    }
+    if (read != msglen) {
+        goto done;
+    }
+
+    *len = msglen;
+    msg[msglen] = 0;
+
+    // Set return parameters
+    *message=msg;
+    msg = 0;
+    res = true;
+
+  done:
+    if (f) {
+        fclose(f);
+    }
+    if (msg) {
+        delete [] msg;
+    }
+
+    return res;
 }
 
 
