@@ -85,7 +85,9 @@ SymbianLog::SymbianLog(bool resetLog, const char* path, const char* name)
             file.Seek(ESeekEnd, pos);
         }
     }
-    User::LeaveIfError(err);
+    if (err != KErrNone) {
+        return;
+    }
     
     // Write the Header
     StringBuffer header = createHeader();
@@ -209,11 +211,15 @@ void SymbianLog::printMessage(const char* level, const char* msg, PLATFORM_VA_LI
     
     fsSession.Connect();
     TInt err = file.Open(fsSession, iLogName, EFileWrite|EFileShareAny);
-    User::LeaveIfError(err);
+    if (err != KErrNone) {
+        return;
+    }
     
     TInt pos = 0;
     err = file.Seek(ESeekEnd, pos);
-    User::LeaveIfError(err);
+    if (err != KErrNone) {
+        return;
+    }
 
     // Write the data
     StringBuffer line, data;
@@ -236,7 +242,9 @@ void SymbianLog::reset(const char* title)
     
     fsSession.Connect();
     TInt err = file.Replace(fsSession, iLogName, EFileWrite|EFileShareAny);
-    User::LeaveIfError(err);
+    if (err != KErrNone) {
+        return;
+    }
     
     // Write the Header
     StringBuffer header = createHeader(title);
@@ -257,7 +265,9 @@ size_t SymbianLog::getLogSize()
     
     TInt size = 0;
     TInt err = file.Size(size);
-    User::LeaveIfError(err);
+    if (err != KErrNone) {
+        return (size_t)-1;
+    }
 
     file.Close();
     fsSession.Close();
