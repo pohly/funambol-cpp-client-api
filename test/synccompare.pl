@@ -186,6 +186,14 @@ sub Normalize {
     # removed or added by servers
     s/^DESCRIPTION:(.*?)(\\n)+$/DESCRIPTION:$1/gm;
 
+    # VTIMEZONE and TZID do not have to be preserved verbatim as long
+    # as the replacement is still representing the same timezone.
+    # Reduce TZIDs which follow the Olson database pseudo-standard
+    # to their location part and strip the VTIMEZONE - makes the
+    # diff shorter, too.
+    s;^BEGIN:VTIMEZONE.*?^TZID:/[^/\n]*/[^/\n]*/(\S+).*^END:VTIMEZONE;BEGIN:VTIMEZONE\nTZID:$1 [...]\nEND:VTIMEZONE;gms;
+    s;TZID=/[^/\n]*/[^/\n]*/(.*)$;TZID=$1;gm;
+
     if ($scheduleworld || $egroupware || $synthesis || $addressbook || $funambol) {
       # does not preserve X-EVOLUTION-UI-SLOT=
       s/^(\w+)([^:\n]*);X-EVOLUTION-UI-SLOT=\d+/$1$2/mg;
