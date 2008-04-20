@@ -48,16 +48,19 @@ class FSocket {
     
 private:
     
-    RSocketServ             iSocketSession;
     RSocket                 iSocket;
     TRequestStatus          iStatus;
-    
+        
     // used? TODO
     StringBuffer lAddress;
     StringBuffer pAddress;
     static StringBuffer lIP;
     
     
+    // 1st and 2nd phase constructors
+    static FSocket* NewL (const StringBuffer& peer, int32_t port);
+    static FSocket* NewLC(const StringBuffer& peer, int32_t port);
+
     /**
      * Opens a socket connecting to the peer host on the given port.
      */
@@ -75,11 +78,7 @@ public:
      *          NULL if the socket cannot be created for any reason.
      */
     static FSocket* createSocket(const StringBuffer& peer, int32_t port);
-    
-    // 1st and 2nd phase constructors
-    static FSocket* NewL (const StringBuffer& peer, int32_t port);
-    static FSocket* NewLC(const StringBuffer& peer, int32_t port);
-    
+        
     virtual ~FSocket();
     
 
@@ -112,7 +111,7 @@ public:
      is the same as len. On errors it can be less than len and it specifies 
      the number of bytes written before a network error was encountered.
     */
-    int32_t writeBuffer(const int8_t* const buffer, int32_t len);
+    int32_t writeBuffer(const int8_t* buffer, int32_t len);
 
     /**
      Close this socket. After this operation the object can be released as
@@ -137,8 +136,6 @@ public:
      connection.
     */
     static const StringBuffer& localIP();
-    
-    static void startConnection();
 
 };
 
