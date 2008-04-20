@@ -65,7 +65,7 @@ SOURCE       AccessConfig.cpp B64Decoder.cpp B64Encoder.cpp BodyPart.cpp Credent
  * MailSyncSourceConfig.cpp */
 
 SOURCEPATH   ..\..\src\cpp\symbian\base
-SOURCE       symbianadapter.cpp Log.cpp
+SOURCE       symbianadapter.cpp Log.cpp FConnection.cpp
 
 SOURCEPATH   ..\..\src\cpp\symbian\spdm
 SOURCE       DeviceManagementNode.cpp DMTreeFactory.cpp
