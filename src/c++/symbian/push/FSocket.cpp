@@ -33,18 +33,16 @@
  * the words "Powered by Funambol".
  */
 
-#include <CommDbConnPref.h>     // connection prefs (iap)
-
 #include "push/FSocket.h"
 #include "base/SymbianLog.h"
 #include "base/util/stringUtils.h"
 #include "base/util/symbianUtils.h"
+#include "base/FConnection.h"
 #include "base/globalsdef.h"
 
 USE_NAMESPACE
 
 StringBuffer FSocket::lIP;
-
 
 
 
@@ -79,7 +77,7 @@ FSocket* FSocket::NewLC(const StringBuffer& peer, int32_t port)
 
 void FSocket::ConstructL(const StringBuffer& peer, int32_t port) 
 {
-    LOG.debug("FSocket::ConstructL");
+    //LOG.debug("FSocket::ConstructL");
     
     StringBuffer  errorMsg;
     RHostResolver resolver; 
@@ -89,16 +87,44 @@ void FSocket::ConstructL(const StringBuffer& peer, int32_t port)
 
     serverName.Assign(stringBufferToNewBuf(peer));
     
-    // Create the socket session
-    iSocketSession.Connect();
+    //
+    // Get the connection manager instance
+    //
+    FConnection* connection = FConnection::getInstance();
+    if (!connection) {
+        iStatus = -1;
+        errorMsg = "Error opening connection";
+        goto error;
+    }
+    // Session is owned by FConnection!
+    RSocketServ* session = connection->getSession();
 
+    //
     // Open the Client Socket tcp/ip
-    TInt res = iSocket.Open(iSocketSession, KAfInet, KSockStream, KProtocolInetTcp);
+    //
+#ifdef __WINSCW__
+    // WINSCW: simply open the socket
+    TInt res = iSocket.Open(*session, KAfInet, KSockStream, KProtocolInetTcp);
+#else
+    // GCCE: use the existing connection
+    // If first time, connect to gprs
+    if (!connection->isConnected()) {
+        LOG.debug("Starting connection");
+        // TODO: remove the iap name: it's already set inside FConnection
+        connection->startConnection("Ask");
+    }
+    RConnection* conn = connection->getConnection();
+    
+    LOG.debug("Opening socket and associate with existing connection");
+    TInt res = iSocket.Open(*session, KAfInet, KSockStream, KProtocolInetTcp, *conn);
+    LOG.debug("Socket opened (err = %d)", res);
+#endif
     if (res != KErrNone) {
         iStatus = -1;
         errorMsg = "Error opening socket";
         goto error;
     }
+    
     
     // This works if serverName is the ip address, like "x.y.z.w"
     res = address.Input(serverName);
@@ -106,7 +132,7 @@ void FSocket::ConstructL(const StringBuffer& peer, int32_t port)
     if (res != KErrNone) {
         // Try to resolve the host address
         LOG.debug("resolve IP address...");
-        res = resolver.Open(iSocketSession, KAfInet, KProtocolInetTcp);
+        res = resolver.Open(*session, KAfInet, KProtocolInetTcp);
         if (res != KErrNone) {
             iStatus = -2;
             errorMsg = "Host resolver open failed";
@@ -124,25 +150,23 @@ void FSocket::ConstructL(const StringBuffer& peer, int32_t port)
         // Set the socket server address/port
         address = hostAddress().iAddr;
     }
-
+    
     address.SetPort(port);
     
     
     // --- Connect to host ---
-    LOG.debug("connect...");
+    LOG.debug("Socket connect...");
     iSocket.Connect(address, iStatus);
     User::WaitForRequest(iStatus);
     if (iStatus != KErrNone) {
         errorMsg = "Failed to connect to Server";
         goto error;
     }
-    
+
     return;
     
-    
 error:
-    LOG.error(errorMsg.c_str());    // msgBox?
-    iSocketSession.Close();
+    LOG.error(errorMsg.c_str());
     return;
 }
 
@@ -160,15 +184,16 @@ FSocket::~FSocket()
 
 
 
-int32_t FSocket::writeBuffer(const int8_t* const buffer, int32_t len) 
+int32_t FSocket::writeBuffer(const int8_t* buffer, int32_t len) 
 {
     // This doesn't copy the buffer in memory.
     TPtr8 data((TUint8*)buffer, len);
+    data.SetLength(len);
     
     // Sends data to the remote host.
     iSocket.Write(data, iStatus);
     User::WaitForRequest(iStatus);
-    
+
     if (iStatus == KErrNone) {
         return len;
     }
@@ -185,20 +210,29 @@ int32_t FSocket::readBuffer(int8_t* buffer, int32_t maxLen)
     data.CreateL(maxLen);
     
     // Receives data from a remote host and completes when data is available.
-    do {
-        TSockXfrLength len;
-        iSocket.RecvOneOrMore(data, 0, iStatus, len);
-        User::WaitForRequest(iStatus);
-        LOG.debug("received %d bytes...", data.Length());
-    } while (iStatus == KErrNone);
-    //
-    // TODO: status error codes?
-    //
+    TSockXfrLength len;
+    iSocket.RecvOneOrMore(data, 0, iStatus, len);
+    User::WaitForRequest(iStatus);
+    
+    TInt msgLen = len();
     
     if (iStatus == KErrNone) {
-        const char* ret = buf8ToNewChar(data);
-        buffer = (int8_t*)ret;
-        return data.Length();
+        if (msgLen <= maxLen) {
+            // OK. Copy the message into the preallocated buffer.
+            memcpy(buffer, data.Ptr(), msgLen);
+            return msgLen;
+        }
+        else {
+            LOG.error("FSocket: error reading, message too big (%d > %d) -> rejected.", msgLen, maxLen);
+            iStatus = -1;
+            return -1;
+        }
+    }
+    else if (iStatus == KErrEof) {
+        // Either the remote connection is closed, or the socket has been shutdown.
+        LOG.info("FSocket: read interrupted (connection closed)");
+        buffer = NULL;
+        return -1;
     }
     else {
         LOG.error("FSocket: error reading on socket (status = %d)", iStatus.Int());
@@ -210,16 +244,13 @@ int32_t FSocket::readBuffer(int8_t* buffer, int32_t maxLen)
 
 void FSocket::close() 
 {
-    LOG.debug("FSocket::close");
+    //LOG.debug("FSocket::close");
+    
+    // TODO: shutdown if I/O in progress?
+    //iSocket.Shutdown(RSocket::EImmediate, iStatus);
     
     iSocket.CancelAll();
-    iSocket.Shutdown(RSocket::EImmediate, iStatus);
-    User::WaitForRequest(iStatus);
-    //iSocket.CancelAll();
-    //iSocket.Close();
-    
-    
-    iSocketSession.Close();
+    iSocket.Close();
 }
 
 
@@ -236,67 +267,3 @@ const StringBuffer& FSocket::peerAddress() const {
 const StringBuffer& FSocket::localIP() {
     return lIP;
 }
-
-
-
-void FSocket::startConnection()
-{
-    RConnection connection;
-    RSocketServ socketServ;
-    User::LeaveIfError(socketServ.Connect());
-    
-    // Use the default IAP without prompting the user
-    TUint32 UidAP=0;
-    TCommDbConnPref prefs;
-    prefs.SetDialogPreference (ECommDbDialogPrefDoNotPrompt);
-    prefs.SetDirection (ECommDbConnectionDirectionUnknown);
-    prefs.SetIapId (UidAP);
-
-    User::LeaveIfError (connection.Open (socketServ, KAfInet));
-    User::LeaveIfError (connection.Start (prefs));
-
-    // use this to search for a particular IAP to use
-    // withouth prompting the user
-#if defined(PREDEFINED_IAP)
-    CCommsDatabase* commDb = CCommsDatabase::NewL(EDatabaseTypeIAP);
-    CleanupStack::PushL(commDb);
-    CApSelect* select = CApSelect::NewLC(*commDb,KEApIspTypeAll,EApBearerTypeAll,KEApSortUidAscending);
-    TBuf<256> accessPoint;
-    TInt UidAP= 0;
-    TBool ok = select->MoveToFirst();
-    for (TInt32 i = 0; ok&&(i<select->Count()); i++)
-        {
-        if ( select->Name ()==_L(PREDEFINED_IAP))
-            {
-            UidAP = select->Uid ();
-            TCommDbConnPref prefs;
-            prefs.SetDialogPreference (ECommDbDialogPrefDoNotPrompt);
-            prefs.SetDirection (ECommDbConnectionDirectionUnknown);
-            prefs.SetIapId (UidAP);
-
-            User::LeaveIfError (iConnection.Open (iSocketSession, KAfInet));
-            User::LeaveIfError (iConnection.Start (prefs));
-
-            }
-        else
-            {
-            ok = select->MoveNext ();
-            }
-        }
-#else
-    // use this if you want prompt user for IAP
-    TCommDbConnPref pref;
-    pref.SetDirection(ECommDbConnectionDirectionUnknown);
-    
-    connection.Open(socketServ, KAfInet);
-    connection.Start(pref);
-#endif
-    
-    socketServ.Close();
-}
-
-
-
-
-
-
