@@ -69,7 +69,12 @@ SymbianLog::SymbianLog(bool resetLog, const char* path, const char* name)
 
     
     // Connect to the file server session.
-    fsSession.Connect();       
+    fsSession.Connect();
+    err = fsSession.ShareAuto();
+    if (err != KErrNone) {
+        setErrorF(err, "SymbianLog error: unable to share RFs session (code %d)", err);
+        return;
+    }
     
     if (resetLog) {
         err = file.Replace(fsSession, iLogName, EFileWrite|EFileShareAny);
@@ -86,6 +91,7 @@ SymbianLog::SymbianLog(bool resetLog, const char* path, const char* name)
         }
     }
     if (err != KErrNone) {
+        setErrorF(err, "SymbianLog: could not open the log file '%ls'", iLogName.Ptr());
         return;
     }
     
@@ -96,8 +102,6 @@ SymbianLog::SymbianLog(bool resetLog, const char* path, const char* name)
     file.Write(data);
 
     file.Close();
-    fsSession.Close();
-    
     iSemaphore.Signal();
     return;
 }
@@ -135,16 +139,20 @@ StringBuffer SymbianLog::createCurrentTime(bool complete)
     }
     
     TTime local;
-    local.HomeTime();
-    
-    TBuf<50> formattedTime;
-    if (complete) { local.FormatL(formattedTime, KFormatDateAndTime); }
-    else          { local.FormatL(formattedTime, KFormatOnlyTime);    }
-    
     StringBuffer ret;
-    const char* date = bufToNewChar(formattedTime);
-    ret.sprintf("%s %s", date, iFormattedBias.c_str());
-    delete [] date;
+    TBuf<50> formattedTime;
+    
+    local.HomeTime();
+
+    if (complete) { 
+        local.FormatL(formattedTime, KFormatDateAndTime); 
+        StringBuffer date = bufToStringBuffer(formattedTime);
+        ret.sprintf("%s %s", date.c_str(), iFormattedBias.c_str());
+    }
+    else { 
+        local.FormatL(formattedTime, KFormatOnlyTime);
+        ret = bufToStringBuffer(formattedTime);
+    }
     return ret;
 }
 
@@ -209,15 +217,16 @@ void SymbianLog::printMessage(const char* level, const char* msg, PLATFORM_VA_LI
     
     StringBuffer currentTime = createCurrentTime(false);
     
-    fsSession.Connect();
     TInt err = file.Open(fsSession, iLogName, EFileWrite|EFileShareAny);
     if (err != KErrNone) {
+        setErrorF(err, "SymbianLog: could not open log file (code %d)", err);
         return;
     }
     
     TInt pos = 0;
     err = file.Seek(ESeekEnd, pos);
     if (err != KErrNone) {
+        setErrorF(err, "SymbianLog: seek error on log file (code %d)", err);
         return;
     }
 
@@ -232,7 +241,6 @@ void SymbianLog::printMessage(const char* level, const char* msg, PLATFORM_VA_LI
     file.Write(buf);
     
     file.Close();
-    fsSession.Close();
     iSemaphore.Signal();
 }
 
@@ -240,9 +248,9 @@ void SymbianLog::reset(const char* title)
 {
     iSemaphore.Wait();
     
-    fsSession.Connect();
     TInt err = file.Replace(fsSession, iLogName, EFileWrite|EFileShareAny);
     if (err != KErrNone) {
+        setErrorF(err, "SymbianLog: error resetting the log file (code %d)", err);
         return;
     }
     
@@ -253,7 +261,6 @@ void SymbianLog::reset(const char* title)
     file.Write(buf);
     
     file.Close();
-    fsSession.Close();
     iSemaphore.Signal();
 }
 
@@ -261,16 +268,15 @@ void SymbianLog::reset(const char* title)
 size_t SymbianLog::getLogSize() 
 {
     iSemaphore.Wait();
-    fsSession.Connect();
     
     TInt size = 0;
     TInt err = file.Size(size);
     if (err != KErrNone) {
+        setErrorF(err, "SymbianLog: error getting the log size (code %d)", err);
         return (size_t)-1;
     }
 
     file.Close();
-    fsSession.Close();
     iSemaphore.Signal();
     
     return (size_t)size;
