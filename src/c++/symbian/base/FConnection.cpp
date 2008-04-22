@@ -50,7 +50,7 @@ USE_NAMESPACE
 // Init static pointer.
 FConnection* FConnection::iInstance = NULL;
 
-_LIT(KIAPSettingName, "IAP\\Id");
+
 
 
 /**
@@ -100,6 +100,14 @@ void FConnection::ConstructL()
         goto error;
     }
     
+    // *Note*: THIS IS MANDATORY TO USE THE SAME SESSION FROM DIFFERENT THREADS!
+    // After calling this function the RSocketServ object 
+    // may be used by threads other than than the one that created it.
+    iLastError = iSession.ShareAuto();
+    if (iLastError != KErrNone) {
+        errMsg.sprintf("FConnection error: unable to share SocketServ (code %d)", iLastError);
+        goto error;
+    }
     
     //
     // Default preferences: no prompt, just to initialize the connection object
@@ -137,8 +145,9 @@ FConnection::~FConnection() {
 }
 
 
-const int FConnection::startConnection() {
-    return startConnection("Default");
+const int FConnection::startConnection() 
+{
+    return startConnection(iIAPDefaultName);
 }
 
 const int FConnection::startConnection(const StringBuffer& aIAPName)
@@ -148,20 +157,13 @@ const int FConnection::startConnection(const StringBuffer& aIAPName)
     StringBuffer errMsg;
     TCommDbConnPref prefs;
     
-    // TODO: can we remove this?
-    TRAP(iLastError, iSession.Connect());
-    if (iLastError != KErrNone) {
-        errMsg.sprintf("FConnection error: unable to connect SocketServ (code %d)", iLastError);
-        goto error;
-    }
-    
     prefs.SetDirection(ECommDbConnectionDirectionUnknown);
      
     if (aIAPName == "Default") {
         //
         // Use the default IAP without prompting the user
         //
-        prefs.SetDialogPreference (ECommDbDialogPrefDoNotPrompt);
+        prefs.SetDialogPreference(ECommDbDialogPrefDoNotPrompt);
         prefs.SetIapId(0);
         iIAP = 0;
     }
@@ -224,7 +226,8 @@ const int FConnection::startConnection(const StringBuffer& aIAPName)
         goto error;
     }
     
-    // Save the IAP ID of this connection
+    // Save the IAP ID of the current connection
+    _LIT(KIAPSettingName, "IAP\\Id");
     iConnection.GetIntSetting(KIAPSettingName, iIAP);
     LOG.debug("Current IAP ID = %d", iIAP);
     
@@ -272,6 +275,12 @@ const int FConnection::stopConnection()
         iLastError = iConnection.Stop(/*RConnection::EStopAuthoritative*/);
     }
     return iLastError;
+}
+
+
+void FConnection::setIAPDefaultName(const StringBuffer& aIAPName)
+{
+    iIAPDefaultName = aIAPName;
 }
 
 
