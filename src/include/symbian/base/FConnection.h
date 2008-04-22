@@ -43,6 +43,11 @@
 
 BEGIN_NAMESPACE
 
+
+/// Max number of times we retry the connection, in case of errors.
+#define         MAX_RETRY_CONNECTION    3
+
+
 /**
  * This class is a singleton, used to manage the network connection.
  * Get the only instance of FConnection calling FConnection::getInstance().
@@ -66,17 +71,26 @@ private:
     /// Current local IP adress of the device
     StringBuffer            iLocalIpAddress;
     
-    /// Current IAP ID of the connection
+    
+    /// Current IAP ID of the active connection
+    /// It's set once the connection is up and running
     TUint32                 iIAP;
     
-    /**
-     *  Default IAP name for the connection.
-     * Should be set at the beginning, calling setIAPDefaultName()
-     */
+    /// Current IAP name of the active connection
+    /// It's set once the connection is up and running
+    StringBuffer            iIAPName;
+    
+    // TODO: remove? use only iIAPName?
+    /// Default IAP name for the connection.
+    /// Should be set at the beginning, calling setIAPDefaultName()
     StringBuffer            iIAPDefaultName;
+    
     
     /// The last error code
     TInt                    iLastError;
+    
+    /// Counter to know how many times we retry to connect to network.
+    TInt                    iRetryConnection;
 
     
     // 1st and 2nd phase constructors
@@ -89,7 +103,25 @@ private:
      */
     void ConstructL();
     
+    
+    //--------- utils ------------
+    /**
+     * Returns the IAP ID from its name.
+     * Scans all the user defined accespoints inside the CommDb database.
+     * @param aIAPName  the IAP name to seach
+     * @return          the IAP ID (value >= 0), -1 if not found
+     */
+    TInt GetIAPIDFromName(const StringBuffer& aIAPName);
+    
+    /**
+     * Returns the IAP name from its ID.
+     * Scans all the user defined accespoints inside the CommDb database.
+     * @param aIAPID  the IAP ID to seach
+     * @return        the IAP name, empty string if not found
+     */
+    StringBuffer GetIAPNameFromID(const TUint aIAPID);
 
+    
 protected:
     
     /// Default constructor.
