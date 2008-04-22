@@ -84,6 +84,7 @@ void FSocket::ConstructL(const StringBuffer& peer, int32_t port)
     RBuf          serverName;
     TNameEntry    hostAddress;
     TInetAddr     address;
+    TInt          res = KErrNone;
 
     serverName.Assign(stringBufferToNewBuf(peer));
     
@@ -104,18 +105,22 @@ void FSocket::ConstructL(const StringBuffer& peer, int32_t port)
     //
 #ifdef __WINSCW__
     // WINSCW: simply open the socket
-    TInt res = iSocket.Open(*session, KAfInet, KSockStream, KProtocolInetTcp);
+    res = iSocket.Open(*session, KAfInet, KSockStream, KProtocolInetTcp);
 #else
     // GCCE: use the existing connection
     // If first time, connect to gprs
     if (!connection->isConnected()) {
         LOG.debug("Starting connection");
-        connection->startConnection();
+        if (connection->startConnection()) {
+            iStatus = -1;
+            errorMsg = "Error starting connection";
+            goto error;
+        }
     }
     RConnection* conn = connection->getConnection();
     
     LOG.debug("Opening socket and associate with existing connection");
-    TInt res = iSocket.Open(*session, KAfInet, KSockStream, KProtocolInetTcp, *conn);
+    res = iSocket.Open(*session, KAfInet, KSockStream, KProtocolInetTcp, *conn);
     //LOG.debug("Socket opened (err = %d)", res);
 #endif
     if (res != KErrNone) {
@@ -129,9 +134,15 @@ void FSocket::ConstructL(const StringBuffer& peer, int32_t port)
     res = address.Input(serverName);
     
     if (res != KErrNone) {
-        // Try to resolve the host address
-        LOG.debug("resolve IP address...");
+        //
+        // Try to resolve the host address. (On GCCE, use the existing RConnection)
+        //
+        LOG.debug("Resolve IP address...");
+#ifdef __WINSCW__
         res = resolver.Open(*session, KAfInet, KProtocolInetTcp);
+#else
+        res = resolver.Open(*session, KAfInet, KProtocolInetTcp, *conn);
+#endif
         if (res != KErrNone) {
             iStatus = -2;
             errorMsg = "Host resolver open failed";
