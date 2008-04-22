@@ -69,6 +69,12 @@ private:
     /// Current IAP ID of the connection
     TUint32                 iIAP;
     
+    /**
+     *  Default IAP name for the connection.
+     * Should be set at the beginning, calling setIAPDefaultName()
+     */
+    StringBuffer            iIAPDefaultName;
+    
     /// The last error code
     TInt                    iLastError;
 
@@ -99,7 +105,11 @@ public:
     virtual ~FConnection();
     
     /**
-     * Starts a new GPRS connection, using the default IAP.
+     * Starts a new GPRS connection using the default IAP, which name
+     * is stored in the member 'iIAPDefaultName'.
+     * The method setIAPDefaultName() should be called before
+     * this method, to set the IAP to be used - otherwise, the user
+     * will be prompted to select the IAP.
      * @return  0 if no error
      */
     const int startConnection();
@@ -107,7 +117,7 @@ public:
     /**
      * Starts a new GPRS connection, given the IAP name.
      * @param aIAPName  "Ask"    : if we want to prompt the user to select the IAP
-     *                  "Default": will use the default IAP, no prompts
+     *                  "Default": will use the default IAP of the system, no prompts
      *                  "<name>" : will use the <name> IAP, no prompts. 
      *                             If not found, will prompt the user to select the IAP
      * @return  0 if no error
@@ -132,7 +142,17 @@ public:
      * TODO
      */
     const StringBuffer& getLocalIpAddress();
+    
+    /**
+     * Sets the default IAP name, that will be used in startConnection().
+     * This method should be called at the beginning, so that
+     * subsequent calls to startConnection() will use this default IAP.
+     * @param  aIAPName  the name of the IAP
+     */
+    void setIAPDefaultName(const StringBuffer& aIAPName);
+    
 
+    
     /// Returns a pointer to the (internally owned) RConnection.
     RConnection* getConnection() { return &iConnection; }
 
