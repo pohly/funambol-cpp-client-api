@@ -110,14 +110,13 @@ void FSocket::ConstructL(const StringBuffer& peer, int32_t port)
     // If first time, connect to gprs
     if (!connection->isConnected()) {
         LOG.debug("Starting connection");
-        // TODO: remove the iap name: it's already set inside FConnection
-        connection->startConnection("Ask");
+        connection->startConnection();
     }
     RConnection* conn = connection->getConnection();
     
     LOG.debug("Opening socket and associate with existing connection");
     TInt res = iSocket.Open(*session, KAfInet, KSockStream, KProtocolInetTcp, *conn);
-    LOG.debug("Socket opened (err = %d)", res);
+    //LOG.debug("Socket opened (err = %d)", res);
 #endif
     if (res != KErrNone) {
         iStatus = -1;
@@ -206,6 +205,8 @@ int32_t FSocket::writeBuffer(const int8_t* buffer, int32_t len)
 
 int32_t FSocket::readBuffer(int8_t* buffer, int32_t maxLen) 
 {
+    StringBuffer errorMsg;
+    
     RBuf8 data;
     data.CreateL(maxLen);
     
@@ -223,22 +224,24 @@ int32_t FSocket::readBuffer(int8_t* buffer, int32_t maxLen)
             return msgLen;
         }
         else {
-            LOG.error("FSocket: error reading, message too big (%d > %d) -> rejected.", msgLen, maxLen);
-            iStatus = -1;
-            return -1;
+            errorMsg.sprintf("FSocket: error reading, message too big (%d > %d) -> rejected.", msgLen, maxLen);
+            goto error;
         }
     }
     else if (iStatus == KErrEof) {
         // Either the remote connection is closed, or the socket has been shutdown.
-        LOG.info("FSocket: read interrupted (connection closed)");
-        buffer = NULL;
-        return -1;
+        errorMsg = "FSocket: read interrupted (connection closed)";
+        goto error;
     }
     else {
-        LOG.error("FSocket: error reading on socket (status = %d)", iStatus.Int());
-        buffer = NULL;
-        return -1;
+        errorMsg.sprintf("FSocket: error reading on socket (status = %d)", iStatus.Int());
+        goto error;
     }
+
+error:
+    LOG.error(errorMsg.c_str());
+    buffer = NULL;
+    return -1;
 }
 
 
