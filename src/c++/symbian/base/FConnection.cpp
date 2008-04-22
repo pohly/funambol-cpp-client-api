@@ -94,7 +94,7 @@ void FConnection::ConstructL()
     TCommDbConnPref prefs;
     
     // Connect SocketServer session
-    TRAP(iLastError, iSession.Connect());
+    iLastError = iSession.Connect();
     if (iLastError != KErrNone) {
         errMsg.sprintf("FConnection error: unable to connect SocketServ (code %d)", iLastError);
         goto error;
@@ -116,16 +116,13 @@ void FConnection::ConstructL()
     prefs.SetDirection(ECommDbConnectionDirectionUnknown);
     prefs.SetIapId(0);
     
-    // Start connection
-    TRAP(iLastError, 
-        { iConnection.Open(iSession, KAfInet);
-          iConnection.Start(prefs);
-        }
-    )
+    // Open connection
+    iLastError = iConnection.Open(iSession, KAfInet);
     if (iLastError != KErrNone) {
-        errMsg.sprintf("FConnection error: unable to open/start connection (code %d)", iLastError);
+        errMsg.sprintf("FConnection error: unable to open connection (code %d)", iLastError);
         goto error;
     }
+    
     return;
 
 error:
@@ -135,7 +132,8 @@ error:
 
 
 FConnection::FConnection() : iLocalIpAddress("127.0.0.1"),
-                             iIAP(0) {
+                             iIAP(0),
+                             iRetryConnection(0) {
 }
 
 
@@ -152,13 +150,16 @@ const int FConnection::startConnection()
 
 const int FConnection::startConnection(const StringBuffer& aIAPName)
 {
-    LOG.debug("Starting gprs connection...");
+    LOG.info("Starting gprs connection...");
+    LOG.debug("Looking for '%s' IAP name", aIAPName.c_str());
+    
     iLastError = KErrNone;
     StringBuffer errMsg;
     TCommDbConnPref prefs;
     
     prefs.SetDirection(ECommDbConnectionDirectionUnknown);
-     
+
+
     if (aIAPName == "Default") {
         //
         // Use the default IAP without prompting the user
@@ -176,32 +177,19 @@ const int FConnection::startConnection(const StringBuffer& aIAPName)
         //
         // Search for the desired IAP. If not found, will prompt the user.
         //
-        TUint32 UidAP = 0;
-        RBuf iapName;
-        iapName.Assign(stringBufferToNewBuf(aIAPName));
-        
-        CCommsDatabase* commDb = CCommsDatabase::NewL(EDatabaseTypeIAP);
-        CleanupStack::PushL(commDb);
-        CApSelect* select = CApSelect::NewLC(*commDb,KEApIspTypeAll,EApBearerTypeAll,KEApSortUidAscending);
-        TBuf<256> accessPoint;
-        TBool ok = select->MoveToFirst();
-        for (TInt32 i = 0; ok&&(i<select->Count()); i++) 
-        {
-            if (select->Name() == iapName) {
-                UidAP = select->Uid();
-                prefs.SetDialogPreference(ECommDbDialogPrefDoNotPrompt);
-                prefs.SetIapId(UidAP);
-                break;
-            }
-            else {
-                ok = select->MoveNext();
-            }
+        TInt iapID = GetIAPIDFromName(aIAPName);
+        if (iapID >= 0) {
+            prefs.SetDialogPreference(ECommDbDialogPrefDoNotPrompt);
+            prefs.SetIapId(iapID);
         }
-        CleanupStack::PopAndDestroy(2);    //commdb and select
+        else {
+            LOG.debug("IAP '%s' not found!", aIAPName.c_str());
+        }
     }
     
 
 /*
+ * **** TODO: check if we need this! ****
  In S60 3rd Edition, enabling/disabling the inactivity timer will require 
  the NetworkControl capability, which is only accessed via Symbian 
  partner. 
@@ -212,29 +200,37 @@ const int FConnection::startConnection(const StringBuffer& aIAPName)
 //    iConnection.SetOpt(KCOLProvider, KConnDisableTimers, ETrue);
 //#endif
     
-
-    //
+    
     // Start connection
-    //
-    TRAP(iLastError, 
-        { iConnection.Open(iSession, KAfInet);
-          iConnection.Start(prefs);
-        }
-    )
+    iLastError = iConnection.Start(prefs);
     if (iLastError != KErrNone) {
-        errMsg.sprintf("FConnection error: unable to open/start connetion (code %d)", iLastError);
-        goto error;
+        errMsg.sprintf("FConnection error: unable to start connection (code %d)", iLastError);
+        goto retry;
     }
     
-    // Save the IAP ID of the current connection
+    // Save the IAP ID & name of the active connection
     _LIT(KIAPSettingName, "IAP\\Id");
     iConnection.GetIntSetting(KIAPSettingName, iIAP);
-    LOG.debug("Current IAP ID = %d", iIAP);
+    iIAPName = GetIAPNameFromID(iIAP);
+    LOG.debug("Current active IAP ID = %d, name = %s", iIAP, iIAPName.c_str());
+    //
+    // TODO: should we persist the iIAPName in the config, here?
+    //
     
+    iRetryConnection = 0;
     return 0;
     
-error:
+    
+retry:
     LOG.error(errMsg.c_str());
+    if (iRetryConnection < MAX_RETRY_CONNECTION) {
+        iRetryConnection ++;
+        LOG.info("Retry connection (%d time)...", iRetryConnection);
+        startConnection("Ask");     // Ask the user?
+    }
+    else {
+        LOG.error("FConnection: %d connection failed", iRetryConnection);
+    }
     return iLastError;
 }
 
@@ -293,7 +289,57 @@ const StringBuffer& FConnection::getLocalIpAddress()
 }
 
 
+TInt FConnection::GetIAPIDFromName(const StringBuffer& aIAPName) 
+{
+    TInt ret = -1;
+    RBuf iapName;
+    iapName.Assign(stringBufferToNewBuf(aIAPName));
+    
+    CCommsDatabase* commDb = CCommsDatabase::NewL(EDatabaseTypeIAP);
+    CleanupStack::PushL(commDb);
+    CApSelect* select = CApSelect::NewLC(*commDb,KEApIspTypeAll,EApBearerTypeAll,KEApSortUidAscending);
+    TBuf<256> accessPoint;
+    
+    TBool ok = select->MoveToFirst();
+    for (TUint32 i=0; ok &&(i<select->Count()); i++) 
+    {
+        if (select->Name() == iapName) {
+            ret = select->Uid();
+            //LOG.debug("Found IAP: %s (id = %d)", aIAPName.c_str(), ret);
+            break;
+        }
+        else {
+            ok = select->MoveNext();
+        }
+    }
+    CleanupStack::PopAndDestroy(2);    //commdb and select
+    
+    return ret;
+}
 
 
-
-
+StringBuffer FConnection::GetIAPNameFromID(const TUint aIAPID) 
+{
+    StringBuffer ret;
+    
+    CCommsDatabase* commDb = CCommsDatabase::NewL(EDatabaseTypeIAP);
+    CleanupStack::PushL(commDb);
+    CApSelect* select = CApSelect::NewLC(*commDb,KEApIspTypeAll,EApBearerTypeAll,KEApSortUidAscending);
+    TBuf<256> accessPoint;
+    
+    TBool ok = select->MoveToFirst();
+    for (TUint32 i=0; ok &&(i<select->Count()); i++) 
+    {
+        if (select->Uid() == aIAPID) {
+            ret = bufToStringBuffer(select->Name());
+            //LOG.debug("Found IAP: %d (name = %s)", aIAPID, ret.c_str());
+            break;
+        }
+        else {
+            ok = select->MoveNext();
+        }
+    }
+    CleanupStack::PopAndDestroy(2);    //commdb and select
+    
+    return ret;
+}
