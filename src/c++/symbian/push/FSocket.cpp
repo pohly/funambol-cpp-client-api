@@ -125,7 +125,7 @@ void FSocket::ConstructL(const StringBuffer& peer, int32_t port)
 #endif
     if (res != KErrNone) {
         iStatus = -1;
-        errorMsg = "Error opening socket";
+        errorMsg.sprintf("FSocket : Error opening socket. code %d", res);
         goto error;
     }
     
@@ -145,7 +145,7 @@ void FSocket::ConstructL(const StringBuffer& peer, int32_t port)
 #endif
         if (res != KErrNone) {
             iStatus = -2;
-            errorMsg = "Host resolver open failed";
+            errorMsg.sprintf("FSocket: Host resolver open failed. code %d", res);
             goto error;
         }
         
@@ -153,7 +153,7 @@ void FSocket::ConstructL(const StringBuffer& peer, int32_t port)
         User::WaitForRequest(iStatus);
         resolver.Close();
         if (iStatus != KErrNone) {
-            errorMsg = "DNS lookup failed";
+            errorMsg.sprintf("FSocket: DNS lookup failed. code %d", iStatus.Int());
             goto error;
         }
 
@@ -169,7 +169,7 @@ void FSocket::ConstructL(const StringBuffer& peer, int32_t port)
     iSocket.Connect(address, iStatus);
     User::WaitForRequest(iStatus);
     if (iStatus != KErrNone) {
-        errorMsg = "Failed to connect to Server";
+        errorMsg.sprintf("FSocket: Failed to connect to Server. code %d", iStatus.Int()); 
         goto error;
     }
 
