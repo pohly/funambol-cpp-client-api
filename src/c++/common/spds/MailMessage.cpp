@@ -156,12 +156,18 @@ int MailMessage::attachmentCount() {
 
 static StringBuffer formatBodyPart(const BodyPart &part)
 {
-    StringBuffer ret;
-
+    StringBuffer ret;    
     LOG.debug("FormatBodyPart START");
-    
+
     ret = MIMETYPE;
-    ret += part.getMimeType(); ret += ";\n";
+    
+    ret += part.getMimeType(); ret += ";";
+    if (!part.getFilename()) {
+        LOG.debug("It doesn't contains an attachment. It is the body");
+        ret +=" "; ret += CT_CHARSET; ret += part.getCharset(); 
+    }
+    ret += NL;
+    
     if( part.getFilename() ) {
         ret += "        "; ret += CT_NAME; ret += "\""; ret += part.getFilename(); ret += "\"\n";
     }
