@@ -1,6 +1,6 @@
 /*
  * Funambol is a mobile platform developed by Funambol, Inc. 
- * Copyright (C) 2003 - 2007 Funambol, Inc.
+ * Copyright (C) 2008 Funambol, Inc.
  * 
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Affero General Public License version 3 as published by
@@ -42,7 +42,8 @@
     
 BEGIN_NAMESPACE
     
-SQLiteKeyValueStore::SQLiteKeyValueStore(const StringBuffer & table, const StringBuffer & colKey,   const StringBuffer & colValue,
+SQLiteKeyValueStore::SQLiteKeyValueStore(const StringBuffer & table, const StringBuffer & colKey,
+                                         const StringBuffer & colValue,
                                          const StringBuffer & path)
 : SQLKeyValueStore(table,colKey,colValue), enumeration(*this)
 {

@@ -1,6 +1,6 @@
 /*
  * Funambol is a mobile platform developed by Funambol, Inc. 
- * Copyright (C) 2003 - 2007 Funambol, Inc.
+ * Copyright (C) 2008 Funambol, Inc.
  * 
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Affero General Public License version 3 as published by
@@ -45,6 +45,15 @@
 
 BEGIN_NAMESPACE
 
+/**
+ * This abstract class represent an implementation of KeyValueStore based on a
+ * generic SQL database.
+ *
+ * It allows the developer to specify the column to use for the key and value,
+ * the table name to use for the storage, and requires to implement the methods
+ * to connect/disconnect to the database, which are specific to the db driver
+ * in use (odbc, etc.)
+ */
 class SQLKeyValueStore : public KeyValueStore {
 private:
     

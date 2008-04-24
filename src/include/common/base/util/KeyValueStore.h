@@ -1,6 +1,6 @@
 /*
  * Funambol is a mobile platform developed by Funambol, Inc. 
- * Copyright (C) 2003 - 2007 Funambol, Inc.
+ * Copyright (C) 2008 Funambol, Inc.
  * 
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Affero General Public License version 3 as published by
@@ -58,18 +58,18 @@ class KeyValueStore {
 
 public:
     
-    /*
+    /**
      * Returns the value of the given property
      *
-     *@param prop - the property name
+     * @param prop - the property name
      *
-     *@return   A NULL StringBuffer in the returned implies that
+     * @return  A NULL StringBuffer in the returned implies that
      *          the property was not set. Otherwise the value it was
      *          set to is returned (which can be "", the empty string).
      */
     virtual StringBuffer readPropertyValue(const char *prop) const = 0;
 
-    /*
+    /**
      * Sets a property value.
      *
      * The value might be cached inside the implementation of this
@@ -84,12 +84,12 @@ public:
     virtual int setPropertyValue(const char *prop, const char *value) = 0;
     
      /**
-     * Remove a certain property 
-     *
-     * @param prop    the name of the property which is to be removed   
-     *
-     * @return int 0 on success, an error code otherwise
-     */
+      * Remove a certain property 
+      *
+      * @param prop    the name of the property which is to be removed   
+      *
+      * @return int 0 on success, an error code otherwise
+      */
     virtual int removeProperty(const char *prop) = 0;
      
     /**
