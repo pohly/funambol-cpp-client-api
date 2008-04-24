@@ -56,16 +56,19 @@ SOURCEPATH   ..\..\src\cpp\common\spdm
 SOURCE       DMTree.cpp ManagementNode.cpp
 
 SOURCEPATH   ..\..\src\cpp\common\client
-SOURCE       DMTClientConfig.cpp
+SOURCE       DMTClientConfig.cpp SyncClient.cpp
 
 SOURCEPATH   ..\..\src\cpp\common\spds
 SOURCE       AccessConfig.cpp B64Decoder.cpp B64Encoder.cpp BodyPart.cpp CredentialHandler.cpp DataTransformer.cpp DataTransformerFactory.cpp DefaultConfigFactory.cpp DeviceConfig.cpp EmailData.cpp FileData.cpp FolderData.cpp ItemReport.cpp MailMessage.cpp MailSyncSourceConfig.cpp spdsutils.cpp SyncItem.cpp SyncItemStatus.cpp SyncManagerConfig.cpp SyncManager.cpp SyncMap.cpp SyncMLBuilder.cpp SyncMLProcessor.cpp SyncReport.cpp SyncSourceConfig.cpp SyncSource.cpp SyncSourceReport.cpp
 
-/* SyncManagerConfig.cpp SyncSourceConfig.cpp AccessConfig.cpp DeviceConfig.cpp
- * MailSyncSourceConfig.cpp */
-
 SOURCEPATH   ..\..\src\cpp\symbian\base
 SOURCE       symbianadapter.cpp Log.cpp FConnection.cpp
+
+SOURCEPATH   ..\..\src\cpp\common\http
+SOURCE       HTTPHeader.cpp Proxy.cpp TransportAgent.cpp URL.cpp
+
+SOURCEPATH   ..\..\src\cpp\symbian\http
+SOURCE       SymbianTransportAgent.cpp TransportAgentFactory.cpp
 
 SOURCEPATH   ..\..\src\cpp\symbian\spdm
 SOURCE       DeviceManagementNode.cpp DMTreeFactory.cpp
@@ -102,4 +105,8 @@ SOURCE Address.cpp BusinessDetail.cpp Contact30.cpp Contact.cpp ContactDetail.cp
 
 SOURCEPATH ..\..\src\cpp\common\vocl\iCalendar
 SOURCE Calendar.cpp Event.cpp iCalConverter.cpp iCalProperty.cpp ToDo.cpp
+
+SOURCEPATH ..\..\src\cpp\symbian\spds
+SOURCE DESEncoder.cpp DESDecoder.cpp
+
 
