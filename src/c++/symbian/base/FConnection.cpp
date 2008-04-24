@@ -56,8 +56,8 @@ FConnection* FConnection::iInstance = NULL;
 /**
  * Method to create the sole instance of FConnection
  */
-FConnection* FConnection::getInstance() {
-
+FConnection* FConnection::getInstance() 
+{
     if (iInstance == NULL) {
         iInstance = FConnection::NewL();
     }
@@ -84,6 +84,14 @@ FConnection* FConnection::NewLC()
     }
     
     return self;
+}
+
+void FConnection::dispose() 
+{
+    if(iInstance) {
+        delete iInstance;
+    }
+    iInstance = NULL;
 }
 
 
@@ -150,7 +158,7 @@ const int FConnection::startConnection()
 
 const int FConnection::startConnection(const StringBuffer& aIAPName)
 {
-    LOG.info("Starting gprs connection...");
+    LOG.info("Starting new connection...");
     LOG.debug("Looking for '%s' IAP name", aIAPName.c_str());
     
     iLastError = KErrNone;
@@ -166,7 +174,6 @@ const int FConnection::startConnection(const StringBuffer& aIAPName)
         //
         prefs.SetDialogPreference(ECommDbDialogPrefDoNotPrompt);
         prefs.SetIapId(0);
-        iIAP = 0;
     }
     else if (aIAPName == "Ask") {
         //
@@ -208,7 +215,8 @@ const int FConnection::startConnection(const StringBuffer& aIAPName)
         goto retry;
     }
     
-    // Save the IAP ID & name of the active connection
+    // Save the IAP ID & name of the active connection.
+    // Query the CommDb database for the IAP ID in use.
     _LIT(KIAPSettingName, "IAP\\Id");
     iConnection.GetIntSetting(KIAPSettingName, iIAP);
     iIAPName = GetIAPNameFromID(iIAP);
