@@ -42,7 +42,7 @@
 
 #include "push/FThread.h"
 #include "push/FSocket.h"
-
+#include "push/PushListener.h"
 #include "push/CTPMessage.h"
 #include "push/CTPConfig.h"
 
@@ -96,6 +96,8 @@ public:
     void run();
 };
 
+
+
 /**
  * The class to manage the CTP connection, singleton.
  */
@@ -134,6 +136,15 @@ private:
 
     /// The socket used
     FSocket* ctpSocket;
+    
+    /**
+     * The listener for push notifications.
+     * Once the Client has registered itself calling registerPushListener()
+     * every push notification will be delivered to this object.
+     * TODO: will be moved in PushManager
+     */
+    PushListener* pushListener;
+    
 
     /**< Handle of main CTP thread, which implements the CTP process */
     CTPThread* ctpThread;                   
@@ -155,8 +166,20 @@ private:
     int32_t sendMsg(CTPMessage* message);
     StringBuffer createMD5Credentials();
     StringBuffer createErrorMsg(uint32_t errorCode = 0);
+    
 
+    /**
+     * Extracts the list of ServerURI names inside the SyncNotification.
+     * Each ServerURI corresponds to a source that we've been notified for,
+     * but it's the Client that knows the right correspondence with the source name.
+     * TODO: will be moved in PushManager
+     * 
+     * @param sn  pointer to the SyncNotification object to read
+     * @return    an ArrayList of ServerURI names (StringBuffers)
+     */
+    ArrayList getUriListFromSAN(SyncNotification* sn);
 
+    
 protected:
 
     // Constructor
@@ -201,6 +224,31 @@ public:
     /// Forces CTP to go in the "leaving" state. 
     /// It hallows to exit threads and close correctly CTP.
     void setLeaving(bool value) { leaving = value; }
+    
+    
+    /**
+     * Register the passed object as the listener for push notifications.
+     * Clients should derivate a class from PushListener and register 
+     * it with this method, then implement PushListener::onNotificationReceived() 
+     * to execute actions when a push message arrives.
+     * TODO: will be moved in PushManager
+     * 
+     * @note  Only one listener can be registered at the time.
+     *        This would discard a listener previously registered.
+     * @param listener  the notification listener object
+     */
+    void registerPushListener(PushListener& listener) { pushListener = &listener; }
+    
+    /**
+     * Method called when a sync notification has been received.
+     * It's called by the receive thread, after a CTP push.
+     * TODO: will be moved in PushManager, also used for STP
+     * Will notify the pushListener (if registered) with a list of serverURI.
+     * 
+     * @param sn  the SyncNotification object received
+     */
+    void syncNotificationReceived(SyncNotification* sn);
+    
 
 private:
     void hexDump(char *buf, int len);

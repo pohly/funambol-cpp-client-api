@@ -50,6 +50,7 @@ USE_NAMESPACE
 CTPService* CTPService::pinstance = NULL;
 
 
+
 /**
  * Method to create the sole instance of CTPService
  */
@@ -82,6 +83,7 @@ CTPService::CTPService() : config(APPLICATION_URI) {
     receivedMsg      = NULL;
     ctpState         = CTP_STATE_DISCONNECTED;
     leaving          = false;
+    pushListener     = NULL;
 
     totalBytesSent     = 0;
     totalBytesReceived = 0;
@@ -585,13 +587,13 @@ int32_t CTPService::receive() {
     if (stopThread(heartbeatThread)) {
         LOG.debug("heartbeatThread killed");
     }
-
+    
     //
     // Start thread to send 'ready' messages
     //
     heartbeatThread = new HeartbeatThread();
     heartbeatThread->start();
-
+    
     //
     // Start thread to receive messages from Server
     //
@@ -667,6 +669,9 @@ StringBuffer CTPService::createMD5Credentials() {
     const char*  password    = config.getAccessConfig().getPassword();
     StringBuffer clientNonce = config.getCtpNonce();
 
+    //LOG.debug("Creating cred from: username = '%s', pwd = '%s', clientNonce = '%s'", 
+    //          username, password, clientNonce.c_str());
+    
     credential = MD5CredentialData(username, password, clientNonce.c_str());
     if (credential) {
         StringBuffer ret(credential);
@@ -730,6 +735,19 @@ int CTPService::extractMsgLength(const char* package, int packageLen) {
     messageLen <<= 8;
     messageLen = messageLen | messageLen1;
     return messageLen;
+}
+
+
+void CTPService::syncNotificationReceived(SyncNotification* sn) {
+    
+    if (pushListener) {
+        // Forward the notification to the registered listener
+        ArrayList uriList = getUriListFromSAN(sn);
+        pushListener->onNotificationReceived(uriList);
+    }
+    else {
+        LOG.debug("No pushListener registered, push message lost.");
+    }
 }
 
 
@@ -1171,7 +1189,7 @@ void ReceiverThread::run() {
                 // ---------------
                 LOG.info("[SYNC] notification received! Starting the sync");
                 sn = statusMsg->getSyncNotification();
-                //TODO startSyncFromSAN(sn);
+                ctpService->syncNotificationReceived(sn);
 
                 // Back to recv
                 LOG.debug("Back to receive state");
@@ -1230,6 +1248,51 @@ void HeartbeatThread::run() {
 
     //TODO PowerPolicyNotify(PPN_UNATTENDEDMODE, FALSE);
     LOG.debug("Exiting heartbeatWorker thread");
+}
+
+
+
+// TODO: will be moved in PushManager
+ArrayList CTPService::getUriListFromSAN(SyncNotification* sn) 
+{
+    ArrayList list;
+    int n = 0;
+    
+    if (!sn) {
+        LOG.error("CTP notification error: SyncNotification is NULL");
+        return list;
+    }
+
+    // Get number of sources to sync
+    n = sn->getNumSyncs();
+    if (!n) {
+        LOG.error("CTP notification error: no sources to sync from server");
+        return list;
+    }
+    
+    // Compose the array of ServerURI names
+    for (int i=0; i<n; i++) {
+        SyncAlert* sync = sn->getSyncAlert(i);
+        if(!sync) {
+            LOG.error("CTP notification error: no SyncAlert in SyncNotification");
+            continue;
+        }
+        if (sync->getServerURI()) {
+            StringBuffer uri(sync->getServerURI());
+            list.add(uri);
+            LOG.debug("uri pushed: '%s'", uri.c_str());
+        } 
+        else {
+            LOG.error("CTP notification error: no source found from server notification request: %s", sync->getServerURI());
+            continue;
+        }
+    }
+
+    if (list.size() == 0) {
+        // 0 sources to sync -> out
+        LOG.info("No sources to sync");
+    }
+    return list;
 }
 
 
