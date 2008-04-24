@@ -82,6 +82,7 @@ WCHAR *wcsncat(WCHAR *ws1, const WCHAR *ws2, size_t n);
 double wcstod(const WCHAR *nptr, WCHAR ** endptr);
 int _wtoi(const WCHAR *str);
 bool readFile(const char* path, char **message, size_t *len, bool binary);
+bool saveFile(const char *filename, const char *buffer, size_t len, bool binary);
 
 END_NAMESPACE
 

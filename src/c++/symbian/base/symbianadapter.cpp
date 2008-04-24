@@ -286,6 +286,23 @@ size_t snwprintf(WCHAR *v, size_t size, const WCHAR* format, unsigned long value
     return (size_t)-1;
 }
 
+bool saveFile(const char *filename, const char *buffer, size_t len, bool binary)
+{
+    const char *mode = binary ? "wb" : "w" ;
+
+    FILE *f = fopen(filename, "w");
+
+    if(!f)
+        return false;
+
+    if (fwrite(buffer, sizeof(char), len, f) != len) {
+        fclose(f);
+        return false;
+    }
+    fclose(f);
+
+    return true;
+}
 
 bool readFile(const char* path, char **message, size_t *len, bool binary)
 {
