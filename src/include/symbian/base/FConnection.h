@@ -131,6 +131,9 @@ public:
     
     /// Method to get the sole instance of FConnection
     static FConnection* getInstance();
+    
+    /// Method to destroy the instance of FConnection
+    static void dispose();
 
     
     /// Destructor. Closes the connection and the session.
