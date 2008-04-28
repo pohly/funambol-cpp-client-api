@@ -50,6 +50,8 @@ SQLiteKeyValueStore::SQLiteKeyValueStore(const StringBuffer & table, const Strin
     this->path = path;
     db = NULL;
     statement = NULL;
+    
+    connect();
 }
 
 
