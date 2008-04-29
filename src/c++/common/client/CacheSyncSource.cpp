@@ -52,13 +52,17 @@ CacheSyncSource::CacheSyncSource(const WCHAR* sourceName, AbstractSyncSourceConf
     newKeys = NULL; 
     updatedKeys = NULL; 
     deletedKeys = NULL;   
-    
-    // get the default directory of the 
-    StringBuffer completeName = getCacheDirectory();;
-    completeName += "/";
-    completeName += CACHE_FILE_NAME;   
 
-    this->cache = (cache) ? cache : new PropertyFile(completeName);
+    if (cache) {
+        this->cache = cache;
+    } else {
+        // get the default directory of the 
+        StringBuffer completeName = getCacheDirectory();;
+        completeName += "/";
+        completeName += CACHE_FILE_NAME;   
+
+        this->cache = new PropertyFile(completeName);
+    }
 }
 
 /**
