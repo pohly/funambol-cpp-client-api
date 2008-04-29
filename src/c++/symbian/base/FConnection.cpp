@@ -68,6 +68,12 @@ FConnection* FConnection::NewL()
 {
     FConnection* self = FConnection::NewLC();
     CleanupStack::Pop( self );
+    
+    if (self->getLastError() != KErrNone) {
+        // Something wrong.
+        delete self;
+        return NULL;
+    }
     return self;
 }
 
@@ -76,13 +82,6 @@ FConnection* FConnection::NewLC()
     FConnection* self = new ( ELeave ) FConnection();
     CleanupStack::PushL( self );
     self->ConstructL();
-    
-    if (self->getLastError() != KErrNone) {
-        // Something wrong.
-        delete self;
-        return NULL;
-    }
-    
     return self;
 }
 
