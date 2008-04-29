@@ -38,16 +38,17 @@
 #include "client/SQLiteKeyValueStore.h"
 #include "base/util/StringBuffer.h"
 #include "base/util/KeyValuePair.h"
+#include "base/Log.h"
 
     
 BEGIN_NAMESPACE
     
 SQLiteKeyValueStore::SQLiteKeyValueStore(const StringBuffer & table, const StringBuffer & colKey,
                                          const StringBuffer & colValue,
-                                         const StringBuffer & path)
-: SQLKeyValueStore(table,colKey,colValue), enumeration(*this)
+                                         const StringBuffer & thePath)
+: SQLKeyValueStore(table,colKey,colValue), enumeration(*this),
+path(thePath)
 {
-    this->path = path;
     db = NULL;
     statement = NULL;
     
@@ -81,7 +82,14 @@ Enumeration& SQLiteKeyValueStore::query(const StringBuffer & sql) const
     int ret = sqlite3_prepare_v2(db, sql.c_str(), sql.length(), &statement, NULL);
     if (ret == SQLITE_OK) {
         enumeration.reinit(sqlite3_step(statement));
+    } else {
+        LOG.error("Unable to prepare sqlite query in query(): %s", sql.c_str());
     }
+    
+    if (ret != SQLITE_OK) {
+        LOG.error("SQLite execute failed: %s", sqlite3_errmsg(db));
+    }
+    
     return enumeration;
 }
 
@@ -94,12 +102,19 @@ int SQLiteKeyValueStore::execute(const StringBuffer & sql)
     int ret = sqlite3_prepare_v2(db, sql.c_str(), sql.length(), &stmt, NULL);
     if (ret == SQLITE_OK) {
         ret = sqlite3_step(stmt);
+    } else {
+        LOG.error("Unable to prepare sqlite query in execute(): %s", sql.c_str());
     }
-    sqlite3_finalize(stmt);
     
+    sqlite3_finalize(stmt);
     
     if (ret == SQLITE_DONE)
         ret = SQLITE_OK;
+        
+    if (ret != SQLITE_OK) {
+        LOG.error("SQLite execute failed: %s", sqlite3_errmsg(db));
+    }
+        
     return ret;
 }
 

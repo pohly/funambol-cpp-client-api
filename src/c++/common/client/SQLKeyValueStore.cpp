@@ -58,7 +58,7 @@ StringBuffer SQLKeyValueStore::sqlRemovePropertyString(const StringBuffer & key)
 StringBuffer SQLKeyValueStore::sqlSetPropertyString(const StringBuffer & key, const StringBuffer & value) const
 {
     StringBuffer sb("");
-    sb.append("INSERT OR REPLACE INTO ").append(table).append(" (").append(sqlColKey()).append(",").append(sqlColValue()).append(") VALUES (").append(key).append(",").append(value).append(")");
+    sb.append("INSERT OR REPLACE INTO ").append(table).append(" (").append(sqlColKey()).append(",").append(sqlColValue()).append(") VALUES ('").append(key).append("','").append(value).append("')");
     return sb;
 }
 
