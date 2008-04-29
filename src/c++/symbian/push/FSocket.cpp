@@ -56,6 +56,12 @@ FSocket* FSocket::NewL(const StringBuffer& peer, int32_t port)
 {
     FSocket* self = FSocket::NewLC(peer, port);
     CleanupStack::Pop( self );
+    
+    if (self->getLastStatus() != KErrNone) {
+        // Something wrong.
+        delete self;
+        return NULL;
+    }
     return self;
 }
 
@@ -64,13 +70,7 @@ FSocket* FSocket::NewLC(const StringBuffer& peer, int32_t port)
     FSocket* self = new ( ELeave ) FSocket();
     CleanupStack::PushL( self );
     self->ConstructL(peer, port);
-    
-    if (self->getLastStatus() != KErrNone) {
-        // Something wrong.
-        delete self;
-        return NULL;
-    }
-    
+
     return self;
 }
 
@@ -184,7 +184,7 @@ error:
 
 FSocket::FSocket() 
 {
-    iStatus = 0;
+    iStatus = KErrNone;
 }
 
 FSocket::~FSocket() 
