@@ -92,6 +92,7 @@ void CacheSyncSource::setItemStatus(const WCHAR* key, int status, const char* co
         case 201:
         case 418: 
             {
+             LOG.info("[%s], Received success status code from server for %s on item with key %s - code: %d", getName(), command, key, status);
              char* k = toMultibyte(key);             
              vp.setKey(k);
              StringBuffer v(k);
@@ -102,6 +103,7 @@ void CacheSyncSource::setItemStatus(const WCHAR* key, int status, const char* co
             break;
         case 500:        
         default:
+            LOG.info("[%s], Received failed status code from server for %s on item with key %s - code: %d", getName(), command, key, status);
             // error. it doesn't update the cache
             break;
     }
@@ -131,6 +133,8 @@ StringBuffer CacheSyncSource::getItemSignature(StringBuffer& key) {
         return NULL;
     }
     
+    LOG.debug("[%s] Getting signature for item with key %s", getName(), key.c_str());
+    
     content = getItemContent(key, &size);                      
     StringBuffer s;
     s.sprintf("%ld", calculateCRC(content, size));
@@ -149,6 +153,9 @@ SyncItem* CacheSyncSource::fillSyncItem(StringBuffer* key) {
     if (!key) {
         return NULL;
     }
+    
+    LOG.debug("[%s] Filling item with key %s", getName(), key->c_str());
+    
     content = getItemContent((*key), &size);
     
     WCHAR* wkey = toWideChar(key->c_str());
@@ -187,7 +194,7 @@ SyncItem* CacheSyncSource::getNextItem() {
         syncItem = fillSyncItem(s);
     }
     if (!syncItem) {
-        LOG.info("There are no items to be exchanged. Return NULL");     
+        LOG.info("There are no more items to be exchanged. Return NULL");     
     }
     return syncItem;
 
@@ -214,7 +221,7 @@ SyncItem* CacheSyncSource::getNextNewItem() {
         syncItem = fillSyncItem(s);
     }
     if (!syncItem) {
-        LOG.info("There are no items to be exchanged. Return NULL");     
+        LOG.info("There are no more new items to be exchanged. Return NULL");     
     }
     return syncItem;   
 }
@@ -237,7 +244,7 @@ SyncItem* CacheSyncSource::getNextUpdatedItem() {
         syncItem = fillSyncItem(s);
     }
     if (!syncItem) {
-        LOG.info("There are no items to be exchanged. Return NULL");     
+        LOG.info("There are no more updated items to be exchanged. Return NULL");     
     }    
     return syncItem;    
 }
@@ -265,7 +272,7 @@ SyncItem* CacheSyncSource::getNextDeletedItem() {
         if (wkey) { delete [] wkey; wkey = NULL; }  
     }
     if (!syncItem) {
-        LOG.info("There are no items to be exchanged. Return NULL");     
+        LOG.info("There are no more deleted items to be exchanged. Return NULL");     
     }    
          
     return syncItem;
@@ -354,6 +361,8 @@ bool CacheSyncSource::fillItemModifications() {
 */
 int CacheSyncSource::saveCache() {
     
+    LOG.debug("[%s] Saving cache", getName());
+    
     int ret = cache->save();
     return ret;
 
@@ -387,10 +396,14 @@ int CacheSyncSource::addItem(SyncItem& item) {
         case 200:
         case 201:
         case 418: {
+            LOG.info("[%s] Successful add of item with key %s - code %d", getName(), item.getKey(), ret);
             KeyValuePair k;
             getKeyAndSignature(item, k);
             insertInCache(k);
         }
+        break;
+        default:
+            LOG.error("[%s] Failed add of item with key %s - code %d", getName(), item.getKey(), ret);
         break;
     }
     return ret;
@@ -403,10 +416,14 @@ int CacheSyncSource::updateItem(SyncItem& item) {
         case 200:
         case 201:
         case 418: {
+            LOG.info("[%s] Successful update of item with key %s - code %d", getName(), item.getKey(), ret);
             KeyValuePair k;
             getKeyAndSignature(item, k);
             updateInCache(k);
         }
+        break;
+        default:
+            LOG.error("[%s] Failed update of item with key %s - code %d", getName(), item.getKey(), ret);
         break;
     }
     return ret;
@@ -417,12 +434,16 @@ int CacheSyncSource::deleteItem(SyncItem& item) {
     switch (ret) {        
         case 200:
         case 201:
-        case 418: {       
+        case 418: {
+            LOG.info("[%s] Successful delete of item with key %s - code %d", getName(), item.getKey(), ret);  
             char* t = toMultibyte(item.getKey());
             KeyValuePair k (t, "");
             removeFromCache(k);
             delete [] t;
         }
+        break;
+        default:
+            LOG.error("[%s] Failed delete of item with key %s - code %d", getName(), item.getKey(), ret);
         break;
     }
     
