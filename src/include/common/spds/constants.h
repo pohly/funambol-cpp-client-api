@@ -172,7 +172,5 @@ typedef enum SyncMode{
 #endif
 
 
-char*  retSyncMode(SyncMode);
-
 /** @endcond */
 #endif
