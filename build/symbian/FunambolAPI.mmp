@@ -50,16 +50,24 @@ SOURCEPATH   ..\..\src\cpp\common\base
 SOURCE       base64.cpp error.cpp md5.c quoted-printable.cpp ErrorHandler.cpp LogErrorHandler.cpp
 
 SOURCEPATH   ..\..\src\cpp\common\base\util
-SOURCE       ArrayElement.cpp ArrayList.cpp BasicTime.cpp KeyValuePair.cpp StringBuffer.cpp baseutils.cpp WKeyValuePair.cpp XMLProcessor.cpp
+SOURCE       ArrayElement.cpp ArrayList.cpp BasicTime.cpp KeyValuePair.cpp
+SOURCE       StringBuffer.cpp baseutils.cpp WKeyValuePair.cpp XMLProcessor.cpp
+SOURCE       ArrayListKeyValueStore.cpp PropertyFile.cpp
 
 SOURCEPATH   ..\..\src\cpp\common\spdm
 SOURCE       DMTree.cpp ManagementNode.cpp
 
 SOURCEPATH   ..\..\src\cpp\common\client
-SOURCE       DMTClientConfig.cpp SyncClient.cpp
+SOURCE       DMTClientConfig.cpp SyncClient.cpp CacheSyncSource.cpp
 
 SOURCEPATH   ..\..\src\cpp\common\spds
-SOURCE       AccessConfig.cpp B64Decoder.cpp B64Encoder.cpp BodyPart.cpp CredentialHandler.cpp DataTransformer.cpp DataTransformerFactory.cpp DefaultConfigFactory.cpp DeviceConfig.cpp EmailData.cpp FileData.cpp FolderData.cpp ItemReport.cpp MailMessage.cpp MailSyncSourceConfig.cpp spdsutils.cpp SyncItem.cpp SyncItemStatus.cpp SyncManagerConfig.cpp SyncManager.cpp SyncMap.cpp SyncMLBuilder.cpp SyncMLProcessor.cpp SyncReport.cpp SyncSourceConfig.cpp SyncSource.cpp SyncSourceReport.cpp
+SOURCE       AccessConfig.cpp B64Decoder.cpp B64Encoder.cpp BodyPart.cpp
+SOURCE       CredentialHandler.cpp DataTransformer.cpp DataTransformerFactory.cpp
+SOURCE       DefaultConfigFactory.cpp DeviceConfig.cpp EmailData.cpp FileData.cpp
+SOURCE       FolderData.cpp ItemReport.cpp MailMessage.cpp MailSyncSourceConfig.cpp
+SOURCE       spdsutils.cpp SyncItem.cpp SyncItemStatus.cpp SyncManagerConfig.cpp
+SOURCE       SyncManager.cpp SyncMap.cpp SyncMLBuilder.cpp SyncMLProcessor.cpp SyncReport.cpp
+SOURCE       SyncSourceConfig.cpp SyncSource.cpp SyncSourceReport.cpp
 
 SOURCEPATH   ..\..\src\cpp\symbian\base
 SOURCE       symbianadapter.cpp Log.cpp FConnection.cpp
@@ -83,30 +91,47 @@ SOURCEPATH   ..\..\src\cpp\symbian\push
 SOURCE       FThread.cpp FSocket.cpp
 
 SOURCEPATH   ..\..\src\cpp\common\event
-SOURCE BaseEvent.cpp FireEvent.cpp Listener.cpp ManageListener.cpp SetListener.cpp SyncEvent.cpp SyncItemEvent.cpp SyncItemListener.cpp SyncListener.cpp SyncSourceEvent.cpp SyncSourceListener.cpp SyncStatusEvent.cpp SyncStatusListener.cpp TransportEvent.cpp TransportListener.cpp
+SOURCE       BaseEvent.cpp FireEvent.cpp Listener.cpp ManageListener.cpp
+SOURCE       SetListener.cpp SyncEvent.cpp SyncItemEvent.cpp SyncItemListener.cpp
+SOURCE       SyncListener.cpp SyncSourceEvent.cpp SyncSourceListener.cpp SyncStatusEvent.cpp
+SOURCE       SyncStatusListener.cpp TransportEvent.cpp TransportListener.cpp
 
 SOURCEPATH   ..\..\src\cpp\common\filter
-SOURCE AllClause.cpp Clause.cpp ClauseUtil.cpp FieldClause.cpp LogicalClause.cpp SourceFilter.cpp WhereClause.cpp
+SOURCE       AllClause.cpp Clause.cpp ClauseUtil.cpp FieldClause.cpp
+SOURCE       LogicalClause.cpp SourceFilter.cpp WhereClause.cpp
 
 SOURCEPATH   ..\..\src\cpp\common\syncml\core
-SOURCE AbstractCommand.cpp Add.cpp Alert.cpp Anchor.cpp Atomic.cpp Authentication.cpp Chal.cpp CmdID.cpp ComplexData.cpp ContentTypeInfo.cpp ContentTypeParameter.cpp Copy.cpp Cred.cpp CTCap.cpp CTPropParam.cpp CTTypeSupported.cpp Data.cpp DataStore.cpp Delete.cpp DevInf.cpp DevInfData.cpp DevInfItem.cpp DSMem.cpp EMI.cpp Exec.cpp Ext.cpp Filter.cpp Get.cpp Item.cpp ItemizedCommand.cpp Map.cpp MapItem.cpp Mem.cpp Meta.cpp MetInf.cpp ModificationCommand.cpp NextNonce.cpp ObjectDel.cpp Property.cpp PropParam.cpp Put.cpp Replace.cpp ResponseCommand.cpp Results.cpp Search.cpp Sequence.cpp SessionID.cpp SourceArray.cpp Source.cpp SourceRef.cpp Status.cpp StringElement.cpp SyncAlert.cpp SyncBody.cpp SyncCap.cpp Sync.cpp SyncHdr.cpp SyncML.cpp SyncNotification.cpp SyncTypeArray.cpp SyncType.cpp Target.cpp TargetRef.cpp VerDTD.cpp VerProto.cpp
+SOURCE       AbstractCommand.cpp Add.cpp Alert.cpp Anchor.cpp Atomic.cpp
+SOURCE       Authentication.cpp Chal.cpp CmdID.cpp ComplexData.cpp ContentTypeInfo.cpp
+SOURCE       ContentTypeParameter.cpp Copy.cpp Cred.cpp CTCap.cpp CTPropParam.cpp
+SOURCE       CTTypeSupported.cpp Data.cpp DataStore.cpp Delete.cpp DevInf.cpp DevInfData.cpp
+SOURCE       DevInfItem.cpp DSMem.cpp EMI.cpp Exec.cpp Ext.cpp Filter.cpp Get.cpp Item.cpp
+SOURCE       ItemizedCommand.cpp Map.cpp MapItem.cpp Mem.cpp Meta.cpp MetInf.cpp
+SOURCE       ModificationCommand.cpp NextNonce.cpp ObjectDel.cpp Property.cpp PropParam.cpp
+SOURCE       Put.cpp Replace.cpp ResponseCommand.cpp Results.cpp Search.cpp Sequence.cpp
+SOURCE       SessionID.cpp SourceArray.cpp Source.cpp SourceRef.cpp Status.cpp StringElement.cpp
+SOURCE       SyncAlert.cpp SyncBody.cpp SyncCap.cpp Sync.cpp SyncHdr.cpp SyncML.cpp
+SOURCE       SyncNotification.cpp SyncTypeArray.cpp SyncType.cpp Target.cpp TargetRef.cpp VerDTD.cpp
+SOURCE       VerProto.cpp
 
-SOURCEPATH ..\..\src\cpp\common\syncml\formatter
-SOURCE Formatter.cpp
+SOURCEPATH   ..\..\src\cpp\common\syncml\formatter
+SOURCE       Formatter.cpp
 
-SOURCEPATH ..\..\src\cpp\common\syncml\parser
-SOURCE Parser.cpp
+SOURCEPATH   ..\..\src\cpp\common\syncml\parser
+SOURCE       Parser.cpp
 
-SOURCEPATH ..\..\src\cpp\common\vocl
-SOURCE VConverter.cpp VObject.cpp VObjectFactory.cpp VProperty.cpp
+SOURCEPATH   ..\..\src\cpp\common\vocl
+SOURCE       VConverter.cpp VObject.cpp VObjectFactory.cpp VProperty.cpp
 
-SOURCEPATH ..\..\src\cpp\common\vocl\vCard
-SOURCE Address.cpp BusinessDetail.cpp Contact30.cpp Contact.cpp ContactDetail.cpp Email.cpp Name.cpp Note.cpp PersonalDetail.cpp Phone.cpp Title.cpp TypedProperty.cpp vCardConverter.cpp vCardProperty.cpp WebPage.cpp
+SOURCEPATH   ..\..\src\cpp\common\vocl\vCard
+SOURCE       Address.cpp BusinessDetail.cpp Contact30.cpp Contact.cpp ContactDetail.cpp
+SOURCE       Email.cpp Name.cpp Note.cpp PersonalDetail.cpp Phone.cpp Title.cpp
+SOURCE       TypedProperty.cpp vCardConverter.cpp vCardProperty.cpp WebPage.cpp
 
-SOURCEPATH ..\..\src\cpp\common\vocl\iCalendar
-SOURCE Calendar.cpp Event.cpp iCalConverter.cpp iCalProperty.cpp ToDo.cpp
+SOURCEPATH   ..\..\src\cpp\common\vocl\iCalendar
+SOURCE       Calendar.cpp Event.cpp iCalConverter.cpp iCalProperty.cpp ToDo.cpp
 
-SOURCEPATH ..\..\src\cpp\symbian\spds
-SOURCE DESEncoder.cpp DESDecoder.cpp
+SOURCEPATH   ..\..\src\cpp\symbian\spds
+SOURCE       DESEncoder.cpp DESDecoder.cpp
 
 
