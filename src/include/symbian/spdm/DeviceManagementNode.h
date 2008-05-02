@@ -111,9 +111,18 @@ protected:
     // Rename a file in the current working directory (currentDir)
     int renameFileInCwd(const char* src, const char* dst);
 
+#if defined(UPDATE_NATIVE_CONFIG)
+    // Push configuration parameters into the native configuration (only for
+    // paramters that apply)
+    void pushSymbianSyncMLConfigParameter(const char* property,
+                                          const char* value);
+#endif
+
     private:
 
     static StringBuffer configPath;
+    static StringBuffer server;
+    static StringBuffer profileName;
 
     public:
 
@@ -172,7 +181,11 @@ protected:
          */
         virtual ArrayElement* clone();
 
+        static void  setServerURI(const StringBuffer& server);
+        static const StringBuffer& getServerURI();
 
+        static void  setProfileName(const StringBuffer& name);
+        static const StringBuffer& getProfileName();
 };
 
 

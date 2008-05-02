@@ -34,11 +34,12 @@
  */
 
 
+#define UPDATE_NATIVE_CONFIG 1
+
 #include <stdio.h>
 #include <ctype.h>
 #include <f32file.h>
 #include <utf.h>
-
 
 #include "base/util/utils.h"
 #include "base/util/stringUtils.h"
@@ -56,455 +57,6 @@ USE_NAMESPACE
 #define CONFIG_DIR      ".config"
 #define SYNC4J_DIR      ".sync4j"
 
-StringBuffer DeviceManagementNode::configPath; 
-StringBuffer DeviceManagementNode::configFile = "config.ini";
-
-DeviceManagementNode::DeviceManagementNode(const char* parent,
-                                           const char *leafName)
-                            : ManagementNode(parent, leafName),
-                              lines(new ArrayList),
-                              modified(false)
-{
-    initCurrentDir();
-    update(true);
-}
-
-DeviceManagementNode::DeviceManagementNode(const char *node)
-    : ManagementNode(node),
-      lines(new ArrayList),
-      modified(false)
-{
-    initCurrentDir();
-    update(true);
-}
-
-DeviceManagementNode::DeviceManagementNode(const DeviceManagementNode &other)
-    : ManagementNode(other) {
-
-    lines = other.lines->clone();
-    currentDir = other.currentDir;
-    modified = other.modified;
-}
-
-DeviceManagementNode::~DeviceManagementNode() {
-    if (modified) {
-        update(false);
-    }
-    delete lines;
-}
-
-void DeviceManagementNode::update(bool read) {
-    if (!read && !modified) {
-        // no work to be done
-        return;
-    }
-
-    StringBuffer fileName(currentDir);
-    concatDirs(fileName, configFile.c_str());
-    const char* fname = fileName.c_str();
-    FILE* file = fopen(fname, "r");
-
-    if (file) {
-        // Open a temp file in writing mode if we must update the config
-        if (!read) {
-            fclose(file);
-            fileName.append(".tmp");
-            file = fopen(fileName, "w");
-        }
-
-        if (read) {
-            // Note: don't create local buffers too big, the Symbian stack size is limited!
-            char buffer[128];
-
-            lines->clear();
-            while (fgets(buffer, sizeof(buffer), file)) {
-                char *eol = strchr(buffer, '\r');
-                if (!eol) {
-                    eol = strchr(buffer, '\n');
-                }
-                if (eol) {
-                    *eol = 0;
-                }
-                line newline(buffer);
-                lines->add(newline);
-            }
-            fclose(file);
-        } 
-        else {
-            int i = 0;
-
-            while (true) {
-                line *curr = (line *)lines->get(i);
-                if (!curr) {
-                    break;
-                }
-                fprintf(file, "%s\n", curr->getLine());
-
-                i++;
-            }
-            fflush(file);
-            if (!ferror(file)) {
-                StringBuffer tmpConfig = configFile;
-                tmpConfig += ".tmp";
-
-                fclose(file);   // Both files must be closed for the rename.
-                renameFileInCwd( tmpConfig.c_str(), configFile.c_str());
-            }
-	        else {
-	            fclose(file);
-	        }
-	    }
-
-    }
-}
-
-int DeviceManagementNode::strnicmp( const char *a, const char *b, int len ) {
-    while (--len >= 0) {
-        if (toupper(*a) != toupper(*b)) {
-            return 1;
-        }
-        a++;
-        b++;
-    }
-    return 0;
-}
-
-
-/*
- * Returns the value of the given property
- * the value is returned as a new char array and must be fred by the user
- *
- * @param property - the property name
- */
-char* DeviceManagementNode::readPropertyValue(const char* property) {
-    int i = 0;
-
-    while (true) {
-        line *curr = (line *)lines->get(i);
-        if (!curr) {
-            break;
-        }
-
-        const char *value = curr->getLine();
-        while (*value && isspace(*value)) {
-            value++;
-        }
-        if (!strnicmp(value, property, strlen(property))) {
-            value = strchr(value, '=');
-            if (value) {
-                value++;
-                while (*value && isspace(*value)) {
-                    value++;
-                }
-                char *res = stringdup(value);   // FOUND :)
-
-                // remove trailing white space: usually it is
-                // added accidentally by users
-                char *tmp = res + strlen(res) - 1;
-                while (tmp > res) {
-                    if (!isspace(*tmp)) {
-                        break;
-                    }
-                    tmp--;
-                }
-                tmp[1] = 0;
-
-                return res;
-            }
-        }
-        i++;
-    }
-    // Not found, return an empty string
-    return stringdup("");
-}
-
-
-int DeviceManagementNode::getChildrenMaxCount() {
-    int count = 0;
-
-    RFs fileSession;
-    RFile file;
-    int cleanupStackSize = 0;
-
-    StringBuffer fileSpecSb(currentDir);
-    concatDirs(fileSpecSb, "*.*");
-
-    // TODO use utility function for string conversion
-    TBuf8<DIM_MANAGEMENT_PATH> buf8((const unsigned char*)fileSpecSb.c_str());
-    HBufC* fileSpec = CnvUtfConverter::ConvertToUnicodeFromUtf8L(buf8);
-    ++cleanupStackSize;
-    CleanupStack::PushL(fileSpec);
-
-    //
-    // Connect to the file server
-    //
-    fileSession.Connect();
-    ++cleanupStackSize;
-    CleanupClosePushL(fileSession);
-
-    //
-    // Get the directories list, sorted by name
-    // (Leave if an error occurs)
-    //
-    CDir* dirList;
-    TRAPD(err, fileSession.GetDir(*fileSpec, KEntryAttDir|KEntryAttMatchExclusive,
-                                  ESortByName, dirList));
-    if (err != KErrNone || dirList == NULL) {
-        goto finally;
-    }
-    ++cleanupStackSize;
-    CleanupStack::PushL(dirList);
-
-    count = dirList->Count(); 
-finally:
-    //
-    // Close the connection with the file server
-    // and destroy dirList
-    //
-    fileSession.Close();
-    CleanupStack::PopAndDestroy(cleanupStackSize);
-    return count;
-}
-
-
-
-char **DeviceManagementNode::getChildrenNames() {
-    char **childrenName = 0;
-    int cleanupStackSize = 0;
-    RFs fileSession;
-    RFile file;
-
-    StringBuffer fileSpecSb(currentDir);
-    concatDirs(fileSpecSb, "*.*");
-
-    // TODO use utility function for string conversion
-    TBuf8<DIM_MANAGEMENT_PATH> buf8((const unsigned char*)fileSpecSb.c_str());
-    HBufC* fileSpec = CnvUtfConverter::ConvertToUnicodeFromUtf8L(buf8);
-    ++cleanupStackSize;
-    CleanupStack::PushL(fileSpec);
-
-    //
-    // Connect to the file server
-    //
-    fileSession.Connect();
-    ++cleanupStackSize;
-    CleanupClosePushL(fileSession);
-
-    //
-    // Get the directories list, sorted by name
-    // (Leave if an error occurs)
-    //
-    CDir* dirList;
-    TRAPD(err, fileSession.GetDir(*fileSpec, KEntryAttDir|KEntryAttMatchExclusive,
-                                  ESortByName, dirList));
-    if (err != KErrNone || dirList == NULL) {
-        goto finally;
-    }
-    ++cleanupStackSize;
-    CleanupStack::PushL(dirList);
-
-    //
-    // Process each entry
-    //
-    childrenName = new char*[dirList->Count()];
-    TInt i;
-    for (i=0;i<dirList->Count();i++)
-    {
-        TBuf<DIM_MANAGEMENT_PATH> fileName = (*dirList)[i].iName;
-
-#if 0
-        childrenName[i] = bufToNewChar(buf8);
-#else
-        // TODO use string utils
-        HBufC8* buf8 = CnvUtfConverter::ConvertFromUnicodeToUtf8L(fileName);
-        childrenName[i] = stringdup((const char*)buf8->Ptr(), buf8->Length());
-        *(childrenName[i] + buf8->Length()) = (char)0;
-        delete buf8;
-#endif
-
-    }
-    fileSession.Close();
-
-finally:
-    //
-    // Close the connection with the file server
-    // and destroy dirList
-    //
-    CleanupStack::PopAndDestroy(cleanupStackSize);
-    return childrenName;
-}
-
-/*
- * Sets a property value.
- *
- * @param property - the property name
- * @param value - the property value (zero terminated string)
- */
-void DeviceManagementNode::setPropertyValue(const char* property, const char* newvalue) {
-    int i = 0;
-
-    while (true) {
-        line *curr = (line *)lines->get(i);
-        if (!curr) {
-            break;
-        }
-
-        const char *start = curr->getLine();
-        const char *value = start;
-
-        while (*value && isspace(*value)) {
-            value++;
-        }
-        if (!strnicmp(value, property, strlen(property))) {
-            value = strchr(value, '=');
-            if (value) {
-                value++;
-                while (*value && isspace(*value)) {
-                    value++;
-                }
-                if (strcmp(value, newvalue)) {
-                    // preserve indention and property name from original config
-                    char *newstr = new char[(value - start) + strlen(newvalue) + 1];
-                    strncpy(newstr, start, value - start);
-                    strcpy(newstr + (value - start), newvalue);
-                    curr->setLine(newstr);
-                    delete [] newstr;
-                    modified = true;
-                }
-                return;
-            }
-        }
-
-        i++;
-    }
-
-    char *newstr = new char[strlen(property) + 3 + strlen(newvalue) + 1];
-    sprintf(newstr, "%s = %s", property, newvalue);
-    line newline(newstr);
-    lines->add(newline);
-
-    // In Symbian some of the synchronizations are performed using the Symbian
-    // SyncML APIs. These APIs use their own configuration, but we want this to
-    // be invisible to our clients. Therefore we handle it here and update the
-    // Symbian SyncML configuration here. There is a potential problem as we
-    // save the SyncML config here while the DMTree is not flushed until the
-    // node is closed. This may result in configuration being out of sync, but
-    // this should only happen only on error cases. To fix this problem (and
-    // other source of unaligned configurations) we shall push the DM
-    // configuration into the SyncML config on startup.
-#if defined(UPDATE_NATIVE_CONFIG)
-    pushSymbianSyncMLConfigParameter(property, newvalue);
-#endif
-
-    modified = true;
-    delete [] newstr;
-}
-
-#if defined(UPDATE_NATIVE_CONFIG)
-
-void DeviceManagementNode::pushSymbianSyncMLConfigParameter(const char* property,
-                                                            const char* value)
-{
-     StringBuffer p(property);
-     StringBuffer v(value);
-
-     if (p == "") {
-     } else if (p == "") {
-     }
-
-}
-#endif
-
-ArrayElement* DeviceManagementNode::clone()
-{
-    DeviceManagementNode* ret = new DeviceManagementNode(context, name);
-
-    int n = children.size();
-
-    for (int i = 0; i<n; ++i) {
-        ret->addChild(*((ManagementNode*)children[i]));
-    }
-
-    return ret;
-}
-
-void DeviceManagementNode::concatDirs(StringBuffer& src1, const char* src2) {
- 
-    // If the src path terminates with \\ then there is no
-    // need to add it again (this would be an illegal symbian path)
-    // Unfortunately we cannot use StringBuffer directly for this check
-    // there is something weird with \\ in StringBuffer (at least on symbian)
-    const char* chars = src1.c_str();
-    if (chars[strlen(chars)-1] != '\\') {
-        src1.append("\\");
-    }
-    src1.append(src2);
-}
-
-void DeviceManagementNode::initCurrentDir() {
-
-    if (configPath.empty()) {
-        currentDir = ".\\";
-    } else {
-        currentDir = configPath;
-    }
-    if (context) {
-        StringBuffer translatedContext = contextToPath(context);
-        const char* tc = translatedContext.c_str();
-        concatDirs(currentDir, tc);
-    }
-    if (name) {
-        concatDirs(currentDir, name);
-    }
-}
-
-StringBuffer DeviceManagementNode::contextToPath(const char* cont) {
-    // Contextes are defined as: (string/)* and on Symbian
-    // we map them to file. But Symbian uses backslashes as
-    // directory separator.
-    StringBuffer sb(cont);
-    sb.replaceAll("/", "\\", 0);
-    return sb;
-}
-
-int DeviceManagementNode::renameFileInCwd(const char* src, const char* dst) {
-
-    RFs fileSession;
-    RFile file;
-
-    StringBuffer srcSb(currentDir);
-    concatDirs(srcSb, src);
-    StringBuffer dstSb(currentDir);
-    concatDirs(dstSb, dst);
-
-    RBuf srcDes, dstDes;
-    srcDes.Assign(stringBufferToNewBuf(srcSb));
-    dstDes.Assign(stringBufferToNewBuf(dstSb));
-
-    // Connect to the file server
-    fileSession.Connect();
-    CleanupClosePushL(fileSession);
-
-    // Replace 'config.ini' file with 'config.ini.tmp'
-    TInt err = fileSession.Replace(srcDes, dstDes);
-
-    CleanupStack::PopAndDestroy(&fileSession);
-
-    if (err == KErrNone) {
-        return 0;
-    }
-    else {
-        LOG.error("Error (code %d) replacing file '%s'", err, dstSb.c_str());
-        if (err == KErrAccessDenied) {
-            LOG.error("Access denied");
-        }
-        return -1;
-    }
-}
-
-
-
-//#define UPDATE_NATIVE_CONFIG 1
 
 #if defined(UPDATE_NATIVE_CONFIG)
 
@@ -514,8 +66,6 @@ int DeviceManagementNode::renameFileInCwd(const char* src, const char* dst) {
 #include <syncmlclientds.h>
 #include <syncmldef.h>
 #include <syncmltransportproperties.h>
-////////////////////////////////////////////////////////////////////
-
 #include <CommDbConnPref.h>  // for IAP retrieval
 #include <apselect.h>
 #include <CDBPREFTABLE.H>
@@ -614,7 +164,6 @@ private:
      * Set username.
      * Set the username to connect to sync server for the specified 
      * profile.Can leave.
-     * @param aProfileName The SyncML profile name.
      * @param aUsername The username used to connect.
      */
     void setUsernameL(const TDesC8& aUsername);
@@ -623,7 +172,6 @@ private:
      * Set password.
      * Set the password to connect to sync server for the specified 
      * profile.Can leave.
-     * @param aProfileName The SyncML profile name.
      * @param aPassword The password used to connect.
      */
     void setPasswordL(const TDesC8& aPassword);
@@ -632,7 +180,6 @@ private:
      * Enable sync application.
      * Enable the specified sync application for the specified 
      * profile.Can leave.
-     * @param aProfileName The SyncML profile name.
      * @param aSyncApp The application to be enabled for sync.
      */
     void enableTaskL(TSyncApp aSyncApp, bool enable);
@@ -646,16 +193,498 @@ private:
 
     void setCredentialsL(const TDesC8* aUsername, const TDesC8* aPassword);
 
+    TSmlProfileId getProfileID(TInt& index);
+
     /*
      * descriptor storing the IAP id, used by CreateProfileL.
      */
     TBuf8<32>   iIapId;
-
-    static TBuf16<128> aProfileName;
 };
 
-TBuf16<128> CSyncProfileManager::aProfileName = _L("Funambol");
+#endif
 
+
+StringBuffer DeviceManagementNode::configPath; 
+StringBuffer DeviceManagementNode::configFile = "config.ini";
+
+StringBuffer DeviceManagementNode::server("DefaultServer");
+StringBuffer DeviceManagementNode::profileName("DefaultProfile");
+
+DeviceManagementNode::DeviceManagementNode(const char* parent,
+                                           const char *leafName)
+                            : ManagementNode(parent, leafName),
+                              lines(new ArrayList),
+                              modified(false)
+{
+    initCurrentDir();
+    update(true);
+}
+
+DeviceManagementNode::DeviceManagementNode(const char *node)
+    : ManagementNode(node),
+      lines(new ArrayList),
+      modified(false)
+{
+    initCurrentDir();
+    update(true);
+}
+
+DeviceManagementNode::DeviceManagementNode(const DeviceManagementNode &other)
+    : ManagementNode(other) {
+
+    lines = other.lines->clone();
+    currentDir = other.currentDir;
+    modified = other.modified;
+}
+
+DeviceManagementNode::~DeviceManagementNode() {
+    if (modified) {
+        update(false);
+    }
+    delete lines;
+}
+
+
+void DeviceManagementNode::update(bool read) {
+    if (!read && !modified) {
+        // no work to be done
+        return;
+    }
+
+    StringBuffer fileName(currentDir);
+    concatDirs(fileName, configFile.c_str());
+    const char* fname = fileName.c_str();
+    FILE* file = fopen(fname, "r");
+
+    if (file) {
+        // Open a temp file in writing mode if we must update the config
+        if (!read) {
+            fclose(file);
+            fileName.append(".tmp");
+            file = fopen(fileName, "w");
+        }
+
+        if (read) {
+            // Note: don't create local buffers too big, the Symbian stack size is limited!
+            char buffer[128];
+
+            lines->clear();
+            while (fgets(buffer, sizeof(buffer), file)) {
+                char *eol = strchr(buffer, '\r');
+                if (!eol) {
+                    eol = strchr(buffer, '\n');
+                }
+                if (eol) {
+                    *eol = 0;
+                }
+                line newline(buffer);
+                lines->add(newline);
+            }
+            fclose(file);
+        } 
+        else {
+            int i = 0;
+
+            while (true) {
+                line *curr = (line *)lines->get(i);
+                if (!curr) {
+                    break;
+                }
+                fprintf(file, "%s\n", curr->getLine());
+
+                i++;
+            }
+            fflush(file);
+            if (!ferror(file)) {
+                StringBuffer tmpConfig = configFile;
+                tmpConfig += ".tmp";
+
+                fclose(file);   // Both files must be closed for the rename.
+                renameFileInCwd( tmpConfig.c_str(), configFile.c_str());
+            }
+            else {
+                fclose(file);
+            }
+        }
+    }
+}
+
+int DeviceManagementNode::strnicmp( const char *a, const char *b, int len ) {
+    while (--len >= 0) {
+        if (toupper(*a) != toupper(*b)) {
+            return 1;
+        }
+        a++;
+        b++;
+    }
+    return 0;
+}
+
+
+/*
+ * Returns the value of the given property
+ * the value is returned as a new char array and must be fred by the user
+ *
+ * @param property - the property name
+ */
+char* DeviceManagementNode::readPropertyValue(const char* property) {
+    int i = 0;
+
+    while (true) {
+        line *curr = (line *)lines->get(i);
+        if (!curr) {
+            break;
+        }
+
+        const char *value = curr->getLine();
+        while (*value && isspace(*value)) {
+            value++;
+        }
+        if (!strnicmp(value, property, strlen(property))) {
+            value = strchr(value, '=');
+            if (value) {
+                value++;
+                while (*value && isspace(*value)) {
+                    value++;
+                }
+                char *res = stringdup(value);   // FOUND :)
+
+                // remove trailing white space: usually it is
+                // added accidentally by users
+                char *tmp = res + strlen(res) - 1;
+                while (tmp > res) {
+                    if (!isspace(*tmp)) {
+                        break;
+                    }
+                    tmp--;
+                }
+                tmp[1] = 0;
+
+                return res;
+            }
+        }
+        i++;
+    }
+    // Not found, return an empty string
+    return stringdup("");
+}
+
+#include "base/util/symbianUtils.h"
+
+int DeviceManagementNode::getChildrenMaxCount() {
+    int count = 0;
+
+    RFs fileSession;
+    RFile file;
+    int cleanupStackSize = 0;
+
+    StringBuffer fileSpecSb(currentDir);
+    concatDirs(fileSpecSb, "*.*");
+
+    // TODO use utility function for string conversion
+    TBuf8<DIM_MANAGEMENT_PATH> buf8((const unsigned char*)fileSpecSb.c_str());
+    HBufC* fileSpec = CnvUtfConverter::ConvertToUnicodeFromUtf8L(buf8);
+    ++cleanupStackSize;
+    CleanupStack::PushL(fileSpec);
+
+    //
+    // Connect to the file server
+    //
+    fileSession.Connect();
+    ++cleanupStackSize;
+    CleanupClosePushL(fileSession);
+
+    StringBuffer buf;
+
+    //
+    // Get the directories list, sorted by name
+    // (Leave if an error occurs)
+    //
+    CDir* dirList;
+    TRAPD(err, fileSession.GetDir(*fileSpec, KEntryAttDir|KEntryAttMatchExclusive,
+                                  ESortByName, dirList));
+    if (err != KErrNone || dirList == NULL) {
+        goto finally;
+    }
+    ++cleanupStackSize;
+    CleanupStack::PushL(dirList);
+
+    count = dirList->Count();
+
+finally:
+    //
+    // Close the connection with the file server
+    // and destroy dirList
+    //
+    fileSession.Close();
+    CleanupStack::PopAndDestroy(cleanupStackSize);
+    return count;
+}
+
+
+
+char **DeviceManagementNode::getChildrenNames() {
+    char **childrenName = 0;
+    int cleanupStackSize = 0;
+    RFs fileSession;
+    RFile file;
+
+    StringBuffer fileSpecSb(currentDir);
+    concatDirs(fileSpecSb, "*.*");
+
+    // TODO use utility function for string conversion
+    TBuf8<DIM_MANAGEMENT_PATH> buf8((const unsigned char*)fileSpecSb.c_str());
+    HBufC* fileSpec = CnvUtfConverter::ConvertToUnicodeFromUtf8L(buf8);
+    ++cleanupStackSize;
+    CleanupStack::PushL(fileSpec);
+
+    //
+    // Connect to the file server
+    //
+    fileSession.Connect();
+    ++cleanupStackSize;
+    CleanupClosePushL(fileSession);
+
+    //
+    // Get the directories list, sorted by name
+    // (Leave if an error occurs)
+    //
+    CDir* dirList;
+    TRAPD(err, fileSession.GetDir(*fileSpec, KEntryAttDir|KEntryAttMatchExclusive,
+                                  ESortByName, dirList));
+    if (err != KErrNone || dirList == NULL) {
+        goto finally;
+    }
+    ++cleanupStackSize;
+    CleanupStack::PushL(dirList);
+
+    //
+    // Process each entry
+    //
+    childrenName = new char*[dirList->Count()];
+    TInt i;
+    for (i=0;i<dirList->Count();i++)
+    {
+        TBuf<DIM_MANAGEMENT_PATH> fileName = (*dirList)[i].iName;
+
+#if 0
+        childrenName[i] = bufToNewChar(buf8);
+#else
+        // TODO use string utils
+        HBufC8* buf8 = CnvUtfConverter::ConvertFromUnicodeToUtf8L(fileName);
+        childrenName[i] = stringdup((const char*)buf8->Ptr(), buf8->Length());
+        *(childrenName[i] + buf8->Length()) = (char)0;
+        delete buf8;
+#endif
+    }
+    fileSession.Close();
+
+finally:
+    //
+    // Close the connection with the file server
+    // and destroy dirList
+    //
+    CleanupStack::PopAndDestroy(cleanupStackSize);
+    return childrenName;
+}
+
+/*
+ * Sets a property value.
+ *
+ * @param property - the property name
+ * @param value - the property value (zero terminated string)
+ */
+void DeviceManagementNode::setPropertyValue(const char* property, const char* newvalue) {
+    int i = 0;
+
+    while (true) {
+        line *curr = (line *)lines->get(i);
+        if (!curr) {
+            break;
+        }
+
+        const char *start = curr->getLine();
+        const char *value = start;
+
+        while (*value && isspace(*value)) {
+            value++;
+        }
+        if (!strnicmp(value, property, strlen(property))) {
+            value = strchr(value, '=');
+            if (value) {
+                value++;
+                while (*value && isspace(*value)) {
+                    value++;
+                }
+                if (strcmp(value, newvalue)) {
+                    // preserve indention and property name from original config
+                    char *newstr = new char[(value - start) + strlen(newvalue) + 1];
+                    strncpy(newstr, start, value - start);
+                    strcpy(newstr + (value - start), newvalue);
+                    curr->setLine(newstr);
+                    delete [] newstr;
+                    modified = true;
+                }
+                goto finally;
+            }
+        }
+
+        i++;
+    }
+
+    {
+        // This is a new property
+        char *newstr = new char[strlen(property) + 3 + strlen(newvalue) + 1];
+        sprintf(newstr, "%s = %s", property, newvalue);
+        line newline(newstr);
+        lines->add(newline);
+        delete [] newstr;
+        modified = true;
+    }
+
+finally:
+    // In Symbian some of the synchronizations are performed using the Symbian
+    // SyncML APIs. These APIs use their own configuration, but we want this to
+    // be invisible to our clients. Therefore we handle it here and update the
+    // Symbian SyncML configuration here. There is a potential problem as we
+    // save the SyncML config here while the DMTree is not flushed until the
+    // node is closed. This may result in configuration being out of sync, but
+    // this should only happen only on error cases. To fix this problem (and
+    // other source of unaligned configurations) we shall push the DM
+    // configuration into the SyncML config on startup.
+#if defined(UPDATE_NATIVE_CONFIG)
+    pushSymbianSyncMLConfigParameter(property, newvalue);
+#endif
+}
+
+void DeviceManagementNode::setServerURI(const StringBuffer& server) {
+    DeviceManagementNode::server = server;
+}
+
+const StringBuffer& DeviceManagementNode::getServerURI() {
+    return server;
+}
+
+void DeviceManagementNode::setProfileName(const StringBuffer& name) {
+    DeviceManagementNode::profileName = name;
+}
+
+const StringBuffer& DeviceManagementNode::getProfileName() {
+    return profileName;
+}
+
+
+#if defined(UPDATE_NATIVE_CONFIG)
+
+void DeviceManagementNode::pushSymbianSyncMLConfigParameter(const char* property,
+                                                            const char* value)
+{
+    StringBuffer p(property);
+    StringBuffer v(value);
+
+    CSyncProfileManager* profileManager =  CSyncProfileManager::createNewInstance();
+
+    // If the profile does not exist, then we need to create one
+
+    // TODO: missing other parameters
+    if (p == "username") {
+        profileManager->setUsername(value);
+    } else if (p == "password") {
+        profileManager->setPassword(value);
+    }
+
+    delete profileManager;
+}
+#endif
+
+ArrayElement* DeviceManagementNode::clone()
+{
+    DeviceManagementNode* ret = new DeviceManagementNode(context, name);
+
+    int n = children.size();
+
+    for (int i = 0; i<n; ++i) {
+        ret->addChild(*((ManagementNode*)children[i]));
+    }
+
+    return ret;
+}
+
+void DeviceManagementNode::concatDirs(StringBuffer& src1, const char* src2) {
+ 
+    // If the src path terminates with \\ then there is no
+    // need to add it again (this would be an illegal symbian path)
+    // Unfortunately we cannot use StringBuffer directly for this check
+    // there is something weird with \\ in StringBuffer (at least on symbian)
+    const char* chars = src1.c_str();
+    if (chars[strlen(chars)-1] != '\\') {
+        src1.append("\\");
+    }
+    src1.append(src2);
+}
+
+void DeviceManagementNode::initCurrentDir() {
+
+    if (configPath.empty()) {
+        currentDir = ".\\";
+    } else {
+        currentDir = configPath;
+    }
+    if (context) {
+        StringBuffer translatedContext = contextToPath(context);
+        const char* tc = translatedContext.c_str();
+        concatDirs(currentDir, tc);
+    }
+    if (name) {
+        concatDirs(currentDir, name);
+    }
+}
+
+StringBuffer DeviceManagementNode::contextToPath(const char* cont) {
+    // Contextes are defined as: (string/)* and on Symbian
+    // we map them to file. But Symbian uses backslashes as
+    // directory separator.
+    StringBuffer sb(cont);
+    sb.replaceAll("/", "\\", 0);
+    return sb;
+}
+
+int DeviceManagementNode::renameFileInCwd(const char* src, const char* dst) {
+
+    RFs fileSession;
+    RFile file;
+
+    StringBuffer srcSb(currentDir);
+    concatDirs(srcSb, src);
+    StringBuffer dstSb(currentDir);
+    concatDirs(dstSb, dst);
+
+    RBuf srcDes, dstDes;
+    srcDes.Assign(stringBufferToNewBuf(srcSb));
+    dstDes.Assign(stringBufferToNewBuf(dstSb));
+
+    // Connect to the file server
+    fileSession.Connect();
+    CleanupClosePushL(fileSession);
+
+    // Replace 'config.ini' file with 'config.ini.tmp'
+    TInt err = fileSession.Replace(srcDes, dstDes);
+
+    CleanupStack::PopAndDestroy(&fileSession);
+
+    if (err == KErrNone) {
+        return 0;
+    }
+    else {
+        LOG.error("Error (code %d) replacing file '%s'", err, dstSb.c_str());
+        if (err == KErrAccessDenied) {
+            LOG.error("Access denied");
+        }
+        return -1;
+    }
+}
+
+#if defined(UPDATE_NATIVE_CONFIG)
 /**
  * CSyncProfileManager::NewL()
  * Two-phased constructor.
@@ -776,48 +805,90 @@ bool CSyncProfileManager::setIapIdForConnProperties(const StringBuffer& iapName)
  */
 void CSyncProfileManager::deleteProfileL()
 {
+    TInt index;
+    TSmlProfileId profileId = getProfileID(index);
+
+    if (profileId < 0) {
+        User::Leave(KErrNoProfile);
+    }
+
     RSyncMLSession syncMLSession;
-    TSmlProfileId  profileId = -1;
     TInt err=KErrNone;
     
     // open SyncML session
     TRAP(err,syncMLSession.OpenL());
     User::LeaveIfError(err);
     
+    // delete the profile
+    TRAP(err,syncMLSession.DeleteProfileL(index));
+    User::LeaveIfError(err);
+    // close SyncML session
+    syncMLSession.Close();
+}
+
+/**
+ * CSyncProfileManager::getProfileID()
+ */
+TSmlProfileId CSyncProfileManager::getProfileID(TInt& index)
+{
+    RSyncMLSession syncMLSession;
+    TSmlProfileId  profileId = -1;
+    TInt err=KErrNone;
+
+    index = -1;
+    
+    // open SyncML session
+    TRAP(err,syncMLSession.OpenL());
+    if (err != KErrNone) {
+        return -2;
+    }
+    
     // find the specified profile
     RArray<TSmlProfileId> profileArr;
     TRAP(err,syncMLSession.ListProfilesL(profileArr,ESmlDataSync));
-    User::LeaveIfError(err);
+    if (err != KErrNone) {
+        return -2;
+    }
+
+    const StringBuffer& profileSb = DeviceManagementNode::getProfileName();
+    HBufC* profile = stringBufferToNewBuf(profileSb);
+    CleanupStack::PushL(profile);
+
     TInt count = profileArr.Count();
     for(int i=0;i<count;i++)
     {
         RSyncMLDataSyncProfile syncProfile;
         
         TRAP(err,syncProfile.OpenL(syncMLSession,profileArr[i],ESmlOpenRead));
-        User::LeaveIfError(err);
-        if(syncProfile.DisplayName().Compare(aProfileName)== 0)
+        if (err != KErrNone) {
+            return -2;
+        }
+        if(syncProfile.DisplayName().Compare(*profile)== 0)
         {
             profileId = syncProfile.Identifier();
             syncProfile.Close();
+            index = i;
             break;
         }
         syncProfile.Close();
     }
-    
-    if(profileId == -1)
-        User::Leave(KErrNoProfile);
-    // delete the profile
-    TRAP(err,syncMLSession.DeleteProfileL(profileId));
-    User::LeaveIfError(err);
+
+    // Cleanup
+    CleanupStack::PopAndDestroy(); // profile
+
     // close SyncML session
     syncMLSession.Close();
+    return profileId;
 }
+
 
 void CSyncProfileManager::createProfileL(const TDesC8& aUsername,
                                          const TDesC8& aPassword,
                                          const TDesC8& aServerURI,
                                          const TDesC& aIapName)
 {
+    LOG.debug("Creating Sync Profile");
+
     RSyncMLSession syncMLSession;
     RSyncMLDataSyncProfile syncProfile;
 
@@ -830,11 +901,22 @@ void CSyncProfileManager::createProfileL(const TDesC8& aUsername,
     // create a profile
     TRAP(err,syncProfile.CreateL(syncMLSession));
     User::LeaveIfError(err);
-    
+
+    // We ignore the aServerURI parameter and rather use the global setting that
+    // is held in the DeviceManagementNode
+    const StringBuffer& serverUri = DeviceManagementNode::getServerURI();
+    HBufC8* server = stringBufferToNewBuf8(serverUri);
+    CleanupStack::PushL(server);
+
+    const StringBuffer& profileSb = DeviceManagementNode::getProfileName();
+    HBufC* profile = stringBufferToNewBuf(profileSb);
+    CleanupStack::PushL(profile);
+
     TRAP(err, {
-        syncProfile.SetDisplayNameL(aProfileName);
+        syncProfile.SetDisplayNameL(*profile);
         syncProfile.SetUserNameL(aUsername);
         syncProfile.SetPasswordL(aPassword);
+
         // protocol version, values are:
         // ESmlVersion1_1_2 = 1.1.2
         // ESmlVersion1_2 = 1.2
@@ -845,13 +927,14 @@ void CSyncProfileManager::createProfileL(const TDesC8& aUsername,
         // save profile
         syncProfile.UpdateL();
     });
+    CleanupStack::PopAndDestroy(); // profile
     User::LeaveIfError(err);
 
     // create and enable tasks (applications)
     // retrieve needed data provider ids
     TSmlDataProviderId contactsProvider = -1;
     TSmlDataProviderId calendarProvider = -1;
-    
+   
     RArray<TSmlDataProviderId> dataProvidersArr;
     TRAP(err,syncMLSession.ListDataProvidersL(dataProvidersArr));
     User::LeaveIfError(err);
@@ -902,7 +985,7 @@ void CSyncProfileManager::createProfileL(const TDesC8& aUsername,
     User::LeaveIfError(err);
     
     calendarTask.Close();
-    
+
     // SAVE PROFILE AGAIN to save tasks!!!!
     TRAP(err,syncProfile.UpdateL());
     User::LeaveIfError(err);
@@ -923,14 +1006,18 @@ void CSyncProfileManager::createProfileL(const TDesC8& aUsername,
         User::LeaveIfError(err);
         setIapIdForConnPropertiesL(aIapName);
         TRAP(err, {
-            syncConnection.SetServerURIL(aServerURI);
+            syncConnection.SetServerURIL(*server);
             syncConnection.SetPropertyL(_L8("NSmlIapId"),iIapId);
             syncConnection.UpdateL();
         });
         User::LeaveIfError(err);
         syncConnection.Close();
     }
-    
+   
+    // Cleanup server as it is no longer needed
+    CleanupStack::PopAndDestroy(); // server
+
+    // Update the profile
     TRAP(err,syncProfile.UpdateL());
     User::LeaveIfError(err);
     
@@ -939,7 +1026,6 @@ void CSyncProfileManager::createProfileL(const TDesC8& aUsername,
     
     // close SyncML session     
     syncMLSession.Close();
-
 }
 
 
@@ -953,38 +1039,58 @@ void CSyncProfileManager::setCredentialsL(const TDesC8* aUsername,
     RSyncMLSession syncMLSession;
     TInt err=KErrNone;
 
+    LOG.debug("Sync Profile: setCredentialsL");
+
+    if (aUsername == NULL && aPassword == NULL) {
+        return;
+    }
+
+    TInt index;
+    TSmlProfileId profileId = getProfileID(index);
+    if (profileId < 0) {
+        // The profile cannot be found, we must create one
+
+        TInt errCreate;
+        TBuf8<8> emptyServer((const unsigned char*)"");
+        if (aUsername == NULL) {
+            TBuf8<8> username((const unsigned char*)"");
+            TRAP(errCreate, createProfileL(username, *aPassword,
+                                           emptyServer, _L("Ask")));
+        } else if (aPassword == NULL) {
+            TBuf8<8> password((const unsigned char*)"");
+            TRAP(errCreate, createProfileL(*aUsername, password,
+                                           emptyServer, _L("Ask")));
+        } else {
+            TRAP(errCreate, createProfileL(*aUsername, *aPassword,
+                                           emptyServer, _L("Ask")));
+        }
+
+        User::LeaveIfError(errCreate);
+        return;
+    }
+
     // open SyncML session
     TRAP(err,syncMLSession.OpenL());
     User::LeaveIfError(err);
 
-    // find the specified profile
+    // Modify the profile
     RArray<TSmlProfileId> profileArr;
     TRAP(err,syncMLSession.ListProfilesL(profileArr,ESmlDataSync));
     User::LeaveIfError(err);
-    TInt count = profileArr.Count();
-    for(int i=0;i<count;i++)
-    {
-        RSyncMLDataSyncProfile syncProfile;
-    
-        TRAP(err,syncProfile.OpenL(syncMLSession,profileArr[i],ESmlOpenReadWrite));
-        User::LeaveIfError(err);
-        if(syncProfile.DisplayName().Compare(aProfileName)== 0)
-        {
-            TRAP(err, {
-                if (aUsername) {
-                    syncProfile.SetUserNameL(*aUsername);
-                }
-                if (aPassword) {
-                    syncProfile.SetPasswordL(*aPassword);
-                }
-                syncProfile.UpdateL();
-            });
-            User::LeaveIfError(err);
-            syncProfile.Close();
-            break;
+    RSyncMLDataSyncProfile syncProfile;
+    TRAP(err, syncProfile.OpenL(syncMLSession, profileArr[index],ESmlOpenReadWrite));
+    User::LeaveIfError(err);
+    TRAP(err, {
+        if (aUsername) {
+            syncProfile.SetUserNameL(*aUsername);
         }
-        syncProfile.Close();
-    }
+        if (aPassword) {
+            syncProfile.SetPasswordL(*aPassword);
+        }
+        syncProfile.UpdateL();
+    });
+    User::LeaveIfError(err);
+    syncProfile.Close();
     
     // close SyncML session
     syncMLSession.Close();
@@ -997,7 +1103,6 @@ void CSyncProfileManager::setCredentialsL(const TDesC8* aUsername,
  */
 void CSyncProfileManager::enableTaskL(TSyncApp aSyncApp, bool enable)
 {
-
     RSyncMLSession syncMLSession;
     TSmlProfileId  profileId = -1;
     RSyncMLDataSyncProfile syncProfile;
@@ -1022,31 +1127,16 @@ void CSyncProfileManager::enableTaskL(TSyncApp aSyncApp, bool enable)
             break;
         }
     }
-    
+
+    TInt index;
+    profileId = getProfileID(index);
+
+    if(profileId == -1)
+        User::Leave(KErrNoProfile);
+
     // open SyncML session
     TRAP(err,syncMLSession.OpenL());
     User::LeaveIfError(err);
-        
-    // find the specified profile
-    RArray<TSmlProfileId> profileArr;
-    TRAP(err,syncMLSession.ListProfilesL(profileArr,ESmlDataSync));
-    User::LeaveIfError(err);
-    TInt count = profileArr.Count();
-    for(int i=0;i<count;i++)
-    {
-        TRAP(err,syncProfile.OpenL(syncMLSession,profileArr[i],ESmlOpenRead));
-        User::LeaveIfError(err);
-        if(syncProfile.DisplayName().Compare(aProfileName)== 0)
-        {
-            profileId = syncProfile.Identifier();
-            syncProfile.Close();
-            break;
-        }
-        syncProfile.Close();
-    }
-    
-    if(profileId == -1)
-        User::Leave(KErrNoProfile);
     
     // find the specified task
     RArray<TSmlTaskId> taskArr;
