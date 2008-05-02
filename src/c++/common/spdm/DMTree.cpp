@@ -55,22 +55,29 @@ USE_NAMESPACE
 /*
  * Constructor
  */
-DMTree::DMTree(const char *rootContext) {
-    root = stringdup(rootContext);
+DMTree::DMTree(const char *root) : root(root) {
 }
 
 /*
  * Destructor
  */
 DMTree::~DMTree() {
-    if (root)
-        delete [] root;
 }
 
 bool DMTree::isLeaf(const char *node) {
     DeviceManagementNode dmn(node);
 
     return (dmn.getChildrenMaxCount() == 0);
+}
+
+ManagementNode* DMTree::getNode(const char* node) {
+
+    StringBuffer completeNodeName;
+    // TODO: check if we need to append a / at the end of root
+    completeNodeName.sprintf("%s%s", root.c_str(), node);
+
+    ManagementNode *n = new DeviceManagementNode(completeNodeName.c_str());
+    return n;
 }
 
 /*
@@ -93,10 +100,10 @@ ManagementNode* DMTree::readManagementNode(const char* node) {
     if (childrenCount) {
         char** childrenNames = n->getChildrenNames();
 
-		if (!childrenNames){
-			LOG.error("Error in getChildrenNames");
-			return NULL;
-		}
+        if (!childrenNames){
+            LOG.error("Error in getChildrenNames");
+            return NULL;
+        }
         int i = 0;
         for (i = 0; i < childrenCount; i++) {
             DeviceManagementNode s(node, childrenNames[i]);
@@ -105,7 +112,7 @@ ManagementNode* DMTree::readManagementNode(const char* node) {
         for (i = 0; i < childrenCount; i++) {
             delete [] childrenNames[i]; childrenNames[i] = NULL;
         }
-		delete [] childrenNames;
+        delete [] childrenNames;
     }
 
     return n;

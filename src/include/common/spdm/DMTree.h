@@ -37,17 +37,18 @@
     #define INCL_DMTREE
 /** @cond DEV */
 
+    #include "base/globalsdef.h"
+    #include "base/util/StringBuffer.h"
     #include "spdm/constants.h"
     #include "spdm/ManagementNode.h"
-#include "base/globalsdef.h"
 
-BEGIN_NAMESPACE
+    BEGIN_NAMESPACE
 
     class DMTree {
 
     private:
 
-        char *root;
+        StringBuffer root;
 
     protected:
 
@@ -69,12 +70,14 @@ BEGIN_NAMESPACE
          */
         virtual ManagementNode* readManagementNode(const char*  node);
 
+        virtual ManagementNode* getNode(const char* node);
+
         void setManagementNode(ManagementNode& n);
 
     };
 
 
-END_NAMESPACE
+    END_NAMESPACE
 
 /** @endcond */
 #endif
