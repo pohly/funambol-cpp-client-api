@@ -39,6 +39,7 @@
 #include <e32std.h>
 
 #include "base/fscapi.h"
+#include "base/Log.h"
 #include "base/util/utils.h"
 #include "base/util/symbianUtils.h"
 #include "base/globalsdef.h"
@@ -76,11 +77,12 @@ static size_t estimateMaxSize(const char* format, PLATFORM_VA_LIST ap) {
     size_t maxSize = strlen(format);
     while (*p) {
         if (*p == '%') {
+            ++p;
             // We may have a precision or width here and we must skip it
             while ((*p) >= '0' && (*p) <= '9') {
                 ++p;
             }
-            char type = *(++p);
+            char type = *p;
             switch (type) {
                 case 'd':
                 case 'i':
@@ -123,8 +125,16 @@ static size_t estimateMaxSize(const char* format, PLATFORM_VA_LIST ap) {
                 case 'L':
                 case 'l':
                 {
-                    maxSize += 20;
-                    PLATFORM_VA_ARG(ap, int64_t);
+                    if (*(p+1) == 's') {
+                        // Symbian does not support %ls because the underlying
+                        // FormatList does not support it.
+                        // To avoid problems we do not print this string, as we
+                        // do not have an easy way of doing it
+                        return -2;
+                    } else {
+                        maxSize += 20;
+                        PLATFORM_VA_ARG(ap, int64_t);
+                    }
                     break;
                 }
                 default:
@@ -146,11 +156,12 @@ static char* translateFormat(const char* format) {
 
     while (*q) {
         if (*q == '%') {
+            q++;
             // We may have a precision or width here and we must just copy it
             while ((*q) >= '0' && (*q) <= '9') {
                 *(p++) = *(q++);
             }
-            char fmt = *(++q);
+            char fmt = *q;
             *(p++) = '%';
             switch (fmt) {
                 case 'l':
@@ -195,6 +206,28 @@ size_t vsnprintf(char* s, size_t size, const char* format, PLATFORM_VA_LIST aq) 
 #endif
 
     size_t estimatedSize = estimateMaxSize(format, aqCopy);
+
+    // Handle errors
+    if (estimatedSize == -2) {
+        // The string contains formats which are not supported
+        // and we cannot print the string
+        char* replaceMsg = "Symbian does not support %ls";
+        int   replaceMsgLen = strlen(replaceMsg);
+        if (replaceMsgLen < size) {
+            memcpy(s, replaceMsg, replaceMsgLen);
+            s[replaceMsgLen-1] = (char)0;
+            return replaceMsgLen;
+        } else {
+            memcpy(s, replaceMsg, size);
+            if (size > 1) {
+                s[size-1] = (char)0;
+                return size-1;
+            } else {
+                return 0;
+            }
+        }
+    }
+
     if (estimatedSize > size) {
         finalSize = estimatedSize;
     } else {
@@ -206,10 +239,13 @@ size_t vsnprintf(char* s, size_t size, const char* format, PLATFORM_VA_LIST aq) 
                 finalSize = formattedBuf.Length();
                 if (finalSize < size) {
                     memcpy(s, ptr, finalSize);
-                    s[finalSize] = 0;           // Symbian descriptors don't have the trailing null char
+                    s[finalSize] = (char)0;           // Symbian descriptors don't have the trailing null char
                 } else {
                     // In this case we truncate. We signal this by returning -1
                     memcpy(s, ptr, size);
+                    if (size) {
+                        s[size-1] = (char)0;
+                    }
                     finalSize = (size_t)-1;
                 }
             }
@@ -360,27 +396,38 @@ bool readFile(const char* path, char **message, size_t *len, bool binary)
 
 
 WCHAR *wcschr(const WCHAR *ws, WCHAR wc) {
+    LOG.error("***** wcschr not implemented *****");
     return NULL;
 }
 
 WCHAR *wcsstr(WCHAR *ws1, WCHAR *ws2) {
+    LOG.error("***** wcsstr not implemented *****");
     return NULL;
 }
 
 WCHAR *wcstok(WCHAR *ws1, const WCHAR *ws2) {
+    LOG.error("***** wcstok not implemented *****");
     return NULL;
 }
 
 WCHAR *wcsncat(WCHAR *ws1, const WCHAR *ws2, size_t n) {
+    LOG.error("***** wcsncat not implemented *****");
     return NULL;
 }
 
 double wcstod(const WCHAR *nptr, WCHAR **endptr) {
+    LOG.error("***** wcstod not implemented *****");
     return 0.0;
 }
 
 int _wtoi(const WCHAR *str) {
+    LOG.error("***** _wtoi not implemented *****");
     return 0;
+}
+
+StringBuffer getCacheDirectory() {
+    StringBuffer empty;
+    return empty;
 }
 
 END_NAMESPACE
