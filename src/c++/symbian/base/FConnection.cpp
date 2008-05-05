@@ -185,8 +185,11 @@ const int FConnection::startConnection(const StringBuffer& aIAPName)
         //
         TInt iapID = GetIAPIDFromName(aIAPName);
         if (iapID >= 0) {
+            LOG.debug("SetDialogPreference");
             prefs.SetDialogPreference(ECommDbDialogPrefDoNotPrompt);
+            LOG.debug("SetIapId");
             prefs.SetIapId(iapID);
+            LOG.debug("Done");
         }
         else {
             LOG.debug("IAP '%s' not found!", aIAPName.c_str());
@@ -206,18 +209,24 @@ const int FConnection::startConnection(const StringBuffer& aIAPName)
 //    iConnection.SetOpt(KCOLProvider, KConnDisableTimers, ETrue);
 //#endif
     
-    
+   
+    LOG.debug("Start connection");
     // Start connection
     iLastError = iConnection.Start(prefs);
+    LOG.debug("Done");
     if (iLastError != KErrNone) {
         errMsg.sprintf("FConnection error: unable to start connection (code %d)", iLastError);
+        LOG.debug("Goto retry");
         goto retry;
     }
     
     // Save the IAP ID & name of the active connection.
     // Query the CommDb database for the IAP ID in use.
+    LOG.debug("Stage (1)");
     _LIT(KIAPSettingName, "IAP\\Id");
+    LOG.debug("Stage (2)");
     iConnection.GetIntSetting(KIAPSettingName, iIAP);
+    LOG.debug("Stage (3): %d", iIAP);
     iIAPName = GetIAPNameFromID(iIAP);
     LOG.debug("Current active IAP ID = %d, name = %s", iIAP, iIAPName.c_str());
     //
@@ -225,10 +234,12 @@ const int FConnection::startConnection(const StringBuffer& aIAPName)
     //
     
     iRetryConnection = 0;
+    LOG.debug("Stage (4)");
     return 0;
     
     
 retry:
+    LOG.debug("About to retry");
     LOG.error(errMsg.c_str());
     if (iRetryConnection < MAX_RETRY_CONNECTION) {
         iRetryConnection ++;
@@ -238,6 +249,7 @@ retry:
     else {
         LOG.error("FConnection: %d connection failed", iRetryConnection);
     }
+    LOG.debug("Stage (5)");
     return iLastError;
 }
 
@@ -310,6 +322,8 @@ TInt FConnection::GetIAPIDFromName(const StringBuffer& aIAPName)
     TBool ok = select->MoveToFirst();
     for (TUint32 i=0; ok &&(i<select->Count()); i++) 
     {
+        StringBuffer tmp = bufToStringBuffer(select->Name());
+        LOG.debug("Found IAP: %s (id = %d)", tmp.c_str(), select->Uid());
         if (select->Name() == iapName) {
             ret = select->Uid();
             //LOG.debug("Found IAP: %s (id = %d)", aIAPName.c_str(), ret);
@@ -319,7 +333,9 @@ TInt FConnection::GetIAPIDFromName(const StringBuffer& aIAPName)
             ok = select->MoveNext();
         }
     }
+    LOG.debug("IAP Found");
     CleanupStack::PopAndDestroy(2);    //commdb and select
+    LOG.debug("Returning");
     
     return ret;
 }
@@ -327,8 +343,9 @@ TInt FConnection::GetIAPIDFromName(const StringBuffer& aIAPName)
 
 StringBuffer FConnection::GetIAPNameFromID(const TUint aIAPID) 
 {
-    StringBuffer ret;
-    
+    StringBuffer ret = "";
+   
+    LOG.debug("GetIAPNameFromID");
     CCommsDatabase* commDb = CCommsDatabase::NewL(EDatabaseTypeIAP);
     CleanupStack::PushL(commDb);
     CApSelect* select = CApSelect::NewLC(*commDb,KEApIspTypeAll,EApBearerTypeAll,KEApSortUidAscending);
@@ -337,6 +354,8 @@ StringBuffer FConnection::GetIAPNameFromID(const TUint aIAPID)
     TBool ok = select->MoveToFirst();
     for (TUint32 i=0; ok &&(i<select->Count()); i++) 
     {
+        StringBuffer tmp = bufToStringBuffer(select->Name());
+        LOG.debug("Name=%s -- %d", tmp.c_str(), select->Uid());
         if (select->Uid() == aIAPID) {
             ret = bufToStringBuffer(select->Name());
             //LOG.debug("Found IAP: %d (name = %s)", aIAPID, ret.c_str());
