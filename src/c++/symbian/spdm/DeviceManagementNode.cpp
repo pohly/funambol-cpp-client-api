@@ -209,6 +209,9 @@ StringBuffer DeviceManagementNode::configFile = "config.ini";
 
 StringBuffer DeviceManagementNode::server("DefaultServer");
 StringBuffer DeviceManagementNode::profileName("DefaultProfile");
+TSmlCreatorId DeviceManagementNode::uid = -1;
+StringBuffer DeviceManagementNode::cardURI = "card";
+StringBuffer DeviceManagementNode::calURI  = "cal";
 
 DeviceManagementNode::DeviceManagementNode(const char* parent,
                                            const char *leafName)
@@ -573,6 +576,30 @@ const StringBuffer& DeviceManagementNode::getProfileName() {
     return profileName;
 }
 
+void DeviceManagementNode::setUID(TSmlCreatorId uid) {
+    DeviceManagementNode::uid = uid;
+}
+
+TSmlCreatorId DeviceManagementNode::getUID() {
+    return uid;
+}
+
+void DeviceManagementNode::setCardURI(const StringBuffer& cardURI) {
+    DeviceManagementNode::cardURI = cardURI;
+}
+
+const StringBuffer& DeviceManagementNode::getCardURI() {
+    return cardURI;
+}
+
+void DeviceManagementNode::setCalURI(const StringBuffer& calURI) {
+    DeviceManagementNode::calURI = calURI;
+}
+
+const StringBuffer& DeviceManagementNode::getCalURI() {
+    return calURI;
+}
+
 
 #if defined(UPDATE_NATIVE_CONFIG)
 
@@ -901,6 +928,8 @@ void CSyncProfileManager::createProfileL(const TDesC8& aUsername,
     // create a profile
     TRAP(err,syncProfile.CreateL(syncMLSession));
     User::LeaveIfError(err);
+    TSmlCreatorId creatorId = DeviceManagementNode::getUID();
+    syncProfile.SetCreatorId(creatorId);
 
     // We ignore the aServerURI parameter and rather use the global setting that
     // is held in the DeviceManagementNode
@@ -923,7 +952,7 @@ void CSyncProfileManager::createProfileL(const TDesC8& aUsername,
         syncProfile.SetProtocolVersionL(ESmlVersion1_1_2);
         // This is for accepting all sync requests
         syncProfile.SetSanUserInteractionL(ESmlEnableSync);
-        syncProfile.DeleteAllowed();
+        //syncProfile.DeleteAllowed();
         // save profile
         syncProfile.UpdateL();
     });
@@ -962,10 +991,21 @@ void CSyncProfileManager::createProfileL(const TDesC8& aUsername,
     // contacts
     // default Funambol server source is "card"
     RSyncMLTask contactsTask;
-    TRAP(err,contactsTask.CreateL(syncProfile,contactsProvider,_L("card"),_L("C:Contacts.cdb")));
+
+    const StringBuffer& cardURI = DeviceManagementNode::getCardURI();
+    HBufC* cardURIBuf = stringBufferToNewBuf(cardURI);
+    CleanupStack::PushL(cardURIBuf);
+    TRAP(err,contactsTask.CreateL(syncProfile,contactsProvider,*cardURIBuf,_L("C:Contacts.cdb")));
+    CleanupStack::PopAndDestroy();
     User::LeaveIfError(err);
+    contactsTask.SetCreatorId(creatorId);
+
     TRAP(err, {
         contactsTask.SetEnabledL(ETrue);
+        contactsTask.SetDisplayNameL(_L("Contacts"));
+        contactsTask.SetDefaultSyncTypeL(ESmlTwoWay);
+        contactsTask.SetFilterMatchTypeL(ESyncMLMatchDisabled);
+
         contactsTask.UpdateL();
     });
     User::LeaveIfError(err);
@@ -975,11 +1015,19 @@ void CSyncProfileManager::createProfileL(const TDesC8& aUsername,
         User::Leave(KErrNoCalendarProvider);
     // calendar 
     // default Funambol server source is "cal"
+    const StringBuffer& calURI = DeviceManagementNode::getCalURI();
+    HBufC* calURIBuf = stringBufferToNewBuf(calURI);
+    CleanupStack::PushL(calURIBuf);
     RSyncMLTask calendarTask;
-    TRAP(err,calendarTask.CreateL(syncProfile,calendarProvider,_L("cal"),_L("C:Calendar")));
+    TRAP(err,calendarTask.CreateL(syncProfile,calendarProvider,*calURIBuf,_L("C:Calendar")));
+    CleanupStack::PopAndDestroy(calURIBuf);
     User::LeaveIfError(err);
+    calendarTask.SetCreatorId(creatorId);
     TRAP(err, {
         calendarTask.SetEnabledL(ETrue);
+        calendarTask.SetDisplayNameL(_L("Calendar"));
+        calendarTask.SetDefaultSyncTypeL(ESmlTwoWay);
+        calendarTask.SetFilterMatchTypeL(ESyncMLMatchDisabled);
         calendarTask.UpdateL();
     });
     User::LeaveIfError(err);
@@ -1005,7 +1053,10 @@ void CSyncProfileManager::createProfileL(const TDesC8& aUsername,
         TRAP(err,syncConnection.OpenByConnectionIdL(syncProfile,connArr[i]));
         User::LeaveIfError(err);
         setIapIdForConnPropertiesL(aIapName);
+
         TRAP(err, {
+            syncConnection.SetPriority(0);
+            syncConnection.SetRetryCount(1);
             syncConnection.SetServerURIL(*server);
             syncConnection.SetPropertyL(_L8("NSmlIapId"),iIapId);
             syncConnection.UpdateL();
