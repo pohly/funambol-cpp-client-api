@@ -375,7 +375,7 @@ void WinEvent::addTimezone(VObject* vo) {
     }
 
     // Add a DAYLIGHT property for every year that this appointment occurr. (max = 6)
-    for (int year = yearBegin; year < yearEnd; year++) {
+    for (int year = yearBegin; year <= yearEnd; year++) {
 
         wstring daylightDate = getDateFromTzRule(year, tzInfo.DaylightDate);
         wstring standardDate = getDateFromTzRule(year, tzInfo.StandardDate);

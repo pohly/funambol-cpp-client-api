@@ -325,7 +325,7 @@ void WinEventSIF::addTimezone(wstring& sif) {
     // DSTOffset = - (Bias + StandardBias + DaylightBias)
     // [StandardBias is usually = 0]
     bool hasDST = false;
-    int diffBias = tzInfo.Bias +  + tzInfo.StandardBias + tzInfo.DaylightBias;
+    int diffBias = tzInfo.Bias + tzInfo.StandardBias + tzInfo.DaylightBias;
     wstring daylightBias;
     if (diffBias != 0) { 
         hasDST = true;
@@ -339,7 +339,7 @@ void WinEventSIF::addTimezone(wstring& sif) {
 
     if (hasDST) {
         // Add a DayLight tag for every year that this appointment occurr. (max = 6)
-        for (int year = yearBegin; year < yearEnd; year++) {
+        for (int year = yearBegin; year <= yearEnd; year++) {
 
             wstring daylightDate = getDateFromTzRule(year, tzInfo.DaylightDate);
             wstring standardDate = getDateFromTzRule(year, tzInfo.StandardDate);
