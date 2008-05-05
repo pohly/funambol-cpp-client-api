@@ -79,9 +79,13 @@ static size_t estimateMaxSize(const char* format, PLATFORM_VA_LIST ap) {
         if (*p == '%') {
             ++p;
             // We may have a precision or width here and we must skip it
+            char number[16];
+            int idx = 0;
             while ((*p) >= '0' && (*p) <= '9') {
+                number[idx++] = *p;
                 ++p;
             }
+            number[idx] = (char)0;
             char type = *p;
             switch (type) {
                 case 'd':
@@ -95,7 +99,12 @@ static size_t estimateMaxSize(const char* format, PLATFORM_VA_LIST ap) {
                 case 's':
                 {
                     char* s = PLATFORM_VA_ARG(ap, char*);
-                    maxSize += strlen(s);
+                    int len = 0;
+                    if (s) {
+                        len = strlen(s);
+                    }
+                    int align = atoi(number);
+                    maxSize += (len>align) ? len : align;
                     break;
                 }
                 case 'b':
@@ -157,12 +166,12 @@ static char* translateFormat(const char* format) {
     while (*q) {
         if (*q == '%') {
             q++;
+            *(p++) = '%';
             // We may have a precision or width here and we must just copy it
             while ((*q) >= '0' && (*q) <= '9') {
                 *(p++) = *(q++);
             }
             char fmt = *q;
-            *(p++) = '%';
             switch (fmt) {
                 case 'l':
                 {
