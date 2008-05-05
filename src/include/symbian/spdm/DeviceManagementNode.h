@@ -37,6 +37,7 @@
 #define INCL_POSIX_DEVICE_MANAGEMENT_NODE
 /** @cond DEV */
 
+#include <syncmldef.h>
 #include <string.h>
 
 #include "base/globalsdef.h"
@@ -120,9 +121,12 @@ protected:
 
     private:
 
-    static StringBuffer configPath;
-    static StringBuffer server;
-    static StringBuffer profileName;
+    static StringBuffer  configPath;
+    static StringBuffer  server;
+    static StringBuffer  profileName;
+    static StringBuffer  cardURI;
+    static StringBuffer  calURI;
+    static TSmlCreatorId uid;
 
     public:
 
@@ -186,6 +190,15 @@ protected:
 
         static void  setProfileName(const StringBuffer& name);
         static const StringBuffer& getProfileName();
+
+        static void  setUID(TSmlCreatorId uid);
+        static TSmlCreatorId getUID();
+
+        static void setCardURI(const StringBuffer& cardURI);
+        static const StringBuffer& getCardURI();
+
+        static void setCalURI(const StringBuffer& calURI);
+        static const StringBuffer& getCalURI();
 };
 
 
