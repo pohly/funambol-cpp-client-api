@@ -46,9 +46,48 @@ class XMLProcessorTest : public CppUnit::TestFixture {
     CPPUNIT_TEST_SUITE(XMLProcessorTest);
 
     CPPUNIT_TEST(testXMLProcessor);
+    CPPUNIT_TEST(testXMLProcessorAmp);
     CPPUNIT_TEST_SUITE_END();
 
+
 private:
+    
+    void testXMLProcessorAmp(){
+        //
+        // the final string must be
+        // hello < & > &lt; &gt; &amp;
+        //
+        const char target[] = "hello < & > &lt; &gt; &amp;";
+        const char xml[] =
+        "<document>\n\
+        <LocURI>./devinf11</LocURI>\n\
+        <Data>hello &lt; &amp; &gt; &amp;lt; &amp;gt; &amp;amp;</Data>\n\
+        </document>" ;
+        
+        unsigned int pos = 0;        
+
+        // Get 'document' tag
+        char *doc = XMLProcessor::copyElementContent(xml, "Data", &pos);
+        if (strcmp(target, doc) != 0) {
+            CPPUNIT_ASSERT_MESSAGE("TEST FAILED.", false);            
+        }        
+        
+        delete [] doc;
+        pos = 0;
+
+        const char target1[] = "hello &lt; &amp; &gt; &amp;lt; &amp;gt; &amp;amp;";
+        const char xml1[] =
+        "<document>\n\
+        <LocURI>./devinf11</LocURI>\n\
+        <Data><![CDATA[hello &lt; &amp; &gt; &amp;lt; &amp;gt; &amp;amp;]]></Data>\n\
+        </document>" ;
+        
+        doc = XMLProcessor::copyElementContent(xml1, "Data", &pos);
+        if (strcmp(target1, doc) != 0) {
+            CPPUNIT_ASSERT_MESSAGE("TEST FAILED.", false);            
+        }  
+
+    }
 
     void testXMLProcessor(){
         const char xml1[] =
