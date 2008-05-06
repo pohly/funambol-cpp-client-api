@@ -252,8 +252,9 @@ char* XMLProcessor::copyContent(const char* xml,
         // <Add><Data><![CDATA[ literal entity &amp; ]]></Data></Add>
         //
         StringBuffer tmp(xml+startPos, endPos - startPos);
-        tmp.replaceAll("&amp;", "&");
         tmp.replaceAll("&lt;", "<");
+        tmp.replaceAll("&gt;", ">");
+        tmp.replaceAll("&amp;", "&");
         ret = stringdup(tmp.c_str());
     } else {
         size_t len = endPos - startPos;
