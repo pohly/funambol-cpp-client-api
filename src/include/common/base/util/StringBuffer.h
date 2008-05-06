@@ -256,6 +256,16 @@ class StringBuffer: public ArrayElement {
         bool null() const;
 
         /**
+         * True if the string terminates with ch
+         */
+        bool endsWith(char ch) const;
+
+        /**
+         * True if the string terminates with str
+         */
+        bool endsWith(const char* str) const;
+
+        /**
          * Clone the string
          */
         ArrayElement* clone() ;

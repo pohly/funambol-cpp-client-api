@@ -425,7 +425,34 @@ bool StringBuffer::empty() const {
     return false;
 }
 
-bool StringBuffer::null() const { return (s==0); }
+bool StringBuffer::null() const {
+    return (s==0);
+}
+
+bool StringBuffer::endsWith(char ch) const {
+    if (empty()) {
+        return false;
+    }
+
+    if (s[length()-1] == ch) {
+        return true;
+    } else {
+        return false;
+    }
+}
+
+bool StringBuffer::endsWith(const char* str) const {
+    if (empty() || str == NULL || *str == (char)0) {
+        return false;
+    }
+    size_t strLength = strlen(str);
+    if (strLength > length()) {
+        return false;
+    }
+
+    char* start = s - strLength;
+    return !strcmp(start, str);
+}
 
 
 // Member Operators
