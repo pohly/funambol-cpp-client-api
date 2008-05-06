@@ -45,6 +45,30 @@
     #define INCL_FSCAPI
 /** @cond DEV */
 
+    /* Autodetect target system based on compiler automatic macros */
+    #if defined(__unix__) || defined(__linux__)
+    /* This is a generic unix system */
+    #define POSIX 1
+    #elif defined(__ENVIRONMENT_IPHONE_OS_VERSION_MIN_REQUIRED__)
+    /* This is an iPhone */
+    #define MAC   1
+    #elif defined(__ENVIRONMENT_MAC_OS_X_VERSION_MIN_REQUIRED__)
+    /* This is a Mac */
+    #define MAC   1
+    #elif defined(_WIN32_WCE) || defined(WIN32)
+    /* This is windows or windows mobile, in this case we don't have our
+     * own macro so there is nothing we need to do
+     */
+    #elif defined(__SYMBIAN32__)
+    /* This is Symbian. Other macros allow to discriminate the version, but at
+     * the moment we don't need it
+     */
+    #define SYMBIAN 1
+    #else
+    #error "Unrecognized platform, cannot proceed"
+    #endif
+
+    /* Include the proper files */
     #ifdef MAC
         #ifndef MSG_NOSIGNAL
             #define MSG_NOSIGNAL SO_NOSIGPIPE
@@ -53,42 +77,30 @@
     
     #ifdef POSIX
         #include "base/posixadapter.h"
-    #endif
-    #ifdef HAVE_STDARG_H
-        #include <stdarg.h>
-    #endif
-    #ifdef SYMBIAN
+    #elif SYMBIAN
         #include "base/symbianadapter.h"
-    #endif
-
-    #include "base/errors.h"
-
-    #if defined(_WIN32_WCE) || defined(WIN32)
+    #elif defined(_WIN32_WCE) || defined(WIN32)
         // Windows common stuff
         #define WIN32_LEAN_AND_MEAN     // Exclude rarely-used stuff from Windows headers
 
         #include <windows.h>
         #include "base/winadapter.h"
-    #endif
 
-    #if defined(WIN32)
-        #include "wininet.h"
-    #endif
+        #if defined(WIN32)
+            #include "wininet.h"
+        #endif
 
-    #if defined(WIN32) && !defined(_WIN32_WCE)
-        #include <sys/stat.h>
-        #include "shlobj.h"        
-        #include <wchar.h>
-        #include <time.h>
-        #include <stdlib.h>
-    #endif
+        #if defined(WIN32) && !defined(_WIN32_WCE)
+            #include <sys/stat.h>
+            #include "shlobj.h"        
+            #include <wchar.h>
+            #include <time.h>
+            #include <stdlib.h>
+        #endif
 
-    #ifdef _WIN32_WCE
-        #include "base/time.h"
-    #endif
-
-    #if defined(__PALMOS__)
-      #include "base/palmadapter.h"
+        #ifdef _WIN32_WCE
+            #include "base/time.h"
+        #endif
     #endif
 
     #ifdef MALLOC_DEBUG
@@ -149,6 +161,12 @@
      * to control assertions.
      */
     #include <assert.h>
+
+    #ifdef HAVE_STDARG_H
+        #include <stdarg.h>
+    #endif
+ 
+    #include "base/errors.h"
 
 /** @endcond */
 #endif
