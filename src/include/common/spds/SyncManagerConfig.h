@@ -67,9 +67,17 @@ class SyncManagerConfig : public AbstractSyncConfig {
         virtual ~SyncManagerConfig();
 
         // implementation of AbstractSyncConfig (required because of different return type)
-        virtual AbstractSyncSourceConfig* getAbstractSyncSourceConfig(const char* name) const { return getSyncSourceConfig(name); }
-        virtual AbstractSyncSourceConfig* getAbstractSyncSourceConfig(unsigned int i) const { return getSyncSourceConfig(i); }
-        virtual unsigned int getAbstractSyncSourceConfigsCount() const { return getSyncSourceConfigsCount(); }
+        virtual AbstractSyncSourceConfig* getAbstractSyncSourceConfig(const char* name) const {
+            return getSyncSourceConfig(name);
+        }
+
+        virtual AbstractSyncSourceConfig* getAbstractSyncSourceConfig(unsigned int i) const {
+            return getSyncSourceConfig(i);
+        }
+
+        virtual unsigned int getAbstractSyncSourceConfigsCount() const {
+            return getSyncSourceConfigsCount();
+        }
 
         // additional calls which return the more specific classes used by SyncManagerConfig
         virtual unsigned int getSyncSourceConfigsCount() const { return sourceConfigsCount; }
@@ -80,7 +88,7 @@ class SyncManagerConfig : public AbstractSyncConfig {
 
         virtual const AccessConfig& getAccessConfig() const { return accessConfig; }
         virtual AccessConfig& getAccessConfig() { return accessConfig; }
-	virtual void setAccessConfig(AccessConfig& ac) { accessConfig.assign(ac); }
+        virtual void setAccessConfig(AccessConfig& ac) { accessConfig.assign(ac); }
 
         virtual const DeviceConfig& getDeviceConfig() const { return deviceConfig; }
         virtual DeviceConfig& getDeviceConfig() { return deviceConfig; }
