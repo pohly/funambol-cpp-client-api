@@ -40,15 +40,16 @@
 USE_NAMESPACE
 
 
-DSMem::DSMem() {
-    sharedMem      = false;
-    long    maxMem = 0;
-    long    maxID  = 0;
+DSMem::DSMem() : sharedMem(false),
+                 maxMem(0),
+                 maxID(0)
+{
 }
+
 DSMem::~DSMem() {
-    sharedMem      = false;
-    long    maxMem = 0;
-    long    maxID  = 0;
+    sharedMem = false;
+    maxMem = 0;
+    maxID  = 0;
 }
 
 /**
