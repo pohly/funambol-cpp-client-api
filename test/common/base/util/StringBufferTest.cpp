@@ -54,6 +54,7 @@ class StringBufferTest : public CppUnit::TestFixture {
     CPPUNIT_TEST(testSprintf);
     CPPUNIT_TEST(testReset);
     CPPUNIT_TEST(testLength);
+    CPPUNIT_TEST(testEndsWith);
     CPPUNIT_TEST_SUITE_END();
 
 private:
@@ -188,6 +189,26 @@ private:
         CPPUNIT_ASSERT_EQUAL( s, *cloned);
 
         delete cloned;
+    }
+
+    //////////////////////////////////////////////////////// Test /////
+    // Test null() and empty() behavior
+    void testEndsWith() {
+        StringBuffer s("Test Ends With");
+
+        CPPUNIT_ASSERT(s.endsWith('h'));
+        CPPUNIT_ASSERT(s.endsWith(" With"));
+        CPPUNIT_ASSERT(!s.endsWith('t'));
+        CPPUNIT_ASSERT(!s.endsWith("with"));
+
+        StringBuffer s2("th");
+
+        CPPUNIT_ASSERT(!s2.endsWith("with"));
+        CPPUNIT_ASSERT(!s2.endsWith(""));
+
+        StringBuffer s3;
+        CPPUNIT_ASSERT(!s3.endsWith('t'));
+        CPPUNIT_ASSERT(!s3.endsWith("t"));
     }
 
 
