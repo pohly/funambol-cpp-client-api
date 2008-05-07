@@ -219,7 +219,7 @@ bool iCalConverter::convert(WString& errorDescription, long* errorCode) {
 
         //extract VEVENTs from vo
         Event* ev;
-        while(ev = extractEvent(vo, errorDescription, errorCode)) {
+        while((ev = extractEvent(vo, errorDescription, errorCode))) {
             if (!validateEvent(ev, errorDescription, errorCode)) {
                 delete ev; ev = NULL;
                 return false;
@@ -230,7 +230,7 @@ bool iCalConverter::convert(WString& errorDescription, long* errorCode) {
 
         //extract VTODOs from vo
         ToDo* task;
-        while(task = extractTask(vo, errorDescription, errorCode)) {
+        while((task = extractTask(vo, errorDescription, errorCode))) {
             if (!validateTodo(task, errorDescription, errorCode)) {
                 delete task; task = NULL;
                 return false;
