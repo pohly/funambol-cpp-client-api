@@ -57,6 +57,11 @@ BEGIN_NAMESPACE
 class KeyValueStore {
 
 public:
+
+    /**
+     * Virtual destructor
+     */
+    virtual ~KeyValueStore() {}
     
     /**
      * Returns the value of the given property

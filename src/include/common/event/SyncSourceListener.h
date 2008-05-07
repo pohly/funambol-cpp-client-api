@@ -54,6 +54,9 @@ public:
     //Conctructor
     SyncSourceListener();
 
+    // Virtual destructor
+    virtual ~SyncSourceListener() {}
+
     // listen for the Sync Begin Event
     virtual void syncSourceBegin(SyncSourceEvent& event);
 

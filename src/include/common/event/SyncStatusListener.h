@@ -54,6 +54,9 @@ public:
     // Constructor
     SyncStatusListener();
 
+    // Virtual destructor
+    virtual ~SyncStatusListener() {}
+
     // listen for the Status Received Event
     virtual void statusReceived(SyncStatusEvent& event);
 

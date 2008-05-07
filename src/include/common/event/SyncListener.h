@@ -56,6 +56,9 @@ public:
     //Contructor
     SyncListener();
 
+    // Virtual destructor
+    virtual ~SyncListener() {}
+
     // listen for the Sync Begin Event
     virtual void syncBegin(SyncEvent& event);
 

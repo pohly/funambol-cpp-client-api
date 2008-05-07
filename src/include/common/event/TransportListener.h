@@ -56,6 +56,9 @@ public:
     // Constructor
     TransportListener();
 
+    // Virtual destructor
+    virtual ~TransportListener() {}
+
     // listen for the Send Data Begin Event
     virtual void sendDataBegin(TransportEvent& event);
 

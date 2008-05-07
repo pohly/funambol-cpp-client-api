@@ -55,6 +55,9 @@ public:
     //Constructor
     SyncItemListener();
 
+    // Virtual destructor
+    virtual ~SyncItemListener() {}
+
     // listen for the Item added by Server Event
     virtual void itemAddedByServer(SyncItemEvent& event);
 
