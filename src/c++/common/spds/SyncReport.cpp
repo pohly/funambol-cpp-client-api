@@ -193,6 +193,7 @@ void SyncReport::toString(StringBuffer &str, bool verbose) {
         str += tmp.sprintf("   Source State    = %d\n", ssr->getState());
         str += tmp.sprintf("   Last error code = %d\n", ssr->getLastErrorCode());
         str += tmp.sprintf("   Last error msg  = %s\n", ssr->getLastErrorMsg());
+#ifndef SYMBIAN
         for (const char* const* target = SyncSourceReport::targets;
              *target;
              target++) {
@@ -211,6 +212,7 @@ void SyncReport::toString(StringBuffer &str, bool verbose) {
                 }
             }
         }
+#endif
     }
     str += "\n";
 }
