@@ -36,14 +36,14 @@
     #define INCL_HTTP_URL
 /** @cond DEV */
 
+    #include "base/globalsdef.h"
     #include "base/fscapi.h"
     #include "base/constants.h"
     #include "http/constants.h"
-#include "base/globalsdef.h"
 
 BEGIN_NAMESPACE
 
-    class __declspec(dllexport) URL {
+    class URL {
 
     public:
         char*  fullURL ;
@@ -65,10 +65,11 @@ BEGIN_NAMESPACE
         URL& operator= (const char*  url);
 
     protected:
-        void setURL(const char* u, const char* p, const char* h, const char* r, unsigned int port);
+        void setURL(const char* u, const char* p, const char* h, const char* r, int port);
     };
 
 END_NAMESPACE
 
 /** @endcond */
 #endif
+
