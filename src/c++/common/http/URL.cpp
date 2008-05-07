@@ -84,7 +84,7 @@ void URL::setURL(URL& url) {
     setURL(url.fullURL, url.protocol, url.host, url.resource, url.port);
 }
 
-void URL::setURL(const char*u, const char*p, const char*h, const char*r, unsigned int port) {
+void URL::setURL(const char*u, const char*p, const char*h, const char*r, int port) {
     if (fullURL) {
         delete [] fullURL; fullURL = NULL;
     }
