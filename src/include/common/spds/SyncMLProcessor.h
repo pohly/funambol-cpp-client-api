@@ -37,6 +37,7 @@
     #define INCL_SYNCML_PROCESSOR
 /** @cond DEV */
 
+    #include "base/globalsdef.h"
     #include "base/util/ArrayList.h"
     #include "base/util/XMLProcessor.h"
     #include "spds/SyncSource.h"
@@ -46,7 +47,6 @@
     #include "syncml/core/ObjectDel.h"
     #include "syncml/parser/Parser.h"
     #include "spds/SyncReport.h"
-#include "base/globalsdef.h"
 
 BEGIN_NAMESPACE
 
@@ -54,7 +54,7 @@ BEGIN_NAMESPACE
      * This class is responsible for the processing of the incoming messages.
      */
 
-    class __declspec(dllexport) SyncMLProcessor : public XMLProcessor {
+    class SyncMLProcessor : public XMLProcessor {
 
     private:
 
