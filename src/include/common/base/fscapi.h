@@ -52,9 +52,11 @@
     #elif defined(__ENVIRONMENT_IPHONE_OS_VERSION_MIN_REQUIRED__)
     /* This is an iPhone */
     #define MAC   1
+    #define POSIX 1
     #elif defined(__ENVIRONMENT_MAC_OS_X_VERSION_MIN_REQUIRED__)
     /* This is a Mac */
     #define MAC   1
+    #define POSIX 1
     #elif defined(_WIN32_WCE) || defined(WIN32)
     /* This is windows or windows mobile, in this case we don't have our
      * own macro so there is nothing we need to do
