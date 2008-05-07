@@ -701,13 +701,13 @@ void DMTClientConfig::saveConnConfig(ManagementNode& syncMLNode,
     connNode.setPropertyValue(PROPERTY_USE_PROXY,
                               (accessConfig.getUseProxy() ? "1": "0") );
     connNode.setPropertyValue(PROPERTY_PROXY_HOST, accessConfig.getProxyHost());
-    sprintf(buf, "%lu", accessConfig.getProxyPort());
+    sprintf(buf, "%d", accessConfig.getProxyPort());
     connNode.setPropertyValue(PROPERTY_PROXY_PORT, buf);
     connNode.setPropertyValue(PROPERTY_PROXY_USERNAME, accessConfig.getProxyUsername());
     connNode.setPropertyValue(PROPERTY_PROXY_PASSWORD, accessConfig.getProxyPassword());
     connNode.setPropertyValue(PROPERTY_CHECK_CONN,
                               (accessConfig.getCheckConn() ? "1": "0") );
-    sprintf(buf, "%lu", accessConfig.getResponseTimeout());
+    sprintf(buf, "%u", accessConfig.getResponseTimeout());
     connNode.setPropertyValue(PROPERTY_RESPONSE_TIMEOUT, buf);
     sprintf(buf, "%lu", accessConfig.getReadBufferSize());
     connNode.setPropertyValue(PROPERTY_READ_BUFFER_SIZE, buf);
@@ -868,10 +868,10 @@ void DMTClientConfig::saveExtDevConfig(ManagementNode& syncMLNode,
     extNode.setPropertyValue(PROPERTY_NUMBER_OF_CHANGES_SUPPORT,
                              (deviceConfig.getNocSupport() ? "1": "0") );
 
-    sprintf(buf, "%lu", deviceConfig.getLogLevel());
+    sprintf(buf, "%d", deviceConfig.getLogLevel());
     extNode.setPropertyValue(PROPERTY_LOG_LEVEL, buf);
 
-    sprintf(buf, "%lu", deviceConfig.getMaxObjSize());
+    sprintf(buf, "%u", deviceConfig.getMaxObjSize());
     extNode.setPropertyValue(PROPERTY_MAX_OBJ_SIZE, buf);
 }
 
