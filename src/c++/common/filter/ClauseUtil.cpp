@@ -69,7 +69,7 @@ char* ClauseUtil::toCGIQuery(Clause& clause) {
     if (clause.type == WHERE_CLAUSE) {
         operands.add(clause);
     } else {
-		operands = *((LogicalClause&)clause).getOperands();
+        operands = *((LogicalClause&)clause).getOperands();
     }
 
     for (int i=0; i<operands.size(); ++i) {
@@ -81,6 +81,9 @@ char* ClauseUtil::toCGIQuery(Clause& clause) {
                     break;
                 case OR:
                     query.append("&OR;");
+                    break;
+                default:
+                    // Nothing to do in these cases
                     break;
             }
         }
@@ -141,6 +144,10 @@ char* ClauseUtil::toCGIQuery(Clause& clause) {
                 } else {
                     query.append("&iNCON;");
                 }
+                break;
+            default:
+                // This is either UNKNOWN or an error. In both cases
+                // there is nothing to do
                 break;
         }
         query.append(whereClause->getValue());
