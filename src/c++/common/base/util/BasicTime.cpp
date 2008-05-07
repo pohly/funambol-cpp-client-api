@@ -133,7 +133,7 @@ int BasicTime::parseRfc822(const char *date)
             // it can be an error in the format: Mon,12 Feb 2007 09:00:01 +0100
             // the comma is attached to the day
             if (*(pdate + 1) != ' ') {
-                ret = sscanf(pdate + 1, "%s,%d %s %d %s %s",
+                ret = sscanf(pdate + 1, "%d %s %d %s %s",
                     &day, mon, &year, time, timeZone);
 
             }
@@ -200,7 +200,7 @@ int BasicTime::parseRfc822(const char *date)
                 wcH[3] = '\0';
             }
             // get min
-            if ( strlen(timeZone) >= 5)	{
+            if ( strlen(timeZone) >= 5)    {
                 wcM[0] = timeZone[3];
                 wcM[1] = timeZone[4];
                 wcM[2] = '\0';
@@ -270,11 +270,11 @@ bool BasicTime::isADate(const char* date) {
 
 // Date: Fri, 01 Aug 2003 14:04:55 +0800
 char *BasicTime::formatRfc822() const {
-	const char *days[] = {
+    const char *days[] = {
         "Sun", "Mon", "Tue", "Wed",
         "Thu", "Fri", "Sat", "Sun"
     };
-	const char *months[] = {
+    const char *months[] = {
         "Jan", "Feb", "Mar", "Apr",
         "May", "Jun", "Jul", "Aug",
         "Sep", "Oct", "Nov", "Dec"
