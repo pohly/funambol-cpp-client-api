@@ -1090,7 +1090,8 @@ StringBuffer* Formatter::getSync(Sync* sync) {
     sequence = getSpecificCommand(sync->getCommands(), SEQUENCE);
     atomic   = getSpecificCommand(sync->getCommands(), ATOMIC);
 
-    if (NotZeroStringBufferLenght(10, cmdID, cred, meta, source, target, noResp, numberOfChanges, commonCommandList, sequence, atomic)) {
+    if (NotZeroStringBufferLenght(10, cmdID, cred, meta, source, target, noResp,
+                                  numberOfChanges, commonCommandList, sequence, atomic)) {
         s = new StringBuffer();
         s->append(cmdID);
         s->append(noResp);
@@ -1105,7 +1106,8 @@ StringBuffer* Formatter::getSync(Sync* sync) {
     }
 
     ret = getValue(SYNC, s);
-    deleteAllStringBuffer(11, &s, &cred, &cmdID, &meta, &source, &target, &noResp, &numberOfChanges, &commonCommandList, &atomic, &sequence);
+    deleteAllStringBuffer(11, &s, &cred, &cmdID, &meta, &source, &target, &noResp,
+                          &numberOfChanges, &commonCommandList, &atomic, &sequence);
 
     return ret;
 }
