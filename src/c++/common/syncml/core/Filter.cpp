@@ -38,13 +38,13 @@
 
 USE_NAMESPACE
 
-Filter::Filter() : meta(NULL), field(NULL), record(NULL), filterType(NULL) {
+Filter::Filter() : field(NULL), record(NULL), filterType(NULL), meta(NULL)  {
 }
 
 Filter::Filter(Meta*    m,
                Item*    f,
                Item*    r,
-               char* t): meta(NULL), field(NULL), record(NULL), filterType(NULL) {
+               char* t): field(NULL), record(NULL), filterType(NULL), meta(NULL) {
     setMeta(m);
     setField(f);
     setRecord(r);
@@ -64,7 +64,7 @@ Meta* Filter::getMeta() {
 
 void Filter::setMeta(Meta* m) {
     if (this->meta) {
-		delete this->meta; this->meta = NULL;
+        delete this->meta; this->meta = NULL;
     }
 
     this->meta = m->clone();
@@ -76,10 +76,10 @@ Item* Filter::getField() {
 
 void Filter::setField(Item* f) {
     if (field) {
-		delete field; field = NULL;
+        delete field; field = NULL;
     }
     if (f) {
-	    field = (Item*)f->clone();
+        field = (Item*)f->clone();
     }
 }
 
@@ -89,10 +89,10 @@ Item* Filter::getRecord() {
 
 void Filter::setRecord(Item* r) {
     if (record) {
-		delete record; record = NULL;
+        delete record; record = NULL;
     }
     if (r) {
-	    record = (Item*)r->clone();
+        record = (Item*)r->clone();
     }
 }
 
