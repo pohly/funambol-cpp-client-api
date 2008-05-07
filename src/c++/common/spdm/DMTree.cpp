@@ -73,8 +73,11 @@ bool DMTree::isLeaf(const char *node) {
 ManagementNode* DMTree::getNode(const char* node) {
 
     StringBuffer completeNodeName;
-    // TODO: check if we need to append a / at the end of root
-    completeNodeName.sprintf("%s%s", root.c_str(), node);
+    if (root.endsWith('/')) {
+        completeNodeName.sprintf("%s%s", root.c_str(), node);
+    } else {
+        completeNodeName.sprintf("%s/%s", root.c_str(), node);
+    }
 
     ManagementNode *n = new DeviceManagementNode(completeNodeName.c_str());
     return n;
