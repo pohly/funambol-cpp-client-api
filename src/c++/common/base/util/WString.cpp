@@ -33,6 +33,7 @@
  * the words "Powered by Funambol".
  */
 
+#include "base/globalsdef.h"
 #include "base/fscapi.h"
 #include "base/messages.h"
 #include "base/util/utils.h"
@@ -42,12 +43,10 @@
 USE_NAMESPACE
 
 const size_t WString::npos = 0xFFFFFFFF;
-static size_t growup = 5;
 
 #if 0
 /// FIXME: Debug code
 #include <stdio.h>
-#include "base/globalsdef.h"
 
 void abort(const char *msg)
 {
