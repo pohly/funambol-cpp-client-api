@@ -378,10 +378,10 @@ static bool getBodyPart(StringBuffer &rfcBody, StringBuffer &boundary,
         if(part.ifind("Content-Type: multipart/alternative") != StringBuffer::npos) {
             size_t b_pos = part.ifind("boundary=");
             if( b_pos != StringBuffer::npos ) {
-			    size_t begin = part.find("=\"", b_pos) + 2 ;
-			    size_t end = part.find("\"", begin) ;
+                size_t begin = part.find("=\"", b_pos) + 2 ;
+                size_t end = part.find("\"", begin) ;
 
-			    StringBuffer inner_boundary("\n--");
+                StringBuffer inner_boundary("\n--");
                 inner_boundary += part.substr( begin, end-begin );
 
                 begin = part.find(inner_boundary, end);
@@ -392,7 +392,7 @@ static bool getBodyPart(StringBuffer &rfcBody, StringBuffer &boundary,
                     LOG.debug("Bodypart is multipart/alternative: "
                         "getting first alternative only: \n%s\n", part.c_str() );
                 }
-		    }
+            }
         }
     }
 
@@ -416,8 +416,8 @@ static bool getBodyPart(StringBuffer &rfcBody, StringBuffer &boundary,
     headers.split(lines, newline);
 
     for ( line=(StringBuffer *)lines.front();
-		  line;
-		  line=(StringBuffer *)lines.next() ) {
+          line;
+          line=(StringBuffer *)lines.next() ) {
         if( *line == "\r" )
             continue;
         // The first empty line marks the end of the header section
@@ -450,7 +450,7 @@ static bool getBodyPart(StringBuffer &rfcBody, StringBuffer &boundary,
     hdrlen += strlen(newline) + strlen(newline); // added 2 new line that separate the bodyparts
     // get bodypart content
     if( isAttach == false) { // || !ret.getFilename() ) {
-		// this is not an attachment
+        // this is not an attachment
         if(ret.getEncoding() && strcmp(ret.getEncoding(), "quoted-printable") == 0 ) {
             char *decoded = qp_decode( part.substr(hdrlen) );
             ret.setContent ( decoded );
@@ -497,17 +497,17 @@ static bool getBodyPart(StringBuffer &rfcBody, StringBuffer &boundary,
                 LOG.debug("convertAndSave success");
             }
         }
-	}
+    }
     LOG.debug("getBodyPart END");
 
     // return true if there are more parts
-	return (next != StringBuffer::npos);
+    return (next != StringBuffer::npos);
 }
 
 static void generateBoundary(StringBuffer& boundary)
 {
     char buf[40];
-	int i;
+    int i;
 
     *buf = '=';
     memset(buf+1, '-', 9*sizeof(char));
@@ -524,10 +524,10 @@ static bool isAscii(const char *str){
 
     for(size_t i = 0; i < strlen(str); i++) {
         if (str[i] < 32 || str[i] > 126 ){
-			return false;
+            return false;
         }
     }
-	return true;
+    return true;
 }
 
 /**
@@ -707,7 +707,7 @@ char * MailMessage::format() {
         ret += body.getContent(); ret += NL;
     }
     LOG.debug("MailMessage::format END");
-	return stringdup(ret.c_str());
+    return stringdup(ret.c_str());
 }
 
 
@@ -809,8 +809,8 @@ int MailMessage::parseHeaders(StringBuffer &rfcHeaders) {
     importance = "0";
 
     for ( line=(StringBuffer *)lines.front();
-		  line;
-		  line=(StringBuffer *)lines.next() ) {
+          line;
+          line=(StringBuffer *)lines.next() ) {
 
         if( *line == "\r" )
             break;
@@ -819,7 +819,6 @@ int MailMessage::parseHeaders(StringBuffer &rfcHeaders) {
             break;
         }
         // Process the headers
-        bool unknown=false;
 
         if( line->ifind(TO) == 0 ){
             to = MailMessage::decodeHeader(line->substr(TO_LEN));
@@ -892,9 +891,9 @@ int MailMessage::parseHeaders(StringBuffer &rfcHeaders) {
 
             if( begin != StringBuffer::npos ) {
                 begin += strlen("boundary=\"");
-			    end = line->find("\"", begin) ;
-			    boundary = line->substr( begin, end-begin );
-		    }
+                end = line->find("\"", begin) ;
+                boundary = line->substr( begin, end-begin );
+            }
             else {
                     begin=line->ifind(CT_CHARSET);
                 if( begin != StringBuffer::npos ) {
@@ -915,7 +914,7 @@ int MailMessage::parseHeaders(StringBuffer &rfcHeaders) {
                 }
             }
             */
-	    }
+        }
         else if(line->ifind(RECEIVED) == 0) {
             if (!receivedExtracted) {
                 strReceived = line->substr(line->rfind(";") );
@@ -955,8 +954,8 @@ int MailMessage::parseHeaders(StringBuffer &rfcHeaders) {
 
     LOG.debug("parseHeaders END");
 
-	// FIXME: should check for mandatory headers before return 0
-	return 0;
+    // FIXME: should check for mandatory headers before return 0
+    return 0;
 }
 
 

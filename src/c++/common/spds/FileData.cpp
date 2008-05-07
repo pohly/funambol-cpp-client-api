@@ -203,7 +203,7 @@ int FileData::parse(StringBuffer* s)
             }
             else
             {
-                int repNo = enc.replaceAll(TEXT("\""),TEXT(""));
+                enc.replaceAll(TEXT("\""),TEXT(""));
             }
         }
         else
@@ -214,7 +214,7 @@ int FileData::parse(StringBuffer* s)
 
     if (!enc.empty() && (enc == TEXT("base64")))
     {
-        int len = b64_decode((void *)body.c_str(), body.c_str());
+        b64_decode((void *)body.c_str(), body.c_str());
     }
 
     if (!enc.empty() && (enc == TEXT("quoted-printable")))
@@ -288,7 +288,7 @@ char* FileData::format() {
         out += XMLProcessor::makeElement(FILE_ATTRIBUTES, attributes);
 
     if (enc.empty()){
-        int len = b64_decode((void*)body.c_str(), body.c_str());
+        b64_decode((void*)body.c_str(), body.c_str());
         out += XMLProcessor::makeElement(FILE_BODY, body);
     }
     else

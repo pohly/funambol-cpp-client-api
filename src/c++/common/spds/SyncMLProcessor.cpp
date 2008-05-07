@@ -76,7 +76,6 @@ int SyncMLProcessor::processAlertStatus(SyncSource& source, SyncML* syncml, Arra
     int ret = -1;
     const char* name = NULL;
     Status* s     = NULL;
-    Data* data    = NULL;
     SourceRef* sourceRef    = NULL;
 
     if (alerts->size()) {
@@ -128,7 +127,6 @@ int SyncMLProcessor::processServerAlert(SyncSource& source, SyncML* syncml) {
     int ret             = -1;
     int iterator        = 0;
     AbstractCommand* a  = NULL;
-    Item* item          = NULL;
     bool found          = false;
 
     ret = 0;
@@ -186,7 +184,6 @@ char** SyncMLProcessor::getSortedSourcesFromServer(SyncML* syncml, int sourcesNu
     char** sourceList = new char*[sourcesNumber+1];
     int iterator        = 0;
     AbstractCommand* a  = NULL;
-    Item* item          = NULL;
 
     do {
         a = getCommand(syncml->getSyncBody(), ALERT, iterator);
@@ -520,7 +517,6 @@ AbstractCommand* SyncMLProcessor::getCommand(SyncBody* syncBody, const char*comm
 
     int iterator = 0, found = 0;
     ArrayList* list     = syncBody->getCommands();
-    int l = list->size();
     AbstractCommand* a  = NULL;
     const char* name = NULL;
     do {
@@ -547,7 +543,6 @@ int SyncMLProcessor::getStatusCode(SyncBody* syncBody, SyncSource* source, const
     ArrayList* list = syncBody->getCommands();
     const char* name = NULL;
     Status* s     = NULL;
-    Data* data    = NULL;
 
     for (int i = 0; i < list->size(); i++) {
         name = ((AbstractCommand*)(list->get(i)))->getName();    // is returned the pointer to the element not a new element

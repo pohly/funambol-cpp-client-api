@@ -142,12 +142,13 @@ int EmailData::parse(const char *msg, size_t len)
     if (start != StringBuffer::npos && end != StringBuffer::npos) {
         totalEmailSize = itemtmp.length(); // the size of the current piece of mail
         itemtmp = NULL;
-    //if( XMLProcessor::getElementContent(msg, EMAIL_ITEM, NULL, &start, &end) ) {
-		StringBuffer item(msg+start, end-start);
+        //if( XMLProcessor::getElementContent(msg, EMAIL_ITEM, NULL, &start, &end) ) {
+        StringBuffer item(msg+start, end-start);
         unsigned int startAttr=0, endAttr=0;
-        size_t itemlen = end-start;
 
-        if(XMLProcessor::getElementAttributes(msg, EMAIL_ITEM, &startAttr, &endAttr, false)){ //currently emailitem is not escaped so false!!
+        //currently emailitem is not escaped so false!!
+        if(XMLProcessor::getElementAttributes(msg, EMAIL_ITEM, &startAttr,
+                                              &endAttr, false)) {
             StringBuffer attrlist(msg+startAttr, endAttr-startAttr);
             if(attrlist.ifind("quoted-printable") != StringBuffer::npos) {
                 char *decoded = qp_decode(item);
@@ -225,7 +226,7 @@ int EmailData::parse(const char *msg, size_t len)
                     remainingAttachments = new ArrayList();
                 }
                 extMailData = new ExtMailData();
-                unsigned int from = 0, previous = 0;
+                unsigned int from = 0;
                 char* val = XMLProcessor::copyElementContent(ext, "XVal", &from);
                 if (val) {
                     extMailData->attachName = stringdup(MailMessage::decodeHeader(val).c_str());

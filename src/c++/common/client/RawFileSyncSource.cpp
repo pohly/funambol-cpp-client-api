@@ -93,7 +93,6 @@ int RawFileSyncSource::updateItem(SyncItem& item) {
 
 bool RawFileSyncSource::setItemData(SyncItem* syncItem) {
 
-    bool ret = true;
     size_t len;
     char* content;
     char fileName[512];
@@ -118,7 +117,7 @@ bool RawFileSyncSource::setItemData(SyncItem* syncItem) {
         syncItem->setData(content, (long)len);
         WCHAR *tmp = toWideChar(getConfig().getType());
         syncItem->setDataType(tmp);
-		delete [] tmp;
+        delete [] tmp;
         delete [] content;
         content = NULL;
     }

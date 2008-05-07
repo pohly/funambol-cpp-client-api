@@ -855,7 +855,6 @@ long SyncMLBuilder::addItem(ModificationCommand* &modificationCommand,
         char* cmdid = itow(cmdID);
         CmdID commandID(cmdid);
         delete [] cmdid; cmdid = NULL;
-        ModificationCommand* ret = NULL;
         MetInf metInf(NULL, (char*)type, NULL, NULL,
                       NULL, NULL, NULL, NULL, NULL, NULL, NULL);
         Meta meta;

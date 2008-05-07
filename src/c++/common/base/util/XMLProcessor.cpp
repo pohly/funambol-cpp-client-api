@@ -624,7 +624,6 @@ char* XMLProcessor::copyElementContentLevel(const char*xml   ,
     char* ret = NULL;
     bool openBracket  = false;  // <
     bool closeBracket = false;  // >
-    bool aloneBracket = false;  // </
     bool preCloseBracket = false;  //<.../
     bool openTag      = false;
     bool closeTag     = false;
@@ -767,7 +766,6 @@ const char* XMLProcessor::getElementAttributes(const char* xml,
 
     const char* p1 = NULL;
     const char* p2 = NULL;
-    bool charFound  = false;
     unsigned int l = strlen(tag);
 
     // example ot tag with attribute list

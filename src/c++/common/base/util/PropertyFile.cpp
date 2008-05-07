@@ -64,7 +64,7 @@ int PropertyFile::read() {
 int PropertyFile::save() {
     FILE* file;
     file = fopen(node, "w");
-    int i = 0, ret = 0;   
+    int ret = 0;   
     if (file) {
         KeyValuePair* curr = NULL;         
         for (curr = (KeyValuePair*)data.front(); curr;

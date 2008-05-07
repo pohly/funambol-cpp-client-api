@@ -67,7 +67,7 @@ static char prevSourceUri[64];
 static SyncMode prevSyncMode;
 
 static bool isFiredSyncEventBEGIN;
-static bool isFiredSyncEventEND;
+//static bool isFiredSyncEventEND;
 
 // Static functions ------------------------------------------------------------
 
@@ -260,7 +260,6 @@ SyncManager::~SyncManager() {
         delete [] sortedSourcesFromServer;
     }
     if (allItemsList){
-        int i = 0;
 #if 0
         while (allItemsList[i]) {
             delete [] allItemsList[i];
@@ -283,7 +282,6 @@ int SyncManager::prepareSync(SyncSource** s) {
     char* responseMsg           = NULL;
     SyncML*  syncml             = NULL;
     int ret                     = 0;
-    int serverRet               = 0;
     int count                   = 0;
     const char* requestedAuthType  = NULL;
     ArrayList* list             = NULL; //new ArrayList();
@@ -302,7 +300,6 @@ int SyncManager::prepareSync(SyncSource** s) {
     Status* status              = NULL; // The status from the client to the server
     Cred*   cred                = NULL;
     Alert*  alert               = NULL;
-    SyncSource** buf            = NULL;
     StringBuffer* devInfStr     = NULL;
     bool putDevInf              = false;
     char devInfHash[16 * 4 +1]; // worst case factor base64 is four
@@ -1079,7 +1076,6 @@ int SyncManager::sync() {
             // assumes a constant overhead for each message and change item 
             // and then adds the actual item data sent.
             deleteSyncML(&syncml);
-            static long msgOverhead = 2000;
             static long changeOverhead = 150;
             long msgSize = 0;
             Sync* sync = syncMLBuilder.prepareSyncCommand(*sources[count]);

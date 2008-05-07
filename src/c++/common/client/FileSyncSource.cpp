@@ -299,11 +299,11 @@ int FileSyncSource::deleteItem(SyncItem& item) {
     sprintf(completeName, "%s/%" WCHAR_PRINTF, dir, item.getKey());
     if (
 #ifdef WIN32
-		!_unlink(completeName)
+        !_unlink(completeName)
 #else
-		!unlink(completeName)
+        !unlink(completeName)
 #endif
-		) {
+        ) {
         ret = STC_OK;
     }
 
@@ -317,9 +317,9 @@ int FileSyncSource::endSync() {
 
         // reset information about deleted items
         for (item = getFirst(deletedItems, false); item; item = getNext(deletedItems, false)) {
-			char *tmp = toMultibyte(item->getKey());
+            char *tmp = toMultibyte(item->getKey());
             fileNode->setPropertyValue(tmp, "");
-			delete [] tmp;
+            delete [] tmp;
             delete item;
         }
 
@@ -330,9 +330,9 @@ int FileSyncSource::endSync() {
             unsigned long modTime = getFileModTime(completeName);
             char anchor[30];
             timestampToAnchor(modTime, anchor);
-			char *tmp = toMultibyte(item->getKey());
+            char *tmp = toMultibyte(item->getKey());
             fileNode->setPropertyValue(tmp, anchor);
-			delete [] tmp;
+            delete [] tmp;
             delete item;
         }
     }
@@ -347,7 +347,6 @@ void FileSyncSource::assign(FileSyncSource& s) {
 
 bool FileSyncSource::setItemData(SyncItem* syncItem) {
 
-    bool ret = true;
     size_t len;
     char* content;
     char fileName[512];

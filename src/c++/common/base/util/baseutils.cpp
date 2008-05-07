@@ -232,7 +232,6 @@ char* MD5CredentialData(const char* userName, const char* password, const char* 
     char token      [512];
     char* md5Digest = NULL;
     char ch          [3];
-    char* dig = NULL;
 
     memset(digest,      0, 16);
     memset(base64,      0, 64);

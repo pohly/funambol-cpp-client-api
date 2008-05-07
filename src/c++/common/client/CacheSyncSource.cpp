@@ -316,8 +316,7 @@ bool CacheSyncSource::fillItemModifications() {
     KeyValuePair* kvp;
 
     ArrayListEnumeration *newitems = new ArrayListEnumeration(),
-                         *moditems = new ArrayListEnumeration(),
-                         *delitems = new ArrayListEnumeration();
+                         *moditems = new ArrayListEnumeration();
 
     if (items) {
         while(items->hasMoreElement()) {
@@ -349,9 +348,7 @@ bool CacheSyncSource::fillItemModifications() {
     updatedKeys = moditems;           
     deletedKeys = new ArrayListEnumeration(cacheCopy);    
     
-    if (items) { 
-        delete items; 
-    }
+    delete items; 
     return true;
 }
 
