@@ -82,13 +82,21 @@ protected:
 
         CPPUNIT_ASSERT_EQUAL(-1, copy.parseRfc822("this is garbage"));
 
-        static const char convertStr[] = "Mon, 6 Nov 2006 20:30:15 +0100";
+        const char convertStr[] = "Mon, 6 Nov 2006 20:30:15 +0100";
         BasicTime convert;
         CPPUNIT_ASSERT_EQUAL(0, convert.parseRfc822(convertStr));
         buffer = convert.formatRfc822();
         CPPUNIT_ASSERT(!strcmp(buffer, convertStr));
         delete [] buffer; buffer = NULL;
+
+        const char convertStr2[] = "Mon,12 Feb 2007 09:00:01 +0100";
+        BasicTime convert2;
+        CPPUNIT_ASSERT_EQUAL(0, convert2.parseRfc822(convertStr2));
+        buffer = convert.formatRfc822();
+        CPPUNIT_ASSERT(!strcmp(buffer, convertStr));
+        delete [] buffer; buffer = NULL;
     }
+
 
 private:
     BasicTime millenium;
