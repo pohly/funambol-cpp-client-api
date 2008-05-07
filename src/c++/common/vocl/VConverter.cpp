@@ -46,12 +46,12 @@ USE_NAMESPACE
 
 VObject* VConverter::parse(const WCHAR* buffer) {
 
-	WCHAR *objType = extractObjectType(buffer);
-	WCHAR *objVersion = extractObjectVersion(buffer);
+    WCHAR *objType = extractObjectType(buffer);
+    WCHAR *objVersion = extractObjectVersion(buffer);
     if(!objType)
         return NULL;
 
-	VObject* vo = VObjectFactory::createInstance(objType, objVersion);
+    VObject* vo = VObjectFactory::createInstance(objType, objVersion);
     VProperty *prop;
 
     // Unfolding
@@ -125,7 +125,7 @@ VProperty* VConverter::readFieldHeader(WCHAR* buffer) {
     //if the header is folded (in .ics files)
     //we need to remove the folding
     WCHAR* headerFolding = NULL;
-    if(headerFolding = wcsstr(header, TEXT("\n "))) {
+    if ((headerFolding = wcsstr(header, TEXT("\n ")))) {
         header[headerFolding - header] = '\0';
     }
 
@@ -133,8 +133,8 @@ VProperty* VConverter::readFieldHeader(WCHAR* buffer) {
     WCHAR *token;
     bool first = true;
 
-	token = wcstok( header, seps );
-	while( token != NULL ) {
+    token = wcstok( header, seps );
+    while( token != NULL ) {
         if (first) {
 
             WCHAR* group = new WCHAR[wcslen(token) + 1];
@@ -224,11 +224,11 @@ bool VConverter::readFieldBody(WCHAR* buffer, VProperty* vprop) {
     if(vprop->equalsEncoding(TEXT("QUOTED-PRINTABLE"))) {
 
         char* buf = toMultibyte(allValues);
-	    char* dec = qp_decode(buf);
+        char* dec = qp_decode(buf);
         len = strlen(dec);
-	    delete [] buf;
+        delete [] buf;
 
-	    if (dec) {
+        if (dec) {
             WCHAR* wdecoded = toWideChar(dec);
             delete [] dec;
 
@@ -301,7 +301,7 @@ finally:
         delete [] allValues; allValues = NULL;
     }
 
-	return ret;
+    return ret;
 }
 
 
