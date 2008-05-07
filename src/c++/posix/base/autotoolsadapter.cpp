@@ -46,8 +46,6 @@ BEGIN_NAMESPACE
 
 bool saveFile(const char *filename, const char *buffer, size_t len, bool binary)
 {
-    const char *mode = binary ? "wb" : "w" ;
-
     FILE *f = fopen(filename, "w");
 
     if(!f)
@@ -160,12 +158,15 @@ bool removeFileInDir(const char* d, const char* fname) {
 
     if (fname) {
         sprintf(toFind, "%s/%s", d, fname);    
-        if (remove(toFind) != 0) { LOG.error("Error deleting the %s file", toFind); ret = true;}
-        else { LOG.debug("File %s deleted succesfully", toFind); }	
+        if (remove(toFind) != 0) {
+            LOG.error("Error deleting the %s file", toFind); ret = true;
+        } else {
+            LOG.debug("File %s deleted succesfully", toFind);
+        }
     }
     else {        
         totalFiles = readDir((char*)d, &numFiles, false);
-	if (totalFiles && numFiles > 0) {
+        if (totalFiles && numFiles > 0) {
             for (int i = 0; i < numFiles; i++) {
                 sprintf(toFind, "%s/%s", d, totalFiles[i]);
                 remove(toFind);            
@@ -180,7 +181,6 @@ bool removeFileInDir(const char* d, const char* fname) {
         delete [] totalFiles; totalFiles = NULL;
     }
 
-finally:
     return ret;
 }
 
