@@ -40,7 +40,7 @@
 USE_NAMESPACE
 
 
-SourceFilter::SourceFilter() : clause(NULL), type(NULL), inclusive(false) {
+SourceFilter::SourceFilter() : clause(NULL), inclusive(false), type(NULL) {
 }
 
 SourceFilter::~SourceFilter() {
