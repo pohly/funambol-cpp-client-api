@@ -75,7 +75,6 @@ SyncHdr* Parser::getSyncHdr(const char*xml) {
     Meta*        meta      = NULL;
 
     SyncHdr*     ret       = NULL;
-    unsigned int pos = 0;
     char* t = NULL;
 
     t = XMLProcessor::copyElementContent(xml, SESSION_ID, NULL);
@@ -142,7 +141,6 @@ Authentication* Parser::getAuthentication(const char*xml) {
     char* data       = NULL;
     Meta*  meta       = NULL;
 
-    unsigned int pos = 0;
     char* t = NULL;
 
     data = XMLProcessor::copyElementContent (xml, DATA , NULL);
@@ -405,7 +403,6 @@ SyncBody* Parser::getSyncBody(const char*xml) {
     SyncBody* syncBody   = NULL;
     bool finalMsg        = false;
     ArrayList* commands;
-    unsigned int pos = 0;
     char* t = NULL;
     commands = getCommands(xml);
     t = XMLProcessor::copyElementContent(xml, FINAL_MSG, NULL);
@@ -782,7 +779,6 @@ Sync* Parser::getSync(const char*xml) {
     long numberOfChanges    = -1;
     char* numberOfChangesW = NULL;
 
-    unsigned int pos = 0;
     char* t = NULL;
     t = XMLProcessor::copyElementContent(xml, CMD_ID,  NULL);
     cmdID    = getCmdID      (t);
@@ -913,7 +909,6 @@ Copy* Parser::getCopy(const char*xml) {
     Meta*       meta    = NULL;
     ArrayList*  items   = NULL;
 
-    unsigned int pos = 0;
     char* t = NULL;
     t = XMLProcessor::copyElementContent (xml, CMD_ID , NULL);
     cmdID   = getCmdID     (t);
@@ -955,7 +950,6 @@ Add* Parser::getAdd(const char*xml) {
     Meta*       meta    = NULL;
     ArrayList*  items   = NULL;
 
-    unsigned int pos = 0;
     char* t = NULL;
     t = XMLProcessor::copyElementContent (xml, CMD_ID , NULL);
     cmdID   = getCmdID     (t);
@@ -998,7 +992,6 @@ Delete* Parser::getDelete(const char*xml) {
     Meta*       meta    = NULL;
     ArrayList*  items   = NULL;
 
-    unsigned int pos = 0;
     char* t = NULL;
     t = XMLProcessor::copyElementContent (xml, CMD_ID , NULL);
     cmdID   = getCmdID     (t);
@@ -1039,7 +1032,6 @@ Replace* Parser::getReplace(const char*xml) {
     Meta*       meta    = NULL;
     ArrayList*  items   = NULL;
 
-    unsigned int pos = 0;
     char* t = NULL;
     t = XMLProcessor::copyElementContent (xml, CMD_ID , NULL);
     cmdID   = getCmdID     (t);
@@ -1077,7 +1069,6 @@ MapItem* Parser::getMapItem(const char*xml) {
     Target*    target = NULL;
     Source*    source = NULL;
 
-    unsigned int pos = 0;
     char* t = NULL;
     t = XMLProcessor::copyElementContent(xml, TARGET,NULL);
     target   = getTarget(t);
@@ -1133,7 +1124,6 @@ Map* Parser::getMap(const char*xml) {
     Source*    source = NULL;
     ArrayList* mapItems; //MapItem[]
 
-    unsigned int pos = 0;
     char* t = NULL;
     t = XMLProcessor::copyElementContent (xml, CMD_ID , NULL);
     cmdID   = getCmdID(t);
@@ -1602,7 +1592,6 @@ Status* Parser::getStatus(const char*xml) {
     Data*       data        = NULL;
     ArrayList*  items       = new ArrayList();
 
-    unsigned int pos = 0;
     char* t = NULL;
     t = XMLProcessor::copyElementContent (xml, CMD_ID , NULL);
     cmdID = getCmdID(t);
@@ -1737,7 +1726,6 @@ Alert* Parser::getAlert(const char*xml) {
     Alert* ret = NULL;
     ArrayList* items = new ArrayList();
 
-    unsigned int pos = 0;
     char* t = NULL;
     t = XMLProcessor::copyElementContent (xml, CMD_ID , NULL);
     CmdID* cmdID     = getCmdID   (t);
@@ -1773,7 +1761,6 @@ Exec* Parser::getExec(const char*xml) {
     Cred*  cred         = NULL;
     ArrayList*  items   = new ArrayList();
 
-    unsigned int pos = 0;
     char* t = NULL;
     t = XMLProcessor::copyElementContent (xml, CMD_ID , NULL);
     cmdID     = getCmdID   (t);
@@ -1802,7 +1789,6 @@ Get* Parser::getGet(const char*xml) {
     Get* ret = NULL;
     ArrayList* items = NULL;
 
-    unsigned int pos = 0;
     char* t = NULL;
     t = XMLProcessor::copyElementContent (xml, CMD_ID , NULL);
     CmdID* cmdID     = getCmdID   (t);
@@ -1841,7 +1827,6 @@ Put* Parser::getPut(const char*xml) {
     Put* ret = NULL;
     ArrayList* items = NULL;
 
-    unsigned int pos = 0;
     char* t = NULL;
     t = XMLProcessor::copyElementContent (xml, CMD_ID , NULL);
     CmdID* cmdID     = getCmdID   (t);
@@ -1888,7 +1873,6 @@ Search* Parser::getSearch(const char*xml) {
     Meta*       meta     = NULL;
     Data*       data     = NULL;
 
-    unsigned int pos = 0;
     char* t = NULL;
     t = XMLProcessor::copyElementContent (xml, CMD_ID , NULL);
     cmdID     = getCmdID   (t);
@@ -1946,7 +1930,6 @@ Results* Parser::getResult(const char*xml) {
     ArrayList*  sourceRefs  = new ArrayList();
     ArrayList*  items       = new ArrayList();
 
-    unsigned int pos = 0;
     char* t = NULL;
     t = XMLProcessor::copyElementContent (xml, CMD_ID , NULL);
     cmdID           = getCmdID     (t);
@@ -2015,7 +1998,6 @@ Item* Parser::getItem(const char*xml, const char* command) {
     char* targetParent = NULL;
     char* sourceParent = NULL;
     char*      t       = NULL;
-    unsigned int pos = 0;
     t = XMLProcessor::copyElementContent(xml, TARGET,NULL);
     target   = getTarget     (t);
     if (t) {delete [] t; t = NULL;}
@@ -2547,7 +2529,7 @@ bool Parser::getMoreData(const char*content) {
 */
 CTCap* Parser::getCTCap(const char*xml) {
     CTCap* ret = NULL;
-    CTTypeSupported* ctTypeSupported = NULL;
+    //CTTypeSupported* ctTypeSupported = NULL;
 
     // ArrayList* ctTypes = new ArrayList();
 
