@@ -43,7 +43,6 @@
 USE_NAMESPACE
 
 const size_t StringBuffer::npos = 0xFFFFFFFF;
-static size_t growup = 5;
 
 
 StringBuffer::StringBuffer(const char* str, size_t len) {
@@ -450,7 +449,7 @@ bool StringBuffer::endsWith(const char* str) const {
         return false;
     }
 
-    char* start = s - strLength;
+    char* start = (s + length()) - strLength;
     return !strcmp(start, str);
 }
 
