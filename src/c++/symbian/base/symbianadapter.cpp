@@ -103,6 +103,9 @@ static size_t estimateMaxSize(const char* format, PLATFORM_VA_LIST ap) {
                     if (s) {
                         len = strlen(s);
                     }
+                    else {
+                        return -2;
+                    }
                     int align = atoi(number);
                     maxSize += (len>align) ? len : align;
                     break;
