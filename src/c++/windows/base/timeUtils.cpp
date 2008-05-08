@@ -327,7 +327,7 @@ wstring getDateFromTzRule(const int year, SYSTEMTIME tzRule) {
 }
 
 
-SYSTEMTIME getTzRuleFromDates(list<wstring>& dates) {
+SYSTEMTIME getTzRuleFromDates(list<wstring>& dates, bool *found) {
 
     SYSTEMTIME tzRule;
     SYSTEMTIME stDate;
@@ -359,10 +359,17 @@ SYSTEMTIME getTzRuleFromDates(list<wstring>& dates) {
 
     if (tzRule.wDay != 4) {
         // we're sure it is correct, the first date is enough.
+        *found = true;
         goto exit;
     }
+    
+    // modification: to handle properly the timezone structure on Windows desktop
+    // if the tzRule.wDay is 4, we set the default to 5, that means the last week.
+    // By the way, we try to see the other rules to understand if it really is the 5th
+    *found = false;
+    tzRule.wDay = 5;    
 
-
+    
     //
     // If it's "the 4th week" (wDay=4), we have to check the other dates
     // because it could be "the last week" (wDay=5).
@@ -379,13 +386,14 @@ SYSTEMTIME getTzRuleFromDates(list<wstring>& dates) {
 
         if (week == 5) {
             // This year it's the 5th week, so the rule is "the last week"!
-            tzRule.wDay = 5;
+            // we really found this is the 5th week
+            *found = true;
             goto exit;
         }
         it++;
     }
     goto exit;
-
+    
 
 error:
     LOG.error("Error creating Timezone rule from list of DAYLIGHT dates.");

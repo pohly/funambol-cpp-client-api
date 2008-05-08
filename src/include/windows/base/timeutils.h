@@ -89,13 +89,15 @@ std::wstring getDateFromTzRule(const int year, SYSTEMTIME tzRule);
  * SYSTEMTIME structure is used to store dates, but also to store a timezone rule.
  * Usually only 1 date is enough to get the timezone rule 
  * (e.g. date = 2008/10/5 -> tz rule = first Sunday of october).
- * We need more dates to distinguish between the 4th and the last occurrence
- * (e.g. date = 2008/10/26 -> is the 4th and also the last Sunday of october).
+ * We always suppose that if the occurrence is the 4th of the month we
+ * set as the 5th due to a research in the registry of windows. There are
+ * no timezone that are in the 4th week but all are in the latest week (5th)
  * 
  * @param dates   list of dates for different years, in format "yyyyMMddThhmmss" (local time)
+ * @param found   if the right value is found really or guess by the rule
  * @return        the timezone rule, as a SYSTEMTIME structure
  */
-SYSTEMTIME getTzRuleFromDates(std::list<std::wstring>& dates);
+SYSTEMTIME getTzRuleFromDates(std::list<std::wstring>& dates, bool *found);
 
 
 /**
