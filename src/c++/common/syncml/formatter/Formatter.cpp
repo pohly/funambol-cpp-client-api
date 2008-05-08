@@ -1081,7 +1081,7 @@ StringBuffer* Formatter::getSync(Sync* sync) {
         numberOfChanges->sprintf(
             "<%s>%d</%s>",
             NUMBER_OF_CHANGES,
-            sync->getNumberOfChanges(),
+            (int)sync->getNumberOfChanges(),
             NUMBER_OF_CHANGES);
     }
 
