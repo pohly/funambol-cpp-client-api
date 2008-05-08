@@ -125,6 +125,11 @@ void SyncManager::decodeItemKey(SyncItem *syncItem)
 
 void SyncManager::encodeItemKey(SyncItem *syncItem)
 {
+    if (!syncItem) { 
+        LOG.error("The syncItem is NULL: invalid encoding?");
+        return; 
+    }
+
     char *key= toMultibyte(syncItem->getKey());
 
     if (syncItem &&
