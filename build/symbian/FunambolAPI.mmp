@@ -43,7 +43,7 @@ USERINCLUDE     ..\..\src\include\symbian
 
 
 
-MACRO SYMBIAN
+/* MACRO SYMBIAN */
 MACRO ENABLE_NAMESPACE
 
 SOURCEPATH   ..\..\src\cpp\common\base
@@ -80,6 +80,7 @@ SOURCE       SymbianTransportAgent.cpp TransportAgentFactory.cpp
 
 SOURCEPATH   ..\..\src\cpp\symbian\spdm
 SOURCE       DeviceManagementNode.cpp DMTreeFactory.cpp
+SOURCE       SyncProfileManager.cpp ImapAccountManager.cpp
 
 SOURCEPATH   ..\..\src\cpp\symbian\base\util
 SOURCE       stringUtils.cpp symbianUtils.cpp timeUtils.cpp
