@@ -102,9 +102,8 @@ static size_t estimateMaxSize(const char* format, PLATFORM_VA_LIST ap) {
                     int len = 0;
                     if (s) {
                         len = strlen(s);
-                    }
-                    else {
-                        return -2;
+                    } else {
+                        return (size_t)-2;
                     }
                     int align = atoi(number);
                     maxSize += (len>align) ? len : align;
@@ -142,7 +141,7 @@ static size_t estimateMaxSize(const char* format, PLATFORM_VA_LIST ap) {
                         // FormatList does not support it.
                         // To avoid problems we do not print this string, as we
                         // do not have an easy way of doing it
-                        return -2;
+                        return (size_t)-2;
                     } else {
                         maxSize += 20;
                         PLATFORM_VA_ARG(ap, int64_t);
@@ -220,11 +219,11 @@ size_t vsnprintf(char* s, size_t size, const char* format, PLATFORM_VA_LIST aq) 
     size_t estimatedSize = estimateMaxSize(format, aqCopy);
 
     // Handle errors
-    if (estimatedSize == -2) {
+    if (estimatedSize == (size_t)-2) {
         // The string contains formats which are not supported
         // and we cannot print the string
-        char* replaceMsg = "Symbian does not support %ls";
-        int   replaceMsgLen = strlen(replaceMsg);
+        char* replaceMsg = "Symbian unsupported printf";
+        size_t replaceMsgLen = (size_t)strlen(replaceMsg);
         if (replaceMsgLen < size) {
             memcpy(s, replaceMsg, replaceMsgLen);
             s[replaceMsgLen-1] = (char)0;
@@ -336,7 +335,7 @@ size_t snwprintf(WCHAR *v, size_t size, const WCHAR* format, unsigned long value
 
 bool saveFile(const char *filename, const char *buffer, size_t len, bool binary)
 {
-    const char *mode = binary ? "wb" : "w" ;
+    //const char *mode = binary ? "wb" : "w" ;
 
     FILE *f = fopen(filename, "w");
 

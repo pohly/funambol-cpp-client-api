@@ -235,7 +235,8 @@ int32_t FSocket::readBuffer(int8_t* buffer, int32_t maxLen)
             return msgLen;
         }
         else {
-            errorMsg.sprintf("FSocket: error reading, message too big (%d > %d) -> rejected.", msgLen, maxLen);
+            errorMsg.sprintf("FSocket: error reading, message too big (%d > %d) -> rejected.",
+                             (int)msgLen, (int)maxLen);
             goto error;
         }
     }
