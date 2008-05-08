@@ -222,11 +222,8 @@ const int FConnection::startConnection(const StringBuffer& aIAPName)
     
     // Save the IAP ID & name of the active connection.
     // Query the CommDb database for the IAP ID in use.
-    LOG.debug("Stage (1)");
     _LIT(KIAPSettingName, "IAP\\Id");
-    LOG.debug("Stage (2)");
     iConnection.GetIntSetting(KIAPSettingName, iIAP);
-    LOG.debug("Stage (3): %d", iIAP);
     iIAPName = GetIAPNameFromID(iIAP);
     LOG.debug("Current active IAP ID = %d, name = %s", iIAP, iIAPName.c_str());
     //
@@ -234,7 +231,6 @@ const int FConnection::startConnection(const StringBuffer& aIAPName)
     //
     
     iRetryConnection = 0;
-    LOG.debug("Stage (4)");
     return 0;
     
     
@@ -249,7 +245,6 @@ retry:
     else {
         LOG.error("FConnection: %d connection failed", iRetryConnection);
     }
-    LOG.debug("Stage (5)");
     return iLastError;
 }
 
