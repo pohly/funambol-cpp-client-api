@@ -33,8 +33,8 @@
  * the words "Powered by Funambol".
  */
 
-#ifndef INCL_POSIX_DEVICE_MANAGEMENT_NODE
-#define INCL_POSIX_DEVICE_MANAGEMENT_NODE
+#ifndef INCL_SYMBIAN_DEVICE_MANAGEMENT_NODE
+#define INCL_SYMBIAN_DEVICE_MANAGEMENT_NODE
 /** @cond DEV */
 
 #include <syncmldef.h>
@@ -126,6 +126,7 @@ protected:
     static StringBuffer  profileName;
     static StringBuffer  cardURI;
     static StringBuffer  calURI;
+    static StringBuffer  imapServer;
     static TSmlCreatorId uid;
 
     public:
@@ -199,6 +200,9 @@ protected:
 
         static void setCalURI(const StringBuffer& calURI);
         static const StringBuffer& getCalURI();
+
+        static void setImapServer(const StringBuffer& imapServer);
+        static const StringBuffer& getImapServer();
 };
 
 
