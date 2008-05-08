@@ -68,9 +68,7 @@ public:
      * @param serverURIList  ArrayList of StringBuffer: they are the serverURI names
      *                       requested by the Server through the push message.
      */
-    virtual void onNotificationReceived(const ArrayList& serverURIList) {}
-    
-
+    virtual void onNotificationReceived(const ArrayList& /* serverURIList */) {}
 };
 
 

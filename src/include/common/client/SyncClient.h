@@ -123,7 +123,7 @@ BEGIN_NAMESPACE
          * @return 0       for success, an error code otherwise - an error code
          *                 aborts the whole synchronization
          */
-        virtual int prepareSync(AbstractSyncConfig& config) {
+        virtual int prepareSync(AbstractSyncConfig& /* config */) {
             return ERR_NONE;
         }
 
@@ -148,8 +148,8 @@ BEGIN_NAMESPACE
          *         aborts the whole synchronization and the value of *source is
          *         ignored
          */
-        virtual int createSyncSource(const char *name, const int pos,
-                                     AbstractSyncSourceConfig* config,
+        virtual int createSyncSource(const char * /* name */, const int /* pos */,
+                                     AbstractSyncSourceConfig* /* config */,
                                      SyncSource **source) {
             *source = NULL;
             return ERR_UNSPECIFIED;
@@ -160,7 +160,7 @@ BEGIN_NAMESPACE
          * @return 0 for success, an error code otherwise - an error code stops
          *         immediately
          */
-        virtual int beginSync(SyncSource **source) {
+        virtual int beginSync(SyncSource ** /* source */) {
             return ERR_NONE;
         }
 
@@ -168,7 +168,7 @@ BEGIN_NAMESPACE
          * Callback invoked after the sync process.
          * @return: 0 for success, an error code otherwise
          */
-        virtual int endSync(SyncSource **source) {
+        virtual int endSync(SyncSource ** /* source */) {
             return ERR_NONE;
         }
 

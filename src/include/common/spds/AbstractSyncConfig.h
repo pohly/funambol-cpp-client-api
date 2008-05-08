@@ -114,7 +114,7 @@ class AbstractSyncConfig {
      *
      * @param timestamp the beginSync timestamp
      */
-    virtual void setBeginSync(unsigned long timestamp) {}
+    virtual void setBeginSync(unsigned long /* timestamp */) {}
 
     /**
      * Sets the new "endSync" timestamp.
@@ -124,7 +124,7 @@ class AbstractSyncConfig {
      *
      * @param timestamp the endSync timestamp
      */
-    virtual void setEndSync(unsigned long timestamp) {}
+    virtual void setEndSync(unsigned long /* timestamp */) {}
 
     /** Does the server require authentication? */
     virtual bool getServerAuthRequired() const = 0;

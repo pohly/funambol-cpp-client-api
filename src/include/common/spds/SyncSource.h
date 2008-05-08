@@ -264,8 +264,7 @@ public:
      * @deprecated
      * @since          SyncML API v7
      */
-    virtual void setItemStatus(const WCHAR* key, int status) {
-    };
+    virtual void setItemStatus(const WCHAR* /* key */, int /* status */) {}
 
     /**
      * called by the sync engine with the status returned by the
@@ -277,7 +276,8 @@ public:
      * @param command  the SyncML command associated to the item
      
      */
-    virtual void setItemStatus(const WCHAR* key, int status, const char* command) {
+    virtual void setItemStatus(const WCHAR* key, int status,
+                               const char* /* command */) {
         setItemStatus(key, status);
     }
     
