@@ -2527,7 +2527,7 @@ bool Parser::getMoreData(const char*content) {
 * TBD
 *
 */
-CTCap* Parser::getCTCap(const char*xml) {
+CTCap* Parser::getCTCap(const char* /* xml */) {
     CTCap* ret = NULL;
     //CTTypeSupported* ctTypeSupported = NULL;
 
@@ -2539,7 +2539,7 @@ CTCap* Parser::getCTCap(const char*xml) {
 //
 // TBD
 //
-ArrayList* Parser::getEMI(const char*content) {
+ArrayList* Parser::getEMI(const char* /*content*/) {
     ArrayList* ret = NULL;
     return ret;
 }

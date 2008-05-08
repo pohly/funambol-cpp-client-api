@@ -107,7 +107,7 @@ EmailData::~EmailData()
 *
 */
 
-int EmailData::parse(const char *msg, size_t len)
+int EmailData::parse(const char *msg, size_t /* len */)
 {
     int ret = 0;
     unsigned int start = 0, end = 0;

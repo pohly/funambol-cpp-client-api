@@ -55,7 +55,8 @@ SyncManagerConfig::~SyncManagerConfig() {
     }
 }
 
-SyncSourceConfig* SyncManagerConfig::getSyncSourceConfig(const char* name, bool refresh) const {
+SyncSourceConfig* SyncManagerConfig::getSyncSourceConfig(const char* name,
+                                                         bool /* refresh */) const {
     if ((name == NULL) || (strlen(name) == 0)) {
         return NULL;
     }
@@ -69,7 +70,8 @@ SyncSourceConfig* SyncManagerConfig::getSyncSourceConfig(const char* name, bool 
     return NULL;
 }
 
-SyncSourceConfig* SyncManagerConfig::getSyncSourceConfig(unsigned int i, bool refresh) const {
+SyncSourceConfig* SyncManagerConfig::getSyncSourceConfig(unsigned int i,
+                                                         bool /* refresh */) const {
     if (i >= sourceConfigsCount) {
         return NULL;
     }

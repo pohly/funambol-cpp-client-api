@@ -793,8 +793,9 @@ ComplexData* SyncMLBuilder::getComplexData(SyncItem* syncItem,
 
 
 ArrayList* SyncMLBuilder::prepareItem(SyncItem* syncItem,
-                                      long &syncItemOffset, long maxBytes, long &sentBytes,
-                                      const char* type, char* COMMAND) {
+                                      long &syncItemOffset, long maxBytes,
+                                      long &sentBytes,
+                                      const char* /* type */, char* COMMAND) {
     ArrayList* list = new ArrayList();
 
     Source* sou = new Source(_wcc(syncItem->getKey()));

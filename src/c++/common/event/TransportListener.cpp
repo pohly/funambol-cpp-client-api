@@ -49,8 +49,8 @@ USE_NAMESPACE
 
 TransportListener::TransportListener() : Listener() {}
 
-void TransportListener::sendDataBegin   (TransportEvent& event) {}
-void TransportListener::syncDataEnd     (TransportEvent& event) {}
-void TransportListener::receiveDataBegin(TransportEvent& event) {}
-void TransportListener::receivingData   (TransportEvent& event) {}
-void TransportListener::receiveDataEnd  (TransportEvent& event) {}
+void TransportListener::sendDataBegin   (TransportEvent& /*event*/) {}
+void TransportListener::syncDataEnd     (TransportEvent& /*event*/) {}
+void TransportListener::receiveDataBegin(TransportEvent& /*event*/) {}
+void TransportListener::receivingData   (TransportEvent& /*event*/) {}
+void TransportListener::receiveDataEnd  (TransportEvent& /*event*/) {}

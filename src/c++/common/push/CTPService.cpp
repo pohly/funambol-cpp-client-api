@@ -835,20 +835,11 @@ CTPThread::CTPThread() : FThread(),
 void CTPThread::run() {
 
     LOG.debug("Starting ctpWorker thread");
-    int32_t ret = 0;
 
     // Get the unique instance of CTPService.
     CTPService* ctpService = CTPService::getInstance();
 
     //TODO PowerPolicyNotify(PPN_UNATTENDEDMODE, TRUE);
-
-    //
-    // Wait for STPThread to finish.
-    // - if handle is NULL, no STP has been done  -> go with CTP.
-    // - if STPThread returned error              -> go with CTP.
-    // - if STPThread returned ok                 -> exit now (STP is running).
-    //
-    int32_t timeout = ctpService->getConfig()->getNotifyTimeout();
 
     // Refresh configuration, save the ctpRetry original value in a buffer
     ctpService->getConfig()->readCTPConfig();
@@ -930,7 +921,6 @@ void CTPThread::run() {
         }
         char authStatus = authStatusMsg->getGenericCommand();
         CTPParam* param;
-        char* buf = NULL;
         switch (authStatus) {
 
             case ST_NOT_AUTHENTICATED:

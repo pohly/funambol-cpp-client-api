@@ -72,7 +72,7 @@ CSymbianTransportAgent* CSymbianTransportAgent::NewL(URL& aUrl,Proxy& aProxy,
  */
 CSymbianTransportAgent* CSymbianTransportAgent::NewLC(URL& aUrl,Proxy& aProxy,
                                                       unsigned int aResponseTimeout,
-                                                      unsigned int aMaxMsgSize)
+                                                      unsigned int /* aMaxMsgSize */)
 {
     CSymbianTransportAgent* self;
     
@@ -114,7 +114,7 @@ CSymbianTransportAgent::~CSymbianTransportAgent()
  * CSymbianTransportAgent::ConstructL()
  * Second phase construction.
  */
-void CSymbianTransportAgent::ConstructL(URL& aUrl)
+void CSymbianTransportAgent::ConstructL(URL& /* aUrl */)
 {
    
     // Open RHTTPSession with default protocol ("HTTP/TCP")

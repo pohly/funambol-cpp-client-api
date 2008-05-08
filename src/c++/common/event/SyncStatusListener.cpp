@@ -49,5 +49,5 @@ USE_NAMESPACE
 
 SyncStatusListener::SyncStatusListener() : Listener() {}
 
-void SyncStatusListener::statusReceived(SyncStatusEvent& event) {}
-void SyncStatusListener::statusSending (SyncStatusEvent& event) {}
+void SyncStatusListener::statusReceived(SyncStatusEvent& /* event */) {}
+void SyncStatusListener::statusSending (SyncStatusEvent& /* event */) {}

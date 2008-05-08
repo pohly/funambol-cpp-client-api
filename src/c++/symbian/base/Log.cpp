@@ -52,7 +52,7 @@ _LIT(KFormatOnlyTime,    "%:0%J%:1%T%:2%S");
 _LIT(KLogSemaphoreName,  "FLogSemaphore");
 
 
-SymbianLog::SymbianLog(bool resetLog, const char* path, const char* name) 
+SymbianLog::SymbianLog(bool resetLog, const char* /* path */, const char* /* name */) 
 {
     TInt err = KErrNone;
     iLogName.Assign(charToNewBuf(SYMBIAN_LOG_NAME));
@@ -109,11 +109,11 @@ SymbianLog::SymbianLog(bool resetLog, const char* path, const char* name)
 SymbianLog::~SymbianLog() {   
 }
 
-void SymbianLog::setLogPath(const char* configLogPath) {
+void SymbianLog::setLogPath(const char* /* configLogPath */) {
 // TODO: implement
 }
 
-void SymbianLog::setLogName(const char* configLogName) {
+void SymbianLog::setLogName(const char* /* configLogName */) {
 // TODO: implement
 }
 

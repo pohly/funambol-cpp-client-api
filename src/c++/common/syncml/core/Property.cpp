@@ -153,7 +153,7 @@ void Property::setMaxSize(long p0) {
     maxSize = p0;
 }
 
-void Property::setNoTruncate(bool p0) {
+void Property::setNoTruncate(bool /* p0 */) {
 }
 
 bool Property::isNoTruncate() {

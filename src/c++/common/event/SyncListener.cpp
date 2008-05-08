@@ -49,9 +49,9 @@ USE_NAMESPACE
 
 SyncListener::SyncListener() : Listener() {}
 
-void SyncListener::syncBegin         (SyncEvent& event) {}
-void SyncListener::syncEnd           (SyncEvent& event) {}
-void SyncListener::syncError         (SyncEvent& event) {}
-void SyncListener::sendInitialization(SyncEvent& event) {}
-void SyncListener::sendModifications (SyncEvent& event) {}
-void SyncListener::sendFinalization  (SyncEvent& event) {}
+void SyncListener::syncBegin         (SyncEvent& /* event */) {}
+void SyncListener::syncEnd           (SyncEvent& /* event */) {}
+void SyncListener::syncError         (SyncEvent& /* event */) {}
+void SyncListener::sendInitialization(SyncEvent& /* event */) {}
+void SyncListener::sendModifications (SyncEvent& /* event */) {}
+void SyncListener::sendFinalization  (SyncEvent& /* event */) {}

@@ -50,8 +50,8 @@ BasicTime::BasicTime() {
     tzMin = 0;
 }
 
-int BasicTime::set(int yy, int mon, int dd, int wd,
-                   int hh, int mm, int ss, int tzh, int tzm)
+int BasicTime::set(int /* yy */, int /* mon */, int /* dd */, int /* wd */,
+                   int /* hh */, int /* mm */, int /* ss */, int /* tzh */, int /* tzm */)
 {
     //  TODO
     return 0;

@@ -61,7 +61,7 @@ CTPConfig::CTPConfig(const char* application_uri)
         
 CTPConfig::~CTPConfig() {}
 
-char* CTPConfig::decodePassword(const char* password) {
+char* CTPConfig::decodePassword(const char* /* password */) {
     
     char* decripted = NULL;
 #if 0
@@ -79,7 +79,7 @@ char* CTPConfig::decodePassword(const char* password) {
     return decripted;       
 }
 
-StringBuffer CTPConfig::encodePassword(const char* password) {
+StringBuffer CTPConfig::encodePassword(const char* /* password */) {
     
     StringBuffer buffer("");
 #if 0
@@ -241,12 +241,14 @@ void CTPConfig::readCTPConfig() {
 
 
 void CTPConfig::saveCTPConfig() { 
-    
+   
+    LOG.debug("saveCTPConfig");
+
     ManagementNode* node = NULL;
     if (!open()) {
         return;
     }
- 
+
     bool passwordEncoded = false;
 
     StringBuffer buffer;
@@ -265,7 +267,7 @@ void CTPConfig::saveCTPConfig() {
         delete node;
     }
 
-    char* passDecoded;
+    //char* passDecoded;
     if (passwordEncoded) {
 #if 0
         // TODO FIXME

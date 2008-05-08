@@ -585,7 +585,7 @@ void DMTClientConfig::saveSourceConfig(int i, ManagementNode& n) {
     }
 }
 
-bool DMTClientConfig::readAuthConfig(ManagementNode& syncMLNode,
+bool DMTClientConfig::readAuthConfig(ManagementNode& /* syncMLNode */,
                                      ManagementNode& authNode) {
     const char *tmp;
 
@@ -628,7 +628,7 @@ bool DMTClientConfig::readAuthConfig(ManagementNode& syncMLNode,
     return true;
 }
 
-void DMTClientConfig::saveAuthConfig(ManagementNode& syncMLNode,
+void DMTClientConfig::saveAuthConfig(ManagementNode& /* syncMLNode */,
                                      ManagementNode& authNode) {
     authNode.setPropertyValue(PROPERTY_USERNAME, accessConfig.getUsername());
     authNode.setPropertyValue(PROPERTY_PASSWORD, accessConfig.getPassword());
@@ -642,7 +642,7 @@ void DMTClientConfig::saveAuthConfig(ManagementNode& syncMLNode,
                               (accessConfig.getServerAuthRequired() ? "1" : "0" ) );
 }
 
-bool DMTClientConfig::readConnConfig(ManagementNode& syncMLNode,
+bool DMTClientConfig::readConnConfig(ManagementNode& /* syncMLNode */,
                                      ManagementNode& connNode) {
     char* tmp;
 
@@ -693,7 +693,7 @@ bool DMTClientConfig::readConnConfig(ManagementNode& syncMLNode,
     return true;
 }
 
-void DMTClientConfig::saveConnConfig(ManagementNode& syncMLNode,
+void DMTClientConfig::saveConnConfig(ManagementNode& /* syncMLNode */,
                                      ManagementNode& connNode) {
     char buf[512];
 
@@ -715,7 +715,7 @@ void DMTClientConfig::saveConnConfig(ManagementNode& syncMLNode,
     connNode.setPropertyValue(PROPERTY_ENABLE_COMPRESSION, accessConfig.getCompression() ? "1": "0");
 }
 
-bool DMTClientConfig::readExtAccessConfig(ManagementNode& syncMLNode,
+bool DMTClientConfig::readExtAccessConfig(ManagementNode& /* syncMLNode */,
                                           ManagementNode& extNode) {
     char* tmp;
 
@@ -739,7 +739,7 @@ bool DMTClientConfig::readExtAccessConfig(ManagementNode& syncMLNode,
     return true;
 }
 
-void DMTClientConfig::saveExtAccessConfig(ManagementNode& syncMLNode,
+void DMTClientConfig::saveExtAccessConfig(ManagementNode& /* syncMLNode */,
                                           ManagementNode& extNode) {
     char buf[512];
 
@@ -757,7 +757,7 @@ void DMTClientConfig::saveExtAccessConfig(ManagementNode& syncMLNode,
 
 }
 
-bool DMTClientConfig::readDevInfoConfig(ManagementNode& syncMLNode,
+bool DMTClientConfig::readDevInfoConfig(ManagementNode& /* syncMLNode */,
                                         ManagementNode& devInfoNode) {
     char* tmp;
 
@@ -780,7 +780,7 @@ bool DMTClientConfig::readDevInfoConfig(ManagementNode& syncMLNode,
     return true;
 }
 
-void DMTClientConfig::saveDevInfoConfig(ManagementNode& syncMLNode,
+void DMTClientConfig::saveDevInfoConfig(ManagementNode& /* syncMLNode */,
                                         ManagementNode& devInfoNode) {
     devInfoNode.setPropertyValue(PROPERTY_DEVICE_ID, deviceConfig.getDevID());
     devInfoNode.setPropertyValue(PROPERTY_MANUFACTURER, deviceConfig.getMan());
@@ -788,7 +788,7 @@ void DMTClientConfig::saveDevInfoConfig(ManagementNode& syncMLNode,
     devInfoNode.setPropertyValue(PROPERTY_DS_VERSION, deviceConfig.getDsV());
 }
 
-bool DMTClientConfig::readDevDetailConfig(ManagementNode& syncMLNode,
+bool DMTClientConfig::readDevDetailConfig(ManagementNode& /* syncMLNode */,
                                           ManagementNode& devDetailNode) {
     char* tmp;
 
@@ -819,7 +819,7 @@ bool DMTClientConfig::readDevDetailConfig(ManagementNode& syncMLNode,
     return true;
 }
 
-void DMTClientConfig::saveDevDetailConfig(ManagementNode& syncMLNode,
+void DMTClientConfig::saveDevDetailConfig(ManagementNode& /* syncMLNode */,
                                           ManagementNode& devDetailNode) {
     devDetailNode.setPropertyValue(PROPERTY_DEVICE_TYPE, deviceConfig.getDevType());
     devDetailNode.setPropertyValue(PROPERTY_OEM, deviceConfig.getOem());
@@ -830,7 +830,7 @@ void DMTClientConfig::saveDevDetailConfig(ManagementNode& syncMLNode,
                                    (deviceConfig.getLoSupport() ? "1": "0") );
 }
 
-bool DMTClientConfig::readExtDevConfig(ManagementNode& syncMLNode,
+bool DMTClientConfig::readExtDevConfig(ManagementNode& /* syncMLNode */,
                                        ManagementNode& extNode) {
     char* tmp;
 
@@ -858,7 +858,7 @@ bool DMTClientConfig::readExtDevConfig(ManagementNode& syncMLNode,
     return true;
 }
 
-void DMTClientConfig::saveExtDevConfig(ManagementNode& syncMLNode,
+void DMTClientConfig::saveExtDevConfig(ManagementNode& /* syncMLNode */,
                                        ManagementNode& extNode) {
     char buf[512];
 
@@ -876,7 +876,7 @@ void DMTClientConfig::saveExtDevConfig(ManagementNode& syncMLNode,
 }
 
 bool DMTClientConfig::readSourceVars(int i,
-                                     ManagementNode& sourcesNode,
+                                     ManagementNode& /* sourcesNode */,
                                      ManagementNode& sourceNode) {
     char* tmp;
 
@@ -888,7 +888,7 @@ bool DMTClientConfig::readSourceVars(int i,
 }
 
 void DMTClientConfig::saveSourceVars(int i,
-                                     ManagementNode& sourcesNode,
+                                     ManagementNode& /* sourcesNode */,
                                      ManagementNode& sourceNode) {
     char buf[512];
 
@@ -897,7 +897,7 @@ void DMTClientConfig::saveSourceVars(int i,
 }
 
 bool DMTClientConfig::readSourceConfig(int i,
-                                       ManagementNode& sourcesNode,
+                                       ManagementNode& /* sourcesNode */,
                                        ManagementNode& sourceNode) {
     char* tmp;
 
@@ -941,7 +941,7 @@ bool DMTClientConfig::readSourceConfig(int i,
 }
 
 void DMTClientConfig::saveSourceConfig(int i,
-                                       ManagementNode& sourcesNode,
+                                       ManagementNode& /* sourcesNode */,
                                        ManagementNode& sourceNode) {
     sourceNode.setPropertyValue(PROPERTY_SOURCE_NAME, sourceConfigs[i].getName());
     sourceNode.setPropertyValue(PROPERTY_SOURCE_URI, sourceConfigs[i].getURI());
