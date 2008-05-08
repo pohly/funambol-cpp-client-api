@@ -110,12 +110,17 @@ private:
 
         StringBuffer str(TEST_STRING);
 
+        char* toUtf8   = toMultibyte(TEXT(TEST_STRING));
+        char* toLatin1 = toMultibyte(TEXT(TEST_STRING), "iso_8859-1");
+
         StringBuffer cnv;
         cnv.convert(TEXT(TEST_STRING));
+        fprintf(stderr, "\nConverted string: %s\n", cnv.c_str());
+        CPPUNIT_ASSERT((strcmp(cnv.c_str(), toUtf8) == 0));
 
-        fprintf(stderr, "Converted string: %s\n", cnv.c_str());
-
-        CPPUNIT_ASSERT(str == cnv);
+        cnv.convert(TEXT(TEST_STRING), "iso_8859-1");
+        fprintf(stderr, "\nConverted string: %s\n", cnv.c_str());
+        CPPUNIT_ASSERT((strcmp(cnv.c_str(), toLatin1) == 0));
     }
 
     //////////////////////////////////////////////////////// Test /////
