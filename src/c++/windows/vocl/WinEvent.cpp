@@ -776,12 +776,13 @@ bool WinEvent::parseTimezone(VObject* vo) {
             // >> Bias = -TZ
             // >> StandardBias = 0  (Cannot retrieve it, assume = 0 as usually is 0)
             // >> DaylightBias = - (DSTOffset + Bias)
+            bool rightValue = true;
             found = true;
             tzInfo.Bias         = bias;
             tzInfo.StandardBias = 0;
             tzInfo.DaylightBias = parseBias(dstOffset.c_str()) - bias;
-            tzInfo.DaylightDate = getTzRuleFromDates(daylightDates);
-            tzInfo.StandardDate = getTzRuleFromDates(standardDates);
+            tzInfo.DaylightDate = getTzRuleFromDates(daylightDates, &rightValue);
+            tzInfo.StandardDate = getTzRuleFromDates(standardDates, &rightValue);
             wcsncpy(tzInfo.StandardName, standardName.c_str(), 32);
             wcsncpy(tzInfo.DaylightName, daylightName.c_str(), 32);
         }
