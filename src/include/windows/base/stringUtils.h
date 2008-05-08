@@ -53,8 +53,8 @@ void  toLowerCase      (std::wstring& s);
 void  replaceAll       (const std::wstring& source, const std::wstring& dest, std::wstring& dataString, const int startPos = 0);
 int   getElementContent(const std::wstring& xml, const std::wstring& tag, std::wstring& content, unsigned int pos = 0);
 int   getElementContent(const std::wstring& xml, const std::wstring& tag, std::wstring& content, const std::wstring::size_type pos, std::wstring::size_type& start, std::wstring::size_type& end);
-char* encryptData      (const char* data);
-char* decryptData      (const char* b64Data);
+char* encryptData      (const char* data, const char* password = NULL);
+char* decryptData      (const char* b64Data, const char* password = NULL);
 
 
 /** @} */

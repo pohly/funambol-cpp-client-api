@@ -247,9 +247,10 @@ not_found:
 /**
  * Used to encrypt private data (username/password) using 'B64(DES(data))'.
  * @param data   the data to encrypt
+ * @param password the password used the to encrypt. If NULL used the default one
  * @return       the data encrypted (new buffer: must be deleted by caller)
  */
-char* encryptData(const char* data) {
+char* encryptData(const char* data, const char* password) {
 
     if (!data) return NULL;
     char*   desData = NULL;
@@ -265,7 +266,11 @@ char* encryptData(const char* data) {
         goto error;
     }
     info.size = strlen(data1);
-    info.password = "SettimioSevero";
+    if (password) {
+        info.password = password;
+    } else {
+        info.password = "SettimioSevero";
+    }
     desData = dt->transform(data1, info);
     if (!desData || info.newReturnedData == false) {
         goto error;
@@ -299,7 +304,7 @@ exit:
  * @param b64Data   the data to decrypt
  * @return          the data decrypted (new buffer: must be deleted by caller)
  */
-char* decryptData(const char* b64Data) {
+char* decryptData(const char* b64Data, const char* password) {
 
     if (!b64Data) return NULL;
     char* desData = NULL;
@@ -328,7 +333,11 @@ char* decryptData(const char* b64Data) {
     //
     dt = new DESDecoder();
     // info.size is already correct :)
-    info.password = "SettimioSevero";
+    if (password) {
+        info.password = password;
+    } else {
+        info.password = "SettimioSevero";
+    }
     data = dt->transform(desData, info);
     if (!data) {
         goto error;
