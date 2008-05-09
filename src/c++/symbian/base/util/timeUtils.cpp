@@ -43,11 +43,19 @@
 
 #include "base/fscapi.h"
 #include "base/util/timeUtils.h"
+#include "base/SymbianLog.h"
 #include "base/globalsdef.h"
 
 BEGIN_NAMESPACE
 
 void utcToLocalTime(TTime& aTime /*, const CTzId& aZone*/) {
+    TRAPD(err, utcToLocalTimeL(aTime);)
+    if (err) {
+        LOG.error("utcToLocalTime: failed conversion, code %d", err);
+    }
+}
+
+void utcToLocalTimeL(TTime& aTime /*, const CTzId& aZone*/) {
 
     // Connect to the time zone server
     RTz tzServer;
@@ -63,7 +71,15 @@ void utcToLocalTime(TTime& aTime /*, const CTzId& aZone*/) {
     CleanupStack::PopAndDestroy(2);         // tzConverter, tzServer
 }
 
+
 void localTimeToUtc(TTime& aTime /*, const CTzId& aZone*/) {
+    TRAPD(err, localTimeToUtcL(aTime);)
+    if (err) {
+        LOG.error("localTimeToUtc: failed conversion, code %d", err);
+    }
+}
+
+void localTimeToUtcL(TTime& aTime /*, const CTzId& aZone*/) {
 
     // Connect to the time zone server
     RTz tzServer;

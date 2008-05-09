@@ -41,8 +41,11 @@
 
 BEGIN_NAMESPACE
 
-void utcToLocalTime(TTime& aTime /*, const CTzId& aZone*/);
-void localTimeToUtc(TTime& aTime /*, const CTzId& aZone*/);
+void utcToLocalTime (TTime& aTime /*, const CTzId& aZone*/);
+void utcToLocalTimeL(TTime& aTime /*, const CTzId& aZone*/);
+
+void localTimeToUtc (TTime& aTime /*, const CTzId& aZone*/);
+void localTimeToUtcL(TTime& aTime /*, const CTzId& aZone*/);
 
 END_NAMESPACE
 
