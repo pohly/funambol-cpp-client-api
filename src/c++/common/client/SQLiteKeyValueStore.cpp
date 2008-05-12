@@ -136,7 +136,7 @@ Enumeration& SQLiteKeyValueStore::getProperties() const
     
     sqlQuery = sqlGetAllString();
     SQLiteKeyValueStoreEnumeration& en2 = (SQLiteKeyValueStoreEnumeration&)query(sqlQuery);
-    en2.totalRows = rows;
+    en2.setTotalRows(rows);
     
     return en;
 }
