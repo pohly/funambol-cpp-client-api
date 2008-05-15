@@ -68,8 +68,6 @@ private:
     char next[DIM_ANCHOR];
     char last[DIM_ANCHOR];
 
-    //ErrorHandler* errorHandler;
-
     SourceFilter* filter;
 
 protected:

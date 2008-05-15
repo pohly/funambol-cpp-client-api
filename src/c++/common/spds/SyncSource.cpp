@@ -68,9 +68,8 @@ SyncSource::SyncSource(const WCHAR* sourceName, AbstractSyncSourceConfig *sc) :
 
     setConfig(sc);
     if ((sourceName == NULL) || (*sourceName == 0)) {
-        //lastErrorCode = ERR_PARAMETER_IS_EMPTY;
-        //sprintf(lastErrorMsg, "name cannot be empty (NULL or 0-length)");
-        setError(ERR_PARAMETER_IS_EMPTY, "name cannot be empty (NULL or 0-length)");
+        setError(ERR_PARAMETER_IS_EMPTY,
+                "name cannot be empty (NULL or 0-length)");
         goto finally;
     }
     name = wstrdup(sourceName);
@@ -80,7 +79,6 @@ SyncSource::SyncSource(const WCHAR* sourceName, AbstractSyncSourceConfig *sc) :
     lastSync = 0;
 	nextSync = 0;
 
-    //errorHandler = NULL;
     filter       = NULL;
 }
 
