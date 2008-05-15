@@ -77,10 +77,10 @@ class MailMessage : public ArrayElement {
 
         ArrayList headers;
 
-		// can be used by the client to store an internal msg id
-		StringBuffer entryId;
+        // can be used by the client to store an internal msg id
+        StringBuffer entryId;
         //
-		//time_t lastModificationTime;
+        //time_t lastModificationTime;
 
         // it is the priority of the mail message. 
         StringBuffer importance;
@@ -127,8 +127,8 @@ class MailMessage : public ArrayElement {
         const char * getMessageId() const ;
         void setMessageId(const char *val);
 
-		const char*  getEntryID();
-		void setEntryID(const char*  id);
+        const char*  getEntryID();
+        void setEntryID(const char*  id);
 
         void setHeaders(const char*  extraHeaders);
         const char* getHeaders();
@@ -137,8 +137,8 @@ class MailMessage : public ArrayElement {
         const char* getImportance();
 
         // Body
-		BodyPart & getBody();
-		void setBody(BodyPart &body);
+        BodyPart & getBody();
+        void setBody(BodyPart &body);
         //BodyPart * getAlternate();
         //void setAlternate(BodyPart &alt);
 
