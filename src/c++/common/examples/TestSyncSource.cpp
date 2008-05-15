@@ -69,10 +69,6 @@ int setAllItems() {
     return 0;
 }
 
-int setAllItemsEmpty() {
-    return 0;
-}
-
 int setModifiedItems() {
 
     SyncItem item;
