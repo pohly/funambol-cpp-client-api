@@ -44,7 +44,12 @@
 #include "http/TransportAgent.h"
 #include "Log.h"
 #import <CoreFoundation/CoreFoundation.h>
-#import <CoreServices/CoreServices.h>
+#if TARGET_IPHONE_SIMULATOR
+    #import <CoreServices/CoreServices.h>
+#else
+    #import <CFNetwork/CFNetwork.h>
+#endif
+
 
 
 BEGIN_NAMESPACE
