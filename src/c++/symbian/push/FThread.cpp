@@ -66,7 +66,8 @@ void FThread::start( FThread::Priority priority ) {
     TRAPD(err, sthread.Create(threadId, (TThreadFunction)symbianRunWrapper,
                               KDefaultStackSize, (RAllocator*)&User::Heap(), this));
     if (err == KErrNone) {
-        LOG.debug("Created thread (id = %d)", id-1);
+        //LOG.debug("Created thread (id = %d)", id-1);
+        isRunning = true;
         if (priority == InheritPriority) {
             // TODO: how do we get the current thread priority?
             priority = NormalPriority;
@@ -78,8 +79,13 @@ void FThread::start( FThread::Priority priority ) {
 
 void FThread::wait() {
     TRequestStatus stat;
+    if (sthread.Handle() == NULL) {
+        return;
+    }
     sthread.Logon(stat);
-    User::WaitForRequest(stat);
+    if (sthread.ExitType() == EExitPending || stat != KRequestPending) {
+        User::WaitForRequest(stat);
+    }
 }
 
 TRequestStatus timerStat;
@@ -124,6 +130,8 @@ void FThread::softTerminate() {
     terminate = true;
     // Kill the thread
     sthread.Kill(0);
+    // At this point the thread is no longer running
+    isRunning = false;
 }
 
 void FThread::sleep(long msec) {
@@ -153,15 +161,44 @@ TInt symbianRunWrapper(TAny* thread) {
     // Install a new trap handler for the thread.
     CTrapCleanup* cleanupstack = CTrapCleanup::New();
 
+    // Install a new active scheduler
+    TInt err;
+#if 0
+    CActiveScheduler* activeScheduler = NULL;
+    TRAP(err,
+        // Add support for active objects (in case the thread uses any)
+        activeScheduler = new (ELeave) CActiveScheduler;
+        //CleanupStack::PushL(activeScheduler);
+        CActiveScheduler::Install(activeScheduler);
+    );
+
+    if (err != KErrNone) {
+        LOG.error("Cannot create FThread active object");
+        return err;
+    }
+#endif
+
     // Mandatory!
     // To trap any internal call to "CleanupStack::PushL()"
-    TRAPD(err, 
-         { FThread* t = (FThread*)thread;
+
+    FThread* t = (FThread*)thread;
+    TRAP(err, 
+         {
            t->run();
          }
     )
-    
+    t->isRunning = false;
+
+    // Can this be moved into the destructor?
+    if (t->sthread.Handle() != NULL) {
+        t->sthread.Close();
+    }
+   
+    //delete activeScheduler;
     delete cleanupstack;
+
+    // Terminate the current thread
+    User::Exit(err);
     return err;
 }
 
@@ -170,13 +207,22 @@ TInt symbianTimeoutWrapper(TAny* thread)
     // Install a new trap handler for the thread.
     CTrapCleanup* cleanupstack = CTrapCleanup::New();
 
+    FThread* t = (FThread*)thread;
     TRAPD(err, 
-         { FThread* t = (FThread*)thread;
-           t->startTimeout();
-         }
+        {
+            t->startTimeout();
+            if (t->sthread.Handle() != NULL) {
+                t->sthread.Close();
+            }
+        }
     )
-    
+    t->isRunning = false;
+
     delete cleanupstack;
+
+    // Terminate the current thread
+    User::Exit(0);
+
     return 0;
 }
 
