@@ -60,6 +60,7 @@ class CTPThread : public FThread {
 
 public:
     CTPThread();
+    ~CTPThread();
     void run();
     int32_t getErrorCode() { return errorCode; }
 
@@ -71,6 +72,7 @@ private:
 class ReceiverThread : public FThread {
 public:
     ReceiverThread();
+    ~ReceiverThread();
     void run();
     int32_t getErrorCode() { return errorCode; }
 
@@ -81,8 +83,10 @@ private:
 class HeartbeatThread : public FThread {
 public:
     HeartbeatThread();
+    ~HeartbeatThread();
     void run();
     int32_t getErrorCode() { return errorCode; }
+    void softTerminate();
 
 private:
     int32_t errorCode;
@@ -93,6 +97,7 @@ class CmdTimeoutThread : public FThread {
 
 public:
     CmdTimeoutThread();
+    ~CmdTimeoutThread();
     void run();
 };
 
@@ -198,7 +203,6 @@ public:
     int32_t openConnection();
     int32_t closeConnection();
     int32_t receive();
-    bool stopThread(FThread* thread);
 
     // Create and send messages through the socket.
     int32_t sendReadyMsg();
@@ -249,12 +253,12 @@ public:
      */
     void syncNotificationReceived(SyncNotification* sn);
     
+    bool stopThread(FThread* thread);
 
 private:
     void hexDump(char *buf, int len);
     int extractMsgLength(const char* package, int packageLen);
     bool saveNonceParam(CTPMessage* authStatusMsg);
-
 };
 
 
