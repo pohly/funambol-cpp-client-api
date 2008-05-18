@@ -44,7 +44,6 @@ BEGIN_NAMESPACE
 TInt symbianRunWrapper(TAny* thread);
 TInt symbianTimeoutWrapper(TAny* thread);
 
-
 class FThread {
 
 protected:
@@ -52,9 +51,10 @@ protected:
 
 protected:
     FThread();
-    virtual ~FThread();
 
 public:
+    virtual ~FThread();
+
     enum Priority { IdlePriority         = EPriorityNull,
                     LowestPriority       = EPriorityMuchLess,
                     LowPriority          = EPriorityLess,
@@ -122,7 +122,6 @@ private:
 
     friend TInt symbianRunWrapper(TAny* thread);
     friend TInt symbianTimeoutWrapper(TAny* thread);
- 
 };
 
 
