@@ -96,16 +96,28 @@ CTPService::CTPService() : config(APPLICATION_URI) {
  */
 CTPService::~CTPService() {
     
-    stopThread(ctpThread);
-    stopThread(receiverThread);
-    stopThread(heartbeatThread);
-    stopThread(cmdTimeoutThread);
+    LOG.debug("Stopping ctp thread");
+    if (stopThread(ctpThread)) {
+        ctpThread = NULL;
+    }
+
+    LOG.debug("Stopping receiver thread");
+    if (stopThread(receiverThread)) {
+        receiverThread = NULL;
+    }
+
+    LOG.debug("Stopping heartbeat thread");
+    if (stopThread(heartbeatThread)) {
+        heartbeatThread = NULL;
+    }
+
+    LOG.debug("Stopping timeout thread");
+    if (stopThread(cmdTimeoutThread)) {
+        cmdTimeoutThread = NULL;
+    }
 
     closeConnection();
-
-    if (receivedMsg) {
-        delete receivedMsg;
-    }
+    delete receivedMsg;
 }
 
 
@@ -117,17 +129,12 @@ CTPService::~CTPService() {
  * @return           handle of the ctpThread started
  */
 FThread* CTPService::startCTP() {
-
-    if (ctpThread) {
-        ctpThread->softTerminate();
-        // TODO Shall we wait until the old thread is still running?
-    }
-
     setCtpState(CTP_STATE_DISCONNECTED);
     leaving = false;
     totalBytesSent     = 0;
     totalBytesReceived = 0;
 
+    LOG.debug("Starting ctp thread");
     ctpThread = new CTPThread();
     ctpThread->start();
     return ctpThread;
@@ -167,41 +174,24 @@ int32_t CTPService::stopCTP() {
     int ret = 0;
     LOG.info("Closing CTP connection...");
 
-
-    // Terminate immediately the heartbeat and cmdTimeout threads to avoid sending 
-    // any READY msg now. Keep receiverThread alive, to receive the last OK msg.
-    if (stopThread(heartbeatThread)) {
-        LOG.debug("heartbeatThread killed");
-    }
-    if (stopThread(cmdTimeoutThread)) {
-        LOG.debug("cmdTimeoutThread killed");
-    }
-
-
-    // Start thread to receive messages from Server if not running
-    // If client authenticated, receiverThread is already running
-    if (!receiverThread) {
-        receiverThread = new ReceiverThread();
-        receiverThread->start();
-        // Just to be sure the receiveWorker has reached the 'recv' state
-        FThread::sleep(1000);
-    }
-
-
     // Set leaving to true, so receive thread will exit after the OK msg.
     leaving = true;
     setCtpState(CTP_STATE_CLOSING);
 
 
     int32_t timeout;
-    bool terminated;
+    // bool terminated;
+
     //
-    // Send the BYE message
+    // Send the BYE message if the receiverThread is running (if not we assume
+    // the connection is unavailable)
     //
-    LOG.info("Sending [BYE] message...");
-    if (sendByeMsg()) {
-        LOG.error("Error sending the BYE message");
-        goto finally;
+    if (receiverThread) {
+        LOG.info("Sending [BYE] message...");
+        if (sendByeMsg()) {
+            LOG.error("Error sending the BYE message");
+            goto finally;
+        }
     }
 
     //
@@ -213,6 +203,9 @@ int32_t CTPService::stopCTP() {
         timeout = 60;
     }
 
+#if 0
+    // Because of the bug in the FThread it is unsafe to invoke
+    // wait(timeout)
     terminated = receiverThread->wait(timeout * 1000);
 
     if (terminated) {
@@ -221,22 +214,15 @@ int32_t CTPService::stopCTP() {
     } else {
         // Timeout: kill thread -> out.
         LOG.debug("Timeout - receiverThread will now be terminated");
-        receiverThread->softTerminate();
         ret = 3;
     }
-    delete receiverThread;
-    receiverThread = NULL;
+#endif
 
 
 finally:
 
-    // Close them if still running...
-    if (stopThread(receiverThread)) {
-        LOG.debug("receiverThread killed");
-    }
-    if (stopThread(ctpThread)) {
-        LOG.debug("ctpThread killed");
-    }
+    // Heartbeat is stoppable
+    stopThread(heartbeatThread);
 
     //
     // Close socket connection
@@ -314,11 +300,6 @@ int32_t CTPService::closeConnection() {
         LOG.info("Socket connection closed");
     }
 
-    // Just to be sure: close all ctp threads if still running
-    stopThread(cmdTimeoutThread);
-    stopThread(heartbeatThread);
-    stopThread(receiverThread);
-    
     ctpState = CTP_STATE_DISCONNECTED;
     LOG.debug("Total number of bytes sent = %d",     totalBytesSent);
     LOG.debug("Total number of bytes received = %d", totalBytesReceived);
@@ -437,13 +418,15 @@ int32_t CTPService::sendMsg(CTPMessage* message) {
         return 1;
     }
 
-    int ret = 0;
-    char* msg = message->toByte();
-    int msgLength = message->getPackageLength();
     if (!ctpSocket) {
         LOG.error("sendMsg error: socket not initialized.");
         return 2;
     }
+
+    int ret = 0;
+    // The msg is owned by the CTPMessage and there is no need to delete it
+    char* msg = message->toByte();
+    int msgLength = message->getPackageLength();
 
     // Debug the message to send.
     LOG.debug("Sending %d bytes:", msgLength);
@@ -461,7 +444,10 @@ int32_t CTPService::sendMsg(CTPMessage* message) {
         LOG.debug("Total bytes sent since beginning: %d", totalBytesSent);
 
         // Will restore connection if no response in 60sec
-        stopThread(cmdTimeoutThread);
+        LOG.debug("Stopping timeout thread");
+        if (stopThread(cmdTimeoutThread)) {
+            cmdTimeoutThread = NULL;
+        }
         cmdTimeoutThread = new CmdTimeoutThread();
         cmdTimeoutThread->start();
     }
@@ -546,7 +532,11 @@ CTPMessage* CTPService::receiveStatusMsg() {
     LOG.debug("status = 0x%02x", receivedMsg->getGenericCommand());
 
 finally:
-    stopThread(cmdTimeoutThread);       // Msg received or error, anyway kill the cmdTimeoutThread.
+    // Msg received or error, anyway kill the cmdTimeoutThread.
+    LOG.debug("Stopping timeout thread");
+    if (stopThread(cmdTimeoutThread)) {
+        cmdTimeoutThread = NULL;
+    }
     return receivedMsg;
 }
 
@@ -581,12 +571,6 @@ int32_t CTPService::receive() {
         LOG.error("CTPService::receive() error: no socket connection available");
         return -3;
     }
-    if (stopThread(receiverThread)) {
-        LOG.debug("receiverThread killed");
-    }
-    if (stopThread(heartbeatThread)) {
-        LOG.debug("heartbeatThread killed");
-    }
     
     //
     // Start thread to send 'ready' messages
@@ -607,7 +591,8 @@ int32_t CTPService::receive() {
     int32_t ret = 0;
     uint32_t timeout = getConfig()->getCtpConnTimeout() * 1000;
 
-    LOG.debug("Waiting for the receive thread to finish (timeout = %d sec)...", getConfig()->getCtpConnTimeout());
+    LOG.debug("Waiting for the receive thread to finish (timeout = %d sec)...",
+              getConfig()->getCtpConnTimeout());
     bool receiveTerminated;
     if (timeout == 0) {
         receiverThread->wait();
@@ -621,36 +606,32 @@ int32_t CTPService::receive() {
         ret = 0;
     } else {
         LOG.debug("Timeout - receiverThread will now be terminated");
-        receiverThread->softTerminate();
+        stopThread(receiverThread);
+        receiverThread = NULL;
         ret = 1;
-    }
-
-    delete receiverThread;
-    receiverThread = NULL;
-
-    // Also terminate the heartbeatThread
-    if (stopThread(heartbeatThread)) {
-        LOG.debug("heartbeatThread killed");
     }
 
     return ret;
 }
 
-
-
 /**
  * Utility to terminate a desired thread, setting its HANDLE to NULL.
  * @param thread   the HANDLE of the thread to be stopped
- * @param exitcode [optional] the desired exitcode
  * @return         true if the thread has been effectively terminated
  */
-bool CTPService::stopThread(FThread* thread) {
+bool CTPService::stopThread(FThread *thread) {
 
+    bool terminated = false;
     if (thread) {
         thread->softTerminate();
-        return thread->finished();
+        terminated = thread->finished();
+        if (terminated) {
+            LOG.debug("Deleting thread object");
+            delete thread;
+        }
     }
-    return false;
+
+    return terminated;
 }
 
 
@@ -758,6 +739,9 @@ void CTPService::syncNotificationReceived(SyncNotification* sn) {
 CmdTimeoutThread::CmdTimeoutThread() {
 }
 
+CmdTimeoutThread::~CmdTimeoutThread() {
+}
+
 /**
  * Thread used to check if a response arrived in ctpCmdTimeout seconds.
  * If not, the CTP connection will be pulled down so that ctpThread
@@ -805,6 +789,9 @@ CTPThread::CTPThread() : FThread(),
 {
 }
 
+CTPThread::~CTPThread() {
+}
+
 /**
  * This is the main CTP thread. Manages the CTP connection using CTPService:
  * 1. waits until the stpThread is finished, if successfully we exit this thread
@@ -843,8 +830,9 @@ void CTPThread::run() {
 
     // Refresh configuration, save the ctpRetry original value in a buffer
     ctpService->getConfig()->readCTPConfig();
-    int32_t defaultCtpRetry = ctpService->getConfig()->getCtpRetry();
 
+    LOG.debug("Reading CtpRetry");
+    int32_t defaultCtpRetry = ctpService->getConfig()->getCtpRetry();
 
     // Start the CTP connection process.
     // *********************************
@@ -1144,6 +1132,9 @@ ReceiverThread::ReceiverThread() : FThread(),
 {
 }
 
+ReceiverThread::~ReceiverThread() {
+}
+
 void ReceiverThread::run() {
  
     LOG.debug("Starting receiveWorker thread");
@@ -1214,8 +1205,16 @@ HeartbeatThread::HeartbeatThread() : FThread()
 {
 }
 
+HeartbeatThread::~HeartbeatThread() {
+}
+
+void HeartbeatThread::softTerminate() {
+    terminate = true;
+}
+
 void HeartbeatThread::run() {
     LOG.debug("Starting Heartbeat thread");
+
     errorCode = 0;
 
     //TODO PowerPolicyNotify(PPN_UNATTENDEDMODE, TRUE);
@@ -1225,7 +1224,7 @@ void HeartbeatThread::run() {
     int32_t sleepInterval = ctpService->getConfig()->getCtpReady();
 
     // Send 'ready' message to Server and sleep ctpReady seconds
-    while (ctpService->isLeaving() == false) {
+    while (terminate == false) {
         LOG.info("Sending [READY] message...");
         if (ctpService->sendReadyMsg()) {
             LOG.debug("Error sending READY msg");
@@ -1273,7 +1272,8 @@ ArrayList CTPService::getUriListFromSAN(SyncNotification* sn)
             LOG.debug("uri pushed: '%s'", uri.c_str());
         } 
         else {
-            LOG.error("CTP notification error: no source found from server notification request: %s", sync->getServerURI());
+            LOG.error("CTP notification error: no source found from server "
+                      "notification request: %s", sync->getServerURI());
             continue;
         }
     }
