@@ -59,7 +59,7 @@ private:
     int  status;
 
     // The LUID of item.
-    WCHAR* id;
+    WCHAR* luid;
 
     // The message associated to the status. It can be referred to the whole sync process if the error
     // is on the sync header (for example a 506 status code in the sync header) or to a single item as a

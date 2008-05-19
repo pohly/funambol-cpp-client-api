@@ -44,11 +44,11 @@ USE_NAMESPACE
 //--------------------------------------------------- Constructor & Destructor
 ItemReport::ItemReport() {
     status = 0;
-    id  = NULL;
+    luid  = NULL;
     statusMessage = NULL;
 }
 ItemReport::ItemReport(const WCHAR* luid, const int statusCode, const WCHAR* statusMess) {
-    id  = NULL;
+    luid  = NULL;
     statusMessage = NULL;
     setStatus(statusCode);
     setId(luid);
@@ -57,15 +57,15 @@ ItemReport::ItemReport(const WCHAR* luid, const int statusCode, const WCHAR* sta
 
 ItemReport::ItemReport(ItemReport& ir) {
     status = 0;
-    id  = NULL;
+    luid  = NULL;
     statusMessage = NULL;
     assign(ir);
 }
 
 ItemReport::~ItemReport() {
-    if (id) {
-        delete [] id;
-        id = NULL;
+    if (luid) {
+        delete [] luid;
+        luid = NULL;
     }
     if (statusMessage) {
         delete [] statusMessage;
@@ -76,15 +76,15 @@ ItemReport::~ItemReport() {
 //------------------------------------------------------------- Public Methods
 
 const WCHAR* ItemReport::getId() const {
-    return id;
+    return luid;
 }
 void ItemReport::setId(const WCHAR* v) {
-    if (id) {
-        delete [] id;
-        id = NULL;
+    if (luid) {
+        delete [] luid;
+        luid = NULL;
     }
 
-	id = wstrdup(v);
+	luid = wstrdup(v);
 }
 
 const int ItemReport::getStatus() const {
