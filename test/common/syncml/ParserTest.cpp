@@ -170,7 +170,7 @@ private:
         CPPUNIT_ASSERT( strcmp(value, refValue)==0 );
 
         // Free memory
-        delete value;
+        delete []value;
     }
 
     void roundTripTest(const char *filename){
