@@ -13,8 +13,9 @@ AM_CPPFLAGS = -I$(INCDIR)/posix -I$(INCDIR)/common -DPOSIX
 
 vpath %.cpp	$(TESTDIR) \
 		$(TESTDIR)/common/base/util \
+		$(TESTDIR)/common/base \
 		$(TESTDIR)/posix/spdm/ \
-	        $(TESTDIR)/common/syncml
+		$(TESTDIR)/common/syncml
 
 # Test runner sources
 SOURCES = client-test-main.cpp client-test.cpp ClientTest.cpp
@@ -24,7 +25,9 @@ TESTS_BASE = \
     ArrayListTest.cpp \
     BasicTimeTest.cpp \
     StringBufferTest.cpp \
-    ParserTest.cpp
+    ParserTest.cpp \
+    ObjectDelTest.cpp \
+    base64Test.cpp
     
 TESTCASES = $(TESTS_BASE)
 
