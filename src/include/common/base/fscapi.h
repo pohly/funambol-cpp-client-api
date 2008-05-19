@@ -145,6 +145,10 @@
     #define PLATFORM_VA_COPY va_copy
     #endif
 
+    #if !defined(PLATFORM_VA_ARG)
+    #define PLATFORM_VA_ARG va_arg
+    #endif
+
 
     /**
      * All platforms are expected to have assert.h and provide
