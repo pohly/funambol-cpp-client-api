@@ -33,6 +33,7 @@
  * the words "Powered by Funambol".
  */
 
+#include "base/util/utils.h"
 #include "base/util/StringBuffer.h"
 
 #include <cppunit/extensions/TestFactoryRegistry.h>
