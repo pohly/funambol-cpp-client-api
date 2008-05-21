@@ -100,6 +100,7 @@ SymbianLog::SymbianLog(bool resetLog, const char* /* path */, const char* /* nam
     RBuf8 data;
     data.Assign(stringBufferToNewBuf8(header));
     file.Write(data);
+    data.Close();
 
     file.Close();
     iSemaphore.Signal();
@@ -218,28 +219,34 @@ void SymbianLog::printMessage(const char* level, const char* msg, PLATFORM_VA_LI
     StringBuffer currentTime = createCurrentTime(false);
     
     TInt err = file.Open(fsSession, iLogName, EFileWrite|EFileShareAny);
+    TInt pos = 0;
+
     if (err != KErrNone) {
         setErrorF(err, "SymbianLog: could not open log file (code %d)", err);
-        return;
+        goto finally;
     }
     
-    TInt pos = 0;
     err = file.Seek(ESeekEnd, pos);
     if (err != KErrNone) {
         setErrorF(err, "SymbianLog: seek error on log file (code %d)", err);
-        return;
+        goto finally;
     }
 
-    // Write the data
-    StringBuffer line, data;
-    line.sprintf("%s -%s- %s", currentTime.c_str(), level, msg);
-    data.vsprintf(line.c_str(), argList);
-    data.append("\n");
-    
-    RBuf8 buf;
-    buf.Assign(stringBufferToNewBuf8(data));
-    file.Write(buf);
-    
+    {
+
+        // Write the data
+        StringBuffer line, data;
+        line.sprintf("%s -%s- %s", currentTime.c_str(), level, msg);
+        data.vsprintf(line.c_str(), argList);
+        data.append("\n");
+        
+        RBuf8 buf;
+        buf.Assign(stringBufferToNewBuf8(data));
+        file.Write(buf);
+        buf.Close();
+    }
+
+finally:
     file.Close();
     iSemaphore.Signal();
 }
@@ -259,6 +266,7 @@ void SymbianLog::reset(const char* title)
     RBuf8 buf;
     buf.Assign(stringBufferToNewBuf8(header));
     file.Write(buf);
+    buf.Close();
     
     file.Close();
     iSemaphore.Signal();

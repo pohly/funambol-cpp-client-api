@@ -227,16 +227,17 @@ size_t vsnprintf(char* s, size_t size, const char* format, PLATFORM_VA_LIST aq) 
         if (replaceMsgLen < size) {
             memcpy(s, replaceMsg, replaceMsgLen);
             s[replaceMsgLen-1] = (char)0;
-            return replaceMsgLen;
+            finalSize = replaceMsgLen;
         } else {
             memcpy(s, replaceMsg, size);
             if (size > 1) {
                 s[size-1] = (char)0;
-                return size-1;
+                finalSize = size-1;
             } else {
-                return 0;
+                finalSize = 0;
             }
         }
+        goto finally;
     }
 
     if (estimatedSize > size) {
@@ -263,7 +264,9 @@ size_t vsnprintf(char* s, size_t size, const char* format, PLATFORM_VA_LIST aq) 
         }
     }
 
+finally:
     delete newFormat;
+    formattedBuf.Close();
     return finalSize;
 }
 
@@ -310,27 +313,30 @@ size_t snwprintf(WCHAR *v, size_t size, const WCHAR* format, unsigned long value
     TPtrC16 formatBuf((const TUint16*)format);
     TInt error;
     RBuf16 formattedBuf;
+    size_t finalSize = (size_t)-1;
 
     TRAP(error, formattedBuf.CreateL(size));
     if (error == KErrNone) {
         TRAP(error, formattedBuf.Format(formatBuf, value));
         if (error == KErrNone) {
             WCHAR* ptr = (WCHAR *) formattedBuf.Ptr();
-            size_t finalSize = formattedBuf.Length() * sizeof(WCHAR);
+            finalSize = formattedBuf.Length() * sizeof(WCHAR);
             if (finalSize < size) {
                 memcpy(v, ptr, finalSize);
                 v[finalSize] = 0;   // Symbian descriptors don't have the trailing null char
-                return finalSize;
             } else {
                 // In this case we truncate. We signal this by returning -1
                 memcpy(v, ptr, size);
                 v[size] = 0;   // Symbian descriptors don't have the trailing null char
-                return (size_t)-1;
+                finalSize = (size_t)-1;
             }
         }
     }
+
+finally:
+    formattedBuf.Close();
     // We cannot format the string. Return -1.
-    return (size_t)-1;
+    return finalSize;
 }
 
 bool saveFile(const char *filename, const char *buffer, size_t len, bool binary)

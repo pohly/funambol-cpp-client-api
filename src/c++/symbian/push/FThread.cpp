@@ -60,7 +60,7 @@ typedef void (FThread::*ThreadFunction)(void);
 void FThread::start( FThread::Priority priority ) {
 
     RBuf threadId;
-    threadId.CreateL(30);
+    threadId.Create(30);
     threadId.Format(_L("FThread-%d"), id++);
     
     TRAPD(err, sthread.Create(threadId, (TThreadFunction)symbianRunWrapper,
@@ -75,6 +75,7 @@ void FThread::start( FThread::Priority priority ) {
         sthread.SetPriority((TThreadPriority)priority);
         sthread.Resume();
     }
+    threadId.Close();
 }
 
 void FThread::wait() {
@@ -135,7 +136,8 @@ void FThread::softTerminate() {
 }
 
 void FThread::sleep(long msec) {
-    User::After((TTimeIntervalMicroSeconds32) (msec * 1000));
+    TTimeIntervalMicroSeconds32 interval(msec * 1000);
+    User::After(interval);
 }
 
 TInt FThread::startTimeout() {
