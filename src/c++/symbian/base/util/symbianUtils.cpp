@@ -81,20 +81,23 @@ void msgBox(const TDesC8& aMsg, const TWarningLevel aLevel)
     CnvUtfConverter::ConvertToUnicodeFromUtf8(msg16, aMsg);
 
     msgBox(msg16, aLevel);
+    msg16.Close();
 }
 
 void msgBox(const char* aMsg, const TWarningLevel aLevel)
 {
     RBuf16 buf16;
     buf16.Assign(charToNewBuf(aMsg));
-    msgBox(buf16);
-
+    msgBox(buf16, aLevel);
+    buf16.Close();
 }
+
 void msgBox(const wchar_t* aMsg, const TWarningLevel aLevel)
 {
     RBuf16 buf16;
     buf16.Assign(wcharToNewBuf(aMsg));
-    msgBox(buf16);
+    msgBox(buf16, aLevel);
+    buf16.Close();
 }
 
 
@@ -111,8 +114,8 @@ void showAlert(const TDesC8& aMsg)
     RBuf msg16;
     msg16.CreateL(aMsg.Length());
     CnvUtfConverter::ConvertToUnicodeFromUtf8(msg16, aMsg);
-
     showAlert(msg16);
+    msg16.Close();
 }
 
 void showAlert(const char* aMsg)
@@ -120,12 +123,14 @@ void showAlert(const char* aMsg)
     RBuf16 buf16;
     buf16.Assign(charToNewBuf(aMsg));
     showAlert(buf16);
+    buf16.Close();
 }
 void showAlert(const wchar_t* aMsg)
 {
     RBuf16 buf16;
     buf16.Assign(wcharToNewBuf(aMsg));
     showAlert(buf16);
+    buf16.Close();
 }
 
 END_NAMESPACE

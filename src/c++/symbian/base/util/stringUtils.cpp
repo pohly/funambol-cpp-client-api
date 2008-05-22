@@ -62,6 +62,7 @@ HBufC* charToNewBuf(const char* aInput)
     buf8.Copy(chars);
     
     HBufC* ret = CnvUtfConverter::ConvertToUnicodeFromUtf8L(buf8);
+    buf8.Close();
     return ret;
 }
 
@@ -71,6 +72,7 @@ const char* bufToNewChar(const TDesC& aInput)
 
     // This allocates a NEW char* buffer
     char* ret = stringdup((const char*)buf8->Ptr(), buf8->Length());
+    delete buf8;
     return (const char*)ret;
 }
 
@@ -121,8 +123,9 @@ HBufC8* charToNewBuf8(const char* aInput)
     RBuf8 buf8;
     buf8.CreateL(len);
     buf8.Copy(chars);
-    
-    return buf8.Alloc();
+    HBufC8* res = buf8.Alloc();
+    buf8.Close();
+    return res;
 }
 
 const char* buf8ToNewChar(const TDesC8& aInput) 
