@@ -87,6 +87,7 @@ SOURCE       stringUtils.cpp symbianUtils.cpp timeUtils.cpp
 
 SOURCEPATH   ..\..\src\cpp\common\push
 SOURCE       CTPMessage.cpp CTPConfig.cpp CTPParam.cpp CTPService.cpp
+SOURCE       CTPThreadPool.cpp
 
 SOURCEPATH   ..\..\src\cpp\symbian\push
 SOURCE       FThread.cpp FSocket.cpp
