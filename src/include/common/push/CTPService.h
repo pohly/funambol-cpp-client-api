@@ -38,6 +38,7 @@
 
 /** @cond DEV */
 
+#include "base/globalsdef.h"
 #include "base/fscapi.h"
 
 #include "push/FThread.h"
@@ -45,12 +46,12 @@
 #include "push/PushListener.h"
 #include "push/CTPMessage.h"
 #include "push/CTPConfig.h"
+#include "push/CTPThreadPool.h"
 
 /**< CTP Protocol version = 1.0 */
 #define CTP_PROTOCOL_VERSION            0x10
 /**< Each time the CTP connection is broken, we double the ctpRetry time */
 #define CTP_RETRY_INCREASE_FACTOR       2
-#include "base/globalsdef.h"
 
 BEGIN_NAMESPACE
 
@@ -99,8 +100,8 @@ public:
     CmdTimeoutThread();
     ~CmdTimeoutThread();
     void run();
+    void softTerminate();
 };
-
 
 
 /**
@@ -166,6 +167,11 @@ private:
     // For debugging
     int32_t totalBytesSent;
     int32_t totalBytesReceived;
+
+    /// CTP Thread Pool Manager
+    CTPThreadPool threadPool;
+
+private:
 
     // Private methods:
     int32_t sendMsg(CTPMessage* message);

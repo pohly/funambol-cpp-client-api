@@ -33,22 +33,24 @@
  * the words "Powered by Funambol".
  */
 
+#include "base/globalsdef.h"
 #include "base/fscapi.h"
 #include "base/Log.h"
 #include "base/util/utils.h"
 #include "base/util/StringBuffer.h"
+#include "base/util/ArrayList.h"
 
-#include "push/CTPService.h"
 #include "push/CTPParam.h"
 #include "push/FThread.h"
 #include "push/FSocket.h"
-#include "base/globalsdef.h"
+#include "push/CTPThreadPool.h"
+
+#include "push/CTPService.h"
 
 USE_NAMESPACE
 
 // Init static pointer.
 CTPService* CTPService::pinstance = NULL;
-
 
 
 /**
@@ -61,8 +63,6 @@ CTPService* CTPService::getInstance() {
     }
     return pinstance;
 }
-
-
 
 
 /**
@@ -97,27 +97,25 @@ CTPService::CTPService() : config(APPLICATION_URI) {
 CTPService::~CTPService() {
     
     LOG.debug("Stopping ctp thread");
-    if (stopThread(ctpThread)) {
-        ctpThread = NULL;
-    }
+    stopThread(ctpThread);
+    ctpThread = NULL;
 
     LOG.debug("Stopping receiver thread");
-    if (stopThread(receiverThread)) {
-        receiverThread = NULL;
-    }
+    stopThread(receiverThread);
+    receiverThread = NULL;
 
     LOG.debug("Stopping heartbeat thread");
-    if (stopThread(heartbeatThread)) {
-        heartbeatThread = NULL;
-    }
+    stopThread(heartbeatThread);
+    heartbeatThread = NULL;
 
     LOG.debug("Stopping timeout thread");
-    if (stopThread(cmdTimeoutThread)) {
-        cmdTimeoutThread = NULL;
-    }
+    stopThread(cmdTimeoutThread);
+    cmdTimeoutThread = NULL;
 
     closeConnection();
     delete receivedMsg;
+    // Cleanup any running thread
+    threadPool.cleanup();
 }
 
 
@@ -221,8 +219,13 @@ int32_t CTPService::stopCTP() {
 
 finally:
 
-    // Heartbeat is stoppable
+    // Stop the Heartbeat
     stopThread(heartbeatThread);
+    heartbeatThread = NULL;
+
+    // Stop the cmd timeout
+    stopThread(cmdTimeoutThread);
+    cmdTimeoutThread = NULL;
 
     //
     // Close socket connection
@@ -444,11 +447,12 @@ int32_t CTPService::sendMsg(CTPMessage* message) {
         LOG.debug("Total bytes sent since beginning: %d", totalBytesSent);
 
         // Will restore connection if no response in 60sec
-        LOG.debug("Stopping timeout thread");
-        if (stopThread(cmdTimeoutThread)) {
-            cmdTimeoutThread = NULL;
-        }
-        cmdTimeoutThread = new CmdTimeoutThread();
+        // Declare the old timeout done
+        stopThread(cmdTimeoutThread);
+        cmdTimeoutThread = NULL;
+        threadPool.cleanup();
+        // Create a new timeout thread
+        cmdTimeoutThread = threadPool.createCmdTimeoutThread();
         cmdTimeoutThread->start();
     }
     return 0;
@@ -533,10 +537,8 @@ CTPMessage* CTPService::receiveStatusMsg() {
 
 finally:
     // Msg received or error, anyway kill the cmdTimeoutThread.
-    LOG.debug("Stopping timeout thread");
-    if (stopThread(cmdTimeoutThread)) {
-        cmdTimeoutThread = NULL;
-    }
+    stopThread(cmdTimeoutThread);
+    cmdTimeoutThread = NULL;
     return receivedMsg;
 }
 
@@ -575,13 +577,13 @@ int32_t CTPService::receive() {
     //
     // Start thread to send 'ready' messages
     //
-    heartbeatThread = new HeartbeatThread();
+    heartbeatThread = threadPool.createHeartbeatThread();
     heartbeatThread->start();
     
     //
     // Start thread to receive messages from Server
     //
-    receiverThread = new ReceiverThread();
+    receiverThread = threadPool.createReceiverThread();
     receiverThread->start();
 
     //
@@ -625,10 +627,6 @@ bool CTPService::stopThread(FThread *thread) {
     if (thread) {
         thread->softTerminate();
         terminated = thread->finished();
-        if (terminated) {
-            LOG.debug("Deleting thread object");
-            delete thread;
-        }
     }
 
     return terminated;
@@ -670,7 +668,6 @@ bool checkStartSync(void);
 bool checkStartSync() {
     return false;
 }
-
 
 
 // TODO where should this go???
@@ -765,7 +762,7 @@ void CmdTimeoutThread::run() {
 
     // Check if we were killed, then there is nothing to do
     if (terminate) {
-        return;
+        goto finally;
     }
 
     if ( (ctpService->isLeaving() == false) &&
@@ -776,10 +773,15 @@ void CmdTimeoutThread::run() {
         ctpService->closeConnection();
     }
 
+finally:
+
     // TODO PowerPolicyNotify(PPN_UNATTENDEDMODE, FALSE);
     LOG.debug("Exiting cmdTimeoutWorker thread");
 }
 
+void CmdTimeoutThread::softTerminate() {
+    terminate = true;
+}
 
 //////////////////////////////////////////////////////////////////////////////
 // CTPThread
@@ -1118,6 +1120,8 @@ bool CTPThread::saveNonceParam(CTPMessage* authStatusMsg) {
     ctpService->getConfig()->setCtpNonce(b64Nonce);
     ctpService->getConfig()->saveCTPConfig();
 
+    LOG.debug("Done");
+
     delete [] b64Nonce;
     return true;
 }
@@ -1212,6 +1216,7 @@ void HeartbeatThread::softTerminate() {
     terminate = true;
 }
 
+
 void HeartbeatThread::run() {
     LOG.debug("Starting Heartbeat thread");
 
@@ -1225,13 +1230,16 @@ void HeartbeatThread::run() {
 
     // Send 'ready' message to Server and sleep ctpReady seconds
     while (terminate == false) {
+
         LOG.info("Sending [READY] message...");
         if (ctpService->sendReadyMsg()) {
             LOG.debug("Error sending READY msg");
             errorCode = 1;
+            // By closing the connection we force the CTP to restart
+            ctpService->closeConnection();
             break;
         }
-        LOG.debug("Next ready msg will be sent in %d seconds...", sleepInterval);
+        //LOG.debug("Next ready msg will be sent in %d seconds...", sleepInterval);
         FThread::sleep(sleepInterval * 1000);
     }
 
@@ -1284,5 +1292,4 @@ ArrayList CTPService::getUriListFromSAN(SyncNotification* sn)
     }
     return list;
 }
-
 
