@@ -48,8 +48,8 @@ ItemReport::ItemReport() {
     statusMessage = NULL;
 }
 ItemReport::ItemReport(const WCHAR* luid, const int statusCode, const WCHAR* statusMess) {
-    luid  = NULL;
-    statusMessage = NULL;
+    this->luid = NULL;
+    this->statusMessage = NULL;
     setStatus(statusCode);
     setId(luid);
     setStatusMessage(statusMess);
