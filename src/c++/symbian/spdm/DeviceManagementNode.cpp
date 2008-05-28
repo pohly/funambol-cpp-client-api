@@ -72,6 +72,9 @@ TSmlCreatorId DeviceManagementNode::uid = -1;
 StringBuffer DeviceManagementNode::cardURI("card");
 StringBuffer DeviceManagementNode::calURI("cal");
 StringBuffer DeviceManagementNode::imapServer("");
+StringBuffer DeviceManagementNode::smtpServer("");
+unsigned int DeviceManagementNode::imapPort = 143;
+unsigned int DeviceManagementNode::smtpPort = 25;
 
 DeviceManagementNode::DeviceManagementNode(const char* parent,
                                            const char *leafName)
@@ -468,6 +471,31 @@ const StringBuffer& DeviceManagementNode::getImapServer() {
     return imapServer;
 }
 
+void DeviceManagementNode::setImapPort(unsigned int imapPort) {
+    DeviceManagementNode::imapPort = imapPort;
+}
+
+unsigned int DeviceManagementNode::getImapPort() {
+    return imapPort;
+}
+
+void DeviceManagementNode::setSmtpPort(unsigned int smtpPort) {
+    DeviceManagementNode::smtpPort = smtpPort;
+}
+
+unsigned int DeviceManagementNode::getSmtpPort() {
+    return smtpPort;
+}
+
+void DeviceManagementNode::setSmtpServer(const StringBuffer& smtpServer) {
+    DeviceManagementNode::smtpServer = smtpServer;
+}
+
+const StringBuffer& DeviceManagementNode::getSmtpServer() {
+    return smtpServer;
+}
+
+
 
 #if defined(UPDATE_NATIVE_CONFIG)
 
@@ -478,29 +506,35 @@ void DeviceManagementNode::pushSymbianSyncMLConfigParameter(const char* property
     StringBuffer v(value);
 
     CSyncProfileManager* profileManager = CSyncProfileManager::createNewInstance();
-   
-#if 0
+
     CImapAccountManager* imapManager;
     TRAPD(err, imapManager = CImapAccountManager::NewL());
     if (err != KErrNone) {
         LOG.error("Cannot create imap account manager");
         return;
     }
-#endif
 
     // If the profile does not exist, then we need to create one
 
     // TODO: missing other parameters
+    //LOG.debug("configFile=%s, p=%s", configFile.c_str(), p.c_str());
+
     if (p == "username") {
         profileManager->setUsername(value);
-        //imapManager->setUsername(value);
+        imapManager->setUsername(value);
     } else if (p == "password") {
         profileManager->setPassword(value);
-        //imapManager->setPassword(value);
+        imapManager->setPassword(value);
+    } else if (p == "value") {
+        if (currentDir.find("Address") != StringBuffer::npos) {
+            imapManager->setAddress(value);
+        } else if (currentDir.find("DisplayName") != StringBuffer::npos) {
+            imapManager->setDisplayName(value);
+        }
     }
 
     delete profileManager;
-    //delete imapManager;
+    delete imapManager;
 }
 #endif
 

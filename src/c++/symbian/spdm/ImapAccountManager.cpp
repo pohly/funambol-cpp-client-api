@@ -49,7 +49,6 @@
 #include "spdm/DeviceManagementNode.h"
 #include "base/globalsdef.h"
 
-USE_NAMESPACE
 
 #include <e32base.h>
 #include <e32cmn.h>
@@ -70,8 +69,17 @@ USE_NAMESPACE
 #include <IMPCMTM.H>
 #include <smtcmtm.h>
 #include <impcmtm.h>
+#include <smldmadapter.h>
+
+#include "spdm/SymbianDmRootObject.h"
 
 #include "spdm/ImapAccountManager.h"
+
+
+USE_NAMESPACE
+
+// Change right plug-in UID to this variable
+const TUid KUidPluInUID         = { 0x101f6e35 };
 
 /**
  * CImapAccountManager::NewL()
@@ -136,77 +144,162 @@ CImapAccountManager::~CImapAccountManager()
     delete iSession;
 }
 
+bool CImapAccountManager::AccountExists(CEmailAccounts* emailAccounts,
+                                        const TDesC8& name) {
+
+    RArray<TImapAccount> imapAccountsArr;
+    emailAccounts->GetImapAccountsL(imapAccountsArr);
+    TInt count = imapAccountsArr.Count();
+    bool ret = false;
+
+    for(int i=0; i<count; i++) {
+        // find specified imap account
+        HBufC8* tmp8 = CnvUtfConverter::ConvertFromUnicodeToUtf8L(
+                                           imapAccountsArr[i].iImapAccountName);
+        bool equal = (tmp8->Compare(name) == 0);
+        delete tmp8;
+        if(equal) {
+            ret = true;
+            break;
+        }
+    }
+    return ret;
+}
+
 /**
- * CImapAccountManager::CreateAccountL()
+ * CImapAccountManager::UpdateAccountL()
  * Create a default IMAP account. If an IMAP account with the same
  * name already exists, it is duplicated. 
  */
-void CImapAccountManager::CreateAccountL(const TDesC& aAccountName,
-                                         const TDesC& aImapServer,
-                                         const TDesC8& aImapLogin,
-                                         const TDesC8& aImapPassword,
-                                         const TDesC& aSmtpServer,
-                                         const TDesC& aEmailAlias,
-                                         const TDesC& aEmailAddress,
+void CImapAccountManager::UpdateAccountL(const TDesC8* aImapLogin,
+                                         const TDesC8* aImapPassword,
+                                         const TDesC* aEmailAlias,
+                                         const TDesC* aEmailAddress,
                                          const TDesC& aIapName)
 {
-    TInt err = KErrNone;
-    
+    LOG.debug("UpdateAccountL");
+
+    const StringBuffer& profileSb = DeviceManagementNode::getProfileName();
+    HBufC8* profile = stringBufferToNewBuf8(profileSb);
+    CleanupStack::PushL(profile);
+
     CEmailAccounts* emailAccounts = CEmailAccounts::NewLC();
-    
-    // add an IAP to the email IAP preferences
-    SetIapIdForConnProperties(aIapName);
-    TImIAPChoice iap;
-    iap.iIAP = 15; // to be changed when working
-    iap.iDialogPref = ECommDbDialogPrefDoNotPrompt; // ECommDbDialogPrefDoNotPrompt
-    
-    CImIAPPreferences* prefs = CImIAPPreferences::NewLC();
-    
-    // set IMAP settings
-    // first populate with default settings
+
+    // If the account does not exist, then we create it
+    // native functionalities
+    if (!AccountExists(emailAccounts, *profile)) {
+        LOG.debug("Account does not exist, create a new one");
+        CSymbianDMRootObject* dmRootObj = CSymbianDMRootObject::NewL(KUidPluInUID);
+        dmRootObj->AddAccountL(*profile);
+        delete dmRootObj;
+    }
+
+    // After creating the account we can modify its settings
+    TImapAccount imapAccount;
+    TSmtpAccount smtpAccount;
+
+    // retrieve all imap accounts
+    RArray<TImapAccount> imapAccountsArr;
+    emailAccounts->GetImapAccountsL(imapAccountsArr);
+    TInt count = imapAccountsArr.Count();
+
+    bool found = false;
+    for(int i=0; i<count; i++) {
+        // find specified imap account
+        HBufC8* tmp8 = CnvUtfConverter::ConvertFromUnicodeToUtf8L(
+                                           imapAccountsArr[i].iImapAccountName);
+        bool equal = (tmp8->Compare(*profile) == 0);
+        delete tmp8;
+
+        if(equal) {
+            // retrieve imap account
+            imapAccount=imapAccountsArr[i];
+            // retrieve associated SMTP account
+            emailAccounts->GetSmtpAccountL(imapAccount.iSmtpService,smtpAccount);
+            found = true;
+            break;
+        }
+    }
+    if (!found) {
+        LOG.debug("Cannot set account properties as the account cannot be found");
+        CleanupStack::Pop(2);
+        return;
+    }
+
+    // Get some parameters from the DeviceManagementNode
+    const StringBuffer& smtpAddress = DeviceManagementNode::getSmtpServer();
+    HBufC* smtp = stringBufferToNewBuf(smtpAddress);
+    CleanupStack::PushL(smtp);
+
+    const StringBuffer& imapAddress = DeviceManagementNode::getImapServer();
+    HBufC* imap = stringBufferToNewBuf(imapAddress);
+    CleanupStack::PushL(imap);
+
+    unsigned int imapPort = DeviceManagementNode::getImapPort();
+    unsigned int smtpPort = DeviceManagementNode::getSmtpPort();
+
+    // complete IMAP settings
     CImImap4Settings *imap4Settings = new(ELeave)CImImap4Settings;
     CleanupStack::PushL(imap4Settings);
-    TRAP(err, {
-        emailAccounts->PopulateDefaultImapSettingsL(*imap4Settings, *prefs);
-        // then overwrite specific settings
-        imap4Settings->SetServerAddressL(aImapServer);
-        imap4Settings->SetLoginNameL(aImapLogin); 
-        imap4Settings->SetPasswordL(aImapPassword);
-        //imap4Settings->SetPort(143);
-        prefs->AddIAPL(iap);
-        // create IMAP account
-        iImapAccount = emailAccounts->CreateImapAccountL(aAccountName,
-                                                         *imap4Settings,
-                                                         *prefs, EFalse);
-    });
-    User::LeaveIfError(err);
-    
-    // set SMTP settings
+    emailAccounts->LoadImapSettingsL(imapAccount,*imap4Settings);
+    imap4Settings->SetServerAddressL(*imap);
+    imap4Settings->SetPort(imapPort);
+    if (aImapLogin) {
+        imap4Settings->SetLoginNameL(*aImapLogin); 
+    }
+    if (aImapPassword) {
+        imap4Settings->SetPasswordL(*aImapPassword);
+    }
+    imap4Settings->SetFolderPathL(_L8("Unix path"));
+    imap4Settings->SetDeleteEmailsWhenDisconnecting(EFalse);
+    imap4Settings->SetDisconnectedUserMode(ETrue);
+    imap4Settings->SetAcknowledgeReceipts(EFalse);
+    imap4Settings->SetUpdatingSeenFlags(ETrue);
+    imap4Settings->SetSyncRateL(0);
+    imap4Settings->SetImapIdle(EFalse);
+    emailAccounts->SaveImapSettingsL(imapAccount,*imap4Settings);
+
+    // complete SMTP settings
     CImSmtpSettings *smtpSettings = new (ELeave) CImSmtpSettings();
     CleanupStack::PushL(smtpSettings);
-    // first populate with default settings
-    TRAP(err, {
-        emailAccounts->PopulateDefaultSmtpSettingsL(*smtpSettings, *prefs);
-        // then overwrite specific settings
-        smtpSettings->SetServerAddressL(aSmtpServer);
-        smtpSettings->SetEmailAliasL(aEmailAlias);
-        smtpSettings->SetEmailAddressL(aEmailAddress);
-        smtpSettings->SetReplyToAddressL(aEmailAddress);
-        smtpSettings->SetReceiptAddressL(aEmailAddress);
-        //smtpSettings->SetPort(25);
-        prefs->AddIAPL(iap);
-         // Create SMTP account
-        iSmtpAccount= emailAccounts->CreateSmtpAccountL(iImapAccount,
-                                                        *smtpSettings,
-                                                        *prefs, EFalse);
-    });
-    User::LeaveIfError(err);
-    // set it as default
-    TRAP(err,emailAccounts->SetDefaultSmtpAccountL(iSmtpAccount));
-    User::LeaveIfError(err);
-    //connPrefRecord,dbSession,prefs,smtpSettings,popIAP,settings,emailAccounts
-    CleanupStack::PopAndDestroy(4,emailAccounts);
+    emailAccounts->LoadSmtpSettingsL(smtpAccount,*smtpSettings);
+    smtpSettings->SetServerAddressL(*smtp);
+    smtpSettings->SetPort(smtpPort);
+    if (aEmailAlias) {
+        StringBuffer tmp = bufToStringBuffer(*aEmailAlias);
+        LOG.debug("Setting Email Alias to: %s", tmp.c_str());
 
+        smtpSettings->SetEmailAliasL(*aEmailAlias);
+    } else {
+        smtpSettings->SetEmailAliasL(_L(""));
+    }
+    if (aEmailAddress) {
+        StringBuffer tmp = bufToStringBuffer(*aEmailAddress);
+        LOG.debug("Setting Email Address to: %s", tmp.c_str());
+
+        smtpSettings->SetEmailAddressL(*aEmailAddress);
+        smtpSettings->SetReplyToAddressL(*aEmailAddress);
+        smtpSettings->SetReceiptAddressL(*aEmailAddress);
+    } else {
+        smtpSettings->SetEmailAddressL(_L(""));
+        smtpSettings->SetReplyToAddressL(_L(""));
+        smtpSettings->SetReceiptAddressL(_L(""));
+    }
+    smtpSettings->SetSMTPAuth(ETrue);
+    if (aImapLogin) {
+        smtpSettings->SetLoginNameL(*aImapLogin);
+    }
+    if (aImapPassword) {
+        smtpSettings->SetPasswordL(*aImapPassword);
+    }
+    emailAccounts->SaveSmtpSettingsL(smtpAccount,*smtpSettings);
+    emailAccounts->SetDefaultSmtpAccountL(smtpAccount);
+
+    // delete others
+    delete smtpSettings;
+    delete imap4Settings;
+    delete emailAccounts;
+    CleanupStack::Pop(6); 
 }
 
 /**
@@ -243,36 +336,6 @@ void CImapAccountManager::DeleteAccountL(const TDesC& aAccountName)
     
     CleanupStack::PopAndDestroy(1,emailAccounts); 
 }
-
-#if 0
-TImapAccount getAccount() {
-    CEmailAccounts* emailAccounts = CEmailAccounts::NewLC();
-    
-    // find all imap accounts
-    RArray<TImapAccount> imapAccountsArr;
-    TRAP(err,emailAccounts->GetImapAccountsL(imapAccountsArr));
-    User::LeaveIfError(err);
-    TInt count = imapAccountsArr.Count();
-    for(int i=0; i<count; i++)
-    {
-        // find specified imap account
-        if((imapAccountsArr[i].iImapAccountName).Compare(aAccountName)==0)
-        {
-            // delete associated smtp account
-            TSmtpAccount smtpAccount;
-            TRAP(err, {
-            emailAccounts->GetSmtpAccountL(imapAccountsArr[i].iSmtpService,smtpAccount);
-            emailAccounts->DefaultSmtpAccountL(smtpAccount);
-            // delete imap account
-            emailAccounts->DeleteImapAccountL(imapAccountsArr[i]);
-            });
-            User::LeaveIfError(err);
-        }
-    }
-    
-    CleanupStack::PopAndDestroy(1,emailAccounts); 
-}
-#endif
 
 
 /**
@@ -343,89 +406,70 @@ void CImapAccountManager::SetIapIdForConnProperties(const TDesC& aIapName)
     }
 }
 
-#if 0
-bool CImapAccountManager::setUsername(const StringBuffer& username) {
+bool CImapAccountManager::setUsername(const StringBuffer& username)
+{
     if (username.null()) {
         return false;
     }
+
     HBufC8* aUsername = stringBufferToNewBuf8(username);
-    TRAPD(err, setCredentialsL(aUsername, (TDesC8*)NULL));
+    TRAPD(err, setCredentialsL(aUsername, NULL));
     delete aUsername;
     return err == KErrNone ? true : false;
 }
 
-bool CImapAccountManager::setPassword(const StringBuffer& password) {
+bool CImapAccountManager::setPassword(const StringBuffer& password)
+{
     if (password.null()) {
         return false;
     }
+
     HBufC8* aPassword = stringBufferToNewBuf8(password);
-    TRAPD(err, setCredentialsL((TDesC8*)NULL, aPassword));
+    TRAPD(err, setCredentialsL(NULL, aPassword));
     delete aPassword;
     return err == KErrNone ? true : false;
+}
+
+bool CImapAccountManager::setAddress(const StringBuffer& address) {
+
+    if (address.null()) {
+        return false;
+    }
+
+    HBufC* aAddress = stringBufferToNewBuf(address);
+    TRAPD(err, UpdateAccountL(NULL, NULL,
+                              NULL, aAddress, _L("Ask"));
+    )
+    delete aAddress;
+    return err == KErrNone ? true : false;
+}
+
+bool CImapAccountManager::setDisplayName(const StringBuffer& name) {
+
+    if (name.null()) {
+        return false;
+    }
+
+    HBufC* aName = stringBufferToNewBuf(name);
+    TRAPD(err, UpdateAccountL(NULL, NULL,
+                              aName, NULL, _L("Ask"));
+    )
+    delete aName;
+    return err == KErrNone ? true : false;
+
 }
 
 void CImapAccountManager::setCredentialsL(const TDesC8* aUsername,
                                           const TDesC8* aPassword)
 {
-    RSyncMLSession syncMLSession;
-    TInt err=KErrNone;
-
-    LOG.debug("Imap Profile: setCredentialsL");
-
     if (aUsername == NULL && aPassword == NULL) {
         return;
     }
 
-    TInt index;
-    TSmlProfileId profileId = getProfileID(index);
-    if (profileId < 0) {
-        // The profile cannot be found, we must create one
-
-        TInt errCreate;
-        TBuf8<8> emptyServer((const unsigned char*)"");
-        if (aUsername == NULL) {
-            TBuf8<8> username((const unsigned char*)"");
-            TRAP(errCreate, createProfileL(username, *aPassword,
-                                           emptyServer, _L("Ask")));
-        } else if (aPassword == NULL) {
-            TBuf8<8> password((const unsigned char*)"");
-            TRAP(errCreate, createProfileL(*aUsername, password,
-                                           emptyServer, _L("Ask")));
-        } else {
-            TRAP(errCreate, createProfileL(*aUsername, *aPassword,
-                                           emptyServer, _L("Ask")));
-        }
-
-        User::LeaveIfError(errCreate);
-        return;
-    }
-
-    // open SyncML session
-    TRAP(err,syncMLSession.OpenL());
-    User::LeaveIfError(err);
-
-    // Modify the profile
-    RArray<TSmlProfileId> profileArr;
-    TRAP(err,syncMLSession.ListProfilesL(profileArr,ESmlDataSync));
-    User::LeaveIfError(err);
-    RSyncMLDataSyncProfile syncProfile;
-    TRAP(err, syncProfile.OpenL(syncMLSession, profileArr[index],ESmlOpenReadWrite));
-    User::LeaveIfError(err);
-    TRAP(err, {
-        if (aUsername) {
-            syncProfile.SetUserNameL(*aUsername);
-        }
-        if (aPassword) {
-            syncProfile.SetPasswordL(*aPassword);
-        }
-        syncProfile.UpdateL();
-    });
-    User::LeaveIfError(err);
-    syncProfile.Close();
-    
-    // close SyncML session
-    syncMLSession.Close();
+    TInt errCreate;
+    TRAP(errCreate, UpdateAccountL(aUsername, aPassword,
+                                   NULL, NULL, _L("Ask")));
+    User::LeaveIfError(errCreate);
 }
-#endif
 
 
