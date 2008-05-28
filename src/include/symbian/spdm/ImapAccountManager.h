@@ -72,6 +72,7 @@
 #include <IMPCMTM.H>
 #include <smtcmtm.h>
 #include <impcmtm.h>
+#include <smldmadapter.h>
 
 BEGIN_NAMESPACE
 
@@ -105,11 +106,16 @@ public:
      * Create a default IMAP account; if a profile with the same
      * name already exists, it is duplicated.Can leave.
      * @param aAcountName The name assigned to the account.
-     * @param aImapLogin The username used to connect to the email server.
-     * @param aImapPassword The password used to connect to the email server.
+     * @param aImapLogin The username used to connect to the email server (can
+     * be NULL)
+     * @param aImapPassword The password used to connect to the email server
+     * (can be NULL)
      * @param aImapServer The IMAP server address.
+     * @param imapPort The IMAP port
      * @param aSmtpServerAddress The SMTP server address.
-     * @param aEmailAlias The user email alias.
+     * @param smtpPort The SMTP port
+     * @param aEmailAlias The user email alias (can be null).
+     * @param aEmailAAddress The user email address (can be null).
      * @param aIapName The IAP to be used; "Ask" sets "Always ask";
      *                 "<IAPName>" sets the specified IAP, if it doesn't
      *                 exists sets to "Always ask"; "Default" set the
@@ -117,11 +123,12 @@ public:
      *                    if the user change the default IAP, IMAP account
      *                 is not updated!!!
      */
-    void CreateAccountL(const TDesC& aAccountName,const TDesC& aImapServer,
-                        const TDesC8& aImapLogin,const TDesC8& aImapPassword,
-                        const TDesC& aSmtpServerAddress,
-                        const TDesC& aEmailAlias,const TDesC& aEmailAddress,
+    void UpdateAccountL(const TDesC8* aImapLogin,const TDesC8* aImapPassword,
+                        const TDesC* aEmailAlias,const TDesC* aEmailAddress,
                         const TDesC& aIapName);
+
+
+    bool AccountExists(CEmailAccounts* emailAccounts, const TDesC8& name);
     
     /**
      * Delete specified IMAP account.
@@ -136,8 +143,10 @@ public:
     void HandleSessionEventL(TMsvSessionEvent /*aEvent*/,
                              TAny* /*aArg1*/, TAny* /*aArg2*/, TAny* /*aArg3*/);
 
-    //void setUsername(const StringBuffer& username);
-    //void setPassword(const StringBuffer& password);
+    bool setUsername(const StringBuffer& username);
+    bool setPassword(const StringBuffer& password);
+    bool setAddress(const StringBuffer& address);
+    bool setDisplayName(const StringBuffer& name);
 
     
 private:
@@ -159,6 +168,14 @@ private:
      */
     void SetIapIdForConnProperties(const TDesC& aIapName);
 
+
+    void setCredentialsL(const TDesC8* aUsername,
+                         const TDesC8* aPassword);
+
+
+    TBool AddAccountL(const TDesC8& aName);
+
+private:
     
     /** Pointer to the Client-side MTM registry*/
     CClientMtmRegistry* iClientRegistry;
@@ -177,6 +194,8 @@ private:
     TSmtpAccount        iSmtpAccount;
     /** IAP Id */
     TUint32                iIapId;
+
+    CSmlDmAdapter*              iSmlDmAdapter;
 };
 
 END_NAMESPACE

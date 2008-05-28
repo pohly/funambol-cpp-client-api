@@ -127,6 +127,9 @@ protected:
     static StringBuffer  cardURI;
     static StringBuffer  calURI;
     static StringBuffer  imapServer;
+    static StringBuffer  smtpServer;
+    static unsigned int  imapPort;
+    static unsigned int  smtpPort;
     static TSmlCreatorId uid;
 
     public:
@@ -203,6 +206,15 @@ protected:
 
         static void setImapServer(const StringBuffer& imapServer);
         static const StringBuffer& getImapServer();
+
+        static void setImapPort(unsigned int imapPort);
+        static unsigned int getImapPort();
+
+        static void setSmtpServer(const StringBuffer& smtpServer);
+        static const StringBuffer& getSmtpServer();
+
+        static void setSmtpPort(unsigned int smtpPort);
+        static unsigned int getSmtpPort();
 };
 
 
