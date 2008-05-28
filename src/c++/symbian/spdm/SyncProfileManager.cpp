@@ -314,7 +314,8 @@ void CSyncProfileManager::createProfileL(const TDesC8& aUsername,
         // ESmlVersion1_2 = 1.2
         syncProfile.SetProtocolVersionL(ESmlVersion1_1_2);
         // This is for accepting all sync requests
-        syncProfile.SetSanUserInteractionL(ESmlEnableSync);
+        //syncProfile.SetSanUserInteractionL(ESmlEnableSync);
+        syncProfile.SetSanUserInteractionL(ESmlDisableSync);
         //syncProfile.DeleteAllowed();
         // save profile
         syncProfile.UpdateL();
@@ -363,7 +364,8 @@ void CSyncProfileManager::createProfileL(const TDesC8& aUsername,
     const StringBuffer& cardURI = DeviceManagementNode::getCardURI();
     HBufC* cardURIBuf = stringBufferToNewBuf(cardURI);
     CleanupStack::PushL(cardURIBuf);
-    TRAP(err,contactsTask.CreateL(syncProfile,contactsProvider,*cardURIBuf,CONTACTS_DATA_STORE_NAME));
+    TRAP(err,contactsTask.CreateL(syncProfile,contactsProvider,*cardURIBuf,
+                                  CONTACTS_DATA_STORE_NAME));
     CleanupStack::PopAndDestroy();
     User::LeaveIfError(err);
     contactsTask.SetCreatorId(creatorId);
@@ -386,7 +388,8 @@ void CSyncProfileManager::createProfileL(const TDesC8& aUsername,
     HBufC* calURIBuf = stringBufferToNewBuf(calURI);
     CleanupStack::PushL(calURIBuf);
     RSyncMLTask calendarTask;
-    TRAP(err,calendarTask.CreateL(syncProfile,calendarProvider,*calURIBuf,CALENDAR_DATA_STORE_NAME));
+    TRAP(err,calendarTask.CreateL(syncProfile,calendarProvider,*calURIBuf,
+                                  CALENDAR_DATA_STORE_NAME));
     CleanupStack::PopAndDestroy(calURIBuf);
     User::LeaveIfError(err);
     calendarTask.SetCreatorId(creatorId);
@@ -426,7 +429,6 @@ void CSyncProfileManager::createProfileL(const TDesC8& aUsername,
             syncConnection.SetRetryCount(2);
             syncConnection.SetServerURIL(*server);
             syncConnection.SetPropertyL(_L8("NSmlIapId"),iIapId);
-            //syncConnection.SetPropertyL(_L8("NSmlTransportId"),_L8("0x101F99F0"));
             syncConnection.UpdateL();
         });
         User::LeaveIfError(err);
