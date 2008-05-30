@@ -229,8 +229,10 @@ bool VConverter::readFieldBody(WCHAR* buffer, VProperty* vprop) {
         delete [] buf;
 
         if (dec) {
-            WCHAR* wdecoded = toWideChar(dec);
+            char* t = toMultibyte(vprop->getParameterValue(TEXT("CHARSET")));
+            WCHAR* wdecoded = toWideChar(dec, t);
             delete [] dec;
+            delete [] t;
 
             if (wdecoded) {
                 wcsncpy(allValues, wdecoded, len);
