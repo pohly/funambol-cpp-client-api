@@ -485,7 +485,7 @@ CTPMessage* CTPService::receiveStatusMsg() {
     // Receive socket message: could be split into more pkg
     //
     while (1) {
-        LOG.info("Waiting for Server message...");
+        LOG.debug("Waiting for Server message...");
         int pkgLen = ctpSocket->readBuffer((int8_t*)buffer, sizeof(buffer));
 
         if (pkgLen <= 0) {
@@ -1165,7 +1165,7 @@ void ReceiverThread::run() {
 
             case ST_OK:
                 // 'OK' to our 'READY' command -> back to recv
-                LOG.info("[OK] received -> back to receive state");
+                LOG.debug("[OK] received -> back to receive state");
                 break;
 
             case ST_SYNC:
@@ -1231,7 +1231,7 @@ void HeartbeatThread::run() {
     // Send 'ready' message to Server and sleep ctpReady seconds
     while (terminate == false) {
 
-        LOG.info("Sending [READY] message...");
+        LOG.debug("Sending [READY] message...");
         if (ctpService->sendReadyMsg()) {
             LOG.debug("Error sending READY msg");
             errorCode = 1;
