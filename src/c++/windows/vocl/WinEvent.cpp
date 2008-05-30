@@ -373,29 +373,36 @@ void WinEvent::addTimezone(VObject* vo) {
     if (yearEnd - yearBegin > MAX_DAYLIGHT_PROPS) {
         yearEnd = yearBegin + MAX_DAYLIGHT_PROPS;
     }
+    if (hasDayLightSaving(&tzInfo)) {
+        // Add a DAYLIGHT property for every year that this appointment occurr. (max = 6)
+        for (int year = yearBegin; year <= yearEnd; year++) {
 
-    // Add a DAYLIGHT property for every year that this appointment occurr. (max = 6)
-    for (int year = yearBegin; year <= yearEnd; year++) {
+            wstring daylightDate = getDateFromTzRule(year, tzInfo.DaylightDate);
+            wstring standardDate = getDateFromTzRule(year, tzInfo.StandardDate);
 
-        wstring daylightDate = getDateFromTzRule(year, tzInfo.DaylightDate);
-        wstring standardDate = getDateFromTzRule(year, tzInfo.StandardDate);
+            // "DAYLIGHT:TRUE;-0900;20080406T020000;20081026T020000;Pacific Standard Time;Pacific Daylight Time"
+            vp = new VProperty(TEXT("DAYLIGHT"));
+            vp->addValue(hasDST.c_str());               // DST flag
+            if (hasDST == TEXT("TRUE")) {
+                vp->addValue(daylightBias.c_str());     // DST offset = (Bias + DaylightBias)
+                vp->addValue(daylightDate.c_str());     // Date and time when the DST begins
+                vp->addValue(standardDate.c_str());     // Date and time when the DST ends
+                vp->addValue(tzInfo.StandardName);      // Standard time designation (optional, could be empty)
+                vp->addValue(tzInfo.DaylightName);      // DST designation (optional, could be empty)
+            }
+            vo->addProperty(vp);
+            delete vp; vp = NULL;
 
-        // "DAYLIGHT:TRUE;-0900;20080406T020000;20081026T020000;Pacific Standard Time;Pacific Daylight Time"
-        vp = new VProperty(TEXT("DAYLIGHT"));
-        vp->addValue(hasDST.c_str());               // DST flag
-        if (hasDST == TEXT("TRUE")) {
-            vp->addValue(daylightBias.c_str());     // DST offset = (Bias + DaylightBias)
-            vp->addValue(daylightDate.c_str());     // Date and time when the DST begins
-            vp->addValue(standardDate.c_str());     // Date and time when the DST ends
-            vp->addValue(tzInfo.StandardName);      // Standard time designation (optional, could be empty)
-            vp->addValue(tzInfo.DaylightName);      // DST designation (optional, could be empty)
+            if (hasDST == TEXT("FALSE")) {
+                break;    // Send only 1 property, are all the same.
+            }
         }
+    } else {
+        // there is no DAYLIGHT saving
+        vp = new VProperty(TEXT("DAYLIGHT"));
+        vp->addValue(TEXT("FALSE"));
         vo->addProperty(vp);
         delete vp; vp = NULL;
-
-        if (hasDST == TEXT("FALSE")) {
-            break;    // Send only 1 property, are all the same.
-        }
     }
 
 }
@@ -766,8 +773,8 @@ bool WinEvent::parseTimezone(VObject* vo) {
             tzInfo.Bias         = bias;
             tzInfo.StandardBias = 0;        // Cannot retrieve it, assume = 0 (usually is 0)
             tzInfo.DaylightBias = 0;
-            //tzInfo.DaylightDate = 0;
-            //tzInfo.StandardDate = 0;
+            memset((void*)(&tzInfo.DaylightDate), 0, sizeof(SYSTEMTIME));
+            memset((void*)(&tzInfo.StandardDate) , 0, sizeof(SYSTEMTIME));                                  
             wcsncpy(tzInfo.StandardName, standardName.c_str(), 32);
             wcsncpy(tzInfo.DaylightName, daylightName.c_str(), 32);
         }

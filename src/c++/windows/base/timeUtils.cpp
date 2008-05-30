@@ -280,7 +280,7 @@ wstring getDateFromTzRule(const int year, SYSTEMTIME tzRule) {
     stDate.wMinute       = tzRule.wMinute;
     stDate.wSecond       = tzRule.wSecond;
     stDate.wMilliseconds = tzRule.wMilliseconds;
-
+    stDate.wDayOfWeek    = tzRule.wDayOfWeek;
 
     // Get the correct wDayOfWeek of the first day of month.
     stDate.wDay = 1;
@@ -482,4 +482,24 @@ bool isSameSystemtime(const SYSTEMTIME* st1, const SYSTEMTIME* st2) {
     else {
         return false;
     }
+}
+
+bool hasDayLightSaving(const TIME_ZONE_INFORMATION* tz) {
+    
+    if (tz->DaylightDate.wYear   == 0  &&
+        tz->DaylightDate.wMonth  == 0  &&
+        tz->DaylightDate.wDay    == 0  && 
+        tz->DaylightDate.wHour   == 0  &&
+        tz->DaylightDate.wMinute == 0  &&        
+        tz->StandardDate.wYear   == 0  &&
+        tz->StandardDate.wMonth  == 0  &&
+        tz->StandardDate.wDay    == 0  && 
+        tz->StandardDate.wHour   == 0  &&
+        tz->StandardDate.wMinute == 0) {
+        
+            return false;
+    } else {
+        return true;
+    }
+
 }

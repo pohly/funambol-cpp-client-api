@@ -337,7 +337,7 @@ void WinEventSIF::addTimezone(wstring& sif) {
         yearEnd = yearBegin + MAX_DAYLIGHT_PROPS;
     }
 
-    if (hasDST) {
+    if (hasDST && hasDayLightSaving(&tzInfo)) {
         // Add a DayLight tag for every year that this appointment occurr. (max = 6)
         for (int year = yearBegin; year <= yearEnd; year++) {
 
@@ -365,7 +365,8 @@ void WinEventSIF::addTimezone(wstring& sif) {
     }
     else {
         // No daylight for this timezone
-        sif += L"<DayLight/>\n";
+        // It doesn't add anything.
+        // sif += L"<DayLight/>\n";
     }
 
     sif += L"</Timezone>\n";
@@ -393,7 +394,8 @@ bool WinEventSIF::parseTimezone(const wstring& data) {
         list<wstring> standardDates;
 
         //
-        // Search all <DayLight> inside <Timezone> (one for every year)
+        // Search all <DayLight> inside <Timezone> (one for every year). It cannot exist
+        // it there is not DayLight
         //
         wstring::size_type start = 0, end = 0;
         bool dstFlag = false;
@@ -427,8 +429,8 @@ bool WinEventSIF::parseTimezone(const wstring& data) {
             tzInfo.Bias         = bias;
             tzInfo.StandardBias = 0;        // Cannot retrieve it, assume = 0 (usually is 0)
             tzInfo.DaylightBias = 0;
-            //tzInfo.DaylightDate = 0;
-            //tzInfo.StandardDate = 0;
+            memset((void*)(&tzInfo.DaylightDate), 0, sizeof(SYSTEMTIME));
+            memset((void*)(&tzInfo.StandardDate) , 0, sizeof(SYSTEMTIME));           
             wcsncpy(tzInfo.StandardName, standardName.c_str(), 32);
             wcsncpy(tzInfo.DaylightName, daylightName.c_str(), 32);
         }
