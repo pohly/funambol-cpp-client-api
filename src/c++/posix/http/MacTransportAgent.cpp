@@ -92,7 +92,8 @@ char* MacTransportAgent::sendMessage(const char* msg){
     
     CFHTTPMessageRef httpRequest =
         CFHTTPMessageCreateRequest(kCFAllocatorDefault, requestMethod, myURL, kCFHTTPVersion1_1);
-    
+    CFStringRef useragent = CFStringCreateWithCString(NULL, getUserAgent(), kCFStringEncodingUTF8);
+    CFHTTPMessageSetHeaderFieldValue(httpRequest, CFSTR("user-agent"),  useragent);
     if(!httpRequest){
         LOG.error("MacTransportAgent::sendMessage error: CFHTTPMessageCreateRequest Error.");
         setError(ERR_NETWORK_INIT, "MacTransportAgent::sendMessage error: CFHTTPMessageCreateRequest Error.");

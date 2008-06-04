@@ -62,7 +62,6 @@ public:
     ~MacTransportAgent();
     
     char* sendMessage(const char* msg);
-    //void setUserAgent(const char* ua);
 };
 
 END_NAMESPACE
