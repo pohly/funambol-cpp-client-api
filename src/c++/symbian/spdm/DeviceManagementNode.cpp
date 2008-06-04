@@ -34,8 +34,6 @@
  */
 
 
-#define UPDATE_NATIVE_CONFIG 1
-
 #include <stdio.h>
 #include <ctype.h>
 #include <f32file.h>
@@ -56,12 +54,6 @@ USE_NAMESPACE
 
 #define CONFIG_DIR      ".config"
 #define SYNC4J_DIR      ".sync4j"
-
-#if defined(UPDATE_NATIVE_CONFIG)
-#include "spdm/SyncProfileManager.h"
-#include "spdm/ImapAccountManager.h"
-#endif
-
 
 StringBuffer DeviceManagementNode::configPath; 
 StringBuffer DeviceManagementNode::configFile = "config.ini";
@@ -394,7 +386,6 @@ void DeviceManagementNode::setPropertyValue(const char* property, const char* ne
                 goto finally;
             }
         }
-
         i++;
     }
 
@@ -409,18 +400,7 @@ void DeviceManagementNode::setPropertyValue(const char* property, const char* ne
     }
 
 finally:
-    // In Symbian some of the synchronizations are performed using the Symbian
-    // SyncML APIs. These APIs use their own configuration, but we want this to
-    // be invisible to our clients. Therefore we handle it here and update the
-    // Symbian SyncML configuration here. There is a potential problem as we
-    // save the SyncML config here while the DMTree is not flushed until the
-    // node is closed. This may result in configuration being out of sync, but
-    // this should only happen only on error cases. To fix this problem (and
-    // other source of unaligned configurations) we shall push the DM
-    // configuration into the SyncML config on startup.
-#if defined(UPDATE_NATIVE_CONFIG)
-    pushSymbianSyncMLConfigParameter(property, newvalue);
-#endif
+    i = 0;
 }
 
 void DeviceManagementNode::setServerURI(const StringBuffer& server) {
@@ -495,48 +475,6 @@ const StringBuffer& DeviceManagementNode::getSmtpServer() {
     return smtpServer;
 }
 
-
-
-#if defined(UPDATE_NATIVE_CONFIG)
-
-void DeviceManagementNode::pushSymbianSyncMLConfigParameter(const char* property,
-                                                            const char* value)
-{
-    StringBuffer p(property);
-    StringBuffer v(value);
-
-    CSyncProfileManager* profileManager = CSyncProfileManager::createNewInstance();
-
-    CImapAccountManager* imapManager;
-    TRAPD(err, imapManager = CImapAccountManager::NewL());
-    if (err != KErrNone) {
-        LOG.error("Cannot create imap account manager");
-        return;
-    }
-
-    // If the profile does not exist, then we need to create one
-
-    // TODO: missing other parameters
-    //LOG.debug("configFile=%s, p=%s", configFile.c_str(), p.c_str());
-
-    if (p == "username") {
-        profileManager->setUsername(value);
-        imapManager->setUsername(value);
-    } else if (p == "password") {
-        profileManager->setPassword(value);
-        imapManager->setPassword(value);
-    } else if (p == "value") {
-        if (currentDir.find("Address") != StringBuffer::npos) {
-            imapManager->setAddress(value);
-        } else if (currentDir.find("DisplayName") != StringBuffer::npos) {
-            imapManager->setDisplayName(value);
-        }
-    }
-
-    delete profileManager;
-    delete imapManager;
-}
-#endif
 
 ArrayElement* DeviceManagementNode::clone()
 {
