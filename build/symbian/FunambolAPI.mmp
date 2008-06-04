@@ -38,7 +38,6 @@ TARGETTYPE      lib
 
 SYSTEMINCLUDE   \epoc32\include 
 SYSTEMINCLUDE   \epoc32\include\libc
-SYSTEMINCLUDE   \epoc32\include\ecom
 USERINCLUDE     ..\..\src\include\common 
 USERINCLUDE     ..\..\src\include\symbian
 
@@ -81,8 +80,6 @@ SOURCE       SymbianTransportAgent.cpp TransportAgentFactory.cpp
 
 SOURCEPATH   ..\..\src\cpp\symbian\spdm
 SOURCE       DeviceManagementNode.cpp DMTreeFactory.cpp
-SOURCE       SyncProfileManager.cpp ImapAccountManager.cpp
-SOURCE       SymbianDmRootObject.cpp SymbianDmObject.cpp
 
 SOURCEPATH   ..\..\src\cpp\symbian\base\util
 SOURCE       stringUtils.cpp symbianUtils.cpp timeUtils.cpp
