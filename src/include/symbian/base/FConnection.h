@@ -48,6 +48,8 @@ BEGIN_NAMESPACE
 #define         MAX_RETRY_CONNECTION    3
 
 
+
+
 /**
  * This class is a singleton, used to manage the network connection.
  * Get the only instance of FConnection calling FConnection::getInstance().
@@ -185,6 +187,14 @@ public:
      * @param  aIAPName  the name of the IAP
      */
     void setIAPDefaultName(const StringBuffer& aIAPName);
+    
+    /**
+     * Returns an array of (new allocated) descriptors, with all 
+     * the current IAP names.
+     * The caller has the ownership of the array, so he should take
+     * care of deleting it (calling Close()).
+     */
+    RArray<HBufC*> GetAllIAPNames() ;
     
 
     

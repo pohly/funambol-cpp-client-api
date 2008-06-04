@@ -312,7 +312,6 @@ TInt FConnection::GetIAPIDFromName(const StringBuffer& aIAPName)
     CCommsDatabase* commDb = CCommsDatabase::NewL(EDatabaseTypeIAP);
     CleanupStack::PushL(commDb);
     CApSelect* select = CApSelect::NewLC(*commDb,KEApIspTypeAll,EApBearerTypeAll,KEApSortUidAscending);
-    TBuf<256> accessPoint;
     
     TBool ok = select->MoveToFirst();
     for (TUint32 i=0; ok &&(i<select->Count()); i++) 
@@ -344,7 +343,6 @@ StringBuffer FConnection::GetIAPNameFromID(const TUint aIAPID)
     CCommsDatabase* commDb = CCommsDatabase::NewL(EDatabaseTypeIAP);
     CleanupStack::PushL(commDb);
     CApSelect* select = CApSelect::NewLC(*commDb,KEApIspTypeAll,EApBearerTypeAll,KEApSortUidAscending);
-    TBuf<256> accessPoint;
     
     TBool ok = select->MoveToFirst();
     for (TUint32 i=0; ok &&(i<select->Count()); i++) 
@@ -364,3 +362,25 @@ StringBuffer FConnection::GetIAPNameFromID(const TUint aIAPID)
     
     return ret;
 }
+
+
+RArray<HBufC*> FConnection::GetAllIAPNames() 
+{
+    RArray<HBufC*> names;
+    names.Reset();
+    
+    CCommsDatabase* commDb = CCommsDatabase::NewL(EDatabaseTypeIAP);
+    CleanupStack::PushL(commDb);
+    CApSelect* select = CApSelect::NewLC(*commDb,KEApIspTypeAll,EApBearerTypeAll,KEApSortUidAscending);
+    
+    TBool ok = select->MoveToFirst();
+    for (TUint32 i=0; ok &&(i<select->Count()); i++) {
+        HBufC* currentName = select->Name().Alloc();
+        names.Append(currentName);
+        ok = select->MoveNext();
+    }
+
+    CleanupStack::PopAndDestroy(2);    //commdb and select
+    return names;
+}
+
