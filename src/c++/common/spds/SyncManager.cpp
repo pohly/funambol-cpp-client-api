@@ -130,11 +130,14 @@ void SyncManager::encodeItemKey(SyncItem *syncItem)
         return; 
     }
 
-    char *key= toMultibyte(syncItem->getKey());
+    if (wcschr(syncItem->getKey(), '<') || wcschr(syncItem->getKey(), '&')) {
+        char *key= toMultibyte(syncItem->getKey());
 
-    if (syncItem &&
-        (key ) != NULL &&
-        (strchr(key, '<') || strchr(key, '&'))) {
+        if (!key) {
+            LOG.error("encodeItemKey: cannot convert key %" WCHAR_PRINTF, syncItem->getKey());
+            return;
+        }
+        
         StringBuffer encoded;
         b64_encode(encoded, key, strlen(key));
         StringBuffer newkey(encodedKeyPrefix);
@@ -142,9 +145,11 @@ void SyncManager::encodeItemKey(SyncItem *syncItem)
         LOG.debug("replacing unsafe key '%s' with encoded key '%s'", key, newkey.c_str());
         WCHAR* t = toWideChar(newkey.c_str());
         syncItem->setKey(t);
+        
         delete [] t;
+        delete [] key;
     }
-    delete [] key;
+
 }
 
 /*
