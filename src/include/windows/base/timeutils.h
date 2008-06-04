@@ -124,7 +124,14 @@ bool isSameTimezone(const TIME_ZONE_INFORMATION* tz1, const TIME_ZONE_INFORMATIO
  */
 bool isSameSystemtime(const SYSTEMTIME* st1, const SYSTEMTIME* st2);
 
-
+/**
+* Check if the timezone information has a day light saving. If all the 
+* parameters (day, hours, etc... )are empty, then no daylight saving is supported.
+*
+* @param tz the timezone information to check
+* @return true if timezone needed, false otherwise
+*/
+bool hasDayLightSaving(const TIME_ZONE_INFORMATION* tz) ;
 
 /** @} */
 /** @endcond */
