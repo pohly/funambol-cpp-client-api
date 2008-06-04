@@ -268,10 +268,7 @@ void CImapAccountManager::UpdateAccountL(const TDesC8* aImapLogin,
     if (aEmailAlias) {
         StringBuffer tmp = bufToStringBuffer(*aEmailAlias);
         LOG.debug("Setting Email Alias to: %s", tmp.c_str());
-
         smtpSettings->SetEmailAliasL(*aEmailAlias);
-    } else {
-        smtpSettings->SetEmailAliasL(_L(""));
     }
     if (aEmailAddress) {
         StringBuffer tmp = bufToStringBuffer(*aEmailAddress);
@@ -280,10 +277,6 @@ void CImapAccountManager::UpdateAccountL(const TDesC8* aImapLogin,
         smtpSettings->SetEmailAddressL(*aEmailAddress);
         smtpSettings->SetReplyToAddressL(*aEmailAddress);
         smtpSettings->SetReceiptAddressL(*aEmailAddress);
-    } else {
-        smtpSettings->SetEmailAddressL(_L(""));
-        smtpSettings->SetReplyToAddressL(_L(""));
-        smtpSettings->SetReceiptAddressL(_L(""));
     }
     smtpSettings->SetSMTPAuth(ETrue);
     if (aImapLogin) {
@@ -435,7 +428,6 @@ bool CImapAccountManager::setAddress(const StringBuffer& address) {
     if (address.null()) {
         return false;
     }
-
     HBufC* aAddress = stringBufferToNewBuf(address);
     TRAPD(err, UpdateAccountL(NULL, NULL,
                               NULL, aAddress, _L("Ask"));
