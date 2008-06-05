@@ -1151,22 +1151,31 @@ int SyncManager::sync() {
                     break;
 
                 case SYNC_REFRESH_FROM_SERVER:
-                    last = true;
-                    // TODO: remove me...
-                    allItemsList[count] = new ArrayList();
-                    syncItem = getItem(*sources[count], &SyncSource::getFirstItemKey);
-                    if(syncItem) {
-                        allItemsList[count]->add((ArrayElement&)*syncItem);
-                        delete syncItem; syncItem = NULL;
-                    }
-                    syncItem = getItem(*sources[count], &SyncSource::getNextItemKey);
-                    while(syncItem) {
-                        allItemsList[count]->add((ArrayElement&)*syncItem);
-                        delete syncItem; syncItem = NULL;
+                    {
+                        last = true;
+                        char *name = toMultibyte(sources[count]->getName());
+                        if (sources[count]->removeAllItems() == 0) {                        
+                            LOG.debug("Removed all items for source %s", name);
+                        } else {
+                            LOG.error("Error removing all items for source %s", name);
+                        }
+                        delete [] name;
+                        // TODO: remove me...
+                        allItemsList[count] = new ArrayList();
+                        syncItem = getItem(*sources[count], &SyncSource::getFirstItemKey);
+                        if(syncItem) {
+                            allItemsList[count]->add((ArrayElement&)*syncItem);
+                            delete syncItem; syncItem = NULL;
+                        }
                         syncItem = getItem(*sources[count], &SyncSource::getNextItemKey);
+                        while(syncItem) {
+                            allItemsList[count]->add((ArrayElement&)*syncItem);
+                            delete syncItem; syncItem = NULL;
+                            syncItem = getItem(*sources[count], &SyncSource::getNextItemKey);
+                        }
                     }
                     break;
-
+                    
                 case SYNC_ONE_WAY_FROM_SERVER:
                     last = true;
                     break;
