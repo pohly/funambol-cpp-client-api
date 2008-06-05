@@ -41,6 +41,7 @@
 #include "spds/constants.h"
 #include "spds/SyncItem.h"
 #include "spds/SyncItemStatus.h"
+#include "base/util/StringBuffer.h"
 
 BEGIN_NAMESPACE
 
@@ -72,7 +73,26 @@ SyncItemStatus** toSyncItemStatusArray(ArrayList& items);
  */
 SyncItem** toSyncItemArray(ArrayList& items);
 
+
+/**
+ * This functions works for standard encoded files with new line every
+ * 72 characters. It does not work if the line length is not multiple of 4.
+ *
+ * @param const char* msg the message to decode
+ * @param char** binmsg new allocated decoded message
+ * @param size_t* binlen the lenght of the decoded message
+ * @return int 0 if successful
+ */
 int uudecode(const char *msg, char **binmsg, size_t *binlen);
+
+/**
+ * Encode the message in base64, splitting the result in lines of 72 columns
+ * each.
+ * 
+ * @param const char* msg the message to encode (can be binary data)
+ * @param int len the lenght of the message
+ * @return char* new allocated string or NULL in case of error
+ */
 char *uuencode(const char *msg, int len);
 
 /**
@@ -95,6 +115,15 @@ int convertAndSave(const char *filename, const char *str,
 */
 char *loadAndConvert(const char *filename,
                         const char *encoding = "UTF-8");
+
+/**
+ * indent a string encoded in bb4
+ *
+ * @param StringBuffer& the string to indent
+ * @param int space how much to indent
+ * @return 0 if successful
+ */
+int indent(StringBuffer& content, int space = 8);
 
 END_NAMESPACE
 

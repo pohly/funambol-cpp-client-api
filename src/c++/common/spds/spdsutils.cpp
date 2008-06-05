@@ -156,6 +156,10 @@ char *uuencode(const char *msg, int len)
         if(len-i < step)
             step = len-i;
         dlen += b64_encode(ret+dlen, (void *)(msg+i), step);
+        if(getLastErrorCode() != 0){
+            delete [] ret;
+            return NULL;
+        }
         ret[dlen++]='\n';
     }
 
@@ -217,6 +221,10 @@ int uudecode(const char *msg, char **binmsg, size_t *binlen)
             break;
         nl++;
         len += b64_decode(out+len, line);
+        if ( getLastErrorCode() != 0){
+            delete [] line;
+            return -1;
+        }
 
         delete [] line;
     }
@@ -317,6 +325,26 @@ const char* getSourceName(const char *uri)
         // FIXME
         return stringdup(uri);
 #endif
+}
+
+int indent(StringBuffer& content, int space){
+    
+    StringBuffer buf;
+    char* startingBuf = new char[space +1];
+    memset(startingBuf, ' ', space);
+    startingBuf[space] = 0;
+    buf = startingBuf;
+
+    char* spacebuf = new char[space +2];
+    spacebuf[0] = '\n';
+    memset((spacebuf+1), ' ', space);
+    spacebuf[space+1] = 0;
+    content.replaceAll("\n", spacebuf);
+    buf.append(content);
+    content = buf;
+    delete [] spacebuf;
+    delete [] startingBuf;
+    return 0;
 }
 
 END_NAMESPACE
