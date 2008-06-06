@@ -772,7 +772,7 @@ bool WinEvent::parseTimezone(VObject* vo) {
             found = true;
             tzInfo.Bias         = bias;
             tzInfo.StandardBias = 0;        // Cannot retrieve it, assume = 0 (usually is 0)
-            tzInfo.DaylightBias = 0;
+            tzInfo.DaylightBias = -60;     // most of the tiemzone is -60. only 1 is not (baghdad)
             memset((void*)(&tzInfo.DaylightDate), 0, sizeof(SYSTEMTIME));
             memset((void*)(&tzInfo.StandardDate) , 0, sizeof(SYSTEMTIME));                                  
             wcsncpy(tzInfo.StandardName, standardName.c_str(), 32);
