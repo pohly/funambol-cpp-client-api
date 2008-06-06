@@ -154,16 +154,16 @@ Cred* CredentialHandler::getClientCredential() {
 
     Authentication* auth = NULL;
     char* credential  = NULL;
-    if (strcmp(clientAuthType, AUTH_TYPE_BASIC) == 0) {
-        auth = new Authentication(AUTH_TYPE_BASIC, username, password);
 
-    } else {
+    if (strcmp(clientAuthType, AUTH_TYPE_MD5) == 0) {
         credential = MD5CredentialData(username, password, clientNonce);
         auth = new Authentication(AUTH_TYPE_MD5, credential);
         // overwrite the username that for MD5 auth is the same as data
         auth->setUsername(username);
         auth->setPassword(password);
         if (credential) { delete [] credential; credential = NULL; }
+    } else {
+        auth = new Authentication(AUTH_TYPE_BASIC, username, password);
     }
 
     Cred* cred           = new Cred(auth);
