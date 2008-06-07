@@ -337,12 +337,7 @@ void LocalTests::deleteAll(CreateSource createSource) {
     SOURCE_ASSERT(source.get(), source->beginSync() == 0);
 
     // delete all items
-    std::auto_ptr<SyncItem> item;
-    SOURCE_ASSERT_NO_FAILURE(source.get(), item.reset(source->getFirstItem()));
-    while (item.get()) {
-        SOURCE_ASSERT_EQUAL(source.get(), (int)STC_OK, source->deleteItem(*item));
-        SOURCE_ASSERT_NO_FAILURE(source.get(), item.reset(source->getNextItem()));
-    }
+    SOURCE_ASSERT_NO_FAILURE(source.get(), source->removeAllItems());
     SOURCE_ASSERT(source.get(), source->endSync() == 0);
     CPPUNIT_ASSERT_NO_THROW(source.reset());
 
