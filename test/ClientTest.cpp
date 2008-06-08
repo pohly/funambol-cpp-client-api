@@ -838,6 +838,7 @@ void LocalTests::testLinkedItems() {
     SOURCE_ASSERT_EQUAL(copy.get(), 0, copy->endSync());
     CPPUNIT_ASSERT_NO_THROW(copy.reset());
 
+#if LINKED_ITEMS_RELAXED_SEMANTIC
     // same as above for child item
     child = insert(createSourceA, config.childItem);
 
@@ -862,6 +863,7 @@ void LocalTests::testLinkedItems() {
     SOURCE_ASSERT_EQUAL(copy.get(), 1, countEqual(listDeletedItems(copy.get()), child));
     SOURCE_ASSERT_EQUAL(copy.get(), 0, copy->endSync());
     CPPUNIT_ASSERT_NO_THROW(copy.reset());
+#endif
 
     // insert parent first, then child
     parent = insert(createSourceA, config.parentItem);
@@ -891,6 +893,7 @@ void LocalTests::testLinkedItems() {
     SOURCE_ASSERT_EQUAL(copy.get(), 0, copy->endSync());
     CPPUNIT_ASSERT_NO_THROW(copy.reset());
 
+#if LINKED_ITEMS_RELAXED_SEMANTIC
     // insert child first, then parent
     child = insert(createSourceA, config.childItem);
     parent = insert(createSourceA, config.parentItem);
@@ -918,7 +921,9 @@ void LocalTests::testLinkedItems() {
     SOURCE_ASSERT_EQUAL(copy.get(), 1, countEqual(listDeletedItems(copy.get()), parent));
     SOURCE_ASSERT_EQUAL(copy.get(), 0, copy->endSync());
     CPPUNIT_ASSERT_NO_THROW(copy.reset());
+#endif
 
+#if LINKED_ITEMS_RELAXED_SEMANTIC
     // insert child first, check changes, then insert then parent
     child = insert(createSourceA, config.childItem);
 
@@ -958,10 +963,12 @@ void LocalTests::testLinkedItems() {
     SOURCE_ASSERT_EQUAL(copy.get(), 1, countEqual(listDeletedItems(copy.get()), parent));
     SOURCE_ASSERT_EQUAL(copy.get(), 0, copy->endSync());
     CPPUNIT_ASSERT_NO_THROW(copy.reset());
+#endif
 
+#if LINKED_ITEMS_RELAXED_SEMANTIC
     // insert both items, remove parent, then child
-    child = insert(createSourceA, config.childItem);
     parent = insert(createSourceA, config.parentItem);
+    child = insert(createSourceA, config.childItem);
 
     SOURCE_ASSERT_NO_FAILURE(copy.get(), copy.reset(createSourceB()));
     SOURCE_ASSERT_EQUAL(copy.get(), 0, copy->beginSync());
@@ -997,10 +1004,11 @@ void LocalTests::testLinkedItems() {
     SOURCE_ASSERT_EQUAL(copy.get(), 1, countEqual(listDeletedItems(copy.get()), child));
     SOURCE_ASSERT_EQUAL(copy.get(), 0, copy->endSync());
     CPPUNIT_ASSERT_NO_THROW(copy.reset());
+#endif
 
     // insert both items, remove child, then parent
-    child = insert(createSourceA, config.childItem);
     parent = insert(createSourceA, config.parentItem);
+    child = insert(createSourceA, config.childItem);
 
     SOURCE_ASSERT_NO_FAILURE(copy.get(), copy.reset(createSourceB()));
     SOURCE_ASSERT_EQUAL(copy.get(), 0, copy->beginSync());
@@ -1074,6 +1082,7 @@ void LocalTests::testLinkedItems() {
     SOURCE_ASSERT_EQUAL(copy.get(), 0, copy->endSync());
     CPPUNIT_ASSERT_NO_THROW(copy.reset());
 
+#if LINKED_ITEMS_RELAXED_SEMANTIC
     // add child twice (should be turned into update)
     child = insert(createSourceA, config.childItem);
 
@@ -1110,6 +1119,7 @@ void LocalTests::testLinkedItems() {
     SOURCE_ASSERT_EQUAL(copy.get(), 1, countEqual(listDeletedItems(copy.get()), child));
     SOURCE_ASSERT_EQUAL(copy.get(), 0, copy->endSync());
     CPPUNIT_ASSERT_NO_THROW(copy.reset());
+#endif
 
     // add parent, then update it
     parent = insert(createSourceA, config.parentItem);
@@ -1148,6 +1158,7 @@ void LocalTests::testLinkedItems() {
     SOURCE_ASSERT_EQUAL(copy.get(), 0, copy->endSync());
     CPPUNIT_ASSERT_NO_THROW(copy.reset());
 
+#if LINKED_ITEMS_RELAXED_SEMANTIC
     // add child, then update it
     child = insert(createSourceA, config.childItem);
 
@@ -1184,6 +1195,7 @@ void LocalTests::testLinkedItems() {
     SOURCE_ASSERT_EQUAL(copy.get(), 1, countEqual(listDeletedItems(copy.get()), child));
     SOURCE_ASSERT_EQUAL(copy.get(), 0, copy->endSync());
     CPPUNIT_ASSERT_NO_THROW(copy.reset());
+#endif
 
     // add parent and child, then update child
     parent = insert(createSourceA, config.parentItem);
@@ -2607,7 +2619,6 @@ void ClientTest::getTestData(const char *type, Config &config)
             "RRULE:FREQ=WEEKLY;COUNT=10;INTERVAL=1;BYDAY=SU\n"
             "CREATED:20080407T193241\n"
             "LAST-MODIFIED:20080407T193241\n"
-            "RECURRENCE-ID:20080406T090000Z\n"
             "END:VEVENT\n"
             "END:VCALENDAR\n";
         config.childItem =

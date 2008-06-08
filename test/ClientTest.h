@@ -343,12 +343,24 @@ class ClientTest {
          *
          * Because SyncML cannot express such dependencies between items,
          * a SyncSource has to be able to insert, updated and remove
-         * both items independently.
+         * both items independently. However, operations which violate
+         * the semantic of the related items (like deleting the parent, but
+         * not the child) may have unspecified results (like also deleting
+         * the child). See LINKED_ITEMS_RELAXED_SEMANTIC.
          *
          * One example for main and subordinate items are a recurring
          * iCalendar 2.0 event and a detached recurrence.
          */
         const char *parentItem, *childItem;
+
+        /**
+         * define to 0 to disable tests which slightly violate the
+         * semantic of linked items by inserting children
+         * before/without their parent
+         */
+#ifndef LINKED_ITEMS_RELAXED_SEMANTIC
+# define LINKED_ITEMS_RELAXED_SEMANTIC 1
+#endif
 
         /**
          * called to dump all items into a file, required by tests which need
