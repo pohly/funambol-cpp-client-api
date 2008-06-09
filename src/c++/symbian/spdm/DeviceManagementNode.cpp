@@ -559,6 +559,9 @@ int DeviceManagementNode::renameFileInCwd(const char* src, const char* dst) {
         if (err == KErrAccessDenied) {
             LOG.error("Access denied");
         }
+        else if (err == KErrPathNotFound) {
+            LOG.error("Unable to find the specified folder");
+        }
         return -1;
     }
 }
