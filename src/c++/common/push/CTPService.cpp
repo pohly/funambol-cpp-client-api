@@ -771,6 +771,9 @@ void CmdTimeoutThread::run() {
         // the receiveThread will exit with error, so ctpThread will restore ctp.
         LOG.info("No response received from Server after %d seconds: closing CTP", timeout);
         ctpService->closeConnection();
+        
+        // Heartbeat thread can be in sleep mode, we must terminate it.
+        ctpService->stopHeartbeat();
     }
 
 finally:

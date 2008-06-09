@@ -260,7 +260,10 @@ public:
     void syncNotificationReceived(SyncNotification* sn);
     
     bool stopThread(FThread* thread);
+    
+    bool stopHeartbeat() { return stopThread(heartbeatThread); }
 
+    
 private:
     void hexDump(char *buf, int len);
     int extractMsgLength(const char* package, int packageLen);
