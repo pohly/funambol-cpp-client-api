@@ -186,6 +186,11 @@ sub Normalize {
     # removed or added by servers
     s/^DESCRIPTION:(.*?)(\\n)+$/DESCRIPTION:$1/gm;
 
+    # Strip trailing digits from TZID. They are appended by
+    # Evolution and SyncEvolution to distinguish VTIMEZONE
+    # definitions which have the same TZID, but different rules.
+    s/(^TZID:|;TZID=)([^;:]*?) \d+/$1$2/gm;
+
     # VTIMEZONE and TZID do not have to be preserved verbatim as long
     # as the replacement is still representing the same timezone.
     # Reduce TZIDs which follow the Olson database pseudo-standard
