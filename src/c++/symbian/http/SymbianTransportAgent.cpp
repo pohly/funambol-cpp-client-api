@@ -50,6 +50,9 @@
 #include "http/errors.h"
 #include "http/SymbianTransportAgent.h"
 
+#include "base/FConnection.h"  // for connection management
+
+
 USE_NAMESPACE
 
 /**
@@ -123,10 +126,31 @@ void CSymbianTransportAgent::ConstructL(URL& /* aUrl */)
     // must be installed when the session is opened and it 
     // must be running if a transaction is actually to do anything. 
     
+	// Get the connection manager instance
+	FConnection* connection = FConnection::getInstance();
+	if (!connection) {
+		LOG.error("TransportAgent: no active connection; exiting");
+		setError(ERR_HTTP, "No active connection");
+		return;
+    }
+	
+	// Session is owned by FConnection!
+	RSocketServ* socketServ = connection->getSession();
+	RConnection* rConnection = connection->getConnection();
+	// reuse active connection, please see:
+	// http://wiki.forum.nokia.com/index.php/CS000825_-_Using_an_already_active_connection
     TInt err;
     TRAP( err, iHttpSession.OpenL() );
     User::LeaveIfError( err );
 
+    // Set the session's connection info...
+    RStringPool strPool = iHttpSession.StringPool();
+    RHTTPConnectionInfo connInfo = iHttpSession.ConnectionInfo();
+    // ...to use the socket server
+    connInfo.SetPropertyL ( strPool.StringF(HTTP::EHttpSocketServ,RHTTPSession::GetTable() ), THTTPHdrVal (socketServ->Handle()) );
+    // ...to use the connection
+    connInfo.SetPropertyL ( strPool.StringF(HTTP::EHttpSocketConnection,RHTTPSession::GetTable() ), THTTPHdrVal (REINTERPRET_CAST(TInt, rConnection)) );
+     
     // Create the nested active scheduler
     // please see » Symbian OS v9.1 » Symbian OS reference » C++ component
     // reference » Base E32 » CActiveSchedulerWait
@@ -307,6 +331,16 @@ char* CSymbianTransportAgent::sendMessage(const char* msg)
         TPtrC8 ptr(reinterpret_cast<const TUint8*>(msg));
         iPostBody = HBufC8::NewL(ptr.Length());
         iPostBody->Des().Copy(ptr);
+    }
+    
+    FConnection* connection = FConnection::getInstance();
+    if (connection->isConnected() == false) {
+        int res = connection->startConnection();
+        if (res) {
+            setErrorF(ERR_CONNECT, "Connection error (%d): please check your internet settings.", res); 
+            LOG.error(getLastErrorMsg());
+            goto finally;
+        }
     }
 
     // Get request method string for HTTP POST
