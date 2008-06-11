@@ -140,6 +140,7 @@ error:
 
 FConnection::FConnection() : iLocalIpAddress("127.0.0.1"),
                              iIAP(0),
+                             iIAPName(""),
                              iRetryConnection(0) {
 }
 
@@ -152,7 +153,7 @@ FConnection::~FConnection() {
 
 const int FConnection::startConnection() 
 {
-    return startConnection(iIAPDefaultName);
+    return startConnection(iIAPName);
 }
 
 const int FConnection::startConnection(const StringBuffer& aIAPName)
@@ -174,7 +175,7 @@ const int FConnection::startConnection(const StringBuffer& aIAPName)
         prefs.SetDialogPreference(ECommDbDialogPrefDoNotPrompt);
         prefs.SetIapId(0);
     }
-    else if (aIAPName == "Ask") {
+    else if (aIAPName.empty() || aIAPName == "Ask") {
         //
         // Prompt user for IAP selection
         //
@@ -187,9 +188,7 @@ const int FConnection::startConnection(const StringBuffer& aIAPName)
         if (iapID >= 0) {
             LOG.debug("SetDialogPreference");
             prefs.SetDialogPreference(ECommDbDialogPrefDoNotPrompt);
-            LOG.debug("SetIapId");
             prefs.SetIapId(iapID);
-            LOG.debug("Done");
         }
         else {
             LOG.debug("IAP '%s' not found!", aIAPName.c_str());
@@ -209,11 +208,9 @@ const int FConnection::startConnection(const StringBuffer& aIAPName)
 //    iConnection.SetOpt(KCOLProvider, KConnDisableTimers, ETrue);
 //#endif
     
-   
-    LOG.debug("Start connection");
+
     // Start connection
     iLastError = iConnection.Start(prefs);
-    LOG.debug("Done");
     if (iLastError != KErrNone) {
         errMsg.sprintf("FConnection error: unable to start connection (code %d)", iLastError);
         LOG.debug("Goto retry");
@@ -225,7 +222,7 @@ const int FConnection::startConnection(const StringBuffer& aIAPName)
     _LIT(KIAPSettingName, "IAP\\Id");
     iConnection.GetIntSetting(KIAPSettingName, iIAP);
     iIAPName = GetIAPNameFromID(iIAP);
-    LOG.debug("Current active IAP ID = %d, name = %s", iIAP, iIAPName.c_str());
+    LOG.debug("Current active IAP ID = %d, name = '%s'", iIAP, iIAPName.c_str());
     //
     // TODO: should we persist the iIAPName in the config, here?
     //
@@ -235,12 +232,18 @@ const int FConnection::startConnection(const StringBuffer& aIAPName)
     
     
 retry:
+
+    if (iIAPName.empty() || iIAPName == "Ask") {
+        LOG.error("Connection error: no IAP selected, don't retry");
+        return iLastError;
+    }
+
     LOG.debug("About to retry");
     LOG.error(errMsg.c_str());
     if (iRetryConnection < MAX_RETRY_CONNECTION) {
         iRetryConnection ++;
         LOG.info("Retry connection (%d time)...", iRetryConnection);
-        startConnection("Ask");     // Ask the user?
+        startConnection(iIAPName);
     }
     else {
         LOG.error("FConnection: %d connection failed", iRetryConnection);
@@ -288,11 +291,6 @@ const int FConnection::stopConnection()
 }
 
 
-void FConnection::setIAPDefaultName(const StringBuffer& aIAPName)
-{
-    iIAPDefaultName = aIAPName;
-}
-
 
 const StringBuffer& FConnection::getLocalIpAddress() 
 {
@@ -317,7 +315,7 @@ TInt FConnection::GetIAPIDFromName(const StringBuffer& aIAPName)
     for (TUint32 i=0; ok &&(i<select->Count()); i++) 
     {
         StringBuffer tmp = bufToStringBuffer(select->Name());
-        LOG.debug("Found IAP: %s (id = %d)", tmp.c_str(), select->Uid());
+        //LOG.debug("Found IAP: %s (id = %d)", tmp.c_str(), select->Uid());
         if (select->Name() == iapName) {
             ret = select->Uid();
             //LOG.debug("Found IAP: %s (id = %d)", aIAPName.c_str(), ret);
@@ -327,9 +325,8 @@ TInt FConnection::GetIAPIDFromName(const StringBuffer& aIAPName)
             ok = select->MoveNext();
         }
     }
-    LOG.debug("IAP Found");
+    //LOG.debug("IAP Found");
     CleanupStack::PopAndDestroy(2);    //commdb and select
-    LOG.debug("Returning");
     
     return ret;
 }
@@ -348,7 +345,7 @@ StringBuffer FConnection::GetIAPNameFromID(const TUint aIAPID)
     for (TUint32 i=0; ok &&(i<select->Count()); i++) 
     {
         StringBuffer tmp = bufToStringBuffer(select->Name());
-        LOG.debug("Name=%s -- %d", tmp.c_str(), select->Uid());
+        //LOG.debug("Name=%s -- %d", tmp.c_str(), select->Uid());
         if (select->Uid() == aIAPID) {
             ret = bufToStringBuffer(select->Name());
             //LOG.debug("Found IAP: %d (name = %s)", aIAPID, ret.c_str());

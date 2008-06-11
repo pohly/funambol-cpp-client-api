@@ -78,14 +78,10 @@ private:
     /// It's set once the connection is up and running
     TUint32                 iIAP;
     
-    /// Current IAP name of the active connection
-    /// It's set once the connection is up and running
+    /// Current IAP name of the active connection.
+    /// It can be set calling setIAPName() method.
+    /// It's set also when the connection is up and running.
     StringBuffer            iIAPName;
-    
-    // TODO: remove? use only iIAPName?
-    /// Default IAP name for the connection.
-    /// Should be set at the beginning, calling setIAPDefaultName()
-    StringBuffer            iIAPDefaultName;
     
     
     /// The last error code
@@ -153,10 +149,10 @@ public:
     
     /**
      * Starts a new GPRS connection, given the IAP name.
-     * @param aIAPName  "Ask"    : if we want to prompt the user to select the IAP
-     *                  "Default": will use the default IAP of the system, no prompts
-     *                  "<name>" : will use the <name> IAP, no prompts. 
-     *                             If not found, will prompt the user to select the IAP
+     * @param aIAPName  "Ask" or "" : if we want to prompt the user to select the IAP
+     *                  "Default"   : will use the default IAP of the system, no prompts
+     *                  "<name>"    : will use the <name> IAP, no prompts. 
+     *                                If not found, will prompt the user to select the IAP
      * @return  0 if no error
      */
     const int startConnection(const StringBuffer& aIAPName);
@@ -181,12 +177,15 @@ public:
     const StringBuffer& getLocalIpAddress();
     
     /**
-     * Sets the default IAP name, that will be used in startConnection().
+     * Sets the IAP name, that will be used in startConnection().
      * This method should be called at the beginning, so that
-     * subsequent calls to startConnection() will use this default IAP.
+     * subsequent calls to startConnection() will use this IAP.
      * @param  aIAPName  the name of the IAP
      */
-    void setIAPDefaultName(const StringBuffer& aIAPName);
+    void setIAPName(const StringBuffer& aIAPName) { iIAPName = aIAPName; }
+    
+    /// Returns the current IAP name.
+    StringBuffer& getIAPName() { return iIAPName; }
     
     /**
      * Returns an array of (new allocated) descriptors, with all 
