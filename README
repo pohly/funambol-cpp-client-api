@@ -95,12 +95,6 @@ http://www.funambol.org/support/faq.html
 WIKI:
 https://wiki.objectweb.org/sync4j/
 
-Mailinglist archives:
-http://groups.yahoo.com/group/Sync4j (login required)
-http://sourceforge.net/mailarchive/forum.php?forum_id=215 (sync4j-users)
-http://sourceforge.net/mailarchive/forum.php?forum_id=48877
-(funambol-dev)
-
 Bugs
 ====
 
@@ -117,7 +111,7 @@ Funambol offers commercial support for this software.
 See http://www.funambol.com/support.
 
 You can also get support from the open source community.
-See http://www.funambol.com/opensource/support.
+See https://core.forge.funambol.org/
 
-Copyright (c) 2003-2007 Funambol. All rights reserved. 
+Copyright (c) 2008 Funambol. All rights reserved. 
 
