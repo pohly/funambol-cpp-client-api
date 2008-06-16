@@ -41,6 +41,7 @@
 
 #include "base/util/utils.h"
 #include "base/util/stringUtils.h"
+#include "base/util/symbianUtils.h"
 #include "base/util/StringBuffer.h"
 #include "base/fscapi.h"
 #include "base/SymbianLog.h"
@@ -142,7 +143,6 @@ void DeviceManagementNode::update(bool read) {
         } 
         else {
             int i = 0;
-
             while (true) {
                 line *curr = (line *)lines->get(i);
                 if (!curr) {
@@ -242,15 +242,15 @@ int DeviceManagementNode::getChildrenMaxCount() {
     // TODO use utility function for string conversion
     TBuf8<DIM_MANAGEMENT_PATH> buf8((const unsigned char*)fileSpecSb.c_str());
     HBufC* fileSpec = CnvUtfConverter::ConvertToUnicodeFromUtf8L(buf8);
-    ++cleanupStackSize;
     CleanupStack::PushL(fileSpec);
+    ++cleanupStackSize;
 
     //
     // Connect to the file server
     //
     fileSession.Connect();
-    ++cleanupStackSize;
     CleanupClosePushL(fileSession);
+    ++cleanupStackSize;
 
     StringBuffer buf;
 
@@ -264,8 +264,8 @@ int DeviceManagementNode::getChildrenMaxCount() {
     if (err != KErrNone || dirList == NULL) {
         goto finally;
     }
-    ++cleanupStackSize;
     CleanupStack::PushL(dirList);
+    ++cleanupStackSize;
 
     count = dirList->Count();
 
@@ -293,15 +293,15 @@ char **DeviceManagementNode::getChildrenNames() {
     // TODO use utility function for string conversion
     TBuf8<DIM_MANAGEMENT_PATH> buf8((const unsigned char*)fileSpecSb.c_str());
     HBufC* fileSpec = CnvUtfConverter::ConvertToUnicodeFromUtf8L(buf8);
-    ++cleanupStackSize;
     CleanupStack::PushL(fileSpec);
+    ++cleanupStackSize;
 
     //
     // Connect to the file server
     //
     fileSession.Connect();
-    ++cleanupStackSize;
     CleanupClosePushL(fileSession);
+    ++cleanupStackSize;
 
     //
     // Get the directories list, sorted by name
@@ -313,8 +313,8 @@ char **DeviceManagementNode::getChildrenNames() {
     if (err != KErrNone || dirList == NULL) {
         goto finally;
     }
-    ++cleanupStackSize;
     CleanupStack::PushL(dirList);
+    ++cleanupStackSize;
 
     //
     // Process each entry
@@ -528,8 +528,8 @@ StringBuffer DeviceManagementNode::contextToPath(const char* cont) {
     return sb;
 }
 
-int DeviceManagementNode::renameFileInCwd(const char* src, const char* dst) {
-
+int DeviceManagementNode::renameFileInCwd(const char* src, const char* dst)
+{
     RFs fileSession;
     RFile file;
 
@@ -550,6 +550,8 @@ int DeviceManagementNode::renameFileInCwd(const char* src, const char* dst) {
     TInt err = fileSession.Replace(srcDes, dstDes);
 
     CleanupStack::PopAndDestroy(&fileSession);
+    srcDes.Close();
+    dstDes.Close();
 
     if (err == KErrNone) {
         return 0;
