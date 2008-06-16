@@ -613,6 +613,9 @@ int32_t CTPService::receive() {
         ret = 1;
     }
 
+    // We are terminating receiving, therefore we must stop the heartbeat
+    stopThread(heartbeatThread);
+
     return ret;
 }
 
