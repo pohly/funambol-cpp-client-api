@@ -125,6 +125,7 @@ void showAlert(const char* aMsg)
     showAlert(buf16);
     buf16.Close();
 }
+
 void showAlert(const wchar_t* aMsg)
 {
     RBuf16 buf16;
@@ -132,6 +133,28 @@ void showAlert(const wchar_t* aMsg)
     showAlert(buf16);
     buf16.Close();
 }
+
+void logMemInfo() {
+
+    TInt size, available, biggest;
+    RHeap& heap = User::Heap();
+
+    heap.Compress();
+
+    available = heap.Available(biggest);
+    size      = heap.Size();
+#if 1
+    LOG.debug("Heap size = %d -- available = %d -- biggest = %d", size, available, biggest);
+#else
+    LOG.debug("Heap size = -- available = -- biggest =");
+    RBuf msg;
+    msg.Create(255);
+    msg.Format(_L("Heap size = %d -- available = %d -- biggest = %d"), size, available, biggest);
+    msgBox(msg);
+    msg.Close();
+#endif
+}
+
 
 END_NAMESPACE
 

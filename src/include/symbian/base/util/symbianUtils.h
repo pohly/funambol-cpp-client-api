@@ -39,6 +39,7 @@
 
 #include "base/globalsdef.h"
 #include "base/fscapi.h"
+#include "base/Log.h"
 
 BEGIN_NAMESPACE
 
@@ -76,6 +77,11 @@ void showAlert(const TDesC&   aMsg);
 void showAlert(const TDesC8&  aMsg);
 void showAlert(const char*    aMsg);
 void showAlert(const WCHAR* aMsg);
+
+/**
+ * Log current heap usage information. Useful for debugging.
+ */
+void logMemInfo();
 
 END_NAMESPACE
 
