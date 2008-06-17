@@ -117,12 +117,13 @@ public:
      */
     typedef enum {
         CTP_STATE_DISCONNECTED          = 0, 
-        CTP_STATE_CONNECTING            = 1, 
-        CTP_STATE_CONNECTED             = 2,
-        CTP_STATE_AUTHENTICATING        = 3, 
-        CTP_STATE_READY                 = 4, 
-        CTP_STATE_WAITING_RESPONSE      = 5, 
-        CTP_STATE_CLOSING               = 6
+        CTP_STATE_SLEEPING              = 1,
+        CTP_STATE_CONNECTING            = 2, 
+        CTP_STATE_CONNECTED             = 3,
+        CTP_STATE_AUTHENTICATING        = 4, 
+        CTP_STATE_READY                 = 5, 
+        CTP_STATE_WAITING_RESPONSE      = 6, 
+        CTP_STATE_CLOSING               = 7
     } CtpState;
 
 private:

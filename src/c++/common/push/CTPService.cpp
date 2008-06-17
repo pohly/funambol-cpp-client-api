@@ -303,12 +303,12 @@ int32_t CTPService::closeConnection() {
         LOG.info("Socket connection closed");
     }
 
-    ctpState = CTP_STATE_DISCONNECTED;
     LOG.debug("Total number of bytes sent = %d",     totalBytesSent);
     LOG.debug("Total number of bytes received = %d", totalBytesReceived);
     totalBytesSent     = 0;
     totalBytesReceived = 0;
-
+    
+    ctpState = CTP_STATE_DISCONNECTED;
     return ret;
 }
 
@@ -855,6 +855,7 @@ void CTPThread::run() {
             // Restoring from a broken connection: close socket and wait some seconds.
             LOG.debug("Restoring CTP connection...");
             ctpService->closeConnection();
+            ctpService->setCtpState(CTPService::CTP_STATE_SLEEPING);
 
             int32_t ctpRetry = ctpService->getConfig()->getCtpRetry();
             int32_t maxCtpRetry = ctpService->getConfig()->getMaxCtpRetry();
@@ -864,7 +865,7 @@ void CTPThread::run() {
 
             // CTP could have been restarted during the sleep time!
             // So exit if the ctp is active.
-            if (ctpService->getCtpState() > CTPService::CTP_STATE_DISCONNECTED) {
+            if (ctpService->getCtpState() > CTPService::CTP_STATE_SLEEPING) {
                 LOG.debug("CTP already active -> don't restore ctp");
                 errorCode = 6;
                 goto finally;
