@@ -233,13 +233,14 @@ const int FConnection::startConnection(const StringBuffer& aIAPName)
     
 retry:
 
+    LOG.error(errMsg.c_str());
+
     if (iIAPName.empty() || iIAPName == "Ask") {
-        LOG.error("Connection error: no IAP selected, don't retry");
+        LOG.debug("Connection error and no IAP stored: don't retry");
         return iLastError;
     }
 
-    LOG.debug("About to retry");
-    LOG.error(errMsg.c_str());
+    LOG.debug("About to retry...");
     if (iRetryConnection < MAX_RETRY_CONNECTION) {
         iRetryConnection ++;
         LOG.info("Retry connection (%d time)...", iRetryConnection);
