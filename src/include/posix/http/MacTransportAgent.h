@@ -49,6 +49,11 @@
 #else
     #import <CFNetwork/CFNetwork.h>
 #endif
+#define ERR_HTTP_TIME_OUT               ERR_TRANSPORT_BASE+ 7
+#define ERR_HTTP_NOT_FOUND              ERR_TRANSPORT_BASE+60
+#define ERR_HTTP_REQUEST_TIMEOUT        ERR_TRANSPORT_BASE+61
+#define ERR_HTTP_INFLATE                ERR_TRANSPORT_BASE+70
+#define ERR_HTTP_DEFLATE                ERR_TRANSPORT_BASE+71
 
 
 

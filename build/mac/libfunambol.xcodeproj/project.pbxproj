@@ -423,6 +423,7 @@
 		7C9F58B90DAF62AE007E0091 /* CacheSyncSource.h in Headers */ = {isa = PBXBuildFile; fileRef = 7C9F58B80DAF62AE007E0091 /* CacheSyncSource.h */; };
 		7CB0367A0DB4EC8A003F4E5F /* SQLKeyValueStore.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7CB036780DB4EC8A003F4E5F /* SQLKeyValueStore.cpp */; };
 		7CB0367E0DB4EC9A003F4E5F /* SQLKeyValueStore.h in Headers */ = {isa = PBXBuildFile; fileRef = 7CB0367C0DB4EC9A003F4E5F /* SQLKeyValueStore.h */; };
+		AB3E85FA0E07F8CC00581A6C /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AB3E85F90E07F8CB00581A6C /* SystemConfiguration.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -873,6 +874,7 @@
 		7C9F58CE0DAF639E007E0091 /* globalsdef.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = globalsdef.h; sourceTree = "<group>"; };
 		7CB036780DB4EC8A003F4E5F /* SQLKeyValueStore.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = SQLKeyValueStore.cpp; sourceTree = "<group>"; };
 		7CB0367C0DB4EC9A003F4E5F /* SQLKeyValueStore.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SQLKeyValueStore.h; sourceTree = "<group>"; };
+		AB3E85F90E07F8CB00581A6C /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
 		D2AAC046055464E500DB518D /* libfunambol.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libfunambol.a; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -903,6 +905,7 @@
 				7C8B0D630DB74DFD005113A8 /* libsqlite3.0.8.6.dylib in Frameworks */,
 				7C8B0D9A0DB7517C005113A8 /* CoreServices.framework in Frameworks */,
 				7C8B0E630DB75288005113A8 /* CoreFoundation.framework in Frameworks */,
+				AB3E85FA0E07F8CC00581A6C /* SystemConfiguration.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -977,6 +980,7 @@
 		7C8B0C130DB73AAD005113A8 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				AB3E85F90E07F8CB00581A6C /* SystemConfiguration.framework */,
 				7C8B0A620DB7394F005113A8 /* CoreFoundation.framework */,
 				7C8B0C3A0DB73B79005113A8 /* OSX */,
 				7C8B0C390DB73B69005113A8 /* iPhone */,
