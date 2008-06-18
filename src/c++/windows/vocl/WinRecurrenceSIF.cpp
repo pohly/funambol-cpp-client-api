@@ -123,7 +123,11 @@ wstring WinRecurrenceSIF::adaptToSIFSpecs(const wstring& propName, const wstring
     wstring propertyValue = L"";
 
     // "PatternEndDate" is always in UTC format "YYYYMMDDThhmmssZ"
-    if (propValue.length() == 8 && propName == L"PatternStartDate") {
+    // since 7.0.x client version for the Task 
+    // (appointments are in local time) also patternenddate
+    // is in format yyyy-mm-dd
+    if (propValue.length() == 8 && 
+        (propName == L"PatternStartDate" || propName == L"PatternEndDate")) {
         propertyValue = formatDateWithMinus(propValue);    
     }
 
