@@ -59,6 +59,7 @@ FSocket* FSocket::NewL(const StringBuffer& peer, int32_t port)
     
     if (self->getLastStatus() != KErrNone) {
         // Something wrong.
+        LOG.debug("FSocket::NewL - error in ConstructL (status = %d)", self->getLastStatus());
         delete self;
         return NULL;
     }
@@ -110,10 +111,10 @@ void FSocket::ConstructL(const StringBuffer& peer, int32_t port)
     // GCCE: use the existing connection
     // If first time, connect to gprs
     if (!connection->isConnected()) {
-        LOG.debug("Starting connection");
+        LOG.debug("FSocket: not connected, start new connection");
         if (connection->startConnection()) {
             iStatus = -1;
-            errorMsg = "Error starting connection";
+            errorMsg = "FSocket: error starting connection";
             goto error;
         }
     }
@@ -264,11 +265,12 @@ error:
 void FSocket::close() 
 {
     //LOG.debug("FSocket::close");
-    
     // TODO: shutdown if I/O in progress?
     //iSocket.Shutdown(RSocket::EImmediate, iStatus);
     
-    iSocket.CancelAll();
+    // Seems that this call causes a crash when startConnection failed for network error
+    //iSocket.CancelAll();
+
     iSocket.Close();
 }
 
