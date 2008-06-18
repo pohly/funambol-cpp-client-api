@@ -273,6 +273,7 @@ int32_t CTPService::openConnection() {
     LOG.debug("Create SOCKET connection...");
     StringBuffer url(config.getUrlTo().c_str());
     ctpSocket = FSocket::createSocket(url, config.getCtpPort());
+    LOG.debug("after socket created");
 
     if (ctpSocket == NULL) {
         LOG.error("Cannot create FSocket");
@@ -731,6 +732,14 @@ void CTPService::syncNotificationReceived(SyncNotification* sn) {
     }
 }
 
+void CTPService::notifyError(const int errorCode, const int additionalInfo) {
+    
+    if (pushListener) {
+        // Forward the error to the registered listener
+        pushListener->onCTPError(errorCode);
+    }
+}
+
 
 
 //////////////////////////////////////////////////////////////////////////////
@@ -773,6 +782,8 @@ void CmdTimeoutThread::run() {
         // Response not received -> close ctp connection so that
         // the receiveThread will exit with error, so ctpThread will restore ctp.
         LOG.info("No response received from Server after %d seconds: closing CTP", timeout);
+        ctpService->notifyError(CTPService::CTP_ERROR_RECEIVE_TIMOUT);
+        
         ctpService->closeConnection();
         
         // Heartbeat thread can be in sleep mode, we must terminate it.
@@ -860,13 +871,19 @@ void CTPThread::run() {
             int32_t ctpRetry = ctpService->getConfig()->getCtpRetry();
             int32_t maxCtpRetry = ctpService->getConfig()->getMaxCtpRetry();
             int32_t sleepTime = ctpRetry < maxCtpRetry ? ctpRetry : maxCtpRetry;
+            
             LOG.info("CTP will be restored in %d seconds...", sleepTime);
+            if (sleepTime == maxCtpRetry) {
+                // In case the max retry time is reached
+                ctpService->notifyError(CTPService::CTP_ERROR_CONNECTION_FAILED, sleepTime * 1000);
+            }
             FThread::sleep(sleepTime * 1000);
 
             // CTP could have been restarted during the sleep time!
             // So exit if the ctp is active.
             if (ctpService->getCtpState() > CTPService::CTP_STATE_SLEEPING) {
                 LOG.debug("CTP already active -> don't restore ctp");
+                ctpService->notifyError(CTPService::CTP_ERROR_ANOTHER_INSTANCE);
                 errorCode = 6;
                 goto finally;
             }
@@ -950,17 +967,20 @@ void CTPThread::run() {
                     LOG.info("CTP error: Client not authenticated. Please check your credentials.");
                     //showInvalidCredentialsMsgBox(INVALID_CREDENTIALS, 10);      // code 401
                     errorCode = 2;
+                    ctpService->notifyError(CTPService::CTP_ERROR_NOT_AUTHENTICATED);
                     goto error;
                 }
                 else if (authStatus == ST_UNAUTHORIZED) {
                     LOG.info("CTP error: Client unauthorized by the Server. Please check your credentials.");
                     //showInvalidCredentialsMsgBox(PAYMENT_REQUIRED, 10);         // code 402
                     errorCode = 2;
+                    ctpService->notifyError(CTPService::CTP_ERROR_UNAUTHORIZED);
                     goto error;
                 }
                 else {
                     LOG.info("CTP error: received status '0x%02x'.", authStatus);
                     errorCode = 2;
+                    ctpService->notifyError(CTPService::CTP_ERROR_RECEIVED_UNKNOWN_COMMAND);
                     goto error;
                 }
                 // no 'break': need to enter into case ST_OK...
@@ -1035,6 +1055,7 @@ void CTPThread::run() {
                 if (saveNonceParam(authStatusMsg) == false) {
                     LOG.debug("No new nonce received.");
                 }
+                ctpService->notifyError(CTPService::CTP_ERROR_UNAUTHORIZED);
                 errorCode = 3;
                 goto error;
 
@@ -1044,18 +1065,22 @@ void CTPThread::run() {
                 LOG.info("Authentication forbidden by the Server, please check your credentials.");
                 //showInvalidCredentialsMsgBox(FORBIDDEN, 10);                // code 403
                 errorCode = 4;
+                ctpService->notifyError(CTPService::CTP_ERROR_AUTH_FORBIDDEN);
                 goto error;
 
             case ST_ERROR:
                 // Error -> restore connection
                 LOG.info("Received ERROR status from Server: restore ctp connection");
                 //printErrorStatus(authStatusMsg);
+                // TODO: parse the error message and pass to the notification function
+                ctpService->notifyError(CTPService::CTP_ERROR_RECEIVED_STATUS_ERROR);
                 restore = true;
                 continue;
 
             default:
                 // Unexpected status -> restore connection
                 LOG.error("Unexpected status received '0x%02x' -> restore ctp connection", authStatus);
+                ctpService->notifyError(CTPService::CTP_ERROR_RECEIVED_WRONG_COMMAND);
                 restore = true;
                 continue;
         }
@@ -1163,6 +1188,7 @@ void ReceiverThread::run() {
         if (!statusMsg) {
             // Error on receiving -> exit thread
             errorCode = -1;
+            ctpService->notifyError(CTPService::CTP_ERROR_RECEIVING_STATUS);
             goto finally;
         }
 
@@ -1189,11 +1215,13 @@ void ReceiverThread::run() {
 
             case ST_ERROR:
                 LOG.debug("[ERROR] message received");
+                ctpService->notifyError(CTPService::CTP_ERROR_RECEIVED_STATUS_ERROR);
                 //printErrorStatus(statusMsg);
             default:
                 // Error from server -> exit thread (will try restoring the socket from scratch)
                 LOG.debug("Bad status received (code 0x%02x), exiting thread", status);
                 errorCode = -2;
+                ctpService->notifyError(CTPService::CTP_ERROR_RECEIVED_UNKNOWN_COMMAND);
                 goto finally;
         }
     }
@@ -1242,6 +1270,7 @@ void HeartbeatThread::run() {
         if (ctpService->sendReadyMsg()) {
             LOG.debug("Error sending READY msg");
             errorCode = 1;
+            ctpService->notifyError(CTPService::CTP_ERROR_SENDING_READY);
             // By closing the connection we force the CTP to restart
             ctpService->closeConnection();
             break;

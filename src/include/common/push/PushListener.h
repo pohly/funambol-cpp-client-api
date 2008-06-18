@@ -69,6 +69,15 @@ public:
      *                       requested by the Server through the push message.
      */
     virtual void onNotificationReceived(const ArrayList& /* serverURIList */) {}
+    
+    /**
+     * Method called when a CTP error occurs.
+     * Clients should override this method and implement 
+     * desired actions for the each error.
+     * @param errorCode       the CTP error code (one of CtpError)
+     * @param additionalInfo  [optional] further information about the error
+     */
+    virtual void onCTPError(const int errorCode, const int additionalInfo = 0) {}
 };
 
 

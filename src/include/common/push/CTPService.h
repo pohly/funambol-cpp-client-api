@@ -53,6 +53,7 @@
 /**< Each time the CTP connection is broken, we double the ctpRetry time */
 #define CTP_RETRY_INCREASE_FACTOR       2
 
+
 BEGIN_NAMESPACE
 
 
@@ -114,6 +115,7 @@ public:
      * The state of CTP connection.
      * State CTP_STATE_WAITING_RESPONSE is used to check the timeout (ctpCmdTimeout)
      * for which the client shall wait for the server response, after sending a command.
+     * CTP Service is not active only when state is DISCONNECTED. 
      */
     typedef enum {
         CTP_STATE_DISCONNECTED          = 0, 
@@ -125,6 +127,23 @@ public:
         CTP_STATE_WAITING_RESPONSE      = 6, 
         CTP_STATE_CLOSING               = 7
     } CtpState;
+    
+    /**
+     * Possible errors of CTP service.
+     */
+    typedef enum {
+        CTP_ERROR_NOT_AUTHENTICATED         = 1,
+        CTP_ERROR_UNAUTHORIZED              = 2, 
+        CTP_ERROR_AUTH_FORBIDDEN            = 3, 
+        CTP_ERROR_RECEIVED_UNKNOWN_COMMAND  = 4,
+        CTP_ERROR_RECEIVED_STATUS_ERROR     = 5, 
+        CTP_ERROR_RECEIVED_WRONG_COMMAND    = 6, 
+        CTP_ERROR_ANOTHER_INSTANCE          = 7,
+        CTP_ERROR_SENDING_READY             = 8,
+        CTP_ERROR_RECEIVING_STATUS          = 9,
+        CTP_ERROR_RECEIVE_TIMOUT            = 10,
+        CTP_ERROR_CONNECTION_FAILED         = 11
+    } CtpError;
 
 private:
 
@@ -259,6 +278,15 @@ public:
      * @param sn  the SyncNotification object received
      */
     void syncNotificationReceived(SyncNotification* sn);
+    
+    /**
+     * Method called when a CTP error occurs.
+     * Will notify the pushListener (if registered) with the passed
+     * error code and (optional) addinitional info.
+     * @param errorCode       the CTP error code (one of CtpError)
+     * @param additionalInfo  [optional] further information about the error
+     */
+    void notifyError(const int errorCode, const int additionalInfo = 0);
     
     bool stopThread(FThread* thread);
     
