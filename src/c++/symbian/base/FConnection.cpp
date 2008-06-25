@@ -283,10 +283,12 @@ const bool FConnection::isConnected()
 const int FConnection::stopConnection() 
 {
     iLastError = KErrNone;
-    if (isConnected()) 
-    {
+    if (isConnected()) {
         LOG.debug("Stopping the current connection");
         iLastError = iConnection.Stop(/*RConnection::EStopAuthoritative*/);
+    }
+    else {
+        LOG.debug("No need to stop connection (not connected)");
     }
     return iLastError;
 }
