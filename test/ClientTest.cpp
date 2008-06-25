@@ -65,7 +65,7 @@ static std::list<std::string> listAnyItems(
     SyncItem * (SyncSource::*first)(),
     SyncItem * (SyncSource::*next)() )
 {
-    SyncItem *item;
+    SyncItem *item = NULL;
     std::list<std::string> res;
 
     CPPUNIT_ASSERT(source);
@@ -158,7 +158,7 @@ static void importItem(SyncSource *source, std::string &data)
         SyncItem item;
         item.setData( data.c_str(), (long)data.size() );
         item.setDataType( TEXT("raw") );
-        int status;
+        int status = STC_OK;
         SOURCE_ASSERT_NO_FAILURE(source, status = source->addItem(item));
         CPPUNIT_ASSERT(status == STC_OK || status == STC_ITEM_ADDED);
         CPPUNIT_ASSERT(item.getKey() != 0);
@@ -205,7 +205,7 @@ void LocalTests::addTests() {
     }
 }
 
-std::string LocalTests::insert(CreateSource createSource, const char *data) {
+std::string LocalTests::insert(CreateSource createSource, const char *data, bool relaxed) {
     std::string uid;
 
     // create source
@@ -214,11 +214,11 @@ std::string LocalTests::insert(CreateSource createSource, const char *data) {
 
     // count number of already existing items
     SOURCE_ASSERT(source.get(), source->beginSync() == 0);
-    int numItems;
+    int numItems = 0;
     CPPUNIT_ASSERT_NO_THROW(numItems = countItems(source.get()));
     SyncItem item;
     item.setData(data, (long)strlen(data));
-    int status;
+    int status = STC_OK;
     SOURCE_ASSERT_NO_FAILURE(source.get(), status = source->addItem(item));
     CPPUNIT_ASSERT(item.getKey() != 0);
     CPPUNIT_ASSERT(wcslen(item.getKey()) > 0);
@@ -228,20 +228,22 @@ std::string LocalTests::insert(CreateSource createSource, const char *data) {
     // delete source again
     CPPUNIT_ASSERT_NO_THROW(source.reset());
 
-    // two possible results:
-    // - a new item was added
-    // - the item was matched against an existing one
-    CPPUNIT_ASSERT_NO_THROW(source.reset(createSource()));
-    CPPUNIT_ASSERT(source.get() != 0);
-    SOURCE_ASSERT(source.get(), source->beginSync() == 0);
-    CPPUNIT_ASSERT(status == STC_OK || status == STC_ITEM_ADDED || status == STC_CONFLICT_RESOLVED_WITH_MERGE);
-    CPPUNIT_ASSERT_EQUAL(numItems + (status == STC_CONFLICT_RESOLVED_WITH_MERGE ? 0 : 1),
-                         countItems(source.get()));
-    CPPUNIT_ASSERT(countNewItems(source.get()) == 0);
-    CPPUNIT_ASSERT(countUpdatedItems(source.get()) == 0);
-    CPPUNIT_ASSERT(countDeletedItems(source.get()) == 0);
-    SOURCE_ASSERT(source.get(), source->endSync() == 0 );
-    CPPUNIT_ASSERT_NO_THROW(source.reset());
+    if (!relaxed) {
+        // two possible results:
+        // - a new item was added
+        // - the item was matched against an existing one
+        CPPUNIT_ASSERT_NO_THROW(source.reset(createSource()));
+        CPPUNIT_ASSERT(source.get() != 0);
+        SOURCE_ASSERT(source.get(), source->beginSync() == 0);
+        CPPUNIT_ASSERT(status == STC_OK || status == STC_ITEM_ADDED || status == STC_CONFLICT_RESOLVED_WITH_MERGE);
+        CPPUNIT_ASSERT_EQUAL(numItems + (status == STC_CONFLICT_RESOLVED_WITH_MERGE ? 0 : 1),
+                             countItems(source.get()));
+        CPPUNIT_ASSERT(countNewItems(source.get()) == 0);
+        CPPUNIT_ASSERT(countUpdatedItems(source.get()) == 0);
+        CPPUNIT_ASSERT(countDeletedItems(source.get()) == 0);
+        SOURCE_ASSERT(source.get(), source->endSync() == 0 );
+        CPPUNIT_ASSERT_NO_THROW(source.reset());
+    }
 
 #if 0
     /* source.createItem() is a SyncEvolution extension which cannot be used here */
@@ -896,7 +898,7 @@ void LocalTests::testLinkedItems() {
 #if LINKED_ITEMS_RELAXED_SEMANTIC
     // insert child first, then parent
     child = insert(createSourceA, config.childItem);
-    parent = insert(createSourceA, config.parentItem);
+    parent = insert(createSourceA, config.parentItem, true);
 
     SOURCE_ASSERT_NO_FAILURE(copy.get(), copy.reset(createSourceB()));
     SOURCE_ASSERT_EQUAL(copy.get(), 0, copy->beginSync());
@@ -924,7 +926,7 @@ void LocalTests::testLinkedItems() {
 #endif
 
 #if LINKED_ITEMS_RELAXED_SEMANTIC
-    // insert child first, check changes, then insert then parent
+    // insert child first, check changes, then insert the parent
     child = insert(createSourceA, config.childItem);
 
     SOURCE_ASSERT_NO_FAILURE(copy.get(), copy.reset(createSourceB()));
@@ -937,14 +939,16 @@ void LocalTests::testLinkedItems() {
     SOURCE_ASSERT_EQUAL(copy.get(), 0, copy->endSync());
     CPPUNIT_ASSERT_NO_THROW(copy.reset());
 
-    parent = insert(createSourceA, config.parentItem);
+    parent = insert(createSourceA, config.parentItem, true);
 
     SOURCE_ASSERT_NO_FAILURE(copy.get(), copy.reset(createSourceB()));
     SOURCE_ASSERT_EQUAL(copy.get(), 0, copy->beginSync());
     SOURCE_ASSERT_EQUAL(copy.get(), 2, countItems(copy.get()));
     SOURCE_ASSERT_EQUAL(copy.get(), 1, countNewItems(copy.get()));
     SOURCE_ASSERT_EQUAL(copy.get(), 1, countEqual(listNewItems(copy.get()), parent));
-    SOURCE_ASSERT_EQUAL(copy.get(), 0, countUpdatedItems(copy.get()));
+    // relaxed semantic: the child item might be considered updated now if
+    // it had to be modified when inserting the parent
+    SOURCE_ASSERT(copy.get(), 1 >= countUpdatedItems(copy.get()));
     SOURCE_ASSERT_EQUAL(copy.get(), 0, countDeletedItems(copy.get()));
     SOURCE_ASSERT_EQUAL(copy.get(), 1, countEqual(listItems(copy.get()), child));
     SOURCE_ASSERT_EQUAL(copy.get(), 1, countEqual(listItems(copy.get()), parent));
@@ -987,7 +991,8 @@ void LocalTests::testLinkedItems() {
     SOURCE_ASSERT_EQUAL(copy.get(), 0, copy->beginSync());
     SOURCE_ASSERT_EQUAL(copy.get(), 1, countItems(copy.get()));
     SOURCE_ASSERT_EQUAL(copy.get(), 0, countNewItems(copy.get()));
-    SOURCE_ASSERT_EQUAL(copy.get(), 0, countUpdatedItems(copy.get()));
+    // deleting the parent may or may not modify the child
+    SOURCE_ASSERT(copy.get(), 1 >= countUpdatedItems(copy.get()));
     SOURCE_ASSERT_EQUAL(copy.get(), 1, countDeletedItems(copy.get()));
     SOURCE_ASSERT_EQUAL(copy.get(), 1, countEqual(listDeletedItems(copy.get()), parent));
     SOURCE_ASSERT_EQUAL(copy.get(), 0, copy->endSync());
@@ -1644,7 +1649,7 @@ void SyncTests::testMerge() {
         std::auto_ptr<SyncSource> copy;
         SOURCE_ASSERT_NO_FAILURE(copy.get(), copy.reset(it->second->createSourceA()));
         SOURCE_ASSERT_EQUAL(copy.get(), 0, copy->beginSync());
-        int numItems;
+        int numItems = 0;
         SOURCE_ASSERT_NO_FAILURE(copy.get(), numItems = countItems(copy.get()));
         SOURCE_ASSERT_EQUAL(copy.get(), 0, copy->endSync());
         CPPUNIT_ASSERT(numItems >= 1);

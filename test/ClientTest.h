@@ -568,9 +568,10 @@ public:
      * The type of the item is unset; it is assumed that the source
      * can handle that.
      *
+     * @param relaxed   if true, then disable some of the additional checks after adding the item
      * @return the UID of the inserted item
      */
-    virtual std::string insert(CreateSource createSource, const char *data);
+    virtual std::string insert(CreateSource createSource, const char *data, bool relaxed = false);
 
     /**
      * assumes that exactly one element is currently inserted and updates it with the given item
