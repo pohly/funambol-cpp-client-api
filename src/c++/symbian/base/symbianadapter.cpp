@@ -277,7 +277,7 @@ char* toMultibyte(const WCHAR *wc, const char *encoding)
 #ifdef USE_WCHAR
     size_t length = wcstombs(NULL, wc, 0) + 1;
     if(length == (size_t)-1) {
-        //LOG.error("toMultibyte: invalid string.");
+        LOG.error("toMultibyte: invalid string.");
         return strdup("");
     }
     char* ret = new char[length];
@@ -295,7 +295,7 @@ WCHAR* toWideChar(const char *mb, const char *encoding)
 #ifdef USE_WCHAR
     size_t length = mbstowcs(NULL, mb, 0) + 1;
     if(length == (size_t)-1) {
-        //LOG.error("toWideChar: invalid string.");
+        LOG.error("toWideChar: invalid string.");
         return wstrdup(TEXT(""));
     }
     WCHAR* ret = new WCHAR[length];
@@ -333,7 +333,6 @@ size_t snwprintf(WCHAR *v, size_t size, const WCHAR* format, unsigned long value
         }
     }
 
-finally:
     formattedBuf.Close();
     // We cannot format the string. Return -1.
     return finalSize;
@@ -413,7 +412,17 @@ bool readFile(const char* path, char **message, size_t *len, bool binary)
 
 
 WCHAR *wcschr(const WCHAR *ws, WCHAR wc) {
-    LOG.error("***** wcschr not implemented *****");
+
+    if (!ws) {
+        return NULL;
+    }
+    WCHAR* res = const_cast<WCHAR *>(ws);
+    while(*res) {
+        if (*res == wc) {
+            return res;
+        }
+        res++;
+    }
     return NULL;
 }
 
