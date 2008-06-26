@@ -126,19 +126,19 @@ void CSymbianTransportAgent::ConstructL(URL& /* aUrl */)
     // must be installed when the session is opened and it 
     // must be running if a transaction is actually to do anything. 
     
-	// Get the connection manager instance
-	FConnection* connection = FConnection::getInstance();
-	if (!connection) {
-		LOG.error("TransportAgent: no active connection; exiting");
-		setError(ERR_HTTP, "No active connection");
-		return;
+    // Get the connection manager instance
+    FConnection* connection = FConnection::getInstance();
+    if (!connection) {
+        LOG.error("TransportAgent: no active connection; exiting");
+        setError(ERR_HTTP, "No active connection");
+        return;
     }
-	
-	// Session is owned by FConnection!
-	RSocketServ* socketServ = connection->getSession();
-	RConnection* rConnection = connection->getConnection();
-	// reuse active connection, please see:
-	// http://wiki.forum.nokia.com/index.php/CS000825_-_Using_an_already_active_connection
+    
+    // Session is owned by FConnection!
+    RSocketServ* socketServ = connection->getSession();
+    RConnection* rConnection = connection->getConnection();
+    // reuse active connection, please see:
+    // http://wiki.forum.nokia.com/index.php/CS000825_-_Using_an_already_active_connection
     TInt err;
     TRAP( err, iHttpSession.OpenL() );
     User::LeaveIfError( err );
@@ -147,9 +147,11 @@ void CSymbianTransportAgent::ConstructL(URL& /* aUrl */)
     RStringPool strPool = iHttpSession.StringPool();
     RHTTPConnectionInfo connInfo = iHttpSession.ConnectionInfo();
     // ...to use the socket server
-    connInfo.SetPropertyL ( strPool.StringF(HTTP::EHttpSocketServ,RHTTPSession::GetTable() ), THTTPHdrVal (socketServ->Handle()) );
+    connInfo.SetPropertyL ( strPool.StringF(HTTP::EHttpSocketServ,RHTTPSession::GetTable() ),
+                            THTTPHdrVal (socketServ->Handle()) );
     // ...to use the connection
-    connInfo.SetPropertyL ( strPool.StringF(HTTP::EHttpSocketConnection,RHTTPSession::GetTable() ), THTTPHdrVal (REINTERPRET_CAST(TInt, rConnection)) );
+    connInfo.SetPropertyL ( strPool.StringF(HTTP::EHttpSocketConnection,RHTTPSession::GetTable() ),
+                            THTTPHdrVal (REINTERPRET_CAST(TInt, rConnection)) );
      
     // Create the nested active scheduler
     // please see » Symbian OS v9.1 » Symbian OS reference » C++ component
@@ -313,6 +315,8 @@ char* CSymbianTransportAgent::sendMessage(const char* msg)
     iPostBody = NULL;
 
     if (url.fullURL == NULL) {
+        setErrorF(ERR_CONNECT, "Empty URL"); 
+        LOG.error("Transport Agent: empty URL");
         return NULL;
     }
 
@@ -324,6 +328,8 @@ char* CSymbianTransportAgent::sendMessage(const char* msg)
     HBufC8* fullUrl = charToNewBuf8(url.fullURL); 
     TInt parseErr = uri.Parse(*fullUrl);
     if (parseErr != KErrNone) {
+        setErrorF(ERR_CONNECT, "Malformed URL"); 
+        LOG.error("Transport Agent: malformed url");
         goto finally;
     }
 
@@ -388,6 +394,8 @@ char* CSymbianTransportAgent::sendMessage(const char* msg)
     }
     else
     {
+        setErrorF(ERR_HTTP,
+                  "HTTP request error: request timed out waiting for response");
         LOG.debug("HTTP response not received");
     }
 
