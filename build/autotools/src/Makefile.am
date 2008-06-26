@@ -218,10 +218,6 @@ briefcase_LDADD = libsync4j.la
 #vcardconverter_SOURCES = vcardconverter.cpp
 #vcardconverter_LDADD = libsync4j.la
 
-
-#NotifProcessorTest_SOURCES = NotifProcessorTest.cpp
-#NotifProcessorTest_LDADD = libsync4j.la
-
 vpath %.cpp $(srcdir)/../../../src/c++/common/base             \
             $(srcdir)/../../../src/c++/common/base/util        \
             $(srcdir)/../../../src/c++/common/client           \
@@ -245,4 +241,5 @@ vpath %.cpp $(srcdir)/../../../src/c++/common/base             \
 
 vpath %.c   $(srcdir)/../../../src/c++/common/base
 
-AM_CPPFLAGS = -I$(srcdir)/../../../src/include/posix -I$(srcdir)/../../../src/include/common
+AM_CPPFLAGS = -DFUNAMBOL_BUILD_API -I$(srcdir)/../../../src/include/posix -I$(srcdir)/../../../src/include/common
+
