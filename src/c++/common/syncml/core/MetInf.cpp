@@ -40,8 +40,8 @@
 BEGIN_NAMESPACE
 
 MetInf::MetInf() {
-     set(NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL,
-        NULL, NULL, NULL);
+     set(NULL, NULL, NULL, 0, NULL, NULL, NULL, 0,
+        0, NULL, NULL);
 }
 
 MetInf::MetInf(const char*    format    ,
@@ -56,8 +56,8 @@ MetInf::MetInf(const char*    format    ,
                ArrayList*  emi       ,
                Mem*        mem       ) {
 
-    set(NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL,
-        NULL, NULL, NULL);
+    set(NULL, NULL, NULL, 0, NULL, NULL, NULL, 0,
+        0, NULL, NULL);
     set(format, type, mark, size, anchor, version, nonce, maxMsgSize,
         maxObjSize, emi, mem);
 

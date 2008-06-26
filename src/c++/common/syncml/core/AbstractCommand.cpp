@@ -61,26 +61,18 @@ AbstractCommand::AbstractCommand(CmdID* cmdID, bool noResp) {
 
 void AbstractCommand::set(CmdID* cmdID, bool noResp) {
     setCmdID(cmdID);
-    if (noResp != NULL) {
-        this->noResp  = (noResp == true) ? true : false;
-    } else {
-        this->noResp  = NULL;
-    }
+    this->noResp  = noResp;
 }
 
 AbstractCommand::AbstractCommand(CmdID* cmdID,
                                  bool noResp,
                                  Meta* meta) {
-        initialize();
+    initialize();
 
-        setCmdID(cmdID);
-        if (noResp != NULL) {
-            this->noResp  = (noResp == true) ? true : false;
-        } else {
-            this->noResp  = NULL;
-        }
-        setMeta(meta);
-    }
+    setCmdID(cmdID);
+    this->noResp  = noResp;
+    setMeta(meta);
+}
 
 void AbstractCommand::initialize() {
      cmdID  = NULL;
@@ -128,7 +120,7 @@ AbstractCommand::~AbstractCommand() {
  * @return true if the command doesn't require a response, false otherwise
  */
  bool AbstractCommand::isNoResp() {
-    return (noResp != NULL);
+    return noResp;
 }
 
 

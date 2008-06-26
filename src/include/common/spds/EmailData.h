@@ -151,7 +151,7 @@ class EmailData : public ArrayElement {
             if (remainingAttachments)
                 return ((ExtMailData*)remainingAttachments->get(index))->attachSize;
             else
-                return NULL;
+                return 0;
         }
 
 

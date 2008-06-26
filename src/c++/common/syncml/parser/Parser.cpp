@@ -70,7 +70,7 @@ SyncHdr* Parser::getSyncHdr(const char*xml) {
     Cred*        cred      = NULL;
     char*     respURI   = NULL;
     char*     msgID     = NULL;
-    bool         noResp    = NULL;
+    bool         noResp    = false;
     char*     tmp       = NULL;
     Meta*        meta      = NULL;
 
@@ -340,7 +340,7 @@ Mem* Parser::getMem(const char*xml) {
     char* sharedMemW = NULL;
     char* freeIDW    = NULL;
 
-    bool    sharedMem   = NULL;
+    bool    sharedMem   = false;
     long    freeMem     = 0;
     long    freeID      = 0;
 
@@ -430,7 +430,7 @@ Sequence* Parser::getSequence(const char*xml) {
     Sequence* ret           = NULL;
 
     Meta*   meta            = NULL;
-    bool    noResp          = NULL;
+    bool    noResp          = false;
     CmdID*  cmdID           = NULL;
     ArrayList* commands     = new ArrayList();
     Sync* sync              = NULL;
@@ -596,7 +596,7 @@ Atomic* Parser::getAtomic(const char*xml) {
     Atomic* ret             = NULL;
 
     Meta*   meta            = NULL;
-    bool    noResp          = NULL;
+    bool    noResp          = false;
     CmdID*  cmdID           = NULL;
     ArrayList* commands     = new ArrayList();
     Sync* sync              = NULL;
@@ -771,7 +771,7 @@ Sync* Parser::getSync(const char*xml) {
     Atomic* atomic          = NULL;
     Cred*   cred            = NULL;
     Meta*   meta            = NULL;
-    bool    noResp          = NULL;
+    bool    noResp          = false;
     CmdID*  cmdID           = NULL;
     Target* target          = NULL;
     Source* source          = NULL;
@@ -904,7 +904,7 @@ Copy* Parser::getCopy(const char*xml) {
     Copy* ret = NULL;
 
     CmdID*      cmdID   = NULL;
-    bool        noResp  = NULL;
+    bool        noResp  = false;
     Cred*       cred    = NULL;
     Meta*       meta    = NULL;
     ArrayList*  items   = NULL;
@@ -945,7 +945,7 @@ Add* Parser::getAdd(const char*xml) {
     Add* ret = NULL;
 
     CmdID*      cmdID   = NULL;
-    bool        noResp  = NULL;
+    bool        noResp  = false;
     Cred*       cred    = NULL;
     Meta*       meta    = NULL;
     ArrayList*  items   = NULL;
@@ -985,9 +985,9 @@ Delete* Parser::getDelete(const char*xml) {
     Delete* ret = NULL;
 
     CmdID*      cmdID   = NULL;
-    bool        noResp  = NULL;
-    bool        archive = NULL;
-    bool        sftDel  = NULL;
+    bool        noResp  = false;
+    bool        archive = false;
+    bool        sftDel  = false;
     Cred*       cred    = NULL;
     Meta*       meta    = NULL;
     ArrayList*  items   = NULL;
@@ -1027,7 +1027,7 @@ Replace* Parser::getReplace(const char*xml) {
     Replace* ret = NULL;
 
     CmdID*      cmdID   = NULL;
-    bool        noResp  = NULL;
+    bool        noResp  = false;
     Cred*       cred    = NULL;
     Meta*       meta    = NULL;
     ArrayList*  items   = NULL;
@@ -1864,8 +1864,8 @@ Search* Parser::getSearch(const char*xml) {
 
     Search*     ret      = NULL;
     CmdID*      cmdID    = NULL;
-    bool        noResp   = NULL;
-    bool        noResults= NULL;
+    bool        noResp   = false;
+    bool        noResults= false;
     Cred*       cred     = NULL;
     Target*     target   = NULL;
     ArrayList*  sources  = new ArrayList();  // an Array of SourceArray object
@@ -2121,9 +2121,9 @@ DevInf* Parser::getDevInf(const char*xml) {
     ArrayList* dataStores   = NULL;       // DataStore[]
     ArrayList* ctCaps       = NULL;       // CTCap[]
     ArrayList* exts         = NULL;       // Ext[]
-    bool utc                = NULL;         // if present they Support UTC
-    bool supportLargeObjs   = NULL;         // if present they Support largeObject
-    bool supportNumberOfChanges = NULL;     // if present they Support NumberOfChanges
+    bool utc                = false;         // if present they Support UTC
+    bool supportLargeObjs   = false;         // if present they Support largeObject
+    bool supportNumberOfChanges = false;     // if present they Support NumberOfChanges
     SyncCap* syncCap        = NULL;
 
     char* value          = NULL;
@@ -2465,7 +2465,7 @@ DSMem* Parser::getDSMem(const char*xml) {
     char* sharedMemW = NULL;
     char* maxIDW    = NULL;
 
-    bool    sharedMem   = NULL;
+    bool    sharedMem   = false;
     long    maxMem     = 0;
     long    maxID      = 0;
 

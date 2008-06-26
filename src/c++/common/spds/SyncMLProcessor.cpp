@@ -154,9 +154,7 @@ int SyncMLProcessor::processServerAlert(SyncSource& source, SyncML* syncml) {
             item = (Item*)getArrayElement(itemList, i);
             const char *locURI = ((Target*)item->getTarget())->getLocURI();
             if (strcmp( locURI, _wcc(source.getName()) ) == 0) {
-                if (alert->getData() == NULL) {
-                    //lastErrorCode = ERR_REPRESENTATION;
-                    //sprintf(lastErrorMsg, "SyncBody/Alert/Data not found!");
+                if ( !alert->getData() ) {
                     setError(ERR_REPRESENTATION, "SyncBody/Alert/Data not found!");
                     goto finally;
                 }

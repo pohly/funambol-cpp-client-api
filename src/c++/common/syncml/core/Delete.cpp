@@ -99,7 +99,7 @@ const char* Delete::getName() {
 * @return true if the deleted data should be archived
 */
 bool Delete::isArchive() {
-     return (archive != NULL);
+     return archive;
 }
 
 /**
@@ -127,7 +127,7 @@ void Delete::setArchive(bool archive) {
 *         <b>false</b> if this is a "hard delete"
 */
 bool Delete::isSftDel() {
-    return (sftDel != NULL);
+    return sftDel;
 }
 
 bool Delete::getSftDel() {

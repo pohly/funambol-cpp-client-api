@@ -42,7 +42,6 @@ BEGIN_NAMESPACE
 Mem::Mem(bool sharedMem, long freeMem, long freeID) {
     this->freeMem = 0;
     this->freeID  = 0;
-    this->sharedMem = NULL;
 
     setFreeMem(freeMem);
     setFreeID(freeID);
@@ -50,10 +49,6 @@ Mem::Mem(bool sharedMem, long freeMem, long freeID) {
 }
 
 Mem::~Mem() {}
-
-bool Mem::isSharedMem() {
-    return (sharedMem != NULL);
-}
 
 /**
  * Sets the memoryShared status

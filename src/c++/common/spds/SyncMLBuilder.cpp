@@ -581,8 +581,8 @@ Alert* SyncMLBuilder::prepareInitAlert(SyncSource& s, unsigned long maxObjSize) 
 
 
     Anchor*    anchor    = new Anchor(s.getLastAnchor(), s.getNextAnchor());
-    MetInf* metInf       = new MetInf(NULL, NULL, NULL, NULL,
-                            anchor, NULL, NULL, NULL, maxObjSize > 0 ? maxObjSize : NULL,  NULL, NULL);
+    MetInf* metInf       = new MetInf(NULL, NULL, NULL, 0,
+                            anchor, NULL, NULL, 0, maxObjSize,  NULL, NULL);
     Meta* meta           = new Meta();
     meta->setMetInf(metInf);
     Item* item           = new Item(tar, sou, meta, NULL, false);
@@ -690,7 +690,7 @@ SyncHdr* SyncMLBuilder::prepareSyncHdr(Cred* cred, unsigned long maxMsgSize, uns
 
 
     if (maxMsgSize > 0 || maxObjSize > 0) {
-        MetInf* metInf = new MetInf(NULL, NULL, NULL, NULL,
+        MetInf* metInf = new MetInf(NULL, NULL, NULL, 0,
                                     NULL, NULL, NULL, maxMsgSize,
                                     maxObjSize, NULL, NULL);
         meta = new Meta();
@@ -856,8 +856,8 @@ long SyncMLBuilder::addItem(ModificationCommand* &modificationCommand,
         char* cmdid = itow(cmdID);
         CmdID commandID(cmdid);
         delete [] cmdid; cmdid = NULL;
-        MetInf metInf(NULL, (char*)type, NULL, NULL,
-                      NULL, NULL, NULL, NULL, NULL, NULL, NULL);
+        MetInf metInf(NULL, (char*)type, NULL, 0,
+                      NULL, NULL, NULL, 0, 0, NULL, NULL);
         Meta meta;
 
         meta.setMetInf(&metInf);

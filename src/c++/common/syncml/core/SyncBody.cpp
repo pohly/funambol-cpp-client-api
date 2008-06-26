@@ -128,16 +128,6 @@ void SyncBody::setFinalMsg(bool finalMsg) {
 /**
 * Gets the value of finalMsg property
 *
-* @return true if this is the final message being sent, otherwise false
-*
-*/
-bool SyncBody::isFinalMsg() {
-    return (finalMsg != NULL);
-}
-
-/**
-* Gets the value of finalMsg property
-*
 * @return true if this is the final message being sent, otherwise null
 *
 */

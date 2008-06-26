@@ -222,16 +222,6 @@ void Item::setData(ComplexData* data) {
 }
 
 /**
-* Gets moreData property
-*
-* @return true if the data item is incomplete and has further chunks
-*         to come, false otherwise
-*/
-bool Item::isMoreData() {
-    return (moreData != NULL);
-}
-
-/**
 * Gets the Boolean value of moreData
 *
 * @return true if the data item is incomplete and has further chunks

@@ -433,15 +433,6 @@ void DevInf::setExt(ArrayList* ext) {
 }
 
 /**
-* Gets true if the device supports UTC based time
-*
-* @return true if the device supports UTC based time
-*/
-bool DevInf::isUTC() {
-    return (utc != NULL);
-}
-
-/**
 * Sets the UTC property
 *
 * @param utc is true if the device supports UTC based time
@@ -460,14 +451,6 @@ bool DevInf::getUTC() {
     return utc;
 }
 
-/**
-* Gets true if the device supports handling of large objects
-*
-* @return true if the device supports handling of large objects
-*/
-bool DevInf::isSupportLargeObjs() {
-    return (supportLargeObjs != NULL);
-}
 
 /**
 * Sets the supportLargeObjs property
@@ -486,15 +469,6 @@ void DevInf::setSupportLargeObjs(bool supportLargeObjs) {
 */
 bool DevInf::getSupportLargeObjs() {
     return supportLargeObjs;
-}
-
-/**
-* Gets true if the device supports number of changes
-*
-* @return true if the device supports number of changes
-*/
-bool DevInf::isSupportNumberOfChanges() {
-    return (supportNumberOfChanges != NULL);
 }
 
 /**

@@ -132,7 +132,7 @@ void SyncML::setSyncBody(SyncBody* body) {
 * @return lastMessage
 */
 bool SyncML::isLastMessage() {
-    return body->isFinalMsg();
+    return body->getFinalMsg();
 }
 
 /**

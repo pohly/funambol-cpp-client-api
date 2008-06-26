@@ -45,12 +45,12 @@ Meta::Meta() {
             NULL,
             NULL,
             NULL,
+            0,
             NULL,
             NULL,
             NULL,
-            NULL,
-            NULL,
-            NULL,
+            0,
+            0,
             NULL,
             NULL
         );

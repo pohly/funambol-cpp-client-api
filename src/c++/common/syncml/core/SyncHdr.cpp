@@ -296,14 +296,6 @@ void SyncHdr::setRespURI(const char*uri) {
     this->respURI = stringdup(uri);
 }
 
-/**
-* Gets noResp property
-*
-* @return true if the command doesn't require a response, false otherwise
-*/
-bool SyncHdr::isNoResp() {
-    return (noResp != NULL);
-}
 
 /**
 * Gets the Boolean value of noResp

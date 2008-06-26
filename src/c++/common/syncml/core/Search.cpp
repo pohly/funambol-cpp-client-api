@@ -105,16 +105,6 @@ Search::Search(CmdID*      cmdID    ,
 }
 
 /**
-* Returns noResults
-*
-* @return noResults
-*
-*/
-bool Search::isNoResults() {
-    return (noResults != NULL);
-}
-
-/**
 * Sets noResults
 *
 * @param noResults the noResults value
