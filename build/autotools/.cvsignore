@@ -6,7 +6,6 @@ stamp-h1
 Makefile
 Makefile.in
 libtool
-
 config.guess
 config.sub
 configure
@@ -16,3 +15,6 @@ ltmain.sh
 Makefile.in
 mkinstalldirs
 missing 
+aclocal.m4
+config.h.in
+err
