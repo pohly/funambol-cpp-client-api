@@ -66,14 +66,6 @@ class Mem {
          */
         Mem(bool sharedMem, long freeMem, long freeID);
 
-         /**
-         * Returns the memoryShared status
-         *
-         * @return <i>true</i> if the datastore memory is shared, <i>false</i> otherwise
-         *
-         */
-        bool isSharedMem();
-
         /**
          * Sets the memoryShared status
          *

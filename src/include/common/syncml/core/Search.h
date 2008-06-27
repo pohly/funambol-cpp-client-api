@@ -92,14 +92,6 @@ class Search : public AbstractCommand{
                Data*       data     );
 
         /**
-         * Returns noResults
-         *
-         * @return noResults
-         *
-         */
-        bool isNoResults();
-
-        /**
          * Sets noResults
          *
          * @param noResults the noResults value

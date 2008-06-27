@@ -2053,7 +2053,7 @@ Status *SyncManager::processSyncItem(Item* item, const CommandInfo &cmdInfo, Syn
         incomingItem = new IncomingSyncItem(iname, cmdInfo, count);
 
         // incomplete item?
-        if (item->isMoreData()) {
+        if (item->getMoreData()) {
             // reserve buffer in advance, append below
             long size = cmdInfo.size;
             if (size < 0 || maxObjSize && size > maxObjSize) {
@@ -2133,7 +2133,7 @@ Status *SyncManager::processSyncItem(Item* item, const CommandInfo &cmdInfo, Syn
 
         incomingItem->setModificationTime(sources[count]->getNextSync());
 
-        if (!item->isMoreData()) {
+        if (!item->getMoreData()) {
 
 
             if (append) {

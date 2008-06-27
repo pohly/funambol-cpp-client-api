@@ -70,13 +70,6 @@ class DSMem {
         DSMem(bool sharedMem, long maxMem, long maxID);
 
         /**
-         * Returns the memoryShared status
-         *
-         * @return <i>true</i> if the datastore memory is shared, <i>false</i> otherwise
-         */
-        bool isSharedMem();
-
-        /**
          * Sets the memoryShared status
          *
          * @param sharedMem the new memoryShared status

@@ -295,13 +295,6 @@ class DevInf {
         void setExt(ArrayList* ext);
 
         /**
-         * Gets true if the device supports UTC based time
-         *
-         * @return true if the device supports UTC based time
-         */
-        bool isUTC();
-
-        /**
          * Sets the UTC property
          *
          * @param utc is true if the device supports UTC based time
@@ -314,13 +307,6 @@ class DevInf {
          * @return true if the device supports UTC based time
          */
         bool getUTC();
-
-        /**
-         * Gets true if the device supports handling of large objects
-         *
-         * @return true if the device supports handling of large objects
-         */
-        bool isSupportLargeObjs();
 
         /**
          * Sets the supportLargeObjs property
@@ -337,13 +323,6 @@ class DevInf {
          * @return true if the device supports handling of large objects
          */
         bool getSupportLargeObjs();
-
-        /**
-         * Gets true if the device supports number of changes
-         *
-         * @return true if the device supports number of changes
-         */
-        bool isSupportNumberOfChanges();
 
         /**
          * Sets the supportNumberOfChanges property

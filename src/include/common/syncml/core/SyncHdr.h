@@ -201,13 +201,6 @@ class SyncHdr {
         void setRespURI(const char* uri);
 
         /**
-         * Gets noResp property
-         *
-         * @return true if the command doesn't require a response, false otherwise
-         */
-        bool isNoResp();
-
-        /**
          * Gets the Boolean value of noResp
          *
          * @return true if the command doesn't require a response, null otherwise

@@ -101,14 +101,6 @@ class SyncBody {
         /**
          * Gets the value of finalMsg property
          *
-         * @return true if this is the final message being sent, otherwise false
-         *
-         */
-        bool isFinalMsg();
-
-        /**
-         * Gets the value of finalMsg property
-         *
          * @return true if this is the final message being sent, otherwise null
          *
          */

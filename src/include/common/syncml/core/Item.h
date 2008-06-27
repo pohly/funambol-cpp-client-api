@@ -195,14 +195,6 @@ class Item : public ArrayElement {
         void setData(ComplexData* data);
 
         /**
-         * Gets moreData property
-         *
-         * @return true if the data item is incomplete and has further chunks
-         *         to come, false otherwise
-         */
-        bool isMoreData();
-
-        /**
          * Gets the Boolean value of moreData
          *
          * @return true if the data item is incomplete and has further chunks
