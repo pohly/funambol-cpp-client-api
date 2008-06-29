@@ -91,14 +91,6 @@
 # include "base/posix_build_adapter.h"
 #endif
 
-/* some of the code compares NULL against integers, which
-   fails if NULL is defined as (void *)0 */
-//#undef NULL
-//#define NULL 0
-
-#define min(x,y) ( (x) < (y) ? (x) : (y) )
-#define max(x,y) ( (x) > (y) ? (x) : (y) )
-
 /** @endcond */
 #endif
 

@@ -58,6 +58,9 @@ END_NAMESPACE
 #define wcsicmp wcscasecmp
 #define snwprintf swprintf
 
+#define min(x,y) ( (x) < (y) ? (x) : (y) )
+#define max(x,y) ( (x) > (y) ? (x) : (y) )
+
 #ifdef MAC
 
 #   undef  _wcsicmp
