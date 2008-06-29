@@ -43,6 +43,9 @@
 // Enable the fix for encoding when building for posix
 #define VOCL_ENCODING_FIX
 
+#define min(x,y) ( (x) < (y) ? (x) : (y) )
+#define max(x,y) ( (x) > (y) ? (x) : (y) )
+
 #ifdef USE_WCHAR
 
 BEGIN_NAMESPACE
@@ -57,9 +60,6 @@ END_NAMESPACE
 #define _wcsicmp wcscasecmp
 #define wcsicmp wcscasecmp
 #define snwprintf swprintf
-
-#define min(x,y) ( (x) < (y) ? (x) : (y) )
-#define max(x,y) ( (x) > (y) ? (x) : (y) )
 
 #ifdef MAC
 
