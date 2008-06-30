@@ -180,35 +180,35 @@ char* MacTransportAgent::sendMessage(const char* msg){
             }
             case -1: {                    // no connection (TODO: implement retry)
                 setErrorF(ERR_SERVER_ERROR, "Network error in server receiving data. ");
-                LOG.error(getLastErrorMsg());
+                LOG.error("%s", getLastErrorMsg());
                 
                 break;
             }
             case 400: {                    // 400 bad request error. TODO: retry to send the message
                 setErrorF(ERR_SERVER_ERROR, "HTTP server error: %d. Server failure.", statusCode);
-                LOG.debug(getLastErrorMsg());
+                LOG.debug("%s", getLastErrorMsg());
                 
                 break;
             }
             case 500: {     // 500 -> out code 2052
                 setErrorF(ERR_SERVER_ERROR, "HTTP server error: %d. Server failure.", statusCode);
-                LOG.debug(getLastErrorMsg());
+                LOG.debug("%s", getLastErrorMsg());
                 break;
             }
             case 404: {         // 404 -> out code 2060
                 setErrorF(ERR_HTTP_NOT_FOUND, "HTTP request error: resource not found (status %d)", statusCode);
-                LOG.debug(getLastErrorMsg());
+                LOG.debug("%s", getLastErrorMsg());
                 break;
             }
             case 408: {   // 408 -> out code 2061
                 setErrorF(ERR_HTTP_REQUEST_TIMEOUT, "HTTP request error: server timed out waiting for request (status %d)", statusCode);
-                LOG.debug(getLastErrorMsg());
+                LOG.debug("%s", getLastErrorMsg());
                 break;
             }
                 
             default: {
                 setErrorF(statusCode, "HTTP request error: status received = %d", statusCode);
-                LOG.error(getLastErrorMsg());
+                LOG.error("%s", getLastErrorMsg());
             }
         }
         
@@ -225,7 +225,7 @@ char* MacTransportAgent::sendMessage(const char* msg){
         return ret;
     }else{
         setErrorF(ERR_CONNECT, "Network error: the attempt to connect to the server failed -> exit");
-        LOG.debug(getLastErrorMsg());
+        LOG.debug("%s", getLastErrorMsg());
         
         return NULL;
     }
