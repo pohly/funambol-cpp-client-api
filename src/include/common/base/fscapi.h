@@ -54,7 +54,11 @@
     #define MAC   1
     #define POSIX 1
     #elif defined(__ENVIRONMENT_MAC_OS_X_VERSION_MIN_REQUIRED__)
-    /* This is a Mac */
+    /* This is a MacOSx >= 10.5 */
+    #define MAC   1
+    #define POSIX 1
+    #elif defined(__APPLE__) && defined(__MACH__)
+    /* This is a MacOSx < 10.5 */
     #define MAC   1
     #define POSIX 1
     #elif defined(_WIN32_WCE) || defined(WIN32)
