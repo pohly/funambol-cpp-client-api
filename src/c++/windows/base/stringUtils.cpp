@@ -288,7 +288,7 @@ char* encryptData(const char* data, const char* password) {
 
 
 error:
-    LOG.error(ERR_ENCRYPT_DATA);
+    LOG.error("%s", ERR_ENCRYPT_DATA);
     b64Data = stringdup(data);
 
 exit:
@@ -346,7 +346,7 @@ char* decryptData(const char* b64Data, const char* password) {
     goto exit;
 
 error:
-    LOG.error(ERR_DECRYPT_DATA);
+    LOG.error("%s", ERR_DECRYPT_DATA);
     data = stringdup("");
 
 exit:

@@ -94,7 +94,6 @@ ManagementNode* DMTree::getNode(const char* node) {
  */
 ManagementNode* DMTree::readManagementNode(const char* node) {
 
-    //LOG.debug(node);
 
     ManagementNode *n = new DeviceManagementNode(node);
 

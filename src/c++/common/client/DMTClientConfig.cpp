@@ -127,7 +127,7 @@ bool DMTClientConfig::read() {
 
     bool ret = false;
 
-    LOG.debug(DBG_READING_CONFIG_FROM_DM);
+    LOG.debug("%s", DBG_READING_CONFIG_FROM_DM);
 
     //
     // Reading syncml node
@@ -173,7 +173,7 @@ bool DMTClientConfig::save() {
     bool ret = false;
     unsigned int i = 0;
 
-    LOG.debug(DBG_WRITING_CONFIG_TO_DM);
+    LOG.debug("%s", DBG_WRITING_CONFIG_TO_DM);
     if (!open()) {
         return false;
     }

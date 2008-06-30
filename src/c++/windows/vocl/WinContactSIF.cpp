@@ -140,7 +140,7 @@ wstring WinContactSIF::adaptToSIFSpecs(const wstring& propName, const wstring& p
 int WinContactSIF::parse(const wstring data) {
 
     if (!sifFields) {
-        LOG.error(ERR_SIFFIELDS_NULL);
+        LOG.error("%s", ERR_SIFFIELDS_NULL);
         return 1;
     }
     propertyMap.clear();

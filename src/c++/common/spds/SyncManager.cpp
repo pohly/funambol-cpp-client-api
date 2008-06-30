@@ -456,7 +456,7 @@ int SyncManager::prepareSync(SyncSource** s) {
             goto finally;
         }
 
-        LOG.debug(MSG_INITIALIZATATION_MESSAGE);
+        LOG.debug("%s", MSG_INITIALIZATATION_MESSAGE);
 
         currentState = STATE_PKG1_SENDING;
 
@@ -558,7 +558,7 @@ int SyncManager::prepareSync(SyncSource** s) {
 
             if (ret == -1 || ret == 404 || ret == 415) {
                 setErrorF(ret, "AlertStatus from server %d", ret);
-                LOG.error(getLastErrorMsg());
+                LOG.error("%s", getLastErrorMsg());
                 setSourceStateAndError(count, SOURCE_ERROR, ret, getLastErrorMsg());
             }
         }
@@ -756,7 +756,7 @@ int SyncManager::prepareSync(SyncSource** s) {
                 ret = syncMLProcessor.processServerAlert(*sources[count], syncml);
                 if (isErrorStatus(ret)) {
                     setErrorF(ret, "AlertStatus from server %d", ret);
-                    LOG.error(getLastErrorMsg());
+                    LOG.error("%s", getLastErrorMsg());
                     setSourceStateAndError(count, SOURCE_ERROR, ret, getLastErrorMsg());
                 }
                 fireSyncSourceEvent(sources[count]->getConfig().getURI(),
@@ -1477,7 +1477,7 @@ int SyncManager::sync() {
                 //lastErrorCode = ret;
                 //sprintf(lastErrorMsg, "Server Failure: server returned error code %i", ret);
                 setErrorF(ret, "Server Failure: server returned error code %i", ret);
-                LOG.error(getLastErrorMsg());
+                LOG.error("%s", getLastErrorMsg());
                 goto finally;
 
             }
@@ -1593,7 +1593,7 @@ int SyncManager::sync() {
             //lastErrorCode = ret;
             //sprintf(lastErrorMsg, "Server Failure: server returned error code %i", ret);
             setErrorF(ret, "Server Failure: server returned error code %i", ret);
-            LOG.error(getLastErrorMsg());
+            LOG.error("%s", getLastErrorMsg());
             goto finally;
         }
         ret = 0;
@@ -1653,7 +1653,7 @@ int SyncManager::sync() {
                     //lastErrorCode = ret;
                     //sprintf(lastErrorMsg, "Server Failure: server returned error code %i", ret);
                     setErrorF(ret, "Server Failure: server returned error code %i", ret);
-                    LOG.error(getLastErrorMsg());
+                    LOG.error("%s", getLastErrorMsg());
                     goto finally;
                 }
                 ret = 0;
@@ -1787,7 +1787,7 @@ int SyncManager::endSync() {
             //lastErrorCode = ret;
             //sprintf(lastErrorMsg, "Server Failure: server returned error code %i", ret);
             setErrorF(ret,  "Server Failure: server returned error code %i", ret);
-            LOG.error(getLastErrorMsg());
+            LOG.error("%s", getLastErrorMsg());
             goto finally;
         }
         ret = 0;
@@ -1951,7 +1951,7 @@ int SyncManager::assignSources(SyncSource** srclist) {
             //lastErrorCode = ERR_SOURCE_DEFINITION_NOT_FOUND;
             //sprintf(lastErrorMsg, ERRMSG_SOURCE_DEFINITION_NOT_FOUND, name);
             setErrorF(ERR_SOURCE_DEFINITION_NOT_FOUND, ERRMSG_SOURCE_DEFINITION_NOT_FOUND, name);
-            LOG.debug(getLastErrorMsg());
+            LOG.debug("%s", getLastErrorMsg());
 
             setSourceStateAndError(i, SOURCE_ERROR,
                                    ERR_SOURCE_DEFINITION_NOT_FOUND, getLastErrorMsg());

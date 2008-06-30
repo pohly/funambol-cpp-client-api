@@ -178,7 +178,7 @@ void FSocket::ConstructL(const StringBuffer& peer, int32_t port)
     return;
     
 error:
-    LOG.error(errorMsg.c_str());
+    LOG.error("%s", errorMsg.c_str());
     serverName.Close();
     return;
 }
@@ -255,7 +255,7 @@ int32_t FSocket::readBuffer(int8_t* buffer, int32_t maxLen)
     }
 
 error:
-    LOG.error(errorMsg.c_str());
+    LOG.error("%s", errorMsg.c_str());
     buffer = NULL;
     data.Close();
     return -1;

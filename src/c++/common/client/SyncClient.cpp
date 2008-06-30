@@ -68,7 +68,7 @@ int SyncClient::sync(AbstractSyncConfig& config, SyncSource** sources) {
         ret = 1;
         setError(ret, "Error in sync() - configuration not set correctly.");
         
-        LOG.error(getLastErrorMsg());
+        LOG.error("%s", getLastErrorMsg());
         return ret;
     }
 

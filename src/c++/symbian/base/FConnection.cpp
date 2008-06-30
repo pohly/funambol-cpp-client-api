@@ -133,7 +133,7 @@ void FConnection::ConstructL()
     return;
 
 error:
-    LOG.error(errMsg.c_str());
+    LOG.error("%s", errMsg.c_str());
 }
 
 
@@ -233,7 +233,7 @@ const int FConnection::startConnection(const StringBuffer& aIAPName)
     
 retry:
 
-    LOG.error(errMsg.c_str());
+    LOG.error("%s", errMsg.c_str());
 
     if (iIAPName.empty() || iIAPName == "Ask") {
         LOG.debug("Connection error and no IAP stored: don't retry");

@@ -344,7 +344,7 @@ char* CSymbianTransportAgent::sendMessage(const char* msg)
         int res = connection->startConnection();
         if (res) {
             setErrorF(ERR_CONNECT, "Connection error (%d): please check your internet settings.", res); 
-            LOG.error(getLastErrorMsg());
+            LOG.error("%s", getLastErrorMsg());
             goto finally;
         }
     }
@@ -364,7 +364,7 @@ char* CSymbianTransportAgent::sendMessage(const char* msg)
     SetHeaderL(hdr, HTTP::EContentType, _L8("application/vnd.syncml+xml"));
 
     LOG.debug("Sending message:");
-    LOG.debug(msg);
+    LOG.debug("%s", msg);
 
     // Set data supplier for POST body
     // Please see  » Symbian OS v9.1 » Symbian OS guide » Using HTTP Client »
@@ -390,7 +390,7 @@ char* CSymbianTransportAgent::sendMessage(const char* msg)
         response[length] = '\0';
 
         LOG.debug("Message received:");
-        LOG.debug(response);
+        LOG.debug("%s", response);
     }
     else
     {

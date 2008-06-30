@@ -62,7 +62,7 @@ ManagementNode::ManagementNode(const char* fullname) {
 
         sprintf(msg, "Invalid context: %s", fullname);
         //TODO call ErrorHandler XXX
-        LOG.error(msg);
+        LOG.error("%s", msg);
     }
 }
 

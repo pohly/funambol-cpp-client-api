@@ -88,7 +88,7 @@ void testClause() {
 
     StringBuffer* sb = Formatter::getFilter(f);
     LOG.info("Record only filter");
-    LOG.info(sb->c_str());
+    LOG.info("%s", sb->c_str());
 
     delete f; delete sb;
 
@@ -124,7 +124,7 @@ void testClause() {
     sb = Formatter::getFilter(f);
 
     LOG.info("Field only filter");
-    LOG.info(sb->c_str());
+    LOG.info("%s", sb->c_str());
 
     delete f; delete sb;
 
@@ -143,7 +143,7 @@ void testClause() {
     sb = Formatter::getFilter(f);
 
     LOG.info("Field and record filter");
-    LOG.info(sb->c_str());
+    LOG.info("%s", sb->c_str());
 
     delete f; delete sb;
 }

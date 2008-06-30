@@ -96,7 +96,7 @@ wstring& WinRecurrenceSIF::toString() {
 int WinRecurrenceSIF::parse(const wstring dataString) {
 
     if (!sifFields) {
-        LOG.error(ERR_SIFFIELDS_NULL);
+        LOG.error("%s", ERR_SIFFIELDS_NULL);
         return 1;
     }
     propertyMap.clear();

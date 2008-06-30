@@ -66,13 +66,13 @@ void testEncryption() {
     infoe.password = password;
 
     LOG.info("Clear text");
-    LOG.info(clearText);
+    LOG.info("%s", clearText);
 
     char* desText = dese->transform(clearText, infoe);
     char* b64Text = b64e->transform(desText, infoe);
 
     LOG.info("Clear text");
-    LOG.info(b64Text);
+    LOG.info("%s", b64Text);
 
     delete [] desText;
 
@@ -86,7 +86,7 @@ void testEncryption() {
     clearString[infod.size/sizeof(char)] = 0;
 
     LOG.info("Clear text");
-    LOG.info(clearString);
+    LOG.info("%s", clearString);
 
     delete [] clearString; delete [] clearText;
     delete [] b64Text; delete [] desText;

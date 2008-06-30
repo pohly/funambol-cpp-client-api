@@ -143,7 +143,7 @@ WinTransportAgent::~WinTransportAgent(){}
  */
 char* WinTransportAgent::sendMessage(const char* msg) {
 
-    LOG.debug(msg);
+    LOG.debug("%s", msg);
     ENTERING(L"TransportAgent::sendMessage");
 
 #ifdef USE_ZLIB
@@ -345,7 +345,7 @@ char* WinTransportAgent::sendMessage(const char* msg) {
             char* tmp = createHttpErrorMessage(errorCode);
             //sprintf(lastErrorMsg, "HttpSendRequest error %d: %s", errorCode, tmp);
             setErrorF(GetLastError(), "HttpSendRequest error %d: %s", errorCode, tmp);
-            LOG.debug(getLastErrorMsg());
+            LOG.debug("%s", getLastErrorMsg());
 
             if (errorCode == ERROR_INTERNET_OFFLINE_MODE) {                     // 00002 -> retry
                 LOG.debug("Offline mode detected: go-online and retry...");
@@ -359,14 +359,14 @@ char* WinTransportAgent::sendMessage(const char* msg) {
                 //lastErrorCode = ERR_HTTP_TIME_OUT;
                 //sprintf(lastErrorMsg, "Network error: the request has timed out -> exit.");
                 setError(ERR_HTTP_TIME_OUT, "Network error: the request has timed out -> exit.");
-                LOG.debug(getLastErrorMsg());
+                LOG.debug("%s", getLastErrorMsg());
                 goto exit;
             }
             else if (errorCode == ERROR_INTERNET_CANNOT_CONNECT) {              // 12029 -> out code 2001
                 //lastErrorCode = ERR_CONNECT;
                 //sprintf(lastErrorMsg, "Network error: the attempt to connect to the server failed -> exit");
                 setError(ERR_CONNECT, "Network error: the attempt to connect to the server failed -> exit"); 
-                LOG.debug(getLastErrorMsg());
+                LOG.debug("%s", getLastErrorMsg());
                 goto exit;
             }
             // Other network error: retry.
@@ -374,7 +374,7 @@ char* WinTransportAgent::sendMessage(const char* msg) {
             continue;
         }
 
-        LOG.debug(MESSAGE_SENT);
+        LOG.debug("%s", MESSAGE_SENT);
         fireTransportEvent(contentLength, SEND_DATA_END);
 
 
@@ -442,69 +442,53 @@ char* WinTransportAgent::sendMessage(const char* msg) {
             continue;
         }
         else if (status == HTTP_STATUS_SERVER_ERROR ) {     // 500 -> out code 2052
-            //lastErrorCode = ERR_SERVER_ERROR;
-            //sprintf(lastErrorMsg, "HTTP server error: %d. Server failure.", status);
             setErrorF(ERR_SERVER_ERROR, "HTTP server error: %d. Server failure.", status);
-            LOG.debug(getLastErrorMsg());
+            LOG.debug("%s", getLastErrorMsg());
             goto exit;
         }
 
         #ifdef _WIN32_WCE
         // To handle the http error code for the tcp/ip notification with wrong credential
         else if (status == ERR_CREDENTIAL) {                // 401 -> out code 401
-            //lastErrorCode = ERR_CREDENTIAL;
-            //sprintf(lastErrorMsg, "HTTP server error: %d. Wrong credential.", status);
             setErrorF(ERR_CREDENTIAL, "HTTP server error: %d. Wrong credential.", status);
-            LOG.debug(getLastErrorMsg());
+            LOG.debug("%s", getLastErrorMsg());
             goto exit;
         }
         // To handle the http error code for the tcp/ip notification when payment required
         else if (status == PAYMENT_REQUIRED) {              // 402 -> out code 402
-            //lastErrorCode = PAYMENT_REQUIRED;
-            //sprintf(lastErrorMsg, "HTTP server error: %d. Client not authenticated.", status);
             setErrorF(PAYMENT_REQUIRED, "HTTP server error: %d. Client not authenticated.", status);
-            LOG.debug(getLastErrorMsg());
+            LOG.debug("%s", getLastErrorMsg());
             goto exit;
         }
         // To handle the http error code for the tcp/ip notification when client not activated (forbidden)
         else if (status == FORBIDDEN) {                     // 403 -> out code 403
-            //lastErrorCode = FORBIDDEN;
-            //sprintf(lastErrorMsg, "HTTP server error: %d. Connection forbidden, client not activated.", status);
             setErrorF(FORBIDDEN, "HTTP server error: %d. Connection forbidden, client not activated.", status);
-            LOG.debug(getLastErrorMsg());
+            LOG.debug("%s", getLastErrorMsg());
             goto exit;
         }
         // to handle the http error code for the tcp/ip notification and client not notifiable
         else if (status == ERR_CLIENT_NOT_NOTIFIABLE) {     // 420 -> out code 420
-            //lastErrorCode = ERR_CLIENT_NOT_NOTIFIABLE;
-            //sprintf(lastErrorMsg, "HTTP server error: %d. Client not notifiable.", status);
             setErrorF(ERR_CLIENT_NOT_NOTIFIABLE, "HTTP server error: %d. Client not notifiable.", status);
-            LOG.debug(getLastErrorMsg());
+            LOG.debug("%s", getLastErrorMsg());
             goto exit;
         }
         // to handle the http error code for the tcp/ip notification and client not notifiable
         // code 421 is returned by newer Funambol Server to say "you're allowed to start CTP"
         else if (status == ERR_CTP_ALLOWED) {               // 421 -> out code 421
-            //lastErrorCode = ERR_CTP_ALLOWED;
-            //sprintf(lastErrorMsg, "HTTP server error: %d. Client not notifiable and CTP Server is available.", status);
             setErrorF(ERR_CTP_ALLOWED, "HTTP server error: %d. Client not notifiable and CTP Server is available.", status);
-            LOG.debug(getLastErrorMsg());
+            LOG.debug("%s", getLastErrorMsg());
             goto exit;
         }
         #endif
         
         else if (status == HTTP_STATUS_NOT_FOUND) {         // 404 -> out code 2060
-            //lastErrorCode = ERR_HTTP_NOT_FOUND;
-            //sprintf(lastErrorMsg, "HTTP request error: resource not found (status %d)", status);
             setErrorF(ERR_HTTP_NOT_FOUND, "HTTP request error: resource not found (status %d)", status);
-            LOG.debug(getLastErrorMsg());
+            LOG.debug("%s", getLastErrorMsg());
             goto exit;
         }
         else if (status == HTTP_STATUS_REQUEST_TIMEOUT) {   // 408 -> out code 2061
-            //lastErrorCode = ERR_HTTP_REQUEST_TIMEOUT;
-            //sprintf(lastErrorMsg, "HTTP request error: server timed out waiting for request (status %d)", status);
             setErrorF(ERR_HTTP_REQUEST_TIMEOUT, "HTTP request error: server timed out waiting for request (status %d)", status);
-            LOG.debug(getLastErrorMsg());
+            LOG.debug("%s", getLastErrorMsg());
             goto exit;
         }
         else {
@@ -512,9 +496,8 @@ char* WinTransportAgent::sendMessage(const char* msg) {
             //lastErrorCode = ERR_HTTP_STATUS_NOT_OK;         // else -> out code 2053
             DWORD code = GetLastError();
             char* tmp = createHttpErrorMessage(code);
-            //sprintf(lastErrorMsg, "HTTP request error: status received = %d): %s (code %d)", status, tmp, code);
             setErrorF(ERR_HTTP_STATUS_NOT_OK, "HTTP request error: status received = %d): %s (code %d)", status, tmp, code);
-		    LOG.debug(getLastErrorMsg());
+		    LOG.debug("%s", getLastErrorMsg());
 		    delete [] tmp;
 		    goto exit;
         }
@@ -523,10 +506,8 @@ char* WinTransportAgent::sendMessage(const char* msg) {
 
     // Too much retries -> exit
     if (numretries == MAX_RETRIES) {                        // Network error -> out code 2001
-        //lastErrorCode = ERR_CONNECT;
-        //sprintf(lastErrorMsg, "HTTP request error: %d attempts failed.", numretries);
         setErrorF(ERR_CONNECT, "HTTP request error: %d attempts failed.", numretries); 
-        LOG.error(getLastErrorMsg());
+        LOG.error("%s", getLastErrorMsg());
         goto exit;
     }
 
@@ -618,7 +599,7 @@ char* WinTransportAgent::sendMessage(const char* msg) {
 //
 // ====================================== Reading Response ======================================
 //
-    LOG.debug(READING_RESPONSE);
+    LOG.debug("%s", READING_RESPONSE);
     LOG.debug("Content-length: %u", contentLength);
 
     if (contentLength <= 0) {
@@ -632,7 +613,7 @@ char* WinTransportAgent::sendMessage(const char* msg) {
         //lastErrorCode = ERR_NOT_ENOUGH_MEMORY;
         //sprintf(lastErrorMsg, "Not enough memory to allocate a buffer for the server response: %d required.", contentLength);
         setErrorF(ERR_NOT_ENOUGH_MEMORY, "Not enough memory to allocate a buffer for the server response: %d required.", contentLength);
-        LOG.error(getLastErrorMsg());
+        LOG.error("%s", getLastErrorMsg());
         goto exit;
     }
     memset(response, 0, contentLength);

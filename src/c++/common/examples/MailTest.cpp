@@ -95,7 +95,7 @@ int main(int argc, char** argv)
         if( !msg ){
             WCHAR dbg[256];
             wsprintf(dbg, TEXT("Can't open file %s\n"), name[i]);
-	        LOG.error(dbg);
+	        LOG.error("%s", dbg);
             continue;
         }
 

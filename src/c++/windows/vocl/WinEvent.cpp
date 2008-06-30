@@ -426,9 +426,8 @@ int WinEvent::parse(const wstring dataString) {
     //
     VObject* vo = VConverter::parse(dataString.c_str());
     if (!vo) {
-        //sprintf(lastErrorMsg, ERR_ITEM_VOBJ_PARSE);
         setError(1, ERR_ITEM_VOBJ_PARSE);
-        LOG.error(getLastErrorMsg());
+        LOG.error("%s", getLastErrorMsg());
         return 1;
     }
     // Check if VObject type and version are the correct ones.
