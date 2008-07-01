@@ -173,8 +173,9 @@ $(nobase_pkginclude_HEADERS): % : ../../../src/include/%
 	mkdir -p `dirname $@`
 	rm -f $@
 	if [ "$(@F)" == "Log.h" ]; then echo '#include <stdarg.h>' >>$@; fi
-	sed -e 's/WCHAR/char/g' $< >>$@
+	cp $< $@
 
 clean : cleancopies
 cleancopies :
 	for i in $(nobase_pkginclude_HEADERS); do rm -rf `echo $$i | sed -e 's;\([^/]*\).*;\1;'`; done
+
