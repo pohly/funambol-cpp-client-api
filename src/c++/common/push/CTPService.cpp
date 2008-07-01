@@ -160,6 +160,10 @@ FThread* CTPService::startCTP() {
  */
 int32_t CTPService::stopCTP() {
 
+    // Set leaving to true, so all the threads can check this flag and exit.
+    leaving = true;
+    setCtpState(CTP_STATE_CLOSING);
+
     if (!ctpThread) {
         LOG.debug("No CTP thread available -> exiting.");
         return 1;
@@ -171,10 +175,6 @@ int32_t CTPService::stopCTP() {
 
     int ret = 0;
     LOG.info("Closing CTP connection...");
-
-    // Set leaving to true, so receive thread will exit after the OK msg.
-    leaving = true;
-    setCtpState(CTP_STATE_CLOSING);
 
 
     int32_t timeout;
@@ -878,6 +878,12 @@ void CTPThread::run() {
                 ctpService->notifyError(CTPService::CTP_ERROR_CONNECTION_FAILED, sleepTime * 1000);
             }
             FThread::sleep(sleepTime * 1000);
+            
+            // Calling StopCTP() sets the leaving flag.
+            if (ctpService->isLeaving()) {
+                LOG.debug("CTP state is 'leaving' -> exit CTP");
+                goto finally;
+            }
 
             // CTP could have been restarted during the sleep time!
             // So exit if the ctp is active.
