@@ -120,7 +120,12 @@ public:
     void setProdID (const WCHAR* prodID);
     WCHAR* getVersion();
     WCHAR* getProdID();
+    /** Add a new property to the VObject */
     void addProperty(VProperty* property);
+    /** Add a new property to the VObject, using key and value for it. */
+    void addProperty(const WCHAR* key, const WCHAR* value) { 
+        VProperty vprop(key, value); addProperty(&vprop);
+    }
     void addFirstProperty(VProperty* property);
     void insertProperty(VProperty* property);
     bool removeProperty(int index);
