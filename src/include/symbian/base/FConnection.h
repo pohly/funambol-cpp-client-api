@@ -89,6 +89,11 @@ private:
     
     /// Counter to know how many times we retry to connect to network.
     TInt                    iRetryConnection;
+    
+    /// We don't want to open a RConnection that is already opened, 
+    /// otherwise there can be errors using the connection.
+    /// This bool is used to know if we called iConnection.Open().
+    bool                    isConnectionOpened;
 
     
     // 1st and 2nd phase constructors
@@ -100,6 +105,16 @@ private:
      * with default preferences and without prompting the user.
      */
     void ConstructL();
+    
+    /**
+     * Opens the connection.
+     * It's used internally because we MUST have the connection opened
+     * before calling iConnection.Start() or iConnection.EnumerateConnections().
+     * @return  0 if connection opened without errors
+     *          1 if connection already opened (so nothing done)
+     *          a system error code <0 in case of errors
+     */
+    const int openConnection();
     
     
     //--------- utils ------------
@@ -137,6 +152,7 @@ public:
     /// Destructor. Closes the connection and the session.
     virtual ~FConnection();
     
+    
     /**
      * Starts a new GPRS connection using the default IAP, which name
      * is stored in the member 'iIAPDefaultName'.
@@ -158,7 +174,22 @@ public:
     const int startConnection(const StringBuffer& aIAPName);
     
     /**
-     * If a connection is active, it will be stopped.
+     * Closes the active connection.
+     * The connection will not be dropped immediately: it will be dropped 
+     * when there is no more data traffic on the connection.
+     * 
+     * @note    If a client needs to shutdown the connection in a hard way, then use
+     *          stopConnection() instead of this method.
+     */
+    void closeConnection();
+    
+    /**
+     * Stops the entire connection by disconnecting the underlying network 
+     * interface immediately, regardless of whether other clients are using it or not.
+     * Applications using the connection will be sent the socket error code KErrCancel.
+     * 
+     * @note    If a client needs to graciously shutdown the connection, closeConnection() 
+     *          should be used instead of this method.
      * @return  0 if no error
      */
     const int stopConnection();

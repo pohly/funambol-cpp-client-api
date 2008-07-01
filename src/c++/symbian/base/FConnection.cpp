@@ -85,6 +85,19 @@ FConnection* FConnection::NewLC()
     return self;
 }
 
+FConnection::FConnection() : iLocalIpAddress("127.0.0.1"),
+                             iIAP(0),
+                             iIAPName(""),
+                             iRetryConnection(0),
+                             isConnectionOpened(false) {
+}
+
+
+FConnection::~FConnection() {
+    iConnection.Close();
+    iSession.Close();
+}
+
 void FConnection::dispose() 
 {
     if(iInstance) {
@@ -123,12 +136,8 @@ void FConnection::ConstructL()
     prefs.SetDirection(ECommDbConnectionDirectionUnknown);
     prefs.SetIapId(0);
     
-    // Open connection
-    iLastError = iConnection.Open(iSession, KAfInet);
-    if (iLastError != KErrNone) {
-        errMsg.sprintf("FConnection error: unable to open connection (code %d)", iLastError);
-        goto error;
-    }
+    // Opens the connection
+    openConnection();
     
     return;
 
@@ -136,18 +145,32 @@ error:
     LOG.error("%s", errMsg.c_str());
 }
 
+const int FConnection::openConnection()
+{
+    iLastError = KErrNone;
 
-
-FConnection::FConnection() : iLocalIpAddress("127.0.0.1"),
-                             iIAP(0),
-                             iIAPName(""),
-                             iRetryConnection(0) {
+    // We don't want to open a RConnection that is already opened, 
+    // otherwise there can be errors using the connection.
+    if (!isConnectionOpened) 
+    {
+        LOG.debug("FConnection: connection is closed, opening it.");
+        // Open connection
+        iLastError = iConnection.Open(iSession, KAfInet);
+        if (iLastError != KErrNone) {
+            LOG.error("FConnection error: unable to open connection (code %d)", iLastError);
+            return iLastError;
+        }
+        isConnectionOpened = true;
+        return 0;
+    }
+    return 1;
 }
 
-
-FConnection::~FConnection() {
+void FConnection::closeConnection() 
+{
+    LOG.debug("Closing the current connection");
     iConnection.Close();
-    iSession.Close();
+    isConnectionOpened = false;
 }
 
 
@@ -209,6 +232,9 @@ const int FConnection::startConnection(const StringBuffer& aIAPName)
 //#endif
     
 
+    // Opens the connection
+    openConnection();
+
     // Start connection
     iLastError = iConnection.Start(prefs);
     if (iLastError != KErrNone) {
@@ -255,9 +281,14 @@ retry:
 
 const bool FConnection::isConnected() 
 {
+    //LOG.debug("FConnection::isConnected?");
     iLastError = KErrNone;
     bool connected = false;
     TUint count;
+    
+    // Connection must always be opened before enumerating the active 
+    // connections, otherwise following function will crash.
+    openConnection();
     
     //Enumerate currently active connections
     TRAP(iLastError, iConnection.EnumerateConnections(count));
