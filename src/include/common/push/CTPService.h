@@ -288,15 +288,31 @@ public:
      */
     void notifyError(const int errorCode, const int additionalInfo = 0);
     
-    bool stopThread(FThread* thread);
     
-    bool stopHeartbeat() { return stopThread(heartbeatThread); }
+    /// Stops the heartbeatThread and sets the pointer to NULL.
+    void stopHeartbeatThread();
+    
+    /// Stops the cmdTimeoutThread and sets the pointer to NULL.
+    void stopCmdTimeoutThread();
+    
+    /// Stops the receiverThread and sets the pointer to NULL.
+    void stopReceiverThread();
+    
+    /// Stops the ctpThread and sets the pointer to NULL.
+    void stopCtpThread();
 
     
 private:
     void hexDump(char *buf, int len);
     int extractMsgLength(const char* package, int packageLen);
     bool saveNonceParam(CTPMessage* authStatusMsg);
+    
+    /**
+     * Utility to terminate a desired thread, setting its HANDLE to NULL.
+     * @param thread   the HANDLE of the thread to be stopped
+     * @return         true if the thread has been effectively terminated
+     */
+    bool stopThread(FThread* thread);
 };
 
 

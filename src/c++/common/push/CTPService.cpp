@@ -96,21 +96,13 @@ CTPService::CTPService() : config(APPLICATION_URI) {
  */
 CTPService::~CTPService() {
     
-    LOG.debug("Stopping ctp thread");
-    stopThread(ctpThread);
-    ctpThread = NULL;
+    stopCtpThread();
 
-    LOG.debug("Stopping receiver thread");
-    stopThread(receiverThread);
-    receiverThread = NULL;
+    stopReceiverThread();
 
-    LOG.debug("Stopping heartbeat thread");
-    stopThread(heartbeatThread);
-    heartbeatThread = NULL;
+    stopHeartbeatThread();
 
-    LOG.debug("Stopping timeout thread");
-    stopThread(cmdTimeoutThread);
-    cmdTimeoutThread = NULL;
+    stopCmdTimeoutThread();
 
     closeConnection();
     delete receivedMsg;
@@ -219,13 +211,9 @@ int32_t CTPService::stopCTP() {
 
 finally:
 
-    // Stop the Heartbeat
-    stopThread(heartbeatThread);
-    heartbeatThread = NULL;
-
-    // Stop the cmd timeout
-    stopThread(cmdTimeoutThread);
-    cmdTimeoutThread = NULL;
+    // Stop the heartbeat & timeout threads
+    stopHeartbeatThread();
+    stopCmdTimeoutThread();
 
     //
     // Close socket connection
@@ -449,8 +437,8 @@ int32_t CTPService::sendMsg(CTPMessage* message) {
 
         // Will restore connection if no response in 60sec
         // Declare the old timeout done
-        stopThread(cmdTimeoutThread);
-        cmdTimeoutThread = NULL;
+        stopCmdTimeoutThread();
+
         threadPool.cleanup();
         // Create a new timeout thread
         cmdTimeoutThread = threadPool.createCmdTimeoutThread();
@@ -538,8 +526,8 @@ CTPMessage* CTPService::receiveStatusMsg() {
 
 finally:
     // Msg received or error, anyway kill the cmdTimeoutThread.
-    stopThread(cmdTimeoutThread);
-    cmdTimeoutThread = NULL;
+    stopCmdTimeoutThread();
+
     return receivedMsg;
 }
 
@@ -609,22 +597,34 @@ int32_t CTPService::receive() {
         ret = 0;
     } else {
         LOG.debug("Timeout - receiverThread will now be terminated");
-        stopThread(receiverThread);
-        receiverThread = NULL;
+        stopReceiverThread();
         ret = 1;
     }
 
     // We are terminating receiving, therefore we must stop the heartbeat
-    stopThread(heartbeatThread);
+    stopHeartbeatThread();
 
     return ret;
 }
 
-/**
- * Utility to terminate a desired thread, setting its HANDLE to NULL.
- * @param thread   the HANDLE of the thread to be stopped
- * @return         true if the thread has been effectively terminated
- */
+
+void CTPService::stopHeartbeatThread() {
+    stopThread(heartbeatThread); 
+    heartbeatThread = NULL;
+}
+void CTPService::stopCmdTimeoutThread() {
+    stopThread(cmdTimeoutThread); 
+    cmdTimeoutThread = NULL;
+}
+void CTPService::stopReceiverThread() {
+    stopThread(receiverThread); 
+    receiverThread = NULL;
+}
+void CTPService::stopCtpThread() {
+    stopThread(ctpThread); 
+    ctpThread = NULL;
+}
+
 bool CTPService::stopThread(FThread *thread) {
 
     bool terminated = false;
@@ -787,7 +787,7 @@ void CmdTimeoutThread::run() {
         ctpService->closeConnection();
         
         // Heartbeat thread can be in sleep mode, we must terminate it.
-        ctpService->stopHeartbeat();
+        ctpService->stopHeartbeatThread();
     }
 
 finally:
