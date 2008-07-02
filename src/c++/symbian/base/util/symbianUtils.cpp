@@ -50,10 +50,10 @@ BEGIN_NAMESPACE
 
 void msgBox(const TDesC& aMsg, const TWarningLevel aLevel)
 {
-    // go to foreground and prompt
-    TApaTask task(CEikonEnv::Static()->WsSession());
-    task.SetWgId( CEikonEnv::Static()->RootWin().Identifier());
-    task.BringToForeground();
+    // don't go to foreground!
+    //TApaTask task(CEikonEnv::Static()->WsSession());
+    //task.SetWgId( CEikonEnv::Static()->RootWin().Identifier());
+    //task.BringToForeground();
 
     CAknResourceNoteDialog* note;
     switch (aLevel)
