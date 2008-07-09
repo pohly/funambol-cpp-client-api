@@ -1,52 +1,111 @@
 
 /*
- * Copyright (C) 2003-2006 Funambol
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * Funambol is a mobile platform developed by Funambol, Inc. 
+ * Copyright (C) 2003 - 2007 Funambol, Inc.
+ * 
+ * This program is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU Affero General Public License version 3 as published by
+ * the Free Software Foundation with the addition of the following permission 
+ * added to Section 15 as permitted in Section 7(a): FOR ANY PART OF THE COVERED
+ * WORK IN WHICH THE COPYRIGHT IS OWNED BY FUNAMBOL, FUNAMBOL DISCLAIMS THE 
+ * WARRANTY OF NON INFRINGEMENT  OF THIRD PARTY RIGHTS.
+ * 
+ * This program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
+ * details.
+ * 
+ * You should have received a copy of the GNU Affero General Public License 
+ * along with this program; if not, see http://www.gnu.org/licenses or write to
+ * the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
+ * MA 02110-1301 USA.
+ * 
+ * You can contact Funambol, Inc. headquarters at 643 Bair Island Road, Suite 
+ * 305, Redwood City, CA 94063, USA, or at email address info@funambol.com.
+ * 
+ * The interactive user interfaces in modified source and object code versions
+ * of this program must display Appropriate Legal Notices, as required under
+ * Section 5 of the GNU Affero General Public License version 3.
+ * 
+ * In accordance with Section 7(b) of the GNU Affero General Public License
+ * version 3, these Appropriate Legal Notices must retain the display of the
+ * "Powered by Funambol" logo. If the display of the logo is not reasonably 
+ * feasible for technical reasons, the Appropriate Legal Notices must display
+ * the words "Powered by Funambol".
  */
 #include "base/fscapi.h"
 #include "base/util/utils.h"
 #include "spds/spdsutils.h"
 #include "base/quoted-printable.h"
+#include "base/globalsdef.h"
+
+
+#define BASE64 "base64"
+#define QUOTED_PRINTABLE "quoted-printable"
+
+BEGIN_NAMESPACE
 
 // Base64 encoding for files (with newline)
 char *uuencode(const char *msg, int len);
 
 SyncMode syncModeCode(const char* syncMode) {
 
-    if (strcmp(syncMode,T("slow")) == 0)
+    if (strcmp(syncMode,"slow") == 0)
         return SYNC_SLOW;
-    else if (strcmp(syncMode,T("two-way")) == 0)
+    else if (strcmp(syncMode,"two-way") == 0)
         return SYNC_TWO_WAY;
-    else if (strcmp(syncMode,T("one-way")) == 0)
+    else if (strcmp(syncMode,"one-way") == 0)               // deprecated
         return SYNC_ONE_WAY_FROM_SERVER;
-    else if (strcmp(syncMode,T("one-way-server")) == 0)
+    else if (strcmp(syncMode,"one-way-server") == 0 ||      // deprecated
+             strcmp(syncMode,"one-way-from-server") == 0 )
         return SYNC_ONE_WAY_FROM_SERVER;
-    else if (strcmp(syncMode,T("one-way-client")) == 0)
+    else if (strcmp(syncMode,"one-way-client") == 0 ||      // deprecated
+             strcmp(syncMode,"one-way-from-client") == 0)
         return SYNC_ONE_WAY_FROM_CLIENT;
-    else if (strcmp(syncMode,T("refresh"))             == 0 ||
-             strcmp(syncMode,T("refresh-server"))      == 0 ||
-             strcmp(syncMode,T("refresh-from-server")) == 0  )
+    else if (strcmp(syncMode,"refresh")             == 0 || // deprecated
+             strcmp(syncMode,"refresh-server")      == 0 || // deprecated
+             strcmp(syncMode,"refresh-from-server") == 0  )
         return SYNC_REFRESH_FROM_SERVER;
-    else if (strcmp(syncMode,T("refresh-client")) == 0 ||
-             strcmp(syncMode,T("refresh-from-client")) == 0)
+    else if (strcmp(syncMode,"refresh-client") == 0 ||      // deprecated
+             strcmp(syncMode,"refresh-from-client") == 0)
         return SYNC_REFRESH_FROM_CLIENT;
     //--------- Funambol extension --------------------
-    else if (strcmp(syncMode, T("addrchange")) == 0)
+    else if (strcmp(syncMode, "addrchange") == 0)
         return SYNC_ADDR_CHANGE_NOTIFICATION;
     return SYNC_NONE;
+}
+
+const char *syncModeKeyword(SyncMode syncMode) {
+    switch (syncMode) {
+        case SYNC_SLOW:
+            return "slow";
+        case SYNC_TWO_WAY:
+            return "two-way";
+        case SYNC_ONE_WAY_FROM_SERVER:
+            return "one-way-from-server";
+        case SYNC_ONE_WAY_FROM_CLIENT:
+            return "one-way-from-client";
+        case SYNC_REFRESH_FROM_SERVER:
+            return "refresh-from-server";
+        case SYNC_REFRESH_FROM_CLIENT:
+            return "refresh-from-client";
+        case SYNC_ADDR_CHANGE_NOTIFICATION:
+            return "addrchange";
+        case SYNC_NONE:
+            return "none";
+        case SYNC_TWO_WAY_BY_SERVER:
+            return "two-way-by-server";
+        case SYNC_ONE_WAY_FROM_CLIENT_BY_SERVER:
+            return "one-way-from-client-by-server";
+        case SYNC_REFRESH_FROM_CLIENT_BY_SERVER:
+            return "refresh-from-client-by-server";
+        case SYNC_ONE_WAY_FROM_SERVER_BY_SERVER:
+            return "one-way-from-server-by-server";
+        case SYNC_REFRESH_FROM_SERVER_BY_SERVER:
+            return "refresh-from-server-by-server";
+    }
+
+    return "";
 }
 
 
@@ -97,9 +156,13 @@ char *uuencode(const char *msg, int len)
         if(len-i < step)
             step = len-i;
         dlen += b64_encode(ret+dlen, (void *)(msg+i), step);
+        if(getLastErrorCode() != 0){
+            delete [] ret;
+            return NULL;
+        }
         ret[dlen++]='\n';
     }
-    
+
     // Terminate the string
     ret[dlen]=0;
     return ret;
@@ -129,7 +192,7 @@ static const char *getLine(const char *msg, char **line) {
     *line= new char[linelen+1];
     strncpy(*line, msg, linelen );
     (*line)[linelen]=0;
-    
+
     while (*next == '\r' || *next == '\n') {
         next++;
     }
@@ -148,7 +211,7 @@ int uudecode(const char *msg, char **binmsg, size_t *binlen)
     const char *cursor = buf;
     char *line;
     // Make room for the destination (3/4 of the original)
-    int outlen = strlen(buf)/3 * 4 + 1;
+    int outlen = strlen(buf)/4 * 3 + 1;
     char *out = new char[outlen+1];
     memset(out, 0, outlen);
     int len = 0, nl=0;
@@ -158,11 +221,14 @@ int uudecode(const char *msg, char **binmsg, size_t *binlen)
             break;
         nl++;
         len += b64_decode(out+len, line);
-        if(nl==200)
-            puts("Near the end");
+        if ( getLastErrorCode() != 0){
+            delete [] line;
+            return -1;
+        }
+
         delete [] line;
     }
-    delete [] buf; 
+    delete [] buf;
     // Terminate the string
     out[len]=0;
     // Set return parameters
@@ -177,11 +243,11 @@ char *loadAndConvert(const char *filename, const char *encoding)
     bool binary = true;
     size_t msglen=0;
     char *ret = 0;
-    
+
     if(!filename)
         return 0;
 
-    if( strcmp(encoding, T("base64")) == 0 ) {
+    if( strcmp(encoding, "base64") == 0 ) {
         binary = true;
     }
 
@@ -189,17 +255,17 @@ char *loadAndConvert(const char *filename, const char *encoding)
     if(!readFile(filename, &msg, &msglen, binary))
         return 0;
     // Encode the file
-    if( strcmp(encoding, T("base64")) == 0 ) {
+    if( strcmp(encoding, BASE64) == 0 ) {
         ret = uuencode(msg, msglen);
         delete [] msg;
     }
-    else if( strcmp(encoding, T("quoted-printable")) == 0 ) {
+    else if( strcmp(encoding, QUOTED_PRINTABLE) == 0 ) {
         if(qp_isNeed(msg))
             ret = qp_encode(msg);
         delete [] msg;
     }
     else {  // Default 8bit
-        ret = msg;    
+        ret = msg;
     }
     return ret;
 }
@@ -216,17 +282,19 @@ int convertAndSave(const char *filename,
         return -1;
 
     // Decode the file
-    if( strcmp(encoding, T("base64")) == 0 ) {
+    if( strcmp(encoding, BASE64) == 0 ) {
         if( uudecode(s, &buf, &len) ) {
             return -1;
         }
         binary = true;
+    } else if( strcmp(encoding, QUOTED_PRINTABLE) == 0 ) {
+        if (s == NULL)
+            return -1;
+
+        buf = qp_decode(s);
+        len = strlen(buf);
+        binary = true;
     }
-    // TODO
-    //else if( strcmp(encoding, T("ISO-8859-1")) == 0 ) {
-    //    buf = stringdup(s);
-    //    len = strlen(buf);        
-    //}
     else {      // Default UTF-8
         buf = stringdup(s);
         len = strlen(buf);
@@ -237,17 +305,18 @@ int convertAndSave(const char *filename,
     return 0;
 }
 
-char *getSourceName(const char *uri)
+const char* getSourceName(const char *uri)
 {
 #if 0
 // FIXME
     char nodeName = new char[];
-    strcpy(nodeName, rootContext); strcat(nodeName, T(CONTEXT_SPDS_SOURCES));
+    strcpy(nodeName, rootContext); strcat(nodeName, CONTEXT_SPDS_SOURCES);
 
-    node = dmt->getManagementNode(nodeName);
+    node = dmt->readManagementNode(nodeName);
     if ( ! node ) {
-        lastErrorCode = ERR_INVALID_CONTEXT;
-        sprintf(lastErrorMsg, ERRMSG_INVALID_CONTEXT, nodeName);
+        //lastErrorCode = ERR_INVALID_CONTEXT;
+        //sprintf(lastErrorMsg, ERRMSG_INVALID_CONTEXT, nodeName);
+        setErrorf(ERR_INVALID_CONTEXT, ERRMSG_INVALID_CONTEXT, nodeName);
         goto finally;
     }
     n = node->getChildrenMaxCount();
@@ -258,4 +327,25 @@ char *getSourceName(const char *uri)
 #endif
 }
 
+int indent(StringBuffer& content, int space){
+    
+    StringBuffer buf;
+    char* startingBuf = new char[space +1];
+    memset(startingBuf, ' ', space);
+    startingBuf[space] = 0;
+    buf = startingBuf;
+
+    char* spacebuf = new char[space +2];
+    spacebuf[0] = '\n';
+    memset((spacebuf+1), ' ', space);
+    spacebuf[space+1] = 0;
+    content.replaceAll("\n", spacebuf);
+    buf.append(content);
+    content = buf;
+    delete [] spacebuf;
+    delete [] startingBuf;
+    return 0;
+}
+
+END_NAMESPACE
 

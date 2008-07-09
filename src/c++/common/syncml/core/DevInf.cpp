@@ -1,49 +1,69 @@
 /*
- * Copyright (C) 2003-2006 Funambol
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * Funambol is a mobile platform developed by Funambol, Inc. 
+ * Copyright (C) 2003 - 2007 Funambol, Inc.
+ * 
+ * This program is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU Affero General Public License version 3 as published by
+ * the Free Software Foundation with the addition of the following permission 
+ * added to Section 15 as permitted in Section 7(a): FOR ANY PART OF THE COVERED
+ * WORK IN WHICH THE COPYRIGHT IS OWNED BY FUNAMBOL, FUNAMBOL DISCLAIMS THE 
+ * WARRANTY OF NON INFRINGEMENT  OF THIRD PARTY RIGHTS.
+ * 
+ * This program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
+ * details.
+ * 
+ * You should have received a copy of the GNU Affero General Public License 
+ * along with this program; if not, see http://www.gnu.org/licenses or write to
+ * the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
+ * MA 02110-1301 USA.
+ * 
+ * You can contact Funambol, Inc. headquarters at 643 Bair Island Road, Suite 
+ * 305, Redwood City, CA 94063, USA, or at email address info@funambol.com.
+ * 
+ * The interactive user interfaces in modified source and object code versions
+ * of this program must display Appropriate Legal Notices, as required under
+ * Section 5 of the GNU Affero General Public License version 3.
+ * 
+ * In accordance with Section 7(b) of the GNU Affero General Public License
+ * version 3, these Appropriate Legal Notices must retain the display of the
+ * "Powered by Funambol" logo. If the display of the logo is not reasonably 
+ * feasible for technical reasons, the Appropriate Legal Notices must display
+ * the words "Powered by Funambol".
  */
- 
+
 #include "base/util/utils.h"
 #include "syncml/core/DevInf.h"
- 
+#include "base/globalsdef.h"
+
+USE_NAMESPACE
+
 DevInf::DevInf() {
-    
+
     initialize();
 
 }
 DevInf::~DevInf() {
-    
-    if(verDTD) { delete verDTD ; verDTD  = NULL; }                
-    
-    if(man   )  { delete [] man   ;  man    = NULL; } 
-    if(mod   )  { delete [] mod   ;  mod    = NULL; } 
-    if(oem   )  { delete [] oem   ;  oem    = NULL; } 
-    if(fwV   )  { delete [] fwV   ;  fwV    = NULL; } 
-    if(swV   )  { delete [] swV   ;  swV    = NULL; } 
-    if(hwV   )  { delete [] hwV   ;  hwV    = NULL; } 
-    if(devID )  { delete [] devID ;  devID  = NULL; } 
-    if(devTyp)  { delete [] devTyp;  devTyp = NULL; } 
-    
-    if(dataStores) { dataStores->clear() ; } //delete dataStores; dataStores = NULL;}     //DataStore[]  
-    if(ctCap     ) { ctCap->clear()      ; } //delete ctCap;      ctCap = NULL;     }     // CTCap[]
-    if(ext       ) { ext->clear()        ; } //delete ext;        ext = NULL;       }     // Ext[]
 
-    utc                    = FALSE;                  
-    supportLargeObjs       = FALSE;     
-    supportNumberOfChanges = FALSE;
+    if(verDTD) { delete verDTD ; verDTD  = NULL; }
+
+    if(man   )  { delete [] man   ;  man    = NULL; }
+    if(mod   )  { delete [] mod   ;  mod    = NULL; }
+    if(oem   )  { delete [] oem   ;  oem    = NULL; }
+    if(fwV   )  { delete [] fwV   ;  fwV    = NULL; }
+    if(swV   )  { delete [] swV   ;  swV    = NULL; }
+    if(hwV   )  { delete [] hwV   ;  hwV    = NULL; }
+    if(devID )  { delete [] devID ;  devID  = NULL; }
+    if(devTyp)  { delete [] devTyp;  devTyp = NULL; }
+
+    if(dataStores) { /*dataStores->clear() ; }*/ delete dataStores; dataStores = NULL;}     //DataStore[]
+    if(ctCap     ) { /*ctCap->clear()      ; }*/ delete ctCap;      ctCap = NULL;     }     // CTCap[]
+    if(ext       ) { /*ext->clear()        ; }*/ delete ext;        ext = NULL;       }     // Ext[]
+
+    utc                    = false;
+    supportLargeObjs       = false;
+    supportNumberOfChanges = false;
 
 }
 
@@ -79,11 +99,11 @@ DevInf::DevInf(VerDTD* verDTD,
         ArrayList* dataStores,
         ArrayList* ctCap,
         ArrayList* ext,
-        BOOL utc,
-        BOOL supportLargeObjs,
-        BOOL supportNumberOfChanges,
+        bool utc,
+        bool supportLargeObjs,
+        bool supportNumberOfChanges,
         SyncCap* syncCap) {
-    
+
     initialize();
 
     setVerDTD(verDTD);
@@ -107,24 +127,24 @@ DevInf::DevInf(VerDTD* verDTD,
 }
 
 void DevInf::initialize() {
-    verDTD = NULL;  
-    man    = NULL; 
-    mod    = NULL; 
-    oem    = NULL; 
-    fwV    = NULL; 
-    swV    = NULL; 
-    hwV    = NULL; 
-    devID  = NULL; 
-    devTyp = NULL; 
-    
+    verDTD = NULL;
+    man    = NULL;
+    mod    = NULL;
+    oem    = NULL;
+    fwV    = NULL;
+    swV    = NULL;
+    hwV    = NULL;
+    devID  = NULL;
+    devTyp = NULL;
+
     syncCap = NULL;
-    dataStores = new ArrayList();  //DataStore[]   
-    ctCap      = new ArrayList();  // CTCap[] 
-    ext        = new ArrayList();  // Ext[] 
-    
-    utc                    = FALSE;                  
-    supportLargeObjs       = FALSE;     
-    supportNumberOfChanges = FALSE;
+    dataStores = NULL; //new ArrayList();  //DataStore[]
+    ctCap      = new ArrayList();  // CTCap[]
+    ext        = new ArrayList();  // Ext[]
+
+    utc                    = false;
+    supportLargeObjs       = false;
+    supportNumberOfChanges = false;
 }
 
 
@@ -151,7 +171,7 @@ void DevInf::setVerDTD(VerDTD* verDTD) {
             delete [] this->verDTD; this->verDTD = NULL;
         }
         this->verDTD = verDTD->clone();
-    }    
+    }
 }
 
 /**
@@ -159,12 +179,8 @@ void DevInf::setVerDTD(VerDTD* verDTD) {
 *
 * @return the device manufacturer property
 */
-char* DevInf::getMan(char* retMan) {
-    if (retMan == NULL) {
-        return man;
-    }
-    return strcpy(retMan, man);
-
+const char* DevInf::getMan() {
+    return man;
 }
 
 /**
@@ -185,11 +201,8 @@ void DevInf::setMan(const char* man) {
 *
 * @return the model name of device
 */
-char* DevInf::getMod(char* retMod) {
-    if (retMod == NULL) {
-        return mod;
-    }
-    return strcpy(retMod, mod);
+const char* DevInf::getMod() {
+    return mod;
 }
 
 /**
@@ -210,11 +223,8 @@ void DevInf::setMod(const char* mod) {
 *
 * @return the OEM property
 */
-char* DevInf::getOEM(char* retOem) {
-    if (retOem == NULL) {
-        return oem;
-    }
-    return strcpy(retOem, oem);
+const char* DevInf::getOEM() {
+    return oem;
 }
 
 /**
@@ -235,11 +245,8 @@ void DevInf::setOEM(const char* oem) {
 *
 * @return the firmware version property
 */
-char* DevInf::getFwV(char* retFwV) {
-    if (retFwV == NULL) {
-        return fwV;
-    }
-    return strcpy(retFwV, fwV);
+const char* DevInf::getFwV() {
+    return fwV;
 }
 
 /**
@@ -260,11 +267,8 @@ void DevInf::setFwV(const char* fwV) {
 *
 * @return the software version property
 */
-char* DevInf::getSwV(char* retSwV) {
-    if (retSwV == NULL) {
-        return swV;
-    }
-    return strcpy(retSwV, swV);
+const char* DevInf::getSwV() {
+    return swV;
 }
 
 /**
@@ -285,11 +289,8 @@ void DevInf::setSwV(const char* swV) {
 *
 * @return the hardware version property
 */
-char* DevInf::getHwV(char* retHwv) {
-    if (retHwv == NULL) {
-        return hwV;
-    }
-    return strcpy(retHwv, hwV);
+const char* DevInf::getHwV() {
+    return hwV;
 }
 
 /**
@@ -310,11 +311,8 @@ void DevInf::setHwV(const char* hwV) {
 *
 * @return the device identifier
 */
-char* DevInf::getDevID(char* retDevID) {
-    if (retDevID == NULL) {
-        return devID;
-    }
-    return strcpy(retDevID, devID);
+const char* DevInf::getDevID() {
+    return devID;
 }
 
 /**
@@ -339,11 +337,8 @@ void DevInf::setDevID(const char* devID) {
 *
 * @return the device type
 */
-char* DevInf::getDevTyp(char* retDevTyp) {
-    if (retDevTyp == NULL) {
-        return devTyp;
-    }
-    return strcpy(retDevTyp, devTyp);
+const char* DevInf::getDevTyp() {
+    return devTyp;
 }
 
 /**
@@ -381,7 +376,7 @@ ArrayList* DevInf::getDataStore() {
 void DevInf::setDataStore(ArrayList* dataStores) {
     if (this->dataStores) {
 		this->dataStores->clear();
-    } 
+    }
     if (dataStores) {
 	    this->dataStores = dataStores->clone();
     }
@@ -402,12 +397,12 @@ ArrayList* DevInf::getCTCap() {
 * @param ctCap an array of content type capability
 *
 */
-void DevInf::setCTCap(ArrayList* ctCap) {
-    if (this->ctCap) {
-		this->ctCap->clear(); 
-    } 
-    if (ctCap) {
-	    this->ctCap = ctCap->clone();
+void DevInf::setCTCap(ArrayList* ct_Cap) {
+    if (ct_Cap && !(ct_Cap->isEmpty())) {
+        if (this->ctCap) {
+            this->ctCap->clear();
+        }
+        this->ctCap = ct_Cap;//->clone();
     }
 }
 
@@ -428,20 +423,13 @@ ArrayList* DevInf::getExt() {
 */
 void DevInf::setExt(ArrayList* ext) {
     if (this->ext) {
-		this->ext->clear();
-    } 
+		//this->ext->clear();
+                delete this->ext;
+                this->ext = NULL;
+    }
     if (ext) {
 	    this->ext = ext->clone();
     }
-}
-
-/**
-* Gets true if the device supports UTC based time
-*
-* @return true if the device supports UTC based time
-*/
-BOOL DevInf::isUTC() {
-    return (utc != NULL);
 }
 
 /**
@@ -449,12 +437,8 @@ BOOL DevInf::isUTC() {
 *
 * @param utc is true if the device supports UTC based time
 */
-void DevInf::setUTC(BOOL utc) {
-    if ((utc == NULL) || (utc != TRUE && utc != FALSE)) {
-        this->utc = NULL;
-    } else {
-        this->utc = utc;
-    }  
+void DevInf::setUTC(bool utc) {
+    this->utc = utc;
 }
 
 
@@ -463,18 +447,10 @@ void DevInf::setUTC(BOOL utc) {
 *
 * @return true if the device supports UTC based time
 */
-BOOL DevInf::getUTC() {
+bool DevInf::getUTC() {
     return utc;
 }
 
-/**
-* Gets true if the device supports handling of large objects
-*
-* @return true if the device supports handling of large objects
-*/
-BOOL DevInf::isSupportLargeObjs() {
-    return (supportLargeObjs != NULL);
-}
 
 /**
 * Sets the supportLargeObjs property
@@ -482,12 +458,8 @@ BOOL DevInf::isSupportLargeObjs() {
 * @param supportLargeObjs is true if the device supports handling of large objects
 *
 */
-void DevInf::setSupportLargeObjs(BOOL supportLargeObjs) {
-    if ((supportLargeObjs == NULL) || (supportLargeObjs != TRUE && supportLargeObjs != FALSE)) {
-        this->supportLargeObjs = NULL;
-    } else {
-        this->supportLargeObjs = supportLargeObjs;
-    }  
+void DevInf::setSupportLargeObjs(bool supportLargeObjs) {
+    this->supportLargeObjs = supportLargeObjs;
 }
 
 /**
@@ -495,17 +467,8 @@ void DevInf::setSupportLargeObjs(BOOL supportLargeObjs) {
 *
 * @return true if the device supports handling of large objects
 */
-BOOL DevInf::getSupportLargeObjs() {
+bool DevInf::getSupportLargeObjs() {
     return supportLargeObjs;
-}
-
-/**
-* Gets true if the device supports number of changes
-*
-* @return true if the device supports number of changes
-*/
-BOOL DevInf::isSupportNumberOfChanges() {
-    return (supportNumberOfChanges != NULL);
 }
 
 /**
@@ -514,12 +477,8 @@ BOOL DevInf::isSupportNumberOfChanges() {
 * @param supportNumberOfChanges is true if the device supports number of changes
 *
 */
-void DevInf::setSupportNumberOfChanges(BOOL supportNumberOfChanges) {
-    if ((supportNumberOfChanges == NULL) || (supportNumberOfChanges != TRUE && supportNumberOfChanges != FALSE)) {
-        this->supportNumberOfChanges = NULL;
-    } else {
-        this->supportNumberOfChanges = supportNumberOfChanges;
-    }  
+void DevInf::setSupportNumberOfChanges(bool supportNumberOfChanges) {
+    this->supportNumberOfChanges = supportNumberOfChanges;
 }
 
 /**
@@ -527,7 +486,7 @@ void DevInf::setSupportNumberOfChanges(BOOL supportNumberOfChanges) {
 *
 * @return true if the device supports number of changes
 */
-BOOL DevInf::getSupportNumberOfChanges() {
+bool DevInf::getSupportNumberOfChanges() {
     return supportNumberOfChanges;
 }
 
@@ -546,8 +505,8 @@ SyncCap* DevInf::getSyncCap() {
 
 
 DevInf* DevInf::clone() {
-    DevInf* ret = new DevInf(verDTD, man, mod, oem, fwV, swV, hwV, devID, 
-                             devTyp, dataStores, ctCap, ext, 
+    DevInf* ret = new DevInf(verDTD, man, mod, oem, fwV, swV, hwV, devID,
+                             devTyp, dataStores, ctCap, ext,
                              utc, supportLargeObjs, supportNumberOfChanges, syncCap);
     return ret;
 }

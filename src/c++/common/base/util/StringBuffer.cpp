@@ -1,45 +1,49 @@
 /*
- * Copyright (C) 2003-2006 Funambol
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * Funambol is a mobile platform developed by Funambol, Inc. 
+ * Copyright (C) 2003 - 2007 Funambol, Inc.
+ * 
+ * This program is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU Affero General Public License version 3 as published by
+ * the Free Software Foundation with the addition of the following permission 
+ * added to Section 15 as permitted in Section 7(a): FOR ANY PART OF THE COVERED
+ * WORK IN WHICH THE COPYRIGHT IS OWNED BY FUNAMBOL, FUNAMBOL DISCLAIMS THE 
+ * WARRANTY OF NON INFRINGEMENT  OF THIRD PARTY RIGHTS.
+ * 
+ * This program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
+ * details.
+ * 
+ * You should have received a copy of the GNU Affero General Public License 
+ * along with this program; if not, see http://www.gnu.org/licenses or write to
+ * the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
+ * MA 02110-1301 USA.
+ * 
+ * You can contact Funambol, Inc. headquarters at 643 Bair Island Road, Suite 
+ * 305, Redwood City, CA 94063, USA, or at email address info@funambol.com.
+ * 
+ * The interactive user interfaces in modified source and object code versions
+ * of this program must display Appropriate Legal Notices, as required under
+ * Section 5 of the GNU Affero General Public License version 3.
+ * 
+ * In accordance with Section 7(b) of the GNU Affero General Public License
+ * version 3, these Appropriate Legal Notices must retain the display of the
+ * "Powered by Funambol" logo. If the display of the logo is not reasonably 
+ * feasible for technical reasons, the Appropriate Legal Notices must display
+ * the words "Powered by Funambol".
  */
 
+#include "base/globalsdef.h"
 #include "base/fscapi.h"
 #include "base/messages.h"
 #include "base/util/utils.h"
 #include "base/util/StringBuffer.h"
 
-const size_t StringBuffer::npos = 0xFFFFFFFF;
-static size_t growup = 5;
 
-#if 0
-/// FIXME: Debug code
-#include <stdio.h>
-void abort(const char *msg)
-{
-    FILE *f=fopen("\fatal.txt", "w");
-    fputs(msg, f);
-    fclose(f);
-    exit(1);
-}
-size_t charlen = sizeof(char);
-    if(charlen != 2) {
-        abort("Panic: wide char size in not 2");
-    }
-    
-#endif
+USE_NAMESPACE
+
+const size_t StringBuffer::npos = 0xFFFFFFFF;
+
 
 StringBuffer::StringBuffer(const char* str, size_t len) {
     size = 0;
@@ -49,7 +53,7 @@ StringBuffer::StringBuffer(const char* str, size_t len) {
     // otherwise set it, even empty.
     if (str) {
         size_t slen = strlen(str);
-        size_t newlen = (len > slen) ? slen : len ; 
+        size_t newlen = (len > slen) ? slen : len ;
 
         if(newlen) {
             getmem(newlen);
@@ -63,6 +67,7 @@ StringBuffer::StringBuffer(const char* str, size_t len) {
     }
 }
 
+//Copy Costructor
 StringBuffer::StringBuffer(const StringBuffer &sb) {
     size = 0;
     s = NULL;
@@ -95,34 +100,37 @@ StringBuffer& StringBuffer::append(const char* sNew) {
     return *this;
 }
 
-StringBuffer& StringBuffer::append(unsigned long i, BOOL sign) {
-    char v[12];
-
-    if (sign) {
-        // sprintf(v, "%ld", i);
-        sprintf(v, T("%ld"), i);
-    } else {
-        // sprintf(v, "%lu", i);
-        sprintf(v, T("%lu"), i);
-    }
-
-    append(v);
+StringBuffer& StringBuffer::append(unsigned long i, bool sign) {
+    append(StringBuffer().sprintf(sign ? "%ld" : "%lu", i));
 
     return *this;
 }
 
+/* TODO:
+
+StringBuffer& StringBuffer::append(unsigned long i) {
+    append(StringBuffer().sprintf("%lu", i));
+
+    return *this;
+}
+
+StringBuffer& StringBuffer::append(long i) {
+    append(StringBuffer().sprintf("%ld", i));
+
+    return *this;
+}
+
+*/
+
 StringBuffer& StringBuffer::append(StringBuffer& str) {
-    return append(str.getChars());
+    return append(str.c_str());
 }
 
 StringBuffer& StringBuffer::append(StringBuffer* str) {
-    if (str)
-        return append(str->getChars());
-    else 
-        return *this;
+    return (str) ? append(str->c_str()) : *this;
 }
 
-StringBuffer& StringBuffer::set(const char* sNew) {
+StringBuffer& StringBuffer::assign(const char* sNew) {
     if (sNew) {
         size_t len = strlen(sNew);
         if ( len ) {
@@ -139,25 +147,94 @@ StringBuffer& StringBuffer::set(const char* sNew) {
     else {
         freemem();  // release the string and set it to null
     }
-    
+
     return *this;
 }
 
-const char* StringBuffer::getChars() const { return s; }
+/////////////////////////////////////////////////////////////////////////////
+// convert.
+/////////////////////////////////////////////////////////////////////////////
+StringBuffer& StringBuffer::convert(const WCHAR* wc, const char *encoding) {
+    
+    if(sizeof(WCHAR) != sizeof(char)) {
+        char *tmp = toMultibyte(wc, encoding);
+        assign(tmp);
+        delete [] tmp;
+    }
+    else {
+        assign((const char *)wc);
+    }
+    return *this;
+}
+
+// sprintf ----------------------------
+StringBuffer& StringBuffer::sprintf(const char* format, ...) {
+    PLATFORM_VA_LIST ap;
+
+    PLATFORM_VA_START(ap, format);
+    this->vsprintf(format, ap);
+    PLATFORM_VA_END(ap);
+
+    return *this;
+}
+
+
+StringBuffer& StringBuffer::vsprintf(const char* format, PLATFORM_VA_LIST ap) {
+    PLATFORM_VA_LIST aq;
+
+    // ensure minimal size for first iteration
+    int realsize = 255;
+
+    do {
+        // make a copy to keep ap valid for further iterations
+#ifdef va_copy
+        PLATFORM_VA_COPY(aq, ap);
+#else
+        aq = ap;
+#endif
+
+        if (size < (unsigned long)realsize) {
+            s = (char*)realloc(s, (realsize + 1) * sizeof(char));
+            if (s == NULL) {
+                // Out of memory. Flush the string content and return
+                size = 0;
+                return *this;
+            }
+            size = realsize;
+        }
+
+        realsize = vsnprintf(s, size + 1, format, aq);
+        if (realsize == -1) {
+            // old-style vnsprintf: exact len unknown, try again with doubled size
+            realsize = size * 2;
+        }
+        PLATFORM_VA_END(aq);
+    } while((unsigned long)realsize > size);
+
+    // free extra memory
+    s = (char*)realloc(s, (realsize + 1) * sizeof(char));
+    size = realsize;
+
+    return *this;
+}
+
+
 
 unsigned long StringBuffer::length() const {
     return (s) ? strlen(s) : 0;
 }
 
+// Watch out
 StringBuffer& StringBuffer::reset() {
     freemem();
     return *this;
 }
 
-size_t StringBuffer::find(const char *str, size_t pos) const 
+size_t StringBuffer::find(const char *str, size_t pos) const
 {
-    if (pos >= length())
+    if (pos >= length()) {
         return npos;
+    }
     char *p = strstr(s+pos, str);
     if(!p)
         return npos;
@@ -168,11 +245,12 @@ size_t StringBuffer::ifind(const char *str, size_t pos) const
 {
     if (pos >= length())
         return npos;
+
     char *ls = strtolower(s+pos);
     char *lstr = strtolower(str);
 
     char *p = strstr(ls, lstr);
-    
+
     size_t ret = (p) ? p-ls : npos;
 
     delete [] ls;
@@ -181,42 +259,34 @@ size_t StringBuffer::ifind(const char *str, size_t pos) const
     return ret;
 }
 
-size_t StringBuffer::rfind(const char *str, size_t pos) const 
+size_t StringBuffer::rfind(const char *str, size_t pos) const
 {
-    /*
-    if (pos >= length())
-        return npos;
-    const char *p = brfind(s+pos, str);
-    if(!p)
-        return npos;
-    return (p-s);
-    */  
     if (pos >= length())
         return npos;
 
     size_t tmp = StringBuffer::npos;
     int previous = pos;
-    
+
     tmp = find(str, pos);
     if (tmp == StringBuffer::npos)
         return npos;
-        
+
     while(1) {
-        
+
         previous = tmp;
         tmp = find(str, tmp + 1);
         if (tmp == StringBuffer::npos)
-            break;        
+            break;
     }
-    
+
     return previous;
-  
+
 }
 
 
-size_t StringBuffer::replace(const char *from, const char *to, size_t pos) 
+size_t StringBuffer::replace(const char *from, const char *to, size_t pos)
 {
-	size_t ret = npos;
+    size_t ret = npos;
 
     if (!s)
         return npos;
@@ -233,7 +303,7 @@ size_t StringBuffer::replace(const char *from, const char *to, size_t pos)
 
         // reallocate if needed
         getmem(length() + ldiff);
-        p = s + fpos;            // ensure that p is valid again 
+        p = s + fpos;            // ensure that p is valid again
         // check is there is a remainder after the replaced token
         if( p[flen] ) {
             tail = new char[length()];
@@ -246,7 +316,7 @@ size_t StringBuffer::replace(const char *from, const char *to, size_t pos)
             strcpy(p+tlen, tail);
             delete [] tail;
         }
-		ret = p - s;
+        ret = p - s;
     }
     return ret;
 }
@@ -287,7 +357,7 @@ StringBuffer& StringBuffer::join(ArrayList &tokens, const char *separator) {
     size_t totlen = 0, seplen = strlen(separator);
     // Calc total size
     for (line=(StringBuffer *)tokens.front();
-		 line;
+         line;
          line=(StringBuffer *)tokens.next() ) {
         totlen += line->length() + seplen;
     }
@@ -295,7 +365,7 @@ StringBuffer& StringBuffer::join(ArrayList &tokens, const char *separator) {
     reserve(totlen);
     // Join strings
     for (line=(StringBuffer *)tokens.front();
-		 line;
+         line;
          line=(StringBuffer *)tokens.next() ) {
         this->append(line->c_str());
         this->append(separator);
@@ -305,9 +375,9 @@ StringBuffer& StringBuffer::join(ArrayList &tokens, const char *separator) {
 
 StringBuffer StringBuffer::substr(size_t pos, size_t len) const {
     if(pos > strlen(s))
-        return StringBuffer(T(""));
+        return StringBuffer("");
 
-	return (StringBuffer(s+pos, len));
+    return (StringBuffer(s+pos, len));
 }
 
 void StringBuffer::reserve(size_t len) {
@@ -335,7 +405,8 @@ StringBuffer& StringBuffer::lowerCase() {
 }
 
 /**
- * Perform case insensitive compare
+ * Perform case insensitive compare.
+ * @return true if equals
  */
 bool StringBuffer::icmp(const char *sc) const {
     return wcscmpIgnoreCase(s, sc);
@@ -353,14 +424,41 @@ bool StringBuffer::empty() const {
     return false;
 }
 
-bool StringBuffer::null() const { return (s==0); }
+bool StringBuffer::null() const {
+    return (s==0);
+}
+
+bool StringBuffer::endsWith(char ch) const {
+    if (empty()) {
+        return false;
+    }
+
+    if (s[length()-1] == ch) {
+        return true;
+    } else {
+        return false;
+    }
+}
+
+bool StringBuffer::endsWith(const char* str) const {
+    if (empty() || str == NULL || *str == (char)0) {
+        return false;
+    }
+    size_t strLength = strlen(str);
+    if (strLength > length()) {
+        return false;
+    }
+
+    char* start = (s + length()) - strLength;
+    return !strcmp(start, str);
+}
 
 
 // Member Operators
 StringBuffer& StringBuffer::operator= (const char* sc)
-    { return set(sc); }
+    { return assign(sc); }
 StringBuffer& StringBuffer::operator= (const StringBuffer& sb)
-    { return set(sb); }
+    { return assign(sb); }
 StringBuffer& StringBuffer::operator+= (const char* sc)
     { append(sc); return *this; }
 StringBuffer& StringBuffer::operator+= (const StringBuffer& s)
@@ -389,6 +487,8 @@ bool  StringBuffer::operator!= (const StringBuffer& s) const
 }
 
 
+BEGIN_NAMESPACE
+
 // Function operators
 StringBuffer operator+(const StringBuffer& x, const char *y)
 {
@@ -396,6 +496,8 @@ StringBuffer operator+(const StringBuffer& x, const char *y)
   result.append(y);
   return result;
 }
+
+END_NAMESPACE
 
 
 //size_t StringBuffer_memcount = 0;
@@ -411,8 +513,8 @@ void StringBuffer::getmem(size_t len)
         s = (char *)realloc(s, (len+1) * sizeof(char) );
         //StringBuffer_memcount += (len-size);
         size = len;
-        // Make sure s is terminated at the old position 
-        // (malloc may fill the buffer with rubbish) 
+        // Make sure s is terminated at the old position
+        // (malloc may fill the buffer with rubbish)
         s[oldlen] = 0;
         //fprintf(stderr, "\t\ts=%lx size=%ld alloc=%ld\n", s, size, alloclen);
     }
@@ -428,4 +530,5 @@ void StringBuffer::freemem()
     //StringBuffer_memcount -= size;
     size = 0;
 }
+
 

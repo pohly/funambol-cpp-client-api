@@ -1,31 +1,65 @@
-/**
- * Copyright (C) 2003-2006 Funambol
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston,
- * MA 02111-1307 USA
+/*
+ * Funambol is a mobile platform developed by Funambol, Inc. 
+ * Copyright (C) 2003 - 2007 Funambol, Inc.
+ * 
+ * This program is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU Affero General Public License version 3 as published by
+ * the Free Software Foundation with the addition of the following permission 
+ * added to Section 15 as permitted in Section 7(a): FOR ANY PART OF THE COVERED
+ * WORK IN WHICH THE COPYRIGHT IS OWNED BY FUNAMBOL, FUNAMBOL DISCLAIMS THE 
+ * WARRANTY OF NON INFRINGEMENT  OF THIRD PARTY RIGHTS.
+ * 
+ * This program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
+ * details.
+ * 
+ * You should have received a copy of the GNU Affero General Public License 
+ * along with this program; if not, see http://www.gnu.org/licenses or write to
+ * the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
+ * MA 02110-1301 USA.
+ * 
+ * You can contact Funambol, Inc. headquarters at 643 Bair Island Road, Suite 
+ * 305, Redwood City, CA 94063, USA, or at email address info@funambol.com.
+ * 
+ * The interactive user interfaces in modified source and object code versions
+ * of this program must display Appropriate Legal Notices, as required under
+ * Section 5 of the GNU Affero General Public License version 3.
+ * 
+ * In accordance with Section 7(b) of the GNU Affero General Public License
+ * version 3, these Appropriate Legal Notices must retain the display of the
+ * "Powered by Funambol" logo. If the display of the logo is not reasonably 
+ * feasible for technical reasons, the Appropriate Legal Notices must display
+ * the words "Powered by Funambol".
  */
+
 
 #include "base/util/utils.h"
 #include "base/util/WString.h"
 #include "base/Log.h"
 #include "vocl/VObject.h"
 #include "string.h"
+#include "base/globalsdef.h"
+
+USE_NAMESPACE
 
 VObject::VObject() {
     productID = NULL;
     version = NULL;
+    properties = new ArrayList();
+}
+
+VObject::VObject(const WCHAR* prodID, const WCHAR* ver) {
+
+    productID = NULL;
+    version = NULL;
+
+    if (prodID) {
+        setProdID(prodID);
+    }
+    if (ver) {
+        setVersion(ver);
+    }
     properties = new ArrayList();
 }
 
@@ -41,18 +75,18 @@ VObject::~VObject() {
     }
 }
 
-void VObject::set(WCHAR** p, WCHAR* v) {
+void VObject::set(WCHAR** p, const WCHAR* v) {
     if (*p) {
         delete [] *p;
     }
     *p = (v) ? wstrdup(v) : NULL;
 }
 
-void VObject::setVersion(WCHAR* ver) {
+void VObject::setVersion(const WCHAR* ver) {
     set(&version, ver);
 }
 
-void VObject::setProdID(WCHAR* prodID) {
+void VObject::setProdID(const WCHAR* prodID) {
     set(&productID, prodID);
 }
 
@@ -75,24 +109,24 @@ int VObject::propertiesCount() {
 bool VObject::removeProperty(int index) {
     if(index < 0 || index >= propertiesCount())
         return false;
-    properties->remove(index);
+    properties->removeElementAt(index);
     return true;
 }
 
 void VObject::removeProperty(WCHAR* propName) {
     for (int i=0; i<properties->size(); i++) {
-        VProperty *property; 
+        VProperty *property;
         property = (VProperty* )properties->get(i);
         if(!wcscmp(property->getName(), propName)) {
-            properties->remove(i);
+            properties->removeElementAt(i);
             break;
         }
     }
 }
 
-bool VObject::containsProperty(WCHAR* propName) {
+bool VObject::containsProperty(const WCHAR* propName) {
     for (int i=0; i<properties->size(); i++) {
-        VProperty *property; 
+        VProperty *property;
         property = (VProperty* )properties->get(i);
         if(!wcscmp(property->getName(), propName)) {
             return true;
@@ -105,12 +139,12 @@ VProperty* VObject::getProperty(int index) {
     return (VProperty*)properties->get(index);
 }
 
-VProperty* VObject::getProperty(WCHAR* propName) {
+VProperty* VObject::getProperty(const WCHAR* propName) {
     for (int i=0; i<properties->size(); i++) {
-        
-        VProperty *property; 
+
+        VProperty *property;
         property = (VProperty* )properties->get(i);
-		
+
         if(!wcscmp(property->getName(), propName)) {
             return property;
         }
@@ -124,10 +158,10 @@ VProperty* VObject::getProperty(WCHAR* propName) {
  * The returned WCHAR* is new allocated, must be freed by the caller.
  */
 WCHAR* VObject::toString() {
-    
+
     WString strVObject;
 
-    BOOL is_30 = FALSE;
+    bool is_30 = false;
     if (version) {
         is_30 = !wcscmp(getVersion(), TEXT("3.0"));
     }
@@ -160,7 +194,7 @@ WCHAR* VObject::toString() {
         if (valueConv) {
             delete [] valueConv;   valueConv = NULL;
         }
-    }		    
+    }
 
     // memory must be free by caller with delete []
     WCHAR *str = wstrdup(strVObject);
@@ -193,6 +227,7 @@ void VObject::removeAllProperies(WCHAR* propName) {
         }
 }
 
+#ifdef VOCL_ENCODING_FIX
 
 // Patrick Ohly: hack below, see header file
 
@@ -208,7 +243,7 @@ static int hex2int( WCHAR x )
 
 void VObject::toNativeEncoding()
 {
-    BOOL is_30 = !wcscmp(getVersion(), TEXT("3.0"));
+    bool is_30 = !wcscmp(getVersion(), TEXT("3.0"));
     // line break is encoded with either one or two
     // characters on different platforms
     const int linebreaklen = wcslen(SYNC4J_LINEBREAK);
@@ -252,7 +287,7 @@ void VObject::toNativeEncoding()
                             native[out - 2] = SYNC4J_LINEBREAK[0];
                             out--;
                         }
-                        
+
                         // the conversion to wchar on Windows is
                         // probably missing here
                     }
@@ -338,7 +373,7 @@ void VObject::toNativeEncoding()
 
 void VObject::fromNativeEncoding()
 {
-    BOOL is_30 = !wcscmp(getVersion(), TEXT("3.0"));
+    bool is_30 = !wcscmp(getVersion(), TEXT("3.0"));
 
     for (int index = propertiesCount() - 1; index >= 0; index--) {
         VProperty *vprop = getProperty(index);
@@ -357,7 +392,7 @@ void VObject::fromNativeEncoding()
         // line break is encoded with either one or two
         // characters on different platforms
         const int linebreaklen = wcslen(SYNC4J_LINEBREAK);
-        
+
         // use backslash for special characters,
         // if necessary do quoted-printable encoding
         bool doquoted = !is_30 &&
@@ -377,7 +412,7 @@ void VObject::fromNativeEncoding()
              case '\\':
                 foreign[out] = '\\';
                 out++;
-                foreign[out] = curr; 
+                foreign[out] = curr;
                 out++;
                 break;
              case SEMICOLON_REPLACEMENT:
@@ -388,7 +423,7 @@ void VObject::fromNativeEncoding()
                 if (doquoted &&
                     (curr == '=' || (unsigned char)curr >= 128)) {
                     // escape = and non-ASCII characters
-                    wsprintf(foreign + out, TEXT("=%02X"), (unsigned int)(unsigned char)curr);
+                    swprintf(foreign + out, 4, TEXT("=%02X"), (unsigned int)(unsigned char)curr);
                     out += 3;
                 } else if (!wcsncmp(native + in - 1,
                                     SYNC4J_LINEBREAK,
@@ -420,3 +455,6 @@ void VObject::fromNativeEncoding()
         }
     }
 }
+
+#endif
+

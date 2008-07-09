@@ -1,88 +1,57 @@
 /*
- * Copyright (C) 2003-2006 Funambol
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * Funambol is a mobile platform developed by Funambol, Inc. 
+ * Copyright (C) 2003 - 2007 Funambol, Inc.
+ * 
+ * This program is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU Affero General Public License version 3 as published by
+ * the Free Software Foundation with the addition of the following permission 
+ * added to Section 15 as permitted in Section 7(a): FOR ANY PART OF THE COVERED
+ * WORK IN WHICH THE COPYRIGHT IS OWNED BY FUNAMBOL, FUNAMBOL DISCLAIMS THE 
+ * WARRANTY OF NON INFRINGEMENT  OF THIRD PARTY RIGHTS.
+ * 
+ * This program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
+ * details.
+ * 
+ * You should have received a copy of the GNU Affero General Public License 
+ * along with this program; if not, see http://www.gnu.org/licenses or write to
+ * the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
+ * MA 02110-1301 USA.
+ * 
+ * You can contact Funambol, Inc. headquarters at 643 Bair Island Road, Suite 
+ * 305, Redwood City, CA 94063, USA, or at email address info@funambol.com.
+ * 
+ * The interactive user interfaces in modified source and object code versions
+ * of this program must display Appropriate Legal Notices, as required under
+ * Section 5 of the GNU Affero General Public License version 3.
+ * 
+ * In accordance with Section 7(b) of the GNU Affero General Public License
+ * version 3, these Appropriate Legal Notices must retain the display of the
+ * "Powered by Funambol" logo. If the display of the logo is not reasonably 
+ * feasible for technical reasons, the Appropriate Legal Notices must display
+ * the words "Powered by Funambol".
  */
 
 #include <sys/stat.h>
 #include <unistd.h>
+#include <dirent.h>
 
 #include "base/Log.h"
 #include "base/util/utils.h"
+#include "base/globalsdef.h"
 
+BEGIN_NAMESPACE
 
-long utf8len(const char* s) {
-	 return s ? wcslen(s) : 0;
-}
-
-char* wc2utf8(const char* s, char* d, unsigned long dsize) {
-
-    //
-    // First of all, if s is NULL, just return NULL.
-    // Then, if d is NULL, let's allocate the required memory to contain the
-    // utf8 string.
-    //
-    if (s == NULL) {
-        return NULL;
-    }
-
-    if (d == NULL) {
-        dsize = utf8len(s);
-        d = new char[dsize+1];
-    }
-
-	 wcscpy( d, s );
-
-    return d;
-}
-
-char* utf82wc(const char* s, char* d, unsigned long dsize) {
-
-    //
-    // First of all, if s is NULL, just return NULL.
-    // Then, if d is NULL, let's allocate the required memory to contain the
-    // WCHAR string.
-    //
-    if (s == NULL) {
-        return NULL;
-    }
-
-    if (d == NULL) {
-        // get the right lenght with a NULL dest
-        dsize = strlen (s);
-        d = new WCHAR[dsize+1];
-    }
-
-
-
-    wcscpy(d, s);
-
-    return d;
-
-}
 
 bool saveFile(const char *filename, const char *buffer, size_t len, bool binary)
 {
-	const char *mode = binary ? "wb" : "w" ;
-
     FILE *f = fopen(filename, "w");
 
     if(!f)
         return false;
 
-    if (fwrite(buffer, len, sizeof(char), f) != len) {
+    if (fwrite(buffer, sizeof(char), len, f) != len) {
         fclose(f);
         return false;
     }
@@ -134,22 +103,151 @@ bool readFile(const char* path, char **message, size_t *len, bool binary)
 }
 
 
-// TBD: dummy implementation!
 char** readDir(char* name, int *count, bool onlyCount) {
-    return NULL;
+    char **entries = NULL;
+    *count = 0;
+
+    // count entries
+    int total = 0;
+    DIR *dir = opendir(name);
+    if (dir) {
+        struct dirent *entry = readdir(dir);
+        while (entry) {
+            if (strcmp(entry->d_name, ".") &&
+                strcmp(entry->d_name, "..")) {
+                total++;
+            }
+            entry = readdir(dir);
+        }
+
+        if (!onlyCount && total) {
+            entries = new char *[total];
+
+            rewinddir(dir);
+            entry = readdir(dir);
+            while (entry && *count < total) {
+                if (strcmp(entry->d_name, ".") &&
+                    strcmp(entry->d_name, "..")) {
+                    entries[*count] = stringdup(entry->d_name);
+                    ++*count;
+                }
+                entry = readdir(dir);
+            }
+        }
+        closedir(dir);
+    }
+
+    return entries;
 }
 
+unsigned long getFileModTime(const char* name)
+{
+    struct stat buf;
+
+    return stat(name, &buf) ? 0 :
+        buf.st_ctime > buf.st_mtime ? buf.st_ctime :
+        buf.st_mtime;
+}
+
+bool removeFileInDir(const char* d, const char* fname) {
+       
+    char toFind    [512];       
+    bool ret = false;
+    char** totalFiles = NULL;
+    int numFiles = 0;
+
+    if (fname) {
+        sprintf(toFind, "%s/%s", d, fname);    
+        if (remove(toFind) != 0) {
+            LOG.error("Error deleting the %s file", toFind); ret = true;
+        } else {
+            LOG.debug("File %s deleted succesfully", toFind);
+        }
+    }
+    else {        
+        totalFiles = readDir((char*)d, &numFiles, false);
+        if (totalFiles && numFiles > 0) {
+            for (int i = 0; i < numFiles; i++) {
+                sprintf(toFind, "%s/%s", d, totalFiles[i]);
+                remove(toFind);            
+            }
+        }
+        ret = true;
+    }
+    if (totalFiles) {
+        for (int i = 0; i < numFiles; i++) {
+            delete [] totalFiles[i]; 
+        }
+        delete [] totalFiles; totalFiles = NULL;
+    }
+
+    return ret;
+}
+
+StringBuffer getCacheDirectory() {
+    
+    StringBuffer ret(getenv("HOME"));
+    ret.append("/");
+    ret.append(CACHE_REP);
+    
+    DIR* d = opendir(ret);
+    if (!d) {
+        mkdir(ret, 0777);
+    } else {
+        closedir(d);
+    }  
+    return ret;
+}
+    
+    
 // TODO: convert to the specified encoding, assuming wc is UTF-8
 char* toMultibyte(const WCHAR *wc, const char *encoding)
 {
+#ifdef USE_WCHAR
+    size_t length = wcstombs(NULL, wc, 0) + 1;
+    if(length == -1) {
+        LOG.error("toMultibyte: invalid string.");
+        return strdup("");
+    }
+    char* ret = new char[length];
+    wcstombs(ret, wc, length);
+
+    return ret;
+#else
     return stringdup(wc);
+#endif
 }
 
 // TODO: convert to UTF-8 from the specified encoding
 WCHAR* toWideChar(const char *mb, const char *encoding)
 {
+#ifdef USE_WCHAR
+    size_t length = mbstowcs(NULL, mb, 0) + 1;
+    if(length == -1) {
+        LOG.error("toWideChar: invalid string.");
+        return wstrdup(TEXT(""));
+    }
+    WCHAR* ret = new WCHAR[length];
+    mbstowcs(ret, mb, length);
+
+    return ret;
+#else
     return stringdup(mb);
+#endif
 }
+
+#ifdef USE_WCHAR
+// FIXME-----------------------------------------------------------------------
+//Overloading thread-safe version of wcstok (defined in Linux) to make it
+//work like the non-thread safe version available on Windows (same as strtok).
+// FIXME: adjust VOCL code to NOT use this but String::split and remove it!!
+//-----------------------------------------------------------------------------
+WCHAR *wcstok(WCHAR *s, const WCHAR *delim)
+{
+    static WCHAR *state = 0;
+    return ::wcstok(s, delim, &state);
+}
+#endif
 
 // Implemented using mkstemp() with a template hard-coded
 // to /tmp. Because the API of mkTempFileName() cannot return
@@ -171,3 +269,6 @@ char *mkTempFileName(const char *name)
         return filename;
     }
 }
+
+END_NAMESPACE
+

@@ -1,19 +1,36 @@
 /*
- * Copyright (C) 2003-2006 Funambol
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * Funambol is a mobile platform developed by Funambol, Inc. 
+ * Copyright (C) 2003 - 2007 Funambol, Inc.
+ * 
+ * This program is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU Affero General Public License version 3 as published by
+ * the Free Software Foundation with the addition of the following permission 
+ * added to Section 15 as permitted in Section 7(a): FOR ANY PART OF THE COVERED
+ * WORK IN WHICH THE COPYRIGHT IS OWNED BY FUNAMBOL, FUNAMBOL DISCLAIMS THE 
+ * WARRANTY OF NON INFRINGEMENT  OF THIRD PARTY RIGHTS.
+ * 
+ * This program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
+ * details.
+ * 
+ * You should have received a copy of the GNU Affero General Public License 
+ * along with this program; if not, see http://www.gnu.org/licenses or write to
+ * the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
+ * MA 02110-1301 USA.
+ * 
+ * You can contact Funambol, Inc. headquarters at 643 Bair Island Road, Suite 
+ * 305, Redwood City, CA 94063, USA, or at email address info@funambol.com.
+ * 
+ * The interactive user interfaces in modified source and object code versions
+ * of this program must display Appropriate Legal Notices, as required under
+ * Section 5 of the GNU Affero General Public License version 3.
+ * 
+ * In accordance with Section 7(b) of the GNU Affero General Public License
+ * version 3, these Appropriate Legal Notices must retain the display of the
+ * "Powered by Funambol" logo. If the display of the logo is not reasonably 
+ * feasible for technical reasons, the Appropriate Legal Notices must display
+ * the words "Powered by Funambol".
  */
 
 
@@ -23,6 +40,9 @@
 #include "base/util/XMLProcessor.h"
 #include "base/util/StringBuffer.h"
 #include "base/Log.h"
+#include "base/globalsdef.h"
+
+USE_NAMESPACE
 
 //--------------------------------------------------------------- Static functions
 
@@ -47,7 +67,7 @@ static const char *findElementContent(const char *xml,
             //LOG.debug("XMLProcessor: tag %s not found", openTag);
             return 0;
         }
-        
+
         p1 += strlen(openTag); // move to end of tag
 
         // Check the tag type
@@ -113,7 +133,7 @@ static const char *findElementContent(const char *xml,
         p1 = NULL;
         return 0;
     }
-    
+
     // Okay, if we are here, the tag content has been found
     if (startPos) {
         *startPos = p1 - xml;
@@ -132,29 +152,29 @@ static const char *findElementContent(const char *xml,
 }
 
 const char* XMLProcessor::getElementContent(const char* xml,
-                                       const char* tag,
-                                       unsigned int* pos,
-                                       unsigned int* startPos,
-                                       unsigned int* endPos  )
-{        
+                                            const char* tag,
+                                            unsigned int* pos,
+                                            unsigned int* startPos,
+                                            unsigned int* endPos  )
+{
     char *openTag = 0;
     char *closeTag = 0;
-    
+
     if (!xml) {
         return 0;
     }
 
     size_t l = strlen(tag);
 
-    if(strcmp(tag, T("CDATA")) == 0) {
-        openTag = stringdup(T("<![CDATA["));
-        closeTag = stringdup(T("]]>"));
+    if(strcmp(tag, "CDATA") == 0) {
+        openTag = stringdup("<![CDATA[");
+        closeTag = stringdup("]]>");
     }
     else {
         openTag = new char[l+10];
         closeTag = new char[l+10];
-        sprintf(openTag, T("<%s"), tag);
-        sprintf(closeTag, T("</%s>"), tag);
+        sprintf(openTag, "<%s", tag);
+        sprintf(closeTag, "</%s>", tag);
     }
 
     const char *ret = findElementContent(xml, openTag, closeTag, pos, startPos, endPos);
@@ -167,7 +187,7 @@ const char* XMLProcessor::getElementContent(const char* xml,
     return ret;
 }
 
-char* XMLProcessor::getContent(const char* xml,
+char* XMLProcessor::copyContent(const char* xml,
                                 unsigned int startPos,
                                 unsigned int endPos  ) {
 
@@ -186,19 +206,19 @@ char* XMLProcessor::getContent(const char* xml,
     // figure out whether the text that we are about to copy
     // contains further elements; if not, treat it as a leaf
     // element and decode entities
-    BOOL isLeaf = TRUE;
+    bool isLeaf = true;
     unsigned int pos = startPos;
     while (pos < endPos) {
         if (xml[pos] == '<') {
-            isLeaf = FALSE;
+            isLeaf = false;
             break;
         }
         pos++;
     }
 
-    const char cdataStart[] = T("<![CDATA[");
+    const char cdataStart[] = "<![CDATA[";
     const int cdataStartLen = sizeof(cdataStart) - 1;
-    const char cdataEnd[] = T("]]>");
+    const char cdataEnd[] = "]]>";
     const int cdataEndLen = sizeof(cdataEnd) - 1;
 
     // strip CDATA markers at start and end?
@@ -219,7 +239,7 @@ char* XMLProcessor::getContent(const char* xml,
             }
             cdataEndPos--;
         }
-        
+
         ret = new char[cdataEndPos - pos + 1];
         strncpy(ret, xml + pos, cdataEndPos - pos);
         ret[cdataEndPos - pos] = 0;
@@ -232,8 +252,9 @@ char* XMLProcessor::getContent(const char* xml,
         // <Add><Data><![CDATA[ literal entity &amp; ]]></Data></Add>
         //
         StringBuffer tmp(xml+startPos, endPos - startPos);
-        tmp.replaceAll("&amp;", "&");
         tmp.replaceAll("&lt;", "<");
+        tmp.replaceAll("&gt;", ">");
+        tmp.replaceAll("&amp;", "&");
         ret = stringdup(tmp.c_str());
     } else {
         size_t len = endPos - startPos;
@@ -245,14 +266,14 @@ char* XMLProcessor::getContent(const char* xml,
     return ret;
 }
 
-char* XMLProcessor::getElementContent(const char* xml,
+char* XMLProcessor::copyElementContent(const char* xml,
                                        const char* tag,
                                        unsigned int* pos)
 {
     unsigned int start, end;
 
     if( getElementContent (xml, tag, pos, &start, &end) ) {
-        return getContent(xml, start, end);
+        return copyContent(xml, start, end);
     }
     return 0;
 }
@@ -261,10 +282,10 @@ char* XMLProcessor::getElementContent(const char* xml,
 * It returns the number of the tag in the xml string
 */
 
-int XMLProcessor::countElementTag(char* xml, char* tag) {
+int XMLProcessor::countElementTag(const char* xml, const char* tag) {
 
     unsigned int count = 0, pos = 0, previous = 0;
-    
+
     while (getElementContent(&xml[pos], tag , &pos, NULL, NULL) != NULL) {
         pos += previous;
         previous = pos;
@@ -275,46 +296,47 @@ int XMLProcessor::countElementTag(char* xml, char* tag) {
 
 
 /*
-* Returns the next tag found in the xml string. It looks at the < and > tags to retrieve 
-* the name of the token. 
+* Returns the next tag found in the xml string. It looks at the < and > tags to retrieve
+* the name of the token.
 * If <tag xmlns...> it returns "tag"
 * The "pos" argument will contain the position of the close <tag/>
 * The return value is a new char* and must be fred by the caller. If no tag is found, NULL is returned
 */
-char* XMLProcessor::getNextTag(char* xml, int* pos) {
-    
-    char* p1, *p2, *p4, *p3 = NULL, *ret = NULL;
+const char* XMLProcessor::getNextTag(const char*xml, int* pos) {
+
+    const char* p1, *p2, *p4, *p3 = NULL;
+    char* ret = NULL;
     p1 = p2 = p4 = xml;
     int i = 0, k = 0, len = 0;
-    BOOL found = FALSE;
-    len = strlen(xml);     
-    
+    bool found = false;
+    len = strlen(xml);
+
     for (i = 0; i < len; i++) {
         if (found) {
             if (p4[i] != '/' && p4[i] != '!' && p4[i] != '-' ) {
                 break; // the element found is right!
             } else {
-                found = FALSE;
+                found = false;
             }
         }
-        if (p4[i] == '<') {            
-            p1 = &p4[i];            
-            found = TRUE;
+        if (p4[i] == '<') {
+            p1 = &p4[i];
+            found = true;
         }
     }
-    
+
     if (found) {
-        p2 = p1;           
-        for (k = 0; k < len; k++) {             
+        p2 = p1;
+        for (k = 0; k < len; k++) {
             if (*p1 == 0) {
                 break;
             }
             else if (*p1 == ' ') {
                 p3 = p1;
             }
-            else if (*p1 == '>') { 
+            else if (*p1 == '>') {
                 *pos = p1 -xml + 1;
-                if (p3) {                    
+                if (p3) {
                     p1 = p3;
                 }
                 ret = new char[(p1)-(p2)];
@@ -322,7 +344,7 @@ char* XMLProcessor::getNextTag(char* xml, int* pos) {
                 ret[(p1)-(p2+1)] = 0;
                 return ret;
                 break;
-            }            
+            }
             p1 = p1 + 1;
         }
     }
@@ -333,31 +355,31 @@ char* XMLProcessor::getNextTag(char* xml, int* pos) {
 
 
 /*
-* count the number of "&" (passed as a string) in the token. 
+* count the number of "&" (passed as a string) in the token.
 */
-int XMLProcessor::countAnd(char* token) {
-    return countChar(token, T("&"));
+int XMLProcessor::countAnd(const char* token) {
+    return countChar(token, "&");
 }
 
-int XMLProcessor::countChar(char* token, char* element) {
+int XMLProcessor::countChar(const char* token, const char* element) {
 
-    char* p1, *p2;
+    const char* p1, *p2;
     p1 = p2 = token;
     int i = 0, k = 0, len = 0;
 
     while (strstr(p1, element) != NULL) {
-        len = strlen(p2);        
-        for (k = 0; k < len; k++) {             
+        len = strlen(p2);
+        for (k = 0; k < len; k++) {
             if (*p1 == 0) {
                 break;
             }
-            else if (*p1 == '&') {                
+            else if (*p1 == '&') {
                 p1 = p1 + 1;
                 i++;
                 break;
-            }            
+            }
             p1 = p1 + 1;
-        }  
+        }
     }
     return i;
 }
@@ -366,11 +388,11 @@ int XMLProcessor::countChar(char* token, char* element) {
 /*
 * it's as getElementContent but it doesn't get the content of a tag if the parent match except.
 * The parent can be more than one. They have to be separated by &
-* i.e.  
+* i.e.
 *
-* getElementContentExcept(xmlPtr, T("Add"), T("Sync&Atomic"), &post)
+* getElementContentExcept(xmlPtr, "Add", "Sync&Atomic", &post)
 *
-* The function returns "... to keep ... " content only 
+* The function returns "... to keep ... " content only
 *
 * <SyncBody>
    <Sync>
@@ -386,45 +408,45 @@ int XMLProcessor::countChar(char* token, char* element) {
  </SyncBody>
 */
 
-char* XMLProcessor::getElementContentExcept(char*      xmlPtr    ,
-                                               char*      tag       ,
-                                               char*      except    ,
-                                               unsigned int* post) {
-    
+char* XMLProcessor::copyElementContentExcept(const char*xmlPtr    ,
+                                             const char*tag       ,
+                                             const char*except    ,
+                                             unsigned int* post) {
+
     char*  ret    = NULL;
     const char*  found  = NULL;
-    char*  xml    = NULL;
+    const char*  xml    = NULL;
     char** array = NULL;
-    int*  validElement = NULL;   
+    int*  validElement = NULL;
     int count        = 0, countTag = 0;
-    BOOL notValid  = FALSE;
+    bool notValid  = false;
 
     unsigned int pos      = 0, previous         = 0,
                  position = 0, previousPosition = 0,
                  startPos = 0, endPos           = 0;
-    
+
     xml = xmlPtr;
-    
+
     if (xml == NULL) {
         return NULL;
-    }     
-    
+    }
+
     if (except == NULL) {
-        ret = getElementContent(xml, tag, &pos);
+        ret = copyElementContent(xml, tag, &pos);
         if (post) {
             *post = pos;
         }
         return ret;
     }
-    count = countAnd(except);    
+    count = countAnd(except);
     count++;
-    
+
     array = new char*[count + 1];
 	int l;
     for (l = 0; l <= count; l++) {
         array[l] = NULL;
     }
-    
+
     // represent a element found that can be used properly
     countTag = countElementTag(xml, tag);
     if (countTag > 0) {
@@ -439,30 +461,30 @@ char* XMLProcessor::getElementContentExcept(char*      xmlPtr    ,
     p1 = p2 = internal;
     int i = 0, k = 0, len = 0;
 
-    while (strstr(p2, T("&")) != NULL) {
-        len = strlen(p2);        
-        for (k = 0; k < len; k++) {             
+    while (strstr(p2, "&") != NULL) {
+        len = strlen(p2);
+        for (k = 0; k < len; k++) {
             if (*p1 == 0) {
                 break;
             }
-            else if (*p1 == '&') {                
+            else if (*p1 == '&') {
                 *p1 = 0;
                 array[i] = stringdup(p2);
                 p1 = p1 + 1;
                 p2 = p1;
                 i++;
                 break;
-            }            
+            }
             p1 = p1 + 1;
-        }  
+        }
     }
-    
+
     if (i == 0 || k < len) {
         if (array[i]) { delete [] array[i]; array[i] = NULL; }
         array[i] = stringdup(p2);
         i++;
     }
-             
+
     for (int s = 0; s < count; s ++) {
         i = 0;
 
@@ -471,29 +493,29 @@ char* XMLProcessor::getElementContentExcept(char*      xmlPtr    ,
             k = 0;
 
             pos = 0, previous = 0;
-            while ((ret = getElementContent(&xml[pos], tag, &pos)) != NULL) {    
-            
+            while ((ret = copyElementContent(&xml[pos], tag, &pos)) != NULL) {
+
                 if (validElement && validElement[k] == 1) {
                     pos += previous;
-                    position = 0; 
+                    position = 0;
                     previousPosition = 0;
-                    startPos = 0; 
+                    startPos = 0;
                     endPos   = 0;
                     while ((found = getElementContent(&xml[position], array[i], &position, &startPos, &endPos)) != NULL ) {
-        
+
                         startPos += previousPosition;
                         endPos   += previousPosition;
                         position += previousPosition;
                         if (startPos < pos && pos < endPos) {
-                            notValid = TRUE;                    
+                            notValid = true;
                             break;
                         }
                         previousPosition = position;
-                       
-                    }                    
+
+                    }
 
                     if (notValid) {
-                        notValid = FALSE;     
+                        notValid = false;
                         safeDel(&ret);
                         validElement[k] = 0;
                     } else {
@@ -517,19 +539,19 @@ char* XMLProcessor::getElementContentExcept(char*      xmlPtr    ,
 
         if (count > 1) {
             char* tmp = stringdup(array[0]);
-    
+
             for (int m = 0; m < count - 1; m++) {
                 if (array[m]) { delete [] array[m]; array[m] = NULL; }
-                //safeDel(&array[m]);  
+                //safeDel(&array[m]);
                 array[m] = stringdup(array[m+1]);
             }
             //safeDel(&array[count-1]);
             if (array[count-1]) { delete [] array[count-1]; array[count-1] = NULL; }
             array[count-1] = stringdup(tmp);
-            safeDel(&tmp); 
+            safeDel(&tmp);
         }
-    }       
-    
+    }
+
     if (notValid) {
         if (ret) {
             safeDel(&ret);
@@ -540,17 +562,17 @@ char* XMLProcessor::getElementContentExcept(char*      xmlPtr    ,
     } else {
         ;
     }
-    
+
     safeDel(&internal);
     if (validElement) {
         delete [] validElement; validElement = NULL;
     }
-    
+
     for (l = 0; l <= count; l++) {
         if (array[l]) { delete [] array[l]; array[l] = NULL; }
     }
     delete [] array; array = NULL;
-    //safeDelete(array);   
+    //safeDelete(array);
 
     return ret;
 }
@@ -558,7 +580,7 @@ char* XMLProcessor::getElementContentExcept(char*      xmlPtr    ,
 /*
 * It returns getElementContent value but it depends on the level that is specified.
 * It return only ... to keep ... independently on the tag in which it is contained if lev is zero.
-* 
+*
 *   <Sync>
 *     <Add>... to avoid ...</Add>
 *   </Sync>
@@ -584,45 +606,44 @@ char* XMLProcessor::getElementContentExcept(char*      xmlPtr    ,
 *    char* p = NULL;
 *    unsigned int pos = 0, previous = 0;
 *    int startLevel = -1;
-*    while ((p = XMLProcessor::getElementContentLevel(&xml[pos], T("Add"), 0, &startLevel, &pos)) != NULL) {        
+*    while ((p = XMLProcessor::getElementContentLevel(&xml[pos], "Add", 0, &startLevel, &pos)) != NULL) {
 *        pos += previous;
-*        previous = pos;                
+*        previous = pos;
 *    }
 *
 */
 
-char* XMLProcessor::getElementContentLevel(char*      xml   ,
-                                              char*      tag   ,                                              
-                                              unsigned int* pos, 
-                                              int           lev ,   
-                                              int*          startLevel)  {
-    
-    char* p1       = NULL;
-    char* p2       = NULL;
-    char* ret      = NULL;
-    BOOL openBracket  = FALSE;  // <
-    BOOL closeBracket = FALSE;  // >
-    BOOL aloneBracket = FALSE;  // </
-    BOOL preCloseBracket = FALSE;  //<.../
-    BOOL openTag      = FALSE;
-    BOOL closeTag     = FALSE;
+char* XMLProcessor::copyElementContentLevel(const char*xml   ,
+                                            const char*tag   ,
+                                            unsigned int* pos,
+                                            int           lev ,
+                                            int*          startLevel)  {
+
+    const char* p1 = NULL;
+    const char* p2 = NULL;
+    char* ret = NULL;
+    bool openBracket  = false;  // <
+    bool closeBracket = false;  // >
+    bool preCloseBracket = false;  //<.../
+    bool openTag      = false;
+    bool closeTag     = false;
 
     char tagNameFound[40];
-    
+
     int level               = -1;
     unsigned int xmlLength  = (unsigned int)-1;
     unsigned int l          = (unsigned int)-1;
     unsigned int previousIndex = (unsigned int)-1;
-    unsigned int i          =  0;    
-    
+    unsigned int i          =  0;
+
     if (xml == NULL) {
         goto finally;
     }
-    
+
     if (lev < 0) {
-        return getElementContent(xml, tag, pos);
-    }        
-   
+        return copyElementContent(xml, tag, pos);
+    }
+
     xmlLength = strlen(xml);
     l = strlen(tag);
 
@@ -634,102 +655,102 @@ char* XMLProcessor::getElementContentLevel(char*      xml   ,
     }
 
     p1 = p2 = xml;
-    
+
     for (i = 0; i < xmlLength; i ++) {
-        if (!strncmp(p1 + i, T("<![CDATA["), strlen(T("<![CDATA[")))) {
+        if (!strncmp(p1 + i, "<![CDATA[", strlen("<![CDATA["))) {
             // skip over content
             while(p1[i]) {
                 i++;
-                if (!strcmp(p1 + i, T("]]>"))) {
-                    i += strlen(T("]]>"));
+                if (!strcmp(p1 + i, "]]>")) {
+                    i += strlen("]]>");
                     break;
                 }
             }
         }
         if (p1[i] == '<') {
-            openBracket = TRUE;
+            openBracket = true;
             previousIndex = i;
             p2 = &p1[i];
 
         } else if (p1[i] == '/') {
             if (previousIndex == (i - 1)) {
-                // </...>                
-                preCloseBracket = TRUE;
+                // </...>
+                preCloseBracket = true;
             } else {
                 // might be <.../>, which will be checked below
                 // with p1[i - 1] == '/'
             }
 
-        } else if (p1[i] == '>') {  
-            
-            if (openBracket == FALSE) {
-                closeBracket = FALSE;
-                preCloseBracket = FALSE;
+        } else if (p1[i] == '>') {
+
+            if (openBracket == false) {
+                closeBracket = false;
+                preCloseBracket = false;
             } else {
                 if (preCloseBracket) {
-                    closeTag = TRUE;
+                    closeTag = true;
                 }
                 else if (openBracket && p1[i - 1] == '/') {
                     // <.../>: do not change levels or open tag,
                     // it has been closed already
                 } else {
-                    openTag = TRUE;                    
+                    openTag = true;
                 }
-                closeBracket = TRUE;
-                
+                closeBracket = true;
+
                 if (closeTag) {
                     level--;
-                    openBracket  = FALSE;
-                    closeBracket = FALSE;
-                    preCloseBracket = FALSE;
-                    openTag      = FALSE;
-                    closeTag     = FALSE;
+                    openBracket  = false;
+                    closeBracket = false;
+                    preCloseBracket = false;
+                    openTag      = false;
+                    closeTag     = false;
 
                 } else if (openTag) {
                     level++;
                 } else {
-                    openBracket  = FALSE;
-                    closeBracket = FALSE;
-                    preCloseBracket = FALSE;
-                    openTag      = FALSE;
-                    closeTag     = FALSE;
+                    openBracket  = false;
+                    closeBracket = false;
+                    preCloseBracket = false;
+                    openTag      = false;
+                    closeTag     = false;
 
-                }                
+                }
             }
-        }         
+        }
           if (openTag && openBracket && closeBracket) {
             int n = (&p1[i] - p2 - 1);
-            strncpy(tagNameFound, p2 + 1, n);         
+            strncpy(tagNameFound, p2 + 1, n);
             tagNameFound[n] = 0;
             if (strcmp(tagNameFound, tag) == 0 && (level == lev)) {
                 unsigned int internalPos;
-                ret = getElementContent(p2, tag, &internalPos);
+                ret = copyElementContent(p2, tag, &internalPos);
                 if (pos) {
-                    *pos = p2 - xml + internalPos;                    
+                    *pos = p2 - xml + internalPos;
                 }
                 if (startLevel) {
                     *startLevel = level - 1;
                 }
                 break;
             }
-            openBracket  = FALSE;
-            closeBracket = FALSE;           
+            openBracket  = false;
+            closeBracket = false;
         }
     }
 
 finally:
-    openBracket  = FALSE;
-    closeBracket = FALSE;
-    preCloseBracket = FALSE;
-    openTag      = FALSE;
-    closeTag     = FALSE;
+    openBracket  = false;
+    closeBracket = false;
+    preCloseBracket = false;
+    openTag      = false;
+    closeTag     = false;
     return ret;
 
 }
 
 /**
- * Get the attribute list of the forst element 'tag', returning a pointer 
- * to the beginning of the string in the original buffer 'xml', and the 
+ * Get the attribute list of the forst element 'tag', returning a pointer
+ * to the beginning of the string in the original buffer 'xml', and the
  * starting and ending position of the substring.
  *
  * @param xml - the XML document to process.
@@ -740,39 +761,38 @@ finally:
 const char* XMLProcessor::getElementAttributes(const char* xml,
                                           const char* tag,
                                           unsigned int* startPos,
-                                          unsigned int* endPos, 
+                                          unsigned int* endPos,
                                           bool escaped) {
-        
+
     const char* p1 = NULL;
     const char* p2 = NULL;
-    BOOL charFound  = FALSE;
     unsigned int l = strlen(tag);
 
     // example ot tag with attribute list
     // <body enc="base64">
     char *openTag = 0; //<tag
-    
+
     if (!xml) {
         goto finally;
     }
 
-    if(strcmp(tag, T("CDATA")) == 0) {
+    if(strcmp(tag, "CDATA") == 0) {
         goto finally;
     }
     else {
         openTag = new char[l+10];
         if (escaped){
-            sprintf(openTag, T("&lt;%s "), tag);
+            sprintf(openTag, "&lt;%s ", tag);
         }
         else{
-            sprintf(openTag, T("<%s "), tag);
+            sprintf(openTag, "<%s ", tag);
         }
     }
 
     p1 = strstr(xml, openTag);
 
     if (!p1) {
-        LOG.info("XMLProcessor: tag %s not found", tag);
+        LOG.debug("XMLProcessor: tag %s not found", tag);
         goto finally;
     }
     // move to the beginning of the attribute list
@@ -806,51 +826,51 @@ const char* XMLProcessor::getElementAttributes(const char* xml,
 StringBuffer XMLProcessor::makeElement(const char* tag, const char* val, const char* attr)
 {
     StringBuffer s;
-        
+
     if (!val)
         return s;
     if (!val[0])
         return s;
-    
+
     size_t len = strlen(tag);
     char* t1 = new char[len + 4]; // <  >  0, whitout closing >
     char* t2 = new char[len + 6]; // </ > \n 0
 
-    sprintf(t1, T("<%s"), tag);    
-    sprintf(t2, T("</%s>\n"), tag);
+    sprintf(t1, "<%s", tag);
+    sprintf(t2, "</%s>\n", tag);
 
-    s = t1; 
+    s = t1;
     if (attr != NULL)
     {
         s += " ";
-        s += attr;        
+        s += attr;
     }
     s += ">";
     s += val; s += t2;
 
     delete [] t1;
     delete [] t2;
-    
-    return s;    
+
+    return s;
 }
 
 
-StringBuffer XMLProcessor::makeElement(const char* tag, 
+StringBuffer XMLProcessor::makeElement(const char* tag,
                                     const char* val,
                                     ArrayList attrList) {
 
     StringBuffer s;
-    
+
     for (int i = 0; i < attrList.size(); i++)
     {
         KeyValuePair* item = (KeyValuePair*)attrList[i];
         if (i > 0)
             s += " ";
-        s += item->getKey(); 
+        s += item->getKey();
         s += "=\"";
-        s += item->getValue(); 
+        s += item->getValue();
         s += "\"";
-    }    
+    }
     s = makeElement(tag, val, s.c_str());
 
     return s;

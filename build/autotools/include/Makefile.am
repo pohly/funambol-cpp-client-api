@@ -1,6 +1,7 @@
 ## Process this file with automake to produce Makefile.in
 
 nobase_pkginclude_HEADERS = \
+    common/base/globalsdef.h \
     common/base/ErrorHandler.h \
     common/base/Log.h \
     common/base/constants.h \
@@ -8,15 +9,24 @@ nobase_pkginclude_HEADERS = \
     common/base/fscapi.h \
     common/base/md5.h \
     common/base/base64.h \
+    common/base/test.h \
+    common/base/messages.h \
     common/base/util/utils.h \
     common/base/util/ArrayElement.h \
     common/base/util/ArrayList.h \
     common/base/util/KeyValuePair.h \
     common/base/util/WKeyValuePair.h \
     common/base/util/XMLProcessor.h \
+    common/base/util/StringBuffer.h \
     common/base/util/WString.h \
+    common/base/util/ArrayListEnumeration.h \
+    common/base/util/ArrayListKeyValueStore.h \
+    common/base/util/Enumeration.h \
+    common/base/util/KeyValueStore.h \
+    common/base/util/PropertyFile.h \
     common/client/DMTClientConfig.h \
     common/client/SyncClient.h \
+    common/client/CacheSyncSource.h \
     common/event/constants.h \
     common/filter/Clause.h \
     common/filter/LogicalClause.h \
@@ -32,6 +42,8 @@ nobase_pkginclude_HEADERS = \
     common/spdm/errors.h \
     common/spdm/DMTree.h \
     common/spdm/ManagementNode.h \
+    common/spds/AbstractSyncConfig.h \
+    common/spds/AbstractSyncSourceConfig.h \
     common/spds/CredentialHandler.h \
     common/spds/ItemReport.h \
     common/spds/SyncSourceConfig.h \
@@ -49,19 +61,121 @@ nobase_pkginclude_HEADERS = \
     common/spds/spdsutils.h \
     common/spds/constants.h \
     common/spds/errors.h \
+    common/spds/DefaultConfigFactory.h \
+    common/syncml/core/AbstractCommand.h \
+    common/syncml/core/Add.h \
+    common/syncml/core/AlertCode.h \
+    common/syncml/core/Alert.h \
+    common/syncml/core/Anchor.h \
+    common/syncml/core/Atomic.h \
+    common/syncml/core/Authentication.h \
+    common/syncml/core/Chal.h \
+    common/syncml/core/CmdID.h \
+    common/syncml/core/ComplexData.h \
+    common/syncml/core/Constants.h \
+    common/syncml/core/ContentTypeInfo.h \
+    common/syncml/core/ContentTypeParameter.h \
+    common/syncml/core/Copy.h \
+    common/syncml/core/core.h \
+    common/syncml/core/Cred.h \
     common/syncml/core/CTCap.h \
+    common/syncml/core/CTPropParam.h \
     common/syncml/core/CTTypeSupported.h \
+    common/syncml/core/Data.h \
+    common/syncml/core/DataStore.h \
+    common/syncml/core/Delete.h \
+    common/syncml/core/DevInfData.h \
+    common/syncml/core/DevInf.h \
+    common/syncml/core/DevInfItem.h \
+    common/syncml/core/DevTyp.h \
+    common/syncml/core/DSMem.h \
+    common/syncml/core/EMI.h \
+    common/syncml/core/Exec.h \
+    common/syncml/core/Ext.h \
+    common/syncml/core/Filter.h \
+    common/syncml/core/Get.h \
+    common/syncml/core/Item.h \
+    common/syncml/core/ItemizedCommand.h \
+    common/syncml/core/Map.h \
+    common/syncml/core/MapItem.h \
+    common/syncml/core/Mark.h \
+    common/syncml/core/Mem.h \
+    common/syncml/core/Meta.h \
+    common/syncml/core/MetInf.h \
+    common/syncml/core/ModificationCommand.h \
+    common/syncml/core/NextNonce.h \
+    common/syncml/core/ObjectDel.h \
+    common/syncml/core/Property.h \
+    common/syncml/core/PropParam.h \
+    common/syncml/core/Put.h \
+    common/syncml/core/Replace.h \
+    common/syncml/core/ResponseCommand.h \
+    common/syncml/core/Results.h \
+    common/syncml/core/Search.h \
+    common/syncml/core/Sequence.h \
+    common/syncml/core/SessionID.h \
+    common/syncml/core/SourceArray.h \
+    common/syncml/core/Source.h \
+    common/syncml/core/SourceRef.h \
+    common/syncml/core/Status.h \
+    common/syncml/core/StringElement.h \
+    common/syncml/core/SyncAlert.h \
+    common/syncml/core/SyncBody.h \
+    common/syncml/core/SyncCap.h \
+    common/syncml/core/Sync.h \
+    common/syncml/core/SyncHdr.h \
+    common/syncml/core/SyncML.h \
+    common/syncml/core/SyncNotification.h \
+    common/syncml/core/SyncTypeArray.h \
+    common/syncml/core/SyncType.h \
+    common/syncml/core/TagNames.h \
+    common/syncml/core/Target.h \
+    common/syncml/core/TargetRef.h \
     common/syncml/core/VerDTD.h \
+    common/syncml/core/VerProto.h \
     common/vocl/VConverter.h \
     common/vocl/VObject.h \
     common/vocl/VProperty.h \
-    posix/base/posixlog.h
+    common/vocl/vCard/Address.h \
+    common/vocl/vCard/BusinessDetail.h \
+    common/vocl/vCard/Contact30.h \
+    common/vocl/vCard/ContactDetail.h \
+    common/vocl/vCard/Contact.h \
+    common/vocl/vCard/Email.h \
+    common/vocl/vCard/Name.h \
+    common/vocl/vCard/Note.h \
+    common/vocl/vCard/PersonalDetail.h \
+    common/vocl/vCard/Phone.h  \
+    common/vocl/vCard/Title.h  \
+    common/vocl/vCard/TypedProperty.h \
+    common/vocl/vCard/vCardConverter.h \
+    common/vocl/vCard/vCardProperty.h \
+    common/vocl/vCard/WebPage.h \
+    common/event/ManageListener.h \
+    common/event/SyncListener.h \
+    common/event/SyncItemListener.h \
+    common/event/SyncStatusListener.h \
+    common/event/SyncSourceListener.h \
+    common/event/TransportListener.h \
+    common/event/BaseEvent.h \
+    common/event/SyncEvent.h \
+    common/event/SyncItemEvent.h \
+    common/event/SyncStatusEvent.h \
+    common/event/SyncSourceEvent.h \
+    common/event/TransportEvent.h \
+    common/event/Listener.h \
+    posix/spdm/DeviceManagementNode.h \
+    posix/base/posixlog.h \
+    posix/base/posixadapter.h
 
 # fix header files for public distribution
 $(nobase_pkginclude_HEADERS): % : ../../../src/include/%
 	mkdir -p `dirname $@`
-	sed -e 's/WCHAR/char/g' -e 's/= *NULL/= 0/g' -e 's/__declspec([^)]*)//g' -e 's/__cdecl//g' -e 's/EXTRA_SECTION_[0123456789]*//g' -e 's/BOOL/int/g' -e 's/FALSE/0/g' -e 's/TRUE/1/g' $< >$@
+	rm -f $@
+	if [ "$(@F)" == "Log.h" ]; then echo '#include <stdarg.h>' >>$@; fi
+	cp $< $@
 
 clean : cleancopies
 cleancopies :
 	for i in $(nobase_pkginclude_HEADERS); do rm -rf `echo $$i | sed -e 's;\([^/]*\).*;\1;'`; done
+

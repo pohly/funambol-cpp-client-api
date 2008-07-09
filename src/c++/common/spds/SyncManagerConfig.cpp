@@ -1,19 +1,36 @@
 /*
- * Copyright (C) 2003-2006 Funambol
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * Funambol is a mobile platform developed by Funambol, Inc. 
+ * Copyright (C) 2003 - 2007 Funambol, Inc.
+ * 
+ * This program is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU Affero General Public License version 3 as published by
+ * the Free Software Foundation with the addition of the following permission 
+ * added to Section 15 as permitted in Section 7(a): FOR ANY PART OF THE COVERED
+ * WORK IN WHICH THE COPYRIGHT IS OWNED BY FUNAMBOL, FUNAMBOL DISCLAIMS THE 
+ * WARRANTY OF NON INFRINGEMENT  OF THIRD PARTY RIGHTS.
+ * 
+ * This program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
+ * details.
+ * 
+ * You should have received a copy of the GNU Affero General Public License 
+ * along with this program; if not, see http://www.gnu.org/licenses or write to
+ * the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
+ * MA 02110-1301 USA.
+ * 
+ * You can contact Funambol, Inc. headquarters at 643 Bair Island Road, Suite 
+ * 305, Redwood City, CA 94063, USA, or at email address info@funambol.com.
+ * 
+ * The interactive user interfaces in modified source and object code versions
+ * of this program must display Appropriate Legal Notices, as required under
+ * Section 5 of the GNU Affero General Public License version 3.
+ * 
+ * In accordance with Section 7(b) of the GNU Affero General Public License
+ * version 3, these Appropriate Legal Notices must retain the display of the
+ * "Powered by Funambol" logo. If the display of the logo is not reasonably 
+ * feasible for technical reasons, the Appropriate Legal Notices must display
+ * the words "Powered by Funambol".
  */
 
 #include "base/fscapi.h"
@@ -21,6 +38,10 @@
 #include "base/errors.h"
 #include "base/Log.h"
 #include "spds/SyncManagerConfig.h"
+#include "spds/DefaultConfigFactory.h"
+#include "base/globalsdef.h"
+
+USE_NAMESPACE
 
 
 SyncManagerConfig::SyncManagerConfig() {
@@ -34,31 +55,8 @@ SyncManagerConfig::~SyncManagerConfig() {
     }
 }
 
-SyncSourceConfig* SyncManagerConfig::getSyncSourceConfigs() {
-    return sourceConfigs;
-}
-
-unsigned int SyncManagerConfig::getSyncSourceConfigsCount() {
-    return sourceConfigsCount;
-}
-
-AccessConfig& SyncManagerConfig::getAccessConfig() {
-    return accessConfig;
-}
-
-void SyncManagerConfig::setAccessConfig(AccessConfig& ac) {
-    accessConfig.assign(ac);
-}
-
-DeviceConfig& SyncManagerConfig::getDeviceConfig() {
-    return deviceConfig;
-}
-
-void SyncManagerConfig::setDeviceConfig(DeviceConfig& dc) {
-    deviceConfig.assign(dc);
-}
-
-SyncSourceConfig* SyncManagerConfig::getSyncSourceConfig(const char* name, BOOL refresh) {
+SyncSourceConfig* SyncManagerConfig::getSyncSourceConfig(const char* name,
+                                                         bool /* refresh */) const {
     if ((name == NULL) || (strlen(name) == 0)) {
         return NULL;
     }
@@ -72,7 +70,8 @@ SyncSourceConfig* SyncManagerConfig::getSyncSourceConfig(const char* name, BOOL 
     return NULL;
 }
 
-SyncSourceConfig* SyncManagerConfig::getSyncSourceConfig(unsigned int i, BOOL refresh) {
+SyncSourceConfig* SyncManagerConfig::getSyncSourceConfig(unsigned int i,
+                                                         bool /* refresh */) const {
     if (i >= sourceConfigsCount) {
         return NULL;
     }
@@ -81,7 +80,7 @@ SyncSourceConfig* SyncManagerConfig::getSyncSourceConfig(unsigned int i, BOOL re
 }
 
 
-BOOL SyncManagerConfig::setSyncSourceConfig(SyncSourceConfig& sc) {
+bool SyncManagerConfig::setSyncSourceConfig(SyncSourceConfig& sc) {
     unsigned int i=0;
     for (i=0; i<sourceConfigsCount; ++i) {
         if (strcmp(sc.getName(), sourceConfigs[i].getName()) == 0) {
@@ -100,24 +99,27 @@ BOOL SyncManagerConfig::setSyncSourceConfig(SyncSourceConfig& sc) {
 
     //dirty |= DIRTY_SYNC_SOURCE;
 
-    return TRUE;
+    return true;
 }
 
 
-/* 
+/*
  * Add the passed SyncSourceConfig (the object is copied).
  * If SyncSourceConfig name is already present (match name) the
- * config is replaced with the given one. 
+ * config is replaced with the given one.
  * Otherwise it is added in the sourceConfig array.
  */
-BOOL SyncManagerConfig::addSyncSourceConfig(SyncSourceConfig& sc) {
-    
-    unsigned int i;
+bool SyncManagerConfig::addSyncSourceConfig(SyncSourceConfig& sc) {
+
+    unsigned int i = 0;
+    SyncSourceConfig* s = NULL;
 
     // copy array in a tmp buffer
-    SyncSourceConfig* s = new SyncSourceConfig[sourceConfigsCount];
-    for (i=0; i<sourceConfigsCount; i++)
-        s[i].assign(sourceConfigs[i]);
+    if (sourceConfigsCount>0) {
+        s = new SyncSourceConfig[sourceConfigsCount];
+        for (i=0; i<sourceConfigsCount; i++)
+            s[i].assign(sourceConfigs[i]);
+    }
 
     // delete old one, create new (+1 element)
     if (sourceConfigs) {
@@ -137,10 +139,21 @@ BOOL SyncManagerConfig::addSyncSourceConfig(SyncSourceConfig& sc) {
     }
 
     //dirty |= DIRTY_SYNC_SOURCE;
-    return TRUE;
+    return true;
 }
 
+void SyncManagerConfig::setClientDefaults() {
+    AccessConfig* ac = DefaultConfigFactory::getAccessConfig();
+    setAccessConfig(*ac);
+    delete ac;
 
-BOOL SyncManagerConfig::isDirty() {
-    return accessConfig.getDirty();
+    DeviceConfig* dc = DefaultConfigFactory::getDeviceConfig();
+    setDeviceConfig(*dc);
+    delete dc;
+}
+
+void SyncManagerConfig::setSourceDefaults(const char* name) {
+    SyncSourceConfig* sc = DefaultConfigFactory::getSyncSourceConfig(name);
+    setSyncSourceConfig(*sc);
+    delete sc;
 }

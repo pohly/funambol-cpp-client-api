@@ -1,29 +1,49 @@
 /*
- * Copyright (C) 2003-2006 Funambol
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * Funambol is a mobile platform developed by Funambol, Inc. 
+ * Copyright (C) 2003 - 2007 Funambol, Inc.
+ * 
+ * This program is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU Affero General Public License version 3 as published by
+ * the Free Software Foundation with the addition of the following permission 
+ * added to Section 15 as permitted in Section 7(a): FOR ANY PART OF THE COVERED
+ * WORK IN WHICH THE COPYRIGHT IS OWNED BY FUNAMBOL, FUNAMBOL DISCLAIMS THE 
+ * WARRANTY OF NON INFRINGEMENT  OF THIRD PARTY RIGHTS.
+ * 
+ * This program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
+ * details.
+ * 
+ * You should have received a copy of the GNU Affero General Public License 
+ * along with this program; if not, see http://www.gnu.org/licenses or write to
+ * the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
+ * MA 02110-1301 USA.
+ * 
+ * You can contact Funambol, Inc. headquarters at 643 Bair Island Road, Suite 
+ * 305, Redwood City, CA 94063, USA, or at email address info@funambol.com.
+ * 
+ * The interactive user interfaces in modified source and object code versions
+ * of this program must display Appropriate Legal Notices, as required under
+ * Section 5 of the GNU Affero General Public License version 3.
+ * 
+ * In accordance with Section 7(b) of the GNU Affero General Public License
+ * version 3, these Appropriate Legal Notices must retain the display of the
+ * "Powered by Funambol" logo. If the display of the logo is not reasonably 
+ * feasible for technical reasons, the Appropriate Legal Notices must display
+ * the words "Powered by Funambol".
  */
 #include "base/util/utils.h"
 #include "filter/WhereClause.h"
+#include "base/globalsdef.h"
+
+USE_NAMESPACE
 
 
-WhereClause::WhereClause() : property(NULL), value(NULL), op(UNKNOWN), caseSensitive(TRUE) {
+WhereClause::WhereClause() : property(NULL), value(NULL), op(UNKNOWN), caseSensitive(true) {
     type = WHERE_CLAUSE;
 }
 
-WhereClause::WhereClause(const char* p, const char* v, WhereClauseOperator o, BOOL s) {
+WhereClause::WhereClause(const char* p, const char* v, WhereClauseOperator o, bool s) {
     type = WHERE_CLAUSE;
     property = NULL; if (p) property = stringdup(p);
     value = NULL; if (v) value = stringdup(v);
@@ -46,12 +66,8 @@ WhereClause::~WhereClause() {
  * @return  the current property's value
  *
  */
-char* WhereClause::getProperty(char* property) {
-    if (property == NULL) {
-        return this->property;
-    }
-
-    return strcpy(property, this->property);
+const char* WhereClause::getProperty() {
+    return property;
 }
 
 /*
@@ -60,7 +76,7 @@ char* WhereClause::getProperty(char* property) {
  * @param property the new value
  *
  */
-void WhereClause::setProperty(char* property) {
+void WhereClause::setProperty(const char*property) {
     if (this->property) {
         delete this->property; this->property = NULL;
     }
@@ -76,12 +92,8 @@ void WhereClause::setProperty(char* property) {
  * @return  the current value's value
  *
  */
-char* WhereClause::getValue(char* value) {
-    if (value == NULL) {
-        return this->value;
-    }
-
-    return strcpy(value, this->value);
+const char* WhereClause::getValue() {
+    return value;
 }
 
 /*
@@ -90,7 +102,7 @@ char* WhereClause::getValue(char* value) {
  * @param value the new value
  *
  */
-void WhereClause::setValue(char* value) {
+void WhereClause::setValue(const char*value) {
     if (this->value) {
         delete this->value; this->value = NULL;
     }
@@ -120,11 +132,11 @@ void WhereClause::setOperator(WhereClauseOperator o) {
     op = o;
 }
 
-BOOL WhereClause::isCaseSensitive() {
-    return (caseSensitive == TRUE);
+bool WhereClause::isCaseSensitive() {
+    return (caseSensitive == true);
 }
 
-void WhereClause::setCaseSensitive(BOOL s) {
+void WhereClause::setCaseSensitive(bool s) {
     caseSensitive = s;
 }
 

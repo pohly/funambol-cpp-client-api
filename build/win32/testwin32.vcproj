@@ -4,6 +4,7 @@
 	Version="8,00"
 	Name="testwin32"
 	ProjectGUID="{C581FD5F-8CF7-4CFA-84CA-F16314068F44}"
+	RootNamespace="testwin32"
 	>
 	<Platforms>
 		<Platform
@@ -43,7 +44,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="..\..\src\include\common,..\..\src\include\win32"
+				AdditionalIncludeDirectories="..\..\src\include\common,..\..\src\include\windows"
 				PreprocessorDefinitions="WIN32;_DEBUG;_CONSOLE;UNICODE;_CRT_SECURE_NO_DEPRECATE"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
@@ -75,6 +76,7 @@
 				LinkIncremental="2"
 				SuppressStartupBanner="true"
 				AdditionalLibraryDirectories="..\..\output\win32"
+				IgnoreDefaultLibraryNames="LIBCD;LIBCMTD"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile=".\output\testwin32-dbg/testwin32.pdb"
 				SubSystem="1"
@@ -138,7 +140,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="2"
 				InlineFunctionExpansion="1"
-				AdditionalIncludeDirectories="..\..\src\include"
+				AdditionalIncludeDirectories="..\..\src\include\common,..\..\src\include\windows"
 				PreprocessorDefinitions="WIN32;NDEBUG;_CONSOLE;_MBCS;UNICODE;NO_CRIT_MSGBOX"
 				StringPooling="true"
 				RuntimeLibrary="0"
@@ -163,6 +165,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
+				AdditionalDependencies="wininet.lib wsock32.lib Netapi32.lib"
 				OutputFile=".\output\testwin32-rel/testwin32.exe"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
@@ -230,55 +233,31 @@
 			<File
 				RelativePath="..\..\src\c++\common\examples\TestSyncSource.cpp"
 				>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-					/>
-				</FileConfiguration>
 			</File>
-			<File
-				RelativePath="..\..\src\include\common\examples\TestSyncSource.h"
+			<Filter
+				Name="listeners"
 				>
-			</File>
-			<File
-				RelativePath="..\..\src\c++\common\examples\TestSyncSource2.cpp"
-				>
-				<FileConfiguration
-					Name="Debug|Win32"
+				<File
+					RelativePath="..\..\src\c++\common\examples\listeners\TestSyncItemListener.cpp"
 					>
-					<Tool
-						Name="VCCLCompilerTool"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|Win32"
+				</File>
+				<File
+					RelativePath="..\..\src\c++\common\examples\listeners\TestSyncListener.cpp"
 					>
-					<Tool
-						Name="VCCLCompilerTool"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-					/>
-				</FileConfiguration>
-			</File>
-			<File
-				RelativePath="..\..\src\include\common\examples\TestSyncSource2.h"
-				>
-			</File>
+				</File>
+				<File
+					RelativePath="..\..\src\c++\common\examples\listeners\TestSyncSourceListener.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\c++\common\examples\listeners\TestSyncStatusListener.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\c++\common\examples\listeners\TestTransportListener.cpp"
+					>
+				</File>
+			</Filter>
 		</Filter>
 		<Filter
 			Name="Header Files"

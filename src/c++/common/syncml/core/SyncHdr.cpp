@@ -1,30 +1,50 @@
 /*
- * Copyright (C) 2003-2006 Funambol
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * Funambol is a mobile platform developed by Funambol, Inc. 
+ * Copyright (C) 2003 - 2007 Funambol, Inc.
+ * 
+ * This program is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU Affero General Public License version 3 as published by
+ * the Free Software Foundation with the addition of the following permission 
+ * added to Section 15 as permitted in Section 7(a): FOR ANY PART OF THE COVERED
+ * WORK IN WHICH THE COPYRIGHT IS OWNED BY FUNAMBOL, FUNAMBOL DISCLAIMS THE 
+ * WARRANTY OF NON INFRINGEMENT  OF THIRD PARTY RIGHTS.
+ * 
+ * This program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
+ * details.
+ * 
+ * You should have received a copy of the GNU Affero General Public License 
+ * along with this program; if not, see http://www.gnu.org/licenses or write to
+ * the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
+ * MA 02110-1301 USA.
+ * 
+ * You can contact Funambol, Inc. headquarters at 643 Bair Island Road, Suite 
+ * 305, Redwood City, CA 94063, USA, or at email address info@funambol.com.
+ * 
+ * The interactive user interfaces in modified source and object code versions
+ * of this program must display Appropriate Legal Notices, as required under
+ * Section 5 of the GNU Affero General Public License version 3.
+ * 
+ * In accordance with Section 7(b) of the GNU Affero General Public License
+ * version 3, these Appropriate Legal Notices must retain the display of the
+ * "Powered by Funambol" logo. If the display of the logo is not reasonably 
+ * feasible for technical reasons, the Appropriate Legal Notices must display
+ * the words "Powered by Funambol".
  */
- 
- 
+
+
 #include "syncml/core/SyncHdr.h"
- 
+#include "base/globalsdef.h"
+
+USE_NAMESPACE
+
 
 SyncHdr::SyncHdr() {
 
     COMMAND_NAME = new char[strlen(SYNCHDR_COMMAND_NAME) + 1];
     sprintf(COMMAND_NAME, SYNCHDR_COMMAND_NAME);
-         
+
     verDTD      = NULL;
     verProto    = NULL;
     sessionID   = NULL;
@@ -34,7 +54,7 @@ SyncHdr::SyncHdr() {
     respURI     = NULL;
     cred        = NULL;
     meta        = NULL;
-    noResp      = FALSE;    
+    noResp      = false;
 }
 
 SyncHdr::~SyncHdr() {
@@ -48,8 +68,8 @@ SyncHdr::~SyncHdr() {
     if (respURI)    { delete [] respURI;    respURI     = NULL; }
     if (cred)       { delete    cred;       cred        = NULL; }
     if (meta)       { delete    meta;       meta        = NULL; }
-    
-    noResp = FALSE   ;
+
+    noResp = false   ;
 }
 
 /**
@@ -74,10 +94,10 @@ SyncHdr::SyncHdr(VerDTD*      verDTD,
                 Target*      target,
                 Source*      source,
                 char*     respURI,
-                BOOL         noResp,
+                bool         noResp,
                 Cred*        cred,
                 Meta*        meta) {
-    
+
     this->verDTD      = NULL;
     this->verProto    = NULL;
     this->sessionID   = NULL;
@@ -87,7 +107,7 @@ SyncHdr::SyncHdr(VerDTD*      verDTD,
     this->respURI     = NULL;
     this->cred        = NULL;
     this->meta        = NULL;
-    this->noResp      = FALSE;  
+    this->noResp      = false;
 
     COMMAND_NAME = new char[strlen(SYNCHDR_COMMAND_NAME) + 1];
     sprintf(COMMAND_NAME, SYNCHDR_COMMAND_NAME);
@@ -128,7 +148,7 @@ void SyncHdr::setVerDTD(VerDTD* verDTD) {
             delete this->verDTD; this->verDTD = NULL;
         }
         this->verDTD = verDTD->clone();
-    }    
+    }
 }
 
 /**
@@ -153,7 +173,7 @@ void SyncHdr::setVerProto(VerProto* verProto) {
             delete this->verProto; this->verProto = NULL;
         }
         this->verProto = verProto->clone();
-    }        
+    }
 }
 /**
 * Gets the session identifier
@@ -178,7 +198,7 @@ void SyncHdr::setSessionID(SessionID* sessionID) {
             delete this->sessionID; this->sessionID = NULL;
         }
         this->sessionID = sessionID->clone();
-    }   
+    }
 }
 
 
@@ -187,11 +207,8 @@ void SyncHdr::setSessionID(SessionID* sessionID) {
 *
 * @return msgID the message identifier
 */
-char* SyncHdr::getMsgID(char* retMsgID) {
-    if (retMsgID == NULL) {
-        return msgID;
-    }
-    return strcpy(retMsgID, msgID);
+const char* SyncHdr::getMsgID() {
+    return msgID;
 }
 
 
@@ -200,7 +217,7 @@ char* SyncHdr::getMsgID(char* retMsgID) {
 *
 * @param msgID the message identifier
 */
-void SyncHdr::setMsgID(char* msgID) {
+void SyncHdr::setMsgID(const char*msgID) {
     if (this->msgID) {
         delete [] this->msgID; this->msgID = NULL;
     }
@@ -229,7 +246,7 @@ void SyncHdr::setTarget(Target* target) {
             delete this->target; this->target = NULL;
         }
         this->target = target->clone();
-    }   
+    }
 }
 
 /**
@@ -254,7 +271,7 @@ void SyncHdr::setSource(Source* source) {
             delete this->source; this->source = NULL;
         }
         this->source = source->clone();
-    }  
+    }
 }
 
 /**
@@ -262,11 +279,8 @@ void SyncHdr::setSource(Source* source) {
 *
 * @return respURI the response URI
 */
-char* SyncHdr::getRespURI(char* retRespURI) {
-     if (retRespURI == NULL) {
-        return respURI;
-    }
-    return strcpy(retRespURI, respURI);
+const char* SyncHdr::getRespURI() {
+    return respURI;
 }
 
 
@@ -275,28 +289,20 @@ char* SyncHdr::getRespURI(char* retRespURI) {
 *
 * @param uri the new response URI; NOT NULL
 */
-void SyncHdr::setRespURI(char* uri) {
+void SyncHdr::setRespURI(const char*uri) {
     if (this->respURI) {
         delete [] this->respURI; this->respURI = NULL;
     }
     this->respURI = stringdup(uri);
 }
 
-/**
-* Gets noResp property
-*
-* @return true if the command doesn't require a response, false otherwise
-*/
-BOOL SyncHdr::isNoResp() {
-    return (noResp != NULL);
-}
 
 /**
 * Gets the Boolean value of noResp
 *
 * @return true if the command doesn't require a response, null otherwise
 */
-BOOL SyncHdr::getNoResp() {
+bool SyncHdr::getNoResp() {
     return noResp;
 }
 
@@ -305,17 +311,13 @@ BOOL SyncHdr::getNoResp() {
 *
 * @param noResp the noResponse property
 */
-void SyncHdr::setNoResp(BOOL noResp) {
-      if ((noResp == NULL) || (noResp != TRUE && noResp != FALSE)) {
-        this->noResp = NULL;
-    } else {
-        this->noResp = noResp;
-    }  
+void SyncHdr::setNoResp(bool noResp) {
+    this->noResp = noResp;
 }
 
 /**
 * Gets the Credential property
-* 
+*
 * @return cred the Credential property
 */
 Cred* SyncHdr::getCred() {
@@ -324,21 +326,21 @@ Cred* SyncHdr::getCred() {
 
 /**
 * Sets the Credential property
-* 
+*
 * @param cred the Credential property
 */
-void SyncHdr::setCred(Cred* cred) {   
+void SyncHdr::setCred(Cred* cred) {
     if (this->cred) {
         delete this->cred; this->cred = NULL;
     }
     if (cred) {
-        this->cred = cred->clone();    
+        this->cred = cred->clone();
     }
 }
 
 /**
 * Gets the Meta property
-* 
+*
 * @return meta the Meta property
 */
 Meta* SyncHdr::getMeta() {
@@ -347,7 +349,7 @@ Meta* SyncHdr::getMeta() {
 
 /**
 * Sets the Meta property
-* 
+*
 * @param meta the Meta property
 */
 void SyncHdr::setMeta(Meta* meta) {
@@ -355,11 +357,11 @@ void SyncHdr::setMeta(Meta* meta) {
         delete this->meta; this->meta = NULL;
     }
     if (meta) {
-        this->meta = meta->clone();    
+        this->meta = meta->clone();
     }
 }
 
-char* SyncHdr::getName() {
+const char* SyncHdr::getName() {
     return COMMAND_NAME;
 
 }

@@ -1,24 +1,42 @@
 /*
- * Copyright (C) 2003-2006 Funambol
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * Funambol is a mobile platform developed by Funambol, Inc. 
+ * Copyright (C) 2003 - 2007 Funambol, Inc.
+ * 
+ * This program is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU Affero General Public License version 3 as published by
+ * the Free Software Foundation with the addition of the following permission 
+ * added to Section 15 as permitted in Section 7(a): FOR ANY PART OF THE COVERED
+ * WORK IN WHICH THE COPYRIGHT IS OWNED BY FUNAMBOL, FUNAMBOL DISCLAIMS THE 
+ * WARRANTY OF NON INFRINGEMENT  OF THIRD PARTY RIGHTS.
+ * 
+ * This program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
+ * details.
+ * 
+ * You should have received a copy of the GNU Affero General Public License 
+ * along with this program; if not, see http://www.gnu.org/licenses or write to
+ * the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
+ * MA 02110-1301 USA.
+ * 
+ * You can contact Funambol, Inc. headquarters at 643 Bair Island Road, Suite 
+ * 305, Redwood City, CA 94063, USA, or at email address info@funambol.com.
+ * 
+ * The interactive user interfaces in modified source and object code versions
+ * of this program must display Appropriate Legal Notices, as required under
+ * Section 5 of the GNU Affero General Public License version 3.
+ * 
+ * In accordance with Section 7(b) of the GNU Affero General Public License
+ * version 3, these Appropriate Legal Notices must retain the display of the
+ * "Powered by Funambol" logo. If the display of the logo is not reasonably 
+ * feasible for technical reasons, the Appropriate Legal Notices must display
+ * the words "Powered by Funambol".
  */
 
 
 #ifndef INCL_SYNC_HDR
 #define INCL_SYNC_HDR
+/** @cond DEV */
 
 #include "base/fscapi.h"
 #include "syncml/core/VerDTD.h"
@@ -29,10 +47,13 @@
 #include "syncml/core/Cred.h"
 #include "syncml/core/Meta.h"
 
-#define SYNCHDR_COMMAND_NAME T("SyncHdr")
+#define SYNCHDR_COMMAND_NAME "SyncHdr"
+#include "base/globalsdef.h"
+
+BEGIN_NAMESPACE
 
 class SyncHdr {
-    
+
      // ------------------------------------------------------------ Private data
     private:
         char*     COMMAND_NAME;
@@ -43,13 +64,13 @@ class SyncHdr {
         Target*     target   ;
         Source*     source   ;
         char*     respURI  ;
-        BOOL        noResp   ;
+        bool        noResp   ;
         Cred*       cred     ;
         Meta*       meta     ;
 
-    // ---------------------------------------------------------- Public data    
+    // ---------------------------------------------------------- Public data
     public:
-        
+
         SyncHdr();
         ~SyncHdr();
 
@@ -75,7 +96,7 @@ class SyncHdr {
                 Target*      target,
                 Source*      source,
                 char*      respURI,
-                BOOL         noResp,
+                bool         noResp,
                 Cred*        cred,
                 Meta*        meta);
 
@@ -128,14 +149,14 @@ class SyncHdr {
          *
          * @return msgID the message identifier
          */
-        char*  getMsgID(char*  retMsgID);
+        const char* getMsgID();
 
         /**
          * Sets the message identifier
          *
          * @param msgID the message identifier
          */
-        void setMsgID(char*  msgID);
+        void setMsgID(const char* msgID);
 
         /**
          * Gets the Target object
@@ -170,67 +191,64 @@ class SyncHdr {
          *
          * @return respURI the response URI
          */
-        char*  getRespURI(char*  respURI);
+        const char* getRespURI();
 
         /**
          * Sets the response URI.
          *
          * @param uri the new response URI; NOT NULL
          */
-        void setRespURI(char*  uri);
-
-        /**
-         * Gets noResp property
-         *
-         * @return true if the command doesn't require a response, false otherwise
-         */
-        BOOL isNoResp();
+        void setRespURI(const char* uri);
 
         /**
          * Gets the Boolean value of noResp
          *
          * @return true if the command doesn't require a response, null otherwise
          */
-        BOOL getNoResp();
+        bool getNoResp();
 
         /**
          * Sets the noResponse property
          *
          * @param noResp the noResponse property
          */
-        void setNoResp(BOOL noResp);
+        void setNoResp(bool noResp);
 
         /**
          * Gets the Credential property
-         * 
+         *
          * @return cred the Credential property
          */
         Cred* getCred();
 
         /**
          * Sets the Credential property
-         * 
+         *
          * @param cred the Credential property
          */
         void setCred(Cred* cred);
 
         /**
          * Gets the Meta property
-         * 
+         *
          * @return meta the Meta property
          */
         Meta* getMeta();
 
         /**
          * Sets the Meta property
-         * 
+         *
          * @param meta the Meta property
          */
         void setMeta(Meta* meta);
 
-        char*  getName();
-        
+        const char* getName();
+
         SyncHdr* clone();
 };
 
+
+END_NAMESPACE
+
+/** @endcond */
 #endif

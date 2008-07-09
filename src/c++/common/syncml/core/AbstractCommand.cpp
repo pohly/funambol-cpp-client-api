@@ -1,32 +1,52 @@
 /*
- * Copyright (C) 2003-2006 Funambol
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * Funambol is a mobile platform developed by Funambol, Inc. 
+ * Copyright (C) 2003 - 2007 Funambol, Inc.
+ * 
+ * This program is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU Affero General Public License version 3 as published by
+ * the Free Software Foundation with the addition of the following permission 
+ * added to Section 15 as permitted in Section 7(a): FOR ANY PART OF THE COVERED
+ * WORK IN WHICH THE COPYRIGHT IS OWNED BY FUNAMBOL, FUNAMBOL DISCLAIMS THE 
+ * WARRANTY OF NON INFRINGEMENT  OF THIRD PARTY RIGHTS.
+ * 
+ * This program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
+ * details.
+ * 
+ * You should have received a copy of the GNU Affero General Public License 
+ * along with this program; if not, see http://www.gnu.org/licenses or write to
+ * the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
+ * MA 02110-1301 USA.
+ * 
+ * You can contact Funambol, Inc. headquarters at 643 Bair Island Road, Suite 
+ * 305, Redwood City, CA 94063, USA, or at email address info@funambol.com.
+ * 
+ * The interactive user interfaces in modified source and object code versions
+ * of this program must display Appropriate Legal Notices, as required under
+ * Section 5 of the GNU Affero General Public License version 3.
+ * 
+ * In accordance with Section 7(b) of the GNU Affero General Public License
+ * version 3, these Appropriate Legal Notices must retain the display of the
+ * "Powered by Funambol" logo. If the display of the logo is not reasonably 
+ * feasible for technical reasons, the Appropriate Legal Notices must display
+ * the words "Powered by Funambol".
  */
- 
- 
-#include "syncml/core/AbstractCommand.h"
- 
-AbstractCommand::AbstractCommand() {    
-    initialize();
-}  
 
-AbstractCommand::AbstractCommand(CmdID* cmdID, BOOL noResp) {         
+
+#include "syncml/core/AbstractCommand.h"
+#include "base/globalsdef.h"
+
+USE_NAMESPACE
+
+AbstractCommand::AbstractCommand() {
+    initialize();
+}
+
+AbstractCommand::AbstractCommand(CmdID* cmdID, bool noResp) {
     initialize();
     set(cmdID, noResp);
-}    
+}
 
 /**
  * Create a new AbstractCommand object with the given commandIdentifier
@@ -34,48 +54,40 @@ AbstractCommand::AbstractCommand(CmdID* cmdID, BOOL noResp) {
  * @param cmdID the command identifier - NOT NULL
  *
  */
- AbstractCommand::AbstractCommand(CmdID* cmdID) {      
+ AbstractCommand::AbstractCommand(CmdID* cmdID) {
     initialize();
-    set(cmdID, FALSE);
+    set(cmdID, false);
 }
 
-void AbstractCommand::set(CmdID* cmdID, BOOL noResp) {    
+void AbstractCommand::set(CmdID* cmdID, bool noResp) {
     setCmdID(cmdID);
-    if (noResp != NULL) {
-        this->noResp  = (noResp == TRUE) ? TRUE : FALSE;     
-    } else {
-        this->noResp  = NULL;
-    }
+    this->noResp  = noResp;
 }
 
-AbstractCommand::AbstractCommand(CmdID* cmdID, 
-                                 BOOL noResp,
+AbstractCommand::AbstractCommand(CmdID* cmdID,
+                                 bool noResp,
                                  Meta* meta) {
-        initialize();
+    initialize();
 
-        setCmdID(cmdID);
-        if (noResp != NULL) {
-            this->noResp  = (noResp == TRUE) ? TRUE : FALSE;     
-        } else {
-            this->noResp  = NULL;
-        }
-        setMeta(meta);
-    }  
+    setCmdID(cmdID);
+    this->noResp  = noResp;
+    setMeta(meta);
+}
 
 void AbstractCommand::initialize() {
      cmdID  = NULL;
-     noResp = FALSE;
+     noResp = false;
      meta   = NULL;
      credential   = NULL;
  }
 
 AbstractCommand::~AbstractCommand() {
-    
+
     if (cmdID)      {delete cmdID; cmdID = NULL; }
     if (meta)       {delete meta; meta = NULL; }
     if (credential) {delete credential; credential = NULL; }
 
-    noResp = FALSE;            
+    noResp = false;
 }
 
 /**
@@ -86,14 +98,14 @@ AbstractCommand::~AbstractCommand() {
  CmdID* AbstractCommand::getCmdID() {
     return this->cmdID;
 }
-    
+
 /**
  * Sets the CommandIdentifier property
  *
  * @param cmdID the command identifier
  *
  */
- void AbstractCommand::setCmdID(CmdID* cmdID) {     
+ void AbstractCommand::setCmdID(CmdID* cmdID) {
     if (this->cmdID) {
         delete this->cmdID; this->cmdID = NULL;
     }
@@ -107,35 +119,31 @@ AbstractCommand::~AbstractCommand() {
  *
  * @return true if the command doesn't require a response, false otherwise
  */
- BOOL AbstractCommand::isNoResp() {
-    return (noResp != NULL);
-}
-
-
- BOOL AbstractCommand::getNoResp() {    
+ bool AbstractCommand::isNoResp() {
     return noResp;
 }
-    
+
+
+ bool AbstractCommand::getNoResp() {
+    return noResp;
+}
+
 /**
  * Sets noResp true if no response is required
- * 
+ *
  * @param noResp is true if no response is required
  *
  */
- void AbstractCommand::setNoResp(BOOL noResp) {
-     if ((noResp == NULL) || (noResp != TRUE && noResp != FALSE)) {
-        this->noResp = NULL;
-     } else {
-        this->noResp = noResp;
-     }     
-}    
- 
+ void AbstractCommand::setNoResp(bool noResp) {
+     this->noResp = noResp;
+}
+
 
 /**
 * Gets Credential object
 *
 * @return the Credential object
-*/    
+*/
 Cred* AbstractCommand::getCred() {
     return credential;
 
@@ -143,22 +151,22 @@ Cred* AbstractCommand::getCred() {
 
 /**
 * Sets authentication credential
-* 
+*
 * @param cred the authentication credential
 *
 */
 void AbstractCommand::setCred(Cred* cred) {
-    
+
     if (credential) {
         delete credential; credential = NULL;
     }
     if (cred) {
-        credential = cred->clone();    
+        credential = cred->clone();
     } else {
         credential = NULL;
     }
 }
- 
+
 /**
 * Gets an Meta object
 *
@@ -170,7 +178,7 @@ Meta* AbstractCommand::getMeta() {
 
 /**
 * Sets Meta object
-* 
+*
 * @param meta the meta object
 *
 */
@@ -180,7 +188,7 @@ void AbstractCommand::setMeta(Meta* meta) {
         delete this->meta; this->meta = NULL;
     }
     if (meta) {
-        this->meta = meta->clone();    
+        this->meta = meta->clone();
     }
 
 }

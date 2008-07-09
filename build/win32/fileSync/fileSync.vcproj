@@ -40,7 +40,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="..\..\..\src\include\common,..\..\..\src\include\win32"
+				AdditionalIncludeDirectories="..\..\..\src\include\common;..\..\..\src\include\windows"
 				PreprocessorDefinitions="WIN32;_DEBUG;_CONSOLE;_CRT_SECURE_NO_DEPRECATE"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
@@ -119,6 +119,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
+				AdditionalIncludeDirectories="..\..\..\src\include\common;..\..\..\src\include\windows"
 				PreprocessorDefinitions="WIN32;NDEBUG;_CONSOLE"
 				RuntimeLibrary="2"
 				UsePrecompiledHeader="0"
@@ -179,11 +180,11 @@
 			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}"
 			>
 			<File
-				RelativePath="..\..\..\src\c++\common\client\FILEClient.cpp"
+				RelativePath="..\..\..\src\c++\common\examples\BriefcaseCacheSyncSource.cpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\..\src\c++\common\spds\FILESyncSource.cpp"
+				RelativePath="..\..\..\src\c++\common\examples\BriefcaseClient.cpp"
 				>
 			</File>
 		</Filter>
@@ -193,11 +194,7 @@
 			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}"
 			>
 			<File
-				RelativePath="..\..\..\src\include\common\client\FileClient.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\..\src\include\common\spds\FILESyncSource.h"
+				RelativePath="..\..\..\src\include\common\examples\BriefcaseCacheSyncSource.h"
 				>
 			</File>
 		</Filter>

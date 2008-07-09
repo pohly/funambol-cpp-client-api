@@ -1,24 +1,42 @@
 /*
- * Copyright (C) 2005-2006 Funambol
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * Funambol is a mobile platform developed by Funambol, Inc. 
+ * Copyright (C) 2003 - 2007 Funambol, Inc.
+ * 
+ * This program is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU Affero General Public License version 3 as published by
+ * the Free Software Foundation with the addition of the following permission 
+ * added to Section 15 as permitted in Section 7(a): FOR ANY PART OF THE COVERED
+ * WORK IN WHICH THE COPYRIGHT IS OWNED BY FUNAMBOL, FUNAMBOL DISCLAIMS THE 
+ * WARRANTY OF NON INFRINGEMENT  OF THIRD PARTY RIGHTS.
+ * 
+ * This program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
+ * details.
+ * 
+ * You should have received a copy of the GNU Affero General Public License 
+ * along with this program; if not, see http://www.gnu.org/licenses or write to
+ * the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
+ * MA 02110-1301 USA.
+ * 
+ * You can contact Funambol, Inc. headquarters at 643 Bair Island Road, Suite 
+ * 305, Redwood City, CA 94063, USA, or at email address info@funambol.com.
+ * 
+ * The interactive user interfaces in modified source and object code versions
+ * of this program must display Appropriate Legal Notices, as required under
+ * Section 5 of the GNU Affero General Public License version 3.
+ * 
+ * In accordance with Section 7(b) of the GNU Affero General Public License
+ * version 3, these Appropriate Legal Notices must retain the display of the
+ * "Powered by Funambol" logo. If the display of the logo is not reasonably 
+ * feasible for technical reasons, the Appropriate Legal Notices must display
+ * the words "Powered by Funambol".
  */
 
 
 #ifndef INCL_DEVINF
 #define INCL_DEVINF
+/** @cond DEV */
 
 #include "base/fscapi.h"
 #include "base/util/ArrayList.h"
@@ -26,10 +44,13 @@
 #include "syncml/core/DataStore.h"
 #include "syncml/core/CTCap.h"
 #include "syncml/core/Ext.h"
+#include "base/globalsdef.h"
+
+BEGIN_NAMESPACE
 
 
 class DevInf {
-    
+
      // ------------------------------------------------------------ Private data
     private:
         VerDTD* verDTD;
@@ -44,16 +65,16 @@ class DevInf {
         ArrayList* dataStores;  //DataStore[]
         ArrayList* ctCap;       // CTCap[]
         ArrayList* ext;         // Ext[]
-        BOOL utc;
-        BOOL supportLargeObjs;
-        BOOL supportNumberOfChanges;      
+        bool utc;
+        bool supportLargeObjs;
+        bool supportNumberOfChanges;
         SyncCap* syncCap;
 
         void initialize();
-    
-    // ---------------------------------------------------------- Public data    
+
+    // ---------------------------------------------------------- Public data
     public:
-    
+
         DevInf();
         ~DevInf();
 
@@ -89,9 +110,9 @@ class DevInf {
                ArrayList* dataStores,
                ArrayList* ctCap,
                ArrayList* ext,
-               BOOL utc,
-               BOOL supportLargeObjs,
-               BOOL supportNumberOfChanges,
+               bool utc,
+               bool supportLargeObjs,
+               bool supportNumberOfChanges,
                SyncCap* syncCap);
 
         // ---------------------------------------------------------- Public methods
@@ -114,7 +135,7 @@ class DevInf {
          *
          * @return the device manufacturer property
          */
-        char*  getMan(char*  retMan);
+        const char* getMan();
 
         /**
          * Sets the device manufacturer property
@@ -129,7 +150,7 @@ class DevInf {
          *
          * @return the model name of device
          */
-        char*  getMod(char*  retMod);
+        const char* getMod();
 
         /**
          * Sets the device model property
@@ -144,7 +165,7 @@ class DevInf {
          *
          * @return the OEM property
          */
-        char*  getOEM(char*  retOem);
+        const char* getOEM();
 
         /**
          * Sets the Original Equipment Manufacturer of the device
@@ -159,7 +180,7 @@ class DevInf {
          *
          * @return the firmware version property
          */
-        char*  getFwV(char*  retFwV);
+        const char* getFwV();
 
         /**
          * Sets the firmware version property
@@ -174,7 +195,7 @@ class DevInf {
          *
          * @return the software version property
          */
-        char*  getSwV(char*  retSwV);
+        const char* getSwV();
 
         /**
          * Sets the software version property
@@ -189,7 +210,7 @@ class DevInf {
          *
          * @return the hardware version property
          */
-        char*  getHwV(char*  retHwv);
+        const char* getHwV();
 
         /**
          * Sets the hardware version property
@@ -204,7 +225,7 @@ class DevInf {
          *
          * @return the device identifier
          */
-        char*  getDevID(char*  retDevID);
+        const char* getDevID();
 
         /**
          * Sets the device identifier
@@ -219,7 +240,7 @@ class DevInf {
          *
          * @return the device type
          */
-        char*  getDevTyp(char*  retDevTyp);
+        const char* getDevTyp();
 
         /**
          * Sets the device type
@@ -274,32 +295,18 @@ class DevInf {
         void setExt(ArrayList* ext);
 
         /**
-         * Gets true if the device supports UTC based time
-         *
-         * @return true if the device supports UTC based time
-         */
-        BOOL isUTC();
-
-        /**
          * Sets the UTC property
          *
          * @param utc is true if the device supports UTC based time
          */
-        void setUTC(BOOL utc);
+        void setUTC(bool utc);
 
         /**
          * Gets the Boolean value of utc
          *
          * @return true if the device supports UTC based time
          */
-        BOOL getUTC();
-
-        /**
-         * Gets true if the device supports handling of large objects
-         *
-         * @return true if the device supports handling of large objects
-         */
-        BOOL isSupportLargeObjs();
+        bool getUTC();
 
         /**
          * Sets the supportLargeObjs property
@@ -307,22 +314,15 @@ class DevInf {
          * @param supportLargeObjs is true if the device supports handling of large objects
          *
          */
-        void setSupportLargeObjs(BOOL supportLargeObjs);
+        void setSupportLargeObjs(bool supportLargeObjs);
 
-        
+
         /**
          * Gets the Boolean value of supportLargeObjs
          *
          * @return true if the device supports handling of large objects
          */
-        BOOL getSupportLargeObjs();
-
-        /**
-         * Gets true if the device supports number of changes
-         *
-         * @return true if the device supports number of changes
-         */
-        BOOL isSupportNumberOfChanges();
+        bool getSupportLargeObjs();
 
         /**
          * Sets the supportNumberOfChanges property
@@ -330,21 +330,25 @@ class DevInf {
          * @param supportNumberOfChanges is true if the device supports number of changes
          *
          */
-        void setSupportNumberOfChanges(BOOL supportNumberOfChanges);        
+        void setSupportNumberOfChanges(bool supportNumberOfChanges);
 
         /**
          * Gets the Boolean value of supportNumberOfChanges
          *
          * @return true if the device supports number of changes
          */
-        BOOL getSupportNumberOfChanges();
+        bool getSupportNumberOfChanges();
 
         void setSyncCap(SyncCap* syncCap);
 
         SyncCap* getSyncCap();
 
         DevInf* clone();
-   
+
 };
 
+
+END_NAMESPACE
+
+/** @endcond */
 #endif

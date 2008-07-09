@@ -1,22 +1,42 @@
 /*
- * Copyright (C) 2005-2006 Funambol
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * Funambol is a mobile platform developed by Funambol, Inc. 
+ * Copyright (C) 2003 - 2007 Funambol, Inc.
+ * 
+ * This program is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU Affero General Public License version 3 as published by
+ * the Free Software Foundation with the addition of the following permission 
+ * added to Section 15 as permitted in Section 7(a): FOR ANY PART OF THE COVERED
+ * WORK IN WHICH THE COPYRIGHT IS OWNED BY FUNAMBOL, FUNAMBOL DISCLAIMS THE 
+ * WARRANTY OF NON INFRINGEMENT  OF THIRD PARTY RIGHTS.
+ * 
+ * This program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
+ * details.
+ * 
+ * You should have received a copy of the GNU Affero General Public License 
+ * along with this program; if not, see http://www.gnu.org/licenses or write to
+ * the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
+ * MA 02110-1301 USA.
+ * 
+ * You can contact Funambol, Inc. headquarters at 643 Bair Island Road, Suite 
+ * 305, Redwood City, CA 94063, USA, or at email address info@funambol.com.
+ * 
+ * The interactive user interfaces in modified source and object code versions
+ * of this program must display Appropriate Legal Notices, as required under
+ * Section 5 of the GNU Affero General Public License version 3.
+ * 
+ * In accordance with Section 7(b) of the GNU Affero General Public License
+ * version 3, these Appropriate Legal Notices must retain the display of the
+ * "Powered by Funambol" logo. If the display of the logo is not reasonably 
+ * feasible for technical reasons, the Appropriate Legal Notices must display
+ * the words "Powered by Funambol".
  */
 #ifndef INCL_DM_CONFIG
 #define INCL_DM_CONFIG
+/** @cond API */
+/** @addtogroup Client */
+/** @{ */
 
 #include "base/fscapi.h"
 #include "http/constants.h"
@@ -26,12 +46,18 @@
 #include "spds/DeviceConfig.h"
 #include "spds/SyncSourceConfig.h"
 #include "spdm/ManagementNode.h"
+#include "base/globalsdef.h"
+
+BEGIN_NAMESPACE
 
 class DMTree;
 
 /**
  * This class is an extension of SyncManagerConfig that is DM tree aware; this
  * means that configuration properties are read/stored from/to the DM tree.
+ *
+ * @todo describe the properties of the DM tree and how they are grouped into device info,
+ * additional device info, extended device info, etc.
  */
 class DMTClientConfig : public SyncManagerConfig {
 
@@ -44,110 +70,149 @@ class DMTClientConfig : public SyncManagerConfig {
         ManagementNode* sourcesNode;
 
         void initialize();
-        DMTClientConfig() EXTRA_SECTION_01;
+        DMTClientConfig();
 
         /* top level functions */
-        virtual BOOL readAccessConfig(ManagementNode& n) EXTRA_SECTION_01;
-        virtual void saveAccessConfig(ManagementNode& n) EXTRA_SECTION_01;
-        virtual BOOL readDeviceConfig(ManagementNode& n) EXTRA_SECTION_01;
-        virtual void saveDeviceConfig(ManagementNode& n) EXTRA_SECTION_01;
-        virtual BOOL readSourceConfig(int i, ManagementNode& n) EXTRA_SECTION_01;
-        virtual void saveSourceConfig(int i, ManagementNode& n) EXTRA_SECTION_01;
-
-        /* functions called by the functions above to save some parts of the config */
-
+        virtual bool readAccessConfig(ManagementNode& n);
+        virtual void saveAccessConfig(ManagementNode& n);
+        virtual bool readDeviceConfig(ManagementNode& n);
+        virtual void saveDeviceConfig(ManagementNode& n);
+        virtual bool readSourceConfig(int i, ManagementNode& n);
+        virtual void saveSourceConfig(int i, ManagementNode& n);
 
         /**
-         * @param syncmlNode     the "spds/syncml" node
+         * Called by readAccessConfig() to save authentication
+         * settings.  The purpose of making this function virtual is
+         * that a derived class can override it and then to read the
+         * settings from a different than the default
+         * "spds/syncml/auth" node by calling the base function with a
+         * different \a authNode parameter or generate the settings in
+         * some other way.
+         *
+         * @param syncMLNode     the "spds/syncml" node
          * @param authNode       the "spds/syncml/auth" node
          */
-        virtual BOOL readAuthConfig(ManagementNode& syncMLNode,
-                                    ManagementNode& authNode) EXTRA_SECTION_01;
+        virtual bool readAuthConfig(ManagementNode& syncMLNode,
+                                    ManagementNode& authNode);
         /**
-         * @param syncmlNode     the "spds/syncml" node
+         * Same as readAccessConfig() for saving the settings.
+         *
+         * @param syncMLNode     the "spds/syncml" node
          * @param authNode       the "spds/syncml/auth" node
          */
         virtual void saveAuthConfig(ManagementNode& syncMLNode,
-                                    ManagementNode& authNode) EXTRA_SECTION_01;
- 
+                                    ManagementNode& authNode);
+
         /**
-         * @param syncmlNode     the "spds/syncml" node
+         * Same as readAccessConfig() for reading connection
+         * information.
+         *
+         * @param syncMLNode     the "spds/syncml" node
          * @param connNode       the "spds/syncml/conn" node
          */
-        virtual BOOL readConnConfig(ManagementNode& syncMLNode,
-                                    ManagementNode& connNode) EXTRA_SECTION_01;
+        virtual bool readConnConfig(ManagementNode& syncMLNode,
+                                    ManagementNode& connNode);
         /**
-         * @param syncmlNode     the "spds/syncml" node
+         * Same as readAccessConfig() for saving connection
+         * information.
+         *
+         * @param syncMLNode     the "spds/syncml" node
          * @param connNode       the "spds/syncml/conn" node
          */
         virtual void saveConnConfig(ManagementNode& syncMLNode,
-                                    ManagementNode& connNode) EXTRA_SECTION_01;
- 
+                                    ManagementNode& connNode);
+
         /**
-         * @param syncmlNode     the "spds/syncml" node
+         * Same as readAccessConfig() for reading additional access
+         * information.
+         *
+         * @param syncMLNode     the "spds/syncml" node
          * @param extNode        the "spds/syncml/ext" node
          */
-        virtual BOOL readExtAccessConfig(ManagementNode& syncMLNode,
-                                         ManagementNode& extNode) EXTRA_SECTION_01;
+        virtual bool readExtAccessConfig(ManagementNode& syncMLNode,
+                                         ManagementNode& extNode);
         /**
-         * @param syncmlNode     the "spds/syncml" node
+         * Same as readAccessConfig() for saving additional access
+         * information.
+         *
+         * @param syncMLNode     the "spds/syncml" node
          * @param extNode        the "spds/syncml/ext" node
          */
         virtual void saveExtAccessConfig(ManagementNode& syncMLNode,
-                                         ManagementNode& extNode) EXTRA_SECTION_01;
- 
+                                         ManagementNode& extNode);
+
         /**
-         * @param syncmlNode     the "spds/syncml" node
+         * Same as readAccessConfig() for reading device information.
+         *
+         * @param syncMLNode     the "spds/syncml" node
          * @param devInfoNode    the "spds/syncml/devinfo" node
          */
-        virtual BOOL readDevInfoConfig(ManagementNode& syncMLNode,
-                                       ManagementNode& devInfoNode) EXTRA_SECTION_01;
+        virtual bool readDevInfoConfig(ManagementNode& syncMLNode,
+                                       ManagementNode& devInfoNode);
         /**
-         * @param syncmlNode     the "spds/syncml" node
+         * Same as readAccessConfig() for saving device information.
+         *
+         * @param syncMLNode     the "spds/syncml" node
          * @param devInfoNode    the "spds/syncml/devinfo" node
          */
         virtual void saveDevInfoConfig(ManagementNode& syncMLNode,
-                                       ManagementNode& devInfoNode) EXTRA_SECTION_01;
-         
+                                       ManagementNode& devInfoNode);
+
         /**
-         * @param syncmlNode     the "spds/syncml" node
-         * @param DevDetailNode  the "spds/syncml/devdetail" node
+         * Same as readAccessConfig() for reading additional device
+         * information.
+         *
+         * @param syncMLNode     the "spds/syncml" node
+         * @param devDetailNode  the "spds/syncml/devdetail" node
          */
-        virtual BOOL readDevDetailConfig(ManagementNode& syncMLNode,
-                                         ManagementNode& devDetailNode) EXTRA_SECTION_01;
+        virtual bool readDevDetailConfig(ManagementNode& syncMLNode,
+                                         ManagementNode& devDetailNode);
         /**
-         * @param syncmlNode     the "spds/syncml" node
+         * Same as readAccessConfig() for saving additional device
+         * information.
+         *
+         * @param syncMLNode     the "spds/syncml" node
          * @param devDetailNode  the "spds/syncml/devdetail" node
          */
         virtual void saveDevDetailConfig(ManagementNode& syncMLNode,
-                                         ManagementNode& devDetailNode) EXTRA_SECTION_01;
- 
+                                         ManagementNode& devDetailNode);
+
         /**
-         * @param syncmlNode     the "spds/syncml" node
+         * Same as readAccessConfig() for reading some more additional
+         * device information.
+         *
+         * @param syncMLNode     the "spds/syncml" node
          * @param extNode        the "spds/syncml/ext" node
          */
-        virtual BOOL readExtDevConfig(ManagementNode& syncMLNode,
-                                      ManagementNode& extNode) EXTRA_SECTION_01;
+        virtual bool readExtDevConfig(ManagementNode& syncMLNode,
+                                      ManagementNode& extNode);
         /**
-         * @param syncmlNode     the "spds/syncml" node
+         * Same as readAccessConfig() for saving some more additional
+         * device information.
+         *
+         * @param syncMLNode     the "spds/syncml" node
          * @param extNode        the "spds/syncml/ext" node
          */
         virtual void saveExtDevConfig(ManagementNode& syncMLNode,
-                                      ManagementNode& extNode) EXTRA_SECTION_01;
+                                      ManagementNode& extNode);
 
         /**
-         * reads variables that the library uses internally, like anchors
+         * Same as readAccessConfig() for reading variables that the
+         * library uses internally, like anchors.
          *
+         * @param i              index of the source
          * @param sourcesNode    the "spds/sources" node
          * @param sourceNode     the "spds/sources/<source name>" node
          */
-        virtual BOOL readSourceVars(int i,
+        virtual bool readSourceVars(int i,
                                     ManagementNode& sourcesNode,
                                     ManagementNode& sourceNode);
 
         /**
-         * saves variables that the library uses internally, like anchors
+         * Same as readAccessConfig() for saveing variables that the
+         * library uses internally, like anchors.
          *
+         * @param i              index of the source
          * @param sourcesNode    the "spds/sources" node
          * @param sourceNode     the "spds/sources/<source name>" node
          */
@@ -156,18 +221,24 @@ class DMTClientConfig : public SyncManagerConfig {
                                     ManagementNode& sourceNode);
 
         /**
-         * reads the normal properties of a sync source, i.e. excluding variables like anchors
+         * Same as readAccessConfig() for reading the normal
+         * properties of a sync source, i.e. excluding variables like
+         * anchors.
          *
+         * @param i              index of the source
          * @param sourcesNode    the "spds/sources" node
          * @param sourceNode     the "spds/sources/<source name>" node
          */
-        virtual BOOL readSourceConfig(int i,
+        virtual bool readSourceConfig(int i,
                                       ManagementNode& sourcesNode,
                                       ManagementNode& sourceNode);
 
         /**
-         * reads the normal properties of a sync source, i.e. excluding variables like anchors
+         * Same as readAccessConfig() for reading the normal
+         * properties of a sync source, i.e. excluding variables like
+         * anchors.
          *
+         * @param i              index of the source
          * @param sourcesNode    the "spds/sources" node
          * @param sourceNode     the "spds/sources/<source name>" node
          */
@@ -177,23 +248,23 @@ class DMTClientConfig : public SyncManagerConfig {
 
     public:
 
-        DMTClientConfig(const char*  root) EXTRA_SECTION_01;
+        DMTClientConfig(const char*  root);
 
-        ~DMTClientConfig() EXTRA_SECTION_01;
+        ~DMTClientConfig();
 
-        SyncSourceConfig* getSyncSourceConfig(const char* name, BOOL refresh = FALSE) EXTRA_SECTION_01;
-        SyncSourceConfig* getSyncSourceConfig(unsigned int i,   BOOL refresh = FALSE) EXTRA_SECTION_01;
+        SyncSourceConfig* getSyncSourceConfig(const char* name, bool refresh = false);
+        SyncSourceConfig* getSyncSourceConfig(unsigned int i,   bool refresh = false);
 
-        virtual BOOL read() EXTRA_SECTION_01;
-        virtual BOOL save() EXTRA_SECTION_01;
+        virtual bool read();
+        virtual bool save();
 
         /**
          * Opens the configuration backend associated with the root context.
          * Calling on an open config does nothing.
          *
-         * @return TRUE for success
+         * @return true for success
          */
-        virtual BOOL open() EXTRA_SECTION_01;
+        virtual bool open();
 
         /**
          * Provides access to the "syncml" configuration node,
@@ -202,12 +273,12 @@ class DMTClientConfig : public SyncManagerConfig {
          *
          * @return node pointer owned by config and valid while the config is open
          */
-        virtual ManagementNode* getSyncMLNode() EXTRA_SECTION_01;
+        virtual ManagementNode* getSyncMLNode();
 
         /**
          * Gets number of sync source configurations, -1 if not open.
          */
-        virtual int getNumSources() EXTRA_SECTION_01;
+        virtual int getNumSources();
 
         /**
          * Get the specified sync source configuration.
@@ -215,14 +286,24 @@ class DMTClientConfig : public SyncManagerConfig {
          * @param index    number of the requested sync source configuration
          * @return node pointer owned by config and valid while the config is open
          */
-        virtual ManagementNode* getSyncSourceNode(int index) EXTRA_SECTION_01;
+        virtual ManagementNode* getSyncSourceNode(int index);
+
+        /**
+         * Get the specified sync source configuration by name.
+         */
+        virtual ManagementNode* getSyncSourceNode(const char* name);
 
         /**
          * Closes the configuration backend. Frees all resources associated
          * with and invalidates all ManagementNode pointers returned by this
          * config.
          */
-        virtual void close() EXTRA_SECTION_01;
+        virtual void close();
 };
 
+
+END_NAMESPACE
+
+/** @} */
+/** @endcond */
 #endif

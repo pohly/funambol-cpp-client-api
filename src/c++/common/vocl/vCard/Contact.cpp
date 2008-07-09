@@ -1,32 +1,52 @@
-/**
- * Copyright (C) 2003-2006 Funambol
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston,
- * MA 02111-1307 USA
+/*
+ * Funambol is a mobile platform developed by Funambol, Inc. 
+ * Copyright (C) 2003 - 2007 Funambol, Inc.
+ * 
+ * This program is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU Affero General Public License version 3 as published by
+ * the Free Software Foundation with the addition of the following permission 
+ * added to Section 15 as permitted in Section 7(a): FOR ANY PART OF THE COVERED
+ * WORK IN WHICH THE COPYRIGHT IS OWNED BY FUNAMBOL, FUNAMBOL DISCLAIMS THE 
+ * WARRANTY OF NON INFRINGEMENT  OF THIRD PARTY RIGHTS.
+ * 
+ * This program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
+ * details.
+ * 
+ * You should have received a copy of the GNU Affero General Public License 
+ * along with this program; if not, see http://www.gnu.org/licenses or write to
+ * the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
+ * MA 02110-1301 USA.
+ * 
+ * You can contact Funambol, Inc. headquarters at 643 Bair Island Road, Suite 
+ * 305, Redwood City, CA 94063, USA, or at email address info@funambol.com.
+ * 
+ * The interactive user interfaces in modified source and object code versions
+ * of this program must display Appropriate Legal Notices, as required under
+ * Section 5 of the GNU Affero General Public License version 3.
+ * 
+ * In accordance with Section 7(b) of the GNU Affero General Public License
+ * version 3, these Appropriate Legal Notices must retain the display of the
+ * "Powered by Funambol" logo. If the display of the logo is not reasonably 
+ * feasible for technical reasons, the Appropriate Legal Notices must display
+ * the words "Powered by Funambol".
  */
+
 
 #include "base/fscapi.h"
 #include "base/util/utils.h"
 #include "vocl/vCard/Contact.h"
+#include "base/globalsdef.h"
+
+USE_NAMESPACE
 
 Contact::Contact() {
     name           = NULL;
     notes          = NULL;
     businessDetail = NULL;
     personalDetail = NULL;
-    
+
     setVersion(TEXT("2.1"));
     setProdID(TEXT("VCARD"));
 }
@@ -52,7 +72,7 @@ Contact::~Contact() {
  * @return the uid of this contact or NULL if not specified
  */
 WCHAR* Contact::getUID(WCHAR* buf, int size) {
-    
+
     if(!containsProperty(TEXT("UID")))
         return NULL;
 
@@ -100,7 +120,7 @@ ArrayList* Contact::getNotes() {
                     if(!notes)
                         notes = new ArrayList();
                     notes->add((ArrayElement&)*note);
-                }            
+                }
         }
     }
 
@@ -114,7 +134,7 @@ void Contact::setNotes(ArrayList& list) {
     } else {
         notes = new ArrayList();
     }
-    
+
     Note *note = NULL;
     VProperty *vp;
 
@@ -129,10 +149,10 @@ void Contact::setNotes(ArrayList& list) {
     int s = list.size();
     for (i=0; i<s; ++i) {
         notes->add(*list[i]);
-        
+
         note = (Note*)list[i];
-        if(note->getProperty()) {                
-            vp = getVPropertyFromProperty(TEXT("NOTE"), note->getProperty());             
+        if(note->getProperty()) {
+            vp = getVPropertyFromProperty(TEXT("NOTE"), note->getProperty());
             if(note->getType())
                 vp->addParameter(TEXT("TYPE"), note->getType());
             insertProperty(vp);
@@ -158,7 +178,7 @@ WCHAR* Contact::getRevision (WCHAR* buf, int size) {
 }
 
 Name* Contact::getName () {
-    if (!name) { 
+    if (!name) {
         if(containsProperty(TEXT("N")) && getProperty(TEXT("N"))->getValue()) {
             VProperty* vp = getProperty(TEXT("N"));
 
@@ -199,18 +219,18 @@ Name* Contact::getName () {
                 delete suffix;
             }
         }
-        
+
         if(containsProperty(TEXT("FN")) && getProperty(TEXT("FN"))->getValue()) {
             if (!name)
                 name = new Name();
-            
+
             VProperty* vp = getProperty(TEXT("FN"));
             vCardProperty *displayName = getPropertyFromVProperty(vp);
             name->setDisplayName(*displayName);
 
             delete displayName;
         }
-        
+
         if(containsProperty(TEXT("NICKNAME")) && getProperty(TEXT("NICKNAME"))->getValue()) {
             if (!name)
                 name = new Name();
@@ -220,7 +240,7 @@ Name* Contact::getName () {
             name->setNickname(*nickName);
 
             delete nickName;
-        }        
+        }
     }
     return name;
 }
@@ -229,36 +249,36 @@ void Contact::setName(Name& n) {
     if (name) delete name;
 
     name = n.clone();
-    
+
     if (containsProperty(TEXT("N")))
         removeProperty(TEXT("N"));
     if (containsProperty(TEXT("FN")))
         removeProperty(TEXT("FN"));
     if (containsProperty(TEXT("NICKNAME")))
         removeProperty(TEXT("NICKNAME"));
-    
+
     if(name) {
         WCHAR *nameProp = new WCHAR[MAX_VPROPERTY_VALUE + 1];
         wcscpy(nameProp,TEXT(""));
-        if(name->getLastName()) 
-            wcscat(nameProp,name->getLastName()->getValue());            
+        if(name->getLastName())
+            wcscat(nameProp,name->getLastName()->getValue());
         wcscat(nameProp,TEXT(";"));
 
-        if(name->getFirstName()) 
+        if(name->getFirstName())
             wcscat(nameProp,name->getFirstName()->getValue());
             wcscat(nameProp,TEXT(";"));
-        
+
         if(name->getMiddleName())
             wcscat(nameProp,name->getMiddleName()->getValue());
             wcscat(nameProp,TEXT(";"));
-        
+
         if(name->getSalutation())
             wcscat(nameProp,name->getSalutation()->getValue());
             wcscat(nameProp,TEXT(";"));
-        
-        if(name->getSuffix())  
+
+        if(name->getSuffix())
             wcscat(nameProp,name->getSuffix()->getValue());
-        
+
         VProperty* vpName = new VProperty(TEXT("N"), nameProp);
         if(name->getFirstName()) {
             if(name->getFirstName()->getCharset())
@@ -271,11 +291,11 @@ void Contact::setName(Name& n) {
         insertProperty(vpName);
 
         if(name->getDisplayName()) {
-            VProperty* vpDisplayName = getVPropertyFromProperty(TEXT("FN"), name->getDisplayName());            
+            VProperty* vpDisplayName = getVPropertyFromProperty(TEXT("FN"), name->getDisplayName());
             insertProperty(vpDisplayName);
         }
         if(name->getNickname()) {
-            VProperty* vpNickName = getVPropertyFromProperty(TEXT("NICKNAME"), name->getNickname());            
+            VProperty* vpNickName = getVPropertyFromProperty(TEXT("NICKNAME"), name->getNickname());
             insertProperty(vpNickName);
         }
     }
@@ -292,28 +312,28 @@ BusinessDetail* Contact::getBusinessDetail () {
         Address* adr = NULL;
 
         for(int i = 0; i<propertiesCount();i++) {
-            if(!wcscmp(getProperty(i)->getName(), TEXT("ADR")) && getProperty(i)->isType(TEXT("WORK")))                
+            if(!wcscmp(getProperty(i)->getName(), TEXT("ADR")) && getProperty(i)->isType(TEXT("WORK")))
                 if(getProperty(i)->getValue()) {
-                    adr = composeAddress(getProperty(i), BUSINESS);                                                           
+                    adr = composeAddress(getProperty(i), BUSINESS);
                     if(!businessDetail)
                         businessDetail = new BusinessDetail();
 
                     businessDetail->setAddress(*adr);
 
                     delete adr;
-                } 
-            if(!wcscmp(getProperty(i)->getName(), TEXT("LABEL")) && getProperty(i)->isType(TEXT("WORK")))                
+                }
+            if(!wcscmp(getProperty(i)->getName(), TEXT("LABEL")) && getProperty(i)->isType(TEXT("WORK")))
                 if(getProperty(i)->getValue()) {
                     adr = addLabelAddress(getProperty(i), BUSINESS);
-                    
+
                     if(!businessDetail)
                         businessDetail = new BusinessDetail();
 
                     businessDetail->setAddress(*adr);
 
                     delete adr;
-                } 
-            if(!wcscmp(getProperty(i)->getName(), TEXT("ROLE"))) 
+                }
+            if(!wcscmp(getProperty(i)->getName(), TEXT("ROLE")))
                 if(getProperty(i)->getValue()) {
                     vCardProperty *prop = getPropertyFromVProperty(getProperty(i));
                     if(!businessDetail)
@@ -328,8 +348,8 @@ BusinessDetail* Contact::getBusinessDetail () {
                     wcscpy(titles[titlesIndex], getProperty(i)->getValue());
                     titlesIndex++;
                 }
-                
-            if(!wcscmp(getProperty(i)->getName(), TEXT("ORG"))) 
+
+            if(!wcscmp(getProperty(i)->getName(), TEXT("ORG")))
                 if(getProperty(i)->getValue()) {
                     vCardProperty *prop = getPropertyFromVProperty(getProperty(i));
                     if(!businessDetail)
@@ -337,8 +357,8 @@ BusinessDetail* Contact::getBusinessDetail () {
                     businessDetail->setCompany(*prop);
 
                     delete prop;
-                }            
-            if(!wcscmp(getProperty(i)->getName(), TEXT("LOGO"))) 
+                }
+            if(!wcscmp(getProperty(i)->getName(), TEXT("LOGO")))
                 if(getProperty(i)->getValue()) {
                     vCardProperty *prop = getPropertyFromVProperty(getProperty(i));
                     if(!businessDetail)
@@ -346,7 +366,7 @@ BusinessDetail* Contact::getBusinessDetail () {
                     businessDetail->setLogo(*prop);
 
                     delete prop;
-                }            
+                }
             if(!wcscmp(getProperty(i)->getName(), TEXT("TEL")))
                 if(getProperty(i)->isType(TEXT("WORK"))) {
                     if(getProperty(i)->isType(TEXT("CELL"))) {
@@ -355,7 +375,7 @@ BusinessDetail* Contact::getBusinessDetail () {
                         phone->setPhoneNumber(*prop);
                         phone->setType(TEXT("MobileBusinessTelephoneNumber"));
                         if(!phones)
-                            phones = new ArrayList(); 
+                            phones = new ArrayList();
                         phones->add((ArrayElement&) *phone);
                         delete phone;
                     }
@@ -398,19 +418,19 @@ BusinessDetail* Contact::getBusinessDetail () {
                     vCardProperty* prop = getPropertyFromVProperty(getProperty(i));
                     WebPage* url = new WebPage();
                     url->setWebPage(*prop);
-                    url->setType(TEXT("BusinessWebPage"));                    
+                    url->setType(TEXT("BusinessWebPage"));
                     if(!webPages)
                         webPages = new ArrayList();
                     webPages->add((ArrayElement&) *url);
                     delete url;
-                }               
+                }
         }
        if(titlesIndex>0) {
             if(!businessDetail)
                 businessDetail = new BusinessDetail();
             businessDetail->setTitles(titles, titlesIndex);
             delete *titles;
-        } 
+        }
         if(phones) {
             if(!contactDetail)
                 contactDetail = new ContactDetail();
@@ -434,14 +454,14 @@ BusinessDetail* Contact::getBusinessDetail () {
                 businessDetail = new BusinessDetail();
             businessDetail->setContactDetail(*contactDetail);
             delete contactDetail;
-        }                
+        }
     }
     return businessDetail;
 }
 
 void Contact::setBusinessDetail(BusinessDetail& d) {
     if (businessDetail) delete businessDetail;
-    
+
     businessDetail = d.clone();
 
     for(int i = 0, m = propertiesCount(); i < m;i++) {
@@ -454,12 +474,12 @@ void Contact::setBusinessDetail(BusinessDetail& d) {
             removeProperty(i);
             --i;
             --m;
-        }         
+        }
         if(!wcscmp(getProperty(i)->getName(), TEXT("ROLE"))) {
             removeProperty(i);
             --i;
             --m;
-        }         
+        }
         if(!wcscmp(getProperty(i)->getName(), TEXT("TITLE"))) {
             removeProperty(i);
             --i;
@@ -505,41 +525,41 @@ void Contact::setBusinessDetail(BusinessDetail& d) {
                 insertProperty(vp);
             }
         }
-        if(businessDetail->getContactDetail()) { 
+        if(businessDetail->getContactDetail()) {
             if(businessDetail->getContactDetail()->getEmails()) {
                 ArrayList* emails = businessDetail->getContactDetail()->getEmails();
-                for (int i=0; i<emails->size(); ++i) {                                        
-                    if(((Email*) emails->get(i))->getProperty()) {                
-                        VProperty* vp = getVPropertyFromProperty(TEXT("EMAIL"), ((Email*)emails->get(i))->getProperty());                                     
+                for (int i=0; i<emails->size(); ++i) {
+                    if(((Email*) emails->get(i))->getProperty()) {
+                        VProperty* vp = getVPropertyFromProperty(TEXT("EMAIL"), ((Email*)emails->get(i))->getProperty());
                         vp->addParameter(TEXT("WORK"), NULL);
                         vp->addParameter(TEXT("TYPE"),TEXT("INTERNET"));
                         insertProperty(vp);
                     }
                 }
-            }    
+            }
             if(businessDetail->getContactDetail()->getWebPages()) {
                 ArrayList* webs = businessDetail->getContactDetail()->getWebPages();
-                for (int i=0; i<webs->size(); ++i) {                                        
-                    if(((WebPage*) webs->get(i))->getProperty()) {                
-                        VProperty* vp = getVPropertyFromProperty(TEXT("URL"), ((WebPage*)webs->get(i))->getProperty());                                     
-                        vp->addParameter(TEXT("WORK"), NULL);                       
+                for (int i=0; i<webs->size(); ++i) {
+                    if(((WebPage*) webs->get(i))->getProperty()) {
+                        VProperty* vp = getVPropertyFromProperty(TEXT("URL"), ((WebPage*)webs->get(i))->getProperty());
+                        vp->addParameter(TEXT("WORK"), NULL);
                         insertProperty(vp);
                     }
                 }
             }
             if(businessDetail->getContactDetail()->getPhones()) {
                 ArrayList* phones = businessDetail->getContactDetail()->getPhones();
-                for (int i=0; i<phones->size(); ++i)                                         
-                    if(((Phone*) phones->get(i))->getProperty()) {                
-                        VProperty* vp = getVPropertyFromProperty(TEXT("TEL"), ((Phone*)phones->get(i))->getProperty());                                     
+                for (int i=0; i<phones->size(); ++i)
+                    if(((Phone*) phones->get(i))->getProperty()) {
+                        VProperty* vp = getVPropertyFromProperty(TEXT("TEL"), ((Phone*)phones->get(i))->getProperty());
                         if(!wcscmp(TEXT("MobileBusinessTelephoneNumber"),((Phone*)phones->get(i))->getType()))
                             vp->addParameter(TEXT("TYPE"),TEXT("WORK,CELL"));
                         if(!wcscmp(TEXT("BusinessTelephoneNumber"),((Phone*)phones->get(i))->getType()))
-                            vp->addParameter(TEXT("TYPE"),TEXT("WORK,VOICE"));                                               
+                            vp->addParameter(TEXT("TYPE"),TEXT("WORK,VOICE"));
                         if(!wcscmp(TEXT("BusinessFaxNumber"),((Phone*)phones->get(i))->getType()))
-                            vp->addParameter(TEXT("TYPE"),TEXT("WORK,FAX"));                      
+                            vp->addParameter(TEXT("TYPE"),TEXT("WORK,FAX"));
                         insertProperty(vp);
-                    }                
+                    }
             }
         }
         if(businessDetail->getRole()) {
@@ -557,9 +577,9 @@ void Contact::setBusinessDetail(BusinessDetail& d) {
 
         if(businessDetail->getTitles()) {
             ArrayList* titles = businessDetail->getTitles();
-            for (int i=0; i<titles->size(); ++i) {                                        
-                if(((Title*)titles->get(i))->getProperty()) {                
-                    VProperty* vp = getVPropertyFromProperty(TEXT("TITLE"), ((Title*)titles->get(i))->getProperty());                                                                               
+            for (int i=0; i<titles->size(); ++i) {
+                if(((Title*)titles->get(i))->getProperty()) {
+                    VProperty* vp = getVPropertyFromProperty(TEXT("TITLE"), ((Title*)titles->get(i))->getProperty());
                     insertProperty(vp);
                 }
             }
@@ -574,43 +594,43 @@ PersonalDetail* Contact::getPersonalDetail() {
         ArrayList* webPages = new ArrayList();
         ContactDetail* contactDetail = NULL;
         Address* adr = NULL;
-                
+
         for(int i = 0; i<propertiesCount();i++) {
-            if(!wcscmp(getProperty(i)->getName(), TEXT("ADR")) && getProperty(i)->isType(TEXT("HOME")))                
+            if(!wcscmp(getProperty(i)->getName(), TEXT("ADR")) && getProperty(i)->isType(TEXT("HOME")))
                 if(getProperty(i)->getValue()) {
-                    adr = composeAddress(getProperty(i), HOME);                                                           
+                    adr = composeAddress(getProperty(i), HOME);
                     if(!personalDetail)
                         personalDetail = new PersonalDetail();
                     personalDetail->setAddress(*adr);
                     delete adr;
                 }
-            if(!wcscmp(getProperty(i)->getName(), TEXT("LABEL")) && getProperty(i)->isType(TEXT("HOME")))                
+            if(!wcscmp(getProperty(i)->getName(), TEXT("LABEL")) && getProperty(i)->isType(TEXT("HOME")))
                 if(getProperty(i)->getValue()) {
                     adr = addLabelAddress(getProperty(i), HOME);
                     if(!personalDetail)
                         personalDetail = new PersonalDetail();
                     personalDetail->setAddress(*adr);
                     delete adr;
-                } 
+                }
             if(!wcscmp(getProperty(i)->getName(), TEXT("ADR")) && !getProperty(i)->isType(TEXT("HOME"))
-                && !getProperty(i)->isType(TEXT("WORK")))                
+                && !getProperty(i)->isType(TEXT("WORK")))
                 if(getProperty(i)->getValue()) {
-                    adr = composeAddress(getProperty(i), OTHER);                                                           
+                    adr = composeAddress(getProperty(i), OTHER);
                     if(!personalDetail)
                         personalDetail = new PersonalDetail();
                     personalDetail->setOtherAddress(*adr);
                     delete adr;
                 }
-            if(!wcscmp(getProperty(i)->getName(), TEXT("LABEL")) && !getProperty(i)->isType(TEXT("HOME")) 
-                && !getProperty(i)->isType(TEXT("WORK")))                
+            if(!wcscmp(getProperty(i)->getName(), TEXT("LABEL")) && !getProperty(i)->isType(TEXT("HOME"))
+                && !getProperty(i)->isType(TEXT("WORK")))
                 if(getProperty(i)->getValue()) {
                     adr = addLabelAddress(getProperty(i), OTHER);
                     if(!personalDetail)
                         personalDetail = new PersonalDetail();
                     personalDetail->setOtherAddress(*adr);
                     delete adr;
-                } 
-            if(!wcscmp(getProperty(i)->getName(), TEXT("PHOTO"))) 
+                }
+            if(!wcscmp(getProperty(i)->getName(), TEXT("PHOTO")))
                 if(getProperty(i)->getValue()) {
                     vCardProperty* prop = getPropertyFromVProperty(getProperty(i));
                     if(!personalDetail)
@@ -660,7 +680,7 @@ PersonalDetail* Contact::getPersonalDetail() {
                     phones->add((ArrayElement&) *phone);
                     delete phone;
                 }
-                if(getProperty(i)->isType(TEXT("CELL")) && !getProperty(i)->isType(TEXT("HOME")) 
+                if(getProperty(i)->isType(TEXT("CELL")) && !getProperty(i)->isType(TEXT("HOME"))
                     && !getProperty(i)->isType(TEXT("WORK"))) {
                         vCardProperty* prop = getPropertyFromVProperty(getProperty(i));
                         Phone* phone = new Phone();
@@ -669,7 +689,7 @@ PersonalDetail* Contact::getPersonalDetail() {
                         phones->add((ArrayElement&) *phone);
                         delete phone;
                     }
-                if(getProperty(i)->isType(TEXT("VOICE")) && !getProperty(i)->isType(TEXT("HOME")) 
+                if(getProperty(i)->isType(TEXT("VOICE")) && !getProperty(i)->isType(TEXT("HOME"))
                     && !getProperty(i)->isType(TEXT("WORK"))) {
                         vCardProperty* prop = getPropertyFromVProperty(getProperty(i));
                         Phone* phone = new Phone();
@@ -678,7 +698,7 @@ PersonalDetail* Contact::getPersonalDetail() {
                         phones->add((ArrayElement&) *phone);
                         delete phone;
                     }
-                if(getProperty(i)->isType(TEXT("FAX")) && !getProperty(i)->isType(TEXT("HOME")) 
+                if(getProperty(i)->isType(TEXT("FAX")) && !getProperty(i)->isType(TEXT("HOME"))
                     && !getProperty(i)->isType(TEXT("WORK"))) {
                         vCardProperty* prop = getPropertyFromVProperty(getProperty(i));
                         Phone* phone = new Phone();
@@ -697,7 +717,7 @@ PersonalDetail* Contact::getPersonalDetail() {
                     emails->add((ArrayElement&) *email);
                     delete email;
                 }
-                if(getProperty(i)->isType(TEXT("INTERNET")) && !getProperty(i)->containsParameter(TEXT("HOME")) 
+                if(getProperty(i)->isType(TEXT("INTERNET")) && !getProperty(i)->containsParameter(TEXT("HOME"))
                     && !getProperty(i)->containsParameter(TEXT("WORK"))) {
                     vCardProperty* prop = getPropertyFromVProperty(getProperty(i));
                     Email* email = new Email();
@@ -715,7 +735,7 @@ PersonalDetail* Contact::getPersonalDetail() {
                     url->setType(TEXT("HomeWebPage"));
                     webPages->add((ArrayElement&) *url);
                     delete url;
-                }   
+                }
                 if(!getProperty(i)->containsParameter(TEXT("HOME")) && !getProperty(i)->containsParameter(TEXT("WORK"))) {
                     vCardProperty* prop = getPropertyFromVProperty(getProperty(i));
                     WebPage* url = new WebPage();
@@ -723,9 +743,9 @@ PersonalDetail* Contact::getPersonalDetail() {
                     url->setType(TEXT("WebPage"));
                     webPages->add((ArrayElement&) *url);
                     delete url;
-                }   
+                }
             }
-        } //end for VProperties        
+        } //end for VProperties
         if(phones) {
             if(!contactDetail)
                 contactDetail = new ContactDetail();
@@ -749,7 +769,7 @@ PersonalDetail* Contact::getPersonalDetail() {
                 personalDetail = new PersonalDetail();
             personalDetail->setContactDetail(*contactDetail);
             delete contactDetail;
-        }                
+        }
     }
     return personalDetail;
 }
@@ -775,7 +795,7 @@ void Contact::setPersonalDetail(PersonalDetail& d) {
             removeProperty(i);
             --i;
             --m;
-        }            
+        }
         if(!wcscmp(getProperty(i)->getName(), TEXT("LABEL")) && !getProperty(i)->isType(TEXT("HOME"))
             && !getProperty(i)->isType(TEXT("WORK"))) {
                 removeProperty(i);
@@ -793,13 +813,13 @@ void Contact::setPersonalDetail(PersonalDetail& d) {
             --m;
         }
         if(!wcscmp(getProperty(i)->getName(), TEXT("TEL")) && !getProperty(i)->isType(TEXT("WORK")))
-            if(getProperty(i)->isType(TEXT("CELL")) || getProperty(i)->isType(TEXT("VOICE")) 
+            if(getProperty(i)->isType(TEXT("CELL")) || getProperty(i)->isType(TEXT("VOICE"))
                 || getProperty(i)->isType(TEXT("FAX"))) {
                     removeProperty(i);
                     --i;
                     --m;
                 }
-        if(!wcscmp(getProperty(i)->getName(), TEXT("EMAIL")) && !getProperty(i)->containsParameter(TEXT("WORK")) 
+        if(!wcscmp(getProperty(i)->getName(), TEXT("EMAIL")) && !getProperty(i)->containsParameter(TEXT("WORK"))
             && getProperty(i)->isType(TEXT("INTERNET"))) {
                 removeProperty(i);
                 --i;
@@ -809,7 +829,7 @@ void Contact::setPersonalDetail(PersonalDetail& d) {
             removeProperty(i);
             --i;
             --m;
-        }            
+        }
     }
 
     if(personalDetail) {
@@ -825,71 +845,71 @@ void Contact::setPersonalDetail(PersonalDetail& d) {
             }
         }
         if(personalDetail->getOtherAddress()) {
-            VProperty* vp = composeVAddress(personalDetail->getOtherAddress());            
+            VProperty* vp = composeVAddress(personalDetail->getOtherAddress());
             insertProperty(vp);
 
             if(personalDetail->getOtherAddress()->getLabel()) {
-                VProperty* vp = getVPropertyFromProperty(TEXT("LABEL"),personalDetail->getOtherAddress()->getLabel());                
+                VProperty* vp = getVPropertyFromProperty(TEXT("LABEL"),personalDetail->getOtherAddress()->getLabel());
                 insertProperty(vp);
             }
         }
-        if(personalDetail->getContactDetail()) { 
+        if(personalDetail->getContactDetail()) {
             if(personalDetail->getContactDetail()->getEmails()) {
                 ArrayList* emails = personalDetail->getContactDetail()->getEmails();
-                for (int i=0; i<emails->size(); ++i) {                                        
-                    if(((Email*) emails->get(i))->getProperty()) {                
-                        VProperty* vp = getVPropertyFromProperty(TEXT("EMAIL"), ((Email*)emails->get(i))->getProperty());                                                
+                for (int i=0; i<emails->size(); ++i) {
+                    if(((Email*) emails->get(i))->getProperty()) {
+                        VProperty* vp = getVPropertyFromProperty(TEXT("EMAIL"), ((Email*)emails->get(i))->getProperty());
                         if(!wcscmp(TEXT("Email2Address") ,((Email*)emails->get(i))->getType()))
-                            vp->addParameter(TEXT("HOME"), NULL);                        
+                            vp->addParameter(TEXT("HOME"), NULL);
                         vp->addParameter(TEXT("TYPE"),TEXT("INTERNET"));
                         insertProperty(vp);
                     }
                 }
-            }    
+            }
             if(personalDetail->getContactDetail()->getWebPages()) {
                 ArrayList* webs = personalDetail->getContactDetail()->getWebPages();
-                for (int i=0; i<webs->size(); ++i) {                                        
-                    if(((WebPage*) webs->get(i))->getProperty()) {                
+                for (int i=0; i<webs->size(); ++i) {
+                    if(((WebPage*) webs->get(i))->getProperty()) {
                         VProperty* vp = getVPropertyFromProperty(TEXT("URL"), ((WebPage*)webs->get(i))->getProperty());
                         if(!wcscmp(TEXT("HomeWebPage") ,((WebPage*)webs->get(i))->getType()))
-                            vp->addParameter(TEXT("HOME"), NULL);                       
+                            vp->addParameter(TEXT("HOME"), NULL);
                         insertProperty(vp);
                     }
                 }
             }
             if(personalDetail->getContactDetail()->getPhones()) {
                 ArrayList* phones = personalDetail->getContactDetail()->getPhones();
-                for (int i=0; i<phones->size(); ++i)                                         
-                    if(((Phone*) phones->get(i))->getProperty()) {                
-                        VProperty* vp = getVPropertyFromProperty(TEXT("TEL"), ((Phone*)phones->get(i))->getProperty());                                                             
+                for (int i=0; i<phones->size(); ++i)
+                    if(((Phone*) phones->get(i))->getProperty()) {
+                        VProperty* vp = getVPropertyFromProperty(TEXT("TEL"), ((Phone*)phones->get(i))->getProperty());
                         if(!wcscmp(TEXT("MobileTelephoneNumber"),((Phone*)phones->get(i))->getType()))
                             vp->addParameter(TEXT("TYPE"), TEXT("CELL"));
                         if(!wcscmp(TEXT("MobileHomeTelephoneNumber"),((Phone*)phones->get(i))->getType()))
-                            vp->addParameter(TEXT("TYPE"),TEXT("HOME,CELL"));                        
+                            vp->addParameter(TEXT("TYPE"),TEXT("HOME,CELL"));
                         if(!wcscmp(TEXT("OtherTelephoneNumber"),((Phone*)phones->get(i))->getType()))
                             vp->addParameter(TEXT("TYPE"),TEXT("VOICE"));
-                        if(!wcscmp(TEXT("HomeTelephoneNumber"),((Phone*)phones->get(i))->getType())) 
-                            vp->addParameter(TEXT("TYPE"),TEXT("HOME,VOICE"));                        
+                        if(!wcscmp(TEXT("HomeTelephoneNumber"),((Phone*)phones->get(i))->getType()))
+                            vp->addParameter(TEXT("TYPE"),TEXT("HOME,VOICE"));
                         if(!wcscmp(TEXT("OtherFaxNumber"),((Phone*)phones->get(i))->getType()))
                             vp->addParameter(TEXT("TYPE"), TEXT("FAX"));
                         if(!wcscmp(TEXT("HomeFaxNumber"),((Phone*)phones->get(i))->getType()))
                              vp->addParameter(TEXT("TYPE"), TEXT("HOME,FAX"));
                         insertProperty(vp);
-                    }                
+                    }
             }
         } //end contactDetail
         if(personalDetail->getPhoto()) {
             VProperty* vp = getVPropertyFromProperty(TEXT("PHOTO"), personalDetail->getPhoto());
             insertProperty(vp);
-        }        
+        }
         if(personalDetail->getBirthday()) {
-            VProperty* vp = new VProperty(TEXT("BDAY"), personalDetail->getBirthday());                
+            VProperty* vp = new VProperty(TEXT("BDAY"), personalDetail->getBirthday());
             insertProperty(vp);
         }
     }
 }
 
-void Contact::setUID (WCHAR* u) {    
+void Contact::setUID (WCHAR* u) {
     if (containsProperty(TEXT("UID")))
         getProperty(TEXT("UID"))->setValue(u);
     else
@@ -917,7 +937,7 @@ void Contact::set(WCHAR** p, WCHAR* v) {
 }
 
 vCardProperty* Contact::getPropertyFromVProperty(VProperty* vp) {
-    
+
     if(vp) {
         vCardProperty *prop = new vCardProperty(vp->getValue());
         if(vp->getParameterValue(TEXT("ENCODING")))
@@ -925,7 +945,7 @@ vCardProperty* Contact::getPropertyFromVProperty(VProperty* vp) {
         if(vp->containsParameter(TEXT("BASE64")))
             prop->setEncoding(TEXT("BASE64"));
         if(vp->containsParameter(TEXT("QUOTED-PRINTABLE")))
-            prop->setEncoding(TEXT("QUOTED-PRINTABLE")); 
+            prop->setEncoding(TEXT("QUOTED-PRINTABLE"));
         if(vp->getParameterValue(TEXT("LANGUAGE")))
             prop->setLanguage(vp->getParameterValue(TEXT("LANGUAGE")));
         if(vp->getParameterValue(TEXT("CHARSET")))
@@ -933,7 +953,7 @@ vCardProperty* Contact::getPropertyFromVProperty(VProperty* vp) {
         return prop;
     }
 
-    return NULL;    
+    return NULL;
 }
 
 VProperty* Contact::getVPropertyFromProperty(WCHAR*name, vCardProperty* prop) {
@@ -1087,7 +1107,7 @@ VProperty* Contact::composeVAddress(Address* adr) {
                 wcscpy(encoding, adr->getCountry()->getEncoding());
             }
     }
-    
+
     VProperty* vp = new VProperty(TEXT("ADR"), addressValue);
     if(charset)
         vp->addParameter(TEXT("CHARSET"), charset);
@@ -1095,30 +1115,30 @@ VProperty* Contact::composeVAddress(Address* adr) {
         vp->addParameter(TEXT("LANGUAGE"), language);
     if(encoding)
         vp->addParameter(TEXT("ENCODING"), encoding);
- 
-    return vp; 
+
+    return vp;
 }
 
-Address* Contact::composeAddress(VProperty* vp, int type) {        
-    if(vp) {        
+Address* Contact::composeAddress(VProperty* vp, int type) {
+    if(vp) {
         Address* adr;
         switch (type) {
             case BUSINESS:
-                if(!businessDetail || !businessDetail->getAddress()) 
+                if(!businessDetail || !businessDetail->getAddress())
                     adr = new Address();
-                else 
+                else
                     adr = businessDetail->getAddress()->clone();
                 break;
             case HOME:
-                if(!personalDetail || !personalDetail->getAddress()) 
+                if(!personalDetail || !personalDetail->getAddress())
                     adr = new Address();
-                else 
+                else
                     adr = personalDetail->getAddress()->clone();
                 break;
             case OTHER:
-                if(!personalDetail || !personalDetail->getOtherAddress()) 
+                if(!personalDetail || !personalDetail->getOtherAddress())
                     adr = new Address();
-                else 
+                else
                     adr = personalDetail->getOtherAddress()->clone();
                 break;
             default:
@@ -1130,76 +1150,76 @@ Address* Contact::composeAddress(VProperty* vp, int type) {
             prop->setValue(vp->getPropComponent(1));
             adr->setPostOfficeAddress(*prop);
 
-            delete prop;                        
+            delete prop;
         }
         if(vp->getPropComponent(2)){
             vCardProperty *prop = getPropertyFromVProperty(vp);
             prop->setValue(vp->getPropComponent(2));
             adr->setRoomNumber(*prop);
 
-            delete prop;                        
+            delete prop;
         }
         if(vp->getPropComponent(3)){
             vCardProperty *prop = getPropertyFromVProperty(vp);
             prop->setValue(vp->getPropComponent(3));
             adr->setStreet(*prop);
 
-            delete prop;                        
+            delete prop;
         }
         if(vp->getPropComponent(4)){
             vCardProperty *prop = getPropertyFromVProperty(vp);
             prop->setValue(vp->getPropComponent(4));
             adr->setCity(*prop);
 
-            delete prop;                        
+            delete prop;
         }
         if(vp->getPropComponent(5)){
             vCardProperty *prop = getPropertyFromVProperty(vp);
             prop->setValue(vp->getPropComponent(5));
             adr->setState(*prop);
 
-            delete prop;                        
+            delete prop;
         }
         if(vp->getPropComponent(6)){
             vCardProperty *prop = getPropertyFromVProperty(vp);
             prop->setValue(vp->getPropComponent(6));
             adr->setPostalCode(*prop);
 
-            delete prop;                        
+            delete prop;
         }
         if(vp->getPropComponent(7)){
             vCardProperty *prop = getPropertyFromVProperty(vp);
             prop->setValue(vp->getPropComponent(7));
             adr->setCountry(*prop);
 
-            delete prop; 
+            delete prop;
         }
         return adr;
     }
     return NULL;
 }
 
-Address* Contact::addLabelAddress(VProperty* vp, int type) {        
+Address* Contact::addLabelAddress(VProperty* vp, int type) {
     if(vp) {
         Address* adr;
-        
+
         switch (type) {
             case BUSINESS:
-                if(!businessDetail || !businessDetail->getAddress()) 
+                if(!businessDetail || !businessDetail->getAddress())
                     adr = new Address();
-                else 
+                else
                     adr = businessDetail->getAddress()->clone();
                 break;
             case HOME:
-                if(!personalDetail || !personalDetail->getAddress()) 
+                if(!personalDetail || !personalDetail->getAddress())
                     adr = new Address();
-                else 
+                else
                     adr = personalDetail->getAddress()->clone();
                 break;
             case OTHER:
-                if(!personalDetail || !personalDetail->getOtherAddress()) 
+                if(!personalDetail || !personalDetail->getOtherAddress())
                     adr = new Address();
-                else 
+                else
                     adr = personalDetail->getOtherAddress()->clone();
                 break;
             default:
@@ -1207,10 +1227,10 @@ Address* Contact::addLabelAddress(VProperty* vp, int type) {
         }
 
         if(vp->getValue()) {
-            vCardProperty *prop = getPropertyFromVProperty(vp);            
+            vCardProperty *prop = getPropertyFromVProperty(vp);
             adr->setLabel(*prop);
 
-            delete prop;                        
+            delete prop;
         }
         return adr;
     }
@@ -1218,7 +1238,7 @@ Address* Contact::addLabelAddress(VProperty* vp, int type) {
 }
 
 Contact* Contact::clone() {
-    
+
     Contact* ret = new Contact();
     VProperty* property;
 
@@ -1234,7 +1254,7 @@ WCHAR* Contact::toString() {
         //this means the Contact was created with new, not using vConverter::parse
         //we need to add BEGIN, VERSION, END to VObject properties
         addFirstProperty(new VProperty(TEXT("VERSION"), getVersion()));
-        addFirstProperty(new VProperty(TEXT("BEGIN"), TEXT("VCARD")));   
+        addFirstProperty(new VProperty(TEXT("BEGIN"), TEXT("VCARD")));
         addProperty(new VProperty(TEXT("END"), TEXT("VCARD")));
     }
 

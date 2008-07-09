@@ -1,25 +1,43 @@
 /*
- * Copyright (C) 2003-2006 Funambol
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * Funambol is a mobile platform developed by Funambol, Inc. 
+ * Copyright (C) 2003 - 2007 Funambol, Inc.
+ * 
+ * This program is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU Affero General Public License version 3 as published by
+ * the Free Software Foundation with the addition of the following permission 
+ * added to Section 15 as permitted in Section 7(a): FOR ANY PART OF THE COVERED
+ * WORK IN WHICH THE COPYRIGHT IS OWNED BY FUNAMBOL, FUNAMBOL DISCLAIMS THE 
+ * WARRANTY OF NON INFRINGEMENT  OF THIRD PARTY RIGHTS.
+ * 
+ * This program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
+ * details.
+ * 
+ * You should have received a copy of the GNU Affero General Public License 
+ * along with this program; if not, see http://www.gnu.org/licenses or write to
+ * the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
+ * MA 02110-1301 USA.
+ * 
+ * You can contact Funambol, Inc. headquarters at 643 Bair Island Road, Suite 
+ * 305, Redwood City, CA 94063, USA, or at email address info@funambol.com.
+ * 
+ * The interactive user interfaces in modified source and object code versions
+ * of this program must display Appropriate Legal Notices, as required under
+ * Section 5 of the GNU Affero General Public License version 3.
+ * 
+ * In accordance with Section 7(b) of the GNU Affero General Public License
+ * version 3, these Appropriate Legal Notices must retain the display of the
+ * "Powered by Funambol" logo. If the display of the logo is not reasonably 
+ * feasible for technical reasons, the Appropriate Legal Notices must display
+ * the words "Powered by Funambol".
  */
 
 
 
 #ifndef INCL_META
 #define INCL_META
+/** @cond DEV */
 
 #include "base/fscapi.h"
 #include "syncml/core/MetInf.h"
@@ -27,13 +45,16 @@
 #include "syncml/core/NextNonce.h"
 #include "syncml/core/Mem.h"
 #include "syncml/core/EMI.h"
+#include "base/globalsdef.h"
+
+BEGIN_NAMESPACE
 
 class Meta {
-    
+
      // ------------------------------------------------------------ Private data
     private:
        MetInf* metInf;
-       
+
        void set(const char*     format,
                 const char*     type  ,
                 const char*     mark  ,
@@ -44,18 +65,18 @@ class Meta {
                 long        maxMsgSize,
                 long        maxObjSize,
                 ArrayList*  emi       ,
-                Mem*        mem      ); 
-                
-    
-    // ---------------------------------------------------------- Public data    
+                Mem*        mem      );
+
+
+    // ---------------------------------------------------------- Public data
     public:
 
         Meta();
 
         ~Meta();
-    
+
         MetInf* getMetInf();
-		
+
 		void setMetInf(MetInf* metInf);
 
 		 /**
@@ -79,13 +100,13 @@ class Meta {
 		 * @param size the new size value
 		 */
 		void setSize(long size);
-   
+
 		/**
 		 * Returns format
 		 *
 		 * @return format
 		 */
-		char*  getFormat(char*  retFormat=0);
+		const char* getFormat();
 
 		/**
 		 * Sets format
@@ -99,7 +120,7 @@ class Meta {
 		 *
 		 * @return type
 		 */
-		char*  getType(char*  retType=0);
+		const char* getType();
 
 		/**
 		 * Sets type
@@ -113,7 +134,7 @@ class Meta {
 		 *
 		 * @return mark
 		 */
-		char*  getMark(char*  retMark=0);
+		const char* getMark();
 
 		/**
 		 * Sets mark
@@ -127,7 +148,7 @@ class Meta {
 		 *
 		 * @return version
 		 */
-		char*  getVersion(char*  retVersion=0);
+		const char* getVersion();
 
 		/**
 		 * Sets version
@@ -136,7 +157,7 @@ class Meta {
 		 */
 		void setVersion(const char*  version);
 
-		
+
 		/**
 		 * Returns anchor
 		 *
@@ -206,21 +227,21 @@ class Meta {
 		 * @param mem the new mem value
 		 */
 		void setMem(Mem* mem);
-        
+
         /**
 		 * Sets emi
 		 *
 		 * @param emi the new emi value
 		 */
 		void setEMI(ArrayList* emi);
-		
+
         /**
 		 * Gets emi
 		 *
-		 * @return emi 
+		 * @return emi
 		 */
 		ArrayList* getEMI();
-        
+
         /**
 		 * clone meta
 		 *
@@ -229,4 +250,8 @@ class Meta {
         Meta* clone();
 };
 
+
+END_NAMESPACE
+
+/** @endcond */
 #endif

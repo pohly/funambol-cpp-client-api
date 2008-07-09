@@ -1,35 +1,56 @@
 /*
- * Copyright (C) 2003-2006 Funambol
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * Funambol is a mobile platform developed by Funambol, Inc. 
+ * Copyright (C) 2003 - 2007 Funambol, Inc.
+ * 
+ * This program is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU Affero General Public License version 3 as published by
+ * the Free Software Foundation with the addition of the following permission 
+ * added to Section 15 as permitted in Section 7(a): FOR ANY PART OF THE COVERED
+ * WORK IN WHICH THE COPYRIGHT IS OWNED BY FUNAMBOL, FUNAMBOL DISCLAIMS THE 
+ * WARRANTY OF NON INFRINGEMENT  OF THIRD PARTY RIGHTS.
+ * 
+ * This program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
+ * details.
+ * 
+ * You should have received a copy of the GNU Affero General Public License 
+ * along with this program; if not, see http://www.gnu.org/licenses or write to
+ * the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
+ * MA 02110-1301 USA.
+ * 
+ * You can contact Funambol, Inc. headquarters at 643 Bair Island Road, Suite 
+ * 305, Redwood City, CA 94063, USA, or at email address info@funambol.com.
+ * 
+ * The interactive user interfaces in modified source and object code versions
+ * of this program must display Appropriate Legal Notices, as required under
+ * Section 5 of the GNU Affero General Public License version 3.
+ * 
+ * In accordance with Section 7(b) of the GNU Affero General Public License
+ * version 3, these Appropriate Legal Notices must retain the display of the
+ * "Powered by Funambol" logo. If the display of the logo is not reasonably 
+ * feasible for technical reasons, the Appropriate Legal Notices must display
+ * the words "Powered by Funambol".
  */
 
 
 #ifndef INCL_BASE_UTIL_ARRAY_LIST
 #define INCL_BASE_UTIL_ARRAY_LIST
+/** @cond DEV */
 
 #include "base/fscapi.h"
 
 #include "base/util/ArrayElement.h"
+#include "base/globalsdef.h"
+
+BEGIN_NAMESPACE
 
 /**
  * This class implements a simple linked list that can be accessed by index too.
- * This class does not make use of C++ templates by choice, since it must be 
+ * This class does not make use of C++ templates by choice, since it must be
  * as much easier and portable as possible.
- * 
- * Each list element must be an instance of ArrayElement, which must be 
+ *
+ * Each list element must be an instance of ArrayElement, which must be
  * considered an abstract class. Implementing classes must define the destructor
  * and the method clone(), which is used to replicate a given object. This is
  * used by insertion methods: they always clone the item and store the cloned
@@ -40,77 +61,88 @@
  */
 
 struct Element {
-	ArrayElement* e; // the element value
-	Element* n;      // the next element (NULL for the latest)
+    ArrayElement* e; // the element value
+    Element* n;      // the next element (NULL for the latest)
 };
 
 class ArrayList {
-	private:
-	    Element* head;
-	    
+    private:
+        Element* head;
+        Element* lastElement;
+
         Element* iterator;
 
-        ArrayList& set (const ArrayList & other);
-        
-	public:
-	    ArrayList() EXTRA_SECTION_00;
-        ArrayList(const ArrayList &other) EXTRA_SECTION_00;
-	    ~ArrayList() EXTRA_SECTION_00;
-	    
-	    /**
-	     * Is this list empty?
-	     */
-	    bool isEmpty() EXTRA_SECTION_00;
-	    
-		/**
-		 * Adds a new element at the specified index. If index is greater than
-		 * the list size the element is appended.
-		 * The element is dinamically duplicated so that the caller can release
-		 * the element at any time. This method returns the position (0 based) at which
-		 * the element has been inserted. It can be different by index if index is out
-		 * of the array bounds, in that case element is appended as last element.
-		 * It returns -1 in case of errors.
-		 * 
-		 * @param index the insertion position
-		 * @param element the element to insert
-		 */
-	    int add(int index, ArrayElement& element) EXTRA_SECTION_00;
-	    
-	    /**
-	     * Same as add(index, element, size), but append at the end of the array.
-	     * 
-	     * @param element the element to insert
-	     */
-	    int add(ArrayElement& element) EXTRA_SECTION_00;
-	    
-        /**
-        * Add all the ArrayElement of the given ArrayList to the current
-        * array list
-        */
-        int add(ArrayList* list) EXTRA_SECTION_00;
+        int count;
 
-	    /**
-	     * Frees the list. All elements are freed as well.
-	     */
-	    void clear() EXTRA_SECTION_00;
-	    
-	    /**
-	     * Frees the list and all its elements, regardless the value of
-	     * autoDeleteElements. 
-	     */
-	    void clearAll() EXTRA_SECTION_00;
-	    
+        ArrayList& set (const ArrayList & other);
+
+    protected:
+
+        /**
+         * Can be used to reset the iterator, so that next call to next restart from
+         * the beginning.
+         */
+        void resetIterator() { iterator = 0; }
+
+    public:
+        ArrayList();
+        ArrayList(const ArrayList &other);
+        ~ArrayList();
+
+        /**
+         * Is this list empty?
+         */
+        bool isEmpty();
+
+        /**
+         * Adds a new element at the specified index. If index is greater than
+         * the list size the element is appended.
+         * The element is dinamically duplicated so that the caller can release
+         * the element at any time. This method returns the position (0 based) at which
+         * the element has been inserted. It can be different by index if index is out
+         * of the array bounds, in that case element is appended as last element.
+         * It returns -1 in case of errors.
+         *
+         * @param index the insertion position
+         * @param element the element to insert
+         */
+        int add(int index, ArrayElement& element);
+
+        /**
+         * Same as add(index, element, size), but append at the end of the array.
+         *
+         * @param element the element to insert
+         */
+        int add(ArrayElement& element);
+
+        /**
+         * Add all the ArrayElement of the given ArrayList to the current
+         * array list
+         */
+        int add(ArrayList* list);
+
+        /**
+         * Frees the list. All elements are freed as well.
+         */
+        void clear();
+
+        /**
+         * Frees the list and all its elements, regardless the value of
+         * autoDeleteElements.
+         */
+        void clearAll();
+
         int removeElementAt(int index);
 
-	    /**
-	     * Returns the index-th element of the array or NULL if index is out of
-	     * the array bounds. Note that the retuned element will be released at
-	     * list destruction. Clone it if it must have a different life cycle.
-	     * 
-	     * @param index the element position 
-	     */
-	    ArrayElement* get(int index) EXTRA_SECTION_00;
-	    
+        /**
+         * Returns the index-th element of the array or NULL if index is out of
+         * the array bounds. Note that the retuned element will be released at
+         * list destruction. Clone it if it must have a different life cycle.
+         *
+         * @param index the element position
+         */
+        ArrayElement* get(int index) const;
+
         /**
          * Returns the first element of the array and set here the internal iterator.
          *
@@ -119,7 +151,7 @@ class ArrayList {
          *
          * @return - the first element of the array, or NULL if empty.
          */
-        ArrayElement* front() EXTRA_SECTION_00;
+        ArrayElement* front();
 
         /**
          * Returns the next element of the array and increment the internal iterator.
@@ -127,9 +159,9 @@ class ArrayList {
          * Note that the retuned element will be released at list destruction.
          * Clone it if it must have a different life cycle.
          *
-         * @return - the first element of the array, or NULL if beyond the last.
+         * @return - the next element of the array, or NULL if beyond the last.
          */
-        ArrayElement* next() EXTRA_SECTION_00;
+        ArrayElement* next();
 
         /**
          * Returns the previous element of the array and decrement the internal iterator.
@@ -137,9 +169,9 @@ class ArrayList {
          * Note that the retuned element will be released at list destruction.
          * Clone it if it must have a different life cycle.
          *
-         * @return - the first element of the array, or NULL if before the first.
+         * @return - the previous element of the array, or NULL if before the first.
          */
-        ArrayElement* prev() EXTRA_SECTION_00;
+        ArrayElement* prev();
 
         /**
          * Returns the last element of the array and set here the internal iterator.
@@ -149,28 +181,39 @@ class ArrayList {
          *
          * @return - the first element of the array, or NULL if empty.
          */
-        ArrayElement* back() EXTRA_SECTION_00;
+        ArrayElement* back();
+        
+        /**
+         * Returns true if it is the last one, false otherwise
+         *
+         * @return - true if the iterator is at the last element, false otherwise.
+         */
+        bool last() const;
 
-	    /**
-	     * Returns the array size.
-	     */
-	    int size() EXTRA_SECTION_00;
-	    
-	    /**
-	     * Same as get(index)
-	     */
-	    ArrayElement* operator[] (int index) EXTRA_SECTION_00;
+        /**
+         * Returns the array size.
+         */
+        int size() const;
+
+        /**
+         * Same as get(index)
+         */
+        ArrayElement* operator[] (int index) const;
 
         /**
          * Copy the ArrayList
          */
-        ArrayList& operator= (const ArrayList &v) EXTRA_SECTION_00;
+        ArrayList& operator= (const ArrayList &v);
 
-		bool remove(int index) EXTRA_SECTION_00;
+
         /**
-        * Clones the arrayList a return a pointer to a new one.
-        */
+         * Clones the arrayList a return a pointer to a new one.
+         */
         ArrayList* clone();
-	    
+
 };
+
+END_NAMESPACE
+
+/** @endcond */
 #endif

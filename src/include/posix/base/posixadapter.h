@@ -1,40 +1,65 @@
 /*
- * Copyright (C) 2005-2006 Funambol
- * Author Patrick Ohly
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * Funambol is a mobile platform developed by Funambol, Inc. 
+ * Copyright (C) 2003 - 2007 Funambol, Inc.
+ * 
+ * This program is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU Affero General Public License version 3 as published by
+ * the Free Software Foundation with the addition of the following permission 
+ * added to Section 15 as permitted in Section 7(a): FOR ANY PART OF THE COVERED
+ * WORK IN WHICH THE COPYRIGHT IS OWNED BY FUNAMBOL, FUNAMBOL DISCLAIMS THE 
+ * WARRANTY OF NON INFRINGEMENT  OF THIRD PARTY RIGHTS.
+ * 
+ * This program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
+ * details.
+ * 
+ * You should have received a copy of the GNU Affero General Public License 
+ * along with this program; if not, see http://www.gnu.org/licenses or write to
+ * the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
+ * MA 02110-1301 USA.
+ * 
+ * You can contact Funambol, Inc. headquarters at 643 Bair Island Road, Suite 
+ * 305, Redwood City, CA 94063, USA, or at email address info@funambol.com.
+ * 
+ * The interactive user interfaces in modified source and object code versions
+ * of this program must display Appropriate Legal Notices, as required under
+ * Section 5 of the GNU Affero General Public License version 3.
+ * 
+ * In accordance with Section 7(b) of the GNU Affero General Public License
+ * version 3, these Appropriate Legal Notices must retain the display of the
+ * "Powered by Funambol" logo. If the display of the logo is not reasonably 
+ * feasible for technical reasons, the Appropriate Legal Notices must display
+ * the words "Powered by Funambol".
  */
 
-#ifndef INCL_AUTOTOOLS_ADAPTER
-#define INCL_AUTOTOOLS_ADAPTER
+
+#ifndef INCL_POSIX_ADAPTER
+#define INCL_POSIX_ADAPTER
+/** @cond DEV */
 
 
 /*
  * POSIX environment, configured and compiled with automake/autoconf
  */
 
+#ifdef HAVE_CONFIG_H
 #include <config.h>
+#endif
 #include <string.h>
 #include <stdlib.h>
 #include <ctype.h>
 #include <stdio.h>
 #include <time.h>
 #include <stdarg.h>
+#include <unistd.h>
 
 // For ntoh functions
 #include <netinet/in.h>
+
+// Workaround for wchar defines below: unit testing may depend
+// on standard header files. Include its header file first.
+#include <base/test.h>
 
 // Cygwin version of gcc does have these builtin
 #ifndef __CYGWIN__
@@ -42,72 +67,30 @@
 # define __cdecl
 #endif
 
-//#ifdef ENABLE_NLS
-//# include <libintl.h>
-//# define TEXT(String) gettext (String)
-//#else
-//# define TEXT(String) (String)
-//# endif
-#define TEXT(_x) _x
-#define CHR(_x)  _x
-#define T(_x) _x
+#ifdef USE_WCHAR
 
-#define EXTRA_SECTION_00
-#define EXTRA_SECTION_01
-#define EXTRA_SECTION_02
-#define EXTRA_SECTION_03
-#define EXTRA_SECTION_04
-#define EXTRA_SECTION_05
-#define EXTRA_SECTION_06
+# undef WCHAR
+# include <wchar.h>
+# include <wctype.h>
 
-#define BOOL int
-#define TRUE 1
-#define FALSE 0
+# define WCHAR wchar_t
+# define WCHAR_PRINTF "ls"
+# define TEXT(_x) L##_x
 
-#define SYNC4J_LINEBREAK "\n"
+#else
 
 /* map WCHAR and its functions back to standard functions */
-#undef WCHAR
-#define WCHAR char
+#       undef WCHAR
+#       define WCHAR char
+#       define WCHAR_PRINTF "s"
+#       define TEXT(_x) _x
 
-#define wsprintf sprintf
-#define _wfopen fopen
-#define wprintf printf
-#define fwprintf fprintf
-#define wsprintf sprintf
-#define swprintf sprintf
-#define wcscpy strcpy
-#define wcsncpy strncpy
-#define wcsncmp strncmp
-#define wcslen strlen
-#define wcstol strtol
-#define wcstoul strtoul
-#define wcsstr strstr
-#define wcscmp strcmp
-#define wcstok strtok
-inline char towlower(char x) { return tolower(x); }
-inline char towupper(char x) { return toupper(x); }
-#define wmemmove memmove
-#define wmemcpy memcpy
-#define wmemcmp memcmp
-#define wmemset memset
-#define wcschr strchr
-#define wcsrchr strrchr
-#define wcscat strcat
-#define wcsncat strncat
-#define _wtoi atoi
-#define wcstod strtod
-#define wcsicmp strcasecmp
-#define _wcsicmp strcasecmp
-#define _stricmp strcasecmp
+#endif
 
-/* some of the code compares NULL against integers, which
-   fails if NULL is defined as (void *)0 */
-#undef NULL
-#define NULL 0
+#ifdef FUNAMBOL_BUILD_API
+# include "base/posix_build_adapter.h"
+#endif
 
-#define min(x,y) ( (x) < (y) ? (x) : (y) )
-#define max(x,y) ( (x) > (y) ? (x) : (y) )
-
+/** @endcond */
 #endif
 

@@ -1,24 +1,44 @@
 /*
- * Copyright (C) 2003-2006 Funambol
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * Funambol is a mobile platform developed by Funambol, Inc. 
+ * Copyright (C) 2003 - 2007 Funambol, Inc.
+ * 
+ * This program is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU Affero General Public License version 3 as published by
+ * the Free Software Foundation with the addition of the following permission 
+ * added to Section 15 as permitted in Section 7(a): FOR ANY PART OF THE COVERED
+ * WORK IN WHICH THE COPYRIGHT IS OWNED BY FUNAMBOL, FUNAMBOL DISCLAIMS THE 
+ * WARRANTY OF NON INFRINGEMENT  OF THIRD PARTY RIGHTS.
+ * 
+ * This program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
+ * details.
+ * 
+ * You should have received a copy of the GNU Affero General Public License 
+ * along with this program; if not, see http://www.gnu.org/licenses or write to
+ * the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
+ * MA 02110-1301 USA.
+ * 
+ * You can contact Funambol, Inc. headquarters at 643 Bair Island Road, Suite 
+ * 305, Redwood City, CA 94063, USA, or at email address info@funambol.com.
+ * 
+ * The interactive user interfaces in modified source and object code versions
+ * of this program must display Appropriate Legal Notices, as required under
+ * Section 5 of the GNU Affero General Public License version 3.
+ * 
+ * In accordance with Section 7(b) of the GNU Affero General Public License
+ * version 3, these Appropriate Legal Notices must retain the display of the
+ * "Powered by Funambol" logo. If the display of the logo is not reasonably 
+ * feasible for technical reasons, the Appropriate Legal Notices must display
+ * the words "Powered by Funambol".
  */
- 
+
 #include "base/util/utils.h"
 #include "syncml/core/CTPropParam.h"
- 
+#include "base/globalsdef.h"
+
+USE_NAMESPACE
+
 
 CTPropParam::CTPropParam() {
     initialize();
@@ -51,23 +71,23 @@ CTPropParam::CTPropParam(char*   propName,
     setPropName(propName);
     setValEnum(valEnum);
     setContentTypeParameters(ctParameters);
-       
+
     this->displayName  = stringdup(displayName);
 
 }
 
-    
+
 /**
  * Creates a new ContentTypeProperty object with the given name, value and
  * display name
  *
- * @param propName corresponds to &lt;PropName&gt; element in the SyncML 
+ * @param propName corresponds to &lt;PropName&gt; element in the SyncML
  *                  specification - NOT NULL
- * @param dataType corresponds to &lt;DataType&gt; element in the SyncML 
+ * @param dataType corresponds to &lt;DataType&gt; element in the SyncML
  *                  specification
- * @param size corresponds to &lt;Size&gt; element in the SyncML 
+ * @param size corresponds to &lt;Size&gt; element in the SyncML
  *                  specification
- * @param displayName corresponds to &lt;DisplayName&gt; element in the SyncML 
+ * @param displayName corresponds to &lt;DisplayName&gt; element in the SyncML
  *                  specification
  * @param ctParameters the array of content type parameters - NOT NULL
  *
@@ -94,11 +114,8 @@ CTPropParam::CTPropParam(char* propName,
  *
  * @return the property name
  */
-char* CTPropParam::getPropName(char* retPropName) {
-    if (retPropName == NULL) {
-        return propName;
-    }
-    return strcpy(retPropName, propName);
+const char* CTPropParam::getPropName() {
+    return propName;
 }
 
 /**
@@ -106,7 +123,7 @@ char* CTPropParam::getPropName(char* retPropName) {
  *
  * @param propName the property name
  */
-void CTPropParam::setPropName(char* propName) {
+void CTPropParam::setPropName(const char*propName) {
     if (this->propName) {
         delete [] this->propName; this->propName = NULL;
     }
@@ -130,8 +147,8 @@ ArrayList* CTPropParam::getValEnum() {
  */
 void CTPropParam::setValEnum(ArrayList* valEnum) {
     if (this->valEnum) {
-		this->valEnum->clear(); 
-    } 
+		this->valEnum->clear();
+    }
 	this->valEnum = valEnum->clone();
 }
 
@@ -140,11 +157,8 @@ void CTPropParam::setValEnum(ArrayList* valEnum) {
  *
  * @return the display name property
  */
-char* CTPropParam::getDisplayName(char* retDisplayName) {
-    if (retDisplayName == NULL) {
-        return displayName;
-    }
-    return strcpy(retDisplayName, displayName);
+const char* CTPropParam::getDisplayName() {
+    return displayName;
 }
 
 /**
@@ -152,7 +166,7 @@ char* CTPropParam::getDisplayName(char* retDisplayName) {
  *
  * @param displayName the display name of a given content type property
  */
-void CTPropParam::setDisplayName(char* displayName) {
+void CTPropParam::setDisplayName(const char*displayName) {
     if (this->displayName) {
         delete [] this->displayName; this->displayName = NULL;
     }
@@ -164,11 +178,8 @@ void CTPropParam::setDisplayName(char* displayName) {
  *
  * @return the data type propeties
  */
-char* CTPropParam::getDataType(char* retDataType) {
-    if (retDataType == NULL) {
-        return dataType;
-    }
-    return strcpy(retDataType, dataType);
+const char* CTPropParam::getDataType() {
+    return dataType;
 }
 
 /**
@@ -176,7 +187,7 @@ char* CTPropParam::getDataType(char* retDataType) {
  *
  * @param dataType the data type of a given content type property
  */
-void CTPropParam::setDataType(char* dataType) {
+void CTPropParam::setDataType(const char*dataType) {
     if (this->dataType) {
         delete [] this->dataType; this->dataType = NULL;
     }
@@ -209,7 +220,7 @@ void CTPropParam::setSize(int size) {
  */
 ArrayList* CTPropParam::getContentTypeParameters() {
      return ctParameters;
-}   
+}
 
 /**
  * Sets an array of content type properties
@@ -219,8 +230,8 @@ ArrayList* CTPropParam::getContentTypeParameters() {
  */
 void CTPropParam::setContentTypeParameters(ArrayList* ctParameters) {
     if (this->ctParameters) {
-		this->ctParameters->clear(); 
-    } 
+		this->ctParameters->clear();
+    }
 	this->ctParameters = ctParameters->clone();
 }
 

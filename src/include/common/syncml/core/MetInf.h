@@ -1,25 +1,43 @@
 /*
- * Copyright (C) 2003-2006 Funambol
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * Funambol is a mobile platform developed by Funambol, Inc. 
+ * Copyright (C) 2003 - 2007 Funambol, Inc.
+ * 
+ * This program is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU Affero General Public License version 3 as published by
+ * the Free Software Foundation with the addition of the following permission 
+ * added to Section 15 as permitted in Section 7(a): FOR ANY PART OF THE COVERED
+ * WORK IN WHICH THE COPYRIGHT IS OWNED BY FUNAMBOL, FUNAMBOL DISCLAIMS THE 
+ * WARRANTY OF NON INFRINGEMENT  OF THIRD PARTY RIGHTS.
+ * 
+ * This program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
+ * details.
+ * 
+ * You should have received a copy of the GNU Affero General Public License 
+ * along with this program; if not, see http://www.gnu.org/licenses or write to
+ * the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
+ * MA 02110-1301 USA.
+ * 
+ * You can contact Funambol, Inc. headquarters at 643 Bair Island Road, Suite 
+ * 305, Redwood City, CA 94063, USA, or at email address info@funambol.com.
+ * 
+ * The interactive user interfaces in modified source and object code versions
+ * of this program must display Appropriate Legal Notices, as required under
+ * Section 5 of the GNU Affero General Public License version 3.
+ * 
+ * In accordance with Section 7(b) of the GNU Affero General Public License
+ * version 3, these Appropriate Legal Notices must retain the display of the
+ * "Powered by Funambol" logo. If the display of the logo is not reasonably 
+ * feasible for technical reasons, the Appropriate Legal Notices must display
+ * the words "Powered by Funambol".
  */
 
 
 
 #ifndef INCL_METINF
 #define INCL_METINF
+/** @cond DEV */
 
 #include "base/fscapi.h"
 #include "base/util/ArrayList.h"
@@ -27,10 +45,13 @@
 #include "syncml/core/NextNonce.h"
 #include "syncml/core/Mem.h"
 #include "syncml/core/EMI.h"
+#include "base/globalsdef.h"
+
+BEGIN_NAMESPACE
 
 
 class MetInf {
-    
+
      // ------------------------------------------------------------ Private data
     private:
         char*      format    ;
@@ -43,8 +64,8 @@ class MetInf {
         long         maxObjSize;
         long         size      ;
         ArrayList*   emi       ;
-        Mem*         mem       ; 
-       
+        Mem*         mem       ;
+
         /**
          * Sets all properties in once.
          *
@@ -72,13 +93,13 @@ class MetInf {
                  ArrayList*  emi       ,
                  Mem*        mem       );
 
-    // ---------------------------------------------------------- Protected data    
+    // ---------------------------------------------------------- Protected data
     public:
 
         MetInf();
 
-		~MetInf();
-        
+        ~MetInf();
+
      /**
      * Creates a new MetInf object with the given info.
      *
@@ -95,19 +116,19 @@ class MetInf {
      * @param mem the memory information
      *
      */
-    MetInf(char*     format    ,
-           char*     type      ,
-           char*     mark      ,
+    MetInf(const char*     format    ,
+           const char*     type      ,
+           const char*     mark      ,
            long        size      ,
            Anchor*     anchor    ,
-           char*     version   ,
+           const char*     version   ,
            NextNonce*  nonce     ,
            long        maxMsgSize,
            long        maxObjSize,
-           ArrayList*  emi       ,           
-           Mem*        mem       ); 
-                  
-    
+           ArrayList*  emi       ,
+           Mem*        mem       );
+
+
      /**
      * Returns dateSize (in bytes)
      *
@@ -121,13 +142,13 @@ class MetInf {
      * @param size the new size value
      */
     void setSize(long size);
-    
+
     /**
      * Returns format
      *
      * @return format
      */
-    char*  getFormat(char*  retformat);
+    const char* getFormat();
 
     /**
      * Sets format
@@ -141,7 +162,7 @@ class MetInf {
      *
      * @return type
      */
-    char*  getType(char*  retType);
+    const char* getType();
 
     /**
      * Sets type
@@ -149,13 +170,13 @@ class MetInf {
      * @param type the new type value
      */
     void setType(const char*  type);
-    
+
     /**
      * Returns mark
      *
      * @return mark
      */
-    char*  getMark(char*  retMark) ;
+    const char* getMark() ;
 
     /**
      * Sets mark
@@ -170,107 +191,111 @@ class MetInf {
      * @param emi the new emi value
      */
     void setEmi(ArrayList* emi);
-     
-	/**
-	 * Returns anchor
-	 *
-	 * @return anchor
-	 */
-	Anchor* getAnchor();
-	/**
-	 * Sets anchor
-	 *
-	 * @param anchor the new anchor value
-	 */
-	void setAnchor(Anchor* anchor);
 
-	/**
-	 * Returns nextNonce
-	 *
-	 * @return nextNonce
-	 */
-	NextNonce* getNextNonce();
+    /**
+     * Returns anchor
+     *
+     * @return anchor
+     */
+    Anchor* getAnchor();
+    /**
+     * Sets anchor
+     *
+     * @param anchor the new anchor value
+     */
+    void setAnchor(Anchor* anchor);
 
-	/**
-	 * Sets nextNonce
-	 *
-	 * @param nextNonce the new nextNonce value
-	 */
-	void setNextNonce(NextNonce* nextNonce);
+    /**
+     * Returns nextNonce
+     *
+     * @return nextNonce
+     */
+    NextNonce* getNextNonce();
 
-	/**
-	 * Returns mem
-	 *
-	 * @return mem
-	 */
-	Mem* getMem();
+    /**
+     * Sets nextNonce
+     *
+     * @param nextNonce the new nextNonce value
+     */
+    void setNextNonce(NextNonce* nextNonce);
 
-	/**
-	 * Sets mem
-	 *
-	 * @param mem the new mem value
-	 */
-	void setMem(Mem* mem);
+    /**
+     * Returns mem
+     *
+     * @return mem
+     */
+    Mem* getMem();
 
-	
-	/**
-	 * Returns maxMsgSize
-	 *
-	 * @return maxMsgSize
-	 */
-	long getMaxMsgSize();
+    /**
+     * Sets mem
+     *
+     * @param mem the new mem value
+     */
+    void setMem(Mem* mem);
 
-	/**
-	 * Sets maxMsgSize
-	 *
-	 * @param maxMsgSize the new maxMsgSize value
-	 */
-	 void setMaxMsgSize(long maxMsgSize);
 
-	/**
-	 * Returns maxObjSize
-	 *
-	 * @return maxObjSize
-	 */
-	long getMaxObjSize();
+    /**
+     * Returns maxMsgSize
+     *
+     * @return maxMsgSize
+     */
+    long getMaxMsgSize();
 
-	/**
-	 * Sets maObjSize
-	 *
-	 * @param maxObjSize the new maxObjSize value
-	 */
-	void setMaxObjSize(long maxObjSize);
+    /**
+     * Sets maxMsgSize
+     *
+     * @param maxMsgSize the new maxMsgSize value
+     */
+     void setMaxMsgSize(long maxMsgSize);
 
-	/**
-	 * Returns emi
-	 *
-	 * @return emi
-	 */
-	ArrayList* getEMI();
+    /**
+     * Returns maxObjSize
+     *
+     * @return maxObjSize
+     */
+    long getMaxObjSize();
 
-	/**
-	 * Sets emi
-	 *
-	 * @param emi the new emi value
-	 */
-	void setEMI(ArrayList* emi);
-	
-	/**
-	 * Returns version
-	 *
-	 * @return version
-	 */
-	char*  getVersion(char*  retVersion);
+    /**
+     * Sets maObjSize
+     *
+     * @param maxObjSize the new maxObjSize value
+     */
+    void setMaxObjSize(long maxObjSize);
 
-	/**
-	 * Sets version
-	 *
-	 * @param version the new version value
-	 */
-	void setVersion(const char*  version);
+    /**
+     * Returns emi
+     *
+     * @return emi
+     */
+    ArrayList* getEMI();
 
-	MetInf* clone();
+    /**
+     * Sets emi
+     *
+     * @param emi the new emi value
+     */
+    void setEMI(ArrayList* emi);
+
+    /**
+     * Returns version
+     *
+     * @return version
+     */
+    const char* getVersion();
+
+    /**
+     * Sets version
+     *
+     * @param version the new version value
+     */
+    void setVersion(const char*  version);
+
+    MetInf* clone();
 
 };
 
+
+END_NAMESPACE
+
+/** @endcond */
 #endif

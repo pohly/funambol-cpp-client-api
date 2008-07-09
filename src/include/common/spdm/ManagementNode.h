@@ -1,28 +1,50 @@
 /*
- * Copyright (C) 2003-2006 Funambol
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * Funambol is a mobile platform developed by Funambol, Inc. 
+ * Copyright (C) 2003 - 2007 Funambol, Inc.
+ * 
+ * This program is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU Affero General Public License version 3 as published by
+ * the Free Software Foundation with the addition of the following permission 
+ * added to Section 15 as permitted in Section 7(a): FOR ANY PART OF THE COVERED
+ * WORK IN WHICH THE COPYRIGHT IS OWNED BY FUNAMBOL, FUNAMBOL DISCLAIMS THE 
+ * WARRANTY OF NON INFRINGEMENT  OF THIRD PARTY RIGHTS.
+ * 
+ * This program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
+ * details.
+ * 
+ * You should have received a copy of the GNU Affero General Public License 
+ * along with this program; if not, see http://www.gnu.org/licenses or write to
+ * the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
+ * MA 02110-1301 USA.
+ * 
+ * You can contact Funambol, Inc. headquarters at 643 Bair Island Road, Suite 
+ * 305, Redwood City, CA 94063, USA, or at email address info@funambol.com.
+ * 
+ * The interactive user interfaces in modified source and object code versions
+ * of this program must display Appropriate Legal Notices, as required under
+ * Section 5 of the GNU Affero General Public License version 3.
+ * 
+ * In accordance with Section 7(b) of the GNU Affero General Public License
+ * version 3, these Appropriate Legal Notices must retain the display of the
+ * "Powered by Funambol" logo. If the display of the logo is not reasonably 
+ * feasible for technical reasons, the Appropriate Legal Notices must display
+ * the words "Powered by Funambol".
  */
 
 #ifndef INCL_MANAGEMENT_NODE
 #define INCL_MANAGEMENT_NODE
+/** @cond DEV */
 
 #include "base/fscapi.h"
 #include "base/util/ArrayElement.h"
 #include "base/util/ArrayList.h"
 #include "spdm/constants.h"
+#include "base/util/StringBuffer.h"
+#include "base/globalsdef.h"
+
+BEGIN_NAMESPACE
 
 /*
  * This class represents a management node, so that a configuration
@@ -37,6 +59,7 @@ class ManagementNode : public ArrayElement {
     protected:
         char *name;
         char *context;
+
         //
         // Children are dinamically allocated inside this class and given to
         // the list. The list will delete all created objects at descruction
@@ -62,7 +85,8 @@ class ManagementNode : public ArrayElement {
          * @param name - the node name
          *
          */
-        ManagementNode(const char*  parent, const char*  name) EXTRA_SECTION_02;
+        ManagementNode(const char*  parent, const char*  name);
+
         /*
          * Constructor.
          *
@@ -70,11 +94,10 @@ class ManagementNode : public ArrayElement {
          *                      component is used as name, the rest as context
          *
          */
-        ManagementNode(const char*  fullcontext) EXTRA_SECTION_02;
+        ManagementNode(const char*  fullcontext);
 
         /* Base class destructor */
-        virtual ~ManagementNode() EXTRA_SECTION_02;
-
+        virtual ~ManagementNode();
 
         // ----------------------------------------------------- Virtual methods
 
@@ -89,22 +112,28 @@ class ManagementNode : public ArrayElement {
         virtual ManagementNode * getChild(int index);
 
         /**
+         * Returns the node's child with the given name, NULL if not found.
+         */
+        virtual ManagementNode * getChild(const char* name);
+
+        /**
          * Add a new child to this node.
          *
          * @param child - the ManagementNode to add
          */
-		virtual void addChild(ManagementNode &child);
+        virtual void addChild(ManagementNode &child);
 
         /*
          * Returns how many children belong to this node (how many have been added)
          */
-		virtual int getChildrenCount();
+        virtual int getChildrenCount();
 
         /*
-         * Returns the full node name
+         * Returns the full node name in a newly allocated buffer,
+         * caller must free it with delete [].
          *
          */
-        virtual char *getFullName();
+        virtual char* createFullName();
 
         /**
          * Returns the node name itself without the context.
@@ -115,7 +144,7 @@ class ManagementNode : public ArrayElement {
 
         /*
          * Find how many children are defined for this node in the underlying
-		 * config system.
+         * config system.
          */
         virtual int getChildrenMaxCount() = 0;
 
@@ -131,9 +160,10 @@ class ManagementNode : public ArrayElement {
          *
          * @param property - the property name
          *
-         * @return - the property value. MUST be deleted by the caller with delete []
+         * @return - the property value. MUST be deleted by the caller with delete [];
+         *           never NULL, for non-existant properties an empty string is returned
          */
-        virtual char *getPropertyValue(const char*  property) = 0;
+        virtual char* readPropertyValue(const char*  property) = 0;
 
         /*
          * Sets a property value.
@@ -151,5 +181,9 @@ class ManagementNode : public ArrayElement {
 
 };
 
+
+END_NAMESPACE
+
+/** @endcond */
 #endif
 

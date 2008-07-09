@@ -1,25 +1,59 @@
 /*
- * Copyright (C) 2003-2006 Funambol
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * Funambol is a mobile platform developed by Funambol, Inc. 
+ * Copyright (C) 2003 - 2007 Funambol, Inc.
+ * 
+ * This program is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU Affero General Public License version 3 as published by
+ * the Free Software Foundation with the addition of the following permission 
+ * added to Section 15 as permitted in Section 7(a): FOR ANY PART OF THE COVERED
+ * WORK IN WHICH THE COPYRIGHT IS OWNED BY FUNAMBOL, FUNAMBOL DISCLAIMS THE 
+ * WARRANTY OF NON INFRINGEMENT  OF THIRD PARTY RIGHTS.
+ * 
+ * This program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
+ * details.
+ * 
+ * You should have received a copy of the GNU Affero General Public License 
+ * along with this program; if not, see http://www.gnu.org/licenses or write to
+ * the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
+ * MA 02110-1301 USA.
+ * 
+ * You can contact Funambol, Inc. headquarters at 643 Bair Island Road, Suite 
+ * 305, Redwood City, CA 94063, USA, or at email address info@funambol.com.
+ * 
+ * The interactive user interfaces in modified source and object code versions
+ * of this program must display Appropriate Legal Notices, as required under
+ * Section 5 of the GNU Affero General Public License version 3.
+ * 
+ * In accordance with Section 7(b) of the GNU Affero General Public License
+ * version 3, these Appropriate Legal Notices must retain the display of the
+ * "Powered by Funambol" logo. If the display of the logo is not reasonably 
+ * feasible for technical reasons, the Appropriate Legal Notices must display
+ * the words "Powered by Funambol".
  */
 
 
 #include "spds/SyncSourceReport.h"
 #include "spds/SyncReport.h"
 #include "spds/ItemReport.h"
+#include "base/globalsdef.h"
+
+USE_NAMESPACE
+
+const char* const SyncSourceReport::targets[] = {
+    CLIENT,
+    SERVER,
+    NULL
+};
+
+const char* const SyncSourceReport::commands[] = {
+    COMMAND_ADD,
+    COMMAND_REPLACE,
+    COMMAND_DELETE,
+    NULL
+};
+
 
 
 //--------------------------------------------------- Constructor & Destructor
@@ -56,13 +90,37 @@ SyncSourceReport::~SyncSourceReport() {
         sourceName = NULL;
     }
 
-    clientAddItems->clear();
-    clientModItems->clear();
-    clientDelItems->clear();
+    //clientAddItems->clear();
+    //clientModItems->clear();
+    //clientDelItems->clear();
 
-    serverAddItems->clear();
-    serverModItems->clear();
-    serverDelItems->clear();
+    //serverAddItems->clear();
+    //serverModItems->clear();
+    //serverDelItems->clear();
+    if (clientAddItems){
+        delete clientAddItems;
+        clientAddItems = NULL;
+    }
+    if (clientModItems){
+        delete clientModItems;
+        clientModItems = NULL;
+    }
+    if (clientDelItems){
+        delete clientDelItems;
+        clientDelItems = NULL;
+    }
+    if (serverAddItems){
+        delete serverAddItems;
+        serverAddItems = NULL;
+    }
+    if (serverModItems){
+        delete serverModItems;
+        serverModItems = NULL;
+    }
+    if (serverDelItems){
+        delete serverDelItems;
+        serverDelItems = NULL;
+    }
 }
 
 
@@ -74,10 +132,6 @@ const int SyncSourceReport::getLastErrorCode() const {
 }
 void SyncSourceReport::setLastErrorCode(const int code) {
     lastErrorCode = code;
-
-    if (state == SOURCE_ACTIVE) {
-        state = SOURCE_ERROR;
-    }
 }
 
 const SourceState SyncSourceReport::getState() const {
@@ -111,15 +165,14 @@ void SyncSourceReport::setSourceName(const char* name) {
 
 
 bool SyncSourceReport::checkState() {
-    if (state == SOURCE_ACTIVE) { 
+    if (state == SOURCE_ACTIVE) {
         return true;
     }
     return false;
 }
 
 
-
-ItemReport* SyncSourceReport::getItemReport(const char* target, const char* command, unsigned int index) {
+ItemReport* SyncSourceReport::getItemReport(const char* target, const char* command, int index) {
 
     ArrayList* list = getList(target, command);
 
@@ -130,25 +183,26 @@ ItemReport* SyncSourceReport::getItemReport(const char* target, const char* comm
 }
 
 
-void SyncSourceReport::addItem(const char* target, const char* command, const WCHAR* ID, const int status) {
+void SyncSourceReport::addItem(const char* target, const char* command, const WCHAR* ID,
+                               const int status, const WCHAR* statusMessage) {
 
     // Create the ItemReport element
-    ItemReport element(ID, status);
+    ItemReport element(ID, status, statusMessage);
 
     // Add element in the corresponding list
     ArrayList* list = getList(target, command);
 
 
     // If the element is already present -> no add, only replace status with the new one.
-    ItemReport* ie = NULL;
-    for (unsigned int i=0; i<list->size(); i++) {
+  /*  ItemReport* ie = NULL;
+    for (int i=0; i<list->size(); i++) {
         ie = getItemReport(target, command, i);
         if ( !wcscmp(element.getId(), ie->getId()) ) {
             ie->setStatus(status);
             return;
         }
-    }
-    
+    }*/
+
     // If here, element is new -> add.
     list->add(element);
 }
@@ -160,7 +214,7 @@ int SyncSourceReport::getItemReportCount(const char* target, const char* command
 }
 
 int SyncSourceReport::getItemReportSuccessfulCount(const char* target, const char* command) {
-    
+
     ArrayList* list = getList(target, command);
     ItemReport* e;
 
@@ -179,7 +233,7 @@ int SyncSourceReport::getItemReportSuccessfulCount(const char* target, const cha
 
 
 int SyncSourceReport::getItemReportFailedCount(const char* target, const char* command) {
-    
+
     ArrayList* list = getList(target, command);
     if (list->size() == 0) {
         return 0;
@@ -189,9 +243,29 @@ int SyncSourceReport::getItemReportFailedCount(const char* target, const char* c
 }
 
 
+int SyncSourceReport::getItemReportAlreadyExistCount(const char* target, const char* command) {
+
+    ArrayList* list = getList(target, command);
+    ItemReport* e;
+
+    // Scan for code 418 = ALREADY_EXISTS
+    int found = 0;
+    if (list->size() > 0) {
+        e = (ItemReport*)list->front();
+        if (e->getStatus() == ALREADY_EXISTS) found++;
+        for (int i=1; i<list->size(); i++) {
+            e = (ItemReport*)list->next();
+            if (e->getStatus() == ALREADY_EXISTS) found++;
+        }
+    }
+    return found;
+}
+
+
 
 ArrayList* SyncSourceReport::getList(const char* target, const char* command) const {
-    ArrayList* ret;
+
+    ArrayList* ret = NULL;
 
     if (!strcmp(target, CLIENT)) {
         if (!strcmp(command, COMMAND_ADD)) {
@@ -232,9 +306,9 @@ ArrayList* SyncSourceReport::getList(const char* target, const char* command) co
 //------------------------------------------------------------- Private Methods
 
 bool SyncSourceReport::isSuccessful(const int status) {
-    if (status >= 200 && status <= 299) 
+    if (status >= 200 && status < 500)
         return true;
-    else 
+    else
         return false;
 }
 
@@ -242,7 +316,7 @@ void SyncSourceReport::initialize() {
     lastErrorCode  = ERR_NONE;
     lastErrorMsg   = NULL;
     sourceName     = NULL;
-    state          = SOURCE_ACTIVE;
+    state          = SOURCE_INACTIVE;
     clientAddItems = NULL;
     clientModItems = NULL;
     clientDelItems = NULL;

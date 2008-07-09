@@ -1,46 +1,66 @@
 /*
- * Copyright (C) 2003-2006 Funambol
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * Funambol is a mobile platform developed by Funambol, Inc. 
+ * Copyright (C) 2003 - 2007 Funambol, Inc.
+ * 
+ * This program is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU Affero General Public License version 3 as published by
+ * the Free Software Foundation with the addition of the following permission 
+ * added to Section 15 as permitted in Section 7(a): FOR ANY PART OF THE COVERED
+ * WORK IN WHICH THE COPYRIGHT IS OWNED BY FUNAMBOL, FUNAMBOL DISCLAIMS THE 
+ * WARRANTY OF NON INFRINGEMENT  OF THIRD PARTY RIGHTS.
+ * 
+ * This program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
+ * details.
+ * 
+ * You should have received a copy of the GNU Affero General Public License 
+ * along with this program; if not, see http://www.gnu.org/licenses or write to
+ * the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
+ * MA 02110-1301 USA.
+ * 
+ * You can contact Funambol, Inc. headquarters at 643 Bair Island Road, Suite 
+ * 305, Redwood City, CA 94063, USA, or at email address info@funambol.com.
+ * 
+ * The interactive user interfaces in modified source and object code versions
+ * of this program must display Appropriate Legal Notices, as required under
+ * Section 5 of the GNU Affero General Public License version 3.
+ * 
+ * In accordance with Section 7(b) of the GNU Affero General Public License
+ * version 3, these Appropriate Legal Notices must retain the display of the
+ * "Powered by Funambol" logo. If the display of the logo is not reasonably 
+ * feasible for technical reasons, the Appropriate Legal Notices must display
+ * the words "Powered by Funambol".
  */
- 
- 
+
+
 #include "syncml/core/Delete.h"
- 
+#include "base/globalsdef.h"
+
+USE_NAMESPACE
+
 Delete::Delete() {
     COMMAND_NAME = new char[strlen(DELETE_COMMAND_NAME) + 1];
     sprintf(COMMAND_NAME, DELETE_COMMAND_NAME);
-    
+
 
 }
 Delete::~Delete() {
     if (COMMAND_NAME) {
         delete [] COMMAND_NAME; COMMAND_NAME = NULL;
     }
-    archive = FALSE;
-    sftDel  = FALSE;
+    archive = false;
+    sftDel  = false;
 }
 
-/** 
-* Creates a new Delete object with the given command identifier, 
+/**
+* Creates a new Delete object with the given command identifier,
 * noResponse, archiveData, softDelete, credential, meta and array of item
 *
 * @param cmdID the command identifier - NOT NULL
 * @param noResp true if no response is required
 * @param archive true if the deleted data should be archived
-* @param sftDel true if this is a "soft delete". If set to false, then 
+* @param sftDel true if this is a "soft delete". If set to false, then
 *                   this delete command is a "hard delete"
 * @param cred the authentication credential
 * @param meta the meta data
@@ -48,13 +68,13 @@ Delete::~Delete() {
 *
 */
 Delete::Delete(CmdID* cmdID,
-               BOOL noResp,
-               BOOL archive,
-               BOOL sftDel,
+               bool noResp,
+               bool archive,
+               bool sftDel,
                Cred* cred,
                Meta* meta,
-               ArrayList* items) : ModificationCommand(cmdID, meta, items) {   
-        
+               ArrayList* items) : ModificationCommand(cmdID, meta, items) {
+
     setCred(cred);
     setNoResp(noResp);
     setArchive(archive);
@@ -68,8 +88,8 @@ Delete::Delete(CmdID* cmdID,
 * Gets the command name property
 *
 * @return the command name property
-*/    
-char* Delete::getName() {
+*/
+const char* Delete::getName() {
     return COMMAND_NAME;
 }
 
@@ -78,8 +98,8 @@ char* Delete::getName() {
 *
 * @return true if the deleted data should be archived
 */
-BOOL Delete::isArchive() {
-     return (archive != NULL);
+bool Delete::isArchive() {
+     return archive;
 }
 
 /**
@@ -87,7 +107,7 @@ BOOL Delete::isArchive() {
 *
 * @return archive the Boolean archive property
 */
-BOOL Delete::getArchive() {
+bool Delete::getArchive() {
     return archive;
 }
 
@@ -96,36 +116,27 @@ BOOL Delete::getArchive() {
 *
 * @param archive the Boolean archive object
 */
-void Delete::setArchive(BOOL archive) {
-    if ((archive == NULL) || (archive != TRUE && archive != FALSE)) {
-        this->archive = NULL;
-    } else {
-        this->archive = archive;
-    }  
-
+void Delete::setArchive(bool archive) {
+    this->archive = archive;
 }
 
 /**
 * Gets the SftDel property
 *
-* @return <b>true</b>  if this is a "Soft delete" 
+* @return <b>true</b>  if this is a "Soft delete"
 *         <b>false</b> if this is a "hard delete"
 */
-BOOL Delete::isSftDel() {
-    return (sftDel != NULL);
+bool Delete::isSftDel() {
+    return sftDel;
 }
 
-BOOL Delete::getSftDel() {
+bool Delete::getSftDel() {
     return sftDel;
 }
 
 
-void Delete::setSftDel(BOOL sftDel) {
-    if ((sftDel == NULL) || (sftDel != TRUE && sftDel != FALSE)) {
-        this->sftDel = NULL;
-    } else {
-        this->sftDel = sftDel;
-    } 
+void Delete::setSftDel(bool sftDel) {
+    this->sftDel = sftDel;
 }
 
 ArrayElement* Delete::clone() {

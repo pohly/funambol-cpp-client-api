@@ -1,19 +1,36 @@
 /*
- * Copyright (C) 2003-2006 Funambol
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * Funambol is a mobile platform developed by Funambol, Inc. 
+ * Copyright (C) 2003 - 2007 Funambol, Inc.
+ * 
+ * This program is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU Affero General Public License version 3 as published by
+ * the Free Software Foundation with the addition of the following permission 
+ * added to Section 15 as permitted in Section 7(a): FOR ANY PART OF THE COVERED
+ * WORK IN WHICH THE COPYRIGHT IS OWNED BY FUNAMBOL, FUNAMBOL DISCLAIMS THE 
+ * WARRANTY OF NON INFRINGEMENT  OF THIRD PARTY RIGHTS.
+ * 
+ * This program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
+ * details.
+ * 
+ * You should have received a copy of the GNU Affero General Public License 
+ * along with this program; if not, see http://www.gnu.org/licenses or write to
+ * the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
+ * MA 02110-1301 USA.
+ * 
+ * You can contact Funambol, Inc. headquarters at 643 Bair Island Road, Suite 
+ * 305, Redwood City, CA 94063, USA, or at email address info@funambol.com.
+ * 
+ * The interactive user interfaces in modified source and object code versions
+ * of this program must display Appropriate Legal Notices, as required under
+ * Section 5 of the GNU Affero General Public License version 3.
+ * 
+ * In accordance with Section 7(b) of the GNU Affero General Public License
+ * version 3, these Appropriate Legal Notices must retain the display of the
+ * "Powered by Funambol" logo. If the display of the logo is not reasonably 
+ * feasible for technical reasons, the Appropriate Legal Notices must display
+ * the words "Powered by Funambol".
  */
 
 //--README--------------------------------------------------------------
@@ -36,6 +53,9 @@
 #include "spdm/DMTree.h"
 #include "spdm/DMTreeFactory.h"
 #include "spdm/ManagementNode.h"
+#include "base/globalsdef.h"
+
+USE_NAMESPACE
 
 #if 0 //def _WIN32_WCE
 static WCHAR *convertSlashes(const WCHAR* str) {
@@ -113,170 +133,170 @@ int settings(const char *rootContext)
     // Access config parameters
     sprintf(nodeName, "%s%s", rootContext, CONTEXT_SPDS_SYNCML);
 
-    ManagementNode *node = dmt->getManagementNode(nodeName);
+    ManagementNode *node = dmt->readManagementNode(nodeName);
     if ( ! node ) {
         lastErrorCode = ERR_INVALID_CONTEXT;
         goto finally;
     }
 
-    node->setPropertyValue(T("deviceId"), T(""));
-    node->setPropertyValue(T("username"), T("guest"));
-    node->setPropertyValue(T("password"), T("guest"));
-    node->setPropertyValue(T("syncUrl"), T("http://192.168.0.xx:8080/funambol/ds"));
-    node->setPropertyValue(T("serverName"), T("http://192.168.0.xx:8080"));
-    node->setPropertyValue(T("beginTimestamp"), T("0"));
-    node->setPropertyValue(T("endTimestamp"), T("0"));
-    node->setPropertyValue(T("sourceCount"), T("0"));
-    node->setPropertyValue(T("responseTimeout"), T("0"));
-    node->setPropertyValue(T("checkConn"), T("1"));
-    node->setPropertyValue(T("firstTimeSyncMode"), T("0"));
-    node->setPropertyValue(T("proxyHost"), T(""));
-    node->setPropertyValue(T("proxyPort"), T(""));
-    node->setPropertyValue(T("useProxy"), T(""));
-    node->setPropertyValue(T("clientNonce"), T("cGlwcG8="));
-    node->setPropertyValue(T("serverNonce"), T("VGB8YHQ6U25lWmAuR3Z3bw=="));
-    node->setPropertyValue(T("serverID"), T("funambol"));
-    node->setPropertyValue(T("serverPWD"), T("funambol"));
-    node->setPropertyValue(T("isServerAuthRequired"), T("F"));
-    node->setPropertyValue(T("clientAuthType"), T("syncml:auth-basic"));
-    node->setPropertyValue(T("serverAuthType"), T("syncml:auth-basic"));
-    node->setPropertyValue(T("maxMsgSize"), T("122880"));
-    node->setPropertyValue(T("maxModPerMsg"), T("20"));
-    
+    node->setPropertyValue("deviceId", "");
+    node->setPropertyValue("username", "guest");
+    node->setPropertyValue("password", "guest");
+    node->setPropertyValue("syncUrl", "http://192.168.1.11:8080/funambol/ds");
+    node->setPropertyValue("serverName", "http://192.168.1.11:8080");
+    node->setPropertyValue("beginTimestamp", "0");
+    node->setPropertyValue("endTimestamp", "0");
+    node->setPropertyValue("sourceCount", "0");
+    node->setPropertyValue("responseTimeout", "0");
+    node->setPropertyValue("checkConn", "1");
+    node->setPropertyValue("firstTimeSyncMode", "0");
+    node->setPropertyValue("proxyHost", "");
+    node->setPropertyValue("proxyPort", "");
+    node->setPropertyValue("useProxy", "");
+    node->setPropertyValue("clientNonce", "cGlwcG8=");
+    node->setPropertyValue("serverNonce", "VGB8YHQ6U25lWmAuR3Z3bw==");
+    node->setPropertyValue("serverID", "funambol");
+    node->setPropertyValue("serverPWD", "funambol");
+    node->setPropertyValue("isServerAuthRequired", "F");
+    node->setPropertyValue("clientAuthType", "syncml:auth-basic");
+    node->setPropertyValue("serverAuthType", "syncml:auth-basic");
+    node->setPropertyValue("maxMsgSize", "122880");
+    node->setPropertyValue("maxModPerMsg", "20");
+
     delete node;
 
     // Contact sync source parameters
     sprintf(nodeName, "%s%s", rootContext, "/spds/sources/contacts");
 
-    node = dmt->getManagementNode(nodeName);
+    node = dmt->readManagementNode(nodeName);
     if ( ! node ) {
         lastErrorCode = ERR_INVALID_CONTEXT;
         goto finally;
     }
 
-    node->setPropertyValue(T("sync"), T("two-way"));
-    node->setPropertyValue(T("last"), T("0"));
-    node->setPropertyValue(T("name"), T("contact"));
-    node->setPropertyValue(T("type"), T("text/x-s4j-sifc"));
-    node->setPropertyValue(T("syncModes"), T("slow,two-way,refresh"));
-    node->setPropertyValue(T("uri"), T("scard"));
-    node->setPropertyValue(T("useSIF"), T("1"));
-    node->setPropertyValue(T("encoding"), T("b64"));
+    node->setPropertyValue("sync", "two-way");
+    node->setPropertyValue("last", "0");
+    node->setPropertyValue("name", "contact");
+    node->setPropertyValue("type", "text/x-s4j-sifc");
+    node->setPropertyValue("syncModes", "slow,two-way,refresh");
+    node->setPropertyValue("uri", "scard");
+    node->setPropertyValue("useSIF", "1");
+    node->setPropertyValue("encoding", "b64");
 
     delete node;
 
     // Appointments sync source parameters
     sprintf(nodeName, "%s%s", rootContext, "/spds/sources/appointments");
 
-    node = dmt->getManagementNode(nodeName);
+    node = dmt->readManagementNode(nodeName);
     if ( ! node ) {
         lastErrorCode = ERR_INVALID_CONTEXT;
         goto finally;
     }
 
-    node->setPropertyValue(T("sync"), T("none"));
-    node->setPropertyValue(T("last"), T("0"));
-    node->setPropertyValue(T("name"), T("calendar"));
-    node->setPropertyValue(T("type"), T("text/x-s4j-sife"));
-    node->setPropertyValue(T("syncModes"), T("slow,two-way,refresh"));
-    node->setPropertyValue(T("uri"),  T("scal"));
-    node->setPropertyValue(T("useSIF"), T("1"));
-    node->setPropertyValue(T("encoding"), T("b64"));
+    node->setPropertyValue("sync", "none");
+    node->setPropertyValue("last", "0");
+    node->setPropertyValue("name", "calendar");
+    node->setPropertyValue("type", "text/x-s4j-sife");
+    node->setPropertyValue("syncModes", "slow,two-way,refresh");
+    node->setPropertyValue("uri",  "scal");
+    node->setPropertyValue("useSIF", "1");
+    node->setPropertyValue("encoding", "b64");
 
     delete node;
 
     // Tasks sync source parameters
     sprintf(nodeName, "%s%s", rootContext, "/spds/sources/tasks");
 
-    node = dmt->getManagementNode(nodeName);
+    node = dmt->readManagementNode(nodeName);
     if ( ! node ) {
         lastErrorCode = ERR_INVALID_CONTEXT;
         goto finally;
     }
 
-    node->setPropertyValue(T("sync"), T("none"));
-    node->setPropertyValue(T("last"), T("0"));
-    node->setPropertyValue(T("name"), T("task"));
-    node->setPropertyValue(T("type"), T("text/x-s4j-sift"));
-    node->setPropertyValue(T("syncModes"), T("slow,two-way,refresh"));
-    node->setPropertyValue(T("uri"),  T("stask"));
-    node->setPropertyValue(T("useSIF"), T("1"));
-    node->setPropertyValue(T("encoding"), T("b64"));
+    node->setPropertyValue("sync", "none");
+    node->setPropertyValue("last", "0");
+    node->setPropertyValue("name", "task");
+    node->setPropertyValue("type", "text/x-s4j-sift");
+    node->setPropertyValue("syncModes", "slow,two-way,refresh");
+    node->setPropertyValue("uri",  "stask");
+    node->setPropertyValue("useSIF", "1");
+    node->setPropertyValue("encoding", "b64");
 
     delete node;
 
     // Notes sync source parameters
     sprintf(nodeName, "%s%s", rootContext, "/spds/sources/notes");
 
-    node = dmt->getManagementNode(nodeName);
+    node = dmt->readManagementNode(nodeName);
     if ( ! node ) {
         lastErrorCode = ERR_INVALID_CONTEXT;
         goto finally;
     }
 
-    node->setPropertyValue(T("sync"), T("none"));
-    node->setPropertyValue(T("last"), T("0"));
-    node->setPropertyValue(T("name"), T("note"));
-    node->setPropertyValue(T("type"), T("text/x-s4j-sifn"));
-    node->setPropertyValue(T("syncModes"), T("slow,two-way,refresh"));
-    node->setPropertyValue(T("uri"),  T("stask"));
-    node->setPropertyValue(T("useSIF"), T("1"));
-    node->setPropertyValue(T("encoding"), T("b64"));
+    node->setPropertyValue("sync", "none");
+    node->setPropertyValue("last", "0");
+    node->setPropertyValue("name", "note");
+    node->setPropertyValue("type", "text/x-s4j-sifn");
+    node->setPropertyValue("syncModes", "slow,two-way,refresh");
+    node->setPropertyValue("uri",  "stask");
+    node->setPropertyValue("useSIF", "1");
+    node->setPropertyValue("encoding", "b64");
 
     delete node;
 
     // Briefcase sync source parameters
     sprintf(nodeName, "%s%s", rootContext, "/spds/sources/briefcase");
 
-    node = dmt->getManagementNode(nodeName);
+    node = dmt->readManagementNode(nodeName);
     if ( ! node ) {
         lastErrorCode = ERR_INVALID_CONTEXT;
         goto finally;
     }
 
-    node->setPropertyValue(T("sync"), T("none"));
-    node->setPropertyValue(T("last"), T("0"));
-    node->setPropertyValue(T("name"), T("briefcase"));
-    node->setPropertyValue(T("type"), T("application/*"));
-    node->setPropertyValue(T("syncModes"), T("slow,two-way,refresh"));
-    node->setPropertyValue(T("uri"),  T("briefcase"));
-    node->setPropertyValue(T("useSIF"), T("1"));
-    node->setPropertyValue(T("encoding"), T("b64"));
+    node->setPropertyValue("sync", "two-way");
+    node->setPropertyValue("last", "0");
+    node->setPropertyValue("name", "briefcase");
+    node->setPropertyValue("type", "application/*");
+    node->setPropertyValue("syncModes", "slow,two-way,refresh");
+    node->setPropertyValue("uri",  "briefcase");
+    node->setPropertyValue("useSIF", "1");
+    node->setPropertyValue("encoding", "b64");
 
     delete node;
 
     // Mail sync source parameters
     sprintf(nodeName, "%s%s", rootContext, "/spds/sources/mails");
 
-    node = dmt->getManagementNode(nodeName);
+    node = dmt->readManagementNode(nodeName);
     if ( ! node ) {
         lastErrorCode = ERR_INVALID_CONTEXT;
         goto finally;
     }
 
-    node->setPropertyValue(T("sync"), T("none"));
-    node->setPropertyValue(T("last"), T("0"));
-    node->setPropertyValue(T("name"), T("mail"));
-    node->setPropertyValue(T("type"), T("application/vnd.omads-email+xml"));
-    node->setPropertyValue(T("syncModes"), T("slow,two-way,refresh"));
-    node->setPropertyValue(T("uri"), T("mail"));
-    node->setPropertyValue(T("useSIF"), T("1"));
-    node->setPropertyValue(T("encoding"), T("text/plain"));
-    node->setPropertyValue(T("Inbox" ), T("1" ) );
-    node->setPropertyValue(T("Outbox" ), T("1" ) );
-    node->setPropertyValue(T("Trash" ), T("0" ) );
-    node->setPropertyValue(T("Sent" ), T("1" ) );
-    node->setPropertyValue(T("Draft" ), T("0" ) );
-    node->setPropertyValue(T("attachSize" ), T("-1" ) );
-    node->setPropertyValue(T("bodySyze" ), T("-1" ) );
-    node->setPropertyValue(T("downloadAge" ), T("-1" ) );
-    
+    node->setPropertyValue("sync", "none");
+    node->setPropertyValue("last", "0");
+    node->setPropertyValue("name", "mail");
+    node->setPropertyValue("type", "application/vnd.omads-email+xml");
+    node->setPropertyValue("syncModes", "slow,two-way,refresh");
+    node->setPropertyValue("uri", "mail");
+    node->setPropertyValue("useSIF", "1");
+    node->setPropertyValue("encoding", "text/plain");
+    node->setPropertyValue("Inbox", "1" );
+    node->setPropertyValue("Outbox", "1" );
+    node->setPropertyValue("Trash", "0" );
+    node->setPropertyValue("Sent", "1" );
+    node->setPropertyValue("Draft", "0" );
+    node->setPropertyValue("attachSize", "-1" );
+    node->setPropertyValue("bodySyze", "-1" );
+    node->setPropertyValue("downloadAge", "-1" );
+
 finally:
     if (node)
         delete node;
     if (dmt)
         delete dmt;
-        
+
     return lastErrorCode;
 }
 

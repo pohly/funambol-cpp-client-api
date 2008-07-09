@@ -1,33 +1,54 @@
 /*
- * Copyright (C) 2003-2006 Funambol
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * Funambol is a mobile platform developed by Funambol, Inc. 
+ * Copyright (C) 2003 - 2007 Funambol, Inc.
+ * 
+ * This program is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU Affero General Public License version 3 as published by
+ * the Free Software Foundation with the addition of the following permission 
+ * added to Section 15 as permitted in Section 7(a): FOR ANY PART OF THE COVERED
+ * WORK IN WHICH THE COPYRIGHT IS OWNED BY FUNAMBOL, FUNAMBOL DISCLAIMS THE 
+ * WARRANTY OF NON INFRINGEMENT  OF THIRD PARTY RIGHTS.
+ * 
+ * This program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
+ * details.
+ * 
+ * You should have received a copy of the GNU Affero General Public License 
+ * along with this program; if not, see http://www.gnu.org/licenses or write to
+ * the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
+ * MA 02110-1301 USA.
+ * 
+ * You can contact Funambol, Inc. headquarters at 643 Bair Island Road, Suite 
+ * 305, Redwood City, CA 94063, USA, or at email address info@funambol.com.
+ * 
+ * The interactive user interfaces in modified source and object code versions
+ * of this program must display Appropriate Legal Notices, as required under
+ * Section 5 of the GNU Affero General Public License version 3.
+ * 
+ * In accordance with Section 7(b) of the GNU Affero General Public License
+ * version 3, these Appropriate Legal Notices must retain the display of the
+ * "Powered by Funambol" logo. If the display of the logo is not reasonably 
+ * feasible for technical reasons, the Appropriate Legal Notices must display
+ * the words "Powered by Funambol".
  */
 
 
 #ifndef INCL_MAP
 #define INCL_MAP
+/** @cond DEV */
 
 #include "base/fscapi.h"
 #include "syncml/core/AbstractCommand.h"
 #include "syncml/core/ModificationCommand.h"
 
-#define MAP_COMMAND_NAME T("Map")
+#define MAP_COMMAND_NAME "Map"
+#include "base/globalsdef.h"
+
+BEGIN_NAMESPACE
 
 class Map : public AbstractCommand {
-    
+
      // ------------------------------------------------------------ Private data
     private:
         char*  COMMAND_NAME;
@@ -35,15 +56,15 @@ class Map : public AbstractCommand {
         Source*    source;
         ArrayList* mapItems; //MapItem[]
         void initialize();
-    
+
     public:
-    
-    
+
+
         // ------------------------------------------------------------ Constructors
-    
+
         Map();
         ~Map();
-    
+
         /**
          * Creates a new Map commands from its constituent information.
          *
@@ -61,14 +82,14 @@ class Map : public AbstractCommand {
             Cred* cred,
             Meta* meta,
             ArrayList* mapItems);
-          
+
         /**
          * Returns the target property
          * @return the target property
          *
          */
         Target* getTarget();
-    
+
         /**
          * Sets the target property
          *
@@ -76,14 +97,14 @@ class Map : public AbstractCommand {
          *
          */
         void setTarget(Target* target);
-    
+
         /**
          * Returns the source property
          * @return the source property
          *
          */
         Source* getSource();
-    
+
         /**
          * Sets the source property
          *
@@ -91,7 +112,7 @@ class Map : public AbstractCommand {
          *
          */
         void setSource(Source* source);
-    
+
         /**
          * Returns the map items
          *
@@ -99,7 +120,7 @@ class Map : public AbstractCommand {
          *
          */
         ArrayList* getMapItems();
-    
+
         /**
          * Sets the mapItems property
          *
@@ -107,15 +128,19 @@ class Map : public AbstractCommand {
          *
          */
         void setMapItems(ArrayList* mapItems);
-       
+
         /**
          * Returns the command name
          *
          * @return the command name
          */
-        char*  getName();
-    
+        const char* getName();
+
         ArrayElement* clone();
 };
 
+
+END_NAMESPACE
+
+/** @endcond */
 #endif

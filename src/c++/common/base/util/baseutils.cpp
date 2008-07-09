@@ -1,23 +1,43 @@
 /*
- * Copyright (C) 2003-2006 Funambol
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * Funambol is a mobile platform developed by Funambol, Inc. 
+ * Copyright (C) 2003 - 2007 Funambol, Inc.
+ * 
+ * This program is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU Affero General Public License version 3 as published by
+ * the Free Software Foundation with the addition of the following permission 
+ * added to Section 15 as permitted in Section 7(a): FOR ANY PART OF THE COVERED
+ * WORK IN WHICH THE COPYRIGHT IS OWNED BY FUNAMBOL, FUNAMBOL DISCLAIMS THE 
+ * WARRANTY OF NON INFRINGEMENT  OF THIRD PARTY RIGHTS.
+ * 
+ * This program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
+ * details.
+ * 
+ * You should have received a copy of the GNU Affero General Public License 
+ * along with this program; if not, see http://www.gnu.org/licenses or write to
+ * the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
+ * MA 02110-1301 USA.
+ * 
+ * You can contact Funambol, Inc. headquarters at 643 Bair Island Road, Suite 
+ * 305, Redwood City, CA 94063, USA, or at email address info@funambol.com.
+ * 
+ * The interactive user interfaces in modified source and object code versions
+ * of this program must display Appropriate Legal Notices, as required under
+ * Section 5 of the GNU Affero General Public License version 3.
+ * 
+ * In accordance with Section 7(b) of the GNU Affero General Public License
+ * version 3, these Appropriate Legal Notices must retain the display of the
+ * "Powered by Funambol" logo. If the display of the logo is not reasonably 
+ * feasible for technical reasons, the Appropriate Legal Notices must display
+ * the words "Powered by Funambol".
  */
 
 #include "base/fscapi.h"
 #include "base/util/utils.h"
+#include "base/globalsdef.h"
+
+BEGIN_NAMESPACE
 
 /*
  * Deletes the given char[] buffer if it is not NULL
@@ -118,40 +138,40 @@ WCHAR* wcstoupper(const WCHAR *s)
  */
 const char *brfind(const char *s1, const char *s2, size_t len)
 {
-	const char *sc1, *sc2, *ps1;
+    const char *sc1, *sc2, *ps1;
 
     if (!s1)
         return NULL;
 
-	if (*s2 == '\0')
-		return s1;
+    if (*s2 == '\0')
+        return s1;
 
     if(len < strlen(s1)){
         ps1 = s1 + len;
     }
     else {
-	    ps1 = s1 + strlen(s1);
+        ps1 = s1 + strlen(s1);
     }
-	
-	while(ps1 > s1) {
-		--ps1;
+
+    while(ps1 > s1) {
+        --ps1;
         for (sc1 = ps1, sc2 = s2; *sc1 != *sc2; sc1++, sc2++) {
-			if (*sc2 == '\0')
-				return (ps1);
+            if (*sc2 == '\0')
+                return (ps1);
         }
-	}
-	return NULL;
+    }
+    return NULL;
 }
 
 
-/**
- * Convert an unsigned long to an anchor.
- *
- * @param timestamp the timestamo to convert into an anchor
- * @param anchor where the anchor will be written
- */
-void timestampToAnchor(unsigned long timestamp, char* anchor) {
-    sprintf(anchor, T("%lu"), timestamp);
+void timestampToAnchor(unsigned long timestamp, char anchor[21]) {
+    sprintf(anchor, "%lu", timestamp);
+}
+
+unsigned long anchorToTimestamp(const char* anchor) {
+    unsigned long timestamp;
+
+    return sscanf(anchor, "%lu", &timestamp) == 1 ? timestamp : 0;
 }
 
 bool wcscmpIgnoreCase(const char* p, const char* q) {
@@ -180,16 +200,18 @@ bool wcscmpIgnoreCase(const char* p, const char* q) {
 char* itow(int i) {
     char* ret = new char[10];
     memset(ret, 0, 10*sizeof(char) );
-    sprintf(ret, T("%i"), i);
+    sprintf(ret, "%i", i);
     return ret;
 }
 
 char* ltow(long i) {
     char* ret = new char[20];
     memset(ret, 0, 20*sizeof(char));
-    sprintf(ret, T("%i"), i);
+    sprintf(ret, "%ld", i);
     return ret;
 }
+
+
 
 /*
 * It implements algo for authentication with MD5 method.
@@ -199,7 +221,7 @@ char* ltow(long i) {
 * Data: H (B64(H(username:password)):nonce)
 */
 
-char* MD5CredentialData(char* userName, char* password, char* nonce) {
+char* MD5CredentialData(const char* userName, const char* password, const char* nonce) {
 
     int len = 0, lenNonce = 0, totLen = 0;
 
@@ -210,7 +232,6 @@ char* MD5CredentialData(char* userName, char* password, char* nonce) {
     char token      [512];
     char* md5Digest = NULL;
     char ch          [3];
-    char* dig = NULL;
 
     memset(digest,      0, 16);
     memset(base64,      0, 64);
@@ -219,7 +240,7 @@ char* MD5CredentialData(char* userName, char* password, char* nonce) {
     memset(token,       0, 512);
     sprintf(ch, ":");
 
-    sprintf(token, T("%s:%s"), userName, password);
+    sprintf(token, "%s:%s", userName, password);
     len = strlen(token);
 
     // H(username:password)
@@ -228,7 +249,7 @@ char* MD5CredentialData(char* userName, char* password, char* nonce) {
     // B64(H(username:password))
     len = b64_encode((char*)base64, digest, 16);
 
-    
+
     // decode nonce from stored base64 to bin
     strcpy(cnonce, nonce);
     lenNonce = b64_decode(cnonce, cnonce);
@@ -274,3 +295,17 @@ char* calculateMD5(const void* token, int len, char* wdigest) {
         return NULL;
     }
 }
+
+
+size_t fgetsize(FILE *f)
+{
+    size_t size;
+
+    fseek(f, 0, SEEK_END);
+    size=ftell(f);
+    fseek(f, 0, SEEK_SET);
+    return size;
+}
+
+END_NAMESPACE
+

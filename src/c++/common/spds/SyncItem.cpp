@@ -1,19 +1,36 @@
 /*
- * Copyright (C) 2003-2006 Funambol
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * Funambol is a mobile platform developed by Funambol, Inc. 
+ * Copyright (C) 2003 - 2007 Funambol, Inc.
+ * 
+ * This program is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU Affero General Public License version 3 as published by
+ * the Free Software Foundation with the addition of the following permission 
+ * added to Section 15 as permitted in Section 7(a): FOR ANY PART OF THE COVERED
+ * WORK IN WHICH THE COPYRIGHT IS OWNED BY FUNAMBOL, FUNAMBOL DISCLAIMS THE 
+ * WARRANTY OF NON INFRINGEMENT  OF THIRD PARTY RIGHTS.
+ * 
+ * This program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
+ * details.
+ * 
+ * You should have received a copy of the GNU Affero General Public License 
+ * along with this program; if not, see http://www.gnu.org/licenses or write to
+ * the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
+ * MA 02110-1301 USA.
+ * 
+ * You can contact Funambol, Inc. headquarters at 643 Bair Island Road, Suite 
+ * 305, Redwood City, CA 94063, USA, or at email address info@funambol.com.
+ * 
+ * The interactive user interfaces in modified source and object code versions
+ * of this program must display Appropriate Legal Notices, as required under
+ * Section 5 of the GNU Affero General Public License version 3.
+ * 
+ * In accordance with Section 7(b) of the GNU Affero General Public License
+ * version 3, these Appropriate Legal Notices must retain the display of the
+ * "Powered by Funambol" logo. If the display of the logo is not reasonably 
+ * feasible for technical reasons, the Appropriate Legal Notices must display
+ * the words "Powered by Funambol".
  */
 
 
@@ -24,9 +41,11 @@
 #include "base/util/utils.h"
 #include "spds/SyncItem.h"
 #include "spds/DataTransformerFactory.h"
+#include "base/globalsdef.h"
 
-const char* const SyncItem::encodings::plain = "plain/text";
-const char* const SyncItem::encodings::bin = "bin";
+USE_NAMESPACE
+
+const char* const SyncItem::encodings::plain = "bin";
 const char* const SyncItem::encodings::escaped = "b64";
 const char* const SyncItem::encodings::des = "des;b64";
 
@@ -82,7 +101,7 @@ SyncItem::~SyncItem() {
     }
 }
 
-const char* SyncItem::getDataEncoding() {
+const char* SyncItem::getDataEncoding() const {
     return encoding;
 }
 
@@ -99,7 +118,7 @@ int SyncItem::changeDataEncoding(const char* enc, const char* encryption, const 
     int res = ERR_NONE;
     char encToUse[30];
 
-    // First: if encryption not NULL and valid, it is used and 'enc' 
+    // First: if encryption not NULL and valid, it is used and 'enc'
     // value is ignored.
     if ( (encryption) && (!strcmp(encryption, "des")) ) {
         strcpy(encToUse, encodings::des);
@@ -124,13 +143,13 @@ int SyncItem::changeDataEncoding(const char* enc, const char* encryption, const 
     if (strcmp(encodings::encodingString(encoding), encodings::plain)) {
         if (!strcmp(encoding, encodings::escaped) ||
             !strcmp(encoding, encodings::des)) {
-            res = transformData("b64", FALSE, credentialInfo);
+            res = transformData("b64", false, credentialInfo);
             if (res) {
                 return res;
             }
         }
         if (!strcmp(encoding, encodings::des)) {
-            res = transformData("des", FALSE, credentialInfo);
+            res = transformData("des", false, credentialInfo);
             if (res) {
                 return res;
             }
@@ -141,14 +160,14 @@ int SyncItem::changeDataEncoding(const char* enc, const char* encryption, const 
     // now convert to new encoding
     if (strcmp(encodings::encodingString(encoding), encodings::encodingString(encToUse))) {
         if (!strcmp(encToUse, encodings::des)) {
-            res = transformData("des", TRUE, credentialInfo);
+            res = transformData("des", true, credentialInfo);
             if (res) {
                 return res;
             }
         }
         if (!strcmp(encToUse, encodings::escaped) ||
             !strcmp(encToUse, encodings::des)) {
-            res = transformData("b64", TRUE, credentialInfo);
+            res = transformData("b64", true, credentialInfo);
             if (res) {
                 return res;
             }
@@ -160,7 +179,7 @@ int SyncItem::changeDataEncoding(const char* enc, const char* encryption, const 
     return ERR_NONE;
 }
 
-int SyncItem::transformData(const char* name, BOOL encode, const char* password)
+int SyncItem::transformData(const char* name, bool encode, const char* password)
 {
     char* buffer = NULL;
     DataTransformer *dt = encode ?
@@ -168,9 +187,9 @@ int SyncItem::transformData(const char* name, BOOL encode, const char* password)
         DataTransformerFactory::getDecoder(name);
     TransformationInfo info;
     int res = ERR_NONE;
-    
+
     if (dt == NULL) {
-        res = lastErrorCode;
+        res = getLastErrorCode();
         goto exit;
     }
 
@@ -178,7 +197,7 @@ int SyncItem::transformData(const char* name, BOOL encode, const char* password)
     info.password = password;
     buffer = dt->transform((char*)getData(), info);
     if (!buffer) {
-        res = lastErrorCode;
+        res = getLastErrorCode();
         goto exit;
     }
     // danger, transformer may or may not have manipulated the data in place
@@ -206,7 +225,7 @@ int SyncItem::transformData(const char* name, BOOL encode, const char* password)
  *
  * @param key - buffer where the key will be stored
  */
-WCHAR* SyncItem::getKey() {
+const WCHAR* SyncItem::getKey() const {
         return key;
     }
 
@@ -236,7 +255,7 @@ void SyncItem::setKey(const WCHAR* itemKey) {
  * is a milliseconds timestamp since a reference time (which is
  * platform specific).
  */
-long SyncItem::getModificationTime() {
+long SyncItem::getModificationTime() const {
     return lastModificationTime;
 }
 
@@ -253,7 +272,7 @@ void* SyncItem::setData(const void* itemData, long dataSize) {
     }
 
     size = dataSize;
-    
+
     // Not yet set.
     if (size == -1) {
         data = NULL;
@@ -262,8 +281,9 @@ void* SyncItem::setData(const void* itemData, long dataSize) {
 
     data = new char[size + 1];
     if (data == NULL) {
-        lastErrorCode = ERR_NOT_ENOUGH_MEMORY;
-        sprintf(lastErrorMsg, ERRMSG_NOT_ENOUGH_MEMORY, dataSize);
+        //lastErrorCode = ERR_NOT_ENOUGH_MEMORY;
+        //sprintf(lastErrorMsg, ERRMSG_NOT_ENOUGH_MEMORY, (int)dataSize);
+        setErrorF(ERR_NOT_ENOUGH_MEMORY, ERRMSG_NOT_ENOUGH_MEMORY, (int)dataSize);
         return NULL;
     }
 
@@ -280,14 +300,14 @@ void* SyncItem::setData(const void* itemData, long dataSize) {
 /*
  * Returns the SyncItem data buffer. It is deleted in the destructor.
  */
-void* SyncItem::getData() {
+void* SyncItem::getData() const {
     return data;
 }
 
 /*
  * Returns the SyncItem data size.
  */
-long SyncItem::getDataSize() {
+long SyncItem::getDataSize() const {
     return size;
 }
 
@@ -312,7 +332,7 @@ void SyncItem::setDataType(const WCHAR* mimeType) {
  * Returns the SyncItem data mime type.
  *
  */
-WCHAR* SyncItem::getDataType() {
+const WCHAR* SyncItem::getDataType() const {
     return type;
 }
 
@@ -328,7 +348,7 @@ void SyncItem::setState(SyncState newState) {
 /*
  * Gets the SyncItem state
  */
-SyncState SyncItem::getState() {
+SyncState SyncItem::getState() const {
     return state;
 }
 
@@ -337,11 +357,8 @@ SyncState SyncItem::getState() {
  *
  * @return the taregtParent property value
  */
-WCHAR* SyncItem::getTargetParent(WCHAR* parent) {
-    if (parent == NULL) {
-        return targetParent;
-    }
-    return wcscpy(parent, targetParent);
+const WCHAR* SyncItem::getTargetParent() const {
+    return targetParent;
 }
 
 /**
@@ -353,7 +370,7 @@ void SyncItem::setTargetParent(const WCHAR* parent) {
     if (targetParent) {
         delete [] targetParent; targetParent = NULL;
     }
-    targetParent = wstrdup(parent);  
+    targetParent = wstrdup(parent);
 }
 
 /**
@@ -361,11 +378,8 @@ void SyncItem::setTargetParent(const WCHAR* parent) {
  *
  * @return the sourceParent property value
  */
-WCHAR* SyncItem::getSourceParent(WCHAR* parent) {
-    if (parent == NULL) {
-        return sourceParent;
-    }
-    return wcscpy(parent, sourceParent);
+const WCHAR* SyncItem::getSourceParent() const {
+    return sourceParent;
 }
 
 /**
@@ -377,7 +391,7 @@ void SyncItem::setSourceParent(const WCHAR* parent) {
     if (sourceParent) {
         delete [] sourceParent; sourceParent = NULL;
     }
-    sourceParent = wstrdup(parent);  
+    sourceParent = wstrdup(parent);
 }
 
 ArrayElement* SyncItem::clone() {

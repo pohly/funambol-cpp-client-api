@@ -1,24 +1,44 @@
 /*
- * Copyright (C) 2003-2006 Funambol
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * Funambol is a mobile platform developed by Funambol, Inc. 
+ * Copyright (C) 2003 - 2007 Funambol, Inc.
+ * 
+ * This program is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU Affero General Public License version 3 as published by
+ * the Free Software Foundation with the addition of the following permission 
+ * added to Section 15 as permitted in Section 7(a): FOR ANY PART OF THE COVERED
+ * WORK IN WHICH THE COPYRIGHT IS OWNED BY FUNAMBOL, FUNAMBOL DISCLAIMS THE 
+ * WARRANTY OF NON INFRINGEMENT  OF THIRD PARTY RIGHTS.
+ * 
+ * This program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
+ * details.
+ * 
+ * You should have received a copy of the GNU Affero General Public License 
+ * along with this program; if not, see http://www.gnu.org/licenses or write to
+ * the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
+ * MA 02110-1301 USA.
+ * 
+ * You can contact Funambol, Inc. headquarters at 643 Bair Island Road, Suite 
+ * 305, Redwood City, CA 94063, USA, or at email address info@funambol.com.
+ * 
+ * The interactive user interfaces in modified source and object code versions
+ * of this program must display Appropriate Legal Notices, as required under
+ * Section 5 of the GNU Affero General Public License version 3.
+ * 
+ * In accordance with Section 7(b) of the GNU Affero General Public License
+ * version 3, these Appropriate Legal Notices must retain the display of the
+ * "Powered by Funambol" logo. If the display of the logo is not reasonably 
+ * feasible for technical reasons, the Appropriate Legal Notices must display
+ * the words "Powered by Funambol".
  */
- 
+
 #include "base/util/utils.h"
 #include "syncml/core/DataStore.h"
- 
+#include "base/globalsdef.h"
+
+USE_NAMESPACE
+
 DataStore::DataStore() {
     initialize();
 }
@@ -26,13 +46,13 @@ DataStore::DataStore() {
 DataStore::~DataStore() {
    if(sourceRef   )   { delete sourceRef      ;  sourceRef       = NULL; }
    if(displayName )   { delete [] displayName    ;  displayName     = NULL; }
-   maxGUIDSize = 0; 
+   maxGUIDSize = 0;
    if(rxPref      )   { delete    rxPref         ;  rxPref          = NULL; }
-   if(rx          )   { rx->clear(); } //delete rx; rx = NULL;                  } 
+   if(rx          )   { /*rx->clear();*/  delete rx; rx = NULL;                  }
    if(txPref      )   { delete    txPref         ;  txPref          = NULL; }
-   if(tx          )   { tx->clear(); }//delete tx; tx = NULL;                  } 
+   if(tx          )   { /*tx->clear();*/  delete tx; tx = NULL;                  }
    if(dsMem       )   { delete    dsMem          ;  dsMem           = NULL; }
-   if(syncCap     )   { delete    syncCap        ;  syncCap         = NULL; }  
+   if(syncCap     )   { delete    syncCap        ;  syncCap         = NULL; }
 }
 
 /**
@@ -52,6 +72,7 @@ DataStore::~DataStore() {
  *                  to the content type preferred - NOT NULL
  * @param tx an array of the relative info trasmitted to the content type
  *           supported - NOT NULL
+ * @param ctCaps an array of the relative CtCaps
  * @param dsMem the datastore memory info
  * @param syncCap the synchronization capabilities - NOT NULL
  *
@@ -63,9 +84,10 @@ DataStore::DataStore(SourceRef* sourceRef,
                       ArrayList* rx,
                       ContentTypeInfo* txPref,
                       ArrayList* tx,
+                      ArrayList* ct_Caps,
                       DSMem* dsMem,
                       SyncCap* syncCap) {
-        
+
         initialize();
         setSourceRef(sourceRef);
         setMaxGUIDSize(maxGUIDSize);
@@ -74,6 +96,7 @@ DataStore::DataStore(SourceRef* sourceRef,
         setTxPref(txPref);
         setTx(tx);
         setSyncCap(syncCap);
+        setCtCaps(ct_Caps);
         setDisplayName(displayName);
         setDSMem(dsMem);
 }
@@ -83,11 +106,12 @@ void DataStore::initialize() {
     displayName     = NULL;
     maxGUIDSize     = 0;
     rxPref          = NULL;
-    rx              = new ArrayList(); 
+    rx              = NULL; //new ArrayList();
     txPref          = NULL;
-    tx              = new ArrayList(); 
+    tx              = NULL; //new ArrayList();
+    ctCaps          = NULL; //new ArrayList();
     dsMem           = NULL;
-    syncCap         = NULL;  
+    syncCap         = NULL;
 }
 
 /**
@@ -110,9 +134,9 @@ void DataStore::setSourceRef(SourceRef* sourceRef) {
         // TBD
     } else {
         if (this->sourceRef) {
-            delete this->sourceRef; this->sourceRef = NULL;            
+            delete this->sourceRef; this->sourceRef = NULL;
         }
-    }    
+    }
     this->sourceRef = (SourceRef*)sourceRef->clone();
 
 }
@@ -122,11 +146,8 @@ void DataStore::setSourceRef(SourceRef* sourceRef) {
  *
  * @return the displayName properties
  */
-char* DataStore::getDisplayName(char* retDisplayName) {
-    if (retDisplayName == NULL) {
-        return displayName;
-    }
-    return strcpy(retDisplayName, displayName);
+const char* DataStore::getDisplayName() {
+    return displayName;
 }
 
 /**
@@ -135,11 +156,11 @@ char* DataStore::getDisplayName(char* retDisplayName) {
  * @param displayName the displauName property
  *
  */
-void DataStore::setDisplayName(char* displayName) {
+void DataStore::setDisplayName(const char*displayName) {
     if (this->displayName) {
         delete [] this->displayName; this->displayName = NULL;
     }
-    this->displayName = stringdup(displayName);    
+    this->displayName = stringdup(displayName);
 }
 
 /**
@@ -169,12 +190,12 @@ ContentTypeInfo* DataStore::getRxPref() {
  *
  * @param rxPref the preferred type and version of a content type
  */
-void DataStore::setRxPref(ContentTypeInfo* rxPref) {    
+void DataStore::setRxPref(ContentTypeInfo* rxPref) {
     if (rxPref == NULL) {
         // TBD
     } else {
         if (this->rxPref) {
-            delete this->rxPref; this->rxPref = NULL;            
+            delete this->rxPref; this->rxPref = NULL;
         }
     }
     this->rxPref = (ContentTypeInfo*)rxPref->clone();
@@ -199,8 +220,8 @@ void DataStore::setRx(ArrayList* rxCTI) {
         // TBD
     } else {
         if (rx) {
-		    rx->clear(); 
-        } 
+		    rx->clear();
+        }
     	rx = rxCTI->clone();
     }
 }
@@ -225,10 +246,10 @@ void DataStore::setTxPref(ContentTypeInfo* txPref) {
         // TBD
     } else {
         if (this->txPref) {
-            delete this->txPref; this->txPref = NULL;            
+            delete this->txPref; this->txPref = NULL;
         }
         this->txPref = (ContentTypeInfo*)txPref->clone();
-    }        
+    }
 }
 
 /**
@@ -250,10 +271,28 @@ void DataStore::setTx(ArrayList* txCTI) {
         // TBD
     } else {
         if (tx) {
-		    tx->clear(); 
-        } 
+		    tx->clear();
+        }
     	tx = txCTI->clone();
-    }   
+    }
+}
+
+/**
+* Gets an array of CtCaps corresponds to &lt;CTCap&gt; element
+*
+* @return an array of CTCaps corresponds to &lt;CTCap&gt; element
+*/
+ArrayList* DataStore::getCtCaps(){
+    return ctCaps;
+}
+
+/**
+* Sets an array of CtCaps
+*
+* @param Ct_Caps an array of Ctcaps
+*/
+void DataStore::setCtCaps(ArrayList* ct_Caps){
+    ctCaps = ct_Caps;
 }
 
 /**
@@ -300,9 +339,9 @@ void DataStore::setSyncCap(SyncCap* syncCap) {
      } else {
         if (this->syncCap) {
 		    delete this->syncCap; this->syncCap = NULL;
-        } 
-    	this->syncCap = syncCap->clone();        
-    }       
+        }
+    	this->syncCap = syncCap->clone();
+    }
 }
 
 ArrayElement* DataStore::clone() {
@@ -310,9 +349,10 @@ ArrayElement* DataStore::clone() {
                                     displayName ,
                                     maxGUIDSize ,
                                     rxPref      ,
-                                    rx          , 
+                                    rx          ,
                                     txPref      ,
-                                    tx          , 
+                                    tx          ,
+                                    ctCaps      ,
                                     dsMem       ,
                                     syncCap     );
     return ret;

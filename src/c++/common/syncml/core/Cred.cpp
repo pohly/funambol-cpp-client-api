@@ -1,24 +1,44 @@
 /*
- * Copyright (C) 2003-2006 Funambol
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * Funambol is a mobile platform developed by Funambol, Inc. 
+ * Copyright (C) 2003 - 2007 Funambol, Inc.
+ * 
+ * This program is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU Affero General Public License version 3 as published by
+ * the Free Software Foundation with the addition of the following permission 
+ * added to Section 15 as permitted in Section 7(a): FOR ANY PART OF THE COVERED
+ * WORK IN WHICH THE COPYRIGHT IS OWNED BY FUNAMBOL, FUNAMBOL DISCLAIMS THE 
+ * WARRANTY OF NON INFRINGEMENT  OF THIRD PARTY RIGHTS.
+ * 
+ * This program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
+ * details.
+ * 
+ * You should have received a copy of the GNU Affero General Public License 
+ * along with this program; if not, see http://www.gnu.org/licenses or write to
+ * the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
+ * MA 02110-1301 USA.
+ * 
+ * You can contact Funambol, Inc. headquarters at 643 Bair Island Road, Suite 
+ * 305, Redwood City, CA 94063, USA, or at email address info@funambol.com.
+ * 
+ * The interactive user interfaces in modified source and object code versions
+ * of this program must display Appropriate Legal Notices, as required under
+ * Section 5 of the GNU Affero General Public License version 3.
+ * 
+ * In accordance with Section 7(b) of the GNU Affero General Public License
+ * version 3, these Appropriate Legal Notices must retain the display of the
+ * "Powered by Funambol" logo. If the display of the logo is not reasonably 
+ * feasible for technical reasons, the Appropriate Legal Notices must display
+ * the words "Powered by Funambol".
  */
- 
- 
+
+
 #include "syncml/core/Cred.h"
- 
+#include "base/globalsdef.h"
+
+USE_NAMESPACE
+
 
 Cred::Cred() {
     authentication = NULL;
@@ -34,9 +54,9 @@ Cred::Cred(Authentication* auth) {
     authentication = NULL;
     if (auth == NULL) {
         // TBD
-    }   
+    }
     this->authentication = auth->clone();
-    
+
 }
 
 /**
@@ -44,12 +64,8 @@ Cred::Cred(Authentication* auth) {
  *
  * @return type property
  */
-char* Cred::getType(char* retType) {
-
-    if (retType == NULL) {
-        return authentication->getType(NULL);
-    }
-    return strcpy(retType, authentication->getType(NULL));
+const char* Cred::getType() {
+    return authentication ? authentication->getType() : NULL;
 }
 
 /**
@@ -57,11 +73,8 @@ char* Cred::getType(char* retType) {
  *
  * @return format property
  */
-char* Cred::getFormat(char* retFormat) {
-    if (retFormat == NULL) {
-        return authentication->getFormat(NULL);
-    }
-    return strcpy(retFormat, authentication->getFormat(NULL));
+const char* Cred::getFormat() {
+    return authentication ? authentication->getFormat() : NULL;
 }
 
 /**
@@ -69,11 +82,8 @@ char* Cred::getFormat(char* retFormat) {
  *
  * @return data property
  */
-char* Cred::getData(char* retData) {
- if (retData == NULL) {
-        return authentication->getData(NULL);
-    }
-    return strcpy(retData, authentication->getData(NULL));
+const char* Cred::getData() {
+    return authentication ? authentication->getData() : NULL;
 }
 
 /**
@@ -81,11 +91,8 @@ char* Cred::getData(char* retData) {
  *
  * @return the username stored in this credential
  */
-char* Cred::getUsername(char* retUsername) {
-    if (retUsername == NULL) {
-        return authentication->getUsername(NULL);
-    }
-    return strcpy(retUsername, authentication->getUsername(NULL));
+const char* Cred::getUsername() {
+    return authentication ? authentication->getUsername() : NULL;
 }
 
 

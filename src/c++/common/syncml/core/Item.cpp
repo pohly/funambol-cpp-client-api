@@ -1,24 +1,44 @@
 /*
- * Copyright (C) 2003-2006 Funambol
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * Funambol is a mobile platform developed by Funambol, Inc. 
+ * Copyright (C) 2003 - 2007 Funambol, Inc.
+ * 
+ * This program is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU Affero General Public License version 3 as published by
+ * the Free Software Foundation with the addition of the following permission 
+ * added to Section 15 as permitted in Section 7(a): FOR ANY PART OF THE COVERED
+ * WORK IN WHICH THE COPYRIGHT IS OWNED BY FUNAMBOL, FUNAMBOL DISCLAIMS THE 
+ * WARRANTY OF NON INFRINGEMENT  OF THIRD PARTY RIGHTS.
+ * 
+ * This program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
+ * details.
+ * 
+ * You should have received a copy of the GNU Affero General Public License 
+ * along with this program; if not, see http://www.gnu.org/licenses or write to
+ * the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
+ * MA 02110-1301 USA.
+ * 
+ * You can contact Funambol, Inc. headquarters at 643 Bair Island Road, Suite 
+ * 305, Redwood City, CA 94063, USA, or at email address info@funambol.com.
+ * 
+ * The interactive user interfaces in modified source and object code versions
+ * of this program must display Appropriate Legal Notices, as required under
+ * Section 5 of the GNU Affero General Public License version 3.
+ * 
+ * In accordance with Section 7(b) of the GNU Affero General Public License
+ * version 3, these Appropriate Legal Notices must retain the display of the
+ * "Powered by Funambol" logo. If the display of the logo is not reasonably 
+ * feasible for technical reasons, the Appropriate Legal Notices must display
+ * the words "Powered by Funambol".
  */
- 
- 
+
+
 #include "syncml/core/Item.h"
- 
+#include "base/globalsdef.h"
+
+USE_NAMESPACE
+
 
 Item::Item() {
    initialize();
@@ -31,7 +51,7 @@ Item::~Item() {
     if (data  ) { delete data  ; data   = NULL; }
     if (targetParent) { delete [] targetParent; targetParent = NULL; }
     if (sourceParent) { delete [] sourceParent; sourceParent = NULL; }
-    moreData = FALSE;
+    moreData = false;
 
 }
 
@@ -43,7 +63,7 @@ void Item::initialize() {
     sourceParent = NULL;
     meta         = NULL;
     data         = NULL;
-    moreData     = FALSE;  
+    moreData     = false;
 }
 
 /**
@@ -63,7 +83,7 @@ Item::Item( Target* target,
             char* sParent,
             Meta*   meta  ,
             ComplexData* data,
-            BOOL moreData) {
+            bool moreData) {
     initialize();
 
     setTarget(target);
@@ -92,7 +112,7 @@ Item::Item( Target* target,
             Source* source,
             Meta*   meta  ,
             ComplexData* data,
-            BOOL moreData) {
+            bool moreData) {
     initialize();
     setTarget(target);
     setSource(source);
@@ -122,7 +142,7 @@ Target* Item::getTarget() {
 void Item::setTarget(Target* target) {
     if (this->target) {
 		delete this->target; this->target = NULL;
-    } 
+    }
     if (target) {
 	    this->target = target->clone();
     }
@@ -146,7 +166,7 @@ Source* Item::getSource() {
 void Item::setSource(Source* source) {
     if (this->source) {
 		delete this->source; this->source = NULL;
-    } 
+    }
     if (source) {
 	    this->source = source->clone();
     }
@@ -170,9 +190,9 @@ Meta* Item::getMeta() {
 void Item::setMeta(Meta* meta) {
     if (this->meta) {
 		delete this->meta; this->meta = NULL;
-    } 
+    }
     if (meta) {
-	    this->meta = meta->clone();   
+	    this->meta = meta->clone();
     }
 }
 
@@ -202,22 +222,12 @@ void Item::setData(ComplexData* data) {
 }
 
 /**
-* Gets moreData property
-*
-* @return true if the data item is incomplete and has further chunks 
-*         to come, false otherwise
-*/
-BOOL Item::isMoreData() {
-    return (moreData != NULL);
-}
-
-/**
 * Gets the Boolean value of moreData
 *
-* @return true if the data item is incomplete and has further chunks 
+* @return true if the data item is incomplete and has further chunks
 *         to come, false otherwise
 */
-BOOL Item::getMoreData() {
+bool Item::getMoreData() {
     return moreData;
 }
 
@@ -226,12 +236,8 @@ BOOL Item::getMoreData() {
 *
 * @param moreData the moreData property
 */
-void Item::setMoreData(BOOL moreData) {
-    if ((moreData == NULL) || (moreData != TRUE && moreData != FALSE)) {
-        this->moreData = NULL;
-    } else {
-        this->moreData = moreData;
-    }  
+void Item::setMoreData(bool moreData) {
+    this->moreData = moreData;
 }
 
 /**
@@ -239,11 +245,8 @@ void Item::setMoreData(BOOL moreData) {
  *
  * @return the taregtParent property value
  */
-char* Item::getTargetParent(char* parent) {
-    if (parent == NULL) {
-        return targetParent;
-    }
-    return strcpy(parent, targetParent);
+const char* Item::getTargetParent() {
+    return targetParent;
 }
 
 /**
@@ -251,11 +254,11 @@ char* Item::getTargetParent(char* parent) {
  *
  * @param parent the taregtParent property
  */
-void Item::setTargetParent(char* parent) {
+void Item::setTargetParent(const char*parent) {
     if (targetParent) {
         delete [] targetParent; targetParent = NULL;
     }
-    targetParent = stringdup(parent);  
+    targetParent = stringdup(parent);
 }
 
 /**
@@ -263,11 +266,8 @@ void Item::setTargetParent(char* parent) {
  *
  * @return the sourceParent property value
  */
-char* Item::getSourceParent(char* parent) {
-    if (parent == NULL) {
-        return sourceParent;
-    }
-    return strcpy(parent, sourceParent);
+const char* Item::getSourceParent() {
+    return sourceParent;
 }
 
 /**
@@ -275,11 +275,11 @@ char* Item::getSourceParent(char* parent) {
  *
  * @param parent the sourceParent property
  */
-void Item::setSourceParent(char* parent) {
+void Item::setSourceParent(const char*parent) {
     if (sourceParent) {
         delete [] sourceParent; sourceParent = NULL;
     }
-    sourceParent = stringdup(parent);  
+    sourceParent = stringdup(parent);
 }
 
 /**

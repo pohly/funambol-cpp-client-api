@@ -1,26 +1,46 @@
-/**
- * Copyright (C) 2003-2006 Funambol
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston,
- * MA 02111-1307 USA
+/*
+ * Funambol is a mobile platform developed by Funambol, Inc. 
+ * Copyright (C) 2003 - 2007 Funambol, Inc.
+ * 
+ * This program is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU Affero General Public License version 3 as published by
+ * the Free Software Foundation with the addition of the following permission 
+ * added to Section 15 as permitted in Section 7(a): FOR ANY PART OF THE COVERED
+ * WORK IN WHICH THE COPYRIGHT IS OWNED BY FUNAMBOL, FUNAMBOL DISCLAIMS THE 
+ * WARRANTY OF NON INFRINGEMENT  OF THIRD PARTY RIGHTS.
+ * 
+ * This program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
+ * details.
+ * 
+ * You should have received a copy of the GNU Affero General Public License 
+ * along with this program; if not, see http://www.gnu.org/licenses or write to
+ * the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
+ * MA 02110-1301 USA.
+ * 
+ * You can contact Funambol, Inc. headquarters at 643 Bair Island Road, Suite 
+ * 305, Redwood City, CA 94063, USA, or at email address info@funambol.com.
+ * 
+ * The interactive user interfaces in modified source and object code versions
+ * of this program must display Appropriate Legal Notices, as required under
+ * Section 5 of the GNU Affero General Public License version 3.
+ * 
+ * In accordance with Section 7(b) of the GNU Affero General Public License
+ * version 3, these Appropriate Legal Notices must retain the display of the
+ * "Powered by Funambol" logo. If the display of the logo is not reasonably 
+ * feasible for technical reasons, the Appropriate Legal Notices must display
+ * the words "Powered by Funambol".
  */
 
+
 #include "vocl/iCalendar/Event.h"
+#include "base/globalsdef.h"
+
+USE_NAMESPACE
 
 Event::Event() {
-    classEvent = NULL;  
+    classEvent = NULL;
     created = NULL;
     description = NULL;
     dtStart = NULL;
@@ -289,128 +309,128 @@ iCalProperty* Event::getDuration() {
     return duration;
 }
 ArrayList* Event::getAttach() {
-    if(!attach) 
-        for(int i = 0; i < propertiesCount(); i++) 
+    if(!attach)
+        for(int i = 0; i < propertiesCount(); i++)
             if(!wcscmp(getProperty(i)->getName(),TEXT("ATTACH")) && getProperty(i)->getValue()) {
-                if(!attach) 
+                if(!attach)
                     attach = new ArrayList();
                 attach->add((ArrayElement&) *getiCalPropertyFromVProperty(getProperty(i)));
             }
     return attach;
 }
 ArrayList* Event::getAttendee() {
-    if(!attendee) 
-        for(int i = 0; i < propertiesCount(); i++) 
+    if(!attendee)
+        for(int i = 0; i < propertiesCount(); i++)
             if(!wcscmp(getProperty(i)->getName(),TEXT("ATTENDEE")) && getProperty(i)->getValue()) {
                 if(!attendee)
                     attendee = new ArrayList();
-                attendee->add((ArrayElement&) *getiCalPropertyFromVProperty(getProperty(i))); 
+                attendee->add((ArrayElement&) *getiCalPropertyFromVProperty(getProperty(i)));
             }
     return attendee;
 }
 ArrayList* Event::getCategories() {
-    if(!categories) 
-        for(int i = 0; i < propertiesCount(); i++) 
+    if(!categories)
+        for(int i = 0; i < propertiesCount(); i++)
             if(!wcscmp(getProperty(i)->getName(),TEXT("CATEGORIES")) && getProperty(i)->getValue()) {
                 if(!categories)
                     categories = new ArrayList();
-                categories->add((ArrayElement&) *getiCalPropertyFromVProperty(getProperty(i))); 
+                categories->add((ArrayElement&) *getiCalPropertyFromVProperty(getProperty(i)));
             }
     return categories;
 }
 ArrayList* Event::getComment() {
-    if(!comment) 
-        for(int i = 0; i < propertiesCount(); i++) 
+    if(!comment)
+        for(int i = 0; i < propertiesCount(); i++)
             if(!wcscmp(getProperty(i)->getName(),TEXT("COMMENT")) && getProperty(i)->getValue()) {
                 if(!comment)
                     comment = new ArrayList();
-                comment->add((ArrayElement&) *getiCalPropertyFromVProperty(getProperty(i))); 
+                comment->add((ArrayElement&) *getiCalPropertyFromVProperty(getProperty(i)));
             }
     return comment;
 }
 ArrayList* Event::getContact() {
-    if(!contact) 
-        for(int i = 0; i < propertiesCount(); i++) 
+    if(!contact)
+        for(int i = 0; i < propertiesCount(); i++)
             if(!wcscmp(getProperty(i)->getName(),TEXT("CONTACT")) && getProperty(i)->getValue()) {
-                if(!contact) 
+                if(!contact)
                     contact = new ArrayList();
-                contact->add((ArrayElement&) *getiCalPropertyFromVProperty(getProperty(i))); 
+                contact->add((ArrayElement&) *getiCalPropertyFromVProperty(getProperty(i)));
             }
     return contact;
 }
 ArrayList* Event::getExDate() {
-    if(!exDate) 
-        for(int i = 0; i < propertiesCount(); i++) 
+    if(!exDate)
+        for(int i = 0; i < propertiesCount(); i++)
             if(!wcscmp(getProperty(i)->getName(),TEXT("EXDATE")) && getProperty(i)->getValue()) {
                 if(!exDate)
                     exDate = new ArrayList();
-                exDate->add((ArrayElement&) *getiCalPropertyFromVProperty(getProperty(i))); 
+                exDate->add((ArrayElement&) *getiCalPropertyFromVProperty(getProperty(i)));
             }
     return exDate;
 }
 ArrayList* Event::getExRule() {
     if(!exRule)
-        for(int i = 0; i < propertiesCount(); i++) 
+        for(int i = 0; i < propertiesCount(); i++)
             if(!wcscmp(getProperty(i)->getName(),TEXT("EXRULE")) && getProperty(i)->getValue()) {
-                if(!exRule) 
+                if(!exRule)
                     exRule = new ArrayList();
-                exRule->add((ArrayElement&) *getiCalPropertyFromVProperty(getProperty(i))); 
+                exRule->add((ArrayElement&) *getiCalPropertyFromVProperty(getProperty(i)));
             }
     return exRule;
 }
 ArrayList*Event::getRStatus() {
-    if(!rStatus) 
-        for(int i = 0; i < propertiesCount(); i++) 
+    if(!rStatus)
+        for(int i = 0; i < propertiesCount(); i++)
             if(!wcscmp(getProperty(i)->getName(),TEXT("REQUEST-STATUS")) && getProperty(i)->getValue()) {
                 if(!rStatus)
                     rStatus = new ArrayList();
-                rStatus->add((ArrayElement&) *getiCalPropertyFromVProperty(getProperty(i))); 
+                rStatus->add((ArrayElement&) *getiCalPropertyFromVProperty(getProperty(i)));
             }
     return rStatus;
 }
 ArrayList* Event::getRelated() {
-    if(!related) 
-        for(int i = 0; i < propertiesCount(); i++) 
+    if(!related)
+        for(int i = 0; i < propertiesCount(); i++)
             if(!wcscmp(getProperty(i)->getName(),TEXT("RELATED")) && getProperty(i)->getValue()) {
                 if(!related)
                     related = new ArrayList();
-                related->add((ArrayElement&) *getiCalPropertyFromVProperty(getProperty(i))); 
+                related->add((ArrayElement&) *getiCalPropertyFromVProperty(getProperty(i)));
             }
     return related;
 }
 ArrayList* Event::getResources() {
-    if(!resources) 
-        for(int i = 0; i < propertiesCount(); i++) 
+    if(!resources)
+        for(int i = 0; i < propertiesCount(); i++)
             if(!wcscmp(getProperty(i)->getName(),TEXT("RESOURCES")) && getProperty(i)->getValue()) {
                 if(!resources)
                     resources = new ArrayList();
-                resources->add((ArrayElement&) *getiCalPropertyFromVProperty(getProperty(i))); 
+                resources->add((ArrayElement&) *getiCalPropertyFromVProperty(getProperty(i)));
             }
     return resources;
 }
 ArrayList* Event::getRDate() {
     if(!rDate)
-        for(int i = 0; i < propertiesCount(); i++) 
+        for(int i = 0; i < propertiesCount(); i++)
             if(!wcscmp(getProperty(i)->getName(),TEXT("RDATE")) && getProperty(i)->getValue()) {
                 if(!rDate)
                     rDate = new ArrayList();
-                rDate->add((ArrayElement&) *getiCalPropertyFromVProperty(getProperty(i))); 
+                rDate->add((ArrayElement&) *getiCalPropertyFromVProperty(getProperty(i)));
             }
     return rDate;
 }
 ArrayList* Event::getRRule() {
-    if(!rRule) 
-        for(int i = 0; i < propertiesCount(); i++) 
+    if(!rRule)
+        for(int i = 0; i < propertiesCount(); i++)
             if(!wcscmp(getProperty(i)->getName(),TEXT("RRULE")) && getProperty(i)->getValue()) {
                 if(!rRule)
                     rRule = new ArrayList();
-                rRule->add((ArrayElement&) *getiCalPropertyFromVProperty(getProperty(i))); 
+                rRule->add((ArrayElement&) *getiCalPropertyFromVProperty(getProperty(i)));
             }
     return rRule;
 }
 ArrayList* Event::getXProp() {
-    if(!xProp) 
-        for(int i = 0; i < propertiesCount(); i++) 
+    if(!xProp)
+        for(int i = 0; i < propertiesCount(); i++)
             if((wcsstr(getProperty(i)->getName(),TEXT("X-")) == getProperty(i)->getName()) && getProperty(i)->getValue()) {
                 if(!xProp)
                     xProp = new ArrayList();
@@ -787,12 +807,12 @@ ArrayElement* Event::clone() {
     return (ArrayElement*)ret;
 }
 WCHAR* Event::toString() {
-    if(propertiesCount()<1 || 
+    if(propertiesCount()<1 ||
         wcscmp(getProperty(0)->getName(),TEXT("BEGIN")) ||
         wcscmp(getProperty(0)->getValue(),TEXT("VEVENT")) ||
         wcscmp(getProperty(propertiesCount()-1)->getName(),TEXT("END")) ||
         wcscmp(getProperty(propertiesCount()-1)->getValue(),TEXT("VEVENT"))) {
- 
+
         addFirstProperty(new VProperty(TEXT("BEGIN"), TEXT("VEVENT")));
         addProperty(new VProperty(TEXT("END"), TEXT("VEVENT")));
     }
@@ -800,7 +820,7 @@ WCHAR* Event::toString() {
     return ((VObject*)this)->toString();
 }
 
-iCalProperty* Event::getiCalPropertyFromVProperty(VProperty* vp) {    
+iCalProperty* Event::getiCalPropertyFromVProperty(VProperty* vp) {
     if (vp) {
         iCalProperty *prop = new iCalProperty(vp->getValue());
         if(vp->getParameterValue(TEXT("ALTREP")))
@@ -877,45 +897,45 @@ VProperty* Event::getVPropertyFromiCalProperty(WCHAR* name, iCalProperty* prop) 
     if(name && prop) {
         VProperty *vprop = new VProperty(name, prop->getValue());
 
-        if(prop->getAltre()) 
+        if(prop->getAltre())
             vprop->addParameter(TEXT("ALTREP"), prop->getAltre());
-        if(prop->getCn()) 
+        if(prop->getCn())
             vprop->addParameter(TEXT("CN"), prop->getCn());
-        if(prop->getCutype()) 
+        if(prop->getCutype())
             vprop->addParameter(TEXT("CUTYPE"), prop->getCutype());
-        if(prop->getDelegatedFrom()) 
+        if(prop->getDelegatedFrom())
             vprop->addParameter(TEXT("DELEGATED-FROM"), prop->getDelegatedFrom());
-        if(prop->getDelegatedTo()) 
+        if(prop->getDelegatedTo())
             vprop->addParameter(TEXT("DELEGATED-TO"), prop->getDelegatedTo());
-        if(prop->getDir()) 
+        if(prop->getDir())
             vprop->addParameter(TEXT("DIR"), prop->getDir());
-        if(prop->getEncoding()) 
+        if(prop->getEncoding())
             vprop->addParameter(TEXT("ENCODING"), prop->getEncoding());
-        if(prop->getFormatType()) 
+        if(prop->getFormatType())
             vprop->addParameter(TEXT("FMTTYPE"), prop->getFormatType());
-        if(prop->getFbType()) 
+        if(prop->getFbType())
             vprop->addParameter(TEXT("FBTYPE"), prop->getFbType());
-        if(prop->getLanguage()) 
+        if(prop->getLanguage())
             vprop->addParameter(TEXT("LANGUAGE"), prop->getLanguage());
-        if(prop->getMember()) 
+        if(prop->getMember())
             vprop->addParameter(TEXT("MEMBER"), prop->getMember());
-        if(prop->getPartStat()) 
+        if(prop->getPartStat())
             vprop->addParameter(TEXT("PARTSTAT"), prop->getPartStat());
-        if(prop->getRange()) 
+        if(prop->getRange())
             vprop->addParameter(TEXT("RANGE"), prop->getRange());
-        if(prop->getTrigRel()) 
+        if(prop->getTrigRel())
             vprop->addParameter(TEXT("RELATED"), prop->getTrigRel());
-        if(prop->getRelated()) 
+        if(prop->getRelated())
             vprop->addParameter(TEXT("RELTYPE"), prop->getRelated());
-        if(prop->getRole()) 
+        if(prop->getRole())
             vprop->addParameter(TEXT("ROLE"), prop->getRole());
-        if(prop->getRsvp()) 
+        if(prop->getRsvp())
             vprop->addParameter(TEXT("RSVP"), prop->getRsvp());
-        if(prop->getSentBy()) 
+        if(prop->getSentBy())
             vprop->addParameter(TEXT("SENT-BY"), prop->getSentBy());
-        if(prop->getTzID()) 
+        if(prop->getTzID())
             vprop->addParameter(TEXT("TZID"), prop->getTzID());
-        if(prop->getValueType()) 
+        if(prop->getValueType())
             vprop->addParameter(TEXT("VALUE"), prop->getValueType());
         if(prop->getXParam()) {
             ArrayList* xParamList = new ArrayList();

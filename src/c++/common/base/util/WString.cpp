@@ -1,33 +1,53 @@
 /*
- * Copyright (C) 2003-2006 Funambol
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * Funambol is a mobile platform developed by Funambol, Inc. 
+ * Copyright (C) 2003 - 2007 Funambol, Inc.
+ * 
+ * This program is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU Affero General Public License version 3 as published by
+ * the Free Software Foundation with the addition of the following permission 
+ * added to Section 15 as permitted in Section 7(a): FOR ANY PART OF THE COVERED
+ * WORK IN WHICH THE COPYRIGHT IS OWNED BY FUNAMBOL, FUNAMBOL DISCLAIMS THE 
+ * WARRANTY OF NON INFRINGEMENT  OF THIRD PARTY RIGHTS.
+ * 
+ * This program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
+ * details.
+ * 
+ * You should have received a copy of the GNU Affero General Public License 
+ * along with this program; if not, see http://www.gnu.org/licenses or write to
+ * the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
+ * MA 02110-1301 USA.
+ * 
+ * You can contact Funambol, Inc. headquarters at 643 Bair Island Road, Suite 
+ * 305, Redwood City, CA 94063, USA, or at email address info@funambol.com.
+ * 
+ * The interactive user interfaces in modified source and object code versions
+ * of this program must display Appropriate Legal Notices, as required under
+ * Section 5 of the GNU Affero General Public License version 3.
+ * 
+ * In accordance with Section 7(b) of the GNU Affero General Public License
+ * version 3, these Appropriate Legal Notices must retain the display of the
+ * "Powered by Funambol" logo. If the display of the logo is not reasonably 
+ * feasible for technical reasons, the Appropriate Legal Notices must display
+ * the words "Powered by Funambol".
  */
 
+#include "base/globalsdef.h"
 #include "base/fscapi.h"
 #include "base/messages.h"
 #include "base/util/utils.h"
 #include "base/util/WString.h"
 #include "base/util/StringBuffer.h"
 
+USE_NAMESPACE
+
 const size_t WString::npos = 0xFFFFFFFF;
-static size_t growup = 5;
 
 #if 0
 /// FIXME: Debug code
 #include <stdio.h>
+
 void abort(const char *msg)
 {
     FILE *f=fopen("\fatal.txt", "w");
@@ -39,7 +59,7 @@ size_t charlen = sizeof(WCHAR);
     if(charlen != 2) {
         abort("Panic: wide char size in not 2");
     }
-    
+
 #endif
 
 WString::WString(const WCHAR* str, size_t len) {
@@ -50,7 +70,7 @@ WString::WString(const WCHAR* str, size_t len) {
     // otherwise set it, even empty.
     if (str) {
         size_t slen = wcslen(str);
-        size_t newlen = (len > slen) ? slen : len ; 
+        size_t newlen = (len > slen) ? slen : len ;
 
         if(newlen) {
             getmem(newlen);
@@ -96,15 +116,13 @@ WString& WString::append(const WCHAR* sNew) {
     return *this;
 }
 
-WString& WString::append(unsigned long i, BOOL sign) {
+WString& WString::append(unsigned long i, bool sign) {
     WCHAR v[12];
 
     if (sign) {
-        // wcsprintf(v, "%ld", i);
-        wsprintf(v, TEXT("%ld"), i);
+        snwprintf(v, 11, TEXT("%ld"), i);
     } else {
-        // wcsprintf(v, "%lu", i);
-        wsprintf(v, TEXT("%lu"), i);
+        snwprintf(v, 11, TEXT("%lu"), i);
     }
 
     append(v);
@@ -119,7 +137,7 @@ WString& WString::append(WString& str) {
 WString& WString::append(WString* str) {
     if (str)
         return append(str->getChars());
-    else 
+    else
         return *this;
 }
 
@@ -140,7 +158,7 @@ WString& WString::set(const WCHAR* sNew) {
     else {
         freemem();  // release the string and set it to null
     }
-    
+
     return *this;
 }
 
@@ -155,7 +173,7 @@ WString& WString::reset() {
     return *this;
 }
 
-size_t WString::find(const WCHAR *str, size_t pos) const 
+size_t WString::find(const WCHAR *str, size_t pos) const
 {
     if (pos >= length())
         return npos;
@@ -174,7 +192,7 @@ size_t WString::ifind(const WCHAR *str, size_t pos) const
     WCHAR *lstr = wcstolower(str);
 
     WCHAR *p = wcsstr(ls, lstr);
-    
+
     size_t ret = (p) ? p-ls : npos;
 
     delete [] ls;
@@ -183,7 +201,7 @@ size_t WString::ifind(const WCHAR *str, size_t pos) const
     return ret;
 }
 */
-size_t WString::replace(const WCHAR *from, const WCHAR *to, size_t pos) 
+size_t WString::replace(const WCHAR *from, const WCHAR *to, size_t pos)
 {
 	size_t ret = npos;
 
@@ -199,10 +217,10 @@ size_t WString::replace(const WCHAR *from, const WCHAR *to, size_t pos)
         WCHAR *tail = 0;
         int ldiff = tlen - flen ;
 
-        // reallocate if needed 
+        // reallocate if needed
         size_t p_off = p - s;     // remember position in string
         getmem(length() + ldiff);
-        p = s + p_off;            // ensure that p is valid again 
+        p = s + p_off;            // ensure that p is valid again
         // check is there is a remainder after the replaced token
         if( p[flen] ) {
             tail = new WCHAR[length()];
@@ -331,10 +349,10 @@ WString& WString::operator= (const WString& sb)
     { return set(sb); }
 WString& WString::operator= (const StringBuffer& sb) {
     WCHAR* t = NULL;
-    t = toWideChar(sb.c_str());        
-    WString& w = set(t); 
+    t = toWideChar(sb.c_str());
+    WString& w = set(t);
     delete [] t;
-    return w;    
+    return w;
 }
 WString& WString::operator+= (const WCHAR* sc)
     { append(sc); return *this; }
@@ -372,8 +390,8 @@ void WString::getmem(size_t len)
         s = (WCHAR *)realloc(s, (len+1) * sizeof(WCHAR) );
         //WString_memcount += (len-size);
         size = len;
-        // Make sure s is terminated at the old position 
-        // (malloc may fill the buffer with rubbish) 
+        // Make sure s is terminated at the old position
+        // (malloc may fill the buffer with rubbish)
         s[oldlen] = 0;
         //fprintf(stderr, "\t\ts=%lx size=%ld alloc=%ld\n", s, size, alloclen);
     }

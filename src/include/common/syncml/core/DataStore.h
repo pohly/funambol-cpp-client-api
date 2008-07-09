@@ -1,24 +1,42 @@
 /*
- * Copyright (C) 2005-2006 Funambol
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * Funambol is a mobile platform developed by Funambol, Inc. 
+ * Copyright (C) 2003 - 2007 Funambol, Inc.
+ * 
+ * This program is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU Affero General Public License version 3 as published by
+ * the Free Software Foundation with the addition of the following permission 
+ * added to Section 15 as permitted in Section 7(a): FOR ANY PART OF THE COVERED
+ * WORK IN WHICH THE COPYRIGHT IS OWNED BY FUNAMBOL, FUNAMBOL DISCLAIMS THE 
+ * WARRANTY OF NON INFRINGEMENT  OF THIRD PARTY RIGHTS.
+ * 
+ * This program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
+ * details.
+ * 
+ * You should have received a copy of the GNU Affero General Public License 
+ * along with this program; if not, see http://www.gnu.org/licenses or write to
+ * the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
+ * MA 02110-1301 USA.
+ * 
+ * You can contact Funambol, Inc. headquarters at 643 Bair Island Road, Suite 
+ * 305, Redwood City, CA 94063, USA, or at email address info@funambol.com.
+ * 
+ * The interactive user interfaces in modified source and object code versions
+ * of this program must display Appropriate Legal Notices, as required under
+ * Section 5 of the GNU Affero General Public License version 3.
+ * 
+ * In accordance with Section 7(b) of the GNU Affero General Public License
+ * version 3, these Appropriate Legal Notices must retain the display of the
+ * "Powered by Funambol" logo. If the display of the logo is not reasonably 
+ * feasible for technical reasons, the Appropriate Legal Notices must display
+ * the words "Powered by Funambol".
  */
 
 
 #ifndef INCL_DATA_STORE
 #define INCL_DATA_STORE
+/** @cond DEV */
 
 #include "base/fscapi.h"
 #include "base/util/ArrayList.h"
@@ -26,10 +44,13 @@
 #include "syncml/core/ContentTypeInfo.h"
 #include "syncml/core/DSMem.h"
 #include "syncml/core/SyncCap.h"
+#include "base/globalsdef.h"
+
+BEGIN_NAMESPACE
 
 
 class DataStore : public ArrayElement {
-    
+
      // ------------------------------------------------------------ Private data
     private:
         SourceRef*       sourceRef;
@@ -39,14 +60,15 @@ class DataStore : public ArrayElement {
         ArrayList*       rx; // ContentTypeInfo[]
         ContentTypeInfo* txPref;
         ArrayList*       tx; // ContentTypeInfo[]
+        ArrayList*       ctCaps;
         DSMem*           dsMem;
-        SyncCap*         syncCap;  
+        SyncCap*         syncCap;
 
         void initialize();
-    
-    // ---------------------------------------------------------- Public data    
+
+    // ---------------------------------------------------------- Public data
     public:
-        
+
         DataStore();
         ~DataStore();
 
@@ -78,8 +100,9 @@ class DataStore : public ArrayElement {
                   ArrayList* rx,
                   ContentTypeInfo* txPref,
                   ArrayList* tx,
+                  ArrayList* ct_Caps,
                   DSMem* dsMem,
-                  SyncCap* syncCap);        
+                  SyncCap* syncCap);
 
         /**
          * Gets the sourceRef properties
@@ -101,7 +124,7 @@ class DataStore : public ArrayElement {
          *
          * @return the displayName properties
          */
-        char*  getDisplayName(char*  retDisplayName);
+        const char* getDisplayName();
 
         /**
          * Sets the displayName property
@@ -109,7 +132,7 @@ class DataStore : public ArrayElement {
          * @param displayName the displauName property
          *
          */
-        void setDisplayName(char*  displayName);
+        void setDisplayName(const char* displayName);
 
         /**
          * Gets the maxGUIDSize properties
@@ -206,8 +229,27 @@ class DataStore : public ArrayElement {
          */
         void setSyncCap(SyncCap* syncCap);
 
+        /**
+         * Gets an array of CtCaps corresponds to &lt;CTCap&gt; element
+         *
+         * @return an array of CTCaps corresponds to &lt;CTCap&gt; element
+         */
+        ArrayList* getCtCaps();
+
+        /**
+         * Sets an array of CtCaps
+         *
+         * @param Ct_Caps an array of Ctcaps
+         */
+        void setCtCaps(ArrayList* Ct_Caps);
+
+
         ArrayElement* clone();
-   
+
 };
 
+
+END_NAMESPACE
+
+/** @endcond */
 #endif

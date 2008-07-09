@@ -1,30 +1,53 @@
 /*
- * Copyright (C) 2005-2006 Funambol
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * Funambol is a mobile platform developed by Funambol, Inc. 
+ * Copyright (C) 2003 - 2007 Funambol, Inc.
+ * 
+ * This program is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU Affero General Public License version 3 as published by
+ * the Free Software Foundation with the addition of the following permission 
+ * added to Section 15 as permitted in Section 7(a): FOR ANY PART OF THE COVERED
+ * WORK IN WHICH THE COPYRIGHT IS OWNED BY FUNAMBOL, FUNAMBOL DISCLAIMS THE 
+ * WARRANTY OF NON INFRINGEMENT  OF THIRD PARTY RIGHTS.
+ * 
+ * This program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
+ * details.
+ * 
+ * You should have received a copy of the GNU Affero General Public License 
+ * along with this program; if not, see http://www.gnu.org/licenses or write to
+ * the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
+ * MA 02110-1301 USA.
+ * 
+ * You can contact Funambol, Inc. headquarters at 643 Bair Island Road, Suite 
+ * 305, Redwood City, CA 94063, USA, or at email address info@funambol.com.
+ * 
+ * The interactive user interfaces in modified source and object code versions
+ * of this program must display Appropriate Legal Notices, as required under
+ * Section 5 of the GNU Affero General Public License version 3.
+ * 
+ * In accordance with Section 7(b) of the GNU Affero General Public License
+ * version 3, these Appropriate Legal Notices must retain the display of the
+ * "Powered by Funambol" logo. If the display of the logo is not reasonably 
+ * feasible for technical reasons, the Appropriate Legal Notices must display
+ * the words "Powered by Funambol".
  */
 
 #ifndef INCL_SYNCCLIENT
     #define INCL_SYNCCLIENT
+/** @cond API */
+/** @addtogroup Client */
+/** @{ */
 
     #include "base/fscapi.h"
     #include "base/Log.h"
-    #include "spds/SyncManagerConfig.h"
+    #include "spds/AbstractSyncConfig.h"
     #include "spds/SyncSource.h"
     #include "spds/constants.h"
     #include "spds/SyncReport.h"
+#include "base/globalsdef.h"
+
+BEGIN_NAMESPACE
 
     /**
      * This class wraps the common operations executed by a typical
@@ -33,7 +56,7 @@
      * synchronization. A client can override these calls by
      * subclassing SyncClient and using an instance of its own class
      * instead.
-     * 
+     *
      * Warning: the library contains global data in several different
      * places. Therefore it is not possible to execute multiple
      * sessions in parallel.
@@ -54,7 +77,7 @@
          *
          * @return - 0 on success, an error otherwise
          */
-        virtual int sync(SyncManagerConfig& config, SyncSource** sources);
+        virtual int sync(AbstractSyncConfig& config, SyncSource** sources);
 
         /**
          * Execute a synchronization with sources that are chosen based
@@ -79,7 +102,7 @@
          *                      from the configuration.
          * @return 0 on success, an error otherwise
          */
-        virtual int sync(SyncManagerConfig& config, char** sourceNames = NULL);
+        virtual int sync(AbstractSyncConfig& config, char** sourceNames = NULL);
 
         /*
          * Returns a pointer to the internal syncReport.
@@ -100,7 +123,7 @@
          * @return 0       for success, an error code otherwise - an error code
          *                 aborts the whole synchronization
          */
-        virtual int prepareSync(SyncManagerConfig& config) {
+        virtual int prepareSync(AbstractSyncConfig& /* config */) {
             return ERR_NONE;
         }
 
@@ -115,7 +138,7 @@
          * @param config   a pointer to the source's configuration: this
          *                 includes all properties that the client library
          *                 knows and uses itself (only valid during this call)
-         *                 This pointer is owned by SyncManagerConfig, sources uses it
+         *                 This pointer is owned by AbstractSyncConfig, sources uses it
          *                 to initialize the internal config by reference.
          * @retval source  the sync source created by the client or NULL if
          *                 there is no sync source currently associated with
@@ -125,8 +148,8 @@
          *         aborts the whole synchronization and the value of *source is
          *         ignored
          */
-        virtual int createSyncSource(const char *name, const int pos,
-                                     SyncSourceConfig* config,
+        virtual int createSyncSource(const char * /* name */, const int /* pos */,
+                                     AbstractSyncSourceConfig* /* config */,
                                      SyncSource **source) {
             *source = NULL;
             return ERR_UNSPECIFIED;
@@ -137,7 +160,7 @@
          * @return 0 for success, an error code otherwise - an error code stops
          *         immediately
          */
-        virtual int beginSync(SyncSource **source) {
+        virtual int beginSync(SyncSource ** /* source */) {
             return ERR_NONE;
         }
 
@@ -145,7 +168,7 @@
          * Callback invoked after the sync process.
          * @return: 0 for success, an error code otherwise
          */
-        virtual int endSync(SyncSource **source) {
+        virtual int endSync(SyncSource ** /* source */) {
             return ERR_NONE;
         }
 
@@ -165,12 +188,16 @@
         virtual int continueAfterSync() {
             return ERR_NONE;
         }
-        
+
         // The report of the synchronization process.
         // Sources reports are initializated during sync(sources**) call.
         SyncReport syncReport;
     };
 
 
+END_NAMESPACE
+
+/** @} */
+/** @endcond */
 #endif
 

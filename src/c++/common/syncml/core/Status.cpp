@@ -1,26 +1,46 @@
 /*
- * Copyright (C) 2003-2006 Funambol
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * Funambol is a mobile platform developed by Funambol, Inc. 
+ * Copyright (C) 2003 - 2007 Funambol, Inc.
+ * 
+ * This program is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU Affero General Public License version 3 as published by
+ * the Free Software Foundation with the addition of the following permission 
+ * added to Section 15 as permitted in Section 7(a): FOR ANY PART OF THE COVERED
+ * WORK IN WHICH THE COPYRIGHT IS OWNED BY FUNAMBOL, FUNAMBOL DISCLAIMS THE 
+ * WARRANTY OF NON INFRINGEMENT  OF THIRD PARTY RIGHTS.
+ * 
+ * This program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
+ * details.
+ * 
+ * You should have received a copy of the GNU Affero General Public License 
+ * along with this program; if not, see http://www.gnu.org/licenses or write to
+ * the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
+ * MA 02110-1301 USA.
+ * 
+ * You can contact Funambol, Inc. headquarters at 643 Bair Island Road, Suite 
+ * 305, Redwood City, CA 94063, USA, or at email address info@funambol.com.
+ * 
+ * The interactive user interfaces in modified source and object code versions
+ * of this program must display Appropriate Legal Notices, as required under
+ * Section 5 of the GNU Affero General Public License version 3.
+ * 
+ * In accordance with Section 7(b) of the GNU Affero General Public License
+ * version 3, these Appropriate Legal Notices must retain the display of the
+ * "Powered by Funambol" logo. If the display of the logo is not reasonably 
+ * feasible for technical reasons, the Appropriate Legal Notices must display
+ * the words "Powered by Funambol".
  */
- 
- 
+
+
 #include "syncml/core/Status.h"
- 
-Status::Status() {    
-    
+#include "base/globalsdef.h"
+
+USE_NAMESPACE
+
+Status::Status() {
+
    initialize();
 }
 Status::~Status() {
@@ -38,8 +58,8 @@ Status::~Status() {
 * @param msgRef message reference
 * @param cmdRef command reference - NOT NULL
 * @param cmd command - NOT NULL
-* @param targetRefs target references. If null 
-* @param sourceRefs source references. If null 
+* @param targetRefs target references. If null
+* @param sourceRefs source references. If null
 * @param cred authentication credentials
 * @param chal authentication challenge
 * @param data status data - NOT NULL
@@ -62,7 +82,7 @@ Status::Status(CmdID*        cmdID     ,
                                                            targetRefs,
                                                            sourceRefs,
                                                            items)  {
-    
+
     initialize();
 
     setCred(cred);
@@ -72,10 +92,10 @@ Status::Status(CmdID*        cmdID     ,
 }
 
 void Status::initialize() {
-    
+
     COMMAND_NAME = new char[strlen(STATUS_COMMAND_NAME) + 1];
     sprintf(COMMAND_NAME, STATUS_COMMAND_NAME);
-    
+
     chal        = NULL;
     data        = NULL;
     cmd         = NULL;
@@ -130,7 +150,7 @@ void Status::setData(Data* data) {
             delete this->data; this->data = NULL;
         }
         this->data = data->clone();
-    }        
+    }
 }
 
 /**
@@ -138,23 +158,20 @@ void Status::setData(Data* data) {
 *
 * @return the cmd element
 */
-char* Status::getCmd(char* retCmd) {
-    if (retCmd == NULL) {
-        return cmd;
-    }
-    return strcpy(retCmd, cmd);
+const char* Status::getCmd() {
+    return cmd;
 }
 
 /**
 * Sets the cmd element
 *
 * @param cmd the new cmd element - NOT NULL
-*         
+*
 */
 void Status::setCmd(const char* cmd) {
     if (cmd == NULL) {
         // TBD
-    } else { 
+    } else {
         if (this->cmd) {
             delete [] this->cmd; this->cmd = NULL;
         }
@@ -168,8 +185,8 @@ void Status::setCmd(const char* cmd) {
 * @return the status code as int
 */
 int Status::getStatusCode() {
-    return strtol(data->getData(NULL), NULL, 10);
-    
+    return strtol(data->getData(), NULL, 10);
+
 }
 
 /**
@@ -177,12 +194,12 @@ int Status::getStatusCode() {
 *
 * @return the command name
 */
-char* Status::getName() {
+const char* Status::getName() {
     return COMMAND_NAME;
 }
 
 ArrayElement* Status::clone() {
-    Status* ret = new Status(getCmdID(), getMsgRef(NULL), getCmdRef(NULL), getCmd(NULL), getTargetRef(),
+    Status* ret = new Status(getCmdID(), getMsgRef(), getCmdRef(), getCmd(), getTargetRef(),
                              getSourceRef(), getCred(), chal, data, getItems());
     return ret;
 }

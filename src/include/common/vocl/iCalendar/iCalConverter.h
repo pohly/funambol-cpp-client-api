@@ -1,14 +1,56 @@
+/*
+ * Funambol is a mobile platform developed by Funambol, Inc. 
+ * Copyright (C) 2003 - 2007 Funambol, Inc.
+ * 
+ * This program is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU Affero General Public License version 3 as published by
+ * the Free Software Foundation with the addition of the following permission 
+ * added to Section 15 as permitted in Section 7(a): FOR ANY PART OF THE COVERED
+ * WORK IN WHICH THE COPYRIGHT IS OWNED BY FUNAMBOL, FUNAMBOL DISCLAIMS THE 
+ * WARRANTY OF NON INFRINGEMENT  OF THIRD PARTY RIGHTS.
+ * 
+ * This program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
+ * details.
+ * 
+ * You should have received a copy of the GNU Affero General Public License 
+ * along with this program; if not, see http://www.gnu.org/licenses or write to
+ * the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
+ * MA 02110-1301 USA.
+ * 
+ * You can contact Funambol, Inc. headquarters at 643 Bair Island Road, Suite 
+ * 305, Redwood City, CA 94063, USA, or at email address info@funambol.com.
+ * 
+ * The interactive user interfaces in modified source and object code versions
+ * of this program must display Appropriate Legal Notices, as required under
+ * Section 5 of the GNU Affero General Public License version 3.
+ * 
+ * In accordance with Section 7(b) of the GNU Affero General Public License
+ * version 3, these Appropriate Legal Notices must retain the display of the
+ * "Powered by Funambol" logo. If the display of the logo is not reasonably 
+ * feasible for technical reasons, the Appropriate Legal Notices must display
+ * the words "Powered by Funambol".
+ */
+
+
 #ifndef INCL_VIRTUAL_CALENDAR_CONVERTER
 #define INCL_VIRTUAL_CALENDAR_CONVERTER
+/** @cond DEV */
 
 #include "base/fscapi.h"
 #include "vocl/iCalendar/Calendar.h"
 #include "vocl/VConverter.h"
+#include "base/globalsdef.h"
+
+BEGIN_NAMESPACE
+
+class WString;
 
 #define EVENT_PROPERTIES_LIST TEXT("BEGIN,CLASS,CREATED,DESCRIPTION,DTSTART,GEO,LAST-MODIFIED,LOCATION,ORGANIZER,PRIORITY,") \
                                    TEXT("DTSTAMP,SEQUENCE,STATUS,SUMMARY,TRANSP,UID,URL,RECURRENCE-ID,DTEND,DURATION,ATTACH,ATTENDEE,") \
                                    TEXT("CATEGORIES,COMMENT,CONTACT,EXDATE,EXRULE,REQUEST-STATUS,RELATED,RESOURCES,RDATE,RRULE,END,GROUP")
-   
+
 #define TODO_PROPERTIES_LIST  TEXT("BEGIN,CLASS,COMPLETED,CREATED,DESCRIPTION,DTSTAMP,DTSTART,GEO,LAST-MODIFIED,LOCATION,ORGANIZER,PERCENT-COMPLETE,") \
                                    TEXT("PRIORITY,RECURRENCE-ID,SEQUENCE,STATUS,SUMMARY,UID,URL,DUE,DURATION,ATTACH,ATTENDEE,") \
                                    TEXT("CATEGORIES,COMMENT,CONTACT,EXDATE,EXRULE,REQUEST-STATUS,RELATED,RESOURCES,RDATE,RRULE,END,GROUP")
@@ -39,15 +81,15 @@
 //#define isdigit(c) ((c) >= '0' && (c)<= '9') FIXME
 
 
-class iCalConverter { 
+class iCalConverter {
 private:
     WCHAR* iCalendar;
-    Calendar* calendar; 
-    bool validateEvent(Event*, WCHAR* error, long* errorCode);
-    bool validateTodo(ToDo*, WCHAR* error, long* errorCode);
-    bool validatePropery(VProperty*, WCHAR* error, long* errorCode);
-    Event* extractEvent(VObject* vo, WCHAR* errorDescription, long* errorCode);
-    ToDo* extractTask(VObject* vo, WCHAR* errorDescription, long* errorCode);
+    Calendar* calendar;
+    bool validateEvent(Event*, WString& error, long* errorCode);
+    bool validateTodo(ToDo*, WString& error, long* errorCode);
+    bool validatePropery(VProperty*, WString& error, long* errorCode);
+    Event* extractEvent(VObject* vo, WString& errorDescription, long* errorCode);
+    ToDo* extractTask(VObject* vo, WString& errorDescription, long* errorCode);
     bool validateGeo(WCHAR* geo);
     bool validateDT(WCHAR* dt);
     bool validateDate(WCHAR* date);
@@ -61,6 +103,10 @@ public:
     void setSource(Calendar& inputCalendar);
     void getICalendar(WCHAR* vCard);
     void getCalendar(Calendar** outputContact);
-    bool convert(WCHAR* error, long* errorCode);
+    bool convert(WString& error, long* errorCode);
 };
+
+END_NAMESPACE
+
+/** @endcond */
 #endif
