@@ -104,7 +104,8 @@ DeviceManagementNode::~DeviceManagementNode() {
 }
 
 
-void DeviceManagementNode::update(bool read) {
+void DeviceManagementNode::update(bool read) 
+{
     if (!read && !modified) {
         // no work to be done
         return;
@@ -114,6 +115,16 @@ void DeviceManagementNode::update(bool read) {
     concatDirs(fileName, configFile.c_str());
     const char* fname = fileName.c_str();
     FILE* file = fopen(fname, "r");
+    
+    if (!file) {
+        // Maybe the file or directory does not exist: create it and try again.
+        LOG.debug("Could not open file, create it empty: '%s'", fileName.c_str());
+        mkdirAll(currentDir);
+        file = fopen(fname, "w+");  // "w+" to create the file and be able to read/write
+        
+        // Anyway, set the last error so Clients can know the file was not found.
+        setErrorF(ERR_DM_TREE_NOT_AVAILABLE, "File not found: '%s'", fileName.c_str());
+    }
 
     if (file) {
         // Open a temp file in writing mode if we must update the config
@@ -121,6 +132,11 @@ void DeviceManagementNode::update(bool read) {
             fclose(file);
             fileName.append(".tmp");
             file = fopen(fileName, "w");
+            if (!file) {
+                setErrorF(ERR_INVALID_CONTEXT, "Error opening file: '%s'", fileName.c_str());
+                LOG.error("%s", getLastErrorMsg());
+                return;
+            }
         }
 
         if (read) {
@@ -157,13 +173,24 @@ void DeviceManagementNode::update(bool read) {
                 StringBuffer tmpConfig = configFile;
                 tmpConfig += ".tmp";
 
-                fclose(file);   // Both files must be closed for the rename.
+                // Both files must be closed for the rename.
+                int ret = fclose(file);
+                if (ret) {
+                    setErrorF(ret, "Error (%d) closing file: '%s'", ret, fileName.c_str());
+                    return;
+                }
+
                 renameFileInCwd( tmpConfig.c_str(), configFile.c_str());
             }
             else {
                 fclose(file);
             }
         }
+    }
+    else {
+        setErrorF(ERR_DM_TREE_NOT_AVAILABLE, "Error opening file: '%s'", fileName.c_str());
+        LOG.error("%s", getLastErrorMsg());
+        return;
     }
 }
 
@@ -489,18 +516,7 @@ ArrayElement* DeviceManagementNode::clone()
     return ret;
 }
 
-void DeviceManagementNode::concatDirs(StringBuffer& src1, const char* src2) {
- 
-    // If the src path terminates with \\ then there is no
-    // need to add it again (this would be an illegal symbian path)
-    // Unfortunately we cannot use StringBuffer directly for this check
-    // there is something weird with \\ in StringBuffer (at least on symbian)
-    const char* chars = src1.c_str();
-    if (chars[strlen(chars)-1] != '\\') {
-        src1.append("\\");
-    }
-    src1.append(src2);
-}
+
 
 void DeviceManagementNode::initCurrentDir() {
 
@@ -519,14 +535,6 @@ void DeviceManagementNode::initCurrentDir() {
     }
 }
 
-StringBuffer DeviceManagementNode::contextToPath(const char* cont) {
-    // Contextes are defined as: (string/)* and on Symbian
-    // we map them to file. But Symbian uses backslashes as
-    // directory separator.
-    StringBuffer sb(cont);
-    sb.replaceAll("/", "\\", 0);
-    return sb;
-}
 
 int DeviceManagementNode::renameFileInCwd(const char* src, const char* dst)
 {
