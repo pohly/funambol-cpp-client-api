@@ -156,5 +156,42 @@ void logMemInfo() {
 }
 
 
+TInt mkdirAll(const StringBuffer& aPath)
+{
+    TInt err = KErrNone;
+    
+    // Transform: "/" -> "\"
+    StringBuffer path(aPath);
+    path = contextToPath(path.c_str());
+
+    // Trailing char MUST be "\"
+    const char* chars = path.c_str();
+    if (chars[strlen(chars)-1] != '\\') {
+        path += "\\";
+    }
+    
+    //LOG.debug("creating dir: '%s'", path.c_str());
+    
+    // Connect to the file server
+    RFs fileSession;
+    err = fileSession.Connect();
+    if (err) {
+        LOG.error("Cannot connect to the file server (code %d)", err);
+        return err;
+    }
+    CleanupClosePushL(fileSession);
+    
+    // Make the dirs
+    RBuf pathDes;
+    pathDes.Assign(stringBufferToNewBuf(path));
+    err = fileSession.MkDirAll(pathDes);
+    pathDes.Close();
+    
+    CleanupStack::PopAndDestroy(&fileSession);
+    return err;
+}
+
+
+
 END_NAMESPACE
 

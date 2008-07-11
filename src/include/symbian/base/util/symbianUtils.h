@@ -83,6 +83,8 @@ void showAlert(const WCHAR* aMsg);
  */
 void logMemInfo();
 
+TInt mkdirAll(const StringBuffer& aPath);
+
 END_NAMESPACE
 
 

@@ -89,6 +89,21 @@ HBufC8*       charToNewBuf8(const char*   aInput);
 StringBuffer buf8ToStringBuffer(const TDesC8&       aInput);
 HBufC8* stringBufferToNewBuf8  (const StringBuffer& aInput);
 
+
+/**
+ * Contextes are defined as: (string/)* and on Symbian
+ * we map them to file. But Symbian uses backslashes as
+ * directory separator.
+ */
+StringBuffer contextToPath(const char* cont);
+
+/**
+ * Concatenate two directory names (of file names)
+ * If src1 is terminated by dir separator then src2 is simply appended
+ * otherwise a dir separator is inserted first.
+ */
+void concatDirs(StringBuffer& src1, const char* src2);
+
 END_NAMESPACE
 
 #endif /*INCL_STRING_UTILS*/
