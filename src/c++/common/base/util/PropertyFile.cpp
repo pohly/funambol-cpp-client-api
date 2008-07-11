@@ -45,7 +45,7 @@ int PropertyFile::read() {
     FILE* f;
     f = fopen(node, "r");
     if (!f) {
-        LOG.error("PropertyFile: it is not possible to read the file");
+        LOG.debug("PropertyFile: it is not possible to read the file: '%s'", node.c_str());
         return -1;
     }
     while(fgets(line, 511, f) != NULL) {
@@ -77,7 +77,7 @@ int PropertyFile::save() {
         ret = 0;
 
     } else {
-        LOG.error("PropertyFile: it is not possible to save the file");
+        LOG.error("PropertyFile: it is not possible to save the file: '%s'", node.c_str());
         ret = -1;
     }
     return ret;
