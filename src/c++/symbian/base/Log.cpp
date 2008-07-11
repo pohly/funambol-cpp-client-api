@@ -107,7 +107,8 @@ SymbianLog::SymbianLog(bool resetLog, const char* /* path */, const char* /* nam
     return;
 }
 
-SymbianLog::~SymbianLog() {   
+SymbianLog::~SymbianLog() {
+    fsSession.Close();
 }
 
 void SymbianLog::setLogPath(const char* /* configLogPath */) {
@@ -233,7 +234,6 @@ void SymbianLog::printMessage(const char* level, const char* msg, PLATFORM_VA_LI
     }
 
     {
-
         // Write the data
         StringBuffer line, data;
         line.sprintf("%s -%s- %s", currentTime.c_str(), level, msg);
