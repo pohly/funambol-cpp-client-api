@@ -59,7 +59,6 @@
     #define POSIX 1
     #elif defined(__APPLE__) && defined(__MACH__)
     /* This is a MacOSx < 10.5 */
-    #define MAC   1
     #define POSIX 1
     #elif defined(_WIN32_WCE) || defined(WIN32)
     /* This is windows or windows mobile, in this case we don't have our
