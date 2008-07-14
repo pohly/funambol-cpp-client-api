@@ -84,9 +84,11 @@ char* MacTransportAgent::sendMessage(const char* msg){
     bool gotflags = SCNetworkReachabilityGetFlags(scnReachRef, &flags);
     bool isReachable = flags & kSCNetworkReachabilityFlagsReachable;
     bool noConnectionRequired = !(flags & kSCNetworkReachabilityFlagsConnectionRequired);
+#if defined(__ENVIRONMENT_IPHONE_OS_VERSION_MIN_REQUIRED__)
     if ((flags & kSCNetworkReachabilityFlagsIsWWAN)) {
         noConnectionRequired = true;
     }
+#endif
     
 
     if ( gotflags && isReachable && noConnectionRequired ){
