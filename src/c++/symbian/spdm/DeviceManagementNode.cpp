@@ -380,6 +380,12 @@ finally:
  * @param value - the property value (zero terminated string)
  */
 void DeviceManagementNode::setPropertyValue(const char* property, const char* newvalue) {
+    
+    if (!property || !newvalue) {
+        LOG.debug("DeviceManagementNode::setPropertyValue - Warning, NULL char*!");
+        return;
+    }
+    
     int i = 0;
 
     while (true) {
