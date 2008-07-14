@@ -99,39 +99,25 @@ void CTPConfig::readCTPConfig() {
         return;
     }
 
-    if (readAccessConfig(*syncMLNode)) {
-        setUsername(accessConfig.getUsername());
-        // urlTo is loaded from 'ctpServer' key   
-        // nonce is read calling 'readAccessConfig()'
-    }
+    readAccessConfig(*syncMLNode);      // nonce is read with this call
+    readDeviceConfig(*syncMLNode);      // devID is read with this call
 
-    bool passEncoded = false;
-    // TODO we should stringbuffer instead of malloc/new strings
-    char* passDecoded;
-    if (passEncoded) {
-#if 0
-        // FIXME TODO
-        passDecoded = decodePassword(accessConfig.getPassword());
-        accessConfig.setPassword(passDecoded);
-#endif
-    } else {
-        passDecoded = stringdup(accessConfig.getPassword());
-        accessConfig.setPassword(passDecoded);
-    }
-    delete [] passDecoded;
-
-    if (readDeviceConfig(*syncMLNode)) {
-        setDeviceId(deviceConfig.getDevID());
-
-    }
     
-    // now read the single CTP properties
+    bool passEncoded = false;
+#if 0
+    // TODO: decode password if encoded!
+    passDecoded = decodePassword(accessConfig.getPassword());
+    accessConfig.setPassword(passDecoded);
+#endif
+    
+    //
+    // Read the single CTP properties
+    //
     ManagementNode* node;
     char nodeName[DIM_MANAGEMENT_PATH];
     nodeName[0] = 0;
     sprintf(nodeName, "%s%s", rootContext, CONTEXT_PUSH_CTP);
     
-
     node = dmt->readManagementNode(nodeName);
     if (node) 
     {
@@ -226,17 +212,14 @@ void CTPConfig::readCTPConfig() {
         } else {
             // If 'ctpServer' reg value is empty, extract the url from 'syncUrl'
             setUrlTo(getHostName(accessConfig.getSyncURL()));
-        }                
+        }
         delete [] tmp;
-
 
         delete node;
         node = NULL;
     }
     
     close();
-    return;
-
 }
 
 
@@ -249,35 +232,85 @@ void CTPConfig::saveCTPConfig() {
         return;
     }
 
+    // TODO: encode password if necessary
     bool passwordEncoded = false;
-
-    StringBuffer buffer;
     if (passwordEncoded) {
+        StringBuffer buffer;
         buffer = encodePassword(accessConfig.getPassword());
-    } else {
-        buffer = accessConfig.getPassword();
+        accessConfig.setPassword(buffer.c_str());
     }
-    accessConfig.setPassword(buffer.c_str());
+    
     // Save the nonce: save AuthConfig properties
-    char nodeName[DIM_MANAGEMENT_PATH];
-    sprintf(nodeName, "%s%s%s", APPLICATION_URI, CONTEXT_SPDS_SYNCML, CONTEXT_AUTH);
-    node = dmt->readManagementNode(nodeName);
+    StringBuffer nodeName("");
+    nodeName.sprintf("%s%s%s", APPLICATION_URI, CONTEXT_SPDS_SYNCML, CONTEXT_AUTH);
+    node = dmt->readManagementNode(nodeName.c_str());
     if (node) {
         saveAuthConfig(*syncMLNode, *node);
         delete node;
     }
 
-    //char* passDecoded;
     if (passwordEncoded) {
 #if 0
         // TODO FIXME
-        passDecoded = decodePassword(accessConfig.getPassword());
+        char* passDecoded = decodePassword(accessConfig.getPassword());
         accessConfig.setPassword(passDecoded);
         delete [] passDecoded;
 #endif
     } else {
         // Nothing to do: the password is already in clear text.
     }
+    
+    
+    //
+    // Save the single CTP properties
+    //
+    nodeName.sprintf("%s%s", APPLICATION_URI, CONTEXT_PUSH_CTP);
+    node = dmt->readManagementNode(nodeName.c_str());
+    if (node) 
+    {
+        // NOTE: Leave it empty: so it's generated each time we call readCTPConfig()
+        // So when we change the ServerURL, the 'urlTo' value is changed accordingly.
+        node->setPropertyValue(PROPERTY_CTP_SERVER, "");
+        
+        StringBuffer value("");
+        value.sprintf("%ld", ctpCmdTimeout);
+        node->setPropertyValue(CTP_CMD_TIMEOUT, value.c_str());
+        
+        value.sprintf("%ld", ctpConnTimeout);
+        node->setPropertyValue(CTP_CONN_TIMEOUT, value.c_str());
+        
+        value.sprintf("%ld", ctpPort);
+        node->setPropertyValue(CTP_PORT, value.c_str());
+        
+        value.sprintf("%ld", ctpReady);
+        node->setPropertyValue(CTP_READY, value.c_str());
+        
+        value.sprintf("%ld", ctpRetry);
+        node->setPropertyValue(CTP_RETRY, value.c_str());
+        
+        value.sprintf("%ld", maxCtpRetry);
+        node->setPropertyValue(CTP_MAX_RETRY_TIMEOUT, value.c_str());
+        
+        value.sprintf("%ld", notifyTimeout);
+        node->setPropertyValue(PROPERTY_NOTIFY_TIMEOUT, value.c_str());
+        
+        value.sprintf("%ld", maxCtpRetry);
+        node->setPropertyValue(CTP_MAX_RETRY_TIMEOUT, value.c_str());
+        
+        /* -- Not used now --
+        value.sprintf("%d", push);
+        node->setPropertyValue(PROPERTY_PUSH_NOTIFICATION, value.c_str());
+
+        value.sprintf("%d", polling);
+        node->setPropertyValue(PROPERTY_POLLING_NOTIFICATION, value.c_str());
+
+        value.sprintf("%d", queuePush);
+        node->setPropertyValue(CTP_QUEUE_PUSH, value.c_str());
+        */
+        
+        delete node;
+    }
+
     close();
 }
                       
