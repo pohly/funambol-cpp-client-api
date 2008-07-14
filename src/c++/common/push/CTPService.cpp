@@ -322,12 +322,12 @@ int32_t CTPService::sendAuthMsg(){
     // Fill parameters (read values from config)
     CTPParam devId;
     devId.setParamCode(P_DEVID);
-    devId.setValue(config.getDeviceId().c_str(), config.getDeviceId().length());
+    devId.setValue(config.getDevID(), strlen(config.getDevID()));
     authMsg.addParam(&devId);
 
     CTPParam username;
     username.setParamCode(P_USERNAME);
-    username.setValue(config.getUsername().c_str(), config.getUsername().length());
+    username.setValue(config.getUsername(), strlen(config.getUsername()));
     authMsg.addParam(&username);
 
     CTPParam cred;
@@ -346,8 +346,8 @@ int32_t CTPService::sendAuthMsg(){
         authMsg.addParam(&from);
     }
 
-    LOG.info ("AUTH: devId='%s', user='%s', cred='%s'", config.getDeviceId().c_str(), 
-                                                        config.getUsername().c_str(),
+    LOG.info ("AUTH: devId='%s', user='%s', cred='%s'", config.getDevID(), 
+                                                        config.getUsername(),
                                                         credentials.c_str() );
 
     // Send message
@@ -1153,7 +1153,7 @@ bool CTPThread::saveNonceParam(CTPMessage* authStatusMsg) {
     //hexDump((char*)nonce, nonceLen);
     LOG.debug("New nonce received: '%s'", b64Nonce);
 
-    // Save new nonce to config, and save config to registry!
+    // Save new nonce to config, and save config!
     CTPService* ctpService = CTPService::getInstance();
     ctpService->getConfig()->setCtpNonce(b64Nonce);
     ctpService->getConfig()->saveCTPConfig();
