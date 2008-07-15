@@ -12,6 +12,14 @@ can get it either by compiling libcurl from source
 (http://curl.haxx.se/) or by installing a libcurl development
 package for your operating system.
 
+MacOS Notes
+===========
+To build on MacOS, please set the following env variables before 
+issuing the configure command:
+
+export CFLAGS="-isysroot /Developer/SDKs/MacOSX10.4u.sdk"
+export LDFLAGS="-isysroot /Developer/SDKs/MacOSX10.4u.sdk -Wl,-syslibroot,/Developer/SDKs/MacOSX10.4u.sdk"
+export MACOSX_DEPLOYMENT_TARGET=10.4
 
 Maintainer Notes
 ================
