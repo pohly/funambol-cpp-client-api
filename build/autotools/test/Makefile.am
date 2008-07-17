@@ -6,10 +6,10 @@ CXXDIR  = $(srcdir)/../../../src/c++
 INCDIR  = $(srcdir)/../../../src/include
 TESTDIR = $(srcdir)/../../../test
 
-LDADD = ../src/libsync4j.la 
+LDADD = ../src/libfunambol.la 
 AM_LDFLAGS = @CURL_LDFLAGS@ @CPPUNIT_LDFLAGS@
 AM_CXXFLAGS = @CURL_CFLAGS@ @CPPUNIT_CXXFLAGS@
-AM_CPPFLAGS = -I$(INCDIR)/posix -I$(INCDIR)/common -DPOSIX
+AM_CPPFLAGS = -I$(INCDIR)/posix -I$(INCDIR)/common -DFUNAMBOL_BUILD_API
 
 vpath %.cpp	$(TESTDIR) \
 		$(TESTDIR)/common/base/util \
@@ -30,12 +30,7 @@ TESTS_BASE = \
     
 TESTCASES = $(TESTS_BASE)
 
-# With --disable-shared autotools links against libsync4j.a which does not
-# pull any of the test suites into the test binary, so they would not be
-# executed. The workaround is to explicitly set them as undefined on the
-# link line.
 client_test_SOURCES = $(SOURCES) $(TESTCASES)
-#client_test_LDFLAGS = libsync4j.la
 
 # ensure that files are in the current directory before the check runs
 check-am check: client-test-files
@@ -87,7 +82,7 @@ CLEANFILES = $(nobase_pkginclude_HEADERS)
 # fix files for public distribution
 $(source_files): %: ../../../%
 	mkdir -p ${@D}
-	sed -e 's/WCHAR/char/g' -e 's/= *NULL/= 0/g' -e 's/__declspec([^)]*)//g' -e 's/__cdecl//g' -e 's/EXTRA_SECTION_[0123456789]*//g' $< >$@
+	cp  $< $@
 
 # just copy for distribution
 $(verbatim_files): %: ../../../%

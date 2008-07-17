@@ -1,6 +1,6 @@
 #EXTRA_PROGRAMS = vcardconverter
 EXTRA_PROGRAMS = briefcase
-lib_LTLIBRARIES = libsync4j.la
+lib_LTLIBRARIES = libfunambol.la
 
 SOURCES_BASE = \
     lLog.cpp \
@@ -194,29 +194,29 @@ SOURCES_VOCL = \
     lvCardConverter.cpp \
     lvCardProperty.cpp
 
-SOURCES_LIBSYNC4J = $(SOURCES_BASE) $(SOURCES_EVENT) $(SOURCES_FRAMEWORK) $(SOURCES_HTTP) $(SOURCES_SPDM) $(SOURCES_SPDS) $(SOURCES_CLIENT) $(SOURCES_VOCL)
+SOURCES_LIBFUNAMBOL = $(SOURCES_BASE) $(SOURCES_EVENT) $(SOURCES_FRAMEWORK) $(SOURCES_HTTP) $(SOURCES_SPDM) $(SOURCES_SPDS) $(SOURCES_CLIENT) $(SOURCES_VOCL)
 
 # Explicitly copy each source file here.
 # automake 1.10 creates rules which expect the *file* in this directory;
 # a symbolic link is not enough. The "l" prefix is necessary to avoid
 # a circular dependency (local copy of the same name as file in vpath).
-$(SOURCES_LIBSYNC4J): l% : %
+$(SOURCES_LIBFUNAMBOL): l% : %
 	ln -s $< $@
-CLEANFILES = $(SOURCES_LIBSYNC4J)
+CLEANFILES = $(SOURCES_LIBFUNAMBOL)
 
-libsync4j_la_SOURCES = $(SOURCES_LIBSYNC4J:%=l%)
-libsync4j_la_LDFLAGS = -version-info 3:0 @CURL_LDFLAGS@ @CPPUNIT_LDFLAGS@
-libsync4j_la_CXXFLAGS = @CURL_CFLAGS@ @CPPUNIT_CXXFLAGS@
+libfunambol_la_SOURCES = $(SOURCES_LIBFUNAMBOL:%=l%)
+libfunambol_la_LDFLAGS = -version-info 3:0 @CURL_LDFLAGS@ @CPPUNIT_LDFLAGS@
+libfunambol_la_CXXFLAGS = @CURL_CFLAGS@ @CPPUNIT_CXXFLAGS@
 
 # client_SOURCES = client.cpp TestSyncSource.cpp TestSyncSource2.cpp
-# client_LDADD = libsync4j.la
+# client_LDADD = libfunambol.la
 
 
 briefcase_SOURCES = BriefcaseClient.cpp BriefcaseCacheSyncSource.cpp
-briefcase_LDADD = libsync4j.la
+briefcase_LDADD = libfunambol.la
 
 #vcardconverter_SOURCES = vcardconverter.cpp
-#vcardconverter_LDADD = libsync4j.la
+#vcardconverter_LDADD = libfunambol.la
 
 vpath %.cpp $(srcdir)/../../../src/c++/common/base             \
             $(srcdir)/../../../src/c++/common/base/util        \

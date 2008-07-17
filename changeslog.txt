@@ -1,3 +1,6 @@
+2008-07-15
+   - gazza: renamed autotools generated library to libfunambol.a
+
 2008-04-07
    - magi: * added 
                 CacheSyncSource.h, CacheSyncSource.cpp
