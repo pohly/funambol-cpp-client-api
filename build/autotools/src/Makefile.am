@@ -118,6 +118,7 @@ SOURCES_FRAMEWORK = \
 
 SOURCES_HTTP = \
     lCurlTransportAgent.cpp \
+    lMacTransportAgent.cpp \
     lTransportAgentFactory.cpp \
     lHTTPHeader.cpp \
     lProxy.cpp \
