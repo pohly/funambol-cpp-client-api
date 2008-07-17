@@ -44,13 +44,6 @@
 #include "http/TransportAgent.h"
 #include "base/Log.h"
 
-#include <CoreFoundation/CoreFoundation.h>
-#if TARGET_IPHONE_SIMULATOR
-    #include <CoreServices/CoreServices.h>
-#else
-    #include <CFNetwork/CFNetwork.h>
-#endif
-
 #define ERR_HTTP_TIME_OUT               ERR_TRANSPORT_BASE+ 7
 #define ERR_HTTP_NOT_FOUND              ERR_TRANSPORT_BASE+60
 #define ERR_HTTP_REQUEST_TIMEOUT        ERR_TRANSPORT_BASE+61

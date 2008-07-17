@@ -45,30 +45,63 @@
     #define INCL_FSCAPI
 /** @cond DEV */
 
+    /* This is the list of possible transport agents (some are available on
+     * different platforms, while other ones are available on a single platform)
+     **/
+    #define FUN_CURL_TRANSPORT_AGENT 1
+    #define FUN_MAC_TRANSPORT_AGENT  2
+    #define FUN_WIN_TRANSPORT_AGENT  3
+    #define FUN_SYM_TRANSPORT_AGENT  4
+
     /* Autodetect target system based on compiler automatic macros */
     #if defined(__unix__) || defined(__linux__)
     /* This is a generic unix system */
     #define POSIX 1
+
+    #if !defined(FUN_TRANSPORT_AGENT)
+    #define FUN_TRANSPORT_AGENT FUN_CURL_TRANSPORT_AGENT
+    #endif
+
     #elif defined(__ENVIRONMENT_IPHONE_OS_VERSION_MIN_REQUIRED__)
     /* This is an iPhone */
-    #define MAC   1
+    #define FUN_IPHONE   1
     #define POSIX 1
-    #elif defined(__ENVIRONMENT_MAC_OS_X_VERSION_MIN_REQUIRED__)
-    /* This is a MacOSx >= 10.5 */
-    #define MAC   1
-    #define POSIX 1
+
+    #if !defined(FUN_TRANSPORT_AGENT)
+    #define FUN_TRANSPORT_AGENT FUN_MAC_TRANSPORT_AGENT
+    #endif
+
     #elif defined(__APPLE__) && defined(__MACH__)
-    /* This is a MacOSx < 10.5 */
+    /* This is a MacOSx. If needed we could use __ENVIRONMENT_MAC_OS_X_VERSION_MIN_REQUIRED__
+     * to discriminate on the OS version (e.g. 10.5 vs 10.4)
+     */
     #define POSIX 1
+    #define MAC   1
+
+    #if !defined(FUN_TRANSPORT_AGENT)
+    #define FUN_TRANSPORT_AGENT FUN_MAC_TRANSPORT_AGENT
+    #endif
+
     #elif defined(_WIN32_WCE) || defined(WIN32)
     /* This is windows or windows mobile, in this case we don't have our
-     * own macro so there is nothing we need to do
+     * own macro.
      */
+
+    #if !defined(FUN_TRANSPORT_AGENT)
+    #define FUN_TRANSPORT_AGENT FUN_WIN_TRANSPORT_AGENT
+    #endif
+
+
     #elif defined(__SYMBIAN32__)
     /* This is Symbian. Other macros allow to discriminate the version, but at
      * the moment we don't need it
      */
     #define SYMBIAN 1
+
+    #if !defined(FUN_TRANSPORT_AGENT)
+    #define FUN_TRANSPORT_AGENT FUN_SYM_TRANSPORT_AGENT
+    #endif
+
     #else
     #error "Unrecognized platform, cannot proceed"
     #endif

@@ -33,12 +33,30 @@
  * the words "Powered by Funambol".
  */
 
+
+#include "base/fscapi.h"
+
+#if FUN_TRANSPORT_AGENT == FUN_MAC_TRANSPORT_AGENT
+
+#include <CoreFoundation/CoreFoundation.h>
+
+#if defined(FUN_IPHONE)
+#include <SystemConfiguration/SystemConfiguration.h>
+#include <SystemConfiguration/SCNetworkReachability.h>
+#if TARGET_IPHONE_SIMULATOR
+#include <CoreServices/CoreServices.h>
+#else
+#include <CFNetwork/CFNetwork.h>
+#endif
+#else
+#include <CoreServices/CoreServices.h>
+#endif
+
 #include "http/MacTransportAgent.h"
 #include "http/constants.h"
 
 #include "base/util/utils.h"
 #include "base/util/StringBuffer.h"
-#import <SystemConfiguration/SystemConfiguration.h>
 
 
 USE_NAMESPACE
@@ -76,15 +94,18 @@ char* MacTransportAgent::sendMessage(const char* msg){
         setError(ERR_NETWORK_INIT, "MacTransportAgent::sendMessage error: NULL message.");
         return NULL;
     }
-    
-    
+   
+    bool gotflags = true;
+    bool isReachable = true;
+    bool noConnectionRequired = true; 
+
+#if defined(FUN_IPHONE)    
     SCNetworkReachabilityFlags        flags;
     SCNetworkReachabilityRef scnReachRef = SCNetworkReachabilityCreateWithName(kCFAllocatorDefault, url.host);
     
-    bool gotflags = SCNetworkReachabilityGetFlags(scnReachRef, &flags);
-    bool isReachable = flags & kSCNetworkReachabilityFlagsReachable;
-    bool noConnectionRequired = !(flags & kSCNetworkReachabilityFlagsConnectionRequired);
-#if defined(__ENVIRONMENT_IPHONE_OS_VERSION_MIN_REQUIRED__)
+    gotflags = SCNetworkReachabilityGetFlags(scnReachRef, &flags);
+    isReachable = flags & kSCNetworkReachabilityFlagsReachable;
+    noConnectionRequired = !(flags & kSCNetworkReachabilityFlagsConnectionRequired);
     if ((flags & kSCNetworkReachabilityFlagsIsWWAN)) {
         noConnectionRequired = true;
     }
@@ -232,4 +253,6 @@ char* MacTransportAgent::sendMessage(const char* msg){
         return NULL;
     }
 }
+
+#endif
 

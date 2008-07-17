@@ -35,10 +35,12 @@
 
 #include "http/TransportAgentFactory.h"
 
-#ifndef MAC
+#if FUN_TRANSPORT_AGENT == FUN_CURL_TRANSPORT_AGENT
 #include "http/CurlTransportAgent.h"
-#else
+#elif FUN_TRANSPORT_AGENT == FUN_MAC_TRANSPORT_AGENT
 #include "http/MacTransportAgent.h"
+#elif
+#error "No Transport agent defined, cannot compile"
 #endif
 
 #include "base/globalsdef.h"
@@ -48,11 +50,11 @@ BEGIN_NAMESPACE
 TransportAgent* TransportAgentFactory::getTransportAgent(
         URL& url, Proxy& proxy, unsigned int timeout, unsigned int maxmsgsize)
 {
-    #ifdef MAC
-    return new MacTransportAgent(url, proxy, timeout);
-    #else
+#if FUN_TRANSPORT_AGENT == FUN_CURL_TRANSPORT_AGENT
     return new CurlTransportAgent(url, proxy, timeout);
-    #endif
+#elif FUN_TRANSPORT_AGENT == FUN_MAC_TRANSPORT_AGENT
+    return new MacTransportAgent(url, proxy, timeout);
+#endif
 }
 
 END_NAMESPACE

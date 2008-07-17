@@ -61,7 +61,7 @@ END_NAMESPACE
 #define wcsicmp wcscasecmp
 #define snwprintf swprintf
 
-#ifdef MAC
+#if defined(MAC) || defined(FUN_IPHONE)
 
 #   undef  _wcsicmp
 #   undef  wcsicmp

@@ -33,6 +33,10 @@
  * the words "Powered by Funambol".
  */
 
+#include "base/fscapi.h"
+
+#if FUN_TRANSPORT_AGENT == FUN_CURL_TRANSPORT_AGENT
+
 #include "base/posixlog.h"
 #include "base/messages.h"
 #include "http/constants.h"
@@ -238,4 +242,6 @@ char* CurlTransportAgent::sendMessage(const char* msg) {
 
     return response;
 }
+
+#endif
 
