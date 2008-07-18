@@ -41,6 +41,7 @@ nobase_pkginclude_HEADERS = \
     common/spdm/constants.h \
     common/spdm/errors.h \
     common/spdm/DMTree.h \
+    common/spdm/DMTreeFactory.h \
     common/spdm/ManagementNode.h \
     common/spds/AbstractSyncConfig.h \
     common/spds/AbstractSyncSourceConfig.h \
