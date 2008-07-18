@@ -67,18 +67,6 @@ protected:
     char *prefix;
     static StringBuffer configFile;
 
-    class line : public ArrayElement {
-        char *str;
-
-        public:
-            line(const char *newStr = NULL) { str = NULL; setLine(newStr); }
-            ~line() { free(str); }
-            ArrayElement *clone() { return new line(str); }
-
-            const char *getLine() { return str; }
-            void setLine(const char *newStr) { if (str) { free(str); } str = strdup(newStr ? newStr : ""); }
-    };
-
     // the application's working directory
     StringBuffer currentDir;
 
@@ -114,15 +102,6 @@ protected:
     private:
 
     static StringBuffer  configPath;
-    static StringBuffer  server;
-    static StringBuffer  profileName;
-    static StringBuffer  cardURI;
-    static StringBuffer  calURI;
-    static StringBuffer  imapServer;
-    static StringBuffer  smtpServer;
-    static unsigned int  imapPort;
-    static unsigned int  smtpPort;
-    static TSmlCreatorId uid;
 
     public:
 
