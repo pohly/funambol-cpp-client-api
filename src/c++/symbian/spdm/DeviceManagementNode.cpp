@@ -50,6 +50,7 @@
 #include "spdm/ManagementNode.h"
 #include "spdm/DeviceManagementNode.h"
 #include "base/globalsdef.h"
+#include "base/cppdef.h"
 
 USE_NAMESPACE
 
@@ -59,15 +60,18 @@ USE_NAMESPACE
 StringBuffer DeviceManagementNode::configPath; 
 StringBuffer DeviceManagementNode::configFile = "config.ini";
 
-StringBuffer DeviceManagementNode::server("DefaultServer");
-StringBuffer DeviceManagementNode::profileName("DefaultProfile");
-TSmlCreatorId DeviceManagementNode::uid = -1;
-StringBuffer DeviceManagementNode::cardURI("card");
-StringBuffer DeviceManagementNode::calURI("cal");
-StringBuffer DeviceManagementNode::imapServer("");
-StringBuffer DeviceManagementNode::smtpServer("");
-unsigned int DeviceManagementNode::imapPort = 143;
-unsigned int DeviceManagementNode::smtpPort = 25;
+class line : public ArrayElement {
+    char *str;
+
+    public:
+        line(const char *newStr = NULL) { str = NULL; setLine(newStr); }
+        ~line() { delete str; }
+        ArrayElement *clone() { return new line(str); }
+
+        const char *getLine() { return str; }
+        void setLine(const char *newStr) { delete str; str = stringdup(newStr ? newStr : ""); }
+};
+
 
 DeviceManagementNode::DeviceManagementNode(const char* parent,
                                            const char *leafName)
@@ -435,79 +439,6 @@ void DeviceManagementNode::setPropertyValue(const char* property, const char* ne
 finally:
     i = 0;
 }
-
-void DeviceManagementNode::setServerURI(const StringBuffer& server) {
-    DeviceManagementNode::server = server;
-}
-
-const StringBuffer& DeviceManagementNode::getServerURI() {
-    return server;
-}
-
-void DeviceManagementNode::setProfileName(const StringBuffer& name) {
-    DeviceManagementNode::profileName = name;
-}
-
-const StringBuffer& DeviceManagementNode::getProfileName() {
-    return profileName;
-}
-
-void DeviceManagementNode::setUID(TSmlCreatorId uid) {
-    DeviceManagementNode::uid = uid;
-}
-
-TSmlCreatorId DeviceManagementNode::getUID() {
-    return uid;
-}
-
-void DeviceManagementNode::setCardURI(const StringBuffer& cardURI) {
-    DeviceManagementNode::cardURI = cardURI;
-}
-
-const StringBuffer& DeviceManagementNode::getCardURI() {
-    return cardURI;
-}
-
-void DeviceManagementNode::setCalURI(const StringBuffer& calURI) {
-    DeviceManagementNode::calURI = calURI;
-}
-
-const StringBuffer& DeviceManagementNode::getCalURI() {
-    return calURI;
-}
-
-void DeviceManagementNode::setImapServer(const StringBuffer& imapServer) {
-    DeviceManagementNode::imapServer = imapServer;
-}
-
-const StringBuffer& DeviceManagementNode::getImapServer() {
-    return imapServer;
-}
-
-void DeviceManagementNode::setImapPort(unsigned int imapPort) {
-    DeviceManagementNode::imapPort = imapPort;
-}
-
-unsigned int DeviceManagementNode::getImapPort() {
-    return imapPort;
-}
-
-void DeviceManagementNode::setSmtpPort(unsigned int smtpPort) {
-    DeviceManagementNode::smtpPort = smtpPort;
-}
-
-unsigned int DeviceManagementNode::getSmtpPort() {
-    return smtpPort;
-}
-
-void DeviceManagementNode::setSmtpServer(const StringBuffer& smtpServer) {
-    DeviceManagementNode::smtpServer = smtpServer;
-}
-
-const StringBuffer& DeviceManagementNode::getSmtpServer() {
-    return smtpServer;
-}
-
 
 ArrayElement* DeviceManagementNode::clone()
 {
