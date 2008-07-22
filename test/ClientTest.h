@@ -620,7 +620,20 @@ public:
     virtual void testImport();
     virtual void testImportDelete();
     virtual void testManyChanges();
-    virtual void testLinkedItems();
+    virtual void testLinkedItemsParent();
+    virtual void testLinkedItemsChild();
+    virtual void testLinkedItemsParentChild();
+    virtual void testLinkedItemsChildParent();
+    virtual void testLinkedItemsChildChangesParent();
+    virtual void testLinkedItemsRemoveParentFirst();
+    virtual void testLinkedItemsRemoveNormal();
+    virtual void testLinkedItemsInsertParentTwice();
+    virtual void testLinkedItemsInsertChildTwice();
+    virtual void testLinkedItemsParentUpdate();
+    virtual void testLinkedItemsUpdateChild();
+    virtual void testLinkedItemsInsertBothUpdateChild();
+    virtual void testLinkedItemsInsertBothUpdateParent();
+
 };
 
 enum itemType {
