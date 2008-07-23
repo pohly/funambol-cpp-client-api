@@ -144,13 +144,18 @@ bool DeviceManagementNode::gotoDir(bool read) {
     bool success = true;
     returnFromDir();
     cwdfd = open(".", O_RDONLY);
-   
-    chdir( getConfigPath() );
+
     StringBuffer dirs;
-    dirs = dirs + context + "/" + name;
+    dirs = getConfigPath() + "/" + context + "/" + name;
     char* ccurr = strdup( dirs.c_str() );
     do {
-        char *nextdir = strchr(ccurr, '/');
+        char *nextdir;
+        
+        if (ccurr[0] == '/')
+            nextdir = strchr(ccurr + 1, '/');
+        else
+            nextdir = strchr(ccurr, '/');
+        
         if (nextdir) {
             *nextdir = 0;
             nextdir++;
