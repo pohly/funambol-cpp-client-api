@@ -382,6 +382,19 @@ bool WinEventSIF::parseTimezone(const wstring& data) {
     if (timezone.size() == 0) {
         return false;
     }
+    
+    /**
+    * This check is for avoid scenarios in which the client receives the PatternStartDate and
+    * Timezone together that is not permitted and it is not handled properly by the clients.
+    * So, if the client gets the PatternStartDate with 'Z', the way to handle is the same as the 6.5 version.
+    */
+    wstring patDate;
+    if (!getElementContent(data, L"PatternStartDate", patDate, 0) && patDate.size()) {
+        if (patDate.find(TEXT("Z")) != wstring::npos) {
+            LOG.debug("PatternStartDate is in UTC format: the Timezone is not consider");
+            return false;
+        }
+    }
 
     bool found = false;
     wstring element;
