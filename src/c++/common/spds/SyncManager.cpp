@@ -690,7 +690,7 @@ int SyncManager::prepareSync(SyncSource** s) {
                     if (statusCode) {
                         status = syncMLBuilder.prepareCmdStatus(*cmd, statusCode);
                         if (status) {
-		                    // Fire Sync Status Event: status from client
+                            // Fire Sync Status Event: status from client
                             fireSyncStatusEvent(status->getCmd(), status->getStatusCode(), NULL, NULL, NULL , CLIENT_STATUS);
 
                             commands.add(*status);
@@ -916,7 +916,7 @@ bool SyncManager::checkForServerChanges(SyncML* syncml, ArrayList &statusList)
 
             ArrayList* items = sync->getCommands();
             Status* status = syncMLBuilder.prepareSyncStatus(*sources[count], sync);
-			statusList.add(*status);
+            statusList.add(*status);
             deleteStatus(&status);
 
             ArrayList* previousStatus = new ArrayList();
@@ -1436,7 +1436,7 @@ int SyncManager::sync() {
             msg    = syncMLBuilder.prepareMsg(syncml);
 
             deleteSyncML(&syncml);
-			commands.clear();
+            commands.clear();
 
             if (msg == NULL) {
                 ret = getLastErrorCode();
@@ -1545,7 +1545,7 @@ int SyncManager::sync() {
     //
     if ( !isFinalfromServer && isAtLeastOneSourceCorrect ) {
         status = syncMLBuilder.prepareSyncHdrStatus(NULL, 200);
-	commands.add(*status);
+        commands.add(*status);
         deleteStatus(&status);
         for (count = 0; count < sourcesNumber; count ++) {
             if(!sources[count]->getReport()->checkState()) {
@@ -2002,13 +2002,21 @@ Status *SyncManager::processSyncItem(Item* item, const CommandInfo &cmdInfo, Syn
     const char* itemName;
     Status *status = 0;
 
-    Source* s = item->getSource();
-    if (s) {
-        itemName = s->getLocURI();
+    // During an "Add" we want the source URI, otherwise
+    // ("Delete", "Update") the target URI.
+    Target* t = item->getTarget();
+    if (t && strcmp(cmdInfo.commandName, ADD)) {
+        itemName = t->getLocURI();
     }
     else {
-        Target* t = item->getTarget();
-        itemName = t->getLocURI();
+        Source* s = item->getSource();
+        itemName = s->getLocURI();
+    }
+
+    if (!itemName) {
+        // invalid command: no URI
+        status = syncMLBuilder.prepareItemStatus(cmdInfo.commandName, "", cmdInfo.cmdRef, 412);
+        return status;
     }
 
     // Fill item -------------------------------------------------
