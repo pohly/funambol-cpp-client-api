@@ -115,7 +115,7 @@ public:
 
     VObject();
     VObject(const WCHAR* prodID, const WCHAR* ver);
-    ~VObject();
+    virtual ~VObject();
     void setVersion (const WCHAR* ver);
     void setProdID (const WCHAR* prodID);
     WCHAR* getVersion();
