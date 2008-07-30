@@ -25,8 +25,11 @@ nobase_pkginclude_HEADERS = \
     common/base/util/KeyValueStore.h \
     common/base/util/PropertyFile.h \
     common/client/DMTClientConfig.h \
-    common/client/SyncClient.h \
     common/client/CacheSyncSource.h \
+    common/client/ODBCKeyValueStore.h \
+    common/client/SQLiteKeyValueStore.h \
+    common/client/SQLKeyValueStore.h \
+    common/client/SyncClient.h \
     common/event/constants.h \
     common/filter/Clause.h \
     common/filter/LogicalClause.h \
