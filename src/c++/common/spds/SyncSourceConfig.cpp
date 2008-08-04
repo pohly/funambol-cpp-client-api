@@ -203,7 +203,8 @@ void SyncSourceConfig::addCtCap(ArrayList *props, const char *ct_Type, const cha
         fieldlevel = getFieldLevel();
     }else if ( fLevel == FLEVEL_DISABLED ){
         fieldlevel = false;
-    }else if ( fLevel == FLEVEL_ENABLED ){
+    }else {
+        assert( fLevel == FLEVEL_ENABLED );
         fieldlevel = true;
     }
 
