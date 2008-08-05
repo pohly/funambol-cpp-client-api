@@ -15,7 +15,8 @@ vpath %.cpp	$(TESTDIR) \
 		$(TESTDIR)/common/base/util \
 		$(TESTDIR)/common/base \
 		$(TESTDIR)/posix/spdm/ \
-		$(TESTDIR)/common/syncml
+		$(TESTDIR)/common/syncml \
+		$(TESTDIR)/common/filter
 
 # Test runner sources
 SOURCES = client-test-main.cpp client-test.cpp ClientTest.cpp
@@ -25,11 +26,22 @@ TESTS_BASE = \
     ArrayListTest.cpp \
     BasicTimeTest.cpp \
     StringBufferTest.cpp \
-    ParserTest.cpp \
-    ObjectDelTest.cpp \
+    PropertyFileTest.cpp \
+    XMLProcessorTest.cpp \
     base64Test.cpp
+
+TESTS_FILTER = \
+    ClauseTest.cpp \
+    FilterTest.cpp
+
+TESTS_SYNCML = \
+    ParserTest.cpp \
+    ObjectDelTest.cpp
+
+TESTS_POSIX = \
+    ConfigTest.cpp
     
-TESTCASES = $(TESTS_BASE)
+TESTCASES = $(TESTS_BASE) $(TESTS_FILTER) $(TESTS_SYNCML) $(TESTS_POSIX)
 
 client_test_SOURCES = $(SOURCES) $(TESTCASES)
 
