@@ -51,7 +51,7 @@
 #include "filter/ClauseUtil.h"
 #include "filter/LogicalClause.h"
 #include "filter/FieldClause.h"
-#include "filter/sourceFilter.h"
+#include "filter/SourceFilter.h"
 #include "filter/WhereClause.h"
 #include "syncml/core/core.h"
 #include "syncml/formatter/Formatter.h"
@@ -83,14 +83,14 @@ public:
     }
 
     void tearDown(){
-		if (f){
-			delete f;
-			f = NULL;
-		}
-		if (sb){
-			delete sb;
-			sb = NULL;
-		}
+        if (f){
+            delete f;
+            f = NULL;
+        }
+        if (sb){
+            delete sb;
+            sb = NULL;
+        }
     }
 
 
@@ -99,8 +99,8 @@ private:
     void recordOnlyFilterTest(){
         SourceFilter filter;
 
-        WhereClause where1("CompanyName", "funambol", EQ, FALSE);
-        WhereClause where2("FirstName", "ste", CONTAIN, TRUE);
+        WhereClause where1("CompanyName", "funambol", EQ, false);
+        WhereClause where2("FirstName", "ste", CONTAIN, true);
 
         ArrayList operands;
 
@@ -120,13 +120,13 @@ private:
         LogicalClause recordOnly(AND, operands);
 
         filter.setClause(recordOnly);
-        filter.setInclusive(FALSE);
+        filter.setInclusive(false);
         filter.setType("text/x-s4j-sifc");
 
         f = ClauseUtil::toFilter(filter);
 
         sb = Formatter::getFilter(f);
-		sb->replaceAll("\n","");
+        sb->replaceAll("\n","");
 
         CPPUNIT_ASSERT( *sb == filter1 );
     }
@@ -134,12 +134,12 @@ private:
     void fieldOnlyFilterTest(){
         SourceFilter filter;
 
-        WhereClause where1("CompanyName", "funambol", EQ, FALSE);
-        WhereClause where2("FirstName", "ste", CONTAIN, TRUE);
+        WhereClause where1("CompanyName", "funambol", EQ, false);
+        WhereClause where2("FirstName", "ste", CONTAIN, true);
 
         ArrayList operands;
 
-		operands.add(where1);
+        operands.add(where1);
         operands.add(where2);
 
         LogicalClause record(AND, operands);
@@ -168,7 +168,7 @@ private:
         LogicalClause fieldOnly(AND, operands);
 
         filter.setClause(fieldOnly);
-        filter.setInclusive(TRUE);
+        filter.setInclusive(true);
 
         f = ClauseUtil::toFilter(filter);
         sb = Formatter::getFilter(f);
@@ -179,17 +179,17 @@ private:
     void fieldAndRecordFilterTest(){
         SourceFilter filter;
 
-        WhereClause where1("CompanyName", "funambol", EQ, FALSE);
-        WhereClause where2("FirstName", "ste", CONTAIN, TRUE);
+        WhereClause where1("CompanyName", "funambol", EQ, false);
+        WhereClause where2("FirstName", "ste", CONTAIN, true);
 
         ArrayList operands; 
 
-		operands.add(where1);
+        operands.add(where1);
         operands.add(where2);
 
         AllClause all;
-		
-		Property fieldProperty;
+        
+        Property fieldProperty;
         ArrayList fieldProperties, fieldParameters;
         PropParam param;
 
