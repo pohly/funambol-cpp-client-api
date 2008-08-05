@@ -116,11 +116,9 @@ private:
 
         StringBuffer cnv;
         cnv.convert(TEXT(TEST_STRING));
-        fprintf(stderr, "\nConverted string: %s\n", cnv.c_str());
         CPPUNIT_ASSERT((strcmp(cnv.c_str(), toUtf8) == 0));
 
         cnv.convert(TEXT(TEST_STRING), "iso_8859-1");
-        fprintf(stderr, "\nConverted string: %s\n", cnv.c_str());
         CPPUNIT_ASSERT((strcmp(cnv.c_str(), toLatin1) == 0));
     }
 
