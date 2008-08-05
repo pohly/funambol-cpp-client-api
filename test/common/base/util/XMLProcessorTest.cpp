@@ -100,7 +100,6 @@ private:
             </document>" ;
 
         unsigned int pos = 0, start = 0, end = 0;
-        const char *p = 0;
 
         // Get 'document' tag
         char *doc = XMLProcessor::copyElementContent(xml1, "document", &pos);
@@ -164,3 +163,4 @@ private:
 };
 
 CPPUNIT_TEST_SUITE_REGISTRATION( XMLProcessorTest );
+
