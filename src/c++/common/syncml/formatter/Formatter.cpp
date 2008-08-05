@@ -189,7 +189,7 @@ StringBuffer* Formatter::getSyncHdr(SyncHdr* syncHdr) {
     respURI   = getValue    (RESP_URI, syncHdr->getRespURI());
     meta      = getMeta     (syncHdr->getMeta());
 
-    if (NotZeroStringBufferLenght(9, sessionID, verDTD, verProto, source, target, cred, msgID, respURI, meta)) {
+    if (NotZeroStringBufferLength(9, sessionID, verDTD, verProto, source, target, cred, msgID, respURI, meta)) {
         s = new StringBuffer();
         s->append(verDTD);
         s->append(verProto);
@@ -238,7 +238,7 @@ StringBuffer* Formatter::getAuthentication(Authentication* auth) {
     data = getValue(DATA, auth->getData());
     meta = getMeta(auth->getMeta());
 
-    if (NotZeroStringBufferLenght(2, data, meta)) {
+    if (NotZeroStringBufferLength(2, data, meta)) {
         ret = new StringBuffer();
         ret->append(meta);
         ret->append(data);
@@ -258,7 +258,7 @@ StringBuffer* Formatter::getMeta(Meta* meta) {
 
     metInf = getMetInf(meta->getMetInf());
 
-    if (NotZeroStringBufferLenght(1, metInf)) {
+    if (NotZeroStringBufferLength(1, metInf)) {
         ret = getValue(META, metInf);
     }
     deleteStringBuffer(&metInf);
@@ -302,7 +302,7 @@ StringBuffer* Formatter::getMetInf(MetInf* metInf) {
     //emi          = getEMI(xml);
     mem          = getMem(metInf->getMem());
 
-    if (NotZeroStringBufferLenght(8, format, type, mark, size, anchor, version, maxMsgSize, maxObjSize)) {
+    if (NotZeroStringBufferLength(8, format, type, mark, size, anchor, version, maxMsgSize, maxObjSize)) {
         ret = new StringBuffer();
         ret ->append(format);
         ret ->append(type);
@@ -383,7 +383,7 @@ StringBuffer* Formatter::getAnchor(Anchor* anchor) {
 */
 StringBuffer* Formatter::getSources(ArrayList* sources) {
 
-    if (!sources || !NotZeroArrayLenght(1, sources))
+    if (!sources || !NotZeroArrayLength(1, sources))
         return NULL;
 
     StringBuffer* ret = new StringBuffer();
@@ -413,7 +413,7 @@ StringBuffer* Formatter::getSourceArray(SourceArray* sourceArray) {
     s->append(tmp);
     if (tmp) { delete tmp; tmp = NULL; }
 
-    if (NotZeroStringBufferLenght(1, s)) {
+    if (NotZeroStringBufferLength(1, s)) {
         ret = getValue(SOURCE, s);
     }
 
@@ -439,7 +439,7 @@ StringBuffer* Formatter::getSource(Source* source) {
     s->append(tmp);
     if (tmp) { delete tmp; tmp = NULL; }
 
-    if (NotZeroStringBufferLenght(1, s)) {
+    if (NotZeroStringBufferLength(1, s)) {
         delete ret; ret = NULL;
         ret = getValue(SOURCE, s);
     }
@@ -474,7 +474,7 @@ StringBuffer* Formatter::getTarget(Target* target) {
         s->append(filter);
     }
 
-    if (NotZeroStringBufferLenght(1, s)) {
+    if (NotZeroStringBufferLength(1, s)) {
         delete ret; ret = NULL;
         ret = getValue(TARGET, s);
 
@@ -574,7 +574,7 @@ StringBuffer* Formatter::getExtraCommandList(ArrayList* commands) {
         }
     }
 
-    if (NotZeroStringBufferLenght(4, exec, map, alert, get)) {
+    if (NotZeroStringBufferLength(4, exec, map, alert, get)) {
         s = new StringBuffer();
         s->append(exec);
         s->append(map);
@@ -641,7 +641,7 @@ StringBuffer* Formatter::getCommonCommandList(ArrayList* commands) {
         }
     }
 
-    if (NotZeroStringBufferLenght(4, copies, adds, replaces, dels)) {
+    if (NotZeroStringBufferLength(4, copies, adds, replaces, dels)) {
         s = new StringBuffer();
         s->append(copies);
         s->append(adds);
@@ -690,7 +690,7 @@ StringBuffer* Formatter::getSpecificCommand(ArrayList* commands, const char*comm
         }
     }
 
-    if (NotZeroStringBufferLenght(1, ret)) {
+    if (NotZeroStringBufferLength(1, ret)) {
         s = new StringBuffer();
         s->append(ret);
     }
@@ -819,7 +819,7 @@ StringBuffer* Formatter::getSyncBody(SyncBody* syncBody) {
 
     finalMessage = getValue(FINAL_MSG, syncBody->getFinalMsg());
 
-    if (finalMessage || NotZeroStringBufferLenght(11, alerts, commonCommandList, statusArray, sync, map,
+    if (finalMessage || NotZeroStringBufferLength(11, alerts, commonCommandList, statusArray, sync, map,
                                                      exec, get, put, results, search, sequence)) {
         s = new StringBuffer();
         s->append(statusArray);
@@ -870,7 +870,7 @@ StringBuffer* Formatter::getSearch(Search* search) {
     target    = getTarget  (search->getTarget());
     sources   = getSources (search->getSources());
 
-    if (NotZeroStringBufferLenght(9, cmdID, cred, meta, noResults, noResp, lang, data, target, sources)) {
+    if (NotZeroStringBufferLength(9, cmdID, cred, meta, noResults, noResp, lang, data, target, sources)) {
         s = new StringBuffer();
         s->append(cmdID);
         s->append(noResp);
@@ -912,7 +912,7 @@ StringBuffer* Formatter::getGet(Get* get) {
     noResp    = getValue   (NO_RESP, get->getNoResp());
     lang      = getValue   (LANG, get->getNoResp());
 
-    if (NotZeroStringBufferLenght(6, cmdID, cred, meta, items, noResp, lang)) {
+    if (NotZeroStringBufferLength(6, cmdID, cred, meta, items, noResp, lang)) {
         s = new StringBuffer();
         s->append(cmdID);
         s->append(noResp);
@@ -946,7 +946,7 @@ StringBuffer* Formatter::getExec(Exec* exec) {
     items     = getItems   (exec->getItems());
     noResp    = getValue   (NO_RESP, exec->getNoResp());
 
-    if (NotZeroStringBufferLenght(4, cmdID, cred, items, noResp)) {
+    if (NotZeroStringBufferLength(4, cmdID, cred, items, noResp)) {
         s = new StringBuffer();
         s->append(cmdID);
         s->append(noResp);
@@ -983,7 +983,7 @@ StringBuffer* Formatter::getMap(Map* map) {
     target    = getTarget  (map->getTarget());
     mapItems  = getMapItems(map->getMapItems());
 
-    if (NotZeroStringBufferLenght(6, cmdID, cred, meta, source, target, mapItems)) {
+    if (NotZeroStringBufferLength(6, cmdID, cred, meta, source, target, mapItems)) {
         s = new StringBuffer();
         s->append(cmdID);
         s->append(target);
@@ -1008,7 +1008,7 @@ StringBuffer* Formatter::getMap(Map* map) {
 */
 StringBuffer* Formatter::getMapItems(ArrayList* mapItems) {
 
-    if (!mapItems || !NotZeroArrayLenght(1, mapItems))
+    if (!mapItems || !NotZeroArrayLength(1, mapItems))
         return NULL;
 
     StringBuffer* ret = new StringBuffer();
@@ -1036,7 +1036,7 @@ StringBuffer* Formatter::getMapItem(MapItem* mapItem) {
     target      = getTarget (mapItem->getTarget());
     source      = getSource (mapItem->getSource());
 
-    if (NotZeroStringBufferLenght(2, target, source)) {
+    if (NotZeroStringBufferLength(2, target, source)) {
         s = new StringBuffer();
         s->append(target);
         s->append(source);
@@ -1090,7 +1090,7 @@ StringBuffer* Formatter::getSync(Sync* sync) {
     sequence = getSpecificCommand(sync->getCommands(), SEQUENCE);
     atomic   = getSpecificCommand(sync->getCommands(), ATOMIC);
 
-    if (NotZeroStringBufferLenght(10, cmdID, cred, meta, source, target, noResp,
+    if (NotZeroStringBufferLength(10, cmdID, cred, meta, source, target, noResp,
                                   numberOfChanges, commonCommandList, sequence, atomic)) {
         s = new StringBuffer();
         s->append(cmdID);
@@ -1136,7 +1136,7 @@ StringBuffer* Formatter::getSequence(Sequence* sequence) {
     sync = getSpecificCommand(sequence->getCommands(), SYNC);
     atomic = getSpecificCommand(sequence->getCommands(), ATOMIC);
 
-    if (NotZeroStringBufferLenght(7, cmdID, meta, noResp, commonCommandList, extraCommandList, sync, atomic)) {
+    if (NotZeroStringBufferLength(7, cmdID, meta, noResp, commonCommandList, extraCommandList, sync, atomic)) {
         s = new StringBuffer();
         s->append(cmdID);
         s->append(noResp);
@@ -1178,7 +1178,7 @@ StringBuffer* Formatter::getAtomic(Atomic* atomic) {
     sync      = getSpecificCommand(atomic->getCommands(), SYNC);
     sequence  = getSpecificCommand(atomic->getCommands(), SEQUENCE);
 
-    if (NotZeroStringBufferLenght(7, cmdID, meta, noResp, commonCommandList, extraCommandList, sync, sequence)) {
+    if (NotZeroStringBufferLength(7, cmdID, meta, noResp, commonCommandList, extraCommandList, sync, sequence)) {
         s = new StringBuffer();
         s->append(cmdID);
         s->append(noResp);
@@ -1206,7 +1206,7 @@ StringBuffer* Formatter::getAtomic(Atomic* atomic) {
 */
 StringBuffer* Formatter::getCopies(ArrayList* copies) {
 
-    if (!copies || !NotZeroArrayLenght(1, copies))
+    if (!copies || !NotZeroArrayLength(1, copies))
         return NULL;
 
     StringBuffer* ret = new StringBuffer();
@@ -1237,7 +1237,7 @@ StringBuffer* Formatter::getCopy(Copy* copy) {
     items     = getItems   (copy->getItems());
     noResp    = getValue   (NO_RESP, copy->getNoResp());
 
-    if (NotZeroStringBufferLenght(5, cmdID, cred, meta, items, noResp)) {
+    if (NotZeroStringBufferLength(5, cmdID, cred, meta, items, noResp)) {
         s = new StringBuffer();
         s->append(cmdID);
         s->append(noResp);
@@ -1263,7 +1263,7 @@ StringBuffer* Formatter::getCopy(Copy* copy) {
 */
 StringBuffer* Formatter::getReplaces(ArrayList* replaces) {
 
-    if (!replaces || !NotZeroArrayLenght(1, replaces))
+    if (!replaces || !NotZeroArrayLength(1, replaces))
         return NULL;
 
     StringBuffer* ret = new StringBuffer();
@@ -1294,7 +1294,7 @@ StringBuffer* Formatter::getReplace(Replace* replace) {
     items     = getItems   (replace->getItems());
     noResp    = getValue   (NO_RESP, replace->getNoResp());
 
-    if (NotZeroStringBufferLenght(5, cmdID, cred, meta, items, noResp)) {
+    if (NotZeroStringBufferLength(5, cmdID, cred, meta, items, noResp)) {
         s = new StringBuffer();
         s->append(cmdID);
         s->append(noResp);
@@ -1320,7 +1320,7 @@ StringBuffer* Formatter::getReplace(Replace* replace) {
 */
 StringBuffer* Formatter::getDels(ArrayList* dels) {
 
-    if (!dels || !NotZeroArrayLenght(1, dels))
+    if (!dels || !NotZeroArrayLength(1, dels))
         return NULL;
 
     StringBuffer* ret = new StringBuffer();
@@ -1355,7 +1355,7 @@ StringBuffer* Formatter::getDelete(Delete* del) {
     archive   = getValue   (ARCHIVE, del->getArchive());
     sftdel    = getValue   (SFT_DEL, del->getSftDel());
 
-    if (NotZeroStringBufferLenght(7, cmdID, cred, meta, items, noResp, sftdel, archive)) {
+    if (NotZeroStringBufferLength(7, cmdID, cred, meta, items, noResp, sftdel, archive)) {
         s = new StringBuffer();
         s->append(cmdID);
         s->append(noResp);
@@ -1383,7 +1383,7 @@ StringBuffer* Formatter::getDelete(Delete* del) {
 */
 StringBuffer* Formatter::getAdds(ArrayList* adds) {
 
-    if (!adds || !NotZeroArrayLenght(1, adds))
+    if (!adds || !NotZeroArrayLength(1, adds))
         return NULL;
 
     StringBuffer* ret = new StringBuffer();
@@ -1414,7 +1414,7 @@ StringBuffer* Formatter::getAdd(Add* add) {
     items     = getItems   (add->getItems());
     noResp    = getValue   (NO_RESP, add->getNoResp());
 
-    if (NotZeroStringBufferLenght(5, cmdID, cred, meta, items, noResp)) {
+    if (NotZeroStringBufferLength(5, cmdID, cred, meta, items, noResp)) {
         s = new StringBuffer();
         s->append(cmdID);
         s->append(noResp);
@@ -1451,7 +1451,7 @@ StringBuffer* Formatter::getPut(Put* put) {
     meta      = getMeta    (put->getMeta());
     items     = getItems   (put->getItems());
 
-    if (NotZeroStringBufferLenght(6, cmdID, lang, meta, items, cred, noResp)) {
+    if (NotZeroStringBufferLength(6, cmdID, lang, meta, items, cred, noResp)) {
         s = new StringBuffer();
         s->append(cmdID);
         s->append(noResp);
@@ -1491,7 +1491,7 @@ StringBuffer* Formatter::getResults(Results* results) {
     sourceRefs = getSourceRefs(results->getSourceRef());
     targetRefs = getTargetRefs(results->getTargetRef());
 
-    if (NotZeroStringBufferLenght(7, cmdID, msgRef, cmdRef, meta, items, sourceRefs, targetRefs)) {
+    if (NotZeroStringBufferLength(7, cmdID, msgRef, cmdRef, meta, items, sourceRefs, targetRefs)) {
         s = new StringBuffer();
         s->append(cmdID);
         s->append(msgRef);
@@ -1517,7 +1517,7 @@ StringBuffer* Formatter::getResults(Results* results) {
 */
 StringBuffer* Formatter::getStatusArray(ArrayList* statusArray) {
 
-    if (!statusArray || !NotZeroArrayLenght(1, statusArray))
+    if (!statusArray || !NotZeroArrayLength(1, statusArray))
         return NULL;
 
     StringBuffer* ret = new StringBuffer();
@@ -1561,7 +1561,7 @@ StringBuffer* Formatter::getStatus(Status* status) {
     chal      = getChal(status->getChal());
     data      = getData   (status->getData());
 
-    if (NotZeroStringBufferLenght(10, cmdID, msgRef, cmdRef, cmd, cred, data, items, sourceRefs, targetRefs, chal)) {
+    if (NotZeroStringBufferLength(10, cmdID, msgRef, cmdRef, cmd, cred, data, items, sourceRefs, targetRefs, chal)) {
         s = new StringBuffer();
         s->append(cmdID);
         s->append(msgRef);
@@ -1590,7 +1590,7 @@ StringBuffer* Formatter::getChal(Chal* chal) {
 
     StringBuffer* meta     = getMeta   (chal->getMeta());
 
-    if (NotZeroStringBufferLenght(1, meta)) {
+    if (NotZeroStringBufferLength(1, meta)) {
         s = new StringBuffer();
         s->append(meta);
     }
@@ -1612,7 +1612,7 @@ StringBuffer* Formatter::getChal(Chal* chal) {
 */
 StringBuffer* Formatter::getAlerts(ArrayList* alerts) {
 
-    if (!alerts || !NotZeroArrayLenght(1, alerts))
+    if (!alerts || !NotZeroArrayLength(1, alerts))
         return NULL;
 
     StringBuffer* ret = new StringBuffer();
@@ -1640,7 +1640,7 @@ StringBuffer* Formatter::getAlert(Alert* alert) {
     StringBuffer* items     = getItems   (alert->getItems());
     StringBuffer* noResp    = getValue   (NO_RESP, alert->getNoResp());
 
-    if (NotZeroStringBufferLenght(5, cmdID, cred, data, items, noResp)) {
+    if (NotZeroStringBufferLength(5, cmdID, cred, data, items, noResp)) {
         s = new StringBuffer();
         s->append(cmdID);
         s->append(noResp);
@@ -1664,7 +1664,7 @@ StringBuffer* Formatter::getAlert(Alert* alert) {
 */
 StringBuffer* Formatter::getItems(ArrayList* items) {
 
-    if (!items || !NotZeroArrayLenght(1, items))
+    if (!items || !NotZeroArrayLength(1, items))
         return NULL;
 
     StringBuffer* ret = new StringBuffer();
@@ -1705,7 +1705,7 @@ StringBuffer* Formatter::getItem(Item* item) {
     sourceParent  = getValue    (SOURCE_PARENT, item->getSourceParent());
 
 
-    if (NotZeroStringBufferLenght(7, target, source, targetParent, sourceParent, meta, data, moreData)) {
+    if (NotZeroStringBufferLength(7, target, source, targetParent, sourceParent, meta, data, moreData)) {
         s = new StringBuffer();
         s->append(target);
         s->append(source);
@@ -1845,7 +1845,7 @@ StringBuffer* Formatter::getDevInf(DevInf* devInf) {
     supportLargeObjs        = getValue    (SUPPORT_LARGE_OBJECT, devInf->getSupportLargeObjs());
     supportNumberOfChanges  = getValue    (SUPPORT_NUMBER_OF_CHANGES, devInf->getSupportNumberOfChanges());
 
-    if (NotZeroStringBufferLenght(15, verDTD, man, mod, oem, fwV, swV, hwV, devID, devTyp,
+    if (NotZeroStringBufferLength(15, verDTD, man, mod, oem, fwV, swV, hwV, devID, devTyp,
                                       dataStores, syncCap, /*ctCaps,*/ utc, supportLargeObjs, supportNumberOfChanges)) {
         s = new StringBuffer();
         s->append(verDTD);
@@ -1887,7 +1887,7 @@ StringBuffer* Formatter::getDevInf(DevInf* devInf) {
 */
 StringBuffer* Formatter::getExts(ArrayList* exts) {
 
-    if (!exts || !NotZeroArrayLenght(1, exts))
+    if (!exts || !NotZeroArrayLength(1, exts))
         return NULL;
 
     StringBuffer* ret = new StringBuffer();
@@ -1915,7 +1915,7 @@ StringBuffer* Formatter::getExt(Ext* ext) {
     xNam  = getValue (XNAM, ext->getXNam());
     xVals = getXVals (ext->getXVal());
 
-    if (NotZeroStringBufferLenght(2, xNam, xVals)) {
+    if (NotZeroStringBufferLength(2, xNam, xVals)) {
         s = new StringBuffer();
         s->append(xNam);
         s->append(xVals);
@@ -1937,7 +1937,7 @@ StringBuffer* Formatter::getExt(Ext* ext) {
 */
 StringBuffer* Formatter::getXVals(ArrayList* xVals) {
 
-    if (!xVals || !NotZeroArrayLenght(1, xVals))
+    if (!xVals || !NotZeroArrayLength(1, xVals))
         return NULL;
 
     StringBuffer* ret = new StringBuffer();
@@ -1971,7 +1971,7 @@ StringBuffer* Formatter::getXVal(StringElement* xVal) {
 */
 StringBuffer* Formatter::getDataStores(ArrayList* dataStores) {
 
-    if (!dataStores || !NotZeroArrayLenght(1, dataStores))
+    if (!dataStores || !NotZeroArrayLength(1, dataStores))
         return NULL;
 
     StringBuffer* ret = new StringBuffer();
@@ -2018,7 +2018,7 @@ StringBuffer* Formatter::getDataStore(DataStore* dataStore) {
     dsMem       = getDSMem(dataStore->getDSMem());
     syncCap     = getSyncCap(dataStore->getSyncCap());
 
-    if (NotZeroStringBufferLenght(9, sourceRef, displayName, maxGUIDSize, rxPref, rx, txPref, tx, ctCaps, dsMem, syncCap)) {
+    if (NotZeroStringBufferLength(9, sourceRef, displayName, maxGUIDSize, rxPref, rx, txPref, tx, ctCaps, dsMem, syncCap)) {
         s = new StringBuffer();
         s->append(sourceRef);
         s->append(displayName);
@@ -2052,7 +2052,7 @@ StringBuffer* Formatter::getSyncCap(SyncCap* syncCap) {
 
     syncTypes   = getSyncTypes(syncCap->getSyncType());
 
-    if (NotZeroStringBufferLenght(1, syncTypes)) {
+    if (NotZeroStringBufferLength(1, syncTypes)) {
         s = new StringBuffer();
         s->append(syncTypes);
     }
@@ -2065,7 +2065,7 @@ StringBuffer* Formatter::getSyncCap(SyncCap* syncCap) {
 
 StringBuffer* Formatter::getSyncTypes(ArrayList* syncTypes) {
 
-    if (!syncTypes || !NotZeroArrayLenght(1, syncTypes))
+    if (!syncTypes || !NotZeroArrayLength(1, syncTypes))
         return NULL;
 
     StringBuffer* ret = new StringBuffer();
@@ -2127,7 +2127,7 @@ StringBuffer* Formatter::getDSMem(DSMem* dsMem) {
 
 StringBuffer* Formatter::getContentTypeInfos(ArrayList* contentTypeInfos, const char*TAG) {
 
-    if (!contentTypeInfos || !NotZeroArrayLenght(1, contentTypeInfos))
+    if (!contentTypeInfos || !NotZeroArrayLength(1, contentTypeInfos))
         return NULL;
 
     StringBuffer* ret = new StringBuffer();
@@ -2156,7 +2156,7 @@ StringBuffer* Formatter::getContentTypeInfo(ContentTypeInfo* contentTypeInfo, co
     ctType  = getValue (CT_TYPE, contentTypeInfo->getCTType());
     verCT   = getValue (VER_CT, contentTypeInfo->getVerCT());
 
-    if (NotZeroStringBufferLenght(2, ctType, verCT)) {
+    if (NotZeroStringBufferLength(2, ctType, verCT)) {
         s = new StringBuffer();
         s->append(ctType);
         s->append(verCT);
@@ -2170,7 +2170,7 @@ StringBuffer* Formatter::getContentTypeInfo(ContentTypeInfo* contentTypeInfo, co
 
 StringBuffer* Formatter::getTargetRefs(ArrayList* targetRefs) {
 
-    if (!targetRefs || !NotZeroArrayLenght(1, targetRefs))
+    if (!targetRefs || !NotZeroArrayLength(1, targetRefs))
         return NULL;
 
     StringBuffer* ret = new StringBuffer();
@@ -2201,7 +2201,7 @@ StringBuffer* Formatter::getTargetRef(TargetRef* targetRef) {
         target = getTarget(targetRef->getTarget());
     }
 
-    if (value || NotZeroStringBufferLenght(1, target)) {
+    if (value || NotZeroStringBufferLength(1, target)) {
         s = new StringBuffer();
         s->append(value);
         s->append(target);
@@ -2217,7 +2217,7 @@ StringBuffer* Formatter::getTargetRef(TargetRef* targetRef) {
 
 StringBuffer* Formatter::getSourceRefs(ArrayList* sourceRefs) {
 
-    if (!sourceRefs || !NotZeroArrayLenght(1, sourceRefs))
+    if (!sourceRefs || !NotZeroArrayLength(1, sourceRefs))
         return NULL;
 
     StringBuffer* ret = new StringBuffer();
@@ -2248,7 +2248,7 @@ StringBuffer* Formatter::getSourceRef(SourceRef* sourceRef) {
         source = getSource(sourceRef->getSource());
     }
 
-    if (value || NotZeroStringBufferLenght(1, source)) {
+    if (value || NotZeroStringBufferLength(1, source)) {
         s = new StringBuffer();
         s->append(value);
         s->append(source);
@@ -2337,7 +2337,7 @@ StringBuffer* Formatter::getCTCaps(ArrayList* ctCaps) {
 #endif
 
 
-    if (!ctCaps || !NotZeroArrayLenght(1, ctCaps))
+    if (!ctCaps || !NotZeroArrayLength(1, ctCaps))
         return NULL;
 
     StringBuffer* ret = new StringBuffer();
@@ -2417,7 +2417,7 @@ StringBuffer* Formatter::getPropParam(PropParam* p) {
         }
     }
 
-    if (NotZeroStringBufferLenght(3, paramName, displayName, dataType)) {
+    if (NotZeroStringBufferLength(3, paramName, displayName, dataType)) {
         s.append(paramName  );
         s.append(displayName);
         s.append(dataType   );
@@ -2483,7 +2483,7 @@ StringBuffer* Formatter::getProperty(Property* p) {
         }
     }
 
-    if (NotZeroStringBufferLenght(6, displayName,
+    if (NotZeroStringBufferLength(6, displayName,
                                      propName,
                                      dataType,
                                      maxOccur,
@@ -2532,7 +2532,7 @@ StringBuffer* Formatter::getFilter(Filter* filter) {
     StringBuffer* record = getItem(filter->getRecord());
     StringBuffer* field  = getItem(filter->getField());
 
-    if (NotZeroStringBufferLenght(4, type, meta, record, field)) {
+    if (NotZeroStringBufferLength(4, type, meta, record, field)) {
         StringBuffer* ret = NULL;
 
         s.append(ret = getValue(RECORD, record)); delete ret; ret = NULL;

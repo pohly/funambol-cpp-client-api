@@ -34,8 +34,9 @@
  */
 
 
-#include "syncml/core/ObjectDel.h"
 #include "base/globalsdef.h"
+#include "base/fscapi.h"
+#include "syncml/core/ObjectDel.h"
 
 BEGIN_NAMESPACE
 
@@ -44,397 +45,109 @@ BEGIN_NAMESPACE
 * The first parameter is the number of char* pointer array to delete
 *
 */
-/*
+
 // To be developed
 void deleteAll(int count, char** s, ...) {
 
-    va_list ap;
+    PLATFORM_VA_LIST ap;
     int i = 0;
 
-    va_start (ap, s);
-
-    for (i = 0; i < count; i++)
-    safeDel((va_arg (ap, char**)));
-
-    va_end (ap);
-
-}
-*/
-
-void deleteAll(int, char** s) {
+    // Delete the first one
     safeDel(s);
-}
-void deleteAll(int, char** s, char** s1) {
-    safeDel(s); safeDel(s1);
-}
-void deleteAll(int, char** s, char** s1, char** s2) {
-    safeDel(s); safeDel(s1); safeDel(s2);
-}
-void deleteAll(int, char** s, char** s1, char** s2, char** s3) {
-    safeDel(s); safeDel(s1); safeDel(s2); safeDel(s3);
-}
-void deleteAll(int, char** s, char** s1, char** s2, char** s3, char** s4) {
-    safeDel(s); safeDel(s1); safeDel(s2); safeDel(s3); safeDel(s4);
-}
-void deleteAll(int, char** s, char** s1, char** s2, char** s3, char** s4,
-                    char** s5) {
-    safeDel(s); safeDel(s1); safeDel(s2); safeDel(s3); safeDel(s4); safeDel(s5);
-}
-void deleteAll(int, char** s, char** s1, char** s2, char** s3, char** s4,
-                    char** s5, char** s6) {
-    safeDel(s); safeDel(s1); safeDel(s2); safeDel(s3); safeDel(s4); safeDel(s5); safeDel(s6);
-}
-void deleteAll(int, char** s, char** s1, char** s2, char** s3, char** s4,
-                    char** s5, char** s6, char** s7) {
-    safeDel(s); safeDel(s1); safeDel(s2); safeDel(s3); safeDel(s4); safeDel(s5);
-    safeDel(s6); safeDel(s7);
-}
-void deleteAll(int, char** s, char** s1, char** s2, char** s3, char** s4,
-                    char** s5, char** s6, char** s7, char** s8) {
-    safeDel(s); safeDel(s1); safeDel(s2); safeDel(s3); safeDel(s4); safeDel(s5);
-    safeDel(s6); safeDel(s7); safeDel(s8);
-}
 
+    // Delete all the others
+    PLATFORM_VA_START (ap, s);
+
+    for (i = 0; i < count - 1; i++) {
+        char** pp = PLATFORM_VA_ARG(ap, char**);
+        safeDel(pp);
+    }
+
+    PLATFORM_VA_END (ap);
+}
 
 void deleteStringBuffer(StringBuffer** s) {
-    if (*s) {
+    if (s) {
         delete *s; *s = NULL;
-
     }
 }
 
-void deleteAllStringBuffer(int, StringBuffer** s) {
-    deleteStringBuffer(s);
-}
-
-void deleteAllStringBuffer(int, StringBuffer** s, StringBuffer** s1) {
-    deleteStringBuffer(s); deleteStringBuffer(s1);
-}
-
-void deleteAllStringBuffer(int, StringBuffer** s, StringBuffer** s1,
-                                StringBuffer** s2) {
-    deleteStringBuffer(s); deleteStringBuffer(s1); deleteStringBuffer(s2);
-
-}
-void deleteAllStringBuffer(int, StringBuffer** s, StringBuffer** s1,
-                                StringBuffer** s2, StringBuffer** s3) {
-    deleteStringBuffer(s); deleteStringBuffer(s1);
-    deleteStringBuffer(s2); deleteStringBuffer(s3);
-
-}
-void deleteAllStringBuffer(int, StringBuffer** s, StringBuffer** s1,
-                                StringBuffer** s2, StringBuffer** s3,
-                                StringBuffer** s4) {
-    deleteStringBuffer(s); deleteStringBuffer(s1);
-    deleteStringBuffer(s2); deleteStringBuffer(s3); deleteStringBuffer(s4);
-
-}
-
-void deleteAllStringBuffer(int, StringBuffer** s, StringBuffer** s1,
-                                StringBuffer** s2, StringBuffer** s3,
-                                StringBuffer** s4, StringBuffer** s5) {
-    deleteStringBuffer(s); deleteStringBuffer(s1); deleteStringBuffer(s2);
-    deleteStringBuffer(s3); deleteStringBuffer(s4); deleteStringBuffer(s5);
-
-}
-
-void deleteAllStringBuffer(int, StringBuffer** s, StringBuffer** s1,
-                                StringBuffer** s2, StringBuffer** s3,
-                                StringBuffer** s4, StringBuffer** s5,
-                                StringBuffer** s6) {
-    deleteStringBuffer(s); deleteStringBuffer(s1); deleteStringBuffer(s2);
-    deleteStringBuffer(s3); deleteStringBuffer(s4); deleteStringBuffer(s5);
-    deleteStringBuffer(s6);
-
-}
-
-void deleteAllStringBuffer(int, StringBuffer** s, StringBuffer** s1,
-                                StringBuffer** s2, StringBuffer** s3,
-                                StringBuffer** s4, StringBuffer** s5,
-                                StringBuffer** s6, StringBuffer** s7) {
-     deleteStringBuffer(s); deleteStringBuffer(s1); deleteStringBuffer(s2);
-     deleteStringBuffer(s3); deleteStringBuffer(s4); deleteStringBuffer(s5);
-     deleteStringBuffer(s6); deleteStringBuffer(s7);
-}
-
-void deleteAllStringBuffer(int, StringBuffer** s, StringBuffer** s1,
-                                StringBuffer** s2, StringBuffer** s3,
-                                StringBuffer** s4, StringBuffer** s5,
-                                StringBuffer** s6, StringBuffer** s7,
-                                StringBuffer** s8) {
-     deleteStringBuffer(s); deleteStringBuffer(s1); deleteStringBuffer(s2);
-     deleteStringBuffer(s3); deleteStringBuffer(s4); deleteStringBuffer(s5);
-     deleteStringBuffer(s6); deleteStringBuffer(s7); deleteStringBuffer(s8);
-}
-
-void deleteAllStringBuffer(int, StringBuffer** s, StringBuffer** s1,
-                                StringBuffer** s2, StringBuffer** s3,
-                                StringBuffer** s4, StringBuffer** s5,
-                                StringBuffer** s6, StringBuffer** s7,
-                                StringBuffer** s8, StringBuffer** s9) {
-     deleteStringBuffer(s); deleteStringBuffer(s1); deleteStringBuffer(s2);
-     deleteStringBuffer(s3); deleteStringBuffer(s4); deleteStringBuffer(s5);
-     deleteStringBuffer(s6); deleteStringBuffer(s7); deleteStringBuffer(s8);
-     deleteStringBuffer(s9);
-}
-
-void deleteAllStringBuffer(int, StringBuffer** s, StringBuffer** s1,
-                                StringBuffer** s2, StringBuffer** s3,
-                                StringBuffer** s4, StringBuffer** s5,
-                                StringBuffer** s6, StringBuffer** s7,
-                                StringBuffer** s8, StringBuffer** s9,
-                                StringBuffer** s10) {
-     deleteStringBuffer(s); deleteStringBuffer(s1); deleteStringBuffer(s2);
-     deleteStringBuffer(s3); deleteStringBuffer(s4); deleteStringBuffer(s5);
-     deleteStringBuffer(s6); deleteStringBuffer(s7); deleteStringBuffer(s8);
-     deleteStringBuffer(s9); deleteStringBuffer(s10);
-}
-
-void deleteAllStringBuffer(int, StringBuffer** s, StringBuffer** s1,
-                                StringBuffer** s2, StringBuffer** s3,
-                                StringBuffer** s4, StringBuffer** s5,
-                                StringBuffer** s6, StringBuffer** s7,
-                                StringBuffer** s8, StringBuffer** s9,
-                                StringBuffer** s10, StringBuffer** s11) {
-     deleteStringBuffer(s); deleteStringBuffer(s1); deleteStringBuffer(s2);
-     deleteStringBuffer(s3); deleteStringBuffer(s4); deleteStringBuffer(s5);
-     deleteStringBuffer(s6); deleteStringBuffer(s7); deleteStringBuffer(s8);
-     deleteStringBuffer(s9); deleteStringBuffer(s10); deleteStringBuffer(s11);
-}
-
-void deleteAllStringBuffer(int, StringBuffer** s, StringBuffer** s1,
-                                StringBuffer** s2, StringBuffer** s3,
-                                StringBuffer** s4, StringBuffer** s5,
-                                StringBuffer** s6, StringBuffer** s7,
-                                StringBuffer** s8, StringBuffer** s9,
-                                StringBuffer** s10, StringBuffer** s11,
-                                StringBuffer** s12) {
-     deleteStringBuffer(s); deleteStringBuffer(s1); deleteStringBuffer(s2);
-     deleteStringBuffer(s3); deleteStringBuffer(s4); deleteStringBuffer(s5);
-     deleteStringBuffer(s6); deleteStringBuffer(s7); deleteStringBuffer(s8);
-     deleteStringBuffer(s9); deleteStringBuffer(s10);
-     deleteStringBuffer(s11); deleteStringBuffer(s12);
-}
-
-void deleteAllStringBuffer(int, StringBuffer** s, StringBuffer** s1,
-                                StringBuffer** s2, StringBuffer** s3,
-                                StringBuffer** s4, StringBuffer** s5,
-                                StringBuffer** s6, StringBuffer** s7,
-                                StringBuffer** s8, StringBuffer** s9,
-                                StringBuffer** s10, StringBuffer** s11,
-                                StringBuffer** s12, StringBuffer** s13) {
-     deleteStringBuffer(s); deleteStringBuffer(s1); deleteStringBuffer(s2);
-     deleteStringBuffer(s3); deleteStringBuffer(s4); deleteStringBuffer(s5);
-     deleteStringBuffer(s6); deleteStringBuffer(s7); deleteStringBuffer(s8);
-     deleteStringBuffer(s9); deleteStringBuffer(s10); deleteStringBuffer(s11);
-     deleteStringBuffer(s12); deleteStringBuffer(s13);
-}
-
-void deleteAllStringBuffer(int, StringBuffer** s, StringBuffer** s1,
-                                StringBuffer** s2, StringBuffer** s3,
-                                StringBuffer** s4, StringBuffer** s5,
-                                StringBuffer** s6, StringBuffer** s7,
-                                StringBuffer** s8, StringBuffer** s9,
-                                StringBuffer** s10, StringBuffer** s11,
-                                StringBuffer** s12, StringBuffer** s13,
-                                StringBuffer** s14) {
-     deleteStringBuffer(s); deleteStringBuffer(s1); deleteStringBuffer(s2);
-     deleteStringBuffer(s3); deleteStringBuffer(s4); deleteStringBuffer(s5);
-     deleteStringBuffer(s6); deleteStringBuffer(s7); deleteStringBuffer(s8);
-     deleteStringBuffer(s9); deleteStringBuffer(s10); deleteStringBuffer(s11);
-     deleteStringBuffer(s12); deleteStringBuffer(s13); deleteStringBuffer(s14);
-}
-
-void deleteAllStringBuffer(int, StringBuffer** s, StringBuffer** s1,
-                                StringBuffer** s2, StringBuffer** s3,
-                                StringBuffer** s4, StringBuffer** s5,
-                                StringBuffer** s6, StringBuffer** s7,
-                                StringBuffer** s8, StringBuffer** s9,
-                                StringBuffer** s10, StringBuffer** s11,
-                                StringBuffer** s12, StringBuffer** s13,
-                                StringBuffer** s14, StringBuffer** s15) {
-     deleteStringBuffer(s); deleteStringBuffer(s1); deleteStringBuffer(s2);
-     deleteStringBuffer(s3); deleteStringBuffer(s4); deleteStringBuffer(s5);
-     deleteStringBuffer(s6); deleteStringBuffer(s7); deleteStringBuffer(s8);
-     deleteStringBuffer(s9); deleteStringBuffer(s10); deleteStringBuffer(s11);
-     deleteStringBuffer(s12); deleteStringBuffer(s13); deleteStringBuffer(s14);
-     deleteStringBuffer(s15);
-}
-
-void deleteAllStringBuffer(int, StringBuffer** s, StringBuffer** s1,
-                                StringBuffer** s2, StringBuffer** s3,
-                                StringBuffer** s4, StringBuffer** s5,
-                                StringBuffer** s6, StringBuffer** s7,
-                                StringBuffer** s8, StringBuffer** s9,
-                                StringBuffer** s10, StringBuffer** s11,
-                                StringBuffer** s12, StringBuffer** s13,
-                                StringBuffer** s14, StringBuffer** s15,
-                                StringBuffer** s16) {
-     deleteStringBuffer(s); deleteStringBuffer(s1); deleteStringBuffer(s2);
-     deleteStringBuffer(s3); deleteStringBuffer(s4); deleteStringBuffer(s5);
-     deleteStringBuffer(s6); deleteStringBuffer(s7); deleteStringBuffer(s8);
-     deleteStringBuffer(s9); deleteStringBuffer(s10); deleteStringBuffer(s11);
-     deleteStringBuffer(s12); deleteStringBuffer(s13); deleteStringBuffer(s14);
-     deleteStringBuffer(s15); deleteStringBuffer(s16);
-}
-
-
-
-/*
 //To be developed....
 void deleteAllStringBuffer(int count, StringBuffer** s, ...) {
 
-    va_list ap;
+    PLATFORM_VA_LIST ap;
     int i = 0;
 
-    va_start (ap, s);
+    // Delete the first one
+    deleteStringBuffer(s);
 
-    for (i = 0; i < count; i++) {
-        StringBuffer** s = va_arg (ap, StringBuffer**);
+    // Delete all the others
 
-        deleteStringBuffer(s);
-        // deleteStringBuffer(va_arg (ap, StringBuffer**));
+    PLATFORM_VA_START (ap, s);
+
+    for (i = 0; i < count -1; i++) {
+        StringBuffer** ss = PLATFORM_VA_ARG (ap, StringBuffer**);
+        deleteStringBuffer(ss);
     }
-    va_end (ap);
+    PLATFORM_VA_END (ap);
 
 }
-*/
 
 bool SingleNotNullCheck(char* s) {
     return (s) ? true : false;
 }
 
-bool NotNullCheck(int, char* s) {
-    return SingleNotNullCheck(s);
-}
-bool NotNullCheck(int, char* s, char* s1) {
-    return (SingleNotNullCheck(s) || SingleNotNullCheck(s1));
-}
-bool NotNullCheck(int, char* s, char* s1, char* s2) {
-    return (SingleNotNullCheck(s) || SingleNotNullCheck(s1) || SingleNotNullCheck(s2));
-}
-bool NotNullCheck(int, char* s, char* s1, char* s2, char* s3) {
-    return (SingleNotNullCheck(s)  || SingleNotNullCheck(s1) ||
-            SingleNotNullCheck(s2) || SingleNotNullCheck(s3));
-}
-bool NotNullCheck(int, char* s, char* s1, char* s2, char* s3, char* s4) {
-    return (SingleNotNullCheck(s)  || SingleNotNullCheck(s1) ||
-            SingleNotNullCheck(s2) || SingleNotNullCheck(s3) || SingleNotNullCheck(s4));
-}
-bool NotNullCheck(int, char* s, char* s1, char* s2, char* s3, char* s4, char* s5) {
-    return (SingleNotNullCheck(s)  || SingleNotNullCheck(s1) ||
-            SingleNotNullCheck(s2) || SingleNotNullCheck(s3) ||
-            SingleNotNullCheck(s4) || SingleNotNullCheck(s5));
-}
-bool NotNullCheck(int, char* s, char* s1, char* s2, char* s3, char* s4,
-                       char* s5, char* s6) {
-    return (SingleNotNullCheck(s)  || SingleNotNullCheck(s1) ||
-            SingleNotNullCheck(s2) || SingleNotNullCheck(s3) ||
-            SingleNotNullCheck(s4) || SingleNotNullCheck(s5) ||
-            SingleNotNullCheck(s6));
-}
-bool NotNullCheck(int, char* s, char* s1, char* s2, char* s3, char* s4, char* s5,
-                       char* s6, char* s7) {
-    return (SingleNotNullCheck(s)  || SingleNotNullCheck(s1) ||
-            SingleNotNullCheck(s2) || SingleNotNullCheck(s3) ||
-            SingleNotNullCheck(s4) || SingleNotNullCheck(s5) ||
-            SingleNotNullCheck(s6) || SingleNotNullCheck(s7));
-}
-bool NotNullCheck(int, char* s, char* s1, char* s2, char* s3, char* s4,
-                       char* s5, char* s6, char* s7, char* s8) {
-    return (SingleNotNullCheck(s)  || SingleNotNullCheck(s1) ||
-            SingleNotNullCheck(s2) || SingleNotNullCheck(s3) ||
-            SingleNotNullCheck(s4) || SingleNotNullCheck(s5) ||
-            SingleNotNullCheck(s6) || SingleNotNullCheck(s7) ||
-            SingleNotNullCheck(s8));
-}
-bool NotNullCheck(int, char* s, char* s1, char* s2, char* s3, char* s4,
-                       char* s5, char* s6, char* s7, char* s8, char* s9) {
-    return (SingleNotNullCheck(s)  || SingleNotNullCheck(s1) ||
-            SingleNotNullCheck(s2) || SingleNotNullCheck(s3) ||
-            SingleNotNullCheck(s4) || SingleNotNullCheck(s5) ||
-            SingleNotNullCheck(s6) || SingleNotNullCheck(s7) ||
-            SingleNotNullCheck(s8) || SingleNotNullCheck(s9));
-}
-bool NotNullCheck(int, char* s, char* s1, char* s2, char* s3, char* s4,
-                       char* s5, char* s6, char* s7, char* s8, char* s9,
-                       char* s10) {
-    return (SingleNotNullCheck(s)  || SingleNotNullCheck(s1) ||
-            SingleNotNullCheck(s2) || SingleNotNullCheck(s3) ||
-            SingleNotNullCheck(s4) || SingleNotNullCheck(s5) ||
-            SingleNotNullCheck(s6) || SingleNotNullCheck(s7) ||
-            SingleNotNullCheck(s8) || SingleNotNullCheck(s9) ||
-            SingleNotNullCheck(s10));
-}
-
 /*
 * return true if an element of the char* list is not NULL
 */
-/*
-// To be developed
 bool NotNullCheck(int count, char* s, ...) {
 
-    va_list ap;
+    PLATFORM_VA_LIST ap;
     int i = 0;
-    bool ret = false;
 
-    va_start (ap, s);
-    char* t = NULL;
+    if (s) {
+        return true;
+    }
 
-    for(i = 0; i < count; i++) {
-        t = NULL;
-        t = va_arg (ap, char*);
-        if (t != NULL) {
-            ret = true;
+    PLATFORM_VA_START (ap, s);
+
+    for(i = 0; i < count - 1; i++) {
+        char *t = PLATFORM_VA_ARG (ap, char*);
+
+        if (SingleNotNullCheck(t)) {
+            return true;
         }
     }
-    va_end (ap);
-    return ret;
+    PLATFORM_VA_END (ap);
+    return false;
 }
-*/
+
 bool NotZeroCheck(int count, int s, ...) {
 
-    va_list ap;
+    PLATFORM_VA_LIST ap;
     int i = 0;
-    bool ret = false;
 
-    va_start (ap, s);
+    if (s != 0) {
+        return true;
+    }
 
-    for(i = 0; i < count; i++) {
-        if (va_arg (ap, int) != 0) {
-            ret = true;
+    PLATFORM_VA_START (ap, s);
+
+    for(i = 0; i < count - 1; i++) {
+        if (PLATFORM_VA_ARG (ap, int) != 0) {
+            return true;
         }
     }
-    va_end (ap);
-    return ret;
+
+    PLATFORM_VA_END (ap);
+    return false;
 }
 
 /*
 * return true if at least an arrayList as lenght > 0
 * To be developed
 */
-/*
-bool NotZeroArrayLenght(int count, ArrayList* s, ...) {
-
-    va_list ap;
-    int i    = 0;
-    bool ret = false;
-
-    va_start (ap, s);
-
-    for(i = 0; i < count; i++) {
-        ArrayList* p = va_arg (ap, ArrayList*);
-
-        if (p->size() > 0) {
-            ret = true;
-        }
-
-    }
-    va_end (ap);
-    return ret;
-}
-*/
-bool NotZeroSingleArrayLenght(ArrayList* s) {
+bool NotZeroSingleArrayLength(ArrayList* s) {
     bool ret = false;
     if (s) {
         if (s->size() > 0)
@@ -443,20 +156,31 @@ bool NotZeroSingleArrayLenght(ArrayList* s) {
     return ret;
 }
 
-bool NotZeroArrayLenght(int, ArrayList* s) {
-    return NotZeroSingleArrayLenght(s);
+bool NotZeroArrayLength(int count, ArrayList* s, ...) {
+
+    PLATFORM_VA_LIST ap;
+    int i    = 0;
+
+    if (NotZeroSingleArrayLength(s)) {
+        return true;
+    }
+
+    PLATFORM_VA_START (ap, s);
+
+    for(i = 0; i < count - 1; i++) {
+        ArrayList* p = PLATFORM_VA_ARG (ap, ArrayList*);
+
+        if (NotZeroSingleArrayLength(p)) {
+            return true;
+        }
+    }
+
+    PLATFORM_VA_END (ap);
+    return false;
 }
-bool NotZeroArrayLenght(int, ArrayList* s, ArrayList* s1) {
-    return (NotZeroSingleArrayLenght(s) || NotZeroSingleArrayLenght(s1));
-}
-bool NotZeroArrayLenght(int, ArrayList* s, ArrayList* s1, ArrayList* s2) {
-    return (NotZeroSingleArrayLenght(s) || NotZeroSingleArrayLenght(s1) || NotZeroSingleArrayLenght(s2));
-}
 
 
-
-
-bool NotZeroSingleStringBufferLenght(StringBuffer* s) {
+bool NotZeroSingleStringBufferLength(StringBuffer* s) {
     bool ret = false;
     if (s) {
         if (s->length() > 0)
@@ -465,594 +189,316 @@ bool NotZeroSingleStringBufferLenght(StringBuffer* s) {
     return ret;
 }
 
-bool NotZeroStringBufferLenght(int, StringBuffer* s) {
-    return NotZeroSingleStringBufferLenght(s);
-}
-
-bool NotZeroStringBufferLenght(int, StringBuffer* s, StringBuffer* s1) {
-    return (NotZeroSingleStringBufferLenght(s) ||
-            NotZeroSingleStringBufferLenght(s1)
-            );
-}
-bool NotZeroStringBufferLenght(int, StringBuffer* s, StringBuffer* s1, StringBuffer* s2) {
-    return (NotZeroSingleStringBufferLenght(s)  ||
-            NotZeroSingleStringBufferLenght(s1) ||
-            NotZeroSingleStringBufferLenght(s2)
-            );
-}
-bool NotZeroStringBufferLenght(int, StringBuffer* s, StringBuffer* s1,
-                                    StringBuffer* s2, StringBuffer* s3) {
-    return (NotZeroSingleStringBufferLenght(s)  ||
-            NotZeroSingleStringBufferLenght(s1) ||
-            NotZeroSingleStringBufferLenght(s2) ||
-            NotZeroSingleStringBufferLenght(s3)
-            );
-}
-bool NotZeroStringBufferLenght(int, StringBuffer* s, StringBuffer* s1,
-                                    StringBuffer* s2, StringBuffer* s3,
-                                    StringBuffer* s4) {
-    return (NotZeroSingleStringBufferLenght(s)  ||
-            NotZeroSingleStringBufferLenght(s1) ||
-            NotZeroSingleStringBufferLenght(s2) ||
-            NotZeroSingleStringBufferLenght(s3) ||
-            NotZeroSingleStringBufferLenght(s4)
-            );
-}
-
-bool NotZeroStringBufferLenght(int, StringBuffer* s, StringBuffer* s1,
-                                    StringBuffer* s2, StringBuffer* s3,
-                                    StringBuffer* s4, StringBuffer* s5) {
-    return (NotZeroSingleStringBufferLenght(s)  ||
-            NotZeroSingleStringBufferLenght(s1) ||
-            NotZeroSingleStringBufferLenght(s2) ||
-            NotZeroSingleStringBufferLenght(s3) ||
-            NotZeroSingleStringBufferLenght(s4) ||
-            NotZeroSingleStringBufferLenght(s5)
-            );
-}
-bool NotZeroStringBufferLenght(int, StringBuffer* s, StringBuffer* s1,
-                                    StringBuffer* s2, StringBuffer* s3,
-                                    StringBuffer* s4, StringBuffer* s5,
-                                    StringBuffer* s6) {
-    return (NotZeroSingleStringBufferLenght(s)  ||
-            NotZeroSingleStringBufferLenght(s1) ||
-            NotZeroSingleStringBufferLenght(s2) ||
-            NotZeroSingleStringBufferLenght(s3) ||
-            NotZeroSingleStringBufferLenght(s4) ||
-            NotZeroSingleStringBufferLenght(s5) ||
-            NotZeroSingleStringBufferLenght(s6)
-            );
-}
-
-bool NotZeroStringBufferLenght(int, StringBuffer* s, StringBuffer* s1,
-                                    StringBuffer* s2, StringBuffer* s3,
-                                    StringBuffer* s4, StringBuffer* s5,
-                                    StringBuffer* s6, StringBuffer* s7) {
-    return (NotZeroSingleStringBufferLenght(s)  ||
-            NotZeroSingleStringBufferLenght(s1) ||
-            NotZeroSingleStringBufferLenght(s2) ||
-            NotZeroSingleStringBufferLenght(s3) ||
-            NotZeroSingleStringBufferLenght(s4) ||
-            NotZeroSingleStringBufferLenght(s5) ||
-            NotZeroSingleStringBufferLenght(s6) ||
-            NotZeroSingleStringBufferLenght(s7)
-            );
-}
-
-bool NotZeroStringBufferLenght(int, StringBuffer* s, StringBuffer* s1,
-                                    StringBuffer* s2, StringBuffer* s3,
-                                    StringBuffer* s4, StringBuffer* s5,
-                                    StringBuffer* s6, StringBuffer* s7,
-                                    StringBuffer* s8) {
-    return (NotZeroSingleStringBufferLenght(s)  ||
-            NotZeroSingleStringBufferLenght(s1) ||
-            NotZeroSingleStringBufferLenght(s2) ||
-            NotZeroSingleStringBufferLenght(s3) ||
-            NotZeroSingleStringBufferLenght(s4) ||
-            NotZeroSingleStringBufferLenght(s5) ||
-            NotZeroSingleStringBufferLenght(s6) ||
-            NotZeroSingleStringBufferLenght(s7) ||
-            NotZeroSingleStringBufferLenght(s8)
-            );
-}
-bool NotZeroStringBufferLenght(int, StringBuffer* s, StringBuffer* s1,
-                                    StringBuffer* s2, StringBuffer* s3,
-                                    StringBuffer* s4, StringBuffer* s5,
-                                    StringBuffer* s6, StringBuffer* s7,
-                                    StringBuffer* s8, StringBuffer* s9) {
-    return (NotZeroSingleStringBufferLenght(s)  ||
-            NotZeroSingleStringBufferLenght(s1) ||
-            NotZeroSingleStringBufferLenght(s2) ||
-            NotZeroSingleStringBufferLenght(s3) ||
-            NotZeroSingleStringBufferLenght(s4) ||
-            NotZeroSingleStringBufferLenght(s5) ||
-            NotZeroSingleStringBufferLenght(s6) ||
-            NotZeroSingleStringBufferLenght(s7) ||
-            NotZeroSingleStringBufferLenght(s8) ||
-            NotZeroSingleStringBufferLenght(s9)
-            );
-}
-
-bool NotZeroStringBufferLenght(int, StringBuffer* s, StringBuffer* s1,
-                                    StringBuffer* s2, StringBuffer* s3,
-                                    StringBuffer* s4, StringBuffer* s5,
-                                    StringBuffer* s6, StringBuffer* s7,
-                                    StringBuffer* s8, StringBuffer* s9,
-                                    StringBuffer* s10) {
-    return (NotZeroSingleStringBufferLenght(s)  ||
-            NotZeroSingleStringBufferLenght(s1) ||
-            NotZeroSingleStringBufferLenght(s2) ||
-            NotZeroSingleStringBufferLenght(s3) ||
-            NotZeroSingleStringBufferLenght(s4) ||
-            NotZeroSingleStringBufferLenght(s5) ||
-            NotZeroSingleStringBufferLenght(s6) ||
-            NotZeroSingleStringBufferLenght(s7) ||
-            NotZeroSingleStringBufferLenght(s8) ||
-            NotZeroSingleStringBufferLenght(s9) ||
-            NotZeroSingleStringBufferLenght(s10)
-            );
-}
-
-bool NotZeroStringBufferLenght(int, StringBuffer* s, StringBuffer* s1,
-                                    StringBuffer* s2, StringBuffer* s3,
-                                    StringBuffer* s4, StringBuffer* s5,
-                                    StringBuffer* s6, StringBuffer* s7,
-                                    StringBuffer* s8, StringBuffer* s9,
-                                    StringBuffer* s10, StringBuffer* s11) {
-    return (NotZeroSingleStringBufferLenght(s)  ||
-            NotZeroSingleStringBufferLenght(s1) ||
-            NotZeroSingleStringBufferLenght(s2) ||
-            NotZeroSingleStringBufferLenght(s3) ||
-            NotZeroSingleStringBufferLenght(s4) ||
-            NotZeroSingleStringBufferLenght(s5) ||
-            NotZeroSingleStringBufferLenght(s6) ||
-            NotZeroSingleStringBufferLenght(s7) ||
-            NotZeroSingleStringBufferLenght(s8) ||
-            NotZeroSingleStringBufferLenght(s9) ||
-            NotZeroSingleStringBufferLenght(s10) ||
-            NotZeroSingleStringBufferLenght(s11)
-            );
-}
-
-bool NotZeroStringBufferLenght(int, StringBuffer* s, StringBuffer* s1,
-                                    StringBuffer* s2, StringBuffer* s3,
-                                    StringBuffer* s4, StringBuffer* s5,
-                                    StringBuffer* s6, StringBuffer* s7,
-                                    StringBuffer* s8, StringBuffer* s9,
-                                    StringBuffer* s10, StringBuffer* s11,
-                                    StringBuffer* s12) {
-    return (NotZeroSingleStringBufferLenght(s)  ||
-            NotZeroSingleStringBufferLenght(s1) ||
-            NotZeroSingleStringBufferLenght(s2) ||
-            NotZeroSingleStringBufferLenght(s3) ||
-            NotZeroSingleStringBufferLenght(s4) ||
-            NotZeroSingleStringBufferLenght(s5) ||
-            NotZeroSingleStringBufferLenght(s6) ||
-            NotZeroSingleStringBufferLenght(s7) ||
-            NotZeroSingleStringBufferLenght(s8) ||
-            NotZeroSingleStringBufferLenght(s9) ||
-            NotZeroSingleStringBufferLenght(s10) ||
-            NotZeroSingleStringBufferLenght(s11) ||
-            NotZeroSingleStringBufferLenght(s12)
-            );
-}
-
-bool NotZeroStringBufferLenght(int, StringBuffer* s, StringBuffer* s1,
-                                    StringBuffer* s2, StringBuffer* s3,
-                                    StringBuffer* s4, StringBuffer* s5,
-                                    StringBuffer* s6, StringBuffer* s7,
-                                    StringBuffer* s8, StringBuffer* s9,
-                                    StringBuffer* s10, StringBuffer* s11,
-                                    StringBuffer* s12, StringBuffer* s13) {
-    return (NotZeroSingleStringBufferLenght(s)  ||
-            NotZeroSingleStringBufferLenght(s1) ||
-            NotZeroSingleStringBufferLenght(s2) ||
-            NotZeroSingleStringBufferLenght(s3) ||
-            NotZeroSingleStringBufferLenght(s4) ||
-            NotZeroSingleStringBufferLenght(s5) ||
-            NotZeroSingleStringBufferLenght(s6) ||
-            NotZeroSingleStringBufferLenght(s7) ||
-            NotZeroSingleStringBufferLenght(s8) ||
-            NotZeroSingleStringBufferLenght(s9) ||
-            NotZeroSingleStringBufferLenght(s10) ||
-            NotZeroSingleStringBufferLenght(s11) ||
-            NotZeroSingleStringBufferLenght(s12) ||
-            NotZeroSingleStringBufferLenght(s13)
-            );
-}
-
-bool NotZeroStringBufferLenght(int, StringBuffer* s, StringBuffer* s1,
-                                    StringBuffer* s2, StringBuffer* s3,
-                                    StringBuffer* s4, StringBuffer* s5,
-                                    StringBuffer* s6, StringBuffer* s7,
-                                    StringBuffer* s8, StringBuffer* s9,
-                                    StringBuffer* s10, StringBuffer* s11,
-                                    StringBuffer* s12, StringBuffer* s13,
-                                    StringBuffer* s14) {
-    return (NotZeroSingleStringBufferLenght(s)  ||
-            NotZeroSingleStringBufferLenght(s1) ||
-            NotZeroSingleStringBufferLenght(s2) ||
-            NotZeroSingleStringBufferLenght(s3) ||
-            NotZeroSingleStringBufferLenght(s4) ||
-            NotZeroSingleStringBufferLenght(s5) ||
-            NotZeroSingleStringBufferLenght(s6) ||
-            NotZeroSingleStringBufferLenght(s7) ||
-            NotZeroSingleStringBufferLenght(s8) ||
-            NotZeroSingleStringBufferLenght(s9) ||
-            NotZeroSingleStringBufferLenght(s10) ||
-            NotZeroSingleStringBufferLenght(s11) ||
-            NotZeroSingleStringBufferLenght(s12) ||
-            NotZeroSingleStringBufferLenght(s13) ||
-            NotZeroSingleStringBufferLenght(s14)
-            );
-}
-
-bool NotZeroStringBufferLenght(int, StringBuffer* s, StringBuffer* s1,
-                                    StringBuffer* s2, StringBuffer* s3,
-                                    StringBuffer* s4, StringBuffer* s5,
-                                    StringBuffer* s6, StringBuffer* s7,
-                                    StringBuffer* s8, StringBuffer* s9,
-                                    StringBuffer* s10, StringBuffer* s11,
-                                    StringBuffer* s12, StringBuffer* s13,
-                                    StringBuffer* s14, StringBuffer* s15) {
-    return (NotZeroSingleStringBufferLenght(s)  ||
-            NotZeroSingleStringBufferLenght(s1) ||
-            NotZeroSingleStringBufferLenght(s2) ||
-            NotZeroSingleStringBufferLenght(s3) ||
-            NotZeroSingleStringBufferLenght(s4) ||
-            NotZeroSingleStringBufferLenght(s5) ||
-            NotZeroSingleStringBufferLenght(s6) ||
-            NotZeroSingleStringBufferLenght(s7) ||
-            NotZeroSingleStringBufferLenght(s8) ||
-            NotZeroSingleStringBufferLenght(s9) ||
-            NotZeroSingleStringBufferLenght(s10) ||
-            NotZeroSingleStringBufferLenght(s11) ||
-            NotZeroSingleStringBufferLenght(s12) ||
-            NotZeroSingleStringBufferLenght(s13) ||
-            NotZeroSingleStringBufferLenght(s14) ||
-            NotZeroSingleStringBufferLenght(s15)
-            );
-}
-
-bool NotZeroStringBufferLenght(int, StringBuffer* s, StringBuffer* s1,
-                                    StringBuffer* s2, StringBuffer* s3,
-                                    StringBuffer* s4, StringBuffer* s5,
-                                    StringBuffer* s6, StringBuffer* s7,
-                                    StringBuffer* s8, StringBuffer* s9,
-                                    StringBuffer* s10, StringBuffer* s11,
-                                    StringBuffer* s12, StringBuffer* s13,
-                                    StringBuffer* s14, StringBuffer* s15,
-                                    StringBuffer* s16) {
-    return (NotZeroSingleStringBufferLenght(s)  ||
-            NotZeroSingleStringBufferLenght(s1) ||
-            NotZeroSingleStringBufferLenght(s2) ||
-            NotZeroSingleStringBufferLenght(s3) ||
-            NotZeroSingleStringBufferLenght(s4) ||
-            NotZeroSingleStringBufferLenght(s5) ||
-            NotZeroSingleStringBufferLenght(s6) ||
-            NotZeroSingleStringBufferLenght(s7) ||
-            NotZeroSingleStringBufferLenght(s8) ||
-            NotZeroSingleStringBufferLenght(s9) ||
-            NotZeroSingleStringBufferLenght(s10) ||
-            NotZeroSingleStringBufferLenght(s11) ||
-            NotZeroSingleStringBufferLenght(s12) ||
-            NotZeroSingleStringBufferLenght(s13) ||
-            NotZeroSingleStringBufferLenght(s14) ||
-            NotZeroSingleStringBufferLenght(s15) ||
-            NotZeroSingleStringBufferLenght(s16)
-            );
-}
-
 /*
-* return true if at least an StringBuffer as lenght > 0
+* return true if at least one StringBuffer has lenght > 0
 */
-/*
-bool NotZeroStringBufferLenght(int count, StringBuffer* s, ...) {
+bool NotZeroStringBufferLength(int count, StringBuffer* s, ...) {
 
-    va_list ap;
+    PLATFORM_VA_LIST ap;
     int i    = 0;
-    bool ret = false;
 
-    va_start (ap, s);
-
-    for(i = 0; i < count; i++) {
-        StringBuffer* p = va_arg (ap, StringBuffer*);
-
-        if (p != NULL && p->length() > 0) {
-            ret = true;
-        }
-
+    if (NotZeroSingleStringBufferLength(s)) {
+        return true;
     }
-    va_end (ap);
-    return ret;
+
+    PLATFORM_VA_START (ap, s);
+
+    for(i = 0; i < count - 1; i++) {
+        StringBuffer* p = PLATFORM_VA_ARG (ap, StringBuffer*);
+
+        if (NotZeroSingleStringBufferLength(p)) {
+            return true;
+        }
+    }
+    PLATFORM_VA_END (ap);
+    return false;
 }
-*/
 
 
 void deleteTarget(Target ** s) {
-    if (*s) {
+    if (s) {
         delete *s; *s = NULL;
     }
 }
 
 void deleteSource(Source ** s) {
-    if (*s) {
+    if (s) {
         delete *s; *s = NULL;
     }
 }
 
 void deleteSourceArray(SourceArray ** s) {
-    if (*s) {
+    if (s) {
         delete *s; *s = NULL;
     }
 }
 
 void deleteCred(Cred ** s) {
-    if (*s) {
+    if (s) {
         delete *s; *s = NULL;
     }
 }
 
 void deleteMeta(Meta ** s) {
-    if (*s) {
+    if (s) {
         delete *s; *s = NULL;
     }
 }
 
 void deleteMetInf(MetInf ** s) {
-    if (*s) {
+    if (s) {
         delete *s; *s = NULL;
     }
 }
 
 void deleteNextNonce(NextNonce ** s) {
-    if (*s) {
+    if (s) {
         delete *s; *s = NULL;
     }
 }
 
 void deleteAlert(Alert ** s) {
-    if (*s) {
+    if (s) {
         delete *s; *s = NULL;
     }
 }
 
 void deleteItem(Item ** s) {
-    if (*s) {
+    if (s) {
         delete *s; *s = NULL;
     }
 }
 
 void deleteCmdID(CmdID ** s) {
-    if (*s) {
+    if (s) {
         delete *s; *s = NULL;
     }
 }
 
 void deleteAuthentication(Authentication ** s) {
-    if (*s) {
+    if (s) {
         delete *s; *s = NULL;
     }
 }
 
 void deleteAnchor(Anchor ** s) {
-    if (*s) {
+    if (s) {
         delete *s; *s = NULL;
     }
 }
 
 void deleteMem(Mem ** s) {
-    if (*s) {
+    if (s) {
         delete *s; *s = NULL;
     }
 }
 
 void deleteSyncHdr(SyncHdr ** s) {
-    if (*s) {
+    if (s) {
         delete *s; *s = NULL;
     }
 }
 
 void deleteSyncBody(SyncBody ** s) {
-    if (*s) {
+    if (s) {
         delete *s; *s = NULL;
     }
 }
 
 void deleteSessionID(SessionID ** s) {
-    if (*s) {
+    if (s) {
         delete *s; *s = NULL;
     }
 }
 
 void deleteVerDTD(VerDTD ** s) {
-    if (*s) {
+    if (s) {
         delete *s; *s = NULL;
     }
 }
 
 void deleteVerProto(VerProto ** s) {
-    if (*s) {
+    if (s) {
         delete *s; *s = NULL;
     }
 }
 
 void deleteTargetRef(TargetRef ** s) {
-    if (*s) {
+    if (s) {
         delete *s; *s = NULL;
     }
 }
 
 void deleteSourceRef(SourceRef ** s) {
-    if (*s) {
+    if (s) {
         delete *s; *s = NULL;
     }
 }
 
 void deleteStatus(Status ** s) {
-    if (*s) {
+    if (s) {
         delete *s; *s = NULL;
     }
 }
 
 void deleteChal(Chal ** s) {
-    if (*s) {
+    if (s) {
         delete *s; *s = NULL;
     }
 }
 
 void deleteData(Data ** s) {
-    if (*s) {
+    if (s) {
         delete *s; *s = NULL;
     }
 }
 
 void deleteMap(Map ** s) {
-    if (*s) {
+    if (s) {
         delete *s; *s = NULL;
     }
 }
 
 void deleteMapItem(MapItem ** s) {
-    if (*s) {
+    if (s) {
         delete *s; *s = NULL;
     }
 }
 
 void deleteComplexData(ComplexData ** s) {
-    if (*s) {
+    if (s) {
         delete *s; *s = NULL;
     }
 }
 
 void deleteAdd(Add ** s) {
-    if (*s) {
+    if (s) {
         delete *s; *s = NULL;
     }
 }
 
 void deleteReplace(Replace ** s) {
-    if (*s) {
+    if (s) {
         delete *s; *s = NULL;
     }
 }
 
 void deleteDelete(Delete ** s) {
-    if (*s) {
+    if (s) {
         delete *s; *s = NULL;
     }
 }
 
 void deleteCopy(Copy ** s) {
-    if (*s) {
+    if (s) {
         delete *s; *s = NULL;
     }
 }
 
 void deleteSync(Sync ** s) {
-    if (*s) {
+    if (s) {
         delete *s; *s = NULL;
     }
 }
 
 void deleteSequence(Sequence ** s) {
-    if (*s) {
+    if (s) {
         delete *s; *s = NULL;
     }
 }
 
 void deleteAtomic(Atomic ** s) {
-    if (*s) {
+    if (s) {
         delete *s; *s = NULL;
     }
 }
 
 void deleteGet(Get ** s) {
-    if (*s) {
+    if (s) {
         delete *s; *s = NULL;
     }
 }
 
 void deletePut(Put ** s) {
-    if (*s) {
+    if (s) {
         delete *s; *s = NULL;
     }
 }
 
 void deleteDataStore(DataStore ** s) {
-    if (*s) {
+    if (s) {
         delete *s; *s = NULL;
     }
 }
 
 void deleteSyncType(SyncType ** s) {
-    if (*s) {
+    if (s) {
         delete *s; *s = NULL;
     }
 }
 
 void deleteContentTypeInfo(ContentTypeInfo ** s) {
-    if (*s) {
+    if (s) {
         delete *s; *s = NULL;
     }
 }
 
 void deleteSyncCap(SyncCap ** s) {
-    if (*s) {
+    if (s) {
         delete *s; *s = NULL;
     }
 }
 
 void deleteDSMem(DSMem ** s) {
-    if (*s) {
+    if (s) {
         delete *s; *s = NULL;
     }
 }
 
 void deleteCTCap(CTCap ** s) {
-    if (*s) {
+    if (s) {
         delete *s; *s = NULL;
     }
 }
 
 void deleteExt(Ext ** s) {
-    if (*s) {
+    if (s) {
         delete *s; *s = NULL;
     }
 }
 
 void deleteStringElement(StringElement ** s) {
-    if (*s) {
+    if (s) {
         delete *s; *s = NULL;
     }
 }
 
 void deleteResults(Results ** s) {
-    if (*s) {
+    if (s) {
         delete *s; *s = NULL;
     }
 }
 
 void deleteExec(Exec ** s) {
-    if (*s) {
+    if (s) {
         delete *s; *s = NULL;
     }
 }
 
 void deleteSearch(Search ** s) {
-    if (*s) {
+    if (s) {
         delete *s; *s = NULL;
     }
 }
 
 void deleteSyncML(SyncML ** s) {
-    if (*s) {
+    if (s) {
         delete *s; *s = NULL;
     }
 }
 
 void deleteArrayList(ArrayList ** s) {
-    if (*s) {
+    if (s && *s) {
         (*s)->clear();
     }
 }

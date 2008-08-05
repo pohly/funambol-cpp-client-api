@@ -220,7 +220,7 @@ MetInf* Parser::getMetInf(const char*xml) {
     // check if someting is null, 0 or zero lenght
     bool isToCreate = false;
     isToCreate = NotNullCheck(7, format, type, mark, version, maxMsgSizeW, maxObjSizeW, sizeW)
-                 || NotZeroArrayLenght(1, emi)
+                 || NotZeroArrayLength(1, emi)
                  || (mem)
                  || (anchor)
                  || (nextNonce);
@@ -568,7 +568,7 @@ Sequence* Parser::getSequence(const char*xml) {
 
     if ((cmdID)   ||
         (meta)    ||
-        NotZeroArrayLenght(1, commands)) {
+        NotZeroArrayLength(1, commands)) {
 
         ret = new Sequence(cmdID, noResp, meta, commands);
     }
@@ -741,7 +741,7 @@ Atomic* Parser::getAtomic(const char*xml) {
 
     if ((cmdID)   ||
         (meta)    ||
-        NotZeroArrayLenght(1, commands)) {
+        NotZeroArrayLength(1, commands)) {
 
         ret = new Atomic(cmdID, noResp, meta, commands);
     }
@@ -832,7 +832,7 @@ Sync* Parser::getSync(const char*xml) {
         (target)  ||
         (source)  ||
         (meta)    ||
-        NotZeroArrayLenght(1, commands)) {
+        NotZeroArrayLength(1, commands)) {
 
         ret = new Sync(cmdID, noResp, cred, target, source, meta, numberOfChanges, commands);
     }
@@ -926,7 +926,7 @@ Copy* Parser::getCopy(const char*xml) {
 
     if ((cmdID) ||
         (cred)  ||
-        NotZeroArrayLenght(1, items)
+        NotZeroArrayLength(1, items)
         )  {
 
         ret = new Copy(cmdID, noResp, cred, meta, items);
@@ -967,7 +967,7 @@ Add* Parser::getAdd(const char*xml) {
 
     if ((cmdID) ||
         (cred)  ||
-        NotZeroArrayLenght(1, items)
+        NotZeroArrayLength(1, items)
         )  {
 
         ret = new Add(cmdID, noResp, cred, meta, items);
@@ -1009,7 +1009,7 @@ Delete* Parser::getDelete(const char*xml) {
 
     if ((cmdID) ||
         (cred)  ||
-        NotZeroArrayLenght(1, items)
+        NotZeroArrayLength(1, items)
         )  {
 
         ret = new Delete(cmdID, noResp, archive, sftDel, cred, meta, items);
@@ -1049,7 +1049,7 @@ Replace* Parser::getReplace(const char*xml) {
 
     if ((cmdID) ||
         (cred)  ||
-        NotZeroArrayLenght(1, items)
+        NotZeroArrayLength(1, items)
         )  {
 
         ret = new Replace(cmdID, noResp, cred, meta, items);
@@ -1147,7 +1147,7 @@ Map* Parser::getMap(const char*xml) {
         (cred)  ||
         (target)||
         (source)||
-        NotZeroArrayLenght(1, mapItems)
+        NotZeroArrayLength(1, mapItems)
         )  {
 
         ret = new Map(cmdID, target, source, cred, meta, mapItems);
@@ -1618,7 +1618,7 @@ Status* Parser::getStatus(const char*xml) {
                                         || (data)
                                         || (cmdID)
                                         || (chal)
-                                        || NotZeroArrayLenght(3, items, targetRefs, sourceRefs)
+                                        || NotZeroArrayLength(3, items, targetRefs, sourceRefs)
                                         )  {
 
         ret = new Status(cmdID, msgRef, cmdRef, cmd, targetRefs, sourceRefs, cred, chal, data, items);
@@ -1773,7 +1773,7 @@ Exec* Parser::getExec(const char*xml) {
     if(t) {delete [] t; t = NULL;}
     items = getItems(xml);
 
-    if (cmdID || NotZeroArrayLenght(1, items) || (cred)) {
+    if (cmdID || NotZeroArrayLength(1, items) || (cred)) {
         ret = new Exec(cmdID, noResp, cred, items);
     }
 
@@ -1808,7 +1808,7 @@ Get* Parser::getGet(const char*xml) {
     if (NotNullCheck(1, lang)  || (cred)
                                || (cmdID)
                                || (meta)
-                               || NotZeroArrayLenght(1, items))  {
+                               || NotZeroArrayLength(1, items))  {
 
         ret = new Get(cmdID, noResp, lang, cred, meta, items); //Item[]
     }
@@ -1846,7 +1846,7 @@ Put* Parser::getPut(const char*xml) {
     if (NotNullCheck(1, lang)  || (cred)
                                || (cmdID)
                                || (meta)
-                               || NotZeroArrayLenght(1, items))  {
+                               || NotZeroArrayLength(1, items))  {
 
         ret = new Put(cmdID, noResp, lang, cred, meta, items); //Item[]
     }
@@ -1900,7 +1900,7 @@ Search* Parser::getSearch(const char*xml) {
 
     if (NotNullCheck(1, lang) || (cmdID) || (cred)
                               || (meta)  || (target)
-                              || (data)  || NotZeroArrayLenght(1, sources))  {
+                              || (data)  || NotZeroArrayLength(1, sources))  {
 
         ret = new Search(cmdID, noResp, noResults, cred, target, sources, lang, meta, data);
     }
@@ -1944,7 +1944,7 @@ Results* Parser::getResult(const char*xml) {
     items           = getItems     (xml);
 
     if (NotNullCheck(2, msgRef, cmdRef) || (cmdID) || (meta)
-                                        || NotZeroArrayLenght(3, items, targetRefs, sourceRefs)
+                                        || NotZeroArrayLength(3, items, targetRefs, sourceRefs)
                                         )  {
 
         ret = new Results(cmdID, msgRef, cmdRef, meta, targetRefs, sourceRefs, items);
@@ -2235,7 +2235,7 @@ DevInf* Parser::getDevInf(const char*xml) {
     if (NotNullCheck(8, man, mod, oem, fwV, swV, hwV, devId, devTyp) ||
                                      (verDTD)      ||
                                      (syncCap)     ||
-                                      NotZeroArrayLenght(3, dataStores, ctCaps, exts) ) {
+                                      NotZeroArrayLength(3, dataStores, ctCaps, exts) ) {
 
         ret = new DevInf(verDTD, man, mod, oem,  fwV, swV, hwV, devId, devTyp,
                                 dataStores, ctCaps, exts,
@@ -2282,7 +2282,7 @@ Ext* Parser::getExt(const char*xml) {
         previous = pos;
     }
 
-    if ( XNam || NotZeroArrayLenght(1, list) ) {
+    if ( XNam || NotZeroArrayLength(1, list) ) {
         ret = new Ext(XNam, list);
     }
 
@@ -2374,7 +2374,7 @@ DataStore* Parser::getDataStore(const char*xml) {
                                      (txPref)      ||
                                      (dsMem)       ||
                                      (syncCap)     ||
-                                     NotZeroArrayLenght(2, rx, tx) ) {
+                                     NotZeroArrayLength(2, rx, tx) ) {
         ret = new DataStore(sourceRef, displayName, maxGUIDSize, rxPref, rx, txPref, tx, NULL , dsMem, syncCap);
     }
 
@@ -2415,7 +2415,7 @@ SyncCap* Parser::getSyncCap(const char*xml) {
     }
     if (t) {delete [] t; t = NULL;}
 
-    if (NotZeroArrayLenght(1, list)) {
+    if (NotZeroArrayLength(1, list)) {
         ret = new SyncCap(list);
     }
 
