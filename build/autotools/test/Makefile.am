@@ -26,6 +26,7 @@ TESTS_BASE = \
     BasicTimeTest.cpp \
     StringBufferTest.cpp \
     ParserTest.cpp \
+    ObjectDelTest.cpp \
     base64Test.cpp
     
 TESTCASES = $(TESTS_BASE)
