@@ -50,7 +50,7 @@
 #include "filter/ClauseUtil.h"
 #include "filter/LogicalClause.h"
 #include "filter/FieldClause.h"
-#include "filter/sourceFilter.h"
+#include "filter/SourceFilter.h"
 #include "filter/WhereClause.h"
 #include "syncml/core/core.h"
 #include "syncml/formatter/Formatter.h"
@@ -140,3 +140,4 @@ private:
 };
 
 CPPUNIT_TEST_SUITE_REGISTRATION( FilterTest );
+
