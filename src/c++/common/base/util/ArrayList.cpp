@@ -50,13 +50,13 @@ USE_NAMESPACE
  * such as the C++ new operator)
  */
 
-ArrayList::ArrayList() : head(0), lastElement(0), iterator(0) {
-    count = 0;
+ArrayList::ArrayList() : head(0), lastElement(0), iterator(0), count(0)
+{
 }
 
-ArrayList::ArrayList(const ArrayList &other) {
-    count = 0;
-    head = iterator = lastElement = 0;
+ArrayList::ArrayList(const ArrayList &other) : head(0), lastElement(0),
+                                               iterator(0), count(0)
+{
     for (Element *p = other.head; p; p = p->n) {
         add( *(p->e) );
     }
@@ -107,11 +107,20 @@ int ArrayList::add(int index, ArrayElement& element) {
 
     }
     else {
-    // Inserting the new element at the index-th position
+        // Inserting the new element at the index-th position
         e = head;
-    for (int i=0; i<index-1; ++i) {
-        e = e->n;
+        for (int i=0; i<index-1; ++i) {
+            e = e->n;
+        }
     }
+
+    // Check if we are replacing the ghost or one of its neighbors
+    if (iterator == &ghost) {
+        if (e && ghost.n == e->n) {
+            iterator = newElement;
+        } else if (e == NULL && ghost.n == head) {
+            iterator = newElement;
+        }
     }
 
     if (e == NULL || index == 0) {
@@ -141,6 +150,7 @@ int ArrayList::add(int index, ArrayElement& element) {
         e->n = newElement;
         lastElement = newElement;
     }
+
 
     count++;
 
@@ -206,6 +216,24 @@ int ArrayList::removeElementAt(int index) {
         lastElement = before;
     }
 
+    //////// Update the ghost in case we are remove one of its neighobors
+    if (iterator == &ghost) {
+        if (ghost.n == e) {
+            ghost.n = e->n;
+        } else if ((Element*)ghost.e == e) {
+            ghost.e = (ArrayElement*)before;
+        }
+    }
+
+    // Check if we are deleting the iterator item
+    // and in this case update the ghost
+    if (iterator == e) {
+        ghost.n = e->n;
+        ghost.e = (ArrayElement*) before;
+        iterator = &ghost;
+    }
+    /////////////////////////////////////////////
+
     delete e;
     e = NULL;
 
@@ -228,6 +256,9 @@ void ArrayList::clear()
     count = 0;
     head = NULL;
     lastElement = NULL;
+
+    // This operation invalidates the iterator
+    iterator = NULL;
 }
 
 /**
@@ -287,11 +318,27 @@ ArrayElement* ArrayList::prev() {
         return 0;
     if(iterator == head)
         return 0;
-    for(e = head; e->n == iterator; e = e->n) {
-        if(!e)
+
+    // Check if we have a ghost item
+    if (iterator == &ghost) {
+        Element* prev = (Element*)ghost.e;
+        if (prev) {
+            return prev->e;
+        } else {
             return 0;
+        }
     }
-    return e->e;
+    ///////////////////////////////
+    e = head;
+    while (e && e->n != iterator) {
+        e = e->n;
+    }
+
+    if (!e) {
+        return 0;
+    } else {
+        return e->e;
+    }
 }
 
 ArrayElement* ArrayList::back() {
@@ -309,15 +356,6 @@ bool ArrayList::last() const {
     } else {
         return (iterator->n) ? false : true;
     }
-    /**
-    if (!iterator && size() == 0) {
-        return true;
-    } else if (!iterator && size() > 0) {
-        return false;
-    } else {
-        return (iterator->n) ? false : true;
-    }
-    */
 }
 /**
  * Same as get(index)

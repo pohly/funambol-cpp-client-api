@@ -49,6 +49,9 @@ class ArrayListTest : public CppUnit::TestFixture {
     CPPUNIT_TEST(removeMiddle);
     CPPUNIT_TEST(removeAll);
     CPPUNIT_TEST(getLast);
+    CPPUNIT_TEST(iterateAndDelete);
+    CPPUNIT_TEST(iterateAndDelete2);
+    CPPUNIT_TEST(iterateAndAddDelete);
     CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -145,6 +148,103 @@ private:
             second_e = second.get(index);
         }
     }
+
+    void iterateAndDelete() {
+        StringBuffer a("a"), b("b"), c("c");
+        ArrayList al;
+        al.add(a);
+        al.add(b);
+        al.add(c);
+
+        // Now iterate and delete the first and the last one
+        ArrayElement* item = al.front();
+        al.removeElementAt(0);
+        item = al.next();
+        al.next();
+        al.removeElementAt(1);
+        CPPUNIT_ASSERT(al.last());
+
+        // Now remove also the last one
+        al.removeElementAt(0);
+        CPPUNIT_ASSERT(al.isEmpty());
+    }
+
+    void iterateAndDelete2() {
+        StringBuffer a("a"), b("b"), c("c");
+        ArrayList al;
+        al.add(a);
+        al.add(b);
+        al.add(c);
+
+        // Now iterate and delete the second item
+        ArrayElement* item = al.front();
+        item = al.next();
+        al.removeElementAt(1);
+        // We should have a previous and next
+        item = al.prev();
+        CPPUNIT_ASSERT(item && *((StringBuffer *)item) == a);
+        item = al.next();
+        CPPUNIT_ASSERT(item && *((StringBuffer *)item) == c);
+
+        // Now remove the head
+        item = al.front();
+        al.removeElementAt(0);
+        item = al.prev();
+        CPPUNIT_ASSERT(item == NULL);
+        item = al.next();
+        CPPUNIT_ASSERT(item && *((StringBuffer *)item) == c);
+
+        // Now remove the tail
+        al.removeElementAt(0);
+        item = al.prev();
+        CPPUNIT_ASSERT(item == NULL);
+        item = al.next();
+        CPPUNIT_ASSERT(item == NULL);
+        CPPUNIT_ASSERT(al.last());
+    }
+
+    void iterateAndAddDelete() {
+        StringBuffer a("a"), b("b"), c("c");
+        ArrayList al;
+        al.add(a);
+        al.add(b);
+        al.add(c);
+
+        // Now iterate and delete the second item
+        ArrayElement* item = al.front();
+        item = al.next();
+        al.removeElementAt(1);
+        // Replace it
+        al.add(1, a);
+        // Now the iterator should we on the second "a"
+        // (we have "aac")
+        item = al.prev();
+        CPPUNIT_ASSERT(item && *((StringBuffer *)item) == a);
+        item = al.next();
+        CPPUNIT_ASSERT(item && *((StringBuffer *)item) == c);
+
+        // Replace the first "a" and get "bac"
+        al.front();
+        al.next();
+        al.removeElementAt(0);
+        al.add(0, b);
+        // Check that the iterator is still OK
+        item = al.prev();
+        CPPUNIT_ASSERT(item && *((StringBuffer *)item) == b);
+        item = al.next();
+        CPPUNIT_ASSERT(item && *((StringBuffer *)item) == c);
+
+        // Now replace the last item (and get bab)
+        al.front();
+        al.next();
+        al.removeElementAt(2);
+        al.add(b);
+        item = al.prev();
+        CPPUNIT_ASSERT(item && *((StringBuffer *)item) == b);
+        item = al.next();
+        CPPUNIT_ASSERT(item && *((StringBuffer *)item) == b);
+    }
+
 
     ArrayList abc, bc, ac, ab, empty;
 };

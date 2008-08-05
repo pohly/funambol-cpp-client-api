@@ -76,6 +76,8 @@ class ArrayList {
 
         ArrayList& set (const ArrayList & other);
 
+        Element ghost;
+
     protected:
 
         /**
