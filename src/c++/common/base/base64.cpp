@@ -171,18 +171,16 @@ input[], int *n)
 
 int b64_decode(void *dest, const char *src)
 {
-        int len = 0;
-        int outsz = 0;
+    int len = 0;
+    int outsz = 0;
 
-        while (*src) {
-                decode_group((unsigned char*)dest + outsz,
-                    src,
-                    &len);
-                src += 4;
-                outsz += len;
-        }
+    while (*src) {
+        decode_group((unsigned char*)dest + outsz, src, &len);
+        src += 4;
+        outsz += len;
+    }
 
-        return outsz;
+    return outsz;
 }
 
 void * b64_decode(int & len, const char *src)
