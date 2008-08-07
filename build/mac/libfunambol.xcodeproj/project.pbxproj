@@ -462,14 +462,14 @@
 		7C3BEB350DB732B400119850 /* TestSyncSource.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = TestSyncSource.cpp; sourceTree = "<group>"; };
 		7C3BEB360DB732B400119850 /* TestSyncSource2.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = TestSyncSource2.cpp; sourceTree = "<group>"; };
 		7C3BEB370DB732B400119850 /* vcardconverter.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = vcardconverter.cpp; sourceTree = "<group>"; };
-		7C3BEC790DB734E600119850 /* examples-client */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = "examples-client"; sourceTree = BUILT_PRODUCTS_DIR; };
+		7C3BEC790DB734E600119850 /* examples-client */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = "compiled.mach-o.executable"; path = "examples-client"; sourceTree = BUILT_PRODUCTS_DIR; };
 		7C7649350DB385DC00786883 /* KeyValueStore.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = KeyValueStore.h; sourceTree = "<group>"; };
 		7C8B0A620DB7394F005113A8 /* CoreFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreFoundation.framework; path = System/Library/Frameworks/CoreFoundation.framework; sourceTree = SDKROOT; };
 		7C8B0C4F0DB73C2E005113A8 /* SQLiteKeyValueStore.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = SQLiteKeyValueStore.cpp; sourceTree = "<group>"; };
 		7C8B0D620DB74DFD005113A8 /* libsqlite3.0.8.6.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libsqlite3.0.8.6.dylib; path = usr/lib/libsqlite3.0.8.6.dylib; sourceTree = SDKROOT; };
 		7C8B0D990DB7517C005113A8 /* CoreServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreServices.framework; path = System/Library/Frameworks/CoreServices.framework; sourceTree = SDKROOT; };
 		7C8B0EBD0DB756A4005113A8 /* SQLiteKVSTest.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = SQLiteKVSTest.cpp; sourceTree = "<group>"; };
-		7C8B0EC70DB758A3005113A8 /* examples-sqlitekvstest */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = "examples-sqlitekvstest"; sourceTree = BUILT_PRODUCTS_DIR; };
+		7C8B0EC70DB758A3005113A8 /* examples-sqlitekvstest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = "compiled.mach-o.executable"; path = "examples-sqlitekvstest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		7C8B0ED30DB758B3005113A8 /* libsqlite3.0.8.6.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libsqlite3.0.8.6.dylib; path = usr/lib/libsqlite3.0.8.6.dylib; sourceTree = SDKROOT; };
 		7C9F520E0DAF4CB1007E0091 /* base64.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = base64.cpp; sourceTree = "<group>"; };
 		7C9F520F0DAF4CB1007E0091 /* error.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = error.cpp; sourceTree = "<group>"; };
@@ -2554,7 +2554,7 @@
 					"../../src/include/posix/**",
 					"../../src/include/common/**",
 				);
-				ONLY_ACTIVE_ARCH = YES;
+				ONLY_ACTIVE_ARCH = NO;
 				"OTHER_LDFLAGS[arch=armv6]" = (
 					"-framework",
 					CFNetwork,
@@ -2615,7 +2615,7 @@
 					CoreServices,
 				);
 				PRODUCT_NAME = libfunambol;
-				SDKROOT = iphonesimulator2.0;
+				SDKROOT = iphoneos2.0;
 			};
 			name = "iPhone-Debug";
 		};
@@ -2647,7 +2647,7 @@
 				7C9F56210DAF5289007E0091 /* iPhone-Release */,
 			);
 			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = "OSX-Release";
+			defaultConfigurationName = "iPhone-Release";
 		};
 		1DEB91EF08733DB70010E9CD /* Build configuration list for PBXProject "libfunambol" */ = {
 			isa = XCConfigurationList;
@@ -2658,7 +2658,7 @@
 				7C9F561F0DAF5289007E0091 /* iPhone-Release */,
 			);
 			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = "OSX-Release";
+			defaultConfigurationName = "iPhone-Release";
 		};
 		7C3BEC8A0DB7353F00119850 /* Build configuration list for PBXNativeTarget "examples-client" */ = {
 			isa = XCConfigurationList;
@@ -2669,7 +2669,7 @@
 				7C3BEC7E0DB734E700119850 /* iPhone-Release */,
 			);
 			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = "OSX-Release";
+			defaultConfigurationName = "iPhone-Release";
 		};
 		7C8B0ED50DB758B4005113A8 /* Build configuration list for PBXNativeTarget "examples-sqlitekvstest" */ = {
 			isa = XCConfigurationList;
@@ -2680,7 +2680,7 @@
 				7C8B0ECF0DB758A4005113A8 /* iPhone-Release */,
 			);
 			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = "OSX-Release";
+			defaultConfigurationName = "iPhone-Release";
 		};
 /* End XCConfigurationList section */
 	};
