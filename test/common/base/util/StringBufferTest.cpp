@@ -120,6 +120,9 @@ private:
 
         cnv.convert(TEXT(TEST_STRING), "iso_8859-1");
         CPPUNIT_ASSERT((strcmp(cnv.c_str(), toLatin1) == 0));
+
+        delete [] toUtf8;
+        delete [] toLatin1;
     }
 
     //////////////////////////////////////////////////////// Test /////

@@ -136,6 +136,7 @@ private:
         // Copy result
         out = *s ;
         delete s;
+        delete syncml;
     }
 
     /*
