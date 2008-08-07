@@ -290,26 +290,20 @@ void Authentication::setData(const char*data) {
             }
 
         } else {
-            unsigned long len = 0;
-            len = strlen(data);
+            unsigned long len = strlen(data);
             char* tmp = stringdup(data);
             char* b64tmp = new char[len];
             len = b64_decode(b64tmp, tmp);
+            b64tmp[len] = (char)0;
 
             clearData = stringdup(b64tmp);
-            if (this->data) {
-                delete [] this->data; this->data = NULL;
-            }
-            //this->data = new char[strlen(clearData) + 1];
-            //sprintf(this->data, clearData);
+            delete [] this->data;
             this->data = stringdup(data);
 
-            if (tmp) {
-                delete [] tmp; tmp = NULL;
-            }
-            if (b64tmp) {
-                delete [] b64tmp; b64tmp = NULL;
-            }
+            delete [] tmp;
+            tmp = NULL;
+            delete [] b64tmp;
+            b64tmp = NULL;
         }
 
         unsigned int len = strlen(clearData);
