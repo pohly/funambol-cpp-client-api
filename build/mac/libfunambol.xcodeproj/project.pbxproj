@@ -2554,7 +2554,7 @@
 					"../../src/include/posix/**",
 					"../../src/include/common/**",
 				);
-				ONLY_ACTIVE_ARCH = NO;
+				ONLY_ACTIVE_ARCH = YES;
 				"OTHER_LDFLAGS[arch=armv6]" = (
 					"-framework",
 					CFNetwork,
@@ -2615,7 +2615,7 @@
 					CoreServices,
 				);
 				PRODUCT_NAME = libfunambol;
-				SDKROOT = iphoneos2.0;
+				SDKROOT = iphonesimulator2.0;
 			};
 			name = "iPhone-Debug";
 		};
@@ -2647,7 +2647,7 @@
 				7C9F56210DAF5289007E0091 /* iPhone-Release */,
 			);
 			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = "iPhone-Release";
+			defaultConfigurationName = "OSX-Release";
 		};
 		1DEB91EF08733DB70010E9CD /* Build configuration list for PBXProject "libfunambol" */ = {
 			isa = XCConfigurationList;
@@ -2658,7 +2658,7 @@
 				7C9F561F0DAF5289007E0091 /* iPhone-Release */,
 			);
 			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = "iPhone-Release";
+			defaultConfigurationName = "OSX-Release";
 		};
 		7C3BEC8A0DB7353F00119850 /* Build configuration list for PBXNativeTarget "examples-client" */ = {
 			isa = XCConfigurationList;
@@ -2669,7 +2669,7 @@
 				7C3BEC7E0DB734E700119850 /* iPhone-Release */,
 			);
 			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = "iPhone-Release";
+			defaultConfigurationName = "OSX-Release";
 		};
 		7C8B0ED50DB758B4005113A8 /* Build configuration list for PBXNativeTarget "examples-sqlitekvstest" */ = {
 			isa = XCConfigurationList;
@@ -2680,7 +2680,7 @@
 				7C8B0ECF0DB758A4005113A8 /* iPhone-Release */,
 			);
 			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = "iPhone-Release";
+			defaultConfigurationName = "OSX-Release";
 		};
 /* End XCConfigurationList section */
 	};
