@@ -139,6 +139,9 @@ void DeviceManagementNode::lookupDir() {
     }
 }
 
+void DeviceManagementNode::cleanMultipleSlashes(StringBuffer& path) {
+    while (path.replace("//", "/") != StringBuffer::npos) {} 
+}
 
 bool DeviceManagementNode::gotoDir(bool read) {
     bool success = true;
@@ -147,7 +150,10 @@ bool DeviceManagementNode::gotoDir(bool read) {
 
     StringBuffer dirs;
     dirs = getConfigPath() + "/" + context + "/" + name;
-    char* ccurr = strdup( dirs.c_str() );
+    cleanMultipleSlashes(dirs);
+    char* ccurr = stringdup( dirs.c_str() );
+    const char* origCcurr = ccurr;
+
     do {
         char *nextdir;
         
@@ -176,6 +182,8 @@ bool DeviceManagementNode::gotoDir(bool read) {
         }
         ccurr = nextdir;
     } while (ccurr);
+
+    delete [] origCcurr;
     return success;
 }
 

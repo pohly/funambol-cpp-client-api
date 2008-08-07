@@ -90,8 +90,13 @@ protected:
 
     // copy content of "lines" to or from file
     void update(bool read);
-    
+
+    // string compare case insensitive
     int strnicmp( const char *a, const char *b, int len );
+
+    // remove adjacent slashes (such as "//") in the given string (which is
+    // modified)
+    void cleanMultipleSlashes(StringBuffer& path);
 
 private:
     static StringBuffer configPath;
