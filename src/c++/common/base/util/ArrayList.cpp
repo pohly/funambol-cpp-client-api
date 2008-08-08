@@ -234,6 +234,7 @@ int ArrayList::removeElementAt(int index) {
     }
     /////////////////////////////////////////////
 
+    delete e->e;
     delete e;
     e = NULL;
 

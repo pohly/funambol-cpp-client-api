@@ -134,6 +134,15 @@ class ArrayList {
          */
         void clearAll();
 
+        /**
+         * Removes the item at the given index. The item is deleted and memory
+         * freed.
+         * If the index is beyond the last item, then the last item is removed.
+         * If the index is negative, the method returns without removing
+         * anything.
+         *
+         * @param index the element position
+         */
         int removeElementAt(int index);
 
         /**
