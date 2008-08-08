@@ -44,15 +44,15 @@ DataStore::DataStore() {
 }
 
 DataStore::~DataStore() {
-   if(sourceRef   )   { delete sourceRef      ;  sourceRef       = NULL; }
-   if(displayName )   { delete [] displayName    ;  displayName     = NULL; }
+   delete sourceRef;
+   delete [] displayName;
    maxGUIDSize = 0;
-   if(rxPref      )   { delete    rxPref         ;  rxPref          = NULL; }
-   if(rx          )   { /*rx->clear();*/  delete rx; rx = NULL;                  }
-   if(txPref      )   { delete    txPref         ;  txPref          = NULL; }
-   if(tx          )   { /*tx->clear();*/  delete tx; tx = NULL;                  }
-   if(dsMem       )   { delete    dsMem          ;  dsMem           = NULL; }
-   if(syncCap     )   { delete    syncCap        ;  syncCap         = NULL; }
+   delete rxPref;
+   delete rx;
+   delete txPref;
+   delete tx;
+   delete dsMem;
+   delete syncCap;
 }
 
 /**
@@ -78,7 +78,7 @@ DataStore::~DataStore() {
  *
  */
 DataStore::DataStore(SourceRef* sourceRef,
-                      char* displayName,
+                      const char* displayName,
                       long maxGUIDSize,
                       ContentTypeInfo* rxPref,
                       ArrayList* rx,
@@ -133,9 +133,7 @@ void DataStore::setSourceRef(SourceRef* sourceRef) {
     if (sourceRef == NULL) {
         // TBD
     } else {
-        if (this->sourceRef) {
-            delete this->sourceRef; this->sourceRef = NULL;
-        }
+        delete this->sourceRef;
     }
     this->sourceRef = (SourceRef*)sourceRef->clone();
 
@@ -157,9 +155,7 @@ const char* DataStore::getDisplayName() {
  *
  */
 void DataStore::setDisplayName(const char*displayName) {
-    if (this->displayName) {
-        delete [] this->displayName; this->displayName = NULL;
-    }
+    delete [] this->displayName;
     this->displayName = stringdup(displayName);
 }
 
@@ -194,9 +190,7 @@ void DataStore::setRxPref(ContentTypeInfo* rxPref) {
     if (rxPref == NULL) {
         // TBD
     } else {
-        if (this->rxPref) {
-            delete this->rxPref; this->rxPref = NULL;
-        }
+        delete this->rxPref;
     }
     this->rxPref = (ContentTypeInfo*)rxPref->clone();
 }
@@ -220,9 +214,9 @@ void DataStore::setRx(ArrayList* rxCTI) {
         // TBD
     } else {
         if (rx) {
-		    rx->clear();
+            rx->clear();
         }
-    	rx = rxCTI->clone();
+        rx = rxCTI->clone();
     }
 }
 
@@ -245,9 +239,7 @@ void DataStore::setTxPref(ContentTypeInfo* txPref) {
     if (txPref == NULL) {
         // TBD
     } else {
-        if (this->txPref) {
-            delete this->txPref; this->txPref = NULL;
-        }
+        delete this->txPref;
         this->txPref = (ContentTypeInfo*)txPref->clone();
     }
 }
@@ -271,9 +263,9 @@ void DataStore::setTx(ArrayList* txCTI) {
         // TBD
     } else {
         if (tx) {
-		    tx->clear();
+            tx->clear();
         }
-    	tx = txCTI->clone();
+        tx = txCTI->clone();
     }
 }
 
@@ -310,9 +302,7 @@ DSMem* DataStore::getDSMem() {
  * @param dsMem the datastore memory information
  */
 void DataStore::setDSMem(DSMem* dsMem) {
-    if (this->dsMem) {
-        delete this->dsMem; this->dsMem = NULL;
-    }
+    delete this->dsMem;
     if (dsMem) {
         this->dsMem = dsMem->clone();
     }
@@ -337,10 +327,8 @@ void DataStore::setSyncCap(SyncCap* syncCap) {
      if (syncCap == NULL) {
             // TBD
      } else {
-        if (this->syncCap) {
-		    delete this->syncCap; this->syncCap = NULL;
-        }
-    	this->syncCap = syncCap->clone();
+        delete this->syncCap;
+        this->syncCap = syncCap->clone();
     }
 }
 
@@ -358,3 +346,4 @@ ArrayElement* DataStore::clone() {
     return ret;
 
 }
+

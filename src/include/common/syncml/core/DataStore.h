@@ -94,7 +94,7 @@ class DataStore : public ArrayElement {
          *
          */
         DataStore(SourceRef* sourceRef,
-                  char*  displayName,
+                  const char*  displayName,
                   long maxGUIDSize,
                   ContentTypeInfo* rxPref,
                   ArrayList* rx,
