@@ -42,23 +42,19 @@ NextNonce::NextNonce() {
     initialize();
 }
 
-NextNonce::NextNonce(void* value, unsigned long size) {
+NextNonce::NextNonce(const void* value, unsigned long size) {
     initialize();
     setValue(value, size);
 }
 
-NextNonce::NextNonce(char* wvalue) {
+NextNonce::NextNonce(const char* wvalue) {
     initialize();
     setWValue(wvalue);
 }
 
 NextNonce::~NextNonce() {
-    if (wvalue) {
-        delete [] wvalue; wvalue = NULL;
-    }
-    if (value) {
-        delete [] value; value = NULL;
-    }
+    delete [] wvalue;
+    delete [] value;
     size = -1;
 }
 
@@ -68,10 +64,9 @@ void NextNonce::initialize() {
     size = -1;
 }
 
-void* NextNonce::setValue(void* argValue, unsigned long argSize) {
-     if (value) {
-        delete  value; value = NULL;
-    }
+void* NextNonce::setValue(const void* argValue, unsigned long argSize) {
+    delete  value;
+    value = NULL;
     if (argValue == NULL) {
         size = 0;
         return NULL;
@@ -98,9 +93,7 @@ long NextNonce::getValueSize() {
 }
 
 void NextNonce::setWValue(const char*wnonce) {
-    if (wvalue) {
-        delete [] wvalue; wvalue = NULL;
-    }
+    delete [] wvalue;
     wvalue = stringdup(wnonce);
 
     if (wnonce) {
@@ -142,3 +135,4 @@ NextNonce* NextNonce::clone() {
     }
     return ret;
 }
+

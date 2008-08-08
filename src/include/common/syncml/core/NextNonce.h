@@ -58,19 +58,19 @@ class NextNonce {
     public:
 
     NextNonce();
-    NextNonce(void* value, unsigned long size);
+    NextNonce(const void* value, unsigned long size);
 
     /*
     * For a NextNonce starting from a b64 string
     */
-    NextNonce(char*  b64value);
+    NextNonce(const char*  b64value);
 
     ~NextNonce();
 
     void* getValue();
     long getValueSize();
 
-    void* setValue(void* argValue, unsigned long size);
+    void* setValue(const void* argValue, unsigned long size);
 
     void setWValue(const char* wnonce);
 
