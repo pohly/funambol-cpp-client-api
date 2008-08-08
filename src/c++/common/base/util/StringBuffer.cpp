@@ -494,9 +494,9 @@ bool  StringBuffer::operator!= (const StringBuffer& s) const
     return !(*this == s.c_str());
 }
 
-char StringBuffer::operator[]( unsigned int index ) const
+char StringBuffer::operator[]( int index ) const
 {
-    if (s && index >= 0 && index < strlen(s)) {
+    if (s && index >= 0 && (unsigned int)index < strlen(s)) {
         return s[index];
     } else {
         return (char)(-1);
