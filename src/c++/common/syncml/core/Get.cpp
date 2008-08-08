@@ -68,7 +68,7 @@ Get::~Get() {
 */
 Get::Get(CmdID* cmdID,
          bool noResp,
-         char* lang,
+         const char* lang,
          Cred* cred,
          Meta* meta,
          ArrayList* items) : ItemizedCommand(cmdID, meta, items) {
