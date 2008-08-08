@@ -52,10 +52,14 @@ Filter::Filter(Meta*    m,
 }
 
 Filter::~Filter() {
-    if (meta)       { delete meta      ; meta = NULL;         }
-    if (field)      { delete field     ; field = NULL;        }
-    if (record  )   { delete record    ; record   = NULL;     }
-    if (filterType) { delete filterType; filterType   = NULL; }
+    delete meta;
+    meta = NULL;
+    delete field;
+    field = NULL;
+    delete record;
+    record   = NULL;
+    delete [] filterType;
+    filterType   = NULL;
 }
 
 Meta* Filter::getMeta() {
@@ -63,11 +67,11 @@ Meta* Filter::getMeta() {
 }
 
 void Filter::setMeta(Meta* m) {
-    if (this->meta) {
-        delete this->meta; this->meta = NULL;
+    delete this->meta;
+    this->meta = NULL;
+    if (m) {
+        this->meta = m->clone();
     }
-
-    this->meta = m->clone();
 }
 
 Item* Filter::getField() {
@@ -75,9 +79,8 @@ Item* Filter::getField() {
 }
 
 void Filter::setField(Item* f) {
-    if (field) {
-        delete field; field = NULL;
-    }
+    delete field;
+    field = NULL;
     if (f) {
         field = (Item*)f->clone();
     }
@@ -88,9 +91,8 @@ Item* Filter::getRecord() {
 }
 
 void Filter::setRecord(Item* r) {
-    if (record) {
-        delete record; record = NULL;
-    }
+    delete record;
+    record = NULL;
     if (r) {
         record = (Item*)r->clone();
     }
@@ -101,10 +103,8 @@ const char* Filter::getFilterType() {
 }
 
 void Filter::setFilterType(const char*t) {
-    if (filterType) {
-        delete [] filterType; filterType = NULL;
-    }
-
+    delete [] filterType;
+    filterType = NULL;
     if (t) {
         filterType = stringdup(t);
     }
@@ -113,3 +113,4 @@ void Filter::setFilterType(const char*t) {
 Filter* Filter::clone() {
     return new Filter(meta, field, record, filterType);
 }
+
