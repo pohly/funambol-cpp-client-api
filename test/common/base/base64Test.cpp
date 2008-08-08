@@ -74,6 +74,7 @@ private:
         char* decoded = (char*)b64_decode(len, encoded.c_str());
         CPPUNIT_ASSERT(equal(rawData, decoded, rawDataSize));
         CPPUNIT_ASSERT(len == rawDataSize);
+        delete [] decoded;
     }
 
     void twoEncodes() {
@@ -97,6 +98,7 @@ private:
         int len2 = b64_decode(decoded2, encoded.c_str());
         CPPUNIT_ASSERT(len == len2);
         CPPUNIT_ASSERT(equal(decoded1, decoded2, len));
+        delete []decoded1;
         delete []decoded2;
     }
 

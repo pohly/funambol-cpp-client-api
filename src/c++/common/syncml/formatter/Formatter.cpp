@@ -1043,7 +1043,7 @@ StringBuffer* Formatter::getMapItem(MapItem* mapItem) {
     }
 
     ret = getValue(MAP_ITEM, s);
-    deleteAllStringBuffer(2, &s, &target, &source);
+    deleteAllStringBuffer(3, &s, &target, &source);
 
     return ret;
 }
