@@ -295,7 +295,7 @@ class StringBuffer: public ArrayElement {
          * Returns the character at position index. If index is invalid,
          * the method returns -1
          */
-        char operator[]( int index ) const;
+        char operator[]( unsigned int index ) const;
 
         operator const char* () const { return s; } ;
 
