@@ -89,6 +89,15 @@ class StringBuffer: public ArrayElement {
          */
         StringBuffer& append(const char* );
 
+        /**
+         * Append a char string to the StringBuffer but do not copy more than
+         * len chars.
+         */
+        StringBuffer& append(const char* sNew, unsigned long len);
+
+        /**
+         * Append a long to the StringBuffer with the specified sign
+         */
         StringBuffer& append(unsigned long u, bool sign = true);
 
         /**
@@ -281,6 +290,12 @@ class StringBuffer: public ArrayElement {
         bool operator== (const StringBuffer& sb) const ;
         bool operator!= (const char*  sc) const ;
         bool operator!= (const StringBuffer& s) const ;
+
+        /**
+         * Returns the character at position index. If index is invalid,
+         * the method returns -1
+         */
+        char operator[]( int index ) const;
 
         operator const char* () const { return s; } ;
 

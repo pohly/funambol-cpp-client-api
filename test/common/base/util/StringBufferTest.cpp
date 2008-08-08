@@ -56,6 +56,8 @@ class StringBufferTest : public CppUnit::TestFixture {
     CPPUNIT_TEST(testReset);
     CPPUNIT_TEST(testLength);
     CPPUNIT_TEST(testEndsWith);
+    CPPUNIT_TEST(testAppend);
+    CPPUNIT_TEST(testOperatorArray);
     CPPUNIT_TEST_SUITE_END();
 
 private:
@@ -100,6 +102,51 @@ private:
 
         s = "Second test string";
         CPPUNIT_ASSERT(s == "Second test string");
+    }
+
+    //////////////////////////////////////////////////////// Test /////
+    // test append methods
+    void testAppend() {
+        StringBuffer s;
+
+        s.append("One");
+        CPPUNIT_ASSERT(s == "One");
+
+        s.append("Two");
+        CPPUNIT_ASSERT(s == "OneTwo");
+
+        s.append(10);
+        CPPUNIT_ASSERT(s == "OneTwo10");
+
+        StringBuffer s1("Three");
+        s.append(s1);
+        CPPUNIT_ASSERT(s == "OneTwo10Three");
+
+        s.append("FourFive", 4);
+        CPPUNIT_ASSERT(s == "OneTwo10ThreeFour");
+
+        s.append("Six", 0);
+        CPPUNIT_ASSERT(s == "OneTwo10ThreeFour");
+
+        StringBuffer s2(0);
+        s.append(s2);
+        s.append(s2.c_str());
+        CPPUNIT_ASSERT(s == "OneTwo10ThreeFour");
+    }
+
+    void testOperatorArray() {
+        StringBuffer s("123456");
+
+        CPPUNIT_ASSERT(s[0] == '1');
+        CPPUNIT_ASSERT(s[1] == '2');
+        CPPUNIT_ASSERT(s[2] == '3');
+        CPPUNIT_ASSERT(s[3] == '4');
+        CPPUNIT_ASSERT(s[4] == '5');
+        CPPUNIT_ASSERT(s[5] == '6');
+        CPPUNIT_ASSERT(s[6] == (char)-1);
+
+        StringBuffer s1(0);
+        CPPUNIT_ASSERT(s1[0] == (char)-1);
     }
 
     //////////////////////////////////////////////////////// Test /////

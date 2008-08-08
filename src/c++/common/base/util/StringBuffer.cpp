@@ -78,27 +78,34 @@ StringBuffer::~StringBuffer() {
     freemem();
 }
 
-StringBuffer& StringBuffer::append(const char* sNew) {
-    if (sNew == NULL) {
+
+StringBuffer& StringBuffer::append(const char* sNew, unsigned long len) {
+    if (sNew == NULL || len == 0) {
         return *this;
     }
-
-    unsigned long len = strlen(sNew);
-
-    if (len == 0) {
-        return *this;
-    }
+    
     if (s) {
-        getmem(strlen(s) + len);
-        strcat(s, sNew);
+        unsigned int slen = strlen(s);
+        getmem(slen + len);
+        strncat(s + slen, sNew, len);
     }
     else {
         getmem(len);
-        strcpy(s, sNew);
+        strncpy(s, sNew, len);
+        s[len]=0;
     }
 
     return *this;
 }
+
+
+StringBuffer& StringBuffer::append(const char* sNew) {
+    if (sNew == NULL) {
+        return *this;
+    }
+    return append(sNew, strlen(sNew));
+}
+
 
 StringBuffer& StringBuffer::append(unsigned long i, bool sign) {
     append(StringBuffer().sprintf(sign ? "%ld" : "%lu", i));
@@ -481,11 +488,20 @@ bool  StringBuffer::operator!= (const char* sc) const
 {
     return !(*this == sc);
 }
+
 bool  StringBuffer::operator!= (const StringBuffer& s) const
 {
     return !(*this == s.c_str());
 }
 
+char StringBuffer::operator[]( int index ) const
+{
+    if (s && index >= 0 && index < strlen(s)) {
+        return s[index];
+    } else {
+        return (char)(-1);
+    }
+}
 
 BEGIN_NAMESPACE
 
