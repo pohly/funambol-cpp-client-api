@@ -79,7 +79,7 @@ Search::Search(CmdID*      cmdID    ,
                Cred*       cred     ,
                Target*     target   ,
                ArrayList*  sources  ,
-               char*    lang     ,
+               const char* lang     ,
                Meta*       meta     ,
                Data*       data     ) : AbstractCommand(cmdID, noResp)  {
 

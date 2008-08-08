@@ -87,7 +87,7 @@ class Search : public AbstractCommand{
                Cred*       cred     ,
                Target*     target   ,
                ArrayList*  sources  ,
-               char*     lang     ,
+               const char* lang     ,
                Meta*       meta     ,
                Data*       data     );
 

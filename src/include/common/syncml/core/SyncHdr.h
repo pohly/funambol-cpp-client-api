@@ -92,10 +92,10 @@ class SyncHdr {
         SyncHdr(VerDTD*      verDTD,
                 VerProto*    verProto,
                 SessionID*   sessionID,
-                char*      msgID,
+                const char*  msgID,
                 Target*      target,
                 Source*      source,
-                char*      respURI,
+                const char*  respURI,
                 bool         noResp,
                 Cred*        cred,
                 Meta*        meta);

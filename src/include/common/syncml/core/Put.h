@@ -72,7 +72,7 @@ class Put : public ItemizedCommand {
          */
         Put( CmdID* cmdID,
                     bool noResp,
-                    char*  lang,
+                    const char*  lang,
                     Cred* cred,
                     Meta* meta,
                     ArrayList* items ); // items[]
