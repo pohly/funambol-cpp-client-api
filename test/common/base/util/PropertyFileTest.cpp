@@ -56,6 +56,7 @@ public:
     }
 
     void tearDown() {
+        delete propFile;
     }
 
 protected:

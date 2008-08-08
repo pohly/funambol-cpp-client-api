@@ -86,6 +86,7 @@ private:
         if (strcmp(target1, doc) != 0) {
             CPPUNIT_ASSERT_MESSAGE("TEST FAILED.", false);            
         }  
+        delete [] doc;
 
     }
 
