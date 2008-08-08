@@ -45,12 +45,12 @@ Item::Item() {
 }
 
 Item::~Item() {
-    if (target) { delete target; target = NULL; }
-    if (source) { delete source; source = NULL; }
-    if (meta  ) { delete meta  ; meta   = NULL; }
-    if (data  ) { delete data  ; data   = NULL; }
-    if (targetParent) { delete [] targetParent; targetParent = NULL; }
-    if (sourceParent) { delete [] sourceParent; sourceParent = NULL; }
+    delete target;
+    delete source;
+    delete meta;
+    delete data;
+    delete [] targetParent;
+    delete [] sourceParent;
     moreData = false;
 
 }
@@ -79,8 +79,8 @@ void Item::initialize() {
  */
 Item::Item( Target* target,
             Source* source,
-            char* tParent,
-            char* sParent,
+            const char* tParent,
+            const char* sParent,
             Meta*   meta  ,
             ComplexData* data,
             bool moreData) {
@@ -140,11 +140,11 @@ Target* Item::getTarget() {
 *
 */
 void Item::setTarget(Target* target) {
-    if (this->target) {
-		delete this->target; this->target = NULL;
-    }
+    delete this->target;
     if (target) {
-	    this->target = target->clone();
+        this->target = target->clone();
+    } else {
+        this->target = NULL;
     }
 }
 
@@ -164,11 +164,11 @@ Source* Item::getSource() {
 *
 */
 void Item::setSource(Source* source) {
-    if (this->source) {
-		delete this->source; this->source = NULL;
-    }
+    delete this->source;
     if (source) {
-	    this->source = source->clone();
+        this->source = source->clone();
+    } else {
+        this->source = NULL;
     }
 }
 
@@ -188,11 +188,11 @@ Meta* Item::getMeta() {
 *
 */
 void Item::setMeta(Meta* meta) {
-    if (this->meta) {
-		delete this->meta; this->meta = NULL;
-    }
+    delete this->meta;
     if (meta) {
-	    this->meta = meta->clone();
+        this->meta = meta->clone();
+    } else {
+        this->meta = NULL;
     }
 }
 
@@ -213,11 +213,11 @@ ComplexData* Item::getData() {
 *
 */
 void Item::setData(ComplexData* data) {
-    if (this->data) {
-		delete this->data; this->data = NULL;
-    }
+    delete this->data;
     if (data) {
-	    this->data = data->clone();
+        this->data = data->clone();
+    } else {
+        this->data = NULL;
     }
 }
 
@@ -256,7 +256,7 @@ const char* Item::getTargetParent() {
  */
 void Item::setTargetParent(const char*parent) {
     if (targetParent) {
-        delete [] targetParent; targetParent = NULL;
+        delete [] targetParent;
     }
     targetParent = stringdup(parent);
 }
@@ -277,7 +277,7 @@ const char* Item::getSourceParent() {
  */
 void Item::setSourceParent(const char*parent) {
     if (sourceParent) {
-        delete [] sourceParent; sourceParent = NULL;
+        delete [] sourceParent;
     }
     sourceParent = stringdup(parent);
 }
@@ -290,3 +290,4 @@ ArrayElement* Item::clone() {
     Item* ret = new Item(target, source, meta, data, moreData);
     return ret;
 }
+

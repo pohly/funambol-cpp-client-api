@@ -82,8 +82,8 @@ class Item : public ArrayElement {
          */
         Item(Target* target,
              Source* source,
-             char*  targetParent,
-             char*  sourceParent,
+             const char*  targetParent,
+             const char*  sourceParent,
              Meta*   meta  ,
              ComplexData* data,
              bool moreData);
