@@ -44,7 +44,8 @@ SourceFilter::SourceFilter() : clause(NULL), inclusive(false), type(NULL) {
 }
 
 SourceFilter::~SourceFilter() {
-    if (clause) delete clause;
+    delete clause;
+    delete [] type;
 }
 
 void SourceFilter::setInclusive(bool i) {
@@ -114,11 +115,11 @@ const char* SourceFilter::getType() {
  * @param type the new type value
  */
 void SourceFilter::setType(const char*type) {
-    if (this->type) {
-        delete [] this->type; this->type = NULL;
-    }
+    delete [] this->type;
 
     if (type) {
         this->type = stringdup(type);
+    } else {
+        this->type = NULL;
     }
 }
