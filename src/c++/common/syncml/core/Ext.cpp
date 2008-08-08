@@ -61,7 +61,7 @@ Ext::~Ext() {
 *                  element
 *
 */
-Ext::Ext(char* xNam, ArrayList* xVal) {
+Ext::Ext(const char* xNam, ArrayList* xVal) {
     initialize();
     setXNam(xNam);
     setXVal(xVal);

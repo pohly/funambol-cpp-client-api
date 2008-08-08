@@ -73,7 +73,7 @@ class Ext : public ArrayElement {
          *                  element
          *
          */
-        Ext(char*  xNam, ArrayList* xVal);
+        Ext(const char*  xNam, ArrayList* xVal);
 
         /**
          * Gets the name of the extension
