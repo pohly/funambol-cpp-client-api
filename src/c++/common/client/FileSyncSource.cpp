@@ -203,7 +203,15 @@ void FileSyncSource::setItemStatus(const WCHAR* key, int status) {
     LOG.debug("item key: %" WCHAR_PRINTF ", status: %i", key, status);
 }
 
-int FileSyncSource::removeAllItems() {return 0; }
+int FileSyncSource::removeAllItems()
+{
+    for (SyncItem* syncItem = getFirstItem();
+         syncItem;
+         syncItem = getNextItem()) {
+        deleteItem(*syncItem);
+        delete syncItem;
+    }
+}
 
 //////////////////////////////////////////////////////////////////////////////////////////
 
