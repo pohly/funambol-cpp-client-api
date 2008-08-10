@@ -1845,7 +1845,7 @@ StringBuffer* Formatter::getDevInf(DevInf* devInf) {
     supportLargeObjs        = getValue    (SUPPORT_LARGE_OBJECT, devInf->getSupportLargeObjs());
     supportNumberOfChanges  = getValue    (SUPPORT_NUMBER_OF_CHANGES, devInf->getSupportNumberOfChanges());
 
-    if (NotZeroStringBufferLength(15, verDTD, man, mod, oem, fwV, swV, hwV, devID, devTyp,
+    if (NotZeroStringBufferLength(14, verDTD, man, mod, oem, fwV, swV, hwV, devID, devTyp,
                                       dataStores, syncCap, /*ctCaps,*/ utc, supportLargeObjs, supportNumberOfChanges)) {
         s = new StringBuffer();
         s->append(verDTD);
@@ -1871,7 +1871,7 @@ StringBuffer* Formatter::getDevInf(DevInf* devInf) {
     // TODO: getValue() should accept const strings
     ret = getValue((char *)DEV_INF, (char *)s->c_str(), (char *)DEVINF);
 
-    deleteAllStringBuffer(16, &s, &verDTD, &man, &mod, &oem, &fwV, &swV, &hwV,
+    deleteAllStringBuffer(15, &s, &verDTD, &man, &mod, &oem, &fwV, &swV, &hwV,
                               &devID, &devTyp, &dataStores, /*&ctCaps,*/ &exts, &utc,
                               &supportLargeObjs, &supportNumberOfChanges);
 
