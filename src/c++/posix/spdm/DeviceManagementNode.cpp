@@ -280,7 +280,10 @@ char* DeviceManagementNode::readPropertyValue(const char* property) {
         while (*value && isspace(*value)) {
             value++;
         }
-        if (!strnicmp(value, property, strlen(property))) {
+        StringBuffer valcompare(value);
+        valcompare.replaceAll(" ", "");
+        valcompare = valcompare.substr(0, valcompare.find("=", 0));
+        if ((valcompare.icmp(property))) {
             value = strchr(value, '=');
             if (value) {
                 value++;
@@ -379,7 +382,10 @@ void DeviceManagementNode::setPropertyValue(const char* property, const char* ne
         while (*value && isspace(*value)) {
             value++;
         }
-        if (!strnicmp(value, property, strlen(property))) {
+        StringBuffer valcompare(value);
+        valcompare.replaceAll(" ", "");
+        valcompare = valcompare.substr(0, valcompare.find("=", 0));
+        if ((valcompare.icmp(property))) {
             value = strchr(value, '=');
             if (value) {
                 value++;
