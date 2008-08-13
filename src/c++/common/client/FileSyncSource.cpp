@@ -211,6 +211,8 @@ int FileSyncSource::removeAllItems()
         deleteItem(*syncItem);
         delete syncItem;
     }
+    // Return 0 on success
+    return 0;
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////
