@@ -177,7 +177,7 @@ int32_t CTPService::stopCTP() {
     // the connection is unavailable)
     //
     if (receiverThread) {
-        LOG.info("Sending [BYE] message...");
+        LOG.debug("Sending [BYE] message...");
         if (sendByeMsg()) {
             LOG.error("Error sending the BYE message");
             goto finally;
@@ -289,7 +289,7 @@ int32_t CTPService::closeConnection() {
     if (ctpSocket) {
         ctpSocket->close();
         ctpSocket = NULL;
-        LOG.info("Socket connection closed");
+        LOG.debug("Socket connection closed");
     }
 
     LOG.debug("Total number of bytes sent = %d",     totalBytesSent);
