@@ -384,6 +384,10 @@ StringBuffer StringBuffer::substr(size_t pos, size_t len) const {
     if(pos > strlen(s))
         return StringBuffer("");
 
+    if(pos+len > strlen(s)) {
+        len = strlen(s) - pos;
+    }
+
     return (StringBuffer(s+pos, len));
 }
 
