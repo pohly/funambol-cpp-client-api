@@ -214,12 +214,14 @@ bool DMTClientConfig::open() {
 
     dmt = DMTreeFactory::getDMTree(rootContext);
 
+    delete syncMLNode;
     sprintf(nodeName, "%s%s", rootContext, CONTEXT_SPDS_SYNCML);
     syncMLNode = dmt->readManagementNode(nodeName);
     if (!syncMLNode ) {
         goto failed;
     }
 
+    delete sourcesNode;
     sprintf(nodeName, "%s%s", rootContext, CONTEXT_SPDS_SOURCES);
     sourcesNode = dmt->readManagementNode(nodeName);
     if (!sourcesNode) {
@@ -259,18 +261,15 @@ ManagementNode* DMTClientConfig::getSyncSourceNode(const char* name) {
 }
 
 void DMTClientConfig::close() {
-    if (syncMLNode) {
-        delete syncMLNode;
-        syncMLNode = NULL;
-    }
-    if (sourcesNode) {
-        delete sourcesNode;
-        sourcesNode = NULL;
-    }
-    if (dmt) {
-        delete dmt;
-        dmt = NULL;
-    }
+    
+    delete syncMLNode;
+    syncMLNode = NULL;
+    
+    delete sourcesNode;
+    sourcesNode = NULL;
+    
+    delete dmt;
+    dmt = NULL;
 }
 
 
@@ -881,7 +880,7 @@ bool DMTClientConfig::readSourceVars(int i,
     char* tmp;
 
     tmp = sourceNode.readPropertyValue(PROPERTY_SOURCE_LAST_SYNC);
-    sourceConfigs[i].setLast( ((*tmp) ? strtol(tmp, NULL, 10) : 0) );
+    sourceConfigs[i].setLast( ((*tmp) ? strtoul(tmp, NULL, 10) : 0) );
     delete [] tmp;
 
     return true;
