@@ -43,7 +43,10 @@
 #include "base/globalsdef.h"
 
 #define SYMBIAN_LOG_HEADER          "Funambol Symbian Plug-in Log"
-#define SYMBIAN_LOG_NAME            "c:\\data\\synclog.txt"
+#define SYMBIAN_LOG_PATH            "C:\\data\\"
+#define SYMBIAN_LOG_NAME            "synclog.txt"
+//#define SYMBIAN_ROLL_LOG_NAME        "synclog.txt.0"
+#define SYMBIAN_LOG_SIZE            (500 * 1024)  // bytes
 
 #define ERR_SEMAPHORE_CREATION      30
 #define ERR_SEMAPHORE_CREATION_MSG  "Error creating Log Semaphore"
@@ -56,6 +59,8 @@ class SymbianLog : public Log {
 private:
 
     void printMessage(const char*  level, const char*  msg, PLATFORM_VA_LIST argList);
+    void RollLogFile(void);
+    TInt LogSize(void);
     
     /// The file server session.
     RFs fsSession;
@@ -65,6 +70,12 @@ private:
     
     /// The complete log name (default = SYMBIAN_LOG_NAME)
     RBuf iLogName;
+    /// The complete roll log name (default = SYMBIAN_ROLL_LOG_NAME)
+    RBuf iRollLogName;
+    /// The log file name
+    RBuf iLogFileName;
+    /// The lof file path name
+    RBuf iLogPathName;
     
     /**
      * Semaphore for the resource RFs, to avoid accessing the FileSystem at

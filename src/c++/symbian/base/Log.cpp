@@ -35,6 +35,7 @@
 
 #include <eikenv.h>
 #include <e32cmn.h>
+#include <bautils.h>
 #include "base/SymbianLog.h"
 #include "base/util/symbianUtils.h"
 #include "base/util/stringUtils.h"
@@ -52,10 +53,28 @@ _LIT(KFormatOnlyTime,    "%:0%J%:1%T%:2%S");
 _LIT(KLogSemaphoreName,  "FLogSemaphore");
 
 
-SymbianLog::SymbianLog(bool resetLog, const char* /* path */, const char* /* name */) 
+SymbianLog::SymbianLog(bool resetLog, const char* path, const char* name) 
 {
     TInt err = KErrNone;
-    iLogName.Assign(charToNewBuf(SYMBIAN_LOG_NAME));
+    
+    const char* p = (path)? path : SYMBIAN_LOG_PATH;
+    const char* n = (name)? name : SYMBIAN_LOG_NAME;
+    
+    // assign all the paths and names
+    StringBuffer logName(p);
+    logName += n;
+    iLogName.Assign(charToNewBuf(logName.c_str()));
+    
+    StringBuffer rollName(logName);
+    rollName += ".0";
+    iRollLogName.Assign(charToNewBuf(rollName.c_str()));
+    
+    StringBuffer pathSb(p);
+    iLogPathName.Assign(charToNewBuf(pathSb.c_str()));
+    
+    StringBuffer nameSb(n);
+    iLogFileName.Assign(charToNewBuf(nameSb.c_str()));
+    
     
     // Create a semaphore, to avoid accessing the FileSystem at
     // the same time by different threads.
@@ -75,6 +94,9 @@ SymbianLog::SymbianLog(bool resetLog, const char* /* path */, const char* /* nam
         setErrorF(err, "SymbianLog error: unable to share RFs session (code %d)", err);
         return;
     }
+    
+    // ensure path exists!
+    BaflUtils::EnsurePathExistsL(fsSession,iLogPathName);
     
     if (resetLog) {
         err = file.Replace(fsSession, iLogName, EFileWrite|EFileShareAny);
@@ -108,15 +130,67 @@ SymbianLog::SymbianLog(bool resetLog, const char* /* path */, const char* /* nam
 }
 
 SymbianLog::~SymbianLog() {
-    fsSession.Close();
+    iLogPathName.Close();
+    iLogFileName.Close();
+    iLogName.Close();
+    iRollLogName.Close();
 }
 
-void SymbianLog::setLogPath(const char* /* configLogPath */) {
-// TODO: implement
+void SymbianLog::setLogPath(const char* configLogPath ) 
+{
+    if (configLogPath == NULL)
+    {
+        return;
+    }
+    iSemaphore.Wait();
+    
+    iLogPathName.Close();
+    iLogPathName.Assign(charToNewBuf(configLogPath));
+    
+    TInt size;
+    size = iLogPathName.Size() + iLogFileName.Size();
+    iLogName.Close();
+    iLogName.CreateL(size);
+    iLogName.Copy(iLogPathName);
+    iLogName.Append(iLogFileName);
+
+    iRollLogName.Close();
+    iRollLogName.CreateL(iLogName.Size());
+    iRollLogName.Copy(iLogName);
+    iRollLogName.Append(_L(".0"));
+    
+    // ensure path exists!
+    BaflUtils::EnsurePathExistsL(fsSession,iLogPathName);
+    
+    iSemaphore.Signal();
+    return;
 }
 
-void SymbianLog::setLogName(const char* /* configLogName */) {
-// TODO: implement
+void SymbianLog::setLogName(const char* configLogName ) 
+{
+    if (configLogName == NULL)
+    {
+        return;
+    }
+    iSemaphore.Wait();
+    
+    iLogFileName.Close();
+    iLogFileName.Assign(charToNewBuf(configLogName));
+    
+    TInt size;
+    size = iLogPathName.Size() + iLogFileName.Size();
+    iLogName.Close();
+    iLogName.CreateL(size);
+    iLogName.Copy(iLogPathName);
+    iLogName.Append(iLogFileName);
+
+    iRollLogName.Close();
+    iRollLogName.CreateL(iLogName.Size());
+    iRollLogName.Copy(iLogName);
+    iRollLogName.Append(_L(".0"));
+    
+    iSemaphore.Signal();
+    return;
 }
 
 
@@ -234,6 +308,7 @@ void SymbianLog::printMessage(const char* level, const char* msg, PLATFORM_VA_LI
     }
 
     {
+
         // Write the data
         StringBuffer line, data;
         line.sprintf("%s -%s- %s", currentTime.c_str(), level, msg);
@@ -244,10 +319,16 @@ void SymbianLog::printMessage(const char* level, const char* msg, PLATFORM_VA_LI
         buf.Assign(stringBufferToNewBuf8(data));
         file.Write(buf);
         buf.Close();
+     
     }
-
+    
 finally:
     file.Close();
+    // we need closed file to operate on it
+    if ( LogSize() > SYMBIAN_LOG_SIZE ){
+        // roll log file
+        RollLogFile();
+    }
     iSemaphore.Signal();
 }
 
@@ -285,12 +366,57 @@ size_t SymbianLog::getLogSize()
     }
 
     file.Close();
+    
     iSemaphore.Signal();
     
     return (size_t)size;
 }
 
+TInt SymbianLog::LogSize()
+{
+    TEntry entry;
+    fsSession.Entry(iLogName,entry);
+    TInt size = entry.iSize;
 
+    return size;
+}
+
+void SymbianLog::RollLogFile(void)
+{
+    CFileMan* fileMan = CFileMan::NewL(fsSession);
+    CleanupStack::PushL(fileMan);
+    //copy the current file into the roll file, file must be open
+    TInt err = KErrNone;
+    err = file.Open(fsSession, iLogName, EFileWrite|EFileShareAny);
+    if (err != KErrNone) {
+        setErrorF(err, "SymbianLog: could not open log file (code %d)", err);
+    } else {
+        err = fileMan->Copy(file,iRollLogName,CFileMan::EOverWrite);
+    }
+    if (err != KErrNone) {
+        setErrorF(err, "SymbianLog: copy error on roll log file (code %d)", err);
+    }
+    file.Close();
+    // reset the current file
+    // we don't use reset() method because we don't want 
+    // nested semaphores
+    err = KErrNone;
+    err = file.Replace(fsSession, iLogName, EFileWrite|EFileShareAny);
+    if (err != KErrNone) {
+        setErrorF(err, "SymbianLog: error resetting the log file (code %d)", err);
+        return;
+    }
+    // Write the Header
+    StringBuffer header = createHeader();
+    RBuf8 buf;
+    buf.Assign(stringBufferToNewBuf8(header));
+    file.Write(buf);
+    buf.Close();
+    file.Close();
+    
+    CleanupStack::PopAndDestroy(fileMan);
+
+}
 
 Log *Log::logger;
 
