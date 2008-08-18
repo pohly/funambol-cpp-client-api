@@ -33,6 +33,12 @@
  * the words "Powered by Funambol".
  */
 
+#include <unistd.h>
+#include <sys/stat.h>
+#include <errno.h>
+#include <fcntl.h>
+#include <dirent.h>
+
 #include "spdm/migrateConfig.h"
 #include "spdm/DeviceManagementNode.h"
 #include "base/util/StringBuffer.h"
@@ -84,10 +90,20 @@ class ConfigTest : public CppUnit::TestFixture {
     CPPUNIT_TEST(testCompatibility);
     CPPUNIT_TEST(testConfig);
     CPPUNIT_TEST_SUITE_END();
+
     public:
-        void setUp(){}
+        void setUp() {
+            // Save current directory information
+            cwdfd = open(".", O_RDONLY);
+        }
+
         void tearDown(){
-}
+            // Return to the original directory
+            if (cwdfd >= 0) {
+                fchdir(cwdfd);
+                close(cwdfd);
+            }
+        }
 
         void testMigration(){
 
@@ -192,6 +208,9 @@ class ConfigTest : public CppUnit::TestFixture {
             endcommand += dir;
             system(endcommand); 
         }
+
+    private:
+    int cwdfd; 
 };
 
 CPPUNIT_TEST_SUITE_REGISTRATION( ConfigTest );
