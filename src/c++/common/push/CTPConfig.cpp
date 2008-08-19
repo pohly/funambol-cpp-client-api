@@ -103,7 +103,6 @@ void CTPConfig::readCTPConfig() {
     readDeviceConfig(*syncMLNode);      // devID is read with this call
 
     
-    bool passEncoded = false;
 #if 0
     // TODO: decode password if encoded!
     passDecoded = decodePassword(accessConfig.getPassword());
