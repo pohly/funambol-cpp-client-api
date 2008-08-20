@@ -1154,25 +1154,12 @@ int SyncManager::sync() {
                     {
                         last = true;
                         char *name = toMultibyte(sources[count]->getName());
-                        if (sources[count]->removeAllItems() == 0) {                        
+                        if (sources[count]->removeAllItems() == 0) {
                             LOG.debug("Removed all items for source %s", name);
                         } else {
                             LOG.error("Error removing all items for source %s", name);
                         }
                         delete [] name;
-                        // TODO: remove me...
-                        allItemsList[count] = new ArrayList();
-                        syncItem = getItem(*sources[count], &SyncSource::getFirstItemKey);
-                        if(syncItem) {
-                            allItemsList[count]->add((ArrayElement&)*syncItem);
-                            delete syncItem; syncItem = NULL;
-                        }
-                        syncItem = getItem(*sources[count], &SyncSource::getNextItemKey);
-                        while(syncItem) {
-                            allItemsList[count]->add((ArrayElement&)*syncItem);
-                            delete syncItem; syncItem = NULL;
-                            syncItem = getItem(*sources[count], &SyncSource::getNextItemKey);
-                        }
                     }
                     break;
                     
@@ -1188,7 +1175,9 @@ int SyncManager::sync() {
                                 syncItemOffset = 0;
                                 if (syncItem) {
                                     // Fire Sync Item Event - Item sent as Updated
-                                    fireSyncItemEvent(sources[count]->getConfig().getURI(), sources[count]->getConfig().getName(), syncItem->getKey(), ITEM_UPDATED_BY_CLIENT);
+                                    fireSyncItemEvent(sources[count]->getConfig().getURI(),
+                                                      sources[count]->getConfig().getName(),
+                                                      syncItem->getKey(), ITEM_UPDATED_BY_CLIENT);
                                 }
                             }
                         }
@@ -1199,7 +1188,9 @@ int SyncManager::sync() {
                                 syncItemOffset = 0;
                                 if (syncItem) {
                                     // Fire Sync Item Event - Item sent as Updated
-                                    fireSyncItemEvent(sources[count]->getConfig().getURI(), sources[count]->getConfig().getName(), syncItem->getKey(), ITEM_UPDATED_BY_CLIENT);
+                                    fireSyncItemEvent(sources[count]->getConfig().getURI(),
+                                                      sources[count]->getConfig().getName(),
+                                                      syncItem->getKey(), ITEM_UPDATED_BY_CLIENT);
                                 }
                             }
 
