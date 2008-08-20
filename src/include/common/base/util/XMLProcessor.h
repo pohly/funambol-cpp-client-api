@@ -71,7 +71,10 @@ public:
      * @param pos (OUTPUT) the position where the tag is found (ignored if NULL)
      *
      */
-    static char* copyElementContent(const char*  xml, const char*  tag, unsigned int* pos = NULL);
+    static char* copyElementContent(const char*  xml, const char*  tag,
+                                    unsigned int* pos = NULL);
+    static void copyElementContent(StringBuffer& res, const char*  xml, const char*  tag,
+                                   unsigned int* pos = NULL);
 
     /*
      * It's like copyElementContent but it doesn't allocate new memory.
@@ -84,6 +87,11 @@ public:
      */
     static const char*  getElementContent(const char*  xml, const char*  tag,
                     unsigned int* pos, unsigned int* startPos, unsigned int* endPos);
+
+
+    static void getElementContent(const char*  xml, const char*  tag,
+                                  unsigned int* pos, unsigned int* startPos,
+                                  unsigned int* endPos, StringBuffer& res);
 
     /*
     * It returns the number of the tag in the xml string
@@ -123,11 +131,21 @@ public:
                                           const char* except    ,
                                           unsigned int* pos);
 
+
     static char* copyElementContentLevel(const char* xml,
                                          const char* tag,
                                          unsigned int* pos,
                                          int           lev = 0 ,  // the root value level
                                          int* startLevel   = NULL);
+
+    static void copyElementContentLevel(StringBuffer& res,
+                                        const char* xml,
+                                        const char* tag,
+                                        unsigned int* pos,
+                                        int           lev = 0 ,  // the root value level
+                                        int* startLevel   = NULL);
+
+
 
     /*
      * It returns the content of the buffer specified by startPos (initial position)
@@ -142,6 +160,8 @@ public:
      */
 
     static char* copyContent(const char*  xml, unsigned int startPos, unsigned int endPos);
+    static void copyContent(const char*  xml, unsigned int startPos,
+                            unsigned int endPos, StringBuffer& res);
 
     /**
      * Create an XML element with the specified tag and value.
@@ -173,17 +193,17 @@ public:
                                     const char*  val,
                                     ArrayList attrList);
 
-	/**
-	 * Same with bool value
-	 */
+    /**
+     * Same with bool value
+     */
     static StringBuffer makeElement(const char*  tag, bool val) {
         return makeElement( tag, (val?"true":"false") ) ;
     }
 
     /**
-	 * Same with integer value
-	 */
-	static StringBuffer makeElement(const char*  tag, int val) {
+     * Same with integer value
+     */
+    static StringBuffer makeElement(const char*  tag, int val) {
         return makeElement( tag, StringBuffer().append(val) ) ;
     }
 

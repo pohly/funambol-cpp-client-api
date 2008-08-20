@@ -266,6 +266,82 @@ char* XMLProcessor::copyContent(const char* xml,
     return ret;
 }
 
+void XMLProcessor::copyContent(const char* xml,
+                               unsigned int startPos,
+                               unsigned int endPos,
+                               StringBuffer& res)
+{
+    res.assign(NULL);
+    if (!xml) {
+        return;
+    }
+    if (endPos < startPos) {
+        return;
+    }
+    if (strlen(xml) < endPos - startPos) {
+        return;
+    }
+
+    // figure out whether the text that we are about to copy
+    // contains further elements; if not, treat it as a leaf
+    // element and decode entities
+    bool isLeaf = true;
+    unsigned int pos = startPos;
+    while (pos < endPos) {
+        if (xml[pos] == '<') {
+            isLeaf = false;
+            break;
+        }
+        pos++;
+    }
+
+    const char cdataStart[] = "<![CDATA[";
+    const int cdataStartLen = sizeof(cdataStart) - 1;
+    const char cdataEnd[] = "]]>";
+    const int cdataEndLen = sizeof(cdataEnd) - 1;
+
+    // strip CDATA markers at start and end?
+    if (!isLeaf &&
+        endPos - pos > cdataStartLen + cdataEndLen &&
+        !strncmp(xml + pos, cdataStart, cdataStartLen)) {
+        // yep, copy content verbatim;
+        // search real end of data first
+        pos += cdataStartLen;
+        unsigned int cdataEndPos = endPos;
+        while (cdataEndPos - cdataEndLen > pos) {
+            if (!strncmp(xml + cdataEndPos - cdataEndLen,
+                          cdataEnd,
+                          cdataEndLen)) {
+                // found "]]>"
+                cdataEndPos -= cdataEndLen;
+                break;
+            }
+            cdataEndPos--;
+        }
+
+        //StringBuffer ret(xml + pos, cdataEndPos - pos);
+        res.append(xml +  pos, cdataEndPos - pos);
+    } else if (isLeaf) {
+        // Decode content of final element:
+        // might contain escaped special characters.
+        //
+        // This must _not_ be done for tags which contain other
+        // tags because then we might destroy the content of e.g.
+        // <Add><Data><![CDATA[ literal entity &amp; ]]></Data></Add>
+        //
+        StringBuffer ret(xml+startPos, endPos - startPos);
+        ret.replaceAll("&lt;", "<");
+        ret.replaceAll("&gt;", ">");
+        ret.replaceAll("&amp;", "&");
+        res = ret;
+    } else {
+        size_t len = endPos - startPos;
+        //StringBuffer ret(xml + startPos, len * sizeof(char));
+        res.append(xml + startPos, len * sizeof(char));
+    }
+}
+
+
 char* XMLProcessor::copyElementContent(const char* xml,
                                        const char* tag,
                                        unsigned int* pos)
@@ -276,6 +352,19 @@ char* XMLProcessor::copyElementContent(const char* xml,
         return copyContent(xml, start, end);
     }
     return 0;
+}
+
+void XMLProcessor::copyElementContent(StringBuffer& res,
+                                      const char* xml,
+                                      const char* tag,
+                                      unsigned int* pos)
+{
+    unsigned int start, end;
+    res.assign(NULL);
+
+    if( getElementContent (xml, tag, pos, &start, &end) ) {
+        copyContent(xml, start, end, res);
+    }
 }
 
 /*
@@ -747,6 +836,143 @@ finally:
     return ret;
 
 }
+
+void XMLProcessor::copyElementContentLevel(StringBuffer& res,
+                                           const char*xml   ,
+                                           const char*tag   ,
+                                           unsigned int* pos,
+                                           int           lev ,
+                                           int*          startLevel)  {
+
+    const char* p1 = NULL;
+    const char* p2 = NULL;
+    bool openBracket  = false;  // <
+    bool closeBracket = false;  // >
+    bool preCloseBracket = false;  //<.../
+    bool openTag      = false;
+    bool closeTag     = false;
+
+    char tagNameFound[40];
+
+    int level               = -1;
+    unsigned int xmlLength  = (unsigned int)-1;
+    unsigned int l          = (unsigned int)-1;
+    unsigned int previousIndex = (unsigned int)-1;
+    unsigned int i          =  0;
+
+    res.assign(NULL);
+
+    if (xml == NULL) {
+        goto finally;
+    }
+
+    if (lev < 0) {
+        return copyElementContent(res, xml, tag, pos);
+    }
+
+    xmlLength = strlen(xml);
+    l = strlen(tag);
+
+    if (pos != NULL) {
+        *pos = 0;
+    }
+    if (startLevel != NULL) {
+       level = *startLevel;
+    }
+
+    p1 = p2 = xml;
+
+    for (i = 0; i < xmlLength; i ++) {
+        if (!strncmp(p1 + i, "<![CDATA[", strlen("<![CDATA["))) {
+            // skip over content
+            while(p1[i]) {
+                i++;
+                if (!strcmp(p1 + i, "]]>")) {
+                    i += strlen("]]>");
+                    break;
+                }
+            }
+        }
+        if (p1[i] == '<') {
+            openBracket = true;
+            previousIndex = i;
+            p2 = &p1[i];
+
+        } else if (p1[i] == '/') {
+            if (previousIndex == (i - 1)) {
+                // </...>
+                preCloseBracket = true;
+            } else {
+                // might be <.../>, which will be checked below
+                // with p1[i - 1] == '/'
+            }
+
+        } else if (p1[i] == '>') {
+
+            if (openBracket == false) {
+                closeBracket = false;
+                preCloseBracket = false;
+            } else {
+                if (preCloseBracket) {
+                    closeTag = true;
+                }
+                else if (openBracket && p1[i - 1] == '/') {
+                    // <.../>: do not change levels or open tag,
+                    // it has been closed already
+                } else {
+                    openTag = true;
+                }
+                closeBracket = true;
+
+                if (closeTag) {
+                    level--;
+                    openBracket  = false;
+                    closeBracket = false;
+                    preCloseBracket = false;
+                    openTag      = false;
+                    closeTag     = false;
+
+                } else if (openTag) {
+                    level++;
+                } else {
+                    openBracket  = false;
+                    closeBracket = false;
+                    preCloseBracket = false;
+                    openTag      = false;
+                    closeTag     = false;
+
+                }
+            }
+        }
+          if (openTag && openBracket && closeBracket) {
+            int n = (&p1[i] - p2 - 1);
+            strncpy(tagNameFound, p2 + 1, n);
+            tagNameFound[n] = 0;
+            if (strcmp(tagNameFound, tag) == 0 && (level == lev)) {
+                unsigned int internalPos;
+                copyElementContent(res, p2, tag, &internalPos);
+                if (pos) {
+                    *pos = p2 - xml + internalPos;
+                }
+                if (startLevel) {
+                    *startLevel = level - 1;
+                }
+                break;
+            }
+            openBracket  = false;
+            closeBracket = false;
+        }
+    }
+
+finally:
+    openBracket  = false;
+    closeBracket = false;
+    preCloseBracket = false;
+    openTag      = false;
+    closeTag     = false;
+
+}
+
 
 /**
  * Get the attribute list of the forst element 'tag', returning a pointer

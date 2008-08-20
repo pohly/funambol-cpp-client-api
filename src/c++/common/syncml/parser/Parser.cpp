@@ -44,13 +44,12 @@ SyncML* Parser::getSyncML(const char*xml) {
     SyncHdr*  syncHdr  = NULL;
     SyncML*   syncML   = NULL;
     unsigned int pos = 0;
-    char* t = NULL;
-    t = XMLProcessor::copyElementContent(xml, SYNC_HDR, &pos);
-    syncHdr  = getSyncHdr (t);
-    if (t) { delete [] t; t = NULL; }
-    t = XMLProcessor::copyElementContent(xml, SYNC_BODY, &pos);
-    syncBody = getSyncBody(t);
-    if (t) { delete [] t; t = NULL; }
+    StringBuffer t;
+    XMLProcessor::copyElementContent(t, xml, SYNC_HDR, &pos);
+    syncHdr  = getSyncHdr (t.c_str());
+    XMLProcessor::copyElementContent(t, xml, SYNC_BODY, &pos);
+    syncBody = getSyncBody(t.c_str());
+
     syncML = new SyncML(syncHdr, syncBody);
 
     deleteSyncHdr (&syncHdr);
@@ -68,44 +67,31 @@ SyncHdr* Parser::getSyncHdr(const char*xml) {
     Source*      source    = NULL;
     Target*      target    = NULL;
     Cred*        cred      = NULL;
-    char*     respURI   = NULL;
-    char*     msgID     = NULL;
+    StringBuffer respURI;
+    StringBuffer msgID;
     bool         noResp    = false;
-    char*     tmp       = NULL;
     Meta*        meta      = NULL;
-
     SyncHdr*     ret       = NULL;
-    char* t = NULL;
 
-    t = XMLProcessor::copyElementContent(xml, SESSION_ID, NULL);
-    sessionID = getSessionID(t);
-    if (t) { delete [] t; t = NULL; }
-    t = XMLProcessor::copyElementContent (xml, VER_DTD, NULL);
-    verDTD = getVerDTD(t);
-    if (t) { delete [] t; t = NULL; }
-    t = XMLProcessor::copyElementContent (xml, VER_PROTO, NULL);
-    verProto = getVerProto(t);
-    if (t) { delete [] t; t = NULL; }
-    t = XMLProcessor::copyElementContent (xml, SOURCE, NULL);
-    source = getSource(t);
-    if (t) { delete [] t; t = NULL; }
-    t = XMLProcessor::copyElementContent (xml, TARGET, NULL);
-    target = getTarget(t);
-    if (t) { delete [] t; t = NULL; }
-    t = XMLProcessor::copyElementContent (xml, CRED, NULL);
-    cred = getCred(t);
-    if (t) { delete [] t; t = NULL; }
-    msgID = XMLProcessor::copyElementContent(xml, MSG_ID, NULL);
-    respURI = XMLProcessor::copyElementContent(xml, RESP_URI, NULL);
-    t = XMLProcessor::copyElementContentLevel(xml, META, NULL);
-    meta = getMeta(t);
-    if (t) { delete [] t; t = NULL; }
-    tmp = XMLProcessor::copyElementContent(xml, NO_RESP, NULL);
+    sessionID = getSessionID(xml);
+    verDTD = getVerDTD(xml);
+    verProto = getVerProto(xml);
+    source = getSource(xml);
+    target = getTarget(xml);
+    cred = getCred(xml);
 
-    if (tmp) {
-        wcscmpIgnoreCase(tmp, "TRUE") ? noResp = true : noResp = false;
+    XMLProcessor::copyElementContent(msgID, xml, MSG_ID, NULL);
+    XMLProcessor::copyElementContent(respURI, xml, RESP_URI, NULL);
+    meta = getMeta(xml);
+
+    StringBuffer t;
+    XMLProcessor::copyElementContent(t, xml, NO_RESP, NULL);
+    if (!t.empty()) {
+        wcscmpIgnoreCase(t.c_str(), "TRUE") ? noResp = true : noResp = false;
     }
-    ret = new SyncHdr(verDTD, verProto, sessionID, msgID, target, source, respURI, noResp, cred, meta);
+
+    ret = new SyncHdr(verDTD, verProto, sessionID, msgID.c_str(), target,
+                      source, respURI.c_str(), noResp, cred, meta);
 
     deleteVerDTD(&verDTD);
     deleteVerProto(&verProto);
@@ -114,18 +100,18 @@ SyncHdr* Parser::getSyncHdr(const char*xml) {
     deleteTarget(&target);
     deleteCred(&cred);
     deleteMeta(&meta);
-    safeDel(&respURI);
-    safeDel(&msgID);
-    safeDel(&tmp);
 
     return ret;
 }
 
-Cred* Parser::getCred(const char*xml) {
+Cred* Parser::getCred(const char*xml, unsigned int* pos) {
+
+    StringBuffer t;
+    XMLProcessor::copyElementContent (t, xml, CRED, pos);
     Cred* ret              = NULL;
     Authentication* auth   = NULL;
 
-    auth = getAuthentication(xml);
+    auth = getAuthentication(t.c_str());
     if (auth) {
         ret = new Cred(auth);
     }
@@ -138,29 +124,34 @@ Cred* Parser::getCred(const char*xml) {
 Authentication* Parser::getAuthentication(const char*xml) {
     Authentication* ret        = NULL;
 
-    char* data       = NULL;
+    StringBuffer data;
+    StringBuffer t;
     Meta*  meta       = NULL;
 
-    char* t = NULL;
+    XMLProcessor::copyElementContent (data, xml, DATA , NULL);
 
-    data = XMLProcessor::copyElementContent (xml, DATA , NULL);
-    t = XMLProcessor::copyElementContentLevel (xml, META , NULL);
-    meta = getMeta(t);
-    if (t) {delete [] t; t = NULL;}
+    meta = getMeta(xml);
     if (data || meta) {
         ret = new Authentication(meta, data);
     }
-    safeDel(&data);
     deleteMeta(&meta);
 
     return ret;
 }
 
-Meta* Parser::getMeta(const char*xml) {
+Meta* Parser::getMeta(const char*xml, unsigned int* pos) {
+
+    StringBuffer t;
+    XMLProcessor::copyElementContentLevel (t, xml,  META, pos);
+    return getMetaFromContent(t.c_str());
+}
+
+Meta* Parser::getMetaFromContent(const char* content) {
+
     Meta* ret        = NULL;
     MetInf* metInf   = NULL;
 
-    metInf = getMetInf(xml);
+    metInf = getMetInf(content);
     if (metInf) {
         ret = new Meta();
         ret->setMetInf(metInf);
@@ -171,14 +162,11 @@ Meta* Parser::getMeta(const char*xml) {
     return ret;
 }
 
+
 MetInf* Parser::getMetInf(const char*xml) {
     MetInf* ret             = NULL;
 
-    char*     format     = NULL;
-    char*     type       = NULL;
-    char*     mark       = NULL;
     Anchor*      anchor     = NULL;
-    char*     version    = NULL;
     NextNonce*   nextNonce  = NULL;
     long         maxMsgSize = 0;
     long         maxObjSize = 0;
@@ -186,32 +174,35 @@ MetInf* Parser::getMetInf(const char*xml) {
     ArrayList*   emi        = NULL;
     Mem*         mem        = NULL;
 
-    char*         maxMsgSizeW   = NULL;
-    char*         maxObjSizeW   = NULL;
-    char*         sizeW         = NULL;
-
     // get all the values
+    StringBuffer format;
+    StringBuffer type;
+    StringBuffer mark;
+    StringBuffer version;
+    StringBuffer maxMsgSizeW;
+    StringBuffer maxObjSizeW;
+    StringBuffer sizeW;
 
-    format       = XMLProcessor::copyElementContent (xml, FORMAT   , NULL);
-    type         = XMLProcessor::copyElementContent (xml, TYPE     , NULL);
-    mark         = XMLProcessor::copyElementContent (xml, MARK     , NULL);
+    XMLProcessor::copyElementContent (format, xml, FORMAT   , NULL);
+    XMLProcessor::copyElementContent (type, xml, TYPE     , NULL);
+    XMLProcessor::copyElementContent (mark, xml, MARK     , NULL);
 
     anchor       = getAnchor(xml);
-    version      = XMLProcessor::copyElementContent (xml, VERSIONSTR       , NULL);
+    XMLProcessor::copyElementContent (version, xml, VERSIONSTR       , NULL);
     nextNonce    = getNextNonce(xml);
 
-    maxMsgSizeW  = XMLProcessor::copyElementContent (xml, MAX_MESSAGE_SIZE     , NULL);
-    maxObjSizeW  = XMLProcessor::copyElementContent (xml, MAX_OBJ_SIZE     , NULL);
-    sizeW        = XMLProcessor::copyElementContent (xml, SIZE             , NULL);
+    XMLProcessor::copyElementContent (maxMsgSizeW, xml, MAX_MESSAGE_SIZE     , NULL);
+    XMLProcessor::copyElementContent (maxObjSizeW, xml, MAX_OBJ_SIZE     , NULL);
+    XMLProcessor::copyElementContent (sizeW, xml, SIZE             , NULL);
 
-    if (maxMsgSizeW) {
-        maxMsgSize = strtol(maxMsgSizeW, NULL, 10);
+    if (!maxMsgSizeW.empty()) {
+        maxMsgSize = strtol(maxMsgSizeW.c_str(), NULL, 10);
     }
-    if (maxObjSizeW) {
-        maxObjSize = strtol(maxObjSizeW, NULL, 10);
+    if (!maxObjSizeW.empty()) {
+        maxObjSize = strtol(maxObjSizeW.c_str(), NULL, 10);
     }
-    if (sizeW) {
-        size = strtol(sizeW, NULL, 10);
+    if (!sizeW.empty()) {
+        size = strtol(sizeW.c_str(), NULL, 10);
     }
 
     emi          = getEMI(xml);
@@ -219,181 +210,177 @@ MetInf* Parser::getMetInf(const char*xml) {
 
     // check if someting is null, 0 or zero lenght
     bool isToCreate = false;
-    isToCreate = NotNullCheck(7, format, type, mark, version, maxMsgSizeW, maxObjSizeW, sizeW)
+    bool notNull = NotNullCheck(7, format.c_str(), type.c_str(), mark.c_str(),
+                                   version.c_str(), maxMsgSizeW.c_str(),
+                                   maxObjSizeW.c_str(), sizeW.c_str());
+ 
+    isToCreate = notNull
                  || NotZeroArrayLength(1, emi)
                  || (mem)
                  || (anchor)
                  || (nextNonce);
 
     if (isToCreate) {
-        ret = new MetInf(format, type, mark, size, anchor, version, nextNonce, maxMsgSize,
+        ret = new MetInf(format.c_str(), type.c_str(), mark.c_str(), size,
+                         anchor, version.c_str(), nextNonce, maxMsgSize,
                          maxObjSize, emi, mem);
     }
-    deleteAll(7, &format, &type, &mark, &version, &maxMsgSizeW, &maxObjSizeW, &sizeW);
-
     deleteAnchor(&anchor);
     deleteNextNonce(&nextNonce);
-    deleteArrayList(&emi);
+    delete emi;
     deleteMem(&mem);
 
     return ret;
 }
 
 
-ArrayList* Parser::getSources(const char*xml) {
+void Parser::getSources(ArrayList& list, const char*xml) {
 
     Source* source = NULL;
     SourceArray* sourceArray = NULL;
     unsigned int pos = 0, previous = 0;
-    ArrayList* list = new ArrayList();
+    StringBuffer t;
 
-    char* t = NULL;
-    t = XMLProcessor::copyElementContent(&xml[pos], SOURCE, &pos);
-    while ((source = getSource(t)) != NULL) {
+    XMLProcessor::copyElementContent(t, &xml[pos], SOURCE, &pos);
+    while ((source = getSourceFromContent(t.c_str())) != NULL) {
         if (source) {
             sourceArray = new SourceArray(source);
-            list->add(*sourceArray); // in the ArrayList NULL element cannot be inserted
+            list.add(*sourceArray); // in the ArrayList NULL element cannot be inserted
             deleteSource(&source);
             deleteSourceArray(&sourceArray);
         }
         pos += previous;
         previous = pos;
-        if (t) { delete [] t; t = NULL; }
-        t = XMLProcessor::copyElementContent(&xml[pos], SOURCE, &pos);
+        XMLProcessor::copyElementContent(t, &xml[pos], SOURCE, &pos);
     }
-    if (t) { delete [] t; t = NULL;}
-    return list;
 }
 
 
-Source* Parser::getSource(const char*xml) {
-    Source* ret      = NULL;
-    char* locURI  = NULL;
-    char* locName = NULL;
-    locURI  = XMLProcessor::copyElementContent (xml, LOC_URI, NULL);
-    locName = XMLProcessor::copyElementContent (xml, LOC_NAME, NULL);
+Source* Parser::getSource(const char* xml, unsigned int* pos) {
+    StringBuffer t;
+    XMLProcessor::copyElementContent (t, xml, SOURCE, pos);
+    return getSourceFromContent(t.c_str());
+}
 
-    if (NotNullCheck(2, locURI, locName)) {
-        ret = new Source(locURI, locName);
+Source* Parser::getSourceFromContent(const char* xml) {
+    Source* ret   = NULL;
+    StringBuffer locURI, locName;
+    XMLProcessor::copyElementContent (locURI, xml, LOC_URI, NULL);
+    XMLProcessor::copyElementContent (locName, xml, LOC_NAME, NULL);
+
+    if (NotNullCheck(2, locURI.c_str(), locName.c_str())) {
+        ret = new Source(locURI.c_str(), locName.c_str());
     }
-
-    safeDel(&locURI);
-    safeDel(&locName);
 
     return ret;
 }
 
-Target* Parser::getTarget(const char*xml) {
-    Target*  ret      = NULL;
-    char* locURI   = NULL;
-    char* locName  = NULL;
 
-    locURI  = XMLProcessor::copyElementContent (xml, LOC_URI, NULL);
-    locName = XMLProcessor::copyElementContent (xml, LOC_NAME, NULL);
+Target* Parser::getTarget(const char*xml, unsigned int* pos) {
+    StringBuffer t;
+    XMLProcessor::copyElementContent (t, xml, TARGET, NULL);
+    return getTargetFromContent(t.c_str());
+}
 
-    if (NotNullCheck(2, locURI, locName)) {
-        ret = new Target(locURI, locName);
+Target* Parser::getTargetFromContent(const char* xml) {
+    Target*  ret   = NULL;
+    StringBuffer locURI, locName;
+    XMLProcessor::copyElementContent (locURI, xml, LOC_URI, NULL);
+    XMLProcessor::copyElementContent (locName, xml, LOC_NAME, NULL);
+
+    if (NotNullCheck(2, locURI.c_str(), locName.c_str())) {
+        ret = new Target(locURI.c_str(), locName.c_str());
     }
-
-    safeDel(&locURI);
-    safeDel(&locName);
 
     return ret;
 }
 
 Anchor* Parser::getAnchor(const char*xml) {
-    Anchor*  ret    = NULL;
-    char* last   = NULL;
-    char* next   = NULL;
+    Anchor* ret  = NULL;
+    StringBuffer last, next;
+    XMLProcessor::copyElementContent (last, xml, LAST, NULL);
+    XMLProcessor::copyElementContent (next, xml, NEXT, NULL);
 
-    last  = XMLProcessor::copyElementContent (xml, LAST, NULL);
-    next  = XMLProcessor::copyElementContent (xml, NEXT, NULL);
-
-    if (NotNullCheck(2, last, next)) {
-        ret = new Anchor(last, next);
+    if (NotNullCheck(2, last.c_str(), next.c_str())) {
+        ret = new Anchor(last.c_str(), next.c_str());
     }
-
-    safeDel(&next);
-    safeDel(&last);
-
     return ret;
 }
 
 NextNonce* Parser::getNextNonce(const char*xml) {
     NextNonce* ret   = NULL;
-    char* value   = NULL;
+    StringBuffer value;
+    XMLProcessor::copyElementContent (value, xml, NEXT_NONCE, NULL);
 
-    value  = XMLProcessor::copyElementContent (xml, NEXT_NONCE, NULL);
-
-    if (NotNullCheck(1, value)) {
-
-        ret = new NextNonce(value);
+    if (NotNullCheck(1, value.c_str())) {
+        ret = new NextNonce(value.c_str());
     }
 
-    safeDel(&value);
     return ret;
 }
 
 Mem* Parser::getMem(const char*xml) {
-    Mem* ret            = NULL;
-    char* freeMemW   = NULL;
-    char* sharedMemW = NULL;
-    char* freeIDW    = NULL;
-
+    Mem*    ret         = NULL;
     bool    sharedMem   = false;
     long    freeMem     = 0;
     long    freeID      = 0;
+    bool    isToCreate  = false;
 
-    bool isToCreate = false;
+    StringBuffer freeMemW;
+    StringBuffer sharedMemW;
+    StringBuffer freeIDW;
+    XMLProcessor::copyElementContent (freeMemW, xml, FREE_MEM,   NULL);
+    XMLProcessor::copyElementContent (sharedMemW, xml, SHARED_MEM, NULL);
+    XMLProcessor::copyElementContent (freeIDW, xml, FREE_ID,    NULL);
 
-    freeMemW    = XMLProcessor::copyElementContent (xml, FREE_MEM,   NULL);
-    sharedMemW  = XMLProcessor::copyElementContent (xml, SHARED_MEM, NULL);
-    freeIDW     = XMLProcessor::copyElementContent (xml, FREE_ID,    NULL);
+    isToCreate = NotNullCheck(3, freeMemW.c_str(), sharedMemW.c_str(),
+                                 freeIDW.c_str());
 
-    isToCreate = NotNullCheck(3, freeMemW, sharedMemW, freeIDW);
-
-    if (freeMemW != NULL) {
-        freeMem = strtol(freeMemW, NULL, 10);
+    if (!freeMemW.empty()) {
+        freeMem = strtol(freeMemW.c_str(), NULL, 10);
     }
-    if (freeIDW != NULL) {
-        freeID = strtol(freeIDW, NULL, 10);
+    if (!freeIDW.empty()) {
+        freeID = strtol(freeIDW.c_str(), NULL, 10);
     }
-    if (sharedMemW != NULL) {
-        sharedMem = strcmp(sharedMemW, "0")? true : false;
+    if (!sharedMemW.empty()) {
+        sharedMem = sharedMemW.c_str() != "0" ? true : false;
     }
 
     if (isToCreate) {
         ret = new Mem(sharedMem, freeMem, freeID);
     }
-
-    safeDel(&freeMemW);
-    safeDel(&freeIDW);
-    safeDel(&sharedMemW);
-
     return ret;
 }
 
 
-SessionID* Parser::getSessionID(const char*content) {
+SessionID* Parser::getSessionID(const char*xml, unsigned int* pos) {
+
+    StringBuffer t;
+    XMLProcessor::copyElementContent(t, xml, SESSION_ID, pos);
     SessionID* ret = NULL;
-    if (content) {
-        ret = new SessionID(content);
+    if (t.c_str()) {
+        ret = new SessionID(t.c_str());
     }
     return ret;
 }
 
-VerDTD* Parser::getVerDTD(const char*content) {
+VerDTD* Parser::getVerDTD(const char*xml, unsigned int* pos) {
+    StringBuffer t;
+    XMLProcessor::copyElementContent (t, xml, VER_DTD, pos);
     VerDTD* ret = NULL;
-    if (content) {
-        ret = new VerDTD(content);
+    if (t.c_str()) {
+        ret = new VerDTD(t.c_str());
     }
     return ret;
 }
 
-VerProto* Parser::getVerProto(const char*content) {
+VerProto* Parser::getVerProto(const char* xml, unsigned int* pos) {
+
+    StringBuffer t;
+    XMLProcessor::copyElementContent (t, xml, VER_PROTO, pos);
     VerProto* ret = NULL;
-    if (content) {
-        ret = new VerProto(content);
+    if (t.c_str()) {
+        ret = new VerProto(t.c_str());
     }
     return ret;
 }
@@ -402,16 +389,10 @@ SyncBody* Parser::getSyncBody(const char*xml) {
 
     SyncBody* syncBody   = NULL;
     bool finalMsg        = false;
-    ArrayList* commands;
-    char* t = NULL;
-    commands = getCommands(xml);
-    t = XMLProcessor::copyElementContent(xml, FINAL_MSG, NULL);
-    finalMsg = getFinalMsg(t);
-    if (t) {delete [] t; t = NULL;}
-    syncBody = new SyncBody(commands, finalMsg);
-
-    deleteArrayList(&commands);
-
+    ArrayList commands;
+    getCommands(commands, xml);
+    finalMsg = getFinalMsg(xml);
+    syncBody = new SyncBody(&commands, finalMsg);
     return syncBody;
 }
 
@@ -432,7 +413,6 @@ Sequence* Parser::getSequence(const char*xml) {
     Meta*   meta            = NULL;
     bool    noResp          = false;
     CmdID*  cmdID           = NULL;
-    ArrayList* commands     = new ArrayList();
     Sync* sync              = NULL;
     Atomic* atomic          = NULL;
 
@@ -441,141 +421,92 @@ Sequence* Parser::getSequence(const char*xml) {
     Get*   get              = NULL;
     Exec* exec              = NULL;
 
-    ArrayList* list     = new ArrayList();
     unsigned int pos = 0, previous = 0;
 
-    char* t = NULL;
-    t = XMLProcessor::copyElementContent(xml, CMD_ID, NULL);
-    cmdID = getCmdID(t);
-    if (t) {delete [] t; t = NULL;}
-    t = XMLProcessor::copyElementContentLevel (xml,  META  , NULL);
-    meta = getMeta(t);
-    if (t) {delete [] t; t = NULL;}
-    t = XMLProcessor::copyElementContent (xml, NO_RESP, NULL);
-    noResp   = getNoResp(t);
-    if (t) {delete [] t; t = NULL;}
+    StringBuffer t;
+
+    cmdID = getCmdID(xml);
+    meta = getMeta(xml);
+    noResp   = getNoResp(xml);
     // list of commands that must not be leaf of Sync and Atomic
-    commands = getCommonCommandList(xml, "Atomic&Sync");
+    ArrayList commands;
+    getCommonCommandList(commands, xml, "Atomic&Sync");
 
     // Alert
     pos = 0, previous = 0;
-    t = XMLProcessor::copyElementContentLevel(&xml[pos], ALERT, &pos);
-    while ((alert = getAlert(t)) != NULL) {
-        if (alert) {
-            list->add(*alert); // in the ArrayList NULL element cannot be inserted
-            deleteAlert(&alert);
-        }
+    XMLProcessor::copyElementContentLevel(t, &xml[pos], ALERT, &pos);
+    while ((alert = getAlert(t.c_str())) != NULL) {
+        commands.add(*alert); // in the ArrayList NULL element cannot be inserted
+        deleteAlert(&alert);
         pos += previous;
         previous = pos;
-        if (t) { delete [] t; t = NULL; }
-        t = XMLProcessor::copyElementContentLevel(&xml[pos], ALERT, &pos);
+        XMLProcessor::copyElementContentLevel(t, &xml[pos], ALERT, &pos);
     }
-    if (t) {delete [] t; t = NULL;}
-    if (list && list->size() > 0) {
-        for (int i = 0; i < list->size(); i++) {
-            commands->add(*list->get(i));
-        }
-    }
-    deleteArrayList(&list);
 
     // Map
     pos = 0, previous = 0;
-    t = XMLProcessor::copyElementContentLevel(&xml[pos], MAP, &pos);
-    while ((map = getMap(t)) != NULL) {
-        if (map) {
-            list->add(*map); // in the ArrayList NULL element cannot be inserted
-            deleteMap(&map);
-        }
+    XMLProcessor::copyElementContentLevel(t, &xml[pos], MAP, &pos);
+    while ((map = getMap(t.c_str())) != NULL) {
+        commands.add(*map); // in the ArrayList NULL element cannot be inserted
+        deleteMap(&map);
         pos += previous;
         previous = pos;
-        if (t) { delete [] t; t = NULL; }
-        t = XMLProcessor::copyElementContentLevel(&xml[pos], MAP, &pos);
+        XMLProcessor::copyElementContentLevel(t, &xml[pos], MAP, &pos);
     }
-    if (t) {delete [] t; t = NULL;}
-    if (list && list->size() > 0) {
-        for (int i = 0; i < list->size(); i++) {
-            commands->add(*list->get(i));
-        }
-    }
-
-    deleteArrayList(&list);
 
     // Get
     pos = 0, previous = 0;
-    t = XMLProcessor::copyElementContentLevel(&xml[pos], GET, &pos);
-    while ((get = getGet(t)) != NULL) {
-        if (get) {
-            list->add(*get); // in the ArrayList NULL element cannot be inserted
-            deleteGet(&get);
-        }
+    XMLProcessor::copyElementContentLevel(t, &xml[pos], GET, &pos);
+    while ((get = getGet(t.c_str())) != NULL) {
+        commands.add(*get); // in the ArrayList NULL element cannot be inserted
+        deleteGet(&get);
         pos += previous;
         previous = pos;
-        if (t) { delete [] t; t = NULL; }
-        t = XMLProcessor::copyElementContentLevel(&xml[pos], GET, &pos);
+        XMLProcessor::copyElementContentLevel(t, &xml[pos], GET, &pos);
     }
-    if (t) {delete [] t; t = NULL;}
-    if (list && list->size() > 0) {
-        for (int i = 0; i < list->size(); i++) {
-            commands->add(*list->get(i));
-        }
-    }
-    deleteArrayList(&list);
 
     // Exec
     pos = 0, previous = 0;
-    t = XMLProcessor::copyElementContentLevel(&xml[pos], EXEC, &pos);
-    while ((exec = getExec(t)) != NULL) {
-        if (exec) {
-            list->add(*exec); // in the ArrayList NULL element cannot be inserted
-            deleteExec(&exec);
-        }
+    XMLProcessor::copyElementContentLevel(t, &xml[pos], EXEC, &pos);
+    while ((exec = getExec(t.c_str())) != NULL) {
+        commands.add(*exec); // in the ArrayList NULL element cannot be inserted
+        deleteExec(&exec);
         pos += previous;
         previous = pos;
-        if (t) { delete [] t; t = NULL; }
-        t = XMLProcessor::copyElementContentLevel(&xml[pos], EXEC, &pos);
+        XMLProcessor::copyElementContentLevel(t, &xml[pos], EXEC, &pos);
     }
-    if(t) {delete [] t; t = NULL;}
 
-    if (list && list->size() > 0) {
-        for (int i = 0; i < list->size(); i++) {
-            commands->add(*list->get(i));
-        }
-    }
-    deleteArrayList(&list);
+    StringBuffer element;
+    XMLProcessor::copyElementContentLevel (element, xml,  SYNC, NULL);
 
-    char* element = XMLProcessor::copyElementContentLevel (xml,  SYNC, NULL);
-
-    if (element) {
-        sync = getSync(element);
+    if (!element.empty()) {
+        sync = getSync(element.c_str());
         if (sync) {
-            commands->add(*sync);
+            commands.add(*sync);
             deleteSync(&sync);
         }
-        safeDel(&element);
     }
 
-    element = XMLProcessor::copyElementContentLevel (xml,  ATOMIC, NULL);
+    XMLProcessor::copyElementContentLevel (element, xml,  ATOMIC, NULL);
 
-    if (element) {
-        atomic = getAtomic(element);
+    if (!element.empty()) {
+        atomic = getAtomic(element.c_str());
         if (atomic) {
-            commands->add(*atomic);
+            commands.add(*atomic);
             deleteAtomic(&atomic);
         }
-        safeDel(&element);
     }
 
 
     if ((cmdID)   ||
         (meta)    ||
-        NotZeroArrayLength(1, commands)) {
+        NotZeroArrayLength(1, &commands)) {
 
-        ret = new Sequence(cmdID, noResp, meta, commands);
+        ret = new Sequence(cmdID, noResp, meta, &commands);
     }
 
     deleteMeta(&meta);
     deleteCmdID(&cmdID);
-    deleteArrayList(&commands);
 
     return ret;
 }
@@ -598,140 +529,86 @@ Atomic* Parser::getAtomic(const char*xml) {
     Meta*   meta            = NULL;
     bool    noResp          = false;
     CmdID*  cmdID           = NULL;
-    ArrayList* commands     = new ArrayList();
     Sync* sync              = NULL;
     Sequence* sequence      = NULL;
-    char* element = NULL;
 
     Alert* alert            = NULL;
     Map*   map              = NULL;
     Get*   get              = NULL;
     Exec* exec              = NULL;
 
-    ArrayList* list     = new ArrayList();
     unsigned int pos = 0, previous = 0;
-    char* t = NULL;
-    t = XMLProcessor::copyElementContent(xml, CMD_ID, NULL);
-    cmdID    = getCmdID(t);
-    if (t) {delete [] t; t = NULL;}
-    t = XMLProcessor::copyElementContentLevel(xml,  META  , NULL);
-    meta     = getMeta       (t);
-    if (t) {delete [] t; t = NULL;}
-    t = XMLProcessor::copyElementContent(xml, NO_RESP, NULL);
-    noResp   = getNoResp(t);
-    if (t) {delete [] t; t = NULL;}
+    StringBuffer t;
+    cmdID    = getCmdID(xml);
+    meta     = getMeta(xml);
+    noResp   = getNoResp(xml);
     // list of commands that must not be leaf of Sync and Atomic
-    commands = getCommonCommandList(xml, "Sync&Sequence");
+    ArrayList commands;
+    getCommonCommandList(commands, xml, "Sync&Sequence");
 
     // Alert
     pos = 0, previous = 0;
-    t = XMLProcessor::copyElementContentLevel(&xml[pos], ALERT, &pos);
-    while ((alert = getAlert(t)) != NULL) {
-        if (alert) {
-            list->add(*alert); // in the ArrayList NULL element cannot be inserted
-            deleteAlert(&alert);
-        }
+    XMLProcessor::copyElementContentLevel(t, &xml[pos], ALERT, &pos);
+    while ((alert = getAlert(t.c_str())) != NULL) {
+        commands.add(*alert); // in the ArrayList NULL element cannot be inserted
+        deleteAlert(&alert);
         pos += previous;
         previous = pos;
-        if (t) { delete [] t; t = NULL; }
-        t = XMLProcessor::copyElementContentLevel(&xml[pos], ALERT, &pos);
+        XMLProcessor::copyElementContentLevel(t, &xml[pos], ALERT, &pos);
     }
-    if (t) {delete [] t; t = NULL;}
-
-    if (list && list->size() > 0) {
-        for (int i = 0; i < list->size(); i++) {
-            commands->add(*list->get(i));
-        }
-    }
-    deleteArrayList(&list);
 
     // Map
     pos = 0, previous = 0;
-    t = XMLProcessor::copyElementContentLevel(&xml[pos], MAP, &pos);
-    while ((map = getMap(t)) != NULL) {
-        if (map) {
-            list->add(*map); // in the ArrayList NULL element cannot be inserted
-            deleteMap(&map);
-        }
+    XMLProcessor::copyElementContentLevel(t, &xml[pos], MAP, &pos);
+    while ((map = getMap(t.c_str())) != NULL) {
+        commands.add(*map); // in the ArrayList NULL element cannot be inserted
+        deleteMap(&map);
         pos += previous;
         previous = pos;
-        if (t) { delete [] t; t = NULL; }
-        t = XMLProcessor::copyElementContentLevel(&xml[pos], MAP, &pos);
+        XMLProcessor::copyElementContentLevel(t, &xml[pos], MAP, &pos);
     }
-    if (t) {delete [] t; t = NULL;}
-
-    if (list && list->size() > 0) {
-        for (int i = 0; i < list->size(); i++) {
-            commands->add(*list->get(i));
-        }
-    }
-
-    deleteArrayList(&list);
 
     // Get
     pos = 0, previous = 0;
-    t = XMLProcessor::copyElementContentLevel(&xml[pos], GET, &pos);
-    while ((get = getGet(t)) != NULL) {
-        if (get) {
-            list->add(*get); // in the ArrayList NULL element cannot be inserted
-            deleteGet(&get);
-        }
+    XMLProcessor::copyElementContentLevel(t, &xml[pos], GET, &pos);
+    while ((get = getGet(t.c_str())) != NULL) {
+        commands.add(*get); // in the ArrayList NULL element cannot be inserted
+        deleteGet(&get);
         pos += previous;
         previous = pos;
-        if (t) { delete [] t; t = NULL; }
-        t = XMLProcessor::copyElementContentLevel(&xml[pos], GET, &pos);
+        XMLProcessor::copyElementContentLevel(t, &xml[pos], GET, &pos);
     }
-    if (t) {delete [] t; t = NULL;}
-
-    if (list && list->size() > 0) {
-        for (int i = 0; i < list->size(); i++) {
-            commands->add(*list->get(i));
-        }
-    }
-    deleteArrayList(&list);
 
     // Exec
     pos = 0, previous = 0;
-    t = XMLProcessor::copyElementContentLevel(&xml[pos], EXEC, &pos);
-    while ((exec = getExec(t)) != NULL) {
-        if (exec) {
-            list->add(*exec); // in the ArrayList NULL element cannot be inserted
-            deleteExec(&exec);
-        }
+    XMLProcessor::copyElementContentLevel(t, &xml[pos], EXEC, &pos);
+    while ((exec = getExec(t.c_str())) != NULL) {
+        commands.add(*exec); // in the ArrayList NULL element cannot be inserted
+        deleteExec(&exec);
         pos += previous;
         previous = pos;
-        if (t) { delete [] t; t = NULL; }
-        t = XMLProcessor::copyElementContentLevel(&xml[pos], EXEC, &pos);
+        XMLProcessor::copyElementContentLevel(t, &xml[pos], EXEC, &pos);
     }
-    if (t) {delete [] t; t = NULL;}
 
-    if (list && list->size() > 0) {
-        for (int i = 0; i < list->size(); i++) {
-            commands->add(*list->get(i));
-        }
-    }
-    deleteArrayList(&list);
+    StringBuffer element;
+    XMLProcessor::copyElementContentLevel (element, xml,  SYNC , NULL);
 
-    element = XMLProcessor::copyElementContentLevel (xml,  SYNC , NULL);
-
-    if (element) {
-        sync = getSync(element);
+    if (!element.empty()) {
+        sync = getSync(element.c_str());
         if (sync) {
-            commands->add(*sync);
+            commands.add(*sync);
             deleteSync(&sync);
         }
-        safeDel(&element);
     }
 
-    element = XMLProcessor::copyElementContentLevel (xml,  SEQUENCE, NULL);
+    XMLProcessor::copyElementContentLevel (element, xml,  SEQUENCE, NULL);
 
-    if (element) {
-        sequence = getSequence(element);
+    if (!element.empty()) {
+        sequence = getSequence(element.c_str());
         if (sequence) {
-            commands->add(*sequence);
+            commands.add(*sequence);
             deleteSequence(&sequence);
         }
-        safeDel(&element);
     }
 
     //
@@ -741,14 +618,13 @@ Atomic* Parser::getAtomic(const char*xml) {
 
     if ((cmdID)   ||
         (meta)    ||
-        NotZeroArrayLength(1, commands)) {
+        NotZeroArrayLength(1, &commands)) {
 
-        ret = new Atomic(cmdID, noResp, meta, commands);
+        ret = new Atomic(cmdID, noResp, meta, &commands);
     }
 
     deleteMeta(&meta);
     deleteCmdID(&cmdID);
-    deleteArrayList(&commands);
 
     return ret;
 }
@@ -775,42 +651,31 @@ Sync* Parser::getSync(const char*xml) {
     CmdID*  cmdID           = NULL;
     Target* target          = NULL;
     Source* source          = NULL;
-    ArrayList* commands     = new ArrayList();
     long numberOfChanges    = -1;
-    char* numberOfChangesW = NULL;
 
-    char* t = NULL;
-    t = XMLProcessor::copyElementContent(xml, CMD_ID,  NULL);
-    cmdID    = getCmdID      (t);
-    if (t) {delete [] t; t = NULL;}
-    t = XMLProcessor::copyElementContent(xml, TARGET,  NULL);
-    target   = getTarget     (t);
-    if (t) {delete [] t; t = NULL;}
-    t = XMLProcessor::copyElementContent(xml, SOURCE,  NULL);
-    source   = getSource     (t);
-    if (t) {delete [] t; t = NULL;}
-    t = XMLProcessor::copyElementContentLevel (xml,  META  ,NULL);
-    meta     = getMeta       (t);
-    if (t) {delete [] t; t = NULL;}
-    numberOfChangesW = XMLProcessor::copyElementContent (xml,  NUMBER_OF_CHANGES ,NULL);
-    if (numberOfChangesW) {
-        numberOfChanges = strtol(numberOfChangesW, NULL, 10);
+    StringBuffer t;
+    cmdID    = getCmdID      (xml);
+    target   = getTarget     (xml);
+    source   = getSource     (xml);
+    meta     = getMeta       (xml);
+    StringBuffer numberOfChangesW;
+    XMLProcessor::copyElementContent (numberOfChangesW, xml,  NUMBER_OF_CHANGES ,NULL);
+    if (!numberOfChangesW.empty()) {
+        numberOfChanges = strtol(numberOfChangesW.c_str(), NULL, 10);
     }
 
-    t = XMLProcessor::copyElementContent (xml, CRED   ,NULL);
-    cred     = getCred       (t);
-    if (t) {delete [] t; t = NULL;}
-    t = XMLProcessor::copyElementContent (xml, NO_RESP, NULL);
-    noResp   = getNoResp    (t);
-    if (t) {delete [] t; t = NULL;}
-    commands = getCommonCommandList(xml, "Atomic&Sequence");
+    cred     = getCred      (xml);
+    noResp   = getNoResp    (xml);
+    ArrayList commands;
+    getCommonCommandList(commands, xml, "Atomic&Sequence");
 
-    char* element = XMLProcessor::copyElementContentExcept(xml,  SEQUENCE, "Atomic", NULL);
+    char* element;
+    element = XMLProcessor::copyElementContentExcept(xml,  SEQUENCE, "Atomic", NULL);
 
     if (element) {
         sequence = getSequence(element);
         if (sequence) {
-            commands->add(*sequence);
+            commands.add(*sequence);
             deleteSequence(&sequence);
         }
         safeDel(&element);
@@ -821,7 +686,7 @@ Sync* Parser::getSync(const char*xml) {
     if (element) {
         atomic = getAtomic(element);
         if (atomic) {
-            commands->add(*atomic);
+            commands.add(*atomic);
             deleteAtomic(&atomic);
         }
         safeDel(&element);
@@ -832,9 +697,10 @@ Sync* Parser::getSync(const char*xml) {
         (target)  ||
         (source)  ||
         (meta)    ||
-        NotZeroArrayLength(1, commands)) {
+        NotZeroArrayLength(1, &commands)) {
 
-        ret = new Sync(cmdID, noResp, cred, target, source, meta, numberOfChanges, commands);
+        ret = new Sync(cmdID, noResp, cred, target, source, meta,
+                       numberOfChanges, &commands);
     }
 
     deleteCred(&cred);
@@ -842,62 +708,31 @@ Sync* Parser::getSync(const char*xml) {
     deleteCmdID(&cmdID);
     deleteTarget(&target);
     deleteSource(&source);
-    deleteArrayList(&commands);
 
     return ret;
 }
 
-ArrayList* Parser::getCommonCommandList(const char*xml, const char*except) {
-
-    ArrayList* commands = new ArrayList();
-    ArrayList* list = new ArrayList();
+void Parser::getCommonCommandList(ArrayList& commands, const char*xml, const char*except) {
 
     //
     //Delete
     //
-    list = getDels(xml, except);
-    if (list && list->size() > 0) {
-        for (int i = 0; i < list->size(); i++) {
-            commands->add(*list->get(i));
-        }
-    }
-    deleteArrayList(&list);
+    getAndAppendDels(commands, xml, except);
 
     //
     //Add
     //
-    list = getAdds(xml, except);
-    if (list && list->size() > 0) {
-        for (int i = 0; i < list->size(); i++) {
-            commands->add(*list->get(i));
-        }
-    }
-    deleteArrayList(&list);
+    getAndAppendAdds(commands, xml, except);
 
     //
     //Replace
     //
-    list = getReplaces(xml, except);
-    if (list && list->size() > 0) {
-        for (int i = 0; i < list->size(); i++) {
-            commands->add(*list->get(i));
-        }
-    }
-    deleteArrayList(&list);
-
+    getAndAppendReplaces(commands, xml, except);
 
     //
     //Copy
     //
-    list = getCopies(xml, except);
-    if (list && list->size() > 0) {
-        for (int i = 0; i < list->size(); i++) {
-            commands->add(*list->get(i));
-        }
-    }
-    deleteArrayList(&list);
-
-    return commands;
+    getAndAppendCopies(commands, xml, except);
 }
 
 Copy* Parser::getCopy(const char*xml) {
@@ -907,35 +742,26 @@ Copy* Parser::getCopy(const char*xml) {
     bool        noResp  = false;
     Cred*       cred    = NULL;
     Meta*       meta    = NULL;
-    ArrayList*  items   = NULL;
 
-    char* t = NULL;
-    t = XMLProcessor::copyElementContent (xml, CMD_ID , NULL);
-    cmdID   = getCmdID     (t);
-    if (t) {delete [] t; t = NULL;}
-    t = XMLProcessor::copyElementContentLevel (xml, META,    NULL);
-    meta    = getMeta      (t);
-    if (t) {delete [] t; t = NULL;}
-    t = XMLProcessor::copyElementContent (xml, CRED   , NULL);
-    cred    = getCred      (t);
-    if (t) {delete [] t; t = NULL;}
-    t = XMLProcessor::copyElementContent (xml, NO_RESP, NULL);
-    noResp  = getNoResp    (t);
-    if (t) {delete [] t; t = NULL;}
-    items = getItems(xml, COPY);
+    cmdID   = getCmdID     (xml);
+    meta    = getMeta      (xml);
+    cred    = getCred      (xml);
+    noResp  = getNoResp    (xml);
+
+    ArrayList items;
+    getItems(items, xml, COPY);
 
     if ((cmdID) ||
         (cred)  ||
-        NotZeroArrayLength(1, items)
+        NotZeroArrayLength(1, &items)
         )  {
 
-        ret = new Copy(cmdID, noResp, cred, meta, items);
+        ret = new Copy(cmdID, noResp, cred, meta, &items);
     }
 
     deleteCmdID(&cmdID);
     deleteMeta(&meta);
     deleteCred(&cred);
-    deleteArrayList(&items);
 
     return ret;
 }
@@ -948,35 +774,26 @@ Add* Parser::getAdd(const char*xml) {
     bool        noResp  = false;
     Cred*       cred    = NULL;
     Meta*       meta    = NULL;
-    ArrayList*  items   = NULL;
 
-    char* t = NULL;
-    t = XMLProcessor::copyElementContent (xml, CMD_ID , NULL);
-    cmdID   = getCmdID     (t);
-    if (t) {delete [] t; t = NULL;}
-    t = XMLProcessor::copyElementContentLevel (xml, META,    NULL);
-    meta    = getMeta      (t);
-    if (t) {delete [] t; t = NULL;}
-    t = XMLProcessor::copyElementContent (xml, CRED   , NULL);
-    cred    = getCred      (t);
-    if (t) {delete [] t; t = NULL;}
-    t = XMLProcessor::copyElementContent (xml, NO_RESP, NULL);
-    noResp  = getNoResp    (t);
-    if (t) {delete [] t; t = NULL;}
-    items = getItems(xml, ADD);
+    cmdID   = getCmdID     (xml);
+    meta    = getMeta      (xml);
+    cred    = getCred      (xml);
+    noResp  = getNoResp    (xml);
+
+    ArrayList items;
+    getItems(items, xml, ADD);
 
     if ((cmdID) ||
         (cred)  ||
-        NotZeroArrayLength(1, items)
+        NotZeroArrayLength(1, &items)
         )  {
 
-        ret = new Add(cmdID, noResp, cred, meta, items);
+        ret = new Add(cmdID, noResp, cred, meta, &items);
     }
 
     deleteCmdID(&cmdID);
     deleteMeta(&meta);
     deleteCred(&cred);
-    deleteArrayList(&items);
 
     return ret;
 }
@@ -990,35 +807,26 @@ Delete* Parser::getDelete(const char*xml) {
     bool        sftDel  = false;
     Cred*       cred    = NULL;
     Meta*       meta    = NULL;
-    ArrayList*  items   = NULL;
 
-    char* t = NULL;
-    t = XMLProcessor::copyElementContent (xml, CMD_ID , NULL);
-    cmdID   = getCmdID     (t);
-    if (t) {delete [] t; t = NULL;}
-    t = XMLProcessor::copyElementContentLevel (xml, META,    NULL);
-    meta    = getMeta      (t);
-    if (t) {delete [] t; t = NULL;}
-    t = XMLProcessor::copyElementContent (xml, CRED   , NULL);
-    cred    = getCred      (t);
-    if (t) {delete [] t; t = NULL;}
-    t = XMLProcessor::copyElementContent (xml, NO_RESP, NULL);
-    noResp  = getNoResp    (t);
-    if (t) {delete [] t; t = NULL;}
-    items = getItems(xml, DEL);
+    cmdID   = getCmdID     (xml);
+    meta    = getMeta      (xml);
+    cred    = getCred      (xml);
+    noResp  = getNoResp    (xml);
+
+    ArrayList  items;
+    getItems(items, xml, DEL);
 
     if ((cmdID) ||
         (cred)  ||
-        NotZeroArrayLength(1, items)
+        NotZeroArrayLength(1, &items)
         )  {
 
-        ret = new Delete(cmdID, noResp, archive, sftDel, cred, meta, items);
+        ret = new Delete(cmdID, noResp, archive, sftDel, cred, meta, &items);
     }
 
     deleteCmdID(&cmdID);
     deleteMeta(&meta);
     deleteCred(&cred);
-    deleteArrayList(&items);
 
     return ret;
 }
@@ -1030,35 +838,26 @@ Replace* Parser::getReplace(const char*xml) {
     bool        noResp  = false;
     Cred*       cred    = NULL;
     Meta*       meta    = NULL;
-    ArrayList*  items   = NULL;
 
-    char* t = NULL;
-    t = XMLProcessor::copyElementContent (xml, CMD_ID , NULL);
-    cmdID   = getCmdID     (t);
-    if (t) {delete [] t; t = NULL;}
-    t = XMLProcessor::copyElementContentLevel (xml, META,    NULL);
-    meta    = getMeta      (t);
-    if (t) {delete [] t; t = NULL;}
-    t = XMLProcessor::copyElementContent (xml, CRED   , NULL);
-    cred    = getCred      (t);
-    if (t) {delete [] t; t = NULL;}
-    t = XMLProcessor::copyElementContent (xml, NO_RESP, NULL);
-    noResp  = getNoResp    (t);
-    if (t) {delete [] t; t = NULL;}
-    items = getItems(xml, REPLACE);
+    cmdID   = getCmdID     (xml);
+    meta    = getMeta      (xml);
+    cred    = getCred      (xml);
+    noResp  = getNoResp    (xml);
+
+    ArrayList  items;
+    getItems(items, xml, REPLACE);
 
     if ((cmdID) ||
         (cred)  ||
-        NotZeroArrayLength(1, items)
+        NotZeroArrayLength(1, &items)
         )  {
 
-        ret = new Replace(cmdID, noResp, cred, meta, items);
+        ret = new Replace(cmdID, noResp, cred, meta, &items);
     }
 
     deleteCmdID(&cmdID);
     deleteMeta(&meta);
     deleteCred(&cred);
-    deleteArrayList(&items);
 
     return ret;
 }
@@ -1069,16 +868,11 @@ MapItem* Parser::getMapItem(const char*xml) {
     Target*    target = NULL;
     Source*    source = NULL;
 
-    char* t = NULL;
-    t = XMLProcessor::copyElementContent(xml, TARGET,NULL);
-    target   = getTarget(t);
-    if (t) {delete [] t; t = NULL;}
-    t = XMLProcessor::copyElementContent(xml, SOURCE,NULL);
-    source   = getSource(t);
+    StringBuffer t;
+    target   = getTarget(xml);
+    source   = getSource(xml);
 
-    if ((target)||
-        (source)) {
-
+    if ((target)|| (source)) {
         ret = new MapItem(target, source);
     }
 
@@ -1091,26 +885,20 @@ MapItem* Parser::getMapItem(const char*xml) {
 /*
 * Returns an ArrayList of mapItem command
 */
-ArrayList* Parser::getMapItems(const char*xml) {
+void Parser::getMapItems(ArrayList& list, const char*xml) {
 
     MapItem* mapItem = NULL;
     unsigned int pos = 0, previous = 0;
-    ArrayList* list = new ArrayList();
 
-    char* t = NULL;
-    t = XMLProcessor::copyElementContent(&xml[pos], MAP_ITEM, &pos);
-    while ((mapItem = getMapItem(t)) != NULL) {
-        if (mapItem) {
-            list->add(*mapItem); // in the ArrayList NULL element cannot be inserted
-            deleteMapItem(&mapItem);
-        }
+    StringBuffer t;
+    XMLProcessor::copyElementContent(t, &xml[pos], MAP_ITEM, &pos);
+    while ((mapItem = getMapItem(t.c_str())) != NULL) {
+        list.add(*mapItem); // in the ArrayList NULL element cannot be inserted
+        deleteMapItem(&mapItem);
         pos += previous;
         previous = pos;
-        if (t) { delete [] t; t = NULL; }
-        t = XMLProcessor::copyElementContent(&xml[pos], MAP_ITEM, &pos);
+        XMLProcessor::copyElementContent(t, &xml[pos], MAP_ITEM, &pos);
     }
-    if (t) {delete [] t; t = NULL;}
-    return list;
 }
 
 Map* Parser::getMap(const char*xml) {
@@ -1122,35 +910,25 @@ Map* Parser::getMap(const char*xml) {
 
     Target*    target = NULL;
     Source*    source = NULL;
-    ArrayList* mapItems; //MapItem[]
 
-    char* t = NULL;
-    t = XMLProcessor::copyElementContent (xml, CMD_ID , NULL);
-    cmdID   = getCmdID(t);
-    if (t) {delete [] t; t = NULL;}
-    t = XMLProcessor::copyElementContentLevel (xml, META,    NULL);
-    meta    = getMeta(t);
-    if (t) {delete [] t; t = NULL;}
-    t = XMLProcessor::copyElementContent (xml, CRED   , NULL);
-    cred    = getCred(t);
-    if (t) {delete [] t; t = NULL;}
-    t = XMLProcessor::copyElementContent(xml, TARGET,NULL);
-    target   = getTarget(t);
-    if (t) {delete [] t; t = NULL;}
-    t = XMLProcessor::copyElementContent(xml, SOURCE,  NULL);
-    source   = getSource(t);
-    if (t) {delete [] t; t = NULL;}
-    mapItems = getMapItems(xml);
+    cmdID   = getCmdID(xml);
+    meta    = getMeta(xml);
+    cred    = getCred(xml);
+    target  = getTarget(xml);
+    source  = getSource(xml);
+
+    ArrayList mapItems;
+    getMapItems(mapItems, xml);
 
     if ((cmdID) ||
         (meta)  ||
         (cred)  ||
         (target)||
         (source)||
-        NotZeroArrayLength(1, mapItems)
+        NotZeroArrayLength(1, &mapItems)
         )  {
 
-        ret = new Map(cmdID, target, source, cred, meta, mapItems);
+        ret = new Map(cmdID, target, source, cred, meta, &mapItems);
     }
 
     deleteCmdID(&cmdID);
@@ -1158,7 +936,6 @@ Map* Parser::getMap(const char*xml) {
     deleteCred(&cred);
     deleteTarget(&target);
     deleteSource(&source);
-    deleteArrayList(&mapItems);
 
     return ret;
 }
@@ -1167,114 +944,86 @@ Map* Parser::getMap(const char*xml) {
 /*
 * Returns an ArrayList of copy command
 */
-ArrayList* Parser::getCopies(const char*xml, const char*except) {
+void Parser::getAndAppendCopies(ArrayList& list, const char*xml, const char*except) {
 
     Copy* copy = NULL;
     unsigned int pos = 0, previous = 0;
-    ArrayList* list = NULL;
 
    /*
     * except is set to SYNC if we are looking for Copy commands external from <sync> tag
     */
-    char* t = NULL;
-    t = XMLProcessor::copyElementContentExcept(&xml[pos], COPY, except, &pos);
+    char* t = XMLProcessor::copyElementContentExcept(&xml[pos], COPY, except, &pos);
     while ((copy = getCopy(t)) != NULL) {
-        if (copy) {
-            if (!list)
-                list = new ArrayList();
-            list->add(*copy); // in the ArrayList NULL element cannot be inserted
-            deleteCopy(&copy);
-        }
+        list.add(*copy); // in the ArrayList NULL element cannot be inserted
+        deleteCopy(&copy);
         pos += previous;
         previous = pos;
-        if (t) { delete [] t; t = NULL; }
+        delete [] t;
         t = XMLProcessor::copyElementContentExcept(&xml[pos], COPY, except, &pos);
     }
-    if (t) {delete [] t; t = NULL;}
-    return list;
+    delete [] t;
 }
 
 /*
 * Returns an ArrayList of add command
 */
-ArrayList* Parser::getAdds(const char*xml, const char*except) {
+void Parser::getAndAppendAdds(ArrayList& list, const char*xml, const char*except) {
 
     Add* add         = NULL;
     unsigned int pos = 0, previous = 0;
-    ArrayList* list  = NULL;
-    char* t         = NULL;
-   /*
+    /*
     * except is set to SYNC if we are looking for Add commands external from <sync> tag
     */
-    t = XMLProcessor::copyElementContentExcept(&xml[pos], ADD, except, &pos);
+    char* t = XMLProcessor::copyElementContentExcept(&xml[pos], ADD, except, &pos);
     while ((add = getAdd(t)) != NULL) {
-        if (add) {
-            if (!list)
-                list = new ArrayList();
-            list->add(*add); // in the ArrayList NULL element cannot be inserted
-            deleteAdd(&add);
-        }
+        list.add(*add); // in the ArrayList NULL element cannot be inserted
+        deleteAdd(&add);
         pos += previous;
         previous = pos;
-        if (t) { delete [] t; t = NULL; }
+        delete [] t;
         t = XMLProcessor::copyElementContentExcept(&xml[pos], ADD, except, &pos);
     }
-    if (t) { delete [] t; t = NULL; }
-    return list;
+    delete [] t;
 }
 
 /*
 * Returns an ArrayList of Replace commands
 */
-ArrayList* Parser::getReplaces(const char*xml, const char*except) {
+void Parser::getAndAppendReplaces(ArrayList& list, const char*xml, const char*except) {
 
     Replace* replace = NULL;
     unsigned int pos = 0, previous = 0;
-    ArrayList* list = NULL;
-    char* t        = NULL;
 
-    t = XMLProcessor::copyElementContentExcept(&xml[pos], REPLACE, except, &pos);
+    char* t = XMLProcessor::copyElementContentExcept(&xml[pos], REPLACE, except, &pos);
     while ((replace = getReplace(t)) != NULL) {
-        if (replace) {
-            if (!list)
-                list = new ArrayList();
-            list->add(*replace); // in the ArrayList NULL element cannot be inserted
-            deleteReplace(&replace);
-        }
+        list.add(*replace); // in the ArrayList NULL element cannot be inserted
+        deleteReplace(&replace);
         pos += previous;
         previous = pos;
-        if (t) { delete [] t; t = NULL; }
+        delete [] t;
         t = XMLProcessor::copyElementContentExcept(&xml[pos], REPLACE, except, &pos);
     }
-    if (t) { delete [] t; t = NULL; }
-    return list;
+    delete [] t;
 }
 
 /*
 * Returns an ArrayList of Dels command
 */
-ArrayList* Parser::getDels(const char*xml, const char*except) {
+void Parser::getAndAppendDels(ArrayList& list, const char*xml, const char*except) {
 
     Delete* del        = NULL;
     unsigned int pos   = 0, previous = 0;
-    ArrayList* list    = NULL;
-    char* t           = NULL;
 
-    t = XMLProcessor::copyElementContentExcept(&xml[pos], DEL, except, &pos);
+    char* t = XMLProcessor::copyElementContentExcept(&xml[pos], DEL, except, &pos);
     while ((del = getDelete(t)) != NULL) {
-        if (del) {
-            if (!list)
-                list = new ArrayList();
-            list->add(*del); // in the ArrayList NULL element cannot be inserted
-            deleteDelete(&del);
-        }
+        list.add(*del); // in the ArrayList NULL element cannot be inserted
+        deleteDelete(&del);
         pos += previous;
         previous = pos;
-        if (t) { delete [] t; t = NULL;}
+        delete [] t;
         t = XMLProcessor::copyElementContentExcept(&xml[pos], DEL, except, &pos);
     }
-    if (t) { delete [] t; t = NULL; }
-    return list;
+    delete [] t;
 }
 
 /*
@@ -1295,10 +1044,8 @@ Commands of SyncBody tag
     Status
     Sync
 */
-ArrayList* Parser::getCommands(const char*xml) {
-    ArrayList* ret    = new ArrayList();
-
-    ArrayList* list     = NULL;
+void Parser::getCommands(ArrayList& ret, const char*xml) {
+    ArrayList list;
     Alert* alert        = NULL;
     Map*   map          = NULL;
     Get*   get          = NULL;
@@ -1312,200 +1059,94 @@ ArrayList* Parser::getCommands(const char*xml) {
     Atomic* atomic      = NULL;
     Sync* sync          = NULL;
     unsigned int pos = 0, previous = 0;
-    char* t            = NULL;
-
 
     // Status
-    t = XMLProcessor::copyElementContent(&xml[pos], STATUS, &pos);
-    while ((status = getStatus(t)) != NULL) {
-        if (status) {
-            if (!list)
-                list = new ArrayList();
-            list->add(*status); // in the ArrayList NULL element cannot be inserted
-            deleteStatus(&status);
-        }
+    StringBuffer t;
+    XMLProcessor::copyElementContent(t, &xml[pos], STATUS, &pos);
+    while ((status = getStatus(t.c_str())) != NULL) {
+        ret.add(*status); // in the ArrayList NULL element cannot be inserted
+        deleteStatus(&status);
         pos += previous;
         previous = pos;
-        if (t) { delete [] t; t = NULL; }
-        t = XMLProcessor::copyElementContent(&xml[pos], STATUS, &pos);
+        XMLProcessor::copyElementContent(t, &xml[pos], STATUS, &pos);
     }
-    if (t) { delete [] t; t = NULL; }
-
-    if (list && list->size() > 0) {
-        for (int i = 0; i < list->size(); i++) {
-            ret->add(*list->get(i));
-        }
-    }
-    deleteArrayList(&list);
 
     // Alert: use the copyElementContentLevel because Alert could be also in Atomic and Sequence commands
     pos = 0, previous = 0;
-    t = XMLProcessor::copyElementContentLevel(&xml[pos], ALERT, &pos);
-    while ((alert = getAlert(t)) != NULL) {
-        if (alert) {
-            if (!list)
-                list = new ArrayList();
-            list->add(*alert); // in the ArrayList NULL element cannot be inserted
-            deleteAlert(&alert);
-        }
+    XMLProcessor::copyElementContentLevel(t, &xml[pos], ALERT, &pos);
+    while ((alert = getAlert(t.c_str())) != NULL) {
+        ret.add(*alert); // in the ArrayList NULL element cannot be inserted
+        deleteAlert(&alert);
         pos += previous;
         previous = pos;
-        if (t) { delete [] t; t = NULL; }
-        t = XMLProcessor::copyElementContentLevel(&xml[pos], ALERT, &pos);
+        XMLProcessor::copyElementContentLevel(t, &xml[pos], ALERT, &pos);
     }
-    if (t) { delete [] t; t = NULL; }
-
-    if (list && list->size() > 0) {
-        for (int i = 0; i < list->size(); i++) {
-            ret->add(*list->get(i));
-        }
-    }
-    deleteArrayList(&list);
 
     // Map: use the copyElementContentLevel because Map could be also in Atomic and Sequence commands
     pos = 0, previous = 0;
-    t = XMLProcessor::copyElementContentLevel(&xml[pos], MAP, &pos);
-    while ((map = getMap(t)) != NULL) {
-        if (map) {
-            if (!list)
-                list = new ArrayList();
-            list->add(*map); // in the ArrayList NULL element cannot be inserted
-            deleteMap(&map);
-        }
+    XMLProcessor::copyElementContentLevel(t, &xml[pos], MAP, &pos);
+    while ((map = getMap(t.c_str())) != NULL) {
+        ret.add(*map); // in the ArrayList NULL element cannot be inserted
+        deleteMap(&map);
         pos += previous;
         previous = pos;
-        if (t) { delete [] t; t = NULL; }
-        t = XMLProcessor::copyElementContentLevel(&xml[pos], MAP, &pos);
+        XMLProcessor::copyElementContentLevel(t, &xml[pos], MAP, &pos);
     }
-    if (t) { delete [] t; t = NULL; }
-
-    if (list && list->size() > 0) {
-        for (int i = 0; i < list->size(); i++) {
-            ret->add(*list->get(i));
-        }
-    }
-
-    deleteArrayList(&list);
 
     // Get: use the copyElementContentLevel because Get could be also in Atomic and Sequence commands
     pos = 0, previous = 0;
-    t = XMLProcessor::copyElementContent(&xml[pos], GET, &pos);
-    while ((get = getGet(t)) != NULL) {
-        if (get) {
-            if (!list)
-                list = new ArrayList();
-            list->add(*get); // in the ArrayList NULL element cannot be inserted
-            deleteGet(&get);
-        }
+    XMLProcessor::copyElementContent(t, &xml[pos], GET, &pos);
+    while ((get = getGet(t.c_str())) != NULL) {
+        ret.add(*get); // in the ArrayList NULL element cannot be inserted
+        deleteGet(&get);
         pos += previous;
         previous = pos;
-        if (t) { delete [] t; t = NULL; }
-        t = XMLProcessor::copyElementContent(&xml[pos], GET, &pos);
+        XMLProcessor::copyElementContent(t, &xml[pos], GET, &pos);
     }
-    if (t) { delete [] t; t = NULL; }
-
-    if (list && list->size() > 0) {
-        for (int i = 0; i < list->size(); i++) {
-            ret->add(*list->get(i));
-        }
-    }
-    deleteArrayList(&list);
 
     // Put
     pos = 0, previous = 0;
-    t = XMLProcessor::copyElementContent(&xml[pos], PUT, &pos);
-    while ((put = getPut(t)) != NULL) {
-        if (put) {
-            if (!list)
-                list = new ArrayList();
-            list->add(*put); // in the ArrayList NULL element cannot be inserted
-            deletePut(&put);
-        }
+    XMLProcessor::copyElementContent(t, &xml[pos], PUT, &pos);
+    while ((put = getPut(t.c_str())) != NULL) {
+        ret.add(*put); // in the ArrayList NULL element cannot be inserted
+        deletePut(&put);
         pos += previous;
         previous = pos;
-        if (t) { delete [] t; t = NULL; }
-        t = XMLProcessor::copyElementContent(&xml[pos], PUT, &pos);
+        XMLProcessor::copyElementContent(t, &xml[pos], PUT, &pos);
     }
-    if (t) { delete [] t; t = NULL; }
-
-    if (list && list->size() > 0) {
-        for (int i = 0; i < list->size(); i++) {
-            ret->add(*list->get(i));
-        }
-    }
-    deleteArrayList(&list);
 
     // Results
     pos = 0, previous = 0;
-    t = XMLProcessor::copyElementContent(&xml[pos], RESULTS, &pos);
-    while ((result = getResult(t)) != NULL) {
-        if (result) {
-            if (!list)
-                list = new ArrayList();
-            list->add(*result); // in the ArrayList NULL element cannot be inserted
-            deleteResults(&result);
-        }
+    XMLProcessor::copyElementContent(t, &xml[pos], RESULTS, &pos);
+    while ((result = getResult(t.c_str())) != NULL) {
+        ret.add(*result); // in the ArrayList NULL element cannot be inserted
+        deleteResults(&result);
         pos += previous;
         previous = pos;
-        if (t) { delete [] t; t = NULL; }
-        t = XMLProcessor::copyElementContent(&xml[pos], RESULTS, &pos);
+        XMLProcessor::copyElementContent(t, &xml[pos], RESULTS, &pos);
     }
-    if (t) { delete [] t; t = NULL; }
-
-    if (list && list->size() > 0) {
-        for (int i = 0; i < list->size(); i++) {
-            ret->add(*list->get(i));
-        }
-    }
-    deleteArrayList(&list);
 
     // Exec: use the copyElementContentLevel because Exec could be also in Atomic and Sequence commands
     pos = 0, previous = 0;
-    t = XMLProcessor::copyElementContentLevel(&xml[pos], EXEC, &pos);
-    while ((exec = getExec(t)) != NULL) {
-        if (exec) {
-            if (!list)
-                list = new ArrayList();
-            list->add(*exec); // in the ArrayList NULL element cannot be inserted
-            deleteExec(&exec);
-        }
+    XMLProcessor::copyElementContentLevel(t, &xml[pos], EXEC, &pos);
+    while ((exec = getExec(t.c_str())) != NULL) {
+        ret.add(*exec); // in the ArrayList NULL element cannot be inserted
+        deleteExec(&exec);
         pos += previous;
         previous = pos;
-        if (t) { delete [] t; t = NULL; }
-        t = XMLProcessor::copyElementContentLevel(&xml[pos], EXEC, &pos);
+        XMLProcessor::copyElementContentLevel(t, &xml[pos], EXEC, &pos);
     }
-    if (t) { delete [] t; t = NULL; }
-
-    if (list && list->size() > 0) {
-        for (int i = 0; i < list->size(); i++) {
-            ret->add(*list->get(i));
-        }
-    }
-    deleteArrayList(&list);
 
     // Search
     pos = 0, previous = 0;
-    t = XMLProcessor::copyElementContent(&xml[pos], SEARCH, &pos);
-    while ((search = getSearch(t)) != NULL) {
-        if (search) {
-            if (!list)
-                list = new ArrayList();
-            list->add(*search); // in the ArrayList NULL element cannot be inserted
-            deleteSearch(&search);
-        }
+    XMLProcessor::copyElementContent(t, &xml[pos], SEARCH, &pos);
+    while ((search = getSearch(t.c_str())) != NULL) {
+        ret.add(*search); // in the ArrayList NULL element cannot be inserted
+        deleteSearch(&search);
         pos += previous;
         previous = pos;
-        if (t) { delete [] t; t = NULL; }
-        t = XMLProcessor::copyElementContent(&xml[pos], SEARCH, &pos);
+        XMLProcessor::copyElementContent(t, &xml[pos], SEARCH, &pos);
     }
-    if (t) { delete [] t; t = NULL; }
-
-    if (list && list->size() > 0) {
-        for (int i = 0; i < list->size(); i++) {
-            ret->add(*list->get(i));
-        }
-    }
-    deleteArrayList(&list);
 
     // get the Sync commands. not belonging to Atomic and Sequence
     //sync = getSync(XMLProcessor::copyElementContentExcept (xml, SYNC, "Atomic&Sequence", NULL));
@@ -1517,61 +1158,44 @@ ArrayList* Parser::getCommands(const char*xml) {
 
     // Sync
     pos = 0, previous = 0;
-    t = XMLProcessor::copyElementContentExcept(&xml[pos], SYNC, "Atomic&Sequence", &pos);
-    while ((sync = getSync(t)) != NULL) {
-        if (sync) {
-            if (!list)
-                list = new ArrayList();
-            list->add(*sync); // in the ArrayList NULL element cannot be inserted
-            deleteSync(&sync);
-        }
+    char* t1 = XMLProcessor::copyElementContentExcept(&xml[pos], SYNC, "Atomic&Sequence", &pos);
+    while ((sync = getSync(t1)) != NULL) {
+        ret.add(*sync); // in the ArrayList NULL element cannot be inserted
+        deleteSync(&sync);
         pos += previous;
         previous = pos;
-        if (t) { delete [] t; t = NULL; }
-        t = XMLProcessor::copyElementContentExcept(&xml[pos], SYNC, "Atomic&Sequence", &pos);
+        delete [] t1;
+        t1 = XMLProcessor::copyElementContentExcept(&xml[pos], SYNC, "Atomic&Sequence", &pos);
     }
-    if (t) { delete [] t; t = NULL; }
-
-    if (list && list->size() > 0) {
-        for (int i = 0; i < list->size(); i++) {
-            ret->add(*list->get(i));
-        }
-    }
-    deleteArrayList(&list);
-
-
+    delete [] t1;
 
     // get the Sequence commands. Not belonging to Atomic and Sync
-    t = XMLProcessor::copyElementContentExcept(xml, SEQUENCE, "Atomic&Sync", &pos);
-    sequence = getSequence(t);
-    if (t) {delete [] t; t = NULL;}
+    t1 = XMLProcessor::copyElementContentExcept(xml, SEQUENCE, "Atomic&Sync", &pos);
+    sequence = getSequence(t1);
+    delete [] t1;
 
     if (sequence) {
-        ret->add(*sequence);
+        ret.add(*sequence);
         deleteSequence(&sequence);
     }
 
     // get the Sequence commands. Not belonging to Sequence and Sync and Atomic
-    t = XMLProcessor::copyElementContentExcept(xml, ATOMIC, "Atomic&Sync&Sequence", &pos);
-    atomic = getAtomic(t);
-    if (t) {delete [] t; t = NULL;}
+    t1 = XMLProcessor::copyElementContentExcept(xml, ATOMIC, "Atomic&Sync&Sequence", &pos);
+    atomic = getAtomic(t1);
+    delete [] t1;
 
     if (atomic) {
-        ret->add(*atomic);
+        ret.add(*atomic);
         deleteAtomic(&atomic);
     }
 
 
-    list = getCommonCommandList(xml, "Atomic&Sync&Sequence");
+    ArrayList commonCommandList;
+    getCommonCommandList(commonCommandList, xml, "Atomic&Sync&Sequence");
 
-    if (list && list->size() > 0) {
-        for (int i = 0; i < list->size(); i++) {
-            ret->add(*list->get(i));
-        }
+    for (int i = 0; i < commonCommandList.size(); i++) {
+        ret.add(*commonCommandList.get(i));
     }
-    deleteArrayList(&list);
-
-    return ret;
 }
 
 Status* Parser::getStatus(const char*xml) {
@@ -1579,54 +1203,43 @@ Status* Parser::getStatus(const char*xml) {
     if (!xml)
         return NULL;
 
-    Status*     ret         = NULL;
+    Status*  ret         = NULL;
+    CmdID*   cmdID       = NULL;
+    Cred*    cred        = NULL;
+    Chal*    chal        = NULL;
+    Data*    data        = NULL;
 
-    CmdID*      cmdID       = NULL;
-    char*    msgRef      = NULL;
-    char*    cmdRef      = NULL;
-    char*    cmd         = NULL;
-    ArrayList*  targetRefs  = new ArrayList();
-    ArrayList*  sourceRefs  = new ArrayList();
-    Cred*       cred        = NULL;
-    Chal*       chal        = NULL;
-    Data*       data        = NULL;
-    ArrayList*  items       = new ArrayList();
+    cmdID = getCmdID(xml);
 
-    char* t = NULL;
-    t = XMLProcessor::copyElementContent (xml, CMD_ID , NULL);
-    cmdID = getCmdID(t);
-    if (t) {delete [] t; t = NULL;}
-
-    msgRef          = XMLProcessor::copyElementContent (xml, MSG_REF, NULL);
-    cmdRef          = XMLProcessor::copyElementContent (xml, CMD_REF, NULL);
-    cmd             = XMLProcessor::copyElementContent (xml, CMD,     NULL);
-    t = XMLProcessor::copyElementContent (xml, CRED   , NULL);
-    cred            = getCred      (t);
-    if (t) {delete [] t; t = NULL;}
+    StringBuffer msgRef, cmdRef, cmd;
+    XMLProcessor::copyElementContent (msgRef, xml, MSG_REF, NULL);
+    XMLProcessor::copyElementContent (cmdRef, xml, CMD_REF, NULL);
+    XMLProcessor::copyElementContent (cmd, xml, CMD,     NULL);
+    cred = getCred(xml);
     // get Data <Data>200</Data>
-    t = XMLProcessor::copyElementContent (xml, DATA   , NULL);
-    data            = getData      (t);
-    if (t) {delete [] t; t = NULL;}
-    items           = getItems     (xml);
-    targetRefs      = getTargetRefs(xml);
-    sourceRefs      = getSourceRefs(xml);
-    t = XMLProcessor::copyElementContent (xml, CHAL   , NULL);
-    chal            = getChal      (t);
-    if (t) {delete [] t; t = NULL;}
+    data = getData(xml);
 
-    if (NotNullCheck(2, msgRef, cmdRef) || (cred)
+    ArrayList items;
+    getItems(items, xml);
+
+    ArrayList targetRefs;
+    getTargetRefs(targetRefs, xml);
+
+    ArrayList sourceRefs;
+    getSourceRefs(sourceRefs, xml);
+
+    chal = getChal(xml);
+
+    if (NotNullCheck(2, msgRef.c_str(), cmdRef.c_str()) || (cred)
                                         || (data)
                                         || (cmdID)
                                         || (chal)
-                                        || NotZeroArrayLength(3, items, targetRefs, sourceRefs)
+                                        || NotZeroArrayLength(3, &items, &targetRefs, &sourceRefs)
                                         )  {
 
-        ret = new Status(cmdID, msgRef, cmdRef, cmd, targetRefs, sourceRefs, cred, chal, data, items);
+        ret = new Status(cmdID, msgRef.c_str(), cmdRef.c_str(), cmd.c_str(),
+                         &targetRefs, &sourceRefs, cred, chal, data, &items);
     }
-    deleteArrayList(&sourceRefs);
-    deleteArrayList(&targetRefs);
-    deleteArrayList(&items);
-    deleteAll(3, &msgRef, &cmdRef, &cmd);
     deleteCmdID(&cmdID);
     deleteCred(&cred);
     deleteData(&data);
@@ -1635,12 +1248,13 @@ Status* Parser::getStatus(const char*xml) {
     return ret;
 }
 
-Chal* Parser::getChal(const char*xml) {
+Chal* Parser::getChal(const char* xml, unsigned int* pos) {
+
+    StringBuffer t;
+    XMLProcessor::copyElementContent (t, xml, CHAL, pos);
 
     Chal* ret  = NULL;
-    Meta* meta = NULL;
-
-    meta     = getMeta (xml);
+    Meta* meta = getMetaFromContent(t.c_str());
 
     if (meta) {
         ret = new Chal(meta);
@@ -1650,54 +1264,41 @@ Chal* Parser::getChal(const char*xml) {
     return ret;
 }
 
-ArrayList* Parser::getTargetRefs(const char*xml) {
-    ArrayList* list = new ArrayList();
+void Parser::getTargetRefs(ArrayList& list, const char*xml) {
     TargetRef* targetRef = NULL;
     unsigned int pos = 0, previous = 0;
 
-    char* t = NULL;
-    t = XMLProcessor::copyElementContent(&xml[pos], TARGET_REF, &pos);
-    while ((targetRef = getTargetRef(t)) != NULL) {
-        if (targetRef) {
-            list->add(*targetRef); // in the ArrayList NULL element cannot be inserted
-            deleteTargetRef(&targetRef);
-        }
+    StringBuffer t;
+    XMLProcessor::copyElementContent(t, &xml[pos], TARGET_REF, &pos);
+    while ((targetRef = getTargetRef(t.c_str())) != NULL) {
+        list.add(*targetRef); // in the ArrayList NULL element cannot be inserted
+        deleteTargetRef(&targetRef);
         pos += previous;
         previous = pos;
-        if (t) {delete [] t; t = NULL;}
-        t = XMLProcessor::copyElementContent(&xml[pos], TARGET_REF, &pos);
+        XMLProcessor::copyElementContent(t, &xml[pos], TARGET_REF, &pos);
     }
-    if (t) {delete [] t; t = NULL;}
-
-    return list;
 }
 
-ArrayList* Parser::getSourceRefs(const char*xml) {
-    ArrayList* list = new ArrayList();
+void Parser::getSourceRefs(ArrayList& list, const char*xml) {
     SourceRef* sourceRef = NULL;
     unsigned int pos = 0, previous = 0;
 
-    char* t = NULL;
-    t = XMLProcessor::copyElementContent(&xml[pos], SOURCE_REF, &pos);
-    while ((sourceRef = getSourceRef(t)) != NULL) {
-        if (sourceRef) {
-            list->add(*sourceRef); // in the ArrayList NULL element cannot be inserted
-            deleteSourceRef(&sourceRef);
-        }
+    StringBuffer t;
+    XMLProcessor::copyElementContent(t, &xml[pos], SOURCE_REF, &pos);
+    while ((sourceRef = getSourceRef(t.c_str())) != NULL) {
+        list.add(*sourceRef); // in the ArrayList NULL element cannot be inserted
+        deleteSourceRef(&sourceRef);
         pos += previous;
         previous = pos;
-        if (t) {delete [] t; t = NULL;}
-        t = XMLProcessor::copyElementContent(&xml[pos], SOURCE_REF, &pos);
+        XMLProcessor::copyElementContent(t, &xml[pos], SOURCE_REF, &pos);
     }
-    if (t) {delete [] t; t = NULL;}
-    return list;
 }
 
 SourceRef* Parser::getSourceRef(const char*xml) {
     SourceRef* ret = NULL;
     Source* source;
 
-    source = getSource(xml);
+    source = getSourceFromContent(xml);
     if (source) {
         ret = new SourceRef(source);
     } else if (xml) {
@@ -1711,7 +1312,7 @@ TargetRef* Parser::getTargetRef(const char*xml) {
     TargetRef* ret = NULL;
     Target* target;
 
-    target = getTarget(xml);
+    target = getTargetFromContent(xml);
     if (target) {
         ret = new TargetRef(target);
     } else if (xml) {
@@ -1724,30 +1325,22 @@ TargetRef* Parser::getTargetRef(const char*xml) {
 Alert* Parser::getAlert(const char*xml) {
 
     Alert* ret = NULL;
-    ArrayList* items = new ArrayList();
+  
+    StringBuffer t;
+    CmdID* cmdID     = getCmdID   (xml);
+    Cred*  cred      = getCred    (xml);
+    XMLProcessor::copyElementContent (t, xml, DATA   , NULL);
+    int    data      = getDataCode(t.c_str());
+    bool   noResp    = getNoResp  (xml);
 
-    char* t = NULL;
-    t = XMLProcessor::copyElementContent (xml, CMD_ID , NULL);
-    CmdID* cmdID     = getCmdID   (t);
-    if(t) {delete [] t; t = NULL;}
-    t = XMLProcessor::copyElementContent (xml, CRED   , NULL);
-    Cred*  cred      = getCred    (t);
-    if(t) {delete [] t; t = NULL;}
-    t = XMLProcessor::copyElementContent (xml, DATA   , NULL);
-    int    data      = getDataCode(t);
-    if(t) {delete [] t; t = NULL;}
-    t = XMLProcessor::copyElementContent (xml, NO_RESP, NULL);
-    bool   noResp    = getNoResp  (t);
-    if(t) {delete [] t; t = NULL;}
-
-    items = getItems(xml);
-    if (items && items->size() > 0) {
-        ret = new Alert(cmdID, noResp, cred, data, items); //Item[]
+    ArrayList items;
+    getItems(items, xml);
+    if (items.size() > 0) {
+        ret = new Alert(cmdID, noResp, cred, data, &items); //Item[]
     }
 
     deleteCmdID(&cmdID);
     deleteCred(&cred);
-    deleteArrayList(&items);
 
     return ret;
 }
@@ -1759,27 +1352,19 @@ Exec* Parser::getExec(const char*xml) {
     CmdID* cmdID        = NULL;
     bool   noResp       = false;
     Cred*  cred         = NULL;
-    ArrayList*  items   = new ArrayList();
 
-    char* t = NULL;
-    t = XMLProcessor::copyElementContent (xml, CMD_ID , NULL);
-    cmdID     = getCmdID   (t);
-    if(t) {delete [] t; t = NULL;}
-    t = XMLProcessor::copyElementContent (xml, CRED   , NULL);
-    cred      = getCred    (t);
-    if(t) {delete [] t; t = NULL;}
-    t = XMLProcessor::copyElementContent (xml, NO_RESP, NULL);
-    noResp    = getNoResp  (t);
-    if(t) {delete [] t; t = NULL;}
-    items = getItems(xml);
+    cmdID     = getCmdID   (xml);
+    cred      = getCred    (xml);
+    noResp    = getNoResp  (xml);
+    ArrayList items;
+    getItems(items, xml);
 
-    if (cmdID || NotZeroArrayLength(1, items) || (cred)) {
-        ret = new Exec(cmdID, noResp, cred, items);
+    if (cmdID || NotZeroArrayLength(1, &items) || (cred)) {
+        ret = new Exec(cmdID, noResp, cred, &items);
     }
 
     deleteCmdID(&cmdID);
     deleteCred(&cred);
-    deleteArrayList(&items);
 
     return ret;
 }
@@ -1787,37 +1372,27 @@ Exec* Parser::getExec(const char*xml) {
 Get* Parser::getGet(const char*xml) {
 
     Get* ret = NULL;
-    ArrayList* items = NULL;
 
-    char* t = NULL;
-    t = XMLProcessor::copyElementContent (xml, CMD_ID , NULL);
-    CmdID* cmdID     = getCmdID   (t);
-    if(t) {delete [] t; t = NULL;}
-    t = XMLProcessor::copyElementContent (xml, CRED   , NULL);
-    Cred*  cred      = getCred    (t);
-    if(t) {delete [] t; t = NULL;}
-    t = XMLProcessor::copyElementContent (xml, NO_RESP, NULL);
-    bool   noResp    = getNoResp  (t);
-    if(t) {delete [] t; t = NULL;}
-    t = XMLProcessor::copyElementContentLevel (xml, META ,   NULL);
-    Meta*  meta      = getMeta    (t);
-    if(t) {delete [] t; t = NULL;}
-    char* lang    = XMLProcessor::copyElementContent        (xml, LANG, NULL);
-    items = getItems(xml);
+    CmdID* cmdID     = getCmdID   (xml);
+    Cred*  cred      = getCred    (xml);
+    bool   noResp    = getNoResp  (xml);
+    Meta*  meta      = getMeta    (xml);
+    StringBuffer lang;
+    XMLProcessor::copyElementContent(lang, xml, LANG, NULL);
+    ArrayList items;
+    getItems(items, xml);
 
     if (NotNullCheck(1, lang)  || (cred)
                                || (cmdID)
                                || (meta)
-                               || NotZeroArrayLength(1, items))  {
+                               || NotZeroArrayLength(1, &items))  {
 
-        ret = new Get(cmdID, noResp, lang, cred, meta, items); //Item[]
+        ret = new Get(cmdID, noResp, lang.c_str(), cred, meta, &items); //Item[]
     }
 
     deleteCmdID(&cmdID);
     deleteCred(&cred);
     deleteMeta(&meta);
-    safeDel(&lang);
-    deleteArrayList(&items);
 
     return ret;
 }
@@ -1825,37 +1400,27 @@ Get* Parser::getGet(const char*xml) {
 Put* Parser::getPut(const char*xml) {
 
     Put* ret = NULL;
-    ArrayList* items = NULL;
 
-    char* t = NULL;
-    t = XMLProcessor::copyElementContent (xml, CMD_ID , NULL);
-    CmdID* cmdID     = getCmdID   (t);
-    if(t) {delete [] t; t = NULL;}
-    t = XMLProcessor::copyElementContent (xml, CRED   , NULL);
-    Cred*  cred      = getCred    (t);
-    if(t) {delete [] t; t = NULL;}
-    t = XMLProcessor::copyElementContent (xml, NO_RESP, NULL);
-    bool   noResp    = getNoResp  (t);
-    if(t) {delete [] t; t = NULL;}
-    t = XMLProcessor::copyElementContentLevel (xml, META ,   NULL);
-    Meta*  meta      = getMeta    (t);
-    if(t) {delete [] t; t = NULL;}
-    char* lang    = XMLProcessor::copyElementContent        (xml, LANG, NULL);
-    items = getItems(xml);
+    CmdID* cmdID     = getCmdID   (xml);
+    Cred*  cred      = getCred    (xml);
+    bool   noResp    = getNoResp  (xml);
+    Meta*  meta      = getMeta    (xml);
+    StringBuffer lang;
+    XMLProcessor::copyElementContent(lang, xml, LANG, NULL);
+    ArrayList items;
+    getItems(items, xml);
 
     if (NotNullCheck(1, lang)  || (cred)
                                || (cmdID)
                                || (meta)
-                               || NotZeroArrayLength(1, items))  {
+                               || NotZeroArrayLength(1, &items))  {
 
-        ret = new Put(cmdID, noResp, lang, cred, meta, items); //Item[]
+        ret = new Put(cmdID, noResp, lang.c_str(), cred, meta, &items); //Item[]
     }
 
     deleteCmdID(&cmdID);
     deleteCred(&cred);
     deleteMeta(&meta);
-    safeDel(&lang);
-    deleteArrayList(&items);
 
     return ret;
 }
@@ -1868,52 +1433,38 @@ Search* Parser::getSearch(const char*xml) {
     bool        noResults= false;
     Cred*       cred     = NULL;
     Target*     target   = NULL;
-    ArrayList*  sources  = new ArrayList();  // an Array of SourceArray object
-    char*    lang     = NULL;
     Meta*       meta     = NULL;
     Data*       data     = NULL;
 
-    char* t = NULL;
-    t = XMLProcessor::copyElementContent (xml, CMD_ID , NULL);
-    cmdID     = getCmdID   (t);
-    if (t) { delete [] t; t = NULL;}
-    t = XMLProcessor::copyElementContent (xml, CRED   , NULL);
-    cred      = getCred    (t);
-    if (t) { delete [] t; t = NULL;}
-    t = XMLProcessor::copyElementContent (xml, NO_RESP, NULL);
-    noResp    = getNoResp  (t);
-    if (t) { delete [] t; t = NULL;}
-    t = XMLProcessor::copyElementContent(xml, NO_RESULTS, NULL);
-    noResults = getNoResults(t);
-    if (t) { delete [] t; t = NULL;}
-    t = XMLProcessor::copyElementContent (xml, TARGET,NULL);
-    target    = getTarget  (t);
-    if (t) { delete [] t; t = NULL;}
-    lang      = XMLProcessor::copyElementContent             (xml, LANG, NULL);
-    t = XMLProcessor::copyElementContentLevel (xml, META , NULL);
-    meta      = getMeta    (t);
-    if (t) { delete [] t; t = NULL;}
-    t = XMLProcessor::copyElementContent (xml, DATA ,   NULL);
-    data      = getData    (t);
-    if (t) { delete [] t; t = NULL;}
-    sources   = getSources (xml);
+    cmdID     = getCmdID   (xml);
+    cred      = getCred    (xml);
+    noResp    = getNoResp  (xml);
+    noResults = getNoResults(xml);
+    target    = getTarget  (xml);
 
-    if (NotNullCheck(1, lang) || (cmdID) || (cred)
+    StringBuffer lang;
+    XMLProcessor::copyElementContent(lang, xml, LANG, NULL);
+    meta      = getMeta    (xml);
+    data      = getData    (xml);
+
+    ArrayList sources;
+    getSources (sources, xml);
+
+    if (NotNullCheck(1, lang.c_str()) || (cmdID) || (cred)
                               || (meta)  || (target)
-                              || (data)  || NotZeroArrayLength(1, sources))  {
+                              || (data)  || NotZeroArrayLength(1, &sources))  {
 
-        ret = new Search(cmdID, noResp, noResults, cred, target, sources, lang, meta, data);
+        ret = new Search(cmdID, noResp, noResults, cred, target, &sources,
+                         lang.c_str(), meta, data);
     }
 
     deleteCmdID(&cmdID);
     deleteCred(&cred);
     deleteTarget(&target);
-    safeDel(&lang);
     deleteData(&data);
     deleteMeta(&meta);
-    deleteArrayList(&sources);
 
-  return ret;
+    return ret;
 }
 
 Results* Parser::getResult(const char*xml) {
@@ -1923,36 +1474,32 @@ Results* Parser::getResult(const char*xml) {
 
     Results*    ret         = NULL;
     CmdID*      cmdID       = NULL;
-    char*    msgRef      = NULL;
-    char*    cmdRef      = NULL;
     Meta*       meta        = NULL;
-    ArrayList*  targetRefs  = new ArrayList(); // it could be an array with only a value
-    ArrayList*  sourceRefs  = new ArrayList();
-    ArrayList*  items       = new ArrayList();
 
-    char* t = NULL;
-    t = XMLProcessor::copyElementContent (xml, CMD_ID , NULL);
-    cmdID           = getCmdID     (t);
-    if (t) {delete [] t; t = NULL;}
-    msgRef          = XMLProcessor::copyElementContent (xml, MSG_REF, NULL);
-    cmdRef          = XMLProcessor::copyElementContent (xml, CMD_REF, NULL);
-    t = XMLProcessor::copyElementContentLevel(xml, META, NULL);
-    meta            = getMeta      (t);
-    if (t) {delete [] t; t = NULL;}
-    targetRefs      = getTargetRefs(xml);
-    sourceRefs      = getSourceRefs(xml);
-    items           = getItems     (xml);
+    StringBuffer t;
+    cmdID           = getCmdID(xml);
 
-    if (NotNullCheck(2, msgRef, cmdRef) || (cmdID) || (meta)
-                                        || NotZeroArrayLength(3, items, targetRefs, sourceRefs)
+    StringBuffer msgRef, cmdRef;
+    XMLProcessor::copyElementContent (msgRef, xml, MSG_REF, NULL);
+    XMLProcessor::copyElementContent (cmdRef, xml, CMD_REF, NULL);
+    meta = getMeta(xml);
+
+    ArrayList targetRefs;
+    getTargetRefs(targetRefs, xml);
+
+    ArrayList sourceRefs;
+    getSourceRefs(sourceRefs, xml);
+
+    ArrayList items;
+    getItems(items, xml);
+
+    if (NotNullCheck(2, msgRef.c_str(), cmdRef.c_str()) || (cmdID) || (meta)
+                                        || NotZeroArrayLength(3, &items, &targetRefs, &sourceRefs)
                                         )  {
 
-        ret = new Results(cmdID, msgRef, cmdRef, meta, targetRefs, sourceRefs, items);
+        ret = new Results(cmdID, msgRef.c_str(), cmdRef.c_str(), meta,
+                          &targetRefs, &sourceRefs, &items);
     }
-    deleteArrayList(&sourceRefs);
-    deleteArrayList(&targetRefs);
-    deleteArrayList(&items);
-    deleteAll(2, &msgRef, &cmdRef);
     deleteCmdID(&cmdID);
     deleteMeta(&meta);
 
@@ -1963,29 +1510,20 @@ Results* Parser::getResult(const char*xml) {
 //
 // return and array list of items
 //
-ArrayList* Parser::getItems(const char*xml, const char* command) {
+void Parser::getItems(ArrayList& items, const char*xml, const char* command) {
 
     Item* item = NULL;
-    ArrayList* items = NULL;
     unsigned int pos = 0, previous = 0;
-    char*      t       = NULL;
 
-    t = XMLProcessor::copyElementContent(&xml[pos], ITEM, &pos);
-    while ((item = getItem(t, command)) != NULL) {
-        if (item) {
-            if (!items)
-                items = new ArrayList();
-            items->add(*item);    // in the ArrayList NULL element cannot be inserted
-            deleteItem(&item);
-        }
+    StringBuffer t;
+    XMLProcessor::copyElementContent(t, &xml[pos], ITEM, &pos);
+    while ((item = getItem(t.c_str(), command)) != NULL) {
+        items.add(*item);    // in the ArrayList NULL element cannot be inserted
+        deleteItem(&item);
         pos += previous;
         previous = pos;
-        if (t) { delete [] t; t = NULL; }
-        t = XMLProcessor::copyElementContent(&xml[pos], ITEM, &pos);
+        XMLProcessor::copyElementContent(t, &xml[pos], ITEM, &pos);
     }
-    if (t) { delete [] t; t = NULL; }
-
-    return items;
 }
 
 Item* Parser::getItem(const char*xml, const char* command) {
@@ -1995,43 +1533,30 @@ Item* Parser::getItem(const char*xml, const char* command) {
     Meta*   meta      = NULL;
     ComplexData* data = NULL;
     bool moreData     = false;
-    char* targetParent = NULL;
-    char* sourceParent = NULL;
-    char*      t       = NULL;
-    t = XMLProcessor::copyElementContent(xml, TARGET,NULL);
-    target   = getTarget     (t);
-    if (t) {delete [] t; t = NULL;}
-    t = XMLProcessor::copyElementContent(xml, SOURCE,NULL);
-    source   = getSource     (t);
-    if (t) {delete [] t; t = NULL;}
-    t = XMLProcessor::copyElementContentLevel(xml, META,NULL);
-    meta     = getMeta       (t);
-    if (t) {delete [] t; t = NULL;}
 
-    t = XMLProcessor::copyElementContent(xml, COMPLEX_DATA,NULL);
-    data     = getComplexData(t,command);
-    if (t) { delete [] t; t = NULL; }
+    target   = getTarget(xml);
+    source   = getSource(xml);
+    meta     = getMeta(xml);
+    data     = getComplexData(xml, command);
 
-    t = XMLProcessor::copyElementContent(xml, MORE_DATA,NULL);
-    moreData = getMoreData   (t);
-    if (t) {delete [] t; t = NULL;}
-    targetParent = XMLProcessor::copyElementContent(xml, TARGET_PARENT,      NULL);
-    sourceParent = XMLProcessor::copyElementContent(xml, SOURCE_PARENT,      NULL);
+    moreData = getMoreData   (xml);
+    StringBuffer targetParent, sourceParent;
+    XMLProcessor::copyElementContent(targetParent, xml, TARGET_PARENT, NULL);
+    XMLProcessor::copyElementContent(sourceParent, xml, SOURCE_PARENT, NULL);
 
     if ((target)     ||
             (source) ||
             (meta)   ||
             (data))  {
         // ret = new Item(target, source, meta, data, moreData);
-        ret = new Item(target, source, targetParent, sourceParent, meta, data, moreData);
-
+        ret = new Item(target, source, targetParent.c_str(), sourceParent.c_str(),
+                       meta, data, moreData);
     }
 
     deleteTarget     (&target);
     deleteSource     (&source);
     deleteMeta       (&meta);
     deleteComplexData(&data);
-    deleteAll(2, &targetParent, &sourceParent);
 
     return ret;
 }
@@ -2044,31 +1569,39 @@ int Parser::getDataCode(const char*content) {
    return ret;
 }
 
-Data* Parser::getData(const char*content) {
-   Data* ret = 0;
-   if (content) {
-        ret = new Data(content);
-   }
-   return ret;
-}
-
-bool Parser::getFinalMsg(const char*content) {
-    bool ret = false;
-    if (content) {
-        ret = true;
+Data* Parser::getData(const char* xml, unsigned int* pos) {
+    StringBuffer t;
+    XMLProcessor::copyElementContent (t, xml, DATA, pos);
+    Data* ret = 0;
+    if (t.c_str()) {
+        ret = new Data(t.c_str());
     }
     return ret;
 }
 
-CmdID* Parser::getCmdID(const char*content) {
+bool Parser::getFinalMsg(const char* xml, unsigned int* pos) {
+
+    StringBuffer t;
+    XMLProcessor::copyElementContent(t, xml, FINAL_MSG, pos);
+    return !t.null();
+}
+
+CmdID* Parser::getCmdID(const char* xml, unsigned int* pos) {
+
+    StringBuffer t;
+    XMLProcessor::copyElementContent(t, xml, CMD_ID, pos);
     CmdID* ret = NULL;
-    if (content) {
-        ret = new CmdID(content);
+    if (!t.empty()) {
+        ret = new CmdID(t.c_str());
     }
     return ret;
 }
 
-ComplexData* Parser::getComplexData(const char*xml, const char* command) {
+ComplexData* Parser::getComplexData(const char* allxml, const char* command, unsigned int* pos) {
+
+    StringBuffer t;
+    XMLProcessor::copyElementContent(t, allxml, COMPLEX_DATA, pos);
+    const char* xml = t.c_str();
 
     ComplexData* ret = NULL;
     Anchor* anchor   = NULL;
@@ -2099,6 +1632,8 @@ ComplexData* Parser::getComplexData(const char*xml, const char* command) {
        else if (xml) {
            ret = new ComplexData(xml);
        }
+       delete anchor;
+       delete devInf;
     }
     return ret;
 }
@@ -2110,143 +1645,117 @@ DevInf* Parser::getDevInf(const char*xml) {
     Ext* ext                = NULL;
 
     VerDTD* verDTD          = NULL;
-    char* man            = NULL;
-    char* mod            = NULL;
-    char* oem            = NULL;
-    char* fwV            = NULL;
-    char* swV            = NULL;
-    char* hwV            = NULL;
-    char* devId          = NULL;
-    char* devTyp         = NULL;
-    ArrayList* dataStores   = NULL;       // DataStore[]
-    ArrayList* ctCaps       = NULL;       // CTCap[]
-    ArrayList* exts         = NULL;       // Ext[]
+    ArrayList dataStores;   // DataStore[]
+    ArrayList ctCaps;       // CTCap[]
+    ArrayList exts;         // Ext[]
     bool utc                = false;         // if present they Support UTC
     bool supportLargeObjs   = false;         // if present they Support largeObject
     bool supportNumberOfChanges = false;     // if present they Support NumberOfChanges
     SyncCap* syncCap        = NULL;
 
-    char* value          = NULL;
-
     unsigned int pos = 0;
-    char* t = NULL;
-    t = XMLProcessor::copyElementContent(xml, VER_DTD,NULL);
-    verDTD = getVerDTD(t);
-    if (t) {delete [] t; t = NULL;}
-    man     = XMLProcessor::copyElementContent(xml, MAN,           NULL);
-    mod     = XMLProcessor::copyElementContent(xml, MOD,           NULL);
-    oem     = XMLProcessor::copyElementContent(xml, OEM,           NULL);
-    fwV     = XMLProcessor::copyElementContent(xml, FWV,           NULL);
-    swV     = XMLProcessor::copyElementContent(xml, SWV,           NULL);
-    hwV     = XMLProcessor::copyElementContent(xml, HWV,           NULL);
-    devId   = XMLProcessor::copyElementContent(xml, DEV_ID,        NULL);
-    devTyp  = XMLProcessor::copyElementContent(xml, DEV_TYP,       NULL);
+    StringBuffer t;
+    verDTD = getVerDTD(t.c_str());
+    StringBuffer man, mod, oem, fwV, swV, hwV, devId, devTyp;
 
-    t = XMLProcessor::copyElementContent(xml, SYNC_CAP,NULL);
-    syncCap = getSyncCap(t);
-    if (t) {delete [] t; t = NULL;}
+    XMLProcessor::copyElementContent(man, xml, MAN,           NULL);
+    XMLProcessor::copyElementContent(mod, xml, MOD,           NULL);
+    XMLProcessor::copyElementContent(oem, xml, OEM,           NULL);
+    XMLProcessor::copyElementContent(fwV, xml, FWV,           NULL);
+    XMLProcessor::copyElementContent(swV, xml, SWV,           NULL);
+    XMLProcessor::copyElementContent(hwV, xml, HWV,           NULL);
+    XMLProcessor::copyElementContent(devId, xml, DEV_ID,        NULL);
+    XMLProcessor::copyElementContent(devTyp, xml, DEV_TYP,       NULL);
+
+    syncCap = getSyncCap(xml);
 
     unsigned int previous = 0;
     pos = 0;
 
     // DataStore
-    t = XMLProcessor::copyElementContent(&xml[pos], DATA_STORE, &pos);
-    while ((dataStore = getDataStore(t)) != NULL) {
+    XMLProcessor::copyElementContent(t, &xml[pos], DATA_STORE, &pos);
+    while ((dataStore = getDataStore(t.c_str())) != NULL) {
         if (dataStore) {
-            if (!dataStores) {
-                dataStores = new ArrayList();
-            }
-            dataStores->add(*dataStore); // in the ArrayList NULL element cannot be inserted
+            dataStores.add(*dataStore); // in the ArrayList NULL element cannot be inserted
             deleteDataStore(&dataStore);
         }
         pos += previous;
         previous = pos;
-        if (t) {delete [] t; t = NULL;}
-        t = XMLProcessor::copyElementContent(&xml[pos], DATA_STORE, &pos);
+        XMLProcessor::copyElementContent(t, &xml[pos], DATA_STORE, &pos);
     }
-    if (t) {delete [] t; t = NULL;}
 
     // ctCap
     pos = 0; previous = 0;
-    t = XMLProcessor::copyElementContent(&xml[pos], CT_CAP, &pos);
-    while ((ctCap = getCTCap(t)) != NULL) {
+    XMLProcessor::copyElementContent(t, &xml[pos], CT_CAP, &pos);
+    while ((ctCap = getCTCap(t.c_str())) != NULL) {
         if (ctCap) {
-            if (!ctCaps) {
-                ctCaps = new ArrayList();
-            }
-            ctCaps->add(*ctCap); // in the ArrayList NULL element cannot be inserted
+            ctCaps.add(*ctCap); // in the ArrayList NULL element cannot be inserted
             deleteCTCap(&ctCap);
         }
         pos += previous;
         previous = pos;
-        if (t) {delete [] t; t = NULL;}
-        t = XMLProcessor::copyElementContent(&xml[pos], CT_CAP, &pos);
+        XMLProcessor::copyElementContent(t, &xml[pos], CT_CAP, &pos);
     }
-    if (t) {delete [] t; t = NULL;}
 
     // ext
     pos = 0; previous = 0;
-    t = XMLProcessor::copyElementContent(&xml[pos], EXT, &pos);
-    while ((ext = getExt(t)) != NULL) {
+    XMLProcessor::copyElementContent(t, &xml[pos], EXT, &pos);
+    while ((ext = getExt(t.c_str())) != NULL) {
         if (ext) {
-            if (!exts) {
-                exts = new ArrayList();
-            }
-            exts->add(*ext); // in the ArrayList NULL element cannot be inserted
+            exts.add(*ext); // in the ArrayList NULL element cannot be inserted
             deleteExt(&ext);
         }
         pos += previous;
         previous = pos;
-        if (t) {delete [] t; t = NULL;}
-        t = XMLProcessor::copyElementContent(&xml[pos], EXT, &pos);
+        XMLProcessor::copyElementContent(t, &xml[pos], EXT, &pos);
     }
-    if (t) {delete [] t; t = NULL;}
 
     //
     // The large object value depends on SUPPORT_LARGE_OBJECT tag.
     //
-    if ((value = XMLProcessor::copyElementContent(xml, SUPPORT_LARGE_OBJECT, NULL)) != NULL) {
-        if (wcscmpIgnoreCase(value, "TRUE")) {
+    StringBuffer value;
+    XMLProcessor::copyElementContent(value, xml, SUPPORT_LARGE_OBJECT, NULL);
+    if (!value.empty()) {
+        if (wcscmpIgnoreCase(value.c_str(), "TRUE")) {
             supportLargeObjs = true;
         }
-        safeDel(&value);
     }
 
     //
     // The large object value depends on SUPPORT_NUMBER_OF_CHANGES tag.
     //
-    if ((value = XMLProcessor::copyElementContent(xml, SUPPORT_NUMBER_OF_CHANGES, NULL)) != NULL) {
-        if (wcscmpIgnoreCase(value, "TRUE")) {
+    XMLProcessor::copyElementContent(value, xml, SUPPORT_NUMBER_OF_CHANGES, NULL);
+    if (!value.empty()) {
+        if (wcscmpIgnoreCase(value.c_str(), "TRUE")) {
             supportNumberOfChanges = true;
         }
-        safeDel(&value);
     }
 
     //
     // The large object value depends on UTC tag.
     //
-    if ((value = XMLProcessor::copyElementContent(xml, UTC, NULL)) != NULL) {
-        if (wcscmpIgnoreCase(value, "TRUE")) {
+    XMLProcessor::copyElementContent(value, xml, UTC, NULL);
+    if (!value.empty()) {
+        if (wcscmpIgnoreCase(value.c_str(), "TRUE")) {
             utc = true;
         }
-        safeDel(&value);
     }
 
-    if (NotNullCheck(8, man, mod, oem, fwV, swV, hwV, devId, devTyp) ||
-                                     (verDTD)      ||
-                                     (syncCap)     ||
-                                      NotZeroArrayLength(3, dataStores, ctCaps, exts) ) {
+    bool notNull = NotNullCheck(8, man.c_str(), mod.c_str(), oem.c_str(),
+                                   fwV.c_str(), swV.c_str(), hwV.c_str(),
+                                   devId.c_str(), devTyp.c_str());
+    if (notNull       ||
+        (verDTD)      ||
+        (syncCap)     ||
+        NotZeroArrayLength(3, &dataStores, &ctCaps, &exts) ) {
 
-        ret = new DevInf(verDTD, man, mod, oem,  fwV, swV, hwV, devId, devTyp,
-                                dataStores, ctCaps, exts,
-                                utc, supportLargeObjs, supportNumberOfChanges,
-                                syncCap);
+        ret = new DevInf(verDTD, man.c_str(), mod.c_str(), oem.c_str(), fwV.c_str(),
+                         swV.c_str(), hwV.c_str(), devId.c_str(), devTyp.c_str(),
+                         &dataStores, &ctCaps, &exts,
+                         utc, supportLargeObjs, supportNumberOfChanges,
+                         syncCap);
 
     }
-    deleteAll(8, &man, &mod, &oem, &fwV, &swV, &hwV, &devId, &devTyp);
-    deleteArrayList(&dataStores);
-    deleteArrayList(&ctCaps);
-    deleteArrayList(&exts);
     deleteVerDTD(&verDTD);
     deleteSyncCap(&syncCap);
     return ret;
@@ -2260,21 +1769,19 @@ DevInf* Parser::getDevInf(const char*xml) {
 */
 Ext* Parser::getExt(const char*xml) {
     Ext* ret = NULL;
-    char* XNam         = NULL;
     char* value        = NULL;
-    ArrayList* list     = NULL;
+    ArrayList list;
     StringElement* s    = NULL;
     unsigned int pos = 0, previous = 0;
 
-    XNam = XMLProcessor::copyElementContent(xml, XNAM, NULL);
+    StringBuffer XNam;
+    XMLProcessor::copyElementContent(XNam, xml, XNAM, NULL);
 
     // XVal
     while ((value = XMLProcessor::copyElementContent(&xml[pos], XVAL, &pos)) != NULL) {
         if (value) {
-            if (!list)
-                list = new ArrayList();
             s = new StringElement(value);
-            list->add(*s);
+            list.add(*s);
             deleteStringElement(&s);
             safeDel(&value);
         }
@@ -2282,12 +1789,9 @@ Ext* Parser::getExt(const char*xml) {
         previous = pos;
     }
 
-    if ( XNam || NotZeroArrayLength(1, list) ) {
-        ret = new Ext(XNam, list);
+    if ( XNam || NotZeroArrayLength(1, &list) ) {
+        ret = new Ext(XNam, &list);
     }
-
-    safeDel(&XNam);
-    deleteArrayList(&list);
 
     return ret;
 }
@@ -2296,130 +1800,106 @@ DataStore* Parser::getDataStore(const char*xml) {
     DataStore* ret = NULL;
 
     SourceRef*       sourceRef      = NULL;
-    char*           displayName    = NULL;
     long             maxGUIDSize    = 0;
-    char*           maxGUIDSizeW   = NULL;
     ContentTypeInfo* rxPref         = NULL;
-    ArrayList*       rx             = NULL; // ContentTypeInfo[]
     ContentTypeInfo* txPref         = NULL;;
-    ArrayList*       tx             = NULL; // ContentTypeInfo[]
     DSMem*           dsMem          = NULL;
     SyncCap*         syncCap        = NULL;
-
     ContentTypeInfo* x              = NULL;
+    ArrayList        tx; // ContentTypeInfo[]
+    ArrayList        rx; // ContentTypeInfo[]
 
     unsigned int pos = 0;
-    char* t = NULL;
-    t = XMLProcessor::copyElementContent(xml, SOURCE_REF,  NULL);
-    sourceRef   = getSourceRef(t);
-    if (t) {delete [] t; t = NULL;}
-    displayName = XMLProcessor::copyElementContent(xml, DISPLAY_NAME,             NULL);
-    maxGUIDSizeW = XMLProcessor::copyElementContent(xml, MAX_GUID_SIZE,           NULL);
-    if (maxGUIDSizeW) {
-        maxGUIDSize = strtol(maxGUIDSizeW, NULL, 10);
+    StringBuffer t, displayName, maxGUIDSizeW;
+    XMLProcessor::copyElementContent(t, xml, SOURCE_REF,  NULL);
+    sourceRef   = getSourceRef(t.c_str());
+    XMLProcessor::copyElementContent(displayName, xml, DISPLAY_NAME,             NULL);
+    XMLProcessor::copyElementContent(maxGUIDSizeW, xml, MAX_GUID_SIZE,           NULL);
+    if (!maxGUIDSizeW.empty()) {
+        maxGUIDSize = strtol(maxGUIDSizeW.c_str(), NULL, 10);
     }
-    t = XMLProcessor::copyElementContent(xml, RX_PREF,  NULL);
-    rxPref = getContentTypeInfo(t);
-    if (t) {delete [] t; t = NULL;}
-    t = XMLProcessor::copyElementContent(xml, TX_PREF,  NULL);
-    txPref = getContentTypeInfo(t);
-    if (t) {delete [] t; t = NULL;}
+    XMLProcessor::copyElementContent(t, xml, RX_PREF,  NULL);
+    rxPref = getContentTypeInfo(t.c_str());
+    XMLProcessor::copyElementContent(t, xml, TX_PREF,  NULL);
+    txPref = getContentTypeInfo(t.c_str());
 
     unsigned int previous = 0;
     pos = 0;
 
     // Rx
-    t = XMLProcessor::copyElementContent(&xml[pos], RX, &pos);
-    while ((x = getContentTypeInfo(t)) != NULL) {
+    XMLProcessor::copyElementContent(t, &xml[pos], RX, &pos);
+    while ((x = getContentTypeInfo(t.c_str())) != NULL) {
         if (x) {
-            if (!rx)
-                rx = new ArrayList();
-            rx->add(*x); // in the ArrayList NULL element cannot be inserted
+            rx.add(*x); // in the ArrayList NULL element cannot be inserted
             deleteContentTypeInfo(&x);
         }
         pos += previous;
         previous = pos;
-        if (t) {delete [] t; t = NULL;}
-        t = XMLProcessor::copyElementContent(&xml[pos], RX, &pos);
+        XMLProcessor::copyElementContent(t, &xml[pos], RX, &pos);
     }
-    if (t) {delete [] t; t = NULL;}
 
     // Tx
     pos = 0, previous = 0;
-    t = XMLProcessor::copyElementContent(&xml[pos], TX, &pos);
-    while ((x = getContentTypeInfo(t)) != NULL) {
+    XMLProcessor::copyElementContent(t, &xml[pos], TX, &pos);
+    while ((x = getContentTypeInfo(t.c_str())) != NULL) {
         if (x) {
-            if (!tx)
-                tx = new ArrayList();
-            tx->add(*x); // in the ArrayList NULL element cannot be inserted
+            tx.add(*x); // in the ArrayList NULL element cannot be inserted
             deleteContentTypeInfo(&x);
         }
         pos += previous;
         previous = pos;
-        if (t) {delete [] t; t = NULL;}
-        t = XMLProcessor::copyElementContent(&xml[pos], TX, &pos);
+        XMLProcessor::copyElementContent(t, &xml[pos], TX, &pos);
     }
-    if (t) {delete [] t; t = NULL;}
 
-    t = XMLProcessor::copyElementContent(xml, DS_MEM,  NULL);
-    dsMem = getDSMem(t);
-    if (t) {delete [] t; t = NULL;}
-    t = XMLProcessor::copyElementContent(xml, SYNC_CAP,  NULL);
-    syncCap = getSyncCap(t);
-    if (t) {delete [] t; t = NULL;}
+    dsMem = getDSMem(xml);
+    syncCap = getSyncCap(xml);
 
-    if (NotNullCheck(2, displayName, maxGUIDSizeW) ||
+    if (NotNullCheck(2, displayName.c_str(), maxGUIDSizeW.c_str()) ||
                                      (sourceRef)   ||
                                      (rxPref)      ||
                                      (txPref)      ||
                                      (dsMem)       ||
                                      (syncCap)     ||
-                                     NotZeroArrayLength(2, rx, tx) ) {
-        ret = new DataStore(sourceRef, displayName, maxGUIDSize, rxPref, rx, txPref, tx, NULL , dsMem, syncCap);
+                                     NotZeroArrayLength(2, &rx, &tx) ) {
+        ret = new DataStore(sourceRef, displayName.c_str(), maxGUIDSize,
+                            rxPref, &rx, txPref, &tx, NULL , dsMem, syncCap);
     }
 
-    safeDel(&displayName);
-    safeDel(&maxGUIDSizeW);
     deleteContentTypeInfo(&rxPref);
     deleteContentTypeInfo(&txPref);
-    deleteArrayList(&tx);
-    deleteArrayList(&rx);
     deleteSyncCap(&syncCap);
     deleteDSMem(&dsMem);
-
 
     return ret;
 }
 
 
-SyncCap* Parser::getSyncCap(const char*xml) {
+SyncCap* Parser::getSyncCap(const char* allxml) {
+  
+    StringBuffer x;
+    XMLProcessor::copyElementContent(x, allxml, SYNC_CAP,NULL);
+    const char* xml = x.c_str();
 
     SyncCap* ret            = NULL;
     SyncType* syncType      = NULL;
-    ArrayList* list         = NULL;
+    ArrayList list;
 
     unsigned int pos = 0, previous = 0;
-    char* t = NULL;
-    t = XMLProcessor::copyElementContent(&xml[pos], SYNC_TYPE, &pos);
-    while ((syncType = getSyncType(t)) != NULL) {
+    StringBuffer t;
+    XMLProcessor::copyElementContent(t, &xml[pos], SYNC_TYPE, &pos);
+    while ((syncType = getSyncType(t.c_str())) != NULL) {
         if (syncType) {
-            if (!list)
-                list = new ArrayList();
-            list->add(*syncType); // in the ArrayList NULL element cannot be inserted
+            list.add(*syncType); // in the ArrayList NULL element cannot be inserted
             deleteSyncType(&syncType);
         }
         pos += previous;
         previous = pos;
-        if (t) {delete [] t; t = NULL;}
-        t = XMLProcessor::copyElementContent(&xml[pos], SYNC_TYPE, &pos);
-    }
-    if (t) {delete [] t; t = NULL;}
-
-    if (NotZeroArrayLength(1, list)) {
-        ret = new SyncCap(list);
+        XMLProcessor::copyElementContent(t, &xml[pos], SYNC_TYPE, &pos);
     }
 
-    deleteArrayList(&list);
+    if (NotZeroArrayLength(1, &list)) {
+        ret = new SyncCap(&list);
+    }
 
     return ret;
 }
@@ -2458,12 +1938,14 @@ ContentTypeInfo* Parser::getContentTypeInfo(const char*xml) {
     return ret;
 }
 
-DSMem* Parser::getDSMem(const char*xml) {
+DSMem* Parser::getDSMem(const char* allxml, unsigned int* pos) {
+
+    StringBuffer x;
+    XMLProcessor::copyElementContent(x, allxml, DS_MEM, pos);
+    const char* xml = x.c_str();
 
     DSMem* ret          = NULL;
-    char* maxMemW   = NULL;
-    char* sharedMemW = NULL;
-    char* maxIDW    = NULL;
+    StringBuffer maxMemW, sharedMemW, maxIDW;
 
     bool    sharedMem   = false;
     long    maxMem     = 0;
@@ -2471,54 +1953,47 @@ DSMem* Parser::getDSMem(const char*xml) {
 
     bool isToCreate = false;
 
-    maxMemW     = XMLProcessor::copyElementContent (xml, MAX_MEM,   NULL);
-    sharedMemW  = XMLProcessor::copyElementContent (xml, SHARED_MEM, NULL);
-    maxIDW      = XMLProcessor::copyElementContent (xml, MAX_ID,    NULL);
+    XMLProcessor::copyElementContent (maxMemW, xml, MAX_MEM,   NULL);
+    XMLProcessor::copyElementContent (sharedMemW, xml, SHARED_MEM, NULL);
+    XMLProcessor::copyElementContent (maxIDW, xml, MAX_ID,    NULL);
 
-    isToCreate = NotNullCheck(3, maxMemW, sharedMemW, maxIDW);
+    isToCreate = NotNullCheck(3, maxMemW.c_str(), sharedMemW.c_str(),
+                                 maxIDW.c_str());
 
-    if (maxMemW != NULL) {
-        maxMem = strtol(maxMemW, NULL, 10);
+    if (!maxMemW.empty()) {
+        maxMem = strtol(maxMemW.c_str(), NULL, 10);
     }
-    if (maxIDW != NULL) {
-        maxID = strtol(maxIDW, NULL, 10);
+    if (!maxIDW.empty()) {
+        maxID = strtol(maxIDW.c_str(), NULL, 10);
     }
-    if (sharedMemW != NULL) {
-        sharedMem = strcmp(sharedMemW, "0")? true : false;
+    if (!sharedMemW.empty()) {
+        sharedMem = sharedMemW.c_str() != "0" ? true : false;
     }
 
     if (isToCreate) {
         ret = new DSMem(sharedMem, maxMem, maxID);
     }
 
-    safeDel(&maxMemW);
-    safeDel(&maxIDW);
-    safeDel(&sharedMemW);
-
     return ret;
 
 }
 
-bool Parser::getNoResp(const char*content) {
-  if (content)
-      return true;
-  else
-      return false;
+bool Parser::getNoResp(const char* xml, unsigned int* pos) {
+    StringBuffer t;
+    XMLProcessor::copyElementContent (t, xml, NO_RESP, pos);
+    return (!t.null());
 }
 
-bool Parser::getNoResults(const char*content) {
-
-    if (content)
-        return true;
-    else
-        return false;
+bool Parser::getNoResults(const char* xml, unsigned int* pos) {
+    StringBuffer t;
+    XMLProcessor::copyElementContent(t, xml, NO_RESULTS, pos);
+    return !t.null();
 }
 
-bool Parser::getMoreData(const char*content) {
-     if (content)
-        return true;
-    else
-        return false;
+bool Parser::getMoreData(const char* xml, unsigned int* pos) {
+    StringBuffer t;
+    XMLProcessor::copyElementContent(t, xml, MORE_DATA, pos);
+    return !t.null();
 }
 
 /*
