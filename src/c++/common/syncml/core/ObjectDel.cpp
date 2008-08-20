@@ -93,14 +93,14 @@ void deleteAllStringBuffer(int count, StringBuffer** s, ...) {
 
 }
 
-bool SingleNotNullCheck(char* s) {
+static bool SingleNotNullCheck(const char* s) {
     return (s) ? true : false;
 }
 
 /*
 * return true if an element of the char* list is not NULL
 */
-bool NotNullCheck(int count, char* s, ...) {
+bool NotNullCheck(int count, const char* s, ...) {
 
     PLATFORM_VA_LIST ap;
     int i = 0;
@@ -112,7 +112,7 @@ bool NotNullCheck(int count, char* s, ...) {
     PLATFORM_VA_START (ap, s);
 
     for(i = 0; i < count - 1; i++) {
-        char *t = PLATFORM_VA_ARG (ap, char*);
+        const char *t = PLATFORM_VA_ARG (ap, const char*);
 
         if (SingleNotNullCheck(t)) {
             return true;
@@ -494,12 +494,6 @@ void deleteSearch(Search ** s) {
 void deleteSyncML(SyncML ** s) {
     if (s) {
         delete *s; *s = NULL;
-    }
-}
-
-void deleteArrayList(ArrayList ** s) {
-    if (s && *s) {
-        (*s)->clear();
     }
 }
 

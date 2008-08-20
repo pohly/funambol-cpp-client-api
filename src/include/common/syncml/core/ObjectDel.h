@@ -49,7 +49,7 @@ BEGIN_NAMESPACE
 void deleteAll              (int count, char** s, ...);
 void deleteStringBuffer     (StringBuffer** s);
 void deleteAllStringBuffer  (int count, StringBuffer** s, ...);
-bool NotNullCheck           (int count, char*  s, ...);
+bool NotNullCheck           (int count, const char*  s, ...);
 bool NotZeroCheck           (int count, int s, ...);
 bool NotZeroArrayLength     (int count, ArrayList* s, ...);
 bool NotZeroStringBufferLength(int count, StringBuffer* s, ...); //XXX
@@ -63,7 +63,6 @@ void deleteCred             (Cred ** s);
 void deleteAuthentication   (Authentication ** s);
 void deleteAlert            (Alert ** s);
 void deleteItem             (Item ** s);
-void deleteArrayList        (ArrayList ** s);
 void deleteNextNonce        (NextNonce ** s);
 void deleteCmdID            (CmdID ** s);
 void deleteComplexData      (ComplexData ** s);
