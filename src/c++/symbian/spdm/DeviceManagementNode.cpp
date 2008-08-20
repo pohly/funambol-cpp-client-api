@@ -50,7 +50,6 @@
 #include "spdm/ManagementNode.h"
 #include "spdm/DeviceManagementNode.h"
 #include "base/globalsdef.h"
-#include "base/cppdef.h"
 
 USE_NAMESPACE
 
