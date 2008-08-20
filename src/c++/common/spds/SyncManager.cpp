@@ -295,7 +295,7 @@ int SyncManager::prepareSync(SyncSource** s) {
     int count                   = 0;
     const char* requestedAuthType  = NULL;
     ArrayList* list             = NULL; //new ArrayList();
-    ArrayList* alerts           = new ArrayList();
+    ArrayList alerts;
 
     // for authentication improvments
     bool isServerAuthRequired   = credentialHandler.getServerAuthRequired();
@@ -395,7 +395,7 @@ int SyncManager::prepareSync(SyncSource** s) {
         deleteCred(&cred);
         deleteAlert(&alert);
         deleteSyncML(&syncml);
-        deleteArrayList(&alerts);
+        alerts.clear();
         
 
         bool addressChange = false;
@@ -424,7 +424,7 @@ int SyncManager::prepareSync(SyncSource** s) {
                 else {
                     alert = syncMLBuilder.prepareInitAlert(*sources[count], maxObjSize);
                 }
-                alerts->add(*alert);
+                alerts.add(*alert);
                 deleteAlert(&alert);
             }
             cred = credentialHandler.getClientCredential();
@@ -444,7 +444,7 @@ int SyncManager::prepareSync(SyncSource** s) {
 
         // "cred" only contains an encoded strings as username, also
         // need the original username for LocName
-        syncml = syncMLBuilder.prepareInitObject(cred, alerts, &commands, maxMsgSize, maxObjSize);
+        syncml = syncMLBuilder.prepareInitObject(cred, &alerts, &commands, maxMsgSize, maxObjSize);
         if (syncml == NULL) {
             ret = getLastErrorCode();
             goto finally;
@@ -529,7 +529,7 @@ int SyncManager::prepareSync(SyncSource** s) {
             goto finally;
         }
 
-        // ret = syncMLProcessor.processInitResponse(*sources[0], syncml, alerts);
+        // ret = syncMLProcessor.processInitResponse(*sources[0], syncml, &alerts);
 
         ret = syncMLProcessor.processSyncHdrStatus(syncml);
 
@@ -547,7 +547,7 @@ int SyncManager::prepareSync(SyncSource** s) {
             if (!sources[count]->getReport()->checkState())
                 continue;
 
-            int sourceRet = syncMLProcessor.processAlertStatus(*sources[count], syncml, alerts);
+            int sourceRet = syncMLProcessor.processAlertStatus(*sources[count], syncml, &alerts);
             if (isAuthFailed(ret) && sourceRet == -1) {
                 // Synthesis server does not include SourceRefs if
                 // authentication failed. Remember the authentication
@@ -812,11 +812,6 @@ finally:
     deleteSyncML(&syncml);
     deleteCred(&cred);
     deleteAlert(&alert);
-    deleteArrayList(&alerts);
-    if (alerts){
-        delete alerts;
-        alerts = NULL;
-    }
     deleteStatus(&status);
     deleteChal(&serverChal);
     return ret;
@@ -919,7 +914,7 @@ bool SyncManager::checkForServerChanges(SyncML* syncml, ArrayList &statusList)
             statusList.add(*status);
             deleteStatus(&status);
 
-            ArrayList* previousStatus = new ArrayList();
+            ArrayList previousStatus;
             for (int i = 0; i < items->size(); i++) {
                 CommandInfo cmdInfo;
                 ModificationCommand* modificationCommand = (ModificationCommand*)(items->get(i));
@@ -962,22 +957,17 @@ bool SyncManager::checkForServerChanges(SyncML* syncml, ArrayList &statusList)
                     status = processSyncItem(item, cmdInfo, syncMLBuilder);
 
                     if (status) {
-                        syncMLBuilder.addItemStatus(previousStatus, status);
+                        syncMLBuilder.addItemStatus(&previousStatus, status);
                         deleteStatus(&status);
                     }
                 }
 
-                if (previousStatus) {
-                    statusList.add(previousStatus);
-                    deleteArrayList(&previousStatus);
-                }
+                statusList.add(&previousStatus);
+                previousStatus.clear();
             }
         // Fire SyncSourceEvent: END sync of a syncsource (server modifications)
         //fireSyncSourceEvent(sources[count]->getConfig().getURI(), sources[count]->getConfig().getName(), sources[count]->getSyncMode(), 0, SYNC_SOURCE_END);
-            if (previousStatus){
-                delete previousStatus;
-                previousStatus = NULL;
-            }
+            previousStatus.clear();
         }
         i++;
     } // End: while (sortedSourcesFromServer[i])
