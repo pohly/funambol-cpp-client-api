@@ -126,20 +126,27 @@ bool DMTClientConfig::read() {
     int n = 0, i = 0; // number of sync sources
 
     bool ret = false;
+    resetError();
 
     LOG.debug("%s", DBG_READING_CONFIG_FROM_DM);
 
     //
     // Reading syncml node
     //
-    //char nodeName[DIM_MANAGEMENT_PATH];
-
     if (!open()) {
         return false;
     }
 
+    // Reading AccessConfig
     readAccessConfig(*syncMLNode);
+    ret = (getLastErrorCode() == 0);
+    if (!ret) { goto finally; }
+    
+    // Reading DeviceConfig
     readDeviceConfig(*syncMLNode);
+    ret = (getLastErrorCode() == 0);
+    if (!ret) { goto finally; }
+
 
     n = sourcesNode->getChildrenMaxCount();
 
@@ -160,10 +167,9 @@ bool DMTClientConfig::read() {
         readSourceConfig(i, *(sourcesNode) );
     }
 
-    ret = true;
+    ret = (getLastErrorCode() == 0);
 
-//finally:
-
+finally:
     close();
     return ret;
 }
@@ -185,25 +191,28 @@ bool DMTClientConfig::save() {
         // SyncML management node
         //
         saveAccessConfig(*syncMLNode);
+        
+        ret = (getLastErrorCode() == 0);
+        if (!ret) { goto finally; }
     }
     //
     // TBD: handle the dirty flag
     //
 
     saveDeviceConfig(*syncMLNode);
+    ret = (getLastErrorCode() == 0);
+    if (!ret) { goto finally; }
 
     //
     // Sources management node
     //
-    //lastErrorCode = ERR_NONE;
     resetError();
     for(i=0; i<sourceConfigsCount; ++i) {
         saveSourceConfig(i, *(sourcesNode) );
     }
+    ret = (getLastErrorCode() == 0);
 
-    resetError();
-    ret = (getLastErrorCode() != 0);
-
+finally:
     close();
     return ret;
 }
@@ -214,12 +223,14 @@ bool DMTClientConfig::open() {
 
     dmt = DMTreeFactory::getDMTree(rootContext);
 
+    delete syncMLNode;
     sprintf(nodeName, "%s%s", rootContext, CONTEXT_SPDS_SYNCML);
     syncMLNode = dmt->readManagementNode(nodeName);
     if (!syncMLNode ) {
         goto failed;
     }
 
+    delete sourcesNode;
     sprintf(nodeName, "%s%s", rootContext, CONTEXT_SPDS_SOURCES);
     sourcesNode = dmt->readManagementNode(nodeName);
     if (!sourcesNode) {
@@ -259,18 +270,15 @@ ManagementNode* DMTClientConfig::getSyncSourceNode(const char* name) {
 }
 
 void DMTClientConfig::close() {
-    if (syncMLNode) {
-        delete syncMLNode;
-        syncMLNode = NULL;
-    }
-    if (sourcesNode) {
-        delete sourcesNode;
-        sourcesNode = NULL;
-    }
-    if (dmt) {
-        delete dmt;
-        dmt = NULL;
-    }
+    
+    delete syncMLNode;
+    syncMLNode = NULL;
+    
+    delete sourcesNode;
+    sourcesNode = NULL;
+    
+    delete dmt;
+    dmt = NULL;
 }
 
 
@@ -881,7 +889,7 @@ bool DMTClientConfig::readSourceVars(int i,
     char* tmp;
 
     tmp = sourceNode.readPropertyValue(PROPERTY_SOURCE_LAST_SYNC);
-    sourceConfigs[i].setLast( ((*tmp) ? strtol(tmp, NULL, 10) : 0) );
+    sourceConfigs[i].setLast( ((*tmp) ? strtoul(tmp, NULL, 10) : 0) );
     delete [] tmp;
 
     return true;
