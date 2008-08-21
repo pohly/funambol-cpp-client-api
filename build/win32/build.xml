@@ -57,7 +57,6 @@ Forge file for Funambol C++ SDK Tests and Demos
         <property name="dir.distribution"  value="${basedir}"/>
         <property name="dir.build"         value="${basedir}"/>
         <property name="dir.output"        value="${dir.distribution}/output"/>
-        <property name="dir.forge"         value="${dir.distribution}"/>
 
         <property name="build.target"      value="Debug|Win32"/>
         
@@ -108,176 +107,24 @@ Forge file for Funambol C++ SDK Tests and Demos
     
     <target name="compile" depends="init"> 
 
+        <echo message="Compiling Library..."/>
+        <exec dir="${dir.build}" executable="${vs2005.devenv}/devenv">
+            <arg line="win32.vcproj /Out build_lib.log /Build ${build.target}"/>
+        </exec>
+
         <echo message="Compiling Unit Tests..."/>
         <exec dir="${dir.build}" executable="${vs2005.devenv}/devenv">
-            <arg line="cppunit.sln /Out build.log /Build ${build.target}"/>
+            <arg line="cppunit.sln /Out build_ut.log /Build ${build.target}"/>
         </exec>
       
         <echo message="Compiling Test Demo..."/>
         <exec dir="${dir.build}" executable="${vs2005.devenv}/devenv">
-            <arg line="testwin32.sln /Out build.log /Build ${build.target}"/>
+            <arg line="testwin32.sln /Out build_td.log /Build ${build.target}"/>
         </exec>
       
     </target>
 
 
-    <!--
-    ========================================================================
-      FORGE
-    ========================================================================
-    -->
-
-    <target name="forge" depends="init,build,compile">
-
-        <!-- Create the directory structure, copy the properties file -->
-        <mkdir dir="${dir.output}"/>
-        <mkdir dir="${dir.fileset}"/>
-        <mkdir dir="${dir.fileset}/redist"/>
-        <mkdir dir="${dir.fileset}/docs"/>
-        <mkdir dir="${dir.fileset}/images"/>
-        <mkdir dir="${dir.fileset}/LICENSES"/>
-        
-        <copy file="${dir.distribution}/build/release.properties" todir="${dir.fileset}/docs"/>
-        
-        
-        <!--
-        Copy DLLs and needed files into fileset dir
-        -->        
-	<copy todir="${dir.fileset}" overwrite="TRUE">
-	    <fileset dir="${dir.mainclientdll}/build/Release" includes="winmainclientdll.dll"/>
-	    <fileset dir="${dir.ui}/build/Release"            includes="OutlookPlugin.exe"/>
-	    <fileset dir="${dir.redemptionLib}"               includes="Redemption.dll"/>
-	    <fileset dir="${dir.outlookaddin}/Release"        includes="FunambolAddin.dll"/>
-        </copy>
-        
-        <copy todir="${dir.fileset}/images" overwrite="TRUE">
-            <fileset dir="${dir.ui}/src/res" includes="OutlookPlugin.ico"/>
-        </copy>
-
-	
-	<!-- These are DLLs required to run VC++ software -->
-	<!-- (comment here to avoid including these libs) -->
-        <copy todir="${dir.fileset}/redist" overwrite="TRUE">
-            <fileset dir="${dir.VCpp2005Lib}" includes="**/Microsoft.VC80.ATL/, 
-                                                        **/Microsoft.VC80.CRT/,
-                                                        **/Microsoft.VC80.MFC/" />
-        </copy> 
-        
-
-        <!--
-        Run the installer
-        -->
-        <antcall target="build-install" inheritAll="true"/>
-
-
-        <!--
-        Run the installer for portal
-        -->
-        <antcall target="build-install-sp" inheritAll="true"/>
-
-
-    </target>
-    
-    
-    <!--
-    ========================================================================
-      FORGE SRC
-    ========================================================================
-    -->
-    
-    <target name="forge-src" depends="init,build">
-
-        <mkdir dir="${dir.output}/${dir.src}${release.major}.${release.minor}.${build.number}"/>
-
-
-        <!-- UI -->
-        <mkdir  dir="${dir.output}/${dir.src}${release.major}.${release.minor}.${build.number}/UI"/> 
-        <copy todir="${dir.output}/${dir.src}${release.major}.${release.minor}.${build.number}/UI" >
-
-            <fileset dir="${dir.ui}" includes="**/OutlookPlugin.sln, **/OutlookPlugin.vcproj" />
-            <fileset dir="${dir.ui}" includes="**/src/" 
-                                     excludes="**/*.bak, **/*.my, **/.#*, **/CVS/" />
-
-            <fileset dir="${dir.ui}" includes="**/OutlookPluginROM.sln, **/OutlookPluginROM.vcproj"  />
-            <fileset dir="${dir.ui}" includes="**/LanguageResources/OutlookPluginROM/src" 
-                                     excludes="**/*.bak, **/*.my, **/.#*, **/CVS/" />
-        </copy>
-
-      
-        <!-- mainclientdll -->
-        <mkdir  dir="${dir.output}/${dir.src}${release.major}.${release.minor}.${build.number}/mainclientdll"/> 
-        <copy todir="${dir.output}/${dir.src}${release.major}.${release.minor}.${build.number}/mainclientdll" >
-            <fileset dir="${dir.mainclientdll}" includes="**/winmainclientdll.dsp, **/winmainclientdll.dsw,
-        				 	          **/winmainclientdll.sln, **/winmainclientdll.vcproj, 
-        				 	          **/winmainclientdll.rc,  **/winmainclientdll.aps"  
-        				 	          />
-            <fileset dir="${dir.mainclientdll}" includes="**/src/" 
-                                                excludes="**/*.bak, **/*.my, **/.#*, **/CVS/" />
-        </copy>
-     
-     
-        <!-- Addin -->
-        <mkdir  dir="${dir.output}/${dir.src}${release.major}.${release.minor}.${build.number}/Addin"/>
-        <copy todir="${dir.output}/${dir.src}${release.major}.${release.minor}.${build.number}/Addin" >
-        
-            <fileset dir="${dir.outlookaddin}" excludes="**/Debug/, **/CVS/,     **/*Release*/,  **/*release*/,
-                                                         **/*.ncb,  **/*.user,   **/*.suo, 
-                                                         **/*.bak,  **/*.my,     **/.#*" 
-                                                         />
-        </copy>  
-
-
-        <!-- Design -->
-        <mkdir  dir="${dir.output}/${dir.src}${release.major}.${release.minor}.${build.number}/design"/>
-        <copy todir="${dir.output}/${dir.src}${release.major}.${release.minor}.${build.number}/design" >
-            <fileset dir="${dir.design}" excludes="**/*.bak, **/*.my, **/.#*, **/CVS/" />
-        </copy>  
-
-
-
-        <!-- ZIP files -->
-        <zip destfile="${dir.output}/${dir.src}${release.major}.${release.minor}.${build.number}.zip">
-            <fileset dir="${dir.output}/${dir.src}${release.major}.${release.minor}.${build.number}"/>
-        </zip>
-        
-    </target>
-    
-
-    <!--
-    ========================================================================
-    BUILD-INSTALL
-    ========================================================================
-    -->
-    <target name="build-install" depends="init" >
-    
-    <echo message="${install-builder.nsi}" />
-        <exec dir="${dir.forge}" executable="${install-builder.nsi}">        
-            <arg line="/DPRODUCT_VERSION=${release.major}.${release.minor}.${build.number}
-                       /DFILE_NAME=${fileName}
-                       /DVERSION_NUMBER=${release.major}.${release.minor}.${build.number}  ${script.nsi} "/>
-        </exec>
-    
-    </target>
-
-    <!--
-    ========================================================================
-    BUILD-INSTALL_FOR_PORTAL
-    ========================================================================
-    -->
-    <target name="build-install-sp" depends="init" >
-    
-    <echo message="${install-builder.nsi}" /><echo message="${sp}"/>
-        <exec dir="${dir.forge}" executable="${install-builder.nsi}">        
-            
-            <arg line="/DPRODUCT_VERSION=${release.major}.${release.minor}.${build.number}
-                       /DFILE_NAME=${fileNameSp}
-                       /DVERSION_NUMBER=${release.major}.${release.minor}.${build.number} 
-                       /DSP  ${script.nsi} " />
-        </exec>
-    
-    </target>
-
-    
 
     <!--
     ========================================================================
@@ -286,7 +133,6 @@ Forge file for Funambol C++ SDK Tests and Demos
     -->
     <target name="clean" depends="init">
         <delete dir="${dir.output}"/>
-        <delete dir="${dir.forge}/output"/>
     </target>
 
 </project>
