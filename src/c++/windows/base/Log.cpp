@@ -205,7 +205,7 @@ void winLog::developer(const char*  msg, ...) {
 
 void winLog::printMessage(const char* level, const char* msg, va_list argList) {
 
-	StringBuffer currentTime = createCurrentTime(false);
+    StringBuffer currentTime = createCurrentTime(false);
     logFile = _wfopen(wlogDir.c_str(), TEXT("a+"));
     if (logFile) {
         fprintf(logFile, "%s [%s] - ", currentTime.c_str(), level);
