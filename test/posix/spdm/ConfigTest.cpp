@@ -76,9 +76,11 @@ void createConfig(DMTClientConfig& config) {
     delete dc;
 
     SyncSourceConfig* sc = DefaultConfigFactory::getSyncSourceConfig(SOURCE_NAME);
-    sc->setEncoding("bin");
-    sc->setType    ("text");
-    sc->setURI     ("briefcase");
+    sc->setEncoding  ("bin");
+    sc->setType      ("text");
+    sc->setURI       ("briefcase");
+    sc->setSync      ("two-way");
+    sc->setSyncModes ("two-way,one-way-from-server,one-way-from-client");
     config.setSyncSourceConfig(*sc);
     delete sc;
 }
@@ -89,6 +91,7 @@ class ConfigTest : public CppUnit::TestFixture {
     CPPUNIT_TEST(testMigration);
     CPPUNIT_TEST(testCompatibility);
     CPPUNIT_TEST(testConfig);
+    CPPUNIT_TEST(testConfigSyncModes);
     CPPUNIT_TEST_SUITE_END();
 
     public:
@@ -209,6 +212,33 @@ class ConfigTest : public CppUnit::TestFixture {
             system(endcommand); 
         }
 
+        void testConfigSyncModes(){
+            StringBuffer dir;
+            dir = getenv("XDG_CONFIG_HOME");
+            if (dir.empty()){
+                dir = getenv("HOME");
+                dir += "/.config/";
+            }
+            dir += "FunambolTest";
+            DMTClientConfig* config = new DMTClientConfig(APPLICATION_URI);
+
+            if (!config->read() ||
+                strcmp(config->getDeviceConfig().getDevID(), DEVICE_ID)) {
+                // Config not found -> generate a default config
+                createConfig(*config);
+                config->save();
+            }
+            delete config;
+            CPPUNIT_ASSERT( (chdir(dir)) == 0 );
+            DMTClientConfig ctest(APPLICATION_URI);
+            ctest.read();
+            SyncSourceConfig* sc = ctest.getSyncSourceConfig(SOURCE_NAME);
+            CPPUNIT_ASSERT( strcmp(sc->getSync(), "two-way") == 0 );
+            CPPUNIT_ASSERT( strcmp(sc->getSyncModes(), "two-way,one-way-from-server,one-way-from-client") == 0 );
+            StringBuffer endcommand = "rm -rf ";
+            endcommand += dir;
+            system(endcommand); 
+        }
     private:
     int cwdfd; 
 };
