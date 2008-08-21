@@ -173,7 +173,7 @@ void DeviceManagementNode::update(bool read)
             }
             fflush(file);
             if (!ferror(file)) {
-                StringBuffer tmpConfig = configFile;
+                StringBuffer tmpConfig(configFile);
                 tmpConfig += ".tmp";
 
                 // Both files must be closed for the rename.
