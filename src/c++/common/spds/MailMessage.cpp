@@ -204,7 +204,7 @@ inline static size_t findNewLine(StringBuffer &str, size_t offset) {
     size_t nl = str.find("\n", offset)+1;
     if(nl == StringBuffer::npos)
         return nl;
-    return (str[nl] == '\r') ? nl+1 : nl ;
+    return (str[(int)nl] == '\r') ? nl+1 : nl ;
 }
 
 static size_t getHeadersLen(StringBuffer &s, StringBuffer &newline)
@@ -217,7 +217,7 @@ static size_t getHeadersLen(StringBuffer &s, StringBuffer &newline)
     }
     size_t pos2 = pos1 + 1 ;
 
-    while (s[pos1-1] == '\r'){
+    while (s[(int)(pos1-1)] == '\r'){
         pos1--;
     }
     newline = s.substr(pos1, pos2-pos1);
