@@ -65,20 +65,23 @@ private:
     ///////////////////////////////////////////////////////// Test /////
     // test the different constructor and the c_str() method.
     void testConstruct() {
-        StringBuffer s1;
-        CPPUNIT_ASSERT(s1.c_str() == NULL);
+        StringBuffer s;
+        CPPUNIT_ASSERT(strcmp(s.c_str(), "") == 0);
 
-        StringBuffer s2("");
-        CPPUNIT_ASSERT(strcmp(s2.c_str(), "") == 0);
+        StringBuffer sempty("");
+        CPPUNIT_ASSERT(strcmp(sempty.c_str(), "") == 0);
 
-        StringBuffer s3("test");
-        CPPUNIT_ASSERT(strcmp(s3.c_str(), "test") == 0);
+        StringBuffer snull(NULL);
+        CPPUNIT_ASSERT(snull.c_str() == NULL);
 
-        StringBuffer s4("0123456789", 4);
-        CPPUNIT_ASSERT(strcmp(s4.c_str(), "0123") == 0);
+        StringBuffer stest("test");
+        CPPUNIT_ASSERT(strcmp(stest.c_str(), "test") == 0);
 
-        StringBuffer copy(s3);
-        CPPUNIT_ASSERT(strcmp(copy, s3) == 0);
+        StringBuffer scount("0123456789", 4);
+        CPPUNIT_ASSERT(strcmp(scount.c_str(), "0123") == 0);
+
+        StringBuffer scopy(stest);
+        CPPUNIT_ASSERT(strcmp(scopy, stest) == 0);
     }
 
 

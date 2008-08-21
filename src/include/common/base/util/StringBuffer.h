@@ -64,15 +64,16 @@ class StringBuffer: public ArrayElement {
          * The default is NULL, thus creating a string wiith a null internal
          * pointer.
          * Possible calls are:
-         * <li> Stringbuffer s; // construct a string with NULL value
-         * <li> Stringbuffer s(""); // construct a string with empty value
+         * <li> Stringbuffer s; // construct a string with an empty value
+         * <li> Stringbuffer s(NULL); // construct a string a null value
          * <li> Stringbuffer s("string"); // construct a string containing "string"
          * <li> Stringbuffer s(buf, len); // construct a string with the content of buf and lenght len.
          *
-         * In the latter example, buf may or may not be null-terminated.
+         * In the latter example, buf may or may not be null-terminated. If it's null-terminated, and
+         * the lenght of buf is smaller than len, the first wins.
          *
          */
-        StringBuffer(const char* str = NULL, size_t len = npos);
+        StringBuffer(const char* str = "", size_t len = npos);
 
         /**
          * Copy constructor.
