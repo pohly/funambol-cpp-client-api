@@ -43,10 +43,11 @@
 
 #ifdef ENABLE_INTEGRATION_TESTS
 
-#include "ClientTest.h"
 #include "base/globalsdef.h"
+#include "base/fscapi.h"
 #include "base/test.h"
 #include "base/util/StringBuffer.h"
+#include "ClientTest.h"
 
 #include <memory>
 #include <vector>
@@ -72,7 +73,7 @@ static std::list<std::string> listAnyItems(
     CPPUNIT_ASSERT(!source->getReport() || source->getReport()->getState() != SOURCE_ERROR);
     SOURCE_ASSERT_NO_FAILURE(source, item = (source->*first)());
     while ( item ) {
-        const WCHAR *key = item->getKey();
+        const char *key = _wcc(item->getKey());
         SOURCE_ASSERT(source, key);
         SOURCE_ASSERT(source, key[0]);
         res.push_back(key);
@@ -234,7 +235,7 @@ std::string LocalTests::insert(CreateSource createSource, const char *data, bool
     SOURCE_ASSERT_NO_FAILURE(source.get(), status = source->addItem(item));
     CPPUNIT_ASSERT(item.getKey() != 0);
     CPPUNIT_ASSERT(wcslen(item.getKey()) > 0);
-    uid = item.getKey();
+    uid = _wcc(item.getKey());
     SOURCE_ASSERT(source.get(), source->endSync() == 0);
 
     // delete source again
@@ -284,12 +285,14 @@ static std::string updateItem(CreateSource createSource, const std::string &uid,
 
     // insert item
     SyncItem item;
-    item.setKey(uid.c_str());
+    WCHAR* wuid = toWideChar(uid.c_str());
+    item.setKey(wuid);
+    delete wuid;
     item.setData(data, (long)strlen(data) + 1);
     item.setDataType(TEXT(""));
     SOURCE_ASSERT_EQUAL(source.get(), (int)STC_OK, source->updateItem(item));
     SOURCE_ASSERT(source.get(), item.getKey());
-    newuid = item.getKey();
+    newuid = _wcc(item.getKey());
 
     SOURCE_ASSERT(source.get(), source->endSync() == 0);
     CPPUNIT_ASSERT_NO_THROW(source.reset());
@@ -380,7 +383,9 @@ static void deleteItem(CreateSource createSource, const std::string &uid) {
 
     // delete item
     SyncItem item;
-    item.setKey(uid.c_str());
+    WCHAR* wuid = toWideChar(uid.c_str());
+    item.setKey(wuid);
+    delete wuid;
     SOURCE_ASSERT_EQUAL(source.get(), (int)STC_OK, source->deleteItem(item));
 
     SOURCE_ASSERT(source.get(), source->endSync() == 0);
