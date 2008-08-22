@@ -55,6 +55,7 @@ class ObjectDelTest : public CppUnit::TestFixture {
     CPPUNIT_TEST_SUITE(ObjectDelTest);
     CPPUNIT_TEST(testDelSingleStringBuffer);
     CPPUNIT_TEST(testDelMultipleStringBuffer);
+    CPPUNIT_TEST(testDelNullStringBuffer);
     CPPUNIT_TEST(testSingleNotNullCheck);
     CPPUNIT_TEST(testMultipleNotNullCheck);
     CPPUNIT_TEST(testSingleNotZeroCheck);
@@ -87,6 +88,12 @@ private:
         for(int i=0;i<16;++i) {
             CPPUNIT_ASSERT(sb[i] == NULL);
         }
+    }
+    
+    void testDelNullStringBuffer() {
+        StringBuffer* sb = NULL;
+        deleteAllStringBuffer(1, &sb);
+        CPPUNIT_ASSERT(sb == NULL);
     }
 
     void testSingleNotNullCheck() {
