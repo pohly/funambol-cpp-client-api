@@ -9,22 +9,40 @@ AC_PROG_CXX
 AC_PROG_LIBTOOL
 dnl AM_GNU_GETTEXT - not currently used
 
-dnl we use libcurl on all posix but Mac
+dnl Use a specific transport agent
+AC_ARG_WITH(transport-agent,
+            AS_HELP_STRING([--with-transport-agent=curl/mac/mozilla],
+                           [force to use the specified transport agent. NOTE: the Mozilla transport agent requires --with-mozilla-sdk-path=DIR for setting the Mozilla SDK path]),
+            transport_agent="$withval", transport_agent="no")
+
+dnl use_curl_ta="no"
 dnl use_mac_ta="no"
-dnl use_libcurl="no"
-case $target in
-*apple-darwin*)  use_mac_ta="yes" ;;
-*) use_libcurl="yes" ;;
-esac
+dnl use_mozilla_ta="no"
+
+dnl If the transport agent is not specified, set it to default: "mac" for Mac OS, "curl" for all the other posix systems
+if test "x$transport_agent" = "xno"; then
+    case $target in
+        *apple-darwin*)  use_mac_ta="yes" ;;
+        *) use_curl_ta ="yes" ;;
+    esac
+else
+    case $transport_agent in
+        curl)  use_curl_ta="yes" ;;
+        mac)  use_mac_ta="yes" ;;
+        mozilla)  use_mozilla_ta="yes" ;;
+        *) AC_MSG_ERROR([you must choose one of the following transport agents: curl/mac/mozilla]) ;;
+    esac
+fi
 
 dnl check for libcurl now instead of during make
-if test "x$use_libcurl" = "xyes"; then
+if test "x$use_curl_ta" = "xyes"; then
     AC_MSG_CHECKING([for libcurl])
     if CURL_LDFLAGS=`sh -c 'curl-config --libs' 2>&AS_MESSAGE_LOG_FD` && \
        CURL_CFLAGS=`sh -c 'curl-config --cflags' 2>&AS_MESSAGE_LOG_FD`; then
             AC_MSG_RESULT([found])
             AC_SUBST(CURL_LDFLAGS)
             AC_SUBST(CURL_CFLAGS)
+            CPPFLAGS="-DFUN_TRANSPORT_AGENT=FUN_CURL_TRANSPORT_AGENT $CPPFLAGS"
     else
             AC_MSG_RESULT([missing])
             AC_MSG_ERROR([libcurl is required, check that its development package is installed and curl-config is in your PATH])
@@ -34,8 +52,27 @@ fi
 if test "x$use_mac_ta" = "xyes"; then
     CURL_LDFLAGS="-framework CoreServices"
     AC_SUBST(CURL_LDFLAGS)
+    CPPFLAGS="-DFUN_TRANSPORT_AGENT=FUN_MAC_TRANSPORT_AGENT $CPPFLAGS"
 fi
 
+dnl check for mozilla sdk
+if test "x$use_mozilla_ta" = "xyes"; then
+
+        AC_ARG_WITH(mozilla-sdk-path,
+                    AS_HELP_STRING([--with-mozilla-sdk-path=DIR],
+                                   [use the Mozilla SDK from directory DIR]),
+                    mozilla_sdk_path="$withval", 
+                    [AC_MSG_ERROR([Mozilla SDK is required, you must specify its path using --with-mozilla-sdk-path=DIR])])
+
+        CPPFLAGS="-I$mozilla_sdk_path/include -I$mozilla_sdk_path/include/xpcom -I$mozilla_sdk_path/include/nspr -I$mozilla_sdk_path/include/string -I$mozilla_sdk_path/include/content $CPPFLAGS"
+
+        AC_MSG_CHECKING([for mozilla headers])
+        AC_CHECK_HEADERS(mozilla-config.h,
+                         [],
+                         [AC_MSG_ERROR([Mozilla headers not found, you must specify the Mozilla SDK path using --with-mozilla-sdk-path=DIR])])
+
+        CPPFLAGS="-DFUN_TRANSPORT_AGENT=FUN_MOZ_TRANSPORT_AGENT $CPPFLAGS"
+fi
 
 dnl Check for certain headers.
 AC_CHECK_HEADERS(time.h)
