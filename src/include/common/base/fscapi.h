@@ -52,6 +52,7 @@
     #define FUN_MAC_TRANSPORT_AGENT  2
     #define FUN_WIN_TRANSPORT_AGENT  3
     #define FUN_SYM_TRANSPORT_AGENT  4
+    #define FUN_MOZ_TRANSPORT_AGENT  5
 
     /* Autodetect target system based on compiler automatic macros */
     #if defined(__unix__) || defined(__linux__)

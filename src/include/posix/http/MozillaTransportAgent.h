@@ -33,32 +33,33 @@
  * the words "Powered by Funambol".
  */
 
-#include "http/TransportAgentFactory.h"
+#ifndef INCL_MOZILLA_TRANSPORT_AGENT
+#define INCL_MOZILLA_TRANSPORT_AGENT
 
-#if FUN_TRANSPORT_AGENT == FUN_CURL_TRANSPORT_AGENT
-#include "http/CurlTransportAgent.h"
-#elif FUN_TRANSPORT_AGENT == FUN_MAC_TRANSPORT_AGENT
-#include "http/MacTransportAgent.h"
-#elif FUN_TRANSPORT_AGENT == FUN_MOZ_TRANSPORT_AGENT
-#include "http/MozillaTransportAgent.h"
-#else
-#error "No Transport agent defined, cannot compile"
+#include "http/URL.h"
+#include "http/Proxy.h"
+#include "http/TransportAgent.h"
+#include "base/Log.h"
+
+#define ERR_HTTP_TIME_OUT               ERR_TRANSPORT_BASE+ 7
+#define ERR_HTTP_NOT_FOUND              ERR_TRANSPORT_BASE+60
+#define ERR_HTTP_REQUEST_TIMEOUT        ERR_TRANSPORT_BASE+61
+#define ERR_HTTP_INFLATE                ERR_TRANSPORT_BASE+70
+#define ERR_HTTP_DEFLATE                ERR_TRANSPORT_BASE+71
+
+/*
+ * This is the Mozilla implementation of the TransportAgent object
+ * It makes use of the Mozilla xpcom components for making http requests
+ */
+
+class MozillaTransportAgent : public TransportAgent {
+    
+public:
+    MozillaTransportAgent();
+    MozillaTransportAgent(URL& url, Proxy& proxy, unsigned int responseTimeout = DEFAULT_MAX_TIMEOUT);
+    ~MozillaTransportAgent();
+    
+    char* sendMessage(const char* msg);
+};
+
 #endif
-
-#include "base/globalsdef.h"
-
-BEGIN_NAMESPACE
-
-TransportAgent* TransportAgentFactory::getTransportAgent(
-        URL& url, Proxy& proxy, unsigned int timeout, unsigned int maxmsgsize)
-{
-#if FUN_TRANSPORT_AGENT == FUN_CURL_TRANSPORT_AGENT
-    return new CurlTransportAgent(url, proxy, timeout);
-#elif FUN_TRANSPORT_AGENT == FUN_MAC_TRANSPORT_AGENT
-    return new MacTransportAgent(url, proxy, timeout);
-#elif FUN_TRANSPORT_AGENT == FUN_MOZ_TRANSPORT_AGENT
-    return new MozillaTransportAgent(url, proxy, timeout);
-#endif
-}
-
-END_NAMESPACE
