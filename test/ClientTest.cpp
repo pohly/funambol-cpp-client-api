@@ -72,7 +72,7 @@ static std::list<std::string> listAnyItems(
     CPPUNIT_ASSERT(!source->getReport() || source->getReport()->getState() != SOURCE_ERROR);
     SOURCE_ASSERT_NO_FAILURE(source, item = (source->*first)());
     while ( item ) {
-        const char *key = item->getKey();
+        const WCHAR *key = item->getKey();
         SOURCE_ASSERT(source, key);
         SOURCE_ASSERT(source, key[0]);
         res.push_back(key);
