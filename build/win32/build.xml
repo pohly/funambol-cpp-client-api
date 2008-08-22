@@ -105,26 +105,28 @@ Forge file for Funambol C++ SDK Tests and Demos
     ========================================================================
     -->
     
-    <target name="compile" depends="init"> 
+    <target name="compile" depends="init,compile_lib,compile_ut,compile_td"/> 
 
+    <target name="compile_lib" depends="init"> 
         <echo message="Compiling Library..."/>
         <exec dir="${dir.build}" executable="${vs2005.devenv}/devenv">
             <arg line="win32.vcproj /Out build_lib.log /Build ${build.target}"/>
         </exec>
+    </target>
 
+    <target name="compile_ut" depends="init"> 
         <echo message="Compiling Unit Tests..."/>
         <exec dir="${dir.build}" executable="${vs2005.devenv}/devenv">
-            <arg line="cppunit.sln /Out build_ut.log /Build ${build.target}"/>
+            <arg line="client-test.sln /Out build_ut.log /Build ${build.target}"/>
         </exec>
-      
+    </target>
+
+    <target name="compile_td" depends="init"> 
         <echo message="Compiling Test Demo..."/>
         <exec dir="${dir.build}" executable="${vs2005.devenv}/devenv">
             <arg line="testwin32.sln /Out build_td.log /Build ${build.target}"/>
         </exec>
-      
     </target>
-
-
 
     <!--
     ========================================================================
