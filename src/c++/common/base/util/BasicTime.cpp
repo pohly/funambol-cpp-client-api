@@ -114,7 +114,9 @@ int BasicTime::parseRfc822(const char *date)
         "May", "Jun", "Jul", "Aug",
         "Sep", "Oct", "Nov", "Dec"
     };
-    char dayOfWeek[6] = "---,";
+    // In some cases the day of week may initially contain the day,dayofmonth,
+    // so its max length is 3+1+2
+    char dayOfWeek[7] = "---,";
     char mon[4] = "---";
     char time[10] = "00:00:00";
     char timeZone[20] = "GMT";
