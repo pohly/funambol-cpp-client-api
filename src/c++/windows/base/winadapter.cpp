@@ -377,7 +377,6 @@ bool readFile(const char* path, char **message, size_t *len, bool binary)
     }
     msglen = fgetsize(f);
     msg = new char[msglen+1];
-    memset(msg, 0, msglen);
 
     *len=fread(msg, sizeof(char), msglen, f);
     if(ferror(f)){
@@ -385,6 +384,9 @@ bool readFile(const char* path, char **message, size_t *len, bool binary)
         goto finally;
     }
     fclose(f);
+
+    // Terminate the read msg
+    msg[*len] = 0;
 
     // Set return parameters
     *message= msg ;
