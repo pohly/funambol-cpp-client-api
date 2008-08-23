@@ -41,7 +41,7 @@ USE_NAMESPACE
 class DestroyManageListener{
 public:
     DestroyManageListener() {           };
-    ~DestroyManageListener(){ delete &(ManageListener::getInstance());}
+    ~DestroyManageListener(){ ManageListener::dispose(); }
 };
 
 DestroyManageListener destroyManageListener;
