@@ -23,7 +23,7 @@ dnl If the transport agent is not specified, set it to default: "mac" for Mac OS
 if test "x$transport_agent" = "xno"; then
     case $target in
         *apple-darwin*)  use_mac_ta="yes" ;;
-        *) use_curl_ta ="yes" ;;
+        *) use_curl_ta="yes" ;;
     esac
 else
     case $transport_agent in
