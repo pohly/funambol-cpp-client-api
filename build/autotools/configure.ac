@@ -65,6 +65,7 @@ if test "x$use_mozilla_ta" = "xyes"; then
                     [AC_MSG_ERROR([Mozilla SDK is required, you must specify its path using --with-mozilla-sdk-path=DIR])])
 
         CPPFLAGS="-I$mozilla_sdk_path/include -I$mozilla_sdk_path/include/xpcom -I$mozilla_sdk_path/include/nspr -I$mozilla_sdk_path/include/string -I$mozilla_sdk_path/include/content $CPPFLAGS"
+        LDFLAGS="-L$mozilla_sdk_path/lib -lxpcomglue_s -lxpcom -lnspr4 -lplds4 -lplc4 $LDFLAGS"
 
         AC_MSG_CHECKING([for mozilla headers])
         AC_CHECK_HEADERS(mozilla-config.h,
