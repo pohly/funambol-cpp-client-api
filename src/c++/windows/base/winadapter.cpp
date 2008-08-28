@@ -304,34 +304,6 @@ static Codepage encodings[] = {
 };
 
 
-
-#if 0
-#if defined(WIN32) && !defined(_WIN32_WCE)
-// TODO: get temp dir !
-#define TEMPROOT TEXT("C:\\WINDOWS\\TEMP")
-
-WCHAR *mkTempFileName(const WCHAR *name)
-{
-	WCHAR *ret = new WCHAR[wcslen(TEMPROOT)+wcslen(name)+3] ;
-	wsprintf(ret, TEXT("%s\\%s"), TEMPROOT, name);
-	FILE *f;
-    int i;
-
-	for (i=0; i<10 && (f=_wfopen(ret, TEXT("r"))) != NULL; i++ ) {
-		fclose(f);
-		wsprintf(ret, TEXT("%s\\%d%s"), TEMPROOT, i, name);
-	}
-
-	if(i==10) {
-		// Can't find a free temp file name !
-		delete [] ret;
-		return NULL;
-	}
-	return ret;
-}
-#endif   // #if defined(WIN32) && !defined(_WIN32_WCE)
-#endif
-
 /*
  * Return a filename composed by the system temp dir and the name given
  * in input. If the file exists, try to add a digit 0-9.
@@ -563,6 +535,34 @@ bool removeFileInDir(const char* d, const char* fname) {
 finally:
     if (dir) { delete [] dir; }
     return ret;
+}
+
+/**
+ * Creates a folder. 
+ * @return 0 on success, -1 otherwise.
+ */
+int createFolder(const char *path) {
+    wchar_t* p = toWideChar(path);
+    DWORD attr = CreateDirectory(p, NULL);    
+    delete [] p;
+    // TODO: check error code.
+    return 0;
+}
+
+/**
+ * return the home folder, or an empty string on failure.
+ */
+StringBuffer getHomeFolder() {
+    wchar_t p[MAX_PATH];
+    StringBuffer home(NULL);
+
+    if( !SHGetSpecialFolderPath(NULL, p, CSIDL_PERSONAL, 0)) {
+        LOG.error("Can't get home folder.");
+    }
+    else {
+        home.convert(p);
+    }
+    return home;
 }
 
 StringBuffer getCacheDirectory() {

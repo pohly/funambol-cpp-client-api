@@ -184,6 +184,27 @@ bool removeFileInDir(const char* d, const char* fname) {
     return ret;
 }
 
+/**
+ * Creates a folder. TODO: move it to SDK utils
+ * @return 0 on success, -1 otherwise.
+ */
+int createFolder(const char *path) {
+    DIR* d = opendir(path);
+    if (!d) {
+        mkdir(path, 0777);
+    } else {
+        closedir(d);        
+    }   
+}
+
+StringBuffer getHomeFolder() {
+    StringBuffer home(getenv("HOME"));
+    if( home.null() ) {
+        LOG.error("Home directory not defined.");
+    }
+    return home;
+}
+
 StringBuffer getCacheDirectory() {
     
     StringBuffer ret(getenv("HOME"));
@@ -198,7 +219,6 @@ StringBuffer getCacheDirectory() {
     }  
     return ret;
 }
-    
     
 // TODO: convert to the specified encoding, assuming wc is UTF-8
 char* toMultibyte(const WCHAR *wc, const char *encoding)
