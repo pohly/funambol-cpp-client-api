@@ -343,7 +343,7 @@ Mem* Parser::getMem(const char*xml) {
         freeID = strtol(freeIDW.c_str(), NULL, 10);
     }
     if (!sharedMemW.empty()) {
-        sharedMem = sharedMemW.c_str() != "0" ? true : false;
+        sharedMem = sharedMemW != "0" ? true : false;
     }
 
     if (isToCreate) {
@@ -1967,7 +1967,7 @@ DSMem* Parser::getDSMem(const char* allxml, unsigned int* pos) {
         maxID = strtol(maxIDW.c_str(), NULL, 10);
     }
     if (!sharedMemW.empty()) {
-        sharedMem = sharedMemW.c_str() != "0" ? true : false;
+        sharedMem = sharedMemW != "0" ? true : false;
     }
 
     if (isToCreate) {
