@@ -190,11 +190,13 @@ bool removeFileInDir(const char* d, const char* fname) {
  */
 int createFolder(const char *path) {
     DIR* d = opendir(path);
+    int res = 0;
     if (!d) {
-        mkdir(path, 0777);
+        res = mkdir(path, 0777);
     } else {
         closedir(d);        
-    }   
+    }
+    return res;
 }
 
 StringBuffer getHomeFolder() {
