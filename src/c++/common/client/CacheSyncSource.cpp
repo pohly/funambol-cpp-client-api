@@ -57,7 +57,7 @@ CacheSyncSource::CacheSyncSource(const WCHAR* sourceName, AbstractSyncSourceConf
         this->cache = cache;
     } else {
         // get the default directory of the 
-        StringBuffer completeName = getCacheDirectory();;
+        StringBuffer completeName = getCacheDirectory();
         completeName += "/";
         completeName += CACHE_FILE_NAME;   
 
