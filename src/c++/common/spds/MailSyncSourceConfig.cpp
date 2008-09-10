@@ -163,3 +163,25 @@ void MailSyncSourceConfig::assign(const MailSyncSourceConfig& sc) {
     setSchedule(sc.getSchedule());
 
 }
+
+StringBuffer MailSyncSourceConfig::print() {
+
+    StringBuffer ret;
+    ret = "** SOURCE: "; ret += getName(); ret += "**\r\n";
+    
+    ret += "URI:\t\t"; ret += getURI(); ret += "\r\n";
+    ret += "SyncModes:\t"; ret += getSyncModes(); ret += "\r\n";
+    ret += "Type:\t\t"; ret += getType(); ret += "\r\n";
+    ret += "Sync:\t\t"; ret += getSync(); ret += "\r\n";
+    ret += "Encoding:\t"; ret += getEncoding(); ret += "\r\n";
+    ret += "Version:\t"; ret += getVersion(); ret += "\r\n";
+    ret += "SupportedType:\t"; ret += getSupportedTypes(); ret += "\r\n";
+    ret += "Last:\t\t"; ret.append(getLast()); ret += "\r\n";
+    ret += "Encryption:\t"; ret += getEncryption(); ret += "\r\n";    
+
+    ret += "DownloadAge:\t"; ret.append(getDownloadAge()); ret += "\r\n";    
+    ret += "BodySize:\t"; ret.append(getBodySize()); ret += "\r\n";
+    ret += "AttachSize:\t"; ret.append(getAttachSize()); ret += "\r\n";
+
+    return ret;
+}

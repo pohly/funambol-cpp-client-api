@@ -43,6 +43,11 @@ BodyPart::BodyPart() {
     mimeType = "text/plain";
     charset  = "UTF-8";
     encoding = "8bit";
+    
+    content = NULL;
+    disposition = NULL;
+    name = NULL;
+    filename = NULL;
 }
 
 const char * BodyPart::getMimeType() const { return (mimeType.c_str()); }

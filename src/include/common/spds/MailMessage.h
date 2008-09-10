@@ -93,6 +93,8 @@ class MailMessage : public ArrayElement {
         int parseBodyParts(StringBuffer &rfcBody);
 
     public:
+        
+        MailMessage();
 
         // Headers
         const char *getTo() const;

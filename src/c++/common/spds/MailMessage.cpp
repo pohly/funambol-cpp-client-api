@@ -152,6 +152,23 @@ int MailMessage::attachmentCount() {
     return attachments.size();
 }
 
+MailMessage::MailMessage() {
+
+    newline = NULL;
+
+    to = NULL;
+    from = NULL;
+    cc = NULL;
+    bcc = NULL;
+    subject = NULL;
+
+    contentType = NULL;
+    boundary = NULL;
+    mimeVersion = NULL;
+    messageId = NULL;
+    entryId = NULL;
+    importance = NULL;
+}
 //----------------------------------------------------------- Static Functions
 
 static StringBuffer formatBodyPart(const BodyPart &part)

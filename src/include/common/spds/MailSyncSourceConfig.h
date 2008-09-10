@@ -177,6 +177,7 @@ BEGIN_NAMESPACE
          */
         void assign(const MailSyncSourceConfig& sc);
 
+        StringBuffer print();
     };
 
 

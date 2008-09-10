@@ -82,6 +82,10 @@ EmailData::EmailData()
     extMailData = NULL;
     totalEmailSize = 0;
     isMailPartial = false;
+
+    received = NULL;
+    created = NULL;
+    modified = NULL;
 }
 
 EmailData::~EmailData()
@@ -181,7 +185,7 @@ int EmailData::parse(const char *msg, size_t /* len */)
 
     }
     else {
-        LOG.info("EMailData: no <emailitem> tag.");
+        // LOG.info("EMailData: no <emailitem> tag.");
         // It is not an error, just log it for info.
     }
     /*
