@@ -144,6 +144,7 @@ WinTransportAgent::~WinTransportAgent(){}
 char* WinTransportAgent::sendMessage(const char* msg) {
 
     LOG.debug("%s", msg);
+    //LOG.debugHideDataContent(msg);
     ENTERING(L"TransportAgent::sendMessage");
 
 #ifdef USE_ZLIB
@@ -352,6 +353,7 @@ char* WinTransportAgent::sendMessage(const char* msg) {
                 WCHAR* wurl = toWideChar(url.fullURL);
                 InternetGoOnline(wurl, NULL, NULL);
                 delete [] wurl;
+                resetError();
                 continue;
             }
             else if (errorCode == ERROR_INTERNET_TIMEOUT ||                     // 12002 -> out code 2007
@@ -371,6 +373,7 @@ char* WinTransportAgent::sendMessage(const char* msg) {
             }
             // Other network error: retry.
             LOG.info("Network error writing data from client: retry %i time...", numretries + 1);
+            resetError();
             continue;
         }
 
@@ -709,6 +712,9 @@ char* WinTransportAgent::sendMessage(const char* msg) {
 #endif
 
     LOG.debug("Response read:\n%s", response);
+    //LOG.debug("Response read:");
+    //LOG.debugHideDataContent(response);
+
 
 exit:
     // Close the Internet handles.
