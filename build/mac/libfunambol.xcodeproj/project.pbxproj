@@ -962,7 +962,7 @@
 				7C8B0EBD0DB756A4005113A8 /* SQLiteKVSTest.cpp */,
 			);
 			name = examples;
-			path = "../../src/c++/common/examples";
+			path = ../../src/cpp/common/examples;
 			sourceTree = SOURCE_ROOT;
 		};
 		7C3BEB2C0DB732B400119850 /* listeners */ = {
@@ -1024,7 +1024,7 @@
 				7C9F52140DAF4CB1007E0091 /* util */,
 			);
 			name = base;
-			path = "../../src/c++/common/base";
+			path = ../../src/cpp/common/base;
 			sourceTree = "<group>";
 		};
 		7C9F52140DAF4CB1007E0091 /* util */ = {
@@ -1059,7 +1059,7 @@
 				7C9F52280DAF4CB1007E0091 /* SyncClient.cpp */,
 			);
 			name = client;
-			path = "../../src/c++/common/client";
+			path = ../../src/cpp/common/client;
 			sourceTree = "<group>";
 		};
 		7C9F52290DAF4CB1007E0091 /* event */ = {
@@ -1082,7 +1082,7 @@
 				7C9F52380DAF4CB1007E0091 /* TransportListener.cpp */,
 			);
 			name = event;
-			path = "../../src/c++/common/event";
+			path = ../../src/cpp/common/event;
 			sourceTree = "<group>";
 		};
 		7C9F52490DAF4CB1007E0091 /* filter */ = {
@@ -1097,7 +1097,7 @@
 				7C9F52500DAF4CB1007E0091 /* WhereClause.cpp */,
 			);
 			name = filter;
-			path = "../../src/c++/common/filter";
+			path = ../../src/cpp/common/filter;
 			sourceTree = "<group>";
 		};
 		7C9F52510DAF4CB1007E0091 /* http */ = {
@@ -1109,7 +1109,7 @@
 				7C9F52550DAF4CB1007E0091 /* URL.cpp */,
 			);
 			name = http;
-			path = "../../src/c++/common/http";
+			path = ../../src/cpp/common/http;
 			sourceTree = "<group>";
 		};
 		7C9F525B0DAF4CB1007E0091 /* spdm */ = {
@@ -1119,7 +1119,7 @@
 				7C9F525D0DAF4CB1007E0091 /* ManagementNode.cpp */,
 			);
 			name = spdm;
-			path = "../../src/c++/common/spdm";
+			path = ../../src/cpp/common/spdm;
 			sourceTree = "<group>";
 		};
 		7C9F525E0DAF4CB1007E0091 /* spds */ = {
@@ -1154,7 +1154,7 @@
 				7C9F527A0DAF4CB1007E0091 /* SyncSourceReport.cpp */,
 			);
 			name = spds;
-			path = "../../src/c++/common/spds";
+			path = ../../src/cpp/common/spds;
 			sourceTree = "<group>";
 		};
 		7C9F527B0DAF4CB1007E0091 /* syncml */ = {
@@ -1165,7 +1165,7 @@
 				7C9F52C00DAF4CB1007E0091 /* parser */,
 			);
 			name = syncml;
-			path = "../../src/c++/common/syncml";
+			path = ../../src/cpp/common/syncml;
 			sourceTree = "<group>";
 		};
 		7C9F527C0DAF4CB1007E0091 /* core */ = {
@@ -1267,7 +1267,7 @@
 				7C9F52DC0DAF4CB1007E0091 /* VProperty.cpp */,
 			);
 			name = vocl;
-			path = "../../src/c++/common/vocl";
+			path = ../../src/cpp/common/vocl;
 			sourceTree = "<group>";
 		};
 		7C9F52C30DAF4CB1007E0091 /* iCalendar */ = {
@@ -1311,7 +1311,7 @@
 				7C9F52E00DAF4CB1007E0091 /* Log.cpp */,
 			);
 			name = base;
-			path = "../../src/c++/posix/base";
+			path = ../../src/cpp/posix/base;
 			sourceTree = "<group>";
 		};
 		7C9F52E10DAF4CB1007E0091 /* http */ = {
@@ -1321,7 +1321,7 @@
 				7C9F52E30DAF4CB1007E0091 /* TransportAgentFactory.cpp */,
 			);
 			name = http;
-			path = "../../src/c++/posix/http";
+			path = ../../src/cpp/posix/http;
 			sourceTree = "<group>";
 		};
 		7C9F52E70DAF4CB1007E0091 /* spdm */ = {
@@ -1331,7 +1331,7 @@
 				7C9F52E90DAF4CB1007E0091 /* DMTreeFactory.cpp */,
 			);
 			name = spdm;
-			path = "../../src/c++/posix/spdm";
+			path = ../../src/cpp/posix/spdm;
 			sourceTree = "<group>";
 		};
 		7C9F52EA0DAF4CB1007E0091 /* spds */ = {
@@ -1341,7 +1341,7 @@
 				7C9F52EC0DAF4CB1007E0091 /* DESEncoder.cpp */,
 			);
 			name = spds;
-			path = "../../src/c++/posix/spds";
+			path = ../../src/cpp/posix/spds;
 			sourceTree = "<group>";
 		};
 		7C9F53B60DAF4CC5007E0091 /* base */ = {
@@ -1749,7 +1749,7 @@
 			name = include;
 			sourceTree = "<group>";
 		};
-		7C9F55900DAF4CD9007E0091 /* c++ */ = {
+		7C9F55900DAF4CD9007E0091 /* cpp */ = {
 			isa = PBXGroup;
 			children = (
 				7C9F52DE0DAF4CB1007E0091 /* base */,
@@ -1757,14 +1757,14 @@
 				7C9F52E70DAF4CB1007E0091 /* spdm */,
 				7C9F52EA0DAF4CB1007E0091 /* spds */,
 			);
-			name = "c++";
+			name = cpp;
 			sourceTree = "<group>";
 		};
 		7C9F560F0DAF5167007E0091 /* posix */ = {
 			isa = PBXGroup;
 			children = (
 				7C9F558F0DAF4CD3007E0091 /* include */,
-				7C9F55900DAF4CD9007E0091 /* c++ */,
+				7C9F55900DAF4CD9007E0091 /* cpp */,
 			);
 			name = posix;
 			sourceTree = "<group>";
@@ -1773,12 +1773,12 @@
 			isa = PBXGroup;
 			children = (
 				7C9F56120DAF5189007E0091 /* include */,
-				7C9F56110DAF5186007E0091 /* c++ */,
+				7C9F56110DAF5186007E0091 /* cpp */,
 			);
 			name = common;
 			sourceTree = "<group>";
 		};
-		7C9F56110DAF5186007E0091 /* c++ */ = {
+		7C9F56110DAF5186007E0091 /* cpp */ = {
 			isa = PBXGroup;
 			children = (
 				7C3BEB270DB732B400119850 /* examples */,
@@ -1792,7 +1792,7 @@
 				7C9F527B0DAF4CB1007E0091 /* syncml */,
 				7C9F52C20DAF4CB1007E0091 /* vocl */,
 			);
-			name = "c++";
+			name = cpp;
 			sourceTree = "<group>";
 		};
 		7C9F56120DAF5189007E0091 /* include */ = {
