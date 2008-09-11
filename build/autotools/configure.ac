@@ -1,7 +1,7 @@
 dnl Process this file with autoconf to produce a configure script.
-AC_INIT(../../src/c++/common/base/base64.cpp)
+AC_INIT(../../src/cpp/common/base/base64.cpp)
 AC_CANONICAL_SYSTEM
-AM_INIT_AUTOMAKE(funambol, 2.0)
+AM_INIT_AUTOMAKE(funambol, 7.0)
 AM_CONFIG_HEADER(config.h)
 
 dnl Checks for programs.

@@ -1,3 +1,10 @@
+2008-09-10
+   - gazza: 
+        * moved to subversion, root changed from /3x to /funambol
+        * src/c++ renamed to src/cpp
+        * md5.c renamed to md5.cpp
+            
+
 2008-07-15
    - gazza: renamed autotools generated library to libfunambol.a
 
@@ -27,7 +34,8 @@
     - toccy: * 'lastErrorMsg' is now a StringBuffer
              * 'lastErrorMsg' and 'lastErrorCode' are no more global, 
                 they must be accessed only by provided get/set methods.
-             * removed char[] in log.cpp, using StringBuffer, 'logmsg' is now deprecated
+             * removed char[] in log.cpp, using StringBuffer,
+               'logmsg' is now deprecated
 
 2008-01-29
     - toccy: windows/http/GPRSConnection.cpp:

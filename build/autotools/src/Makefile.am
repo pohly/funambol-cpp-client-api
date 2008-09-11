@@ -21,7 +21,7 @@ SOURCES_BASE = \
     lerror.cpp \
     lErrorHandler.cpp \
     lItemContainer.cpp \
-    lmd5.c
+    lmd5.cpp
 
 SOURCES_EVENT = \
     lBaseEvent.cpp \
@@ -220,28 +220,28 @@ briefcase_LDADD = libfunambol.la
 #vcardconverter_SOURCES = vcardconverter.cpp
 #vcardconverter_LDADD = libfunambol.la
 
-vpath %.cpp $(srcdir)/../../../src/c++/common/base             \
-            $(srcdir)/../../../src/c++/common/base/util        \
-            $(srcdir)/../../../src/c++/common/client           \
-            $(srcdir)/../../../src/c++/common/examples         \
-            $(srcdir)/../../../src/c++/common/event            \
-            $(srcdir)/../../../src/c++/common/filter           \
-            $(srcdir)/../../../src/c++/common/syncml/formatter \
-            $(srcdir)/../../../src/c++/common/syncml/core      \
-            $(srcdir)/../../../src/c++/common/syncml/parser    \
-            $(srcdir)/../../../src/c++/common/http             \
-            $(srcdir)/../../../src/c++/common/spdm             \
-            $(srcdir)/../../../src/c++/common/spds             \
-            $(srcdir)/../../../src/c++/common/test             \
-            $(srcdir)/../../../src/c++/common/vocl             \
-            $(srcdir)/../../../src/c++/common/vocl/iCalendar   \
-            $(srcdir)/../../../src/c++/common/vocl/vCard       \
-            $(srcdir)/../../../src/c++/posix/base              \
-            $(srcdir)/../../../src/c++/posix/http              \
-            $(srcdir)/../../../src/c++/posix/spdm              \
-            $(srcdir)/../../../src/c++/posix/spds
+vpath %.cpp $(srcdir)/../../../src/cpp/common/base             \
+            $(srcdir)/../../../src/cpp/common/base/util        \
+            $(srcdir)/../../../src/cpp/common/client           \
+            $(srcdir)/../../../src/cpp/common/examples         \
+            $(srcdir)/../../../src/cpp/common/event            \
+            $(srcdir)/../../../src/cpp/common/filter           \
+            $(srcdir)/../../../src/cpp/common/syncml/formatter \
+            $(srcdir)/../../../src/cpp/common/syncml/core      \
+            $(srcdir)/../../../src/cpp/common/syncml/parser    \
+            $(srcdir)/../../../src/cpp/common/http             \
+            $(srcdir)/../../../src/cpp/common/spdm             \
+            $(srcdir)/../../../src/cpp/common/spds             \
+            $(srcdir)/../../../src/cpp/common/test             \
+            $(srcdir)/../../../src/cpp/common/vocl             \
+            $(srcdir)/../../../src/cpp/common/vocl/iCalendar   \
+            $(srcdir)/../../../src/cpp/common/vocl/vCard       \
+            $(srcdir)/../../../src/cpp/posix/base              \
+            $(srcdir)/../../../src/cpp/posix/http              \
+            $(srcdir)/../../../src/cpp/posix/spdm              \
+            $(srcdir)/../../../src/cpp/posix/spds
 
-vpath %.c   $(srcdir)/../../../src/c++/common/base
+vpath %.c   $(srcdir)/../../../src/cpp/common/base
 
 AM_CPPFLAGS = -DFUNAMBOL_BUILD_API -I$(srcdir)/../../../src/include/posix -I$(srcdir)/../../../src/include/common
 
