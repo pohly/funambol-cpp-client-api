@@ -3,31 +3,36 @@ ________________
 
 Overview
 ========
-This SDK allows to integrate a syncml stack in a C++ application on a
-variety of platforms. Currently, Windows, WinMobile and Linux are
-actively supported, but you can easily build it on other Unixes or other
-mobile/embedded platforms.
+This SDK allows to integrate a syncml stack in a C++ application on a variety
+of platforms. Currently, Windows, WinMobile and Linux, MacOs, iPhone and
+Symbian are actively supported, but you can easily build it on other Unixes or
+other mobile/embedded platforms.
 
 Please report your experiences with these platforms to the Funambol
-community, preferably using the mailing list:
+community, preferably using the users discussion group. It can be used as a web forum at this address:
 
-    funambol-developers@lists.sourceforge.net
+	http://core.forge.funambol.org/ds/viewForumSummary.do?dsForumId=405
 
+or as a mailing list at this address:
+
+	users@core.forge.funambol.org
+
+You can use the discussion ofrm you like more.
 
 Downloading
 ===========
 
 You can obtain the sources both from a released package from the Funambol
-website, or checking out the latest version from CVS. In the second way you'll
-get a state-of-the-art version, but you may find bugs or even run into problems
-building it (even though we try to avoid it). Please report this using the
-mailing list or the bug tracker.
+website, or checking out the latest version from Subversion. In the second way
+you'll get a state-of-the-art version, but you may find bugs or even run into
+problems building it (even though we try to avoid it). Please report this using
+the mailing list or the bug tracker.
 
-To build the latest version for WinMobile, which supports the compression of the 
-SyncML stream, you need also to get the zlib sources for WinMobile. You can find
-it mirrored in the Funambol CVS under 'tools/zlib'. Just check it out under the 
-client-api tree and the build project will find and compile it. To make it more
-clear, the expected tree is:
+To build the latest version for WinMobile, which supports the compression of
+the SyncML stream, you need also to get the zlib sources for WinMobile. You can
+find it mirrored in the Funambol CVS under 'tools/zlib'. Just check it out
+under the client-api tree and the build project will find and compile it. To
+make it more clear, the expected tree is:
 
     client-api/
         tools/
@@ -86,14 +91,17 @@ some patches have been applied in the meantime.
 Resources
 =========
 
-If you encounter any issue building or using this SDK, please read first the
-mailing lists archives, the FAQ or the Wiki page:
+If you encounter any issue building or using this SDK, the first source of information is the Funambol Core project homepage on the Funambol Forge.
+Please read first the discussions' archives, or the Wiki page:
 
-FAQ:
-http://www.funambol.org/support/faq.html
+Homepage:
+http://core.forge.funambol.org
+
+Discussions:
+https://core.forge.funambol.org/ds/viewForums.do
 
 WIKI:
-https://wiki.objectweb.org/sync4j/
+https://core.forge.funambol.org/wiki
 
 Bugs
 ====
