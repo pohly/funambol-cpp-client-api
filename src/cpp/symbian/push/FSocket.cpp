@@ -264,7 +264,7 @@ error:
 
 void FSocket::close() 
 {
-    //LOG.debug("FSocket::close");
+    LOG.debug("FSocket::close");
     // TODO: shutdown if I/O in progress?
     //iSocket.Shutdown(RSocket::EImmediate, iStatus);
     
