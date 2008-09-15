@@ -166,11 +166,14 @@ int32_t CTPService::stopCTP() {
     }
 
     int ret = 0;
-    LOG.info("Closing CTP connection...");
 
 
+// TODO: FIXME
+// Because of the bug in the FThread it is unsafe to invoke FThread::wait(timeout).
+// So there's no need to send the last [BYE] message, as we can't wait for Server response.
+#if CTP_SEND_BYE_MSG
     int32_t timeout;
-    // bool terminated;
+    bool terminated = true;
 
     //
     // Send the BYE message if the receiverThread is running (if not we assume
@@ -182,42 +185,38 @@ int32_t CTPService::stopCTP() {
             LOG.error("Error sending the BYE message");
             goto finally;
         }
-    }
 
-    //
-    // Wait for OK msg: receive thread should exit after the last OK
-    // message sent by Server - timeout = ctpCmdTimeout (60sec).
-    //
-    timeout = config.getCtpCmdTimeout();
-    if (!timeout) {
-        timeout = 60;
-    }
-
-#if 0
-    // Because of the bug in the FThread it is unsafe to invoke
-    // wait(timeout)
-    terminated = receiverThread->wait(timeout * 1000);
-
-    if (terminated) {
-        LOG.debug("receiverThread terminated");
-        ret = 0;
-    } else {
-        // Timeout: kill thread -> out.
-        LOG.debug("Timeout - receiverThread will now be terminated");
-        ret = 3;
+	    //
+	    // Wait for OK msg: receive thread should exit after the last OK
+	    // message sent by Server - timeout = ctpCmdTimeout (60sec).
+	    //
+	    timeout = config.getCtpCmdTimeout();
+	    if (!timeout) {
+	        timeout = 60;
+	    }
+	
+	    terminated = receiverThread->wait(timeout * 1000);
+	
+	    if (terminated) {
+	        LOG.debug("receiverThread terminated");
+	        ret = 0;
+	    } else {
+	        // Timeout: kill thread -> out.
+	        LOG.debug("Timeout - receiverThread will now be terminated");
+	        ret = 3;
+	    }
     }
 #endif
 
 
 finally:
+    LOG.info("Closing CTP connection...");
 
     // Stop the heartbeat & timeout threads
     stopHeartbeatThread();
     stopCmdTimeoutThread();
 
-    //
     // Close socket connection
-    //
     closeConnection();
 
     return ret;
@@ -420,6 +419,9 @@ int32_t CTPService::sendMsg(CTPMessage* message) {
     char* msg = message->toByte();
     int msgLength = message->getPackageLength();
 
+    // Declare the old timeout done
+    stopCmdTimeoutThread();
+
     // Debug the message to send.
     LOG.debug("Sending %d bytes:", msgLength);
     hexDump(msg, msgLength);
@@ -436,9 +438,6 @@ int32_t CTPService::sendMsg(CTPMessage* message) {
         LOG.debug("Total bytes sent since beginning: %d", totalBytesSent);
 
         // Will restore connection if no response in 60sec
-        // Declare the old timeout done
-        stopCmdTimeoutThread();
-
         threadPool.cleanup();
         // Create a new timeout thread
         cmdTimeoutThread = threadPool.createCmdTimeoutThread();
