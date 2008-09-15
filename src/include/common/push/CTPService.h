@@ -53,6 +53,8 @@
 /**< Each time the CTP connection is broken, we double the ctpRetry time */
 #define CTP_RETRY_INCREASE_FACTOR       2
 
+#define CTP_SEND_BYE_MSG                0   /** Set to 1 to send the [BYE] msg before closing connection */
+
 
 BEGIN_NAMESPACE
 
