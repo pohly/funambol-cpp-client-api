@@ -177,7 +177,7 @@
 				Name="base"
 				>
 				<File
-					RelativePath="..\..\src\c++\common\base\base64.cpp"
+					RelativePath="..\..\src\cpp\common\base\base64.cpp"
 					>
 					<FileConfiguration
 						Name="Debug|Win32"
@@ -199,7 +199,7 @@
 					</FileConfiguration>
 				</File>
 				<File
-					RelativePath="..\..\src\c++\common\base\error.cpp"
+					RelativePath="..\..\src\cpp\common\base\error.cpp"
 					>
 					<FileConfiguration
 						Name="Debug|Win32"
@@ -221,7 +221,7 @@
 					</FileConfiguration>
 				</File>
 				<File
-					RelativePath="..\..\src\c++\common\base\ErrorHandler.cpp"
+					RelativePath="..\..\src\cpp\common\base\ErrorHandler.cpp"
 					>
 					<FileConfiguration
 						Name="Debug|Win32"
@@ -243,33 +243,11 @@
 					</FileConfiguration>
 				</File>
 				<File
-					RelativePath="..\..\src\c++\windows\base\Log.cpp"
+					RelativePath="..\..\src\cpp\windows\base\Log.cpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\src\c++\common\base\LogErrorHandler.cpp"
-					>
-					<FileConfiguration
-						Name="Debug|Win32"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-							AdditionalIncludeDirectories=""
-							PreprocessorDefinitions=""
-						/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Release|Win32"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-							AdditionalIncludeDirectories=""
-							PreprocessorDefinitions=""
-						/>
-					</FileConfiguration>
-				</File>
-				<File
-					RelativePath="..\..\src\c++\common\base\md5.c"
+					RelativePath="..\..\src\cpp\common\base\LogErrorHandler.cpp"
 					>
 					<FileConfiguration
 						Name="Debug|Win32"
@@ -291,22 +269,26 @@
 					</FileConfiguration>
 				</File>
 				<File
-					RelativePath="..\..\src\c++\windows\base\MemTracker.cpp"
+					RelativePath="..\..\src\cpp\common\base\md5.cpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\src\c++\common\base\quoted-printable.cpp"
+					RelativePath="..\..\src\cpp\windows\base\MemTracker.cpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\src\c++\windows\base\winadapter.cpp"
+					RelativePath="..\..\src\cpp\common\base\quoted-printable.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\cpp\windows\base\winadapter.cpp"
 					>
 				</File>
 				<Filter
 					Name="util"
 					>
 					<File
-						RelativePath="..\..\src\c++\common\base\util\ArrayElement.cpp"
+						RelativePath="..\..\src\cpp\common\base\util\ArrayElement.cpp"
 						>
 						<FileConfiguration
 							Name="Debug|Win32"
@@ -328,7 +310,7 @@
 						</FileConfiguration>
 					</File>
 					<File
-						RelativePath="..\..\src\c++\common\base\util\ArrayList.cpp"
+						RelativePath="..\..\src\cpp\common\base\util\ArrayList.cpp"
 						>
 						<FileConfiguration
 							Name="Debug|Win32"
@@ -350,37 +332,11 @@
 						</FileConfiguration>
 					</File>
 					<File
-						RelativePath="..\..\src\c++\common\base\util\ArrayListKeyValueStore.cpp"
+						RelativePath="..\..\src\cpp\common\base\util\ArrayListKeyValueStore.cpp"
 						>
 					</File>
 					<File
-						RelativePath="..\..\src\c++\common\base\util\baseutils.cpp"
-						>
-						<FileConfiguration
-							Name="Debug|Win32"
-							>
-							<Tool
-								Name="VCCLCompilerTool"
-								AdditionalIncludeDirectories=""
-								PreprocessorDefinitions=""
-							/>
-						</FileConfiguration>
-						<FileConfiguration
-							Name="Release|Win32"
-							>
-							<Tool
-								Name="VCCLCompilerTool"
-								AdditionalIncludeDirectories=""
-								PreprocessorDefinitions=""
-							/>
-						</FileConfiguration>
-					</File>
-					<File
-						RelativePath="..\..\src\c++\common\base\util\BasicTime.cpp"
-						>
-					</File>
-					<File
-						RelativePath="..\..\src\c++\common\base\util\KeyValuePair.cpp"
+						RelativePath="..\..\src\cpp\common\base\util\baseutils.cpp"
 						>
 						<FileConfiguration
 							Name="Debug|Win32"
@@ -402,11 +358,11 @@
 						</FileConfiguration>
 					</File>
 					<File
-						RelativePath="..\..\src\c++\common\base\util\PropertyFile.cpp"
+						RelativePath="..\..\src\cpp\common\base\util\BasicTime.cpp"
 						>
 					</File>
 					<File
-						RelativePath="..\..\src\c++\common\base\util\StringBuffer.cpp"
+						RelativePath="..\..\src\cpp\common\base\util\KeyValuePair.cpp"
 						>
 						<FileConfiguration
 							Name="Debug|Win32"
@@ -428,23 +384,49 @@
 						</FileConfiguration>
 					</File>
 					<File
-						RelativePath="..\..\src\c++\windows\base\stringUtils.cpp"
+						RelativePath="..\..\src\cpp\common\base\util\PropertyFile.cpp"
 						>
 					</File>
 					<File
-						RelativePath="..\..\src\c++\windows\base\timeUtils.cpp"
+						RelativePath="..\..\src\cpp\common\base\util\StringBuffer.cpp"
+						>
+						<FileConfiguration
+							Name="Debug|Win32"
+							>
+							<Tool
+								Name="VCCLCompilerTool"
+								AdditionalIncludeDirectories=""
+								PreprocessorDefinitions=""
+							/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Release|Win32"
+							>
+							<Tool
+								Name="VCCLCompilerTool"
+								AdditionalIncludeDirectories=""
+								PreprocessorDefinitions=""
+							/>
+						</FileConfiguration>
+					</File>
+					<File
+						RelativePath="..\..\src\cpp\windows\base\stringUtils.cpp"
 						>
 					</File>
 					<File
-						RelativePath="..\..\src\c++\common\base\util\WKeyValuePair.cpp"
+						RelativePath="..\..\src\cpp\windows\base\timeUtils.cpp"
 						>
 					</File>
 					<File
-						RelativePath="..\..\src\c++\common\base\util\WString.cpp"
+						RelativePath="..\..\src\cpp\common\base\util\WKeyValuePair.cpp"
 						>
 					</File>
 					<File
-						RelativePath="..\..\src\c++\common\base\util\XMLProcessor.cpp"
+						RelativePath="..\..\src\cpp\common\base\util\WString.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\cpp\common\base\util\XMLProcessor.cpp"
 						>
 						<FileConfiguration
 							Name="Debug|Win32"
@@ -471,7 +453,7 @@
 				Name="http"
 				>
 				<File
-					RelativePath="..\..\src\c++\common\http\HTTPHeader.cpp"
+					RelativePath="..\..\src\cpp\common\http\HTTPHeader.cpp"
 					>
 					<FileConfiguration
 						Name="Debug|Win32"
@@ -493,7 +475,7 @@
 					</FileConfiguration>
 				</File>
 				<File
-					RelativePath="..\..\src\c++\common\http\Proxy.cpp"
+					RelativePath="..\..\src\cpp\common\http\Proxy.cpp"
 					>
 					<FileConfiguration
 						Name="Debug|Win32"
@@ -515,7 +497,7 @@
 					</FileConfiguration>
 				</File>
 				<File
-					RelativePath="..\..\src\c++\common\http\TransportAgent.cpp"
+					RelativePath="..\..\src\cpp\common\http\TransportAgent.cpp"
 					>
 					<FileConfiguration
 						Name="Debug|Win32"
@@ -537,7 +519,7 @@
 					</FileConfiguration>
 				</File>
 				<File
-					RelativePath="..\..\src\c++\windows\http\TransportAgentFactory.cpp"
+					RelativePath="..\..\src\cpp\windows\http\TransportAgentFactory.cpp"
 					>
 					<FileConfiguration
 						Name="Debug|Win32"
@@ -559,7 +541,7 @@
 					</FileConfiguration>
 				</File>
 				<File
-					RelativePath="..\..\src\c++\common\http\URL.cpp"
+					RelativePath="..\..\src\cpp\common\http\URL.cpp"
 					>
 					<FileConfiguration
 						Name="Debug|Win32"
@@ -581,7 +563,7 @@
 					</FileConfiguration>
 				</File>
 				<File
-					RelativePath="..\..\src\c++\windows\http\WinTransportAgent.cpp"
+					RelativePath="..\..\src\cpp\windows\http\WinTransportAgent.cpp"
 					>
 				</File>
 			</Filter>
@@ -589,11 +571,11 @@
 				Name="client"
 				>
 				<File
-					RelativePath="..\..\src\c++\common\client\CacheSyncSource.cpp"
+					RelativePath="..\..\src\cpp\common\client\CacheSyncSource.cpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\src\c++\common\client\DMTClientConfig.cpp"
+					RelativePath="..\..\src\cpp\common\client\DMTClientConfig.cpp"
 					>
 					<FileConfiguration
 						Name="Debug|Win32"
@@ -615,11 +597,11 @@
 					</FileConfiguration>
 				</File>
 				<File
-					RelativePath="..\..\src\c++\common\client\MailSourceManagementNode.cpp"
+					RelativePath="..\..\src\cpp\common\client\MailSourceManagementNode.cpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\src\c++\common\client\SyncClient.cpp"
+					RelativePath="..\..\src\cpp\common\client\SyncClient.cpp"
 					>
 				</File>
 			</Filter>
@@ -627,11 +609,11 @@
 				Name="spdm"
 				>
 				<File
-					RelativePath="..\..\src\c++\windows\spdm\DeviceManagementNode.cpp"
+					RelativePath="..\..\src\cpp\windows\spdm\DeviceManagementNode.cpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\src\c++\common\spdm\DMtree.cpp"
+					RelativePath="..\..\src\cpp\common\spdm\DMtree.cpp"
 					>
 					<FileConfiguration
 						Name="Debug|Win32"
@@ -653,11 +635,11 @@
 					</FileConfiguration>
 				</File>
 				<File
-					RelativePath="..\..\src\c++\windows\spdm\DMTreeFactory.cpp"
+					RelativePath="..\..\src\cpp\windows\spdm\DMTreeFactory.cpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\src\c++\common\spdm\ManagementNode.cpp"
+					RelativePath="..\..\src\cpp\common\spdm\ManagementNode.cpp"
 					>
 					<FileConfiguration
 						Name="Debug|Win32"
@@ -683,7 +665,7 @@
 				Name="spds"
 				>
 				<File
-					RelativePath="..\..\src\c++\common\spds\AccessConfig.cpp"
+					RelativePath="..\..\src\cpp\common\spds\AccessConfig.cpp"
 					>
 					<FileConfiguration
 						Name="Debug|Win32"
@@ -705,37 +687,15 @@
 					</FileConfiguration>
 				</File>
 				<File
-					RelativePath="..\..\src\c++\common\spds\B64Decoder.cpp"
+					RelativePath="..\..\src\cpp\common\spds\B64Decoder.cpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\src\c++\common\spds\B64Encoder.cpp"
+					RelativePath="..\..\src\cpp\common\spds\B64Encoder.cpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\src\c++\common\spds\BodyPart.cpp"
-					>
-					<FileConfiguration
-						Name="Debug|Win32"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-							AdditionalIncludeDirectories=""
-							PreprocessorDefinitions=""
-						/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Release|Win32"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-							AdditionalIncludeDirectories=""
-							PreprocessorDefinitions=""
-						/>
-					</FileConfiguration>
-				</File>
-				<File
-					RelativePath="..\..\src\c++\common\spds\CredentialHandler.cpp"
+					RelativePath="..\..\src\cpp\common\spds\BodyPart.cpp"
 					>
 					<FileConfiguration
 						Name="Debug|Win32"
@@ -757,31 +717,7 @@
 					</FileConfiguration>
 				</File>
 				<File
-					RelativePath="..\..\src\c++\common\spds\DataTransformer.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\src\c++\common\spds\DataTransformerFactory.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\src\c++\common\spds\DefaultConfigFactory.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\src\c++\windows\spds\DESDecoder.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\src\c++\windows\spds\DESEncoder.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\src\c++\common\spds\DeviceConfig.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\src\c++\common\spds\EmailData.cpp"
+					RelativePath="..\..\src\cpp\common\spds\CredentialHandler.cpp"
 					>
 					<FileConfiguration
 						Name="Debug|Win32"
@@ -803,45 +739,31 @@
 					</FileConfiguration>
 				</File>
 				<File
-					RelativePath="..\..\src\c++\common\spds\FileData.cpp"
+					RelativePath="..\..\src\cpp\common\spds\DataTransformer.cpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\src\c++\common\spds\ItemReport.cpp"
+					RelativePath="..\..\src\cpp\common\spds\DataTransformerFactory.cpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\src\c++\common\spds\MailMessage.cpp"
+					RelativePath="..\..\src\cpp\common\spds\DefaultConfigFactory.cpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\src\c++\common\spds\MailSyncSourceConfig.cpp"
+					RelativePath="..\..\src\cpp\windows\spds\DESDecoder.cpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\src\c++\common\spds\spdsutils.cpp"
+					RelativePath="..\..\src\cpp\windows\spds\DESEncoder.cpp"
 					>
-					<FileConfiguration
-						Name="Debug|Win32"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-							AdditionalIncludeDirectories=""
-							PreprocessorDefinitions=""
-						/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Release|Win32"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-							AdditionalIncludeDirectories=""
-							PreprocessorDefinitions=""
-						/>
-					</FileConfiguration>
 				</File>
 				<File
-					RelativePath="..\..\src\c++\common\spds\SyncItem.cpp"
+					RelativePath="..\..\src\cpp\common\spds\DeviceConfig.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\cpp\common\spds\EmailData.cpp"
 					>
 					<FileConfiguration
 						Name="Debug|Win32"
@@ -863,7 +785,23 @@
 					</FileConfiguration>
 				</File>
 				<File
-					RelativePath="..\..\src\c++\common\spds\SyncItemStatus.cpp"
+					RelativePath="..\..\src\cpp\common\spds\FileData.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\cpp\common\spds\ItemReport.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\cpp\common\spds\MailMessage.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\cpp\common\spds\MailSyncSourceConfig.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\cpp\common\spds\spdsutils.cpp"
 					>
 					<FileConfiguration
 						Name="Debug|Win32"
@@ -885,7 +823,7 @@
 					</FileConfiguration>
 				</File>
 				<File
-					RelativePath="..\..\src\c++\common\spds\SyncManager.cpp"
+					RelativePath="..\..\src\cpp\common\spds\SyncItem.cpp"
 					>
 					<FileConfiguration
 						Name="Debug|Win32"
@@ -907,7 +845,7 @@
 					</FileConfiguration>
 				</File>
 				<File
-					RelativePath="..\..\src\c++\common\spds\SyncManagerConfig.cpp"
+					RelativePath="..\..\src\cpp\common\spds\SyncItemStatus.cpp"
 					>
 					<FileConfiguration
 						Name="Debug|Win32"
@@ -929,7 +867,7 @@
 					</FileConfiguration>
 				</File>
 				<File
-					RelativePath="..\..\src\c++\common\spds\SyncMap.cpp"
+					RelativePath="..\..\src\cpp\common\spds\SyncManager.cpp"
 					>
 					<FileConfiguration
 						Name="Debug|Win32"
@@ -951,7 +889,7 @@
 					</FileConfiguration>
 				</File>
 				<File
-					RelativePath="..\..\src\c++\common\spds\SyncMLBuilder.cpp"
+					RelativePath="..\..\src\cpp\common\spds\SyncManagerConfig.cpp"
 					>
 					<FileConfiguration
 						Name="Debug|Win32"
@@ -973,7 +911,7 @@
 					</FileConfiguration>
 				</File>
 				<File
-					RelativePath="..\..\src\c++\common\spds\SyncMLProcessor.cpp"
+					RelativePath="..\..\src\cpp\common\spds\SyncMap.cpp"
 					>
 					<FileConfiguration
 						Name="Debug|Win32"
@@ -995,11 +933,7 @@
 					</FileConfiguration>
 				</File>
 				<File
-					RelativePath="..\..\src\c++\common\spds\SyncReport.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\src\c++\common\spds\SyncSource.cpp"
+					RelativePath="..\..\src\cpp\common\spds\SyncMLBuilder.cpp"
 					>
 					<FileConfiguration
 						Name="Debug|Win32"
@@ -1021,7 +955,7 @@
 					</FileConfiguration>
 				</File>
 				<File
-					RelativePath="..\..\src\c++\common\spds\SyncSourceConfig.cpp"
+					RelativePath="..\..\src\cpp\common\spds\SyncMLProcessor.cpp"
 					>
 					<FileConfiguration
 						Name="Debug|Win32"
@@ -1043,7 +977,55 @@
 					</FileConfiguration>
 				</File>
 				<File
-					RelativePath="..\..\src\c++\common\spds\SyncSourceReport.cpp"
+					RelativePath="..\..\src\cpp\common\spds\SyncReport.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\cpp\common\spds\SyncSource.cpp"
+					>
+					<FileConfiguration
+						Name="Debug|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							AdditionalIncludeDirectories=""
+							PreprocessorDefinitions=""
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							AdditionalIncludeDirectories=""
+							PreprocessorDefinitions=""
+						/>
+					</FileConfiguration>
+				</File>
+				<File
+					RelativePath="..\..\src\cpp\common\spds\SyncSourceConfig.cpp"
+					>
+					<FileConfiguration
+						Name="Debug|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							AdditionalIncludeDirectories=""
+							PreprocessorDefinitions=""
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							AdditionalIncludeDirectories=""
+							PreprocessorDefinitions=""
+						/>
+					</FileConfiguration>
+				</File>
+				<File
+					RelativePath="..\..\src\cpp\common\spds\SyncSourceReport.cpp"
 					>
 				</File>
 			</Filter>
@@ -1054,7 +1036,7 @@
 					Name="core"
 					>
 					<File
-						RelativePath="..\..\src\c++\common\syncml\core\AbstractCommand.cpp"
+						RelativePath="..\..\src\cpp\common\syncml\core\AbstractCommand.cpp"
 						>
 						<FileConfiguration
 							Name="Debug|Win32"
@@ -1076,7 +1058,7 @@
 						</FileConfiguration>
 					</File>
 					<File
-						RelativePath="..\..\src\c++\common\syncml\core\Add.cpp"
+						RelativePath="..\..\src\cpp\common\syncml\core\Add.cpp"
 						>
 						<FileConfiguration
 							Name="Debug|Win32"
@@ -1098,7 +1080,7 @@
 						</FileConfiguration>
 					</File>
 					<File
-						RelativePath="..\..\src\c++\common\syncml\core\Alert.cpp"
+						RelativePath="..\..\src\cpp\common\syncml\core\Alert.cpp"
 						>
 						<FileConfiguration
 							Name="Debug|Win32"
@@ -1120,7 +1102,7 @@
 						</FileConfiguration>
 					</File>
 					<File
-						RelativePath="..\..\src\c++\common\syncml\core\Anchor.cpp"
+						RelativePath="..\..\src\cpp\common\syncml\core\Anchor.cpp"
 						>
 						<FileConfiguration
 							Name="Debug|Win32"
@@ -1142,7 +1124,7 @@
 						</FileConfiguration>
 					</File>
 					<File
-						RelativePath="..\..\src\c++\common\syncml\core\Atomic.cpp"
+						RelativePath="..\..\src\cpp\common\syncml\core\Atomic.cpp"
 						>
 						<FileConfiguration
 							Name="Debug|Win32"
@@ -1164,7 +1146,7 @@
 						</FileConfiguration>
 					</File>
 					<File
-						RelativePath="..\..\src\c++\common\syncml\core\Authentication.cpp"
+						RelativePath="..\..\src\cpp\common\syncml\core\Authentication.cpp"
 						>
 						<FileConfiguration
 							Name="Debug|Win32"
@@ -1186,7 +1168,7 @@
 						</FileConfiguration>
 					</File>
 					<File
-						RelativePath="..\..\src\c++\common\syncml\core\Chal.cpp"
+						RelativePath="..\..\src\cpp\common\syncml\core\Chal.cpp"
 						>
 						<FileConfiguration
 							Name="Debug|Win32"
@@ -1208,7 +1190,7 @@
 						</FileConfiguration>
 					</File>
 					<File
-						RelativePath="..\..\src\c++\common\syncml\core\CmdID.cpp"
+						RelativePath="..\..\src\cpp\common\syncml\core\CmdID.cpp"
 						>
 						<FileConfiguration
 							Name="Debug|Win32"
@@ -1230,7 +1212,7 @@
 						</FileConfiguration>
 					</File>
 					<File
-						RelativePath="..\..\src\c++\common\syncml\core\ComplexData.cpp"
+						RelativePath="..\..\src\cpp\common\syncml\core\ComplexData.cpp"
 						>
 						<FileConfiguration
 							Name="Debug|Win32"
@@ -1252,7 +1234,7 @@
 						</FileConfiguration>
 					</File>
 					<File
-						RelativePath="..\..\src\c++\common\syncml\core\ContentTypeInfo.cpp"
+						RelativePath="..\..\src\cpp\common\syncml\core\ContentTypeInfo.cpp"
 						>
 						<FileConfiguration
 							Name="Debug|Win32"
@@ -1274,7 +1256,7 @@
 						</FileConfiguration>
 					</File>
 					<File
-						RelativePath="..\..\src\c++\common\syncml\core\ContentTypeParameter.cpp"
+						RelativePath="..\..\src\cpp\common\syncml\core\ContentTypeParameter.cpp"
 						>
 						<FileConfiguration
 							Name="Debug|Win32"
@@ -1296,7 +1278,7 @@
 						</FileConfiguration>
 					</File>
 					<File
-						RelativePath="..\..\src\c++\common\syncml\core\Copy.cpp"
+						RelativePath="..\..\src\cpp\common\syncml\core\Copy.cpp"
 						>
 						<FileConfiguration
 							Name="Debug|Win32"
@@ -1318,7 +1300,7 @@
 						</FileConfiguration>
 					</File>
 					<File
-						RelativePath="..\..\src\c++\common\syncml\core\Cred.cpp"
+						RelativePath="..\..\src\cpp\common\syncml\core\Cred.cpp"
 						>
 						<FileConfiguration
 							Name="Debug|Win32"
@@ -1340,7 +1322,7 @@
 						</FileConfiguration>
 					</File>
 					<File
-						RelativePath="..\..\src\c++\common\syncml\core\CTCap.cpp"
+						RelativePath="..\..\src\cpp\common\syncml\core\CTCap.cpp"
 						>
 						<FileConfiguration
 							Name="Debug|Win32"
@@ -1362,7 +1344,7 @@
 						</FileConfiguration>
 					</File>
 					<File
-						RelativePath="..\..\src\c++\common\syncml\core\CTPropParam.cpp"
+						RelativePath="..\..\src\cpp\common\syncml\core\CTPropParam.cpp"
 						>
 						<FileConfiguration
 							Name="Debug|Win32"
@@ -1384,7 +1366,7 @@
 						</FileConfiguration>
 					</File>
 					<File
-						RelativePath="..\..\src\c++\common\syncml\core\CTTypeSupported.cpp"
+						RelativePath="..\..\src\cpp\common\syncml\core\CTTypeSupported.cpp"
 						>
 						<FileConfiguration
 							Name="Debug|Win32"
@@ -1406,7 +1388,7 @@
 						</FileConfiguration>
 					</File>
 					<File
-						RelativePath="..\..\src\c++\common\syncml\core\Data.cpp"
+						RelativePath="..\..\src\cpp\common\syncml\core\Data.cpp"
 						>
 						<FileConfiguration
 							Name="Debug|Win32"
@@ -1428,7 +1410,7 @@
 						</FileConfiguration>
 					</File>
 					<File
-						RelativePath="..\..\src\c++\common\syncml\core\DataStore.cpp"
+						RelativePath="..\..\src\cpp\common\syncml\core\DataStore.cpp"
 						>
 						<FileConfiguration
 							Name="Debug|Win32"
@@ -1450,7 +1432,7 @@
 						</FileConfiguration>
 					</File>
 					<File
-						RelativePath="..\..\src\c++\common\syncml\core\Delete.cpp"
+						RelativePath="..\..\src\cpp\common\syncml\core\Delete.cpp"
 						>
 						<FileConfiguration
 							Name="Debug|Win32"
@@ -1472,7 +1454,7 @@
 						</FileConfiguration>
 					</File>
 					<File
-						RelativePath="..\..\src\c++\common\syncml\core\DevInf.cpp"
+						RelativePath="..\..\src\cpp\common\syncml\core\DevInf.cpp"
 						>
 						<FileConfiguration
 							Name="Debug|Win32"
@@ -1494,7 +1476,7 @@
 						</FileConfiguration>
 					</File>
 					<File
-						RelativePath="..\..\src\c++\common\syncml\core\DevInfData.cpp"
+						RelativePath="..\..\src\cpp\common\syncml\core\DevInfData.cpp"
 						>
 						<FileConfiguration
 							Name="Debug|Win32"
@@ -1516,7 +1498,7 @@
 						</FileConfiguration>
 					</File>
 					<File
-						RelativePath="..\..\src\c++\common\syncml\core\DevInfItem.cpp"
+						RelativePath="..\..\src\cpp\common\syncml\core\DevInfItem.cpp"
 						>
 						<FileConfiguration
 							Name="Debug|Win32"
@@ -1538,7 +1520,7 @@
 						</FileConfiguration>
 					</File>
 					<File
-						RelativePath="..\..\src\c++\common\syncml\core\DSMem.cpp"
+						RelativePath="..\..\src\cpp\common\syncml\core\DSMem.cpp"
 						>
 						<FileConfiguration
 							Name="Debug|Win32"
@@ -1560,7 +1542,7 @@
 						</FileConfiguration>
 					</File>
 					<File
-						RelativePath="..\..\src\c++\common\syncml\core\EMI.cpp"
+						RelativePath="..\..\src\cpp\common\syncml\core\EMI.cpp"
 						>
 						<FileConfiguration
 							Name="Debug|Win32"
@@ -1582,7 +1564,7 @@
 						</FileConfiguration>
 					</File>
 					<File
-						RelativePath="..\..\src\c++\common\syncml\core\Exec.cpp"
+						RelativePath="..\..\src\cpp\common\syncml\core\Exec.cpp"
 						>
 						<FileConfiguration
 							Name="Debug|Win32"
@@ -1604,7 +1586,7 @@
 						</FileConfiguration>
 					</File>
 					<File
-						RelativePath="..\..\src\c++\common\syncml\core\Ext.cpp"
+						RelativePath="..\..\src\cpp\common\syncml\core\Ext.cpp"
 						>
 						<FileConfiguration
 							Name="Debug|Win32"
@@ -1626,7 +1608,7 @@
 						</FileConfiguration>
 					</File>
 					<File
-						RelativePath="..\..\src\c++\common\syncml\core\Filter.cpp"
+						RelativePath="..\..\src\cpp\common\syncml\core\Filter.cpp"
 						>
 						<FileConfiguration
 							Name="Debug|Win32"
@@ -1648,7 +1630,7 @@
 						</FileConfiguration>
 					</File>
 					<File
-						RelativePath="..\..\src\c++\common\syncml\core\Get.cpp"
+						RelativePath="..\..\src\cpp\common\syncml\core\Get.cpp"
 						>
 						<FileConfiguration
 							Name="Debug|Win32"
@@ -1670,7 +1652,7 @@
 						</FileConfiguration>
 					</File>
 					<File
-						RelativePath="..\..\src\c++\common\syncml\core\Item.cpp"
+						RelativePath="..\..\src\cpp\common\syncml\core\Item.cpp"
 						>
 						<FileConfiguration
 							Name="Debug|Win32"
@@ -1692,7 +1674,7 @@
 						</FileConfiguration>
 					</File>
 					<File
-						RelativePath="..\..\src\c++\common\syncml\core\ItemizedCommand.cpp"
+						RelativePath="..\..\src\cpp\common\syncml\core\ItemizedCommand.cpp"
 						>
 						<FileConfiguration
 							Name="Debug|Win32"
@@ -1714,7 +1696,7 @@
 						</FileConfiguration>
 					</File>
 					<File
-						RelativePath="..\..\src\c++\common\syncml\core\Map.cpp"
+						RelativePath="..\..\src\cpp\common\syncml\core\Map.cpp"
 						>
 						<FileConfiguration
 							Name="Debug|Win32"
@@ -1736,7 +1718,7 @@
 						</FileConfiguration>
 					</File>
 					<File
-						RelativePath="..\..\src\c++\common\syncml\core\MapItem.cpp"
+						RelativePath="..\..\src\cpp\common\syncml\core\MapItem.cpp"
 						>
 						<FileConfiguration
 							Name="Debug|Win32"
@@ -1758,7 +1740,7 @@
 						</FileConfiguration>
 					</File>
 					<File
-						RelativePath="..\..\src\c++\common\syncml\core\Mem.cpp"
+						RelativePath="..\..\src\cpp\common\syncml\core\Mem.cpp"
 						>
 						<FileConfiguration
 							Name="Debug|Win32"
@@ -1780,7 +1762,7 @@
 						</FileConfiguration>
 					</File>
 					<File
-						RelativePath="..\..\src\c++\common\syncml\core\Meta.cpp"
+						RelativePath="..\..\src\cpp\common\syncml\core\Meta.cpp"
 						>
 						<FileConfiguration
 							Name="Debug|Win32"
@@ -1802,7 +1784,7 @@
 						</FileConfiguration>
 					</File>
 					<File
-						RelativePath="..\..\src\c++\common\syncml\core\MetInf.cpp"
+						RelativePath="..\..\src\cpp\common\syncml\core\MetInf.cpp"
 						>
 						<FileConfiguration
 							Name="Debug|Win32"
@@ -1824,7 +1806,7 @@
 						</FileConfiguration>
 					</File>
 					<File
-						RelativePath="..\..\src\c++\common\syncml\core\ModificationCommand.cpp"
+						RelativePath="..\..\src\cpp\common\syncml\core\ModificationCommand.cpp"
 						>
 						<FileConfiguration
 							Name="Debug|Win32"
@@ -1846,7 +1828,7 @@
 						</FileConfiguration>
 					</File>
 					<File
-						RelativePath="..\..\src\c++\common\syncml\core\NextNonce.cpp"
+						RelativePath="..\..\src\cpp\common\syncml\core\NextNonce.cpp"
 						>
 						<FileConfiguration
 							Name="Debug|Win32"
@@ -1868,7 +1850,7 @@
 						</FileConfiguration>
 					</File>
 					<File
-						RelativePath="..\..\src\c++\common\syncml\core\ObjectDel.cpp"
+						RelativePath="..\..\src\cpp\common\syncml\core\ObjectDel.cpp"
 						>
 						<FileConfiguration
 							Name="Debug|Win32"
@@ -1890,7 +1872,7 @@
 						</FileConfiguration>
 					</File>
 					<File
-						RelativePath="..\..\src\c++\common\syncml\core\Property.cpp"
+						RelativePath="..\..\src\cpp\common\syncml\core\Property.cpp"
 						>
 						<FileConfiguration
 							Name="Debug|Win32"
@@ -1912,7 +1894,7 @@
 						</FileConfiguration>
 					</File>
 					<File
-						RelativePath="..\..\src\c++\common\syncml\core\PropParam.cpp"
+						RelativePath="..\..\src\cpp\common\syncml\core\PropParam.cpp"
 						>
 						<FileConfiguration
 							Name="Debug|Win32"
@@ -1934,7 +1916,7 @@
 						</FileConfiguration>
 					</File>
 					<File
-						RelativePath="..\..\src\c++\common\syncml\core\Put.cpp"
+						RelativePath="..\..\src\cpp\common\syncml\core\Put.cpp"
 						>
 						<FileConfiguration
 							Name="Debug|Win32"
@@ -1956,7 +1938,7 @@
 						</FileConfiguration>
 					</File>
 					<File
-						RelativePath="..\..\src\c++\common\syncml\core\Replace.cpp"
+						RelativePath="..\..\src\cpp\common\syncml\core\Replace.cpp"
 						>
 						<FileConfiguration
 							Name="Debug|Win32"
@@ -1978,7 +1960,7 @@
 						</FileConfiguration>
 					</File>
 					<File
-						RelativePath="..\..\src\c++\common\syncml\core\ResponseCommand.cpp"
+						RelativePath="..\..\src\cpp\common\syncml\core\ResponseCommand.cpp"
 						>
 						<FileConfiguration
 							Name="Debug|Win32"
@@ -2000,7 +1982,7 @@
 						</FileConfiguration>
 					</File>
 					<File
-						RelativePath="..\..\src\c++\common\syncml\core\Results.cpp"
+						RelativePath="..\..\src\cpp\common\syncml\core\Results.cpp"
 						>
 						<FileConfiguration
 							Name="Debug|Win32"
@@ -2022,7 +2004,7 @@
 						</FileConfiguration>
 					</File>
 					<File
-						RelativePath="..\..\src\c++\common\syncml\core\Search.cpp"
+						RelativePath="..\..\src\cpp\common\syncml\core\Search.cpp"
 						>
 						<FileConfiguration
 							Name="Debug|Win32"
@@ -2044,7 +2026,7 @@
 						</FileConfiguration>
 					</File>
 					<File
-						RelativePath="..\..\src\c++\common\syncml\core\Sequence.cpp"
+						RelativePath="..\..\src\cpp\common\syncml\core\Sequence.cpp"
 						>
 						<FileConfiguration
 							Name="Debug|Win32"
@@ -2066,7 +2048,7 @@
 						</FileConfiguration>
 					</File>
 					<File
-						RelativePath="..\..\src\c++\common\syncml\core\SessionID.cpp"
+						RelativePath="..\..\src\cpp\common\syncml\core\SessionID.cpp"
 						>
 						<FileConfiguration
 							Name="Debug|Win32"
@@ -2088,7 +2070,7 @@
 						</FileConfiguration>
 					</File>
 					<File
-						RelativePath="..\..\src\c++\common\syncml\core\Source.cpp"
+						RelativePath="..\..\src\cpp\common\syncml\core\Source.cpp"
 						>
 						<FileConfiguration
 							Name="Debug|Win32"
@@ -2110,7 +2092,7 @@
 						</FileConfiguration>
 					</File>
 					<File
-						RelativePath="..\..\src\c++\common\syncml\core\SourceArray.cpp"
+						RelativePath="..\..\src\cpp\common\syncml\core\SourceArray.cpp"
 						>
 						<FileConfiguration
 							Name="Debug|Win32"
@@ -2132,7 +2114,7 @@
 						</FileConfiguration>
 					</File>
 					<File
-						RelativePath="..\..\src\c++\common\syncml\core\SourceRef.cpp"
+						RelativePath="..\..\src\cpp\common\syncml\core\SourceRef.cpp"
 						>
 						<FileConfiguration
 							Name="Debug|Win32"
@@ -2154,7 +2136,7 @@
 						</FileConfiguration>
 					</File>
 					<File
-						RelativePath="..\..\src\c++\common\syncml\core\Status.cpp"
+						RelativePath="..\..\src\cpp\common\syncml\core\Status.cpp"
 						>
 						<FileConfiguration
 							Name="Debug|Win32"
@@ -2176,7 +2158,7 @@
 						</FileConfiguration>
 					</File>
 					<File
-						RelativePath="..\..\src\c++\common\syncml\core\StringElement.cpp"
+						RelativePath="..\..\src\cpp\common\syncml\core\StringElement.cpp"
 						>
 						<FileConfiguration
 							Name="Debug|Win32"
@@ -2198,7 +2180,7 @@
 						</FileConfiguration>
 					</File>
 					<File
-						RelativePath="..\..\src\c++\common\syncml\core\Sync.cpp"
+						RelativePath="..\..\src\cpp\common\syncml\core\Sync.cpp"
 						>
 						<FileConfiguration
 							Name="Debug|Win32"
@@ -2220,7 +2202,7 @@
 						</FileConfiguration>
 					</File>
 					<File
-						RelativePath="..\..\src\c++\common\syncml\core\SyncAlert.cpp"
+						RelativePath="..\..\src\cpp\common\syncml\core\SyncAlert.cpp"
 						>
 						<FileConfiguration
 							Name="Debug|Win32"
@@ -2242,7 +2224,7 @@
 						</FileConfiguration>
 					</File>
 					<File
-						RelativePath="..\..\src\c++\common\syncml\core\SyncBody.cpp"
+						RelativePath="..\..\src\cpp\common\syncml\core\SyncBody.cpp"
 						>
 						<FileConfiguration
 							Name="Debug|Win32"
@@ -2264,7 +2246,7 @@
 						</FileConfiguration>
 					</File>
 					<File
-						RelativePath="..\..\src\c++\common\syncml\core\SyncCap.cpp"
+						RelativePath="..\..\src\cpp\common\syncml\core\SyncCap.cpp"
 						>
 						<FileConfiguration
 							Name="Debug|Win32"
@@ -2286,7 +2268,7 @@
 						</FileConfiguration>
 					</File>
 					<File
-						RelativePath="..\..\src\c++\common\syncml\core\SyncHdr.cpp"
+						RelativePath="..\..\src\cpp\common\syncml\core\SyncHdr.cpp"
 						>
 						<FileConfiguration
 							Name="Debug|Win32"
@@ -2308,7 +2290,7 @@
 						</FileConfiguration>
 					</File>
 					<File
-						RelativePath="..\..\src\c++\common\syncml\core\SyncML.cpp"
+						RelativePath="..\..\src\cpp\common\syncml\core\SyncML.cpp"
 						>
 						<FileConfiguration
 							Name="Debug|Win32"
@@ -2330,7 +2312,7 @@
 						</FileConfiguration>
 					</File>
 					<File
-						RelativePath="..\..\src\c++\common\syncml\core\SyncNotification.cpp"
+						RelativePath="..\..\src\cpp\common\syncml\core\SyncNotification.cpp"
 						>
 						<FileConfiguration
 							Name="Debug|Win32"
@@ -2352,7 +2334,7 @@
 						</FileConfiguration>
 					</File>
 					<File
-						RelativePath="..\..\src\c++\common\syncml\core\SyncType.cpp"
+						RelativePath="..\..\src\cpp\common\syncml\core\SyncType.cpp"
 						>
 						<FileConfiguration
 							Name="Debug|Win32"
@@ -2374,7 +2356,7 @@
 						</FileConfiguration>
 					</File>
 					<File
-						RelativePath="..\..\src\c++\common\syncml\core\SyncTypeArray.cpp"
+						RelativePath="..\..\src\cpp\common\syncml\core\SyncTypeArray.cpp"
 						>
 						<FileConfiguration
 							Name="Debug|Win32"
@@ -2396,7 +2378,7 @@
 						</FileConfiguration>
 					</File>
 					<File
-						RelativePath="..\..\src\c++\common\syncml\core\Target.cpp"
+						RelativePath="..\..\src\cpp\common\syncml\core\Target.cpp"
 						>
 						<FileConfiguration
 							Name="Debug|Win32"
@@ -2418,7 +2400,7 @@
 						</FileConfiguration>
 					</File>
 					<File
-						RelativePath="..\..\src\c++\common\syncml\core\TargetRef.cpp"
+						RelativePath="..\..\src\cpp\common\syncml\core\TargetRef.cpp"
 						>
 						<FileConfiguration
 							Name="Debug|Win32"
@@ -2440,7 +2422,7 @@
 						</FileConfiguration>
 					</File>
 					<File
-						RelativePath="..\..\src\c++\common\syncml\core\VerDTD.cpp"
+						RelativePath="..\..\src\cpp\common\syncml\core\VerDTD.cpp"
 						>
 						<FileConfiguration
 							Name="Debug|Win32"
@@ -2462,7 +2444,7 @@
 						</FileConfiguration>
 					</File>
 					<File
-						RelativePath="..\..\src\c++\common\syncml\core\VerProto.cpp"
+						RelativePath="..\..\src\cpp\common\syncml\core\VerProto.cpp"
 						>
 						<FileConfiguration
 							Name="Debug|Win32"
@@ -2488,7 +2470,7 @@
 					Name="parser"
 					>
 					<File
-						RelativePath="..\..\src\c++\common\syncml\parser\Parser.cpp"
+						RelativePath="..\..\src\cpp\common\syncml\parser\Parser.cpp"
 						>
 						<FileConfiguration
 							Name="Debug|Win32"
@@ -2514,7 +2496,7 @@
 					Name="formatter"
 					>
 					<File
-						RelativePath="..\..\src\c++\common\syncml\formatter\Formatter.cpp"
+						RelativePath="..\..\src\cpp\common\syncml\formatter\Formatter.cpp"
 						>
 						<FileConfiguration
 							Name="Debug|Win32"
@@ -2541,7 +2523,7 @@
 				Name="filter"
 				>
 				<File
-					RelativePath="..\..\src\c++\common\filter\AllClause.cpp"
+					RelativePath="..\..\src\cpp\common\filter\AllClause.cpp"
 					>
 					<FileConfiguration
 						Name="Debug|Win32"
@@ -2563,7 +2545,7 @@
 					</FileConfiguration>
 				</File>
 				<File
-					RelativePath="..\..\src\c++\common\filter\Clause.cpp"
+					RelativePath="..\..\src\cpp\common\filter\Clause.cpp"
 					>
 					<FileConfiguration
 						Name="Debug|Win32"
@@ -2585,7 +2567,7 @@
 					</FileConfiguration>
 				</File>
 				<File
-					RelativePath="..\..\src\c++\common\filter\ClauseUtil.cpp"
+					RelativePath="..\..\src\cpp\common\filter\ClauseUtil.cpp"
 					>
 					<FileConfiguration
 						Name="Debug|Win32"
@@ -2607,7 +2589,7 @@
 					</FileConfiguration>
 				</File>
 				<File
-					RelativePath="..\..\src\c++\common\filter\FieldClause.cpp"
+					RelativePath="..\..\src\cpp\common\filter\FieldClause.cpp"
 					>
 					<FileConfiguration
 						Name="Debug|Win32"
@@ -2629,7 +2611,7 @@
 					</FileConfiguration>
 				</File>
 				<File
-					RelativePath="..\..\src\c++\common\filter\LogicalClause.cpp"
+					RelativePath="..\..\src\cpp\common\filter\LogicalClause.cpp"
 					>
 					<FileConfiguration
 						Name="Debug|Win32"
@@ -2651,7 +2633,7 @@
 					</FileConfiguration>
 				</File>
 				<File
-					RelativePath="..\..\src\c++\common\filter\SourceFilter.cpp"
+					RelativePath="..\..\src\cpp\common\filter\SourceFilter.cpp"
 					>
 					<FileConfiguration
 						Name="Debug|Win32"
@@ -2673,7 +2655,7 @@
 					</FileConfiguration>
 				</File>
 				<File
-					RelativePath="..\..\src\c++\common\filter\WhereClause.cpp"
+					RelativePath="..\..\src\cpp\common\filter\WhereClause.cpp"
 					>
 					<FileConfiguration
 						Name="Debug|Win32"
@@ -2699,7 +2681,7 @@
 				Name="vocl"
 				>
 				<File
-					RelativePath="..\..\src\c++\common\vocl\VConverter.cpp"
+					RelativePath="..\..\src\cpp\common\vocl\VConverter.cpp"
 					>
 					<FileConfiguration
 						Name="Debug|Win32"
@@ -2721,7 +2703,7 @@
 					</FileConfiguration>
 				</File>
 				<File
-					RelativePath="..\..\src\c++\common\vocl\VObject.cpp"
+					RelativePath="..\..\src\cpp\common\vocl\VObject.cpp"
 					>
 					<FileConfiguration
 						Name="Debug|Win32"
@@ -2743,7 +2725,7 @@
 					</FileConfiguration>
 				</File>
 				<File
-					RelativePath="..\..\src\c++\common\vocl\VObjectFactory.cpp"
+					RelativePath="..\..\src\cpp\common\vocl\VObjectFactory.cpp"
 					>
 					<FileConfiguration
 						Name="Debug|Win32"
@@ -2765,7 +2747,7 @@
 					</FileConfiguration>
 				</File>
 				<File
-					RelativePath="..\..\src\c++\common\vocl\VProperty.cpp"
+					RelativePath="..\..\src\cpp\common\vocl\VProperty.cpp"
 					>
 					<FileConfiguration
 						Name="Debug|Win32"
@@ -2790,7 +2772,7 @@
 					Name="iCalendar"
 					>
 					<File
-						RelativePath="..\..\src\c++\common\vocl\iCalendar\Calendar.cpp"
+						RelativePath="..\..\src\cpp\common\vocl\iCalendar\Calendar.cpp"
 						>
 						<FileConfiguration
 							Name="Debug|Win32"
@@ -2812,7 +2794,7 @@
 						</FileConfiguration>
 					</File>
 					<File
-						RelativePath="..\..\src\c++\common\vocl\iCalendar\Event.cpp"
+						RelativePath="..\..\src\cpp\common\vocl\iCalendar\Event.cpp"
 						>
 						<FileConfiguration
 							Name="Debug|Win32"
@@ -2834,7 +2816,7 @@
 						</FileConfiguration>
 					</File>
 					<File
-						RelativePath="..\..\src\c++\common\vocl\iCalendar\iCalConverter.cpp"
+						RelativePath="..\..\src\cpp\common\vocl\iCalendar\iCalConverter.cpp"
 						>
 						<FileConfiguration
 							Name="Debug|Win32"
@@ -2856,7 +2838,7 @@
 						</FileConfiguration>
 					</File>
 					<File
-						RelativePath="..\..\src\c++\common\vocl\iCalendar\iCalProperty.cpp"
+						RelativePath="..\..\src\cpp\common\vocl\iCalendar\iCalProperty.cpp"
 						>
 						<FileConfiguration
 							Name="Debug|Win32"
@@ -2878,7 +2860,7 @@
 						</FileConfiguration>
 					</File>
 					<File
-						RelativePath="..\..\src\c++\common\vocl\iCalendar\ToDo.cpp"
+						RelativePath="..\..\src\cpp\common\vocl\iCalendar\ToDo.cpp"
 						>
 						<FileConfiguration
 							Name="Debug|Win32"
@@ -2904,7 +2886,7 @@
 					Name="vCard"
 					>
 					<File
-						RelativePath="..\..\src\c++\common\vocl\vCard\Address.cpp"
+						RelativePath="..\..\src\cpp\common\vocl\vCard\Address.cpp"
 						>
 						<FileConfiguration
 							Name="Debug|Win32"
@@ -2926,7 +2908,7 @@
 						</FileConfiguration>
 					</File>
 					<File
-						RelativePath="..\..\src\c++\common\vocl\vCard\BusinessDetail.cpp"
+						RelativePath="..\..\src\cpp\common\vocl\vCard\BusinessDetail.cpp"
 						>
 						<FileConfiguration
 							Name="Debug|Win32"
@@ -2948,7 +2930,7 @@
 						</FileConfiguration>
 					</File>
 					<File
-						RelativePath="..\..\src\c++\common\vocl\vCard\Contact.cpp"
+						RelativePath="..\..\src\cpp\common\vocl\vCard\Contact.cpp"
 						>
 						<FileConfiguration
 							Name="Debug|Win32"
@@ -2970,7 +2952,7 @@
 						</FileConfiguration>
 					</File>
 					<File
-						RelativePath="..\..\src\c++\common\vocl\vCard\Contact30.cpp"
+						RelativePath="..\..\src\cpp\common\vocl\vCard\Contact30.cpp"
 						>
 						<FileConfiguration
 							Name="Debug|Win32"
@@ -2992,7 +2974,7 @@
 						</FileConfiguration>
 					</File>
 					<File
-						RelativePath="..\..\src\c++\common\vocl\vCard\ContactDetail.cpp"
+						RelativePath="..\..\src\cpp\common\vocl\vCard\ContactDetail.cpp"
 						>
 						<FileConfiguration
 							Name="Debug|Win32"
@@ -3014,7 +2996,7 @@
 						</FileConfiguration>
 					</File>
 					<File
-						RelativePath="..\..\src\c++\common\vocl\vCard\Email.cpp"
+						RelativePath="..\..\src\cpp\common\vocl\vCard\Email.cpp"
 						>
 						<FileConfiguration
 							Name="Debug|Win32"
@@ -3036,7 +3018,7 @@
 						</FileConfiguration>
 					</File>
 					<File
-						RelativePath="..\..\src\c++\common\vocl\vCard\Name.cpp"
+						RelativePath="..\..\src\cpp\common\vocl\vCard\Name.cpp"
 						>
 						<FileConfiguration
 							Name="Debug|Win32"
@@ -3058,7 +3040,7 @@
 						</FileConfiguration>
 					</File>
 					<File
-						RelativePath="..\..\src\c++\common\vocl\vCard\Note.cpp"
+						RelativePath="..\..\src\cpp\common\vocl\vCard\Note.cpp"
 						>
 						<FileConfiguration
 							Name="Debug|Win32"
@@ -3080,7 +3062,7 @@
 						</FileConfiguration>
 					</File>
 					<File
-						RelativePath="..\..\src\c++\common\vocl\vCard\PersonalDetail.cpp"
+						RelativePath="..\..\src\cpp\common\vocl\vCard\PersonalDetail.cpp"
 						>
 						<FileConfiguration
 							Name="Debug|Win32"
@@ -3102,7 +3084,7 @@
 						</FileConfiguration>
 					</File>
 					<File
-						RelativePath="..\..\src\c++\common\vocl\vCard\Phone.cpp"
+						RelativePath="..\..\src\cpp\common\vocl\vCard\Phone.cpp"
 						>
 						<FileConfiguration
 							Name="Debug|Win32"
@@ -3124,7 +3106,7 @@
 						</FileConfiguration>
 					</File>
 					<File
-						RelativePath="..\..\src\c++\common\vocl\vCard\Title.cpp"
+						RelativePath="..\..\src\cpp\common\vocl\vCard\Title.cpp"
 						>
 						<FileConfiguration
 							Name="Debug|Win32"
@@ -3146,7 +3128,7 @@
 						</FileConfiguration>
 					</File>
 					<File
-						RelativePath="..\..\src\c++\common\vocl\vCard\TypedProperty.cpp"
+						RelativePath="..\..\src\cpp\common\vocl\vCard\TypedProperty.cpp"
 						>
 						<FileConfiguration
 							Name="Debug|Win32"
@@ -3168,7 +3150,7 @@
 						</FileConfiguration>
 					</File>
 					<File
-						RelativePath="..\..\src\c++\common\vocl\vCard\vCardConverter.cpp"
+						RelativePath="..\..\src\cpp\common\vocl\vCard\vCardConverter.cpp"
 						>
 						<FileConfiguration
 							Name="Debug|Win32"
@@ -3190,7 +3172,7 @@
 						</FileConfiguration>
 					</File>
 					<File
-						RelativePath="..\..\src\c++\common\vocl\vCard\vCardProperty.cpp"
+						RelativePath="..\..\src\cpp\common\vocl\vCard\vCardProperty.cpp"
 						>
 						<FileConfiguration
 							Name="Debug|Win32"
@@ -3212,7 +3194,7 @@
 						</FileConfiguration>
 					</File>
 					<File
-						RelativePath="..\..\src\c++\common\vocl\vCard\WebPage.cpp"
+						RelativePath="..\..\src\cpp\common\vocl\vCard\WebPage.cpp"
 						>
 						<FileConfiguration
 							Name="Debug|Win32"
@@ -3238,55 +3220,55 @@
 					Name="winObjects"
 					>
 					<File
-						RelativePath="..\..\src\c++\windows\vocl\sifUtils.cpp"
+						RelativePath="..\..\src\cpp\windows\vocl\sifUtils.cpp"
 						>
 					</File>
 					<File
-						RelativePath="..\..\src\c++\windows\vocl\WinContact.cpp"
+						RelativePath="..\..\src\cpp\windows\vocl\WinContact.cpp"
 						>
 					</File>
 					<File
-						RelativePath="..\..\src\c++\windows\vocl\WinContactSIF.cpp"
+						RelativePath="..\..\src\cpp\windows\vocl\WinContactSIF.cpp"
 						>
 					</File>
 					<File
-						RelativePath="..\..\src\c++\windows\vocl\WinEvent.cpp"
+						RelativePath="..\..\src\cpp\windows\vocl\WinEvent.cpp"
 						>
 					</File>
 					<File
-						RelativePath="..\..\src\c++\windows\vocl\WinEventSIF.cpp"
+						RelativePath="..\..\src\cpp\windows\vocl\WinEventSIF.cpp"
 						>
 					</File>
 					<File
-						RelativePath="..\..\src\c++\windows\vocl\WinItem.cpp"
+						RelativePath="..\..\src\cpp\windows\vocl\WinItem.cpp"
 						>
 					</File>
 					<File
-						RelativePath="..\..\src\c++\windows\vocl\WinNote.cpp"
+						RelativePath="..\..\src\cpp\windows\vocl\WinNote.cpp"
 						>
 					</File>
 					<File
-						RelativePath="..\..\src\c++\windows\vocl\WinNoteSIF.cpp"
+						RelativePath="..\..\src\cpp\windows\vocl\WinNoteSIF.cpp"
 						>
 					</File>
 					<File
-						RelativePath="..\..\src\c++\windows\vocl\WinRecipient.cpp"
+						RelativePath="..\..\src\cpp\windows\vocl\WinRecipient.cpp"
 						>
 					</File>
 					<File
-						RelativePath="..\..\src\c++\windows\vocl\WinRecurrence.cpp"
+						RelativePath="..\..\src\cpp\windows\vocl\WinRecurrence.cpp"
 						>
 					</File>
 					<File
-						RelativePath="..\..\src\c++\windows\vocl\WinRecurrenceSIF.cpp"
+						RelativePath="..\..\src\cpp\windows\vocl\WinRecurrenceSIF.cpp"
 						>
 					</File>
 					<File
-						RelativePath="..\..\src\c++\windows\vocl\WinTask.cpp"
+						RelativePath="..\..\src\cpp\windows\vocl\WinTask.cpp"
 						>
 					</File>
 					<File
-						RelativePath="..\..\src\c++\windows\vocl\WinTaskSIF.cpp"
+						RelativePath="..\..\src\cpp\windows\vocl\WinTaskSIF.cpp"
 						>
 					</File>
 				</Filter>
@@ -3295,63 +3277,63 @@
 				Name="event"
 				>
 				<File
-					RelativePath="..\..\src\c++\common\event\BaseEvent.cpp"
+					RelativePath="..\..\src\cpp\common\event\BaseEvent.cpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\src\c++\common\event\FireEvent.cpp"
+					RelativePath="..\..\src\cpp\common\event\FireEvent.cpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\src\c++\common\event\Listener.cpp"
+					RelativePath="..\..\src\cpp\common\event\Listener.cpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\src\c++\common\event\ManageListener.cpp"
+					RelativePath="..\..\src\cpp\common\event\ManageListener.cpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\src\c++\common\event\SetListener.cpp"
+					RelativePath="..\..\src\cpp\common\event\SetListener.cpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\src\c++\common\event\SyncEvent.cpp"
+					RelativePath="..\..\src\cpp\common\event\SyncEvent.cpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\src\c++\common\event\SyncItemEvent.cpp"
+					RelativePath="..\..\src\cpp\common\event\SyncItemEvent.cpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\src\c++\common\event\SyncItemListener.cpp"
+					RelativePath="..\..\src\cpp\common\event\SyncItemListener.cpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\src\c++\common\event\SyncListener.cpp"
+					RelativePath="..\..\src\cpp\common\event\SyncListener.cpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\src\c++\common\event\SyncSourceEvent.cpp"
+					RelativePath="..\..\src\cpp\common\event\SyncSourceEvent.cpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\src\c++\common\event\SyncSourceListener.cpp"
+					RelativePath="..\..\src\cpp\common\event\SyncSourceListener.cpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\src\c++\common\event\SyncStatusEvent.cpp"
+					RelativePath="..\..\src\cpp\common\event\SyncStatusEvent.cpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\src\c++\common\event\SyncStatusListener.cpp"
+					RelativePath="..\..\src\cpp\common\event\SyncStatusListener.cpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\src\c++\common\event\TransportEvent.cpp"
+					RelativePath="..\..\src\cpp\common\event\TransportEvent.cpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\src\c++\common\event\TransportListener.cpp"
+					RelativePath="..\..\src\cpp\common\event\TransportListener.cpp"
 					>
 				</File>
 			</Filter>
