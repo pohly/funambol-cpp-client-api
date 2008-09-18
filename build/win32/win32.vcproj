@@ -362,28 +362,6 @@
 						>
 					</File>
 					<File
-						RelativePath="..\..\src\cpp\common\base\util\KeyValuePair.cpp"
-						>
-						<FileConfiguration
-							Name="Debug|Win32"
-							>
-							<Tool
-								Name="VCCLCompilerTool"
-								AdditionalIncludeDirectories=""
-								PreprocessorDefinitions=""
-							/>
-						</FileConfiguration>
-						<FileConfiguration
-							Name="Release|Win32"
-							>
-							<Tool
-								Name="VCCLCompilerTool"
-								AdditionalIncludeDirectories=""
-								PreprocessorDefinitions=""
-							/>
-						</FileConfiguration>
-					</File>
-					<File
 						RelativePath="..\..\src\cpp\common\base\util\PropertyFile.cpp"
 						>
 					</File>
@@ -415,10 +393,6 @@
 					</File>
 					<File
 						RelativePath="..\..\src\cpp\windows\base\timeUtils.cpp"
-						>
-					</File>
-					<File
-						RelativePath="..\..\src\cpp\common\base\util\WKeyValuePair.cpp"
 						>
 					</File>
 					<File
