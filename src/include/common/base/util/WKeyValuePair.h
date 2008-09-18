@@ -40,6 +40,7 @@
 
 #include "base/fscapi.h"
 #include "base/util/ArrayElement.h"
+#include "base/util/WString.h"
 #include "base/globalsdef.h"
 
 BEGIN_NAMESPACE
@@ -50,43 +51,61 @@ BEGIN_NAMESPACE
 class WKeyValuePair : public ArrayElement {
     public:
 
-        WKeyValuePair(const WCHAR* key = NULL, const WCHAR* value = NULL);
-        ~WKeyValuePair();
-
-        ArrayElement* clone();
+        /**
+         * Constructor.
+         *
+         * @param key the key to use
+         * @param value the value to use
+         */
+        WKeyValuePair(const WCHAR* key = NULL, const WCHAR* value = NULL)
+         : k(key), v(value) {};
 
         /**
-         * Sets the key. The string is duplicated so that the caller can
-         * independently release its copy. If key is NULL, the older value
-         * is released.
+         * Sets the key.
          *
          * @param key the new key
          */
-        void setKey(const WCHAR* key);
+        void setKey(const WCHAR* key) { k = key; }
 
         /**
-         * Sets the value. The string is duplicated so that the caller can
-         * independently release its copy. If value is NULL, the older value
-         * is released.
+         * Sets the value. 
          *
          * @param value the new value
          */
-
-        void setValue(const WCHAR* value);
+        void setValue(const WCHAR* value) { v = value; }
 
         /**
          * Returns the key (the internal buffer address is returned).
          */
-        const WCHAR* getKey();
+        const WCHAR* getKey() const { return k.c_str(); } 
 
         /**
          * Returns the value (the internal buffer address is returned).
          */
-        const WCHAR* getValue();
+        const WCHAR* getValue() const { return v.c_str(); }
+
+        /**
+         * Compares two WKeyValuePair objects (equals when both key and val equal)
+         */
+        bool operator==(WKeyValuePair &other) const {
+            return (k==other.k && v==other.v);
+        }
+
+        /**
+         * True if the WKeyValuePair objects are different.
+         */
+        bool operator!=(WKeyValuePair &other) const {
+            return !(*this == other);
+        }
+
+        /**
+         * Arraylist implementation.
+         */
+        ArrayElement* clone() { return new WKeyValuePair(*this); }
 
     private:
-        WCHAR* k;
-        WCHAR* v;
+        WString k;
+        WString v;
 };
 
 

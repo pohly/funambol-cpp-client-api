@@ -1,6 +1,6 @@
 /*
  * Funambol is a mobile platform developed by Funambol, Inc. 
- * Copyright (C) 2003 - 2007 Funambol, Inc.
+ * Copyright (C) 2008 Funambol, Inc.
  * 
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Affero General Public License version 3 as published by
@@ -33,43 +33,70 @@
  * the words "Powered by Funambol".
  */
 
+#include <cppunit/extensions/TestFactoryRegistry.h>
+#include <cppunit/extensions/HelperMacros.h>
 
-#include "base/util/utils.h"
-#include "base/util/WKeyValuePair.h"
+#include "base/util/StringBuffer.h"
+#include "base/util/KeyValuePair.h"
 #include "base/globalsdef.h"
 
 USE_NAMESPACE
 
-WKeyValuePair::WKeyValuePair(const WCHAR* key, const WCHAR* value) {
-    k = (key  ) ? wstrdup(key  ) : NULL;
-    v = (value) ? wstrdup(value) : NULL;
-}
+class KeyValuePairTest : public CppUnit::TestFixture {
+    CPPUNIT_TEST_SUITE(KeyValuePairTest);
+    CPPUNIT_TEST(testGet);
+    CPPUNIT_TEST(testSet);
+    CPPUNIT_TEST(testCompare);
+    CPPUNIT_TEST(testAssign);
+    CPPUNIT_TEST_SUITE_END();
 
-WKeyValuePair::~WKeyValuePair() {
-    if (k) delete [] k; k = NULL;
-    if (v) delete [] v; v = NULL;
-}
+public:
 
-void WKeyValuePair::setKey(const WCHAR* key) {
-    if (k) delete[] k; k = NULL;
+private:
+    void testGet() {
+        KeyValuePair empty;
+        CPPUNIT_ASSERT(empty.getKey() == NULL);
+        CPPUNIT_ASSERT(empty.getValue() == NULL);
 
-    k = (key) ? wstrdup(key) : NULL;
-}
+        KeyValuePair t("key","val");
+        CPPUNIT_ASSERT(strcmp(t.getKey(), "key") == 0);
+        CPPUNIT_ASSERT(strcmp(t.getValue(), "val") == 0);
+    }
 
-const WCHAR* WKeyValuePair::getKey() {
-    return k;
-}
+    void testSet() {
+        KeyValuePair kv;
+        kv.setKey("key");
+        kv.setValue("val");
+        
+        CPPUNIT_ASSERT(strcmp(kv.getKey(), "key") == 0);
+        CPPUNIT_ASSERT(strcmp(kv.getValue(), "val") == 0);
+    }
 
-const WCHAR* WKeyValuePair::getValue() {
-    return v;
-}
+    void testCompare() {
+        KeyValuePair a("a", "A"), b("b", "b");
 
-void WKeyValuePair::setValue(const WCHAR* value) {
-    if (v) delete[] v; v = NULL;
+        CPPUNIT_ASSERT( a != b);
 
-    v = (value) ? wstrdup(value) : NULL;
-}
+        b.setKey("a");
+        CPPUNIT_ASSERT( a != b);
 
-ArrayElement* WKeyValuePair::clone() {
-    return new WKeyValuePair(k, v);
-}
+        b.setValue("a");
+        CPPUNIT_ASSERT( a != b);
+
+        b.setValue("A");
+        CPPUNIT_ASSERT( a == b);
+    }
+
+    void testAssign() {
+        KeyValuePair a("a", "A"), b("b", "b");
+
+        CPPUNIT_ASSERT( a != b);
+
+        a = b;
+        CPPUNIT_ASSERT( a == b);
+    }
+
+};
+
+CPPUNIT_TEST_SUITE_REGISTRATION( KeyValuePairTest );
+

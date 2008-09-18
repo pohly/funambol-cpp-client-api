@@ -40,6 +40,7 @@
 
 #include "base/fscapi.h"
 #include "base/util/ArrayElement.h"
+#include "base/util/StringBuffer.h"
 #include "base/globalsdef.h"
 
 BEGIN_NAMESPACE
@@ -50,43 +51,72 @@ BEGIN_NAMESPACE
 class KeyValuePair : public ArrayElement {
     public:
 
-        KeyValuePair(const char*  key = NULL, const char*  value = NULL);
-        ~KeyValuePair();
-
-        ArrayElement* clone();
+        /**
+         * Constructor.
+         *
+         * @param key the key to use
+         * @param value the value to use
+         */
+        KeyValuePair(const char* key = NULL, const char* value = NULL)
+         : k(key), v(value) {};
 
         /**
-         * Sets the key. The string is duplicated so that the caller can
-         * independently release its copy. If key is NULL, the older value
-         * is released.
+         * Sets the key. 
          *
          * @param key the new key
          */
-        void setKey(const char*  key);
+        void setKey(const char* key) { k = key; }
 
         /**
-         * Sets the value. The string is duplicated so that the caller can
-         * independently release its copy. If value is NULL, the older value
-         * is released.
+         * Sets the value. 
          *
          * @param value the new value
          */
 
-        void setValue(const char*  value);
+        void setValue(const char* value) { v = value; }
 
         /**
          * Returns the key (the internal buffer address is returned).
          */
-        const char*  getKey();
+        const char* getKey() const { return k.c_str(); } 
 
         /**
          * Returns the value (the internal buffer address is returned).
          */
-        const char*  getValue();
+        const char* getValue() const { return v.c_str(); }
+
+        /**
+         * Returns a StringBuffer reference to the key.
+         */
+        const StringBuffer& getKeyStr() const { return v; }
+
+        /**
+         * Returns a StringBuffer reference to the value.
+         */
+        const StringBuffer& getValStr() const { return v; }
+
+        /**
+         * Compares two KeyValuePair objects (equals when both key and val equal)
+         */
+        bool operator==(KeyValuePair &other) const {
+            return (k==other.k && v==other.v);
+        }
+
+        /**
+         * True if the KeyValuePair objects are different.
+         */
+        bool operator!=(KeyValuePair &other) const {
+            return !(*this == other);
+        }
+
+        /**
+         * Arraylist implementation.
+         */
+        ArrayElement* clone() { return new KeyValuePair(*this); }
 
     private:
-        char*  k;
-        char*  v;
+        StringBuffer k;
+        StringBuffer v;
 };
 
 
