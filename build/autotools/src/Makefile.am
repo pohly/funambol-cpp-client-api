@@ -9,8 +9,6 @@ SOURCES_BASE = \
     lArrayList.cpp \
     lArrayListKeyValueStore.cpp \
     lBasicTime.cpp \
-    lKeyValuePair.cpp \
-    lWKeyValuePair.cpp \
     lStringBuffer.cpp \
     lPropertyFile.cpp \
     lWString.cpp \
