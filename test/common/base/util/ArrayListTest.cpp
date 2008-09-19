@@ -55,6 +55,7 @@ class ArrayListTest : public CppUnit::TestFixture {
     CPPUNIT_TEST_SUITE_END();
 
 public:
+
     void setUp() {
         StringBuffer a("a"), b("b"), c("c");
 
