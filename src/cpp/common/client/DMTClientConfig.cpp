@@ -126,20 +126,27 @@ bool DMTClientConfig::read() {
     int n = 0, i = 0; // number of sync sources
 
     bool ret = false;
+    resetError();
 
     LOG.debug("%s", DBG_READING_CONFIG_FROM_DM);
 
     //
     // Reading syncml node
     //
-    //char nodeName[DIM_MANAGEMENT_PATH];
-
     if (!open()) {
         return false;
     }
 
+    // Reading AccessConfig
     readAccessConfig(*syncMLNode);
+    ret = (getLastErrorCode() == 0);
+    if (!ret) { goto finally; }
+    
+    // Reading DeviceConfig
     readDeviceConfig(*syncMLNode);
+    ret = (getLastErrorCode() == 0);
+    if (!ret) { goto finally; }
+
 
     n = sourcesNode->getChildrenMaxCount();
 
@@ -160,10 +167,9 @@ bool DMTClientConfig::read() {
         readSourceConfig(i, *(sourcesNode) );
     }
 
-    ret = true;
+    ret = (getLastErrorCode() == 0);
 
-//finally:
-
+finally:
     close();
     return ret;
 }
@@ -185,25 +191,27 @@ bool DMTClientConfig::save() {
         // SyncML management node
         //
         saveAccessConfig(*syncMLNode);
+        ret = (getLastErrorCode() == 0);
+        if (!ret) { goto finally; }
     }
     //
     // TBD: handle the dirty flag
     //
 
     saveDeviceConfig(*syncMLNode);
+    ret = (getLastErrorCode() == 0);
+    if (!ret) { goto finally; }
 
     //
     // Sources management node
     //
-    //lastErrorCode = ERR_NONE;
     resetError();
     for(i=0; i<sourceConfigsCount; ++i) {
         saveSourceConfig(i, *(sourcesNode) );
     }
+    ret = (getLastErrorCode() == 0);
 
-    resetError();
-    ret = (getLastErrorCode() != 0);
-
+finally:
     close();
     return ret;
 }
