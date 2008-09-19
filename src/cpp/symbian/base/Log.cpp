@@ -356,20 +356,7 @@ void SymbianLog::reset(const char* title)
 
 size_t SymbianLog::getLogSize() 
 {
-    iSemaphore.Wait();
-    
-    TInt size = 0;
-    TInt err = file.Size(size);
-    if (err != KErrNone) {
-        setErrorF(err, "SymbianLog: error getting the log size (code %d)", err);
-        return (size_t)-1;
-    }
-
-    file.Close();
-    
-    iSemaphore.Signal();
-    
-    return (size_t)size;
+    return (size_t)LogSize();
 }
 
 TInt SymbianLog::LogSize()
