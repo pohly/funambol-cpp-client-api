@@ -110,7 +110,7 @@ private:
 
         TransformationInfo infoe, infod;
 
-        infoe.size = strlen(clearText)*sizeof(char);
+        infoe.size = (long)strlen(clearText)*sizeof(char);
         infoe.password = password;
 
 
