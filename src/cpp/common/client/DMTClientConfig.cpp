@@ -139,13 +139,9 @@ bool DMTClientConfig::read() {
 
     // Reading AccessConfig
     readAccessConfig(*syncMLNode);
-    ret = (getLastErrorCode() == 0);
-    if (!ret) { goto finally; }
     
     // Reading DeviceConfig
     readDeviceConfig(*syncMLNode);
-    ret = (getLastErrorCode() == 0);
-    if (!ret) { goto finally; }
 
 
     n = sourcesNode->getChildrenMaxCount();
@@ -191,16 +187,12 @@ bool DMTClientConfig::save() {
         // SyncML management node
         //
         saveAccessConfig(*syncMLNode);
-        ret = (getLastErrorCode() == 0);
-        if (!ret) { goto finally; }
     }
     //
     // TBD: handle the dirty flag
     //
 
     saveDeviceConfig(*syncMLNode);
-    ret = (getLastErrorCode() == 0);
-    if (!ret) { goto finally; }
 
     //
     // Sources management node
