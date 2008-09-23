@@ -96,35 +96,24 @@ SymbianLog::SymbianLog(bool resetLog, const char* path, const char* name)
     }
     
     // ensure path exists!
-    BaflUtils::EnsurePathExistsL(fsSession,iLogPathName);
+    BaflUtils::EnsurePathExistsL(fsSession, iLogPathName);
     
     if (resetLog) {
         err = file.Replace(fsSession, iLogName, EFileWrite|EFileShareAny);
-    }
-    else {
-        err = file.Open(fsSession, iLogName, EFileWrite|EFileShareAny);
-        if (err == KErrNotFound) {
-            err = file.Create(fsSession, iLogName, EFileWrite|EFileShareAny);
+        if (err != KErrNone) {
+            setErrorF(err, "SymbianLog: could not open the log file '%ls'", iLogName.Ptr());
+            return;
         }
-        else {
-            // Log file existing, and not resetted. Will append data.
-            TInt pos;
-            file.Seek(ESeekEnd, pos);
-        }
-    }
-    if (err != KErrNone) {
-        setErrorF(err, "SymbianLog: could not open the log file '%ls'", iLogName.Ptr());
-        return;
+        
+        // Write the Header
+        StringBuffer header = createHeader();
+        RBuf8 data;
+        data.Assign(stringBufferToNewBuf8(header));
+        file.Write(data);
+        data.Close();
+        file.Close();
     }
     
-    // Write the Header
-    StringBuffer header = createHeader();
-    RBuf8 data;
-    data.Assign(stringBufferToNewBuf8(header));
-    file.Write(data);
-    data.Close();
-
-    file.Close();
     iSemaphore.Signal();
     return;
 }
@@ -192,7 +181,6 @@ void SymbianLog::setLogName(const char* configLogName )
     iSemaphore.Signal();
     return;
 }
-
 
 
 StringBuffer SymbianLog::createHeader(const char* title) 
@@ -295,20 +283,31 @@ void SymbianLog::printMessage(const char* level, const char* msg, PLATFORM_VA_LI
     
     TInt err = file.Open(fsSession, iLogName, EFileWrite|EFileShareAny);
     TInt pos = 0;
-
-    if (err != KErrNone) {
-        setErrorF(err, "SymbianLog: could not open log file (code %d)", err);
-        goto finally;
-    }
     
-    err = file.Seek(ESeekEnd, pos);
-    if (err != KErrNone) {
-        setErrorF(err, "SymbianLog: seek error on log file (code %d)", err);
-        goto finally;
+    if (err == KErrNotFound) 
+    {
+        // First time: file does not exist. Create it.
+        err = file.Create(fsSession, iLogName, EFileWrite|EFileShareAny);
+        if (err != KErrNone) {
+            setErrorF(err, "SymbianLog: could not open log file (code %d)", err);
+            goto finally;
+        }
+        StringBuffer header = createHeader();
+        RBuf8 data;
+        data.Assign(stringBufferToNewBuf8(header));
+        file.Write(data);
+        data.Close();
+    }
+    else 
+    {
+        err = file.Seek(ESeekEnd, pos);
+        if (err != KErrNone) {
+            setErrorF(err, "SymbianLog: seek error on log file (code %d)", err);
+            goto finally;
+        }
     }
 
     {
-
         // Write the data
         StringBuffer line, data;
         line.sprintf("%s -%s- %s", currentTime.c_str(), level, msg);
@@ -319,7 +318,6 @@ void SymbianLog::printMessage(const char* level, const char* msg, PLATFORM_VA_LI
         buf.Assign(stringBufferToNewBuf8(data));
         file.Write(buf);
         buf.Close();
-     
     }
     
 finally:

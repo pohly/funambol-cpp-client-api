@@ -42,10 +42,11 @@
 #include <f32file.h>
 #include "base/globalsdef.h"
 
-#define SYMBIAN_LOG_HEADER          "Funambol Symbian Plug-in Log"
+// Default values, used if the Client don't set them.
+#define SYMBIAN_LOG_HEADER          "Funambol Symbian Sync Client Log"
 #define SYMBIAN_LOG_PATH            "C:\\data\\"
 #define SYMBIAN_LOG_NAME            "synclog.txt"
-//#define SYMBIAN_ROLL_LOG_NAME        "synclog.txt.0"
+
 #define SYMBIAN_LOG_SIZE            (500 * 1024)  // bytes
 
 #define ERR_SEMAPHORE_CREATION      30
