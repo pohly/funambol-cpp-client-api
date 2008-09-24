@@ -50,6 +50,7 @@
 #include "spds/CredentialHandler.h"
 #include "spds/CredentialHandler.h"
 #include "spds/SyncReport.h"
+#include "spds/MappingsManager.h"
 
 // Tolerance to data size for incoming items (106%) -> will be allocated some more space.
 #define DATA_SIZE_TOLERANCE      1.06
@@ -157,9 +158,9 @@ class SyncManager {
 
         SyncManagerState currentState;
         SyncSource** sources;
-        ArrayList commands;
-        ArrayList* mappings;
-
+        ArrayList commands;        
+        
+        MappingsManager** mmanager;
         // Now using sources[i].checkState() method
         //int* check;
 
@@ -237,7 +238,7 @@ class SyncManager {
          * Add the map command according to the current value of the 
          * member 'mappings', and clean up the member afterwards.
          */
-        void addMapCommand(int sourceIndex);
+        void addMapCommand(int sourceIndex);       
 
 };
 

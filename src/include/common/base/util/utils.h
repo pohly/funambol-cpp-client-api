@@ -208,6 +208,8 @@ unsigned long getFileModTime(const char* name);
 */
 StringBuffer getCacheDirectory();
 
+StringBuffer getHomeFolder();
+
 long int getLenEncoding(const char*  s, const char* encoding);
 char *toMultibyte(const WCHAR *wc, const char *encoding = 0 );
 WCHAR *toWideChar(const char *mb, const char *encoding = 0 );

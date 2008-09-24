@@ -87,12 +87,15 @@ public:
      */
     virtual int removeProperty(const char *prop);
     
+    virtual int removeAllProperties();
+
     /**
      * Read all the properties that are in the store. This is
      * an enumeration of KeyValuePairs. 
      * 
      */
-    virtual Enumeration& getProperties() const {        
+    virtual Enumeration& getProperties()  {         
+        data.resetIterator();
         return (Enumeration&)data; 
     }
 
@@ -101,7 +104,7 @@ public:
      * in the data arraylist 
      * @return 0 - success, failure otherwise
      */
-    virtual int save() = 0;
+    virtual int close() = 0;
 };
 
 

@@ -80,13 +80,15 @@ class ArrayList {
 
     protected:
 
+        
+
+    public:
         /**
          * Can be used to reset the iterator, so that next call to next restart from
          * the beginning.
          */
         void resetIterator() { iterator = 0; }
 
-    public:
         ArrayList();
         ArrayList(const ArrayList &other);
         ~ArrayList();

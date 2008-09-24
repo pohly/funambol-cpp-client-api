@@ -59,22 +59,39 @@ BEGIN_NAMESPACE
 class PropertyFile : public ArrayListKeyValueStore {
 
 private:
-
+    
+    /**
+    * The name of the property file
+    */
     StringBuffer node;
+
+    /**
+    * The name of the property file that is used as a journal. 
+    * It contains all the entries that are set with setPropertyValue (thye are appended into the file). 
+    * They can be more than twice of the same key (two calls to setPropertyValue(prop1,val1); setPropertyValue(prop1,val111);)
+    * The idea is that in memory there is the ArrayList of KeyValuePair with all the properties that
+    * are with a unique key and this journal contains all the entries that can have more that one time
+    * the same key. (in the case above, the arrayList contains only (prop1,val111)).
+    * With the close() method the right property/value is written in the final storage and the journal is deleted.
+    * If there is something wrong and the memory is erased before the close() is called, the next read() 
+    * will find the journal file and populates properly the ArrayList in memory with the right property/value. 
+    * Note that the ArrayList in memory is filled in the same order the properties are read from the journal file.
+    */
+    StringBuffer nodeJour;
     
      /**
-     * Extract all currently properties in the node
-     * It populates the data ArrayList to hold the 
-     * key/values in the filesystem
+     * Extract all currently properties in the node looking also at the journal file if exists.
+     * It populates the data ArrayList to hold the key/values in the filesystem
      */
     int read();
-
+        
 public:
     
     /**      
      * The name of the general node 
      */
     PropertyFile(const char* n) : node(n) {
+        nodeJour = node + ".jour";
         read();
     }
 
@@ -82,11 +99,38 @@ public:
     ~PropertyFile() {}               
 
     /**
-     * Save the current properties that are
-     * in the data arraylist in the filesystem
+     * Store the current properties that are
+     * in the data arraylist in the filesystem. It deletes the journal too
      */
-    int save();
+    int close();
     
+    /**
+    * The setPropertyValue of the PropertyFile calls the super
+    * implementation and then write in the journal list with
+    * a simple append.
+    *
+    * @param prop - the name of the prop
+    * @param value - the value
+    */
+    int setPropertyValue(const char *prop, const char *value);
+    
+    /**
+    * To remove the property, also the journal has to be updated. In the case, 
+    * it is always updated with an append so at the next read it can be fixed
+    */
+    int removeProperty(const char* prop);
+
+    /**
+    * It remove all the properties in memory and in the storage
+    */
+    int removeAllProperties();
+   
+    /**
+    * It sepatares from the line read from the property file the key and value.
+    * It takes care 
+    * 
+    */
+    bool separateKeyValue(StringBuffer& s, StringBuffer& key, StringBuffer& value);
 };
 
 

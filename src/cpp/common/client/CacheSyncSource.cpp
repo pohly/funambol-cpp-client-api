@@ -360,7 +360,7 @@ int CacheSyncSource::saveCache() {
     
     LOG.debug("[%s] Saving cache", getName());
     
-    int ret = cache->save();
+    int ret = cache->close();
     return ret;
 
 }

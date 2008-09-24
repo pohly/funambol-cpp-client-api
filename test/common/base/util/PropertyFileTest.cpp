@@ -47,6 +47,10 @@ class PropertyFileTest : public CppUnit::TestFixture {
     CPPUNIT_TEST(testGetProperties);
     CPPUNIT_TEST(testRemoveProperty);
     CPPUNIT_TEST(testRemoveAll);
+    CPPUNIT_TEST(testSetPropertyFailsStorage);
+    CPPUNIT_TEST(testGetPropertiesFromStorage); 
+    CPPUNIT_TEST(testEscapeLinesFunciton); 
+    
     CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -65,7 +69,7 @@ protected:
 
         // Write a value into the property file
         propFile->setPropertyValue("property", "value");
-        propFile->save();
+        propFile->close();
         // Now read back
         StringBuffer value = propFile->readPropertyValue("property");
         CPPUNIT_ASSERT(value == "value");
@@ -92,13 +96,14 @@ protected:
                 prop3 = true;
             }
         }
+        propFile->close();
         CPPUNIT_ASSERT(prop1 && prop2 && prop3);
     }
 
     void testRemoveProperty() {
         // Write a value into the property file
         propFile->setPropertyValue("property4", "value4");
-        propFile->save();
+        propFile->close();
         // Remove it
         int success = propFile->removeProperty("property4");
         CPPUNIT_ASSERT(success == 0);
@@ -116,11 +121,86 @@ protected:
             int success = propFile->removeProperty(key);
             CPPUNIT_ASSERT(success == 0);
         }
+        propFile->close();
         // Now iterate again, and we should have now more elements
         enumeration = propFile->getProperties();
         CPPUNIT_ASSERT(!enumeration.hasMoreElement());
     }
+    
+    /**
+    * it doesn't close the storage
+    */
+    void testSetPropertyFailsStorage() {
+        
+        // Write a value into the property file
+        propFile->setPropertyValue("property1", "value1");
+        propFile->setPropertyValue("property2", "value2");
+        // overwrite the property1
+        propFile->setPropertyValue("property1", "valueNew");  
+        propFile->setPropertyValue("1234", "5678"); 
+        propFile->setPropertyValue("123:4", "567:8");        
+        propFile->setPropertyValue("1234:", "567:8");
+        propFile->setPropertyValue("1:234:", "5:67:8");
 
+        Enumeration& enumeration = propFile->getProperties();
+        int i = 0;
+        while (enumeration.hasMoreElement()) {
+            i++;
+            enumeration.getNextElement();
+        }
+        CPPUNIT_ASSERT(i == 6);
+        
+    }
+    
+    void testGetPropertiesFromStorage() {        
+        // Now iterate on them
+        Enumeration& enumeration = propFile->getProperties();
+        bool prop1 = false, prop2 = false, prop3 = false, prop4 = false, prop5 = false, prop6 = false;
+        while (enumeration.hasMoreElement()) {
+            KeyValuePair* item = (KeyValuePair*)enumeration.getNextElement();
+            const char* key = item->getKey();
+            const char* value = item->getValue();
+            CPPUNIT_ASSERT(value != NULL && strlen(value) > 0);
+            if (strcmp(key, "property1") == 0 && strcmp(value, "valueNew") == 0 ) {
+                prop1 = true;
+            } else if (strcmp(key, "property2") == 0 && strcmp(value, "value2") == 0 ) {
+                prop2 = true;
+            } else if (strcmp(key, "1234") == 0 && strcmp(value, "5678") == 0 ) {
+                prop3 = true;
+            } else if (strcmp(key, "123:4") == 0 && strcmp(value, "567:8") == 0 ) {
+                prop4 = true;
+            }  else if (strcmp(key, "1234:") == 0 && strcmp(value, "567:8") == 0 ) {
+                prop5 = true;
+            }  else if (strcmp(key, "1:234:") == 0 && strcmp(value, "5:67:8") == 0 ) {
+                prop6 = true;
+            }   
+
+        }
+        propFile->close();
+        CPPUNIT_ASSERT(prop1 && prop2 && prop3 && prop4 && prop5 && prop6);        
+    }
+
+    
+    void testEscapeLinesFunciton() {       
+        StringBuffer a("1234:5678\n");
+        StringBuffer b("123\\:4:567\\:8\n");
+        StringBuffer c("1234\\::567\\:8\n");
+        
+        StringBuffer key;
+        StringBuffer value;
+
+        propFile->separateKeyValue(a, key, value);
+
+        propFile->separateKeyValue(b, key, value);
+        
+        propFile->separateKeyValue(c, key, value);
+
+       
+        propFile->close();
+       
+        
+
+    }
 
 private:
     PropertyFile *propFile;

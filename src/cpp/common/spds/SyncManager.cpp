@@ -49,12 +49,16 @@
 #include "syncml/core/TagNames.h"
 #include "syncml/core/ObjectDel.h"
 
+
 #include "event/FireEvent.h"
 
 #include <limits.h>
 #include "base/globalsdef.h"
+#include "spds/MappingsManager.h"
 
 USE_NAMESPACE
+
+MappingStoreBuilder* MappingsManager::builder = NULL;
 
 static void fillContentTypeInfoList(ArrayList &l, const char*  types);
 
@@ -195,7 +199,7 @@ void SyncManager::initialize() {
     // uninitialized memory reads and potential crashes when
     // constructing a SyncManager, but not using it
     transportAgent = NULL;
-    mappings       = NULL;
+    
     sources        = NULL;
     currentState   = STATE_START;
     sourcesNumber  = 0;
@@ -241,15 +245,15 @@ void SyncManager::initialize() {
     prevSyncMode = SYNC_NONE;
     isFiredSyncEventBEGIN = false;
 
+    mmanager = NULL;
+
 }
 
 SyncManager::~SyncManager() {
     if (transportAgent) {
         delete transportAgent;
     }
-    if (mappings) {
-        delete [] mappings; mappings = NULL;
-    }
+    
     if (sources) {
         // This deletes only SyncSource array
         // We DON'T want to release SyncSource objects here!
@@ -279,6 +283,16 @@ SyncManager::~SyncManager() {
         delete [] allItemsList;
         allItemsList = 0;
     }
+
+    if (mmanager) {
+        int i=0;
+        while (mmanager[i]) {
+            delete mmanager[i];
+            i++;
+        }
+        delete [] mmanager;
+    }
+
 }
 
 /*
@@ -349,11 +363,14 @@ int SyncManager::prepareSync(SyncSource** s) {
         const char* proxyPwd  = config.getProxyPassword();
         proxy.setProxy(NULL, 0, proxyUser, proxyPwd);
     }
-
-    mappings = new ArrayList[sourcesNumber + 1];
+        
+    mmanager = new MappingsManager*[sourcesNumber + 1];
+    
     for (count = 0; count < sourcesNumber; count++) {
         LOG.info(MSG_PREPARING_SYNC, sources[count]->getConfig().getName());
+        mmanager[count] = new MappingsManager(sources[count]->getConfig().getName());
     }
+    mmanager[count] = 0;
 
     syncMLBuilder.resetCommandID();
     syncMLBuilder.resetMessageID();
@@ -1066,6 +1083,35 @@ int SyncManager::sync() {
                 deleteStatus(&status);
 
             }
+            
+            /*
+            * Check if there is some mappings from the previous 
+            * sync of the source. This is valid only for two-way sync
+            * and one-way. Otherwise the old mappings are removed
+            */
+            switch (sources[count]->getSyncMode()) {
+                case SYNC_TWO_WAY:
+                case SYNC_ONE_WAY_FROM_SERVER: {
+                    Enumeration& en = mmanager[count]->getMappings();
+                    ArrayList tmpMapItems;            
+                    while(en.hasMoreElement()) {
+                        KeyValuePair* kvp = (KeyValuePair*)en.getNextElement();                
+                        MapItem* mapItem = syncMLBuilder.prepareMapItem(&SyncMap(kvp->getValue(), kvp->getKey())); 
+                        tmpMapItems.add(*mapItem);                
+                        delete mapItem;
+                    }
+                    if (tmpMapItems.size() > 0) {
+                        Map* tmpMap = syncMLBuilder.prepareMapCommand(*sources[count]);
+                        tmpMap->getMapItems()->add(&tmpMapItems); 
+                        commands.add(*tmpMap);
+                        delete tmpMap;
+                    }
+                }
+                break;
+                default: {
+                    mmanager[count]->resetMappings();
+                }
+            }
 
             // Accumulate changes for the current sync source until the maxMsgSize
             // is reached.
@@ -1439,6 +1485,10 @@ int SyncManager::sync() {
                 ret=getLastErrorCode();
                 goto finally;
             }
+
+            // reset the mappings if any. This action is done everytime...
+            mmanager[count]->resetMappings();
+
             // increment the msgRef after every send message
             syncMLBuilder.increaseMsgRef();
             syncMLBuilder.resetCommandID();
@@ -1600,7 +1650,9 @@ int SyncManager::sync() {
             // Add any map command pending for the active sources
             for(int i=0; i<sourcesNumber; i++) {
                 addMapCommand(i);
-            }
+                // finalize the mapping in the storage
+                mmanager[i]->closeMappings();
+            }                       
 
             if (!last) {
                 deleteSyncML(&syncml);
@@ -1614,6 +1666,12 @@ int SyncManager::sync() {
                     ret=getLastErrorCode();
                     goto finally;
                 }
+                
+                // reset the mappings in the storage
+                for(int i=0; i<sourcesNumber; i++) {
+                    mmanager[i]->resetMappings();
+                } 
+
                 // increment the msgRef after every send message
                 syncMLBuilder.increaseMsgRef();
                 syncMLBuilder.resetCommandID();
@@ -1669,25 +1727,26 @@ finally:
  * Adds the Map command to the commands list if needed.
  * Updates the class member 'commands'.
  */
-void SyncManager::addMapCommand(int sourceIndex) {
+void SyncManager::addMapCommand(int sourceIndex) {    
     Map* map = NULL;
-    // Build the mapping command
-    if (mappings[sourceIndex].size() > 0) {
-        map = syncMLBuilder.prepareMapCommand(*sources[sourceIndex]);
-        for (int i=0; i < mappings[sourceIndex].size(); i++) {                                                      
-            MapItem* mapItem = syncMLBuilder.prepareMapItem(
-                                        (SyncMap*)mappings[sourceIndex].get(i));
-            syncMLBuilder.addMapItem(map, mapItem);
-
-            delete mapItem;
-        }
+    Enumeration& en = mmanager[sourceIndex]->getMappings();
+    while (en.hasMoreElement()) {
+        if (map == NULL) {
+            map = syncMLBuilder.prepareMapCommand(*sources[sourceIndex]);
+        } 
+        KeyValuePair* kvp = (KeyValuePair*)en.getNextElement();                
+        MapItem* mapItem = syncMLBuilder.prepareMapItem(&SyncMap(kvp->getValue(), kvp->getKey()));                
+        syncMLBuilder.addMapItem(map, mapItem);
+        delete mapItem;
+    }
+    if (map) {
         // Add it to the list
         commands.add(*map);
-        // And clear the pending mappings for this source
-        mappings[sourceIndex].clear();
         delete map;
-    }  
+    }
+    
 }
+
 
 int SyncManager::endSync() {
 
@@ -1707,11 +1766,12 @@ int SyncManager::endSync() {
         if (!sources[count]->getReport()->checkState()) {
             continue;
         }
-
+        
+        
         if (  (sources[count]->getSyncMode() == SYNC_ONE_WAY_FROM_CLIENT &&
-                commands.isEmpty() && mappings[count].size() == 0) ||
+                commands.isEmpty() && (mmanager[count]->getMappings().hasMoreElement() == false)) ||
                 (sources[count]->getSyncMode() == SYNC_REFRESH_FROM_CLIENT &&
-                commands.isEmpty() && mappings[count].size() == 0)
+                commands.isEmpty() && (mmanager[count]->getMappings().hasMoreElement() == false))
                 ) {
             // No need to send the final msg (no mapping).
         }
@@ -1724,8 +1784,12 @@ int SyncManager::endSync() {
                 commands.add(*status);
                 deleteStatus(&status);
             }
-            // Add any map command pending for this source
-            addMapCommand(count);
+            // @@ No more used when inserting the new mapping...
+            // Add any map command pending for this source 
+            // addMapCommand(count);            
+
+            // finalize the mapping in the storage
+            mmanager[count]->closeMappings();
         }
     }
 
@@ -1742,11 +1806,18 @@ int SyncManager::endSync() {
         //Fire Finalization Event
         fireSyncEvent(NULL, SEND_FINALIZATION);
 
-        responseMsg = transportAgent->sendMessage(mapMsg);
+        responseMsg = transportAgent->sendMessage(mapMsg);        
         if (responseMsg == NULL) {
             ret=getLastErrorCode();
             goto finally;
         }
+        for (count = 0; count < sourcesNumber; count ++) {
+            if (!sources[count]->getReport()->checkState()) {
+                continue;
+            }
+            mmanager[count]->resetMappings();
+        }
+            
         // increment the msgRef after every send message
         syncMLBuilder.increaseMsgRef();
         syncMLBuilder.resetCommandID();
@@ -1791,13 +1862,13 @@ int SyncManager::endSync() {
         }
 
         // -----------------------
-        // TODO: remove this section when the removeAllItems() is used for refrseh-from-server sync
+        // TODO: remove this section when the removeAllItems() is used for refrseh-from-server sync        
         if (  (sources[count]->getSyncMode() == SYNC_ONE_WAY_FROM_CLIENT &&
-                commands.isEmpty() && mappings[count].size() == 0) ||
+                commands.isEmpty() && (mmanager[count]->getMappings().hasMoreElement() == false)) ||
                 (sources[count]->getSyncMode() == SYNC_REFRESH_FROM_CLIENT &&
-                commands.isEmpty() && mappings[count].size() == 0)
+                commands.isEmpty() && (mmanager[count]->getMappings().hasMoreElement() == false))
                 ) {
-        }
+        }        
         else {
             if(allItemsList[count]) {
                 int size = allItemsList[count]->size();
@@ -1822,8 +1893,15 @@ int SyncManager::endSync() {
  finally:
 
     for (count = 0; count < sourcesNumber; count ++) {
-        if (!sources[count]->getReport()->checkState())
+        if (!sources[count]->getReport()->checkState()) {
+            LOG.debug("The source %s got and error %i: %s", 
+                            _wcc(sources[count]->getName()), 
+                            sources[count]->getReport()->getLastErrorCode(),
+                            sources[count]->getReport()->getLastErrorMsg());  
+            LOG.debug("The old last value is committed (no changed)");
             continue;
+
+        }
 
         commitChanges(*sources[count]);
     }
@@ -2159,8 +2237,9 @@ Status *SyncManager::processSyncItem(Item* item, const CommandInfo &cmdInfo, Syn
                 // If the add was successful, set the id mapping
                 if (code >= 200 && code <= 299) {
                     char *key = toMultibyte(incomingItem->getKey());
-                    SyncMap syncMap(item->getSource()->getLocURI(), key);
-                    mappings[count].add(syncMap);
+                    //SyncMap syncMap(item->getSource()->getLocURI(), key);
+                    //mappings[count].add(syncMap);
+                    mmanager[count]->addMapping(key, item->getSource()->getLocURI()); // LUID, GUID
                     delete [] key;
                 }
             }

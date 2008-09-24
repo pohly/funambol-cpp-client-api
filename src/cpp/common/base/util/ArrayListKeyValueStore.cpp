@@ -65,7 +65,7 @@ int ArrayListKeyValueStore::setPropertyValue(const char *prop, const char *value
         }
     }
     KeyValuePair k(prop, value);
-    data.add(k);
+    data.add(k);    
     return ret;
 }
     
@@ -81,6 +81,11 @@ int ArrayListKeyValueStore::removeProperty(const char *prop) {
         }
         counter++;
     }
+    
     return 0;
 }
         
+int ArrayListKeyValueStore::removeAllProperties() {
+    data.clear();
+    return 0;
+}

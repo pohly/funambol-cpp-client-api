@@ -36,7 +36,21 @@
 #include "base/util/PropertyFile.h"
 #include "base/globalsdef.h"
 
+#define REMOVED "__#REM#O#VED#__"
+
 USE_NAMESPACE
+
+StringBuffer escapeString(const char* val) {
+    StringBuffer s(val);
+    s.replaceAll(":", "\\:");
+    return s;
+}
+
+StringBuffer unescapeString(const char* val) {
+    StringBuffer s(val);
+    s.replaceAll("\\:", ":");
+    return s;
+}
 
 int PropertyFile::read() {
     
@@ -46,22 +60,65 @@ int PropertyFile::read() {
     f = fopen(node, "r");
     if (!f) {
         LOG.debug("PropertyFile: it is not possible to read the file: '%s'", node.c_str());
-        return -1;
+        LOG.debug("PropertyFile: try to see if a journal exists...");
+    } else {
+        while(fgets(line, 511, f) != NULL) {
+            StringBuffer s(line);
+            StringBuffer key;
+            StringBuffer value;
+
+            if (separateKeyValue(s, key, value)) {
+                KeyValuePair toInsert(key, value);
+                data.add(toInsert);
+            }            
+        }   
+        fclose(f);   
     }
-    while(fgets(line, 511, f) != NULL) {
-        StringBuffer s(line);
-        if ((found = s.find(":")) != StringBuffer::npos) {         
-            StringBuffer key = s.substr(0, found);
-            StringBuffer value = s.substr(found + 1, (s.length() - (found + 2))); // it remove the \n at the end
-            KeyValuePair toInsert(key, value);
-            data.add(toInsert);
-        } 
-    }    
-    fclose(f);   
+    // check if there is the journal file and if any, set every value in memory. After that
+    // empty the journal
+    f = fopen(nodeJour, "r");
+    if (!f) {
+        LOG.debug("PropertyFile: there is no journal file: '%s'", nodeJour.c_str());        
+    } else {
+        while(fgets(line, 511, f) != NULL) {
+            StringBuffer s(line);
+            StringBuffer key;
+            StringBuffer value;
+            if (separateKeyValue(s, key, value)) {
+                if (value == REMOVED) {
+                    ArrayListKeyValueStore::removeProperty(key);
+                } else {
+                    ArrayListKeyValueStore::setPropertyValue(key, value);
+                }
+            }                  
+        }       
+        fclose(f);         
+    }
     return 0;
 }
 
-int PropertyFile::save() {
+static bool removeFile(const char* fullname) {
+    char* p;
+	int len;
+    bool ret;
+
+    p = strrchr((char*)fullname, '/');
+
+    if (!p) {
+        // the file is in the current directory
+        ret = removeFileInDir(".", fullname);                
+    } else {
+	    len = p-fullname;        
+        StringBuffer dir(fullname, len);	 
+	    p++; len=strlen(fullname)-len;
+        StringBuffer filename(p, len);
+        ret = removeFileInDir(dir, filename);
+    }    	
+    return ret;
+}
+
+int PropertyFile::close() {
+
     FILE* file;
     file = fopen(node, "w");
     int ret = 0;   
@@ -70,15 +127,93 @@ int PropertyFile::save() {
         for (curr = (KeyValuePair*)data.front(); curr;
              curr = (KeyValuePair*)data.next() ) {
             
-            fprintf(file, "%s:%s\n", curr->getKey(), curr->getValue());
-            
+             fprintf(file, "%s:%s\n", escapeString(curr->getKey()).c_str(), escapeString(curr->getValue()).c_str());            
         }       
         fclose(file); 
+        
+        // reset the content of the journal        
+        if (!removeFile(nodeJour)) {
+            LOG.debug("There are problem in removing journal file");
+        }
+        
         ret = 0;
 
     } else {
         LOG.error("PropertyFile: it is not possible to save the file: '%s'", node.c_str());
         ret = -1;
     }
+    return ret;
+}
+
+int PropertyFile::setPropertyValue(const char *prop, const char *value) {
+    
+    int ret = ArrayListKeyValueStore::setPropertyValue(prop, value);
+    if (ret) {
+        return ret;
+    }
+
+    FILE* file = fopen(nodeJour, "a+");    
+    if (file) {
+        fprintf(file, "%s:%s\n", escapeString(prop).c_str(), escapeString(value).c_str());
+        fclose(file);
+    } else {        
+        LOG.error("PropertyFile: it is not possible to save the journal file: '%s'", node.c_str());
+        ret = -1;
+    }
+
+    return ret;
+
+}
+
+int PropertyFile::removeProperty(const char *prop) {
+    
+    int ret = 0;
+
+    FILE* file = fopen(nodeJour, "a+");    
+    if (file) {
+        fprintf(file, "%s:%s\n", escapeString(prop).c_str(), escapeString(REMOVED).c_str());
+        fclose(file);
+    } else {        
+        LOG.error("PropertyFile: it is not possible to save the journal file: '%s'", node.c_str());        
+    }
+
+    ret = ArrayListKeyValueStore::removeProperty(prop);
+    if (ret) {
+        LOG.debug("PropertyFile: it is not possible to remove from the ArrayList");
+    }
+
+    return ret;
+
+}
+
+int PropertyFile::removeAllProperties() {
+    
+    int ret = ArrayListKeyValueStore::removeAllProperties();
+    if (ret) {
+        return ret;
+    }
+    // reset the content         
+    if (!removeFile(node)) {
+        LOG.debug("There are problem in removing the file");
+    }            
+    return ret;
+}
+
+
+bool PropertyFile::separateKeyValue(StringBuffer& s, StringBuffer& key, StringBuffer& value) {
+    bool ret = false;
+    size_t found = 0;      
+    
+    for (unsigned int i = 0; i < s.length(); i++) {
+        if  (((found = s.find(":", found + 1)) != StringBuffer::npos) && (found > 1 && s.c_str()[found-1] != '\\')) {
+
+            key = unescapeString(s.substr(0, found));
+            value = unescapeString(s.substr(found + 1, (s.length() - (found + 2)))); // it remove the \n at the end                   
+            
+            ret = true;
+            break;
+        }
+    }
+    
     return ret;
 }

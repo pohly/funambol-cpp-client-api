@@ -96,11 +96,16 @@ public:
       * @return int 0 on success, an error code otherwise
       */
     virtual int removeProperty(const char *prop) = 0;
-     
+    
+    /**
+    * Remove all the properties in the value store
+    */
+    virtual int removeAllProperties() = 0;
+
     /**
      * Get all the properties that are currently defined.     
      */
-    virtual Enumeration& getProperties() const = 0;
+    virtual Enumeration& getProperties() = 0;
 
     /**
      * Ensure that all properties are stored persistently.
@@ -109,7 +114,7 @@ public:
      *
      * @return 0 - success, failure otherwise
      */
-    virtual int save() = 0;
+    virtual int close() = 0;
 };
 
 
