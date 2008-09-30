@@ -52,6 +52,37 @@ StringBuffer unescapeString(const char* val) {
     return s;
 }
 
+static bool existsFile(const char* fullname) {
+    bool found = false;
+    FILE* f = fopen(fullname, "r");
+    if (f) {
+        found = true;
+        fclose(f);
+    }
+    return found;
+}
+
+static bool removeFile(const char* fullname) {
+    char* p;
+	int len;
+    bool ret = false;
+    
+    p = strrchr((char*)fullname, '/');
+
+    if (!p) {
+        // the file is in the current directory
+        ret = removeFileInDir(".", fullname);                
+    } else {
+	    len = p-fullname;        
+        StringBuffer dir(fullname, len);	 
+	    p++; len=strlen(fullname)-len;
+        StringBuffer filename(p, len);
+        ret = removeFileInDir(dir, filename);
+    }    	
+    return ret;
+}
+
+
 int PropertyFile::read() {
     
     char line[512];
@@ -59,8 +90,7 @@ int PropertyFile::read() {
     FILE* f;
     f = fopen(node, "r");
     if (!f) {
-        LOG.debug("PropertyFile: it is not possible to read the file: '%s'", node.c_str());
-        LOG.debug("PropertyFile: try to see if a journal exists...");
+        LOG.debug("PropertyFile: the file '%s' doesn't exist. Try the journal file. '%s'", node.c_str());        
     } else {
         while(fgets(line, 511, f) != NULL) {
             StringBuffer s(line);
@@ -78,7 +108,7 @@ int PropertyFile::read() {
     // empty the journal
     f = fopen(nodeJour, "r");
     if (!f) {
-        LOG.debug("PropertyFile: there is no journal file: '%s'", nodeJour.c_str());        
+        // LOG.debug("PropertyFile: there is no journal file: '%s'", nodeJour.c_str());        
     } else {
         while(fgets(line, 511, f) != NULL) {
             StringBuffer s(line);
@@ -97,26 +127,6 @@ int PropertyFile::read() {
     return 0;
 }
 
-static bool removeFile(const char* fullname) {
-    char* p;
-	int len;
-    bool ret;
-
-    p = strrchr((char*)fullname, '/');
-
-    if (!p) {
-        // the file is in the current directory
-        ret = removeFileInDir(".", fullname);                
-    } else {
-	    len = p-fullname;        
-        StringBuffer dir(fullname, len);	 
-	    p++; len=strlen(fullname)-len;
-        StringBuffer filename(p, len);
-        ret = removeFileInDir(dir, filename);
-    }    	
-    return ret;
-}
-
 int PropertyFile::close() {
 
     FILE* file;
@@ -132,8 +142,8 @@ int PropertyFile::close() {
         fclose(file); 
         
         // reset the content of the journal        
-        if (!removeFile(nodeJour)) {
-            LOG.debug("There are problem in removing journal file");
+        if (existsFile(nodeJour) && !removeFile(nodeJour)) {
+            LOG.error("There are problem in removing journal file");
         }
         
         ret = 0;
@@ -157,7 +167,7 @@ int PropertyFile::setPropertyValue(const char *prop, const char *value) {
         fprintf(file, "%s:%s\n", escapeString(prop).c_str(), escapeString(value).c_str());
         fclose(file);
     } else {        
-        LOG.error("PropertyFile: it is not possible to save the journal file: '%s'", node.c_str());
+        LOG.error("PropertyFile setProperty: it is not possible to save the journal file: '%s'", node.c_str());
         ret = -1;
     }
 
@@ -174,7 +184,7 @@ int PropertyFile::removeProperty(const char *prop) {
         fprintf(file, "%s:%s\n", escapeString(prop).c_str(), escapeString(REMOVED).c_str());
         fclose(file);
     } else {        
-        LOG.error("PropertyFile: it is not possible to save the journal file: '%s'", node.c_str());        
+        LOG.error("PropertyFile removeProperty: it is not possible to save the journal file: '%s'", node.c_str());        
     }
 
     ret = ArrayListKeyValueStore::removeProperty(prop);
@@ -193,8 +203,8 @@ int PropertyFile::removeAllProperties() {
         return ret;
     }
     // reset the content         
-    if (!removeFile(node)) {
-        LOG.debug("There are problem in removing the file");
+    if (existsFile(nodeJour) && !removeFile(node)) {
+        LOG.error("There are problem in removing the file %s", node);
     }            
     return ret;
 }
