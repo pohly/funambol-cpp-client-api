@@ -35,10 +35,8 @@
 		7C9F52F60DAF4CB1007E0091 /* baseutils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C9F52180DAF4CB1007E0091 /* baseutils.cpp */; };
 		7C9F52F70DAF4CB1007E0091 /* BasicTime.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C9F52190DAF4CB1007E0091 /* BasicTime.cpp */; };
 		7C9F52F80DAF4CB1007E0091 /* ItemContainer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C9F521A0DAF4CB1007E0091 /* ItemContainer.cpp */; };
-		7C9F52F90DAF4CB1007E0091 /* KeyValuePair.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C9F521B0DAF4CB1007E0091 /* KeyValuePair.cpp */; };
 		7C9F52FA0DAF4CB1007E0091 /* PropertyFile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C9F521C0DAF4CB1007E0091 /* PropertyFile.cpp */; };
 		7C9F52FB0DAF4CB1007E0091 /* StringBuffer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C9F521D0DAF4CB1007E0091 /* StringBuffer.cpp */; };
-		7C9F52FC0DAF4CB1007E0091 /* WKeyValuePair.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C9F521E0DAF4CB1007E0091 /* WKeyValuePair.cpp */; };
 		7C9F52FD0DAF4CB1007E0091 /* WString.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C9F521F0DAF4CB1007E0091 /* WString.cpp */; };
 		7C9F52FE0DAF4CB1007E0091 /* XMLProcessor.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C9F52200DAF4CB1007E0091 /* XMLProcessor.cpp */; };
 		7C9F53000DAF4CB1007E0091 /* DMTClientConfig.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C9F52230DAF4CB1007E0091 /* DMTClientConfig.cpp */; };
@@ -483,10 +481,8 @@
 		7C9F52180DAF4CB1007E0091 /* baseutils.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = baseutils.cpp; sourceTree = "<group>"; };
 		7C9F52190DAF4CB1007E0091 /* BasicTime.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = BasicTime.cpp; sourceTree = "<group>"; };
 		7C9F521A0DAF4CB1007E0091 /* ItemContainer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ItemContainer.cpp; sourceTree = "<group>"; };
-		7C9F521B0DAF4CB1007E0091 /* KeyValuePair.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = KeyValuePair.cpp; sourceTree = "<group>"; };
 		7C9F521C0DAF4CB1007E0091 /* PropertyFile.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PropertyFile.cpp; sourceTree = "<group>"; };
 		7C9F521D0DAF4CB1007E0091 /* StringBuffer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = StringBuffer.cpp; sourceTree = "<group>"; };
-		7C9F521E0DAF4CB1007E0091 /* WKeyValuePair.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = WKeyValuePair.cpp; sourceTree = "<group>"; };
 		7C9F521F0DAF4CB1007E0091 /* WString.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = WString.cpp; sourceTree = "<group>"; };
 		7C9F52200DAF4CB1007E0091 /* XMLProcessor.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = XMLProcessor.cpp; sourceTree = "<group>"; };
 		7C9F52230DAF4CB1007E0091 /* DMTClientConfig.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DMTClientConfig.cpp; sourceTree = "<group>"; };
@@ -1036,10 +1032,8 @@
 				7C9F52180DAF4CB1007E0091 /* baseutils.cpp */,
 				7C9F52190DAF4CB1007E0091 /* BasicTime.cpp */,
 				7C9F521A0DAF4CB1007E0091 /* ItemContainer.cpp */,
-				7C9F521B0DAF4CB1007E0091 /* KeyValuePair.cpp */,
 				7C9F521C0DAF4CB1007E0091 /* PropertyFile.cpp */,
 				7C9F521D0DAF4CB1007E0091 /* StringBuffer.cpp */,
-				7C9F521E0DAF4CB1007E0091 /* WKeyValuePair.cpp */,
 				7C9F521F0DAF4CB1007E0091 /* WString.cpp */,
 				7C9F52200DAF4CB1007E0091 /* XMLProcessor.cpp */,
 			);
@@ -2161,10 +2155,8 @@
 				7C9F52F60DAF4CB1007E0091 /* baseutils.cpp in Sources */,
 				7C9F52F70DAF4CB1007E0091 /* BasicTime.cpp in Sources */,
 				7C9F52F80DAF4CB1007E0091 /* ItemContainer.cpp in Sources */,
-				7C9F52F90DAF4CB1007E0091 /* KeyValuePair.cpp in Sources */,
 				7C9F52FA0DAF4CB1007E0091 /* PropertyFile.cpp in Sources */,
 				7C9F52FB0DAF4CB1007E0091 /* StringBuffer.cpp in Sources */,
-				7C9F52FC0DAF4CB1007E0091 /* WKeyValuePair.cpp in Sources */,
 				7C9F52FD0DAF4CB1007E0091 /* WString.cpp in Sources */,
 				7C9F52FE0DAF4CB1007E0091 /* XMLProcessor.cpp in Sources */,
 				7C9F53000DAF4CB1007E0091 /* DMTClientConfig.cpp in Sources */,
