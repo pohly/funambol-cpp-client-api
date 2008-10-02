@@ -124,7 +124,7 @@ LANG SC
 
 VENDORID          0
 SECUREID          0xEEBB239B
-CAPABILITY        ReadUserData SwEvent SurroundingsDD ReadDeviceData WriteDeviceData TrustedUI  NetworkServices WriteUserData LocalServices
+CAPABILITY        ReadUserData ReadDeviceData NetworkServices WriteUserData LocalServices
 
 MACRO SYMBIAN
 MACRO ENABLE_NAMESPACE
