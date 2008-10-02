@@ -222,13 +222,12 @@ int FileData::parse(StringBuffer* s)
         body = qp_decode(body.c_str());
     }
 
-
     if( XMLProcessor::getElementContent (msg, FILE_NAME, NULL, &start, &end) ) {
         name = msg.substr(start, end-start);
     }
     else name = TEXT("");
 
-	delete s;
+	//delete s;
 
     return ret;
 }
