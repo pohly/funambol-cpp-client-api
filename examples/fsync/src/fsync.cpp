@@ -33,27 +33,23 @@
  * the words "Powered by Funambol".
  */
 
-#include "base/fscapi.h"
-#include "base/messages.h"
-#include "base/Log.h"
-#include "base/util/ArrayList.h"
-#include "base/util/StringBuffer.h"
-#include "spds/spdsutils.h"
-#include "spds/constants.h"
-#include "client/SyncClient.h"
-#include "client/DMTClientConfig.h"
-#include "spds/DefaultConfigFactory.h"
-#include "client/FileSyncSource.h"
-
+#include "FSyncOpt.h"
 #include "FSyncConfig.h"
+
+#include "client/SyncClient.h"
+#include "client/FileSyncSource.h"
+#include "base/Log.h"
+#include "base/util/StringBuffer.h"
 
 bool doSync(FSyncConfig& config, FSyncOpt& options) {
 
     // Create the SyncSource passing its name, the SyncSourceConfig 
-    FileSyncSource fSource(TEXT(SOURCE_NAME), config.getSyncSourceConfig(SOURCE_NAME));    
-    // store the path to the folder to sync
+    FileSyncSource fSource(TEXT(FSYNC_SOURCE_NAME), config.getSyncSourceConfig(FSYNC_SOURCE_NAME));    
+    
+    // Store the path to the folder to sync
     fSource.setDir(config.getSyncPath());
 
+    // Initialize the SyncSource array to sync
     SyncSource* ssArray[] = { &fSource, NULL } ;
 
     // Create the SyncClient
@@ -62,37 +58,47 @@ bool doSync(FSyncConfig& config, FSyncOpt& options) {
     // SYNC!
     if( fileClient.sync(config, ssArray) ) {
         LOG.error("Error in sync.");
+
+        return false;
     }
 
-    // Save config to registry.
+    // Save the config
     config.save();
+
+    return true;
 }
+int createFolder(const char *path);
 
 int main(int argc, char** argv) {
 
+    StringBuffer folder;
+    
     // Parse the command line
     FSyncOpt options;
-    if (!options.getopt(argc, argv)) {
+
+    /*
+    if (!options.readOptions(argc, argv)) {
         LOG.error("Error processing command line.");
         fprintf(stderr,"Error processing command line.");
         exit(1);
     }
-
+    */
     // TODO: use cmdline options
     // Init LOG
     LOG.setLogName(LOG_NAME);
-    LOG.setLogPath(LOG_PATH);
-    LOG.reset(LOG_TITLE);
+    LOG.setLogPath(FSYNC_LOG_PATH);
+    LOG.reset(FSYNC_LOG_TITLE);
     LOG.setLevel(LOG_LEVEL_DEBUG);
     
     // Create and initialize the configuration.
-    FSyncConfig config(APPLICATION_URI).init();
+    FSyncConfig config;
+    config.init();
 
-    briefcase = options.getPath() || config.getSyncPath ;
+    folder = config.getSyncPath();
 
     // Check the presence of the sync folder
-    if(createFolder(briefcase) != 0) {
-        LOG.error("Error creating briefcase folder.");
+    if(createFolder(folder.c_str()) != 0) {
+        LOG.error("Error creating folder.");
         perror("filesync");
         exit(1);
     }

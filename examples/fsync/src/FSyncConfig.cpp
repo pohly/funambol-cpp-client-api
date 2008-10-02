@@ -33,30 +33,35 @@
  * the words "Powered by Funambol".
  */
 
-USE_NAMESPACE
-
-#include "fscapi.h"
+#include "base/fscapi.h"
 #include "FSyncConfig.h"
+#include "spdm/DMTreeFactory.h"
+#include "spds/DefaultConfigFactory.h"
 
-FSyncConfig(): DMTClientConfig(FSYNC_APPLICATION_URI), syncPath(FSYNC_DEFAULT_PATH){
+FSyncConfig::FSyncConfig(): DMTClientConfig(FSYNC_APPLICATION_URI), syncPath(FSYNC_DEFAULT_PATH){
+    
 }
 
-// Perform all the actions to initialize the configuration:
-// - read it from the storage, or create a default one
-// - handle backward compatibility
-void init() {
-    // Read config from registry.
+/**
+ * Perform all the actions to initialize the configuration:
+ * - read it from the storage, or create a default one
+ * - handle backward compatibility
+ */
+void FSyncConfig::init() {
+
+    // Read the configuration
     if (!read()) {
         // Config not found, generate a default one
         createConfig();
+        read();
     }
 
     // Handle backward compatibility: if the stored version is
     // different from the current one, take the proper action
-    if (strcmp(config.getDeviceConfig().getSwv(), SW_VERSION) != 0) {
+    if (strcmp(this->getDeviceConfig().getSwv(), FSYNC_SW_VERSION) != 0) {
         // Handle differences in config. For instance, if a new parameter has
         // been added, initialize it so that it will be stored at the end.
-
+        
         // TODO: just an example now, remember this at next version.
     }
 }
@@ -65,8 +70,12 @@ void init() {
 // values.
 bool FSyncConfig::read() {
     
-    if ( !DMTClientConfig::read() ) {
+    if (!DMTClientConfig::read()) {
         return false; // error in the common config read.
+    }
+
+    if (!open()) {
+        return false;
     }
 
     //
@@ -77,17 +86,20 @@ bool FSyncConfig::read() {
         // The node is valid, get the values
         const char *val;
 
-        val = node.readPropertyValue(FSYNC_PATH_PROPERTY);
+        val = node->readPropertyValue(FSYNC_PATH_PROPERTY);
         syncPath = val;
 
         // cleanup
-        delete [] val;
-        delete node;
-        node = NULL;
+        delete [] val;  val = NULL;
+        delete node;    node = NULL;
 
+        close();
+        
         // return success
         return true;
     }
+
+    close();
 
     // return failure
     return false;
@@ -100,21 +112,29 @@ bool FSyncConfig::save() {
         return false; // error in the common config save.
     }
 
+    if (!open()) {
+        return false;
+    }
+
     //
     // Write client-specific properties to the config
     //
     ManagementNode *node = dmt->readManagementNode(rootContext);
     if (node) {
         // The node is valid, store the values
-        node.setPropertyValue(FSYNC_PATH_PROPERTY, syncPath);
+        node->setPropertyValue(FSYNC_PATH_PROPERTY, syncPath);
 
         // cleanup
-        delete node;
+        delete node;    
         node = NULL;
+
+        close();
 
         // return success
         return true;
     }
+    
+    close();
 
     // return failure
     return false;
@@ -124,6 +144,10 @@ bool FSyncConfig::save() {
 // Method to create a default config.
 //
 void FSyncConfig::createConfig() {
+
+    if (!open()) {
+        return;
+    }
 
     AccessConfig* ac = DefaultConfigFactory::getAccessConfig();
     ac->setMaxMsgSize(60000);
@@ -139,12 +163,19 @@ void FSyncConfig::createConfig() {
     this->setDeviceConfig(*dc);
     delete dc;
 
-    SyncSourceConfig* sc = DefaultConfigFactory::getSyncSourceConfig(SOURCE_NAME);
-    sc->setEncoding ("b64");
-    sc->setType     ("application/*");
+    SyncSourceConfig* sc = DefaultConfigFactory::getSyncSourceConfig(FSYNC_SOURCE_NAME);
+    sc->setEncoding ("");
+    sc->setType     ("application/vnd.omads-file+xml");
     sc->setURI      (FSYNC_SOURCE_NAME);
     this->setSyncSourceConfig(*sc);
     delete sc;
+
+    ManagementNode *node = dmt->readManagementNode(rootContext);
+    if (node) {
+        node->setPropertyValue(FSYNC_PATH_PROPERTY, FSYNC_DEFAULT_PATH);
+    }
+    close();
+
+    // save the configuration
+    save();
 }
-
-

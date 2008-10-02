@@ -36,8 +36,9 @@
 #ifndef INCL_FSYNCCONFIG
 #define INCL_FSYNCCONFIG
 
-#include "fscapi.h"
+#include "base/fscapi.h"
 #include "base/util/StringBuffer.h"
+#include "client/DMTClientConfig.h"
 
 // This is relative to the config root specific for each platform.
 // E.g. HKCU/Software on Windows or $HOME/.config on Unix
@@ -80,15 +81,19 @@ class FSyncConfig : public DMTClientConfig {
          * FSYNC_DEFAULT_PATH to initialize the config.
          * By default also reads the config from the store.
          */
-        FSyncConfig(bool read=true);
+        FSyncConfig();
 
         virtual bool read();
         virtual bool save();
 
+        void init();
+        void createConfig();
+
         /** Get the current sync path */
-        const StringBuffer& getSyncPath() { return syncPath; } const;
+        const StringBuffer& getSyncPath() { return syncPath; };
 
         /** Set a new sync path */
         void setSyncPath(const char *newPath) { syncPath = newPath; };
-}
+};
 
+#endif

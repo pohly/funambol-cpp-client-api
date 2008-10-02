@@ -33,40 +33,23 @@
  * the words "Powered by Funambol".
  */
 
-#ifndef INCL_FSYNCCONFIG
-#define INCL_FSYNCCONFIG
+#ifndef INCL_FSYNCOPT
+#define INCL_FSYNCOPT
 
-#include "fscapi.h"
+#include "base/fscapi.h"
 #include "base/util/StringBuffer.h"
 
 
 /**
- * This class extends DMTClientConfig to store also the default sync path,
- * and to provide the default configuration suited to this client.
+ * This class allows to get options from the command line
  */
 class FSyncOpt {
 
-    private:
-
-        /** The local path to sync */
-        StringBuffer path;
-
-        int verbose;
-
     public:
+        
+    private:
+        
 
-        /**
-         * 
-         */
-        FSyncOpt();
+};
 
-        /** parse the command line */
-        bool getopt(int argc, char** argv);
-
-        /** Get the current sync path */
-        const StringBuffer& getSyncPath() { return syncPath; } const;
-
-        /** Set a new sync path */
-        void setSyncPath(const char *newPath) { syncPath = newPath; };
-}
-
+#endif
