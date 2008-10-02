@@ -230,7 +230,13 @@ public:
      *
      * @return 0 - success, failure otherwise
      */
-    virtual int save() = 0;
+     virtual int close();
+    /**
+     * Remove all properties
+     *
+     * @return int 0 on success, an error code otherwise
+     */
+     virtual int removeAllProperties();
 };
 
 
