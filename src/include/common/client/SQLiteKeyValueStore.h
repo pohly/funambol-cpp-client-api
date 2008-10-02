@@ -199,7 +199,7 @@ public:
      *
      * @return 0 - success, failure otherwise
      */
-    virtual int save();
+     virtual int close();
 };
 
 
