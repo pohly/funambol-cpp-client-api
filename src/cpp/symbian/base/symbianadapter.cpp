@@ -456,5 +456,19 @@ StringBuffer getCacheDirectory() {
     return empty;
 }
 
+// TODO: implementation needed!
+bool removeFileInDir(const char* dir, const char* filename) {
+    return true;
+}
+
+StringBuffer getHomeFolder() {
+    StringBuffer home(getenv("HOME"));
+    if( home.null() ) {
+        LOG.error("Home directory not defined.");
+    }
+    return home;
+}
+
+
 END_NAMESPACE
 
