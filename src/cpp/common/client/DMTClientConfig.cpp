@@ -143,7 +143,6 @@ bool DMTClientConfig::read() {
     // Reading DeviceConfig
     readDeviceConfig(*syncMLNode);
 
-
     n = sourcesNode->getChildrenMaxCount();
 
     //
@@ -165,7 +164,6 @@ bool DMTClientConfig::read() {
 
     ret = (getLastErrorCode() == 0);
 
-finally:
     close();
     return ret;
 }
@@ -203,7 +201,6 @@ bool DMTClientConfig::save() {
     }
     ret = (getLastErrorCode() == 0);
 
-finally:
     close();
     return ret;
 }
