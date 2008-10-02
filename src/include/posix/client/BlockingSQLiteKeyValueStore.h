@@ -122,6 +122,7 @@ public:
                         const StringBuffer & path)
                         : SQLiteKeyValueStore(table,colKey,colValue,path)
     {
+        LOG.debug("BlockingSQLiteKeyValueStore: path = %s", path.c_str());
         sem_init(&sema,0,1);
         sem_init(&sema_save,0,1);
     }
@@ -138,13 +139,14 @@ public:
     /**
      * Get all the properties that are currently defined.     
      */
-    virtual Enumeration& getProperties() const
+    virtual Enumeration& getProperties()
     {
         sem_wait(&sema);
         Enumeration & e = SQLiteKeyValueStore::getProperties();
         sem_post(&sema);
         return e;
     }
+    
     
     /**
      * Ensure that all properties are stored persistently.
@@ -153,14 +155,22 @@ public:
      *
      * @return 0 - success, failure otherwise
      */
-    virtual int save()
+    virtual int close()
     {
         int ret;
         sem_wait(&sema_save);
-        ret = SQLiteKeyValueStore::save();
+        ret = SQLiteKeyValueStore::close();
         sem_post(&sema_save);
         return ret;
     }
+    
+    virtual int removeAllProperties(){
+        sem_wait(&sema);
+        int e = SQLiteKeyValueStore::removeAllProperties();
+        sem_post(&sema);
+        return e;
+    }
+
 };
 
 
