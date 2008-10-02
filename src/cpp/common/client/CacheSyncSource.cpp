@@ -59,7 +59,8 @@ CacheSyncSource::CacheSyncSource(const WCHAR* sourceName, AbstractSyncSourceConf
         // get the default directory of the 
         StringBuffer completeName = getCacheDirectory();
         completeName += "/";
-        completeName += CACHE_FILE_NAME;   
+        completeName += CACHE_FILE_NAME;  
+        LOG.debug("PropertyFile: path to the PropertyFile %s", completeName.c_str());
 
         this->cache = new PropertyFile(completeName);
     }
@@ -307,10 +308,7 @@ bool CacheSyncSource::fillItemModifications() {
     ArrayList cacheCopy;
     while(e.hasMoreElement()) {
         cacheCopy.add(*e.getNextElement());
-    }        
-    //if (e) {
-    //    delete e;
-    //}
+    }
 
     StringBuffer* key;
     KeyValuePair* kvp;
