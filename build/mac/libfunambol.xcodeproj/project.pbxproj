@@ -422,6 +422,9 @@
 		7CB0367A0DB4EC8A003F4E5F /* SQLKeyValueStore.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7CB036780DB4EC8A003F4E5F /* SQLKeyValueStore.cpp */; };
 		7CB0367E0DB4EC9A003F4E5F /* SQLKeyValueStore.h in Headers */ = {isa = PBXBuildFile; fileRef = 7CB0367C0DB4EC9A003F4E5F /* SQLKeyValueStore.h */; };
 		AB3E85FA0E07F8CC00581A6C /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AB3E85F90E07F8CB00581A6C /* SystemConfiguration.framework */; };
+		ABF8C4C00E93A1CB00401C02 /* BlockingSQLiteKeyValueStore.h in Headers */ = {isa = PBXBuildFile; fileRef = ABF8C4BF0E93A1CB00401C02 /* BlockingSQLiteKeyValueStore.h */; };
+		ABF8C5810E93BD4700401C02 /* MappingsManager.h in Headers */ = {isa = PBXBuildFile; fileRef = ABF8C57F0E93BD4700401C02 /* MappingsManager.h */; };
+		ABF8C5820E93BD4700401C02 /* MappingStoreBuilder.h in Headers */ = {isa = PBXBuildFile; fileRef = ABF8C5800E93BD4700401C02 /* MappingStoreBuilder.h */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -871,6 +874,9 @@
 		7CB036780DB4EC8A003F4E5F /* SQLKeyValueStore.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = SQLKeyValueStore.cpp; sourceTree = "<group>"; };
 		7CB0367C0DB4EC9A003F4E5F /* SQLKeyValueStore.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SQLKeyValueStore.h; sourceTree = "<group>"; };
 		AB3E85F90E07F8CB00581A6C /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
+		ABF8C4BF0E93A1CB00401C02 /* BlockingSQLiteKeyValueStore.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BlockingSQLiteKeyValueStore.h; path = ../../src/include/posix/client/BlockingSQLiteKeyValueStore.h; sourceTree = SOURCE_ROOT; };
+		ABF8C57F0E93BD4700401C02 /* MappingsManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MappingsManager.h; sourceTree = "<group>"; };
+		ABF8C5800E93BD4700401C02 /* MappingStoreBuilder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MappingStoreBuilder.h; sourceTree = "<group>"; };
 		D2AAC046055464E500DB518D /* libfunambol.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libfunambol.a; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -1508,6 +1514,8 @@
 		7C9F54150DAF4CC5007E0091 /* spds */ = {
 			isa = PBXGroup;
 			children = (
+				ABF8C57F0E93BD4700401C02 /* MappingsManager.h */,
+				ABF8C5800E93BD4700401C02 /* MappingStoreBuilder.h */,
 				7C9F54160DAF4CC5007E0091 /* AbstractSyncConfig.h */,
 				7C9F54170DAF4CC5007E0091 /* AbstractSyncSourceConfig.h */,
 				7C9F54180DAF4CC5007E0091 /* AccessConfig.h */,
@@ -1735,6 +1743,7 @@
 		7C9F558F0DAF4CD3007E0091 /* include */ = {
 			isa = PBXGroup;
 			children = (
+				ABF8C4BC0E93A18A00401C02 /* client */,
 				7C3BEB1F0DB7328E00119850 /* http */,
 				7C9F54A40DAF4CC5007E0091 /* base */,
 				7C9F54A90DAF4CC5007E0091 /* push */,
@@ -1746,6 +1755,7 @@
 		7C9F55900DAF4CD9007E0091 /* cpp */ = {
 			isa = PBXGroup;
 			children = (
+				ABF8C4BE0E93A1A100401C02 /* client */,
 				7C9F52DE0DAF4CB1007E0091 /* base */,
 				7C9F52E10DAF4CB1007E0091 /* http */,
 				7C9F52E70DAF4CB1007E0091 /* spdm */,
@@ -1805,6 +1815,21 @@
 				7C9F54880DAF4CC5007E0091 /* vocl */,
 			);
 			name = include;
+			sourceTree = "<group>";
+		};
+		ABF8C4BC0E93A18A00401C02 /* client */ = {
+			isa = PBXGroup;
+			children = (
+				ABF8C4BF0E93A1CB00401C02 /* BlockingSQLiteKeyValueStore.h */,
+			);
+			name = client;
+			sourceTree = "<group>";
+		};
+		ABF8C4BE0E93A1A100401C02 /* client */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = client;
 			sourceTree = "<group>";
 		};
 		C6A0FF2B0290797F04C91782 /* Documentation */ = {
@@ -2046,6 +2071,9 @@
 				7CB0367E0DB4EC9A003F4E5F /* SQLKeyValueStore.h in Headers */,
 				7C3BEB220DB7328E00119850 /* CurlTransportAgent.h in Headers */,
 				7C3BEB230DB7328E00119850 /* MacTransportAgent.h in Headers */,
+				ABF8C4C00E93A1CB00401C02 /* BlockingSQLiteKeyValueStore.h in Headers */,
+				ABF8C5810E93BD4700401C02 /* MappingsManager.h in Headers */,
+				ABF8C5820E93BD4700401C02 /* MappingStoreBuilder.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
