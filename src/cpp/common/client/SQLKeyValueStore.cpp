@@ -145,6 +145,21 @@ int SQLKeyValueStore::removeProperty(const char *prop)
 {
     return execute(sqlRemovePropertyString(prop));
 }
+
+/**
+ * Remove a certain property 
+ *
+ * @param prop    the name of the property which is to be removed   
+ *
+ * @return int 0 on success, an error code otherwise
+ */
+int SQLKeyValueStore::removeAllProperties()
+{
+    StringBuffer q("DELETE * FROM ");
+    q.append(table);
+    q.append(";");
+    return execute(q);
+}
  
 /**
  * Get all the properties that are currently defined.     
