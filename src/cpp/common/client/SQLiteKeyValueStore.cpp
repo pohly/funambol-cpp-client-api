@@ -169,7 +169,7 @@ int SQLiteKeyValueStore::disconnect()
     return ret;
 }
 
-int SQLiteKeyValueStore::save()
+int SQLiteKeyValueStore::close()
 {
     if (statement)
     {
