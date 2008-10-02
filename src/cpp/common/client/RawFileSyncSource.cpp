@@ -44,7 +44,7 @@
 USE_NAMESPACE
 
 
-RawFileSyncSource::RawFileSyncSource(const WCHAR* name, AbstractSyncSourceConfig* sc) : FileSyncSource(name, sc) {
+RawFileSyncSource::RawFileSyncSource(const WCHAR* name, AbstractSyncSourceConfig* sc) : TestFileSyncSource(name, sc) {
 }
 
 int RawFileSyncSource::addItem(SyncItem& item) {

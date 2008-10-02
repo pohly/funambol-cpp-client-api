@@ -39,7 +39,7 @@
 /** @addtogroup Client */
 /** @{ */
 
-#include "client/FileSyncSource.h"
+#include "client/TestFileSyncSource.h"
 #include "base/globalsdef.h"
 
 BEGIN_NAMESPACE
@@ -54,7 +54,7 @@ BEGIN_NAMESPACE
  * The type of the items is taken from the sync source
  * type property.
  */
-class RawFileSyncSource : public FileSyncSource {
+class RawFileSyncSource : public TestFileSyncSource {
   public:
     RawFileSyncSource(const WCHAR* name, AbstractSyncSourceConfig* sc);
 
