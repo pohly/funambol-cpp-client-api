@@ -36,368 +36,237 @@
 #include "spds/SyncItemStatus.h"
 #include "base/util/utils.h"
 #include "base/Log.h"
-#include "spds/FileData.h"
-
+#include "syncml/core/TagNames.h"
+#include "base/util/ArrayListEnumeration.h"
 #include "client/FileSyncSource.h"
-#include "base/globalsdef.h"
 
-USE_NAMESPACE
+#define OMA_MIME_TYPE "application/vnd.omads-file+xml"
+
+#define ERR_FILE_SYSTEM             1
+#define ERR_NO_FILES_TO_SYNC        2
+#define ERR_BAD_FILE_CONTENT        3
 
 
-FileSyncSource::FileSyncSource(const WCHAR* name, AbstractSyncSourceConfig* sc) : SyncSource(name, sc) {
-    dir  = NULL;
-    fileNode = NULL;
-
-    setDir(".");
+static StringBuffer getCompleteName(StringBuffer& dir, const WCHAR *name) {
+    
+    char* t = toMultibyte(name);
+    StringBuffer pathName(dir);
+    pathName += "/"; 
+    pathName += t;
+    delete [] t;
+    return pathName;
+    
 }
 
-FileSyncSource::~FileSyncSource() {
-    if(dir) {
-        delete [] dir;
-        dir = NULL;
-    }
+FileSyncSource::FileSyncSource(
+                        const WCHAR* name,
+                        AbstractSyncSourceConfig* sc)
+    : CacheSyncSource(name, sc), dir(DEFAULT_SYNC_DIR) {
+   
 }
 
+FileSyncSource::~FileSyncSource() {}
 
 
-void FileSyncSource::setDir(const char* p) {
-    if (dir)
-        delete [] dir;
-
-    dir = (p) ? stringdup(p) : stringdup("\\");
-}
-
-const char* FileSyncSource::getDir() {
-    return dir;
-}
-
-
-
-/////////////////////////////////////////////////////////////////////////////////////////
-
-
-int FileSyncSource::beginSync() {
-    allItems.items.clear();
-    deletedItems.items.clear();
-    newItems.items.clear();
-    updatedItems.items.clear();
-
-
-    //
-    // Get file list.
-    //
-    int count;
-    char** fileNames = readDir(dir, &count);
-    LOG.info("The client number of files to sync are %i", count);
-
-    //
-    // Create array list with empty data from file names.
-    //
-    for (int i=0; i<count; i++) {
-        if (fileNames[i]) {
-            WCHAR* wname = toWideChar(fileNames[i]);
-            SyncItem* s = new SyncItem(wname);
-            allItems.items.add(*s);
-
-            if (fileNode) {
-                char completeName[512];
-                sprintf(completeName, "%s/%s", dir, fileNames[i]);
-                unsigned long fileModTime = getFileModTime(completeName);
-                unsigned long serverModTime = getServerModTime(fileNames[i]);
-
-                if (!serverModTime) {
-                    // added file
-                    newItems.items.add(*s);
-                } else if (serverModTime < fileModTime) {
-                    // updated file
-                    updatedItems.items.add(*s);
-                }
-            }
-
-            delete s;
-            delete [] wname;
-            delete [] fileNames[i];
-        }
-    }
-
-    if (fileNode) {
-        // iterate over all files stored on server (i.e. those with non-zero time stamp property)
-        // and check which of these have been deleted locally
-        //
-        // TODO: currently impossible with the ManagementNode interface, have to guess file names (works
-        // for RawFileSyncSource)
-
-        for (int key = 0; key < 1000; key++) {
-            char keystr[80];
-            sprintf(keystr, "%d", key);
-
-            if (getServerModTime(keystr)) {
-                char completeName[512];
-                sprintf(completeName, "%s/%s", dir, keystr);
-                if (!getFileModTime(completeName)) {
-                    // file no longer exists locally
-                    WCHAR* wname = toWideChar(keystr);
-                    SyncItem* s = new SyncItem(wname);
-                    deletedItems.items.add(*s);
-                    delete s;
-                    delete [] wname;
-                }
-            }
-        }
-    }
-
-    if (fileNames) {
-        delete [] fileNames;
-        fileNames = NULL;
-    }
+int FileSyncSource::removeAllItems() {
+    removeFileInDir(dir);
     return 0;
 }
 
-SyncItem* FileSyncSource::getFirst(ItemIteratorContainer& container, bool getData) {
-    container.index = 0;
-    if (container.index >= container.items.size()) {
-        return NULL;
-    }
-    SyncItem* syncItem = (SyncItem*)container.items.get(container.index)->clone();
-
-    //
-    // Set data from file content, return syncItem (freed by API)
-    //
-    if (!getData || setItemData(syncItem)){
-        return syncItem;
-    }
-    else {
-        delete syncItem;
-        return NULL;
+int FileSyncSource::parseFileData(FileData& file, SyncItem& item) {
+    
+    if (file.parse(item.getData(),item.getDataSize())) {
+        LOG.info("Error parsing item from server. Using its content directly");
+        return 1;
+    } else {
+        return 0;
     }
 }
 
-SyncItem* FileSyncSource::getNext(ItemIteratorContainer& container, bool getData) {
-    container.index++;
-    if (container.index >= container.items.size()) {
-        return NULL;
-    }
-    SyncItem* syncItem = (SyncItem*)container.items.get(container.index)->clone();
-
-    // Set data from file content, return syncItem (freed by API)
-    if (!getData || setItemData(syncItem)){
-        return syncItem;
-    }
-    else {
-        delete syncItem;
-        return NULL;
-    }
-}
-
-unsigned long FileSyncSource::getServerModTime(const char* keystr) {
-    unsigned long modtime = 0;
-    if (fileNode) {
-        char* timestr = fileNode->readPropertyValue(keystr);
-        modtime = anchorToTimestamp(timestr);
-        delete [] timestr;
-    }
-    return modtime;
-}
-
-void FileSyncSource::setItemStatus(const WCHAR* key, int status) {
-    LOG.debug("item key: %" WCHAR_PRINTF ", status: %i", key, status);
-}
-
-int FileSyncSource::removeAllItems()
-{
-    for (SyncItem* syncItem = getFirstItem();
-         syncItem;
-         syncItem = getNextItem()) {
-        deleteItem(*syncItem);
-        delete syncItem;
-    }
-    // Return 0 on success
-    return 0;
-}
-
-//////////////////////////////////////////////////////////////////////////////////////////
-
-
-int FileSyncSource::addItem(SyncItem& item) {
-
-    // format is the custom XML format understood by FileData
+int FileSyncSource::saveFileData(FileData& file) {
+    
     int ret = STC_COMMAND_FAILED;
-    FileData file;
-    char* data = (char*)item.getData();
-    size_t len = item.getDataSize();
-
-    if (file.parse(data, len)) {
-        setError(ERR_BAD_FILE_CONTENT, "Error parsing item from server");
-        LOG.error("%s", getLastErrorMsg());
-        report->setLastErrorCode(ERR_BAD_FILE_CONTENT);
-        report->setLastErrorMsg(getLastErrorMsg());
-        report->setState(SOURCE_ERROR);
+    if (!saveFile(getCompleteName(dir, file.getName()), file.getBody(), file.getSize(), true)) {
+        LOG.info("Error saving file");        
         return STC_COMMAND_FAILED;
+    } else {
+        return STC_OK;
     }
-
-
-    if (file.getSize() >= 0) {
-        //
-        // Save item on FS
-        //
-        char completeName[512];
-        sprintf(completeName, "%s/%" WCHAR_PRINTF, dir, file.getName());
-        if (!saveFile(completeName, file.getBody(), file.getSize(), true)) {
-            setErrorF(ERR_FILE_SYSTEM, "Error saving file %" WCHAR_PRINTF, file.getName());
-            LOG.error("%s", getLastErrorMsg());
-            report->setLastErrorCode(ERR_FILE_SYSTEM);
-            report->setLastErrorMsg(getLastErrorMsg());
-            report->setState(SOURCE_ERROR);
-            return STC_COMMAND_FAILED;
-        }
-        ret = addedItem(item, file.getName());
-        LOG.debug("Added item: %" WCHAR_PRINTF, file.getName());
-    }
-    return ret;
 }
 
-int FileSyncSource::addedItem(SyncItem& item, const WCHAR* key) {
-    item.setKey(key);
-
-    // remember this item so that endSync() can store its time stamp
-    SyncItem smallitem;
-    smallitem.setKey(key);
-    allItems.items.add(smallitem);
-
-    return STC_ITEM_ADDED;
-}
-
-int FileSyncSource::updateItem(SyncItem& item) {
-    ////// TBD ////////
-    return STC_COMMAND_FAILED;
-    ///////////////////
-
-    int ret = STC_COMMAND_FAILED;
-
-    FileData file;
-    char* data      = NULL;
-    long h          = 0;
-    WCHAR* encod  = NULL;
-    int size = 0;
-    int res = 0;
-    size = item.getDataSize();
-    data = new char[size + 1];
-    memset(data, 0, size + 1);
-    memcpy(data, item.getData(), size);
-    res = file.parse((data));
-    encod = (WCHAR*)file.getEnc();
-    delete [] data;
-
-    if (wcslen(encod) > 0) {
-        item.setData(file.getBody(), file.getSize());
-        //
-        // Replace item on FS (res=h)
-        //
-    }
-
-    if (h == 0) {
-        ret = STC_OK;
-        LOG.debug("updated item: %S", item.getKey());
-    }
-    return ret;
-}
-
-int FileSyncSource::deleteItem(SyncItem& item) {
-    int ret = STC_COMMAND_FAILED;
-
-    char completeName[512];
-    sprintf(completeName, "%s/%" WCHAR_PRINTF, dir, item.getKey());
-    if (
-#ifdef WIN32
-        !_unlink(completeName)
-#else
-        !unlink(completeName)
-#endif
-        ) {
-        ret = STC_OK;
-    }
-
-    return ret;
-}
-
-
-int FileSyncSource::endSync() {
-    if (fileNode) {
-        SyncItem* item;
-
-        // reset information about deleted items
-        for (item = getFirst(deletedItems, false); item; item = getNext(deletedItems, false)) {
-            char *tmp = toMultibyte(item->getKey());
-            fileNode->setPropertyValue(tmp, "");
-            delete [] tmp;
-            delete item;
-        }
-
-        // update information about each file that currently exists on the server
-        for (item = getFirst(allItems, false); item; item = getNext(allItems, false)) {
-            char completeName[512];
-            sprintf(completeName, "%s/%" WCHAR_PRINTF, dir, item->getKey());
-            unsigned long modTime = getFileModTime(completeName);
-            char anchor[30];
-            timestampToAnchor(modTime, anchor);
-            char *tmp = toMultibyte(item->getKey());
-            fileNode->setPropertyValue(tmp, anchor);
-            delete [] tmp;
-            delete item;
-        }
-    }
-
-    return 0;
-}
-
-void FileSyncSource::assign(FileSyncSource& s) {
-    SyncSource::assign(s);
-    setDir(getDir());
-}
-
-bool FileSyncSource::setItemData(SyncItem* syncItem) {
-
-    size_t len;
-    char* content;
-    char fileName[512];
-
-    //
-    // Get file content.
-    //
-    sprintf(fileName, "%s/%" WCHAR_PRINTF, dir, syncItem->getKey());
-    if (!readFile(fileName, &content, &len, true)) {
-        setErrorF(ERR_FILE_SYSTEM, "Error opening the file '%s'", fileName);
+int FileSyncSource::saveFileData(SyncItem& item, bool isUpdate) {
+    
+    StringBuffer completeName(getCompleteName(dir, item.getKey()));
+    if (!isUpdate) { // it is an add
+         FILE *fh = fopen(completeName, "r");
+         if (fh) {
+            fclose(fh);     
+            return STC_ALREADY_EXISTS;
+         }
+    }   
+    if (!saveFile(completeName, (const char *)item.getData(), item.getDataSize(), true)) {
+        setErrorF(ERR_FILE_SYSTEM, "Error saving file %s", completeName.c_str());
         LOG.error("%s", getLastErrorMsg());
         report->setLastErrorCode(ERR_FILE_SYSTEM);
         report->setLastErrorMsg(getLastErrorMsg());
         report->setState(SOURCE_ERROR);
-        return false;
+        return STC_COMMAND_FAILED;
+    } 
+    
+    if (!isUpdate) {    
+        return STC_ITEM_ADDED;
+    } else {
+        return STC_OK;
+    }
+    
+}
+
+Enumeration* FileSyncSource::getAllItemList() {
+    
+    //
+    // Get the list of the files that are in the directory
+    //
+    ArrayList currentKeys;
+    Enumeration* allKeys = NULL;        
+    int count;
+    char** fileNames = readDir((char*)dir.c_str(), &count);
+    LOG.info("The client number of files to sync are %i", count);
+    
+    for (int i = 0; i < count; i++) {
+        if (fileNames[i]) {
+            StringBuffer s(fileNames[i]);            
+            currentKeys.add(s);
+        }
+    }    
+
+    // delete fileNames
+    for (int i = 0; i < count; i++) {
+        delete [] fileNames[i]; fileNames[i] = NULL; 
+    }
+    if (fileNames != NULL) {
+        delete [] fileNames; fileNames = NULL;
+    }    
+
+    allKeys = new ArrayListEnumeration(currentKeys);
+    
+    return allKeys;
+
+}
+
+/**
+* Adds an item on the file system in the set directory.
+* 
+*/
+int FileSyncSource::insertItem(SyncItem& item) {
+    
+    int ret = STC_COMMAND_FAILED;
+    FileData file;
+    
+    if (parseFileData(file, item) == 0) {
+        if (file.getSize() >= 0) {   
+            ret = saveFileData(file);
+            if (ret == STC_COMMAND_FAILED) {
+                return ret;
+            } else {
+                item.setKey(file.getName());
+                ret = STC_ITEM_ADDED;
+                LOG.debug("Added item: %" WCHAR_PRINTF, file.getName());
+            }
+        }        
+    } else {
+        ret = saveFileData(item, false);        
+    }      
+    return ret;
+}
+
+
+int FileSyncSource::removeItem(SyncItem& item) {
+    
+    const char* filename = toMultibyte(item.getKey());
+    removeFileInDir(dir, filename);
+    if (filename) { delete [] filename; filename = NULL; }
+    LOG.debug("Added deleted: %" WCHAR_PRINTF, item.getKey());
+
+    return STC_OK;
+
+}
+int FileSyncSource::modifyItem(SyncItem& item) {
+    
+    int ret = STC_COMMAND_FAILED;
+    FileData file;
+    
+    if (parseFileData(file, item) == 0) {
+        if (file.getSize() >= 0) {   
+            ret = saveFileData(file);
+            if (ret = STC_COMMAND_FAILED) {
+                return ret;
+            } else { // don't add the item if it doesn't exist
+                //
+            }
+        }        
+    } else {
+         ret = saveFileData(item, true);    
+    }    
+    return ret;
+    
+}
+
+/**
+* Get the content of an item given the key. It is used to populate
+* the SyncItem before the engine uses it in the usual flow of the sync.
+* It is used also by the itemHandler if needed 
+* (i.e. in the cache implementation)
+*
+* @param key      the local key of the item
+* @param size     OUT: the size of the content
+*
+* @return         the local item content
+*/
+void* FileSyncSource::getItemContent(StringBuffer& key, size_t* size) {
+    
+    char* fileContent = NULL; 
+    char* itemContent = NULL;
+    *size = 0;
+    WCHAR* fileName = toWideChar(key);
+    StringBuffer completeName(getCompleteName(dir, fileName));
+    
+    if (readFile(completeName, &fileContent, size, true)) {        
+        LOG.debug("Content succesfully read");   
+    } else {
+        LOG.error("Content of the file not read"); 
     }
 
-    //
-    // Set data
-    //
-    if (content) {
+    if(!fileContent) {
+        // the file is empty
+        // set it as empty string, not null
+        fileContent = stringdup("");
+    }
+
+    // get the SyncSource mime type
+    const char* mimeType = config->getType();
+
+    if(!strcmp(mimeType, OMA_MIME_TYPE))
+    {
+        // the item content must be set as OMA file obj format
         FileData file;
-        file.setName(syncItem->getKey());
-        file.setSize((int)len);
-        file.setEnc(TEXT("base64"));
-        file.setBody(content, (int)len);
-        char* encContent = file.format();
-        syncItem->setData(encContent, (int)strlen(encContent));
-        delete [] encContent;
-        encContent = NULL;
-        //syncItem->setData(content, (long)len);
-        delete [] content;
-        content = NULL;
-        return true;
+
+        file.setName(fileName);
+        file.setSize(*size);
+        file.setBody(fileContent, *size);
+
+        itemContent = file.format();
+
+        *size = strlen(itemContent);
+
+        delete [] fileContent;
+        fileContent = NULL;
     }
-    else {
-        setErrorF(ERR_BAD_FILE_CONTENT, "Error bad file content: '%s'", fileName);
-        LOG.error("%s", getLastErrorMsg());
-        report->setLastErrorCode(ERR_BAD_FILE_CONTENT);
-        report->setLastErrorMsg(getLastErrorMsg());
-        report->setState(SOURCE_ERROR);
-        return false;
+    else
+    {
+        // fill the item content only with file content
+        itemContent = fileContent;
     }
+
+    delete [] fileName; fileName = 0;
+    return itemContent;
 }

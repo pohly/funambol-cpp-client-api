@@ -44,116 +44,130 @@
 #include "spds/SyncItem.h"
 #include "spds/SyncMap.h"
 #include "spds/SyncStatus.h"
-#include "spds/SyncSource.h"
 #include "spdm/ManagementNode.h"
 #include "base/util/ItemContainer.h"
+#include "spds/FileData.h"
+#include "client/CacheSyncSource.h"
 
 
-#define ERR_FILE_SYSTEM             1
-#define ERR_NO_FILES_TO_SYNC        2
-#define ERR_BAD_FILE_CONTENT        3
-#include "base/globalsdef.h"
-
-BEGIN_NAMESPACE
+#define DEFAULT_SYNC_DIR   "."
 
 /**
- * Synchronizes the content of files in a certain directory and the
- * file attributes using a certain XML format.
+ * This class implements externs the CacheSyncSource abstract class, implementing a
+ * plain file datastore. All the files in a folder are synchronized with the server.
+ * Depending on the MIME type defined for the source (see SyncSource::type), this
+ * class can work in two ways:
  *
- * @todo document what that XML format is
- * @todo updateItem() is not implemented
+ * - if the type is "application/vnd.omads-file+xml", the files are wrapped into
+ *   the OMA File Object representation, to preserve the file name and attributes.
+ * - otherwise, the file is sent as it to the server.
+ *
+ * for incoming items, the format of the file is detected by the content.
+ *
  */
+class FileSyncSource : public CacheSyncSource {
 
-class FileSyncSource : public SyncSource {
-
-protected:
+private:   
     
-    // The dir in which the files are and that are to be synced.
-    char* dir;
+    StringBuffer dir;
 
-    // The copy is protected
-    FileSyncSource(SyncSource& s);
-    
-    // Return true if data correctly set: syncItem->getKey() contains
-    // the file name relative to dir, copying its content into
-    // the items data can be overriden by derived classes.
-    virtual bool setItemData(SyncItem* syncItem);
+    // Copy is not allowed
+    FileSyncSource(const FileSyncSource& s) : CacheSyncSource(s){};
+    FileSyncSource& operator=(const FileSyncSource& s) {};
 
     /**
-     * must be called for each successfully added item
-     *
-     * @param item     the added item
-     * @param key      the key of that item
-     * @return SyncML status code, STC_ITEM_ADDED on success
-     */
-    int addedItem(SyncItem& item, const WCHAR* key);
-      
-public:
-    FileSyncSource(const WCHAR* name, AbstractSyncSourceConfig* sc);
-    virtual ~FileSyncSource();
-    
-    /**
-     * The directory synchronized by this source.
-     *
-     * @param p      an absolute or relative path to the directory
+    * Save the file inside the filesystem. 
+    * Return 0 is success otherwise failure
     */
-    void setDir(const char* p);
-    const char* getDir();
+    int saveFileData(FileData& file);
     
     /**
-     * Tracking changes requires persistent storage: for each item sent
-     * to the server a property is set to the item's modification time.
+    * Save the file inside the filesystem. 
+    * It doesn't use the FileData SyncMLobject but
+    * it uses only the data as inside
+    *
+    * @param item       the item from which get the data
+    * @param isUpdate   it says if the item must to be add (false)
+    *                   or updated (true)
     *                        
-     * The caller is responsible for storing these properties after
-     * a successful sync and continues to own the node instance itself.
-     *
-     * During the next beginSync() the information will be used to
-     * identify added, updated and deleted items.
     */
-    void setFileNode(ManagementNode *mn) { fileNode = mn; }
-    ManagementNode *getFileNode() { return fileNode; }
+    int saveFileData(SyncItem& item, bool isUpdate);
 
-    /* SyncSource interface implementations follow */
+    /**
+    * Parse the file object
+    * Return 0 is success otherwise failure
+    */    
+    int parseFileData(FileData& file, SyncItem& item);
 
-    SyncItem* getFirstItem() { return getFirst(allItems); }
-    SyncItem* getNextItem() { return getNext(allItems); }
-    SyncItem* getFirstNewItem() { return getFirst(newItems); }
-    SyncItem* getNextNewItem() { return getNext(newItems); }
-    SyncItem* getFirstUpdatedItem() { return getFirst(updatedItems); }
-    SyncItem* getNextUpdatedItem() { return getNext(updatedItems); }
-    SyncItem* getFirstDeletedItem() { return getFirst(deletedItems, false); }
-    SyncItem* getNextDeletedItem() { return getNext(deletedItems, false); }
-    SyncItem* getFirstItemKey() { return getFirst(allItems, false); }
-    SyncItem* getNextItemKey() { return getNext(allItems, false); }
-    int addItem(SyncItem& item);
-    int updateItem(SyncItem& item);
-    int deleteItem(SyncItem& item);
-    void setItemStatus(const WCHAR* key, int status);
-    int removeAllItems();
-    int beginSync();
-    int endSync();
+public:
+
+    FileSyncSource(const WCHAR* name, AbstractSyncSourceConfig* sc);
+    ~FileSyncSource();
+      
     void assign(FileSyncSource& s);
-
-  private:
-    // Lists of all, new, update and deleted items
-    // together with the current index.
-    struct ItemIteratorContainer {
-        ArrayList items;
-        int index;
-    } allItems, newItems, updatedItems, deletedItems;
     
-    // an optional node in which file dates are stored to track changes
-    ManagementNode* fileNode;
+    /**
+    * set/get the directory where to sync the files
+    */
+    void setDir(const char* p) { dir = p; }
+    const StringBuffer& getDir() { return dir; };
     
-    /** returns time stored in fileNode for the given key, 0 if not found */
-    unsigned long getServerModTime(const char* keystr);
+    /**
+    * Get the list of all the keys stored in a StringBuffer. It reads all the 
+    * files name in the directory. The directory is set in the sync source.
+    */
+    Enumeration* getAllItemList();
+    
+    /**
+     * Removes all the item of the sync source. It is called 
+     * by the engine in the case of a refresh from server to clean      
+     * all the client items before receiving the server ones.
+     */
+    int removeAllItems();
 
-    SyncItem* getFirst(ItemIteratorContainer& container, bool getData = true);
-    SyncItem* getNext(ItemIteratorContainer& container, bool getData = true);
+    /**
+     * Called by the sync engine to add an item that the server has sent.
+     * The sync source is expected to add it to its database, then set the
+     * key to the local key assigned to the new item. Alternatively
+     * the sync source can match the new item against one of the existing
+     * items and return that key.
+     *
+     * @param item    the item as sent by the server
+     * @return SyncML status code
+     */
+    int insertItem(SyncItem& item);
+    
+    /**
+     * Called by the sync engine to update an item that the source already
+     * should have. The item's key is the local key of that item.
+     *
+     * @param item    the item as sent by the server
+     * @return SyncML status code
+     */
+    int modifyItem(SyncItem& item);
+
+     /**
+     * Called by the sync engine to update an item that the source already
+     * should have. The item's key is the local key of that item, no data is
+     * provided.
+     *
+     * @param item    the item as sent by the server
+     */
+    int removeItem(SyncItem& item);
+    
+     /**
+    * Get the content of an item given the key. It is used to populate
+    * the SyncItem before the engine uses it in the usual flow of the sync.
+    * It is used also by the itemHandler if needed 
+    * (i.e. in the cache implementation)
+    *
+    * @param key      the local key of the item
+    * @param size     OUT: the size of the content
+    */
+    void* getItemContent(StringBuffer& key, size_t* size);
+      
+        
 };
-
-
-END_NAMESPACE
 
 /** @} */
 /** @endcond */

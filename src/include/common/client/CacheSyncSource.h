@@ -337,7 +337,12 @@ public:
     * Used for the sync requiring and exchange of all items and
     * for the sync that need to calculate the modification.
     * It has to return a new allocated Enumeration that is
-    * freed by the CacheSyncSource
+    * freed by the CacheSyncSource.
+    *
+    * @return a new allocated Enumeration that is freed by the 
+    *         CacheSyncSource. 
+    *         Return NULL in case of error, an empty Enumeration
+    *         if there are no items.
     */
     virtual Enumeration* getAllItemList() = 0;      
     
