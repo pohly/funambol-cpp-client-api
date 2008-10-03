@@ -53,10 +53,10 @@
 #define DEFAULT_SYNC_DIR   "."
 
 /**
- * This class implements externs the CacheSyncSource abstract class, implementing a
- * plain file datastore. All the files in a folder are synchronized with the server.
- * Depending on the MIME type defined for the source (see SyncSource::type), this
- * class can work in two ways:
+ * This class extends the CacheSyncSource abstract class, implementing a plain
+ * file datastore. All the files in a folder are synchronized with the server.
+ * Depending on the MIME type defined for the source (see
+ * SyncSourceConfig::getType()), this class can work in two ways:
  *
  * - if the type is "application/vnd.omads-file+xml", the files are wrapped into
  *   the OMA File Object representation, to preserve the file name and attributes.
@@ -172,3 +172,4 @@ public:
 /** @} */
 /** @endcond */
 #endif
+
