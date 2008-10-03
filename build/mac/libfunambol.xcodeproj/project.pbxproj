@@ -42,7 +42,6 @@
 		7C9F53000DAF4CB1007E0091 /* DMTClientConfig.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C9F52230DAF4CB1007E0091 /* DMTClientConfig.cpp */; };
 		7C9F53020DAF4CB1007E0091 /* FileSyncSource.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C9F52250DAF4CB1007E0091 /* FileSyncSource.cpp */; };
 		7C9F53030DAF4CB1007E0091 /* MailSourceManagementNode.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C9F52260DAF4CB1007E0091 /* MailSourceManagementNode.cpp */; };
-		7C9F53040DAF4CB1007E0091 /* RawFileSyncSource.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C9F52270DAF4CB1007E0091 /* RawFileSyncSource.cpp */; };
 		7C9F53050DAF4CB1007E0091 /* SyncClient.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C9F52280DAF4CB1007E0091 /* SyncClient.cpp */; };
 		7C9F53060DAF4CB1007E0091 /* BaseEvent.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C9F522A0DAF4CB1007E0091 /* BaseEvent.cpp */; };
 		7C9F53070DAF4CB1007E0091 /* FireEvent.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C9F522B0DAF4CB1007E0091 /* FireEvent.cpp */; };
@@ -227,7 +226,6 @@
 		7C9F54CC0DAF4CC5007E0091 /* FileClient.h in Headers */ = {isa = PBXBuildFile; fileRef = 7C9F53D60DAF4CC5007E0091 /* FileClient.h */; };
 		7C9F54CD0DAF4CC5007E0091 /* FileSyncSource.h in Headers */ = {isa = PBXBuildFile; fileRef = 7C9F53D70DAF4CC5007E0091 /* FileSyncSource.h */; };
 		7C9F54CE0DAF4CC5007E0091 /* MailSourceManagementNode.h in Headers */ = {isa = PBXBuildFile; fileRef = 7C9F53D80DAF4CC5007E0091 /* MailSourceManagementNode.h */; };
-		7C9F54CF0DAF4CC5007E0091 /* RawFileSyncSource.h in Headers */ = {isa = PBXBuildFile; fileRef = 7C9F53D90DAF4CC5007E0091 /* RawFileSyncSource.h */; };
 		7C9F54D00DAF4CC5007E0091 /* SyncClient.h in Headers */ = {isa = PBXBuildFile; fileRef = 7C9F53DB0DAF4CC5007E0091 /* SyncClient.h */; };
 		7C9F54D10DAF4CC5007E0091 /* BaseEvent.h in Headers */ = {isa = PBXBuildFile; fileRef = 7C9F53DD0DAF4CC5007E0091 /* BaseEvent.h */; };
 		7C9F54D20DAF4CC5007E0091 /* constants.h in Headers */ = {isa = PBXBuildFile; fileRef = 7C9F53DE0DAF4CC5007E0091 /* constants.h */; };
@@ -491,7 +489,6 @@
 		7C9F52230DAF4CB1007E0091 /* DMTClientConfig.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DMTClientConfig.cpp; sourceTree = "<group>"; };
 		7C9F52250DAF4CB1007E0091 /* FileSyncSource.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = FileSyncSource.cpp; sourceTree = "<group>"; };
 		7C9F52260DAF4CB1007E0091 /* MailSourceManagementNode.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = MailSourceManagementNode.cpp; sourceTree = "<group>"; };
-		7C9F52270DAF4CB1007E0091 /* RawFileSyncSource.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = RawFileSyncSource.cpp; sourceTree = "<group>"; };
 		7C9F52280DAF4CB1007E0091 /* SyncClient.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = SyncClient.cpp; sourceTree = "<group>"; };
 		7C9F522A0DAF4CB1007E0091 /* BaseEvent.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = BaseEvent.cpp; sourceTree = "<group>"; };
 		7C9F522B0DAF4CB1007E0091 /* FireEvent.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = FireEvent.cpp; sourceTree = "<group>"; };
@@ -676,7 +673,6 @@
 		7C9F53D60DAF4CC5007E0091 /* FileClient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FileClient.h; sourceTree = "<group>"; };
 		7C9F53D70DAF4CC5007E0091 /* FileSyncSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FileSyncSource.h; sourceTree = "<group>"; };
 		7C9F53D80DAF4CC5007E0091 /* MailSourceManagementNode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MailSourceManagementNode.h; sourceTree = "<group>"; };
-		7C9F53D90DAF4CC5007E0091 /* RawFileSyncSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RawFileSyncSource.h; sourceTree = "<group>"; };
 		7C9F53DA0DAF4CC5007E0091 /* README.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = README.txt; sourceTree = "<group>"; };
 		7C9F53DB0DAF4CC5007E0091 /* SyncClient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SyncClient.h; sourceTree = "<group>"; };
 		7C9F53DD0DAF4CC5007E0091 /* BaseEvent.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BaseEvent.h; sourceTree = "<group>"; };
@@ -1055,7 +1051,6 @@
 				7C9F52230DAF4CB1007E0091 /* DMTClientConfig.cpp */,
 				7C9F52250DAF4CB1007E0091 /* FileSyncSource.cpp */,
 				7C9F52260DAF4CB1007E0091 /* MailSourceManagementNode.cpp */,
-				7C9F52270DAF4CB1007E0091 /* RawFileSyncSource.cpp */,
 				7C9F52280DAF4CB1007E0091 /* SyncClient.cpp */,
 			);
 			name = client;
@@ -1397,7 +1392,6 @@
 				7C9F53D60DAF4CC5007E0091 /* FileClient.h */,
 				7C9F53D70DAF4CC5007E0091 /* FileSyncSource.h */,
 				7C9F53D80DAF4CC5007E0091 /* MailSourceManagementNode.h */,
-				7C9F53D90DAF4CC5007E0091 /* RawFileSyncSource.h */,
 				7C9F53DA0DAF4CC5007E0091 /* README.txt */,
 				7C9F53DB0DAF4CC5007E0091 /* SyncClient.h */,
 			);
@@ -1876,7 +1870,6 @@
 				7C9F54CC0DAF4CC5007E0091 /* FileClient.h in Headers */,
 				7C9F54CD0DAF4CC5007E0091 /* FileSyncSource.h in Headers */,
 				7C9F54CE0DAF4CC5007E0091 /* MailSourceManagementNode.h in Headers */,
-				7C9F54CF0DAF4CC5007E0091 /* RawFileSyncSource.h in Headers */,
 				7C9F54D00DAF4CC5007E0091 /* SyncClient.h in Headers */,
 				7C9F54D10DAF4CC5007E0091 /* BaseEvent.h in Headers */,
 				7C9F54D20DAF4CC5007E0091 /* constants.h in Headers */,
@@ -2190,7 +2183,6 @@
 				7C9F53000DAF4CB1007E0091 /* DMTClientConfig.cpp in Sources */,
 				7C9F53020DAF4CB1007E0091 /* FileSyncSource.cpp in Sources */,
 				7C9F53030DAF4CB1007E0091 /* MailSourceManagementNode.cpp in Sources */,
-				7C9F53040DAF4CB1007E0091 /* RawFileSyncSource.cpp in Sources */,
 				7C9F53050DAF4CB1007E0091 /* SyncClient.cpp in Sources */,
 				7C9F53060DAF4CB1007E0091 /* BaseEvent.cpp in Sources */,
 				7C9F53070DAF4CB1007E0091 /* FireEvent.cpp in Sources */,
