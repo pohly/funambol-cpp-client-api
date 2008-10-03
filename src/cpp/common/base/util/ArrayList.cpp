@@ -38,17 +38,7 @@
 
 USE_NAMESPACE
 
-/**
- * This class implements a simple linked list that can be accessed by index too.
- * This class does not make use of C++ templates by choice, since it must be
- * as much easier and portable as possible.
- *
- * Since this class works with pointers, it can be instructed to delete the
- * list elements at object destruction. If the property autoDeleteElements is
- * true all elements are delete using the C++ delete operator (therefore, make
- * sure elements are allocated with a compatible memory allocation function -
- * such as the C++ new operator)
- */
+
 
 ArrayList::ArrayList() : head(0), lastElement(0), iterator(0), count(0)
 {
@@ -288,14 +278,6 @@ ArrayElement* ArrayList::get(int index) const {
  * Returns the array size.
  */
 int ArrayList::size() const {
-/*    Element *e = head;
-    int i = 0;
-    while (e) {
-        ++i;
-        e = e->n;
-    }
-
-    return i;*/
     return count;
 }
 
@@ -384,5 +366,4 @@ ArrayList* ArrayList::clone() {
     return ret;
 
 }
-
 
