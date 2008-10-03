@@ -40,6 +40,8 @@
 #include "base/util/ArrayListEnumeration.h"
 #include "client/FileSyncSource.h"
 
+BEGIN_NAMESPACE
+
 #define OMA_MIME_TYPE "application/vnd.omads-file+xml"
 
 #define ERR_FILE_SYSTEM             1
@@ -270,3 +272,5 @@ void* FileSyncSource::getItemContent(StringBuffer& key, size_t* size) {
     delete [] fileName; fileName = 0;
     return itemContent;
 }
+
+END_NAMESPACE

@@ -49,6 +49,7 @@
 #include "spds/FileData.h"
 #include "client/CacheSyncSource.h"
 
+BEGIN_NAMESPACE
 
 #define DEFAULT_SYNC_DIR   "."
 
@@ -168,6 +169,8 @@ public:
       
         
 };
+
+END_NAMESPACE
 
 /** @} */
 /** @endcond */
