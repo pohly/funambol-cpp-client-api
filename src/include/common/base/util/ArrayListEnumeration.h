@@ -49,31 +49,31 @@ BEGIN_NAMESPACE
 class ArrayListEnumeration : public Enumeration, public ArrayList {
 
     public: 
-        
+
         ArrayListEnumeration() : ArrayList() {             
             resetIterator();
         }
-    
+
         ArrayListEnumeration(const ArrayList& l) : ArrayList(l) { 
             resetIterator();
         }
-    
+
         virtual ~ArrayListEnumeration() {}
 
         /**
          * Return true if there are more elements in the enumeration.
          */
-	    bool hasMoreElement() const  {     
+        bool hasMoreElement() const  {     
             return !last();
-	    }
+        }
 
         /**
          * Return the next element
          */
-	    ArrayElement* getNextElement() {
+        ArrayElement* getNextElement() {
             return next();           
-	    } 
-        
+        } 
+
 };
 
 
