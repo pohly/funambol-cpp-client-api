@@ -40,7 +40,6 @@
 /** @{ */
 
 #include "base/fscapi.h"
-#include "base/ErrorHandler.h"
 #include "base/util/ArrayElement.h"
 #include "filter/SourceFilter.h"
 #include "spds/constants.h"
@@ -303,20 +302,6 @@ public:
      *@return 0 if the remote succeded.
      */
     virtual int removeAllItems() = 0;
-
-    /**
-     * Return the key of the first SyncItem of all.
-     * It is used in case of refresh sync
-     * and retrieve all the keys of the data source.
-     */
-    virtual SyncItem* getFirstItemKey() = 0;
-
-    /**
-     * Return the key of the next SyncItem of all.
-     * It is used in case of refresh sync
-     * and retrieve all the keys of the data source.
-     */
-    virtual SyncItem* getNextItemKey() = 0;
 
     /**
      * Return the first SyncItem of all.
