@@ -180,6 +180,13 @@ protected:
     int removeFromCache(KeyValuePair& k) {
         return updateInCache(k, DEL);
     }    
+    
+    /**
+     * Clear the cache using the removeAllProperties method.
+     */
+    int clearCache() {
+        return (cache->removeAllProperties() || saveCache());
+    }
 
 public:
 
