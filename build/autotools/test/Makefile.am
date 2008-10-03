@@ -26,6 +26,7 @@ SOURCES = client-test-main.cpp client-test.cpp ClientTest.cpp
 TESTS_BASE = \
     ArrayListTest.cpp \
     BasicTimeTest.cpp \
+    KeyValuePairTest.cpp \
     StringBufferTest.cpp \
     PropertyFileTest.cpp \
     XMLProcessorTest.cpp \
