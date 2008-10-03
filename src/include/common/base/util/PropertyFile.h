@@ -40,7 +40,6 @@
 /** @{ */
 
 #include "base/fscapi.h"
-#include "base/ErrorHandler.h"
 #include "base/util/ArrayElement.h"
 #include "spds/constants.h"
 #include "spds/SyncItem.h"
