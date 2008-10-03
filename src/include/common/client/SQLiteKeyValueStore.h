@@ -85,6 +85,8 @@ protected:
      */
     virtual int execute(const StringBuffer & sql);
     
+
+    
     virtual bool enumeration_hasMoreElement()
     {
         return (statement && enumeration_lastReturn == SQLITE_ROW && enumeration_nextRow < enumeration_totalRows);
@@ -160,7 +162,7 @@ public:
      * @param path      - The name of the full path to the database to use
      *
      */
-    SQLiteKeyValueStore(const StringBuffer & table, const StringBuffer & colKey,   const StringBuffer & colValue,
+    SQLiteKeyValueStore(const StringBuffer & table, const StringBuffer & colKey, const StringBuffer & colValue,
                         const StringBuffer & path);
     
     /*
@@ -173,7 +175,7 @@ public:
     /**
      * Get all the properties that are currently defined.     
      */
-    virtual Enumeration& getProperties() const;
+    virtual Enumeration& getProperties();
     
     /*
      * Connect to the database server.  The connection should be stored
@@ -200,6 +202,22 @@ public:
      * @return 0 - success, failure otherwise
      */
      virtual int close();
+    
+    /**
+     * Initializes the database
+     *
+     * @return 0 success
+     */
+    int init(const char* table, const char* colKey, const char* colValue, const char* path);
+    
+    /**
+     * Checks if the table already exists in the sqlite database
+     *
+     * @param const char* tableName the name of the table to check
+     *
+     * @return      - Success or Failure
+     */
+    bool checkIfTableExists(const char* tableName);
 };
 
 

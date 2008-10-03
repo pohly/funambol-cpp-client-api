@@ -46,13 +46,21 @@ BEGIN_NAMESPACE
 SQLiteKeyValueStore::SQLiteKeyValueStore(const StringBuffer & table, const StringBuffer & colKey,
                                          const StringBuffer & colValue,
                                          const StringBuffer & thePath)
-: SQLKeyValueStore(table,colKey,colValue), enumeration(*this),
-path(thePath)
+: SQLKeyValueStore(table,colKey,colValue), enumeration(*this), path(thePath)
 {
     db = NULL;
     statement = NULL;
     
-    connect();
+    bool toInit =!checkIfTableExists(table);
+    
+    if(connect() != SQLITE_OK) {
+        LOG.error("SQLiteKeyValueStore: cannot connect to database.");
+    }
+    if(toInit){
+        if(init(table,colKey,colValue,thePath) != SQLITE_OK){
+            LOG.error("SQLiteKeyValueStore: cannot create database.");
+        }
+    }
 }
 
 
@@ -121,7 +129,7 @@ int SQLiteKeyValueStore::execute(const StringBuffer & sql)
 /**
  * Get all the properties that are currently defined.     
  */
-Enumeration& SQLiteKeyValueStore::getProperties() const
+Enumeration& SQLiteKeyValueStore::getProperties()
 {
     StringBuffer sqlQuery = sqlCountAllString();
     Enumeration& en = query(sqlQuery);
@@ -179,6 +187,38 @@ int SQLiteKeyValueStore::close()
     return (
         ((execute("COMMIT TRANSACTION;") == SQLITE_OK) && (execute("BEGIN TRANSACTION;") == SQLITE_OK))
         ? 0 : 1);
+}
+
+
+bool SQLiteKeyValueStore::checkIfTableExists(const char* tableName){
+/*    StringBuffer sql;
+    sql.sprintf("select count (*) from sqlite_master where type='table' and name='%s';", tableName);
+    LOG.debug("SQLiteKeyValueStore::checkIfTableExists with sql query %s", sql.c_str());
+    Enumeration& res = query(sql);
+    bool ret;
+    if (res.hasMoreElement())
+    {
+        KeyValuePair* kvp = (KeyValuePair*)res.getNextElement();
+        StringBuffer val = kvp->getValue();
+        ret = val.icmp("1");
+        delete kvp;
+    }*/
+    
+    FILE* f = fopen(path.c_str(), "r");
+    if ( !f ) {
+        return false;
+    }
+    
+    return true;
+}
+
+int SQLiteKeyValueStore::init(const char* table, const char* colKey,   const char* colValue,
+                          const char* path){
+    StringBuffer sql;
+            
+    sql.sprintf("CREATE TABLE  %s (%s TEXT PRIMARY KEY, %s TEXT)", table, colKey, colValue);        
+    return execute(sql);
+       
 }
 
 END_NAMESPACE
