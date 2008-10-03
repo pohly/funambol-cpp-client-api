@@ -37,7 +37,6 @@
 #include "client/SyncClient.h"
 #include "spds/SyncManager.h"
 #include "spds/spdsutils.h"
-#include "base/LogErrorHandler.h"
 #include "syncml/core/CTTypeSupported.h"
 #include "syncml/core/CTCap.h"
 #include "syncml/core/CTPropParam.h"
