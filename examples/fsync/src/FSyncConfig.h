@@ -90,7 +90,7 @@ class FSyncConfig : public DMTClientConfig {
         void createConfig();
 
         /** Get the current sync path */
-        const StringBuffer& getSyncPath() { return syncPath; };
+        const StringBuffer& getSyncPath() const { return syncPath; };
 
         /** Set a new sync path */
         void setSyncPath(const char *newPath) { syncPath = newPath; };
