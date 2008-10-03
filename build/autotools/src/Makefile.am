@@ -17,7 +17,6 @@ SOURCES_BASE = \
     lbase64.cpp \
     lquoted-printable.cpp \
     lerror.cpp \
-    lErrorHandler.cpp \
     lItemContainer.cpp \
     lmd5.cpp
 
