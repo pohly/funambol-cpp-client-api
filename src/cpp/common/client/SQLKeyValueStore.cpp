@@ -155,9 +155,9 @@ int SQLKeyValueStore::removeProperty(const char *prop)
  */
 int SQLKeyValueStore::removeAllProperties()
 {
-    StringBuffer q("DELETE * FROM ");
+    StringBuffer q("DELETE  FROM ");
     q.append(table);
-    q.append(";");
+    q.append(" WHERE 1;");
     return execute(q);
 }
  

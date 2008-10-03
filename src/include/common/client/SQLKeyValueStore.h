@@ -230,7 +230,7 @@ public:
      *
      * @return 0 - success, failure otherwise
      */
-     virtual int close();
+    //virtual int close(){};
     /**
      * Remove all properties
      *
