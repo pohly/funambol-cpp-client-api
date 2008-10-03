@@ -118,7 +118,7 @@ public:
      * @param path      - The name of the full path to the database to use
      *
      */
-    BlockingSQLiteKeyValueStore(const StringBuffer & table, const StringBuffer & colKey,   const StringBuffer & colValue,
+    BlockingSQLiteKeyValueStore(const StringBuffer & table, const StringBuffer & colKey, const StringBuffer & colValue,
                         const StringBuffer & path)
                         : SQLiteKeyValueStore(table,colKey,colValue,path)
     {
@@ -146,7 +146,6 @@ public:
         sem_post(&sema);
         return e;
     }
-    
     
     /**
      * Ensure that all properties are stored persistently.
