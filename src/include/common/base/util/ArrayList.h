@@ -60,10 +60,16 @@ BEGIN_NAMESPACE
  * operator.
  */
 
+//struct Element;
+// Internal structure for the list
 struct Element {
+    // Initialize the structure
+    Element(ArrayElement *_e = NULL, Element* _n = NULL): e(_e), n(_n) {};
+
     ArrayElement* e; // the element value
-    Element* n;      // the next element (NULL for the latest)
+    Element* n;      // the next element (NULL for the last)
 };
+
 
 class ArrayList {
     private:
@@ -89,6 +95,7 @@ class ArrayList {
          */
         void resetIterator() { iterator = 0; }
 
+
         ArrayList();
         ArrayList(const ArrayList &other);
         ~ArrayList();
@@ -102,13 +109,14 @@ class ArrayList {
          * Adds a new element at the specified index. If index is greater than
          * the list size the element is appended.
          * The element is dinamically duplicated so that the caller can release
-         * the element at any time. This method returns the position (0 based) at which
-         * the element has been inserted. It can be different by index if index is out
-         * of the array bounds, in that case element is appended as last element.
-         * It returns -1 in case of errors.
+         * the element at any time. 
          *
          * @param index the insertion position
          * @param element the element to insert
+         * @return the position (0 based) at which the element has been
+         *         inserted. It can be different by index if index is out of
+         *         the array bounds, in that case element is appended as last
+         *         element. It returns -1 in case of errors.
          */
         int add(int index, ArrayElement& element);
 
@@ -149,10 +157,14 @@ class ArrayList {
 
         /**
          * Returns the index-th element of the array or NULL if index is out of
-         * the array bounds. Note that the retuned element will be released at
+         * the array bounds.
+         *
+         * Note that the retuned element will be released at
          * list destruction. Clone it if it must have a different life cycle.
          *
          * @param index the element position
+         * @return the index-th element of the array or NULL if index is out of
+         *         the array bounds
          */
         ArrayElement* get(int index) const;
 
@@ -177,7 +189,8 @@ class ArrayList {
         ArrayElement* next();
 
         /**
-         * Returns the previous element of the array and decrement the internal iterator.
+         * Returns the previous element of the array and decrement the internal 
+         * iterator.
          *
          * Note that the retuned element will be released at list destruction.
          * Clone it if it must have a different life cycle.
