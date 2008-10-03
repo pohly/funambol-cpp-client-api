@@ -76,24 +76,14 @@ class KeyValuePair : public ArrayElement {
         void setValue(const char* value) { v = value; }
 
         /**
-         * Returns the key (the internal buffer address is returned).
-         */
-        const char* getKey() const { return k.c_str(); } 
-
-        /**
-         * Returns the value (the internal buffer address is returned).
-         */
-        const char* getValue() const { return v.c_str(); }
-
-        /**
          * Returns a StringBuffer reference to the key.
          */
-        const StringBuffer& getKeyStr() const { return v; }
+        const StringBuffer& getKey() const { return k; }
 
         /**
          * Returns a StringBuffer reference to the value.
          */
-        const StringBuffer& getValStr() const { return v; }
+        const StringBuffer& getValue() const { return v; }
 
         /**
          * Compares two KeyValuePair objects (equals when both key and val equal)
