@@ -203,7 +203,7 @@ int PropertyFile::removeAllProperties() {
         return ret;
     }
     // reset the content         
-    if (existsFile(nodeJour) && !removeFile(node)) {
+    if (existsFile(node) && !removeFile(node)) {
         LOG.error("There are problem in removing the file %s", node);
     }            
     return ret;
