@@ -293,7 +293,7 @@ StringBuffer MailMessage::decodeHeader(StringBuffer line) {
     if (!line || line.empty()) {
         return line;
     }
-
+    
     size_t startPos = 0;
     StringBuffer ret;
     StringBuffer charset;
@@ -339,6 +339,7 @@ StringBuffer MailMessage::decodeHeader(StringBuffer line) {
             char* dec = new char[text.length()];
             int len = b64_decode((void *)dec, text);
             dec[len]=0;
+
             if (startPos >= 2 &&  ret.length() == 0) {
                 ret += line.substr(0, startPos - 2);
             }
@@ -353,7 +354,7 @@ StringBuffer MailMessage::decodeHeader(StringBuffer line) {
         ret += line;
     }
 
-    WCHAR* wret = toWideChar(ret, charset);
+    WCHAR* wret = toWideChar(ret, charset);    
     ret.set(NULL);
     char* t = toMultibyte(wret);
     ret.set(t);
