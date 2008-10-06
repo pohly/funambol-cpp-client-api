@@ -578,6 +578,10 @@
 					RelativePath="..\..\src\cpp\common\client\SyncClient.cpp"
 					>
 				</File>
+				<File
+					RelativePath="..\..\src\cpp\common\client\TestFileSyncSource.cpp"
+					>
+				</File>
 			</Filter>
 			<Filter
 				Name="spdm"
@@ -4197,6 +4201,14 @@
 				</File>
 				<File
 					RelativePath="..\..\src\include\common\spds\ItemReport.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\include\common\spds\MappingsManager.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\include\common\spds\MappingStoreBuilder.h"
 					>
 				</File>
 				<File
