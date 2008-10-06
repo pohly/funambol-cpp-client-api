@@ -269,11 +269,3 @@ int TestSyncSource::endSync() {
     LOG.debug("End sync TestSyncSource");
     return 0;
 }
-
-SyncItem* TestSyncSource::getFirstItemKey() {
-    return NULL;
-}
-
-SyncItem* TestSyncSource::getNextItemKey() {
-    return NULL;
-}

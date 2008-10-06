@@ -109,21 +109,7 @@ public:
     /*
      * Return the next SyncItem of updated one. It is used in case of fast sync
      * and retrieve the new data source content.
-     */
-     /*
-     * Return the next SyncItem of updated one. It is used in case of fast sync
-     * and retrieve the new data source content.
-     */
-
-    SyncItem* getFirstItemKey();
-
-    /*
-     * Return the key of the next SyncItem of all.
-     * It is used in case of refresh sync
-     * and retrieve all the keys of the data source.
-     */
-    SyncItem* getNextItemKey();
-
+     */     
     SyncItem* getNextDeletedItem();
 
     void setItemStatus(const WCHAR* key, int status);
