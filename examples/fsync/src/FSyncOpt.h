@@ -39,16 +39,33 @@
 #include "base/fscapi.h"
 #include "base/util/StringBuffer.h"
 
+USE_NAMESPACE
 
 /**
  * This class allows to get options from the command line
  */
 class FSyncOpt {
-
     public:
-        
+
+        /** Default constructor */
+        FSyncOpt();
+
+        /** parse the command line */
+        bool getopt(int argc, char** argv);
+
+        /** Get the current sync path */
+        const StringBuffer& getSyncPath()  const { return syncPath; };
+
+        /** Set a new sync path */
+        void setSyncPath(const char *newPath) { syncPath = newPath; };
+
     private:
         
+        /** The local path to sync */
+        StringBuffer syncPath;
+
+        /** The verbosity level */
+        int verbose;
 
 };
 

@@ -38,6 +38,8 @@
 #include "spdm/DMTreeFactory.h"
 #include "spds/DefaultConfigFactory.h"
 
+USE_NAMESPACE 
+
 FSyncConfig::FSyncConfig(): DMTClientConfig(FSYNC_APPLICATION_URI), syncPath(FSYNC_DEFAULT_PATH){
     
 }

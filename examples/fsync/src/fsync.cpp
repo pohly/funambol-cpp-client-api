@@ -41,6 +41,8 @@
 #include "base/Log.h"
 #include "base/util/StringBuffer.h"
 
+USE_NAMESPACE
+
 bool doSync(FSyncConfig& config, FSyncOpt& options) {
 
     // Create the SyncSource passing its name, the SyncSourceConfig 

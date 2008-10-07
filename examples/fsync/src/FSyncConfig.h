@@ -40,6 +40,8 @@
 #include "base/util/StringBuffer.h"
 #include "client/DMTClientConfig.h"
 
+USE_NAMESPACE
+
 // This is relative to the config root specific for each platform.
 // E.g. HKCU/Software on Windows or $HOME/.config on Unix
 #define FSYNC_APPLICATION_URI         "Funambol/fsync"

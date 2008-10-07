@@ -33,8 +33,16 @@
  * the words "Powered by Funambol".
  */
 
-//USE_NAMESPACE
-
 #include "base/fscapi.h"
-#include "FSyncConfig.h"
+#include "FSyncOpt.h"
+
+USE_NAMESPACE
+
+FSyncOpt::FSyncOpt() {
+
+}
+
+bool FSyncOpt::getopt(int argc, char** argv) {
+    return 0;
+}
 
