@@ -39,8 +39,8 @@
 
 USE_NAMESPACE
 
-int  lastErrorCode = ERR_NONE;
-StringBuffer lastErrorMsg;
+static int lastErrorCode = ERR_NONE;
+static StringBuffer lastErrorMsg;
 
 
 // Reset error message and code
