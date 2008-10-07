@@ -147,7 +147,6 @@ SOURCES_SPDS = \
     lFileData.cpp \
     lItemReport.cpp \
     lMailMessage.cpp \
-    lRawFileSyncSource.cpp \
     lSyncManagerConfig.cpp \
     lSyncItem.cpp \
     lSyncItemStatus.cpp \
