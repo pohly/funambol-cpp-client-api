@@ -222,3 +222,4 @@ int SQLiteKeyValueStore::init(const char* table, const char* colKey,   const cha
 }
 
 END_NAMESPACE
+
