@@ -53,13 +53,6 @@
 #define ERRMSG_B64_ORPHANED_BITS        "Orphaned bits ignored"
 #define ERRMSG_NOT_ENOUGH_MEMORY        "Not enough memory (%d bytes required)"
    
-/* ************************ DEPRECATED ***************************
- * Do not access these variable directly anymore, they will be hidden
- * in the future. Use the access methods instead.
- */
-//extern int  lastErrorCode;
-//extern char lastErrorMsg[];
-
 /**
  * Reset the error message and code.
  */

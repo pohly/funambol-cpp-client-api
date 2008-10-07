@@ -40,12 +40,9 @@
 /** @{ */
 
 #include "base/fscapi.h"
-#include "base/ErrorHandler.h"
 #include "base/util/ArrayElement.h"
-#include "filter/SourceFilter.h"
 #include "spds/constants.h"
 #include "spds/SyncItem.h"
-#include "spds/SyncStatus.h"
 #include "spds/AbstractSyncSourceConfig.h"
 #include "spds/SyncSourceReport.h"
 #include "spds/SyncSource.h"
@@ -59,38 +56,63 @@ BEGIN_NAMESPACE
 #define CACHE_FILE_NAME     "cache_items.dat"
 
 /**
- * This is an extension of the basic SyncSource that a SyncML client developer could implement
- * to let the sync engine access the client's data. It provides the logic to retrieve 
- * the item modification to be exchanged with the server
+ * This class class implements the SyncSource interface, adding a method to
+ * detect the changes in the local store since the last sync based on cache
+ * files to make easier the implementation of new sync sources. 
+ *
+ * It requires an instance of a class implementing the KeyValueStore interface
+ * to store the sync cache, made by pairs of LUID (the local id of the item) and
+ * a fingerprint (default method is CRC of the content, but can be a timestamp
+ * or any other way to detect a change on the item). By default, CacheSyncSource 
+ * is able to obtain a PropertyFile (which implements KeyValueStore as a file), 
+ * but if a more efficient way to store it is available for the platform, the
+ * developer can create anoher store and pass it in the CacheSyncSource constructor
+ * (see also the SQLKeyValueStore abstract class).
+ *
+ * The mandatory methods to implement are:
+ * <li><b>getAllItemList</b>: returns a list of StringBuffer with all the keys
+ *      of the items in the data store</li>
+ * <li><b>insertItem</b>: adds a new item into the data store</li>
+ * <li><b>modifyItem</b>: modifies an item in the data store</li>
+ * <li><b>removeItem</b>: removes an item from the data store</li>
+ * <li><b>getItemContent</b>: get the content of an item given the key</li>
+ *
+ * The optional methods, that can be overloaded to change the behavior of the
+ * user sync source, are:
+ * <li><b>getItemSignature</b>: get a fingerprint of the item, which is any
+ *      string which allows to detech changes in the item</li>
+ *
  */
 class CacheSyncSource : public SyncSource {
 
 private:
          
     /**
-    * Used to store a KeyValuePair containing the key and the command
-    * associated to the item. It stores the cache:
-    * - during the slow sync. After the allKeys is populated, for every
-    * item status sent back by the server, the cache is populated. It is possible
-    * to write down when needed.
-    * - during the two-way sync it is populated at the beginning to understand
-    * the modification. This action populates the newKeys, updatedKeys and deletedKeys.
-    * For every item status sent back by the server the cache is updated
-    *    
-    */    
+     * Used to store a KeyValuePair containing the key and the command
+     * associated to the item. It stores the cache:
+     * <li>during the slow sync. After the allKeys is populated, for every
+     * item status sent back by the server, the cache is populated. It is possible
+     * to write down when needed.
+     * - during the two-way sync it is populated at the beginning to understand
+     * the modification. This action populates the newKeys, updatedKeys and deletedKeys.
+     * For every item status sent back by the server the cache is updated
+     *    
+     */    
     KeyValueStore* cache; 
        
     /**
-    * Enumeration of the new keys
-    */
+     * Enumeration of the new keys
+     */
     Enumeration*   newKeys;
+
     /**
-    * Enumeration of the updated keys
-    */
+     * Enumeration of the updated keys
+     */
     Enumeration*   updatedKeys;
+
     /**
-    * Enumeration of the deleted keys
-    */
+     * Enumeration of the deleted keys
+     */
     Enumeration*   deletedKeys;       
     
     /**
@@ -100,43 +122,48 @@ private:
     Enumeration* allKeys;
 
     /**
-    * Fills the sync item given the key. It is used by the method getXXXItem to
-    * complete the SyncItem.
-    */
+     * Fills the sync item given the key. It is used by the method getXXXItem to
+     * complete the SyncItem.
+     */
     SyncItem* fillSyncItem(StringBuffer* key);       
 
     /**
-    * The way to calculate the cache is the follow:
-    * loop on the current element against an array list
-    * that has the cache. It is the copy of the original cache.
-    * When an current element is found in the cache, it is removed
-    * from the cache copy. At the end the remained element
-    * in the cache are the deleted ones.
-    * Called when the two-way sync is requested
-    */
+     * The way to calculate the cache is the follow:
+     * loop on the current element against an array list
+     * that has the cache. It is the copy of the original cache.
+     * When an current element is found in the cache, it is removed
+     * from the cache copy. At the end the remained element
+     * in the cache are the deleted ones.
+     * Called when the two-way sync is requested
+     */
     bool fillItemModifications();
 
     /**
-    * Utility private method that populates the keyValuePair with 
-    * the couple key/signature starting from the SyncItem.
-    * Used in the addItem and updateItem
-    *
-    * @param item - IN:  the SyncItem
-    * @param kvp  - OUT: the KeyValuePair to be populate
-    */
+     * Utility private method that populates the keyValuePair with 
+     * the couple key/signature starting from the SyncItem.
+     * Used in the addItem and updateItem
+     *
+     * @param item - IN:  the SyncItem
+     * @param kvp  - OUT: the KeyValuePair to be populate
+     */
     void getKeyAndSignature(SyncItem& item, KeyValuePair& kvp);
 
 protected:
   
     /**
-     * Save the current cache in what is implemented by KeyValueStore (a file or wathever).    
+     * Save the current cache into the persistent store. Which store depends on
+     * the KeyValueStore passed in the constructor (a file by default).
      */
     int saveCache();
   
     /**
-     * Called by the sync engine to add an item that the server has sent.
-     * The implementation calls the insertItem method that must be implemented
-     * by the user. Also used to update the item 
+     * Implementation of the SyncSource method addItem, it's called by the SyncManager
+     * to add an item that the server has sent.
+     * It calls the insertItem() method that must be implemented by the user. 
+     * Also used to update the item 
+     *
+     * @param item    the item as sent by the server
+     * @return SyncML status code
      */
     int addItem(SyncItem& item);
 
@@ -155,16 +182,17 @@ protected:
      * provided.
      *
      * @param item    the item as sent by the server
+     * @return SyncML status code
      */
     int deleteItem(SyncItem& item);
 
     /**
-    * Used to update the cache adding, replacing or deleting. 
-    * The KeyValuePair contains the pair UID/signature. It is provided
-    * by the proper method who calls this. It udpates the cache 
-    * that is in memory.
-    * The action by default is Replace. 
-    */
+     * Used to update the cache adding, replacing or deleting. 
+     * The KeyValuePair contains the pair UID/signature. It is provided
+     * by the proper method who calls this. It udpates the cache 
+     * that is in memory.
+     * The action by default is Replace. 
+     */
     int updateInCache(KeyValuePair& k, const char* action = REPLACE);
         
     /**
@@ -293,28 +321,28 @@ public:
      */
     SyncItem* getNextDeletedItem();
     
-     /**
-    * Indicates that all the server status of the current package 
-    * of the client items has been processed by the engine.
-    * This signal can be useful to update the modification arrays
-    * NOT USED at the moment
-    */
+    /**
+     * Indicates that all the server status of the current package 
+     * of the client items has been processed by the engine.
+     * This signal can be useful to update the modification arrays
+     * NOT USED at the moment
+     */
     void serverStatusPackageEnded() {};    
     
     /**
-    * Indicates that all the client status of the current package 
-    * of the server items that has been processed by the client and 
-    * are going to be sent to the server.
-    * This signal can be useful to update the modification arrays
-    * NOT USED at the moment
-    */
+     * Indicates that all the client status of the current package 
+     * of the server items that has been processed by the client and 
+     * are going to be sent to the server.
+     * This signal can be useful to update the modification arrays
+     * NOT USED at the moment
+     */
     void clientStatusPackageEnded() {};        
 
     /**
-    * In the first implementatation, in which serverStatusPackageEnded and 
-    * clientStatusPackageEnded are not yet impelemented, the end sync
-    * will udpate the whole cache status persistently.
-    */
+     * In the first implementatation, in which serverStatusPackageEnded and 
+     * clientStatusPackageEnded are not yet impelemented, the end sync
+     * will udpate the whole cache status persistently.
+     */
     int endSync();       
     
     /**
@@ -340,17 +368,17 @@ public:
     
             
     /**
-    * Get an array list containing all the StringBuffer keys of all items. 
-    * Used for the sync requiring and exchange of all items and
-    * for the sync that need to calculate the modification.
-    * It has to return a new allocated Enumeration that is
-    * freed by the CacheSyncSource.
-    *
-    * @return a new allocated Enumeration that is freed by the 
-    *         CacheSyncSource. 
-    *         Return NULL in case of error, an empty Enumeration
-    *         if there are no items.
-    */
+     * Returns an Enumeration containing the StringBuffer keys of all items. 
+     *
+     * It is used both for the full sync, where all items are sent to the server,
+     * and for the fast sync to calculate the modification since the last 
+     * successful sync.
+     * 
+     * @return a newly allocated Enumeration that is free'd by the CacheSyncSource
+     *         CacheSyncSource. 
+     *         Return NULL in case of error, an empty Enumeration
+     *         if there are no items.     
+     */
     virtual Enumeration* getAllItemList() = 0;      
     
     /**
@@ -360,8 +388,8 @@ public:
      * the sync source can match the new item against one of the existing
      * items and return that key.
      *
-     * @param item    the item as sent by the server
-     * @return SyncML status code
+     * @param item  the item as sent by the server
+     * @return      SyncML status code 
      */
     virtual int insertItem(SyncItem& item) = 0;
 
@@ -369,8 +397,8 @@ public:
      * Called by the sync engine to update an item that the source already
      * should have. The item's key is the local key of that item.
      *
-     * @param item    the item as sent by the server
-     * @return SyncML status code
+     * @param item  the item as sent by the server
+     * @return      SyncML status code
      */
     virtual int modifyItem(SyncItem& item) = 0;
 
@@ -379,7 +407,8 @@ public:
      * should have. The item's key is the local key of that item, no data is
      * provided.
      *
-     * @param item    the item as sent by the server
+     * @param item  the item as sent by the server
+     * @return      SyncML status code
      */
     virtual int removeItem(SyncItem& item) = 0;
    

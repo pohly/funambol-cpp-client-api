@@ -52,7 +52,7 @@
 #include <cppunit/TestFixture.h>
 #include "base/globalsdef.h"
 
-BEGIN_NAMESPACE
+USE_NAMESPACE
 
 /**
  * This class encapsulates logging and checking of a SyncReport.
@@ -845,8 +845,6 @@ protected:
 
 #endif // ENABLE_INTEGRATION_TESTS
 
-
-END_NAMESPACE
 
 /** @} */
 /** @endcond */

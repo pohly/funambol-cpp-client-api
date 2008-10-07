@@ -52,13 +52,14 @@
 #include <cppunit/extensions/TestFactoryRegistry.h>
 #include <cppunit/extensions/HelperMacros.h>
 
-#include <base/Log.h>
-
 #include <stdlib.h>
 #include <stdio.h>
+
 #include "base/globalsdef.h"
+#include <base/Log.h>
 
 USE_NAMESPACE
+
 #ifdef HAVE_SIGNAL_H
 # include <signal.h>
 #endif

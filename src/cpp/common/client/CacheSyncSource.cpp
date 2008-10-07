@@ -94,11 +94,10 @@ void CacheSyncSource::setItemStatus(const WCHAR* key, int status, const char* co
         case 418: 
             {
              LOG.info("[%s], Received success status code from server for %s on item with key %s - code: %d", getName(), command, key, status);
-             char* k = toMultibyte(key);             
+             char* k = toMultibyte(key);         
              vp.setKey(k);
              StringBuffer v(k);
-             StringBuffer sb = getItemSignature(v);
-             vp.setValue(sb);             
+             vp.setValue(getItemSignature(v));             
              delete [] k;
             }   
             break;

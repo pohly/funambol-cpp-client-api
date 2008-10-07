@@ -42,6 +42,8 @@
 #include "shlobj.h"
 #endif
 
+BEGIN_NAMESPACE
+
 struct Codepage {
     const char *name;
     int  codepage_id;
@@ -776,5 +778,8 @@ USE_NAMESPACE
     }
 
 #endif  // #ifdef MALLOC_DEBUG
+
 #endif  // #if defined(WIN32) && !defined(_WIN32_WCE)
+
+END_NAMESPACE
 

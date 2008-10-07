@@ -145,11 +145,11 @@ std::list<std::string> listItemsOfType(SyncSource *source, itemType type)
     return res;
 }
 
-static int countNewItems( SyncSource *source ) { return listNewItems(source).size(); }
-static int countUpdatedItems( SyncSource *source ) { return listUpdatedItems(source).size(); }
-static int countDeletedItems( SyncSource *source ) { return listDeletedItems(source).size(); }
-static int countItems( SyncSource *source ) { return listItems(source).size(); }
-int countItemsOfType(SyncSource *source, itemType type) { return listItemsOfType(source, type).size(); }
+static int countNewItems( SyncSource *source ) { return (int)listNewItems(source).size(); }
+static int countUpdatedItems( SyncSource *source ) { return (int)listUpdatedItems(source).size(); }
+static int countDeletedItems( SyncSource *source ) { return (int)listDeletedItems(source).size(); }
+static int countItems( SyncSource *source ) { return (int)listItems(source).size(); }
+int countItemsOfType(SyncSource *source, itemType type) { return (int)listItemsOfType(source, type).size(); }
 
 
 static void importItem(SyncSource *source, std::string &data)
@@ -806,7 +806,7 @@ void LocalTests::testManyChanges() {
 
 template<class T, class V> int countEqual(const T &container,
                                           const V &value) {
-    return count(container.begin(),
+    return (int)count(container.begin(),
                  container.end(),
                  value);
 }

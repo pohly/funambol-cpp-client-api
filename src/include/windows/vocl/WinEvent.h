@@ -46,6 +46,7 @@
 #include "vocl/constants.h"
 #include "vocl/VObject.h"
 
+BEGIN_NAMESPACE
 
 typedef list<wstring>               exceptionList;
 typedef exceptionList::iterator     exceptionsIterator;
@@ -53,8 +54,6 @@ typedef list<WinRecipient>          recipientList;
 
 #define MAX_DAYLIGHT_PROPS          6      // Max 6 "DAYLIGHT" properties for infinite recurrences.
 #include "base/globalsdef.h"
-
-BEGIN_NAMESPACE
 
 
 /**
