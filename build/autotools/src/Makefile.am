@@ -133,7 +133,6 @@ SOURCES_SPDS = \
     lAccessConfig.cpp \
     lBodyPart.cpp \
     lCredentialHandler.cpp \
-    lCacheSyncSource.cpp \
     lDataTransformerFactory.cpp \
     lDataTransformer.cpp \
     lDeviceConfig.cpp \
@@ -143,7 +142,6 @@ SOURCES_SPDS = \
     lDESEncoder.cpp \
     lDefaultConfigFactory.cpp \
     lEmailData.cpp \
-    lFileSyncSource.cpp \
     lFileData.cpp \
     lItemReport.cpp \
     lMailMessage.cpp \
@@ -162,6 +160,9 @@ SOURCES_SPDS = \
 
 SOURCES_CLIENT = \
     lDMTClientConfig.cpp \
+    lTestFileSyncSource.cpp \
+    lCacheSyncSource.cpp \
+    lFileSyncSource.cpp \
     lSyncClient.cpp
 
 SOURCES_VOCL = \
