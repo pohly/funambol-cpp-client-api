@@ -204,7 +204,7 @@ int PropertyFile::removeAllProperties() {
     }
     // reset the content         
     if (existsFile(node) && !removeFile(node)) {
-        LOG.error("There are problem in removing the file %s", node);
+        LOG.error("There are problem in removing the file %s", node.c_str());
     }            
     return ret;
 }
@@ -227,3 +227,4 @@ bool PropertyFile::separateKeyValue(StringBuffer& s, StringBuffer& key, StringBu
     
     return ret;
 }
+
