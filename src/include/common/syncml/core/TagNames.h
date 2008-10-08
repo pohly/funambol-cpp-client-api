@@ -143,7 +143,7 @@
 #define DEVINF              "xmlns=\"syncml:devinf\""
 
 // special values
-#define DEVINF_URI          "./devinf11"
+#define DEVINF_URI          "./devinf12"
 #define DEVINF_FORMAT       "application/vnd.syncml-devinf+xml"
 
 // Commands
