@@ -212,7 +212,7 @@ void POSIXLog::printMessage(LogLevel level, const char* levelPrefix, const char*
             utc_time.tm_sec);
 
     if (!logFileStdout && !logFile) {
-        reset();
+         setLogFile(logPath, logName, logRedirectStderr);
     }
 
     StringBuffer buffer;
