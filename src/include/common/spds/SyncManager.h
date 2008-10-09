@@ -111,7 +111,7 @@ class SyncManager {
 
         /**
          * Gathers the various bits and pieces known about the client and
-         * its sources and builds a SyncML devinfo 1.1 instance.
+         * its sources and builds a SyncML devinfo 1.2 instance.
          *
          * For simplicity reasons this function is called for the currently
          * active sync sources, changing them between runs thus causes

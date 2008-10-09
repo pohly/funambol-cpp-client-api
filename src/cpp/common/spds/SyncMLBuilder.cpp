@@ -640,8 +640,8 @@ SyncHdr* SyncMLBuilder::prepareSyncHdr(Cred* cred, unsigned long maxMsgSize, uns
 
     ++msgID;
 
-    VerDTD*    verDTD    = new VerDTD("1.1");
-    VerProto*  verProto  = new VerProto("SyncML/1.1");
+    VerDTD*    verDTD    = new VerDTD("1.2");
+    VerProto*  verProto  = new VerProto("SyncML/1.2");
     char* sid = ltow(sessionID);
     SessionID* sessID    = new SessionID(sid);
     delete [] sid;   sid = NULL;
