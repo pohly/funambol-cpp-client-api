@@ -36,6 +36,7 @@
 #include <stdio.h>
 #include "base/Log.h"
 #include "base/util/utils.h"
+#include "base/globalsdef.h"
 
 #if defined(WIN32) && !defined(_WIN32_WCE)
 #include <sys/stat.h>
@@ -680,7 +681,6 @@ WCHAR* toWideChar(const char *mb, const char *encoding) {
 
     if (!dsize)
         return ret;
-
     int codepage = findCodePage(encoding);
     unsigned long k = 0;
 
@@ -706,7 +706,6 @@ int round(double val) {
 }
 
 
-
 #if defined(WIN32) && !defined(_WIN32_WCE)
 // ----------------------------------------------------
 // REDEFINITION OF NEW / DELETE -> debug for memory leaks
@@ -715,71 +714,66 @@ int round(double val) {
 // ----------------------------------------------------
 #ifdef MALLOC_DEBUG
 
-    //
-    // This is required since in debug mode, new is rewritten
-    // as new(__FILE__, __LINE__). See utils.h for details
-    //
-    #undef new
-    #include "base/memTracker.h"
-#include "base/globalsdef.h"
+//
+// This is required since in debug mode, new is rewritten
+// as new(__FILE__, __LINE__). See utils.h for details
+//
+#undef new
+#include "base/memTracker.h"
 
-USE_NAMESPACE
+MemTracker m = MemTracker(true);
 
-    MemTracker m = MemTracker(true);
+void *operator new(size_t s, char* file, int line) {
+	void* p = malloc(s);
 
+	//fprintf(stderr, "new - p:%lx s:%ld, %s:%d\n", p, s, file, line);
+	if (m.isMemTracking()) {
+ 		m.disableMemTracker();
+		m.addTrack((DWORD)p, s, file, line);
+    	m.enableMemTracker();
+	}
 
-    void *operator new(size_t s, char* file, int line) {
-        void* p = malloc(s);
+	return p;
+}
 
-        //fprintf(stderr, "new - p:%lx s:%ld, %s:%d\n", p, s, file, line);
-        if (m.isMemTracking()) {
-            m.disableMemTracker();
-		    m.addTrack((DWORD)p, s, file, line);
-            m.enableMemTracker();
-        }
+void *operator new(size_t s) {
+	return ::operator new(s, "", 0);
+}
 
-        return p;
+void *operator new[](size_t s) {
+	return ::operator new(s, "", 0);
+}
+
+void *operator new[](size_t s, char* file, int line) {
+	return ::operator new(s, file, line);
+}
+
+void operator delete(void* p) {
+
+	//fprintf(stderr, "delete - p:%lx\n", (long)p);
+    if (m.isMemTracking()) {
+    	m.disableMemTracker();
+		m.removeTrack((DWORD)p);
+        m.enableMemTracker();
+	}
+
+    if (p) {
+    	free(p);
     }
+ }
 
-    void *operator new(size_t s) {
-        return ::operator new(s, "", 0);
-    }
-
-    void *operator new[](size_t s) {
-        return ::operator new(s, "", 0);
-    }
-
-    void *operator new[](size_t s, char* file, int line) {
-        return ::operator new(s, file, line);
-    }
-
-    void operator delete(void* p) {
-
-        //fprintf(stderr, "delete - p:%lx\n", (long)p);
-        if (m.isMemTracking()) {
-            m.disableMemTracker();
-		    m.removeTrack((DWORD)p);
-            m.enableMemTracker();
-        }
-
-        if (p) {
-            free(p);
-        }
-    }
-
-    void operator delete[] (void* p) {
-        ::operator delete(p);
-    }
+ void operator delete[] (void* p) {
+ 	::operator delete(p);
+ }
 
 
-    void printMemLeaks() {
-        if (m.isMemTracking())
-            m.dumpUnfreed();
-    }
+ void printMemLeaks() {
+ 	if (m.isMemTracking())
+    	m.dumpUnfreed();
+ }
 
 #endif  // #ifdef MALLOC_DEBUG
 
 #endif  // #if defined(WIN32) && !defined(_WIN32_WCE)
 
 END_NAMESPACE
-
