@@ -62,6 +62,9 @@ typedef wchar_t WCHAR;
 // size check for wide char.
 #define snwprintf _snwprintf
 
+#include "base/globalsdef.h"
+
+BEGIN_NAMESPACE
 
 /**
  * Returns a rounded integer value from double.
@@ -73,6 +76,7 @@ int round(double val);
 void printMemLeaks();
 #endif
 
+END_NAMESPACE
 
 // Enable warning: class has virtual functions, but destructor is not virtual
 // When a class has virtual functions but a nonvirtual destructor, 
