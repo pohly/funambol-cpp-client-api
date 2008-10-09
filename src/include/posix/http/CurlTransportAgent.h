@@ -55,6 +55,7 @@ BEGIN_NAMESPACE
 
     class CurlTransportAgent : public TransportAgent {
         CURL *easyhandle;
+        struct curl_slist *slist;
         char proxyauth[DIM_USERNAME + 1 + DIM_PASSWORD];
 
         char *sendbuffer;
