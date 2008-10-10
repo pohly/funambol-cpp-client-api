@@ -90,7 +90,7 @@ int PropertyFile::read() {
     FILE* f;
     f = fopen(node, "r");
     if (!f) {
-        LOG.debug("PropertyFile: the file '%s' doesn't exist. Try the journal file. '%s'", node.c_str());        
+        LOG.debug("PropertyFile: the file '%s' doesn't exist", node.c_str());        
     } else {
         while(fgets(line, 511, f) != NULL) {
             StringBuffer s(line);
