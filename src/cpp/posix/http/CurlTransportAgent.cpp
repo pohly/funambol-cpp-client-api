@@ -78,6 +78,8 @@ CurlInit CurlInit::singleton;
  */
 CurlTransportAgent::CurlTransportAgent(URL& newURL, Proxy& newProxy, unsigned int maxResponseTimeout) : TransportAgent(newURL, newProxy, maxResponseTimeout){
     easyhandle = CurlInit::easy_init();
+    slist = curl_slist_append(NULL, "Expect:");
+
     if (easyhandle) {
         curl_easy_setopt(easyhandle, CURLOPT_DEBUGFUNCTION, debugCallback);
         curl_easy_setopt(easyhandle, CURLOPT_VERBOSE, LOG.getLevel() ? true : false);
@@ -89,6 +91,7 @@ CurlTransportAgent::CurlTransportAgent(URL& newURL, Proxy& newProxy, unsigned in
         curl_easy_setopt(easyhandle, CURLOPT_ERRORBUFFER, this->curlerrortxt );
         curl_easy_setopt(easyhandle, CURLOPT_AUTOREFERER, true);
         curl_easy_setopt(easyhandle, CURLOPT_FOLLOWLOCATION, true);
+        curl_easy_setopt(easyhandle, CURLOPT_HTTPHEADER, slist);
         if (proxy.host[0]) {
             curl_easy_setopt(easyhandle, CURLOPT_PROXY, proxy.host);
             if (proxy.port) {
@@ -116,6 +119,9 @@ void CurlTransportAgent::setUserAgent(const char*ua) {
 CurlTransportAgent::~CurlTransportAgent() {
     if (easyhandle) {
         curl_easy_cleanup(easyhandle);
+    }
+    if (slist) {
+        curl_slist_free_all(slist);
     }
 }
 
