@@ -17,8 +17,8 @@
  *
  * If some information is missing or not explained well,
  * please do not hesitate to ask for clarifications. A good starting
- * point for such inquiries is the Funambol developers mailing list:
- * https://lists.sourceforge.net/lists/listinfo/funambol-developers
+ * point for such inquiries is the Funambol users discussion mailing list:
+ * https://core.forge.funambol.org/ds/viewForumSummary.do?dsForumId=405
  *
  * For developers working on the core library it will also be possible
  * to generate an extended version of this documentation, but this is
