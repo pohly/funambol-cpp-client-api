@@ -67,13 +67,7 @@ FileSyncSource::FileSyncSource(
    
 }
 
-FileSyncSource::~FileSyncSource() {}
-
-
-int FileSyncSource::removeAllItems() {
-    removeFileInDir(dir);
-    return 0;
-}
+FileSyncSource::~FileSyncSource() { }
 
 int FileSyncSource::parseFileData(FileData& file, SyncItem& item) {
     
@@ -152,13 +146,11 @@ Enumeration* FileSyncSource::getAllItemList() {
     allKeys = new ArrayListEnumeration(currentKeys);
     
     return allKeys;
-
 }
 
 /**
-* Adds an item on the file system in the set directory.
-* 
-*/
+ * Adds an item on the file system in the set directory.
+ */
 int FileSyncSource::insertItem(SyncItem& item) {
     
     int ret = STC_COMMAND_FAILED;
@@ -181,17 +173,6 @@ int FileSyncSource::insertItem(SyncItem& item) {
     return ret;
 }
 
-
-int FileSyncSource::removeItem(SyncItem& item) {
-    
-    const char* filename = toMultibyte(item.getKey());
-    removeFileInDir(dir, filename);
-    if (filename) { delete [] filename; filename = NULL; }
-    LOG.debug("Added deleted: %" WCHAR_PRINTF, item.getKey());
-
-    return STC_OK;
-
-}
 int FileSyncSource::modifyItem(SyncItem& item) {
     
     int ret = STC_COMMAND_FAILED;
@@ -211,6 +192,21 @@ int FileSyncSource::modifyItem(SyncItem& item) {
     }    
     return ret;
     
+}
+
+int FileSyncSource::removeItem(SyncItem& item) {
+    
+    const char* filename = toMultibyte(item.getKey());
+    removeFileInDir(dir, filename);
+    if (filename) { delete [] filename; filename = NULL; }
+    LOG.debug("Added deleted: %" WCHAR_PRINTF, item.getKey());
+    
+    return STC_OK;
+}
+
+int FileSyncSource::removeAllItems() {
+    removeFileInDir(dir);
+    return 0;
 }
 
 /**
