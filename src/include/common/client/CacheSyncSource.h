@@ -75,6 +75,7 @@ BEGIN_NAMESPACE
  * <li><b>insertItem</b>: adds a new item into the data store</li>
  * <li><b>modifyItem</b>: modifies an item in the data store</li>
  * <li><b>removeItem</b>: removes an item from the data store</li>
+ * <li><b>removeAllItems</b>: removes all the items from the data store</li>
  * <li><b>getItemContent</b>: get the content of an item given the key</li>
  *
  * The optional methods, that can be overloaded to change the behavior of the
@@ -411,8 +412,7 @@ public:
      * @return      SyncML status code
      */
     virtual int removeItem(SyncItem& item) = 0;
-   
-   
+    
 };
 
 END_NAMESPACE
