@@ -197,18 +197,6 @@
 					RelativePath="..\..\test\common\spds\EncryptionTest.cpp"
 					>
 				</File>
-				<Filter
-					Name="IntegrationTests"
-					>
-					<File
-						RelativePath="..\..\test\ClientTest.cpp"
-						>
-					</File>
-					<File
-						RelativePath="..\..\src\cpp\common\client\TestFileSyncSource.cpp"
-						>
-					</File>
-				</Filter>
 			</Filter>
 			<Filter
 				Name="base"
@@ -291,6 +279,26 @@
 				</File>
 				<File
 					RelativePath="..\..\test\common\filter\FilterTest.cpp"
+					>
+				</File>
+			</Filter>
+			<Filter
+				Name="client"
+				>
+				<File
+					RelativePath="..\..\test\common\client\OptionParserTest.cpp"
+					>
+				</File>
+			</Filter>
+			<Filter
+				Name="IntegrationTests"
+				>
+				<File
+					RelativePath="..\..\test\ClientTest.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\cpp\common\client\TestFileSyncSource.cpp"
 					>
 				</File>
 			</Filter>

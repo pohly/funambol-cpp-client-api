@@ -539,6 +539,10 @@
 					>
 				</File>
 				<File
+					RelativePath="..\..\src\cpp\common\client\OptionParser.cpp"
+					>
+				</File>
+				<File
 					RelativePath="..\..\src\cpp\common\client\SQLKeyValueStore.cpp"
 					>
 				</File>

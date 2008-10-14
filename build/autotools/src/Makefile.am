@@ -163,6 +163,7 @@ SOURCES_CLIENT = \
     lTestFileSyncSource.cpp \
     lCacheSyncSource.cpp \
     lFileSyncSource.cpp \
+    lOptionParser.cpp \
     lSyncClient.cpp
 
 SOURCES_VOCL = \

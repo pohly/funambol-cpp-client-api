@@ -17,6 +17,7 @@ vpath %.cpp	$(TESTDIR) \
 		$(TESTDIR)/posix/spdm/ \
 		$(TESTDIR)/common/syncml \
 		$(TESTDIR)/common/filter \
+		$(TESTDIR)/common/client \
 		$(TESTDIR)/common/event
 
 # Test runner sources
@@ -41,12 +42,15 @@ TESTS_SYNCML = \
     FormatterTest.cpp \
     ObjectDelTest.cpp
 
-TESTS_POSIX = \
+TESTS_SPDM = \
     ConfigTest.cpp
+
+TESTS_CLIENT = \
+    OptionParserTest.cpp
 
 TESTS_EVENT = testEvent.cpp
     
-TESTCASES = $(TESTS_BASE) $(TESTS_FILTER) $(TESTS_SYNCML) $(TESTS_POSIX) $(TESTS_EVENT)
+TESTCASES = $(TESTS_BASE) $(TESTS_FILTER) $(TESTS_SYNCML) $(TESTS_SPDM) $(TESTS_EVENT) $(TEST_CLIENT)
 
 client_test_SOURCES = $(SOURCES) $(TESTCASES)
 
