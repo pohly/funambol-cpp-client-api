@@ -39,6 +39,7 @@
 #include "base/fscapi.h"
 #include "client/OptionParser.h"
 
+USE_NAMESPACE
 
 class OptionParserTest : public CppUnit::TestFixture {
 
@@ -99,9 +100,9 @@ private:
         CPPUNIT_ASSERT(ret =! 0);
     }
 
-    Funambol::OptionParser parser;
-    Funambol::StringMap opts;
-    Funambol::ArrayList args;
+    OptionParser parser;
+    StringMap opts;
+    ArrayList args;
 
 };
 

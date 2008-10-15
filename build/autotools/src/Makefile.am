@@ -10,6 +10,7 @@ SOURCES_BASE = \
     lArrayListKeyValueStore.cpp \
     lBasicTime.cpp \
     lStringBuffer.cpp \
+    lStringMap.cpp \
     lPropertyFile.cpp \
     lWString.cpp \
     lXMLProcessor.cpp \
