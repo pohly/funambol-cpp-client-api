@@ -33,8 +33,8 @@
  * the words "Powered by Funambol".
  */
 
-#ifndef INCL_FSYNCCONFIG
-#define INCL_FSYNCCONFIG
+#ifndef INCL_OPTION_PARSE
+#define INCL_OPTION_PARSE
 
 #include "base/fscapi.h"
 #include "base/util/StringBuffer.h"
