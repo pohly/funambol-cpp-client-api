@@ -65,7 +65,8 @@ bool StringMap::put(const char *key, const char *val) {
         return false;
     }
     else {
-        c.add(KeyValuePair(key, val));
+        KeyValuePair kv(key, val);
+        c.add(kv);
         return true;
     }
 }
