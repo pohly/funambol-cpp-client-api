@@ -74,6 +74,9 @@ BEGIN_NAMESPACE
         LOG_LEVEL_DEBUG = 2,
     } LogLevel;
 
+    /**
+     *
+     */
     class Log {
 
     private:

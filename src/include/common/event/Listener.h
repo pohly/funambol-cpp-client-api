@@ -45,12 +45,11 @@ BEGIN_NAMESPACE
 /* The base class for all Listeners. This has to be derived by all types of
  * listeners.
  */
-
 class Listener {
 
     public:
         // Constructor
-        Listener();
+        Listener() {};
 };
 
 

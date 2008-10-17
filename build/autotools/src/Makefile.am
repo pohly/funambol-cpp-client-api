@@ -24,19 +24,13 @@ SOURCES_BASE = \
 SOURCES_EVENT = \
     lBaseEvent.cpp \
     lFireEvent.cpp \
-    lListener.cpp \
     lManageListener.cpp \
     lSetListener.cpp \
     lSyncEvent.cpp \
     lSyncItemEvent.cpp \
-    lSyncItemListener.cpp \
-    lSyncListener.cpp \
     lSyncSourceEvent.cpp \
-    lSyncSourceListener.cpp \
     lSyncStatusEvent.cpp \
-    lSyncStatusListener.cpp \
-    lTransportEvent.cpp \
-    lTransportListener.cpp
+    lTransportEvent.cpp 
 
 SOURCES_FRAMEWORK = \
     lFormatter.cpp \

@@ -52,16 +52,16 @@ class SyncStatusListener : public Listener {
 
 public:
     // Constructor
-    SyncStatusListener();
+    SyncStatusListener() {};
 
     // Virtual destructor
     virtual ~SyncStatusListener() {}
 
     // listen for the Status Received Event
-    virtual void statusReceived(SyncStatusEvent& event);
+    virtual void statusReceived(SyncStatusEvent& event) {};
 
     // listen for the Status Sending Event
-    virtual void statusSending(SyncStatusEvent& event);
+    virtual void statusSending(SyncStatusEvent& event) {};
 };
 
 

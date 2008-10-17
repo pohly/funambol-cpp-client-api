@@ -3235,10 +3235,6 @@
 					>
 				</File>
 				<File
-					RelativePath="..\..\src\cpp\common\event\Listener.cpp"
-					>
-				</File>
-				<File
 					RelativePath="..\..\src\cpp\common\event\ManageListener.cpp"
 					>
 				</File>
@@ -3255,19 +3251,7 @@
 					>
 				</File>
 				<File
-					RelativePath="..\..\src\cpp\common\event\SyncItemListener.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\src\cpp\common\event\SyncListener.cpp"
-					>
-				</File>
-				<File
 					RelativePath="..\..\src\cpp\common\event\SyncSourceEvent.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\src\cpp\common\event\SyncSourceListener.cpp"
 					>
 				</File>
 				<File
@@ -3275,15 +3259,7 @@
 					>
 				</File>
 				<File
-					RelativePath="..\..\src\cpp\common\event\SyncStatusListener.cpp"
-					>
-				</File>
-				<File
 					RelativePath="..\..\src\cpp\common\event\TransportEvent.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\src\cpp\common\event\TransportListener.cpp"
 					>
 				</File>
 			</Filter>

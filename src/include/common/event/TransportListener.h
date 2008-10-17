@@ -54,25 +54,25 @@ class TransportListener : public Listener{
 public:
 
     // Constructor
-    TransportListener();
+    TransportListener() {};
 
     // Virtual destructor
     virtual ~TransportListener() {}
 
     // listen for the Send Data Begin Event
-    virtual void sendDataBegin(TransportEvent& event);
+    virtual void sendDataBegin(TransportEvent& event) {};
 
     // listen for the Sync Data End Event
-    virtual void syncDataEnd(TransportEvent& event);
+    virtual void syncDataEnd(TransportEvent& event) {};
 
     // listen for the Receive Data Begin Event
-    virtual void receiveDataBegin(TransportEvent& event);
+    virtual void receiveDataBegin(TransportEvent& event) {};
 
     // listen for the Receiving Data Event
-    virtual void receivingData(TransportEvent& event);
+    virtual void receivingData(TransportEvent& event) {};
 
     // listen for the Receive Data End Event
-    virtual void receiveDataEnd(TransportEvent& event);
+    virtual void receiveDataEnd(TransportEvent& event) {};
 };
 
 

@@ -48,7 +48,7 @@
 
 BEGIN_NAMESPACE
 
-class  TestSyncSource : public SyncSource {
+class TestSyncSource : public SyncSource {
 
 public:
 
