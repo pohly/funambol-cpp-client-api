@@ -65,6 +65,9 @@ class OptionParser {
          */
         ArrayList arguments;
 
+		/** error string */
+        StringBuffer errMsg;
+
     public:
 
         /** 
@@ -135,6 +138,12 @@ class OptionParser {
          * Print the usage message.
          */
         void usage();
+
+		/** get error message as a StringBuffer */
+		const StringBuffer& getErrMsg() const { return errMsg; }
+
+		/** returns error message as a string */
+		const char *getErrString() const { return errMsg.c_str(); }
 
 };
 
