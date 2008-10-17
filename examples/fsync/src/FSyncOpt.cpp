@@ -38,11 +38,38 @@
 
 USE_NAMESPACE
 
-FSyncOpt::FSyncOpt() {
+FSyncOpt::FSyncOpt(const char *progname) : parser(progname), verbose(0)
+{
+	parser.addOption('l', "logname", "set log name", true);
+	parser.addOption('L', "loglevel", "set log level [none, info, debug]", true);
+	parser.addOption('v', "verbose", "increase verbosity");
+	parser.addOption('q', "quiet", "decrease verbosity");
 
+	// TODO
+	parser.addArgument("ServerURL", "the URL of the sync server, or the one in the config if not specified", false);
+	parser.addArgument("LocalFolder", "the local folder to sync, or the one in the config if not specified", false);
 }
 
-bool FSyncOpt::getopt(int argc, char** argv) {
-    return 0;
+bool FSyncOpt::getopt(int args_num, const char** args_val) 
+{
+
+	if (parser.parse(args_num, args_val, opts, args) == false) {
+		return false;
+	}
+
+	if (optionSet("verbose")) {
+		verbose = 1;
+	} else if (optionSet("quiet")) {
+		verbose = -1;
+	}
+
+    return true;
+}
+
+const char* FSyncOpt::getOptionVal(const char *ln)
+{ 
+	const StringBuffer &optValue = opts.get(ln);
+
+	return optValue.c_str();
 }
 

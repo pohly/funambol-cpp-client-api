@@ -37,36 +37,57 @@
 #define INCL_FSYNCOPT
 
 #include "base/fscapi.h"
-#include "base/util/StringBuffer.h"
+#include "base/util/StringMap.h"
+#include "client/OptionParser.h"
 
 USE_NAMESPACE
 
 /**
  * This class allows to get options from the command line
  */
-class FSyncOpt {
+class FSyncOpt 
+{
     public:
-
         /** Default constructor */
-        FSyncOpt();
+        FSyncOpt(const char *progname);
 
         /** parse the command line */
-        bool getopt(int argc, char** argv);
+        bool getopt(int argc, const char** argv);
 
         /** Get the current sync path */
-        const StringBuffer& getSyncPath()  const { return syncPath; };
+        const StringBuffer& getSyncPath() const;
 
         /** Set a new sync path */
-        void setSyncPath(const char *newPath) { syncPath = newPath; };
+        void setSyncPath(const char *newPath);
+
+		/** Get parser error */
+		const char *getErr() const { return parser.getErrString(); }
+
+		/** Check option presence */
+		bool optionSet(const char *ln) { return opts.get(ln) ? true : false; }
+
+		/** Get options value */
+		const char* getOptionVal(const char *ln);
+
+		const char* getLogName() { return getOptionVal("logname"); }
+		const char* getLogPath() { return getOptionVal("logpath"); }
+		const char* getLogLevel() { return getOptionVal("loglevel"); }
+
+		const char* getSyncFolder()	const { return syncPath.c_str(); }
+		int getVerbosity() const { return verbose; } 
 
     private:
+        /** The command line parser */
+		OptionParser parser;
+		StringMap opts;
+		ArrayList args;
         
         /** The local path to sync */
         StringBuffer syncPath;
 
         /** The verbosity level */
-        int verbose;
-
+		int verbose;
 };
+
 
 #endif
