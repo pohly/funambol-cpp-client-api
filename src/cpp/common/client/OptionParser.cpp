@@ -149,30 +149,37 @@ bool OptionParser::parse(int argc, const char** argv, StringMap &opts, ArrayList
             }
 
             if ((optind=findOption(arg, shortname)) == -1){
-                fprintf(stderr, "\nUnknown option: %s\n", arg);
-                usage();
+                errMsg.sprintf("unknown option: %s", arg);
+
+                //usage();
                 return false;
             }
 
             Option *opt = (Option *)options[optind];
 
-            if (opt->hasArgument) {
-                opts.put(opt->longName, argv[++i]);
-            }
-            else {
+            if (opt->hasArgument) { // check if a value has been provided to option
+				if ((argv[++i] == NULL) || (strlen(argv[i]) == 0)) {
+					errMsg.sprintf("option '%s' requires an argument", arg);
+
+					return false;
+				}
+
+                opts.put(opt->longName, argv[i]);
+            } else {
                 opts.put(opt->longName, "1");
             }
+
             continue;
-        }
-        else {
+        } else {
             StringBuffer s(argv[i]);
             args.add(s);
         }
     }
 
-    if(opts["help"]){
+    if (opts["help"]){
         usage();
     }
+
     return true;
 }
 
@@ -188,11 +195,11 @@ void OptionParser::usage() {
         if (opt->hasArgument) {
             line.sprintf("\n  --%s,\t-%s <args>\t%s",
                 opt->longName.c_str(), opt->shortName.c_str(), opt->helpMsg.c_str());
-        }
-	else {
-	    line.sprintf("\n  --%s,\t-%s \t\t%s",
+        } else {
+	    	line.sprintf("\n  --%s,\t-%s \t\t%s",
                 opt->longName.c_str(), opt->shortName.c_str(), opt->helpMsg.c_str());
         }
+
         opthelp += line;
     }
     // optlist can be [xxx] or empty
