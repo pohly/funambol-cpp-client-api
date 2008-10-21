@@ -92,7 +92,7 @@ SOURCEPATH   ..\..\src\cpp\symbian\push
 SOURCE       FThread.cpp FSocket.cpp
 
 SOURCEPATH   ..\..\src\cpp\common\event
-SOURCE       BaseEvent.cpp FireEvent.cpp Listener.cpp ManageListener.cpp
+SOURCE       BaseEvent.cpp FireEvent.cpp ManageListener.cpp
 SOURCE       SetListener.cpp SyncEvent.cpp SyncItemEvent.cpp SyncItemListener.cpp
 SOURCE       SyncListener.cpp SyncSourceEvent.cpp SyncSourceListener.cpp SyncStatusEvent.cpp
 SOURCE       SyncStatusListener.cpp TransportEvent.cpp TransportListener.cpp
