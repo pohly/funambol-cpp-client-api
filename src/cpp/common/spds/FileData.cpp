@@ -246,6 +246,8 @@ void FileData::setBody(const char* v, int len)
         memset(base64, 0, encodeLen + 1);
         b64_encode(base64, (char*)v, len);
         body = base64;
+        enc = TEXT("base64");
+
         delete [] base64;
     }
 }
@@ -317,6 +319,4 @@ int FileData::lengthForB64(int len) {
 
     }
     return ret;
-
-
 }
