@@ -220,6 +220,7 @@ int FileSyncSource::removeAllItems() {
 *
 * @return         the local item content. It's new allocated, it must be 
 *                 deleted by the caller using delete []
+*                 Returns NULL in case of error
 */
 void* FileSyncSource::getItemContent(StringBuffer& key, size_t* size) {
     
@@ -229,15 +230,9 @@ void* FileSyncSource::getItemContent(StringBuffer& key, size_t* size) {
     WCHAR* fileName = toWideChar(key);
     StringBuffer completeName(getCompleteName(dir, fileName));
     
-    if (readFile(completeName, &fileContent, size, true)) {        
-        LOG.debug("Content succesfully read");   
-    } else {
-        LOG.error("Content of the file not read"); 
-    }
-
-    if(!fileContent) {
-        // the file is empty set it as empty string
-        fileContent = stringdup("");
+    if (!readFile(completeName, &fileContent, size, true)) {        
+        LOG.error("Content of the file not read");
+        return NULL;
     }
 
     // get the SyncSource mime type
@@ -254,14 +249,15 @@ void* FileSyncSource::getItemContent(StringBuffer& key, size_t* size) {
 
         itemContent = file.format();
         *size = strlen(itemContent);
+
+        delete [] fileContent; fileContent = NULL;
     }
     else
     {
-        // fill the item content only with file content
-        itemContent = stringdup(fileContent);
+        // fill the item content with raw file content
+        itemContent = fileContent;
     }
 
-    delete [] fileContent; fileContent = NULL;
     delete [] fileName; fileName = NULL;
 
     return itemContent;
