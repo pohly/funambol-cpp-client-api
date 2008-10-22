@@ -44,11 +44,11 @@ FSyncSourceListener::FSyncSourceListener() : SyncSourceListener() { }
 FSyncSourceListener::~FSyncSourceListener() { }
 
 void FSyncSourceListener::syncSourceBegin(SyncSourceEvent& event) {
-    printf("Begin sync of files\n");
+    //printf("Begin sync of files\n");
 }
 
 void FSyncSourceListener::syncSourceEnd(SyncSourceEvent& event) {
-    printf("End sync of files\n");
+    //printf("End sync of files\n");
 }
 
 void FSyncSourceListener::syncSourceSyncModeRequested(SyncSourceEvent& event) {

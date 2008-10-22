@@ -75,8 +75,7 @@ bool doSync(FSyncConfig& config, FSyncOpt& options)
 
     // SYNC!
     if (fileClient.sync(config, ssArray)) {
-        LOG.error("Error in sync.\n");
-
+        LOG.error("Error during sync.\n");
         return false;
     }
 
@@ -88,16 +87,17 @@ bool doSync(FSyncConfig& config, FSyncOpt& options)
 
 int main(int argc, char** argv) 
 {
-	FSyncOpt opts(progname); // command line options handler
+    // Initialize the command line options handler
+	FSyncOpt opts(progname); 
 
 	// Option values
 	const char *logPath = FSYNC_LOG_PATH;
 	const char *logName = LOG_NAME;
 	const char *logLevelName = "debug";
 	LogLevel log_level = FSYNC_LOG_LEVEL;
-	
     VerboseLevel verbose = NORMAL; 
 
+    // Parse command line options
 	if (opts.getopt(argc, const_cast<const char **>(argv)) == false) {
 		fprintf(stderr, "error parsing options: %s\n", opts.getErr());
 		exit(EXIT_FAILURE);
@@ -107,13 +107,14 @@ int main(int argc, char** argv)
 	if (opts.optionSet("help")) { 
 		exit(EXIT_SUCCESS);
 	}
-
+    
+    // Get verbosity option
 	verbose = opts.getVerbosity();
 
+    // Get log options
 	if (opts.optionSet("logpath")) { 
 		logPath = opts.getLogPath();
 	}
-
 	if (opts.optionSet("logname")) { 
 		logName = opts.getLogName();
 	}
@@ -123,10 +124,9 @@ int main(int argc, char** argv)
     LOG.setLogPath(logPath);
     LOG.reset(FSYNC_LOG_TITLE);
 
-	// Configure log level from command line
+	// Configure log level
 	if (opts.optionSet("loglevel")) { 
 		logLevelName = opts.getLogLevel();
-
 		if (strcmp(logLevelName, "none") == 0) {
 			log_level = LOG_LEVEL_NONE;
 		} else if (strcmp(logLevelName, "info") == 0) {
@@ -136,18 +136,16 @@ int main(int argc, char** argv)
 		} else {
 			fprintf(stderr, "%s: unrecognized log level: '%s'\n",
 				progname, logLevelName);
-
 			exit(EXIT_FAILURE);
 		}
 	} 
     LOG.setLevel(log_level);
-   
+  
+    // Manage sync listeners
     ManageListener& manage = ManageListener::getInstance();
 
 	if (verbose >= NORMAL) {
-
-        manage.setSyncListener      ( new FSyncListener());
-
+        manage.setSyncListener( new FSyncListener());
         if (verbose >= VERBOSE) {
             manage.setSyncItemListener  ( new FSyncItemListener());
             manage.setSyncSourceListener( new FSyncSourceListener());
@@ -158,7 +156,7 @@ int main(int argc, char** argv)
     // Create and initialize the configuration.
     FSyncConfig config;
 	if (verbose >= VERBOSE) {
-		printf("Initalizing client configuration...\n");
+		printf("\nInitalizing client configuration...");
 	}
     config.init();
     StringBuffer folder = config.getSyncPath();
@@ -169,8 +167,9 @@ int main(int argc, char** argv)
 		exit(EXIT_FAILURE);
 	}
 
+    // Sync
     if (doSync(config, opts) == false) {
-        // Error during sync
+        // Sync failed
 		exit(EXIT_FAILURE);
 	}
 

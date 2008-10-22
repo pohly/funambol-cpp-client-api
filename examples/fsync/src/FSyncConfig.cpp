@@ -55,7 +55,6 @@ void FSyncConfig::init() {
     if (!read()) {
         // Config not found, generate a default one
         createConfig();
-        read();
     }
 
     // Handle backward compatibility: if the stored version is
@@ -166,15 +165,16 @@ void FSyncConfig::createConfig() {
     delete dc;
 
     SyncSourceConfig* sc = DefaultConfigFactory::getSyncSourceConfig(FSYNC_SOURCE_NAME);
-    sc->setEncoding ("");
-    sc->setType     ("application/vnd.omads-file+xml");
+    sc->setEncoding ("b64");
+    sc->setType     ("application/*");
     sc->setURI      (FSYNC_SOURCE_NAME);
     this->setSyncSourceConfig(*sc);
     delete sc;
 
+    syncPath = FSYNC_DEFAULT_PATH;
     ManagementNode *node = dmt->readManagementNode(rootContext);
     if (node) {
-        node->setPropertyValue(FSYNC_PATH_PROPERTY, FSYNC_DEFAULT_PATH);
+        node->setPropertyValue(FSYNC_PATH_PROPERTY, syncPath.c_str());
     }
     close();
 
