@@ -218,7 +218,8 @@ int FileSyncSource::removeAllItems() {
 * @param key      the local key of the item
 * @param size     OUT: the size of the content
 *
-* @return         the local item content
+* @return         the local item content. It's new allocated, it must be 
+*                 deleted by the caller using delete []
 */
 void* FileSyncSource::getItemContent(StringBuffer& key, size_t* size) {
     
@@ -235,8 +236,7 @@ void* FileSyncSource::getItemContent(StringBuffer& key, size_t* size) {
     }
 
     if(!fileContent) {
-        // the file is empty
-        // set it as empty string, not null
+        // the file is empty set it as empty string
         fileContent = stringdup("");
     }
 
@@ -253,19 +253,17 @@ void* FileSyncSource::getItemContent(StringBuffer& key, size_t* size) {
         file.setBody(fileContent, *size);
 
         itemContent = file.format();
-
         *size = strlen(itemContent);
-
-        delete [] fileContent;
-        fileContent = NULL;
     }
     else
     {
         // fill the item content only with file content
-        itemContent = fileContent;
+        itemContent = stringdup(fileContent);
     }
 
-    delete [] fileName; fileName = 0;
+    delete [] fileContent; fileContent = NULL;
+    delete [] fileName; fileName = NULL;
+
     return itemContent;
 }
 
