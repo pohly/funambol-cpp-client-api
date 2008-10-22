@@ -40,13 +40,8 @@
 #include "client/SyncClient.h"
 #include "client/FileSyncSource.h"
 #include "base/util/StringBuffer.h"
+#include "base/util/utils.h"
 #include "base/Log.h"
-
-//////// TODO: remove me
-#include <sys/stat.h>
-#include <sys/types.h>
-#include <iostream>
-////////////////////////
 
 #ifndef EXIT_SUCCESS
 #	define EXIT_SUCCESS 0
@@ -85,28 +80,6 @@ bool doSync(FSyncConfig& config, FSyncOpt& options)
     config.save();
 
     return true;
-}
-
-// TODO: this should be implemented in some sort of directory handler class
-bool createFolder(const char *path)
-{
-	if (path == NULL)
-		return false;
-
-#ifdef WIN32
-    wchar_t* p = toWideChar(path);
-    DWORD attr = CreateDirectory(p, NULL);
-    delete [] p;
-#else
-    DIR* d = opendir(path);
-    if (!d) {
-        mkdir(path, 0777);
-    } else {
-        closedir(d);
-    }
-#endif
-
-	return true;
 }
 
 int main(int argc, char** argv) 
@@ -183,9 +156,11 @@ int main(int argc, char** argv)
     StringBuffer folder = config.getSyncPath();
 	
     // Check the presence of the sync folder
-    if (createFolder(folder.c_str()) == false) {
-        exit(EXIT_FAILURE);
-    }
+    if (createFolder(folder.c_str()) < 0) {
+		LOG.error("error creating folder");
+
+		exit(EXIT_FAILURE);
+	}
 
 	if (verbose >= 0) {
 		printf("starting sync..\n");
