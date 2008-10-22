@@ -42,6 +42,12 @@
 
 USE_NAMESPACE
 
+typedef enum VerboseLevel{
+        QUIET   = -1,
+        NORMAL  = 0,
+        VERBOSE = 1
+} VerboseLevel;
+
 /**
  * This class allows to get options from the command line
  */
@@ -74,7 +80,7 @@ class FSyncOpt
 		const char* getLogLevel() { return getOptionVal("loglevel"); }
 
 		const char* getSyncFolder()	const { return syncPath.c_str(); }
-		int getVerbosity() const { return verbose; } 
+		VerboseLevel getVerbosity() const { return verbose; } 
 
     private:
         /** The command line parser */
@@ -86,7 +92,7 @@ class FSyncOpt
         StringBuffer syncPath;
 
         /** The verbosity level */
-		int verbose;
+		VerboseLevel verbose;
 };
 
 

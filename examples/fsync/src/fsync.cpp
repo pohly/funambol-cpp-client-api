@@ -35,10 +35,14 @@
 
 #include "FSyncConfig.h"
 #include "FSyncOpt.h"
-
+#include "FSyncListener.h"
+#include "FSyncSourceListener.h"
+#include "FSyncItemListener.h"
+#include "FSyncTransportListener.h"
 #include "base/fscapi.h"
 #include "client/SyncClient.h"
 #include "client/FileSyncSource.h"
+#include "event/ManageListener.h"
 #include "base/util/StringBuffer.h"
 #include "base/util/utils.h"
 #include "base/Log.h"
@@ -71,7 +75,7 @@ bool doSync(FSyncConfig& config, FSyncOpt& options)
 
     // SYNC!
     if (fileClient.sync(config, ssArray)) {
-        LOG.error("Error in sync.");
+        LOG.error("Error in sync.\n");
 
         return false;
     }
@@ -91,11 +95,11 @@ int main(int argc, char** argv)
 	const char *logName = LOG_NAME;
 	const char *logLevelName = "debug";
 	LogLevel log_level = FSYNC_LOG_LEVEL;
-	int verbose = 0; // verbosity levels: -1 quiet, 0 normal, 1 verbose
+	
+    VerboseLevel verbose = NORMAL; 
 
 	if (opts.getopt(argc, const_cast<const char **>(argv)) == false) {
 		fprintf(stderr, "error parsing options: %s\n", opts.getErr());
-
 		exit(EXIT_FAILURE);
 	}
 
@@ -136,43 +140,46 @@ int main(int argc, char** argv)
 			exit(EXIT_FAILURE);
 		}
 	} 
-
     LOG.setLevel(log_level);
    
-	if (verbose > 0) {
-		printf("writing log to '%s' with %s level\n",
-			logName, logLevelName);
+    ManageListener& manage = ManageListener::getInstance();
+
+	if (verbose >= NORMAL) {
+
+        manage.setSyncListener      ( new FSyncListener());
+
+        if (verbose >= VERBOSE) {
+            manage.setSyncItemListener  ( new FSyncItemListener());
+            manage.setSyncSourceListener( new FSyncSourceListener());
+            manage.setTransportListener ( new FSyncTransportListener());
+        }
 	} 
 
     // Create and initialize the configuration.
     FSyncConfig config;
-
-	if (verbose > 0) {
-		printf("initalizing client configuration\n");
+	if (verbose >= VERBOSE) {
+		printf("Initalizing client configuration...\n");
 	}
-
     config.init();
-
     StringBuffer folder = config.getSyncPath();
 	
     // Check the presence of the sync folder
     if (createFolder(folder.c_str()) < 0) {
 		LOG.error("error creating folder");
-
 		exit(EXIT_FAILURE);
-	}
-
-	if (verbose >= 0) {
-		printf("starting sync..\n");
 	}
 
     if (doSync(config, opts) == false) {
+        // Error during sync
 		exit(EXIT_FAILURE);
 	}
 
-	if (verbose >= 0) {
-		printf("sync ended\n");
-	}
+    // Unset listeners
+    LOG.debug("Unset listeners");
+    manage.unsetSyncListener();
+    manage.unsetSyncItemListener();
+    manage.unsetSyncSourceListener();
+    manage.unsetTransportListener();
 
 	exit(EXIT_SUCCESS);
 }

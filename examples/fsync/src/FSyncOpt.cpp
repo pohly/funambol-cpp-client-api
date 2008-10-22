@@ -38,7 +38,7 @@
 
 USE_NAMESPACE
 
-FSyncOpt::FSyncOpt(const char *progname) : parser(progname), verbose(0)
+FSyncOpt::FSyncOpt(const char *progname) : parser(progname), verbose(NORMAL)
 {
 	parser.addOption('l', "logname", "set log name", true);
 	parser.addOption('L', "loglevel", "set log level [none, info, debug]", true);
@@ -52,15 +52,14 @@ FSyncOpt::FSyncOpt(const char *progname) : parser(progname), verbose(0)
 
 bool FSyncOpt::getopt(int args_num, const char** args_val) 
 {
-
 	if (parser.parse(args_num, args_val, opts, args) == false) {
 		return false;
 	}
 
 	if (optionSet("verbose")) {
-		verbose = 1;
+		verbose = VERBOSE;
 	} else if (optionSet("quiet")) {
-		verbose = -1;
+		verbose = QUIET;
 	}
 
     return true;

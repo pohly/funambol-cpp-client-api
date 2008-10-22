@@ -44,21 +44,23 @@ FSyncSourceListener::FSyncSourceListener() : SyncSourceListener() { }
 FSyncSourceListener::~FSyncSourceListener() { }
 
 void FSyncSourceListener::syncSourceBegin(SyncSourceEvent& event) {
-    printf("Begin sync of folder");
+    printf("Begin sync of files\n");
 }
 
 void FSyncSourceListener::syncSourceEnd(SyncSourceEvent& event) {
-    printf("End sync of folder");
+    printf("End sync of files\n");
 }
 
 void FSyncSourceListener::syncSourceSyncModeRequested(SyncSourceEvent& event) {
-    printf("\n%s sync is needed", syncModeKeyword((SyncMode)event.getSyncMode()));
+    printf("%s sync is needed\n", syncModeKeyword((SyncMode)event.getSyncMode()));
 }
 
 void FSyncSourceListener::syncSourceTotalClientItems(SyncSourceEvent& event) {
-    printf("\nSyncing %d items from the client", event.getData());
+    // not used yet
+    //printf("Syncing %d items from the client\n", event.getData());
 }
 
 void FSyncSourceListener::syncSourceTotalServerItems(SyncSourceEvent& event) {
-    printf("\nSyncing %d items from the server", event.getData());
+    // not used yet
+    //printf("Syncing %d items from the server\n", event.getData());
 }

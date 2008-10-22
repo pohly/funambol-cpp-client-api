@@ -51,25 +51,25 @@ FSyncItemListener::FSyncItemListener() : SyncItemListener() {
 FSyncItemListener::~FSyncItemListener() { }
 
 void FSyncItemListener::itemAddedByServer(SyncItemEvent& event) {
-    printf("\nReceiving new file %d", ++itemsAddedByServerCount);
+    printf("Receiving new file %d\n", ++itemsAddedByServerCount);
 }
 
 void FSyncItemListener::itemAddedByClient(SyncItemEvent& event) {
-    printf("\nSending new file: %ls", event.getItemKey());
+    printf("Sending new file: %ls\n", event.getItemKey());
 }
 
 void FSyncItemListener::itemDeletedByServer(SyncItemEvent& event) {
-    printf("\nReceiving deleted file: %ls", event.getItemKey());
+    printf("Receiving deleted file: %ls\n", event.getItemKey());
 }
 
 void FSyncItemListener::itemUpdatedByServer(SyncItemEvent& event) {
-    printf("Receiving updated file: %ls", event.getItemKey());
+    printf("Receiving updated file: %ls\n", event.getItemKey());
 }
 
 void FSyncItemListener::itemUpdatedByClient(SyncItemEvent& event) {
-    printf("Sending updated file: %ls", event.getItemKey());
+    printf("Sending updated file: %ls\n", event.getItemKey());
 }
 
 void FSyncItemListener::itemDeletedByClient(SyncItemEvent& event) {
-    printf("Sending deleted file: %ls", event.getItemKey());
+    printf("Sending deleted file: %ls\n", event.getItemKey());
 }

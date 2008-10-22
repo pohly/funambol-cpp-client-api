@@ -43,15 +43,15 @@ FSyncTransportListener::FSyncTransportListener() : TransportListener() { }
 FSyncTransportListener::~FSyncTransportListener() { }
 
 void FSyncTransportListener::sendDataBegin(TransportEvent& event) { 
-    printf("\nBegin sending data ...");
+    printf("Sending data... \n");
 }
 
 void FSyncTransportListener::syncDataEnd(TransportEvent& event) { 
-    printf("\nEnd sending data.");
+    printf("End sending data \n");
 }
 
 void FSyncTransportListener::receiveDataBegin(TransportEvent& event) { 
-    printf("\nBegin receiving data ...");
+    printf("Receiving data...");
 }
 
 void FSyncTransportListener::receivingData(TransportEvent& event) { 
@@ -59,5 +59,5 @@ void FSyncTransportListener::receivingData(TransportEvent& event) {
 }
 
 void FSyncTransportListener::receiveDataEnd(TransportEvent& event) { 
-    printf("\nEnd receiving data");
+    printf("\nEnd receiving data \n");
 }

@@ -43,25 +43,25 @@ FSyncListener::FSyncListener() : SyncListener() { }
 FSyncListener::~FSyncListener() { }
 
 void FSyncListener::syncBegin(SyncEvent& event) {
-    printf("\nBegin synchronization...");
+    printf("Begin synchronization...\n");
 }
 
 void FSyncListener::syncEnd(SyncEvent& event) {
-    printf("\nSynchronization done.");
+    printf("Synchronization done.\n");
 }
 
 void FSyncListener::syncError(SyncEvent& event) {
-    printf("\nSynchronization error: %s", event.getMessage());
+    printf("Synchronization error: %s\n", event.getMessage());
 }
 
 void FSyncListener::sendInitialization(SyncEvent& event) {
-    printf("\nConnecting to the server...");
+    printf("Connecting to the server...\n");
 }
 
 void FSyncListener::sendModifications(SyncEvent& event) {
-    printf("\nSending modifications...");
+    printf("Sending modifications...\n");
 }
 
 void FSyncListener::sendFinalization(SyncEvent& event) {
-    printf("\nSending finalization...");
+    printf("Sending finalization...\n");
 }
