@@ -203,6 +203,12 @@ bool removeFileInDir(const char* dir, const char* filename = NULL);
 unsigned long getFileModTime(const char* name);
 
 /**
+ * Creates a folder.
+ * @return 0 on success, -1 otherwise.
+ */
+int createFolder(const char *path);
+
+/**
 * Return the cache directory where are stored all the file .dat
 * used by the itemhandler cache implementation
 */
