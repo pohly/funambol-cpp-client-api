@@ -91,6 +91,8 @@ int main(int argc, char** argv)
 	FSyncOpt opts(progname); 
 
 	// Option values
+    const char *serverUrl = NULL;
+    const char *localFolder = NULL;
 	const char *logPath = FSYNC_LOG_PATH;
 	const char *logName = LOG_NAME;
 	const char *logLevelName = "debug";
@@ -107,7 +109,11 @@ int main(int argc, char** argv)
 	if (opts.optionSet("help")) { 
 		exit(EXIT_SUCCESS);
 	}
-    
+   
+    if (opts.optionSet("server")) {
+        serverUrl = opts.getServerUrl();
+    } 
+
     // Get verbosity option
 	verbose = opts.getVerbosity();
 
@@ -158,6 +164,11 @@ int main(int argc, char** argv)
 	if (verbose >= VERBOSE) {
 		printf("\nInitalizing client configuration...");
 	}
+
+    if (serverUrl) {
+        config.setServerUrl(serverUrl);
+    }
+
     config.init();
     StringBuffer folder = config.getSyncPath();
 	

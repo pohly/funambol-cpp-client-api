@@ -75,6 +75,7 @@ class FSyncOpt
 		/** Get options value */
 		const char* getOptionVal(const char *ln);
 
+        const char* getServerUrl() { return getOptionVal("server"); }
 		const char* getLogName() { return getOptionVal("logname"); }
 		const char* getLogPath() { return getOptionVal("logpath"); }
 		const char* getLogLevel() { return getOptionVal("loglevel"); }

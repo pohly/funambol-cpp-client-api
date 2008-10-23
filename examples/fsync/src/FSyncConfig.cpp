@@ -153,6 +153,11 @@ void FSyncConfig::createConfig() {
     AccessConfig* ac = DefaultConfigFactory::getAccessConfig();
     ac->setMaxMsgSize(60000);
     ac->setUserAgent (FSYNC_USER_AGENT);
+
+    if (serverUrl.c_str()) {
+        ac->setSyncURL(serverUrl.c_str());
+    }
+
     this->setAccessConfig(*ac);
     delete ac;
 

@@ -61,6 +61,7 @@ USE_NAMESPACE
 #define FSYNC_SOURCE_NAME       "briefcase"
 
 // Device info: stored in the client config and sent to the DS server.
+//#define FSYNC_DEVICE_ID         "fsx-"  // File Sync eXample
 #define FSYNC_DEVICE_ID         "fsd-000000000000"  // File Sync Demo
 #define FSYNC_SW_VERSION        "1.0"
 #define FSYNC_USER_AGENT        "Funambol File Sync " FSYNC_SW_VERSION
@@ -72,9 +73,14 @@ USE_NAMESPACE
 class FSyncConfig : public DMTClientConfig {
 
     private:
+        /** The server url */
+        StringBuffer serverUrl;
 
         /** The folder to sync */
         StringBuffer syncPath;
+
+        /** device id */
+        const char *device_id_;
 
     public:
 
@@ -83,19 +89,25 @@ class FSyncConfig : public DMTClientConfig {
          * FSYNC_DEFAULT_PATH to initialize the config.
          * By default also reads the config from the store.
          */
-        FSyncConfig();
+	FSyncConfig();
 
         virtual bool read();
         virtual bool save();
 
         void init();
         void createConfig();
+        
+        /** Get the current server url */
+        const StringBuffer& getServerUrl() const { return serverUrl; }
 
         /** Get the current sync path */
         const StringBuffer& getSyncPath() const { return syncPath; };
 
         /** Set a new sync path */
         void setSyncPath(const char *newPath) { syncPath = newPath; };
+
+        /** Set a new server url */
+        void setServerUrl(const char *url) { if (url) { serverUrl = url; } };
 };
 
 #endif
