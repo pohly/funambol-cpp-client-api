@@ -45,7 +45,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="0"
 				AdditionalIncludeDirectories="..\..\src\include\common,..\..\src\include\windows"
-				PreprocessorDefinitions="WIN32;_DEBUG;_CONSOLE;UNICODE;_CRT_SECURE_NO_DEPRECATE"
+				PreprocessorDefinitions="ENABLE_NAMESPACE;WIN32;_DEBUG;_CONSOLE;UNICODE;_CRT_SECURE_NO_DEPRECATE"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="1"
@@ -141,9 +141,9 @@
 				Optimization="2"
 				InlineFunctionExpansion="1"
 				AdditionalIncludeDirectories="..\..\src\include\common,..\..\src\include\windows"
-				PreprocessorDefinitions="WIN32;NDEBUG;_CONSOLE;_MBCS;UNICODE;NO_CRIT_MSGBOX"
+				PreprocessorDefinitions="WIN32;NDEBUG;_CONSOLE;_MBCS;UNICODE;NO_CRIT_MSGBOX;ENABLE_NAMESPACE"
 				StringPooling="true"
-				RuntimeLibrary="0"
+				RuntimeLibrary="2"
 				EnableFunctionLevelLinking="true"
 				PrecompiledHeaderFile=".\output\testwin32-rel-object/testwin32.pch"
 				AssemblerListingLocation=".\output\testwin32-rel-object/"
@@ -211,24 +211,6 @@
 			<File
 				RelativePath="..\..\src\cpp\common\examples\client.cpp"
 				>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-					/>
-				</FileConfiguration>
 			</File>
 			<File
 				RelativePath="..\..\src\cpp\common\examples\TestSyncSource.cpp"
