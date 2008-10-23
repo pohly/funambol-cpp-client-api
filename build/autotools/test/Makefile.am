@@ -9,7 +9,7 @@ TESTDIR = $(srcdir)/../../../test
 LDADD = ../src/libfunambol.la 
 AM_LDFLAGS = @CURL_LDFLAGS@ @CPPUNIT_LDFLAGS@
 AM_CXXFLAGS = @CURL_CFLAGS@ @CPPUNIT_CXXFLAGS@
-AM_CPPFLAGS = -I$(INCDIR)/posix -I$(INCDIR)/common -DFUNAMBOL_BUILD_API
+AM_CPPFLAGS = -I$(INCDIR)/posix -I$(INCDIR)/common -I$(TESTDIR)/integration -DFUNAMBOL_BUILD_API
 
 vpath %.cpp	$(TESTDIR) \
 		$(TESTDIR)/common/base/util \
@@ -18,6 +18,7 @@ vpath %.cpp	$(TESTDIR) \
 		$(TESTDIR)/common/syncml \
 		$(TESTDIR)/common/filter \
 		$(TESTDIR)/common/client \
+		$(TESTDIR)/integration \
 		$(TESTDIR)/common/event
 
 # Test runner sources
@@ -27,7 +28,6 @@ SOURCES = client-test-main.cpp client-test.cpp ClientTest.cpp
 TESTS_BASE = \
     ArrayListTest.cpp \
     BasicTimeTest.cpp \
-    KeyValuePairTest.cpp \
     StringBufferTest.cpp \
     PropertyFileTest.cpp \
     XMLProcessorTest.cpp \
@@ -49,8 +49,12 @@ TESTS_CLIENT = \
     OptionParserTest.cpp
 
 TESTS_EVENT = testEvent.cpp
+
+TESTS_SPDS = \
+    MappingsTest.cpp \
+    MappingTestSyncSource.cpp
     
-TESTCASES = $(TESTS_BASE) $(TESTS_FILTER) $(TESTS_SYNCML) $(TESTS_SPDM) $(TESTS_EVENT) $(TESTS_CLIENT)
+TESTCASES = $(TESTS_BASE) $(TESTS_FILTER) $(TESTS_SYNCML) $(TESTS_SPDM) $(TESTS_EVENT) $(TESTS_CLIENT) $(TESTS_SPDS)
 
 client_test_SOURCES = $(SOURCES) $(TESTCASES)
 

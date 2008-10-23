@@ -1571,6 +1571,7 @@ SyncTests::~SyncTests() {
 
 /** adds the supported tests to the instance itself */
 void SyncTests::addTests() {
+          
     if (sources.size()) {
         const ClientTest::Config &config(sources[0].second->config);
 
@@ -1630,6 +1631,9 @@ void SyncTests::addTests() {
             }
         }
     }
+
+    // test mappings
+    ADD_TEST(SyncTests, testMappings);
 }
 
 /** compare databases of first and second client */

@@ -144,6 +144,9 @@ CLIENT_TEST_SOURCES=vcard21 \
  * the first client and .client.B.log for the second client. The base name
  * of these files is unique, so the corresponding part of the server log
  * is stored with the same base name and .server.log as suffix.
+ *
+ * For the test of the MappingsTest see the MappingsTest.h file
+
  */
 class TestFileSource : public ClientTest {
 public:

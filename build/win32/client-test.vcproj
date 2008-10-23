@@ -41,7 +41,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="..\..;..\..\src\include\windows;..\..\src\include\common;..\..\..\..\tools\cppunit\include"
+				AdditionalIncludeDirectories="..\..;..\..\test;..\..\test\integration;..\..\src\include\windows;..\..\src\include\common;..\..\..\..\tools\cppunit\include"
 				PreprocessorDefinitions="WIN32;_DEBUG_;ENABLE_UNIT_TESTS;ENABLE_INTEGRATION_TESTS;ENABLE_NAMESPACE;_CRT_SECURE_NO_DEPRECATE;CRT_SECURE_NO_DEPRECATE;_CRT_NON_CONFORMING_SWPRINTFS"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
@@ -217,10 +217,6 @@
 						>
 					</File>
 					<File
-						RelativePath="..\..\test\common\base\util\KeyValuePairTest.cpp"
-						>
-					</File>
-					<File
 						RelativePath="..\..\test\common\base\util\PropertyFileTest.cpp"
 						>
 					</File>
@@ -298,6 +294,22 @@
 					>
 				</File>
 				<File
+					RelativePath="..\..\test\integration\MappingsTest.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\test\integration\MappingsTest.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\test\integration\MappingTestSyncSource.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\test\integration\MappingTestSyncSource.h"
+					>
+				</File>
+				<File
 					RelativePath="..\..\src\cpp\common\client\TestFileSyncSource.cpp"
 					>
 				</File>
@@ -308,6 +320,10 @@
 			Filter="h;hpp;hxx;hm;inl;inc;xsd"
 			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}"
 			>
+			<File
+				RelativePath="..\..\test\ClientTest.h"
+				>
+			</File>
 		</Filter>
 		<Filter
 			Name="Resource Files"

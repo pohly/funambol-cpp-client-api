@@ -51,7 +51,7 @@
 #include <cppunit/TestAssert.h>
 #include <cppunit/TestFixture.h>
 #include "base/globalsdef.h"
-
+#include "MappingsTest.h"
 USE_NAMESPACE
 
 /**
@@ -772,6 +772,11 @@ protected:
 
     virtual void testManyItems();
 
+    // Check the tests
+    virtual void testMappings() {
+        MappingsTest mapping;
+        mapping.runTests();        
+    }
 
     /**
      * implements testMaxMsg(), testLargeObject(), testLargeObjectEncoded()
