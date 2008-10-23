@@ -199,7 +199,7 @@ int FileSyncSource::removeItem(SyncItem& item) {
     const char* filename = toMultibyte(item.getKey());
     removeFileInDir(dir, filename);
     if (filename) { delete [] filename; filename = NULL; }
-    LOG.debug("Added deleted: %" WCHAR_PRINTF, item.getKey());
+    LOG.debug("Item deleted: %" WCHAR_PRINTF, item.getKey());
     
     return STC_OK;
 }
