@@ -141,7 +141,7 @@
 				Optimization="2"
 				InlineFunctionExpansion="1"
 				AdditionalIncludeDirectories="..\..\src\include\common,..\..\src\include\windows"
-				PreprocessorDefinitions="WIN32;NDEBUG;_CONSOLE;_MBCS;UNICODE;NO_CRIT_MSGBOX;ENABLE_NAMESPACE"
+				PreprocessorDefinitions="WIN32;NDEBUG;_CONSOLE;_MBCS;UNICODE;NO_CRIT_MSGBOX;ENABLE_NAMESPACE;_CRT_SECURE_NO_WARNINGS"
 				StringPooling="true"
 				RuntimeLibrary="2"
 				EnableFunctionLevelLinking="true"
