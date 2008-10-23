@@ -61,53 +61,68 @@ USE_NAMESPACE
 #define FSYNC_SOURCE_NAME       "briefcase"
 
 // Device info: stored in the client config and sent to the DS server.
-//#define FSYNC_DEVICE_ID         "fsx-"  // File Sync eXample
-#define FSYNC_DEVICE_ID         "fsd-000000000000"  // File Sync Demo
+#define FSYNC_DEVICE_ID         "sc-pim"  
 #define FSYNC_SW_VERSION        "1.0"
 #define FSYNC_USER_AGENT        "Funambol File Sync " FSYNC_SW_VERSION
 
 /**
  * This class extends DMTClientConfig to store also the default sync path,
  * and to provide the default configuration suited to this client.
+ *
+ * It implements the Singleton pattern to be available from any point of
+ * the application.
  */
 class FSyncConfig : public DMTClientConfig {
 
-    private:
-        /** The server url */
-        StringBuffer serverUrl;
+public:
 
-        /** The folder to sync */
-        StringBuffer syncPath;
+    /**
+     * Singleton implementation: get the unique instance of the config.
+     */
+    static FSyncConfig *getInstance();
 
-        /** device id */
-        const char *device_id_;
+    /**
+     * Singleton implementation: release the unique instance of the config.
+     */
+    static void dispose();
 
-    public:
+    // Overloaded methods from DMTClientConfig
+    virtual bool read();
+    virtual bool save();
 
-        /**
-         * Default constructor: uses the macros FSYNC_APPLICATION_URI and 
-         * FSYNC_DEFAULT_PATH to initialize the config.
-         * By default also reads the config from the store.
-         */
-	FSyncConfig();
+    /**
+     * Initialize the config: try to read it from file or generate a default one.
+     */
+    void init();
 
-        virtual bool read();
-        virtual bool save();
+    /** Get the current sync path */
+    const StringBuffer& getSyncPath() const { return syncPath; };
 
-        void init();
-        void createConfig();
-        
-        /** Get the current server url */
-        const StringBuffer& getServerUrl() const { return serverUrl; }
+    /** Set a new sync path */
+    void setSyncPath(const char *newPath) { syncPath = newPath; };
 
-        /** Get the current sync path */
-        const StringBuffer& getSyncPath() const { return syncPath; };
+private:
 
-        /** Set a new sync path */
-        void setSyncPath(const char *newPath) { syncPath = newPath; };
+    /** Fsync specific parameters: the folder to sync */
+    StringBuffer syncPath;
 
-        /** Set a new server url */
-        void setServerUrl(const char *url) { if (url) { serverUrl = url; } };
+    //------------------------------------------------------------------
+
+    /** Singleton implementation: the unique FSyncConfig instance */
+    static FSyncConfig *instance;
+
+    /**
+     * Default constructor: uses the macros FSYNC_APPLICATION_URI and 
+     * FSYNC_DEFAULT_PATH to initialize the config.
+     * By default also reads the config from the store.
+     */
+    FSyncConfig();
+
+    /**
+     * Generates a default config.
+     */
+    void createConfig();
+
 };
 
 #endif

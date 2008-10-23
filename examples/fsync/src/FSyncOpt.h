@@ -49,51 +49,36 @@ typedef enum VerboseLevel{
 } VerboseLevel;
 
 /**
- * This class allows to get options from the command line
+ * This class allows to get options from the command line.
  */
-class FSyncOpt 
+class FSyncOpt
 {
     public:
         /** Default constructor */
         FSyncOpt(const char *progname);
 
         /** parse the command line */
-        bool getopt(int argc, const char** argv);
+        bool parseCmdline(int argc, char** argv);
 
-        /** Get the current sync path */
-        const StringBuffer& getSyncPath() const;
+        /** Get parser error */
+        const char *getErr() const { return parser.getErrMsg(); }
 
-        /** Set a new sync path */
-        void setSyncPath(const char *newPath);
+        /** Check option presence */
+        bool optionSet(const char *ln) { return opts.get(ln) ? true : false; }
 
-		/** Get parser error */
-		const char *getErr() const { return parser.getErrString(); }
+        /** Get options value */
+        const char* getOptionVal(const char *ln);
 
-		/** Check option presence */
-		bool optionSet(const char *ln) { return opts.get(ln) ? true : false; }
-
-		/** Get options value */
-		const char* getOptionVal(const char *ln);
-
-        const char* getServerUrl() { return getOptionVal("server"); }
-		const char* getLogName() { return getOptionVal("logname"); }
-		const char* getLogPath() { return getOptionVal("logpath"); }
-		const char* getLogLevel() { return getOptionVal("loglevel"); }
-
-		const char* getSyncFolder()	const { return syncPath.c_str(); }
-		VerboseLevel getVerbosity() const { return verbose; } 
+        VerboseLevel getVerbosity() const { return verbose; } 
 
     private:
         /** The command line parser */
-		OptionParser parser;
-		StringMap opts;
-		ArrayList args;
+        OptionParser parser;
+        StringMap opts;
+        ArrayList args;
         
-        /** The local path to sync */
-        StringBuffer syncPath;
-
         /** The verbosity level */
-		VerboseLevel verbose;
+        VerboseLevel verbose;
 };
 
 

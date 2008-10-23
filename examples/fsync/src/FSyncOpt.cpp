@@ -35,6 +35,7 @@
 
 #include "base/fscapi.h"
 #include "FSyncOpt.h"
+#include "FSyncConfig.h"
 
 USE_NAMESPACE
 
@@ -42,37 +43,77 @@ FSyncOpt::FSyncOpt(const char *progname) : parser(progname), verbose(NORMAL)
 {
     parser.addOption('s', "server", "set server url", true);
     parser.addOption('d', "dir", "set the local folder to sync", true);
-	parser.addOption('l', "logname", "set log name", true);
-	parser.addOption('L', "loglevel", "set log level [none, info, debug]", true);
-        parser.addOption('u', "user", "set the user name", true); // TODO
-	parser.addOption('v', "verbose", "increase verbosity");
-	parser.addOption('q', "quiet", "decrease verbosity");
+    parser.addOption('l', "loglevel", "set log level [error, info, debug]", true);
+    parser.addOption('u', "user", "set the user name", true);
+    parser.addOption('p', "password", "set the user password", true);
+    parser.addOption('v', "verbose", "increase verbosity");
+    parser.addOption('q', "quiet", "decrease verbosity");
 
-	/* TODO
-	 * parser.addArgument("ServerURL", "the URL of the sync server, or the one in the config if not specified", false);
-	 * parser.addArgument("LocalFolder", "the local folder to sync, or the one in the config if not specified", false);
-     */
 }
 
-bool FSyncOpt::getopt(int args_num, const char** args_val) 
+bool FSyncOpt::parseCmdline(int args_num, char** args_val) 
 {
-	if (parser.parse(args_num, args_val, opts, args) == false) {
-		return false;
-	}
+    if (parser.parse(args_num, const_cast<const char **>(args_val), opts, args) == false) {
+        return false;
+    }
 
-	if (optionSet("verbose")) {
-		verbose = VERBOSE;
-	} else if (optionSet("quiet")) {
-		verbose = QUIET;
-	}
+    if (optionSet("verbose")) {
+        verbose = VERBOSE;
+    } else if (optionSet("quiet")) {
+        verbose = QUIET;
+    }
+    FSyncConfig *config = FSyncConfig::getInstance();
+
+    // Get log options
+    StringBuffer logLevelName = opts["loglevel"];
+    if (!logLevelName.null()) {
+        LogLevel logLevel;
+        if (logLevelName == "error") {
+            logLevel = LOG_LEVEL_NONE;
+        } else if (logLevelName == "info") {
+            logLevel = LOG_LEVEL_INFO;	
+        } else if (logLevelName == "debug") {
+            logLevel = LOG_LEVEL_DEBUG;
+        } else {
+            fprintf(stderr, "%s: unrecognized log level: '%s'\n",
+                parser.getProgramName(), logLevelName);
+            exit(EXIT_FAILURE);
+        }
+        config->getDeviceConfig().setLogLevel(logLevel);
+    }
+
+    // Get server option
+    StringBuffer serverUrl = opts["server"];
+    if (!serverUrl.null()) {
+        config->getAccessConfig().setSyncURL(serverUrl);
+    }
+
+    // Get local dir
+    StringBuffer dir = opts["dir"];
+    if (!dir.null()) {
+        config->setSyncPath(dir);
+        // TODO: reset anchors if different.
+    }
+
+    // Get username
+    StringBuffer user = opts["user"];
+    if (!user.null()) {
+        config->getAccessConfig().setUsername(user);
+    }
+
+    // Get password (not secure, it's an example!) 
+    StringBuffer pass = opts["password"];
+    if (!pass.null()) {
+        config->getAccessConfig().setPassword(pass);
+    }
 
     return true;
 }
 
 const char* FSyncOpt::getOptionVal(const char *ln)
 { 
-	const StringBuffer &optValue = opts.get(ln);
+    const StringBuffer &optValue = opts.get(ln);
 
-	return optValue.c_str();
+    return optValue.c_str();
 }
 

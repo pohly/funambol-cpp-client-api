@@ -40,9 +40,34 @@
 
 USE_NAMESPACE 
 
+FSyncConfig *FSyncConfig::instance = NULL;
+
+// Generate a unique device id
+static StringBuffer generateDeviceID() {
+    StringBuffer devid;
+    devid.sprintf("%s-%ld", FSYNC_DEVICE_ID, time(NULL));
+    return devid;
+}
+
+// Default constructor
 FSyncConfig::FSyncConfig(): DMTClientConfig(FSYNC_APPLICATION_URI), syncPath(FSYNC_DEFAULT_PATH){
     
 }
+
+
+// Singleton implementation: get the unique instance of the config.
+FSyncConfig *FSyncConfig::getInstance() {
+    if(!instance) {
+        instance = new FSyncConfig();
+    }
+    return instance;
+}
+
+// Singleton implementation: release the unique instance of the config.
+void FSyncConfig::dispose() {
+    delete instance;
+}
+
 
 /**
  * Perform all the actions to initialize the configuration:
@@ -146,26 +171,18 @@ bool FSyncConfig::save() {
 //
 void FSyncConfig::createConfig() {
 
-    if (!open()) {
-        return;
-    }
-
     AccessConfig* ac = DefaultConfigFactory::getAccessConfig();
     ac->setMaxMsgSize(60000);
     ac->setUserAgent (FSYNC_USER_AGENT);
-
-    if (serverUrl.c_str()) {
-        ac->setSyncURL(serverUrl.c_str());
-    }
 
     this->setAccessConfig(*ac);
     delete ac;
 
     DeviceConfig* dc = DefaultConfigFactory::getDeviceConfig();
-    dc->setDevID    (FSYNC_DEVICE_ID);
-    dc->setMan      ("Funambol");
+    dc->setDevID(generateDeviceID());
+    dc->setMan("Funambol");
     dc->setLoSupport(true);
-    dc->setSwv      (FSYNC_SW_VERSION); 
+    dc->setSwv(FSYNC_SW_VERSION); 
     this->setDeviceConfig(*dc);
     delete dc;
 
@@ -177,11 +194,6 @@ void FSyncConfig::createConfig() {
     delete sc;
 
     syncPath = FSYNC_DEFAULT_PATH;
-    ManagementNode *node = dmt->readManagementNode(rootContext);
-    if (node) {
-        node->setPropertyValue(FSYNC_PATH_PROPERTY, syncPath.c_str());
-    }
-    close();
 
     // save the configuration
     save();
