@@ -76,7 +76,8 @@ bool FSyncOpt::parseCmdline(int args_num, char** args_val)
             logLevel = LOG_LEVEL_DEBUG;
         } else {
             fprintf(stderr, "%s: unrecognized log level: '%s'\n",
-                parser.getProgramName(), logLevelName);
+                parser.getProgramName(), logLevelName.c_str());
+
             exit(EXIT_FAILURE);
         }
         config->getDeviceConfig().setLogLevel(logLevel);
