@@ -204,6 +204,8 @@ unsigned long getFileModTime(const char* name);
 
 /**
  * Creates a folder.
+ * If the folder already exists, the method returns success and does nothing.
+ *
  * @return 0 on success, -1 otherwise.
  */
 int createFolder(const char *path);
