@@ -44,6 +44,7 @@ FSyncOpt::FSyncOpt(const char *progname) : parser(progname), verbose(NORMAL)
     parser.addOption('d', "dir", "set the local folder to sync", true);
 	parser.addOption('l', "logname", "set log name", true);
 	parser.addOption('L', "loglevel", "set log level [none, info, debug]", true);
+        parser.addOption('u', "user", "set the user name", true); // TODO
 	parser.addOption('v', "verbose", "increase verbosity");
 	parser.addOption('q', "quiet", "decrease verbosity");
 
