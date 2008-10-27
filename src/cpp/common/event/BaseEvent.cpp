@@ -36,8 +36,7 @@
 #include "event/BaseEvent.h"
 #include "base/globalsdef.h"
 
-USE_NAMESPACE
-
+BEGIN_NAMESPACE
 
 BaseEvent::BaseEvent(int type, unsigned long date) {
 
@@ -56,3 +55,5 @@ unsigned long BaseEvent::getDate() {
 
 	return date;
 }
+
+END_NAMESPACE
