@@ -245,7 +245,10 @@ void DeviceManagementNode::update(bool read) {
         if (file) {
             fclose(file);
         }
-    }
+    } else {
+		setErrorF(ERR_INVALID_CONTEXT, ERRMSG_INVALID_CONTEXT, context);
+	}
+
     returnFromDir();
 }
 
