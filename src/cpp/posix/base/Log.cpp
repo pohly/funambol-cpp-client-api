@@ -47,6 +47,7 @@ USE_NAMESPACE
 
 POSIXLog::POSIXLog() :
     logFile(NULL),
+    logPath(NULL),
     logFileStdout(false),
     logName(LOG_NAME),
     logRedirectStderr(false),
@@ -64,10 +65,10 @@ void POSIXLog::setLogName(const char*  configLogName) {
 }
 
 void POSIXLog::setLogFile(const char *path, const char* name, bool redirectStderr) {
-    if (path != logPath.c_str()) {
+    if (logPath != path) {
         setLogPath(path);
     }
-    if (name != logName.c_str()) {
+    if (logName != name) {
         setLogName(name);
     }
     logRedirectStderr = redirectStderr;
