@@ -43,8 +43,6 @@
 
 USE_NAMESPACE
 
-//char logmsg[512];
-
 POSIXLog::POSIXLog() :
     logFile(NULL),
     logPath(NULL),
@@ -57,7 +55,13 @@ POSIXLog::POSIXLog() :
 }
 
 void POSIXLog::setLogPath(const char*  configLogPath) {
-    logPath.sprintf("%s/", configLogPath ? configLogPath : "./");
+    // If empty or null, set current dir.
+    if(configLogPath == 0|| *configLogPath == '\0') {
+        logPath = "./";
+    }
+    else {
+        logPath.sprintf("%s/", configLogPath);
+    }
 }
 
 void POSIXLog::setLogName(const char*  configLogName) {
