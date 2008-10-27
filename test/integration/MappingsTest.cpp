@@ -37,6 +37,14 @@
 # include <config.h>
 #endif
 
+#ifdef WIN32
+#define Sleep       Sleep
+#define INTERVAL    1000
+#else
+#define Sleep       sleep
+#define INTERVAL    1
+#endif
+
 #ifdef ENABLE_INTEGRATION_TESTS
 
 # include <cppunit/extensions/TestFactoryRegistry.h>
@@ -125,6 +133,7 @@ DMTClientConfig* getConfiguration(const char* name) {
     // Add 3 contacts from the source first to the server
 
 void MappingsTest::testAdd3Contacts() {
+        
         DMTClientConfig* config1 = getConfiguration("funambol_mappings_first");
         SyncSourceConfig *ccontact1 = config1->getSyncSourceConfig("contact");          
         CPPUNIT_ASSERT(ccontact1);
@@ -161,7 +170,9 @@ void MappingsTest::testAdd3Contacts() {
 void MappingsTest::testMappings() {
 
         testPutClientServerInSync();
+        Sleep(1000);
         testAdd3Contacts();
+        Sleep(1000);
 
         DMTClientConfig* config2 = getConfiguration("funambol_mappings_second");
         SyncSourceConfig *ccontact2 = config2->getSyncSourceConfig("contact");          
@@ -194,8 +205,10 @@ void MappingsTest::testMappings() {
         } catch (...) {            
             CPPUNIT_ASSERT(existsFile(FULLNAME_CON_JOUR));                    
         }
+
         // unregister the listener to avoid the exception they throw
         unsetSyncItemListener();
+        Sleep(1000);
         ret = client.sync(*config2, sources);
         CPPUNIT_ASSERT(!ret);
         CPPUNIT_ASSERT(!existsFile(FULLNAME_CON));        
@@ -249,13 +262,13 @@ void MappingsTest::testPutClientServerInSync() {
         ret = client.sync(*config1, sources);
         CPPUNIT_ASSERT(!ret);
         config1->save();
-        
+        Sleep(1000);
         sources[0] = &scontact2;
 
         ret = client.sync(*config2, sources);
         CPPUNIT_ASSERT(!ret);
         config2->save();
-
+        Sleep(1000);
         delete config1; delete config2;
 
     }
