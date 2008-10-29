@@ -219,8 +219,10 @@ void MappingsTest::testMappings() {
         
         // currently the client check the server sends back 3 items. But when the server
         // has a fix, this test should fails and it must be fixed properly. the item the 
-        // server sends shuld be 1
-        CPPUNIT_ASSERT_EQUAL(3, added);
+        // server sends should be 1
+        // CPPUNIT_ASSERT_EQUAL(3, added);
+        // 2008-10-08 fixed applied on dog_food as server test
+        CPPUNIT_ASSERT_EQUAL(1, added);
         
         delete config2;           
         MappingsManager::setBuilder(NULL);
