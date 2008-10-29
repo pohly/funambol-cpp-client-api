@@ -1,3 +1,6 @@
+Funambol SDK C++ 7.1.0
+-----------------------
+
 2008-10-29
    - magi: added feature to cache mapping amongst different sync. 
    - magi: added integration test for mappings handling feature
