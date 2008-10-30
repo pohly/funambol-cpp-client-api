@@ -86,7 +86,6 @@ static bool removeFile(const char* fullname) {
 int PropertyFile::read() {
     
     char line[512];
-    size_t found = 0;
     FILE* f;
     f = fopen(node, "r");
     if (!f) {
