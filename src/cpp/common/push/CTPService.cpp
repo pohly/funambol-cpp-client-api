@@ -183,9 +183,7 @@ int32_t CTPService::stopCTP() {
         LOG.debug("Sending [BYE] message...");
         if (sendByeMsg()) {
             LOG.error("Error sending the BYE message");
-            goto finally;
-        }
-
+        } else {
 	    //
 	    // Wait for OK msg: receive thread should exit after the last OK
 	    // message sent by Server - timeout = ctpCmdTimeout (60sec).
@@ -205,11 +203,10 @@ int32_t CTPService::stopCTP() {
 	        LOG.debug("Timeout - receiverThread will now be terminated");
 	        ret = 3;
 	    }
+        }
     }
 #endif
 
-
-finally:
     LOG.info("Closing CTP connection...");
 
     // Stop the heartbeat & timeout threads
