@@ -47,19 +47,23 @@
 BEGIN_NAMESPACE
 
 
-    /*
-     * This is a factory class for the platform specific TransportAgent.
-     * It must be specifically implemented for any classes
-     */
-    class TransportAgentFactory {
+/*
+ * This is a factory class for the platform specific TransportAgent.
+ * It must be specifically implemented for any classes
+ */
+class TransportAgentFactory {
+ public:
+    typedef TransportAgent* (*creator_t)(URL& url,
+                                         Proxy& proxy,
+                                         unsigned int responseTimeout,
+                                         unsigned int maxmsgsize);
 
-        public:
-            static TransportAgent* getTransportAgent(
-                                        URL& url,
-                                        Proxy& proxy,
-                                        unsigned int responseTimeout = DEFAULT_MAX_TIMEOUT,
-                                        unsigned int maxmsgsize = DEFAULT_MAX_MSG_SIZE);
-    };
+    /**
+     * Currently active creator of a transport agent.
+     * A sane default is provided by the library.
+     */
+    static creator_t getTransportAgent;
+};
 
 
 END_NAMESPACE

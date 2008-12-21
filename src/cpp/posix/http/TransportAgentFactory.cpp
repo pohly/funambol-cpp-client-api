@@ -49,7 +49,7 @@
 
 BEGIN_NAMESPACE
 
-TransportAgent* TransportAgentFactory::getTransportAgent(
+static TransportAgent* defaultTransportAgent(
         URL& url, Proxy& proxy, unsigned int timeout, unsigned int maxmsgsize)
 {
 #if FUN_TRANSPORT_AGENT == FUN_CURL_TRANSPORT_AGENT
@@ -60,5 +60,7 @@ TransportAgent* TransportAgentFactory::getTransportAgent(
     return new MozillaTransportAgent(url, proxy, timeout);
 #endif
 }
+
+TransportAgentFactory::creator_t TransportAgentFactory::getTransportAgent = defaultTransportAgent;
 
 END_NAMESPACE
