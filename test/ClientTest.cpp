@@ -152,7 +152,8 @@ static int countItems( SyncSource *source ) { return (int)listItems(source).size
 int countItemsOfType(SyncSource *source, itemType type) { return (int)listItemsOfType(source, type).size(); }
 
 
-static void importItem(SyncSource *source, std::string &data)
+/** insert new item, return LUID */
+static std::string importItem(SyncSource *source, std::string &data)
 {
     CPPUNIT_ASSERT(source);
     if (data.size()) {
@@ -164,6 +165,9 @@ static void importItem(SyncSource *source, std::string &data)
         CPPUNIT_ASSERT(status == STC_OK || status == STC_ITEM_ADDED);
         CPPUNIT_ASSERT(item.getKey() != 0);
         CPPUNIT_ASSERT(wcslen(item.getKey()) > 0);
+        return item.getKey();
+    } else {
+        return "";
     }
 }
 
@@ -300,12 +304,6 @@ static std::string updateItem(CreateSource createSource, const std::string &uid,
     return newuid;
 }
 
-
-/**
- * assumes that exactly one element is currently inserted and updates it with the given item
- *
- * The type of the item is cleared, as in insert() above.
- */
 void LocalTests::update(CreateSource createSource, const char *data, bool check) {
     CPPUNIT_ASSERT(createSource.createSource);
     CPPUNIT_ASSERT(data);
@@ -342,6 +340,26 @@ void LocalTests::update(CreateSource createSource, const char *data, bool check)
     CPPUNIT_ASSERT(modifiedItem.get());
     CPPUNIT_ASSERT( wcslen( item->getKey() ) );
     CPPUNIT_ASSERT( !wcscmp( item->getKey(), modifiedItem->getKey() ) );
+}
+
+void LocalTests::update(CreateSource createSource, const char *data, const std::string &luid) {
+    CPPUNIT_ASSERT(createSource.createSource);
+    CPPUNIT_ASSERT(data);
+
+    // create source
+    std::auto_ptr<SyncSource> source(createSource());
+    CPPUNIT_ASSERT(source.get() != 0);
+    SOURCE_ASSERT(source.get(), source->beginSync() == 0);
+
+    // get existing item, then update it
+    SOURCE_ASSERT(source.get(), source->beginSync() == 0 );
+    SyncItem item;
+    item.setData(data, (long)strlen(data) + 1);
+    item.setDataType(TEXT(""));
+    item.setKey(luid.c_str());
+    SOURCE_ASSERT_EQUAL(source.get(), (int)STC_OK, source->updateItem(item));
+    SOURCE_ASSERT(source.get(), source->endSync() == 0);
+    CPPUNIT_ASSERT_NO_THROW(source.reset());
 }
 
 /** deletes all items locally via sync source */
@@ -435,9 +453,11 @@ void LocalTests::compareDatabases(const char *refFile, SyncSource &copy, bool ra
  * @param startIndex      IDs are generated starting with this value
  * @param numItems        number of items to be inserted if non-null, otherwise config.numItems is used
  * @param size            minimum size for new items
- * @return number of items inserted
+ * @return LUIDs of all inserted items
  */
-int LocalTests::insertManyItems(CreateSource createSource, int startIndex, int numItems, int size) {
+std::list<std::string> LocalTests::insertManyItems(CreateSource createSource, int startIndex, int numItems, int size) {
+    std::list<std::string> luids;
+
     CPPUNIT_ASSERT(config.templateItem);
     CPPUNIT_ASSERT(config.uniqueProperties);
 
@@ -537,13 +557,13 @@ int LocalTests::insertManyItems(CreateSource createSource, int startIndex, int n
             data.replace(off, toreplace, stuffing.str());
         }
 
-        importItem(source.get(), data);
+        luids.push_back(importItem(source.get(), data));
         data = "";
     }
 
     SOURCE_ASSERT_EQUAL(source.get(), 0, source->endSync());
     CPPUNIT_ASSERT_NO_THROW(source.reset());
-    return lastIndex - firstIndex + 1;
+    return luids;
 }
 
 // creating sync source
@@ -778,7 +798,7 @@ void LocalTests::testManyChanges() {
     CPPUNIT_ASSERT_NO_THROW(copy.reset());
 
     // now insert plenty of items
-    int numItems = insertManyItems(createSourceA);
+    int numItems = insertManyItems(createSourceA).size();
 
     // check that exactly this number of items is listed as new
     SOURCE_ASSERT_NO_FAILURE(copy.get(), copy.reset(createSourceB()));

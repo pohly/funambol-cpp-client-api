@@ -569,18 +569,25 @@ public:
      * can handle that.
      *
      * @param relaxed   if true, then disable some of the additional checks after adding the item
-     * @return the UID of the inserted item
+     * @return the LUID of the inserted item
      */
     virtual std::string insert(CreateSource createSource, const char *data, bool relaxed = false);
 
     /**
      * assumes that exactly one element is currently inserted and updates it with the given item
      *
-     * The type of the item is cleared, as in insert() above.
+     * The type of the item is unset, as in insert() above.
      *
      * @param check     if true, then reopen the source and verify that the reported items are as expected
      */
     virtual void update(CreateSource createSource, const char *data, bool check = true);
+
+    /**
+     * updates one item identified by its LUID with the given item
+     *
+     * The type of the item is cleared, as in insert() above.
+     */
+    virtual void update(CreateSource createSource, const char *data, const std::string &luid);
 
     /** deletes all items locally via sync source */
     virtual void deleteAll(CreateSource createSource);
@@ -605,7 +612,7 @@ public:
      * @param size            minimum size for new items
      * @return number of items inserted
      */
-    virtual int insertManyItems(CreateSource createSource, int startIndex = 1, int numItems = 0, int size = -1);
+    virtual std::list<std::string> insertManyItems(CreateSource createSource, int startIndex = 1, int numItems = 0, int size = -1);
 
 
     /* for more information on the different tests see their implementation */
