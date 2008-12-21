@@ -685,6 +685,27 @@ protected:
     std::vector< std::pair<int, LocalTests *> > sources;
     typedef std::vector< std::pair<int, LocalTests *> >::iterator source_it;
 
+    /**
+     * Stack of log file prefixes which are to be appended to the base name,
+     * which already contains the current test name. Add a new prefix by
+     * instantiating SyncPrefix. Its destructor takes care of popping
+     * the prefix.
+     */
+    std::list<std::string> logPrefixes;
+
+    class SyncPrefix {
+        SyncTests &m_tests;
+    public:
+        SyncPrefix(const std::string &prefix, SyncTests &tests) :
+        m_tests(tests) {
+            tests.logPrefixes.push_back(prefix);
+        }
+        ~SyncPrefix() {
+            m_tests.logPrefixes.pop_back();
+        }
+    };
+    friend class SyncPrefix;
+
     /** the indices from sources, terminated by -1 (for sync()) */
     int *sourceArray;
 
@@ -798,12 +819,22 @@ protected:
      * checks the result and (optionally) the sync report
      */
     virtual void sync(SyncMode syncMode,
-                      const std::string &logprefix = "",
                       CheckSyncReport checkReport = CheckSyncReport(),
                       long maxMsgSize = 0,
                       long maxObjSize = 0,
                       bool loSupport = false,
                       const char *encoding = "");
+
+    virtual void sync(SyncMode syncMode,
+                      const char *logPrefix,
+                      CheckSyncReport checkReport = CheckSyncReport(),
+                      long maxMsgSize = 0,
+                      long maxObjSize = 0,
+                      bool loSupport = false,
+                      const char *encoding = "") {
+        SyncPrefix prefix(logPrefix, *this);
+        sync(syncMode, checkReport, maxMsgSize, maxObjSize, loSupport, encoding);
+    }
 };
 
 
