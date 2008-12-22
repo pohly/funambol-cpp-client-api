@@ -66,19 +66,22 @@ USE_NAMESPACE
 class CheckSyncReport {
   public:
     CheckSyncReport(int clAdded = -1, int clUpdated = -1, int clDeleted = -1,
-                    int srAdded = -1, int srUpdated = -1, int srDeleted = -1) :
+                    int srAdded = -1, int srUpdated = -1, int srDeleted = -1,
+                    bool mstSucceed = true) :
         clientAdded(clAdded),
         clientUpdated(clUpdated),
         clientDeleted(clDeleted),
         serverAdded(srAdded),
         serverUpdated(srUpdated),
-        serverDeleted(srDeleted)
+        serverDeleted(srDeleted),
+        mustSucceed(mstSucceed)
         {}
 
     virtual ~CheckSyncReport() {}
 
     const int clientAdded, clientUpdated, clientDeleted,
         serverAdded, serverUpdated, serverDeleted;
+    bool mustSucceed;
 
     /**
      * checks that the sync completed as expected and throws
@@ -408,6 +411,13 @@ class ClientTest {
          * themselves; client-test.cpp uses it to initialize source configs)
          */
         const char *type;
+
+        /**
+         * TRUE if the source supports recovery from an interrupted
+         * synchronization. Enables the Client::Sync::*::Retry group
+         * of tests.
+         */
+        bool retrySync;
     };
 
     /**
@@ -800,6 +810,23 @@ protected:
 
     virtual void testManyItems();
 
+    virtual void doInterruptResume(int changes);
+    enum {
+        CLIENT_ADD = (1<<0),
+        CLIENT_REMOVE = (1<<1),
+        CLIENT_UPDATE = (1<<2),
+        SERVER_ADD = (1<<3),
+        SERVER_REMOVE = (1<<4),
+        SERVER_UPDATE = (1<<5)
+    };
+    virtual void testInterruptResumeClientAdd();
+    virtual void testInterruptResumeClientRemove();
+    virtual void testInterruptResumeClientUpdate();
+    virtual void testInterruptResumeServerAdd();
+    virtual void testInterruptResumeServerRemove();
+    virtual void testInterruptResumeServerUpdate();
+    virtual void testInterruptResumeFull();
+
     // Check the tests
     virtual void testMappings() {
         MappingsTest mapping;
@@ -883,7 +910,10 @@ protected:
  * @param _function   a function without parameters in that class
  */
 #define ADD_TEST(_class, _function) \
-    addTest(new CppUnit::TestCaller<_class>(getName() + "::" #_function, &_class::_function, *this))
+    ADD_TEST_TO_SUITE(this, _class, _function)
+
+#define ADD_TEST_TO_SUITE(_suite, _class, _function) \
+    _suite->addTest(new CppUnit::TestCaller<_class>(_suite->getName() + "::" #_function, &_class::_function, *this))
 
 
 #endif // ENABLE_INTEGRATION_TESTS

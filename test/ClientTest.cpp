@@ -47,6 +47,8 @@
 #include "base/fscapi.h"
 #include "base/test.h"
 #include "base/util/StringBuffer.h"
+#include "http/TransportAgentFactory.h"
+#include "http/TransportAgent.h"
 #include "ClientTest.h"
 
 #include <memory>
@@ -1650,6 +1652,23 @@ void SyncTests::addTests() {
                 }
             }
         }
+    
+        if (config.retrySync &&
+            config.insertItem &&
+            config.updateItem &&
+            accessClientB &&
+            config.dump &&
+            config.compare) {
+            CppUnit::TestSuite *retryTests = new CppUnit::TestSuite(getName() + "::Retry");
+            ADD_TEST_TO_SUITE(retryTests, SyncTests, testInterruptResumeClientAdd);
+            ADD_TEST_TO_SUITE(retryTests, SyncTests, testInterruptResumeClientRemove);
+            ADD_TEST_TO_SUITE(retryTests, SyncTests, testInterruptResumeClientUpdate);
+            ADD_TEST_TO_SUITE(retryTests, SyncTests, testInterruptResumeServerAdd);
+            ADD_TEST_TO_SUITE(retryTests, SyncTests, testInterruptResumeServerRemove);
+            ADD_TEST_TO_SUITE(retryTests, SyncTests, testInterruptResumeServerUpdate);
+            ADD_TEST_TO_SUITE(retryTests, SyncTests, testInterruptResumeFull);
+            addTest(retryTests);
+        }
     }
 
     // test mappings
@@ -2409,6 +2428,261 @@ void SyncTests::doVarSizes(bool withMaxMsgSize,
     compareDatabases();
 }
 
+class TransportFaultInjector : public TransportAgent, TransportAgentFactory {
+    creator_t m_original;
+    int m_interruptAtMessage, m_messageCount;
+    TransportAgent *m_wrappedAgent;
+    static TransportFaultInjector *m_wrapper;
+public:
+    TransportFaultInjector(int interruptAtMessage) {
+        m_messageCount = 0;
+        m_interruptAtMessage = interruptAtMessage;
+        m_original = getTransportAgent;
+        getTransportAgent = getFaultInjectorAgent;
+        m_wrappedAgent = NULL;
+        m_wrapper = this;
+    }
+    ~TransportFaultInjector() {
+        getTransportAgent = m_original;
+    }
+    void operator delete(void *) {}
+
+    int getMessageCount() { return m_messageCount; }
+
+    static TransportAgent* getFaultInjectorAgent(URL& url,
+                                                 Proxy& proxy,
+                                                 unsigned int responseTimeout,
+                                                 unsigned int maxmsgsize) {
+        m_wrapper->m_wrappedAgent = m_wrapper->m_original(url, proxy, responseTimeout, maxmsgsize);
+        return m_wrapper;
+    }
+
+    virtual void setURL(URL& newURL) { m_wrappedAgent->setURL(newURL); }
+    virtual URL& getURL() { return m_wrappedAgent->getURL(); }
+    virtual void setTimeout(unsigned int t) { m_wrappedAgent->setTimeout(t); }
+    virtual unsigned int getTimeout() { return m_wrappedAgent->getTimeout(); }
+    virtual void setMaxMsgSize(unsigned int t) { m_wrappedAgent->setMaxMsgSize(t); }
+    virtual unsigned int getMaxMsgSize() { return m_wrappedAgent->getMaxMsgSize(); }
+    virtual void setReadBufferSize(unsigned int t) { m_wrappedAgent->setReadBufferSize(t); }
+    virtual unsigned int getReadBufferSize() { return m_wrappedAgent->getReadBufferSize(); }
+    virtual void setUserAgent(const char*  ua) { m_wrappedAgent->setUserAgent(ua); }
+    virtual const char* getUserAgent() { return m_wrappedAgent->getUserAgent(); }
+    virtual void setCompression(bool newCompression) { m_wrappedAgent->setCompression(newCompression); }
+    virtual bool getCompression() { return m_wrappedAgent->getCompression(); }
+    virtual const char* getSSLServerCertificates() const { return m_wrappedAgent->getSSLServerCertificates(); }
+    virtual void setSSLServerCertificates(const char *value) { m_wrappedAgent->setSSLServerCertificates(value); }
+    virtual bool getSSLVerifyServer() const { return m_wrappedAgent->getSSLVerifyServer(); }
+    virtual void setSSLVerifyServer(bool value) { m_wrappedAgent->setSSLVerifyServer(value); }
+    virtual bool getSSLVerifyHost() const { return m_wrappedAgent->getSSLVerifyHost(); }
+    virtual void setSSLVerifyHost(bool value) { m_wrappedAgent->setSSLVerifyHost(value); }
+    virtual char* sendMessage(const char* msg) {
+        if (m_interruptAtMessage == m_messageCount) {
+            setErrorF(ERR_HTTP, "TransportFaultInjector: interrupt before sending message #%d", m_messageCount);
+            LOG.debug("%s", getLastErrorMsg());
+        }
+        m_messageCount++;
+        if (m_interruptAtMessage >= 0 &&
+            m_messageCount > m_interruptAtMessage) {
+            return NULL;
+        }
+        char *result = m_wrappedAgent->sendMessage(msg);
+        if (m_interruptAtMessage == m_messageCount) {
+            setErrorF(ERR_HTTP, "TransportFaultInjector: interrupt after receiving reply #%d", m_messageCount);
+            LOG.debug("%s", getLastErrorMsg());
+        }
+        m_messageCount++;
+        if (m_interruptAtMessage >= 0 &&
+            m_messageCount > m_interruptAtMessage) {
+            return NULL;
+        }
+        return result;
+    }
+};
+TransportFaultInjector *TransportFaultInjector::m_wrapper;
+
+/**
+ * This function covers different error scenarios that can occur
+ * during real synchronization. To pass, clients must either force a
+ * slow synchronization after a failed synchronization or implement
+ * the error handling described in the design guide (track server's
+ * status for added/updated/deleted items and resend unacknowledged
+ * changes).
+ *
+ * The items used during these tests are synthetic. They are
+ * constructed so that normally a server should be able to handle
+ * twinning during a slow sync correctly.
+ *
+ * Errors are injected into a synchronization by wrapping the normal
+ * HTTP transport agent. The wrapper enumerates messages sent between
+ * client and server (i.e., one message exchange increments the
+ * counter by two), starting from zero. It "cuts" the connection before
+ * sending out the next message to the server respectively after the 
+ * server has replied, but before returning the reply to the client.
+ * The first case simulates a lost message from the client to the server
+ * and the second case a lost message from the server to the client.
+ *
+ * The expected result is the same as in an uninterrupted sync, which
+ * is done once at the beginning.
+ *
+ * Each test goes through the following steps:
+ * - client A and B reset local data store
+ * - client A creates 3 new items, remembers LUIDs
+ * - refresh-from-client A sync
+ * - refresh-from-client B sync
+ * - client B creates 3 different items, remembers LUIDs
+ * - client B syncs
+ * - client A syncs => A, B, server are in sync
+ * - client A modifies his items (depends on test) and
+ *   sends changes to server => server has changes for B
+ * - client B modifies his items (depends on test)
+ * - client B syncs, transport wrapper simulates lost message n
+ * - client B syncs again, resuming synchronization if possible or
+ *   slow sync otherwise (responsibility of the client!)
+ * - client A syncs (not tested yet: A should be sent exactly the changes made by B)
+ * - test that A and B contain same items
+ * - test that A contains the same items as the uninterrupted reference run
+ * - repeat the steps above ranging starting with lost message 0 until no
+ *   message got lost
+ */
+void SyncTests::doInterruptResume(int changes)
+{
+    int interruptAtMessage = -1;
+    int i;
+
+    while (true) {
+        char buffer[80];
+        sprintf(buffer, "%d", interruptAtMessage);
+        const char *prefix = interruptAtMessage == -1 ? "complete" : buffer;
+        SyncPrefix prefixA(prefix, *this);
+        SyncPrefix prefixB(prefix, *accessClientB);
+
+        std::vector< std::list<std::string> > clientAluids;
+        std::vector< std::list<std::string> > clientBluids;
+
+        // create new items in client A and sync to server
+        clientAluids.resize(sources.size());
+        for (i = 0; i < sources.size(); i++) {
+            sources[i].second->deleteAll(sources[i].second->createSourceA);
+            clientAluids[i] =
+                sources[i].second->insertManyItems(sources[i].second->createSourceA,
+                                                   1, 3, 0);
+        }
+        sync(SYNC_REFRESH_FROM_CLIENT, "fromA");
+
+        // init client B and add its items to server and client A
+        accessClientB->sync(SYNC_REFRESH_FROM_SERVER, "initB");
+        clientBluids.resize(sources.size());
+        for (i = 0; i < sources.size(); i++) {
+            clientBluids[i] =
+                accessClientB->sources[i].second->insertManyItems(accessClientB->sources[i].second->createSourceA,
+                                                                  11, 3, 0);
+        }
+        accessClientB->sync(SYNC_TWO_WAY, "fromB");
+        sync(SYNC_TWO_WAY, "updateA");
+
+        // => client A, B and server in sync with a total of six items
+
+        // make changes as requested on client A and sync to server
+        for (i = 0; i < sources.size(); i++) {
+            if (changes & SERVER_ADD) {
+                sources[i].second->insertManyItems(sources[i].second->createSourceA,
+                                                   4, 1, 0);
+            }
+            if (changes & SERVER_REMOVE) {
+                // TODO
+            }
+            if (changes & SERVER_UPDATE) {
+                // TODO
+            }
+        }
+        if (changes & (SERVER_ADD|SERVER_REMOVE|SERVER_UPDATE)) {
+            sync(SYNC_TWO_WAY, "changesFromA");
+        }
+
+        // make changes as requested on client B
+        for (i = 0; i < sources.size(); i++) {
+            if (changes & CLIENT_ADD) {
+                accessClientB->sources[i].second->insertManyItems(accessClientB->sources[i].second->createSourceA,
+                                                                  14, 1, 0);
+            }
+            if (changes & CLIENT_REMOVE) {
+                // TODO
+            }
+            if (changes & CLIENT_UPDATE) {
+                // TODO
+            }
+        }
+
+        // Now do an interrupted sync between B and server.
+        // The wrapper is a factory and the created transport
+        // all in one class, allocated on the stack. The
+        // explicit delete of the TransportAgent is suppressed
+        // by overloading the delete operator.
+        int wasInterrupted;
+        {
+            TransportFaultInjector faultInjector(interruptAtMessage);
+            accessClientB->sync(SYNC_TWO_WAY, "changesFromB",
+                                CheckSyncReport(-1, -1, -1, -1, -1, -1, false));
+            wasInterrupted = interruptAtMessage != -1 &&
+                faultInjector.getMessageCount() <= interruptAtMessage;
+        }
+
+        if (interruptAtMessage != -1) {
+            if (wasInterrupted) {
+                // uninterrupted sync, done
+                break;
+            }
+
+            // continue
+            accessClientB->sync(SYNC_TWO_WAY, "retryB");
+        }
+
+        // copy changes to client A
+        sync(SYNC_TWO_WAY, "toA");
+
+        // compare client A and B
+        compareDatabases();
+
+        interruptAtMessage++;
+    }
+}
+
+void SyncTests::testInterruptResumeClientAdd()
+{
+    doInterruptResume(CLIENT_ADD);
+}
+
+void SyncTests::testInterruptResumeClientRemove()
+{
+    doInterruptResume(CLIENT_REMOVE);
+}
+
+void SyncTests::testInterruptResumeClientUpdate()
+{
+    doInterruptResume(CLIENT_UPDATE);
+}
+
+void SyncTests::testInterruptResumeServerAdd()
+{
+    doInterruptResume(SERVER_ADD);
+}
+
+void SyncTests::testInterruptResumeServerRemove()
+{
+    doInterruptResume(SERVER_REMOVE);
+}
+
+void SyncTests::testInterruptResumeServerUpdate()
+{
+    doInterruptResume(SERVER_UPDATE);
+}
+
+void SyncTests::testInterruptResumeFull()
+{
+    doInterruptResume(CLIENT_ADD|CLIENT_REMOVE|CLIENT_UPDATE|
+                      SERVER_ADD|SERVER_REMOVE|SERVER_UPDATE);
+}
+
 void SyncTests::sync(SyncMode syncMode,
                      CheckSyncReport checkReport,
                      long maxMsgSize,
@@ -2458,7 +2732,6 @@ void SyncTests::sync(SyncMode syncMode,
         // this logs the original exception using CPPUnit mechanisms
         CPPUNIT_ASSERT_NO_THROW( throw );
     }
-    CPPUNIT_ASSERT( !res );
 }
 
 
@@ -2663,6 +2936,7 @@ void ClientTest::getTestData(const char *type, Config &config)
     memset(&config, 0, sizeof(config));
     char *numitems = getenv("CLIENT_TEST_NUM_ITEMS");
     config.numItems = numitems ? atoi(numitems) : 100;
+    config.retrySync = true;
 
     if (!strcmp(type, "vcard30")) {
         config.sourceName = "vcard30";
@@ -3082,7 +3356,7 @@ void CheckSyncReport::check(int res, SyncReport &report) const
                        serverAdded, serverUpdated, serverDeleted);
     LOG.info("%s", str.c_str());
 
-    CPPUNIT_ASSERT_MESSAGE("synchronization failed", !res);
+    CPPUNIT_ASSERT_MESSAGE("synchronization failed", !mustSucceed || !res);
 
     // this code is intentionally duplicated to produce nicer CPPUNIT asserts
     for (unsigned int i=0; report.getSyncSourceReport(i); i++) {
