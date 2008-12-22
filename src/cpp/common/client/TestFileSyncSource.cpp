@@ -77,6 +77,18 @@ const char* TestFileSyncSource::getDir() {
 
 
 int TestFileSyncSource::beginSync() {
+    SyncMode mode = getSyncMode();
+    LOG.info("%s: sync mode is %s",
+             getName(),
+             mode == SYNC_SLOW ? "'slow'" :
+             mode == SYNC_TWO_WAY ? "'two-way'" :
+             mode == SYNC_REFRESH_FROM_SERVER ? "'refresh from server'" :
+             mode == SYNC_REFRESH_FROM_CLIENT ? "'refresh from client'" :
+             mode == SYNC_ONE_WAY_FROM_SERVER ? "'one-way from server'" :
+             mode == SYNC_ONE_WAY_FROM_CLIENT ? "'one-way from client'" :
+             mode == SYNC_NONE ? "'none' (for debugging)" :
+             "???");
+
     allItems.items.clear();
     deletedItems.items.clear();
     newItems.items.clear();
