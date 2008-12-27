@@ -124,6 +124,13 @@ size_t CurlTransportAgent::receiveData(void *buffer, size_t size, size_t nmemb, 
     CurlTransportAgent *agent = (CurlTransportAgent *)stream;
     size_t curr = size * nmemb;
 
+    // Check maximum message size. If it is exceeded, receive as much
+    // as allowed and abort by telling libcurl that not all data could
+    // be received.
+    if (agent->received + curr > agent->maxmsgsize) {
+        curr = agent->maxmsgsize - agent->received;
+    }
+
     if (agent->received + curr + 1 > agent->responsebuffersize) {
         size_t newbuffersize = agent->responsebuffersize + max(10 * 1024, (curr + 1 + 1024) / 1024 * 1024);
         char *newbuffer = new char[newbuffersize];
