@@ -1532,6 +1532,13 @@ int SyncManager::sync() {
                 commands.add(*status);
                 deleteStatus(&status);
                 commands.add(&statusList);
+
+                // Add any map command pending for the active sources
+                for(int i=0; i<sourcesNumber; i++) {
+                    addMapCommand(i);
+                    // finalize the mapping in the storage
+                    mmanager[i]->closeMappings();
+                }                       
             }
 
             // Add any map command pending for the active sources
