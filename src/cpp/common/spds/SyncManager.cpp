@@ -1871,7 +1871,14 @@ int SyncManager::endSync() {
 
  finally:
 
-    for (count = 0; count < sourcesNumber; count ++) {
+    for (count = 0;
+         // only update anchors if synchronization completed without error
+         ret==0 &&
+             count < sourcesNumber;
+         count ++) {
+        // Is this check really correct? Not updating the anchor
+        // if the sync sources had a (possibly minor?) error forces
+        // a slow sync.
         if (!sources[count]->getReport()->checkState()) {
             LOG.debug("The source %s got and error %i: %s", 
                             _wcc(sources[count]->getName()), 
