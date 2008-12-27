@@ -2543,10 +2543,16 @@ TransportFaultInjector *TransportFaultInjector::m_wrapper;
  * - test that A contains the same items as the uninterrupted reference run
  * - repeat the steps above ranging starting with lost message 0 until no
  *   message got lost
+ *
+ * Set the CLIENT_TEST_INTERRUPT_AT env variable to a message number
+ * >= 0 to execute one uninterrupted run and then interrupt at that
+ * message.
  */
 void SyncTests::doInterruptResume(int changes)
 {
     int interruptAtMessage = -1;
+    const char *t = getenv("CLIENT_TEST_INTERRUPT_AT");
+    int requestedInterruptAt = t ? atoi(t) : -1;
     int i;
 
     while (true) {
@@ -2643,7 +2649,18 @@ void SyncTests::doInterruptResume(int changes)
         // compare client A and B
         compareDatabases();
 
-        interruptAtMessage++;
+        // pick next iterration
+        if (requestedInterruptAt != -1) {
+            // only do one interrupted run of the test
+            if (requestedInterruptAt == interruptAtMessage) {
+                break;
+            } else {
+                interruptAtMessage = requestedInterruptAt;
+            }
+        } else {
+            // interrupt one message later than before
+            interruptAtMessage++;
+        }
     }
 }
 
