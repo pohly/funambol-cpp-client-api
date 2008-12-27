@@ -44,6 +44,9 @@
 #include "http/CurlTransportAgent.h"
 #include "base/globalsdef.h"
 
+#include <netinet/tcp.h>
+#include <errno.h>
+
 USE_NAMESPACE
 
 /*
@@ -77,6 +80,15 @@ CurlInit CurlInit::singleton;
  * @param proxy proxy information or NULL if no proxy should be used
  */
 CurlTransportAgent::CurlTransportAgent(URL& newURL, Proxy& newProxy, unsigned int maxResponseTimeout) : TransportAgent(newURL, newProxy, maxResponseTimeout){
+    easyhandle = NULL;
+    initHandle();
+    setUserAgent("Funambol POSIX SyncML client");
+}
+
+void CurlTransportAgent::initHandle() {
+    if (easyhandle) {
+        curl_easy_cleanup(easyhandle);
+    }
     easyhandle = CurlInit::easy_init();
 
     if (easyhandle) {
@@ -90,6 +102,9 @@ CurlTransportAgent::CurlTransportAgent(URL& newURL, Proxy& newProxy, unsigned in
         curl_easy_setopt(easyhandle, CURLOPT_ERRORBUFFER, this->curlerrortxt );
         curl_easy_setopt(easyhandle, CURLOPT_AUTOREFERER, true);
         curl_easy_setopt(easyhandle, CURLOPT_FOLLOWLOCATION, true);
+        curl_easy_setopt(easyhandle, CURLOPT_SOCKOPTDATA, this);
+        curl_easy_setopt(easyhandle, CURLOPT_SOCKOPTFUNCTION, sockOpt);
+
         if (proxy.host[0]) {
             curl_easy_setopt(easyhandle, CURLOPT_PROXY, proxy.host);
             if (proxy.port) {
@@ -101,7 +116,6 @@ CurlTransportAgent::CurlTransportAgent(URL& newURL, Proxy& newProxy, unsigned in
             }
         }
     }
-    setUserAgent("Funambol POSIX SyncML client");
 }
 
 void CurlTransportAgent::setUserAgent(const char*ua) {
@@ -118,6 +132,25 @@ CurlTransportAgent::~CurlTransportAgent() {
     if (easyhandle) {
         curl_easy_cleanup(easyhandle);
     }
+}
+
+int CurlTransportAgent::sockOpt(void *clientp, curl_socket_t curlfd, curlsocktype purpose) {
+    CurlTransportAgent *agent = (CurlTransportAgent *)clientp;
+
+    if (agent->maxmsgsize == 1 && purpose == CURLSOCKTYPE_IPCXN) {
+        // Caller is most likely trying to simulate a lost reply.
+        // Ensure that the server notices when the client rejects
+        // data by setting a very small receive window size.
+        int size = 128;
+        if (setsockopt(curlfd, IPPROTO_TCP, TCP_MAXSEG, &size, sizeof(size))) {
+            LOG.debug("Curl transport agent: setsockopt TCP_MAXSEG: %s", strerror(errno));
+        }
+        if (setsockopt(curlfd, SOL_SOCKET, SO_RCVBUF, &size, sizeof(size))) {
+            LOG.debug("Curl transport agent: setsockopt SO_RCVBUF: %s", strerror(errno));
+        }
+    }
+
+    return 0;
 }
 
 size_t CurlTransportAgent::receiveData(void *buffer, size_t size, size_t nmemb, void *stream) {
@@ -218,6 +251,13 @@ char* CurlTransportAgent::sendMessage(const char* msg) {
     responsebuffer = new char[responsebuffersize];
     received = 0;
     responsebuffer[0] = 0;
+
+    // reinitialize when maxmsgsize indicates that caller wants
+    // to interrupt sync
+    if (maxmsgsize == 1) {
+        initHandle();
+    }
+
     // todo? url.resource
     const char *certificates = getSSLServerCertificates();
     if ((code = curl_easy_setopt(easyhandle, CURLOPT_POST, true)) ||

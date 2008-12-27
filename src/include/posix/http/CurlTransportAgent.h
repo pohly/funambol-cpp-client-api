@@ -68,6 +68,9 @@ BEGIN_NAMESPACE
         char curlerrortxt[CURL_ERROR_SIZE];
 
         static int debugCallback(CURL *easyhandle, curl_infotype type, char *data, size_t size, void *unused);
+        static int sockOpt(void *clientp, curl_socket_t curlfd, curlsocktype purpose);
+
+        void initHandle();
 
     public:
         CurlTransportAgent();

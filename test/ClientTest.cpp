@@ -2485,6 +2485,11 @@ public:
             m_messageCount > m_interruptAtMessage) {
             return NULL;
         }
+        if (m_interruptAtMessage == m_messageCount) {
+            LOG.debug("artificially reduce maxmsgsize from %ld to 1 to force message receive error",
+                      (long int)m_wrappedAgent->getMaxMsgSize());
+            m_wrappedAgent->setMaxMsgSize(1);
+        }
         char *result = m_wrappedAgent->sendMessage(msg);
         if (m_interruptAtMessage == m_messageCount) {
             setErrorF(ERR_HTTP, "TransportFaultInjector: interrupt after receiving reply #%d", m_messageCount);
