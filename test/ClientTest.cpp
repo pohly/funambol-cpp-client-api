@@ -306,6 +306,27 @@ static std::string updateItem(CreateSource createSource, const std::string &uid,
     return newuid;
 }
 
+/** updates specific item locally via sync source */
+static void removeItem(CreateSource createSource, const std::string &luid)
+{
+    CPPUNIT_ASSERT(createSource.createSource);
+
+    // create source
+    std::auto_ptr<SyncSource> source(createSource());
+    CPPUNIT_ASSERT(source.get() != 0);
+    SOURCE_ASSERT(source.get(), source->beginSync() == 0);
+
+    // remove item
+    SyncItem item;
+    WCHAR* wuid = toWideChar(luid.c_str());
+    item.setKey(wuid);
+    delete wuid;
+    SOURCE_ASSERT_EQUAL(source.get(), (int)STC_OK, source->deleteItem(item));
+
+    SOURCE_ASSERT(source.get(), source->endSync() == 0);
+    CPPUNIT_ASSERT_NO_THROW(source.reset());
+}
+
 void LocalTests::update(CreateSource createSource, const char *data, bool check) {
     CPPUNIT_ASSERT(createSource.createSource);
     CPPUNIT_ASSERT(data);
@@ -447,6 +468,97 @@ void LocalTests::compareDatabases(const char *refFile, SyncSource &copy, bool ra
     CPPUNIT_ASSERT(config.compare(client, sourceFile.c_str(), copyFile.c_str()));
 }
 
+std::string LocalTests::createItem(int item, const std::string &revision, int size)
+{
+    std::string data = config.templateItem;
+    std::stringstream prefix;
+
+    prefix << std::setfill('0') << std::setw(3) << item << " ";
+
+    const char *prop = config.uniqueProperties;
+    const char *nextProp;
+    while (*prop) {
+        std::string curProp;
+        nextProp = strchr(prop, ':');
+        if (!nextProp) {
+            curProp = prop;
+        } else {
+            curProp = std::string(prop, 0, nextProp - prop);
+        }
+
+        std::string property;
+        // property is expected to not start directly at the
+        // beginning
+        property = "\n";
+        property += curProp;
+        property += ":";
+        size_t off = data.find(property);
+        if (off != data.npos) {
+            data.insert(off + property.size(), prefix.str());
+        }
+
+        if (!nextProp) {
+            break;
+        }
+        prop = nextProp + 1;
+    }
+    data.replace(data.find("<<REVISION>>"), strlen("<<REVISION>>"), revision);
+    if (size > 0 && (int)data.size() < size) {
+        int additionalBytes = size - (int)data.size();
+        int added = 0;
+        /* vCard 2.1 and vCal 1.0 need quoted-printable line breaks */
+        bool quoted = data.find("VERSION:1.0") != data.npos ||
+            data.find("VERSION:2.1") != data.npos;
+        size_t toreplace = 1;
+
+        CPPUNIT_ASSERT(config.sizeProperty);
+
+        /* stuff the item so that it reaches at least that size */
+        size_t off = data.find(config.sizeProperty);
+        CPPUNIT_ASSERT(off != data.npos);
+        std::stringstream stuffing;
+        if (quoted) {
+            stuffing << ";ENCODING=QUOTED-PRINTABLE:";
+        } else {
+            stuffing << ":";
+        }
+
+        // insert after the first line, it often acts as the summary
+        if (data.find("BEGIN:VJOURNAL") != data.npos) {
+            size_t start = data.find(":", off);
+            CPPUNIT_ASSERT( start != data.npos );
+            size_t eol = data.find("\\n", off);
+            CPPUNIT_ASSERT( eol != data.npos );
+            stuffing << data.substr(start + 1, eol - start + 1);
+            toreplace += eol - start + 1;
+        }
+
+        while(added < additionalBytes) {
+            int linelen = 0;
+
+            while(added + 4 < additionalBytes &&
+                  linelen < 60) {
+                stuffing << 'x';
+                added++;
+                linelen++;
+            }
+            // insert line breaks to allow folding
+            if (quoted) {
+                stuffing << "x=0D=0Ax";
+                added += 8;
+            } else {
+                stuffing << "x\\nx";
+                added += 4;
+            }
+        }
+        off = data.find(":", off);
+        data.replace(off, toreplace, stuffing.str());
+    }
+
+    return data;
+}
+
+
 /**
  * insert artificial items, number of them determined by config.numItems
  * unless passed explicitly
@@ -474,93 +586,8 @@ std::list<std::string> LocalTests::insertManyItems(CreateSource createSource, in
     }
     int lastIndex = firstIndex + (numItems >= 1 ? numItems : config.numItems) - 1;
     for (int item = firstIndex; item <= lastIndex; item++) {
-        std::string data = config.templateItem;
-        std::stringstream prefix;
-
-        prefix << std::setfill('0') << std::setw(3) << item << " ";
-
-
-        const char *prop = config.uniqueProperties;
-        const char *nextProp;
-        while (*prop) {
-            std::string curProp;
-            nextProp = strchr(prop, ':');
-            if (!nextProp) {
-                curProp = prop;
-            } else {
-                curProp = std::string(prop, 0, nextProp - prop);
-            }
-
-            std::string property;
-            // property is expected to not start directly at the
-            // beginning
-            property = "\n";
-            property += curProp;
-            property += ":";
-            size_t off = data.find(property);
-            if (off != data.npos) {
-                data.insert(off + property.size(), prefix.str());
-            }
-
-            if (!nextProp) {
-                break;
-            }
-            prop = nextProp + 1;
-        }
-        if (size > 0 && (int)data.size() < size) {
-            int additionalBytes = size - (int)data.size();
-            int added = 0;
-            /* vCard 2.1 and vCal 1.0 need quoted-printable line breaks */
-            bool quoted = data.find("VERSION:1.0") != data.npos ||
-                data.find("VERSION:2.1") != data.npos;
-            size_t toreplace = 1;
-
-            CPPUNIT_ASSERT(config.sizeProperty);
-
-            /* stuff the item so that it reaches at least that size */
-            size_t off = data.find(config.sizeProperty);
-            CPPUNIT_ASSERT(off != data.npos);
-            std::stringstream stuffing;
-            if (quoted) {
-                stuffing << ";ENCODING=QUOTED-PRINTABLE:";
-            } else {
-                stuffing << ":";
-            }
-
-            // insert after the first line, it often acts as the summary
-            if (data.find("BEGIN:VJOURNAL") != data.npos) {
-                size_t start = data.find(":", off);
-                CPPUNIT_ASSERT( start != data.npos );
-                size_t eol = data.find("\\n", off);
-                CPPUNIT_ASSERT( eol != data.npos );
-                stuffing << data.substr(start + 1, eol - start + 1);
-                toreplace += eol - start + 1;
-            }
-
-            while(added < additionalBytes) {
-                int linelen = 0;
-
-                while(added + 4 < additionalBytes &&
-                      linelen < 60) {
-                    stuffing << 'x';
-                    added++;
-                    linelen++;
-                }
-                // insert line breaks to allow folding
-                if (quoted) {
-                    stuffing << "x=0D=0Ax";
-                    added += 8;
-                } else {
-                    stuffing << "x\\nx";
-                    added += 4;
-                }
-            }
-            off = data.find(":", off);
-            data.replace(off, toreplace, stuffing.str());
-        }
-
+        std::string data = createItem(item, "", size);
         luids.push_back(importItem(source.get(), data));
-        data = "";
     }
 
     SOURCE_ASSERT_EQUAL(source.get(), 0, source->endSync());
@@ -2973,7 +3000,7 @@ void ClientTest::getTestData(const char *type, Config &config)
             "TEL;TYPE=WORK;TYPE=VOICE:business 1\n"
             "X-EVOLUTION-FILE-AS:Doe\\, John\n"
             "X-MOZILLA-HTML:FALSE\n"
-            "NOTE:\n"
+            "NOTE:<<REVISION>>\n"
             "END:VCARD\n";
         config.updateItem =
             "BEGIN:VCARD\n"
@@ -3041,7 +3068,7 @@ void ClientTest::getTestData(const char *type, Config &config)
             "N:Doe;John;;;\n"
             "TEL;TYPE=WORK;TYPE=VOICE:business 1\n"
             "X-MOZILLA-HTML:FALSE\n"
-            "NOTE:\n"
+            "NOTE:<<REVISION>>\n"
             "END:VCARD\n";
         config.updateItem =
             "BEGIN:VCARD\n"
@@ -3111,7 +3138,7 @@ void ClientTest::getTestData(const char *type, Config &config)
             "LAST-MODIFIED:20060409T213201\n"
             "CREATED:20060409T213201\n"
             "LOCATION:my office\n"
-            "DESCRIPTION:let's talk\n"
+            "DESCRIPTION:let's talk<<REVISION>>\n"
             "CLASS:PUBLIC\n"
             "TRANSP:OPAQUE\n"
             "SEQUENCE:1\n"
@@ -3238,7 +3265,7 @@ void ClientTest::getTestData(const char *type, Config &config)
             "DTSTART:20060406T160000Z\n"
             "DTSTAMP:20060406T211449Z\n"
             "LOCATION:my office\n"
-            "DESCRIPTION:let's talk\n"
+            "DESCRIPTION:let's talk<<REVISION>>\n"
             "END:VEVENT\n"
             "END:VCALENDAR\n";
         config.updateItem =
@@ -3298,7 +3325,7 @@ void ClientTest::getTestData(const char *type, Config &config)
             "UID:20060417T173712Z-4360-727-1-2730@gollum\n"
             "DTSTAMP:20060417T173712Z\n"
             "SUMMARY:do me\n"
-            "DESCRIPTION:to be done\n"
+            "DESCRIPTION:to be done<<REVISION>>\n"
             "PRIORITY:0\n"
             "STATUS:IN-PROCESS\n"
             "CREATED:20060417T173712\n"

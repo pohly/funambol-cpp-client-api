@@ -284,6 +284,8 @@ class ClientTest {
          * properties.
          *
          * This is the template for these automatically generated items.
+         * It must contain the string <<REVISION>> which will be replaced
+         * with the revision parameter of the createItem() method.
          */
         const char *templateItem;
 
@@ -624,6 +626,21 @@ public:
      */
     virtual std::list<std::string> insertManyItems(CreateSource createSource, int startIndex = 1, int numItems = 0, int size = -1);
 
+    /**
+     * create an artificial item for the current database
+     *
+     * @param item      item number: items with different number should be
+     *                  recognized as different by SyncML servers
+     * @param revision  differentiates items with the same item number (= updates of an older item)
+     * @param size      if > 0, then create items at least that large (in bytes)
+     * @return created item
+     */
+    std::string createItem(int item, const std::string &revision, int size);
+    std::string createItem(int item, int revision, int size) {
+        char buffer[32];
+        sprintf(buffer, "%d", revision);
+        return createItem(item, std::string(buffer), size);
+    }
 
     /* for more information on the different tests see their implementation */
 
