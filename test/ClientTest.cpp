@@ -2627,10 +2627,16 @@ void SyncTests::doInterruptResume(int changes)
                                                    4, 1, 0);
             }
             if (changes & SERVER_REMOVE) {
-                // TODO
+                // remove second item
+                removeItem(sources[i].second->createSourceA,
+                           *(++clientAluids[i].begin()));
             }
             if (changes & SERVER_UPDATE) {
-                // TODO
+                // update third item
+                updateItem(sources[i].second->createSourceA,
+                           *(++ ++clientAluids[i].begin()),
+                           sources[i].second->createItem(3, "updated", 0).c_str());
+                                              
             }
         }
         if (changes & (SERVER_ADD|SERVER_REMOVE|SERVER_UPDATE)) {
@@ -2644,10 +2650,15 @@ void SyncTests::doInterruptResume(int changes)
                                                                   14, 1, 0);
             }
             if (changes & CLIENT_REMOVE) {
-                // TODO
+                // remove second item
+                removeItem(accessClientB->sources[i].second->createSourceA,
+                           *(++clientBluids[i].begin()));
             }
             if (changes & CLIENT_UPDATE) {
-                // TODO
+                // update third item
+                updateItem(accessClientB->sources[i].second->createSourceA,
+                           *(++ ++clientBluids[i].begin()),
+                           accessClientB->sources[i].second->createItem(13, "updated", 0).c_str());
             }
         }
 
