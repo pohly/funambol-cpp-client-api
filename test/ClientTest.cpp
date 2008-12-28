@@ -441,7 +441,7 @@ static void deleteItem(CreateSource createSource, const std::string &uid) {
  * @param copy         a sync source which contains the copied items, begin/endSync will be called
  * @param raiseAssert  raise assertion if comparison yields differences (defaults to true)
  */
-void LocalTests::compareDatabases(const char *refFile, SyncSource &copy, bool raiseAssert) {
+bool LocalTests::compareDatabases(const char *refFile, SyncSource &copy, bool raiseAssert) {
     CPPUNIT_ASSERT(config.dump);
 
     std::string sourceFile, copyFile;
@@ -449,7 +449,7 @@ void LocalTests::compareDatabases(const char *refFile, SyncSource &copy, bool ra
     if (refFile) {
         sourceFile = refFile;
     } else {
-        sourceFile = getCurrentTest() + ".source.test.dat";
+        sourceFile = getCurrentTest() + ".A.test.dat";
         simplifyFilename(sourceFile);
         std::auto_ptr<SyncSource> source;
         SOURCE_ASSERT_NO_FAILURE(source.get(), source.reset(createSourceA()));
@@ -459,13 +459,16 @@ void LocalTests::compareDatabases(const char *refFile, SyncSource &copy, bool ra
         CPPUNIT_ASSERT_NO_THROW(source.reset());
     }
 
-    copyFile = getCurrentTest() + ".copy.test.dat";
+    copyFile = getCurrentTest() + ".B.test.dat";
     simplifyFilename(copyFile);
     SOURCE_ASSERT_EQUAL(&copy, 0, copy.beginSync());
     SOURCE_ASSERT_EQUAL(&copy, 0, config.dump(client, copy, copyFile.c_str()));
     SOURCE_ASSERT_EQUAL(&copy, 0, copy.endSync());
 
-    CPPUNIT_ASSERT(config.compare(client, sourceFile.c_str(), copyFile.c_str()));
+    bool equal = config.compare(client, sourceFile.c_str(), copyFile.c_str());
+    CPPUNIT_ASSERT(!raiseAssert || equal);
+
+    return equal;
 }
 
 std::string LocalTests::createItem(int item, const std::string &revision, int size)
@@ -1702,10 +1705,10 @@ void SyncTests::addTests() {
     ADD_TEST(SyncTests, testMappings);
 }
 
-/** compare databases of first and second client */
-void SyncTests::compareDatabases() {
+bool SyncTests::compareDatabases(const char *refFileBase, bool raiseAssert) {
     source_it it1;
     source_it it2;
+    bool equal = true;
 
     CPPUNIT_ASSERT(accessClientB);
     for (it1 = sources.begin(), it2 = accessClientB->sources.begin();
@@ -1713,11 +1716,26 @@ void SyncTests::compareDatabases() {
          ++it1, ++it2) {
         std::auto_ptr<SyncSource> copy;
         SOURCE_ASSERT_NO_FAILURE(copy.get(), copy.reset(it2->second->createSourceB()));
-        it1->second->compareDatabases(NULL, *copy.get());
+        if (refFileBase) {
+            std::string refFile = refFileBase;
+            refFile += it1->second->config.sourceName;
+            refFile += ".dat";
+            simplifyFilename(refFile);
+            if (!it1->second->compareDatabases(refFile.c_str(), *copy.get(), raiseAssert)) {
+                equal = false;
+            }
+        } else {
+            if (!it1->second->compareDatabases(NULL, *copy.get(), raiseAssert)) {
+                equal = false;
+            }
+        }
         CPPUNIT_ASSERT_NO_THROW(copy.reset());
     }
     CPPUNIT_ASSERT(it1 == sources.end());
     CPPUNIT_ASSERT(it2 == accessClientB->sources.end());
+
+    CPPUNIT_ASSERT(!raiseAssert || equal);
+    return equal;
 }
 
 /** deletes all items locally and on server */
@@ -2958,6 +2976,10 @@ int ClientTest::import(ClientTest &client, SyncSource &source, const char *file)
 bool ClientTest::compare(ClientTest &client, const char *fileA, const char *fileB)
 {
     std::string cmdstr = std::string("perl synccompare.pl ") + fileA + " " + fileB;
+    setenv("CLIENT_TEST_LEFT_NAME", fileA, 1);
+    setenv("CLIENT_TEST_RIGHT_NAME", fileB, 1);
+    setenv("CLIENT_TEST_REMOVED", "only in left file", 1);
+    setenv("CLIENT_TEST_ADDED", "only in right file", 1);
     return system(cmdstr.c_str()) == 0;
 }
 

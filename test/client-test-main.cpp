@@ -81,6 +81,14 @@ void simplifyFilename(string &filename)
         }
         filename.replace(pos, 1, "_");
     }
+    pos = 0;
+    while (true) {
+        pos = filename.find("__", pos);
+        if (pos == filename.npos) {
+            break;
+        }
+        filename.erase(pos, 1);
+    }
 }
 
 class ClientOutputter : public CppUnit::CompilerOutputter {

@@ -611,8 +611,9 @@ public:
      * @param refFile      existing file with source reference items, NULL uses a dump of sync source A instead
      * @param copy         a sync source which contains the copied items, begin/endSync will be called
      * @param raiseAssert  raise assertion if comparison yields differences (defaults to true)
+     * @return true if the two databases are equal
      */
-    virtual void compareDatabases(const char *refFile, SyncSource &copy, bool raiseAssert = true);
+    virtual bool compareDatabases(const char *refFile, SyncSource &copy, bool raiseAssert = true);
 
     /**
      * insert artificial items, number of them determined by TEST_EVOLUTION_NUM_ITEMS
@@ -746,8 +747,13 @@ protected:
         DELETE_ALL_REFRESH /**< delete locally, refresh server */
     };
 
-    /** compare databases of first and second client */
-    virtual void compareDatabases();
+    /**
+     * Compare databases second client with either reference file(s)
+     * or first client.  The reference file(s) must follow the naming
+     * scheme <reFileBase><source name>.dat
+     */
+    virtual bool compareDatabases(const char *refFileBase = NULL,
+                                  bool raiseAssert = true);
 
     /** deletes all items locally and on server */
     virtual void deleteAll(DeleteAllMode mode = DELETE_ALL_SYNC);
