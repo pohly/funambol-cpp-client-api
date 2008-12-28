@@ -2604,6 +2604,8 @@ void SyncTests::doInterruptResume(int changes)
     const char *t = getenv("CLIENT_TEST_INTERRUPT_AT");
     int requestedInterruptAt = t ? atoi(t) : -1;
     int i;
+    std::string refFileBase = getCurrentTest() + ".ref.";
+    bool equal = true;
 
     while (true) {
         char buffer[80];
@@ -2708,7 +2710,37 @@ void SyncTests::doInterruptResume(int changes)
         sync(SYNC_TWO_WAY, "toA");
 
         // compare client A and B
-        compareDatabases();
+        if (interruptAtMessage != -1 &&
+            !compareDatabases(refFileBase.c_str(), false)) {
+            equal = false;
+            std::cout << "====> comparison of client B against reference file(s) failed after interrupting at message #" <<
+                interruptAtMessage << std::endl;
+            std::cout.flush();
+        }
+        if (!compareDatabases(NULL, false)) {
+            equal = false;
+            std::cout << "====> comparison of client A and B failed after interrupting at message #" <<
+                interruptAtMessage << std::endl;
+            std::cout.flush();
+        }
+
+        // save reference files from uninterrupted run?
+        if (interruptAtMessage == -1) {
+            for (source_it it = sources.begin();
+                 it != sources.end();
+                 ++it) {
+                std::string refFile = refFileBase;
+                refFile += it->second->config.sourceName;
+                refFile += ".dat";
+                simplifyFilename(refFile);
+                std::auto_ptr<SyncSource> source;
+                SOURCE_ASSERT_NO_FAILURE(source.get(), source.reset(it->second->createSourceA()));
+                SOURCE_ASSERT_EQUAL(source.get(), 0, source->beginSync());
+                SOURCE_ASSERT_EQUAL(source.get(), 0, it->second->config.dump(client, *source.get(), refFile.c_str()));
+                SOURCE_ASSERT_EQUAL(source.get(), 0, source->endSync());
+                CPPUNIT_ASSERT_NO_THROW(source.reset());
+            }
+        }
 
         // pick next iterration
         if (requestedInterruptAt != -1) {
@@ -2723,6 +2755,8 @@ void SyncTests::doInterruptResume(int changes)
             interruptAtMessage++;
         }
     }
+
+    CPPUNIT_ASSERT(equal);
 }
 
 void SyncTests::testInterruptResumeClientAdd()
