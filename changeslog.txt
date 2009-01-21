@@ -1,3 +1,9 @@
+2009-01-21
+   - toccy: fixed SyncManager for Symbian Client v7.1 stabilization:
+            we don't send the device info, because they are different
+            from the ones used by native Nokia Sync Client. DevInfo will be
+            sent by native Sync Client at first PIM sync.
+
 Funambol SDK C++ 7.1.6
 -----------------------
 2009-01-14

@@ -366,7 +366,12 @@ int SyncManager::prepareSync(SyncSource** s) {
     config.setBeginSync(timestamp);
 
     // Create the device informations.
-    devInf = createDeviceInfo();
+    // *** FIX for Symbian Client v.7.1 ***
+    // We don't send the device info, because they are different
+    // from the ones used by native Nokia Sync Client. DevInfo will be
+    // sent by native Sync Client at first PIM sync.
+    //devInf = createDeviceInfo();
+    devInf = NULL;
 
     // check device information for changes
     if (devInf) {
