@@ -53,6 +53,9 @@ FSocket::~FSocket() {
 
 FSocket* FSocket::createSocket(const StringBuffer& peer, int32_t port) {
 
+    if(customSocket) {
+        return customSocket;
+    }
     // Create a socket
     SOCKET sk = socket(AF_INET, SOCK_STREAM, 0);
     if (sk == INVALID_SOCKET) {
@@ -123,7 +126,4 @@ bool FSocket::isValid() {
     return winSocket != INVALID_SOCKET;
 }
 
-
-
-
-
+FSocket* FSocket::customSocket;

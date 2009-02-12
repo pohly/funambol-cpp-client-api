@@ -36,8 +36,6 @@
 #include "push/FThread.h"
 #include "base/globalsdef.h"
 
-DWORD WINAPI threadEntryFunction( LPVOID lpParam );
-
 USE_NAMESPACE
 
 FThread::FThread() : isRunning(false) {
@@ -96,12 +94,16 @@ void FThread::setRunning(bool value) {
     isRunning = value;
 }
 
+BEGIN_NAMESPACE
+
 DWORD WINAPI threadEntryFunction( LPVOID lpParam ) {
     FThread* threadObj = (FThread*)lpParam;
     threadObj->run();
     threadObj->setRunning(false);
     return NULL;
 }
+
+END_NAMESPACE
 
 int FThread::getWindowsThreadPriority(FThread::Priority priority) {
     if(priority == IdlePriority)              return THREAD_PRIORITY_IDLE; 

@@ -49,7 +49,6 @@ public:
 protected:
     FThread();
     
-
     bool terminate;
 
 public:
@@ -97,10 +96,13 @@ public:
      */
     static void sleep(unsigned long msec);
     
-    virtual void run() = 0;
+protected:
+	virtual void run() = 0;
     void setRunning(bool value);
-    
+
 private:
+
+	friend DWORD WINAPI threadEntryFunction( LPVOID lpParam );
 
     /**
      * Obtains the Windows thread priority from the FThread Priority enumeration
