@@ -39,7 +39,7 @@
 
 static void *pthreadEntryFunction(void* fthreadObj);
 
-#include "FThread.h"
+#include "push/FThread.h"
 #include "base/globalsdef.h"
 
 USE_NAMESPACE
@@ -73,7 +73,9 @@ bool FThread::wait(unsigned long timeout) {
     t.tv_sec  = seconds;
     t.tv_nsec = nanoseconds;
 
+#if !defined(__APPLE__) && defined(__MACH__)
     pthread_timedjoin_np(pthread, NULL, &t);
+#endif
 }
 
 bool FThread::finished() const {

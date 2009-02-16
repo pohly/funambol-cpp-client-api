@@ -57,7 +57,7 @@ BEGIN_NAMESPACE
 
 class FSocket {
 
-private:
+protected:
     FSocket();
 
 public:
@@ -83,7 +83,7 @@ public:
      Returns the actual number of bytes read (-1 if the socket cannot be
      read or in case of any network error).
     */
-    int32_t readBuffer(int8_t* buffer, int32_t maxLen);
+    virtual int32_t readBuffer(int8_t* buffer, int32_t maxLen);
 
     /**
      Writes the given buffer to the stream and flush it. The buffer length
@@ -92,13 +92,13 @@ public:
      is the same as len. On errors it can be less than len and it specifies 
      the number of bytes written before a network error was encountered.
     */
-    int32_t writeBuffer(const int8_t* const buffer, int32_t len);
+    virtual int32_t writeBuffer(const int8_t* const buffer, int32_t len);
 
     /**
      Close this socket. After this operation the object can be released as
      any IO operation is invalid.
     */
-    void close();
+    virtual void close();
 
 public:
 
@@ -110,7 +110,11 @@ public:
      NULL if the socket cannot be created for any reason.
     */
     static FSocket* createSocket(const StringBuffer& peer, int32_t port);
-
+    
+    /**
+     Set a custom FSocket used instead of the platform dependent one
+     */
+    static void setSocket(FSocket* custom) { customSocket = custom; }
     
 
     // These methods are misc utilities
@@ -133,6 +137,7 @@ private:
 
 private:
     bool isValid();
+    static FSocket* customSocket;
 
 private:
     int unixSock;

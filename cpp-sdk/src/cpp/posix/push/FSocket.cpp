@@ -36,7 +36,7 @@
 #include <errno.h>
 #include <string.h>
 
-#include "FSocket.h"
+#include "push/FSocket.h"
 #include "base/globalsdef.h"
 
 USE_NAMESPACE
@@ -57,6 +57,11 @@ bool FSocket::isValid() {
 }
 
 FSocket* FSocket::createSocket(const StringBuffer& peer, int32_t port) {
+    
+    if(customSocket) {
+        return customSocket;
+    }
+    
     int sock = socket ( AF_INET, SOCK_STREAM, 0 );
 
     if ( sock == -1 )
@@ -136,6 +141,7 @@ const StringBuffer& FSocket::localIP() {
     return lIP;
 }
 
+FSocket* FSocket::customSocket;
 
 
 

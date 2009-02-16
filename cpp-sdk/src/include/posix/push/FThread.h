@@ -42,10 +42,10 @@ BEGIN_NAMESPACE
 class FThread {
 
 protected:
+    FThread();
     bool terminate;
 
-protected:
-    FThread();
+public:
     virtual ~FThread();
 
 public:
