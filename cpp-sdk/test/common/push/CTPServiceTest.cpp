@@ -95,9 +95,18 @@ public:
     /** FSocket readBuffer */
     int32_t readBuffer(int8_t* buffer, int32_t maxLen) {
         memset ( buffer, 0, maxLen );
-
+        
         // Wait until the input message is available
-        while(!inputPacketAvailable()) {}
+        int timeout = 20000;
+        while(!inputPacketAvailable()) {
+            // Check if the connection is closed closed
+            if(getConnectionClosed()) return -1;
+            FThread::sleep(100);
+            timeout -= 100;
+            if(timeout < 0) { 
+                CPPUNIT_ASSERT(false);
+            }
+        }
 
         // Get the read buffer size
         int readBytes = input_socket_buffer_len > maxLen ? 
@@ -113,7 +122,7 @@ public:
             input_socket_buffer += readBytes;
         }
         LOG.debug("FakeSocket - reading buffer data");
-        hexDump(buffer, readBytes);
+        hexDump((char*)buffer, readBytes);
 
         return readBytes;
     }
@@ -123,6 +132,20 @@ public:
         
         LOG.debug("FakeSocket - writing buffer");
         hexDump((char*)buffer, len);
+
+        /******* Catch the heartbeat [READY] messages ********/
+        CTPMessage msg; msg.parse((char*)buffer, len);
+        if(msg.getGenericCommand() == CM_READY) {
+            // Reply OK
+            CTPMessage reply;
+            reply.setGenericCommand(ST_OK);
+            reply.setProtocolVersion(CTP_PROTOCOL_VERSION);
+            char* msgbuffer = reply.toByte(); 
+            int   msgbuffer_len = reply.getBufferLength(); 
+            setInputSocketBuffer(msgbuffer, msgbuffer_len);
+            return len;
+        }
+        /*****************************************************/
 
         setOutputSocketBuffer((char*)buffer, len);
         return len;
@@ -143,7 +166,7 @@ public:
 
     /** Set the output socket buffer */
     static void setOutputSocketBuffer(char* buffer, int len) {
-        freeBuffer(output_socket_buffer, output_socket_buffer_len);
+        freeBuffer(output_socket_buffer, output_socket_buffer_len);        
         output_socket_buffer = createBuffer(buffer, len);
         output_socket_buffer_len = len;
     }
@@ -152,7 +175,14 @@ public:
     static int getOutputSocketBuffer(int8_t* buffer, int maxLen) {
         
         // wait for output packet available
-        while(!FakeSocket::outputPacketAvailable()) {}
+        int timeout = 20000;
+        while(!FakeSocket::outputPacketAvailable()) { 
+            FThread::sleep(100);
+            timeout -= 100;
+            if(timeout < 0) { 
+                CPPUNIT_ASSERT(false);
+            }
+        }
 
         memset ( buffer, 0, maxLen );
         int returnLength = output_socket_buffer_len > maxLen ? 
@@ -163,6 +193,14 @@ public:
         
         return returnLength;
     }
+    
+    static bool getConnectionClosed() {
+        return connectionClosed;
+    }
+    
+    static bool setConnectionClosed(bool closed) {
+        connectionClosed = closed;
+    }
 
     /* Free buffers */
     static void dispose() { 
@@ -170,6 +208,7 @@ public:
         freeBuffer(output_socket_buffer, output_socket_buffer_len);
         input_socket_buffer_len = 0;
         output_socket_buffer_len = 0;
+        connectionClosed = false;
     }
 
 private:
@@ -219,12 +258,16 @@ private:
 
     static char* output_socket_buffer;
     static int   output_socket_buffer_len;
+    
+    static bool  connectionClosed;
 };
 
 char*   FakeSocket::input_socket_buffer;
 int     FakeSocket::input_socket_buffer_len;
 char*   FakeSocket::output_socket_buffer;
 int     FakeSocket::output_socket_buffer_len;
+
+bool    FakeSocket::connectionClosed;
 
 
 /******************************************************
@@ -256,6 +299,8 @@ public:
      * Register the PushListener, to be notified of the CTP events
      */
     void setUp() {
+        
+        LOG.setLevel(LOG_LEVEL_DEBUG);
         
         //Initialize test configuration
         initConfig();
@@ -318,6 +363,7 @@ public:
 /********************************** TEST CASES *********************************/
 
     void CTPConfigTest() {
+        LOG.debug("######################### CTPConfigTest #########################");
         CPPUNIT_ASSERT(strcmp(CTP_SERVICE->getConfig()->getUsername(), TEST_USERNAME) == 0);
         CPPUNIT_ASSERT(strcmp(CTP_SERVICE->getConfig()->getPassword(), TEST_PASSWORD) == 0);
         CPPUNIT_ASSERT(strcmp(CTP_SERVICE->getConfig()->getDevID(), TEST_DEVID) == 0);
@@ -325,6 +371,7 @@ public:
     }
 
     void CTPConnectionTest() {
+        LOG.debug("######################### CTPConnectionTest #########################");
         // Open connection with the server
         CTP_SERVICE->openConnection();
         CPPUNIT_ASSERT_EQUAL(CTP_SERVICE->getCtpState(), CTPService::CTP_STATE_CONNECTED);
@@ -335,15 +382,19 @@ public:
     }
 
     void CTPReadyMessageTest() {
+        LOG.debug("######################### CTPReadyMessageTest #########################");
         // Ensure there's an opened connection with the server
         CTP_SERVICE->openConnection();
         
         // Send ready message 
         CTP_SERVICE->sendReadyMsg();
-        CTPASSERT_COMMAND(CM_READY);
+        
+        // The READY command is catched by the Socket (see FakeSocket writeBuffer method)
+        //CTPASSERT_COMMAND(CM_READY);
     }
 
     void CTPByeMessageTest() {
+        LOG.debug("######################### CTPByeMessageTest #########################");
         // Ensure there's an opened connection with the server
         CTP_SERVICE->openConnection();
 
@@ -353,6 +404,7 @@ public:
     }
 
     void CTPAuthenticationTest() {
+        LOG.debug("######################### CTPAuthenticationTest #########################");
         // Ensure there's an opened connection with the server
         CTP_SERVICE->openConnection();
 
@@ -368,20 +420,21 @@ public:
     }
 
     void CTPStartStopServiceTest() {
+        LOG.debug("######################### CTPStartStopServiceTest #########################");
         CTP_SERVICE->startCTP();
         CTPASSERT_STATE(CTPService::CTP_STATE_WAITING_RESPONSE);
         simulateServerResponse(ST_OK);
         CTPASSERT_STATE(CTPService::CTP_STATE_READY);
         CTP_SERVICE->stopCTP();
-        CTPASSERT_STATE(CTPService::CTP_STATE_DISCONNECTED);
         
         //Used to kill the receiver thread
-        simulateServerResponse(ST_OK);
-        Sleep(2000);
+        FakeSocket::setConnectionClosed(true);
+        FThread::sleep(2000);
     }
 
     /* Simulate auth error only one time */
     void CTPAuthenticationFailTest1() {
+        LOG.debug("######################### CTPAuthenticationFailTest1 #########################");
         CTP_SERVICE->startCTP();
         CTPASSERT_COMMAND(CM_AUTH);
         CTPASSERT_STATE(CTPService::CTP_STATE_WAITING_RESPONSE);
@@ -393,12 +446,13 @@ public:
         CTPASSERT_STATE(CTPService::CTP_STATE_DISCONNECTED);
 
         //Used to kill the receiver thread
-        simulateServerResponse(ST_OK);
-        Sleep(2000);
+        FakeSocket::setConnectionClosed(true);
+        FThread::sleep(2000);
     }
 
     /* Simulate auth error two times */
     void CTPAuthenticationFailTest2() {
+        LOG.debug("######################### CTPAuthenticationFailTest2 #########################");
         CTP_SERVICE->startCTP();
         CTPASSERT_COMMAND(CM_AUTH);
         CTPASSERT_STATE(CTPService::CTP_STATE_WAITING_RESPONSE);
@@ -409,23 +463,24 @@ public:
         CTP_SERVICE->stopCTP();
 
         //Used to kill the receiver thread
-        simulateServerResponse(ST_OK);
-        Sleep(2000);
+        FakeSocket::setConnectionClosed(true);
+        FThread::sleep(2000);
     }
 
     void CTPTestPush() {
+        LOG.debug("######################### CTPTestPush #########################");
         CTP_SERVICE->startCTP();
         CTPASSERT_COMMAND(CM_AUTH);
         simulateServerResponse(ST_OK);
         CTPASSERT_STATE(CTPService::CTP_STATE_READY);
-        Sleep(2000);
+        FThread::sleep(500);
         simulateServerPush();
         CTPASSERT_NOTIFICATION();
         CTP_SERVICE->stopCTP();
-
+        
         //Used to kill the receiver thread
-        simulateServerResponse(ST_OK);
-        Sleep(2000);
+        FakeSocket::setConnectionClosed(true);
+        FThread::sleep(2000);
     }
 
 
@@ -441,7 +496,7 @@ public:
         char buffer[MAX_MESSAGE_SIZE];
         int len = FakeSocket::getOutputSocketBuffer((int8_t*)buffer, MAX_MESSAGE_SIZE);
         
-        CTPMessage msg; msg.parse((int8_t*)buffer, len);
+        CTPMessage msg; msg.parse((char*)buffer, len);
         CPPUNIT_ASSERT_EQUAL(msg.getGenericCommand(), command);
 
         if(command == CM_AUTH) {
@@ -461,12 +516,12 @@ public:
 
     /** Wait for the specified ctp state to be verified */
     void assertCTPState(int state) {
-        int delay = 5000;
+        int timeout = 5000;
         while(CTP_SERVICE->getCtpState() != state ) {
-            Sleep(100);
-            delay -= 100;
+            FThread::sleep(100);
+            timeout -= 100;
             // check timeout
-            if(delay < 0) { 
+            if(timeout < 0) { 
                 CPPUNIT_ASSERT(false);
                 return;
             }
@@ -476,12 +531,12 @@ public:
 
     /** Wait for a sync notification */
     void assertNotification() {
-        int delay = 5000;
+        int timeout = 5000;
         while(!notificationReceived) {
-            Sleep(100);
-            delay -= 100;
+            FThread::sleep(100);
+            timeout -= 100;
             // check timeout
-            if(delay < 0) { 
+            if(timeout < 0) { 
                 CPPUNIT_ASSERT(false);
                 return;
             }
@@ -491,12 +546,12 @@ public:
 
     /** Wait for an error notification */
     void assertErrorNotification(const int error) {
-        int delay = 5000;
+        int timeout = 5000;
         while(!errorReceived) {
-            Sleep(100);
-            delay -= 100;
+            FThread::sleep(100);
+            timeout -= 100;
             // check timeout
-            if(delay < 0) { 
+            if(timeout < 0) { 
                 CPPUNIT_ASSERT(false);
                 return;
             }
