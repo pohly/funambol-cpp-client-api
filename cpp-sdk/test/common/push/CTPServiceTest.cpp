@@ -198,7 +198,7 @@ public:
         return connectionClosed;
     }
     
-    static bool setConnectionClosed(bool closed) {
+    static void setConnectionClosed(bool closed) {
         connectionClosed = closed;
     }
 
