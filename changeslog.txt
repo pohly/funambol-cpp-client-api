@@ -1,4 +1,6 @@
 2009-04-06
+    - toccy: added MediaSyncSource class, to define a special behavior for generic "media files" 
+             to be synchronized between the Server and a mobile Client
     - toccy: created branch US1744 (Picture Sync - sync interruption and resume) from r579
 
 2009-04-01
