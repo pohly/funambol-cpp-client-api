@@ -48,13 +48,19 @@ BEGIN_NAMESPACE
 
 static StringBuffer getCompleteName(const char *dir, const WCHAR *name) {
     
-    char* t = toMultibyte(name);
-    StringBuffer pathName(dir);
-    pathName += "/"; 
-    pathName += t;
-    delete [] t;
-    return pathName;
+    StringBuffer fileName;
+    fileName.convert(name);
     
+    if (fileName.find(dir) == 0) {
+        // Filename contains the path from the first char -> it's already the complete name
+        return fileName;
+    }
+    else {
+        StringBuffer pathName(dir);
+        pathName += "/"; 
+        pathName += fileName;
+        return pathName;
+    }
 }
 
 static int saveFileContent(const char *name, const char *content, size_t size, bool isUpdate) {
