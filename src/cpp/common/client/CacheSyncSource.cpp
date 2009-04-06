@@ -180,7 +180,7 @@ StringBuffer CacheSyncSource::getItemSignature(StringBuffer& key) {
         return NULL;
     }
     
-    LOG.debug("[%" WCHAR_PRINTF "] Getting signature for item with key %s", getName(), key.c_str());
+    LOG.debug("[%s] Getting signature for item with key %s", getConfig().getName(), key.c_str());
     
     content = getItemContent(key, &size);                      
     StringBuffer s;
@@ -420,7 +420,7 @@ bool CacheSyncSource::fillItemModifications() {
 */
 int CacheSyncSource::saveCache() {
     
-    LOG.debug("[%" WCHAR_PRINTF "] Saving cache", getName());
+    LOG.debug("[%s] Saving cache", getConfig().getName());
     
     int ret = cache->close();
     return ret;
@@ -450,19 +450,23 @@ void CacheSyncSource::getKeyAndSignature(SyncItem& item, KeyValuePair& kvp) {
 }
 
 int CacheSyncSource::addItem(SyncItem& item) {
+    
     int ret = insertItem(item);
+    StringBuffer key;
+    key.convert(item.getKey());
+    
     switch (ret) {        
         case 200:
         case 201:
         case 418: {
-            LOG.info("[%" WCHAR_PRINTF "] Successful add of item with key %" WCHAR_PRINTF " - code %d", getName(), item.getKey(), ret);
+            LOG.info("[%s] Successful add of item with key %s - code %d", getConfig().getName(), key.c_str(), ret);
             KeyValuePair k;
             getKeyAndSignature(item, k);
             insertInCache(k);
         }
         break;
         default:
-            LOG.error("[%" WCHAR_PRINTF "] Failed add of item with key %" WCHAR_PRINTF " - code %d", getName(), item.getKey(), ret);
+            LOG.error("[%s] Failed add of item with key %s - code %d", getConfig().getName(), key.c_str(), ret);
         break;
     }
     return ret;
@@ -470,31 +474,39 @@ int CacheSyncSource::addItem(SyncItem& item) {
 
 
 int CacheSyncSource::updateItem(SyncItem& item) {
+    
     int ret = modifyItem(item);
+    StringBuffer key;
+    key.convert(item.getKey());
+    
     switch (ret) {        
         case 200:
         case 201:
         case 418: {
-            LOG.info("[%" WCHAR_PRINTF "] Successful update of item with key %" WCHAR_PRINTF " - code %d", getName(), item.getKey(), ret);
+            LOG.info("[%s] Successful update of item with key %s - code %d", getConfig().getName(), key.c_str(), ret);
             KeyValuePair k;
             getKeyAndSignature(item, k);
             updateInCache(k);
         }
         break;
         default:
-            LOG.error("[%" WCHAR_PRINTF "] Failed update of item with key %" WCHAR_PRINTF " - code %d", getName(), item.getKey(), ret);
+            LOG.error("[%s] Failed update of item with key %s - code %d", getConfig().getName(), key.c_str(), ret);
         break;
     }
     return ret;
 }
 
 int CacheSyncSource::deleteItem(SyncItem& item) {
+    
     int ret = removeItem(item);
+    StringBuffer key;
+    key.convert(item.getKey());
+    
     switch (ret) {        
         case 200:
         case 201:
         case 418: {
-            LOG.info("[%" WCHAR_PRINTF "] Successful delete of item with key %" WCHAR_PRINTF " - code %d", getName(), item.getKey(), ret);  
+            LOG.info("[%s] Successful delete of item with key %s - code %d", getConfig().getName(), key.c_str(), ret);  
             char* t = toMultibyte(item.getKey());
             KeyValuePair k (t, "");
             removeFromCache(k);
@@ -502,7 +514,7 @@ int CacheSyncSource::deleteItem(SyncItem& item) {
         }
         break;
         default:
-            LOG.error("[%" WCHAR_PRINTF "] Failed delete of item with key %" WCHAR_PRINTF " - code %d", getName(), item.getKey(), ret);
+            LOG.error("[%s] Failed delete of item with key %s - code %d", getConfig().getName(), key.c_str(), ret);
         break;
     }
     
