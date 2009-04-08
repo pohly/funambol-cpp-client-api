@@ -131,7 +131,10 @@ CacheSyncSource::~CacheSyncSource() {
 * If there is an error this error is reported in the saving procedure and there
 * it is decided how procede
 */
-void CacheSyncSource::setItemStatus(const WCHAR* key, int status, const char* command) {
+void CacheSyncSource::setItemStatus(const WCHAR* wkey, int status, const char* command) {
+    
+    StringBuffer key;
+    key.convert(wkey);
     
     KeyValuePair vp;
     switch (status) {
@@ -140,17 +143,14 @@ void CacheSyncSource::setItemStatus(const WCHAR* key, int status, const char* co
         case 201:
         case 418: 
             {
-             LOG.info("[%" WCHAR_PRINTF "], Received success status code from server for %s on item with key %s - code: %d", getName(), command, key, status);
-             char* k = toMultibyte(key);         
-             vp.setKey(k);
-             StringBuffer v(k);
-             vp.setValue(getItemSignature(v));             
-             delete [] k;
+             LOG.info("[%s], Received success status code from server for %s on item with key %s - code: %d", getConfig().getName(), command, key.c_str(), status);        
+             vp.setKey(key.c_str());
+             vp.setValue(getItemSignature(key));
             }   
             break;
         case 500:        
         default:
-            LOG.info("[%" WCHAR_PRINTF "], Received failed status code from server for %s on item with key %s - code: %d", getName(), command, key, status);
+            LOG.info("[%s], Received failed status code from server for %s on item with key %s - code: %d", getConfig().getName(), command, key.c_str(), status);
             // error. it doesn't update the cache
             break;
     }
@@ -201,7 +201,7 @@ SyncItem* CacheSyncSource::fillSyncItem(StringBuffer* key) {
         return NULL;
     }
     
-    //LOG.debug("[%" WCHAR_PRINTF "] Filling item with key %s", getName(), key->c_str());
+    //LOG.debug("[%s] Filling item with key %s", getConfig().getName(), key->c_str());
     
     content = getItemContent((*key), &size);
     
@@ -240,7 +240,7 @@ SyncItem* CacheSyncSource::getNextItem() {
     
     SyncItem* syncItem = NULL;
     if (allKeys && allKeys->hasMoreElement()) {
-        StringBuffer* s     = (StringBuffer*)allKeys->getNextElement();    
+        StringBuffer* s = (StringBuffer*)allKeys->getNextElement();    
         syncItem = fillSyncItem(s);
     }
     if (!syncItem) {
@@ -267,7 +267,7 @@ SyncItem* CacheSyncSource::getNextNewItem() {
     
     SyncItem* syncItem = NULL;
     if (newKeys && newKeys->hasMoreElement()) {
-        StringBuffer* s     = (StringBuffer*)newKeys->getNextElement();    
+        StringBuffer* s = (StringBuffer*)newKeys->getNextElement();    
         syncItem = fillSyncItem(s);
     }
     if (!syncItem) {
@@ -290,7 +290,7 @@ SyncItem* CacheSyncSource::getNextUpdatedItem() {
 
     SyncItem* syncItem = NULL;
     if (updatedKeys && updatedKeys->hasMoreElement()) {
-        StringBuffer* s     = (StringBuffer*)updatedKeys->getNextElement();    
+        StringBuffer* s = (StringBuffer*)updatedKeys->getNextElement();    
         syncItem = fillSyncItem(s);
     }
     if (!syncItem) {
@@ -313,7 +313,7 @@ SyncItem* CacheSyncSource::getNextDeletedItem() {
     
     SyncItem* syncItem = NULL;
     if (deletedKeys && deletedKeys->hasMoreElement()) {
-        StringBuffer* s     = (StringBuffer*)deletedKeys->getNextElement();  
+        StringBuffer* s = (StringBuffer*)deletedKeys->getNextElement();  
         if (!s) {
             return NULL;
         }
@@ -424,7 +424,6 @@ int CacheSyncSource::saveCache() {
     
     int ret = cache->close();
     return ret;
-
 }
 
 int CacheSyncSource::updateInCache(KeyValuePair& k, const char* action) {
