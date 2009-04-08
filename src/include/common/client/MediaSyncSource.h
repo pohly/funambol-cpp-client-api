@@ -46,12 +46,6 @@
 #include "client/CacheSyncSource.h"
 #include "client/FileSyncSource.h"
 
-// for stat 
-#include <sys/stat.h>
-#include <sys/types.h>
-#include <unistd.h>
-#include <errno.h>
-
 
 BEGIN_NAMESPACE
 
@@ -72,21 +66,10 @@ class MediaSyncSource : public FileSyncSource
 public:
     MediaSyncSource(const WCHAR* name,
                    AbstractSyncSourceConfig* sc,
-                   const StringBuffer& mediaDir);
+                   const StringBuffer& mediaDir,
+                   const bool aRecursive = false);
 
     ~MediaSyncSource() {};
-
-    /**
-     * Populates an ArrayListEnumeration with all the files found.
-     * Will call scanFolder() to find files recursively in the current dir.
-     */
-    Enumeration* getAllItemList();
-    
-    /**
-     * Cleans up all files under dir, recursively.
-     * Calls cleanUpFolder().
-     */
-    int removeAllItems();
     
     
     /// From FileSyncSource - implemented empty.
@@ -97,36 +80,9 @@ public:
     
     /// From FileSyncSource - implemented empty.
     int removeItem(SyncItem& item);
-    
-
-protected:
-    
-    /// max size in kilo bytes, of each item to send
-    int maxFileSize;
-    
-    /**
-     * Used to filter outgoing items. Current implementation 
-     * doesn't filter any item: override this method for specific filtering.
-     * @param fullName  the full path + name of the file to check
-     * @param st        reference to struct stat for current file
-     * @return          true if the item has to be filtered out (skipped)
-     *                  false if the item is ok
-     */ 
-    virtual bool filterOutgoingItem(const StringBuffer& fullName, struct stat& st) { return false; }
-    
+   
     
 private:
-
-    /**
-     * Get the list of the files that are in the directory, recursively.
-     * Will call filterOutgoingItem() for each item found.
-     */
-    bool scanFolder(const StringBuffer&, ArrayList& currentKeys);
-    
-    /**
-     * Cleanup all the files that are in the directory, recursively.
-     */
-    bool cleanUpFolder(const char *aDirPath);
 
 };
 

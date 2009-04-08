@@ -247,12 +247,12 @@ public:
      * It contains also the proper command associated to the item.
      * It is used to update the current array of cache.
      *
-     * @param key      - the local key of the item
+     * @param wkey     - the local key of the item (wide char)
      * @param status   - the SyncML status returned by the server
      * @param command  - the SyncML command associated to the item
      * 
      */
-    void setItemStatus(const WCHAR* key, int status, const char* command);       
+    void setItemStatus(const WCHAR* wkey, int status, const char* command);       
     
     /**
      * Return the key of the first SyncItem of all.

@@ -44,10 +44,15 @@
 #include "spds/SyncItem.h"
 #include "spds/SyncMap.h"
 #include "spds/SyncStatus.h"
-//#include "spdm/ManagementNode.h"
 #include "base/util/ItemContainer.h"
 #include "spds/FileData.h"
 #include "client/CacheSyncSource.h"
+
+// for stat 
+#include <sys/stat.h>
+#include <sys/types.h>
+#include <unistd.h>
+#include <errno.h>
 
 BEGIN_NAMESPACE
 
@@ -67,22 +72,52 @@ BEGIN_NAMESPACE
  *
  */
 class FileSyncSource : public CacheSyncSource {
-
    
 protected:
     StringBuffer dir;
+    
+    /**
+     * Used to filter outgoing items. Current implementation 
+     * doesn't filter any item: override this method for specific filtering.
+     * @param fullName  the full path + name of the file to check
+     * @param st        reference to struct stat for current file
+     * @return          true if the item has to be filtered out (skipped)
+     *                  false if the item is ok
+     */ 
+    virtual bool filterOutgoingItem(const StringBuffer& fullName, struct stat& st) { return false; }
+     
 
 private:
+
+    /// If true, will recurse into subfolders of 'dir'. Default is false.
+    bool recursive;
+    
     // Copy is not allowed
     FileSyncSource(const FileSyncSource& s) : CacheSyncSource(s){};
     FileSyncSource& operator=(const FileSyncSource& s) { return *this; };
+ 
+    
+    /**
+     * Reads the directory 'fullPath' and get all file names.
+     * If recursive is true, reads recursively all subfolders too.
+     * Populates the filesFound Arraylist with the names of files.
+     * Will call filterOutgoingItem() for each item found if applyFiltering is true.
+     * 
+     * @param fullPath       the absolute path of desired folder to scan
+     *                       if empty, will scan the 'dir' folder
+     * @param filesFound     [OUT] the arraylist of file names
+     * @param applyFiltering if true will call filterOutgoingItem() for each item found. Default = true.
+     * @return               true if no error
+     */
+    bool scanFolder(const StringBuffer& fullPath, ArrayList& filesFound, bool applyFiltering = true);
+    
 
 public:
 
     FileSyncSource(const WCHAR* name, AbstractSyncSourceConfig* sc);
-    FileSyncSource(const WCHAR* name, AbstractSyncSourceConfig* sc, const StringBuffer& aDir); 
+    FileSyncSource(const WCHAR* name, AbstractSyncSourceConfig* sc, const StringBuffer& aDir, const bool aRecursive = false); 
     virtual ~FileSyncSource();
-      
+
     void assign(FileSyncSource& s);
     
     /**
@@ -90,6 +125,13 @@ public:
     */
     void setDir(const char* p) { dir = p; }
     const StringBuffer& getDir() { return dir; };
+    
+    /**
+    * set/get the recursive flag (if true, will recurse subfolders)
+    */
+    void setRecursive(const bool value) { recursive = value; }
+    const bool getRecursive() { return recursive;  };
+    
     
     /**
     * Get the list of all the keys stored in a StringBuffer. It reads all the 

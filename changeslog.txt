@@ -1,3 +1,6 @@
+2009-04-08
+    - toccy: FileSyncSource can now recurse into subfolders (added bool recurse, default value = false)
+
 2009-04-06
     - toccy: added MediaSyncSource class, to define a special behavior for generic "media files" 
              to be synchronized between the Server and a mobile Client
