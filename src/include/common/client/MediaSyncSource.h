@@ -114,6 +114,18 @@ public:
      */
     int beginSync();
 
+    /**
+     * Overrides CacheSyncSource::getFirstItem(), for smart slow-sync.
+     * Calls getFirstNewItem(), as it was a fast sync.
+     */
+    SyncItem* getFirstItem();
+    
+    /**
+     * Overrides CacheSyncSource::getNextItem(), for smart slow-sync.
+     * Calls getNew/Updated/DeletedItem() in sequence, as it was
+     * a normal fast-sync.
+     */
+    SyncItem* getNextItem();
     
     /// Overrides FileSyncSource::insertItem - implemented empty.
     int insertItem(SyncItem& item);
@@ -169,6 +181,16 @@ protected:
     
     
 private:
+    
+    /// Used during (smart) slow syncs. If true, means the New items are finished.
+    bool smartSlowNewItemsDone;
+    
+    /// Used during (smart) slow syncs. If true, means the Updated items are finished.
+    bool smartSlowUpdatedItemsDone;
+    
+    /// Used during (smart) slow syncs. If true, means we need to retrieve the first item of new/mod/del lists.
+    bool smartSlowFirstItem;
+    
     
     /**
      * Read the URL, username and client sw version from the cache. 

@@ -121,7 +121,7 @@ bool MediaSyncSource::checkCacheValidity()
 {
     const StringBuffer& url      = params.getUrl();
     const StringBuffer& username = params.getUsername();
-    const StringBuffer& swv      = params.getSwv();
+    //const StringBuffer& swv    = params.getSwv();
     
     StringBuffer cacheUrl        = readCachePropertyValue(CACHE_PROPERTY_URL);
     StringBuffer cacheUsername   = readCachePropertyValue(CACHE_PROPERTY_USERNAME);
@@ -164,6 +164,78 @@ int MediaSyncSource::saveCache()
     return FileSyncSource::saveCache();
 }
 
+
+
+SyncItem* MediaSyncSource::getFirstItem() 
+{
+    LOG.info("Smart slow starting for %s", getConfig().getName());
+    
+    smartSlowNewItemsDone     = false;
+    smartSlowUpdatedItemsDone = false;
+    smartSlowFirstItem        = true;
+    
+    SyncItem* item = getFirstNewItem();
+    if (item != NULL) {
+        return item;
+    }
+    
+    // If here, the new items are finished: go with updated items.
+    smartSlowNewItemsDone = true;
+    return getNextItem();
+}
+
+
+SyncItem* MediaSyncSource::getNextItem() 
+{
+    SyncItem* item = NULL;
+    
+    //
+    // New items
+    //
+    if (smartSlowNewItemsDone == false) {
+        item = getNextNewItem();
+        if (item != NULL) {
+            return item;
+        }
+        smartSlowNewItemsDone = true;
+    }
+    
+    //
+    // Updated items
+    //
+    if (smartSlowUpdatedItemsDone == false) {
+        if (smartSlowFirstItem) {
+            item = getFirstUpdatedItem();
+            smartSlowFirstItem = false;
+        }
+        else {
+            item = getNextUpdatedItem();
+        }
+        if (item != NULL) {
+            return item;
+        }
+        smartSlowUpdatedItemsDone = true;
+        smartSlowFirstItem = true;
+    }
+    
+    //
+    // Deleted items (sent as empty update items)
+    //
+    if (smartSlowFirstItem) {
+        item = getFirstDeletedItem();
+        smartSlowFirstItem = false;
+    }
+    else {
+        item = getNextDeletedItem();
+    }
+    if (item) {
+        // *** necessary? ***
+        LOG.debug("Sending deleted item as an empty updated item");
+        item->setData(NULL, 0);
+    }
+    return item;
+
+}
 
 
 

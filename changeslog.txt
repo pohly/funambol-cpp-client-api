@@ -1,4 +1,5 @@
 2009-04-09
+    - toccy: MediaSyncSource: implemented smart slow-sync (treat slow syncs as it was a normal fast sync).
     - toccy: MediaSyncSource handles the cache stored inside the 'dir' folder (the folder under sync).
              This cache file also contains special params (server url, username, swv) used by MediaSyncSource
              to check if the cache is valid. Some CacheSyncSource methods have been overrided for this.
