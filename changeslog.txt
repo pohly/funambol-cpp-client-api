@@ -1,3 +1,9 @@
+2009-04-09
+    - toccy: MediaSyncSource handles the cache stored inside the 'dir' folder (the folder under sync).
+             This cache file also contains special params (server url, username, swv) used by MediaSyncSource
+             to check if the cache is valid. Some CacheSyncSource methods have been overrided for this.
+    - toccy: getItemSignature method has been reimplemented in MediaSyncSource: the signature is the file last_mod_time
+
 2009-04-08
     - toccy: FileSyncSource can now recurse into subfolders (added bool recurse, default value = false)
 

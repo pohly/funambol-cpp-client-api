@@ -98,7 +98,26 @@ private:
      *    
      */    
     KeyValueStore* cache; 
-       
+
+
+    /**
+     * Fills the sync item given the key. It is used by the method getXXXItem to
+     * complete the SyncItem.
+     */
+    SyncItem* fillSyncItem(StringBuffer* key);       
+
+    /**
+     * Utility private method that populates the keyValuePair with 
+     * the couple key/signature starting from the SyncItem.
+     * Used in the addItem and updateItem
+     *
+     * @param item - IN:  the SyncItem
+     * @param kvp  - OUT: the KeyValuePair to be populate
+     */
+    void getKeyAndSignature(SyncItem& item, KeyValuePair& kvp);
+
+protected:
+    
     /**
      * Enumeration of the new keys
      */
@@ -119,13 +138,8 @@ private:
      * It is an enumeration of StringBuffer keys
      */
     Enumeration* allKeys;
-
-    /**
-     * Fills the sync item given the key. It is used by the method getXXXItem to
-     * complete the SyncItem.
-     */
-    SyncItem* fillSyncItem(StringBuffer* key);       
-
+    
+    
     /**
      * The way to calculate the cache is the follow:
      * loop on the current element against an array list
@@ -135,25 +149,14 @@ private:
      * in the cache are the deleted ones.
      * Called when the two-way sync is requested
      */
-    bool fillItemModifications();
-
-    /**
-     * Utility private method that populates the keyValuePair with 
-     * the couple key/signature starting from the SyncItem.
-     * Used in the addItem and updateItem
-     *
-     * @param item - IN:  the SyncItem
-     * @param kvp  - OUT: the KeyValuePair to be populate
-     */
-    void getKeyAndSignature(SyncItem& item, KeyValuePair& kvp);
-
-protected:
+    virtual bool fillItemModifications();
+    
   
     /**
      * Save the current cache into the persistent store. Which store depends on
      * the KeyValueStore passed in the constructor (a file by default).
      */
-    int saveCache();
+    virtual int saveCache();
   
     /**
      * Implementation of the SyncSource method addItem, it's called by the SyncManager
@@ -214,6 +217,15 @@ protected:
     int clearCache() {
         return (cache->removeAllProperties() || saveCache());
     }
+    
+    /**
+     * Returns the value of the given property, from the cache.
+     * @param prop - the property name
+     * @return  A NULL StringBuffer in the returned implies that
+     *          the property was not set. Otherwise the value it was
+     *          set to is returned (which can be "", the empty string).
+     */
+    StringBuffer readCachePropertyValue(const char* prop);
 
 public:
 

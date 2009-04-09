@@ -84,7 +84,15 @@ protected:
      * @return          true if the item has to be filtered out (skipped)
      *                  false if the item is ok
      */ 
-    virtual bool filterOutgoingItem(const StringBuffer& fullName, struct stat& st) { return false; }
+    virtual bool filterOutgoingItem(const StringBuffer& fullName, struct stat& st);
+    
+    /**
+     * Utility method, returns true if the fileName extension is equal to one passed.
+     * @param fileName  the file name
+     * @param extension the extension to check
+     * @return          true if the extension matches
+     */
+    bool checkFileExtension(const StringBuffer& fileName, const StringBuffer& extension);
      
 
 private:
@@ -113,9 +121,12 @@ private:
     
 
 public:
-
+    
     FileSyncSource(const WCHAR* name, AbstractSyncSourceConfig* sc);
-    FileSyncSource(const WCHAR* name, AbstractSyncSourceConfig* sc, const StringBuffer& aDir, const bool aRecursive = false); 
+    FileSyncSource(const WCHAR* name, AbstractSyncSourceConfig* sc, 
+                   const StringBuffer& aDir = DEFAULT_SYNC_DIR, 
+                   KeyValueStore* cache = NULL);
+
     virtual ~FileSyncSource();
 
     void assign(FileSyncSource& s);

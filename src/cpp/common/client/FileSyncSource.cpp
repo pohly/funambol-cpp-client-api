@@ -127,11 +127,12 @@ FileSyncSource::FileSyncSource(const WCHAR* name, AbstractSyncSourceConfig* sc)
                               recursive(false) { 
 }
 
-FileSyncSource::FileSyncSource(const WCHAR* name, AbstractSyncSourceConfig* sc, const StringBuffer& aDir, const bool aRecursive)
-                              : CacheSyncSource(name, sc), 
+FileSyncSource::FileSyncSource(const WCHAR* name, AbstractSyncSourceConfig* sc, 
+                               const StringBuffer& aDir, KeyValueStore* cache)
+                              : CacheSyncSource(name, sc, cache), 
                               dir(aDir), 
-                              recursive(aRecursive) {
-
+                              recursive(false) {
+    
     // Cut the last "\" or "/"
     if (aDir.endsWith("\\") || aDir.endsWith("/")) {
         dir = aDir.substr(0, aDir.length()-1);
@@ -371,6 +372,30 @@ bool FileSyncSource::scanFolder(const StringBuffer& fullPath, ArrayList& filesFo
 }
 
 
+bool FileSyncSource::filterOutgoingItem(const StringBuffer& fullName, struct stat& st) 
+{
+    // No filtering.
+    return false; 
+}
+
+
+bool FileSyncSource::checkFileExtension(const StringBuffer& fileName, const StringBuffer& extension)
+{
+    int pos = fileName.rfind(".");
+    
+    if (pos == StringBuffer::npos) {
+        return false;
+    }
+    if (pos < fileName.length()) {
+        pos += 1;
+        StringBuffer ext = fileName.substr(pos, fileName.length() - pos);
+        if (ext == extension) {
+            //LOG.debug("extension is '%s'", ext.c_str());
+            return true;
+        }
+    }
+    return false;
+}
 
 
 

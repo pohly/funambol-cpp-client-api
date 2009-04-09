@@ -49,40 +49,135 @@
 
 BEGIN_NAMESPACE
 
+
+/**
+ * Container for parameters used by this MediaSyncSource class.
+ * Server URL, Username and Swv are stored inside the MediaSyncSource cache to check 
+ * its validity before every sync.
+ */
+class MediaSyncSourceParams
+{
+private:
+    
+    //StringBuffer dir;           /**< The media directory to sync */
+    //bool recursive;             /**< If true, will recurse into subfolders of dir. Default is false. */
+    StringBuffer url;           /**< The Sync Server URL. */
+    StringBuffer username;      /**< The current username. */ 
+    StringBuffer swv;           /**< The current Client software version. */
+    
+public:
+    MediaSyncSourceParams() /*: dir("."), recursive(false)*/ {}
+    ~MediaSyncSourceParams() {};
+    
+    //const StringBuffer& getDir()          { return dir;       }
+    //const bool          getRecursive()    { return recursive; }
+    const StringBuffer& getUrl()          { return url;       }
+    const StringBuffer& getUsername()     { return username;  }
+    const StringBuffer& getSwv()          { return swv;       }
+    
+    //void setDir      (const StringBuffer& v) { dir       = v; }
+    //void setRecursive(const bool        & v) { recursive = v; }
+    void setUrl      (const StringBuffer& v) { url       = v; }
+    void setUsername (const StringBuffer& v) { username  = v; }
+    void setSwv      (const StringBuffer& v) { swv       = v; }
+};
+
+
+
 /**
  * This class extends the FileSyncSource class, to define a special behavior for generic
  * "media files" to be synchronized between the Server and a mobile Client.
  * 
- * - getAllItemList() reads files recursively under "dir" folder, scanning all subfolders
- * - removeAllItems() deletes files recursively under "dir" folder
+ * Differences from FileSyncSource are:
+ * - cache file is stored inside the 'dir' folder (the folder under sync)
+ * - in case the URL or username changes, the cache file is resetted
  * - in case of slow sync, the cache file is not cleared and new/mod/del items are sent (as if it was a fast sync). 
- *   Delete items are sent as empty update items (the Server doesn't expect deletes during slow syncs)
- * - manages a mapping between the LUID and the item's full name
- * - cache file is stored inside each folder
+ * - in case of slow sync, delete items are sent as empty update items (the Server doesn't expect deletes during slow syncs)
+ * - manages a mapping between the LUID and the items keys (full paths), to ensure the items are not sent 2 times.
+ *   This LUID_Map is stored inside the 'dir' folder (the folder under sync)
  */
 class MediaSyncSource : public FileSyncSource
 {
-
+ 
 public:
-    MediaSyncSource(const WCHAR* name,
+    MediaSyncSource(const WCHAR* wname,
                    AbstractSyncSourceConfig* sc,
-                   const StringBuffer& mediaDir,
-                   const bool aRecursive = false);
+                   const StringBuffer& aDir, 
+                   MediaSyncSourceParams mediaParams);
 
     ~MediaSyncSource() {};
     
+    /**
+     * Overrides FileSyncSource::beginSync().
+     * Checks if the pictures cache is still valid, before starting a sync.
+     * If not, the cache is cleared.
+     */
+    int beginSync();
+
     
-    /// From FileSyncSource - implemented empty.
+    /// Overrides FileSyncSource::insertItem - implemented empty.
     int insertItem(SyncItem& item);
     
-    /// From FileSyncSource - implemented empty.
+    /// Overrides FileSyncSource::modifyItem - implemented empty.
     int modifyItem(SyncItem& item);
     
-    /// From FileSyncSource - implemented empty.
+    /// Overrides FileSyncSource::removeItem - implemented empty.
     int removeItem(SyncItem& item);
+    
+    /**
+     * Overrides CacheSyncSource::getItemSignature().
+     * Gets the signature of an item given its full path. 
+     * The signature is the timestamp of last modification time.
+     *
+     * @param key  the key of the item (its full path and name)
+     * @return     the signature of the selected item (last modification time)
+     */
+    StringBuffer getItemSignature(StringBuffer& key);
    
     
+protected:
+    
+    /// Contains parameters used by this class.
+    MediaSyncSourceParams params;
+    
+    /**
+     * Overrides CacheSyncSource::fillItemModifications().
+     * Called for every sync (slow or fast). 
+     * Will call the CacheSyncSource::fillItemModifications() and then
+     * cleanup the special properties found in the cache (url, username, swv).
+     */
+    virtual bool fillItemModifications();
+    
+    /**
+     * Used to filter outgoing items (overrides FileSyncSource::filterOutgoingItem)
+     * Filters the cache files (*.dat).
+     * 
+     * @param fullName  the full path + name of the file to check
+     * @param st        reference to struct stat for current file
+     * @return          true if the item has to be filtered out (skipped)
+     *                  false if the item is ok
+     */ 
+    virtual bool filterOutgoingItem(const StringBuffer& fullName, struct stat& st);
+    
+    /**
+     * Overrides CacheSyncSource::saveCache().
+     * Saves the cache and the LUID_Map into the persistent store.
+     * Adds the special properties (url, username, swv) to the cache file.
+     * Set the files attribute to hidden (TODO).
+     */
+    virtual int saveCache();
+    
+    
 private:
+    
+    /**
+     * Read the URL, username and client sw version from the cache. 
+     * If wrong (different from the passed ones) or missing, the current cache is not valid (true is returned).
+     * This method is called by MediaSyncSource::beginSync().
+     * 
+     * @return  true if the cache file is valid, false if not.
+     */
+    bool checkCacheValidity();
 
 };
 

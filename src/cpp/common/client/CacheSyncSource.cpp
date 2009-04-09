@@ -520,4 +520,12 @@ int CacheSyncSource::deleteItem(SyncItem& item) {
     return ret;
 } 
 
+
+StringBuffer CacheSyncSource::readCachePropertyValue(const char* prop)
+{
+    return cache->readPropertyValue(prop);
+}
+
+
+
 END_NAMESPACE
