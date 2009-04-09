@@ -243,7 +243,13 @@ SyncItem* CacheSyncSource::getNextItem() {
         StringBuffer* s = (StringBuffer*)allKeys->getNextElement();    
         syncItem = fillSyncItem(s);
     }
-    if (!syncItem) {
+    
+    if (syncItem) {
+        StringBuffer key;
+        key.convert(syncItem->getKey());
+        LOG.info("Sending item: key = %s", key.c_str());
+    }
+    else {
         LOG.debug("There are no more items to be exchanged. Return NULL");     
     }
     return syncItem;
@@ -270,7 +276,13 @@ SyncItem* CacheSyncSource::getNextNewItem() {
         StringBuffer* s = (StringBuffer*)newKeys->getNextElement();    
         syncItem = fillSyncItem(s);
     }
-    if (!syncItem) {
+    
+    if (syncItem) {
+        StringBuffer key;
+        key.convert(syncItem->getKey());
+        LOG.info("Sending new item: key = %s", key.c_str());
+    }
+    else {
         LOG.debug("There are no more new items to be exchanged. Return NULL");     
     }
     return syncItem;   
@@ -293,9 +305,15 @@ SyncItem* CacheSyncSource::getNextUpdatedItem() {
         StringBuffer* s = (StringBuffer*)updatedKeys->getNextElement();    
         syncItem = fillSyncItem(s);
     }
-    if (!syncItem) {
+    
+    if (syncItem) {
+        StringBuffer key;
+        key.convert(syncItem->getKey());
+        LOG.info("Sending updated item: key = %s", key.c_str());
+    }
+    else {
         LOG.debug("There are no more updated items to be exchanged. Return NULL");     
-    }    
+    }
     return syncItem;    
 }
 
@@ -321,9 +339,15 @@ SyncItem* CacheSyncSource::getNextDeletedItem() {
         syncItem = new SyncItem(wkey); 
         if (wkey) { delete [] wkey; wkey = NULL; }  
     }
-    if (!syncItem) {
+    
+    if (syncItem) {
+        StringBuffer key;
+        key.convert(syncItem->getKey());
+        LOG.info("Sending deleted item: key = %s", key.c_str());
+    }
+    else {
         LOG.debug("There are no more deleted items to be exchanged. Return NULL");     
-    }    
+    }
          
     return syncItem;
 }
