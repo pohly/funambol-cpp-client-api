@@ -381,7 +381,7 @@ bool FileSyncSource::filterOutgoingItem(const StringBuffer& fullName, struct sta
 
 bool FileSyncSource::checkFileExtension(const StringBuffer& fileName, const StringBuffer& extension)
 {
-    int pos = fileName.rfind(".");
+    unsigned long pos = fileName.rfind(".");
     
     if (pos == StringBuffer::npos) {
         return false;
