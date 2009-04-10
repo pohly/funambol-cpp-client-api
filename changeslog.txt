@@ -1,3 +1,6 @@
+2009-04-10
+    - toccy: merged from trunk (r593)
+
 2009-04-09
     - toccy: MediaSyncSource: implemented smart slow-sync (treat slow syncs as it was a normal fast sync).
     - toccy: MediaSyncSource handles the cache stored inside the 'dir' folder (the folder under sync).
@@ -7,6 +10,10 @@
 
 2009-04-08
     - toccy: FileSyncSource can now recurse into subfolders (added bool recurse, default value = false)
+    - magi:  Added usage of getSSLVerifyServer in the WinTransportAgent. By default
+             it is true as usual.
+             Added support to use also GET instead only POST method. Useful for Windows clients
+             that want to use the WinTransportAgent class with different verb.
 
 2009-04-06
     - toccy: added MediaSyncSource class, to define a special behavior for generic "media files" 
