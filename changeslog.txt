@@ -1,3 +1,6 @@
+2009-04-16
+    - toccy: created branch US2194 (Picture Sync - handle pictures with the same name on different memory cards) from r605
+
 2009-04-15
     - toccy: merged from branch US1744 (Picture Sync - avoid to send a picture twice)
              Added MediaSyncSource class under client.
