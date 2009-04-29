@@ -1,3 +1,6 @@
+2009-04-29
+   - toccy: updated release version to v.8.0
+
 Funambol SDK C++ 7.1.6
 -----------------------
 2009-01-14
