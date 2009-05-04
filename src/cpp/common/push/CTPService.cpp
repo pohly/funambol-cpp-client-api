@@ -1294,14 +1294,14 @@ ArrayList CTPService::getUriListFromSAN(SyncNotification* sn)
     int n = 0;
     
     if (!sn) {
-        LOG.error("CTP notification error: SyncNotification is NULL");
+        LOG.error("Push notification error: SyncNotification is NULL");
         return list;
     }
 
     // Get number of sources to sync
     n = sn->getNumSyncs();
     if (!n) {
-        LOG.error("CTP notification error: no sources to sync from server");
+        LOG.error("Push notification error: no sources to sync from server");
         return list;
     }
     
@@ -1309,7 +1309,7 @@ ArrayList CTPService::getUriListFromSAN(SyncNotification* sn)
     for (int i=0; i<n; i++) {
         SyncAlert* sync = sn->getSyncAlert(i);
         if(!sync) {
-            LOG.error("CTP notification error: no SyncAlert in SyncNotification");
+            LOG.error("Push notification error: no SyncAlert in SyncNotification");
             continue;
         }
         if (sync->getServerURI()) {
@@ -1318,7 +1318,7 @@ ArrayList CTPService::getUriListFromSAN(SyncNotification* sn)
             LOG.debug("uri pushed: '%s'", uri.c_str());
         } 
         else {
-            LOG.error("CTP notification error: no source found from server "
+            LOG.error("Push notification error: no source found from server "
                       "notification request: %s", sync->getServerURI());
             continue;
         }
