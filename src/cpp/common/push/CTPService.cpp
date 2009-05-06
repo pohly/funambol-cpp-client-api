@@ -64,6 +64,15 @@ CTPService* CTPService::getInstance() {
     return pinstance;
 }
 
+/**
+ * Method to delete the sole instance of CTPService
+ */
+void CTPService::dispose() {
+    if (pinstance) {
+        delete pinstance; pinstance = NULL;
+    }
+}
+
 
 /**
  * Constructor: reads the CTPConfig from registry and init members.
@@ -108,6 +117,9 @@ CTPService::~CTPService() {
     delete receivedMsg;
     // Cleanup any running thread
     threadPool.cleanup();
+    if(ctpThread && ctpThread->finished()) {
+        delete ctpThread;   ctpThread = NULL;
+    }
 }
 
 
@@ -283,8 +295,7 @@ int32_t CTPService::closeConnection() {
 
     int ret = 0;
     if (ctpSocket) {
-        ctpSocket->close();
-        ctpSocket = NULL;
+        delete ctpSocket; ctpSocket = NULL;
         LOG.debug("Socket connection closed");
     }
 
@@ -406,11 +417,6 @@ int32_t CTPService::sendMsg(CTPMessage* message) {
         return 1;
     }
 
-    if (!ctpSocket) {
-        LOG.error("sendMsg error: socket not initialized.");
-        return 2;
-    }
-
     int ret = 0;
     // The msg is owned by the CTPMessage and there is no need to delete it
     char* msg = message->toByte();
@@ -423,7 +429,12 @@ int32_t CTPService::sendMsg(CTPMessage* message) {
     LOG.debug("Sending %d bytes:", msgLength);
     hexDump(msg, msgLength);
 
+    if (!ctpSocket) {
+        LOG.error("sendMsg error: socket not initialized.");
+        return 2; 
+    }
     ret = ctpSocket->writeBuffer((const int8_t* const) msg, msgLength);
+    
     if (ret != msgLength) {
         LOG.error("CTPService::sendMsg - send() error (%d bytes sent)", ret);
         return -1;
@@ -471,6 +482,10 @@ CTPMessage* CTPService::receiveStatusMsg() {
     //
     while (1) {
         LOG.debug("Waiting for Server message...");
+        if (!ctpSocket) {
+            LOG.error("receiveStatusMsg error: socket not initialized.");
+            goto finally;
+        }
         int pkgLen = ctpSocket->readBuffer((int8_t*)buffer, sizeof(buffer));
 
         if (pkgLen <= 0) {

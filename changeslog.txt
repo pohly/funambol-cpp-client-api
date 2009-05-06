@@ -1,5 +1,15 @@
+2009-05-06
+   - toccy: copied necessary fixes from trunk to v8 branch:
+            * CTPService: added dispose method, added safe checks, delete ctpThread on destructor
+            * fixed delete[] in AccessConfig::setSyncURL()
+            * SyncReport and SyncSourceReport initialize(): avoid a printf of NULL string
+            * MacTransportAgent: fixed issue with https
+            * Symbian FConnection::stopConnection(): removed (unused) method that needs capability not currently available
+            * test EventTest: fixed test on SyncItemListener
+            * integration tests: fixed typo (USARNAME -> USERNAME)
+
 2009-04-29
-   - toccy: updated release version to v.8.0
+   - toccy: updated release version to v.8.0 (rev. 658)
 
 Funambol SDK C++ 7.1.6
 -----------------------

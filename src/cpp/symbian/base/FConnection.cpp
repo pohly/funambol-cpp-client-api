@@ -313,15 +313,18 @@ const bool FConnection::isConnected()
 
 const int FConnection::stopConnection() 
 {
-    iLastError = KErrNone;
-    if (isConnected()) {
-        LOG.debug("Stopping the current connection");
-        iLastError = iConnection.Stop(/*RConnection::EStopAuthoritative*/);
-    }
-    else {
-        LOG.debug("No need to stop connection (not connected)");
-    }
-    return iLastError;
+	LOG.error("*** WARNING! stopConnection not supported! Need NetworkControl capability. ***");
+	return KErrNotSupported;
+
+    //iLastError = KErrNone;
+    //if (isConnected()) {
+    //    LOG.debug("Stopping the current connection");
+    //    iLastError = iConnection.Stop(/*RConnection::EStopAuthoritative*/);
+    //}
+    //else {
+    //    LOG.debug("No need to stop connection (not connected)");
+    //}
+    //return iLastError;
 }
 
 

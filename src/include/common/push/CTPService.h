@@ -212,6 +212,9 @@ public:
     // Method to get the sole instance of CTPService
     static CTPService* getInstance();
 
+    // Method to delete the sole instance
+    static void dispose();
+
     ~CTPService();
 
     FThread* startCTP();
