@@ -567,6 +567,7 @@ wstring& WinContact::toString() {
         vCard = tmp;
         delete [] tmp;
     }
+    if (vo) { delete vo; vo = NULL; }
     return vCard;
 }
 
@@ -889,6 +890,7 @@ int WinContact::parse(const wstring dataString) {
         }
     }
 
+    if (vo) { delete vo; vo = NULL; }
     return 0;
 }
 
