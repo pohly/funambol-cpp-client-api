@@ -1,3 +1,6 @@
+2009-05-12
+   - magi : merged fix for bug 7041 (mem leak to sync meny contacts)
+
 2009-05-06
    - toccy: copied necessary fixes from trunk to v8 branch:
             * CTPService: added dispose method, added safe checks, delete ctpThread on destructor
