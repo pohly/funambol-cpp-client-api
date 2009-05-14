@@ -295,6 +295,19 @@ class AbstractSyncConfig {
     virtual bool getSendDevInfo() const = 0;
     virtual void setSendDevInfo(bool v) = 0;
 
+    /**
+     * Specifies if Server devinfo should be asked anyway
+     * (can be forced to true by Clients)
+     */
+    virtual bool getForceServerDevInfo() const = 0;
+    virtual void setForceServerDevInfo(bool v) = 0;
+
+    /**
+     * Specifies the Server software version, obtained via 
+     * Server device capabilities (devInf).
+     */
+    virtual const char* getServerSwv() const = 0;
+
 };
 
 

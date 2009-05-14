@@ -121,6 +121,16 @@ class SyncManager {
          */
         DevInf *createDeviceInfo();
 
+        /**
+         * Checks whether we need to ask the Server capabilities or not.
+         * If we don't have enough Server information in the config, we need 
+         * to ask the Server caps.
+         * A Client can force to ask Server caps again by .
+         * 
+         * @return  true if we need to Get defInf to the Server
+         */
+        bool askServerDevInf();
+
     private:
 
         // SyncManager makes local key safe to use in SyncML by

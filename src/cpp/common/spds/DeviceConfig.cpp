@@ -64,7 +64,8 @@ DeviceConfig::DeviceConfig() {
     smartSlowSync   = 2;
 	verDTD			= NULL;
 
-    sendDevInfo     = true;
+    sendDevInfo     = true;         // Default = send Client devInf normally
+    forceServerDevInfo = false;     // Default = ask Server devInf if necessary (don't force)
 }
 
 DeviceConfig::DeviceConfig(DeviceConfig& s) {
@@ -238,6 +239,14 @@ bool DeviceConfig::getSendDevInfo() const {
 void DeviceConfig::setSendDevInfo(bool v) {
     sendDevInfo = v; 
 }
+
+bool DeviceConfig::getForceServerDevInfo() const {
+     return forceServerDevInfo;
+}
+
+void DeviceConfig::setForceServerDevInfo(bool v) {
+    forceServerDevInfo = v; 
+}
  
 /*
  * Sets the values of this object with with the values from the given
@@ -267,5 +276,6 @@ void DeviceConfig::assign(const DeviceConfig& s) {
 	setVerDTD       (s.getVerDTD	   () );
 
 	setSendDevInfo  (s.getSendDevInfo   () );
+    setForceServerDevInfo(s.getForceServerDevInfo());
 }
 

@@ -179,6 +179,10 @@ class SyncManagerConfig : public AbstractSyncConfig {
         virtual bool getSendDevInfo() const { return getClientConfig().getSendDevInfo(); }
         virtual void setSendDevInfo(bool v) { getClientConfig().setSendDevInfo(v); }
 
+        virtual bool getForceServerDevInfo() const { return getClientConfig().getForceServerDevInfo(); }
+        virtual void setForceServerDevInfo(bool v) { getClientConfig().setForceServerDevInfo(v); }
+
+        virtual const char* getServerSwv() const { return getServerConfig().getSwv(); }
 };
 
 

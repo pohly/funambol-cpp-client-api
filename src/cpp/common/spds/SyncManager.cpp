@@ -467,6 +467,15 @@ int SyncManager::prepareSync(SyncSource** s) {
 
         }
 
+        // Ask Server DevInf if necessary (Get command)
+        if (askServerDevInf()) {
+            AbstractCommand* get = syncMLBuilder.prepareServerDevInf();
+            if (get) {
+                commands.add(*get);
+                delete get;
+            }
+        }
+
         // actively send out device infos?
         if (putDevInf) {
             AbstractCommand* put = syncMLBuilder.prepareDevInf(NULL, *devInf);
@@ -2446,6 +2455,35 @@ DevInf *SyncManager::createDeviceInfo()
 
     return devinfo;
 }
+
+
+bool SyncManager::askServerDevInf() {
+
+    // The Client can force to always ask the Server devInf
+    if (config.getForceServerDevInfo()) {
+        return true;
+    }
+
+    // If the Server swv is not available, we need to ask Server caps
+    StringBuffer serverSwv = config.getServerSwv();
+    if (serverSwv.empty()) {
+        return true;
+    }
+
+    // TODO: we should ask Server devInf also if we don't have enough
+    //       information on any source actually under sync.
+    //       (we don't store Server DataStore at the moment)
+    //
+    /*for (int i=0; s[i]; i++) {
+        const char* name = s[i]->getConfig().getName();
+        AbstractSyncSourceConfig* ssconfig = config.getAbstractSyncSourceConfig(name);
+        if (ssconfig) {
+        }
+    }*/
+
+    return false;
+}
+
 
 
 /* Copy from AbstractSyncSourceConfig::getSupportedTypes() format into array list
