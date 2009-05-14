@@ -1,3 +1,6 @@
+2009-05-14
+    - toccy: created branch US2275 (C++ Sync Clients - Support for Server capabilities) - rev. 702
+
 2009-04-29
     - magi: merged from branch US1746 (Picture Sync - avoid to send pictures twice)
             fixed memory leak in vocl component for WinContact, WinCalendar, WinNote, WinTask
