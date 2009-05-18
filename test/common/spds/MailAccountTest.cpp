@@ -48,10 +48,20 @@
 #define ACCOUNT_FOLDER  "<Folder><name>Email Home</name><created>20090428T162654Z<created><role>account</role><Ext><XNam>VisibleName</XNam> <XVal>Name Surname</XVal></Ext><Ext><XNam>EmailAddress</XNam> <XVal>Name.Surname@email.com</XVal></Ext></Folder>"
 #define INBOX_FOLDER    "<Folder><name>Inbox</name><created>20090428T162654Z<created><role>inbox</role></Folder>"
 #define OUTBOX_FOLDER   "<Folder><name>Outbox</name><created>20090428T162654Z<created><role>outbox</role></Folder>"
-#define NAME            L"Email Home"
 #define VISIBLENAME     "Name Surname"
 #define EMAILADDRESS    "Name.Surname@email.com"
+
+#ifdef _WIN32
 #define CREATED         L"20090428T162654Z"
+#define NAME            L"Email Home"
+#define INBOX           L"Inbox"
+#define OUTBOX          L"Outbox"
+#else
+#define CREATED         "20090428T162654Z"
+#define NAME            "Email Home"
+#define INBOX           "Inbox"
+#define OUTBOX          "Outbox"
+#endif
 
 USE_NAMESPACE
 
@@ -86,9 +96,9 @@ private:
 
        CPPUNIT_ASSERT( wcscmp(mailaccount.getAccountName(), NAME) == 0);
        //CPPUNIT_ASSERT( wcscmp(mailaccount.getAccountCreated(), CREATED) == 0);
-       CPPUNIT_ASSERT( wcscmp(mailaccount.getInboxName(), L"Inbox") == 0);
+       CPPUNIT_ASSERT( wcscmp(mailaccount.getInboxName(), INBOX) == 0);
        //CPPUNIT_ASSERT( wcscmp(mailaccount.getInboxCreated(), CREATED) == 0);
-       CPPUNIT_ASSERT( wcscmp(mailaccount.getOutboxName(), L"Outbox") == 0);
+       CPPUNIT_ASSERT( wcscmp(mailaccount.getOutboxName(), OUTBOX) == 0);
        //CPPUNIT_ASSERT( wcscmp(mailaccount.getOutboxCreated(), CREATED) == 0);
 
        const char* val1 = mailaccount.getVisibleName();

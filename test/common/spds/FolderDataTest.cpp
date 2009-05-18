@@ -43,9 +43,16 @@
 #include "base/globalsdef.h"
 #include "spds/FolderData.h"
 
+#ifdef _WIN32
 #define FOLDER_NAME     L"INBOX"
 #define CREATED         L"20050101T000000Z"
 #define ROLE            L"inbox"
+#else
+#define FOLDER_NAME     "INBOX"
+#define CREATED         "20050101T000000Z"
+#define ROLE            "inbox"
+#endif
+
 #define FOLDER_STRING   "<Folder><name>INBOX</name><created>20050101T000000Z</created><role>inbox</role></Folder>"
 
 USE_NAMESPACE

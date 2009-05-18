@@ -44,9 +44,16 @@
 #include "spds/FolderData.h"
 #include "spds/FolderExt.h"
 
+#ifdef _WIN32
 #define FOLDER_NAME     L"Email Home"
 #define CREATED         L"20090428T162654Z"
 #define ROLE            L"account"
+#else
+#define FOLDER_NAME     "Email Home"
+#define CREATED         "20090428T162654Z"
+#define ROLE            "account"
+#endif
+
 #define XNAM_VN         "VisibleName"
 #define XNAM_EA         "EmailAddress"
 #define VISIBLENAME     "Name Surname"
