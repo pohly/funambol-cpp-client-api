@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="Windows-1252"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="8.00"
+	Version="8,00"
 	Name="client-test"
 	ProjectGUID="{68DB1569-6AFC-4288-B7B0-79AF45F2F37C}"
 	RootNamespace="cppunit"
@@ -255,6 +255,10 @@
 				</File>
 				<File
 					RelativePath="..\..\test\common\syncml\ParserTest.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\test\common\syncml\ServerDevInfTest.cpp"
 					>
 				</File>
 			</Filter>
