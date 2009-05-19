@@ -921,7 +921,7 @@ bool DMTClientConfig::readExtDevConfig(ManagementNode& /* syncMLNode */,
 
     if(server){
 
-        tmp = extNode.readPropertyValue("smartSlowSync");
+        tmp = extNode.readPropertyValue(PROPERTY_SMART_SLOW_SYNC);
 		if(strcmp(tmp,"")==0){
 			serverConfig.setSmartSlowSync(2);
 		}else if(strcmp(tmp,"0")==0){
@@ -941,7 +941,9 @@ bool DMTClientConfig::readExtDevConfig(ManagementNode& /* syncMLNode */,
 		tmp = extNode.readPropertyValue(PROPERTY_VER_DTD);
         serverConfig.setVerDTD(tmp);
         delete [] tmp;
-
+        tmp = extNode.readPropertyValue(PROPERTY_SERVER_LAST_SYNC_URL);
+        serverConfig.setServerLastSyncURL(tmp);
+        delete [] tmp;
      
     }else{
         tmp = extNode.readPropertyValue(PROPERTY_UTC);
@@ -979,21 +981,23 @@ void DMTClientConfig::saveExtDevConfig(ManagementNode& /* syncMLNode */,
     if(server){
 		switch (serverConfig.getSmartSlowSync()){
 			case 0:
-			extNode.setPropertyValue("smartSlowSync", "0");
+			extNode.setPropertyValue(PROPERTY_SMART_SLOW_SYNC, "0");
 			break;
 			case 1:
-			extNode.setPropertyValue("smartSlowSync", "1");
+			extNode.setPropertyValue(PROPERTY_SMART_SLOW_SYNC, "1");
 			break;
 			case 2:
-			extNode.setPropertyValue("smartSlowSync", "2");
+			extNode.setPropertyValue(PROPERTY_SMART_SLOW_SYNC, "2");
 			break;
 		}
-		//extNode.setPropertyValue("smartSlowSync", itow(  ));
+		//extNode.setPropertyValue(PROPERTY_SMART_SLOW_SYNC, itow(  ));
 		extNode.setPropertyValue(PROPERTY_UTC,
                              (serverConfig.getUtc() ? "1": "0") );
         extNode.setPropertyValue(PROPERTY_NUMBER_OF_CHANGES_SUPPORT,
                              (serverConfig.getNocSupport() ? "1": "0") );
 		extNode.setPropertyValue(PROPERTY_VER_DTD, serverConfig.getVerDTD());
+        extNode.setPropertyValue(PROPERTY_SERVER_LAST_SYNC_URL, 
+                              serverConfig.getServerLastSyncURL());
 		
     }else{
     

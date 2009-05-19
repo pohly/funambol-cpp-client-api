@@ -66,6 +66,7 @@ DeviceConfig::DeviceConfig() {
 
     sendDevInfo     = true;         // Default = send Client devInf normally
     forceServerDevInfo = false;     // Default = ask Server devInf if necessary (don't force)
+    serverLastSyncURL = NULL;
 }
 
 DeviceConfig::DeviceConfig(DeviceConfig& s) {
@@ -85,6 +86,7 @@ DeviceConfig::~DeviceConfig() {
     safeDelete(&dsV       );
     safeDelete(&devInfHash);
 	safeDelete(&verDTD    );
+    safeDelete(&serverLastSyncURL);
 
 }
 
@@ -247,6 +249,14 @@ bool DeviceConfig::getForceServerDevInfo() const {
 void DeviceConfig::setForceServerDevInfo(bool v) {
     forceServerDevInfo = v; 
 }
+
+const char* DeviceConfig::getServerLastSyncURL() const {
+    return serverLastSyncURL;
+}
+void DeviceConfig::setServerLastSyncURL(const char *v) {
+    set(&serverLastSyncURL, v);
+}
+
  
 /*
  * Sets the values of this object with with the values from the given
@@ -275,7 +285,8 @@ void DeviceConfig::assign(const DeviceConfig& s) {
     setSmartSlowSync(s.getSmartSlowSync() );
 	setVerDTD       (s.getVerDTD	   () );
 
-	setSendDevInfo  (s.getSendDevInfo   () );
+	setSendDevInfo       (s.getSendDevInfo   ()    );
     setForceServerDevInfo(s.getForceServerDevInfo());
+    setServerLastSyncURL (s.getServerLastSyncURL() );
 }
 

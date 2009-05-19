@@ -71,13 +71,16 @@ class DeviceConfig {
         LogLevel      logLevel     ;
         unsigned int  maxObjSize   ;
         char*         devInfHash   ;
+
         // 0 success true
 		// 1 false
 		// 2 cannot determinate
 		int          smartSlowSync;
+
 		char*		 verDTD;
-        bool         sendDevInfo; // send device info on sync start (by default set to true)
+        bool         sendDevInfo;        // send device info on sync start (by default set to true)
         bool         forceServerDevInfo; // force to ask Server devInfo (by default set to false)
+        char*        serverLastSyncURL;  // if ServerURL changed, Server devInf is invalid
 
         /**
          * Sets the given buffer with the given value, dealing correctly with
@@ -163,6 +166,10 @@ class DeviceConfig {
 
         bool getForceServerDevInfo() const      ;
         void setForceServerDevInfo(bool)        ;
+
+        const char* getServerLastSyncURL() const;
+        void setServerLastSyncURL(const char *v);
+
 
         /**
          * Sets the values of this object with with the values from the given
