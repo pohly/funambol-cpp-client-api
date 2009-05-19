@@ -105,6 +105,7 @@ class AbstractSyncConfig {
      * given string.
      */
     virtual const char*  getSyncURL() const = 0;
+    virtual void setSyncURL(const char*  v) {}
 
     /**
      * Sets the new "beginSync" timestamp.
@@ -319,42 +320,53 @@ class AbstractSyncConfig {
     virtual const char* getServerLastSyncURL() const = 0;
     virtual void setServerLastSyncURL(const char* v) = 0;
 
-
     /// Specifies the name of the manufacturer of the Server.
+    virtual const char* getServerMan() const = 0;
     virtual void setServerMan(const char* v) = 0;
 
     /// Specifies the model name or model number of the Server.
+    virtual const char* getServerMod() const = 0;
     virtual void setServerMod(const char* v) = 0;
 
     /// Specifies the OEM (Original Equipment Manufacturer) of the Server.
+    virtual const char* getServerOem() const = 0;
     virtual void setServerOem(const char* v) = 0;
 
     /// Specifies the firmware version of the Server.
+    virtual const char* getServerFwv() const = 0;
     virtual void setServerFwv(const char* v) = 0;
 
     /// Specifies the hardware version of the Server.
+    virtual const char* getServerHwv() const = 0;
     virtual void setServerHwv(const char* v) = 0;
 
     /// Specifies the Server identifier.
+    virtual const char* getServerDevID() const = 0;
     virtual void setServerDevID(const char* v) = 0;
 
     /// Specifies the Server type (expected "server")
+    virtual const char* getServerDevType() const = 0;
     virtual void setServerDevType(const char* v) = 0;
 
     /// Specifies if the Server supports UTC based time.
+    virtual bool getServerUtc() const = 0;
     virtual void setServerUtc(const bool v) = 0;
 
     /// Specifies if the Server supports handling of large objects.
+    virtual bool getServerLoSupport() const = 0;
     virtual void setServerLoSupport(const bool v) = 0;
 
     /// Specifies if the Server supports number of changes.
+    virtual bool getServerNocSupport() const = 0;
     virtual void setServerNocSupport(const bool v) = 0;
 
     /// Specifies the DTD version of the Server (expected "1.2")
+    virtual const char* getServerVerDTD() const = 0;
     virtual void setServerVerDTD(const char* v) = 0;
 
     /// Specifies if the Server supports the Smart Slow sync.
-    virtual void setServerSmartSlowSync(const bool  v) = 0;
+    virtual int getServerSmartSlowSync() const = 0;
+    virtual void setServerSmartSlowSync(const int  v) = 0;
     
 };
 
