@@ -49,59 +49,90 @@
 
 USE_NAMESPACE
 
+#define TEST_SERVER_URL   "http://my.funambol/sync"
+
+#ifdef _WIN32
+# define TESTDIR "."
+#else
+# define TESTDIR "testcases"
+#endif
 
 
 class ServerDevInfTest : public CppUnit::TestFixture {
 
     CPPUNIT_TEST_SUITE(ServerDevInfTest);
+
         CPPUNIT_TEST(testAskServerDevInf);
-        CPPUNIT_TEST(testGetServerDevInf);
+        CPPUNIT_TEST(testPrepareServerDevInf);
         CPPUNIT_TEST(testFormatServerDevInf);
+        CPPUNIT_TEST(testProcessServerDevInf1);
+        CPPUNIT_TEST(testProcessServerDevInf2);
+
     CPPUNIT_TEST_SUITE_END();
 
 public:
-    void setUp(){
+    void setUp() {
+
+        report.setSyncSourceReports(config);
 
     }
 
-    void tearDown(){
+    void tearDown() {
 
     }
 
 private:
 
-    //////////////////////////////////////////////////////// Test /////
+    SyncManagerConfig config;
+    SyncReport report;
+
+
+    //
+    // Test: syncManager::askServerDevInf()
+    // ------------------------------------
     void testAskServerDevInf() {
 
         bool ret = false;
-        SyncManagerConfig config;
-        SyncReport report;
-        
-        report.setSyncSourceReports(config);
         SyncManager syncManager(config, report);
 
-        // No Server swv available in config: expect true
+        // Server url unchanged for tests 1. 2. 3.
+        config.setSyncURL          (TEST_SERVER_URL);
+        config.setServerLastSyncURL(TEST_SERVER_URL);
+
+
+        // 1. No Server swv available in config: expect true
         config.setForceServerDevInfo(false);
         config.setServerSwv("");
         ret = syncManager.askServerDevInf();
         CPPUNIT_ASSERT(ret);
 
-        // Server swv available in config: expect false
+        // 2. Server swv available in config: expect false
         config.setForceServerDevInfo(false);
         config.setServerSwv("8.0.0");
         ret = syncManager.askServerDevInf();
         CPPUNIT_ASSERT(!ret);
 
-        // Force it via the config flag: expect true
+        // 3. Force it via the config flag: expect true
         config.setForceServerDevInfo(true);
         config.setServerSwv("8.0.0");
+        ret = syncManager.askServerDevInf();
+        CPPUNIT_ASSERT(ret);
+
+        // 4. Change the server URL: expect true
+        config.setForceServerDevInfo(false);
+        config.setServerSwv("8.0.0");
+        StringBuffer urlModified = config.getSyncURL();
+        urlModified.append("_mod");
+        config.setServerLastSyncURL(urlModified.c_str());
         ret = syncManager.askServerDevInf();
         CPPUNIT_ASSERT(ret);
     }
 
 
-    //////////////////////////////////////////////////////// Test /////
-    void testGetServerDevInf() {
+    //
+    // Test: syncMLBuilder::prepareServerDevInf()
+    // ------------------------------------------
+    void testPrepareServerDevInf() {
 
         SyncMLBuilder syncMLBuilder;
         AbstractCommand* command = syncMLBuilder.prepareServerDevInf();
@@ -139,7 +170,9 @@ private:
         delete command;
     }
 
-    //////////////////////////////////////////////////////// Test /////
+    //
+    // Test: format the Get command to obtain the Server capabilities
+    // --------------------------------------------------------------
     void testFormatServerDevInf() {
 
         SyncMLBuilder syncMLBuilder;
@@ -172,6 +205,117 @@ private:
     }
 
 
+
+    //
+    // Test: syncMLProcessor::processServerDevInf()
+    // This is a sample XML with devInf Results from Funambol Server
+    // -------------------------------------------------------------
+    void testProcessServerDevInf1() {
+
+        // Load and parse the sample XML with <Results> command from Server
+        config.setSyncURL(TEST_SERVER_URL);
+        processDevInf("devInfResults.xml");
+
+        // Check the config has been filled as expected
+        StringBuffer url1 = config.getSyncURL();
+        StringBuffer url2 = config.getServerLastSyncURL();
+        CPPUNIT_ASSERT(url1 == url2);
+
+        int  iVal;
+        bool bVal;
+        StringBuffer value;
+        value = config.getServerSwv();           CPPUNIT_ASSERT(value == "7.1.1");
+        value = config.getServerFwv();           CPPUNIT_ASSERT(value == "-");
+        value = config.getServerHwv();           CPPUNIT_ASSERT(value == "-");
+        value = config.getServerMan();           CPPUNIT_ASSERT(value == "Funambol");
+        value = config.getServerMod();           CPPUNIT_ASSERT(value == "DS Server ComEd");
+        value = config.getServerOem();           CPPUNIT_ASSERT(value == "-");
+        value = config.getServerDevID();         CPPUNIT_ASSERT(value == "funambol");
+        value = config.getServerDevType();       CPPUNIT_ASSERT(value == "server");
+        value = config.getServerVerDTD();        CPPUNIT_ASSERT(value == "1.2");
+        bVal  = config.getServerUtc();           CPPUNIT_ASSERT(bVal  == true);
+        bVal  = config.getServerLoSupport();     CPPUNIT_ASSERT(bVal  == true);
+        bVal  = config.getServerNocSupport();    CPPUNIT_ASSERT(bVal  == true);
+        iVal  = config.getServerSmartSlowSync(); CPPUNIT_ASSERT(iVal  == 1);
+
+    }
+
+
+    //
+    // Test: syncMLProcessor::processServerDevInf()
+    // This is a sample XML with devInf Results from OMA specs
+    // -------------------------------------------------------
+    void testProcessServerDevInf2() {
+
+        // Load and parse the sample XML with <Results> command from Server
+        config.setSyncURL(TEST_SERVER_URL);
+        processDevInf("devInfResults2.xml");
+
+        // Check the config has been filled as expected
+        StringBuffer url1 = config.getSyncURL();
+        StringBuffer url2 = config.getServerLastSyncURL();
+        CPPUNIT_ASSERT(url1 == url2);
+
+        int  iVal;
+        bool bVal;
+        StringBuffer value;
+        value = config.getServerSwv();           CPPUNIT_ASSERT(value == "1.0.0");
+        value = config.getServerFwv();           CPPUNIT_ASSERT(value == "1.0.1");
+        value = config.getServerHwv();           CPPUNIT_ASSERT(value == "1.0.2");
+        value = config.getServerMan();           CPPUNIT_ASSERT(value == "Small Factory, Ltd.");
+        value = config.getServerMod();           CPPUNIT_ASSERT(value == "Tiny Server");
+        value = config.getServerOem();           CPPUNIT_ASSERT(value == "Tiny Shop");
+        value = config.getServerDevID();         CPPUNIT_ASSERT(value == "485749KR");
+        value = config.getServerDevType();       CPPUNIT_ASSERT(value == "Server");
+        value = config.getServerVerDTD();        CPPUNIT_ASSERT(value == "1.2");
+        bVal  = config.getServerUtc();           CPPUNIT_ASSERT(bVal  == true);
+        bVal  = config.getServerLoSupport();     CPPUNIT_ASSERT(bVal  == true);
+        bVal  = config.getServerNocSupport();    CPPUNIT_ASSERT(bVal  == true);
+        iVal  = config.getServerSmartSlowSync(); CPPUNIT_ASSERT(iVal  == 2);
+    }
+
+
+    /**
+     * Utility: will process Server devInf from file 'filename', 
+     * store data in the config
+     */
+    void processDevInf(const StringBuffer& filename) {
+
+        StringBuffer xml;
+        loadTestFile(filename.c_str(), xml);
+
+        ArrayList commands;
+        Parser::getCommands(commands, xml);
+        CPPUNIT_ASSERT_MESSAGE("Failed to parse devInf Results", (commands.size() == 1) );
+
+        // Process the Server devInf
+        SyncMLProcessor syncMLProcessor;
+        AbstractCommand* cmd = (AbstractCommand*)commands.get(0);
+        bool found = syncMLProcessor.processServerDevInf(cmd, config);
+        CPPUNIT_ASSERT(found);
+    }
+
+
+    /**
+     * Load a SyncML message from file, parse and reformat it
+     * and return the original message and the converted one.
+     */
+    void loadTestFile(const char* fileName, StringBuffer& ret) {
+        char*       message;
+        size_t      len;
+
+        StringBuffer path;
+        path.sprintf("%s/%s", TESTDIR, fileName);
+
+        bool fileLoaded = readFile(path, &message, &len, false);
+        CPPUNIT_ASSERT_MESSAGE("Failed to load XML", fileLoaded);
+           
+        ret = message;
+        delete [] message;
+    }
+
+
 };
+
 
 CPPUNIT_TEST_SUITE_REGISTRATION( ServerDevInfTest );
