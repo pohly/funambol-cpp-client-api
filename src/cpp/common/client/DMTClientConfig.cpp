@@ -967,9 +967,8 @@ bool DMTClientConfig::readExtDevConfig(ManagementNode& /* syncMLNode */,
         clientConfig.setDevInfHash(tmp);
         delete [] tmp;
 
-        tmp = extNode.readPropertyValue(PROPERTY_FORCE_ASK_SERVER_DEVINF);
-        clientConfig.setForceServerDevInfo((*tmp == '1') ? true : false);   // So if different the default is false (don't force asking Server devinf)
-        delete [] tmp;
+        // forceServerDevInfo is not stored: default is false and it's intended to
+        // be set to true by the Client everytime we need to force it.
     }
 
     return true;
@@ -1013,7 +1012,8 @@ void DMTClientConfig::saveExtDevConfig(ManagementNode& /* syncMLNode */,
         sprintf(buf, "%u", clientConfig.getMaxObjSize());
         extNode.setPropertyValue(PROPERTY_MAX_OBJ_SIZE, buf);
 
-        extNode.setPropertyValue(PROPERTY_FORCE_ASK_SERVER_DEVINF, (clientConfig.getForceServerDevInfo() ? "1": "0") );
+        // forceServerDevInfo is not stored: default is false and it's intended to
+        // be set to true by the Client everytime we need to force it.
     }
 }
 

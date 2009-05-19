@@ -112,7 +112,6 @@
 #define PROPERTY_LOG_LEVEL                  "logLevel"
 #define PROPERTY_MAX_OBJ_SIZE               "maxObjSize"
 #define PROPERTY_DEVINF_HASH                "devInfHash"
-#define PROPERTY_FORCE_ASK_SERVER_DEVINF    "forceAskServerDevinf"
 #define PROPERTY_SMART_SLOW_SYNC            "smartSlowSync"
 #define PROPERTY_SERVER_LAST_SYNC_URL       "lastSyncURL"
 
