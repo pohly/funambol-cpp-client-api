@@ -177,6 +177,112 @@ finally:
 }
 
 
+
+
+
+bool SyncMLProcessor::processServerDevInf(AbstractCommand* cmd, AbstractSyncConfig& config) {
+
+    ItemizedCommand* command = (ItemizedCommand*)cmd;
+    if (!command) {
+        return false;
+    }
+
+    //
+    // Should we check the meta type = "application/vnd.syncml-devinf+xml" ?
+    //
+    //Meta* meta = command->getMeta();
+    //if (meta) {
+    //    StringBuffer type = meta->getType();
+    //    if (type != DEVINF_FORMAT) {
+    //        return false;
+    //    }
+    //}
+
+    ArrayList *items = command->getItems();
+    for (int i=0; i < items->size(); i++) {
+
+        Item* item = (Item*)items->get(i);
+        if (!item) { continue; }
+        
+        Source* source = item->getSource();
+        if (!source) { continue; }
+        StringBuffer locURI = source->getLocURI();
+        if (locURI == DEVINF_URI) {
+            //
+            // This is a Server devInf item -> process it.
+            //
+            ComplexData* data = item->getData();
+            if (!data) { continue; }
+
+            DevInf* devInf = data->getDevInf();
+            if (!devInf) { continue; }
+
+
+            // Set all Server devInf params to config
+            VerDTD* verDTD = devInf->getVerDTD();
+            if (verDTD) { 
+                config.setServerVerDTD(verDTD->getValue());
+            }
+            config.setServerMan       (devInf->getMan()   );
+            config.setServerMod       (devInf->getMod()   );
+            config.setServerOem       (devInf->getOEM()   );
+            config.setServerFwv       (devInf->getFwV()   );
+            config.setServerSwv       (devInf->getSwV()   );
+            config.setServerHwv       (devInf->getHwV()   );
+            config.setServerUtc       (devInf->getUTC()   );
+            config.setServerDevID     (devInf->getDevID() );
+            config.setServerDevType   (devInf->getDevTyp());
+            config.setServerLoSupport (devInf->getSupportLargeObjs());
+            config.setServerNocSupport(devInf->getSupportNumberOfChanges());
+            
+            // Process devInf Extension properties
+            ArrayList* ext = devInf->getExt();
+            if (ext) {
+                for (int i=0; i < ext->size(); i++) {
+                    Ext* element = (Ext*)ext->get(i);
+                    if (element) {
+                        StringBuffer xName = element->getXNam();
+
+                        // The only extension expected
+                        if (xName == "X-funambol-smartslow") {
+                            config.setServerSmartSlowSync(true);
+                        }
+                    }
+                }
+            }
+
+            // Store the Server location corresponding to these capabilities
+            // so we'll ask devInf again if the location changes next time.
+            config.setServerLastSyncURL(config.getSyncURL());
+
+            //
+            // Server Datastores/CTCaps: not stored now... do we need them? (TODO)
+            //
+            //ArrayList* dataStores = devInf->getDataStore();
+            //if (dataStores) {
+            //    for (int i=0; i < dataStores->size(); i++) {
+            //        dataStores->get(i);
+            //    }
+            //}
+            //
+            //ArrayList* ctCap = devInf->getCTCap();
+            //if (ctCap) {
+            //    for (int i=0; i < ctCap->size(); i++) {
+            //        ctCap->get(i);
+            //    }
+            //}
+
+            return true;
+        }
+    }
+
+    // If here, no Server devInf found.
+    return false;
+}
+
+
+
+
 char** SyncMLProcessor::getSortedSourcesFromServer(SyncML* syncml, int sourcesNumber) {
 
     char** sourceList = new char*[sourcesNumber+1];

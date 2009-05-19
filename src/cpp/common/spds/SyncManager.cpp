@@ -681,6 +681,7 @@ int SyncManager::prepareSync(SyncSource** s) {
             list = NULL;
         }
 
+
         //
         // Process Put/Get commands
         //
@@ -728,7 +729,10 @@ int SyncManager::prepareSync(SyncSource** s) {
                             }
                         }
                     } else {
-                        // simply acknowledge Put
+                        // Process Server DevInf (Put command from the Server)
+                        if (syncMLProcessor.processServerDevInf(cmd, config)) {
+                            LOG.debug("Server capabilities obtained");
+                        }
                     }
 
                     if (statusCode) {
@@ -744,6 +748,23 @@ int SyncManager::prepareSync(SyncSource** s) {
                 }
             }
         }
+
+
+        //
+        // Process Server devInf (Results to our Get command)
+        //
+        list = syncMLProcessor.getCommands(syncml->getSyncBody(), RESULTS);
+        for (int i=0; i < list->size(); i++) {
+            AbstractCommand* cmd = (AbstractCommand*)list->get(i);
+            if (syncMLProcessor.processServerDevInf(cmd, config)) {
+                LOG.debug("Server capabilities obtained");
+                break;
+            }
+        }
+        delete list;
+        list = NULL;
+
+
 
         //
         // Client Authentication. The auth of the client on the server
@@ -2459,14 +2480,27 @@ DevInf *SyncManager::createDeviceInfo()
 
 bool SyncManager::askServerDevInf() {
 
-    // The Client can force to always ask the Server devInf
+    // 1. The Client can force to always ask the Server devInf
     if (config.getForceServerDevInfo()) {
+        LOG.debug("Client forced to ask Server capabilities");
         return true;
     }
 
-    // If the Server swv is not available, we need to ask Server caps
+    // 2. If Server URL changed from last time we obtained the Server caps,
+    //    we must ask them again (and clear invalid data)
+    StringBuffer currentURL = config.getSyncURL();
+    StringBuffer lastURL    = config.getServerLastSyncURL();
+    if (currentURL != lastURL) {
+        LOG.debug("Server capabilities are invalid (Server URL changed)");
+        clearServerDevInf();
+        return true;
+    }
+
+    // 3. If the Server swv is not available, we need to ask Server caps.
+    //    Server_swv is considered a mandatory property.
     StringBuffer serverSwv = config.getServerSwv();
     if (serverSwv.empty()) {
+        LOG.debug("Server capabilities not found in config");
         return true;
     }
 
@@ -2481,7 +2515,27 @@ bool SyncManager::askServerDevInf() {
         }
     }*/
 
+    LOG.debug("Server capabilities found in config: no need to ask them");
     return false;
+}
+
+
+void SyncManager::clearServerDevInf() {
+
+    config.setServerVerDTD    ("");
+    config.setServerMan       ("");
+    config.setServerMod       ("");
+    config.setServerOem       ("");
+    config.setServerFwv       ("");
+    config.setServerSwv       ("");
+    config.setServerHwv       ("");
+    config.setServerUtc       (false);
+    config.setServerDevID     ("");
+    config.setServerDevType   ("");
+    config.setServerLoSupport (false);
+    config.setServerNocSupport(false);
+    config.setServerSmartSlowSync(false);
+    config.setServerLastSyncURL("");
 }
 
 

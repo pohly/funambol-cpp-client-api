@@ -112,6 +112,18 @@ BEGIN_NAMESPACE
         int processAlertStatus(SyncSource& source, SyncML* syncml, ArrayList* alerts);
 
         int processServerAlert(SyncSource& source, SyncML* syncml);
+
+        /**
+         * Parse and process Server device capabilities if found.
+         * If so, stores all the data in configuration (under Server node).
+         * It can be called either in case of Server response to our Get command (Results)
+         * or in case of a Put command from the Server.
+         * 
+         * @param cmd    the SyncML command containing the Server devInf to process
+         * @return true  if Server devInf found and processed
+         */
+        bool processServerDevInf(AbstractCommand* cmd, AbstractSyncConfig& config);
+
         /*
         * Get the chal from a syncBody object. It is used to get the auth type and next nonce if needed
         */

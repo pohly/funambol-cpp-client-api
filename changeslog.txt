@@ -1,3 +1,9 @@
+2009-05-19
+    - toccy: [US2275] Fixed parsed of devInf
+    - toccy: [US2275] Server capabilities are parsed and values are stored under Server config node
+    - toccy: [US2275] Added serverLastSync property under Server config node: to ask Server devInf if URL changed
+    - toccy: [US2275] Added tests on Server capabilities (ServerDevInfTest)
+
 2009-05-14
     - toccy: [US2275] Added Get command to obtain Server Capabilies (added SyncMLBuilder::prepareServerDevInf())
     - toccy: [US2275] Added 'forceServerDevInfo' param in ClientConfig, to let a Client to force the Get of Server devInf

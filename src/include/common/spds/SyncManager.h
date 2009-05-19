@@ -131,6 +131,13 @@ class SyncManager {
          */
         bool askServerDevInf();
 
+        /**
+         * Utility method, clears all the configuration params of Server caps.
+         * It is used to cleanup the Server caps information for example if the
+         * Server address changes.
+         */
+        void clearServerDevInf();
+
     private:
 
         // SyncManager makes local key safe to use in SyncML by
