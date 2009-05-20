@@ -681,73 +681,35 @@ int SyncManager::prepareSync(SyncSource** s) {
             list = NULL;
         }
 
-
         //
-        // Process Put/Get commands
+        // Process Get commands
         //
-        list = syncml->getSyncBody()->getCommands();
-        int cmdindex;
-        for (cmdindex = 0; cmdindex < list->size(); cmdindex++) {
-            AbstractCommand* cmd = (AbstractCommand*)list->get(cmdindex);
-            const char* name = cmd->getName();
-            if (name) {
-                bool isPut = !strcmp(name, PUT);
-                bool isGet = !strcmp(name, GET);
-
-                if (isGet || isPut) {
-                    int statusCode = 200; // if set, then send it (on by default)
-
-                    if (isGet) {
-                        Get *get = (Get *)cmd;
-                        ArrayList *items = get->getItems();
-                        bool sendDevInf = false;
-
-                        Results results;
-                        for (int i = 0; i < items->size(); i++) {
-                            Item *item = (Item *)items->get(i);
-
-                            // we are not very picky: as long as the Item is
-                            // called "./devinf11" as required by the standard
-                            // we return our device infos
-                            Target *target = item->getTarget();
-                            if (target && target->getLocURI() &&
-                                !strcmp(target->getLocURI(),
-                                         DEVINF_URI)) {
-                                sendDevInf = true;
-                            } else {
-                                LOG.debug("ignoring request to Get item #%d", i);
-                            }
-                        }
-
-                        // cannot send if we have nothing, then simply acknowledge the request,
-                        // but ignore it
-                        if (sendDevInf && devInf) {
-                            AbstractCommand *result = syncMLBuilder.prepareDevInf(cmd, *devInf);
-                            if (result) {
-                                commands.add(*result);
-                                delete result;
-                            }
-                        }
-                    } else {
-                        // Process Server DevInf (Put command from the Server)
-                        if (syncMLProcessor.processServerDevInf(cmd, config)) {
-                            LOG.debug("Server capabilities obtained");
-                        }
-                    }
-
-                    if (statusCode) {
-                        status = syncMLBuilder.prepareCmdStatus(*cmd, statusCode);
-                        if (status) {
-                            // Fire Sync Status Event: status from client
-                            fireSyncStatusEvent(status->getCmd(), status->getStatusCode(), NULL, NULL, NULL , CLIENT_STATUS);
-
-                            commands.add(*status);
-                            deleteStatus(&status);
-                        }
-                    }
-                }
+        list = syncMLProcessor.getCommands(syncml->getSyncBody(), GET);
+        for (int i=0; i < list->size(); i++) {
+            AbstractCommand* cmd = (AbstractCommand*)list->get(i);
+            ArrayList* responseCmd = NULL;
+            if (responseCmd = syncMLProcessor.processGetCommand(cmd, devInf)) {
+                commands.add(responseCmd);
+                delete responseCmd;
             }
         }
+        delete list;
+        list = NULL;
+
+        //
+        // Process Put commands
+        //
+        list = syncMLProcessor.getCommands(syncml->getSyncBody(), PUT);
+        for (int i=0; i < list->size(); i++) {
+            AbstractCommand* cmd = (AbstractCommand*)list->get(i);
+            ArrayList* responseCmd = NULL;
+            if (responseCmd = syncMLProcessor.processPutCommand(cmd, config)) {
+                commands.add(responseCmd);
+                delete responseCmd;
+            }
+        }
+        delete list;
+        list = NULL;
 
 
         //

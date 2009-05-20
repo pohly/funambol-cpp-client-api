@@ -1,3 +1,7 @@
+2009-05-20
+    - toccy: [US2275] Some small refactoring of SyncManager::prepareSync() to process Get/Put commands, 
+                      moved in specialized methods under SyncMLProcessor
+
 2009-05-19
     - toccy: [US2275] Added tests on Server capabilities (ServerDevInfTest suite)
     - toccy: [US2275] Fixed parsed of devInf

@@ -40,6 +40,7 @@
 #include "base/util/utils.h"
 #include "spds/constants.h"
 #include "spds/SyncMLProcessor.h"
+#include "spds/SyncMLBuilder.h"
 #include "spds/spdsutils.h"
 
 #include "event/FireEvent.h"
@@ -177,6 +178,93 @@ finally:
 }
 
 
+ArrayList* SyncMLProcessor::processGetCommand(AbstractCommand* cmd, DevInf* devInf) {
+
+    ArrayList* ret = new ArrayList();
+
+    if (!cmd) {
+        return ret;
+    }
+    StringBuffer name = cmd->getName();
+    Get* get = (Get*)cmd;
+    if ((name != GET) || !get) {
+        return ret;
+    }
+
+    ArrayList *items = get->getItems();
+    bool sendDevInf = false;
+
+    Results results;
+    for (int i = 0; i < items->size(); i++) {
+        Item *item = (Item *)items->get(i);
+
+        // we are not very picky: as long as the Item is
+        // called "./devinf11" as required by the standard
+        // we return our device infos
+        Target *target = item->getTarget();
+        if (target && target->getLocURI() && 
+            !strcmp(target->getLocURI(), DEVINF_URI)) {
+            sendDevInf = true;
+        } else {
+            LOG.debug("ignoring request to Get item #%d", i);
+        }
+    }
+
+    // cannot send if we have nothing, then simply acknowledge the request, but ignore it
+    if (sendDevInf && devInf) {
+        SyncMLBuilder syncMLBuilder;
+        AbstractCommand *result = syncMLBuilder.prepareDevInf(cmd, *devInf);
+        if (result) {
+            ret->add(*result);
+            delete result;
+        }
+    }
+
+    // Send back status code 200
+    int statusCode = 200; 
+    SyncMLBuilder syncMLBuilder;
+    Status* status = syncMLBuilder.prepareCmdStatus(*cmd, statusCode);
+    if (status) {
+        // Fire Sync Status Event: status from client
+        fireSyncStatusEvent(status->getCmd(), status->getStatusCode(), NULL, NULL, NULL , CLIENT_STATUS);
+        ret->add(*status);
+        deleteStatus(&status);
+    }
+
+    return ret;
+}
+
+
+ArrayList* SyncMLProcessor::processPutCommand(AbstractCommand* cmd, AbstractSyncConfig& config) {
+
+    ArrayList* ret = new ArrayList();
+
+    if (!cmd) {
+        return ret;
+    }
+    StringBuffer name = cmd->getName();
+    Put* put = (Put*)cmd;
+    if ((name != PUT) || !put) {
+        return ret;
+    }
+
+    if (processServerDevInf(cmd, config)) {
+        LOG.debug("Server capabilities obtained");
+    }
+
+    // Send back status code 200
+    int statusCode = 200; 
+    SyncMLBuilder syncMLBuilder;
+    Status* status = syncMLBuilder.prepareCmdStatus(*cmd, statusCode);
+    if (status) {
+        // Fire Sync Status Event: status from client
+        fireSyncStatusEvent(status->getCmd(), status->getStatusCode(), NULL, NULL, NULL , CLIENT_STATUS);
+        ret->add(*status);
+        deleteStatus(&status);
+    }
+
+    return ret;
+}
 
 
 
