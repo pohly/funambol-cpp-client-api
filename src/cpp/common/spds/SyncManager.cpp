@@ -1567,10 +1567,12 @@ int SyncManager::sync() {
 
     //
     // If this was the last chunk, we move the state to STATE_PKG3_SENT
-    // At this time "last" is always true. The client is going to send
-    // the 222 package for to get the server modification if at least a source is correct
+    // At this time "last" SHOULD always be true. If not, it means there was an error
+    // and the APIs didn't send the <Final> tag yet.
+    // In this case we MUST send the Final tag now, to notify the Server we completed
+    // the "Clients modification" phase.
     //
-    last = true;
+    bool sendFinalTag = !last;
     currentState = STATE_PKG3_SENT;
 
     //
@@ -1593,7 +1595,7 @@ int SyncManager::sync() {
             }
         }
 
-        syncml = syncMLBuilder.prepareSyncML(&commands, false);
+        syncml = syncMLBuilder.prepareSyncML(&commands, sendFinalTag);
         msg    = syncMLBuilder.prepareMsg(syncml);
 
         LOG.debug("Alert to request server changes");
