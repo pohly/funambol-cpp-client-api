@@ -1016,6 +1016,7 @@ int SyncManager::sync() {
     //ArrayList* list      = new ArrayList();
     bool isFinalfromServer = false;
     bool isAtLeastOneSourceCorrect = false;
+    bool sendFinalAfterClientMods = true;
 
     //
     // If this is the first message, currentState is STATE_PKG1_SENT,
@@ -1572,7 +1573,7 @@ int SyncManager::sync() {
     // In this case we MUST send the Final tag now, to notify the Server we completed
     // the "Clients modification" phase.
     //
-    bool sendFinalTag = !last;
+    sendFinalAfterClientMods = !last;
     currentState = STATE_PKG3_SENT;
 
     //
@@ -1595,7 +1596,7 @@ int SyncManager::sync() {
             }
         }
 
-        syncml = syncMLBuilder.prepareSyncML(&commands, sendFinalTag);
+        syncml = syncMLBuilder.prepareSyncML(&commands, sendFinalAfterClientMods);
         msg    = syncMLBuilder.prepareMsg(syncml);
 
         LOG.debug("Alert to request server changes");
