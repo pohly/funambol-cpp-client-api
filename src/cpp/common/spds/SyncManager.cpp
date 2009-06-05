@@ -473,22 +473,26 @@ int SyncManager::prepareSync(SyncSource** s) {
 
         currentState = STATE_PKG1_SENDING;
 
+        // If transportAgent not set explicitly by the Client, get the default one.
         if (transportAgent == NULL) {
             transportAgent = TransportAgentFactory::getTransportAgent(url, proxy, responseTimeout, maxMsgSize);
-            transportAgent->setReadBufferSize(readBufferSize);
-            transportAgent->setSSLServerCertificates(config.getSSLServerCertificates());
-            transportAgent->setSSLVerifyServer(config.getSSLVerifyServer());
-            transportAgent->setSSLVerifyHost(config.getSSLVerifyHost());
-            // Here we also ensure that the user agent string is valid
-            const char* ua = getUserAgent(config);
-            LOG.debug("User Agent = %s", ua);
-            transportAgent->setUserAgent(ua);
-            transportAgent->setCompression(config.getCompression());
-            delete [] ua; ua = NULL;
         }
         else {
             transportAgent->setURL(url);
         }
+        transportAgent->setReadBufferSize(readBufferSize);
+        transportAgent->setSSLServerCertificates(config.getSSLServerCertificates());
+        transportAgent->setSSLVerifyServer(config.getSSLVerifyServer());
+        transportAgent->setSSLVerifyHost(config.getSSLVerifyHost());
+        
+        // Here we also ensure that the user agent string is valid
+        const char* ua = getUserAgent(config);
+        LOG.debug("User Agent = %s", ua);
+        transportAgent->setUserAgent(ua);
+        transportAgent->setCompression(config.getCompression());
+        delete [] ua; ua = NULL;
+
+
         if (getLastErrorCode() != 0) { // connection: lastErrorCode = 2005: Impossible to establish internet connection
             ret = getLastErrorCode();
             goto finally;
@@ -2467,16 +2471,7 @@ static void fillContentTypeInfoList(ArrayList &l, const char* types) {
     }
 }
 
-/*
- * Ensure that the user agent string is valid.
- * If property 'user agent' is empty, it is replaced by 'mod' and 'SwV'
- * properties from AbstractDeviceConfig.
- * If also 'mod' property is empty, return a default user agent.
- *
- * @param config: reference to the current AbstractSyncConfig
- * @return      : user agent property as a new char*
- *                (need to be freed by the caller)
- */
+
 const char* SyncManager::getUserAgent(AbstractSyncConfig& config) {
 
     char* ret;
@@ -2504,5 +2499,9 @@ const char* SyncManager::getUserAgent(AbstractSyncConfig& config) {
     }
 
     return ret;
+}
+
+void SyncManager::setTransportAgent(TransportAgent* t) {
+    transportAgent = t;
 }
 
