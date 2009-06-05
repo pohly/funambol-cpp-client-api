@@ -190,11 +190,10 @@
 				RelativePath="..\..\test\TestFileSource.cpp"
 				>
 			</File>
-                        <File
+			<File
 				RelativePath="..\..\test\TestFileSource.h"
 				>
 			</File>
-
 			<Filter
 				Name="spds"
 				>
@@ -299,6 +298,10 @@
 					>
 				</File>
 				<File
+					RelativePath="..\..\test\integration\ManyItemsTestSyncSource.cpp"
+					>
+				</File>
+				<File
 					RelativePath="..\..\test\integration\MappingsTest.cpp"
 					>
 				</File>
@@ -315,7 +318,19 @@
 					>
 				</File>
 				<File
+					RelativePath="..\..\test\integration\SyncManagerTest.cpp"
+					>
+				</File>
+				<File
 					RelativePath="..\..\src\cpp\common\client\TestFileSyncSource.cpp"
+					>
+				</File>
+			</Filter>
+			<Filter
+				Name="http"
+				>
+				<File
+					RelativePath="..\..\test\common\http\TransportAgentReplacement.cpp"
 					>
 				</File>
 			</Filter>
@@ -327,6 +342,10 @@
 			>
 			<File
 				RelativePath="..\..\test\ClientTest.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\test\integration\SyncManagerTest.h"
 				>
 			</File>
 			<File
