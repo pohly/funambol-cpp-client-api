@@ -190,10 +190,8 @@ Status* SyncMLBuilder::prepareSyncHdrStatus(Chal*chal, int d) {
     CmdID* commandID         = new CmdID(cmdid);
     ArrayList*    targetRefs = new ArrayList();
     ArrayList*    sourceRefs = new ArrayList();
-    //TargetRef*    tar        = new TargetRef(target);
-    //SourceRef*    sou        = new SourceRef(device);
-    TargetRef*    tar        = new TargetRef(device);
-    SourceRef*    sou        = new SourceRef(target);
+    TargetRef*    tar        = new TargetRef(target);
+    SourceRef*    sou        = new SourceRef(device);
     Data*      data          = new Data(d);
     targetRefs->add(*tar);
     sourceRefs->add(*sou);
