@@ -37,6 +37,9 @@ TESTS_FILTER = \
     ClauseTest.cpp \
     FilterTest.cpp
 
+TESTS_HTTP = \
+    TransportAgentReplacement.cpp
+
 TESTS_SYNCML = \
     ParserTest.cpp \
     FormatterTest.cpp \
@@ -52,9 +55,11 @@ TESTS_EVENT = EventTest.cpp
 
 TESTS_SPDS = \
     MappingsTest.cpp \
-    MappingTestSyncSource.cpp
+    MappingTestSyncSource.cpp \
+    ManyItemsTestSyncSource.cpp \
+    SyncManagerTest.cpp
     
-TESTCASES = $(TESTS_BASE) $(TESTS_FILTER) $(TESTS_SYNCML) $(TESTS_SPDM) $(TESTS_EVENT) $(TESTS_CLIENT) $(TESTS_SPDS)
+TESTCASES = $(TESTS_BASE) $(TESTS_FILTER) $(TESTS_HTTP) $(TESTS_SYNCML) $(TESTS_SPDM) $(TESTS_EVENT) $(TESTS_CLIENT) $(TESTS_SPDS)
 
 client_test_SOURCES = $(SOURCES) $(TESTCASES)
 
