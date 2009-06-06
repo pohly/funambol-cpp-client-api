@@ -19,7 +19,8 @@ vpath %.cpp	$(TESTDIR) \
 		$(TESTDIR)/common/filter \
 		$(TESTDIR)/common/client \
 		$(TESTDIR)/integration \
-		$(TESTDIR)/common/event
+		$(TESTDIR)/common/event \
+        $(TESTDIR)/common/http
 
 # Test runner sources
 SOURCES = client-test-main.cpp ClientTest.cpp TestFileSource.cpp
