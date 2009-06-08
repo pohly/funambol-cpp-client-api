@@ -75,15 +75,20 @@ SymbianLog::SymbianLog(bool resetLog, const char* path, const char* name)
     StringBuffer nameSb(n);
     iLogFileName.Assign(charToNewBuf(nameSb.c_str()));
     
-    
-    // Create a semaphore, to avoid accessing the FileSystem at
-    // the same time by different threads.
-    // The semaphore is global, so that it could be used also by
-    // other processes that (in future) will use this Log.
-    err = iSemaphore.CreateGlobal(KLogSemaphoreName, 1);
-    if (err != KErrNone) {
-        setError(ERR_SEMAPHORE_CREATION, ERR_SEMAPHORE_CREATION_MSG);
-    }
+    // try open log 
+    err = iSemaphore.OpenGlobal(KLogSemaphoreName);  
+
+    if (err == KErrNotFound) {
+        // Create a semaphore, to avoid accessing the FileSystem at
+        // the same time by different threads.
+        // The semaphore is global, so that it could be used also by
+        // other processes that (in future) will use this Log.
+        err = iSemaphore.CreateGlobal(KLogSemaphoreName, 1);
+        if (err != KErrNone) {
+            setError(ERR_SEMAPHORE_CREATION, ERR_SEMAPHORE_CREATION_MSG);
+        }
+    } 
+
     iSemaphore.Wait();
 
     
