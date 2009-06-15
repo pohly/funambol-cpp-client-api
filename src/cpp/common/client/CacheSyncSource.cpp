@@ -58,11 +58,22 @@ BEGIN_NAMESPACE
 static bool initCacheDir(StringBuffer& dir) {
     
     dir = PlatformAdapter::getConfigFolder();
-    dir += "/";
+    int len = dir.length();
+    
+    if (len == 0) {
+        return false;
+    }
+    
+    char pathEnd = dir[len - 1];
+    // check if cache dir path terminates with slash or backslash
+    if ((pathEnd != '/') && (pathEnd != '\\')) {
+        dir += "/";
+    }
+    
     dir += CACHE_FOLDER;
 
     if (createFolder(dir)){
-        LOG.error("initCacheDir: error creating cache directory");
+        LOG.error("initCacheDir: error creating cache directory '%s'", dir.c_str());
         dir = NULL;
         return false;
     }
@@ -120,29 +131,23 @@ CacheSyncSource::~CacheSyncSource() {
 * If there is an error this error is reported in the saving procedure and there
 * it is decided how procede
 */
-void CacheSyncSource::setItemStatus(const WCHAR* key, int status, const char* command) {
+void CacheSyncSource::setItemStatus(const WCHAR* wkey, int status, const char* command) {
+    
+    StringBuffer key;
+    key.convert(wkey);
     
     KeyValuePair vp;
-    switch (status) {
-        
-        case 200:
-        case 201:
-        case 418: 
-            {
-             LOG.info("[%" WCHAR_PRINTF "], Received success status code from server for %s on item with key %s - code: %d", getName(), command, key, status);
-             char* k = toMultibyte(key);         
-             vp.setKey(k);
-             StringBuffer v(k);
-             vp.setValue(getItemSignature(v));             
-             delete [] k;
-            }   
-            break;
-        case 500:        
-        default:
-            LOG.info("[%" WCHAR_PRINTF "], Received failed status code from server for %s on item with key %s - code: %d", getName(), command, key, status);
-            // error. it doesn't update the cache
-            break;
-    }
+    if (!isErrorCode(status)) {
+        LOG.info("[%s], Received success status code from server for %s on item with key %s - code: %d", getConfig().getName(), command, key.c_str(), status);        
+        vp.setKey(key.c_str());
+        if (strcmp(command, DEL)) {
+            vp.setValue(getItemSignature(key));
+        }
+    } else {
+        // 500 etc...
+        LOG.info("[%s], Received failed status code from server for %s on item with key %s - code: %d", getConfig().getName(), command, key.c_str(), status);
+        // error. it doesn't update the cache
+    }    
     if (vp.getKey()) {
         updateInCache(vp, command);
     }
@@ -169,7 +174,7 @@ StringBuffer CacheSyncSource::getItemSignature(StringBuffer& key) {
         return NULL;
     }
     
-    LOG.debug("[%" WCHAR_PRINTF "] Getting signature for item with key %s", getName(), key.c_str());
+    LOG.debug("[%s] Getting signature for item with key %s", getConfig().getName(), key.c_str());
     
     content = getItemContent(key, &size);                      
     StringBuffer s;
@@ -180,7 +185,7 @@ StringBuffer CacheSyncSource::getItemSignature(StringBuffer& key) {
 
 
 
-SyncItem* CacheSyncSource::fillSyncItem(StringBuffer* key) {
+SyncItem* CacheSyncSource::fillSyncItem(StringBuffer* key, const bool fillData) {
     
     SyncItem* syncItem  = NULL;    
     size_t size         = 0;
@@ -190,13 +195,15 @@ SyncItem* CacheSyncSource::fillSyncItem(StringBuffer* key) {
         return NULL;
     }
     
-    LOG.debug("[%" WCHAR_PRINTF "] Filling item with key %s", getName(), key->c_str());
-    
-    content = getItemContent((*key), &size);
+    //LOG.debug("[%s] Filling item with key %s", getConfig().getName(), key->c_str());
     
     WCHAR* wkey = toWideChar(key->c_str());
     syncItem = new SyncItem(wkey);
-    syncItem->setData(content, size);
+    
+    if (fillData) {
+        content = getItemContent((*key), &size);
+        syncItem->setData(content, size);
+    }
     
     if (wkey) { delete [] wkey; wkey = NULL; }
     if (content) { delete [] (char*)content; content = NULL; }
@@ -215,7 +222,18 @@ SyncItem* CacheSyncSource::getFirstItem() {
     // A slow sync is started -> clear the cache
     clearCache();
 
-    allKeys = getAllItemList();      
+    allKeys = getAllItemList();   
+
+    /* @TODO. some reset of the iterator??
+    // it is an Enumeration so we have to loop on the keys
+    int count = 0;
+    while (allKeys && allKeys->hasMoreElement()) {
+        count++;
+        allKeys->getNextElement();
+    }
+    fireClientTotalNumber(count);
+    */
+
     return getNextItem();
 
 };
@@ -229,11 +247,17 @@ SyncItem* CacheSyncSource::getNextItem() {
     
     SyncItem* syncItem = NULL;
     if (allKeys && allKeys->hasMoreElement()) {
-        StringBuffer* s     = (StringBuffer*)allKeys->getNextElement();    
+        StringBuffer* s = (StringBuffer*)allKeys->getNextElement();    
         syncItem = fillSyncItem(s);
     }
-    if (!syncItem) {
-        LOG.info("There are no more items to be exchanged. Return NULL");     
+    
+    if (syncItem) {
+        StringBuffer key;
+        key.convert(syncItem->getKey());
+        LOG.info("Sending %s item: key = %s", getConfig().getName(), key.c_str());
+    }
+    else {
+        LOG.debug("There are no more items to be exchanged. Return NULL");     
     }
     return syncItem;
 
@@ -244,6 +268,24 @@ SyncItem* CacheSyncSource::getNextItem() {
  */
 SyncItem* CacheSyncSource::getFirstNewItem() {    
     fillItemModifications();   
+    
+    /* @TODO some reset of iterator???
+    // get the total number of items
+    int count = 0;
+    while (newKeys && newKeys->hasMoreElement()) {
+        count++;
+        newKeys->getNextElement();
+    }
+    while (updatedKeys && updatedKeys->hasMoreElement()) {
+        count++;
+        updatedKeys->getNextElement();
+    }
+    while (deletedKeys && deletedKeys->hasMoreElement()) {
+        count++;
+        deletedKeys->getNextElement();
+    }
+    fireClientTotalNumber(count);
+    */
     return getNextNewItem();    
 
 }
@@ -256,11 +298,17 @@ SyncItem* CacheSyncSource::getNextNewItem() {
     
     SyncItem* syncItem = NULL;
     if (newKeys && newKeys->hasMoreElement()) {
-        StringBuffer* s     = (StringBuffer*)newKeys->getNextElement();    
+        StringBuffer* s = (StringBuffer*)newKeys->getNextElement();    
         syncItem = fillSyncItem(s);
     }
-    if (!syncItem) {
-        LOG.info("There are no more new items to be exchanged. Return NULL");     
+    
+    if (syncItem) {
+        StringBuffer key;
+        key.convert(syncItem->getKey());
+        LOG.info("Sending new %s item: key = %s", getConfig().getName(), key.c_str());
+    }
+    else {
+        LOG.debug("There are no more new items to be exchanged. Return NULL");     
     }
     return syncItem;   
 }
@@ -279,12 +327,18 @@ SyncItem* CacheSyncSource::getNextUpdatedItem() {
 
     SyncItem* syncItem = NULL;
     if (updatedKeys && updatedKeys->hasMoreElement()) {
-        StringBuffer* s     = (StringBuffer*)updatedKeys->getNextElement();    
+        StringBuffer* s = (StringBuffer*)updatedKeys->getNextElement();    
         syncItem = fillSyncItem(s);
     }
-    if (!syncItem) {
-        LOG.info("There are no more updated items to be exchanged. Return NULL");     
-    }    
+    
+    if (syncItem) {
+        StringBuffer key;
+        key.convert(syncItem->getKey());
+        LOG.info("Sending updated %s item: key = %s", getConfig().getName(), key.c_str());
+    }
+    else {
+        LOG.debug("There are no more updated items to be exchanged. Return NULL");     
+    }
     return syncItem;    
 }
 
@@ -302,17 +356,18 @@ SyncItem* CacheSyncSource::getNextDeletedItem() {
     
     SyncItem* syncItem = NULL;
     if (deletedKeys && deletedKeys->hasMoreElement()) {
-        StringBuffer* s     = (StringBuffer*)deletedKeys->getNextElement();  
-        if (!s) {
-            return NULL;
-        }
-        WCHAR* wkey = toWideChar(s->c_str());
-        syncItem = new SyncItem(wkey); 
-        if (wkey) { delete [] wkey; wkey = NULL; }  
+        StringBuffer* s = (StringBuffer*)deletedKeys->getNextElement();  
+        syncItem = fillSyncItem(s, false);  // Don't set SyncItem data, just the key.
     }
-    if (!syncItem) {
-        LOG.info("There are no more deleted items to be exchanged. Return NULL");     
-    }    
+    
+    if (syncItem) {
+        StringBuffer key;
+        key.convert(syncItem->getKey());
+        LOG.info("Sending deleted %s item: key = %s", getConfig().getName(), key.c_str());
+    }
+    else {
+        LOG.debug("There are no more deleted items to be exchanged. Return NULL");     
+    }
          
     return syncItem;
 }
@@ -409,11 +464,10 @@ bool CacheSyncSource::fillItemModifications() {
 */
 int CacheSyncSource::saveCache() {
     
-    LOG.debug("[%" WCHAR_PRINTF "] Saving cache", getName());
+    LOG.debug("[%s] Saving cache", getConfig().getName());
     
     int ret = cache->close();
     return ret;
-
 }
 
 int CacheSyncSource::updateInCache(KeyValuePair& k, const char* action) {
@@ -429,73 +483,98 @@ int CacheSyncSource::updateInCache(KeyValuePair& k, const char* action) {
 
 void CacheSyncSource::getKeyAndSignature(SyncItem& item, KeyValuePair& kvp) {
     
-    char* t = toMultibyte(item.getKey());
-    StringBuffer s(t);
-    StringBuffer sign = getItemSignature(s);
-    kvp.setKey(t);
-    kvp.setValue(sign);
-    delete [] t;
+    StringBuffer t;
+    t.convert(item.getKey());
+    StringBuffer sign = getItemSignature(t);
     
+    kvp.setKey(t.c_str());
+    kvp.setValue(sign);
 }
 
 int CacheSyncSource::addItem(SyncItem& item) {
+    
     int ret = insertItem(item);
-    switch (ret) {        
-        case 200:
-        case 201:
-        case 418: {
-            LOG.info("[%" WCHAR_PRINTF "] Successful add of item with key %" WCHAR_PRINTF " - code %d", getName(), item.getKey(), ret);
-            KeyValuePair k;
-            getKeyAndSignature(item, k);
-            insertInCache(k);
-        }
-        break;
-        default:
-            LOG.error("[%" WCHAR_PRINTF "] Failed add of item with key %" WCHAR_PRINTF " - code %d", getName(), item.getKey(), ret);
-        break;
+    StringBuffer key;
+    key.convert(item.getKey());
+    
+    if (!isErrorCode(ret)) {
+        LOG.info("[%s] Successful add of item with key %s - code %d", getConfig().getName(), key.c_str(), ret);
+        KeyValuePair k;
+        getKeyAndSignature(item, k);
+        insertInCache(k);
+    } else {
+         LOG.error("[%s] Failed add of item with key %s - code %d", getConfig().getName(), key.c_str(), ret);
     }
+
     return ret;
 }
 
 
 int CacheSyncSource::updateItem(SyncItem& item) {
+    
     int ret = modifyItem(item);
-    switch (ret) {        
-        case 200:
-        case 201:
-        case 418: {
-            LOG.info("[%" WCHAR_PRINTF "] Successful update of item with key %" WCHAR_PRINTF " - code %d", getName(), item.getKey(), ret);
-            KeyValuePair k;
-            getKeyAndSignature(item, k);
-            updateInCache(k);
-        }
-        break;
-        default:
-            LOG.error("[%" WCHAR_PRINTF "] Failed update of item with key %" WCHAR_PRINTF " - code %d", getName(), item.getKey(), ret);
-        break;
+    StringBuffer key;
+    key.convert(item.getKey());
+    
+    if (!isErrorCode(ret)) {
+        LOG.info("[%s] Successful update of item with key %s - code %d", getConfig().getName(), key.c_str(), ret);
+        KeyValuePair k;
+        getKeyAndSignature(item, k);
+        updateInCache(k);
+    } else {
+         LOG.error("[%s] Failed add of item with key %s - code %d", getConfig().getName(), key.c_str(), ret);
     }
+
     return ret;
 }
 
 int CacheSyncSource::deleteItem(SyncItem& item) {
-    int ret = removeItem(item);
-    switch (ret) {        
-        case 200:
-        case 201:
-        case 418: {
-            LOG.info("[%" WCHAR_PRINTF "] Successful delete of item with key %" WCHAR_PRINTF " - code %d", getName(), item.getKey(), ret);  
-            char* t = toMultibyte(item.getKey());
-            KeyValuePair k (t, "");
-            removeFromCache(k);
-            delete [] t;
-        }
-        break;
-        default:
-            LOG.error("[%" WCHAR_PRINTF "] Failed delete of item with key %" WCHAR_PRINTF " - code %d", getName(), item.getKey(), ret);
-        break;
-    }
     
+    int ret = removeItem(item);
+    StringBuffer key;
+    key.convert(item.getKey());
+    
+    if (!isErrorCode(ret)) {
+        LOG.info("[%s] Successful delete of item with key %s - code %d", getConfig().getName(), key.c_str(), ret);  
+        char* t = toMultibyte(item.getKey());
+        KeyValuePair k (t, "");
+        removeFromCache(k);
+        delete [] t;
+    } else {
+        LOG.error("[%s] Failed delete of item with key %s - code %d", getConfig().getName(), key.c_str(), ret);
+       
+    }
     return ret;
 } 
+
+
+StringBuffer CacheSyncSource::readCachePropertyValue(const char* prop)
+{
+    return cache->readPropertyValue(prop);
+}
+
+
+bool CacheSyncSource::isErrorCode(int code) {
+    
+    if ((code >= STC_OK && code < STC_MULTIPLE_CHOICES && 
+         code != STC_CHUNKED_ITEM_ACCEPTED &&
+         code != STC_PARTIAL_CONTENT       && 
+         code != STC_RESET_CONTENT         && 
+         code != STC_NO_CONTENT            ) ||                 
+         code == STC_ALREADY_EXISTS) {
+        return false;
+    } else {
+        return true;
+    }
+}
+
+void CacheSyncSource::fireClientTotalNumber(int number) {
+
+    fireSyncSourceEvent(getConfig().getURI(), 
+                        getConfig().getName(), 
+                        getSyncMode(), number, 
+                        SYNC_SOURCE_TOTAL_CLIENT_ITEMS);
+
+}
 
 END_NAMESPACE

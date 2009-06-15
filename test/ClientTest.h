@@ -52,6 +52,7 @@
 #include <cppunit/TestFixture.h>
 #include "base/globalsdef.h"
 #include "MappingsTest.h"
+#include "ConfigSyncSourceTest.h"
 #include "SyncManagerTest.h"
 
 USE_NAMESPACE
@@ -686,6 +687,10 @@ protected:
     /** utility functions for second client */
     SyncTests *accessClientB;
 
+    /** Listeners for all sync tests */
+    SyncItemListener* itemListener;
+    // TODO: add other listeners
+
     enum DeleteAllMode {
         DELETE_ALL_SYNC,   /**< make sure client and server are in sync,
                               delete locally,
@@ -755,6 +760,7 @@ protected:
     virtual void testItems();
     virtual void testAddUpdate();
 
+
     // test copying with maxMsg and no large object support
     void testMaxMsg() {
         doVarSizes(true, false, NULL);
@@ -778,6 +784,11 @@ protected:
     virtual void testMappings() {
         MappingsTest mapping;
         mapping.runTests();        
+    }
+
+    virtual void testConfigSyncSource() {
+        ConfigSyncSourceTest css;
+        css.runTests();        
     }
 
     virtual void testServerError506() {

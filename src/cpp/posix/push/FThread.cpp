@@ -39,13 +39,13 @@
 
 static void *pthreadEntryFunction(void* fthreadObj);
 
-#include "FThread.h"
+#include "push/FThread.h"
 #include "base/globalsdef.h"
 
 USE_NAMESPACE
 
-FThread::FThread() :isRunning(false),
-                    terminate(false)
+FThread::FThread() : terminate(false),
+                     isRunning(false)
 {
 }
 
@@ -53,10 +53,8 @@ FThread::~FThread() {
 }
 
 void FThread::start( FThread::Priority priority ) {
-
-    char* message = "PThread"; 
     isRunning = true;
-    int ret = pthread_create( &pthread, NULL, pthreadEntryFunction, (void*)this);
+    pthread_create( &pthread, NULL, pthreadEntryFunction, (void*)this);
 }
 
 void FThread::wait() {
@@ -73,7 +71,12 @@ bool FThread::wait(unsigned long timeout) {
     t.tv_sec  = seconds;
     t.tv_nsec = nanoseconds;
 
-    pthread_timedjoin_np(pthread, NULL, &t);
+#if !defined(__APPLE__) && defined(__MACH__)
+    if(pthread_timedjoin_np(pthread, NULL, &t) == ETIMEDOUT) {
+        return true;
+    }
+#endif
+    return false;
 }
 
 bool FThread::finished() const {

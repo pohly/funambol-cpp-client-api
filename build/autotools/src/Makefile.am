@@ -29,6 +29,7 @@ SOURCES_EVENT = \
     lSetListener.cpp \
     lSyncEvent.cpp \
     lSyncItemEvent.cpp \
+    lSyncItemListener.cpp \
     lSyncSourceEvent.cpp \
     lSyncStatusEvent.cpp \
     lTransportEvent.cpp 
@@ -152,6 +153,9 @@ SOURCES_SPDS = \
     lSyncSource.cpp \
     lSyncSourceConfig.cpp \
     lSyncSourceReport.cpp \
+    lFolderData.cpp \
+    lFolderExt.cpp \
+    lMailAccount.cpp \
     lspdsutils.cpp 
 
 SOURCES_CLIENT = \
@@ -160,6 +164,7 @@ SOURCES_CLIENT = \
     lCacheSyncSource.cpp \
     lFileSyncSource.cpp \
     lOptionParser.cpp \
+    lConfigSyncSource.cpp \
     lSyncClient.cpp
 
 SOURCES_VOCL = \
@@ -167,13 +172,11 @@ SOURCES_VOCL = \
     lVObject.cpp \
     lVObjectFactory.cpp \
     lVProperty.cpp \
-\
     lCalendar.cpp \
     lEvent.cpp \
     lToDo.cpp \
     liCalConverter.cpp \
     liCalProperty.cpp \
-\
     lAddress.cpp \
     lBusinessDetail.cpp \
     lContact.cpp \
@@ -190,7 +193,16 @@ SOURCES_VOCL = \
     lvCardConverter.cpp \
     lvCardProperty.cpp
 
-SOURCES_LIBFUNAMBOL = $(SOURCES_BASE) $(SOURCES_EVENT) $(SOURCES_FRAMEWORK) $(SOURCES_HTTP) $(SOURCES_SPDM) $(SOURCES_SPDS) $(SOURCES_CLIENT) $(SOURCES_VOCL)
+SOURCES_PUSH = \
+    lCTPConfig.cpp \
+    lCTPMessage.cpp \
+    lCTPParam.cpp \
+    lCTPService.cpp \
+    lCTPThreadPool.cpp \
+    lFThread.cpp \
+    lFSocket.cpp
+
+SOURCES_LIBFUNAMBOL = $(SOURCES_BASE) $(SOURCES_EVENT) $(SOURCES_FRAMEWORK) $(SOURCES_HTTP) $(SOURCES_SPDM) $(SOURCES_SPDS) $(SOURCES_CLIENT) $(SOURCES_VOCL) $(SOURCES_PUSH)
 
 # Explicitly copy each source file here.
 # automake 1.10 creates rules which expect the *file* in this directory;
@@ -201,7 +213,7 @@ $(SOURCES_LIBFUNAMBOL): l% : %
 CLEANFILES = $(SOURCES_LIBFUNAMBOL)
 
 libfunambol_la_SOURCES = $(SOURCES_LIBFUNAMBOL:%=l%)
-libfunambol_la_LDFLAGS = -version-info @SO_VERSION_INFO@ @CURL_LDFLAGS@ @CPPUNIT_LDFLAGS@
+libfunambol_la_LDFLAGS = -version-info @SO_VERSION_INFO@ @CURL_LDFLAGS@ @CPPUNIT_LDFLAGS@ -lpthread
 libfunambol_la_CXXFLAGS = @CURL_CFLAGS@ @CPPUNIT_CXXFLAGS@
 
 # client_SOURCES = client.cpp TestSyncSource.cpp TestSyncSource2.cpp
@@ -222,6 +234,7 @@ vpath %.cpp $(srcdir)/../../../src/cpp/common/base             \
             $(srcdir)/../../../src/cpp/common/http             \
             $(srcdir)/../../../src/cpp/common/spdm             \
             $(srcdir)/../../../src/cpp/common/spds             \
+            $(srcdir)/../../../src/cpp/common/push             \
             $(srcdir)/../../../src/cpp/common/test             \
             $(srcdir)/../../../src/cpp/common/vocl             \
             $(srcdir)/../../../src/cpp/common/vocl/iCalendar   \
@@ -230,9 +243,9 @@ vpath %.cpp $(srcdir)/../../../src/cpp/common/base             \
             $(srcdir)/../../../src/cpp/posix/base/adapter      \
             $(srcdir)/../../../src/cpp/posix/http              \
             $(srcdir)/../../../src/cpp/posix/spdm              \
-            $(srcdir)/../../../src/cpp/posix/spds
+            $(srcdir)/../../../src/cpp/posix/spds              \
+            $(srcdir)/../../../src/cpp/posix/push
 
 vpath %.c   $(srcdir)/../../../src/cpp/common/base
 
 AM_CPPFLAGS = -DFUNAMBOL_BUILD_API -I$(srcdir)/../../../src/include/posix -I$(srcdir)/../../../src/include/common
-

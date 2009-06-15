@@ -41,7 +41,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="..\..;..\..\test;..\..\test\integration;..\..\src\include\windows;..\..\src\include\common;..\..\..\..\tools\cppunit\include"
+				AdditionalIncludeDirectories="..\..;..\..\test;..\..\test\integration;..\..\src\include\windows;..\..\src\include\common;..\..\tools\cppunit\include"
 				PreprocessorDefinitions="WIN32;_DEBUG_;ENABLE_UNIT_TESTS;ENABLE_INTEGRATION_TESTS;ENABLE_NAMESPACE;_CRT_SECURE_NO_DEPRECATE;CRT_SECURE_NO_DEPRECATE;_CRT_NON_CONFORMING_SWPRINTFS"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
@@ -64,7 +64,7 @@
 				Name="VCLinkerTool"
 				AdditionalDependencies="cppunitd.lib wininet.lib wsock32.lib Netapi32.lib"
 				LinkIncremental="2"
-				AdditionalLibraryDirectories="..\..\..\..\tools\cppunit\lib"
+				AdditionalLibraryDirectories="..\..\tools\cppunit\lib"
 				IgnoreDefaultLibraryNames=""
 				GenerateDebugInformation="true"
 				SubSystem="1"
@@ -198,7 +198,23 @@
 				Name="spds"
 				>
 				<File
+					RelativePath="..\..\test\common\spds\AccountFolderTest.cpp"
+					>
+				</File>
+				<File
 					RelativePath="..\..\test\common\spds\EncryptionTest.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\test\common\spds\FolderDataTest.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\test\common\spds\FolderExtTest.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\test\common\spds\MailAccountTest.cpp"
 					>
 				</File>
 			</Filter>
@@ -257,6 +273,10 @@
 					RelativePath="..\..\test\common\syncml\ParserTest.cpp"
 					>
 				</File>
+				<File
+					RelativePath="..\..\test\common\syncml\ServerDevInfTest.cpp"
+					>
+				</File>
 			</Filter>
 			<Filter
 				Name="event"
@@ -286,6 +306,10 @@
 				Name="client"
 				>
 				<File
+					RelativePath="..\..\test\common\client\ConfigSyncSourceUnitTest.cpp"
+					>
+				</File>
+				<File
 					RelativePath="..\..\test\common\client\OptionParserTest.cpp"
 					>
 				</File>
@@ -295,6 +319,14 @@
 				>
 				<File
 					RelativePath="..\..\test\ClientTest.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\test\integration\ConfigSyncSourceTest.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\test\integration\ConfigSyncSourceTest.h"
 					>
 				</File>
 				<File
@@ -327,6 +359,18 @@
 				</File>
 			</Filter>
 			<Filter
+				Name="push"
+				>
+				<File
+					RelativePath="..\..\test\common\push\CTPServiceTest.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\test\common\push\FThreadTest.cpp"
+					>
+				</File>
+			</Filter>
+			<Filter
 				Name="http"
 				>
 				<File
@@ -342,10 +386,6 @@
 			>
 			<File
 				RelativePath="..\..\test\ClientTest.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\test\integration\SyncManagerTest.h"
 				>
 			</File>
 			<File
@@ -485,6 +525,34 @@
 			<Filter
 				Name="SyncML"
 				>
+				<File
+					RelativePath="..\..\test\testcases\devInfResults.xml"
+					>
+					<FileConfiguration
+						Name="Debug|Win32"
+						>
+						<Tool
+							Name="VCCustomBuildTool"
+							Description="Copying $(InputDir)$(InputFileName)"
+							CommandLine="copy $(InputDir)$(InputFileName) $(TargetDir)&#x0D;&#x0A;"
+							Outputs="$(TargetDir)$(InputFileName)"
+						/>
+					</FileConfiguration>
+				</File>
+				<File
+					RelativePath="..\..\test\testcases\devInfResults2.xml"
+					>
+					<FileConfiguration
+						Name="Debug|Win32"
+						>
+						<Tool
+							Name="VCCustomBuildTool"
+							Description="Copying $(InputDir)$(InputFileName)"
+							CommandLine="copy $(InputDir)$(InputFileName) $(TargetDir)&#x0D;&#x0A;"
+							Outputs="$(TargetDir)$(InputFileName)"
+						/>
+					</FileConfiguration>
+				</File>
 				<File
 					RelativePath="..\..\test\testcases\ex1.xml"
 					>

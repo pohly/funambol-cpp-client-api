@@ -190,8 +190,10 @@ Status* SyncMLBuilder::prepareSyncHdrStatus(Chal*chal, int d) {
     CmdID* commandID         = new CmdID(cmdid);
     ArrayList*    targetRefs = new ArrayList();
     ArrayList*    sourceRefs = new ArrayList();
-    TargetRef*    tar        = new TargetRef(target);
-    SourceRef*    sou        = new SourceRef(device);
+    //TargetRef*    tar        = new TargetRef(target);
+    //SourceRef*    sou        = new SourceRef(device);
+    TargetRef*    tar        = new TargetRef(device);
+    SourceRef*    sou        = new SourceRef(target);
     Data*      data          = new Data(d);
     targetRefs->add(*tar);
     sourceRefs->add(*sou);
@@ -497,6 +499,49 @@ AbstractCommand *SyncMLBuilder::prepareDevInf(AbstractCommand *cmd, DevInf &devI
     safeDelete(&msgRefStr);
     return res;
 }
+
+
+AbstractCommand *SyncMLBuilder::prepareServerDevInf()
+{
+    AbstractCommand *res = NULL;
+
+    Target target(DEVINF_URI);
+    Meta meta;
+    meta.setType(DEVINF_FORMAT);
+    // meta.setFormat("xml");
+    Item item(&target,
+              NULL,
+              NULL,
+              NULL,
+              false);
+
+    ++cmdID;
+    char* cmdid = itow(cmdID);
+    CmdID commandID(cmdid);
+    delete [] cmdid; cmdid = NULL;
+    ArrayList items;
+    items.add(item);
+
+    /*
+    <Get>
+        <CmdID>3</CmdID>
+        <Meta><Type xmlns=’syncml:metinf’>application/vnd.syncml-devinf+xml</Type></Meta>
+        <Item>
+            <Target><LocURI>./devinf12</LocURI></Target>
+        </Item>
+    </Get>
+    */
+
+    res = new Get(&commandID,
+                  false,
+                  NULL,
+                  NULL,
+                  &meta,
+                  &items);
+
+    return res;
+}
+
 
 
 Alert* SyncMLBuilder::prepareAlert(SyncSource& s, int code) {

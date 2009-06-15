@@ -48,14 +48,61 @@ BEGIN_NAMESPACE
 
 static StringBuffer getCompleteName(const char *dir, const WCHAR *name) {
     
-    char* t = toMultibyte(name);
-    StringBuffer pathName(dir);
-    pathName += "/"; 
-    pathName += t;
-    delete [] t;
-    return pathName;
+    StringBuffer fileName;
+    fileName.convert(name);
     
+    if (fileName.find(dir) == 0) {
+        // Filename contains the path from the first char -> it's already the complete name
+        return fileName;
+    }
+    else {
+        StringBuffer pathName(dir);
+        pathName += "/"; 
+        pathName += fileName;
+        return pathName;
+    }
 }
+
+
+//Returns the relative path+name of a file under the 'dir' folder, given its full name.
+StringBuffer getRelativeName(const StringBuffer& dir, const StringBuffer& fullName) {
+    
+    if (dir.empty()) {
+        return fullName;
+    }
+    
+    StringBuffer relativeName("");
+    unsigned int start = dir.length() + 1;
+    
+    // Get the relative path (cuts the trailing 'dir')
+    if (fullName.length() > start) {
+        relativeName = fullName.substr(start, fullName.length() - start);
+    }
+    return relativeName;
+}
+
+//Returns the file name, given its full (absolute path) name.
+StringBuffer getFileName(const StringBuffer& fullName) {
+    
+    StringBuffer fileName("");
+    
+    unsigned long pos = fullName.rfind("/");
+    if (pos == StringBuffer::npos) {
+        pos = fullName.rfind("\\");
+        if (pos == StringBuffer::npos) {
+            // fullName is already the file name
+            return fullName;
+        }
+    }
+    
+    // Move to the first char of the filename
+    pos += 1;
+    
+    fileName = fullName.substr(pos, fullName.length() - pos);
+    return fileName;
+}
+
+
 
 static int saveFileContent(const char *name, const char *content, size_t size, bool isUpdate) {
     
@@ -85,47 +132,64 @@ static int saveFileItem(const char *dir, SyncItem& item, bool isUpdate) {
             isUpdate);
 }
 
+
+/**
+ * Removes all files from an arraylist of file names (absolute paths expected).
+ * @return true if no error
+ */
+static bool removeAllFiles(ArrayList& files) {
+    
+    bool ret = true;
+    
+    for (int i=0; i<files.size(); i++) {
+        StringBuffer* fullName = (StringBuffer*)files[i];
+        if (fullName) {
+            int pos = fullName->rfind("/");
+            StringBuffer filePath = fullName->substr(0, pos);
+            StringBuffer fileName = fullName->substr(pos+1, fullName->length() - pos);
+            //LOG.debug("fullname = %s, path = %s, name = %s", fullName->c_str(), filePath.c_str(), fileName.c_str());
+            
+            if ( removeFileInDir(filePath.c_str(), fileName.c_str()) == false ) {
+                LOG.error("Error removing file: '%s'", fullName->c_str());
+                ret = false;
+            }
+        }
+    }
+    return ret;
+}
+
+
+
 //---------------------------------------------------------------------------------- Constructors
 
-FileSyncSource::FileSyncSource(
-                        const WCHAR* name,
-                        AbstractSyncSourceConfig* sc)
-    : CacheSyncSource(name, sc), dir(DEFAULT_SYNC_DIR) {
-   
+
+
+FileSyncSource::FileSyncSource(const WCHAR* name, AbstractSyncSourceConfig* sc, 
+                               const StringBuffer& aDir, KeyValueStore* cache)
+                              : CacheSyncSource(name, sc, cache), 
+                              dir(aDir), 
+                              recursive(false) {
+    
+    // Cut the last "\" or "/"
+    if (aDir.endsWith("\\") || aDir.endsWith("/")) {
+        dir = aDir.substr(0, aDir.length()-1);
+    }            
 }
 
 FileSyncSource::~FileSyncSource() { }
 
-//-------------------------------------------------------------------------------- Public methods
 
 Enumeration* FileSyncSource::getAllItemList() {
     
-    //
-    // Get the list of the files that are in the directory
-    //
-    ArrayList currentKeys;
+    ArrayList filesFound;
     Enumeration* allKeys = NULL;        
-    int count;
-    char** fileNames = readDir((char*)dir.c_str(), &count);
-    LOG.info("The client number of files to sync are %i", count);
     
-    for (int i = 0; i < count; i++) {
-        if (fileNames[i]) {
-            StringBuffer s(fileNames[i]);            
-            currentKeys.add(s);
-        }
+    if (scanFolder(dir, filesFound) == false) {
+        LOG.error("error reading folder: %s", dir.c_str());
     }    
-
-    // delete fileNames
-    for (int i = 0; i < count; i++) {
-        delete [] fileNames[i]; fileNames[i] = NULL; 
-    }
-    if (fileNames != NULL) {
-        delete [] fileNames; fileNames = NULL;
-    }    
-
-    allKeys = new ArrayListEnumeration(currentKeys);
     
+    LOG.info("The Client number of files read is %i", filesFound.size());
+    allKeys = new ArrayListEnumeration(filesFound);
     return allKeys;
 }
 
@@ -151,8 +215,10 @@ int FileSyncSource::insertItem(SyncItem& item) {
     }
 
     if (ret == STC_OK) {
-        ret = STC_ITEM_ADDED;
         LOG.debug("Added item: %" WCHAR_PRINTF, item.getKey());
+    }
+    else if (ret == STC_ALREADY_EXISTS) {
+        LOG.debug("Item not added (already exists): %" WCHAR_PRINTF, item.getKey());
     }
     else {
         report->setLastErrorCode(ERR_ITEM_ERROR);
@@ -199,7 +265,22 @@ int FileSyncSource::removeItem(SyncItem& item) {
 }
 
 int FileSyncSource::removeAllItems() {
-    removeFileInDir(dir);
+    
+    if (!recursive) {
+        if (removeFileInDir(dir) == false) {
+            return 1;
+        }
+    }
+    else {
+        ArrayList filesFound;
+        if (scanFolder(dir, filesFound, false) == false) {
+            return 1;
+        }
+        if (removeAllFiles(filesFound) == false) {
+            return 1;
+        }
+    }
+    
     return 0;
 }
 
@@ -221,11 +302,18 @@ void* FileSyncSource::getItemContent(StringBuffer& key, size_t* size) {
     char* fileContent = NULL; 
     char* itemContent = NULL;
     *size = 0;
-    WCHAR* fileName = toWideChar(key);
-    StringBuffer completeName(getCompleteName(dir, fileName));
+    
+    WCHAR* fullName = toWideChar(key);
+    StringBuffer completeName(getCompleteName(dir, fullName));
+    
+    StringBuffer fileName(getFileName(completeName));
+    WCHAR* wFileName = toWideChar(fileName.c_str());
+    
+    LOG.debug("complete = %s", completeName.c_str());
+    LOG.debug("name = %s", fileName.c_str());
     
     if (!readFile(completeName, &fileContent, size, true)) {        
-        LOG.error("Content of the file not read");
+        LOG.error("Content of the file not read: %s", completeName.c_str());
         return NULL;
     }
 
@@ -237,9 +325,23 @@ void* FileSyncSource::getItemContent(StringBuffer& key, size_t* size) {
         // the item content must be set as OMA file obj format
         FileData file;
 
-        file.setName(fileName);
+        file.setName(wFileName);
         file.setSize(*size);
         file.setBody(fileContent, *size);
+        
+        // Removed because the Server expects creation time in UTC format (TODO), 
+        // not as a timestamp. So this field is actually useless.
+        // 
+        // Sets the file creation time, if info available
+        /*struct stat st;
+        memset(&st, 0, sizeof(struct stat));
+        if (stat(completeName, &st) >= 0) {
+            StringBuffer tmp;
+            tmp.sprintf("%i", st.st_mtime);
+            WCHAR* time = toWideChar(tmp.c_str());
+            file.setModified(time);
+            delete [] time;
+        }*/
 
         itemContent = file.format();
         *size = strlen(itemContent);
@@ -252,9 +354,108 @@ void* FileSyncSource::getItemContent(StringBuffer& key, size_t* size) {
         itemContent = fileContent;
     }
 
-    delete [] fileName; fileName = NULL;
+    delete [] fullName;  fullName  = NULL;
+    delete [] wFileName; wFileName = NULL;
 
     return itemContent;
 }
+
+
+
+// read recursively directory contents
+bool FileSyncSource::scanFolder(const StringBuffer& fullPath, ArrayList& filesFound, bool applyFiltering)
+{
+    int count = 0;
+    struct stat st;
+    StringBuffer fullName;
+    
+    // Remove the trailing "/" or "\" if exists
+    StringBuffer dirPath(fullPath);
+    if (fullPath.endsWith("\\") || fullPath.endsWith("/")) {
+        dirPath = fullPath.substr(0, fullPath.length()-1);
+    }
+    else if (fullPath.empty()) {
+        dirPath = dir;
+    }
+    
+    char** fileNames = readDir(dirPath.c_str(), &count, false);
+    if (fileNames == NULL) {
+        //LOG.debug("Directory '%s' has no items", dirPath.c_str());
+        return true;
+    }
+
+    for (int i=0; i<count; i++) {
+        if (fileNames[i]) {
+            memset(&st, 0, sizeof(struct stat));
+            
+            fullName.sprintf("%s/%s", dirPath.c_str(), fileNames[i]);
+            //LOG.debug("fullName = %s", fullName.c_str());
+            
+            if (stat(fullName, &st) < 0) {
+                LOG.error("can't stat file '%s' [%d]", fullName.c_str(), errno);
+                continue;
+            }
+            
+            // Filtering on outgoing items
+            if (applyFiltering) {
+                if (filterOutgoingItem(fullName, st)) {
+                    //LOG.debug("Skipping item '%s'", fullName.c_str());
+                    continue;
+                }
+            }
+
+            // Recurse into subfolders.
+            if (recursive && S_ISDIR(st.st_mode)) {
+                if (scanFolder(fullName, filesFound) == false) {
+                    LOG.error("Error reading '%s' folder", fullName.c_str());
+                }
+            }
+            else {
+                //
+                // It's a file -> add it (key is its full path + name)
+                //
+                filesFound.add(fullName);
+            }
+        }
+    }
+    
+    // delete fileNames
+    for (int i = 0; i < count; i++) {
+        delete [] fileNames[i]; fileNames[i] = NULL; 
+    }
+    if (fileNames != NULL) {
+        delete [] fileNames; fileNames = NULL;
+    }
+    
+    return true;
+}
+
+
+bool FileSyncSource::filterOutgoingItem(const StringBuffer& fullName, struct stat& st) 
+{
+    // No filtering.
+    return false; 
+}
+
+
+bool FileSyncSource::checkFileExtension(const StringBuffer& fileName, const StringBuffer& extension)
+{
+    unsigned long pos = fileName.rfind(".");
+    
+    if (pos == StringBuffer::npos) {
+        return false;
+    }
+    if (pos < fileName.length()) {
+        pos += 1;
+        StringBuffer ext = fileName.substr(pos, fileName.length() - pos);
+        if (ext == extension) {
+            //LOG.debug("extension is '%s'", ext.c_str());
+            return true;
+        }
+    }
+    return false;
+}
+
+
 
 END_NAMESPACE

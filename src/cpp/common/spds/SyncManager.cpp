@@ -70,6 +70,8 @@ static char prevSourceName[64];
 static char prevSourceUri[64];
 static SyncMode prevSyncMode;
 
+static const int changeOverhead = 150;
+
 static bool isFiredSyncEventBEGIN;
 //static bool isFiredSyncEventEND;
 
@@ -92,6 +94,26 @@ inline static bool isErrorStatus(int status) {
  */
 inline static bool isAuthFailed(int status) {
     return (status) && ((status == 401) || (status == 407));
+}
+
+/**
+ * Return true is the given item is too big to go in the current message
+ * given the current parameters
+ * 
+ * @param totItems total number of items already sent
+ * @param maxMsgSize the max message size of a SyncML message
+ * @param msgSize 
+ * @param syncItem the sync item
+ * @param syncItemOffset bytes already sent
+ */
+inline static bool isTooBig(unsigned int totItems      , 
+                            int          maxMsgSize    , 
+                            long         msgSize       , 
+                            SyncItem&    syncItem      , 
+                            long         syncItemOffset) {
+    return (totItems &&
+            maxMsgSize &&
+            (msgSize + changeOverhead + syncItem.getDataSize() - syncItemOffset) > maxMsgSize);
 }
 
 /**
@@ -445,6 +467,15 @@ int SyncManager::prepareSync(SyncSource** s) {
 
         }
 
+        // Ask Server DevInf if necessary (Get command)
+        if (askServerDevInf()) {
+            AbstractCommand* get = syncMLBuilder.prepareServerDevInf();
+            if (get) {
+                commands.add(*get);
+                delete get;
+            }
+        }
+
         // actively send out device infos?
         if (putDevInf) {
             AbstractCommand* put = syncMLBuilder.prepareDevInf(NULL, *devInf);
@@ -484,7 +515,7 @@ int SyncManager::prepareSync(SyncSource** s) {
         transportAgent->setSSLServerCertificates(config.getSSLServerCertificates());
         transportAgent->setSSLVerifyServer(config.getSSLVerifyServer());
         transportAgent->setSSLVerifyHost(config.getSSLVerifyHost());
-        
+    
         // Here we also ensure that the user agent string is valid
         const char* ua = getUserAgent(config);
         LOG.debug("User Agent = %s", ua);
@@ -655,68 +686,51 @@ int SyncManager::prepareSync(SyncSource** s) {
         }
 
         //
-        // Process Put/Get commands
+        // Process Get commands
         //
-        list = syncml->getSyncBody()->getCommands();
-        int cmdindex;
-        for (cmdindex = 0; cmdindex < list->size(); cmdindex++) {
-            AbstractCommand* cmd = (AbstractCommand*)list->get(cmdindex);
-            const char* name = cmd->getName();
-            if (name) {
-                bool isPut = !strcmp(name, PUT);
-                bool isGet = !strcmp(name, GET);
-
-                if (isGet || isPut) {
-                    int statusCode = 200; // if set, then send it (on by default)
-
-                    if (isGet) {
-                        Get *get = (Get *)cmd;
-                        ArrayList *items = get->getItems();
-                        bool sendDevInf = false;
-
-                        Results results;
-                        for (int i = 0; i < items->size(); i++) {
-                            Item *item = (Item *)items->get(i);
-
-                            // we are not very picky: as long as the Item is
-                            // called "./devinf11" as required by the standard
-                            // we return our device infos
-                            Target *target = item->getTarget();
-                            if (target && target->getLocURI() &&
-                                !strcmp(target->getLocURI(),
-                                         DEVINF_URI)) {
-                                sendDevInf = true;
-                            } else {
-                                LOG.debug("ignoring request to Get item #%d", i);
-                            }
-                        }
-
-                        // cannot send if we have nothing, then simply acknowledge the request,
-                        // but ignore it
-                        if (sendDevInf && devInf) {
-                            AbstractCommand *result = syncMLBuilder.prepareDevInf(cmd, *devInf);
-                            if (result) {
-                                commands.add(*result);
-                                delete result;
-                            }
-                        }
-                    } else {
-                        // simply acknowledge Put
-                    }
-
-                    if (statusCode) {
-                        status = syncMLBuilder.prepareCmdStatus(*cmd, statusCode);
-                        if (status) {
-                            // Fire Sync Status Event: status from client
-                            fireSyncStatusEvent(status->getCmd(), status->getStatusCode(), NULL, NULL, NULL , CLIENT_STATUS);
-
-                            commands.add(*status);
-                            deleteStatus(&status);
-                        }
-                    }
-                }
+        list = syncMLProcessor.getCommands(syncml->getSyncBody(), GET);
+        for (int i=0; i < list->size(); i++) {
+            AbstractCommand* cmd = (AbstractCommand*)list->get(i);
+            ArrayList* responseCmd = NULL;
+            if (responseCmd = syncMLProcessor.processGetCommand(cmd, devInf)) {
+                commands.add(responseCmd);
+                delete responseCmd;
             }
         }
+        delete list;
+        list = NULL;
+
+        //
+        // Process Put commands
+        //
+        list = syncMLProcessor.getCommands(syncml->getSyncBody(), PUT);
+        for (int i=0; i < list->size(); i++) {
+            AbstractCommand* cmd = (AbstractCommand*)list->get(i);
+            ArrayList* responseCmd = NULL;
+            if (responseCmd = syncMLProcessor.processPutCommand(cmd, config)) {
+                commands.add(responseCmd);
+                delete responseCmd;
+            }
+        }
+        delete list;
+        list = NULL;
+
+
+        //
+        // Process Server devInf (Results to our Get command)
+        //
+        list = syncMLProcessor.getCommands(syncml->getSyncBody(), RESULTS);
+        for (int i=0; i < list->size(); i++) {
+            AbstractCommand* cmd = (AbstractCommand*)list->get(i);
+            if (syncMLProcessor.processServerDevInf(cmd, config)) {
+                LOG.debug("Server capabilities obtained");
+                break;
+            }
+        }
+        delete list;
+        list = NULL;
+
+
 
         //
         // Client Authentication. The auth of the client on the server
@@ -1089,7 +1103,9 @@ int SyncManager::sync() {
             */
             switch (sources[count]->getSyncMode()) {
                 case SYNC_TWO_WAY:
-                case SYNC_ONE_WAY_FROM_SERVER: {
+                case SYNC_ONE_WAY_FROM_SERVER:
+                case SYNC_SMART_ONE_WAY_FROM_SERVER:
+                case SYNC_INCREMENTAL_SMART_ONE_WAY_FROM_SERVER: {
                     Enumeration& en = mmanager[count]->getMappings();
                     ArrayList tmpMapItems;            
                     while(en.hasMoreElement()) {
@@ -1121,7 +1137,7 @@ int SyncManager::sync() {
             // assumes a constant overhead for each message and change item 
             // and then adds the actual item data sent.
             deleteSyncML(&syncml);
-            static long changeOverhead = 150;
+            
             long msgSize = 0;
             Sync* sync = syncMLBuilder.prepareSyncCommand(*sources[count]);
             ArrayList* list = new ArrayList();
@@ -1199,6 +1215,8 @@ int SyncManager::sync() {
                     break;
                     
                 case SYNC_ONE_WAY_FROM_SERVER:
+                case SYNC_SMART_ONE_WAY_FROM_SERVER:
+                case SYNC_INCREMENTAL_SMART_ONE_WAY_FROM_SERVER:
                     last = true;
                     break;
 
@@ -1281,14 +1299,27 @@ int SyncManager::sync() {
                                 if (syncItem == NULL) {
                                     syncItem = getItem(*sources[count], &SyncSource::getNextNewItem);
                                     syncItemOffset = 0;
+
+                                    //
+                                    // If syncItem is still null, there are no more items to process, we can
+                                    // go to the next step
+                                    //
+                                    if (syncItem == NULL) {
+
+                                        step++;
+                                        break;
+                                    }
                                 }
 
-                                if (tot &&
-                                    maxMsgSize &&
-                                    syncItem &&
-                                    msgSize + changeOverhead + syncItem->getDataSize() - syncItemOffset > maxMsgSize) {
+                                if (isTooBig(tot, maxMsgSize, msgSize, *syncItem, syncItemOffset)) {
                                     // avoid adding another item that exceeds the message size
                                     break;
+                                }
+
+                                // For multi-chunck items (Large objects): fire only the first chunk
+                                if (syncItemOffset == 0) {
+                                    // Fire Sync Item Event - New Item Detected
+                                    fireSyncItemEvent(sources[count]->getConfig().getURI(), sources[count]->getConfig().getName(), syncItem->getKey(), ITEM_ADDED_BY_CLIENT);
                                 }
 
                                 msgSize += changeOverhead;
@@ -1299,20 +1330,14 @@ int SyncManager::sync() {
                                                           ADD_COMMAND_NAME,
                                                           syncItem, sources[count]->getConfig().getType());
 
-                                if (syncItem) {
-                                    if (syncItemOffset == syncItem->getDataSize()) {
-                                        // Fire Sync Item Event - New Item Detected
-                                        fireSyncItemEvent(sources[count]->getConfig().getURI(), sources[count]->getConfig().getName(), syncItem->getKey(), ITEM_ADDED_BY_CLIENT);
-                                        delete syncItem; syncItem = NULL;
-                                    } else {
-                                        assert(msgSize >= maxMsgSize);
-                                        break;
-                                    }
-                                }
-                                else {
-                                    step++;
+                                
+                                if (syncItemOffset == syncItem->getDataSize()) {
+                                    delete syncItem; syncItem = NULL;
+                                } else {
+                                    assert(msgSize >= maxMsgSize);
                                     break;
                                 }
+                               
                                 tot++;
                             } while(msgSize < maxMsgSize);
                         }
@@ -1342,16 +1367,30 @@ int SyncManager::sync() {
                                 if (syncItem == NULL) {
                                     syncItem = getItem(*sources[count], &SyncSource::getNextUpdatedItem);
                                     syncItemOffset = 0;
+
+                                    //
+                                    // If syncItem is still null, there are no more items to process, we can
+                                    // go to the next step
+                                    //
+                                    if (syncItem == NULL) {
+
+                                        step++;
+                                        break;
+                                    }
+
                                 }
 
-                                if (tot &&
-                                    maxMsgSize &&
-                                    syncItem &&
-                                    msgSize + changeOverhead + syncItem->getDataSize() - syncItemOffset > maxMsgSize) {
+                                if (isTooBig(tot, maxMsgSize, msgSize, *syncItem, syncItemOffset)) {
                                     // avoid adding another item that exceeds the message size
                                     break;
                                 }
 
+                                //
+                                // For multi-chunck items (Large objects): fire only the first chunk
+                                if (syncItemOffset == 0) {
+                                    // Fire Sync Item Event - Item Updated
+                                    fireSyncItemEvent(sources[count]->getConfig().getURI(), sources[count]->getConfig().getName(), syncItem->getKey(), ITEM_UPDATED_BY_CLIENT);
+                                }
 
                                 msgSize += changeOverhead;
                                 msgSize +=
@@ -1361,18 +1400,10 @@ int SyncManager::sync() {
                                                           REPLACE_COMMAND_NAME,
                                                           syncItem, sources[count]->getConfig().getType());
 
-                                if (syncItem) {
-                                    if (syncItemOffset == syncItem->getDataSize()) {
-                                        // Fire Sync Item Event - Item Updated
-                                        fireSyncItemEvent(sources[count]->getConfig().getURI(), sources[count]->getConfig().getName(), syncItem->getKey(), ITEM_UPDATED_BY_CLIENT);
-                                        delete syncItem; syncItem = NULL;
-                                    } else {
-                                        assert(msgSize >= maxMsgSize);
-                                        break;
-                                    }
-                                }
-                                else {
-                                    step++;
+                                if (syncItemOffset == syncItem->getDataSize()) {
+                                    delete syncItem; syncItem = NULL;
+                                } else {
+                                    assert(msgSize >= maxMsgSize);
                                     break;
                                 }
                                 tot++;
@@ -1592,7 +1623,9 @@ int SyncManager::sync() {
                 continue;
             }
             if ((sources[count]->getSyncMode() != SYNC_ONE_WAY_FROM_CLIENT) &&
-                (sources[count]->getSyncMode() != SYNC_REFRESH_FROM_CLIENT))
+                (sources[count]->getSyncMode() != SYNC_REFRESH_FROM_CLIENT) &&
+                (sources[count]->getSyncMode() != SYNC_SMART_ONE_WAY_FROM_CLIENT) && 
+                (sources[count]->getSyncMode() != SYNC_INCREMENTAL_SMART_ONE_WAY_FROM_CLIENT))
             {
                 alert = syncMLBuilder.prepareAlert(*sources[count]);
                 commands.add(*alert);
@@ -1777,11 +1810,13 @@ int SyncManager::endSync() {
             continue;
         }
         
-        if (  (sources[count]->getSyncMode() == SYNC_ONE_WAY_FROM_CLIENT &&
-                commands.isEmpty() && (mmanager[count]->getMappings().hasMoreElement() == false)) ||
-                (sources[count]->getSyncMode() == SYNC_REFRESH_FROM_CLIENT &&
-                commands.isEmpty() && (mmanager[count]->getMappings().hasMoreElement() == false))
-                ) {
+        SyncMode sMode = sources[count]->getSyncMode();
+        if ( (sMode == SYNC_ONE_WAY_FROM_CLIENT || 
+              sMode == SYNC_REFRESH_FROM_CLIENT || 
+              sMode == SYNC_SMART_ONE_WAY_FROM_CLIENT ||
+              sMode == SYNC_INCREMENTAL_SMART_ONE_WAY_FROM_CLIENT) &&
+             commands.isEmpty() && 
+             (mmanager[count]->getMappings().hasMoreElement() == false) ) {
             // No need to send the final msg (no mapping).
         }
         else {
@@ -2156,6 +2191,25 @@ Status *SyncManager::processSyncItem(Item* item, const CommandInfo &cmdInfo, Syn
                 incomingItem->setData(data, size);
             }
             if (incomingItem) {
+
+                // Fire SyncItem Event: Item Added/Replaced/Deleted by Server
+                // We want to fire these events at the beginning of an item (offset = 0) to inform the client as soon
+                // as possible, because big items (like pictures) can be splitted in many chunks.
+                if (incomingItem->offset == 0) {
+
+                    const char* uri  = sources[count]->getConfig().getURI();
+                    const char* name = sources[count]->getConfig().getName();
+                    
+                    int eventType = ITEM_ADDED_BY_SERVER;
+                    if (!strcmp(cmdInfo.commandName, REPLACE)) {
+                        eventType = ITEM_UPDATED_BY_SERVER;
+                    }
+                    else if (!strcmp(cmdInfo.commandName, DEL)) {
+                        eventType = ITEM_DELETED_BY_SERVER;
+                    }
+                    fireSyncItemEvent(uri, name, incomingItem->getKey(), eventType);
+                }
+
                 incomingItem->offset += size;
             }
         }
@@ -2195,8 +2249,6 @@ Status *SyncManager::processSyncItem(Item* item, const CommandInfo &cmdInfo, Syn
 
             // Process item ------------------------------------------------------------
             if ( strcmp(cmdInfo.commandName, ADD) == 0) {
-                // Fire Sync Item Event - New Item Added by Server
-                fireSyncItemEvent(sources[count]->getConfig().getURI(), sources[count]->getConfig().getName(), incomingItem->getKey(), ITEM_ADDED_BY_SERVER);
 
                 incomingItem->setState(SYNC_STATE_NEW);
                 code = sources[count]->addItem(*incomingItem);
@@ -2224,9 +2276,6 @@ Status *SyncManager::processSyncItem(Item* item, const CommandInfo &cmdInfo, Syn
                 // check that before passing to client
                 decodeItemKey(incomingItem);
 
-                // Fire Sync Item Event - Item Updated by Server
-                fireSyncItemEvent(sources[count]->getConfig().getURI(), sources[count]->getConfig().getName(), incomingItem->getKey(), ITEM_UPDATED_BY_SERVER);
-
                 incomingItem->setState(SYNC_STATE_UPDATED);
                 code = sources[count]->updateItem(*incomingItem);
                 status = syncMLBuilder.prepareItemStatus(REPLACE, itemName, cmdInfo.cmdRef, code);
@@ -2240,9 +2289,6 @@ Status *SyncManager::processSyncItem(Item* item, const CommandInfo &cmdInfo, Syn
                 // item key as stored on the server might have been encoded by library,
                 // check that before passing to client
                 decodeItemKey(incomingItem);
-
-                // Fire Sync Item Event - Item Deleted by Server
-                fireSyncItemEvent(sources[count]->getConfig().getURI(), sources[count]->getConfig().getName(), incomingItem->getKey(), ITEM_DELETED_BY_SERVER);
 
                 incomingItem->setState(SYNC_STATE_DELETED);
                 code = sources[count]->deleteItem(*incomingItem);
@@ -2326,6 +2372,10 @@ DevInf *SyncManager::createDeviceInfo()
         { SYNC_ONE_WAY_FROM_SERVER, 5 }, // Support of 'one-way sync from server only'
         { SYNC_REFRESH_FROM_SERVER, 6 }, // Support of 'refresh sync from server only'
         // 7, // Support of 'server alerted sync'
+        { SYNC_SMART_ONE_WAY_FROM_CLIENT, 50 },             // Support of 'smart-one-way sync from client only'
+        { SYNC_SMART_ONE_WAY_FROM_SERVER, 51 },             // Support of 'smart-one-way sync from client only'
+        { SYNC_INCREMENTAL_SMART_ONE_WAY_FROM_CLIENT, 52 }, // Support of 'incremental-smart-one-way sync from server only'
+        { SYNC_INCREMENTAL_SMART_ONE_WAY_FROM_SERVER, 53 }, // Support of 'incremental-smart-one-way sync from server only'
         { SYNC_NONE, -1 }
     };
 
@@ -2407,6 +2457,68 @@ DevInf *SyncManager::createDeviceInfo()
 
     return devinfo;
 }
+
+
+bool SyncManager::askServerDevInf() {
+
+    // 1. The Client can force to always ask the Server devInf
+    if (config.getForceServerDevInfo()) {
+        LOG.debug("Client forced to ask Server capabilities");
+        return true;
+    }
+
+    // 2. If Server URL changed from last time we obtained the Server caps,
+    //    we must ask them again (and clear invalid data)
+    StringBuffer currentURL = config.getSyncURL();
+    StringBuffer lastURL    = config.getServerLastSyncURL();
+    if (currentURL != lastURL) {
+        LOG.debug("Server capabilities are invalid (Server URL changed)");
+        clearServerDevInf();
+        return true;
+    }
+
+    // 3. If the Server swv is not available, we need to ask Server caps.
+    //    Server_swv is considered a mandatory property.
+    StringBuffer serverSwv = config.getServerSwv();
+    if (serverSwv.empty()) {
+        LOG.debug("Server capabilities not found in config");
+        return true;
+    }
+
+    // TODO: we should ask Server devInf also if we don't have enough
+    //       information on any source actually under sync.
+    //       (we don't store Server DataStore at the moment)
+    //
+    /*for (int i=0; s[i]; i++) {
+        const char* name = s[i]->getConfig().getName();
+        AbstractSyncSourceConfig* ssconfig = config.getAbstractSyncSourceConfig(name);
+        if (ssconfig) {
+        }
+    }*/
+
+    LOG.debug("Server capabilities found in config: no need to ask them");
+    return false;
+}
+
+
+void SyncManager::clearServerDevInf() {
+
+    config.setServerVerDTD    ("");
+    config.setServerMan       ("");
+    config.setServerMod       ("");
+    config.setServerOem       ("");
+    config.setServerFwv       ("");
+    config.setServerSwv       ("");
+    config.setServerHwv       ("");
+    config.setServerUtc       (false);
+    config.setServerDevID     ("");
+    config.setServerDevType   ("");
+    config.setServerLoSupport (false);
+    config.setServerNocSupport(false);
+    config.setServerSmartSlowSync(0);
+    config.setServerLastSyncURL("");
+}
+
 
 
 /* Copy from AbstractSyncSourceConfig::getSupportedTypes() format into array list

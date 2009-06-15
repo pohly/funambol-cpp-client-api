@@ -34,6 +34,7 @@ nobase_pkginclude_HEADERS = \
     common/client/SyncClient.h \
     common/client/FileSyncSource.h \
     common/client/OptionParser.h \
+    common/client/ConfigSyncSource.h \
     common/event/constants.h \
     common/filter/Clause.h \
     common/filter/LogicalClause.h \
@@ -71,6 +72,9 @@ nobase_pkginclude_HEADERS = \
     common/spds/errors.h \
     common/spds/DefaultConfigFactory.h \
     common/spds/FileData.h \
+    common/spds/FolderData.h \
+    common/spds/FolderExt.h \
+    common/spds/MailAccount.h \
     common/syncml/core/AbstractCommand.h \
     common/syncml/core/Add.h \
     common/syncml/core/AlertCode.h \
@@ -173,6 +177,14 @@ nobase_pkginclude_HEADERS = \
     common/event/SyncSourceEvent.h \
     common/event/TransportEvent.h \
     common/event/Listener.h \
+    common/push/CTPConfig.h \
+    common/push/CTPMessage.h \
+    common/push/CTPParam.h \
+    common/push/CTPService.h \
+    common/push/CTPThreadPool.h \
+    common/push/PushListener.h \
+    posix/push/FThread.h \
+    posix/push/FSocket.h \
     posix/spdm/DeviceManagementNode.h \
     posix/base/posixlog.h \
     posix/base/posixadapter.h

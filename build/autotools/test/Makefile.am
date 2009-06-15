@@ -14,12 +14,14 @@ AM_CPPFLAGS = -I$(INCDIR)/posix -I$(INCDIR)/common -I$(TESTDIR)/ -I$(TESTDIR)/in
 vpath %.cpp	$(TESTDIR) \
 		$(TESTDIR)/common/base/util \
 		$(TESTDIR)/common/base \
+		$(TESTDIR)/common/spds/ \
 		$(TESTDIR)/posix/spdm/ \
 		$(TESTDIR)/common/syncml \
 		$(TESTDIR)/common/filter \
 		$(TESTDIR)/common/client \
 		$(TESTDIR)/integration \
 		$(TESTDIR)/common/event \
+        $(TESTDIR)/common/push \
         $(TESTDIR)/common/http
 
 # Test runner sources
@@ -50,17 +52,27 @@ TESTS_SPDM = \
     ConfigTest.cpp
 
 TESTS_CLIENT = \
-    OptionParserTest.cpp
+    OptionParserTest.cpp \
+    ConfigSyncSourceUnitTest.cpp
 
 TESTS_EVENT = EventTest.cpp
 
 TESTS_SPDS = \
     MappingsTest.cpp \
+    ConfigSyncSourceTest.cpp \
+    AccountFolderTest.cpp \
+    FolderDataTest.cpp \
+    FolderExtTest.cpp \
+    MailAccountTest.cpp \
     MappingTestSyncSource.cpp \
     ManyItemsTestSyncSource.cpp \
     SyncManagerTest.cpp
+
+TESTS_PUSH = \
+    FThreadTest.cpp \
+    CTPServiceTest.cpp
     
-TESTCASES = $(TESTS_BASE) $(TESTS_FILTER) $(TESTS_HTTP) $(TESTS_SYNCML) $(TESTS_SPDM) $(TESTS_EVENT) $(TESTS_CLIENT) $(TESTS_SPDS)
+TESTCASES = $(TESTS_BASE) $(TESTS_FILTER) $(TESTS_HTTP) $(TESTS_SYNCML) $(TESTS_SPDM) $(TESTS_EVENT) $(TESTS_CLIENT) $(TESTS_SPDS) $(TESTS_PUSH)
 
 client_test_SOURCES = $(SOURCES) $(TESTCASES)
 
@@ -92,6 +104,8 @@ verbatim_files = \
 	test/testcases/vcard21.vcf \
 	test/testcases/vcard30.vcf \
 	test/testcases/imemo20.ics \
+	test/testcases/devInfResults.xml \
+	test/testcases/devInfResults2.xml \
 	test/testcases/ex1.xml \
 	test/testcases/ex2.xml \
 	test/testcases/syncML1.xml \

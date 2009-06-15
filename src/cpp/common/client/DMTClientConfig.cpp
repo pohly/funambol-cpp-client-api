@@ -921,7 +921,7 @@ bool DMTClientConfig::readExtDevConfig(ManagementNode& /* syncMLNode */,
 
     if(server){
 
-        tmp = extNode.readPropertyValue("smartSlowSync");
+        tmp = extNode.readPropertyValue(PROPERTY_SMART_SLOW_SYNC);
 		if(strcmp(tmp,"")==0){
 			serverConfig.setSmartSlowSync(2);
 		}else if(strcmp(tmp,"0")==0){
@@ -941,7 +941,9 @@ bool DMTClientConfig::readExtDevConfig(ManagementNode& /* syncMLNode */,
 		tmp = extNode.readPropertyValue(PROPERTY_VER_DTD);
         serverConfig.setVerDTD(tmp);
         delete [] tmp;
-
+        tmp = extNode.readPropertyValue(PROPERTY_SERVER_LAST_SYNC_URL);
+        serverConfig.setServerLastSyncURL(tmp);
+        delete [] tmp;
      
     }else{
         tmp = extNode.readPropertyValue(PROPERTY_UTC);
@@ -968,6 +970,9 @@ bool DMTClientConfig::readExtDevConfig(ManagementNode& /* syncMLNode */,
         tmp = extNode.readPropertyValue(PROPERTY_SEND_CLIENT_DEVINF);
         clientConfig.setSendDevInfo((*tmp == '0') ? false : true);          // So if different the default is true (send client devinf)
         delete [] tmp;
+
+        // forceServerDevInfo is not stored: default is false and it's intended to
+        // be set to true by the Client everytime we need to force it.
     }
 
     return true;
@@ -979,21 +984,23 @@ void DMTClientConfig::saveExtDevConfig(ManagementNode& /* syncMLNode */,
     if(server){
 		switch (serverConfig.getSmartSlowSync()){
 			case 0:
-			extNode.setPropertyValue("smartSlowSync", "0");
+			extNode.setPropertyValue(PROPERTY_SMART_SLOW_SYNC, "0");
 			break;
 			case 1:
-			extNode.setPropertyValue("smartSlowSync", "1");
+			extNode.setPropertyValue(PROPERTY_SMART_SLOW_SYNC, "1");
 			break;
 			case 2:
-			extNode.setPropertyValue("smartSlowSync", "2");
+			extNode.setPropertyValue(PROPERTY_SMART_SLOW_SYNC, "2");
 			break;
 		}
-		//extNode.setPropertyValue("smartSlowSync", itow(  ));
+		//extNode.setPropertyValue(PROPERTY_SMART_SLOW_SYNC, itow(  ));
 		extNode.setPropertyValue(PROPERTY_UTC,
                              (serverConfig.getUtc() ? "1": "0") );
         extNode.setPropertyValue(PROPERTY_NUMBER_OF_CHANGES_SUPPORT,
                              (serverConfig.getNocSupport() ? "1": "0") );
 		extNode.setPropertyValue(PROPERTY_VER_DTD, serverConfig.getVerDTD());
+        extNode.setPropertyValue(PROPERTY_SERVER_LAST_SYNC_URL, 
+                              serverConfig.getServerLastSyncURL());
 		
     }else{
     
@@ -1010,6 +1017,9 @@ void DMTClientConfig::saveExtDevConfig(ManagementNode& /* syncMLNode */,
         extNode.setPropertyValue(PROPERTY_MAX_OBJ_SIZE, buf);
 
         extNode.setPropertyValue(PROPERTY_SEND_CLIENT_DEVINF,      (clientConfig.getSendDevInfo() ? "1": "0") );
+
+        // forceServerDevInfo is not stored: default is false and it's intended to
+        // be set to true by the Client everytime we need to force it.
     }
 }
 
@@ -1074,6 +1084,10 @@ bool DMTClientConfig::readSourceConfig(int i,
     tmp = sourceNode.readPropertyValue(PROPERTY_SOURCE_SUPP_TYPES);
     sourceConfigs[i].setSupportedTypes(tmp);
     delete [] tmp;
+    
+    tmp = sourceNode.readPropertyValue(PROPERTY_SOURCE_ENABLED);
+    sourceConfigs[i].setIsEnabled(strcmp(tmp, "0")? true:false);    // Set true if any value different from "0" (also if empty)
+    delete [] tmp;
 
     return true;
 }
@@ -1081,14 +1095,15 @@ bool DMTClientConfig::readSourceConfig(int i,
 void DMTClientConfig::saveSourceConfig(int i,
                                        ManagementNode& /* sourcesNode */,
                                        ManagementNode& sourceNode) {
-    sourceNode.setPropertyValue(PROPERTY_SOURCE_NAME, sourceConfigs[i].getName());
-    sourceNode.setPropertyValue(PROPERTY_SOURCE_URI, sourceConfigs[i].getURI());
-    sourceNode.setPropertyValue(PROPERTY_SOURCE_TYPE, sourceConfigs[i].getType());
-    sourceNode.setPropertyValue(PROPERTY_SOURCE_VERSION, sourceConfigs[i].getVersion());
+    sourceNode.setPropertyValue(PROPERTY_SOURCE_NAME,       sourceConfigs[i].getName());
+    sourceNode.setPropertyValue(PROPERTY_SOURCE_URI,        sourceConfigs[i].getURI());
+    sourceNode.setPropertyValue(PROPERTY_SOURCE_TYPE,       sourceConfigs[i].getType());
+    sourceNode.setPropertyValue(PROPERTY_SOURCE_VERSION,    sourceConfigs[i].getVersion());
     sourceNode.setPropertyValue(PROPERTY_SOURCE_SYNC_MODES, sourceConfigs[i].getSyncModes());
-    sourceNode.setPropertyValue(PROPERTY_SOURCE_SYNC, sourceConfigs[i].getSync());
-    sourceNode.setPropertyValue(PROPERTY_SOURCE_ENCODING, sourceConfigs[i].getEncoding());
+    sourceNode.setPropertyValue(PROPERTY_SOURCE_SYNC,       sourceConfigs[i].getSync());
+    sourceNode.setPropertyValue(PROPERTY_SOURCE_ENCODING,   sourceConfigs[i].getEncoding());
     sourceNode.setPropertyValue(PROPERTY_SOURCE_SUPP_TYPES, sourceConfigs[i].getSupportedTypes());
+    sourceNode.setPropertyValue(PROPERTY_SOURCE_ENABLED,    sourceConfigs[i].isEnabled()? "1":"0");
     sourceNode.setPropertyValue(PROPERTY_SOURCE_ENCRYPTION, sourceConfigs[i].getEncryption());
 
 }

@@ -175,7 +175,7 @@ bool fileExists(const char *pathname);
  * @param len - length of the read content
  * @param binary - if true the file has to be opened in binary mode
  *
- * @return - true if file is succesfully read
+ * @return - true if file is successfully read
  */
 bool readFile(const char* name, char **message, size_t *len, bool binary = false );
 
@@ -188,7 +188,7 @@ bool readFile(const char* name, char **message, size_t *len, bool binary = false
  *
  * @return - new allocated array of fileNames (NULL if errors)
  */
-char** readDir(char* name, int *count, bool onlyCount = false);
+char** readDir(const char* name, int *count, bool onlyCount = false);
 
 /**
 * Remove the named file in the directory. It doesn't remove the subdirectory

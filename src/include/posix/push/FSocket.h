@@ -57,24 +57,11 @@ BEGIN_NAMESPACE
 
 class FSocket {
 
-private:
+protected:
     FSocket();
 
 public:
     virtual ~FSocket();
-
-    /**
-     Returns the local address associates to this socket in the form
-     “address:port” where address can be either the numerical IP or the
-     symbolic name
-    */
-    const StringBuffer& address() const;
-    /**
-     Returns the local address associates to this socket in the form
-     “address:port” where address can be either the numerical IP or the
-     symbolic name
-    */
-    const StringBuffer& peerAddress() const;
 
     /**
      Reads all available bytes from the socket, up to the maximum specified 
@@ -83,7 +70,7 @@ public:
      Returns the actual number of bytes read (-1 if the socket cannot be
      read or in case of any network error).
     */
-    int32_t readBuffer(int8_t* buffer, int32_t maxLen);
+    virtual int32_t readBuffer(int8_t* buffer, int32_t maxLen);
 
     /**
      Writes the given buffer to the stream and flush it. The buffer length
@@ -92,13 +79,13 @@ public:
      is the same as len. On errors it can be less than len and it specifies 
      the number of bytes written before a network error was encountered.
     */
-    int32_t writeBuffer(const int8_t* const buffer, int32_t len);
+    virtual int32_t writeBuffer(const int8_t* const buffer, int32_t len);
 
     /**
      Close this socket. After this operation the object can be released as
      any IO operation is invalid.
     */
-    void close();
+    virtual void close();
 
 public:
 
@@ -110,31 +97,17 @@ public:
      NULL if the socket cannot be created for any reason.
     */
     static FSocket* createSocket(const StringBuffer& peer, int32_t port);
-
     
-
-    // These methods are misc utilities
-
     /**
-     Returns a string representing the local address in the form:
-     “address” where address can be the numerical IP or the symbolic
-     name. If the address cannot be retrieved, then the returned string is
-     empty.
-     If the device is not connected to the network then this method returns
-     an empty string and it does not attempt to set up a network
-     connection.
-    */
-    static const StringBuffer& localIP();
+     Set a custom FSocket used instead of the platform dependent one
+     */
+    static void setSocket(FSocket* custom) { customSocket = custom; }
 
-private:
-    StringBuffer lAddress;
-    StringBuffer pAddress;
-    static StringBuffer lIP;
 
 private:
     bool isValid();
+    static FSocket* customSocket;
 
-private:
     int unixSock;
     sockaddr_in unixAddr;
 

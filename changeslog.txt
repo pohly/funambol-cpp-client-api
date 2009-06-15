@@ -1,3 +1,9 @@
+2009-06-15
+   - toccy: merged ALL CHANGES from trunk (v.8.5) to branch v8. Now trunk and branch v8 are aligned
+
+2009-06-12
+   - teo: created tag "8.0.2"
+   
 2009-06-05
    - toccy: Clients can set a defined TransportAgent to be used during sync, instead of the default for the platform,
             using SyncClient::setTransportAgent() (will call SyncManager::setTransportAgent).

@@ -122,6 +122,24 @@ class SyncManager {
         DevInf *createDeviceInfo();
 
         /**
+         * Checks whether we need to ask the Server capabilities or not.
+         * If we don't have enough Server information in the config, we need 
+         * to ask the Server caps.
+         * A Client can force to ask Server caps again by .
+         * 
+         * @return  true if we need to Get defInf to the Server
+         */
+        bool askServerDevInf();
+
+        /**
+         * Utility method, clears all the configuration params of Server caps.
+         * It is used to cleanup the Server caps information for example if the
+         * Server address changes.
+         */
+        void clearServerDevInf();
+
+
+        /**
          * Sets a defined TransportAgent to be used during sync.
          * Note: the passed pointer will be owned and deleted by SyncManager, so 
          * it MUST NOT be deleted by the caller.
@@ -233,7 +251,6 @@ class SyncManager {
          *                (need to be freed by the caller)
          */
         const char*  getUserAgent(AbstractSyncConfig& config);
-
         bool isToExit();
         void setSourceStateAndError(unsigned int index, SourceState  state,
                                     unsigned int code,  const char*  msg);

@@ -50,6 +50,7 @@
 #include "base/util/Enumeration.h"
 #include "base/util/KeyValueStore.h"
 #include "base/util/KeyValuePair.h"
+#include "event/FireEvent.h"
 
 BEGIN_NAMESPACE
 
@@ -98,7 +99,10 @@ private:
      *    
      */    
     KeyValueStore* cache; 
-       
+
+
+protected:
+    
     /**
      * Enumeration of the new keys
      */
@@ -119,13 +123,27 @@ private:
      * It is an enumeration of StringBuffer keys
      */
     Enumeration* allKeys;
-
+    
+    
     /**
      * Fills the sync item given the key. It is used by the method getXXXItem to
      * complete the SyncItem.
+     * @param fillData [OPTIONAL] if false, don't set the SyncItem data
+     *                 (sets only the key, for deleted items). Default = true.
      */
-    SyncItem* fillSyncItem(StringBuffer* key);       
+    virtual SyncItem* fillSyncItem(StringBuffer* key, const bool fillData = true);       
 
+    /**
+     * Utility method that populates the keyValuePair with 
+     * the couple key/signature starting from the SyncItem.
+     * Used in the addItem and updateItem
+     *
+     * @param item - IN:  the SyncItem
+     * @param kvp  - OUT: the KeyValuePair to be populate
+     */
+    virtual void getKeyAndSignature(SyncItem& item, KeyValuePair& kvp);
+    
+    
     /**
      * The way to calculate the cache is the follow:
      * loop on the current element against an array list
@@ -135,25 +153,14 @@ private:
      * in the cache are the deleted ones.
      * Called when the two-way sync is requested
      */
-    bool fillItemModifications();
-
-    /**
-     * Utility private method that populates the keyValuePair with 
-     * the couple key/signature starting from the SyncItem.
-     * Used in the addItem and updateItem
-     *
-     * @param item - IN:  the SyncItem
-     * @param kvp  - OUT: the KeyValuePair to be populate
-     */
-    void getKeyAndSignature(SyncItem& item, KeyValuePair& kvp);
-
-protected:
+    virtual bool fillItemModifications();
+    
   
     /**
      * Save the current cache into the persistent store. Which store depends on
      * the KeyValueStore passed in the constructor (a file by default).
      */
-    int saveCache();
+    virtual int saveCache();
   
     /**
      * Implementation of the SyncSource method addItem, it's called by the SyncManager
@@ -214,6 +221,15 @@ protected:
     int clearCache() {
         return (cache->removeAllProperties() || saveCache());
     }
+    
+    /**
+     * Returns the value of the given property, from the cache.
+     * @param prop - the property name
+     * @return  A NULL StringBuffer in the returned implies that
+     *          the property was not set. Otherwise the value it was
+     *          set to is returned (which can be "", the empty string).
+     */
+    StringBuffer readCachePropertyValue(const char* prop);
 
 public:
 
@@ -247,12 +263,12 @@ public:
      * It contains also the proper command associated to the item.
      * It is used to update the current array of cache.
      *
-     * @param key      - the local key of the item
+     * @param wkey     - the local key of the item (wide char)
      * @param status   - the SyncML status returned by the server
      * @param command  - the SyncML command associated to the item
      * 
      */
-    void setItemStatus(const WCHAR* key, int status, const char* command);       
+    virtual void setItemStatus(const WCHAR* wkey, int status, const char* command);       
     
     /**
      * Return the key of the first SyncItem of all.
@@ -416,6 +432,25 @@ public:
      */
     virtual int removeItem(SyncItem& item) = 0;
     
+    /**
+     * Called by the setItemStatus, addItem, updateItem, deleteItem to decide if
+     * the code is an error code or not. Based on the result, is udpates the cache
+     * or leave. Currently it consider good values the renge between 200 <= code < 300
+     * and code = 418. The remaining code are errors.
+     *
+     * @code the code to be analyzed
+     * @return true if it is an error code, false otherwise
+     *
+     */
+    virtual bool isErrorCode(int code);  
+
+    /**
+     * Fires the total number of the item from client side to the associated listener.      
+     * It is called after the getAllItemList and fillItemModifications. 
+     * Currently it is not used...
+     * @number the items the number of items
+     */
+    virtual void fireClientTotalNumber(int number);
 };
 
 END_NAMESPACE
