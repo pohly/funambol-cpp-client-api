@@ -54,7 +54,7 @@ class FolderData : public ArrayElement {
 
     // ------------------------------------------------------- Private data
     protected:
-        //WString folder;
+        StringBuffer parent;
 		StringBuffer name;
 		StringBuffer created;
 		StringBuffer modified;
@@ -83,6 +83,11 @@ class FolderData : public ArrayElement {
         * return the length for the base64 array starting from length of the original array
         */
         int lengthForB64(int len);
+        const char* getValueByName(const char* valName);
+        void setValueByName(const char* valName, const char* setVal);
+
+
+
 
     public:
     // ------------------------------------------------------- Constructors
@@ -90,10 +95,10 @@ class FolderData : public ArrayElement {
         ~FolderData();
 
     // ---------------------------------------------------------- Accessors
-		/*const WCHAR* getFolder() { return folder; }
-		void setFolder(const WCHAR* v) { folder = v; } */
-
-		const char* getName() { return name; }
+        const char* getParent() { return parent; }
+        void setParent(const char* v) { parent = v; }
+		
+        const char* getName() { return name; }
         void setName(const char* v) { name = v; }
 
 		const char* getCreated() { return created; }

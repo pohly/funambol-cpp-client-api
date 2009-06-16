@@ -50,7 +50,7 @@
 #define OUTBOX_FOLDER   "<Folder><name>Outbox</name><created>20090428T162654Z<created><role>outbox</role></Folder>"
 #define VISIBLE_NAME     "Name Surname"
 #define EMAIL_ADDRESS    "Name.Surname@email.com"
-
+#define ACCOUNT_PROTOCOL "POP3"
 #define CREATED         "20090428T162654Z"
 #define NAME            "Email Home"
 #define INBOX           "Inbox"
@@ -88,9 +88,14 @@ private:
 
        CPPUNIT_ASSERT( strcmp(val1, VISIBLE_NAME) == 0);
        CPPUNIT_ASSERT( strcmp(val2, EMAIL_ADDRESS) == 0);
-       delete [] val1;
-       delete [] val2;
+       //delete [] val1;
+       //delete [] val2;
 
+       account.setProtocol(ACCOUNT_PROTOCOL);
+       const char* val3 = account.getProtocol();
+       CPPUNIT_ASSERT(val3 != NULL);  
+       CPPUNIT_ASSERT( strcmp(val3, ACCOUNT_PROTOCOL) == 0);
+       //delete [] val3;
     }
 
 };

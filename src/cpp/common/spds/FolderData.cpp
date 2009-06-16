@@ -256,6 +256,32 @@ int FolderData::lengthForB64(int len) {
 
     }
     return ret;
-
-
 }
+
+const char* FolderData::getValueByName(const char* valName){
+    for(int i = 0; i < extended.size(); i++){
+        if( strcmp ( ((FolderExt*)extended.get(i))->getXNam(), valName) == 0){
+            FolderExt* fe = (FolderExt*)(extended.get(i));
+            ArrayList& xvals = fe->getXVals();
+            StringBuffer* xval = (StringBuffer*)(xvals.get(0));
+            return xval->c_str();
+        }
+    }
+    return NULL;
+}
+
+void FolderData::setValueByName(const char* valName, const char* setVal){
+    for(int i = 0; i < extended.size(); i++){
+        if( strcmp ( ((FolderExt*)extended.get(i))->getXNam(), valName) == 0){
+            ((StringBuffer*)((FolderExt*)extended.get(i))->getXVals().get(0))->assign(setVal);
+            return;
+        }
+    }
+    FolderExt ext;
+    ext.setXNam(valName);
+    StringBuffer xval = setVal;
+    ArrayList xvals; xvals.add(xval);
+    ext.setXVals(xvals);
+    extended.add(ext);
+}
+

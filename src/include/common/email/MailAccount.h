@@ -41,8 +41,9 @@
 #include "base/util/ArrayList.h"
 #include "spds/FolderData.h"
 
-#define VISIBLENAME "VisibleName"
-#define EMAILADDRESS "EmailAddress"
+#define VISIBLENAME     "VisibleName"
+#define EMAILADDRESS    "EmailAddress"
+#define PROTOCOL        "Protocol"
 
 BEGIN_NAMESPACE
 
@@ -51,8 +52,7 @@ class MailAccount : public FolderData {
 
     // ------------------------------------------------------- Private data
     private:
-        const char* getValueByName( const char* valName);
-        void setValueByName( const char* valName, const char* setVal);
+
     public:
     // ------------------------------------------------------- Constructors
         MailAccount(){};
@@ -64,6 +64,9 @@ class MailAccount : public FolderData {
         
         const char* getEmailAddress(){ return getValueByName(EMAILADDRESS); }
         void setEmailAddress(const char* xval){ setValueByName(EMAILADDRESS, xval); }
+
+        const char* getProtocol(){ return getValueByName(PROTOCOL); }
+        void setProtocol(const char* xval){ setValueByName(PROTOCOL, xval); }
 
     // ----------------------------------------------------- Public Methods
 
