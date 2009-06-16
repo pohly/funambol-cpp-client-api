@@ -44,18 +44,22 @@
 #include "base/util/ArrayList.h"
 #include "base/globalsdef.h"
 
+#include "base/winadapter.h"
+
+#include "base/fscapi.h"
+
 BEGIN_NAMESPACE
 
 class FolderData : public ArrayElement {
 
     // ------------------------------------------------------- Private data
-    private:
+    protected:
         //WString folder;
-		WString name;
-		WString created;
-		WString modified;
-		WString accessed;
-		WString attributes;
+		StringBuffer name;
+		StringBuffer created;
+		StringBuffer modified;
+		StringBuffer accessed;
+		StringBuffer attributes;
 		bool hidden;
 		bool system;
 		bool archived;
@@ -63,7 +67,7 @@ class FolderData : public ArrayElement {
 		bool writable;
 		bool readable;
 		bool executable;
-		WString role;
+		StringBuffer role;
         ArrayList extended;
 
         // represents the presence of their equivalent tag
@@ -89,20 +93,20 @@ class FolderData : public ArrayElement {
 		/*const WCHAR* getFolder() { return folder; }
 		void setFolder(const WCHAR* v) { folder = v; } */
 
-		const WCHAR* getName() { return name; }
-		void setName(const WCHAR* v) { name = v; }
+		const char* getName() { return name; }
+        void setName(const char* v) { name = v; }
 
-		const WCHAR* getCreated() { return created; }
-		void setCreated(const WCHAR* v) { created = v; }
+		const char* getCreated() { return created; }
+		void setCreated(const char* v) { created = v; }
 
-		const WCHAR* getModified() { return modified; }
-		void setModified(const WCHAR* v) { modified = v; }
+		const char* getModified() { return modified; }
+		void setModified(const char* v) { modified = v; }
 
-		const WCHAR* getAccessed() { return accessed; }
-		void setAccessed(const WCHAR* v) { accessed = v; }
+		const char* getAccessed() { return accessed; }
+		void setAccessed(const char* v) { accessed = v; }
 
-		const WCHAR* getAttributes() { return attributes; }
-		void setAttributes(const WCHAR* v) { attributes = v; }
+		const char* getAttributes() { return attributes; }
+		void setAttributes(const char* v) { attributes = v; }
 
 		bool getHidded() { return hidden; }
 		void setHidden(bool v) { hidden = v; }
@@ -125,8 +129,8 @@ class FolderData : public ArrayElement {
 		bool getExecutable() { return executable; }
 		void setExecutable(bool v) { executable = v; }
 
-		const WCHAR* getRole() { return role; }
-		void setRole(const WCHAR* v) { role = v; }
+		const char* getRole() { return role; }
+		void setRole(const char* v) { role = v; }
 
         void setExtList(ArrayList& list){extended = list;};
         /**
@@ -137,7 +141,7 @@ class FolderData : public ArrayElement {
 
 
     // ----------------------------------------------------- Public Methods
-        int parse(const char *syncmlData, size_t len = WString::npos) ;
+        int parse(const char *syncmlData, size_t len = StringBuffer::npos) ;
         char *format() ;
 
         ArrayElement* clone() { return new FolderData(*this); }

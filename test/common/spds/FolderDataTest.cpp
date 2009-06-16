@@ -36,26 +36,21 @@
 # include <cppunit/extensions/TestFactoryRegistry.h>
 # include <cppunit/extensions/HelperMacros.h>
 
+#include "base/globalsdef.h"
 #include "base/fscapi.h"
+#include "base/winadapter.h"
+#include "spds/FolderData.h"
 #include "base/messages.h"
 #include "base/Log.h"
 #include "base/util/StringBuffer.h"
-#include "base/globalsdef.h"
-#include "spds/FolderData.h"
 
-#ifdef _WIN32
-#define FOLDER_NAME     L"INBOX"
-#define CREATED         L"20050101T000000Z"
-#define ROLE            L"inbox"
-#else
+USE_NAMESPACE
+
 #define FOLDER_NAME     "INBOX"
 #define CREATED         "20050101T000000Z"
 #define ROLE            "inbox"
-#endif
 
 #define FOLDER_STRING   "<Folder><name>INBOX</name><created>20050101T000000Z</created><role>inbox</role></Folder>"
-
-USE_NAMESPACE
 
 
 class FolderDataTest : public CppUnit::TestFixture {
@@ -90,9 +85,9 @@ private:
     void testParse(){
         FolderData folder;
         folder.parse(FOLDER_STRING);
-        CPPUNIT_ASSERT(wcscmp(folder.getName(),FOLDER_NAME) == 0);
-        CPPUNIT_ASSERT(wcscmp(folder.getCreated(),CREATED) == 0);
-        CPPUNIT_ASSERT(wcscmp(folder.getRole(),ROLE) == 0);
+        CPPUNIT_ASSERT(strcmp(folder.getName(),FOLDER_NAME) == 0);
+        CPPUNIT_ASSERT(strcmp(folder.getCreated(),CREATED) == 0);
+        CPPUNIT_ASSERT(strcmp(folder.getRole(),ROLE) == 0);
 
     }
 

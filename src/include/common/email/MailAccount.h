@@ -33,66 +33,46 @@
  * the words "Powered by Funambol".
  */
 
-# include <cppunit/extensions/TestFactoryRegistry.h>
-# include <cppunit/extensions/HelperMacros.h>
 
-#include "base/fscapi.h"
-#include "base/messages.h"
-#include "base/Log.h"
-#include "base/util/StringBuffer.h"
-#include "base/util/ArrayList.h"
+#ifndef INCL_MAIL_ACCOUNT
+#define INCL_MAIL_ACCOUNT
+
 #include "base/globalsdef.h"
+#include "base/util/ArrayList.h"
 #include "spds/FolderData.h"
-#include "email/MailAccount.h"
 
-#define ACCOUNT_FOLDER  "<Folder><name>Email Home</name><created>20090428T162654Z<created><role>account</role><Ext><XNam>VisibleName</XNam> <XVal>Name Surname</XVal></Ext><Ext><XNam>EmailAddress</XNam> <XVal>Name.Surname@email.com</XVal></Ext></Folder>"
-#define INBOX_FOLDER    "<Folder><name>Inbox</name><created>20090428T162654Z<created><role>inbox</role></Folder>"
-#define OUTBOX_FOLDER   "<Folder><name>Outbox</name><created>20090428T162654Z<created><role>outbox</role></Folder>"
-#define VISIBLE_NAME     "Name Surname"
-#define EMAIL_ADDRESS    "Name.Surname@email.com"
+#define VISIBLENAME "VisibleName"
+#define EMAILADDRESS "EmailAddress"
 
-#define CREATED         "20090428T162654Z"
-#define NAME            "Email Home"
-#define INBOX           "Inbox"
-#define OUTBOX          "Outbox"
+BEGIN_NAMESPACE
+
+class MailAccount : public FolderData {
 
 
-USE_NAMESPACE
+    // ------------------------------------------------------- Private data
+    private:
+        const char* getValueByName( const char* valName);
+        void setValueByName( const char* valName, const char* setVal);
+    public:
+    // ------------------------------------------------------- Constructors
+        MailAccount(){};
+        ~MailAccount(){};
+
+    // ---------------------------------------------------------- Accessors
+        const char* getVisibleName(){ return getValueByName(VISIBLENAME); }
+        void setVisibleName(const char* xval){ setValueByName(VISIBLENAME, xval); }
+        
+        const char* getEmailAddress(){ return getValueByName(EMAILADDRESS); }
+        void setEmailAddress(const char* xval){ setValueByName(EMAILADDRESS, xval); }
+
+    // ----------------------------------------------------- Public Methods
 
 
-class MailAccountTest : public CppUnit::TestFixture {
-    CPPUNIT_TEST_SUITE(MailAccountTest);
-        CPPUNIT_TEST(testFillUpAccount);
-    CPPUNIT_TEST_SUITE_END();
-
-public:
-    void setUp(){
-
-    }
-
-    void tearDown(){
-
-    }
-
-private:
-
-
-    void testFillUpAccount(){
-       MailAccount account;
-       account.parse(ACCOUNT_FOLDER);
-       
-       CPPUNIT_ASSERT( strcmp(account.getName(), NAME) == 0);
-
-       const char* val1 = account.getVisibleName();
-       const char* val2 = account.getEmailAddress();
-
-       CPPUNIT_ASSERT( strcmp(val1, VISIBLE_NAME) == 0);
-       CPPUNIT_ASSERT( strcmp(val2, EMAIL_ADDRESS) == 0);
-       delete [] val1;
-       delete [] val2;
-
-    }
 
 };
 
-CPPUNIT_TEST_SUITE_REGISTRATION( MailAccountTest );
+
+END_NAMESPACE
+
+/** @endcond */
+#endif

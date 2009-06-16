@@ -151,29 +151,29 @@ int FolderData::parse(const char *syncmlData, size_t len)
     if( XMLProcessor::getElementContent (msg, FOLDER_ACCESSED, NULL, &start, &end) ) {
         accessed = msg.substr(start, end-start);
     }
-    else accessed = TEXT("");
+    else accessed = "";
 
     if( XMLProcessor::getElementContent (msg, FOLDER_MODIFIED, NULL, &start, &end) ) {
         modified = msg.substr(start, end-start);
     }
-    else modified = TEXT("");
+    else modified = "";
 
     if( XMLProcessor::getElementContent (msg, FOLDER_CREATED, NULL, &start, &end) ) {
         created = msg.substr(start, end-start);
     }
-    else created = TEXT("");
+    else created = "";
 
     if( XMLProcessor::getElementContent (msg, FOLDER_ROLE, NULL, &start, &end) ) {
         role = msg.substr(start, end-start);
     }
-    else role = TEXT("");
+    else role = "";
 
 
     if( XMLProcessor::getElementContent (msg, FOLDER_NAME, NULL, &start, &end) ) {
         name = msg.substr(start, end-start);
     }
     else{
-        name = TEXT("");
+        name = "";
         ret = -1;
     }
 
@@ -199,13 +199,13 @@ char* FolderData::format() {
 
     out = "<Folder>\n";
     if (name.length() > 0)
-        out += XMLProcessor::makeElement(FOLDER_NAME, _wcc(name));
+        out += XMLProcessor::makeElement(FOLDER_NAME, name);
     if (created.length() > 0)
-        out += XMLProcessor::makeElement(FOLDER_CREATED, _wcc(created));
+        out += XMLProcessor::makeElement(FOLDER_CREATED, created);
     if (modified.length() > 0)
-        out += XMLProcessor::makeElement(FOLDER_MODIFIED, _wcc(modified));
+        out += XMLProcessor::makeElement(FOLDER_MODIFIED, modified);
     if (accessed.length() > 0)
-        out += XMLProcessor::makeElement(FOLDER_ACCESSED, _wcc(accessed));
+        out += XMLProcessor::makeElement(FOLDER_ACCESSED, accessed);
 
     StringBuffer attributes;
 
@@ -228,7 +228,7 @@ char* FolderData::format() {
         out += XMLProcessor::makeElement(FOLDER_ATTRIBUTES, attributes);
 
     if (role.length() > 0)
-        out += XMLProcessor::makeElement(FOLDER_ROLE, _wcc(role));
+        out += XMLProcessor::makeElement(FOLDER_ROLE, role);
 
     if (!(extended.isEmpty())){
         for(int i=0; i < extended.size(); i++){

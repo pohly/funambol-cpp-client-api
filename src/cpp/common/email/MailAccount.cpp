@@ -33,60 +33,39 @@
  * the words "Powered by Funambol".
  */
 
-#ifndef INCL_MAIL_SOURCE_MANAGEMENT_NODE
-#define INCL_MAIL_SOURCE_MANAGEMENT_NODE
-/** @cond DEV */
-
-#include "spdm/constants.h"
-#include "spdm/DeviceManagementNode.h"
-#include "email/MailSyncSourceConfig.h"
+#include "base/fscapi.h"
+#include "base/Log.h"
+#include "email/MailAccount.h"
 #include "base/globalsdef.h"
+#include "spds/FolderExt.h"
+#include "base/util/ArrayList.h"
+#include "base/util/utils.h"
 
-BEGIN_NAMESPACE
-
-
-class MailSourceManagementNode : public DeviceManagementNode {
-
-    public:
-        // ------------------------------------------ Constructors & destructors
-
-        MailSourceManagementNode( const char*     context,
-                                  const char*     name   );
-
-        MailSourceManagementNode( const char*     context,
-                                  const char*     name   ,
-                                  MailSyncSourceConfig& config );
-
-        ~MailSourceManagementNode();
-
-        // ------------------------------------------------------------- Methods
-
-        /**
-         * Returns the mail configuration object from the cached value (if
-         * refresh is false) or reading it from the DMT store (if refresh is
-         * true);
-         *
-         * @param refresh should the node be read from the DMT ?
-         */
-        MailSyncSourceConfig& getMailSourceConfig(bool refresh);
-
-        /**
-         * Sets the given mail source configuration object to the internal
-         * cache and into the DMT.
-         *
-         * @param c the configuration object to store
-         */
-        void setMailSourceConfig(MailSyncSourceConfig& c);
-
-        ArrayElement* clone();
-
-        // -------------------------------------------------------- Data members
-    private:
-        MailSyncSourceConfig config;
-};
+USE_NAMESPACE
 
 
-END_NAMESPACE
+const char* MailAccount::getValueByName(const char* valName){
+    for(int i = 0; i < extended.size(); i++){
+        if( strcmp ( ((FolderExt*)extended.get(i))->getXNam(), valName) == 0){
+            FolderExt* fe = (FolderExt*)(extended.get(i));
+            ArrayList xvals = fe->getXVals();
+            StringBuffer* xval = (StringBuffer*)(xvals.get(0));
+            return stringdup(xval->c_str());
+        }
+    }
+    return NULL;
+}
 
-/** @endcond */
-#endif
+void MailAccount::setValueByName(const char* valName, const char* setVal){
+    for(int i = 0; i < extended.size(); i++){
+        if( strcmp ( ((FolderExt*)extended.get(i))->getXNam(), valName) == 0){
+            ((StringBuffer*)((FolderExt*)extended.get(i))->getXVals().get(0))->assign(setVal);
+            return;
+        }
+    }
+    FolderExt ext;
+    ext.setXNam(valName);
+    StringBuffer xval = setVal;
+    ArrayList xvals; xvals.add(xval);
+    ext.setXVals(xvals);
+}

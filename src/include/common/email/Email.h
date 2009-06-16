@@ -33,56 +33,70 @@
  * the words "Powered by Funambol".
  */
 
-#ifndef INCL_MAIL_SOURCE_MANAGEMENT_NODE
-#define INCL_MAIL_SOURCE_MANAGEMENT_NODE
+
+#ifndef INCL_MAIL
+#define INCL_MAIL
 /** @cond DEV */
 
-#include "spdm/constants.h"
-#include "spdm/DeviceManagementNode.h"
-#include "email/MailSyncSourceConfig.h"
+#include "base/fscapi.h"
+#include "base/util/ArrayElement.h"
+#include "base/util/StringBuffer.h"
+#include "spds/MailMessage.h"
 #include "base/globalsdef.h"
 
 BEGIN_NAMESPACE
 
+class Email : public ArrayElement {
 
-class MailSourceManagementNode : public DeviceManagementNode {
+    // ------------------------------------------------------------ Private data
+    private:
+        bool read;
+        bool forwarded;
+        bool replied;
+        StringBuffer received;
+        StringBuffer created;
+        StringBuffer modified;
+        bool deleted;
+        bool flagged;
+
+        MailMessage emailItem;
 
     public:
-        // ------------------------------------------ Constructors & destructors
 
-        MailSourceManagementNode( const char*     context,
-                                  const char*     name   );
+    // --------------------------------------------------------------- Accessors
+        bool getRead() { return read; }
+        void setRead(bool v) { read=v; }
 
-        MailSourceManagementNode( const char*     context,
-                                  const char*     name   ,
-                                  MailSyncSourceConfig& config );
+        bool getForwarded() { return forwarded; }
+        void setForwarded(bool v) { forwarded=v; }
 
-        ~MailSourceManagementNode();
+        bool getReplied() { return replied; }
+        void setReplied(bool r) { replied=r; }
 
-        // ------------------------------------------------------------- Methods
+        const char * getReceived() { return received; }
+        void setReceived(const char * v) { received=v; }
 
-        /**
-         * Returns the mail configuration object from the cached value (if
-         * refresh is false) or reading it from the DMT store (if refresh is
-         * true);
-         *
-         * @param refresh should the node be read from the DMT ?
-         */
-        MailSyncSourceConfig& getMailSourceConfig(bool refresh);
+        const char * getCreated() { return created; }
+        void setCreated(const char * v) { created=v; }
 
-        /**
-         * Sets the given mail source configuration object to the internal
-         * cache and into the DMT.
-         *
-         * @param c the configuration object to store
-         */
-        void setMailSourceConfig(MailSyncSourceConfig& c);
+        const char * getModified() { return modified; }
+        void setModified(const char * v) { modified=v; }
 
-        ArrayElement* clone();
+        bool getDeleted() { return deleted; }
+        void setDeleted(bool v) { deleted=v; }
 
-        // -------------------------------------------------------- Data members
-    private:
-        MailSyncSourceConfig config;
+        bool getFlagged() { return flagged; }
+        void setFlagged(bool v) { flagged=v; }
+
+        MailMessage& getMailMessage() { return emailItem; }
+        void setMailMessage(const MailMessage& v) { emailItem = v; }
+
+    // ---------------------------------------------------------- Public Methods
+        int parse(const char *syncmlData) { return 0; }          // TODO
+        char *format()                     { return wcsdup(""); } // TODO
+
+        ArrayElement* clone() { return new Email(*this); }
+
 };
 
 
@@ -90,3 +104,4 @@ END_NAMESPACE
 
 /** @endcond */
 #endif
+
