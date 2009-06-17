@@ -43,7 +43,7 @@
 #include "base/util/ArrayList.h"
 #include "base/globalsdef.h"
 #include "spds/FolderData.h"
-#include "email/MailAccount.h"
+#include "mail/MailAccount.h"
 
 #define ACCOUNT_FOLDER  "<Folder><name>Email Home</name><created>20090428T162654Z<created><role>account</role><Ext><XNam>VisibleName</XNam> <XVal>Name Surname</XVal></Ext><Ext><XNam>EmailAddress</XNam> <XVal>Name.Surname@email.com</XVal></Ext></Folder>"
 #define INBOX_FOLDER    "<Folder><name>Inbox</name><created>20090428T162654Z<created><role>inbox</role></Folder>"
@@ -70,6 +70,7 @@
 #define _IN_SSL          "0"
 #define _OUT_SSL         "0"
 #define _SIGNATURE       "Elvis is alive!"
+#define _DOMAINNAME      "iamthepelvis.com"
 #define _ID              "ID"
 
 
@@ -128,6 +129,7 @@ private:
        account.setInSSL(_IN_SSL);
        account.setOutSSL(_OUT_SSL);
        account.setSignature(_SIGNATURE);
+       account.setDomainName(_DOMAINNAME);
        account.setID(_ID);
 
        CPPUNIT_ASSERT( strcmp(account.getVisibleName(),     _VISIBLENAME)   == 0 );
@@ -142,6 +144,7 @@ private:
        CPPUNIT_ASSERT( strcmp(account.getInSSL(),           _IN_SSL)        == 0 );
        CPPUNIT_ASSERT( strcmp(account.getOutSSL(),          _OUT_SSL)       == 0 );
        CPPUNIT_ASSERT( strcmp(account.getSignature(),       _SIGNATURE)     == 0 );
+       CPPUNIT_ASSERT( strcmp(account.getDomainName(),       _DOMAINNAME)    == 0 );
        CPPUNIT_ASSERT( strcmp(account.getID(),              _ID)            == 0 );
 
 

@@ -61,7 +61,7 @@ class MailAccountManager {
 public:
 
     MailAccountManager(MailSyncSourceConfig& ssc);
-    ~MailAccountManager();
+    virtual ~MailAccountManager();
 
     // ------------------------ Email account management ------------------------
     /**

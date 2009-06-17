@@ -53,6 +53,7 @@
 #define IN_SSL          "IncomingSSL"
 #define OUT_SSL         "OutcomingSSL"
 #define SIGNATURE       "Signature"
+#define DOMAINNAME      "DomainName"
 #define ID              "ID"
 
 BEGIN_NAMESPACE
@@ -104,6 +105,9 @@ class MailAccount : public FolderData {
 
         const char* getSignature(){ return getValueByName(SIGNATURE); }
         void setSignature(const char* xval){ setValueByName(SIGNATURE, xval); }  
+
+        const char* getDomainName(){ return getValueByName(DOMAINNAME); }
+        void setDomainName(const char* xval){ setValueByName(DOMAINNAME, xval); }
 
         const char* getID(){ return getValueByName(ID); }
         void setID(const char* xval){ setValueByName(ID, xval); }    

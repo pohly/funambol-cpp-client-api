@@ -17766,10 +17766,6 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\include\common\spdm\constants.h"
-				>
-			</File>
-			<File
 				RelativePath="..\..\src\include\common\spds\constants.h"
 				>
 			</File>
@@ -17779,6 +17775,10 @@
 			</File>
 			<File
 				RelativePath="..\..\src\include\common\base\constants.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\include\common\spdm\constants.h"
 				>
 			</File>
 			<File
@@ -17906,7 +17906,7 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\include\common\email\MailSyncSourceConfig.h"
+				RelativePath="..\..\src\include\common\mail\MailSyncSourceConfig.h"
 				>
 			</File>
 			<File
