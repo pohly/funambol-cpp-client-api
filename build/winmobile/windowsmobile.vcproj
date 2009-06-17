@@ -17696,6 +17696,10 @@
 				Name="email"
 				>
 				<File
+					RelativePath="..\..\src\cpp\common\email\EmailAccountManager.cpp"
+					>
+				</File>
+				<File
 					RelativePath="..\..\src\cpp\common\email\EmailData.cpp"
 					>
 					<FileConfiguration
@@ -18146,10 +18150,6 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\include\common\http\constants.h"
-				>
-			</File>
-			<File
 				RelativePath="..\..\src\include\common\base\constants.h"
 				>
 			</File>
@@ -18159,6 +18159,10 @@
 			</File>
 			<File
 				RelativePath="..\..\src\include\common\spds\constants.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\include\common\http\constants.h"
 				>
 			</File>
 			<File
