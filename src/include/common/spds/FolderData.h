@@ -95,46 +95,46 @@ class FolderData : public ArrayElement {
         ~FolderData();
 
     // ---------------------------------------------------------- Accessors
-        const char* getParent() { return parent; }
+        const StringBuffer& getParent() const { return parent; }
         void setParent(const char* v) { parent = v; }
 		
-        const char* getName() { return name; }
+        const StringBuffer& getName() const { return name; }
         void setName(const char* v) { name = v; }
 
-		const char* getCreated() { return created; }
+		const StringBuffer& getCreated() const { return created; }
 		void setCreated(const char* v) { created = v; }
 
-		const char* getModified() { return modified; }
+		const StringBuffer& getModified() const { return modified; }
 		void setModified(const char* v) { modified = v; }
 
-		const char* getAccessed() { return accessed; }
+		const StringBuffer& getAccessed() const { return accessed; }
 		void setAccessed(const char* v) { accessed = v; }
 
-		const char* getAttributes() { return attributes; }
+		const StringBuffer& getAttributes() const { return attributes; }
 		void setAttributes(const char* v) { attributes = v; }
 
-		bool getHidded() { return hidden; }
+		bool getHidded() const { return hidden; }
 		void setHidden(bool v) { hidden = v; }
 
-		bool getSystem() { return system; }
+		bool getSystem() const { return system; }
 		void setSystem(bool v) { system = v; }
 
-		bool getArchived() { return archived; }
+		bool getArchived() const { return archived; }
 		void setArchived(bool v) { archived = v; }
 
-		bool getDeleted() { return deleted; }
+		bool getDeleted() const { return deleted; }
 		void setDeleted(bool v) { deleted = v; }
 
-		bool getWritable() { return writable; }
+		bool getWritable() const { return writable; }
 		void setWritable(bool v) { writable = v; }
 
-		bool getReadable() { return readable; }
+		bool getReadable() const { return readable; }
 		void setReadable(bool v) { readable = v; }
 
-		bool getExecutable() { return executable; }
+		bool getExecutable() const { return executable; }
 		void setExecutable(bool v) { executable = v; }
 
-		const char* getRole() { return role; }
+		const StringBuffer& getRole() const { return role; }
 		void setRole(const char* v) { role = v; }
 
         void setExtList(ArrayList& list){extended = list;};
