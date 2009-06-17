@@ -39,7 +39,7 @@
 
 #include "spdm/constants.h"
 #include "spdm/DeviceManagementNode.h"
-#include "email/MailSyncSourceConfig.h"
+#include "mail/MailSyncSourceConfig.h"
 #include "base/globalsdef.h"
 
 BEGIN_NAMESPACE

@@ -34,19 +34,19 @@
  */
 
 
-#ifndef INCL_MAIL
-#define INCL_MAIL
+#ifndef INCL_MAIL_DATA
+#define INCL_MAIL_DATA
 /** @cond DEV */
 
 #include "base/util/ArrayElement.h"
 #include "base/util/StringBuffer.h"
-#include "email/MailMessage.h"
-#include "email/EmailData.h"
+#include "mail/MailMessage.h"
+#include "mail/MailData.h"
 #include "base/globalsdef.h"
 
 BEGIN_NAMESPACE
 
-class EmailData : public ArrayElement {
+class MailData : public ArrayElement {
 
     // ------------------------------------------------------- Private data
     private:
@@ -93,8 +93,8 @@ class EmailData : public ArrayElement {
 
     public:
     // ------------------------------------------------------- Constructors
-        EmailData();
-        ~EmailData();
+        MailData();
+        ~MailData();
 
     // ---------------------------------------------------------- Accessors
         bool getRead() { return read; }
@@ -128,7 +128,7 @@ class EmailData : public ArrayElement {
         int parse(const char *syncmlData, size_t len = StringBuffer::npos) ;
         char *format() ;
 
-        ArrayElement* clone() { return new EmailData(*this); }
+        ArrayElement* clone() { return new MailData(*this); }
 
         unsigned long getRemainingBodySize() { return remainingBodySize; }
         void setRemainingBodySize(unsigned long v) { remainingBodySize = v; }

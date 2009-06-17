@@ -35,7 +35,7 @@
 
 #include "base/fscapi.h"
 #include "base/Log.h"
-#include "email/MailAccount.h"
+#include "mail/MailAccount.h"
 #include "base/globalsdef.h"
 #include "spds/FolderExt.h"
 #include "base/util/ArrayList.h"

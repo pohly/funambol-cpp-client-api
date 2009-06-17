@@ -38,7 +38,7 @@
 #include "base/util/XMLProcessor.h"
 #include "base/quoted-printable.h"
 #include "syncml/formatter/Formatter.h"
-#include "email/EmailData.h"
+#include "mail/MailData.h"
 #include "base/globalsdef.h"
 
 USE_NAMESPACE
@@ -69,7 +69,7 @@ static inline bool checkFlag(const char *xml, const char *field)
     return ret;
 }
 
-EmailData::EmailData()
+MailData::MailData()
 {
     read = false;
     forwarded = false;
@@ -88,7 +88,7 @@ EmailData::EmailData()
     modified = NULL;
 }
 
-EmailData::~EmailData()
+MailData::~MailData()
 {
     if (extMailData) {
         delete extMailData;
@@ -111,7 +111,7 @@ EmailData::~EmailData()
 *
 */
 
-int EmailData::parse(const char *msg, size_t /* len */)
+int MailData::parse(const char *msg, size_t /* len */)
 {
     int ret = 0;
     unsigned int start = 0, end = 0;
@@ -163,7 +163,7 @@ int EmailData::parse(const char *msg, size_t /* len */)
         // item must start with CDATA
         size_t item_start = item.find("![CDATA");
         if(item_start > 50){ // it could be <emailitem ENC="QUOTED-PRINTABLE"><![CDATA[
-            LOG.error("EMailData: can't find inner CDATA section.");
+            LOG.error("MailData: can't find inner CDATA section.");
             return -1;
         }
         size_t item_end = item.rfind("]]>");
@@ -174,7 +174,7 @@ int EmailData::parse(const char *msg, size_t /* len */)
         if(item.length() - item_end > 10){
             item_end = item.rfind("]]&gt;");
             if(item.length() - item_end > 10){
-                LOG.error("EMailData: can't find CDATA end tag.");
+                LOG.error("MailData: can't find CDATA end tag.");
                 return -2;
             }
         }
@@ -185,7 +185,7 @@ int EmailData::parse(const char *msg, size_t /* len */)
 
     }
     else {
-        // LOG.info("EMailData: no <emailitem> tag.");
+        // LOG.info("MailData: no <emailitem> tag.");
         // It is not an error, just log it for info.
     }
     /*
@@ -272,7 +272,7 @@ int EmailData::parse(const char *msg, size_t /* len */)
     return ret;
 }
 
-char *EmailData::format() {
+char *MailData::format() {
     StringBuffer out;
 
     out.reserve(150);

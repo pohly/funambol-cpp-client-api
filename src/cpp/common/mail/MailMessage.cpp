@@ -38,7 +38,7 @@
 #include "base/quoted-printable.h"
 #include "base/Log.h"
 #include "spds/spdsutils.h"
-#include "email/MailMessage.h"
+#include "mail/MailMessage.h"
 #include "base/globalsdef.h"
 
 USE_NAMESPACE

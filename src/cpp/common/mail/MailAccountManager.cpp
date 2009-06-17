@@ -35,19 +35,19 @@
 
 #include "base/fscapi.h"
 #include "base/Log.h"
-#include "email/EmailAccountManager.h"
+#include "mail/MailAccountManager.h"
 #include "base/globalsdef.h"
 
 USE_NAMESPACE
 
 
 
-EmailAccountManager::EmailAccountManager(MailSyncSourceConfig& ssc) : config(ssc) {}
+MailAccountManager::MailAccountManager(MailSyncSourceConfig& ssc) : config(ssc) {}
 
-EmailAccountManager::~EmailAccountManager() {}
+MailAccountManager::~MailAccountManager() {}
 
 
-int EmailAccountManager::createAccount(MailAccount& account) {
+int MailAccountManager::createAccount(MailAccount& account) {
 
     // Create the account on Client
     int ret = createClientAccount(account);
@@ -62,7 +62,7 @@ int EmailAccountManager::createAccount(MailAccount& account) {
     return ret;
 }
 
-int EmailAccountManager::updateAccount(const MailAccount& account) {
+int MailAccountManager::updateAccount(const MailAccount& account) {
 
     // Update the account on Client
     int ret = updateClientAccount(account);
@@ -76,7 +76,7 @@ int EmailAccountManager::updateAccount(const MailAccount& account) {
     return ret;
 }
 
-int EmailAccountManager::deleteAccount(const StringBuffer& accountID) {
+int MailAccountManager::deleteAccount(const StringBuffer& accountID) {
 
     // Deletes the account on Client
     int ret = deleteClientAccount(accountID);
@@ -91,7 +91,7 @@ int EmailAccountManager::deleteAccount(const StringBuffer& accountID) {
 }
 
 
-int EmailAccountManager::createFolder(const FolderData& folder) {
+int MailAccountManager::createFolder(const FolderData& folder) {
 
     // Safe check
     if (folder.getName().empty() || folder.getParent().empty()) {
@@ -114,7 +114,7 @@ int EmailAccountManager::createFolder(const FolderData& folder) {
     return ret;
 }
 
-int EmailAccountManager::updateFolder(const FolderData& folder) {
+int MailAccountManager::updateFolder(const FolderData& folder) {
 
     // Safe check
     if (folder.getName().empty() || folder.getParent().empty()) {
@@ -137,7 +137,7 @@ int EmailAccountManager::updateFolder(const FolderData& folder) {
     return ret;
 }
 
-int EmailAccountManager::deleteFolder(const FolderData& folder) {
+int MailAccountManager::deleteFolder(const FolderData& folder) {
 
     // Safe check
     if (folder.getName().empty() || folder.getParent().empty()) {
@@ -162,23 +162,23 @@ int EmailAccountManager::deleteFolder(const FolderData& folder) {
 
 
 
-int EmailAccountManager::getAccountNumber() {
+int MailAccountManager::getAccountNumber() {
     // TODO: read from config
     return 0;
 }
 
-bool EmailAccountManager::accountExists(const StringBuffer& accountID) {
+bool MailAccountManager::accountExists(const StringBuffer& accountID) {
     // TODO: read from config
     return true;
 }
 
-int EmailAccountManager::readAccount(MailAccount& account) {
+int MailAccountManager::readAccount(MailAccount& account) {
 
     // TODO: read from config
     return 0;
 }
 
-int EmailAccountManager::readFolder(FolderData& folder) {
+int MailAccountManager::readFolder(FolderData& folder) {
 
     // Safe check
     if (folder.getName().empty() || folder.getParent().empty()) {

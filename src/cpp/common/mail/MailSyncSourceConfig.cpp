@@ -36,7 +36,7 @@
 
 
 #include "base/util/utils.h"
-#include "email/MailSyncSourceConfig.h"
+#include "mail/MailSyncSourceConfig.h"
 #include "base/globalsdef.h"
 
 USE_NAMESPACE

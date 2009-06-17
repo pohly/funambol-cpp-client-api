@@ -34,15 +34,15 @@
  */
 
 
-#ifndef INCL_EMAIL_ACCOUNT_MANAGER
-#define INCL_EMAIL_ACCOUNT_MANAGER
+#ifndef INCL_MAIL_ACCOUNT_MANAGER
+#define INCL_MAIL_ACCOUNT_MANAGER
 /** @cond DEV */
 
 #include "base/util/utils.h"
 #include "base/util/ArrayElement.h"
 #include "base/util/StringBuffer.h"
-#include "email/MailSyncSourceConfig.h"
-#include "email/MailAccount.h"
+#include "mail/MailSyncSourceConfig.h"
+#include "mail/MailAccount.h"
 #include "spds/FolderData.h"
 #include "base/globalsdef.h"
 
@@ -56,12 +56,12 @@ BEGIN_NAMESPACE
  * Clients should extend this class and implement virtual methods to create/update/delete
  * accounts and folders in the specific platform.
  */
-class EmailAccountManager {
+class MailAccountManager {
 
 public:
 
-    EmailAccountManager(MailSyncSourceConfig& ssc);
-    ~EmailAccountManager();
+    MailAccountManager(MailSyncSourceConfig& ssc);
+    ~MailAccountManager();
 
     // ------------------------ Email account management ------------------------
     /**

@@ -36,12 +36,12 @@
 
 
 #ifndef INCL_MAIL_SYNC_SOURCE_CONFIG
-    #define INCL_MAIL_SYNC_SOURCE_CONFIG
+#define INCL_MAIL_SYNC_SOURCE_CONFIG
 /** @cond DEV */
 
-    #include "base/fscapi.h"
-    #include "spds/constants.h"
-    #include "spds/SyncSourceConfig.h"
+#include "base/fscapi.h"
+#include "spds/constants.h"
+#include "spds/SyncSourceConfig.h"
 #include "base/globalsdef.h"
 
 BEGIN_NAMESPACE
