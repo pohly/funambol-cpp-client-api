@@ -57,12 +57,28 @@
 #define OUTBOX          "Outbox"
 
 
+
+#define _VISIBLENAME     "Elvis Presley"
+#define _EMAILADDRESS    "elvis@iamthepelvis.com"
+#define _PROTOCOL        "IMAP4"
+#define _USERNAME        "elvis"
+#define _PASSWORD        "TheKing"
+#define _IN_SERVER       "mail.iamthepelvis.com"
+#define _OUT_SERVER      "smtp.iamthepelvis.com"
+#define _IN_PORT         "143"
+#define _OUT_PORT        "25"
+#define _IN_SSL          "0"
+#define _OUT_SSL         "0"
+#define _ID              "ID"
+
+
 USE_NAMESPACE
 
 
 class MailAccountTest : public CppUnit::TestFixture {
     CPPUNIT_TEST_SUITE(MailAccountTest);
         CPPUNIT_TEST(testFillUpAccount);
+        CPPUNIT_TEST(testExtSetters);
     CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -88,16 +104,46 @@ private:
 
        CPPUNIT_ASSERT( strcmp(val1, VISIBLE_NAME) == 0);
        CPPUNIT_ASSERT( strcmp(val2, EMAIL_ADDRESS) == 0);
-       //delete [] val1;
-       //delete [] val2;
 
        account.setProtocol(ACCOUNT_PROTOCOL);
        const char* val3 = account.getProtocol();
        CPPUNIT_ASSERT(val3 != NULL);  
        CPPUNIT_ASSERT( strcmp(val3, ACCOUNT_PROTOCOL) == 0);
-       //delete [] val3;
     }
 
+
+    void testExtSetters(){
+       MailAccount account;
+       account.parse(ACCOUNT_FOLDER);
+       account.setVisibleName(_VISIBLENAME);
+       account.setEmailAddress(_EMAILADDRESS);
+       account.setProtocol(_PROTOCOL);
+       account.setUsername(_USERNAME);
+       account.setPassword(_PASSWORD);
+       account.setInServer(_IN_SERVER);
+       account.setOutServer(_OUT_SERVER);
+       account.setInPort(_IN_PORT);
+       account.setOutPort(_OUT_PORT);
+       account.setInSSL(_IN_SSL);
+       account.setOutSSL(_OUT_SSL);
+       account.setID(_ID);
+
+       CPPUNIT_ASSERT( strcmp(account.getVisibleName(),     _VISIBLENAME)   == 0 );
+       CPPUNIT_ASSERT( strcmp(account.getEmailAddress(),    _EMAILADDRESS)  == 0 );
+       CPPUNIT_ASSERT( strcmp(account.getProtocol(),        _PROTOCOL)      == 0 );
+       CPPUNIT_ASSERT( strcmp(account.getUsername(),        _USERNAME)      == 0 );
+       CPPUNIT_ASSERT( strcmp(account.getPassword(),        _PASSWORD)      == 0 );
+       CPPUNIT_ASSERT( strcmp(account.getInServer(),        _IN_SERVER)     == 0 );
+       CPPUNIT_ASSERT( strcmp(account.getOutServer(),       _OUT_SERVER)    == 0 );
+       CPPUNIT_ASSERT( strcmp(account.getInPort(),          _IN_PORT)       == 0 );
+       CPPUNIT_ASSERT( strcmp(account.getOutPort(),         _OUT_PORT)      == 0 );
+       CPPUNIT_ASSERT( strcmp(account.getInSSL(),           _IN_SSL)        == 0 );
+       CPPUNIT_ASSERT( strcmp(account.getOutSSL(),            _OUT_SSL)       == 0 );
+       CPPUNIT_ASSERT( strcmp(account.getID(),              _ID) == 0 );
+
+       CPPUNIT_ASSERT( strcmp(account.getVisibleName(), _VISIBLENAME) == 0 );
+
+    }
 };
 
 CPPUNIT_TEST_SUITE_REGISTRATION( MailAccountTest );

@@ -44,6 +44,15 @@
 #define VISIBLENAME     "VisibleName"
 #define EMAILADDRESS    "EmailAddress"
 #define PROTOCOL        "Protocol"
+#define USERNAME        "Username"
+#define PASSWORD        "Password"
+#define IN_SERVER       "IncomingServer"
+#define OUT_SERVER      "OutgoingServer"
+#define IN_PORT         "PortIn"
+#define OUT_PORT        "PortOut"
+#define IN_SSL          "IncomingSSL"
+#define OUT_SSL         "OutcomingSSL"
+#define ID              "ID"
 
 BEGIN_NAMESPACE
 
@@ -68,7 +77,34 @@ class MailAccount : public FolderData {
         const char* getProtocol(){ return getValueByName(PROTOCOL); }
         void setProtocol(const char* xval){ setValueByName(PROTOCOL, xval); }
 
-    // ----------------------------------------------------- Public Methods
+        const char* getUsername(){ return getValueByName(USERNAME); }
+        void setUsername(const char* xval){ setValueByName(USERNAME, xval); }
+
+        const char* getPassword(){ return getValueByName(PASSWORD); }
+        void setPassword(const char* xval){ setValueByName(PASSWORD, xval); }
+
+        const char* getInServer(){ return getValueByName(IN_SERVER); }
+        void setInServer(const char* xval){ setValueByName(IN_SERVER, xval); }
+
+        const char* getOutServer(){ return getValueByName(OUT_SERVER); }
+        void setOutServer(const char* xval){ setValueByName(OUT_SERVER, xval); }
+
+        const char* getInPort(){ return getValueByName(IN_PORT); }
+        void setInPort(const char* xval){ setValueByName(IN_PORT, xval); }
+
+        const char* getOutPort(){ return getValueByName(OUT_PORT); }
+        void setOutPort(const char* xval){ setValueByName(OUT_PORT, xval); }
+
+        const char* getInSSL(){ return getValueByName(IN_SSL); }
+        void setInSSL(const char* xval){ setValueByName(IN_SSL, xval); }  
+
+        const char* getOutSSL(){ return getValueByName(OUT_SSL); }
+        void setOutSSL(const char* xval){ setValueByName(OUT_SSL, xval); }  
+
+        const char* getID(){ return getValueByName(ID); }
+        void setID(const char* xval){ setValueByName(ID, xval); }    
+        
+        // ----------------------------------------------------- Public Methods
 
 
 

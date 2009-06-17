@@ -250,10 +250,8 @@ int FolderData::lengthForB64(int len) {
     modules = len % 3;
     if (modules == 0) {
         ret = 4 * (len / 3);
-
     } else {
         ret = 4 * ((len/3) + 1);
-
     }
     return ret;
 }
