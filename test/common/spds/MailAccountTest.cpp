@@ -69,6 +69,7 @@
 #define _OUT_PORT        "25"
 #define _IN_SSL          "0"
 #define _OUT_SSL         "0"
+#define _SIGNATURE       "Elvis is alive!"
 #define _ID              "ID"
 
 
@@ -126,6 +127,7 @@ private:
        account.setOutPort(_OUT_PORT);
        account.setInSSL(_IN_SSL);
        account.setOutSSL(_OUT_SSL);
+       account.setSignature(_SIGNATURE);
        account.setID(_ID);
 
        CPPUNIT_ASSERT( strcmp(account.getVisibleName(),     _VISIBLENAME)   == 0 );
@@ -138,10 +140,10 @@ private:
        CPPUNIT_ASSERT( strcmp(account.getInPort(),          _IN_PORT)       == 0 );
        CPPUNIT_ASSERT( strcmp(account.getOutPort(),         _OUT_PORT)      == 0 );
        CPPUNIT_ASSERT( strcmp(account.getInSSL(),           _IN_SSL)        == 0 );
-       CPPUNIT_ASSERT( strcmp(account.getOutSSL(),            _OUT_SSL)       == 0 );
-       CPPUNIT_ASSERT( strcmp(account.getID(),              _ID) == 0 );
+       CPPUNIT_ASSERT( strcmp(account.getOutSSL(),          _OUT_SSL)       == 0 );
+       CPPUNIT_ASSERT( strcmp(account.getSignature(),       _SIGNATURE)     == 0 );
+       CPPUNIT_ASSERT( strcmp(account.getID(),              _ID)            == 0 );
 
-       CPPUNIT_ASSERT( strcmp(account.getVisibleName(), _VISIBLENAME) == 0 );
 
     }
 };

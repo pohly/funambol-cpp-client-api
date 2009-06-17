@@ -52,6 +52,7 @@
 #define OUT_PORT        "PortOut"
 #define IN_SSL          "IncomingSSL"
 #define OUT_SSL         "OutcomingSSL"
+#define SIGNATURE       "Signature"
 #define ID              "ID"
 
 BEGIN_NAMESPACE
@@ -99,7 +100,10 @@ class MailAccount : public FolderData {
         void setInSSL(const char* xval){ setValueByName(IN_SSL, xval); }  
 
         const char* getOutSSL(){ return getValueByName(OUT_SSL); }
-        void setOutSSL(const char* xval){ setValueByName(OUT_SSL, xval); }  
+        void setOutSSL(const char* xval){ setValueByName(OUT_SSL, xval); } 
+
+        const char* getSignature(){ return getValueByName(SIGNATURE); }
+        void setSignature(const char* xval){ setValueByName(SIGNATURE, xval); }  
 
         const char* getID(){ return getValueByName(ID); }
         void setID(const char* xval){ setValueByName(ID, xval); }    
