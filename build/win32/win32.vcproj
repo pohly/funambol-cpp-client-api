@@ -3353,11 +3353,11 @@
 				Name="email"
 				>
 				<File
-					RelativePath="..\..\src\cpp\common\email\EmailData.cpp"
+					RelativePath="..\..\src\cpp\common\mail\MailAccount.cpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\src\cpp\common\email\MailAccount.cpp"
+					RelativePath="..\..\src\cpp\common\mail\MailData.cpp"
 					>
 				</File>
 				<File
@@ -4394,15 +4394,15 @@
 				Name="email"
 				>
 				<File
-					RelativePath="..\..\src\include\common\email\EmailAccountManager.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\src\include\common\email\EmailData.h"
-					>
-				</File>
-				<File
 					RelativePath="..\..\src\include\common\email\MailAccount.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\include\common\mail\MailAccount.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\include\common\mail\MailData.h"
 					>
 				</File>
 				<File

@@ -100,7 +100,7 @@ int FolderData::parse(const char *syncmlData, size_t len)
 {
     int ret = 0;
     unsigned int start, end;
-    StringBuffer msg(syncmlData, len);
+    StringBuffer msg(syncmlData);
 
     msg.replaceAll("&lt;", "<");
     msg.replaceAll("&amp;", "&");
@@ -256,7 +256,7 @@ int FolderData::lengthForB64(int len) {
     return ret;
 }
 
-const char* FolderData::getValueByName(const char* valName){
+const char* FolderData::getValueByName(const char* valName) const {
     for(int i = 0; i < extended.size(); i++){
         if( strcmp ( ((FolderExt*)extended.get(i))->getXNam(), valName) == 0){
             FolderExt* fe = (FolderExt*)(extended.get(i));

@@ -83,7 +83,7 @@ class FolderData : public ArrayElement {
         * return the length for the base64 array starting from length of the original array
         */
         int lengthForB64(int len);
-        const char* getValueByName(const char* valName);
+        const char* getValueByName(const char* valName) const;
         void setValueByName(const char* valName, const char* setVal);
 
 

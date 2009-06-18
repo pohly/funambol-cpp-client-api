@@ -45,9 +45,9 @@
 #include "spds/FolderData.h"
 #include "mail/MailAccount.h"
 
-#define ACCOUNT_FOLDER  "<Folder><name>Email Home</name><created>20090428T162654Z<created><role>account</role><Ext><XNam>VisibleName</XNam> <XVal>Name Surname</XVal></Ext><Ext><XNam>EmailAddress</XNam> <XVal>Name.Surname@email.com</XVal></Ext></Folder>"
-#define INBOX_FOLDER    "<Folder><name>Inbox</name><created>20090428T162654Z<created><role>inbox</role></Folder>"
-#define OUTBOX_FOLDER   "<Folder><name>Outbox</name><created>20090428T162654Z<created><role>outbox</role></Folder>"
+#define ACCOUNT_FOLDER  "<Folder><name>Email Home</name><created>20090428T162654Z</created><role>account</role><Ext><XNam>VisibleName</XNam> <XVal>Name Surname</XVal></Ext><Ext><XNam>EmailAddress</XNam> <XVal>Name.Surname@email.com</XVal></Ext></Folder>"
+#define INBOX_FOLDER    "<Folder><name>Inbox</name><created>20090428T162654Z</created><role>inbox</role></Folder>"
+#define OUTBOX_FOLDER   "<Folder><name>Outbox</name><created>20090428T162654Z</created><role>outbox</role></Folder>"
 #define VISIBLE_NAME     "Name Surname"
 #define EMAIL_ADDRESS    "Name.Surname@email.com"
 #define ACCOUNT_PROTOCOL "POP3"

@@ -40,6 +40,7 @@
 #include "base/globalsdef.h"
 #include "base/util/ArrayList.h"
 #include "spds/FolderData.h"
+#include "base/Log.h"
 
 #define VISIBLENAME     "VisibleName"
 #define EMAILADDRESS    "EmailAddress"
@@ -63,53 +64,54 @@ class MailAccount : public FolderData {
 
     // ------------------------------------------------------- Private data
     private:
-
+        
     public:
     // ------------------------------------------------------- Constructors
         MailAccount(){};
         ~MailAccount(){};
 
+
     // ---------------------------------------------------------- Accessors
-        const char* getVisibleName(){ return getValueByName(VISIBLENAME); }
+        const char* getVisibleName() const { return getValueByName(VISIBLENAME); }
         void setVisibleName(const char* xval){ setValueByName(VISIBLENAME, xval); }
         
-        const char* getEmailAddress(){ return getValueByName(EMAILADDRESS); }
+        const char* getEmailAddress() const { return getValueByName(EMAILADDRESS); }
         void setEmailAddress(const char* xval){ setValueByName(EMAILADDRESS, xval); }
 
-        const char* getProtocol(){ return getValueByName(PROTOCOL); }
+        const char* getProtocol() const { return getValueByName(PROTOCOL); }
         void setProtocol(const char* xval){ setValueByName(PROTOCOL, xval); }
 
-        const char* getUsername(){ return getValueByName(USERNAME); }
+        const char* getUsername() const { return getValueByName(USERNAME); }
         void setUsername(const char* xval){ setValueByName(USERNAME, xval); }
 
-        const char* getPassword(){ return getValueByName(PASSWORD); }
+        const char* getPassword() const { return getValueByName(PASSWORD); }
         void setPassword(const char* xval){ setValueByName(PASSWORD, xval); }
 
-        const char* getInServer(){ return getValueByName(IN_SERVER); }
+        const char* getInServer() const { return getValueByName(IN_SERVER); }
         void setInServer(const char* xval){ setValueByName(IN_SERVER, xval); }
 
-        const char* getOutServer(){ return getValueByName(OUT_SERVER); }
+        const char* getOutServer() const { return getValueByName(OUT_SERVER); }
         void setOutServer(const char* xval){ setValueByName(OUT_SERVER, xval); }
 
-        const char* getInPort(){ return getValueByName(IN_PORT); }
+        const char* getInPort() const { return getValueByName(IN_PORT); }
         void setInPort(const char* xval){ setValueByName(IN_PORT, xval); }
 
-        const char* getOutPort(){ return getValueByName(OUT_PORT); }
+        const char* getOutPort() const { return getValueByName(OUT_PORT); }
         void setOutPort(const char* xval){ setValueByName(OUT_PORT, xval); }
 
-        const char* getInSSL(){ return getValueByName(IN_SSL); }
+        const char* getInSSL() const { return getValueByName(IN_SSL); }
         void setInSSL(const char* xval){ setValueByName(IN_SSL, xval); }  
 
-        const char* getOutSSL(){ return getValueByName(OUT_SSL); }
+        const char* getOutSSL() const { return getValueByName(OUT_SSL); }
         void setOutSSL(const char* xval){ setValueByName(OUT_SSL, xval); } 
 
-        const char* getSignature(){ return getValueByName(SIGNATURE); }
+        const char* getSignature() const { return getValueByName(SIGNATURE); }
         void setSignature(const char* xval){ setValueByName(SIGNATURE, xval); }  
 
-        const char* getDomainName(){ return getValueByName(DOMAINNAME); }
+        const char* getDomainName() const { return getValueByName(DOMAINNAME); }
         void setDomainName(const char* xval){ setValueByName(DOMAINNAME, xval); }
 
-        const char* getID(){ return getValueByName(ID); }
+        const char* getID() const { return getValueByName(ID); }
         void setID(const char* xval){ setValueByName(ID, xval); }    
         
         // ----------------------------------------------------- Public Methods
