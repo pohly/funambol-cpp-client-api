@@ -48,6 +48,9 @@
 
 BEGIN_NAMESPACE
 
+
+class AccountProvisioner;
+      
 /**
  * Manager for Email accounts.
  * It's used to add/modify/delete email accounts and folders.
@@ -117,8 +120,6 @@ public:
      * @return 0 if no errors, -1 if folder not found
      */
     int deleteFolder(const FolderData& folder);
-
-
  
     /// Returns the number of existing email accounts.
     int getAccountNumber();
@@ -141,66 +142,7 @@ public:
      * Note: the folder name and parent are required in input.
      * @param folder     [IN-OUT] the email folder to be filled with all settings
      */
-    int readFolder(FolderData& folder);
-
-
-protected:
-
-    /**
-     * Creates the email account on the Client.
-     * Clients must implement this method in order to create the new Email account.
-     * The new account ID will be set inside the 'account' object.
-     * @param account the account settings informations
-     * @return 0 if no errors
-     */
-    virtual int createClientAccount(MailAccount& account) = 0;
-
-    /**
-     * Updates an email account.
-     * Clients must implement this method in order to update a given email account.
-     * @param account the account settings informations
-     * @return 0 if no errors, -1 if account not found
-     */
-    virtual int updateClientAccount(const MailAccount& account) = 0;
-
-    /**
-     * Deletes an email account.
-     * Clients must implement this method in order to delete an email account given its ID.
-     * @param accountID the account ID to be removed
-     * @return 0 if no errors, -1 if account not found
-     */
-    virtual int deleteClientAccount(const StringBuffer& accountID) = 0;
-
-    /**
-     * Creates an email folder on the Client.
-     * Clients must implement this method in order to create a new folder inside
-     * the parent email account.
-     * Note: the folder name and parent are required.
-     * @param folder the FolderData settings informations
-     * @return 0 if no errors
-     */
-    virtual int createClientFolder(const FolderData& folder) = 0;
-
-    /**
-     * Updates an email folder on the Client.
-     * Clients must implement this method in order to update a folder inside
-     * the parent email account.
-     * Note: the folder name and parent are required.
-     * @param folder the FolderData settings informations
-     * @return 0 if no errors
-     */
-    virtual int updateClientFolder(const FolderData& folder) = 0;
-
-    /**
-     * Deletes an email folder on the Client.
-     * Clients must implement this method in order to delete a folder inside
-     * the parent email account.
-     * Note: the folder name and parent are required.
-     * @param folder the FolderData settings informations
-     * @return 0 if no errors, -1 if folder not found
-     */
-    virtual int deleteClientFolder(const FolderData& folder) = 0;
-
+    int readFolder(FolderData& folder);    
 
 private:
 
