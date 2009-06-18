@@ -146,6 +146,20 @@ class SyncManager {
          */
         void setTransportAgent(TransportAgent* t);
 
+        /**
+         * Scans the mappings (enumeration of pairs LUID,GUID) and searches for the
+         * correspondent LUID (key) associated to the passed GUID (value).
+         * It's used in case the SourceParent sent by the Server on a ADD command is a 
+         * GUID value, it can happen if the Client didn't reply yet with the corresponding mapping.
+         * @note If GUID not found, the passed GUID is returned.
+         * 
+         * @param mappings the mappings Enumeration of KeyValuePair (LUID,GUID) to search into
+         * @param guid     the GUID value to search
+         * @return         the correspondent LUID value. If GUID not found, the original GUID is returned.
+         */
+        const StringBuffer& lookupMappings(Enumeration& mappings, const StringBuffer& guid);
+
+
     private:
 
         // SyncManager makes local key safe to use in SyncML by
@@ -274,7 +288,7 @@ class SyncManager {
          * Add the map command according to the current value of the 
          * member 'mappings', and clean up the member afterwards.
          */
-        void addMapCommand(int sourceIndex);       
+        void addMapCommand(int sourceIndex);    
 
 };
 

@@ -2250,6 +2250,20 @@ Status *SyncManager::processSyncItem(Item* item, const CommandInfo &cmdInfo, Syn
             // Process item ------------------------------------------------------------
             if ( strcmp(cmdInfo.commandName, ADD) == 0) {
 
+                // The SourceParent sent by the Server on a ADD command can be a GUID value, if 
+                // the Client didn't reply yet with the corresponding mapping.
+                // In this case, we lookup into our mappings list to retrieve the
+                // LUID value from the GUID.
+                StringBuffer parentGUID(item->getSourceParent());
+                if (!parentGUID.empty()) {
+                    Enumeration& mappings = mmanager[count]->getMappings();
+                    const StringBuffer& parentLUID = lookupMappings(mappings, parentGUID);
+
+                    WCHAR* sparent = toWideChar(parentLUID.c_str());
+                    incomingItem->setSourceParent(sparent);
+                    delete [] sparent;
+                }
+
                 incomingItem->setState(SYNC_STATE_NEW);
                 code = sources[count]->addItem(*incomingItem);
                 status = syncMLBuilder.prepareItemStatus(ADD, itemName, cmdInfo.cmdRef, code);
@@ -2265,8 +2279,6 @@ Status *SyncManager::processSyncItem(Item* item, const CommandInfo &cmdInfo, Syn
                 // If the add was successful, set the id mapping
                 if (code >= 200 && code <= 299) {
                     char *key = toMultibyte(incomingItem->getKey());
-                    //SyncMap syncMap(item->getSource()->getLocURI(), key);
-                    //mappings[count].add(syncMap);
                     mmanager[count]->addMapping(key, item->getSource()->getLocURI()); // LUID, GUID
                     delete [] key;
                 }
@@ -2321,6 +2333,35 @@ Status *SyncManager::processSyncItem(Item* item, const CommandInfo &cmdInfo, Syn
 
     return status;
 }
+
+
+const StringBuffer& SyncManager::lookupMappings(Enumeration& mappings, const StringBuffer& guid) {
+
+    // Check recursively all the elements
+    ArrayElement* e = mappings.getFirstElement();
+    if (e) {
+        KeyValuePair* kvp = (KeyValuePair*)e;
+        if (kvp && (kvp->getValue() == guid)) {
+            return kvp->getKey();           // found
+        }
+
+        while (mappings.hasMoreElement()) {
+            ArrayElement* e = mappings.getNextElement();
+            if (e) {
+                KeyValuePair* kvp = (KeyValuePair*)e;
+                if (kvp && (kvp->getValue() == guid)) {
+                    return kvp->getKey();   // found
+                }
+            }
+        }
+    }
+
+    // If here, corrispondence not found
+    return guid;
+}
+
+
+
 
 /*
  * Creates the device info for this client and sources.
