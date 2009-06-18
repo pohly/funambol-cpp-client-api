@@ -54,6 +54,11 @@ public:
     virtual bool hasMoreElement() const = 0;
 
     /**
+    * Return the first element or NULL if there is none.
+    */
+    virtual ArrayElement* getFirstElement() = 0;
+
+    /**
     * Return the next element or NULL if there is none.
     */
     virtual ArrayElement* getNextElement() = 0;
