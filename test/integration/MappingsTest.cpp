@@ -64,6 +64,7 @@
 #include "spds/MappingsManager.h"
 #include "spds/MappingStoreBuilder.h"
 #include "MappingsTest.h"
+#include "spds/SyncManager.h"
 
 USE_NAMESPACE
 
@@ -296,6 +297,52 @@ void MappingsTest::testPutClientServerInSync() {
         delete config1; delete config2;
 
     }
+
+void MappingsTest::testLookUpMappings() {
+
+    SyncManagerConfig* config = getConfiguration("testLookUpMappings");
+    SyncReport syncReport;
+    SyncManager syncManager(*config, syncReport);
+
+    // Prepare the mappings with LUID,GUID pairs
+    ArrayListEnumeration mappings;
+    StringBuffer luid, guid;
+    for (int i=0; i<10; i++) {
+        luid.sprintf("LUID-%i", i);
+        guid.sprintf("GUID-%i", i);
+        KeyValuePair kvp(luid, guid);
+        mappings.add(kvp);
+    }
+    
+    //
+    // The tests
+    //
+    StringBuffer input("GUID-0");
+    StringBuffer output = syncManager.lookupMappings(mappings, input);
+    CPPUNIT_ASSERT(output == "LUID-0");
+
+    input = "GUID-5";
+    output = syncManager.lookupMappings(mappings, input);
+    CPPUNIT_ASSERT(output == "LUID-5");
+
+    // If not found, the input MUST be returned
+    input = "GUID-not-mapped";
+    output = syncManager.lookupMappings(mappings, input);
+    CPPUNIT_ASSERT(output == input);
+
+    input = "GUID-2";
+    output = syncManager.lookupMappings(mappings, input);
+    CPPUNIT_ASSERT(output == "LUID-2");
+
+    // Empty mappings
+    mappings.clear();
+    input = "GUID-0";
+    output = syncManager.lookupMappings(mappings, input);
+    CPPUNIT_ASSERT(output == input);
+
+    delete config;
+}
+
 
 
 #endif // ENABLE_INTEGRATION_TESTS
