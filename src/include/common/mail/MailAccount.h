@@ -116,7 +116,7 @@ class MailAccount : public FolderData {
         
         // ----------------------------------------------------- Public Methods
 
-
+		ArrayElement* clone() { return new MailAccount(*this); }
 
 };
 
