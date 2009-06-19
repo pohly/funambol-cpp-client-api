@@ -174,11 +174,21 @@ protected:
      * Creates an email folder on the Client.
      * Clients must implement this method in order to create a new folder inside
      * the parent email account.
-    * Note: the folder name and parent are required.
+     * Note: the folder name and parent are required.
      * @param folder the FolderData settings informations
      * @return 0 if no errors
      */
     virtual int createClientFolder(const FolderData& folder) = 0;
+
+	/**
+     * Deletes an email folder on the Client.
+     * Clients must implement this method in order to create a new folder inside
+     * the parent email account.
+     * Note: the folder name and parent are required.
+     * @param folder the FolderData settings informations
+     * @return 0 if no errors
+     */
+    virtual int deleteClientFolder(const FolderData& folder) = 0;
 
     /**
      * Updates an email folder on the Client.
