@@ -37,6 +37,7 @@
 
 #include "base/util/utils.h"
 #include "mail/MailSyncSourceConfig.h"
+#include "mail/MailAccount.h"
 #include "base/globalsdef.h"
 
 USE_NAMESPACE
@@ -134,6 +135,40 @@ void MailSyncSourceConfig::setSchedule(int v) {
 int MailSyncSourceConfig::getSchedule() const {
     return schedule;
 }
+
+
+bool MailSyncSourceConfig::addMailAccount(const MailAccount& account) {
+	const char* name = account.getName();
+	int size = mailAccounts.size();
+
+	if (size >= max_account_numbers) {
+		LOG.error("can't add mail account: maximum number of email account reached");
+		return false;
+	}
+	
+	if (name == NULL) { 
+		LOG.error("can't add mail account: no account name found");
+		return false;
+	}
+
+	for (int i = 0; i < size; i++ ) {
+		MailAccount* storedAccount = static_cast<MailAccount *>(mailAccounts[i]);
+		const char* storedName = storedAccount->getName();
+
+		if ((storedName != NULL) && (strcmp(name, storedName) == 0)) {
+			// prevent adding an already existing accout
+			LOG.error("can't add mail account: an account with such name already exist");
+			return false;
+		}
+	}
+
+	LOG.debug("adding new mail account %s", account.getName().c_str());
+	
+	mailAccounts.add(static_cast<MailAccount>(account));
+	
+	return true;
+}
+
 
 // ------------------------------------------------------------- Private methods
 

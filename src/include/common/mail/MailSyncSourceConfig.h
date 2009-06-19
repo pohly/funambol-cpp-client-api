@@ -44,6 +44,8 @@
 #include "spds/SyncSourceConfig.h"
 #include "base/globalsdef.h"
 
+class MailAccount;
+
 BEGIN_NAMESPACE
 
     class MailSyncSourceConfig : public SyncSourceConfig {
@@ -90,6 +92,16 @@ BEGIN_NAMESPACE
         * it represent the time of the schedule
         */
         int schedule;
+
+		/*
+		 * maximum number of email accounts supported
+		 */
+		static const unsigned max_account_numbers = 4;
+		
+		/* 
+		 * array of mail accounts
+	     */
+	     ArrayList mailAccounts;
 
     public:
 
@@ -169,6 +181,15 @@ BEGIN_NAMESPACE
 
         int  getSchedule() const;
 
+		/**
+		 * adds a mail account
+		 */
+		bool addMailAccount(const MailAccount& account);
+
+		/** 
+		 * mail account accessor
+		 */
+		const ArrayList& getMailAccounts() const { return mailAccounts; }
 
         /**
          * Initialize this object with the given SyncSourceConfig
