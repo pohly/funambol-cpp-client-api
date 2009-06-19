@@ -58,7 +58,11 @@ int MailAccountManager::createAccount(MailAccount& account) {
     }
 
     // TODO: Set account settings in config
-    //config.createEmailAccount(account.name);
+	if (config.addMailAccount(account) == false) {
+		LOG.error("error saving account in configuration");
+
+		return 1;
+	}
 
     return ret;
 }
@@ -80,7 +84,7 @@ int MailAccountManager::updateAccount(const MailAccount& account) {
 int MailAccountManager::deleteAccount(const StringBuffer& accountID) {
 
     // Deletes the account on Client
-    int ret = deleteClientAccount(account);
+    int ret = deleteClientAccount(accountID);
     if (ret) {
         LOG.error("Error deleting email account, code %i", ret);
         return ret;
