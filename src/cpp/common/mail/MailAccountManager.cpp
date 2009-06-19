@@ -50,7 +50,8 @@ MailAccountManager::~MailAccountManager() {}
 int MailAccountManager::createAccount(MailAccount& account) {
 
     // Create the account on Client
-    int ret = 0;
+    int ret = createClientAccount(account);
+
     if (ret) {
         LOG.error("Error creating email account, code %i", ret);
         return ret;
@@ -65,7 +66,7 @@ int MailAccountManager::createAccount(MailAccount& account) {
 int MailAccountManager::updateAccount(const MailAccount& account) {
 
     // Update the account on Client
-    int ret = 0;
+    int ret = updateClientAccount(account);
     if (ret) {
         LOG.error("Error updating email account, code %i", ret);
         return ret;
@@ -79,7 +80,7 @@ int MailAccountManager::updateAccount(const MailAccount& account) {
 int MailAccountManager::deleteAccount(const StringBuffer& accountID) {
 
     // Deletes the account on Client
-    int ret = 0;
+    int ret = deleteClientAccount(account);
     if (ret) {
         LOG.error("Error deleting email account, code %i", ret);
         return ret;
@@ -103,8 +104,8 @@ int MailAccountManager::createFolder(const FolderData& folder) {
         return -1;
     }
 
-    //int ret = createClientFolder(folder);
-    int ret = 0;
+    int ret = createClientFolder(folder);
+
     if (ret) {
         LOG.error("Error creating email folder, code %i", ret);
         return ret;
@@ -127,8 +128,8 @@ int MailAccountManager::updateFolder(const FolderData& folder) {
         return -1;
     }
 
-    //int ret = updateClientFolder(folder);
-    int ret = 0;
+    int ret = updateClientFolder(folder);
+    
     if (ret) {
         LOG.error("Error updating email folder, code %i", ret);
         return ret;
@@ -151,8 +152,8 @@ int MailAccountManager::deleteFolder(const FolderData& folder) {
         return -1;
     }
 
-    //int ret = deleteClientFolder(folder);
-    int ret = 0;
+    int ret = deleteClientFolder(folder);
+    
     if (ret) {
         LOG.error("Error deleting email folder, code %i", ret);
         return ret;
