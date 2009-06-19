@@ -40,6 +40,7 @@
 #include "spdm/constants.h"
 #include "client/MailSourceManagementNode.h"
 #include "base/globalsdef.h"
+#include "mail/MailAccount.h"
 
 USE_NAMESPACE
 
@@ -150,6 +151,70 @@ void MailSourceManagementNode::setMailSourceConfig(MailSyncSourceConfig& c) {
 
     setPropertyValue(PROPERTY_SOURCE_ENCRYPTION,       (char* )c.getEncryption());
 
+	ArrayList mailAccounts = config.getMailAccounts();
+	int accountNum = mailAccounts.size();
+	if (accountNum) {
+		for (int i = 0; i < accountNum; i++) {
+			MailAccount* account = static_cast<MailAccount*>(mailAccounts[i]);
+			char valname[512];
+
+			sprintf(valname, PROPERTY_MAIL_ACCOUNT_VISIBLE_NAME, account->getName());
+			sprintf(t, "%s", account->getVisibleName());
+			setPropertyValue(valname, t);
+
+			sprintf(valname, PROPERTY_MAIL_ACCOUNT_EMAILADDRESS, account->getName());
+			sprintf(t, "%s", account->getEmailAddress());
+			setPropertyValue(valname, t);
+
+			sprintf(valname, PROPERTY_MAIL_ACCOUNT_PROTOCOL, account->getName());
+			sprintf(t, "%s", account->getProtocol());
+			setPropertyValue(valname, t);
+
+			sprintf(valname, PROPERTY_MAIL_ACCOUNT_USERNAME, account->getName());
+			sprintf(t, "%s", account->getUsername());
+			setPropertyValue(valname, t);
+
+			sprintf(valname, PROPERTY_MAIL_ACCOUNT_PASSWORD, account->getName());
+			sprintf(t, "%s", account->getPassword());
+			setPropertyValue(valname, t);
+
+			sprintf(valname, PROPERTY_MAIL_ACCOUNT_IN_SERVER, account->getName());
+			sprintf(t, "%s", account->getInServer());
+			setPropertyValue(valname, t);
+
+			sprintf(valname, PROPERTY_MAIL_ACCOUNT_OUT_SERVER, account->getName());
+			sprintf(t, "%s", account->getOutServer());
+			setPropertyValue(valname, t);
+
+			sprintf(valname, PROPERTY_MAIL_ACCOUNT_IN_PORT, account->getName());
+			sprintf(t, "%s", account->getInPort());
+			setPropertyValue(valname, t);
+
+			sprintf(valname, PROPERTY_MAIL_ACCOUNT_OUT_PORT, account->getName());
+			sprintf(t, "%s", account->getOutPort());
+			setPropertyValue(valname, t);
+
+			sprintf(valname, PROPERTY_MAIL_ACCOUNT_IN_SSL, account->getName());
+			sprintf(t, "%s", account->getInSSL());
+			setPropertyValue(valname, t);
+
+			sprintf(valname, PROPERTY_MAIL_ACCOUNT_OUT_SSL, account->getName());
+			sprintf(t, "%s", account->getOutSSL());
+			setPropertyValue(valname, t);
+
+			sprintf(valname, PROPERTY_MAIL_ACCOUNT_SIGNATURE, account->getName());
+			sprintf(t, "%s", account->getSignature());
+			setPropertyValue(valname, t);
+
+			sprintf(valname, PROPERTY_MAIL_ACCOUNT_DOMAINNAME, account->getName());
+			sprintf(t, "%s", account->getDomainName());
+			setPropertyValue(valname, t);
+
+			sprintf(valname, PROPERTY_MAIL_ACCOUNT_ID, account->getName());
+			sprintf(t, "%s", account->getID());
+			setPropertyValue(valname, t);
+		}
+	}
 }
 
 
