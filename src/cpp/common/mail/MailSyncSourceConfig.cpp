@@ -196,6 +196,7 @@ void MailSyncSourceConfig::assign(const MailSyncSourceConfig& sc) {
     setTrash(sc.getTrash());
     setDraft(sc.getDraft());
     setSchedule(sc.getSchedule());
+    mailAccounts = sc.getMailAccounts();
 
 }
 

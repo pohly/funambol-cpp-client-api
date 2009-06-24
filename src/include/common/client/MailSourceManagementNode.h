@@ -78,6 +78,9 @@ class MailSourceManagementNode : public DeviceManagementNode {
          */
         void setMailSourceConfig(MailSyncSourceConfig& c);
 
+        void getMailAccounts();
+        void setMailAccounts();
+
         ArrayElement* clone();
 
         // -------------------------------------------------------- Data members

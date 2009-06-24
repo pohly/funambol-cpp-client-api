@@ -95,6 +95,11 @@ class FolderData : public ArrayElement {
         ~FolderData();
 
     // ---------------------------------------------------------- Accessors
+
+
+        //The value parent is not a syncml compliant value for Folder
+        //but it is implemented here to have a smarter access to the
+        //Hierarchical synchronization of the folders
         const StringBuffer& getParent() const { return parent; }
         void setParent(const char* v) { parent = v; }
 		

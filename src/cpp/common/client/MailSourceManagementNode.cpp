@@ -60,10 +60,172 @@ MailSourceManagementNode::MailSourceManagementNode(const char*         context,
 MailSourceManagementNode::~MailSourceManagementNode() {
 }
 
+
+void MailSourceManagementNode::setMailAccounts(){
+    char t[512];
+    ArrayList mailAccounts = config.getMailAccounts();
+	int accountNum = mailAccounts.size();
+	if (accountNum) {
+        char nodename[512];
+        sprintf(nodename, "%s/mails/", "Funambol/SyncclientPIM" );
+        DeviceManagementNode* mn = new DeviceManagementNode(nodename, PROPERTY_MAIL_ACCOUNT_ROOT);
+        
+        delete mn;
+		for (int i = 0; i < accountNum; i++) {
+			MailAccount* account = static_cast<MailAccount*>(mailAccounts[i]);
+			char valname[512];
+            const char* name = stringdup(((StringBuffer)account->getName()).c_str());
+            char fullname[512];
+            sprintf(fullname, "%s/%s", nodename, PROPERTY_MAIL_ACCOUNT_ROOT);
+            DeviceManagementNode* mnn = new DeviceManagementNode(fullname,name);
+            delete mnn;
+            DeviceManagementNode* mn = new DeviceManagementNode(fullname,name);
+			sprintf(valname, PROPERTY_MAIL_ACCOUNT_VISIBLE_NAME, name);
+			sprintf(t, "%s", account->getVisibleName());
+			mn->setPropertyValue(valname, t);
+
+			sprintf(valname, PROPERTY_MAIL_ACCOUNT_EMAILADDRESS, name);
+			sprintf(t, "%s", account->getEmailAddress());
+			mn->setPropertyValue(valname, t);
+
+			sprintf(valname, PROPERTY_MAIL_ACCOUNT_PROTOCOL, name);
+			sprintf(t, "%s", account->getProtocol());
+			mn->setPropertyValue(valname, t);
+
+			sprintf(valname, PROPERTY_MAIL_ACCOUNT_USERNAME, name);
+			sprintf(t, "%s", account->getUsername());
+			mn->setPropertyValue(valname, t);
+
+			sprintf(valname, PROPERTY_MAIL_ACCOUNT_PASSWORD, name);
+			sprintf(t, "%s", account->getPassword());
+			mn->setPropertyValue(valname, t);
+
+			sprintf(valname, PROPERTY_MAIL_ACCOUNT_IN_SERVER, name);
+			sprintf(t, "%s", account->getInServer());
+			mn->setPropertyValue(valname, t);
+
+			sprintf(valname, PROPERTY_MAIL_ACCOUNT_OUT_SERVER, name);
+			sprintf(t, "%s", account->getOutServer());
+			mn->setPropertyValue(valname, t);
+
+			sprintf(valname, PROPERTY_MAIL_ACCOUNT_IN_PORT, name);
+			sprintf(t, "%s", account->getInPort());
+			mn->setPropertyValue(valname, t);
+
+			sprintf(valname, PROPERTY_MAIL_ACCOUNT_OUT_PORT, name);
+			sprintf(t, "%s", account->getOutPort());
+			mn->setPropertyValue(valname, t);
+
+			sprintf(valname, PROPERTY_MAIL_ACCOUNT_IN_SSL, name);
+			sprintf(t, "%s", account->getInSSL());
+			mn->setPropertyValue(valname, t);
+
+			sprintf(valname, PROPERTY_MAIL_ACCOUNT_OUT_SSL, name);
+			sprintf(t, "%s", account->getOutSSL());
+			mn->setPropertyValue(valname, t);
+
+			sprintf(valname, PROPERTY_MAIL_ACCOUNT_SIGNATURE, name);
+			sprintf(t, "%s", account->getSignature());
+			mn->setPropertyValue(valname, t);
+
+			sprintf(valname, PROPERTY_MAIL_ACCOUNT_DOMAINNAME, name);
+			sprintf(t, "%s", account->getDomainName());
+			mn->setPropertyValue(valname, t);
+
+			sprintf(valname, PROPERTY_MAIL_ACCOUNT_ID, name);
+			sprintf(t, "%s", account->getID());
+			mn->setPropertyValue(valname, t);
+            delete mn;
+            delete name;
+		}
+	}
+}
+
+void MailSourceManagementNode::getMailAccounts(){
+
+        bool noMoreChilds = false; 
+        int i = 0;
+        ArrayList accountNames;
+        char nname[512];
+        char* tmp;
+        sprintf(nname, "%s/mails/%s",  "Funambol/SyncclientPIM", PROPERTY_MAIL_ACCOUNT_ROOT);
+        DeviceManagementNode* dmn = new DeviceManagementNode(nname);
+        int numchild = dmn->getChildrenCount();
+        while(!noMoreChilds){
+            ManagementNode* mn = dmn->getChild(i);
+            if(mn){
+                StringBuffer name(mn->getName());
+                accountNames.add(name);
+                i++;
+            } else {
+                noMoreChilds = true;
+            }
+        }
+        //ArrayList mailAccounts;
+        for ( int p = 0; i<accountNames.size(); p++){
+            MailAccount ma;
+            char valname[512];
+            char fullname[512];
+            sprintf(fullname, "%s/mails/%s",  "Funambol/SyncclientPIM", PROPERTY_MAIL_ACCOUNT_ROOT);
+            const char* name = stringdup(((StringBuffer*)accountNames[i])->c_str());
+            DeviceManagementNode* mn = new DeviceManagementNode(fullname,name);
+
+            ma.setName(name);
+
+            sprintf(valname,PROPERTY_MAIL_ACCOUNT_VISIBLE_NAME,name);
+            tmp = mn->readPropertyValue(valname);
+            ma.setVisibleName(tmp); safeDel(&tmp);
+            sprintf(valname,PROPERTY_MAIL_ACCOUNT_EMAILADDRESS,name);
+            tmp = mn->readPropertyValue(valname);
+            ma.setEmailAddress(tmp); safeDel(&tmp);
+            sprintf(valname,PROPERTY_MAIL_ACCOUNT_PROTOCOL,name);
+            tmp = mn->readPropertyValue(valname);
+            ma.setProtocol(tmp); safeDel(&tmp);
+            sprintf(valname,PROPERTY_MAIL_ACCOUNT_USERNAME,name);
+            tmp = mn->readPropertyValue(valname);
+            ma.setUsername(tmp); safeDel(&tmp);
+            sprintf(valname,PROPERTY_MAIL_ACCOUNT_PASSWORD,name);
+            tmp = mn->readPropertyValue(valname);
+            ma.setPassword(tmp); safeDel(&tmp);
+            sprintf(valname,PROPERTY_MAIL_ACCOUNT_IN_SERVER,name);
+            tmp = mn->readPropertyValue(valname);
+            ma.setInServer(tmp); safeDel(&tmp);
+            sprintf(valname,PROPERTY_MAIL_ACCOUNT_OUT_SERVER,name);
+            tmp = mn->readPropertyValue(valname);
+            ma.setOutServer(tmp); safeDel(&tmp);
+            sprintf(valname,PROPERTY_MAIL_ACCOUNT_IN_PORT,name);
+            tmp = mn->readPropertyValue(valname);
+            ma.setInPort(tmp); safeDel(&tmp);
+            sprintf(valname,PROPERTY_MAIL_ACCOUNT_OUT_PORT,name);
+            tmp = mn->readPropertyValue(valname);
+            ma.setOutPort(tmp); safeDel(&tmp);
+            sprintf(valname,PROPERTY_MAIL_ACCOUNT_IN_SSL,name);
+            tmp = mn->readPropertyValue(valname);
+            ma.setInSSL(tmp); safeDel(&tmp);
+            sprintf(valname,PROPERTY_MAIL_ACCOUNT_OUT_SSL,name);
+            tmp = mn->readPropertyValue(valname);
+            ma.setOutSSL(tmp); safeDel(&tmp);
+            sprintf(valname,PROPERTY_MAIL_ACCOUNT_SIGNATURE,name);
+            tmp = mn->readPropertyValue(valname);
+            ma.setSignature(tmp); safeDel(&tmp);
+            sprintf(valname,PROPERTY_MAIL_ACCOUNT_DOMAINNAME,name);
+            tmp = mn->readPropertyValue(valname);
+            ma.setDomainName(tmp); safeDel(&tmp);
+            sprintf(valname,PROPERTY_MAIL_ACCOUNT_ID,name);
+            tmp = mn->readPropertyValue(valname);
+            ma.setID(tmp); safeDel(&tmp);
+
+            //mailAccounts.add(ma);
+            config.addMailAccount(ma);
+        }
+}
+
+
 MailSyncSourceConfig& MailSourceManagementNode::getMailSourceConfig(bool refresh) {
     if (refresh) {
         char*  c = NULL;
         char* tmp;
+                getMailAccounts();
 
         config.setName((tmp = readPropertyValue(PROPERTY_SOURCE_NAME)));
         safeDel(&tmp);
@@ -106,6 +268,8 @@ MailSyncSourceConfig& MailSourceManagementNode::getMailSourceConfig(bool refresh
         safeDel(&tmp);
         config.setEncryption((tmp = readPropertyValue(PROPERTY_SOURCE_ENCRYPTION)));
         safeDel(&tmp);
+
+
 
     }
 
@@ -151,70 +315,9 @@ void MailSourceManagementNode::setMailSourceConfig(MailSyncSourceConfig& c) {
 
     setPropertyValue(PROPERTY_SOURCE_ENCRYPTION,       (char* )c.getEncryption());
 
-	ArrayList mailAccounts = config.getMailAccounts();
-	int accountNum = mailAccounts.size();
-	if (accountNum) {
-		for (int i = 0; i < accountNum; i++) {
-			MailAccount* account = static_cast<MailAccount*>(mailAccounts[i]);
-			char valname[512];
+    setMailAccounts();
 
-			sprintf(valname, PROPERTY_MAIL_ACCOUNT_VISIBLE_NAME, account->getName());
-			sprintf(t, "%s", account->getVisibleName());
-			setPropertyValue(valname, t);
 
-			sprintf(valname, PROPERTY_MAIL_ACCOUNT_EMAILADDRESS, account->getName());
-			sprintf(t, "%s", account->getEmailAddress());
-			setPropertyValue(valname, t);
-
-			sprintf(valname, PROPERTY_MAIL_ACCOUNT_PROTOCOL, account->getName());
-			sprintf(t, "%s", account->getProtocol());
-			setPropertyValue(valname, t);
-
-			sprintf(valname, PROPERTY_MAIL_ACCOUNT_USERNAME, account->getName());
-			sprintf(t, "%s", account->getUsername());
-			setPropertyValue(valname, t);
-
-			sprintf(valname, PROPERTY_MAIL_ACCOUNT_PASSWORD, account->getName());
-			sprintf(t, "%s", account->getPassword());
-			setPropertyValue(valname, t);
-
-			sprintf(valname, PROPERTY_MAIL_ACCOUNT_IN_SERVER, account->getName());
-			sprintf(t, "%s", account->getInServer());
-			setPropertyValue(valname, t);
-
-			sprintf(valname, PROPERTY_MAIL_ACCOUNT_OUT_SERVER, account->getName());
-			sprintf(t, "%s", account->getOutServer());
-			setPropertyValue(valname, t);
-
-			sprintf(valname, PROPERTY_MAIL_ACCOUNT_IN_PORT, account->getName());
-			sprintf(t, "%s", account->getInPort());
-			setPropertyValue(valname, t);
-
-			sprintf(valname, PROPERTY_MAIL_ACCOUNT_OUT_PORT, account->getName());
-			sprintf(t, "%s", account->getOutPort());
-			setPropertyValue(valname, t);
-
-			sprintf(valname, PROPERTY_MAIL_ACCOUNT_IN_SSL, account->getName());
-			sprintf(t, "%s", account->getInSSL());
-			setPropertyValue(valname, t);
-
-			sprintf(valname, PROPERTY_MAIL_ACCOUNT_OUT_SSL, account->getName());
-			sprintf(t, "%s", account->getOutSSL());
-			setPropertyValue(valname, t);
-
-			sprintf(valname, PROPERTY_MAIL_ACCOUNT_SIGNATURE, account->getName());
-			sprintf(t, "%s", account->getSignature());
-			setPropertyValue(valname, t);
-
-			sprintf(valname, PROPERTY_MAIL_ACCOUNT_DOMAINNAME, account->getName());
-			sprintf(t, "%s", account->getDomainName());
-			setPropertyValue(valname, t);
-
-			sprintf(valname, PROPERTY_MAIL_ACCOUNT_ID, account->getName());
-			sprintf(t, "%s", account->getID());
-			setPropertyValue(valname, t);
-		}
-	}
 }
 
 
