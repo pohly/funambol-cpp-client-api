@@ -145,13 +145,14 @@ void MailSourceManagementNode::getMailAccounts(){
 
         bool noMoreChilds = false; 
         int i = 0;
-        ArrayList accountNames;
+        //ArrayList accountNames;
         char nname[512];
         char* tmp;
         sprintf(nname, "%s/mails/%s",  "Funambol/SyncclientPIM", PROPERTY_MAIL_ACCOUNT_ROOT);
         DeviceManagementNode* dmn = new DeviceManagementNode(nname);
-        int numchild = dmn->getChildrenCount();
-        while(!noMoreChilds){
+        int numchild = dmn->getChildrenMaxCount();
+        char** accountNames = dmn->getChildrenNames();
+        /*while(!noMoreChilds){
             ManagementNode* mn = dmn->getChild(i);
             if(mn){
                 StringBuffer name(mn->getName());
@@ -160,14 +161,14 @@ void MailSourceManagementNode::getMailAccounts(){
             } else {
                 noMoreChilds = true;
             }
-        }
+        }*/
         //ArrayList mailAccounts;
-        for ( int p = 0; i<accountNames.size(); p++){
+        for ( int p = 0; p<numchild; p++){
             MailAccount ma;
             char valname[512];
             char fullname[512];
             sprintf(fullname, "%s/mails/%s",  "Funambol/SyncclientPIM", PROPERTY_MAIL_ACCOUNT_ROOT);
-            const char* name = stringdup(((StringBuffer*)accountNames[i])->c_str());
+            const char* name = stringdup(accountNames[p]);
             DeviceManagementNode* mn = new DeviceManagementNode(fullname,name);
 
             ma.setName(name);
