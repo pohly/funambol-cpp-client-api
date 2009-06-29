@@ -60,17 +60,29 @@ MailSourceManagementNode::MailSourceManagementNode(const char*         context,
 MailSourceManagementNode::~MailSourceManagementNode() {
 }
 
-
 void MailSourceManagementNode::setMailAccounts(){
     char t[512];
     ArrayList mailAccounts = config.getMailAccounts();
 	int accountNum = mailAccounts.size();
+
 	if (accountNum) {
         char nodename[512];
         sprintf(nodename, "%s/mails/", "Funambol/SyncclientPIM" );
         DeviceManagementNode* mn = new DeviceManagementNode(nodename, PROPERTY_MAIL_ACCOUNT_ROOT);
-        
+  
+        for (int i = 0; i < accountNum; i ++) { 
+            if (((MailAccount*)mailAccounts[i])->getDeleted()){
+                WCHAR* wname = toWideChar(((MailAccount*)mailAccounts[i])->getName());
+                WCHAR* node = new WCHAR[wcslen(fullContext) + wcslen(wname) + wcslen(L"\\mailAccounts\\") +1];
+                wsprintf(node, L"%s\\mailAccounts\\%s", fullContext, wname);
+                deletePropertyNode(node);
+                config.delMailAccount(((MailAccount*)mailAccounts[i])->getName());
+            }
+        }
+
         delete mn;
+        mailAccounts = config.getMailAccounts();
+        accountNum = mailAccounts.size();
 		for (int i = 0; i < accountNum; i++) {
 			MailAccount* account = static_cast<MailAccount*>(mailAccounts[i]);
 			char valname[512];
@@ -143,26 +155,13 @@ void MailSourceManagementNode::setMailAccounts(){
 
 void MailSourceManagementNode::getMailAccounts(){
 
-        bool noMoreChilds = false; 
-        int i = 0;
-        //ArrayList accountNames;
         char nname[512];
         char* tmp;
         sprintf(nname, "%s/mails/%s",  "Funambol/SyncclientPIM", PROPERTY_MAIL_ACCOUNT_ROOT);
         DeviceManagementNode* dmn = new DeviceManagementNode(nname);
         int numchild = dmn->getChildrenMaxCount();
         char** accountNames = dmn->getChildrenNames();
-        /*while(!noMoreChilds){
-            ManagementNode* mn = dmn->getChild(i);
-            if(mn){
-                StringBuffer name(mn->getName());
-                accountNames.add(name);
-                i++;
-            } else {
-                noMoreChilds = true;
-            }
-        }*/
-        //ArrayList mailAccounts;
+
         for ( int p = 0; p<numchild; p++){
             MailAccount ma;
             char valname[512];
@@ -216,7 +215,6 @@ void MailSourceManagementNode::getMailAccounts(){
             tmp = mn->readPropertyValue(valname);
             ma.setID(tmp); safeDel(&tmp);
 
-            //mailAccounts.add(ma);
             config.addMailAccount(ma);
         }
 }
@@ -226,8 +224,7 @@ MailSyncSourceConfig& MailSourceManagementNode::getMailSourceConfig(bool refresh
     if (refresh) {
         char*  c = NULL;
         char* tmp;
-                getMailAccounts();
-
+ 
         config.setName((tmp = readPropertyValue(PROPERTY_SOURCE_NAME)));
         safeDel(&tmp);
         config.setURI((tmp = readPropertyValue(PROPERTY_SOURCE_URI)));
@@ -270,8 +267,7 @@ MailSyncSourceConfig& MailSourceManagementNode::getMailSourceConfig(bool refresh
         config.setEncryption((tmp = readPropertyValue(PROPERTY_SOURCE_ENCRYPTION)));
         safeDel(&tmp);
 
-
-
+        getMailAccounts();
     }
 
     return config;

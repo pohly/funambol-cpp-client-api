@@ -64,10 +64,11 @@ class MailAccount : public FolderData {
 
     // ------------------------------------------------------- Private data
     private:
-        
+        bool deleted;
+
     public:
     // ------------------------------------------------------- Constructors
-        MailAccount(){};
+        MailAccount() : deleted(false) {};
         ~MailAccount(){};
 
 
@@ -113,7 +114,9 @@ class MailAccount : public FolderData {
 
         const char* getID() const { return getValueByName(ID); }
         void setID(const char* xval){ setValueByName(ID, xval); }    
-        
+
+        bool getDeleted() const { return deleted; }
+        void setDeleted() { deleted = true; }
         // ----------------------------------------------------- Public Methods
 
 		ArrayElement* clone() { return new MailAccount(*this); }

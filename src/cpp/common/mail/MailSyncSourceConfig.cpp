@@ -39,6 +39,7 @@
 #include "mail/MailSyncSourceConfig.h"
 #include "mail/MailAccount.h"
 #include "base/globalsdef.h"
+#include "client/MailSourceManagementNode.h"
 
 USE_NAMESPACE
 
@@ -136,6 +137,34 @@ int MailSyncSourceConfig::getSchedule() const {
     return schedule;
 }
 
+bool MailSyncSourceConfig::setDeletedMailAccount(const char* accountName){
+    int size = mailAccounts.size();
+
+    for (int i = 0; i < size ; i++){
+        MailAccount* ma =((MailAccount*)mailAccounts[i]);
+        StringBuffer val(ma->getName());
+        if ( strcmp(accountName, val.c_str()) == 0 ){
+            ma->setDeleted();
+            return true;
+        }
+    }
+    return false;
+}
+
+bool MailSyncSourceConfig::delMailAccount(const char* accountName){
+    
+    int i = 0;
+    int size = mailAccounts.size();
+    for (i = 0; i < size ; i++){
+        MailAccount* ma =((MailAccount*)mailAccounts[i]);
+        StringBuffer val(ma->getName());
+        if ( strcmp(accountName, val.c_str()) == 0 ){
+            mailAccounts.removeElementAt(i);
+            return true;
+        }
+    }
+    return false;
+}
 
 bool MailSyncSourceConfig::addMailAccount(const MailAccount& account) {
 	const char* name = account.getName();

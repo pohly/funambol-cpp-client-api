@@ -186,6 +186,13 @@ BEGIN_NAMESPACE
 		 */
 		bool addMailAccount(const MailAccount& account);
 
+        /**
+		 * adds a mail account
+		 */
+		bool delMailAccount(const char* accountName);
+
+        bool setDeletedMailAccount(const char* accountName);
+
 		/** 
 		 * mail account accessor
 		 */

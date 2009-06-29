@@ -51,9 +51,11 @@ BEGIN_NAMESPACE
 class DeviceManagementNode: public ManagementNode {
 
     private:
+    
+    protected:
         TCHAR *fullContext;
 
-    protected:
+    
         void setFullContext();
 
     public:
@@ -104,6 +106,8 @@ class DeviceManagementNode: public ManagementNode {
          * The new instance MUST be created with the C++ new opertator.
          */
         ArrayElement* clone();
+
+        void deletePropertyNode(const WCHAR* node);
 
 };
 
