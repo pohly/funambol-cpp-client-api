@@ -51,10 +51,10 @@ BEGIN_NAMESPACE
 class DeviceManagementNode: public ManagementNode {
 
     private:
-    
+            TCHAR *fullContext;
     protected:
-        TCHAR *fullContext;
 
+		const TCHAR* getFullContext() const { return fullContext; }
     
         void setFullContext();
 
