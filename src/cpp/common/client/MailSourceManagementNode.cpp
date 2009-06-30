@@ -47,6 +47,7 @@ USE_NAMESPACE
 MailSourceManagementNode::MailSourceManagementNode(const char*  context,
                                                    const char*  name   )
     : DeviceManagementNode(context, name) {
+		setFullContext();
 }
 
 MailSourceManagementNode::MailSourceManagementNode(const char*         context,
@@ -54,27 +55,28 @@ MailSourceManagementNode::MailSourceManagementNode(const char*         context,
                                                    MailSyncSourceConfig& c      )
     : DeviceManagementNode(context, name) {
 
+		setFullContext();
     setMailSourceConfig(c);
 }
 
 MailSourceManagementNode::~MailSourceManagementNode() {
 }
 
-void MailSourceManagementNode::setMailAccounts(){
+void MailSourceManagementNode::setMailAccounts(MailSyncSourceConfig& c){
     char t[512];
     ArrayList mailAccounts = config.getMailAccounts();
 	int accountNum = mailAccounts.size();
+	
 
 	if (accountNum) {
-        char nodename[512];
-        sprintf(nodename, "%s/mails/", "Funambol/SyncclientPIM" );
-        DeviceManagementNode* mn = new DeviceManagementNode(nodename, PROPERTY_MAIL_ACCOUNT_ROOT);
+        char* fullcontext = toMultibyte(getFullContext());
+        DeviceManagementNode* mn = new DeviceManagementNode(fullcontext, PROPERTY_MAIL_ACCOUNT_ROOT);
   
         for (int i = 0; i < accountNum; i ++) { 
             if (((MailAccount*)mailAccounts[i])->getDeleted()){
                 WCHAR* wname = toWideChar(((MailAccount*)mailAccounts[i])->getName());
-                WCHAR* node = new WCHAR[wcslen(fullContext) + wcslen(wname) + wcslen(L"\\mailAccounts\\") +1];
-                wsprintf(node, L"%s\\mailAccounts\\%s", fullContext, wname);
+                WCHAR* node = new WCHAR[wcslen(getFullContext()) + wcslen(wname) + wcslen(L"\\mailAccounts\\") +1];
+                wsprintf(node, L"%s\\mailAccounts\\%s", getFullContext(), wname);
                 deletePropertyNode(node);
                 config.delMailAccount(((MailAccount*)mailAccounts[i])->getName());
             }
@@ -82,13 +84,14 @@ void MailSourceManagementNode::setMailAccounts(){
 
         delete mn;
         mailAccounts = config.getMailAccounts();
+		c.setMailAccounts(mailAccounts);
         accountNum = mailAccounts.size();
 		for (int i = 0; i < accountNum; i++) {
 			MailAccount* account = static_cast<MailAccount*>(mailAccounts[i]);
 			char valname[512];
             const char* name = stringdup(((StringBuffer)account->getName()).c_str());
             char fullname[512];
-            sprintf(fullname, "%s/%s", nodename, PROPERTY_MAIL_ACCOUNT_ROOT);
+            sprintf(fullname, "%s/%s", fullcontext, PROPERTY_MAIL_ACCOUNT_ROOT);
             DeviceManagementNode* mnn = new DeviceManagementNode(fullname,name);
             delete mnn;
             DeviceManagementNode* mn = new DeviceManagementNode(fullname,name);
@@ -150,6 +153,7 @@ void MailSourceManagementNode::setMailAccounts(){
             delete mn;
             delete name;
 		}
+		delete fullcontext;
 	}
 }
 
@@ -157,7 +161,8 @@ void MailSourceManagementNode::getMailAccounts(){
 
         char nname[512];
         char* tmp;
-        sprintf(nname, "%s/mails/%s",  "Funambol/SyncclientPIM", PROPERTY_MAIL_ACCOUNT_ROOT);
+		char* fullcontext = toMultibyte(getFullContext());
+        sprintf(nname, "%s/%s", fullcontext , PROPERTY_MAIL_ACCOUNT_ROOT);
         DeviceManagementNode* dmn = new DeviceManagementNode(nname);
         int numchild = dmn->getChildrenMaxCount();
         char** accountNames = dmn->getChildrenNames();
@@ -166,7 +171,7 @@ void MailSourceManagementNode::getMailAccounts(){
             MailAccount ma;
             char valname[512];
             char fullname[512];
-            sprintf(fullname, "%s/mails/%s",  "Funambol/SyncclientPIM", PROPERTY_MAIL_ACCOUNT_ROOT);
+			sprintf(fullname, "%s/%s",  fullcontext, PROPERTY_MAIL_ACCOUNT_ROOT);
             const char* name = stringdup(accountNames[p]);
             DeviceManagementNode* mn = new DeviceManagementNode(fullname,name);
 
@@ -217,6 +222,7 @@ void MailSourceManagementNode::getMailAccounts(){
 
             config.addMailAccount(ma);
         }
+		delete fullcontext;
 }
 
 
@@ -275,7 +281,6 @@ MailSyncSourceConfig& MailSourceManagementNode::getMailSourceConfig(bool refresh
 
 void MailSourceManagementNode::setMailSourceConfig(MailSyncSourceConfig& c) {
     config.assign(c);
-
     char t[512];
 
     setPropertyValue(PROPERTY_SOURCE_NAME,       (char* )c.getName());
@@ -311,10 +316,8 @@ void MailSourceManagementNode::setMailSourceConfig(MailSyncSourceConfig& c) {
     setPropertyValue(PROPERTY_SOURCE_SCHEDULE, t);
 
     setPropertyValue(PROPERTY_SOURCE_ENCRYPTION,       (char* )c.getEncryption());
-
-    setMailAccounts();
-
-
+	
+	setMailAccounts(c);
 }
 
 
