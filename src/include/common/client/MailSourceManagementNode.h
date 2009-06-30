@@ -79,7 +79,7 @@ class MailSourceManagementNode : public DeviceManagementNode {
         void setMailSourceConfig(MailSyncSourceConfig& c);
 
         void getMailAccounts();
-        void setMailAccounts();
+        void setMailAccounts(MailSyncSourceConfig& c);
 
         ArrayElement* clone();
 
