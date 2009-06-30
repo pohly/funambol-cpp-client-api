@@ -187,16 +187,25 @@ BEGIN_NAMESPACE
 		bool addMailAccount(const MailAccount& account);
 
         /**
-		 * adds a mail account
+		 * deletes a mail account
 		 */
 		bool delMailAccount(const char* accountName);
 
-        bool setDeletedMailAccount(const char* accountName);
+		/**
+		 * modifies an existing mail account replacing it
+		 */
+		bool modifyMailAccount(const MailAccount& account);
+        
+		/**
+		 * flags a mail account as deleted (it will be removed by DM)
+		 */
+		bool setDeletedMailAccount(const char* accountName);
 
 		/** 
 		 * mail account accessor
 		 */
 		const ArrayList& getMailAccounts() const { return mailAccounts; }
+		void setMailAccounts(const ArrayList& ma) { mailAccounts = ma;}
 
         /**
          * Initialize this object with the given SyncSourceConfig

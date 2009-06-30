@@ -199,6 +199,33 @@ bool MailSyncSourceConfig::addMailAccount(const MailAccount& account) {
 }
 
 
+bool MailSyncSourceConfig::modifyMailAccount(const MailAccount& account) {
+	const char* name = account.getName();
+	int size = mailAccounts.size();
+	
+	if (name == NULL) { 
+		LOG.error("can't update mail account: no account name found");
+		return false;
+	}
+
+	for (int i = 0; i < size; i++ ) {
+		MailAccount* storedAccount = static_cast<MailAccount *>(mailAccounts[i]);
+		const char* storedName = storedAccount->getName();
+
+		if ((storedName != NULL) && (strcmp(name, storedName) == 0)) {
+			// update existing account
+			LOG.debug("updating mail account %s", account.getName().c_str());
+			mailAccounts.removeElementAt(i);
+			mailAccounts.add(static_cast<MailAccount>(account));
+			
+			return true;
+		}
+	}
+
+	LOG.error("can't update mail account: an account with such name doesn't exist");
+	return false;
+}
+
 // ------------------------------------------------------------- Private methods
 
 void MailSyncSourceConfig::assign(const MailSyncSourceConfig& sc) {
@@ -226,7 +253,6 @@ void MailSyncSourceConfig::assign(const MailSyncSourceConfig& sc) {
     setDraft(sc.getDraft());
     setSchedule(sc.getSchedule());
     mailAccounts = sc.getMailAccounts();
-
 }
 
 StringBuffer MailSyncSourceConfig::print() {
