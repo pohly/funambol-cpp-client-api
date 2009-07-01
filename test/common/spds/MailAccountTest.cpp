@@ -39,6 +39,7 @@
 #include "base/fscapi.h"
 #include "base/messages.h"
 #include "base/Log.h"
+#include "base/util/utils.h"
 #include "base/util/StringBuffer.h"
 #include "base/util/ArrayList.h"
 #include "base/globalsdef.h"
@@ -115,7 +116,10 @@ private:
 
 
     void testExtSetters(){
+	   const WCHAR* accountIdw = NULL;
+	   const char* accountId = NULL;
        MailAccount account;
+
        account.parse(ACCOUNT_FOLDER);
        account.setVisibleName(_VISIBLENAME);
        account.setEmailAddress(_EMAILADDRESS);
@@ -130,7 +134,12 @@ private:
        account.setOutSSL(_OUT_SSL);
        account.setSignature(_SIGNATURE);
        account.setDomainName(_DOMAINNAME);
-       account.setID(_ID);
+
+	   accountIdw = toWideChar(_ID);
+       account.setID(accountIdw);
+	   delete [] accountIdw;
+
+	   accountId = toMultibyte(account.getID());
 
        CPPUNIT_ASSERT( strcmp(account.getVisibleName(),     _VISIBLENAME)   == 0 );
        CPPUNIT_ASSERT( strcmp(account.getEmailAddress(),    _EMAILADDRESS)  == 0 );
@@ -144,10 +153,10 @@ private:
        CPPUNIT_ASSERT( strcmp(account.getInSSL(),           _IN_SSL)        == 0 );
        CPPUNIT_ASSERT( strcmp(account.getOutSSL(),          _OUT_SSL)       == 0 );
        CPPUNIT_ASSERT( strcmp(account.getSignature(),       _SIGNATURE)     == 0 );
-       CPPUNIT_ASSERT( strcmp(account.getDomainName(),       _DOMAINNAME)    == 0 );
-       CPPUNIT_ASSERT( strcmp(account.getID(),              _ID)            == 0 );
+       CPPUNIT_ASSERT( strcmp(account.getDomainName(),      _DOMAINNAME)    == 0 );
+       CPPUNIT_ASSERT( strcmp(accountId,					_ID)            == 0 );
 
-
+	   delete [] accountId;
     }
 };
 
