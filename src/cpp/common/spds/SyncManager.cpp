@@ -2250,18 +2250,24 @@ Status *SyncManager::processSyncItem(Item* item, const CommandInfo &cmdInfo, Syn
             // Process item ------------------------------------------------------------
             if ( strcmp(cmdInfo.commandName, ADD) == 0) {
 
-                // The SourceParent sent by the Server on a ADD command can be a GUID value, if 
-                // the Client didn't reply yet with the corresponding mapping.
-                // In this case, we lookup into our mappings list to retrieve the
-                // LUID value from the GUID.
-                StringBuffer parentGUID(item->getSourceParent());
-                if (!parentGUID.empty()) {
-                    Enumeration& mappings = mmanager[count]->getMappings();
-                    const StringBuffer& parentLUID = lookupMappings(mappings, parentGUID);
+                // Set the correct TargetParent if only SourceParent is read.
+                // 
+                // The SourceParent sent by the Server on a ADD command is the GUID value, if 
+                // the Client didn't reply yet with the corresponding mapping (in that case the
+                // TargetParent will be sent). 
+                // We lookup into our mappings list to retrieve the LUID value from the GUID, 
+                // and set the TargetParent.
+                StringBuffer targetParent(item->getTargetParent());
+                if (targetParent.empty()) {
+                    StringBuffer parentGUID(item->getSourceParent());
+                    if (!parentGUID.empty()) {
+                        Enumeration& mappings = mmanager[count]->getMappings();
+                        const StringBuffer& parentLUID = lookupMappings(mappings, parentGUID);
 
-                    WCHAR* sparent = toWideChar(parentLUID.c_str());
-                    incomingItem->setSourceParent(sparent);
-                    delete [] sparent;
+                        WCHAR* tparent = toWideChar(parentLUID.c_str());
+                        incomingItem->setTargetParent(tparent);
+                        delete [] tparent;
+                    }
                 }
 
                 incomingItem->setState(SYNC_STATE_NEW);
@@ -2335,7 +2341,7 @@ Status *SyncManager::processSyncItem(Item* item, const CommandInfo &cmdInfo, Syn
 }
 
 
-const StringBuffer& SyncManager::lookupMappings(Enumeration& mappings, const StringBuffer& guid) {
+const StringBuffer SyncManager::lookupMappings(Enumeration& mappings, const StringBuffer& guid) {
 
     // Check recursively all the elements
     ArrayElement* e = mappings.getFirstElement();
@@ -2357,7 +2363,7 @@ const StringBuffer& SyncManager::lookupMappings(Enumeration& mappings, const Str
     }
 
     // If here, corrispondence not found
-    return guid;
+    return "";
 }
 
 

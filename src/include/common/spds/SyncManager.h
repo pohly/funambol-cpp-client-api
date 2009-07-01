@@ -155,9 +155,9 @@ class SyncManager {
          * 
          * @param mappings the mappings Enumeration of KeyValuePair (LUID,GUID) to search into
          * @param guid     the GUID value to search
-         * @return         the correspondent LUID value. If GUID not found, the original GUID is returned.
+         * @return         the correspondent LUID value. If GUID not found, empty string is returned.
          */
-        const StringBuffer& lookupMappings(Enumeration& mappings, const StringBuffer& guid);
+        const StringBuffer lookupMappings(Enumeration& mappings, const StringBuffer& guid);
 
 
     private:
