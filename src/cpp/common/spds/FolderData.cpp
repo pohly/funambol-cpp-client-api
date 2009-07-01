@@ -82,6 +82,7 @@ FolderData::FolderData()
     isReadablePresent = false;
     isExecutablePresent = false;
 
+    id = NULL;
 }
 
 FolderData::~FolderData()
@@ -94,8 +95,12 @@ FolderData::~FolderData()
     created.reset();
     role.reset();
 
-
+    if (id) {
+        delete [] id;
+        id = NULL;
+    }
 }
+
 int FolderData::parse(const char *syncmlData, size_t len)
 {
     int ret = 0;
@@ -282,4 +287,19 @@ void FolderData::setValueByName(const char* valName, const char* setVal){
     ext.setXVals(xvals);
     extended.add(ext);
 }
+
+const WCHAR* FolderData::getID() const { 
+    return id; 
+}
+
+void FolderData::setID(const WCHAR* val) { 
+    if (id) {
+        delete [] id; 
+        id = NULL;
+    }
+
+    if (val) {
+        id = wcsdup(val);
+    }
+}  
 

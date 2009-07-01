@@ -70,6 +70,9 @@ class FolderData : public ArrayElement {
 		StringBuffer role;
         ArrayList extended;
 
+        /// The ID of this folder (the key returned to the Server)
+        WCHAR* id;
+
         // represents the presence of their equivalent tag
         bool isHiddenPresent;
         bool isSystemPresent;
@@ -141,6 +144,10 @@ class FolderData : public ArrayElement {
 
 		const StringBuffer& getRole() const { return role; }
 		void setRole(const char* v) { role = v; }
+
+        const WCHAR* getID() const;
+        void setID(const WCHAR* val);   
+
 
         void setExtList(ArrayList& list){extended = list;};
         /**

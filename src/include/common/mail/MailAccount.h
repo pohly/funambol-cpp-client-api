@@ -112,8 +112,6 @@ class MailAccount : public FolderData {
         const char* getDomainName() const { return getValueByName(DOMAINNAME); }
         void setDomainName(const char* xval){ setValueByName(DOMAINNAME, xval); }
 
-        const char* getID() const { return getValueByName(ID); }
-        void setID(const char* xval){ setValueByName(ID, xval); }    
 
         bool getDeleted() const { return deleted; }
         void setDeleted() { deleted = true; }
