@@ -195,13 +195,13 @@ bool MailAccountManager::accountExists(const StringBuffer& accountID) {
     return true;
 }
 
-int MailAccountManager::readAccount(MailAccount& account) {
+/*int MailAccountManager::readAccount(MailAccount& account) {
 
     // TODO: read from config
     return 0;
-}
+}*/
 
-int MailAccountManager::readFolder(FolderData& folder) {
+/*int MailAccountManager::readFolder(FolderData& folder) {
 
     // Safe check
     if (folder.getName().empty() || folder.getParent().empty()) {
@@ -210,6 +210,6 @@ int MailAccountManager::readFolder(FolderData& folder) {
     
     // TODO: read from config
     return 0;
-}
+}*/
 
 

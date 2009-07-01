@@ -135,14 +135,14 @@ public:
      * Note: the account ID is required in input.
      * @param account    [IN-OUT] the email account to be filled with all settings
      */
-    int readAccount(MailAccount& account);
+    //int readAccount(MailAccount& account);
     
     /**
      * Reads an email folder given its name and the parent account ID.
      * Note: the folder name and parent are required in input.
      * @param folder     [IN-OUT] the email folder to be filled with all settings
      */
-    int readFolder(FolderData& folder);    
+    //int readFolder(FolderData& folder);    
 
 protected:
     /**
