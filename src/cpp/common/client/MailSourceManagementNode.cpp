@@ -46,16 +46,13 @@ USE_NAMESPACE
 
 MailSourceManagementNode::MailSourceManagementNode(const char*  context,
                                                    const char*  name   )
-    : DeviceManagementNode(context, name) {
-		setFullContext();
-}
+    : DeviceManagementNode(context, name) {}
 
 MailSourceManagementNode::MailSourceManagementNode(const char*         context,
                                                    const char*         name   ,
                                                    MailSyncSourceConfig& c      )
-    : DeviceManagementNode(context, name) {
-
-		setFullContext();
+    : DeviceManagementNode(context, name) 
+{
     setMailSourceConfig(c);
 }
 
@@ -92,9 +89,9 @@ void MailSourceManagementNode::setMailAccounts(MailSyncSourceConfig& c){
             const char* name = stringdup(((StringBuffer)account->getName()).c_str());
             char fullname[512];
             sprintf(fullname, "%s/%s", fullcontext, PROPERTY_MAIL_ACCOUNT_ROOT);
-            DeviceManagementNode* mnn = new DeviceManagementNode(fullname,name);
-            delete mnn;
-            DeviceManagementNode* mn = new DeviceManagementNode(fullname,name);
+            
+			DeviceManagementNode* mn = new DeviceManagementNode(fullname,name);
+			
 			sprintf(valname, PROPERTY_MAIL_ACCOUNT_VISIBLE_NAME, name);
 			sprintf(t, "%s", account->getVisibleName());
 			mn->setPropertyValue(valname, t);
@@ -148,7 +145,12 @@ void MailSourceManagementNode::setMailAccounts(MailSyncSourceConfig& c){
 			mn->setPropertyValue(valname, t);
 
 			sprintf(valname, PROPERTY_MAIL_ACCOUNT_ID, name);
-			sprintf(t, "%s", account->getID());
+			
+			const WCHAR* accountIdw = account->getID();
+			const char *accountId = toMultibyte(accountIdw);
+			sprintf(t, "%s", accountId);
+			delete [] accountId;
+
 			mn->setPropertyValue(valname, t);
             delete mn;
             delete name;
@@ -219,9 +221,10 @@ void MailSourceManagementNode::getMailAccounts(){
 
             sprintf(valname,PROPERTY_MAIL_ACCOUNT_ID,name);
             tmp = mn->readPropertyValue(valname);
-            WCHAR* id = toWideChar(tmp); safeDel(&tmp);
-            ma.setID(id);
-            if (id) { delete [] id; }
+
+            WCHAR* idW = toWideChar(tmp); safeDel(&tmp);
+            ma.setID(idW);
+            if (idW) { delete [] idW; }
 
             config.addMailAccount(ma);
         }
