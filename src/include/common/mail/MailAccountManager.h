@@ -97,11 +97,12 @@ public:
     /**
      * Creates a new folder under the parent account.
      * Calls createClientFolder(), if success then saves the config.
+     * The new folder ID is set inside the 'folder' object.
      * Note: the folder name and parent are required.
      * @param folder the FolderData settings informations
      * @return 0 if no errors
      */
-    int createFolder(const FolderData& folder);
+    int createFolder(FolderData& folder);
 
     /**
      * Updates an email folder under the parent account.
@@ -115,11 +116,11 @@ public:
     /**
      * Deletes an email folder under the parent account.
      * Calls deleteClientFolder(), if success then saves the config.
-     * Note: the folder name and parent are required.
-     * @param folder the FolderData settings informations
+     * @param folderID  the key of folder to delete
      * @return 0 if no errors, -1 if folder not found
      */
-    int deleteFolder(const FolderData& folder);
+    int deleteFolder(const WCHAR* folderID);
+
  
     /// Returns the number of existing email accounts.
     int getAccountNumber();
@@ -173,22 +174,13 @@ protected:
     /**
      * Creates an email folder on the Client.
      * Clients must implement this method in order to create a new folder inside
-     * the parent email account.
+     * the parent email account. 
+     * Note: the new folder's ID must be set inside the folder object.
      * Note: the folder name and parent are required.
      * @param folder the FolderData settings informations
      * @return 0 if no errors
      */
-    virtual int createClientFolder(const FolderData& folder) = 0;
-
-	/**
-     * Deletes an email folder on the Client.
-     * Clients must implement this method in order to create a new folder inside
-     * the parent email account.
-     * Note: the folder name and parent are required.
-     * @param folder the FolderData settings informations
-     * @return 0 if no errors
-     */
-    virtual int deleteClientFolder(const FolderData& folder) = 0;
+    virtual int createClientFolder(FolderData& folder) = 0;
 
     /**
      * Updates an email folder on the Client.
@@ -200,14 +192,16 @@ protected:
      */
     virtual int updateClientFolder(const FolderData& folder) = 0;
 
-    /**
+	/**
      * Deletes an email folder on the Client.
-     * Clients must implement this method in order to delete a folder inside
+     * Clients must implement this method in order to create a new folder inside
      * the parent email account.
      * Note: the folder name and parent are required.
      * @param folder the FolderData settings informations
-     * @return 0 if no errors, -1 if folder not found
+     * @return 0 if no errors
      */
+    virtual int deleteClientFolder(const WCHAR* folderID) = 0;
+
 private:
 
     /// Reference to config of MailSyncSource. Used to read and save email accounts settings.

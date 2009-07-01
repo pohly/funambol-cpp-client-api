@@ -111,7 +111,7 @@ int MailAccountManager::deleteAccount(const WCHAR* accountID) {
 }
 
 
-int MailAccountManager::createFolder(const FolderData& folder) {
+int MailAccountManager::createFolder(FolderData& folder) {
 
     // Safe check
     if (folder.getName().empty() || folder.getParent().empty()) {
@@ -130,8 +130,7 @@ int MailAccountManager::createFolder(const FolderData& folder) {
         return ret;
     }
 
-    // TODO: Create folder account settings in config
-
+    // folder's ID and settings are not stored in config (TODO?)
     return ret;
 }
 
@@ -154,32 +153,25 @@ int MailAccountManager::updateFolder(const FolderData& folder) {
         return ret;
     }
 
-    // TODO: Update folder account settings in config
-
+    // folder's ID and settings are not stored in config (TODO?)
     return ret;
 }
 
-int MailAccountManager::deleteFolder(const FolderData& folder) {
+int MailAccountManager::deleteFolder(const WCHAR* folderID) {
 
     // Safe check
-    if (folder.getName().empty() || folder.getParent().empty()) {
+    if (folderID == NULL) {
         return -2;
     }
-
-    if ( !accountExists(folder.getParent()) ) {
-        LOG.error("deleteFolder error: parent account '%s' not found", folder.getParent());
-        return -1;
-    }
-
-    int ret = deleteClientFolder(folder);
     
+    // Delete the folder on the Client.
+    int ret = deleteClientFolder(folderID);
     if (ret) {
         LOG.error("Error deleting email folder, code %i", ret);
         return ret;
     }
 
-    // TODO: Remove folder account settings in config
-
+    // folder's ID and settings are not stored in config (TODO?)
     return ret;
 }
 
