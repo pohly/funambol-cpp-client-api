@@ -216,9 +216,12 @@ void MailSourceManagementNode::getMailAccounts(){
             sprintf(valname,PROPERTY_MAIL_ACCOUNT_DOMAINNAME,name);
             tmp = mn->readPropertyValue(valname);
             ma.setDomainName(tmp); safeDel(&tmp);
+
             sprintf(valname,PROPERTY_MAIL_ACCOUNT_ID,name);
             tmp = mn->readPropertyValue(valname);
-            ma.setID(tmp); safeDel(&tmp);
+            WCHAR* id = toWideChar(tmp); safeDel(&tmp);
+            ma.setID(id);
+            if (id) { delete [] id; }
 
             config.addMailAccount(ma);
         }
