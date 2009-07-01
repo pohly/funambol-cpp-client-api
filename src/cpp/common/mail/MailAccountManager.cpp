@@ -57,13 +57,11 @@ int MailAccountManager::createAccount(MailAccount& account) {
         return ret;
     }
 
-    // TODO: Set account settings in config
+    // Set account settings in config
 	if (config.addMailAccount(account) == false) {
 		LOG.error("error saving account in configuration");
-
 		return 1;
 	}
-
     return ret;
 }
 
@@ -76,12 +74,15 @@ int MailAccountManager::updateAccount(const MailAccount& account) {
         return ret;
     }
 
-    // TODO: Update account settings in config (TODO)
-
+    // Update account settings in config
+    if (config.modifyMailAccount(account) == false) {
+		LOG.error("error saving account in configuration");
+		return 1;
+    }
     return ret;
 }
 
-int MailAccountManager::deleteAccount(const StringBuffer& accountID) {
+int MailAccountManager::deleteAccount(const WCHAR* accountID) {
 
     // Deletes the account on Client
     int ret = deleteClientAccount(accountID);
@@ -90,7 +91,21 @@ int MailAccountManager::deleteAccount(const StringBuffer& accountID) {
         return ret;
     }
 
-    // TODO: Remove account settings in config
+    // Remove account settings in config
+    ArrayList mailAccounts = config.getMailAccounts();
+	MailAccount* account = NULL;
+	for (int i = 0; i<mailAccounts.size(); i++){
+		if (wcscmp(((MailAccount*)mailAccounts[i])->getID(), accountID) == 0){
+			account = (MailAccount*)mailAccounts[i];
+			break;
+		}
+	}
+	if (account) {
+		// mark deleted
+		config.setDeletedMailAccount( account->getName() );
+	} else {
+		ret = 1;
+	}
 
     return ret;
 }

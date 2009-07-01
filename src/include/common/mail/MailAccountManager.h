@@ -90,7 +90,7 @@ public:
      * @param accountID the account ID to be removed
      * @return 0 if no errors, -1 if account not found
      */
-    int deleteAccount(const StringBuffer& accountID);
+    int deleteAccount(const WCHAR* accountID);
 
 
     // ------------------------ Email folders management ------------------------
@@ -168,7 +168,7 @@ protected:
      * @param accountID the account ID to be removed
      * @return 0 if no errors, -1 if account not found
      */
-    virtual int deleteClientAccount(const StringBuffer& accountID) = 0;
+    virtual int deleteClientAccount(const WCHAR* accountID) = 0;
 
     /**
      * Creates an email folder on the Client.
