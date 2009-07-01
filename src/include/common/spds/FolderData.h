@@ -71,7 +71,7 @@ class FolderData : public ArrayElement {
         ArrayList extended;
 
         /// The ID of this folder (the key returned to the Server)
-        WCHAR* id;
+        WString id;
 
         // represents the presence of their equivalent tag
         bool isHiddenPresent;
