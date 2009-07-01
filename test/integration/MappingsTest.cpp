@@ -79,9 +79,9 @@ static StringBuffer FULLNAME_CON_JOUR;
 * It could be to have different KeyValueStore for different source
 */
 class CustomMappingStoreBuilder : public MappingStoreBuilder {
-        
+
     KeyValueStore* createNewInstance(const char* name) const {
-        
+
         if (strcmp(name, "contact") == 0) {
             StringBuffer fullName = PlatformAdapter::getHomeFolder();
             fullName += "/"; fullName += name;
@@ -95,8 +95,8 @@ class CustomMappingStoreBuilder : public MappingStoreBuilder {
             // a SQLiteKeyValueStore....
             // returning NULL will make fail the SyncManager
             //
-            return NULL;        
-        }        
+            return NULL;
+        }
     }
 };
 
@@ -116,21 +116,21 @@ MappingsTest::MappingsTest() {
     LOG.setLogName("mappings_tests.log");
     LOG.reset();
 }
-        
+
 
 static DMTClientConfig* getConfiguration(const char* name) {
-    
+
     const char *serverUrl = getenv("CLIENT_TEST_SERVER_URL");
     const char *username = getenv("CLIENT_TEST_USERNAME");
     const char *password = getenv("CLIENT_TEST_PASSWORD");
-    
+
     PlatformAdapter::init(name, true);
     DMTClientConfig* config = new DMTClientConfig();
     config->read();
     DeviceConfig &dc(config->getDeviceConfig());
-    if (!strlen(dc.getDevID())) {            
+    if (!strlen(dc.getDevID())) {
         config->setClientDefaults();
-        config->setSourceDefaults("contact"); 
+        config->setSourceDefaults("contact");
         StringBuffer devid("sc-pim-"); devid += name;
         dc.setDevID(devid);
         SyncSourceConfig* s = config->getSyncSourceConfig("contact");
@@ -138,7 +138,7 @@ static DMTClientConfig* getConfiguration(const char* name) {
         s->setURI("card");
         s->setType("text/x-vcard");
     }
-    
+
     //set custom configuration
     if(serverUrl) {
         config->getAccessConfig().setSyncURL(serverUrl);
@@ -152,29 +152,29 @@ static DMTClientConfig* getConfiguration(const char* name) {
 
     return config;
 }
-    
+
     // Add 3 contacts from the source first to the server
 
 void MappingsTest::testAdd3Contacts() {
-        
+
         DMTClientConfig* config1 = getConfiguration("funambol_mappings_first");
-        SyncSourceConfig *ccontact1 = config1->getSyncSourceConfig("contact");          
+        SyncSourceConfig *ccontact1 = config1->getSyncSourceConfig("contact");
         CPPUNIT_ASSERT(ccontact1);
         ccontact1->setSync("two-way");
         config1->save();
         config1->open();
 
         CustomMappingStoreBuilder* custom = new CustomMappingStoreBuilder();
-        MappingsManager::setBuilder(custom);        
-        
+        MappingsManager::setBuilder(custom);
+
         MappingTestSyncSource  scontact1(TEXT("contact"),  ccontact1);
 
         SyncSource* sources[2];
         sources[0] = &scontact1;
-        sources[1] = NULL;        
-                
+        sources[1] = NULL;
+
         SyncClient client;
-        int ret = 0;       
+        int ret = 0;
         ret = client.sync(*config1, sources);
         CPPUNIT_ASSERT(!ret);
         config1->save();
@@ -182,10 +182,10 @@ void MappingsTest::testAdd3Contacts() {
         SyncSourceReport *ssr = scontact1.getReport();
         int added = ssr->getItemReportSuccessfulCount(SERVER, COMMAND_ADD);
 
-        CPPUNIT_ASSERT_EQUAL(3, added);  
+        CPPUNIT_ASSERT_EQUAL(3, added);
         MappingsManager::setBuilder(NULL);
     }
-    
+
     //
     // The second source syncs and fails at the first turn. Then it sends the
     // mappings and finish succesfully
@@ -198,17 +198,17 @@ void MappingsTest::testAdd3Contacts() {
         Sleep(INTERVAL);
 
         DMTClientConfig* config2 = getConfiguration("funambol_mappings_second");
-        SyncSourceConfig *ccontact2 = config2->getSyncSourceConfig("contact");          
+        SyncSourceConfig *ccontact2 = config2->getSyncSourceConfig("contact");
         CPPUNIT_ASSERT(ccontact2);
         ccontact2->setSync("two-way");
         config2->save();
         config2->open();
-        
+
         // other way to set the custom. Not used here just because the MappingsManager
         // delete the one set by the client if it is set two times
         //CustomMappingStoreBuilder custom;
-        //MappingsManager::setBuilder(&custom);        
-        
+        //MappingsManager::setBuilder(&custom);
+
         CustomMappingStoreBuilder* custom = new CustomMappingStoreBuilder();
         MappingsManager::setBuilder(custom);
 
@@ -216,17 +216,17 @@ void MappingsTest::testAdd3Contacts() {
 
         SyncSource* sources[2];
         sources[0] = &scontact2;
-        sources[1] = NULL;        
-        
-        SyncItemListenerClient* itemListener = new SyncItemListenerClient();    
+        sources[1] = NULL;
+
+        SyncItemListenerClient* itemListener = new SyncItemListenerClient();
         setSyncItemListener(itemListener);
-                        
+
         SyncClient client;
         int ret = 0;
         try {
-            client.sync(*config2, sources);            
-        } catch (...) {            
-            CPPUNIT_ASSERT(existsFile(FULLNAME_CON_JOUR));                    
+            client.sync(*config2, sources);
+        } catch (...) {
+            CPPUNIT_ASSERT(existsFile(FULLNAME_CON_JOUR));
         }
 
         // unregister the listener to avoid the exception they throw
@@ -234,56 +234,56 @@ void MappingsTest::testAdd3Contacts() {
         Sleep(INTERVAL);
         ret = client.sync(*config2, sources);
         CPPUNIT_ASSERT(!ret);
-        CPPUNIT_ASSERT(!existsFile(FULLNAME_CON));        
+        CPPUNIT_ASSERT(!existsFile(FULLNAME_CON));
         config2->save();
 
-        SyncSourceReport *ssr = scontact2.getReport();  
+        SyncSourceReport *ssr = scontact2.getReport();
         int added = ssr->getItemReportSuccessfulCount(CLIENT, COMMAND_ADD);
-        
+
         // currently the client check the server sends back 3 items. But when the server
-        // has a fix, this test should fails and it must be fixed properly. the item the 
+        // has a fix, this test should fails and it must be fixed properly. the item the
         // server sends should be 1
         // CPPUNIT_ASSERT_EQUAL(3, added);
         // 2008-10-08 fixed applied on dog_food as server test
         CPPUNIT_ASSERT_EQUAL(1, added);
-        
-        delete config2;           
+
+        delete config2;
         MappingsManager::setBuilder(NULL);
 
     }
 
     //
-    // Put client and server in sync with no item on the server through a 
+    // Put client and server in sync with no item on the server through a
     // refresh from client
     //
-void MappingsTest::testPutClientServerInSync() { 
+void MappingsTest::testPutClientServerInSync() {
        // create the first configuration
         DMTClientConfig* config1 = getConfiguration("funambol_mappings_first");
         DMTClientConfig* config2 = getConfiguration("funambol_mappings_second");
 
-        SyncSourceConfig *ccontact1 = config1->getSyncSourceConfig("contact");          
+        SyncSourceConfig *ccontact1 = config1->getSyncSourceConfig("contact");
         CPPUNIT_ASSERT(ccontact1);
         ccontact1->setSync("refresh-from-client");
 
-        SyncSourceConfig *ccontact2 = config2->getSyncSourceConfig("contact");                                
+        SyncSourceConfig *ccontact2 = config2->getSyncSourceConfig("contact");
         CPPUNIT_ASSERT(ccontact2);
         ccontact2->setSync("refresh-from-client");
-        
+
         config1->save();
         config1->open();
 
         config2->save();
         config2->open();
-                 
+
         MappingTestSyncSource  scontact1(TEXT("contact"),  ccontact1);
         MappingTestSyncSource  scontact2(TEXT("contact"),  ccontact2);
 
         SyncSource* sources[2];
         sources[0] = &scontact1;
-        sources[1] = NULL;        
-                
+        sources[1] = NULL;
+
         SyncClient client;
-        int ret = 0;       
+        int ret = 0;
         ret = client.sync(*config1, sources);
         CPPUNIT_ASSERT(!ret);
         config1->save();
@@ -313,7 +313,7 @@ void MappingsTest::testLookUpMappings() {
         KeyValuePair kvp(luid, guid);
         mappings.add(kvp);
     }
-    
+
     //
     // The tests
     //
@@ -325,10 +325,10 @@ void MappingsTest::testLookUpMappings() {
     output = syncManager.lookupMappings(mappings, input);
     CPPUNIT_ASSERT(output == "LUID-5");
 
-    // If not found, the input MUST be returned
+    // If not found, empty string is returned
     input = "GUID-not-mapped";
     output = syncManager.lookupMappings(mappings, input);
-    CPPUNIT_ASSERT(output == input);
+    CPPUNIT_ASSERT(output == "");
 
     input = "GUID-2";
     output = syncManager.lookupMappings(mappings, input);
@@ -338,7 +338,7 @@ void MappingsTest::testLookUpMappings() {
     mappings.clear();
     input = "GUID-0";
     output = syncManager.lookupMappings(mappings, input);
-    CPPUNIT_ASSERT(output == input);
+    CPPUNIT_ASSERT(output == "");
 
     delete config;
 }
