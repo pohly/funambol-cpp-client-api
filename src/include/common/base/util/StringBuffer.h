@@ -61,8 +61,7 @@ class StringBuffer: public ArrayElement {
 
         /**
          * Creates a new StringBuffer with the given initial value.
-         * The default is NULL, thus creating a string wiith a null internal
-         * pointer.
+         * The default is empty string.
          * Possible calls are:
          * <li> Stringbuffer s; // construct a string with an empty value
          * <li> Stringbuffer s(NULL); // construct a string a null value
