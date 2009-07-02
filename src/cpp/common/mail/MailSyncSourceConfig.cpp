@@ -182,13 +182,14 @@ bool MailSyncSourceConfig::addMailAccount(const MailAccount& account) {
 
 	for (int i = 0; i < size; i++ ) {
 		MailAccount* storedAccount = static_cast<MailAccount *>(mailAccounts[i]);
-		const char* storedName = storedAccount->getName();
-
-		if ((storedName != NULL) && (strcmp(name, storedName) == 0)) {
-			// prevent adding an already existing accout
-			LOG.error("can't add mail account: an account with such name already exist");
-			return false;
-		}
+        if (storedAccount) {
+		    const char* storedName = storedAccount->getName();
+		    if ((storedName != NULL) && (strcmp(name, storedName) == 0)) {
+			    // prevent adding an already existing accout
+			    LOG.error("can't add mail account: an account with such name already exist");
+			    return false;
+		    }
+        }
 	}
 
 	LOG.debug("adding new mail account %s", account.getName().c_str());
