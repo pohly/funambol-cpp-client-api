@@ -178,13 +178,34 @@ int MailAccountManager::deleteFolder(const WCHAR* folderID) {
 
 
 int MailAccountManager::getAccountNumber() {
-    // TODO: read from config
-    return 0;
+    
+    return config.getMailAccounts().size();
 }
 
 bool MailAccountManager::accountExists(const StringBuffer& accountID) {
-    // TODO: read from config
-    return true;
+    
+    if (getAccountNumber() == 0) {
+        return false;
+    }
+    if (accountID.empty()) {
+        return false;
+    }
+
+    const ArrayList& accounts = config.getMailAccounts();
+    for (int i=0; i<accounts.size(); i++) {
+        MailAccount* account = (MailAccount*)accounts[i];
+        if (account) {
+            StringBuffer currentID;
+            currentID.convert(account->getID());
+            if (currentID == accountID) {
+                // found
+                return true;
+            }
+        }
+    }
+
+    // not found
+    return false;
 }
 
 /*int MailAccountManager::readAccount(MailAccount& account) {
