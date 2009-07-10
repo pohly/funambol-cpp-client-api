@@ -121,15 +121,6 @@ public:
      */
     int deleteFolder(const WCHAR* folderID);
 
- 
-    /// Returns the number of existing email accounts.
-    int getAccountNumber();
-
-    /// To synchronize config settings and account settings.
-    //virtual int refreshAccounts() = 0;
-
-    /// Checks the config, returns true if the account exists.
-    bool accountExists(const StringBuffer& accountID);
 
     /**
      * Reads an email account given its ID.
@@ -201,6 +192,25 @@ protected:
      * @return 0 if no errors
      */
     virtual int deleteClientFolder(const WCHAR* folderID) = 0;
+
+
+    /// Returns the number of existing email accounts.
+    int getAccountNumber();
+
+    /// To synchronize config settings and account settings.
+    //virtual int refreshAccounts() = 0;
+
+    /// Checks the config, returns true if the account exists.
+    bool accountExists(const StringBuffer& accountID);
+
+    /**
+     * Returns the account ID from its name.
+     * Scans the mail accounts in the config.
+     * @param accountName the account name to search
+     * @return the id (b64 key) of the account, an empty string if account not found
+     */
+    StringBuffer getIdOfAccount(const StringBuffer& accountName);
+
 
 private:
 

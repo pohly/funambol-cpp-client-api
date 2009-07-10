@@ -208,6 +208,31 @@ bool MailAccountManager::accountExists(const StringBuffer& accountID) {
     return false;
 }
 
+
+
+StringBuffer MailAccountManager::getIdOfAccount(const StringBuffer& accountName) {
+
+    StringBuffer id("");
+    if (accountName.empty()) {
+        return id;
+    }
+
+    const ArrayList& accounts = config.getMailAccounts();
+    for (int i=0; i<accounts.size(); i++) {
+        MailAccount* account = (MailAccount*)accounts[i];
+        if (account) {
+            if (accountName == account->getName()) {
+                // found
+                id.convert(account->getID());
+                break;
+            }
+        }
+    }
+    return id;
+}
+
+
+
 /*int MailAccountManager::readAccount(MailAccount& account) {
 
     // TODO: read from config
