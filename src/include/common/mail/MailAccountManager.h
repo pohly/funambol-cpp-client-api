@@ -123,6 +123,15 @@ public:
 
 
     /**
+     * Returns the account ID from its name.
+     * Scans the mail accounts in the config.
+     * @param accountName the account name to search
+     * @return the id (b64 key) of the account, an empty string if account not found
+     */
+    StringBuffer getIdOfAccount(const StringBuffer& accountName);
+
+
+    /**
      * Reads an email account given its ID.
      * Note: the account ID is required in input.
      * @param account    [IN-OUT] the email account to be filled with all settings
@@ -203,13 +212,13 @@ protected:
     /// Checks the config, returns true if the account exists.
     bool accountExists(const StringBuffer& accountID);
 
+
     /**
-     * Returns the account ID from its name.
+     * Returns the account ID of the first account stored.
      * Scans the mail accounts in the config.
-     * @param accountName the account name to search
-     * @return the id (b64 key) of the account, an empty string if account not found
+     * @return the id (b64 key) of the account, an empty string if no accounts found
      */
-    StringBuffer getIdOfAccount(const StringBuffer& accountName);
+    StringBuffer getIdOfFirstAccount();
 
 
 private:

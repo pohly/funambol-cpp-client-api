@@ -232,6 +232,21 @@ StringBuffer MailAccountManager::getIdOfAccount(const StringBuffer& accountName)
 }
 
 
+StringBuffer MailAccountManager::getIdOfFirstAccount() {
+
+    StringBuffer id("");
+
+    const ArrayList& accounts = config.getMailAccounts();
+    if (accounts.size() > 0) {
+        MailAccount* account = (MailAccount*)accounts[0];
+        if (account) {
+            id.convert(account->getID());
+        }
+    }
+    return id;
+}
+
+
 
 /*int MailAccountManager::readAccount(MailAccount& account) {
 
