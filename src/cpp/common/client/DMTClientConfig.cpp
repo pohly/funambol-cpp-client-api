@@ -47,6 +47,7 @@
 #include "spdm/DMTree.h"
 #include "spdm/ManagementNode.h"
 #include "spds/DefaultConfigFactory.h"
+#include "client/MailSourceManagementNode.h"
 
 USE_NAMESPACE
 
@@ -587,29 +588,39 @@ bool DMTClientConfig::readSourceConfig(int i, ManagementNode& n) {
  */
 void DMTClientConfig::saveSourceConfig(int i, ManagementNode& n) {
 
-    ManagementNode* node;
-    char nodeName[DIM_MANAGEMENT_PATH];
+        char nodeName[DIM_MANAGEMENT_PATH];
 
-    if (n.getChild(i) == NULL) {
-        // Create node from Source name.
-        char* fn = n.createFullName();
-        sprintf(nodeName, "%s/%s", fn, sourceConfigs[i].getName());
-        delete [] fn;
-        node = dmt->readManagementNode(nodeName);
-    }
-    else {
-        node = (ManagementNode*)n.getChild(i)->clone();
-    }
+    if( strcmp( sourceConfigs[i].getName(), "mail" ) == 0 ){
 
-    if (node) {
-        saveSourceConfig(i, n, *node);
-        saveSourceVars(i, n, *node);
+        MailSourceManagementNode* msmn = new MailSourceManagementNode(n.createFullName(),sourceConfigs[i].getName());
+        MailSyncSourceConfig& mssc = ((MailSyncSourceConfig&)((sourceConfigs[i])));
+        msmn->setMailSourceConfig(mssc);
+        delete msmn;
 
-        // *** TBD ***
-        // CTCap c = sourceConfigs[i].getCtCap();
-        // saveCtCap() somewhere...
+    }else{
+        ManagementNode* node;
 
-        delete node;
+        if (n.getChild(i) == NULL) {
+            // Create node from Source name.
+            char* fn = n.createFullName();
+            sprintf(nodeName, "%s/%s", fn, sourceConfigs[i].getName());
+            delete [] fn;
+            node = dmt->readManagementNode(nodeName);
+        }
+        else {
+            node = (ManagementNode*)n.getChild(i)->clone();
+        }
+
+        if (node) {
+            saveSourceConfig(i, n, *node);
+            saveSourceVars(i, n, *node);
+
+            // *** TBD ***
+            // CTCap c = sourceConfigs[i].getCtCap();
+            // saveCtCap() somewhere...
+
+            delete node;
+        }
     }
 }
 

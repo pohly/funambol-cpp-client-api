@@ -40,6 +40,7 @@
 #include "spds/SyncManagerConfig.h"
 #include "spds/DefaultConfigFactory.h"
 #include "base/globalsdef.h"
+#include "mail/MailSyncSourceConfig.h"
 
 USE_NAMESPACE
 
@@ -95,8 +96,11 @@ bool SyncManagerConfig::setSyncSourceConfig(SyncSourceConfig& sc) {
         return addSyncSourceConfig(sc);
     }
 
-    sourceConfigs[i].assign(sc);
-
+    if ( strcmp( sc.getName(), "mail") == 0 ){
+        ((MailSyncSourceConfig&)(sourceConfigs[i])).assign(((MailSyncSourceConfig&)(sourceConfigs[i])));
+    }else{
+        sourceConfigs[i].assign(sc);
+    }
     //dirty |= DIRTY_SYNC_SOURCE;
 
     return true;
@@ -112,33 +116,44 @@ bool SyncManagerConfig::setSyncSourceConfig(SyncSourceConfig& sc) {
 bool SyncManagerConfig::addSyncSourceConfig(SyncSourceConfig& sc) {
 
     unsigned int i = 0;
-    SyncSourceConfig* s = NULL;
-
-    // copy array in a tmp buffer
+    SyncSourceConfig** tempArray = NULL;
+    tempArray = new SyncSourceConfig * [sourceConfigsCount + 1];
+    
+    //copy the old array in a new one looking for the MailSyncSourceConfig
     if (sourceConfigsCount>0) {
-        s = new SyncSourceConfig[sourceConfigsCount];
-        for (i=0; i<sourceConfigsCount; i++)
-            s[i].assign(sourceConfigs[i]);
+        for ( i = 0; i<sourceConfigsCount; i++){
+            if (strcmp ( sourceConfigs[i].getName(), "mail" ) == 0 ){
+                tempArray[i] = new MailSyncSourceConfig();
+                ((MailSyncSourceConfig*)tempArray[i])->assign(((MailSyncSourceConfig&)(sourceConfigs[i])));
+            }else{
+                tempArray[i] = new SyncSourceConfig();
+                tempArray[i]->assign(sourceConfigs[i]);
+            }
+        }
+    }
+    
+    //Add the new source
+    if (strcmp ( sc.getName(), "mail" ) == 0 ){
+        tempArray[i] = new MailSyncSourceConfig();
+        ((MailSyncSourceConfig*)tempArray[i])->assign(((MailSyncSourceConfig&)(sc)));
+    }else{
+        tempArray[i] = new SyncSourceConfig();
+        tempArray[i]->assign(sc);
     }
 
-    // delete old one, create new (+1 element)
     if (sourceConfigs) {
-        delete [] sourceConfigs;
+        for (i = 0 ; i < (sourceConfigsCount) ; i++){
+            if (&sourceConfigs[i]){
+                delete &sourceConfigs[i];
+                //(sourceConfigs[i]) = NULL;
+            } 
+        }
+        delete [] sourceConfigs; sourceConfigs = NULL;
     }
-    sourceConfigs = new SyncSourceConfig[sourceConfigsCount+1];
+    
+    ++sourceConfigsCount;
+    sourceConfigs = tempArray[0];
 
-    // copy back.
-    for (i=0; i<sourceConfigsCount; i++)
-        sourceConfigs[i].assign(s[i]);
-    // This is the new one.
-    sourceConfigs[sourceConfigsCount].assign(sc);
-    sourceConfigsCount ++;
-
-    if (s) {
-        delete [] s;
-    }
-
-    //dirty |= DIRTY_SYNC_SOURCE;
     return true;
 }
 
