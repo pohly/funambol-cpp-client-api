@@ -237,10 +237,11 @@ StringBuffer MailAccountManager::getIdOfFirstAccount() {
     StringBuffer id("");
 
     const ArrayList& accounts = config.getMailAccounts();
-    if (accounts.size() > 0) {
-        MailAccount* account = (MailAccount*)accounts[0];
-        if (account) {
+    for (int i=0; i<accounts.size(); i++) {
+        MailAccount* account = (MailAccount*)accounts[i];
+        if (account && (account->getDeleted() == false)) {
             id.convert(account->getID());
+            break;
         }
     }
     return id;
