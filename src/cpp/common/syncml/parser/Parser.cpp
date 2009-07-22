@@ -1544,12 +1544,17 @@ Item* Parser::getItem(const char*xml, const char* command) {
     XMLProcessor::copyElementContent(targetParent, xml, TARGET_PARENT, NULL);
     XMLProcessor::copyElementContent(sourceParent, xml, SOURCE_PARENT, NULL);
 
+    StringBuffer sourceParentLocURI, targetParentLocURI;
+    XMLProcessor::copyElementContent(sourceParentLocURI, sourceParent, LOC_URI, NULL);
+    XMLProcessor::copyElementContent(targetParentLocURI, targetParent, LOC_URI, NULL);
+
+
     if ((target)     ||
             (source) ||
             (meta)   ||
             (data))  {
         // ret = new Item(target, source, meta, data, moreData);
-        ret = new Item(target, source, targetParent.c_str(), sourceParent.c_str(),
+        ret = new Item(target, source, targetParentLocURI.c_str(), sourceParentLocURI.c_str(),
                        meta, data, moreData);
     }
 
