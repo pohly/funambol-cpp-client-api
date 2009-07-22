@@ -209,6 +209,23 @@ bool MailAccountManager::accountExists(const StringBuffer& accountID) {
 }
 
 
+StringBuffer MailAccountManager::getIdOfAccount(const int index) {
+
+    StringBuffer id("");
+    if (index < 0 || index >= getAccountNumber()) {
+        return id;
+    }
+
+    const ArrayList& accounts = config.getMailAccounts();
+    MailAccount* account = (MailAccount*)accounts[index];
+    if (account) {
+        id.convert(account->getID());
+    }
+
+    return id;
+}
+
+
 
 StringBuffer MailAccountManager::getIdOfAccount(const StringBuffer& accountName) {
 

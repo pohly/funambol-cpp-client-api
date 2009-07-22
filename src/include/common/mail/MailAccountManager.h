@@ -123,12 +123,23 @@ public:
 
 
     /**
+     * Returns the account ID from its index in the MailAccounts array.
+     * Scans the mail accounts in the config.
+     * @param index  the index [0 ; size-1]
+     * @return the id (b64 key) of the account, an empty string if index out of range
+     */
+    StringBuffer getIdOfAccount(const int index);
+
+    /**
      * Returns the account ID from its name.
      * Scans the mail accounts in the config.
      * @param accountName the account name to search
      * @return the id (b64 key) of the account, an empty string if account not found
      */
     StringBuffer getIdOfAccount(const StringBuffer& accountName);
+
+    /// Returns the number of existing email accounts.
+    int getAccountNumber();
 
 
     /**
@@ -202,9 +213,6 @@ protected:
      */
     virtual int deleteClientFolder(const WCHAR* folderID) = 0;
 
-
-    /// Returns the number of existing email accounts.
-    int getAccountNumber();
 
     /// To synchronize config settings and account settings.
     //virtual int refreshAccounts() = 0;
