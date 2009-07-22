@@ -692,7 +692,7 @@ int SyncManager::prepareSync(SyncSource** s) {
         for (int i=0; i < list->size(); i++) {
             AbstractCommand* cmd = (AbstractCommand*)list->get(i);
             ArrayList* responseCmd = NULL;
-            if (responseCmd = syncMLProcessor.processGetCommand(cmd, devInf)) {
+            if ( (responseCmd = syncMLProcessor.processGetCommand(cmd, devInf)) ) {
                 commands.add(responseCmd);
                 delete responseCmd;
             }
@@ -707,7 +707,7 @@ int SyncManager::prepareSync(SyncSource** s) {
         for (int i=0; i < list->size(); i++) {
             AbstractCommand* cmd = (AbstractCommand*)list->get(i);
             ArrayList* responseCmd = NULL;
-            if (responseCmd = syncMLProcessor.processPutCommand(cmd, config)) {
+            if ( (responseCmd = syncMLProcessor.processPutCommand(cmd, config)) ) {
                 commands.add(responseCmd);
                 delete responseCmd;
             }
