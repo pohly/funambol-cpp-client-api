@@ -929,6 +929,10 @@ bool SyncManager::checkForServerChanges(SyncML* syncml, ArrayList &statusList)
                         sources[count]->getConfig().getName(),
                         sources[count]->getSyncMode(), 0, SYNC_SOURCE_BEGIN);
 
+                fireSyncSourceEvent(sources[count]->getConfig().getURI(),
+                        sources[count]->getConfig().getName(),
+                        sources[count]->getSyncMode(), 0, SYNC_SOURCE_SERVER_BEGIN);
+
                 strcpy(prevSourceUri,  sources[count]->getConfig().getURI());
                 prevSyncMode = sources[count]->getSyncMode();
 
@@ -996,8 +1000,11 @@ bool SyncManager::checkForServerChanges(SyncML* syncml, ArrayList &statusList)
                 statusList.add(&previousStatus);
                 previousStatus.clear();
             }
-        // Fire SyncSourceEvent: END sync of a syncsource (server modifications)
-        //fireSyncSourceEvent(sources[count]->getConfig().getURI(), sources[count]->getConfig().getName(), sources[count]->getSyncMode(), 0, SYNC_SOURCE_END);
+            // Fire SyncSourceEvent: END sync of a syncsource (server modifications)
+            fireSyncSourceEvent(sources[count]->getConfig().getURI(), 
+                sources[count]->getConfig().getName(), 
+                sources[count]->getSyncMode(), 0, 
+                SYNC_SOURCE_SERVER_END);
             previousStatus.clear();
         }
         i++;
