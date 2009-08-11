@@ -228,9 +228,6 @@ protected:
      */
     StringBuffer getIdOfFirstAccount();
 
-
-private:
-
     /// Reference to config of MailSyncSource. Used to read and save email accounts settings.
     MailSyncSourceConfig& config;
 
