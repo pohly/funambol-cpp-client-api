@@ -204,8 +204,16 @@ BEGIN_NAMESPACE
 		/** 
 		 * mail account accessor
 		 */
-		const ArrayList& getMailAccounts() const { return mailAccounts; }
+        const ArrayList& getMailAccounts() const { return mailAccounts; }
 		void setMailAccounts(const ArrayList& ma) { mailAccounts = ma;}
+
+        /**
+         * Assign operator
+         */
+        MailSyncSourceConfig& operator = (const MailSyncSourceConfig& mssc) {
+            assign(mssc);
+            return *this;
+        }
 
         /**
          * Initialize this object with the given SyncSourceConfig
