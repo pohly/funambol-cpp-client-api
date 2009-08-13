@@ -57,6 +57,17 @@
 #define DOMAINNAME      "DomainName"
 #define ID              "ID"
 
+/**
+* Definition of constants to be used to retrieve the id of the folders/account
+*/
+#define ROLE_ACCOUNT    "account"
+#define ROLE_INBOX      "inbox"
+#define ROLE_OUTBOX     "outbox"
+#define ROLE_DRAFT      "draft"
+#define ROLE_SENT       "sent"
+#define ROLE_TRASH      "trash"
+#define ROLE_DELETED    "deleted"
+
 BEGIN_NAMESPACE
 
 class MailAccount : public FolderData {
