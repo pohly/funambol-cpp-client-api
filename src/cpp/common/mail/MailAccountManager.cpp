@@ -37,6 +37,7 @@
 #include "base/Log.h"
 #include "mail/MailAccountManager.h"
 #include "base/globalsdef.h"
+#include "client/MailSourceManagementNode.h"
 
 USE_NAMESPACE
 
@@ -240,7 +241,10 @@ StringBuffer MailAccountManager::getIdOfAccount(const StringBuffer& accountName)
         if (account) {
             if (accountName == account->getName()) {
                 // found
-                id.convert(account->getID());
+                const WCHAR* wid = account->getID();
+                const char* tid = toMultibyte(wid);
+                id = tid;
+                delete [] tid; tid = NULL;
                 break;
             }
         }

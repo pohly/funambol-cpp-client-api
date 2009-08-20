@@ -144,8 +144,15 @@ void MailSourceManagementNode::setMailAccounts(MailSyncSourceConfig& c){
 			sprintf(t, "%s", account->getDomainName());
 			mn->setPropertyValue(valname, t);
 
-			sprintf(valname, PROPERTY_MAIL_ACCOUNT_ID, name);
-			
+            sprintf(valname, PROPERTY_MAIL_ACCOUNT_TO_BE_CLEANED, name);
+            int toBeCleaned = 1;
+            if(account->getToBeCleaned()){
+                toBeCleaned = 0;
+            }
+            sprintf(t, "%d", toBeCleaned);
+            mn->setPropertyValue(valname, t);
+
+            sprintf(valname, PROPERTY_MAIL_ACCOUNT_ID, name);			
 			const WCHAR* accountIdw = account->getID();
 			const char *accountId = toMultibyte(accountIdw);
 			sprintf(t, "%s", accountId);
@@ -222,6 +229,12 @@ void MailSourceManagementNode::getMailAccounts(){
             sprintf(valname,PROPERTY_MAIL_ACCOUNT_ID,name);
             tmp = mn->readPropertyValue(valname);
 
+            sprintf(valname,PROPERTY_MAIL_ACCOUNT_TO_BE_CLEANED,name);
+            tmp = mn->readPropertyValue(valname);
+            if(strcmp(tmp,"0") == 0){
+                ma.setToBeCleaned();
+            }
+
             WCHAR* idW = toWideChar(tmp); safeDel(&tmp);
             ma.setID(idW);
             if (idW) { delete [] idW; }
@@ -288,6 +301,7 @@ MailSyncSourceConfig& MailSourceManagementNode::getMailSourceConfig(bool refresh
 void MailSourceManagementNode::setMailSourceConfig(MailSyncSourceConfig& c) {
     config.assign(c);
     char t[512];
+    setMailAccounts(c);
 
     setPropertyValue(PROPERTY_SOURCE_NAME,       (char* )c.getName());
     setPropertyValue(PROPERTY_SOURCE_URI,        (char* )c.getURI());
@@ -323,7 +337,7 @@ void MailSourceManagementNode::setMailSourceConfig(MailSyncSourceConfig& c) {
 
     setPropertyValue(PROPERTY_SOURCE_ENCRYPTION,       (char* )c.getEncryption());
 	
-	setMailAccounts(c);
+
 }
 
 
