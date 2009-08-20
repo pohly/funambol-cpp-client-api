@@ -155,7 +155,14 @@ public:
      * @param folder     [IN-OUT] the email folder to be filled with all settings
      */
     //int readFolder(FolderData& folder);    
-
+   
+    /**
+     * Returns the internal MailSyncSourceConfig.
+     *
+     * @return config, internal reference to the MailSyncSourceConfig
+     */
+    MailSyncSourceConfig& getMailSyncSourceConfig(){return config;}
+    void setMailSyncSourceConfig(MailSyncSourceConfig& mssc){config.assign(mssc);}
 protected:
     /**
      * Creates the email account on the Client.
@@ -230,6 +237,7 @@ protected:
 
     /// Reference to config of MailSyncSource. Used to read and save email accounts settings.
     MailSyncSourceConfig& config;
+
 
 };
 

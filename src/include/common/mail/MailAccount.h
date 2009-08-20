@@ -76,10 +76,11 @@ class MailAccount : public FolderData {
     // ------------------------------------------------------- Private data
     private:
         bool deleted;
+        bool toBeCleaned;
 
     public:
     // ------------------------------------------------------- Constructors
-        MailAccount() : deleted(false) {};
+        MailAccount() : deleted(false), toBeCleaned(false) {};
         ~MailAccount(){};
 
 
@@ -126,6 +127,9 @@ class MailAccount : public FolderData {
 
         bool getDeleted() const { return deleted; }
         void setDeleted() { deleted = true; }
+
+        bool getToBeCleaned() const { return toBeCleaned; }
+        void setToBeCleaned() { toBeCleaned = true; }
         // ----------------------------------------------------- Public Methods
 
 		ArrayElement* clone() { return new MailAccount(*this); }
