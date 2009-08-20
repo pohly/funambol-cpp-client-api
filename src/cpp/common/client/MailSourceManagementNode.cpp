@@ -226,15 +226,14 @@ void MailSourceManagementNode::getMailAccounts(){
             tmp = mn->readPropertyValue(valname);
             ma.setDomainName(tmp); safeDel(&tmp);
 
-            sprintf(valname,PROPERTY_MAIL_ACCOUNT_ID,name);
-            tmp = mn->readPropertyValue(valname);
-
             sprintf(valname,PROPERTY_MAIL_ACCOUNT_TO_BE_CLEANED,name);
             tmp = mn->readPropertyValue(valname);
             if(strcmp(tmp,"0") == 0){
                 ma.setToBeCleaned();
             }
 
+            sprintf(valname,PROPERTY_MAIL_ACCOUNT_ID,name);
+            tmp = mn->readPropertyValue(valname);
             WCHAR* idW = toWideChar(tmp); safeDel(&tmp);
             ma.setID(idW);
             if (idW) { delete [] idW; }
