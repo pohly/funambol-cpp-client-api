@@ -63,6 +63,7 @@ int MailAccountManager::createAccount(MailAccount& account) {
 		LOG.error("error saving account in configuration");
 		return 1;
 	}
+
     return ret;
 }
 
@@ -91,6 +92,16 @@ int MailAccountManager::deleteAccount(const WCHAR* accountID) {
         LOG.error("Error deleting email account, code %i", ret);
         return ret;
     }
+
+    // mark account to be deleted on client config 
+    ret = markDeleteAccountOnConfig(accountID);
+
+    return ret;
+}
+
+int MailAccountManager::markDeleteAccountOnConfig(const WCHAR* accountID)
+{
+    int ret = 0;
 
     // Remove account settings in config
     ArrayList mailAccounts = config.getMailAccounts();
@@ -213,7 +224,9 @@ bool MailAccountManager::accountExists(const StringBuffer& accountID) {
 StringBuffer MailAccountManager::getIdOfAccount(const int index) {
 
     StringBuffer id("");
+
     if (index < 0 || index >= getAccountNumber()) {
+        LOG.error("index %d out of range for account list", index);
         return id;
     }
 
@@ -231,11 +244,13 @@ StringBuffer MailAccountManager::getIdOfAccount(const int index) {
 StringBuffer MailAccountManager::getIdOfAccount(const StringBuffer& accountName) {
 
     StringBuffer id("");
+
     if (accountName.empty()) {
         return id;
     }
 
     const ArrayList& accounts = config.getMailAccounts();
+
     for (int i=0; i<accounts.size(); i++) {
         MailAccount* account = (MailAccount*)accounts[i];
         if (account) {
@@ -249,6 +264,7 @@ StringBuffer MailAccountManager::getIdOfAccount(const StringBuffer& accountName)
             }
         }
     }
+
     return id;
 }
 

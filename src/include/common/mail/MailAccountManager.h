@@ -92,6 +92,13 @@ public:
      */
     int deleteAccount(const WCHAR* accountID);
 
+    /**
+     * marks an account as deleted on config
+     * on first config save it will be cleared
+     * @param accountID the account id to be removed
+     * @return 0 if no errors, -1 if account not found
+     */
+    int markDeleteAccountOnConfig(const WCHAR* accountID);
 
     // ------------------------ Email folders management ------------------------
     /**
