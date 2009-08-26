@@ -137,6 +137,20 @@ int MailSyncSourceConfig::getSchedule() const {
     return schedule;
 }
 
+bool MailSyncSourceConfig::setToBeCleanedFlag(const char* accountName, bool tobecleaned){
+    int size = mailAccounts.size();
+
+    for (int i = 0; i < size ; i++){
+        MailAccount* ma =((MailAccount*)mailAccounts[i]);
+        StringBuffer val(ma->getName());
+        if ( strcmp(accountName, val.c_str()) == 0 ){
+            ma->setToBeCleaned(tobecleaned);
+            return true;
+        }
+    }
+    return false;
+}
+
 bool MailSyncSourceConfig::setDeletedMailAccount(const char* accountName){
     int size = mailAccounts.size();
 

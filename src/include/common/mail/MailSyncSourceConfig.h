@@ -198,8 +198,20 @@ BEGIN_NAMESPACE
         
 		/**
 		 * flags a mail account as deleted (it will be removed by DM)
+         *
+         * @param const char* accountName the name of the account to mark
+         * @return bool true if success
 		 */
 		bool setDeletedMailAccount(const char* accountName);
+
+   		/**
+		 * flags a mail account as to be cleaned
+         *
+         * @param const char* accountName the name of the account to mark
+         * @param bool tobecleaned
+         * @return bool true if success
+		 */
+        bool setToBeCleanedFlag(const char* accountName, bool tobecleaned);
 
 		/** 
 		 * mail account accessor

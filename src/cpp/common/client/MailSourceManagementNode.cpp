@@ -145,9 +145,9 @@ void MailSourceManagementNode::setMailAccounts(MailSyncSourceConfig& c){
 			mn->setPropertyValue(valname, t);
 
             sprintf(valname, PROPERTY_MAIL_ACCOUNT_TO_BE_CLEANED, name);
-            int toBeCleaned = 1;
+            int toBeCleaned = 0;
             if(account->getToBeCleaned()){
-                toBeCleaned = 0;
+                toBeCleaned = 1;
             }
             sprintf(t, "%d", toBeCleaned);
             mn->setPropertyValue(valname, t);
@@ -228,8 +228,8 @@ void MailSourceManagementNode::getMailAccounts(){
 
             sprintf(valname,PROPERTY_MAIL_ACCOUNT_TO_BE_CLEANED,name);
             tmp = mn->readPropertyValue(valname);
-            if(strcmp(tmp,"0") == 0){
-                ma.setToBeCleaned();
+            if(strcmp(tmp,"1") == 0){
+                ma.setToBeCleaned(true);
             }
 
             sprintf(valname,PROPERTY_MAIL_ACCOUNT_ID,name);

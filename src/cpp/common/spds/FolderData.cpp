@@ -96,6 +96,7 @@ FolderData::~FolderData()
     role.reset();
 }
 
+
 int FolderData::parse(const char *syncmlData, size_t len)
 {
     int ret = 0;

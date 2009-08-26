@@ -63,7 +63,6 @@ int MailAccountManager::createAccount(MailAccount& account) {
 		LOG.error("error saving account in configuration");
 		return 1;
 	}
-
     return ret;
 }
 
