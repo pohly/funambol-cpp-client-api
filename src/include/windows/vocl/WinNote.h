@@ -57,9 +57,6 @@ class WinNote : public WinItem {
 
 private:
 
-    /// Internal string formatted (VNOTE).
-    wstring vNote;
-
     /**
      * Checks the productID and version of VObject passed for vNote.
      * - 'productID' MUST be "VNOTE"
@@ -77,7 +74,7 @@ public:
     WinNote();
 
     /// Constructor: fills propertyMap parsing the passed vNote string
-    WinNote(const wstring dataString);
+    WinNote(const wstring & dataString);
 
     /// Destructor
     ~WinNote();
@@ -90,15 +87,15 @@ public:
      * @param dataString  input vNote string to be parsed
      * @return            0 if no errors
      */
-    virtual int parse(const wstring dataString);
+    virtual int parse(const wstring & dataString);
 
     /**
      * Format and return a vNote string from the propertyMap.
      * Not supported properties are ignored and so not formatted 
      * as they don't have a correspondence in propertyMap.
-     * @return  the vNote string formatted, reference to internal wstring
+     * @return  the vNote string formatted
      */
-    virtual wstring& toString();
+    virtual wstring toString();
 };
 
 

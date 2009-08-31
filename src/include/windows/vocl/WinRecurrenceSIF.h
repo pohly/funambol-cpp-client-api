@@ -56,9 +56,6 @@ class WinRecurrenceSIF : public WinRecurrence {
 
 private:
 
-    /// Internal string formatted (SIF rec pattern).
-    wstring sif;
-
     /// NULL terminated array of SIF fields names.
     const wchar_t** sifFields;
 
@@ -73,7 +70,7 @@ public:
      * @param dataString   input SIF string to parse
      * @param fields      the NULL terminated array of SIF fields
      */
-    WinRecurrenceSIF(const wstring dataString, const wchar_t **fields);
+    WinRecurrenceSIF(const wstring & dataString, const wchar_t **fields);
 
     /// Destructor
     ~WinRecurrenceSIF();
@@ -88,10 +85,10 @@ public:
      * @param dataString   input SIF string to parse
      * @return             0 if no errors
      */
-    int parse(const wstring dataString);
+    int parse(const wstring & dataString);
 
     /// Format and return a SIF rec pattern string from the propertyMap.
-    wstring& toString();
+    wstring toString();
 
 
     /**

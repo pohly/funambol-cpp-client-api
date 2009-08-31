@@ -56,6 +56,7 @@ typedef double DATE;
 
 void   doubleToStringTime(std::wstring& stringDate, const DATE doubleDate, bool onlyDate = false);
 void   stringTimeToDouble(const std::wstring& dataString, DATE* date);
+void   stringDurationToEndDouble(const std::wstring& dataString, DATE* start, DATE* end);
 
 bool   isAllDayFormat    (const std::wstring& dataString);
 bool   isAllDayInterval  (const DATE startdate, const DATE enddate);

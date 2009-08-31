@@ -43,13 +43,11 @@ using namespace std;
 
 // Constructor
 WinRecipient::WinRecipient() {
-    attendee = L"";
 }
 
 // Constructor: fills propertyMap parsing the ATTENDEE
-WinRecipient::WinRecipient(const wstring data) {
-    attendee = L"";
-    parse(data);
+WinRecipient::WinRecipient(const wstring & attendee) {
+    parse(attendee);
 }
 
 // Destructor
@@ -59,14 +57,140 @@ WinRecipient::~WinRecipient() {
 
 
 // Parse a ATTENDEE string and fills the propertyMap.
-int WinRecipient::parse(const wstring data) {
-    // TODO
+int WinRecipient::parse(const wstring & attendee) {
+    //"ATTENDEE;ROLE=ATTENDEE;STATUS=NEEDS ACTION: <email@example.com>"
+
+    wstring::size_type pos1 = attendee.find(L":", 0);
+    wstring value;
+    if (pos1 == wstring::npos)
+        value = attendee;
+    else
+        value = attendee.substr(pos1+1, attendee.length()-pos1-1);
+
+    wstring::size_type em1 = value.find_last_of(L"<", 0);
+    if (em1 == wstring::npos)
+    {
+        em1 = value.find(L"<", 0);
+    }
+    if (em1 != wstring::npos)
+    {
+        wstring::size_type em2 = value.find_last_of(L">", 0);
+        if (em2 == wstring::npos)
+        {
+            em2 = value.find(L">", 0);
+        }
+        if (em2 != wstring::npos)
+        {
+            setProperty(L"AttendeeEmail", value.substr(em1+1,em2-em1-1).c_str());
+        }
+        while (em1 > 0 && value[em1-1] == L' ')
+        {
+            em1--;
+        }
+        if (em1 > 0)
+        {
+            setProperty(L"AttendeeName", value.substr(0, em1));
+        }
+    }
+
+    wstring::size_type pos2 = attendee.find(L";", 0);
+    wstring::size_type pos3 = pos2;
+    wstring::size_type eq;
+    wstring param, pname, pvalue;
+    do 
+    {
+        pos2 = pos3+1;
+        pos3 = attendee.find(L";", pos2);
+        if (pos3 == wstring::npos)
+        {
+            param = attendee.substr(pos2, pos1-pos2);
+        }
+        else
+        {
+            param = attendee.substr(pos2, pos3-pos2);
+        }
+        eq = param.find(L"=", 0);
+        if (eq != wstring::npos)
+        {
+            pname = param.substr(0, eq);
+            pvalue = param.substr(eq+1);
+            if (pname.compare(L"ROLE") == 0)
+            {
+                setProperty(L"AttendeeRole", pvalue);
+            }
+
+            if (pname.compare(L"STATUS") == 0)
+            {
+                setProperty(L"AttendeeStatus", pvalue);
+            }
+        }
+    }
+    while (pos2 != wstring::npos && pos3 < pos1);
+
     return 0;
 }
 
 // Format and return a ATTENDEE string from the propertyMap.
-wstring& WinRecipient::toString() {
-    // TODO
-    return attendee;
+wstring WinRecipient::toString() {
+    return L"";
+}
+
+int WinRecipient::getNamedEmail(wstring & attendee)
+{
+    wstring el;
+    bool name = false;
+    if (getProperty(L"AttendeeName", el))
+    {
+        name = true;
+        attendee = el;
+    }
+
+    if (getProperty(L"AttendeeEmail", el))
+    {
+        if (name)
+            attendee.append(L" ");
+        attendee.append(L"(");
+        attendee.append(el);
+        attendee.append(L")");
+    }
+
+    return 0;
+}
+
+bool WinRecipient::toVProperty(VProperty * vp)
+{
+    if (!vp)
+        return false;
+    wstring str = L"";
+    wstring element = L"";
+    bool name = false;
+
+    if (getProperty(L"AttendeeName", element))
+    {
+        str.append(element);
+        name = true;
+    }
+
+    if (getProperty(L"AttendeeEmail", element))
+    {
+        if (name && str[str.size()-1] != L' ') {
+            str.append(L" ");
+        }
+        str.append(L"<").append(element).append(L">");
+    }
+
+    vp->addValue(str.c_str());
+
+    if (getProperty(L"AttendeeStatus", element))
+    {
+        vp->addParameter(L"STATUS", element.c_str());
+    }
+
+    if (getProperty(L"AttendeeRole", element))
+    {
+        vp->addParameter(L"ROLE", element.c_str());
+    }
+
+    return true;
 }
 

@@ -36,11 +36,11 @@
 #ifndef INCL_CONSTANTS_WIN
 #define INCL_CONSTANTS_WIN
 
+#include "vocl/AppDefs.h"
+
 /** @cond API */
 /** @addtogroup win_adapter */
 /** @{ */
-
-
 
 
 /**
@@ -86,6 +86,20 @@ enum WinRecurrenceType
     winRecursYearNth  = 6
 };
 
+enum WinMeetingResponse
+{
+    winMeetingTentative = 2,
+    winMeetingAccepted = 3,
+    winMeetingDeclined = 4
+};
+
+enum WinMeetingStatus
+{
+    winNonMeeting = 0,
+    winMeeting = 1,
+    winMeetingReceived = 3,
+    winMeetingCanceled = 5
+};
 
 /**
  * This is defined in MS Outlook libraries for note property "Color".
@@ -100,6 +114,13 @@ enum WinNoteColor
     NUM_NOTE_COLOR
 };
 
+enum WinBusyStatus
+{
+    winFree = 0,
+    winTentative = 1,
+    winBusy = 2,
+    winOutOfOffice = 3
+};
 
 
 /** @} */

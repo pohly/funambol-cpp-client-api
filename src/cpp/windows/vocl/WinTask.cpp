@@ -48,12 +48,10 @@ using namespace std;
 
 // Constructor
 WinTask::WinTask() {
-    vCalendar = L"";
 }
 
 // Constructor: fills propertyMap parsing the passed data
-WinTask::WinTask(const wstring dataString) {
-    vCalendar = L"";
+WinTask::WinTask(const wstring & dataString) {
     parse(dataString);
 }
 
@@ -65,8 +63,9 @@ WinTask::~WinTask() {
 
 
 // Format and return a vCalendar string from the propertyMap.
-wstring& WinTask::toString() {
+wstring WinTask::toString() {
 
+    wstring vCalendar;
     vCalendar = L"";
 
     //
@@ -309,7 +308,7 @@ wstring& WinTask::toString() {
 //
 // Parse a vCalendar string and fills the propertyMap.
 //
-int WinTask::parse(const wstring dataString) {
+int WinTask::parse(const wstring & dataString) {
 
     WCHAR* element = NULL;
     DATE startDate = NULL;

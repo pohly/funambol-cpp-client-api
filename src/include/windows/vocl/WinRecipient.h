@@ -41,6 +41,7 @@
 /** @{ */
 
 #include "vocl/WinItem.h"
+#include "vocl/VProperty.h"
 #include "base/globalsdef.h"
 
 BEGIN_NAMESPACE
@@ -55,25 +56,27 @@ class WinRecipient : public WinItem {
 
 private:
 
-    wstring attendee;
-
 public:
 
     /// Default Constructor
     WinRecipient();
 
     /// Constructor: fills propertyMap parsing the vCalendar ATTENDEE string
-    WinRecipient(const wstring data);
+    WinRecipient(const wstring & attendee);
 
     /// Destructor
     ~WinRecipient();
 
 
     /// Parse a vCalendar ATTENDEE string and fills the propertyMap.
-    int parse(const wstring data);
+    int parse(const wstring & attendee);
 
     /// Format and return a vCalendar ATTENDEE string from the propertyMap.
-    wstring& toString();
+    wstring toString();
+
+    int getNamedEmail(wstring & attendee);
+
+    bool toVProperty(VProperty * vp);
 };
 
 

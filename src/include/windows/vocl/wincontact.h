@@ -58,9 +58,6 @@ class WinContact : public WinItem {
 
 private:
 
-    /// Internal string formatted (VCARD).
-    wstring vCard;
-
     /**
      * Checks the productID and version of VObject passed for vCard.
      * - 'productID' MUST be "VCARD"
@@ -83,7 +80,7 @@ public:
     /// Default Constructor
     WinContact();
     /// Constructor: fills propertyMap parsing the passed vCard
-    WinContact(const wstring dataString);
+    WinContact(const wstring & dataString);
 
     /// Destructor
     virtual ~WinContact();
@@ -96,22 +93,22 @@ public:
      * @param dataString  input vCard string to be parsed
      * @return            0 if no errors
      */
-    virtual int parse(const wstring dataString);
+    virtual int parse(const wstring & dataString);
    
     /**
      * Format and return a vCard string from the propertyMap.
      * Not supported properties are ignored and so not formatted 
      * as they don't have a correspondence in propertyMap.
-     * @return  the vCard string formatted, reference to internal wstring
+     * @return  the vCard string formatted
      */
-    virtual wstring& toString();
+    virtual wstring toString();
 
 
     /// Returns the picture type ("JPEG", "GIF", ...)
     const wstring getPhotoType()          { return photoType; }
 
     /// Sets the picture type
-    void setPhotoType(const wstring type) { photoType = type; }
+    void setPhotoType(const wstring & type) { photoType = type; }
 
 
     /// Utility: returns "FileAs" property value.

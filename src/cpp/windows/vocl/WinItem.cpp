@@ -34,6 +34,8 @@
  */
 
 #include "vocl/WinItem.h"
+#include "vocl/AppDefs.h"
+#include <string.h>
 #include "base/globalsdef.h"
 
 USE_NAMESPACE
@@ -43,6 +45,7 @@ using namespace std;
 
 // Init static members.
 wstring WinItem::badString = L"<NULL>";
+bool (*WinItem::defaultValidateExtraProperty) (const std::wstring &) = NULL;
 
 unsigned long WinItem::crc32Table[256] =
 {
@@ -118,7 +121,7 @@ unsigned long WinItem::crc32Table[256] =
 
 
 // Constructor
-WinItem::WinItem() {}
+WinItem::WinItem() {validateExtraProperty = WinItem::defaultValidateExtraProperty;}
 
 // Destructor
 WinItem::~WinItem() {}
@@ -205,6 +208,7 @@ int WinItem::getPropertyMapSize() {
 
 void WinItem::resetPropertyMap() {
     propertyMap.clear();
+    extraPropertyMap.clear();
 }
 
 void WinItem::removeElement(wstring key) {
@@ -216,6 +220,12 @@ void WinItem::resetAllValues() {
 
     map<wstring,wstring>::iterator it = propertyMap.begin();
     while (it != propertyMap.end()) {
+        it->second = L"";
+        it ++;
+    }
+
+    it = extraPropertyMap.begin();
+    while (it != extraPropertyMap.end()) {
         it->second = L"";
         it ++;
     }
@@ -247,7 +257,6 @@ long WinItem::getCRC() {
     return crc32;
 }
 
-
 // Utility to safe-retrieve the property value inside VObject 'vo'.
 WCHAR* WinItem::getVObjectPropertyValue(VObject* vo, const WCHAR* propertyName) {
 
@@ -264,4 +273,78 @@ WCHAR* WinItem::getVObjectPropertyValue(VObject* vo, const WCHAR* propertyName) 
 wstring& WinItem::getName() {
     bool exists = false;
     return getPropertyRef(TEXT("Subject"), &exists);
+}
+
+// Sets a value into propertyMap.
+void WinItem::setExtraProperty(const wstring propertyName, const wstring propertyValue) {
+    extraPropertyMap[propertyName] = propertyValue;
+}
+
+vector<wstring> WinItem::getExtraPropertyNames()
+{
+    vector<wstring> result;
+    result.resize(extraPropertyMap.size());
+    map<wstring,wstring>::iterator it = extraPropertyMap.begin();
+    size_t index = 0;
+    while (it != extraPropertyMap.end()) {
+        result[index] = it->first;
+        index++;
+        it++;
+    }
+    return result;
+}
+
+
+// Gets a value from propertyMap.
+bool WinItem::getExtraProperty(const wstring propertyName, wstring& propertyValue){
+
+    map<wstring,wstring>::iterator it = extraPropertyMap.find(propertyName);
+    if (it != extraPropertyMap.end()) {
+        // Found
+        propertyValue = it->second;
+        return true;
+    }
+    else {
+        // Not found
+        propertyValue = L"";
+        return false;
+    }
+}
+
+
+void WinItem::addExtraProperties(VObject * vo)
+{
+    using namespace std;
+    VProperty * vp;
+    map<wstring,wstring>::iterator it = extraPropertyMap.begin();
+    for (; it != extraPropertyMap.end(); it++)
+    {
+        if (wcsncmp(L"X-", it->first.c_str(), 2) == 0)
+        {
+            vp = new VProperty(it->first.c_str());
+            vp->addValue(it->second.c_str());
+            vo->addProperty(vp);
+            delete vp; vp = NULL;
+        }
+    }
+}
+
+bool WinItem::validExtraProperty(const std::wstring & name)
+{
+    bool result = false;
+    if (validateExtraProperty) {
+        result = validateExtraProperty(name);
+    } else {
+        result = true;
+    }
+
+    return result;
+}
+
+void WinItem::setValidateFunction(bool (*validate)(const std::wstring &)) {
+    validateExtraProperty = validate;
+}
+
+void WinItem::setDefaultValidateFunction(bool (*def) (const std::wstring &)) {
+    defaultValidateExtraProperty = def;
 }

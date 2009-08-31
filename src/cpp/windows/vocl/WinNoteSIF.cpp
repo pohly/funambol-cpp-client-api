@@ -48,13 +48,11 @@ using namespace std;
 // Constructor
 WinNoteSIF::WinNoteSIF() {
     sifFields = NULL;
-    sif = L"";
 }
 
 // Constructor: fills propertyMap parsing the passed SIF string
 WinNoteSIF::WinNoteSIF(const wstring dataString, const wchar_t** fields) {
     
-    sif = L"";
     sifFields = fields;
     parse(dataString);
 }
@@ -63,8 +61,9 @@ WinNoteSIF::WinNoteSIF(const wstring dataString, const wchar_t** fields) {
 WinNoteSIF::~WinNoteSIF() {
 }
 
-wstring& WinNoteSIF::toString() {
+wstring WinNoteSIF::toString() {
     
+    wstring sif;
     wstring propertyValue;
     sif = L"<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";   
     sif += L"<note>\n";
@@ -90,7 +89,7 @@ wstring& WinNoteSIF::toString() {
 
 
 
-int WinNoteSIF::parse(const wstring data) {
+int WinNoteSIF::parse(const wstring & data) {
     
     if (!sifFields) {
         LOG.error("%s", ERR_SIFFIELDS_NULL);

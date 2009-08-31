@@ -48,13 +48,11 @@ using namespace std;
 // Constructor
 WinEventSIF::WinEventSIF() {
     sifFields = NULL;
-    sif = L"";
 }
 
 // Constructor: fills propertyMap parsing the passed SIF string
 WinEventSIF::WinEventSIF(const wstring dataString, const wchar_t** fields, const wchar_t** recFields) {
     
-    sif = L"";
     sifFields = fields;
     recPatternSIF.setSifFields(recFields);
 
@@ -67,8 +65,9 @@ WinEventSIF::~WinEventSIF() {
 
 
 
-wstring& WinEventSIF::toString() {
+wstring WinEventSIF::toString() {
     
+    wstring sif;
     wstring propertyValue;
     sif = L"<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";   
     sif += L"<appointment>\n";
@@ -149,7 +148,7 @@ wstring& WinEventSIF::toString() {
 
 
 
-int WinEventSIF::parse(const wstring data) {
+int WinEventSIF::parse(const wstring & data) {
     
     if (!sifFields) {
         LOG.error("%s", ERR_SIFFIELDS_NULL);

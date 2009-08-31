@@ -53,7 +53,7 @@ WinRecurrence::WinRecurrence() {
 }
 
 // Constructor: fills propertyMap parsing the passed RRULE
-WinRecurrence::WinRecurrence(const wstring dataString, const DATE date) {
+WinRecurrence::WinRecurrence(const wstring & dataString, const DATE date) {
     rrule = L"";
     startDate = date;
     useTimezone = false;
@@ -68,7 +68,7 @@ WinRecurrence::~WinRecurrence() {
 
 
 // Format and return a RRULE string from the propertyMap.
-wstring& WinRecurrence::toString() {
+wstring WinRecurrence::toString() {
 
     rrule = L"";
 
@@ -205,7 +205,7 @@ wstring& WinRecurrence::toString() {
 
 
 // Parse a RRULE string and fills the propertyMap.
-int WinRecurrence::parse(const wstring dataString) {
+int WinRecurrence::parse(const wstring & dataString) {
 
     int ret = 0;
     WCHAR* str = wstrdup(dataString.c_str());
@@ -376,7 +376,21 @@ int WinRecurrence::parse(const wstring dataString) {
                 weekOfMonth = _wtoi(sWeek);
                 if(token[1] == TEXT('-')) {
                     // it's the # of weeks to the end of month...
+                    /*
+                    // This is not correct for things like last Friday,
+                    // when the last friday is in the last week.  5 is a
+                    // valid  value for 'last', so we'll only subtract
+                    // if it's not last
                     weekOfMonth = 5 - weekOfMonth;
+                    */
+                    if (token[0] == TEXT('1'))
+                    {
+                        weekOfMonth = 5;
+                    }
+                    else
+                    {
+                        weekOfMonth = 5 - weekOfMonth;
+                    }
                 }
                 if(weekOfMonth > 5 || weekOfMonth < 1) {
                     goto error;

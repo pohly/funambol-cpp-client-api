@@ -48,12 +48,10 @@ using namespace std;
 // Constructor
 WinContactSIF::WinContactSIF() {
     sifFields = NULL;
-    sif = L"";
 }
 
 // Constructor: fills propertyMap parsing the passed SIF string
-WinContactSIF::WinContactSIF(const wstring dataString, const wchar_t **fields) {
-    sif = L"";
+WinContactSIF::WinContactSIF(const wstring & dataString, const wchar_t **fields) {
     sifFields = fields;
     parse(dataString);
 }
@@ -62,9 +60,10 @@ WinContactSIF::WinContactSIF(const wstring dataString, const wchar_t **fields) {
 WinContactSIF::~WinContactSIF() {
 }
 
-wstring& WinContactSIF::toString() {
+wstring WinContactSIF::toString() {
     
-    wstring propertyValue, propertyKey;
+    wstring sif;
+    wstring propertyValue;
     sif = L"<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";   
     sif += L"<contact>\n";
 
@@ -77,7 +76,7 @@ wstring& WinContactSIF::toString() {
         propertyValue = it->second;      
         propertyValue = adaptToSIFSpecs(it->first, propertyValue);
         if ((it->first) == L"Photo") {
-            addPhotoToSIF(propertyValue);       // To manage the TYPE attribute
+            addPhotoToSIF(sif, propertyValue);       // To manage the TYPE attribute
         }
         else {
             addPropertyToSIF(sif, it->first, propertyValue);
@@ -91,7 +90,7 @@ wstring& WinContactSIF::toString() {
 
 
 
-void WinContactSIF::addPhotoToSIF(wstring propertyValue) {
+void WinContactSIF::addPhotoToSIF(wstring& sif, wstring propertyValue) {
 
     if (photoType.length() == 0) {
         // Type not specified
@@ -137,7 +136,7 @@ wstring WinContactSIF::adaptToSIFSpecs(const wstring& propName, const wstring& p
 
 }
 
-int WinContactSIF::parse(const wstring data) {
+int WinContactSIF::parse(const wstring & data) {
 
     if (!sifFields) {
         LOG.error("%s", ERR_SIFFIELDS_NULL);

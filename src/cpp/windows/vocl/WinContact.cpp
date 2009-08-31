@@ -45,13 +45,11 @@ using namespace std;
 
 // Constructor
 WinContact::WinContact() {
-    vCard     = L"";
     photoType = L"";
 }
 
 // Constructor: fills propertyMap parsing the passed vCard string
-WinContact::WinContact(const wstring dataString) {
-    vCard     = L"";
+WinContact::WinContact(const wstring & dataString) {
     photoType = L"";
     parse(dataString);
 }
@@ -64,8 +62,9 @@ WinContact::~WinContact() {
 //
 // Format and return a vCard string from the propertyMap.
 //
-wstring& WinContact::toString() {
+wstring WinContact::toString() {
 
+    wstring vCard;
     vCard = L"";
 
     //
@@ -493,7 +492,6 @@ wstring& WinContact::toString() {
         vo->addProperty(vp);
         delete vp; vp = NULL;
     }
-
     if (getProperty(L"Language", element)) {
         vp = new VProperty(L"X-FUNAMBOL-LANGUAGES", element.c_str());
         vo->addProperty(vp);
@@ -552,6 +550,7 @@ wstring& WinContact::toString() {
         delete vp; vp = NULL;
     }
 
+    addExtraProperties(vo);
 
     vp = new VProperty(L"END", L"VCARD");
     vo->addProperty(vp);
@@ -576,7 +575,7 @@ wstring& WinContact::toString() {
 //
 // Parse a vCard string and fills the propertyMap.
 //
-int WinContact::parse(const wstring dataString) {
+int WinContact::parse(const wstring & dataString) {
 
 	int businessTel  = 0;
 	int homeTel		 = 0;
@@ -884,9 +883,11 @@ int WinContact::parse(const wstring dataString) {
         else if(!wcscmp(name, L"X-FUNAMBOL-YOMILASTNAME")) {
             setProperty(L"YomiLastName", element);
         }
-
         else {
-            // Property not supported: log a warning?
+            if (validExtraProperty(name))
+            {
+                setExtraProperty(name,element);
+            }
         }
 
     }

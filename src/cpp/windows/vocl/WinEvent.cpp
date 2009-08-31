@@ -48,7 +48,6 @@ using namespace std;
 
 // Constructor
 WinEvent::WinEvent() {
-    vCalendar = L"";
     excludeDate.clear();
     includeDate.clear();
     recipients.clear();
@@ -56,8 +55,7 @@ WinEvent::WinEvent() {
 }
 
 // Constructor: fills propertyMap parsing the passed data
-WinEvent::WinEvent(const wstring dataString) {
-    vCalendar = L"";
+WinEvent::WinEvent(const wstring & dataString) {
     excludeDate.clear();
     includeDate.clear();
     recipients.clear();
@@ -74,8 +72,9 @@ WinEvent::~WinEvent() {
 
 
 // Format and return a vCalendar string from the propertyMap.
-wstring& WinEvent::toString() {
+wstring WinEvent::toString() {
 
+    wstring vCalendar;
     vCalendar = L"";
 
     //
@@ -87,6 +86,7 @@ wstring& WinEvent::toString() {
     DATE startdate = NULL;
     wstring element;
 
+    bool isAllDay = false; // Used later
 
     bool isRecurring = false;
     if (getProperty(L"IsRecurring", element)) {
@@ -123,6 +123,7 @@ wstring& WinEvent::toString() {
     }
 
     if (getProperty(L"AllDayEvent", element)) {
+        isAllDay = element.compare(L"0") != 0;
         vp = new VProperty(TEXT("X-FUNAMBOL-ALLDAY"), element.c_str());
         vo->addProperty(vp);
         delete vp; vp = NULL;
@@ -166,6 +167,24 @@ wstring& WinEvent::toString() {
         delete vp; vp = NULL;
     }
     if (getProperty(L"MeetingStatus", element)) {
+        // Process status element
+        long status = _wtoi(element.c_str());
+        switch (status)
+        {//'CONFIRMED' 'TENTATIVE' 'DECLINED' 'CANCELLED' 'NEEDS ACTION'
+        case winNonMeeting:
+                element = L"TENTATIVE";
+            break;
+        default:
+        case winMeeting:
+                element = L"NEEDS ACTION";
+            break;
+        case winMeetingReceived:
+                element = L"TENTATIVE";
+            break;
+        case winMeetingCanceled:
+                element = L"CANCELLED";
+            break;
+        }
         vp = new VProperty(TEXT("STATUS"), element.c_str());
         vo->addProperty(vp);
         delete vp; vp = NULL;
@@ -199,6 +218,8 @@ wstring& WinEvent::toString() {
     //
     // ReminderSet
     //
+#ifdef USE_AALARM
+#if USE_AALARM 
     if (getProperty(L"ReminderSet", element)) {
         bool bReminder = (element != TEXT("0"));
 
@@ -231,6 +252,48 @@ wstring& WinEvent::toString() {
             delete vp; vp = NULL;
         }
     }
+#endif
+#endif
+
+#ifdef USE_DALARM
+#if USE_DALARM
+    if (getProperty(L"ReminderSet", element)) {
+        BOOL bReminder = _wtoi(element.c_str());
+
+        if(bReminder == TRUE) {
+
+            long minBefore;
+            if (getProperty(L"ReminderMinutesBeforeStart", element)) {
+                minBefore = _wtoi(element.c_str());
+                double minStartDate = startdate * 1440;
+                //subtract the alarm
+                minStartDate -= minBefore;
+                wstring runtime;
+                doubleToStringTime(runtime, minStartDate/1440);
+                if (isAllDay)
+                {
+                    // Dont sent in UTC - doesn't make any sense
+                    runtime = runtime.substr(0,runtime.length()-1);
+                }
+
+                vp = new VProperty(L"DALARM");
+                vp->addValue(runtime.c_str());                      // "RunTime"
+                vp->addValue(L"");                                  // "Snooze Time" (empty)
+                vp->addValue(L"");                                  // "Repeat Count" (0)
+                vp->addValue(L"");                                  // "Message" (empty)
+
+                vo->addProperty(vp);
+                delete vp; vp = NULL;
+            }
+        }
+        else {
+            vp = new VProperty(L"DALARM");
+            vo->addProperty(vp);
+            delete vp; vp = NULL;
+        }
+    }
+#endif
+#endif
 
 
     if (isRecurring) {
@@ -271,14 +334,6 @@ wstring& WinEvent::toString() {
         vo->addProperty(vp);
         delete vp; vp = NULL;
     }
-
-
-
-    //
-    // TODO: format ATTENDEES
-    //
-
-
     //
     // ---- Other Funambol defined properties ----
     // Support for other fields that don't have a
@@ -309,6 +364,20 @@ wstring& WinEvent::toString() {
         delete vp; vp = NULL;
     }
 
+
+    int offset = 0;
+    list<WinRecipient>::iterator it = recipients.begin();
+    for (; it != recipients.end(); it++)
+    {
+        vp = new VProperty(TEXT("ATTENDEE"));
+        if (it->toVProperty(vp))
+        {
+            vo->addProperty(vp);
+        }
+        delete vp; vp = NULL;
+    }
+
+    addExtraProperties(vo);
 
     vp = new VProperty(TEXT("END"), TEXT("VEVENT"));
     vo->addProperty(vp);
@@ -414,9 +483,12 @@ void WinEvent::addTimezone(VObject* vo) {
 //
 // Parse a vCalendar string and fills the propertyMap.
 //
-int WinEvent::parse(const wstring dataString) {
+
+// This function was re-written for speed
+int WinEvent::parse(const wstring & dataString) {
 
     WCHAR* element = NULL;
+    WCHAR* name = NULL;
     DATE startDate = NULL;
     DATE endDate   = NULL;
     wstring startDateValue, endDateValue;
@@ -437,26 +509,11 @@ int WinEvent::parse(const wstring dataString) {
         return 1;
     }
 
+    // Defaults
+    setProperty(L"ReminderSet", L"0");
+    setProperty(L"IsRecurring", L"0");
 
-    //
-    // Conversion: vObject -> WinEvent.
-    // --------------------------------
-    // Note: properties found are added to the propertyMap, so that the 
-    //       map will contain only parsed properties after this process.
-    //
-    if(element = getVObjectPropertyValue(vo, L"SUMMARY")) {
-        setProperty(L"Subject", element);
-    }
-    if(element = getVObjectPropertyValue(vo, L"LOCATION")) {
-        setProperty(L"Location", element);
-    }
-    if(element = getVObjectPropertyValue(vo, L"DESCRIPTION")) {
-        setProperty(L"Body", element);
-    }
-    if(element = getVObjectPropertyValue(vo, L"X-FUNAMBOL-FOLDER")) {
-        setProperty(L"Folder", element);
-    }
-
+    // Must process some things early
     //
     // DTSTART, DTEND:
     // Set the start and end date. If the start is 00:00 and end is 23:59 the appointment is decided to be
@@ -471,14 +528,15 @@ int WinEvent::parse(const wstring dataString) {
         stringTimeToDouble(element, &endDate);
     }
 
+    // ALL-DAY EVENT
+    bool isAllDay = false;
     if (startDate && endDate) {
-        // ALL-DAY EVENT
-        bool isAllDay = false;
         if(element = getVObjectPropertyValue(vo, L"X-FUNAMBOL-ALLDAY")){
             isAllDay = wcscmp(element, L"1")?  false : true;
         }
         if (!isAllDay) {
             // All-day check #2: interval [00:00 - 23:59]
+            // or [00:00 - 24:00]
             isAllDay = isAllDayInterval(startDate, endDate);
         }
         if (!isAllDay) {
@@ -510,149 +568,242 @@ int WinEvent::parse(const wstring dataString) {
         setProperty(L"AllDayEvent", isAllDay? L"1" : L"0");
     }
 
+    //
+    // Conversion: vObject -> WinEvent.
+    // --------------------------------
+    // Note: properties found are added to the propertyMap, so that the
+    //       map will contain only parsed properties after this process.
+    //
+    for(int i=0; i < vo->propertiesCount(); i++)
+    {
+        VProperty* vp = vo->getProperty(i);
+        name    = vp->getName();
+        element = vp->getValue(0);      // the first value of the property.
 
-    if(element = getVObjectPropertyValue(vo, L"X-MICROSOFT-CDO-BUSYSTATUS")) {
-        wstring value(TEXT("0")); // FREE  
-        wstring elementw(element);              
-        if (elementw == TEXT("BUSY") || elementw == TEXT("2")) {
-            value = TEXT("2");
-        } else if (elementw == TEXT("TENTATIVE") || elementw == TEXT("1")) {
-            value = TEXT("1");
-        } else if (elementw == TEXT("OOF") || elementw == TEXT("3")) { // Out of office
-            value = TEXT("3");
-        }                     
-        setProperty(TEXT("BusyStatus"), value);
-    }
-    if(element = getVObjectPropertyValue(vo, L"CATEGORIES")) {
-        setProperty(L"Categories", element);
-    }
-    if (element = getVObjectPropertyValue(vo, L"CLASS")) {
-        WCHAR tmp[10];
-        if (!wcscmp(element, TEXT("CONFIDENTIAL")) ) {
-            wsprintf(tmp, TEXT("%i"), winConfidential);     // Confidential = 3
+		if(!wcscmp(name, L"SUMMARY")) {
+			setProperty(L"Subject", element);
         }
-        else if (!wcscmp(element, TEXT("PRIVATE")) ) {
-            wsprintf(tmp, TEXT("%i"), winPrivate);          // Private = 2
+        else if(!wcscmp(name, L"LOCATION")) {
+            setProperty(L"Location", element);
         }
-        else {
-            wsprintf(tmp, TEXT("%i"), winNormal);           // Normal = 0
+        else if(!wcscmp(name, L"DESCRIPTION")) {
+            setProperty(L"Body", element);
         }
-        setProperty(L"Sensitivity", tmp);
-    }
-    if(element = getVObjectPropertyValue(vo, L"PRIORITY")) {
-        setProperty(L"Importance", element);
-    }
-    if(element = getVObjectPropertyValue(vo, L"STATUS")) {
-        setProperty(L"MeetingStatus", element);
-    }
-    if(element = getVObjectPropertyValue(vo, L"X-MICROSOFT-CDO-REPLYTIME")) {
-        setProperty(L"ReplyTime", element);
-    }
-
-
-    // AALARM
-    // The value consists of: RunTime, SnoozeTime, RepeatCount, AudioContent
-    if(element = getVObjectPropertyValue(vo, L"AALARM")) {
-        WCHAR tmp[10];
-        WCHAR* runTimeValue = vo->getProperty(TEXT("AALARM"))->getPropComponent(1);
-        if (wcslen(runTimeValue) > 0) {
-            setProperty(L"ReminderSet", L"1");
-            DATE runTime = 0;
-            stringTimeToDouble(runTimeValue, &runTime);
-
-            long minBeforeEvent = round((startDate - runTime) * 1440);
-            // Safety check: values < 0 not accepted.
-            if (minBeforeEvent < 0) {
-                minBeforeEvent = 0;
-            }
-            wsprintf(tmp, TEXT("%i"), minBeforeEvent);
-            setProperty(L"ReminderMinutesBeforeStart", tmp);
-
-            // Reminder sound file path
-            WCHAR* filePath = vo->getProperty(TEXT("AALARM"))->getPropComponent(4);
-            if (filePath && wcslen(filePath)>0) {
-                setProperty(L"ReminderSoundFile", filePath);
+        else if(!wcscmp(name, L"X-FUNAMBOL-FOLDER")) {
+            setProperty(L"Folder", element);
+        }
+        else if(!wcscmp(name, L"X-MICROSOFT-CDO-BUSYSTATUS")) {
+            setProperty(L"BusyStatus", element);
+        }
+        else if(!wcscmp(name, L"CATEGORIES")) {
+            setProperty(L"Categories", element);
+        }
+        else if(!wcscmp(name, L"CLASS")) {
+            WCHAR tmp[10];
+            if( !wcscmp(element, TEXT("PRIVATE"     )) ||
+                !wcscmp(element, TEXT("CONFIDENTIAL")) ) {
+                wsprintf(tmp, TEXT("%i"), winPrivate);          // Private = 2
             }
             else {
+                wsprintf(tmp, TEXT("%i"), winNormal);           // Normal = 0
+            }
+            setProperty(L"Sensitivity", tmp);
+        }
+        else if(!wcscmp(name, L"PRIORITY")) {
+            setProperty(L"Importance", element);
+        }
+        else if(!wcscmp(name, L"STATUS")) {
+            /*
+            setProperty(L"MeetingStatus", element);
+            */
+
+            int meetingstatus = 0;
+	        int responsestatus = 0;
+            WCHAR tempbuf[3];
+		    if (!wcscmp(element, L"TENTATIVE"))
+		    {
+                responsestatus = winMeetingTentative;
+		    }
+		    else if (!wcscmp(element, L"CONFIRMED"))
+		    {
+			    responsestatus = winMeetingAccepted;
+			    meetingstatus = winMeetingReceived;
+		    }
+		    else if (!wcscmp(element, L"DECLINED"))
+		    {
+			    responsestatus = winMeetingDeclined;
+		    }
+		    else if (!wcscmp(element, L"CANCELLED"))
+		    {
+			    meetingstatus = winMeetingCanceled;
+		    }
+            else if (!wcscmp(element, L"NEEDS ACTION") || !wcscmp(element, L"NEEDS-ACTION"))
+		    {
+                meetingstatus = winMeeting;
+            }
+
+		    wsprintf(tempbuf, L"%i", meetingstatus);
+		    setProperty(L"MeetingStatus", tempbuf);
+		    wsprintf(tempbuf, L"%i", responsestatus);
+		    setProperty(L"ResponseStatus", tempbuf);
+
+        }
+        else if(!wcscmp(name, L"X-MICROSOFT-CDO-REPLYTIME")) {
+            setProperty(L"ReplyTime", element);
+        }
+
+#ifdef USE_AALARM
+#if USE_AALARM 
+        // AALARM
+        // The value consists of: RunTime, SnoozeTime, RepeatCount, AudioContent
+        else if(!wcscmp(name, L"AALARM")) {
+            WCHAR tmp[10];
+            WCHAR* runTimeValue = vo->getProperty(TEXT("AALARM"))->getPropComponent(1);
+            if (wcslen(runTimeValue) > 0) {
+                setProperty(L"ReminderSet", L"1");
+                DATE runTime = 0;
+                stringTimeToDouble(runTimeValue, &runTime);
+
+                long minBeforeEvent = round((startDate - runTime) * 1440);
+                // Safety check: values < 0 not accepted.
+                if (minBeforeEvent < 0) {
+                    minBeforeEvent = 0;
+                }
+                wsprintf(tmp, TEXT("%i"), minBeforeEvent);
+                setProperty(L"ReminderMinutesBeforeStart", tmp);
+
+                // Reminder sound file path
+                WCHAR* filePath = vo->getProperty(TEXT("AALARM"))->getPropComponent(4);
+                if (filePath && wcslen(filePath)>0) {
+                    setProperty(L"ReminderSoundFile", filePath);
+                }
+                else {
+                    setProperty(L"ReminderSoundFile", L"");
+                }
                 setProperty(L"ReminderSoundFile", L"");
+            }
+            else {
+                // RunTime not found -> no reminder
+                setProperty(L"ReminderSet", L"0");
             }
         }
         else {
-            // RunTime not found -> no reminder
+            // AALARM not found -> reset reminder!
+            // Note: this is done for compatibility with most devices: if alarm not set
+            //       AALARM property is not sent.
             setProperty(L"ReminderSet", L"0");
         }
-    }
-    else {
-        // AALARM not found -> reset reminder!
-        // Note: this is done for compatibility with most devices: if alarm not set
-        //       AALARM property is not sent.
-        setProperty(L"ReminderSet", L"0");
-    }
+#endif
+#endif
 
+#ifdef USE_DALARM
+#if USE_DALARM 
+        // DALARM
+        // The value consists of: RunTime, SnoozeTime, RepeatCount, Message
+        else if(!wcscmp(name, L"DALARM")) {
+            WCHAR tmp[10];
+            WCHAR* runTimeValue = vo->getProperty(TEXT("DALARM"))->getPropComponent(1);
+            if (wcslen(runTimeValue) > 0) {
+                setProperty(L"ReminderSet", L"1");
+                /*
+                DATE runTime = 0;
+                stringTimeToDouble(runTimeValue, &runTime);
 
-    if ( (element = getVObjectPropertyValue(vo, L"RRULE")) && 
-         (wcslen(element) > 0) ) {
-        setProperty(L"IsRecurring", L"1");
+                long minBeforeEvent = round((startDate - runTime) * 1440);
+                // Safety check: values < 0 not accepted.
+                // Do not do check, this will be changed later
+                if (minBeforeEvent < 0 || isAllDay) {
+                    minBeforeEvent = 0;
+                    setProperty(L"ReminderTime", runTimeValue);
+                }
+                wsprintf(tmp, TEXT("%i"), minBeforeEvent);
+                setProperty(L"ReminderMinutesBeforeStart", tmp);
+                */
 
-        // RRULE -> Recurrence pattern
-        // Fill recPattern propertyMap.
-        recPattern.setStartDate(startDate);
-        recPattern.parse(element);
+                DATE runTime = 0;
+                stringTimeToDouble(runTimeValue, &runTime);
 
-        // EXDATE -> fill excludeDate list
-        VProperty* vprop = vo->getProperty(L"EXDATE");
-        if(vprop) {
-            for (int i=0; element = vprop->getValue(i); i++) {
+                long minBeforeEvent = round((startDate - runTime) * 1440);
+                // Safety check: values < 0 not accepted.
+                if (minBeforeEvent < 0) {
+                    minBeforeEvent = 0;
+                }
+                wsprintf(tmp, TEXT("%i"), minBeforeEvent);
+                setProperty(L"ReminderMinutesBeforeStart", tmp);
+
+                // Reminder sound file path
+                //setProperty(L"ReminderSoundFile", L"");
+            }
+        }
+#endif
+#endif
+
+        else if(!wcscmp(name, L"RRULE")) {
+            setProperty(L"IsRecurring", L"1");
+
+            // RRULE -> Recurrence pattern
+            // Fill recPattern propertyMap.
+            recPattern = WinRecurrence(element, startDate);
+        }
+        else if (!wcscmp(name, L"EXDATE"))
+        {
+            VProperty tempprop(L"EXDATE", element);
+            for (int i=0; element = tempprop.getValue(i); i++) {
                 if (wcslen(element) > 0) {
                     excludeDate.push_back(element);
                 }
             }
         }
-        // RDATE -> fill includeDate list
-        vprop = vo->getProperty(L"RDATE");
-        if(vprop) {
-            for (int i=0; element = vprop->getValue(i); i++) {
+        else if (!wcscmp(name, L"RDATE"))
+        {
+            VProperty tempprop(L"RDATE", element);
+            for (int i=0; element = tempprop.getValue(i); i++) {
                 if (wcslen(element) > 0) {
-                    includeDate.push_back(element);
+                    excludeDate.push_back(element);
                 }
             }
         }
+        else if (!wcscmp(name, L"ATTENDEE")) {
+            recipients.push_back(WinRecipient(element));
+        }
 
-        // TIMEZONE
-        bool tzFound = parseTimezone(vo);
-        useTimezone = tzFound;
-        getRecPattern()->setUseTimezone(tzFound);
+        //
+        // ---- Other Funambol defined properties ----
+        // Support for other fields that don't have a
+        // specific correspondence in vCalendar.
+        else if(!wcscmp(name, L"X-FUNAMBOL-COMPANIES")) {
+            setProperty(L"Companies", element);
+        }
+        else if(!wcscmp(name, L"X-FUNAMBOL-AALARMOPTIONS")) {
+            setProperty(L"ReminderOptions", element);
+        }
+        else if(!wcscmp(name, L"X-FUNAMBOL-NOAGING")) {
+            setProperty(L"NoAging", element);
+        }
+        else if(!wcscmp(name, L"X-FUNAMBOL-MILEAGE")) {
+            setProperty(L"Mileage", element);
+        }
+        else if(!wcscmp(name, L"X-FUNAMBOL-BILLINGINFO")) {
+            setProperty(L"Mileage", element);
+        }
+        else if(!wcscmp(name, L"X-FUNAMBOL-COMPANIES")) {
+            setProperty(L"Mileage", element);
+        }
+        else if(!wcscmp(name, L"X-FUNAMBOL-MILEAGE")) {
+            setProperty(L"Mileage", element);
+        }
+        else if(!wcscmp(name, L"X-FUNAMBOL-NOAGING")) {
+            setProperty(L"Mileage", element);
+        }
+        else if(!wcscmp(name, L"X-FUNAMBOL-AALARMOPTIONS")) {
+            setProperty(L"Mileage", element);
+        }
+        else if (validExtraProperty(name))
+	    {
+		    setExtraProperty(name,element);
+        }
+    }
 
-    }
-    else {
-        // Not recurring.
-        setProperty(L"IsRecurring", L"0");
-    }
-
-    //
-    // TODO: parse ATTENDEES and fill recipients list
-    //
-
-    //
-    // ---- Other Funambol defined properties ----
-    // Support for other fields that don't have a
-    // specific correspondence in vCalendar.
-    if (element = getVObjectPropertyValue(vo, L"X-FUNAMBOL-BILLINGINFO")) {
-        setProperty(TEXT("BillingInformation"), element);
-    }
-    if(element = getVObjectPropertyValue(vo, L"X-FUNAMBOL-COMPANIES")) {
-        setProperty(L"Companies", element);
-    }
-    if(element = getVObjectPropertyValue(vo, L"X-FUNAMBOL-MILEAGE")) {
-        setProperty(L"Mileage", element);
-    }
-    if(element = getVObjectPropertyValue(vo, L"X-FUNAMBOL-NOAGING")) {
-        setProperty(L"NoAging", element);
-    }
-    if(element = getVObjectPropertyValue(vo, L"X-FUNAMBOL-AALARMOPTIONS")) {
-        setProperty(L"ReminderOptions", element);
-    }
-    
     if (vo) { delete vo; vo = NULL; }
 
     return 0;

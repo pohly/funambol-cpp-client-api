@@ -123,6 +123,135 @@ void stringTimeToDouble(const wstring& dataString, DATE* date) {
 }
 
 
+/**
+ * Calculate end time based on duration and start time
+ *
+ * @param dataString : the input string in System time format
+ * @param start      : the start date in VariantTime format
+ * @param end        : [OUT] the returned value into VariantTime format
+ */
+void stringDurationToEndDouble(const wstring& dataString, DATE* start, DATE* end) {
+
+    WCHAR inputTime[20];
+    SYSTEMTIME t;
+
+    int   temptime;
+
+    if (start == NULL)
+    {
+        // ERROR
+        end = NULL;
+        return;
+    }
+
+    wsprintf(inputTime, dataString.c_str());
+
+    WCHAR * ptr;
+    WCHAR * last;
+
+    ptr = &inputTime[0];
+
+    bool pos = true;
+    bool save = false;
+    bool aftertime = false;
+    if (*ptr == L'+')
+    {
+        pos = true;
+        ptr++;
+    }
+    else if (*ptr == L'-')
+    {
+        pos = false;
+        ptr++;
+    }
+    
+    if (*ptr == L'P')
+    {
+        ptr++;
+    }
+
+    last = ptr;
+
+    WCHAR * scan = new WCHAR[10];
+    int length;
+
+    const __int64 nSecInWeek=(__int64)10000000*60*60*24*7;
+    const __int64 nSecInDay=(__int64)10000000*60*60*24;
+    const __int64 nSecInHour=(__int64)10000000*60*60;
+    const __int64 nSecInMin=(__int64)10000000*60;
+    const __int64 nSecInSec=(__int64)10000000; 
+
+    FILETIME ft;
+    VariantTimeToSystemTime(*start, &t);
+    SystemTimeToFileTime(&t, &ft);
+    __int64 * realtime = (__int64*)&ft;
+
+    while (*ptr != L'\0')
+    {
+        if (*ptr >= L'0' && *ptr <= L'9')
+        {
+            // Dont save yet
+            save = false;
+        }
+        else
+        {
+            if (*ptr == L'T')
+            {
+                // Time delimiter, dont save
+                save = false;
+                aftertime = true;
+            }
+            else
+            {
+                // Save it!
+                save = true;
+            }
+        }
+
+        if (save)
+        {
+            //swprintf(scan, L"%%");
+            length = (int)(ptr - last)-1;
+            swprintf(scan, L"%%%dd", length);
+            
+            swscanf(last+1, scan, &temptime);
+            switch (*ptr)
+            {
+            case L'Y':
+                // Not supported
+                break;
+            case L'M':
+                if (aftertime)
+                {
+                    *realtime    += (pos ? temptime : -1 * temptime) * nSecInMin;
+                }
+                else
+                {
+                    // Not supported
+                }
+                break;
+            case L'D':
+                *realtime       += (pos ? temptime : -1 * temptime) * nSecInDay;
+                break;
+            case L'W':
+                *realtime       += (pos ? temptime : -1 * temptime) * nSecInWeek;
+                break;
+            case L'H':
+                *realtime       += (pos ? temptime : -1 * temptime) * nSecInHour;
+                break;
+            case L'S':
+                *realtime       += (pos ? temptime : -1 * temptime) * nSecInSec;
+                break;
+            }
+            last = ptr;
+        }
+        ptr++;
+    }
+
+    FileTimeToSystemTime(&ft, &t);
+    SystemTimeToVariantTime(&t, end);
+}
+
 
 
 /*
@@ -159,6 +288,10 @@ bool isAllDayInterval(const DATE startdate, const DATE enddate) {
     bool ret = false;
     if (ststart.wHour == 0 && ststart.wMinute == 0 &&
         stend.wHour == 23  && stend.wMinute  == 59) {
+        ret = true;
+    }
+    if (ststart.wHour == 0 && ststart.wMinute == 0 &&
+        stend.wHour == 0   && stend.wMinute  ==  0 ) {
         ret = true;
     }
     return ret;

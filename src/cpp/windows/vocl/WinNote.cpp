@@ -61,12 +61,10 @@ static WCHAR* colorName[] =
 
 // Constructor
 WinNote::WinNote() {
-    vNote = L"";
 }
 
 // Constructor: fills propertyMap parsing the passed data
-WinNote::WinNote(const wstring dataString) {
-    vNote = L"";
+WinNote::WinNote(const wstring & dataString) {
     parse(dataString);
 }
 
@@ -78,8 +76,9 @@ WinNote::~WinNote() {
 
 
 // Format and return a vNote string from the propertyMap.
-wstring& WinNote::toString() {
+wstring WinNote::toString() {
 
+    wstring vNote;
     vNote = L"";
 
     //
@@ -111,11 +110,25 @@ wstring& WinNote::toString() {
         vp = new VProperty(TEXT("SUMMARY"), element.c_str());
         vo->addProperty(vp);
         delete vp; vp = NULL;
-    }
-    if (getProperty(L"Body", element)) {
-        vp = new VProperty(TEXT("BODY"), element.c_str());
-        vo->addProperty(vp);
-        delete vp; vp = NULL;
+
+        if (element.length() > 0 && getProperty(L"Body", element)) {
+            element = element.substr(element.find_first_of(L"\n")+1);
+            vp = new VProperty(TEXT("BODY"), element.c_str());
+            vo->addProperty(vp);
+            delete vp; vp = NULL;
+        }
+    } else {
+        if (getProperty(L"Body", element)) {
+            int firstLine = element.find_first_of(L"\n");
+
+            vp = new VProperty(TEXT("SUMMARY"), element.substr(0, firstLine).c_str());
+            vo->addProperty(vp);
+            delete vp; vp = NULL;
+
+            vp = new VProperty(TEXT("BODY"), element.substr(firstLine+1).c_str());
+            vo->addProperty(vp);
+            delete vp; vp = NULL;
+        }
     }
     if (getProperty(L"Categories", element)) {
         vp = new VProperty(TEXT("CATEGORIES"), element.c_str());
@@ -192,7 +205,7 @@ wstring& WinNote::toString() {
 //
 // Parse a vNote string and fills the propertyMap.
 //
-int WinNote::parse(const wstring dataString) {
+int WinNote::parse(const wstring & dataString) {
 
     WCHAR* element = NULL;
 
@@ -223,7 +236,10 @@ int WinNote::parse(const wstring dataString) {
         setProperty(L"Subject", element);
     }
     if (element = getVObjectPropertyValue(vo, L"BODY")) {
-        setProperty(L"Body", element);
+        wstring body;
+        getProperty(L"Subject", body);
+        body.append(L"\n").append(element);
+        setProperty(L"Body", body);
     }
     if (element = getVObjectPropertyValue(vo, L"CATEGORIES")) {
         setProperty(L"Categories", element);

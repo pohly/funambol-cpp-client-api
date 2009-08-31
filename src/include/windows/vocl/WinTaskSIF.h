@@ -60,9 +60,6 @@ class WinTaskSIF : public WinTask {
 
 private:
 
-    /// Internal string formatted (SIF).
-    wstring sif;
-
     /// NULL terminated array of SIF fields names.
     const wchar_t** sifFields;
 
@@ -81,7 +78,7 @@ public:
      * @param fields      the NULL terminated array of SIF fields
      * @param fields      the NULL terminated array of SIF fields for recurrence pattern
      */
-    WinTaskSIF(const wstring dataString, const wchar_t** fields, const wchar_t** recFields);
+    WinTaskSIF(const wstring & dataString, const wchar_t** fields, const wchar_t** recFields);
 
     /// Destructor
     ~WinTaskSIF();  
@@ -99,15 +96,15 @@ public:
      * @param dataString  input SIF string to be parsed
      * @return            0 if no errors
      */
-    int parse(const wstring dataString);
+    int parse(const wstring & dataString);
    
     /**
      * Format and return a SIF string from the propertyMap.
      * Not supported properties are ignored and so not formatted 
      * as they don't have a correspondence in propertyMap.
-     * @return  the SIF string formatted, reference to internal wstring
+     * @return  the SIF string formatted
      */
-    wstring& toString();
+    wstring toString();
 
 
     /**

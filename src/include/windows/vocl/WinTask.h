@@ -58,9 +58,6 @@ class WinTask : public WinItem {
 
 private:
 
-    /// Internal string formatted (VCALENDAR).
-    wstring vCalendar;
-
     /// The recurrence pattern object, containing recurring properties.
     WinRecurrence recPattern;
 
@@ -74,14 +71,13 @@ private:
      */
     bool checkVCalendarTypeAndVersion(VObject* vo);
 
-
 public:
 
     /// Default Constructor
     WinTask();
 
     /// Constructor: fills propertyMap parsing the passed vCalendar string
-    WinTask(const wstring dataString);
+    WinTask(const wstring & dataString);
 
     /// Destructor
     ~WinTask();
@@ -94,19 +90,18 @@ public:
      * @param dataString  input vCalendar string to be parsed
      * @return            0 if no errors
      */
-    virtual int parse(const wstring dataString);
+    virtual int parse(const wstring & dataString);
 
     /**
      * Format and return a vCalendar string from the propertyMap.
      * Not supported properties are ignored and so not formatted 
      * as they don't have a correspondence in propertyMap.
-     * @return  the vCalendar string formatted, reference to internal wstring
+     * @return  the vCalendar string formatted
      */
-    virtual wstring& toString();
+    virtual wstring toString();
 
     /// Returns a pointer to the (internally owned) WinRecurrence.
     virtual WinRecurrence* getRecPattern();
-
 
     /**
      * Return the crc value of the internal map with all values.

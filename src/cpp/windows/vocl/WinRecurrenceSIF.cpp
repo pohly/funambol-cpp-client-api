@@ -49,12 +49,10 @@ using namespace std;
 // Constructor
 WinRecurrenceSIF::WinRecurrenceSIF() {
     sifFields = NULL;
-    sif = L"";
 }
 
 // Constructor: fills propertyMap parsing the passed SIF
-WinRecurrenceSIF::WinRecurrenceSIF(const wstring dataString, const wchar_t **fields) {
-    sif = L"";
+WinRecurrenceSIF::WinRecurrenceSIF(const wstring & dataString, const wchar_t **fields) {
     sifFields = fields;
     parse(dataString);
 }
@@ -70,8 +68,9 @@ void WinRecurrenceSIF::setSifFields(const wchar_t** fields) {
 
 
 // Format and return a SIF string from the propertyMap.
-wstring& WinRecurrenceSIF::toString() {
+wstring WinRecurrenceSIF::toString() {
 
+    wstring sif;
     wstring propertyValue;
     sif = L"";
 
@@ -93,7 +92,7 @@ wstring& WinRecurrenceSIF::toString() {
 
 
 // Parse a SIF string and fills the propertyMap.
-int WinRecurrenceSIF::parse(const wstring dataString) {
+int WinRecurrenceSIF::parse(const wstring & dataString) {
 
     if (!sifFields) {
         LOG.error("%s", ERR_SIFFIELDS_NULL);

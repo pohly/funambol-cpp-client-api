@@ -81,7 +81,7 @@ public:
      * @param dataString  input RRULE string to parse
      * @param date        start date (double format) of the correspondent event/task
      */
-    WinRecurrence(const wstring dataString, const DATE date = 0);
+    WinRecurrence(const wstring & dataString, const DATE date = 0);
 
     /// Destructor
     virtual ~WinRecurrence();
@@ -92,10 +92,10 @@ public:
      * @param dataString   input RRULE string to parse
      * @return             0 if no errors
      */
-    virtual int parse(const wstring dataString);
+    virtual int parse(const wstring & dataString);
 
     /// Format and return a vCalendar RRULE string from the propertyMap.
-    virtual wstring& toString();
+    virtual wstring toString();
 
 
     /// Returns the startDate (double format)

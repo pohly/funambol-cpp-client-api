@@ -47,6 +47,7 @@
 #include <string>
 #include <list>
 #include <map>
+#include <vector>
 
 using namespace std;
 
@@ -88,6 +89,9 @@ private:
     /// to an internal property value, when the property is missing.
     static wstring badString;
 
+    static bool (*defaultValidateExtraProperty) (const std::wstring &);
+
+    bool (*validateExtraProperty) (const std::wstring &);
 
 protected:
 
@@ -107,12 +111,13 @@ public:
     */
     map<wstring,wstring> propertyMap;
 
+    map<wstring,wstring> extraPropertyMap;
+
     /// Default Constructor
     WinItem();
 
     /// Destructor
     virtual ~WinItem();
-
 
     /// Returns the size of propertyMap;
     int getPropertyMapSize();
@@ -190,7 +195,7 @@ public:
      * as they don't have a correspondence in propertyMap.
      * @return  the string formatted, reference to internal wstring
      */
-    virtual wstring& toString() = 0;
+    virtual wstring toString() = 0;
 
     /**
      * Parse a string and fills the propertyMap.
@@ -199,7 +204,7 @@ public:
      * @param dataString  input vCard string to be parsed
      * @return            0 if no errors
      */
-    virtual int parse(const wstring dataString) = 0;
+    virtual int parse(const wstring & dataString) = 0;
 
 
     /**
@@ -225,6 +230,16 @@ public:
      * If property doesn't exist, returns "<NULL>"
      */
     virtual wstring& getName();
+
+    void setExtraProperty(const wstring propertyName, const wstring propertyValue);
+    bool getExtraProperty(const wstring propertyName, wstring& propertyValue);
+    vector<wstring> getExtraPropertyNames();
+    void addExtraProperties(VObject * vo);
+
+    bool validExtraProperty(const std::wstring & name);
+
+    void setValidateFunction(bool (*validate)(const std::wstring &));
+    static void setDefaultValidateFunction(bool (*default) (const std::wstring &));
 };
 
 
