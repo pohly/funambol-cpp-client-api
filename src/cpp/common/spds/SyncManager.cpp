@@ -1889,6 +1889,8 @@ int SyncManager::endSync() {
         deleteSyncML(&syncml);        
     }
 
+    LOG.debug("Sync loop complete, ending and commiting sources");
+
     for (count = 0; count < sourcesNumber; count ++) {
         if (!sources[count]->getReport()->checkState()) {
             continue;
@@ -1896,7 +1898,7 @@ int SyncManager::endSync() {
 
         int sret = sources[count]->endSync();
         if (sret) {
-            setErrorF(sret, "Error in endSync of source '%ls'", sources[count]->getName());
+            setErrorF(sret, "Error in endSync of source '%" WCHAR_PRINTF "'", sources[count]->getName());
         }
     }
 
@@ -1910,8 +1912,9 @@ int SyncManager::endSync() {
                             sources[count]->getReport()->getLastErrorMsg());  
             LOG.debug("The old last value is committed (no changed)");
             continue;
-
         }
+
+        LOG.debug("Committing changes for source '%" WCHAR_PRINTF "'", sources[count]->getName());
 
         commitChanges(*sources[count]);
     }
