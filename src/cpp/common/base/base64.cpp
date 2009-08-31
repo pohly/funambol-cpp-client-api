@@ -36,6 +36,7 @@
 
 #include "base/fscapi.h"
 #include "base/util/StringBuffer.h"
+#include "base/Log.h"
 #include "base/globalsdef.h"
 
 BEGIN_NAMESPACE
@@ -124,6 +125,7 @@ input[], int *n)
             //lastErrorCode = ERR_UNSPECIFIED;
             //sprintf(lastErrorMsg, ERRMSG_B64_ORPHANED_BITS);
             setError(ERR_UNSPECIFIED, ERRMSG_B64_ORPHANED_BITS);
+            LOG.debug(getLastErrorMsg());
             return;
         }
 
@@ -134,6 +136,7 @@ input[], int *n)
             //lastErrorCode = ERR_UNSPECIFIED;
             //sprintf(lastErrorMsg, ERRMSG_B64_GARBAGE);
             setError(ERR_UNSPECIFIED, ERRMSG_B64_GARBAGE);
+            LOG.debug(getLastErrorMsg());
         }
 
         output[(*n)++] = ((t1 - b64_tbl) << 2) | ((t2 - b64_tbl) >> 4);
@@ -147,6 +150,7 @@ input[], int *n)
             //lastErrorCode = ERR_UNSPECIFIED;
             //sprintf(lastErrorMsg, ERRMSG_B64_GARBAGE);
             setError(ERR_UNSPECIFIED, ERRMSG_B64_GARBAGE);
+            LOG.debug(getLastErrorMsg());
             return;
         }
 
@@ -161,6 +165,7 @@ input[], int *n)
             //lastErrorCode = ERR_UNSPECIFIED;
             //sprintf(lastErrorMsg, ERRMSG_B64_GARBAGE);
             setError(ERR_UNSPECIFIED, ERRMSG_B64_GARBAGE);
+            LOG.debug(getLastErrorMsg());
             return;
         }
 
