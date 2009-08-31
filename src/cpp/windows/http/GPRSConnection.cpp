@@ -49,6 +49,8 @@
 
 USE_NAMESPACE
 
+static HANDLE  phWebConnection = NULL;
+
 bool EstablishConnection() {
     bool ret = false;
     CONNMGR_CONNECTIONINFO sConInfo = {0};   
@@ -60,7 +62,6 @@ bool EstablishConnection() {
     sConInfo.bExclusive = false;
     sConInfo.bDisabled = false;
     sConInfo.guidDestNet = IID_DestNetInternet;
-    HANDLE  phWebConnection = NULL;
     DWORD pdwStatus = 0;
     DWORD timeout = 20000; //20 sec
 
@@ -152,7 +153,6 @@ bool EstablishConnectionOld() {
     sConInfo.bExclusive = false;
     sConInfo.bDisabled = false;
     sConInfo.guidDestNet = IID_DestNetInternet;
-    HANDLE  phWebConnection = NULL;
 
     // Creates a connection request.
     HRESULT hr = ConnMgrEstablishConnection(&sConInfo, &phWebConnection);
@@ -206,4 +206,20 @@ bool EstablishConnectionOld() {
     CloseHandle( hMutex );
     LOG.debug("GPRS mutex released.");
     return ret;
+}
+
+void DropConnection()
+{
+    if (phWebConnection)
+    {
+        if (S_OK == ConnMgrReleaseConnection(phWebConnection,0))
+        {
+            LOG.debug("Connection dropped");
+        }
+        else
+        {
+            LOG.debug("Failed to drop connection");
+        }
+        phWebConnection = NULL;
+    }
 }
