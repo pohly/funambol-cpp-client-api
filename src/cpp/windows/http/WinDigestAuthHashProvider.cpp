@@ -33,55 +33,53 @@
  * the words "Powered by Funambol".
  */
 
-#ifndef INCL_MAC_TRANSPORT_AGENT
-#define INCL_MAC_TRANSPORT_AGENT
-/** @cond DEV */
+#include "base/util/StringBuffer.h"
+#include "http/WinDigestAuthHashProvider.h"
+#include <Wincrypt.h>
 
-#include "base/fscapi.h"
+USE_NAMESPACE
 
-#if defined(FUN_IPHONE)
-#include <SystemConfiguration/SystemConfiguration.h>
-#include <SystemConfiguration/SCNetworkReachability.h>
-#if TARGET_IPHONE_SIMULATOR
-#include <CoreServices/CoreServices.h>
-#else
-#include <CFNetwork/CFNetwork.h>
-#endif
-#else
-#include <CoreServices/CoreServices.h>
-#endif
+StringBuffer WinDigestAuthHashProvider::getHash(const StringBuffer str) const {
+	HCRYPTPROV hProv = 0;
+	HCRYPTHASH hHash = 0;
+	DWORD size = 0;
+	char rgbDigits[] = "0123456789abcdef";
+	#define MD5LEN 16
+	BYTE hashval[100];
+	char* final;
 
-#include "http/URL.h"
-#include "http/Proxy.h"
-#include "http/TransportAgent.h"
-#include "base/Log.h"
-#include "http/HttpAuthentication.h"
+	if ( !CryptAcquireContext(
+        &hProv,  // variable to hold the returned handle
+        NULL,           // use default key container
+        NULL,           // use default provider 
+        PROV_RSA_FULL,  // type of context to acquire
+        CRYPT_VERIFYCONTEXT | CRYPT_MACHINE_KEYSET)) {
+		//error
+        return NULL;
+    }
 
-#define ERR_HTTP_TIME_OUT               ERR_TRANSPORT_BASE+ 7
-#define ERR_HTTP_NOT_FOUND              ERR_TRANSPORT_BASE+60
-#define ERR_HTTP_REQUEST_TIMEOUT        ERR_TRANSPORT_BASE+61
-#define ERR_HTTP_INFLATE                ERR_TRANSPORT_BASE+70
-#define ERR_HTTP_DEFLATE                ERR_TRANSPORT_BASE+71
+	if (!CryptCreateHash(hProv, CALG_MD5, 0, 0, &hHash)) {
+		return NULL;
+	}
 
+	if (!CryptHashData(hHash, (BYTE*)str.c_str(), str.length(), 0)) {
+		return NULL;
+	}
 
-BEGIN_NAMESPACE
+	size = MD5LEN;
+	final = new char[((MD5LEN*2)+1)];
+	if (CryptGetHashParam(hHash, HP_HASHVAL, hashval, &size, 0)) {
+		for (DWORD i=0; i<MD5LEN; i++) {
+			final[2*i] = rgbDigits[hashval[i] >> 4];
+			final[2*i + 1] = rgbDigits[hashval[i] & 0xf];
+		}
+		final[(MD5LEN*2)] = '\0';
+	}
+	CryptDestroyHash(hHash);
+	CryptReleaseContext(hProv, 0);
 
-class MacTransportAgent : public TransportAgent {
-private:
-	HttpAuthentication *auth;
-    bool addHttpAuthentication(CFHTTPMessageRef* request);
-    
-public:
-    MacTransportAgent();
-    MacTransportAgent(URL& url, Proxy& proxy, unsigned int responseTimeout = DEFAULT_MAX_TIMEOUT);
-    ~MacTransportAgent();
-    
-    char* sendMessage(const char* msg);
-	void setAuthentication(HttpAuthentication *httpAuth);
-};
+    StringBuffer result(final);
+    delete [] final;
 
-END_NAMESPACE
-
-/** @endcond */
-#endif
-
+	return result;
+}

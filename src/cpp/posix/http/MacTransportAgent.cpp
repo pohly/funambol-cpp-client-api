@@ -60,7 +60,9 @@
 
 USE_NAMESPACE
 
-MacTransportAgent::MacTransportAgent() : TransportAgent() {}
+MacTransportAgent::MacTransportAgent() : TransportAgent() {
+    auth = NULL;
+}
 
 MacTransportAgent::~MacTransportAgent() {}
 
@@ -74,8 +76,9 @@ MacTransportAgent::~MacTransportAgent() {}
  */
 MacTransportAgent::MacTransportAgent(URL& newURL, Proxy& newProxy, unsigned int maxResponseTimeout)
 : TransportAgent(newURL, newProxy, maxResponseTimeout)
-{}
-    
+{
+    auth = NULL;
+}
 
 /*
  * Sends the given SyncML message to the server specified
@@ -95,7 +98,7 @@ char* MacTransportAgent::sendMessage(const char* msg){
     bool gotflags = true;
     bool isReachable = true;
     bool noConnectionRequired = true; 
-    
+
     StringBuffer result;
     CFIndex bytesRead = 1;
     int statusCode = -1;
@@ -132,7 +135,7 @@ char* MacTransportAgent::sendMessage(const char* msg){
         CFStringRef requestMethod = CFSTR("POST");
         
         CFHTTPMessageRef httpRequest =
-        CFHTTPMessageCreateRequest(kCFAllocatorDefault, requestMethod, myURL, kCFHTTPVersion1_1);
+            CFHTTPMessageCreateRequest(kCFAllocatorDefault, requestMethod, myURL, kCFHTTPVersion1_1);
         CFStringRef useragent = CFStringCreateWithCString(NULL, getUserAgent(), kCFStringEncodingUTF8);
         CFHTTPMessageSetHeaderFieldValue(httpRequest, CFSTR("user-agent"),  useragent);
         if(!httpRequest){
@@ -142,8 +145,6 @@ char* MacTransportAgent::sendMessage(const char* msg){
             goto finally;
         }
         
-        
-        //CFDataRef bodyData;
         CFDataRef bodyData = CFDataCreate(kCFAllocatorDefault, (const UInt8*)msg, strlen(msg));	
         if (!bodyData){
             LOG.error("MacTransportAgent::sendMessage error: CFHTTPMessageCreateRequest Error.");
@@ -153,8 +154,14 @@ char* MacTransportAgent::sendMessage(const char* msg){
         CFHTTPMessageSetBody(httpRequest, bodyData);
         CFHTTPMessageSetHeaderFieldValue(httpRequest, headerFieldName, headerFieldValue);
         
-        //CFReadStreamRef responseStream;
-        CFReadStreamRef responseStream = CFReadStreamCreateForHTTPRequest(kCFAllocatorDefault, httpRequest);
+        if (auth) {
+            if (!addHttpAuthentication(&httpRequest)) {
+                LOG.error("Failed to add HTTP authentication information...");
+            }
+        }
+
+        CFReadStreamRef responseStream;
+        responseStream = CFReadStreamCreateForHTTPRequest(kCFAllocatorDefault, httpRequest);
         
         //bool setProperty;
         //if we are trying to sync on a https server we have to have a trusted certificate.
@@ -254,7 +261,13 @@ char* MacTransportAgent::sendMessage(const char* msg){
                 LOG.debug("%s", getLastErrorMsg());
                 break;
             }
-                
+            case 401: {   // Authentication failed
+                setErrorF(401, "Authentication failed");
+                LOG.debug("%s", getLastErrorMsg());
+                ret = stringdup(result.c_str());
+                break;
+            }
+				
             default: {
                 setErrorF(statusCode, "HTTP request error: status received = %d", statusCode);
                 LOG.error("%s", getLastErrorMsg());
@@ -272,7 +285,7 @@ char* MacTransportAgent::sendMessage(const char* msg){
         CFRelease(requestMethod);
         CFRelease(useragent);
 
-        LOG.debug("MacTransportAgent::sendMessage end");    
+        LOG.debug("MacTransportAgent::sendMessage end");     
         return ret;
     }else{
         setErrorF(ERR_CONNECT, "Network error: the attempt to connect to the server failed -> exit");
@@ -280,6 +293,43 @@ char* MacTransportAgent::sendMessage(const char* msg){
         LOG.debug("MacTransportAgent::sendMessage end");
         return NULL;
     }
+}
+
+/*
+ * Set the authentication object to enable
+ * authenticating the http request.
+ */
+void MacTransportAgent::setAuthentication(HttpAuthentication *httpAuth) {
+    auth = httpAuth;
+}
+
+/**
+ * Add authentication headers to the given HTTP request.
+ *
+ * @param request The HTTP request that needs authentication headers.
+ *
+ * @return whether or not the authentication headers were successfully added to the request.
+ */
+bool MacTransportAgent::addHttpAuthentication(CFHTTPMessageRef* request) {
+    CFReadStreamRef responseStream = CFReadStreamCreateForHTTPRequest(kCFAllocatorDefault, *request);
+    if (!CFReadStreamOpen(responseStream)) {//Sends request
+        LOG.error("Failed to open response stream...");
+        return false;
+    }
+    
+    UInt8   buffer[1000];
+    CFReadStreamRead(responseStream, buffer, 999);
+    CFHTTPMessageRef responseHeader = (CFHTTPMessageRef) CFReadStreamCopyProperty(
+                                                                                  responseStream,
+                                                                                  kCFStreamPropertyHTTPResponseHeader);
+    CFStringRef tempuser = CFStringCreateWithCString(NULL, auth->getUsername().c_str(), kCFStringEncodingUTF8);
+    CFStringRef temppass = CFStringCreateWithCString(NULL, auth->getPassword().c_str(), kCFStringEncodingUTF8);
+    bool authSuccess = CFHTTPMessageAddAuthentication(*request, responseHeader, tempuser, temppass, NULL, false);
+    CFRelease(tempuser);
+    CFRelease(temppass);
+    CFRelease(responseHeader);
+    CFRelease(responseStream);
+    return authSuccess;
 }
 
 #endif

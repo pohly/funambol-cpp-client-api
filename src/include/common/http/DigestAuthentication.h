@@ -33,55 +33,44 @@
  * the words "Powered by Funambol".
  */
 
-#ifndef INCL_MAC_TRANSPORT_AGENT
-#define INCL_MAC_TRANSPORT_AGENT
-/** @cond DEV */
+#ifndef INCL_DIGEST_AUTHENTICATION
+#define INCL_DIGEST_AUTHENTICATION
 
 #include "base/fscapi.h"
-
-#if defined(FUN_IPHONE)
-#include <SystemConfiguration/SystemConfiguration.h>
-#include <SystemConfiguration/SCNetworkReachability.h>
-#if TARGET_IPHONE_SIMULATOR
-#include <CoreServices/CoreServices.h>
-#else
-#include <CFNetwork/CFNetwork.h>
-#endif
-#else
-#include <CoreServices/CoreServices.h>
-#endif
-
+#include "base/util/StringBuffer.h"
 #include "http/URL.h"
 #include "http/Proxy.h"
-#include "http/TransportAgent.h"
-#include "base/Log.h"
+#include "http/HashProvider.h"
 #include "http/HttpAuthentication.h"
-
-#define ERR_HTTP_TIME_OUT               ERR_TRANSPORT_BASE+ 7
-#define ERR_HTTP_NOT_FOUND              ERR_TRANSPORT_BASE+60
-#define ERR_HTTP_REQUEST_TIMEOUT        ERR_TRANSPORT_BASE+61
-#define ERR_HTTP_INFLATE                ERR_TRANSPORT_BASE+70
-#define ERR_HTTP_DEFLATE                ERR_TRANSPORT_BASE+71
-
 
 BEGIN_NAMESPACE
 
-class MacTransportAgent : public TransportAgent {
-private:
-	HttpAuthentication *auth;
-    bool addHttpAuthentication(CFHTTPMessageRef* request);
-    
+class DigestAuthentication : public HttpAuthentication {
 public:
-    MacTransportAgent();
-    MacTransportAgent(URL& url, Proxy& proxy, unsigned int responseTimeout = DEFAULT_MAX_TIMEOUT);
-    ~MacTransportAgent();
-    
-    char* sendMessage(const char* msg);
-	void setAuthentication(HttpAuthentication *httpAuth);
+	DigestAuthentication(const StringBuffer& username, const StringBuffer& password);
+    virtual ~DigestAuthentication() {};
+
+	void setUsername(const StringBuffer& username);
+	StringBuffer getUsername();
+
+	void setPassword(const StringBuffer& password);
+	StringBuffer getPassword();
+
+	StringBuffer getAuthenticationHeaders(const char* authstr, URL url, const HashProvider *hashProvider);
+
+private:
+	StringBuffer realm;
+	StringBuffer qop;
+	StringBuffer nonce;
+	StringBuffer opaque;
+	StringBuffer username;
+	StringBuffer password;
+
+	void processAuthInfo(const char* authstr);
+	StringBuffer extractDigestProp(const char* authstr, const char* prop);
+	StringBuffer generateAuthResponseString(URL url, const HashProvider *hashProvider);
 };
 
 END_NAMESPACE
-
-/** @endcond */
 #endif
 

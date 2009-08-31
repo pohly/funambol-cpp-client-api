@@ -68,6 +68,7 @@
 #include "http/URL.h"
 #include "http/Proxy.h"
 #include "http/TransportAgent.h"
+#include "http/HttpAuthentication.h"
 
 /** Max number of attempts sending http requests. */
 #define MAX_RETRIES                     3                       // Max number of attempts sending http requests.
@@ -121,17 +122,31 @@ public:
      *
      */
     void setHttpVerb(HTTPVerbs value) { httpVerb = value; }
+
+	/**
+	 * Set the authentication object to use to authenticate messages.
+	 *
+	 */
+	void setAuthentication(HttpAuthentication *auth);
     
 private:
     bool isToDeflate;           // to be zipped
     bool isFirstMessage;        // first message is clear
     bool isToInflate;           // to be unzipped
-
+	HttpAuthentication *auth;
+	void addAuthenticationHeaders(HINTERNET hRequest, WCHAR* headers);
+	
     HTTPVerbs httpVerb;         // It uses the HTTP_GET and HTTP_POST (default).
     HTTPVerbs getHttpVerb() const { return httpVerb; }
     
     char* createHttpErrorMessage(DWORD errorCode);
     void  dumpMessage(const char* msg, const int msgLen);
+
+#ifdef _WIN32_WCE
+public:
+    void setKeepAlive() {keepalive = true;}
+    bool keepalive;
+#endif
 };
 
 
