@@ -1,9 +1,12 @@
 2009-09-03
+Funambol SDK C++ 8.0.5 (V8 SP1)
+-----------------------
+
    - toccy: fixed bug #7794: sync fails when server sends multipart item + another item in one message
             Fixed the SyncML parser (Parser::getCommonCommandList) in order to process commands from the Server 
             in the same order the Server sent them.
 
-Funambol SDK C++ 8.0.4
+Funambol SDK C++ 8.0.4 (V8 GA)
 -----------------------
 2009-06-29
    - toccy: created tag 8.0.4
