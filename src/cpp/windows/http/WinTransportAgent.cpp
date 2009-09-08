@@ -486,6 +486,11 @@ char* WinTransportAgent::sendMessage(const char* msg) {
                      "Server responds 400: retry %i time...", numretries + 1);
             continue;
         }
+        else if (status == HTTP_STATUS_GATEWAY_TIMEOUT) {   // 504 timed out waiting for gateway. retry to send the message
+            LOG.info("Network error in server receiving data. "
+                     "Server responds 504: retry %i time...", numretries + 1);
+            continue;
+        }
         else if (status == HTTP_STATUS_SERVER_ERROR ) {     // 500 -> out code 2052
             setErrorF(ERR_SERVER_ERROR, "HTTP server error: %d. Server failure.", status);
             LOG.debug("%s", getLastErrorMsg());
