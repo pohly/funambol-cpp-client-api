@@ -158,7 +158,7 @@ bool MailSyncSourceConfig::setDeletedMailAccount(const char* accountName){
         MailAccount* ma =((MailAccount*)mailAccounts[i]);
         StringBuffer val(ma->getName());
         if ( strcmp(accountName, val.c_str()) == 0 ){
-            ma->setDeleted();
+            ma->setDeleted(true);
             return true;
         }
     }

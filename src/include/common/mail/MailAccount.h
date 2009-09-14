@@ -82,6 +82,7 @@ class MailAccount : public FolderData {
     // ------------------------------------------------------- Constructors
         MailAccount() : deleted(false), toBeCleaned(false) {};
         MailAccount(const MailAccount& ma);
+        MailAccount(const FolderData& ma);
         ~MailAccount(){};
 
 
@@ -127,7 +128,7 @@ class MailAccount : public FolderData {
 
 
         bool getDeleted() const { return deleted; }
-        void setDeleted() { deleted = true; }
+        void setDeleted(const bool val) { deleted = val; }
 
         bool getToBeCleaned() const { return toBeCleaned; }
         void setToBeCleaned(bool tobecleaned) { toBeCleaned = tobecleaned; }

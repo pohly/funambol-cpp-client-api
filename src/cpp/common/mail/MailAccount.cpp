@@ -60,4 +60,27 @@ MailAccount::MailAccount(const MailAccount& ma){
     setExtList(al);
 }
 
+MailAccount::MailAccount(const FolderData& ma) {
+    deleted = false;
+    toBeCleaned = false;
+
+    setParent(ma.getParent());
+    setName(ma.getName());
+    setCreated(ma.getCreated());
+    setModified(ma.getModified());
+    setAccessed(ma.getAccessed());
+    setAttributes(ma.getAttributes());
+    setHidden(ma.getHidden());
+    setSystem(ma.getSystem());
+    setArchived(ma.getArchived());
+    setDel(ma.getDel());
+    setWritable(ma.getWritable());
+    setReadable(ma.getReadable());
+    setExecutable(ma.getExecutable());
+    setRole(ma.getRole());
+    setID(ma.getID());
+    ArrayList al = ((FolderData)ma).getExtList();
+    setExtList(al);
+}
+
 
