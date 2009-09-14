@@ -25,7 +25,7 @@ vpath %.cpp	$(TESTDIR) \
         $(TESTDIR)/common/http
 
 # Test runner sources
-SOURCES = client-test-main.cpp ClientTest.cpp TestFileSource.cpp
+SOURCES = client-test-main.cpp ClientTest.cpp TestFileSource.cpp testUtils.cpp
 
 # Testcase sources
 TESTS_BASE = \
@@ -65,7 +65,7 @@ TESTS_SPDS = \
     FolderExtTest.cpp \
     MailAccountTest.cpp \
     MappingTestSyncSource.cpp \
-    ManyItemsTestSyncSource.cpp \
+    TestSyncSource.cpp \
     SyncManagerTest.cpp
 
 TESTS_PUSH = \

@@ -65,6 +65,7 @@
 #include "spds/MappingStoreBuilder.h"
 #include "MappingsTest.h"
 #include "spds/SyncManager.h"
+#include "testUtils.h"
 
 USE_NAMESPACE
 
@@ -124,7 +125,7 @@ static DMTClientConfig* getConfiguration(const char* name) {
     const char *username = getenv("CLIENT_TEST_USERNAME");
     const char *password = getenv("CLIENT_TEST_PASSWORD");
 
-    PlatformAdapter::init(name, true);
+    initAdapter(name);
     DMTClientConfig* config = new DMTClientConfig();
     config->read();
     DeviceConfig &dc(config->getDeviceConfig());
@@ -149,7 +150,7 @@ static DMTClientConfig* getConfiguration(const char* name) {
     if(password) {
         config->getAccessConfig().setPassword(password);
     }
-
+    
     return config;
 }
 
