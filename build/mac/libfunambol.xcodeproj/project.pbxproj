@@ -410,7 +410,6 @@
 		AB43F7350EDACE1100183D6B /* StringMap.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AB43F7340EDACE1100183D6B /* StringMap.cpp */; };
 		AB43F7370EDACE2800183D6B /* StringMap.h in Headers */ = {isa = PBXBuildFile; fileRef = AB43F7360EDACE2800183D6B /* StringMap.h */; };
 		AB4B1B060ED6F6D3007C477B /* PlatformAdapter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AB4B1B050ED6F6D3007C477B /* PlatformAdapter.cpp */; };
-		AB76F80E0FF38E0D000B8F23 /* libsqlite3.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = AB76F80D0FF38E0D000B8F23 /* libsqlite3.dylib */; };
 		ABF8C4C00E93A1CB00401C02 /* BlockingSQLiteKeyValueStore.h in Headers */ = {isa = PBXBuildFile; fileRef = ABF8C4BF0E93A1CB00401C02 /* BlockingSQLiteKeyValueStore.h */; };
 		ABF8C5810E93BD4700401C02 /* MappingsManager.h in Headers */ = {isa = PBXBuildFile; fileRef = ABF8C57F0E93BD4700401C02 /* MappingsManager.h */; };
 		ABF8C5820E93BD4700401C02 /* MappingStoreBuilder.h in Headers */ = {isa = PBXBuildFile; fileRef = ABF8C5800E93BD4700401C02 /* MappingStoreBuilder.h */; };
@@ -853,7 +852,6 @@
 		AB43F7340EDACE1100183D6B /* StringMap.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = StringMap.cpp; sourceTree = "<group>"; };
 		AB43F7360EDACE2800183D6B /* StringMap.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = StringMap.h; sourceTree = "<group>"; };
 		AB4B1B050ED6F6D3007C477B /* PlatformAdapter.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = PlatformAdapter.cpp; path = adapter/PlatformAdapter.cpp; sourceTree = "<group>"; };
-		AB76F80D0FF38E0D000B8F23 /* libsqlite3.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libsqlite3.dylib; path = usr/lib/libsqlite3.dylib; sourceTree = SDKROOT; };
 		ABF8C4BF0E93A1CB00401C02 /* BlockingSQLiteKeyValueStore.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BlockingSQLiteKeyValueStore.h; path = ../../src/include/posix/client/BlockingSQLiteKeyValueStore.h; sourceTree = SOURCE_ROOT; };
 		ABF8C57F0E93BD4700401C02 /* MappingsManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MappingsManager.h; sourceTree = "<group>"; };
 		ABF8C5800E93BD4700401C02 /* MappingStoreBuilder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MappingStoreBuilder.h; sourceTree = "<group>"; };
@@ -886,7 +884,6 @@
 				7C8B0D9A0DB7517C005113A8 /* CoreServices.framework in Frameworks */,
 				AB3E85FA0E07F8CC00581A6C /* SystemConfiguration.framework in Frameworks */,
 				ABFBD5D80EC4586100FA542B /* Foundation.framework in Frameworks */,
-				AB76F80E0FF38E0D000B8F23 /* libsqlite3.dylib in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -896,7 +893,6 @@
 		08FB7794FE84155DC02AAC07 /* mac */ = {
 			isa = PBXGroup;
 			children = (
-				AB76F80D0FF38E0D000B8F23 /* libsqlite3.dylib */,
 				7C8B0C130DB73AAD005113A8 /* Frameworks */,
 				7C9F520B0DAF4C9B007E0091 /* Source */,
 				C6A0FF2B0290797F04C91782 /* Documentation */,
@@ -2526,6 +2522,7 @@
 					ENABLE_NAMESPACE,
 					FUNAMBOL_BUILD_API,
 				);
+				GCC_VERSION = 4.2;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				HEADER_SEARCH_PATHS = (
@@ -2573,7 +2570,7 @@
 				);
 				PREBINDING = NO;
 				SCAN_ALL_SOURCE_FILES_FOR_INCLUDES = YES;
-				SDKROOT = iphoneos2.2.1;
+				SDKROOT = iphoneos3.0;
 				STANDARD_C_PLUS_PLUS_LIBRARY_TYPE = dynamic;
 			};
 			name = "iPhone-Release";
