@@ -183,11 +183,6 @@ bool MailSyncSourceConfig::delMailAccount(const char* accountName){
 bool MailSyncSourceConfig::addMailAccount(const MailAccount& account) {
 	const char* name = account.getName();
 	int size = mailAccounts.size();
-
-	if (size >= max_account_numbers) {
-		LOG.error("can't add mail account: maximum number of email account reached");
-		return false;
-	}
 	
 	if (name == NULL) { 
 		LOG.error("can't add mail account: no account name found");

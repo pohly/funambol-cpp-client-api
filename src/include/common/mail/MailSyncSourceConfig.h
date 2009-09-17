@@ -92,11 +92,6 @@ BEGIN_NAMESPACE
         * it represent the time of the schedule
         */
         int schedule;
-
-		/*
-		 * maximum number of email accounts supported
-		 */
-		static const unsigned max_account_numbers = 4;
 		
 		/* 
 		 * array of mail accounts
