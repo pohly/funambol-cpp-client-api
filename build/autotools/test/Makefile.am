@@ -9,7 +9,7 @@ TESTDIR = $(srcdir)/../../../test
 LDADD = ../src/libfunambol.la 
 AM_LDFLAGS = @CURL_LDFLAGS@ @CPPUNIT_LDFLAGS@
 AM_CXXFLAGS = @CURL_CFLAGS@ @CPPUNIT_CXXFLAGS@
-AM_CPPFLAGS = -I$(INCDIR)/posix -I$(INCDIR)/common -I$(TESTDIR)/integration -DFUNAMBOL_BUILD_API
+AM_CPPFLAGS = -I$(INCDIR)/posix -I$(INCDIR)/common -I$(TESTDIR)/ -I$(TESTDIR)/integration -DFUNAMBOL_BUILD_API
 
 vpath %.cpp	$(TESTDIR) \
 		$(TESTDIR)/common/base/util \
@@ -21,7 +21,8 @@ vpath %.cpp	$(TESTDIR) \
 		$(TESTDIR)/common/client \
 		$(TESTDIR)/integration \
 		$(TESTDIR)/common/event \
-                $(TESTDIR)/common/push
+        $(TESTDIR)/common/push \
+        $(TESTDIR)/common/http
 
 # Test runner sources
 SOURCES = client-test-main.cpp ClientTest.cpp TestFileSource.cpp
@@ -38,6 +39,9 @@ TESTS_BASE = \
 TESTS_FILTER = \
     ClauseTest.cpp \
     FilterTest.cpp
+
+TESTS_HTTP = \
+    TransportAgentReplacement.cpp
 
 TESTS_SYNCML = \
     ParserTest.cpp \
@@ -60,13 +64,15 @@ TESTS_SPDS = \
     FolderDataTest.cpp \
     FolderExtTest.cpp \
     MailAccountTest.cpp \
-    MappingTestSyncSource.cpp
+    MappingTestSyncSource.cpp \
+    ManyItemsTestSyncSource.cpp \
+    SyncManagerTest.cpp
 
 TESTS_PUSH = \
     FThreadTest.cpp \
     CTPServiceTest.cpp
     
-TESTCASES = $(TESTS_BASE) $(TESTS_FILTER) $(TESTS_SYNCML) $(TESTS_SPDM) $(TESTS_EVENT) $(TESTS_CLIENT) $(TESTS_SPDS) $(TESTS_PUSH)
+TESTCASES = $(TESTS_BASE) $(TESTS_FILTER) $(TESTS_HTTP) $(TESTS_SYNCML) $(TESTS_SPDM) $(TESTS_EVENT) $(TESTS_CLIENT) $(TESTS_SPDS) $(TESTS_PUSH)
 
 client_test_SOURCES = $(SOURCES) $(TESTCASES)
 

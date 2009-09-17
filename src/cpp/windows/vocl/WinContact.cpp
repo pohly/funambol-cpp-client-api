@@ -888,9 +888,8 @@ int WinContact::parse(const wstring dataString) {
         else {
             // Property not supported: log a warning?
         }
-
     }
-    
+
     if (vo) { delete vo; vo = NULL; }
     return 0;
 }

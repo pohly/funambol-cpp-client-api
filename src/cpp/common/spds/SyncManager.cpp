@@ -504,22 +504,26 @@ int SyncManager::prepareSync(SyncSource** s) {
 
         currentState = STATE_PKG1_SENDING;
 
+        // If transportAgent not set explicitly by the Client, get the default one.
         if (transportAgent == NULL) {
             transportAgent = TransportAgentFactory::getTransportAgent(url, proxy, responseTimeout, maxMsgSize);
-            transportAgent->setReadBufferSize(readBufferSize);
-            transportAgent->setSSLServerCertificates(config.getSSLServerCertificates());
-            transportAgent->setSSLVerifyServer(config.getSSLVerifyServer());
-            transportAgent->setSSLVerifyHost(config.getSSLVerifyHost());
-            // Here we also ensure that the user agent string is valid
-            const char* ua = getUserAgent(config);
-            LOG.debug("User Agent = %s", ua);
-            transportAgent->setUserAgent(ua);
-            transportAgent->setCompression(config.getCompression());
-            delete [] ua; ua = NULL;
         }
         else {
             transportAgent->setURL(url);
         }
+        transportAgent->setReadBufferSize(readBufferSize);
+        transportAgent->setSSLServerCertificates(config.getSSLServerCertificates());
+        transportAgent->setSSLVerifyServer(config.getSSLVerifyServer());
+        transportAgent->setSSLVerifyHost(config.getSSLVerifyHost());
+    
+        // Here we also ensure that the user agent string is valid
+        const char* ua = getUserAgent(config);
+        LOG.debug("User Agent = %s", ua);
+        transportAgent->setUserAgent(ua);
+        transportAgent->setCompression(config.getCompression());
+        delete [] ua; ua = NULL;
+
+
         if (getLastErrorCode() != 0) { // connection: lastErrorCode = 2005: Impossible to establish internet connection
             ret = getLastErrorCode();
             goto finally;
@@ -1030,6 +1034,7 @@ int SyncManager::sync() {
     //ArrayList* list      = new ArrayList();
     bool isFinalfromServer = false;
     bool isAtLeastOneSourceCorrect = false;
+    bool sendFinalAfterClientMods = true;
 
     //
     // If this is the first message, currentState is STATE_PKG1_SENT,
@@ -1098,7 +1103,9 @@ int SyncManager::sync() {
             */
             switch (sources[count]->getSyncMode()) {
                 case SYNC_TWO_WAY:
-                case SYNC_ONE_WAY_FROM_SERVER: {
+                case SYNC_ONE_WAY_FROM_SERVER:
+                case SYNC_SMART_ONE_WAY_FROM_SERVER:
+                case SYNC_INCREMENTAL_SMART_ONE_WAY_FROM_SERVER: {
                     Enumeration& en = mmanager[count]->getMappings();
                     ArrayList tmpMapItems;            
                     while(en.hasMoreElement()) {
@@ -1208,6 +1215,8 @@ int SyncManager::sync() {
                     break;
                     
                 case SYNC_ONE_WAY_FROM_SERVER:
+                case SYNC_SMART_ONE_WAY_FROM_SERVER:
+                case SYNC_INCREMENTAL_SMART_ONE_WAY_FROM_SERVER:
                     last = true;
                     break;
 
@@ -1594,10 +1603,12 @@ int SyncManager::sync() {
 
     //
     // If this was the last chunk, we move the state to STATE_PKG3_SENT
-    // At this time "last" is always true. The client is going to send
-    // the 222 package for to get the server modification if at least a source is correct
+    // At this time "last" SHOULD always be true. If not, it means there was an error
+    // and the APIs didn't send the <Final> tag yet.
+    // In this case we MUST send the Final tag now, to notify the Server we completed
+    // the "Clients modification" phase.
     //
-    last = true;
+    sendFinalAfterClientMods = !last;
     currentState = STATE_PKG3_SENT;
 
     //
@@ -1612,7 +1623,9 @@ int SyncManager::sync() {
                 continue;
             }
             if ((sources[count]->getSyncMode() != SYNC_ONE_WAY_FROM_CLIENT) &&
-                (sources[count]->getSyncMode() != SYNC_REFRESH_FROM_CLIENT))
+                (sources[count]->getSyncMode() != SYNC_REFRESH_FROM_CLIENT) &&
+                (sources[count]->getSyncMode() != SYNC_SMART_ONE_WAY_FROM_CLIENT) && 
+                (sources[count]->getSyncMode() != SYNC_INCREMENTAL_SMART_ONE_WAY_FROM_CLIENT))
             {
                 alert = syncMLBuilder.prepareAlert(*sources[count]);
                 commands.add(*alert);
@@ -1620,7 +1633,7 @@ int SyncManager::sync() {
             }
         }
 
-        syncml = syncMLBuilder.prepareSyncML(&commands, false);
+        syncml = syncMLBuilder.prepareSyncML(&commands, sendFinalAfterClientMods);
         msg    = syncMLBuilder.prepareMsg(syncml);
 
         LOG.debug("Alert to request server changes");
@@ -1797,11 +1810,13 @@ int SyncManager::endSync() {
             continue;
         }
         
-        if (  (sources[count]->getSyncMode() == SYNC_ONE_WAY_FROM_CLIENT &&
-                commands.isEmpty() && (mmanager[count]->getMappings().hasMoreElement() == false)) ||
-                (sources[count]->getSyncMode() == SYNC_REFRESH_FROM_CLIENT &&
-                commands.isEmpty() && (mmanager[count]->getMappings().hasMoreElement() == false))
-                ) {
+        SyncMode sMode = sources[count]->getSyncMode();
+        if ( (sMode == SYNC_ONE_WAY_FROM_CLIENT || 
+              sMode == SYNC_REFRESH_FROM_CLIENT || 
+              sMode == SYNC_SMART_ONE_WAY_FROM_CLIENT ||
+              sMode == SYNC_INCREMENTAL_SMART_ONE_WAY_FROM_CLIENT) &&
+             commands.isEmpty() && 
+             (mmanager[count]->getMappings().hasMoreElement() == false) ) {
             // No need to send the final msg (no mapping).
         }
         else {
@@ -2357,6 +2372,10 @@ DevInf *SyncManager::createDeviceInfo()
         { SYNC_ONE_WAY_FROM_SERVER, 5 }, // Support of 'one-way sync from server only'
         { SYNC_REFRESH_FROM_SERVER, 6 }, // Support of 'refresh sync from server only'
         // 7, // Support of 'server alerted sync'
+        { SYNC_SMART_ONE_WAY_FROM_CLIENT, 50 },             // Support of 'smart-one-way sync from client only'
+        { SYNC_SMART_ONE_WAY_FROM_SERVER, 51 },             // Support of 'smart-one-way sync from client only'
+        { SYNC_INCREMENTAL_SMART_ONE_WAY_FROM_CLIENT, 52 }, // Support of 'incremental-smart-one-way sync from server only'
+        { SYNC_INCREMENTAL_SMART_ONE_WAY_FROM_SERVER, 53 }, // Support of 'incremental-smart-one-way sync from server only'
         { SYNC_NONE, -1 }
     };
 
@@ -2496,7 +2515,7 @@ void SyncManager::clearServerDevInf() {
     config.setServerDevType   ("");
     config.setServerLoSupport (false);
     config.setServerNocSupport(false);
-    config.setServerSmartSlowSync(false);
+    config.setServerSmartSlowSync(0);
     config.setServerLastSyncURL("");
 }
 
@@ -2564,16 +2583,7 @@ static void fillContentTypeInfoList(ArrayList &l, const char* types) {
     }
 }
 
-/*
- * Ensure that the user agent string is valid.
- * If property 'user agent' is empty, it is replaced by 'mod' and 'SwV'
- * properties from AbstractDeviceConfig.
- * If also 'mod' property is empty, return a default user agent.
- *
- * @param config: reference to the current AbstractSyncConfig
- * @return      : user agent property as a new char*
- *                (need to be freed by the caller)
- */
+
 const char* SyncManager::getUserAgent(AbstractSyncConfig& config) {
 
     char* ret;
@@ -2601,5 +2611,9 @@ const char* SyncManager::getUserAgent(AbstractSyncConfig& config) {
     }
 
     return ret;
+}
+
+void SyncManager::setTransportAgent(TransportAgent* t) {
+    transportAgent = t;
 }
 

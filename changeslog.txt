@@ -1,103 +1,61 @@
-2009-05-20
-    - toccy: merged from branch US2275 to trunk (C++ Sync Clients - Support for Server capabilities)
-             The Server capabilities are autonomously processed by APIs and params are stored under Server config node
-             Clients can force to request Server caps via the flag: 'forceServerDevInfo'
+2009-09-03
+Funambol SDK C++ 8.0.5 (V8 SP1)
+-----------------------
+
+   - toccy: fixed bug #7794: sync fails when server sends multipart item + another item in one message
+            Fixed the SyncML parser (Parser::getCommonCommandList) in order to process commands from the Server 
+            in the same order the Server sent them.
+
+Funambol SDK C++ 8.0.4 (V8 GA)
+-----------------------
+2009-06-29
+   - toccy: created tag 8.0.4
+   - dave: fixed semaphore handling in Symbian Log.cpp, to be able to use the Log by 2 processes 
+           (used by Symbian Client PushServer)
+
+Funambol SDK C++ 8.0.3
+-----------------------
+2009-06-22
+   - magi: created tag 8.0.3
+
+2009-06-15
+   
+   - toccy: merged ALL CHANGES from trunk (v.8.5) to branch v8. Now trunk and branch v8 are aligned
+
+2009-06-12
+   - teo: created tag "8.0.2"
+   
+2009-06-05
+   - toccy: Clients can set a defined TransportAgent to be used during sync, instead of the default for the platform,
+            using SyncClient::setTransportAgent() (will call SyncManager::setTransportAgent).
+   - toccy: Unit test: * added test "testServerError506" (SyncManagerTest.cpp) to check for a loop in SyncManager::sync(), 
+                         because of a missing <Final> tag in case of Server error
+                       * added "http/TransportAgentReplacement" under test, to be used as a replacement of TransportAgent, 
+                         can be used to check and modify syncML messages (beffer between SyncManager and real TrnasportAgent)
+                       * added "integration/ManyItemsTestSyncSource", can be used as a simple SyncSource
+                         to generate N new items (vCard or vCal), for integration tests
+
+2009-06-01
+   - toccy: fixed possible loop in SyncManager::sync(), because of a missing <Final> tag in case of Server error
 
 2009-05-19
-    - toccy: [US2275] Some small refactoring of SyncManager::prepareSync() to process Get/Put commands, 
-                      moved in specialized methods under SyncMLProcessor
-    - toccy: [US2275] Added tests on Server capabilities (ServerDevInfTest suite)
-    - toccy: [US2275] Fixed parsed of devInf
-    - toccy: [US2275] Server capabilities are parsed and values are stored under Server config node
-    - toccy: [US2275] Added serverLastSync property under Server config node: to ask Server devInf if URL changed
-    - toccy: fixed bug #311685: avoid segfault after failed authentication with Memotoo server
+   - toccy: merged fix for bug #311685: avoid segfault after failed authentication with Memotoo server
 
-2009-05-18
-    - teo: extended FolderData to handle ext tag
-           added FolderExt to handle ext in FolderData
-           added MailAccount to wrap the Account information sent by Folder from the server
+2009-05-12
+   - magi : merged fix for bug 7041 (mem leak to sync meny contacts)
 
-2009-05-14
-    - toccy: [US2275] Added Get command to obtain Server Capabilies (added SyncMLBuilder::prepareServerDevInf())
-    - toccy: [US2275] Added 'forceServerDevInfo' param in ClientConfig, to let a Client to force the Get of Server devInf
-    - toccy: created branch US2275 (C++ Sync Clients - Support for Server capabilities) - rev. 702
+2009-05-06
+   - toccy: copied necessary fixes from trunk to v8 branch:
+            * CTPService: added dispose method, added safe checks, delete ctpThread on destructor
+            * fixed delete[] in AccessConfig::setSyncURL()
+            * SyncReport and SyncSourceReport initialize(): avoid a printf of NULL string
+            * MacTransportAgent: fixed issue with https
+            * Symbian FConnection::stopConnection(): removed (unused) method that needs capability not currently available
+            * test EventTest: fixed test on SyncItemListener
+            * integration tests: fixed typo (USARNAME -> USERNAME)
 
 2009-04-29
-    - magi: merged from branch US1746 (Picture Sync - avoid to send pictures twice)
-            fixed memory leak in vocl component for WinContact, WinCalendar, WinNote, WinTask
-
-2009-04-29
-   - toccy: updated trunk version to "8.5.0"
-
-2009-04-28
-    - toccy: FileSyncSource: the tag 'name' is just the file name(was the absolute path + name)
-                             added the 'Modified' tag information for files, when last modification time is available
-
-2009-04-23
-    - toccy: merged from branch US2194 (Picture Sync - handle pictures with the same name on different memory cards)
-
-2009-04-17
-    - toccy: [US2194] Added a LUID-Map in MediaSyncSource to generate unique item's keys (incremental numbers).
-             The LUID-Map is owned by MediaSyncSource and it's a PropertyFile containing <full path;LUID> pairs for each item in cache.
-
-2009-04-16
-    - toccy: created branch US2194 (Picture Sync - handle pictures with the same name on different memory cards) from r605
-
-2009-04-15
-    - toccy: merged from branch US1744 (Picture Sync - avoid to send a picture twice)
-             Added MediaSyncSource class under client.
-
-2009-04-09
-    - toccy: [US1744] MediaSyncSource: implemented smart slow-sync (treat slow syncs as it was a normal fast sync).
-    - toccy: [US1744] MediaSyncSource handles the cache stored inside the 'dir' folder (the folder under sync).
-             This cache file also contains special params (server url, username, swv) used by MediaSyncSource
-             to check if the cache is valid. Some CacheSyncSource methods have been overrided for this.
-    - toccy: [US1744] getItemSignature method has been reimplemented in MediaSyncSource: the signature is the file last_mod_time
-
-2009-04-08
-    - toccy: [US1744] FileSyncSource can now recurse into subfolders (added bool recurse, default value = false)
-    - magi:  Added usage of getSSLVerifyServer in the WinTransportAgent. By default
-             it is true as usual.
-             Added support to use also GET instead only POST method. Useful for Windows clients
-             that want to use the WinTransportAgent class with different verb.
-
-2009-04-06
-    - toccy: [US1744] added MediaSyncSource class, to define a special behavior for generic "media files" 
-             to be synchronized between the Server and a mobile Client
-    - toccy: created branch US1744 (Picture Sync - avoid to send a picture twice) from r579
-
-2009-04-01
-   - toccy: Added SyncSource boolean 'enabled' to enable/disable a source
-            without losing the sync direction information
-
-2009-03-30
-   - davide: added methods (setSendDevInfo, getSendDevInfo) to disable send of devinfo 
-             to DeviceConfig, SyncManagerConfig and AbstractSyncConfig classes. Added
-             check of sendDevInfo property (default value set to true) in SyncManger 
-             at sync start.
-             Design Document updated.
-             
-2009-03-23
-   - toccy: fixed FileSyncSource::insertItem(). Don't set the global error when inserting an item already existing.
-   - toccy: anticipated the fire of Items Added/Replaced/Deleted by Server in SyncManager, to inform the Client as
-            soon as possible because big items can be splitted in many chunks.
-
-2009-03-11
-   - toccy: SyncManager: moved the fireSyncItemEvent for items added by Client, so that we get notified 
-            by the APIs at the beginning of the sending of a big item.
-            Some small code refactoring of SyncManager
-            Added a default implementation for SyncItemListener (which logs at debug level the events)
-            Added syncItemListener for Client::Sync::vcard21 unit tests, to check the use of SyncItemListener during sync
-
-2009-02-17
-   - carlo: Added FThread and FSocket implementation for Windows
-            Added CTPService unit test
-            Enabled FThread unit test
-
-2009-02-12
-   - teo: Added ConfigSyncSource to sync some properties from the config.
-          Added unit test and integration test
-          Updated Design Document
+   - toccy: updated release version to v.8.0 (rev. 658)
 
 Funambol SDK C++ 7.1.6
 -----------------------

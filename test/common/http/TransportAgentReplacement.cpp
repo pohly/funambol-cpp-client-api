@@ -32,49 +32,65 @@
  * feasible for technical reasons, the Appropriate Legal Notices must display
  * the words "Powered by Funambol".
  */
-
-
-#include "syncml/core/SyncTypeArray.h"
+#include "http/constants.h"
+#include "http/HTTPHeader.h"
+#include "http/TransportAgent.h"
+#include "http/TransportAgentFactory.h"
+#include "base/util/utils.h"
 #include "base/globalsdef.h"
+
+#include "common/http/TransportAgentReplacement.h"
 
 USE_NAMESPACE
 
-SyncTypeArray::SyncTypeArray(){
 
-    syncTypeArray = new ArrayList();
 
-    SyncType TWO_WAY             = SyncType(1);
-    SyncType SLOW                = SyncType(2);
-    SyncType ONE_WAY_FROM_CLIENT = SyncType(3);
-    SyncType REFRESH_FROM_CLIENT = SyncType(4);
-    SyncType ONE_WAY_FROM_SERVER = SyncType(5);
-    SyncType REFRESH_FROM_SERVER = SyncType(6);
-    SyncType SERVER_ALERTED      = SyncType(7);
-    SyncType SMART_ONE_WAY_FROM_CLIENT             = SyncType(50);
-    SyncType SMART_ONE_WAY_FROM_SERVER             = SyncType(51);
-    SyncType INCREMENTAL_SMART_ONE_WAY_FROM_CLIENT = SyncType(52);
-    SyncType INCREMENTAL_SMART_ONE_WAY_FROM_SERVER = SyncType(53);
-
-    syncTypeArray->add(TWO_WAY);
-    syncTypeArray->add(SLOW);
-    syncTypeArray->add(ONE_WAY_FROM_CLIENT);
-    syncTypeArray->add(REFRESH_FROM_CLIENT);
-    syncTypeArray->add(ONE_WAY_FROM_SERVER);
-    syncTypeArray->add(REFRESH_FROM_SERVER);
-    syncTypeArray->add(SERVER_ALERTED);
-    syncTypeArray->add(SMART_ONE_WAY_FROM_CLIENT);
-    syncTypeArray->add(SMART_ONE_WAY_FROM_SERVER);
-    syncTypeArray->add(INCREMENTAL_SMART_ONE_WAY_FROM_CLIENT);
-    syncTypeArray->add(INCREMENTAL_SMART_ONE_WAY_FROM_SERVER);
-
+TransportAgentReplacement::TransportAgentReplacement() {
+    realTransportAgent = NULL;
 }
 
-SyncTypeArray::~SyncTypeArray() {
-    if (syncTypeArray) {
-        syncTypeArray->clear();  //delete syncTypeArray; syncTypeArray = NULL;
+TransportAgentReplacement::TransportAgentReplacement(URL& url, 
+                                                     Proxy& proxy, 
+                                                     unsigned int responseTimeout,
+                                                     unsigned int maxmsgsize) {
+
+    realTransportAgent = TransportAgentFactory::getTransportAgent(url, proxy, responseTimeout, maxmsgsize);
+}
+
+
+TransportAgentReplacement::~TransportAgentReplacement() {
+    if (realTransportAgent) {
+        delete realTransportAgent;
+        realTransportAgent = NULL;
     }
 }
 
-ArrayList* SyncTypeArray::getSyncTypeArray() {
-    return syncTypeArray;
+
+
+char* TransportAgentReplacement::sendMessage(const char* msg) {
+
+    // Actions before send
+    StringBuffer msgModified(msg);
+    beforeSendingMessage(msgModified);
+
+    // Send msg
+    const char* response = NULL;
+    if (realTransportAgent) {
+        response = realTransportAgent->sendMessage(msgModified);
+    }
+
+    // Actions after receive
+    StringBuffer responseModified(response);
+    afterReceivingResponse(responseModified);
+    if (response) {
+        delete [] response;
+        response = NULL;
+    }
+    if (responseModified.length() == 0) {
+        return NULL;
+    }
+
+    // Returns a new allocated buffer
+    return (char*)stringdup(responseModified.c_str());
 }
+
