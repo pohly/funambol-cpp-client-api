@@ -65,20 +65,27 @@ class MailData : public ArrayElement {
         class ExtMailData : public ArrayElement {
             public:
                 ExtMailData() {
-                    attachName = 0;
-                    attachSize = 0;
+                    attachName = NULL;
+                    attachSize = NULL;
+                    attachMime = NULL;
+                    attachURL  = NULL;
                 }
-                ~ExtMailData() {
-                    if (attachName) {
-                        delete [] attachName; attachName = NULL;
-                    }
+                ~ExtMailData() {                    
+                    delete [] attachName; attachName = NULL;
+                    delete [] attachMime; attachMime = NULL;                                        
+                    delete [] attachURL;  attachURL = NULL;                    
                 }
                 char*       attachName;
                 long        attachSize;
+                char*       attachMime;
+                char*       attachURL;
+
                 ArrayElement* clone() {
                     ExtMailData* ret = new ExtMailData();
                     ret->attachName = stringdup(attachName);
                     ret->attachSize = attachSize;
+                    ret->attachMime = stringdup(attachMime);
+                    ret->attachURL  = stringdup(attachURL);
                     return ret;
                 }
 
@@ -152,6 +159,18 @@ class MailData : public ArrayElement {
                 return ((ExtMailData*)remainingAttachments->get(index))->attachSize;
             else
                 return 0;
+        }
+        const char* getAttachmentMime(unsigned int index) {
+            if (remainingAttachments)
+                return ((ExtMailData*)remainingAttachments->get(index))->attachMime;
+            else
+                return NULL;
+        }
+        const char* getAttachmentURL(unsigned int index) {
+            if (remainingAttachments)
+                return ((ExtMailData*)remainingAttachments->get(index))->attachURL;
+            else
+                return NULL;
         }
 
 
