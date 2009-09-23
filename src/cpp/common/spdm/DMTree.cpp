@@ -104,6 +104,7 @@ ManagementNode* DMTree::readManagementNode(const char* node) {
 
         if (!childrenNames){
             LOG.error("Error in getChildrenNames");
+            delete n;
             return NULL;
         }
         int i = 0;

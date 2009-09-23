@@ -100,7 +100,7 @@ void vCardConverter::getContact(Contact** outputContact) {
 bool vCardConverter::convert(WString& errorDescription, long* errorCode) {
     errorDescription = TEXT("");
     *errorCode = ERROR_SUCCESS;
-
+    
     if(!contact && !vCard)
         return false;
     if(contact && vCard)
@@ -112,14 +112,16 @@ bool vCardConverter::convert(WString& errorDescription, long* errorCode) {
         }
     }
     if (vCard) {
-        WCHAR* vCardCopy = new WCHAR[wcslen(vCard) + 1];
-        vCardCopy =  vCard;
-        Contact* invalidatedContact = (Contact*)VConverter::parse(vCardCopy);
-        if (invalidatedContact && validate((VObject*)invalidatedContact, errorDescription, errorCode))
-            contact = invalidatedContact->clone();
-        else
+        Contact* invalidatedContact = (Contact*)VConverter::parse(vCard);
+        if (invalidatedContact && 
+            validate((VObject*)invalidatedContact, errorDescription, errorCode)) {
+            contact = invalidatedContact; // contact validated, point class member to it
+        }   
+        else {
+            // contact not validated, just release it
+            delete invalidatedContact; invalidatedContact = NULL;
             return false;
-        delete invalidatedContact; invalidatedContact = NULL;
+        }
     }
 
    return true;

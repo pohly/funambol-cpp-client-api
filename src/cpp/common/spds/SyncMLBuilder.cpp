@@ -94,34 +94,37 @@ void SyncMLBuilder::resetMsgRef() {
 
 void SyncMLBuilder::addItemStatus(ArrayList* previousStatus, Status* status) {
 
-    if (previousStatus->size() == 0) {
+    if (status == NULL) {
+        return;
+    }
+
+    int psSize = previousStatus->size();
+
+    if (psSize == 0) {
         previousStatus->add(*status);
         return;
     }
 
-    bool found    = false;
-    Status* s     = NULL;
+    Status* s = NULL;
+    ArrayList* list = NULL;
 
-    if (status == NULL)
-        return;
-    ArrayList* list = new ArrayList();
-    for (int i = 0; i < previousStatus->size(); i++) {
-
+    for (int i = 0 ; i < psSize; i++) {
         s = (Status*)previousStatus->get(i);
+        // If the command and the status code are the same, just add the item key
+        // to the list of items with the same status code.
         if ((strcmp(s->getCmd(), status->getCmd()) == 0) &&
             (strcmp(s->getData()->getData(), status->getData()->getData()) == 0) &&
             (strcmp(s->getCmdRef(), status->getCmdRef()) == 0) ) {
-                    list = s->getItems();
-                    for (int j = 0; j < status->getItems()->size(); j++) {
-                        list->add(*((Item*)(status->getItems())->get(j)));
-                        found = true;
-                    }
+                list = s->getItems();
+                for (int j = 0; j < status->getItems()->size(); j++) {
+                    list->add(*((Item*)(status->getItems())->get(j)));
+                    return; // the item already exists, no need to add it again
                 }
+        }
 
     }
-    if (!found)
-        previousStatus->add(*status);
-
+    // add the status item because it's not present yet.
+    previousStatus->add(*status);
 }
 
 

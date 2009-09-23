@@ -231,15 +231,14 @@ char* MD5CredentialData(const char* userName, const char* password, const char* 
     char base64Nonce [64];
     char token      [512];
     char* md5Digest = NULL;
-    char ch          [3];
+    const char ch[] = ":";
 
     memset(digest,      0, 16);
     memset(base64,      0, 64);
     memset(base64Nonce, 0, 64);
     memset(cnonce,      0, 64);
     memset(token,       0, 512);
-    sprintf(ch, ":");
-
+    
     sprintf(token, "%s:%s", userName, password);
     len = strlen(token);
 

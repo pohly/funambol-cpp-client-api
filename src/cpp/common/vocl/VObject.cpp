@@ -102,6 +102,10 @@ void VObject::addProperty(VProperty* vProp) {
     properties->add(*vProp);
 }
 
+void VObject::addProperty(VProperty& vProp) {
+    properties->add(vProp);
+}
+
 int VObject::propertiesCount() {
     return properties->size();
 }

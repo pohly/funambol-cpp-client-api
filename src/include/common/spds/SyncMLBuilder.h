@@ -114,14 +114,18 @@ class SyncMLBuilder {
         Status*  prepareAlertStatus(SyncSource& s,  ArrayList* alert, int authStatusCode);
 
         /*
-        * Prepare the status for Item command. COMMAND could be ADD, REPLACE, DEL
-        */
+         * Prepare the status for Item command. COMMAND could be ADD, REPLACE, DEL
+         */
         Status*  prepareItemStatus(const char*  COMMAND, const char*  key, const char*  cmdRef, int code);
 
         /*
-        * Add the status to the corrent list of commands. It is responsible to collapse the status if needed
-        */
-        void     addItemStatus(ArrayList* previousStatus, Status* status);
+         * Add the status to the corrent list of commands. 
+         * It is responsible to collapse the status if needed.
+         * 
+         * @param previousStatus the ArrayList containing the current status items
+         * @param status the new status item to add
+         */
+        void addItemStatus(ArrayList* previousStatus, Status* status);
 
         /*
         * Prepare the status for Sync command

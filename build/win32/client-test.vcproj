@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="Windows-1252"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="8,00"
+	Version="8.00"
 	Name="client-test"
 	ProjectGUID="{68DB1569-6AFC-4288-B7B0-79AF45F2F37C}"
 	RootNamespace="cppunit"
@@ -326,10 +326,6 @@
 					>
 				</File>
 				<File
-					RelativePath="..\..\test\integration\ConfigSyncSourceTest.h"
-					>
-				</File>
-				<File
 					RelativePath="..\..\test\integration\ManyItemsTestSyncSource.cpp"
 					>
 				</File>
@@ -338,15 +334,7 @@
 					>
 				</File>
 				<File
-					RelativePath="..\..\test\integration\MappingsTest.h"
-					>
-				</File>
-				<File
 					RelativePath="..\..\test\integration\MappingTestSyncSource.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\test\integration\MappingTestSyncSource.h"
 					>
 				</File>
 				<File
@@ -398,6 +386,22 @@
 			>
 			<File
 				RelativePath="..\..\test\ClientTest.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\test\integration\ConfigSyncSourceTest.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\test\integration\ManyItemsTestSyncSource.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\test\integration\MappingsTest.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\test\integration\MappingTestSyncSource.h"
 				>
 			</File>
 			<File

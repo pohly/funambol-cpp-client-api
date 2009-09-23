@@ -343,34 +343,31 @@ StringBuffer* Formatter::getMem(Mem* mem) {
 }
 
 StringBuffer* Formatter::getNextNonce(NextNonce* nextNonce) {
-    if (!nextNonce)
+    if (!nextNonce) {
         return NULL;
+    }
 
-    StringBuffer* ret = new StringBuffer();
-    ret = getValue(NEXT_NONCE, nextNonce->getValueAsBase64());
-    return ret;
+    return getValue(NEXT_NONCE, nextNonce->getValueAsBase64());
 }
 
 StringBuffer* Formatter::getAnchor(Anchor* anchor) {
-    if (!anchor)
+    if (!anchor) {
         return NULL;
+    }
 
-    StringBuffer* ret = NULL;
-    StringBuffer* buf = new StringBuffer();
+    StringBuffer buf;
     StringBuffer* tmp = NULL;
 
     tmp = getValue(LAST,  anchor->getLast());
-    buf->append(tmp);
-    if (tmp) { delete tmp; tmp = NULL; }
+    buf.append(tmp);
+    delete tmp;
 
     tmp = getValue(NEXT,  anchor->getNext());
-    buf->append(tmp);
-    if (tmp) { delete tmp; tmp = NULL; }
+    buf.append(tmp);
+    delete tmp;
 
-    ret = getValue(ANCHOR, (char *)buf->c_str(), METINFO);
+    return getValue(ANCHOR, buf.c_str(), METINFO);
 
-    if (buf) {delete buf; buf = NULL; }
-    return ret;
 }
 
 /*

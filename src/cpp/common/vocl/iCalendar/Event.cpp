@@ -938,17 +938,21 @@ VProperty* Event::getVPropertyFromiCalProperty(WCHAR* name, iCalProperty* prop) 
         if(prop->getValueType())
             vprop->addParameter(TEXT("VALUE"), prop->getValueType());
         if(prop->getXParam()) {
-            ArrayList* xParamList = new ArrayList();
-            xParamList = prop->getXParam();
+            ArrayList* xParamList = prop->getXParam();
             for(int i = 0; i<xParamList->size(); i++) {
                 WKeyValuePair* xParam = (WKeyValuePair*)xParamList->get(i);
-                if(xParam->getKey())
-                    if(xParam->getValue())
+                if(xParam->getKey()) {
+                    if(xParam->getValue()) {
                         vprop->addParameter(xParam->getKey(), xParam->getValue());
-                    else
+                    }
+                    else {
                         vprop->addParameter(xParam->getKey(), NULL);
+                    }
+                }
             }
-            delete xParamList; xParamList = NULL;
+            //XXX!!! Deleting an internal object of the class! 
+            //REMOVE IT!
+            //delete xParamList; xParamList = NULL;
         }
 
         return vprop;
