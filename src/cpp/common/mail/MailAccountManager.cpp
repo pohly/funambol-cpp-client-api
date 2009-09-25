@@ -268,6 +268,36 @@ StringBuffer MailAccountManager::getIdOfAccount(const StringBuffer& accountName)
 }
 
 
+MailAccount* MailAccountManager::getAccountByName(const wchar_t* name)
+{
+    MailAccount* account = NULL;
+
+    StringBuffer accountName;
+    accountName.convert(name);
+
+    LOG.info("%s: checking for account name: %s", __FUNCTION__, accountName.c_str());
+    if (accountName.empty()) {
+        return account;
+    }
+
+    const ArrayList& accounts = config.getMailAccounts();
+
+    for (int i=0; i<accounts.size(); i++) {
+        MailAccount* ma = (MailAccount*)accounts[i];
+        if (ma) {
+            LOG.info("%s: account name: %s", __FUNCTION__, ma->getName().c_str());
+            if (accountName == ma->getName()) {
+                // found
+                account = new MailAccount(*ma);
+            }
+        }
+    }
+
+    return account;
+}
+
+
+
 StringBuffer MailAccountManager::getIdOfFirstAccount() {
 
     StringBuffer id("");
