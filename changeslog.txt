@@ -1,5 +1,5 @@
 
-Funambol SDK C++ 8.0.6
+Funambol SDK C++ 8.0.7
 -----------------------
 2009-10-05
   - Teo: Added retry mechanism. When we have network errors we try to resend
