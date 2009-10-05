@@ -207,9 +207,11 @@ char* MacTransportAgent::sendMessage(const char* msg){
    
             if (statusCode == -1) {                     //  -> retry
                 LOG.debug("Offline mode detected: go-online and retry...");
+                LOG.debug("Network error: let's wait 5 seconds before retry");
                 resetError();
-                sleep(1);
+                sleep(5);
             }else if (statusCode == 400) {
+                LOG.debug("Network error: let's wait 1 second before retry");
                 sleep(1);
             }else if(statusCode == 401 || statusCode == 402 || statusCode == 403 ||
                      statusCode == 407 || statusCode >= 500 || (statusCode >= 200 && statusCode < 300)) { //don't retry in these cases 500, 401, 402, 403, 407
