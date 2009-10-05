@@ -1,7 +1,14 @@
-2009-09-03
+
+Funambol SDK C++ 8.0.6
+-----------------------
+2009-10-05
+  - Teo: Added retry mechanism. When we have network errors we try to resend
+         the message 2 more times.
+  - Teo: Code correction for iPhone SDK 3.0
+
 Funambol SDK C++ 8.0.5 (V8 SP1)
 -----------------------
-
+2009-09-03
    - toccy: fixed bug #7794: sync fails when server sends multipart item + another item in one message
             Fixed the SyncML parser (Parser::getCommonCommandList) in order to process commands from the Server 
             in the same order the Server sent them.
