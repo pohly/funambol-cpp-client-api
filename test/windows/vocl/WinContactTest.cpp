@@ -43,8 +43,9 @@
 #include "base/util/utils.h"
 #include "base/globalsdef.h"
 
+
 #ifdef _WIN32
-# define TESTDIR "../../test/testcases/"
+# define TESTDIR "."
 #else
 # define TESTDIR "testcases"
 #endif
