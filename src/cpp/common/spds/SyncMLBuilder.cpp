@@ -525,7 +525,7 @@ AbstractCommand *SyncMLBuilder::prepareServerDevInf()
     /*
     <Get>
         <CmdID>3</CmdID>
-        <Meta><Type xmlns=’syncml:metinf’>application/vnd.syncml-devinf+xml</Type></Meta>
+        <Meta><Type xmlns=Ã­syncml:metinfÃ­>application/vnd.syncml-devinf+xml</Type></Meta>
         <Item>
             <Target><LocURI>./devinf12</LocURI></Target>
         </Item>
@@ -805,7 +805,7 @@ ComplexData* SyncMLBuilder::getComplexData(SyncItem* syncItem,
 ArrayList* SyncMLBuilder::prepareItem(SyncItem* syncItem,
                                       long &syncItemOffset, long maxBytes,
                                       long &sentBytes,
-                                      const char* type, char* COMMAND) {
+                                      const char* /* type */, const char* COMMAND) {
     ArrayList* list = new ArrayList();
 
     Source* sou = new Source(_wcc(syncItem->getKey()));
@@ -813,9 +813,6 @@ ArrayList* SyncMLBuilder::prepareItem(SyncItem* syncItem,
     Meta m;
     bool hasMoreData = false;
     bool isFirstChunk = !syncItemOffset;
-    MetInf metInf(NULL, (char*)type, NULL, 0,
-                      NULL, NULL, NULL, 0, 0, NULL, NULL);
-
     if (strcmp(DELETE_COMMAND_NAME, COMMAND) != 0) {
         if (syncItem->getDataEncoding()) {
             m.setFormat(syncItem->getDataEncoding());
@@ -830,12 +827,6 @@ ArrayList* SyncMLBuilder::prepareItem(SyncItem* syncItem,
         // skip all item data for deleted items
         syncItemOffset = syncItem->getDataSize();
         sentBytes = 0;
-    }
-
-
-    // set meta inf for data type
-    if (type) {    
-        m.setMetInf(&metInf);
     }
 
     char *tparent = toMultibyte(syncItem->getTargetParent());
@@ -856,7 +847,7 @@ ArrayList* SyncMLBuilder::prepareItem(SyncItem* syncItem,
 
 long SyncMLBuilder::addItem(ModificationCommand* &modificationCommand,
                             long &syncItemOffset, long maxBytes,
-                            char* COMMAND, SyncItem* syncItem, const char* defaultType) {
+                            const char* COMMAND, SyncItem* syncItem, const char* defaultType) {
     if (syncItem == NULL) {
          return 0;
     }
@@ -865,16 +856,9 @@ long SyncMLBuilder::addItem(ModificationCommand* &modificationCommand,
     // Only fallback to the default type configured for its
     // source if (broken?) SyncSources do not set a in their
     // items.
-    const wchar_t* itemType = syncItem->getDataType();
-    const char *type = NULL;
-
-    if (itemType) {
-        type = toMultibyte(itemType);
-        LOG.info("setting sync item type: %s", type);
-    } else {
-        if (defaultType) {
-            type = stringdup(defaultType);
-        }
+    const char *type = _wcc(syncItem->getDataType());
+    if (!type || !type[0]) {
+        type = defaultType;
     }
 
     if (!modificationCommand) {
@@ -882,13 +866,18 @@ long SyncMLBuilder::addItem(ModificationCommand* &modificationCommand,
         char* cmdid = itow(cmdID);
         CmdID commandID(cmdid);
         delete [] cmdid; cmdid = NULL;
-       
+        MetInf metInf(NULL, (char*)type, NULL, 0,
+                      NULL, NULL, NULL, 0, 0, NULL, NULL);
+        Meta meta;
+
+        meta.setMetInf(&metInf);
+
         if (strcmp(ADD_COMMAND_NAME, COMMAND) == 0)
-            modificationCommand = new Add(&commandID, false, NULL, NULL, NULL);
+            modificationCommand = new Add(&commandID, false, NULL, &meta, NULL);
         else if (strcmp(REPLACE_COMMAND_NAME, COMMAND) == 0){
-            modificationCommand = new Replace(&commandID, false, NULL, NULL, NULL);
+            modificationCommand = new Replace(&commandID, false, NULL, &meta, NULL);
         } else if (strcmp(DELETE_COMMAND_NAME, COMMAND) == 0) {
-            modificationCommand = new Delete(&commandID, false, false, false, NULL, NULL, NULL);
+            modificationCommand = new Delete(&commandID, false, false, false, NULL, &meta, NULL);
         }
     }
 
@@ -902,10 +891,6 @@ long SyncMLBuilder::addItem(ModificationCommand* &modificationCommand,
     assert(!strcmp(DELETE_COMMAND_NAME, COMMAND) || syncItemOffset <= syncItem->getDataSize());
     list->add(tmpList);
     delete tmpList;
-
-    if (type) {
-        delete [] type;
-    }
 
     return sentBytes;
 }

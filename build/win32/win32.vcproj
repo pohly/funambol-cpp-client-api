@@ -3357,16 +3357,56 @@
 					>
 				</File>
 				<File
+					RelativePath="..\..\src\cpp\common\mail\MailAccountManager.cpp"
+					>
+				</File>
+				<File
 					RelativePath="..\..\src\cpp\common\mail\MailData.cpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\src\cpp\common\email\MailMessage.cpp"
+					RelativePath="..\..\src\cpp\common\mail\MailMessage.cpp"
 					>
+					<FileConfiguration
+						Name="Debug|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							ObjectFile="$(IntDir)\$(InputName)1.obj"
+							XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							ObjectFile="$(IntDir)\$(InputName)1.obj"
+							XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
+						/>
+					</FileConfiguration>
 				</File>
 				<File
-					RelativePath="..\..\src\cpp\common\email\MailSyncSourceConfig.cpp"
+					RelativePath="..\..\src\cpp\common\mail\MailSyncSourceConfig.cpp"
 					>
+					<FileConfiguration
+						Name="Debug|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							ObjectFile="$(IntDir)\$(InputName)1.obj"
+							XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							ObjectFile="$(IntDir)\$(InputName)1.obj"
+							XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
+						/>
+					</FileConfiguration>
 				</File>
 			</Filter>
 		</Filter>
@@ -4394,11 +4434,11 @@
 				Name="email"
 				>
 				<File
-					RelativePath="..\..\src\include\common\email\MailAccount.h"
+					RelativePath="..\..\src\include\common\mail\MailAccount.h"
 					>
 				</File>
 				<File
-					RelativePath="..\..\src\include\common\mail\MailAccount.h"
+					RelativePath="..\..\src\include\common\email\MailAccount.h"
 					>
 				</File>
 				<File
