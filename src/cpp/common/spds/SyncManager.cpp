@@ -2570,6 +2570,7 @@ void SyncManager::clearServerDevInf() {
     config.setServerLoSupport (false);
     config.setServerNocSupport(false);
     config.setServerSmartSlowSync(0);
+    config.setServerMultipleEmailAccount(0);
     config.setServerLastSyncURL("");
 }
 

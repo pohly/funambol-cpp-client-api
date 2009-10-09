@@ -943,6 +943,19 @@ bool DMTClientConfig::readExtDevConfig(ManagementNode& /* syncMLNode */,
 			serverConfig.setSmartSlowSync(2);
 		}
         delete [] tmp;
+
+        tmp = extNode.readPropertyValue(PROPERTY_MULTIPLE_EMAIL_ACCOUNT);
+		if(strcmp(tmp,"")==0){
+			serverConfig.setMultipleEmailAccount(2);
+		}else if(strcmp(tmp,"0")==0){
+			serverConfig.setMultipleEmailAccount(0);
+		}else if(strcmp(tmp,"1")==0){
+			serverConfig.setMultipleEmailAccount(1);
+		}else if(strcmp(tmp,"2")==0){
+			serverConfig.setMultipleEmailAccount(2);
+		}
+        delete [] tmp;
+
 		tmp = extNode.readPropertyValue(PROPERTY_UTC);
         serverConfig.setUtc((*tmp == '1') ? true : false);
         delete [] tmp;
@@ -1004,6 +1017,19 @@ void DMTClientConfig::saveExtDevConfig(ManagementNode& /* syncMLNode */,
 			extNode.setPropertyValue(PROPERTY_SMART_SLOW_SYNC, "2");
 			break;
 		}
+
+        switch (serverConfig.getMultipleEmailAccount()){
+			case 0:
+			extNode.setPropertyValue(PROPERTY_MULTIPLE_EMAIL_ACCOUNT, "0");
+			break;
+			case 1:
+			extNode.setPropertyValue(PROPERTY_MULTIPLE_EMAIL_ACCOUNT, "1");
+			break;
+			case 2:
+			extNode.setPropertyValue(PROPERTY_MULTIPLE_EMAIL_ACCOUNT, "2");
+			break;
+		}
+
 		//extNode.setPropertyValue(PROPERTY_SMART_SLOW_SYNC, itow(  ));
 		extNode.setPropertyValue(PROPERTY_UTC,
                              (serverConfig.getUtc() ? "1": "0") );
