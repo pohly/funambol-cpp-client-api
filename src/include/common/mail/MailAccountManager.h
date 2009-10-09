@@ -146,10 +146,14 @@ public:
     StringBuffer getIdOfAccount(const StringBuffer& accountName);
 
     /**
-    * Returns an account class by name
+    * Returns an account by name
     */
     MailAccount* getAccountByName(const wchar_t* accountName);
 
+    /**
+    * Returns a mail account by mail address
+    */
+    MailAccount* getAccountFromMailAddr(const char* mailAddr);
 
     /// Returns the number of existing email accounts.
     int getAccountNumber();

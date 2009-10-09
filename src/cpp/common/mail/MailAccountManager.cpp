@@ -296,6 +296,33 @@ MailAccount* MailAccountManager::getAccountByName(const wchar_t* name)
     return account;
 }
 
+MailAccount* MailAccountManager::getAccountFromMailAddr(const char* mailAddr)
+{
+    MailAccount* account = NULL;
+
+    if (mailAddr == NULL) {
+        return account;
+    }
+
+    const ArrayList& accounts = config.getMailAccounts();
+
+    for (int i=0; i<accounts.size(); i++) {
+        MailAccount* ma = (MailAccount*)accounts[i];
+        if (ma) {
+            const char* addr = ma->getEmailAddress();
+            if (addr) {
+                if (strcmp(mailAddr, addr) == 0) {
+                    // found
+                    account = ma;
+                }
+            } else {
+                LOG.error("%s: can't get email address from account");
+            }
+        }
+    }
+
+    return account;
+}
 
 
 StringBuffer MailAccountManager::getIdOfFirstAccount() {
