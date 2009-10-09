@@ -131,6 +131,7 @@
 #define PROPERTY_DEVINF_HASH                "devInfHash"
 #define PROPERTY_SEND_CLIENT_DEVINF         "sendClientDevInf"
 #define PROPERTY_SMART_SLOW_SYNC            "smartSlowSync"
+#define PROPERTY_MULTIPLE_EMAIL_ACCOUNT     "multipleEmailAccount"
 #define PROPERTY_SERVER_LAST_SYNC_URL       "lastSyncURL"
 
 
