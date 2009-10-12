@@ -65,9 +65,16 @@ const char* FolderExt::format(){
     out += XNam;
     out += "</XNam>";
     for(int i = 0; i<XVals.size(); i++){
-        out += "<XVal>";
-        out += ((StringBuffer*)(XVals.get(i)))->c_str();
-        out += "</XVal>";
+        const char* xVal = ((StringBuffer*)(XVals.get(i)))->c_str();
+        
+        if (xVal) {
+            ((StringBuffer*)(XVals.get(i)))->c_str();
+            out += "<XVal>";
+            out += xVal;
+            out += "</XVal>";
+        } else {
+            out += "<XVal/>";
+        }
     }
     out += "\n</Ext>";
     

@@ -155,6 +155,12 @@ public:
     */
     MailAccount* getAccountFromMailAddr(const char* mailAddr);
 
+    /**
+    * Returns an account class by id
+    */
+    MailAccount* getAccountById(const wchar_t* accountId);
+
+
     /// Returns the number of existing email accounts.
     int getAccountNumber();
 

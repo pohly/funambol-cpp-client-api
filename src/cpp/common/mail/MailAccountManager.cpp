@@ -275,7 +275,6 @@ MailAccount* MailAccountManager::getAccountByName(const wchar_t* name)
     StringBuffer accountName;
     accountName.convert(name);
 
-    LOG.info("%s: checking for account name: %s", __FUNCTION__, accountName.c_str());
     if (accountName.empty()) {
         return account;
     }
@@ -285,10 +284,38 @@ MailAccount* MailAccountManager::getAccountByName(const wchar_t* name)
     for (int i=0; i<accounts.size(); i++) {
         MailAccount* ma = (MailAccount*)accounts[i];
         if (ma) {
-            LOG.info("%s: account name: %s", __FUNCTION__, ma->getName().c_str());
             if (accountName == ma->getName()) {
                 // found
                 account = new MailAccount(*ma);
+            }
+        }
+    }
+
+    return account;
+}
+
+MailAccount* MailAccountManager::getAccountById(const wchar_t* id)
+{
+    MailAccount* account = NULL;
+    
+    if (id == NULL) {
+        LOG.error("%s: no account id specified", __FUNCTION__);
+        return account;
+    }
+   
+    const ArrayList& accounts = config.getMailAccounts();
+
+    for (int i=0; i<accounts.size(); i++) {
+        MailAccount* ma = (MailAccount*)accounts[i];
+        if (ma) {
+            const wchar_t* storedId = ma->getID();
+            if (storedId) { 
+                if (wcscmp(id, storedId) == 0) {
+                    // found
+                    account = ma;
+                }
+            } else {
+                LOG.error("%s: error getting ID from mail account", __FUNCTION__);
             }
         }
     }
@@ -303,7 +330,7 @@ MailAccount* MailAccountManager::getAccountFromMailAddr(const char* mailAddr)
     if (mailAddr == NULL) {
         return account;
     }
-
+    
     const ArrayList& accounts = config.getMailAccounts();
 
     for (int i=0; i<accounts.size(); i++) {
