@@ -108,11 +108,14 @@ wstring WinNote::toString() {
 
     if (getProperty(L"Subject", element)) {
         vp = new VProperty(TEXT("SUMMARY"), element.c_str());
+        std::wstring subject = element;
         vo->addProperty(vp);
         delete vp; vp = NULL;
 
-        if (element.length() > 0 && getProperty(L"Body", element)) {
-            element = element.substr(element.find_first_of(L"\n")+1);
+        if (getProperty(L"Body", element)) {
+            if (subject.length() == 0 || element.find_first_of(subject) == 0) {
+                element = element.substr(element.find_first_of(L"\n")+1);
+            }
             vp = new VProperty(TEXT("BODY"), element.c_str());
             vo->addProperty(vp);
             delete vp; vp = NULL;
