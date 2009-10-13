@@ -386,6 +386,14 @@
 					</File>
 				</Filter>
 			</Filter>
+			<Filter
+				Name="inputStream"
+				>
+				<File
+					RelativePath="..\..\test\common\inputStream\BufferInputStreamTest.cpp"
+					>
+				</File>
+			</Filter>
 		</Filter>
 		<Filter
 			Name="Header Files"
