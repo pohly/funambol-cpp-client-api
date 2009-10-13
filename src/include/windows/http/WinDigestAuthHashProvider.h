@@ -39,10 +39,13 @@
 #include "base/fscapi.h"
 #include "http/HashProvider.h"
 
+BEGIN_NAMESPACE
+
 class WinDigestAuthHashProvider : public HashProvider {
 public:
 	WinDigestAuthHashProvider() {}
 	StringBuffer getHash(const StringBuffer str) const;
 };
 
+END_NAMESPACE
 #endif

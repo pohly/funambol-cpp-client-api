@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="Windows-1252"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="8,00"
+	Version="8.00"
 	Name="libfunambol"
 	ProjectGUID="{D279EE74-36FB-4C4C-8F29-04947825C53E}"
 	RootNamespace="win32"
@@ -395,6 +395,10 @@
 				Name="http"
 				>
 				<File
+					RelativePath="..\..\src\cpp\common\http\DigestAuthentication.cpp"
+					>
+				</File>
+				<File
 					RelativePath="..\..\src\cpp\common\http\HTTPHeader.cpp"
 					>
 					<FileConfiguration
@@ -505,6 +509,10 @@
 					</FileConfiguration>
 				</File>
 				<File
+					RelativePath="..\..\src\cpp\windows\http\WinDigestAuthHashProvider.cpp"
+					>
+				</File>
+				<File
 					RelativePath="..\..\src\cpp\windows\http\WinTransportAgent.cpp"
 					>
 				</File>
@@ -543,6 +551,10 @@
 					</FileConfiguration>
 				</File>
 				<File
+					RelativePath="..\..\src\cpp\common\client\FileLogAccessor.cpp"
+					>
+				</File>
+				<File
 					RelativePath="..\..\src\cpp\common\client\FileSyncSource.cpp"
 					>
 				</File>
@@ -552,6 +564,14 @@
 				</File>
 				<File
 					RelativePath="..\..\src\cpp\common\client\OptionParser.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\cpp\common\client\PostDataLogSender.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\cpp\common\client\SendLogManager.cpp"
 					>
 				</File>
 				<File
@@ -3697,6 +3717,10 @@
 				</File>
 				<File
 					RelativePath="..\..\src\include\common\http\URL.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\include\windows\http\windigestauthhashprovider.h"
 					>
 				</File>
 				<File

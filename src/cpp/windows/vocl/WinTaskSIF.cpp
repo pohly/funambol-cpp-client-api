@@ -48,13 +48,10 @@ using namespace std;
 // Constructor
 WinTaskSIF::WinTaskSIF() {
     sifFields = NULL;
-    sif = L"";
 }
 
 // Constructor: fills propertyMap parsing the passed SIF string
-WinTaskSIF::WinTaskSIF(const wstring dataString, const wchar_t** fields, const wchar_t** recFields) {
-    
-    sif = L"";
+WinTaskSIF::WinTaskSIF(const wstring& dataString, const wchar_t** fields, const wchar_t** recFields) {
     sifFields = fields;
     recPatternSIF.setSifFields(recFields);
 
@@ -65,9 +62,10 @@ WinTaskSIF::WinTaskSIF(const wstring dataString, const wchar_t** fields, const w
 WinTaskSIF::~WinTaskSIF() {
 }
 
-wstring& WinTaskSIF::toString() {
+wstring WinTaskSIF::toString() {
     
     wstring propertyValue;
+    wstring sif;
     sif = L"<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";   
     sif += L"<task>\n";
 
@@ -104,7 +102,7 @@ wstring& WinTaskSIF::toString() {
 
 
 
-int WinTaskSIF::parse(const wstring data) {
+int WinTaskSIF::parse(const wstring &data) {
     
     if (!sifFields) {
         LOG.error("%s", ERR_SIFFIELDS_NULL);
