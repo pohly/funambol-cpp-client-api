@@ -100,7 +100,7 @@ wstring WinRecurrence::toString() {
     getProperty(L"DayOfMonth",     tmp);       dayofmonth  = _wtoi(tmp.c_str());
     getProperty(L"Instance",       tmp);       instance    = _wtoi(tmp.c_str());
     getProperty(L"MonthOfYear",    tmp);       monthofyear = _wtoi(tmp.c_str());
-    getProperty(L"NoEndDate",      tmp);       noEnd       = (tmp != TEXT("0"));
+    getProperty(L"NoEndDate",      tmp);       noEnd       = (tmp == TEXT("1"));
     getProperty(L"PatternStartDate", pStart);
     // Note: "PatternEndDate" is no more sent: using only "Occurrences"
 
