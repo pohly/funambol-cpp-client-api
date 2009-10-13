@@ -764,7 +764,7 @@ int WinEvent::parse(const wstring & dataString) {
             }
         }
         else if (!wcscmp(name, L"ATTENDEE")) {
-            recipients.push_back(WinRecipient(element));
+            recipients.push_back(WinRecipient(vp->toString()));
         }
 
         //
