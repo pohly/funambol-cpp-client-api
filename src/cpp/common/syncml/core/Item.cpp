@@ -286,8 +286,8 @@ void Item::setSourceParent(const char*parent) {
  * Item can be an element of an Array object
  */
 ArrayElement* Item::clone() {
-    //Item* ret = new Item(target, source, targetParent, sourceParent, meta, data, moreData);
-    Item* ret = new Item(target, source, meta, data, moreData);
+    Item* ret = new Item(target, source, targetParent, sourceParent, meta, data, moreData);
+    //Item* ret = new Item(target, source, meta, data, moreData);
     return ret;
 }
 

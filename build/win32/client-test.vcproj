@@ -190,10 +190,6 @@
 				RelativePath="..\..\test\TestFileSource.cpp"
 				>
 			</File>
-			<File
-				RelativePath="..\..\test\TestFileSource.h"
-				>
-			</File>
 			<Filter
 				Name="spds"
 				>
@@ -330,10 +326,6 @@
 					>
 				</File>
 				<File
-					RelativePath="..\..\test\integration\ManyItemsTestSyncSource.cpp"
-					>
-				</File>
-				<File
 					RelativePath="..\..\test\integration\MappingsTest.cpp"
 					>
 				</File>
@@ -357,6 +349,10 @@
 					RelativePath="..\..\src\cpp\common\client\TestFileSyncSource.cpp"
 					>
 				</File>
+				<File
+					RelativePath="..\..\test\integration\TestSyncSource.cpp"
+					>
+				</File>
 			</Filter>
 			<Filter
 				Name="push"
@@ -378,6 +374,18 @@
 					>
 				</File>
 			</Filter>
+			<Filter
+				Name="vocl"
+				>
+				<Filter
+					Name="winObjects"
+					>
+					<File
+						RelativePath="..\..\test\windows\vocl\WinContactTest.cpp"
+						>
+					</File>
+				</Filter>
+			</Filter>
 		</Filter>
 		<Filter
 			Name="Header Files"
@@ -389,7 +397,19 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\test\TestFileSource.h"
+				>
+			</File>
+			<File
 				RelativePath="..\..\src\include\common\client\TestFileSyncSource.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\test\integration\TestSyncSource.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\test\testUtils.cpp"
 				>
 			</File>
 		</Filter>
@@ -518,6 +538,102 @@
 						Name="VCCustomBuildTool"
 						Description="Copying $(InputDir)$(InputFileName)"
 						CommandLine="copy $(InputDir)$(InputFileName) $(TargetDir)&#x0D;&#x0A;"
+						Outputs="$(TargetDir)$(InputFileName)"
+					/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\test\testcases\vcard4Wcontact21-2.vcf"
+				>
+				<FileConfiguration
+					Name="Debug|Win32"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Copying $(InputDir)$(InputFileName)"
+						CommandLine="copy $(InputDir)$(InputFileName) $(TargetDir)"
+						Outputs="$(TargetDir)$(InputFileName)"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Copying $(InputDir)$(InputFileName)"
+						CommandLine="copy $(InputDir)$(InputFileName) $(TargetDir)"
+						Outputs="$(TargetDir)$(InputFileName)"
+					/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\test\testcases\vcard4Wcontact21-3.vcf"
+				>
+				<FileConfiguration
+					Name="Debug|Win32"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Copying $(InputDir)$(InputFileName)"
+						CommandLine="copy $(InputDir)$(InputFileName) $(TargetDir)"
+						Outputs="$(TargetDir)$(InputFileName)"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Copying $(InputDir)$(InputFileName)"
+						CommandLine="copy $(InputDir)$(InputFileName) $(TargetDir)"
+						Outputs="$(TargetDir)$(InputFileName)"
+					/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\test\testcases\vcard4WContact21.vcf"
+				>
+				<FileConfiguration
+					Name="Debug|Win32"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Copying $(InputDir)$(InputFileName)"
+						CommandLine="copy $(InputDir)$(InputFileName) $(TargetDir)"
+						Outputs="$(TargetDir)$(InputFileName)"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Copying $(InputDir)$(InputFileName)"
+						CommandLine="copy $(InputDir)$(InputFileName) $(TargetDir)"
+						Outputs="$(TargetDir)$(InputFileName)"
+					/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\test\testcases\vcard4WContact30.vcf"
+				>
+				<FileConfiguration
+					Name="Debug|Win32"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Copying $(InputDir)$(InputFileName)"
+						CommandLine="copy $(InputDir)$(InputFileName) $(TargetDir)"
+						Outputs="$(TargetDir)$(InputFileName)"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Copying $(InputDir)$(InputFileName)"
+						CommandLine="copy $(InputDir)$(InputFileName) $(TargetDir)"
 						Outputs="$(TargetDir)$(InputFileName)"
 					/>
 				</FileConfiguration>

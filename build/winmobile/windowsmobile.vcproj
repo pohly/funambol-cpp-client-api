@@ -17716,6 +17716,18 @@
 					>
 				</File>
 			</Filter>
+			<Filter
+				Name="updater"
+				>
+				<File
+					RelativePath="..\..\src\cpp\common\updater\Updater.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\cpp\common\updater\UpdaterConfig.cpp"
+					>
+				</File>
+			</Filter>
 		</Filter>
 		<Filter
 			Name="Header Files"
@@ -17779,6 +17791,10 @@
 			</File>
 			<File
 				RelativePath="..\..\src\include\common\spdm\constants.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\include\common\base\constants.h"
 				>
 			</File>
 			<File
@@ -18098,6 +18114,22 @@
 				</File>
 				<File
 					RelativePath="..\..\tools\zlib\zutil.h"
+					>
+				</File>
+			</Filter>
+			<Filter
+				Name="updater"
+				>
+				<File
+					RelativePath="..\..\src\include\common\updater\Updater.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\include\common\updater\UpdaterConfig.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\include\common\updater\UpdaterUI.h"
 					>
 				</File>
 			</Filter>

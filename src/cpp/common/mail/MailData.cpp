@@ -231,15 +231,31 @@ int MailData::parse(const char *msg, size_t /* len */)
                 }
                 extMailData = new ExtMailData();
                 unsigned int from = 0;
+                int prev = 0;
                 char* val = XMLProcessor::copyElementContent(ext, "XVal", &from);
                 if (val) {
                     extMailData->attachName = stringdup(MailMessage::decodeHeader(val).c_str());
                     delete [] val; val = NULL;
                 }
+                prev = from;
                 val = XMLProcessor::copyElementContent(&ext[from], "XVal", &from);
                 if (val) {
                     extMailData->attachSize = atol(val);
                     totalEmailSize += atol(val);
+                    delete [] val; val = NULL;
+                }
+                from += prev;
+                prev = from;
+                val = XMLProcessor::copyElementContent(&ext[from], "XVal", &from);
+                if (val) {
+                    extMailData->attachMime = stringdup(MailMessage::decodeHeader(val).c_str());                    
+                    delete [] val; val = NULL;
+                }
+                from += prev;
+                prev = from;
+                val = XMLProcessor::copyElementContent(&ext[from], "XVal", &from);
+                if (val) {
+                    extMailData->attachURL = stringdup(MailMessage::decodeHeader(val).c_str());                    
                     delete [] val; val = NULL;
                 }
                 if (extMailData->attachName && extMailData->attachSize != 0) {

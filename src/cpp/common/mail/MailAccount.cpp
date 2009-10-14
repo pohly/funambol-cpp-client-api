@@ -33,14 +33,54 @@
  * the words "Powered by Funambol".
  */
 
-#include "base/fscapi.h"
-#include "base/Log.h"
 #include "mail/MailAccount.h"
-#include "base/globalsdef.h"
-#include "spds/FolderExt.h"
-#include "base/util/ArrayList.h"
-#include "base/util/utils.h"
 
 USE_NAMESPACE
+
+MailAccount::MailAccount(const MailAccount& ma){
+    deleted = ma.getDeleted();
+    toBeCleaned = ma.getToBeCleaned();
+
+    setParent(ma.getParent());
+    setName(ma.getName());
+    setCreated(ma.getCreated());
+    setModified(ma.getModified());
+    setAccessed(ma.getAccessed());
+    setAttributes(ma.getAttributes());
+    setHidden(ma.getHidden());
+    setSystem(ma.getSystem());
+    setArchived(ma.getArchived());
+    setDel(ma.getDel());
+    setWritable(ma.getWritable());
+    setReadable(ma.getReadable());
+    setExecutable(ma.getExecutable());
+    setRole(ma.getRole());
+    setID(ma.getID());
+    ArrayList al = ((FolderData)ma).getExtList();
+    setExtList(al);
+}
+
+MailAccount::MailAccount(const FolderData& ma) {
+    deleted = false;
+    toBeCleaned = false;
+
+    setParent(ma.getParent());
+    setName(ma.getName());
+    setCreated(ma.getCreated());
+    setModified(ma.getModified());
+    setAccessed(ma.getAccessed());
+    setAttributes(ma.getAttributes());
+    setHidden(ma.getHidden());
+    setSystem(ma.getSystem());
+    setArchived(ma.getArchived());
+    setDel(ma.getDel());
+    setWritable(ma.getWritable());
+    setReadable(ma.getReadable());
+    setExecutable(ma.getExecutable());
+    setRole(ma.getRole());
+    setID(ma.getID());
+    ArrayList al = ((FolderData)ma).getExtList();
+    setExtList(al);
+}
 
 

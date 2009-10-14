@@ -1693,17 +1693,20 @@ StringBuffer* Formatter::getItem(Item* item) {
     StringBuffer*      moreData = NULL;
     StringBuffer*      targetParent = NULL;
     StringBuffer*      sourceParent = NULL;
-
-
+    StringBuffer*      locUriSourceParent  = NULL;
+    StringBuffer*      locUriTargetParent = NULL;
 
     target    = getTarget   (item->getTarget());
     source    = getSource   (item->getSource());
     meta      = getMeta     (item->getMeta());
     data      = getData     (item->getData());
     moreData  = getValue    (MORE_DATA, item->getMoreData());
-    targetParent  = getValue    (TARGET_PARENT, item->getTargetParent());
-    sourceParent  = getValue    (SOURCE_PARENT, item->getSourceParent());
+    
+    locUriSourceParent    = getValue    (LOC_URI, item->getSourceParent());
+    locUriTargetParent    = getValue    (LOC_URI, item->getTargetParent());
 
+    targetParent  = getValue    (TARGET_PARENT, locUriTargetParent);
+    sourceParent  = getValue    (SOURCE_PARENT, locUriSourceParent);
 
     if (NotZeroStringBufferLength(7, target, source, targetParent, sourceParent, meta, data, moreData)) {
         s = new StringBuffer();
@@ -1718,6 +1721,9 @@ StringBuffer* Formatter::getItem(Item* item) {
 
     ret = getValue(ITEM, s);
     deleteAllStringBuffer(8, &s, &target, &source, &targetParent, &sourceParent, &meta, &data, &moreData);
+
+    delete locUriSourceParent;
+    delete locUriTargetParent;
 
     return ret;
 }

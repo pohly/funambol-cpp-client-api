@@ -92,11 +92,6 @@ BEGIN_NAMESPACE
         * it represent the time of the schedule
         */
         int schedule;
-
-		/*
-		 * maximum number of email accounts supported
-		 */
-		static const unsigned max_account_numbers = 4;
 		
 		/* 
 		 * array of mail accounts
@@ -198,14 +193,34 @@ BEGIN_NAMESPACE
         
 		/**
 		 * flags a mail account as deleted (it will be removed by DM)
+         *
+         * @param const char* accountName the name of the account to mark
+         * @return bool true if success
 		 */
 		bool setDeletedMailAccount(const char* accountName);
+
+   		/**
+		 * flags a mail account as to be cleaned
+         *
+         * @param const char* accountName the name of the account to mark
+         * @param bool tobecleaned
+         * @return bool true if success
+		 */
+        bool setToBeCleanedFlag(const char* accountName, bool tobecleaned);
 
 		/** 
 		 * mail account accessor
 		 */
-		const ArrayList& getMailAccounts() const { return mailAccounts; }
+        const ArrayList& getMailAccounts() const { return mailAccounts; }
 		void setMailAccounts(const ArrayList& ma) { mailAccounts = ma;}
+
+        /**
+         * Assign operator
+         */
+        MailSyncSourceConfig& operator = (const MailSyncSourceConfig& mssc) {
+            assign(mssc);
+            return *this;
+        }
 
         /**
          * Initialize this object with the given SyncSourceConfig

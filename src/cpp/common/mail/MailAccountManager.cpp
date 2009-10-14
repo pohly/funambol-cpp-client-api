@@ -37,6 +37,7 @@
 #include "base/Log.h"
 #include "mail/MailAccountManager.h"
 #include "base/globalsdef.h"
+#include "client/MailSourceManagementNode.h"
 
 USE_NAMESPACE
 
@@ -90,6 +91,16 @@ int MailAccountManager::deleteAccount(const WCHAR* accountID) {
         LOG.error("Error deleting email account, code %i", ret);
         return ret;
     }
+
+    // mark account to be deleted on client config 
+    ret = markDeleteAccountOnConfig(accountID);
+
+    return ret;
+}
+
+int MailAccountManager::markDeleteAccountOnConfig(const WCHAR* accountID)
+{
+    int ret = 0;
 
     // Remove account settings in config
     ArrayList mailAccounts = config.getMailAccounts();
@@ -207,6 +218,156 @@ bool MailAccountManager::accountExists(const StringBuffer& accountID) {
     // not found
     return false;
 }
+
+
+StringBuffer MailAccountManager::getIdOfAccount(const int index) {
+
+    StringBuffer id("");
+
+    if (index < 0 || index >= getAccountNumber()) {
+        LOG.error("index %d out of range for account list", index);
+        return id;
+    }
+
+    const ArrayList& accounts = config.getMailAccounts();
+    MailAccount* account = (MailAccount*)accounts[index];
+    if (account) {
+        id.convert(account->getID());
+    }
+
+    return id;
+}
+
+
+
+StringBuffer MailAccountManager::getIdOfAccount(const StringBuffer& accountName) {
+
+    StringBuffer id("");
+
+    if (accountName.empty()) {
+        return id;
+    }
+
+    const ArrayList& accounts = config.getMailAccounts();
+
+    for (int i=0; i<accounts.size(); i++) {
+        MailAccount* account = (MailAccount*)accounts[i];
+        if (account) {
+            if (accountName == account->getName()) {
+                // found
+                const WCHAR* wid = account->getID();
+                const char* tid = toMultibyte(wid);
+                id = tid;
+                delete [] tid; tid = NULL;
+                break;
+            }
+        }
+    }
+
+    return id;
+}
+
+
+MailAccount* MailAccountManager::getAccountByName(const wchar_t* name)
+{
+    MailAccount* account = NULL;
+
+    StringBuffer accountName;
+    accountName.convert(name);
+
+    if (accountName.empty()) {
+        return account;
+    }
+
+    const ArrayList& accounts = config.getMailAccounts();
+
+    for (int i=0; i<accounts.size(); i++) {
+        MailAccount* ma = (MailAccount*)accounts[i];
+        if (ma) {
+            if (accountName == ma->getName()) {
+                // found
+                account = new MailAccount(*ma);
+            }
+        }
+    }
+
+    return account;
+}
+
+MailAccount* MailAccountManager::getAccountById(const wchar_t* id)
+{
+    MailAccount* account = NULL;
+    
+    if (id == NULL) {
+        LOG.error("%s: no account id specified", __FUNCTION__);
+        return account;
+    }
+   
+    const ArrayList& accounts = config.getMailAccounts();
+
+    for (int i=0; i<accounts.size(); i++) {
+        MailAccount* ma = (MailAccount*)accounts[i];
+        if (ma) {
+            const wchar_t* storedId = ma->getID();
+            if (storedId) { 
+                if (wcscmp(id, storedId) == 0) {
+                    // found
+                    account = ma;
+                }
+            } else {
+                LOG.error("%s: error getting ID from mail account", __FUNCTION__);
+            }
+        }
+    }
+
+    return account;
+}
+
+MailAccount* MailAccountManager::getAccountFromMailAddr(const char* mailAddr)
+{
+    MailAccount* account = NULL;
+
+    if (mailAddr == NULL) {
+        return account;
+    }
+    
+    const ArrayList& accounts = config.getMailAccounts();
+
+    for (int i=0; i<accounts.size(); i++) {
+        MailAccount* ma = (MailAccount*)accounts[i];
+        if (ma) {
+            const char* addr = ma->getEmailAddress();
+            if (addr) {
+                if (strcmp(mailAddr, addr) == 0) {
+                    // found
+                    account = ma;
+                }
+            } else {
+                LOG.error("%s: can't get email address from account");
+            }
+        }
+    }
+
+    return account;
+}
+
+
+StringBuffer MailAccountManager::getIdOfFirstAccount() {
+
+    StringBuffer id("");
+
+    const ArrayList& accounts = config.getMailAccounts();
+    for (int i=0; i<accounts.size(); i++) {
+        MailAccount* account = (MailAccount*)accounts[i];
+        if (account && (account->getDeleted() == false)) {
+            id.convert(account->getID());
+            break;
+        }
+    }
+    return id;
+}
+
+
 
 /*int MailAccountManager::readAccount(MailAccount& account) {
 

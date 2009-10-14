@@ -121,7 +121,7 @@ class FolderData : public ArrayElement {
 		const StringBuffer& getAttributes() const { return attributes; }
 		void setAttributes(const char* v) { attributes = v; }
 
-		bool getHidded() const { return hidden; }
+		bool getHidden() const { return hidden; }
 		void setHidden(bool v) { hidden = v; }
 
 		bool getSystem() const { return system; }
@@ -130,8 +130,8 @@ class FolderData : public ArrayElement {
 		bool getArchived() const { return archived; }
 		void setArchived(bool v) { archived = v; }
 
-		bool getDeleted() const { return deleted; }
-		void setDeleted(bool v) { deleted = v; }
+		bool getDel() const { return deleted; }
+		void setDel(bool v) { deleted = v; }
 
 		bool getWritable() const { return writable; }
 		void setWritable(bool v) { writable = v; }
@@ -154,7 +154,7 @@ class FolderData : public ArrayElement {
          * getter of the Ext list.
          * @returns an ArrayList of KeyValuePairs with all the ext values
          */
-        ArrayList getExtList() { return extended; };
+        ArrayList& getExtList() { return extended; };
 
 
     // ----------------------------------------------------- Public Methods

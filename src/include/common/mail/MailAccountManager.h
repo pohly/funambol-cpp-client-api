@@ -92,6 +92,13 @@ public:
      */
     int deleteAccount(const WCHAR* accountID);
 
+    /**
+     * marks an account as deleted on config
+     * on first config save it will be cleared
+     * @param accountID the account id to be removed
+     * @return 0 if no errors, -1 if account not found
+     */
+    int markDeleteAccountOnConfig(const WCHAR* accountID);
 
     // ------------------------ Email folders management ------------------------
     /**
@@ -121,15 +128,42 @@ public:
      */
     int deleteFolder(const WCHAR* folderID);
 
- 
+
+    /**
+     * Returns the account ID from its index in the MailAccounts array.
+     * Scans the mail accounts in the config.
+     * @param index  the index [0 ; size-1]
+     * @return the id (b64 key) of the account, an empty string if index out of range
+     */
+    StringBuffer getIdOfAccount(const int index);
+
+    /**
+     * Returns the account ID from its name.
+     * Scans the mail accounts in the config.
+     * @param accountName the account name to search
+     * @return the id (b64 key) of the account, an empty string if account not found
+     */
+    StringBuffer getIdOfAccount(const StringBuffer& accountName);
+
+    /**
+    * Returns an account by name
+    */
+    MailAccount* getAccountByName(const wchar_t* accountName);
+
+    /**
+    * Returns a mail account by mail address
+    */
+    MailAccount* getAccountFromMailAddr(const char* mailAddr);
+
+    /**
+    * Returns an account class by id
+    */
+    MailAccount* getAccountById(const wchar_t* accountId);
+
+
     /// Returns the number of existing email accounts.
     int getAccountNumber();
 
-    /// To synchronize config settings and account settings.
-    //virtual int refreshAccounts() = 0;
-
-    /// Checks the config, returns true if the account exists.
-    bool accountExists(const StringBuffer& accountID);
 
     /**
      * Reads an email account given its ID.
@@ -144,7 +178,14 @@ public:
      * @param folder     [IN-OUT] the email folder to be filled with all settings
      */
     //int readFolder(FolderData& folder);    
-
+   
+    /**
+     * Returns the internal MailSyncSourceConfig.
+     *
+     * @return config, internal reference to the MailSyncSourceConfig
+     */
+    MailSyncSourceConfig& getMailSyncSourceConfig(){return config;}
+    void setMailSyncSourceConfig(MailSyncSourceConfig& mssc){config.assign(mssc);}
 protected:
     /**
      * Creates the email account on the Client.
@@ -202,10 +243,24 @@ protected:
      */
     virtual int deleteClientFolder(const WCHAR* folderID) = 0;
 
-private:
+
+    /// To synchronize config settings and account settings.
+    //virtual int refreshAccounts() = 0;
+
+    /// Checks the config, returns true if the account exists.
+    bool accountExists(const StringBuffer& accountID);
+
+
+    /**
+     * Returns the account ID of the first account stored.
+     * Scans the mail accounts in the config.
+     * @return the id (b64 key) of the account, an empty string if no accounts found
+     */
+    StringBuffer getIdOfFirstAccount();
 
     /// Reference to config of MailSyncSource. Used to read and save email accounts settings.
     MailSyncSourceConfig& config;
+
 
 };
 

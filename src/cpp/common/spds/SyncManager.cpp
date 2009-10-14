@@ -692,7 +692,7 @@ int SyncManager::prepareSync(SyncSource** s) {
         for (int i=0; i < list->size(); i++) {
             AbstractCommand* cmd = (AbstractCommand*)list->get(i);
             ArrayList* responseCmd = NULL;
-            if (responseCmd = syncMLProcessor.processGetCommand(cmd, devInf)) {
+            if ( (responseCmd = syncMLProcessor.processGetCommand(cmd, devInf)) ) {
                 commands.add(responseCmd);
                 delete responseCmd;
             }
@@ -707,7 +707,7 @@ int SyncManager::prepareSync(SyncSource** s) {
         for (int i=0; i < list->size(); i++) {
             AbstractCommand* cmd = (AbstractCommand*)list->get(i);
             ArrayList* responseCmd = NULL;
-            if (responseCmd = syncMLProcessor.processPutCommand(cmd, config)) {
+            if ( (responseCmd = syncMLProcessor.processPutCommand(cmd, config)) ) {
                 commands.add(responseCmd);
                 delete responseCmd;
             }
@@ -929,6 +929,10 @@ bool SyncManager::checkForServerChanges(SyncML* syncml, ArrayList &statusList)
                         sources[count]->getConfig().getName(),
                         sources[count]->getSyncMode(), 0, SYNC_SOURCE_BEGIN);
 
+                fireSyncSourceEvent(sources[count]->getConfig().getURI(),
+                        sources[count]->getConfig().getName(),
+                        sources[count]->getSyncMode(), 0, SYNC_SOURCE_SERVER_BEGIN);
+
                 strcpy(prevSourceUri,  sources[count]->getConfig().getURI());
                 prevSyncMode = sources[count]->getSyncMode();
 
@@ -996,8 +1000,11 @@ bool SyncManager::checkForServerChanges(SyncML* syncml, ArrayList &statusList)
                 statusList.add(&previousStatus);
                 previousStatus.clear();
             }
-        // Fire SyncSourceEvent: END sync of a syncsource (server modifications)
-        //fireSyncSourceEvent(sources[count]->getConfig().getURI(), sources[count]->getConfig().getName(), sources[count]->getSyncMode(), 0, SYNC_SOURCE_END);
+            // Fire SyncSourceEvent: END sync of a syncsource (server modifications)
+            fireSyncSourceEvent(sources[count]->getConfig().getURI(), 
+                sources[count]->getConfig().getName(), 
+                sources[count]->getSyncMode(), 0, 
+                SYNC_SOURCE_SERVER_END);
             previousStatus.clear();
         }
         i++;
@@ -2563,6 +2570,7 @@ void SyncManager::clearServerDevInf() {
     config.setServerLoSupport (false);
     config.setServerNocSupport(false);
     config.setServerSmartSlowSync(0);
+    config.setServerMultipleEmailAccount(0);
     config.setServerLastSyncURL("");
 }
 
