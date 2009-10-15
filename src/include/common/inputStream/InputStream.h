@@ -56,20 +56,14 @@ class InputStream  {
 
 protected:
 
-    /// The total size of data
+    /**
+     * The total size of data.
+     * It should be set in the constructor, this information is needed by the sync 
+     * engine to know how much data to send.
+     * Note: not all the stream implementation can get this information. If not available
+     *       this value can be left = 0.
+     */
     unsigned int totalSize;
-
-    /**
-     * This flag is set by all standard input operations when the End Of File 
-     * is reached in the sequence associated with the stream.
-     */
-    bool eofbit;
-
-    /**
-     * The 'position' pointer determines the next location in the input 
-     * sequence to be read by the next input operation.
-     */
-    unsigned int position;
 
 
 public:
@@ -78,6 +72,14 @@ public:
     InputStream();
 
     virtual ~InputStream();
+
+
+    /**
+     * Returns the total size of the input stream data.
+     * Note: not all the stream implementation can get this information. If not available
+     * it will return 0.
+     */
+    int getTotalSize();
 
 
     /** 
@@ -91,9 +93,9 @@ public:
 
     /**
      * Call this method to start again reading from the beginning of the stream.
-     * Resets the 'currentPosition' member.
+     * Resets the position indicator of the stream.
      */
-    virtual void reset();
+    virtual void reset() = 0;
 
     /**
      * Closes the current input stream.
@@ -104,18 +106,19 @@ public:
     virtual int close();
 
     /**
-     * The function returns true if the eofbit stream's error flag has been set by a previous i/o operation. 
+     * The function returns a non-zero value  if the eofbit stream's error flag has been 
+     * set by a previous i/o operation. 
      * This flag is set by all standard input operations when the End Of File 
      * is reached in the sequence associated with the stream.
      */
-    bool eof();
+    virtual int eof() = 0;
 
     /**
      * Returns the absolute position of the 'position' pointer.
      * The 'position' pointer determines the next location in the input 
      * sequence to be read by the next input operation.
      */
-    int getPosition();
+    virtual int getPosition() = 0;
 
 };
 

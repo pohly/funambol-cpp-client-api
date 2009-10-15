@@ -41,26 +41,16 @@ USE_NAMESPACE
 InputStream::InputStream() {
 
     totalSize = 0;
-    position  = 0;
-    eofbit    = false;
 }
 
 InputStream::~InputStream() {}
 
 
-void InputStream::reset() { 
-    position = 0;
-    eofbit   = false;
-}
-
 int InputStream::close() {
     return 0;
 }
 
-bool InputStream::eof() {
-    return eofbit;
+int InputStream::getTotalSize() {
+    return totalSize;
 }
 
-int InputStream::getPosition() {
-    return position;
-}

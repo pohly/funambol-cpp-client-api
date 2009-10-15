@@ -58,6 +58,18 @@ private:
     /// The buffer of data to read, passed in the constructor and EXTERNALLY OWNED.
     const void* data;
 
+    /**
+     * This flag is set by all standard input operations when the End Of File 
+     * is reached in the sequence associated with the stream.
+     */
+    int eofbit;
+
+    /**
+     * The 'position' pointer determines the next location in the input 
+     * sequence to be read by the next input operation.
+     */
+    unsigned int position;
+
 public:
 
     /**
@@ -77,6 +89,28 @@ public:
      * @return          the number of bytes effectively read (<= size)
      */
     int read(void* buffer, const unsigned int size);
+
+
+    /**
+     * Call this method to start again reading from the beginning of the stream.
+     * Resets the position indicator of the stream.
+     */
+    void reset();
+
+    /**
+     * The function returns a non-zero value  if the eofbit stream's error flag has been 
+     * set by a previous i/o operation. 
+     * This flag is set by all standard input operations when the End Of File 
+     * is reached in the sequence associated with the stream.
+     */
+    int eof();
+
+    /**
+     * Returns the absolute position of the 'position' pointer.
+     * The 'position' pointer determines the next location in the input 
+     * sequence to be read by the next input operation.
+     */
+    int getPosition();
 
 };
 

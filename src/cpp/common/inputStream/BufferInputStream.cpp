@@ -43,6 +43,8 @@ BufferInputStream::BufferInputStream(const void* data, const unsigned int dataSi
 
     this->data      = data;
     this->totalSize = dataSize;
+    this->position  = 0;
+    this->eofbit    = 0;
 }
 
 BufferInputStream::~BufferInputStream() {}
@@ -52,7 +54,7 @@ int BufferInputStream::read(void* buffer, const unsigned int size) {
 
     if (!totalSize) {
         LOG.error("BufferInputStream::read error: total data size = 0");
-        buffer = 0;
+        buffer = NULL;
         return 0;
     }
 
@@ -68,9 +70,22 @@ int BufferInputStream::read(void* buffer, const unsigned int size) {
     // Update internal members
     position += bytesRead;
     if (position == totalSize) {
-        eofbit = true;
+        eofbit = 1;
     }
 
     return bytesRead;
 }
 
+
+void BufferInputStream::reset() { 
+    position = 0;
+    eofbit   = 0;
+}
+
+int BufferInputStream::eof() {
+    return eofbit;
+}
+
+int BufferInputStream::getPosition() {
+    return position;
+}
