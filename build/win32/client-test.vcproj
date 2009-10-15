@@ -393,6 +393,14 @@
 					RelativePath="..\..\test\common\inputStream\BufferInputStreamTest.cpp"
 					>
 				</File>
+				<File
+					RelativePath="..\..\test\common\inputStream\FileInputStreamTest.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\test\common\inputStream\InputStreamTest.cpp"
+					>
+				</File>
 			</Filter>
 		</Filter>
 		<Filter
