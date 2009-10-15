@@ -3391,6 +3391,10 @@
 					>
 				</File>
 				<File
+					RelativePath="..\..\src\cpp\common\inputStream\FileInputStream.cpp"
+					>
+				</File>
+				<File
 					RelativePath="..\..\src\cpp\common\inputStream\InputStream.cpp"
 					>
 				</File>

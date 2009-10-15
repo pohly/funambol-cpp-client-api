@@ -51,10 +51,10 @@ BEGIN_NAMESPACE
  */
 class FileInputStream : public InputStream {
 
-private:
+protected:
 
     /// The file location (path & file name)
-    StringBuffer& path;
+    StringBuffer path;
 
     /// The file to be read.
     FILE* f;
@@ -64,25 +64,49 @@ public:
 
     /**
      * Constructor. 
-     * @param path  the file location (path & file name) to read from.
+     * Opens the file named by the path 'path' in the file system. The FILE object
+     * remains opened for reading until the close() method is called, or this object is destroyed.
+     * @param path    the file location (path & file name) to read from.
      */
     FileInputStream(const StringBuffer& path);
 
+    /// Closes the FILE object.
     virtual ~FileInputStream();
 
     /**
-     * Reads 'size' bytes from the file.
+     * Reads 'size' bytes from the file. The file is already opened in the constructor.
      * Returns the number of bytes effectively read.
      * @note            The file's content read is returned as it is (raw data).
      * @param buffer    [IN/OUT] the buffer of data read, allocated by the caller
      * @param size      the size of the chunk to be read [in bytes]
      * @return          the number of bytes effectively read (<= size)
      */
-    virtual int read(void* buffer, const int size);
+    virtual int read(void* buffer, const unsigned int size);
 
-    /// Closes the file.
-    /// @return 0 if no errors
+    /**
+     * Call this method to start again reading from the beginning of the file stream.
+     * Resets the position indicator of the stream.
+     */
+    void reset();
+
+    /**
+     * Closes the FILE object.
+     * @return 0 if no errors
+     */
     int close();
+
+    /**
+     * The function returns a non-zero value if the eofbit stream's error flag 
+     * has been set by a previous i/o operation. 
+     * Proxy method to the feof(f).
+     */
+    int eof();
+
+    /**
+     * Returns the absolute position of the 'position' pointer.
+     * Proxy method to the ftell(f);
+     */
+    int getPosition();
 
 };
 

@@ -1,3 +1,6 @@
+2009-10-15
+  - toccy: [US3125] added FileInputStream class, added unit test (FileInputStreamTest)
+
 2009-10-13
   - toccy: [US3125] added InputStream classes, implemented BufferInputStream, added unit test (BufferInputStreamTest)
 
