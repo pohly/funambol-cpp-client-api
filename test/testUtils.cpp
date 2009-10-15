@@ -147,7 +147,7 @@ DMTClientConfig* getNewDMTClientConfig(const char* testName, const bool setClien
 
 
 
-char* loadTestFile(const char* testName, const char* fileName) {
+char* loadTestFile(const char* testName, const char* fileName, bool binary) {
 
     if (!testName || !fileName) {
         return NULL;
@@ -156,13 +156,22 @@ char* loadTestFile(const char* testName, const char* fileName) {
     char* content = NULL;
     size_t len;
 
-    StringBuffer path;
-    path.sprintf("%s/%s/%s", TESTCASES_DIR, testName, fileName);
+    StringBuffer& path = getTestFileFullPath(testName, fileName);
 
-    bool fileLoaded = readFile(path.c_str(), &content, &len, false);
+    bool fileLoaded = readFile(path.c_str(), &content, &len, binary);
     CPPUNIT_ASSERT_MESSAGE("Failed to load test file", fileLoaded);
        
     return content;
+}
+
+StringBuffer getTestFileFullPath(const char* testName, const char* fileName) {
+
+    if (!testName || !fileName) {
+        return "";
+    }
+    StringBuffer path;
+    path.sprintf("%s/%s/%s", TESTCASES_DIR, testName, fileName);
+    return path;
 }
 
 
