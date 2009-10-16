@@ -353,6 +353,8 @@ class AbstractSyncConfig {
     /// Specifies if the Server supports the Smart Slow sync.
     virtual void setServerSmartSlowSync(const int  v) = 0;
     
+    /// Specifies if the Server supports MEA.
+    virtual void setServerMultipleEmailAccount(const int  v) = 0;
 };
 
 

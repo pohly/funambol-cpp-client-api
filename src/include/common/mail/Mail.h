@@ -34,50 +34,69 @@
  */
 
 
-#ifndef INCL_SYNC_SOURCE_LISTENER
-#define INCL_SYNC_SOURCE_LISTENER
+#ifndef INCL_MAIL
+#define INCL_MAIL
 /** @cond DEV */
 
-#include "event/SyncSourceEvent.h"
-#include "event/Listener.h"
+#include "base/fscapi.h"
+#include "base/util/ArrayElement.h"
+#include "base/util/StringBuffer.h"
+#include "spds/MailMessage.h"
 #include "base/globalsdef.h"
 
 BEGIN_NAMESPACE
 
-/*
- * Set Listeners for each event in SyncSourceEvent
- */
+class Email : public ArrayElement {
 
-class SyncSourceListener : public Listener{
+    // ------------------------------------------------------------ Private data
+    private:
+        bool read;
+        bool forwarded;
+        bool replied;
+        StringBuffer received;
+        StringBuffer created;
+        StringBuffer modified;
+        bool deleted;
+        bool flagged;
 
-public:
-    //Conctructor
-    SyncSourceListener(const char *name = "") : Listener(name) {};
+        MailMessage emailItem;
 
-    // Virtual destructor
-    virtual ~SyncSourceListener() {}
+    public:
 
-    // listen for the Sync Begin Event
-    virtual void syncSourceBegin(SyncSourceEvent& event) {};
+    // --------------------------------------------------------------- Accessors
+        bool getRead() { return read; }
+        void setRead(bool v) { read=v; }
 
-    // listen for the Sync End Event
-    virtual void syncSourceEnd(SyncSourceEvent& event) {};
+        bool getForwarded() { return forwarded; }
+        void setForwarded(bool v) { forwarded=v; }
 
-    // listen for the server Sync Begin Event
-    virtual void syncSourceServerBegin(SyncSourceEvent& event) {};
+        bool getReplied() { return replied; }
+        void setReplied(bool r) { replied=r; }
 
-    // listen for the server Sync End Event
-    virtual void syncSourceServerEnd(SyncSourceEvent& event) {};
+        const char * getReceived() { return received; }
+        void setReceived(const char * v) { received=v; }
 
+        const char * getCreated() { return created; }
+        void setCreated(const char * v) { created=v; }
 
-    // listen for the SyncMode requested by the server
-    virtual void syncSourceSyncModeRequested (SyncSourceEvent& event) {};
+        const char * getModified() { return modified; }
+        void setModified(const char * v) { modified=v; }
 
-    // listen for total client items (number of changes) sent by Client.
-    virtual void syncSourceTotalClientItems (SyncSourceEvent& event) {};
+        bool getDeleted() { return deleted; }
+        void setDeleted(bool v) { deleted=v; }
 
-    // listen for total server items (number of changes) sent by Server.
-    virtual void syncSourceTotalServerItems (SyncSourceEvent& event) {};
+        bool getFlagged() { return flagged; }
+        void setFlagged(bool v) { flagged=v; }
+
+        MailMessage& getMailMessage() { return emailItem; }
+        void setMailMessage(const MailMessage& v) { emailItem = v; }
+
+    // ---------------------------------------------------------- Public Methods
+        int parse(const char *syncmlData) { return 0; }          // TODO
+        char *format()                     { return wcsdup(""); } // TODO
+
+        ArrayElement* clone() { return new Email(*this); }
+
 };
 
 

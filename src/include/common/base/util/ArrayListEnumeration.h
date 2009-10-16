@@ -68,6 +68,13 @@ class ArrayListEnumeration : public Enumeration, public ArrayList {
         }
 
         /**
+         * Return the first element
+         */
+        ArrayElement* getFirstElement() {
+            return front();           
+        }
+
+        /**
          * Return the next element
          */
         ArrayElement* getNextElement() {

@@ -441,7 +441,7 @@ SourceFilter* ClauseUtil::createSourceFilter(const WCHAR* since, int bodySize, i
     return filter;
 }
 
-SourceFilter* ClauseUtil::createSourceFilterInclusive(const char* luid, int size) {
+SourceFilter* ClauseUtil::createSourceFilterInclusive(const char* luid, int size, bool alsoAttachment) {
 
     if (!luid) {
         //
@@ -467,9 +467,11 @@ SourceFilter* ClauseUtil::createSourceFilterInclusive(const char* luid, int size
     textParam.setParamName("texttype");
     params.add(textParam);
 
-    PropParam attachParam;
-    attachParam.setParamName("attachtype");
-    params.add(attachParam);
+    if (alsoAttachment) {
+        PropParam attachParam;
+        attachParam.setParamName("attachtype");
+        params.add(attachParam);
+    }
     p.setPropParams(params);
 
     p.setMaxSize(size*1024);

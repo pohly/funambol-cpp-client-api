@@ -151,6 +151,12 @@ bool fireSyncSourceEvent(const char* sourceURI, const char* sourceName, SyncMode
           case SYNC_SOURCE_END:
               listener->syncSourceEnd(event);
               break;
+          case SYNC_SOURCE_SERVER_BEGIN:
+              listener->syncSourceServerBegin(event);
+              break;
+          case SYNC_SOURCE_SERVER_END:
+              listener->syncSourceServerEnd(event);
+              break;
           case SYNC_SOURCE_SYNCMODE_REQUESTED:
               listener->syncSourceSyncModeRequested(event);
               break;

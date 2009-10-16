@@ -72,10 +72,9 @@ class DeviceConfig {
         unsigned int  maxObjSize   ;
         char*         devInfHash   ;
 
-        // 0 success true
-		// 1 false
-		// 2 cannot determinate
+
 		int          smartSlowSync;
+        int          multipleEmailAccount;
 
 		char*		 verDTD;
         bool         sendDevInfo;        // send device info on sync start (by default set to true)
@@ -157,6 +156,9 @@ class DeviceConfig {
 
         int getSmartSlowSync() const;
         void setSmartSlowSync(int v);
+
+        int getMultipleEmailAccount() const;
+        void setMultipleEmailAccount(int v);
 
 		const char*  getVerDTD() const        ;
         void setVerDTD(const char*  v)        ;

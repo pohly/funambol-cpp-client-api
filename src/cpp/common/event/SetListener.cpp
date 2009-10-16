@@ -71,29 +71,29 @@ void setSyncStatusListener(SyncStatusListener* listener) {
 //
 // Unset listeners:
 //
-void unsetSyncListener() {
+void unsetSyncListener(const char* name) {
     ManageListener& manage = ManageListener::getInstance();
-    manage.unsetSyncListener();
+    manage.unsetSyncListener(name);
 }
 
-void unsetTransportListener() {
+void unsetTransportListener(const char* name) {
     ManageListener& manage = ManageListener::getInstance();
-    manage.unsetTransportListener();
+    manage.unsetTransportListener(name);
 }
 
-void unsetSyncSourceListener() {
+void unsetSyncSourceListener(const char* name) {
     ManageListener& manage = ManageListener::getInstance();
-    manage.unsetSyncSourceListener();
+    manage.unsetSyncSourceListener(name);
 }
 
-void unsetSyncItemListener() {
+void unsetSyncItemListener(const char* name) {
     ManageListener& manage = ManageListener::getInstance();
-    manage.unsetSyncItemListener();
+    manage.unsetSyncItemListener(name);
 }
 
-void unsetSyncStatusListener() {
+void unsetSyncStatusListener(const char* name) {
     ManageListener& manage = ManageListener::getInstance();
-    manage.unsetSyncStatusListener();
+    manage.unsetSyncStatusListener(name);
 }
 
 END_NAMESPACE

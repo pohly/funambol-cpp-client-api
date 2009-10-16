@@ -39,7 +39,7 @@
 
 #include "spdm/constants.h"
 #include "spdm/DeviceManagementNode.h"
-#include "spds/MailSyncSourceConfig.h"
+#include "mail/MailSyncSourceConfig.h"
 #include "base/globalsdef.h"
 
 BEGIN_NAMESPACE
@@ -77,6 +77,9 @@ class MailSourceManagementNode : public DeviceManagementNode {
          * @param c the configuration object to store
          */
         void setMailSourceConfig(MailSyncSourceConfig& c);
+
+        void getMailAccounts();
+        void setMailAccounts(MailSyncSourceConfig& c);
 
         ArrayElement* clone();
 

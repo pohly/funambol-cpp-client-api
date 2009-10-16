@@ -85,9 +85,10 @@ public:
      *
      * @param luid the id of the mail
      * @param size the max size of the mail
+     * @param alsoAttachment if we want consider the attachment too. True bu default
      */
 
-    static SourceFilter* createSourceFilterInclusive(const char* luid, int size);
+    static SourceFilter* createSourceFilterInclusive(const char* luid, int size, bool alsoAttachment = true);
 };
 
 

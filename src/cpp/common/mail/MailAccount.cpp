@@ -33,46 +33,54 @@
  * the words "Powered by Funambol".
  */
 
-#include "base/fscapi.h"
-#include "base/Log.h"
-#include "spds/MailAccount.h"
-#include "base/globalsdef.h"
-#include "spds/FolderExt.h"
-#include "base/util/ArrayList.h"
-#include "base/util/utils.h"
+#include "mail/MailAccount.h"
 
 USE_NAMESPACE
 
-const char* MailAccount::getVisibleName(){
+MailAccount::MailAccount(const MailAccount& ma){
+    deleted = ma.getDeleted();
+    toBeCleaned = ma.getToBeCleaned();
 
-    ArrayList exts = account.getExtList();
-
-    for (int i = 0; i < exts.size(); i++){
-    
-        FolderExt* ext = (FolderExt*)exts.get(i);
-
-        if (strcmp(ext->getXNam(), "VisibleName") == 0){
-            ArrayList xvals = ext->getXVals();
-            StringBuffer* xVal = (StringBuffer*)(xvals.front());
-            return stringdup(xVal->c_str());
-        }
-    }
-    return NULL;
+    setParent(ma.getParent());
+    setName(ma.getName());
+    setCreated(ma.getCreated());
+    setModified(ma.getModified());
+    setAccessed(ma.getAccessed());
+    setAttributes(ma.getAttributes());
+    setHidden(ma.getHidden());
+    setSystem(ma.getSystem());
+    setArchived(ma.getArchived());
+    setDel(ma.getDel());
+    setWritable(ma.getWritable());
+    setReadable(ma.getReadable());
+    setExecutable(ma.getExecutable());
+    setRole(ma.getRole());
+    setID(ma.getID());
+    ArrayList al = ((FolderData)ma).getExtList();
+    setExtList(al);
 }
 
-const char* MailAccount::getEmailAddress(){
+MailAccount::MailAccount(const FolderData& ma) {
+    deleted = false;
+    toBeCleaned = false;
 
-    ArrayList exts = account.getExtList();
-
-    for (int i = 0; i < exts.size(); i++){
-    
-        FolderExt* ext = (FolderExt*)exts.get(i);
-
-        if (strcmp(ext->getXNam(), "EmailAddress") == 0){
-            ArrayList xvals = ext->getXVals();
-            StringBuffer* xVal = (StringBuffer*)(xvals.front());
-            return stringdup(xVal->c_str());
-        }
-    }
-    return NULL;
+    setParent(ma.getParent());
+    setName(ma.getName());
+    setCreated(ma.getCreated());
+    setModified(ma.getModified());
+    setAccessed(ma.getAccessed());
+    setAttributes(ma.getAttributes());
+    setHidden(ma.getHidden());
+    setSystem(ma.getSystem());
+    setArchived(ma.getArchived());
+    setDel(ma.getDel());
+    setWritable(ma.getWritable());
+    setReadable(ma.getReadable());
+    setExecutable(ma.getExecutable());
+    setRole(ma.getRole());
+    setID(ma.getID());
+    ArrayList al = ((FolderData)ma).getExtList();
+    setExtList(al);
 }
+
+

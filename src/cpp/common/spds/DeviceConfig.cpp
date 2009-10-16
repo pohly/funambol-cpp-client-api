@@ -62,6 +62,8 @@ DeviceConfig::DeviceConfig() {
     devInfHash      = NULL;
 
     smartSlowSync   = 2;
+    multipleEmailAccount = 0;
+
 	verDTD			= NULL;
 
     sendDevInfo     = true;         // Default = send Client devInf normally
@@ -223,8 +225,17 @@ void DeviceConfig::setDevInfHash(const char *v) {
 int DeviceConfig::getSmartSlowSync() const {
     return smartSlowSync;
 }
+
+int DeviceConfig::getMultipleEmailAccount() const {
+    return multipleEmailAccount;
+}
+
 void DeviceConfig::setSmartSlowSync(int v) {
     smartSlowSync = v;
+}
+
+void DeviceConfig::setMultipleEmailAccount(int v) {
+    multipleEmailAccount = v;
 }
 
 const char* DeviceConfig::getVerDTD() const {
@@ -282,7 +293,8 @@ void DeviceConfig::assign(const DeviceConfig& s) {
     setMaxObjSize   (s.getMaxObjSize()    );
     setDevInfHash   (s.getDevInfHash()    );
 
-    setSmartSlowSync(s.getSmartSlowSync() );
+    setSmartSlowSync( s.getSmartSlowSync() );
+    setMultipleEmailAccount( s.getMultipleEmailAccount() );
 	setVerDTD       (s.getVerDTD	   () );
 
 	setSendDevInfo       (s.getSendDevInfo   ()    );

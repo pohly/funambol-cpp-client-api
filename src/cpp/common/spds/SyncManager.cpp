@@ -691,8 +691,8 @@ int SyncManager::prepareSync(SyncSource** s) {
         list = syncMLProcessor.getCommands(syncml->getSyncBody(), GET);
         for (int i=0; i < list->size(); i++) {
             AbstractCommand* cmd = (AbstractCommand*)list->get(i);
-            ArrayList* responseCmd = syncMLProcessor.processGetCommand(cmd, devInf);
-            if (responseCmd) {
+            ArrayList* responseCmd = NULL;
+            if ( (responseCmd = syncMLProcessor.processGetCommand(cmd, devInf)) ) {
                 commands.add(responseCmd);
                 delete responseCmd;
             }
@@ -706,8 +706,8 @@ int SyncManager::prepareSync(SyncSource** s) {
         list = syncMLProcessor.getCommands(syncml->getSyncBody(), PUT);
         for (int i=0; i < list->size(); i++) {
             AbstractCommand* cmd = (AbstractCommand*)list->get(i);
-            ArrayList* responseCmd = syncMLProcessor.processPutCommand(cmd, config);
-            if (responseCmd) {
+            ArrayList* responseCmd = NULL;
+            if ( (responseCmd = syncMLProcessor.processPutCommand(cmd, config)) ) {
                 commands.add(responseCmd);
                 delete responseCmd;
             }
@@ -928,6 +928,10 @@ bool SyncManager::checkForServerChanges(SyncML* syncml, ArrayList &statusList)
                         sources[count]->getConfig().getName(),
                         sources[count]->getSyncMode(), 0, SYNC_SOURCE_BEGIN);
 
+                fireSyncSourceEvent(sources[count]->getConfig().getURI(),
+                        sources[count]->getConfig().getName(),
+                        sources[count]->getSyncMode(), 0, SYNC_SOURCE_SERVER_BEGIN);
+
                 strcpy(prevSourceUri,  sources[count]->getConfig().getURI());
                 prevSyncMode = sources[count]->getSyncMode();
 
@@ -995,8 +999,11 @@ bool SyncManager::checkForServerChanges(SyncML* syncml, ArrayList &statusList)
                 statusList.add(&previousStatus);
                 previousStatus.clear();
             }
-        // Fire SyncSourceEvent: END sync of a syncsource (server modifications)
-        //fireSyncSourceEvent(sources[count]->getConfig().getURI(), sources[count]->getConfig().getName(), sources[count]->getSyncMode(), 0, SYNC_SOURCE_END);
+            // Fire SyncSourceEvent: END sync of a syncsource (server modifications)
+            fireSyncSourceEvent(sources[count]->getConfig().getURI(), 
+                sources[count]->getConfig().getName(), 
+                sources[count]->getSyncMode(), 0, 
+                SYNC_SOURCE_SERVER_END);
             previousStatus.clear();
         }
         i++;
@@ -2249,6 +2256,26 @@ Status *SyncManager::processSyncItem(Item* item, const CommandInfo &cmdInfo, Syn
             // Process item ------------------------------------------------------------
             if ( strcmp(cmdInfo.commandName, ADD) == 0) {
 
+                // Set the correct TargetParent if only SourceParent is read.
+                // 
+                // The SourceParent sent by the Server on a ADD command is the GUID value, if 
+                // the Client didn't reply yet with the corresponding mapping (in that case the
+                // TargetParent will be sent). 
+                // We lookup into our mappings list to retrieve the LUID value from the GUID, 
+                // and set the TargetParent.
+                StringBuffer targetParent(item->getTargetParent());
+                if (targetParent.empty()) {
+                    StringBuffer parentGUID(item->getSourceParent());
+                    if (!parentGUID.empty()) {
+                        Enumeration& mappings = mmanager[count]->getMappings();
+                        const StringBuffer& parentLUID = lookupMappings(mappings, parentGUID);
+
+                        WCHAR* tparent = toWideChar(parentLUID.c_str());
+                        incomingItem->setTargetParent(tparent);
+                        delete [] tparent;
+                    }
+                }
+
                 incomingItem->setState(SYNC_STATE_NEW);
                 code = sources[count]->addItem(*incomingItem);
                 status = syncMLBuilder.prepareItemStatus(ADD, itemName, cmdInfo.cmdRef, code);
@@ -2264,8 +2291,6 @@ Status *SyncManager::processSyncItem(Item* item, const CommandInfo &cmdInfo, Syn
                 // If the add was successful, set the id mapping
                 if (code >= 200 && code <= 299) {
                     char *key = toMultibyte(incomingItem->getKey());
-                    //SyncMap syncMap(item->getSource()->getLocURI(), key);
-                    //mappings[count].add(syncMap);
                     mmanager[count]->addMapping(key, item->getSource()->getLocURI()); // LUID, GUID
                     delete [] key;
                 }
@@ -2320,6 +2345,35 @@ Status *SyncManager::processSyncItem(Item* item, const CommandInfo &cmdInfo, Syn
 
     return status;
 }
+
+
+const StringBuffer SyncManager::lookupMappings(Enumeration& mappings, const StringBuffer& guid) {
+
+    // Check recursively all the elements
+    ArrayElement* e = mappings.getFirstElement();
+    if (e) {
+        KeyValuePair* kvp = (KeyValuePair*)e;
+        if (kvp && (kvp->getValue() == guid)) {
+            return kvp->getKey();           // found
+        }
+
+        while (mappings.hasMoreElement()) {
+            ArrayElement* e = mappings.getNextElement();
+            if (e) {
+                KeyValuePair* kvp = (KeyValuePair*)e;
+                if (kvp && (kvp->getValue() == guid)) {
+                    return kvp->getKey();   // found
+                }
+            }
+        }
+    }
+
+    // If here, corrispondence not found
+    return "";
+}
+
+
+
 
 /*
  * Creates the device info for this client and sources.
@@ -2515,6 +2569,7 @@ void SyncManager::clearServerDevInf() {
     config.setServerLoSupport (false);
     config.setServerNocSupport(false);
     config.setServerSmartSlowSync(0);
+    config.setServerMultipleEmailAccount(0);
     config.setServerLastSyncURL("");
 }
 

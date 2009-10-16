@@ -47,6 +47,7 @@
 #include "spdm/DMTree.h"
 #include "spdm/ManagementNode.h"
 #include "spds/DefaultConfigFactory.h"
+#include "client/MailSourceManagementNode.h"
 
 USE_NAMESPACE
 
@@ -587,29 +588,39 @@ bool DMTClientConfig::readSourceConfig(int i, ManagementNode& n) {
  */
 void DMTClientConfig::saveSourceConfig(int i, ManagementNode& n) {
 
-    ManagementNode* node;
-    char nodeName[DIM_MANAGEMENT_PATH];
+        char nodeName[DIM_MANAGEMENT_PATH];
 
-    if (n.getChild(i) == NULL) {
-        // Create node from Source name.
-        char* fn = n.createFullName();
-        sprintf(nodeName, "%s/%s", fn, sourceConfigs[i].getName());
-        delete [] fn;
-        node = dmt->readManagementNode(nodeName);
-    }
-    else {
-        node = (ManagementNode*)n.getChild(i)->clone();
-    }
+    if( strcmp( sourceConfigs[i].getName(), "mail" ) == 0 ){
 
-    if (node) {
-        saveSourceConfig(i, n, *node);
-        saveSourceVars(i, n, *node);
+        MailSourceManagementNode* msmn = new MailSourceManagementNode(n.createFullName(),sourceConfigs[i].getName());
+        MailSyncSourceConfig& mssc = ((MailSyncSourceConfig&)((sourceConfigs[i])));
+        msmn->setMailSourceConfig(mssc);
+        delete msmn;
 
-        // *** TBD ***
-        // CTCap c = sourceConfigs[i].getCtCap();
-        // saveCtCap() somewhere...
+    }else{
+        ManagementNode* node;
 
-        delete node;
+        if (n.getChild(i) == NULL) {
+            // Create node from Source name.
+            char* fn = n.createFullName();
+            sprintf(nodeName, "%s/%s", fn, sourceConfigs[i].getName());
+            delete [] fn;
+            node = dmt->readManagementNode(nodeName);
+        }
+        else {
+            node = (ManagementNode*)n.getChild(i)->clone();
+        }
+
+        if (node) {
+            saveSourceConfig(i, n, *node);
+            saveSourceVars(i, n, *node);
+
+            // *** TBD ***
+            // CTCap c = sourceConfigs[i].getCtCap();
+            // saveCtCap() somewhere...
+
+            delete node;
+        }
     }
 }
 
@@ -932,6 +943,19 @@ bool DMTClientConfig::readExtDevConfig(ManagementNode& /* syncMLNode */,
 			serverConfig.setSmartSlowSync(2);
 		}
         delete [] tmp;
+
+        tmp = extNode.readPropertyValue(PROPERTY_MULTIPLE_EMAIL_ACCOUNT);
+		if(strcmp(tmp,"")==0){
+			serverConfig.setMultipleEmailAccount(2);
+		}else if(strcmp(tmp,"0")==0){
+			serverConfig.setMultipleEmailAccount(0);
+		}else if(strcmp(tmp,"1")==0){
+			serverConfig.setMultipleEmailAccount(1);
+		}else if(strcmp(tmp,"2")==0){
+			serverConfig.setMultipleEmailAccount(2);
+		}
+        delete [] tmp;
+
 		tmp = extNode.readPropertyValue(PROPERTY_UTC);
         serverConfig.setUtc((*tmp == '1') ? true : false);
         delete [] tmp;
@@ -993,6 +1017,19 @@ void DMTClientConfig::saveExtDevConfig(ManagementNode& /* syncMLNode */,
 			extNode.setPropertyValue(PROPERTY_SMART_SLOW_SYNC, "2");
 			break;
 		}
+
+        switch (serverConfig.getMultipleEmailAccount()){
+			case 0:
+			extNode.setPropertyValue(PROPERTY_MULTIPLE_EMAIL_ACCOUNT, "0");
+			break;
+			case 1:
+			extNode.setPropertyValue(PROPERTY_MULTIPLE_EMAIL_ACCOUNT, "1");
+			break;
+			case 2:
+			extNode.setPropertyValue(PROPERTY_MULTIPLE_EMAIL_ACCOUNT, "2");
+			break;
+		}
+
 		//extNode.setPropertyValue(PROPERTY_SMART_SLOW_SYNC, itow(  ));
 		extNode.setPropertyValue(PROPERTY_UTC,
                              (serverConfig.getUtc() ? "1": "0") );

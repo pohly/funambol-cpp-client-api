@@ -197,6 +197,7 @@ class SyncManagerConfig : public AbstractSyncConfig {
         virtual void setServerNocSupport(const bool  v) { getServerConfig().setNocSupport(v);}
         virtual void setServerVerDTD    (const char* v) { getServerConfig().setVerDTD(v);    }
         virtual void setServerSmartSlowSync(const int v){ getServerConfig().setSmartSlowSync(v); }
+        virtual void setServerMultipleEmailAccount(const int v){ getServerConfig().setMultipleEmailAccount(v); }
         virtual void setServerLastSyncURL(const char* v){ getServerConfig().setServerLastSyncURL(v); }
 
         virtual const char* getServerSwv() const        { return getServerConfig().getSwv(); }
@@ -212,6 +213,7 @@ class SyncManagerConfig : public AbstractSyncConfig {
         virtual bool getServerNocSupport() const        { return getServerConfig().getNocSupport(); }
         virtual const char* getServerVerDTD() const     { return getServerConfig().getVerDTD(); }
         virtual int getServerSmartSlowSync() const      { return getServerConfig().getSmartSlowSync(); }
+        virtual int getMultipleEmailAccount() const      { return getServerConfig().getMultipleEmailAccount(); }
         virtual const char* getServerLastSyncURL() const{ return getServerConfig().getServerLastSyncURL(); }
 
 };
