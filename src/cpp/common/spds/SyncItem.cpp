@@ -42,6 +42,7 @@
 #include "spds/SyncItem.h"
 #include "spds/DataTransformerFactory.h"
 #include "base/globalsdef.h"
+#include "inputStream/BufferInputStream.h"
 
 USE_NAMESPACE
 
@@ -81,6 +82,8 @@ void SyncItem::initialize() {
     key[0] = 0;
     targetParent = NULL;
     sourceParent = NULL;
+
+    inputStream = NULL;
 }
 
 /*
@@ -99,6 +102,11 @@ SyncItem::~SyncItem() {
     if (sourceParent) {
         delete [] sourceParent; sourceParent = NULL;
     }
+
+    if (inputStream) {
+        inputStream->close();
+    }
+    delete inputStream;
 }
 
 const char* SyncItem::getDataEncoding() const {
@@ -294,7 +302,18 @@ void* SyncItem::setData(const void* itemData, long dataSize) {
         memset(data, 0, size + 1);
     }
 
+    // Set a new BufferInputStream linked to this data
+    if (inputStream) {
+        inputStream->close();
+        delete inputStream;
+    }
+    inputStream = new BufferInputStream(data, size);
+
     return data;
+}
+
+InputStream* SyncItem::getInputStream() {
+    return inputStream;
 }
 
 /*

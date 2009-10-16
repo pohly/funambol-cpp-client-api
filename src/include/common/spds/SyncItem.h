@@ -42,6 +42,7 @@
     #include "base/util/ArrayElement.h"
     #include "spds/constants.h"
     #include "spds/SyncStatus.h"
+    #include "inputStream/InputStream.h"
 
     #include <string.h>
 #include "base/globalsdef.h"
@@ -71,6 +72,12 @@ BEGIN_NAMESPACE
 
         WCHAR* targetParent;
         WCHAR* sourceParent;
+
+        /**
+         * The SyncItem's input stream. Created new in the constructor, based on the
+         * syncItem type (default is BufferInputStream)
+         */
+        InputStream* inputStream;
 
         /**
          * Initializes private members
@@ -129,6 +136,9 @@ BEGIN_NAMESPACE
          * Sets the SyncItem content data. The passed data is copied into an
          * internal buffer so that the caller can release the buffer after
          * calling setData().
+         * The SyncItem's inputStream is created NEW everytime setData() is called,
+         * and it's linked to the 'data' buffer (it's a BufferInputStream).
+         * To read chunked data, just call getInputStream()->read(buffer, size).
          *
          * Data which is to be sent as it is currently cannot contain nul-bytes
          * because it is treated like a C-style string. The size parameter should
@@ -161,6 +171,15 @@ BEGIN_NAMESPACE
          * is not included in the data size.
          */
         void* getData() const;
+
+        /**
+         * Returns a pointer to the SyncItem's inputStream.
+         * Depending on SyncItem's implementation, it can be a specialized
+         * InputStream (default is BufferInputStream).
+         * Can be NULL if the InputStream has not been set yet (in the
+         * default implementation, calling setData())
+         */
+        InputStream* getInputStream();
 
         /*
          * Returns the amount of bytes stored in the item,

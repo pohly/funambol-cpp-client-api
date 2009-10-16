@@ -1,3 +1,6 @@
+2009-10-16
+  - toccy: [US3125] SyncItem now uses an InputStream (BufferInputStream by default)
+
 2009-10-15
   - toccy: [US3125] added FileInputStream class, added unit test (FileInputStreamTest)
 
