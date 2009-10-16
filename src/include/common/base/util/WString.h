@@ -39,7 +39,7 @@
 
 #include "base/util/ArrayElement.h"
 #include "base/globalsdef.h"
-
+#include "base/fscapi.h"
 BEGIN_NAMESPACE
 
 class ArrayList;

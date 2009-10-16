@@ -147,6 +147,10 @@ finally:
     return ret;
 }
 
+void DeviceManagementNode::deletePropertyNode(const WCHAR* node){ 
+    RegDeleteKey(HKEY_DM_ROOT, node );
+}
+
 int DeviceManagementNode::getChildrenMaxCount() {
     HKEY key;
     ULONG howMany = 0;

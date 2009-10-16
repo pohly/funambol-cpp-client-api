@@ -36,8 +36,10 @@
 
 
 #include "base/util/utils.h"
-#include "spds/MailSyncSourceConfig.h"
+#include "mail/MailSyncSourceConfig.h"
+#include "mail/MailAccount.h"
 #include "base/globalsdef.h"
+#include "client/MailSourceManagementNode.h"
 
 USE_NAMESPACE
 
@@ -135,6 +137,105 @@ int MailSyncSourceConfig::getSchedule() const {
     return schedule;
 }
 
+bool MailSyncSourceConfig::setToBeCleanedFlag(const char* accountName, bool tobecleaned){
+    int size = mailAccounts.size();
+
+    for (int i = 0; i < size ; i++){
+        MailAccount* ma =((MailAccount*)mailAccounts[i]);
+        StringBuffer val(ma->getName());
+        if ( strcmp(accountName, val.c_str()) == 0 ){
+            ma->setToBeCleaned(tobecleaned);
+            return true;
+        }
+    }
+    return false;
+}
+
+bool MailSyncSourceConfig::setDeletedMailAccount(const char* accountName){
+    int size = mailAccounts.size();
+
+    for (int i = 0; i < size ; i++){
+        MailAccount* ma =((MailAccount*)mailAccounts[i]);
+        StringBuffer val(ma->getName());
+        if ( strcmp(accountName, val.c_str()) == 0 ){
+            ma->setDeleted(true);
+            return true;
+        }
+    }
+    return false;
+}
+
+bool MailSyncSourceConfig::delMailAccount(const char* accountName){
+    
+    int i = 0;
+    int size = mailAccounts.size();
+    for (i = 0; i < size ; i++){
+        MailAccount* ma =((MailAccount*)mailAccounts[i]);
+        StringBuffer val(ma->getName());
+        if ( strcmp(accountName, val.c_str()) == 0 ){
+            mailAccounts.removeElementAt(i);
+            return true;
+        }
+    }
+    return false;
+}
+
+bool MailSyncSourceConfig::addMailAccount(const MailAccount& account) {
+	const char* name = account.getName();
+	int size = mailAccounts.size();
+	
+	if (name == NULL) { 
+		LOG.error("can't add mail account: no account name found");
+		return false;
+	}
+
+	for (int i = 0; i < size; i++ ) {
+		MailAccount* storedAccount = static_cast<MailAccount *>(mailAccounts[i]);
+        if (storedAccount) {
+		    const char* storedName = storedAccount->getName();
+		    if ((storedName != NULL) && (strcmp(name, storedName) == 0)) {
+			    // prevent adding an already existing accout
+			    LOG.error("can't add mail account: an account with such name already exist");
+			    return false;
+		    }
+        }
+	}
+
+	LOG.debug("adding new mail account %s", account.getName().c_str());
+	
+	mailAccounts.add(static_cast<MailAccount>(account));
+	
+	return true;
+}
+
+
+bool MailSyncSourceConfig::modifyMailAccount(const MailAccount& account) {
+	const char* name = account.getName();
+	int size = mailAccounts.size();
+	
+	if (name == NULL) { 
+		LOG.error("can't update mail account: no account name found");
+		return false;
+	}
+
+	for (int i = 0; i < size; i++ ) {
+		MailAccount* storedAccount = static_cast<MailAccount *>(mailAccounts[i]);
+		const char* storedName = storedAccount->getName();
+
+		if ((storedName != NULL) && (strcmp(name, storedName) == 0)) {
+			// update existing account
+			LOG.debug("updating mail account %s", account.getName().c_str());
+			mailAccounts.removeElementAt(i);
+			mailAccounts.add(static_cast<MailAccount>(account));
+			
+			return true;
+		}
+	}
+
+	LOG.error("can't update mail account: an account with such name doesn't exist");
+	return false;
+}
+
 // ------------------------------------------------------------- Private methods
 
 void MailSyncSourceConfig::assign(const MailSyncSourceConfig& sc) {
@@ -161,7 +262,7 @@ void MailSyncSourceConfig::assign(const MailSyncSourceConfig& sc) {
     setTrash(sc.getTrash());
     setDraft(sc.getDraft());
     setSchedule(sc.getSchedule());
-
+    mailAccounts = sc.getMailAccounts();
 }
 
 StringBuffer MailSyncSourceConfig::print() {

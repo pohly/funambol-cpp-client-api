@@ -67,19 +67,19 @@ void setSyncStatusListener(SyncStatusListener* listener);
 
 
 //removes the SyncEvent Listener
-void unsetSyncListener();
+void unsetSyncListener(const char* name="");
 
 // Removes the TransportEvent Listener
-void unsetTransportListener();
+void unsetTransportListener(const char* name="");
 
 // Removes the SyncSourceEvent Listener
-void unsetSyncSourceListener();
+void unsetSyncSourceListener(const char* name="");
 
 // Removes the SyncItemEvent Listener
-void unsetSyncItemListener();
+void unsetSyncItemListener(const char* name="");
 
 // Removes the SyncStatusEvent Listener
-void unsetSyncStatusListener();
+void unsetSyncStatusListener(const char* name="");
 
 END_NAMESPACE
 

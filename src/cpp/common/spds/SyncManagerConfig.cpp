@@ -40,6 +40,7 @@
 #include "spds/SyncManagerConfig.h"
 #include "spds/DefaultConfigFactory.h"
 #include "base/globalsdef.h"
+#include "mail/MailSyncSourceConfig.h"
 
 USE_NAMESPACE
 
@@ -95,8 +96,11 @@ bool SyncManagerConfig::setSyncSourceConfig(SyncSourceConfig& sc) {
         return addSyncSourceConfig(sc);
     }
 
-    sourceConfigs[i].assign(sc);
-
+    if ( strcmp( sc.getName(), "mail") == 0 ){
+        ((MailSyncSourceConfig&)(sourceConfigs[i])).assign(((MailSyncSourceConfig&)(sourceConfigs[i])));
+    }else{
+        sourceConfigs[i].assign(sc);
+    }
     //dirty |= DIRTY_SYNC_SOURCE;
 
     return true;
@@ -115,30 +119,43 @@ bool SyncManagerConfig::addSyncSourceConfig(SyncSourceConfig& sc) {
     SyncSourceConfig* s = NULL;
 
     // copy array in a tmp buffer
-    if (sourceConfigsCount>0) {
+    if (sourceConfigsCount > 0) {
         s = new SyncSourceConfig[sourceConfigsCount];
-        for (i=0; i<sourceConfigsCount; i++)
-            s[i].assign(sourceConfigs[i]);
+        for (i=0; i<sourceConfigsCount; i++) {
+            if (strcmp(sourceConfigs[i].getName(), "mail") == 0) {
+                ((MailSyncSourceConfig&)s[i]).assign(((MailSyncSourceConfig&)(sourceConfigs[i])));
+            } else {
+                s[i].assign(sourceConfigs[i]);
+            }
+        }       
     }
 
     // delete old one, create new (+1 element)
     if (sourceConfigs) {
         delete [] sourceConfigs;
     }
-    sourceConfigs = new SyncSourceConfig[sourceConfigsCount+1];
 
+    sourceConfigs = new SyncSourceConfig[sourceConfigsCount + 1];
     // copy back.
-    for (i=0; i<sourceConfigsCount; i++)
-        sourceConfigs[i].assign(s[i]);
-    // This is the new one.
-    sourceConfigs[sourceConfigsCount].assign(sc);
-    sourceConfigsCount ++;
+    for (i = 0; i < sourceConfigsCount; i++) {
+        if (strcmp(s[i].getName(), "mail") == 0) {
+            ((MailSyncSourceConfig &)sourceConfigs[i]).assign(((MailSyncSourceConfig&)(s[i])));
+        } else {
+            sourceConfigs[i].assign(s[i]);
+        }
+    }
+    
+    sourceConfigsCount++;
+    if (strcmp(sc.getName(), "mail") == 0) {
+        ((MailSyncSourceConfig&)(sourceConfigs[i])).assign(((MailSyncSourceConfig&)(sc)));
+    } else {
+        sourceConfigs[i].assign(sc);
+    }
 
     if (s) {
         delete [] s;
     }
 
-    //dirty |= DIRTY_SYNC_SOURCE;
     return true;
 }
 

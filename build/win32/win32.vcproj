@@ -725,28 +725,6 @@
 					>
 				</File>
 				<File
-					RelativePath="..\..\src\cpp\common\spds\EmailData.cpp"
-					>
-					<FileConfiguration
-						Name="Debug|Win32"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-							AdditionalIncludeDirectories=""
-							PreprocessorDefinitions=""
-						/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Release|Win32"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-							AdditionalIncludeDirectories=""
-							PreprocessorDefinitions=""
-						/>
-					</FileConfiguration>
-				</File>
-				<File
 					RelativePath="..\..\src\cpp\common\spds\FileData.cpp"
 					>
 				</File>
@@ -760,18 +738,6 @@
 				</File>
 				<File
 					RelativePath="..\..\src\cpp\common\spds\ItemReport.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\src\cpp\common\spds\MailAccount.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\src\cpp\common\spds\MailMessage.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\src\cpp\common\spds\MailSyncSourceConfig.cpp"
 					>
 				</File>
 				<File
@@ -3383,6 +3349,66 @@
 					>
 				</File>
 			</Filter>
+			<Filter
+				Name="email"
+				>
+				<File
+					RelativePath="..\..\src\cpp\common\mail\MailAccount.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\cpp\common\mail\MailAccountManager.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\cpp\common\mail\MailData.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\cpp\common\mail\MailMessage.cpp"
+					>
+					<FileConfiguration
+						Name="Debug|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							ObjectFile="$(IntDir)\$(InputName)1.obj"
+							XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							ObjectFile="$(IntDir)\$(InputName)1.obj"
+							XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
+						/>
+					</FileConfiguration>
+				</File>
+				<File
+					RelativePath="..\..\src\cpp\common\mail\MailSyncSourceConfig.cpp"
+					>
+					<FileConfiguration
+						Name="Debug|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							ObjectFile="$(IntDir)\$(InputName)1.obj"
+							XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							ObjectFile="$(IntDir)\$(InputName)1.obj"
+							XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
+						/>
+					</FileConfiguration>
+				</File>
+			</Filter>
 		</Filter>
 		<Filter
 			Name="Header Files"
@@ -4248,10 +4274,6 @@
 					>
 				</File>
 				<File
-					RelativePath="..\..\src\include\common\spds\MailAccount.h"
-					>
-				</File>
-				<File
 					RelativePath="..\..\src\include\common\spds\MappingsManager.h"
 					>
 				</File>
@@ -4405,6 +4427,30 @@
 				</File>
 				<File
 					RelativePath="..\..\src\include\common\push\PushListener.h"
+					>
+				</File>
+			</Filter>
+			<Filter
+				Name="email"
+				>
+				<File
+					RelativePath="..\..\src\include\common\mail\MailAccount.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\include\common\email\MailAccount.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\include\common\mail\MailData.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\include\common\email\MailMessage.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\include\common\email\MailSyncSourceConfig.h"
 					>
 				</File>
 			</Filter>

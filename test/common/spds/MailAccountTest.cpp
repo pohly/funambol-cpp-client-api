@@ -39,29 +39,41 @@
 #include "base/fscapi.h"
 #include "base/messages.h"
 #include "base/Log.h"
+#include "base/util/utils.h"
 #include "base/util/StringBuffer.h"
 #include "base/util/ArrayList.h"
 #include "base/globalsdef.h"
 #include "spds/FolderData.h"
-#include "spds/MailAccount.h"
+#include "mail/MailAccount.h"
 
-#define ACCOUNT_FOLDER  "<Folder><name>Email Home</name><created>20090428T162654Z<created><role>account</role><Ext><XNam>VisibleName</XNam> <XVal>Name Surname</XVal></Ext><Ext><XNam>EmailAddress</XNam> <XVal>Name.Surname@email.com</XVal></Ext></Folder>"
-#define INBOX_FOLDER    "<Folder><name>Inbox</name><created>20090428T162654Z<created><role>inbox</role></Folder>"
-#define OUTBOX_FOLDER   "<Folder><name>Outbox</name><created>20090428T162654Z<created><role>outbox</role></Folder>"
-#define VISIBLENAME     "Name Surname"
-#define EMAILADDRESS    "Name.Surname@email.com"
-
-#ifdef _WIN32
-#define CREATED         L"20090428T162654Z"
-#define NAME            L"Email Home"
-#define INBOX           L"Inbox"
-#define OUTBOX          L"Outbox"
-#else
+#define ACCOUNT_FOLDER  "<Folder><name>Email Home</name><created>20090428T162654Z</created><role>account</role><Ext><XNam>VisibleName</XNam> <XVal>Name Surname</XVal></Ext><Ext><XNam>EmailAddress</XNam> <XVal>Name.Surname@email.com</XVal></Ext></Folder>"
+#define INBOX_FOLDER    "<Folder><name>Inbox</name><created>20090428T162654Z</created><role>inbox</role></Folder>"
+#define OUTBOX_FOLDER   "<Folder><name>Outbox</name><created>20090428T162654Z</created><role>outbox</role></Folder>"
+#define VISIBLE_NAME     "Name Surname"
+#define EMAIL_ADDRESS    "Name.Surname@email.com"
+#define ACCOUNT_PROTOCOL "POP3"
 #define CREATED         "20090428T162654Z"
 #define NAME            "Email Home"
 #define INBOX           "Inbox"
 #define OUTBOX          "Outbox"
-#endif
+
+
+
+#define _VISIBLENAME     "Elvis Presley"
+#define _EMAILADDRESS    "elvis@iamthepelvis.com"
+#define _PROTOCOL        "IMAP4"
+#define _USERNAME        "elvis"
+#define _PASSWORD        "TheKing"
+#define _IN_SERVER       "mail.iamthepelvis.com"
+#define _OUT_SERVER      "smtp.iamthepelvis.com"
+#define _IN_PORT         "143"
+#define _OUT_PORT        "25"
+#define _IN_SSL          "0"
+#define _OUT_SSL         "0"
+#define _SIGNATURE       "Elvis is alive!"
+#define _DOMAINNAME      "iamthepelvis.com"
+#define _ID              "ID"
+
 
 USE_NAMESPACE
 
@@ -69,6 +81,7 @@ USE_NAMESPACE
 class MailAccountTest : public CppUnit::TestFixture {
     CPPUNIT_TEST_SUITE(MailAccountTest);
         CPPUNIT_TEST(testFillUpAccount);
+        CPPUNIT_TEST(testExtSetters);
     CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -84,32 +97,67 @@ private:
 
 
     void testFillUpAccount(){
-       FolderData account, inbox, outbox;
+       MailAccount account;
        account.parse(ACCOUNT_FOLDER);
-       inbox.parse(INBOX_FOLDER);
-       outbox.parse(OUTBOX_FOLDER);
+       
+       CPPUNIT_ASSERT( strcmp(account.getName(), NAME) == 0);
 
-       MailAccount mailaccount;
-       mailaccount.setAccount(account);
-       mailaccount.setInbox(inbox);
-       mailaccount.setOutBox(outbox);
+       const char* val1 = account.getVisibleName();
+       const char* val2 = account.getEmailAddress();
 
-       CPPUNIT_ASSERT( wcscmp(mailaccount.getAccountName(), NAME) == 0);
-       //CPPUNIT_ASSERT( wcscmp(mailaccount.getAccountCreated(), CREATED) == 0);
-       CPPUNIT_ASSERT( wcscmp(mailaccount.getInboxName(), INBOX) == 0);
-       //CPPUNIT_ASSERT( wcscmp(mailaccount.getInboxCreated(), CREATED) == 0);
-       CPPUNIT_ASSERT( wcscmp(mailaccount.getOutboxName(), OUTBOX) == 0);
-       //CPPUNIT_ASSERT( wcscmp(mailaccount.getOutboxCreated(), CREATED) == 0);
+       CPPUNIT_ASSERT( strcmp(val1, VISIBLE_NAME) == 0);
+       CPPUNIT_ASSERT( strcmp(val2, EMAIL_ADDRESS) == 0);
 
-       const char* val1 = mailaccount.getVisibleName();
-       const char* val2 = mailaccount.getEmailAddress();
-
-       CPPUNIT_ASSERT( strcmp(val1, VISIBLENAME) == 0);
-       CPPUNIT_ASSERT( strcmp(val2, EMAILADDRESS) == 0);
-       delete [] val1;
-       delete [] val2;
+       account.setProtocol(ACCOUNT_PROTOCOL);
+       const char* val3 = account.getProtocol();
+       CPPUNIT_ASSERT(val3 != NULL);  
+       CPPUNIT_ASSERT( strcmp(val3, ACCOUNT_PROTOCOL) == 0);
     }
 
+
+    void testExtSetters(){
+	   const WCHAR* accountIdw = NULL;
+	   const char* accountId = NULL;
+       MailAccount account;
+
+       account.parse(ACCOUNT_FOLDER);
+       account.setVisibleName(_VISIBLENAME);
+       account.setEmailAddress(_EMAILADDRESS);
+       account.setProtocol(_PROTOCOL);
+       account.setUsername(_USERNAME);
+       account.setPassword(_PASSWORD);
+       account.setInServer(_IN_SERVER);
+       account.setOutServer(_OUT_SERVER);
+       account.setInPort(_IN_PORT);
+       account.setOutPort(_OUT_PORT);
+       account.setInSSL(_IN_SSL);
+       account.setOutSSL(_OUT_SSL);
+       account.setSignature(_SIGNATURE);
+       account.setDomainName(_DOMAINNAME);
+
+	   accountIdw = toWideChar(_ID);
+       account.setID(accountIdw);
+	   delete [] accountIdw;
+
+	   accountId = toMultibyte(account.getID());
+
+       CPPUNIT_ASSERT( strcmp(account.getVisibleName(),     _VISIBLENAME)   == 0 );
+       CPPUNIT_ASSERT( strcmp(account.getEmailAddress(),    _EMAILADDRESS)  == 0 );
+       CPPUNIT_ASSERT( strcmp(account.getProtocol(),        _PROTOCOL)      == 0 );
+       CPPUNIT_ASSERT( strcmp(account.getUsername(),        _USERNAME)      == 0 );
+       CPPUNIT_ASSERT( strcmp(account.getPassword(),        _PASSWORD)      == 0 );
+       CPPUNIT_ASSERT( strcmp(account.getInServer(),        _IN_SERVER)     == 0 );
+       CPPUNIT_ASSERT( strcmp(account.getOutServer(),       _OUT_SERVER)    == 0 );
+       CPPUNIT_ASSERT( strcmp(account.getInPort(),          _IN_PORT)       == 0 );
+       CPPUNIT_ASSERT( strcmp(account.getOutPort(),         _OUT_PORT)      == 0 );
+       CPPUNIT_ASSERT( strcmp(account.getInSSL(),           _IN_SSL)        == 0 );
+       CPPUNIT_ASSERT( strcmp(account.getOutSSL(),          _OUT_SSL)       == 0 );
+       CPPUNIT_ASSERT( strcmp(account.getSignature(),       _SIGNATURE)     == 0 );
+       CPPUNIT_ASSERT( strcmp(account.getDomainName(),      _DOMAINNAME)    == 0 );
+       CPPUNIT_ASSERT( strcmp(accountId,					_ID)            == 0 );
+
+	   delete [] accountId;
+    }
 };
 
 CPPUNIT_TEST_SUITE_REGISTRATION( MailAccountTest );

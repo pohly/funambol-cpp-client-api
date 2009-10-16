@@ -1,8 +1,15 @@
+2009-10-16
+  - dave: merged with branches US2448 and US1332 (MEA feature branches) at revision 1218
+            * fixed addSyncSourceConfig() in SyncManagerConfig.cpp
+
 2009-09-29 
   - toccy: fixed auto-update feature
             * new url is: "/sapi/profile/client?action=get-update-info"
             * "mandatory" type is replaced by "recommended"
             * added format parameter = properties
+
+2009-09-14
+   - toccy: merged from trunk to US1332 - rev.1109
 
 2009-09-10
    - toccy: [unit test] added "testUtils" to collect utils fuctions shared by different tests.
