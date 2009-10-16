@@ -39,6 +39,7 @@
 #include "base/fscapi.h"
 #include "base/util/StringBuffer.h"
 #include "spds/SyncManagerConfig.h"
+#include "spds/SyncItem.h"
 
 #include "InputStreamTest.h"
 #include "inputStream/BufferInputStream.h"
@@ -57,6 +58,7 @@ class BufferInputStreamTest : public InputStreamTest {
     CPPUNIT_TEST(testBufferReadBigChunk);
     CPPUNIT_TEST(testBufferReadTwoChunks);
     CPPUNIT_TEST(testBufferReadManyChunks);
+    CPPUNIT_TEST(testSyncItemBufferInputStream);
     CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -103,6 +105,49 @@ private:
         BufferInputStream stream(smallData, smallDataSize);
         testReadManyChunks(stream, smallData, smallDataSize);
         stream.close();
+    }
+
+
+    /**
+     * 1. Creates a SyncItem, and reads the stream from there (it's a BufferInputStream)
+     * 2. Tests the SyncItem setting 2 different data
+     * 3. Clones the SyncItem, then reads agin the stream
+     */
+    void testSyncItemBufferInputStream() {
+
+        SyncItem item(TEXT("key"));
+
+        // Set data
+        item.setData(smallData, smallDataSize);
+        InputStream* stream = item.getInputStream();
+        CPPUNIT_ASSERT (stream);
+
+        if (stream) {
+            testReadManyChunks(*stream, smallData, smallDataSize);
+        }
+        
+        // Set another data inside the same SyncItem
+        StringBuffer smallBuffer2("test another data inside the same SyncItem");
+        void* smallData2 = (void*)(smallBuffer2.c_str());
+        int smallDataSize2 = smallBuffer2.length();
+
+        item.setData(smallData2, smallDataSize2);
+        stream = item.getInputStream();
+        CPPUNIT_ASSERT (stream);
+
+        if (stream) {
+            testReadManyChunks(*stream, smallData2, smallDataSize2);
+        }
+
+        // Clone the item
+        SyncItem* itemCloned = (SyncItem*)item.clone();
+        stream = itemCloned->getInputStream();
+        CPPUNIT_ASSERT (stream);
+
+        if (stream) {
+            testReadManyChunks(*stream, smallData2, smallDataSize2);
+        }
+        delete itemCloned;
     }
 
 };
