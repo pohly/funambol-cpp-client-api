@@ -74,7 +74,11 @@ nobase_pkginclude_HEADERS = \
     common/spds/FileData.h \
     common/spds/FolderData.h \
     common/spds/FolderExt.h \
-    common/spds/MailAccount.h \
+    common/mail/MailAccount.h \
+    common/mail/MailAccountManager.h \
+    common/mail/MailData.h \
+    common/mail/MailMessage.h \
+    common/mail/MailSyncSourceConfig.h \
     common/syncml/core/AbstractCommand.h \
     common/syncml/core/Add.h \
     common/syncml/core/AlertCode.h \

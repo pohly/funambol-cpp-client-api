@@ -38,7 +38,6 @@
 
 #include "base/globalsdef.h"
 #include "base/fscapi.h"
-#include "base/winadapter.h"
 #include "spds/FolderData.h"
 #include "base/messages.h"
 #include "base/Log.h"
