@@ -82,7 +82,7 @@ FolderData::FolderData()
     isReadablePresent = false;
     isExecutablePresent = false;
 
-    id = TEXT("");
+    fid = TEXT("");
 }
 
 FolderData::~FolderData()
@@ -285,13 +285,13 @@ void FolderData::setValueByName(const char* valName, const char* setVal){
 }
 
 const WCHAR* FolderData::getID() const { 
-    return id.c_str(); 
+    return fid.c_str(); 
 }
 
 void FolderData::setID(const WCHAR* val) { 
 
     if (val) {
-        id = val;
+        fid = val;
     }
 }  
 

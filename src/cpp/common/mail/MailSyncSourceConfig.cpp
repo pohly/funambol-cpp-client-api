@@ -203,7 +203,7 @@ bool MailSyncSourceConfig::addMailAccount(const MailAccount& account) {
 
 	LOG.debug("adding new mail account %s", account.getName().c_str());
 	
-	mailAccounts.add(static_cast<MailAccount>(account));
+	mailAccounts.add((MailAccount&)account);
 	
 	return true;
 }
@@ -226,7 +226,7 @@ bool MailSyncSourceConfig::modifyMailAccount(const MailAccount& account) {
 			// update existing account
 			LOG.debug("updating mail account %s", account.getName().c_str());
 			mailAccounts.removeElementAt(i);
-			mailAccounts.add(static_cast<MailAccount>(account));
+			mailAccounts.add((MailAccount&)(account));
 			
 			return true;
 		}

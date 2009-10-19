@@ -71,8 +71,8 @@ void MailSourceManagementNode::setMailAccounts(MailSyncSourceConfig& c){
         for (int i = 0; i < accountNum; i ++) { 
             if (((MailAccount*)mailAccounts[i])->getDeleted()){
                 WCHAR* wname = toWideChar(((MailAccount*)mailAccounts[i])->getName());
-                WCHAR* node = new WCHAR[wcslen(getFullContext()) + wcslen(wname) + wcslen(L"\\mailAccounts\\") +1];
-                wsprintf(node, L"%s\\mailAccounts\\%s", getFullContext(), wname);
+                WCHAR* node = new WCHAR[wcslen(getFullContext()) + wcslen(wname) + wcslen(TEXT("\\mailAccounts\\")) +1];
+                wsprintf(node, TEXT("%s\\mailAccounts\\%s"), getFullContext(), wname);
                 deletePropertyNode(node);
                 config.delMailAccount(((MailAccount*)mailAccounts[i])->getName());
 

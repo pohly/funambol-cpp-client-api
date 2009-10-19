@@ -68,12 +68,9 @@
 		7C9F533B0DAF4CB1007E0091 /* DataTransformerFactory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C9F52660DAF4CB1007E0091 /* DataTransformerFactory.cpp */; };
 		7C9F533C0DAF4CB1007E0091 /* DefaultConfigFactory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C9F52670DAF4CB1007E0091 /* DefaultConfigFactory.cpp */; };
 		7C9F533D0DAF4CB1007E0091 /* DeviceConfig.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C9F52680DAF4CB1007E0091 /* DeviceConfig.cpp */; };
-		7C9F533E0DAF4CB1007E0091 /* EmailData.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C9F52690DAF4CB1007E0091 /* EmailData.cpp */; };
 		7C9F533F0DAF4CB1007E0091 /* FileData.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C9F526A0DAF4CB1007E0091 /* FileData.cpp */; };
 		7C9F53400DAF4CB1007E0091 /* FolderData.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C9F526B0DAF4CB1007E0091 /* FolderData.cpp */; };
 		7C9F53410DAF4CB1007E0091 /* ItemReport.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C9F526C0DAF4CB1007E0091 /* ItemReport.cpp */; };
-		7C9F53420DAF4CB1007E0091 /* MailMessage.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C9F526D0DAF4CB1007E0091 /* MailMessage.cpp */; };
-		7C9F53430DAF4CB1007E0091 /* MailSyncSourceConfig.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C9F526E0DAF4CB1007E0091 /* MailSyncSourceConfig.cpp */; };
 		7C9F53440DAF4CB1007E0091 /* spdsutils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C9F526F0DAF4CB1007E0091 /* spdsutils.cpp */; };
 		7C9F53450DAF4CB1007E0091 /* SyncItem.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C9F52700DAF4CB1007E0091 /* SyncItem.cpp */; };
 		7C9F53460DAF4CB1007E0091 /* SyncItemStatus.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C9F52710DAF4CB1007E0091 /* SyncItemStatus.cpp */; };
@@ -283,8 +280,6 @@
 		7C9F55150DAF4CC5007E0091 /* FileData.h in Headers */ = {isa = PBXBuildFile; fileRef = 7C9F54280DAF4CC5007E0091 /* FileData.h */; };
 		7C9F55160DAF4CC5007E0091 /* FolderData.h in Headers */ = {isa = PBXBuildFile; fileRef = 7C9F54290DAF4CC5007E0091 /* FolderData.h */; };
 		7C9F55170DAF4CC5007E0091 /* ItemReport.h in Headers */ = {isa = PBXBuildFile; fileRef = 7C9F542A0DAF4CC5007E0091 /* ItemReport.h */; };
-		7C9F55180DAF4CC5007E0091 /* MailMessage.h in Headers */ = {isa = PBXBuildFile; fileRef = 7C9F542B0DAF4CC5007E0091 /* MailMessage.h */; };
-		7C9F55190DAF4CC5007E0091 /* MailSyncSourceConfig.h in Headers */ = {isa = PBXBuildFile; fileRef = 7C9F542C0DAF4CC5007E0091 /* MailSyncSourceConfig.h */; };
 		7C9F551A0DAF4CC5007E0091 /* spdsutils.h in Headers */ = {isa = PBXBuildFile; fileRef = 7C9F542E0DAF4CC5007E0091 /* spdsutils.h */; };
 		7C9F551B0DAF4CC5007E0091 /* SyncItem.h in Headers */ = {isa = PBXBuildFile; fileRef = 7C9F542F0DAF4CC5007E0091 /* SyncItem.h */; };
 		7C9F551C0DAF4CC5007E0091 /* SyncItemStatus.h in Headers */ = {isa = PBXBuildFile; fileRef = 7C9F54300DAF4CC5007E0091 /* SyncItemStatus.h */; };
@@ -410,6 +405,17 @@
 		AB43F7350EDACE1100183D6B /* StringMap.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AB43F7340EDACE1100183D6B /* StringMap.cpp */; };
 		AB43F7370EDACE2800183D6B /* StringMap.h in Headers */ = {isa = PBXBuildFile; fileRef = AB43F7360EDACE2800183D6B /* StringMap.h */; };
 		AB4B1B060ED6F6D3007C477B /* PlatformAdapter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AB4B1B050ED6F6D3007C477B /* PlatformAdapter.cpp */; };
+		AB7B8944108C9E1C00E14CD5 /* MailAccount.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AB7B893F108C9E1C00E14CD5 /* MailAccount.cpp */; };
+		AB7B8945108C9E1C00E14CD5 /* MailAccountManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AB7B8940108C9E1C00E14CD5 /* MailAccountManager.cpp */; };
+		AB7B8946108C9E1C00E14CD5 /* MailData.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AB7B8941108C9E1C00E14CD5 /* MailData.cpp */; };
+		AB7B8947108C9E1C00E14CD5 /* MailMessage.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AB7B8942108C9E1C00E14CD5 /* MailMessage.cpp */; };
+		AB7B8948108C9E1C00E14CD5 /* MailSyncSourceConfig.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AB7B8943108C9E1C00E14CD5 /* MailSyncSourceConfig.cpp */; };
+		AB7B8950108C9E3D00E14CD5 /* Mail.h in Headers */ = {isa = PBXBuildFile; fileRef = AB7B894A108C9E3D00E14CD5 /* Mail.h */; };
+		AB7B8951108C9E3D00E14CD5 /* MailAccount.h in Headers */ = {isa = PBXBuildFile; fileRef = AB7B894B108C9E3D00E14CD5 /* MailAccount.h */; };
+		AB7B8952108C9E3D00E14CD5 /* MailAccountManager.h in Headers */ = {isa = PBXBuildFile; fileRef = AB7B894C108C9E3D00E14CD5 /* MailAccountManager.h */; };
+		AB7B8953108C9E3D00E14CD5 /* MailData.h in Headers */ = {isa = PBXBuildFile; fileRef = AB7B894D108C9E3D00E14CD5 /* MailData.h */; };
+		AB7B8954108C9E3D00E14CD5 /* MailMessage.h in Headers */ = {isa = PBXBuildFile; fileRef = AB7B894E108C9E3D00E14CD5 /* MailMessage.h */; };
+		AB7B8955108C9E3D00E14CD5 /* MailSyncSourceConfig.h in Headers */ = {isa = PBXBuildFile; fileRef = AB7B894F108C9E3D00E14CD5 /* MailSyncSourceConfig.h */; };
 		ABF8C4C00E93A1CB00401C02 /* BlockingSQLiteKeyValueStore.h in Headers */ = {isa = PBXBuildFile; fileRef = ABF8C4BF0E93A1CB00401C02 /* BlockingSQLiteKeyValueStore.h */; };
 		ABF8C5810E93BD4700401C02 /* MappingsManager.h in Headers */ = {isa = PBXBuildFile; fileRef = ABF8C57F0E93BD4700401C02 /* MappingsManager.h */; };
 		ABF8C5820E93BD4700401C02 /* MappingStoreBuilder.h in Headers */ = {isa = PBXBuildFile; fileRef = ABF8C5800E93BD4700401C02 /* MappingStoreBuilder.h */; };
@@ -437,7 +443,6 @@
 		7C3BEB200DB7328E00119850 /* CurlTransportAgent.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CurlTransportAgent.h; sourceTree = "<group>"; };
 		7C3BEB210DB7328E00119850 /* MacTransportAgent.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MacTransportAgent.h; sourceTree = "<group>"; };
 		7C3BEB240DB7329900119850 /* MacTransportAgent.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = MacTransportAgent.cpp; sourceTree = "<group>"; };
-		7C3BEB280DB732B400119850 /* BriefcaseCacheSyncSource.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = BriefcaseCacheSyncSource.cpp; sourceTree = "<group>"; };
 		7C3BEB290DB732B400119850 /* BriefcaseClient.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = BriefcaseClient.cpp; sourceTree = "<group>"; };
 		7C3BEB2A0DB732B400119850 /* client.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = client.cpp; sourceTree = "<group>"; };
 		7C3BEB2B0DB732B400119850 /* clientTestFramework.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = clientTestFramework.cpp; sourceTree = "<group>"; };
@@ -452,12 +457,12 @@
 		7C3BEB350DB732B400119850 /* TestSyncSource.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = TestSyncSource.cpp; sourceTree = "<group>"; };
 		7C3BEB360DB732B400119850 /* TestSyncSource2.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = TestSyncSource2.cpp; sourceTree = "<group>"; };
 		7C3BEB370DB732B400119850 /* vcardconverter.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = vcardconverter.cpp; sourceTree = "<group>"; };
-		7C3BEC790DB734E600119850 /* examples-client */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = "compiled.mach-o.executable"; path = "examples-client"; sourceTree = BUILT_PRODUCTS_DIR; };
+		7C3BEC790DB734E600119850 /* examples-client */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = "examples-client"; sourceTree = BUILT_PRODUCTS_DIR; };
 		7C7649350DB385DC00786883 /* KeyValueStore.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = KeyValueStore.h; sourceTree = "<group>"; };
 		7C8B0C4F0DB73C2E005113A8 /* SQLiteKeyValueStore.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = SQLiteKeyValueStore.cpp; sourceTree = "<group>"; };
 		7C8B0D990DB7517C005113A8 /* CoreServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreServices.framework; path = System/Library/Frameworks/CoreServices.framework; sourceTree = SDKROOT; };
 		7C8B0EBD0DB756A4005113A8 /* SQLiteKVSTest.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = SQLiteKVSTest.cpp; sourceTree = "<group>"; };
-		7C8B0EC70DB758A3005113A8 /* examples-sqlitekvstest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = "compiled.mach-o.executable"; path = "examples-sqlitekvstest"; sourceTree = BUILT_PRODUCTS_DIR; };
+		7C8B0EC70DB758A3005113A8 /* examples-sqlitekvstest */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = "examples-sqlitekvstest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		7C9F520E0DAF4CB1007E0091 /* base64.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = base64.cpp; sourceTree = "<group>"; };
 		7C9F520F0DAF4CB1007E0091 /* error.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = error.cpp; sourceTree = "<group>"; };
 		7C9F52120DAF4CB1007E0091 /* md5.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = md5.cpp; sourceTree = "<group>"; };
@@ -507,12 +512,9 @@
 		7C9F52660DAF4CB1007E0091 /* DataTransformerFactory.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DataTransformerFactory.cpp; sourceTree = "<group>"; };
 		7C9F52670DAF4CB1007E0091 /* DefaultConfigFactory.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DefaultConfigFactory.cpp; sourceTree = "<group>"; };
 		7C9F52680DAF4CB1007E0091 /* DeviceConfig.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DeviceConfig.cpp; sourceTree = "<group>"; };
-		7C9F52690DAF4CB1007E0091 /* EmailData.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = EmailData.cpp; sourceTree = "<group>"; };
 		7C9F526A0DAF4CB1007E0091 /* FileData.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = FileData.cpp; sourceTree = "<group>"; };
 		7C9F526B0DAF4CB1007E0091 /* FolderData.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = FolderData.cpp; sourceTree = "<group>"; };
 		7C9F526C0DAF4CB1007E0091 /* ItemReport.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ItemReport.cpp; sourceTree = "<group>"; };
-		7C9F526D0DAF4CB1007E0091 /* MailMessage.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = MailMessage.cpp; sourceTree = "<group>"; };
-		7C9F526E0DAF4CB1007E0091 /* MailSyncSourceConfig.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = MailSyncSourceConfig.cpp; sourceTree = "<group>"; };
 		7C9F526F0DAF4CB1007E0091 /* spdsutils.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = spdsutils.cpp; sourceTree = "<group>"; };
 		7C9F52700DAF4CB1007E0091 /* SyncItem.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = SyncItem.cpp; sourceTree = "<group>"; };
 		7C9F52710DAF4CB1007E0091 /* SyncItemStatus.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = SyncItemStatus.cpp; sourceTree = "<group>"; };
@@ -723,8 +725,6 @@
 		7C9F54280DAF4CC5007E0091 /* FileData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FileData.h; sourceTree = "<group>"; };
 		7C9F54290DAF4CC5007E0091 /* FolderData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FolderData.h; sourceTree = "<group>"; };
 		7C9F542A0DAF4CC5007E0091 /* ItemReport.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ItemReport.h; sourceTree = "<group>"; };
-		7C9F542B0DAF4CC5007E0091 /* MailMessage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MailMessage.h; sourceTree = "<group>"; };
-		7C9F542C0DAF4CC5007E0091 /* MailSyncSourceConfig.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MailSyncSourceConfig.h; sourceTree = "<group>"; };
 		7C9F542D0DAF4CC5007E0091 /* README.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = README.txt; sourceTree = "<group>"; };
 		7C9F542E0DAF4CC5007E0091 /* spdsutils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = spdsutils.h; sourceTree = "<group>"; };
 		7C9F542F0DAF4CC5007E0091 /* SyncItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SyncItem.h; sourceTree = "<group>"; };
@@ -852,6 +852,17 @@
 		AB43F7340EDACE1100183D6B /* StringMap.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = StringMap.cpp; sourceTree = "<group>"; };
 		AB43F7360EDACE2800183D6B /* StringMap.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = StringMap.h; sourceTree = "<group>"; };
 		AB4B1B050ED6F6D3007C477B /* PlatformAdapter.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = PlatformAdapter.cpp; path = adapter/PlatformAdapter.cpp; sourceTree = "<group>"; };
+		AB7B893F108C9E1C00E14CD5 /* MailAccount.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = MailAccount.cpp; sourceTree = "<group>"; };
+		AB7B8940108C9E1C00E14CD5 /* MailAccountManager.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = MailAccountManager.cpp; sourceTree = "<group>"; };
+		AB7B8941108C9E1C00E14CD5 /* MailData.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = MailData.cpp; sourceTree = "<group>"; };
+		AB7B8942108C9E1C00E14CD5 /* MailMessage.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = MailMessage.cpp; sourceTree = "<group>"; };
+		AB7B8943108C9E1C00E14CD5 /* MailSyncSourceConfig.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = MailSyncSourceConfig.cpp; sourceTree = "<group>"; };
+		AB7B894A108C9E3D00E14CD5 /* Mail.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Mail.h; sourceTree = "<group>"; };
+		AB7B894B108C9E3D00E14CD5 /* MailAccount.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MailAccount.h; sourceTree = "<group>"; };
+		AB7B894C108C9E3D00E14CD5 /* MailAccountManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MailAccountManager.h; sourceTree = "<group>"; };
+		AB7B894D108C9E3D00E14CD5 /* MailData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MailData.h; sourceTree = "<group>"; };
+		AB7B894E108C9E3D00E14CD5 /* MailMessage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MailMessage.h; sourceTree = "<group>"; };
+		AB7B894F108C9E3D00E14CD5 /* MailSyncSourceConfig.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MailSyncSourceConfig.h; sourceTree = "<group>"; };
 		ABF8C4BF0E93A1CB00401C02 /* BlockingSQLiteKeyValueStore.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BlockingSQLiteKeyValueStore.h; path = ../../src/include/posix/client/BlockingSQLiteKeyValueStore.h; sourceTree = SOURCE_ROOT; };
 		ABF8C57F0E93BD4700401C02 /* MappingsManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MappingsManager.h; sourceTree = "<group>"; };
 		ABF8C5800E93BD4700401C02 /* MappingStoreBuilder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MappingStoreBuilder.h; sourceTree = "<group>"; };
@@ -924,7 +935,6 @@
 		7C3BEB270DB732B400119850 /* examples */ = {
 			isa = PBXGroup;
 			children = (
-				7C3BEB280DB732B400119850 /* BriefcaseCacheSyncSource.cpp */,
 				7C3BEB290DB732B400119850 /* BriefcaseClient.cpp */,
 				7C3BEB2A0DB732B400119850 /* client.cpp */,
 				7C3BEB2B0DB732B400119850 /* clientTestFramework.cpp */,
@@ -1101,12 +1111,9 @@
 				7C9F52660DAF4CB1007E0091 /* DataTransformerFactory.cpp */,
 				7C9F52670DAF4CB1007E0091 /* DefaultConfigFactory.cpp */,
 				7C9F52680DAF4CB1007E0091 /* DeviceConfig.cpp */,
-				7C9F52690DAF4CB1007E0091 /* EmailData.cpp */,
 				7C9F526A0DAF4CB1007E0091 /* FileData.cpp */,
 				7C9F526B0DAF4CB1007E0091 /* FolderData.cpp */,
 				7C9F526C0DAF4CB1007E0091 /* ItemReport.cpp */,
-				7C9F526D0DAF4CB1007E0091 /* MailMessage.cpp */,
-				7C9F526E0DAF4CB1007E0091 /* MailSyncSourceConfig.cpp */,
 				7C9F526F0DAF4CB1007E0091 /* spdsutils.cpp */,
 				7C9F52700DAF4CB1007E0091 /* SyncItem.cpp */,
 				7C9F52710DAF4CB1007E0091 /* SyncItemStatus.cpp */,
@@ -1502,8 +1509,6 @@
 				7C9F54280DAF4CC5007E0091 /* FileData.h */,
 				7C9F54290DAF4CC5007E0091 /* FolderData.h */,
 				7C9F542A0DAF4CC5007E0091 /* ItemReport.h */,
-				7C9F542B0DAF4CC5007E0091 /* MailMessage.h */,
-				7C9F542C0DAF4CC5007E0091 /* MailSyncSourceConfig.h */,
 				7C9F542D0DAF4CC5007E0091 /* README.txt */,
 				7C9F542E0DAF4CC5007E0091 /* spdsutils.h */,
 				7C9F542F0DAF4CC5007E0091 /* SyncItem.h */,
@@ -1751,6 +1756,7 @@
 		7C9F56110DAF5186007E0091 /* cpp */ = {
 			isa = PBXGroup;
 			children = (
+				AB7B893E108C9E1C00E14CD5 /* mail */,
 				7C3BEB270DB732B400119850 /* examples */,
 				7C9F520D0DAF4CB1007E0091 /* base */,
 				7C9F52210DAF4CB1007E0091 /* client */,
@@ -1768,6 +1774,7 @@
 		7C9F56120DAF5189007E0091 /* include */ = {
 			isa = PBXGroup;
 			children = (
+				AB7B8949108C9E3D00E14CD5 /* mail */,
 				7C9F53B60DAF4CC5007E0091 /* base */,
 				7C9F53D30DAF4CC5007E0091 /* client */,
 				7C9F53DC0DAF4CC5007E0091 /* event */,
@@ -1782,6 +1789,33 @@
 			);
 			name = include;
 			sourceTree = "<group>";
+		};
+		AB7B893E108C9E1C00E14CD5 /* mail */ = {
+			isa = PBXGroup;
+			children = (
+				AB7B893F108C9E1C00E14CD5 /* MailAccount.cpp */,
+				AB7B8940108C9E1C00E14CD5 /* MailAccountManager.cpp */,
+				AB7B8941108C9E1C00E14CD5 /* MailData.cpp */,
+				AB7B8942108C9E1C00E14CD5 /* MailMessage.cpp */,
+				AB7B8943108C9E1C00E14CD5 /* MailSyncSourceConfig.cpp */,
+			);
+			name = mail;
+			path = ../../src/cpp/common/mail;
+			sourceTree = SOURCE_ROOT;
+		};
+		AB7B8949108C9E3D00E14CD5 /* mail */ = {
+			isa = PBXGroup;
+			children = (
+				AB7B894A108C9E3D00E14CD5 /* Mail.h */,
+				AB7B894B108C9E3D00E14CD5 /* MailAccount.h */,
+				AB7B894C108C9E3D00E14CD5 /* MailAccountManager.h */,
+				AB7B894D108C9E3D00E14CD5 /* MailData.h */,
+				AB7B894E108C9E3D00E14CD5 /* MailMessage.h */,
+				AB7B894F108C9E3D00E14CD5 /* MailSyncSourceConfig.h */,
+			);
+			name = mail;
+			path = ../../src/include/common/mail;
+			sourceTree = SOURCE_ROOT;
 		};
 		ABF8C4BC0E93A18A00401C02 /* client */ = {
 			isa = PBXGroup;
@@ -1911,8 +1945,6 @@
 				7C9F55150DAF4CC5007E0091 /* FileData.h in Headers */,
 				7C9F55160DAF4CC5007E0091 /* FolderData.h in Headers */,
 				7C9F55170DAF4CC5007E0091 /* ItemReport.h in Headers */,
-				7C9F55180DAF4CC5007E0091 /* MailMessage.h in Headers */,
-				7C9F55190DAF4CC5007E0091 /* MailSyncSourceConfig.h in Headers */,
 				7C9F551A0DAF4CC5007E0091 /* spdsutils.h in Headers */,
 				7C9F551B0DAF4CC5007E0091 /* SyncItem.h in Headers */,
 				7C9F551C0DAF4CC5007E0091 /* SyncItemStatus.h in Headers */,
@@ -2038,6 +2070,12 @@
 				ABF8C5810E93BD4700401C02 /* MappingsManager.h in Headers */,
 				ABF8C5820E93BD4700401C02 /* MappingStoreBuilder.h in Headers */,
 				AB43F7370EDACE2800183D6B /* StringMap.h in Headers */,
+				AB7B8950108C9E3D00E14CD5 /* Mail.h in Headers */,
+				AB7B8951108C9E3D00E14CD5 /* MailAccount.h in Headers */,
+				AB7B8952108C9E3D00E14CD5 /* MailAccountManager.h in Headers */,
+				AB7B8953108C9E3D00E14CD5 /* MailData.h in Headers */,
+				AB7B8954108C9E3D00E14CD5 /* MailMessage.h in Headers */,
+				AB7B8955108C9E3D00E14CD5 /* MailSyncSourceConfig.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2184,12 +2222,9 @@
 				7C9F533B0DAF4CB1007E0091 /* DataTransformerFactory.cpp in Sources */,
 				7C9F533C0DAF4CB1007E0091 /* DefaultConfigFactory.cpp in Sources */,
 				7C9F533D0DAF4CB1007E0091 /* DeviceConfig.cpp in Sources */,
-				7C9F533E0DAF4CB1007E0091 /* EmailData.cpp in Sources */,
 				7C9F533F0DAF4CB1007E0091 /* FileData.cpp in Sources */,
 				7C9F53400DAF4CB1007E0091 /* FolderData.cpp in Sources */,
 				7C9F53410DAF4CB1007E0091 /* ItemReport.cpp in Sources */,
-				7C9F53420DAF4CB1007E0091 /* MailMessage.cpp in Sources */,
-				7C9F53430DAF4CB1007E0091 /* MailSyncSourceConfig.cpp in Sources */,
 				7C9F53440DAF4CB1007E0091 /* spdsutils.cpp in Sources */,
 				7C9F53450DAF4CB1007E0091 /* SyncItem.cpp in Sources */,
 				7C9F53460DAF4CB1007E0091 /* SyncItemStatus.cpp in Sources */,
@@ -2308,6 +2343,11 @@
 				AB4B1B060ED6F6D3007C477B /* PlatformAdapter.cpp in Sources */,
 				AB43F7350EDACE1100183D6B /* StringMap.cpp in Sources */,
 				AB40DF830F695B2F00E4CD39 /* SyncItemListener.cpp in Sources */,
+				AB7B8944108C9E1C00E14CD5 /* MailAccount.cpp in Sources */,
+				AB7B8945108C9E1C00E14CD5 /* MailAccountManager.cpp in Sources */,
+				AB7B8946108C9E1C00E14CD5 /* MailData.cpp in Sources */,
+				AB7B8947108C9E1C00E14CD5 /* MailMessage.cpp in Sources */,
+				AB7B8948108C9E1C00E14CD5 /* MailSyncSourceConfig.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
