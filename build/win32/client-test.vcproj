@@ -190,6 +190,10 @@
 				RelativePath="..\..\test\TestFileSource.cpp"
 				>
 			</File>
+			<File
+				RelativePath="..\..\test\testUtils.cpp"
+				>
+			</File>
 			<Filter
 				Name="spds"
 				>
@@ -410,6 +414,10 @@
 					>
 				</File>
 				<File
+					RelativePath="..\..\test\common\inputStream\FileDataInputStreamTest.cpp"
+					>
+				</File>
+				<File
 					RelativePath="..\..\test\common\inputStream\FileInputStreamTest.cpp"
 					>
 				</File>
@@ -438,10 +446,6 @@
 			</File>
 			<File
 				RelativePath="..\..\test\integration\TestSyncSource.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\test\testUtils.cpp"
 				>
 			</File>
 		</Filter>
