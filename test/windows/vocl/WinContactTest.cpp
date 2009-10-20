@@ -43,11 +43,9 @@
 #include "base/util/utils.h"
 #include "base/globalsdef.h"
 
-#ifdef _WIN32
-# define TESTDIR "../../test/testcases/"
-#else
+
+// This is the dir where all the testcases are located
 # define TESTDIR "testcases"
-#endif
 
 
 USE_NAMESPACE
