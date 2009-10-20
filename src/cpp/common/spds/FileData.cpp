@@ -44,25 +44,6 @@
 USE_NAMESPACE
 
 
-#define FILE_ITEM       TEXT("File")
-#define FILE_HIDDEN     "h"
-#define FILE_SYSTEM     "s"
-#define FILE_ARCHIVED   "a"
-#define FILE_DELETE     "d"
-#define FILE_WRITABLE   "w"
-#define FILE_READABLE   "r"
-#define FILE_EXECUTABLE "e"
-#define FILE_ACCESSED   "accessed"
-#define FILE_ATTRIBUTES "attributes"
-#define FILE_BODY       "body"
-#define FILE_CTTYTPE    "cttype"
-#define FILE_ENC        "enc"
-#define FILE_MODIFIED   "modified"
-#define FILE_NAME       "name"
-#define FILE_SIZE       "size"
-#define FILE_CREATED    "created"
-
-
 FileData::FileData()
 {
     size = 0;
@@ -234,7 +215,7 @@ int FileData::parse(StringBuffer* s)
 
 void FileData::setBody(const char* v, int len)
 {
-    if (size == 0)
+    if (len == 0)
     {
         body = v;
     }
