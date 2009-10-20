@@ -405,6 +405,63 @@
 		AB43F7350EDACE1100183D6B /* StringMap.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AB43F7340EDACE1100183D6B /* StringMap.cpp */; };
 		AB43F7370EDACE2800183D6B /* StringMap.h in Headers */ = {isa = PBXBuildFile; fileRef = AB43F7360EDACE2800183D6B /* StringMap.h */; };
 		AB4B1B060ED6F6D3007C477B /* PlatformAdapter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AB4B1B050ED6F6D3007C477B /* PlatformAdapter.cpp */; };
+		AB4D6E47108DC0AE0036FEFF /* client-test-main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AB4D6E44108DC0AE0036FEFF /* client-test-main.cpp */; };
+		AB4D6E48108DC0AE0036FEFF /* ClientTest.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AB4D6E45108DC0AE0036FEFF /* ClientTest.cpp */; };
+		AB4D6F4D108DC6820036FEFF /* base64Test.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AB4D6F29108DC6820036FEFF /* base64Test.cpp */; };
+		AB4D6F4E108DC6820036FEFF /* ArrayListTest.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AB4D6F2B108DC6820036FEFF /* ArrayListTest.cpp */; };
+		AB4D6F4F108DC6820036FEFF /* BasicTimeTest.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AB4D6F2C108DC6820036FEFF /* BasicTimeTest.cpp */; };
+		AB4D6F50108DC6820036FEFF /* KeyValuePairTest.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AB4D6F2D108DC6820036FEFF /* KeyValuePairTest.cpp */; };
+		AB4D6F51108DC6820036FEFF /* PropertyFileTest.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AB4D6F2E108DC6820036FEFF /* PropertyFileTest.cpp */; };
+		AB4D6F52108DC6820036FEFF /* StringBufferTest.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AB4D6F2F108DC6820036FEFF /* StringBufferTest.cpp */; };
+		AB4D6F53108DC6820036FEFF /* StringMapTest.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AB4D6F30108DC6820036FEFF /* StringMapTest.cpp */; };
+		AB4D6F54108DC6820036FEFF /* XMLProcessorTest.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AB4D6F31108DC6820036FEFF /* XMLProcessorTest.cpp */; };
+		AB4D6F55108DC6820036FEFF /* ConfigSyncSourceUnitTest.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AB4D6F33108DC6820036FEFF /* ConfigSyncSourceUnitTest.cpp */; };
+		AB4D6F56108DC6820036FEFF /* OptionParserTest.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AB4D6F34108DC6820036FEFF /* OptionParserTest.cpp */; };
+		AB4D6F57108DC6820036FEFF /* EventTest.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AB4D6F36108DC6820036FEFF /* EventTest.cpp */; };
+		AB4D6F58108DC6820036FEFF /* ClauseTest.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AB4D6F38108DC6820036FEFF /* ClauseTest.cpp */; };
+		AB4D6F59108DC6820036FEFF /* ConfigFilterTest.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AB4D6F39108DC6820036FEFF /* ConfigFilterTest.cpp */; };
+		AB4D6F5A108DC6820036FEFF /* FilterTest.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AB4D6F3A108DC6820036FEFF /* FilterTest.cpp */; };
+		AB4D6F5B108DC6820036FEFF /* TransportAgentReplacement.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AB4D6F3C108DC6820036FEFF /* TransportAgentReplacement.cpp */; };
+		AB4D6F5E108DC6820036FEFF /* AccountFolderTest.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AB4D6F42108DC6820036FEFF /* AccountFolderTest.cpp */; };
+		AB4D6F5F108DC6820036FEFF /* EncryptionTest.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AB4D6F43108DC6820036FEFF /* EncryptionTest.cpp */; };
+		AB4D6F60108DC6820036FEFF /* FolderDataTest.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AB4D6F44108DC6820036FEFF /* FolderDataTest.cpp */; };
+		AB4D6F61108DC6820036FEFF /* FolderExtTest.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AB4D6F45108DC6820036FEFF /* FolderExtTest.cpp */; };
+		AB4D6F62108DC6820036FEFF /* MailAccountTest.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AB4D6F46108DC6820036FEFF /* MailAccountTest.cpp */; };
+		AB4D6F63108DC6820036FEFF /* CtCapTest.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AB4D6F48108DC6820036FEFF /* CtCapTest.cpp */; };
+		AB4D6F64108DC6820036FEFF /* FormatterTest.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AB4D6F49108DC6820036FEFF /* FormatterTest.cpp */; };
+		AB4D6F65108DC6820036FEFF /* ObjectDelTest.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AB4D6F4A108DC6820036FEFF /* ObjectDelTest.cpp */; };
+		AB4D6F66108DC6820036FEFF /* ParserTest.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AB4D6F4B108DC6820036FEFF /* ParserTest.cpp */; };
+		AB4D6F67108DC6820036FEFF /* ServerDevInfTest.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AB4D6F4C108DC6820036FEFF /* ServerDevInfTest.cpp */; };
+		AB4D702F108DEE520036FEFF /* ConfigSyncSource.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AB4D702D108DEE520036FEFF /* ConfigSyncSource.cpp */; };
+		AB4D7030108DEE520036FEFF /* OptionParser.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AB4D702E108DEE520036FEFF /* OptionParser.cpp */; };
+		AB4D7033108DEE690036FEFF /* ConfigSyncSource.h in Headers */ = {isa = PBXBuildFile; fileRef = AB4D7031108DEE690036FEFF /* ConfigSyncSource.h */; };
+		AB4D7034108DEE690036FEFF /* OptionParser.h in Headers */ = {isa = PBXBuildFile; fileRef = AB4D7032108DEE690036FEFF /* OptionParser.h */; };
+		AB4D7037108DEE920036FEFF /* FolderExt.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AB4D7036108DEE920036FEFF /* FolderExt.cpp */; };
+		AB4D7039108DEEA60036FEFF /* FolderExt.h in Headers */ = {isa = PBXBuildFile; fileRef = AB4D7038108DEEA60036FEFF /* FolderExt.h */; };
+		AB4D704F108DEF9E0036FEFF /* testUtils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AB4D704D108DEF9E0036FEFF /* testUtils.cpp */; };
+		AB4D70C2108E07D70036FEFF /* devInfResults.xml in CopyFiles */ = {isa = PBXBuildFile; fileRef = AB4D7053108DF5110036FEFF /* devInfResults.xml */; };
+		AB4D70C3108E07D70036FEFF /* devInfResults2.xml in CopyFiles */ = {isa = PBXBuildFile; fileRef = AB4D7054108DF5110036FEFF /* devInfResults2.xml */; };
+		AB4D70C4108E07D70036FEFF /* ex1.xml in CopyFiles */ = {isa = PBXBuildFile; fileRef = AB4D7055108DF5110036FEFF /* ex1.xml */; };
+		AB4D70C5108E07D70036FEFF /* ex2.xml in CopyFiles */ = {isa = PBXBuildFile; fileRef = AB4D7056108DF5110036FEFF /* ex2.xml */; };
+		AB4D70C6108E07D70036FEFF /* ical20.ics in CopyFiles */ = {isa = PBXBuildFile; fileRef = AB4D7057108DF5110036FEFF /* ical20.ics */; };
+		AB4D70C7108E07D70036FEFF /* imemo20.ics in CopyFiles */ = {isa = PBXBuildFile; fileRef = AB4D7058108DF5110036FEFF /* imemo20.ics */; };
+		AB4D70C8108E07D70036FEFF /* itodo20.ics in CopyFiles */ = {isa = PBXBuildFile; fileRef = AB4D7059108DF5110036FEFF /* itodo20.ics */; };
+		AB4D70C9108E07D70036FEFF /* syncML1.xml in CopyFiles */ = {isa = PBXBuildFile; fileRef = AB4D705A108DF5110036FEFF /* syncML1.xml */; };
+		AB4D70CA108E07D70036FEFF /* syncML2.xml in CopyFiles */ = {isa = PBXBuildFile; fileRef = AB4D705B108DF5110036FEFF /* syncML2.xml */; };
+		AB4D70CB108E07D70036FEFF /* syncML3.xml in CopyFiles */ = {isa = PBXBuildFile; fileRef = AB4D705C108DF5110036FEFF /* syncML3.xml */; };
+		AB4D70CC108E07D70036FEFF /* syncML4.xml in CopyFiles */ = {isa = PBXBuildFile; fileRef = AB4D705D108DF5110036FEFF /* syncML4.xml */; };
+		AB4D70CD108E07D70036FEFF /* syncML5.xml in CopyFiles */ = {isa = PBXBuildFile; fileRef = AB4D705E108DF5110036FEFF /* syncML5.xml */; };
+		AB4D70CE108E07D70036FEFF /* syncML6.xml in CopyFiles */ = {isa = PBXBuildFile; fileRef = AB4D705F108DF5110036FEFF /* syncML6.xml */; };
+		AB4D70CF108E07D70036FEFF /* syncML7.xml in CopyFiles */ = {isa = PBXBuildFile; fileRef = AB4D7060108DF5110036FEFF /* syncML7.xml */; };
+		AB4D70D0108E07D70036FEFF /* syncML8.xml in CopyFiles */ = {isa = PBXBuildFile; fileRef = AB4D7061108DF5110036FEFF /* syncML8.xml */; };
+		AB4D70D1108E07E20036FEFF /* vcal10.ics in CopyFiles */ = {isa = PBXBuildFile; fileRef = AB4D7068108DF5110036FEFF /* vcal10.ics */; };
+		AB4D70D2108E07E20036FEFF /* vcard21.vcf in CopyFiles */ = {isa = PBXBuildFile; fileRef = AB4D7069108DF5110036FEFF /* vcard21.vcf */; };
+		AB4D70D3108E07E20036FEFF /* vcard30.vcf in CopyFiles */ = {isa = PBXBuildFile; fileRef = AB4D706A108DF5110036FEFF /* vcard30.vcf */; };
+		AB4D70D4108E07E20036FEFF /* vcard4Wcontact21-2.vcf in CopyFiles */ = {isa = PBXBuildFile; fileRef = AB4D706B108DF5110036FEFF /* vcard4Wcontact21-2.vcf */; };
+		AB4D70D5108E07E20036FEFF /* vcard4Wcontact21-3.vcf in CopyFiles */ = {isa = PBXBuildFile; fileRef = AB4D706C108DF5110036FEFF /* vcard4Wcontact21-3.vcf */; };
+		AB4D70D6108E07E20036FEFF /* vcard4WContact21.vcf in CopyFiles */ = {isa = PBXBuildFile; fileRef = AB4D706D108DF5110036FEFF /* vcard4WContact21.vcf */; };
+		AB4D70D7108E07E20036FEFF /* vcard4WContact30.vcf in CopyFiles */ = {isa = PBXBuildFile; fileRef = AB4D706E108DF5110036FEFF /* vcard4WContact30.vcf */; };
+		AB4D70D8108E07E20036FEFF /* wrongex.xml in CopyFiles */ = {isa = PBXBuildFile; fileRef = AB4D706F108DF5110036FEFF /* wrongex.xml */; };
 		AB7B8944108C9E1C00E14CD5 /* MailAccount.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AB7B893F108C9E1C00E14CD5 /* MailAccount.cpp */; };
 		AB7B8945108C9E1C00E14CD5 /* MailAccountManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AB7B8940108C9E1C00E14CD5 /* MailAccountManager.cpp */; };
 		AB7B8946108C9E1C00E14CD5 /* MailData.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AB7B8941108C9E1C00E14CD5 /* MailData.cpp */; };
@@ -437,7 +494,49 @@
 			remoteGlobalIDString = D2AAC045055464E500DB518D;
 			remoteInfo = libfunambol;
 		};
+		AB4D6E30108DBF4C0036FEFF /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 08FB7793FE84155DC02AAC07 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = D2AAC045055464E500DB518D /* libfunambol */;
+			remoteInfo = libfunambol;
+		};
 /* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		AB4D70C1108E07220036FEFF /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = testcases;
+			dstSubfolderSpec = 16;
+			files = (
+				AB4D70D1108E07E20036FEFF /* vcal10.ics in CopyFiles */,
+				AB4D70D2108E07E20036FEFF /* vcard21.vcf in CopyFiles */,
+				AB4D70D3108E07E20036FEFF /* vcard30.vcf in CopyFiles */,
+				AB4D70D4108E07E20036FEFF /* vcard4Wcontact21-2.vcf in CopyFiles */,
+				AB4D70D5108E07E20036FEFF /* vcard4Wcontact21-3.vcf in CopyFiles */,
+				AB4D70D6108E07E20036FEFF /* vcard4WContact21.vcf in CopyFiles */,
+				AB4D70D7108E07E20036FEFF /* vcard4WContact30.vcf in CopyFiles */,
+				AB4D70D8108E07E20036FEFF /* wrongex.xml in CopyFiles */,
+				AB4D70C2108E07D70036FEFF /* devInfResults.xml in CopyFiles */,
+				AB4D70C3108E07D70036FEFF /* devInfResults2.xml in CopyFiles */,
+				AB4D70C4108E07D70036FEFF /* ex1.xml in CopyFiles */,
+				AB4D70C5108E07D70036FEFF /* ex2.xml in CopyFiles */,
+				AB4D70C6108E07D70036FEFF /* ical20.ics in CopyFiles */,
+				AB4D70C7108E07D70036FEFF /* imemo20.ics in CopyFiles */,
+				AB4D70C8108E07D70036FEFF /* itodo20.ics in CopyFiles */,
+				AB4D70C9108E07D70036FEFF /* syncML1.xml in CopyFiles */,
+				AB4D70CA108E07D70036FEFF /* syncML2.xml in CopyFiles */,
+				AB4D70CB108E07D70036FEFF /* syncML3.xml in CopyFiles */,
+				AB4D70CC108E07D70036FEFF /* syncML4.xml in CopyFiles */,
+				AB4D70CD108E07D70036FEFF /* syncML5.xml in CopyFiles */,
+				AB4D70CE108E07D70036FEFF /* syncML6.xml in CopyFiles */,
+				AB4D70CF108E07D70036FEFF /* syncML7.xml in CopyFiles */,
+				AB4D70D0108E07D70036FEFF /* syncML8.xml in CopyFiles */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		7C3BEB200DB7328E00119850 /* CurlTransportAgent.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CurlTransportAgent.h; sourceTree = "<group>"; };
@@ -852,6 +951,72 @@
 		AB43F7340EDACE1100183D6B /* StringMap.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = StringMap.cpp; sourceTree = "<group>"; };
 		AB43F7360EDACE2800183D6B /* StringMap.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = StringMap.h; sourceTree = "<group>"; };
 		AB4B1B050ED6F6D3007C477B /* PlatformAdapter.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = PlatformAdapter.cpp; path = adapter/PlatformAdapter.cpp; sourceTree = "<group>"; };
+		AB4D6E2A108DBF440036FEFF /* libfunamboltest */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = libfunamboltest; sourceTree = BUILT_PRODUCTS_DIR; };
+		AB4D6E44108DC0AE0036FEFF /* client-test-main.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = "client-test-main.cpp"; path = "../../test/client-test-main.cpp"; sourceTree = SOURCE_ROOT; };
+		AB4D6E45108DC0AE0036FEFF /* ClientTest.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = ClientTest.cpp; path = ../../test/ClientTest.cpp; sourceTree = SOURCE_ROOT; };
+		AB4D6E46108DC0AE0036FEFF /* ClientTest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ClientTest.h; path = ../../test/ClientTest.h; sourceTree = SOURCE_ROOT; };
+		AB4D6F29108DC6820036FEFF /* base64Test.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = base64Test.cpp; sourceTree = "<group>"; };
+		AB4D6F2B108DC6820036FEFF /* ArrayListTest.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ArrayListTest.cpp; sourceTree = "<group>"; };
+		AB4D6F2C108DC6820036FEFF /* BasicTimeTest.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = BasicTimeTest.cpp; sourceTree = "<group>"; };
+		AB4D6F2D108DC6820036FEFF /* KeyValuePairTest.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = KeyValuePairTest.cpp; sourceTree = "<group>"; };
+		AB4D6F2E108DC6820036FEFF /* PropertyFileTest.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PropertyFileTest.cpp; sourceTree = "<group>"; };
+		AB4D6F2F108DC6820036FEFF /* StringBufferTest.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = StringBufferTest.cpp; sourceTree = "<group>"; };
+		AB4D6F30108DC6820036FEFF /* StringMapTest.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = StringMapTest.cpp; sourceTree = "<group>"; };
+		AB4D6F31108DC6820036FEFF /* XMLProcessorTest.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = XMLProcessorTest.cpp; sourceTree = "<group>"; };
+		AB4D6F33108DC6820036FEFF /* ConfigSyncSourceUnitTest.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ConfigSyncSourceUnitTest.cpp; sourceTree = "<group>"; };
+		AB4D6F34108DC6820036FEFF /* OptionParserTest.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = OptionParserTest.cpp; sourceTree = "<group>"; };
+		AB4D6F36108DC6820036FEFF /* EventTest.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = EventTest.cpp; sourceTree = "<group>"; };
+		AB4D6F38108DC6820036FEFF /* ClauseTest.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ClauseTest.cpp; sourceTree = "<group>"; };
+		AB4D6F39108DC6820036FEFF /* ConfigFilterTest.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ConfigFilterTest.cpp; sourceTree = "<group>"; };
+		AB4D6F3A108DC6820036FEFF /* FilterTest.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = FilterTest.cpp; sourceTree = "<group>"; };
+		AB4D6F3C108DC6820036FEFF /* TransportAgentReplacement.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = TransportAgentReplacement.cpp; sourceTree = "<group>"; };
+		AB4D6F3D108DC6820036FEFF /* TransportAgentReplacement.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TransportAgentReplacement.h; sourceTree = "<group>"; };
+		AB4D6F42108DC6820036FEFF /* AccountFolderTest.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = AccountFolderTest.cpp; sourceTree = "<group>"; };
+		AB4D6F43108DC6820036FEFF /* EncryptionTest.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = EncryptionTest.cpp; sourceTree = "<group>"; };
+		AB4D6F44108DC6820036FEFF /* FolderDataTest.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = FolderDataTest.cpp; sourceTree = "<group>"; };
+		AB4D6F45108DC6820036FEFF /* FolderExtTest.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = FolderExtTest.cpp; sourceTree = "<group>"; };
+		AB4D6F46108DC6820036FEFF /* MailAccountTest.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = MailAccountTest.cpp; sourceTree = "<group>"; };
+		AB4D6F48108DC6820036FEFF /* CtCapTest.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CtCapTest.cpp; sourceTree = "<group>"; };
+		AB4D6F49108DC6820036FEFF /* FormatterTest.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = FormatterTest.cpp; sourceTree = "<group>"; };
+		AB4D6F4A108DC6820036FEFF /* ObjectDelTest.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ObjectDelTest.cpp; sourceTree = "<group>"; };
+		AB4D6F4B108DC6820036FEFF /* ParserTest.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ParserTest.cpp; sourceTree = "<group>"; };
+		AB4D6F4C108DC6820036FEFF /* ServerDevInfTest.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ServerDevInfTest.cpp; sourceTree = "<group>"; };
+		AB4D702D108DEE520036FEFF /* ConfigSyncSource.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ConfigSyncSource.cpp; sourceTree = "<group>"; };
+		AB4D702E108DEE520036FEFF /* OptionParser.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = OptionParser.cpp; sourceTree = "<group>"; };
+		AB4D7031108DEE690036FEFF /* ConfigSyncSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ConfigSyncSource.h; sourceTree = "<group>"; };
+		AB4D7032108DEE690036FEFF /* OptionParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OptionParser.h; sourceTree = "<group>"; };
+		AB4D7036108DEE920036FEFF /* FolderExt.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = FolderExt.cpp; sourceTree = "<group>"; };
+		AB4D7038108DEEA60036FEFF /* FolderExt.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FolderExt.h; sourceTree = "<group>"; };
+		AB4D704D108DEF9E0036FEFF /* testUtils.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = testUtils.cpp; path = ../../test/testUtils.cpp; sourceTree = SOURCE_ROOT; };
+		AB4D704E108DEF9E0036FEFF /* testUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = testUtils.h; path = ../../test/testUtils.h; sourceTree = SOURCE_ROOT; };
+		AB4D7053108DF5110036FEFF /* devInfResults.xml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = devInfResults.xml; sourceTree = "<group>"; };
+		AB4D7054108DF5110036FEFF /* devInfResults2.xml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = devInfResults2.xml; sourceTree = "<group>"; };
+		AB4D7055108DF5110036FEFF /* ex1.xml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = ex1.xml; sourceTree = "<group>"; };
+		AB4D7056108DF5110036FEFF /* ex2.xml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = ex2.xml; sourceTree = "<group>"; };
+		AB4D7057108DF5110036FEFF /* ical20.ics */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = ical20.ics; sourceTree = "<group>"; };
+		AB4D7058108DF5110036FEFF /* imemo20.ics */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = imemo20.ics; sourceTree = "<group>"; };
+		AB4D7059108DF5110036FEFF /* itodo20.ics */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = itodo20.ics; sourceTree = "<group>"; };
+		AB4D705A108DF5110036FEFF /* syncML1.xml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = syncML1.xml; sourceTree = "<group>"; };
+		AB4D705B108DF5110036FEFF /* syncML2.xml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = syncML2.xml; sourceTree = "<group>"; };
+		AB4D705C108DF5110036FEFF /* syncML3.xml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = syncML3.xml; sourceTree = "<group>"; };
+		AB4D705D108DF5110036FEFF /* syncML4.xml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = syncML4.xml; sourceTree = "<group>"; };
+		AB4D705E108DF5110036FEFF /* syncML5.xml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = syncML5.xml; sourceTree = "<group>"; };
+		AB4D705F108DF5110036FEFF /* syncML6.xml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = syncML6.xml; sourceTree = "<group>"; };
+		AB4D7060108DF5110036FEFF /* syncML7.xml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = syncML7.xml; sourceTree = "<group>"; };
+		AB4D7061108DF5110036FEFF /* syncML8.xml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = syncML8.xml; sourceTree = "<group>"; };
+		AB4D7063108DF5110036FEFF /* syncML1.xml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = syncML1.xml; sourceTree = "<group>"; };
+		AB4D7064108DF5110036FEFF /* syncML2.xml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = syncML2.xml; sourceTree = "<group>"; };
+		AB4D7065108DF5110036FEFF /* syncML3.xml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = syncML3.xml; sourceTree = "<group>"; };
+		AB4D7066108DF5110036FEFF /* syncML4.xml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = syncML4.xml; sourceTree = "<group>"; };
+		AB4D7067108DF5110036FEFF /* syncML5.xml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = syncML5.xml; sourceTree = "<group>"; };
+		AB4D7068108DF5110036FEFF /* vcal10.ics */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = vcal10.ics; sourceTree = "<group>"; };
+		AB4D7069108DF5110036FEFF /* vcard21.vcf */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = vcard21.vcf; sourceTree = "<group>"; };
+		AB4D706A108DF5110036FEFF /* vcard30.vcf */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = vcard30.vcf; sourceTree = "<group>"; };
+		AB4D706B108DF5110036FEFF /* vcard4Wcontact21-2.vcf */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "vcard4Wcontact21-2.vcf"; sourceTree = "<group>"; };
+		AB4D706C108DF5110036FEFF /* vcard4Wcontact21-3.vcf */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "vcard4Wcontact21-3.vcf"; sourceTree = "<group>"; };
+		AB4D706D108DF5110036FEFF /* vcard4WContact21.vcf */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = vcard4WContact21.vcf; sourceTree = "<group>"; };
+		AB4D706E108DF5110036FEFF /* vcard4WContact30.vcf */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = vcard4WContact30.vcf; sourceTree = "<group>"; };
+		AB4D706F108DF5110036FEFF /* wrongex.xml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = wrongex.xml; sourceTree = "<group>"; };
 		AB7B893F108C9E1C00E14CD5 /* MailAccount.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = MailAccount.cpp; sourceTree = "<group>"; };
 		AB7B8940108C9E1C00E14CD5 /* MailAccountManager.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = MailAccountManager.cpp; sourceTree = "<group>"; };
 		AB7B8941108C9E1C00E14CD5 /* MailData.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = MailData.cpp; sourceTree = "<group>"; };
@@ -888,6 +1053,13 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		AB4D6E28108DBF440036FEFF /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		D289987405E68DCB004EDB86 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -918,6 +1090,7 @@
 				D2AAC046055464E500DB518D /* libfunambol.a */,
 				7C3BEC790DB734E600119850 /* examples-client */,
 				7C8B0EC70DB758A3005113A8 /* examples-sqlitekvstest */,
+				AB4D6E2A108DBF440036FEFF /* libfunamboltest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -994,6 +1167,7 @@
 			children = (
 				7C9F56100DAF516B007E0091 /* common */,
 				7C9F560F0DAF5167007E0091 /* posix */,
+				AB4D6E6C108DC4E10036FEFF /* testcases */,
 			);
 			name = Source;
 			sourceTree = "<group>";
@@ -1032,6 +1206,8 @@
 		7C9F52210DAF4CB1007E0091 /* client */ = {
 			isa = PBXGroup;
 			children = (
+				AB4D702D108DEE520036FEFF /* ConfigSyncSource.cpp */,
+				AB4D702E108DEE520036FEFF /* OptionParser.cpp */,
 				7C8B0C4F0DB73C2E005113A8 /* SQLiteKeyValueStore.cpp */,
 				7CB036780DB4EC8A003F4E5F /* SQLKeyValueStore.cpp */,
 				7C9F58B60DAF62A4007E0091 /* CacheSyncSource.cpp */,
@@ -1102,6 +1278,7 @@
 		7C9F525E0DAF4CB1007E0091 /* spds */ = {
 			isa = PBXGroup;
 			children = (
+				AB4D7036108DEE920036FEFF /* FolderExt.cpp */,
 				7C9F525F0DAF4CB1007E0091 /* AccessConfig.cpp */,
 				7C9F52600DAF4CB1007E0091 /* B64Decoder.cpp */,
 				7C9F52610DAF4CB1007E0091 /* B64Encoder.cpp */,
@@ -1365,6 +1542,8 @@
 		7C9F53D30DAF4CC5007E0091 /* client */ = {
 			isa = PBXGroup;
 			children = (
+				AB4D7031108DEE690036FEFF /* ConfigSyncSource.h */,
+				AB4D7032108DEE690036FEFF /* OptionParser.h */,
 				7CB0367C0DB4EC9A003F4E5F /* SQLKeyValueStore.h */,
 				7C9F53D50DAF4CC5007E0091 /* DMTClientConfig.h */,
 				7C9F58B80DAF62AE007E0091 /* CacheSyncSource.h */,
@@ -1487,6 +1666,7 @@
 		7C9F54150DAF4CC5007E0091 /* spds */ = {
 			isa = PBXGroup;
 			children = (
+				AB4D7038108DEEA60036FEFF /* FolderExt.h */,
 				ABF8C57F0E93BD4700401C02 /* MappingsManager.h */,
 				ABF8C5800E93BD4700401C02 /* MappingStoreBuilder.h */,
 				7C9F54160DAF4CC5007E0091 /* AbstractSyncConfig.h */,
@@ -1790,6 +1970,162 @@
 			name = include;
 			sourceTree = "<group>";
 		};
+		AB4D6E6C108DC4E10036FEFF /* testcases */ = {
+			isa = PBXGroup;
+			children = (
+				AB4D7052108DF5110036FEFF /* testcases */,
+				AB4D704D108DEF9E0036FEFF /* testUtils.cpp */,
+				AB4D704E108DEF9E0036FEFF /* testUtils.h */,
+				AB4D6F27108DC6820036FEFF /* common */,
+				AB4D6E44108DC0AE0036FEFF /* client-test-main.cpp */,
+				AB4D6E45108DC0AE0036FEFF /* ClientTest.cpp */,
+				AB4D6E46108DC0AE0036FEFF /* ClientTest.h */,
+			);
+			name = testcases;
+			sourceTree = "<group>";
+		};
+		AB4D6F27108DC6820036FEFF /* common */ = {
+			isa = PBXGroup;
+			children = (
+				AB4D6F28108DC6820036FEFF /* base */,
+				AB4D6F32108DC6820036FEFF /* client */,
+				AB4D6F35108DC6820036FEFF /* event */,
+				AB4D6F37108DC6820036FEFF /* filter */,
+				AB4D6F3B108DC6820036FEFF /* http */,
+				AB4D6F41108DC6820036FEFF /* spds */,
+				AB4D6F47108DC6820036FEFF /* syncml */,
+			);
+			name = common;
+			path = ../../test/common;
+			sourceTree = SOURCE_ROOT;
+		};
+		AB4D6F28108DC6820036FEFF /* base */ = {
+			isa = PBXGroup;
+			children = (
+				AB4D6F29108DC6820036FEFF /* base64Test.cpp */,
+				AB4D6F2A108DC6820036FEFF /* util */,
+			);
+			path = base;
+			sourceTree = "<group>";
+		};
+		AB4D6F2A108DC6820036FEFF /* util */ = {
+			isa = PBXGroup;
+			children = (
+				AB4D6F2B108DC6820036FEFF /* ArrayListTest.cpp */,
+				AB4D6F2C108DC6820036FEFF /* BasicTimeTest.cpp */,
+				AB4D6F2D108DC6820036FEFF /* KeyValuePairTest.cpp */,
+				AB4D6F2E108DC6820036FEFF /* PropertyFileTest.cpp */,
+				AB4D6F2F108DC6820036FEFF /* StringBufferTest.cpp */,
+				AB4D6F30108DC6820036FEFF /* StringMapTest.cpp */,
+				AB4D6F31108DC6820036FEFF /* XMLProcessorTest.cpp */,
+			);
+			path = util;
+			sourceTree = "<group>";
+		};
+		AB4D6F32108DC6820036FEFF /* client */ = {
+			isa = PBXGroup;
+			children = (
+				AB4D6F33108DC6820036FEFF /* ConfigSyncSourceUnitTest.cpp */,
+				AB4D6F34108DC6820036FEFF /* OptionParserTest.cpp */,
+			);
+			path = client;
+			sourceTree = "<group>";
+		};
+		AB4D6F35108DC6820036FEFF /* event */ = {
+			isa = PBXGroup;
+			children = (
+				AB4D6F36108DC6820036FEFF /* EventTest.cpp */,
+			);
+			path = event;
+			sourceTree = "<group>";
+		};
+		AB4D6F37108DC6820036FEFF /* filter */ = {
+			isa = PBXGroup;
+			children = (
+				AB4D6F38108DC6820036FEFF /* ClauseTest.cpp */,
+				AB4D6F39108DC6820036FEFF /* ConfigFilterTest.cpp */,
+				AB4D6F3A108DC6820036FEFF /* FilterTest.cpp */,
+			);
+			path = filter;
+			sourceTree = "<group>";
+		};
+		AB4D6F3B108DC6820036FEFF /* http */ = {
+			isa = PBXGroup;
+			children = (
+				AB4D6F3C108DC6820036FEFF /* TransportAgentReplacement.cpp */,
+				AB4D6F3D108DC6820036FEFF /* TransportAgentReplacement.h */,
+			);
+			path = http;
+			sourceTree = "<group>";
+		};
+		AB4D6F41108DC6820036FEFF /* spds */ = {
+			isa = PBXGroup;
+			children = (
+				AB4D6F42108DC6820036FEFF /* AccountFolderTest.cpp */,
+				AB4D6F43108DC6820036FEFF /* EncryptionTest.cpp */,
+				AB4D6F44108DC6820036FEFF /* FolderDataTest.cpp */,
+				AB4D6F45108DC6820036FEFF /* FolderExtTest.cpp */,
+				AB4D6F46108DC6820036FEFF /* MailAccountTest.cpp */,
+			);
+			path = spds;
+			sourceTree = "<group>";
+		};
+		AB4D6F47108DC6820036FEFF /* syncml */ = {
+			isa = PBXGroup;
+			children = (
+				AB4D6F48108DC6820036FEFF /* CtCapTest.cpp */,
+				AB4D6F49108DC6820036FEFF /* FormatterTest.cpp */,
+				AB4D6F4A108DC6820036FEFF /* ObjectDelTest.cpp */,
+				AB4D6F4B108DC6820036FEFF /* ParserTest.cpp */,
+				AB4D6F4C108DC6820036FEFF /* ServerDevInfTest.cpp */,
+			);
+			path = syncml;
+			sourceTree = "<group>";
+		};
+		AB4D7052108DF5110036FEFF /* testcases */ = {
+			isa = PBXGroup;
+			children = (
+				AB4D7053108DF5110036FEFF /* devInfResults.xml */,
+				AB4D7054108DF5110036FEFF /* devInfResults2.xml */,
+				AB4D7055108DF5110036FEFF /* ex1.xml */,
+				AB4D7056108DF5110036FEFF /* ex2.xml */,
+				AB4D7057108DF5110036FEFF /* ical20.ics */,
+				AB4D7058108DF5110036FEFF /* imemo20.ics */,
+				AB4D7059108DF5110036FEFF /* itodo20.ics */,
+				AB4D705A108DF5110036FEFF /* syncML1.xml */,
+				AB4D705B108DF5110036FEFF /* syncML2.xml */,
+				AB4D705C108DF5110036FEFF /* syncML3.xml */,
+				AB4D705D108DF5110036FEFF /* syncML4.xml */,
+				AB4D705E108DF5110036FEFF /* syncML5.xml */,
+				AB4D705F108DF5110036FEFF /* syncML6.xml */,
+				AB4D7060108DF5110036FEFF /* syncML7.xml */,
+				AB4D7061108DF5110036FEFF /* syncML8.xml */,
+				AB4D7062108DF5110036FEFF /* testLargeObject2 */,
+				AB4D7068108DF5110036FEFF /* vcal10.ics */,
+				AB4D7069108DF5110036FEFF /* vcard21.vcf */,
+				AB4D706A108DF5110036FEFF /* vcard30.vcf */,
+				AB4D706B108DF5110036FEFF /* vcard4Wcontact21-2.vcf */,
+				AB4D706C108DF5110036FEFF /* vcard4Wcontact21-3.vcf */,
+				AB4D706D108DF5110036FEFF /* vcard4WContact21.vcf */,
+				AB4D706E108DF5110036FEFF /* vcard4WContact30.vcf */,
+				AB4D706F108DF5110036FEFF /* wrongex.xml */,
+			);
+			name = testcases;
+			path = ../../test/testcases;
+			sourceTree = SOURCE_ROOT;
+		};
+		AB4D7062108DF5110036FEFF /* testLargeObject2 */ = {
+			isa = PBXGroup;
+			children = (
+				AB4D7063108DF5110036FEFF /* syncML1.xml */,
+				AB4D7064108DF5110036FEFF /* syncML2.xml */,
+				AB4D7065108DF5110036FEFF /* syncML3.xml */,
+				AB4D7066108DF5110036FEFF /* syncML4.xml */,
+				AB4D7067108DF5110036FEFF /* syncML5.xml */,
+			);
+			path = testLargeObject2;
+			sourceTree = "<group>";
+		};
 		AB7B893E108C9E1C00E14CD5 /* mail */ = {
 			isa = PBXGroup;
 			children = (
@@ -2076,6 +2412,9 @@
 				AB7B8953108C9E3D00E14CD5 /* MailData.h in Headers */,
 				AB7B8954108C9E3D00E14CD5 /* MailMessage.h in Headers */,
 				AB7B8955108C9E3D00E14CD5 /* MailSyncSourceConfig.h in Headers */,
+				AB4D7033108DEE690036FEFF /* ConfigSyncSource.h in Headers */,
+				AB4D7034108DEE690036FEFF /* OptionParser.h in Headers */,
+				AB4D7039108DEEA60036FEFF /* FolderExt.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2116,6 +2455,24 @@
 			productReference = 7C8B0EC70DB758A3005113A8 /* examples-sqlitekvstest */;
 			productType = "com.apple.product-type.tool";
 		};
+		AB4D6E29108DBF440036FEFF /* libfunamboltest */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = AB4D6E32108DBF6B0036FEFF /* Build configuration list for PBXNativeTarget "libfunamboltest" */;
+			buildPhases = (
+				AB4D6E27108DBF440036FEFF /* Sources */,
+				AB4D6E28108DBF440036FEFF /* Frameworks */,
+				AB4D70C1108E07220036FEFF /* CopyFiles */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				AB4D6E31108DBF4C0036FEFF /* PBXTargetDependency */,
+			);
+			name = libfunamboltest;
+			productName = libfunamboltest;
+			productReference = AB4D6E2A108DBF440036FEFF /* libfunamboltest */;
+			productType = "com.apple.product-type.tool";
+		};
 		D2AAC045055464E500DB518D /* libfunambol */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 1DEB91EB08733DB70010E9CD /* Build configuration list for PBXNativeTarget "libfunambol" */;
@@ -2148,6 +2505,7 @@
 				D2AAC045055464E500DB518D /* libfunambol */,
 				7C3BEC780DB734E600119850 /* examples-client */,
 				7C8B0EC60DB758A3005113A8 /* examples-sqlitekvstest */,
+				AB4D6E29108DBF440036FEFF /* libfunamboltest */,
 			);
 		};
 /* End PBXProject section */
@@ -2166,6 +2524,41 @@
 			buildActionMask = 2147483647;
 			files = (
 				7C8B0ED60DB758C1005113A8 /* SQLiteKVSTest.cpp in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		AB4D6E27108DBF440036FEFF /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				AB4D6E47108DC0AE0036FEFF /* client-test-main.cpp in Sources */,
+				AB4D6E48108DC0AE0036FEFF /* ClientTest.cpp in Sources */,
+				AB4D6F4D108DC6820036FEFF /* base64Test.cpp in Sources */,
+				AB4D6F4E108DC6820036FEFF /* ArrayListTest.cpp in Sources */,
+				AB4D6F4F108DC6820036FEFF /* BasicTimeTest.cpp in Sources */,
+				AB4D6F50108DC6820036FEFF /* KeyValuePairTest.cpp in Sources */,
+				AB4D6F51108DC6820036FEFF /* PropertyFileTest.cpp in Sources */,
+				AB4D6F52108DC6820036FEFF /* StringBufferTest.cpp in Sources */,
+				AB4D6F53108DC6820036FEFF /* StringMapTest.cpp in Sources */,
+				AB4D6F54108DC6820036FEFF /* XMLProcessorTest.cpp in Sources */,
+				AB4D6F55108DC6820036FEFF /* ConfigSyncSourceUnitTest.cpp in Sources */,
+				AB4D6F56108DC6820036FEFF /* OptionParserTest.cpp in Sources */,
+				AB4D6F57108DC6820036FEFF /* EventTest.cpp in Sources */,
+				AB4D6F58108DC6820036FEFF /* ClauseTest.cpp in Sources */,
+				AB4D6F59108DC6820036FEFF /* ConfigFilterTest.cpp in Sources */,
+				AB4D6F5A108DC6820036FEFF /* FilterTest.cpp in Sources */,
+				AB4D6F5B108DC6820036FEFF /* TransportAgentReplacement.cpp in Sources */,
+				AB4D6F5E108DC6820036FEFF /* AccountFolderTest.cpp in Sources */,
+				AB4D6F5F108DC6820036FEFF /* EncryptionTest.cpp in Sources */,
+				AB4D6F60108DC6820036FEFF /* FolderDataTest.cpp in Sources */,
+				AB4D6F61108DC6820036FEFF /* FolderExtTest.cpp in Sources */,
+				AB4D6F62108DC6820036FEFF /* MailAccountTest.cpp in Sources */,
+				AB4D6F63108DC6820036FEFF /* CtCapTest.cpp in Sources */,
+				AB4D6F64108DC6820036FEFF /* FormatterTest.cpp in Sources */,
+				AB4D6F65108DC6820036FEFF /* ObjectDelTest.cpp in Sources */,
+				AB4D6F66108DC6820036FEFF /* ParserTest.cpp in Sources */,
+				AB4D6F67108DC6820036FEFF /* ServerDevInfTest.cpp in Sources */,
+				AB4D704F108DEF9E0036FEFF /* testUtils.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2348,6 +2741,9 @@
 				AB7B8946108C9E1C00E14CD5 /* MailData.cpp in Sources */,
 				AB7B8947108C9E1C00E14CD5 /* MailMessage.cpp in Sources */,
 				AB7B8948108C9E1C00E14CD5 /* MailSyncSourceConfig.cpp in Sources */,
+				AB4D702F108DEE520036FEFF /* ConfigSyncSource.cpp in Sources */,
+				AB4D7030108DEE520036FEFF /* OptionParser.cpp in Sources */,
+				AB4D7037108DEE920036FEFF /* FolderExt.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2364,6 +2760,11 @@
 			target = D2AAC045055464E500DB518D /* libfunambol */;
 			targetProxy = 7C8B0ED00DB758A7005113A8 /* PBXContainerItemProxy */;
 		};
+		AB4D6E31108DBF4C0036FEFF /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = D2AAC045055464E500DB518D /* libfunambol */;
+			targetProxy = AB4D6E30108DBF4C0036FEFF /* PBXContainerItemProxy */;
+		};
 /* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
@@ -2373,7 +2774,10 @@
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				COPY_PHASE_STRIP = NO;
 				EXECUTABLE_PREFIX = "";
-				FRAMEWORK_SEARCH_PATHS = "";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SRCROOT)/../../tools\"",
+				);
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_ENABLE_FIX_AND_CONTINUE = YES;
 				GCC_MODEL_TUNING = G5;
@@ -2389,7 +2793,10 @@
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				EXECUTABLE_PREFIX = "";
-				FRAMEWORK_SEARCH_PATHS = "";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SRCROOT)/../../tools\"",
+				);
 				GCC_MODEL_TUNING = G5;
 				INSTALL_PATH = /usr/local/lib;
 				PRODUCT_NAME = libfunambol;
@@ -2408,17 +2815,19 @@
 					ENABLE_NAMESPACE,
 					FUNAMBOL_BUILD_API,
 				);
+				GCC_VERSION = 4.2;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				HEADER_SEARCH_PATHS = (
-					"../../src/include/posix/**",
-					"../../src/include/common/**",
+					../../src/include/posix,
+					../../src/include/common,
 				);
 				ONLY_ACTIVE_ARCH = YES;
 				PREBINDING = NO;
 				SCAN_ALL_SOURCE_FILES_FOR_INCLUDES = YES;
 				SDKROOT = macosx10.5;
 				STANDARD_C_PLUS_PLUS_LIBRARY_TYPE = dynamic;
+				STRINGS_FILE_OUTPUT_ENCODING = "UTF-16";
 			};
 			name = "OSX-Debug";
 		};
@@ -2622,7 +3031,10 @@
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				COPY_PHASE_STRIP = NO;
 				EXECUTABLE_PREFIX = "";
-				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SRCROOT)/../../tools\"",
+				);
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_ENABLE_FIX_AND_CONTINUE = YES;
 				GCC_MODEL_TUNING = G5;
@@ -2648,10 +3060,102 @@
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				EXECUTABLE_PREFIX = "";
-				FRAMEWORK_SEARCH_PATHS = "";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SRCROOT)/../../tools\"",
+				);
 				GCC_MODEL_TUNING = G5;
 				INSTALL_PATH = /usr/local/lib;
 				PRODUCT_NAME = libfunambol;
+			};
+			name = "iPhone-Release";
+		};
+		AB4D6E2C108DBF440036FEFF /* OSX-Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = NO;
+				GCC_INLINES_ARE_PRIVATE_EXTERN = NO;
+				GCC_MODEL_TUNING = "";
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/Carbon.framework/Headers/Carbon.h";
+				GCC_PREPROCESSOR_DEFINITIONS = ENABLE_NAMESPACE;
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_USE_GCC3_PFE_SUPPORT = YES;
+				GCC_VERSION = 4.2;
+				HEADER_SEARCH_PATHS = (
+					../../test/,
+					/opt/local/include,
+					../../src/include/posix,
+					../../src/include/common,
+				);
+				INSTALL_PATH = /usr/local/bin;
+				OTHER_LDFLAGS = (
+					"-lfunambol",
+					"-L/opt/local/lib",
+					"-lcppunit",
+					"-framework",
+					Carbon,
+				);
+				PREBINDING = NO;
+				PRODUCT_NAME = libfunamboltest;
+				STRINGS_FILE_OUTPUT_ENCODING = "UTF-8";
+				STRIP_INSTALLED_PRODUCT = YES;
+			};
+			name = "OSX-Debug";
+		};
+		AB4D6E2D108DBF440036FEFF /* OSX-Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_MODEL_TUNING = G5;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/Carbon.framework/Headers/Carbon.h";
+				INSTALL_PATH = /usr/local/bin;
+				OTHER_LDFLAGS = (
+					"-framework",
+					Carbon,
+				);
+				PREBINDING = NO;
+				PRODUCT_NAME = libfunamboltest;
+			};
+			name = "OSX-Release";
+		};
+		AB4D6E2E108DBF440036FEFF /* iPhone-Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_MODEL_TUNING = G5;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/Carbon.framework/Headers/Carbon.h";
+				INSTALL_PATH = /usr/local/bin;
+				OTHER_LDFLAGS = (
+					"-framework",
+					Carbon,
+				);
+				PREBINDING = NO;
+				PRODUCT_NAME = libfunamboltest;
+			};
+			name = "iPhone-Debug";
+		};
+		AB4D6E2F108DBF440036FEFF /* iPhone-Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_MODEL_TUNING = G5;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/Carbon.framework/Headers/Carbon.h";
+				INSTALL_PATH = /usr/local/bin;
+				OTHER_LDFLAGS = (
+					"-framework",
+					Carbon,
+				);
+				PREBINDING = NO;
+				PRODUCT_NAME = libfunamboltest;
 			};
 			name = "iPhone-Release";
 		};
@@ -2698,6 +3202,17 @@
 				7C8B0ECD0DB758A4005113A8 /* OSX-Release */,
 				7C8B0ECE0DB758A4005113A8 /* iPhone-Debug */,
 				7C8B0ECF0DB758A4005113A8 /* iPhone-Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = "OSX-Release";
+		};
+		AB4D6E32108DBF6B0036FEFF /* Build configuration list for PBXNativeTarget "libfunamboltest" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				AB4D6E2C108DBF440036FEFF /* OSX-Debug */,
+				AB4D6E2D108DBF440036FEFF /* OSX-Release */,
+				AB4D6E2E108DBF440036FEFF /* iPhone-Debug */,
+				AB4D6E2F108DBF440036FEFF /* iPhone-Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = "OSX-Release";

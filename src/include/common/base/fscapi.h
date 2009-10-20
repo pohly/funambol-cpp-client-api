@@ -77,7 +77,7 @@
      * to discriminate on the OS version (e.g. 10.5 vs 10.4)
      */
     #define POSIX 1
-    #define MAC   1
+    #define MAC   1  
 
     #if !defined(FUN_TRANSPORT_AGENT)
     #define FUN_TRANSPORT_AGENT FUN_MAC_TRANSPORT_AGENT
