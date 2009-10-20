@@ -461,6 +461,12 @@ int _wtoi(const WCHAR *str) {
     return 0;
 }
 
+size_t wsprintf(WCHAR* s, const WCHAR* format, ...) 
+{
+    LOG.error("***** %s not implemented *****", __FUNCTION__);
+    return 0;
+}
+
 int wcscasecmp(const WCHAR* s1, const WCHAR* s2)
 {
     int c1, c2;
