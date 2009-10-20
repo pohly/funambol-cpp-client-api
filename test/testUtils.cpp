@@ -46,11 +46,7 @@
 #define DEFAULT_TEST_NAME   "cppTest"
 
 // This is the dir where all the testcases are located
-#ifdef _WIN32
-# define TESTCASES_DIR "../../test/testcases/"
-#else
 # define TESTCASES_DIR "testcases"
-#endif
 
 
 USE_NAMESPACE

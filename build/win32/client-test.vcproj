@@ -210,6 +210,10 @@
 					>
 				</File>
 				<File
+					RelativePath="..\..\test\common\spds\ItemReaderTest.cpp"
+					>
+				</File>
+				<File
 					RelativePath="..\..\test\common\spds\MailAccountTest.cpp"
 					>
 				</File>
@@ -323,6 +327,18 @@
 				</File>
 				<File
 					RelativePath="..\..\test\integration\ConfigSyncSourceTest.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\test\integration\LOItemTest.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\test\integration\LOSyncSource.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\test\integration\LOSyncSource.h"
 					>
 				</File>
 				<File

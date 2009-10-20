@@ -314,6 +314,10 @@
 						>
 					</File>
 					<File
+						RelativePath="..\..\src\cpp\common\base\util\EncodingHelper.cpp"
+						>
+					</File>
+					<File
 						RelativePath="..\..\src\cpp\common\base\util\MemoryKeyValueStore.cpp"
 						>
 					</File>
@@ -679,6 +683,10 @@
 					</FileConfiguration>
 				</File>
 				<File
+					RelativePath="..\..\src\cpp\common\spds\Chunk.cpp"
+					>
+				</File>
+				<File
 					RelativePath="..\..\src\cpp\common\spds\CredentialHandler.cpp"
 					>
 					<FileConfiguration
@@ -734,6 +742,10 @@
 				</File>
 				<File
 					RelativePath="..\..\src\cpp\common\spds\FolderExt.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\cpp\common\spds\ItemReader.cpp"
 					>
 				</File>
 				<File
@@ -3505,6 +3517,10 @@
 						>
 					</File>
 					<File
+						RelativePath="..\..\src\include\common\base\util\EncodingHelper.h"
+						>
+					</File>
+					<File
 						RelativePath="..\..\src\include\common\base\util\Enumeration.h"
 						>
 					</File>
@@ -4246,6 +4262,10 @@
 					>
 				</File>
 				<File
+					RelativePath="..\..\src\include\common\spds\Chunk.h"
+					>
+				</File>
+				<File
 					RelativePath="..\..\src\include\common\spds\constants.h"
 					>
 				</File>
@@ -4283,6 +4303,10 @@
 				</File>
 				<File
 					RelativePath="..\..\src\include\common\spds\FolderExt.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\include\common\spds\ItemReader.h"
 					>
 				</File>
 				<File

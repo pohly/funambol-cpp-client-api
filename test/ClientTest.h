@@ -54,6 +54,7 @@
 #include "MappingsTest.h"
 #include "ConfigSyncSourceTest.h"
 #include "SyncManagerTest.h"
+#include "LOItemTest.h"
 
 USE_NAMESPACE
 
@@ -799,6 +800,11 @@ protected:
     virtual void testLargeObject2() {
         SyncManagerTest test;
         test.testLargeObject2();        
+    }
+
+    virtual void testLOItem() {
+        LOItemTest test;
+        test.testLOItem();        
     }
 
     /**
