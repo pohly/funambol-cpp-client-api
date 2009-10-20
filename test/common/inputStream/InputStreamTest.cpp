@@ -119,9 +119,7 @@ void InputStreamTest::testReadTwoChunks(InputStream& stream, const void* expecte
  * Reads in many small chuncks
  * ------------------------------------------------------------------------------
  */
-void InputStreamTest::testReadManyChunks(InputStream& stream, const void* expectedData, const int expectedDataSize) {
-
-    int chunkSize = 25;
+void InputStreamTest::testReadManyChunks(InputStream& stream, const void* expectedData, const int expectedDataSize, const int chunkSize) {
 
     // Output buffer
     const int outBufferSize = expectedDataSize + 10;

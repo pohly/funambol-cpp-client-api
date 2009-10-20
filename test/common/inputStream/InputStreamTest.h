@@ -79,8 +79,9 @@ protected:
      * @param stream           the InputStream to read from (expected already initialized)
      * @param expectedData     the data expected to read
      * @param expectedDataSize the data expected size to read
+     * @param chunkSize        [OPTIONAL] the chunk size, in byte (default = 25 bytes)
      */
-    void testReadManyChunks(InputStream& stream, const void* expectedData, const int expectedDataSize);
+    void testReadManyChunks(InputStream& stream, const void* expectedData, const int expectedDataSize, const int chunkSize = 25);
 
 };
 
