@@ -4478,11 +4478,11 @@
 				Name="email"
 				>
 				<File
-					RelativePath="..\..\src\include\common\email\MailAccount.h"
+					RelativePath="..\..\src\include\common\mail\MailAccount.h"
 					>
 				</File>
 				<File
-					RelativePath="..\..\src\include\common\mail\MailAccount.h"
+					RelativePath="..\..\src\include\common\email\MailAccount.h"
 					>
 				</File>
 				<File
@@ -4506,11 +4506,11 @@
 					>
 				</File>
 				<File
-					RelativePath="..\..\src\include\common\inputStream\FileInputStream.h"
+					RelativePath="..\..\src\include\common\inputStream\FileDataInputStream.h"
 					>
 				</File>
 				<File
-					RelativePath="..\..\src\include\common\inputStream\FileObjectInputStream.h"
+					RelativePath="..\..\src\include\common\inputStream\FileInputStream.h"
 					>
 				</File>
 				<File
