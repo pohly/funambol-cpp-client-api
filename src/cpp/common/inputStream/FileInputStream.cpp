@@ -58,12 +58,8 @@ FileInputStream::FileInputStream(const StringBuffer& path) : InputStream() {
     
 
     // Get file size
-    if (f) {
-        fseek(f, 0, SEEK_END);
-        totalSize = (unsigned int)ftell(f);
-        // Resets the position indicator of the stream
-        fseek(f, 0, SEEK_SET);
-    }
+    totalSize = fgetsize(f);
+    fseek(f, 0, SEEK_SET);          // Resets the position indicator of the stream
 
     // Get file size (alternate way)
     //struct stat st;
@@ -74,6 +70,7 @@ FileInputStream::FileInputStream(const StringBuffer& path) : InputStream() {
     //}
     //totalSize = st.st_size;
 }
+
 
 FileInputStream::~FileInputStream() {
 
@@ -132,4 +129,18 @@ int FileInputStream::getPosition() {
         ret = (int)ftell(f);
     }
     return ret;
+}
+
+
+ArrayElement* FileInputStream::clone() {
+    return new FileInputStream(this->path);
+}
+
+FileInputStream::FileInputStream(const FileInputStream& stream) {
+    FileInputStream(stream.path);
+}
+
+FileInputStream& FileInputStream::operator=(const FileInputStream& stream) {
+    FileInputStream(stream.path);
+    return *this;
 }

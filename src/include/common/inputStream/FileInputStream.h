@@ -51,7 +51,7 @@ BEGIN_NAMESPACE
  */
 class FileInputStream : public InputStream {
 
-protected:
+private:
 
     /// The file location (path & file name)
     StringBuffer path;
@@ -108,6 +108,15 @@ public:
      */
     int getPosition();
 
+
+    /// From ArrayElement
+    ArrayElement* clone();
+
+    /// Copy constructor
+    FileInputStream(const FileInputStream& stream);
+
+    /// Operator =
+    FileInputStream& operator=(const FileInputStream& stream);
 };
 
 

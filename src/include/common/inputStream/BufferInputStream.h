@@ -73,11 +73,17 @@ private:
 public:
 
     /**
-     * Constructor. 
+     * Default constructor. 
      * @param data      the buffer to be read.
      * @param dataSize  the size of buffer 'data'
      */
     BufferInputStream(const void* data, const unsigned int dataSize);
+
+    /**
+     * Constructor: gets the void* data and size from a StringBuffer.
+     * @param dataString  the buffer string to read
+     */
+    BufferInputStream(const StringBuffer& dataString);
 
     ~BufferInputStream();
 
@@ -111,6 +117,9 @@ public:
      * sequence to be read by the next input operation.
      */
     int getPosition();
+
+    /// From ArrayElement
+    ArrayElement* clone();
 
 };
 

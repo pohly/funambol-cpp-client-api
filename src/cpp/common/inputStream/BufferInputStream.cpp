@@ -47,6 +47,14 @@ BufferInputStream::BufferInputStream(const void* data, const unsigned int dataSi
     this->eofbit    = 0;
 }
 
+BufferInputStream::BufferInputStream(const StringBuffer& dataString) : InputStream() {
+
+    this->data      = dataString.c_str();
+    this->totalSize = dataString.length();
+    this->position  = 0;
+    this->eofbit    = 0;
+}
+
 BufferInputStream::~BufferInputStream() {}
 
 
@@ -88,4 +96,10 @@ int BufferInputStream::eof() {
 
 int BufferInputStream::getPosition() {
     return position;
+}
+
+
+ArrayElement* BufferInputStream::clone() {
+    // The 'data' buffer is always externally owned.
+    return new BufferInputStream(this->data, this->totalSize); 
 }
