@@ -46,9 +46,6 @@
 // Default len for stringdup (means: use source string len)
 #define STRINGDUP_NOLEN 0xFFFFFFFF
 
-#define B64_ENCODING        "b64"
-#define TEXT_PLAIN_ENCODING "text/plain"
-
 BEGIN_NAMESPACE
 
 /*
@@ -158,6 +155,14 @@ bool saveFile(const char *filename, const char *buffer, size_t len,
  * @return - the length of the file
  */
 size_t fgetsize(FILE *f);
+
+/**
+ * Get the size of the file, in bytes
+ *
+ * @param fileName - the file name (full path)
+ * @return - the length of the file
+ */
+size_t fgetsize(const char* fileName);
 
 /**
  * Test the presence of a file.

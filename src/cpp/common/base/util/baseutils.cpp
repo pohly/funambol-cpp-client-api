@@ -212,7 +212,6 @@ char* ltow(long i) {
 }
 
 
-
 /*
 * It implements algo for authentication with MD5 method.
 * It computes digest token according with follow:
@@ -305,6 +304,18 @@ size_t fgetsize(FILE *f)
     size=ftell(f);
     fseek(f, 0, SEEK_SET);
     return size;
+}
+
+size_t fgetsize(const char* fileName) {
+    if (fileName) {
+        FILE* f = fopen(fileName, "rb");
+        if (f) {
+            size_t size = fgetsize(f);
+            fclose(f);
+            return size;
+        }
+    }
+    return 0;
 }
 
 END_NAMESPACE
