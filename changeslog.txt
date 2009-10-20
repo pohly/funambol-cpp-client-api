@@ -1,3 +1,6 @@
+2009-10-20
+  - toccy: [US3125] Added FileDataInputStream (and unit tests: FileDataInputStreamTest)
+
 2009-10-16
   - toccy: merged from trunk at r1227
   - dave:  merged with branches US2448 and US1332 (MEA feature branches) at revision 1218

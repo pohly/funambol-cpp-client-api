@@ -40,6 +40,7 @@
 #include "base/fscapi.h"
 #include "base/constants.h"
 #include "base/globalsdef.h"
+#include "base/util/ArrayElement.h"
 
 
 BEGIN_NAMESPACE
@@ -52,7 +53,7 @@ BEGIN_NAMESPACE
  * Specific implementations of InputStream can read data directly from a stream 
  * in order to avoid loading a large object in memory.
  */
-class InputStream  {
+class InputStream : public ArrayElement {
 
 protected:
 
@@ -119,6 +120,9 @@ public:
      * sequence to be read by the next input operation.
      */
     virtual int getPosition() = 0;
+
+    /// From ArrayElement
+    virtual ArrayElement* clone() = 0;
 
 };
 
