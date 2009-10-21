@@ -39,6 +39,7 @@
 
 #include "base/fscapi.h"
 #include "inputStream/InputStream.h"
+#include "base/util/EncodingHelper.h"
 #include "spds/FileData.h"
 
 BEGIN_NAMESPACE
@@ -78,6 +79,9 @@ private:
     /// The XML epilogue (after the file body). It's created in the constructor.
     StringBuffer epilogue;
 
+    /// Used for utils method to encode/decode the file body in base64.
+    EncodingHelper encodingHelper;
+
 
     /**
      * This flag is set by all standard input operations when the End Of File 
@@ -116,6 +120,7 @@ public:
      * Constructor. 
      * Opens the file named by the path 'path' in the file system. The FILE object
      * remains opened for reading until the close() method is called, or this object is destroyed.
+     * @note  the file body is actually ALWAYS encoded in Base64 (see encodingHelper construction).
      * @param path    the file location (path & file name) to read from.
      */
     FileDataInputStream(const StringBuffer& path);

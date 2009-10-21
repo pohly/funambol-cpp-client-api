@@ -37,7 +37,6 @@
 #include "base/base64.h"
 #include "base/util/utils.h"
 #include "base/util/XMLProcessor.h"
-#include "base/util/EncodingHelper.h"
 #include "syncml/core/Constants.h"
 
 #include "inputStream/FileDataInputStream.h"
@@ -47,30 +46,8 @@
 USE_NAMESPACE
 
 
-//Returns the file name, given its full (absolute path) name.
-static StringBuffer getFileName(const StringBuffer& fullName) {
-    
-    StringBuffer fileName("");
-    
-    unsigned long pos = fullName.rfind("/");
-    if (pos == StringBuffer::npos) {
-        pos = fullName.rfind("\\");
-        if (pos == StringBuffer::npos) {
-            // fullName is already the file name
-            return fullName;
-        }
-    }
-    
-    // Move to the first char of the filename
-    pos += 1;
-    
-    fileName = fullName.substr(pos, fullName.length() - pos);
-    return fileName;
-}
-
-
-FileDataInputStream::FileDataInputStream(const StringBuffer& path) : InputStream() {
-
+FileDataInputStream::FileDataInputStream (const StringBuffer& path) : InputStream(), 
+                                                                      encodingHelper(FORMAT_B64, NULL, NULL) {
     currentSection = 0;
     position       = 0;
     eofbit         = 0;
@@ -99,7 +76,7 @@ FileDataInputStream::FileDataInputStream(const StringBuffer& path) : InputStream
     fseek(f, 0, SEEK_SET);          // Resets the position indicator of the stream
     fileData.setSize(fileSize);
 
-    StringBuffer fileName(getFileName(path));
+    StringBuffer fileName(getFileNameFromPath(path));
     WCHAR* wFileName = toWideChar(fileName.c_str());
     fileData.setName(wFileName);
     delete [] wFileName;
@@ -125,8 +102,7 @@ FileDataInputStream::FileDataInputStream(const StringBuffer& path) : InputStream
     setSections(formattedData);
     
     // Calculate the projected total data size
-    EncodingHelper helper(FORMAT_B64, NULL, NULL);
-    long b64FileSize = helper.getDataSizeAfterEncoding(fileSize);
+    long b64FileSize = encodingHelper.getDataSizeAfterEncoding(fileSize);
     totalSize = prologue.length() + b64FileSize + epilogue.length();
 }
 
@@ -213,7 +189,7 @@ int FileDataInputStream::readFromStream(InputStream* stream, void* buffer, const
     //
     // 2nd stream: read data from file and encode in Base64
     //
-    int rawSize = int(size / 4) * 3;    // must be 3/4 in size, and multiple of 3.
+    int rawSize = encodingHelper.getMaxDataSizeToEncode(size);      //int(size / 4) * 3;  // must be 3/4 in size, and multiple of 3.
     if (rawSize <= 0) {
         return 0;
     }
