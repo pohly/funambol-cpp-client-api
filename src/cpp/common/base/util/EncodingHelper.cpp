@@ -138,7 +138,7 @@ char* EncodingHelper::transform(char* buffer, unsigned long *len, bool isEncodin
         return ret;
     }
 
-    if (strlen(buffer) == 0 || len == 0) {
+    if (len == 0) {
         ret = stringdup("");
         setDataEncoding(encodings::plain);
         LOG.info("EncodingHelper: nothing to be done: buffer empty or lenght = 0");
