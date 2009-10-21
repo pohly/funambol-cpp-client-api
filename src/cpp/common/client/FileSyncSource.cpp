@@ -32,12 +32,12 @@
  * feasible for technical reasons, the Appropriate Legal Notices must display
  * the words "Powered by Funambol".
  */
-#include "spds/SyncItem.h"
 #include "spds/SyncItemStatus.h"
 #include "base/util/utils.h"
 #include "base/Log.h"
 #include "syncml/core/TagNames.h"
 #include "base/util/ArrayListEnumeration.h"
+#include "client/FileSyncItem.h"
 #include "client/FileSyncSource.h"
 
 BEGIN_NAMESPACE
@@ -263,80 +263,40 @@ int FileSyncSource::removeAllItems() {
     return 0;
 }
 
-/**
-* Get the content of an item given the key. It is used to populate
-* the SyncItem before the engine uses it in the usual flow of the sync.
-* It is used also by the itemHandler if needed 
-* (i.e. in the cache implementation)
-*
-* @param key      the local key of the item
-* @param size     OUT: the size of the content
-*
-* @return         the local item content. It's new allocated, it must be 
-*                 deleted by the caller using delete []
-*                 Returns NULL in case of error
-*/
-void* FileSyncSource::getItemContent(StringBuffer& key, size_t* size) {
+
+SyncItem* FileSyncSource::fillSyncItem(StringBuffer* key, const bool /*fillData*/) {
     
-    char* fileContent = NULL; 
-    char* itemContent = NULL;
-    *size = 0;
+    SyncItem* syncItem = NULL;    
     
-    WCHAR* fullName = toWideChar(key);
-    StringBuffer completeName(getCompleteName(dir, fullName));
-    
-    StringBuffer fileName(getFileNameFromPath(completeName));
-    WCHAR* wFileName = toWideChar(fileName.c_str());
-    
-    LOG.debug("complete = %s", completeName.c_str());
-    LOG.debug("name = %s", fileName.c_str());
-    
-    if (!readFile(completeName, &fileContent, size, true)) {        
-        LOG.error("Content of the file not read: %s", completeName.c_str());
+    if (!key) {
         return NULL;
     }
+    WCHAR* wkey = toWideChar(key->c_str());
+    StringBuffer completeName = getCompleteName(dir, wkey);
 
-    // get the SyncSource mime type
-    const char* mimeType = config->getType();
-
-    if(!strcmp(mimeType, OMA_MIME_TYPE))
-    {
-        // the item content must be set as OMA file obj format
-        FileData file;
-
-        file.setName(wFileName);
-        file.setSize(*size);
-        file.setBody(fileContent, *size);
-        
-        // Removed because the Server expects creation time in UTC format (TODO), 
-        // not as a timestamp. So this field is actually useless.
-        // 
-        // Sets the file creation time, if info available
-        /*struct stat st;
-        memset(&st, 0, sizeof(struct stat));
-        if (stat(completeName, &st) >= 0) {
-            StringBuffer tmp;
-            tmp.sprintf("%i", st.st_mtime);
-            WCHAR* time = toWideChar(tmp.c_str());
-            file.setModified(time);
-            delete [] time;
-        }*/
-
-        itemContent = file.format();
-        *size = strlen(itemContent);
-
-        delete [] fileContent; fileContent = NULL;
+    //LOG.debug("[%s] Filling item with key %s", getConfig().getName(), key->c_str());
+    LOG.debug("complete = %s", completeName.c_str());
+    LOG.debug("name = %s", key->c_str());
+    
+    bool isFileData = false;
+    if(!strcmp(config->getType(), OMA_MIME_TYPE)) {
+        isFileData = true;
     }
-    else
-    {
-        // fill the item content with raw file content
-        itemContent = fileContent;
-    }
+    
+    // Note: no data is set here! 
+    // We use input stream.
+    syncItem = new FileSyncItem(completeName, wkey, isFileData);
+    
+    delete [] wkey;
+    return syncItem;
 
-    delete [] fullName;  fullName  = NULL;
-    delete [] wFileName; wFileName = NULL;
+}
 
-    return itemContent;
+
+void* FileSyncSource::getItemContent(StringBuffer& key, size_t* size) {
+    LOG.info("Warning: DEPRECATED METHOD FileSyncSource::getItemContent()");
+    LOG.info("It's not used anymore, use instead the file input streams to read file content.");
+    return NULL;
 }
 
 

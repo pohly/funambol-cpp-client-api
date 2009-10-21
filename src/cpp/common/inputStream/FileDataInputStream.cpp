@@ -87,6 +87,19 @@ FileDataInputStream::FileDataInputStream (const StringBuffer& path) : InputStrea
     StringBuffer& fakeBody = fileName;
     fileData.setBody(fakeBody.c_str(), fakeBody.length());
 
+    // Removed because the Server expects creation time in UTC format (TODO), 
+    // not as a timestamp. So this field is actually useless.
+    // Sets the file creation time, if info available
+    /*struct stat st;
+    memset(&st, 0, sizeof(struct stat));
+    if (stat(completeName, &st) >= 0) {
+        StringBuffer tmp;
+        tmp.sprintf("%i", st.st_mtime);
+        WCHAR* time = toWideChar(tmp.c_str());
+        fileData.setModified(time);
+        delete [] time;
+    }*/
+
     const char* buf = fileData.format();
     if (!buf) {
         LOG.error("FileDataInputStream error: cannot format output data");

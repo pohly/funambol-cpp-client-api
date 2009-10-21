@@ -1,5 +1,6 @@
 2009-10-21
   - toccy: [US3125] Added FileSyncItem class (and unit tests: FileSyncItemTest, SyncItemTest)
+                    Modified FileSyncSource in order to use FileSyncItem and new input stream classes
 
 2009-10-20
   - toccy: [US3125] Added FileDataInputStream (and unit tests: FileDataInputStreamTest)
