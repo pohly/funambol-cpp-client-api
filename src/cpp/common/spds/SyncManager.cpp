@@ -1226,7 +1226,8 @@ int SyncManager::sync() {
 
                                 if (chunk == NULL) {
                                     LOG.error("SyncManager: chunk null due to wrong transformation");
-                                    break;
+                                    delete syncItem; syncItem = NULL;                                    
+                                    continue;
                                 }
                                 
                                 // extra safe check...
@@ -1330,7 +1331,8 @@ int SyncManager::sync() {
 
                                 if (chunk == NULL) {
                                     LOG.error("SyncManager: chunk null due to wrong transformation");
-                                    break;
+                                    delete syncItem; syncItem = NULL;                                    
+                                    continue;
 
                                 }
                                 if (isTooBig(chunk->getDataSize(), maxMsgSize, msgSize)) {
@@ -1411,7 +1413,8 @@ int SyncManager::sync() {
 
                                 if (chunk == NULL) {
                                     LOG.error("SyncManager: chunk null due to wrong transformation");
-                                    break;
+                                    delete syncItem; syncItem = NULL;                                    
+                                    continue;
 
                                 }
                                 if (isTooBig(chunk->getDataSize(), maxMsgSize, msgSize)) {

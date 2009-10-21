@@ -138,7 +138,7 @@ void ConfigSyncSourceTest::testConfigSource() {
     int ret = 0;       
     ret = client.sync(*config1, sources);
     config1->save();
-    //CPPUNIT_ASSERT_EQUAL(ret == 0 || ret == 404);
+    
     CPPUNIT_ASSERT(ret == 0 || ret == 404);
     if (ret == 404) {
         std::cout << "ConfigSyncSource doesn't exists: Test Passed but ret = 404 ";        

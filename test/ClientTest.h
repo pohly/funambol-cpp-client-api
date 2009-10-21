@@ -822,7 +822,12 @@ protected:
         LOItemTest test;               
         test.testLOItemReplaceb64();
     }
-
+    
+    virtual void testLOItemWithItemEncoding() {
+        LOItemTest test;               
+        test.testLOItemWithItemEncoding();
+    }
+    
     /**
      * implements testMaxMsg(), testLargeObject(), testLargeObjectEncoded()
      * using a sequence of items with varying sizes

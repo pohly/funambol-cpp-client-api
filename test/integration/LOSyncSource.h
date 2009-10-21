@@ -72,6 +72,8 @@ private:
     bool useAdd;
     bool useUpdate;
 
+    bool useDataEncoding;
+
 public:
     
     void setUseSif(bool v) { useSif = v; }
@@ -85,6 +87,9 @@ public:
 
     void setUseUpdate(bool v) { useUpdate = v; }
     bool getUseUpdate() { return useUpdate; }
+
+    void setUseDataEncoding(bool v) { useDataEncoding = v; }
+    bool getUseDataEncoding() { return useDataEncoding; }
     
     /**
      * Constructor: create a SyncSource with the specified name

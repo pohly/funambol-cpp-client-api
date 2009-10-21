@@ -92,6 +92,7 @@ public:
     void testLOItemb64();
     void testLOItemSlowSyncb64();
     void testLOItemReplaceb64();
+    void testLOItemWithItemEncoding();
 
 private:    
                

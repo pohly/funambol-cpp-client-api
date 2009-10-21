@@ -60,12 +60,6 @@ BufferInputStream::~BufferInputStream() {}
 
 int BufferInputStream::read(void* buffer, const unsigned int size) {
 
-    if (!totalSize) {
-        LOG.error("BufferInputStream::read error: total data size = 0");
-        buffer = NULL;
-        return 0;
-    }
-
     // to avoid buffer overflow
     int bytesRead = size;
     if (position + size > totalSize) {

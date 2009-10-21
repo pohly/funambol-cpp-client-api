@@ -132,11 +132,19 @@ char* EncodingHelper::transform(char* buffer, unsigned long *len, bool isEncodin
     }
 
     // nothing to be done?
-    if (!buffer || strlen(buffer) <= 0) {
+    if (!buffer) {
         //!strcmp(encodings::encodingString(encoding), encodings::encodingString(encToUse))) 
         LOG.info("EncodingHelper: nothing to be done: buffer NULL or lenght <= 0");
         return ret;
     }
+
+    if (strlen(buffer) == 0 || len == 0) {
+        ret = stringdup("");
+        setDataEncoding(encodings::plain);
+        LOG.info("EncodingHelper: nothing to be done: buffer empty or lenght = 0");
+        return ret;
+    }
+
     if (encToUse == encodings::plain) {
         LOG.debug("EncodingHelper: no transformation done. Only returned the new array");
         ret = stringdup(buffer);

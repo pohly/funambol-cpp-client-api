@@ -141,13 +141,7 @@ FileDataInputStream::~FileDataInputStream() {
 
 int FileDataInputStream::read(void* buffer, const unsigned int size) {
 
-    LOG.debug("FileDataInputStream::read - section #%i, size requested = %i", currentSection, size);
-
-    if (!totalSize) {
-        LOG.debug("FileDataInputStream::read - total size = 0");
-        buffer = NULL;
-        return 0;
-    }
+    LOG.debug("FileDataInputStream::read - section #%i, size requested = %i", currentSection, size);    
 
     InputStream* stream = (InputStream*)sections.get(currentSection);
     if (!stream) {

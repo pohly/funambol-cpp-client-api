@@ -44,7 +44,8 @@ USE_NAMESPACE
 
 LOSyncSource::LOSyncSource(const WCHAR* name, SyncSourceConfig *sc) 
                         : SyncSource(name, sc), count(0), useSif(false), 
-                        useSlowSync(false), useAdd(false), useUpdate(false) {
+                        useSlowSync(false), useAdd(false), useUpdate(false),
+                        useDataEncoding(false) {
                             
 }
 
@@ -85,8 +86,13 @@ SyncItem* LOSyncSource::getNextNewItem() {
     wsprintf(key, TEXT("%S"), name.c_str());
     wcscat(key, getName());    
 
-    SyncItem* item = new SyncItem(key);
-    
+    SyncItem* item = new SyncItem(key);    
+    if (getUseDataEncoding()) {
+        // just to test that the api works properly with custom encoding
+        item->setDataEncoding("bin");
+    }
+
+
     char* data = getNewCard(true);
     item->setData(data, (long)strlen(data));
     

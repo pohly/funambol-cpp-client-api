@@ -80,12 +80,6 @@ FileInputStream::~FileInputStream() {
 
 int FileInputStream::read(void* buffer, const unsigned int size) {
 
-    if (!totalSize) {
-        LOG.debug("FileInputStream::read - total file size = 0");
-        buffer = NULL;
-        return 0;
-    }
-
     if (!f) {
         LOG.error("FileInputStream::read error: file is not opened");
         buffer = NULL;

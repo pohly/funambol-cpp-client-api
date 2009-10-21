@@ -75,6 +75,9 @@ Chunk* ItemReader::getNextChunk(unsigned long size) {
     char* value             = NULL;
     bool first              = true;
     bool last               = true;
+    bool useSyncItemEncoding  = (syncItem->getDataEncoding() == NULL) ?
+                                false :
+                                true;
 
     if (syncItem == NULL) {
         LOG.error("ItemReader: the syncItem is null");
@@ -86,33 +89,49 @@ Chunk* ItemReader::getNextChunk(unsigned long size) {
     if (istream->getPosition() != 0) {
         first = false;
     }
-
-    if (syncItem->getDataEncoding() == NULL) {
+    
+    if (useSyncItemEncoding) {
+        toRead = size;
+    } else {
+        // ths item doesn't have its own encoding
         toRead = helper.getMaxDataSizeToEncode(size);
     } 
     
     bytesRead = istream->read((void*)buffer, toRead);
-
-    // set if it is the last chunk
+       
+    if (istream->getTotalSize() == 0) {
+        value = stringdup("");
+    } else {
+        if (useSyncItemEncoding) {
+            // consider that the buffer should be a char since the chunk is a buffer
+            value = stringdup(buffer);
+        } else {
+            value = helper.encode(buffer, &bytesRead);     
+            if (value == NULL) {
+            LOG.info("ItemReader: getNextChunk NULL after transformation");
+            return NULL;
+        }
+        }
+        
+    }
     if (istream->eof() == 0) {
         last = false; 
     }
-    value = helper.encode(buffer, &bytesRead);     
-    
-    if (value == NULL) {
-        LOG.info("ItemReader: getNextChunk NULL after transformation");
-        return NULL;
-    }
-
+   
     chunk = new Chunk(value);
     
     chunk->setFirst(first);
-    chunk->setLast(last);        
-    chunk->setTotalDataSize(helper.getDataSizeAfterEncoding(syncItem->getDataSize()));
-    chunk->setDataEncoding(helper.getDataEncoding());
+    chunk->setLast(last);    
 
+    if (useSyncItemEncoding) {
+        chunk->setTotalDataSize(syncItem->getDataSize());
+        chunk->setDataEncoding(syncItem->getDataEncoding());
+    } else {
+        chunk->setTotalDataSize(helper.getDataSizeAfterEncoding(syncItem->getDataSize()));
+        chunk->setDataEncoding(helper.getDataEncoding());
+    }
     delete [] value;
-
+    
     return chunk;
 }
 
