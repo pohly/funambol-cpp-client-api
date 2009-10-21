@@ -94,7 +94,12 @@ long EncodingHelper::getDataSizeAfterEncoding(long size) {
     long ret = size;
     
     if (encoding == encodings::escaped) {
-        ret = ((unsigned long)(size/3)) * 4;
+        int modules = size % 3;
+        if (modules == 0) {
+            ret = 4 * (size/3);
+        } else {
+            ret = 4 * ((size/3) + 1);
+        }
     }
 /*@TODO...    
     if (encryption == "des") {
