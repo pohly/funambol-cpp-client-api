@@ -81,27 +81,6 @@ StringBuffer getRelativeName(const StringBuffer& dir, const StringBuffer& fullNa
     return relativeName;
 }
 
-//Returns the file name, given its full (absolute path) name.
-StringBuffer getFileName(const StringBuffer& fullName) {
-    
-    StringBuffer fileName("");
-    
-    unsigned long pos = fullName.rfind("/");
-    if (pos == StringBuffer::npos) {
-        pos = fullName.rfind("\\");
-        if (pos == StringBuffer::npos) {
-            // fullName is already the file name
-            return fullName;
-        }
-    }
-    
-    // Move to the first char of the filename
-    pos += 1;
-    
-    fileName = fullName.substr(pos, fullName.length() - pos);
-    return fileName;
-}
-
 
 
 static int saveFileContent(const char *name, const char *content, size_t size, bool isUpdate) {
@@ -306,7 +285,7 @@ void* FileSyncSource::getItemContent(StringBuffer& key, size_t* size) {
     WCHAR* fullName = toWideChar(key);
     StringBuffer completeName(getCompleteName(dir, fullName));
     
-    StringBuffer fileName(getFileName(completeName));
+    StringBuffer fileName(getFileNameFromPath(completeName));
     WCHAR* wFileName = toWideChar(fileName.c_str());
     
     LOG.debug("complete = %s", completeName.c_str());

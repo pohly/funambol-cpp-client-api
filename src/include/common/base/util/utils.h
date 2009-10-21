@@ -165,6 +165,14 @@ size_t fgetsize(FILE *f);
 size_t fgetsize(const char* fileName);
 
 /**
+ * Returns the file name, given its full name (path+name).
+ * It just gets the last part of the string, after the last "/" or "\".
+ * @param fullName  the full path of the file
+ * @return          the file name
+ */
+StringBuffer getFileNameFromPath(const StringBuffer& fullName);
+
+/**
  * Test the presence of a file.
  *
  * @param the path to the file to test
