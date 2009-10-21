@@ -54,8 +54,6 @@ public:
     void setUp()    {}
     void tearDown() {}
 
-protected:
-
     /**
      * Reads the stream with a big chunk (size > stream size)
      * @param stream           the InputStream to read from (expected already initialized)

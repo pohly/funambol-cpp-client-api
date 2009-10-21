@@ -41,8 +41,7 @@
 #include "spds/SyncManagerConfig.h"
 #include "spds/SyncItem.h"
 
-#include "InputStreamTest.h"
-#include "inputStream/BufferInputStream.h"
+#include "common/inputStream/InputStreamTest.h"
 #include "testUtils.h"
 
 
@@ -52,60 +51,69 @@
 
 USE_NAMESPACE
 
-class BufferInputStreamTest : public InputStreamTest {
+class SyncItemTest : public CppUnit::TestFixture {
 
-    CPPUNIT_TEST_SUITE(BufferInputStreamTest);
-    CPPUNIT_TEST(testBufferReadBigChunk);
-    CPPUNIT_TEST(testBufferReadTwoChunks);
-    CPPUNIT_TEST(testBufferReadManyChunks);
+    CPPUNIT_TEST_SUITE(SyncItemTest);
+    CPPUNIT_TEST(testSyncItemInputStream);
     CPPUNIT_TEST_SUITE_END();
 
 public:
 
-    void setUp() {
-
-        // Input buffers
-        smallBuffer   = SMALL_BUFFER;
-        smallData     = (void*)(smallBuffer.c_str());
-        smallDataSize = smallBuffer.length();
-    }
-
-    void tearDown() {
-    }
+    void setUp() {}
+    void tearDown() {}
 
 private:
 
-    StringBuffer smallBuffer;
-    void* smallData;
-    int smallDataSize;
+    /**
+     * 1. Creates a SyncItem, and reads the stream from there (it's a BufferInputStream)
+     * 2. Tests the SyncItem setting 2 different data
+     * 3. Clones the SyncItem, then reads agin the stream
+     * Use the inputStream tests defined in InputStreamTest class.
+     */
+    void testSyncItemInputStream() {
+
+        SyncItem item(TEXT("key"));
+        InputStreamTest test;
+
+        // Input buffers
+        StringBuffer smallBuffer = SMALL_BUFFER;
+        void* smallData = (void*)(smallBuffer.c_str());
+        int smallDataSize = smallBuffer.length();
 
 
-    /// Reads a big chunk (size > stream size)
-    void testBufferReadBigChunk() {
+        // Set data
+        item.setData(smallData, smallDataSize);
+        InputStream* stream = item.getInputStream();
+        CPPUNIT_ASSERT (stream);
 
-        BufferInputStream stream(smallData, smallDataSize);
-        testReadBigChunk(stream, smallData, smallDataSize);
-        stream.close();
-    }
+        if (stream) {
+            test.testReadManyChunks(*stream, smallData, smallDataSize);
+        }
+        
+        // Set another data inside the same SyncItem
+        StringBuffer smallBuffer2("test another data inside the same SyncItem");
+        void* smallData2 = (void*)(smallBuffer2.c_str());
+        int smallDataSize2 = smallBuffer2.length();
 
+        item.setData(smallData2, smallDataSize2);
+        stream = item.getInputStream();
+        CPPUNIT_ASSERT (stream);
 
-    /// Reads the stream in 2 chunks
-    void testBufferReadTwoChunks() {
+        if (stream) {
+            test.testReadManyChunks(*stream, smallData2, smallDataSize2);
+        }
 
-        BufferInputStream stream(smallData, smallDataSize);
-        testReadTwoChunks(stream, smallData, smallDataSize);
-        stream.close();
-    }
+        // Clone the item
+        SyncItem* itemCloned = (SyncItem*)item.clone();
+        stream = itemCloned->getInputStream();
+        CPPUNIT_ASSERT (stream);
 
-
-    /// Reads the stream in many small chuncks
-    void testBufferReadManyChunks() {
-
-        BufferInputStream stream(smallData, smallDataSize);
-        testReadManyChunks(stream, smallData, smallDataSize);
-        stream.close();
+        if (stream) {
+            test.testReadManyChunks(*stream, smallData2, smallDataSize2);
+        }
+        delete itemCloned;
     }
 
 };
 
-CPPUNIT_TEST_SUITE_REGISTRATION( BufferInputStreamTest );
+CPPUNIT_TEST_SUITE_REGISTRATION( SyncItemTest );

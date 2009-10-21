@@ -221,6 +221,10 @@
 					RelativePath="..\..\test\common\spds\MailAccountTest.cpp"
 					>
 				</File>
+				<File
+					RelativePath="..\..\test\common\spds\SyncItemTest.cpp"
+					>
+				</File>
 			</Filter>
 			<Filter
 				Name="base"
@@ -311,6 +315,10 @@
 				>
 				<File
 					RelativePath="..\..\test\common\client\ConfigSyncSourceUnitTest.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\test\common\client\FileSyncItemTest.cpp"
 					>
 				</File>
 				<File

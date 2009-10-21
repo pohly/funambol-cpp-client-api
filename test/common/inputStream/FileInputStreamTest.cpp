@@ -42,6 +42,7 @@
 
 #include "InputStreamTest.h"
 #include "inputStream/FileInputStream.h"
+#include "client/FileSyncItem.h"
 #include "testUtils.h"
 
 
@@ -136,16 +137,16 @@ private:
     void testFileReadManyChunks() {
 
         FileInputStream stream1(fileName1);
-        testReadManyChunks(stream1, fileContent1, fileSize1, 200);     // Chunks of 200 bytes);
+        testReadManyChunks(stream1, fileContent1, fileSize1, 200);     // Chunks of 200 bytes
         stream1.close();
 
         FileInputStream stream2(fileName2);
-        testReadManyChunks(stream2, fileContent2, fileSize2, 500);     // Chunks of 500 bytes);
+        testReadManyChunks(stream2, fileContent2, fileSize2, 500);     // Chunks of 500 bytes
         stream2.close();
 
         FileInputStream stream3(fileName3);
         int fileSize3 = stream3.getTotalSize();
-        testReadManyChunks(stream3, fileContent3, fileSize3, 500);     // Chunks of 500 bytes);
+        testReadManyChunks(stream3, fileContent3, fileSize3, 500);     // Chunks of 500 bytes
         stream3.close();
     }
 
