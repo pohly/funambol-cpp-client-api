@@ -94,7 +94,7 @@ BEGIN_NAMESPACE
          */
         SyncItem();
 
-        ~SyncItem();
+        virtual ~SyncItem();
 
         /*
          * Constructs a new SyncItem identified by the given key. The key must
@@ -166,7 +166,7 @@ BEGIN_NAMESPACE
          * @param data        memory to be copied, may be NULL; in that case an empty buffer is allocated
          * @param size        length of the given data or, if data is NULL, the desired buffer size
          */
-        void* setData(const void* data, long size);
+        virtual void* setData(const void* data, long size);
 
         /*
          * Returns the SyncItem data buffer, in read-write mode.
@@ -174,7 +174,7 @@ BEGIN_NAMESPACE
          * There is guaranteed to be a nul-byte after the data which
          * is not included in the data size.
          */
-        void* getData() const;
+        virtual void* getData() const;
 
         /**
          * Returns a pointer to the SyncItem's inputStream.
@@ -189,14 +189,14 @@ BEGIN_NAMESPACE
          * Returns the amount of bytes stored in the item,
          * excluding the implicit nul-byte after the real data.
          */
-        long getDataSize() const;
+        virtual long getDataSize() const;
 
          /*
          * Sets the SyncItem data size without changing the data buffer.
          *
          * @param s the new size
          */
-        void setDataSize(long s);
+        virtual void setDataSize(long s);
 
         /**
          * Sets the encoding of the data _without_ changing the data itself.
