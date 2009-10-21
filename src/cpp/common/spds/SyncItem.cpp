@@ -66,8 +66,10 @@ SyncItem::SyncItem() {
  */
 SyncItem::SyncItem(const WCHAR* itemKey) {
     initialize();
-    wcsncpy(key, itemKey, DIM_KEY);
-    key[DIM_KEY-1] = 0;
+    if (itemKey) {
+        wcsncpy(key, itemKey, DIM_KEY);
+        key[DIM_KEY-1] = 0;
+    }
 }
 
 /**
