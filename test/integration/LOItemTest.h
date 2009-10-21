@@ -82,11 +82,16 @@ BEGIN_NAMESPACE
 
 class LOItemTest : public CppUnit::TestFixture {    
 
+    DMTClientConfig* resetItemOnServer(const char* uri);
 public:
 
     LOItemTest();
-
+    
+    void testLOItemSlowSync();
     void testLOItem();
+    void testLOItemb64();
+    void testLOItemSlowSyncb64();
+    void testLOItemReplaceb64();
 
 private:    
                

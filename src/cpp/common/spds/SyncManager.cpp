@@ -72,8 +72,8 @@ static char prevSourceName[64];
 static char prevSourceUri[64];
 static SyncMode prevSyncMode;
 
-static const int changeOverhead = 250;
-
+static const int changeOverhead = 150;
+static const int DELETE_ITEM_COMMAND_SIZE = 300; // it a raw computation about the amount of space a delete command takes
 static bool isFiredSyncEventBEGIN;
 //static bool isFiredSyncEventEND;
 
@@ -118,7 +118,7 @@ inline static bool isTooBig(unsigned int totItems      ,
             (msgSize + changeOverhead + syncItem.getDataSize() - syncItemOffset) > maxMsgSize);
 }
 */
-/* Return true is the given item is too big to go in the current message
+/* Return true is the given chunk is too big to go in the current message
  * given the current parameters
  * 
  * @param chunk the size of the chunk or of the item
@@ -132,13 +132,26 @@ inline static bool isTooBig(int          chunkSize     ,
     return ((chunkSize + changeOverhead + msgSize) > maxMsgSize);
 }
 
-static bool isTooBig2(EncodingHelper& helper     ,
+/* Return true is the given item is too big to go in the current message
+ * given the current parameters. It check also that the msgSize is not greater
+ * than the masMsgSize before call the getNextChunk.
+ * Moreover, it optimizes the fact that if the remaining size is less than
+ * a percentage of the maxMsgSize (we use a 5%) we don't start to split it but
+ * we start to put in the next message
+ * 
+ * @param helper the helper to get the maxDataSize
+ * @param size the size of the complete item 
+ * @param maxMsgSize the max message size of a SyncML message
+ * @param msgSize 
+ */
+
+static bool isItemTooBig(EncodingHelper& helper     ,
                       long            size       ,
                       int             maxMsgSize , 
                       long            msgSize        
                       ) {
 
-    static int percMaxMsgSize = (int)(0.5*maxMsgSize);
+    static int percMaxMsgSize = (int)(0.05*maxMsgSize);
     if (maxMsgSize < changeOverhead + msgSize) {
         return true;
     } else if (maxMsgSize - changeOverhead - msgSize < percMaxMsgSize)   {
@@ -1202,23 +1215,24 @@ int SyncManager::sync() {
                             }
                             if (syncItem) {                                                                
                                                                 
-                                if (isTooBig2(helper, syncItem->getDataSize(), maxMsgSize, msgSize)) {
+                                if (isItemTooBig(helper, syncItem->getDataSize(), maxMsgSize, msgSize)) {
                                     break;
                                 }
 
                                 if (chunk == NULL) { 
                                     itemReader.setSyncItem(syncItem);
-                                    chunk = itemReader.getNextChunk(maxMsgSize - changeOverhead - msgSize); // this is a new object to be freed   
+                                    chunk = itemReader.getNextChunk(maxMsgSize - changeOverhead - msgSize); 
                                 }
 
                                 if (chunk == NULL) {
                                     LOG.error("SyncManager: chunk null due to wrong transformation");
                                     break;
                                 }
-
+                                
+                                // extra safe check...
                                 if (isTooBig(chunk->getDataSize(), maxMsgSize, msgSize)) {
                                     // avoid adding another item that exceeds the message size
-                                        // if the message exceedes, the chunk is not deleted
+                                    // if the message exceedes, the chunk is not deleted
                                     break;
                                 }
 
@@ -1247,7 +1261,8 @@ int SyncManager::sync() {
                                 if (isLast) {                                    
                                     delete syncItem; syncItem = NULL;
                                 } else {
-                                    assert(msgSize >= maxMsgSize);
+                                    LOG.debug("SyncManager: the msgSize is %i. The maxMsgSize is %i", msgSize, maxMsgSize);
+                                    //assert(msgSize >= maxMsgSize);
                                     break;
                                 }
                             }
@@ -1304,7 +1319,7 @@ int SyncManager::sync() {
                                     }
                                 }
                                                                
-                                if (isTooBig2(helper, syncItem->getDataSize(), maxMsgSize, msgSize)) {
+                                if (isItemTooBig(helper, syncItem->getDataSize(), maxMsgSize, msgSize)) {
                                     break;
                                 }
 
@@ -1347,8 +1362,9 @@ int SyncManager::sync() {
                                 if (isLast) {                                    
                                     delete syncItem; syncItem = NULL;
                                 } else {
-                                    assert(msgSize >= maxMsgSize);
-                                    break;
+                                    LOG.debug("SyncManager: the msgSize is %i. The maxMsgSize is %i", msgSize, maxMsgSize);
+                                    //assert(msgSize >= maxMsgSize);
+                                    
                                 }
                                 tot++;
                             } while(msgSize < maxMsgSize);
@@ -1384,7 +1400,7 @@ int SyncManager::sync() {
 
                                 }
                                                                 
-                                if (isTooBig2(helper, syncItem->getDataSize(), maxMsgSize, msgSize)) {
+                                if (isItemTooBig(helper, syncItem->getDataSize(), maxMsgSize, msgSize)) {
                                     break;
                                 }
 
@@ -1427,8 +1443,9 @@ int SyncManager::sync() {
                                 if (isLast) {                                    
                                     delete syncItem; syncItem = NULL;
                                 } else {
-                                    assert(msgSize >= maxMsgSize);
-                                    break;
+                                    LOG.debug("SyncManager: the msgSize is %i. The maxMsgSize is %i", msgSize, maxMsgSize);
+                                    //assert(msgSize >= maxMsgSize);
+                                    
                                 }
                                                             
                                 tot++;
@@ -1462,7 +1479,7 @@ int SyncManager::sync() {
                                     }                                    
                                 }
 
-                                if (isTooBig(0, maxMsgSize, msgSize)) { // the size of the data item is 0
+                                if (isTooBig(DELETE_ITEM_COMMAND_SIZE, maxMsgSize, msgSize)) { // the size of the data item is 0
                                     // avoid adding another item that exceeds the message size
                                     // if the message exceedes, the chunk is not deleted
                                     break;

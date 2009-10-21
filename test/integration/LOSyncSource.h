@@ -56,15 +56,35 @@ BEGIN_NAMESPACE
 class  LOSyncSource : public SyncSource {
 
 private:
-    
-    // it is an internal counter to make the card unique
-    int count;
 
+    int count;    
     // it returns a unique card 
-    StringBuffer getNewCard();
+    char* getNewCard(bool isAdd);
+    
+    // to load sif file
+    bool useSif;
+
+    // to send items during a slow sync
+    bool useSlowSync;
+
+    StringBuffer getSyncItemName();
+
+    bool useAdd;
+    bool useUpdate;
 
 public:
     
+    void setUseSif(bool v) { useSif = v; }
+    bool getUseSif() { return useSif; }
+
+    void setUseSlowSync(bool v) { useSlowSync = v; }
+    bool getUseSlowSync() { return useSlowSync; }
+    
+    void setUseAdd(bool v) { useAdd = v; }
+    bool getUseAdd() { return useAdd; }
+
+    void setUseUpdate(bool v) { useUpdate = v; }
+    bool getUseUpdate() { return useUpdate; }
     
     /**
      * Constructor: create a SyncSource with the specified name
@@ -82,14 +102,14 @@ public:
      * It is used in case of slow or refresh sync
      * and retrieve the entire data source content.
      */
-    SyncItem* getFirstItem(){ return NULL; }
+    SyncItem* getFirstItem();
 
     /*
      * Return the next SyncItem of all.
      * It is used in case of slow or refresh sync
      * and retrieve the entire data source content.
      */
-    SyncItem* getNextItem(){ return NULL; }
+    SyncItem* getNextItem();
 
     /*
      * Return the first SyncItem of new one. It is used in case of fast sync
@@ -107,13 +127,13 @@ public:
      * Return the first SyncItem of updated one. It is used in case of fast sync
      * and retrieve the new data source content.
      */
-    SyncItem* getFirstUpdatedItem() { return NULL; }
+    SyncItem* getFirstUpdatedItem();
 
     /*
      * Return the next SyncItem of updated one. It is used in case of fast sync
      * and retrieve the new data source content.
      */
-    SyncItem* getNextUpdatedItem() { return NULL; }
+    SyncItem* getNextUpdatedItem();
 
 
     /*

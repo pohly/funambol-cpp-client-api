@@ -80,12 +80,12 @@ long EncodingHelper::getMaxDataSizeToEncode(long size) {
     if (encoding == encodings::escaped) {
         ret = ((unsigned long)(size/4)) * 3;
     }
-    
+/*@TODO...    
     if (encryption == "des") {
         int mod = (ret%8);
         ret = ret - 8 - mod;
     }
-
+*/
     return ret;
 }
 

@@ -806,6 +806,22 @@ protected:
         LOItemTest test;
         test.testLOItem();        
     }
+    virtual void testLOItemb64() {
+        LOItemTest test;               
+        test.testLOItemb64();        
+    }
+    virtual void testLOItemSlowSync() {
+        LOItemTest test;               
+        test.testLOItemSlowSync();        
+    }
+    virtual void testLOItemSlowSyncb64() {
+        LOItemTest test;               
+        test.testLOItemSlowSyncb64();        
+    }
+    virtual void testLOItemReplaceb64() {
+        LOItemTest test;               
+        test.testLOItemReplaceb64();
+    }
 
     /**
      * implements testMaxMsg(), testLargeObject(), testLargeObjectEncoded()

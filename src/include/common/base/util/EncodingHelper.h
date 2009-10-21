@@ -160,7 +160,9 @@ public:
     long getMaxDataSizeToEncode(long size);
 
     /**
-    * return the total data after the encoding. 
+    * return the total amount of data after the encoding. 
+    * 
+    * @param size - the current known size before the transformation
     */
     long getDataSizeAfterEncoding(long size);
 };

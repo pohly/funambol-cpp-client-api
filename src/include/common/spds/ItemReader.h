@@ -93,13 +93,7 @@ private:
     * is greater than the maxMsgSize set at the beginning, it frees the existing
     * buffer and create a new one.
     */
-    void resetBuffer(unsigned long size);
-    
-    /**
-    * This set if this is the first time the chunk is created for this SyncItem. It is
-    * set to false when the syncitem is set.
-    */
-    bool isFirstChunk;
+    void resetBuffer(unsigned long size);       
 
     EncodingHelper& helper;
 

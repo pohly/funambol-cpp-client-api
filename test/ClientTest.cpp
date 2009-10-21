@@ -1653,6 +1653,11 @@ void SyncTests::addTests() {
     // and also a Delete command in the second msg
     ADD_TEST(SyncTests, testLargeObject2);
     ADD_TEST(SyncTests, testLOItem);
+    ADD_TEST(SyncTests, testLOItemb64);
+    ADD_TEST(SyncTests, testLOItemSlowSync);
+    ADD_TEST(SyncTests, testLOItemSlowSyncb64);
+    ADD_TEST(SyncTests, testLOItemReplaceb64);
+   
 }
 
 /** compare databases of first and second client */

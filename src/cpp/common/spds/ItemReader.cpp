@@ -42,8 +42,7 @@ USE_NAMESPACE
 
 ItemReader::ItemReader(unsigned long size, EncodingHelper& help) : helper(help){ 
     maxChunkSize = size; 
-    buffer = new char[maxChunkSize + 1];    
-    isFirstChunk = true;        
+    buffer = new char[maxChunkSize + 1];         
 }
 
 ItemReader::~ItemReader() {
@@ -51,8 +50,7 @@ ItemReader::~ItemReader() {
 }
 
 void ItemReader::setSyncItem(SyncItem* item) {
-    syncItem = item;
-    isFirstChunk = true;
+    syncItem = item;    
 }
 
 void ItemReader::resetBuffer(unsigned long size) {
@@ -75,6 +73,8 @@ Chunk* ItemReader::getNextChunk(unsigned long size) {
     Chunk* chunk            = NULL;
     bool res                = true;
     char* value             = NULL;
+    bool first              = true;
+    bool last               = true;
 
     if (syncItem == NULL) {
         LOG.error("ItemReader: the syncItem is null");
@@ -82,6 +82,10 @@ Chunk* ItemReader::getNextChunk(unsigned long size) {
     }
     
     InputStream* istream = syncItem->getInputStream();
+    
+    if (istream->getPosition() != 0) {
+        first = false;
+    }
 
     if (syncItem->getDataEncoding() == NULL) {
         toRead = helper.getMaxDataSizeToEncode(size);
@@ -89,15 +93,10 @@ Chunk* ItemReader::getNextChunk(unsigned long size) {
     
     bytesRead = istream->read((void*)buffer, toRead);
 
-    bool last = true;
     // set if it is the last chunk
     if (istream->eof() == 0) {
         last = false; 
     }
-    //if (bytesRead == toRead) {
-    //    last = false; 
-    //} 
-
     value = helper.encode(buffer, &bytesRead);     
     
     if (value == NULL) {
@@ -106,16 +105,9 @@ Chunk* ItemReader::getNextChunk(unsigned long size) {
     }
 
     chunk = new Chunk(value);
-    chunk->setLast(last);
-
-    // set if it is the first chunk
-    if (isFirstChunk) {
-        chunk->setFirst(true);
-        isFirstChunk = false;        
-    } else {
-        chunk->setFirst(false);
-    }
     
+    chunk->setFirst(first);
+    chunk->setLast(last);        
     chunk->setTotalDataSize(helper.getDataSizeAfterEncoding(syncItem->getDataSize()));
     chunk->setDataEncoding(helper.getDataEncoding());
 

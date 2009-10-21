@@ -50,9 +50,7 @@
 #include "base/adapter/PlatformAdapter.h"
 #include "client/DMTClientConfig.h"
 #include "client/SyncClient.h"
-#include "MappingTestSyncSource.h"
-#include "spds/MappingsManager.h"
-#include "spds/MappingStoreBuilder.h"
+#include "LOSyncSource.h"
 #include "LOItemTest.h"
 #include "spds/SyncManager.h"
 #include "testUtils.h"
@@ -65,62 +63,141 @@ LOItemTest::LOItemTest() {
     LOG.reset();
 }
 
-static DMTClientConfig* getConfiguration(const char* name) {
-
-    const char *serverUrl = getenv("CLIENT_TEST_SERVER_URL");
-    const char *username = getenv("CLIENT_TEST_USERNAME");
-    const char *password = getenv("CLIENT_TEST_PASSWORD");
-    
-    initAdapter(name);
-    DMTClientConfig* config = new DMTClientConfig();
-    config->read();
-    DeviceConfig &dc(config->getDeviceConfig());
-    if (!strlen(dc.getDevID())) {
-        config->setClientDefaults();
-        config->setSourceDefaults("calendar");
-        StringBuffer devid("sc-pim-"); devid += name;
-        dc.setDevID(devid);
-        SyncSourceConfig* s = config->getSyncSourceConfig("calendar");
-        s->setEncoding("b64");
-        s->setURI("scal");
-        s->setType("text/x-s4j-sife");
-    }
-
-    //set custom configuration
-    if(serverUrl) {
-        config->getAccessConfig().setSyncURL(serverUrl);
-    }
-    if(username) {
-        config->getAccessConfig().setUsername(username);
-    }
-    if(password) {
-        config->getAccessConfig().setPassword(password);
-    }
-    
-    return config;
+bool isSuccessful(const int status) {
+    if (status == 201 || status == 200)
+        return true;
+    else
+        return false;
 }
 
-    // Add 3 contacts from the source first to the server
+int getOperationSuccessful(SyncSourceReport *ssr, const char* target, const char* command) {
+    ArrayList* list = ssr->getList(target, command);
+    ItemReport* e;
+    
+    // Scan for successful codes
+    int good = 0;
+    if (list->size() > 0) {
+        e = (ItemReport*)list->front();
+        if ( isSuccessful(e->getStatus()) ) {
+            good++;            
+        }
+        for (int i=1; i<list->size(); i++) {
+            e = (ItemReport*)list->next();            
+            if ( isSuccessful(e->getStatus())) {
+                good++;
+            }
+        }
+    }
+    return good;
+}
+int getSuccessfullyAdded(SyncSourceReport *ssr) {
+    return getOperationSuccessful(ssr, SERVER, COMMAND_ADD);
+}
+int getSuccessfullyReplaced(SyncSourceReport *ssr) {
+    return getOperationSuccessful(ssr, SERVER, COMMAND_REPLACE);
+}
 
 void LOItemTest::testLOItem() {
+    
+    DMTClientConfig* config = resetItemOnServer("card");
+    CPPUNIT_ASSERT(config);
+    config->read();    
+    SyncSourceConfig *conf = config->getSyncSourceConfig("contact");
+    conf->setSync("two-way");
+
+    LOSyncSource* scontact = new LOSyncSource(TEXT("contact"),  conf); 
+    scontact->setUseAdd(true);
+    SyncSource* sources[2];
+    sources[0] = scontact;
+    sources[1] = NULL;
+    SyncClient client;
+    int ret = client.sync(*config, sources);
+    CPPUNIT_ASSERT(!ret);
+
+    SyncSourceReport *ssr = scontact->getReport();
+    int added = getSuccessfullyAdded(ssr);
+ 
+    CPPUNIT_ASSERT_EQUAL(2, added);
+}
+
+void LOItemTest::testLOItemb64() {
+           
+    DMTClientConfig* config = resetItemOnServer("scard");
+    CPPUNIT_ASSERT(config);
+    config->read();
+    SyncSourceConfig *conf = config->getSyncSourceConfig("contact");     
+    conf->setEncoding("b64");
+    conf->setType("text/x-s4j-sifc");        
+    conf->setURI("scard");
+    conf->setVersion("1.0");
+    conf->setSync("two-way");
+
+    LOSyncSource* scontact = new LOSyncSource(TEXT("contact"),  conf);    
+    scontact->setUseSif(true);
+    scontact->setUseAdd(true);
+    SyncSource* sources[2];
+    sources[0] = scontact;
+    sources[1] = NULL;
+    SyncClient client;
+    int ret = client.sync(*config, sources);
+    CPPUNIT_ASSERT(!ret);
+
+    SyncSourceReport *ssr = scontact->getReport();
+    int added = getSuccessfullyAdded(ssr);
+    
+    CPPUNIT_ASSERT_EQUAL(2, added);
+    config->save();
+
+}
+
+void LOItemTest::testLOItemReplaceb64() {
+    
+    testLOItemb64();
+    initAdapter("funambol_LOItem");    
+    DMTClientConfig* config = new DMTClientConfig();    
+    CPPUNIT_ASSERT(config);
+    config->read();
+    SyncSourceConfig *conf = config->getSyncSourceConfig("contact");     
+    conf->setEncoding("b64");
+    conf->setType("text/x-s4j-sifc");        
+    conf->setURI("scard");
+    conf->setVersion("1.0");
+    conf->setSync("two-way");
+
+    LOSyncSource* scontact = new LOSyncSource(TEXT("contact"),  conf);    
+    scontact->setUseSif(true);
+    scontact->setUseAdd(false);
+    scontact->setUseUpdate(true);
+    SyncSource* sources[2];
+    sources[0] = scontact;
+    sources[1] = NULL;
+    SyncClient client;
+    int ret = client.sync(*config, sources);
+    CPPUNIT_ASSERT(!ret);
+
+    SyncSourceReport *ssr = scontact->getReport();
+    int added = getSuccessfullyReplaced(ssr);
+ 
+    CPPUNIT_ASSERT_EQUAL(2, added);
+
+}
+
+DMTClientConfig* LOItemTest::resetItemOnServer(const char* sourceURI) {
     
     ArrayList asources;
     StringBuffer contact("contact");
     asources.add(contact);
     DMTClientConfig* config = getNewDMTClientConfig("funambol_LOItem", true, &asources);
-    SyncSourceConfig *conf = config->getSyncSourceConfig("contact");
     CPPUNIT_ASSERT(config);
-    conf->setEncoding("b64");
-    conf->setType("text/x-s4j-sifc");        
-    conf->setSync("two-way");
-    conf->setURI("scard");
-    conf->setVersion("1.0");
-    
-    config->getAccessConfig().setMaxMsgSize(10000);                       
-    MappingTestSyncSource* scontact1 = new MappingTestSyncSource(TEXT("contact"),  conf);
+    SyncSourceConfig *conf = config->getSyncSourceConfig("contact");
+    conf->setSync("refresh-from-client");
+    conf->setURI(sourceURI);
+
+    config->getAccessConfig().setMaxMsgSize(5500);                       
+    LOSyncSource* scontact = new LOSyncSource(TEXT("contact"),  conf);    
 
     SyncSource* sources[2];
-    sources[0] = scontact1;
+    sources[0] = scontact;
     sources[1] = NULL;
 
     SyncClient client;
@@ -129,16 +206,58 @@ void LOItemTest::testLOItem() {
     CPPUNIT_ASSERT(!ret);
     config->save();
 
-    delete scontact1;
-
-    config->read();
-    conf = config->getSyncSourceConfig("contact");
-    scontact1 = new MappingTestSyncSource(TEXT("contact"),  conf);    
-    // it uses the same config    
-    ret = client.sync(*config, sources);
-
-
+    delete scontact;
+    return config;
 
 }
 
+void LOItemTest::testLOItemSlowSync() {
+
+    DMTClientConfig* config = resetItemOnServer("card");
+
+    config->read();
+    SyncSourceConfig *conf = config->getSyncSourceConfig("contact");
+    conf->setSync("slow");
+
+    LOSyncSource* scontact = new LOSyncSource(TEXT("contact"),  conf);   
+    scontact->setUseSlowSync(true);
+    
+    SyncSource* sources[2];
+    sources[0] = scontact;
+    sources[1] = NULL;
+    
+    SyncClient client;
+    int ret = client.sync(*config, sources);
+    CPPUNIT_ASSERT(!ret);
+
+    SyncSourceReport *ssr = scontact->getReport();
+    int replaced = getSuccessfullyReplaced(ssr);
+ 
+    CPPUNIT_ASSERT_EQUAL(2, replaced);
+}
+
+void LOItemTest::testLOItemSlowSyncb64() {
+
+    DMTClientConfig* config = resetItemOnServer("scard");
+
+    config->read();
+    SyncSourceConfig *conf = config->getSyncSourceConfig("contact");
+    conf->setSync("slow");
+
+    LOSyncSource* scontact = new LOSyncSource(TEXT("contact"),  conf);   
+    scontact->setUseSlowSync(true);
+    
+    SyncSource* sources[2];
+    sources[0] = scontact;
+    sources[1] = NULL;
+    
+    SyncClient client;
+    int ret = client.sync(*config, sources);
+    CPPUNIT_ASSERT(!ret);
+
+    SyncSourceReport *ssr = scontact->getReport();
+    int replaced = getSuccessfullyReplaced(ssr);
+ 
+    CPPUNIT_ASSERT_EQUAL(2, replaced);
+}
 #endif // ENABLE_INTEGRATION_TESTS

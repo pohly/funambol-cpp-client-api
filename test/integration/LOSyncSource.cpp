@@ -38,38 +38,92 @@
 #include "base/Log.h"
 #include "base/util/StringBuffer.h"
 #include "base/globalsdef.h"
-
+#include "testUtils.h"
 
 USE_NAMESPACE
 
-
 LOSyncSource::LOSyncSource(const WCHAR* name, SyncSourceConfig *sc) 
-                        : SyncSource(name, sc), count(0) {
+                        : SyncSource(name, sc), count(0), useSif(false), 
+                        useSlowSync(false), useAdd(false), useUpdate(false) {
                             
 }
+
+SyncItem* LOSyncSource::getFirstItem() {     
+    return getNextItem();
+}
+
+    /*
+     * Return the next SyncItem of all.
+     * It is used in case of slow or refresh sync
+     * and retrieve the entire data source content.
+     */
+SyncItem* LOSyncSource::getNextItem() { 
+    if (getUseSlowSync()) {
+        setUseAdd(true);
+        return getNextNewItem();
+    } else {
+        return NULL;
+    }
+}
+
 
 SyncItem* LOSyncSource::getFirstNewItem() {
    return getNextNewItem();
 }
 
 SyncItem* LOSyncSource::getNextNewItem() {
-
-    if (count == 3) {
+    
+    if (getUseAdd() == false) {
+        return NULL;
+    }
+    if (count == 2) {
         return NULL;
     }
     
+    StringBuffer name = getSyncItemName();
     WCHAR key[256];
-    wsprintf(key, TEXT("%i-%lu"), count, this->getConfig().getLast());
+    wsprintf(key, TEXT("%S"), name.c_str());
     wcscat(key, getName());    
 
     SyncItem* item = new SyncItem(key);
     
-    StringBuffer data = getNewCard();
-    item->setData(data, data.length());
+    char* data = getNewCard(true);
+    item->setData(data, (long)strlen(data));
     
+    delete [] data;
     return item;
 
 }
+
+
+SyncItem* LOSyncSource::getFirstUpdatedItem() {
+    return getNextUpdatedItem();
+}
+
+SyncItem* LOSyncSource::getNextUpdatedItem() { 
+    
+    if (getUseUpdate() == false) {
+        return NULL;
+    }
+    if (count == 2) {
+        return NULL;
+    }
+    
+    StringBuffer name = getSyncItemName();
+    WCHAR key[256];
+    wsprintf(key, TEXT("%S"), name.c_str());
+    wcscat(key, getName());    
+
+    SyncItem* item = new SyncItem(key);
+    
+    char* data = getNewCard(false);
+    item->setData(data, (long)strlen(data));
+    
+    delete [] data;
+    return item;
+
+}
+
 
 void LOSyncSource::setItemStatus(const WCHAR* key, int status) {
    
@@ -93,25 +147,27 @@ int LOSyncSource::endSync() {
     return 0;
 }
 
-StringBuffer LOSyncSource::getNewCard() {
+StringBuffer LOSyncSource::getSyncItemName() {
+    StringBuffer name;
+    if (useSif) {        
+        name.sprintf("sif%i.txt", count);
+    } else {
+        name.sprintf("vcard%i.txt", count);
+    }
+    return name;
+
+}
+char* LOSyncSource::getNewCard(bool isAdd) {
     
-    StringBuffer name(toMultibyte(getName()));
-    name.append(this->getConfig().getLast());    
-
-    StringBuffer card = "BEGIN:VCARD\n"
-                        "VERSION:3.0\n"
-                        "TITLE:tester\n";
-
-    card += "FN:John "; card += name; card += "\n";
-    card +=             "N:"; card += name;
-    card +=             ";John;;;\n"
-                        "TEL;TYPE=WORK;TYPE=VOICE:11223344\n"                        
-                        "NOTE:\n"
-                        "END:VCARD\n";
-    
-    // for the next time...
-    count++;
-
+    int suffix = (isAdd ? count : count+2);
+    StringBuffer filetest;
+    if (useSif) {
+        filetest.sprintf("sif%i.txt", suffix);
+    } else {
+        filetest.sprintf("vcard%i.txt", suffix);
+    }
+    char* card = loadTestFile("LOItemTest", filetest.c_str(), true);
+    count++;    
     return card;
 
 }
