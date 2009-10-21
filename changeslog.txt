@@ -1,3 +1,6 @@
+2009-10-21
+  - toccy: [US3125] Added FileSyncItem class (and unit tests: FileSyncItemTest, SyncItemTest)
+
 2009-10-20
   - toccy: [US3125] Added FileDataInputStream (and unit tests: FileDataInputStreamTest)
 

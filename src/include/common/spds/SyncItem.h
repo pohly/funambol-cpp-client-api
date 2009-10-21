@@ -74,15 +74,19 @@ BEGIN_NAMESPACE
         WCHAR* sourceParent;
 
         /**
+         * Initializes private members
+         */
+        void initialize();
+
+
+    protected:
+
+        /**
          * The SyncItem's input stream. Created new in the constructor, based on the
          * syncItem type (default is BufferInputStream)
          */
         InputStream* inputStream;
 
-        /**
-         * Initializes private members
-         */
-        void initialize();
 
     public:
         /*

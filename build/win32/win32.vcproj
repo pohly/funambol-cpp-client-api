@@ -547,6 +547,10 @@
 					</FileConfiguration>
 				</File>
 				<File
+					RelativePath="..\..\src\cpp\common\client\FileSyncItem.cpp"
+					>
+				</File>
+				<File
 					RelativePath="..\..\src\cpp\common\client\FileSyncSource.cpp"
 					>
 				</File>
@@ -3603,6 +3607,10 @@
 				</File>
 				<File
 					RelativePath="..\..\src\include\common\client\DMTClientConfig.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\include\common\client\FileSyncItem.h"
 					>
 				</File>
 				<File
