@@ -94,10 +94,6 @@ class FileData : public ArrayElement {
         bool isReadablePresent;
         bool isExecutablePresent;
 
-        /*
-        * return the length for the base64 array starting from length of the original array
-        */
-        int lengthForB64(int len);
 
     public:
     // ------------------------------------------------------- Constructors
