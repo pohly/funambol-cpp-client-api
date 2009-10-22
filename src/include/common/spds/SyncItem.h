@@ -222,7 +222,7 @@ BEGIN_NAMESPACE
         /**
          * Changes the encoding and the data currently stored in the item.
          * Transformation to and from the encodings listed in SyncItem::encoding
-         * are supported.
+         * are supported. The method is virtual for possible customizations
          *
          * Some encodings may require additional information (TBD).
          *
@@ -235,7 +235,7 @@ BEGIN_NAMESPACE
          * @return error code, usually caused by unsupported encoding either of
          *         the current data or the requested new encoding
          */
-        int changeDataEncoding(const char* encoding, const char* encryption, const char* credentialInfo = NULL);
+        virtual int changeDataEncoding(const char* encoding, const char* encryption, const char* credentialInfo = NULL);
 
         /*
          * Sets the SyncItem data mime type

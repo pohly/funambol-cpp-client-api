@@ -2086,6 +2086,22 @@ SyncItem* SyncManager::getItem(SyncSource& source, SyncItem* (SyncSource::* getI
     if (!syncItem) {
         return NULL;
     }
+    
+    // change encoding automatically only for supported ones (currently only DES)
+    const char* encoding   = source.getConfig().getEncoding();
+    const char* encryption = source.getConfig().getEncryption();
+    if (!syncItem->getDataEncoding()) {
+        if (encryption && encryption[0]) {
+            if (syncItem->changeDataEncoding(encoding, encryption, credentialInfo)) {
+                LOG.error("Error: invalid encoding for item: %" WCHAR_PRINTF ,
+                    syncItem->getKey());
+                delete syncItem;
+                syncItem = NULL;
+            }
+        }
+    }
+
+
 /*
     // change encoding automatically?
     const char* encoding   = source.getConfig().getEncoding();

@@ -106,11 +106,11 @@ Chunk* ItemReader::getNextChunk(unsigned long size) {
             // consider that the buffer should be a char since the chunk is a buffer
             value = stringdup(buffer);
         } else {
-            value = helper.encode(buffer, &bytesRead);     
+            value = helper.encode(EncodingHelper::encodings::plain, buffer, &bytesRead);     
             if (value == NULL) {
-            LOG.info("ItemReader: getNextChunk NULL after transformation");
-            return NULL;
-        }
+                LOG.info("ItemReader: getNextChunk NULL after transformation");
+                return NULL;
+            }
         }
         
     }

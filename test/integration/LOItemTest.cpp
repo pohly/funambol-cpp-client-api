@@ -120,6 +120,36 @@ void LOItemTest::testLOItem() {
     CPPUNIT_ASSERT_EQUAL(2, added);
 }
 
+void LOItemTest::testLOItemDES() {
+    
+    DMTClientConfig* config = resetItemOnServer("scard");
+    CPPUNIT_ASSERT(config);
+    config->read();
+    SyncSourceConfig *conf = config->getSyncSourceConfig("contact");     
+    conf->setEncoding("b64");
+    conf->setEncryption("des");
+    conf->setType("text/x-s4j-sifc");        
+    conf->setURI("scard");
+    conf->setVersion("1.0");
+    conf->setSync("two-way");
+
+    LOSyncSource* scontact = new LOSyncSource(TEXT("contact"),  conf);    
+    scontact->setUseSif(true);
+    scontact->setUseAdd(true);
+    SyncSource* sources[2];
+    sources[0] = scontact;
+    sources[1] = NULL;
+    SyncClient client;
+    int ret = client.sync(*config, sources);
+    CPPUNIT_ASSERT(!ret);
+
+    SyncSourceReport *ssr = scontact->getReport();
+    int added = getSuccessfullyAdded(ssr);
+    
+    CPPUNIT_ASSERT_EQUAL(2, added);
+ 
+}
+
 void LOItemTest::testLOItemWithItemEncoding() {
     
     DMTClientConfig* config = resetItemOnServer("card");

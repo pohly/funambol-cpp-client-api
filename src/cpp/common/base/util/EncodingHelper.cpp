@@ -49,6 +49,7 @@ EncodingHelper::EncodingHelper(const char* encoding, const char* encryption, con
     setEncoding(encoding);
     setEncryption(encryption);
     setCredential(credential ? credential : "");
+    from = encodings::plain;
 }
 
 EncodingHelper::~EncodingHelper() {}
@@ -110,19 +111,20 @@ long EncodingHelper::getDataSizeAfterEncoding(long size) {
     return ret;
 }
 
-char* EncodingHelper::encode(char* buffer, unsigned long *len) {
-    return transform(buffer, len, true);
+char* EncodingHelper::encode(const char* from, char* buffer, unsigned long *len) {
+    return transform(from, buffer, len);
 }
 
-char* EncodingHelper::decode(char* buffer, unsigned long *len) {
-    return transform(buffer, len, false);
+char* EncodingHelper::decode(const char* from, char* buffer, unsigned long *len) {
+    return transform(from, buffer, len);
 }
 
-char* EncodingHelper::transform(char* buffer, unsigned long *len, bool isEncoding) {
+char* EncodingHelper::transform(const char* from, char* buffer, unsigned long *len) {
 
     char* ret = NULL;    
     StringBuffer encToUse;
     char* pBuffer = buffer;
+    StringBuffer originalEncoding(encodings::encodingString(from));
 
     if (encryption == "des") {
         encToUse = encodings::des;
@@ -140,36 +142,37 @@ char* EncodingHelper::transform(char* buffer, unsigned long *len, bool isEncodin
 
     if (len == 0) {
         ret = stringdup("");
-        setDataEncoding(encodings::plain);
-        LOG.info("EncodingHelper: nothing to be done: buffer empty or lenght = 0");
+        //setDataEncoding(originalEncoding);
+        LOG.debug("EncodingHelper: nothing to be done: buffer empty or lenght = 0");
         return ret;
     }
-
-    if (encToUse == encodings::plain) {
-        LOG.debug("EncodingHelper: no transformation done. Only returned the new array");
-        ret = stringdup(buffer);
-        setDataEncoding(encodings::plain);
+    
+    if (encToUse == originalEncoding) {
+        ret = new char[*len + 1];        
+        memcpy(ret, buffer, *len);        
+        setDataEncoding(originalEncoding);
+        LOG.debug("EncodingHelper: no transformation done. Only returned the new array");        
         return ret;
     }
-
+    
     // sanity check: both encodings must be valid
     if (!encodings::isSupported(encToUse.c_str()) ||
         !encodings::isSupported(encoding.c_str())) {
             LOG.error("EncodingHelper: encoding not supported");
             return ret;
     }
-
-    if (isEncoding == false) {
-        // DECODING part: always convert to plain encoding first
-        if (encToUse != encodings::plain) {
-            if ((encToUse == encodings::escaped) || (encToUse == encodings::des)) {            
+        
+    if (encToUse != originalEncoding) {
+        // DECODING
+        if (originalEncoding != encodings::plain) {
+            if ((originalEncoding == encodings::escaped) || (originalEncoding == encodings::des)) {            
                 ret = transformData("b64", false, credential.c_str(), pBuffer, len);
                 if (ret == NULL) {
                     return ret;
                 }
                 pBuffer = ret;
             }
-            if (encToUse == encodings::des) {            
+            if (originalEncoding == encodings::des) {            
                 ret = transformData("des", false, credential.c_str(), pBuffer, len);
                 if (pBuffer != buffer) { 
                     delete [] pBuffer;
@@ -179,8 +182,8 @@ char* EncodingHelper::transform(char* buffer, unsigned long *len, bool isEncodin
                 }                
             }
             setDataEncoding(encodings::plain);
-        }
-    } else {
+        }     
+        
         // ENCODING: convert to new encoding               
         if (encToUse == encodings::des) {
             ret = transformData("des", true, credential.c_str(), pBuffer, len);
@@ -197,12 +200,12 @@ char* EncodingHelper::transform(char* buffer, unsigned long *len, bool isEncodin
             if (ret == NULL) {                
                 return ret;
             }
+        }  
             
-        }
         setDataEncoding(encToUse.c_str());
-
     }
     return ret;
+
 }
 
 char* EncodingHelper::transformData(const char* name, bool encode, 

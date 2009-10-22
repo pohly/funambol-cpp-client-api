@@ -120,6 +120,12 @@ public:
       * Data size is calculated by the internal InputStream.
       */
     void setDataSize(long s);
+    
+    /**
+     * DEPRECATED METHOD.
+     * The changeDataEncoding is not implemented in FileSyncItem
+     */
+    virtual int changeDataEncoding(const char* encoding, const char* encryption, const char* credentialInfo = NULL);
 
 
     /**

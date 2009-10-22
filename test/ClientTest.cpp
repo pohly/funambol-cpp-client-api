@@ -1658,7 +1658,7 @@ void SyncTests::addTests() {
     ADD_TEST(SyncTests, testLOItemSlowSyncb64);
     ADD_TEST(SyncTests, testLOItemReplaceb64);
     ADD_TEST(SyncTests, testLOItemWithItemEncoding);
-    
+    ADD_TEST(SyncTests, testLOItemDES);
    
 }
 

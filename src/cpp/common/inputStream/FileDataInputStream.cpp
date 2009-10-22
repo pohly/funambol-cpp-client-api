@@ -51,6 +51,7 @@ FileDataInputStream::FileDataInputStream (const StringBuffer& path) : InputStrea
     currentSection = 0;
     position       = 0;
     eofbit         = 0;
+    totalSize      = 0;
 
     if (path.empty()) {
         LOG.error("FileDataInputStream error: empty file path");
@@ -63,60 +64,59 @@ FileDataInputStream::FileDataInputStream (const StringBuffer& path) : InputStrea
     // NOTE: MUST open in binary mode, in oder to have a correct position indicator
     // of the stream after each read() call.
     FILE* f = fopen(path.c_str(), "rb");
-    if (!f) {
-        LOG.error("FileDataInputStream error: cannot read the file '%s'", path.c_str());
+    if (f) {
+        // LOG.error("FileDataInputStream error: cannot read the file '%s'", path.c_str());
+
+        //
+        // Fill the FileData object (OMA file obj format)
+        //
+        FileData fileData;
+        int fileSize = fgetsize(f);
+        fseek(f, 0, SEEK_SET);          // Resets the position indicator of the stream
+        fileData.setSize(fileSize);
+
+        StringBuffer fileName(getFileNameFromPath(path));
+        WCHAR* wFileName = toWideChar(fileName.c_str());
+        fileData.setName(wFileName);
+        delete [] wFileName;
+        wFileName = NULL;
+
+        // The body is fake: we just write the file name.
+        // Will be replaced reading the real file content from the stream (see read())
+        StringBuffer& fakeBody = fileName;
+        fileData.setBody(fakeBody.c_str(), fakeBody.length());
+
+        // Removed because the Server expects creation time in UTC format (TODO), 
+        // not as a timestamp. So this field is actually useless.
+        // Sets the file creation time, if info available
+        /*struct stat st;
+        memset(&st, 0, sizeof(struct stat));
+        if (stat(completeName, &st) >= 0) {
+            StringBuffer tmp;
+            tmp.sprintf("%i", st.st_mtime);
+            WCHAR* time = toWideChar(tmp.c_str());
+            fileData.setModified(time);
+            delete [] time;
+        }*/
+
+        const char* buf = fileData.format();
+        if (!buf) {
+            LOG.error("FileDataInputStream error: cannot format output data");
+            return;
+        }
+        StringBuffer formattedData(buf);
+        delete [] buf;
+
+
+        //
+        // Save the 3 InputStream sections.
+        //
+        setSections(formattedData);
+        
+        // Calculate the projected total data size
+        long b64FileSize = encodingHelper.getDataSizeAfterEncoding(fileSize);
+        totalSize = prologue.length() + b64FileSize + epilogue.length();
     }
-
-
-    //
-    // Fill the FileData object (OMA file obj format)
-    //
-    FileData fileData;
-    int fileSize = fgetsize(f);
-    fseek(f, 0, SEEK_SET);          // Resets the position indicator of the stream
-    fileData.setSize(fileSize);
-
-    StringBuffer fileName(getFileNameFromPath(path));
-    WCHAR* wFileName = toWideChar(fileName.c_str());
-    fileData.setName(wFileName);
-    delete [] wFileName;
-    wFileName = NULL;
-
-    // The body is fake: we just write the file name.
-    // Will be replaced reading the real file content from the stream (see read())
-    StringBuffer& fakeBody = fileName;
-    fileData.setBody(fakeBody.c_str(), fakeBody.length());
-
-    // Removed because the Server expects creation time in UTC format (TODO), 
-    // not as a timestamp. So this field is actually useless.
-    // Sets the file creation time, if info available
-    /*struct stat st;
-    memset(&st, 0, sizeof(struct stat));
-    if (stat(completeName, &st) >= 0) {
-        StringBuffer tmp;
-        tmp.sprintf("%i", st.st_mtime);
-        WCHAR* time = toWideChar(tmp.c_str());
-        fileData.setModified(time);
-        delete [] time;
-    }*/
-
-    const char* buf = fileData.format();
-    if (!buf) {
-        LOG.error("FileDataInputStream error: cannot format output data");
-        return;
-    }
-    StringBuffer formattedData(buf);
-    delete [] buf;
-
-
-    //
-    // Save the 3 InputStream sections.
-    //
-    setSections(formattedData);
-    
-    // Calculate the projected total data size
-    long b64FileSize = encodingHelper.getDataSizeAfterEncoding(fileSize);
-    totalSize = prologue.length() + b64FileSize + epilogue.length();
 }
 
 

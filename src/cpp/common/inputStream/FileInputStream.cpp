@@ -42,6 +42,8 @@ USE_NAMESPACE
 FileInputStream::FileInputStream(const StringBuffer& path) : InputStream() {
 
     f = NULL;
+    totalSize = 0;
+
     if (path.empty()) {
         LOG.error("FileInputStream error: empty file path");
         return;
@@ -53,14 +55,12 @@ FileInputStream::FileInputStream(const StringBuffer& path) : InputStream() {
     // of the stream after each read() call.
     f = fopen(path.c_str(), "rb");
     if (!f) {
-        LOG.error("FileInputStream error: cannot read the file '%s'", path.c_str());
+        // LOG.error("FileInputStream error: cannot read the file '%s'", path.c_str());
+    } else {    
+        // Get file size
+        totalSize = fgetsize(f);
+        fseek(f, 0, SEEK_SET);          // Resets the position indicator of the stream
     }
-    
-
-    // Get file size
-    totalSize = fgetsize(f);
-    fseek(f, 0, SEEK_SET);          // Resets the position indicator of the stream
-
     // Get file size (alternate way)
     //struct stat st;
     //memset(&st, 0, sizeof(struct stat));

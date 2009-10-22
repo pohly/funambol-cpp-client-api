@@ -827,6 +827,10 @@ protected:
         LOItemTest test;               
         test.testLOItemWithItemEncoding();
     }
+    virtual void testLOItemDES() {
+        LOItemTest test;               
+        test.testLOItemDES();
+    }
     
     /**
      * implements testMaxMsg(), testLargeObject(), testLargeObjectEncoded()

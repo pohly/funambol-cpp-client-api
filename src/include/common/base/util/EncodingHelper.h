@@ -66,11 +66,89 @@ private:
     * Credential info
     */ 
     StringBuffer credential;     
+    
+    /**
+    * The original encoding of the data that needs to be 
+    * converted. Bu default it is plain
+    */
+    StringBuffer from;
 
     /**
     * The data encoding when the item is modified
     */
     StringBuffer dataEncoding;
+    
+    char* transformData(const char* name, bool encode, const char* password, 
+                                    char* buff, unsigned long *len);
+
+    void setEncoding(const char* encoding);
+    void setEncryption(const char* encryption);
+    void setCredential(const char* credential);
+    
+    void setDataEncoding(const char* dataEnc);
+    
+    /**
+    * Changes the encoding according with the one set into the class.
+    * 
+    * @param buffer - the buffer that needs the transformation
+    * @param len[IN/OUT] - the len of the data inside the buffer
+    * @param isEncoding - if the transformation is encode or decode
+    * @param checkBot - it tries to decode and encode without know about the action to do
+    *
+    * @return - a new allocated buffer transformed
+    */
+    char* transform(const char* from, char* buffer, unsigned long *len);
+
+public:
+
+    // Constructor
+    EncodingHelper(const char* encoding, const char* encryption, const char* credential);
+
+    ~EncodingHelper();        
+        
+    StringBuffer getDataEncoding() { return dataEncoding; }
+
+    /**
+    * Encodes the buffer using the encoding and the encryption.
+    *
+    * @param buffer - the buffer where the transformation happen
+    * @param size[IN/OUT] - the len of the data inside the buffer
+    * 
+    * @return a new allocated buffer given the 
+    */
+    char* encode(const char* from, char* buffer, unsigned long *len);
+    
+    /**
+    * Decode the buffer using the encoding and the encryption
+    *
+    * @param buffer - the buffer where the transformation happen
+    * @param size[IN/OUT] - the len of the data inside the buffer
+    * 
+    * @return a new allocated buffer given the 
+    */
+    char* decode(const char* from, char* buffer, unsigned long *len);
+        
+
+    /**
+    * Calculate the max amount of the data could be asked from a
+    * size and according with the encoding/encryption that are set in
+    * the class. This method is used when, given a an array of <size> 
+    * length, the caller wants to know how many bytes can ask that fit
+    * the original array, after the transformation according with 
+    * the encoding/encryption.
+    *
+    * @param size - the size respect to the caller want to know the amount of data
+    * @return the max data the caller can ask to fit the <size> limit
+    * 
+    */
+    long getMaxDataSizeToEncode(long size);
+
+    /**
+    * return the total amount of data after the encoding. 
+    * 
+    * @param size - the current known size before the transformation
+    */
+    long getDataSizeAfterEncoding(long size);
 
     /**
      * valid encodings for changeDataEncoding() and some helper functions
@@ -94,77 +172,6 @@ private:
                 !strcmp(enc, des);
         }
     };
-    
-    
-    char* transformData(const char* name, bool encode, const char* password, 
-                                    char* buff, unsigned long *len);
-
-    void setEncoding(const char* encoding);
-    void setEncryption(const char* encryption);
-    void setCredential(const char* credential);
-    
-    void setDataEncoding(const char* dataEnc);
-    
-    /**
-    * Changes the encoding according with the one set into the class.
-    * 
-    * @param buffer - the buffer that needs the transformation
-    * @param len[IN/OUT] - the len of the data inside the buffer
-    * @param isEncoding - if the transformation is encode or decode
-    *
-    * @return - a new allocated buffer transformed
-    */
-    char* transform(char* buffer, unsigned long *len, bool isEncoding);
-
-public:
-
-    // Constructor
-    EncodingHelper(const char* encoding, const char* encryption, const char* credential);
-
-    ~EncodingHelper();        
-        
-    StringBuffer getDataEncoding() { return dataEncoding; }
-
-    /**
-    * Encodes the buffer using the encoding and the encryption.
-    *
-    * @param buffer - the buffer where the transformation happen
-    * @param size[IN/OUT] - the len of the data inside the buffer
-    * 
-    * @return a new allocated buffer given the 
-    */
-    char* encode(char* buffer, unsigned long *len);
-    
-    /**
-    * Decode the buffer using the encoding and the encryption
-    *
-    * @param buffer - the buffer where the transformation happen
-    * @param size[IN/OUT] - the len of the data inside the buffer
-    * 
-    * @return a new allocated buffer given the 
-    */
-    char* decode(char* buffer, unsigned long *len);
-    
-    /**
-    * Calculate the max amount of the data could be asked from a
-    * size and according with the encoding/encryption that are set in
-    * the class. This method is used when, given a an array of <size> 
-    * length, the caller wants to know how many bytes can ask that fit
-    * the original array, after the transformation according with 
-    * the encoding/encryption.
-    *
-    * @param size - the size respect to the caller want to know the amount of data
-    * @return the max data the caller can ask to fit the <size> limit
-    * 
-    */
-    long getMaxDataSizeToEncode(long size);
-
-    /**
-    * return the total amount of data after the encoding. 
-    * 
-    * @param size - the current known size before the transformation
-    */
-    long getDataSizeAfterEncoding(long size);
 };
 
 

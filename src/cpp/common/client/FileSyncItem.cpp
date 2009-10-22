@@ -94,6 +94,12 @@ void* FileSyncItem::getData() const {
     return NULL;
 }
 
+int FileSyncItem::changeDataEncoding(const char* encoding, const char* encryption, const char* credentialInfo) {
+    LOG.info("Warning: method FileSyncItem::changeDataEncoding is not implemented. The item is not trasferred");
+    return ERR_UNSPECIFIED;
+}
+
+
 void FileSyncItem::setDataSize(long s) {
     LOG.info("Warning: deprecated method FileSyncItem::setDataSize() in mo more used");
 }
