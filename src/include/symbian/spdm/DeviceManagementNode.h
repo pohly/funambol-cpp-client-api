@@ -186,6 +186,11 @@ protected:
 
         static void setSmtpPort(unsigned int smtpPort);
         static unsigned int getSmtpPort();
+
+        // TODO - implement these methods for MEA 
+        // support on Symbian platform
+        const WCHAR* getFullContext() { return NULL; }
+        void deletePropertyNode(const WCHAR* node) {}
 };
 
 

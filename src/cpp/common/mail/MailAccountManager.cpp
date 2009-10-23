@@ -130,7 +130,7 @@ int MailAccountManager::createFolder(FolderData& folder) {
     }
 
     if ( !accountExists(folder.getParent()) ) {
-        LOG.error("createFolder error: parent account '%s' not found", folder.getParent());
+        LOG.error("createFolder error: parent account '%s' not found", folder.getParent().c_str());
         return -1;
     }
 
@@ -153,7 +153,7 @@ int MailAccountManager::updateFolder(const FolderData& folder) {
     }
 
     if ( !accountExists(folder.getParent()) ) {
-        LOG.error("updateFolder error: parent account '%s' not found", folder.getParent());
+        LOG.error("updateFolder error: parent account '%s' not found", folder.getParent().c_str());
         return -1;
     }
 
@@ -222,30 +222,30 @@ bool MailAccountManager::accountExists(const StringBuffer& accountID) {
 
 StringBuffer MailAccountManager::getIdOfAccount(const int index) {
 
-    StringBuffer id("");
+    StringBuffer fid("");
 
     if (index < 0 || index >= getAccountNumber()) {
         LOG.error("index %d out of range for account list", index);
-        return id;
+        return fid;
     }
 
     const ArrayList& accounts = config.getMailAccounts();
     MailAccount* account = (MailAccount*)accounts[index];
     if (account) {
-        id.convert(account->getID());
+        fid.convert(account->getID());
     }
 
-    return id;
+    return fid;
 }
 
 
 
 StringBuffer MailAccountManager::getIdOfAccount(const StringBuffer& accountName) {
 
-    StringBuffer id("");
+    StringBuffer fid("");
 
     if (accountName.empty()) {
-        return id;
+        return fid;
     }
 
     const ArrayList& accounts = config.getMailAccounts();
@@ -257,18 +257,18 @@ StringBuffer MailAccountManager::getIdOfAccount(const StringBuffer& accountName)
                 // found
                 const WCHAR* wid = account->getID();
                 const char* tid = toMultibyte(wid);
-                id = tid;
+                fid = tid;
                 delete [] tid; tid = NULL;
                 break;
             }
         }
     }
 
-    return id;
+    return fid;
 }
 
 
-MailAccount* MailAccountManager::getAccountByName(const wchar_t* name)
+MailAccount* MailAccountManager::getAccountByName(const WCHAR* name)
 {
     MailAccount* account = NULL;
 
@@ -294,11 +294,11 @@ MailAccount* MailAccountManager::getAccountByName(const wchar_t* name)
     return account;
 }
 
-MailAccount* MailAccountManager::getAccountById(const wchar_t* id)
+MailAccount* MailAccountManager::getAccountById(const WCHAR* fid)
 {
     MailAccount* account = NULL;
     
-    if (id == NULL) {
+    if (fid == NULL) {
         LOG.error("%s: no account id specified", __FUNCTION__);
         return account;
     }
@@ -308,9 +308,9 @@ MailAccount* MailAccountManager::getAccountById(const wchar_t* id)
     for (int i=0; i<accounts.size(); i++) {
         MailAccount* ma = (MailAccount*)accounts[i];
         if (ma) {
-            const wchar_t* storedId = ma->getID();
+            const WCHAR* storedId = ma->getID();
             if (storedId) { 
-                if (wcscmp(id, storedId) == 0) {
+                if (wcscmp(fid, storedId) == 0) {
                     // found
                     account = ma;
                 }
@@ -354,17 +354,17 @@ MailAccount* MailAccountManager::getAccountFromMailAddr(const char* mailAddr)
 
 StringBuffer MailAccountManager::getIdOfFirstAccount() {
 
-    StringBuffer id("");
+    StringBuffer fid("");
 
     const ArrayList& accounts = config.getMailAccounts();
     for (int i=0; i<accounts.size(); i++) {
         MailAccount* account = (MailAccount*)accounts[i];
         if (account && (account->getDeleted() == false)) {
-            id.convert(account->getID());
+            fid.convert(account->getID());
             break;
         }
     }
-    return id;
+    return fid;
 }
 
 

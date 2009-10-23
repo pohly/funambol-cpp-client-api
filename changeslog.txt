@@ -1,6 +1,7 @@
 2009-10-23
-  - toccy:[US3125] Added MultipleInputStream abstract class
-  - magi: [US3125] cumulative message: 
+  - toccy: Merged from trunk at r1285
+  - toccy: [US3125] Added MultipleInputStream abstract class
+  - magi:  [US3125] cumulative message: 
                    Added ItemReader, Chunk, EncodingHelper classes.
                    Added unit test and integration test
                    Fixed issues on above classes. 

@@ -76,7 +76,7 @@ public:
     public:
         ListenerTest(int e) : counter(0), expected(e) {}
 
-        void check() { CPPUNIT_ASSERT_EQUAL(counter, expected); }
+        void checkp() { CPPUNIT_ASSERT_EQUAL(counter, expected); }
         
     protected:
         int counter;
@@ -245,11 +245,11 @@ private:
         TSyncListener* s = 
             static_cast<TSyncListener*>(
                 ManageListener::getInstance().getSyncListener("T1"));
-        s->check();
+        s->checkp();
 
         s = static_cast<TSyncListener*>(
             ManageListener::getInstance().getSyncListener("T2"));
-        s->check();
+        s->checkp();
     }
 
     /** Test the SyncSourceEvent */
@@ -264,11 +264,11 @@ private:
         TSyncSourceListener* s = 
             static_cast<TSyncSourceListener*>(
                 ManageListener::getInstance().getSyncSourceListener("T1"));
-        s->check();
+        s->checkp();
 
         s = static_cast<TSyncSourceListener*>(
             ManageListener::getInstance().getSyncSourceListener("T2"));
-        s->check();
+        s->checkp();
     }
 
     /** Test the SyncItemEvent */
@@ -286,11 +286,11 @@ private:
         TSyncItemListener* s = 
             static_cast<TSyncItemListener*>(
                 ManageListener::getInstance().getSyncItemListener("T1"));
-        s->check();
+        s->checkp();
 
         s = static_cast<TSyncItemListener*>(
             ManageListener::getInstance().getSyncItemListener("T2"));
-        s->check();
+        s->checkp();
     }
 
     /** Test the SyncStatusEvent */
@@ -304,11 +304,11 @@ private:
         TSyncStatusListener* s = 
             static_cast<TSyncStatusListener*>(
                 ManageListener::getInstance().getSyncStatusListener("T1"));
-        s->check();
+        s->checkp();
 
         s = static_cast<TSyncStatusListener*>(
             ManageListener::getInstance().getSyncStatusListener("T2"));
-        s->check();
+        s->checkp();
     }
 
     /** Test the TransportEvent */
@@ -323,11 +323,11 @@ private:
         TTransportListener* s = 
             static_cast<TTransportListener*>(
                 ManageListener::getInstance().getTransportListener("T1"));
-        s->check();
+        s->checkp();
 
         s = static_cast<TTransportListener*>(
             ManageListener::getInstance().getTransportListener("T2"));
-        s->check();
+        s->checkp();
     }
 
     void testUnsetListeners() {

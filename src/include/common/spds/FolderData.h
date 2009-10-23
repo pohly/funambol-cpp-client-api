@@ -44,7 +44,7 @@
 #include "base/util/ArrayList.h"
 #include "base/globalsdef.h"
 
-#include "base/winadapter.h"
+//#include "base/winadapter.h"
 
 #include "base/fscapi.h"
 
@@ -70,8 +70,8 @@ class FolderData : public ArrayElement {
 		StringBuffer role;
         ArrayList extended;
 
-        /// The ID of this folder (the key returned to the Server)
-        WString id;
+        /// The ID of this folder (the key returned to the Server) (called fid istead of id for compilation as Objecitve-C++ under mac builds)
+        WString fid;
 
         // represents the presence of their equivalent tag
         bool isHiddenPresent;

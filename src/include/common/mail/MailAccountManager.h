@@ -148,7 +148,7 @@ public:
     /**
     * Returns an account by name
     */
-    MailAccount* getAccountByName(const wchar_t* accountName);
+    MailAccount* getAccountByName(const WCHAR* accountName);
 
     /**
     * Returns a mail account by mail address
@@ -158,7 +158,7 @@ public:
     /**
     * Returns an account class by id
     */
-    MailAccount* getAccountById(const wchar_t* accountId);
+    MailAccount* getAccountById(const WCHAR* accountId);
 
 
     /// Returns the number of existing email accounts.

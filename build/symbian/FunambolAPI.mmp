@@ -57,14 +57,18 @@ SOURCE       MemoryKeyValueStore.cpp PropertyFile.cpp
 SOURCEPATH   ..\..\src\cpp\common\spdm
 SOURCE       DMTree.cpp ManagementNode.cpp
 
+SOURCEPATH   ..\..\src\cpp\common\mail
+SOURCE       MailAccount.cpp  MailAccountManager.cpp  MailData.cpp  MailMessage.cpp  MailSyncSourceConfig.cpp
+
+
 SOURCEPATH   ..\..\src\cpp\common\client
-SOURCE       DMTClientConfig.cpp SyncClient.cpp CacheSyncSource.cpp FileSyncSource.cpp MediaSyncSource.cpp
+SOURCE       DMTClientConfig.cpp SyncClient.cpp CacheSyncSource.cpp FileSyncSource.cpp MediaSyncSource.cpp MailSourceManagementNode.cpp
 
 SOURCEPATH   ..\..\src\cpp\common\spds
 SOURCE       AccessConfig.cpp B64Decoder.cpp B64Encoder.cpp BodyPart.cpp
 SOURCE       CredentialHandler.cpp DataTransformer.cpp DataTransformerFactory.cpp
-SOURCE       DefaultConfigFactory.cpp DeviceConfig.cpp EmailData.cpp FileData.cpp
-SOURCE       FolderData.cpp ItemReport.cpp MailMessage.cpp MailSyncSourceConfig.cpp
+SOURCE       DefaultConfigFactory.cpp DeviceConfig.cpp FileData.cpp
+SOURCE       FolderData.cpp ItemReport.cpp FolderExt.cpp
 SOURCE       spdsutils.cpp SyncItem.cpp SyncItemStatus.cpp SyncManagerConfig.cpp
 SOURCE       SyncManager.cpp SyncMap.cpp SyncMLBuilder.cpp SyncMLProcessor.cpp SyncReport.cpp
 SOURCE       SyncSourceConfig.cpp SyncSource.cpp SyncSourceReport.cpp
