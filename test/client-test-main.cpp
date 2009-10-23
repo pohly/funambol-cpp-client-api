@@ -60,10 +60,6 @@
 #include <base/Log.h>
 #include "push/CTPService.h"
 
-
-#include "base/posixadapter.h"
-
-
 USE_NAMESPACE
 
 #ifdef ENABLE_INTEGRATION_TESTS
@@ -250,11 +246,7 @@ int main(int argc, char* argv[])
               runner.run(argv[test], false, true, false);
           }
       }
-#if not defined(__APPLE__) && not defined(__MACH__)
-      
-      // Dispose the singleton objects
-      CTPService::dispose();
-#endif
+
       // Return error code 1 if the one of test failed.
       return syncListener.hasFailed() ? 1 : 0;
   } catch (invalid_argument e) {

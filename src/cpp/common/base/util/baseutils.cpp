@@ -35,6 +35,7 @@
 
 #include "base/fscapi.h"
 #include "base/util/utils.h"
+#include "base/util/StringBuffer.h"
 #include "base/globalsdef.h"
 
 BEGIN_NAMESPACE
@@ -212,7 +213,6 @@ char* ltow(long i) {
 }
 
 
-
 /*
 * It implements algo for authentication with MD5 method.
 * It computes digest token according with follow:
@@ -306,6 +306,39 @@ size_t fgetsize(FILE *f)
     fseek(f, 0, SEEK_SET);
     return size;
 }
+
+size_t fgetsize(const char* fileName) {
+    if (fileName) {
+        FILE* f = fopen(fileName, "rb");
+        if (f) {
+            size_t size = fgetsize(f);
+            fclose(f);
+            return size;
+        }
+    }
+    return 0;
+}
+
+//Returns the file name, given its full (absolute path) name.
+StringBuffer getFileNameFromPath(const StringBuffer& fullName) {
+    
+    StringBuffer fileName("");
+    
+    unsigned long pos = fullName.rfind("/");
+    if (pos == StringBuffer::npos) {
+        pos = fullName.rfind("\\");
+        if (pos == StringBuffer::npos) {
+            // fullName is already the file name
+            return fullName;
+        }
+    }
+    // Move to the first char of the filename
+    pos += 1;
+    
+    fileName = fullName.substr(pos, fullName.length() - pos);
+    return fileName;
+}
+
 
 END_NAMESPACE
 

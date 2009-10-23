@@ -42,13 +42,7 @@
 #include "vocl/WinContact.h"
 #include "base/util/utils.h"
 #include "base/globalsdef.h"
-
-
-#ifdef _WIN32
-# define TESTDIR "."
-#else
-# define TESTDIR "testcases"
-#endif
+#include "testUtils.h"
 
 
 USE_NAMESPACE
@@ -72,25 +66,16 @@ public:
 private:
 
 
-    void loadTestFile(const char* fileName, StringBuffer& ret) {
-        char*       message;
-        size_t      len;
-
-        StringBuffer path;
-        path.sprintf("%s/%s", TESTDIR, fileName);
-
-        bool fileLoaded = readFile(path, &message, &len, false);
-        CPPUNIT_ASSERT_MESSAGE("Failed to load XML", fileLoaded);
-           
-        ret = message ;
-
+    void loadFile(const char* fileName, StringBuffer& ret) {
+        char* message = loadTestFile("WinContactTest", fileName, false);
+        ret = message;
         delete [] message;
     }
 
     void testVcard(const char* vcardname){
         WinContact* wcontact = new WinContact();
         StringBuffer vcard;
-        loadTestFile(vcardname, vcard);
+        loadFile(vcardname, vcard);
         WCHAR* temp = toWideChar(vcard.c_str());
         wstring wcard(temp);
         wcontact->parse(wcard);

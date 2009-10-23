@@ -43,6 +43,24 @@
 #include "base/util/StringBuffer.h"
 #include "base/globalsdef.h"
 
+#define FILE_ITEM       TEXT("File")
+#define FILE_HIDDEN     "h"
+#define FILE_SYSTEM     "s"
+#define FILE_ARCHIVED   "a"
+#define FILE_DELETE     "d"
+#define FILE_WRITABLE   "w"
+#define FILE_READABLE   "r"
+#define FILE_EXECUTABLE "e"
+#define FILE_ACCESSED   "accessed"
+#define FILE_ATTRIBUTES "attributes"
+#define FILE_BODY       "body"
+#define FILE_CTTYTPE    "cttype"
+#define FILE_ENC        "enc"
+#define FILE_MODIFIED   "modified"
+#define FILE_NAME       "name"
+#define FILE_SIZE       "size"
+#define FILE_CREATED    "created"
+
 BEGIN_NAMESPACE
 
 class FileData : public ArrayElement {
@@ -76,10 +94,6 @@ class FileData : public ArrayElement {
         bool isReadablePresent;
         bool isExecutablePresent;
 
-        /*
-        * return the length for the base64 array starting from length of the original array
-        */
-        int lengthForB64(int len);
 
     public:
     // ------------------------------------------------------- Constructors

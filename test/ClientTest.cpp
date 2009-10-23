@@ -1643,7 +1643,7 @@ void SyncTests::addTests() {
 
     // test mappings
     ADD_TEST(SyncTests, testMappings);
-
+    
     ADD_TEST(SyncTests, testConfigSyncSource);
 
     // test Server error 506 adding calendar items (caused loop before v8.5)
@@ -1652,6 +1652,15 @@ void SyncTests::addTests() {
     // test Large object issue (bug #7794) with a Replace command split in 2 msg, 
     // and also a Delete command in the second msg
     ADD_TEST(SyncTests, testLargeObject2);
+    ADD_TEST(SyncTests, testLOItem);
+    ADD_TEST(SyncTests, testLOItemb64);
+    ADD_TEST(SyncTests, testLOItemSlowSync);
+    ADD_TEST(SyncTests, testLOItemSlowSyncb64);
+    ADD_TEST(SyncTests, testLOItemReplaceb64);
+    ADD_TEST(SyncTests, testLOItemWithItemEncoding);
+    ADD_TEST(SyncTests, testLOItemDES);
+    ADD_TEST(SyncTests, testFileSyncSource);
+   
 }
 
 /** compare databases of first and second client */

@@ -190,18 +190,27 @@ public:
      * @param item    the item as sent by the server
      */
     virtual int removeItem(SyncItem& item);
+
+    /**
+     * Overrides CacheSyncSource::fillSyncItem() in order to create
+     * new FileSyncItem instead of a SyncItem.
+     * NOTE: it doesn't really fill the item's data: it just creates the
+     * FileSyncItem specifying the file's path, then the file content 
+     * will be read chunk by chunk from the input stream when needed.
+     * 
+     * @param key      the item's key = the file name
+     * @param fillData [OPTIONAL] ignored param
+     * @return         a new allocated FileSyncItem
+     */
+    SyncItem* fillSyncItem(StringBuffer* key, const bool fillData = true);
     
-     /**
-    * Get the content of an item given the key. It is used to populate
-    * the SyncItem before the engine uses it in the usual flow of the sync.
-    * It is used also by the itemHandler if needed 
-    * (i.e. in the cache implementation)
-    *
-    * @param key      the local key of the item
-    * @param size     OUT: the size of the content
-    */
+    /**
+     * DEPRECATED METHOD.
+     * The file content is not retrieved anymore, since we use input streams
+     * to read file data directly from the disk.
+     * This method just logs a warning and returns NULL.
+     */
     virtual void* getItemContent(StringBuffer& key, size_t* size);
-      
         
 };
 

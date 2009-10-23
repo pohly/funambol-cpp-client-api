@@ -49,12 +49,14 @@
 #include "syncml/core/TagNames.h"
 #include "syncml/core/ObjectDel.h"
 
-
 #include "event/FireEvent.h"
 
 #include <limits.h>
 #include "base/globalsdef.h"
 #include "spds/MappingsManager.h"
+
+#include "spds/ItemReader.h"
+#include "spds/Chunk.h"
 
 USE_NAMESPACE
 
@@ -71,7 +73,7 @@ static char prevSourceUri[64];
 static SyncMode prevSyncMode;
 
 static const int changeOverhead = 150;
-
+static const int DELETE_ITEM_COMMAND_SIZE = 300; // it a raw computation about the amount of space a delete command takes
 static bool isFiredSyncEventBEGIN;
 //static bool isFiredSyncEventEND;
 
@@ -96,7 +98,7 @@ inline static bool isAuthFailed(int status) {
     return (status) && ((status == 401) || (status == 407));
 }
 
-/**
+/*
  * Return true is the given item is too big to go in the current message
  * given the current parameters
  * 
@@ -105,7 +107,7 @@ inline static bool isAuthFailed(int status) {
  * @param msgSize 
  * @param syncItem the sync item
  * @param syncItemOffset bytes already sent
- */
+ 
 inline static bool isTooBig(unsigned int totItems      , 
                             int          maxMsgSize    , 
                             long         msgSize       , 
@@ -115,7 +117,49 @@ inline static bool isTooBig(unsigned int totItems      ,
             maxMsgSize &&
             (msgSize + changeOverhead + syncItem.getDataSize() - syncItemOffset) > maxMsgSize);
 }
+*/
+/* Return true is the given chunk is too big to go in the current message
+ * given the current parameters
+ * 
+ * @param chunk the size of the chunk or of the item
+ * @param maxMsgSize the max message size of a SyncML message
+ * @param msgSize 
+ */
+inline static bool isTooBig(int          chunkSize     ,
+                            int          maxMsgSize    , 
+                            long         msgSize        
+                            ) {
+    return ((chunkSize + changeOverhead + msgSize) > maxMsgSize);
+}
 
+/* Return true is the given item is too big to go in the current message
+ * given the current parameters. It check also that the msgSize is not greater
+ * than the masMsgSize before call the getNextChunk.
+ * Moreover, it optimizes the fact that if the remaining size is less than
+ * a percentage of the maxMsgSize (we use a 5%) we don't start to split it but
+ * we start to put in the next message
+ * 
+ * @param helper the helper to get the maxDataSize
+ * @param size the size of the complete item 
+ * @param maxMsgSize the max message size of a SyncML message
+ * @param msgSize 
+ */
+
+static bool isItemTooBig(EncodingHelper& helper     ,
+                      long            size       ,
+                      int             maxMsgSize , 
+                      long            msgSize        
+                      ) {
+
+    static int percMaxMsgSize = (int)(0.05*maxMsgSize);
+    if (maxMsgSize < changeOverhead + msgSize) {
+        return true;
+    } else if (maxMsgSize - changeOverhead - msgSize < percMaxMsgSize)   {
+        long itemSize = helper.getMaxDataSizeToEncode(size);   
+        return (itemSize > percMaxMsgSize);
+    }
+    return false;    
+}
 /**
  * Return true if there's no more work to do
  * (if no source has a correct status)
@@ -1041,6 +1085,8 @@ int SyncManager::sync() {
     bool isFinalfromServer = false;
     bool isAtLeastOneSourceCorrect = false;
     bool sendFinalAfterClientMods = true;
+    
+    Chunk* chunk = NULL;
 
     //
     // If this is the first message, currentState is STATE_PKG1_SENT,
@@ -1086,7 +1132,13 @@ int SyncManager::sync() {
         else {
             isAtLeastOneSourceCorrect = true;
         }
-
+        
+        // create the EncodingHelper for this itemReader
+        EncodingHelper helper(sources[count]->getConfig().getEncoding(),
+                       sources[count]->getConfig().getEncryption(),
+                       credentialInfo);
+        ItemReader itemReader(maxMsgSize, helper);
+    
         // keep sending changes for current source until done with it
         do {
             if (modificationCommand) {
@@ -1150,51 +1202,72 @@ int SyncManager::sync() {
 
             switch (sources[count]->getSyncMode()) {
                 case SYNC_SLOW:
+                case SYNC_REFRESH_FROM_CLIENT:
                     {
-                        if (syncItem == NULL) {
-                            if (tot == 0) {
+                        if (syncItem == NULL && tot == 0) { // it is the firt if tot == 0                            
+                            // The item is without any transformation. 
                                 syncItem = getItem(*sources[count], &SyncSource::getFirstItem);
-                                syncItemOffset = 0;
-                                if (syncItem) {
-                                    // Fire Sync Item Event - Item sent as Updated
-                                    fireSyncItemEvent(sources[count]->getConfig().getURI(), sources[count]->getConfig().getName(), syncItem->getKey(), ITEM_UPDATED_BY_CLIENT);
-                                }
-                            }
                         }
                         tot = 0;
                         do {
                             if (syncItem == NULL) {
                                 syncItem = getItem(*sources[count], &SyncSource::getNextItem);
-                                syncItemOffset = 0;
-                                if (syncItem) {
-                                    // Fire Sync Item Event - Item sent as Updated
-                                    fireSyncItemEvent(sources[count]->getConfig().getURI(), sources[count]->getConfig().getName(), syncItem->getKey(), ITEM_UPDATED_BY_CLIENT);
+                            }
+                            if (syncItem) {                                                                
+                                                                
+                                if (isItemTooBig(helper, syncItem->getDataSize(), maxMsgSize, msgSize)) {
+                                    break;
                                 }
-                            }
 
-                            if (tot &&
-                                maxMsgSize &&
-                                syncItem &&
-                                msgSize + changeOverhead + syncItem->getDataSize() - syncItemOffset > maxMsgSize) {
-                                // avoid adding another item that exceeds the message size
-                                break;
-                            }
+                                if (chunk == NULL) { 
+                                    itemReader.setSyncItem(syncItem);
+                                    chunk = itemReader.getNextChunk(maxMsgSize - changeOverhead - msgSize); 
+                                }
 
-                            msgSize += changeOverhead;
-                            msgSize +=
-                                syncMLBuilder.addItem(modificationCommand,
-                                                      syncItemOffset,
-                                                      (maxMsgSize && loSupport) ? (maxMsgSize - msgSize) : LONG_MAX,
-                                                      REPLACE_COMMAND_NAME,
-                                                      syncItem,
-                                                      sources[count]->getConfig().getType());
+                                if (chunk == NULL) {
+                                    LOG.error("SyncManager: chunk null due to wrong transformation");
+                                    delete syncItem; syncItem = NULL;                                    
+                                    continue;
+                                }
+                                
+                                // extra safe check...
+                                if (isTooBig(chunk->getDataSize(), maxMsgSize, msgSize)) {
+                                    // avoid adding another item that exceeds the message size
+                                    // if the length of the chunk is too big, it is wrong
+                                    // should never happen!!
+                                    LOG.error("SyncManager: the chunk exceedes the the max size!!!");
+                                    delete syncItem; syncItem = NULL; 
+                                    delete chunk; chunk = NULL;
+                                    continue;
+                                }
 
-                            if (syncItem) {
-                                if (syncItemOffset == syncItem->getDataSize()) {
-                                    // the item is only the pointer not another instance. to save mem
+                                
+                                bool isLast = chunk->isLast();
+                                
+                                // fire the event only if the chunk is the first for LO
+                                // if it the only one, it is always the first
+                                if (chunk->isFirst()) {
+                                    fireSyncItemEvent(sources[count]->getConfig().getURI(), 
+                                                  sources[count]->getConfig().getName(), 
+                                                  syncItem->getKey(), ITEM_UPDATED_BY_CLIENT);
+            
+                                }
+
+                                msgSize += changeOverhead;
+                                msgSize +=
+                                        syncMLBuilder.addChunk(modificationCommand,
+                                                          REPLACE_COMMAND_NAME,
+                                                          syncItem,
+                                                          chunk,
+                                                          sources[count]->getConfig().getType());
+
+                                delete chunk; chunk = NULL;
+                                
+                                if (isLast) {                                    
                                     delete syncItem; syncItem = NULL;
                                 } else {
-                                    assert(msgSize >= maxMsgSize);
+                                    LOG.debug("SyncManager: the msgSize is %i. The maxMsgSize is %i", msgSize, maxMsgSize);
+                                    //assert(msgSize >= maxMsgSize);
                                     break;
                                 }
                             }
@@ -1226,68 +1299,9 @@ int SyncManager::sync() {
                     last = true;
                     break;
 
-                case SYNC_REFRESH_FROM_CLIENT:
+                default: // TWO-WAY sync
                     {
-                        if (syncItem == NULL) {
-                            if (tot == 0) {
-                                syncItem = getItem(*sources[count], &SyncSource::getFirstItem);
-                                syncItemOffset = 0;
-                                if (syncItem) {
-                                    // Fire Sync Item Event - Item sent as Updated
-                                    fireSyncItemEvent(sources[count]->getConfig().getURI(),
-                                                      sources[count]->getConfig().getName(),
-                                                      syncItem->getKey(), ITEM_UPDATED_BY_CLIENT);
-                                }
-                            }
-                        }
-                        tot = 0;
-                        do {
-                            if (syncItem == NULL) {
-                                syncItem = getItem(*sources[count], &SyncSource::getNextItem);
-                                syncItemOffset = 0;
-                                if (syncItem) {
-                                    // Fire Sync Item Event - Item sent as Updated
-                                    fireSyncItemEvent(sources[count]->getConfig().getURI(),
-                                                      sources[count]->getConfig().getName(),
-                                                      syncItem->getKey(), ITEM_UPDATED_BY_CLIENT);
-                                }
-                            }
 
-                            if (tot &&
-                                maxMsgSize &&
-                                syncItem &&
-                                msgSize + changeOverhead + syncItem->getDataSize() - syncItemOffset > maxMsgSize) {
-                                // avoid adding another item that exceeds the message size
-                                break;
-                            }
-
-                            msgSize += changeOverhead;
-                            msgSize +=
-                                syncMLBuilder.addItem(modificationCommand,
-                                                      syncItemOffset,
-                                                      (maxMsgSize && loSupport) ? (maxMsgSize - msgSize) : LONG_MAX,
-                                                      REPLACE_COMMAND_NAME, syncItem,
-                                                      sources[count]->getConfig().getType());
-
-                            if (syncItem) {
-                                if (syncItemOffset == syncItem->getDataSize()) {
-                                    delete syncItem; syncItem = NULL;// the item is only the pointer not another instance. to save mem
-                                } else {
-                                    assert(msgSize >= maxMsgSize);
-                                    break;
-                                }
-                            }
-                            else {
-                                last = true;
-                                break;
-                            }
-                            tot++;
-                        } while(msgSize < maxMsgSize);
-                    }
-                    break;
-
-                default:
-                    {
                         tot = 0;
                         //
                         // New Item
@@ -1295,55 +1309,73 @@ int SyncManager::sync() {
                         if (step == 0) {
                             assert(syncItem == NULL);
                             syncItem = getItem(*sources[count], &SyncSource::getFirstNewItem);
-                            syncItemOffset = 0;
                             step++;
-                            if (syncItem == NULL)
+                            if (syncItem == NULL) {
                                 step++;
+                            }
                         }
                         if (step == 1) {
                             do {
                                 if (syncItem == NULL) {
                                     syncItem = getItem(*sources[count], &SyncSource::getNextNewItem);
-                                    syncItemOffset = 0;
-
-                                    //
-                                    // If syncItem is still null, there are no more items to process, we can
-                                    // go to the next step
-                                    //
                                     if (syncItem == NULL) {
-
                                         step++;
                                         break;
                                     }
                                 }
-
-                                if (isTooBig(tot, maxMsgSize, msgSize, *syncItem, syncItemOffset)) {
-                                    // avoid adding another item that exceeds the message size
+                                                               
+                                if (isItemTooBig(helper, syncItem->getDataSize(), maxMsgSize, msgSize)) {
                                     break;
                                 }
 
-                                // For multi-chunck items (Large objects): fire only the first chunk
-                                if (syncItemOffset == 0) {
-                                    // Fire Sync Item Event - New Item Detected
-                                    fireSyncItemEvent(sources[count]->getConfig().getURI(), sources[count]->getConfig().getName(), syncItem->getKey(), ITEM_ADDED_BY_CLIENT);
+                                if (chunk == NULL) {
+                                    itemReader.setSyncItem(syncItem); 
+                                    chunk = itemReader.getNextChunk(maxMsgSize - changeOverhead - msgSize); // this is a new object to be freed   
+                                }
+
+                                if (chunk == NULL) {
+                                    LOG.error("SyncManager: chunk null due to wrong transformation");
+                                    delete syncItem; syncItem = NULL;                                    
+                                    continue;
+
+                                }
+                                if (isTooBig(chunk->getDataSize(), maxMsgSize, msgSize)) {
+                                    // avoid adding another item that exceeds the message size
+                                    // if the length of the chunk is too big, it is wrong
+                                    // should never happen!!
+                                    LOG.error("SyncManager: the chunk exceedes the the max size!!!");
+                                    delete syncItem; syncItem = NULL; 
+                                    delete chunk; chunk = NULL;
+                                    continue;
+                                }
+
+                                bool isLast = chunk->isLast();
+
+                                // fire the event only if the chunk is the first for LO
+                                // if it the only one, it is always the first
+                                if (chunk->isFirst()) {
+                                    fireSyncItemEvent(sources[count]->getConfig().getURI(), 
+                                        sources[count]->getConfig().getName(), 
+                                        syncItem->getKey(), ITEM_ADDED_BY_CLIENT);
                                 }
 
                                 msgSize += changeOverhead;
                                 msgSize +=
-                                    syncMLBuilder.addItem(modificationCommand,
-                                                          syncItemOffset,
-                                                          (maxMsgSize && loSupport) ? (maxMsgSize - msgSize) : LONG_MAX,
+                                    syncMLBuilder.addChunk(modificationCommand,
                                                           ADD_COMMAND_NAME,
-                                                          syncItem, sources[count]->getConfig().getType());
+                                    syncItem,
+                                    chunk,
+                                    sources[count]->getConfig().getType());
 
+                                delete chunk; chunk = NULL;
                                 
-                                if (syncItemOffset == syncItem->getDataSize()) {
+                                if (isLast) {                                    
                                     delete syncItem; syncItem = NULL;
                                 } else {
-                                    assert(msgSize >= maxMsgSize);
-                                    break;
+                                    LOG.debug("SyncManager: the msgSize is %i. The maxMsgSize is %i", msgSize, maxMsgSize);
+                                    //assert(msgSize >= maxMsgSize);
+                                    
                                 }
-                               
                                 tot++;
                             } while(msgSize < maxMsgSize);
                         }
@@ -1361,23 +1393,15 @@ int SyncManager::sync() {
 
                             assert(syncItem == NULL);
                             syncItem = getItem(*sources[count], &SyncSource::getFirstUpdatedItem);
-                            syncItemOffset = 0;
-
                             step++;
-                            if (syncItem == NULL)
+                            if (syncItem == NULL) {
                                 step++;
-
+                            }
                         }
                         if (step == 3) {
                             do {
                                 if (syncItem == NULL) {
                                     syncItem = getItem(*sources[count], &SyncSource::getNextUpdatedItem);
-                                    syncItemOffset = 0;
-
-                                    //
-                                    // If syncItem is still null, there are no more items to process, we can
-                                    // go to the next step
-                                    //
                                     if (syncItem == NULL) {
 
                                         step++;
@@ -1385,33 +1409,60 @@ int SyncManager::sync() {
                                     }
 
                                 }
-
-                                if (isTooBig(tot, maxMsgSize, msgSize, *syncItem, syncItemOffset)) {
-                                    // avoid adding another item that exceeds the message size
+                                                                
+                                if (isItemTooBig(helper, syncItem->getDataSize(), maxMsgSize, msgSize)) {
                                     break;
                                 }
 
-                                //
-                                // For multi-chunck items (Large objects): fire only the first chunk
-                                if (syncItemOffset == 0) {
-                                    // Fire Sync Item Event - Item Updated
-                                    fireSyncItemEvent(sources[count]->getConfig().getURI(), sources[count]->getConfig().getName(), syncItem->getKey(), ITEM_UPDATED_BY_CLIENT);
+                                if (chunk == NULL) {
+                                    itemReader.setSyncItem(syncItem);                                    
+                                    chunk = itemReader.getNextChunk(maxMsgSize - changeOverhead - msgSize); // this is a new object to be freed   
+                                }
+
+                                if (chunk == NULL) {
+                                    LOG.error("SyncManager: chunk null due to wrong transformation");
+                                    delete syncItem; syncItem = NULL;                                    
+                                    continue;
+
+                                }
+                                if (isTooBig(chunk->getDataSize(), maxMsgSize, msgSize)) {
+                                    // avoid adding another item that exceeds the message size
+                                    // if the length of the chunk is too big, it is wrong
+                                    // should never happen!!
+                                    LOG.error("SyncManager: the chunk exceedes the the max size!!!");
+                                    delete syncItem; syncItem = NULL; 
+                                    delete chunk; chunk = NULL;
+                                    continue;
+                                }
+
+                                bool isLast = chunk->isLast();
+
+                                // fire the event only if the chunk is the first for LO
+                                // if it the only one, it is always the first
+                                if (chunk->isFirst()) {
+                                    fireSyncItemEvent(sources[count]->getConfig().getURI(), 
+                                        sources[count]->getConfig().getName(), 
+                                        syncItem->getKey(), ITEM_UPDATED_BY_CLIENT);
                                 }
 
                                 msgSize += changeOverhead;
                                 msgSize +=
-                                    syncMLBuilder.addItem(modificationCommand,
-                                                          syncItemOffset,
-                                                          (maxMsgSize && loSupport) ? (maxMsgSize - msgSize) : LONG_MAX,
+                                    syncMLBuilder.addChunk(modificationCommand,
                                                           REPLACE_COMMAND_NAME,
-                                                          syncItem, sources[count]->getConfig().getType());
+                                    syncItem,
+                                    chunk,
+                                    sources[count]->getConfig().getType());
 
-                                if (syncItemOffset == syncItem->getDataSize()) {
+                                delete chunk; chunk = NULL;
+
+                                if (isLast) {                                    
                                     delete syncItem; syncItem = NULL;
                                 } else {
-                                    assert(msgSize >= maxMsgSize);
-                                    break;
+                                    LOG.debug("SyncManager: the msgSize is %i. The maxMsgSize is %i", msgSize, maxMsgSize);
+                                    //assert(msgSize >= maxMsgSize);
+                                    
                                 }
+                                                            
                                 tot++;
                             } while( msgSize < maxMsgSize);
                         }
@@ -1428,58 +1479,57 @@ int SyncManager::sync() {
                             }
 
                             syncItem = getItem(*sources[count], &SyncSource::getFirstDeletedItem);
-                            syncItemOffset = 0;
-
                             step++;
-                            if (syncItem == NULL)
+                            if (syncItem == NULL) {
                                 step++;
+                        }
                         }
                         if (step == 5) {
                             do {
                                 if (syncItem == NULL) {
                                     syncItem = getItem(*sources[count], &SyncSource::getNextDeletedItem);
-                                    syncItemOffset = 0;
+                                    if (syncItem == NULL) {
+                                        step++;
+                                        break;
+                                    }                                    
                                 }
 
-                                if (tot &&
-                                    maxMsgSize &&
-                                    syncItem &&
-                                    msgSize + changeOverhead + syncItem->getDataSize() - syncItemOffset > maxMsgSize) {
+                                if (isTooBig(DELETE_ITEM_COMMAND_SIZE, maxMsgSize, msgSize)) { // the size of the data item is 0
                                     // avoid adding another item that exceeds the message size
-                                    break;
+                                    // if the length of the chunk is too big, it is wrong
+                                    // should never happen!!
+                                    delete syncItem; syncItem = NULL; 
+                                    delete chunk; chunk = NULL;
+                                    continue;
                                 }
 
+                                fireSyncItemEvent(sources[count]->getConfig().getURI(), 
+                                    sources[count]->getConfig().getName(), 
+                                    syncItem->getKey(), ITEM_DELETED_BY_CLIENT);
+                                
+                                chunk = new Chunk();
                                 msgSize += changeOverhead;
                                 msgSize +=
-                                    syncMLBuilder.addItem(modificationCommand,
-                                                          syncItemOffset,
-                                                          (maxMsgSize && loSupport) ? (maxMsgSize - msgSize) : LONG_MAX,
+                                    syncMLBuilder.addChunk(modificationCommand,
                                                           DELETE_COMMAND_NAME,
-                                                          syncItem, sources[count]->getConfig().getType());
+                                                          syncItem,
+                                                          chunk,
+                                                          sources[count]->getConfig().getType());                                    
 
-                                if (syncItem) {
-                                    if (syncItemOffset == syncItem->getDataSize()) {
-                                        // Fire Sync Item Event - Item Deleted
-                                        fireSyncItemEvent(sources[count]->getConfig().getURI(), sources[count]->getConfig().getName(), syncItem->getKey(), ITEM_DELETED_BY_CLIENT);
-                                        delete syncItem; syncItem = NULL;
-                                    } else {
-                                        assert(msgSize >= maxMsgSize);
-                                        break;
-                                    }
-                                }
-                                else {
-                                    step++;
-                                    break;
-                                }
+                                delete syncItem; syncItem = NULL;
+                                delete chunk;
+
                                 tot++;
+
                             } while(msgSize < maxMsgSize);
                         }
-                        if (step == 6 && syncItem == NULL)
+                        if (step == 6 && syncItem == NULL) {
                             last = true;
-
-                        break;
-                    }
             }
+                        break;
+                    } // close case
+            
+            } //  close switch
 
             if (modificationCommand) {
                 list->add(*modificationCommand);
@@ -2051,12 +2101,12 @@ SyncItem* SyncManager::getItem(SyncSource& source, SyncItem* (SyncSource::* getI
     if (!syncItem) {
         return NULL;
     }
-
-    // change encoding automatically?
+    
+    // change encryption automatically only for supported ones (currently only DES)
     const char* encoding   = source.getConfig().getEncoding();
     const char* encryption = source.getConfig().getEncryption();
     if (!syncItem->getDataEncoding()) {
-        if ( (encoding && encoding[0]) || (encryption && encryption[0]) ) {
+        if (encryption && encryption[0]) {
             if (syncItem->changeDataEncoding(encoding, encryption, credentialInfo)) {
                 LOG.error("Error: invalid encoding for item: %" WCHAR_PRINTF ,
                     syncItem->getKey());
@@ -2066,7 +2116,6 @@ SyncItem* SyncManager::getItem(SyncSource& source, SyncItem* (SyncSource::* getI
         }
     }
 
-    // the client might have used a key which is not safe for SyncML, encode it if necessary
     encodeItemKey(syncItem);
 
     return syncItem;

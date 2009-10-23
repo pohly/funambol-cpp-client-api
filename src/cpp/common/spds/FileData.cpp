@@ -40,27 +40,9 @@
 #include "spds/FileData.h"
 #include "base/quoted-printable.h"
 #include "base/globalsdef.h"
+#include "base/util/EncodingHelper.h"
 
 USE_NAMESPACE
-
-
-#define FILE_ITEM       TEXT("File")
-#define FILE_HIDDEN     "h"
-#define FILE_SYSTEM     "s"
-#define FILE_ARCHIVED   "a"
-#define FILE_DELETE     "d"
-#define FILE_WRITABLE   "w"
-#define FILE_READABLE   "r"
-#define FILE_EXECUTABLE "e"
-#define FILE_ACCESSED   "accessed"
-#define FILE_ATTRIBUTES "attributes"
-#define FILE_BODY       "body"
-#define FILE_CTTYTPE    "cttype"
-#define FILE_ENC        "enc"
-#define FILE_MODIFIED   "modified"
-#define FILE_NAME       "name"
-#define FILE_SIZE       "size"
-#define FILE_CREATED    "created"
 
 
 FileData::FileData()
@@ -234,14 +216,15 @@ int FileData::parse(StringBuffer* s)
 
 void FileData::setBody(const char* v, int len)
 {
-    if (size == 0)
+    if (len == 0)
     {
         body = v;
     }
     else
     {
         char*   base64    = NULL;
-        int     encodeLen = lengthForB64(len);
+        EncodingHelper helper(FORMAT_B64, NULL, NULL);
+        int encodeLen = helper.getDataSizeAfterEncoding(len);
         base64 = new char[encodeLen + 1];
         memset(base64, 0, encodeLen + 1);
         b64_encode(base64, (char*)v, len);
@@ -305,18 +288,3 @@ char* FileData::format() {
     return stringdup(out.c_str());
 }
 
-int FileData::lengthForB64(int len) {
-
-    int modules = 0;
-    int ret     = 0;
-
-    modules = len % 3;
-    if (modules == 0) {
-        ret = 4 * (len / 3);
-
-    } else {
-        ret = 4 * ((len/3) + 1);
-
-    }
-    return ret;
-}

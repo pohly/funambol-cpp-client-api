@@ -46,16 +46,28 @@
 #define DEFAULT_TEST_NAME   "cppTest"
 
 // This is the dir where all the testcases are located
-#ifdef _WIN32
-# define TESTCASES_DIR "../../test/testcases/"
-#else
 # define TESTCASES_DIR "testcases"
-#endif
 
 
 USE_NAMESPACE
 
+static SyncSourceConfig* createBriefcaseDefaultConfig() {
 
+    SyncSourceConfig* sc = new SyncSourceConfig();
+
+    sc->setName                 ("briefcase");
+    sc->setSyncModes            ("slow,two-way");
+    sc->setSync                 ("two-way");
+    sc->setEncoding             ("b64");
+    sc->setLast                 (0);
+    sc->setSupportedTypes       ("");
+    sc->setVersion              ("");
+    sc->setEncryption           ("");
+    sc->setURI                  ("briefcase");
+    sc->setType                 ("application/*");
+    
+    return sc;
+}
 /**
  * Sets the default values (from DefaultConfigFactory) in the passed SyncManagerConfig.
  * @param config             the SyncManagerConfig to fill
@@ -78,6 +90,16 @@ static void setDefaults(SyncManagerConfig* config, const char* testName,
         for (int i=0; i<defaultSources->size(); i++) {
             StringBuffer* sourceName = (StringBuffer*)defaultSources->get(i);
             config->setSourceDefaults(sourceName->c_str());
+        } 
+
+    }
+    if (defaultSources) {
+        for (int i=0; i<defaultSources->size(); i++) {
+            StringBuffer* sourceName = (StringBuffer*)defaultSources->get(i);
+            if (strcmp(sourceName->c_str(), "briefcase") == 0) { 
+                config->setSyncSourceConfig(*createBriefcaseDefaultConfig());
+                break;
+            }
         }
     }
 
@@ -101,6 +123,10 @@ static void setDefaults(SyncManagerConfig* config, const char* testName,
         config->getAccessConfig().setPassword(password);
     }
 }
+
+
+
+
 
 
 
@@ -147,7 +173,7 @@ DMTClientConfig* getNewDMTClientConfig(const char* testName, const bool setClien
 
 
 
-char* loadTestFile(const char* testName, const char* fileName) {
+char* loadTestFile(const char* testName, const char* fileName, bool binary) {
 
     if (!testName || !fileName) {
         return NULL;
@@ -156,13 +182,22 @@ char* loadTestFile(const char* testName, const char* fileName) {
     char* content = NULL;
     size_t len;
 
-    StringBuffer path;
-    path.sprintf("%s/%s/%s", TESTCASES_DIR, testName, fileName);
+    StringBuffer& path = getTestFileFullPath(testName, fileName);
 
-    bool fileLoaded = readFile(path.c_str(), &content, &len, false);
+    bool fileLoaded = readFile(path.c_str(), &content, &len, binary);
     CPPUNIT_ASSERT_MESSAGE("Failed to load test file", fileLoaded);
        
     return content;
+}
+
+StringBuffer getTestFileFullPath(const char* testName, const char* fileName) {
+
+    if (!testName || !fileName) {
+        return "";
+    }
+    StringBuffer path;
+    path.sprintf("%s/%s/%s", TESTCASES_DIR, testName, fileName);
+    return path;
 }
 
 

@@ -525,7 +525,7 @@ AbstractCommand *SyncMLBuilder::prepareServerDevInf()
     /*
     <Get>
         <CmdID>3</CmdID>
-        <Meta><Type xmlns=Ã­syncml:metinfÃ­>application/vnd.syncml-devinf+xml</Type></Meta>
+        <Meta><Type xmlns=’syncml:metinf’>application/vnd.syncml-devinf+xml</Type></Meta>
         <Item>
             <Target><LocURI>./devinf12</LocURI></Target>
         </Item>
@@ -844,6 +844,104 @@ ArrayList* SyncMLBuilder::prepareItem(SyncItem* syncItem,
 
     return list;
 }
+
+
+ComplexData* SyncMLBuilder::getComplexData(Chunk* chunk) {
+
+    if (!chunk) {
+        return  NULL;
+    }
+    ComplexData* data = new ComplexData(chunk->getData());            
+    return data;
+}
+
+Item* SyncMLBuilder::prepareItemChunk(SyncItem* syncItem,
+                                      Chunk* chunk,
+                                      char* COMMAND) {
+    
+    StringBuffer key; key.convert(syncItem->getKey());
+    Source* sou = new Source(key.c_str());
+    ComplexData* data = NULL;
+    bool hasMoreData = !chunk->isLast();
+    Meta m;
+    
+
+    if (strcmp(DELETE_COMMAND_NAME, COMMAND) != 0) {
+        m.setFormat(chunk->getDataEncoding().c_str());               
+        data = getComplexData(chunk);        
+        if (chunk->isFirst() && !chunk->isLast()) {
+            // must send size, but only in first chunk of this item
+            // m.setSize(syncItem->getDataSize());
+            m.setSize(chunk->getTotalDataSize());            
+        }
+    } else {
+        // skip all item data for deleted items        
+    }    
+
+    char *tparent = toMultibyte(syncItem->getTargetParent());
+    char *sparent = toMultibyte(syncItem->getSourceParent());
+
+    Item* item = new Item(NULL, sou, tparent, sparent, &m, data, hasMoreData);
+    
+    delete [] tparent;
+    delete [] sparent;
+
+    deleteSource(&sou);
+    deleteComplexData(&data);
+    
+    return item;
+}
+
+
+long SyncMLBuilder::addChunk(ModificationCommand* &modificationCommand,                            
+                            char* COMMAND, SyncItem* syncItem, Chunk* chunk, 
+                            const char* defaultType) {
+
+    if (chunk == NULL) {
+         return 0;
+    }
+
+    // The item should determine its type itself.
+    // Only fallback to the default type configured for its
+    // source if (broken?) SyncSources do not set a in their
+    // items.
+    const char *type = NULL;
+    type = toMultibyte(syncItem->getDataType());
+    if (!type || !type[0]) {
+        type = stringdup(defaultType);
+    }
+
+    if (!modificationCommand) {
+        ++cmdID;
+        char* cmdid = itow(cmdID);
+        CmdID commandID(cmdid);
+        delete [] cmdid; cmdid = NULL;
+       
+        MetInf metInf(NULL, (char*)type, NULL, 0,
+                      NULL, NULL, NULL, 0, 0, NULL, NULL);
+        Meta meta;
+        meta.setMetInf(&metInf);
+
+        if (strcmp(ADD_COMMAND_NAME, COMMAND) == 0)
+            modificationCommand = new Add(&commandID, false, NULL, &meta, NULL);
+        else if (strcmp(REPLACE_COMMAND_NAME, COMMAND) == 0){
+            modificationCommand = new Replace(&commandID, false, NULL, &meta, NULL);
+        } else if (strcmp(DELETE_COMMAND_NAME, COMMAND) == 0) {
+            modificationCommand = new Delete(&commandID, false, false, false, NULL, &meta, NULL);
+        }
+    }
+
+    ArrayList* list = modificationCommand->getItems();    
+    Item* item = prepareItemChunk(syncItem, chunk, COMMAND);
+    
+    list->add(*item);
+    deleteItem(&item);
+    
+    delete [] type;    
+    
+    return chunk->getDataSize();
+}
+
 
 long SyncMLBuilder::addItem(ModificationCommand* &modificationCommand,
                             long &syncItemOffset, long maxBytes,
