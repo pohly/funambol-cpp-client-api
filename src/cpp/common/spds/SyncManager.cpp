@@ -1233,8 +1233,12 @@ int SyncManager::sync() {
                                 // extra safe check...
                                 if (isTooBig(chunk->getDataSize(), maxMsgSize, msgSize)) {
                                     // avoid adding another item that exceeds the message size
-                                    // if the message exceedes, the chunk is not deleted
-                                    break;
+                                    // if the length of the chunk is too big, it is wrong
+                                    // should never happen!!
+                                    LOG.error("SyncManager: the chunk exceedes the the max size!!!");
+                                    delete syncItem; syncItem = NULL; 
+                                    delete chunk; chunk = NULL;
+                                    continue;
                                 }
 
                                 
@@ -1337,8 +1341,12 @@ int SyncManager::sync() {
                                 }
                                 if (isTooBig(chunk->getDataSize(), maxMsgSize, msgSize)) {
                                     // avoid adding another item that exceeds the message size
-                                    // if the message exceedes, the chunk is not deleted
-                                    break;
+                                    // if the length of the chunk is too big, it is wrong
+                                    // should never happen!!
+                                    LOG.error("SyncManager: the chunk exceedes the the max size!!!");
+                                    delete syncItem; syncItem = NULL; 
+                                    delete chunk; chunk = NULL;
+                                    continue;
                                 }
 
                                 bool isLast = chunk->isLast();
@@ -1419,8 +1427,12 @@ int SyncManager::sync() {
                                 }
                                 if (isTooBig(chunk->getDataSize(), maxMsgSize, msgSize)) {
                                     // avoid adding another item that exceeds the message size
-                                    // if the message exceedes, the chunk is not deleted
-                                    break;
+                                    // if the length of the chunk is too big, it is wrong
+                                    // should never happen!!
+                                    LOG.error("SyncManager: the chunk exceedes the the max size!!!");
+                                    delete syncItem; syncItem = NULL; 
+                                    delete chunk; chunk = NULL;
+                                    continue;
                                 }
 
                                 bool isLast = chunk->isLast();
@@ -1484,8 +1496,11 @@ int SyncManager::sync() {
 
                                 if (isTooBig(DELETE_ITEM_COMMAND_SIZE, maxMsgSize, msgSize)) { // the size of the data item is 0
                                     // avoid adding another item that exceeds the message size
-                                    // if the message exceedes, the chunk is not deleted
-                                    break;
+                                    // if the length of the chunk is too big, it is wrong
+                                    // should never happen!!
+                                    delete syncItem; syncItem = NULL; 
+                                    delete chunk; chunk = NULL;
+                                    continue;
                                 }
 
                                 fireSyncItemEvent(sources[count]->getConfig().getURI(), 
@@ -2087,7 +2102,7 @@ SyncItem* SyncManager::getItem(SyncSource& source, SyncItem* (SyncSource::* getI
         return NULL;
     }
     
-    // change encoding automatically only for supported ones (currently only DES)
+    // change encryption automatically only for supported ones (currently only DES)
     const char* encoding   = source.getConfig().getEncoding();
     const char* encryption = source.getConfig().getEncryption();
     if (!syncItem->getDataEncoding()) {
@@ -2101,23 +2116,6 @@ SyncItem* SyncManager::getItem(SyncSource& source, SyncItem* (SyncSource::* getI
         }
     }
 
-
-/*
-    // change encoding automatically?
-    const char* encoding   = source.getConfig().getEncoding();
-    const char* encryption = source.getConfig().getEncryption();
-    if (!syncItem->getDataEncoding()) {
-        if ( (encoding && encoding[0]) || (encryption && encryption[0]) ) {
-            if (syncItem->changeDataEncoding(encoding, encryption, credentialInfo)) {
-                LOG.error("Error: invalid encoding for item: %" WCHAR_PRINTF ,
-                    syncItem->getKey());
-                delete syncItem;
-                syncItem = NULL;
-            }
-        }
-    }
-*/
-    // the client might have used a key which is not safe for SyncML, encode it if necessary
     encodeItemKey(syncItem);
 
     return syncItem;

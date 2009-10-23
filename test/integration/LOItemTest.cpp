@@ -54,6 +54,7 @@
 #include "LOItemTest.h"
 #include "spds/SyncManager.h"
 #include "testUtils.h"
+#include "client/FileSyncSource.h"
 
 USE_NAMESPACE
 
@@ -96,6 +97,40 @@ int getSuccessfullyAdded(SyncSourceReport *ssr) {
 int getSuccessfullyReplaced(SyncSourceReport *ssr) {
     return getOperationSuccessful(ssr, SERVER, COMMAND_REPLACE);
 }
+
+int getSuccessfullyDeleted(SyncSourceReport *ssr) {
+    return getOperationSuccessful(ssr, SERVER, COMMAND_DELETE);
+}
+
+DMTClientConfig* LOItemTest::resetItemOnServer(const char* sourceURI) {
+    
+    ArrayList asources;
+    StringBuffer contact("contact");
+    asources.add(contact);
+    DMTClientConfig* config = getNewDMTClientConfig("funambol_LOItem", true, &asources);
+    CPPUNIT_ASSERT(config);
+    SyncSourceConfig *conf = config->getSyncSourceConfig("contact");
+    conf->setSync("refresh-from-client");
+    conf->setURI(sourceURI);
+
+    config->getAccessConfig().setMaxMsgSize(5500);                       
+    LOSyncSource* scontact = new LOSyncSource(TEXT("contact"),  conf);    
+
+    SyncSource* sources[2];
+    sources[0] = scontact;
+    sources[1] = NULL;
+
+    SyncClient client;
+    int ret = 0;
+    ret = client.sync(*config, sources);
+    CPPUNIT_ASSERT(!ret);
+    config->save();
+
+    delete scontact;
+    return config;
+
+}
+
 
 void LOItemTest::testLOItem() {
     
@@ -237,34 +272,6 @@ void LOItemTest::testLOItemReplaceb64() {
 
 }
 
-DMTClientConfig* LOItemTest::resetItemOnServer(const char* sourceURI) {
-    
-    ArrayList asources;
-    StringBuffer contact("contact");
-    asources.add(contact);
-    DMTClientConfig* config = getNewDMTClientConfig("funambol_LOItem", true, &asources);
-    CPPUNIT_ASSERT(config);
-    SyncSourceConfig *conf = config->getSyncSourceConfig("contact");
-    conf->setSync("refresh-from-client");
-    conf->setURI(sourceURI);
-
-    config->getAccessConfig().setMaxMsgSize(5500);                       
-    LOSyncSource* scontact = new LOSyncSource(TEXT("contact"),  conf);    
-
-    SyncSource* sources[2];
-    sources[0] = scontact;
-    sources[1] = NULL;
-
-    SyncClient client;
-    int ret = 0;
-    ret = client.sync(*config, sources);
-    CPPUNIT_ASSERT(!ret);
-    config->save();
-
-    delete scontact;
-    return config;
-
-}
 
 void LOItemTest::testLOItemSlowSync() {
 
@@ -314,5 +321,94 @@ void LOItemTest::testLOItemSlowSyncb64() {
     int replaced = getSuccessfullyReplaced(ssr);
  
     CPPUNIT_ASSERT_EQUAL(2, replaced);
+}
+
+void LOItemTest::testFileSyncSource() {
+    
+    StringBuffer test_dir("./FileToSync");
+    StringBuffer test_name("LOItemTest");    
+
+    // empty the test dir if exists
+    removeFileInDir(test_dir.c_str());
+
+    ArrayList asources;
+    StringBuffer briefcase("briefcase");
+    asources.add(briefcase);
+    DMTClientConfig* config = getNewDMTClientConfig("funambol_LOItem", true, &asources);
+    CPPUNIT_ASSERT(config);
+    config->getAccessConfig().setMaxMsgSize(5500);
+    SyncSourceConfig *conf = config->getSyncSourceConfig(briefcase.c_str());
+    conf->setSync("refresh-from-client");
+    conf->setURI(briefcase.c_str());    
+    
+    // put 4 files inside the test dir
+    createFolder(test_dir.c_str());
+    for (int i = 0; i < 4; i++) {
+        StringBuffer s; s.sprintf("sif%i.txt", i);
+        StringBuffer& path = getTestFileFullPath(test_name.c_str(), s.c_str());
+        char* content = loadTestFile(test_name.c_str(), s.c_str(), true);
+        struct stat st;
+        stat(path.c_str(), &st);
+        int size = st.st_size;
+       
+        StringBuffer name(test_dir);
+        name.append("/");
+        name.append(s);
+        bool written = saveFile(name.c_str(), content, size, true) ;
+        delete [] content;
+    }
+    FileSyncSource* fsss = new FileSyncSource(TEXT("briefcase"), conf, test_dir);       
+
+    SyncSource* sources[2];
+    sources[0] = fsss;
+    sources[1] = NULL;
+    
+    SyncClient client;
+    int ret = client.sync(*config, sources);
+    CPPUNIT_ASSERT(!ret);
+    
+    SyncSourceReport *ssr = fsss->getReport();
+    int replaced = getSuccessfullyReplaced(ssr);
+ 
+    CPPUNIT_ASSERT_EQUAL(4, replaced);
+    config->save();
+    
+    delete fsss;
+     
+    // remove 2 items and add a new one
+    removeFileInDir(test_dir.c_str(), "sif0.txt"); 
+    removeFileInDir(test_dir.c_str(), "sif1.txt"); 
+    
+    StringBuffer& path = getTestFileFullPath(test_name.c_str(), "vcard0.txt");
+    char* content = loadTestFile(test_name.c_str(), "vcard0.txt", true);
+    struct stat st;
+    stat(path.c_str(), &st);
+    int size = st.st_size;
+   
+    StringBuffer name(test_dir);
+    name.append("/");
+    name.append("vcard0.txt");
+    bool written = saveFile(name.c_str(), content, size, true) ;
+    delete [] content;
+    
+    config->read();
+    conf = config->getSyncSourceConfig(briefcase.c_str());
+    conf->setSync("two-way");
+   
+    fsss = new FileSyncSource(TEXT("briefcase"), conf, test_dir);
+
+    sources[0] = fsss;
+    sources[1] = NULL;
+    
+    ret = client.sync(*config, sources);
+    CPPUNIT_ASSERT(!ret);
+    
+    ssr = fsss->getReport();
+    int added = getSuccessfullyAdded(ssr);
+    int deleted = getSuccessfullyDeleted(ssr);
+    CPPUNIT_ASSERT_EQUAL(1, added);
+    CPPUNIT_ASSERT_EQUAL(2, deleted);
+    
+    
 }
 #endif // ENABLE_INTEGRATION_TESTS

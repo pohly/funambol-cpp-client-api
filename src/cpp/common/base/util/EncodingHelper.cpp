@@ -148,8 +148,9 @@ char* EncodingHelper::transform(const char* from, char* buffer, unsigned long *l
     }
     
     if (encToUse == originalEncoding) {
-        ret = new char[*len + 1];        
-        memcpy(ret, buffer, *len);        
+        ret = new char[*len + 1];         
+        memcpy(ret, buffer, *len);
+        ret[*len] = 0;
         setDataEncoding(originalEncoding);
         LOG.debug("EncodingHelper: no transformation done. Only returned the new array");        
         return ret;

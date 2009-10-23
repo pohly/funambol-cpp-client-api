@@ -831,6 +831,10 @@ protected:
         LOItemTest test;               
         test.testLOItemDES();
     }
+    virtual void testFileSyncSource() {
+        LOItemTest test;               
+        test.testFileSyncSource();
+    }
     
     /**
      * implements testMaxMsg(), testLargeObject(), testLargeObjectEncoded()

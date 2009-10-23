@@ -105,12 +105,12 @@ private:
         int i = 0;
         do {    
             delete c;
-            c = itemReader.getNextChunk(maxMsgSize);
-            if (c == NULL) {
-                break;
-            }
+            c = itemReader.getNextChunk(maxMsgSize);            
             i++;
             result.append(c->getData());
+            if (c && c->isLast()) {
+                break;
+            }
         } while(c);
 
         CPPUNIT_ASSERT(i == 4);        
@@ -139,12 +139,12 @@ private:
         int i = 0;
         do {    
             delete c;
-            c = itemReader.getNextChunk(maxMsgSize);
-            if (c == NULL) {
-                break;
-            }
+            c = itemReader.getNextChunk(maxMsgSize);            
             i++;
             result.append(c->getData());
+            if (c && c->isLast()) {
+                break;
+            }
         } while(c);
 
         CPPUNIT_ASSERT(i == 3);        
@@ -197,12 +197,12 @@ private:
         int i = 0;
         do {    
             delete c;
-            c = itemReader.getNextChunk(maxMsgSize);
-            if (c == NULL) {
-                break;
-            }
+            c = itemReader.getNextChunk(maxMsgSize);            
             i++;
             res.append(c->getData());
+            if (c && c->isLast()) {
+                break;
+            }
         } while(c);
         
         CPPUNIT_ASSERT_EQUAL(i,5);

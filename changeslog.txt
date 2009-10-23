@@ -1,3 +1,10 @@
+2009-10-23
+  - magi: [US3125] cumulative message: 
+                   Added ItemReader, Chunk, EncodingHelper classes.
+                   Added unit test and integration test
+                   Fixed issues on above classes. 
+                   Modified SyncManager, SyncMLBuilder to use the new classes
+                   
 2009-10-21
   - toccy: [US3125] Added FileSyncItem class (and unit tests: FileSyncItemTest, SyncItemTest)
                     Modified FileSyncSource in order to use FileSyncItem and new input stream classes

@@ -94,6 +94,7 @@ public:
     void testLOItemReplaceb64();
     void testLOItemWithItemEncoding();
     void testLOItemDES();
+    void testFileSyncSource();
 private:    
                
 };

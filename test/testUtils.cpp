@@ -51,7 +51,23 @@
 
 USE_NAMESPACE
 
+static SyncSourceConfig* createBriefcaseDefaultConfig() {
 
+    SyncSourceConfig* sc = new SyncSourceConfig();
+
+    sc->setName                 ("briefcase");
+    sc->setSyncModes            ("slow,two-way");
+    sc->setSync                 ("two-way");
+    sc->setEncoding             ("b64");
+    sc->setLast                 (0);
+    sc->setSupportedTypes       ("");
+    sc->setVersion              ("");
+    sc->setEncryption           ("");
+    sc->setURI                  ("briefcase");
+    sc->setType                 ("application/*");
+    
+    return sc;
+}
 /**
  * Sets the default values (from DefaultConfigFactory) in the passed SyncManagerConfig.
  * @param config             the SyncManagerConfig to fill
@@ -74,6 +90,16 @@ static void setDefaults(SyncManagerConfig* config, const char* testName,
         for (int i=0; i<defaultSources->size(); i++) {
             StringBuffer* sourceName = (StringBuffer*)defaultSources->get(i);
             config->setSourceDefaults(sourceName->c_str());
+        } 
+
+    }
+    if (defaultSources) {
+        for (int i=0; i<defaultSources->size(); i++) {
+            StringBuffer* sourceName = (StringBuffer*)defaultSources->get(i);
+            if (strcmp(sourceName->c_str(), "briefcase") == 0) { 
+                config->setSyncSourceConfig(*createBriefcaseDefaultConfig());
+                break;
+            }
         }
     }
 
@@ -97,6 +123,10 @@ static void setDefaults(SyncManagerConfig* config, const char* testName,
         config->getAccessConfig().setPassword(password);
     }
 }
+
+
+
+
 
 
 
