@@ -46,93 +46,85 @@
 USE_NAMESPACE
 
 
-FileDataInputStream::FileDataInputStream (const StringBuffer& path) : InputStream(), 
-                                                                      encodingHelper(FORMAT_B64, NULL, NULL) {
-    currentSection = 0;
-    position       = 0;
-    eofbit         = 0;
-    totalSize      = 0;
-
-    if (path.empty()) {
-        LOG.error("FileDataInputStream error: empty file path");
-        return;
-    }
-    this->path = path;
-
+FileDataInputStream::FileDataInputStream (const StringBuffer& filePath) : MultipleInputStream(), 
+                                                                          encodingHelper(FORMAT_B64, NULL, NULL), 
+                                                                          path(filePath) {
 
     // Opens the file.
     // NOTE: MUST open in binary mode, in oder to have a correct position indicator
     // of the stream after each read() call.
     FILE* f = fopen(path.c_str(), "rb");
-    if (f) {
+    if (!f) {
+        // File not existing
         // LOG.error("FileDataInputStream error: cannot read the file '%s'", path.c_str());
-
-        //
-        // Fill the FileData object (OMA file obj format)
-        //
-        FileData fileData;
-        int fileSize = fgetsize(f);
-        fseek(f, 0, SEEK_SET);          // Resets the position indicator of the stream
-        fileData.setSize(fileSize);
-
-        StringBuffer fileName(getFileNameFromPath(path));
-        WCHAR* wFileName = toWideChar(fileName.c_str());
-        fileData.setName(wFileName);
-        delete [] wFileName;
-        wFileName = NULL;
-
-        // The body is fake: we just write the file name.
-        // Will be replaced reading the real file content from the stream (see read())
-        StringBuffer& fakeBody = fileName;
-        fileData.setBody(fakeBody.c_str(), fakeBody.length());
-
-        // Removed because the Server expects creation time in UTC format (TODO), 
-        // not as a timestamp. So this field is actually useless.
-        // Sets the file creation time, if info available
-        /*struct stat st;
-        memset(&st, 0, sizeof(struct stat));
-        if (stat(completeName, &st) >= 0) {
-            StringBuffer tmp;
-            tmp.sprintf("%i", st.st_mtime);
-            WCHAR* time = toWideChar(tmp.c_str());
-            fileData.setModified(time);
-            delete [] time;
-        }*/
-
-        const char* buf = fileData.format();
-        if (!buf) {
-            LOG.error("FileDataInputStream error: cannot format output data");
-            return;
-        }
-        StringBuffer formattedData(buf);
-        delete [] buf;
-
-
-        //
-        // Save the 3 InputStream sections.
-        //
-        setSections(formattedData);
-        
-        // Calculate the projected total data size
-        long b64FileSize = encodingHelper.getDataSizeAfterEncoding(fileSize);
-        totalSize = prologue.length() + b64FileSize + epilogue.length();
+        return;
     }
+
+    //
+    // Fill the FileData object (OMA file obj format)
+    //
+    FileData fileData;
+    int fileSize = fgetsize(f);
+    fseek(f, 0, SEEK_SET);          // Resets the position indicator of the stream
+    fileData.setSize(fileSize);
+
+    StringBuffer fileName(getFileNameFromPath(path));
+    WCHAR* wFileName = toWideChar(fileName.c_str());
+    fileData.setName(wFileName);
+    delete [] wFileName;
+    wFileName = NULL;
+
+    // The body is fake: we just write the file name.
+    // Will be replaced reading the real file content from the stream (see read())
+    StringBuffer& fakeBody = fileName;
+    fileData.setBody(fakeBody.c_str(), fakeBody.length());
+
+    // Removed because the Server expects creation time in UTC format (TODO), 
+    // not as a timestamp. So this field is actually useless.
+    // Sets the file creation time, if info available
+    /*struct stat st;
+    memset(&st, 0, sizeof(struct stat));
+    if (stat(completeName, &st) >= 0) {
+        StringBuffer tmp;
+        tmp.sprintf("%i", st.st_mtime);
+        WCHAR* time = toWideChar(tmp.c_str());
+        fileData.setModified(time);
+        delete [] time;
+    }*/
+
+    const char* buf = fileData.format();
+    if (!buf) {
+        LOG.error("FileDataInputStream error: cannot format output data");
+        return;
+    }
+    formattedFileData = buf;
+    delete [] buf;
+
+    //
+    // Save the 3 InputStream sections.
+    //
+    setSections();
+
+
+    // Calculate the projected total data size
+    long b64FileSize = encodingHelper.getDataSizeAfterEncoding(fileSize);
+    totalSize = prologue.length() + b64FileSize + epilogue.length();
 }
 
 
-void FileDataInputStream::setSections(const StringBuffer& formattedData) {
+void FileDataInputStream::setSections() {
 
     unsigned int pos=0, startPos=0, endPos=0;
 
     // Get the prologue and epilogue XML.
-    XMLProcessor::getElementContent(formattedData.c_str(), FILE_BODY, &pos, &startPos, &endPos);
+    XMLProcessor::getElementContent(formattedFileData.c_str(), FILE_BODY, &pos, &startPos, &endPos);
     if (!startPos || !endPos || (endPos < startPos)) {
         LOG.error("FileDataInputStream error: cannot find '%s' tag in output string", FILE_BODY);
         return;
     }
     
-    prologue = formattedData.substr(0, startPos);
-    epilogue = formattedData.substr(endPos);
+    prologue = formattedFileData.substr(0, startPos);
+    epilogue = formattedFileData.substr(endPos);
 
     // Create the 3 InputStream to read from.
     BufferInputStream stream1(prologue);
@@ -145,43 +137,6 @@ void FileDataInputStream::setSections(const StringBuffer& formattedData) {
     sections.add(stream3);
 }
 
-
-FileDataInputStream::~FileDataInputStream() {
-    close();
-}
-
-
-
-int FileDataInputStream::read(void* buffer, const unsigned int size) {
-
-    LOG.debug("FileDataInputStream::read - section #%i, size requested = %i", currentSection, size);    
-
-    InputStream* stream = (InputStream*)sections.get(currentSection);
-    if (!stream) {
-        LOG.error("FileDataInputStream: error reading stream #%i", currentSection+1);
-    }
-
-    // Reads data from the current stream
-    int bytesRead = readFromStream(stream, buffer, size);
-    position += bytesRead;
-
-    if (stream->eof()) {
-        // Current section has ended
-        if (isLastSection()) {
-            eofbit = 1;
-            return bytesRead;
-        }
-        else {
-            // Move to next section and read remaining bytes.
-            // Note: recursive call!
-            currentSection ++;
-            int ret = read((byte*)buffer + bytesRead, size - bytesRead);
-            return (bytesRead + ret);
-        }
-    }
-
-    return bytesRead;
-}
 
 
 int FileDataInputStream::readFromStream(InputStream* stream, void* buffer, const unsigned int size) {
@@ -210,46 +165,6 @@ int FileDataInputStream::readFromStream(InputStream* stream, void* buffer, const
     return b64Size;
 }
 
-
-bool FileDataInputStream::isLastSection() {
-    return currentSection == sections.size() - 1;
-}
-
-
-void FileDataInputStream::reset() {
-
-    for (int i=0; i<sections.size(); i++) {
-        InputStream* stream = (InputStream*)sections[i];
-        if (stream) {
-            stream->reset();
-        }
-    }
-
-    eofbit         = 0;
-    position       = 0;
-    currentSection = 0;
-}
-
-
-int FileDataInputStream::close() {
-
-    int ret = 0;
-    for (int i=0; i<sections.size(); i++) {
-        InputStream* stream = (InputStream*)sections[i];
-        if (stream) {
-            ret |= stream->close();
-        }
-    }
-    return ret;
-}
-
-int FileDataInputStream::eof() {
-    return eofbit;
-}
-
-int FileDataInputStream::getPosition() {
-    return position;
-}
 
 ArrayElement* FileDataInputStream::clone() {
     return new FileDataInputStream(this->path);

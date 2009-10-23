@@ -38,7 +38,7 @@
 /** @cond DEV */
 
 #include "base/fscapi.h"
-#include "inputStream/InputStream.h"
+#include "inputStream/MultipleInputStream.h"
 #include "base/util/EncodingHelper.h"
 #include "spds/FileData.h"
 
@@ -46,32 +46,21 @@ BEGIN_NAMESPACE
 
 
 /**
- * Extends the InputStream class, implements an input stream to read from a 
+ * Extends the MultipleInputStream class, implements an input stream to read from a 
  * generic file, given its full path.
  * The file's content read is returned as a File Object Data (XML with
  * tags about the file size, name and so on).
  */
-class FileDataInputStream : public InputStream {
+class FileDataInputStream : public MultipleInputStream {
 
 private:
 
     /// The file location (path & file name)
     StringBuffer path;
 
-
-    /**
-     * This is an array of InputStream objects.
-     * Each one rapresents a section of the whole data to return.
-     * In this implementation:
-     *   1st section = BufferInputStream (the prologue xml)
-     *   2nd section = FileInputStream   (the real file body)
-     *   3rd section = BufferInputStream (the epilogue xml)
-     */
-    ArrayList sections;
-
-    /// The index of the current section.
-    int currentSection;
-
+    /// The formatted file data object, created by the constructor and then used
+    /// to set the sections.
+    StringBuffer formattedFileData;
 
     /// The XML prologue (before the file body). It's created in the constructor.
     StringBuffer prologue;
@@ -84,29 +73,16 @@ private:
 
 
     /**
-     * This flag is set by all standard input operations when the End Of File 
-     * is reached in the sequence associated with the stream.
-     * It will be set to 1 when the EOF is reached for the last section.
+     * Creates the 3 input streams and adds them into the array of sections:
+     *   1st section = BufferInputStream (the prologue xml)
+     *   2nd section = FileInputStream   (the real file body)
+     *   3rd section = BufferInputStream (the epilogue xml)
      */
-    int eofbit;
-
-    /**
-     * The 'position' pointer determines the next location in the input 
-     * sequence to be read by the next input operation.
-     * Note: the position is the absolute position of the whole data.
-     */
-    unsigned int position;
-
-
-    /// Sets the 3 InputStream sections to read data from.
-    void setSections(const StringBuffer& formattedData);
-
-    /// Returns true if current section is the last one.
-    bool isLastSection();
+    void setSections();
 
     /**
      * Reads stream data from current section.
-     * Some section may need special actions:
+     * Overrided because some section may need special actions:
      * Data from section 2 (file content) needs to be converted
      * into base64 encoding.
      * Note: 'buffer' is expected already allocated for at least 'size' bytes.
@@ -118,53 +94,12 @@ public:
 
     /**
      * Constructor. 
-     * Opens the file named by the path 'path' in the file system. The FILE object
+     * Opens the file named by the path 'filePath' in the file system. The FILE object
      * remains opened for reading until the close() method is called, or this object is destroyed.
      * @note  the file body is actually ALWAYS encoded in Base64 (see encodingHelper construction).
-     * @param path    the file location (path & file name) to read from.
+     * @param filePath  the file location (path & file name) to read from.
      */
-    FileDataInputStream(const StringBuffer& path);
-
-    /// Closes the stream.
-    ~FileDataInputStream();
-
-    /**
-     * Reads 'size' bytes from the file. The file's content read is returned 
-     * as a File Object Data (OMA File Object).
-     * 'buffer' is expected already allocated for at least 'size' bytes.
-     * @note            the number of bytes read can be less than the size specified
-     *                  even if the stream EOF is not reached. So please use eof() method
-     *                  after a read(), to know if the end of stream is reached.
-     * @note            'buffer' is expected already allocated for at least 'size' bytes
-     * @param buffer    [IN/OUT] the buffer of data read, allocated by the caller
-     * @param size      the size of the chunk to be read [in bytes]
-     * @return          the number of bytes effectively read (<= size)
-     */
-    virtual int read(void* buffer, const unsigned int size);
-
-    /**
-     * Call this method to start again reading from the beginning of the file stream.
-     * Resets the position indicator of the stream. Reset all streams.
-     */
-    void reset();
-
-    /**
-     * Closes the FILE object.
-     * @return 0 if no errors
-     */
-    int close();
-
-    /**
-     * The function returns a non-zero value if the eofbit stream's error flag 
-     * has been set by a previous i/o operation. Closes all streams.
-     */
-    int eof();
-
-    /**
-     * Returns the absolute position of the 'position' pointer.
-     * Proxy method to the ftell(f);
-     */
-    int getPosition();
+    FileDataInputStream(const StringBuffer& filePath);
 
 
     /// From ArrayElement

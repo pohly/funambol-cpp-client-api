@@ -3444,6 +3444,10 @@
 					RelativePath="..\..\src\cpp\common\inputStream\InputStream.cpp"
 					>
 				</File>
+				<File
+					RelativePath="..\..\src\cpp\common\inputStream\MultipleInputStream.cpp"
+					>
+				</File>
 			</Filter>
 		</Filter>
 		<Filter
@@ -4486,11 +4490,11 @@
 				Name="email"
 				>
 				<File
-					RelativePath="..\..\src\include\common\email\MailAccount.h"
+					RelativePath="..\..\src\include\common\mail\MailAccount.h"
 					>
 				</File>
 				<File
-					RelativePath="..\..\src\include\common\mail\MailAccount.h"
+					RelativePath="..\..\src\include\common\email\MailAccount.h"
 					>
 				</File>
 				<File
