@@ -38,7 +38,6 @@
 #include "base/util/utils.h"
 #include "inputStream/MultipleInputStream.h"
 
-
 USE_NAMESPACE
 
 

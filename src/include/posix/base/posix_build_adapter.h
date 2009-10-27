@@ -66,6 +66,8 @@ END_NAMESPACE
 #   undef  _wcsicmp
 #   undef  wcsicmp
 
+
+
 inline int wcsicmp(const WCHAR * s1, const WCHAR * s2)
 {
     const WCHAR * i1 = s1;
