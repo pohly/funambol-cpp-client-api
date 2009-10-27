@@ -66,7 +66,7 @@ int BufferInputStream::read(void* buffer, const unsigned int size) {
         bytesRead = totalSize - position;
     }
 
-    void* p = (byte*)data + position;
+    void* p = (char*)data + position;
     memcpy(buffer, p, bytesRead);
 
     // Update internal members

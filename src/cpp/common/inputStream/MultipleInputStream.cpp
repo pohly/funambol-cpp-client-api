@@ -79,7 +79,7 @@ int MultipleInputStream::read(void* buffer, const unsigned int size) {
             // Move to next section and read remaining bytes.
             // Note: recursive call!
             currentSection ++;
-            int ret = read((byte*)buffer + bytesRead, size - bytesRead);
+            int ret = read((char*)buffer + bytesRead, size - bytesRead);
             return (bytesRead + ret);
         }
     }

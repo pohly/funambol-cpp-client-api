@@ -86,7 +86,7 @@ int FileInputStream::read(void* buffer, const unsigned int size) {
         return 0;
     }
 
-    return fread(buffer, sizeof(byte), size, f);
+    return fread(buffer, sizeof(char), size, f);
 }
 
 void FileInputStream::reset() {

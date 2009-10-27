@@ -156,7 +156,7 @@ int FileDataInputStream::readFromStream(InputStream* stream, void* buffer, const
         return 0;
     }
 
-    byte* rawBuffer = new byte[rawSize];
+    char* rawBuffer = new char[rawSize];
     int rawBytesRead = stream->read(rawBuffer, rawSize);
 
     int b64Size = b64_encode((char*)buffer, rawBuffer, rawBytesRead);
