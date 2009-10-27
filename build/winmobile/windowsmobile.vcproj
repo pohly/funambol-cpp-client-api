@@ -1953,6 +1953,10 @@
 						</FileConfiguration>
 					</File>
 					<File
+						RelativePath="..\..\src\cpp\common\base\util\EncodingHelper.cpp"
+						>
+					</File>
+					<File
 						RelativePath="..\..\src\cpp\common\base\util\MemoryKeyValueStore.cpp"
 						>
 					</File>
@@ -2350,6 +2354,10 @@
 							UsePrecompiledHeader="0"
 						/>
 					</FileConfiguration>
+				</File>
+				<File
+					RelativePath="..\..\src\cpp\common\client\FileSyncItem.cpp"
+					>
 				</File>
 				<File
 					RelativePath="..\..\src\cpp\common\client\FileSyncSource.cpp"
@@ -3446,6 +3454,10 @@
 					</FileConfiguration>
 				</File>
 				<File
+					RelativePath="..\..\src\cpp\common\spds\Chunk.cpp"
+					>
+				</File>
+				<File
 					RelativePath="..\..\src\cpp\common\spds\CredentialHandler.cpp"
 					>
 					<FileConfiguration
@@ -3825,6 +3837,10 @@
 				</File>
 				<File
 					RelativePath="..\..\src\cpp\common\spds\FolderExt.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\cpp\common\spds\ItemReader.cpp"
 					>
 				</File>
 				<File
@@ -17728,6 +17744,30 @@
 					>
 				</File>
 			</Filter>
+			<Filter
+				Name="inputStream"
+				>
+				<File
+					RelativePath="..\..\src\cpp\common\inputStream\BufferInputStream.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\cpp\common\inputStream\FileDataInputStream.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\cpp\common\inputStream\FileInputStream.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\cpp\common\inputStream\InputStream.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\cpp\common\inputStream\MultipleInputStream.cpp"
+					>
+				</File>
+			</Filter>
 		</Filter>
 		<Filter
 			Name="Header Files"
@@ -17778,10 +17818,6 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\include\common\spds\constants.h"
-				>
-			</File>
-			<File
 				RelativePath="..\..\src\include\common\http\constants.h"
 				>
 			</File>
@@ -17795,6 +17831,10 @@
 			</File>
 			<File
 				RelativePath="..\..\src\include\common\base\constants.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\include\common\spds\constants.h"
 				>
 			</File>
 			<File
