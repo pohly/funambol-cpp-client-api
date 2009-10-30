@@ -1,3 +1,7 @@
+2009-10-30
+  - toccy: added 'modification' attribute to FileSyncSource items (FileData Objcts), in UTC format like "20091030T103000Z"
+           added unixTimeToString and getFileModTime functions for each platform (base/*adapter.cpp)
+
 2009-10-23
   - toccy: Merged branch US3125 (Large Object for outgoing items) to trunk, at r1286. Branch closed.
            Outgoing items are not split in chunks reading directly from the input streams, to save memory allocation.

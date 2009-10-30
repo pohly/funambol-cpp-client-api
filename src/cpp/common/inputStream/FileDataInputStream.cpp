@@ -79,18 +79,14 @@ FileDataInputStream::FileDataInputStream (const StringBuffer& filePath) : Multip
     StringBuffer& fakeBody = fileName;
     fileData.setBody(fakeBody.c_str(), fakeBody.length());
 
-    // Removed because the Server expects creation time in UTC format (TODO), 
-    // not as a timestamp. So this field is actually useless.
-    // Sets the file creation time, if info available
-    /*struct stat st;
-    memset(&st, 0, sizeof(struct stat));
-    if (stat(completeName, &st) >= 0) {
-        StringBuffer tmp;
-        tmp.sprintf("%i", st.st_mtime);
-        WCHAR* time = toWideChar(tmp.c_str());
-        fileData.setModified(time);
-        delete [] time;
-    }*/
+    // Sets the file modification time (UTC string like "20091028T192200Z")
+    unsigned long tstamp = getFileModTime(path);
+    StringBuffer modTime = unixTimeToString(tstamp, true);  // file's mod time is already in UTC
+    if (!modTime.empty()) {
+        WString wmodTime;
+        wmodTime = modTime;
+        fileData.setModified(wmodTime);
+    }
 
     const char* buf = fileData.format();
     if (!buf) {
