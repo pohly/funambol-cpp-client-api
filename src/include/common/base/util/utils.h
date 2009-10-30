@@ -221,6 +221,17 @@ bool removeFileInDir(const char* dir, const char* filename = NULL);
 unsigned long getFileModTime(const char* name);
 
 /**
+ * Converts a timestamp from unix format (seconds from 1970-01-01) 
+ * into a string like "20091022T192200" or "20091022T192100Z".
+ * No local/UTC conversion is done inside this function.
+ *
+ * @param unixTime  the input timestamp in unix format
+ * @param isUTC     if true, will place the "Z" at the end of the returned string
+ * @return          a string formatted like "20091022T192200Z", empty string in case of error
+ */
+StringBuffer unixTimeToString(const unsigned long unixTime, const bool isUTC);
+
+/**
  * Creates a folder.
  * If the folder already exists, the method returns success and does nothing.
  *

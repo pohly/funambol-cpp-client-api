@@ -584,6 +584,38 @@ int createFolder(const char *aPath) {
     return err;
 }
 
+
+unsigned long getFileModTime(const char* name) {
+    struct stat buffer;
+    memset(&buffer, 0, sizeof(struct stat));
+    return stat(name, &buffer) ? 0 : (unsigned long)buffer.st_mtime;
+}
+
+
+StringBuffer unixTimeToString(const unsigned long unixTime, const bool isUTC) {
+
+    StringBuffer ret;
+    struct tm *sysTime;
+    time_t tstamp = (time_t)unixTime;
+    
+    sysTime = gmtime(&tstamp);
+    if (!sysTime) {
+        LOG.error("error in gmtime: unixTime = %li", unixTime);
+        return ret;
+    }
+
+
+    int year  = sysTime->tm_year + 1900;  // starting from 1900
+    int month = sysTime->tm_mon + 1;      // range [0-11]
+    ret.sprintf("%d%02d%02dT%02d%02d%02d", year, month, sysTime->tm_mday, sysTime->tm_hour, sysTime->tm_min, sysTime->tm_sec);
+    
+    if (isUTC) {
+        ret.append("Z");
+    }
+    return ret;
+}
+
+
 char** readDir(const char* name, int *count, bool onlyCount) {
     char **entries = NULL;
     *count = 0;

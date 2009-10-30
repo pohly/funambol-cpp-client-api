@@ -38,6 +38,12 @@
 #include "base/util/utils.h"
 #include "base/globalsdef.h"
 #include <ShlObj.h>
+#include <time.h>
+
+#ifdef _WIN32_WCE
+#include <crtdefs.h>        // for __time64_t
+#include <altcecrt.h>       // for _gmtime64_s()
+#endif
 
 #if defined(WIN32) && !defined(_WIN32_WCE)
 #include <sys/stat.h>
@@ -411,12 +417,35 @@ finally:
     return ret;
 }
 
-#if defined(WIN32) && !defined(_WIN32_WCE)
+
 unsigned long getFileModTime(const char* name) {
-	struct _stat buffer;
-	return _stat(name, &buffer) ? 0 : (unsigned long)buffer.st_mtime;
+	struct stat buffer;
+	return stat(name, &buffer) ? 0 : (unsigned long)buffer.st_mtime;
 }
-#endif
+
+
+StringBuffer unixTimeToString(const unsigned long unixTime, const bool isUTC) {
+
+    StringBuffer ret;
+    struct tm sysTime;
+    __time64_t tstamp = (__time64_t)unixTime;
+
+    int err = _gmtime64_s(&sysTime, &tstamp);
+    if (err) {
+        LOG.error("error in _gmtime64_s (code %d)", err);
+        return ret;
+    }
+
+    int year  = sysTime.tm_year + 1900;  // starting from 1900
+    int month = sysTime.tm_mon + 1;      // range [0-11]
+    ret.sprintf("%d%02d%02dT%02d%02d%02d", year, month, sysTime.tm_mday, sysTime.tm_hour, sysTime.tm_min, sysTime.tm_sec);
+
+    if (isUTC) {
+        ret.append("Z");
+    }
+    return ret;
+}
+
 
 #if defined(WIN32) || defined(_WIN32_WCE)
 /// Returns a file list from a directory, as char**.
