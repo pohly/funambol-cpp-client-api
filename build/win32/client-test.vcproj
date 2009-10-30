@@ -229,6 +229,10 @@
 			<Filter
 				Name="base"
 				>
+				<File
+					RelativePath="..\..\test\common\base\utilsTest.cpp"
+					>
+				</File>
 				<Filter
 					Name="util"
 					>

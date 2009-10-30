@@ -34,7 +34,8 @@ TESTS_BASE = \
     StringBufferTest.cpp \
     PropertyFileTest.cpp \
     XMLProcessorTest.cpp \
-    base64Test.cpp
+    base64Test.cpp \
+    utilsTest.cpp
 
 TESTS_FILTER = \
     ClauseTest.cpp \

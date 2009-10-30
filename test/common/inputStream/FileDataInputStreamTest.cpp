@@ -90,6 +90,12 @@ private:
         fileData.setSize(fileSize);
         fileData.setBody(fileContent, fileSize);
 
+        unsigned long tstamp = getFileModTime(fileName);
+        StringBuffer modTime = unixTimeToString(tstamp, true);  // file's mod time is already in UTC
+        WString wmodTime;
+        wmodTime = modTime;
+        fileData.setModified(wmodTime);
+
         fileDataContent = fileData.format();
         fileDataSize = (int)strlen(fileDataContent);
 
