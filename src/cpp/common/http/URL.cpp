@@ -61,6 +61,17 @@ URL::URL(const char* url) : fullURL(NULL), protocol(NULL), host(NULL), resource(
 URL::URL() : fullURL(NULL), protocol(NULL), host(NULL), resource(NULL) {
 }
 
+/*
+ * Copy constructor
+ */
+URL::URL(URL& url) {
+    this->fullURL   = stringdup(url.fullURL);
+    this->host      = stringdup(url.host);
+    this->port      = url.port;
+    this->protocol  = stringdup(url.protocol);
+    this->resource  = stringdup(url.resource);
+}
+
 URL::~URL() {
     if (fullURL) {
         delete [] fullURL; fullURL = NULL;

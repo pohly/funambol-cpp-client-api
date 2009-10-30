@@ -53,6 +53,7 @@ BEGIN_NAMESPACE
         int    port    ;
 
         URL();
+        URL(URL &url);
         URL(const char* url);
         ~URL();
 
