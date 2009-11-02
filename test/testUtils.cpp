@@ -182,7 +182,7 @@ char* loadTestFile(const char* testName, const char* fileName, bool binary) {
     char* content = NULL;
     size_t len;
 
-    StringBuffer& path = getTestFileFullPath(testName, fileName);
+    StringBuffer path = getTestFileFullPath(testName, fileName);
 
     bool fileLoaded = readFile(path.c_str(), &content, &len, binary);
     CPPUNIT_ASSERT_MESSAGE("Failed to load test file", fileLoaded);

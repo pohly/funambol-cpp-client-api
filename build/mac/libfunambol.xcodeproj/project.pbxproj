@@ -1044,10 +1044,10 @@
 		AB4D7068108DF5110036FEFF /* vcal10.ics */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = vcal10.ics; sourceTree = "<group>"; };
 		AB4D7069108DF5110036FEFF /* vcard21.vcf */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = vcard21.vcf; sourceTree = "<group>"; };
 		AB4D706A108DF5110036FEFF /* vcard30.vcf */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = vcard30.vcf; sourceTree = "<group>"; };
-		AB4D706B108DF5110036FEFF /* vcard4Wcontact21-2.vcf */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "vcard4Wcontact21-2.vcf"; sourceTree = "<group>"; };
-		AB4D706C108DF5110036FEFF /* vcard4Wcontact21-3.vcf */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "vcard4Wcontact21-3.vcf"; sourceTree = "<group>"; };
-		AB4D706D108DF5110036FEFF /* vcard4WContact21.vcf */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = vcard4WContact21.vcf; sourceTree = "<group>"; };
-		AB4D706E108DF5110036FEFF /* vcard4WContact30.vcf */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = vcard4WContact30.vcf; sourceTree = "<group>"; };
+		AB4D706B108DF5110036FEFF /* vcard4Wcontact21-2.vcf */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = "vcard4Wcontact21-2.vcf"; path = "WinContactTest/vcard4Wcontact21-2.vcf"; sourceTree = "<group>"; };
+		AB4D706C108DF5110036FEFF /* vcard4Wcontact21-3.vcf */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = "vcard4Wcontact21-3.vcf"; path = "WinContactTest/vcard4Wcontact21-3.vcf"; sourceTree = "<group>"; };
+		AB4D706D108DF5110036FEFF /* vcard4WContact21.vcf */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = vcard4WContact21.vcf; path = WinContactTest/vcard4WContact21.vcf; sourceTree = "<group>"; };
+		AB4D706E108DF5110036FEFF /* vcard4WContact30.vcf */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = vcard4WContact30.vcf; path = WinContactTest/vcard4WContact30.vcf; sourceTree = "<group>"; };
 		AB4D706F108DF5110036FEFF /* wrongex.xml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = wrongex.xml; sourceTree = "<group>"; };
 		AB7B893F108C9E1C00E14CD5 /* MailAccount.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = MailAccount.cpp; sourceTree = "<group>"; };
 		AB7B8940108C9E1C00E14CD5 /* MailAccountManager.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = MailAccountManager.cpp; sourceTree = "<group>"; };
@@ -3175,6 +3175,7 @@
 				);
 				INSTALL_PATH = /usr/local/bin;
 				OTHER_LDFLAGS = (
+					"-L/opt/local/include",
 					"-lfunambol",
 					"-L/opt/local/lib",
 					"-lcppunit",
