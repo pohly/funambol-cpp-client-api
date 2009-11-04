@@ -67,6 +67,8 @@ FileDataInputStream::FileDataInputStream (const StringBuffer& filePath) : Multip
     int fileSize = fgetsize(f);
     fseek(f, 0, SEEK_SET);          // Resets the position indicator of the stream
     fileData.setSize(fileSize);
+    fclose(f); 
+    f = NULL;
 
     StringBuffer fileName(getFileNameFromPath(path));
     WCHAR* wFileName = toWideChar(fileName.c_str());
