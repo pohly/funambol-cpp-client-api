@@ -1,3 +1,6 @@
+2009-11-04
+  - toccy: fixed bug #7973 for Windows Clients (vCal property PRIORITY for events/tasks has a wrong mapping)
+
 2009-10-30
   - toccy: added 'modification' attribute to FileSyncSource items (FileData Objcts), in UTC format like "20091030T103000Z"
            added unixTimeToString and getFileModTime functions for each platform (base/*adapter.cpp)
