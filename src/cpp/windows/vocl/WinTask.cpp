@@ -158,7 +158,18 @@ wstring& WinTask::toString() {
         }
     }
     if (getProperty(L"Importance", element)) {
-        vp = new VProperty(TEXT("PRIORITY"), element.c_str());
+        // PRIORITY:1 in vCal = High, subsequent numbers specify a decreasing ordinal priority.
+        // We set: 1=High, 2=normal, 3=low
+        int importance = _wtoi(element.c_str());
+        vp = new VProperty(TEXT("PRIORITY"));
+        if (importance == winImportanceHigh) {
+            vp->addValue(TEXT("1"));
+        } else if (importance == winImportanceLow) {
+            vp->addValue(TEXT("3"));
+        } else {  
+            // default value 
+            vp->addValue(TEXT("2"));
+        }
         vo->addProperty(vp);
         delete vp; vp = NULL;
     }
@@ -380,7 +391,19 @@ int WinTask::parse(const wstring dataString) {
         setProperty(L"PercentComplete", element);
     }
     if (element = getVObjectPropertyValue(vo, L"PRIORITY")) {
-        setProperty(L"Importance", element);
+        // PRIORITY:1 in vCal = High, subsequent numbers specify a decreasing ordinal priority.
+        int priority = _wtoi(element);
+
+        int importance;
+        if (priority >= 3) {
+            importance = winImportanceLow;
+        } else if (priority == 1) {
+            importance = winImportanceHigh;
+        } else {  
+            // default value 
+            importance = winImportanceNormal;
+        }
+        setIntProperty(L"Importance", importance);
     }
     if (element = getVObjectPropertyValue(vo, L"STATUS")) {
         if(!wcscmp(element, TEXT("COMPLETED"))) {

@@ -1,3 +1,7 @@
+Funambol SDK C++ 8.0.8
+-----------------------
+2009-11-04
+  - toccy: fixed bug #7973 for Windows Clients (vCal property PRIORITY for events/tasks has a wrong mapping)
 
 Funambol SDK C++ 8.0.7
 -----------------------
@@ -6,7 +10,7 @@ Funambol SDK C++ 8.0.7
          the message 2 more times.
   - Teo: Code correction for iPhone SDK 3.0
 
-Funambol SDK C++ 8.0.5 (V8 SP1)
+Funambol SDK C++ 8.0.5 (V8 SP1, V8SP2)
 -----------------------
 2009-09-03
    - toccy: fixed bug #7794: sync fails when server sends multipart item + another item in one message
