@@ -107,6 +107,15 @@ char* loadTestFile(const char* testName, const char* fileName, bool binary = fal
 StringBuffer getTestFileFullPath(const char* testName, const char* fileName);
 
 
+/**
+ * Returns the full path of a given test file (concat "testcases/testName/") with
+ * the final slash at the end
+ *
+ * @param testName the test name
+ * @return         the full path of the test file
+ */
+StringBuffer getTestDirFullPath(const char* testName);
+
 /** @} */
 /** @endcond */
 #endif // INCL_TEST_UTILS

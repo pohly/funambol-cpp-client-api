@@ -103,7 +103,6 @@ bool readFile(const char* path, char **message, size_t *len, bool binary)
     return res;
 }
 
-
 char** readDir(const char* name, int *count, bool onlyCount) {
     char **entries = NULL;
     *count = 0;
@@ -134,10 +133,12 @@ char** readDir(const char* name, int *count, bool onlyCount) {
                 }
                 entry = readdir(dir);
             }
+        } else {
+            *count = total;
         }
         closedir(dir);
     }
-
+    
     return entries;
 }
 

@@ -200,6 +200,15 @@ StringBuffer getTestFileFullPath(const char* testName, const char* fileName) {
     return path;
 }
 
+StringBuffer getTestDirFullPath(const char* testName) {
+    
+    if (!testName) {
+        return "";
+    }
+    StringBuffer path;
+    path.sprintf("%s/%s/", TESTCASES_DIR, testName);
+    return path;
+}
 
 
 /** @} */
