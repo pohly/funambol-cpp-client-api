@@ -338,5 +338,72 @@ bool fileExists(const char *pathname) {
 
     return false;
 }
+
+ArrayList readFilesInDirRecursive(const char* dirname, bool recursive) {
+    
+    ArrayList totalFiles;
+    // count entries
+    DIR *dir = opendir(dirname);
+    if (dir) {
+        struct dirent *entry = readdir(dir);
+        while (entry) {
+            if (strcmp(entry->d_name, ".") &&
+                strcmp(entry->d_name, "..")) {
+                if (entry->d_type == DT_DIR && recursive) {
+                    ArrayList list;
+                    StringBuffer newDir(dirname);
+                    newDir.append("/");
+                    newDir.append(entry->d_name);
+                    list = readFilesInDirRecursive(newDir.c_str(), recursive);
+                    totalFiles.add(&list);
+                } else {
+                    StringBuffer name(dirname);
+                    name.append("/");
+                    name.append(entry->d_name);
+                    totalFiles.add(name);    
+                }
+                
+            }
+            entry = readdir(dir);
+        }
+        
+        closedir(dir);
+    }
+    
+    return totalFiles;
+    
+}
+
+ArrayList readDirsInDirRecursive(const char* dirname, bool recursive) {
+    
+    ArrayList totalDirs;
+    DIR *dir = opendir(dirname);
+    if (dir) {
+        struct dirent *entry = readdir(dir);
+        while (entry) {
+            if (strcmp(entry->d_name, ".") &&
+                strcmp(entry->d_name, "..")) {
+                 if (entry->d_type == DT_DIR && recursive) {
+                    ArrayList list;
+                    StringBuffer newDir(dirname);
+                    newDir.append("/");
+                    newDir.append(entry->d_name);
+                    totalDirs.add(newDir);
+                    list = readDirsInDirRecursive(newDir.c_str(), recursive);
+                    totalDirs.add(&list);
+                } 
+                
+            }
+            entry = readdir(dir);
+        }
+        
+        closedir(dir);
+    }
+    
+    return totalDirs;
+    
+}
+
+
 END_NAMESPACE
 

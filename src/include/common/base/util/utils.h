@@ -374,6 +374,30 @@ inline long calculateCRC(const char* s) {
     return calculateCRC(s, strlen(s));
 }
 
+/**
+* Read the files into a directory in recursive way it recursive is true.
+* Returns an array list of files with full path dirname/filename, dirname/dir1/fileinside
+*
+* @param dirname the dir to look into
+* @param recursive if true it looks inside the inner dirs
+*
+* @return an ArrayList of Stringbuffer containing the file names 
+*/
+
+ArrayList readFilesInDirRecursive(const char* dirname, bool recursive);
+
+/**
+ * Read the dir into a directory in recursive way it recursive is true.
+ * Returns an array list of dir with full path dirname/dir1, dirname/dir1/dir2
+ *
+ * @param dirname the dir to look into
+ * @param recursive if true it looks inside the inner dirs
+ *
+ * @return an ArrayList of Stringbuffer containing the dir names 
+ */
+ArrayList readDirsInDirRecursive(const char* dirname, bool recursive);
+
+
 END_NAMESPACE
 
 /** @endcond */
