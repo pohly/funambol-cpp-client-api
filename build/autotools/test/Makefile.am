@@ -67,7 +67,8 @@ TESTS_SPDS = \
     MailAccountTest.cpp \
     MappingTestSyncSource.cpp \
     TestSyncSource.cpp \
-    SyncManagerTest.cpp
+    SyncManagerTest.cpp \
+    LOItemTest.cpp
 
 TESTS_PUSH = \
     FThreadTest.cpp \
