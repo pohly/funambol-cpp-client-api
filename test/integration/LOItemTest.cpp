@@ -345,7 +345,7 @@ void LOItemTest::testFileSyncSource() {
     createFolder(test_dir.c_str());
     for (int i = 0; i < 4; i++) {
         StringBuffer s; s.sprintf("sif%i.txt", i);
-        StringBuffer& path = getTestFileFullPath(test_name.c_str(), s.c_str());
+        StringBuffer path = getTestFileFullPath(test_name.c_str(), s.c_str());
         char* content = loadTestFile(test_name.c_str(), s.c_str(), true);
         struct stat st;
         stat(path.c_str(), &st);
@@ -379,7 +379,7 @@ void LOItemTest::testFileSyncSource() {
     removeFileInDir(test_dir.c_str(), "sif0.txt"); 
     removeFileInDir(test_dir.c_str(), "sif1.txt"); 
     
-    StringBuffer& path = getTestFileFullPath(test_name.c_str(), "vcard0.txt");
+    StringBuffer path = getTestFileFullPath(test_name.c_str(), "vcard0.txt");
     char* content = loadTestFile(test_name.c_str(), "vcard0.txt", true);
     struct stat st;
     stat(path.c_str(), &st);
