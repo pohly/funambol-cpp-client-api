@@ -173,6 +173,14 @@
 			Name="Source Files"
 			Filter="cpp;c;cxx;rc;def;r;odl;idl;hpj;bat"
 			>
+			<File
+				RelativePath="..\..\src\cpp\common\client\updater\UpdaterFactory.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\cpp\common\client\updater\XmlUpdater.cpp"
+				>
+			</File>
 			<Filter
 				Name="base"
 				>
@@ -3408,6 +3416,42 @@
 			Name="Header Files"
 			Filter="h;hpp;hxx;hm;inl"
 			>
+			<File
+				RelativePath="..\..\src\include\common\client\FileClient.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\include\common\client\FileLogAccessor.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\include\common\client\LogAccessor.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\include\common\client\LogSender.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\include\common\client\MailSourceManagementNode.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\include\common\client\MediaSyncSource.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\include\common\client\PostDataLogSender.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\include\common\client\SendLogManager.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\include\common\client\TestFileSyncSource.h"
+				>
+			</File>
 			<Filter
 				Name="base"
 				>

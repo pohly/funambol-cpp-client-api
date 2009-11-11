@@ -280,3 +280,91 @@ Log &Log::instance() {
     }
     return *logger;
 }
+
+
+bool Log::rotateLogFile(unsigned int maxSize, unsigned int maxCount) {
+#ifndef _WIN32_WCE
+    unsigned int KB = 1024;
+    unsigned int MB = KB*KB;
+    logFile = _wfopen(wlogDir, TEXT("r"));
+
+    if (logFile) 
+    {
+        // check file size
+        size_t size = fgetsize(logFile);
+        if (size>=maxSize*MB)
+        {
+            if (! fclose(logFile))
+            {
+                bool stopflag = false;
+                unsigned int lastID = 1;
+                WCHAR newname[512];
+                WCHAR oldname[512];
+                // find the next available name
+                while(!stopflag && lastID<maxCount)
+                {
+                    wsprintf(newname,L"%s.%d",wlogDir,lastID);
+                    FILE* tmpfile = _wfopen(newname, L"r");
+                    if (tmpfile)
+                    {
+                        fclose(tmpfile);
+                        lastID++;
+                    }
+                    else
+                    {
+                        stopflag = true;
+                    }
+                }
+                char * _newname;
+                char * _oldname;
+                char * _wlogDir;
+
+                _newname = toMultibyte(newname);
+                remove(_newname);
+                delete _newname;
+
+                // rename
+                for(int t=lastID;t>1;t--)
+                {
+                    wsprintf(newname,L"%s.%d",wlogDir,t);
+                    wsprintf(oldname,L"%s.%d",wlogDir,t-1);
+
+                    _newname = toMultibyte(newname);
+                    _oldname = toMultibyte(oldname);
+                    rename(_oldname,_newname);
+                    delete _newname;
+                    delete _oldname;
+                }
+                wsprintf(newname,L"%s.%d",wlogDir,1);
+
+                _newname = toMultibyte(newname);
+                _wlogDir = toMultibyte(wlogDir);
+                remove(_newname);
+                rename(_wlogDir,_newname);
+                delete _wlogDir;
+                delete _newname;
+
+                logFile = _wfopen(wlogDir, L"a+");
+
+                if (logFile == NULL && strcmp(logName,LOG_NAME)!=0) 
+                {
+                    WCHAR tmp[512];
+                    wsprintf(tmp, L"Unable to open new log file: \"%s\".\nPlease check your user's permissions.", wlogDir);
+                    /*
+
+                    MessageBox(NULL, tmp, TEXT("Outlook Sync"), MB_SETFOREGROUND | MB_OK);
+
+                    */
+                    MessageBox(NULL, tmp, TEXT("Sync for Outlook"), MB_SETFOREGROUND | MB_OK);
+                }
+
+                reset();
+                return true;
+            }
+        }
+    }
+#else
+    reset();
+#endif
+    return false;
+}

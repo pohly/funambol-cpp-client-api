@@ -193,6 +193,8 @@ BEGIN_NAMESPACE
          * Returns the log file size [bytes].
          */
         virtual size_t getLogSize() = 0;
+
+        bool rotateLogFile(unsigned int maxSize, unsigned int maxCount) ;
     };
 
 # define LOG Log::instance()
