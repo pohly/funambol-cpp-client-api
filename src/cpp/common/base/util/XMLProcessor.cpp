@@ -595,7 +595,12 @@ char* XMLProcessor::copyElementContentExcept(const char*xmlPtr    ,
                         startPos += previousPosition;
                         endPos   += previousPosition;
                         position += previousPosition;
-                        if (startPos < pos && pos < endPos) {
+                        // [MB]
+                        // was "if (startPos < pos && pos < endPos) {"
+                        // case : "<Atomic><CmdID>2</CmdID><Get><CmdID>3</CmdID><Item><Target><LocURI>./DevInfo/DevId</LocURI></Target></Item></Get></Atomic>"
+                        // while searching "Get" commands not included into Atomic, routine failed for the specified piece of syncml and returned non-null result
+                        // will be treated as if get is outside of Atomic
+                        if (startPos < pos && pos <= endPos) {
                             notValid = true;
                             break;
                         }

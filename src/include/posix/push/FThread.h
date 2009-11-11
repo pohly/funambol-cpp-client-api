@@ -73,6 +73,7 @@ public:
      Wait for this thread to finish its execution or the timeout expires.
      If the thread terminates its execution before the timeout expires then 
      true is returned, false otherwise.
+	 @param timeout Timeout in milliseconds
     */
     virtual bool wait(unsigned long timeout);
 
@@ -101,7 +102,7 @@ public:
      */
     static void sleep(long msec);
 
-    friend void* pthreadEntryFunction(void* fthreadObj);
+    static void* pthreadEntryFunction(void* fthreadObj);
 
 
 private:

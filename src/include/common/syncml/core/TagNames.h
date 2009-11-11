@@ -89,6 +89,7 @@
 #define CMD_REF             "CmdRef"
 #define TARGET_REF          "TargetRef"
 #define SOURCE_REF          "SourceRef"
+#define CORRELATOR          "Correlator"
 #define CHAL                "Chal"
 #define CMD                 "Cmd"
 #define ADD                 "Add"

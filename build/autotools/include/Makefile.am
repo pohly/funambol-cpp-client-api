@@ -42,6 +42,7 @@ nobase_pkginclude_HEADERS = \
     common/http/constants.h \
     common/http/Proxy.h \
     common/http/TransportAgent.h \
+    common/http/TransportAgentFactory.h \
     common/http/URL.h \
     common/http/errors.h \
     common/spds/AccessConfig.h \
@@ -146,6 +147,7 @@ nobase_pkginclude_HEADERS = \
     common/syncml/core/TargetRef.h \
     common/syncml/core/VerDTD.h \
     common/syncml/core/VerProto.h \
+    common/syncml/formatter/Formatter.h \
     common/vocl/VConverter.h \
     common/vocl/VObject.h \
     common/vocl/VProperty.h \

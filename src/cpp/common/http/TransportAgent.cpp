@@ -35,10 +35,13 @@
 #include "http/constants.h"
 #include "http/HTTPHeader.h"
 #include "http/TransportAgent.h"
+#include "base/util/KeyValuePair.h"
 #include "base/util/utils.h"
 #include "base/globalsdef.h"
 
 USE_NAMESPACE
+
+const unsigned int TransportAgent::MIME_BUFFER_SIZE;
 
 TransportAgent::TransportAgent() {
     timeout = DEFAULT_MAX_TIMEOUT;
@@ -49,6 +52,9 @@ TransportAgent::TransportAgent() {
     SSLServerCertificates = "";
     SSLVerifyServer = true;
     SSLVerifyHost = true;
+    responseMime[0] = 0;
+    responseSize = 0;
+    headerProperties = NULL;
 }
 
 TransportAgent::TransportAgent(URL& newURL,
@@ -66,6 +72,9 @@ TransportAgent::TransportAgent(URL& newURL,
     SSLServerCertificates = "";
     SSLVerifyServer = true;
     SSLVerifyHost = true;
+    responseMime[0] = 0;
+    responseSize = 0;
+    headerProperties = NULL;
 }
 
 TransportAgent::~TransportAgent() {
@@ -103,6 +112,19 @@ unsigned int TransportAgent::getReadBufferSize() {
     return readBufferSize;
 }
 
+void TransportAgent::setResponseMime(const char *mime) {
+    if (mime && (strlen(mime) < MIME_BUFFER_SIZE))
+        strcpy(responseMime, mime);
+}
+
+const char* TransportAgent::getResponseMime() {
+    return stringdup(responseMime);
+}
+
+unsigned int TransportAgent::getResponseSize() {
+	return responseSize;
+}
+
 void TransportAgent::setUserAgent(const char* ua) {
     if (ua)
         strcpy(userAgent, ua);
@@ -120,3 +142,13 @@ bool TransportAgent::getCompression(){
     return compression;
 }
 
+void  TransportAgent::setProperty(const char *propName, const char * const propValue){
+	if (!headerProperties)
+		headerProperties = new ArrayList;
+	KeyValuePair pair(propName, propValue);
+	headerProperties->add(pair);
+}
+
+char* TransportAgent::query(ArrayList& httpHeaders, long* protocolResponseCode){
+	return 0;
+}

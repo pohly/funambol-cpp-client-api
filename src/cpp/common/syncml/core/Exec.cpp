@@ -94,5 +94,6 @@ Item* Exec::getItem() {
 
 ArrayElement* Exec::clone() {
     Exec* ret = new Exec(getCmdID(), getNoResp(), getCred(), getItems());
+    ret->setCorrelator(getCorrelator());
     return ret;
 }

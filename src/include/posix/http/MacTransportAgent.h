@@ -61,6 +61,8 @@ public:
     ~MacTransportAgent();
     
     char* sendMessage(const char* msg);
+    char* sendWBXMLMessage(const char* msg, unsigned int length);
+    void  setProperty(const char *propName, const char * const propValue);
 };
 
 END_NAMESPACE

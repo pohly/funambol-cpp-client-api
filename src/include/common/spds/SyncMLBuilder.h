@@ -37,7 +37,6 @@
 #define INCL_SYNCML_BUILDER
 /** @cond DEV */
 
-#include "spds/DataTransformer.h"
 #include "spds/SyncSource.h"
 #include "spds/SyncMap.h"
 #include "syncml/core/TagNames.h"

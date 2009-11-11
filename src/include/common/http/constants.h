@@ -42,6 +42,7 @@
 #define USER_AGENT          TEXT("Funambol SyncML Client")
 #define CHAR_USER_AGENT     "Funambol SyncML Client"
 #define SYNCML_CONTENT_TYPE TEXT("application/vnd.syncml+xml")
+#define SYNCML_WBXML_CONTENT_TYPE TEXT("application/vnd.syncml+wbxml")
 
 #define HTTP_OK            200
 #define HTTP_SERVER_ERROR  500

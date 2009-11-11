@@ -42,7 +42,8 @@
 #include "spds/SyncMLProcessor.h"
 #include "spds/SyncMLBuilder.h"
 #include "spds/spdsutils.h"
-
+#include "syncml/parser/Parser.h"
+    
 #include "event/FireEvent.h"
 #include "base/globalsdef.h"
 

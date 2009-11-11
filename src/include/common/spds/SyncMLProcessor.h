@@ -45,7 +45,6 @@
     #include "spds/SyncItemStatus.h"
     #include "syncml/core/TagNames.h"
     #include "syncml/core/ObjectDel.h"
-    #include "syncml/parser/Parser.h"
     #include "spds/SyncReport.h"
 
 BEGIN_NAMESPACE

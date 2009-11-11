@@ -940,22 +940,25 @@ StringBuffer* Formatter::getExec(Exec* exec) {
     StringBuffer* cred      = NULL;
     StringBuffer* items     = NULL;
     StringBuffer* noResp    = NULL;
-
+    StringBuffer* correl    = NULL;
+	
     cmdID     = getCmdID   (exec->getCmdID());
     cred      = getCred    (exec->getCred());
     items     = getItems   (exec->getItems());
     noResp    = getValue   (NO_RESP, exec->getNoResp());
+    correl    = getValue   (CORRELATOR, exec->getCorrelator());
 
-    if (NotZeroStringBufferLength(4, cmdID, cred, items, noResp)) {
+    if (NotZeroStringBufferLength(5, cmdID, cred, items, noResp, correl)) {
         s = new StringBuffer();
         s->append(cmdID);
+		s->append(correl);
         s->append(noResp);
         s->append(cred);
         s->append(items);
     }
 
     ret = getValue(EXEC, s);
-    deleteAllStringBuffer(5, &s, &cred, &cmdID, &items, &noResp);
+    deleteAllStringBuffer(6, &s, &cred, &cmdID, &items, &noResp, &correl);
 
     return ret;
 }
@@ -1639,10 +1642,12 @@ StringBuffer* Formatter::getAlert(Alert* alert) {
     StringBuffer* data      = getValue   (DATA, (long)alert->getData());
     StringBuffer* items     = getItems   (alert->getItems());
     StringBuffer* noResp    = getValue   (NO_RESP, alert->getNoResp());
+    StringBuffer* correl    = getValue   (CORRELATOR, alert->getCorrelator());
 
-    if (NotZeroStringBufferLength(5, cmdID, cred, data, items, noResp)) {
+    if (NotZeroStringBufferLength(6, cmdID, cred, data, items, noResp, correl)) {
         s = new StringBuffer();
         s->append(cmdID);
+        s->append(correl);
         s->append(noResp);
         s->append(cred);
         s->append(data);
@@ -1650,7 +1655,7 @@ StringBuffer* Formatter::getAlert(Alert* alert) {
     }
 
     ret = getValue(ALERT, s);
-    deleteAllStringBuffer(6, &s, &cred, &cmdID, &data, &items, &noResp);
+    deleteAllStringBuffer(7, &s, &cred, &cmdID, &data, &items, &noResp, &correl);
 
     return ret;
 }

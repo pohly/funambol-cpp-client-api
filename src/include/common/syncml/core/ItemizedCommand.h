@@ -54,6 +54,7 @@ class ItemizedCommand : public AbstractCommand {
     protected:
         ArrayList* items;  // Item[]
         Meta*      meta ;
+		char*  correlator;
 
         void initialize();
 
@@ -83,6 +84,20 @@ class ItemizedCommand : public AbstractCommand {
          */
         ItemizedCommand(CmdID*  cmdID, ArrayList* items);
 
+		/**
+		 * Gets the correlator value
+		 *
+		 * @return the correlator value
+		 */
+		const char * getCorrelator();
+		
+		/**
+		 * Sets the correlator value
+		 *
+		 * @param correlator the correlator value
+		 */
+		void setCorrelator(const char *correlator);
+	
         /**
          * Gets the array of items
          *

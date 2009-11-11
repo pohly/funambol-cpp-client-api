@@ -61,6 +61,8 @@
     #define DEFAULT_INTERNET_READ_BUFFER_SIZE  4096
 #include "base/globalsdef.h"
 
+#include "base/util/ArrayList.h"
+
 BEGIN_NAMESPACE
 
     /*
@@ -72,6 +74,8 @@ BEGIN_NAMESPACE
     class TransportAgent {
 
     protected:
+
+        static const unsigned int MIME_BUFFER_SIZE = 256;
         URL url;
         Proxy proxy;
 
@@ -83,6 +87,10 @@ BEGIN_NAMESPACE
         StringBuffer SSLServerCertificates;
         bool SSLVerifyServer;
         bool SSLVerifyHost;
+        char responseMime[MIME_BUFFER_SIZE];
+        unsigned int responseSize;
+        ArrayList *headerProperties;
+
 
     public:
         TransportAgent();
@@ -145,6 +153,25 @@ BEGIN_NAMESPACE
         virtual const char* getUserAgent();
 
         /**
+         * Set MIME type of the received message.
+         *
+         * @param mime mime type of the received response
+         */
+        void setResponseMime(const char *mime);
+
+        /**
+         * Returns MIME type of the response message.
+         *
+         * Returned string should be deleted.
+         */
+        const char* getResponseMime();
+
+        /**
+         * Returns size of the server response (header size not included)
+         */
+        unsigned int getResponseSize();
+
+        /**
          * Returns the buffer size
          */
         virtual unsigned int getReadBufferSize();
@@ -177,7 +204,7 @@ BEGIN_NAMESPACE
         virtual bool getSSLVerifyHost() const { return SSLVerifyHost; }
         virtual void setSSLVerifyHost(bool value) { SSLVerifyHost = value; }
 
-        /*
+        /**
          * Sends the given SyncML message to the server specified
          * by the install property 'url'. Returns the server's response.
          * The response string has to be freed with delete [].
@@ -185,6 +212,21 @@ BEGIN_NAMESPACE
          * is set.
          */
         virtual char*  sendMessage(const char*  msg) = 0;
+
+        /**
+         * Sends the given WBXML message to the server.
+         */
+        virtual char*  sendWBXMLMessage(const char* msg, unsigned int length) = 0;
+
+        /**
+         * Set specific property of the transport layer
+         */
+        virtual void  setProperty(const char *propName, const char * const propValue);
+
+        /**
+         * Query server using HTTP GET method
+         */
+        virtual char* query(ArrayList& httpHeaders, long* protocolResponseCode);
 
     };
 

@@ -37,10 +37,12 @@
 #include <time.h>
 #include <pthread.h>
 
-static void *pthreadEntryFunction(void* fthreadObj);
-
 #include "push/FThread.h"
 #include "base/globalsdef.h"
+
+#ifdef ANDROID
+#include <errno.h>		
+#endif
 
 USE_NAMESPACE
 
@@ -64,19 +66,39 @@ void FThread::wait() {
 bool FThread::wait(unsigned long timeout) {
 
     struct timespec t;
+    if (clock_gettime(CLOCK_REALTIME, &t) != 0)
+    {
+        /* Handle error */
+        t.tv_sec  = time(NULL);
+        t.tv_nsec = 0;
+    }
 
     time_t seconds = timeout / 1000;
-    long   nanoseconds = (timeout % 1000) * 1000;
+    long   nanoseconds = (timeout % 1000) * 1000000;
 
-    t.tv_sec  = seconds;
-    t.tv_nsec = nanoseconds;
+    t.tv_sec  += seconds;
+    t.tv_nsec += nanoseconds;
 
-#if !defined(__APPLE__) && defined(__MACH__)
-    if(pthread_timedjoin_np(pthread, NULL, &t) == ETIMEDOUT) {
-        return true;
+    // there can not be more than 1000000000 nanoseconds (1 sec) overflow
+	if ((unsigned long)t.tv_nsec >= 1000000000) {
+		t.tv_nsec -= 1000000000;
+		++t.tv_sec;
+	}
+
+
+#ifdef ANDROID
+    int res = pthread_join(pthread, NULL);
+    if (res != 0)
+    {
+    	while (nanosleep(&t, &t) == -1 && EINTR == errno);
+		res = pthread_join(pthread, NULL);
     }
+
+#else
+    int res = pthread_timedjoin_np(pthread, NULL, &t);
 #endif
-    return false;
+
+    return res == 0;
 }
 
 bool FThread::finished() const {
@@ -99,7 +121,7 @@ void FThread::sleep(long msec) {
     int ret = 0;
 
     time_t seconds = msec / 1000;
-    long   nanoseconds = (msec % 1000) * 1000;
+    long   nanoseconds = (msec % 1000) * 1000000;
 
     t.tv_sec  = seconds;
     t.tv_nsec = nanoseconds;
@@ -115,7 +137,7 @@ void FThread::setRunning(bool value) {
 }
 
 
-static void *pthreadEntryFunction(void* fthreadObj) {
+void *FThread::pthreadEntryFunction(void* fthreadObj) {
     FThread* threadObj = (FThread*)fthreadObj;
     threadObj->run();
     threadObj->setRunning(false);

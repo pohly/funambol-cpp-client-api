@@ -62,6 +62,7 @@ class Parser {
         static Source*          getSource           (const char* xml, unsigned int* pos = NULL);
         static Source*          getSourceFromContent(const char* content);
         static Cred*            getCred             (const char* xml, unsigned int* pos = NULL);
+        static StringBuffer*    getCorrelator       (const char* xml);
         static Anchor*          getAnchor           (const char* xml);
         static NextNonce*       getNextNonce        (const char* xml);
         static Mem*             getMem              (const char* xml);

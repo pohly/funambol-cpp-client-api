@@ -105,6 +105,30 @@ ItemizedCommand::ItemizedCommand(CmdID*  cmdID, ArrayList* items) : AbstractComm
 void ItemizedCommand::initialize() {
     items = NULL;  // Item[]
     meta  = NULL;
+	correlator = NULL;
+}
+
+/**
+ * Gets the correlator value
+ *
+ * @return the correlator value
+ */
+const char * ItemizedCommand::getCorrelator()
+{
+	return correlator;
+}
+
+/**
+ * Sets the correlator value
+ *
+ * @param correlator the correlator value
+ */
+void ItemizedCommand::setCorrelator(const char *correlator)
+{
+	if (this->correlator) {
+        delete [] this->correlator; this->correlator = NULL;
+    }
+    this->correlator = stringdup(correlator);
 }
 
 /**

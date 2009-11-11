@@ -43,6 +43,7 @@
 #include "http/errors.h"
 #include "http/CurlTransportAgent.h"
 #include "base/globalsdef.h"
+#include "base/util/KeyValuePair.h"
 
 USE_NAMESPACE
 
@@ -80,6 +81,8 @@ CurlTransportAgent::CurlTransportAgent(URL& newURL, Proxy& newProxy, unsigned in
     easyhandle = CurlInit::easy_init();
 
     if (easyhandle) {
+        curl_easy_setopt(easyhandle, CURLOPT_HEADERFUNCTION, responseHeader);
+        curl_easy_setopt(easyhandle, CURLOPT_WRITEHEADER, this);
         curl_easy_setopt(easyhandle, CURLOPT_DEBUGFUNCTION, debugCallback);
         curl_easy_setopt(easyhandle, CURLOPT_VERBOSE, LOG.getLevel() ? true : false);
         curl_easy_setopt(easyhandle, CURLOPT_NOPROGRESS, true);
@@ -102,6 +105,7 @@ CurlTransportAgent::CurlTransportAgent(URL& newURL, Proxy& newProxy, unsigned in
         }
     }
     setUserAgent("Funambol POSIX SyncML client");
+    setResponseMime("");
 }
 
 void CurlTransportAgent::setUserAgent(const char*ua) {
@@ -117,6 +121,11 @@ void CurlTransportAgent::setUserAgent(const char*ua) {
 CurlTransportAgent::~CurlTransportAgent() {
     if (easyhandle) {
         curl_easy_cleanup(easyhandle);
+    }
+    if (headerProperties)
+    {
+        delete headerProperties;
+        headerProperties = NULL;
     }
 }
 
@@ -137,6 +146,24 @@ size_t CurlTransportAgent::receiveData(void *buffer, size_t size, size_t nmemb, 
            curr);
     agent->received += curr;
     agent->responsebuffer[agent->received] = 0;
+    return curr;
+}
+
+size_t CurlTransportAgent::responseHeader(void *buffer, size_t size, size_t nmemb, void *stream) {
+    CurlTransportAgent *agent = (CurlTransportAgent *)stream;
+    size_t curr = size * nmemb;
+
+	char cbf[128] = {0};
+	if (curr < 128) {
+		memcpy(cbf, buffer, curr);
+		// check if passed data is the Content-Type of the HTTP message
+		const char *ctype = "Content-Type:";
+		char *conttype = strstr(cbf, ctype);
+		if (conttype) {
+			const char *mime = cbf + strlen(ctype);
+			agent->setResponseMime(mime);
+		}
+	}
     return curr;
 }
 
@@ -181,26 +208,48 @@ int CurlTransportAgent::debugCallback(CURL *easyhandle, curl_infotype type, char
  * Use getResponse() to get the server response.
  */
 char* CurlTransportAgent::sendMessage(const char* msg) {
+	return sendBuffer(msg, msg ? strlen(msg) : 0);
+}
+
+
+char* CurlTransportAgent::sendWBXMLMessage(const char* msg, unsigned int length) {
+	return sendBuffer(msg, length);
+}
+
+char * CurlTransportAgent::sendBuffer(const void * data, unsigned int size){
     if (!easyhandle) {
         setError(ERR_NETWORK_INIT, "libcurl error init error");
         LOG.error("%s", getLastErrorMsg());
         return NULL;
     }
 
-    size_t size = strlen(msg);
-
-
-    LOG.debug("Requesting resource %s at %s:%d", url.resource, url.host, url.port);
-    POSIX_LOG.setPrefix("data out: ");
-    LOG.debug("=== %d bytes ===\n%s", (int)size, msg);
-    POSIX_LOG.setPrefix(NULL);
+//    LOG.debug("Requesting resource %s at %s:%d", url.resource, url.host, url.port);
+//    POSIX_LOG.setPrefix("data out: ");
+//    LOG.debug("=== %d bytes ===\n%s", (int)size, msg);
+//    POSIX_LOG.setPrefix(NULL);
 
     curl_slist *slist=NULL;
     char *response = NULL;
     CURLcode code;
     char contenttype[256];
-    sprintf(contenttype, "Content-Type: %s", SYNCML_CONTENT_TYPE);
+    sprintf(contenttype, "Content-Type: %s", SYNCML_WBXML_CONTENT_TYPE);
     slist = curl_slist_append(slist, contenttype);
+
+	if (headerProperties)
+		for (int i=0; i<headerProperties->size(); ++i){
+			KeyValuePair *pPair = (KeyValuePair *) headerProperties->get(i);
+			if (pPair){
+				char property[256] = {0};
+				sprintf(property, "%s: %s", pPair->getKey().c_str(), pPair->getValue().c_str());
+				slist = curl_slist_append(slist, property);
+			}
+			else{
+		        setError(ERR_NETWORK_INIT, "libcurl error adding header property");
+		        LOG.error("%s", getLastErrorMsg());
+				return NULL;
+			}
+		}
+
     // Disable "Expect: 100": it is usually used to check without
     // transmitting the data that the recipient is willing to accept
     // the POST . With SyncML servers that should be the case, so the
@@ -215,7 +264,7 @@ char* CurlTransportAgent::sendMessage(const char* msg) {
     const char *certificates = getSSLServerCertificates();
     if ((code = curl_easy_setopt(easyhandle, CURLOPT_POST, true)) ||
         (code = curl_easy_setopt(easyhandle, CURLOPT_URL, url.fullURL)) ||
-        (code = curl_easy_setopt(easyhandle, CURLOPT_POSTFIELDS, msg)) ||
+        (code = curl_easy_setopt(easyhandle, CURLOPT_POSTFIELDS, data)) ||
         (code = curl_easy_setopt(easyhandle, CURLOPT_POSTFIELDSIZE, size)) ||
         (code = curl_easy_setopt(easyhandle, CURLOPT_HTTPHEADER, slist)) ||
         /*
@@ -238,6 +287,7 @@ char* CurlTransportAgent::sendMessage(const char* msg) {
                   response);
     }
     POSIX_LOG.setPrefix(NULL);
+    responseSize = received;
 
 
     responsebuffer = NULL;
@@ -249,6 +299,69 @@ char* CurlTransportAgent::sendMessage(const char* msg) {
 
     return response;
 }
+
+
+char* CurlTransportAgent::query(ArrayList& httpHeaders, long* protocolResponseCode){
+    if (!easyhandle) {
+        setError(ERR_NETWORK_INIT, "libcurl error init error");
+        return NULL;
+    }
+
+    curl_slist *slist=NULL;
+    char *response = NULL;
+    CURLcode code;
+
+    if (!httpHeaders.isEmpty())
+    {
+    	StringBuffer* el = (StringBuffer*)httpHeaders.front();
+		while (el)
+		{
+			slist = curl_slist_append(slist, el->c_str());
+			el = (StringBuffer*)httpHeaders.next();
+		}
+    }
+    responsebuffersize = 64 * 1024;
+    responsebuffer = new char[responsebuffersize];
+    received = 0;
+    responsebuffer[0] = 0;
+    // todo? url.resource
+    const char *certificates = getSSLServerCertificates();
+    if ((code = curl_easy_setopt(easyhandle, CURLOPT_HTTPGET, true)) ||
+        (code = curl_easy_setopt(easyhandle, CURLOPT_URL, url.fullURL)) ||
+        (code = curl_easy_setopt(easyhandle, CURLOPT_HTTPHEADER, slist)) ||
+        /*
+         * slightly cheating here: when CURLOPT_CAINFO was set before, we don't unset it because
+         * we don't know what the default is
+         */
+        (certificates[0] && (code = curl_easy_setopt(easyhandle, CURLOPT_CAINFO, certificates))) ||
+        (code = curl_easy_setopt(easyhandle, CURLOPT_SSL_VERIFYPEER, (long)SSLVerifyServer)) ||
+        (code = curl_easy_setopt(easyhandle, CURLOPT_SSL_VERIFYHOST, (long)(SSLVerifyHost ? 2 : 0))) ||
+        (code = curl_easy_perform(easyhandle))) {
+        delete [] responsebuffer;
+        setErrorF(ERR_HTTP, "libcurl error %d, %.250s", code, curlerrortxt);
+    } else {
+        response = responsebuffer;
+
+    }
+    responseSize = received;
+
+    long res_code = 0;
+    if (protocolResponseCode)
+    {
+        *protocolResponseCode = (curl_easy_getinfo(easyhandle, CURLINFO_RESPONSE_CODE, &res_code) == CURLE_OK)
+			? res_code : 0;
+    }
+
+    responsebuffer = NULL;
+    responsebuffersize = 0;
+
+    if (slist) {
+        curl_slist_free_all(slist);
+    }
+
+    return response;
+}
+
 
 #endif
 

@@ -54,6 +54,7 @@ BEGIN_NAMESPACE
      */
 
     class CurlTransportAgent : public TransportAgent {
+    protected:
         CURL *easyhandle;
         char proxyauth[DIM_USERNAME + 1 + DIM_PASSWORD];
 
@@ -69,13 +70,19 @@ BEGIN_NAMESPACE
 
         static int debugCallback(CURL *easyhandle, curl_infotype type, char *data, size_t size, void *unused);
 
+        static size_t responseHeader(void *buffer, size_t size, size_t nmemb, void *stream);
+		char * sendBuffer(const void * data, unsigned int length);
+
     public:
         CurlTransportAgent();
         CurlTransportAgent(URL& url, Proxy& proxy, unsigned int responseTimeout = DEFAULT_MAX_TIMEOUT);
         ~CurlTransportAgent();
 
         char* sendMessage(const char* msg);
+        char* sendWBXMLMessage(const char* msg, unsigned int length);
         void setUserAgent(const char* ua);
+
+		char* query(ArrayList& httpHeaders, long* protocolResponseCode);
 
     };
 

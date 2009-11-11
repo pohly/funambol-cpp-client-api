@@ -121,6 +121,15 @@ Cred* Parser::getCred(const char*xml, unsigned int* pos) {
     return ret;
 }
 
+StringBuffer* Parser::getCorrelator(const char* xml) {
+	StringBuffer t;
+	XMLProcessor::copyElementContent(t, xml, CORRELATOR, NULL);
+	if (t.length())
+		return new StringBuffer(t);
+	else
+		return NULL;
+}
+
 Authentication* Parser::getAuthentication(const char*xml) {
     Authentication* ret        = NULL;
 
@@ -1128,14 +1137,21 @@ void Parser::getCommands(ArrayList& ret, const char*xml) {
 
     // Get: use the copyElementContentLevel because Get could be also in Atomic and Sequence commands
     pos = 0, previous = 0;
-    XMLProcessor::copyElementContent(t, &xml[pos], GET, &pos);
-    while ((get = getGet(t.c_str())) != NULL) {
+
+    // [MB]
+    // Atomic command does not support nested Get commands
+    char *t0 = NULL;
+    t0 = XMLProcessor::copyElementContentExcept(xml, GET, "Atomic&Sequence", &pos);
+    while (t0 && (get = getGet(t0)) != NULL) {
         ret.add(*get); // in the ArrayList NULL element cannot be inserted
         deleteGet(&get);
         pos += previous;
         previous = pos;
-        XMLProcessor::copyElementContent(t, &xml[pos], GET, &pos);
+        delete [] t0;
+        t0 = XMLProcessor::copyElementContentExcept(&xml[pos], GET, "Atomic&Sequence", &pos);
+        // [MB] prev. code was: XMLProcessor::copyElementContentLevel(t, &xml[pos], GET, &pos);
     }
+    delete [] t0; t0 = NULL;
 
     // Put
     pos = 0, previous = 0;
@@ -1365,15 +1381,20 @@ Alert* Parser::getAlert(const char*xml) {
     XMLProcessor::copyElementContent (t, xml, DATA   , NULL);
     int    data      = getDataCode(t.c_str());
     bool   noResp    = getNoResp  (xml);
+	StringBuffer* correlator = getCorrelator(xml);
 
     ArrayList items;
     getItems(items, xml);
     if (items.size() > 0) {
         ret = new Alert(cmdID, noResp, cred, data, &items); //Item[]
+		if (correlator)
+			ret->setCorrelator(correlator->c_str());
     }
 
     deleteCmdID(&cmdID);
     deleteCred(&cred);
+	if (correlator)
+		delete correlator;
 
     return ret;
 }
@@ -1382,22 +1403,29 @@ Exec* Parser::getExec(const char*xml) {
 
     Exec* ret = NULL;
 
-    CmdID* cmdID        = NULL;
-    bool   noResp       = false;
-    Cred*  cred         = NULL;
+    CmdID* cmdID             = NULL;
+    bool   noResp            = false;
+    Cred*  cred              = NULL;
+	StringBuffer* correlator = NULL;
 
-    cmdID     = getCmdID   (xml);
-    cred      = getCred    (xml);
-    noResp    = getNoResp  (xml);
+    cmdID      = getCmdID     (xml);
+    cred       = getCred      (xml);
+    noResp     = getNoResp    (xml);
+	correlator = getCorrelator(xml);
+
     ArrayList items;
     getItems(items, xml);
 
     if (cmdID || NotZeroArrayLength(1, &items) || (cred)) {
         ret = new Exec(cmdID, noResp, cred, &items);
+		if (correlator)
+			ret->setCorrelator(correlator->c_str());
     }
 
     deleteCmdID(&cmdID);
     deleteCred(&cred);
+	if (correlator)
+		delete correlator;
 
     return ret;
 }

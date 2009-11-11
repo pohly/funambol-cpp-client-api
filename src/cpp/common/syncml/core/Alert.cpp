@@ -45,6 +45,10 @@ Alert::~Alert() {
     if (COMMAND_NAME) {
         delete [] COMMAND_NAME; COMMAND_NAME = NULL;
     }
+
+	if (correlator) {
+		delete [] correlator; correlator = NULL;
+	}
 }
 
 /**
@@ -106,6 +110,6 @@ const char* Alert::getName() {
 ArrayElement* Alert::clone() {
     Alert* ret = new Alert(getCmdID(), getNoResp(), getCred(), data, getItems());
     ret->setMeta(getMeta());
+    ret->setCorrelator(getCorrelator());
     return ret;
-
 }

@@ -54,8 +54,8 @@
     #define FUN_SYM_TRANSPORT_AGENT  4
     #define FUN_MOZ_TRANSPORT_AGENT  5
 
-    /* Autodetect target system based on compiler automatic macros */
-    #if defined(__unix__) || defined(__linux__)
+/* Autodetect target system based on compiler automatic macros */
+    #if defined(__unix__) || defined(__linux__) || defined(ANDROID)
     /* This is a generic unix system */
     #define POSIX 1
 
@@ -115,7 +115,11 @@
     #endif
     
     #ifdef POSIX
-        #include "base/posixadapter.h"
+        #ifdef ANDROID
+		    #include "base/androidadapter.h"
+	    #else	
+		    #include "base/posixadapter.h"
+        #endif
         #include <sys/stat.h>
         #include <errno.h>
         #include <sys/types.h>
