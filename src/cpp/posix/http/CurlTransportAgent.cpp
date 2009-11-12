@@ -208,15 +208,15 @@ int CurlTransportAgent::debugCallback(CURL *easyhandle, curl_infotype type, char
  * Use getResponse() to get the server response.
  */
 char* CurlTransportAgent::sendMessage(const char* msg) {
-	return sendBuffer(msg, msg ? strlen(msg) : 0);
+	return sendBuffer(msg, msg ? strlen(msg) : 0, SYNCML_CONTENT_TYPE);
 }
 
 
 char* CurlTransportAgent::sendWBXMLMessage(const char* msg, unsigned int length) {
-	return sendBuffer(msg, length);
+	return sendBuffer(msg, length, SYNCML_WBXML_CONTENT_TYPE);
 }
 
-char * CurlTransportAgent::sendBuffer(const void * data, unsigned int size){
+char * CurlTransportAgent::sendBuffer(const void * data, unsigned int size, const char *contentTypeName){
     if (!easyhandle) {
         setError(ERR_NETWORK_INIT, "libcurl error init error");
         LOG.error("%s", getLastErrorMsg());
@@ -232,7 +232,7 @@ char * CurlTransportAgent::sendBuffer(const void * data, unsigned int size){
     char *response = NULL;
     CURLcode code;
     char contenttype[256];
-    sprintf(contenttype, "Content-Type: %s", SYNCML_WBXML_CONTENT_TYPE);
+    sprintf(contenttype, "Content-Type: %s", contentTypeName);
     slist = curl_slist_append(slist, contenttype);
 
 	if (headerProperties)

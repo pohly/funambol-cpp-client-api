@@ -71,7 +71,7 @@ BEGIN_NAMESPACE
         static int debugCallback(CURL *easyhandle, curl_infotype type, char *data, size_t size, void *unused);
 
         static size_t responseHeader(void *buffer, size_t size, size_t nmemb, void *stream);
-		char * sendBuffer(const void * data, unsigned int length);
+		char * sendBuffer(const void * data, unsigned int length, const char *contentTypeName);
 
     public:
         CurlTransportAgent();
