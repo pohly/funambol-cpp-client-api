@@ -64,7 +64,7 @@ URL::URL() : fullURL(NULL), protocol(NULL), host(NULL), resource(NULL) {
 /*
  * Copy constructor
  */
-URL::URL(URL& url) {
+URL::URL(const URL& url) {
     this->fullURL   = stringdup(url.fullURL);
     this->host      = stringdup(url.host);
     this->port      = url.port;
