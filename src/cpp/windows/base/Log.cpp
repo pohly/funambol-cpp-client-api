@@ -348,14 +348,7 @@ bool Log::rotateLogFile(unsigned int maxSize, unsigned int maxCount) {
 
                 if (logFile == NULL && strcmp(logName,LOG_NAME)!=0) 
                 {
-                    WCHAR tmp[512];
-                    wsprintf(tmp, L"Unable to open new log file: \"%s\".\nPlease check your user's permissions.", wlogDir);
-                    /*
-
-                    MessageBox(NULL, tmp, TEXT("Outlook Sync"), MB_SETFOREGROUND | MB_OK);
-
-                    */
-                    MessageBox(NULL, tmp, TEXT("Sync for Outlook"), MB_SETFOREGROUND | MB_OK);
+                    error("Unable to open new log file: \"%s\".\nPlease check your user's permissions.", logPath.c_str());
                 }
 
                 reset();
