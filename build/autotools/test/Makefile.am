@@ -68,6 +68,7 @@ TESTS_SPDS = \
     MappingTestSyncSource.cpp \
     TestSyncSource.cpp \
     SyncManagerTest.cpp \
+    LOSyncSource.cpp \
     LOItemTest.cpp
 
 TESTS_PUSH = \
