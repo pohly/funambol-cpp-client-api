@@ -1,3 +1,9 @@
+2009-11-12
+  - magi: added "isToAbort" check into the SyncManagerConfig to communicate to the SyncManager there is a request to cancel the sync.
+          This flag could be set by the client to signal to the SyncManager it has to exit the sync process as soon as it can.
+          There are some check on this flag during the process of the items both sending or receiving. The check is performed also
+          just before and after the sendMessage function.
+          If the flag is true, the an conventional error code 701 is returned to the caller and the sync can end smoothly 
 2009-11-04
   - toccy: fixed bug #7973 for Windows Clients (vCal property PRIORITY for events/tasks has a wrong mapping)
 
