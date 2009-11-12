@@ -216,8 +216,11 @@ void SyncSourceConfig::addCtCap(ArrayList *props, const char *ct_Type, const cha
         assert( fLevel == FLEVEL_ENABLED );
         fieldlevel = true;
     }
+    
+    CTCap* ctcaps = createCtCap(props, cttype, verct, fieldlevel);
 
-    ctCaps.add(*(createCtCap(props, cttype, verct, fieldlevel)));
+    ctCaps.add(*(ctcaps));
+    delete ctcaps;
 
 }
 
