@@ -193,7 +193,9 @@ nobase_pkginclude_HEADERS = \
     posix/push/FSocket.h \
     posix/spdm/DeviceManagementNode.h \
     posix/base/posixlog.h \
-    posix/base/posixadapter.h
+    posix/base/posixadapter.h \
+    common/inputStream/InputStream.h \
+    common/spds/Chunk.h
 
 # fix header files for public distribution
 $(nobase_pkginclude_HEADERS): % : ../../../src/include/%
@@ -205,4 +207,3 @@ $(nobase_pkginclude_HEADERS): % : ../../../src/include/%
 clean : cleancopies
 cleancopies :
 	for i in $(nobase_pkginclude_HEADERS); do rm -rf `echo $$i | sed -e 's;\([^/]*\).*;\1;'`; done
-
