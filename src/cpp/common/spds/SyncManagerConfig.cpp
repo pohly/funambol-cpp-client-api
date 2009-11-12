@@ -48,6 +48,7 @@ USE_NAMESPACE
 SyncManagerConfig::SyncManagerConfig() {
     sourceConfigs = NULL;
     sourceConfigsCount = 0;
+    abortSyncProcess = false;
 }
 
 SyncManagerConfig::~SyncManagerConfig() {

@@ -355,6 +355,10 @@ class AbstractSyncConfig {
     
     /// Specifies if the Server supports MEA.
     virtual void setServerMultipleEmailAccount(const int  v) = 0;
+    
+    // get info about if the client has set to force to exit.
+    virtual bool isToAbort() = 0;
+        
 };
 
 

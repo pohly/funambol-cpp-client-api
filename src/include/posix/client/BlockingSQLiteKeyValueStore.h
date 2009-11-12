@@ -42,7 +42,7 @@
 #include <sqlite3.h>
 
 #include <semaphore.h>
-
+#include "base/Log.h"
 #include "client/SQLiteKeyValueStore.h"
 
 BEGIN_NAMESPACE

@@ -63,7 +63,11 @@ class SyncManagerConfig : public AbstractSyncConfig {
         unsigned int sourceConfigsCount;
 
         virtual bool addSyncSourceConfig(SyncSourceConfig& sc);
-
+        
+        // should be set by the client to abort the sync process smoothly
+        // The SyncManager check this flag periodically (isToAbort method)
+        bool abortSyncProcess;
+    
     public:
 
         SyncManagerConfig();
@@ -215,7 +219,15 @@ class SyncManagerConfig : public AbstractSyncConfig {
         virtual int getServerSmartSlowSync() const      { return getServerConfig().getSmartSlowSync(); }
         virtual int getMultipleEmailAccount() const      { return getServerConfig().getMultipleEmailAccount(); }
         virtual const char* getServerLastSyncURL() const{ return getServerConfig().getServerLastSyncURL(); }
-
+        
+        virtual bool isToAbort() {
+            return abortSyncProcess;
+        }
+        
+        virtual bool setToAbort(bool val = true) {
+            abortSyncProcess = val;
+        }
+    
 };
 
 

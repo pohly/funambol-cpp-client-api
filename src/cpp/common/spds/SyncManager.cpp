@@ -581,7 +581,23 @@ int SyncManager::prepareSync(SyncSource** s) {
         //Fire Initialization Event
         fireSyncEvent(NULL, SEND_INITIALIZATION);
 
+        
+        if (config.isToAbort()) {
+            ret = SYNC_ABORTED_BY_CLIENT;
+            setErrorF(ret, "Signal to abort the process: %i", ret);
+            LOG.info("%s", getLastErrorMsg());                                
+            goto finally;
+        }
+        
         responseMsg = transportAgent->sendMessage(initMsg);
+        
+        if (config.isToAbort()) {
+            ret = SYNC_ABORTED_BY_CLIENT;
+            setErrorF(ret, "Signal to abort the process: %i", ret);
+            LOG.info("%s", getLastErrorMsg());                                
+            goto finally;
+        }
+        
         // Non-existant or empty reply?
         // Synthesis server replies with empty message to
         // a message that it cannot parse.
@@ -919,7 +935,14 @@ bool SyncManager::checkForServerChanges(SyncML* syncml, ArrayList &statusList)
     char* sourceUri = NULL;
     int i=0;
     while (sortedSourcesFromServer[i]) {
-
+        
+        if (config.isToAbort()) {
+            result = true;
+            setErrorF(SYNC_ABORTED_BY_CLIENT, "Signal to abort the process: %i", SYNC_ABORTED_BY_CLIENT);
+            LOG.info("%s", getLastErrorMsg());                                
+            goto finally;
+        }
+        
         sourceUri = sortedSourcesFromServer[i];
 
         // Retrieve the correspondent index for this syncsource.
@@ -1014,6 +1037,14 @@ bool SyncManager::checkForServerChanges(SyncML* syncml, ArrayList &statusList)
                 }
 
                 for (int j = 0; j < list->size(); j++) {
+                    
+                    if (config.isToAbort()) {
+                        result = true;
+                        setErrorF(SYNC_ABORTED_BY_CLIENT, "Signal to abort the process: %i", SYNC_ABORTED_BY_CLIENT);
+                        LOG.info("%s", getLastErrorMsg());                                
+                        goto finally;
+                    }
+                    
                     Item *item = (Item*)list->get(j);
                     if (item == NULL) {
                         LOG.error("SyncManager::checkForServerChanges() - unexpected NULL item.");
@@ -1028,7 +1059,7 @@ bool SyncManager::checkForServerChanges(SyncML* syncml, ArrayList &statusList)
                     if (itemMeta && itemMeta->getSize() > 0) {
                         cmdInfo.size = itemMeta->getSize();
                     }
-
+                    
                     //
                     // set the syncItem element
                     //
@@ -1072,7 +1103,6 @@ int SyncManager::sync() {
     /** Current item to be transmitted. Might be split across multiple messages if LargeObjectSupport is on. */
     SyncItem* syncItem   = NULL;
     /** number of bytes already transmitted from syncItem */
-    long syncItemOffset  = 0;
     Alert* alert         = NULL;
     ModificationCommand* modificationCommand = NULL;
     unsigned int tot     = 0;
@@ -1210,6 +1240,14 @@ int SyncManager::sync() {
                         }
                         tot = 0;
                         do {
+                            
+                            if (config.isToAbort()) {
+                                ret = SYNC_ABORTED_BY_CLIENT;
+                                setErrorF(ret, "Signal to abort the process: %i", ret);
+                                LOG.info("%s", getLastErrorMsg());                                
+                                goto finally;
+                            }
+                            
                             if (syncItem == NULL) {
                                 syncItem = getItem(*sources[count], &SyncSource::getNextItem);
                             }
@@ -1323,7 +1361,15 @@ int SyncManager::sync() {
                                         break;
                                     }
                                 }
-                                                               
+                                
+                                if (config.isToAbort()) {
+                                    ret = SYNC_ABORTED_BY_CLIENT;
+                                    setErrorF(ret, "Signal to abort the process: %i", ret);
+                                    LOG.info("%s", getLastErrorMsg());                                
+                                    goto finally;
+                                }
+                                
+                                
                                 if (isItemTooBig(helper, syncItem->getDataSize(), maxMsgSize, msgSize)) {
                                     break;
                                 }
@@ -1409,7 +1455,14 @@ int SyncManager::sync() {
                                     }
 
                                 }
-                                                                
+                                 
+                                if (config.isToAbort()) {
+                                    ret = SYNC_ABORTED_BY_CLIENT;
+                                    setErrorF(ret, "Signal to abort the process: %i", ret);
+                                    LOG.info("%s", getLastErrorMsg());                                
+                                    goto finally;
+                                }
+                                
                                 if (isItemTooBig(helper, syncItem->getDataSize(), maxMsgSize, msgSize)) {
                                     break;
                                 }
@@ -1493,7 +1546,14 @@ int SyncManager::sync() {
                                         break;
                                     }                                    
                                 }
-
+                                
+                                if (config.isToAbort()) {
+                                    ret = SYNC_ABORTED_BY_CLIENT;
+                                    setErrorF(ret, "Signal to abort the process: %i", ret);
+                                    LOG.info("%s", getLastErrorMsg());                                
+                                    goto finally;
+                                }
+                                
                                 if (isTooBig(DELETE_ITEM_COMMAND_SIZE, maxMsgSize, msgSize)) { // the size of the data item is 0
                                     // avoid adding another item that exceeds the message size
                                     // if the length of the chunk is too big, it is wrong
@@ -1566,7 +1626,22 @@ int SyncManager::sync() {
             //Fire Modifications Event
             fireSyncEvent(NULL, SEND_MODIFICATION);
 
+            if (config.isToAbort()) {
+                ret = SYNC_ABORTED_BY_CLIENT;
+                setErrorF(ret, "Signal to abort the process: %i", ret);
+                LOG.info("%s", getLastErrorMsg());                                
+                goto finally;
+            }
+            
             responseMsg = transportAgent->sendMessage(msg);
+            
+            if (config.isToAbort()) {
+                ret = SYNC_ABORTED_BY_CLIENT;
+                setErrorF(ret, "Signal to abort the process: %i", ret);
+                LOG.info("%s", getLastErrorMsg());                                
+                goto finally;
+            }
+            
             if (responseMsg == NULL) {
                 ret=getLastErrorCode();
                 goto finally;
@@ -1614,7 +1689,14 @@ int SyncManager::sync() {
                 setError(itemret, "");
                 break;
             }
-
+            
+            if (config.isToAbort()) {
+                ret = SYNC_ABORTED_BY_CLIENT;
+                setErrorF(ret, "Signal to abort the process: %i", ret);
+                LOG.info("%s", getLastErrorMsg());                                
+                goto finally;
+            }
+            
             // Fire SyncSourceEvent: END sync of a syncsource (client modifications)
             if (last)
                 fireSyncSourceEvent(sources[count]->getConfig().getURI(), sources[count]->getConfig().getName(), sources[count]->getSyncMode(), 0, SYNC_SOURCE_END);
@@ -1693,8 +1775,23 @@ int SyncManager::sync() {
         msg    = syncMLBuilder.prepareMsg(syncml);
 
         LOG.debug("Alert to request server changes");
-
+        
+        if (config.isToAbort()) {
+            ret = SYNC_ABORTED_BY_CLIENT;
+            setErrorF(ret, "Signal to abort the process: %i", ret);
+            LOG.info("%s", getLastErrorMsg());                                
+            goto finally;
+        }
+        
         responseMsg = transportAgent->sendMessage(msg);
+        
+        if (config.isToAbort()) {
+            ret = SYNC_ABORTED_BY_CLIENT;
+            setErrorF(ret, "Signal to abort the process: %i", ret);
+            LOG.info("%s", getLastErrorMsg());                                
+            goto finally;
+        }
+        
         if (responseMsg == NULL) {
             LOG.debug("SyncManager::sync(): null responseMsg");
             ret=getLastErrorCode();
@@ -1758,8 +1855,23 @@ int SyncManager::sync() {
                 msg    = syncMLBuilder.prepareMsg(syncml);
 
                 LOG.debug("Status to the server");
-
+                
+                if (config.isToAbort()) {
+                    ret = SYNC_ABORTED_BY_CLIENT;
+                    setErrorF(ret, "Signal to abort the process: %i", ret);
+                    LOG.info("%s", getLastErrorMsg());                                
+                    goto finally;
+                }
+                
                 responseMsg = transportAgent->sendMessage(msg);
+                
+                if (config.isToAbort()) {
+                    ret = SYNC_ABORTED_BY_CLIENT;
+                    setErrorF(ret, "Signal to abort the process: %i", ret);
+                    LOG.info("%s", getLastErrorMsg());                                
+                    goto finally;
+                }
+                
                 if (responseMsg == NULL) {
                     ret=getLastErrorCode();
                     goto finally;
@@ -1902,7 +2014,15 @@ int SyncManager::endSync() {
         mapMsg = syncMLBuilder.prepareMsg(syncml);
 
         LOG.debug("Mapping");
-
+        
+        // the last occasion to drop the sync smootly. After that we don't leave to drop to avoid slow sync
+        if (config.isToAbort()) {
+            ret = SYNC_ABORTED_BY_CLIENT;
+            setErrorF(ret, "Signal to abort the process: %i", ret);
+            LOG.info("%s", getLastErrorMsg());                                
+            goto finally;
+        }
+        
         //Fire Finalization Event
         fireSyncEvent(NULL, SEND_FINALIZATION);
 
@@ -1911,6 +2031,11 @@ int SyncManager::endSync() {
             ret=getLastErrorCode();
             goto finally;
         }
+        
+        if (config.isToAbort()) {
+            LOG.info("%s", "Sync is to abort but in the ending phase so ignore it...");                                
+        }
+        
         for (count = 0; count < sourcesNumber; count ++) {
             if (!sources[count]->getReport()->checkState()) {
                 continue;

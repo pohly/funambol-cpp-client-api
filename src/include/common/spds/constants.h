@@ -53,7 +53,9 @@
 #define DIM_SYNC_MODE         16
 #define DIM_ANCHOR            32
 
-#define ERR_REPRESENTATION  700
+#define ERR_REPRESENTATION       700
+#define SYNC_ABORTED_BY_CLIENT   701
+
 
 typedef enum SyncMode{
         SYNC_NONE                                   = 000,

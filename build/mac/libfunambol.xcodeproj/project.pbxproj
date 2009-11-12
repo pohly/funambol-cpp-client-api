@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		100CF24810A84DCC0082D48B /* LOItemTest.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 100CF24610A84DCC0082D48B /* LOItemTest.cpp */; };
+		103CD76B10AB2B7F00AC4271 /* BlockingSQLiteKeyValueStore.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 103CD76A10AB2B7F00AC4271 /* BlockingSQLiteKeyValueStore.cpp */; };
 		7C3BEB220DB7328E00119850 /* CurlTransportAgent.h in Headers */ = {isa = PBXBuildFile; fileRef = 7C3BEB200DB7328E00119850 /* CurlTransportAgent.h */; };
 		7C3BEB230DB7328E00119850 /* MacTransportAgent.h in Headers */ = {isa = PBXBuildFile; fileRef = 7C3BEB210DB7328E00119850 /* MacTransportAgent.h */; };
 		7C3BEB250DB7329900119850 /* MacTransportAgent.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C3BEB240DB7329900119850 /* MacTransportAgent.cpp */; };
@@ -555,6 +557,9 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		100CF24610A84DCC0082D48B /* LOItemTest.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = LOItemTest.cpp; path = ../../test/integration/LOItemTest.cpp; sourceTree = SOURCE_ROOT; };
+		100CF24710A84DCC0082D48B /* LOItemTest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = LOItemTest.h; path = ../../test/integration/LOItemTest.h; sourceTree = SOURCE_ROOT; };
+		103CD76A10AB2B7F00AC4271 /* BlockingSQLiteKeyValueStore.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = BlockingSQLiteKeyValueStore.cpp; path = ../../src/cpp/posix/client/BlockingSQLiteKeyValueStore.cpp; sourceTree = SOURCE_ROOT; };
 		7C3BEB200DB7328E00119850 /* CurlTransportAgent.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CurlTransportAgent.h; sourceTree = "<group>"; };
 		7C3BEB210DB7328E00119850 /* MacTransportAgent.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MacTransportAgent.h; sourceTree = "<group>"; };
 		7C3BEB240DB7329900119850 /* MacTransportAgent.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = MacTransportAgent.cpp; sourceTree = "<group>"; };
@@ -1108,6 +1113,8 @@
 		08FB7794FE84155DC02AAC07 /* mac */ = {
 			isa = PBXGroup;
 			children = (
+				100CF24610A84DCC0082D48B /* LOItemTest.cpp */,
+				100CF24710A84DCC0082D48B /* LOItemTest.h */,
 				7C8B0C130DB73AAD005113A8 /* Frameworks */,
 				7C9F520B0DAF4C9B007E0091 /* Source */,
 				C6A0FF2B0290797F04C91782 /* Documentation */,
@@ -1239,6 +1246,7 @@
 		7C9F52210DAF4CB1007E0091 /* client */ = {
 			isa = PBXGroup;
 			children = (
+				103CD76A10AB2B7F00AC4271 /* BlockingSQLiteKeyValueStore.cpp */,
 				AB4D702D108DEE520036FEFF /* ConfigSyncSource.cpp */,
 				AB4D702E108DEE520036FEFF /* OptionParser.cpp */,
 				7C8B0C4F0DB73C2E005113A8 /* SQLiteKeyValueStore.cpp */,
@@ -2633,6 +2641,8 @@
 				AB4D6F66108DC6820036FEFF /* ParserTest.cpp in Sources */,
 				AB4D6F67108DC6820036FEFF /* ServerDevInfTest.cpp in Sources */,
 				AB4D704F108DEF9E0036FEFF /* testUtils.cpp in Sources */,
+				100CF24810A84DCC0082D48B /* LOItemTest.cpp in Sources */,
+				103CD76B10AB2B7F00AC4271 /* BlockingSQLiteKeyValueStore.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
