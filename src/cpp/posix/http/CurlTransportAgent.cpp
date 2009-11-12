@@ -208,7 +208,19 @@ int CurlTransportAgent::debugCallback(CURL *easyhandle, curl_infotype type, char
  * Use getResponse() to get the server response.
  */
 char* CurlTransportAgent::sendMessage(const char* msg) {
-	return sendBuffer(msg, msg ? strlen(msg) : 0, SYNCML_CONTENT_TYPE);
+    if (!easyhandle) {
+        setError(ERR_NETWORK_INIT, "libcurl error init error");
+        LOG.error("%s", getLastErrorMsg());
+        return NULL;
+    }
+
+    const size_t size = strlen(msg);
+    LOG.debug("Requesting resource %s at %s:%d", url.resource, url.host, url.port);
+    POSIX_LOG.setPrefix("data out: ");
+    LOG.debug("=== %d bytes ===\n%s", (int)size, msg);
+    POSIX_LOG.setPrefix(NULL);
+
+	return sendBuffer(msg, size, SYNCML_CONTENT_TYPE);
 }
 
 
@@ -222,17 +234,6 @@ char * CurlTransportAgent::sendBuffer(const void * data, unsigned int size, cons
         LOG.error("%s", getLastErrorMsg());
         return NULL;
     }
-
-//    LOG.debug("Requesting resource %s at %s:%d", url.resource, url.host, url.port);
-//    POSIX_LOG.setPrefix("data out: ");
-//    LOG.debug("=== %d bytes ===\n%s", (int)size, msg);
-//    POSIX_LOG.setPrefix(NULL);
-
-
-    LOG.debug("Requesting resource %s at %s:%d", url.resource, url.host, url.port);
-    POSIX_LOG.setPrefix("data out: ");
-    LOG.debug("=== %d bytes ===\n%s", (int)size, msg);
-    POSIX_LOG.setPrefix(NULL);
 
     curl_slist *slist=NULL;
     char *response = NULL;
