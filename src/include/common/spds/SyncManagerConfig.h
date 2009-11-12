@@ -224,7 +224,7 @@ class SyncManagerConfig : public AbstractSyncConfig {
             return abortSyncProcess;
         }
         
-        virtual bool setToAbort(bool val = true) {
+        virtual void setToAbort(bool val = true) {
             abortSyncProcess = val;
         }
     
