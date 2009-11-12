@@ -1,3 +1,44 @@
+2009-11-04
+  - toccy: fixed bug #7973 for Windows Clients (vCal property PRIORITY for events/tasks has a wrong mapping)
+
+2009-10-30
+  - toccy: added 'modification' attribute to FileSyncSource items (FileData Objcts), in UTC format like "20091030T103000Z"
+           added unixTimeToString and getFileModTime functions for each platform (base/*adapter.cpp)
+
+2009-10-23
+  - toccy: Merged branch US3125 (Large Object for outgoing items) to trunk, at r1286. Branch closed.
+           Outgoing items are not split in chunks reading directly from the input streams, to save memory allocation.
+
+  - toccy: [US3125] Added MultipleInputStream abstract class
+  - magi:  [US3125] cumulative message: 
+                   Added ItemReader, Chunk, EncodingHelper classes.
+                   Added unit test and integration test
+                   Fixed issues on above classes. 
+                   Modified SyncManager, SyncMLBuilder to use the new classes
+                   
+2009-10-21
+  - toccy: [US3125] Added FileSyncItem class (and unit tests: FileSyncItemTest, SyncItemTest)
+                    Modified FileSyncSource in order to use FileSyncItem and new input stream classes
+                    Added FileDataInputStream (and unit tests: FileDataInputStreamTest)
+
+2009-10-16
+  - toccy: merged from trunk at r1227
+  - dave:  merged with branches US2448 and US1332 (MEA feature branches) at revision 1218
+            * fixed addSyncSourceConfig() in SyncManagerConfig.cpp
+  - toccy: [US3125] SyncItem now uses an InputStream (BufferInputStream by default)
+                    added FileInputStream class, added unit test (FileInputStreamTest)
+                    added InputStream classes, implemented BufferInputStream, added unit test (BufferInputStreamTest)
+                    updated design doc for Large-object support
+
+2009-09-29 
+  - toccy: fixed auto-update feature
+            * new url is: "/sapi/profile/client?action=get-update-info"
+            * "mandatory" type is replaced by "recommended"
+            * added format parameter = properties
+
+2009-09-14
+   - toccy: merged from trunk to US1332 - rev.1109
+
 2009-09-10
    - toccy: [unit test] added "testUtils" to collect utils fuctions shared by different tests.
             All tests should always call "initAdapter" fuction to initialize the PlatformAdapter instead of 

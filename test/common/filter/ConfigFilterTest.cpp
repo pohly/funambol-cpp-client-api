@@ -57,7 +57,7 @@
 #include "spdm/constants.h"
 #include "spds/spdsutils.h"
 #include "spds/constants.h"
-#include "spds/MailSyncSourceConfig.h"
+#include "mail/MailSyncSourceConfig.h"
 #include "syncml/core/core.h"
 #include "syncml/formatter/Formatter.h"
 #include "base/globalsdef.h"

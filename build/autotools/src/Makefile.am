@@ -138,10 +138,8 @@ SOURCES_SPDS = \
     lDESDecoder.cpp \
     lDESEncoder.cpp \
     lDefaultConfigFactory.cpp \
-    lEmailData.cpp \
     lFileData.cpp \
     lItemReport.cpp \
-    lMailMessage.cpp \
     lSyncManagerConfig.cpp \
     lSyncItem.cpp \
     lSyncItemStatus.cpp \
@@ -155,8 +153,14 @@ SOURCES_SPDS = \
     lSyncSourceReport.cpp \
     lFolderData.cpp \
     lFolderExt.cpp \
+    lspdsutils.cpp
+
+SOURCES_MAIL = \ 
     lMailAccount.cpp \
-    lspdsutils.cpp 
+    lMailAccountManager.cpp \
+    lMailData.cpp \
+    lMailMessage.cpp \
+    lMailSyncSourceConfig.cpp
 
 SOURCES_CLIENT = \
     lDMTClientConfig.cpp \
@@ -202,7 +206,7 @@ SOURCES_PUSH = \
     lFThread.cpp \
     lFSocket.cpp
 
-SOURCES_LIBFUNAMBOL = $(SOURCES_BASE) $(SOURCES_EVENT) $(SOURCES_FRAMEWORK) $(SOURCES_HTTP) $(SOURCES_SPDM) $(SOURCES_SPDS) $(SOURCES_CLIENT) $(SOURCES_VOCL) $(SOURCES_PUSH)
+SOURCES_LIBFUNAMBOL = $(SOURCES_BASE) $(SOURCES_EVENT) $(SOURCES_FRAMEWORK) $(SOURCES_HTTP) $(SOURCES_SPDM) $(SOURCES_SPDS) $(SOURCES_MAIL) $(SOURCES_CLIENT) $(SOURCES_VOCL) $(SOURCES_PUSH)
 
 # Explicitly copy each source file here.
 # automake 1.10 creates rules which expect the *file* in this directory;
@@ -234,6 +238,7 @@ vpath %.cpp $(srcdir)/../../../src/cpp/common/base             \
             $(srcdir)/../../../src/cpp/common/http             \
             $(srcdir)/../../../src/cpp/common/spdm             \
             $(srcdir)/../../../src/cpp/common/spds             \
+            $(srcdir)/../../../src/cpp/common/mail             \
             $(srcdir)/../../../src/cpp/common/push             \
             $(srcdir)/../../../src/cpp/common/test             \
             $(srcdir)/../../../src/cpp/common/vocl             \

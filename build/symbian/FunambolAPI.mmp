@@ -52,22 +52,30 @@ SOURCE       base64.cpp error.cpp md5.cpp quoted-printable.cpp
 SOURCEPATH   ..\..\src\cpp\common\base\util
 SOURCE       ArrayElement.cpp ArrayList.cpp BasicTime.cpp
 SOURCE       StringBuffer.cpp StringMap.cpp baseutils.cpp XMLProcessor.cpp WString.cpp
-SOURCE       MemoryKeyValueStore.cpp PropertyFile.cpp
+SOURCE       MemoryKeyValueStore.cpp PropertyFile.cpp EncodingHelper.cpp
 
 SOURCEPATH   ..\..\src\cpp\common\spdm
 SOURCE       DMTree.cpp ManagementNode.cpp
 
+SOURCEPATH   ..\..\src\cpp\common\mail
+SOURCE       MailAccount.cpp  MailAccountManager.cpp  MailData.cpp  MailMessage.cpp  MailSyncSourceConfig.cpp
+
+
 SOURCEPATH   ..\..\src\cpp\common\client
-SOURCE       DMTClientConfig.cpp SyncClient.cpp CacheSyncSource.cpp FileSyncSource.cpp MediaSyncSource.cpp
+SOURCE       DMTClientConfig.cpp SyncClient.cpp CacheSyncSource.cpp FileSyncSource.cpp MediaSyncSource.cpp MailSourceManagementNode.cpp
+SOURCE       FileSyncItem.cpp
 
 SOURCEPATH   ..\..\src\cpp\common\spds
 SOURCE       AccessConfig.cpp B64Decoder.cpp B64Encoder.cpp BodyPart.cpp
 SOURCE       CredentialHandler.cpp DataTransformer.cpp DataTransformerFactory.cpp
-SOURCE       DefaultConfigFactory.cpp DeviceConfig.cpp EmailData.cpp FileData.cpp
-SOURCE       FolderData.cpp ItemReport.cpp MailMessage.cpp MailSyncSourceConfig.cpp
+SOURCE       DefaultConfigFactory.cpp DeviceConfig.cpp FileData.cpp
+SOURCE       FolderData.cpp ItemReport.cpp FolderExt.cpp
 SOURCE       spdsutils.cpp SyncItem.cpp SyncItemStatus.cpp SyncManagerConfig.cpp
 SOURCE       SyncManager.cpp SyncMap.cpp SyncMLBuilder.cpp SyncMLProcessor.cpp SyncReport.cpp
-SOURCE       SyncSourceConfig.cpp SyncSource.cpp SyncSourceReport.cpp
+SOURCE       SyncSourceConfig.cpp SyncSource.cpp SyncSourceReport.cpp Chunk.cpp ItemReader.cpp
+
+SOURCEPATH   ..\..\src\cpp\common\inputStream
+SOURCE       InputStream.cpp BufferInputStream.cpp FileInputStream.cpp FileDataInputStream.cpp MultipleInputStream.cpp
 
 SOURCEPATH   ..\..\src\cpp\symbian\base
 SOURCE       symbianadapter.cpp Log.cpp FConnection.cpp

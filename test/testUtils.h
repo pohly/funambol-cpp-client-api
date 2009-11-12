@@ -86,16 +86,35 @@ SyncManagerConfig* getNewSyncManagerConfig(const char* testName, const bool setC
 DMTClientConfig* getNewDMTClientConfig(const char* testName, const bool setClientDefaults, ArrayList* defaultSources = NULL);
 
 
-/*
+/**
  * Loads and returns (NEW ALLOCATED) the content of a test file.
  * The test files are located under the dir "testcases/<test name>".
  *
  * @param testName the test name
  * @param fileName the file name
+ * @param binary   if true the file has to be opened in binary mode
  * @return a new allocated buffer with the file content
  */
-char* loadTestFile(const char* testName, const char* fileName);
+char* loadTestFile(const char* testName, const char* fileName, bool binary = false);
 
+/**
+ * Returns the full path of a given test file (concat "testcases/testName/fileName")
+ *
+ * @param testName the test name
+ * @param fileName the file name
+ * @return         the full path of the test file
+ */
+StringBuffer getTestFileFullPath(const char* testName, const char* fileName);
+
+
+/**
+ * Returns the full path of a given test file (concat "testcases/testName/") with
+ * the final slash at the end
+ *
+ * @param testName the test name
+ * @return         the full path of the test file
+ */
+StringBuffer getTestDirFullPath(const char* testName);
 
 /** @} */
 /** @endcond */

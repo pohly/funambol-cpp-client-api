@@ -228,6 +228,12 @@ char * CurlTransportAgent::sendBuffer(const void * data, unsigned int size, cons
 //    LOG.debug("=== %d bytes ===\n%s", (int)size, msg);
 //    POSIX_LOG.setPrefix(NULL);
 
+
+    LOG.debug("Requesting resource %s at %s:%d", url.resource, url.host, url.port);
+    POSIX_LOG.setPrefix("data out: ");
+    LOG.debug("=== %d bytes ===\n%s", (int)size, msg);
+    POSIX_LOG.setPrefix(NULL);
+
     curl_slist *slist=NULL;
     char *response = NULL;
     CURLcode code;

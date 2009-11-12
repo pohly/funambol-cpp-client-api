@@ -173,7 +173,10 @@ private:
          */
         virtual ArrayElement* clone();
 
-
+        /*TODO TBD*/
+        virtual const WCHAR* getFullContext() { return NULL; }
+        /*TODO TBD*/
+        void deletePropertyNode(const WCHAR* node){};
 };
 
 

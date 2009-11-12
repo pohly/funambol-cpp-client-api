@@ -1,34 +1,34 @@
 /*
- * Funambol is a mobile platform developed by Funambol, Inc. 
+ * Funambol is a mobile platform developed by Funambol, Inc.
  * Copyright (C) 2003 - 2007 Funambol, Inc.
- * 
+ *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Affero General Public License version 3 as published by
- * the Free Software Foundation with the addition of the following permission 
+ * the Free Software Foundation with the addition of the following permission
  * added to Section 15 as permitted in Section 7(a): FOR ANY PART OF THE COVERED
- * WORK IN WHICH THE COPYRIGHT IS OWNED BY FUNAMBOL, FUNAMBOL DISCLAIMS THE 
+ * WORK IN WHICH THE COPYRIGHT IS OWNED BY FUNAMBOL, FUNAMBOL DISCLAIMS THE
  * WARRANTY OF NON INFRINGEMENT  OF THIRD PARTY RIGHTS.
- * 
+ *
  * This program is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  * FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
  * details.
- * 
- * You should have received a copy of the GNU Affero General Public License 
+ *
+ * You should have received a copy of the GNU Affero General Public License
  * along with this program; if not, see http://www.gnu.org/licenses or write to
  * the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
  * MA 02110-1301 USA.
- * 
- * You can contact Funambol, Inc. headquarters at 643 Bair Island Road, Suite 
+ *
+ * You can contact Funambol, Inc. headquarters at 643 Bair Island Road, Suite
  * 305, Redwood City, CA 94063, USA, or at email address info@funambol.com.
- * 
+ *
  * The interactive user interfaces in modified source and object code versions
  * of this program must display Appropriate Legal Notices, as required under
  * Section 5 of the GNU Affero General Public License version 3.
- * 
+ *
  * In accordance with Section 7(b) of the GNU Affero General Public License
  * version 3, these Appropriate Legal Notices must retain the display of the
- * "Powered by Funambol" logo. If the display of the logo is not reasonably 
+ * "Powered by Funambol" logo. If the display of the logo is not reasonably
  * feasible for technical reasons, the Appropriate Legal Notices must display
  * the words "Powered by Funambol".
  */
@@ -36,6 +36,7 @@
 #include <sys/stat.h>
 #include <unistd.h>
 #include <dirent.h>
+#include <time.h>
 
 #include "base/Log.h"
 #include "base/util/utils.h"
@@ -102,7 +103,6 @@ bool readFile(const char* path, char **message, size_t *len, bool binary)
     return res;
 }
 
-
 char** readDir(const char* name, int *count, bool onlyCount) {
     char **entries = NULL;
     *count = 0;
@@ -133,10 +133,12 @@ char** readDir(const char* name, int *count, bool onlyCount) {
                 }
                 entry = readdir(dir);
             }
+        } else {
+            *count = total;
         }
         closedir(dir);
     }
-
+    
     return entries;
 }
 
@@ -149,35 +151,58 @@ unsigned long getFileModTime(const char* name)
         buf.st_mtime;
 }
 
+StringBuffer unixTimeToString(const unsigned long unixTime, const bool isUTC) {
+
+    StringBuffer ret;
+    struct tm *sysTime;
+    time_t tstamp = (time_t)unixTime;
+    
+    sysTime = gmtime(&tstamp);
+
+    if (!sysTime) {
+        LOG.error("error in gmtime: unixTime = %li", unixTime);
+        return ret;
+    }
+
+    int year  = sysTime->tm_year + 1900;  // starting from 1900
+    int month = sysTime->tm_mon + 1;      // range [0-11]
+    ret.sprintf("%d%02d%02dT%02d%02d%02d", year, month, sysTime->tm_mday, sysTime->tm_hour, sysTime->tm_min, sysTime->tm_sec);
+
+    if (isUTC) {
+        ret.append("Z");
+    }
+    return ret;
+}
+
 bool removeFileInDir(const char* d, const char* fname) {
-       
-    char toFind    [512];       
+
+    char toFind    [512];
     bool ret = false;
     char** totalFiles = NULL;
     int numFiles = 0;
 
     if (fname) {
-        sprintf(toFind, "%s/%s", d, fname);    
+        sprintf(toFind, "%s/%s", d, fname);
         if (remove(toFind) != 0) {
-            LOG.error("Error deleting the %s file", toFind); 
+            LOG.error("Error deleting the %s file", toFind);
         } else {
             LOG.debug("File %s deleted succesfully", toFind);
             ret = true;
         }
     }
-    else {        
+    else {
         totalFiles = readDir((char*)d, &numFiles, false);
         if (totalFiles && numFiles > 0) {
             for (int i = 0; i < numFiles; i++) {
                 sprintf(toFind, "%s/%s", d, totalFiles[i]);
-                remove(toFind);            
+                remove(toFind);
             }
         }
         ret = true;
     }
     if (totalFiles) {
         for (int i = 0; i < numFiles; i++) {
-            delete [] totalFiles[i]; 
+            delete [] totalFiles[i];
         }
         delete [] totalFiles; totalFiles = NULL;
     }
@@ -199,7 +224,7 @@ int createFolder(const char *path) {
     tpath = spath;
 
     DIR* d;
-    
+
     // Create upper folders
     while( (tpath=strpbrk(tpath+1, "\\/")) ) {
         tsep=*tpath;
@@ -208,19 +233,19 @@ int createFolder(const char *path) {
         if (!d) {
             ret = mkdir(spath, 0777);
         } else {
-            closedir(d);        
+            closedir(d);
         }
         *tpath=tsep;
         if(ret != 0)  break;
     }
-    
+
     // Create last folder
     if(ret == 0) {
         d = opendir(path);
         if (!d) {
             ret = mkdir(path, 0777);
         } else {
-            closedir(d);        
+            closedir(d);
         }
     }
     delete [] spath;
@@ -301,17 +326,84 @@ char *mkTempFileName(const char *name)
 bool fileExists(const char *pathname) {
     if (pathname) {
         struct stat st;
-        
+
         memset(&st, 0, sizeof(struct stat));
-        
+
         if (stat(pathname, &st) < 0) {
             return false;
         }
-     
+
         return true;
     }
 
     return false;
 }
+
+ArrayList readFilesInDirRecursive(const char* dirname, bool recursive) {
+    
+    ArrayList totalFiles;
+    // count entries
+    DIR *dir = opendir(dirname);
+    if (dir) {
+        struct dirent *entry = readdir(dir);
+        while (entry) {
+            if (strcmp(entry->d_name, ".") &&
+                strcmp(entry->d_name, "..")) {
+                if (entry->d_type == DT_DIR && recursive) {
+                    ArrayList list;
+                    StringBuffer newDir(dirname);
+                    newDir.append("/");
+                    newDir.append(entry->d_name);
+                    list = readFilesInDirRecursive(newDir.c_str(), recursive);
+                    totalFiles.add(&list);
+                } else {
+                    StringBuffer name(dirname);
+                    name.append("/");
+                    name.append(entry->d_name);
+                    totalFiles.add(name);    
+                }
+                
+            }
+            entry = readdir(dir);
+        }
+        
+        closedir(dir);
+    }
+    
+    return totalFiles;
+    
+}
+
+ArrayList readDirsInDirRecursive(const char* dirname, bool recursive) {
+    
+    ArrayList totalDirs;
+    DIR *dir = opendir(dirname);
+    if (dir) {
+        struct dirent *entry = readdir(dir);
+        while (entry) {
+            if (strcmp(entry->d_name, ".") &&
+                strcmp(entry->d_name, "..")) {
+                 if (entry->d_type == DT_DIR && recursive) {
+                    ArrayList list;
+                    StringBuffer newDir(dirname);
+                    newDir.append("/");
+                    newDir.append(entry->d_name);
+                    totalDirs.add(newDir);
+                    list = readDirsInDirRecursive(newDir.c_str(), recursive);
+                    totalDirs.add(&list);
+                } 
+                
+            }
+            entry = readdir(dir);
+        }
+        
+        closedir(dir);
+    }
+    
+    return totalDirs;
+    
+}
+
+
 END_NAMESPACE
 

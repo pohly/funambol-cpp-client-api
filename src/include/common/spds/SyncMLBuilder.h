@@ -43,6 +43,7 @@
 #include "syncml/core/ObjectDel.h"
 #include "syncml/formatter/Formatter.h"
 #include "base/globalsdef.h"
+#include "spds/Chunk.h"
 
 BEGIN_NAMESPACE
 
@@ -165,7 +166,17 @@ class SyncMLBuilder {
          */
         ArrayList* prepareItem(SyncItem* syncItem,
                                long &syncItemOffset, long maxBytes, long &sentBytes,
-                               const char*  type, char*  COMMAND);
+                               const char*  type, const char*  COMMAND);
+        /*
+         * @param syncItem                      
+         * @param chunk                             the chunk item to be added
+         * @param COMMAND                           REPLACE_COMMAND_NAME, ADD_COMMAND_NAME, DELETE_COMMAND_NAME        
+         * @return item                             the Item object to be added in the list of command
+         */
+        Item* prepareItemChunk(SyncItem* syncItem,
+                                      Chunk* chunk,
+                                      char* COMMAND);
+
 
         /*
         * Add the MapItem to the Map command.
@@ -187,9 +198,24 @@ class SyncMLBuilder {
         */
         long addItem(ModificationCommand* &modificationCommand,
                      long &syncItemOffset, long maxBytes,
-                     char*  COMMAND, SyncItem* syncItem,
+                     const char*  COMMAND, SyncItem* syncItem,
                      const char*  defaultType);
 
+        /*
+        * Add a Chunk into the modificationCommand. 
+        * If the modificationCommand is NULL, then this is the first item and modificationCommand
+        * is initialized.
+        *
+        * @param[in, out] modificationCommand      new items are added here, created if necessary
+        * @param COMMAND                           REPLACE_COMMAND_NAME, ADD_COMMAND_NAME, DELETE_COMMAND_NAME
+        * @param syncItem                          
+        * @param chunk                             chunk item to be added, NULL causes the call to return without doing anything
+        * @param defaultType                       fallback if the syncItem does not define a type
+        * @return number of bytes of item data included, that is the chunk size
+        */
+        long addChunk(ModificationCommand* &modificationCommand,                            
+                            char* COMMAND, SyncItem* syncItem, Chunk* chunk, 
+                            const char* defaultType);
         /*
         * Reset the cmdID counter
         */
@@ -217,6 +243,14 @@ class SyncMLBuilder {
 
         char*  target;
         char*  device;
+        
+        /**
+        * get the ComplexData given the chunk
+        *
+        * @param chunk   the chunk item 
+        * @return the complex data
+        */
+        ComplexData* getComplexData(Chunk* chunk);
 
         unsigned long sessionID;
         unsigned int  msgID    ;

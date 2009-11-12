@@ -44,15 +44,10 @@
 #include "spds/FolderData.h"
 #include "spds/FolderExt.h"
 
-#ifdef _WIN32
-#define FOLDER_NAME     L"Email Home"
-#define CREATED         L"20090428T162654Z"
-#define ROLE            L"account"
-#else
+
 #define FOLDER_NAME     "Email Home"
 #define CREATED         "20090428T162654Z"
 #define ROLE            "account"
-#endif
 
 #define XNAM_VN         "VisibleName"
 #define XNAM_EA         "EmailAddress"
@@ -113,9 +108,9 @@ private:
     void testParse(){
         FolderData folder;
         folder.parse(FOLDER_STRING);
-        CPPUNIT_ASSERT(wcscmp(folder.getName(),FOLDER_NAME) == 0);
-        CPPUNIT_ASSERT(wcscmp(folder.getCreated(),CREATED) == 0);
-        CPPUNIT_ASSERT(wcscmp(folder.getRole(),ROLE) == 0);
+        CPPUNIT_ASSERT(strcmp(folder.getName(),FOLDER_NAME) == 0);
+        CPPUNIT_ASSERT(strcmp(folder.getCreated(),CREATED) == 0);
+        CPPUNIT_ASSERT(strcmp(folder.getRole(),ROLE) == 0);
         /*ArrayList* list = folder.getExtList();
         const char* value1 = ((KeyValuePair*)(list->get(0)))->getValue();
         const char* value2 = ((KeyValuePair*)(list->get(1)))->getValue();

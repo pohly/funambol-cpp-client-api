@@ -54,6 +54,7 @@
 #include "MappingsTest.h"
 #include "ConfigSyncSourceTest.h"
 #include "SyncManagerTest.h"
+#include "LOItemTest.h"
 
 USE_NAMESPACE
 
@@ -801,6 +802,40 @@ protected:
         test.testLargeObject2();        
     }
 
+    virtual void testLOItem() {
+        LOItemTest test;
+        test.testLOItem();        
+    }
+    virtual void testLOItemb64() {
+        LOItemTest test;               
+        test.testLOItemb64();        
+    }
+    virtual void testLOItemSlowSync() {
+        LOItemTest test;               
+        test.testLOItemSlowSync();        
+    }
+    virtual void testLOItemSlowSyncb64() {
+        LOItemTest test;               
+        test.testLOItemSlowSyncb64();        
+    }
+    virtual void testLOItemReplaceb64() {
+        LOItemTest test;               
+        test.testLOItemReplaceb64();
+    }
+    
+    virtual void testLOItemWithItemEncoding() {
+        LOItemTest test;               
+        test.testLOItemWithItemEncoding();
+    }
+    virtual void testLOItemDES() {
+        LOItemTest test;               
+        test.testLOItemDES();
+    }
+    virtual void testFileSyncSource() {
+        LOItemTest test;               
+        test.testFileSyncSource();
+    }
+    
     /**
      * implements testMaxMsg(), testLargeObject(), testLargeObjectEncoded()
      * using a sequence of items with varying sizes

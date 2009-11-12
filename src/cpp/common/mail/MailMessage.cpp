@@ -38,7 +38,7 @@
 #include "base/quoted-printable.h"
 #include "base/Log.h"
 #include "spds/spdsutils.h"
-#include "spds/MailMessage.h"
+#include "mail/MailMessage.h"
 #include "base/globalsdef.h"
 
 USE_NAMESPACE
@@ -475,7 +475,7 @@ static bool getBodyPart(StringBuffer &rfcBody, StringBuffer &boundary,
             delete [] decoded;
         }
         else if (ret.getEncoding() && strcmp(ret.getEncoding(), "base64") == 0 ) {
-            char *decoded = "";
+            char *decoded = NULL;
             size_t len = 0;
             if( uudecode( part.substr(hdrlen), &decoded, &len ) ) {
                 LOG.error("Error decoding content");

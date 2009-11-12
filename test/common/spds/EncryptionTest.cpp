@@ -53,7 +53,8 @@ USE_NAMESPACE
 class EncryptionTest : public CppUnit::TestFixture {
 
     CPPUNIT_TEST_SUITE(EncryptionTest);
-        CPPUNIT_TEST(testEncryption);
+        CPPUNIT_TEST(testEncryption);        
+        
     CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -140,6 +141,67 @@ private:
 
         CPPUNIT_ASSERT( *startText == *finalText );
 
+    }
+
+    void testCustomEncryption(){
+        char* clearText = "12345678";
+        startText = new StringBuffer(clearText);
+        // char* password = "dummypassword";
+        char* password = "test";
+
+        b64e = DataTransformerFactory::getEncoder("b64");
+        b64d = DataTransformerFactory::getDecoder("b64");
+        dese = DataTransformerFactory::getEncoder("des");
+        desd = DataTransformerFactory::getDecoder("des");
+
+        TransformationInfo infoe, infod;
+
+        infoe.size = (long)strlen(clearText)*sizeof(char);
+        infoe.password = password;
+
+
+        char* desText = dese->transform(clearText, infoe);
+        char* b64Text = b64e->transform(desText, infoe);
+        
+        TransformationInfo info1, info2, info3, info4, info5;
+        info1.size = 4; info2.size = 4; info3.size = 3; info4.size = 8; info5.size = 16;
+        info1.password = password; info2.password = password; info3.password = password;
+        info4.password = password; info5.password = password;
+        
+        char* desText1 = dese->transform("1234", info1);
+        char* desText2 = dese->transform("5678", info2);
+        char* desText3 = dese->transform("123", info3);
+        char* desText4 = dese->transform("12345678", info4);
+        char* desText5 = dese->transform("1234567812345678", info5);
+        char* b64Text1 = b64e->transform(desText1, info1);
+        char* b64Text2 = b64e->transform(desText2, info2);
+        char* b64Text3 = b64e->transform(desText3, info3);
+        char* b64Text4 = b64e->transform(desText4, info4);
+        char* b64Text5 = b64e->transform(desText5, info5);
+
+        delete [] desText;  desText = NULL;
+/*
+        infod.size = infoe.size;
+        infod.password = infoe.password;
+        desText = b64d->transform(b64Text, infod);
+        clearText = desd->transform(desText, infod);
+
+        char* clearString = new char[infod.size/sizeof(char)+1];
+        strncpy(clearString, clearText, infod.size/sizeof(char));
+        clearString[infod.size/sizeof(char)] = 0;
+        finalText = new StringBuffer(clearString);
+        if (clearString){
+            delete [] clearString; clearString = NULL;
+        }
+        if (clearString) {
+            delete [] clearText; clearText = NULL;
+        }
+        if (b64Text){
+            delete [] b64Text;  b64Text = NULL;
+        }
+
+        CPPUNIT_ASSERT( *startText == *finalText );
+*/
     }
 
 };

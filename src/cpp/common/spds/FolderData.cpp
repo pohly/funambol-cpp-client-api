@@ -82,6 +82,7 @@ FolderData::FolderData()
     isReadablePresent = false;
     isExecutablePresent = false;
 
+    fid = TEXT("");
 }
 
 FolderData::~FolderData()
@@ -93,14 +94,14 @@ FolderData::~FolderData()
     name.reset();
     created.reset();
     role.reset();
-
-
 }
+
+
 int FolderData::parse(const char *syncmlData, size_t len)
 {
     int ret = 0;
     unsigned int start, end;
-    StringBuffer msg(syncmlData, len);
+    StringBuffer msg(syncmlData);
 
     msg.replaceAll("&lt;", "<");
     msg.replaceAll("&amp;", "&");
@@ -151,29 +152,29 @@ int FolderData::parse(const char *syncmlData, size_t len)
     if( XMLProcessor::getElementContent (msg, FOLDER_ACCESSED, NULL, &start, &end) ) {
         accessed = msg.substr(start, end-start);
     }
-    else accessed = TEXT("");
+    else accessed = "";
 
     if( XMLProcessor::getElementContent (msg, FOLDER_MODIFIED, NULL, &start, &end) ) {
         modified = msg.substr(start, end-start);
     }
-    else modified = TEXT("");
+    else modified = "";
 
     if( XMLProcessor::getElementContent (msg, FOLDER_CREATED, NULL, &start, &end) ) {
         created = msg.substr(start, end-start);
     }
-    else created = TEXT("");
+    else created = "";
 
     if( XMLProcessor::getElementContent (msg, FOLDER_ROLE, NULL, &start, &end) ) {
         role = msg.substr(start, end-start);
     }
-    else role = TEXT("");
+    else role = "";
 
 
     if( XMLProcessor::getElementContent (msg, FOLDER_NAME, NULL, &start, &end) ) {
         name = msg.substr(start, end-start);
     }
     else{
-        name = TEXT("");
+        name = "";
         ret = -1;
     }
 
@@ -199,13 +200,13 @@ char* FolderData::format() {
 
     out = "<Folder>\n";
     if (name.length() > 0)
-        out += XMLProcessor::makeElement(FOLDER_NAME, _wcc(name));
+        out += XMLProcessor::makeElement(FOLDER_NAME, name);
     if (created.length() > 0)
-        out += XMLProcessor::makeElement(FOLDER_CREATED, _wcc(created));
+        out += XMLProcessor::makeElement(FOLDER_CREATED, created);
     if (modified.length() > 0)
-        out += XMLProcessor::makeElement(FOLDER_MODIFIED, _wcc(modified));
+        out += XMLProcessor::makeElement(FOLDER_MODIFIED, modified);
     if (accessed.length() > 0)
-        out += XMLProcessor::makeElement(FOLDER_ACCESSED, _wcc(accessed));
+        out += XMLProcessor::makeElement(FOLDER_ACCESSED, accessed);
 
     StringBuffer attributes;
 
@@ -228,7 +229,7 @@ char* FolderData::format() {
         out += XMLProcessor::makeElement(FOLDER_ATTRIBUTES, attributes);
 
     if (role.length() > 0)
-        out += XMLProcessor::makeElement(FOLDER_ROLE, _wcc(role));
+        out += XMLProcessor::makeElement(FOLDER_ROLE, role);
 
     if (!(extended.isEmpty())){
         for(int i=0; i < extended.size(); i++){
@@ -250,12 +251,47 @@ int FolderData::lengthForB64(int len) {
     modules = len % 3;
     if (modules == 0) {
         ret = 4 * (len / 3);
-
     } else {
         ret = 4 * ((len/3) + 1);
-
     }
     return ret;
-
-
 }
+
+const char* FolderData::getValueByName(const char* valName) const {
+    for(int i = 0; i < extended.size(); i++){
+        if( strcmp ( ((FolderExt*)extended.get(i))->getXNam(), valName) == 0){
+            FolderExt* fe = (FolderExt*)(extended.get(i));
+            ArrayList& xvals = fe->getXVals();
+            StringBuffer* xval = (StringBuffer*)(xvals.get(0));
+            return xval->c_str();
+        }
+    }
+    return NULL;
+}
+
+void FolderData::setValueByName(const char* valName, const char* setVal){
+    for(int i = 0; i < extended.size(); i++){
+        if( strcmp ( ((FolderExt*)extended.get(i))->getXNam(), valName) == 0){
+            ((StringBuffer*)((FolderExt*)extended.get(i))->getXVals().get(0))->assign(setVal);
+            return;
+        }
+    }
+    FolderExt ext;
+    ext.setXNam(valName);
+    StringBuffer xval = setVal;
+    ArrayList xvals; xvals.add(xval);
+    ext.setXVals(xvals);
+    extended.add(ext);
+}
+
+const WCHAR* FolderData::getID() const { 
+    return fid.c_str(); 
+}
+
+void FolderData::setID(const WCHAR* val) { 
+
+    if (val) {
+        fid = val;
+    }
+}  
+

@@ -91,6 +91,23 @@
 #define PROPERTY_SOURCE_ENCRYPTION     "encryption"
 #define PROPERTY_ENABLE_COMPRESSION    "enableCompression"
 
+#define PROPERTY_MAIL_ACCOUNT_ROOT              "mailAccounts"
+#define PROPERTY_MAIL_ACCOUNT_VISIBLE_NAME		"VisibleName"
+#define PROPERTY_MAIL_ACCOUNT_EMAILADDRESS		"EmailAddress"
+#define PROPERTY_MAIL_ACCOUNT_PROTOCOL			"Protocol"
+#define PROPERTY_MAIL_ACCOUNT_USERNAME			"Username"
+#define PROPERTY_MAIL_ACCOUNT_PASSWORD			"Password"
+#define PROPERTY_MAIL_ACCOUNT_IN_SERVER			"IncomingServer"
+#define PROPERTY_MAIL_ACCOUNT_OUT_SERVER		"OutgoingServer"
+#define PROPERTY_MAIL_ACCOUNT_IN_PORT			"PortIn"
+#define PROPERTY_MAIL_ACCOUNT_OUT_PORT			"PortOut"
+#define PROPERTY_MAIL_ACCOUNT_IN_SSL			"IncomingSSL"
+#define PROPERTY_MAIL_ACCOUNT_OUT_SSL			"OutcomingSSL"
+#define PROPERTY_MAIL_ACCOUNT_SIGNATURE			"Signature"
+#define PROPERTY_MAIL_ACCOUNT_DOMAINNAME		"DomainName"
+#define PROPERTY_MAIL_ACCOUNT_ID				"ID"
+#define PROPERTY_MAIL_ACCOUNT_TO_BE_CLEANED		"ToBeCleaned"
+
 // Push related
 #define PROPERTY_PUSH_NOTIFICATION     "push"
 #define PROPERTY_POLLING_NOTIFICATION  "polling"
@@ -114,6 +131,7 @@
 #define PROPERTY_DEVINF_HASH                "devInfHash"
 #define PROPERTY_SEND_CLIENT_DEVINF         "sendClientDevInf"
 #define PROPERTY_SMART_SLOW_SYNC            "smartSlowSync"
+#define PROPERTY_MULTIPLE_EMAIL_ACCOUNT     "multipleEmailAccount"
 #define PROPERTY_SERVER_LAST_SYNC_URL       "lastSyncURL"
 
 

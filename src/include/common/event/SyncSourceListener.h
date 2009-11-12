@@ -63,6 +63,13 @@ public:
     // listen for the Sync End Event
     virtual void syncSourceEnd(SyncSourceEvent& event) {};
 
+    // listen for the server Sync Begin Event
+    virtual void syncSourceServerBegin(SyncSourceEvent& event) {};
+
+    // listen for the server Sync End Event
+    virtual void syncSourceServerEnd(SyncSourceEvent& event) {};
+
+
     // listen for the SyncMode requested by the server
     virtual void syncSourceSyncModeRequested (SyncSourceEvent& event) {};
 

@@ -44,18 +44,22 @@
 #include "base/util/ArrayList.h"
 #include "base/globalsdef.h"
 
+//#include "base/winadapter.h"
+
+#include "base/fscapi.h"
+
 BEGIN_NAMESPACE
 
 class FolderData : public ArrayElement {
 
     // ------------------------------------------------------- Private data
-    private:
-        //WString folder;
-		WString name;
-		WString created;
-		WString modified;
-		WString accessed;
-		WString attributes;
+    protected:
+        StringBuffer parent;
+		StringBuffer name;
+		StringBuffer created;
+		StringBuffer modified;
+		StringBuffer accessed;
+		StringBuffer attributes;
 		bool hidden;
 		bool system;
 		bool archived;
@@ -63,8 +67,11 @@ class FolderData : public ArrayElement {
 		bool writable;
 		bool readable;
 		bool executable;
-		WString role;
+		StringBuffer role;
         ArrayList extended;
+
+        /// The ID of this folder (the key returned to the Server) (called fid istead of id for compilation as Objecitve-C++ under mac builds)
+        WString fid;
 
         // represents the presence of their equivalent tag
         bool isHiddenPresent;
@@ -79,6 +86,11 @@ class FolderData : public ArrayElement {
         * return the length for the base64 array starting from length of the original array
         */
         int lengthForB64(int len);
+        const char* getValueByName(const char* valName) const;
+        void setValueByName(const char* valName, const char* setVal);
+
+
+
 
     public:
     // ------------------------------------------------------- Constructors
@@ -86,58 +98,67 @@ class FolderData : public ArrayElement {
         ~FolderData();
 
     // ---------------------------------------------------------- Accessors
-		/*const WCHAR* getFolder() { return folder; }
-		void setFolder(const WCHAR* v) { folder = v; } */
 
-		const WCHAR* getName() { return name; }
-		void setName(const WCHAR* v) { name = v; }
 
-		const WCHAR* getCreated() { return created; }
-		void setCreated(const WCHAR* v) { created = v; }
+        //The value parent is not a syncml compliant value for Folder
+        //but it is implemented here to have a smarter access to the
+        //Hierarchical synchronization of the folders
+        const StringBuffer& getParent() const { return parent; }
+        void setParent(const char* v) { parent = v; }
+		
+        const StringBuffer& getName() const { return name; }
+        void setName(const char* v) { name = v; }
 
-		const WCHAR* getModified() { return modified; }
-		void setModified(const WCHAR* v) { modified = v; }
+		const StringBuffer& getCreated() const { return created; }
+		void setCreated(const char* v) { created = v; }
 
-		const WCHAR* getAccessed() { return accessed; }
-		void setAccessed(const WCHAR* v) { accessed = v; }
+		const StringBuffer& getModified() const { return modified; }
+		void setModified(const char* v) { modified = v; }
 
-		const WCHAR* getAttributes() { return attributes; }
-		void setAttributes(const WCHAR* v) { attributes = v; }
+		const StringBuffer& getAccessed() const { return accessed; }
+		void setAccessed(const char* v) { accessed = v; }
 
-		bool getHidded() { return hidden; }
+		const StringBuffer& getAttributes() const { return attributes; }
+		void setAttributes(const char* v) { attributes = v; }
+
+		bool getHidden() const { return hidden; }
 		void setHidden(bool v) { hidden = v; }
 
-		bool getSystem() { return system; }
+		bool getSystem() const { return system; }
 		void setSystem(bool v) { system = v; }
 
-		bool getArchived() { return archived; }
+		bool getArchived() const { return archived; }
 		void setArchived(bool v) { archived = v; }
 
-		bool getDeleted() { return deleted; }
-		void setDeleted(bool v) { deleted = v; }
+		bool getDel() const { return deleted; }
+		void setDel(bool v) { deleted = v; }
 
-		bool getWritable() { return writable; }
+		bool getWritable() const { return writable; }
 		void setWritable(bool v) { writable = v; }
 
-		bool getReadable() { return readable; }
+		bool getReadable() const { return readable; }
 		void setReadable(bool v) { readable = v; }
 
-		bool getExecutable() { return executable; }
+		bool getExecutable() const { return executable; }
 		void setExecutable(bool v) { executable = v; }
 
-		const WCHAR* getRole() { return role; }
-		void setRole(const WCHAR* v) { role = v; }
+		const StringBuffer& getRole() const { return role; }
+		void setRole(const char* v) { role = v; }
+
+        const WCHAR* getID() const;
+        void setID(const WCHAR* val);   
+
 
         void setExtList(ArrayList& list){extended = list;};
         /**
          * getter of the Ext list.
          * @returns an ArrayList of KeyValuePairs with all the ext values
          */
-        ArrayList getExtList() { return extended; };
+        ArrayList& getExtList() { return extended; };
 
 
     // ----------------------------------------------------- Public Methods
-        int parse(const char *syncmlData, size_t len = WString::npos) ;
+        int parse(const char *syncmlData, size_t len = StringBuffer::npos) ;
         char *format() ;
 
         ArrayElement* clone() { return new FolderData(*this); }

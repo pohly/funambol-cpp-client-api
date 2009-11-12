@@ -34,7 +34,8 @@ TESTS_BASE = \
     StringBufferTest.cpp \
     PropertyFileTest.cpp \
     XMLProcessorTest.cpp \
-    base64Test.cpp
+    base64Test.cpp \
+    utilsTest.cpp
 
 TESTS_FILTER = \
     ClauseTest.cpp \
@@ -66,7 +67,8 @@ TESTS_SPDS = \
     MailAccountTest.cpp \
     MappingTestSyncSource.cpp \
     TestSyncSource.cpp \
-    SyncManagerTest.cpp
+    SyncManagerTest.cpp \
+    LOItemTest.cpp
 
 TESTS_PUSH = \
     FThreadTest.cpp \

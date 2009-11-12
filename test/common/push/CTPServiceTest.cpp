@@ -322,6 +322,8 @@ public:
     void tearDown() { 
         //Reset socket buffers
         FakeSocket::dispose();
+        // Dispose the CTP singleton
+        CTP_SERVICE->dispose();
     }
 
     /* Initialize the CTP test configuration */

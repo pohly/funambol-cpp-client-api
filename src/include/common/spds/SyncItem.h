@@ -42,6 +42,7 @@
     #include "base/util/ArrayElement.h"
     #include "spds/constants.h"
     #include "spds/SyncStatus.h"
+    #include "inputStream/InputStream.h"
 
     #include <string.h>
 #include "base/globalsdef.h"
@@ -77,13 +78,23 @@ BEGIN_NAMESPACE
          */
         void initialize();
 
+
+    protected:
+
+        /**
+         * The SyncItem's input stream. Created new in the constructor, based on the
+         * syncItem type (default is BufferInputStream)
+         */
+        InputStream* inputStream;
+
+
     public:
         /*
          * Default constructor
          */
         SyncItem();
 
-        ~SyncItem();
+        virtual ~SyncItem();
 
         /*
          * Constructs a new SyncItem identified by the given key. The key must
@@ -129,6 +140,9 @@ BEGIN_NAMESPACE
          * Sets the SyncItem content data. The passed data is copied into an
          * internal buffer so that the caller can release the buffer after
          * calling setData().
+         * The SyncItem's inputStream is created NEW everytime setData() is called,
+         * and it's linked to the 'data' buffer (it's a BufferInputStream).
+         * To read chunked data, just call getInputStream()->read(buffer, size).
          *
          * Data which is to be sent as it is currently cannot contain nul-bytes
          * because it is treated like a C-style string. The size parameter should
@@ -152,7 +166,7 @@ BEGIN_NAMESPACE
          * @param data        memory to be copied, may be NULL; in that case an empty buffer is allocated
          * @param size        length of the given data or, if data is NULL, the desired buffer size
          */
-        void* setData(const void* data, long size);
+        virtual void* setData(const void* data, long size);
 
         /*
          * Returns the SyncItem data buffer, in read-write mode.
@@ -160,20 +174,29 @@ BEGIN_NAMESPACE
          * There is guaranteed to be a nul-byte after the data which
          * is not included in the data size.
          */
-        void* getData() const;
+        virtual void* getData() const;
+
+        /**
+         * Returns a pointer to the SyncItem's inputStream.
+         * Depending on SyncItem's implementation, it can be a specialized
+         * InputStream (default is BufferInputStream).
+         * Can be NULL if the InputStream has not been set yet (in the
+         * default implementation, calling setData())
+         */
+        InputStream* getInputStream();
 
         /*
          * Returns the amount of bytes stored in the item,
          * excluding the implicit nul-byte after the real data.
          */
-        long getDataSize() const;
+        virtual long getDataSize() const;
 
          /*
          * Sets the SyncItem data size without changing the data buffer.
          *
          * @param s the new size
          */
-        void setDataSize(long s);
+        virtual void setDataSize(long s);
 
         /**
          * Sets the encoding of the data _without_ changing the data itself.
@@ -199,7 +222,7 @@ BEGIN_NAMESPACE
         /**
          * Changes the encoding and the data currently stored in the item.
          * Transformation to and from the encodings listed in SyncItem::encoding
-         * are supported.
+         * are supported. The method is virtual for possible customizations
          *
          * Some encodings may require additional information (TBD).
          *
@@ -212,7 +235,7 @@ BEGIN_NAMESPACE
          * @return error code, usually caused by unsupported encoding either of
          *         the current data or the requested new encoding
          */
-        int changeDataEncoding(const char* encoding, const char* encryption, const char* credentialInfo = NULL);
+        virtual int changeDataEncoding(const char* encoding, const char* encryption, const char* credentialInfo = NULL);
 
         /*
          * Sets the SyncItem data mime type

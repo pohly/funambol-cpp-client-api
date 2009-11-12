@@ -34,53 +34,53 @@
  */
 
 
-#ifndef INCL_MAIL_ACCOUNT
-#define INCL_MAIL_ACCOUNT
+#include "base/fscapi.h"
+#include "base/util/StringBuffer.h"
+#include "spds/SyncManagerConfig.h"
 
-#include "base/globalsdef.h"
-#include "base/util/ArrayList.h"
-#include "spds/FolderData.h"
+#include "inputStream/InputStream.h"
+#include "testUtils.h"
 
 BEGIN_NAMESPACE
 
-class MailAccount : public ArrayElement {
+/**
+ * This class defines protected methods to test a generic InputStream class, 
+ * indipendently of the inputStream implementation.
+ */
+class InputStreamTest : public CppUnit::TestFixture {
+
+public:
+
+    void setUp()    {}
+    void tearDown() {}
+
+    /**
+     * Reads the stream with a big chunk (size > stream size)
+     * @param stream           the InputStream to read from (expected already initialized)
+     * @param expectedData     the data expected to read
+     * @param expectedDataSize the data expected size to read
+     */
+    void testReadBigChunk(InputStream& stream, const void* expectedData, const int expectedDataSize);
 
 
-    // ------------------------------------------------------- Private data
-    private:
-        FolderData inbox;
-        FolderData outbox;
-        FolderData account;
-
-    public:
-    // ------------------------------------------------------- Constructors
-        MailAccount(){};
-        ~MailAccount(){};
-
-    // ---------------------------------------------------------- Accessors
-        void setInbox   (FolderData& val)   { inbox    = val; }
-        void setOutBox  (FolderData& val)   { outbox   = val; }
-        void setAccount (FolderData& val)   { account  = val; }
-
-        const WCHAR* getAccountName()             { return account.getName();    }
-        const WCHAR* getAccountCreated()          { return account.getCreated(); }
-        const char* getVisibleName();
-        const char* getEmailAddress();
-        const WCHAR* getInboxName()               { return inbox.getName();    }
-        const WCHAR* getInboxCreated()            { return inbox.getCreated(); }
-        const WCHAR* getOutboxName()             { return outbox.getName();    }
-        const WCHAR* getOutboxCreated()          { return outbox.getCreated(); }
+    /**
+     * Reads the stream in 2 chunks
+     * @param stream           the InputStream to read from (expected already initialized)
+     * @param expectedData     the data expected to read
+     * @param expectedDataSize the data expected size to read
+     */
+    void testReadTwoChunks(InputStream& stream, const void* expectedData, const int expectedDataSize);
 
 
-    // ----------------------------------------------------- Public Methods
-
-    ArrayElement* clone() { return new MailAccount(*this); }
-
+    /**
+     * Reads the stream in many small chuncks
+     * @param stream           the InputStream to read from (expected already initialized)
+     * @param expectedData     the data expected to read
+     * @param expectedDataSize the data expected size to read
+     * @param chunkSize        [OPTIONAL] the chunk size, in byte (default = 25 bytes)
+     */
+    void testReadManyChunks(InputStream& stream, const void* expectedData, const int expectedDataSize, const int chunkSize = 25);
 
 };
 
-
 END_NAMESPACE
-
-/** @endcond */
-#endif

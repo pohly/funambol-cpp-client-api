@@ -160,6 +160,22 @@ bool saveFile(const char *filename, const char *buffer, size_t len,
 size_t fgetsize(FILE *f);
 
 /**
+ * Get the size of the file, in bytes
+ *
+ * @param fileName - the file name (full path)
+ * @return - the length of the file
+ */
+size_t fgetsize(const char* fileName);
+
+/**
+ * Returns the file name, given its full name (path+name).
+ * It just gets the last part of the string, after the last "/" or "\".
+ * @param fullName  the full path of the file
+ * @return          the file name
+ */
+StringBuffer getFileNameFromPath(const StringBuffer& fullName);
+
+/**
  * Test the presence of a file.
  *
  * @param the path to the file to test
@@ -206,6 +222,17 @@ bool removeFileInDir(const char* dir, const char* filename = NULL);
  * time base as time().
  */
 unsigned long getFileModTime(const char* name);
+
+/**
+ * Converts a timestamp from unix format (seconds from 1970-01-01) 
+ * into a string like "20091022T192200" or "20091022T192100Z".
+ * No local/UTC conversion is done inside this function.
+ *
+ * @param unixTime  the input timestamp in unix format
+ * @param isUTC     if true, will place the "Z" at the end of the returned string
+ * @return          a string formatted like "20091022T192200Z", empty string in case of error
+ */
+StringBuffer unixTimeToString(const unsigned long unixTime, const bool isUTC);
 
 /**
  * Creates a folder.
@@ -349,6 +376,30 @@ inline long calculateCRC(const char* s) {
     
     return calculateCRC(s, strlen(s));
 }
+
+/**
+* Read the files into a directory in recursive way it recursive is true.
+* Returns an array list of files with full path dirname/filename, dirname/dir1/fileinside
+*
+* @param dirname the dir to look into
+* @param recursive if true it looks inside the inner dirs
+*
+* @return an ArrayList of Stringbuffer containing the file names 
+*/
+
+ArrayList readFilesInDirRecursive(const char* dirname, bool recursive);
+
+/**
+ * Read the dir into a directory in recursive way it recursive is true.
+ * Returns an array list of dir with full path dirname/dir1, dirname/dir1/dir2
+ *
+ * @param dirname the dir to look into
+ * @param recursive if true it looks inside the inner dirs
+ *
+ * @return an ArrayList of Stringbuffer containing the dir names 
+ */
+ArrayList readDirsInDirRecursive(const char* dirname, bool recursive);
+
 
 END_NAMESPACE
 

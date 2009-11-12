@@ -176,9 +176,7 @@ public:
      * @param statusMessage   the status message associated to the operation         (used to create the ItemReport element)
      *
      */
-    void addItem(const char* target, const char* command, const WCHAR* ID, const int status, const WCHAR* statusMessage);
-
-
+     void addItem(const char* target, const char* command, const WCHAR* ID, const int status, const WCHAR* statusMessage);
 
     /**
      * Utility to switch on the right list, based on target and command.

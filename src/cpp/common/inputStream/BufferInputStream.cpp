@@ -33,46 +33,67 @@
  * the words "Powered by Funambol".
  */
 
-#include "base/fscapi.h"
 #include "base/Log.h"
-#include "spds/MailAccount.h"
-#include "base/globalsdef.h"
-#include "spds/FolderExt.h"
-#include "base/util/ArrayList.h"
 #include "base/util/utils.h"
+#include "inputStream/BufferInputStream.h"
 
 USE_NAMESPACE
 
-const char* MailAccount::getVisibleName(){
+BufferInputStream::BufferInputStream(const void* data, const unsigned int dataSize) : InputStream() {
 
-    ArrayList exts = account.getExtList();
-
-    for (int i = 0; i < exts.size(); i++){
-    
-        FolderExt* ext = (FolderExt*)exts.get(i);
-
-        if (strcmp(ext->getXNam(), "VisibleName") == 0){
-            ArrayList xvals = ext->getXVals();
-            StringBuffer* xVal = (StringBuffer*)(xvals.front());
-            return stringdup(xVal->c_str());
-        }
-    }
-    return NULL;
+    this->data      = data;
+    this->totalSize = dataSize;
+    this->position  = 0;
+    this->eofbit    = 0;
 }
 
-const char* MailAccount::getEmailAddress(){
+BufferInputStream::BufferInputStream(const StringBuffer& dataString) : InputStream() {
 
-    ArrayList exts = account.getExtList();
+    this->data      = dataString.c_str();
+    this->totalSize = dataString.length();
+    this->position  = 0;
+    this->eofbit    = 0;
+}
 
-    for (int i = 0; i < exts.size(); i++){
-    
-        FolderExt* ext = (FolderExt*)exts.get(i);
+BufferInputStream::~BufferInputStream() {}
 
-        if (strcmp(ext->getXNam(), "EmailAddress") == 0){
-            ArrayList xvals = ext->getXVals();
-            StringBuffer* xVal = (StringBuffer*)(xvals.front());
-            return stringdup(xVal->c_str());
-        }
+
+int BufferInputStream::read(void* buffer, const unsigned int size) {
+
+    // to avoid buffer overflow
+    int bytesRead = size;
+    if (position + size > totalSize) {
+        bytesRead = totalSize - position;
     }
-    return NULL;
+
+    void* p = (char*)data + position;
+    memcpy(buffer, p, bytesRead);
+
+    // Update internal members
+    position += bytesRead;
+    if (position == totalSize) {
+        eofbit = 1;
+    }
+
+    return bytesRead;
+}
+
+
+void BufferInputStream::reset() { 
+    position = 0;
+    eofbit   = 0;
+}
+
+int BufferInputStream::eof() {
+    return eofbit;
+}
+
+int BufferInputStream::getPosition() {
+    return position;
+}
+
+
+ArrayElement* BufferInputStream::clone() {
+    // The 'data' buffer is always externally owned.
+    return new BufferInputStream(this->data, this->totalSize); 
 }

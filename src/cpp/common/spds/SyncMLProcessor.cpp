@@ -325,6 +325,8 @@ bool SyncMLProcessor::processServerDevInf(AbstractCommand* cmd, AbstractSyncConf
             config.setServerNocSupport(devInf->getSupportNumberOfChanges());
             
             config.setServerSmartSlowSync(0);
+            config.setServerMultipleEmailAccount(0)
+                ;
             // Process devInf Extension properties
             ArrayList* ext = devInf->getExt();
             if (ext) {
@@ -333,10 +335,12 @@ bool SyncMLProcessor::processServerDevInf(AbstractCommand* cmd, AbstractSyncConf
                     if (element) {
                         StringBuffer xName = element->getXNam();
 
-                        // The only extension expected.
+                        // The only extensions expected.
                         if (xName == "X-funambol-smartslow") {                                                        
                             config.setServerSmartSlowSync(1);
-                        } 
+                        } else if (xName == "X-funambol-multiple-email-account") {
+                            config.setServerMultipleEmailAccount(1);
+                        }
                     }
                 }
             }

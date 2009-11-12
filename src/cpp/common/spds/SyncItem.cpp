@@ -42,6 +42,9 @@
 #include "spds/SyncItem.h"
 #include "spds/DataTransformerFactory.h"
 #include "base/globalsdef.h"
+#include "inputStream/BufferInputStream.h"
+#include "base/util/EncodingHelper.h"
+#include "base/Log.h"
 
 USE_NAMESPACE
 
@@ -65,8 +68,10 @@ SyncItem::SyncItem() {
  */
 SyncItem::SyncItem(const WCHAR* itemKey) {
     initialize();
-    wcsncpy(key, itemKey, DIM_KEY);
-    key[DIM_KEY-1] = 0;
+    if (itemKey) {
+        wcsncpy(key, itemKey, DIM_KEY);
+        key[DIM_KEY-1] = 0;
+    }
 }
 
 /**
@@ -81,6 +86,8 @@ void SyncItem::initialize() {
     key[0] = 0;
     targetParent = NULL;
     sourceParent = NULL;
+
+    inputStream = NULL;
 }
 
 /*
@@ -99,6 +106,11 @@ SyncItem::~SyncItem() {
     if (sourceParent) {
         delete [] sourceParent; sourceParent = NULL;
     }
+
+    if (inputStream) {
+        inputStream->close();
+    }
+    delete inputStream;
 }
 
 const char* SyncItem::getDataEncoding() const {
@@ -112,8 +124,42 @@ void SyncItem::setDataEncoding(const char* enc) {
     encoding = stringdup(enc);
 }
 
+int SyncItem::changeDataEncoding(const char* enc, const char* encryption, const char* credentialInfo) {
 
+    int ret = ERR_NONE;
+    EncodingHelper helper(enc, encryption, credentialInfo);
 
+    // if the current encoding is NULL or plain we do nothing on going out. we are decoding
+    if (strcmp(encodings::encodingString(encoding), encodings::plain)) {
+        unsigned long s = size;
+        char* transformed = helper.decode(encodings::encodingString(encoding), data, &s);
+        if (!transformed) {
+            LOG.error("SyncItem changeDataEncoding: error in transformation of the item. It is not changed");
+            ret = ERR_UNSPECIFIED;
+            return ret;
+        } else {
+            setData(transformed, s);
+            delete [] transformed;   
+            setDataEncoding(encodings::plain);        
+        }
+    }
+        
+    if (size >= 0) {
+        unsigned long s = size;
+        char* transformed = helper.encode(encodings::encodingString(encoding), data, &s);
+        if (!transformed) {
+            LOG.error("SyncItem changeDataEncoding: error in transformation of the item. It is not changed");
+            ret = ERR_UNSPECIFIED;
+        } else {
+            setData(transformed, s);
+            delete [] transformed;   
+            setDataEncoding(helper.getDataEncoding());        
+        }
+    }
+
+    return ret;
+}
+/*
 int SyncItem::changeDataEncoding(const char* enc, const char* encryption, const char* credentialInfo) {
     int res = ERR_NONE;
     char encToUse[30];
@@ -217,7 +263,7 @@ int SyncItem::transformData(const char* name, bool encode, const char* password)
     }
     return res;
 }
-
+*/
 /*
  * Returns the SyncItem's key. If key is NULL, the internal buffer is
  * returned; if key is not NULL, the value is copied in the caller
@@ -294,7 +340,18 @@ void* SyncItem::setData(const void* itemData, long dataSize) {
         memset(data, 0, size + 1);
     }
 
+    // Set a new BufferInputStream linked to this data
+    if (inputStream) {
+        inputStream->close();
+        delete inputStream;
+    }
+    inputStream = new BufferInputStream(data, size);
+
     return data;
+}
+
+InputStream* SyncItem::getInputStream() {
+    return inputStream;
 }
 
 /*

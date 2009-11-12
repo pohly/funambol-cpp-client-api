@@ -36,13 +36,14 @@
 
 
 #ifndef INCL_MAIL_SYNC_SOURCE_CONFIG
-    #define INCL_MAIL_SYNC_SOURCE_CONFIG
+#define INCL_MAIL_SYNC_SOURCE_CONFIG
 /** @cond DEV */
 
-    #include "base/fscapi.h"
-    #include "spds/constants.h"
-    #include "spds/SyncSourceConfig.h"
+#include "base/fscapi.h"
+#include "spds/constants.h"
+#include "spds/SyncSourceConfig.h"
 #include "base/globalsdef.h"
+#include "mail/MailAccount.h"
 
 BEGIN_NAMESPACE
 
@@ -90,6 +91,11 @@ BEGIN_NAMESPACE
         * it represent the time of the schedule
         */
         int schedule;
+		
+		/* 
+		 * array of mail accounts
+	     */
+	     ArrayList mailAccounts;
 
     public:
 
@@ -169,6 +175,51 @@ BEGIN_NAMESPACE
 
         int  getSchedule() const;
 
+		/**
+		 * adds a mail account
+		 */
+		bool addMailAccount(const MailAccount& account);
+
+        /**
+		 * deletes a mail account
+		 */
+		bool delMailAccount(const char* accountName);
+
+		/**
+		 * modifies an existing mail account replacing it
+		 */
+		bool modifyMailAccount(const MailAccount& account);
+        
+		/**
+		 * flags a mail account as deleted (it will be removed by DM)
+         *
+         * @param const char* accountName the name of the account to mark
+         * @return bool true if success
+		 */
+		bool setDeletedMailAccount(const char* accountName);
+
+   		/**
+		 * flags a mail account as to be cleaned
+         *
+         * @param const char* accountName the name of the account to mark
+         * @param bool tobecleaned
+         * @return bool true if success
+		 */
+        bool setToBeCleanedFlag(const char* accountName, bool tobecleaned);
+
+		/** 
+		 * mail account accessor
+		 */
+        const ArrayList& getMailAccounts() const { return mailAccounts; }
+		void setMailAccounts(const ArrayList& ma) { mailAccounts = ma;}
+
+        /**
+         * Assign operator
+         */
+        MailSyncSourceConfig& operator = (const MailSyncSourceConfig& mssc) {
+            assign(mssc);
+            return *this;
+        }
 
         /**
          * Initialize this object with the given SyncSourceConfig

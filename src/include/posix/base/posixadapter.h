@@ -94,3 +94,6 @@
 /** @endcond */
 #endif
 
+#if defined(MAC) || defined(FUN_IPHONE)
+typedef char byte;
+#endif

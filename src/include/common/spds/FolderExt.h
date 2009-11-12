@@ -62,7 +62,7 @@ class FolderExt : public ArrayElement {
         const char* getXNam(){return XNam.c_str();}
         void setXNam(const char* val){ XNam = val;}
 
-        ArrayList getXVals(){return XVals;}
+        ArrayList& getXVals(){return XVals;}
         void setXVals(ArrayList& val){XVals = val;}
 
     // ----------------------------------------------------- Public Methods

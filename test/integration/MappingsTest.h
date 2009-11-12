@@ -88,6 +88,7 @@ public:
 
     void runTests() {
         testMappings();
+        testLookUpMappings();
     }
 
 private:    
@@ -97,6 +98,9 @@ private:
     void testMappings();
    
     void testPutClientServerInSync();
+
+    /// Tests the method SyncManager::lookUpMappings().
+    void testLookUpMappings();
 };
 
 END_NAMESPACE

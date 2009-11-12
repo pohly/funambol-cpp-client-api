@@ -33,7 +33,7 @@
  * the words "Powered by Funambol".
  */
 #ifndef INCL_MAIL_MESSAGE
-    #define INCL_MAIL_MESSAGE
+#define INCL_MAIL_MESSAGE
 /** @cond DEV */
 
 #include "base/util/ArrayList.h"

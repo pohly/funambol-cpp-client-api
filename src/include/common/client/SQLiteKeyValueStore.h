@@ -151,6 +151,11 @@ public:
         {
             return skvs.enumeration_getNextElement();
         }
+        
+        virtual ArrayElement* getFirstElement()
+        {
+            return skvs.enumeration_getNextElement();
+        }
 
     } enumeration;
     
