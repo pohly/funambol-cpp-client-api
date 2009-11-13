@@ -206,7 +206,14 @@ SOURCES_PUSH = \
     lFThread.cpp \
     lFSocket.cpp
 
-SOURCES_LIBFUNAMBOL = $(SOURCES_BASE) $(SOURCES_EVENT) $(SOURCES_FRAMEWORK) $(SOURCES_HTTP) $(SOURCES_SPDM) $(SOURCES_SPDS) $(SOURCES_MAIL) $(SOURCES_CLIENT) $(SOURCES_VOCL) $(SOURCES_PUSH)
+SOURCES_INPUTSTREAM =  \
+    lBufferInputStream.cpp \
+    lFileDataInputStream.cpp \
+    lFileInputStream.cpp \
+    lInputStream.cpp \
+    lMultipleInputStream.cpp    
+
+SOURCES_LIBFUNAMBOL = $(SOURCES_BASE) $(SOURCES_EVENT) $(SOURCES_FRAMEWORK) $(SOURCES_HTTP) $(SOURCES_SPDM) $(SOURCES_SPDS) $(SOURCES_MAIL) $(SOURCES_CLIENT) $(SOURCES_VOCL) $(SOURCES_PUSH) $(SOURCES_INPUTSTREAM)
 
 # Explicitly copy each source file here.
 # automake 1.10 creates rules which expect the *file* in this directory;
@@ -244,6 +251,7 @@ vpath %.cpp $(srcdir)/../../../src/cpp/common/base             \
             $(srcdir)/../../../src/cpp/common/vocl             \
             $(srcdir)/../../../src/cpp/common/vocl/iCalendar   \
             $(srcdir)/../../../src/cpp/common/vocl/vCard       \
+            $(srcdir)/../../../src/cpp/common/inputStream      \
             $(srcdir)/../../../src/cpp/posix/base              \
             $(srcdir)/../../../src/cpp/posix/base/adapter      \
             $(srcdir)/../../../src/cpp/posix/http              \

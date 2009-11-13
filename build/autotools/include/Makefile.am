@@ -187,6 +187,11 @@ nobase_pkginclude_HEADERS = \
     common/push/CTPService.h \
     common/push/CTPThreadPool.h \
     common/push/PushListener.h \
+    common/inputStream/BufferInputStream.h \
+    common/inputStream/FileDataInputStream.h \
+    common/inputStream/FileInputStream.h \
+    common/inputStream/InputStream.h \
+    common/inputStream/MultipleInputStream.h \
     posix/push/FThread.h \
     posix/push/FSocket.h \
     posix/spdm/DeviceManagementNode.h \
