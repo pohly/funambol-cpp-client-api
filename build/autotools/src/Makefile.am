@@ -20,7 +20,10 @@ SOURCES_BASE = \
     lerror.cpp \
     lItemContainer.cpp \
     lPlatformAdapter.cpp \
-    lmd5.cpp
+    lmd5.cpp \
+    lEncodingHelper.cpp \
+    lInputStream.cpp \
+    lBufferInputStream.cpp
 
 SOURCES_EVENT = \
     lBaseEvent.cpp \
@@ -153,9 +156,10 @@ SOURCES_SPDS = \
     lSyncSourceReport.cpp \
     lFolderData.cpp \
     lFolderExt.cpp \
-    lspdsutils.cpp
+    lspdsutils.cpp \
+    lChunk.cpp
 
-SOURCES_MAIL = \ 
+SOURCES_MAIL = \
     lMailAccount.cpp \
     lMailAccountManager.cpp \
     lMailData.cpp \
@@ -249,7 +253,8 @@ vpath %.cpp $(srcdir)/../../../src/cpp/common/base             \
             $(srcdir)/../../../src/cpp/posix/http              \
             $(srcdir)/../../../src/cpp/posix/spdm              \
             $(srcdir)/../../../src/cpp/posix/spds              \
-            $(srcdir)/../../../src/cpp/posix/push
+            $(srcdir)/../../../src/cpp/posix/push		\
+            $(srcdir)/../../../src/cpp/common/inputStream
 
 vpath %.c   $(srcdir)/../../../src/cpp/common/base
 
