@@ -20,6 +20,7 @@ SOURCES_BASE = \
     lerror.cpp \
     lItemContainer.cpp \
     lPlatformAdapter.cpp \
+    lEncodingHelper.cpp \
     lmd5.cpp
 
 SOURCES_EVENT = \
@@ -153,6 +154,8 @@ SOURCES_SPDS = \
     lSyncSourceReport.cpp \
     lFolderData.cpp \
     lFolderExt.cpp \
+    lChunk.cpp \
+    lItemReader.cpp \
     lspdsutils.cpp
 
 SOURCES_MAIL = \ 
@@ -169,6 +172,7 @@ SOURCES_CLIENT = \
     lFileSyncSource.cpp \
     lOptionParser.cpp \
     lConfigSyncSource.cpp \
+    lFileSyncItem.cpp \
     lSyncClient.cpp
 
 SOURCES_VOCL = \

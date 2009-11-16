@@ -25,6 +25,7 @@ nobase_pkginclude_HEADERS = \
     common/base/util/KeyValueStore.h \
     common/base/util/PropertyFile.h \
     common/base/util/ItemContainer.h \
+    common/base/util/EncodingHelper.h \
     common/base/adapter/PlatformAdapter.h \
     common/client/DMTClientConfig.h \
     common/client/CacheSyncSource.h \
@@ -33,6 +34,7 @@ nobase_pkginclude_HEADERS = \
     common/client/SQLKeyValueStore.h \
     common/client/SyncClient.h \
     common/client/FileSyncSource.h \
+    common/client/FileSyncItem.h \
     common/client/OptionParser.h \
     common/client/ConfigSyncSource.h \
     common/event/constants.h \
@@ -74,6 +76,8 @@ nobase_pkginclude_HEADERS = \
     common/spds/FileData.h \
     common/spds/FolderData.h \
     common/spds/FolderExt.h \
+    common/spds/Chunk.h \
+    common/spds/ItemReader.h \
     common/mail/MailAccount.h \
     common/mail/MailAccountManager.h \
     common/mail/MailData.h \
