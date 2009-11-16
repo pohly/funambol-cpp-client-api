@@ -450,6 +450,9 @@ bool CacheSyncSource::fillItemModifications() {
         delitems->add((StringBuffer&)kvp->getKey());
     }
     
+    int count = newitems->size() + moditems->size() + delitems->size();
+    fireClientTotalNumber(count);
+    
     newKeys = newitems;
     updatedKeys = moditems;           
     deletedKeys = delitems;
