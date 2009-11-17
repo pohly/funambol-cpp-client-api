@@ -1,5 +1,6 @@
 2009-11-17
   - toccy: fixed toMultibyte() function for Symbian: it MUST check for NULL input pointers to avoid unexpected results
+  - toccy: added vCal 1.0 STATUS property support, for tasks (windows branch, under vocl/winObjects)
 
 2009-11-12
   - magi: added "isToAbort" check into the SyncManagerConfig to communicate to the SyncManager there is a request to cancel the sync.

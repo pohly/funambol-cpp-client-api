@@ -113,6 +113,20 @@ enum WinNoteColor
 };
 
 
+/**
+ * This is defined in MS Outlook and Pocket Outlook libraries.
+ * Following are the possible values for WinTask property "Status".
+ */
+enum WinTaskStatus
+{
+    winTaskNotStarted = 0,
+    winTaskInProgress = 1,
+    winTaskComplete   = 2,
+    winTaskWaiting    = 3,
+    winTaskDeferred   = 4
+};
+
+
 
 /** @} */
 /** @endcond */
