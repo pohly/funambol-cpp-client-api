@@ -296,7 +296,7 @@ BEGIN_NAMESPACE
          * object. The new instance is created the the C++ new operator and
          * must be removed with the C++ delete operator.
          */
-        ArrayElement* clone();
+        virtual ArrayElement* clone();
 
         /**
          * valid encodings for changeDataEncoding() and some helper functions
