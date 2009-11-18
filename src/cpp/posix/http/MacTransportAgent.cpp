@@ -247,8 +247,9 @@ char* MacTransportAgent::sendMessage(const char* msg){
                 ret = stringdup(result.c_str());
                 
                 break;
-            }        case -1: {                    // no connection (TODO: implement retry)
-                setErrorF(ERR_SERVER_ERROR, "Network error in server receiving data. ");
+            }        
+            case -1: {                    // connection error -> out code 2001
+                setErrorF(ERR_CONNECT, "Network error in server receiving data. ");
                 LOG.error("%s", getLastErrorMsg());
                 
                 break;
