@@ -1,3 +1,6 @@
+2009-11-19
+  - toccy: fixed "Status" <-> vCal STATUS property mappings, for tasks (windows branch, under vocl/winObjects)
+
 2009-11-17
   - toccy: fixed toMultibyte() function for Symbian: it MUST check for NULL input pointers to avoid unexpected results
   - toccy: added vCal 1.0 STATUS property support, for tasks (windows branch, under vocl/winObjects)

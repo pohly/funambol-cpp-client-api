@@ -164,17 +164,24 @@ wstring& WinTask::toString() {
         }
     }
     if (!statusIsSet && getProperty(L"Status", element)) {
-        // Map the status field.
-        // Possible vCalendar 1.0 values are: 'ACCEPTED' / 'NEEDS ACTION' / 'SENT' / 'TENTATIVE'
-        //      / 'CONFIRMED' / 'DECLINED' / 'COMPLETED' / 'DELEGATED' / 'X-' word / value 
+        // Map the status field (Client -> Server)
+        // 
+        // Outlook    | SIF |  vCalendar     
+        // -------------------------------------------------
+        // NotStarted |  0  |  ACCEPTED     (vCal 1.0 & 2.0)  
+        // InProgress |  1  |  IN-PROCESS   (vCal 2.0)
+        // Complete   |  2  |  COMPLETED    (vCal 1.0 & 2.0)
+        // Waiting    |  3  |  NEEDS-ACTION (vCal 1.0 & 2.0)
+        // Deferred   |  4  |  DECLINED     (vCal 1.0 & 2.0)
+        // 
         int status = _wtoi(element.c_str());
         vp = new VProperty(TEXT("STATUS"));
 
-        if      (status == winTaskNotStarted) vp->addValue(TEXT("X-STATUS-NOT-STARTED"));
-        else if (status == winTaskInProgress) vp->addValue(TEXT("X-STATUS-IN-PROGRESS"));
+        if      (status == winTaskNotStarted) vp->addValue(TEXT("ACCEPTED"));
+        else if (status == winTaskInProgress) vp->addValue(TEXT("IN-PROCESS"));
         else if (status == winTaskComplete)   vp->addValue(TEXT("COMPLETED"));
-        else if (status == winTaskWaiting)    vp->addValue(TEXT("X-STATUS-WAITING"));
-        else if (status == winTaskDeferred)   vp->addValue(TEXT("X-STATUS-DEFERRED"));
+        else if (status == winTaskWaiting)    vp->addValue(TEXT("NEEDS-ACTION"));
+        else if (status == winTaskDeferred)   vp->addValue(TEXT("DECLINED"));
 
         vo->addProperty(vp);
         delete vp; vp = NULL;
@@ -430,16 +437,41 @@ int WinTask::parse(const wstring dataString) {
     }
     if (element = getVObjectPropertyValue(vo, L"STATUS")) {
         // Map the status field.
-        // Possible vCalendar 1.0 values are: 'ACCEPTED' / 'NEEDS ACTION' / 'SENT' / 'TENTATIVE'
-        //      / 'CONFIRMED' / 'DECLINED' / 'COMPLETED' / 'DELEGATED' / 'X-' word / value 
-        if (!wcscmp(element, TEXT("COMPLETED"))) {
+        // 
+        // vCalendar                        | SIF |  Outlook      
+        // ------------------------------------------------------    
+        // ACCEPTED      (vCal 1.0 & 2.0)   |  0  |  NotStarted  
+        // SENT          (vCal 1.0)         |  0  |  NotStarted        
+        // TENTATIVE     (vCal 1.0 & 2.0)   |  0  |  NotStarted     
+        // IN-PROCESS    (vCal 2.0)         |  1  |  InProgress        
+        // CONFIRMED     (vCal 1.0)         |  1  |  InProgress        
+        // COMPLETED     (vCal 1.0 & 2.0)   |  2  |  Complete          
+        // NEEDS-ACTION  (vCal 1.0 & 2.0)   |  3  |  Waiting       
+        // DELEGATED     (vCal 1.0 & 2.0)   |  3  |  Waiting        
+        // DECLINED      (vCal 1.0 & 2.0)   |  4  |  Deferred  
+        //
+		WinTaskStatus status;
+        if ( !wcscmp(element, TEXT("COMPLETED")) ) {
             setProperty(L"Complete", TEXT("1"));
-            setIntProperty(L"Status", winTaskComplete);
+            status = winTaskComplete;
         }
-        else if (!wcscmp(element, TEXT("X-STATUS-NOT-STARTED")))  setIntProperty(L"Status", winTaskNotStarted);
-        else if (!wcscmp(element, TEXT("X-STATUS-IN-PROGRESS")))  setIntProperty(L"Status", winTaskInProgress);
-        else if (!wcscmp(element, TEXT("X-STATUS-WAITING")))      setIntProperty(L"Status", winTaskWaiting);
-        else if (!wcscmp(element, TEXT("X-STATUS-DEFERRED")))     setIntProperty(L"Status", winTaskDeferred);
+        else if ( !wcscmp(element, TEXT("ACCEPTED")) || 
+			      !wcscmp(element, TEXT("SENT"))     ||
+				  !wcscmp(element, TEXT("TENTATIVE")) ) {
+			status = winTaskNotStarted;
+		}
+        else if ( !wcscmp(element, TEXT("IN-PROCESS")) ||
+			      !wcscmp(element, TEXT("CONFIRMED")) ) {
+			status = winTaskInProgress;
+		}
+		else if ( !wcscmp(element, TEXT("NEEDS-ACTION")) ||
+			      !wcscmp(element, TEXT("DELEGATED")) ) {
+			status = winTaskWaiting;
+		}
+		else if (!wcscmp(element, TEXT("DECLINED"))) {
+			status = winTaskDeferred;
+		}
+		setIntProperty(L"Status", status);
     }
 
     //
