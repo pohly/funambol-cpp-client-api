@@ -158,7 +158,7 @@ SOURCES_SPDS = \
     lItemReader.cpp \
     lspdsutils.cpp
 
-SOURCES_MAIL = \ 
+SOURCES_MAIL = \
     lMailAccount.cpp \
     lMailAccountManager.cpp \
     lMailData.cpp \
@@ -173,7 +173,8 @@ SOURCES_CLIENT = \
     lOptionParser.cpp \
     lConfigSyncSource.cpp \
     lFileSyncItem.cpp \
-    lSyncClient.cpp
+    lSyncClient.cpp   \
+    lMailSourceManagementNode.cpp
 
 SOURCES_VOCL = \
     lVConverter.cpp \
