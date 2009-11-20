@@ -1,15 +1,15 @@
 dnl Process this file with autoconf to produce a configure script.
-AC_INIT([funambol], [7.1])
+AC_INIT([funambol], [8.5])
 AC_CANONICAL_SYSTEM
 AC_CONFIG_SRCDIR([../../src/cpp/common/base/base64.cpp])
 AM_CONFIG_HEADER(config.h)
 AM_INIT_AUTOMAKE
 
+AC_CONFIG_MACRO_DIR([m4])
 
 dnl Checks for programs.
 AC_PROG_CXX
 AC_PROG_LIBTOOL
-
 
 dnl AM_GNU_GETTEXT - not currently used
 
