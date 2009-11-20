@@ -205,10 +205,9 @@ public:
     SyncItem* fillSyncItem(StringBuffer* key, const bool fillData = true);
     
     /**
-     * DEPRECATED METHOD.
-     * The file content is not retrieved anymore, since we use input streams
-     * to read file data directly from the disk.
-     * This method just logs a warning and returns NULL.
+     * Returns the whole file content and size, for the file with name 'key'.
+     * Note: this method is no more called by the sync engine, since we now
+     * use input streams to retrieve the file's data chunk by chunk.
      */
     virtual void* getItemContent(StringBuffer& key, size_t* size);
         

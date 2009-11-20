@@ -39,6 +39,7 @@
 #include "base/util/ArrayListEnumeration.h"
 #include "client/FileSyncItem.h"
 #include "client/FileSyncSource.h"
+#include "inputStream/FileInputStream.h"
 
 BEGIN_NAMESPACE
 
@@ -98,10 +99,10 @@ static int saveFileContent(const char *name, const char *content, size_t size, b
 }
 
 static int saveFileData(const char *dir, FileData& file, bool isUpdate) {
-    return saveFileContent(
-            getCompleteName(dir, file.getName()), file.getBody(), file.getSize(), isUpdate);
 
+    return saveFileContent(getCompleteName(dir, file.getName()), file.getBody(), file.getSize(), isUpdate);
 }
+
 
 static int saveFileItem(const char *dir, SyncItem& item, bool isUpdate) {
     return saveFileContent(
@@ -184,14 +185,14 @@ int FileSyncSource::insertItem(SyncItem& item) {
     if (file.parse(item.getData(),item.getDataSize()) == 0) {
         if (file.getSize() >= 0) {   
             ret = saveFileData(dir, file, false);
-            if (ret == STC_OK) {            // Set the LUID with the local name 
-                item.setKey(file.getName());
-            }
         }        
     } else {
         // treat it as a raw file
         ret = saveFileItem(dir, item, false);
     }
+
+    // Set the LUID with the local name 
+    item.setKey(file.getName());
 
     if (ret == STC_OK) {
         LOG.debug("Added item: %" WCHAR_PRINTF, item.getKey());
@@ -294,9 +295,18 @@ SyncItem* FileSyncSource::fillSyncItem(StringBuffer* key, const bool /*fillData*
 
 
 void* FileSyncSource::getItemContent(StringBuffer& key, size_t* size) {
-    LOG.info("Warning: DEPRECATED METHOD FileSyncSource::getItemContent()");
-    LOG.info("It's not used anymore, use instead the file input streams to read file content.");
-    return NULL;
+
+    WString wkey;
+    wkey = key;
+    StringBuffer fullName = getCompleteName(dir.c_str(), wkey.c_str());
+
+    FileInputStream stream(fullName);
+    int fileSize = stream.getTotalSize();
+
+    char* ret = new char[fileSize + 1];
+    *size = stream.read(ret, fileSize);
+
+    return ret;
 }
 
 
