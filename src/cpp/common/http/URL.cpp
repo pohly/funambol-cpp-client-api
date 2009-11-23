@@ -51,14 +51,14 @@ USE_NAMESPACE
  *
  * @param url the URL
  */
-URL::URL(const char* url) : fullURL(NULL), protocol(NULL), host(NULL), resource(NULL){
+URL::URL(const char* url) : fullURL(NULL), protocol(NULL), host(NULL), resource(NULL), port(0){
     setURL(url);
 }
 
 /*
  * Default constructs
  */
-URL::URL() : fullURL(NULL), protocol(NULL), host(NULL), resource(NULL) {
+URL::URL() : fullURL(NULL), protocol(NULL), host(NULL), resource(NULL), port(0) {
 }
 
 /*

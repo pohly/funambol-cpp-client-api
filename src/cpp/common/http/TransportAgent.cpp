@@ -118,7 +118,21 @@ void TransportAgent::setResponseMime(const char *mime) {
 }
 
 const char* TransportAgent::getResponseMime() {
-    return stringdup(responseMime);
+	return getResponseProperty("Content-Type");
+}
+
+const char* TransportAgent::getResponseProperty(const char *pname) {
+	if (!pname) return NULL;
+
+	char *pValue = NULL;
+    for (int i=0; i<responseHdrProperties.size(); ++i) {
+    	KeyValuePair *pair = (KeyValuePair*) responseHdrProperties.get(i);
+		if (pair && pair->getKey().icmp(pname))
+		{
+			pValue = stringdup(pair->getValue().c_str());
+		}
+	}
+	return pValue;
 }
 
 unsigned int TransportAgent::getResponseSize() {

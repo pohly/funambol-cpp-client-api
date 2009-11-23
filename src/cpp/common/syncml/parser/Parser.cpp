@@ -772,7 +772,7 @@ void Parser::getCommonCommandList(ArrayList& commands, const char*xml, const cha
 
         pos += previous;
         previous = pos;
-        delete tag;
+        delete [] tag;
     }
 
 }
@@ -1385,10 +1385,11 @@ Alert* Parser::getAlert(const char*xml) {
 
     ArrayList items;
     getItems(items, xml);
-    if (items.size() > 0) {
+    if (items.size() > 0 || data)
+    {
         ret = new Alert(cmdID, noResp, cred, data, &items); //Item[]
-		if (correlator)
-			ret->setCorrelator(correlator->c_str());
+        if (correlator)
+            ret->setCorrelator(correlator->c_str());
     }
 
     deleteCmdID(&cmdID);

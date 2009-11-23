@@ -52,6 +52,7 @@
 #define NAMESPACE_DEVINF    "syncml:devinf"
 #define FORMAT_B64          "b64"
 
+#define AUTH_TYPE_MAC    "syncml:auth-MAC"
 #define AUTH_TYPE_MD5    "syncml:auth-md5"
 #define AUTH_TYPE_BASIC  "syncml:auth-basic"
 #define AUTH_NONE        "none"

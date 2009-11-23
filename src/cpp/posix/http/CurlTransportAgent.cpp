@@ -153,16 +153,39 @@ size_t CurlTransportAgent::responseHeader(void *buffer, size_t size, size_t nmem
     CurlTransportAgent *agent = (CurlTransportAgent *)stream;
     size_t curr = size * nmemb;
 
-	char cbf[128] = {0};
-	if (curr < 128) {
+	char cbf[256] = {0};
+	if (curr < 256) {
 		memcpy(cbf, buffer, curr);
+
 		// check if passed data is the Content-Type of the HTTP message
-		const char *ctype = "Content-Type:";
+/*		const char *ctype = "Content-Type:";
 		char *conttype = strstr(cbf, ctype);
 		if (conttype) {
 			const char *mime = cbf + strlen(ctype);
 			agent->setResponseMime(mime);
+		}*/
+
+		// find HTTP property with ':' as a delimiter
+		const char *propName  = strtok(cbf, ":");
+		const char *value = strtok(NULL, ":");
+		char *propValue = NULL;
+
+		if (value && strlen(value)) {
+			int len=0;
+			propValue = new char[strlen(value)+1];
+			// skip first blank space ' ' and trailings \r\n
+			while (*value != '\r' && *value != '\n' && *value != '\0') {
+				propValue[len] = *value;
+				value++;
+				len++;
+			}
+			propValue[len] = 0;
 		}
+
+		KeyValuePair pair(propName, propValue);
+		agent->responseHdrProperties.add(pair);
+		if (propValue)
+			delete [] propValue;
 	}
     return curr;
 }
@@ -256,6 +279,7 @@ char * CurlTransportAgent::sendBuffer(const void * data, unsigned int size, cons
 				return NULL;
 			}
 		}
+	responseHdrProperties.clear();
 
     // Disable "Expect: 100": it is usually used to check without
     // transmitting the data that the recipient is willing to accept

@@ -89,7 +89,8 @@ BEGIN_NAMESPACE
         bool SSLVerifyHost;
         char responseMime[MIME_BUFFER_SIZE];
         unsigned int responseSize;
-        ArrayList *headerProperties;
+        ArrayList *headerProperties; // output message properties
+        ArrayList responseHdrProperties;
 
 
     public:
@@ -165,6 +166,11 @@ BEGIN_NAMESPACE
          * Returned string should be deleted.
          */
         const char* getResponseMime();
+
+        /**
+         * Returns property of the response message
+         */
+        const char* getResponseProperty(const char *pname);
 
         /**
          * Returns size of the server response (header size not included)
