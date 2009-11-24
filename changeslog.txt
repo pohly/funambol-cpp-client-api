@@ -1,3 +1,6 @@
+2009-11-24
+  - toccy: fixed spds FileData.format method, to produce a valid XML (escape special chars)
+
 2009-11-19
   - toccy: fixed "Status" <-> vCal STATUS property mappings, for tasks (windows branch, under vocl/winObjects)
 

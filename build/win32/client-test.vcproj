@@ -206,6 +206,10 @@
 					>
 				</File>
 				<File
+					RelativePath="..\..\test\common\spds\FileDataTest.cpp"
+					>
+				</File>
+				<File
 					RelativePath="..\..\test\common\spds\FolderDataTest.cpp"
 					>
 				</File>

@@ -45,6 +45,20 @@
 USE_NAMESPACE
 
 
+/// Checks the input wstring, escaping chars not allowed for a valid XML ('&' and '<')
+static StringBuffer escapeWString(const WString& inputWstring) {
+
+    StringBuffer ret;
+    ret.convert(inputWstring);
+
+    if (!ret.empty()) {
+        ret.replaceAll("&", "&amp;");
+        ret.replaceAll("<", "&lt;");
+    }
+    return ret;
+}
+
+
 FileData::FileData()
 {
     size = 0;
@@ -243,14 +257,22 @@ char* FileData::format() {
     out.reserve(150);
 
     out = "<File>\n";
-    if (name.length() > 0)
-        out += XMLProcessor::makeElement(FILE_NAME, _wcc(name));
-    if (created.length() > 0)
-        out += XMLProcessor::makeElement(FILE_CREATED, _wcc(created));
-    if (modified.length() > 0)
-        out += XMLProcessor::makeElement(FILE_MODIFIED, _wcc(modified));
-    if (accessed.length() > 0)
-        out += XMLProcessor::makeElement(FILE_ACCESSED, _wcc(accessed));
+    if (name.length() > 0) {
+        StringBuffer escapedValue = escapeWString(name);
+        out += XMLProcessor::makeElement(FILE_NAME, escapedValue.c_str());
+    }
+    if (created.length() > 0) {
+        StringBuffer escapedValue = escapeWString(created);
+        out += XMLProcessor::makeElement(FILE_CREATED, escapedValue.c_str());
+    }
+    if (modified.length() > 0) {
+        StringBuffer escapedValue = escapeWString(modified);
+        out += XMLProcessor::makeElement(FILE_MODIFIED, escapedValue.c_str());
+    }
+    if (accessed.length() > 0) {
+        StringBuffer escapedValue = escapeWString(accessed);
+        out += XMLProcessor::makeElement(FILE_ACCESSED, escapedValue.c_str());
+    }
 
     StringBuffer attributes;
 
@@ -275,15 +297,17 @@ char* FileData::format() {
         b64_decode((void*)body.c_str(), body.c_str());
         out += XMLProcessor::makeElement(FILE_BODY, body);
     }
-    else
-    {
+    else {
         ArrayList attrList;
         KeyValuePair attr("enc", _wcc(enc.c_str()));
         attrList.add(attr);
         out += XMLProcessor::makeElement(FILE_BODY, body.c_str(), attrList);
     }
-    if (size > 0)
+
+    if (size > 0) {
         out += XMLProcessor::makeElement(FILE_SIZE, size);
+    }
+    
     out += "</File>\n";
     return stringdup(out.c_str());
 }
