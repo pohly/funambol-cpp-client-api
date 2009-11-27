@@ -57,7 +57,7 @@
 
 #include "base/util/utils.h"
 #include "base/util/StringBuffer.h"
-
+#include "event/FireEvent.h"
 
 USE_NAMESPACE
 
@@ -167,6 +167,8 @@ char* MacTransportAgent::sendMessage(const char* msg){
         CFHTTPMessageSetBody(httpRequest, bodyData);
         CFHTTPMessageSetHeaderFieldValue(httpRequest, headerFieldName, headerFieldValue);
         
+        fireTransportEvent(strlen(msg), SEND_DATA_BEGIN);
+        
         CFReadStreamRef responseStream = CFReadStreamCreateForHTTPRequest(kCFAllocatorDefault, httpRequest);
         
         
@@ -180,7 +182,8 @@ char* MacTransportAgent::sendMessage(const char* msg){
             if (!CFReadStreamOpen(responseStream)) {//Sends request
                 LOG.error("Failed to send HTTP request...");
             }
-        
+            fireTransportEvent(strlen(msg), SEND_DATA_END);
+            fireTransportEvent(strlen(msg), RECEIVE_DATA_BEGIN);
         
         
 #define READ_SIZE 1000
@@ -222,7 +225,7 @@ char* MacTransportAgent::sendMessage(const char* msg){
             LOG.info("Network error writing data from client: retry %i time... for statuscode %i", numretries + 1, statusCode);
             continue;
         }
-
+        fireTransportEvent(result.length(), RECEIVE_DATA_END);
     exit:
         
         LOG.debug("Status Code: %d", statusCode);

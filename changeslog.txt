@@ -1,3 +1,6 @@
+2009-11-27
+  - magi: added transport event in MacTransportAgent
+          modified posixLog to avoid to write wrong new [DEBUG] line
 2009-11-24
   - toccy: fixed spds FileData.format method, to produce a valid XML (escape special chars)
 

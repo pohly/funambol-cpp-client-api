@@ -109,9 +109,15 @@ void POSIXLog::setLogFile(const char *path, const char* name, bool redirectStder
                  &tm);
         developer("%s", buffer);
         asctime_r(&tm, buffer);
+        if (buffer && strlen(buffer) > 2) {
+            buffer[strlen(buffer)-1] = NULL;
+        }
         developer("local time: %s", buffer);
         gmtime_r(&t, &tm);
         asctime_r(&tm, buffer);
+        if (buffer && strlen(buffer) > 2) {
+            buffer[strlen(buffer)-1] = NULL;
+        }
         developer("world time: %s", buffer);
     }
 
