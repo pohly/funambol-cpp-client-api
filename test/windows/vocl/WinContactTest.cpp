@@ -76,20 +76,21 @@ private:
         WinContact* wcontact = new WinContact();
         StringBuffer vcard;
         loadFile(vcardname, vcard);
+        vcard.replaceAll("\r\n","\n");
+        vcard.replaceAll("\n","\r\n");
+
         WCHAR* temp = toWideChar(vcard.c_str());
         wstring wcard(temp);
+        delete [] temp; temp = NULL;
+
         wcontact->parse(wcard);
-        vcard.replaceAll("\r\n","");
-        vcard.replaceAll("\n","");
         wstring result = wcontact->toString();
+        delete wcontact;
+
         const char* tempc = toMultibyte(result.c_str());
         StringBuffer resultc(tempc);
-        resultc.replaceAll("\r\n", "");
-        resultc.replaceAll("\n", "");
         delete [] tempc; tempc = NULL;
-        delete wcontact;
-        delete [] temp; temp = NULL;
-        
+
         CPPUNIT_ASSERT( strcmp(resultc.c_str(), vcard.c_str()) == 0 );  
     }
 

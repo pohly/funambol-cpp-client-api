@@ -102,6 +102,11 @@ WString& WString::append(const WCHAR* sNew) {
     unsigned long len = wcslen(sNew);
 
     if (len == 0) {
+        // In case we're appending an empty string to a null string
+        if (s == NULL) {
+            s = new WCHAR[1];
+            s[0] = 0;
+        }
         return *this;
     }
     if (s) {

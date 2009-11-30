@@ -265,143 +265,115 @@ int VProperty::parameterCount() {
     return parameters->size();
 }
 
+int VProperty::createPropertyHeader(WString & buffer) {
 
-/*
- * Returns a WCHAR* string of this VProperty, based on vCard-vCal specifications.
- * Here values of the property are encoded / special chars are escaped according to
- * vCard-vCal 2.1/3.0 specifications.
- * @param version: vCard version "2.1" or "3.0" - we have different specs
- *                 (if not defined, default will be 2.1)
- *
- * Note:
- * The returned WCHAR* is new allocated, must be freed by the caller.
- */
-WCHAR* VProperty::toString(WCHAR* version) {
-
-    bool is_30 = false;
-    if (version) {
-        is_30 = !wcscmp(version, TEXT("3.0"));
+    if (parameterCount()>0 && containsParameter(TEXT("GROUP"))) {
+        buffer.append(getParameterValue(TEXT("GROUP")));
+        buffer.append(TEXT("."));
     }
+
+    buffer.append(name);
+
+    for (int i=0; i<parameterCount(); i++) {
+        WKeyValuePair *parameter;
+        parameter = (WKeyValuePair*)parameters->get(i);
+
+        // Ignore group and content-value
+        if (!parameter->getKey() ||
+            (wcscmp(parameter->getKey(), TEXT("GROUP")) != 0 &&
+            wcscmp(parameter->getKey(), TEXT("CONTENT-VALUE")) != 0)
+            ) {
+
+            if (parameter->getKey() && parameter->getValue()) {
+                // Both key and value
+                buffer.append(TEXT(";"));
+                buffer.append(parameter->getKey());
+                buffer.append(TEXT("="));
+                buffer.append(parameter->getValue());
+            } else if (parameter->getValue()) {
+                // Just value
+                buffer.append(TEXT(";"));
+                buffer.append(parameter->getValue());
+            } else if (parameter->getKey()) {
+                // Just key
+                buffer.append(TEXT(";"));
+                buffer.append(parameter->getKey());
+            }
+        }
+    }
+
+    buffer.append(TEXT(":"));
+
+    return buffer.length();
+}
+
+void VProperty::addRequiredEncoding(bool shouldFormat, bool qpAllowed, const ArrayList & escapedCharMap) {
+
+    if (shouldFormat && !qpAllowed) {
+        if(!equalsEncoding(TEXT("BASE64")) &&
+           !equalsEncoding(TEXT("B")) &&
+           !equalsEncoding(TEXT("b")) ) {
+            for (int i=0; i<valueCount(); i++) {
+                char* charValue = toMultibyte(getValue(i));
+                if (encodingIsNeed(charValue, escapedCharMap)) {
+                    addParameter(TEXT("ENCODING"), TEXT("b"));
+                    delete [] charValue;
+                    break;
+                }
+                delete [] charValue;
+            }
+        }
+    } else if (qpAllowed) {
+        if (!equalsEncoding(TEXT("QUOTED-PRINTABLE")) ) {
+            for (int i=0; i<valueCount(); i++) {
+                char* charValue = toMultibyte(getValue(i));
+                if (encodingIsNeed(charValue, escapedCharMap)) {
+                    addParameter(TEXT("ENCODING"), TEXT("QUOTED-PRINTABLE"));
+                    addParameter(TEXT("CHARSET"), TEXT("UTF-8"));
+                    delete [] charValue;
+                    break;
+                }
+                delete [] charValue;
+            }
+        }
+    }
+}
+
+WString VProperty::createPropertyValueString(bool shouldFormat, int headerLength, int maxLineLength, FoldMethod foldMethod, const ArrayList & escapedCharMap) {
 
     WString propertyString = TEXT("");
-    bool isToFormatValue = true;
 
-    if (!name){
-        goto finally;
-    }
-    
-    if (parameterCount()>0 && containsParameter(TEXT("CONTENT-VALUE"))) {
-        WCHAR* parVal = getParameterValue(TEXT("CONTENT-VALUE"));
-        if (parVal != NULL && wcscmp(parVal, TEXT("UNCHANGED")) == 0) 
-            isToFormatValue = false;
-        
-    }
+    bool isQPEncoded = equalsEncoding(TEXT("QUOTED-PRINTABLE"));
+    bool isBEncoded  = equalsEncoding(TEXT("BASE64")) ||
+               equalsEncoding(TEXT("B")) ||
+               equalsEncoding(TEXT("b"));
 
-    // Set encoding (QP/B64) parameter if necessary
-    // QP encoding not allowed for vCard 3.0 (RFC 2426)
-    if (is_30) {
-        if (isToFormatValue) {
-            if(!equalsEncoding(TEXT("BASE64")) &&
-               !equalsEncoding(TEXT("B")) &&
-               !equalsEncoding(TEXT("b")) ) {
-                for (int i=0; i<valueCount(); i++) {
-                    char* charValue = toMultibyte(getValue(i));
-                    if (encodingIsNeed(charValue)) {
-                        addParameter(TEXT("ENCODING"), TEXT("b"));
-                        delete [] charValue;
-                        break;
-                    }
-                }
-            }
-        }
-    }
-    else {               
-        if (isToFormatValue) {
-            if (!equalsEncoding(TEXT("QUOTED-PRINTABLE")) ) {
-                for (int i=0; i<valueCount(); i++) {
-                    char* charValue = toMultibyte(getValue(i));
-                    if (encodingIsNeed(charValue)) {
-                        addParameter(TEXT("ENCODING"), TEXT("QUOTED-PRINTABLE"));
-                        addParameter(TEXT("CHARSET"), TEXT("UTF-8"));
-                        delete [] charValue;
-                        break;
-                    }
-                    delete [] charValue;
-                }
-            }
-        }
-    }
-
-
-    //
-    // Write Group:
-    //
-    if (parameterCount()>0 && containsParameter(TEXT("GROUP"))) {
-        propertyString.append(getParameterValue(TEXT("GROUP")));
-        propertyString.append(TEXT("."));
-    }
-
-    //
-    // Write name:
-    //
-    propertyString.append(name);
-
-    //
-    // Write parameters:
-    //
-    if(parameterCount()>0) {
-        for (int i=0; i<parameterCount(); i++) {
-            WKeyValuePair *parameter;
-            parameter = (WKeyValuePair*)parameters->get(i);
-            if (parameter->getKey()) {
-                if (!wcscmp(parameter->getKey(), TEXT("GROUP"))) {
-                    continue;
-                }
-                // for the custom value 
-                if (!wcscmp(parameter->getKey(), TEXT("CONTENT-VALUE"))) {
-                    continue;
-                }
-                propertyString.append(TEXT(";"));
-                propertyString.append(parameter->getKey());
-            }
-            if (parameter->getValue()) {
-                propertyString.append(TEXT("="));
-                propertyString.append(parameter->getValue());
-            }
-        }
-    }
-
-    //
-    // Write values:
-    //
-    propertyString.append(TEXT(":"));
-    if(valueCount()>0) {
+    // Write values
+    int numValues = valueCount();
+    if(numValues > 0) {
         WString valueString = TEXT("");
         
-        if (isToFormatValue) {
+        if (shouldFormat) {
             // Get all values in one single string
-            WCHAR *value, *valueConv;
-            for (int i=0; i<valueCount(); i++) {
+            for (int i=0; i<numValues; i++) {
                 if (i>0) {
                     valueString.append(TEXT(";"));
                 }
-                value = getValue(i);
-
-                // Escape special chars - based on version (";"  "\", ",")
-                valueConv = escapeSpecialChars(value, version);
-
-                valueString.append(valueConv);
-                delete [] valueConv;
+                // Escape special chars
+                WString value = getValue(i);
+                if (!isQPEncoded && !isBEncoded) {
+                   value = escape(value, escapedCharMap);
+                }
+                valueString.append(value);
             }
-        } else { 
-            
-            WCHAR *value;
+        } else {
+            WString value;
             for (int i=0; i<valueCount(); i++) {
                 if (i>0) {
                     valueString.append(TEXT(";"));
                 }
                 value = getValue(i);         
-                if (i == 0 && (value != NULL) && wcslen(value) > 0 && (wcscmp(name, TEXT("PHOTO")) == 0)) {
+                if (i == 0 && !value.null() && value.length() > 0 && (wcscmp(name, TEXT("PHOTO")) == 0)) {
                     valueString.append(TEXT("\r\n"));
                 }   
                 valueString.append(value);
@@ -409,46 +381,41 @@ WCHAR* VProperty::toString(WCHAR* version) {
 
         }
 
-        if (isToFormatValue) {
+        if (shouldFormat) {
             // QUOTED-PRINTABLE encoding (of all values)
-            if (equalsEncoding(TEXT("QUOTED-PRINTABLE"))) {
+            if (isQPEncoded) {
 
                 char* s  = toMultibyte(valueString.c_str());
-                char* qp = convertToQP(s, 0);
-                WCHAR* qpValueString = toWideChar(qp);
-                if(qpValueString)
-                    propertyString.append(qpValueString);
-                else
-                    propertyString.append(valueString);
-
-                delete [] qpValueString;
+                char* qp = convertToQP(s, headerLength, maxLineLength);
                 delete [] s;
+                WCHAR* qpValueString = toWideChar(qp);
                 delete [] qp;
-            }
+                if(qpValueString) {
+                    propertyString.append(qpValueString);
+                    delete [] qpValueString;
 
-            // BASE64 encoding (of all values)
-            else if(equalsEncoding(TEXT("BASE64")) ||
-               equalsEncoding(TEXT("B")) ||
-               equalsEncoding(TEXT("b")) ) {
+                    // Disable folding
+                    foldMethod = noFolding;
+                } else {
+                    propertyString.append(valueString);
+                }
+
+            } else if(isBEncoded) {
 
                 char* s  = toMultibyte(valueString.c_str());
                 int len = strlen(s);
+
                 char* base64 = new char[2*len + 1];
                 b64_encode(base64, s, len);
+                delete [] s;
+
                 WCHAR* b64ValueString = toWideChar(base64);
+                delete [] base64;
 
                 propertyString.append(b64ValueString);
-                // Extra line break: required for v.2.1 / optional for v.3.0
-                //propertyString.append(RFC822_LINE_BREAK);
-
                 delete [] b64ValueString;
-                delete [] base64;
-                delete [] s;
-            }
-
-
-            // Default encoding (7bit)
-            else {
+            } else {
+                // Default encoding (7bit)
                 propertyString.append(valueString);
             }
         } else { // not is to apply any transformation
@@ -456,11 +423,123 @@ WCHAR* VProperty::toString(WCHAR* version) {
         }
     }
 
+    if (foldMethod != noFolding) {
+        WString lineDelimeter = TEXT("\r\n ");
+        WString foldOn = NULL;
+        if (foldMethod == foldOnWhitespaceOne || foldMethod == foldOnWhitespaceTwo) {
+            // TODO can fold on tabs too, but should then be indented with tabs, not spaces
+            foldOn = TEXT(" ");
+        }
 
-finally:
-    // memory must be free by caller with delete []
-    WCHAR *str = wstrdup(propertyString);
-    return str;
+        if (foldMethod == foldOnWhitespaceTwo) {
+            lineDelimeter.append(TEXT(" "));
+        }
+
+        fold(propertyString, headerLength, maxLineLength, lineDelimeter, foldOn);
+    }
+
+
+    return propertyString;
+}
+
+int VProperty::getMaxLineLength(const WString & pid, const WString & version) {
+    // Default
+    int maxLineLength = 76;
+    if (pid == TEXT("VCALENDAR") && version == TEXT("2.0")) {
+        maxLineLength = 75;
+    }
+
+    return maxLineLength;
+}
+
+bool VProperty::isQPEncodingAllowed(const WString & pid, const WString & version) {
+    return !(pid == TEXT("VCARD") && version == TEXT("3.0"));
+}
+
+VProperty::FoldMethod VProperty::getFoldMethod(const WString & pid, const WString & version) {
+
+    FoldMethod method = noFolding;
+
+    if (pid == TEXT("VCARD")) {
+        if (version == TEXT("2.1")) {
+            method = foldOnWhitespaceTwo;
+        } else {
+            method = foldAnywhere;
+        }
+    } else if (pid == TEXT("VCALENDAR")) {
+        if (version == TEXT("1.0")) {
+            method = foldOnWhitespaceTwo;
+        } else {
+            method = foldAnywhere;
+        }
+    } else if (pid == TEXT("VNOTE")) {
+        if (version == TEXT("1.1")) {
+            method = foldOnWhitespaceTwo;
+        }
+    }
+
+    return method;
+}
+
+/*
+ * Returns a WCHAR* string of this VProperty, based on vCard-vCal specifications.
+ * Here values of the property are encoded / special chars are escaped according to
+ * vCard-vCal 2.1/3.0 specifications.
+ * @param pid      The component name (product id)
+ * @param version: The component version
+ *
+ * Note:
+ * The returned WCHAR* is new allocated, must be freed by the caller.
+ */
+WCHAR* VProperty::toString(WCHAR * pid, WCHAR* version, bool doFolding) {
+
+    WString propertyString = TEXT("");
+
+    if (!name) {
+        return wstrdup(propertyString);
+    }
+
+    bool qpAllowed = isQPEncodingAllowed(pid, version);
+    int maxLineLength = getMaxLineLength(pid, version);
+
+    ArrayList escapedCharMap = getEscapedCharMap(pid, version);
+
+    bool shouldFormat = true;
+    if (parameterCount()>0 && containsParameter(TEXT("CONTENT-VALUE"))) {
+        WCHAR* parVal = getParameterValue(TEXT("CONTENT-VALUE"));
+        if (parVal != NULL && wcscmp(parVal, TEXT("UNCHANGED")) == 0) {
+            shouldFormat = false;
+        }
+    }
+
+    addRequiredEncoding(shouldFormat, qpAllowed, escapedCharMap);
+
+    int headerLength = createPropertyHeader(propertyString);
+
+    FoldMethod foldMethod = noFolding;
+    if (doFolding) {
+        foldMethod = getFoldMethod(pid, version);
+    }
+
+    WString valueString = createPropertyValueString(shouldFormat, propertyString.length(), maxLineLength, foldMethod, escapedCharMap);
+
+    if (valueString.null()) {
+        if (qpAllowed &&
+            !equalsEncoding(TEXT("QUOTED-PRINTABLE"))) {
+
+            // Try again with QP
+            addParameter(TEXT("ENCODING"), TEXT("QUOTED-PRINTABLE"));
+            addParameter(TEXT("CHARSET"), TEXT("UTF-8"));
+            return toString(pid, version);
+        } else {
+            // Abandon folding
+            return toString(pid, version, false);
+        }
+    } else {
+        propertyString.append(valueString);
+    }
+
+    return wstrdup(propertyString.c_str());
 }
 
 
@@ -531,7 +610,7 @@ BEGIN_NAMESPACE
  * @return        : the char* string in QP format (new - must be freed by the caller!)
  *                  (NULL if conversion failed)
  */
-char* convertToQP(const char* input, int start) {
+char* convertToQP(const char* input, int start, int maxLineLength) {
 
     int   count   = start;
     int   maxLen  = 3*strlen(input);         // This is the max length for output string
@@ -543,6 +622,9 @@ char* convertToQP(const char* input, int start) {
     char* qpString = new char[maxLen + 1];
     strcpy(qpString, "");
 
+    bool isAllowed;
+    bool canFit;
+
     if (maxLen>0) {
         sAppend = new char[maxLen + 1];
         strncpy(sAppend, input, maxLen);
@@ -552,44 +634,31 @@ char* convertToQP(const char* input, int start) {
             return NULL;
 
         for (p = sAppend; *p; p++) {
-            //if (count > QP_MAX_LINE_LEN) {
-            //    strcat(qpString, "=\r\n");
-            //    count = 0;
-            //}
-            //else
-            if (*p == '\t' || *p == ' ') {
-                const char *pScan = p;
-                while (*pScan && (*pScan == '\t' || *pScan == ' ')) {
-                    pScan++;
-                }
-                if (*pScan == '\0') {
-                    while (*p) {
-                        unsigned char ind = *p;
-                        sprintf(szTemp, "=%02X", ind);
-                        strcat(qpString, szTemp);
-                        count += 3;
-                        p++;
 
-                        //if (count > QP_MAX_LINE_LEN) {
-                        //    strcat(qpString, "=\r\n");
-                        //    count = 0;
-                        //}
-                    }
-                    break;
-                }
-                else {
-                    sprintf(szTemp, "%c", *p);
-                    strcat(qpString, szTemp);
-                    count++;
-                }
-                continue;
+            // 33 = !
+            // 126 = ~
+            // Any printable character, except space, tab, and =
+            isAllowed = (*p >= 33) && (*p <= 126) && (*p != '=') && (*p != ' ') && (*p != '\t');
+
+            if (isAllowed) {
+                // No limit, room for X, or last character
+                canFit = (maxLineLength == -1) || (count < maxLineLength - 1) || ((count <= maxLineLength - 1) && *(p+1) == '\0');
+            } else {
+                // No limit, room for =XX, or last character
+                canFit = (maxLineLength == -1) || (count < maxLineLength - 3) || ((count <= maxLineLength - 3) && *(p+1) == '\0');
             }
-            else if (('!' <= *p) && ('~' >= *p) && ('=' != *p)) {
+
+            if (!canFit) {
+                // Line full, add a soft line break
+                strcat(qpString, "=\r\n");
+                count = 0;
+            }
+            
+            if (isAllowed) {
                 sprintf(szTemp, "%c", *p);
                 strcat(qpString, szTemp);
                 count++;
-            }
-            else {
+            } else {
                 unsigned char ind = *p;
                 sprintf(szTemp, "=%02X", ind);
                 strcat(qpString, szTemp);
@@ -605,82 +674,109 @@ char* convertToQP(const char* input, int start) {
 
 
 // Returns true if special encoding is needed for the string 'in'.
-bool encodingIsNeed(const char *in) {
-    for(int i = 0; i < int(strlen(in)); i++)
-        if ( (in[i] < 0x20) || ((unsigned char)in[i] > 0x7f))
+bool encodingIsNeed(const char *in, const ArrayList & escapedCharMap) {
+    for(int i = 0; i < int(strlen(in)); i++) {
+        // If it will be escaped, its okay
+        bool escaped = false;
+        for (int j = 0; j < escapedCharMap.size(); j++) {
+            WKeyValuePair * kvp = dynamic_cast<WKeyValuePair*>(escapedCharMap.get(j));
+            if (kvp != NULL) {
+                if (wcslen(kvp->getValue()) == 1 && in[i] == kvp->getValue()[0]) {
+                    escaped = true;
+                    break;
+                }
+            }
+        }
+        if (!escaped && ((in[i] < 0x20) || ((unsigned char)in[i] > 0x7f))) {
             return true;
+        }
+    }
 
     return false;
 }
 
+/**
+ * Get a map of escaped characters (escaped -> unescaped)
+ * Order matters
+ */
+ArrayList getEscapedCharMap(const WString & pid, const WString & version) {
 
+    ArrayList escaped;
 
-
-
-/*
-* Escape special characters adding a back-slash (i.e. ";" -> "\;")
-* @param inputString  : the input string to parse
-* @param version      : vCard version "2.1" or "3.0" - we have different chars to escape
- *                     (if not defined, default will be 2.1)
-* @return             : the new allocated string with escaped chars
-* Note:
-*      returns new allocated WCHAR*, must be freed by the caller.
-*/
-WCHAR* escapeSpecialChars(const WCHAR* inputString, WCHAR* version) {
-
-    int i, j, inputLen, outputLen;
-    inputLen  = wcslen(inputString);
-    WCHAR* wc = new WCHAR[2];
-    WCHAR charsToEscape[4];
-
-    bool is_30 = false;
-    if (version) {
-        is_30 = !wcscmp(version, TEXT("3.0"));
-    }
-    if (is_30) {
-        wcscpy(charsToEscape, VCARD30_SPECIAL_CHARS);
-    }
-    else {
-        wcscpy(charsToEscape, VCARD21_SPECIAL_CHARS);
-    }
-
-
-    // First find the length of output value
-    outputLen = inputLen;
-    for (i=0; i<inputLen; i++) {
-        wcsncpy(wc, &inputString[i], 1);
-        wc[1]=0;
-        if (wcsstr(charsToEscape, wc))
-            outputLen ++;
-    }
-    WCHAR* outputString = new WCHAR[outputLen+1];
-
-
-    // Now escape special characters (add back-slash)
-    j=0;
-    for (i=0; i<inputLen; i++) {
-        wcsncpy(wc, &inputString[i], 1);
-        wc[1]=0;
-        if (wcsstr(charsToEscape, wc)) {
-            if (is_30 && inputString[i]=='\\' && inputString[i+1]=='n') {
-                // none: this is "\n" sequence, MUST NOT be escaped in 3.0
-            }
-            else {
-                outputString[j]   = '\\';
-                j++;
-            }
+    if (pid == TEXT("VCARD")) {
+        escaped.add(WKeyValuePair(TEXT("\\\\"),TEXT("\\")));
+        escaped.add(WKeyValuePair(TEXT("\\;"),TEXT(";")));
+        if (version == TEXT("3.0")) {
+            escaped.add(WKeyValuePair(TEXT("\\n"),TEXT("\n")));
+            escaped.add(WKeyValuePair(TEXT("\\N"),TEXT("\n")));
         }
-        outputString[j] = inputString[i];
-        j++;
+    } else if (pid == TEXT("VCALENDAR")) {
+        escaped.add(WKeyValuePair(TEXT("\\\\"),TEXT("\\")));
+        escaped.add(WKeyValuePair(TEXT("\\;"),TEXT(";")));
+        if (version == TEXT("2.0")) {
+            escaped.add(WKeyValuePair(TEXT("\\,"),TEXT(",")));
+            escaped.add(WKeyValuePair(TEXT("\\n"),TEXT("\n")));
+            escaped.add(WKeyValuePair(TEXT("\\N"),TEXT("\n")));
+        }
+    } else if (pid == TEXT("VNOTE")) {
+        escaped.add(WKeyValuePair(TEXT("\\\\"),TEXT("\\")));
+        escaped.add(WKeyValuePair(TEXT("\\;"),TEXT(";")));
     }
 
-    outputString[outputLen] = 0;
-    delete [] wc;
-    return outputString;
+    return escaped;
 }
 
+void VProperty::fold(WString & propertyString, int headerLength, int maxLineLength, const WString & lineDelimeter, const WString & foldOn) {
+    WString result = TEXT("");
+    result.reserve(propertyString.length() * 2);
 
+    int thisLineAllowedLength = maxLineLength - headerLength;
+    int pos = 0;
+    int lastPos = 0;
+    bool foldNow = false;
+    int length = propertyString.length();
+    while (pos < length) {
+        if (!foldOn.null()) {
+            int newpos = propertyString.find(foldOn, pos+1);
 
+            if (newpos == WString::npos) {
+                if (length - lastPos > thisLineAllowedLength) {
+                    // Unfoldable by current strategy
+                    result = NULL;
+                    return;
+                } else {
+                    newpos = length;
+                    foldNow = true;
+                }
+            }
+
+            if (newpos - lastPos < thisLineAllowedLength) {
+                pos = newpos;
+            } else {
+                foldNow = true;
+            }
+        } else {
+            foldNow = true;
+            pos = min(pos + thisLineAllowedLength, length);
+        }
+
+        if (foldNow) {
+            result.append(propertyString.substr(lastPos, pos - lastPos));
+            if (pos != length) {
+                result.append(lineDelimeter);
+            }
+            lastPos = pos;
+            if (!foldOn.null()) {
+                // Skip the fold characters
+                lastPos += foldOn.length();
+            }
+            thisLineAllowedLength = maxLineLength;
+            foldNow = false;
+        }
+    }
+
+    propertyString = result;
+}
 
 /*
  * Folding of long lines. Output string is splitted into multiple
@@ -724,36 +820,16 @@ finally:
 }
 
 
+WString VProperty::escape(WString inputString, const ArrayList & escapedCharMap) {
 
-/*
- * Unfolding a logical line. Input string is splitted into multiple
- * lines, delimited by the RFC-822 line break ("\r\n") followed by one space.
- * @param inputString : input  WCHAR string with folded lines
- * @return            : output WCHAR string unfolded (new allocated)
- *
- * Note:
- *      returns new allocated WCHAR*, must be freed by the caller.
- */
-WCHAR* unfolding(const WCHAR* inputString) {
-
-    int inputLen  = wcslen(inputString);
-    WCHAR* outputString = new WCHAR[inputLen + 1];
-    outputString[0] = 0;
-
-    int j=0;
-    for (int i=0; i<inputLen-2; i++) {
-        if (inputString[i]   == '\r' &&
-            inputString[i+1] == '\n' &&
-            inputString[i+2] == ' ') {
-            i += 2;
-            continue;
+    for (int i = 0; i < escapedCharMap.size(); i++) {
+        WKeyValuePair * kvp = dynamic_cast<WKeyValuePair *>(escapedCharMap.get(i));
+        if (kvp != NULL) {
+            inputString.replaceAll(kvp->getValue(), kvp->getKey());
         }
-        outputString[j] = inputString[i];
-        j++;
     }
-    outputString[j] = 0;
-
-    return outputString;
+    
+    return inputString;
 }
 
 END_NAMESPACE

@@ -86,7 +86,7 @@ wstring& WinNote::toString() {
     // Conversion: WinNote -> vObject.
     // -------------------------------
     //
-    VObject* vo = new VObject();
+    VObject* vo = new VObject(L"VNOTE", VNOTE_VERSION);
     VProperty* vp  = NULL;
     wstring element;
 

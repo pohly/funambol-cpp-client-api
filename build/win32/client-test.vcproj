@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="Windows-1252"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="8,00"
+	Version="8.00"
 	Name="client-test"
 	ProjectGUID="{68DB1569-6AFC-4288-B7B0-79AF45F2F37C}"
 	RootNamespace="cppunit"
@@ -413,6 +413,10 @@
 			<Filter
 				Name="vocl"
 				>
+				<File
+					RelativePath="..\..\test\common\vocl\VConverterTest.cpp"
+					>
+				</File>
 				<Filter
 					Name="winObjects"
 					>
@@ -521,6 +525,10 @@
 						Outputs="$(TargetDir)$(InputFileName)"
 					/>
 				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\test\testcases\VConverterTest\testVcard21Folding.vcf"
+				>
 			</File>
 			<File
 				RelativePath="..\..\test\testcases\vcal10.ics"

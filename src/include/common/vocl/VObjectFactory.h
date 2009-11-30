@@ -46,7 +46,7 @@ BEGIN_NAMESPACE
 class VObjectFactory {
 
 public:
-    static VObject* createInstance(WCHAR* objType, WCHAR* objversion);
+    static VObject* createInstance(const WString & objType, const WString & objversion);
 };
 
 

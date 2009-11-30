@@ -82,7 +82,7 @@ wstring& WinEvent::toString() {
     // Conversion: WinEvent -> vObject.
     // --------------------------------
     //
-    VObject* vo = new VObject();
+    VObject* vo = new VObject(L"VCALENDAR", VCALENDAR_VERSION);
     VProperty* vp  = NULL;
     DATE startdate = NULL;
     wstring element;

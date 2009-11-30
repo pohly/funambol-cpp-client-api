@@ -72,7 +72,7 @@ wstring& WinContact::toString() {
     // Conversion: WinContact -> vObject.
     // ----------------------------------
     //
-    VObject* vo = new VObject();
+    VObject* vo = new VObject(L"VCARD", VCARD_VERSION);
     wstring element;
     VProperty* vp = NULL;
     bool found = false;

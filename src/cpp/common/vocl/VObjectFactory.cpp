@@ -43,25 +43,26 @@
 
 USE_NAMESPACE
 
-VObject* VObjectFactory::createInstance(WCHAR* objType, WCHAR* objVersion) {
+VObject* VObjectFactory::createInstance(const WString & objType, const WString & objVersion) {
 
-    if(!objType)
-        return new VObject();
-    if (!wcscmp(objType, TEXT("VCARD")) && objVersion && !wcscmp(objVersion, TEXT("2.1")))
-        return new Contact();
-    if (!wcscmp(objType, TEXT("VCARD")) && objVersion && !wcscmp(objVersion, TEXT("3.0")))
-        return new Contact30();
-    else if(!wcscmp(objType, TEXT("VEVENT")))
+    if (objType == TEXT("VCARD")) {
+        if (objVersion == TEXT("2.1")) {
+            return new Contact();
+        } else if (objVersion == TEXT("3.0")) {
+            return new Contact30();
+        }
+    } else if(objType == TEXT("VEVENT")) {
         return new Event();
-    else if(!wcscmp(objType, TEXT("VTODO")))
+    } else if(objType == TEXT("VTODO")) {
         return new ToDo();
-
-   /*else if(!wcscmp(objType, TEXT("VJOURNAL"))
+   /*} else if(objType == TEXT("VJOURNAL")) {
         return new Journal();
-    else if(!wcscmp(objType, TEXT("VFREEBUSY"))
+    } else if(objType == TEXT("VFREEBUSY")) {
         return new Freebusy();
-    else if(!wcscmp(objType, TEXT("VTIMEZONE"))
+    } else if(objType == TEXT("VTIMEZONE")) {
         return new Timezone();
     */
-    else return new VObject(objType, objVersion);
+    }
+
+    return new VObject(objType, objVersion);
 }

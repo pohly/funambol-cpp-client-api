@@ -73,7 +73,7 @@ wstring& WinTask::toString() {
     // Conversion: WinTask -> vObject.
     // -------------------------------
     //
-    VObject* vo = new VObject();
+    VObject* vo = new VObject(L"VCALENDAR", VCALENDAR_VERSION);
     VProperty* vp  = NULL;
     wstring element;
     bool statusIsSet = false;

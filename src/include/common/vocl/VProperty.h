@@ -42,28 +42,20 @@
 #include "base/util/WKeyValuePair.h"
 #include "base/util/ArrayList.h"
 
+#include <map>
 
-// Quoted-Printable formatted lines should be max 76 chars long.
-#define QP_MAX_LINE_LEN             70
-#define VCARD_MAX_LINE_LEN          76
-
-
-// These are special chars to escape in vCard/vCal/vTodo (version 2.1 - 3.0)
-#define VCARD21_SPECIAL_CHARS       TEXT(";\\")
-#define VCARD30_SPECIAL_CHARS       TEXT(";\\,")
 #define RFC822_LINE_BREAK           TEXT("\r\n")
+
 #include "base/globalsdef.h"
 
 BEGIN_NAMESPACE
 
+ArrayList getEscapedCharMap(const WString & pid, const WString & version);
 
 // ------------ Public functions --------------
-WCHAR* escapeSpecialChars(const WCHAR* inputString, WCHAR* version);
-char*    convertToQP(const char* input, int start);
-bool     encodingIsNeed(const char *in);
+char*    convertToQP(const char* input, int start, int maxLineLength = -1);
+bool     encodingIsNeed(const char *in, const ArrayList & escapedCharMap = ArrayList());
 WCHAR* folding(const WCHAR* inputString, const int maxLine);
-WCHAR* unfolding(const WCHAR* inputString);
-
 
 
 // ------------ Class VProperty ---------------
@@ -81,6 +73,29 @@ private:
     // This is only used as a buffer for 'getValue()'
     WCHAR* valueBuf;
 
+    WString escape(WString inputString, const ArrayList & escapedCharMap);
+
+    enum FoldMethod {
+        // Do not fold - fallback option
+        noFolding,
+        // Fold by inserting 1 whitespace on a whitespace character only
+        foldOnWhitespaceOne,
+        // Fold by inserting 2 whitespace on a whitespace character only
+        // This option is good for ensuring compliance with faulty
+        // parsers that simply strip the first whitespace, as one remains
+        foldOnWhitespaceTwo,
+        // For ical
+        foldAnywhere
+    };
+
+    FoldMethod getFoldMethod(const WString & pid, const WString & version);
+    int getMaxLineLength(const WString & pid, const WString & version);
+    bool isQPEncodingAllowed(const WString & pid, const WString & version);
+    int createPropertyHeader(WString & buffer);
+    WString createPropertyValueString(bool shouldFormat, int headerLength, int maxLineLength, FoldMethod foldMethod, const ArrayList  & escapedCharMap);
+    void addRequiredEncoding(bool shouldFormat, bool qpAllowed, const ArrayList & escapedCharMap);
+
+    void fold(WString & propertyString, int headerLength, int maxLineLength, const WString & lineDelimiter, const WString & foldOn);
  public:
 
     VProperty(const WCHAR* propName , const WCHAR* propValue  = NULL);
@@ -113,7 +128,7 @@ private:
     bool equalsEncoding(const WCHAR* encoding);
     //WCHAR* getPropComponent(int i);
     bool isType(const WCHAR* type);
-    WCHAR* toString(WCHAR* version = NULL);
+    WCHAR* toString(WCHAR * pid, WCHAR* version, bool doFolding = true);
 
  };
 

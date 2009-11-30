@@ -168,24 +168,18 @@ WCHAR* VObject::toString() {
 
     // *** FIXME ***
     // By now folding feature not supported on server...
-    bool useFolding = false;
+    bool useFolding = true;
 
     // let's reserve some space to avoid reallocation in most cases
     strVObject.reserve(5000);
 
     for (int i=0; i<properties->size(); i++) {
         VProperty *prop = getProperty(i);
-        WCHAR* propString = prop->toString(version);
+        WCHAR* propString = prop->toString(productID, version);
         WCHAR* valueConv = NULL;
 
         // Folding
-        if (useFolding && wcslen(propString) > VCARD_MAX_LINE_LEN) {
-            valueConv = folding(propString, VCARD_MAX_LINE_LEN);
-            strVObject.append(valueConv);
-        }
-        else {
-            strVObject.append(propString);
-        }
+        strVObject.append(propString);
         strVObject.append(RFC822_LINE_BREAK);
 
         if (propString) {
@@ -457,4 +451,3 @@ void VObject::fromNativeEncoding()
 }
 
 #endif
-

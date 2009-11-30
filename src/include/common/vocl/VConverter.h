@@ -39,6 +39,7 @@
 /** @cond DEV */
 
 #include "vocl/VObject.h"
+#include "base/util/WString.h"
 #include "base/globalsdef.h"
 
 BEGIN_NAMESPACE
@@ -46,15 +47,27 @@ BEGIN_NAMESPACE
 class VConverter{
 
 public:
-
-    /**
-     * Parses the passed string 'buffer', returns a NEW ALLOCATED VObject*.
-     */
     static VObject* parse(const WCHAR* buffer);
 
 private:
-    static VProperty* readFieldHeader(WCHAR* buffer);
-    static bool readFieldBody(WCHAR* buffer, VProperty* property);
+    enum UnfoldMethod {
+        // Remove only 1 leading whitespace character (ical, vcard 3)
+        removeOneFoldingWhitespace,
+        // DEPRECATED
+        // Not standards compliant any time
+        // Here for backwards compatibility only
+        removeAllFoldingWhitespace,
+        // Convert n whitespace characters to one whitespace character
+        convertToOneWhitespace,
+    };
+
+    static VProperty* readFieldHeader(WCHAR * buffer, WCHAR * fieldSeparators);
+    static bool readFieldBody(WCHAR * buffer, VProperty* vprop, const ArrayList & escapedCharMap, const UnfoldMethod & unfoldMethod);
+    
+    static UnfoldMethod getUnfoldMethod(const WString & pid, const WString & version);
+    static WCHAR * popPropertyLine(WCHAR * buffer, const UnfoldMethod & unfoldMethod);
+    static WCHAR * popQPPropertyLine(WCHAR * buffer, const WString & encoding);
+    static WString unescape(WString incoming, const ArrayList & escapedCharMap);
 
     // Extract the parameter of certain properties, e.g. "BEGIN:" or "VERSION:".
     // The result is a pointer into buffCopy, which is expected to have
@@ -64,8 +77,8 @@ private:
 
     // extractObjectType() and extractObjectVersion() contain static buffers,
     // copy the result before calling these functions again!
-    static WCHAR* extractObjectType(const WCHAR* buffer);
-    static WCHAR* extractObjectVersion(const WCHAR* buffer);
+    static WString extractObjectType(const WCHAR* buffer);
+    static WString extractObjectVersion(const WCHAR* buffer);
     static bool extractGroup(WCHAR* propertyName, WCHAR* propertyGroup);
 
 };

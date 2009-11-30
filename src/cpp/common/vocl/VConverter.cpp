@@ -40,42 +40,193 @@
 #include "base/util/WString.h"
 #include "base/quoted-printable.h"
 #include "base/globalsdef.h"
+#include "base/util/StringBuffer.h"
+
+#include <map>
 
 USE_NAMESPACE
 
+VConverter::UnfoldMethod VConverter::getUnfoldMethod(const WString & pid, const WString & version) {
+
+    // Default
+    UnfoldMethod method = convertToOneWhitespace;
+
+    // Default exceptions
+    if (pid == L"VCARD" && version == L"3.0") {
+        method = removeOneFoldingWhitespace;
+    } else if (pid == L"VCALENDAR" && version == L"2.0") {
+        method = removeOneFoldingWhitespace;
+    }
+
+    return method;
+}
+
+WCHAR * VConverter::popPropertyLine(WCHAR * buffer, const UnfoldMethod & unfoldMethod) {
+
+    int inputLen  = wcslen(buffer);
+    // Reserve all the space that could be possible
+    WCHAR * result = new WCHAR[inputLen+1];
+
+    bool done = false;
+    int j = 0;
+    int i = 0;
+    for (i=0; i<inputLen-2 && !done; i++) {
+        if (buffer[i]   == '\r' &&
+            buffer[i+1] == '\n') {
+            // End of line, or end of property
+            i+=2;
+            WCHAR lookFor = 0;
+            if (buffer[i] == ' ') {
+                lookFor = ' ';
+            } else if (buffer[i] == '\t') {
+                lookFor = '\t';
+            } else {
+                done = true;
+            }
+            if (lookFor != 0) {
+                int wsIndex = i;
+                // Skip any additional whitespace characters matching the first
+                switch (unfoldMethod) {
+                    case convertToOneWhitespace:
+                        wsIndex++;
+                        // Break omitted
+                    case removeAllFoldingWhitespace:
+                        // We use that wsIndex to be one ahead for the convertToOneWhitespace
+                        // method
+                        while (buffer[wsIndex] && buffer[wsIndex] == lookFor) {
+                            i++;
+                            wsIndex++;
+                        }
+                        break;
+                    case removeOneFoldingWhitespace:
+                            i++;
+                        break;
+                }
+            }
+        }
+
+        if (!done) {
+            result[j] = buffer[i];
+            j++;
+        }
+    }
+
+    if (!done) {
+        // Content did not end in a \r\n, assume end of file
+        // We never hit the end of the line, because of the for loop condition
+        // Get the last few characters
+        result[j] = buffer[i];
+        j++; i++;
+        result[j] = buffer[i];
+        j++; i++;
+        // Move i one more, to the place after the '\0'.
+        i++;
+    }
+
+    result[j] = 0;
+
+    memmove(buffer, buffer+i-1, (wcslen(buffer+i-1)+1) * sizeof(*buffer));
+
+    WCHAR * prop = new WCHAR[wcslen(result)+1];
+    wcscpy(prop, result);
+    delete [] result;
+
+    return prop;
+}
+
+WCHAR * VConverter::popQPPropertyLine(WCHAR * buffer, const WString & encoding) {
+
+    int inputLen  = wcslen(buffer);
+    WCHAR * qpString = new WCHAR[inputLen];
+
+    bool done = false;
+    int j = 0;
+    int i = 0;
+    for (; i<inputLen-2 && !done; i++) {
+        if (buffer[i]   == '=' && 
+            buffer[i+1] == '\r' &&
+            buffer[i+2] == '\n') {
+            // End of line
+            i += 2;
+
+        } else if (buffer[i]   == '\r' &&
+            buffer[i+1] == '\n') {
+            // End of property
+
+            i += 1;
+            done = true;
+        } else {
+            qpString[j] = buffer[i];
+            j++;
+        }
+    }
+
+    if (!done) {
+        // Content did not end in a \r\n, assume end of file
+        // We never hit the end of the line, because of the for loop condition
+        // Get the last few characters
+        qpString[j] = buffer[i];
+        j++; i++;
+        qpString[j] = buffer[i];
+        j++; i++;
+        // Move i one more, to the place after the '\0'.
+        i++;
+    }
+
+    qpString[j] = 0;
+
+    memmove(buffer, buffer+i, (wcslen(buffer+i)+1) * sizeof(*buffer));
+
+    char * mbEncoding = toMultibyte(encoding);
+    char * mbString = toMultibyte(qpString);
+    char * wcString = qp_decode(mbString);
+    WCHAR * prop = toWideChar(wcString, mbEncoding);
+
+    delete [] mbEncoding;
+    delete [] qpString;
+    delete [] mbString;
+    delete [] wcString;
+
+    return prop;
+}
 
 VObject* VConverter::parse(const WCHAR* buffer) {
 
-    WCHAR *objType = extractObjectType(buffer);
-    WCHAR *objVersion = extractObjectVersion(buffer);
+    WString objType = extractObjectType(buffer);
+    WString objVersion = extractObjectVersion(buffer);
     if(!objType)
         return NULL;
 
-    VObject* vo = VObjectFactory::createInstance(objType, objVersion);
+    VObject* vo = VObjectFactory::createInstance(objType.c_str(), objVersion.c_str());
     VProperty *prop;
 
-    // Unfolding
-    WCHAR* buffCopy = unfolding(buffer);
+    WCHAR* buffCopy;
+    buffCopy = new WCHAR[wcslen(buffer)+1];
+    wcscpy(buffCopy, buffer);
+
+    ArrayList escapedCharMap = getEscapedCharMap(objType, objVersion);
+    UnfoldMethod unfoldMethod = getUnfoldMethod(objType, objVersion);
+    WCHAR * fieldSeparators = TEXT(";,");/*getFieldSeparators(objType, objVersion);*/
 
     while ( true ) {
-        prop = readFieldHeader(buffCopy);
+        prop = readFieldHeader(buffCopy, fieldSeparators);
         if (!prop) {
             break;
         }
-        if ( readFieldBody(buffCopy, prop )) {
+        if ( readFieldBody(buffCopy, prop, escapedCharMap, unfoldMethod)) {
             vo->addProperty(prop);
         }
         delete prop;
     }
 
-    if(objType)    { delete [] objType;    objType    = NULL; }
-    if(objVersion) { delete [] objVersion; objVersion = NULL; }
     if (buffCopy)  { delete [] buffCopy;   buffCopy   = NULL; }
 
     return vo;
 }
 
-VProperty* VConverter::readFieldHeader(WCHAR* buffer) {
+VProperty* VConverter::readFieldHeader(WCHAR * buffer, WCHAR * fieldSeparators) {
+
+    // TODO: Handle escaped quotes in parameters
 
     WCHAR* headerIndex = NULL;
     WCHAR* quotaIndex = NULL;
@@ -131,11 +282,10 @@ VProperty* VConverter::readFieldHeader(WCHAR* buffer) {
         header[headerFolding - header] = '\0';
     }
 
-    WCHAR seps[] = TEXT(";");
     WCHAR *token;
     bool first = true;
 
-    token = wcstok( header, seps );
+    token = wcstok( header, fieldSeparators );
     while( token != NULL ) {
         if (first) {
 
@@ -169,7 +319,7 @@ VProperty* VConverter::readFieldHeader(WCHAR* buffer) {
                 prop->addParameter(token,NULL);
             }
         }
-        token = wcstok( NULL, seps );
+        token = wcstok( NULL, fieldSeparators );
     }
 
     delete [] header; header = NULL;
@@ -178,7 +328,7 @@ VProperty* VConverter::readFieldHeader(WCHAR* buffer) {
     return prop;
 }
 
-bool VConverter::readFieldBody(WCHAR* buffer, VProperty* vprop) {
+bool VConverter::readFieldBody(WCHAR * buffer, VProperty* vprop, const ArrayList & escapedCharMap, const UnfoldMethod & unfoldMethod) {
 
     int i      = 0;
     int j      = 0;
@@ -186,128 +336,60 @@ bool VConverter::readFieldBody(WCHAR* buffer, VProperty* vprop) {
     int offset = 0;
     bool ret   = false;
     WCHAR* value     = NULL;
-    WCHAR* allValues = NULL;
     WCHAR* c         = NULL;
 
-    // Get length of all values
-    while (buffer[i] != '\0') {
-        if ((buffer[i] == '\r') || buffer[i] == '\n') {
-
-            // Get offset of next property
-            for (j=i+1; buffer[j] != '\0'; j++) {
-                if((buffer[j] != '\r') && (buffer[j] != '\n'))
-                    break;
-            }
-            offset = j;
-            break;
-        }
-        i++;
+    // Unfold property
+    if(vprop->equalsEncoding(TEXT("QUOTED-PRINTABLE"))) {
+        value = popQPPropertyLine(buffer, vprop->getParameterValue(TEXT("CHARSET")));
+    } else {
+        value = popPropertyLine(buffer, unfoldMethod);
     }
-    len = i;
 
-
-    if (!len) {
+    len = wcslen(value);
+    if (len == 0) {
         // This field is empty, we MUST consider it adding an empty value
         // so any value on client will be deleted.
         vprop->addValue(TEXT(""));
         ret = true;
-        goto finally;
-    }
+    } else {
 
-    // This is a string with all values for this property (to parse)
-    allValues = new WCHAR[len + 1];
-    wcsncpy(allValues, buffer, len);
-    allValues[len] = 0;
-
-
-    //
-    // If needed, decode QP string and copy to 'allValues'.
-    //
-    if(vprop->equalsEncoding(TEXT("QUOTED-PRINTABLE"))) {
-
-        char* buf = toMultibyte(allValues);
-        char* dec = qp_decode(buf);
-        len = strlen(dec);
-        delete [] buf;
-
-        if (dec) {
-            char* t = toMultibyte(vprop->getParameterValue(TEXT("CHARSET")));
-            WCHAR* wdecoded = toWideChar(dec, t);
-            delete [] dec;
-            delete [] t;
-
-            if (wdecoded) {
-                wcsncpy(allValues, wdecoded, len);
-                allValues[len] = 0;
-                delete [] wdecoded;
-            }
-        }
-        if (!len) {
-            goto finally;
-        }
-    }
-
-    /*
-    --- base64 is not decoded ----
-    IT IS NOT POSSIBLE TO DECODE BASE64 PARAMETERS IN A WCHAR
-    AND TAKE THE LENGHT OF A BINARY!!
-    */
-
-    // This is a buffer for each single value
-    value = new WCHAR[len + 1];
-    wcscpy(value, TEXT(""));
-
-    //
-    // Extract values and add to Vproperty
-    //
-    j=0;
-    c = allValues;
-    for (i=0; i<len; i++) {
-
-        // End of value
-        if (c[i] == ';') {
-            vprop->addValue(value);
-            j = 0;
-            wcscpy(value, TEXT(""));
-        }
-
-        else {
-            // Manage escaped chars: jump back-slash
+        c = value;
+        WCHAR * aValue = c;
+        bool escaped = false;
+        for (i=0; i<len; i++) {
             if (c[i] == '\\') {
-                if (c[i+1]=='n') {
-                    // none: this is "\n" sequence (formatted line ending for 3.0)
-                }
-                else {
-                    i++;
-                    if (c[i] == '\0')
-                        break;
-                }
+                escaped = !escaped;
             }
-            value[j] = c[i];
-            j++;
-            value[j] = '\0';
+
+            // End of value
+            if (c[i] == ';' && !escaped) {
+                c[i] = '\0';
+                vprop->addValue(unescape(aValue, escapedCharMap));
+                aValue = c+i+1;
+            }
         }
+
+        vprop->addValue(unescape(aValue, escapedCharMap));
+
+        ret = true;
     }
 
-    vprop->addValue(value);
-    ret = true;
-
-finally:
-
-    // Shift buffer for next property to parse
-    //wcscpy(buffer, buffer+offset);
-    memmove(buffer, buffer+offset, (wcslen(buffer+offset) + 1)*sizeof(*buffer));
-
-    if (value) {
-        delete [] value;     value = NULL;
-    }
-    if (allValues) {
-        delete [] allValues; allValues = NULL;
-    }
+    delete [] value;
 
     return ret;
 }
 
+WString VConverter::unescape(WString incoming, const ArrayList & escaped) {
+
+    for (int i = 0; i < escaped.size(); i++) {
+        WKeyValuePair * kvp = dynamic_cast<WKeyValuePair*>(escaped.get(i));
+        if (kvp != NULL) {
+            incoming.replaceAll(kvp->getKey(), kvp->getValue());
+        }
+    }
+    
+    return incoming;
+}
 
 
 WCHAR* VConverter::extractObjectProperty(const WCHAR* buffer, const WCHAR *property,
@@ -351,14 +433,14 @@ WCHAR* VConverter::extractObjectProperty(const WCHAR* buffer, const WCHAR *prope
     return NULL;
 }
 
-WCHAR* VConverter::extractObjectType(const WCHAR* buffer) {
+WString VConverter::extractObjectType(const WCHAR* buffer) {
     WCHAR* buffCopy = NULL;
     size_t buffCopyLen = 0;
 
     WCHAR* tmp = extractObjectProperty(buffer, TEXT("BEGIN"),
                                  buffCopy, buffCopyLen);
 
-    WCHAR* ret = wstrdup(tmp);
+    WString ret = tmp;
 
     if (buffCopy) { delete [] buffCopy; }
     buffCopyLen = 0;
@@ -367,14 +449,14 @@ WCHAR* VConverter::extractObjectType(const WCHAR* buffer) {
 }
 
 
-WCHAR* VConverter::extractObjectVersion(const WCHAR* buffer) {
+WString VConverter::extractObjectVersion(const WCHAR* buffer) {
     WCHAR* buffCopy = NULL;
     size_t buffCopyLen = 0;
 
     WCHAR* tmp = extractObjectProperty(buffer, TEXT("VERSION"),
                                  buffCopy, buffCopyLen);
     
-    WCHAR* ret = wstrdup(tmp);
+    WString ret = tmp;
     if (buffCopy) { delete [] buffCopy; }
     buffCopyLen = 0;
 
