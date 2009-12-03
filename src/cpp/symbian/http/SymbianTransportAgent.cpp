@@ -103,14 +103,14 @@ CSymbianTransportAgent::CSymbianTransportAgent(URL& aUrl, Proxy& aProxy,
  */
 CSymbianTransportAgent::~CSymbianTransportAgent()
 {
+    LOG.debug("CSymbianTransportAgent destructor - closing HTTP session");
+
     //any remaining transactions that weren't complete are immediately cancelled.
     iHttpSession.Close();
+    
     delete iPostBody;
-    iPostBody = NULL;
     delete iResponseBody;
-    iResponseBody = NULL;
     delete iASWait;
-    iASWait = NULL;
 }
 
 /**
@@ -119,7 +119,7 @@ CSymbianTransportAgent::~CSymbianTransportAgent()
  */
 void CSymbianTransportAgent::ConstructL(URL& /* aUrl */)
 {
-   
+    
     // Open RHTTPSession with default protocol ("HTTP/TCP")
     // Note that RHTTPSession (and consequently the whole 
     // of HTTP) depends on the active scheduler; a scheduler 
@@ -167,11 +167,13 @@ void CSymbianTransportAgent::ConstructL(URL& /* aUrl */)
 void CSymbianTransportAgent::MHFRunL( RHTTPTransaction aTransaction, 
                                 const THTTPEvent& aEvent )
 {
+    LOG.debug("entering CSymbianTransportAgent::MHFRunL: iStatus = %d", aEvent.iStatus);
 
     switch ( aEvent.iStatus ) 
     {
         case THTTPEvent::EGotResponseHeaders:
         {
+            LOG.debug(" -> EGotResponseHeaders");
             // HTTP response headers have been received. Use
             // aTransaction.Response() to get the response. However, it's not
             // necessary to do anything with the response when this event occurs.
@@ -195,11 +197,13 @@ void CSymbianTransportAgent::MHFRunL( RHTTPTransaction aTransaction,
                 // errors in range 5xx
                 SetHttpServerError(status);
             }
+            LOG.debug("Returned HTTP status: %d", status);
         }
         break;
 
         case THTTPEvent::EGotResponseBodyData:
         {
+            LOG.debug(" -> EGotResponseBodyData: setting the response");
             // Part (or all) of response's body data received. Use 
             // aTransaction.Response().Body()->GetNextDataPart() to get the actual
             // body data.
@@ -228,6 +232,7 @@ void CSymbianTransportAgent::MHFRunL( RHTTPTransaction aTransaction,
 
         case THTTPEvent::EResponseComplete:
         {
+            LOG.debug(" -> EResponseComplete");
             // Indicates that header & body of response is completely received.
             // No further action here needed.
         }
@@ -235,39 +240,43 @@ void CSymbianTransportAgent::MHFRunL( RHTTPTransaction aTransaction,
 
         case THTTPEvent::ESucceeded:
         {
+            LOG.debug(" -> ESucceeded: stopping the AScheduler");
             // Indicates that transaction succeeded. 
-            // Transaction can be closed now. It's not needed anymore.
             iTransFailed = EFalse;
-            aTransaction.Close();
             iASWait->AsyncStop();
         }
         break;
 
         case THTTPEvent::EFailed:
         {
+            LOG.debug(" -> EFailed: stopping the AScheduler");
             iTransFailed = ETrue;
-            aTransaction.Close();
             iASWait->AsyncStop();
         }
         break;
 
         default:
+        {
             // There are more events in THTTPEvent, but they are not usually 
             // needed. However, event status smaller than zero should be handled 
-            // correctly since it's error.
-        {
-            if ( aEvent.iStatus < 0 )
-            {
-                // Just close the transaction on errors
+            // correctly since it's error.     
+            LOG.debug(" -> default");
+            
+            if (aEvent.iStatus < 0) {
+                LOG.debug("error status: stopping the AScheduler");
+                // Signal the active scheduler on errors
                 iTransFailed = ETrue;
-                aTransaction.Close();
                 iASWait->AsyncStop();
-            } else {
+            } 
+            else {
+                LOG.debug("non error status: ignoring");
                 // Other events are not errors (e.g. permanent and temporary redirections)
             }
         }
         break;
     }
+    
+    LOG.debug("exiting CSymbianTransportAgent::MHFRunL");
 }
 
 /**
@@ -309,6 +318,8 @@ void CSymbianTransportAgent::ConnectL()
  */
 char* CSymbianTransportAgent::sendMessage(const char* msg)
 {
+    LOG.debug("entering CSymbianTransportAgent::sendMessage"); 
+    
     // Check if user aborted current sync.
     if (getLastErrorCode() == KErrCancel) {
         LOG.debug("Leaving sendMessage - lastErrorCode is %d", getLastErrorCode());
@@ -389,7 +400,9 @@ char* CSymbianTransportAgent::sendMessage(const char* msg)
     // Start the scheduler, once the transaction completes or is cancelled on an
     // error the scheduler will be stopped in the event handler
     // This is a trick to implement a synchronous method
+    LOG.debug("starting ASync scheduler...");
     iASWait->Start();  // TO BE VERIFIED!!!!
+    LOG.debug("ASync scheduler stopped");
     
     
     // Check if user aborted current sync.
@@ -399,8 +412,7 @@ char* CSymbianTransportAgent::sendMessage(const char* msg)
     }
     
     // when all is finished, return char* to be delete []
-    if(!iTransFailed)
-    {
+    if(!iTransFailed) {
         TInt length = iResponseBody->Des().Length();
         response = new char[length+1];
         Mem::Copy(response, iResponseBody->Ptr(), length);
@@ -409,16 +421,19 @@ char* CSymbianTransportAgent::sendMessage(const char* msg)
         LOG.debug("Message received:");
         LOG.debug("%s", response);
     }
-    else
-    {
-        setErrorF(ERR_HTTP,
-                  "HTTP request error: request timed out waiting for response");
-        LOG.debug("HTTP response not received");
+    else {
+        LOG.debug("HTTP transaction failed");
+        setErrorF(ERR_HTTP, "HTTP request error: request timed out waiting for response");
     }
 
 finally:
 
+    // Transaction can be closed now. It's not needed anymore.
+    LOG.debug("closing HTTP transaction");
+    iHttpTransaction.Close();
+
     delete fullUrl;
+    LOG.debug("exiting CSymbianTransportAgent::sendMessage");
     return response;
 }
 
