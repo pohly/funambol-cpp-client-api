@@ -98,9 +98,12 @@ Chunk* ItemReader::getNextChunk(unsigned long size) {
     } 
     
     bytesRead = istream->read((void*)buffer, toRead);
-       
+    
     if (istream->getTotalSize() == 0) {
         value = stringdup("");
+    } else if (bytesRead == 0) {
+        LOG.error("ItemReader: could not read from the InputStream");
+        return NULL;
     } else {
         if (useSyncItemEncoding) {
             // consider that the buffer should be a char since the chunk is a buffer
