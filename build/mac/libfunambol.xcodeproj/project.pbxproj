@@ -9,6 +9,436 @@
 /* Begin PBXBuildFile section */
 		100CF24810A84DCC0082D48B /* LOItemTest.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 100CF24610A84DCC0082D48B /* LOItemTest.cpp */; };
 		103CD76B10AB2B7F00AC4271 /* BlockingSQLiteKeyValueStore.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 103CD76A10AB2B7F00AC4271 /* BlockingSQLiteKeyValueStore.cpp */; };
+		1080224010D11BB4003F624B /* base64.h in Headers */ = {isa = PBXBuildFile; fileRef = 7C9F53B70DAF4CC5007E0091 /* base64.h */; };
+		1080224110D11BB4003F624B /* constants.h in Headers */ = {isa = PBXBuildFile; fileRef = 7C9F53B80DAF4CC5007E0091 /* constants.h */; };
+		1080224210D11BB4003F624B /* debug.h in Headers */ = {isa = PBXBuildFile; fileRef = 7C9F53B90DAF4CC5007E0091 /* debug.h */; };
+		1080224310D11BB4003F624B /* errors.h in Headers */ = {isa = PBXBuildFile; fileRef = 7C9F53BB0DAF4CC5007E0091 /* errors.h */; };
+		1080224410D11BB4003F624B /* fscapi.h in Headers */ = {isa = PBXBuildFile; fileRef = 7C9F53BC0DAF4CC5007E0091 /* fscapi.h */; };
+		1080224510D11BB4003F624B /* Log.h in Headers */ = {isa = PBXBuildFile; fileRef = 7C9F53BD0DAF4CC5007E0091 /* Log.h */; };
+		1080224610D11BB4003F624B /* md5.h in Headers */ = {isa = PBXBuildFile; fileRef = 7C9F53BF0DAF4CC5007E0091 /* md5.h */; };
+		1080224710D11BB4003F624B /* messages.h in Headers */ = {isa = PBXBuildFile; fileRef = 7C9F53C00DAF4CC5007E0091 /* messages.h */; };
+		1080224810D11BB4003F624B /* quoted-printable.h in Headers */ = {isa = PBXBuildFile; fileRef = 7C9F53C10DAF4CC5007E0091 /* quoted-printable.h */; };
+		1080224910D11BB4003F624B /* test.h in Headers */ = {isa = PBXBuildFile; fileRef = 7C9F53C20DAF4CC5007E0091 /* test.h */; };
+		1080224A10D11BB4003F624B /* ArrayElement.h in Headers */ = {isa = PBXBuildFile; fileRef = 7C9F53C40DAF4CC5007E0091 /* ArrayElement.h */; };
+		1080224B10D11BB4003F624B /* ArrayList.h in Headers */ = {isa = PBXBuildFile; fileRef = 7C9F53C50DAF4CC5007E0091 /* ArrayList.h */; };
+		1080224C10D11BB4003F624B /* ArrayListEnumeration.h in Headers */ = {isa = PBXBuildFile; fileRef = 7C9F53C60DAF4CC5007E0091 /* ArrayListEnumeration.h */; };
+		1080224D10D11BB4003F624B /* MemoryKeyValueStore.h in Headers */ = {isa = PBXBuildFile; fileRef = 7C9F53C70DAF4CC5007E0091 /* MemoryKeyValueStore.h */; };
+		1080224E10D11BB4003F624B /* BasicTime.h in Headers */ = {isa = PBXBuildFile; fileRef = 7C9F53C80DAF4CC5007E0091 /* BasicTime.h */; };
+		1080224F10D11BB4003F624B /* Enumeration.h in Headers */ = {isa = PBXBuildFile; fileRef = 7C9F53C90DAF4CC5007E0091 /* Enumeration.h */; };
+		1080225010D11BB4003F624B /* ItemContainer.h in Headers */ = {isa = PBXBuildFile; fileRef = 7C9F53CA0DAF4CC5007E0091 /* ItemContainer.h */; };
+		1080225110D11BB4003F624B /* KeyValuePair.h in Headers */ = {isa = PBXBuildFile; fileRef = 7C9F53CB0DAF4CC5007E0091 /* KeyValuePair.h */; };
+		1080225210D11BB4003F624B /* PropertyFile.h in Headers */ = {isa = PBXBuildFile; fileRef = 7C9F53CD0DAF4CC5007E0091 /* PropertyFile.h */; };
+		1080225310D11BB4003F624B /* StringBuffer.h in Headers */ = {isa = PBXBuildFile; fileRef = 7C9F53CE0DAF4CC5007E0091 /* StringBuffer.h */; };
+		1080225410D11BB4003F624B /* utils.h in Headers */ = {isa = PBXBuildFile; fileRef = 7C9F53CF0DAF4CC5007E0091 /* utils.h */; };
+		1080225510D11BB4003F624B /* WKeyValuePair.h in Headers */ = {isa = PBXBuildFile; fileRef = 7C9F53D00DAF4CC5007E0091 /* WKeyValuePair.h */; };
+		1080225610D11BB4003F624B /* WString.h in Headers */ = {isa = PBXBuildFile; fileRef = 7C9F53D10DAF4CC5007E0091 /* WString.h */; };
+		1080225710D11BB4003F624B /* XMLProcessor.h in Headers */ = {isa = PBXBuildFile; fileRef = 7C9F53D20DAF4CC5007E0091 /* XMLProcessor.h */; };
+		1080225810D11BB4003F624B /* DMTClientConfig.h in Headers */ = {isa = PBXBuildFile; fileRef = 7C9F53D50DAF4CC5007E0091 /* DMTClientConfig.h */; };
+		1080225910D11BB4003F624B /* FileClient.h in Headers */ = {isa = PBXBuildFile; fileRef = 7C9F53D60DAF4CC5007E0091 /* FileClient.h */; };
+		1080225A10D11BB4003F624B /* FileSyncSource.h in Headers */ = {isa = PBXBuildFile; fileRef = 7C9F53D70DAF4CC5007E0091 /* FileSyncSource.h */; };
+		1080225B10D11BB4003F624B /* MailSourceManagementNode.h in Headers */ = {isa = PBXBuildFile; fileRef = 7C9F53D80DAF4CC5007E0091 /* MailSourceManagementNode.h */; };
+		1080225C10D11BB4003F624B /* SyncClient.h in Headers */ = {isa = PBXBuildFile; fileRef = 7C9F53DB0DAF4CC5007E0091 /* SyncClient.h */; };
+		1080225D10D11BB4003F624B /* BaseEvent.h in Headers */ = {isa = PBXBuildFile; fileRef = 7C9F53DD0DAF4CC5007E0091 /* BaseEvent.h */; };
+		1080225E10D11BB4003F624B /* constants.h in Headers */ = {isa = PBXBuildFile; fileRef = 7C9F53DE0DAF4CC5007E0091 /* constants.h */; };
+		1080225F10D11BB4003F624B /* FireEvent.h in Headers */ = {isa = PBXBuildFile; fileRef = 7C9F53DF0DAF4CC5007E0091 /* FireEvent.h */; };
+		1080226010D11BB4003F624B /* Listener.h in Headers */ = {isa = PBXBuildFile; fileRef = 7C9F53E00DAF4CC5007E0091 /* Listener.h */; };
+		1080226110D11BB4003F624B /* ManageListener.h in Headers */ = {isa = PBXBuildFile; fileRef = 7C9F53E10DAF4CC5007E0091 /* ManageListener.h */; };
+		1080226210D11BB4003F624B /* SetListener.h in Headers */ = {isa = PBXBuildFile; fileRef = 7C9F53E20DAF4CC5007E0091 /* SetListener.h */; };
+		1080226310D11BB4003F624B /* SyncEvent.h in Headers */ = {isa = PBXBuildFile; fileRef = 7C9F53E30DAF4CC5007E0091 /* SyncEvent.h */; };
+		1080226410D11BB4003F624B /* SyncItemEvent.h in Headers */ = {isa = PBXBuildFile; fileRef = 7C9F53E40DAF4CC5007E0091 /* SyncItemEvent.h */; };
+		1080226510D11BB4003F624B /* SyncItemListener.h in Headers */ = {isa = PBXBuildFile; fileRef = 7C9F53E50DAF4CC5007E0091 /* SyncItemListener.h */; };
+		1080226610D11BB4003F624B /* SyncListener.h in Headers */ = {isa = PBXBuildFile; fileRef = 7C9F53E60DAF4CC5007E0091 /* SyncListener.h */; };
+		1080226710D11BB4003F624B /* SyncSourceEvent.h in Headers */ = {isa = PBXBuildFile; fileRef = 7C9F53E70DAF4CC5007E0091 /* SyncSourceEvent.h */; };
+		1080226810D11BB4003F624B /* SyncSourceListener.h in Headers */ = {isa = PBXBuildFile; fileRef = 7C9F53E80DAF4CC5007E0091 /* SyncSourceListener.h */; };
+		1080226910D11BB4003F624B /* SyncStatusEvent.h in Headers */ = {isa = PBXBuildFile; fileRef = 7C9F53E90DAF4CC5007E0091 /* SyncStatusEvent.h */; };
+		1080226A10D11BB4003F624B /* SyncStatusListener.h in Headers */ = {isa = PBXBuildFile; fileRef = 7C9F53EA0DAF4CC5007E0091 /* SyncStatusListener.h */; };
+		1080226B10D11BB4003F624B /* TransportEvent.h in Headers */ = {isa = PBXBuildFile; fileRef = 7C9F53EB0DAF4CC5007E0091 /* TransportEvent.h */; };
+		1080226C10D11BB4003F624B /* TransportListener.h in Headers */ = {isa = PBXBuildFile; fileRef = 7C9F53EC0DAF4CC5007E0091 /* TransportListener.h */; };
+		1080226D10D11BB4003F624B /* config.h in Headers */ = {isa = PBXBuildFile; fileRef = 7C9F53EE0DAF4CC5007E0091 /* config.h */; };
+		1080226E10D11BB4003F624B /* TestSyncItemListener.h in Headers */ = {isa = PBXBuildFile; fileRef = 7C9F53F00DAF4CC5007E0091 /* TestSyncItemListener.h */; };
+		1080226F10D11BB4003F624B /* TestSyncListener.h in Headers */ = {isa = PBXBuildFile; fileRef = 7C9F53F10DAF4CC5007E0091 /* TestSyncListener.h */; };
+		1080227010D11BB4003F624B /* TestSyncSourceListener.h in Headers */ = {isa = PBXBuildFile; fileRef = 7C9F53F20DAF4CC5007E0091 /* TestSyncSourceListener.h */; };
+		1080227110D11BB4003F624B /* TestSyncStatusListener.h in Headers */ = {isa = PBXBuildFile; fileRef = 7C9F53F30DAF4CC5007E0091 /* TestSyncStatusListener.h */; };
+		1080227210D11BB4003F624B /* TestTransportListener.h in Headers */ = {isa = PBXBuildFile; fileRef = 7C9F53F40DAF4CC5007E0091 /* TestTransportListener.h */; };
+		1080227310D11BB4003F624B /* TestSyncSource.h in Headers */ = {isa = PBXBuildFile; fileRef = 7C9F53F50DAF4CC5007E0091 /* TestSyncSource.h */; };
+		1080227410D11BB4003F624B /* TestSyncSource2.h in Headers */ = {isa = PBXBuildFile; fileRef = 7C9F53F60DAF4CC5007E0091 /* TestSyncSource2.h */; };
+		1080227510D11BB4003F624B /* AllClause.h in Headers */ = {isa = PBXBuildFile; fileRef = 7C9F53F80DAF4CC5007E0091 /* AllClause.h */; };
+		1080227610D11BB4003F624B /* Clause.h in Headers */ = {isa = PBXBuildFile; fileRef = 7C9F53F90DAF4CC5007E0091 /* Clause.h */; };
+		1080227710D11BB4003F624B /* ClauseUtil.h in Headers */ = {isa = PBXBuildFile; fileRef = 7C9F53FA0DAF4CC5007E0091 /* ClauseUtil.h */; };
+		1080227810D11BB4003F624B /* FieldClause.h in Headers */ = {isa = PBXBuildFile; fileRef = 7C9F53FB0DAF4CC5007E0091 /* FieldClause.h */; };
+		1080227910D11BB4003F624B /* LogicalClause.h in Headers */ = {isa = PBXBuildFile; fileRef = 7C9F53FC0DAF4CC5007E0091 /* LogicalClause.h */; };
+		1080227A10D11BB4003F624B /* SourceFilter.h in Headers */ = {isa = PBXBuildFile; fileRef = 7C9F53FD0DAF4CC5007E0091 /* SourceFilter.h */; };
+		1080227B10D11BB4003F624B /* WhereClause.h in Headers */ = {isa = PBXBuildFile; fileRef = 7C9F53FE0DAF4CC5007E0091 /* WhereClause.h */; };
+		1080227C10D11BB4003F624B /* constants.h in Headers */ = {isa = PBXBuildFile; fileRef = 7C9F54000DAF4CC5007E0091 /* constants.h */; };
+		1080227D10D11BB4003F624B /* errors.h in Headers */ = {isa = PBXBuildFile; fileRef = 7C9F54010DAF4CC5007E0091 /* errors.h */; };
+		1080227E10D11BB4003F624B /* HTTPHeader.h in Headers */ = {isa = PBXBuildFile; fileRef = 7C9F54020DAF4CC5007E0091 /* HTTPHeader.h */; };
+		1080227F10D11BB4003F624B /* Proxy.h in Headers */ = {isa = PBXBuildFile; fileRef = 7C9F54030DAF4CC5007E0091 /* Proxy.h */; };
+		1080228010D11BB4003F624B /* TransportAgent.h in Headers */ = {isa = PBXBuildFile; fileRef = 7C9F54040DAF4CC5007E0091 /* TransportAgent.h */; };
+		1080228110D11BB4003F624B /* TransportAgentFactory.h in Headers */ = {isa = PBXBuildFile; fileRef = 7C9F54050DAF4CC5007E0091 /* TransportAgentFactory.h */; };
+		1080228210D11BB4003F624B /* URL.h in Headers */ = {isa = PBXBuildFile; fileRef = 7C9F54060DAF4CC5007E0091 /* URL.h */; };
+		1080228310D11BB4003F624B /* CTPConfig.h in Headers */ = {isa = PBXBuildFile; fileRef = 7C9F54080DAF4CC5007E0091 /* CTPConfig.h */; };
+		1080228410D11BB4003F624B /* CTPMessage.h in Headers */ = {isa = PBXBuildFile; fileRef = 7C9F54090DAF4CC5007E0091 /* CTPMessage.h */; };
+		1080228510D11BB4003F624B /* CTPParam.h in Headers */ = {isa = PBXBuildFile; fileRef = 7C9F540A0DAF4CC5007E0091 /* CTPParam.h */; };
+		1080228610D11BB4003F624B /* CTPService.h in Headers */ = {isa = PBXBuildFile; fileRef = 7C9F540B0DAF4CC5007E0091 /* CTPService.h */; };
+		1080228710D11BB4003F624B /* constants.h in Headers */ = {isa = PBXBuildFile; fileRef = 7C9F540D0DAF4CC5007E0091 /* constants.h */; };
+		1080228810D11BB4003F624B /* DeviceManager.h in Headers */ = {isa = PBXBuildFile; fileRef = 7C9F540E0DAF4CC5007E0091 /* DeviceManager.h */; };
+		1080228910D11BB4003F624B /* DeviceManagerFactory.h in Headers */ = {isa = PBXBuildFile; fileRef = 7C9F540F0DAF4CC5007E0091 /* DeviceManagerFactory.h */; };
+		1080228A10D11BB4003F624B /* DMTree.h in Headers */ = {isa = PBXBuildFile; fileRef = 7C9F54100DAF4CC5007E0091 /* DMTree.h */; };
+		1080228B10D11BB4003F624B /* DMTreeFactory.h in Headers */ = {isa = PBXBuildFile; fileRef = 7C9F54110DAF4CC5007E0091 /* DMTreeFactory.h */; };
+		1080228C10D11BB4003F624B /* errors.h in Headers */ = {isa = PBXBuildFile; fileRef = 7C9F54120DAF4CC5007E0091 /* errors.h */; };
+		1080228D10D11BB4003F624B /* ManagementNode.h in Headers */ = {isa = PBXBuildFile; fileRef = 7C9F54130DAF4CC5007E0091 /* ManagementNode.h */; };
+		1080228E10D11BB4003F624B /* spdmutils.h in Headers */ = {isa = PBXBuildFile; fileRef = 7C9F54140DAF4CC5007E0091 /* spdmutils.h */; };
+		1080228F10D11BB4003F624B /* AbstractSyncConfig.h in Headers */ = {isa = PBXBuildFile; fileRef = 7C9F54160DAF4CC5007E0091 /* AbstractSyncConfig.h */; };
+		1080229010D11BB4003F624B /* AbstractSyncSourceConfig.h in Headers */ = {isa = PBXBuildFile; fileRef = 7C9F54170DAF4CC5007E0091 /* AbstractSyncSourceConfig.h */; };
+		1080229110D11BB4003F624B /* AccessConfig.h in Headers */ = {isa = PBXBuildFile; fileRef = 7C9F54180DAF4CC5007E0091 /* AccessConfig.h */; };
+		1080229210D11BB4003F624B /* B64Decoder.h in Headers */ = {isa = PBXBuildFile; fileRef = 7C9F54190DAF4CC5007E0091 /* B64Decoder.h */; };
+		1080229310D11BB4003F624B /* B64Encoder.h in Headers */ = {isa = PBXBuildFile; fileRef = 7C9F541A0DAF4CC5007E0091 /* B64Encoder.h */; };
+		1080229410D11BB4003F624B /* BodyPart.h in Headers */ = {isa = PBXBuildFile; fileRef = 7C9F541B0DAF4CC5007E0091 /* BodyPart.h */; };
+		1080229510D11BB4003F624B /* constants.h in Headers */ = {isa = PBXBuildFile; fileRef = 7C9F541D0DAF4CC5007E0091 /* constants.h */; };
+		1080229610D11BB4003F624B /* CredentialHandler.h in Headers */ = {isa = PBXBuildFile; fileRef = 7C9F541E0DAF4CC5007E0091 /* CredentialHandler.h */; };
+		1080229710D11BB4003F624B /* DataTransformer.h in Headers */ = {isa = PBXBuildFile; fileRef = 7C9F541F0DAF4CC5007E0091 /* DataTransformer.h */; };
+		1080229810D11BB4003F624B /* DataTransformerFactory.h in Headers */ = {isa = PBXBuildFile; fileRef = 7C9F54200DAF4CC5007E0091 /* DataTransformerFactory.h */; };
+		1080229910D11BB4003F624B /* DefaultConfigFactory.h in Headers */ = {isa = PBXBuildFile; fileRef = 7C9F54210DAF4CC5007E0091 /* DefaultConfigFactory.h */; };
+		1080229A10D11BB4003F624B /* DESDecoder.h in Headers */ = {isa = PBXBuildFile; fileRef = 7C9F54220DAF4CC5007E0091 /* DESDecoder.h */; };
+		1080229B10D11BB4003F624B /* DESEncoder.h in Headers */ = {isa = PBXBuildFile; fileRef = 7C9F54230DAF4CC5007E0091 /* DESEncoder.h */; };
+		1080229C10D11BB4003F624B /* DeviceConfig.h in Headers */ = {isa = PBXBuildFile; fileRef = 7C9F54240DAF4CC5007E0091 /* DeviceConfig.h */; };
+		1080229D10D11BB4003F624B /* Email.h in Headers */ = {isa = PBXBuildFile; fileRef = 7C9F54250DAF4CC5007E0091 /* Email.h */; };
+		1080229E10D11BB4003F624B /* EmailData.h in Headers */ = {isa = PBXBuildFile; fileRef = 7C9F54260DAF4CC5007E0091 /* EmailData.h */; };
+		1080229F10D11BB4003F624B /* errors.h in Headers */ = {isa = PBXBuildFile; fileRef = 7C9F54270DAF4CC5007E0091 /* errors.h */; };
+		108022A010D11BB4003F624B /* FileData.h in Headers */ = {isa = PBXBuildFile; fileRef = 7C9F54280DAF4CC5007E0091 /* FileData.h */; };
+		108022A110D11BB4003F624B /* FolderData.h in Headers */ = {isa = PBXBuildFile; fileRef = 7C9F54290DAF4CC5007E0091 /* FolderData.h */; };
+		108022A210D11BB4003F624B /* ItemReport.h in Headers */ = {isa = PBXBuildFile; fileRef = 7C9F542A0DAF4CC5007E0091 /* ItemReport.h */; };
+		108022A310D11BB4003F624B /* spdsutils.h in Headers */ = {isa = PBXBuildFile; fileRef = 7C9F542E0DAF4CC5007E0091 /* spdsutils.h */; };
+		108022A410D11BB4003F624B /* SyncItem.h in Headers */ = {isa = PBXBuildFile; fileRef = 7C9F542F0DAF4CC5007E0091 /* SyncItem.h */; };
+		108022A510D11BB4003F624B /* SyncItemStatus.h in Headers */ = {isa = PBXBuildFile; fileRef = 7C9F54300DAF4CC5007E0091 /* SyncItemStatus.h */; };
+		108022A610D11BB4003F624B /* SyncManager.h in Headers */ = {isa = PBXBuildFile; fileRef = 7C9F54310DAF4CC5007E0091 /* SyncManager.h */; };
+		108022A710D11BB4003F624B /* SyncManagerConfig.h in Headers */ = {isa = PBXBuildFile; fileRef = 7C9F54320DAF4CC5007E0091 /* SyncManagerConfig.h */; };
+		108022A810D11BB4003F624B /* SyncMap.h in Headers */ = {isa = PBXBuildFile; fileRef = 7C9F54330DAF4CC5007E0091 /* SyncMap.h */; };
+		108022A910D11BB4003F624B /* SyncMLBuilder.h in Headers */ = {isa = PBXBuildFile; fileRef = 7C9F54340DAF4CC5007E0091 /* SyncMLBuilder.h */; };
+		108022AA10D11BB4003F624B /* SyncMLProcessor.h in Headers */ = {isa = PBXBuildFile; fileRef = 7C9F54350DAF4CC5007E0091 /* SyncMLProcessor.h */; };
+		108022AB10D11BB4003F624B /* SyncReport.h in Headers */ = {isa = PBXBuildFile; fileRef = 7C9F54360DAF4CC5007E0091 /* SyncReport.h */; };
+		108022AC10D11BB4003F624B /* SyncSource.h in Headers */ = {isa = PBXBuildFile; fileRef = 7C9F54370DAF4CC5007E0091 /* SyncSource.h */; };
+		108022AD10D11BB4003F624B /* SyncSourceConfig.h in Headers */ = {isa = PBXBuildFile; fileRef = 7C9F54380DAF4CC5007E0091 /* SyncSourceConfig.h */; };
+		108022AE10D11BB4003F624B /* SyncSourceReport.h in Headers */ = {isa = PBXBuildFile; fileRef = 7C9F54390DAF4CC5007E0091 /* SyncSourceReport.h */; };
+		108022AF10D11BB4003F624B /* SyncStatus.h in Headers */ = {isa = PBXBuildFile; fileRef = 7C9F543A0DAF4CC5007E0091 /* SyncStatus.h */; };
+		108022B010D11BB4003F624B /* AbstractCommand.h in Headers */ = {isa = PBXBuildFile; fileRef = 7C9F543D0DAF4CC5007E0091 /* AbstractCommand.h */; };
+		108022B110D11BB4003F624B /* Add.h in Headers */ = {isa = PBXBuildFile; fileRef = 7C9F543E0DAF4CC5007E0091 /* Add.h */; };
+		108022B210D11BB4003F624B /* Alert.h in Headers */ = {isa = PBXBuildFile; fileRef = 7C9F543F0DAF4CC5007E0091 /* Alert.h */; };
+		108022B310D11BB4003F624B /* AlertCode.h in Headers */ = {isa = PBXBuildFile; fileRef = 7C9F54400DAF4CC5007E0091 /* AlertCode.h */; };
+		108022B410D11BB4003F624B /* Anchor.h in Headers */ = {isa = PBXBuildFile; fileRef = 7C9F54410DAF4CC5007E0091 /* Anchor.h */; };
+		108022B510D11BB4003F624B /* Atomic.h in Headers */ = {isa = PBXBuildFile; fileRef = 7C9F54420DAF4CC5007E0091 /* Atomic.h */; };
+		108022B610D11BB4003F624B /* Authentication.h in Headers */ = {isa = PBXBuildFile; fileRef = 7C9F54430DAF4CC5007E0091 /* Authentication.h */; };
+		108022B710D11BB4003F624B /* Chal.h in Headers */ = {isa = PBXBuildFile; fileRef = 7C9F54440DAF4CC5007E0091 /* Chal.h */; };
+		108022B810D11BB4003F624B /* CmdID.h in Headers */ = {isa = PBXBuildFile; fileRef = 7C9F54450DAF4CC5007E0091 /* CmdID.h */; };
+		108022B910D11BB4003F624B /* ComplexData.h in Headers */ = {isa = PBXBuildFile; fileRef = 7C9F54460DAF4CC5007E0091 /* ComplexData.h */; };
+		108022BA10D11BB4003F624B /* Constants.h in Headers */ = {isa = PBXBuildFile; fileRef = 7C9F54470DAF4CC5007E0091 /* Constants.h */; };
+		108022BB10D11BB4003F624B /* ContentTypeInfo.h in Headers */ = {isa = PBXBuildFile; fileRef = 7C9F54480DAF4CC5007E0091 /* ContentTypeInfo.h */; };
+		108022BC10D11BB4003F624B /* ContentTypeParameter.h in Headers */ = {isa = PBXBuildFile; fileRef = 7C9F54490DAF4CC5007E0091 /* ContentTypeParameter.h */; };
+		108022BD10D11BB4003F624B /* Copy.h in Headers */ = {isa = PBXBuildFile; fileRef = 7C9F544A0DAF4CC5007E0091 /* Copy.h */; };
+		108022BE10D11BB4003F624B /* core.h in Headers */ = {isa = PBXBuildFile; fileRef = 7C9F544B0DAF4CC5007E0091 /* core.h */; };
+		108022BF10D11BB4003F624B /* Cred.h in Headers */ = {isa = PBXBuildFile; fileRef = 7C9F544C0DAF4CC5007E0091 /* Cred.h */; };
+		108022C010D11BB4003F624B /* CTCap.h in Headers */ = {isa = PBXBuildFile; fileRef = 7C9F544D0DAF4CC5007E0091 /* CTCap.h */; };
+		108022C110D11BB4003F624B /* CTPropParam.h in Headers */ = {isa = PBXBuildFile; fileRef = 7C9F544E0DAF4CC5007E0091 /* CTPropParam.h */; };
+		108022C210D11BB4003F624B /* CTTypeSupported.h in Headers */ = {isa = PBXBuildFile; fileRef = 7C9F544F0DAF4CC5007E0091 /* CTTypeSupported.h */; };
+		108022C310D11BB4003F624B /* Data.h in Headers */ = {isa = PBXBuildFile; fileRef = 7C9F54500DAF4CC5007E0091 /* Data.h */; };
+		108022C410D11BB4003F624B /* DataStore.h in Headers */ = {isa = PBXBuildFile; fileRef = 7C9F54510DAF4CC5007E0091 /* DataStore.h */; };
+		108022C510D11BB4003F624B /* Delete.h in Headers */ = {isa = PBXBuildFile; fileRef = 7C9F54520DAF4CC5007E0091 /* Delete.h */; };
+		108022C610D11BB4003F624B /* DevInf.h in Headers */ = {isa = PBXBuildFile; fileRef = 7C9F54530DAF4CC5007E0091 /* DevInf.h */; };
+		108022C710D11BB4003F624B /* DevInfData.h in Headers */ = {isa = PBXBuildFile; fileRef = 7C9F54540DAF4CC5007E0091 /* DevInfData.h */; };
+		108022C810D11BB4003F624B /* DevInfItem.h in Headers */ = {isa = PBXBuildFile; fileRef = 7C9F54550DAF4CC5007E0091 /* DevInfItem.h */; };
+		108022C910D11BB4003F624B /* DevTyp.h in Headers */ = {isa = PBXBuildFile; fileRef = 7C9F54560DAF4CC5007E0091 /* DevTyp.h */; };
+		108022CA10D11BB4003F624B /* DSMem.h in Headers */ = {isa = PBXBuildFile; fileRef = 7C9F54570DAF4CC5007E0091 /* DSMem.h */; };
+		108022CB10D11BB4003F624B /* EMI.h in Headers */ = {isa = PBXBuildFile; fileRef = 7C9F54580DAF4CC5007E0091 /* EMI.h */; };
+		108022CC10D11BB4003F624B /* Exec.h in Headers */ = {isa = PBXBuildFile; fileRef = 7C9F54590DAF4CC5007E0091 /* Exec.h */; };
+		108022CD10D11BB4003F624B /* Ext.h in Headers */ = {isa = PBXBuildFile; fileRef = 7C9F545A0DAF4CC5007E0091 /* Ext.h */; };
+		108022CE10D11BB4003F624B /* Filter.h in Headers */ = {isa = PBXBuildFile; fileRef = 7C9F545B0DAF4CC5007E0091 /* Filter.h */; };
+		108022CF10D11BB4003F624B /* Get.h in Headers */ = {isa = PBXBuildFile; fileRef = 7C9F545C0DAF4CC5007E0091 /* Get.h */; };
+		108022D010D11BB4003F624B /* Item.h in Headers */ = {isa = PBXBuildFile; fileRef = 7C9F545D0DAF4CC5007E0091 /* Item.h */; };
+		108022D110D11BB4003F624B /* ItemizedCommand.h in Headers */ = {isa = PBXBuildFile; fileRef = 7C9F545E0DAF4CC5007E0091 /* ItemizedCommand.h */; };
+		108022D210D11BB4003F624B /* Map.h in Headers */ = {isa = PBXBuildFile; fileRef = 7C9F545F0DAF4CC5007E0091 /* Map.h */; };
+		108022D310D11BB4003F624B /* MapItem.h in Headers */ = {isa = PBXBuildFile; fileRef = 7C9F54600DAF4CC5007E0091 /* MapItem.h */; };
+		108022D410D11BB4003F624B /* Mark.h in Headers */ = {isa = PBXBuildFile; fileRef = 7C9F54610DAF4CC5007E0091 /* Mark.h */; };
+		108022D510D11BB4003F624B /* Mem.h in Headers */ = {isa = PBXBuildFile; fileRef = 7C9F54620DAF4CC5007E0091 /* Mem.h */; };
+		108022D610D11BB4003F624B /* Meta.h in Headers */ = {isa = PBXBuildFile; fileRef = 7C9F54630DAF4CC5007E0091 /* Meta.h */; };
+		108022D710D11BB4003F624B /* MetInf.h in Headers */ = {isa = PBXBuildFile; fileRef = 7C9F54640DAF4CC5007E0091 /* MetInf.h */; };
+		108022D810D11BB4003F624B /* ModificationCommand.h in Headers */ = {isa = PBXBuildFile; fileRef = 7C9F54650DAF4CC5007E0091 /* ModificationCommand.h */; };
+		108022D910D11BB4003F624B /* NextNonce.h in Headers */ = {isa = PBXBuildFile; fileRef = 7C9F54660DAF4CC5007E0091 /* NextNonce.h */; };
+		108022DA10D11BB4003F624B /* ObjectDel.h in Headers */ = {isa = PBXBuildFile; fileRef = 7C9F54670DAF4CC5007E0091 /* ObjectDel.h */; };
+		108022DB10D11BB4003F624B /* Property.h in Headers */ = {isa = PBXBuildFile; fileRef = 7C9F54680DAF4CC5007E0091 /* Property.h */; };
+		108022DC10D11BB4003F624B /* PropParam.h in Headers */ = {isa = PBXBuildFile; fileRef = 7C9F54690DAF4CC5007E0091 /* PropParam.h */; };
+		108022DD10D11BB4003F624B /* Put.h in Headers */ = {isa = PBXBuildFile; fileRef = 7C9F546A0DAF4CC5007E0091 /* Put.h */; };
+		108022DE10D11BB4003F624B /* Replace.h in Headers */ = {isa = PBXBuildFile; fileRef = 7C9F546B0DAF4CC5007E0091 /* Replace.h */; };
+		108022DF10D11BB4003F624B /* ResponseCommand.h in Headers */ = {isa = PBXBuildFile; fileRef = 7C9F546C0DAF4CC5007E0091 /* ResponseCommand.h */; };
+		108022E010D11BB4003F624B /* Results.h in Headers */ = {isa = PBXBuildFile; fileRef = 7C9F546D0DAF4CC5007E0091 /* Results.h */; };
+		108022E110D11BB4003F624B /* Search.h in Headers */ = {isa = PBXBuildFile; fileRef = 7C9F546E0DAF4CC5007E0091 /* Search.h */; };
+		108022E210D11BB4003F624B /* Sequence.h in Headers */ = {isa = PBXBuildFile; fileRef = 7C9F546F0DAF4CC5007E0091 /* Sequence.h */; };
+		108022E310D11BB4003F624B /* SessionID.h in Headers */ = {isa = PBXBuildFile; fileRef = 7C9F54700DAF4CC5007E0091 /* SessionID.h */; };
+		108022E410D11BB4003F624B /* Source.h in Headers */ = {isa = PBXBuildFile; fileRef = 7C9F54710DAF4CC5007E0091 /* Source.h */; };
+		108022E510D11BB4003F624B /* SourceArray.h in Headers */ = {isa = PBXBuildFile; fileRef = 7C9F54720DAF4CC5007E0091 /* SourceArray.h */; };
+		108022E610D11BB4003F624B /* SourceRef.h in Headers */ = {isa = PBXBuildFile; fileRef = 7C9F54730DAF4CC5007E0091 /* SourceRef.h */; };
+		108022E710D11BB4003F624B /* Status.h in Headers */ = {isa = PBXBuildFile; fileRef = 7C9F54740DAF4CC5007E0091 /* Status.h */; };
+		108022E810D11BB4003F624B /* StringElement.h in Headers */ = {isa = PBXBuildFile; fileRef = 7C9F54750DAF4CC5007E0091 /* StringElement.h */; };
+		108022E910D11BB4003F624B /* Sync.h in Headers */ = {isa = PBXBuildFile; fileRef = 7C9F54760DAF4CC5007E0091 /* Sync.h */; };
+		108022EA10D11BB4003F624B /* SyncAlert.h in Headers */ = {isa = PBXBuildFile; fileRef = 7C9F54770DAF4CC5007E0091 /* SyncAlert.h */; };
+		108022EB10D11BB4003F624B /* SyncBody.h in Headers */ = {isa = PBXBuildFile; fileRef = 7C9F54780DAF4CC5007E0091 /* SyncBody.h */; };
+		108022EC10D11BB4003F624B /* SyncCap.h in Headers */ = {isa = PBXBuildFile; fileRef = 7C9F54790DAF4CC5007E0091 /* SyncCap.h */; };
+		108022ED10D11BB4003F624B /* SyncHdr.h in Headers */ = {isa = PBXBuildFile; fileRef = 7C9F547A0DAF4CC5007E0091 /* SyncHdr.h */; };
+		108022EE10D11BB4003F624B /* SyncML.h in Headers */ = {isa = PBXBuildFile; fileRef = 7C9F547B0DAF4CC5007E0091 /* SyncML.h */; };
+		108022EF10D11BB4003F624B /* SyncNotification.h in Headers */ = {isa = PBXBuildFile; fileRef = 7C9F547C0DAF4CC5007E0091 /* SyncNotification.h */; };
+		108022F010D11BB4003F624B /* SyncType.h in Headers */ = {isa = PBXBuildFile; fileRef = 7C9F547D0DAF4CC5007E0091 /* SyncType.h */; };
+		108022F110D11BB4003F624B /* SyncTypeArray.h in Headers */ = {isa = PBXBuildFile; fileRef = 7C9F547E0DAF4CC5007E0091 /* SyncTypeArray.h */; };
+		108022F210D11BB4003F624B /* TagNames.h in Headers */ = {isa = PBXBuildFile; fileRef = 7C9F547F0DAF4CC5007E0091 /* TagNames.h */; };
+		108022F310D11BB4003F624B /* Target.h in Headers */ = {isa = PBXBuildFile; fileRef = 7C9F54800DAF4CC5007E0091 /* Target.h */; };
+		108022F410D11BB4003F624B /* TargetRef.h in Headers */ = {isa = PBXBuildFile; fileRef = 7C9F54810DAF4CC5007E0091 /* TargetRef.h */; };
+		108022F510D11BB4003F624B /* VerDTD.h in Headers */ = {isa = PBXBuildFile; fileRef = 7C9F54820DAF4CC5007E0091 /* VerDTD.h */; };
+		108022F610D11BB4003F624B /* VerProto.h in Headers */ = {isa = PBXBuildFile; fileRef = 7C9F54830DAF4CC5007E0091 /* VerProto.h */; };
+		108022F710D11BB4003F624B /* Formatter.h in Headers */ = {isa = PBXBuildFile; fileRef = 7C9F54850DAF4CC5007E0091 /* Formatter.h */; };
+		108022F810D11BB4003F624B /* Parser.h in Headers */ = {isa = PBXBuildFile; fileRef = 7C9F54870DAF4CC5007E0091 /* Parser.h */; };
+		108022F910D11BB4003F624B /* Calendar.h in Headers */ = {isa = PBXBuildFile; fileRef = 7C9F548A0DAF4CC5007E0091 /* Calendar.h */; };
+		108022FA10D11BB4003F624B /* Event.h in Headers */ = {isa = PBXBuildFile; fileRef = 7C9F548B0DAF4CC5007E0091 /* Event.h */; };
+		108022FB10D11BB4003F624B /* iCalConverter.h in Headers */ = {isa = PBXBuildFile; fileRef = 7C9F548C0DAF4CC5007E0091 /* iCalConverter.h */; };
+		108022FC10D11BB4003F624B /* iCalProperty.h in Headers */ = {isa = PBXBuildFile; fileRef = 7C9F548D0DAF4CC5007E0091 /* iCalProperty.h */; };
+		108022FD10D11BB4003F624B /* ToDo.h in Headers */ = {isa = PBXBuildFile; fileRef = 7C9F548E0DAF4CC5007E0091 /* ToDo.h */; };
+		108022FE10D11BB4003F624B /* Address.h in Headers */ = {isa = PBXBuildFile; fileRef = 7C9F54900DAF4CC5007E0091 /* Address.h */; };
+		108022FF10D11BB4003F624B /* BusinessDetail.h in Headers */ = {isa = PBXBuildFile; fileRef = 7C9F54910DAF4CC5007E0091 /* BusinessDetail.h */; };
+		1080230010D11BB4003F624B /* Contact.h in Headers */ = {isa = PBXBuildFile; fileRef = 7C9F54920DAF4CC5007E0091 /* Contact.h */; };
+		1080230110D11BB4003F624B /* Contact30.h in Headers */ = {isa = PBXBuildFile; fileRef = 7C9F54930DAF4CC5007E0091 /* Contact30.h */; };
+		1080230210D11BB4003F624B /* ContactDetail.h in Headers */ = {isa = PBXBuildFile; fileRef = 7C9F54940DAF4CC5007E0091 /* ContactDetail.h */; };
+		1080230310D11BB4003F624B /* Email.h in Headers */ = {isa = PBXBuildFile; fileRef = 7C9F54950DAF4CC5007E0091 /* Email.h */; };
+		1080230410D11BB4003F624B /* Name.h in Headers */ = {isa = PBXBuildFile; fileRef = 7C9F54960DAF4CC5007E0091 /* Name.h */; };
+		1080230510D11BB4003F624B /* Note.h in Headers */ = {isa = PBXBuildFile; fileRef = 7C9F54970DAF4CC5007E0091 /* Note.h */; };
+		1080230610D11BB4003F624B /* PersonalDetail.h in Headers */ = {isa = PBXBuildFile; fileRef = 7C9F54980DAF4CC5007E0091 /* PersonalDetail.h */; };
+		1080230710D11BB4003F624B /* Phone.h in Headers */ = {isa = PBXBuildFile; fileRef = 7C9F54990DAF4CC5007E0091 /* Phone.h */; };
+		1080230810D11BB4003F624B /* Title.h in Headers */ = {isa = PBXBuildFile; fileRef = 7C9F549A0DAF4CC5007E0091 /* Title.h */; };
+		1080230910D11BB4003F624B /* TypedProperty.h in Headers */ = {isa = PBXBuildFile; fileRef = 7C9F549B0DAF4CC5007E0091 /* TypedProperty.h */; };
+		1080230A10D11BB4003F624B /* vCardConverter.h in Headers */ = {isa = PBXBuildFile; fileRef = 7C9F549C0DAF4CC5007E0091 /* vCardConverter.h */; };
+		1080230B10D11BB4003F624B /* vCardProperty.h in Headers */ = {isa = PBXBuildFile; fileRef = 7C9F549D0DAF4CC5007E0091 /* vCardProperty.h */; };
+		1080230C10D11BB4003F624B /* WebPage.h in Headers */ = {isa = PBXBuildFile; fileRef = 7C9F549E0DAF4CC5007E0091 /* WebPage.h */; };
+		1080230D10D11BB4003F624B /* VConverter.h in Headers */ = {isa = PBXBuildFile; fileRef = 7C9F549F0DAF4CC5007E0091 /* VConverter.h */; };
+		1080230E10D11BB4003F624B /* VObject.h in Headers */ = {isa = PBXBuildFile; fileRef = 7C9F54A00DAF4CC5007E0091 /* VObject.h */; };
+		1080230F10D11BB4003F624B /* VObjectFactory.h in Headers */ = {isa = PBXBuildFile; fileRef = 7C9F54A10DAF4CC5007E0091 /* VObjectFactory.h */; };
+		1080231010D11BB4003F624B /* VProperty.h in Headers */ = {isa = PBXBuildFile; fileRef = 7C9F54A20DAF4CC5007E0091 /* VProperty.h */; };
+		1080231110D11BB4003F624B /* posixadapter.h in Headers */ = {isa = PBXBuildFile; fileRef = 7C9F54A50DAF4CC5007E0091 /* posixadapter.h */; };
+		1080231210D11BB4003F624B /* posixlog.h in Headers */ = {isa = PBXBuildFile; fileRef = 7C9F54A60DAF4CC5007E0091 /* posixlog.h */; };
+		1080231310D11BB4003F624B /* FSocket.h in Headers */ = {isa = PBXBuildFile; fileRef = 7C9F54AA0DAF4CC5007E0091 /* FSocket.h */; };
+		1080231410D11BB4003F624B /* FThread.h in Headers */ = {isa = PBXBuildFile; fileRef = 7C9F54AB0DAF4CC5007E0091 /* FThread.h */; };
+		1080231510D11BB4003F624B /* DeviceManagementNode.h in Headers */ = {isa = PBXBuildFile; fileRef = 7C9F54AD0DAF4CC5007E0091 /* DeviceManagementNode.h */; };
+		1080231610D11BB4003F624B /* migrateConfig.h in Headers */ = {isa = PBXBuildFile; fileRef = 7C9F54AE0DAF4CC5007E0091 /* migrateConfig.h */; };
+		1080231710D11BB4003F624B /* CacheSyncSource.h in Headers */ = {isa = PBXBuildFile; fileRef = 7C9F58B80DAF62AE007E0091 /* CacheSyncSource.h */; };
+		1080231810D11BB4003F624B /* KeyValueStore.h in Headers */ = {isa = PBXBuildFile; fileRef = 7C7649350DB385DC00786883 /* KeyValueStore.h */; };
+		1080231910D11BB4003F624B /* SQLKeyValueStore.h in Headers */ = {isa = PBXBuildFile; fileRef = 7CB0367C0DB4EC9A003F4E5F /* SQLKeyValueStore.h */; };
+		1080231A10D11BB4003F624B /* CurlTransportAgent.h in Headers */ = {isa = PBXBuildFile; fileRef = 7C3BEB200DB7328E00119850 /* CurlTransportAgent.h */; };
+		1080231B10D11BB4003F624B /* MacTransportAgent.h in Headers */ = {isa = PBXBuildFile; fileRef = 7C3BEB210DB7328E00119850 /* MacTransportAgent.h */; };
+		1080231C10D11BB4003F624B /* BlockingSQLiteKeyValueStore.h in Headers */ = {isa = PBXBuildFile; fileRef = ABF8C4BF0E93A1CB00401C02 /* BlockingSQLiteKeyValueStore.h */; };
+		1080231D10D11BB4003F624B /* MappingsManager.h in Headers */ = {isa = PBXBuildFile; fileRef = ABF8C57F0E93BD4700401C02 /* MappingsManager.h */; };
+		1080231E10D11BB4003F624B /* MappingStoreBuilder.h in Headers */ = {isa = PBXBuildFile; fileRef = ABF8C5800E93BD4700401C02 /* MappingStoreBuilder.h */; };
+		1080231F10D11BB4003F624B /* StringMap.h in Headers */ = {isa = PBXBuildFile; fileRef = AB43F7360EDACE2800183D6B /* StringMap.h */; };
+		1080232010D11BB4003F624B /* Mail.h in Headers */ = {isa = PBXBuildFile; fileRef = AB7B894A108C9E3D00E14CD5 /* Mail.h */; };
+		1080232110D11BB4003F624B /* MailAccount.h in Headers */ = {isa = PBXBuildFile; fileRef = AB7B894B108C9E3D00E14CD5 /* MailAccount.h */; };
+		1080232210D11BB4003F624B /* MailAccountManager.h in Headers */ = {isa = PBXBuildFile; fileRef = AB7B894C108C9E3D00E14CD5 /* MailAccountManager.h */; };
+		1080232310D11BB4003F624B /* MailData.h in Headers */ = {isa = PBXBuildFile; fileRef = AB7B894D108C9E3D00E14CD5 /* MailData.h */; };
+		1080232410D11BB4003F624B /* MailMessage.h in Headers */ = {isa = PBXBuildFile; fileRef = AB7B894E108C9E3D00E14CD5 /* MailMessage.h */; };
+		1080232510D11BB4003F624B /* MailSyncSourceConfig.h in Headers */ = {isa = PBXBuildFile; fileRef = AB7B894F108C9E3D00E14CD5 /* MailSyncSourceConfig.h */; };
+		1080232610D11BB4003F624B /* ConfigSyncSource.h in Headers */ = {isa = PBXBuildFile; fileRef = AB4D7031108DEE690036FEFF /* ConfigSyncSource.h */; };
+		1080232710D11BB4003F624B /* OptionParser.h in Headers */ = {isa = PBXBuildFile; fileRef = AB4D7032108DEE690036FEFF /* OptionParser.h */; };
+		1080232810D11BB4003F624B /* FolderExt.h in Headers */ = {isa = PBXBuildFile; fileRef = AB4D7038108DEEA60036FEFF /* FolderExt.h */; };
+		1080232910D11BB4003F624B /* BufferInputStream.h in Headers */ = {isa = PBXBuildFile; fileRef = AB16B03B1096F4DF00272D44 /* BufferInputStream.h */; };
+		1080232A10D11BB4003F624B /* FileDataInputStream.h in Headers */ = {isa = PBXBuildFile; fileRef = AB16B03C1096F4DF00272D44 /* FileDataInputStream.h */; };
+		1080232B10D11BB4003F624B /* FileInputStream.h in Headers */ = {isa = PBXBuildFile; fileRef = AB16B03D1096F4DF00272D44 /* FileInputStream.h */; };
+		1080232C10D11BB4003F624B /* InputStream.h in Headers */ = {isa = PBXBuildFile; fileRef = AB16B03E1096F4DF00272D44 /* InputStream.h */; };
+		1080232D10D11BB4003F624B /* MultipleInputStream.h in Headers */ = {isa = PBXBuildFile; fileRef = AB16B03F1096F4DF00272D44 /* MultipleInputStream.h */; };
+		1080232E10D11BB4003F624B /* Chunk.h in Headers */ = {isa = PBXBuildFile; fileRef = AB16B0451096F4EC00272D44 /* Chunk.h */; };
+		1080232F10D11BB4003F624B /* ItemReader.h in Headers */ = {isa = PBXBuildFile; fileRef = AB16B0461096F4EC00272D44 /* ItemReader.h */; };
+		1080233010D11BB4003F624B /* EncodingHelper.h in Headers */ = {isa = PBXBuildFile; fileRef = AB16B0C51096F9E800272D44 /* EncodingHelper.h */; };
+		1080233210D11BB4003F624B /* base64.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C9F520E0DAF4CB1007E0091 /* base64.cpp */; };
+		1080233310D11BB4003F624B /* error.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C9F520F0DAF4CB1007E0091 /* error.cpp */; };
+		1080233410D11BB4003F624B /* md5.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C9F52120DAF4CB1007E0091 /* md5.cpp */; };
+		1080233510D11BB4003F624B /* quoted-printable.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C9F52130DAF4CB1007E0091 /* quoted-printable.cpp */; };
+		1080233610D11BB4003F624B /* ArrayElement.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C9F52150DAF4CB1007E0091 /* ArrayElement.cpp */; };
+		1080233710D11BB4003F624B /* ArrayList.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C9F52160DAF4CB1007E0091 /* ArrayList.cpp */; };
+		1080233810D11BB4003F624B /* MemoryKeyValueStore.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C9F52170DAF4CB1007E0091 /* MemoryKeyValueStore.cpp */; };
+		1080233910D11BB4003F624B /* baseutils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C9F52180DAF4CB1007E0091 /* baseutils.cpp */; };
+		1080233A10D11BB4003F624B /* BasicTime.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C9F52190DAF4CB1007E0091 /* BasicTime.cpp */; };
+		1080233B10D11BB4003F624B /* ItemContainer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C9F521A0DAF4CB1007E0091 /* ItemContainer.cpp */; };
+		1080233C10D11BB4003F624B /* PropertyFile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C9F521C0DAF4CB1007E0091 /* PropertyFile.cpp */; };
+		1080233D10D11BB4003F624B /* StringBuffer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C9F521D0DAF4CB1007E0091 /* StringBuffer.cpp */; };
+		1080233E10D11BB4003F624B /* WString.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C9F521F0DAF4CB1007E0091 /* WString.cpp */; };
+		1080233F10D11BB4003F624B /* XMLProcessor.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C9F52200DAF4CB1007E0091 /* XMLProcessor.cpp */; };
+		1080234010D11BB4003F624B /* DMTClientConfig.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C9F52230DAF4CB1007E0091 /* DMTClientConfig.cpp */; };
+		1080234110D11BB4003F624B /* FileSyncSource.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C9F52250DAF4CB1007E0091 /* FileSyncSource.cpp */; };
+		1080234210D11BB4003F624B /* MailSourceManagementNode.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C9F52260DAF4CB1007E0091 /* MailSourceManagementNode.cpp */; };
+		1080234310D11BB4003F624B /* SyncClient.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C9F52280DAF4CB1007E0091 /* SyncClient.cpp */; };
+		1080234410D11BB4003F624B /* BaseEvent.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C9F522A0DAF4CB1007E0091 /* BaseEvent.cpp */; };
+		1080234510D11BB4003F624B /* FireEvent.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C9F522B0DAF4CB1007E0091 /* FireEvent.cpp */; };
+		1080234610D11BB4003F624B /* ManageListener.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C9F522D0DAF4CB1007E0091 /* ManageListener.cpp */; };
+		1080234710D11BB4003F624B /* SetListener.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C9F522E0DAF4CB1007E0091 /* SetListener.cpp */; };
+		1080234810D11BB4003F624B /* SyncEvent.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C9F522F0DAF4CB1007E0091 /* SyncEvent.cpp */; };
+		1080234910D11BB4003F624B /* SyncItemEvent.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C9F52300DAF4CB1007E0091 /* SyncItemEvent.cpp */; };
+		1080234A10D11BB4003F624B /* SyncSourceEvent.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C9F52330DAF4CB1007E0091 /* SyncSourceEvent.cpp */; };
+		1080234B10D11BB4003F624B /* SyncStatusEvent.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C9F52350DAF4CB1007E0091 /* SyncStatusEvent.cpp */; };
+		1080234C10D11BB4003F624B /* TransportEvent.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C9F52370DAF4CB1007E0091 /* TransportEvent.cpp */; };
+		1080234D10D11BB4003F624B /* AllClause.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C9F524A0DAF4CB1007E0091 /* AllClause.cpp */; };
+		1080234E10D11BB4003F624B /* Clause.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C9F524B0DAF4CB1007E0091 /* Clause.cpp */; };
+		1080234F10D11BB4003F624B /* ClauseUtil.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C9F524C0DAF4CB1007E0091 /* ClauseUtil.cpp */; };
+		1080235010D11BB4003F624B /* FieldClause.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C9F524D0DAF4CB1007E0091 /* FieldClause.cpp */; };
+		1080235110D11BB4003F624B /* LogicalClause.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C9F524E0DAF4CB1007E0091 /* LogicalClause.cpp */; };
+		1080235210D11BB4003F624B /* SourceFilter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C9F524F0DAF4CB1007E0091 /* SourceFilter.cpp */; };
+		1080235310D11BB4003F624B /* WhereClause.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C9F52500DAF4CB1007E0091 /* WhereClause.cpp */; };
+		1080235410D11BB4003F624B /* HTTPHeader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C9F52520DAF4CB1007E0091 /* HTTPHeader.cpp */; };
+		1080235510D11BB4003F624B /* Proxy.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C9F52530DAF4CB1007E0091 /* Proxy.cpp */; };
+		1080235610D11BB4003F624B /* TransportAgent.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C9F52540DAF4CB1007E0091 /* TransportAgent.cpp */; };
+		1080235710D11BB4003F624B /* URL.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C9F52550DAF4CB1007E0091 /* URL.cpp */; };
+		1080235810D11BB4003F624B /* DMTree.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C9F525C0DAF4CB1007E0091 /* DMTree.cpp */; };
+		1080235910D11BB4003F624B /* ManagementNode.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C9F525D0DAF4CB1007E0091 /* ManagementNode.cpp */; };
+		1080235A10D11BB4003F624B /* AccessConfig.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C9F525F0DAF4CB1007E0091 /* AccessConfig.cpp */; };
+		1080235B10D11BB4003F624B /* B64Decoder.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C9F52600DAF4CB1007E0091 /* B64Decoder.cpp */; };
+		1080235C10D11BB4003F624B /* B64Encoder.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C9F52610DAF4CB1007E0091 /* B64Encoder.cpp */; };
+		1080235D10D11BB4003F624B /* BodyPart.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C9F52620DAF4CB1007E0091 /* BodyPart.cpp */; };
+		1080235E10D11BB4003F624B /* CredentialHandler.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C9F52640DAF4CB1007E0091 /* CredentialHandler.cpp */; };
+		1080235F10D11BB4003F624B /* DataTransformer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C9F52650DAF4CB1007E0091 /* DataTransformer.cpp */; };
+		1080236010D11BB4003F624B /* DataTransformerFactory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C9F52660DAF4CB1007E0091 /* DataTransformerFactory.cpp */; };
+		1080236110D11BB4003F624B /* DefaultConfigFactory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C9F52670DAF4CB1007E0091 /* DefaultConfigFactory.cpp */; };
+		1080236210D11BB4003F624B /* DeviceConfig.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C9F52680DAF4CB1007E0091 /* DeviceConfig.cpp */; };
+		1080236310D11BB4003F624B /* FileData.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C9F526A0DAF4CB1007E0091 /* FileData.cpp */; };
+		1080236410D11BB4003F624B /* FolderData.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C9F526B0DAF4CB1007E0091 /* FolderData.cpp */; };
+		1080236510D11BB4003F624B /* ItemReport.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C9F526C0DAF4CB1007E0091 /* ItemReport.cpp */; };
+		1080236610D11BB4003F624B /* spdsutils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C9F526F0DAF4CB1007E0091 /* spdsutils.cpp */; };
+		1080236710D11BB4003F624B /* SyncItem.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C9F52700DAF4CB1007E0091 /* SyncItem.cpp */; };
+		1080236810D11BB4003F624B /* SyncItemStatus.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C9F52710DAF4CB1007E0091 /* SyncItemStatus.cpp */; };
+		1080236910D11BB4003F624B /* SyncManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C9F52720DAF4CB1007E0091 /* SyncManager.cpp */; };
+		1080236A10D11BB4003F624B /* SyncManagerConfig.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C9F52730DAF4CB1007E0091 /* SyncManagerConfig.cpp */; };
+		1080236B10D11BB4003F624B /* SyncMap.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C9F52740DAF4CB1007E0091 /* SyncMap.cpp */; };
+		1080236C10D11BB4003F624B /* SyncMLBuilder.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C9F52750DAF4CB1007E0091 /* SyncMLBuilder.cpp */; };
+		1080236D10D11BB4003F624B /* SyncMLProcessor.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C9F52760DAF4CB1007E0091 /* SyncMLProcessor.cpp */; };
+		1080236E10D11BB4003F624B /* SyncReport.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C9F52770DAF4CB1007E0091 /* SyncReport.cpp */; };
+		1080236F10D11BB4003F624B /* SyncSource.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C9F52780DAF4CB1007E0091 /* SyncSource.cpp */; };
+		1080237010D11BB4003F624B /* SyncSourceConfig.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C9F52790DAF4CB1007E0091 /* SyncSourceConfig.cpp */; };
+		1080237110D11BB4003F624B /* SyncSourceReport.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C9F527A0DAF4CB1007E0091 /* SyncSourceReport.cpp */; };
+		1080237210D11BB4003F624B /* AbstractCommand.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C9F527D0DAF4CB1007E0091 /* AbstractCommand.cpp */; };
+		1080237310D11BB4003F624B /* Add.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C9F527E0DAF4CB1007E0091 /* Add.cpp */; };
+		1080237410D11BB4003F624B /* Alert.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C9F527F0DAF4CB1007E0091 /* Alert.cpp */; };
+		1080237510D11BB4003F624B /* Anchor.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C9F52800DAF4CB1007E0091 /* Anchor.cpp */; };
+		1080237610D11BB4003F624B /* Atomic.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C9F52810DAF4CB1007E0091 /* Atomic.cpp */; };
+		1080237710D11BB4003F624B /* Authentication.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C9F52820DAF4CB1007E0091 /* Authentication.cpp */; };
+		1080237810D11BB4003F624B /* Chal.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C9F52830DAF4CB1007E0091 /* Chal.cpp */; };
+		1080237910D11BB4003F624B /* CmdID.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C9F52840DAF4CB1007E0091 /* CmdID.cpp */; };
+		1080237A10D11BB4003F624B /* ComplexData.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C9F52850DAF4CB1007E0091 /* ComplexData.cpp */; };
+		1080237B10D11BB4003F624B /* ContentTypeInfo.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C9F52860DAF4CB1007E0091 /* ContentTypeInfo.cpp */; };
+		1080237C10D11BB4003F624B /* ContentTypeParameter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C9F52870DAF4CB1007E0091 /* ContentTypeParameter.cpp */; };
+		1080237D10D11BB4003F624B /* Copy.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C9F52880DAF4CB1007E0091 /* Copy.cpp */; };
+		1080237E10D11BB4003F624B /* Cred.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C9F52890DAF4CB1007E0091 /* Cred.cpp */; };
+		1080237F10D11BB4003F624B /* CTCap.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C9F528A0DAF4CB1007E0091 /* CTCap.cpp */; };
+		1080238010D11BB4003F624B /* CTPropParam.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C9F528B0DAF4CB1007E0091 /* CTPropParam.cpp */; };
+		1080238110D11BB4003F624B /* CTTypeSupported.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C9F528C0DAF4CB1007E0091 /* CTTypeSupported.cpp */; };
+		1080238210D11BB4003F624B /* Data.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C9F528D0DAF4CB1007E0091 /* Data.cpp */; };
+		1080238310D11BB4003F624B /* DataStore.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C9F528E0DAF4CB1007E0091 /* DataStore.cpp */; };
+		1080238410D11BB4003F624B /* Delete.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C9F528F0DAF4CB1007E0091 /* Delete.cpp */; };
+		1080238510D11BB4003F624B /* DevInf.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C9F52900DAF4CB1007E0091 /* DevInf.cpp */; };
+		1080238610D11BB4003F624B /* DevInfData.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C9F52910DAF4CB1007E0091 /* DevInfData.cpp */; };
+		1080238710D11BB4003F624B /* DevInfItem.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C9F52920DAF4CB1007E0091 /* DevInfItem.cpp */; };
+		1080238810D11BB4003F624B /* DSMem.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C9F52930DAF4CB1007E0091 /* DSMem.cpp */; };
+		1080238910D11BB4003F624B /* EMI.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C9F52940DAF4CB1007E0091 /* EMI.cpp */; };
+		1080238A10D11BB4003F624B /* Exec.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C9F52950DAF4CB1007E0091 /* Exec.cpp */; };
+		1080238B10D11BB4003F624B /* Ext.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C9F52960DAF4CB1007E0091 /* Ext.cpp */; };
+		1080238C10D11BB4003F624B /* Filter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C9F52970DAF4CB1007E0091 /* Filter.cpp */; };
+		1080238D10D11BB4003F624B /* Get.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C9F52980DAF4CB1007E0091 /* Get.cpp */; };
+		1080238E10D11BB4003F624B /* Item.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C9F52990DAF4CB1007E0091 /* Item.cpp */; };
+		1080238F10D11BB4003F624B /* ItemizedCommand.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C9F529A0DAF4CB1007E0091 /* ItemizedCommand.cpp */; };
+		1080239010D11BB4003F624B /* Map.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C9F529B0DAF4CB1007E0091 /* Map.cpp */; };
+		1080239110D11BB4003F624B /* MapItem.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C9F529C0DAF4CB1007E0091 /* MapItem.cpp */; };
+		1080239210D11BB4003F624B /* Mem.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C9F529D0DAF4CB1007E0091 /* Mem.cpp */; };
+		1080239310D11BB4003F624B /* Meta.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C9F529E0DAF4CB1007E0091 /* Meta.cpp */; };
+		1080239410D11BB4003F624B /* MetInf.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C9F529F0DAF4CB1007E0091 /* MetInf.cpp */; };
+		1080239510D11BB4003F624B /* ModificationCommand.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C9F52A00DAF4CB1007E0091 /* ModificationCommand.cpp */; };
+		1080239610D11BB4003F624B /* NextNonce.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C9F52A10DAF4CB1007E0091 /* NextNonce.cpp */; };
+		1080239710D11BB4003F624B /* ObjectDel.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C9F52A20DAF4CB1007E0091 /* ObjectDel.cpp */; };
+		1080239810D11BB4003F624B /* Property.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C9F52A30DAF4CB1007E0091 /* Property.cpp */; };
+		1080239910D11BB4003F624B /* PropParam.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C9F52A40DAF4CB1007E0091 /* PropParam.cpp */; };
+		1080239A10D11BB4003F624B /* Put.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C9F52A50DAF4CB1007E0091 /* Put.cpp */; };
+		1080239B10D11BB4003F624B /* Replace.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C9F52A60DAF4CB1007E0091 /* Replace.cpp */; };
+		1080239C10D11BB4003F624B /* ResponseCommand.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C9F52A70DAF4CB1007E0091 /* ResponseCommand.cpp */; };
+		1080239D10D11BB4003F624B /* Results.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C9F52A80DAF4CB1007E0091 /* Results.cpp */; };
+		1080239E10D11BB4003F624B /* Search.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C9F52A90DAF4CB1007E0091 /* Search.cpp */; };
+		1080239F10D11BB4003F624B /* Sequence.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C9F52AA0DAF4CB1007E0091 /* Sequence.cpp */; };
+		108023A010D11BB4003F624B /* SessionID.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C9F52AB0DAF4CB1007E0091 /* SessionID.cpp */; };
+		108023A110D11BB4003F624B /* Source.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C9F52AC0DAF4CB1007E0091 /* Source.cpp */; };
+		108023A210D11BB4003F624B /* SourceArray.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C9F52AD0DAF4CB1007E0091 /* SourceArray.cpp */; };
+		108023A310D11BB4003F624B /* SourceRef.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C9F52AE0DAF4CB1007E0091 /* SourceRef.cpp */; };
+		108023A410D11BB4003F624B /* Status.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C9F52AF0DAF4CB1007E0091 /* Status.cpp */; };
+		108023A510D11BB4003F624B /* StringElement.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C9F52B00DAF4CB1007E0091 /* StringElement.cpp */; };
+		108023A610D11BB4003F624B /* Sync.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C9F52B10DAF4CB1007E0091 /* Sync.cpp */; };
+		108023A710D11BB4003F624B /* SyncAlert.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C9F52B20DAF4CB1007E0091 /* SyncAlert.cpp */; };
+		108023A810D11BB4003F624B /* SyncBody.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C9F52B30DAF4CB1007E0091 /* SyncBody.cpp */; };
+		108023A910D11BB4003F624B /* SyncCap.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C9F52B40DAF4CB1007E0091 /* SyncCap.cpp */; };
+		108023AA10D11BB4003F624B /* SyncHdr.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C9F52B50DAF4CB1007E0091 /* SyncHdr.cpp */; };
+		108023AB10D11BB4003F624B /* SyncML.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C9F52B60DAF4CB1007E0091 /* SyncML.cpp */; };
+		108023AC10D11BB4003F624B /* SyncNotification.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C9F52B70DAF4CB1007E0091 /* SyncNotification.cpp */; };
+		108023AD10D11BB4003F624B /* SyncType.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C9F52B80DAF4CB1007E0091 /* SyncType.cpp */; };
+		108023AE10D11BB4003F624B /* SyncTypeArray.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C9F52B90DAF4CB1007E0091 /* SyncTypeArray.cpp */; };
+		108023AF10D11BB4003F624B /* Target.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C9F52BA0DAF4CB1007E0091 /* Target.cpp */; };
+		108023B010D11BB4003F624B /* TargetRef.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C9F52BB0DAF4CB1007E0091 /* TargetRef.cpp */; };
+		108023B110D11BB4003F624B /* VerDTD.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C9F52BC0DAF4CB1007E0091 /* VerDTD.cpp */; };
+		108023B210D11BB4003F624B /* VerProto.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C9F52BD0DAF4CB1007E0091 /* VerProto.cpp */; };
+		108023B310D11BB4003F624B /* Formatter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C9F52BF0DAF4CB1007E0091 /* Formatter.cpp */; };
+		108023B410D11BB4003F624B /* Parser.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C9F52C10DAF4CB1007E0091 /* Parser.cpp */; };
+		108023B510D11BB4003F624B /* Calendar.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C9F52C40DAF4CB1007E0091 /* Calendar.cpp */; };
+		108023B610D11BB4003F624B /* Event.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C9F52C50DAF4CB1007E0091 /* Event.cpp */; };
+		108023B710D11BB4003F624B /* iCalConverter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C9F52C60DAF4CB1007E0091 /* iCalConverter.cpp */; };
+		108023B810D11BB4003F624B /* iCalProperty.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C9F52C70DAF4CB1007E0091 /* iCalProperty.cpp */; };
+		108023B910D11BB4003F624B /* ToDo.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C9F52C80DAF4CB1007E0091 /* ToDo.cpp */; };
+		108023BA10D11BB4003F624B /* Address.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C9F52CA0DAF4CB1007E0091 /* Address.cpp */; };
+		108023BB10D11BB4003F624B /* BusinessDetail.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C9F52CB0DAF4CB1007E0091 /* BusinessDetail.cpp */; };
+		108023BC10D11BB4003F624B /* Contact.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C9F52CC0DAF4CB1007E0091 /* Contact.cpp */; };
+		108023BD10D11BB4003F624B /* Contact30.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C9F52CD0DAF4CB1007E0091 /* Contact30.cpp */; };
+		108023BE10D11BB4003F624B /* ContactDetail.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C9F52CE0DAF4CB1007E0091 /* ContactDetail.cpp */; };
+		108023BF10D11BB4003F624B /* Email.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C9F52CF0DAF4CB1007E0091 /* Email.cpp */; };
+		108023C010D11BB4003F624B /* Name.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C9F52D00DAF4CB1007E0091 /* Name.cpp */; };
+		108023C110D11BB4003F624B /* Note.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C9F52D10DAF4CB1007E0091 /* Note.cpp */; };
+		108023C210D11BB4003F624B /* PersonalDetail.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C9F52D20DAF4CB1007E0091 /* PersonalDetail.cpp */; };
+		108023C310D11BB4003F624B /* Phone.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C9F52D30DAF4CB1007E0091 /* Phone.cpp */; };
+		108023C410D11BB4003F624B /* Title.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C9F52D40DAF4CB1007E0091 /* Title.cpp */; };
+		108023C510D11BB4003F624B /* TypedProperty.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C9F52D50DAF4CB1007E0091 /* TypedProperty.cpp */; };
+		108023C610D11BB4003F624B /* vCardConverter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C9F52D60DAF4CB1007E0091 /* vCardConverter.cpp */; };
+		108023C710D11BB4003F624B /* vCardProperty.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C9F52D70DAF4CB1007E0091 /* vCardProperty.cpp */; };
+		108023C810D11BB4003F624B /* WebPage.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C9F52D80DAF4CB1007E0091 /* WebPage.cpp */; };
+		108023C910D11BB4003F624B /* VConverter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C9F52D90DAF4CB1007E0091 /* VConverter.cpp */; };
+		108023CA10D11BB4003F624B /* VObject.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C9F52DA0DAF4CB1007E0091 /* VObject.cpp */; };
+		108023CB10D11BB4003F624B /* VObjectFactory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C9F52DB0DAF4CB1007E0091 /* VObjectFactory.cpp */; };
+		108023CC10D11BB4003F624B /* VProperty.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C9F52DC0DAF4CB1007E0091 /* VProperty.cpp */; };
+		108023CD10D11BB4003F624B /* autotoolsadapter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C9F52DF0DAF4CB1007E0091 /* autotoolsadapter.cpp */; };
+		108023CE10D11BB4003F624B /* Log.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C9F52E00DAF4CB1007E0091 /* Log.cpp */; };
+		108023CF10D11BB4003F624B /* TransportAgentFactory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C9F52E30DAF4CB1007E0091 /* TransportAgentFactory.cpp */; };
+		108023D010D11BB4003F624B /* DeviceManagementNode.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C9F52E80DAF4CB1007E0091 /* DeviceManagementNode.cpp */; };
+		108023D110D11BB4003F624B /* DMTreeFactory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C9F52E90DAF4CB1007E0091 /* DMTreeFactory.cpp */; };
+		108023D210D11BB4003F624B /* DESDecoder.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C9F52EB0DAF4CB1007E0091 /* DESDecoder.cpp */; };
+		108023D310D11BB4003F624B /* DESEncoder.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C9F52EC0DAF4CB1007E0091 /* DESEncoder.cpp */; };
+		108023D410D11BB4003F624B /* CacheSyncSource.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C9F58B60DAF62A4007E0091 /* CacheSyncSource.cpp */; };
+		108023D510D11BB4003F624B /* SQLKeyValueStore.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7CB036780DB4EC8A003F4E5F /* SQLKeyValueStore.cpp */; };
+		108023D610D11BB4003F624B /* MacTransportAgent.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C3BEB240DB7329900119850 /* MacTransportAgent.cpp */; };
+		108023D710D11BB4003F624B /* TestSyncSource.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C3BEB350DB732B400119850 /* TestSyncSource.cpp */; };
+		108023D810D11BB4003F624B /* SQLiteKeyValueStore.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C8B0C4F0DB73C2E005113A8 /* SQLiteKeyValueStore.cpp */; };
+		108023D910D11BB4003F624B /* PlatformAdapter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AB4B1B050ED6F6D3007C477B /* PlatformAdapter.cpp */; };
+		108023DA10D11BB4003F624B /* StringMap.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AB43F7340EDACE1100183D6B /* StringMap.cpp */; };
+		108023DB10D11BB4003F624B /* SyncItemListener.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AB40DF820F695B2F00E4CD39 /* SyncItemListener.cpp */; };
+		108023DC10D11BB4003F624B /* MailAccount.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AB7B893F108C9E1C00E14CD5 /* MailAccount.cpp */; };
+		108023DD10D11BB4003F624B /* MailAccountManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AB7B8940108C9E1C00E14CD5 /* MailAccountManager.cpp */; };
+		108023DE10D11BB4003F624B /* MailData.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AB7B8941108C9E1C00E14CD5 /* MailData.cpp */; };
+		108023DF10D11BB4003F624B /* MailMessage.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AB7B8942108C9E1C00E14CD5 /* MailMessage.cpp */; };
+		108023E010D11BB4003F624B /* MailSyncSourceConfig.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AB7B8943108C9E1C00E14CD5 /* MailSyncSourceConfig.cpp */; };
+		108023E110D11BB4003F624B /* ConfigSyncSource.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AB4D702D108DEE520036FEFF /* ConfigSyncSource.cpp */; };
+		108023E210D11BB4003F624B /* OptionParser.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AB4D702E108DEE520036FEFF /* OptionParser.cpp */; };
+		108023E310D11BB4003F624B /* FolderExt.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AB4D7036108DEE920036FEFF /* FolderExt.cpp */; };
+		108023E410D11BB4003F624B /* BufferInputStream.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AB16B02C1096F4B200272D44 /* BufferInputStream.cpp */; };
+		108023E510D11BB4003F624B /* FileDataInputStream.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AB16B02D1096F4B200272D44 /* FileDataInputStream.cpp */; };
+		108023E610D11BB4003F624B /* FileInputStream.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AB16B02E1096F4B200272D44 /* FileInputStream.cpp */; };
+		108023E710D11BB4003F624B /* InputStream.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AB16B02F1096F4B200272D44 /* InputStream.cpp */; };
+		108023E810D11BB4003F624B /* MultipleInputStream.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AB16B0301096F4B200272D44 /* MultipleInputStream.cpp */; };
+		108023E910D11BB4003F624B /* Chunk.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AB16B0361096F4C700272D44 /* Chunk.cpp */; };
+		108023EA10D11BB4003F624B /* ItemReader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AB16B0371096F4C700272D44 /* ItemReader.cpp */; };
+		108023EB10D11BB4003F624B /* EncodingHelper.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AB16B0C31096F9DB00272D44 /* EncodingHelper.cpp */; };
+		108023ED10D11BB4003F624B /* CoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7C8B0D990DB7517C005113A8 /* CoreServices.framework */; };
+		108023EE10D11BB4003F624B /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AB3E85F90E07F8CB00581A6C /* SystemConfiguration.framework */; };
+		108023EF10D11BB4003F624B /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = ABFBD5D70EC4586100FA542B /* Foundation.framework */; };
 		7C3BEB220DB7328E00119850 /* CurlTransportAgent.h in Headers */ = {isa = PBXBuildFile; fileRef = 7C3BEB200DB7328E00119850 /* CurlTransportAgent.h */; };
 		7C3BEB230DB7328E00119850 /* MacTransportAgent.h in Headers */ = {isa = PBXBuildFile; fileRef = 7C3BEB210DB7328E00119850 /* MacTransportAgent.h */; };
 		7C3BEB250DB7329900119850 /* MacTransportAgent.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C3BEB240DB7329900119850 /* MacTransportAgent.cpp */; };
@@ -560,6 +990,7 @@
 		100CF24610A84DCC0082D48B /* LOItemTest.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = LOItemTest.cpp; path = ../../test/integration/LOItemTest.cpp; sourceTree = SOURCE_ROOT; };
 		100CF24710A84DCC0082D48B /* LOItemTest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = LOItemTest.h; path = ../../test/integration/LOItemTest.h; sourceTree = SOURCE_ROOT; };
 		103CD76A10AB2B7F00AC4271 /* BlockingSQLiteKeyValueStore.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = BlockingSQLiteKeyValueStore.cpp; path = ../../src/cpp/posix/client/BlockingSQLiteKeyValueStore.cpp; sourceTree = SOURCE_ROOT; };
+		108023F510D11BB4003F624B /* libfunambolGC.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libfunambolGC.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		7C3BEB200DB7328E00119850 /* CurlTransportAgent.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CurlTransportAgent.h; sourceTree = "<group>"; };
 		7C3BEB210DB7328E00119850 /* MacTransportAgent.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MacTransportAgent.h; sourceTree = "<group>"; };
 		7C3BEB240DB7329900119850 /* MacTransportAgent.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = MacTransportAgent.cpp; sourceTree = "<group>"; };
@@ -1073,6 +1504,16 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		108023EC10D11BB4003F624B /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				108023ED10D11BB4003F624B /* CoreServices.framework in Frameworks */,
+				108023EE10D11BB4003F624B /* SystemConfiguration.framework in Frameworks */,
+				108023EF10D11BB4003F624B /* Foundation.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		7C3BEC770DB734E600119850 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -1130,6 +1571,7 @@
 				7C3BEC790DB734E600119850 /* examples-client */,
 				7C8B0EC70DB758A3005113A8 /* examples-sqlitekvstest */,
 				AB4D6E2A108DBF440036FEFF /* libfunamboltest */,
+				108023F510D11BB4003F624B /* libfunambolGC.a */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -2252,6 +2694,254 @@
 /* End PBXGroup section */
 
 /* Begin PBXHeadersBuildPhase section */
+		1080223F10D11BB4003F624B /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				1080224010D11BB4003F624B /* base64.h in Headers */,
+				1080224110D11BB4003F624B /* constants.h in Headers */,
+				1080224210D11BB4003F624B /* debug.h in Headers */,
+				1080224310D11BB4003F624B /* errors.h in Headers */,
+				1080224410D11BB4003F624B /* fscapi.h in Headers */,
+				1080224510D11BB4003F624B /* Log.h in Headers */,
+				1080224610D11BB4003F624B /* md5.h in Headers */,
+				1080224710D11BB4003F624B /* messages.h in Headers */,
+				1080224810D11BB4003F624B /* quoted-printable.h in Headers */,
+				1080224910D11BB4003F624B /* test.h in Headers */,
+				1080224A10D11BB4003F624B /* ArrayElement.h in Headers */,
+				1080224B10D11BB4003F624B /* ArrayList.h in Headers */,
+				1080224C10D11BB4003F624B /* ArrayListEnumeration.h in Headers */,
+				1080224D10D11BB4003F624B /* MemoryKeyValueStore.h in Headers */,
+				1080224E10D11BB4003F624B /* BasicTime.h in Headers */,
+				1080224F10D11BB4003F624B /* Enumeration.h in Headers */,
+				1080225010D11BB4003F624B /* ItemContainer.h in Headers */,
+				1080225110D11BB4003F624B /* KeyValuePair.h in Headers */,
+				1080225210D11BB4003F624B /* PropertyFile.h in Headers */,
+				1080225310D11BB4003F624B /* StringBuffer.h in Headers */,
+				1080225410D11BB4003F624B /* utils.h in Headers */,
+				1080225510D11BB4003F624B /* WKeyValuePair.h in Headers */,
+				1080225610D11BB4003F624B /* WString.h in Headers */,
+				1080225710D11BB4003F624B /* XMLProcessor.h in Headers */,
+				1080225810D11BB4003F624B /* DMTClientConfig.h in Headers */,
+				1080225910D11BB4003F624B /* FileClient.h in Headers */,
+				1080225A10D11BB4003F624B /* FileSyncSource.h in Headers */,
+				1080225B10D11BB4003F624B /* MailSourceManagementNode.h in Headers */,
+				1080225C10D11BB4003F624B /* SyncClient.h in Headers */,
+				1080225D10D11BB4003F624B /* BaseEvent.h in Headers */,
+				1080225E10D11BB4003F624B /* constants.h in Headers */,
+				1080225F10D11BB4003F624B /* FireEvent.h in Headers */,
+				1080226010D11BB4003F624B /* Listener.h in Headers */,
+				1080226110D11BB4003F624B /* ManageListener.h in Headers */,
+				1080226210D11BB4003F624B /* SetListener.h in Headers */,
+				1080226310D11BB4003F624B /* SyncEvent.h in Headers */,
+				1080226410D11BB4003F624B /* SyncItemEvent.h in Headers */,
+				1080226510D11BB4003F624B /* SyncItemListener.h in Headers */,
+				1080226610D11BB4003F624B /* SyncListener.h in Headers */,
+				1080226710D11BB4003F624B /* SyncSourceEvent.h in Headers */,
+				1080226810D11BB4003F624B /* SyncSourceListener.h in Headers */,
+				1080226910D11BB4003F624B /* SyncStatusEvent.h in Headers */,
+				1080226A10D11BB4003F624B /* SyncStatusListener.h in Headers */,
+				1080226B10D11BB4003F624B /* TransportEvent.h in Headers */,
+				1080226C10D11BB4003F624B /* TransportListener.h in Headers */,
+				1080226D10D11BB4003F624B /* config.h in Headers */,
+				1080226E10D11BB4003F624B /* TestSyncItemListener.h in Headers */,
+				1080226F10D11BB4003F624B /* TestSyncListener.h in Headers */,
+				1080227010D11BB4003F624B /* TestSyncSourceListener.h in Headers */,
+				1080227110D11BB4003F624B /* TestSyncStatusListener.h in Headers */,
+				1080227210D11BB4003F624B /* TestTransportListener.h in Headers */,
+				1080227310D11BB4003F624B /* TestSyncSource.h in Headers */,
+				1080227410D11BB4003F624B /* TestSyncSource2.h in Headers */,
+				1080227510D11BB4003F624B /* AllClause.h in Headers */,
+				1080227610D11BB4003F624B /* Clause.h in Headers */,
+				1080227710D11BB4003F624B /* ClauseUtil.h in Headers */,
+				1080227810D11BB4003F624B /* FieldClause.h in Headers */,
+				1080227910D11BB4003F624B /* LogicalClause.h in Headers */,
+				1080227A10D11BB4003F624B /* SourceFilter.h in Headers */,
+				1080227B10D11BB4003F624B /* WhereClause.h in Headers */,
+				1080227C10D11BB4003F624B /* constants.h in Headers */,
+				1080227D10D11BB4003F624B /* errors.h in Headers */,
+				1080227E10D11BB4003F624B /* HTTPHeader.h in Headers */,
+				1080227F10D11BB4003F624B /* Proxy.h in Headers */,
+				1080228010D11BB4003F624B /* TransportAgent.h in Headers */,
+				1080228110D11BB4003F624B /* TransportAgentFactory.h in Headers */,
+				1080228210D11BB4003F624B /* URL.h in Headers */,
+				1080228310D11BB4003F624B /* CTPConfig.h in Headers */,
+				1080228410D11BB4003F624B /* CTPMessage.h in Headers */,
+				1080228510D11BB4003F624B /* CTPParam.h in Headers */,
+				1080228610D11BB4003F624B /* CTPService.h in Headers */,
+				1080228710D11BB4003F624B /* constants.h in Headers */,
+				1080228810D11BB4003F624B /* DeviceManager.h in Headers */,
+				1080228910D11BB4003F624B /* DeviceManagerFactory.h in Headers */,
+				1080228A10D11BB4003F624B /* DMTree.h in Headers */,
+				1080228B10D11BB4003F624B /* DMTreeFactory.h in Headers */,
+				1080228C10D11BB4003F624B /* errors.h in Headers */,
+				1080228D10D11BB4003F624B /* ManagementNode.h in Headers */,
+				1080228E10D11BB4003F624B /* spdmutils.h in Headers */,
+				1080228F10D11BB4003F624B /* AbstractSyncConfig.h in Headers */,
+				1080229010D11BB4003F624B /* AbstractSyncSourceConfig.h in Headers */,
+				1080229110D11BB4003F624B /* AccessConfig.h in Headers */,
+				1080229210D11BB4003F624B /* B64Decoder.h in Headers */,
+				1080229310D11BB4003F624B /* B64Encoder.h in Headers */,
+				1080229410D11BB4003F624B /* BodyPart.h in Headers */,
+				1080229510D11BB4003F624B /* constants.h in Headers */,
+				1080229610D11BB4003F624B /* CredentialHandler.h in Headers */,
+				1080229710D11BB4003F624B /* DataTransformer.h in Headers */,
+				1080229810D11BB4003F624B /* DataTransformerFactory.h in Headers */,
+				1080229910D11BB4003F624B /* DefaultConfigFactory.h in Headers */,
+				1080229A10D11BB4003F624B /* DESDecoder.h in Headers */,
+				1080229B10D11BB4003F624B /* DESEncoder.h in Headers */,
+				1080229C10D11BB4003F624B /* DeviceConfig.h in Headers */,
+				1080229D10D11BB4003F624B /* Email.h in Headers */,
+				1080229E10D11BB4003F624B /* EmailData.h in Headers */,
+				1080229F10D11BB4003F624B /* errors.h in Headers */,
+				108022A010D11BB4003F624B /* FileData.h in Headers */,
+				108022A110D11BB4003F624B /* FolderData.h in Headers */,
+				108022A210D11BB4003F624B /* ItemReport.h in Headers */,
+				108022A310D11BB4003F624B /* spdsutils.h in Headers */,
+				108022A410D11BB4003F624B /* SyncItem.h in Headers */,
+				108022A510D11BB4003F624B /* SyncItemStatus.h in Headers */,
+				108022A610D11BB4003F624B /* SyncManager.h in Headers */,
+				108022A710D11BB4003F624B /* SyncManagerConfig.h in Headers */,
+				108022A810D11BB4003F624B /* SyncMap.h in Headers */,
+				108022A910D11BB4003F624B /* SyncMLBuilder.h in Headers */,
+				108022AA10D11BB4003F624B /* SyncMLProcessor.h in Headers */,
+				108022AB10D11BB4003F624B /* SyncReport.h in Headers */,
+				108022AC10D11BB4003F624B /* SyncSource.h in Headers */,
+				108022AD10D11BB4003F624B /* SyncSourceConfig.h in Headers */,
+				108022AE10D11BB4003F624B /* SyncSourceReport.h in Headers */,
+				108022AF10D11BB4003F624B /* SyncStatus.h in Headers */,
+				108022B010D11BB4003F624B /* AbstractCommand.h in Headers */,
+				108022B110D11BB4003F624B /* Add.h in Headers */,
+				108022B210D11BB4003F624B /* Alert.h in Headers */,
+				108022B310D11BB4003F624B /* AlertCode.h in Headers */,
+				108022B410D11BB4003F624B /* Anchor.h in Headers */,
+				108022B510D11BB4003F624B /* Atomic.h in Headers */,
+				108022B610D11BB4003F624B /* Authentication.h in Headers */,
+				108022B710D11BB4003F624B /* Chal.h in Headers */,
+				108022B810D11BB4003F624B /* CmdID.h in Headers */,
+				108022B910D11BB4003F624B /* ComplexData.h in Headers */,
+				108022BA10D11BB4003F624B /* Constants.h in Headers */,
+				108022BB10D11BB4003F624B /* ContentTypeInfo.h in Headers */,
+				108022BC10D11BB4003F624B /* ContentTypeParameter.h in Headers */,
+				108022BD10D11BB4003F624B /* Copy.h in Headers */,
+				108022BE10D11BB4003F624B /* core.h in Headers */,
+				108022BF10D11BB4003F624B /* Cred.h in Headers */,
+				108022C010D11BB4003F624B /* CTCap.h in Headers */,
+				108022C110D11BB4003F624B /* CTPropParam.h in Headers */,
+				108022C210D11BB4003F624B /* CTTypeSupported.h in Headers */,
+				108022C310D11BB4003F624B /* Data.h in Headers */,
+				108022C410D11BB4003F624B /* DataStore.h in Headers */,
+				108022C510D11BB4003F624B /* Delete.h in Headers */,
+				108022C610D11BB4003F624B /* DevInf.h in Headers */,
+				108022C710D11BB4003F624B /* DevInfData.h in Headers */,
+				108022C810D11BB4003F624B /* DevInfItem.h in Headers */,
+				108022C910D11BB4003F624B /* DevTyp.h in Headers */,
+				108022CA10D11BB4003F624B /* DSMem.h in Headers */,
+				108022CB10D11BB4003F624B /* EMI.h in Headers */,
+				108022CC10D11BB4003F624B /* Exec.h in Headers */,
+				108022CD10D11BB4003F624B /* Ext.h in Headers */,
+				108022CE10D11BB4003F624B /* Filter.h in Headers */,
+				108022CF10D11BB4003F624B /* Get.h in Headers */,
+				108022D010D11BB4003F624B /* Item.h in Headers */,
+				108022D110D11BB4003F624B /* ItemizedCommand.h in Headers */,
+				108022D210D11BB4003F624B /* Map.h in Headers */,
+				108022D310D11BB4003F624B /* MapItem.h in Headers */,
+				108022D410D11BB4003F624B /* Mark.h in Headers */,
+				108022D510D11BB4003F624B /* Mem.h in Headers */,
+				108022D610D11BB4003F624B /* Meta.h in Headers */,
+				108022D710D11BB4003F624B /* MetInf.h in Headers */,
+				108022D810D11BB4003F624B /* ModificationCommand.h in Headers */,
+				108022D910D11BB4003F624B /* NextNonce.h in Headers */,
+				108022DA10D11BB4003F624B /* ObjectDel.h in Headers */,
+				108022DB10D11BB4003F624B /* Property.h in Headers */,
+				108022DC10D11BB4003F624B /* PropParam.h in Headers */,
+				108022DD10D11BB4003F624B /* Put.h in Headers */,
+				108022DE10D11BB4003F624B /* Replace.h in Headers */,
+				108022DF10D11BB4003F624B /* ResponseCommand.h in Headers */,
+				108022E010D11BB4003F624B /* Results.h in Headers */,
+				108022E110D11BB4003F624B /* Search.h in Headers */,
+				108022E210D11BB4003F624B /* Sequence.h in Headers */,
+				108022E310D11BB4003F624B /* SessionID.h in Headers */,
+				108022E410D11BB4003F624B /* Source.h in Headers */,
+				108022E510D11BB4003F624B /* SourceArray.h in Headers */,
+				108022E610D11BB4003F624B /* SourceRef.h in Headers */,
+				108022E710D11BB4003F624B /* Status.h in Headers */,
+				108022E810D11BB4003F624B /* StringElement.h in Headers */,
+				108022E910D11BB4003F624B /* Sync.h in Headers */,
+				108022EA10D11BB4003F624B /* SyncAlert.h in Headers */,
+				108022EB10D11BB4003F624B /* SyncBody.h in Headers */,
+				108022EC10D11BB4003F624B /* SyncCap.h in Headers */,
+				108022ED10D11BB4003F624B /* SyncHdr.h in Headers */,
+				108022EE10D11BB4003F624B /* SyncML.h in Headers */,
+				108022EF10D11BB4003F624B /* SyncNotification.h in Headers */,
+				108022F010D11BB4003F624B /* SyncType.h in Headers */,
+				108022F110D11BB4003F624B /* SyncTypeArray.h in Headers */,
+				108022F210D11BB4003F624B /* TagNames.h in Headers */,
+				108022F310D11BB4003F624B /* Target.h in Headers */,
+				108022F410D11BB4003F624B /* TargetRef.h in Headers */,
+				108022F510D11BB4003F624B /* VerDTD.h in Headers */,
+				108022F610D11BB4003F624B /* VerProto.h in Headers */,
+				108022F710D11BB4003F624B /* Formatter.h in Headers */,
+				108022F810D11BB4003F624B /* Parser.h in Headers */,
+				108022F910D11BB4003F624B /* Calendar.h in Headers */,
+				108022FA10D11BB4003F624B /* Event.h in Headers */,
+				108022FB10D11BB4003F624B /* iCalConverter.h in Headers */,
+				108022FC10D11BB4003F624B /* iCalProperty.h in Headers */,
+				108022FD10D11BB4003F624B /* ToDo.h in Headers */,
+				108022FE10D11BB4003F624B /* Address.h in Headers */,
+				108022FF10D11BB4003F624B /* BusinessDetail.h in Headers */,
+				1080230010D11BB4003F624B /* Contact.h in Headers */,
+				1080230110D11BB4003F624B /* Contact30.h in Headers */,
+				1080230210D11BB4003F624B /* ContactDetail.h in Headers */,
+				1080230310D11BB4003F624B /* Email.h in Headers */,
+				1080230410D11BB4003F624B /* Name.h in Headers */,
+				1080230510D11BB4003F624B /* Note.h in Headers */,
+				1080230610D11BB4003F624B /* PersonalDetail.h in Headers */,
+				1080230710D11BB4003F624B /* Phone.h in Headers */,
+				1080230810D11BB4003F624B /* Title.h in Headers */,
+				1080230910D11BB4003F624B /* TypedProperty.h in Headers */,
+				1080230A10D11BB4003F624B /* vCardConverter.h in Headers */,
+				1080230B10D11BB4003F624B /* vCardProperty.h in Headers */,
+				1080230C10D11BB4003F624B /* WebPage.h in Headers */,
+				1080230D10D11BB4003F624B /* VConverter.h in Headers */,
+				1080230E10D11BB4003F624B /* VObject.h in Headers */,
+				1080230F10D11BB4003F624B /* VObjectFactory.h in Headers */,
+				1080231010D11BB4003F624B /* VProperty.h in Headers */,
+				1080231110D11BB4003F624B /* posixadapter.h in Headers */,
+				1080231210D11BB4003F624B /* posixlog.h in Headers */,
+				1080231310D11BB4003F624B /* FSocket.h in Headers */,
+				1080231410D11BB4003F624B /* FThread.h in Headers */,
+				1080231510D11BB4003F624B /* DeviceManagementNode.h in Headers */,
+				1080231610D11BB4003F624B /* migrateConfig.h in Headers */,
+				1080231710D11BB4003F624B /* CacheSyncSource.h in Headers */,
+				1080231810D11BB4003F624B /* KeyValueStore.h in Headers */,
+				1080231910D11BB4003F624B /* SQLKeyValueStore.h in Headers */,
+				1080231A10D11BB4003F624B /* CurlTransportAgent.h in Headers */,
+				1080231B10D11BB4003F624B /* MacTransportAgent.h in Headers */,
+				1080231C10D11BB4003F624B /* BlockingSQLiteKeyValueStore.h in Headers */,
+				1080231D10D11BB4003F624B /* MappingsManager.h in Headers */,
+				1080231E10D11BB4003F624B /* MappingStoreBuilder.h in Headers */,
+				1080231F10D11BB4003F624B /* StringMap.h in Headers */,
+				1080232010D11BB4003F624B /* Mail.h in Headers */,
+				1080232110D11BB4003F624B /* MailAccount.h in Headers */,
+				1080232210D11BB4003F624B /* MailAccountManager.h in Headers */,
+				1080232310D11BB4003F624B /* MailData.h in Headers */,
+				1080232410D11BB4003F624B /* MailMessage.h in Headers */,
+				1080232510D11BB4003F624B /* MailSyncSourceConfig.h in Headers */,
+				1080232610D11BB4003F624B /* ConfigSyncSource.h in Headers */,
+				1080232710D11BB4003F624B /* OptionParser.h in Headers */,
+				1080232810D11BB4003F624B /* FolderExt.h in Headers */,
+				1080232910D11BB4003F624B /* BufferInputStream.h in Headers */,
+				1080232A10D11BB4003F624B /* FileDataInputStream.h in Headers */,
+				1080232B10D11BB4003F624B /* FileInputStream.h in Headers */,
+				1080232C10D11BB4003F624B /* InputStream.h in Headers */,
+				1080232D10D11BB4003F624B /* MultipleInputStream.h in Headers */,
+				1080232E10D11BB4003F624B /* Chunk.h in Headers */,
+				1080232F10D11BB4003F624B /* ItemReader.h in Headers */,
+				1080233010D11BB4003F624B /* EncodingHelper.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		D2AAC043055464E500DB518D /* Headers */ = {
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
@@ -2503,6 +3193,23 @@
 /* End PBXHeadersBuildPhase section */
 
 /* Begin PBXNativeTarget section */
+		1080223E10D11BB4003F624B /* libfunambolGC */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 108023F010D11BB4003F624B /* Build configuration list for PBXNativeTarget "libfunambolGC" */;
+			buildPhases = (
+				1080223F10D11BB4003F624B /* Headers */,
+				1080233110D11BB4003F624B /* Sources */,
+				108023EC10D11BB4003F624B /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = libfunambolGC;
+			productName = mac;
+			productReference = 108023F510D11BB4003F624B /* libfunambolGC.a */;
+			productType = "com.apple.product-type.library.static";
+		};
 		7C3BEC780DB734E600119850 /* examples-client */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 7C3BEC8A0DB7353F00119850 /* Build configuration list for PBXNativeTarget "examples-client" */;
@@ -2588,11 +3295,205 @@
 				7C3BEC780DB734E600119850 /* examples-client */,
 				7C8B0EC60DB758A3005113A8 /* examples-sqlitekvstest */,
 				AB4D6E29108DBF440036FEFF /* libfunamboltest */,
+				1080223E10D11BB4003F624B /* libfunambolGC */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXSourcesBuildPhase section */
+		1080233110D11BB4003F624B /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				1080233210D11BB4003F624B /* base64.cpp in Sources */,
+				1080233310D11BB4003F624B /* error.cpp in Sources */,
+				1080233410D11BB4003F624B /* md5.cpp in Sources */,
+				1080233510D11BB4003F624B /* quoted-printable.cpp in Sources */,
+				1080233610D11BB4003F624B /* ArrayElement.cpp in Sources */,
+				1080233710D11BB4003F624B /* ArrayList.cpp in Sources */,
+				1080233810D11BB4003F624B /* MemoryKeyValueStore.cpp in Sources */,
+				1080233910D11BB4003F624B /* baseutils.cpp in Sources */,
+				1080233A10D11BB4003F624B /* BasicTime.cpp in Sources */,
+				1080233B10D11BB4003F624B /* ItemContainer.cpp in Sources */,
+				1080233C10D11BB4003F624B /* PropertyFile.cpp in Sources */,
+				1080233D10D11BB4003F624B /* StringBuffer.cpp in Sources */,
+				1080233E10D11BB4003F624B /* WString.cpp in Sources */,
+				1080233F10D11BB4003F624B /* XMLProcessor.cpp in Sources */,
+				1080234010D11BB4003F624B /* DMTClientConfig.cpp in Sources */,
+				1080234110D11BB4003F624B /* FileSyncSource.cpp in Sources */,
+				1080234210D11BB4003F624B /* MailSourceManagementNode.cpp in Sources */,
+				1080234310D11BB4003F624B /* SyncClient.cpp in Sources */,
+				1080234410D11BB4003F624B /* BaseEvent.cpp in Sources */,
+				1080234510D11BB4003F624B /* FireEvent.cpp in Sources */,
+				1080234610D11BB4003F624B /* ManageListener.cpp in Sources */,
+				1080234710D11BB4003F624B /* SetListener.cpp in Sources */,
+				1080234810D11BB4003F624B /* SyncEvent.cpp in Sources */,
+				1080234910D11BB4003F624B /* SyncItemEvent.cpp in Sources */,
+				1080234A10D11BB4003F624B /* SyncSourceEvent.cpp in Sources */,
+				1080234B10D11BB4003F624B /* SyncStatusEvent.cpp in Sources */,
+				1080234C10D11BB4003F624B /* TransportEvent.cpp in Sources */,
+				1080234D10D11BB4003F624B /* AllClause.cpp in Sources */,
+				1080234E10D11BB4003F624B /* Clause.cpp in Sources */,
+				1080234F10D11BB4003F624B /* ClauseUtil.cpp in Sources */,
+				1080235010D11BB4003F624B /* FieldClause.cpp in Sources */,
+				1080235110D11BB4003F624B /* LogicalClause.cpp in Sources */,
+				1080235210D11BB4003F624B /* SourceFilter.cpp in Sources */,
+				1080235310D11BB4003F624B /* WhereClause.cpp in Sources */,
+				1080235410D11BB4003F624B /* HTTPHeader.cpp in Sources */,
+				1080235510D11BB4003F624B /* Proxy.cpp in Sources */,
+				1080235610D11BB4003F624B /* TransportAgent.cpp in Sources */,
+				1080235710D11BB4003F624B /* URL.cpp in Sources */,
+				1080235810D11BB4003F624B /* DMTree.cpp in Sources */,
+				1080235910D11BB4003F624B /* ManagementNode.cpp in Sources */,
+				1080235A10D11BB4003F624B /* AccessConfig.cpp in Sources */,
+				1080235B10D11BB4003F624B /* B64Decoder.cpp in Sources */,
+				1080235C10D11BB4003F624B /* B64Encoder.cpp in Sources */,
+				1080235D10D11BB4003F624B /* BodyPart.cpp in Sources */,
+				1080235E10D11BB4003F624B /* CredentialHandler.cpp in Sources */,
+				1080235F10D11BB4003F624B /* DataTransformer.cpp in Sources */,
+				1080236010D11BB4003F624B /* DataTransformerFactory.cpp in Sources */,
+				1080236110D11BB4003F624B /* DefaultConfigFactory.cpp in Sources */,
+				1080236210D11BB4003F624B /* DeviceConfig.cpp in Sources */,
+				1080236310D11BB4003F624B /* FileData.cpp in Sources */,
+				1080236410D11BB4003F624B /* FolderData.cpp in Sources */,
+				1080236510D11BB4003F624B /* ItemReport.cpp in Sources */,
+				1080236610D11BB4003F624B /* spdsutils.cpp in Sources */,
+				1080236710D11BB4003F624B /* SyncItem.cpp in Sources */,
+				1080236810D11BB4003F624B /* SyncItemStatus.cpp in Sources */,
+				1080236910D11BB4003F624B /* SyncManager.cpp in Sources */,
+				1080236A10D11BB4003F624B /* SyncManagerConfig.cpp in Sources */,
+				1080236B10D11BB4003F624B /* SyncMap.cpp in Sources */,
+				1080236C10D11BB4003F624B /* SyncMLBuilder.cpp in Sources */,
+				1080236D10D11BB4003F624B /* SyncMLProcessor.cpp in Sources */,
+				1080236E10D11BB4003F624B /* SyncReport.cpp in Sources */,
+				1080236F10D11BB4003F624B /* SyncSource.cpp in Sources */,
+				1080237010D11BB4003F624B /* SyncSourceConfig.cpp in Sources */,
+				1080237110D11BB4003F624B /* SyncSourceReport.cpp in Sources */,
+				1080237210D11BB4003F624B /* AbstractCommand.cpp in Sources */,
+				1080237310D11BB4003F624B /* Add.cpp in Sources */,
+				1080237410D11BB4003F624B /* Alert.cpp in Sources */,
+				1080237510D11BB4003F624B /* Anchor.cpp in Sources */,
+				1080237610D11BB4003F624B /* Atomic.cpp in Sources */,
+				1080237710D11BB4003F624B /* Authentication.cpp in Sources */,
+				1080237810D11BB4003F624B /* Chal.cpp in Sources */,
+				1080237910D11BB4003F624B /* CmdID.cpp in Sources */,
+				1080237A10D11BB4003F624B /* ComplexData.cpp in Sources */,
+				1080237B10D11BB4003F624B /* ContentTypeInfo.cpp in Sources */,
+				1080237C10D11BB4003F624B /* ContentTypeParameter.cpp in Sources */,
+				1080237D10D11BB4003F624B /* Copy.cpp in Sources */,
+				1080237E10D11BB4003F624B /* Cred.cpp in Sources */,
+				1080237F10D11BB4003F624B /* CTCap.cpp in Sources */,
+				1080238010D11BB4003F624B /* CTPropParam.cpp in Sources */,
+				1080238110D11BB4003F624B /* CTTypeSupported.cpp in Sources */,
+				1080238210D11BB4003F624B /* Data.cpp in Sources */,
+				1080238310D11BB4003F624B /* DataStore.cpp in Sources */,
+				1080238410D11BB4003F624B /* Delete.cpp in Sources */,
+				1080238510D11BB4003F624B /* DevInf.cpp in Sources */,
+				1080238610D11BB4003F624B /* DevInfData.cpp in Sources */,
+				1080238710D11BB4003F624B /* DevInfItem.cpp in Sources */,
+				1080238810D11BB4003F624B /* DSMem.cpp in Sources */,
+				1080238910D11BB4003F624B /* EMI.cpp in Sources */,
+				1080238A10D11BB4003F624B /* Exec.cpp in Sources */,
+				1080238B10D11BB4003F624B /* Ext.cpp in Sources */,
+				1080238C10D11BB4003F624B /* Filter.cpp in Sources */,
+				1080238D10D11BB4003F624B /* Get.cpp in Sources */,
+				1080238E10D11BB4003F624B /* Item.cpp in Sources */,
+				1080238F10D11BB4003F624B /* ItemizedCommand.cpp in Sources */,
+				1080239010D11BB4003F624B /* Map.cpp in Sources */,
+				1080239110D11BB4003F624B /* MapItem.cpp in Sources */,
+				1080239210D11BB4003F624B /* Mem.cpp in Sources */,
+				1080239310D11BB4003F624B /* Meta.cpp in Sources */,
+				1080239410D11BB4003F624B /* MetInf.cpp in Sources */,
+				1080239510D11BB4003F624B /* ModificationCommand.cpp in Sources */,
+				1080239610D11BB4003F624B /* NextNonce.cpp in Sources */,
+				1080239710D11BB4003F624B /* ObjectDel.cpp in Sources */,
+				1080239810D11BB4003F624B /* Property.cpp in Sources */,
+				1080239910D11BB4003F624B /* PropParam.cpp in Sources */,
+				1080239A10D11BB4003F624B /* Put.cpp in Sources */,
+				1080239B10D11BB4003F624B /* Replace.cpp in Sources */,
+				1080239C10D11BB4003F624B /* ResponseCommand.cpp in Sources */,
+				1080239D10D11BB4003F624B /* Results.cpp in Sources */,
+				1080239E10D11BB4003F624B /* Search.cpp in Sources */,
+				1080239F10D11BB4003F624B /* Sequence.cpp in Sources */,
+				108023A010D11BB4003F624B /* SessionID.cpp in Sources */,
+				108023A110D11BB4003F624B /* Source.cpp in Sources */,
+				108023A210D11BB4003F624B /* SourceArray.cpp in Sources */,
+				108023A310D11BB4003F624B /* SourceRef.cpp in Sources */,
+				108023A410D11BB4003F624B /* Status.cpp in Sources */,
+				108023A510D11BB4003F624B /* StringElement.cpp in Sources */,
+				108023A610D11BB4003F624B /* Sync.cpp in Sources */,
+				108023A710D11BB4003F624B /* SyncAlert.cpp in Sources */,
+				108023A810D11BB4003F624B /* SyncBody.cpp in Sources */,
+				108023A910D11BB4003F624B /* SyncCap.cpp in Sources */,
+				108023AA10D11BB4003F624B /* SyncHdr.cpp in Sources */,
+				108023AB10D11BB4003F624B /* SyncML.cpp in Sources */,
+				108023AC10D11BB4003F624B /* SyncNotification.cpp in Sources */,
+				108023AD10D11BB4003F624B /* SyncType.cpp in Sources */,
+				108023AE10D11BB4003F624B /* SyncTypeArray.cpp in Sources */,
+				108023AF10D11BB4003F624B /* Target.cpp in Sources */,
+				108023B010D11BB4003F624B /* TargetRef.cpp in Sources */,
+				108023B110D11BB4003F624B /* VerDTD.cpp in Sources */,
+				108023B210D11BB4003F624B /* VerProto.cpp in Sources */,
+				108023B310D11BB4003F624B /* Formatter.cpp in Sources */,
+				108023B410D11BB4003F624B /* Parser.cpp in Sources */,
+				108023B510D11BB4003F624B /* Calendar.cpp in Sources */,
+				108023B610D11BB4003F624B /* Event.cpp in Sources */,
+				108023B710D11BB4003F624B /* iCalConverter.cpp in Sources */,
+				108023B810D11BB4003F624B /* iCalProperty.cpp in Sources */,
+				108023B910D11BB4003F624B /* ToDo.cpp in Sources */,
+				108023BA10D11BB4003F624B /* Address.cpp in Sources */,
+				108023BB10D11BB4003F624B /* BusinessDetail.cpp in Sources */,
+				108023BC10D11BB4003F624B /* Contact.cpp in Sources */,
+				108023BD10D11BB4003F624B /* Contact30.cpp in Sources */,
+				108023BE10D11BB4003F624B /* ContactDetail.cpp in Sources */,
+				108023BF10D11BB4003F624B /* Email.cpp in Sources */,
+				108023C010D11BB4003F624B /* Name.cpp in Sources */,
+				108023C110D11BB4003F624B /* Note.cpp in Sources */,
+				108023C210D11BB4003F624B /* PersonalDetail.cpp in Sources */,
+				108023C310D11BB4003F624B /* Phone.cpp in Sources */,
+				108023C410D11BB4003F624B /* Title.cpp in Sources */,
+				108023C510D11BB4003F624B /* TypedProperty.cpp in Sources */,
+				108023C610D11BB4003F624B /* vCardConverter.cpp in Sources */,
+				108023C710D11BB4003F624B /* vCardProperty.cpp in Sources */,
+				108023C810D11BB4003F624B /* WebPage.cpp in Sources */,
+				108023C910D11BB4003F624B /* VConverter.cpp in Sources */,
+				108023CA10D11BB4003F624B /* VObject.cpp in Sources */,
+				108023CB10D11BB4003F624B /* VObjectFactory.cpp in Sources */,
+				108023CC10D11BB4003F624B /* VProperty.cpp in Sources */,
+				108023CD10D11BB4003F624B /* autotoolsadapter.cpp in Sources */,
+				108023CE10D11BB4003F624B /* Log.cpp in Sources */,
+				108023CF10D11BB4003F624B /* TransportAgentFactory.cpp in Sources */,
+				108023D010D11BB4003F624B /* DeviceManagementNode.cpp in Sources */,
+				108023D110D11BB4003F624B /* DMTreeFactory.cpp in Sources */,
+				108023D210D11BB4003F624B /* DESDecoder.cpp in Sources */,
+				108023D310D11BB4003F624B /* DESEncoder.cpp in Sources */,
+				108023D410D11BB4003F624B /* CacheSyncSource.cpp in Sources */,
+				108023D510D11BB4003F624B /* SQLKeyValueStore.cpp in Sources */,
+				108023D610D11BB4003F624B /* MacTransportAgent.cpp in Sources */,
+				108023D710D11BB4003F624B /* TestSyncSource.cpp in Sources */,
+				108023D810D11BB4003F624B /* SQLiteKeyValueStore.cpp in Sources */,
+				108023D910D11BB4003F624B /* PlatformAdapter.cpp in Sources */,
+				108023DA10D11BB4003F624B /* StringMap.cpp in Sources */,
+				108023DB10D11BB4003F624B /* SyncItemListener.cpp in Sources */,
+				108023DC10D11BB4003F624B /* MailAccount.cpp in Sources */,
+				108023DD10D11BB4003F624B /* MailAccountManager.cpp in Sources */,
+				108023DE10D11BB4003F624B /* MailData.cpp in Sources */,
+				108023DF10D11BB4003F624B /* MailMessage.cpp in Sources */,
+				108023E010D11BB4003F624B /* MailSyncSourceConfig.cpp in Sources */,
+				108023E110D11BB4003F624B /* ConfigSyncSource.cpp in Sources */,
+				108023E210D11BB4003F624B /* OptionParser.cpp in Sources */,
+				108023E310D11BB4003F624B /* FolderExt.cpp in Sources */,
+				108023E410D11BB4003F624B /* BufferInputStream.cpp in Sources */,
+				108023E510D11BB4003F624B /* FileDataInputStream.cpp in Sources */,
+				108023E610D11BB4003F624B /* FileInputStream.cpp in Sources */,
+				108023E710D11BB4003F624B /* InputStream.cpp in Sources */,
+				108023E810D11BB4003F624B /* MultipleInputStream.cpp in Sources */,
+				108023E910D11BB4003F624B /* Chunk.cpp in Sources */,
+				108023EA10D11BB4003F624B /* ItemReader.cpp in Sources */,
+				108023EB10D11BB4003F624B /* EncodingHelper.cpp in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		7C3BEC760DB734E600119850 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -2860,6 +3761,90 @@
 /* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
+		108023F110D11BB4003F624B /* OSX-Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
+				COPY_PHASE_STRIP = NO;
+				EXECUTABLE_PREFIX = "";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"\\\"$(SRCROOT)/../../tools\\\"",
+				);
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_ENABLE_OBJC_GC = supported;
+				GCC_MODEL_TUNING = G5;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				INSTALL_PATH = /usr/local/lib;
+				PRODUCT_NAME = libfunambol;
+			};
+			name = "OSX-Debug";
+		};
+		108023F210D11BB4003F624B /* OSX-Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				EXECUTABLE_PREFIX = "";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"\\\"$(SRCROOT)/../../tools\\\"",
+				);
+				GCC_ENABLE_OBJC_GC = supported;
+				GCC_MODEL_TUNING = G5;
+				INSTALL_PATH = /usr/local/lib;
+				PRODUCT_NAME = libfunambolGC;
+				SYMROOT = buildGC;
+			};
+			name = "OSX-Release";
+		};
+		108023F310D11BB4003F624B /* iPhone-Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COPY_PHASE_STRIP = NO;
+				EXECUTABLE_PREFIX = "";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"\\\"$(SRCROOT)/../../tools\\\"",
+				);
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_MODEL_TUNING = G5;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				INSTALL_PATH = /usr/local/lib;
+				OTHER_LDFLAGS = "";
+				"OTHER_LDFLAGS[arch=armv6]" = (
+					"-framework",
+					CFNetwork,
+				);
+				"OTHER_LDFLAGS[arch=i386]" = (
+					"-framework",
+					CoreServices,
+				);
+				PRODUCT_NAME = libfunambol;
+				SDKROOT = iphonesimulator2.0;
+			};
+			name = "iPhone-Debug";
+		};
+		108023F410D11BB4003F624B /* iPhone-Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				EXECUTABLE_PREFIX = "";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"\\\"$(SRCROOT)/../../tools\\\"",
+				);
+				GCC_MODEL_TUNING = G5;
+				INSTALL_PATH = /usr/local/lib;
+				PRODUCT_NAME = libfunambol;
+			};
+			name = "iPhone-Release";
+		};
 		1DEB91EC08733DB70010E9CD /* OSX-Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -2931,6 +3916,7 @@
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
 				GCC_C_LANGUAGE_STANDARD = c99;
+				GCC_ENABLE_OBJC_GC = unsupported;
 				GCC_INPUT_FILETYPE = sourcecode.cpp.objcpp;
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					ENABLE_NAMESPACE,
@@ -3259,6 +4245,17 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		108023F010D11BB4003F624B /* Build configuration list for PBXNativeTarget "libfunambolGC" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				108023F110D11BB4003F624B /* OSX-Debug */,
+				108023F210D11BB4003F624B /* OSX-Release */,
+				108023F310D11BB4003F624B /* iPhone-Debug */,
+				108023F410D11BB4003F624B /* iPhone-Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = "OSX-Release";
+		};
 		1DEB91EB08733DB70010E9CD /* Build configuration list for PBXNativeTarget "libfunambol" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
