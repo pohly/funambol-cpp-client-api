@@ -2463,7 +2463,7 @@ Status *SyncManager::processSyncItem(Item* item, const CommandInfo &cmdInfo, Syn
                 sources[count]->getReport()->addItem(CLIENT, COMMAND_ADD, incomingItem->getKey(), status->getStatusCode(), NULL);
 
                 // If the add was successful, set the id mapping
-                if (code >= 200 && code <= 299) {
+                if ((code >= 200 && code <= 299) || code == STC_ALREADY_EXISTS) {     // send mapping for code 418 too
                     char *key = toMultibyte(incomingItem->getKey());
                     mmanager[count]->addMapping(key, item->getSource()->getLocURI()); // LUID, GUID
                     delete [] key;
