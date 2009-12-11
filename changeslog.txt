@@ -1,3 +1,11 @@
+2009-12-11
+  - toccy: reworked FileSyncSource.cpp: if the new file received already exists, the incoming file
+           will be renamed with a suffix until a valid name is found (append _01, _02, ...)
+           If the file already exists and the content is the same (CRC), the new item is not added and
+           the status returned is 418 (already-exists). 
+  - toccy: Fixed the mapping for items with status code 418 in SyncManager: it should be sent, since Server 
+           considers it a successful status.
+
 2009-11-27
   - magi: added transport event in MacTransportAgent
           modified posixLog to avoid to write wrong new [DEBUG] line

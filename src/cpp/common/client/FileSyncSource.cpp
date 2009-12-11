@@ -83,33 +83,192 @@ StringBuffer getRelativeName(const StringBuffer& dir, const StringBuffer& fullNa
 }
 
 
+/**
+ * Adds a suffix like "_00", "_02",... to the file name.
+ * It's used to generate a new file name, if another one already exists.
+ * @param fileName the file name
+ * @param num      the number to add in the suffix (i.e. 1 -> "_01" is appended)
+ * @return         the new file name
+ */
+static StringBuffer addNumericSuffix(const StringBuffer& fileName, const int num) {
+   
+    StringBuffer suffix;
+    suffix.sprintf("_%02d", num);   // "_01", "_02" ...
 
-static int saveFileContent(const char *name, const char *content, size_t size, bool isUpdate) {
+    StringBuffer ret(fileName);
+    unsigned long pos = fileName.rfind(".");
     
-    if (!isUpdate) { // it is an add
-        if(fileExists(name)) {
-            return STC_ALREADY_EXISTS;
-        }
-    }   
-    if (!saveFile(name, content, size, true)) {
+    if (pos == StringBuffer::npos) {
+        // file with no extension: append at the end of filename
+        ret.append(suffix);
+    }
+    else {
+        // file with extension: replace "." with "_0x."
+        suffix.append(".");
+        ret.replace(".", suffix, pos);
+    }
+
+    return ret;
+}
+
+/**
+ * Compares two files. 
+ * Returns true if the files have the same content, false if they are different.
+ */
+static bool compareFiles(const void* content1, const size_t size1, 
+                         const void* content2, const size_t size2) {
+
+    // First, check the size...
+    if (size1 != size2) {
+        return false;
+    }
+
+    StringBuffer crc1, crc2;
+    crc1.sprintf("%ld", calculateCRC(content1, size1));
+    crc2.sprintf("%ld", calculateCRC(content2, size2));
+
+    return (crc1 == crc2)? true : false;
+}
+
+
+/**
+ * Adds a new file (saves it into the filesystem).
+ * The destination file cannot already exist, in this case the incoming file
+ * will be renamed with a suffix until a valid name is found (append _01, _02, ...).
+ * @param name [IN-OUT] the name of file - if changed, the new one is returned.
+ */
+static int addFile(WString& name, const char* dir, const char *content, size_t size) {
+
+    if (name.empty() || !dir || !size) {
         return STC_COMMAND_FAILED;
-    } 
+    }
     
+    int ret = STC_OK;
+    StringBuffer originalName = getCompleteName(dir, name.c_str());
+
+    //
+    // Change the name of incoming file (append _01, _02, ...) until one available is found.
+    //
+    StringBuffer fullName(originalName);
+    for (int i=1; fileExists(fullName.c_str()); i++) {
+        LOG.debug("The file '%s' already exists locally", fullName.c_str());
+
+        // Read the existing file, check if it's the same (CRC)
+        char* existingContent = NULL;
+        size_t existingSize;
+        if (!readFile(fullName.c_str(), &existingContent, &existingSize, true)) {
+            LOG.error("cannot read file: %s", fullName.c_str());
+        }
+        bool isSameFile = compareFiles(content, size, existingContent, existingSize);
+        delete [] existingContent;
+
+        if (isSameFile) {
+            LOG.info("File not added: it already exists with the same name and content (%s)", fullName.c_str());
+            ret = STC_ALREADY_EXISTS;
+            break;
+        }
+        else {
+            // append "_0i" and check again if exists...
+            fullName = addNumericSuffix(originalName, i);
+        }
+    }
+
+    // Set the new 'name': it's returned to the caller (it's the key!)
+    if (fullName != originalName) {
+        StringBuffer newName = getRelativeName(dir, fullName);
+        LOG.info("Incoming file renamed into: '%s'", newName.c_str());
+        name = newName;
+    }
+
+    // Save: only if the same file doesn't already exist.
+    if (ret != STC_ALREADY_EXISTS) {
+        if (!saveFile(fullName.c_str(), content, size, true)) {
+            ret = STC_COMMAND_FAILED;
+        }
+    }
+    return ret;
+}
+
+/**
+ * Updates a file, replacing the existing one with the same name.
+ * NOTE: no check is done to the existance of the file with that name (key),
+ *       since we use the file name as the item's key (so the right mapping is kept).
+ * @param name  the name of file to update
+ */
+static int updateFile(const WString& name, const char* dir, const char *content, size_t size) {
+
+    if (name.empty() || !dir || !size) {
+        return STC_COMMAND_FAILED;
+    }
+
+    // Check file existence
+    //StringBuffer fullName = getCompleteName(dir, name.c_str());
+    //if ( !fileExists(fullName.c_str()) ) {
+    //    LOG.error("Could not update file '%s': file not found locally!", fullName.c_str());
+    //    return STC_COMMAND_FAILED;
+    //}
+
+    if (!saveFile(getCompleteName(dir, name.c_str()), content, size, true)) {
+        return STC_COMMAND_FAILED;
+    }
     return STC_OK;
 }
 
+
+/**
+ * Saves a file (OMA file data) into the filesystem.
+ * The file name is specified in the file data object.
+ * NOTE: The new file name is set and returned inside the file::name attribute.
+
+ * @param dir        the destination directory to save the file
+ * @param file       the FileData object containing the data & other file params
+ * @return isUpdate  true if it's an update, false if it's an add.
+ */
 static int saveFileData(const char *dir, FileData& file, bool isUpdate) {
 
-    return saveFileContent(getCompleteName(dir, file.getName()), file.getBody(), file.getSize(), isUpdate);
+    int ret = STC_COMMAND_FAILED;
+    WString name(file.getName());
+
+    if (isUpdate) {
+        ret = updateFile(name, dir, file.getBody(), file.getSize());
+    }
+    else {
+        ret = addFile(name, dir, file.getBody(), file.getSize());
+    }
+
+    // Set the new item key (real file name, can be different)
+    if (name != file.getName()) {
+        file.setName(name.c_str());
+    }
+    return ret;
 }
 
+/**
+ * Saves a file (raw) into the filesystem.
+ * The file name will be the Item's key.
+ * NOTE: The new file name is set and returned inside the item::key attribute.
+ * 
+ * @param dir        the destination directory to save the file
+ * @param item       the SyncItem containing the data & dataSize
+ * @return isUpdate  true if it's an update, false if it's an add.
+ */
+static int saveFileItem(const char* dir, SyncItem& item, bool isUpdate) {
 
-static int saveFileItem(const char *dir, SyncItem& item, bool isUpdate) {
-    return saveFileContent(
-            getCompleteName(dir, item.getKey()), 
-            (const char *)item.getData(),
-            item.getDataSize(),
-            isUpdate);
+    int ret = STC_COMMAND_FAILED;
+    WString name(item.getKey());
+
+    if (isUpdate) {
+        ret = updateFile(name, dir, (const char*)item.getData(), item.getDataSize());
+    }
+    else {
+        ret = addFile(name, dir, (const char*)item.getData(), item.getDataSize());
+    }
+    
+    // Set the new item key (file name).
+    if (name != item.getKey()) {
+        item.setKey(name.c_str());
+    }
+    return ret;
 }
 
 
@@ -182,25 +341,18 @@ int FileSyncSource::insertItem(SyncItem& item) {
     FileData file;
 
     // Try the OMA file data first
-    if (file.parse(item.getData(),item.getDataSize()) == 0) {
-        if (file.getSize() >= 0) {   
+    if (file.parse(item.getData(), item.getDataSize()) == 0) {
+        if (file.getSize() >= 0) {  
+            // Save file and set the LUID with the local name 
             ret = saveFileData(dir, file, false);
+            item.setKey(file.getName());
         }        
     } else {
-        // treat it as a raw file
+        // Save raw file (item's key is already set with the local name)
         ret = saveFileItem(dir, item, false);
     }
 
-    // Set the LUID with the local name 
-    item.setKey(file.getName());
-
-    if (ret == STC_OK) {
-        LOG.debug("Added item: %" WCHAR_PRINTF, item.getKey());
-    }
-    else if (ret == STC_ALREADY_EXISTS) {
-        LOG.debug("Item not added (already exists): %" WCHAR_PRINTF, item.getKey());
-    }
-    else {
+    if (isErrorCode(ret)) {
         report->setLastErrorCode(ERR_ITEM_ERROR);
         report->setLastErrorMsg(ERRMSG_ITEM_ERROR);
         report->setState(SOURCE_ERROR);
@@ -214,18 +366,20 @@ int FileSyncSource::modifyItem(SyncItem& item) {
     int ret = STC_COMMAND_FAILED;
     FileData file;
     
-    if (file.parse(item.getData(),item.getDataSize()) == 0) {
-        if (file.getSize() >= 0) {   
+    if (file.parse(item.getData(), item.getDataSize()) == 0) {
+        // Save OMA File data object.
+        // The file name is the item's key, IF ITEM ALREADY MAPPED! (only updates / deletes)
+        // So we set the right file name here.
+        file.setName(item.getKey());
+        if (file.getSize() >= 0) {
             ret = saveFileData(dir, file, true);
-        }        
+        }
     } else {
-         ret = saveFileItem(dir, item, true);    
+        // Save raw file
+        ret = saveFileItem(dir, item, true);    
     }
 
-    if (ret == STC_OK) {
-        LOG.debug("Updated item: %" WCHAR_PRINTF, item.getKey());
-    }
-    else {
+    if (isErrorCode(ret)) {
         report->setLastErrorCode(ERR_ITEM_ERROR);
         report->setLastErrorMsg(ERRMSG_ITEM_ERROR);
         report->setState(SOURCE_ERROR);
@@ -238,7 +392,7 @@ int FileSyncSource::removeItem(SyncItem& item) {
     
     const char* filename = toMultibyte(item.getKey());
     removeFileInDir(dir, filename);
-    if (filename) { delete [] filename; filename = NULL; }
+    delete [] filename;
     LOG.debug("Item deleted: %" WCHAR_PRINTF, item.getKey());
     
     return STC_OK;
