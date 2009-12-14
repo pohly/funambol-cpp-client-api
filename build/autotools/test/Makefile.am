@@ -54,7 +54,8 @@ TESTS_SPDM = \
 
 TESTS_CLIENT = \
     OptionParserTest.cpp \
-    ConfigSyncSourceUnitTest.cpp
+    ConfigSyncSourceUnitTest.cpp \
+    FileSyncSourceTest.cpp
 
 TESTS_EVENT = EventTest.cpp
 

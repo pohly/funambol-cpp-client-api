@@ -1,3 +1,7 @@
+2009-12-14
+  - toccy: added unit tests of FileSyncSource (FileSyncSourceTest.cpp)
+  - toccy: moved sample input files from testcases/FileInputStreamTest to testcases/samples, as they are shared.
+
 2009-12-11
   - toccy: reworked FileSyncSource.cpp: if the new file received already exists, the incoming file
            will be renamed with a suffix until a valid name is found (append _01, _02, ...)

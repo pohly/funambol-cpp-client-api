@@ -330,6 +330,10 @@
 					>
 				</File>
 				<File
+					RelativePath="..\..\test\common\client\FileSyncSourceTest.cpp"
+					>
+				</File>
+				<File
 					RelativePath="..\..\test\common\client\OptionParserTest.cpp"
 					>
 				</File>
