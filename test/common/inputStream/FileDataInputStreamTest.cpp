@@ -79,8 +79,8 @@ private:
     /// Loads data for testing the 'testFileName' file.
     void loadTestFileData(const char* testFileName) {
 
-        fileName = getTestFileFullPath("FileInputStreamTest", testFileName);
-        const char* fileContent = loadTestFile("FileInputStreamTest", testFileName, true);  // must be binary mode!
+        fileName = getTestFileFullPath(SAMPLE_FILES_DIR, testFileName);
+        const char* fileContent = loadTestFile(SAMPLE_FILES_DIR, testFileName, true);  // must be binary mode!
         int fileSize = (int)fgetsize(fileName.c_str());
 
         const WCHAR* wtestFileName = toWideChar(testFileName);

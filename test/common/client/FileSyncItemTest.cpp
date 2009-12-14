@@ -74,13 +74,13 @@ private:
      */
     void testFileSyncItemInputStream(const bool isFileData) {
 
-        StringBuffer fileName = getTestFileFullPath("FileInputStreamTest", TEST_FILE_NAME);
+        StringBuffer fileName = getTestFileFullPath(SAMPLE_FILES_DIR, TEST_FILE_NAME);
 
         FileSyncItem item(fileName, isFileData);
         InputStreamTest test;
 
         // raw data
-        char* fileContent = loadTestFile("FileInputStreamTest", TEST_FILE_NAME, true);  // must be binary mode!
+        char* fileContent = loadTestFile(SAMPLE_FILES_DIR, TEST_FILE_NAME, true);  // must be binary mode!
         int fileSize = (int)fgetsize(fileName.c_str());
 
         // file data object

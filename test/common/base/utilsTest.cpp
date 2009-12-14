@@ -88,8 +88,8 @@ private:
     void getFileModTimeTest() {
 
         // Read and save a test file, to set the last modification time to now
-        char* content = loadTestFile           ("FileInputStreamTest", "test_LICENSE_unix.txt", true);
-        StringBuffer path = getTestFileFullPath("FileInputStreamTest", "test_LICENSE_unix.txt");
+        char* content = loadTestFile           (SAMPLE_FILES_DIR, "test_LICENSE_unix.txt", true);
+        StringBuffer path = getTestFileFullPath(SAMPLE_FILES_DIR, "test_LICENSE_unix.txt");
         size_t size = fgetsize(path.c_str());
         saveFile(path.c_str(), content, size, true);
         delete [] content;

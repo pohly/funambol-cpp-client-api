@@ -64,16 +64,16 @@ public:
 
     void setUp() {
         // Input txt test files
-        fileName1    = getTestFileFullPath("FileInputStreamTest", FILE_NAME_1);
-        fileContent1 = loadTestFile       ("FileInputStreamTest", FILE_NAME_1, true);  // must be binary mode!
+        fileName1    = getTestFileFullPath(SAMPLE_FILES_DIR, FILE_NAME_1);
+        fileContent1 = loadTestFile       (SAMPLE_FILES_DIR, FILE_NAME_1, true);  // must be binary mode!
         fileSize1    = (int)strlen(fileContent1);
 
-        fileName2    = getTestFileFullPath("FileInputStreamTest", FILE_NAME_2);
-        fileContent2 = loadTestFile       ("FileInputStreamTest", FILE_NAME_2, true);  // must be binary mode!
+        fileName2    = getTestFileFullPath(SAMPLE_FILES_DIR, FILE_NAME_2);
+        fileContent2 = loadTestFile       (SAMPLE_FILES_DIR, FILE_NAME_2, true);  // must be binary mode!
         fileSize2    = (int)strlen(fileContent2);
 
-        fileName3    = getTestFileFullPath("FileInputStreamTest", FILE_NAME_3);
-        fileContent3 = loadTestFile       ("FileInputStreamTest", FILE_NAME_3, true);
+        fileName3    = getTestFileFullPath(SAMPLE_FILES_DIR, FILE_NAME_3);
+        fileContent3 = loadTestFile       (SAMPLE_FILES_DIR, FILE_NAME_3, true);
     }
 
     void tearDown() {

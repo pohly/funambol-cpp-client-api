@@ -58,6 +58,8 @@ USE_NAMESPACE
 // ---- Collect here util functions that may be shared between different tests ----
 //
 
+#define SAMPLE_FILES_DIR        "samples"
+
 /**
  * Initializes the PlatformAdapter for a given test.
  * To avoid spamming the config folder, the root context is composed so that
